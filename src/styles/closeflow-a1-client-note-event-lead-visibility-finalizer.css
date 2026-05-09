@@ -1,0 +1,27 @@
+/* CLOSEFLOW_A1_CLIENT_NOTE_EVENT_LEAD_VISIBILITY_FINALIZER
+   Scope: only the shared event create modal readability. No visual-system migration here.
+*/
+.closeflow-event-modal-readable[data-a1-event-modal-readable-finalizer="true"] {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.closeflow-event-modal-readable[data-a1-event-modal-readable-finalizer="true"] :is(label, p, span, div, h1, h2, h3, h4, strong, small) {
+  color: #0f172a;
+}
+
+.closeflow-event-modal-readable[data-a1-event-modal-readable-finalizer="true"] :is(input, select, textarea) {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+.closeflow-event-modal-readable[data-a1-event-modal-readable-finalizer="true"] :is(option) {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.closeflow-event-modal-readable[data-a1-event-modal-readable-finalizer="true"] .event-form-footer {
+  background: #ffffff !important;
+  border-top: 1px solid #e2e8f0;
+}

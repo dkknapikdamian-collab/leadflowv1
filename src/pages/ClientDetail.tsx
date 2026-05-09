@@ -322,6 +322,32 @@ function paymentStatusLabel(status?: string) {
       return status || 'Rozliczenie';
   }
 }
+
+const CLIENT_NOTE_ACTIVITY_TYPES_A1_FINALIZER = new Set([
+  'client_note',
+  'client_note_added',
+  'client_note_dictated',
+  'dictated_note',
+  'note_added',
+]);
+
+function getActivityEventTypeA1(activity: any) {
+  return String(activity?.eventType || activity?.activityType || activity?.event_type || '').trim();
+}
+
+function isClientNoteActivityA1(activity: any) {
+  const eventType = getActivityEventTypeA1(activity);
+  const payload = activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+  return CLIENT_NOTE_ACTIVITY_TYPES_A1_FINALIZER.has(eventType)
+    || (String((payload as any).recordType || '').trim() === 'client' && Boolean((payload as any).note || (payload as any).content));
+}
+
+function normalizeClientActivitiesForA1(activities: any[]) {
+  return Array.isArray(activities)
+    ? activities.map((activity) => (isClientNoteActivityA1(activity) ? { ...activity, eventType: getActivityEventTypeA1(activity) || 'client_note' } : activity))
+    : [];
+}
+
 function activityLabel(activity: any) {
   const eventType = String(activity?.eventType || activity?.activityType || 'activity');
   const title = asText(activity?.payload?.title) || asText(activity?.title);
@@ -2127,7 +2153,7 @@ function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
       return Boolean(
         (activityClientId && clientId && activityClientId === clientId) ||
         recordType === 'client' ||
-        eventType === 'client_note_added'
+        isClientNoteActivityA1(activity)
       );
     })
     .map((activity) => ({

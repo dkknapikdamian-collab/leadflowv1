@@ -119,7 +119,7 @@ export default function EventCreateDialog({ open, onOpenChange, onSaved, context
 
   return (
     <Dialog open={open} onOpenChange={(nextOpen) => (nextOpen ? onOpenChange(true) : closeDialog())}>
-      <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable" data-event-create-dialog-stage85="true" data-event-create-dialog-stage22b="true">
+      <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable" data-event-create-dialog-stage85="true" data-event-create-dialog-stage22b="true" data-a1-event-modal-readable-finalizer="true">
         <DialogHeader className="event-form-vnext-header">
           <DialogTitle>Nowe wydarzenie</DialogTitle>
         </DialogHeader>

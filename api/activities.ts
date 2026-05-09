@@ -51,6 +51,7 @@ export default async function handler(req: any, res: any) {
     const body = parseBody(req);
     const caseId = asText(req.query?.caseId || body.caseId);
     const leadId = asText(req.query?.leadId || body.leadId);
+    const clientId = asText(req.query?.clientId || body.clientId);
     const portalSession = readPortalSession(req, body);
     const portalMode = Boolean(portalSession);
 
@@ -73,6 +74,7 @@ export default async function handler(req: any, res: any) {
       const filters = [];
       if (caseId) filters.push(`case_id=eq.${encodeURIComponent(caseId)}`);
       if (leadId) filters.push(`lead_id=eq.${encodeURIComponent(leadId)}`);
+      if (clientId) filters.push(`client_id=eq.${encodeURIComponent(clientId)}`);
       const filterQuery = filters.length ? `&${filters.join('&')}` : '';
       const result = await selectFirstAvailable([withWorkspaceFilter(`activities?select=*&order=created_at.desc&limit=${limit}${filterQuery}`, workspaceId)]);
       const rows = Array.isArray(result.data) ? result.data : [];
@@ -99,6 +101,7 @@ export default async function handler(req: any, res: any) {
         workspace_id: workspaceId,
         case_id: caseId || null,
         lead_id: leadId || null,
+        client_id: clientId || null,
         owner_id: asText(body.ownerId) || null,
         actor_id: asText(body.actorId) || null,
         actor_type: portalMode ? 'client' : (asText(body.actorType) || 'operator'),
@@ -130,6 +133,7 @@ export default async function handler(req: any, res: any) {
       const patch: Record<string, unknown> = {};
       if (body.caseId !== undefined) patch.case_id = asText(body.caseId) || null;
       if (body.leadId !== undefined) patch.lead_id = asText(body.leadId) || null;
+      if (body.clientId !== undefined) patch.client_id = asText(body.clientId) || null;
       if (body.ownerId !== undefined) patch.owner_id = asText(body.ownerId) || null;
       if (body.actorId !== undefined) patch.actor_id = asText(body.actorId) || null;
       if (body.actorType !== undefined) patch.actor_type = asText(body.actorType) || 'operator';

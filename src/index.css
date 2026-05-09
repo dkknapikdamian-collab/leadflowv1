@@ -409,3 +409,5 @@ Do not hide real alerts with text, link or button.
 }
 /* /CLOSEFLOW_ADMIN_FEEDBACK_VISUAL_REPAIR_2026_05_08 */
 @import './styles/closeflow-client-event-modal-runtime-repair.css';
+
+@import './styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css';

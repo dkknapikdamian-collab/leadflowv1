@@ -539,7 +539,8 @@
     "check:closeflow-client-case-settlement-v30": "node scripts/check-closeflow-client-case-settlement-v30.cjs",
     "check:closeflow-client-case-settlement-v31": "node scripts/check-closeflow-client-case-settlement-v31.cjs",
     "audit:closeflow-visual-system-inventory": "node scripts/audit-closeflow-visual-system-inventory.cjs --write",
-    "check:closeflow-visual-system-inventory": "node scripts/check-closeflow-visual-system-inventory.cjs"
+    "check:closeflow-visual-system-inventory": "node scripts/check-closeflow-visual-system-inventory.cjs",
+    "check:a1-client-note-event-lead-visibility-finalizer": "node scripts/check-closeflow-a1-client-note-event-lead-visibility-finalizer.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

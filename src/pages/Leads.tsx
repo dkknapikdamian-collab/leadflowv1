@@ -183,6 +183,19 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
 }
 
 
+
+function sanitizeNewLeadCreatePayloadA1(input: any) {
+  const payload = { ...(input || {}) };
+  delete payload.clientId;
+  delete payload.linkedCaseId;
+  delete payload.caseId;
+  delete payload.client_id;
+  delete payload.linked_case_id;
+  delete payload.case_id;
+  delete payload.leadVisibility;
+  return payload;
+}
+
 function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
@@ -385,7 +398,11 @@ export default function Leads() {
   };
 
   const createLeadFromPreparedInput = async (preparedLead: any, options?: { forceDuplicate?: boolean }) => {
-    await insertLeadToSupabase({ ...preparedLead, allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
+    await insertLeadToSupabase({ ...sanitizeNewLeadCreatePayloadA1(preparedLead), allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
+    setSearchQuery('');
+    setShowTrash(false);
+    setQuickFilter('all');
+    setValueSortEnabled(false);
     await loadLeads();
     toast.success('Lead dodany');
     setIsNewLeadOpen(false);

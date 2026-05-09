@@ -24,7 +24,7 @@ type ContextNoteDialogProps = {
 
 function eventTypeForContext(context?: TaskCreateDialogContext) {
   if (context?.recordType === 'case') return 'operator_note';
-  if (context?.recordType === 'client') return 'client_note_added';
+  if (context?.recordType === 'client') return 'client_note';
   return 'note_added';
 }
 

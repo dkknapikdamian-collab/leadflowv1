@@ -177,9 +177,21 @@ function shouldDropMissingColumnForLeadFallback(table: 'leads' | 'cases' | 'acti
 }
 
 // CLOSEFLOW_LEAD_COMPANY_NOT_NULL_REPAIR_V2: lead create payload must keep company as empty string, never null, because production schema may have NOT NULL.
+
+function sanitizeFreshLeadCreatePayloadA1(payload: Record<string, unknown>) {
+  const next = { ...payload };
+  delete next.client_id;
+  delete next.clientId;
+  delete next.linked_case_id;
+  delete next.linkedCaseId;
+  delete next.case_id;
+  delete next.caseId;
+  return next;
+}
+
 async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
   // CLOSEFLOW_LEAD_COMPANY_NOT_NULL_REPAIR_V25: production leads.company can be NOT NULL.
-  let currentPayload: Record<string, unknown> = { ...payload, company: asLeadCompanyForNotNull(payload.company) };
+  let currentPayload: Record<string, unknown> = { ...sanitizeFreshLeadCreatePayloadA1(payload), company: asLeadCompanyForNotNull(payload.company) };
   for (let attempt = 0; attempt < 12; attempt += 1) {
     try {
       return await insertWithVariants(['leads'], [currentPayload]);
