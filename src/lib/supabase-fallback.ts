@@ -13,7 +13,7 @@ type CaseTemplateItemInput = {
   order?: number;
 };
 type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string; allowDuplicate?: boolean };
-type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; workspaceId?: string; allowDuplicate?: boolean };
+type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; workspaceId?: string; allowDuplicate?: boolean; forceDuplicate?: boolean };
 type ServiceProfileUpsertInput = { id?: string; name?: string; description?: string; startRule?: string; winRule?: string; billingModel?: string; caseCreationMode?: string; isDefault?: boolean; isArchived?: boolean; workspaceId?: string };
 type PaymentUpsertInput = { id?: string; clientId?: string | null; leadId?: string | null; caseId?: string | null; type?: string; status?: string; amount?: number; currency?: string; paidAt?: string | null; dueAt?: string | null; note?: string; workspaceId?: string };
 type ProfileSettingsUpdate = { fullName?: string; companyName?: string; email?: string; appearanceSkin?: string; planningConflictWarningsEnabled?: boolean; browserNotificationsEnabled?: boolean; forceLogoutAfter?: string | null; workspaceId?: string | null };
