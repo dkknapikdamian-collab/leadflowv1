@@ -112,6 +112,7 @@ const STAGE35_MONEY_KEYS = [
 ];
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENTS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
+const CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FULL = 'lead and client duplicate warning modal before write';
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -440,9 +441,9 @@ export default function Clients() {
           open={clientConflictOpen}
           onOpenChange={setClientConflictOpen}
           candidates={clientConflictCandidates}
-          title="Możliwy duplikat klienta lub leada"
-          description="Znaleziono podobny rekord po nazwie, telefonie albo e-mailu. Wybierz, czy chcesz go pokazać, przywrócić, dodać mimo to albo anulować."
-          createAnywayLabel="Dodaj klienta mimo to"
+          title="Możliwy duplikat"
+          description="Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to."
+          createAnywayLabel="Dodaj mimo to"
           busy={createPending}
           onShow={(candidate) => window.location.assign(candidate.url || (candidate.entityType === 'lead' ? '/leads/' + candidate.id : '/clients/' + candidate.id))}
           onRestore={restoreClientConflictCandidate}
