@@ -15,7 +15,7 @@ Każdy aktywny ekran ma jawnie przypisane źródła UI. Ten plik jest generowany
 
 ## Summary
 
-- generated_at: `2026-05-09T17:33:25.978Z`
+- generated_at: `2026-05-09T17:36:57.161Z`
 - route_count: `27`
 - screen_file_count: `22`
 - rows_with_legacy_css_non_blocking: `15`
