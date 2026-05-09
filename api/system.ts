@@ -787,11 +787,13 @@ export default async function handler(req: any, res: any) {
   if (__stage10cKind === 'assistant-query') {
     return assistantQueryHandler(req, res);
   }
-
-  const body = parseBody(req.body);
   const identity = getRequestIdentity(req, body);
   void identity.fullName;
   const kind = routeKind(req, body);
+    if (kind === 'entity-conflicts') {
+      await entityConflictsHandler(req, res);
+      return;
+    }
 
     // VERCEL_HOBBY_API_ROUTE_CONSOLIDATION_2026_04_28
     // Zachowujemy stare URL-e przez vercel.json, ale handler siedzi w jednym endpointcie /api/system.
