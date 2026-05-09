@@ -519,7 +519,9 @@
     "audit:closeflow-ui-map-inventory-v1": "node scripts/audit-closeflow-ui-map-inventory-v1.cjs",
     "check:closeflow-ui-map-inventory-v1": "node scripts/check-closeflow-ui-map-inventory-v1.cjs",
     "build:closeflow-ui-semantic-contract-v1": "node scripts/build-closeflow-ui-semantic-contract-v1.cjs",
-    "check:closeflow-ui-semantic-contract-v1": "node scripts/check-closeflow-ui-semantic-contract-v1.cjs"
+    "check:closeflow-ui-semantic-contract-v1": "node scripts/check-closeflow-ui-semantic-contract-v1.cjs",
+    "build:closeflow-ui-semantic-icon-baseline-v1": "node scripts/build-closeflow-ui-semantic-icon-baseline-v1.cjs",
+    "check:closeflow-ui-semantic-icon-v1": "node scripts/check-closeflow-ui-semantic-icon-v1.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

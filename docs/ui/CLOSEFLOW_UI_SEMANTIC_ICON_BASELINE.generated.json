@@ -1,0 +1,997 @@
+{
+  "version": "CLOSEFLOW_UI2_SEMANTIC_ICON_GUARD_V1",
+  "generatedAt": "2026-05-09T06:10:28.607Z",
+  "sourceScanner": "CLEAN_SCANNER_V4",
+  "mode": "baseline_existing_direct_page_icon_imports",
+  "policy": "Existing critical direct lucide-react imports in src/pages/* are temporarily allowed. New critical direct imports must go through SemanticIcon or be added as a reviewed exception.",
+  "criticalRoles": [
+    "add",
+    "ai",
+    "case",
+    "copy",
+    "delete",
+    "edit",
+    "event",
+    "risk_alert",
+    "task_status",
+    "time"
+  ],
+  "criticalPageIconImports": [
+    {
+      "file": "src/pages/Activity.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 5,
+      "key": "src/pages/Activity.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "imported": "CalendarClock",
+      "local": "CalendarClock",
+      "role": "event",
+      "importLine": 5,
+      "key": "src/pages/Activity.tsx|CalendarClock|CalendarClock|event"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 5,
+      "key": "src/pages/Activity.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 5,
+      "key": "src/pages/Activity.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "imported": "ListChecks",
+      "local": "ListChecks",
+      "role": "task_status",
+      "importLine": 5,
+      "key": "src/pages/Activity.tsx|ListChecks|ListChecks|task_status"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 2,
+      "key": "src/pages/AdminAiSettings.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "imported": "Bot",
+      "local": "Bot",
+      "role": "ai",
+      "importLine": 2,
+      "key": "src/pages/AdminAiSettings.tsx|Bot|Bot|ai"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/AdminAiSettings.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "imported": "ShieldCheck",
+      "local": "ShieldCheck",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/AdminAiSettings.tsx|ShieldCheck|ShieldCheck|task_status"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "CalendarClock",
+      "local": "CalendarClock",
+      "role": "event",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|CalendarClock|CalendarClock|event"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "Clipboard",
+      "local": "Clipboard",
+      "role": "copy",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|Clipboard|Clipboard|copy"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "Pencil",
+      "local": "Pencil",
+      "role": "edit",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|Pencil|Pencil|edit"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 11,
+      "key": "src/pages/AiDrafts.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 30,
+      "key": "src/pages/Billing.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "imported": "BadgeCheck",
+      "local": "BadgeCheck",
+      "role": "task_status",
+      "importLine": 30,
+      "key": "src/pages/Billing.tsx|BadgeCheck|BadgeCheck|task_status"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "imported": "CalendarClock",
+      "local": "CalendarClock",
+      "role": "event",
+      "importLine": 30,
+      "key": "src/pages/Billing.tsx|CalendarClock|CalendarClock|event"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "imported": "Check",
+      "local": "Check",
+      "role": "task_status",
+      "importLine": 30,
+      "key": "src/pages/Billing.tsx|Check|Check|task_status"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 30,
+      "key": "src/pages/Billing.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "imported": "CheckSquare",
+      "local": "CheckSquare",
+      "role": "task_status",
+      "importLine": 15,
+      "key": "src/pages/Calendar.tsx|CheckSquare|CheckSquare|task_status"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 15,
+      "key": "src/pages/Calendar.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 15,
+      "key": "src/pages/Calendar.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "AlertCircle",
+      "local": "AlertCircle",
+      "role": "risk_alert",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|AlertCircle|AlertCircle|risk_alert"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "CalendarClock",
+      "local": "CalendarClock",
+      "role": "event",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|CalendarClock|CalendarClock|event"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "Check",
+      "local": "Check",
+      "role": "task_status",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|Check|Check|task_status"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "Copy",
+      "local": "Copy",
+      "role": "copy",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|Copy|Copy|copy"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "ListChecks",
+      "local": "ListChecks",
+      "role": "task_status",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|ListChecks|ListChecks|task_status"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 26,
+      "key": "src/pages/CaseDetail.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 6,
+      "key": "src/pages/Cases.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 6,
+      "key": "src/pages/Cases.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 6,
+      "key": "src/pages/Cases.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 6,
+      "key": "src/pages/Cases.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 6,
+      "key": "src/pages/Cases.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 6,
+      "key": "src/pages/Cases.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Calendar",
+      "local": "Calendar",
+      "role": "event",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Calendar|Calendar|event"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Copy",
+      "local": "Copy",
+      "role": "copy",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Copy|Copy|copy"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Pencil",
+      "local": "Pencil",
+      "role": "edit",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Pencil|Pencil|edit"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 46,
+      "key": "src/pages/ClientDetail.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "imported": "AlertCircle",
+      "local": "AlertCircle",
+      "role": "risk_alert",
+      "importLine": 6,
+      "key": "src/pages/ClientPortal.tsx|AlertCircle|AlertCircle|risk_alert"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "imported": "Check",
+      "local": "Check",
+      "role": "task_status",
+      "importLine": 6,
+      "key": "src/pages/ClientPortal.tsx|Check|Check|task_status"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 6,
+      "key": "src/pages/ClientPortal.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 6,
+      "key": "src/pages/ClientPortal.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 3,
+      "key": "src/pages/Clients.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 3,
+      "key": "src/pages/Clients.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 3,
+      "key": "src/pages/Clients.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 3,
+      "key": "src/pages/Clients.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "imported": "AlertCircle",
+      "local": "AlertCircle",
+      "role": "risk_alert",
+      "importLine": 7,
+      "key": "src/pages/Dashboard.tsx|AlertCircle|AlertCircle|risk_alert"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 7,
+      "key": "src/pages/Dashboard.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 7,
+      "key": "src/pages/Dashboard.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 7,
+      "key": "src/pages/Dashboard.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Calendar",
+      "local": "Calendar",
+      "role": "event",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Calendar|Calendar|event"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Edit2",
+      "local": "Edit2",
+      "role": "edit",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Edit2|Edit2|edit"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 12,
+      "key": "src/pages/LeadDetail.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 7,
+      "key": "src/pages/Leads.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 7,
+      "key": "src/pages/Leads.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "Clock3",
+      "local": "Clock3",
+      "role": "time",
+      "importLine": 7,
+      "key": "src/pages/Leads.tsx|Clock3|Clock3|time"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 7,
+      "key": "src/pages/Leads.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 7,
+      "key": "src/pages/Leads.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 32,
+      "key": "src/pages/Login.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "imported": "CalendarDays",
+      "local": "CalendarDays",
+      "role": "event",
+      "importLine": 32,
+      "key": "src/pages/Login.tsx|CalendarDays|CalendarDays|event"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 32,
+      "key": "src/pages/Login.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "imported": "CalendarClock",
+      "local": "CalendarClock",
+      "role": "event",
+      "importLine": 2,
+      "key": "src/pages/NotificationsCenter.tsx|CalendarClock|CalendarClock|event"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "imported": "Check",
+      "local": "Check",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/NotificationsCenter.tsx|Check|Check|task_status"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/NotificationsCenter.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "imported": "Clock3",
+      "local": "Clock3",
+      "role": "time",
+      "importLine": 2,
+      "key": "src/pages/NotificationsCenter.tsx|Clock3|Clock3|time"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "imported": "ShieldAlert",
+      "local": "ShieldAlert",
+      "role": "risk_alert",
+      "importLine": 2,
+      "key": "src/pages/NotificationsCenter.tsx|ShieldAlert|ShieldAlert|risk_alert"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 2,
+      "key": "src/pages/NotificationsCenter.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "imported": "Copy",
+      "local": "Copy",
+      "role": "copy",
+      "importLine": 2,
+      "key": "src/pages/ResponseTemplates.tsx|Copy|Copy|copy"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 2,
+      "key": "src/pages/ResponseTemplates.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "imported": "ShieldAlert",
+      "local": "ShieldAlert",
+      "role": "risk_alert",
+      "importLine": 2,
+      "key": "src/pages/ResponseTemplates.tsx|ShieldAlert|ShieldAlert|risk_alert"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 2,
+      "key": "src/pages/ResponseTemplates.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "imported": "CalendarDays",
+      "local": "CalendarDays",
+      "role": "event",
+      "importLine": 15,
+      "key": "src/pages/Settings.tsx|CalendarDays|CalendarDays|event"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 2,
+      "key": "src/pages/SupportCenter.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/SupportCenter.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "imported": "Clock3",
+      "local": "Clock3",
+      "role": "time",
+      "importLine": 2,
+      "key": "src/pages/SupportCenter.tsx|Clock3|Clock3|time"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "imported": "ShieldCheck",
+      "local": "ShieldCheck",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/SupportCenter.tsx|ShieldCheck|ShieldCheck|task_status"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 38,
+      "key": "src/pages/Tasks.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 38,
+      "key": "src/pages/Tasks.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "imported": "CheckSquare",
+      "local": "CheckSquare",
+      "role": "task_status",
+      "importLine": 38,
+      "key": "src/pages/Tasks.tsx|CheckSquare|CheckSquare|task_status"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 38,
+      "key": "src/pages/Tasks.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "imported": "ListTodo",
+      "local": "ListTodo",
+      "role": "task_status",
+      "importLine": 38,
+      "key": "src/pages/Tasks.tsx|ListTodo|ListTodo|task_status"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 38,
+      "key": "src/pages/Tasks.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 20,
+      "key": "src/pages/TasksStable.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 20,
+      "key": "src/pages/TasksStable.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "imported": "CheckSquare",
+      "local": "CheckSquare",
+      "role": "task_status",
+      "importLine": 20,
+      "key": "src/pages/TasksStable.tsx|CheckSquare|CheckSquare|task_status"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 20,
+      "key": "src/pages/TasksStable.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 20,
+      "key": "src/pages/TasksStable.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "CheckCircle2",
+      "local": "CheckCircle2",
+      "role": "task_status",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|CheckCircle2|CheckCircle2|task_status"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "Copy",
+      "local": "Copy",
+      "role": "copy",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|Copy|Copy|copy"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "ShieldAlert",
+      "local": "ShieldAlert",
+      "role": "risk_alert",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|ShieldAlert|ShieldAlert|risk_alert"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "Sparkles",
+      "local": "Sparkles",
+      "role": "ai",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|Sparkles|Sparkles|ai"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 2,
+      "key": "src/pages/Templates.tsx|Trash2|Trash2|delete"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "Briefcase",
+      "local": "Briefcase",
+      "role": "case",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|Briefcase|Briefcase|case"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "CheckSquare",
+      "local": "CheckSquare",
+      "role": "task_status",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|CheckSquare|CheckSquare|task_status"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "Clock",
+      "local": "Clock",
+      "role": "time",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|Clock|Clock|time"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "ListTodo",
+      "local": "ListTodo",
+      "role": "task_status",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|ListTodo|ListTodo|task_status"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "Plus",
+      "local": "Plus",
+      "role": "add",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|Plus|Plus|add"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "imported": "ShieldAlert",
+      "local": "ShieldAlert",
+      "role": "risk_alert",
+      "importLine": 56,
+      "key": "src/pages/Today.tsx|ShieldAlert|ShieldAlert|risk_alert"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "AlertTriangle",
+      "local": "AlertTriangle",
+      "role": "risk_alert",
+      "importLine": 20,
+      "key": "src/pages/TodayStable.tsx|AlertTriangle|AlertTriangle|risk_alert"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "CalendarDays",
+      "local": "CalendarDays",
+      "role": "event",
+      "importLine": 20,
+      "key": "src/pages/TodayStable.tsx|CalendarDays|CalendarDays|event"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "CheckSquare",
+      "local": "CheckSquare",
+      "role": "task_status",
+      "importLine": 20,
+      "key": "src/pages/TodayStable.tsx|CheckSquare|CheckSquare|task_status"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "imported": "Trash2",
+      "local": "Trash2",
+      "role": "delete",
+      "importLine": 20,
+      "key": "src/pages/TodayStable.tsx|Trash2|Trash2|delete"
+    }
+  ]
+}
