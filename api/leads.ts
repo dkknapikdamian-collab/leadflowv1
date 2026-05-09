@@ -171,6 +171,7 @@ function shouldDropMissingColumnForLeadFallback(table: 'leads' | 'cases' | 'acti
   return Boolean(column && column in payload && LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS[table]?.has(column));
 }
 
+// CLOSEFLOW_LEAD_COMPANY_NOT_NULL_REPAIR_V2: lead create payload must keep company as empty string, never null, because production schema may have NOT NULL.
 async function insertLeadWithSchemaFallback(payload: Record<string, unknown>) {
   let currentPayload = { ...payload };
   for (let attempt = 0; attempt < 12; attempt += 1) {
