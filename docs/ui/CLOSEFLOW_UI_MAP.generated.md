@@ -1,6 +1,6 @@
 # CloseFlow UI Map Inventory v1
 
-Generated: 2026-05-09T05:27:07.753Z
+Generated: 2026-05-09T05:29:44.321Z
 
 Status: **mapa/inwentaryzacja, nie refactor UI**. Ten plik ma pokazać, gdzie dziś żyją ikony, kafelki, sekcje, notatki, akcje i położenia. Dopiero po tej mapie wolno robić przepięcie na wspólne komponenty.
 
