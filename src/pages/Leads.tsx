@@ -3,29 +3,62 @@
 // ADMIN_FEEDBACK_P1_LEADS_SEARCH_QUESTION_MARK_REMOVED
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent, type MouseEvent } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { AlertTriangle, Briefcase, ChevronRight, Clock3, FileText, Loader2, Mail, RotateCcw, Search, Sparkles, Target, Trash2, TrendingUp } from 'lucide-react';
-import { format, isPast, parseISO } from 'date-fns';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type MouseEvent } from 'react';
+import { Link,
+  useSearchParams } from 'react-router-dom';
+import { AlertTriangle,
+  Briefcase,
+  ChevronRight,
+  Clock3,
+  FileText,
+  Loader2,
+  Mail,
+  RotateCcw,
+  Search,
+  Sparkles,
+  Target,
+  Trash2,
+  TrendingUp } from 'lucide-react';
+import { format,
+  isPast,
+  parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
-import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { actionIconClass, modalFooterClass} from '../components/entity-actions';
+import { EntityConflictDialog,
+  type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import { consumeGlobalQuickAction,
+  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionIconClass,
+  modalFooterClass} from '../components/entity-actions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Card,
+  CardContent } from '../components/ui/card';
+import { Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { isActiveSalesLead,
+  isLeadMovedToService } from '../lib/lead-health';
 import { getNearestPlannedAction } from '../lib/nearest-action';
-import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
+import { buildRelationFunnelValue,
+  buildRelationValueEntries,
+  formatRelationValue } from '../lib/relation-value';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
@@ -37,7 +70,9 @@ import {
   insertLeadToSupabase,
   isSupabaseConfigured,
   updateClientInSupabase,
-  updateLeadInSupabase
+  updateLeadInSupabase,
+  deleteClientFromSupabase,
+  deleteLeadFromSupabase
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage20-lead-form-vnext.css';
 
@@ -401,6 +436,33 @@ export default function Leads() {
     try { setLeadSubmitting(true); await createLeadFromPreparedInput(leadConflictPendingInput, { forceDuplicate: true }); setLeadConflictOpen(false); setLeadConflictPendingInput(null); setLeadConflictCandidates([]); }
     catch (error: any) { toast.error('Błąd zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
+  };
+
+  const handleShowConflictCandidate = (candidate: EntityConflictCandidate) => {
+    const safeId = encodeURIComponent(String(candidate.id || ''));
+    if (!safeId) return;
+    window.location.href = candidate.entityType === 'client' ? '/clients/' + safeId : '/leads/' + safeId;
+  };
+
+  const handleDeleteConflictCandidate = async (candidate: EntityConflictCandidate) => {
+    const label = candidate.label || (candidate.entityType === 'client' ? 'klienta' : 'leada');
+    const confirmed = window.confirm('Usunąć rekord z konfliktu: ' + label + '? Tej operacji nie będzie można cofnąć.');
+    if (!confirmed) return;
+    try {
+      setLeadSubmitting(true);
+      if (candidate.entityType === 'client') {
+        await deleteClientFromSupabase(candidate.id);
+      } else {
+        await deleteLeadFromSupabase(candidate.id);
+      }
+      setLeadConflictCandidates((current) => current.filter((item) => !(item.id === candidate.id && item.entityType === candidate.entityType)));
+      toast.success('Rekord usunięty z listy konfliktów');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Nie udało się usunąć rekordu: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setLeadSubmitting(false);
+    }
   };
 
   const handleArchiveLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
@@ -1005,6 +1067,31 @@ export default function Leads() {
           }}
           busy={leadSubmitting}
         />
+
+        <div data-closeflow-lead-conflict-dialog-v25="true">
+          <EntityConflictDialog
+            open={leadConflictOpen}
+            candidates={leadConflictCandidates}
+            onOpenChange={(open) => {
+              setLeadConflictOpen(open);
+              if (!open) {
+                setLeadConflictPendingInput(null);
+                setLeadConflictCandidates([]);
+              }
+            }}
+            onShow={handleShowConflictCandidate}
+            onRestore={restoreConflictCandidate}
+            onDeleteCandidate={handleDeleteConflictCandidate}
+            onCreateAnyway={handleCreateLeadAnyway}
+            onCancel={() => {
+              setLeadConflictOpen(false);
+              setLeadConflictPendingInput(null);
+              setLeadConflictCandidates([]);
+            }}
+            busy={leadSubmitting}
+            createAnywayLabel="Dodaj mimo to"
+          />
+        </div>
 </Layout>
   );
 }
