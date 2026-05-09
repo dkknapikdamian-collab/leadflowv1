@@ -98,7 +98,7 @@ export function mobileActionStackClass(className?: string) {
   return cn(CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT.mobileActionStack, className);
 }
 
-export type EntityActionButtonProps = ButtonProps & {
+export type EntityActionButtonProps = Omit<ButtonProps, 'tone'> & {
   tone?: EntityActionTone;
   iconOnly?: boolean;
 };
@@ -107,7 +107,7 @@ export const EntityActionButton = React.forwardRef<HTMLButtonElement, EntityActi
   ({ tone = 'neutral', iconOnly = false, className, ...props }, ref) => (
     <Button
       ref={ref}
-      className={cn(actionButtonClass(tone), iconOnly ? 'cf-entity-icon-action' : null, className)}
+      className={cn(actionButtonClass(tone as EntityActionTone), iconOnly ? 'cf-entity-icon-action' : null, className)}
       {...props}
     />
   )

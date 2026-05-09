@@ -528,7 +528,11 @@
     "check:vercel-hobby-function-limit": "node scripts/check-vercel-hobby-function-limit.cjs",
     "check:closeflow-entity-conflicts-system-route-v1": "node scripts/check-closeflow-entity-conflicts-system-route-v1.cjs",
     "check:closeflow-system-route-conflicts-runtime-v1": "node scripts/check-closeflow-system-route-conflicts-runtime-v1.cjs",
-    "check:closeflow-system-route-conflicts-runtime-repair-v2": "node scripts/check-closeflow-system-route-conflicts-runtime-repair-v2.cjs"
+    "check:closeflow-system-route-conflicts-runtime-repair-v2": "node scripts/check-closeflow-system-route-conflicts-runtime-repair-v2.cjs",
+    "check:closeflow-supabase-fallback-named-exports-v1": "node scripts/check-closeflow-supabase-fallback-named-exports-v1.cjs",
+    "check:closeflow-conflict-runtime-stabilization-hard-reset-v6": "node scripts/check-closeflow-conflict-runtime-stabilization-hard-reset-v6.cjs",
+    "check:closeflow-typescript-stabilization-v7": "node scripts/check-closeflow-typescript-stabilization-v7.cjs",
+    "check:closeflow-typescript-stabilization-v9": "node scripts/check-closeflow-typescript-stabilization-v9.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

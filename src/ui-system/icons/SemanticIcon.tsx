@@ -175,6 +175,7 @@ export type SemanticIconProps = Omit<LucideProps, 'ref' | 'role'> & {
   title?: string;
   decorative?: boolean;
   iconOverride?: LucideIcon;
+  className?: string;
 };
 
 export function SemanticIcon({

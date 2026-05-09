@@ -83,6 +83,8 @@ import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
   fetchActivitiesFromSupabase,
+  updateActivityInSupabase,
+  deleteActivityFromSupabase,
   fetchCasesFromSupabase,
   fetchClientByIdFromSupabase,
   fetchEventsFromSupabase,

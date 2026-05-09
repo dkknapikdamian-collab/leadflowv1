@@ -27,10 +27,11 @@ export type StatShortcutCardProps = {
   helper?: string;
   title?: string;
   ariaLabel?: string;
-  tone?: MetricTone;
+  tone?: MetricTone | string;
+  dataTab?: string;
 };
 
-type MetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple' | 'active' | 'waiting' | 'overdue' | 'risk' | 'done' | 'value' | 'ai' | 'drafts';
+export type MetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple' | 'active' | 'waiting' | 'overdue' | 'risk' | 'done' | 'value' | 'ai' | 'drafts';
 
 const METRIC_TONE_ALIAS: Record<MetricTone, 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple'> = {
   neutral: 'neutral',
@@ -59,8 +60,10 @@ function normalizeMetricToneText(value: unknown) {
     .trim();
 }
 
-function resolveMetricTone(label: string, valueClassName: string, iconClassName: string, explicitTone?: MetricTone) {
-  if (explicitTone) return METRIC_TONE_ALIAS[explicitTone];
+function resolveMetricTone(label: string, valueClassName: string, iconClassName: string, explicitTone?: MetricTone | string) {
+  if (explicitTone && Object.prototype.hasOwnProperty.call(METRIC_TONE_ALIAS, explicitTone)) {
+    return METRIC_TONE_ALIAS[explicitTone as MetricTone];
+  }
 
   const classText = normalizeMetricToneText(`${valueClassName} ${iconClassName}`);
   const labelText = normalizeMetricToneText(label);
@@ -94,6 +97,7 @@ export function StatShortcutCard({
   title,
   ariaLabel,
   tone,
+  dataTab,
 }: StatShortcutCardProps) {
   const resolvedTone = resolveMetricTone(label, valueClassName, iconClassName, tone);
   const card = (
@@ -144,6 +148,7 @@ export function StatShortcutCard({
         data-unified-top-metric-tile="true"
         data-metric-icon-next-to-value="true"
         data-eliteflow-today-metric-lock="true"
+        data-tab={dataTab}
       >
         {card}
       </Link>

@@ -11,6 +11,7 @@ import { pl } from 'date-fns/locale';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionIconClass, modalFooterClass} from '../components/entity-actions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
@@ -32,9 +33,11 @@ import {
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
+  findEntityConflictsInSupabase,
   insertLeadToSupabase,
   isSupabaseConfigured,
-  updateLeadInSupabase,
+  updateClientInSupabase,
+  updateLeadInSupabase
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage20-lead-form-vnext.css';
 
@@ -234,6 +237,9 @@ export default function Leads() {
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
+  const [leadConflictOpen, setLeadConflictOpen] = useState(false);
+  const [leadConflictCandidates, setLeadConflictCandidates] = useState<EntityConflictCandidate[]>([]);
+  const [leadConflictPendingInput, setLeadConflictPendingInput] = useState<any | null>(null);
 
   useEffect(() => subscribeGlobalQuickAction((target) => {
     if (target === 'lead') setIsNewLeadOpen(true);
@@ -344,7 +350,7 @@ export default function Leads() {
   };
 
   const createLeadFromPreparedInput = async (preparedLead: any, options?: { forceDuplicate?: boolean }) => {
-    await insertLeadToSupabase({ ...preparedLead, forceDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
+    await insertLeadToSupabase({ ...preparedLead, allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
     await loadLeads();
     toast.success('Lead dodany');
     setIsNewLeadOpen(false);
@@ -973,7 +979,33 @@ export default function Leads() {
           </div>
         </div>
       </div>
-    </Layout>
+    
+        <EntityConflictDialog
+          open={leadConflictOpen}
+          candidates={leadConflictCandidates}
+          createAnywayLabel="Dodaj mimo to"
+          onOpenChange={(open) => {
+            setLeadConflictOpen(open);
+            if (!open) {
+              setLeadConflictCandidates([]);
+              setLeadConflictPendingInput(null);
+            }
+          }}
+          onShow={(candidate) => {
+            const targetUrl = candidate.url || (candidate.entityType === 'client' ? '/clients/' + candidate.id : '/leads/' + candidate.id);
+            window.location.href = targetUrl;
+          }}
+          onRestore={restoreConflictCandidate}
+          onCreateAnyway={handleCreateLeadAnyway}
+          onCancel={() => {
+            setLeadConflictOpen(false);
+            setLeadConflictCandidates([]);
+            setLeadConflictPendingInput(null);
+            setIsNewLeadOpen(true);
+          }}
+          busy={leadSubmitting}
+        />
+</Layout>
   );
 }
 
