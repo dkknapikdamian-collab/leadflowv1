@@ -1,33 +1,73 @@
-@import './styles/design-system/index.css';
-@import './styles/tasks-header-stage45b-cleanup.css';
-@import './styles/visual-stage30-tasks-compact-after-calendar.css';
-@import './styles/stage7a-tasks-blue-outline-fix.css';
-@import './styles/visual-stage28-tasks-vnext.css';
-@import './styles/visual-stage29-calendar-vnext.css';
-@import './styles/visual-stage27-cases-vnext.css';
-@import './styles/visual-stage26-leads-visual-alignment-fix.css';
-@import './styles/visual-stage25-leads-full-jsx-html-rebuild.css';
-@import './styles/visual-stage13-case-detail-vnext.css';
-@import './styles/visual-stage21-today-final-lock.css';
-@import './styles/visual-stage20-tasks-safe-css.css';
-@import './styles/visual-stage19-clients-safe-css.css';
-@import './styles/visual-stage18-leads-hard-1to1.css';
-@import "./styles/visual-stage16-today-html-reset.css";
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3
+   Owner: CloseFlow Visual System
+   Reason: keep src/index.css as the import orchestration layer, not a hotfix dump.
+   Order:
+   1 tailwind/base
+   2 design-system/index.css
+   3 layout primitives
+   4 component contracts
+   5 page adapters
+   6 legacy imports
+   7 temporary overrides
+   8 emergency hotfixes
+*/
+
+/* 1. tailwind/base */
 @import "tailwindcss";
-@import "./styles/case-detail-simplified.css";
-@import "./styles/case-detail-stage2.css";
-@import "./styles/visual-stage3-pipeline-and-case.css";
-@import "./styles/visual-stage08-case-detail.css";
-@import "./styles/visual-stage07-cases.css";
-@import "./styles/visual-stage06-client-detail.css";
-@import "./styles/visual-stage05-clients.css";
-@import "./styles/visual-stage04-lead-detail.css";
-@import "./styles/visual-stage03-leads.css";
-@import "./styles/visual-stage02-today.css";
+
+/* 2. design-system/index.css */
+@import './styles/design-system/index.css';
+
+/* 3. layout primitives */
 @import "./styles/visual-stage01-shell.css";
+@import "./styles/visual-html-theme-v14.css";
+@import "./styles/closeflow-vnext-ui-contract.css";
+
+/* 4. component contracts */
 @import './styles/closeflow-action-tokens.css';
 @import './styles/closeflow-entity-type-tokens.css';
 @import './styles/closeflow-stage16c-tasks-cases-parity.css';
+@import './styles/closeflow-stage16d-tasks-metric-final-lock.css';
+@import './styles/eliteflow-final-metric-tiles-hard-lock.css';
+@import './styles/eliteflow-metric-tiles-color-font-parity.css';
+@import './styles/eliteflow-metric-text-clip-tasks-repair.css';
+@import './styles/eliteflow-desktop-compact-scale.css';
+@import './styles/eliteflow-sidebar-footer-contrast-repair.css';
+@import './styles/eliteflow-sidebar-user-footer-below-nav.css';
+@import './styles/eliteflow-semantic-badges-and-today-sections.css';
+
+/* 5. page adapters */
+@import "./styles/visual-stage02-today.css";
+@import "./styles/visual-stage03-leads.css";
+@import "./styles/visual-stage04-lead-detail.css";
+@import "./styles/visual-stage05-clients.css";
+@import "./styles/visual-stage06-client-detail.css";
+@import "./styles/visual-stage07-cases.css";
+@import "./styles/visual-stage08-case-detail.css";
+@import './styles/visual-stage13-case-detail-vnext.css';
+@import './styles/visual-stage18-leads-hard-1to1.css';
+@import './styles/visual-stage19-clients-safe-css.css';
+@import './styles/visual-stage20-tasks-safe-css.css';
+@import './styles/visual-stage21-today-final-lock.css';
+@import './styles/visual-stage25-leads-full-jsx-html-rebuild.css';
+@import './styles/visual-stage26-leads-visual-alignment-fix.css';
+@import './styles/visual-stage27-cases-vnext.css';
+@import './styles/visual-stage28-tasks-vnext.css';
+@import './styles/visual-stage29-calendar-vnext.css';
+@import './styles/visual-stage30-tasks-compact-after-calendar.css';
+@import './styles/tasks-header-stage45b-cleanup.css';
+@import "./styles/quick-lead-capture-stage27.css";
+@import './styles/stage37-unified-page-head-and-metrics.css';
+@import './styles/stage38-metrics-and-relations-polish.css';
+
+/* 6. legacy imports */
+@import './styles/legacy/legacy-imports.css';
+
+/* 7. temporary overrides */
+@import './styles/temporary/temporary-overrides.css';
+
+/* 8. emergency hotfixes */
+@import './styles/emergency/emergency-hotfixes.css';
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -237,178 +277,3 @@ html[data-skin] select option {
   background-color: var(--app-surface-strong);
   color: var(--app-text);
 }
-
-/*
-CLIENT_PANEL_EMPTY_WARNING_STRIP_FIX_STAGE_A1
-Hide empty warning strip in client panel when it only contains icon.
-Do not hide real alerts with text, link or button.
-*/
-#root .border-amber-200.bg-amber-50:has(> svg:only-child) {
-  display: none !important;
-}
-@import "./styles/visual-html-theme-v14.css";
-@import "./styles/closeflow-vnext-ui-contract.css";
-@import "./styles/quick-lead-capture-stage27.css";
-@import "./styles/hotfix-task-stat-tiles-clean.css";
-@import "./styles/hotfix-lead-client-right-rail-dark-wrappers.css";
-@import "./styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css";
-@import './styles/hotfix-ai-drafts-right-rail-stage28.css';
-
-@import './styles/stage30a-mobile-contrast-lock.css';
-
-@import './styles/stage31-full-mobile-polish.css';
-
-@import "./styles/stage33a-ai-drafts-generated-text-contrast.css";
-@import './styles/stage34-calendar-readability-status-forms.css';
-@import './styles/stage34b-calendar-complete-polish.css';
-@import './styles/stage35-clients-value-detail-cleanup.css';
-@import './styles/stageA19v2-sidebar-nav-contrast-fix.css';
-@import './styles/stageA20-sidebar-today-click-fix.css';
-@import './styles/stageA20c-sidebar-today-hitbox-fix.css';
-@import './styles/stageA20d-sidebar-unified-nav-tone.css';
-@import './styles/stageA20e-sidebar-today-tone-lock.css';
-@import './styles/stageA24-today-relations-label-align.css';
-@import './styles/stageA25-today-relations-lead-badge-inline.css';
-@import './styles/stage37-unified-page-head-and-metrics.css';
-@import './styles/stage38-metrics-and-relations-polish.css';
-@import './styles/eliteflow-final-metric-tiles-hard-lock.css';
-@import './styles/eliteflow-metric-tiles-color-font-parity.css';
-@import './styles/eliteflow-metric-text-clip-tasks-repair.css';
-@import './styles/eliteflow-desktop-compact-scale.css';
-@import './styles/eliteflow-sidebar-footer-contrast-repair.css';
-@import './styles/eliteflow-sidebar-user-footer-below-nav.css';
-@import './styles/eliteflow-admin-feedback-p1-hotfix.css';
-@import './styles/eliteflow-semantic-badges-and-today-sections.css';
-@import './styles/closeflow-stage16d-tasks-metric-final-lock.css';
-
-
-/* stage26a right rail quick filters light cards */
-.ai-drafts-right-rail,
-.activity-right-rail {
-  background: transparent !important;
-}
-
-.ai-drafts-right-card,
-.activity-right-card,
-.right-card.ai-drafts-right-card,
-.right-card.activity-right-card {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid rgba(148, 163, 184, 0.42) !important;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
-  -webkit-text-fill-color: #0f172a !important;
-}
-
-.ai-drafts-right-card::before,
-.ai-drafts-right-card::after,
-.activity-right-card::before,
-.activity-right-card::after {
-  display: none !important;
-  background: transparent !important;
-}
-
-.ai-drafts-right-card *,
-.activity-right-card *,
-.activity-rail-button,
-.activity-rail-button *,
-.ai-drafts-rail-button,
-.ai-drafts-rail-button * {
-  color: #0f172a !important;
-  stroke: #0f172a !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  -webkit-text-fill-color: #0f172a !important;
-}
-
-.activity-rail-button,
-.ai-drafts-rail-button,
-.activity-right-card button,
-.ai-drafts-right-card button {
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  color: #0f172a !important;
-  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06) !important;
-}
-
-.activity-rail-button:hover,
-.ai-drafts-rail-button:hover,
-.activity-right-card button:hover,
-.ai-drafts-right-card button:hover {
-  background: #f1f5f9 !important;
-  border-color: #94a3b8 !important;
-  color: #020617 !important;
-}
-
-/* CLOSEFLOW_ADMIN_FEEDBACK_VISUAL_REPAIR_2026_05_08
-   Admin feedback repair, 2026-05-08.
-   Scope:
-   1) /cases/:id right rail create-action panel: remove black/dark backing behind tiles.
-   2) /calendar week filter and entry cards: restore text contrast on light cards.
-   Keep this block scoped to existing CloseFlow classes. Do not use global body/card overrides here.
-*/
-:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.97)) !important;
-  color: #0f172a !important;
-  border: 1px solid rgba(226, 232, 240, 0.95) !important;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
-  backdrop-filter: none !important;
-}
-
-:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::before,
-:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::after {
-  background: transparent !important;
-  box-shadow: none !important;
-}
-
-:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(h1, h2, h3, h4, p, span, div, label, small, strong) {
-  color: inherit;
-}
-
-:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(button, a) {
-  color: #0f172a;
-}
-
-:where(.main-calendar-html .right-card.calendar-week-filter, .main-calendar-html .calendar-week-plan, .main-calendar-html .calendar-entry-card) {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.98)) !important;
-  color: #0f172a !important;
-  border-color: rgba(226, 232, 240, 0.95) !important;
-  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07) !important;
-}
-
-.main-calendar-html .right-card.calendar-week-filter :is(h1, h2, h3, h4, p, span, div, button, small, strong),
-.main-calendar-html .calendar-week-plan :is(h1, h2, h3, h4, p, span, div, button, small, strong),
-.main-calendar-html .calendar-entry-card :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
-  color: #334155 !important;
-}
-
-.main-calendar-html .calendar-entry-card .text-slate-400,
-.main-calendar-html .calendar-entry-card p.text-slate-400,
-.main-calendar-html .calendar-entry-card .font-semibold.text-slate-400 {
-  color: #64748b !important;
-}
-
-.main-calendar-html .calendar-entry-card .text-slate-600,
-.main-calendar-html .calendar-entry-card div.text-slate-600,
-.main-calendar-html .calendar-entry-card .font-bold.text-slate-600 {
-  color: #334155 !important;
-}
-
-.main-calendar-html .calendar-week-filter :is(.is-active, [aria-current="date"], [data-active="true"]),
-.main-calendar-html .calendar-week-filter :is(.is-active, [aria-current="date"], [data-active="true"]) :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
-  color: #0f172a !important;
-}
-
-.main-calendar-html .calendar-week-day.is-active,
-.main-calendar-html .calendar-week-day.is-active :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
-  color: #0f172a !important;
-}
-
-.main-calendar-html .calendar-entry-card :is(.text-white, .text-slate-50, .text-slate-100),
-.main-calendar-html .right-card.calendar-week-filter :is(.text-white, .text-slate-50, .text-slate-100),
-.main-calendar-html .calendar-week-plan :is(.text-white, .text-slate-50, .text-slate-100) {
-  color: #334155 !important;
-}
-/* /CLOSEFLOW_ADMIN_FEEDBACK_VISUAL_REPAIR_2026_05_08 */
-@import './styles/closeflow-client-event-modal-runtime-repair.css';
-
-@import './styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css';

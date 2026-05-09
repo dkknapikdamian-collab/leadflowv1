@@ -1,0 +1,20 @@
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_TEMPORARY_OVERRIDES
+   Owner: CloseFlow Visual System
+   Reason: collect stage-scoped UI overrides that are still needed but should not live in src/index.css.
+   Scope: temporary visual polish, mobile locks, sidebar alignment and staged page fixes.
+   remove_after_stage: after VS page adapters and component contracts replace these overrides.
+*/
+
+@import '../stage30a-mobile-contrast-lock.css';
+@import '../stage31-full-mobile-polish.css';
+@import '../stage33a-ai-drafts-generated-text-contrast.css';
+@import '../stage34-calendar-readability-status-forms.css';
+@import '../stage34b-calendar-complete-polish.css';
+@import '../stage35-clients-value-detail-cleanup.css';
+@import '../stageA19v2-sidebar-nav-contrast-fix.css';
+@import '../stageA20-sidebar-today-click-fix.css';
+@import '../stageA20c-sidebar-today-hitbox-fix.css';
+@import '../stageA20d-sidebar-unified-nav-tone.css';
+@import '../stageA20e-sidebar-today-tone-lock.css';
+@import '../stageA24-today-relations-label-align.css';
+@import '../stageA25-today-relations-lead-badge-inline.css';

@@ -1,0 +1,11 @@
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_LEGACY_IMPORTS
+   Owner: CloseFlow Visual System
+   Reason: quarantine old visual-stage and historical case-detail CSS imports outside src/index.css.
+   Scope: historical adapters kept for compatibility; no new code should be added here without a migration note.
+   remove_after_stage: after page adapters are rewritten into current component contracts.
+*/
+
+@import '../case-detail-simplified.css';
+@import '../case-detail-stage2.css';
+@import '../visual-stage3-pipeline-and-case.css';
+@import '../stage7a-tasks-blue-outline-fix.css';

@@ -1,0 +1,203 @@
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_EMERGENCY_HOTFIXES
+   Owner: CloseFlow Visual System
+   Reason: isolate emergency runtime CSS and hotfixes away from src/index.css.
+   Scope: scoped fixes only. New entries must include owner, reason, scope, remove_after_stage.
+   remove_after_stage: each entry below defines its own removal stage.
+*/
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: clean task statistic tile override kept from previous visual repair.
+   scope: task stat tile visual cleanup.
+   remove_after_stage: after StatShortcutCard/MetricTile contract absorbs task variants.
+*/
+@import '../hotfix-task-stat-tiles-clean.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve right rail dark wrapper contrast repair for lead/client surfaces.
+   scope: lead and client right rail wrappers.
+   remove_after_stage: after right rail wrapper component contract is shipped.
+*/
+@import '../hotfix-lead-client-right-rail-dark-wrappers.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve AI drafts right rail contrast repair.
+   scope: AI drafts right rail dark wrapper.
+   remove_after_stage: after AI drafts right rail uses component contract.
+*/
+@import '../hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve secondary AI drafts right rail runtime patch.
+   scope: AI drafts right rail.
+   remove_after_stage: after AI drafts right rail patches are consolidated.
+*/
+@import '../hotfix-ai-drafts-right-rail-stage28.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve admin feedback visual repair from P1 hotfix.
+   scope: admin feedback panel visual repair.
+   remove_after_stage: after admin feedback module receives stable page adapter.
+*/
+@import '../eliteflow-admin-feedback-p1-hotfix.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve client event modal runtime repair.
+   scope: client event modal runtime visibility/contrast repair.
+   remove_after_stage: after client event modal component contract.
+*/
+@import '../closeflow-client-event-modal-runtime-repair.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve client note/event/lead visibility finalizer.
+   scope: client note, event and lead visibility finalizer.
+   remove_after_stage: after client detail visual contract consolidation.
+*/
+@import '../closeflow-a1-client-note-event-lead-visibility-finalizer.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: hide empty client warning strip that only renders an icon.
+   scope: client panel empty amber warning strip only; real alerts with text/actions stay visible.
+   remove_after_stage: after client warning strip rendering is fixed in JSX.
+*/
+#root .border-amber-200.bg-amber-50:has(> svg:only-child) {
+  display: none !important;
+}
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve stage26a right rail quick filters light-card contrast repair.
+   scope: AI drafts and activity right rail quick filter cards.
+   remove_after_stage: after right rail quick filters are rebuilt on shared SurfaceCard/ListRow contracts.
+*/
+.ai-drafts-right-rail,
+.activity-right-rail {
+  background: transparent !important;
+}
+
+.ai-drafts-right-card,
+.activity-right-card,
+.right-card.ai-drafts-right-card,
+.right-card.activity-right-card {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(148, 163, 184, 0.42) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.ai-drafts-right-card::before,
+.ai-drafts-right-card::after,
+.activity-right-card::before,
+.activity-right-card::after {
+  display: none !important;
+  background: transparent !important;
+}
+
+.ai-drafts-right-card *,
+.activity-right-card *,
+.activity-rail-button,
+.activity-rail-button *,
+.ai-drafts-rail-button,
+.ai-drafts-rail-button * {
+  color: #0f172a !important;
+  stroke: #0f172a !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.activity-rail-button,
+.ai-drafts-rail-button,
+.activity-right-card button,
+.ai-drafts-right-card button {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06) !important;
+}
+
+.activity-rail-button:hover,
+.ai-drafts-rail-button:hover,
+.activity-right-card button:hover,
+.ai-drafts-right-card button:hover {
+  background: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: #020617 !important;
+}
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve admin feedback repair for case detail create-action rail and calendar week cards.
+   scope: /cases/:id right rail create-action panel and /calendar week filter/entry cards.
+   remove_after_stage: after case detail right rail and calendar cards use shared component contracts.
+*/
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.97)) !important;
+  color: #0f172a !important;
+  border: 1px solid rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.08) !important;
+  backdrop-filter: none !important;
+}
+
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::before,
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::after {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(h1, h2, h3, h4, p, span, div, label, small, strong) {
+  color: inherit;
+}
+
+:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(button, a) {
+  color: #0f172a;
+}
+
+:where(.main-calendar-html .right-card.calendar-week-filter, .main-calendar-html .calendar-week-plan, .main-calendar-html .calendar-entry-card) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.98)) !important;
+  color: #0f172a !important;
+  border-color: rgba(226, 232, 240, 0.95) !important;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.07) !important;
+}
+
+.main-calendar-html .right-card.calendar-week-filter :is(h1, h2, h3, h4, p, span, div, button, small, strong),
+.main-calendar-html .calendar-week-plan :is(h1, h2, h3, h4, p, span, div, button, small, strong),
+.main-calendar-html .calendar-entry-card :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
+  color: #334155 !important;
+}
+
+.main-calendar-html .calendar-entry-card .text-slate-400,
+.main-calendar-html .calendar-entry-card p.text-slate-400,
+.main-calendar-html .calendar-entry-card .font-semibold.text-slate-400 {
+  color: #64748b !important;
+}
+
+.main-calendar-html .calendar-entry-card .text-slate-600,
+.main-calendar-html .calendar-entry-card div.text-slate-600,
+.main-calendar-html .calendar-entry-card .font-bold.text-slate-600 {
+  color: #334155 !important;
+}
+
+.main-calendar-html .calendar-week-filter :is(.is-active, [aria-current="date"], [data-active="true"]),
+.main-calendar-html .calendar-week-filter :is(.is-active, [aria-current="date"], [data-active="true"]) :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
+  color: #0f172a !important;
+}
+
+.main-calendar-html .calendar-week-day.is-active,
+.main-calendar-html .calendar-week-day.is-active :is(h1, h2, h3, h4, p, span, div, button, small, strong) {
+  color: #0f172a !important;
+}
+
+.main-calendar-html .calendar-entry-card :is(.text-white, .text-slate-50, .text-slate-100),
+.main-calendar-html .right-card.calendar-week-filter :is(.text-white, .text-slate-50, .text-slate-100),
+.main-calendar-html .calendar-week-plan :is(.text-white, .text-slate-50, .text-slate-100) {
+  color: #334155 !important;
+}
