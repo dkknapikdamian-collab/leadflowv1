@@ -1,3 +1,5 @@
+const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
+void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 import {
   EntityIcon,
   EventEntityIcon } from '../components/ui-system';
@@ -34,16 +36,17 @@ const CLIENT_RELATION_PATH_GUARD = 'Ścieżka klienta';
 const CLIENT_RELATION_PATH_GUARD_UTF8 = 'Ścieżka klienta';
 const CLIENT_RELATION_OPEN_LEAD_GUARD = 'Otwórz lead';
 const CLIENT_RELATION_OPEN_LEAD_GUARD_UTF8 = 'Otwórz lead';
-const CLIENT_RELATION_OPEN_CASE_GUARD = 'Przejdź do sprawy';
-const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Przejdź do sprawy';
+const CLIENT_RELATION_OPEN_CASE_GUARD = 'Otwórz sprawę';
+const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const CLIENT_DETAIL_SIMPLIFIED_GUARD_MOJIBAKE = 'Praca dzieje się w sprawie';
 const CLIENT_DETAIL_SIMPLIFIED_GUARD_UTF8 = 'Praca dzieje się w sprawie';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_1 = 'Lead źródłowy';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead źródłowy';
+const CLIENT_DETAIL_HISTORY_ACQUISITION_COPY_GUARD = 'Historia pozyskania';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
-const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Przejdź do sprawy';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
 import {
   useCallback,
   useEffect,
@@ -1664,7 +1667,7 @@ export default function ClientDetail() {
                       }}
                       disabled={!hasAccess && !mainCase?.id && !nextAction.to}
                     >
-                      Przejdź do sprawy
+                      Otwórz sprawę
                     </Button>
                   </section>
 
@@ -1733,7 +1736,7 @@ export default function ClientDetail() {
                             </Button>
                             {lead.linkedCaseId ? (
                               <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(lead.linkedCaseId)}`)}>
-                                Przejdź do sprawy
+                                Otwórz sprawę
                               </Button>
                             ) : null}
                           </div>
@@ -1754,7 +1757,7 @@ export default function ClientDetail() {
                           </span>
                           <div className="client-detail-relation-actions">
                             <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>
-                              Przejdź do sprawy
+                              Otwórz sprawę
                             </Button>
                             {caseRecord.leadId ? (
                               <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(caseRecord.leadId)}`)}>

@@ -38,7 +38,9 @@ test('Activity recognizes today and calendar operational event types', () => {
 test('Activity includes metrics and payload preview', () => {
   const source = read('src/pages/Activity.tsx');
 
-  assert.match(source, /function MetricCard/);
+  assert.match(source, /StatShortcutCard/);
+  assert.match(source, /activity-stats-grid/);
+  assert.doesNotMatch(source, /function MetricCard/);
   assert.match(source, /expandedPayloadIds/);
   assert.match(source, /safePayloadPreview/);
   assert.match(source, /Pokaż szczegóły techniczne/);

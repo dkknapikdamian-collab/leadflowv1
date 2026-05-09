@@ -50,6 +50,7 @@ import { signOutFromSupabase } from '../lib/supabase-auth';
 import GlobalQuickActions from './GlobalQuickActions';
 import ContextActionDialogsHost from './ContextActionDialogs';
 import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
+import { OperatorMetricToneRuntime } from './ui-system';
 import { parseISO, differenceInDays } from 'date-fns';
 
 interface LayoutProps {
@@ -268,6 +269,7 @@ export default function Layout({ children }: LayoutProps) {
       data-sidebar-pointer-router="true"
       onPointerDownCapture={handleSidebarPointerRouter}
     >
+      <OperatorMetricToneRuntime />
       <aside className="sidebar" data-shell-sidebar="true">
         <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">
@@ -386,6 +388,8 @@ export default function Layout({ children }: LayoutProps) {
     </div>
   );
 }
+
+/* CLOSEFLOW_VS7_REPAIR3_OPERATOR_METRIC_TONE_RUNTIME_MOUNT Layout mounts OperatorMetricToneRuntime once for legacy semantic card repair */
 
 /* PHASE0_AI_ADMIN_NAV_GUARD isAdmin AI admin /settings/ai */
 

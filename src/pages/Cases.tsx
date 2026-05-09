@@ -1,6 +1,5 @@
 import {
-  EntityIcon,
-  TemplateEntityIcon } from '../components/ui-system';
+  EntityIcon } from '../components/ui-system';
 import {
   useEffect,
   useMemo,
@@ -17,6 +16,7 @@ import {
   Clock,
   CheckCircle2,
   ExternalLink,
+  FileText,
   Search,
   Trash2,
   Plus
@@ -664,7 +664,7 @@ export default function Cases() {
           <StatShortcutCard
             label="W realizacji"
             value={stats.total}
-            icon={TemplateEntityIcon}
+            icon={FileText}
             tone="blue"
             active={caseView === 'all'}
             onClick={() => setCaseView('all')}

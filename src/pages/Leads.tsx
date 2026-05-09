@@ -72,9 +72,7 @@ import {
   insertLeadToSupabase,
   isSupabaseConfigured,
   updateClientInSupabase,
-  updateLeadInSupabase,
-  deleteClientFromSupabase,
-  deleteLeadFromSupabase
+  updateLeadInSupabase
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage20-lead-form-vnext.css';
 
@@ -173,13 +171,20 @@ function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
 }
 
 
-function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string) {
+function buildLeadValueLabel(lead: any) {
+  const value = Number(lead?.dealValue || lead?.value || lead?.budget || 0);
+  if (!Number.isFinite(value) || value <= 0) return '';
+  return value.toLocaleString('pl-PL') + ' PLN';
+}
+
+function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string, leadValueLabel: string = '') {
   const contact = getLeadPrimaryContact(lead);
   const company = String(lead?.company || '').trim();
   const caseLabel = linkedCase ? 'sprawa: ' + (linkedCase.title || 'otwarta') : '';
 
   return [
     sourceLabel,
+    leadValueLabel,
     company,
     contact,
     caseLabel,
@@ -473,22 +478,31 @@ export default function Leads() {
     window.location.href = candidate.entityType === 'client' ? '/clients/' + safeId : '/leads/' + safeId;
   };
 
-  const handleDeleteConflictCandidate = async (candidate: EntityConflictCandidate) => {
+  const handleArchiveConflictCandidate = async (candidate: EntityConflictCandidate) => {
     const label = candidate.label || (candidate.entityType === 'client' ? 'klienta' : 'leada');
-    const confirmed = window.confirm('Usunąć rekord z konfliktu: ' + label + '? Tej operacji nie będzie można cofnąć.');
+    const confirmed = window.confirm(
+      'Przenieść rekord z konfliktu do kosza: ' + label + '? Rekord nie zostanie trwale skasowany i będzie możliwy do przywrócenia.',
+    );
     if (!confirmed) return;
+
     try {
       setLeadSubmitting(true);
       if (candidate.entityType === 'client') {
-        await deleteClientFromSupabase(candidate.id);
+        await updateClientInSupabase({ id: candidate.id, archivedAt: new Date().toISOString() });
       } else {
-        await deleteLeadFromSupabase(candidate.id);
+        await updateLeadInSupabase({
+          id: candidate.id,
+          status: 'archived',
+          leadVisibility: 'trash',
+          salesOutcome: 'archived',
+          closedAt: new Date().toISOString(),
+        });
       }
       setLeadConflictCandidates((current) => current.filter((item) => !(item.id === candidate.id && item.entityType === candidate.entityType)));
-      toast.success('Rekord usunięty z listy konfliktów');
+      toast.success('Rekord przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Nie udało się usunąć rekordu: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udało się przenieść rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -635,10 +649,11 @@ export default function Leads() {
     return filteredLeads.slice(0, 6).map((lead) => {
       const linkedCase = resolveLinkedCaseForLead(lead);
       const sourceLabel = formatLeadSourceLabel(lead.source);
+      const leadValueLabel = buildLeadValueLabel(lead);
       return {
         id: String(lead.id || ''),
         name: String(lead.name || 'Lead bez nazwy'),
-        meta: buildLeadCompactMeta(lead, linkedCase, sourceLabel),
+        meta: buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel),
       };
     }).filter((lead) => lead.id);
   }, [filteredLeads, resolveLinkedCaseForLead, searchQuery]);
@@ -968,7 +983,7 @@ export default function Leads() {
                   const statusLabel = statusOption?.label || 'Nowy';
                   const leadValueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
                   const contactLabel = getLeadPrimaryContact(lead);
-                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel);
+                  const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel);
                   const nextActionMeta = buildNextActionMeta(nextActionByLeadId.get(leadId));
                   const pending = archivePendingId === leadId;
 
@@ -1110,7 +1125,7 @@ export default function Leads() {
             }}
             onShow={handleShowConflictCandidate}
             onRestore={restoreConflictCandidate}
-            onDeleteCandidate={handleDeleteConflictCandidate}
+            onDeleteCandidate={handleArchiveConflictCandidate}
             onCreateAnyway={handleCreateLeadAnyway}
             onCancel={() => {
               setLeadConflictOpen(false);
