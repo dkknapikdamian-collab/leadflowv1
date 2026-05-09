@@ -12,3 +12,4 @@ export * from './EntityIcon';
 export * from './icon-registry';
 export * from './ActionIcon';
 export * from './action-icon-registry';
+export * from './semantic-visual-registry';

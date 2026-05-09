@@ -548,7 +548,10 @@
     "check:closeflow-entity-icon-registry": "node scripts/check-closeflow-entity-icon-registry.cjs",
     "check:closeflow-wide-syntax-gate": "node scripts/check-closeflow-wide-syntax-gate.cjs",
     "check:closeflow-action-icon-registry": "node scripts/check-closeflow-action-icon-registry.cjs",
-    "check:closeflow-vs2c1-action-icons-components": "node scripts/check-closeflow-vs2c1-action-icons-components.cjs"
+    "check:closeflow-vs2c1-action-icons-components": "node scripts/check-closeflow-vs2c1-action-icons-components.cjs",
+    "check:closeflow-visual-system-baseline-after-vs2c2": "node scripts/check-closeflow-visual-system-baseline-after-vs2c2.cjs",
+    "check:closeflow-semantic-visual-registry": "node scripts/check-closeflow-semantic-visual-registry.cjs",
+    "verify:closeflow-visual-system-safe-baseline": "npm.cmd run check:closeflow-action-icon-registry && npm.cmd run check:closeflow-vs2c1-action-icons-components && npm.cmd run check:closeflow-entity-icon-registry && npm.cmd run check:closeflow-visual-system-baseline-after-vs2c2 && npm.cmd run check:closeflow-semantic-visual-registry"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
