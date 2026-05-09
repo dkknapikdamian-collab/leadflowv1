@@ -37,7 +37,7 @@ Math.max(existing.amount,
 */
 // TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97
 // STAGE30A_TODAY_GUARD_COMPAT: marker only. Global actions stay in Layout,
-  not rendered locally in Today.
+//   not rendered locally in Today.
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1
 /*
 AI_DRAFTS_IN_TODAY_STAGE04
