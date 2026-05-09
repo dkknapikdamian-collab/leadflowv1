@@ -1,7 +1,8 @@
+// CLOSEFLOW_VERCEL_HOBBY_FUNCTION_LIMIT_ENTITY_CONFLICTS_V1
 // CLOSEFLOW_ENTITY_CONFLICTS_API_V1
-import { selectFirstAvailable } from '../src/server/_supabase.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
-import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { selectFirstAvailable } from './_supabase.js';
+import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { assertWorkspaceWriteAccess } from './_access-gate.js';
 
 function asText(value: unknown) { return typeof value === 'string' ? value.trim() : ''; }
 function normalizeText(value: unknown) {
@@ -61,7 +62,7 @@ function sortCandidates(a: any, b: any) {
   const score = (candidate: any) => { const fields = Array.isArray(candidate.matchFields) ? candidate.matchFields : []; let value = 0; if (fields.includes('email')) value += 100; if (fields.includes('phone')) value += 90; if (fields.includes('name')) value += 20; if (fields.includes('company')) value += 10; if (candidate.hiddenReason !== 'active') value += 5; return value; };
   return score(b) - score(a);
 }
-export default async function handler(req: any, res: any) {
+export default async function entityConflictsHandler(req: any, res: any) {
   try {
     if (req.method !== 'POST') { res.status(405).json({ error: 'METHOD_NOT_ALLOWED' }); return; }
     const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body || {};
