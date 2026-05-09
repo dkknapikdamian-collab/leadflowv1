@@ -1,0 +1,1415 @@
+{
+  "marker": "CLOSEFLOW_METRIC_TILES_DEEP_SOURCE_MAP_VS5T",
+  "generatedAt": "2026-05-09T18:27:47.361Z",
+  "totals": {
+    "scannedComponentFiles": 214,
+    "scannedCssFiles": 100,
+    "componentFilesWithMetricSignals": 16,
+    "cssFilesWithMetricSignals": 27,
+    "blockingFindings": 3
+  },
+  "conclusion": "NOT_PIXEL_LOCKED: Today is still not on the same MetricTile source as Tasks/Notifications.",
+  "thesis": "Do not add another CSS patch. First make Today, Tasks and Notifications use the same MetricGrid -> StatShortcutCard -> MetricTile chain, then delete or quarantine legacy selectors that target generic grid/buttons.",
+  "pages": [
+    {
+      "rel": "src/pages/TodayStable.tsx",
+      "exists": true,
+      "importsStatShortcutCard": false,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 0,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": true
+    },
+    {
+      "rel": "src/pages/TasksStable.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": true,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 1,
+      "metricGridCount": 1,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": true,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/NotificationsCenter.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": true,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 7,
+      "metricGridCount": 1,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": true,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/Leads.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 5,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/Clients.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 4,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": true,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/Cases.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 4,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": true,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/Calendar.tsx",
+      "exists": true,
+      "importsStatShortcutCard": false,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 0,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/AiDrafts.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 0,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 6,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    },
+    {
+      "rel": "src/pages/Activity.tsx",
+      "exists": true,
+      "importsStatShortcutCard": true,
+      "importsMetricGrid": false,
+      "importsMetricTile": false,
+      "statShortcutCardCount": 6,
+      "metricGridCount": 0,
+      "metricTileCount": 0,
+      "localMetricCardFunctionCount": 0,
+      "localMetricCardUsageCount": 0,
+      "hasLegacyGrid4Marker": false,
+      "hasNotificationsStatsGrid": false,
+      "hasTasksGridMarker": false,
+      "hasTodayStableMarker": false
+    }
+  ],
+  "blockingFindings": [
+    {
+      "id": "today-not-on-metric-tile-source",
+      "severity": "blocker",
+      "rel": "src/pages/TodayStable.tsx",
+      "reason": "Today is the visual reference, but it is not rendered through StatShortcutCard/MetricTile. Pixel parity cannot be guaranteed while the reference screen uses a separate local tile implementation."
+    },
+    {
+      "id": "legacy-hard-lock-targets-raw-buttons",
+      "severity": "high",
+      "rel": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "reason": "Legacy hard-lock selectors still target generic section.grid > button / button > div and can override component-owned MetricTile markup."
+    },
+    {
+      "id": "local-metric-card-src-pages-aidrafts-tsx",
+      "severity": "high",
+      "rel": "src/pages/AiDrafts.tsx",
+      "reason": "Page contains local MetricCard implementation/usage."
+    }
+  ],
+  "cssImport": {
+    "metricCssImported": true,
+    "indexCssHasMetricImport": true,
+    "designSystemImportsMetricCss": false,
+    "importGraph": [
+      {
+        "order": 1,
+        "rel": "src/index.css",
+        "importedBy": null,
+        "imports": [
+          "src/tailwindcss.css",
+          "src/styles/design-system/index.css",
+          "src/styles/visual-stage01-shell.css",
+          "src/styles/visual-html-theme-v14.css",
+          "src/styles/closeflow-vnext-ui-contract.css",
+          "src/styles/closeflow-action-tokens.css",
+          "src/styles/closeflow-entity-type-tokens.css",
+          "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+          "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+          "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+          "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+          "src/styles/eliteflow-metric-text-clip-tasks-repair.css",
+          "src/styles/closeflow-metric-tiles.css",
+          "src/styles/eliteflow-desktop-compact-scale.css",
+          "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+          "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+          "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+          "src/styles/visual-stage02-today.css",
+          "src/styles/visual-stage03-leads.css",
+          "src/styles/visual-stage04-lead-detail.css",
+          "src/styles/visual-stage05-clients.css",
+          "src/styles/visual-stage06-client-detail.css",
+          "src/styles/visual-stage07-cases.css",
+          "src/styles/visual-stage08-case-detail.css",
+          "src/styles/visual-stage13-case-detail-vnext.css",
+          "src/styles/visual-stage18-leads-hard-1to1.css",
+          "src/styles/visual-stage19-clients-safe-css.css",
+          "src/styles/visual-stage20-tasks-safe-css.css",
+          "src/styles/visual-stage21-today-final-lock.css",
+          "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+          "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+          "src/styles/visual-stage27-cases-vnext.css",
+          "src/styles/visual-stage28-tasks-vnext.css",
+          "src/styles/visual-stage29-calendar-vnext.css",
+          "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+          "src/styles/tasks-header-stage45b-cleanup.css",
+          "src/styles/quick-lead-capture-stage27.css",
+          "src/styles/stage37-unified-page-head-and-metrics.css",
+          "src/styles/stage38-metrics-and-relations-polish.css",
+          "src/styles/legacy/legacy-imports.css",
+          "src/styles/temporary/temporary-overrides.css",
+          "src/styles/emergency/emergency-hotfixes.css"
+        ]
+      },
+      {
+        "order": 2,
+        "rel": "src/styles/design-system/index.css",
+        "importedBy": "src/index.css",
+        "imports": [
+          "src/styles/design-system/closeflow-tokens.css",
+          "src/styles/design-system/closeflow-icons.css",
+          "src/styles/design-system/closeflow-layout.css",
+          "src/styles/design-system/closeflow-components.css",
+          "src/styles/design-system/closeflow-utilities.css"
+        ]
+      },
+      {
+        "order": 3,
+        "rel": "src/styles/design-system/closeflow-tokens.css",
+        "importedBy": "src/styles/design-system/index.css",
+        "imports": []
+      },
+      {
+        "order": 4,
+        "rel": "src/styles/design-system/closeflow-icons.css",
+        "importedBy": "src/styles/design-system/index.css",
+        "imports": []
+      },
+      {
+        "order": 5,
+        "rel": "src/styles/design-system/closeflow-layout.css",
+        "importedBy": "src/styles/design-system/index.css",
+        "imports": []
+      },
+      {
+        "order": 6,
+        "rel": "src/styles/design-system/closeflow-components.css",
+        "importedBy": "src/styles/design-system/index.css",
+        "imports": []
+      },
+      {
+        "order": 7,
+        "rel": "src/styles/design-system/closeflow-utilities.css",
+        "importedBy": "src/styles/design-system/index.css",
+        "imports": []
+      },
+      {
+        "order": 8,
+        "rel": "src/styles/visual-stage01-shell.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 9,
+        "rel": "src/styles/visual-html-theme-v14.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 10,
+        "rel": "src/styles/closeflow-vnext-ui-contract.css",
+        "importedBy": "src/index.css",
+        "imports": [
+          "src/styles/styles/closeflow-vnext-ui-contract.css"
+        ]
+      },
+      {
+        "order": 11,
+        "rel": "src/styles/closeflow-action-tokens.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 12,
+        "rel": "src/styles/closeflow-entity-type-tokens.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 13,
+        "rel": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 14,
+        "rel": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 15,
+        "rel": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 16,
+        "rel": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 17,
+        "rel": "src/styles/eliteflow-metric-text-clip-tasks-repair.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 18,
+        "rel": "src/styles/closeflow-metric-tiles.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 19,
+        "rel": "src/styles/eliteflow-desktop-compact-scale.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 20,
+        "rel": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 21,
+        "rel": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 22,
+        "rel": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 23,
+        "rel": "src/styles/visual-stage02-today.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 24,
+        "rel": "src/styles/visual-stage03-leads.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 25,
+        "rel": "src/styles/visual-stage04-lead-detail.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 26,
+        "rel": "src/styles/visual-stage05-clients.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 27,
+        "rel": "src/styles/visual-stage06-client-detail.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 28,
+        "rel": "src/styles/visual-stage07-cases.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 29,
+        "rel": "src/styles/visual-stage08-case-detail.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 30,
+        "rel": "src/styles/visual-stage13-case-detail-vnext.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 31,
+        "rel": "src/styles/visual-stage18-leads-hard-1to1.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 32,
+        "rel": "src/styles/visual-stage19-clients-safe-css.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 33,
+        "rel": "src/styles/visual-stage20-tasks-safe-css.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 34,
+        "rel": "src/styles/visual-stage21-today-final-lock.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 35,
+        "rel": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 36,
+        "rel": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 37,
+        "rel": "src/styles/visual-stage27-cases-vnext.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 38,
+        "rel": "src/styles/visual-stage28-tasks-vnext.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 39,
+        "rel": "src/styles/visual-stage29-calendar-vnext.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 40,
+        "rel": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 41,
+        "rel": "src/styles/tasks-header-stage45b-cleanup.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 42,
+        "rel": "src/styles/quick-lead-capture-stage27.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 43,
+        "rel": "src/styles/stage37-unified-page-head-and-metrics.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 44,
+        "rel": "src/styles/stage38-metrics-and-relations-polish.css",
+        "importedBy": "src/index.css",
+        "imports": []
+      },
+      {
+        "order": 45,
+        "rel": "src/styles/legacy/legacy-imports.css",
+        "importedBy": "src/index.css",
+        "imports": [
+          "src/styles/case-detail-simplified.css",
+          "src/styles/case-detail-stage2.css",
+          "src/styles/visual-stage3-pipeline-and-case.css",
+          "src/styles/stage7a-tasks-blue-outline-fix.css"
+        ]
+      },
+      {
+        "order": 46,
+        "rel": "src/styles/case-detail-simplified.css",
+        "importedBy": "src/styles/legacy/legacy-imports.css",
+        "imports": []
+      },
+      {
+        "order": 47,
+        "rel": "src/styles/case-detail-stage2.css",
+        "importedBy": "src/styles/legacy/legacy-imports.css",
+        "imports": []
+      },
+      {
+        "order": 48,
+        "rel": "src/styles/visual-stage3-pipeline-and-case.css",
+        "importedBy": "src/styles/legacy/legacy-imports.css",
+        "imports": []
+      },
+      {
+        "order": 49,
+        "rel": "src/styles/stage7a-tasks-blue-outline-fix.css",
+        "importedBy": "src/styles/legacy/legacy-imports.css",
+        "imports": []
+      },
+      {
+        "order": 50,
+        "rel": "src/styles/temporary/temporary-overrides.css",
+        "importedBy": "src/index.css",
+        "imports": [
+          "src/styles/stage30a-mobile-contrast-lock.css",
+          "src/styles/stage31-full-mobile-polish.css",
+          "src/styles/stage33a-ai-drafts-generated-text-contrast.css",
+          "src/styles/stage34-calendar-readability-status-forms.css",
+          "src/styles/stage34b-calendar-complete-polish.css",
+          "src/styles/stage35-clients-value-detail-cleanup.css",
+          "src/styles/stageA19v2-sidebar-nav-contrast-fix.css",
+          "src/styles/stageA20-sidebar-today-click-fix.css",
+          "src/styles/stageA20c-sidebar-today-hitbox-fix.css",
+          "src/styles/stageA20d-sidebar-unified-nav-tone.css",
+          "src/styles/stageA20e-sidebar-today-tone-lock.css",
+          "src/styles/stageA24-today-relations-label-align.css",
+          "src/styles/stageA25-today-relations-lead-badge-inline.css"
+        ]
+      },
+      {
+        "order": 51,
+        "rel": "src/styles/stage30a-mobile-contrast-lock.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 52,
+        "rel": "src/styles/stage31-full-mobile-polish.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 53,
+        "rel": "src/styles/stage33a-ai-drafts-generated-text-contrast.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 54,
+        "rel": "src/styles/stage34-calendar-readability-status-forms.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 55,
+        "rel": "src/styles/stage34b-calendar-complete-polish.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 56,
+        "rel": "src/styles/stage35-clients-value-detail-cleanup.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 57,
+        "rel": "src/styles/stageA19v2-sidebar-nav-contrast-fix.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 58,
+        "rel": "src/styles/stageA20-sidebar-today-click-fix.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 59,
+        "rel": "src/styles/stageA20c-sidebar-today-hitbox-fix.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 60,
+        "rel": "src/styles/stageA20d-sidebar-unified-nav-tone.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 61,
+        "rel": "src/styles/stageA20e-sidebar-today-tone-lock.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 62,
+        "rel": "src/styles/stageA24-today-relations-label-align.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 63,
+        "rel": "src/styles/stageA25-today-relations-lead-badge-inline.css",
+        "importedBy": "src/styles/temporary/temporary-overrides.css",
+        "imports": []
+      },
+      {
+        "order": 64,
+        "rel": "src/styles/emergency/emergency-hotfixes.css",
+        "importedBy": "src/index.css",
+        "imports": [
+          "src/styles/hotfix-task-stat-tiles-clean.css",
+          "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+          "src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css",
+          "src/styles/hotfix-ai-drafts-right-rail-stage28.css",
+          "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+          "src/styles/closeflow-client-event-modal-runtime-repair.css",
+          "src/styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css"
+        ]
+      },
+      {
+        "order": 65,
+        "rel": "src/styles/hotfix-task-stat-tiles-clean.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      },
+      {
+        "order": 66,
+        "rel": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      },
+      {
+        "order": 67,
+        "rel": "src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      },
+      {
+        "order": 68,
+        "rel": "src/styles/hotfix-ai-drafts-right-rail-stage28.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      },
+      {
+        "order": 69,
+        "rel": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      },
+      {
+        "order": 70,
+        "rel": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      },
+      {
+        "order": 71,
+        "rel": "src/styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css",
+        "importedBy": "src/styles/emergency/emergency-hotfixes.css",
+        "imports": []
+      }
+    ]
+  },
+  "componentMap": [
+    {
+      "rel": "src/components/StatShortcutCard.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "MetricTile",
+        "data-stat-shortcut-card",
+        "cf-top-metric-tile"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 1,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 1
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/components/ui-system/index.ts",
+      "signals": [
+        "MetricTile",
+        "MetricGrid"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": false,
+        "uiSystem": false
+      }
+    },
+    {
+      "rel": "src/components/ui-system/MetricGrid.tsx",
+      "signals": [
+        "MetricGrid",
+        "data-cf-metric-grid-contract",
+        "metric-grid"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": false,
+        "uiSystem": false
+      }
+    },
+    {
+      "rel": "src/components/ui-system/MetricTile.tsx",
+      "signals": [
+        "MetricTile",
+        "data-stat-shortcut-card",
+        "data-cf-metric-tile-contract",
+        "cf-top-metric-tile"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 2
+      },
+      "imports": {
+        "statShortcutCard": false,
+        "uiSystem": false
+      }
+    },
+    {
+      "rel": "src/pages/Activity.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "stats-grid"
+      ],
+      "counts": {
+        "statShortcutCard": 6,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/AiDrafts.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "<MetricCard",
+        "stats-grid"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 6,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/Cases.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "grid-4",
+        "stat-grid"
+      ],
+      "counts": {
+        "statShortcutCard": 4,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/Clients.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "grid-4"
+      ],
+      "counts": {
+        "statShortcutCard": 4,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/Leads.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "grid-5"
+      ],
+      "counts": {
+        "statShortcutCard": 5,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/NotificationsCenter.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "MetricGrid",
+        "notifications-stats-grid",
+        "stats-grid",
+        "metric-grid"
+      ],
+      "counts": {
+        "statShortcutCard": 7,
+        "metricTile": 0,
+        "metricGrid": 1,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/ResponseTemplates.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "grid-4"
+      ],
+      "counts": {
+        "statShortcutCard": 4,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/Tasks.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "grid-5"
+      ],
+      "counts": {
+        "statShortcutCard": 1,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/TasksStable.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "MetricGrid",
+        "data-eliteflow-task-stat-grid",
+        "stat-grid",
+        "metric-grid"
+      ],
+      "counts": {
+        "statShortcutCard": 1,
+        "metricTile": 0,
+        "metricGrid": 1,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/Templates.tsx",
+      "signals": [
+        "StatShortcutCard",
+        "grid-4"
+      ],
+      "counts": {
+        "statShortcutCard": 4,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": true,
+        "uiSystem": true
+      }
+    },
+    {
+      "rel": "src/pages/UiPreviewVNext.tsx",
+      "signals": [
+        "grid-5"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": false,
+        "uiSystem": false
+      }
+    },
+    {
+      "rel": "src/pages/UiPreviewVNextFull.tsx",
+      "signals": [
+        "grid-4",
+        "grid-5"
+      ],
+      "counts": {
+        "statShortcutCard": 0,
+        "metricTile": 0,
+        "metricGrid": 0,
+        "localMetricCardFunction": 0,
+        "localMetricCardUsage": 0,
+        "dataStatShortcutCard": 0
+      },
+      "imports": {
+        "statShortcutCard": false,
+        "uiSystem": false
+      }
+    }
+  ],
+  "cssMap": [
+    {
+      "rel": "src/index.css",
+      "signals": [
+        "eliteflow-metric"
+      ],
+      "lineHints": {
+        "eliteflow-metric": 32
+      },
+      "size": 8188
+    },
+    {
+      "rel": "src/styles/closeflow-metric-tiles.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "data-stat-shortcut-card",
+        "data-cf-metric-tile-contract",
+        "eliteflow-metric",
+        "notifications-stats-grid",
+        "data-p0-tasks-stable-rebuild",
+        "data-eliteflow-task-stat-grid",
+        "section.grid > button",
+        ".grid-4",
+        ".grid-5",
+        ".stats-grid",
+        ".stat-grid",
+        ".metric-grid",
+        ".stat-card",
+        ".summary-card",
+        ".dashboard-stat-card",
+        ".metric"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 49,
+        "data-stat-shortcut-card": 242,
+        "data-cf-metric-tile-contract": 410,
+        "eliteflow-metric": 165,
+        "notifications-stats-grid": 430,
+        "data-p0-tasks-stable-rebuild": 235,
+        "data-eliteflow-task-stat-grid": 235,
+        "section.grid > button": 276,
+        ".grid-4": 234,
+        ".grid-5": 234,
+        ".stats-grid": 234,
+        ".stat-grid": 234
+      },
+      "size": 23681
+    },
+    {
+      "rel": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "data-stat-shortcut-card",
+        "data-p0-tasks-stable-rebuild",
+        "data-eliteflow-task-stat-grid",
+        ".grid-4"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 87,
+        "data-stat-shortcut-card": 81,
+        "data-p0-tasks-stable-rebuild": 14,
+        "data-eliteflow-task-stat-grid": 72,
+        ".grid-4": 73
+      },
+      "size": 5966
+    },
+    {
+      "rel": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "data-stat-shortcut-card",
+        "data-p0-tasks-stable-rebuild",
+        "data-eliteflow-task-stat-grid"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 40,
+        "data-stat-shortcut-card": 29,
+        "data-p0-tasks-stable-rebuild": 7,
+        "data-eliteflow-task-stat-grid": 21
+      },
+      "size": 6305
+    },
+    {
+      "rel": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "data-stat-shortcut-card",
+        ".grid-4",
+        ".grid-5",
+        ".stats-grid",
+        ".stat-grid",
+        ".metric-grid",
+        ".metric"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 141,
+        "data-stat-shortcut-card": 135,
+        ".grid-4": 142,
+        ".grid-5": 130,
+        ".stats-grid": 142,
+        ".stat-grid": 142,
+        ".metric-grid": 142,
+        ".metric": 142
+      },
+      "size": 7522
+    },
+    {
+      "rel": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "data-stat-shortcut-card",
+        "eliteflow-metric",
+        "data-p0-tasks-stable-rebuild",
+        "section.grid > button",
+        ".grid-4",
+        ".grid-5",
+        ".stats-grid",
+        ".stat-grid",
+        ".metric-grid",
+        ".stat-card",
+        ".summary-card",
+        ".dashboard-stat-card",
+        ".metric"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 63,
+        "data-stat-shortcut-card": 40,
+        "eliteflow-metric": 7,
+        "data-p0-tasks-stable-rebuild": 206,
+        "section.grid > button": 213,
+        ".grid-4": 32,
+        ".grid-5": 32,
+        ".stats-grid": 32,
+        ".stat-grid": 32,
+        ".metric-grid": 32,
+        ".stat-card": 184,
+        ".summary-card": 184
+      },
+      "size": 12130
+    },
+    {
+      "rel": "src/styles/eliteflow-metric-text-clip-tasks-repair.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "data-stat-shortcut-card",
+        "data-p0-tasks-stable-rebuild",
+        "data-eliteflow-task-stat-grid"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 16,
+        "data-stat-shortcut-card": 15,
+        "data-p0-tasks-stable-rebuild": 57,
+        "data-eliteflow-task-stat-grid": 57
+      },
+      "size": 3034
+    },
+    {
+      "rel": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "signals": [
+        "cf-top-metric-tile",
+        "eliteflow-metric",
+        "data-p0-tasks-stable-rebuild",
+        "section.grid > button",
+        ".grid-4",
+        ".grid-5",
+        ".stats-grid",
+        ".stat-grid",
+        ".metric-grid",
+        ".metric"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 18,
+        "eliteflow-metric": 60,
+        "data-p0-tasks-stable-rebuild": 128,
+        "section.grid > button": 128,
+        ".grid-4": 149,
+        ".grid-5": 149,
+        ".stats-grid": 149,
+        ".stat-grid": 149,
+        ".metric-grid": 149,
+        ".metric": 149
+      },
+      "size": 7515
+    },
+    {
+      "rel": "src/styles/hotfix-task-stat-tiles-clean.css",
+      "signals": [
+        "data-stat-shortcut-card"
+      ],
+      "lineHints": {
+        "data-stat-shortcut-card": 6
+      },
+      "size": 1715
+    },
+    {
+      "rel": "src/styles/stage30a-mobile-contrast-lock.css",
+      "signals": [
+        "data-stat-shortcut-card",
+        ".metric"
+      ],
+      "lineHints": {
+        "data-stat-shortcut-card": 324,
+        ".metric": 320
+      },
+      "size": 16188
+    },
+    {
+      "rel": "src/styles/stage37-unified-page-head-and-metrics.css",
+      "signals": [
+        ".grid-4",
+        ".grid-5",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-4": 9,
+        ".grid-5": 10,
+        ".metric": 9
+      },
+      "size": 1772
+    },
+    {
+      "rel": "src/styles/stage38-metrics-and-relations-polish.css",
+      "signals": [
+        "cf-top-metric-tile"
+      ],
+      "lineHints": {
+        "cf-top-metric-tile": 92
+      },
+      "size": 4536
+    },
+    {
+      "rel": "src/styles/stage7a-tasks-blue-outline-fix.css",
+      "signals": [
+        ".grid-5"
+      ],
+      "lineHints": {
+        ".grid-5": 2
+      },
+      "size": 2010
+    },
+    {
+      "rel": "src/styles/visual-stage05-clients.css",
+      "signals": [
+        ".grid-4",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-4": 105,
+        ".metric": 111
+      },
+      "size": 9892
+    },
+    {
+      "rel": "src/styles/visual-stage07-cases.css",
+      "signals": [
+        "data-stat-shortcut-card",
+        ".grid-4"
+      ],
+      "lineHints": {
+        "data-stat-shortcut-card": 49,
+        ".grid-4": 43
+      },
+      "size": 3949
+    },
+    {
+      "rel": "src/styles/visual-stage10-notifications-vnext.css",
+      "signals": [
+        "notifications-stats-grid"
+      ],
+      "lineHints": {
+        "notifications-stats-grid": 71
+      },
+      "size": 16366
+    },
+    {
+      "rel": "src/styles/visual-stage16-today-html-reset.css",
+      "signals": [
+        ".grid-4",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-4": 277,
+        ".metric": 283
+      },
+      "size": 8865
+    },
+    {
+      "rel": "src/styles/visual-stage17-today-hard-1to1.css",
+      "signals": [
+        "data-stat-shortcut-card",
+        ".grid-4",
+        ".metric"
+      ],
+      "lineHints": {
+        "data-stat-shortcut-card": 321,
+        ".grid-4": 306,
+        ".metric": 317
+      },
+      "size": 17666
+    },
+    {
+      "rel": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "signals": [
+        "data-stat-shortcut-card",
+        ".grid-5",
+        ".metric"
+      ],
+      "lineHints": {
+        "data-stat-shortcut-card": 181,
+        ".grid-5": 177,
+        ".metric": 177
+      },
+      "size": 18186
+    },
+    {
+      "rel": "src/styles/visual-stage19-clients-safe-css.css",
+      "signals": [
+        ".grid-5"
+      ],
+      "lineHints": {
+        ".grid-5": 183
+      },
+      "size": 6818
+    },
+    {
+      "rel": "src/styles/visual-stage21-today-final-lock.css",
+      "signals": [
+        "data-stat-shortcut-card",
+        ".grid-4",
+        ".metric"
+      ],
+      "lineHints": {
+        "data-stat-shortcut-card": 153,
+        ".grid-4": 148,
+        ".metric": 162
+      },
+      "size": 24122
+    },
+    {
+      "rel": "src/styles/visual-stage22-leads-final-lock.css",
+      "signals": [
+        ".grid-5",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-5": 190,
+        ".metric": 190
+      },
+      "size": 23971
+    },
+    {
+      "rel": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "signals": [
+        ".grid-5"
+      ],
+      "lineHints": {
+        ".grid-5": 156
+      },
+      "size": 16701
+    },
+    {
+      "rel": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "signals": [
+        ".grid-5",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-5": 105,
+        ".metric": 111
+      },
+      "size": 12046
+    },
+    {
+      "rel": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "signals": [
+        ".grid-5",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-5": 56,
+        ".metric": 62
+      },
+      "size": 13071
+    },
+    {
+      "rel": "src/styles/visual-stage27-cases-vnext.css",
+      "signals": [
+        ".grid-4",
+        ".metric"
+      ],
+      "lineHints": {
+        ".grid-4": 98,
+        ".metric": 104
+      },
+      "size": 9723
+    },
+    {
+      "rel": "src/styles/visual-stage28-tasks-vnext.css",
+      "signals": [
+        ".grid-5"
+      ],
+      "lineHints": {
+        ".grid-5": 51
+      },
+      "size": 5966
+    }
+  ]
+}
