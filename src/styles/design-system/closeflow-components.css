@@ -1,0 +1,113 @@
+/* CLOSEFLOW_DESIGN_SYSTEM_COMPONENTS_VS1
+   Component contracts for future migration. Existing screens are not rewired in VS-1.
+*/
+.cf-surface-card {
+  border: 1px solid var(--cf-border-subtle);
+  border-radius: var(--cf-radius-2xl);
+  background: var(--cf-surface-card);
+  color: var(--cf-text-primary);
+  box-shadow: var(--cf-shadow-sm);
+}
+
+.cf-metric-card {
+  border: 1px solid var(--cf-metric-border);
+  border-radius: var(--cf-metric-radius);
+  background: var(--cf-metric-bg);
+  color: var(--cf-metric-text);
+  box-shadow: var(--cf-metric-shadow);
+  padding: var(--cf-space-4);
+}
+
+.cf-metric-card[data-active="true"],
+.cf-metric-card.is-active {
+  background: var(--cf-metric-bg-active);
+  border-color: var(--cf-border-focus);
+}
+
+.cf-icon-badge {
+  display: inline-flex;
+  width: calc(var(--cf-icon-size-lg) + var(--cf-space-3));
+  height: calc(var(--cf-icon-size-lg) + var(--cf-space-3));
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--cf-icon-radius);
+  background: var(--cf-icon-bg);
+  color: var(--cf-icon-color);
+}
+
+.cf-form-control {
+  min-height: var(--cf-form-height);
+  border: 1px solid var(--cf-form-border);
+  border-radius: var(--cf-form-radius);
+  background: var(--cf-form-bg);
+  color: var(--cf-form-text);
+}
+
+.cf-form-control:focus,
+.cf-form-control:focus-visible {
+  border-color: var(--cf-form-border-focus);
+  box-shadow: var(--cf-form-shadow-focus);
+  outline: none;
+}
+
+.cf-modal-surface {
+  border: 1px solid var(--cf-modal-border);
+  border-radius: var(--cf-modal-radius);
+  background: var(--cf-modal-bg);
+  color: var(--cf-modal-text);
+  box-shadow: var(--cf-modal-shadow);
+}
+
+.cf-list-card {
+  border: 1px solid var(--cf-border-subtle);
+  border-radius: var(--cf-radius-2xl);
+  background: var(--cf-list-bg);
+}
+
+.cf-list-row {
+  border: 1px solid var(--cf-list-row-border);
+  border-radius: var(--cf-list-row-radius);
+  background: var(--cf-list-row-bg);
+  color: var(--cf-list-row-text);
+}
+
+.cf-list-row:hover {
+  background: var(--cf-list-row-bg-hover);
+}
+
+.cf-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--cf-space-1);
+  border-radius: var(--cf-radius-full);
+  border: 1px solid var(--cf-status-neutral-border);
+  background: var(--cf-status-neutral-bg);
+  color: var(--cf-status-neutral-text);
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.cf-status-pill[data-tone="info"] {
+  border-color: var(--cf-status-info-border);
+  background: var(--cf-status-info-bg);
+  color: var(--cf-status-info-text);
+}
+
+.cf-status-pill[data-tone="success"] {
+  border-color: var(--cf-status-success-border);
+  background: var(--cf-status-success-bg);
+  color: var(--cf-status-success-text);
+}
+
+.cf-status-pill[data-tone="warning"] {
+  border-color: var(--cf-status-warning-border);
+  background: var(--cf-status-warning-bg);
+  color: var(--cf-status-warning-text);
+}
+
+.cf-status-pill[data-tone="danger"] {
+  border-color: var(--cf-status-danger-border);
+  background: var(--cf-status-danger-bg);
+  color: var(--cf-status-danger-text);
+}

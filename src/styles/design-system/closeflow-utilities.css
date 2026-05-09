@@ -1,0 +1,15 @@
+/* CLOSEFLOW_DESIGN_SYSTEM_UTILITIES_VS1 */
+.cf-text-primary { color: var(--cf-text-primary); }
+.cf-text-secondary { color: var(--cf-text-secondary); }
+.cf-text-muted { color: var(--cf-text-muted); }
+.cf-surface-page { background: var(--cf-surface-page); }
+.cf-surface-muted { background: var(--cf-surface-muted); }
+.cf-border-subtle { border-color: var(--cf-border-subtle); }
+.cf-shadow-sm { box-shadow: var(--cf-shadow-sm); }
+.cf-shadow-md { box-shadow: var(--cf-shadow-md); }
+.cf-radius-xl { border-radius: var(--cf-radius-xl); }
+.cf-radius-2xl { border-radius: var(--cf-radius-2xl); }
+.cf-gap-2 { gap: var(--cf-space-2); }
+.cf-gap-3 { gap: var(--cf-space-3); }
+.cf-gap-4 { gap: var(--cf-space-4); }
+.cf-gap-6 { gap: var(--cf-space-6); }

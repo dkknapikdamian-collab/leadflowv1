@@ -1,0 +1,72 @@
+/* CLOSEFLOW_DESIGN_SYSTEM_LAYOUT_VS1
+   Layout primitives for future migration. Not wired into pages yet.
+*/
+.cf-page-shell {
+  width: min(100%, 1440px);
+  margin-inline: auto;
+  padding: var(--cf-space-6);
+}
+
+.cf-page-stack {
+  display: grid;
+  gap: var(--cf-space-6);
+}
+
+.cf-page-grid {
+  display: grid;
+  gap: var(--cf-space-4);
+}
+
+.cf-page-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cf-page-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cf-page-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cf-page-hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--cf-space-4);
+  border: 1px solid var(--cf-border-subtle);
+  border-radius: var(--cf-radius-2xl);
+  background: var(--cf-surface-card);
+  color: var(--cf-text-primary);
+  box-shadow: var(--cf-shadow-sm);
+  padding: var(--cf-space-5);
+}
+
+.cf-page-hero-title {
+  margin: 0;
+  color: var(--cf-text-primary);
+  font-size: 1.875rem;
+  line-height: 1.15;
+  font-weight: 800;
+}
+
+.cf-page-hero-kicker,
+.cf-page-hero-description {
+  color: var(--cf-text-secondary);
+}
+
+@media (max-width: 900px) {
+  .cf-page-shell {
+    padding: var(--cf-space-4);
+  }
+
+  .cf-page-grid-2,
+  .cf-page-grid-3,
+  .cf-page-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-page-hero {
+    flex-direction: column;
+  }
+}
