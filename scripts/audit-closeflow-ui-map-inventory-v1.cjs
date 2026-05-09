@@ -61,16 +61,16 @@ function parseLucideImports(text) {
 function roleForIcon(name) {
   const n = String(name || '').toLowerCase();
   if (/trash|delete|remove/.test(n)) return 'delete';
-  if (/phone|call|smartphone/.test(n)) return 'phone';
+  if (/phone|call/.test(n)) return 'phone';
   if (/mail|email|inbox/.test(n)) return 'email';
   if (/copy|clipboard/.test(n)) return 'copy';
+  if (/dollar|coin|wallet|credit|payment|bank/.test(n)) return 'finance';
   if (/pencil|edit/.test(n)) return 'edit';
   if (/plus|add|create/.test(n)) return 'add';
   if (/file|note|text|sticky/.test(n)) return 'note';
   if (/calendar|event/.test(n)) return 'event';
   if (/clock|timer/.test(n)) return 'time';
-  if (/check|circlecheck|checkcircle|task|list|badgecheck|shieldcheck/.test(n)) return 'task_status';
-  if (/dollar|coin|wallet|credit|payment|bank/.test(n)) return 'finance';
+  if (/check|circlecheck|checkcircle|task|list|shieldcheck|badgecheck/.test(n)) return 'task_status';
   if (/user|users|person/.test(n)) return 'person';
   if (/briefcase|case/.test(n)) return 'case';
   if (/building|home|house/.test(n)) return 'company_property';
@@ -80,15 +80,15 @@ function roleForIcon(name) {
   if (/loader|spinner/.test(n)) return 'loading';
   if (/eye|view/.test(n)) return 'view';
   if (/pin/.test(n)) return 'pin';
-  if (/arrow|chevron/.test(n)) return 'navigation';
-  if (/settings|gear|sliders/.test(n)) return 'settings';
-  if (/logout|log/.test(n)) return 'auth';
-  if (/refresh|rotate/.test(n)) return 'refresh';
-  if (/send/.test(n)) return 'send';
-  if (/bell/.test(n)) return 'notification';
+  if (/^x$|xcircle|circlex|octagonx|xicon/.test(n)) return 'close';
+  if (/external|arrow|chevron/.test(n)) return 'navigation';
+  if (/logout|login/.test(n)) return 'auth';
+  if (/bell|notification/.test(n)) return 'notification';
   if (/search/.test(n)) return 'search';
   if (/filter/.test(n)) return 'filter';
-  if (/x|close/.test(n)) return 'close';
+  if (/refresh|rotate/.test(n)) return 'refresh';
+  if (/send/.test(n)) return 'send';
+  if (/settings|sliders/.test(n)) return 'settings';
   return 'unclassified';
 }
 

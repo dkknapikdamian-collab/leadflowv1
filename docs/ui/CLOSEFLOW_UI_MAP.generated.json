@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-09T05:55:21.705Z",
+  "generatedAt": "2026-05-09T06:00:32.218Z",
   "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
   "scannerVersion": "CLEAN_SCANNER_V4",
   "filesScanned": 287,
@@ -240,7 +240,7 @@
       "file": "src/components/Layout.tsx",
       "imported": "CreditCard",
       "local": "CreditCard",
-      "role": "edit",
+      "role": "finance",
       "importLine": 25,
       "usages": []
     },
@@ -1423,7 +1423,7 @@
       "file": "src/pages/Billing.tsx",
       "imported": "CreditCard",
       "local": "CreditCard",
-      "role": "edit",
+      "role": "finance",
       "importLine": 30,
       "usages": [
         {
@@ -1730,7 +1730,7 @@
       "file": "src/pages/CaseDetail.tsx",
       "imported": "ExternalLink",
       "local": "ExternalLink",
-      "role": "close",
+      "role": "navigation",
       "importLine": 26,
       "usages": [
         {
@@ -1954,7 +1954,7 @@
       "file": "src/pages/Cases.tsx",
       "imported": "ExternalLink",
       "local": "ExternalLink",
-      "role": "close",
+      "role": "navigation",
       "importLine": 6,
       "usages": [
         {
@@ -6432,19 +6432,12 @@
         "usageCount": 4
       }
     ],
-    "edit": [
+    "finance": [
       {
         "file": "src/components/Layout.tsx",
         "icon": "CreditCard",
         "local": "CreditCard",
         "importLine": 25,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/AiDrafts.tsx",
-        "icon": "Pencil",
-        "local": "Pencil",
-        "importLine": 11,
         "usageCount": 0
       },
       {
@@ -6455,17 +6448,24 @@
         "usageCount": 1
       },
       {
-        "file": "src/pages/ClientDetail.tsx",
-        "icon": "Pencil",
-        "local": "Pencil",
-        "importLine": 46,
-        "usageCount": 2
+        "file": "src/pages/Clients.tsx",
+        "icon": "Wallet",
+        "local": "Wallet",
+        "importLine": 3,
+        "usageCount": 0
       },
       {
         "file": "src/pages/LeadDetail.tsx",
-        "icon": "Edit2",
-        "local": "Edit2",
+        "icon": "DollarSign",
+        "local": "DollarSign",
         "importLine": 12,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/Settings.tsx",
+        "icon": "WalletCards",
+        "local": "WalletCards",
+        "importLine": 15,
         "usageCount": 1
       }
     ],
@@ -6876,11 +6876,25 @@
         "usageCount": 1
       },
       {
+        "file": "src/pages/CaseDetail.tsx",
+        "icon": "ExternalLink",
+        "local": "ExternalLink",
+        "importLine": 26,
+        "usageCount": 1
+      },
+      {
         "file": "src/pages/Cases.tsx",
         "icon": "ChevronRight",
         "local": "ChevronRight",
         "importLine": 6,
         "usageCount": 2
+      },
+      {
+        "file": "src/pages/Cases.tsx",
+        "icon": "ExternalLink",
+        "local": "ExternalLink",
+        "importLine": 6,
+        "usageCount": 1
       },
       {
         "file": "src/pages/ClientDetail.tsx",
@@ -7026,24 +7040,10 @@
       },
       {
         "file": "src/pages/CaseDetail.tsx",
-        "icon": "ExternalLink",
-        "local": "ExternalLink",
-        "importLine": 26,
-        "usageCount": 1
-      },
-      {
-        "file": "src/pages/CaseDetail.tsx",
         "icon": "X",
         "local": "X",
         "importLine": 26,
         "usageCount": 0
-      },
-      {
-        "file": "src/pages/Cases.tsx",
-        "icon": "ExternalLink",
-        "local": "ExternalLink",
-        "importLine": 6,
-        "usageCount": 1
       },
       {
         "file": "src/pages/ClientPortal.tsx",
@@ -7471,6 +7471,29 @@
         "usageCount": 1
       }
     ],
+    "edit": [
+      {
+        "file": "src/pages/AiDrafts.tsx",
+        "icon": "Pencil",
+        "local": "Pencil",
+        "importLine": 11,
+        "usageCount": 0
+      },
+      {
+        "file": "src/pages/ClientDetail.tsx",
+        "icon": "Pencil",
+        "local": "Pencil",
+        "importLine": 46,
+        "usageCount": 2
+      },
+      {
+        "file": "src/pages/LeadDetail.tsx",
+        "icon": "Edit2",
+        "local": "Edit2",
+        "importLine": 12,
+        "usageCount": 1
+      }
+    ],
     "delete": [
       {
         "file": "src/pages/AiDrafts.tsx",
@@ -7595,29 +7618,6 @@
         "icon": "Pin",
         "local": "Pin",
         "importLine": 46,
-        "usageCount": 1
-      }
-    ],
-    "finance": [
-      {
-        "file": "src/pages/Clients.tsx",
-        "icon": "Wallet",
-        "local": "Wallet",
-        "importLine": 3,
-        "usageCount": 0
-      },
-      {
-        "file": "src/pages/LeadDetail.tsx",
-        "icon": "DollarSign",
-        "local": "DollarSign",
-        "importLine": 12,
-        "usageCount": 2
-      },
-      {
-        "file": "src/pages/Settings.tsx",
-        "icon": "WalletCards",
-        "local": "WalletCards",
-        "importLine": 15,
         "usageCount": 1
       }
     ]

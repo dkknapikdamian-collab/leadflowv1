@@ -1,0 +1,2077 @@
+{
+  "version": "CLOSEFLOW_UI_SEMANTIC_CONTRACT_V1",
+  "generatedAt": "2026-05-09T06:00:33.287Z",
+  "source": {
+    "inventoryVersion": "CLOSEFLOW_UI_MAP_INVENTORY_V1",
+    "scannerVersion": "CLEAN_SCANNER_V4",
+    "generatedAt": "2026-05-09T06:00:32.218Z",
+    "filesScanned": 287,
+    "directLucideIconImports": 375,
+    "metricTileUsages": 36,
+    "infoRowImplementations": 5,
+    "entityActionContracts": 3,
+    "layoutEvidence": 800
+  },
+  "decision": "Inventory first, contract second, runtime migration third. No visual hotfixes without semantic owner.",
+  "canonicalComponents": {
+    "icons": "src/ui-system/icons/SemanticIcon.tsx",
+    "metricTiles": "src/components/StatShortcutCard.tsx",
+    "infoRows": "src/ui-system/entity/EntityInfoRow.tsx",
+    "notes": [
+      "src/ui-system/entity/EntityNoteCard.tsx",
+      "src/ui-system/entity/EntityNoteComposer.tsx",
+      "src/ui-system/entity/EntityNoteList.tsx"
+    ],
+    "shell": "src/ui-system/entity/EntityDetailShell.tsx"
+  },
+  "criticalRoles": [
+    "delete",
+    "phone",
+    "email",
+    "copy",
+    "edit",
+    "add",
+    "note",
+    "event",
+    "finance",
+    "task_status",
+    "time",
+    "risk_alert"
+  ],
+  "iconRoles": [
+    {
+      "role": "add",
+      "importCount": 10,
+      "usageCount": 16,
+      "component": "SemanticIcon",
+      "tone": "primary",
+      "targetIcon": "Plus",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/GlobalQuickActions.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 26,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 26,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 6,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 46,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 7,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 12,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ResponseTemplates.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Templates.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 2,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/Today.tsx",
+          "icon": "Plus",
+          "local": "Plus",
+          "importLine": 56,
+          "usageCount": 0
+        }
+      ]
+    },
+    {
+      "role": "ai",
+      "importCount": 14,
+      "usageCount": 17,
+      "component": "SemanticIcon",
+      "tone": "ai",
+      "targetIcon": "Sparkles",
+      "migration": "UI-2",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/components/LeadAiFollowupDraft.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/components/LeadAiNextAction.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/components/QuickAiCapture.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 8,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/AdminAiSettings.tsx",
+          "icon": "Bot",
+          "local": "Bot",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 11,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Billing.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 30,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Calendar.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 15,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 6,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Sparkles",
+          "local": "Sparkles",
+          "importLine": 46,
+          "usageCount": 2
+        }
+      ]
+    },
+    {
+      "role": "auth",
+      "importCount": 5,
+      "usageCount": 6,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "LogOut/LogIn",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/EmailVerificationGate.tsx",
+          "icon": "LogOut",
+          "local": "LogOut",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "LogOut",
+          "local": "LogOut",
+          "importLine": 25,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "LogOut",
+          "local": "LogOut",
+          "importLine": 7,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "LogIn",
+          "local": "LogIn",
+          "importLine": 32,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "LogOut",
+          "local": "LogOut",
+          "importLine": 15,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "case",
+      "importCount": 8,
+      "usageCount": 11,
+      "component": "SemanticIcon",
+      "tone": "case",
+      "targetIcon": "Briefcase",
+      "migration": "UI-2",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 46,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 3,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 12,
+          "usageCount": 5
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 7,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 32,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Today.tsx",
+          "icon": "Briefcase",
+          "local": "Briefcase",
+          "importLine": 56,
+          "usageCount": 2
+        }
+      ]
+    },
+    {
+      "role": "close",
+      "importCount": 9,
+      "usageCount": 7,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "X",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 25,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/lead-picker.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/PwaInstallPrompt.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/topic-contact-picker.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/dialog.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/sonner.tsx",
+          "icon": "OctagonXIcon",
+          "local": "OctagonXIcon",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "XCircle",
+          "local": "XCircle",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 26,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientPortal.tsx",
+          "icon": "X",
+          "local": "X",
+          "importLine": 6,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "company_property",
+      "importCount": 2,
+      "usageCount": 1,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Building2",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Building2",
+          "local": "Building2",
+          "importLine": 46,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "Building2",
+          "local": "Building2",
+          "importLine": 15,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "copy",
+      "importCount": 9,
+      "usageCount": 9,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Copy",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/GlobalQuickActions.tsx",
+          "icon": "ClipboardList",
+          "local": "ClipboardList",
+          "importLine": 26,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiFollowupDraft.tsx",
+          "icon": "Copy",
+          "local": "Copy",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiNextAction.tsx",
+          "icon": "ClipboardList",
+          "local": "ClipboardList",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiNextAction.tsx",
+          "icon": "Copy",
+          "local": "Copy",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Clipboard",
+          "local": "Clipboard",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "Copy",
+          "local": "Copy",
+          "importLine": 26,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Copy",
+          "local": "Copy",
+          "importLine": 46,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ResponseTemplates.tsx",
+          "icon": "Copy",
+          "local": "Copy",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Templates.tsx",
+          "icon": "Copy",
+          "local": "Copy",
+          "importLine": 2,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "delete",
+      "importCount": 13,
+      "usageCount": 13,
+      "component": "SemanticIcon",
+      "tone": "danger",
+      "targetIcon": "Trash2",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Calendar.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 15,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 26,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 6,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 46,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 3,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 12,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 7,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Tasks.tsx",
+          "icon": "Trash2",
+          "local": "Trash2",
+          "importLine": 38,
+          "usageCount": 0
+        }
+      ]
+    },
+    {
+      "role": "edit",
+      "importCount": 3,
+      "usageCount": 3,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Pencil",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Pencil",
+          "local": "Pencil",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Pencil",
+          "local": "Pencil",
+          "importLine": 46,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Edit2",
+          "local": "Edit2",
+          "importLine": 12,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "email",
+      "importCount": 8,
+      "usageCount": 8,
+      "component": "SemanticIcon",
+      "tone": "contact",
+      "targetIcon": "Mail",
+      "migration": "UI-3",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/EmailVerificationGate.tsx",
+          "icon": "MailCheck",
+          "local": "MailCheck",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 46,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 12,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 7,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 32,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 15,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/SupportCenter.tsx",
+          "icon": "Mail",
+          "local": "Mail",
+          "importLine": 2,
+          "usageCount": 2
+        }
+      ]
+    },
+    {
+      "role": "event",
+      "importCount": 12,
+      "usageCount": 12,
+      "component": "SemanticIcon",
+      "tone": "event",
+      "targetIcon": "CalendarClock",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Calendar",
+          "local": "Calendar",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/lib/options.ts",
+          "icon": "CalendarDays",
+          "local": "CalendarDays",
+          "importLine": 1,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "CalendarClock",
+          "local": "CalendarClock",
+          "importLine": 5,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "CalendarClock",
+          "local": "CalendarClock",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Billing.tsx",
+          "icon": "CalendarClock",
+          "local": "CalendarClock",
+          "importLine": 30,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "CalendarClock",
+          "local": "CalendarClock",
+          "importLine": 26,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Calendar",
+          "local": "Calendar",
+          "importLine": 46,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Calendar",
+          "local": "Calendar",
+          "importLine": 12,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "CalendarDays",
+          "local": "CalendarDays",
+          "importLine": 32,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "CalendarClock",
+          "local": "CalendarClock",
+          "importLine": 2,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "filter",
+      "importCount": 3,
+      "usageCount": 3,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Filter",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "Filter",
+          "local": "Filter",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "Filter",
+          "local": "Filter",
+          "importLine": 7,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Filter",
+          "local": "Filter",
+          "importLine": 2,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "finance",
+      "importCount": 5,
+      "usageCount": 4,
+      "component": "SemanticIcon",
+      "tone": "finance",
+      "targetIcon": "DollarSign/Wallet/CreditCard",
+      "migration": "Finance V1",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "CreditCard",
+          "local": "CreditCard",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Billing.tsx",
+          "icon": "CreditCard",
+          "local": "CreditCard",
+          "importLine": 30,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "Wallet",
+          "local": "Wallet",
+          "importLine": 3,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "DollarSign",
+          "local": "DollarSign",
+          "importLine": 12,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "WalletCards",
+          "local": "WalletCards",
+          "importLine": 15,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "goal",
+      "importCount": 8,
+      "usageCount": 8,
+      "component": "SemanticIcon",
+      "tone": "primary",
+      "targetIcon": "Target",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 46,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 3,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 12,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 7,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 32,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Target",
+          "local": "Target",
+          "importLine": 2,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "loading",
+      "importCount": 26,
+      "usageCount": 46,
+      "component": "LoadingSpinner",
+      "tone": "neutral",
+      "targetIcon": "Loader2",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/confirm-dialog.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 1,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ContextNoteDialog.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/EmailVerificationGate.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 3
+        },
+        {
+          "file": "src/components/EventCreateDialog.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiFollowupDraft.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiNextAction.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/components/QuickAiCapture.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 8,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/TaskCreateDialog.tsx",
+          "icon": "Loader2",
+          "local": "Loader2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/sonner.tsx",
+          "icon": "Loader2Icon",
+          "local": "Loader2Icon",
+          "importLine": 5,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "navigation",
+      "importCount": 28,
+      "usageCount": 35,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Arrow/Chevron/ExternalLink",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "ChevronRight",
+          "local": "ChevronRight",
+          "importLine": 25,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/sidebar-mini-calendar.tsx",
+          "icon": "ChevronLeft",
+          "local": "ChevronLeft",
+          "importLine": 17,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/sidebar-mini-calendar.tsx",
+          "icon": "ChevronRight",
+          "local": "ChevronRight",
+          "importLine": 17,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/dropdown-menu.tsx",
+          "icon": "ChevronRight",
+          "local": "ChevronRight",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/select.tsx",
+          "icon": "ChevronDownIcon",
+          "local": "ChevronDownIcon",
+          "importLine": 5,
+          "usageCount": 2
+        },
+        {
+          "file": "src/components/ui/select.tsx",
+          "icon": "ChevronUpIcon",
+          "local": "ChevronUpIcon",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "ArrowUpRight",
+          "local": "ArrowUpRight",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Billing.tsx",
+          "icon": "ArrowRight",
+          "local": "ArrowRight",
+          "importLine": 30,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Calendar.tsx",
+          "icon": "ChevronLeft",
+          "local": "ChevronLeft",
+          "importLine": 15,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Calendar.tsx",
+          "icon": "ChevronRight",
+          "local": "ChevronRight",
+          "importLine": 15,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "note",
+      "importCount": 14,
+      "usageCount": 12,
+      "component": "SemanticIcon",
+      "tone": "note",
+      "targetIcon": "FileText",
+      "migration": "UI-4",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "MessageSquareText",
+          "local": "MessageSquareText",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/lib/options.ts",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 1,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 11,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 26,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "StickyNote",
+          "local": "StickyNote",
+          "importLine": 26,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 6,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 46,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/ClientPortal.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 6,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "FileText",
+          "local": "FileText",
+          "importLine": 12,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "notification",
+      "importCount": 9,
+      "usageCount": 9,
+      "component": "SemanticIcon",
+      "tone": "notification",
+      "targetIcon": "Bell",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 5,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Calendar.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 15,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "BellRing",
+          "local": "BellRing",
+          "importLine": 32,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 2,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "BellRing",
+          "local": "BellRing",
+          "importLine": 2,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 15,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Tasks.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 38,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Today.tsx",
+          "icon": "Bell",
+          "local": "Bell",
+          "importLine": 56,
+          "usageCount": 3
+        }
+      ]
+    },
+    {
+      "role": "person",
+      "importCount": 12,
+      "usageCount": 14,
+      "component": "SemanticIcon",
+      "tone": "person",
+      "targetIcon": "UserRound",
+      "migration": "UI-3",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Users",
+          "local": "Users",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/lib/options.ts",
+          "icon": "UserRound",
+          "local": "UserRound",
+          "importLine": 1,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "UserRound",
+          "local": "UserRound",
+          "importLine": 5,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "UserRound",
+          "local": "UserRound",
+          "importLine": 26,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "UserRound",
+          "local": "UserRound",
+          "importLine": 46,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "UserRound",
+          "local": "UserRound",
+          "importLine": 3,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "Users",
+          "local": "Users",
+          "importLine": 7,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "UserRound",
+          "local": "UserRound",
+          "importLine": 12,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Login.tsx",
+          "icon": "User",
+          "local": "User",
+          "importLine": 32,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "User",
+          "local": "User",
+          "importLine": 15,
+          "usageCount": 2
+        }
+      ]
+    },
+    {
+      "role": "phone",
+      "importCount": 5,
+      "usageCount": 3,
+      "component": "SemanticIcon",
+      "tone": "contact",
+      "targetIcon": "Phone",
+      "migration": "UI-3",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/PwaInstallPrompt.tsx",
+          "icon": "Smartphone",
+          "local": "Smartphone",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/lib/options.ts",
+          "icon": "Phone",
+          "local": "Phone",
+          "importLine": 1,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Phone",
+          "local": "Phone",
+          "importLine": 46,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Phone",
+          "local": "Phone",
+          "importLine": 12,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "Smartphone",
+          "local": "Smartphone",
+          "importLine": 15,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "pin",
+      "importCount": 1,
+      "usageCount": 1,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Pin",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Pin",
+          "local": "Pin",
+          "importLine": 46,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "refresh",
+      "importCount": 9,
+      "usageCount": 12,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "RefreshCw/RotateCcw",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/EmailVerificationGate.tsx",
+          "icon": "RefreshCcw",
+          "local": "RefreshCcw",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AdminAiSettings.tsx",
+          "icon": "RefreshCw",
+          "local": "RefreshCw",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Billing.tsx",
+          "icon": "RefreshCw",
+          "local": "RefreshCw",
+          "importLine": 30,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "RotateCcw",
+          "local": "RotateCcw",
+          "importLine": 3,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "RotateCcw",
+          "local": "RotateCcw",
+          "importLine": 7,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "RotateCcw",
+          "local": "RotateCcw",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "RefreshCw",
+          "local": "RefreshCw",
+          "importLine": 15,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/TasksStable.tsx",
+          "icon": "RefreshCcw",
+          "local": "RefreshCcw",
+          "importLine": 20,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/TodayStable.tsx",
+          "icon": "RefreshCcw",
+          "local": "RefreshCcw",
+          "importLine": 20,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "risk_alert",
+      "importCount": 22,
+      "usageCount": 19,
+      "component": "SemanticIcon",
+      "tone": "danger",
+      "targetIcon": "AlertTriangle",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 25,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/sonner.tsx",
+          "icon": "TriangleAlertIcon",
+          "local": "TriangleAlertIcon",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AdminAiSettings.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 11,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Billing.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 30,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "AlertCircle",
+          "local": "AlertCircle",
+          "importLine": 26,
+          "usageCount": 3
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 6,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 46,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ClientPortal.tsx",
+          "icon": "AlertCircle",
+          "local": "AlertCircle",
+          "importLine": 6,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "AlertTriangle",
+          "local": "AlertTriangle",
+          "importLine": 3,
+          "usageCount": 0
+        }
+      ]
+    },
+    {
+      "role": "search",
+      "importCount": 14,
+      "usageCount": 16,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Search",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/lead-picker.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/topic-contact-picker.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 5,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 11,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 6,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Clients.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 7,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 7,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/ResponseTemplates.tsx",
+          "icon": "Search",
+          "local": "Search",
+          "importLine": 2,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "send",
+      "importCount": 3,
+      "usageCount": 4,
+      "component": "SemanticIcon",
+      "tone": "primary",
+      "targetIcon": "Send",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/EmailVerificationGate.tsx",
+          "icon": "Send",
+          "local": "Send",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "Send",
+          "local": "Send",
+          "importLine": 26,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/SupportCenter.tsx",
+          "icon": "Send",
+          "local": "Send",
+          "importLine": 2,
+          "usageCount": 2
+        }
+      ]
+    },
+    {
+      "role": "settings",
+      "importCount": 5,
+      "usageCount": 4,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Settings",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Settings",
+          "local": "Settings",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "Settings",
+          "local": "Settings",
+          "importLine": 7,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Settings2",
+          "local": "Settings2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Settings.tsx",
+          "icon": "SlidersHorizontal",
+          "local": "SlidersHorizontal",
+          "importLine": 15,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/TodayStable.tsx",
+          "icon": "SlidersHorizontal",
+          "local": "SlidersHorizontal",
+          "importLine": 20,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "task_status",
+      "importCount": 42,
+      "usageCount": 43,
+      "component": "SemanticIcon",
+      "tone": "task",
+      "targetIcon": "CheckCircle2",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "CheckCircle2",
+          "local": "CheckCircle2",
+          "importLine": 25,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "CheckSquare",
+          "local": "CheckSquare",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/components/lead-picker.tsx",
+          "icon": "Check",
+          "local": "Check",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiFollowupDraft.tsx",
+          "icon": "CheckCircle2",
+          "local": "CheckCircle2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/LeadAiNextAction.tsx",
+          "icon": "CheckCircle2",
+          "local": "CheckCircle2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/PwaInstallPrompt.tsx",
+          "icon": "ShieldCheck",
+          "local": "ShieldCheck",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/topic-contact-picker.tsx",
+          "icon": "Check",
+          "local": "Check",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/checkbox.tsx",
+          "icon": "CheckIcon",
+          "local": "CheckIcon",
+          "importLine": 6,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/dropdown-menu.tsx",
+          "icon": "Check",
+          "local": "Check",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/ui/select.tsx",
+          "icon": "CheckIcon",
+          "local": "CheckIcon",
+          "importLine": 5,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "time",
+      "importCount": 14,
+      "usageCount": 14,
+      "component": "SemanticIcon",
+      "tone": "time",
+      "targetIcon": "Clock",
+      "migration": "UI-2",
+      "isCritical": true,
+      "examples": [
+        {
+          "file": "src/pages/Activity.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 5,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/AiDrafts.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 11,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/CaseDetail.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 26,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/Cases.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 6,
+          "usageCount": 0
+        },
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 46,
+          "usageCount": 2
+        },
+        {
+          "file": "src/pages/ClientPortal.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 6,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/Dashboard.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 7,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/LeadDetail.tsx",
+          "icon": "Clock",
+          "local": "Clock",
+          "importLine": 12,
+          "usageCount": 4
+        },
+        {
+          "file": "src/pages/Leads.tsx",
+          "icon": "Clock3",
+          "local": "Clock3",
+          "importLine": 7,
+          "usageCount": 1
+        },
+        {
+          "file": "src/pages/NotificationsCenter.tsx",
+          "icon": "Clock3",
+          "local": "Clock3",
+          "importLine": 2,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "unclassified",
+      "importCount": 61,
+      "usageCount": 61,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "TBD",
+      "migration": "manual_review",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "LayoutDashboard",
+          "local": "LayoutDashboard",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "History",
+          "local": "History",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "LifeBuoy",
+          "local": "LifeBuoy",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "Menu",
+          "local": "Menu",
+          "importLine": 25,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/Layout.tsx",
+          "icon": "FolderKanban",
+          "local": "FolderKanban",
+          "importLine": 25,
+          "usageCount": 0
+        },
+        {
+          "file": "src/components/LeadAiFollowupDraft.tsx",
+          "icon": "MessageSquare",
+          "local": "MessageSquare",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/PwaInstallPrompt.tsx",
+          "icon": "Download",
+          "local": "Download",
+          "importLine": 3,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+          "icon": "Mic",
+          "local": "Mic",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+          "icon": "Wand2",
+          "local": "Wand2",
+          "importLine": 2,
+          "usageCount": 1
+        },
+        {
+          "file": "src/components/QuickAiCapture.tsx",
+          "icon": "Mic",
+          "local": "Mic",
+          "importLine": 8,
+          "usageCount": 1
+        }
+      ]
+    },
+    {
+      "role": "view",
+      "importCount": 1,
+      "usageCount": 1,
+      "component": "SemanticIcon",
+      "tone": "neutral",
+      "targetIcon": "Eye",
+      "migration": "later",
+      "isCritical": false,
+      "examples": [
+        {
+          "file": "src/pages/ClientDetail.tsx",
+          "icon": "Eye",
+          "local": "Eye",
+          "importLine": 46,
+          "usageCount": 1
+        }
+      ]
+    }
+  ],
+  "metricTileContract": {
+    "currentCanonicalComponent": "StatShortcutCard",
+    "currentUsageCount": 36,
+    "usageByFile": {
+      "src/pages/Activity.tsx": 6,
+      "src/pages/Cases.tsx": 4,
+      "src/pages/Clients.tsx": 4,
+      "src/pages/Leads.tsx": 5,
+      "src/pages/NotificationsCenter.tsx": 7,
+      "src/pages/ResponseTemplates.tsx": 4,
+      "src/pages/Tasks.tsx": 1,
+      "src/pages/TasksStable.tsx": 1,
+      "src/pages/Templates.tsx": 4
+    },
+    "ruleNow": "Nie dodawać nowych lokalnych kafelków metryk. Istniejące użycia StatShortcutCard zostają bazą.",
+    "ruleAfterUI2": "Nowe kafelki metryk tylko przez StatShortcutCard lub jawnie zatwierdzony wrapper w ui-system."
+  },
+  "localImplementationsToMigrate": [
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 591,
+      "name": "ClientMultiContactField",
+      "snippet": "function ClientMultiContactField({ kind, label, value, onChange, placeholder }: ClientMultiContactFieldProps) {\n  const values = splitClientContactValue(value);\n\n  const updateValue = (index: number, nextValue: string) => {\n    const next = [...values];\n    next[index] = nextValue;\n    onChange(joinClientContactValue(next));\n  };\n\n  const addValue = () => {\n    onChange(joinClientContactValue([...values, '']));\n  };\n\n  const removeValue = (index: number) => {\n    const next = values.filter((_, currentIndex) => currentIndex !== index);\n    onChange(joinClientContactValue(next.length ? next : ['']));\n  };"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 648,
+      "name": "InfoRow",
+      "snippet": "function InfoRow({ icon: Icon, label, value, onCopy }: { icon: any; label: string; value: string; onCopy?: () => void }) {\n  const copyLabel = label === 'Telefon' ? 'Kopiuj telefon' : label === 'E-mail' ? 'Kopiuj email' : `Kopiuj ${label}`;\n  return (\n    <div className=\"client-detail-info-row\">\n      <span className=\"client-detail-info-icon\">\n        <Icon className=\"h-4 w-4\" />\n      </span>\n      <span>\n        <small>{label}</small>\n        <strong>{value || '-'}</strong>\n      </span>\n      {onCopy && value ? (\n        <button type=\"button\" className=\"client-detail-icon-button\" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>\n          <Copy className=\"h-4 w-4\" />\n        </button>\n      ) : null}\n    </div>\n  );"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 667,
+      "name": "StatCell",
+      "snippet": "function StatCell({ label, value }: { label: string; value: string | number }) {\n  return (\n    <div className=\"client-detail-stat-cell\">\n      <strong>{value}</strong>\n      <span>{label}</span>\n    </div>\n  );\n}\n\n\nconst CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';\nconst STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';\nconst STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejdź w sprawę';\nconst STAGE24A_CLIENT_SIDE_QUICK_ACTIONS_GUARD = 'client side quick actions use context action host';\nconst STAGE25B_CLIENT_DETAIL_FEEDBACK_COMPLETE_REPAIR_GUARD = 'client detail feedback complete repair';\nconst STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL = 'client detail final feedback guard compatibility';\nconst STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD = 'client detail JSX fragment build fix';\nconst STAGE26A_FEEDBACK_AFTER_4EC_GUARD = 'feedback after 4ec client activity ai drafts';"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 403,
+      "name": "InfoLine",
+      "snippet": "function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {\n  return (\n    <div className=\"lead-detail-info-line\">\n      <span><Icon className=\"h-4 w-4\" /></span>\n      <div>\n        <small>{label}</small>\n        <strong>{value || '-'}</strong>\n      </div>\n    </div>\n  );\n}\nfunction LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {\n  return (\n    <button type=\"button\" className=\"lead-detail-chip-button\" onClick={onClick} disabled={disabled}>\n      {children}\n    </button>\n  );\n}"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 414,
+      "name": "LeadActionButton",
+      "snippet": "function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {\n  return (\n    <button type=\"button\" className=\"lead-detail-chip-button\" onClick={onClick} disabled={disabled}>\n      {children}\n    </button>\n  );\n}\n\nconst CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEAD_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';\n\nexport default function LeadDetail() {\n  const { leadId } = useParams();\n  const navigate = useNavigate();\n  const { hasAccess, workspace, workspaceReady } = useWorkspace();\n  const [lead, setLead] = useState<any>(null);\n  const [loading, setLoading] = useState(true);\n  const [loadError, setLoadError] = useState<string | null>(null);\n  const [activities, setActivities] = useState<any[]>([]);"
+    }
+  ],
+  "entityActionContracts": [
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 87,
+      "snippet": "const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {\n  entity: 'case',\n  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),\n  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  eventsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  calendarPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  dangerActionZone: actionButtonClass('danger', 'cf-danger-action-zone'),\n  copyInlineSecondaryAction: actionButtonClass('neutral', 'cf-inline-secondary-action'),\n  placement: {\n    addNote: 'activity-panel-header',\n    dictateNote: 'activity-panel-header',\n    addTask: 'tasks-panel-header',\n    addEvent: 'events-panel-header',\n    editRecord: 'entity-header-action-cluster',\n    deleteRecord: 'danger-action-zone',\n    copy: 'info-row-inline-action',\n  },\n} as const;\n\nconst CASE_DETAIL_V1_EVENT_ACTION_GUARD = 'Dodaj wydarzenie';\nconst STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining partial payments';\nconst STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD = 'case finance history visible separate section';\n\ntype CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';\ntype CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 98,
+      "snippet": "const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {\n  entity: 'client',\n  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),\n  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  eventsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  calendarPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  dangerActionZone: actionButtonClass('danger', 'cf-danger-action-zone'),\n  copyInlineSecondaryAction: actionButtonClass('neutral', 'cf-inline-secondary-action'),\n  placement: {\n    addNote: 'activity-panel-header',\n    dictateNote: 'activity-panel-header',\n    addTask: 'tasks-panel-header',\n    addEvent: 'events-panel-header',\n    editRecord: 'entity-header-action-cluster',\n    deleteRecord: 'danger-action-zone',\n    copy: 'info-row-inline-action',\n  },\n} as const;\ntype ClientTab = 'summary' | 'cases' | 'contact' | 'history';\n\ntype ClientNextAction = {\n  kind: 'task' | 'event' | 'case' | 'lead' | 'empty';\n  title: string;\n  subtitle: string;\n  to?: string;"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 81,
+      "snippet": "const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {\n  entity: 'lead',\n  entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),\n  activityPanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  notePanelHeader: actionButtonClass('neutral', 'cf-panel-header-actions'),\n  tasksPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  workItemsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  eventsPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  calendarPanelHeader: actionButtonClass('neutral', 'cf-panel-action-row'),\n  dangerActionZone: actionButtonClass('danger', 'cf-danger-action-zone'),\n  copyInlineSecondaryAction: actionButtonClass('neutral', 'cf-inline-secondary-action'),\n  placement: {\n    addNote: 'activity-panel-header',\n    dictateNote: 'activity-panel-header',\n    addTask: 'tasks-panel-header',\n    addEvent: 'events-panel-header',\n    editRecord: 'entity-header-action-cluster',\n    deleteRecord: 'danger-action-zone',\n    copy: 'info-row-inline-action',\n  },\n} as const;\n\nconst STATUS_OPTIONS = [\n  { value: 'new', label: 'Nowy' },\n  { value: 'contacted', label: 'Skontaktowany' },\n  { value: 'qualification', label: 'Kwalifikacja' },\n  { value: 'proposal_sent', label: 'Oferta wysłana' },\n  { value: 'waiting_response', label: 'Czeka na odpowiedź' },"
+    }
+  ],
+  "detailRegionContract": {
+    "requiredOrderForLeadAndClient": [
+      "entity-header",
+      "entity-top-tiles",
+      "entity-nearest-action",
+      "entity-contact",
+      "entity-notes",
+      "entity-history",
+      "entity-relations",
+      "entity-right-rail"
+    ],
+    "rule": "LeadDetail i ClientDetail mają mieć te same regiony logiczne. Mobile może układać je w jedną kolumnę, desktop może mieć rail, ale semantyczne regiony muszą zostać wspólne."
+  },
+  "migrationStages": [
+    {
+      "stage": "UI-2",
+      "name": "SemanticIcon + first guard",
+      "scope": "critical icon roles only"
+    },
+    {
+      "stage": "UI-3",
+      "name": "EntityInfoRow",
+      "scope": "phone, email, contact/source rows in LeadDetail and ClientDetail"
+    },
+    {
+      "stage": "UI-4",
+      "name": "EntityNoteCard / Composer / List",
+      "scope": "notes in LeadDetail and ClientDetail"
+    },
+    {
+      "stage": "UI-5",
+      "name": "EntityDetailShell",
+      "scope": "LeadDetail and ClientDetail desktop/mobile region parity"
+    },
+    {
+      "stage": "UI-6",
+      "name": "CaseDetail extension",
+      "scope": "extend same contract to CaseDetail after lead/client parity"
+    }
+  ],
+  "guardPolicy": {
+    "now": "Check verifies map cleanliness and semantic contract completeness. Runtime direct icon imports are allowed until migration begins.",
+    "afterUI2": "No new direct imports for critical standard icons in pages/* without semantic exception.",
+    "afterUI3": "No new local phone/email/contact rows in detail pages.",
+    "afterUI4": "No new local note cards/composers/lists in detail pages.",
+    "afterUI5": "LeadDetail and ClientDetail must expose shared data-ui-region contract."
+  }
+}
