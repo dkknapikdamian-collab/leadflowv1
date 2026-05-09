@@ -364,7 +364,12 @@ export default function Leads() {
       setIsNewLeadOpen(false);
       setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false });
     } catch (error: any) {
-      toast.error(`Błąd zapisu leada: ${error.message}`);
+      const message = String(error?.message || 'REQUEST_FAILED');
+      if (message.includes('LEAD_DUPLICATE_IN_HISTORY_OPEN_RECORD')) {
+        toast.error('Ten kontakt istnieje już w historii albo obsłudze. Otwórz historię/kosz i przywróć rekord zamiast tworzyć duplikat.');
+      } else {
+        toast.error(`Błąd zapisu leada: ${message}`);
+      }
     } finally {
       createLeadSubmitLockRef.current = false;
       setLeadSubmitting(false);

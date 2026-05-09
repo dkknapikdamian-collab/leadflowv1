@@ -665,6 +665,126 @@ function isLeadActiveForApiList(lead: Record<string, unknown>) {
   );
 }
 
+
+function getLeadDuplicateRecordId(row: Record<string, unknown>) {
+  return asText(row.id);
+}
+
+function getLeadDuplicateLinkedCaseId(row: Record<string, unknown>) {
+  return asText(row.linked_case_id || row.linkedCaseId || row.case_id || row.caseId);
+}
+
+function isLeadHiddenOrHistoricalForCreate(row: Record<string, unknown>) {
+  const status = asText(row.status).toLowerCase();
+  const visibility = asText(row.lead_visibility || row.leadVisibility).toLowerCase();
+  const outcome = asText(row.sales_outcome || row.salesOutcome).toLowerCase();
+  return (
+    status === 'archived' ||
+    status === 'moved_to_service' ||
+    visibility === 'trash' ||
+    visibility === 'archived' ||
+    outcome === 'archived' ||
+    outcome === 'moved_to_service' ||
+    Boolean(getLeadDuplicateLinkedCaseId(row))
+  );
+}
+
+function isLeadRestorableForCreate(row: Record<string, unknown>) {
+  // CLOSEFLOW_LEAD_CREATE_HIDDEN_DUPLICATE_RESTORE_V1
+  // Restore only hidden leads that are not tied to an existing case. Leads already in service remain historical evidence.
+  return isLeadHiddenOrHistoricalForCreate(row) && !getLeadDuplicateLinkedCaseId(row);
+}
+
+function isLeadDuplicateInsertError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return /duplicate|unique|23505|already exists|already_added|już istnieje|juz istnieje/i.test(message);
+}
+
+function buildLeadDuplicateLookupQueries(workspaceId: string, payload: Record<string, unknown>) {
+  const queries: string[] = [];
+  const email = asText(payload.email).toLowerCase();
+  const phone = asText(payload.phone);
+  const name = asText(payload.name || payload.company);
+
+  if (email) {
+    queries.push(withWorkspaceFilter('leads?select=*&email=eq.' + encodeURIComponent(email) + '&limit=10', workspaceId));
+  }
+  if (phone) {
+    queries.push(withWorkspaceFilter('leads?select=*&phone=eq.' + encodeURIComponent(phone) + '&limit=10', workspaceId));
+  }
+  if (name) {
+    queries.push(withWorkspaceFilter('leads?select=*&name=ilike.' + encodeURIComponent(name) + '&limit=10', workspaceId));
+  }
+  return queries;
+}
+
+async function findHiddenLeadDuplicateCandidates(workspaceId: string, payload: Record<string, unknown>) {
+  const queries = buildLeadDuplicateLookupQueries(workspaceId, payload);
+  const byId = new Map<string, Record<string, unknown>>();
+
+  for (const query of queries) {
+    const rows = await safeSelectRows(query);
+    for (const row of rows) {
+      const id = getLeadDuplicateRecordId(row);
+      if (id && isLeadHiddenOrHistoricalForCreate(row)) byId.set(id, row);
+    }
+  }
+
+  return Array.from(byId.values());
+}
+
+function buildHiddenLeadRestorePayloadForCreate(payload: Record<string, unknown>) {
+  const nextPayload: Record<string, unknown> = {
+    name: asText(payload.name) || 'Lead bez nazwy',
+    company: asText(payload.company) || null,
+    email: asText(payload.email).toLowerCase() || null,
+    phone: asText(payload.phone) || null,
+    source: asText(payload.source) || 'other',
+    value: asNumber(payload.value || payload.deal_value),
+    deal_value: asNumber(payload.deal_value || payload.value),
+    status: normalizeStatus(payload.status || 'new'),
+    summary: asText(payload.summary) || null,
+    notes: asText(payload.notes) || null,
+    is_at_risk: Boolean(payload.is_at_risk),
+    partial_payments: Array.isArray(payload.partial_payments) ? payload.partial_payments : [],
+    lead_visibility: 'active',
+    sales_outcome: 'open',
+    linked_case_id: null,
+    client_id: null,
+    closed_at: null,
+    moved_to_service_at: null,
+    case_started_at: null,
+    updated_at: new Date().toISOString(),
+  };
+  return nextPayload;
+}
+
+async function restoreHiddenLeadForCreateIfNeeded(workspaceId: string, payload: Record<string, unknown>) {
+  const candidates = await findHiddenLeadDuplicateCandidates(workspaceId, payload);
+  const restorable = candidates.find(isLeadRestorableForCreate);
+  if (!restorable) return null;
+
+  const leadId = getLeadDuplicateRecordId(restorable);
+  if (!leadId) return null;
+
+  const restorePayload = buildHiddenLeadRestorePayloadForCreate(payload);
+  await updateLeadWithSchemaFallback(leadId, workspaceId, restorePayload);
+  const rows = await safeSelectRows(withWorkspaceFilter('leads?select=*&id=eq.' + encodeURIComponent(leadId) + '&limit=1', workspaceId));
+  return rows[0] || { ...restorable, ...restorePayload, id: leadId };
+}
+
+async function restoreHiddenLeadForCreateAfterDuplicate(workspaceId: string, payload: Record<string, unknown>, error: unknown) {
+  if (!isLeadDuplicateInsertError(error)) return null;
+  const restored = await restoreHiddenLeadForCreateIfNeeded(workspaceId, payload);
+  if (restored) return restored;
+
+  const candidates = await findHiddenLeadDuplicateCandidates(workspaceId, payload);
+  if (candidates.length) {
+    throw new Error('LEAD_DUPLICATE_IN_HISTORY_OPEN_RECORD');
+  }
+  return null;
+}
+
 function deriveCaseEligibility(status: string, startRule: string, billingStatus: string, acceptedAtRaw: unknown, caseEligibleAtRaw: unknown) {
   const acceptedAt = toIsoDateTime(acceptedAtRaw as string) || (typeof acceptedAtRaw === 'string' ? acceptedAtRaw : null);
   const existingEligible = toIsoDateTime(caseEligibleAtRaw as string) || (typeof caseEligibleAtRaw === 'string' ? caseEligibleAtRaw : null);
@@ -911,7 +1031,23 @@ export default async function handler(req: any, res: any) {
 
     await assertWorkspaceEntityLimit(workspaceId, 'lead');
 
-    const result = await insertLeadWithSchemaFallback(payload);
+    const restoredHiddenLeadForCreate = await restoreHiddenLeadForCreateIfNeeded(workspaceId, payload);
+      if (restoredHiddenLeadForCreate) {
+        res.status(200).json(normalizeLead(restoredHiddenLeadForCreate));
+        return;
+      }
+
+      let result: Awaited<ReturnType<typeof insertLeadWithSchemaFallback>>;
+      try {
+        result = await insertLeadWithSchemaFallback(payload);
+      } catch (error) {
+        const restoredAfterDuplicate = await restoreHiddenLeadForCreateAfterDuplicate(workspaceId, payload, error);
+        if (restoredAfterDuplicate) {
+          res.status(200).json(normalizeLead(restoredAfterDuplicate));
+          return;
+        }
+        throw error;
+      }
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
     // GOOGLE_CALENDAR_STAGE09B_LEAD_CREATE_SYNC_CALL
 
