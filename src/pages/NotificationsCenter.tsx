@@ -44,6 +44,9 @@ import { toast } from 'sonner';
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
+const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
+void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
+
 type NotificationFilter =
   | 'all'
   | 'action'
@@ -499,9 +502,10 @@ export default function NotificationsCenter() {
     { id: 'action', label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
     { id: 'overdue', label: 'Zaległe', value: metrics.overdue, icon: Clock3, tone: 'red' },
     { id: 'today', label: 'Dzisiaj', value: metrics.today, icon: CalendarClock, tone: 'blue' },
-    { id: 'upcoming', label: 'Nadchodzące', value: metrics.upcoming, icon: NotificationEntityIcon, tone: 'neutral' },
+    { id: 'upcoming', label: 'Nadchodzące', value: metrics.upcoming, icon: NotificationEntityIcon, tone: 'purple' },
     { id: 'snoozed', label: 'Odłożone', value: metrics.snoozed, icon: RotateCcw, tone: 'amber' },
     { id: 'read', label: 'Przeczytane', value: metrics.read, icon: Check, tone: 'green' },
+    { id: 'system', label: 'Systemowe', value: metrics.system, icon: ShieldAlert, tone: 'purple' },
   ]), [metrics]);
 
   const filteredRows = useMemo(() => {

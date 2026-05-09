@@ -1,4 +1,7 @@
 import type { ComponentType, HTMLAttributes, ReactNode } from 'react';
+
+const CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W: OperatorMetricTiles owns value/icon tone and metric identity';
+void CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W;
 import { Link } from 'react-router-dom';
 
 export type OperatorMetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple';
@@ -76,13 +79,14 @@ function OperatorMetricTile<TId extends string>({
       className="cf-operator-metric-tile-content"
       data-cf-operator-metric-tile-content="true"
       data-cf-operator-metric-tone={tone}
+      data-cf-operator-metric-id={String(item.id)}
     >
       <div className="cf-operator-metric-text">
         <span className="cf-operator-metric-label">{item.label}</span>
         {item.helper ? <span className="cf-operator-metric-helper">{item.helper}</span> : null}
       </div>
       <div className="cf-operator-metric-value-row">
-        <strong className="cf-operator-metric-value">{item.value}</strong>
+        <strong className="cf-operator-metric-value" data-cf-operator-metric-value="true" data-cf-operator-metric-value-tone={tone}>{item.value}</strong>
         <span className="cf-operator-metric-icon" aria-hidden="true">
           <Icon className="h-4 w-4" />
         </span>
@@ -97,6 +101,8 @@ function OperatorMetricTile<TId extends string>({
     'aria-label': item.ariaLabel || item.title || item.label,
     'aria-pressed': item.to ? undefined : active,
     'data-cf-operator-metric-tile': 'true',
+    'data-cf-operator-metric-tone': tone,
+    'data-cf-operator-metric-id': String(item.id),
     'data-cf-metric-source-truth': 'vs5v',
     'data-cf-operator-metric-active': active ? 'true' : 'false',
   } as const;

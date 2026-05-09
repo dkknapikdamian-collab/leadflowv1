@@ -213,3 +213,66 @@ html body #root [data-cf-operator-metric-tone="purple"] .cf-operator-metric-icon
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W
+   Owner: CloseFlow Visual System
+   Reason: OperatorMetricTiles must own value/icon color, including /notifications metrics.
+   Scope: OperatorMetricTiles only; no legacy StatShortcutCard selectors.
+   remove_after_stage: never; this is part of OperatorMetricTiles contract.
+*/
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="neutral"] .cf-operator-metric-value,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="neutral"] .cf-operator-metric-value {
+  color: var(--cf-operator-tone-neutral-value) !important;
+  -webkit-text-fill-color: var(--cf-operator-tone-neutral-value) !important;
+}
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="blue"] .cf-operator-metric-value,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="blue"] .cf-operator-metric-value {
+  color: var(--cf-operator-tone-blue-value) !important;
+  -webkit-text-fill-color: var(--cf-operator-tone-blue-value) !important;
+}
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="green"] .cf-operator-metric-value,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="green"] .cf-operator-metric-value {
+  color: var(--cf-operator-tone-green-value) !important;
+  -webkit-text-fill-color: var(--cf-operator-tone-green-value) !important;
+}
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="red"] .cf-operator-metric-value,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="red"] .cf-operator-metric-value {
+  color: var(--cf-operator-tone-red-value) !important;
+  -webkit-text-fill-color: var(--cf-operator-tone-red-value) !important;
+}
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="amber"] .cf-operator-metric-value,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="amber"] .cf-operator-metric-value {
+  color: var(--cf-operator-tone-amber-value) !important;
+  -webkit-text-fill-color: var(--cf-operator-tone-amber-value) !important;
+}
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="purple"] .cf-operator-metric-value,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="purple"] .cf-operator-metric-value {
+  color: var(--cf-operator-tone-purple-value) !important;
+  -webkit-text-fill-color: var(--cf-operator-tone-purple-value) !important;
+}
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="neutral"] .cf-operator-metric-icon,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="neutral"] .cf-operator-metric-icon { background: var(--cf-operator-tone-neutral-bg) !important; color: var(--cf-operator-tone-neutral-icon) !important; }
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="blue"] .cf-operator-metric-icon,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="blue"] .cf-operator-metric-icon { background: var(--cf-operator-tone-blue-bg) !important; color: var(--cf-operator-tone-blue-value) !important; }
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="green"] .cf-operator-metric-icon,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="green"] .cf-operator-metric-icon { background: var(--cf-operator-tone-green-bg) !important; color: var(--cf-operator-tone-green-value) !important; }
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="red"] .cf-operator-metric-icon,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="red"] .cf-operator-metric-icon { background: var(--cf-operator-tone-red-bg) !important; color: var(--cf-operator-tone-red-value) !important; }
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="amber"] .cf-operator-metric-icon,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="amber"] .cf-operator-metric-icon { background: var(--cf-operator-tone-amber-bg) !important; color: var(--cf-operator-tone-amber-value) !important; }
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-tone="purple"] .cf-operator-metric-icon,
+html body #root .cf-operator-metric-tile-content[data-cf-operator-metric-tone="purple"] .cf-operator-metric-icon { background: var(--cf-operator-tone-purple-bg) !important; color: var(--cf-operator-tone-purple-value) !important; }
+html body #root .cf-operator-metric-icon svg,
+html body #root .cf-operator-metric-icon svg * {
+  stroke: currentColor !important;
+}
+html body #root .notifications-vnext-page .notifications-stats-grid.cf-operator-metric-grid {
+  max-width: 1440px !important;
+  margin: 0 auto 22px !important;
+}
+html body #root .notifications-vnext-page .notifications-stats-grid.cf-operator-metric-grid .cf-operator-metric-value {
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow: none !important;
+}

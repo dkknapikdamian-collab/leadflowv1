@@ -1,0 +1,12 @@
+{
+  "marker": "CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W",
+  "stage": "VS-5W",
+  "scope": [
+    "/tasks",
+    "/notifications"
+  ],
+  "sourceOfTruth": "OperatorMetricTiles",
+  "notificationsMetricTiles": 8,
+  "valueTone": "data-cf-operator-metric-tone",
+  "noRuntimeLogicChange": true
+}
