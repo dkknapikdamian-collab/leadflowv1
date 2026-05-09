@@ -577,7 +577,9 @@
                     "check:closeflow-metric-tiles-final-system":  "node scripts/check-closeflow-metric-tiles-final-system.cjs",
                     "check:vs6-forms-modals-unification":  "node scripts/check-vs6-forms-modals-unification.cjs",
                     "check:vs7-semantic-metric-tones":  "node scripts/check-vs7-semantic-metric-tones.cjs",
-                    "check:closeflow-screen-placement-slots":  "node scripts/check-closeflow-screen-placement-slots.cjs"
+                    "check:closeflow-screen-placement-slots":  "node scripts/check-closeflow-screen-placement-slots.cjs",
+                    "check:closeflow-screenshot-qa-evidence":  "node scripts/check-closeflow-screenshot-qa-evidence.cjs",
+                    "check:closeflow-screenshot-qa-contract":  "node scripts/check-closeflow-screenshot-qa-evidence.cjs --contract-only",
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",
