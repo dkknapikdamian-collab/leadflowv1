@@ -527,7 +527,8 @@
     "check:closeflow-lead-company-not-null-repair-v2": "node scripts/check-closeflow-lead-company-not-null-repair-v2.cjs",
     "check:vercel-hobby-function-limit": "node scripts/check-vercel-hobby-function-limit.cjs",
     "check:closeflow-entity-conflicts-system-route-v1": "node scripts/check-closeflow-entity-conflicts-system-route-v1.cjs",
-    "check:closeflow-system-route-conflicts-runtime-v1": "node scripts/check-closeflow-system-route-conflicts-runtime-v1.cjs"
+    "check:closeflow-system-route-conflicts-runtime-v1": "node scripts/check-closeflow-system-route-conflicts-runtime-v1.cjs",
+    "check:closeflow-system-route-conflicts-runtime-repair-v2": "node scripts/check-closeflow-system-route-conflicts-runtime-repair-v2.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
