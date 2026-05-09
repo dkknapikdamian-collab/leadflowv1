@@ -1,0 +1,30 @@
+{
+  "marker": "CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S",
+  "generatedAt": "2026-05-09T18:19:21.529Z",
+  "sourceOfTruth": "MetricGrid -> StatShortcutCard -> MetricTile",
+  "repair": "repair2",
+  "routes": [
+    {
+      "route": "/tasks",
+      "file": "src/pages/TasksStable.tsx",
+      "grid": "MetricGrid",
+      "adapter": "StatShortcutCard",
+      "renderer": "MetricTile",
+      "expectedTiles": 4
+    },
+    {
+      "route": "/notifications",
+      "file": "src/pages/NotificationsCenter.tsx",
+      "grid": "MetricGrid",
+      "adapter": "StatShortcutCard",
+      "renderer": "MetricTile",
+      "expectedTiles": 7
+    }
+  ],
+  "forbidden": [
+    "function MetricCard(",
+    ".notifications-stat-card {",
+    ".notifications-stat-label",
+    ".notifications-stat-icon"
+  ]
+}

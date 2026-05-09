@@ -5,6 +5,7 @@ P0_TASKS_STABLE_REBUILD
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import Layout from '../components/Layout';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { MetricGrid } from '../components/ui-system';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -492,7 +493,7 @@ export default function TasksStable() {
           </div>
         </section>
 
-        <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid="true" data-stage16a-metric-visual-parity="true" data-stage16d-task-metric-final-lock="true">
+        <MetricGrid className="cf-tasks-metric-grid" columns={4} data-eliteflow-task-stat-grid="true" data-stage16a-metric-visual-parity="true" data-stage16d-task-metric-final-lock="true" data-cf-metric-single-source="vs5s">
           {statCards.map((card) => (
             <StatShortcutCard
               key={card.id}
@@ -506,7 +507,7 @@ export default function TasksStable() {
               ariaLabel={`Pokaż zadania: ${card.label}`}
             />
           ))}
-        </section>
+        </MetricGrid>
 
         <Card className="border-slate-100 shadow-sm">
           <CardContent className="p-4 sm:p-5">

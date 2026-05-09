@@ -1,6 +1,4 @@
-import {
-  EntityIcon,
-  NotificationEntityIcon } from '../components/ui-system';
+import { EntityIcon, MetricGrid, NotificationEntityIcon } from '../components/ui-system';
 ﻿import {
   useEffect,
   useMemo,
@@ -617,7 +615,7 @@ export default function NotificationsCenter() {
           </div>
         </header>
 
-        <section className="notifications-stats-grid" aria-label="Statystyki powiadomień">
+        <MetricGrid className="notifications-stats-grid" columns={4} aria-label="Statystyki powiadomień" data-notifications-metric-grid="true" data-cf-metric-single-source="vs5s">
           <StatShortcutCard label="Wszystkie" value={metrics.all} icon={NotificationEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Do reakcji" value={metrics.action} icon={ShieldAlert} active={activeFilter === 'action'} onClick={() => setActiveFilter('action')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
           <StatShortcutCard label="Zaległe" value={metrics.overdue} icon={Clock3} active={activeFilter === 'overdue'} onClick={() => setActiveFilter('overdue')} tone="red" />
@@ -625,7 +623,7 @@ export default function NotificationsCenter() {
           <StatShortcutCard label="Nadchodzące" value={metrics.upcoming} icon={NotificationEntityIcon} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} iconClassName="bg-slate-100 text-slate-500" />
           <StatShortcutCard label="Odłożone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} tone="amber" />
           <StatShortcutCard label="Przeczytane" value={metrics.read} icon={Check} active={activeFilter === 'read'} onClick={() => setActiveFilter('read')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
-        </section>
+        </MetricGrid>
 
         <div className="notifications-vnext-shell">
           <section className="notifications-main-column">

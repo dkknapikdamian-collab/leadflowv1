@@ -484,3 +484,112 @@ main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid=
 }
 /* CLOSEFLOW_VS5R_REAL_METRIC_TILE_PARITY_END */
 
+/* CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S_START
+   Owner: CloseFlow Visual System
+   Reason: tasks and notifications must render metric tiles only through MetricGrid -> StatShortcutCard -> MetricTile.
+   Scope: final high-specificity bridge for active route metric grids; blocks older section.grid > button hard locks.
+   remove_after_stage: never; replace only with MetricTile v2.
+*/
+html body #root [data-cf-metric-grid-contract="final-vs5"],
+html body #root .notifications-stats-grid[data-cf-metric-grid-contract="final-vs5"],
+html body #root main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+html body #root [data-cf-metric-grid-contract="final-vs5"] > [data-stat-shortcut-card][data-cf-metric-tile-contract="final-vs5"],
+html body #root [data-cf-metric-grid-contract="final-vs5"] > .cf-top-metric-tile {
+  min-height: 0 !important;
+  height: auto !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-content,
+html body #root .cf-top-metric-tile-content[data-cf-metric-tile-contract="final-vs5"] {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
+  border: 1px solid var(--cf-metric-tile-border) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: var(--cf-metric-tile-bg) !important;
+  box-shadow: var(--cf-metric-tile-shadow) !important;
+  overflow: hidden !important;
+}
+
+html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-label {
+  display: block !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  color: var(--cf-metric-tile-label) !important;
+  -webkit-text-fill-color: var(--cf-metric-tile-label) !important;
+  font-size: var(--cf-metric-tile-label-size) !important;
+  line-height: var(--cf-metric-tile-label-line-height) !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.025em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-value-row {
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+}
+
+html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-value {
+  display: block !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  color: var(--cf-metric-tile-value) !important;
+  font-size: var(--cf-metric-tile-value-size) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.045em !important;
+  text-align: right !important;
+}
+
+html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-icon {
+  width: var(--cf-metric-tile-icon-size) !important;
+  height: var(--cf-metric-tile-icon-size) !important;
+  min-width: var(--cf-metric-tile-icon-size) !important;
+  border-radius: var(--cf-metric-tile-icon-radius) !important;
+  padding: var(--cf-metric-tile-icon-padding) !important;
+}
+
+@media (max-width: 1180px) {
+  html body #root [data-cf-metric-grid-contract="final-vs5"],
+  html body #root .notifications-stats-grid[data-cf-metric-grid-contract="final-vs5"],
+  html body #root main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  html body #root [data-cf-metric-grid-contract="final-vs5"],
+  html body #root .notifications-stats-grid[data-cf-metric-grid-contract="final-vs5"],
+  html body #root main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S_END */
+

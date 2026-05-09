@@ -564,7 +564,9 @@
     "verify:closeflow-metric-tiles-real-parity": "npm run check:closeflow-metric-tiles-real-parity-repair && npm run check:closeflow-metric-tiles-final-migration",
     "audit:closeflow-action-clusters-final-contract": "node scripts/audit-closeflow-action-clusters-final-contract.cjs",
     "check:closeflow-action-clusters-final-contract": "node scripts/check-closeflow-action-clusters-final-contract.cjs",
-    "verify:closeflow-action-clusters-final-contract": "npm.cmd run audit:closeflow-action-clusters-final-contract && npm.cmd run check:closeflow-action-clusters-final-contract"
+    "verify:closeflow-action-clusters-final-contract": "npm.cmd run audit:closeflow-action-clusters-final-contract && npm.cmd run check:closeflow-action-clusters-final-contract",
+    "check:closeflow-metric-tile-single-source-truth": "node scripts/check-closeflow-metric-tile-single-source-truth.cjs",
+    "verify:closeflow-metric-tile-single-source-truth": "npm.cmd run check:closeflow-metric-tile-single-source-truth && npm.cmd run check:closeflow-metric-tiles-real-parity-repair && npm.cmd run check:closeflow-metric-tiles-final-migration"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
