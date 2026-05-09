@@ -420,3 +420,67 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat
 @media (max-width: 640px) {
   :where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) { grid-template-columns: 1fr !important; }
 }
+
+/* CLOSEFLOW_VS5R_REAL_METRIC_TILE_PARITY_START
+   Owner: Visual System
+   Reason: /tasks and /notifications must use the same MetricTile geometry as /leads, /clients and /cases.
+   Scope: grid placement and child reset only; card visuals remain owned by MetricTile variables above.
+   Remove after stage: never, this is the final compatibility bridge for legacy route containers.
+*/
+.notifications-stats-grid,
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+.notifications-stats-grid > [data-stat-shortcut-card],
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] > [data-stat-shortcut-card] {
+  min-height: 0 !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  text-align: left !important;
+}
+
+.notifications-stats-grid .cf-top-metric-tile-content,
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-content {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  padding: var(--cf-metric-tile-padding-y) var(--cf-metric-tile-padding-x) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+}
+
+.notifications-stats-grid .cf-top-metric-tile-label,
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-label {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.notifications-stats-grid .cf-top-metric-tile-value,
+main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] .cf-top-metric-tile-value {
+  font-size: var(--cf-metric-tile-value-size) !important;
+  line-height: 1 !important;
+  letter-spacing: -0.045em !important;
+}
+
+@media (max-width: 1180px) {
+  .notifications-stats-grid,
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .notifications-stats-grid,
+  main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* CLOSEFLOW_VS5R_REAL_METRIC_TILE_PARITY_END */
+

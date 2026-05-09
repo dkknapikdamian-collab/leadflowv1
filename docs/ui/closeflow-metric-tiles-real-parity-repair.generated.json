@@ -1,0 +1,19 @@
+{
+  "stage": "VS-5R",
+  "name": "Metric tiles real parity repair",
+  "status": "implemented",
+  "routes": [
+    "/tasks",
+    "/notifications",
+    "/leads",
+    "/clients",
+    "/cases"
+  ],
+  "sourceOfTruth": "src/components/ui-system/MetricTile.tsx",
+  "adapter": "src/components/StatShortcutCard.tsx",
+  "repaired": {
+    "tasks": "forced route grid to standard MetricTile geometry via closeflow-metric-tiles.css",
+    "notifications": "removed dead local MetricCard and old notification stat-card CSS"
+  },
+  "guard": "CLOSEFLOW_VS5R_REAL_METRIC_TILE_PARITY"
+}

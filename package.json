@@ -559,7 +559,9 @@
     "verify:closeflow-active-screen-layout-matrix": "npm.cmd run audit:closeflow-active-screen-layout-matrix && npm.cmd run check:closeflow-active-screen-layout-matrix",
     "audit:closeflow-metric-tiles-final-migration": "node scripts/audit-closeflow-metric-tiles-final-migration.cjs",
     "check:closeflow-metric-tiles-final-migration": "node scripts/check-closeflow-metric-tiles-final-migration.cjs",
-    "verify:closeflow-metric-tiles-final-migration": "npm.cmd run audit:closeflow-metric-tiles-final-migration && npm.cmd run check:closeflow-metric-tiles-final-migration"
+    "verify:closeflow-metric-tiles-final-migration": "npm.cmd run audit:closeflow-metric-tiles-final-migration && npm.cmd run check:closeflow-metric-tiles-final-migration",
+    "check:closeflow-metric-tiles-real-parity-repair": "node scripts/check-closeflow-metric-tiles-real-parity-repair.cjs",
+    "verify:closeflow-metric-tiles-real-parity": "npm run check:closeflow-metric-tiles-real-parity-repair && npm run check:closeflow-metric-tiles-final-migration"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

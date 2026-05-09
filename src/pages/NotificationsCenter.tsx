@@ -301,36 +301,6 @@ function NotificationRowIcon({ kind }: { kind: NotificationRowKind }) {
   return <ShieldAlert className="h-4 w-4" />;
 }
 
-function MetricCard({
-  label,
-  value,
-  active,
-  icon: Icon,
-  onClick,
-}: {
-  label: string;
-  value: number;
-  active?: boolean;
-  icon: any;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={['notifications-stat-card', active ? 'notifications-stat-card-active' : ''].join(' ')}
-      onClick={onClick}
-    >
-      <span>
-        <span className="notifications-stat-label">{label}</span>
-        <strong>{value}</strong>
-      </span>
-      <span className="notifications-stat-icon" aria-hidden="true">
-        <Icon className="h-5 w-5" />
-      </span>
-    </button>
-  );
-}
-
 function PermissionCopy({ permission, browserEnabled }: { permission: NotificationPermission | 'unsupported'; browserEnabled: boolean }) {
   if (permission === 'unsupported') {
     return (
