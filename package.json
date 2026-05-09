@@ -571,7 +571,8 @@
     "check:closeflow-metric-tiles-deep-source-map": "node scripts/check-closeflow-metric-tiles-deep-source-map.cjs",
     "verify:closeflow-metric-tiles-deep-source-map": "npm.cmd run audit:closeflow-metric-tiles-deep-source-map && npm.cmd run check:closeflow-metric-tiles-deep-source-map",
     "check:closeflow-metric-tile-visual-source-truth": "node scripts/check-closeflow-metric-tile-visual-source-truth.cjs",
-    "verify:closeflow-metric-tile-visual-source-truth": "npm.cmd run check:closeflow-metric-tile-visual-source-truth && npm.cmd run check:closeflow-metric-tile-single-source-truth && npm.cmd run check:closeflow-metric-tiles-real-parity-repair && npm.cmd run check:closeflow-metric-tiles-deep-source-map"
+    "verify:closeflow-metric-tile-visual-source-truth": "npm.cmd run check:closeflow-metric-tile-visual-source-truth && npm.cmd run check:closeflow-metric-tile-single-source-truth && npm.cmd run check:closeflow-metric-tiles-real-parity-repair && npm.cmd run check:closeflow-metric-tiles-deep-source-map",
+    "check:closeflow-operator-metric-tiles": "node scripts/check-closeflow-operator-metric-tiles.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

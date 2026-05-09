@@ -1,0 +1,22 @@
+{
+  "marker": "CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V",
+  "generatedAt": "2026-05-09T18:39:36.546Z",
+  "replaced": [
+    "/tasks",
+    "/notifications"
+  ],
+  "renderer": "OperatorMetricTiles",
+  "isolatedFromLegacySelectors": [
+    "data-stat-shortcut-card",
+    "cf-top-metric-tile",
+    "cf-top-metric-tile-label",
+    "cf-top-metric-tile-value",
+    "section.grid > button"
+  ],
+  "notChanged": [
+    "/today",
+    "/leads",
+    "/clients",
+    "/cases"
+  ]
+}

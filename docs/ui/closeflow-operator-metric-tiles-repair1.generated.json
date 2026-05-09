@@ -1,0 +1,11 @@
+{
+  "marker": "CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V_REPAIR1",
+  "generatedAt": "2026-05-09T18:45:20.701Z",
+  "repair": "accept OperatorMetricTiles in legacy metric tile checks",
+  "preservesRuntime": true,
+  "expectedRenderer": "OperatorMetricTiles",
+  "replacedRoutes": [
+    "/tasks",
+    "/notifications"
+  ]
+}

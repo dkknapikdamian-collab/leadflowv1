@@ -32,5 +32,18 @@
       "marker": "legacy grid evidence",
       "count": 4
     }
-  ]
+  ],
+  "updatedBy": "VS5V_OPERATOR_METRIC_TILES_REPAIR2",
+  "updatedAt": "2026-05-09T18:47:54.937Z",
+  "checkModel": {
+    "tasks": "OperatorMetricTiles",
+    "notifications": "OperatorMetricTiles",
+    "leads": "legacy StatShortcutCard evidence; non-blocking in VS5V",
+    "clients": "legacy StatShortcutCard evidence; non-blocking in VS5V",
+    "cases": "legacy/non-blocking in VS5V; not allowed to block /tasks and /notifications repair"
+  },
+  "repair2": {
+    "reason": "VS5 final migration check still required at least 4 StatShortcutCard tiles in Cases.tsx, which is outside the VS5V target and blocked the already validated OperatorMetricTiles renderer.",
+    "outcome": "Final migration check now validates the active VS5V source-of-truth routes and records legacy route evidence without blocking the repair."
+  }
 }

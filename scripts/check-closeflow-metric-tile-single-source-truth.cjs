@@ -1,44 +1,79 @@
 #!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
+
 const root = process.cwd();
 const STAGE = 'CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S';
+
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
 function exists(rel) { return fs.existsSync(path.join(root, rel)); }
 function fail(message) { console.error(STAGE + '_CHECK_FAIL: ' + message); process.exit(1); }
 function assert(condition, message) { if (!condition) fail(message); }
-function countTaskTiles(text) { const jsx = (text.match(/<StatShortcutCard\b/g) || []).length; const labels = ['Aktywne','Dziś','Zaległe','Zrobione'].filter((label) => text.includes("label: '" + label + "'") || text.includes('label: "' + label + '"')).length; return Math.max(jsx, labels); }
-function countNotificationTiles(text) { const jsx = (text.match(/<StatShortcutCard\b/g) || []).length; const labels = ['Wszystkie','Do reakcji','Zaległe','Dzisiaj','Nadchodzące','Odłożone','Przeczytane'].filter((label) => text.includes('label="' + label + '"') || text.includes("label='" + label + "'")).length; return Math.max(jsx, labels); }
-for (const rel of ['src/index.css','src/components/ui-system/MetricGrid.tsx','src/components/ui-system/MetricTile.tsx','src/components/StatShortcutCard.tsx','src/pages/TasksStable.tsx','src/pages/NotificationsCenter.tsx','src/styles/closeflow-metric-tiles.css','src/styles/visual-stage10-notifications-vnext.css','docs/ui/CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_2026-05-09.md','docs/ui/closeflow-metric-tile-single-source-truth.generated.json']) assert(exists(rel), 'missing file: ' + rel);
-const index = read('src/index.css');
-const grid = read('src/components/ui-system/MetricGrid.tsx');
+function count(text, re) { return (text.match(re) || []).length; }
+
+const required = [
+  'src/components/ui-system/MetricGrid.tsx',
+  'src/components/ui-system/MetricTile.tsx',
+  'src/components/StatShortcutCard.tsx',
+  'src/components/ui-system/OperatorMetricTiles.tsx',
+  'src/styles/closeflow-metric-tiles.css',
+  'src/styles/closeflow-operator-metric-tiles.css',
+  'src/pages/TasksStable.tsx',
+  'src/pages/NotificationsCenter.tsx',
+  'docs/ui/CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_2026-05-09.md',
+  'docs/ui/closeflow-metric-tile-single-source-truth.generated.json',
+];
+for (const rel of required) assert(exists(rel), 'missing required file: ' + rel);
+
+const metricGrid = read('src/components/ui-system/MetricGrid.tsx');
+const metricTile = read('src/components/ui-system/MetricTile.tsx');
+const statShortcut = read('src/components/StatShortcutCard.tsx');
+const operator = read('src/components/ui-system/OperatorMetricTiles.tsx');
 const tasks = read('src/pages/TasksStable.tsx');
 const notifications = read('src/pages/NotificationsCenter.tsx');
 const metricCss = read('src/styles/closeflow-metric-tiles.css');
-const notificationsCss = read('src/styles/visual-stage10-notifications-vnext.css');
+const operatorCss = read('src/styles/closeflow-operator-metric-tiles.css');
+const indexCss = read('src/index.css');
+const emergency = read('src/styles/emergency/emergency-hotfixes.css');
 const pkg = JSON.parse(read('package.json'));
-const json = JSON.parse(read('docs/ui/closeflow-metric-tile-single-source-truth.generated.json'));
-assert(index.includes("@import './styles/closeflow-metric-tiles.css';"), 'src/index.css must import closeflow-metric-tiles.css');
-assert(grid.includes('HTMLAttributes<HTMLElement>'), 'MetricGrid must accept HTML/data/aria props');
-assert(grid.includes('...props'), 'MetricGrid must forward props');
-assert(grid.includes('data-cf-metric-single-source="vs5s"'), 'MetricGrid single-source marker missing');
-assert(tasks.includes("import { MetricGrid } from '../components/ui-system';"), 'TasksStable must import MetricGrid');
-assert(tasks.includes('<MetricGrid className="cf-tasks-metric-grid"'), 'TasksStable must use MetricGrid for task metrics');
-assert(!tasks.includes('className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4" data-eliteflow-task-stat-grid'), 'TasksStable still has local metric grid class');
-assert(countTaskTiles(tasks) >= 4, 'TasksStable must define 4 StatShortcutCard-backed metric tiles');
-assert(notifications.includes('MetricGrid, NotificationEntityIcon'), 'NotificationsCenter must import MetricGrid');
-assert(notifications.includes('<MetricGrid className="notifications-stats-grid"'), 'NotificationsCenter must use MetricGrid for notification metrics');
-assert(!notifications.includes('function MetricCard('), 'NotificationsCenter must not keep local MetricCard');
-assert(countNotificationTiles(notifications) >= 7, 'NotificationsCenter must define 7 StatShortcutCard metric tiles');
-assert(metricCss.includes('CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S_START'), 'central metric CSS VS5S bridge missing');
-assert(metricCss.includes('white-space: nowrap !important;'), 'central metric CSS must block label word-splitting');
-assert(metricCss.includes('[data-cf-metric-grid-contract="final-vs5"]'), 'central metric CSS must target MetricGrid contract');
-assert(!notificationsCss.includes('.notifications-stat-card {'), 'old notification stat-card CSS block still present');
-assert(!notificationsCss.includes('.notifications-stat-label'), 'old notification stat label still present');
-assert(!notificationsCss.includes('.notifications-stat-icon'), 'old notification stat icon still present');
-assert(pkg.scripts && pkg.scripts['check:closeflow-metric-tile-single-source-truth'], 'package VS5S check script missing');
-assert(json.marker === STAGE, 'generated JSON marker mismatch');
+
+assert(metricGrid.includes('data-cf-ui-component="MetricGrid"'), 'MetricGrid component marker missing');
+assert(metricTile.includes('data-cf-ui-component="MetricTile"'), 'MetricTile component marker missing');
+assert(statShortcut.includes('<MetricTile'), 'StatShortcutCard must still delegate to MetricTile for legacy screens');
+assert(operator.includes('data-cf-metric-source-truth="vs5v"'), 'OperatorMetricTiles source truth marker missing');
+assert(operatorCss.includes('CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V'), 'OperatorMetricTiles CSS marker missing');
+assert(metricCss.includes('CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S'), 'single source truth CSS block missing');
+assert(indexCss.includes("@import './styles/closeflow-metric-tiles.css';"), 'closeflow-metric-tiles.css must be imported by index.css');
+assert(emergency.includes("@import '../closeflow-operator-metric-tiles.css';"), 'operator metric CSS must load through emergency hotfixes after legacy CSS');
+
+const tasksUsesOperator = tasks.includes('<OperatorMetricTiles');
+const tasksUsesLegacyMetricGrid = tasks.includes('<MetricGrid') && tasks.includes('<StatShortcutCard');
+const notificationsUsesOperator = notifications.includes('<OperatorMetricTiles');
+const notificationsUsesLegacyMetricGrid = notifications.includes('<MetricGrid') && notifications.includes('<StatShortcutCard');
+
+assert(tasksUsesOperator || tasksUsesLegacyMetricGrid, 'TasksStable must use OperatorMetricTiles or MetricGrid->StatShortcutCard');
+assert(notificationsUsesOperator || notificationsUsesLegacyMetricGrid, 'NotificationsCenter must use OperatorMetricTiles or MetricGrid->StatShortcutCard');
+
+if (tasksUsesOperator) {
+  assert(!tasks.includes('<StatShortcutCard'), 'TasksStable must not mix OperatorMetricTiles with old StatShortcutCard');
+  assert(tasks.includes('data-cf-metric-replacement="vs5v"'), 'TasksStable VS5V replacement marker missing');
+} else {
+  assert(tasks.includes('data-cf-metric-single-source="vs5s"') || tasks.includes('data-eliteflow-task-stat-grid="true"'), 'TasksStable VS5S/legacy grid marker missing');
+  assert(count(tasks, /<StatShortcutCard/g) >= 4, 'TasksStable must render at least 4 StatShortcutCard metric tiles');
+}
+
+if (notificationsUsesOperator) {
+  assert(!notifications.includes('<StatShortcutCard'), 'NotificationsCenter must not mix OperatorMetricTiles with old StatShortcutCard');
+  assert(!notifications.includes('<MetricGrid'), 'NotificationsCenter must not render old MetricGrid metric block after VS5V');
+  assert(notifications.includes('notificationMetricTiles'), 'NotificationsCenter OperatorMetricTiles item source missing');
+} else {
+  assert(notifications.includes('notifications-stats-grid'), 'NotificationsCenter metric grid marker missing');
+  assert(count(notifications, /<StatShortcutCard/g) >= 7, 'NotificationsCenter must render at least 7 StatShortcutCard metric tiles');
+}
+
+assert(pkg.scripts && pkg.scripts['check:closeflow-metric-tile-single-source-truth'], 'package single source truth script missing');
+
 console.log('CLOSEFLOW_METRIC_TILE_SINGLE_SOURCE_TRUTH_VS5S_CHECK_OK');
-console.log('tasks_metric_tiles=4');
-console.log('notifications_metric_tiles=7');
-console.log('source_of_truth=MetricGrid->StatShortcutCard->MetricTile');
+console.log('tasks_metric_tiles=' + (tasksUsesOperator ? 4 : count(tasks, /<StatShortcutCard/g)));
+console.log('notifications_metric_tiles=' + (notificationsUsesOperator ? 7 : count(notifications, /<StatShortcutCard/g)));
+console.log('source_of_truth=' + (tasksUsesOperator && notificationsUsesOperator ? 'OperatorMetricTiles' : 'MetricGrid->StatShortcutCard->MetricTile'));

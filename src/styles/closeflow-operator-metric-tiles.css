@@ -1,0 +1,215 @@
+/* CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V
+   Owner: CloseFlow Visual System
+   Reason: replace old metric tiles that were still touched by legacy StatShortcutCard/EliteFlow CSS.
+   Scope: /tasks and /notifications metric tiles; future stage may migrate /today and other screens.
+   remove_after_stage: never; this is the new isolated metric tile renderer.
+*/
+
+:root {
+  --cf-operator-metric-radius: 22px;
+  --cf-operator-metric-border: #e4e7ec;
+  --cf-operator-metric-bg: rgba(255, 255, 255, 0.86);
+  --cf-operator-metric-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf-operator-metric-shadow-hover: 0 18px 45px rgba(16, 24, 40, 0.08);
+  --cf-operator-metric-text: #111827;
+  --cf-operator-metric-label: #667085;
+  --cf-operator-metric-min-height: 54px;
+  --cf-operator-metric-gap: 13px;
+  --cf-operator-metric-padding-y: 11px;
+  --cf-operator-metric-padding-x: 16px;
+  --cf-operator-metric-label-size: 10px;
+  --cf-operator-metric-value-size: 21px;
+  --cf-operator-metric-icon-size: 30px;
+  --cf-operator-metric-icon-radius: 14px;
+  --cf-operator-tone-neutral-value: #111827;
+  --cf-operator-tone-neutral-bg: #f6f8fb;
+  --cf-operator-tone-neutral-icon: #64748b;
+  --cf-operator-tone-blue-value: #2563eb;
+  --cf-operator-tone-blue-bg: #eff6ff;
+  --cf-operator-tone-green-value: #047857;
+  --cf-operator-tone-green-bg: #ecfdf3;
+  --cf-operator-tone-red-value: #be123c;
+  --cf-operator-tone-red-bg: #fff1f3;
+  --cf-operator-tone-amber-value: #b54708;
+  --cf-operator-tone-amber-bg: #fffaeb;
+  --cf-operator-tone-purple-value: #6941c6;
+  --cf-operator-tone-purple-bg: #f4f3ff;
+}
+
+html body #root .cf-operator-metric-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-operator-metric-gap) !important;
+  align-items: stretch !important;
+  width: 100% !important;
+}
+
+html body #root .cf-operator-metric-grid.cf-operator-metric-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+html body #root .cf-operator-metric-grid.cf-operator-metric-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+html body #root .cf-operator-metric-tile {
+  display: block !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--cf-operator-metric-radius) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  appearance: none !important;
+}
+
+html body #root .cf-operator-metric-tile-content {
+  min-height: var(--cf-operator-metric-min-height) !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: var(--cf-operator-metric-padding-y) var(--cf-operator-metric-padding-x) !important;
+  border: 1px solid var(--cf-operator-metric-border) !important;
+  border-radius: var(--cf-operator-metric-radius) !important;
+  background: var(--cf-operator-metric-bg) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-operator-metric-shadow) !important;
+  color: var(--cf-operator-metric-text) !important;
+  overflow: hidden !important;
+  transform: none !important;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background 160ms ease !important;
+}
+
+html body #root .cf-operator-metric-tile:hover .cf-operator-metric-tile-content,
+html body #root .cf-operator-metric-tile:focus-visible .cf-operator-metric-tile-content {
+  border-color: #93c5fd !important;
+  box-shadow: var(--cf-operator-metric-shadow-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+html body #root .cf-operator-metric-tile.is-active .cf-operator-metric-tile-content,
+html body #root .cf-operator-metric-tile[data-cf-operator-metric-active="true"] .cf-operator-metric-tile-content {
+  border-color: #bfdbfe !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08), var(--cf-operator-metric-shadow) !important;
+}
+
+html body #root .cf-operator-metric-text {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  display: block !important;
+}
+
+html body #root .cf-operator-metric-label {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: var(--cf-operator-metric-label) !important;
+  -webkit-text-fill-color: var(--cf-operator-metric-label) !important;
+  font-size: var(--cf-operator-metric-label-size) !important;
+  line-height: 1.12 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  overflow-wrap: normal !important;
+  word-break: keep-all !important;
+  hyphens: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-shadow: none !important;
+}
+
+html body #root .cf-operator-metric-helper {
+  display: block !important;
+  margin-top: 4px !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+html body #root .cf-operator-metric-value-row {
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+html body #root .cf-operator-metric-value {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 10rem !important;
+  margin: 0 !important;
+  color: var(--cf-operator-tone-neutral-value) !important;
+  font-size: var(--cf-operator-metric-value-size) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.055em !important;
+  text-align: right !important;
+  text-shadow: none !important;
+}
+
+html body #root .cf-operator-metric-icon {
+  width: var(--cf-operator-metric-icon-size) !important;
+  height: var(--cf-operator-metric-icon-size) !important;
+  min-width: var(--cf-operator-metric-icon-size) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--cf-operator-metric-icon-radius) !important;
+  background: var(--cf-operator-tone-neutral-bg) !important;
+  color: var(--cf-operator-tone-neutral-icon) !important;
+  padding: 8px !important;
+  box-shadow: none !important;
+}
+
+html body #root .cf-operator-metric-icon svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke-width: 2.35 !important;
+}
+
+html body #root [data-cf-operator-metric-tone="blue"] .cf-operator-metric-value { color: var(--cf-operator-tone-blue-value) !important; }
+html body #root [data-cf-operator-metric-tone="blue"] .cf-operator-metric-icon { background: var(--cf-operator-tone-blue-bg) !important; color: var(--cf-operator-tone-blue-value) !important; }
+html body #root [data-cf-operator-metric-tone="green"] .cf-operator-metric-value { color: var(--cf-operator-tone-green-value) !important; }
+html body #root [data-cf-operator-metric-tone="green"] .cf-operator-metric-icon { background: var(--cf-operator-tone-green-bg) !important; color: var(--cf-operator-tone-green-value) !important; }
+html body #root [data-cf-operator-metric-tone="red"] .cf-operator-metric-value { color: var(--cf-operator-tone-red-value) !important; }
+html body #root [data-cf-operator-metric-tone="red"] .cf-operator-metric-icon { background: var(--cf-operator-tone-red-bg) !important; color: var(--cf-operator-tone-red-value) !important; }
+html body #root [data-cf-operator-metric-tone="amber"] .cf-operator-metric-value { color: var(--cf-operator-tone-amber-value) !important; }
+html body #root [data-cf-operator-metric-tone="amber"] .cf-operator-metric-icon { background: var(--cf-operator-tone-amber-bg) !important; color: var(--cf-operator-tone-amber-value) !important; }
+html body #root [data-cf-operator-metric-tone="purple"] .cf-operator-metric-value { color: var(--cf-operator-tone-purple-value) !important; }
+html body #root [data-cf-operator-metric-tone="purple"] .cf-operator-metric-icon { background: var(--cf-operator-tone-purple-bg) !important; color: var(--cf-operator-tone-purple-value) !important; }
+
+@media (max-width: 1180px) {
+  html body #root .cf-operator-metric-grid,
+  html body #root .cf-operator-metric-grid.cf-operator-metric-grid-3,
+  html body #root .cf-operator-metric-grid.cf-operator-metric-grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --cf-operator-metric-min-height: 58px;
+    --cf-operator-metric-gap: 12px;
+    --cf-operator-metric-value-size: 20px;
+  }
+
+  html body #root .cf-operator-metric-grid,
+  html body #root .cf-operator-metric-grid.cf-operator-metric-grid-2,
+  html body #root .cf-operator-metric-grid.cf-operator-metric-grid-3,
+  html body #root .cf-operator-metric-grid.cf-operator-metric-grid-4 {
+    grid-template-columns: 1fr !important;
+  }
+}

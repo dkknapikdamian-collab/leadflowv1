@@ -1,4 +1,4 @@
-import { EntityIcon, MetricGrid, NotificationEntityIcon } from '../components/ui-system';
+import { EntityIcon, NotificationEntityIcon, OperatorMetricTiles, type OperatorMetricTileItem } from '../components/ui-system';
 ﻿import {
   useEffect,
   useMemo,
@@ -20,7 +20,6 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
-import { StatShortcutCard } from '../components/StatShortcutCard';
 import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
@@ -495,6 +494,16 @@ export default function NotificationsCenter() {
     };
   }, [rows]);
 
+  const notificationMetricTiles = useMemo<OperatorMetricTileItem<NotificationFilter>[]>(() => ([
+    { id: 'all', label: 'Wszystkie', value: metrics.all, icon: NotificationEntityIcon, tone: 'neutral' },
+    { id: 'action', label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
+    { id: 'overdue', label: 'Zaległe', value: metrics.overdue, icon: Clock3, tone: 'red' },
+    { id: 'today', label: 'Dzisiaj', value: metrics.today, icon: CalendarClock, tone: 'blue' },
+    { id: 'upcoming', label: 'Nadchodzące', value: metrics.upcoming, icon: NotificationEntityIcon, tone: 'neutral' },
+    { id: 'snoozed', label: 'Odłożone', value: metrics.snoozed, icon: RotateCcw, tone: 'amber' },
+    { id: 'read', label: 'Przeczytane', value: metrics.read, icon: Check, tone: 'green' },
+  ]), [metrics]);
+
   const filteredRows = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     return rows.filter((row) => {
@@ -615,15 +624,16 @@ export default function NotificationsCenter() {
           </div>
         </header>
 
-        <MetricGrid className="notifications-stats-grid" columns={4} aria-label="Statystyki powiadomień" data-notifications-metric-grid="true" data-cf-metric-single-source="vs5s">
-          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={NotificationEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
-          <StatShortcutCard label="Do reakcji" value={metrics.action} icon={ShieldAlert} active={activeFilter === 'action'} onClick={() => setActiveFilter('action')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
-          <StatShortcutCard label="Zaległe" value={metrics.overdue} icon={Clock3} active={activeFilter === 'overdue'} onClick={() => setActiveFilter('overdue')} tone="red" />
-          <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={CalendarClock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-indigo-50 text-indigo-500" />
-          <StatShortcutCard label="Nadchodzące" value={metrics.upcoming} icon={NotificationEntityIcon} active={activeFilter === 'upcoming'} onClick={() => setActiveFilter('upcoming')} iconClassName="bg-slate-100 text-slate-500" />
-          <StatShortcutCard label="Odłożone" value={metrics.snoozed} icon={RotateCcw} active={activeFilter === 'snoozed'} onClick={() => setActiveFilter('snoozed')} tone="amber" />
-          <StatShortcutCard label="Przeczytane" value={metrics.read} icon={Check} active={activeFilter === 'read'} onClick={() => setActiveFilter('read')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
-        </MetricGrid>
+        <OperatorMetricTiles
+          items={notificationMetricTiles}
+          activeId={activeFilter}
+          onSelect={(tile) => setActiveFilter(tile.id)}
+          columns={4}
+          className="notifications-stats-grid"
+          aria-label="Statystyki powiadomień"
+          data-notifications-metric-grid="true"
+          data-cf-metric-replacement="vs5v"
+        />
 
         <div className="notifications-vnext-shell">
           <section className="notifications-main-column">

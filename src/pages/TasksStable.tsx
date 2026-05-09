@@ -4,8 +4,7 @@ P0_TASKS_STABLE_REBUILD
 
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import Layout from '../components/Layout';
-import { StatShortcutCard } from '../components/StatShortcutCard';
-import { MetricGrid } from '../components/ui-system';
+import { OperatorMetricTiles, type OperatorMetricTileItem } from '../components/ui-system';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
@@ -444,7 +443,7 @@ export default function TasksStable() {
     }
   };
 
-  const statCards = [
+  const statCards: OperatorMetricTileItem<TaskScope>[] = [
     {
       id: 'active' as TaskScope,
       label: 'Aktywne',
@@ -493,21 +492,18 @@ export default function TasksStable() {
           </div>
         </section>
 
-        <MetricGrid className="cf-tasks-metric-grid" columns={4} data-eliteflow-task-stat-grid="true" data-stage16a-metric-visual-parity="true" data-stage16d-task-metric-final-lock="true" data-cf-metric-single-source="vs5s">
-          {statCards.map((card) => (
-            <StatShortcutCard
-              key={card.id}
-              label={card.label}
-              value={card.value}
-              icon={card.icon}
-              active={scope === card.id}
-              onClick={() => setScope(card.id)}
-              tone={card.tone}
-              title={`Pokaż zadania: ${card.label}`}
-              ariaLabel={`Pokaż zadania: ${card.label}`}
-            />
-          ))}
-        </MetricGrid>
+        <OperatorMetricTiles
+          items={statCards}
+          activeId={scope}
+          onSelect={(card) => setScope(card.id)}
+          columns={4}
+          className="tasks-operator-metric-grid"
+          aria-label="Statystyki zadań"
+          data-cf-metric-replacement="vs5v"
+          data-eliteflow-task-stat-grid="true"
+          data-stage16a-metric-visual-parity="true"
+          data-stage16d-task-metric-final-lock="replaced-by-operator-metric-tiles"
+        />
 
         <Card className="border-slate-100 shadow-sm">
           <CardContent className="p-4 sm:p-5">

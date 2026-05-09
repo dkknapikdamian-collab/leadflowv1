@@ -7,14 +7,6 @@
 
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System
-   reason: clean task statistic tile override kept from previous visual repair.
-   scope: task stat tile visual cleanup.
-   remove_after_stage: after StatShortcutCard/MetricTile contract absorbs task variants.
-*/
-@import '../hotfix-task-stat-tiles-clean.css';
-
-/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
-   owner: CloseFlow Visual System
    reason: preserve right rail dark wrapper contrast repair for lead/client surfaces.
    scope: lead and client right rail wrappers.
    remove_after_stage: after right rail wrapper component contract is shipped.
@@ -209,3 +201,12 @@
    remove_after_stage: after old metric CSS files are deleted and all active screens use MetricGrid.
 */
 @import '../closeflow-metric-tile-visual-source-truth.css';
+
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: load isolated replacement metric tiles after all old visual-stage and hotfix CSS.
+   scope: OperatorMetricTiles renderer only; does not target legacy StatShortcutCard classes.
+   remove_after_stage: never; keep with OperatorMetricTiles contract.
+*/
+@import '../closeflow-operator-metric-tiles.css';
