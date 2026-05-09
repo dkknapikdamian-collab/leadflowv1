@@ -12,8 +12,8 @@ type CaseTemplateItemInput = {
   isRequired?: boolean;
   order?: number;
 };
-type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string };
-type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; workspaceId?: string };
+type LeadInsertInput = { name: string; email?: string; phone?: string; company?: string; source?: string; dealValue?: number; partialPayments?: Array<{ id: string; amount: number; paidAt?: string; createdAt: string }>; nextActionAt?: string; ownerId?: string; workspaceId?: string; allowDuplicate?: boolean };
+type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; workspaceId?: string; allowDuplicate?: boolean };
 type ServiceProfileUpsertInput = { id?: string; name?: string; description?: string; startRule?: string; winRule?: string; billingModel?: string; caseCreationMode?: string; isDefault?: boolean; isArchived?: boolean; workspaceId?: string };
 type PaymentUpsertInput = { id?: string; clientId?: string | null; leadId?: string | null; caseId?: string | null; type?: string; status?: string; amount?: number; currency?: string; paidAt?: string | null; dueAt?: string | null; note?: string; workspaceId?: string };
 type ProfileSettingsUpdate = { fullName?: string; companyName?: string; email?: string; appearanceSkin?: string; planningConflictWarningsEnabled?: boolean; browserNotificationsEnabled?: boolean; forceLogoutAfter?: string | null; workspaceId?: string | null };
@@ -28,6 +28,34 @@ type CaseUpsertInput = { id?: string; title?: string; clientName?: string; clien
 type CaseItemInput = { id?: string; caseId: string; title?: string; description?: string; type?: string; status?: string; isRequired?: boolean; dueDate?: string | null; order?: number; response?: string | null; fileUrl?: string | null; fileName?: string | null; approvedAt?: string | null };
 type ActivityInput = { id?: string; caseId?: string | null; leadId?: string | null; ownerId?: string | null; actorId?: string | null; actorType?: string; eventType?: string; payload?: Record<string, unknown>; workspaceId?: string };
 type MeResponse = { workspace: { id: string; ownerId?: string | null; planId?: string | null; subscriptionStatus?: string | null; trialEndsAt?: string | null; billingProvider?: string | null; providerCustomerId?: string | null; providerSubscriptionId?: string | null; nextBillingAt?: string | null; cancelAtPeriodEnd?: boolean; dailyDigestEnabled?: boolean; dailyDigestHour?: number; dailyDigestTimezone?: string | null; dailyDigestRecipientEmail?: string | null; timezone?: string | null }; profile: { id: string; fullName?: string; companyName?: string; email?: string; role?: string; isAdmin?: boolean; isAppOwner?: boolean; appRole?: string; appearanceSkin?: string; planningConflictWarningsEnabled?: boolean; browserNotificationsEnabled?: boolean; forceLogoutAfter?: string | null }; access: { hasAccess: boolean; status: string; isTrialActive: boolean; isPaidActive: boolean } };
+
+export type EntityConflictCandidate = {
+  id: string;
+  entityType: 'lead' | 'client';
+  label: string;
+  company?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  status?: string | null;
+  visibility?: string | null;
+  state: 'active' | 'hidden' | 'moved_to_service';
+  canRestore?: boolean;
+  route?: string;
+  matches: Array<'email' | 'phone' | 'name' | 'company'>;
+  reason: string;
+};
+
+type EntityConflictCheckInput = {
+  targetType: 'lead' | 'client';
+  name?: string;
+  company?: string;
+  email?: string;
+  phone?: string;
+  include?: Array<'leads' | 'clients'>;
+  limit?: number;
+  workspaceId?: string;
+};
+
 type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unknown> };
 
 const API_GET_CACHE_TTL_MS = 10_000;
@@ -241,6 +269,7 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export function isSupabaseConfigured() { return Boolean(getSupabaseConfig()); }
+export async function findEntityConflictsInSupabase(input: EntityConflictCheckInput) { return callApi<{ ok: boolean; marker?: string; targetType: 'lead' | 'client'; conflicts: EntityConflictCandidate[] }>('/api/entity-conflicts', { method: 'POST', body: JSON.stringify(input) }); }
 export async function insertLeadToSupabase(input: LeadInsertInput) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(input) }); }
 export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
 export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {

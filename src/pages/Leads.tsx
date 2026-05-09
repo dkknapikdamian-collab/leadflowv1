@@ -1,3 +1,4 @@
+// CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1
 // LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
 // ADMIN_FEEDBACK_P1_LEADS_SEARCH_QUESTION_MARK_REMOVED
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
@@ -338,6 +339,35 @@ export default function Leads() {
     return map;
   }, [events, leads, resolveLinkedCaseForLead, tasks]);
 
+  const resetNewLeadForm = () => {
+    setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false });
+  };
+
+  const createLeadFromPreparedInput = async (preparedLead: any, options?: { forceDuplicate?: boolean }) => {
+    await insertLeadToSupabase({ ...preparedLead, forceDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
+    await loadLeads();
+    toast.success('Lead dodany');
+    setIsNewLeadOpen(false);
+    resetNewLeadForm();
+  };
+
+  const restoreConflictCandidate = async (candidate: EntityConflictCandidate) => {
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
+    try {
+      setLeadSubmitting(true);
+      if (candidate.entityType === 'lead') {
+        await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
+        toast.success('Lead przywrócony');
+      } else {
+        await updateClientInSupabase({ id: candidate.id, archivedAt: null });
+        toast.success('Klient przywrócony');
+      }
+      setLeadConflictOpen(false);
+      await loadLeads();
+    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    finally { setLeadSubmitting(false); }
+  };
+
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
@@ -350,30 +380,21 @@ export default function Leads() {
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
-
+    const preparedLead = { ...newLead, name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy', email: newLead.email.trim(), phone: newLead.phone.trim(), company: newLead.company.trim(), dealValue: Number(newLead.dealValue) || 0 };
     try {
-      await insertLeadToSupabase({
-        ...newLead,
-        name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy',
-        dealValue: Number(newLead.dealValue) || 0,
-        ownerId: workspace?.ownerId,
-        workspaceId,
-      });
-      await loadLeads();
-      toast.success('Lead dodany');
-      setIsNewLeadOpen(false);
-      setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false });
-    } catch (error: any) {
-      const message = String(error?.message || 'REQUEST_FAILED');
-      if (message.includes('LEAD_DUPLICATE_IN_HISTORY_OPEN_RECORD')) {
-        toast.error('Ten kontakt istnieje już w historii albo obsłudze. Otwórz historię/kosz i przywróć rekord zamiast tworzyć duplikat.');
-      } else {
-        toast.error(`Błąd zapisu leada: ${message}`);
-      }
-    } finally {
-      createLeadSubmitLockRef.current = false;
-      setLeadSubmitting(false);
-    }
+      const conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId }).catch(() => ({ candidates: [] }));
+      const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
+      if (candidates.length) { setLeadConflictCandidates(candidates); setLeadConflictPendingInput(preparedLead); setIsNewLeadOpen(false); setLeadConflictOpen(true); return; }
+      await createLeadFromPreparedInput(preparedLead);
+    } catch (error: any) { toast.error(`Błąd zapisu leada: ${error.message}`); }
+    finally { createLeadSubmitLockRef.current = false; setLeadSubmitting(false); }
+  };
+
+  const handleCreateLeadAnyway = async () => {
+    if (!leadConflictPendingInput || leadSubmitting) return;
+    try { setLeadSubmitting(true); await createLeadFromPreparedInput(leadConflictPendingInput, { forceDuplicate: true }); setLeadConflictOpen(false); setLeadConflictPendingInput(null); setLeadConflictCandidates([]); }
+    catch (error: any) { toast.error('Błąd zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
+    finally { setLeadSubmitting(false); }
   };
 
   const handleArchiveLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {

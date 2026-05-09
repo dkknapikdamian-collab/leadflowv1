@@ -1,9 +1,11 @@
+// CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type MouseEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, Briefcase, Loader2, Plus, RotateCcw, Search, Target, Trash2, UserRound, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
+import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
 import { actionIconClass, modalFooterClass} from '../components/entity-actions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
@@ -12,7 +14,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { createClientInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, fetchTasksFromSupabase, updateClientInSupabase } from '../lib/supabase-fallback';
+import { createClientInSupabase, findEntityConflictsInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, fetchTasksFromSupabase, updateClientInSupabase, updateLeadInSupabase } from '../lib/supabase-fallback';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 
@@ -91,6 +93,9 @@ export default function Clients() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
+  const [clientConflictOpen, setClientConflictOpen] = useState(false);
+  const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
+  const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
   const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
 
   const reload = useCallback(async () => {
@@ -293,40 +298,51 @@ export default function Clients() {
     [clients, countersByClientId],
   );
 
-  const handleCreateClient = async (event: FormEvent) => {
-    event.preventDefault();
-    if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
-      return;
-    }
-    if (!newClient.name.trim()) {
-      toast.error('Podaj nazwę klienta.');
-      return;
-    }
-    if (!workspace?.id) {
-      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-      return;
-    }
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) {
-      toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-      return;
-    }
+  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '' }); };
+
+  const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
+    await createClientInSupabase({ ...preparedClient, forceDuplicate: Boolean(options?.forceDuplicate), workspaceId: requireWorkspaceId(workspace) });
+    toast.success('Klient dodany');
+    setIsCreateOpen(false);
+    resetNewClientForm();
+    await reload();
+  };
+
+  const restoreClientConflictCandidate = async (candidate: EntityConflictCandidate) => {
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
     try {
       setCreatePending(true);
-      await createClientInSupabase({
-        ...newClient,
-        workspaceId,
-      });
-      toast.success('Klient dodany');
-      setIsCreateOpen(false);
-      setNewClient({ name: '', company: '', email: '', phone: '', notes: '' });
+      if (candidate.entityType === 'client') { await updateClientInSupabase({ id: candidate.id, archivedAt: null }); toast.success('Klient przywrócony'); }
+      else { await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null }); toast.success('Lead przywrócony'); }
+      setClientConflictOpen(false);
       await reload();
-    } catch (error: any) {
-      toast.error('Nie udało się zapisać. Spróbuj ponownie.');
-    } finally {
-      setCreatePending(false);
-    }
+    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    finally { setCreatePending(false); }
+  };
+
+  const handleCreateClient = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!hasAccess) { toast.error('Twój trial wygasł.'); return; }
+    if (!newClient.name.trim()) { toast.error('Podaj nazwę klienta.'); return; }
+    if (!workspace?.id) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
+    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim() };
+    try {
+      setCreatePending(true);
+      const conflicts = await findEntityConflictsInSupabase({ targetType: 'client', name: preparedClient.name, email: preparedClient.email, phone: preparedClient.phone, company: preparedClient.company, workspaceId }).catch(() => ({ candidates: [] }));
+      const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
+      if (candidates.length) { setClientConflictCandidates(candidates); setClientConflictPendingInput(preparedClient); setIsCreateOpen(false); setClientConflictOpen(true); return; }
+      await createClientFromPreparedInput(preparedClient);
+    } catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
+    finally { setCreatePending(false); }
+  };
+
+  const handleCreateClientAnyway = async () => {
+    if (!clientConflictPendingInput || createPending) return;
+    try { setCreatePending(true); await createClientFromPreparedInput(clientConflictPendingInput, { forceDuplicate: true }); setClientConflictOpen(false); setClientConflictPendingInput(null); setClientConflictCandidates([]); }
+    catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
+    finally { setCreatePending(false); }
   };
 
   const handleArchiveClient = async (
@@ -387,6 +403,19 @@ export default function Clients() {
   return (
     <Layout>
       <div className="cf-html-view main-clients-html" data-clients-real-view="true">
+        <EntityConflictDialog
+          open={clientConflictOpen}
+          onOpenChange={setClientConflictOpen}
+          candidates={clientConflictCandidates}
+          title="Możliwy duplikat klienta lub leada"
+          description="Znaleziono podobny rekord po nazwie, telefonie albo e-mailu. Wybierz, czy chcesz go pokazać, przywrócić, dodać mimo to albo anulować."
+          createAnywayLabel="Dodaj klienta mimo to"
+          busy={createPending}
+          onShow={(candidate) => window.location.assign(candidate.url || (candidate.entityType === 'lead' ? '/leads/' + candidate.id : '/clients/' + candidate.id))}
+          onRestore={restoreClientConflictCandidate}
+          onCreateAnyway={handleCreateClientAnyway}
+          onCancel={() => { setClientConflictOpen(false); setIsCreateOpen(true); }}
+        />
         <div className="page-head">
           <div>
             <span className="kicker">Baza relacji</span>
