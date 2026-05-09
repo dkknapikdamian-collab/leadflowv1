@@ -537,7 +537,9 @@
     "check:closeflow-conflict-delete-company-not-null-v27": "node scripts/check-closeflow-conflict-delete-company-not-null-v27.cjs",
     "check:closeflow-client-case-settlement-v29": "node scripts/check-closeflow-client-case-settlement-v29.cjs",
     "check:closeflow-client-case-settlement-v30": "node scripts/check-closeflow-client-case-settlement-v30.cjs",
-    "check:closeflow-client-case-settlement-v31": "node scripts/check-closeflow-client-case-settlement-v31.cjs"
+    "check:closeflow-client-case-settlement-v31": "node scripts/check-closeflow-client-case-settlement-v31.cjs",
+    "audit:closeflow-visual-system-inventory": "node scripts/audit-closeflow-visual-system-inventory.cjs --write",
+    "check:closeflow-visual-system-inventory": "node scripts/check-closeflow-visual-system-inventory.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

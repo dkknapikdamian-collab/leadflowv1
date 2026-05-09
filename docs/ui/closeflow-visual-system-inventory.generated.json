@@ -1,0 +1,1777 @@
+{
+  "meta": {
+    "generatedAt": "2026-05-09T13:23:31.517Z",
+    "stage": "Etap 0 — Visual system inventory freeze",
+    "branchExpected": "dev-rollout-freeze",
+    "purpose": "Freeze visual-system inventory before visual cleanup/migration.",
+    "rules": [
+      "zostaje",
+      "migrujemy",
+      "legacy",
+      "usunąć później"
+    ],
+    "note": "This is an audit inventory, not a UI migration."
+  },
+  "cssImports": [
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 1,
+      "import": "./styles/tasks-header-stage45b-cleanup.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 2,
+      "import": "./styles/visual-stage30-tasks-compact-after-calendar.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 3,
+      "import": "./styles/stage7a-tasks-blue-outline-fix.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 4,
+      "import": "./styles/visual-stage28-tasks-vnext.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 5,
+      "import": "./styles/visual-stage29-calendar-vnext.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 6,
+      "import": "./styles/visual-stage27-cases-vnext.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 7,
+      "import": "./styles/visual-stage26-leads-visual-alignment-fix.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 8,
+      "import": "./styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 9,
+      "import": "./styles/visual-stage13-case-detail-vnext.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 10,
+      "import": "./styles/visual-stage21-today-final-lock.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 11,
+      "import": "./styles/visual-stage20-tasks-safe-css.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 12,
+      "import": "./styles/visual-stage19-clients-safe-css.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 13,
+      "import": "./styles/visual-stage18-leads-hard-1to1.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 14,
+      "import": "./styles/visual-stage16-today-html-reset.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 15,
+      "import": "tailwindcss",
+      "decision": "zostaje"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 16,
+      "import": "./styles/case-detail-simplified.css",
+      "decision": "legacy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 17,
+      "import": "./styles/case-detail-stage2.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 18,
+      "import": "./styles/visual-stage3-pipeline-and-case.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 19,
+      "import": "./styles/visual-stage08-case-detail.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 20,
+      "import": "./styles/visual-stage07-cases.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 21,
+      "import": "./styles/visual-stage06-client-detail.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 22,
+      "import": "./styles/visual-stage05-clients.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 23,
+      "import": "./styles/visual-stage04-lead-detail.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 24,
+      "import": "./styles/visual-stage03-leads.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 25,
+      "import": "./styles/visual-stage02-today.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 26,
+      "import": "./styles/visual-stage01-shell.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 27,
+      "import": "./styles/closeflow-action-tokens.css",
+      "decision": "zostaje"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 28,
+      "import": "./styles/closeflow-entity-type-tokens.css",
+      "decision": "zostaje"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 29,
+      "import": "./styles/closeflow-stage16c-tasks-cases-parity.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 248,
+      "import": "./styles/visual-html-theme-v14.css",
+      "decision": "zostaje"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 249,
+      "import": "./styles/closeflow-vnext-ui-contract.css",
+      "decision": "zostaje"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 250,
+      "import": "./styles/quick-lead-capture-stage27.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 251,
+      "import": "./styles/hotfix-task-stat-tiles-clean.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 252,
+      "import": "./styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 253,
+      "import": "./styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 254,
+      "import": "./styles/hotfix-ai-drafts-right-rail-stage28.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 256,
+      "import": "./styles/stage30a-mobile-contrast-lock.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 258,
+      "import": "./styles/stage31-full-mobile-polish.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 260,
+      "import": "./styles/stage33a-ai-drafts-generated-text-contrast.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 261,
+      "import": "./styles/stage34-calendar-readability-status-forms.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 262,
+      "import": "./styles/stage34b-calendar-complete-polish.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 263,
+      "import": "./styles/stage35-clients-value-detail-cleanup.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 264,
+      "import": "./styles/stageA19v2-sidebar-nav-contrast-fix.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 265,
+      "import": "./styles/stageA20-sidebar-today-click-fix.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 266,
+      "import": "./styles/stageA20c-sidebar-today-hitbox-fix.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 267,
+      "import": "./styles/stageA20d-sidebar-unified-nav-tone.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 268,
+      "import": "./styles/stageA20e-sidebar-today-tone-lock.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 269,
+      "import": "./styles/stageA24-today-relations-label-align.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 270,
+      "import": "./styles/stageA25-today-relations-lead-badge-inline.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 271,
+      "import": "./styles/stage37-unified-page-head-and-metrics.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 272,
+      "import": "./styles/stage38-metrics-and-relations-polish.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 273,
+      "import": "./styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 274,
+      "import": "./styles/eliteflow-metric-tiles-color-font-parity.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 275,
+      "import": "./styles/eliteflow-metric-text-clip-tasks-repair.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 276,
+      "import": "./styles/eliteflow-desktop-compact-scale.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 277,
+      "import": "./styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 278,
+      "import": "./styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 279,
+      "import": "./styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 280,
+      "import": "./styles/eliteflow-semantic-badges-and-today-sections.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 281,
+      "import": "./styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 411,
+      "import": "./styles/closeflow-client-event-modal-runtime-repair.css",
+      "decision": "migrujemy"
+    }
+  ],
+  "namedCssFamilies": [
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/case-detail-stage2.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-desktop-compact-scale.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-metric-text-clip-tasks-repair.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-metric-tiles-color-font-parity.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-semantic-badges-and-today-sections.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "family": "eliteflow-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css",
+      "family": "hotfix-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/hotfix-ai-drafts-right-rail-stage28.css",
+      "family": "hotfix-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/hotfix-lead-client-right-rail-dark-wrappers.css",
+      "family": "hotfix-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/hotfix-right-rail-dark-wrappers.css",
+      "family": "hotfix-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/hotfix-task-stat-tiles-clean.css",
+      "family": "hotfix-*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/quick-lead-capture-stage27.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage33a-ai-drafts-generated-text-contrast.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage36-unified-light-pages.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage37-unified-page-head-and-metrics.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage38-metrics-and-relations-polish.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stage7a-tasks-blue-outline-fix.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA19v2-sidebar-nav-contrast-fix.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA20-sidebar-today-click-fix.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA20c-sidebar-today-hitbox-fix.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA20d-sidebar-unified-nav-tone.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA20e-sidebar-today-tone-lock.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA24-today-relations-label-align.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/stageA25-today-relations-lead-badge-inline.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/tasks-header-stage45b-cleanup.css",
+      "family": "stage*.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage01-shell.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage02-today.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage03-leads.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage04-lead-detail.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage05-clients.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage06-client-detail.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage07-cases.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage08-case-detail.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage10-notifications-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage12-client-detail-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage13-case-detail-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage14-lead-detail-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage16-billing-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage17-support-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage19-settings-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage20-lead-form-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage23-client-case-forms-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage24-leads-html-dom-parity-hardfix.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage3-pipeline-and-case.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage8-activity-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "named CSS family",
+      "file": "src/styles/visual-stage9-ai-drafts-vnext.css",
+      "family": "visual-stage*",
+      "decision": "migrujemy"
+    }
+  ],
+  "localSurfaces": {
+    "localTiles": [
+      {
+        "kind": "local tile/card component",
+        "file": "src/components/Layout.tsx",
+        "line": 111,
+        "match": "function TrialCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/components/Layout.tsx",
+        "line": 131,
+        "match": "function UserCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/components/StatShortcutCard.tsx",
+        "line": 87,
+        "match": "function StatShortcutCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/AdminAiSettings.tsx",
+        "line": 25,
+        "match": "function ProviderCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 112,
+        "match": "const MetricCard =",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Calendar.tsx",
+        "line": 360,
+        "match": "function ScheduleEntryCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1822,
+        "match": "function ShieldStatusIcon",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1827,
+        "match": "function PathCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 721,
+        "match": "function ClientTopTiles",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 301,
+        "match": "function MetricCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Templates.tsx",
+        "line": 101,
+        "match": "function LightMetricCardRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 534,
+        "match": "function TileCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 597,
+        "match": "function LeadLinkCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 1069,
+        "match": "function TodayFunnelDedupValueCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 1183,
+        "match": "function TodayAiDraftsTopTile",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 1212,
+        "match": "function TodayPipelineValueCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 2996,
+        "match": "function TileCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/Today.tsx",
+        "line": 3013,
+        "match": "function TileCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/TodayStable.tsx",
+        "line": 451,
+        "match": "function EmptyState",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local tile/card component",
+        "file": "src/pages/TodayStable.tsx",
+        "line": 455,
+        "match": "function StableCard",
+        "decision": "migrujemy"
+      }
+    ],
+    "localPageHeaders": [
+      {
+        "kind": "local page header/hero",
+        "file": "src/components/entity-actions.tsx",
+        "line": 133,
+        "match": "function PanelHeaderActions",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local page header/hero",
+        "file": "src/components/ui/card.tsx",
+        "line": 19,
+        "match": "const CardHeader =",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local page header/hero",
+        "file": "src/components/ui/dialog.tsx",
+        "line": 51,
+        "match": "const DialogHeader =",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local page header/hero",
+        "file": "src/components/ui/table.tsx",
+        "line": 20,
+        "match": "function TableHeader",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local page header/hero",
+        "file": "src/pages/TodayStable.tsx",
+        "line": 401,
+        "match": "function SectionHeaderIcon",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local page header/hero",
+        "file": "src/pages/TodayStable.tsx",
+        "line": 414,
+        "match": "function SectionHeader",
+        "decision": "migrujemy"
+      }
+    ],
+    "localListRows": [
+      {
+        "kind": "local list row",
+        "file": "src/components/entity-actions.tsx",
+        "line": 141,
+        "match": "function PanelActionRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/components/ui/table.tsx",
+        "line": 53,
+        "match": "function TableRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/Activity.tsx",
+        "line": 507,
+        "match": "function ActivityRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/Calendar.tsx",
+        "line": 360,
+        "match": "function ScheduleEntryCard",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1836,
+        "match": "function WorkItemRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 650,
+        "match": "function InfoRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 293,
+        "match": "function NotificationRowIcon",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 367,
+        "match": "function NotificationsRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/Templates.tsx",
+        "line": 101,
+        "match": "function LightMetricCardRow",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/Today.tsx",
+        "line": 695,
+        "match": "function TodayEntryRelationLinks",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/Today.tsx",
+        "line": 728,
+        "match": "function TodayEntryPriorityReasons",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local list row",
+        "file": "src/pages/Today.tsx",
+        "line": 747,
+        "match": "function TodayEntrySnoozeBar",
+        "decision": "migrujemy"
+      }
+    ],
+    "localForms": [
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/ContextActionDialogs.tsx",
+        "line": 112,
+        "match": "function ContextActionDialogsHost",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/components/ContextNoteDialog.tsx",
+        "line": 100,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/ContextNoteDialog.tsx",
+        "line": 31,
+        "match": "function ContextNoteDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/DraftReviewDialog.tsx",
+        "line": 15,
+        "match": "function DraftReviewDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/EntityConflictDialog.tsx",
+        "line": 50,
+        "match": "function EntityConflictDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/components/EventCreateDialog.tsx",
+        "line": 131,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/EventCreateDialog.tsx",
+        "line": 66,
+        "match": "function EventCreateDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/components/LeadAiFollowupDraft.tsx",
+        "line": 106,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/LeadStartServiceDialog.tsx",
+        "line": 14,
+        "match": "function LeadStartServiceDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/components/TaskCreateDialog.tsx",
+        "line": 130,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/TaskCreateDialog.tsx",
+        "line": 68,
+        "match": "function TaskCreateDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/confirm-dialog.tsx",
+        "line": 18,
+        "match": "function ConfirmDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+        "line": 79,
+        "match": "function QuickLeadCaptureModal",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/components/task-editor-dialog.tsx",
+        "line": 114,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/components/task-editor-dialog.tsx",
+        "line": 62,
+        "match": "function TaskEditorDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1257,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1432,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1719,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form/dialog component",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1892,
+        "match": "function CaseItemDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Cases.tsx",
+        "line": 515,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Clients.tsx",
+        "line": 475,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1569,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Leads.tsx",
+        "line": 680,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Login.tsx",
+        "line": 178,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Login.tsx",
+        "line": 218,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Login.tsx",
+        "line": 262,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/SupportCenter.tsx",
+        "line": 460,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1097,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1230,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/TasksStable.tsx",
+        "line": 568,
+        "match": "<form",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local form surface",
+        "file": "src/pages/TasksStable.tsx",
+        "line": 620,
+        "match": "<form",
+        "decision": "migrujemy"
+      }
+    ]
+  },
+  "routes": {
+    "active": [
+      {
+        "file": "src/pages/Activity.tsx",
+        "page": "Activity",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/AdminAiSettings.tsx",
+        "page": "AdminAiSettings",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/AiDrafts.tsx",
+        "page": "AiDrafts",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Billing.tsx",
+        "page": "Billing",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Calendar.tsx",
+        "page": "Calendar",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/CaseDetail.tsx",
+        "page": "CaseDetail",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Cases.tsx",
+        "page": "Cases",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/ClientDetail.tsx",
+        "page": "ClientDetail",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/ClientPortal.tsx",
+        "page": "ClientPortal",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Clients.tsx",
+        "page": "Clients",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/LeadDetail.tsx",
+        "page": "LeadDetail",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Leads.tsx",
+        "page": "Leads",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Login.tsx",
+        "page": "Login",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/NotificationsCenter.tsx",
+        "page": "NotificationsCenter",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/ResponseTemplates.tsx",
+        "page": "ResponseTemplates",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Settings.tsx",
+        "page": "Settings",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/SupportCenter.tsx",
+        "page": "SupportCenter",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Tasks.tsx",
+        "page": "Tasks",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/TasksStable.tsx",
+        "page": "TasksStable",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/Templates.tsx",
+        "page": "Templates",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/TodayStable.tsx",
+        "page": "TodayStable",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/UiPreviewVNext.tsx",
+        "page": "UiPreviewVNext",
+        "routeEvidence": "App/import/name heuristic"
+      },
+      {
+        "file": "src/pages/UiPreviewVNextFull.tsx",
+        "page": "UiPreviewVNextFull",
+        "routeEvidence": "App/import/name heuristic"
+      }
+    ],
+    "inactive": [
+      {
+        "file": "src/pages/Dashboard.tsx",
+        "page": "Dashboard",
+        "routeEvidence": "not found in App heuristic",
+        "reason": "not active by heuristic"
+      },
+      {
+        "file": "src/pages/Today.tsx",
+        "page": "Today",
+        "routeEvidence": "App/import/name heuristic",
+        "reason": "legacy/inactive marker"
+      }
+    ]
+  },
+  "activeScreenContracts": [
+    {
+      "file": "src/pages/Activity.tsx",
+      "page": "Activity",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "page": "AdminAiSettings",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "page": "AiDrafts",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "page": "Billing",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "page": "Calendar",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": true,
+      "missing": [
+        "standard tiles"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "page": "CaseDetail",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "page": "Cases",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "page": "ClientDetail",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "page": "ClientPortal",
+      "hasStandardWrapper": false,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard wrapper",
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "page": "Clients",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "page": "LeadDetail",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "page": "Leads",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "page": "Login",
+      "hasStandardWrapper": false,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard wrapper",
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "page": "NotificationsCenter",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "page": "ResponseTemplates",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "page": "Settings",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "page": "SupportCenter",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "page": "Tasks",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": true,
+      "missing": [],
+      "decision": "zostaje"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "page": "TasksStable",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "page": "Templates",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": true,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "page": "TodayStable",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": false,
+      "missing": [
+        "standard tiles",
+        "standard page hero"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "page": "UiPreviewVNext",
+      "hasStandardWrapper": true,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": true,
+      "missing": [
+        "standard tiles"
+      ],
+      "decision": "migrujemy"
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "page": "UiPreviewVNextFull",
+      "hasStandardWrapper": false,
+      "hasStandardTiles": false,
+      "hasStandardPageHero": true,
+      "missing": [
+        "standard wrapper",
+        "standard tiles"
+      ],
+      "decision": "migrujemy"
+    }
+  ],
+  "summary": {
+    "cssImports": 61,
+    "namedCssFamilies": 72,
+    "localTiles": 20,
+    "localPageHeaders": 6,
+    "localListRows": 12,
+    "localForms": 31,
+    "activeScreens": 23,
+    "inactiveOrLegacyScreens": 2,
+    "activeScreensWithoutStandardWrapper": 3,
+    "activeScreensWithoutStandardTiles": 13,
+    "activeScreensWithoutStandardPageHero": 13,
+    "decisions": {
+      "zostaje": 12,
+      "migrujemy": 212,
+      "legacy": 1,
+      "usunąć później": 0
+    }
+  }
+}
