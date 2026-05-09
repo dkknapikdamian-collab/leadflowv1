@@ -10,3 +10,5 @@ export * from './StatusPill';
 export * from './SurfaceCard';
 export * from './EntityIcon';
 export * from './icon-registry';
+export * from './ActionIcon';
+export * from './action-icon-registry';
