@@ -1,0 +1,242 @@
+/* CLOSEFLOW_METRIC_TILE_VISUAL_SOURCE_TRUTH_VS5U
+   Owner: CloseFlow Visual System
+   Reason: make Today, Tasks, Notifications and shared MetricTile typography use one visual token layer.
+   Scope: visual geometry/typography only; no data logic, no route logic, no record mutation.
+   remove_after_stage: after TodayStable, Leads, Clients, Cases, Activity and AiDrafts are fully migrated to MetricGrid -> StatShortcutCard -> MetricTile and legacy page CSS is deleted.
+*/
+
+:root {
+  --cf-metric-source-radius: 22px;
+  --cf-metric-source-border: #e4e7ec;
+  --cf-metric-source-bg: rgba(255, 255, 255, 0.86);
+  --cf-metric-source-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf-metric-source-shadow-hover: 0 18px 45px rgba(16, 24, 40, 0.08);
+  --cf-metric-source-text: #111827;
+  --cf-metric-source-label: #667085;
+  --cf-metric-source-icon-bg: #f6f8fb;
+  --cf-metric-source-icon: #64748b;
+  --cf-metric-source-min-height: 54px;
+  --cf-metric-source-gap: 13px;
+  --cf-metric-source-padding-y: 11px;
+  --cf-metric-source-padding-x: 16px;
+  --cf-metric-source-label-size: 10px;
+  --cf-metric-source-label-weight: 950;
+  --cf-metric-source-label-tracking: 0.08em;
+  --cf-metric-source-value-size: 21px;
+  --cf-metric-source-value-weight: 950;
+  --cf-metric-source-value-tracking: -0.055em;
+  --cf-metric-source-icon-size: 30px;
+  --cf-metric-source-icon-radius: 14px;
+  --cf-metric-source-icon-padding: 8px;
+  --cf-metric-source-icon-svg: 14px;
+  --cf-metric-source-blue-value: #2563eb;
+  --cf-metric-source-blue-soft: #eff6ff;
+  --cf-metric-source-green-value: #047857;
+  --cf-metric-source-green-soft: #ecfdf3;
+  --cf-metric-source-red-value: #be123c;
+  --cf-metric-source-red-soft: #fff1f3;
+  --cf-metric-source-amber-value: #b54708;
+  --cf-metric-source-amber-soft: #fffaeb;
+  --cf-metric-source-purple-value: #6941c6;
+  --cf-metric-source-purple-soft: #f4f3ff;
+}
+
+html body #root :is(
+  .cf-metric-grid,
+  .notifications-stats-grid,
+  main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"],
+  .cf-html-shell .main-today .grid-4,
+  .cf-html-shell .main-today [data-visual-metrics],
+  .cf-html-shell .main-today .today-metrics,
+  .cf-html-shell .main-today .today-shortcuts,
+  .cf-html-shell .main-today .stat-shortcut-grid,
+  .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+  .cf-html-shell .main-today .grid:has(.today-top-tile)
+) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-source-gap) !important;
+  align-items: stretch !important;
+}
+
+html body #root :is(
+  [data-stat-shortcut-card][data-cf-metric-tile-contract="final-vs5"],
+  [data-stat-shortcut-card][data-eliteflow-today-metric-lock="true"],
+  .cf-top-metric-tile
+) {
+  display: block !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: var(--cf-metric-source-radius) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  text-align: left !important;
+  text-decoration: none !important;
+  overflow: visible !important;
+}
+
+html body #root :is(
+  .cf-top-metric-tile-content,
+  .cf-html-shell .main-today .metric,
+  .cf-html-shell .main-today [data-stat-shortcut-card],
+  .cf-html-shell .main-today .stat-shortcut-card,
+  .cf-html-shell .main-today .today-top-tile,
+  .cf-html-shell .main-today .today-metric,
+  .cf-html-shell .main-today .today-shortcuts > button,
+  .cf-html-shell .main-today .today-shortcuts > a
+) {
+  min-height: var(--cf-metric-source-min-height) !important;
+  height: 100% !important;
+  width: 100% !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: var(--cf-metric-source-padding-y) var(--cf-metric-source-padding-x) !important;
+  border: 1px solid var(--cf-metric-source-border) !important;
+  border-radius: var(--cf-metric-source-radius) !important;
+  background: var(--cf-metric-source-bg) !important;
+  background-image: none !important;
+  color: var(--cf-metric-source-text) !important;
+  box-shadow: var(--cf-metric-source-shadow) !important;
+  text-align: left !important;
+  overflow: hidden !important;
+  transform: none !important;
+}
+
+html body #root :is(
+  .cf-top-metric-tile:hover .cf-top-metric-tile-content,
+  .cf-top-metric-tile:focus-visible .cf-top-metric-tile-content,
+  .cf-html-shell .main-today .metric:hover,
+  .cf-html-shell .main-today [data-stat-shortcut-card]:hover,
+  .cf-html-shell .main-today .stat-shortcut-card:hover,
+  .cf-html-shell .main-today .today-top-tile:hover,
+  .cf-html-shell .main-today .today-shortcuts > button:hover,
+  .cf-html-shell .main-today .today-shortcuts > a:hover
+) {
+  border-color: #93c5fd !important;
+  box-shadow: var(--cf-metric-source-shadow-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+html body #root .cf-top-metric-tile.is-active .cf-top-metric-tile-content,
+html body #root .cf-top-metric-tile-content.is-active {
+  border-color: #bfdbfe !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08), var(--cf-metric-source-shadow) !important;
+}
+
+html body #root .cf-top-metric-tile-left {
+  min-width: 0 !important;
+  flex: 1 1 auto !important;
+  display: block !important;
+}
+
+html body #root :is(
+  .cf-top-metric-tile-label,
+  .cf-html-shell .main-today .metric label,
+  .cf-html-shell .main-today .metric .label,
+  .cf-html-shell .main-today [data-stat-shortcut-card] label,
+  .cf-html-shell .main-today .stat-shortcut-card label,
+  .cf-html-shell .main-today .today-top-tile label,
+  .cf-html-shell .main-today .today-metric label,
+  .cf-html-shell .main-today .today-shortcuts label
+) {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: var(--cf-metric-source-label) !important;
+  -webkit-text-fill-color: var(--cf-metric-source-label) !important;
+  font-size: var(--cf-metric-source-label-size) !important;
+  line-height: 1.12 !important;
+  font-weight: var(--cf-metric-source-label-weight) !important;
+  letter-spacing: var(--cf-metric-source-label-tracking) !important;
+  text-transform: uppercase !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+  hyphens: none !important;
+  text-shadow: none !important;
+}
+
+html body #root .cf-top-metric-tile-value-row {
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+html body #root :is(
+  .cf-top-metric-tile-value,
+  .cf-html-shell .main-today .metric strong,
+  .cf-html-shell .main-today [data-stat-shortcut-card] strong,
+  .cf-html-shell .main-today .stat-shortcut-card strong,
+  .cf-html-shell .main-today .today-top-tile strong,
+  .cf-html-shell .main-today .today-metric strong,
+  .cf-html-shell .main-today .today-shortcuts strong
+) {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 10rem !important;
+  margin: 0 !important;
+  color: inherit !important;
+  font-size: var(--cf-metric-source-value-size) !important;
+  line-height: 1 !important;
+  font-weight: var(--cf-metric-source-value-weight) !important;
+  letter-spacing: var(--cf-metric-source-value-tracking) !important;
+  text-align: right !important;
+  text-shadow: none !important;
+}
+
+html body #root :is(.cf-top-metric-tile-icon, .cf-html-shell .main-today .metric-icon, .cf-html-shell .main-today .stat-icon) {
+  width: var(--cf-metric-source-icon-size) !important;
+  height: var(--cf-metric-source-icon-size) !important;
+  min-width: var(--cf-metric-source-icon-size) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: var(--cf-metric-source-icon-radius) !important;
+  background: var(--cf-metric-source-icon-bg) !important;
+  color: var(--cf-metric-source-icon) !important;
+  padding: var(--cf-metric-source-icon-padding) !important;
+  box-shadow: none !important;
+}
+
+html body #root :is(.cf-top-metric-tile-icon svg, .cf-html-shell .main-today .metric-icon svg, .cf-html-shell .main-today .stat-icon svg) {
+  width: var(--cf-metric-source-icon-svg) !important;
+  height: var(--cf-metric-source-icon-svg) !important;
+  stroke-width: 2.35 !important;
+}
+
+html body #root [data-eliteflow-metric-tone="blue"] .cf-top-metric-tile-value { color: var(--cf-metric-source-blue-value) !important; }
+html body #root [data-eliteflow-metric-tone="blue"] .cf-top-metric-tile-icon { background: var(--cf-metric-source-blue-soft) !important; color: var(--cf-metric-source-blue-value) !important; }
+html body #root [data-eliteflow-metric-tone="green"] .cf-top-metric-tile-value { color: var(--cf-metric-source-green-value) !important; }
+html body #root [data-eliteflow-metric-tone="green"] .cf-top-metric-tile-icon { background: var(--cf-metric-source-green-soft) !important; color: var(--cf-metric-source-green-value) !important; }
+html body #root [data-eliteflow-metric-tone="red"] .cf-top-metric-tile-value { color: var(--cf-metric-source-red-value) !important; }
+html body #root [data-eliteflow-metric-tone="red"] .cf-top-metric-tile-icon { background: var(--cf-metric-source-red-soft) !important; color: var(--cf-metric-source-red-value) !important; }
+html body #root [data-eliteflow-metric-tone="amber"] .cf-top-metric-tile-value { color: var(--cf-metric-source-amber-value) !important; }
+html body #root [data-eliteflow-metric-tone="amber"] .cf-top-metric-tile-icon { background: var(--cf-metric-source-amber-soft) !important; color: var(--cf-metric-source-amber-value) !important; }
+html body #root [data-eliteflow-metric-tone="purple"] .cf-top-metric-tile-value { color: var(--cf-metric-source-purple-value) !important; }
+html body #root [data-eliteflow-metric-tone="purple"] .cf-top-metric-tile-icon { background: var(--cf-metric-source-purple-soft) !important; color: var(--cf-metric-source-purple-value) !important; }
+
+@media (max-width: 1180px) {
+  html body #root :is(.cf-metric-grid, .notifications-stats-grid, main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"], .cf-html-shell .main-today .grid-4, .cf-html-shell .main-today [data-visual-metrics], .cf-html-shell .main-today .today-metrics, .cf-html-shell .main-today .today-shortcuts, .cf-html-shell .main-today .stat-shortcut-grid, .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]), .cf-html-shell .main-today .grid:has(.today-top-tile)) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --cf-metric-source-min-height: 58px;
+    --cf-metric-source-gap: 12px;
+    --cf-metric-source-value-size: 20px;
+  }
+  html body #root :is(.cf-metric-grid, .notifications-stats-grid, main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"], .cf-html-shell .main-today .grid-4, .cf-html-shell .main-today [data-visual-metrics], .cf-html-shell .main-today .today-metrics, .cf-html-shell .main-today .today-shortcuts, .cf-html-shell .main-today .stat-shortcut-grid, .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]), .cf-html-shell .main-today .grid:has(.today-top-tile)) {
+    grid-template-columns: 1fr !important;
+  }
+}

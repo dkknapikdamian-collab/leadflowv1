@@ -1,0 +1,14 @@
+{
+  "marker": "CLOSEFLOW_METRIC_TILE_VISUAL_SOURCE_TRUTH_VS5U",
+  "scope": "visual metric tile source truth layer",
+  "visualSource": "src/styles/closeflow-metric-tile-visual-source-truth.css",
+  "importedFrom": "src/styles/emergency/emergency-hotfixes.css",
+  "sharedRendererChain": "MetricGrid -> StatShortcutCard -> MetricTile",
+  "todayRendererMigrationPending": true,
+  "pagesProtected": [
+    "src/pages/TodayStable.tsx",
+    "src/pages/TasksStable.tsx",
+    "src/pages/NotificationsCenter.tsx"
+  ],
+  "blockingAuditReference": "docs/ui/closeflow-metric-tiles-deep-source-map.generated.json"
+}

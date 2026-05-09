@@ -201,3 +201,11 @@
 .main-calendar-html .calendar-week-plan :is(.text-white, .text-slate-50, .text-slate-100) {
   color: #334155 !important;
 }
+
+/* CLOSEFLOW_METRIC_TILE_VISUAL_SOURCE_TRUTH_VS5U_IMPORT
+   Owner: CloseFlow Visual System
+   Reason: final visual token layer for metric tiles must load after old page adapters and hotfixes.
+   Scope: Today/Tasks/Notifications/shared MetricTile visual parity only.
+   remove_after_stage: after old metric CSS files are deleted and all active screens use MetricGrid.
+*/
+@import '../closeflow-metric-tile-visual-source-truth.css';
