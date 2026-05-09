@@ -515,7 +515,9 @@
     "check:closeflow-ui-cleanup-release-evidence": "node scripts/check-closeflow-ui-cleanup-release-evidence.cjs",
     "check:closeflow-stage16c-tasks-cases-visual-mobile-repair": "node scripts/check-closeflow-stage16c-tasks-cases-visual-mobile-repair.cjs",
     "check:closeflow-stage16d-tasks-metric-final-lock": "node scripts/check-closeflow-stage16d-tasks-metric-final-lock.cjs",
-    "check:closeflow-client-event-modal-runtime-repair": "node scripts/check-closeflow-client-event-modal-runtime-repair.cjs"
+    "check:closeflow-client-event-modal-runtime-repair": "node scripts/check-closeflow-client-event-modal-runtime-repair.cjs",
+    "audit:closeflow-ui-map-inventory-v1": "node scripts/audit-closeflow-ui-map-inventory-v1.cjs",
+    "check:closeflow-ui-map-inventory-v1": "node scripts/check-closeflow-ui-map-inventory-v1.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
