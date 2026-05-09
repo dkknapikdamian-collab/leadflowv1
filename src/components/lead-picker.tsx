@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { Check } from 'lucide-react';
+import { CancelActionIcon, SearchActionIcon } from './ui-system';
 
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -52,7 +53,7 @@ export function LeadPicker({
     <div className="space-y-2">
       <Label>{label}</Label>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
+        <SearchActionIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
         <Input
           value={query}
           onChange={(e) => {
@@ -78,7 +79,7 @@ export function LeadPicker({
             }}
             aria-label="Usuń powiązanie z leadem"
           >
-            <X className="h-4 w-4" />
+            <CancelActionIcon className="h-4 w-4" />
           </Button>
         ) : null}
 

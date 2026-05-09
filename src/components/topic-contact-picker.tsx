@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Check, Search, X } from 'lucide-react';
+import { Check } from 'lucide-react';
+import { CancelActionIcon, SearchActionIcon } from './ui-system';
 
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -41,7 +42,7 @@ export function TopicContactPicker({
     <div className="space-y-2">
       <Label>{label}</Label>
       <div className="relative">
-        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        <SearchActionIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           value={query}
           onChange={(event) => {
@@ -65,7 +66,7 @@ export function TopicContactPicker({
             }}
             aria-label="Usuń powiązanie"
           >
-            <X className="h-4 w-4" />
+            <CancelActionIcon className="h-4 w-4" />
           </Button>
         ) : null}
 

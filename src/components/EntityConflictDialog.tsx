@@ -1,6 +1,7 @@
 // CLOSEFLOW_ENTITY_CONFLICT_DIALOG_V1
 // CLOSEFLOW_CONFLICT_DELETE_COMPANY_NOT_NULL_V25
-import { AlertTriangle, ExternalLink, RotateCcw, Trash2 } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { DeleteActionIcon, OpenActionIcon, RestoreActionIcon } from './ui-system';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 
@@ -93,16 +94,16 @@ export function EntityConflictDialog({
 
                 <div className="flex flex-wrap gap-2 md:justify-end">
                   <Button type="button" variant="outline" size="sm" onClick={() => onShow(candidate)} disabled={busy}>
-                    <ExternalLink className="mr-1 h-4 w-4" />Pokaż
+                    <OpenActionIcon className="mr-1 h-4 w-4" />Pokaż
                   </Button>
                   {candidate.canRestore && onRestore ? (
                     <Button type="button" variant="outline" size="sm" onClick={() => onRestore(candidate)} disabled={busy}>
-                      <RotateCcw className="mr-1 h-4 w-4" />Przywróć
+                      <RestoreActionIcon className="mr-1 h-4 w-4" />Przywróć
                     </Button>
                   ) : null}
                   {onDeleteCandidate ? (
                     <Button type="button" variant="outline" size="sm" onClick={() => onDeleteCandidate(candidate)} disabled={busy} className="text-rose-700 hover:text-rose-800">
-                      <Trash2 className="mr-1 h-4 w-4" />Usuń
+                      <DeleteActionIcon className="mr-1 h-4 w-4" />Usuń
                     </Button>
                   ) : null}
                 </div>

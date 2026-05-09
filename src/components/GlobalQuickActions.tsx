@@ -23,7 +23,8 @@ Pasek działa jako toolbar i jest czytelny na telefonie: role="toolbar", aria-la
  * with full app context. Keep this short marker for the legacy draft-inbox contract test.
  */
 import { useState } from 'react';
-import { ClipboardList, Plus } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
+import { AddActionIcon } from './ui-system';
 import { Link } from 'react-router-dom';
 
 import QuickAiCapture from './QuickAiCapture';
@@ -91,18 +92,18 @@ export default function GlobalQuickActions() {
         ) : null}
         <Button asChild variant="outline" className="btn" data-global-quick-action="lead" data-feature-status="Gotowe" title="Gotowe">
           <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
-            <Plus className="mr-2 h-4 w-4" />
+            <AddActionIcon className="mr-2 h-4 w-4" />
             Lead
           </Link>
         </Button>
         {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45M: rememberGlobalQuickAction('task') marker only. Direct task modal opens in place, without Link/asChild route. */}
         <Button type="button" variant="outline" className="btn" data-global-quick-action="task" data-global-task-direct-modal-trigger="true" data-feature-status="Gotowe" title="Gotowe" onClick={() => setIsTaskCreateOpen(true)}>
-          <Plus className="mr-2 h-4 w-4" />
+          <AddActionIcon className="mr-2 h-4 w-4" />
           Zadanie
         </Button>
         <Button asChild variant="outline" className="btn" data-global-quick-action="event" data-feature-status="Gotowe" title="Gotowe">
           <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
-            <Plus className="mr-2 h-4 w-4" />
+            <AddActionIcon className="mr-2 h-4 w-4" />
             Wydarzenie
           </Link>
         </Button>
