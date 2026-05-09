@@ -1,0 +1,25 @@
+{
+  "stage": "VS-5X Repair3",
+  "marker": "CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3",
+  "renderer": "OperatorMetricTile",
+  "directRoutes": [
+    "/tasks",
+    "/notifications"
+  ],
+  "adapterRoutes": [
+    "/leads",
+    "/clients",
+    "/cases"
+  ],
+  "sourceOfTruth": {
+    "shell": "OperatorMetricTile",
+    "valueColor": "tone",
+    "iconColor": "tone",
+    "iconBackground": "tone"
+  },
+  "checks": [
+    "check:closeflow-operator-metric-tone-parity",
+    "check:closeflow-metric-tiles-final-system",
+    "check:closeflow-metric-tiles-final-migration"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "stage": "VS-5X Repair4",
+  "marker": "CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR4",
+  "reason": "Update stale VS5V guard to accept VS5X final OperatorMetricTile source truth.",
+  "finalRenderer": "OperatorMetricTile",
+  "directRoutes": [
+    "/tasks",
+    "/notifications"
+  ],
+  "adapterRoutes": [
+    "/leads",
+    "/clients",
+    "/cases"
+  ],
+  "checks": [
+    "check:closeflow-operator-metric-tiles",
+    "check:closeflow-operator-metric-tone-parity",
+    "check:closeflow-metric-tiles-final-system",
+    "check:closeflow-metric-tiles-final-migration"
+  ]
+}

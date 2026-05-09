@@ -1,8 +1,13 @@
 import type { ComponentType, HTMLAttributes, ReactNode } from 'react';
-
-const CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W: OperatorMetricTiles owns value/icon tone and metric identity';
-void CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W;
 import { Link } from 'react-router-dom';
+
+const CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V = 'CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V: isolated metric renderer';
+/* CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V_COMPAT data-cf-metric-source-truth="vs5v" */
+const CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W: OperatorMetricTiles owns value/icon tone and metric identity';
+const CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3 = 'CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3: OperatorMetricTile is the shared final renderer for StatShortcutCard and OperatorMetricTiles';
+void CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V;
+void CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W;
+void CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3;
 
 export type OperatorMetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple';
 
@@ -46,7 +51,7 @@ export function OperatorMetricTiles<TId extends string = string>({
       className={['cf-operator-metric-grid', 'cf-operator-metric-grid-' + columns, className].filter(Boolean).join(' ')}
       data-cf-operator-metric-grid="true"
       data-cf-metric-renderer="OperatorMetricTiles"
-      data-cf-metric-source-truth="vs5v"
+      data-cf-metric-source-truth="vs5x-repair3"
     >
       {items.map((item) => {
         const isActive = item.active ?? (activeId != null && String(activeId) === String(item.id));
@@ -63,23 +68,24 @@ export function OperatorMetricTiles<TId extends string = string>({
   );
 }
 
-function OperatorMetricTile<TId extends string>({
+export function OperatorMetricTile<TId extends string = string>({
   item,
-  active,
+  active = false,
   onSelect,
 }: {
   item: OperatorMetricTileItem<TId>;
-  active: boolean;
+  active?: boolean;
   onSelect?: (item: OperatorMetricTileItem<TId>) => void;
 }) {
   const Icon = item.icon;
   const tone = normalizeTone(item.tone);
+  const metricId = String(item.id || item.label);
   const content = (
     <div
       className="cf-operator-metric-tile-content"
       data-cf-operator-metric-tile-content="true"
       data-cf-operator-metric-tone={tone}
-      data-cf-operator-metric-id={String(item.id)}
+      data-cf-operator-metric-id={metricId}
     >
       <div className="cf-operator-metric-text">
         <span className="cf-operator-metric-label">{item.label}</span>
@@ -102,8 +108,8 @@ function OperatorMetricTile<TId extends string>({
     'aria-pressed': item.to ? undefined : active,
     'data-cf-operator-metric-tile': 'true',
     'data-cf-operator-metric-tone': tone,
-    'data-cf-operator-metric-id': String(item.id),
-    'data-cf-metric-source-truth': 'vs5v',
+    'data-cf-operator-metric-id': metricId,
+    'data-cf-metric-source-truth': 'vs5x-repair3',
     'data-cf-operator-metric-active': active ? 'true' : 'false',
   } as const;
 

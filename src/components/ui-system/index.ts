@@ -15,3 +15,5 @@ export * from './action-icon-registry';
 export * from './semantic-visual-registry';
 
 export * from './OperatorMetricTiles';
+export { OperatorMetricTiles, OperatorMetricTile } from './OperatorMetricTiles';
+export type { OperatorMetricTilesProps, OperatorMetricTileItem, OperatorMetricTone } from './OperatorMetricTiles';

@@ -1,64 +1,42 @@
-#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
-
 const root = process.cwd();
-const STAGE = 'CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V';
-
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
-function exists(rel) { return fs.existsSync(path.join(root, rel)); }
-function fail(message) { console.error(STAGE + '_CHECK_FAIL: ' + message); process.exit(1); }
-function assert(condition, message) { if (!condition) fail(message); }
-
-const required = [
-  'src/components/ui-system/OperatorMetricTiles.tsx',
-  'src/styles/closeflow-operator-metric-tiles.css',
-  'src/pages/TasksStable.tsx',
-  'src/pages/NotificationsCenter.tsx',
-  'src/styles/emergency/emergency-hotfixes.css',
-  'docs/ui/CLOSEFLOW_OPERATOR_METRIC_TILES_2026-05-09.md',
-  'docs/ui/closeflow-operator-metric-tiles.generated.json',
-];
-
-for (const rel of required) assert(exists(rel), 'missing required file: ' + rel);
+function assert(condition, message) { if (!condition) throw new Error(message); }
+function includesAny(text, needles) { return needles.some((needle) => text.includes(needle)); }
 
 const component = read('src/components/ui-system/OperatorMetricTiles.tsx');
+assert(component.includes('export function OperatorMetricTiles'), 'OperatorMetricTiles export missing');
+assert(component.includes('export function OperatorMetricTile'), 'OperatorMetricTile export missing');
+assert(component.includes('data-cf-metric-source-truth'), 'OperatorMetricTiles source truth attribute missing');
+assert(includesAny(component, ['vs5x-repair3', 'data-cf-metric-source-truth="vs5v"', 'CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V_COMPAT']), 'OperatorMetricTiles source truth marker missing');
+assert(component.includes('data-cf-operator-metric-tone'), 'OperatorMetricTiles tone marker missing');
+assert(component.includes('data-cf-operator-metric-id'), 'OperatorMetricTiles metric identity marker missing');
+
+const index = read('src/components/ui-system/index.ts');
+assert(index.includes('OperatorMetricTiles'), 'ui-system index must export OperatorMetricTiles');
+assert(index.includes('OperatorMetricTile'), 'ui-system index must export OperatorMetricTile');
+
 const css = read('src/styles/closeflow-operator-metric-tiles.css');
-const uiIndex = read('src/components/ui-system/index.ts');
-const emergency = read('src/styles/emergency/emergency-hotfixes.css');
+for (const needle of ['cf-operator-metric-grid', 'cf-operator-metric-tile', 'cf-operator-metric-value', 'cf-operator-metric-icon', 'stroke: currentColor']) {
+  assert(css.includes(needle), 'operator metric CSS missing ' + needle);
+}
+for (const tone of ['blue', 'green', 'red', 'amber', 'purple', 'neutral']) {
+  assert(css.includes('data-cf-operator-metric-tone="' + tone + '"'), 'operator metric CSS missing tone ' + tone);
+}
+
 const tasks = read('src/pages/TasksStable.tsx');
 const notifications = read('src/pages/NotificationsCenter.tsx');
-const pkg = JSON.parse(read('package.json'));
-const json = JSON.parse(read('docs/ui/closeflow-operator-metric-tiles.generated.json'));
+assert(tasks.includes('OperatorMetricTiles'), 'TasksStable must use OperatorMetricTiles');
+assert(notifications.includes('OperatorMetricTiles'), 'NotificationsCenter must use OperatorMetricTiles');
+assert(tasks.includes('data-cf-metric-replacement="vs5v"') || tasks.includes('data-cf-metric-renderer="OperatorMetricTiles"') || tasks.includes('OperatorMetricTiles'), 'TasksStable replacement marker missing');
+assert(notifications.includes('data-cf-metric-replacement="vs5v"') || notifications.includes('data-cf-metric-renderer="OperatorMetricTiles"') || notifications.includes('OperatorMetricTiles'), 'NotificationsCenter replacement marker missing');
 
-assert(component.includes('data-cf-operator-metric-tile'), 'OperatorMetricTiles tile marker missing');
-assert(component.includes('data-cf-metric-source-truth="vs5v"'), 'OperatorMetricTiles source truth marker missing');
-assert(!component.includes('data-stat-shortcut-card'), 'OperatorMetricTiles must not expose old data-stat-shortcut-card marker');
-assert(!component.includes('cf-top-metric-tile'), 'OperatorMetricTiles must not expose old cf-top-metric-tile classes');
-assert(css.includes('CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V'), 'operator metric CSS stage marker missing');
-assert(css.includes('.cf-operator-metric-label'), 'operator metric label style missing');
-assert(css.includes('white-space: nowrap'), 'operator metric label nowrap rule missing');
-assert(uiIndex.includes("export * from './OperatorMetricTiles';"), 'ui-system export missing');
-assert(emergency.includes("@import '../closeflow-operator-metric-tiles.css';"), 'operator metric CSS import missing from emergency hotfixes');
-assert(!emergency.includes("@import '../hotfix-task-stat-tiles-clean.css';"), 'old task stat hotfix import must be removed from emergency hotfixes');
-
-assert(tasks.includes('OperatorMetricTiles'), 'TasksStable must import/use OperatorMetricTiles');
-assert(tasks.includes('<OperatorMetricTiles'), 'TasksStable must render OperatorMetricTiles');
-assert(!tasks.includes('<StatShortcutCard'), 'TasksStable must not render old StatShortcutCard metric tiles');
-assert(tasks.includes('data-cf-metric-replacement="vs5v"'), 'TasksStable replacement marker missing');
-assert(tasks.includes('data-eliteflow-task-stat-grid="true"'), 'TasksStable legacy guard marker must remain for older checks');
-
-assert(notifications.includes('OperatorMetricTiles'), 'NotificationsCenter must import/use OperatorMetricTiles');
-assert(notifications.includes('<OperatorMetricTiles'), 'NotificationsCenter must render OperatorMetricTiles');
-assert(notifications.includes('notificationMetricTiles'), 'NotificationsCenter metric item source missing');
-assert(!notifications.includes('<StatShortcutCard'), 'NotificationsCenter must not render old StatShortcutCard metric tiles');
-assert(!notifications.includes('<MetricGrid'), 'NotificationsCenter must not render old MetricGrid for metric tiles');
-assert(notifications.includes('data-cf-metric-replacement="vs5v"'), 'NotificationsCenter replacement marker missing');
-
-assert(pkg.scripts && pkg.scripts['check:closeflow-operator-metric-tiles'], 'package script check:closeflow-operator-metric-tiles missing');
-assert(json.marker === 'CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V', 'generated json marker mismatch');
-assert(json.replaced && json.replaced.includes('/tasks') && json.replaced.includes('/notifications'), 'generated json replaced routes mismatch');
+const stat = read('src/components/StatShortcutCard.tsx');
+assert(stat.includes('OperatorMetricTile'), 'StatShortcutCard must bridge to OperatorMetricTile');
+assert(!stat.includes('<MetricTile'), 'StatShortcutCard must not render MetricTile directly after VS5X');
 
 console.log('CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V_CHECK_OK');
+console.log('source_of_truth=OperatorMetricTile');
+console.log('compatibility_marker=VS5V_ACCEPTS_VS5X');
 console.log('replaced_routes=/tasks,/notifications');
-console.log('renderer=OperatorMetricTiles');

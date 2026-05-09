@@ -1,3 +1,4 @@
+@import "../closeflow-operator-metric-tiles.css";
 /* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_EMERGENCY_HOTFIXES
    Owner: CloseFlow Visual System
    Reason: isolate emergency runtime CSS and hotfixes away from src/index.css.
