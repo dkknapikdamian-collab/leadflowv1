@@ -1,7 +1,7 @@
 # CloseFlow — Visual System Inventory Freeze
 
 **Data:** 2026-05-09  
-**Etap:** 0  
+**Etap:** VS-0  
 **Tryb:** audyt / freeze, bez migracji UI  
 **Źródło JSON:** `docs/ui/closeflow-visual-system-inventory.generated.json`
 
@@ -22,12 +22,14 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 
 | Obszar | Liczba |
 |---|---:|
-| Importy CSS z src/index.css | 61 |
+| Importy CSS z src/index.css | 62 |
 | Pliki CSS rodzin visual-stage/hotfix/eliteflow/stage | 72 |
 | Lokalne kafelki / cardy | 20 |
 | Lokalne page headery / hero | 6 |
 | Lokalne list rows / entry rows | 12 |
-| Lokalne formularze / dialogi | 31 |
+| Lokalne formularze | 20 |
+| Lokalne right-card / right-rail | 79 |
+| Lokalne modale / dialogi | 85 |
 | Aktywne ekrany | 23 |
 | Aktywne ekrany bez standardowego wrappera | 3 |
 | Aktywne ekrany bez standardowych kafelków | 13 |
@@ -38,7 +40,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | Decyzja | Liczba |
 |---|---:|
 | zostaje | 12 |
-| migrujemy | 212 |
+| migrujemy | 366 |
 | legacy | 1 |
 | usunąć później | 0 |
 
@@ -107,6 +109,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | 280 | ./styles/eliteflow-semantic-badges-and-today-sections.css | migrujemy |
 | 281 | ./styles/closeflow-stage16d-tasks-metric-final-lock.css | migrujemy |
 | 411 | ./styles/closeflow-client-event-modal-runtime-repair.css | migrujemy |
+| 413 | ./styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css | migrujemy |
 
 
 ## Rodziny CSS do opanowania
@@ -221,7 +224,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | src/pages/Calendar.tsx | 360 | function ScheduleEntryCard | migrujemy |
 | src/pages/CaseDetail.tsx | 1822 | function ShieldStatusIcon | migrujemy |
 | src/pages/CaseDetail.tsx | 1827 | function PathCard | migrujemy |
-| src/pages/ClientDetail.tsx | 721 | function ClientTopTiles | migrujemy |
+| src/pages/ClientDetail.tsx | 747 | function ClientTopTiles | migrujemy |
 | src/pages/NotificationsCenter.tsx | 301 | function MetricCard | migrujemy |
 | src/pages/Templates.tsx | 101 | function LightMetricCardRow | migrujemy |
 | src/pages/Today.tsx | 534 | function TileCard | migrujemy |
@@ -256,7 +259,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | src/pages/Activity.tsx | 507 | function ActivityRow | migrujemy |
 | src/pages/Calendar.tsx | 360 | function ScheduleEntryCard | migrujemy |
 | src/pages/CaseDetail.tsx | 1836 | function WorkItemRow | migrujemy |
-| src/pages/ClientDetail.tsx | 650 | function InfoRow | migrujemy |
+| src/pages/ClientDetail.tsx | 676 | function InfoRow | migrujemy |
 | src/pages/NotificationsCenter.tsx | 293 | function NotificationRowIcon | migrujemy |
 | src/pages/NotificationsCenter.tsx | 367 | function NotificationsRow | migrujemy |
 | src/pages/Templates.tsx | 101 | function LightMetricCardRow | migrujemy |
@@ -265,33 +268,22 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | src/pages/Today.tsx | 747 | function TodayEntrySnoozeBar | migrujemy |
 
 
-## Lokalne formularze / dialogi
+## Lokalne formularze
 
 | file | line | match | decision |
 | --- | --- | --- | --- |
-| src/components/ContextActionDialogs.tsx | 112 | function ContextActionDialogsHost | migrujemy |
 | src/components/ContextNoteDialog.tsx | 100 | <form | migrujemy |
-| src/components/ContextNoteDialog.tsx | 31 | function ContextNoteDialog | migrujemy |
-| src/components/DraftReviewDialog.tsx | 15 | function DraftReviewDialog | migrujemy |
-| src/components/EntityConflictDialog.tsx | 50 | function EntityConflictDialog | migrujemy |
 | src/components/EventCreateDialog.tsx | 131 | <form | migrujemy |
-| src/components/EventCreateDialog.tsx | 66 | function EventCreateDialog | migrujemy |
 | src/components/LeadAiFollowupDraft.tsx | 106 | <form | migrujemy |
-| src/components/LeadStartServiceDialog.tsx | 14 | function LeadStartServiceDialog | migrujemy |
 | src/components/TaskCreateDialog.tsx | 130 | <form | migrujemy |
-| src/components/TaskCreateDialog.tsx | 68 | function TaskCreateDialog | migrujemy |
-| src/components/confirm-dialog.tsx | 18 | function ConfirmDialog | migrujemy |
-| src/components/quick-lead/QuickLeadCaptureModal.tsx | 79 | function QuickLeadCaptureModal | migrujemy |
 | src/components/task-editor-dialog.tsx | 114 | <form | migrujemy |
-| src/components/task-editor-dialog.tsx | 62 | function TaskEditorDialog | migrujemy |
 | src/pages/Calendar.tsx | 1257 | <form | migrujemy |
 | src/pages/Calendar.tsx | 1432 | <form | migrujemy |
 | src/pages/Calendar.tsx | 1719 | <form | migrujemy |
-| src/pages/CaseDetail.tsx | 1892 | function CaseItemDialog | migrujemy |
 | src/pages/Cases.tsx | 515 | <form | migrujemy |
-| src/pages/Clients.tsx | 475 | <form | migrujemy |
+| src/pages/Clients.tsx | 476 | <form | migrujemy |
 | src/pages/LeadDetail.tsx | 1569 | <form | migrujemy |
-| src/pages/Leads.tsx | 680 | <form | migrujemy |
+| src/pages/Leads.tsx | 697 | <form | migrujemy |
 | src/pages/Login.tsx | 178 | <form | migrujemy |
 | src/pages/Login.tsx | 218 | <form | migrujemy |
 | src/pages/Login.tsx | 262 | <form | migrujemy |
@@ -302,15 +294,192 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | src/pages/TasksStable.tsx | 620 | <form | migrujemy |
 
 
+## Lokalne right-card / right-rail
+
+| file | line | match | decision |
+| --- | --- | --- | --- |
+| src/pages/Activity.tsx | 822 | className="activity-right-rail" | migrujemy |
+| src/pages/Activity.tsx | 823 | className="right-card activity-right-card" | migrujemy |
+| src/pages/Activity.tsx | 824 | className="activity-right-card-head" | migrujemy |
+| src/pages/Activity.tsx | 838 | className="right-card activity-right-card" | migrujemy |
+| src/pages/Activity.tsx | 839 | className="activity-right-card-head" | migrujemy |
+| src/pages/Activity.tsx | 860 | className="right-card activity-right-card" | migrujemy |
+| src/pages/Activity.tsx | 861 | className="activity-right-card-head" | migrujemy |
+| src/pages/AiDrafts.tsx | 1078 | className="ai-drafts-right-rail" | migrujemy |
+| src/pages/AiDrafts.tsx | 1079 | className="right-card ai-drafts-right-card" | migrujemy |
+| src/pages/AiDrafts.tsx | 1080 | className="ai-drafts-right-card-head" | migrujemy |
+| src/pages/AiDrafts.tsx | 1098 | className="right-card ai-drafts-right-card" | migrujemy |
+| src/pages/AiDrafts.tsx | 1099 | className="ai-drafts-right-card-head" | migrujemy |
+| src/pages/AiDrafts.tsx | 1117 | className="right-card ai-drafts-right-card" | migrujemy |
+| src/pages/AiDrafts.tsx | 1118 | className="ai-drafts-right-card-head" | migrujemy |
+| src/pages/AiDrafts.tsx | 1136 | className="right-card ai-drafts-right-card" | migrujemy |
+| src/pages/AiDrafts.tsx | 1137 | className="ai-drafts-right-card-head" | migrujemy |
+| src/pages/Billing.tsx | 667 | className="billing-right-rail" | migrujemy |
+| src/pages/Billing.tsx | 668 | className="right-card billing-right-card" | migrujemy |
+| src/pages/Billing.tsx | 696 | className="right-card billing-right-card" | migrujemy |
+| src/pages/Billing.tsx | 708 | className="right-card billing-right-card billing-right-featured" | migrujemy |
+| src/pages/Billing.tsx | 720 | className="right-card billing-right-card" | migrujemy |
+| src/pages/Billing.tsx | 732 | className="right-card billing-right-card" | migrujemy |
+| src/pages/Calendar.tsx | 1579 | className="right-card calendar-week-filter" | migrujemy |
+| src/pages/Calendar.tsx | 1659 | className="right-card calendar-week-plan" | migrujemy |
+| src/pages/CaseDetail.tsx | 1557 | className="case-detail-right-rail" | migrujemy |
+| src/pages/CaseDetail.tsx | 1559 | className="case-detail-right-card case-detail-create-action-card" | migrujemy |
+| src/pages/CaseDetail.tsx | 1579 | className="right-card case-detail-right-card" | migrujemy |
+| src/pages/CaseDetail.tsx | 1588 | className="right-card case-detail-right-card" | migrujemy |
+| src/pages/CaseDetail.tsx | 1649 | className="right-card case-detail-right-card" | migrujemy |
+| src/pages/CaseDetail.tsx | 1663 | className="right-card case-detail-right-card" | migrujemy |
+| src/pages/CaseDetail.tsx | 1686 | className="right-card case-detail-right-card" | migrujemy |
+| src/pages/Cases.tsx | 781 | className="cases-right-rail" | migrujemy |
+| src/pages/Cases.tsx | 782 | className="right-card cases-shortcuts-rail-card" | migrujemy |
+| src/pages/Cases.tsx | 792 | className="right-card cases-risk-rail-card" | migrujemy |
+| src/pages/ClientDetail.tsx | 1518 | className="client-detail-profile-card client-detail-side-card" | migrujemy |
+| src/pages/ClientDetail.tsx | 1597 | className="client-detail-right-card client-detail-recent-moves-card" | migrujemy |
+| src/pages/ClientDetail.tsx | 1957 | className="client-detail-right-rail" | migrujemy |
+| src/pages/ClientDetail.tsx | 1959 | className="right-card client-detail-right-card client-detail-operational-center" | migrujemy |
+| src/pages/ClientDetail.tsx | 1986 | className="right-card client-detail-right-card client-detail-side-quick-actions-card" | migrujemy |
+| src/pages/ClientDetail.tsx | 2062 | className="right-card client-detail-right-card client-detail-note-card" | migrujemy |
+| src/pages/ClientDetail.tsx | 2117 | className="right-card client-detail-right-card" | migrujemy |
+| src/pages/Clients.tsx | 652 | className="clients-right-rail" | migrujemy |
+| src/pages/Clients.tsx | 653 | className="right-card" | migrujemy |
+| src/pages/Clients.tsx | 663 | className="right-card" | migrujemy |
+| src/pages/LeadDetail.tsx | 1609 | className="lead-detail-right-rail" | migrujemy |
+| src/pages/LeadDetail.tsx | 1610 | className="right-card lead-detail-right-card" | migrujemy |
+| src/pages/LeadDetail.tsx | 1616 | className="right-card lead-detail-right-card" | migrujemy |
+| src/pages/LeadDetail.tsx | 1623 | className="right-card lead-detail-right-card" | migrujemy |
+| src/pages/LeadDetail.tsx | 1638 | className="right-card lead-detail-right-card" | migrujemy |
+| src/pages/LeadDetail.tsx | 1646 | className="right-card lead-detail-right-card" | migrujemy |
+| src/pages/LeadDetail.tsx | 1652 | className="right-card lead-detail-right-card" | migrujemy |
+| src/pages/Leads.tsx | 1026 | className="lead-right-rail" | migrujemy |
+| src/pages/Leads.tsx | 1027 | className="right-card lead-right-card lead-top-relations" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 727 | className="notifications-right-rail" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 728 | className="right-card notifications-right-card" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 729 | className="notifications-right-card-head" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 746 | className="right-card notifications-right-card" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 747 | className="notifications-right-card-head" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 765 | className="right-card notifications-right-card" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 766 | className="notifications-right-card-head" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 784 | className="right-card notifications-right-card" | migrujemy |
+| src/pages/NotificationsCenter.tsx | 785 | className="notifications-right-card-head" | migrujemy |
+| src/pages/Settings.tsx | 1315 | className="settings-right-rail" | migrujemy |
+| src/pages/Settings.tsx | 1316 | className="right-card settings-right-card" | migrujemy |
+| src/pages/Settings.tsx | 1325 | className="right-card settings-right-card" | migrujemy |
+| src/pages/Settings.tsx | 1334 | className="right-card settings-right-card" | migrujemy |
+| src/pages/Settings.tsx | 1343 | className="right-card settings-right-card" | migrujemy |
+| src/pages/Settings.tsx | 1352 | className="right-card settings-right-card" | migrujemy |
+| src/pages/SupportCenter.tsx | 648 | className="support-right-rail" | migrujemy |
+| src/pages/SupportCenter.tsx | 649 | className="right-card support-right-card" | migrujemy |
+| src/pages/SupportCenter.tsx | 661 | className="right-card support-right-card" | migrujemy |
+| src/pages/SupportCenter.tsx | 670 | className="right-card support-right-card" | migrujemy |
+| src/pages/SupportCenter.tsx | 679 | className="right-card support-right-card" | migrujemy |
+| src/pages/Tasks.tsx | 1452 | className="tasks-right-rail" | migrujemy |
+| src/pages/Tasks.tsx | 1453 | className="right-card tasks-right-card" | migrujemy |
+| src/pages/Tasks.tsx | 1462 | className="right-card tasks-right-card" | migrujemy |
+| src/pages/Today.tsx | 2838 | className="right-card today-right-rail space-y-8" | migrujemy |
+| src/pages/UiPreviewVNext.tsx | 47 | className="cfv-right-card" | migrujemy |
+| src/pages/UiPreviewVNext.tsx | 52 | className="cfv-right-card" | migrujemy |
+
+
+## Lokalne modale / dialogi
+
+| file | line | match | decision |
+| --- | --- | --- | --- |
+| src/components/ContextActionDialogs.tsx | 112 | function ContextActionDialogsHost | migrujemy |
+| src/components/ContextNoteDialog.tsx | 31 | function ContextNoteDialog | migrujemy |
+| src/components/ContextNoteDialog.tsx | 90 | <Dialog | migrujemy |
+| src/components/ContextNoteDialog.tsx | 91 | <DialogContent | migrujemy |
+| src/components/DraftReviewDialog.tsx | 15 | function DraftReviewDialog | migrujemy |
+| src/components/DraftReviewDialog.tsx | 25 | <Dialog | migrujemy |
+| src/components/DraftReviewDialog.tsx | 26 | <DialogContent | migrujemy |
+| src/components/EntityConflictDialog.tsx | 50 | function EntityConflictDialog | migrujemy |
+| src/components/EntityConflictDialog.tsx | 65 | <Dialog | migrujemy |
+| src/components/EntityConflictDialog.tsx | 66 | <DialogContent | migrujemy |
+| src/components/EventCreateDialog.tsx | 66 | function EventCreateDialog | migrujemy |
+| src/components/EventCreateDialog.tsx | 121 | <Dialog | migrujemy |
+| src/components/EventCreateDialog.tsx | 122 | <DialogContent | migrujemy |
+| src/components/LeadAiFollowupDraft.tsx | 95 | <Dialog | migrujemy |
+| src/components/LeadAiFollowupDraft.tsx | 102 | <DialogContent | migrujemy |
+| src/components/LeadAiNextAction.tsx | 150 | <Dialog | migrujemy |
+| src/components/LeadAiNextAction.tsx | 157 | <DialogContent | migrujemy |
+| src/components/LeadStartServiceDialog.tsx | 14 | function LeadStartServiceDialog | migrujemy |
+| src/components/LeadStartServiceDialog.tsx | 23 | <Dialog | migrujemy |
+| src/components/LeadStartServiceDialog.tsx | 24 | <DialogContent | migrujemy |
+| src/components/QuickAiCapture.tsx | 259 | <Dialog | migrujemy |
+| src/components/QuickAiCapture.tsx | 283 | <DialogContent | migrujemy |
+| src/components/TaskCreateDialog.tsx | 68 | function TaskCreateDialog | migrujemy |
+| src/components/TaskCreateDialog.tsx | 120 | <Dialog | migrujemy |
+| src/components/TaskCreateDialog.tsx | 121 | <DialogContent | migrujemy |
+| src/components/confirm-dialog.tsx | 18 | function ConfirmDialog | migrujemy |
+| src/components/confirm-dialog.tsx | 30 | <Dialog | migrujemy |
+| src/components/confirm-dialog.tsx | 31 | <DialogContent | migrujemy |
+| src/components/quick-lead/QuickLeadCaptureModal.tsx | 79 | function QuickLeadCaptureModal | migrujemy |
+| src/components/quick-lead/QuickLeadCaptureModal.tsx | 239 | <Dialog | migrujemy |
+| src/components/quick-lead/QuickLeadCaptureModal.tsx | 240 | <DialogContent | migrujemy |
+| src/components/task-editor-dialog.tsx | 62 | function TaskEditorDialog | migrujemy |
+| src/components/task-editor-dialog.tsx | 100 | <Dialog | migrujemy |
+| src/components/task-editor-dialog.tsx | 101 | <DialogContent | migrujemy |
+| src/pages/Calendar.tsx | 1254 | <Dialog | migrujemy |
+| src/pages/Calendar.tsx | 1255 | <DialogContent | migrujemy |
+| src/pages/Calendar.tsx | 1429 | <Dialog | migrujemy |
+| src/pages/Calendar.tsx | 1430 | <DialogContent | migrujemy |
+| src/pages/Calendar.tsx | 1708 | <Dialog | migrujemy |
+| src/pages/Calendar.tsx | 1714 | <DialogContent | migrujemy |
+| src/pages/CaseDetail.tsx | 1892 | function CaseItemDialog | migrujemy |
+| src/pages/CaseDetail.tsx | 1698 | <Dialog | migrujemy |
+| src/pages/CaseDetail.tsx | 1699 | <DialogContent | migrujemy |
+| src/pages/CaseDetail.tsx | 1713 | <Dialog | migrujemy |
+| src/pages/CaseDetail.tsx | 1714 | <DialogContent | migrujemy |
+| src/pages/CaseDetail.tsx | 1906 | <Dialog | migrujemy |
+| src/pages/CaseDetail.tsx | 1907 | <DialogContent | migrujemy |
+| src/pages/Cases.tsx | 497 | <Dialog | migrujemy |
+| src/pages/Cases.tsx | 508 | <DialogContent | migrujemy |
+| src/pages/ClientPortal.tsx | 305 | <Dialog | migrujemy |
+| src/pages/ClientPortal.tsx | 315 | <DialogContent | migrujemy |
+| src/pages/ClientPortal.tsx | 339 | <Dialog | migrujemy |
+| src/pages/ClientPortal.tsx | 349 | <DialogContent | migrujemy |
+| src/pages/Clients.tsx | 465 | <Dialog | migrujemy |
+| src/pages/Clients.tsx | 469 | <DialogContent | migrujemy |
+| src/pages/Dashboard.tsx | 241 | <Dialog | migrujemy |
+| src/pages/Dashboard.tsx | 248 | <DialogContent | migrujemy |
+| src/pages/LeadDetail.tsx | 1679 | <Dialog | migrujemy |
+| src/pages/LeadDetail.tsx | 1680 | <DialogContent | migrujemy |
+| src/pages/LeadDetail.tsx | 1692 | <Dialog | migrujemy |
+| src/pages/LeadDetail.tsx | 1693 | <DialogContent | migrujemy |
+| src/pages/LeadDetail.tsx | 1719 | <Dialog | migrujemy |
+| src/pages/LeadDetail.tsx | 1720 | <DialogContent | migrujemy |
+| src/pages/LeadDetail.tsx | 1735 | <Dialog | migrujemy |
+| src/pages/LeadDetail.tsx | 1736 | <DialogContent | migrujemy |
+| src/pages/LeadDetail.tsx | 1749 | <Dialog | migrujemy |
+| src/pages/LeadDetail.tsx | 1750 | <DialogContent | migrujemy |
+| src/pages/LeadDetail.tsx | 1763 | <Dialog | migrujemy |
+| src/pages/LeadDetail.tsx | 1764 | <DialogContent | migrujemy |
+| src/pages/Leads.tsx | 685 | <Dialog | migrujemy |
+| src/pages/Leads.tsx | 686 | <DialogContent | migrujemy |
+| src/pages/ResponseTemplates.tsx | 306 | <Dialog | migrujemy |
+| src/pages/ResponseTemplates.tsx | 307 | <DialogContent | migrujemy |
+| src/pages/Tasks.tsx | 1094 | <Dialog | migrujemy |
+| src/pages/Tasks.tsx | 1095 | <DialogContent | migrujemy |
+| src/pages/Tasks.tsx | 1222 | <Dialog | migrujemy |
+| src/pages/Tasks.tsx | 1226 | <DialogContent | migrujemy |
+| src/pages/TasksStable.tsx | 563 | <Dialog | migrujemy |
+| src/pages/TasksStable.tsx | 564 | <DialogContent | migrujemy |
+| src/pages/TasksStable.tsx | 615 | <Dialog | migrujemy |
+| src/pages/TasksStable.tsx | 616 | <DialogContent | migrujemy |
+| src/pages/Templates.tsx | 429 | <Dialog | migrujemy |
+| src/pages/Templates.tsx | 430 | <DialogContent | migrujemy |
+| src/pages/Today.tsx | 2903 | <Dialog | migrujemy |
+| src/pages/Today.tsx | 2904 | <DialogContent | migrujemy |
+
+
 ## Co wolno dalej
 
 1. Najpierw migrować aktywne ekrany bez standardowego wrappera.
 2. Potem migrować aktywne ekrany bez standardowych kafelków.
 3. Potem migrować lokalne page hero/headery.
-4. Dopiero na końcu usuwać legacy/hotfix CSS.
+4. Potem porządkować lokalne right-card i modale.
+5. Dopiero na końcu usuwać legacy/hotfix CSS.
 
 ## Czego nie wolno robić po tym etapie
 
 - Nie usuwać hurtowo `visual-stage*`, `hotfix-*`, `eliteflow-*` ani `stage*.css`.
 - Nie przepinać UI bez sprawdzenia aktywnego routingu.
-- Nie robić „ładniejszego” cleanupu bez checka i aktualizacji tego inventory.
+- Nie robić cleanupu wizualnego bez checka i aktualizacji tego inventory.

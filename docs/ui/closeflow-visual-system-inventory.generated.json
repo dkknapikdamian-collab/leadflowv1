@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-05-09T13:23:31.517Z",
-    "stage": "Etap 0 — Visual system inventory freeze",
+    "generatedAt": "2026-05-09T14:11:41.626Z",
+    "stage": "VS-0 — Visual system inventory freeze",
     "branchExpected": "dev-rollout-freeze",
     "purpose": "Freeze visual-system inventory before visual cleanup/migration.",
     "rules": [
@@ -10,7 +10,7 @@
       "legacy",
       "usunąć później"
     ],
-    "note": "This is an audit inventory, not a UI migration."
+    "note": "Audit inventory only. No UI migration."
   },
   "cssImports": [
     {
@@ -438,6 +438,13 @@
       "file": "src/index.css",
       "line": 411,
       "import": "./styles/closeflow-client-event-modal-runtime-repair.css",
+      "decision": "migrujemy"
+    },
+    {
+      "kind": "src/index.css import",
+      "file": "src/index.css",
+      "line": 413,
+      "import": "./styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css",
       "decision": "migrujemy"
     }
   ],
@@ -936,7 +943,7 @@
       {
         "kind": "local tile/card component",
         "file": "src/pages/ClientDetail.tsx",
-        "line": 721,
+        "line": 747,
         "match": "function ClientTopTiles",
         "decision": "migrujemy"
       },
@@ -1101,7 +1108,7 @@
       {
         "kind": "local list row",
         "file": "src/pages/ClientDetail.tsx",
-        "line": 650,
+        "line": 676,
         "match": "function InfoRow",
         "decision": "migrujemy"
       },
@@ -1150,38 +1157,10 @@
     ],
     "localForms": [
       {
-        "kind": "local form/dialog component",
-        "file": "src/components/ContextActionDialogs.tsx",
-        "line": 112,
-        "match": "function ContextActionDialogsHost",
-        "decision": "migrujemy"
-      },
-      {
         "kind": "local form surface",
         "file": "src/components/ContextNoteDialog.tsx",
         "line": 100,
         "match": "<form",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/ContextNoteDialog.tsx",
-        "line": 31,
-        "match": "function ContextNoteDialog",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/DraftReviewDialog.tsx",
-        "line": 15,
-        "match": "function DraftReviewDialog",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/EntityConflictDialog.tsx",
-        "line": 50,
-        "match": "function EntityConflictDialog",
         "decision": "migrujemy"
       },
       {
@@ -1192,24 +1171,10 @@
         "decision": "migrujemy"
       },
       {
-        "kind": "local form/dialog component",
-        "file": "src/components/EventCreateDialog.tsx",
-        "line": 66,
-        "match": "function EventCreateDialog",
-        "decision": "migrujemy"
-      },
-      {
         "kind": "local form surface",
         "file": "src/components/LeadAiFollowupDraft.tsx",
         "line": 106,
         "match": "<form",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/LeadStartServiceDialog.tsx",
-        "line": 14,
-        "match": "function LeadStartServiceDialog",
         "decision": "migrujemy"
       },
       {
@@ -1220,38 +1185,10 @@
         "decision": "migrujemy"
       },
       {
-        "kind": "local form/dialog component",
-        "file": "src/components/TaskCreateDialog.tsx",
-        "line": 68,
-        "match": "function TaskCreateDialog",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/confirm-dialog.tsx",
-        "line": 18,
-        "match": "function ConfirmDialog",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
-        "line": 79,
-        "match": "function QuickLeadCaptureModal",
-        "decision": "migrujemy"
-      },
-      {
         "kind": "local form surface",
         "file": "src/components/task-editor-dialog.tsx",
         "line": 114,
         "match": "<form",
-        "decision": "migrujemy"
-      },
-      {
-        "kind": "local form/dialog component",
-        "file": "src/components/task-editor-dialog.tsx",
-        "line": 62,
-        "match": "function TaskEditorDialog",
         "decision": "migrujemy"
       },
       {
@@ -1276,13 +1213,6 @@
         "decision": "migrujemy"
       },
       {
-        "kind": "local form/dialog component",
-        "file": "src/pages/CaseDetail.tsx",
-        "line": 1892,
-        "match": "function CaseItemDialog",
-        "decision": "migrujemy"
-      },
-      {
         "kind": "local form surface",
         "file": "src/pages/Cases.tsx",
         "line": 515,
@@ -1292,7 +1222,7 @@
       {
         "kind": "local form surface",
         "file": "src/pages/Clients.tsx",
-        "line": 475,
+        "line": 476,
         "match": "<form",
         "decision": "migrujemy"
       },
@@ -1306,7 +1236,7 @@
       {
         "kind": "local form surface",
         "file": "src/pages/Leads.tsx",
-        "line": 680,
+        "line": 697,
         "match": "<form",
         "decision": "migrujemy"
       },
@@ -1364,6 +1294,1158 @@
         "file": "src/pages/TasksStable.tsx",
         "line": 620,
         "match": "<form",
+        "decision": "migrujemy"
+      }
+    ],
+    "localRightCards": [
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 822,
+        "match": "className=\"activity-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 823,
+        "match": "className=\"right-card activity-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 824,
+        "match": "className=\"activity-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 838,
+        "match": "className=\"right-card activity-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 839,
+        "match": "className=\"activity-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 860,
+        "match": "className=\"right-card activity-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Activity.tsx",
+        "line": 861,
+        "match": "className=\"activity-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1078,
+        "match": "className=\"ai-drafts-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1079,
+        "match": "className=\"right-card ai-drafts-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1080,
+        "match": "className=\"ai-drafts-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1098,
+        "match": "className=\"right-card ai-drafts-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1099,
+        "match": "className=\"ai-drafts-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1117,
+        "match": "className=\"right-card ai-drafts-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1118,
+        "match": "className=\"ai-drafts-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1136,
+        "match": "className=\"right-card ai-drafts-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/AiDrafts.tsx",
+        "line": 1137,
+        "match": "className=\"ai-drafts-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Billing.tsx",
+        "line": 667,
+        "match": "className=\"billing-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Billing.tsx",
+        "line": 668,
+        "match": "className=\"right-card billing-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Billing.tsx",
+        "line": 696,
+        "match": "className=\"right-card billing-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Billing.tsx",
+        "line": 708,
+        "match": "className=\"right-card billing-right-card billing-right-featured\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Billing.tsx",
+        "line": 720,
+        "match": "className=\"right-card billing-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Billing.tsx",
+        "line": 732,
+        "match": "className=\"right-card billing-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1579,
+        "match": "className=\"right-card calendar-week-filter\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1659,
+        "match": "className=\"right-card calendar-week-plan\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1557,
+        "match": "className=\"case-detail-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1559,
+        "match": "className=\"case-detail-right-card case-detail-create-action-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1579,
+        "match": "className=\"right-card case-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1588,
+        "match": "className=\"right-card case-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1649,
+        "match": "className=\"right-card case-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1663,
+        "match": "className=\"right-card case-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1686,
+        "match": "className=\"right-card case-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Cases.tsx",
+        "line": 781,
+        "match": "className=\"cases-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Cases.tsx",
+        "line": 782,
+        "match": "className=\"right-card cases-shortcuts-rail-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Cases.tsx",
+        "line": 792,
+        "match": "className=\"right-card cases-risk-rail-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 1518,
+        "match": "className=\"client-detail-profile-card client-detail-side-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 1597,
+        "match": "className=\"client-detail-right-card client-detail-recent-moves-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 1957,
+        "match": "className=\"client-detail-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 1959,
+        "match": "className=\"right-card client-detail-right-card client-detail-operational-center\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 1986,
+        "match": "className=\"right-card client-detail-right-card client-detail-side-quick-actions-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 2062,
+        "match": "className=\"right-card client-detail-right-card client-detail-note-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/ClientDetail.tsx",
+        "line": 2117,
+        "match": "className=\"right-card client-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Clients.tsx",
+        "line": 652,
+        "match": "className=\"clients-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Clients.tsx",
+        "line": 653,
+        "match": "className=\"right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Clients.tsx",
+        "line": 663,
+        "match": "className=\"right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1609,
+        "match": "className=\"lead-detail-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1610,
+        "match": "className=\"right-card lead-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1616,
+        "match": "className=\"right-card lead-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1623,
+        "match": "className=\"right-card lead-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1638,
+        "match": "className=\"right-card lead-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1646,
+        "match": "className=\"right-card lead-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1652,
+        "match": "className=\"right-card lead-detail-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Leads.tsx",
+        "line": 1026,
+        "match": "className=\"lead-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Leads.tsx",
+        "line": 1027,
+        "match": "className=\"right-card lead-right-card lead-top-relations\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 727,
+        "match": "className=\"notifications-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 728,
+        "match": "className=\"right-card notifications-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 729,
+        "match": "className=\"notifications-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 746,
+        "match": "className=\"right-card notifications-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 747,
+        "match": "className=\"notifications-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 765,
+        "match": "className=\"right-card notifications-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 766,
+        "match": "className=\"notifications-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 784,
+        "match": "className=\"right-card notifications-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/NotificationsCenter.tsx",
+        "line": 785,
+        "match": "className=\"notifications-right-card-head\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Settings.tsx",
+        "line": 1315,
+        "match": "className=\"settings-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Settings.tsx",
+        "line": 1316,
+        "match": "className=\"right-card settings-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Settings.tsx",
+        "line": 1325,
+        "match": "className=\"right-card settings-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Settings.tsx",
+        "line": 1334,
+        "match": "className=\"right-card settings-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Settings.tsx",
+        "line": 1343,
+        "match": "className=\"right-card settings-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Settings.tsx",
+        "line": 1352,
+        "match": "className=\"right-card settings-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/SupportCenter.tsx",
+        "line": 648,
+        "match": "className=\"support-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/SupportCenter.tsx",
+        "line": 649,
+        "match": "className=\"right-card support-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/SupportCenter.tsx",
+        "line": 661,
+        "match": "className=\"right-card support-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/SupportCenter.tsx",
+        "line": 670,
+        "match": "className=\"right-card support-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/SupportCenter.tsx",
+        "line": 679,
+        "match": "className=\"right-card support-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1452,
+        "match": "className=\"tasks-right-rail\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1453,
+        "match": "className=\"right-card tasks-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1462,
+        "match": "className=\"right-card tasks-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/Today.tsx",
+        "line": 2838,
+        "match": "className=\"right-card today-right-rail space-y-8\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/UiPreviewVNext.tsx",
+        "line": 47,
+        "match": "className=\"cfv-right-card\"",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local right-card/right-rail class",
+        "file": "src/pages/UiPreviewVNext.tsx",
+        "line": 52,
+        "match": "className=\"cfv-right-card\"",
+        "decision": "migrujemy"
+      }
+    ],
+    "localModals": [
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/ContextActionDialogs.tsx",
+        "line": 112,
+        "match": "function ContextActionDialogsHost",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/ContextNoteDialog.tsx",
+        "line": 31,
+        "match": "function ContextNoteDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/ContextNoteDialog.tsx",
+        "line": 90,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/ContextNoteDialog.tsx",
+        "line": 91,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/DraftReviewDialog.tsx",
+        "line": 15,
+        "match": "function DraftReviewDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/DraftReviewDialog.tsx",
+        "line": 25,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/DraftReviewDialog.tsx",
+        "line": 26,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/EntityConflictDialog.tsx",
+        "line": 50,
+        "match": "function EntityConflictDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/EntityConflictDialog.tsx",
+        "line": 65,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/EntityConflictDialog.tsx",
+        "line": 66,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/EventCreateDialog.tsx",
+        "line": 66,
+        "match": "function EventCreateDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/EventCreateDialog.tsx",
+        "line": 121,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/EventCreateDialog.tsx",
+        "line": 122,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/LeadAiFollowupDraft.tsx",
+        "line": 95,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/LeadAiFollowupDraft.tsx",
+        "line": 102,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/LeadAiNextAction.tsx",
+        "line": 150,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/LeadAiNextAction.tsx",
+        "line": 157,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/LeadStartServiceDialog.tsx",
+        "line": 14,
+        "match": "function LeadStartServiceDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/LeadStartServiceDialog.tsx",
+        "line": 23,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/LeadStartServiceDialog.tsx",
+        "line": 24,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/QuickAiCapture.tsx",
+        "line": 259,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/QuickAiCapture.tsx",
+        "line": 283,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/TaskCreateDialog.tsx",
+        "line": 68,
+        "match": "function TaskCreateDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/TaskCreateDialog.tsx",
+        "line": 120,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/TaskCreateDialog.tsx",
+        "line": 121,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/confirm-dialog.tsx",
+        "line": 18,
+        "match": "function ConfirmDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/confirm-dialog.tsx",
+        "line": 30,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/confirm-dialog.tsx",
+        "line": 31,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+        "line": 79,
+        "match": "function QuickLeadCaptureModal",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+        "line": 239,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/quick-lead/QuickLeadCaptureModal.tsx",
+        "line": 240,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/components/task-editor-dialog.tsx",
+        "line": 62,
+        "match": "function TaskEditorDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/task-editor-dialog.tsx",
+        "line": 100,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/components/task-editor-dialog.tsx",
+        "line": 101,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1254,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1255,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1429,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1430,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1708,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Calendar.tsx",
+        "line": 1714,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog component",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1892,
+        "match": "function CaseItemDialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1698,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1699,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1713,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1714,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1906,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/CaseDetail.tsx",
+        "line": 1907,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Cases.tsx",
+        "line": 497,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Cases.tsx",
+        "line": 508,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/ClientPortal.tsx",
+        "line": 305,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/ClientPortal.tsx",
+        "line": 315,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/ClientPortal.tsx",
+        "line": 339,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/ClientPortal.tsx",
+        "line": 349,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Clients.tsx",
+        "line": 465,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Clients.tsx",
+        "line": 469,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Dashboard.tsx",
+        "line": 241,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Dashboard.tsx",
+        "line": 248,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1679,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1680,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1692,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1693,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1719,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1720,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1735,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1736,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1749,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1750,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1763,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/LeadDetail.tsx",
+        "line": 1764,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Leads.tsx",
+        "line": 685,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Leads.tsx",
+        "line": 686,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/ResponseTemplates.tsx",
+        "line": 306,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/ResponseTemplates.tsx",
+        "line": 307,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1094,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1095,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1222,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Tasks.tsx",
+        "line": 1226,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/TasksStable.tsx",
+        "line": 563,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/TasksStable.tsx",
+        "line": 564,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/TasksStable.tsx",
+        "line": 615,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/TasksStable.tsx",
+        "line": 616,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Templates.tsx",
+        "line": 429,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Templates.tsx",
+        "line": 430,
+        "match": "<DialogContent",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Today.tsx",
+        "line": 2903,
+        "match": "<Dialog",
+        "decision": "migrujemy"
+      },
+      {
+        "kind": "local modal/dialog usage",
+        "file": "src/pages/Today.tsx",
+        "line": 2904,
+        "match": "<DialogContent",
         "decision": "migrujemy"
       }
     ]
@@ -1756,12 +2838,14 @@
     }
   ],
   "summary": {
-    "cssImports": 61,
+    "cssImports": 62,
     "namedCssFamilies": 72,
     "localTiles": 20,
     "localPageHeaders": 6,
     "localListRows": 12,
-    "localForms": 31,
+    "localForms": 20,
+    "localRightCards": 79,
+    "localModals": 85,
     "activeScreens": 23,
     "inactiveOrLegacyScreens": 2,
     "activeScreensWithoutStandardWrapper": 3,
@@ -1769,7 +2853,7 @@
     "activeScreensWithoutStandardPageHero": 13,
     "decisions": {
       "zostaje": 12,
-      "migrujemy": 212,
+      "migrujemy": 366,
       "legacy": 1,
       "usunąć później": 0
     }
