@@ -387,3 +387,36 @@ main[data-p0-tasks-stable-rebuild="true"] > section.grid > button:not([data-stat
     padding: 14px 16px !important;
   }
 }
+
+/* CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5_CSS
+   Owner: CloseFlow visual system.
+   Reason: one metric tile renderer and one grid contract across active screens.
+   Scope: /tasks, /cases, /leads, /clients and existing StatShortcutCard compatibility surfaces.
+   remove_after_stage: never; replace only when MetricTile v2 supersedes this contract.
+*/
+:where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap) !important;
+  align-items: stretch !important;
+}
+
+:where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) > [data-stat-shortcut-card],
+:where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) > .cf-top-metric-tile {
+  min-height: 0 !important;
+  width: 100% !important;
+}
+
+[data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-content,
+.cf-top-metric-tile-content[data-cf-metric-tile-contract="final-vs5"] {
+  min-height: var(--cf-metric-tile-min-height) !important;
+  border-radius: var(--cf-metric-tile-radius) !important;
+}
+
+@media (max-width: 1180px) {
+  :where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+@media (max-width: 640px) {
+  :where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) { grid-template-columns: 1fr !important; }
+}

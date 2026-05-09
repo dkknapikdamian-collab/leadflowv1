@@ -556,7 +556,10 @@
     "verify:closeflow-css-import-order": "npm.cmd run check:closeflow-css-import-order && npm.cmd run build",
     "audit:closeflow-active-screen-layout-matrix": "node scripts/audit-closeflow-active-screen-layout-matrix.cjs",
     "check:closeflow-active-screen-layout-matrix": "node scripts/check-closeflow-active-screen-layout-matrix.cjs",
-    "verify:closeflow-active-screen-layout-matrix": "npm.cmd run audit:closeflow-active-screen-layout-matrix && npm.cmd run check:closeflow-active-screen-layout-matrix"
+    "verify:closeflow-active-screen-layout-matrix": "npm.cmd run audit:closeflow-active-screen-layout-matrix && npm.cmd run check:closeflow-active-screen-layout-matrix",
+    "audit:closeflow-metric-tiles-final-migration": "node scripts/audit-closeflow-metric-tiles-final-migration.cjs",
+    "check:closeflow-metric-tiles-final-migration": "node scripts/check-closeflow-metric-tiles-final-migration.cjs",
+    "verify:closeflow-metric-tiles-final-migration": "npm.cmd run audit:closeflow-metric-tiles-final-migration && npm.cmd run check:closeflow-metric-tiles-final-migration"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

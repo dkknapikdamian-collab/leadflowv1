@@ -130,3 +130,4 @@ export function StatShortcutCard({
 /* ELITEFLOW_METRIC_TILES_COLOR_FONT_PARITY_GUARD data-eliteflow-metric-tone resolveMetricTone */
 /* ELITEFLOW_TASKS_TILES_TEXT_CLIP_REPAIR_GUARD no-truncate metric-value line-height-safe */
 /* VS2_STAT_SHORTCUT_CARD_ADAPTER_COMPAT cf-top-metric-tile-content flex min-h-[72px] w-full rounded-[22px] data-stat-shortcut-card */
+/* CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5_GUARD StatShortcutCard delegates to MetricTile and must not render local card markup */

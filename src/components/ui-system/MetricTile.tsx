@@ -1,6 +1,9 @@
 import type { ComponentType } from 'react';
 import { Link } from 'react-router-dom';
 
+const CLOSEFLOW_METRIC_TILE_FINAL_MIGRATION_VS5 = 'CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5: MetricTile is the final shared tile renderer for active metric surfaces';
+void CLOSEFLOW_METRIC_TILE_FINAL_MIGRATION_VS5;
+
 export type MetricTileTone =
   | 'neutral'
   | 'blue'
@@ -109,6 +112,7 @@ export function MetricTile({
         active ? 'is-active' : '',
       ].filter(Boolean).join(' ')}
       data-cf-ui-component="MetricTile"
+      data-cf-metric-tile-contract="final-vs5"
       data-eliteflow-today-metric-lock="true"
       data-eliteflow-metric-tone={resolvedTone}
     >
@@ -147,6 +151,7 @@ export function MetricTile({
         title={title}
         aria-label={ariaLabel || title || label}
         data-stat-shortcut-card
+        data-cf-metric-tile-contract="final-vs5"
         data-unified-top-metric-tile="true"
         data-metric-icon-next-to-value="true"
         data-eliteflow-today-metric-lock="true"
@@ -165,6 +170,7 @@ export function MetricTile({
       title={title}
       aria-label={ariaLabel || title || label}
       data-stat-shortcut-card
+      data-cf-metric-tile-contract="final-vs5"
       data-unified-top-metric-tile="true"
       data-metric-icon-next-to-value="true"
       data-eliteflow-today-metric-lock="true"

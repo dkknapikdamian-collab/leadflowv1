@@ -1,0 +1,80 @@
+{
+  "stage": "VS-5",
+  "marker": "CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5",
+  "generatedAt": "2026-05-09T17:46:48.674Z",
+  "strategy": "No broad page rewrite. Active pages keep StatShortcutCard compatibility adapter; MetricTile owns final markup and CSS contract owns final layout.",
+  "screens": [
+    {
+      "route": "/tasks",
+      "file": "src/pages/TasksStable.tsx",
+      "requiredGrid": "data-eliteflow-task-stat-grid"
+    },
+    {
+      "route": "/cases",
+      "file": "src/pages/Cases.tsx",
+      "requiredGrid": "grid-4"
+    },
+    {
+      "route": "/leads",
+      "file": "src/pages/Leads.tsx",
+      "requiredGrid": "grid-4"
+    },
+    {
+      "route": "/clients",
+      "file": "src/pages/Clients.tsx",
+      "requiredGrid": "grid-4"
+    }
+  ],
+  "matrix": [
+    {
+      "route": "/tasks",
+      "file": "src/pages/TasksStable.tsx",
+      "usesStatShortcutCard": true,
+      "statShortcutCount": 1,
+      "usesMetricTileDirectly": false,
+      "metricTileCount": 0,
+      "hasRequiredGridMarker": true,
+      "localMetricMarkupRiskCount": 0,
+      "status": "needs_review"
+    },
+    {
+      "route": "/cases",
+      "file": "src/pages/Cases.tsx",
+      "usesStatShortcutCard": true,
+      "statShortcutCount": 4,
+      "usesMetricTileDirectly": false,
+      "metricTileCount": 0,
+      "hasRequiredGridMarker": true,
+      "localMetricMarkupRiskCount": 0,
+      "status": "standard_adapter_active"
+    },
+    {
+      "route": "/leads",
+      "file": "src/pages/Leads.tsx",
+      "usesStatShortcutCard": true,
+      "statShortcutCount": 5,
+      "usesMetricTileDirectly": false,
+      "metricTileCount": 0,
+      "hasRequiredGridMarker": false,
+      "localMetricMarkupRiskCount": 0,
+      "status": "needs_review"
+    },
+    {
+      "route": "/clients",
+      "file": "src/pages/Clients.tsx",
+      "usesStatShortcutCard": true,
+      "statShortcutCount": 4,
+      "usesMetricTileDirectly": false,
+      "metricTileCount": 0,
+      "hasRequiredGridMarker": true,
+      "localMetricMarkupRiskCount": 0,
+      "status": "standard_adapter_active"
+    }
+  ],
+  "totals": {
+    "screens": 4,
+    "standardAdapterActive": 2,
+    "totalStatShortcutCards": 14,
+    "totalLocalMetricMarkupRisk": 0
+  }
+}
