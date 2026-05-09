@@ -22,6 +22,9 @@
 @import "./styles/visual-stage01-shell.css";
 @import "./styles/visual-html-theme-v14.css";
 @import "./styles/closeflow-vnext-ui-contract.css";
+@import './styles/closeflow-form-actions.css';
+@import './styles/visual-stage20-lead-form-vnext.css';
+@import './styles/visual-stage23-client-case-forms-vnext.css';
 
 /* 4. component contracts */
 @import './styles/closeflow-action-tokens.css';
@@ -32,6 +35,8 @@
 @import './styles/eliteflow-metric-tiles-color-font-parity.css';
 @import './styles/eliteflow-metric-text-clip-tasks-repair.css';
 @import './styles/closeflow-metric-tiles.css';
+@import './styles/closeflow-operator-metric-tiles.css';
+@import './styles/closeflow-operator-semantic-tones.css';
 @import './styles/eliteflow-desktop-compact-scale.css';
 @import './styles/eliteflow-sidebar-footer-contrast-repair.css';
 @import './styles/eliteflow-sidebar-user-footer-below-nav.css';

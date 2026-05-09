@@ -13,6 +13,8 @@ export * from './icon-registry';
 export * from './ActionIcon';
 export * from './action-icon-registry';
 export * from './semantic-visual-registry';
+export * from './operator-metric-tone-contract';
+export { OperatorMetricToneRuntime } from './OperatorMetricToneRuntime';
 
 export * from './OperatorMetricTiles';
 export { OperatorMetricTiles, OperatorMetricTile } from './OperatorMetricTiles';

@@ -1,0 +1,69 @@
+/* CLOSEFLOW_VS7_SEMANTIC_METRIC_TONE_SOURCE_OF_TRUTH
+   Owner: CloseFlow Visual System
+   Reason: one semantic label/id/status owns the same tone across metric tiles, icons, numbers and legacy list cards.
+   Scope: OperatorMetricTiles, StatShortcutCard adapter output and legacy Today cards reported in admin feedback 2026-05-09.
+   remove_after_stage: never; this is the semantic tone bridge until every card is migrated to OperatorMetricTiles.
+*/
+
+:root {
+  --cf-semantic-neutral-value: #111827;
+  --cf-semantic-neutral-bg: #f6f8fb;
+  --cf-semantic-neutral-border: #e4e7ec;
+  --cf-semantic-blue-value: #2563eb;
+  --cf-semantic-blue-bg: #eff6ff;
+  --cf-semantic-blue-border: #bfdbfe;
+  --cf-semantic-green-value: #047857;
+  --cf-semantic-green-bg: #ecfdf3;
+  --cf-semantic-green-border: #bbf7d0;
+  --cf-semantic-amber-value: #b54708;
+  --cf-semantic-amber-bg: #fffaeb;
+  --cf-semantic-amber-border: #fedf89;
+  --cf-semantic-red-value: #be123c;
+  --cf-semantic-red-bg: #fff1f3;
+  --cf-semantic-red-border: #fecdd3;
+  --cf-semantic-purple-value: #6941c6;
+  --cf-semantic-purple-bg: #f4f3ff;
+  --cf-semantic-purple-border: #ddd6fe;
+}
+
+html body #root [data-cf-semantic-tone="neutral"] { --cf-semantic-tone-value: var(--cf-semantic-neutral-value); --cf-semantic-tone-bg: var(--cf-semantic-neutral-bg); --cf-semantic-tone-border: var(--cf-semantic-neutral-border); }
+html body #root [data-cf-semantic-tone="blue"] { --cf-semantic-tone-value: var(--cf-semantic-blue-value); --cf-semantic-tone-bg: var(--cf-semantic-blue-bg); --cf-semantic-tone-border: var(--cf-semantic-blue-border); }
+html body #root [data-cf-semantic-tone="green"] { --cf-semantic-tone-value: var(--cf-semantic-green-value); --cf-semantic-tone-bg: var(--cf-semantic-green-bg); --cf-semantic-tone-border: var(--cf-semantic-green-border); }
+html body #root [data-cf-semantic-tone="amber"] { --cf-semantic-tone-value: var(--cf-semantic-amber-value); --cf-semantic-tone-bg: var(--cf-semantic-amber-bg); --cf-semantic-tone-border: var(--cf-semantic-amber-border); }
+html body #root [data-cf-semantic-tone="red"] { --cf-semantic-tone-value: var(--cf-semantic-red-value); --cf-semantic-tone-bg: var(--cf-semantic-red-bg); --cf-semantic-tone-border: var(--cf-semantic-red-border); }
+html body #root [data-cf-semantic-tone="purple"] { --cf-semantic-tone-value: var(--cf-semantic-purple-value); --cf-semantic-tone-bg: var(--cf-semantic-purple-bg); --cf-semantic-tone-border: var(--cf-semantic-purple-border); }
+
+html body #root .cf-operator-metric-value[data-cf-operator-metric-value-tone="neutral"] { color: var(--cf-semantic-neutral-value) !important; -webkit-text-fill-color: var(--cf-semantic-neutral-value) !important; }
+html body #root .cf-operator-metric-value[data-cf-operator-metric-value-tone="blue"] { color: var(--cf-semantic-blue-value) !important; -webkit-text-fill-color: var(--cf-semantic-blue-value) !important; }
+html body #root .cf-operator-metric-value[data-cf-operator-metric-value-tone="green"] { color: var(--cf-semantic-green-value) !important; -webkit-text-fill-color: var(--cf-semantic-green-value) !important; }
+html body #root .cf-operator-metric-value[data-cf-operator-metric-value-tone="amber"] { color: var(--cf-semantic-amber-value) !important; -webkit-text-fill-color: var(--cf-semantic-amber-value) !important; }
+html body #root .cf-operator-metric-value[data-cf-operator-metric-value-tone="red"] { color: var(--cf-semantic-red-value) !important; -webkit-text-fill-color: var(--cf-semantic-red-value) !important; }
+html body #root .cf-operator-metric-value[data-cf-operator-metric-value-tone="purple"] { color: var(--cf-semantic-purple-value) !important; -webkit-text-fill-color: var(--cf-semantic-purple-value) !important; }
+
+html body #root .cf-operator-metric-icon[data-cf-operator-metric-icon-tone="neutral"] { background: var(--cf-semantic-neutral-bg) !important; color: #64748b !important; }
+html body #root .cf-operator-metric-icon[data-cf-operator-metric-icon-tone="blue"] { background: var(--cf-semantic-blue-bg) !important; color: var(--cf-semantic-blue-value) !important; }
+html body #root .cf-operator-metric-icon[data-cf-operator-metric-icon-tone="green"] { background: var(--cf-semantic-green-bg) !important; color: var(--cf-semantic-green-value) !important; }
+html body #root .cf-operator-metric-icon[data-cf-operator-metric-icon-tone="amber"] { background: var(--cf-semantic-amber-bg) !important; color: var(--cf-semantic-amber-value) !important; }
+html body #root .cf-operator-metric-icon[data-cf-operator-metric-icon-tone="red"] { background: var(--cf-semantic-red-bg) !important; color: var(--cf-semantic-red-value) !important; }
+html body #root .cf-operator-metric-icon[data-cf-operator-metric-icon-tone="purple"] { background: var(--cf-semantic-purple-bg) !important; color: var(--cf-semantic-purple-value) !important; }
+
+html body #root [data-cf-semantic-section-card="true"] {
+  border-color: var(--cf-semantic-tone-border) !important;
+  background-image: linear-gradient(135deg, color-mix(in srgb, var(--cf-semantic-tone-bg) 86%, transparent), rgba(255, 255, 255, 0)) !important;
+}
+
+html body #root [data-cf-semantic-section-card="true"] strong,
+html body #root [data-cf-semantic-section-card="true"] .font-black,
+html body #root [data-cf-semantic-section-card="true"] .font-extrabold,
+html body #root [data-cf-semantic-section-card="true"] .text-2xl,
+html body #root [data-cf-semantic-section-card="true"] .text-3xl,
+html body #root [data-cf-semantic-section-card="true"] [data-cf-count],
+html body #root [data-cf-semantic-section-card="true"] [data-cf-value] {
+  color: var(--cf-semantic-tone-value) !important;
+  -webkit-text-fill-color: var(--cf-semantic-tone-value) !important;
+}
+
+html body #root [data-cf-semantic-section-card="true"] svg {
+  color: var(--cf-semantic-tone-value) !important;
+  stroke: currentColor !important;
+}
