@@ -398,10 +398,18 @@ export default function Leads() {
   };
 
   const createLeadFromPreparedInput = async (preparedLead: any, options?: { forceDuplicate?: boolean }) => {
-    await insertLeadToSupabase({ ...sanitizeNewLeadCreatePayloadA1(preparedLead), allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
+    // A1_LEAD_CREATE_VISIBILITY_FINALIZER: a newly created lead must not inherit stale client/case relations and must stay visible after save.
+    const sanitizedPreparedLead = { ...preparedLead };
+    delete sanitizedPreparedLead.clientId;
+    delete sanitizedPreparedLead.client_id;
+    delete sanitizedPreparedLead.linkedCaseId;
+    delete sanitizedPreparedLead.linked_case_id;
+    delete sanitizedPreparedLead.caseId;
+    delete sanitizedPreparedLead.case_id;
+    await insertLeadToSupabase({ ...sanitizedPreparedLead, allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
     setSearchQuery('');
-    setShowTrash(false);
     setQuickFilter('all');
+    setShowTrash(false);
     setValueSortEnabled(false);
     await loadLeads();
     toast.success('Lead dodany');

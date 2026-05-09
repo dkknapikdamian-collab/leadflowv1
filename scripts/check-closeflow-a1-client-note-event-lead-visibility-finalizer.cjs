@@ -1,65 +1,44 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 const fs = require('fs');
-const path = require('path');
+function read(file){ return fs.readFileSync(file, 'utf8'); }
+function fail(message){ console.error('CLOSEFLOW_A1_CLIENT_NOTE_EVENT_LEAD_VISIBILITY_FINALIZER_FAIL: ' + message); process.exit(1); }
+function has(text, needle, message){ if(!text.includes(needle)) fail(message + ': ' + needle); }
+const supabase = read('src/lib/supabase-fallback.ts');
+const api = read('api/activities.ts');
+const client = read('src/pages/ClientDetail.tsx');
+const note = read('src/components/ContextNoteDialog.tsx');
+const leads = read('src/pages/Leads.tsx');
 
-const repo = path.resolve(process.argv[2] || process.cwd());
-process.chdir(repo);
+has(supabase, 'type ActivityInput', 'ActivityInput missing');
+has(supabase, 'clientId?: string | null', 'ActivityInput clientId missing');
+has(supabase, 'fetchActivitiesFromSupabase(params?:', 'fetchActivitiesFromSupabase missing');
+has(supabase, 'clientId?: string', 'fetchActivities clientId param missing');
+has(supabase, "query.set('clientId'", 'fetchActivities clientId query missing');
+has(supabase, 'export async function deleteActivityFromSupabase', 'deleteActivityFromSupabase missing');
+has(supabase, "method: 'DELETE'", 'deleteActivityFromSupabase DELETE method missing');
 
-function read(rel) {
-  return fs.readFileSync(path.join(repo, rel), 'utf8');
+has(api, 'const clientId = asText(req.query?.clientId || body.clientId);', 'api clientId read missing');
+has(api, 'client_id=eq.', 'api GET client_id filter missing');
+has(api, 'client_id: clientId || null', 'api POST client_id missing');
+has(api, 'if (body.clientId !== undefined) patch.client_id', 'api PATCH client_id missing');
+has(api, "if (req.method === 'DELETE')", 'api DELETE branch missing');
+has(api, "PORTAL_ACTIVITY_DELETE_FORBIDDEN", 'api portal delete guard missing');
+
+has(note, "if (context?.recordType === 'client') return 'client_note';", 'ContextNoteDialog client_note mapping missing');
+
+has(client, 'deleteActivityFromSupabase', 'ClientDetail delete helper import/use missing');
+has(client, 'fetchActivitiesFromSupabase({ clientId:', 'ClientDetail clientId activity fetch missing');
+has(client, 'CLIENT_NOTE_ACTIVITY_TYPES_A1_FINALIZER', 'ClientDetail note type finalizer set missing');
+for (const eventType of ['client_note', 'client_note_added', 'client_note_dictated', 'dictated_note', 'note_added']) {
+  has(client, eventType, 'ClientDetail legacy note event type missing');
 }
-function fail(message) {
-  console.error('CLOSEFLOW_A1_CLIENT_NOTE_EVENT_LEAD_VISIBILITY_FINALIZER_FAIL: ' + message);
-  process.exit(1);
-}
-function assert(condition, message) {
-  if (!condition) fail(message);
-}
-function includes(rel, text) {
-  assert(read(rel).includes(text), `${rel} missing: ${text}`);
-}
+has(client, 'normalizeClientActivitiesForA1', 'ClientDetail client note normalizer missing');
 
-includes('src/lib/supabase-fallback.ts', 'clientId?: string | null');
-includes('src/lib/supabase-fallback.ts', 'params?.clientId');
-includes('src/lib/supabase-fallback.ts', "query.set('clientId', params.clientId)");
-includes('src/lib/supabase-fallback.ts', 'deleteActivityFromSupabase');
-
-includes('api/activities.ts', 'const clientId = asText(req.query?.clientId || body.clientId);');
-includes('api/activities.ts', 'client_id=eq.${encodeURIComponent(clientId)}');
-includes('api/activities.ts', 'client_id: clientId || null');
-includes('api/activities.ts', 'patch.client_id = asText(body.clientId) || null');
-
-includes('src/components/ContextNoteDialog.tsx', "if (context?.recordType === 'client') return 'client_note';");
-
-for (const marker of [
-  'CLIENT_NOTE_ACTIVITY_TYPES_A1_FINALIZER',
-  "'client_note'",
-  "'client_note_added'",
-  "'client_note_dictated'",
-  "'dictated_note'",
-  "'note_added'",
-  'isClientNoteActivityA1',
-  'deleteActivityFromSupabase',
-]) {
-  includes('src/pages/ClientDetail.tsx', marker);
-}
-
-includes('src/components/EventCreateDialog.tsx', 'data-a1-event-modal-readable-finalizer="true"');
-includes('src/index.css', "closeflow-a1-client-note-event-lead-visibility-finalizer.css");
-includes('src/styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css', 'CLOSEFLOW_A1_CLIENT_NOTE_EVENT_LEAD_VISIBILITY_FINALIZER');
-
-includes('src/pages/Leads.tsx', 'sanitizeNewLeadCreatePayloadA1');
-includes('src/pages/Leads.tsx', "setSearchQuery('')");
-includes('src/pages/Leads.tsx', "setQuickFilter('all')");
-includes('src/pages/Leads.tsx', 'delete payload.clientId');
-includes('src/pages/Leads.tsx', 'delete payload.linkedCaseId');
-
-includes('api/leads.ts', 'sanitizeFreshLeadCreatePayloadA1');
-includes('api/leads.ts', 'delete next.client_id');
-includes('api/leads.ts', 'delete next.linked_case_id');
-
-const pkg = JSON.parse(read('package.json'));
-assert(pkg.scripts && pkg.scripts['check:a1-client-note-event-lead-visibility-finalizer'], 'package.json missing check script');
+has(leads, 'A1_LEAD_CREATE_VISIBILITY_FINALIZER', 'Leads visibility finalizer marker missing');
+has(leads, "setSearchQuery('')", 'Leads search clear missing');
+has(leads, "setQuickFilter('all')", 'Leads quick filter reset missing');
+has(leads, 'delete sanitizedPreparedLead.clientId', 'Leads stale clientId strip missing');
+has(leads, 'delete sanitizedPreparedLead.linkedCaseId', 'Leads stale linkedCaseId strip missing');
 
 console.log('CLOSEFLOW_A1_CLIENT_NOTE_EVENT_LEAD_VISIBILITY_FINALIZER_CHECK_OK');

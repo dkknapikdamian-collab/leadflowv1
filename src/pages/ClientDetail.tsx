@@ -988,7 +988,7 @@ export default function ClientDetail() {
         fetchPaymentsFromSupabase({ clientId }),
         fetchTasksFromSupabase(),
         fetchEventsFromSupabase(),
-        fetchActivitiesFromSupabase({ limit: 120 }),
+        fetchActivitiesFromSupabase({ clientId: String(id || ''), limit: 120 }),
       ]);
 
       setClient(clientRow);
@@ -997,7 +997,7 @@ export default function ClientDetail() {
       setPayments(Array.isArray(paymentRows) ? paymentRows : []);
       setTasks(Array.isArray(taskRows) ? taskRows : []);
       setEvents(Array.isArray(eventRows) ? eventRows : []);
-      setActivities(Array.isArray(activityRows) ? activityRows : []);
+      setActivities(normalizeClientActivitiesForA1(Array.isArray(activityRows) ? activityRows : []));
       setForm({
         name: String((clientRow as any)?.name || ''),
         company: String((clientRow as any)?.company || ''),
