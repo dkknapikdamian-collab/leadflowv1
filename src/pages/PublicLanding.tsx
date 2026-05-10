@@ -172,7 +172,7 @@ export default function PublicLanding() {
           <a href="#jak-dziala">Jak działa</a>
           <a href="#funkcje">Funkcje</a>
           <a href="#cena">Cena</a>
-          <Link to="/login?tab=login">Mam już konto</Link>
+          <Link to="/login?tab=login">Zaloguj się</Link>
         </nav>
       </header>
 
@@ -189,14 +189,14 @@ export default function PublicLanding() {
           </p>
           <div className="public-landing-actions">
             <Link to="/login?tab=register" className="public-landing-primary-cta">
-              Rozpocznij 21 dni testu <ArrowRight className="h-4 w-4" />
+              Utwórz konto <ArrowRight className="h-4 w-4" />
             </Link>
             <Link to="/login?tab=login" className="public-landing-secondary-cta">
-              Mam już konto
+              Zaloguj się
             </Link>
           </div>
           <p className="public-landing-microcopy">
-            Po testach możesz zostać przy planie Pro za 39 zł miesięcznie.
+            Zacznij od 21 dni dostępu. Plan Pro po okresie próbnym: 39 zł miesięcznie.
           </p>
         </div>
         <HeroMockup />
@@ -278,15 +278,15 @@ export default function PublicLanding() {
         <div className="public-landing-price-card">
           <div>
             <p className="public-landing-kicker">Start</p>
-            <h2>21 dni testu</h2>
+            <h2>21 dni dostępu</h2>
             <p>Dodaj kilka prawdziwych leadów, ustaw następne kroki i sprawdź, czy widok Dziś porządkuje Twoją pracę.</p>
           </div>
           <div className="public-landing-price-box">
             <span>Pro</span>
             <strong>39 zł</strong>
-            <small>miesięcznie po testach</small>
+            <small>miesięcznie po okresie próbnym</small>
             <Link to="/login?tab=register" className="public-landing-primary-cta">
-              Rozpocznij test <ArrowRight className="h-4 w-4" />
+              Utwórz konto <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
@@ -310,13 +310,13 @@ export default function PublicLanding() {
       <section className="public-landing-final-cta">
         <FileText className="h-8 w-8" />
         <h2>Zacznij od kilku realnych leadów.</h2>
-        <p>Najlepszy test CloseFlow to jeden zwykły dzień pracy: kontakty, zadania, terminy i sprawy w jednym widoku.</p>
+        <p>Pierwszy dzień w CloseFlow jest prosty: kontakty, zadania, terminy i sprawy w jednym widoku.</p>
         <div className="public-landing-actions public-landing-actions-center">
           <Link to="/login?tab=register" className="public-landing-primary-cta">
-            Wejdź do testu <ArrowRight className="h-4 w-4" />
+            Utwórz konto <ArrowRight className="h-4 w-4" />
           </Link>
           <Link to="/login?tab=login" className="public-landing-secondary-cta public-landing-secondary-cta-dark">
-            Mam już konto
+            Zaloguj się
           </Link>
         </div>
       </section>
