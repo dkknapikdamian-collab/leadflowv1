@@ -92,3 +92,23 @@
   box-shadow: 0 0 0 3px var(--cf-session-action-danger-focus) !important;
 }
 
+/* FB5_TOAST_DANGER_SOURCE_OF_TRUTH
+   Toasts stay top-center. Delete/trash/destructive UI uses entity action danger tokens.
+*/
+.client-detail-note-delete-action {
+  color: var(--cf-action-danger-text) !important;
+  background: transparent !important;
+  border-color: var(--cf-action-danger-border) !important;
+}
+
+.client-detail-note-delete-action:hover,
+.client-detail-note-delete-action:focus-visible {
+  color: var(--cf-action-danger-text-hover) !important;
+  background: var(--cf-action-danger-bg-hover) !important;
+  border-color: var(--cf-action-danger-border-hover) !important;
+}
+
+.client-detail-note-delete-action svg {
+  color: var(--cf-action-danger-text) !important;
+  stroke: currentColor !important;
+}

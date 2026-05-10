@@ -181,7 +181,7 @@ export default function App() {
     return (
       <TooltipProvider>
         <EmailVerificationGate user={user} />
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-center" richColors closeButton />
       </TooltipProvider>
     );
   }
@@ -225,7 +225,7 @@ export default function App() {
         </AppChunkErrorBoundary>
         <NotificationRuntime enabled={isLoggedIn} />
         <PwaInstallPrompt />
-        <Toaster position="top-right" richColors />
+        <Toaster position="top-center" richColors closeButton />
       </Router>
     </TooltipProvider>
   );

@@ -7,6 +7,7 @@ import { AlertTriangle } from 'lucide-react';
 import { DeleteActionIcon, OpenActionIcon, RestoreActionIcon } from './ui-system';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
+import { actionButtonClass } from './entity-actions';
 
 export type EntityConflictCandidate = {
   id: string;
@@ -106,7 +107,7 @@ export function EntityConflictDialog({
                     </Button>
                   ) : null}
                   {onDeleteCandidate ? (
-                    <Button type="button" variant="outline" size="sm" onClick={() => onDeleteCandidate(candidate)} disabled={busy} className="text-rose-700 hover:text-rose-800">
+                    <Button type="button" variant="outline" size="sm" onClick={() => onDeleteCandidate(candidate)} disabled={busy} className={actionButtonClass('danger')}>
                       <DeleteActionIcon className="mr-1 h-4 w-4" />Usuń
                     </Button>
                   ) : null}

@@ -624,7 +624,10 @@
     "check:closeflow-fb1-copy-noise-cleanup": "node scripts/check-closeflow-fb1-copy-noise-cleanup.cjs",
     "check:closeflow-fb2-leads-list-right-rail-cleanup": "node scripts/check-closeflow-fb2-leads-list-right-rail-cleanup.cjs",
     "check:closeflow-fb3-lead-detail-cleanup": "node scripts/check-closeflow-fb3-lead-detail-cleanup.cjs",
-    "check:closeflow-fb4-today-behavior-cleanup": "node scripts/check-closeflow-fb4-today-behavior-cleanup.cjs"
+    "check:closeflow-fb4-today-behavior-cleanup": "node scripts/check-closeflow-fb4-today-behavior-cleanup.cjs",
+    "check:closeflow-fb5-toast-danger-source": "node scripts/check-closeflow-fb5-toast-danger-source.cjs",
+    "check:closeflow-fb5-heavy-ui-guards": "node scripts/check-closeflow-fb5-heavy-ui-guards.cjs",
+    "check:closeflow-fb5-bulk-ui-contract": "node scripts/check-closeflow-fb5-bulk-ui-contract.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
