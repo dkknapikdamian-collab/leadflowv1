@@ -49,6 +49,7 @@ type TicketRow = {
 };
 
 const SUPPORT_VISUAL_REBUILD_STAGE17 = 'SUPPORT_VISUAL_REBUILD_STAGE17';
+const CLOSEFLOW_FB1_SUPPORT_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
 
 const KIND_OPTIONS: Array<{ id: TicketKind; label: string; helper: string; Icon: any }> = [
   {
@@ -398,7 +399,7 @@ export default function SupportCenter() {
           <div>
             <p className="support-kicker">POMOC</p>
             <h1>Pomoc</h1>
-            <p>Zgłoszenia, odpowiedzi i kontakt w jednym miejscu.</p>
+            <p>Zgłoszenia i status.</p>
           </div>
           <div className="support-header-actions">
             <Button type="button" variant="outline" onClick={() => void loadTickets()}>
@@ -417,14 +418,12 @@ export default function SupportCenter() {
           <article className="support-hero-card">
             <ShieldCheck className="h-5 w-5" />
             <span>Status zgłoszeń</span>
-            <strong>{ticketCounts.all}</strong>
-            <p>Wszystkie Twoje zgłoszenia widoczne w tym workspace.</p>
+            <strong>{ticketCounts.all}</strong>
           </article>
           <article className="support-hero-card">
             <Clock3 className="h-5 w-5" />
             <span>W trakcie</span>
-            <strong>{ticketCounts.byStatus.get('in_progress') || 0}</strong>
-            <p>Tematy, które wymagają dalszej obsługi.</p>
+            <strong>{ticketCounts.byStatus.get('in_progress') || 0}</strong>
           </article>
         </section>
 
@@ -626,23 +625,7 @@ export default function SupportCenter() {
               )}
             </section>
 
-            <section className="support-faq-card">
-              <div className="support-section-head">
-                <div>
-                  <h2>Najczęstsze pytania</h2>
-                  <p>Krótkie odpowiedzi bez ściany tekstu.</p>
-                </div>
-              </div>
-              <div className="support-faq-grid">
-                {FAQ_ITEMS.map((item) => (
-                  <article key={item.question} className="support-faq-item">
-                    <HelpCircle className="h-4 w-4" />
-                    <h3>{item.question}</h3>
-                    <p>{item.answer}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
+            
           </section>
 
           <aside className="support-right-rail" aria-label="Panel pomocy">
@@ -676,18 +659,7 @@ export default function SupportCenter() {
               <small>Jeśli coś nie działa, sprawdź najpierw trasę, przeglądarkę i czy problem powtarza się po odświeżeniu.</small>
             </section>
 
-            <section className="right-card support-right-card">
-              <div className="support-right-title">
-                <Wrench className="h-4 w-4" />
-                <h2>Co sprawdzić najpierw</h2>
-              </div>
-              <ul>
-                <li>Czy jesteś w dobrym workspace.</li>
-                <li>Czy rekord nie jest już w sprawie.</li>
-                <li>Czy problem jest tylko na mobile.</li>
-                <li>Czy build/deploy nie jest w trakcie.</li>
-              </ul>
-            </section>
+            
           </aside>
         </div>
       </main>

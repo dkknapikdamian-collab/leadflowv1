@@ -100,6 +100,7 @@ const DAILY_DIGEST_EMAIL_READY_COPY_GUARD = 'Digest gotowy do wysyłki';
 const DAILY_DIGEST_EMAIL_NEEDS_CONFIG_COPY_GUARD = 'Digest wymaga konfiguracji';
 const DAILY_DIGEST_EMAIL_ENV_COPY_GUARD = 'RESEND_API_KEY: DIGEST_FROM_EMAIL:';
 const GOOGLE_CALENDAR_CONFIG_REQUIRED_IS_NOT_USER_ERROR_STAGE86 = 'Google Calendar wymaga konfiguracji w Vercel';
+const CLOSEFLOW_FB1_SETTINGS_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
 
 type ProfileFormState = {
   fullName: string;
@@ -810,8 +811,7 @@ useEffect(() => {
         <header className="settings-header">
           <div>
             <p className="settings-kicker">USTAWIENIA</p>
-            <h1>Ustawienia</h1>
-            <p>Konto, workspace, powiadomienia i preferencje aplikacji.</p>
+            <h1>Ustawienia</h1>
           </div>
           <div className="settings-header-actions">
             <Button type="button" variant="outline" onClick={refresh}>
@@ -1389,14 +1389,7 @@ useEffect(() => {
               <small>Plan: {planLabel}</small>
             </section>
 
-            <section className="right-card settings-right-card">
-              <div className="settings-right-title">
-                <WalletCards className="h-4 w-4" />
-                <h2>Dostęp</h2>
-              </div>
-              <p>{accessLabel}</p>
-              <small>Stan dostępu pochodzi z istniejącego `useWorkspace` i `access`.</small>
-            </section>
+            
 
             <section className="right-card settings-right-card">
               <div className="settings-right-title">

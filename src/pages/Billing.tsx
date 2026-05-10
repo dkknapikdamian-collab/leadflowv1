@@ -75,6 +75,7 @@ type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';
 const UI_TRUTH_BADGE_LABELS_STAGE14E = ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu'] as const;
 
 const BILLING_VISUAL_REBUILD_STAGE16 = 'BILLING_VISUAL_REBUILD_STAGE16';
+const CLOSEFLOW_FB1_BILLING_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
 const BILLING_STRIPE_BLIK_CONTRACT = 'Stripe';
 const BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J = 'paid plan appears only after Stripe webhook confirmation';
 const BILLING_STRIPE_STAGE86_E2E_GATE = 'checkout → webhook → paid_active → access refresh → cancel/resume';
@@ -174,7 +175,7 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
   paid_active: {
     label: 'Dostęp aktywny',
     headline: 'Plan jest aktywny',
-    description: 'Masz aktywny dostęp do pracy w aplikacji.',
+    description: 'Plan aktywny.',
     tone: 'green',
     cta: 'Zarządzaj planem',
   },
@@ -501,8 +502,7 @@ export default function Billing() {
         <header className="billing-header">
           <div>
             <p className="billing-kicker">ROZLICZENIA</p>
-            <h1>Rozliczenia</h1>
-            <p className="billing-header-description">Plan, dostęp i status subskrypcji w jednym miejscu.</p>
+            <h1>Rozliczenia</h1>
           </div>
           <div className="billing-header-actions">
             <Button type="button" variant="outline" onClick={refresh}>
@@ -546,36 +546,16 @@ export default function Billing() {
                 </div>
               </section>
 
-              <section className="billing-metrics-grid" aria-label="Podsumowanie rozliczeń">
+                            <section className="billing-metrics-grid" aria-label="Podsumowanie rozliczeń">
                 <article className="billing-metric-card">
                   <small>Plan</small>
                   <strong>{currentPlanName}</strong>
-                  <span>Obecny pakiet</span>
+                  <span>{accessCopy.label}</span>
                 </article>
                 <article className="billing-metric-card">
-                  <small>Dostęp</small>
-                  <strong>{accessCopy.label}</strong>
-                  <span>{access?.hasAccess ? 'Możesz pracować' : 'Część akcji zablokowana'}</span>
-                </article>
-                <article className="billing-metric-card">
-                  <small>Trial</small>
-                  <strong>{access?.isTrialActive ? daysLeftLabel : 'Nieaktywny'}</strong>
-                  <span>Koniec: {trialEndsAtLabel}</span>
-                </article>
-                <article className="billing-metric-card">
-                  <small>Limity</small>
-                  <strong>{effectivePlan.name}</strong>
-                  <span>Według planu</span>
-                </article>
-                <article className="billing-metric-card">
-                  <small>Następna płatność / okres</small>
+                  <small>Następna płatność / status płatności</small>
                   <strong>{nextBillingAtLabel}</strong>
-                  <span>{workspace.cancelAtPeriodEnd ? 'Anulowanie na koniec okresu' : 'Nie ustawiono anulowania'}</span>
-                </article>
-                <article className="billing-metric-card">
-                  <small>Blokady</small>
-                  <strong>{blockedState ? 'Aktywne' : 'Brak'}</strong>
-                  <span>{blockedState ? 'Wybierz plan, żeby dodawać nowe rekordy' : 'Brak blokady dostępu'}</span>
+                  <span>{workspace.cancelAtPeriodEnd ? 'Anulowanie na koniec okresu' : accessCopy.label}</span>
                 </article>
               </section>
 
