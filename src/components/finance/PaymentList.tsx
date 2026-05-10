@@ -1,5 +1,7 @@
-import type { FinancePayment, PaymentStatus, PaymentType } from '../../lib/finance/finance-types';
+import type { FinancePayment, PaymentStatus } from '../../lib/finance/finance-types';
 import { normalizeFinancePayments } from '../../lib/finance/finance-normalize';
+import { getPaymentStatusLabel, getPaymentTypeLabel } from '../../lib/finance/finance-payment-labels';
+import { StatusPill } from '../ui-system';
 
 type PaymentListProps = {
   payments?: Array<FinancePayment | Record<string, unknown>>;
@@ -8,21 +10,12 @@ type PaymentListProps = {
   compact?: boolean;
 };
 
-const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
-  deposit: 'Zaliczka',
-  partial: 'Wpłata częściowa',
-  final: 'Wpłata końcowa',
-  commission: 'Prowizja',
-  refund: 'Zwrot',
-  other: 'Inna wpłata',
-};
-
-const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
-  planned: 'planowana',
-  due: 'należna',
-  paid: 'zapłacona',
-  cancelled: 'anulowana',
-};
+export function getPaymentStatusTone(status: PaymentStatus | string) {
+  if (status === 'paid') return 'green' as const;
+  if (status === 'due') return 'amber' as const;
+  if (status === 'cancelled') return 'red' as const;
+  return 'blue' as const;
+}
 
 function formatMoney(value: unknown, currency = 'PLN') {
   const amount = Number(value || 0);
@@ -59,14 +52,14 @@ export function PaymentList({
           {normalized.map((payment) => (
             <li key={payment.id} className="cf-finance-payment-row">
               <div className="cf-finance-payment-row__main">
-                <strong>{PAYMENT_TYPE_LABELS[payment.type] || payment.type}</strong>
+                <strong>{getPaymentTypeLabel(payment.type)}</strong>
                 <span>{payment.note || formatDate(payment.paidAt || payment.dueAt)}</span>
               </div>
               <div className="cf-finance-payment-row__side">
                 <strong>{formatMoney(payment.amount, payment.currency)}</strong>
-                <span className={`cf-finance-status cf-finance-status--payment-${payment.status}`}>
-                  {PAYMENT_STATUS_LABELS[payment.status] || payment.status}
-                </span>
+                <StatusPill tone={getPaymentStatusTone(payment.status)} className={`cf-finance-status cf-finance-status--payment-${payment.status}`}>
+                  {getPaymentStatusLabel(payment.status)}
+                </StatusPill>
               </div>
             </li>
           ))}

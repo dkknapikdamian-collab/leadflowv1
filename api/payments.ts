@@ -11,6 +11,8 @@ import {
 import { clampFinanceAmount } from '../src/lib/finance/finance-calculations.js';
 
 const FIN2_PAYMENTS_API_CONTRACT = 'FIN-2_DATABASE_API_FINANCE_CONTRACT_V1';
+const FIN6_PAYMENTS_LIST_AND_PAYMENT_TYPES_API_PARITY = 'FIN-6_PAYMENTS_LIST_AND_PAYMENT_TYPES_API_PARITY_V1';
+void FIN6_PAYMENTS_LIST_AND_PAYMENT_TYPES_API_PARITY;
 const OPTIONAL_PAYMENT_COLUMNS = new Set([
   'lead_id',
   'client_id',

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { CommissionMode, CommissionStatus, FinanceSummary } from '../../lib/finance/finance-types';
 import { buildClientFinanceSummary } from '../../lib/finance/finance-client-summary';
 import { fetchCasesFromSupabase, fetchPaymentsFromSupabase } from '../../lib/supabase-fallback';
+import { StatusPill, SurfaceCard } from '../ui-system';
 
 type FinanceMiniSummaryProps = {
   summary: FinanceSummary;
@@ -19,6 +20,13 @@ const COMMISSION_STATUS_LABELS: Record<CommissionStatus, string> = {
   paid: 'zapłacona',
   overdue: 'zaległa',
 };
+
+export function getCommissionStatusTone(status: CommissionStatus | string) {
+  if (status === 'paid') return 'green' as const;
+  if (status === 'due' || status === 'partially_paid' || status === 'expected') return 'amber' as const;
+  if (status === 'overdue') return 'red' as const;
+  return 'neutral' as const;
+}
 
 function formatMoney(value: unknown, currency = 'PLN') {
   const amount = Number(value || 0);
@@ -54,7 +62,7 @@ export function FinanceMiniSummary({
   const resolvedCommissionStatus = commissionStatus || summary.commissionStatus;
 
   return (
-    <section className="cf-finance-mini-summary" aria-label={title}>
+    <SurfaceCard className="cf-finance-mini-summary" aria-label={title}>
       <div className="cf-finance-mini-summary__header">
         <p className="cf-finance-kicker">{title}</p>
         <strong className="cf-finance-mini-summary__value">
@@ -82,13 +90,13 @@ export function FinanceMiniSummary({
         <div className="cf-finance-metric cf-finance-metric--wide">
           <dt>Status prowizji</dt>
           <dd>
-            <span className={`cf-finance-status cf-finance-status--${resolvedCommissionStatus}`}>
+            <StatusPill tone={getCommissionStatusTone(resolvedCommissionStatus)} className={`cf-finance-status cf-finance-status--${resolvedCommissionStatus}`}>
               {COMMISSION_STATUS_LABELS[resolvedCommissionStatus] || resolvedCommissionStatus}
-            </span>
+            </StatusPill>
           </dd>
         </div>
       </dl>
-    </section>
+    </SurfaceCard>
   );
 }
 
@@ -136,7 +144,7 @@ export function ClientFinanceRelationSummary({
   }), [cases, loadedCases, loadedPayments, payments]);
 
   return (
-    <section className="cf-finance-mini-summary cf-finance-client-summary" data-fin7-client-finance-summary="true" aria-label={title}>
+    <SurfaceCard className="cf-finance-mini-summary cf-finance-client-summary" data-fin7-client-finance-summary="true" aria-label={title}>
       <div className="cf-finance-mini-summary__header">
         <p className="cf-finance-kicker">FIN-7</p>
         <strong className="cf-finance-mini-summary__value">{title}</strong>
@@ -159,7 +167,7 @@ export function ClientFinanceRelationSummary({
           <dd>{formatMoney(summary.remainingAmount, summary.currency)}</dd>
         </div>
       </dl>
-    </section>
+    </SurfaceCard>
   );
 }
 

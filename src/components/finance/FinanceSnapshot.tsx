@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { SurfaceCard } from '../ui-system';
 import { Button } from '../ui/button';
 import type { CommissionConfig, CommissionMode, CommissionStatus, FinancePayment, FinanceSummary } from '../../lib/finance/finance-types';
 import { buildFinanceSummary, clampFinanceAmount, calculateCommissionAmount } from '../../lib/finance/finance-calculations';
@@ -145,7 +146,7 @@ export function FinanceSnapshot({
   const commissionStatus = normalizeCommissionStatus(record?.['commissionStatus'] || record?.['commission_status'] || summary.commissionStatus) as CommissionStatus;
 
   return (
-    <section className="cf-finance-snapshot" data-contract={CLOSEFLOW_FINANCE_COMPONENTS_FIN3}>
+    <SurfaceCard className="cf-finance-snapshot" tone="default">
       <FinanceMiniSummary
         title={title}
         summary={{ ...summary, commissionAmount }}
@@ -191,7 +192,7 @@ export function FinanceSnapshot({
         onSubmit={onEditCommission}
         isSaving={isSaving}
       />
-    </section>
+    </SurfaceCard>
   );
 }
 

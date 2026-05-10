@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
+import { FormFooter } from '../ui-system';
 import type { FinanceRelationRef, PaymentStatus, PaymentType } from '../../lib/finance/finance-types';
 import { normalizePaymentStatus, normalizePaymentType } from '../../lib/finance/finance-normalize';
+import { PAYMENT_STATUS_OPTIONS, PAYMENT_TYPE_OPTIONS } from '../../lib/finance/finance-payment-labels';
 
 export type PaymentFormValue = FinanceRelationRef & {
   type: PaymentType;
@@ -24,9 +26,6 @@ type PaymentFormDialogProps = {
   onSubmit?: (value: PaymentFormValue) => void | Promise<void>;
   isSaving?: boolean;
 };
-
-const PAYMENT_TYPES: PaymentType[] = ['deposit', 'partial', 'final', 'commission', 'refund', 'other'];
-const PAYMENT_STATUSES: PaymentStatus[] = ['planned', 'due', 'paid', 'cancelled'];
 
 function toDateInputValue(value?: string | null) {
   if (!value) return '';
@@ -98,7 +97,7 @@ export function PaymentFormDialog({
               value={form.type}
               onChange={(event) => setForm((current) => ({ ...current, type: normalizePaymentType(event.target.value) }))}
             >
-              {PAYMENT_TYPES.map((type) => <option key={type} value={type}>{type}</option>)}
+              {PAYMENT_TYPE_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
 
@@ -109,7 +108,7 @@ export function PaymentFormDialog({
               value={form.status}
               onChange={(event) => setForm((current) => ({ ...current, status: normalizePaymentStatus(event.target.value) }))}
             >
-              {PAYMENT_STATUSES.map((status) => <option key={status} value={status}>{status}</option>)}
+              {PAYMENT_STATUS_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
 
@@ -159,12 +158,12 @@ export function PaymentFormDialog({
             />
           </label>
 
-          <DialogFooter className="cf-finance-dialog__footer">
+          <FormFooter className="cf-finance-dialog__footer" align="right">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
             <Button type="submit" disabled={isSaving || Number(String(form.amount || '0').replace(',', '.')) <= 0}>
               Zapisz wpłatę
             </Button>
-          </DialogFooter>
+          </FormFooter>
         </form>
       </DialogContent>
     </Dialog>

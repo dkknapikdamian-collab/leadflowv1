@@ -8,8 +8,8 @@ import { assertWorkspaceWriteAccess } from './_access-gate.js';
 import { writeAuthErrorResponse } from './_supabase-auth.js';
 import { normalizePaymentContract } from '../lib/data-contract.js';
 
-const PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'recurring', 'manual']);
-const PAYMENT_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
+const PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'refund', 'other']);
+const PAYMENT_STATUSES = new Set(['planned', 'due', 'paid', 'cancelled']);
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -142,7 +142,7 @@ export default async function handler(req: any, res: any) {
         lead_id: leadId,
         case_id: caseId,
         type: normalizeEnum(body.type, PAYMENT_TYPES, 'partial'),
-        status: normalizeEnum(body.status, PAYMENT_STATUSES, 'not_started'),
+        status: normalizeEnum(body.status, PAYMENT_STATUSES, 'planned'),
         amount: asNumber(body.amount),
         currency: normalizeCurrency(body.currency),
         paid_at: toIso(body.paidAt),
@@ -177,7 +177,7 @@ export default async function handler(req: any, res: any) {
       if (body.leadId !== undefined) payload.lead_id = leadId;
       if (body.caseId !== undefined) payload.case_id = caseId;
       if (body.type !== undefined) payload.type = normalizeEnum(body.type, PAYMENT_TYPES, 'partial');
-      if (body.status !== undefined) payload.status = normalizeEnum(body.status, PAYMENT_STATUSES, 'not_started');
+      if (body.status !== undefined) payload.status = normalizeEnum(body.status, PAYMENT_STATUSES, 'planned');
       if (body.amount !== undefined) payload.amount = asNumber(body.amount);
       if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.paidAt !== undefined) payload.paid_at = toIso(body.paidAt);

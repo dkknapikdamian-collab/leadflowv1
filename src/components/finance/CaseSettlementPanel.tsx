@@ -1,6 +1,6 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
@@ -28,8 +28,11 @@ import type {
   PaymentStatus,
   PaymentType,
 } from '../../lib/finance/finance-types';
+import { PAYMENT_STATUS_OPTIONS, PAYMENT_TYPE_OPTIONS } from '../../lib/finance/finance-payment-labels';
+import { PaymentList } from './PaymentList';
 import '../../styles/finance/closeflow-finance.css';
 
+import { SurfaceCard, FormFooter } from '../ui-system';
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
 void CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD;
@@ -258,21 +261,17 @@ function PaymentDialog({
           <label className="cf-finance-field">
             <span>Typ płatności</span>
             <select className="cf-finance-input" value={type} onChange={(event) => setType(normalizePaymentType(event.target.value))}>
-              <option value="deposit">zaliczka</option>
-              <option value="partial">częściowa</option>
-              <option value="final">końcowa</option>
-              <option value="commission">prowizja</option>
-              <option value="refund">zwrot</option>
-              <option value="other">inna</option>
+              {PAYMENT_TYPE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
             </select>
           </label>
           <label className="cf-finance-field">
             <span>Status</span>
             <select className="cf-finance-input" value={status} onChange={(event) => setStatus(normalizePaymentStatus(event.target.value))}>
-              <option value="planned">planowana</option>
-              <option value="due">należna</option>
-              <option value="paid">zapłacona</option>
-              <option value="cancelled">anulowana</option>
+              {PAYMENT_STATUS_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
             </select>
           </label>
           <label className="cf-finance-field">
@@ -291,10 +290,10 @@ function PaymentDialog({
             <span>Notatka</span>
             <Textarea value={note} placeholder="np. zaliczka gotówką / przelew / faktura" onChange={(event) => setNote(event.target.value)} />
           </label>
-          <DialogFooter className="cf-finance-dialog__footer">
+          <FormFooter className="cf-finance-dialog__footer" align="right">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
             <Button type="submit" disabled={isSaving || parseMoneyInput(amount) <= 0}>Zapisz płatność</Button>
-          </DialogFooter>
+          </FormFooter>
         </form>
       </DialogContent>
     </Dialog>
@@ -406,10 +405,10 @@ function CommissionDialog({
           <div className="cf-finance-settlement-preview" aria-label="Podgląd prowizji">
             Prowizja należna: <strong>{formatMoney(previewCommission, currency)}</strong>
           </div>
-          <DialogFooter className="cf-finance-dialog__footer">
+          <FormFooter className="cf-finance-dialog__footer" align="right">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
             <Button type="submit" disabled={isSaving}>Zapisz prowizję</Button>
-          </DialogFooter>
+          </FormFooter>
         </form>
       </DialogContent>
     </Dialog>
@@ -447,7 +446,7 @@ export function CaseSettlementPanel({
   const commissionRemaining = Math.max(0, commissionAmount - commissionPaid);
 
   return (
-    <section className="cf-finance-settlement-panel" data-fin5-case-settlement-panel="true" aria-label="Rozliczenie sprawy">
+    <SurfaceCard className="cf-finance-settlement-panel" tone="default">
       <div className="cf-finance-settlement-header">
         <div>
           <p className="cf-finance-kicker">FIN-5</p>
@@ -479,6 +478,12 @@ export function CaseSettlementPanel({
         <span>Wpłaty klienta i płatności prowizji są liczone osobno.</span>
       </div>
 
+      <PaymentList
+        title="Lista płatności"
+        emptyText="Brak zapisanych płatności dla tej sprawy."
+        payments={normalizedPayments}
+      />
+
       <PaymentDialog
         open={paymentOpen}
         onOpenChange={setPaymentOpen}
@@ -503,7 +508,8 @@ export function CaseSettlementPanel({
         onSubmit={onEditCommission}
         isSaving={isSaving}
       />
-    </section>
+      <span hidden data-fin5-case-settlement-panel="true" data-fin8-finance-visual-integration={CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5} />
+    </SurfaceCard>
   );
 }
 

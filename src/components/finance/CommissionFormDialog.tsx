@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
+import { FormFooter } from '../ui-system';
 import type { CommissionBase, CommissionMode, CommissionStatus } from '../../lib/finance/finance-types';
 import { normalizeCommissionBase, normalizeCommissionMode, normalizeCommissionStatus } from '../../lib/finance/finance-normalize';
 
@@ -23,9 +24,24 @@ type CommissionFormDialogProps = {
   isSaving?: boolean;
 };
 
-const COMMISSION_MODES: CommissionMode[] = ['none', 'percent', 'fixed'];
-const COMMISSION_BASES: CommissionBase[] = ['contract_value', 'paid_amount', 'custom'];
-const COMMISSION_STATUSES: CommissionStatus[] = ['not_set', 'expected', 'due', 'partially_paid', 'paid', 'overdue'];
+const COMMISSION_MODES: Array<{ value: CommissionMode; label: string }> = [
+  { value: 'none', label: 'brak' },
+  { value: 'percent', label: 'procent' },
+  { value: 'fixed', label: 'kwota stała' },
+];
+const COMMISSION_BASES: Array<{ value: CommissionBase; label: string }> = [
+  { value: 'contract_value', label: 'wartość transakcji' },
+  { value: 'paid_amount', label: 'wpłacono' },
+  { value: 'custom', label: 'własna podstawa' },
+];
+const COMMISSION_STATUSES: Array<{ value: CommissionStatus; label: string }> = [
+  { value: 'not_set', label: 'nieustawiona' },
+  { value: 'expected', label: 'oczekiwana' },
+  { value: 'due', label: 'należna' },
+  { value: 'partially_paid', label: 'częściowo zapłacona' },
+  { value: 'paid', label: 'zapłacona' },
+  { value: 'overdue', label: 'zaległa' },
+];
 
 function parseNullableNumber(value: string) {
   const parsed = Number(String(value || '').replace(',', '.'));
@@ -85,7 +101,7 @@ export function CommissionFormDialog({
               value={form.commissionMode}
               onChange={(event) => setForm((current) => ({ ...current, commissionMode: normalizeCommissionMode(event.target.value) }))}
             >
-              {COMMISSION_MODES.map((mode) => <option key={mode} value={mode}>{mode}</option>)}
+              {COMMISSION_MODES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
 
@@ -96,7 +112,7 @@ export function CommissionFormDialog({
               value={form.commissionBase}
               onChange={(event) => setForm((current) => ({ ...current, commissionBase: normalizeCommissionBase(event.target.value) }))}
             >
-              {COMMISSION_BASES.map((base) => <option key={base} value={base}>{base}</option>)}
+              {COMMISSION_BASES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
 
@@ -129,7 +145,7 @@ export function CommissionFormDialog({
               value={form.commissionStatus}
               onChange={(event) => setForm((current) => ({ ...current, commissionStatus: normalizeCommissionStatus(event.target.value) }))}
             >
-              {COMMISSION_STATUSES.map((status) => <option key={status} value={status}>{status}</option>)}
+              {COMMISSION_STATUSES.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select>
           </label>
 
@@ -142,10 +158,10 @@ export function CommissionFormDialog({
             />
           </label>
 
-          <DialogFooter className="cf-finance-dialog__footer">
+          <FormFooter className="cf-finance-dialog__footer" align="right">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
             <Button type="submit" disabled={isSaving}>Zapisz prowizję</Button>
-          </DialogFooter>
+          </FormFooter>
         </form>
       </DialogContent>
     </Dialog>
