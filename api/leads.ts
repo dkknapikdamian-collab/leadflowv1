@@ -60,6 +60,13 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'lead_visibility',
   'sales_outcome',
   'currency',
+  'contract_value',
+  'commission_mode',
+  'commission_base',
+  'commission_rate',
+  'commission_amount',
+  'commission_status',
+  'finance_note',
   'google_calendar_id',
   'google_calendar_event_id',
   'google_calendar_event_etag',
@@ -160,6 +167,23 @@ function asNumber(value: unknown) {
   const parsed = Number(value);
   if (!Number.isFinite(parsed)) return 0;
   return Math.max(0, parsed);
+}
+
+const LEAD_COMMISSION_MODES = new Set(['none', 'percent', 'fixed']);
+const LEAD_COMMISSION_BASES = new Set(['contract_value', 'paid_amount', 'custom']);
+const LEAD_COMMISSION_STATUSES = new Set(['not_set', 'expected', 'due', 'partially_paid', 'paid', 'overdue']);
+
+function applyLeadFinancePayload(payload: Record<string, unknown>, body: Record<string, unknown>) {
+  if (body.contractValue !== undefined || body.contract_value !== undefined || body.dealValue !== undefined || body.deal_value !== undefined) {
+    payload.contract_value = asNumber(body.contractValue ?? body.contract_value ?? body.dealValue ?? body.deal_value);
+    payload.value = asNumber(body.dealValue ?? body.deal_value ?? body.contractValue ?? body.contract_value);
+  }
+  if (body.commissionMode !== undefined || body.commission_mode !== undefined) payload.commission_mode = normalizeEnum(body.commissionMode ?? body.commission_mode, LEAD_COMMISSION_MODES, 'none');
+  if (body.commissionBase !== undefined || body.commission_base !== undefined) payload.commission_base = normalizeEnum(body.commissionBase ?? body.commission_base, LEAD_COMMISSION_BASES, 'contract_value');
+  if (body.commissionRate !== undefined || body.commission_rate !== undefined) payload.commission_rate = asNumber(body.commissionRate ?? body.commission_rate);
+  if (body.commissionAmount !== undefined || body.commission_amount !== undefined) payload.commission_amount = asNumber(body.commissionAmount ?? body.commission_amount);
+  if (body.commissionStatus !== undefined || body.commission_status !== undefined) payload.commission_status = normalizeEnum(body.commissionStatus ?? body.commission_status, LEAD_COMMISSION_STATUSES, 'not_set');
+  if (body.financeNote !== undefined || body.finance_note !== undefined || body.financialNote !== undefined || body.financial_note !== undefined) payload.finance_note = asText(body.financeNote ?? body.finance_note ?? body.financialNote ?? body.financial_note) || null;
 }
 
 function normalizeLead(row: Record<string, unknown>) {

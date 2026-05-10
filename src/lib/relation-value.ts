@@ -10,6 +10,10 @@ export type RelationValueEntry = {
 
 const VALUE_KEYS = [
   'dealValue',
+  'leadValue',
+  'lead_value',
+  'leadPotentialValue',
+  'lead_potential_value',
   'net_value',
   'netValue',
   'gross_value',
