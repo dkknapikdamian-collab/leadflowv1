@@ -29,6 +29,7 @@ import {
 import { EntityIcon, EventEntityIcon } from '../components/ui-system';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
+import { ClientFinanceRelationSummary } from '../components/finance/FinanceMiniSummary';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Textarea } from '../components/ui/textarea';
@@ -1392,6 +1393,10 @@ export default function ClientDetail() {
   if (loading || workspaceLoading) {
     return (
       <Layout>
+        <div data-fin7-client-detail-finance-summary="true">
+          <ClientFinanceRelationSummary clientId={String((client as any)?.id || '')} />
+        </div>
+
         <main className="client-detail-vnext-page">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />

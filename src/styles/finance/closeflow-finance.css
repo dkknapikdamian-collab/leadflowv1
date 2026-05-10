@@ -431,3 +431,12 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+/* FIN-7_CLIENT_FINANCE_SUMMARY_STYLE */
+.cf-finance-client-summary {
+  margin: 0 0 16px;
+}
+.cf-finance-client-summary .cf-finance-mini-summary__value {
+  font-size: 18px;
+}

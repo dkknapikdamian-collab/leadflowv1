@@ -609,7 +609,9 @@
     "check:closeflow-calendar-bundle-import-source": "node scripts/check-closeflow-calendar-bundle-import-source.cjs",
     "check:closeflow-vercel-import-source-final": "node scripts/check-closeflow-vercel-import-source-final.cjs",
     "check:closeflow-api-runtime-finance-import-extensions": "node scripts/check-closeflow-api-runtime-finance-import-extensions.cjs",
-    "check:closeflow-api-runtime-data-contract-server-safe": "node scripts/check-closeflow-api-runtime-data-contract-server-safe.cjs"
+    "check:closeflow-api-runtime-data-contract-server-safe": "node scripts/check-closeflow-api-runtime-data-contract-server-safe.cjs",
+    "check:closeflow-fin6-payments-list-types": "node scripts/check-closeflow-fin6-payments-list-types.cjs",
+    "check:closeflow-fin7-client-finance-summary": "node scripts/check-closeflow-fin7-client-finance-summary.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
