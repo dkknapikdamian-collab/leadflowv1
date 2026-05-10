@@ -1,7 +1,9 @@
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { NotificationEntityIcon } from '../components/ui-system';
 
+
 import { EntityIcon } from '../components/ui-system';
+
 
 import {
   useState,
@@ -11,18 +13,25 @@ import {
   useRef
 } from 'react';
 
+
 import { auth } from '../firebase';
 
+
 import { useWorkspace } from '../hooks/useWorkspace';
+
 
 import Layout from '../components/Layout';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 
+
 import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
+
 
 import { Button } from '../components/ui/button';
 
+
 import { Badge } from '../components/ui/badge';
+
 
 import {
   ChevronLeft,
@@ -32,6 +41,7 @@ import {
   CheckSquare,
   Trash2
 } from 'lucide-react';
+
 
 import {
   format,
@@ -50,13 +60,18 @@ import {
   addHours
 } from 'date-fns';
 
+
 import { pl } from 'date-fns/locale';
+
 
 import { toast } from 'sonner';
 
+
 import { Link } from 'react-router-dom';
 
+
 import { useSearchParams } from 'react-router-dom';
+
 
 import {
   Dialog,
@@ -66,11 +81,15 @@ import {
   DialogFooter
 } from '../components/ui/dialog';
 
+
 import { Input } from '../components/ui/input';
+
 
 import { Label } from '../components/ui/label';
 
+
 import { TopicContactPicker } from '../components/topic-contact-picker';
+
 
 import {
   buildStartEndPair,
@@ -88,6 +107,7 @@ import {
   type ScheduleEntry
 } from '../lib/scheduling';
 
+
 import {
   EVENT_TYPES,
   PRIORITY_OPTIONS,
@@ -97,7 +117,9 @@ import {
   TASK_TYPES
 } from '../lib/options';
 
+
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+
 
 import {
   buildTopicContactOptions,
@@ -106,7 +128,9 @@ import {
   type TopicContactOption
 } from '../lib/topic-contact';
 
+
 import { requireWorkspaceId } from '../lib/workspace-context';
+
 
 import '../styles/visual-stage22-event-form-vnext.css';
 import {
@@ -121,7 +145,9 @@ import {
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
 
+
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+
 
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
