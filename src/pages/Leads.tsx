@@ -1,4 +1,5 @@
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
+// CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
 import {
   useCallback,
   useEffect,
@@ -178,7 +179,7 @@ function buildLeadValueLabel(lead: any) {
 }
 
 function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string, leadValueLabel: string = '') {
-  const contact = getLeadPrimaryContact(lead);
+  // CLOSEFLOW_FB2_LEADS_PHONE_SINGLE_SOURCE: kontakt jest pokazywany raz w sekcji kontaktu, bez drugiego "..." w meta.
   const company = String(lead?.company || '').trim();
   const caseLabel = linkedCase ? 'sprawa: ' + (linkedCase.title || 'otwarta') : '';
 
@@ -186,7 +187,6 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     sourceLabel,
     leadValueLabel,
     company,
-    contact,
     caseLabel,
   ].filter(Boolean).join(' · ');
 }
@@ -598,9 +598,10 @@ export default function Leads() {
     [activeLeads, clients, cases],
   );
 
+  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientów i spraw.
   const mostValuableRelations = useMemo(
-    () => relationValueEntries.slice(0, 5),
-    [relationValueEntries],
+    () => buildRelationValueEntries({ leads: activeLeads, clients: [], cases: [] }).slice(0, 5),
+    [activeLeads],
   );
 
   const relationFunnelValue = useMemo(
@@ -1047,7 +1048,7 @@ export default function Leads() {
             <aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">
               <div className="panel-head">
                 <div>
-                  <h3>Najcenniejsze relacje</h3>
+                  <h3>Najcenniejsze leady</h3>
                 </div>
                 <span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>
               </div>

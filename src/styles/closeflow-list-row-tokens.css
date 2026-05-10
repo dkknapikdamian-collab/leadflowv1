@@ -141,3 +141,51 @@
 .cf-progress-bar[data-cf-status-tone="blue"] > span {
   background: var(--cf-status-blue-text);
 }
+
+/* CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
+   Right rail lead value rows: lead-only list, stable text fit, no short-word breaking.
+*/
+.main-leads-html .right-card,
+.main-leads-html .right-card *,
+.main-leads-html [data-fb2-leads-right-rail],
+.main-leads-html [data-fb2-leads-right-rail] * {
+  min-width: 0;
+}
+
+.main-leads-html .right-card a,
+.main-leads-html .right-card button,
+.main-leads-html .right-card article,
+.main-leads-html [data-fb2-leads-right-rail] a,
+.main-leads-html [data-fb2-leads-right-rail] button,
+.main-leads-html [data-fb2-leads-right-rail] article {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.main-leads-html .right-card h3,
+.main-leads-html .right-card strong,
+.main-leads-html .right-card p,
+.main-leads-html [data-fb2-leads-right-rail] h3,
+.main-leads-html [data-fb2-leads-right-rail] strong,
+.main-leads-html [data-fb2-leads-right-rail] p {
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: manual;
+}
+
+.main-leads-html .right-card h3,
+.main-leads-html .right-card p,
+.main-leads-html [data-fb2-leads-right-rail-name],
+.main-leads-html .fb2-lead-right-rail-name {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.main-leads-html [data-fb2-leads-right-rail-amount],
+.main-leads-html .fb2-lead-right-rail-amount {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
