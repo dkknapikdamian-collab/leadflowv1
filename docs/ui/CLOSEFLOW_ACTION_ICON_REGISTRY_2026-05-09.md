@@ -1,73 +1,131 @@
-# CloseFlow Action Icon Registry — VS-2C-mini — 2026-05-09
+# CloseFlow Action Icon Registry
 
-## Status
-
-Foundation only.
-
-Ten etap dodaje jedno źródło prawdy dla ikon akcji, ale **nie przepina jeszcze aktywnych ekranów**.
+**Data:** 2026-05-09  
+**Etap:** VS-2C â€” Action icon registry  
+**Status:** centralny rejestr ikon akcji, osobny od ikon encji
 
 ## Cel
 
-Zmiana ikony akcji w jednym miejscu ma później umożliwić spójną zmianę w całej aplikacji.
+Ikony akcji majÄ… jedno ĹşrĂłdĹ‚o prawdy. Rejestr akcji jest osobny od rejestru encji.
 
-## Dodane pliki
+Encje typu `client`, `lead`, `case`, `billing` zostajÄ… w:
+
+```text
+src/components/ui-system/icon-registry.ts
+```
+
+Akcje typu plus, kosz, search, edit, save, refresh zostajÄ… w:
+
+```text
+src/components/ui-system/action-icon-registry.ts
+```
+
+## Zasada gĹ‚Ăłwna
+
+Zmiana ikony kosza, plusa, wyszukiwania, edycji albo zapisu ma odbywaÄ‡ siÄ™ w jednym miejscu:
+
+```ts
+export const ACTION_ICON_MAP = {
+  delete: Trash2,
+  add: Plus,
+  search: Search,
+  edit: Pencil,
+  save: Save,
+}
+```
+
+Nie przepinamy jeszcze wszystkich ekranĂłw. To jest tylko registry.
+
+## Pliki ĹşrĂłdĹ‚owe
 
 - `src/components/ui-system/action-icon-registry.ts`
 - `src/components/ui-system/ActionIcon.tsx`
-- `scripts/check-closeflow-action-icon-registry.cjs`
 - `docs/ui/CLOSEFLOW_ACTION_ICON_REGISTRY_2026-05-09.md`
+- `scripts/check-closeflow-action-icon-registry.cjs`
+
+## Minimalne uĹĽycie
+
+```tsx
+<ActionIcon action="delete" />
+<ActionIcon action="add" />
+<ActionIcon action="search" />
+```
+
+`ActionIcon` przyjmuje:
+
+```ts
+action: keyof typeof ACTION_ICON_MAP
+size?: 'sm' | 'md' | 'lg'
+tone?: 'default' | 'soft' | 'strong' | 'danger'
+```
 
 ## Akcje minimum
 
-- `add`
-- `edit`
-- `delete`
-- `restore`
-- `search`
-- `save`
-- `cancel`
-- `back`
-- `copy`
-- `open`
-- `archive`
-- `filter`
-- `settings`
+| Akcja | Znaczenie | Ikona domyĹ›lna |
+|---|---|---|
+| `add` | dodaj / utwĂłrz | `Plus` |
+| `edit` | edytuj | `Pencil` |
+| `delete` | usuĹ„ / kosz | `Trash2` |
+| `restore` | przywrĂłÄ‡ | `RotateCcw` |
+| `search` | szukaj | `Search` |
+| `save` | zapisz | `Save` |
+| `cancel` | anuluj / zamknij | `X` |
+| `back` | wrĂłÄ‡ | `ArrowLeft` |
+| `copy` | kopiuj | `Copy` |
+| `open` | otwĂłrz / przejdĹş | `ExternalLink` |
+| `archive` | archiwizuj | `Archive` |
+| `filter` | filtruj | `Filter` |
+| `settings` | ustawienia akcji / konfiguracji | `Settings` |
+| `refresh` | odĹ›wieĹĽ / ponĂłw | `RefreshCw` |
+| `calendar` | kalendarz / termin | `Calendar` |
+| `note` | notatka | `StickyNote` |
+| `task` | zadanie | `ClipboardList` |
 
-## Eksporty
+## Jak zmieniÄ‡ ikonÄ™ kosza globalnie
 
-`src/components/ui-system/index.ts` eksportuje:
+1. OtwĂłrz:
 
-```ts
-export * from './ActionIcon';
-export * from './action-icon-registry';
+```text
+src/components/ui-system/action-icon-registry.ts
 ```
 
-## Nie robimy w tym etapie
+2. ZmieĹ„ tylko wpis w `ACTION_ICON_MAP`:
 
-- Nie przepinamy masowo ekranów.
-- Nie usuwamy ikon akcji z `lucide-react`.
-- Nie wymuszamy jeszcze migracji aktywnych plików.
-- Nie dotykamy VS-2B entity registry.
+```ts
+delete: Trash2,
+```
 
-## Kolejne etapy
+na przykĹ‚ad na:
 
-- VS-2C-1: komponenty globalne i dialogi.
-- VS-2C-2: listy lead/client/case.
-- VS-2C-3: detale lead/client/case.
-- VS-2C-4: Today/Calendar/Settings.
+```ts
+delete: ArchiveX,
+```
 
-## Check
+3. Nie zmieniaj ekranĂłw jeden po drugim.
+4. Nie mieszaj tego z `ENTITY_ICON_MAP`, bo to jest rejestr encji.
+
+## Czego nie robi VS-2C
+
+- Nie przepina masowo aktywnych ekranĂłw.
+- Nie usuwa bezpoĹ›rednich importĂłw ikon akcji z istniejÄ…cych ekranĂłw.
+- Nie miesza ikon akcji z ikonami encji.
+- Nie zmienia wyglÄ…du przyciskĂłw.
+- Nie zmienia `EntityIcon` ani `ENTITY_ICON_MAP`.
+
+## Weryfikacja
 
 ```bash
 npm run check:closeflow-action-icon-registry
-npm run check:closeflow-entity-icon-registry
 npm run build
 ```
 
-## Kryterium zakończenia
+## Kryterium zakoĹ„czenia
 
-- Registry istnieje.
-- `ActionIcon` istnieje.
-- Wszystkie 13 akcji istnieją.
-- Eksporty są w `ui-system/index.ts`.
-- Build przechodzi.
+VS-2C jest zakoĹ„czony, gdy:
+
+1. `ACTION_ICON_MAP` istnieje,
+2. zawiera wszystkie akcje minimum,
+3. `ActionIcon` istnieje i korzysta z `ACTION_ICON_MAP`,
+4. `src/components/ui-system/index.ts` eksportuje `ActionIcon` i `action-icon-registry`,
+5. dokument mĂłwi, jak zmieniÄ‡ ikonÄ™ kosza/plusa/search globalnie,
+6. check i build przechodzÄ….
