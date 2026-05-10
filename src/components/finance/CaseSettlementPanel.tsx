@@ -29,6 +29,7 @@ import type {
   PaymentType,
 } from '../../lib/finance/finance-types';
 import { PAYMENT_STATUS_OPTIONS, PAYMENT_TYPE_OPTIONS } from '../../lib/finance/finance-payment-labels';
+import { FINANCE_DUPLICATE_PAYMENT_WARNING_COPY, buildFinanceDuplicateCandidatesFromRecord, type FinanceDuplicateCandidate } from '../../lib/finance/finance-duplicate-safety';
 import { PaymentList } from './PaymentList';
 import '../../styles/finance/closeflow-finance.css';
 
@@ -72,6 +73,8 @@ type CaseSettlementPanelProps = {
   payments?: Array<FinancePayment | Record<string, unknown>>;
   readonly?: boolean;
   isSaving?: boolean;
+  duplicateCandidates?: FinanceDuplicateCandidate[];
+  duplicateWarningCopy?: string;
   onAddPayment?: (value: CaseSettlementPaymentInput) => void | Promise<void>;
   onEditCommission?: (value: CaseSettlementCommissionInput) => void | Promise<void>;
 };
@@ -218,6 +221,8 @@ function PaymentDialog({
   defaultType,
   onSubmit,
   isSaving,
+  duplicateCandidates = [],
+  duplicateWarningCopy = FINANCE_DUPLICATE_PAYMENT_WARNING_COPY,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -225,6 +230,8 @@ function PaymentDialog({
   defaultType: PaymentType;
   onSubmit?: (value: CaseSettlementPaymentInput) => void | Promise<void>;
   isSaving?: boolean;
+  duplicateCandidates?: FinanceDuplicateCandidate[];
+  duplicateWarningCopy?: string;
 }) {
   const [type, setType] = useState<PaymentType>(defaultType);
   const [status, setStatus] = useState<PaymentStatus>('paid');
@@ -258,6 +265,12 @@ function PaymentDialog({
           <DialogTitle>{defaultType === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę od klienta'}</DialogTitle>
         </DialogHeader>
         <form className="cf-finance-form" onSubmit={handleSubmit}>
+          {duplicateCandidates.length > 0 ? (
+            <div className="cf-finance-duplicate-warning" role="alert" data-fin9-payment-duplicate-warning="true">
+              <strong>Możliwy duplikat klienta</strong>
+              <span>{duplicateWarningCopy}</span>
+            </div>
+          ) : null}
           <label className="cf-finance-field">
             <span>Typ płatności</span>
             <select className="cf-finance-input" value={type} onChange={(event) => setType(normalizePaymentType(event.target.value))}>
@@ -420,6 +433,8 @@ export function CaseSettlementPanel({
   payments = [],
   readonly = false,
   isSaving = false,
+  duplicateCandidates: duplicateCandidatesProp = [],
+  duplicateWarningCopy = FINANCE_DUPLICATE_PAYMENT_WARNING_COPY,
   onAddPayment,
   onEditCommission,
 }: CaseSettlementPanelProps) {
@@ -430,6 +445,9 @@ export function CaseSettlementPanel({
   const currency = normalizeCurrency(record?.currency || payments.find((payment) => (payment as Record<string, unknown>).currency)?.currency || 'PLN');
   const contractValue = getContractValue(record);
   const normalizedPayments = useMemo(() => normalizeFinancePayments(payments as Record<string, unknown>[]), [payments]);
+  const financeDuplicateCandidates = useMemo(() => {
+    return duplicateCandidatesProp.length ? duplicateCandidatesProp : buildFinanceDuplicateCandidatesFromRecord(record);
+  }, [duplicateCandidatesProp, record]);
   const commissionConfig = useMemo(() => getCommissionConfig(record, currency), [currency, record]);
   const explicitCommissionAmount = getExplicitCommissionAmount(record);
   const summary = useMemo(() => buildFinanceSummary({
@@ -491,6 +509,8 @@ export function CaseSettlementPanel({
         defaultType="partial"
         onSubmit={onAddPayment}
         isSaving={isSaving}
+        duplicateCandidates={financeDuplicateCandidates}
+        duplicateWarningCopy={duplicateWarningCopy}
       />
       <PaymentDialog
         open={commissionPaymentOpen}
@@ -499,6 +519,8 @@ export function CaseSettlementPanel({
         defaultType="commission"
         onSubmit={onAddPayment}
         isSaving={isSaving}
+        duplicateCandidates={financeDuplicateCandidates}
+        duplicateWarningCopy={duplicateWarningCopy}
       />
       <CommissionDialog
         open={commissionOpen}
@@ -508,7 +530,7 @@ export function CaseSettlementPanel({
         onSubmit={onEditCommission}
         isSaving={isSaving}
       />
-      <span hidden data-fin5-case-settlement-panel="true" data-fin8-finance-visual-integration={CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5} />
+      <span hidden data-fin5-case-settlement-panel="true" data-fin8-finance-visual-integration={CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5} data-fin9-finance-duplicate-safety="CLOSEFLOW_FIN9_CASE_SETTLEMENT_DUPLICATE_WARNING_ONLY" />
     </SurfaceCard>
   );
 }

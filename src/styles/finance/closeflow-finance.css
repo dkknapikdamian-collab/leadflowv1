@@ -337,3 +337,25 @@
     width: 100%;
   }
 }
+
+
+/* FIN-9_FINANCE_DUPLICATE_SAFETY_STYLE */
+.cf-finance-duplicate-warning {
+  display: grid;
+  gap: var(--cf-space-1, 0.25rem);
+  padding: var(--cf-space-3, 0.75rem);
+  border: 1px solid var(--cf-warning-border, var(--border));
+  border-radius: var(--cf-radius-lg, 0.875rem);
+  background: var(--cf-warning-surface, var(--muted));
+  color: var(--cf-warning-text, var(--foreground));
+}
+
+.cf-finance-duplicate-warning strong {
+  font-size: var(--cf-text-sm, 0.875rem);
+  font-weight: var(--cf-font-semibold, 700);
+}
+
+.cf-finance-duplicate-warning span {
+  font-size: var(--cf-text-xs, 0.75rem);
+  color: var(--cf-text-muted, var(--muted-foreground));
+}

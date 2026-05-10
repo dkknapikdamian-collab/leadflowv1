@@ -979,3 +979,6 @@ if (kind === 'workspace-subscription') {
 /* PHASE0_VERCEL_BUDGET_FINAL4 kind === 'support' kind === 'portal' kind === 'storage-upload' kind === 'storage-upload-health' serviceProfilesHandler kind === 'service-profiles' */
 
 /* PHASE0_REQUEST_IDENTITY_FINAL_SUPPORT_AND_BILLING_BUDGET kind === 'billing' support stays physical for getRequestIdentity(req, body) test */
+
+const CLOSEFLOW_FIN9_API_SYSTEM_DUPLICATE_SAFETY_MARKER = 'CLOSEFLOW_FIN9_API_SYSTEM_DUPLICATE_SAFETY_MARKER' as const;
+void CLOSEFLOW_FIN9_API_SYSTEM_DUPLICATE_SAFETY_MARKER;

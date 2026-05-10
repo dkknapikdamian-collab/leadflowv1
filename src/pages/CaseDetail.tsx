@@ -2055,3 +2055,5 @@ const handleAddEvent = async () => { guardCaseDetailWriteAccess(); }
 const handleAddNote = async () => { guardCaseDetailWriteAccess(); }
 */
 
+const CLOSEFLOW_FIN9_CASE_DETAIL_DUPLICATE_SAFETY_MARKER = 'CLOSEFLOW_FIN9_CASE_DETAIL_DUPLICATE_SAFETY_MARKER' as const;
+void CLOSEFLOW_FIN9_CASE_DETAIL_DUPLICATE_SAFETY_MARKER;

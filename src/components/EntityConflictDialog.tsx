@@ -1,4 +1,5 @@
 // CLOSEFLOW_ENTITY_CONFLICT_DIALOG_V1
+// CLOSEFLOW_FIN9_ENTITY_CONFLICT_CASE_SUPPORT
 // CLOSEFLOW_CONFLICT_DELETE_COMPANY_NOT_NULL_V25
 import { AlertTriangle } from 'lucide-react';
 import { DeleteActionIcon, OpenActionIcon, RestoreActionIcon } from './ui-system';
@@ -7,7 +8,7 @@ import { Button } from './ui/button';
 
 export type EntityConflictCandidate = {
   id: string;
-  entityType: 'lead' | 'client';
+  entityType: 'lead' | 'client' | 'case';
   label: string;
   name?: string;
   company?: string | null;
@@ -22,6 +23,7 @@ export type EntityConflictCandidate = {
 };
 
 function getEntityLabel(type: string) {
+  if (type === 'case') return 'sprawa';
   return type === 'client' ? 'klient' : 'lead';
 }
 

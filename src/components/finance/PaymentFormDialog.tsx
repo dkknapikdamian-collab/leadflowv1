@@ -6,6 +6,7 @@ import { FormFooter } from '../ui-system';
 import type { FinanceRelationRef, PaymentStatus, PaymentType } from '../../lib/finance/finance-types';
 import { normalizePaymentStatus, normalizePaymentType } from '../../lib/finance/finance-normalize';
 import { PAYMENT_STATUS_OPTIONS, PAYMENT_TYPE_OPTIONS } from '../../lib/finance/finance-payment-labels';
+import { FINANCE_DUPLICATE_PAYMENT_WARNING_COPY, type FinanceDuplicateCandidate } from '../../lib/finance/finance-duplicate-safety';
 
 export type PaymentFormValue = FinanceRelationRef & {
   type: PaymentType;
@@ -25,6 +26,8 @@ type PaymentFormDialogProps = {
   defaultValue?: Partial<PaymentFormValue>;
   onSubmit?: (value: PaymentFormValue) => void | Promise<void>;
   isSaving?: boolean;
+  duplicateCandidates?: FinanceDuplicateCandidate[];
+  duplicateWarningCopy?: string;
 };
 
 function toDateInputValue(value?: string | null) {
@@ -48,6 +51,8 @@ export function PaymentFormDialog({
   defaultValue,
   onSubmit,
   isSaving = false,
+  duplicateCandidates = [],
+  duplicateWarningCopy = FINANCE_DUPLICATE_PAYMENT_WARNING_COPY,
 }: PaymentFormDialogProps) {
   const initialState = useMemo(() => ({
     type: normalizePaymentType(defaultValue?.type || 'partial'),
@@ -90,6 +95,13 @@ export function PaymentFormDialog({
         </DialogHeader>
 
         <form className="cf-finance-form" onSubmit={handleSubmit}>
+          {duplicateCandidates.length > 0 ? (
+            <div className="cf-finance-duplicate-warning" role="alert" data-fin9-payment-duplicate-warning="true">
+              <strong>Możliwy duplikat klienta</strong>
+              <span>{duplicateWarningCopy}</span>
+            </div>
+          ) : null}
+          <span hidden data-fin9-payment-duplicate-safety="CLOSEFLOW_FIN9_PAYMENT_DUPLICATE_WARNING_ONLY" />
           <label className="cf-finance-field">
             <span>Typ</span>
             <select
