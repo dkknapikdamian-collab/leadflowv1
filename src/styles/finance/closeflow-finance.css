@@ -1,0 +1,249 @@
+/* FIN-3_CLOSEFLOW_FINANCE_COMPONENTS_V1 */
+.cf-finance-snapshot {
+  display: grid;
+  gap: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.08);
+  padding: 16px;
+}
+
+.cf-finance-mini-summary {
+  display: grid;
+  gap: 14px;
+}
+
+.cf-finance-mini-summary__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cf-finance-kicker {
+  margin: 0;
+  color: rgb(71, 85, 105);
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.cf-finance-mini-summary__value {
+  color: rgb(15, 23, 42);
+  font-size: clamp(1.1rem, 2vw, 1.55rem);
+  line-height: 1.15;
+  text-align: right;
+}
+
+.cf-finance-mini-summary__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.cf-finance-metric {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 14px;
+  background: rgba(248, 250, 252, 0.86);
+  padding: 11px 12px;
+}
+
+.cf-finance-metric--wide {
+  grid-column: 1 / -1;
+}
+
+.cf-finance-metric dt {
+  margin: 0 0 5px;
+  color: rgb(100, 116, 139);
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.cf-finance-metric dd {
+  margin: 0;
+  color: rgb(15, 23, 42);
+  font-size: 0.96rem;
+  font-weight: 800;
+}
+
+.cf-finance-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  border-radius: 999px;
+  padding: 2px 9px;
+  background: rgba(226, 232, 240, 0.88);
+  color: rgb(51, 65, 85);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.cf-finance-status--due,
+.cf-finance-status--payment-due {
+  background: rgba(254, 243, 199, 0.95);
+  color: rgb(146, 64, 14);
+}
+
+.cf-finance-status--overdue {
+  background: rgba(254, 226, 226, 0.95);
+  color: rgb(153, 27, 27);
+}
+
+.cf-finance-status--paid,
+.cf-finance-status--payment-paid {
+  background: rgba(220, 252, 231, 0.95);
+  color: rgb(22, 101, 52);
+}
+
+.cf-finance-status--partially_paid,
+.cf-finance-status--expected,
+.cf-finance-status--payment-planned {
+  background: rgba(219, 234, 254, 0.95);
+  color: rgb(30, 64, 175);
+}
+
+.cf-finance-status--payment-cancelled,
+.cf-finance-status--not_set {
+  background: rgba(241, 245, 249, 0.95);
+  color: rgb(71, 85, 105);
+}
+
+.cf-finance-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cf-finance-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cf-finance-section-header h3 {
+  margin: 0;
+  color: rgb(15, 23, 42);
+  font-size: 0.95rem;
+  font-weight: 850;
+}
+
+.cf-finance-section-header span {
+  color: rgb(100, 116, 139);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.cf-finance-empty {
+  margin: 0;
+  border: 1px dashed rgba(148, 163, 184, 0.52);
+  border-radius: 14px;
+  color: rgb(100, 116, 139);
+  padding: 12px;
+}
+
+.cf-finance-payment-list {
+  display: grid;
+  gap: 10px;
+}
+
+.cf-finance-payment-list__items {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cf-finance-payment-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.92);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.88);
+  padding: 10px 12px;
+}
+
+.cf-finance-payment-row__main,
+.cf-finance-payment-row__side {
+  display: grid;
+  gap: 3px;
+}
+
+.cf-finance-payment-row__main strong,
+.cf-finance-payment-row__side strong {
+  color: rgb(15, 23, 42);
+  font-size: 0.9rem;
+}
+
+.cf-finance-payment-row__main span,
+.cf-finance-payment-row__side span {
+  color: rgb(100, 116, 139);
+  font-size: 0.78rem;
+}
+
+.cf-finance-payment-row__side {
+  justify-items: end;
+  text-align: right;
+}
+
+.cf-finance-dialog {
+  max-width: min(680px, calc(100vw - 24px));
+}
+
+.cf-finance-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cf-finance-field {
+  display: grid;
+  gap: 6px;
+  color: rgb(51, 65, 85);
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+.cf-finance-field--wide {
+  grid-column: 1 / -1;
+}
+
+.cf-finance-input {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid rgb(226, 232, 240);
+  border-radius: 8px;
+  background: white;
+  color: rgb(15, 23, 42);
+  padding: 6px 10px;
+  font-size: 0.88rem;
+}
+
+.cf-finance-dialog__footer {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+}
+
+@media (max-width: 720px) {
+  .cf-finance-mini-summary__grid,
+  .cf-finance-form {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-finance-payment-row,
+  .cf-finance-mini-summary__header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .cf-finance-payment-row__side,
+  .cf-finance-mini-summary__value {
+    justify-items: start;
+    text-align: left;
+  }
+}
