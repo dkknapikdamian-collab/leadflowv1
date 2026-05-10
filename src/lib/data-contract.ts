@@ -9,7 +9,6 @@ import {
   type AccessState,
   type BillingStatus,
 } from './domain-statuses.js';
-import { normalizeCommissionBase, normalizeCommissionMode, normalizeCommissionStatus, normalizePaymentStatus, normalizePaymentType } from './finance/finance-normalize.js';
 export type { AccessState, BillingStatus };
 export type DataRecord = Record<string, unknown>;
 
@@ -489,6 +488,44 @@ function normalizeCurrency(value: unknown, fallback = 'PLN') {
   const normalized = typeof value === 'string' ? value.trim().toUpperCase() : '';
   return /^[A-Z]{3}$/.test(normalized) ? normalized : fallback;
 }
+
+const DATA_CONTRACT_SERVER_SAFE_FINANCE_NORMALIZERS = 'API_RUNTIME_DATA_CONTRACT_SERVER_SAFE_FINANCE_NORMALIZERS_V1' as const;
+
+const DATA_CONTRACT_COMMISSION_MODES = new Set(['none', 'percent', 'fixed']);
+const DATA_CONTRACT_COMMISSION_BASES = new Set(['contract_value', 'paid_amount', 'custom']);
+const DATA_CONTRACT_COMMISSION_STATUSES = new Set(['not_set', 'expected', 'due', 'partially_paid', 'paid', 'overdue']);
+const DATA_CONTRACT_PAYMENT_TYPES = new Set(['deposit', 'partial', 'final', 'commission', 'refund', 'other']);
+const DATA_CONTRACT_PAYMENT_STATUSES = new Set(['planned', 'due', 'paid', 'cancelled']);
+
+function normalizeFinanceEnum(value: unknown, allowed: Set<string>, fallback: string) {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  return allowed.has(normalized) ? normalized : fallback;
+}
+
+function normalizeCommissionMode(value: unknown) {
+  return normalizeFinanceEnum(value, DATA_CONTRACT_COMMISSION_MODES, 'none');
+}
+
+function normalizeCommissionBase(value: unknown) {
+  return normalizeFinanceEnum(value, DATA_CONTRACT_COMMISSION_BASES, 'contract_value');
+}
+
+function normalizeCommissionStatus(value: unknown) {
+  return normalizeFinanceEnum(value, DATA_CONTRACT_COMMISSION_STATUSES, 'not_set');
+}
+
+function normalizePaymentType(value: unknown) {
+  return normalizeFinanceEnum(value, DATA_CONTRACT_PAYMENT_TYPES, 'other');
+}
+
+function normalizePaymentStatus(value: unknown) {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (normalized === 'pending' || normalized === 'awaiting_payment') return 'due';
+  if (normalized === 'done' || normalized === 'completed' || normalized === 'settled') return 'paid';
+  if (normalized === 'canceled') return 'cancelled';
+  return normalizeFinanceEnum(normalized, DATA_CONTRACT_PAYMENT_STATUSES, 'planned');
+}
+
 
 export function normalizeLeadContract(row: DataRecord): LeadDto {
   const status = normalizeLeadStatus(row.status);
