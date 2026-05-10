@@ -12,10 +12,10 @@ export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
 };
 
 export const PAYMENT_STATUS_LABELS: Record<PaymentStatus, string> = {
-  planned: 'planowana',
-  due: 'należna',
-  paid: 'zapłacona',
-  cancelled: 'anulowana',
+  planned: 'Planowana',
+  due: 'Należna',
+  paid: 'Zapłacona',
+  cancelled: 'Anulowana',
 };
 
 export const PAYMENT_TYPE_OPTIONS: Array<{ value: PaymentType; label: string }> = [
