@@ -1,3 +1,5 @@
+const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
+void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
 const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
 void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 import {
@@ -827,6 +829,7 @@ const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENT_DETAIL = 'form/modal a
 
 export default function ClientDetail() {
   const { clientId } = useParams();
+  const id = clientId; // CLIENT_DETAIL_CLIENT_ID_ROUTE_ALIAS_HOTFIX: legacy local references must resolve to route clientId
   const navigate = useNavigate();
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [loading, setLoading] = useState(true);
