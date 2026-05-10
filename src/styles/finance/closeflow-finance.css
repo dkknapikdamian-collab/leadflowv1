@@ -307,3 +307,127 @@
   .cf-finance-lead-value-panel__preview { width: 100%; }
   .cf-finance-lead-value-panel__body { grid-template-columns: 1fr; }
 }
+
+
+/* FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1 */
+.cf-finance-settlement-panel {
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.96));
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+  padding: 20px;
+  margin: 0 0 18px;
+  color: #0f172a;
+}
+
+.cf-finance-settlement-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.cf-finance-settlement-header h2 {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.cf-finance-settlement-header span {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  color: #64748b;
+}
+
+.cf-finance-settlement-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.cf-finance-settlement-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.cf-finance-settlement-metric {
+  min-width: 0;
+  border: 1px solid rgba(203, 213, 225, 0.74);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.86);
+  padding: 14px;
+}
+
+.cf-finance-settlement-metric dt {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.cf-finance-settlement-metric dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  word-break: break-word;
+}
+
+.cf-finance-settlement-footnote {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+  margin-top: 14px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.cf-finance-settlement-preview {
+  grid-column: 1 / -1;
+  border: 1px dashed rgba(37, 99, 235, 0.35);
+  border-radius: 16px;
+  background: rgba(239, 246, 255, 0.78);
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #1e3a8a;
+}
+
+.cf-finance-settlement-dialog .cf-finance-form {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 960px) {
+  .cf-finance-settlement-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .cf-finance-settlement-header {
+    flex-direction: column;
+  }
+
+  .cf-finance-settlement-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .cf-finance-settlement-actions > * {
+    flex: 1 1 100%;
+  }
+
+  .cf-finance-settlement-grid,
+  .cf-finance-settlement-dialog .cf-finance-form {
+    grid-template-columns: 1fr;
+  }
+}

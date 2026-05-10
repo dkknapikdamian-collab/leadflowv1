@@ -1,44 +1,54 @@
 import {
-  AiEntityIcon,
-  EntityIcon,
-  LeadEntityIcon } from '../components/ui-system';
-
-/* STAGE16O_AI_DRAFTS_STATIC_CONTRACTS
- * Centrum szkiców Notatka głosowa najpierw trafia tutaj Lead powstaje dopiero po kliknięciu
- * data-ai-draft-command-center data-ai-draft-stats data-ai-drafts-tab
- * updateAiLeadDraft Edytuj notatkę Zapisz zmiany Kopiuj treść Przejrzyj i zatwierdź markAiLeadDraftConverted Szkice AI
- * data-plan-route-blocker="ai-drafts" Dostępne od planu Basic href="/billing"
- * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
- */
-﻿// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
-import {
   useEffect,
   useMemo,
-  useState } from 'react';
+  useState
+} from 'react';
 import {
-  Archive,
+  AiEntityIcon,
+  EntityIcon,
+  LeadEntityIcon,
+  TemplateEntityIcon
+} from '../components/ui-system';
+import {
   AlertTriangle,
   CalendarClock,
   CheckCircle2,
-  Clock,
   Clipboard,
-  TemplateEntityIcon,
+  Clock,
   Loader2,
   Pencil,
   Search,
-  LeadEntityIcon,
-  Trash2,
-  XCircle
+  Trash2
 } from 'lucide-react';
-import { toast } from 'sonner';
+
+// AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
+
+import {
+  toast
+} from 'sonner';
 
 import Layout from '../components/Layout';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { StatShortcutCard } from '../components/StatShortcutCard';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Textarea } from '../components/ui/textarea';
-import { EVENT_TYPES, PRIORITY_OPTIONS, SOURCE_OPTIONS, TASK_TYPES } from '../lib/options';
+import {
+  useWorkspace
+} from '../hooks/useWorkspace';
+import {
+  StatShortcutCard
+} from '../components/StatShortcutCard';
+import {
+  Button
+} from '../components/ui/button';
+import {
+  Input
+} from '../components/ui/input';
+import {
+  Textarea
+} from '../components/ui/textarea';
+import {
+  EVENT_TYPES,
+  PRIORITY_OPTIONS,
+  SOURCE_OPTIONS,
+  TASK_TYPES
+} from '../lib/options';
 import {
   archiveAiLeadDraftAsync,
   deleteAiLeadDraftAsync,
@@ -46,14 +56,14 @@ import {
   markAiLeadDraftConvertedAsync,
   updateAiLeadDraftAsync,
   type AiLeadDraft,
-  type AiLeadDraftStatus,
+  type AiLeadDraftStatus
 } from '../lib/ai-drafts';
 import {
   buildAiDraftApprovalForm,
   getAiDraftApprovalTypeLabel,
   normalizeAiDraftApprovalAmount,
   type AiDraftApprovalForm,
-  type AiDraftApprovalType,
+  type AiDraftApprovalType
 } from '../lib/ai-draft-approval';
 import {
   insertActivityToSupabase,
@@ -62,15 +72,14 @@ import {
   insertTaskToSupabase,
   fetchClientsFromSupabase,
   fetchLeadsFromSupabase,
-  fetchCasesFromSupabase,
+  fetchCasesFromSupabase
 } from '../lib/supabase-fallback';
-import { buildAiDraftConfirmedParsedDraft, getAiDraftCreatedRecordId } from '../lib/ai-draft-confirm-records';
+import {
+  buildAiDraftConfirmedParsedDraft,
+  getAiDraftCreatedRecordId
+} from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
-
-const LeadEntityIcon = (props: { className?: string }) => <EntityIcon entity="lead" {...props} />;
-const TemplateEntityIcon = (props: { className?: string }) => <EntityIcon entity="template" {...props} />;
-
 type DraftFilter =
   | 'all'
   | 'draft'

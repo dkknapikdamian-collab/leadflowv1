@@ -1,38 +1,91 @@
 import {
-  CaseEntityIcon,
-  EntityIcon,
-  LeadEntityIcon,
-  PaymentEntityIcon } from '../components/ui-system';
-// CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1
-import {
+  type FormEvent,
+  type MouseEvent,
   useCallback,
   useEffect,
   useMemo,
-  useState,
-  type FormEvent,
-  type MouseEvent } from 'react';
-import { Link } from 'react-router-dom';
-import { AlertTriangle,
+  useState
+} from 'react';
+import {
+  Link
+} from 'react-router-dom';
+import {
+  CaseEntityIcon,
+  EntityIcon,
+  LeadEntityIcon,
+  PaymentEntityIcon
+} from '../components/ui-system';
+import {
+  AlertTriangle,
   Loader2,
   Plus,
-  RotateCcw,
   Search,
   Trash2
 } from 'lucide-react';
-import { toast } from 'sonner';
+
+
+
+
+
+
+// CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1
+import {
+  RotateCcw
+} from 'lucide-react';
+import {
+  toast
+} from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
-import { actionIconClass, modalFooterClass} from '../components/entity-actions';
-import { StatShortcutCard } from '../components/StatShortcutCard';
-import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { requireWorkspaceId } from '../lib/workspace-context';
-import { createClientInSupabase, findEntityConflictsInSupabase, fetchCasesFromSupabase, fetchClientsFromSupabase, fetchEventsFromSupabase, fetchLeadsFromSupabase, fetchPaymentsFromSupabase, fetchTasksFromSupabase, updateClientInSupabase, updateLeadInSupabase } from '../lib/supabase-fallback';
-import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import {
+  EntityConflictDialog,
+  type EntityConflictCandidate
+} from '../components/EntityConflictDialog';
+import {
+  actionIconClass,
+  modalFooterClass
+} from '../components/entity-actions';
+import {
+  StatShortcutCard
+} from '../components/StatShortcutCard';
+import {
+  Button
+} from '../components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '../components/ui/dialog';
+import {
+  Input
+} from '../components/ui/input';
+import {
+  Label
+} from '../components/ui/label';
+import {
+  useWorkspace
+} from '../hooks/useWorkspace';
+import {
+  requireWorkspaceId
+} from '../lib/workspace-context';
+import {
+  createClientInSupabase,
+  findEntityConflictsInSupabase,
+  fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchPaymentsFromSupabase,
+  fetchTasksFromSupabase,
+  updateClientInSupabase,
+  updateLeadInSupabase
+} from '../lib/supabase-fallback';
+import {
+  getNearestPlannedAction
+} from '../lib/work-items/planned-actions';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
@@ -697,7 +750,5 @@ export default function Clients() {
     </Layout>
   );
 }
-
-
 
 

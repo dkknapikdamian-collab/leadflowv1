@@ -1,5 +1,9 @@
-﻿import type { CalendarBundle } from './calendar-items';
-import type { NotificationItem } from './notifications';
+import type {
+  CalendarBundle
+} from './calendar-items';
+import type {
+  NotificationItem
+} from './notifications';
 
 const REMINDER_SETTINGS_KEY = 'closeflow:reminders:settings:v1';
 

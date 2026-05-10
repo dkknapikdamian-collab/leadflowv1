@@ -64,6 +64,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
+import { CaseSettlementPanel, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementPanel';
 import {
   createClientPortalTokenInSupabase,
   deleteCaseItemFromSupabase,
@@ -137,6 +138,12 @@ type CaseRecord = {
   paidAmount?: number;
   remainingAmount?: number;
   currency?: string;
+  contractValue?: number;
+  commissionMode?: string;
+  commissionBase?: string;
+  commissionRate?: number;
+  commissionAmount?: number;
+  commissionStatus?: string;
   updatedAt?: any;
   createdAt?: any;
   lastActivityAt?: string | null;
@@ -709,6 +716,8 @@ export default function CaseDetail() {
   const navigate = useNavigate();
   const { hasAccess, access } = useWorkspace();
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
+  const [casePayments, setCasePayments] = useState<CasePaymentRecord[]>([]);
+  const [caseSettlementSaving, setCaseSettlementSaving] = useState(false);
   const [items, setItems] = useState<CaseItem[]>([]);
   const [activities, setActivities] = useState<CaseActivity[]>([]);
   const [tasks, setTasks] = useState<TaskRecord[]>([]);
@@ -1259,11 +1268,116 @@ export default function CaseDetail() {
     }
   };
 
+
+  // FIN-5_CASE_SETTLEMENT_PAYMENTS_FROM_LOAD via isolated refresh hook
+  const refreshCaseSettlementPayments = useCallback(async () => {
+    if (!caseId) return;
+    const refreshedPayments = await fetchPaymentsFromSupabase({ caseId });
+    setCasePayments(refreshedPayments as CasePaymentRecord[]);
+  }, [caseId]);
+
+  useEffect(() => {
+    if (!caseId || !isSupabaseConfigured()) return;
+    void refreshCaseSettlementPayments().catch(() => null);
+  }, [caseId, refreshCaseSettlementPayments]);
+
+  const handleAddCaseSettlementPayment = async (value: CaseSettlementPaymentInput) => {
+    if (!caseId || !caseData) return;
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const amount = Number(value.amount || 0);
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Podaj poprawną kwotę płatności.');
+      return;
+    }
+
+    try {
+      setCaseSettlementSaving(true);
+      await createPaymentInSupabase({
+        caseId,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        type: value.type,
+        status: value.status,
+        amount,
+        currency: value.currency || caseData.currency || 'PLN',
+        paidAt: value.paidAt,
+        dueAt: value.dueAt,
+        note: value.note || '',
+      });
+      await refreshCaseSettlementPayments();
+      toast.success(value.type === 'commission' ? 'Płatność prowizji dodana' : 'Wpłata klienta dodana');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać płatności: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setCaseSettlementSaving(false);
+    }
+  };
+
+  const handleEditCaseSettlementCommission = async (value: CaseSettlementCommissionInput) => {
+    if (!caseId || !caseData) return;
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const nextContractValue = Number(value.contractValue || 0);
+    if (!Number.isFinite(nextContractValue) || nextContractValue < 0) {
+      toast.error('Podaj poprawną wartość transakcji.');
+      return;
+    }
+
+    try {
+      setCaseSettlementSaving(true);
+      const payload = {
+        id: caseId,
+        contractValue: Math.max(0, nextContractValue),
+        expectedRevenue: Math.max(0, nextContractValue),
+        commissionMode: value.commissionMode,
+        commissionBase: value.commissionBase,
+        commissionRate: Number(value.commissionRate || 0),
+        commissionAmount: Number(value.commissionAmount || 0),
+        commissionStatus: value.commissionStatus,
+        currency: value.currency || caseData.currency || 'PLN',
+      };
+      await updateCaseInSupabase(payload);
+      setCaseData((current: CaseRecord | null) => current ? {
+        ...current,
+        contractValue: payload.contractValue,
+        expectedRevenue: payload.expectedRevenue,
+        commissionMode: payload.commissionMode,
+        commissionBase: payload.commissionBase,
+        commissionRate: payload.commissionRate,
+        commissionAmount: payload.commissionAmount,
+        commissionStatus: payload.commissionStatus,
+        currency: payload.currency,
+      } : current);
+      toast.success('Prowizja sprawy zapisana');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać prowizji: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setCaseSettlementSaving(false);
+    }
+  };
   if (loading) {
     return (
       <Layout>
         <main className="case-detail-vnext-page">
           <section className="case-detail-loading-card">
+              <div data-fin5-case-settlement-instance="true">
+                <CaseSettlementPanel
+                  record={caseData}
+                  payments={casePayments}
+                  readonly={!hasAccess}
+                  isSaving={caseSettlementSaving}
+                  onAddPayment={handleAddCaseSettlementPayment}
+                  onEditCommission={handleEditCaseSettlementCommission}
+                />
+              </div>
+
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Ładowanie sprawy...</span>
           </section>

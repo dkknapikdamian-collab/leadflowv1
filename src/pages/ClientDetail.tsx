@@ -1,26 +1,41 @@
-const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
-void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
-const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
-void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
+import {
+  Link,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import {
   EntityIcon,
-  EventEntityIcon } from '../components/ui-system';
-/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
-/* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
-/* STAGE54_CLIENT_CASES_COMPACT_FIT */
-/* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
-/* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
-/*
-CLIENT_DETAIL_VISUAL_REBUILD_STAGE12
-Client is a relation record. Operational work after acquisition happens in Case.
-CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
-CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
-CLIENT_DETAIL_MORE_MENU_SECONDARY
-CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
-STAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION
-CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY
-STAGE50_CLIENT_DETAIL_EDIT_HEADER_POLISH
-*/
+  EventEntityIcon
+} from '../components/ui-system';
+import {
+  AlertTriangle,
+  ArrowLeft,
+  Building2,
+  CheckCircle2,
+  Clock,
+  Copy,
+  Eye,
+  Loader2,
+  Mail,
+  Pencil,
+  Phone,
+  Plus,
+  Save,
+  Trash2
+} from 'lucide-react';
+
+
+
+
+
+
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
 const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu Drugorzędne akcje menu pomocnicze';
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
@@ -50,44 +65,47 @@ const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
 import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState } from 'react';
-import { Link,
-  useNavigate,
-  useParams } from 'react-router-dom';
-import {
-  Activity,
-  AlertTriangle,
-  ArrowLeft,
-  Building2,
-  CheckCircle2,
-  Clock,
-  Copy,
-  Loader2,
-  Mail,
   Mic,
   MicOff,
-  Eye,
-  Pin,
-  Pencil,
-  Phone,
-  Plus,
-  Save,
-  Trash2
-} from 'lucide-react';
-import { toast } from 'sonner';
+  Pin
+} from 'react-router-dom';
+import {
+  Activity
+} from 'react';
+
+const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
+void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
+const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
+void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
+import {
+  toast
+} from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityActionButton, actionButtonClass, formActionsClass } from '../components/entity-actions';
-import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Textarea } from '../components/ui/textarea';
-import { useWorkspace } from '../hooks/useWorkspace';
+import {
+  EntityActionButton,
+  actionButtonClass,
+  formActionsClass
+} from '../components/entity-actions';
+import {
+  openContextQuickAction,
+  type ContextActionKind
+} from '../components/ContextActionDialogs';
+import {
+  Button
+} from '../components/ui/button';
+import {
+  Input
+} from '../components/ui/input';
+import {
+  Label
+} from '../components/ui/label';
+import {
+  Textarea
+} from '../components/ui/textarea';
+import {
+  useWorkspace
+} from '../hooks/useWorkspace';
 import {
   fetchActivitiesFromSupabase,
   updateActivityInSupabase,
@@ -99,10 +117,14 @@ import {
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   updateClientInSupabase,
-  updateLeadInSupabase,
+  updateLeadInSupabase
 } from '../lib/supabase-fallback';
-import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
-import { normalizeWorkItem } from '../lib/work-items/normalize';
+import {
+  getNearestPlannedAction
+} from '../lib/work-items/planned-actions';
+import {
+  normalizeWorkItem
+} from '../lib/work-items/normalize';
 import '../styles/visual-stage12-client-detail-vnext.css';
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',

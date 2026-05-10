@@ -1,35 +1,13 @@
 import {
-  EntityIcon } from '../components/ui-system';
-
-/* STAGE16O_SETTINGS_PLAN_VISIBILITY_STATIC_CONTRACTS
- * canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar)
- * const loadGoogleCalendarStatus = async () => { if (!canUseGoogleCalendarByPlan) { DISABLED_BY_PLAN return; setCheckingGoogleCalendar(true)
- * useEffect(() => { if (!canUseGoogleCalendarByPlan) loadGoogleCalendarStatus() },
-  [workspace?.id,
-  activeUserId,
-  activeUserEmail,
-  canUseGoogleCalendarByPlan])
- * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill"
- * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
- * <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
- * canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest)
- * digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan
- */
-import {
   useEffect,
   useMemo,
-  useState } from 'react';
+  useState
+} from 'react';
 import {
-  EmailAuthProvider,
-  fetchSignInMethodsForEmail,
-  linkWithCredential,
-  reauthenticateWithCredential,
-  sendPasswordResetEmail,
-  signOut,
-  verifyBeforeUpdateEmail,
-  } from 'firebase/auth';
+  EntityIcon,
+  NotificationEntityIcon
+} from '../components/ui-system';
 import {
-  NotificationEntityIcon,
   Building2,
   CalendarDays,
   Database,
@@ -37,6 +15,7 @@ import {
   LockKeyhole,
   LogOut,
   Mail,
+  Menu,
   MonitorCog,
   RefreshCw,
   Save,
@@ -47,26 +26,70 @@ import {
   Users,
   WalletCards
 } from 'lucide-react';
-import { toast } from 'sonner';
+
+import {
+  EmailAuthProvider,
+  fetchSignInMethodsForEmail,
+  linkWithCredential,
+  reauthenticateWithCredential,
+  sendPasswordResetEmail,
+  signOut,
+  verifyBeforeUpdateEmail
+} from 'firebase/auth';
+
+
+import {
+  toast
+} from 'sonner';
 
 import Layout from '../components/Layout';
-import { useAppearance } from '../components/appearance-provider';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { auth } from '../firebase';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { useClientAuthSnapshot } from '../hooks/useClientAuthSnapshot';
-import { getConflictWarningsEnabled, setConflictWarningsEnabled as storeConflictWarningsEnabled } from '../lib/app-preferences';
 import {
-  getBrowserNotificationPermission, getBrowserNotificationsEnabled, setBrowserNotificationsEnabled, supportsBrowserNotifications, } from '../lib/notifications';
-import { getReminderSettings, setReminderSettings } from '../lib/reminders';
-import { updateProfileSettingsInSupabase, updateWorkspaceSettingsInSupabase } from '../lib/supabase-fallback';
-import { GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS } from '../lib/options';
-import { getGoogleCalendarReminderPreference, setGoogleCalendarReminderPreference } from '../lib/google-calendar-reminder-preferences';
+  useAppearance
+} from '../components/appearance-provider';
+import {
+  Button
+} from '../components/ui/button';
+import {
+  Input
+} from '../components/ui/input';
+import {
+  Label
+} from '../components/ui/label';
+import {
+  auth
+} from '../firebase';
+import {
+  useWorkspace
+} from '../hooks/useWorkspace';
+import {
+  useClientAuthSnapshot
+} from '../hooks/useClientAuthSnapshot';
+import {
+  getConflictWarningsEnabled,
+  setConflictWarningsEnabled as storeConflictWarningsEnabled
+} from '../lib/app-preferences';
+import {
+  getBrowserNotificationPermission,
+  getBrowserNotificationsEnabled,
+  setBrowserNotificationsEnabled,
+  supportsBrowserNotifications
+} from '../lib/notifications';
+import {
+  getReminderSettings,
+  setReminderSettings
+} from '../lib/reminders';
+import {
+  updateProfileSettingsInSupabase,
+  updateWorkspaceSettingsInSupabase
+} from '../lib/supabase-fallback';
+import {
+  GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS
+} from '../lib/options';
+import {
+  getGoogleCalendarReminderPreference,
+  setGoogleCalendarReminderPreference
+} from '../lib/google-calendar-reminder-preferences';
 import '../styles/visual-stage19-settings-vnext.css';
-
-const NotificationEntityIcon = (props: { className?: string }) => <EntityIcon entity="notification" {...props} />;
 
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;

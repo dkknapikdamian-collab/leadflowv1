@@ -1,7 +1,7 @@
 import {
   EntityIcon,
   TaskEntityIcon } from '../components/ui-system';
-﻿/*
+/*
 LEGACY_TODAY_TSX_INACTIVE_UI_SURFACE_STAGE15
 Stage15 decision: this file is retained as an inactive legacy UI surface. Active / and /today route through TodayStable in src/App.tsx. Do not refactor this file inside active UI cleanup stages.
 */
@@ -15,7 +15,7 @@ data-today-ai-drafts-compact-tile="true"
 Szkice do zatwierdzenia
 data-today-ai-drafts-pending-count="true"
 openTodayTopTileShortcut('ai_drafts')
-Otwórz Szkice AI
+Otw├│rz Szkice AI
 function getPendingTodayAiDrafts
 draft.status === 'draft'
 String(draft.rawText || '').trim()
@@ -41,14 +41,13 @@ Math.max(existing.amount,
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1
 /*
 AI_DRAFTS_IN_TODAY_STAGE04
-Szkice AI w Dziś są tylko do przeglądu i przejścia do centrum szkiców.
-Finalny zapis rekordu nie dzieje się z poziomu Dziś.
+Szkice AI w Dzi┼Ť s─ů tylko do przegl─ůdu i przej┼Ťcia do centrum szkic├│w.
+Finalny zapis rekordu nie dzieje si─Ö z poziomu Dzi┼Ť.
 */
-
 /*
 TODAY_AI_DRAFTS_TILE_STAGE29
 TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
-Dziś pokazuje mały dolny kafelek Szkice z liczbą niezatwierdzonych szkiców AI. Bez dużej sekcji i bez ingerencji w zwijane listy.
+Dzi┼Ť pokazuje ma┼éy dolny kafelek Szkice z liczb─ů niezatwierdzonych szkic├│w AI. Bez du┼╝ej sekcji i bez ingerencji w zwijane listy.
 */
 
 import {
@@ -158,28 +157,28 @@ const TODAY_QUICK_SNOOZE_OPTIONS = [
   {
     key: '1h',
     label: 'Za 1h',
-    description: 'Odłóż o godzinę.',
+    description: 'Od┼é├│┼╝ o godzin─Ö.',
     minutes: 60,
     days: 0,
   },
   {
     key: 'tomorrow',
     label: 'Jutro',
-    description: 'Odłóż na jutro rano.',
+    description: 'Od┼é├│┼╝ na jutro rano.',
     minutes: 0,
     days: 1,
   },
   {
     key: '2d',
     label: 'Za 2 dni',
-    description: 'Odłóż o dwa dni.',
+    description: 'Od┼é├│┼╝ o dwa dni.',
     minutes: 0,
     days: 2,
   },
   {
     key: 'next_week',
-    label: 'Przyszły tydzień',
-    description: 'Odłóż na przyszły tydzień.',
+    label: 'Przysz┼éy tydzie┼ä',
+    description: 'Od┼é├│┼╝ na przysz┼éy tydzie┼ä.',
     minutes: 0,
     days: 7,
   },
@@ -235,7 +234,7 @@ function shouldOpenWeeklyCalendarTile(id: string, title: string) {
   return compact.includes('calendar')
     || compact.includes('kalendarz')
     || compact.includes('schedule')
-    || compact.includes('najbliższe dni')
+    || compact.includes('najbli┼╝sze dni')
     || compact.includes('najblizsze dni');
 }
 
@@ -263,15 +262,15 @@ function shouldOpenWeeklyCalendarFromShortcutText(value: unknown) {
     compact.includes('calendar') ||
     compact.includes('termin') ||
     compact.includes('wydarze') ||
-    compact.includes('najbliższe') ||
+    compact.includes('najbli┼╝sze') ||
     compact.includes('najblizsze');
 
   const hasWeekOrDaysWord =
-    compact.includes('tydzień') ||
+    compact.includes('tydzie┼ä') ||
     compact.includes('tydzien') ||
     compact.includes('dni') ||
     compact.includes('7 dni') ||
-    compact.includes('najbliższe') ||
+    compact.includes('najbli┼╝sze') ||
     compact.includes('najblizsze');
 
   return hasCalendarWord && hasWeekOrDaysWord;
@@ -306,10 +305,10 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (!compact) return null;
 
   if (compact === 'urgent' || compact === 'pilne') return 'urgent';
-  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez zaplanowanej akcji') return 'without_action'; // Brak następnego kroku
+  if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez zaplanowanej akcji') return 'without_action'; // Brak nast─Öpnego kroku
   if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
   if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
-  if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obsługa') return 'service_transition';
+  if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obs┼éuga') return 'service_transition';
   if (compact === 'calendar' || compact === 'kalendarz') return 'calendar';
   if (compact === 'ai drafts' || compact === 'ai draft' || compact === 'szkice' || compact === 'szkice ai' || compact === 'drafts') return 'ai_drafts';
 
@@ -324,9 +323,9 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   ) return 'blocked';
 
   if (
-    compact.includes('start i obsługa')
+    compact.includes('start i obs┼éuga')
     || compact.includes('start i obsluga')
-    || compact.includes('obsługa aktywna')
+    || compact.includes('obs┼éuga aktywna')
     || compact.includes('obsluga aktywna')
     || compact.includes('gotowe do uruchomienia')
   ) return 'service_transition';
@@ -334,11 +333,11 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (
     compact.includes('bez zaplanowanej akcji')
     || compact.includes('bez dzialan')
-    || compact.includes('bez następnego')
+    || compact.includes('bez nast─Öpnego')
     || compact.includes('bez nastepnego')
-    || compact.includes('brak następnego')
+    || compact.includes('brak nast─Öpnego')
     || compact.includes('brak nastepnego')
-    || compact.includes('najbliższa zaplanowana akcja')
+    || compact.includes('najbli┼╝sza zaplanowana akcja')
         || compact.includes('brak kolejnego')
     || compact.includes('bez kolejnego')
   ) return 'without_action';
@@ -349,18 +348,18 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
     || compact.includes('brak zmiany')
     || compact.includes('bez zmiany')
     || compact.includes('7 dni')
-    || compact.includes('za długo')
+    || compact.includes('za d┼éugo')
     || compact.includes('za dlugo')
-    || compact.includes('zbyt długo')
+    || compact.includes('zbyt d┼éugo')
     || compact.includes('zbyt dlugo')
   ) return 'without_movement';
 
   if (
     compact.includes('pilne')
-    || compact.includes('zaległe')
+    || compact.includes('zaleg┼ée')
     || compact.includes('zalegle')
     || compact.includes('dzisiaj')
-    || compact.includes('dziś')
+    || compact.includes('dzi┼Ť')
     || compact.includes('dzis')
     || compact.includes('priorytet')
     || compact.includes('wymaga uwagi')
@@ -369,7 +368,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
 
   if (
     compact.includes('kalendarz')
-    || compact.includes('najbliższe')
+    || compact.includes('najbli┼╝sze')
     || compact.includes('najblizsze')
     || compact.includes('termin')
     || compact.includes('wydarzenia')
@@ -388,11 +387,11 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
 
 function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
   if (target === 'blocked') return ['zablokowane', 'blok'];
-  if (target === 'service_transition') return ['start i obsługa', 'start i obsluga', 'obsługa aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
-  if (target === 'without_action') return ['bez zaplanowanej akcji', 'bez dzialan', 'bez następnego', 'bez nastepnego', 'najbliższa zaplanowana akcja'];
+  if (target === 'service_transition') return ['start i obs┼éuga', 'start i obsluga', 'obs┼éuga aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
+  if (target === 'without_action') return ['bez zaplanowanej akcji', 'bez dzialan', 'bez nast─Öpnego', 'bez nastepnego', 'najbli┼╝sza zaplanowana akcja'];
   if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
-  if (target === 'urgent') return ['pilne', 'zaległe', 'zalegle', 'dzisiaj', 'dziś', 'dzis'];
-  if (target === 'calendar') return ['kalendarz', 'najbliższe', 'najblizsze', 'terminy', 'wydarzenia'];
+  if (target === 'urgent') return ['pilne', 'zaleg┼ée', 'zalegle', 'dzisiaj', 'dzi┼Ť', 'dzis'];
+  if (target === 'calendar') return ['kalendarz', 'najbli┼╝sze', 'najblizsze', 'terminy', 'wydarzenia'];
   if (target === 'ai_drafts') return ['szkice', 'szkice ai', 'ai drafts', 'do sprawdzenia'];
   return [];
 }
@@ -475,7 +474,7 @@ function expandTodayShortcutSection(section: HTMLElement) {
 }
 
 function openTodayTopTileShortcut(target: TodayTileShortcutTarget) {
-  // TODAY_TOP_TILE_DIRECT_ANCHOR_FIX_V111: górne kafelki Dziś mają jawne kotwice i nie zależą od tekstu nagłówka.
+  // TODAY_TOP_TILE_DIRECT_ANCHOR_FIX_V111: g├│rne kafelki Dzi┼Ť maj─ů jawne kotwice i nie zale┼╝─ů od tekstu nag┼é├│wka.
   if (target === 'calendar') {
     openWeeklyCalendarFromToday();
     return;
@@ -714,7 +713,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
           to={`/leads/${leadId}`}
           className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
         >
-          Otwórz lead
+          Otw├│rz lead
         </Link>
       ) : null}
       {caseId ? (
@@ -722,7 +721,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
           to={`/cases/${caseId}`}
           className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
         >
-          Otwórz sprawę
+          Otw├│rz spraw─Ö
         </Link>
       ) : null}
     </div>
@@ -731,7 +730,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
 
 function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean) {
   if (isPending) return '...';
-  return isCompleted ? 'Przywróć' : 'Zrobione';
+  return isCompleted ? 'Przywr├│─ç' : 'Zrobione';
 }
 
 function TodayEntryPriorityReasons({ entry }: { entry: any }) {
@@ -827,7 +826,7 @@ function TodayEntrySnoozeBar({
       onTouchStart={(event) => event.stopPropagation()}
       onTouchEnd={(event) => event.stopPropagation()}
     >
-      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
+      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko od┼é├│┼╝:</span>
       {onEdit ? (
         <button
           type="button"
@@ -882,7 +881,7 @@ function todayPipelineNormalizeAmount(value: unknown) {
 
   const compact = value
     .replace(/\s/g, '')
-    .replace(/zł|pln/gi, '')
+    .replace(/z┼é|pln/gi, '')
     .replace(/,/g, '.')
     .replace(/[^0-9.-]/g, '');
 
@@ -1088,21 +1087,21 @@ function TodayFunnelDedupValueCard({ leads, clients }: { leads: any[]; clients: 
               {todayPipelineFormatMoney(summary.totalValue)}
             </p>
             <p className="mt-1 text-sm text-slate-500">
-              Wartość z leadów i klientów bez podwójnego liczenia osoby, która przeszła z leada do klienta.
+              Warto┼Ť─ç z lead├│w i klient├│w bez podw├│jnego liczenia osoby, kt├│ra przesz┼éa z leada do klienta.
             </p>
           </div>
           <div className="grid grid-cols-3 gap-2 text-center sm:min-w-[320px]">
             <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
               <p className="text-lg font-black text-slate-950">{summary.uniqueCount}</p>
-              <p className="text-[11px] font-semibold text-slate-500">kontaktów</p>
+              <p className="text-[11px] font-semibold text-slate-500">kontakt├│w</p>
             </div>
             <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
               <p className="text-lg font-black text-slate-950">{summary.leadRows}</p>
-              <p className="text-[11px] font-semibold text-slate-500">leadów</p>
+              <p className="text-[11px] font-semibold text-slate-500">lead├│w</p>
             </div>
             <div className="rounded-2xl border border-slate-100 bg-slate-50 px-3 py-2">
               <p className="text-lg font-black text-slate-950">{summary.clientRows}</p>
-              <p className="text-[11px] font-semibold text-slate-500">klientów</p>
+              <p className="text-[11px] font-semibold text-slate-500">klient├│w</p>
             </div>
           </div>
         </div>
@@ -1131,10 +1130,10 @@ function todayPipelineLeadSubtitle(lead: any) {
   const parts = [
     lead?.status ? String(lead.status) : '',
     lead?.source ? String(lead.source) : '',
-    lead?.nextActionAt ? 'następny ruch: ' + formatLeadMoment(lead.nextActionAt) : '',
+    lead?.nextActionAt ? 'nast─Öpny ruch: ' + formatLeadMoment(lead.nextActionAt) : '',
   ].filter(Boolean);
 
-  return parts.length ? parts.join(' · ') : 'Brak dodatkowych danych';
+  return parts.length ? parts.join(' ┬Ě ') : 'Brak dodatkowych danych';
 }
 
 function todayPipelineIsUrgentLead(lead: any) {
@@ -1185,7 +1184,7 @@ function todayPipelineCaseSubtitle(caseItem: any) {
     caseItem?.updatedAt ? 'ostatnia zmiana: ' + formatLeadMoment(caseItem.updatedAt) : '',
   ].filter(Boolean);
 
-  return parts.length ? parts.join(' · ') : 'Brak dodatkowych danych';
+  return parts.length ? parts.join(' ┬Ě ') : 'Brak dodatkowych danych';
 }
 
 
@@ -1205,18 +1204,17 @@ function TodayAiDraftsTopTile({ drafts }: { drafts: AiLeadDraft[] }) {
       {latestDrafts.length ? (
         <span className="mt-2 block space-y-1 text-[11px] leading-snug text-violet-900">
           {latestDrafts.map((draft) => (
-            <span key={draft.id} className="block truncate">• {draft.rawText || 'Szkic bez treści'}</span>
+            <span key={draft.id} className="block truncate">ÔÇó {draft.rawText || 'Szkic bez tre┼Ťci'}</span>
           ))}
         </span>
       ) : (
-        <span className="mt-2 block text-[11px] text-violet-700">Brak szkiców do decyzji.</span>
+        <span className="mt-2 block text-[11px] text-violet-700">Brak szkic├│w do decyzji.</span>
       )}
     
               <span className="text-xs font-semibold">Przejrzyj</span></Link>
   );
 }
-
-/* TODAY_AI_DRAFTS_STAGE04: Dziś pokazuje szkice AI do sprawdzenia, ale finalny zapis nadal odbywa się w Szkicach AI. */
+/* TODAY_AI_DRAFTS_STAGE04: Dzi┼Ť pokazuje szkice AI do sprawdzenia, ale finalny zapis nadal odbywa si─Ö w Szkicach AI. */
 
 function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: any[] }) {
   const activeLeads = (leads || []).filter(todayPipelineIsActiveLead);
@@ -1254,9 +1252,9 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
       <CardContent className="p-4">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
-            <p className="text-sm font-bold text-slate-900">Dziś w skrócie</p>
+            <p className="text-sm font-bold text-slate-900">Dzi┼Ť w skr├│cie</p>
             <p className="mt-1 text-xs text-slate-500">
-              Pilne leady, brak najbliższej zaplanowanej akcji, brak ruchu i sprawy zatrzymane w miejscu.
+              Pilne leady, brak najbli┼╝szej zaplanowanej akcji, brak ruchu i sprawy zatrzymane w miejscu.
             </p>
           </div>
           <Badge className="w-fit bg-emerald-50 text-emerald-700 border border-emerald-100">
@@ -1281,7 +1279,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
           <button type="button" onClick={() => openTodayTopTileShortcut('urgent')} data-today-pipeline-shortcut="urgent" className="min-w-[180px] flex-1 rounded-2xl border border-blue-100 bg-blue-50 p-3 transition hover:border-blue-200 hover:bg-blue-100 text-left">
             <span className="text-xs font-semibold text-blue-700">Pilne leady</span>
             <strong className="mt-1 block text-2xl text-blue-950">{urgentLeads.length}</strong>
-            <small className="text-xs text-blue-700">Dziś albo zaległe</small>
+            <small className="text-xs text-blue-700">Dzi┼Ť albo zaleg┼ée</small>
           </button>
 
           <button type="button" onClick={() => openTodayTopTileShortcut('without_action')} data-today-pipeline-shortcut="without_action" className="min-w-[180px] flex-1 rounded-2xl border border-amber-100 bg-amber-50 p-3 transition hover:border-amber-200 hover:bg-amber-100 text-left">
@@ -1299,13 +1297,13 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
           <button type="button" onClick={() => openTodayTopTileShortcut('blocked')} data-today-pipeline-shortcut="blocked" className="min-w-[180px] flex-1 rounded-2xl border border-red-100 bg-red-50 p-3 transition hover:border-red-200 hover:bg-red-100 text-left">
             <span className="text-xs font-semibold text-red-700">Zablokowane sprawy</span>
             <strong className="mt-1 block text-2xl text-red-950">{blockedCases.length}</strong>
-            <small className="text-xs text-red-700">Wymagają odblokowania</small>
+            <small className="text-xs text-red-700">Wymagaj─ů odblokowania</small>
           </button>
 
           <button type="button" onClick={() => openTodayTopTileShortcut('service_transition')} data-today-pipeline-shortcut="service_transition" className="min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 transition hover:border-violet-200 hover:bg-violet-100 text-left">
-            <span className="text-xs font-semibold text-violet-700">Start i obsługa</span>
+            <span className="text-xs font-semibold text-violet-700">Start i obs┼éuga</span>
             <strong className="mt-1 block text-2xl text-violet-950">{serviceTransitionCount}</strong>
-            <small className="text-xs text-violet-700">Przejścia i blokady</small>
+            <small className="text-xs text-violet-700">Przej┼Ťcia i blokady</small>
           </button>
 
           <TodayAiDraftsTopTile drafts={aiDraftsStage04} />
@@ -1338,7 +1336,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
               <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-3">
                 <div className="mb-2 flex items-center gap-2 text-sm font-bold text-emerald-800">
                   <TrendingUp className="h-4 w-4" />
-                  Największa wartość leadów
+                  Najwi─Öksza warto┼Ť─ç lead├│w
                 </div>
                 <div className="grid gap-2">
                   {topLeads.map((lead) => (
@@ -1349,7 +1347,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
                     >
                       <strong className="block text-emerald-950">{todayPipelineLeadName(lead)}</strong>
                       <span className="mt-0.5 block text-xs text-emerald-700">
-                        {todayPipelineFormatMoney(todayPipelineLeadAmount(lead))} · {todayPipelineLeadSubtitle(lead)}
+                        {todayPipelineFormatMoney(todayPipelineLeadAmount(lead))} ┬Ě {todayPipelineLeadSubtitle(lead)}
                       </span>
                     </Link>
                   ))}
@@ -1371,7 +1369,7 @@ function getPendingTodayAiDrafts(drafts: AiLeadDraft[]) {
 
 function getTodayAiDraftPreview(draft: AiLeadDraft) {
   const rawText = String(draft.rawText || '').replace(/s+/g, ' ').trim();
-  if (!rawText) return 'Szkic bez treści';
+  if (!rawText) return 'Szkic bez tre┼Ťci';
   return rawText.length > 96 ? rawText.slice(0, 93) + '...' : rawText;
 }
 
@@ -1666,7 +1664,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
         setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })));
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`Błąd odczytu planu dnia: ${error.message}`);
+          toast.error(`B┼é─ůd odczytu planu dnia: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -1824,7 +1822,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const handleAddLead = async (e: FormEvent) => {
     e.preventDefault();
     if (leadSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł. Opłać subskrypcję, aby dodawać leady.');
+    if (!hasAccess) return toast.error('Tw├│j trial wygas┼é. Op┼éa─ç subskrypcj─Ö, aby dodawa─ç leady.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     leadSubmitLockRef.current = true;
@@ -1841,7 +1839,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       setIsLeadOpen(false);
       setNewLead({ name: '', email: '', dealValue: '', source: 'other', status: 'new' });
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       leadSubmitLockRef.current = false;
       setLeadSubmitting(false);
@@ -1851,7 +1849,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
     if (taskSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('Tw├│j trial wygas┼é.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     taskSubmitLockRef.current = true;
@@ -1892,7 +1890,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       setIsTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       taskSubmitLockRef.current = false;
       setTaskSubmitting(false);
@@ -1902,7 +1900,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (eventSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('Tw├│j trial wygas┼é.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     eventSubmitLockRef.current = true;
@@ -1942,7 +1940,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       setIsEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       eventSubmitLockRef.current = false;
       setEventSubmitting(false);
@@ -1964,7 +1962,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       });
       await refreshSupabaseBundle();
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     }
   };
 
@@ -2002,16 +2000,16 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywr├│cone');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
   };
 
   const deleteTodayTask = async (entry: any) => {
-    if (!window.confirm('Usunąć to zadanie?')) return;
+    if (!window.confirm('Usun─ů─ç to zadanie?')) return;
 
     try {
       setTodayActionId(`${entry.id}:delete`);
@@ -2021,9 +2019,9 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success('Zadanie usunięte');
+      toast.success('Zadanie usuni─Öte');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -2062,16 +2060,16 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywrócone');
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako wykonane' : 'Wydarzenie przywr├│cone');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
   };
 
   const deleteTodayEvent = async (entry: any) => {
-    if (!window.confirm('Usunąć to wydarzenie?')) return;
+    if (!window.confirm('Usun─ů─ç to wydarzenie?')) return;
 
     try {
       setTodayActionId(`${entry.id}:delete`);
@@ -2081,9 +2079,9 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success('Wydarzenie usunięte');
+      toast.success('Wydarzenie usuni─Öte');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -2115,9 +2113,9 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       if (previewEntry?.kind === 'task' && previewEntry?.sourceId === entry.sourceId) {
         setPreviewEntry(null);
       }
-      toast.success('Zadanie odłożone');
+      toast.success('Zadanie od┼éo┼╝one');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -2153,9 +2151,9 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       if (previewEntry?.id === entry.id) {
         setPreviewEntry(null);
       }
-      toast.success('Wydarzenie odłożone');
+      toast.success('Wydarzenie od┼éo┼╝one');
     } catch (error: any) {
-      toast.error('Błąd: ' + error.message);
+      toast.error('B┼é─ůd: ' + error.message);
     } finally {
       setTodayActionId(null);
     }
@@ -2195,8 +2193,8 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
           <Card className="border-rose-200">
             <CardContent className="p-6 space-y-4">
               <h2 className="text-lg font-bold text-rose-700">Kontekst workspace nie jest gotowy</h2>
-              <p className="text-sm text-slate-600">Nie możemy uruchomić akcji, dopóki workspace nie zostanie poprawnie zbootstrapowany.</p>
-              <Button onClick={() => refresh()}>Spróbuj ponownie</Button>
+              <p className="text-sm text-slate-600">Nie mo┼╝emy uruchomi─ç akcji, dop├│ki workspace nie zostanie poprawnie zbootstrapowany.</p>
+              <Button onClick={() => refresh()}>Spr├│buj ponownie</Button>
             </CardContent>
           </Card>
         </div>
@@ -2310,7 +2308,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
   const summaryCards = [
     {
       id: 'overdue',
-      title: 'Zaległe',
+      title: 'Zaleg┼ée',
       value: todayDecisionSections.find((section) => section.key === 'overdue')?.count || 0,
       tone: 'text-rose-600',
       bg: 'bg-rose-50',
@@ -2319,7 +2317,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     },
     {
       id: 'move_today',
-      title: 'Do ruchu dziś',
+      title: 'Do ruchu dzi┼Ť',
       value: todayDecisionSections.find((section) => section.key === 'move_today')?.count || 0,
       tone: 'text-blue-600',
       bg: 'bg-blue-50',
@@ -2337,7 +2335,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     },
     {
       id: 'waiting_too_long',
-      title: 'Waiting za długo',
+      title: 'Waiting za d┼éugo',
       value: todayDecisionSections.find((section) => section.key === 'waiting_too_long')?.count || 0,
       tone: 'text-purple-600',
       bg: 'bg-purple-50',
@@ -2413,7 +2411,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:flex-wrap">
               <div className="min-w-0">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700">Start i obsługa</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700">Start i obs┼éuga</p>
                 <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{readyToStartLeads.length + activeServiceLeads.length + blockedCases.length}</p>
               </div>
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
@@ -2429,7 +2427,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
               <div id="today-section-overdue-tasks">
                 <TileCard
                   id="overdue-tasks-section"
-                  title="Zaległe zadania"
+                  title="Zaleg┼ée zadania"
                   collapsedMap={collapsedTiles}
                   onToggle={toggleTile}
                   className="border-rose-100 bg-rose-50/30"
@@ -2458,18 +2456,18 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                               <p className="font-semibold text-slate-900 break-words">{task.title}</p>
                               <p className="text-sm text-rose-500 break-words font-medium">{format(parseISO(startAt), 'd MMMM HH:mm', { locale: pl })}</p>
                               <p className="mt-2 text-sm text-slate-600 break-words">
-                                Zadanie wymaga reakcji. Kliknij kartę, aby podejrzeć szczegóły i wykonać akcję bez przechodzenia do pełnej listy.
+                                Zadanie wymaga reakcji. Kliknij kart─Ö, aby podejrze─ç szczeg├│┼éy i wykona─ç akcj─Ö bez przechodzenia do pe┼énej listy.
                               </p>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <Button variant="outline" size="sm" onClick={() => openPreviewEntry(previewTask)}>
-                                Szczegóły
+                                Szczeg├│┼éy
                               </Button>
                               <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewTask)}>
-                                {task.status === 'done' ? 'Przywróć' : 'Zrobione'}
+                                {task.status === 'done' ? 'Przywr├│─ç' : 'Zrobione'}
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewTask)}>
-                                Usuń
+                                Usu┼ä
                               </Button>
                             </div>
                           </CardContent>
@@ -2494,11 +2492,11 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                       key={lead.id}
                       leadId={String(lead.id)}
                       title={lead.name}
-                      subtitle={`${lead.company || 'Brak firmy'} • ${formatLeadMoment(lead.nextActionAt)}`}
+                      subtitle={`${lead.company || 'Brak firmy'} ÔÇó ${formatLeadMoment(lead.nextActionAt)}`}
                       subtitleClassName="text-rose-500 font-medium"
                       className="border-rose-100 bg-rose-50/30"
                       badges={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
-                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obsługi."
+                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obs┼éugi."
                     />
                   ))}
                 </div>
@@ -2509,13 +2507,13 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-bold text-slate-900">Dzisiaj</h2>
-                  <p className="text-sm text-slate-500">Plan dnia z aktualizacją live.</p>
+                  <p className="text-sm text-slate-500">Plan dnia z aktualizacj─ů live.</p>
                 </div>
                 <Badge variant="secondary" className="rounded-full">{todayEntries.length}</Badge>
               </div>
 
               <div className="space-y-4">
-                <TileCard id="today-section-leads" title="Leady do ruchu" subtitle={`${todayLeadActions.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-leads" title="Leady do ruchu" subtitle={`${todayLeadActions.length} wpis├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayLeadActions.length > 0 ? (
                     <div className="max-h-80 overflow-y-auto pr-1 space-y-3">
                       {todayLeadActions.map((entry) => (
@@ -2539,12 +2537,12 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                     </div>
                   ) : (
                     <Card className="border-dashed bg-slate-50/50">
-                      <CardContent className="p-6 text-sm text-slate-500">Brak leadów z ruchem na dziś.</CardContent>
+                      <CardContent className="p-6 text-sm text-slate-500">Brak lead├│w z ruchem na dzi┼Ť.</CardContent>
                     </Card>
                   )}
                 </TileCard>
 
-                <TileCard id="today-section-events" title="Wydarzenia" subtitle={`${todayEvents.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-events" title="Wydarzenia" subtitle={`${todayEvents.length} wpis├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayEvents.length > 0 ? (
                     <div className="grid gap-3">
                       {todayEvents.map((entry) => {
@@ -2569,7 +2567,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                               >
                                 <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
                                 <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>
-                                  {EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}
+                                  {EVENT_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Wydarzenie'}{entry.leadName ? ` ÔÇó Lead: ${entry.leadName}` : ''}
                                 </p>
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                   <Badge variant="outline" className="text-[10px] uppercase">
@@ -2596,13 +2594,13 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                                   />
                               <div className="flex flex-wrap items-center justify-end gap-2 shrink-0">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
-                                  Szczegóły
+                                  Szczeg├│┼éy
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayEvent(entry)} disabled={completePending}>
                                   {formatTodayCompleteActionLabel(isCompleted, completePending)}
                                 </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayEvent(entry)} disabled={deletePending}>
-                                  {deletePending ? '...' : 'Usuń'}
+                                  {deletePending ? '...' : 'Usu┼ä'}
                                 </Button>
                               </div>
                             </CardContent>
@@ -2612,12 +2610,12 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                     </div>
                   ) : (
                     <Card className="border-dashed bg-slate-50/50">
-                      <CardContent className="p-6 text-sm text-slate-500">Brak wydarzeń na dziś.</CardContent>
+                      <CardContent className="p-6 text-sm text-slate-500">Brak wydarze┼ä na dzi┼Ť.</CardContent>
                     </Card>
                   )}
                 </TileCard>
 
-                <TileCard id="today-section-tasks" title="Zadania na dziś" subtitle={`${todayTasks.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-tasks" title="Zadania na dzi┼Ť" subtitle={`${todayTasks.length} wpis├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   {todayTasks.length > 0 ? (
                     <div className="grid gap-3">
                       {todayTasks.map((entry) => {
@@ -2641,7 +2639,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                                 }}
                               >
                                 <p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>
-                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} • {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` • Lead: ${entry.leadName}` : ''}</p>
+                                <p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} ÔÇó {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` ÔÇó Lead: ${entry.leadName}` : ''}</p>
                                 <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                                   {entry.raw?.recurrence?.mode && entry.raw.recurrence.mode !== 'none' ? (
                                     <Badge variant="outline" className="text-[10px] uppercase"><Repeat className="w-3 h-3 mr-1" /> {RECURRENCE_OPTIONS.find((option) => option.value === entry.raw.recurrence.mode)?.label}</Badge>
@@ -2664,13 +2662,13 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                                   />
                               <div className="flex flex-wrap items-center gap-2">
                                 <Button variant="outline" size="sm" onClick={() => openPreviewEntry(entry)}>
-                                  Szczegóły
+                                  Szczeg├│┼éy
                                 </Button>
                                 <Button variant="outline" size="sm" onClick={() => toggleTodayTask(entry)} disabled={completePending}>
                                   {formatTodayCompleteActionLabel(isCompleted, completePending)}
                                 </Button>
                                 <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(entry)} disabled={deletePending}>
-                                  {deletePending ? '...' : 'Usuń'}
+                                  {deletePending ? '...' : 'Usu┼ä'}
                                 </Button>
                               </div>
                             </CardContent>
@@ -2682,7 +2680,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                     <Card className="border-dashed bg-slate-50/50">
                       <CardContent className="p-8 text-center">
                         <CheckSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-                        <p className="text-sm text-slate-500">Brak zadań na dziś.</p>
+                        <p className="text-sm text-slate-500">Brak zada┼ä na dzi┼Ť.</p>
                       </CardContent>
                     </Card>
                   )}
@@ -2692,7 +2690,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {noStepLeads.length > 0 && (
               <section id="today-section-no-step" className="space-y-4">
-                <TileCard id="today-section-no-step" title="Bez zaplanowanej akcji" subtitle={`${noStepLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-no-step" title="Bez zaplanowanej akcji" subtitle={`${noStepLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {noStepLeads.slice(0, 4).map((lead) => (
                       <LeadLinkCard
@@ -2700,7 +2698,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                         leadId={String(lead.id)}
                         title={lead.name}
                         subtitle={lead.company || 'Brak firmy'}
-                        badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak działań</Badge>}
+                        badges={<Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100 border-none">Brak dzia┼éa┼ä</Badge>}
                       />
                     ))}
                   </div>
@@ -2709,7 +2707,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             )}
 
             <section id="today-section-ai-drafts" className="space-y-4">
-              <TileCard id="today-section-ai-drafts-list" title="Do sprawdzenia" subtitle={`${pendingTodayAiDraftCount} szkiców`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+              <TileCard id="today-section-ai-drafts-list" title="Do sprawdzenia" subtitle={`${pendingTodayAiDraftCount} szkic├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                 {pendingTodayAiDrafts.length > 0 ? (
                   <div className="space-y-2">
                     {pendingTodayAiDrafts.slice(0, 6).map((draft) => (
@@ -2721,7 +2719,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                   </div>
                 ) : (
                   <Card className="border-dashed bg-slate-50/50">
-                    <CardContent className="p-6 text-sm text-slate-500">Brak szkiców do zatwierdzenia.</CardContent>
+                    <CardContent className="p-6 text-sm text-slate-500">Brak szkic├│w do zatwierdzenia.</CardContent>
                   </Card>
                 )}
               </TileCard>
@@ -2729,17 +2727,17 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {waitingTooLongLeads.length > 0 && (
               <section id="today-section-waiting-too-long" className="space-y-4">
-                <TileCard id="today-section-waiting-too-long" title="Waiting za długo" subtitle={`${waitingTooLongLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-waiting-too-long" title="Waiting za d┼éugo" subtitle={`${waitingTooLongLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   <div className="grid gap-3">
                     {waitingTooLongLeads.slice(0, 6).map((lead) => (
                       <LeadLinkCard
                         key={lead.id}
                         leadId={String(lead.id)}
                         title={lead.name}
-                        subtitle={lead.company || 'Oczekuje za długo'}
+                        subtitle={lead.company || 'Oczekuje za d┼éugo'}
                         subtitleClassName="text-purple-600 font-medium"
-                        badges={<Badge variant="outline" className="border-purple-200 text-purple-700 bg-white">Waiting za długo</Badge>}
-                        helperText="Powód: temat długo czeka bez nowego ruchu i wymaga decyzji operatora."
+                        badges={<Badge variant="outline" className="border-purple-200 text-purple-700 bg-white">Waiting za d┼éugo</Badge>}
+                        helperText="Pow├│d: temat d┼éugo czeka bez nowego ruchu i wymaga decyzji operatora."
                       />
                     ))}
                   </div>
@@ -2749,16 +2747,16 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {completedTodayEntries.length > 0 && (
               <section id="today-section-completed-today" className="space-y-4">
-                <TileCard id="today-section-completed-today" title="Dzisiaj zrobioneone" subtitle={`${completedTodayEntries.length} wpisów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-completed-today" title="Dzisiaj zrobioneone" subtitle={`${completedTodayEntries.length} wpis├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   <div className="space-y-2">
                     {completedTodayEntries.slice(0, 8).map((entry) => (
                       <Card key={`completed-${entry.id}`} className="border-emerald-100 bg-emerald-50/30">
                         <CardContent className="p-3 flex items-center justify-between gap-3">
                           <div className="min-w-0">
                             <p className="font-semibold text-slate-900 line-through">{entry.title}</p>
-                            <p className="text-xs text-emerald-700">Powód: zrobioneone dzisiaj</p>
+                            <p className="text-xs text-emerald-700">Pow├│d: zrobioneone dzisiaj</p>
                           </div>
-                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none">Zamknięte</Badge>
+                          <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none">Zamkni─Öte</Badge>
                         </CardContent>
                       </Card>
                     ))}
@@ -2771,10 +2769,10 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
               <section id="today-section-service-transition" className="space-y-4">
                 <div className="flex items-center gap-2 text-violet-600">
                   <EntityIcon entity="case" className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Start i obsługa</h2>
+                  <h2 className="text-lg font-bold">Start i obs┼éuga</h2>
                 </div>
                 {readyToStartLeads.length > 0 ? (
-                  <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                     <div className="space-y-2">
                       {readyToStartLeads.slice(0, 5).map((lead) => (
                         <LeadLinkCard
@@ -2783,22 +2781,22 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                           title={lead.name}
                           subtitle={lead.company || 'Lead gotowy do startu'}
                           badges={<Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 border-none">Gotowy do startu</Badge>}
-                          helperText="Wejdź w lead i użyj akcji „Rozpocznij obsługę”."
+                          helperText="Wejd┼║ w lead i u┼╝yj akcji ÔÇ×Rozpocznij obs┼éug─ÖÔÇŁ."
                         />
                       ))}
                     </div>
                   </TileCard>
                 ) : null}
                 {activeServiceLeads.length > 0 ? (
-                  <TileCard id="today-section-active-service" title="Obsługa aktywna" subtitle={`${activeServiceLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <TileCard id="today-section-active-service" title="Obs┼éuga aktywna" subtitle={`${activeServiceLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                     <div className="space-y-2">
                       {activeServiceLeads.slice(0, 5).map((lead) => (
                         <LeadLinkCard
                           key={lead.id}
                           leadId={String(lead.id)}
                           title={lead.name}
-                          subtitle={lead.company || 'Obsługa aktywna'}
-                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obsługa aktywna</Badge>}
+                          subtitle={lead.company || 'Obs┼éuga aktywna'}
+                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obs┼éuga aktywna</Badge>}
                         />
                       ))}
                     </div>
@@ -2821,7 +2819,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {staleLeads.length > 0 && (
               <section id="today-section-stale" className="space-y-4">
-                <TileCard id="today-section-stale" title="Bez ruchu" subtitle={`${staleLeads.length} leadów`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                <TileCard id="today-section-stale" title="Bez ruchu" subtitle={`${staleLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                   <div className="grid gap-3">
                     {staleLeads.map((lead) => {
                       const days = getDaysWithoutUpdate(lead) || 0;
@@ -2830,11 +2828,11 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                           key={lead.id}
                           leadId={String(lead.id)}
                           title={lead.name}
-                          subtitle={`${days} dni bez wyraźnego ruchu • ${lead.company || lead.source || 'Lead'}`}
+                          subtitle={`${days} dni bez wyra┼║nego ruchu ÔÇó ${lead.company || lead.source || 'Lead'}`}
                           subtitleClassName="text-purple-500 font-medium"
                           className="border-purple-100 bg-purple-50/30"
                           badges={<Badge variant="outline" className="rounded-full border-purple-200 text-purple-700 bg-white">Bez ruchu</Badge>}
-                          helperText="Lead ma ustawiony proces, ale nie było świeżego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
+                          helperText="Lead ma ustawiony proces, ale nie by┼éo ┼Ťwie┼╝ego ruchu. To dobry kandydat do szybkiego sprawdzenia lub follow-upu."
                         />
                       );
                     })}
@@ -2849,7 +2847,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
 
             {riskyValuableLeads.length > 0 && (
               <section id="today-section-high-value-risk" className="space-y-4">
-                <h2 className="text-lg font-bold text-slate-900">Wysoka wartość / ryzyko</h2>
+                <h2 className="text-lg font-bold text-slate-900">Wysoka warto┼Ť─ç / ryzyko</h2>
                 <div className="space-y-3">
                   {riskyValuableLeads.map((lead) => (
                     <LeadLinkCard
@@ -2865,9 +2863,9 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                       }
                       badges={
                         <>
-                          {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagrożony</Badge> : null}
-                          {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przeszłości</Badge> : null}
-                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak działań</Badge> : null}
+                          {lead.isAtRisk ? <Badge variant="destructive">Oznaczony jako zagro┼╝ony</Badge> : null}
+                          {isLeadOverdue(lead) ? <Badge variant="destructive">Termin w przesz┼éo┼Ťci</Badge> : null}
+                          {!parseMoment(lead.nextActionAt) ? <Badge variant="outline" className="border-amber-200 text-amber-700">Brak dzia┼éa┼ä</Badge> : null}
                           {(getDaysWithoutUpdate(lead) || 0) >= 5 ? <Badge variant="outline" className="border-purple-200 text-purple-700">Bez ruchu {getDaysWithoutUpdate(lead)} dni</Badge> : null}
                         </>
                       }
@@ -2878,7 +2876,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
             )}
 
             <section id="today-section-next-days" className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900">Najbliższe dni</h2>
+              <h2 className="text-lg font-bold text-slate-900">Najbli┼╝sze dni</h2>
               <div className="space-y-3">
                 {[1, 2, 3].map((days) => {
                   const date = addDays(new Date(), days);
@@ -2897,7 +2895,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                   return (
                     <TileCard key={days} id={`upcoming-day:${days}`} title={`${format(date, 'EEE', { locale: pl }).toUpperCase()} ${format(date, 'd')}`} subtitle={`${count} ${count === 1 ? 'rzecz' : 'rzeczy'}`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                       <p className="text-[10px] text-slate-500">
-                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarzeń • {dayEntries.filter((entry) => entry.kind === 'task').length} zadań • {dayEntries.filter((entry) => entry.kind === 'lead').length} leadów
+                        {dayEntries.filter((entry) => entry.kind === 'event').length} wydarze┼ä ÔÇó {dayEntries.filter((entry) => entry.kind === 'task').length} zada┼ä ÔÇó {dayEntries.filter((entry) => entry.kind === 'lead').length} lead├│w
                       </p>
                     </TileCard>
                   );
@@ -2912,7 +2910,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
       <Dialog open={Boolean(previewEntry)} onOpenChange={(open) => { if (!open) setPreviewEntry(null); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle>{previewEntry?.kind === 'task' ? 'Podgląd zadania' : 'Podgląd wydarzenia'}</DialogTitle>
+            <DialogTitle>{previewEntry?.kind === 'task' ? 'Podgl─ůd zadania' : 'Podgl─ůd wydarzenia'}</DialogTitle>
           </DialogHeader>
           {previewEntry ? (
             <div className="space-y-4 py-2">
@@ -2922,7 +2920,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                   {previewEntry.kind === 'task'
                     ? TASK_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Zadanie'
                     : EVENT_TYPES.find((item) => item.value === previewEntry.raw?.type)?.label || 'Wydarzenie'}
-                  {previewEntry.leadName ? ` • Lead: ${previewEntry.leadName}` : ''}
+                  {previewEntry.leadName ? ` ÔÇó Lead: ${previewEntry.leadName}` : ''}
                 </p>
               </div>
 
@@ -2962,7 +2960,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                     onClick={() => previewEntry.kind === 'task' ? deleteTodayTask(previewEntry) : deleteTodayEvent(previewEntry)}
                     disabled={todayActionId === `${previewEntry.id}:delete`}
                   >
-                    {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usuń'}
+                    {todayActionId === `${previewEntry.id}:delete` ? 'Usuwanie...' : 'Usu┼ä'}
                   </Button>
                   <Button
                     variant="outline"
@@ -2974,16 +2972,16 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                       ? 'Zapisywanie...'
                       : previewEntry.kind === 'task'
                         ? previewEntry.raw?.status === 'done'
-                          ? 'Przywróć'
+                          ? 'Przywr├│─ç'
                           : 'Oznacz jako zrobione'
                         : previewEntry.raw?.status === 'completed'
-                          ? 'Przywróć'
+                          ? 'Przywr├│─ç'
                           : 'Oznacz jako wykonane'}
                   </Button>
                 </div>
                 <Button variant="outline" size="sm" asChild>
                   <Link to={previewEntry.kind === 'task' ? '/tasks' : '/calendar'}>
-                    {previewEntry.kind === 'task' ? 'Otwórz zadania' : 'Otwórz kalendarz'}
+                    {previewEntry.kind === 'task' ? 'Otw├│rz zadania' : 'Otw├│rz kalendarz'}
                   </Link>
                 </Button>
               </DialogFooter>
@@ -2994,37 +2992,32 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
     </Layout>
   );
 }
-
 /* PHASE0_STAGE29D_TODAY_LAST7_CONTRACT
 TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 data-today-ai-drafts-compact-tile="true"
 data-today-ai-drafts-stage29d-bottom="true"
 Szkice do zatwierdzenia
-Brak szkiców oczekujących
-Otwórz Szkice AI
+Brak szkic├│w oczekuj─ůcych
+Otw├│rz Szkice AI
 function TileCard({
 data-today-tile-card="true"
 data-today-tile-header="true"
 aria-expanded={!collapsed}
 expandTodayShortcutSection(section)
 */
-
 /* TODAY_GLOBAL_QUICK_ACTIONS_DEDUPED_V97 */
-
-
 /* PHASE0_STAGE29D_TODAY_FINAL4
 TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 data-today-ai-drafts-compact-tile="true"
 data-today-ai-drafts-stage29d-bottom="true"
 Szkice do zatwierdzenia
-Brak szkiców oczekujących
-Otwórz Szkice AI
+Brak szkic├│w oczekuj─ůcych
+Otw├│rz Szkice AI
 function TileCard({
 data-today-tile-card="true"
 data-today-tile-header="true"
 aria-expanded={!collapsed}
 expandTodayShortcutSection(section)
 */
-
 
 

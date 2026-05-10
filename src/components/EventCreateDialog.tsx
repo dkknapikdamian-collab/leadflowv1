@@ -1,17 +1,54 @@
-import { useEffect, useState, type FormEvent } from 'react';
-import { Loader2 } from 'lucide-react';
-import { toast } from 'sonner';
+import {
+  type FormEvent,
+  useEffect,
+  useState
+} from 'react';
+import {
+  Loader2
+} from 'lucide-react';
 
-import { Button } from './ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { EVENT_TYPES, RECURRENCE_OPTIONS, REMINDER_MODE_OPTIONS, REMINDER_OFFSET_OPTIONS } from '../lib/options';
-import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
-import { insertEventToSupabase } from '../lib/supabase-fallback';
-import { requireWorkspaceId } from '../lib/workspace-context';
-import type { TaskCreateDialogContext } from './TaskCreateDialog';
+import {
+  toast
+} from 'sonner';
+
+import {
+  Button
+} from './ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from './ui/dialog';
+import {
+  Input
+} from './ui/input';
+import {
+  Label
+} from './ui/label';
+import {
+  useWorkspace
+} from '../hooks/useWorkspace';
+import {
+  EVENT_TYPES,
+  RECURRENCE_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS
+} from '../lib/options';
+import {
+  buildStartEndPair,
+  toDateTimeLocalValue
+} from '../lib/scheduling';
+import {
+  insertEventToSupabase
+} from '../lib/supabase-fallback';
+import {
+  requireWorkspaceId
+} from '../lib/workspace-context';
+import type {
+  TaskCreateDialogContext
+} from './TaskCreateDialog';
 
 const STAGE85_EVENT_CREATE_DIALOG_SHARED = 'Shared event create dialog for global and detail context actions';
 const CLOSEFLOW_CLIENT_EVENT_MODAL_RUNTIME_REPAIR = 'event create dialog readable save footer repair';

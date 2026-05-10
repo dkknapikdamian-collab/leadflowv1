@@ -1,60 +1,58 @@
 import {
+  type FormEvent,
+  useState
+} from 'react';
+import {
+  Link
+} from 'react-router-dom';
+import {
   CaseEntityIcon,
   LeadEntityIcon,
-  NotificationEntityIcon } from '../components/ui-system';
-/* PHASE0_GOOGLE_WEBVIEW_FIRST_OCCURRENCE
-isEmbeddedGoogleAuthBlockedUserAgent()
-Google blokuje logowanie w tej przeglądarce
-Otwórz tę stronę w Chrome albo Safari
-Kopiuj link
-handleCopyLoginUrl
-handleOpenExternalBrowserHint
-signInWithRedirect
-signInWithPopup
-signInWithEmailAndPassword
-'; wv)'
-startRedirectFlow
-*/
-/*
-PHASE0_GOOGLE_MOBILE_WEBVIEW_GUARD
-isEmbeddedGoogleAuthBlockedUserAgent()
-Google blokuje logowanie w tej przeglądarce
-Otwórz tę stronę w Chrome albo Safari
-Kopiuj link
-handleCopyLoginUrl
-handleOpenExternalBrowserHint
-signInWithRedirect
-signInWithPopup
-signInWithEmailAndPassword
-'; wv)'
-*/
+  NotificationEntityIcon
+} from '../components/ui-system';
 import {
-  useState,
-  FormEvent } from 'react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Tabs,
+  ArrowRight,
+  CalendarDays,
+  CheckCircle2,
+  Loader2,
+  Lock,
+  Mail,
+  User
+} from 'lucide-react';
+
+
+
+
+import {
+  Button
+} from '../components/ui/button';
+import {
+  Input
+} from '../components/ui/input';
+import {
+  Label
+} from '../components/ui/label';
+import {
+  Tabs,
+  LogIn
+} from '../components/ui-system';
+
+
+import {
   TabsContent,
   TabsList,
-  TabsTrigger } from '../components/ui/tabs';
+  TabsTrigger
+} from '../components/ui/tabs';
+
 import {
-  CheckCircle2,
-  LogIn,
-  Mail,
-  Lock,
-  User,
-  Loader2,
-  CalendarDays,
-  ArrowRight
-} from 'lucide-react';
-import { toast } from 'sonner';
+  toast
+} from 'sonner';
 import {
   getSupabaseAuthConfig,
   sendPasswordReset,
   signInWithGoogle,
   signInWithPassword,
-  signUpWithPassword,
+  signUpWithPassword
 } from '../lib/supabase-auth';
 
 const HERO_POINTS = [

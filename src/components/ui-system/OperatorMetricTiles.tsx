@@ -1,6 +1,7 @@
-import type { ComponentType, HTMLAttributes, ReactNode } from 'react';
+import { Fragment, type ComponentType, type HTMLAttributes, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { resolveOperatorMetricTone, type OperatorMetricTone } from './operator-metric-tone-contract';
+export type { OperatorMetricTone } from './operator-metric-tone-contract';
 
 const CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V = 'CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V: isolated metric renderer';
 /* CLOSEFLOW_OPERATOR_METRIC_TILES_VS5V_COMPAT data-cf-metric-source-truth="vs5v" */
@@ -54,12 +55,13 @@ export function OperatorMetricTiles<TId extends string = string>({
       {items.map((item) => {
         const isActive = item.active ?? (activeId != null && String(activeId) === String(item.id));
         return (
-          <OperatorMetricTile
-            key={String(item.id)}
-            item={item}
-            active={Boolean(isActive)}
-            onSelect={onSelect}
-          />
+          <Fragment key={String(item.id)}>
+            <OperatorMetricTile
+              item={item}
+              active={Boolean(isActive)}
+              onSelect={onSelect}
+            />
+          </Fragment>
         );
       })}
     </section>

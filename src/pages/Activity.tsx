@@ -1,17 +1,21 @@
 import {
+  useEffect,
+  useMemo,
+  useState
+} from 'react';
+import {
+  Link
+} from 'react-router-dom';
+import {
   CaseEntityIcon,
+  ClientEntityIcon,
   EntityIcon,
   LeadEntityIcon,
   NotificationEntityIcon,
-  TemplateEntityIcon } from '../components/ui-system';
-import Layout from '../components/Layout';
-import '../styles/visual-stage8-activity-vnext.css';
-import '../styles/hotfix-right-rail-dark-wrappers.css';
-import {
-  StatShortcutCard } from '../components/StatShortcutCard';
+  TemplateEntityIcon
+} from '../components/ui-system';
 import {
   ArrowUpRight,
-  CaseEntityIcon,
   CalendarClock,
   CheckCircle2,
   Clock,
@@ -19,25 +23,28 @@ import {
   Link2,
   ListChecks,
   Loader2,
-  Search,
-  LeadEntityIcon,
-  ClientEntityIcon
+  Search
 } from 'lucide-react';
-import { useMemo, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+
+import Layout from '../components/Layout';
+import '../styles/visual-stage8-activity-vnext.css';
+import '../styles/hotfix-right-rail-dark-wrappers.css';
+import {
+  StatShortcutCard
+} from '../components/StatShortcutCard';
+
 import {
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
   fetchLeadsFromSupabase,
-  isSupabaseConfigured,
+  isSupabaseConfigured
 } from '../lib/supabase-fallback';
-import { toast } from 'sonner';
-import { useWorkspace } from '../hooks/useWorkspace';
-
-const CaseEntityIcon = (props: { className?: string }) => <EntityIcon entity="case" {...props} />;
-const LeadEntityIcon = (props: { className?: string }) => <EntityIcon entity="lead" {...props} />;
-const ClientEntityIcon = (props: { className?: string }) => <EntityIcon entity="client" {...props} />;
-
+import {
+  toast
+} from 'sonner';
+import {
+  useWorkspace
+} from '../hooks/useWorkspace';
 const sourceOptions = [
   { value: 'all', label: 'Wszystko' },
   { value: 'today', label: 'Dziś' },
@@ -256,7 +263,6 @@ function getActivityIconTone(activity: any) {
   if (entity === 'event') return 'sky';
   return 'neutral';
 }
-
 
 
 function getActivityTitle(activity: any) {
