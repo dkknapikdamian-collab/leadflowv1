@@ -3,6 +3,7 @@ import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseR
 import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
 import { normalizeCaseContract } from '../src/lib/data-contract.js';
+import { normalizeCommissionBase, normalizeCommissionMode, normalizeCommissionStatus } from '../src/lib/finance/finance-normalize.js';
 import { CASE_STATUS_VALUES, normalizeCaseStatus } from '../src/lib/domain-statuses.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 import { readPortalSession, requirePortalSessionContext } from '../src/server/_portal-token.js';
@@ -11,7 +12,13 @@ import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency',
+  'contract_value',
+  'commission_mode',
+  'commission_base',
+  'commission_rate',
+  'commission_amount',
+  'commission_status',]);
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -274,6 +281,12 @@ export default async function handler(req: any, res: any) {
       }
       const normalizedClientId = asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId);
 
+      const contractValue = asNumber(body.contractValue ?? body.contract_value ?? body.expectedRevenue ?? body.dealValue ?? linkedLead?.contract_value ?? linkedLead?.expected_revenue ?? linkedLead?.value ?? linkedLead?.deal_value);
+      const paidAmount = asNumber(body.paidAmount ?? body.paid_amount);
+      const remainingAmount = body.remainingAmount !== undefined || body.remaining_amount !== undefined
+        ? asNumber(body.remainingAmount ?? body.remaining_amount)
+        : Math.max(0, contractValue - paidAmount);
+
       const payload: Record<string, unknown> = {
         workspace_id: finalWorkspaceId,
         lead_id: normalizedLeadId,
@@ -286,9 +299,15 @@ export default async function handler(req: any, res: any) {
         status: normalizedStatus,
         billing_status: normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started'),
         billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
-        expected_revenue: asNumber(body.expectedRevenue ?? body.dealValue ?? linkedLead?.value ?? linkedLead?.deal_value),
-        paid_amount: asNumber(body.paidAmount),
-        remaining_amount: asNumber(body.remainingAmount ?? (asNumber(body.expectedRevenue ?? body.dealValue ?? linkedLead?.value ?? linkedLead?.deal_value) - asNumber(body.paidAmount))),
+        contract_value: contractValue,
+        expected_revenue: contractValue,
+        commission_mode: normalizeCommissionMode(body.commissionMode ?? body.commission_mode),
+        commission_base: normalizeCommissionBase(body.commissionBase ?? body.commission_base),
+        commission_rate: asNumber(body.commissionRate ?? body.commission_rate),
+        commission_amount: asNumber(body.commissionAmount ?? body.commission_amount),
+        commission_status: normalizeCommissionStatus(body.commissionStatus ?? body.commission_status),
+        paid_amount: paidAmount,
+        remaining_amount: remainingAmount,
         currency: normalizeCurrency(body.currency ?? linkedLead?.currency),
         completeness_percent: Number(body.completenessPercent || 0),
         portal_ready: Boolean(body.portalReady || false),
@@ -372,6 +391,16 @@ export default async function handler(req: any, res: any) {
       if (body.serviceProfileId !== undefined) payload.service_profile_id = asNullableUuid(body.serviceProfileId);
       if (body.billingStatus !== undefined) payload.billing_status = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
       if (body.billingModelSnapshot !== undefined) payload.billing_model_snapshot = normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual');
+      if (body.contractValue !== undefined || body.contract_value !== undefined) {
+        const contractValue = asNumber(body.contractValue ?? body.contract_value);
+        payload.contract_value = contractValue;
+        payload.expected_revenue = contractValue;
+      }
+      if (body.commissionMode !== undefined || body.commission_mode !== undefined) payload.commission_mode = normalizeCommissionMode(body.commissionMode ?? body.commission_mode);
+      if (body.commissionBase !== undefined || body.commission_base !== undefined) payload.commission_base = normalizeCommissionBase(body.commissionBase ?? body.commission_base);
+      if (body.commissionRate !== undefined || body.commission_rate !== undefined) payload.commission_rate = asNumber(body.commissionRate ?? body.commission_rate);
+      if (body.commissionAmount !== undefined || body.commission_amount !== undefined) payload.commission_amount = asNumber(body.commissionAmount ?? body.commission_amount);
+      if (body.commissionStatus !== undefined || body.commission_status !== undefined) payload.commission_status = normalizeCommissionStatus(body.commissionStatus ?? body.commission_status);
       if (body.expectedRevenue !== undefined || body.dealValue !== undefined) payload.expected_revenue = asNumber(body.expectedRevenue ?? body.dealValue);
       if (body.paidAmount !== undefined) payload.paid_amount = asNumber(body.paidAmount);
       if (body.remainingAmount !== undefined) payload.remaining_amount = asNumber(body.remainingAmount);

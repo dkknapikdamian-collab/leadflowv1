@@ -9,6 +9,7 @@ import {
   type AccessState,
   type BillingStatus,
 } from './domain-statuses.js';
+import { normalizeCommissionBase, normalizeCommissionMode, normalizeCommissionStatus, normalizePaymentStatus, normalizePaymentType } from './finance/finance-normalize.js';
 export type { AccessState, BillingStatus };
 export type DataRecord = Record<string, unknown>;
 
@@ -61,6 +62,12 @@ export const DATA_CONTRACT_FIELD_MAP = {
     completenessPercent: ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'],
     portalReady: ['portalReady', 'portal_ready'],
     expectedRevenue: ['expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'],
+    contractValue: ['contractValue', 'contract_value', 'expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'],
+    commissionMode: ['commissionMode', 'commission_mode'],
+    commissionBase: ['commissionBase', 'commission_base'],
+    commissionRate: ['commissionRate', 'commission_rate'],
+    commissionAmount: ['commissionAmount', 'commission_amount'],
+    commissionStatus: ['commissionStatus', 'commission_status'],
     paidAmount: ['paidAmount', 'paid_amount'],
     remainingAmount: ['remainingAmount', 'remaining_amount'],
     currency: ['currency', 'dealCurrency', 'deal_currency'],
@@ -200,6 +207,12 @@ export type CaseDto = DataRecord & {
   completenessPercent: number;
   portalReady: boolean;
   expectedRevenue: number;
+  contractValue: number;
+  commissionMode: string;
+  commissionBase: string;
+  commissionRate: number;
+  commissionAmount: number;
+  commissionStatus: string;
   paidAmount: number;
   remainingAmount: number;
   currency: string;
@@ -534,7 +547,8 @@ export function normalizeClientContract(row: DataRecord): ClientDto {
 }
 
 export function normalizeCaseContract(row: DataRecord): CaseDto {
-  const expectedRevenue = pickNumber(row, ['expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'], 0);
+  const contractValue = pickNumber(row, ['contractValue', 'contract_value', 'expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'], 0);
+  const expectedRevenue = pickNumber(row, ['expectedRevenue', 'expected_revenue', 'dealValue', 'deal_value', 'value', 'amount'], contractValue);
   const paidAmount = pickNumber(row, ['paidAmount', 'paid_amount'], 0);
   const remainingFromRow = pickNumber(row, ['remainingAmount', 'remaining_amount'], Number.NaN);
   const remainingAmount = Number.isFinite(remainingFromRow)
@@ -552,6 +566,12 @@ export function normalizeCaseContract(row: DataRecord): CaseDto {
     completenessPercent: clampPercent(pickNumber(row, ['completenessPercent', 'completeness_percent', 'completionPercent', 'completion_percent'], 0)),
     portalReady: pickBoolean(row, ['portalReady', 'portal_ready'], false),
     expectedRevenue: Math.max(0, expectedRevenue),
+    contractValue: Math.max(0, contractValue),
+    commissionMode: normalizeCommissionMode(row.commissionMode || row.commission_mode),
+    commissionBase: normalizeCommissionBase(row.commissionBase || row.commission_base),
+    commissionRate: pickNumber(row, ['commissionRate', 'commission_rate'], 0),
+    commissionAmount: pickNumber(row, ['commissionAmount', 'commission_amount'], 0),
+    commissionStatus: normalizeCommissionStatus(row.commissionStatus || row.commission_status),
     paidAmount: Math.max(0, paidAmount),
     remainingAmount,
     currency: normalizeCurrency(pickText(row, ['currency', 'dealCurrency', 'deal_currency'], 'PLN')),
@@ -666,8 +686,8 @@ export function normalizePaymentContract(row: DataRecord): NormalizedPaymentReco
     clientId: pickOptionalText(row, ['clientId', 'client_id']),
     leadId: pickOptionalText(row, ['leadId', 'lead_id']),
     caseId: pickOptionalText(row, ['caseId', 'case_id']),
-    type: pickText(row, ['type'], 'manual'),
-    status: normalizeBillingStatus(row.status, 'not_started'),
+    type: normalizePaymentType(row.type || row.paymentType || row.payment_type),
+    status: normalizePaymentStatus(row.status || row.paymentStatus || row.payment_status),
     amount: pickNumber(row, ['amount', 'value', 'total'], 0),
     currency: normalizeCurrency(pickText(row, ['currency'], 'PLN')),
     paidAt: toIsoDateTime(row.paidAt) || toIsoDateTime(row.paid_at),

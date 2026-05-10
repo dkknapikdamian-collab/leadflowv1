@@ -68,7 +68,13 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'google_calendar_sync_status',
   'google_calendar_sync_error',
 ]);
-const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency']);
+const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency',
+  'contract_value',
+  'commission_mode',
+  'commission_base',
+  'commission_rate',
+  'commission_amount',
+  'commission_status',]);
 const OPTIONAL_ACTIVITY_COLUMNS = new Set(['owner_id', 'actor_id', 'actor_type', 'event_type', 'payload', 'lead_id', 'case_id', 'workspace_id', 'created_at', 'updated_at']);
 
 const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activities', Set<string>> = {
@@ -444,6 +450,12 @@ async function handleStartService(body: Record<string, unknown>, workspaceId: st
     status: caseStatus,
     billing_status: normalizeEnum(leadRow.billing_status || leadRow.billingStatus, BILLING_STATUSES, 'not_started'),
     billing_model_snapshot: normalizeEnum(leadRow.billing_model_snapshot || leadRow.billingModelSnapshot, BILLING_MODELS, 'manual'),
+    contract_value: expectedRevenue,
+    commission_mode: 'none',
+    commission_base: 'contract_value',
+    commission_rate: 0,
+    commission_amount: 0,
+    commission_status: 'not_set',
     expected_revenue: expectedRevenue,
     paid_amount: paidAmount,
     remaining_amount: Math.max(0, expectedRevenue - paidAmount),
