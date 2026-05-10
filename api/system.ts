@@ -790,6 +790,7 @@ export default async function handler(req: any, res: any) {
   const identity = getRequestIdentity(req, body);
   void identity.fullName;
   const kind = routeKind(req, body);
+  // API0_VERCEL_HOBBY_DIGEST_CONSOLIDATION: digest/report endpoints are consolidated behind api/system.
     if (kind === 'entity-conflicts') {
       await entityConflictsHandler(req, res);
       return;
