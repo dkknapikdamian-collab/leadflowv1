@@ -1,24 +1,100 @@
 import {
-  AlertTriangle,
-  CardContent } from '../components/ui/card';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent
+} from 'react';
+import { useSearchParams } from 'react-router-dom';
 import {
-  CheckSquare,
+  AlertTriangle,
   CheckCircle2,
+  CheckSquare,
   Clock,
   Link2,
   Loader2,
   MoreVertical,
-  NotificationEntityIcon,
   Repeat,
   Search,
-  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { StatShortcutCard } from '../components/StatShortcutCard';
+  Trash2
+} from 'lucide-react';
+import { NotificationEntityIcon, TaskEntityIcon } from '../components/ui-system';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass } from '../components/entity-actions';
-import { Card,
-  TaskEntityIcon
-} from '../components/ui-system';
+import { Card, CardContent } from '../components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '../components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '../components/ui/dropdown-menu';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { StatShortcutCard } from '../components/StatShortcutCard';
+import { TopicContactPicker } from '../components/topic-contact-picker';
+import {
+  createDefaultRecurrence,
+  createDefaultReminder,
+  getTaskDate,
+  getTaskStartAt,
+  normalizeRecurrenceConfig,
+  normalizeReminderConfig,
+  syncTaskDerivedFields,
+  toDateTimeLocalValue,
+  toReminderAtIso
+} from '../lib/scheduling';
+import {
+  PRIORITY_OPTIONS,
+  RECURRENCE_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
+  TASK_TYPES
+} from '../lib/options';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import {
+  buildTopicContactOptions,
+  findTopicContactOption,
+  resolveTopicContactLink,
+  type TopicContactOption
+} from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  deleteTaskFromSupabase,
+  fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  insertActivityToSupabase,
+  insertTaskToSupabase,
+  subscribeCloseflowDataMutations,
+  updateLeadInSupabase,
+  updateTaskInSupabase
+} from '../lib/supabase-fallback';
+import { auth } from '../firebase';
+import {
+  addDays,
+  addHours,
+  addWeeks,
+  endOfWeek,
+  format,
+  isPast,
+  isToday,
+  isTomorrow,
+  isWithinInterval,
+  parseISO,
+  startOfDay
+} from 'date-fns';
+import { toast } from 'sonner';
 /* STAGE69H_SOFT_NEXT_STEP_PACKAGE_FINAL */
 /*
 TASK_FORM_VISUAL_REBUILD_STAGE21_COMPAT_GUARD
@@ -40,93 +116,22 @@ Nie udało się zapisać zadania. Spróbuj ponownie.
 */
 /* TASKS_PAGE_GREEN_ADD_BUTTON_REMOVED_HOTFIX: dodawanie zadania zostaje w globalnym pasku Zadanie; zielony przycisk w /tasks jest skasowany. */
 /* TASKS_HEADER_STAGE45B_CLEANUP: local /tasks add-task CTA removed; task header copy is product-facing; title contrast is locked. */
-import {
-  useEffect,
-  Trash2,
-  type FormEvent,
-  useMemo,
-  useRef
-} from 'react';
-import { auth } from '../firebase';
+
+
 import { useWorkspace } from '../hooks/useWorkspace';
+
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction,
-  useState
-} from 'lucide-react';
-import {
-  addDays,
-  addHours,
-  addWeeks,
-  endOfWeek,
-  format,
-  isPast,
-  isToday,
-  isTomorrow,
-  isWithinInterval,
-  parseISO,
-  startOfDay
-} from 'date-fns';
+
+
 import { pl } from 'date-fns/locale';
-import { toast } from 'sonner';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter
-} from '../components/ui/dialog';
-import { TopicContactPicker } from '../components/topic-contact-picker';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from '../components/ui/dropdown-menu';
-import {
-  createDefaultRecurrence,
-  createDefaultReminder,
-  getTaskDate,
-  getTaskStartAt,
-  normalizeRecurrenceConfig,
-  normalizeReminderConfig,
-  syncTaskDerivedFields,
-  toReminderAtIso,
-  toDateTimeLocalValue
-} from '../lib/scheduling';
-import {
-  PRIORITY_OPTIONS,
-  RECURRENCE_OPTIONS,
-  REMINDER_OFFSET_OPTIONS,
-  REMINDER_MODE_OPTIONS,
-  TASK_TYPES
-} from '../lib/options';
-import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
-import {
-  buildTopicContactOptions,
-  findTopicContactOption,
-  resolveTopicContactLink,
-  type TopicContactOption
-} from '../lib/topic-contact';
-import { requireWorkspaceId } from '../lib/workspace-context';
-import {
-  deleteTaskFromSupabase,
-  fetchCasesFromSupabase,
-  fetchClientsFromSupabase,
-  fetchEventsFromSupabase,
-  fetchLeadsFromSupabase,
-  fetchTasksFromSupabase,
-  insertActivityToSupabase,
-  insertTaskToSupabase,
-  updateLeadInSupabase,
-  updateTaskInSupabase
-} from '../lib/supabase-fallback';
-import { useSearchParams } from 'react-router-dom';
+
+
 import { isActiveSalesLead } from '../lib/lead-health';
+
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+
 import '../styles/visual-stage21-task-form-vnext.css';
-import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+
 
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
 const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';

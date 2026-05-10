@@ -1,15 +1,5 @@
-import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
-import {
-  EntityIcon,
-  NotificationEntityIcon,
-  OperatorMetricTiles,
-  type OperatorMetricTileItem
-} from '../components/ui-system';
-
-
 import { useEffect, useMemo, useState } from 'react';
-
-
+import { Link } from 'react-router-dom';
 import {
   ArrowUpRight,
   CalendarClock,
@@ -25,11 +15,14 @@ import {
   ShieldAlert,
   Trash2
 } from 'lucide-react';
-
-
-import { Link } from 'react-router-dom';
-
-
+import {
+  EntityIcon,
+  NotificationEntityIcon,
+  OperatorMetricTiles,
+  type OperatorMetricTileItem
+} from '../components/ui-system';
+import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
+import { toast } from 'sonner';
 import Layout from '../components/Layout';
 
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -38,16 +31,16 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import {
   buildTodayNotificationItems,
   clearNotificationLog,
+  clearNotificationSnooze,
   getBrowserNotificationPermission,
   getBrowserNotificationsEnabled,
   getNotificationLog,
+  getNotificationSnoozedUntilByKey,
   getUnreadNotificationCount,
   markAllNotificationsRead,
   setBrowserNotificationsEnabled,
   setNotificationSnooze,
   setNotificationSnoozeCustom,
-  clearNotificationSnooze,
-  getNotificationSnoozedUntilByKey,
   type NotificationItem,
   type NotificationLogItem,
   type NotificationSnoozeMode
@@ -55,9 +48,6 @@ import {
 
 
 import { buildReminderCustomDate } from '../lib/reminders';
-
-
-import { toast } from 'sonner';
 
 
 import '../styles/visual-stage10-notifications-vnext.css';

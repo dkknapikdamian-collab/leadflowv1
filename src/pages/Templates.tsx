@@ -1,5 +1,6 @@
+import { useEffect, useMemo, useState } from 'react';
 import {
-  AiEntityIcon,
+  AlertTriangle,
   CheckCircle2,
   Copy,
   FolderKanban,
@@ -7,39 +8,55 @@ import {
   Plus,
   Search,
   ShieldAlert,
-  TemplateEntityIcon
-} from '../components/ui-system';
-import {
-  useEffect,
-  Trash2,
-  useMemo,
-  useState } from 'react';
-import {
-  AlertTriangle
+  Trash2
 } from 'lucide-react';
+import { AiEntityIcon, TemplateEntityIcon } from '../components/ui-system';
+import { Card, CardContent } from '../components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle
+} from '../components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger
+} from '../components/ui/dropdown-menu';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { toast } from 'sonner';
-
 import Layout from '../components/Layout';
 import { EntityActionButton } from '../components/entity-actions';
+
 import { useWorkspace } from '../hooks/useWorkspace';
-import { StatShortcutCard } from '../components/StatShortcutCard';
-import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
-import { Input } from '../components/ui/input';
-import { Badge } from '../components/ui/badge';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
-import { Label } from '../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import { Checkbox } from '../components/ui/checkbox';
-import { Textarea } from '../components/ui/textarea';
+
+
 import {
-// CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_TEMPLATES
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '../components/ui/select';
+
+import { Checkbox } from '../components/ui/checkbox';
+
+
+import {
+  // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_TEMPLATES
   createCaseTemplateInSupabase,
   deleteCaseTemplateFromSupabase,
   fetchCaseTemplatesFromSupabase,
-  updateCaseTemplateInSupabase,
+  updateCaseTemplateInSupabase
 } from '../lib/supabase-fallback';
+
 
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 

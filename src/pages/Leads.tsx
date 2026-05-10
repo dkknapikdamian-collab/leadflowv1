@@ -1,67 +1,46 @@
 import {
-  CaseEntityIcon,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type MouseEvent
+} from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import {
+  AlertTriangle,
   ChevronRight,
   Clock3,
-  EntityIcon,
-  LeadEntityIcon,
-  TemplateEntityIcon
-} from '../components/ui-system';
-// CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1
-// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
-// ADMIN_FEEDBACK_P1_LEADS_SEARCH_QUESTION_MARK_REMOVED
-// VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
-// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
-import {
-  useCallback,
   Loader2,
   Mail,
   RotateCcw,
   Search,
   Trash2,
-  TrendingUp,
-  type FormEvent,
-  type MouseEvent } from 'react';
-import { Link,
-  useEffect,
-  useMemo,
-  useRef,
-  useSearchParams } from 'react-router-dom';
-import { AlertTriangle,
-  useState
+  TrendingUp
 } from 'lucide-react';
-import { format,
-  isPast,
-  parseISO } from 'date-fns';
-import { pl } from 'date-fns/locale';
-import { toast } from 'sonner';
-
-import Layout from '../components/Layout';
-import { EntityConflictDialog,
-  type EntityConflictCandidate } from '../components/EntityConflictDialog';
-import { consumeGlobalQuickAction,
-  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { actionIconClass,
-  modalFooterClass} from '../components/entity-actions';
-// STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
-import { StatShortcutCard } from '../components/StatShortcutCard';
-import { Badge } from '../components/ui/badge';
-import { Button } from '../components/ui/button';
-import { Card,
-  CardContent } from '../components/ui/card';
-import { Dialog,
+import {
+  CaseEntityIcon,
+  EntityIcon,
+  LeadEntityIcon,
+  TemplateEntityIcon
+} from '../components/ui-system';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionIconClass, modalFooterClass } from '../components/entity-actions';
+import { Card, CardContent } from '../components/ui/card';
+import {
+  Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle } from '../components/ui/dialog';
+  DialogTitle
+} from '../components/ui/dialog';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { useWorkspace } from '../hooks/useWorkspace';
-import { isActiveSalesLead,
-  isLeadMovedToService } from '../lib/lead-health';
-import { getNearestPlannedAction } from '../lib/nearest-action';
-import { buildRelationFunnelValue,
-  buildRelationValueEntries,
-  formatRelationValue } from '../lib/relation-value';
+import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import { StatShortcutCard } from '../components/StatShortcutCard';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
@@ -75,7 +54,35 @@ import {
   updateClientInSupabase,
   updateLeadInSupabase
 } from '../lib/supabase-fallback';
+import { format, isPast, parseISO } from 'date-fns';
+import { toast } from 'sonner';
+// CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1
+// LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
+// ADMIN_FEEDBACK_P1_LEADS_SEARCH_QUESTION_MARK_REMOVED
+// VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
+// VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
+
+
+import { pl } from 'date-fns/locale';
+
+
+import Layout from '../components/Layout';
+
+
+// STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
+
+
+import { useWorkspace } from '../hooks/useWorkspace';
+
+import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+
+import { getNearestPlannedAction } from '../lib/nearest-action';
+
+import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
+
+
 import '../styles/visual-stage20-lead-form-vnext.css';
+
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';

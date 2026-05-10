@@ -1,17 +1,51 @@
-const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
-void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
-const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
-void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  Activity,
   AlertTriangle,
   ArrowLeft,
   Building2,
   CheckCircle2,
   Clock,
   Copy,
-  EntityIcon,
-  EventEntityIcon
-} from '../components/ui-system';
+  Eye,
+  Loader2,
+  Mail,
+  Mic,
+  MicOff,
+  Pencil,
+  Phone,
+  Pin,
+  Plus,
+  Save,
+  Trash2
+} from 'lucide-react';
+import { EntityIcon, EventEntityIcon } from '../components/ui-system';
+import { actionButtonClass } from '../components/entity-actions';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import {
+  fetchCasesFromSupabase,
+  fetchEventsFromSupabase,
+  fetchLeadsFromSupabase,
+  fetchTasksFromSupabase,
+  updateClientInSupabase,
+  updateLeadInSupabase
+} from '../lib/supabase-fallback';
+import { toast } from 'sonner';
+const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
+void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
+const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
+void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
+
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
@@ -56,54 +90,28 @@ const CLIENT_DETAIL_HISTORY_ACQUISITION_COPY_GUARD = 'Historia pozyskania';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
-import {
-  useCallback,
-  Eye,
-  Loader2,
-  Mail,
-  Mic,
-  MicOff,
-  Pencil,
-  Phone,
-  Pin,
-  Plus,
-  Save,
-  Trash2,
-  useEffect,
-  useMemo,
-  useNavigate,
-  useParams } from 'react-router-dom';
-import {
-  Activity,
-  useRef,
-  useState } from 'react';
-import { Link
-} from 'lucide-react';
-import { toast } from 'sonner';
+
 
 import Layout from '../components/Layout';
-import { EntityActionButton, actionButtonClass, formActionsClass } from '../components/entity-actions';
+import { EntityActionButton, formActionsClass } from '../components/entity-actions';
+
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Textarea } from '../components/ui/textarea';
+
+
 import { useWorkspace } from '../hooks/useWorkspace';
+
 import {
-  fetchActivitiesFromSupabase,
-  updateActivityInSupabase,
   deleteActivityFromSupabase,
-  fetchCasesFromSupabase,
+  fetchActivitiesFromSupabase,
   fetchClientByIdFromSupabase,
-  fetchEventsFromSupabase,
-  fetchLeadsFromSupabase,
   fetchPaymentsFromSupabase,
-  fetchTasksFromSupabase,
-  updateClientInSupabase,
-  updateLeadInSupabase,
+  updateActivityInSupabase
 } from '../lib/supabase-fallback';
+
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+
 import '../styles/visual-stage12-client-detail-vnext.css';
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',

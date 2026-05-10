@@ -1,96 +1,35 @@
-import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
-import { NotificationEntityIcon } from '../components/ui-system';
-
-
-import { EntityIcon } from '../components/ui-system';
-
-
 import {
-  useState,
-  useEffect,
   FormEvent,
+  useEffect,
   useMemo,
-  useRef
+  useRef,
+  useState
 } from 'react';
-
-
-import { auth } from '../firebase';
-
-
-import { useWorkspace } from '../hooks/useWorkspace';
-
-
-import Layout from '../components/Layout';
-import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-
-
-import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
-
-
-import { Button } from '../components/ui/button';
-
-
-import { Badge } from '../components/ui/badge';
-
-
+import { Link, useSearchParams } from 'react-router-dom';
 import {
+  CheckSquare,
   ChevronLeft,
   ChevronRight,
   Loader2,
   Repeat,
-  CheckSquare,
   Trash2
 } from 'lucide-react';
-
-
-import {
-  format,
-  addMonths,
-  subMonths,
-  startOfMonth,
-  endOfMonth,
-  startOfWeek,
-  endOfWeek,
-  isSameMonth,
-  isToday,
-  eachDayOfInterval,
-  parseISO,
-  isSameDay,
-  addDays,
-  addHours
-} from 'date-fns';
-
-
-import { pl } from 'date-fns/locale';
-
-
-import { toast } from 'sonner';
-
-
-import { Link } from 'react-router-dom';
-
-
-import { useSearchParams } from 'react-router-dom';
-
-
+import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
-  DialogTitle,
-  DialogFooter
+  DialogTitle
 } from '../components/ui/dialog';
-
-
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
-
-
 import { Label } from '../components/ui/label';
-
-
 import { TopicContactPicker } from '../components/topic-contact-picker';
-
-
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -102,37 +41,26 @@ import {
   normalizeRecurrenceConfig,
   normalizeReminderConfig,
   syncTaskDerivedFields,
-  toReminderAtIso,
   toDateTimeLocalValue,
+  toReminderAtIso,
   type ScheduleEntry
 } from '../lib/scheduling';
-
-
 import {
   EVENT_TYPES,
   PRIORITY_OPTIONS,
   RECURRENCE_OPTIONS,
-  REMINDER_OFFSET_OPTIONS,
   REMINDER_MODE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
   TASK_TYPES
 } from '../lib/options';
-
-
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
-
-
 import {
   buildTopicContactOptions,
   findTopicContactOption,
   resolveTopicContactLink,
   type TopicContactOption
 } from '../lib/topic-contact';
-
-
 import { requireWorkspaceId } from '../lib/workspace-context';
-
-
-import '../styles/visual-stage22-event-form-vnext.css';
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -141,12 +69,38 @@ import {
   insertActivityToSupabase,
   insertEventToSupabase,
   insertTaskToSupabase,
+  subscribeCloseflowDataMutations,
   updateEventInSupabase,
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
+import { auth } from '../firebase';
+import {
+  addDays,
+  addHours,
+  addMonths,
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  parseISO,
+  startOfMonth,
+  startOfWeek,
+  subMonths
+} from 'date-fns';
+import { toast } from 'sonner';
+import { useWorkspace } from '../hooks/useWorkspace';
 
 
-import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+import Layout from '../components/Layout';
+
+
+import { pl } from 'date-fns/locale';
+
+
+import '../styles/visual-stage22-event-form-vnext.css';
 
 
 import { normalizeWorkItem } from '../lib/work-items/normalize';

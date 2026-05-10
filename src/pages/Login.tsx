@@ -1,19 +1,25 @@
+import { FormEvent, useState } from 'react';
 import {
   ArrowRight,
   CalendarDays,
-  CaseEntityIcon,
-  FormEvent } from 'react';
-import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
-import { Tabs,
-  LeadEntityIcon,
+  CheckCircle2,
   Loader2,
   Lock,
   LogIn,
   Mail,
-  NotificationEntityIcon
-} from '../components/ui-system';
+  User
+} from 'lucide-react';
+import { CaseEntityIcon, LeadEntityIcon, NotificationEntityIcon } from '../components/ui-system';
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
+} from '../components/ui/tabs';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { toast } from 'sonner';
 /* PHASE0_GOOGLE_WEBVIEW_FIRST_OCCURRENCE
 isEmbeddedGoogleAuthBlockedUserAgent()
 Google blokuje logowanie w tej przeglądarce
@@ -40,23 +46,16 @@ signInWithPopup
 signInWithEmailAndPassword
 '; wv)'
 */
-import {
-  useState,
-  TabsContent,
-  TabsList,
-  TabsTrigger } from '../components/ui/tabs';
-import {
-  CheckCircle2,
-  User
-} from 'lucide-react';
-import { toast } from 'sonner';
+
+
 import {
   getSupabaseAuthConfig,
   sendPasswordReset,
   signInWithGoogle,
   signInWithPassword,
-  signUpWithPassword,
+  signUpWithPassword
 } from '../lib/supabase-auth';
+
 
 const HERO_POINTS = [
   'Leady, zadania, wydarzenia i sprawy w jednym miejscu.',
