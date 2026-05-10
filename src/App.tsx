@@ -23,6 +23,7 @@ import './styles/closeflow-alert-severity.css';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
+const PublicLanding = lazy(() => import('./pages/PublicLanding'));
 const Today = lazy(() => import('./pages/TodayStable'));
 const Leads = lazy(() => import('./pages/Leads'));
 const LeadDetail = lazy(() => import('./pages/LeadDetail'));
@@ -192,8 +193,9 @@ export default function App() {
           <Suspense fallback={<AppRouteFallback />}>
             <Routes>
               <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
+              <Route path="/start" element={!isLoggedIn ? <PublicLanding /> : <Navigate to="/" />} />
               <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
-              <Route path="/" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
+              <Route path="/" element={isLoggedIn ? <Today /> : <PublicLanding />} />
               <Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
               <Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />
               <Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />
@@ -234,3 +236,5 @@ export default function App() {
 /* PHASE0_AI_DRAFTS_ROUTE_GUARD AiDrafts path="/ai-drafts" */
 
 /* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: /today and /support route aliases are release-candidate smoke routes. */
+
+/* CLOSEFLOW_PUBLIC_LANDING_ROUTE: / shows PublicLanding for logged-out users and Today for logged-in users. */
