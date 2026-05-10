@@ -1,6 +1,4 @@
 import type { ReactNode } from 'react';
-
-export const CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6 = 'ActionCluster is the ui-system action group wrapper. Use data-cf-action-region and do not create local action cluster layout in pages.';
 import {
   dangerActionZoneClass,
   entityActionClusterClass,
@@ -9,8 +7,13 @@ import {
   type EntityActionRegion,
 } from '../entity-actions';
 
+export const CLOSEFLOW_ACTION_CLUSTERS_FINAL_CONTRACT_VS6 = 'ActionCluster is the ui-system action group wrapper. Use data-cf-action-region and do not create local action cluster layout in pages.';
+
 export type ActionClusterProps = {
-  children: ReactNode;
+  primary?: ReactNode;
+  secondary?: ReactNode;
+  danger?: ReactNode;
+  children?: ReactNode;
   className?: string;
   region?: EntityActionRegion;
   density?: 'default' | 'compact';
@@ -23,7 +26,15 @@ function regionClass(region: EntityActionRegion, className?: string) {
   return panelHeaderActionsClass(className);
 }
 
-export function ActionCluster({ children, className = '', region = 'entity-header-action-cluster', density = 'default' }: ActionClusterProps) {
+export function ActionCluster({
+  primary,
+  secondary,
+  danger,
+  children,
+  className = '',
+  region = 'entity-header-action-cluster',
+  density = 'default',
+}: ActionClusterProps) {
   return (
     <div
       className={regionClass(region, className)}
@@ -32,8 +43,19 @@ export function ActionCluster({ children, className = '', region = 'entity-heade
       data-standard-action-cluster="true"
       data-cf-action-cluster-density={density}
       data-cf-action-cluster-contract="VS6"
+      data-cf-action-cluster-api="primary,secondary,danger"
     >
-      {children}
+      {children ? (
+        children
+      ) : (
+        <>
+          {secondary ? <div className="cf-action-cluster-secondary">{secondary}</div> : null}
+          {danger ? <div className="cf-action-cluster-danger">{danger}</div> : null}
+          {primary ? <div className="cf-action-cluster-primary">{primary}</div> : null}
+        </>
+      )}
     </div>
   );
 }
+
+/* CLOSEFLOW_COMPONENT_REGISTRY_VS2_API ActionCluster: primary?, secondary?, danger? */

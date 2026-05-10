@@ -2,59 +2,78 @@
 
 **Data:** 2026-05-09  
 **Etap:** VS-2 — Component registry  
-**Tryb:** fundament komponentow, bez przepinania ekranow masowo
+**Status:** fundament systemu UI, bez masowego przepinania ekranów
 
-## Werdykt
+## Cel
 
-Ten etap tworzy jedno miejsce, z ktorego nowe i migrowane ekrany maja brac podstawowe elementy UI. Nie usuwa legacy CSS i nie robi wizualnego big-banga.
+VS-2 tworzy właściwy rejestr komponentów UI w `src/components/ui-system`. To jest pierwszy stabilny kontrakt po VS-1. Etap nie ma przebudowywać wszystkich ekranów. Ma dać jedno miejsce, z którego kolejne etapy będą brały wrappery, hero, kafelki, karty, wiersze list, statusy, klastry akcji, stopki formularzy i puste stany.
 
-## Zasada
+## Zasada główna
 
-Ekran nie powinien tworzyc nowego lokalnego kafelka, list row, page hero, pill ani footer formularza, jesli istnieje komponent w `src/components/ui-system`.
+Nowy albo migrowany ekran nie powinien tworzyć lokalnego odpowiednika komponentu, jeśli istnieje gotowy komponent w `src/components/ui-system`.
 
-## Rejestr komponentow
+Nie robimy tu wizualnego big-bangu. Rejestr jest kontraktem, a przepinanie ekranów idzie osobnymi etapami.
 
-| Komponent | Plik | Uzycie | Status |
+## Rejestr komponentów
+
+| Komponent | Plik | Minimalne API | Rola |
 |---|---|---|---|
-| PageShell | `src/components/ui-system/PageShell.tsx` | Bazowy wrapper strony / ekranow aplikacji | zrodlo prawdy dla nowych ekranow |
-| PageHero | `src/components/ui-system/PageHero.tsx` | Tytul strony, opis, akcje naglowka | zrodlo prawdy dla page hero |
-| MetricTile | `src/components/ui-system/MetricTile.tsx` | Kafelki liczbowe / shortcut metrics | zrodlo prawdy dla metryk |
-| MetricGrid | `src/components/ui-system/MetricGrid.tsx` | Siatka kafelkow metryk | zrodlo prawdy dla ukladu kafelkow |
-| SurfaceCard | `src/components/ui-system/SurfaceCard.tsx` | Standardowa karta / panel / sekcja | zrodlo prawdy dla powierzchni |
-| ListRow | `src/components/ui-system/ListRow.tsx` | Wiersze list, rekordy, entry rows | zrodlo prawdy dla list rows |
-| StatusPill | `src/components/ui-system/StatusPill.tsx` | Statusy, male etykiety semantyczne | zrodlo prawdy dla statusow |
-| ActionCluster | `src/components/ui-system/ActionCluster.tsx` | Polozenie akcji: header, panel, danger zone | zrodlo prawdy dla ukladu akcji |
-| FormFooter | `src/components/ui-system/FormFooter.tsx` | Stopka formularza / modala z akcjami | zrodlo prawdy dla form actions |
-| EmptyState | `src/components/ui-system/EmptyState.tsx` | Puste stany list i paneli | zrodlo prawdy dla empty states |
+| `PageShell` | `src/components/ui-system/PageShell.tsx` | `children`, `className?`, `variant?: 'default' | 'detail' | 'compact'` | Bazowy wrapper strony |
+| `PageHero` | `src/components/ui-system/PageHero.tsx` | `kicker?`, `title`, `description?`, `actions?`, `meta?` | Nagłówek strony |
+| `MetricTile` | `src/components/ui-system/MetricTile.tsx` | `label`, `value`, `helper?`, `icon?`, `tone?`, `active?`, `onClick?` | Pojedynczy kafelek metryki |
+| `MetricGrid` | `src/components/ui-system/MetricGrid.tsx` | `columns?: 2 | 3 | 4`, mobile zawsze 1 kolumna | Siatka metryk |
+| `SurfaceCard` | `src/components/ui-system/SurfaceCard.tsx` | `title?`, `description?`, `actions?`, `children` | Standardowa karta / panel |
+| `ListRow` | `src/components/ui-system/ListRow.tsx` | `leading?`, `title`, `description?`, `meta?`, `actions?`, `to?`, `onClick?` | Wiersz listy / rekord |
+| `StatusPill` | `src/components/ui-system/StatusPill.tsx` | `tone`, `children` | Status / etykieta semantyczna |
+| `ActionCluster` | `src/components/ui-system/ActionCluster.tsx` | `primary?`, `secondary?`, `danger?` | Uporządkowane grupowanie akcji |
+| `FormFooter` | `src/components/ui-system/FormFooter.tsx` | `cancel`, `submit` | Stopka formularza / modala |
+| `EmptyState` | `src/components/ui-system/EmptyState.tsx` | `title`, `description?`, `action?` | Pusty stan listy / sekcji |
 
-## Adaptery i kompatybilnosc
+## Kompatybilność z tym, co już działa
 
-- `StatShortcutCard` zostaje publicznym adapterem dla istniejacych ekranow i deleguje rendering do `MetricTile`.
-- `EntityActionButton` zostaje, bo jest juz uzywany jako kontrakt akcji encji.
-- `ActionCluster` nie zastępuje przyciskow, tylko pilnuje regionu i polozenia akcji przez `data-cf-action-region`.
-- Legacy CSS zostaje do czasu osobnych etapow migracyjnych.
+- `StatShortcutCard` zostaje adapterem dla istniejących ekranów. Aktualnie deleguje rendering do `OperatorMetricTile`, który jest finalnym rendererem kafelków metryk.
+- `MetricTile` jest publicznym komponentem rejestru i również korzysta z finalnej warstwy metryk, żeby nie powstały dwa różne style kafelków.
+- `ActionCluster` nie zastępuje przycisków. On pilnuje regionu i układu akcji.
+- `EntityActionButton` zostaje źródłem prawdy dla akcji encji.
+- Legacy CSS, hotfix CSS i stare klasy wizualne zostają do osobnych etapów cleanup. VS-2 ich nie usuwa.
 
-## Gdzie wolno uzywac
+## Gdzie używać
 
 | Obszar | Komponent |
 |---|---|
-| Naglowek ekranu | PageHero |
-| Wrapper ekranu | PageShell |
-| Kafelki top metrics | MetricGrid + MetricTile |
-| Panel boczny / karta informacji | SurfaceCard |
-| Lista leadow / klientow / spraw | ListRow |
-| Status leada / sprawy / platnosci | StatusPill |
-| Akcje naglowka lub panelu | ActionCluster + EntityActionButton |
-| Stopka modala/formularza | FormFooter |
-| Pusta lista / brak danych | EmptyState |
+| Wrapper ekranu | `PageShell` |
+| Nagłówek ekranu | `PageHero` |
+| Top metrics / shortcut metrics | `MetricGrid` + `MetricTile` |
+| Panel, sekcja, karta informacji | `SurfaceCard` |
+| Lista leadów, klientów, spraw, aktywności | `ListRow` |
+| Status leada, sprawy, płatności, integracji | `StatusPill` |
+| Akcje w headerze, panelu, danger zone | `ActionCluster` + `EntityActionButton` |
+| Stopka formularza / modala | `FormFooter` |
+| Brak danych / pusta lista | `EmptyState` |
 
-## Czego nie wolno robic po VS-2
+## Czego nie wolno robić po VS-2
 
-- Nie tworzyc nowych lokalnych `MetricCard`, `TileCard`, `LightMetricCardRow`, `ActivityRow` bez powodu.
-- Nie dodawac nowych lokalnych page hero/head bez wpisania powodu w inventory.
-- Nie przepinac wielu ekranow naraz.
-- Nie usuwac `visual-stage*`, `hotfix-*`, `eliteflow-*` ani `stage*.css` bez osobnego etapu cleanup.
+- Nie tworzyć nowych lokalnych `MetricCard`, `TileCard`, `LightMetricCardRow`, `ActivityRow`, jeśli da się użyć rejestru.
+- Nie tworzyć nowych lokalnych page hero / screen shell bez powodu.
+- Nie przepinać wielu ekranów naraz tylko dlatego, że rejestr już istnieje.
+- Nie usuwać `visual-stage*`, `hotfix-*`, `eliteflow-*`, `stage*.css` bez osobnego etapu cleanup.
+- Nie mieszać tego etapu z migracją Today, ClientDetail ani CaseDetail.
 
-## Kolejny sensowny krok
+## Weryfikacja
 
-VS-3 powinien przepiac jeden maly ekran na `PageShell`, `PageHero`, `MetricGrid`, `MetricTile`, `SurfaceCard` i `ListRow`, a potem porownac wizualnie regresje. Nie zaczynac od Today ani ClientDetail, bo to sa najbardziej ryzykowne ekrany.
+Obowiązkowe komendy:
+
+```bash
+npm run check:closeflow-component-registry
+npm run build
+```
+
+## Kryterium zakończenia
+
+VS-2 jest zakończony dopiero wtedy, gdy:
+
+1. wszystkie komponenty istnieją w `src/components/ui-system`,
+2. są eksportowane z `src/components/ui-system/index.ts`,
+3. dokument rejestru opisuje ich minimalne API i użycie,
+4. `scripts/check-closeflow-component-registry.cjs` przechodzi,
+5. `npm run build` przechodzi.

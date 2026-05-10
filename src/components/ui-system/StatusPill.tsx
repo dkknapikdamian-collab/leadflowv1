@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 
 export type StatusPillTone = 'neutral' | 'blue' | 'green' | 'amber' | 'red' | 'purple';
+
 export type StatusPillProps = {
-  children: ReactNode;
   tone?: StatusPillTone;
+  children: ReactNode;
   className?: string;
 };
 
@@ -22,8 +23,11 @@ export function StatusPill({ children, tone = 'neutral', className = '' }: Statu
       className={['cf-status-pill inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-black uppercase tracking-[0.04em]', TONE_CLASS[tone], className].filter(Boolean).join(' ')}
       data-cf-ui-component="StatusPill"
       data-cf-status-tone={tone}
+      data-cf-status-pill-contract="component-registry-vs2"
     >
       {children}
     </span>
   );
 }
+
+/* CLOSEFLOW_COMPONENT_REGISTRY_VS2_API StatusPill: tone, children */

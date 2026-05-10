@@ -33,17 +33,58 @@ for (const name of ['PageShell', 'PageHero', 'MetricTile', 'MetricGrid', 'Surfac
   has('docs/ui/CLOSEFLOW_COMPONENT_REGISTRY_2026-05-09.md', name, 'docs registry');
 }
 
-has('src/components/ui-system/MetricTile.tsx', 'data-cf-ui-component="MetricTile"', 'MetricTile data marker');
+has('src/components/ui-system/PageShell.tsx', "variant?: PageShellVariant", 'PageShell variant prop');
+has('src/components/ui-system/PageShell.tsx', "'default' | 'detail' | 'compact'", 'PageShell allowed variants');
 has('src/components/ui-system/PageShell.tsx', 'data-closeflow-page-wrapper="true"', 'PageShell wrapper marker');
+
+for (const needle of ['kicker?: ReactNode', 'title: ReactNode', 'description?: ReactNode', 'actions?: ReactNode', 'meta?: ReactNode']) {
+  has('src/components/ui-system/PageHero.tsx', needle, 'PageHero API');
+}
 has('src/components/ui-system/PageHero.tsx', 'data-page-hero="true"', 'PageHero marker');
-has('src/components/ui-system/ActionCluster.tsx', 'data-cf-action-region={region}', 'ActionCluster region marker');
-has('src/components/ui-system/FormFooter.tsx', 'data-standard-form-footer="true"', 'FormFooter marker');
+
+for (const needle of ['label: string', 'value: string | number', 'helper?: ReactNode', 'icon?: ComponentType', 'tone?: MetricTileTone | string', 'active?: boolean', 'onClick?: () => void']) {
+  has('src/components/ui-system/MetricTile.tsx', needle, 'MetricTile API');
+}
+has('src/components/ui-system/MetricTile.tsx', 'OperatorMetricTile', 'MetricTile delegates to final metric renderer');
+has('src/components/ui-system/MetricTile.tsx', 'data-cf-ui-component="MetricTile"', 'MetricTile data marker');
+
+has('src/components/ui-system/MetricGrid.tsx', 'columns?: 2 | 3 | 4', 'MetricGrid columns API');
+has('src/components/ui-system/MetricGrid.tsx', 'grid grid-cols-1', 'MetricGrid mobile one column');
+has('src/components/ui-system/MetricGrid.tsx', 'data-cf-metric-grid-mobile-columns="1"', 'MetricGrid mobile marker');
+
+for (const needle of ['title?: ReactNode', 'description?: ReactNode', 'actions?: ReactNode', 'children?: ReactNode']) {
+  has('src/components/ui-system/SurfaceCard.tsx', needle, 'SurfaceCard API');
+}
+has('src/components/ui-system/SurfaceCard.tsx', 'data-standard-surface-card="true"', 'SurfaceCard marker');
+
+for (const needle of ['leading?: ReactNode', 'title?: ReactNode', 'description?: ReactNode', 'meta?: ReactNode', 'actions?: ReactNode', 'to?: string', 'onClick?: () => void']) {
+  has('src/components/ui-system/ListRow.tsx', needle, 'ListRow API');
+}
 has('src/components/ui-system/ListRow.tsx', 'data-standard-list-row="true"', 'ListRow marker');
+
+has('src/components/ui-system/StatusPill.tsx', 'tone?: StatusPillTone', 'StatusPill tone API');
+has('src/components/ui-system/StatusPill.tsx', 'children: ReactNode', 'StatusPill children API');
 has('src/components/ui-system/StatusPill.tsx', 'data-cf-status-tone={tone}', 'StatusPill tone marker');
+
+for (const needle of ['primary?: ReactNode', 'secondary?: ReactNode', 'danger?: ReactNode']) {
+  has('src/components/ui-system/ActionCluster.tsx', needle, 'ActionCluster API');
+}
+has('src/components/ui-system/ActionCluster.tsx', 'data-cf-action-region={region}', 'ActionCluster region marker');
+
+for (const needle of ['cancel?: ReactNode', 'submit?: ReactNode']) {
+  has('src/components/ui-system/FormFooter.tsx', needle, 'FormFooter API');
+}
+has('src/components/ui-system/FormFooter.tsx', 'data-standard-form-footer="true"', 'FormFooter marker');
+
+for (const needle of ['title: ReactNode', 'description?: ReactNode', 'action?: ReactNode']) {
+  has('src/components/ui-system/EmptyState.tsx', needle, 'EmptyState API');
+}
+has('src/components/ui-system/EmptyState.tsx', 'data-standard-empty-state="true"', 'EmptyState marker');
 
 has('src/components/entity-actions.tsx', 'export const EntityActionButton', 'EntityActionButton remains available');
 has('src/components/StatShortcutCard.tsx', "from './ui-system'", 'StatShortcutCard imports ui-system');
-has('src/components/StatShortcutCard.tsx', '<MetricTile', 'StatShortcutCard delegates to MetricTile');
+const statShortcut = read('src/components/StatShortcutCard.tsx');
+assert(statShortcut.includes('OperatorMetricTile') || statShortcut.includes('<MetricTile'), 'StatShortcutCard must delegate to shared ui-system metric renderer');
 has('src/components/StatShortcutCard.tsx', 'resolveMetricTone', 'StatShortcutCard keeps legacy tone resolver compatibility');
 
 const pkg = JSON.parse(read('package.json'));
