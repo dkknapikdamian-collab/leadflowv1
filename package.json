@@ -603,7 +603,8 @@
     "check:closeflow-fin5-syntax-rescue-pathspec-repair2": "node scripts/check-closeflow-fin5-syntax-rescue-pathspec-repair2.cjs",
     "check:closeflow-fin5-encoding-cleanup-final": "node scripts/check-closeflow-fin5-encoding-cleanup-final.cjs",
     "check:closeflow-fin5-byte-encoding-repair": "node scripts/check-closeflow-fin5-byte-encoding-repair.cjs",
-    "check:closeflow-api0-vercel-hobby-functions": "node scripts/check-closeflow-api0-vercel-hobby-functions.cjs"
+    "check:closeflow-api0-vercel-hobby-functions": "node scripts/check-closeflow-api0-vercel-hobby-functions.cjs",
+    "check:closeflow-tsc-import-regression": "node scripts/check-closeflow-tsc-import-regression.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

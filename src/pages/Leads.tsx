@@ -1,118 +1,68 @@
 import {
-  type FormEvent,
-  type MouseEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import {
-  Link,
-  useSearchParams
-} from 'react-router-dom';
-import {
-  consumeGlobalQuickAction,
-  subscribeGlobalQuickAction
-} from '../components/GlobalQuickActions';
-import {
   CaseEntityIcon,
+  ChevronRight,
+  Clock3,
   EntityIcon,
   LeadEntityIcon,
   TemplateEntityIcon
-} from '../components/ui-system';
-import {
-  AlertTriangle,
-  ChevronRight,
-  Loader2,
-  Mail,
-  Search,
-  Trash2
-} from 'lucide-react';
-
-
-
-
-import {
-  Clock3,
-  EntityConflictCandidate
-} from '../components/EntityConflictDialog';
-import {
-  format,
-  isPast
 } from '../components/ui-system';
 // CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1
 // LEAD_TO_CASE_FLOW_STAGE24_LEADS_LIST
 // ADMIN_FEEDBACK_P1_LEADS_SEARCH_QUESTION_MARK_REMOVED
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
-
 import {
-  parseISO
-} from 'date-fns';
-import {
-  pl
-} from 'date-fns/locale';
-import {
-  toast
-} from 'sonner';
+  useCallback,
+  Loader2,
+  Mail,
+  RotateCcw,
+  Search,
+  Trash2,
+  TrendingUp,
+  type FormEvent,
+  type MouseEvent } from 'react';
+import { Link,
+  useEffect,
+  useMemo,
+  useRef,
+  useSearchParams } from 'react-router-dom';
+import { AlertTriangle,
+  useState
+} from 'lucide-react';
+import { format,
+  isPast,
+  parseISO } from 'date-fns';
+import { pl } from 'date-fns/locale';
+import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import {
-  EntityConflictDialog,
-  RotateCcw,
-  TrendingUp
-} from 'react-router-dom';
-
-import {
-  actionIconClass,
-  modalFooterClass
-} from '../components/entity-actions';
+import { EntityConflictDialog,
+  type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import { consumeGlobalQuickAction,
+  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionIconClass,
+  modalFooterClass} from '../components/entity-actions';
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
-import {
-  StatShortcutCard
-} from '../components/StatShortcutCard';
-import {
-  Badge
-} from '../components/ui/badge';
-import {
-  Button
-} from '../components/ui/button';
-import {
-  Card,
-  CardContent
-} from '../components/ui/card';
-import {
-  Dialog,
+import { StatShortcutCard } from '../components/StatShortcutCard';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Card,
+  CardContent } from '../components/ui/card';
+import { Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
-} from '../components/ui/dialog';
-import {
-  Input
-} from '../components/ui/input';
-import {
-  Label
-} from '../components/ui/label';
-import {
-  useWorkspace
-} from '../hooks/useWorkspace';
-import {
-  isActiveSalesLead,
-  isLeadMovedToService
-} from '../lib/lead-health';
-import {
-  getNearestPlannedAction
-} from '../lib/nearest-action';
-import {
-  buildRelationFunnelValue,
+  DialogTitle } from '../components/ui/dialog';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { useWorkspace } from '../hooks/useWorkspace';
+import { isActiveSalesLead,
+  isLeadMovedToService } from '../lib/lead-health';
+import { getNearestPlannedAction } from '../lib/nearest-action';
+import { buildRelationFunnelValue,
   buildRelationValueEntries,
-  formatRelationValue
-} from '../lib/relation-value';
-import {
-  requireWorkspaceId
-} from '../lib/workspace-context';
+  formatRelationValue } from '../lib/relation-value';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
@@ -182,12 +132,10 @@ type CaseRecord = {
 
 type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
 
-
 function formatLeadSourceLabel(value: unknown) {
   const normalized = String(value || 'other');
   return SOURCE_OPTIONS.find((option) => option.value === normalized)?.label || 'Inne';
 }
-
 
 function normalizeLeadSearchValue(value: unknown) {
   return String(value || '')
@@ -198,11 +146,9 @@ function normalizeLeadSearchValue(value: unknown) {
     .trim();
 }
 
-
 function getLeadPrimaryContact(lead: any) {
   return String(lead?.phone || lead?.email || '').trim();
 }
-
 
 function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
   return [
@@ -216,7 +162,6 @@ function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
     linkedCase?.status,
   ].map(normalizeLeadSearchValue).filter(Boolean).join(' ');
 }
-
 
 function buildLeadValueLabel(lead: any) {
   const value = Number(lead?.dealValue || lead?.value || lead?.budget || 0);
@@ -238,7 +183,6 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
   ].filter(Boolean).join(' · ');
 }
 
-
 function sanitizeNewLeadCreatePayloadA1(input: any) {
   const payload = { ...(input || {}) };
   delete payload.clientId;
@@ -255,18 +199,15 @@ function nativeSelectClassName() {
   return 'flex h-10 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 }
 
-
 function formatCaseStatusLabel(value?: string) {
   if (!value) return '';
   return value.replaceAll('_', ' ');
 }
 
-
 function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
   if (!action) return '';
   return action.kind === 'event' ? 'Wydarzenie' : 'Zadanie';
 }
-
 
 function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
   if (!action?.at || !action?.title) {
@@ -288,7 +229,6 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
   };
 }
 
-
 function isLeadInTrash(lead: any) {
   // STAGE30_LEADS_TRASH_STRICT_VISIBILITY: kosz leadow nie moze lapac aktywnych rekordow po samym wyniku sprzedazy.
   const status = String(lead?.status || '').trim();
@@ -296,7 +236,6 @@ function isLeadInTrash(lead: any) {
 
   return visibility === 'trash' || status === 'archived';
 }
-
 
 function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
   if (linkedCase || lead?.linkedCaseId || lead?.caseId || lead?.movedToServiceAt || lead?.caseStartedAt) {
@@ -753,7 +692,6 @@ export default function Leads() {
               <span className="pill">{showTrash ? stats.total : stats.trash}</span>
             </button>
 
-
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
                 <DialogHeader className="lead-form-vnext-header">
@@ -1185,9 +1123,7 @@ export default function Leads() {
   );
 }
 
-
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleQuickFilter('active') toggleValueSorting */
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_LEAD_MODAL_EVENT_BUS */
-
 

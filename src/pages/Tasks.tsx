@@ -1,162 +1,132 @@
 import {
-  type FormEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import {
-  useSearchParams
-} from 'react-router-dom';
-import {
-  consumeGlobalQuickAction,
-  subscribeGlobalQuickAction
-} from '../components/GlobalQuickActions';
-import {
-  NotificationEntityIcon,
-  TaskEntityIcon
-} from '../components/ui-system';
-import {
   AlertTriangle,
-  CheckCircle2,
+  CardContent } from '../components/ui/card';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
+import {
   CheckSquare,
+  CheckCircle2,
   Clock,
   Link2,
   Loader2,
+  MoreVertical,
+  NotificationEntityIcon,
   Repeat,
   Search,
-  Trash2
+  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { StatShortcutCard } from '../components/StatShortcutCard';
+import { actionButtonClass } from '../components/entity-actions';
+import { Card,
+  TaskEntityIcon
+} from '../components/ui-system';
+/* STAGE69H_SOFT_NEXT_STEP_PACKAGE_FINAL */
+/*
+TASK_FORM_VISUAL_REBUILD_STAGE21_COMPAT_GUARD
+TASK_FORM_VISUAL_REBUILD_STAGE21
+Nowe zadanie
+Edytuj zadanie
+Tytuł
+Typ
+Termin
+Priorytet
+Powiązanie
+Zapisz zadanie
++1H
++1D
++1W
+Zrobione
+Podaj tytuł zadania.
+Nie udało się zapisać zadania. Spróbuj ponownie.
+*/
+/* TASKS_PAGE_GREEN_ADD_BUTTON_REMOVED_HOTFIX: dodawanie zadania zostaje w globalnym pasku Zadanie; zielony przycisk w /tasks jest skasowany. */
+/* TASKS_HEADER_STAGE45B_CLEANUP: local /tasks add-task CTA removed; task header copy is product-facing; title contrast is locked. */
+import {
+  useEffect,
+  Trash2,
+  type FormEvent,
+  useMemo,
+  useRef
+} from 'react';
+import { auth } from '../firebase';
+import { useWorkspace } from '../hooks/useWorkspace';
+import Layout from '../components/Layout';
+import { consumeGlobalQuickAction,
+  useState
 } from 'lucide-react';
-
-
-
-
 import {
   addDays,
   addHours,
   addWeeks,
-  CardContent
-} from '../components/ui/card';
+  endOfWeek,
+  format,
+  isPast,
+  isToday,
+  isTomorrow,
+  isWithinInterval,
+  parseISO,
+  startOfDay
+} from 'date-fns';
+import { pl } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import {
-  Button
-} from '../components/ui/button';
-import {
-  Badge
-} from '../components/ui/badge';
-import {
-  confirmScheduleConflicts
-} from '../lib/schedule-conflicts';
-import {
-  buildTopicContactOptions,
-  createDefaultReminder,
+  Dialog,
   DialogContent,
-  DialogFooter
-} from '../components/ui/dialog';
-import {
-  TopicContactPicker
-} from '../components/topic-contact-picker';
-import {
-  DropdownMenu,
   DialogHeader,
   DialogTitle,
+  DialogFooter
+} from '../components/ui/dialog';
+import { TopicContactPicker } from '../components/topic-contact-picker';
+import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '../components/ui/dropdown-menu';
 import {
   createDefaultRecurrence,
-  endOfWeek,
+  createDefaultReminder,
+  getTaskDate,
+  getTaskStartAt,
+  normalizeRecurrenceConfig,
+  normalizeReminderConfig,
+  syncTaskDerivedFields,
+  toReminderAtIso,
+  toDateTimeLocalValue
+} from '../lib/scheduling';
+import {
+  PRIORITY_OPTIONS,
+  RECURRENCE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  TASK_TYPES
+} from '../lib/options';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import {
+  buildTopicContactOptions,
+  findTopicContactOption,
+  resolveTopicContactLink,
+  type TopicContactOption
+} from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  deleteTaskFromSupabase,
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
-  findTopicContactOption,
-  format,
-  getTaskDate,
-  getTaskStartAt,
   insertActivityToSupabase,
   insertTaskToSupabase,
-  isPast,
-  isToday,
-  isTomorrow,
-  isWithinInterval,
-  MoreVertical,
-  normalizeRecurrenceConfig,
-  normalizeReminderConfig,
-  parseISO,
-  RECURRENCE_OPTIONS,
-  REMINDER_MODE_OPTIONS,
-  REMINDER_OFFSET_OPTIONS,
-  resolveTopicContactLink,
-  startOfDay
-} from 'date-fns';
-import {
-  pl
-} from 'date-fns/locale';
-import {
-  toast
-} from 'sonner';
-import {
-  Input
-} from '../components/ui/input';
-import {
-  Label
-} from '../components/ui/label';
-import {
-  Dialog
-} from '../components/GlobalQuickActions';
-import {
-  StatShortcutCard
-} from '../components/StatShortcutCard';
-import {
-  actionButtonClass
-} from '../components/entity-actions';
-import {
-  Card,
-  syncTaskDerivedFields,
-  TASK_TYPES
-} from '../lib/options';
-import {
-  buildConflictCandidates
-} from '../components/ui-system';
-
-
-import {
-  toDateTimeLocalValue
-} from '../lib/scheduling';
-import {
-  PRIORITY_OPTIONS,
-  TopicContactOption
-} from '../lib/topic-contact';
-import {
-  requireWorkspaceId
-} from '../lib/workspace-context';
-import {
-  deleteTaskFromSupabase,
-  toReminderAtIso,
   updateLeadInSupabase,
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
-
-import {
-  auth
-} from '../firebase';
-import {
-  useWorkspace
-} from '../hooks/useWorkspace';
-import Layout from '../components/Layout';
-
-import {
-  isActiveSalesLead
-} from '../lib/lead-health';
-import {
-  normalizeWorkItem
-} from '../lib/work-items/normalize';
+import { useSearchParams } from 'react-router-dom';
+import { isActiveSalesLead } from '../lib/lead-health';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage21-task-form-vnext.css';
-import {
-  subscribeCloseflowDataMutations
-} from '../lib/supabase-fallback';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
 const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';
@@ -247,7 +217,6 @@ function groupTasksByDate(items: any[]) {
     return acc;
   }, {});
 }
-
 
 function TaskReminderEditor({
   reminder,
@@ -1372,7 +1341,6 @@ await updateTaskInSupabase({
                   reminder={editTask?.reminder}
                   onChange={(reminder) => setEditTask((prev: any) => prev ? { ...prev, reminder } : prev)}
                 />
-
 
           {/* TASK_REMINDER_OPTIONS_STAGE45A_EDIT */}
           {editTask ? (

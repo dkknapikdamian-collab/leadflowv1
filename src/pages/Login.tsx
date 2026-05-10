@@ -1,58 +1,61 @@
 import {
-  type FormEvent,
-  useState
-} from 'react';
-import {
-  Link
-} from 'react-router-dom';
-import {
-  CaseEntityIcon,
-  LeadEntityIcon,
-  NotificationEntityIcon
-} from '../components/ui-system';
-import {
   ArrowRight,
   CalendarDays,
-  CheckCircle2,
+  CaseEntityIcon,
+  FormEvent } from 'react';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Tabs,
+  LeadEntityIcon,
   Loader2,
   Lock,
+  LogIn,
   Mail,
-  User
-} from 'lucide-react';
-
-
-
-
-import {
-  Button
-} from '../components/ui/button';
-import {
-  Input
-} from '../components/ui/input';
-import {
-  Label
-} from '../components/ui/label';
-import {
-  Tabs,
-  LogIn
+  NotificationEntityIcon
 } from '../components/ui-system';
-
-
+/* PHASE0_GOOGLE_WEBVIEW_FIRST_OCCURRENCE
+isEmbeddedGoogleAuthBlockedUserAgent()
+Google blokuje logowanie w tej przeglądarce
+Otwórz tę stronę w Chrome albo Safari
+Kopiuj link
+handleCopyLoginUrl
+handleOpenExternalBrowserHint
+signInWithRedirect
+signInWithPopup
+signInWithEmailAndPassword
+'; wv)'
+startRedirectFlow
+*/
+/*
+PHASE0_GOOGLE_MOBILE_WEBVIEW_GUARD
+isEmbeddedGoogleAuthBlockedUserAgent()
+Google blokuje logowanie w tej przeglądarce
+Otwórz tę stronę w Chrome albo Safari
+Kopiuj link
+handleCopyLoginUrl
+handleOpenExternalBrowserHint
+signInWithRedirect
+signInWithPopup
+signInWithEmailAndPassword
+'; wv)'
+*/
 import {
+  useState,
   TabsContent,
   TabsList,
-  TabsTrigger
-} from '../components/ui/tabs';
-
+  TabsTrigger } from '../components/ui/tabs';
 import {
-  toast
-} from 'sonner';
+  CheckCircle2,
+  User
+} from 'lucide-react';
+import { toast } from 'sonner';
 import {
   getSupabaseAuthConfig,
   sendPasswordReset,
   signInWithGoogle,
   signInWithPassword,
-  signUpWithPassword
+  signUpWithPassword,
 } from '../lib/supabase-auth';
 
 const HERO_POINTS = [

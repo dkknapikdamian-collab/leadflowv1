@@ -1,63 +1,50 @@
 import {
-  type FormEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import {
-  Link,
-  useSearchParams
-} from 'react-router-dom';
-import {
-  consumeGlobalQuickAction,
-  subscribeGlobalQuickAction
-} from '../components/GlobalQuickActions';
-import {
+  CheckSquare,
+  ChevronRight,
   EntityIcon,
   NotificationEntityIcon
 } from '../components/ui-system';
 import {
-  CheckSquare,
-  ChevronLeft,
-  ChevronRight,
+  useState,
+  FormEvent,
   Loader2,
   Repeat,
-  Trash2
-} from 'lucide-react';
-
+  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
+import { Button } from '../components/ui/button';
+import { Badge } from '../components/ui/badge';
 import {
+  ChevronLeft,
+  Trash2,
+  useEffect,
+  useMemo,
+  useRef
+} from 'react';
+import { auth } from '../firebase';
+import { useWorkspace } from '../hooks/useWorkspace';
+import Layout from '../components/Layout';
+import { consumeGlobalQuickAction
+} from 'lucide-react';
+import {
+  format,
+  addMonths,
+  subMonths,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  isSameMonth,
+  isToday,
+  eachDayOfInterval,
+  parseISO,
+  isSameDay,
   addDays,
   addHours
 } from 'date-fns';
-import {
-  pl
-} from 'date-fns/locale';
-import {
-  toast
-} from 'sonner';
-import {
-  addMonths,
-  eachDayOfInterval,
-  endOfMonth,
-  endOfWeek,
-  entityActionButtonClass
-} from '../components/entity-actions';
-import {
-  Button
-} from '../components/ui/button';
-import {
-  Badge
-} from '../components/ui/badge';
-
-import {
-  auth
-} from '../firebase';
-import {
-  useWorkspace
-} from '../hooks/useWorkspace';
-import Layout from '../components/Layout';
-
+import { pl } from 'date-fns/locale';
+import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import {
   Dialog,
   DialogContent,
@@ -65,15 +52,9 @@ import {
   DialogTitle,
   DialogFooter
 } from '../components/ui/dialog';
-import {
-  Input
-} from '../components/ui/input';
-import {
-  Label
-} from '../components/ui/label';
-import {
-  TopicContactPicker
-} from '../components/topic-contact-picker';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -97,22 +78,15 @@ import {
   REMINDER_MODE_OPTIONS,
   TASK_TYPES
 } from '../lib/options';
-import {
-  fetchCalendarBundleFromSupabase
-} from '../lib/calendar-items';
-import {
-  buildConflictCandidates,
-  confirmScheduleConflicts
-} from '../lib/schedule-conflicts';
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
 import {
   buildTopicContactOptions,
   findTopicContactOption,
   resolveTopicContactLink,
   type TopicContactOption
 } from '../lib/topic-contact';
-import {
-  requireWorkspaceId
-} from '../lib/workspace-context';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage22-event-form-vnext.css';
 import {
   deleteEventFromSupabase,
@@ -125,12 +99,8 @@ import {
   updateEventInSupabase,
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
-import {
-  subscribeCloseflowDataMutations
-} from '../lib/supabase-fallback';
-import {
-  normalizeWorkItem
-} from '../lib/work-items/normalize';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -330,7 +300,6 @@ function getCalendarEntryStatusTone(entry: ScheduleEntry) {
   if (status === 'in_progress') return 'blue';
   return 'blue';
 }
-
 
 function getCalendarEntryStatusPillClass(entry: ScheduleEntry) {
   return getCalendarEntrySeverity(entry) === 'error' ? 'cf-severity-pill' : 'cf-status-pill';
@@ -545,7 +514,6 @@ export default function Calendar() {
     if (target === 'event') setIsNewEventOpen(true);
     if (target === 'task') setIsNewTaskOpen(true);
   }), []);
-
 
   useEffect(() => {
     const quick = searchParams.get('quick');
@@ -1913,7 +1881,6 @@ export default function Calendar() {
     </Layout>
   );
 }
-
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
 

@@ -1,19 +1,7 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import {
-  Link,
-  useNavigate,
-  useParams
-} from 'react-router-dom';
-import {
-  EntityIcon,
-  EventEntityIcon
-} from '../components/ui-system';
+const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
+void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
+const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
+void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 import {
   AlertTriangle,
   ArrowLeft,
@@ -21,21 +9,25 @@ import {
   CheckCircle2,
   Clock,
   Copy,
-  Eye,
-  Loader2,
-  Mail,
-  Pencil,
-  Phone,
-  Plus,
-  Save,
-  Trash2
-} from 'lucide-react';
-
-
-
-
-
-
+  EntityIcon,
+  EventEntityIcon
+} from '../components/ui-system';
+/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
+/* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
+/* STAGE54_CLIENT_CASES_COMPACT_FIT */
+/* STAGE53_CLIENT_OPERATIONAL_RECENT_MOVES */
+/* STAGE51_CLIENTS_CASE_CONTRAST_HOTFIX */
+/*
+CLIENT_DETAIL_VISUAL_REBUILD_STAGE12
+Client is a relation record. Operational work after acquisition happens in Case.
+CLIENT_DETAIL_FINAL_OPERATING_MODEL_V83
+CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD
+CLIENT_DETAIL_MORE_MENU_SECONDARY
+CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ
+STAGE35_CLIENT_DETAIL_VISIBLE_EDIT_ACTION
+CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY
+STAGE50_CLIENT_DETAIL_EDIT_HEADER_POLISH
+*/
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
 const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu Drugorzędne akcje menu pomocnicze';
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
@@ -65,47 +57,38 @@ const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
 import {
+  useCallback,
+  Eye,
+  Loader2,
+  Mail,
   Mic,
   MicOff,
-  Pin
-} from 'react-router-dom';
+  Pencil,
+  Phone,
+  Pin,
+  Plus,
+  Save,
+  Trash2,
+  useEffect,
+  useMemo,
+  useNavigate,
+  useParams } from 'react-router-dom';
 import {
-  Activity
-} from 'react';
-
-const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
-void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
-const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
-void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
-import {
-  toast
-} from 'sonner';
+  Activity,
+  useRef,
+  useState } from 'react';
+import { Link
+} from 'lucide-react';
+import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import {
-  EntityActionButton,
-  actionButtonClass,
-  formActionsClass
-} from '../components/entity-actions';
-import {
-  openContextQuickAction,
-  type ContextActionKind
-} from '../components/ContextActionDialogs';
-import {
-  Button
-} from '../components/ui/button';
-import {
-  Input
-} from '../components/ui/input';
-import {
-  Label
-} from '../components/ui/label';
-import {
-  Textarea
-} from '../components/ui/textarea';
-import {
-  useWorkspace
-} from '../hooks/useWorkspace';
+import { EntityActionButton, actionButtonClass, formActionsClass } from '../components/entity-actions';
+import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Textarea } from '../components/ui/textarea';
+import { useWorkspace } from '../hooks/useWorkspace';
 import {
   fetchActivitiesFromSupabase,
   updateActivityInSupabase,
@@ -117,14 +100,10 @@ import {
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   updateClientInSupabase,
-  updateLeadInSupabase
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
-import {
-  getNearestPlannedAction
-} from '../lib/work-items/planned-actions';
-import {
-  normalizeWorkItem
-} from '../lib/work-items/normalize';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage12-client-detail-vnext.css';
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
@@ -730,7 +709,6 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-
 const CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';
 const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';
 const STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejdź w sprawę';
@@ -865,7 +843,6 @@ export default function ClientDetail() {
   const [activities, setActivities] = useState<any[]>([]);
   const [clientPinnedNoteIds, setClientPinnedNoteIds] = useState<string[]>([]);
 
-
   const clientNotePinStorageKey = useMemo(
     () => `closeflow:client-pinned-notes:${String(client?.id || 'unknown')}`,
     [client?.id],
@@ -993,7 +970,6 @@ export default function ClientDetail() {
     return () => window.removeEventListener('closeflow:context-note-saved', handleContextNoteSaved as EventListener);
   }, [client?.id]);
 
-
   const [activeTab, setActiveTab] = useState<ClientTab>('summary');
   const [contactEditing, setContactEditing] = useState(false);
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
@@ -1097,7 +1073,6 @@ export default function ClientDetail() {
       )
       .sort((left, right) => (asDate(getActivityTime(right))?.getTime() ?? 0) - (asDate(getActivityTime(left))?.getTime() ?? 0));
   }, [activities, clientId, relationIds.caseIds, relationIds.leadIds]);
-
 
   const recentClientMovements = useMemo(() => {
     return clientActivities.slice(0, 5).map((activity: any, index: number) => ({
@@ -1209,7 +1184,6 @@ export default function ClientDetail() {
       };
     });
   }, [cases, clientEvents, clientTasks, leads]);
-
 
   const resetClientContactForm = () => {
     setForm({
@@ -1407,7 +1381,6 @@ export default function ClientDetail() {
     String(clientId || ''),
   );
 
-
   if (loading || workspaceLoading) {
     return (
       <Layout>
@@ -1544,7 +1517,6 @@ export default function ClientDetail() {
               })()}
             </section>
 
-
 <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
               <div className="client-detail-avatar-row">
                 <div className="client-detail-avatar">{getInitials(client)}</div>
@@ -1648,7 +1620,6 @@ export default function ClientDetail() {
                       Zobacz całą Aktywność
                     </Link>
                   </section>
-
 
           </aside>
 
