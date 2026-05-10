@@ -42,6 +42,7 @@ import {
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
   updateLeadInSupabase,
+  updateTaskInSupabase
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
@@ -66,6 +67,8 @@ const STAGE16AN_TODAY_VIEW_CUSTOMIZER = 'STAGE16AN_TODAY_VIEW_CUSTOMIZER';
 const STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED = 'STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED';
 const TODAY_STABLE_STAGE14_REMAINING_SEVERITY = 'TODAY_STABLE_STAGE14_REMAINING_SEVERITY';
 const TODAY_VIEW_STORAGE_KEY = 'closeflow:today:view-sections:v1';
+const CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP = 'CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP';
+void CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP;
 void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
 void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
@@ -529,6 +532,7 @@ function moveTodaySectionToTop(key: TodaySectionKey) {
 }
 
 function scrollToTodaySection(key: TodaySectionKey) {
+  if (!shouldFb4ScrollTodaySection()) return;
   const target = getTodaySectionCardElement(key);
   target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -553,6 +557,7 @@ function RowLink({
   onDelete?: () => void;
   deleting?: boolean;
 }) {
+  const fb4TaskId = typeof to === 'string' && to.startsWith('/tasks/') ? (to.split('/').filter(Boolean).pop() || '') : '';
   return (
     <div className="border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
       <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -580,6 +585,20 @@ function RowLink({
           ) : null}
         </div>
         <div className="flex items-center gap-2">
+          {fb4TaskId ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                window.dispatchEvent(new CustomEvent('closeflow:today:mark-task-done', { detail: { id: fb4TaskId } }));
+              }}
+            >
+              Zrobione
+            </Button>
+          ) : null}
           {onEdit ? <Button type="button" size="sm" variant="outline" onClick={onEdit}>Edytuj</Button> : null}
           {onDelete ? (
             <EntityActionButton
@@ -620,6 +639,57 @@ async function loadStableTodayData(): Promise<DashboardData> {
     cases: Array.isArray(cases) ? cases : [],
     drafts: Array.isArray(drafts) ? drafts : [],
   };
+}
+
+
+function getFb4TodayTasksSectionTitle(tasks: any[]) {
+  const today = localDateKey();
+  let todayCount = 0;
+  let overdueCount = 0;
+
+  for (const task of Array.isArray(tasks) ? tasks : []) {
+    if (isClosedStatus(task?.status)) continue;
+    const dateKey = getDateKey(getTaskMomentRaw(task));
+    if (!dateKey) continue;
+    if (dateKey === today) todayCount += 1;
+    if (dateKey < today) overdueCount += 1;
+  }
+
+  if (todayCount > 0 && overdueCount > 0) return 'Zadania do obsługi';
+  if (overdueCount > 0) return 'Zaległe zadania';
+  return 'Zadania do wykonania dziś';
+}
+
+function shouldFb4ScrollTodaySection() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.matchMedia('(min-width: 768px)').matches;
+  } catch {
+    return true;
+  }
+}
+
+function normalizeFb4TodayActionText(value: unknown) {
+  return String(value || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .replace(/s+/g, ' ')
+    .trim();
+}
+
+function normalizeFb4TodayActionClusterOrder() {
+  if (typeof document === 'undefined') return;
+  const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
+  if (!root) return;
+  const buttons = Array.from(root.querySelectorAll('button')) as HTMLButtonElement[];
+  const refreshButton = buttons.find((button) => normalizeFb4TodayActionText(button.textContent).includes('odswiez'));
+  const viewButton = buttons.find((button) => normalizeFb4TodayActionText(button.textContent).includes('widok'));
+  if (!refreshButton || !viewButton || refreshButton === viewButton) return;
+  const refreshParent = refreshButton.parentElement;
+  if (!refreshParent) return;
+  if (viewButton.parentElement !== refreshParent) refreshParent.appendChild(viewButton);
+  if (refreshButton.nextSibling !== viewButton) refreshParent.insertBefore(viewButton, refreshButton.nextSibling);
 }
 
 export default function TodayStable() {
@@ -693,6 +763,55 @@ export default function TodayStable() {
       unsubscribe();
     };
   }, [refreshData]);
+
+
+  useEffect(() => {
+    // CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP: Today tiles control one expanded list, move it to the top and avoid mobile scroll jump.
+    if (typeof window === 'undefined') return;
+
+    const handleTileClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      const clickable = target?.closest('button, a, [role="button"]') as HTMLElement | null;
+      const section = getTodaySectionFromTileText(clickable?.textContent || '');
+      if (!section) return;
+
+      setExpandedSection(section);
+      setActiveTodaySection(section);
+      setCollapsedSections(TODAY_SECTION_KEYS.filter((key) => key !== section));
+
+      window.setTimeout(() => {
+        moveTodaySectionToTop(section);
+        scrollToTodaySection(section);
+      }, 0);
+    };
+
+    const handleTaskDone = async (event: Event) => {
+      const id = String((event as CustomEvent<{ id?: string }>).detail?.id || '').trim();
+      if (!id) return;
+      try {
+        setActionPendingId(id);
+        await updateTaskInSupabase({ id, status: 'done' } as any);
+        await refreshData({ manual: true });
+      } finally {
+        setActionPendingId('');
+      }
+    };
+
+    window.addEventListener('click', handleTileClick, true);
+    window.addEventListener('closeflow:today:mark-task-done', handleTaskDone as EventListener);
+    return () => {
+      window.removeEventListener('click', handleTileClick, true);
+      window.removeEventListener('closeflow:today:mark-task-done', handleTaskDone as EventListener);
+    };
+  }, [refreshData]);
+
+  useEffect(() => {
+    const title = getFb4TodayTasksSectionTitle(data.tasks);
+    const header = getTodaySectionHeaderElement('tasks');
+    const titleElement = header?.querySelector('h2');
+    if (titleElement && titleElement.textContent !== title) titleElement.textContent = title;
+    normalizeFb4TodayActionClusterOrder();
+  }, [data.tasks, expandedSection, activeTodaySection, collapsedSections, visibleTodaySections, todayViewOpen, manualRefreshing]);
 
   const todayKey = localDateKey();
   const next7EndKey = addDaysKey(7);

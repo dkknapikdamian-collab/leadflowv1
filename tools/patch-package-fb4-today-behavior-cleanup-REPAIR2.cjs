@@ -1,0 +1,10 @@
+const fs = require('fs');
+const path = require('path');
+const pkgPath = path.join(process.cwd(), 'package.json');
+let raw = fs.readFileSync(pkgPath, 'utf8');
+raw = raw.replace(/^\uFEFF/, '').replace(/^ï»¿/, '');
+const pkg = JSON.parse(raw);
+pkg.scripts = pkg.scripts || {};
+pkg.scripts['check:closeflow-fb4-today-behavior-cleanup'] = 'node scripts/check-closeflow-fb4-today-behavior-cleanup.cjs';
+fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n');
+console.log('CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP_REPAIR2_PACKAGE_OK');
