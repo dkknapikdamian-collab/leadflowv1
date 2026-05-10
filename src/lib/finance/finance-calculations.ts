@@ -8,7 +8,7 @@ import type {
   FinanceSummaryInput,
   PaymentStatus,
   PaymentType,
-} from './finance-types';
+} from './finance-types.js';
 
 export function normalizeFinanceNumber(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;

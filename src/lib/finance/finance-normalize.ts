@@ -11,8 +11,8 @@ import {
   type FinancePayment,
   type PaymentStatus,
   type PaymentType,
-} from './finance-types';
-import { clampFinanceAmount, normalizeCommissionPercent } from './finance-calculations';
+} from './finance-types.js';
+import { clampFinanceAmount, normalizeCommissionPercent } from './finance-calculations.js';
 
 type RawFinanceRecord = Record<string, unknown>;
 
