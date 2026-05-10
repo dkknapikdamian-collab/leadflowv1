@@ -1,25 +1,47 @@
 import type { ComponentPropsWithoutRef } from 'react';
 
 import { cn } from '../../lib/utils';
-import { resolveEntityIcon, type CloseflowEntityIconName } from './icon-registry';
+import { ENTITY_ICON_MAP, resolveEntityIcon, type CloseflowEntityIconName } from './icon-registry';
 
-export type EntityIconProps = Omit<ComponentPropsWithoutRef<'svg'>, 'ref'> & {
-  entity: CloseflowEntityIconName;
+export type EntityIconSize = 'sm' | 'md' | 'lg';
+export type EntityIconTone = 'default' | 'soft' | 'strong';
+
+export type EntityIconProps = Omit<ComponentPropsWithoutRef<'span'>, 'children'> & {
+  entity: keyof typeof ENTITY_ICON_MAP;
+  size?: EntityIconSize;
+  tone?: EntityIconTone;
   label?: string;
   decorative?: boolean;
 };
 
-export function EntityIcon({ entity, label, decorative = true, className, ...props }: EntityIconProps) {
-  const Icon = resolveEntityIcon(entity);
+export function EntityIcon({
+  entity,
+  size = 'md',
+  tone = 'default',
+  label,
+  decorative = true,
+  className,
+  ...props
+}: EntityIconProps) {
+  const Icon = resolveEntityIcon(entity as CloseflowEntityIconName);
   return (
-    <Icon
-      className={cn('cf-entity-icon', 'cf-entity-icon-' + entity, className)}
+    <span
+      className={cn(
+        'cf-entity-icon',
+        'cf-entity-icon-' + entity,
+        'cf-entity-icon-size-' + size,
+        'cf-entity-icon-tone-' + tone,
+        className,
+      )}
       data-cf-entity-icon={entity}
+      data-cf-entity-icon-size={size}
+      data-cf-entity-icon-tone={tone}
       aria-hidden={decorative ? true : undefined}
       aria-label={!decorative ? (label || entity) : undefined}
-      focusable="false"
       {...props}
-    />
+    >
+      <Icon className="cf-entity-icon-svg" focusable="false" aria-hidden="true" />
+    </span>
   );
 }
 
@@ -34,3 +56,7 @@ export function CommissionEntityIcon(props: Omit<EntityIconProps, 'entity'>) { r
 export function AiEntityIcon(props: Omit<EntityIconProps, 'entity'>) { return <EntityIcon entity="ai" {...props} />; }
 export function TemplateEntityIcon(props: Omit<EntityIconProps, 'entity'>) { return <EntityIcon entity="template" {...props} />; }
 export function NotificationEntityIcon(props: Omit<EntityIconProps, 'entity'>) { return <EntityIcon entity="notification" {...props} />; }
+export function SettingsEntityIcon(props: Omit<EntityIconProps, 'entity'>) { return <EntityIcon entity="settings" {...props} />; }
+export function BillingEntityIcon(props: Omit<EntityIconProps, 'entity'>) { return <EntityIcon entity="billing" {...props} />; }
+
+/* CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B_API EntityIcon: entity, size?: 'sm' | 'md' | 'lg', tone?: 'default' | 'soft' | 'strong' */

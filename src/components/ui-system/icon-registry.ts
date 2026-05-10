@@ -6,29 +6,18 @@ import {
   Briefcase,
   Calendar,
   ClipboardList,
+  CreditCard,
   FileText,
+  Settings,
   Sparkles,
   Target,
   UserRound,
   Wallet,
 } from 'lucide-react';
 
-export type CloseflowEntityIconName =
-  | 'client'
-  | 'lead'
-  | 'case'
-  | 'task'
-  | 'event'
-  | 'activity'
-  | 'payment'
-  | 'commission'
-  | 'ai'
-  | 'template'
-  | 'notification';
-
 export const CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B = 'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B';
 
-export const CLOSEFLOW_ENTITY_ICON_REGISTRY: Record<CloseflowEntityIconName, LucideIcon> = {
+export const ENTITY_ICON_MAP = {
   client: UserRound,
   lead: Target,
   case: Briefcase,
@@ -40,8 +29,25 @@ export const CLOSEFLOW_ENTITY_ICON_REGISTRY: Record<CloseflowEntityIconName, Luc
   ai: Sparkles,
   template: FileText,
   notification: Bell,
-};
+  settings: Settings,
+  billing: CreditCard,
+} satisfies Record<string, LucideIcon>;
+
+export type CloseflowEntityIconName = keyof typeof ENTITY_ICON_MAP;
+
+/**
+ * Backward-compatible alias for code written before VS-2B was tightened.
+ * New code should use ENTITY_ICON_MAP directly.
+ */
+export const CLOSEFLOW_ENTITY_ICON_REGISTRY = ENTITY_ICON_MAP;
 
 export function resolveEntityIcon(entity: CloseflowEntityIconName): LucideIcon {
-  return CLOSEFLOW_ENTITY_ICON_REGISTRY[entity] || CLOSEFLOW_ENTITY_ICON_REGISTRY.activity;
+  return ENTITY_ICON_MAP[entity] || ENTITY_ICON_MAP.activity;
 }
+
+/* CLOSEFLOW_ENTITY_ICON_MAP_SINGLE_SOURCE_OF_TRUTH
+   To change the client icon globally:
+   1. change client: UserRound to another lucide icon in ENTITY_ICON_MAP,
+   2. keep the entity key "client",
+   3. do not edit page-level imports.
+*/

@@ -1,9 +1,9 @@
 /* CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B */
 :root {
-  --cf-entity-icon-size-xs: 0.875rem;
   --cf-entity-icon-size-sm: 1rem;
   --cf-entity-icon-size-md: 1.25rem;
   --cf-entity-icon-size-lg: 1.5rem;
+
   --cf-entity-icon-client: var(--cf-icon-client, #2563eb);
   --cf-entity-icon-lead: var(--cf-icon-lead, #7c3aed);
   --cf-entity-icon-case: var(--cf-icon-case, #0f766e);
@@ -15,13 +15,81 @@
   --cf-entity-icon-ai: var(--cf-icon-ai, #7c3aed);
   --cf-entity-icon-template: var(--cf-icon-template, #334155);
   --cf-entity-icon-notification: var(--cf-status-warning, #d97706);
+  --cf-entity-icon-settings: var(--cf-icon-settings, #475569);
+  --cf-entity-icon-billing: var(--cf-icon-billing, #0f766e);
 }
 
 .cf-entity-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  color: currentColor;
+  line-height: 1;
+}
+
+.cf-entity-icon-svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+}
+
+.cf-entity-icon-size-sm {
   width: var(--cf-entity-icon-size-sm);
   height: var(--cf-entity-icon-size-sm);
-  flex: 0 0 auto;
-  stroke: currentColor;
+}
+
+.cf-entity-icon-size-md {
+  width: var(--cf-entity-icon-size-md);
+  height: var(--cf-entity-icon-size-md);
+}
+
+.cf-entity-icon-size-lg {
+  width: var(--cf-entity-icon-size-lg);
+  height: var(--cf-entity-icon-size-lg);
+}
+
+.cf-entity-icon-tone-default {
+  color: currentColor;
+}
+
+.cf-entity-icon-tone-soft {
+  width: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+  height: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 10%, transparent);
+  color: currentColor;
+}
+
+.cf-entity-icon-tone-soft.cf-entity-icon-size-sm {
+  width: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+  height: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+}
+
+.cf-entity-icon-tone-soft.cf-entity-icon-size-lg {
+  width: calc(var(--cf-entity-icon-size-lg) + 1rem);
+  height: calc(var(--cf-entity-icon-size-lg) + 1rem);
+}
+
+.cf-entity-icon-tone-strong {
+  width: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+  height: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+  border-radius: 999px;
+  background: currentColor;
+}
+
+.cf-entity-icon-tone-strong .cf-entity-icon-svg {
+  color: #fff;
+}
+
+.cf-entity-icon-tone-strong.cf-entity-icon-size-sm {
+  width: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+  height: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+}
+
+.cf-entity-icon-tone-strong.cf-entity-icon-size-lg {
+  width: calc(var(--cf-entity-icon-size-lg) + 1rem);
+  height: calc(var(--cf-entity-icon-size-lg) + 1rem);
 }
 
 .cf-entity-icon-client { color: var(--cf-entity-icon-client); }
@@ -35,3 +103,5 @@
 .cf-entity-icon-ai { color: var(--cf-entity-icon-ai); }
 .cf-entity-icon-template { color: var(--cf-entity-icon-template); }
 .cf-entity-icon-notification { color: var(--cf-entity-icon-notification); }
+.cf-entity-icon-settings { color: var(--cf-entity-icon-settings); }
+.cf-entity-icon-billing { color: var(--cf-entity-icon-billing); }
