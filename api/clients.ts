@@ -1,3 +1,4 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 /* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from '../src/server/_request-scope.js';
@@ -5,6 +6,8 @@ import { normalizeClientContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
 const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at']);
+
+const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';

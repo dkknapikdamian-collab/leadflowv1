@@ -1,5 +1,7 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_VERCEL_HOBBY_FUNCTION_LIMIT_ENTITY_CONFLICTS_V1
 // CLOSEFLOW_ENTITY_CONFLICTS_API_V1
+// CLOSEFLOW_A2_ENTITY_CONFLICTS_MATCH_FIELDS: normalizes email/phone/name/company and returns matchFields
 import { selectFirstAvailable } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { assertWorkspaceWriteAccess } from './_access-gate.js';
@@ -50,13 +52,13 @@ function buildLeadCandidate(row: Record<string, unknown>, input: Record<string, 
   const linkedCaseId = asText(row.linked_case_id || row.linkedCaseId || row.case_id || row.caseId);
   const status = asText(row.status) || 'new';
   const id = asText(row.id); if (!id) return null;
-  return { id, entityType: 'lead', label: safeField(row, 'name', 'company') || 'Lead bez nazwy', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), status, statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, matchFields: matches, canRestore: (reason === 'trash' || reason === 'archived') && !linkedCaseId && status !== 'moved_to_service', url: '/leads/' + encodeURIComponent(id) };
+  return { id, entityType: 'lead', label: safeField(row, 'name', 'company') || 'Lead bez nazwy', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), status, statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, matchFields: matches, matches, canRestore: (reason === 'trash' || reason === 'archived') && !linkedCaseId && status !== 'moved_to_service', url: '/leads/' + encodeURIComponent(id) };
 }
 function buildClientCandidate(row: Record<string, unknown>, input: Record<string, unknown>) {
   const matches = matchFields(input, row); if (!matches.length) return null;
   const reason = clientHiddenReason(row);
   const id = asText(row.id); if (!id) return null;
-  return { id, entityType: 'client', label: safeField(row, 'name', 'company') || 'Klient', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), status: asText(row.status) || '', statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, matchFields: matches, canRestore: reason === 'trash', url: '/clients/' + encodeURIComponent(id) };
+  return { id, entityType: 'client', label: safeField(row, 'name', 'company') || 'Klient', name: safeField(row, 'name'), company: safeField(row, 'company'), email: safeField(row, 'email'), phone: safeField(row, 'phone'), status: asText(row.status) || '', statusLabel: hiddenReasonLabel(reason), hiddenReason: reason, matchFields: matches, matches, canRestore: reason === 'trash', url: '/clients/' + encodeURIComponent(id) };
 }
 function sortCandidates(a: any, b: any) {
   const score = (candidate: any) => { const fields = Array.isArray(candidate.matchFields) ? candidate.matchFields : []; let value = 0; if (fields.includes('email')) value += 100; if (fields.includes('phone')) value += 90; if (fields.includes('name')) value += 20; if (fields.includes('company')) value += 10; if (candidate.hiddenReason !== 'active') value += 5; return value; };
@@ -74,6 +76,6 @@ export default async function entityConflictsHandler(req: any, res: any) {
     const leadRows = await safeRows(withWorkspaceFilter('leads?select=id,name,company,email,phone,status,lead_visibility,sales_outcome,linked_case_id,client_id,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId));
     const clientRows = await safeRows(withWorkspaceFilter('clients?select=id,name,company,email,phone,archived_at,updated_at,created_at&order=updated_at.desc.nullslast&limit=1000', workspaceId));
     const candidates = [...leadRows.map((row) => buildLeadCandidate(row, input)).filter(Boolean), ...clientRows.map((row) => buildClientCandidate(row, input)).filter(Boolean)].sort(sortCandidates).slice(0, 12);
-    res.status(200).json({ ok: true, candidates });
+    res.status(200).json({ ok: true, candidates, conflicts: candidates });
   } catch (error: any) { res.status(500).json({ error: error?.message || 'ENTITY_CONFLICTS_FAILED' }); }
 }

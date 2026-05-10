@@ -1,3 +1,4 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import {
   type FormEvent,
   type MouseEvent,
@@ -183,6 +184,7 @@ const STAGE35_MONEY_KEYS = [
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENTS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 const CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FULL = 'lead and client duplicate warning modal before write';
+const CLOSEFLOW_A2_CLIENT_DUPLICATE_WARNING_BEFORE_WRITE = 'client duplicate warning before write';
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -405,7 +407,8 @@ export default function Clients() {
   const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '' }); };
 
   const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
-    await createClientInSupabase({ ...preparedClient, forceDuplicate: Boolean(options?.forceDuplicate), workspaceId: requireWorkspaceId(workspace) });
+    // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
+    await createClientInSupabase({ ...preparedClient, allowDuplicate: Boolean(options?.forceDuplicate), workspaceId: requireWorkspaceId(workspace) });
     toast.success('Klient dodany');
     setIsCreateOpen(false);
     resetNewClientForm();

@@ -1,3 +1,4 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import { findWorkspaceId, insertWithVariants, selectFirstAvailable, supabaseRequest, updateById, updateWhere } from '../src/server/_supabase.js';
 import { asText, assertWorkspaceOwnerOrAdmin, requireAdminAuthContext, requireRequestIdentity, resolveRequestWorkspaceId, getRequestIdentity } from '../src/server/_request-scope.js';
 import { assertWorkspaceAiAllowed, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
@@ -11,6 +12,7 @@ import aiDraftsHandler from '../src/server/ai-drafts.js';
 import draftsHandler from '../src/server/drafts.js';
 import assistantContextHandler from '../src/server/assistant-context.js';
 import entityConflictsHandler from '../src/server/entity-conflicts-handler.js';
+// CLOSEFLOW_A2_API_SYSTEM_ENTITY_CONFLICTS_FINALIZER: kind=entity-conflicts delegates to normalized lead/client conflict search.
 import assistantQueryHandler from '../src/server/assistant-query-handler.js';
 import recordsHandler from '../src/server/records.js';
 import paymentsHandler from '../src/server/payments.js';

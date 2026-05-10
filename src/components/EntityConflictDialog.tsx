@@ -1,4 +1,6 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_ENTITY_CONFLICT_DIALOG_V1
+// CLOSEFLOW_A2_DUPLICATE_WARNING_ACTIONS: Pokaż / Przywróć / Dodaj mimo to / Anuluj
 // CLOSEFLOW_FIN9_ENTITY_CONFLICT_CASE_SUPPORT
 // CLOSEFLOW_CONFLICT_DELETE_COMPANY_NOT_NULL_V25
 import { AlertTriangle } from 'lucide-react';
@@ -53,7 +55,7 @@ type EntityConflictDialogProps = {
 export function EntityConflictDialog({
   open,
   title = 'Możliwy duplikat w bazie',
-  description = 'Znaleziono podobny rekord. Sprawdź go przed zapisem, żeby nie tworzyć przypadkowego duplikatu.',
+  description = 'Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to.',
   candidates,
   createAnywayLabel = 'Dodaj mimo to',
   onOpenChange,

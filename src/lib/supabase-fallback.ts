@@ -1,3 +1,4 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
 import { getSupabaseAccessToken } from './supabase-auth';
@@ -31,7 +32,7 @@ type MeResponse = { workspace: { id: string; ownerId?: string | null; planId?: s
 
 export type EntityConflictCandidate = {
   id: string;
-  entityType: 'lead' | 'client';
+  entityType: 'lead' | 'client' | 'case';
   label: string;
   company?: string | null;
   email?: string | null;
@@ -42,6 +43,7 @@ export type EntityConflictCandidate = {
   canRestore?: boolean;
   route?: string;
   matches: Array<'email' | 'phone' | 'name' | 'company'>;
+  matchFields?: Array<'email' | 'phone' | 'name' | 'company'>;
   reason: string;
 };
 
@@ -273,10 +275,19 @@ function sanitizeLeadCompanyForNotNull(input: LeadInsertInput): LeadInsertInput 
   return { ...input, company: typeof input.company === 'string' ? input.company.trim() : '' };
 }
 
+
+function normalizeDuplicateWriteOverride<T extends Record<string, unknown>>(input: T): T & { allowDuplicate: boolean } {
+  // CLOSEFLOW_A2_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
+  const next: Record<string, unknown> = { ...(input || {}) };
+  if (next.allowDuplicate === undefined) next.allowDuplicate = Boolean(next.forceDuplicate);
+  delete next.forceDuplicate;
+  return next as T & { allowDuplicate: boolean };
+}
+
 export function isSupabaseConfigured() { return Boolean(getSupabaseConfig()); }
 export async function findEntityConflictsInSupabase(input: EntityConflictCheckInput) { return callApi<{ ok: boolean; candidates: EntityConflictCandidate[]; conflicts?: EntityConflictCandidate[] }>('/api/system?kind=entity-conflicts', { method: 'POST', body: JSON.stringify(input) }); }
 export async function insertLeadToSupabase(input: LeadInsertInput) {
-  return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(sanitizeLeadCompanyForNotNull(input)) });
+  return callApi<SupabaseInsertResult>('/api/leads', { method: 'POST', body: JSON.stringify(sanitizeLeadCompanyForNotNull(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>) as unknown as LeadInsertInput)) });
 }
 export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
 export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {
@@ -287,7 +298,7 @@ export async function fetchClientsFromSupabase() {
   return callApi<Record<string, unknown>[]>('/api/clients').then(normalizeClientListContract);
 }
 export async function fetchClientByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row)); }
-export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(input) }); }
+export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>)) }); }
 export async function updateClientInSupabase(input: ClientUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteClientFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/clients?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function fetchServiceProfilesFromSupabase(params?: { includeArchived?: boolean }) {

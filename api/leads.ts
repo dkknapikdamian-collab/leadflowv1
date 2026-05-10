@@ -1,3 +1,4 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, supabaseRequest, updateById, updateByIdScoped, deleteByIdScoped } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { buildLeadMovedToServicePayload } from '../src/server/_lead-service.js';
@@ -89,6 +90,8 @@ const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activiti
   cases: OPTIONAL_CASE_COLUMNS,
   activities: OPTIONAL_ACTIVITY_COLUMNS,
 };
+
+const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';

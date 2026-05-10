@@ -1,3 +1,4 @@
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import {
   useCallback,
   useEffect,
@@ -282,6 +283,7 @@ export default function Leads() {
     isAtRisk: false,
   });
 
+  const CLOSEFLOW_A2_LEAD_DUPLICATE_WARNING_BEFORE_WRITE = 'lead duplicate warning before write';
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
@@ -406,6 +408,7 @@ export default function Leads() {
     delete sanitizedPreparedLead.linked_case_id;
     delete sanitizedPreparedLead.caseId;
     delete sanitizedPreparedLead.case_id;
+    // CLOSEFLOW_A2_LEAD_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
     await insertLeadToSupabase({ ...sanitizedPreparedLead, allowDuplicate: Boolean(options?.forceDuplicate), ownerId: workspace?.ownerId, workspaceId: requireWorkspaceId(workspace) });
     setSearchQuery('');
     setQuickFilter('all');
