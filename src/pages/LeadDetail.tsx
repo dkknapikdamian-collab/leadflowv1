@@ -12,6 +12,7 @@ const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dicta
 const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obs┼éug─Ö | Ten temat jest ju┼╝ w obs┼éudze | Otw├│rz spraw─Ö';
 const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
+const CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP_V1 = 'Lead status visible in header, duplicated right-rail status card removed';
 import {
   useEffect,
   useMemo,
@@ -1433,6 +1434,12 @@ useEffect(() => {
             </button>
             <div className="lead-detail-title-row">
               <h1>{getLeadName(lead)}</h1>
+              <span
+                className={`lead-detail-pill ${statusClass(lead?.status)}`}
+                data-fb3-lead-status-header-pill="true"
+              >
+                {statusLabel(lead?.status)}
+              </span>
               <span className={`lead-detail-pill ${statusClass(String(lead.status || 'new'))}`}>{statusLabel(String(lead.status || 'new'))}</span>
             </div>
             <div className="lead-detail-header-meta">
@@ -1614,7 +1621,6 @@ useEffect(() => {
           {!leadInService ? (
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Status leada</h2></div>
               <span className={`lead-detail-pill ${statusClass(String(lead.status || 'new'))}`}>{statusLabel(String(lead.status || 'new'))}</span>
               <p>{leadInService ? 'Lead jest ju┼╝ ┼║r├│d┼éem historii. Pracuj dalej w sprawie.' : 'Lead aktywny. Mo┼╝esz prowadzi─ç kontakt sprzeda┼╝owy.'}</p>
             </section>
