@@ -1,32 +1,35 @@
+import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import {
+  EntityIcon,
+  NotificationEntityIcon,
+  OperatorMetricTiles,
+  type OperatorMetricTileItem
+} from '../components/ui-system';
+
+import { useEffect, useMemo, useState } from 'react';
+
+import {
+  ArrowUpRight,
   CalendarClock,
   Check,
   CheckCircle2,
   Clock3,
-  EntityIcon,
   Filter,
   Link2,
   Mail,
-  NotificationEntityIcon,
-  OperatorMetricTiles,
   RotateCcw,
   Search,
   Settings2,
   ShieldAlert,
-  Trash2,
-  type OperatorMetricTileItem
-} from '../components/ui-system';
-import {
-  useEffect,
-  useMemo,
-  useState } from 'react';
-import {
-  ArrowUpRight
+  Trash2
 } from 'lucide-react';
+
 import { Link } from 'react-router-dom';
+
 import Layout from '../components/Layout';
-import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
+
 import { useWorkspace } from '../hooks/useWorkspace';
+
 import {
   buildTodayNotificationItems,
   clearNotificationLog,
@@ -42,10 +45,13 @@ import {
   getNotificationSnoozedUntilByKey,
   type NotificationItem,
   type NotificationLogItem,
-  type NotificationSnoozeMode,
+  type NotificationSnoozeMode
 } from '../lib/notifications';
+
 import { buildReminderCustomDate } from '../lib/reminders';
+
 import { toast } from 'sonner';
+
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 

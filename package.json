@@ -604,7 +604,9 @@
     "check:closeflow-fin5-encoding-cleanup-final": "node scripts/check-closeflow-fin5-encoding-cleanup-final.cjs",
     "check:closeflow-fin5-byte-encoding-repair": "node scripts/check-closeflow-fin5-byte-encoding-repair.cjs",
     "check:closeflow-api0-vercel-hobby-functions": "node scripts/check-closeflow-api0-vercel-hobby-functions.cjs",
-    "check:closeflow-tsc-import-regression": "node scripts/check-closeflow-tsc-import-regression.cjs"
+    "check:closeflow-tsc-import-regression-rollback-final": "node scripts/check-closeflow-tsc-import-regression-rollback-final.cjs",
+    "check:closeflow-tsc-import-regression-final2": "node scripts/check-closeflow-tsc-import-regression-rollback-final.cjs",
+    "check:closeflow-calendar-bundle-import-source": "node scripts/check-closeflow-calendar-bundle-import-source.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

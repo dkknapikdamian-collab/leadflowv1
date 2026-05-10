@@ -1,30 +1,38 @@
-import {
-  CheckSquare,
-  ChevronRight,
-  EntityIcon,
-  NotificationEntityIcon
-} from '../components/ui-system';
+import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { NotificationEntityIcon } from '../components/ui-system';
+
+import { EntityIcon } from '../components/ui-system';
+
 import {
   useState,
-  FormEvent,
-  Loader2,
-  Repeat,
-  subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
-import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
-import {
-  ChevronLeft,
-  Trash2,
   useEffect,
+  FormEvent,
   useMemo,
   useRef
 } from 'react';
+
 import { auth } from '../firebase';
+
 import { useWorkspace } from '../hooks/useWorkspace';
+
 import Layout from '../components/Layout';
-import { consumeGlobalQuickAction
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+
+import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
+
+import { Button } from '../components/ui/button';
+
+import { Badge } from '../components/ui/badge';
+
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Repeat,
+  CheckSquare,
+  Trash2
 } from 'lucide-react';
+
 import {
   format,
   addMonths,
@@ -41,10 +49,15 @@ import {
   addDays,
   addHours
 } from 'date-fns';
+
 import { pl } from 'date-fns/locale';
+
 import { toast } from 'sonner';
+
 import { Link } from 'react-router-dom';
+
 import { useSearchParams } from 'react-router-dom';
+
 import {
   Dialog,
   DialogContent,
@@ -52,9 +65,13 @@ import {
   DialogTitle,
   DialogFooter
 } from '../components/ui/dialog';
+
 import { Input } from '../components/ui/input';
+
 import { Label } from '../components/ui/label';
+
 import { TopicContactPicker } from '../components/topic-contact-picker';
+
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -70,6 +87,7 @@ import {
   toDateTimeLocalValue,
   type ScheduleEntry
 } from '../lib/scheduling';
+
 import {
   EVENT_TYPES,
   PRIORITY_OPTIONS,
@@ -78,15 +96,18 @@ import {
   REMINDER_MODE_OPTIONS,
   TASK_TYPES
 } from '../lib/options';
-import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+
 import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+
 import {
   buildTopicContactOptions,
   findTopicContactOption,
   resolveTopicContactLink,
   type TopicContactOption
 } from '../lib/topic-contact';
+
 import { requireWorkspaceId } from '../lib/workspace-context';
+
 import '../styles/visual-stage22-event-form-vnext.css';
 import {
   deleteEventFromSupabase,
@@ -99,8 +120,12 @@ import {
   updateEventInSupabase,
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
+
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+
+
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
