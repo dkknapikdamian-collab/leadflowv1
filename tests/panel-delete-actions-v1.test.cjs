@@ -39,10 +39,13 @@ test('Panel trash actions keep cards navigable through Link wrappers', () => {
   const clients = read('src/pages/Clients.tsx');
   const leads = read('src/pages/Leads.tsx');
 
-  assert.match(clients, /className="relative group\/client-card"/);
-  assert.match(clients, /className="block"/);
-  assert.match(leads, /className="relative group\/lead-row"/);
+  assert.match(clients, /<Link\s+to=\{`\/clients\/\$\{client\.id\}`\}\s+className="block"/);
+  assert.match(clients, /event\.preventDefault\(\)/);
+  assert.match(clients, /event\.stopPropagation\(\)/);
+  assert.match(leads, /<Link[\s\S]{0,360}to=\{`\/leads\//);
   assert.match(leads, /className="block"/);
+  assert.match(leads, /event\.preventDefault\(\)/);
+  assert.match(leads, /event\.stopPropagation\(\)/);
 });
 
 test('Clients and leads expose trash view toggles', () => {
