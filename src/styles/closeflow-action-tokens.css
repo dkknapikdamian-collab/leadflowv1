@@ -162,3 +162,71 @@
     width: 100%;
   }
 }
+
+
+/* CLOSEFLOW_CASE_TRASH_ACTION_TOKENS_2026_05_11
+ * Shared trash icon source of truth. Change these variables once and all trash actions follow.
+ */
+:root {
+  --cf-trash-icon-color: #dc2626;
+  --cf-trash-icon-hover-color: #b91c1c;
+  --cf-trash-icon-bg: rgba(220, 38, 38, 0.08);
+  --cf-trash-icon-hover-bg: rgba(220, 38, 38, 0.14);
+  --cf-trash-icon-border: rgba(220, 38, 38, 0.22);
+  --cf-trash-icon-hover-border: rgba(220, 38, 38, 0.34);
+}
+
+.cf-trash-action-button {
+  color: var(--cf-trash-icon-color) !important;
+  border-color: var(--cf-trash-icon-border) !important;
+  background: var(--cf-trash-icon-bg) !important;
+}
+
+.cf-trash-action-button:hover,
+.cf-trash-action-button:focus-visible {
+  color: var(--cf-trash-icon-hover-color) !important;
+  border-color: var(--cf-trash-icon-hover-border) !important;
+  background: var(--cf-trash-icon-hover-bg) !important;
+}
+
+.cf-trash-action-icon,
+.cf-trash-action-button .cf-trash-action-icon {
+  width: 1rem;
+  height: 1rem;
+  color: currentColor;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+.case-row-title-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.cf-case-detail-delete-shortcut {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 0.75rem;
+}
+
+.cf-case-detail-delete-shortcut .cf-trash-action-button {
+  width: fit-content;
+}
+
+@media (max-width: 640px) {
+  .case-row-title-line {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .cf-case-detail-delete-shortcut {
+    justify-content: stretch;
+  }
+
+  .cf-case-detail-delete-shortcut .cf-trash-action-button {
+    width: 100%;
+  }
+}

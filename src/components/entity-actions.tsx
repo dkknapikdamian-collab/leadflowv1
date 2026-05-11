@@ -122,6 +122,38 @@ export const EntityActionButton = React.forwardRef<HTMLButtonElement, EntityActi
 
 EntityActionButton.displayName = 'EntityActionButton';
 
+export const CLOSEFLOW_TRASH_ACTION_SOURCE_OF_TRUTH = {
+  owner: 'src/components/entity-actions.tsx',
+  buttonClass: 'cf-trash-action-button',
+  iconClass: 'cf-trash-action-icon',
+  tokenColor: '--cf-trash-icon-color',
+  reason: 'one source of truth for trash icon action color and shape',
+} as const;
+
+export function trashActionButtonClass(className?: string) {
+  return cn('cf-trash-action-button', className);
+}
+
+export function trashActionIconClass(className?: string) {
+  return cn('cf-trash-action-icon', className);
+}
+
+export const EntityTrashButton = React.forwardRef<HTMLButtonElement, Omit<EntityActionButtonProps, 'tone' | 'iconOnly'>>(
+  ({ className, ...props }, ref) => (
+    <EntityActionButton
+      ref={ref}
+      tone="danger"
+      iconOnly
+      className={trashActionButtonClass(className)}
+      data-cf-trash-action="true"
+      {...props}
+    />
+  )
+);
+
+EntityTrashButton.displayName = 'EntityTrashButton';
+
+
 export function EntityActionIcon({
   tone = 'neutral',
   className,

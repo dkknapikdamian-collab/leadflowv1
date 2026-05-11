@@ -55,7 +55,8 @@ import {
 import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import { EntityActionButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';
+import { ConfirmDialog } from '../components/confirm-dialog';
+import { EntityActionButton, EntityTrashButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
@@ -87,6 +88,7 @@ import {
   updateTaskInSupabase,
   fetchLeadByIdFromSupabase,
 } from '../lib/supabase-fallback';
+import { deleteCaseWithRelations } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
@@ -727,6 +729,20 @@ function CaseDetailLoadingState() {
           </div>
         </section>
       </main>
+      <ConfirmDialog
+        data-case-detail-delete-confirm="true"
+        open={deleteCaseOpen}
+        onOpenChange={(open) => {
+          if (!open && !deleteCasePending) setDeleteCaseOpen(false);
+        }}
+        title="Usunąć sprawę?"
+        description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
+        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
+        cancelLabel="Nie"
+        confirmTone="destructive"
+        pending={deleteCasePending}
+        onConfirm={handleConfirmDeleteCaseRecord}
+      />
     </Layout>
   );
 }
@@ -745,6 +761,8 @@ export default function CaseDetail() {
   const [payments, setPayments] = useState<any[]>([]);
   const [sourceLead, setSourceLead] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [deleteCaseOpen, setDeleteCaseOpen] = useState(false);
+  const [deleteCasePending, setDeleteCasePending] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
@@ -1392,6 +1410,22 @@ export default function CaseDetail() {
     activities: activities,
   }), [caseData, activities, tasks, events, payments]);
 
+  async function handleConfirmDeleteCaseRecord() {
+    if (!caseData?.id) return;
+
+    try {
+      setDeleteCasePending(true);
+      await deleteCaseWithRelations(caseData.id);
+      toast.success('Sprawa usunięta');
+      setDeleteCaseOpen(false);
+      navigate('/cases');
+    } catch (error: any) {
+      toast.error(`Błąd: ${error?.message || 'Nie udało się usunąć sprawy.'}`);
+    } finally {
+      setDeleteCasePending(false);
+    }
+  }
+
   if (loading) {
     return (
       <Layout>
@@ -1436,6 +1470,22 @@ export default function CaseDetail() {
 
   return (
     <Layout>
+      {caseData?.id ? (
+        <div className="cf-case-detail-delete-shortcut">
+          <EntityTrashButton
+            type="button"
+            variant="ghost"
+            data-case-detail-delete-action="true"
+            aria-label="Usuń sprawę"
+            title="Usuń sprawę"
+            disabled={deleteCasePending}
+            onClick={() => setDeleteCaseOpen(true)}
+          >
+            {deleteCasePending ? <Loader2 className="cf-trash-action-icon h-4 w-4 animate-spin" /> : <Trash2 className="cf-trash-action-icon h-4 w-4" />}
+            Usuń sprawę
+          </EntityTrashButton>
+        </div>
+      ) : null}
       <main className="case-detail-vnext-page">
         <header className="case-detail-header">
           <div className="case-detail-header-copy">

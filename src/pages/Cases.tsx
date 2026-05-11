@@ -26,7 +26,7 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
-import { modalFooterClass } from '../components/entity-actions';
+import { EntityTrashButton, modalFooterClass } from '../components/entity-actions';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -747,7 +747,25 @@ export default function Cases() {
                     <div key={record.id} className="row case-row">
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
-                        <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
+                        <span className="case-row-title-line">
+                          <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
+                          <EntityTrashButton
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            data-case-row-delete-action="true"
+                            aria-label="Usuń sprawę"
+                            title="Usuń sprawę"
+                            disabled={deletePending && caseToDelete?.id === record.id}
+                            onClick={(event) => {
+                              event.preventDefault();
+                              event.stopPropagation();
+                              setCaseToDelete(record);
+                            }}
+                          >
+                            {deletePending && caseToDelete?.id === record.id ? <Loader2 className="cf-trash-action-icon h-4 w-4 animate-spin" /> : <Trash2 className="cf-trash-action-icon h-4 w-4" />}
+                          </EntityTrashButton>
+                        </span>
                         <span className="cf-list-row-meta">
                           <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>
                           <span className="sub">{lifecycle.headline} · {metaSuffix}</span>

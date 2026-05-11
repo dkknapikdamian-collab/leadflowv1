@@ -177,6 +177,8 @@ runQuiet('case detail loading reference', process.execPath, ['scripts/check-clos
 
 runQuiet('today header actions stack', process.execPath, ['scripts/check-closeflow-today-header-actions-stack.cjs']);
 
+runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-trash-actions.cjs']);
+
 runNpmScript('production build', 'build');
 
 for (const relativePath of requiredTests) {
