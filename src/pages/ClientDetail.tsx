@@ -227,7 +227,7 @@ function asDate(value: unknown) {
 }
 function formatDate(value: unknown) {
   const parsed = asDate(value);
-  if (!parsed) return 'Brak daty';
+  if (!parsed) return '';
   return parsed.toLocaleDateString('pl-PL', {
     day: '2-digit',
     month: '2-digit',
@@ -236,7 +236,7 @@ function formatDate(value: unknown) {
 }
 function formatDateTime(value: unknown) {
   const parsed = asDate(value);
-  if (!parsed) return 'Brak daty';
+  if (!parsed) return '';
   return parsed.toLocaleString('pl-PL', {
     day: '2-digit',
     month: '2-digit',
@@ -365,6 +365,133 @@ function normalizeClientActivitiesForA1(activities: any[]) {
     : [];
 }
 
+
+const STAGE14A_CLIENT_DETAIL_NOTES_HISTORY_GUARD = 'ClientDetail shows cases first, real client notes, readable history and recent moves';
+void STAGE14A_CLIENT_DETAIL_NOTES_HISTORY_GUARD;
+
+type Stage14AActivityLike = Record<string, any>;
+
+function getClientActivityPayloadStage14A(activity: Stage14AActivityLike) {
+  return activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+}
+
+function getClientActivityTypeStage14A(activity: Stage14AActivityLike) {
+  const payload = getClientActivityPayloadStage14A(activity);
+  return String(
+    activity?.type ||
+    activity?.activityType ||
+    activity?.activity_type ||
+    activity?.eventType ||
+    activity?.event_type ||
+    payload?.type ||
+    payload?.activityType ||
+    payload?.eventType ||
+    ''
+  ).trim().toLowerCase();
+}
+
+function isTechnicalActivityFallbackStage14A(value: string) {
+  const normalized = String(value || '').trim().toLowerCase();
+  return !normalized || normalized === 'client_note' || normalized === 'activity' || normalized === 'aktywność klienta' || normalized === 'brak daty';
+}
+
+function getClientActivityBodyStage14A(activity: Stage14AActivityLike) {
+  const payload = getClientActivityPayloadStage14A(activity);
+  const candidates = [
+    payload?.note,
+    payload?.content,
+    payload?.body,
+    payload?.message,
+    payload?.description,
+    payload?.summary,
+    activity?.body,
+    activity?.message,
+    activity?.note,
+    activity?.content,
+    activity?.description,
+    activity?.summary,
+    payload?.title,
+    activity?.title,
+  ];
+  for (const candidate of candidates) {
+    const text = asText(candidate);
+    if (text && !isTechnicalActivityFallbackStage14A(text)) return text;
+  }
+  return 'Brak treści aktywności';
+}
+
+function formatClientActivityTitleStage14A(activity: Stage14AActivityLike) {
+  const payload = getClientActivityPayloadStage14A(activity);
+  const type = getClientActivityTypeStage14A(activity);
+  const explicitTitle = asText(activity?.title) || asText(payload?.title);
+
+  if (explicitTitle && !isTechnicalActivityFallbackStage14A(explicitTitle)) return explicitTitle;
+  if (type.includes('note')) return 'Notatka';
+  if (type.includes('task')) return 'Zadanie';
+  if (type.includes('event') || type.includes('calendar') || type.includes('meeting')) return 'Wydarzenie';
+  if (type.includes('payment') || type.includes('finance')) return 'Płatność';
+  if (type.includes('case')) return 'Sprawa';
+  if (type.includes('lead')) return 'Lead';
+  if (type.includes('status')) return 'Zmiana statusu';
+  return 'Aktywność';
+}
+
+function formatClientActivityDateStage14A(activity: Stage14AActivityLike) {
+  const payload = getClientActivityPayloadStage14A(activity);
+  const value = activity?.happenedAt || activity?.happened_at || activity?.createdAt || activity?.created_at || activity?.updatedAt || activity?.updated_at || payload?.happenedAt || payload?.createdAt;
+  const formatted = formatDateTime(value);
+  return formatted && formatted !== 'Brak daty' ? formatted : '';
+}
+
+function formatClientActivitySourceStage14A(activity: Stage14AActivityLike) {
+  const payload = getClientActivityPayloadStage14A(activity);
+  const raw = String(
+    activity?.source ||
+    activity?.sourceType ||
+    activity?.source_type ||
+    activity?.recordType ||
+    activity?.record_type ||
+    activity?.entityType ||
+    activity?.entity_type ||
+    payload?.source ||
+    payload?.sourceType ||
+    payload?.recordType ||
+    payload?.entityType ||
+    ''
+  ).trim().toLowerCase();
+
+  if (raw === 'client' || raw === 'klient') return 'klient';
+  if (raw === 'case' || raw === 'sprawa') return 'sprawa';
+  if (raw === 'lead') return 'lead';
+  return '';
+}
+
+function isClientRelatedActivityStage14A(activity: Stage14AActivityLike, clientId: string) {
+  const payload = getClientActivityPayloadStage14A(activity);
+  const safeClientId = String(clientId || '').trim();
+  if (!safeClientId) return false;
+  return [
+    activity?.clientId,
+    activity?.client_id,
+    activity?.entityId,
+    activity?.entity_id,
+    activity?.recordId,
+    activity?.record_id,
+    payload?.clientId,
+    payload?.client_id,
+    payload?.entityId,
+    payload?.entity_id,
+    payload?.recordId,
+    payload?.record_id,
+  ].some((value) => String(value || '').trim() === safeClientId) || String(payload?.recordType || payload?.entityType || '').trim().toLowerCase() === 'client';
+}
+
+function isClientNoteActivityStage14A(activity: Stage14AActivityLike, clientId: string) {
+  const type = getClientActivityTypeStage14A(activity);
+  const body = getClientActivityBodyStage14A(activity);
+  return isClientRelatedActivityStage14A(activity, clientId) && (type.includes('note') || type === 'client_note' || Boolean(body && body !== 'Brak treści aktywności'));
+}
+
 function activityLabel(activity: any) {
   const eventType = String(activity?.eventType || activity?.activityType || 'activity');
   const title = asText(activity?.payload?.title) || asText(activity?.title);
@@ -393,7 +520,7 @@ function activityLabel(activity: any) {
     case 'ai_draft_converted':
       return title ? `Szkic zatwierdzony: ${title}` : 'Szkic zatwierdzony';
     default:
-      return title || 'Aktywność klienta';
+      return title || formatClientActivityTitleStage14A(activity);
   }
 }
 function getInitials(client: any) {
@@ -979,7 +1106,7 @@ export default function ClientDetail() {
     return () => window.removeEventListener('closeflow:context-note-saved', handleContextNoteSaved as EventListener);
   }, [client?.id]);
 
-  const [activeTab, setActiveTab] = useState<ClientTab>('summary');
+  const [activeTab, setActiveTab] = useState<ClientTab>('cases');
   const [contactEditing, setContactEditing] = useState(false);
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
   const [clientNoteListening, setClientNoteListening] = useState(false);
@@ -1615,7 +1742,7 @@ export default function ClientDetail() {
           <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
                     <div className="client-detail-card-title-row">
                       <EntityIcon entity="activity" className="h-4 w-4" />
-                      <h2>Roadmapa</h2>
+                      <h2>Ostatnie ruchy</h2>
                     </div>
                     {recentClientMovements.length ? (
                       <div className="client-detail-recent-moves-list">
@@ -1948,7 +2075,7 @@ export default function ClientDetail() {
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Historia</h2>
-                      <p>Lekka oś ostatnich ruchów powiązanych z klientem, leadami i sprawami.</p>
+                      <p>Realne ruchy powiązane z klientem, leadami i sprawami.</p>
                     </div>
                   </div>
                   <div className="client-detail-history-list">

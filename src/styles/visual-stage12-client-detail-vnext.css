@@ -3121,3 +3121,26 @@ button.client-detail-top-tile-link {
 .client-detail-vnext-page .client-detail-note-item-toolbar .client-detail-note-delete-button svg {
   stroke: #dc2626 !important;
 }
+
+
+/* STAGE14A_CLIENT_DETAIL_NOTES_HISTORY: readable one-line note/history/recent-move content */
+.client-detail-note-row p,
+.client-detail-activity-row p,
+.client-detail-recent-move-row p {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.client-detail-note-row,
+.client-detail-activity-row,
+.client-detail-recent-move-row {
+  min-width: 0;
+}
+
+.client-detail-note-list {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
