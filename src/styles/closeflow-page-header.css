@@ -151,3 +151,91 @@
     width: 100%;
   }
 }
+
+/* CLOSEFLOW_PAGE_HEADER_SOURCE_OF_TRUTH_2026_05_11_START */
+:root {
+  --cf-page-header-bg: #ffffff;
+  --cf-page-header-bg-soft: #f8fafc;
+  --cf-page-header-border: #e2e8f0;
+  --cf-page-header-title: #0f172a;
+  --cf-page-header-muted: #64748b;
+  --cf-page-header-kicker-bg: #eef2ff;
+  --cf-page-header-kicker-border: #c7d2fe;
+  --cf-page-header-kicker-text: #3730a3;
+  --cf-page-header-radius: 28px;
+  --cf-page-header-shadow: 0 14px 36px rgba(15, 23, 42, 0.055);
+}
+
+[data-closeflow-page-header-system="true"] {
+  border: 1px solid var(--cf-page-header-border) !important;
+  border-radius: var(--cf-page-header-radius) !important;
+  background:
+    radial-gradient(circle at 0% 0%, rgba(79, 70, 229, 0.055), transparent 28%),
+    linear-gradient(180deg, var(--cf-page-header-bg) 0%, var(--cf-page-header-bg-soft) 100%) !important;
+  box-shadow: var(--cf-page-header-shadow) !important;
+}
+
+[data-closeflow-page-header-copy-host="true"] {
+  min-width: 0;
+  max-width: 760px;
+}
+
+.cf-page-header-kicker,
+[data-closeflow-page-header-system="true"] .kicker,
+[data-closeflow-page-header-system="true"] .ai-drafts-kicker,
+[data-closeflow-page-header-system="true"] .activity-kicker,
+[data-closeflow-page-header-system="true"] .notifications-kicker,
+[data-closeflow-page-header-system="true"] .cf-page-hero-kicker {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  border: 1px solid var(--cf-page-header-kicker-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-page-header-kicker-bg) !important;
+  color: var(--cf-page-header-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-kicker-text) !important;
+  padding: 7px 10px !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.035em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+[data-closeflow-page-header-system="true"] h1 {
+  color: var(--cf-page-header-title) !important;
+  -webkit-text-fill-color: var(--cf-page-header-title) !important;
+}
+
+.cf-page-header-description {
+  margin: 8px 0 0 !important;
+  max-width: 760px;
+  color: var(--cf-page-header-muted) !important;
+  -webkit-text-fill-color: var(--cf-page-header-muted) !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  font-weight: 520 !important;
+}
+
+[data-closeflow-page-header-system="true"] .head-actions,
+[data-closeflow-page-header-system="true"] .ai-drafts-header-actions,
+[data-closeflow-page-header-system="true"] .activity-header-actions,
+[data-closeflow-page-header-system="true"] .notifications-header-actions,
+[data-closeflow-page-header-system="true"] .cf-page-hero-actions {
+  gap: 8px !important;
+}
+
+@media (max-width: 720px) {
+  [data-closeflow-page-header-system="true"] {
+    align-items: stretch !important;
+  }
+
+  [data-closeflow-page-header-copy-host="true"] {
+    max-width: 100%;
+  }
+
+  .cf-page-header-description {
+    font-size: 13px !important;
+  }
+}
+/* CLOSEFLOW_PAGE_HEADER_SOURCE_OF_TRUTH_2026_05_11_END */

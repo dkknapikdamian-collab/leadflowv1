@@ -10,6 +10,7 @@ import { isSupabaseEmailVerificationRequiredForUser, signOutFromSupabase } from 
 import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
+import CloseFlowPageHeaderRuntime from './components/CloseFlowPageHeaderRuntime';
 import EmailVerificationGate from './components/EmailVerificationGate';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-action-clusters.css';
@@ -224,6 +225,7 @@ export default function App() {
             </Routes>
           </Suspense>
         </AppChunkErrorBoundary>
+        <CloseFlowPageHeaderRuntime enabled={isLoggedIn} />
         <NotificationRuntime enabled={isLoggedIn} />
         <PwaInstallPrompt />
         <Toaster position="top-center" richColors closeButton />
