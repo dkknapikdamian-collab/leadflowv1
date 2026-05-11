@@ -280,6 +280,7 @@ function buildActivityItem(activity: unknown, caseId: string): ActivityRoadmapIt
   if (!belongsToExactCase(activity, caseId)) return null;
   const row = asRecord(activity);
   const eventType = pickText(row, ['eventType', 'event_type', 'type']);
+  if (eventType === 'note_deleted') return null;
   const kind = activityKindFromEventType(eventType);
   const sourceId = getSourceId(row);
   const payload = pickPayload(row);
@@ -366,4 +367,136 @@ export function buildCaseActivityRoadmap(input: {
     const secondTime = new Date(second.happenedAt).getTime() || 0;
     return secondTime - firstTime;
   });
+}
+
+export function getRoadmapRawPayload(item: ActivityRoadmapItem): Record<string, unknown> {
+  const raw = item.raw;
+  if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+    const payload = (raw as Record<string, unknown>).payload || (raw as Record<string, unknown>).data;
+    if (payload && typeof payload === 'object' && !Array.isArray(payload)) return payload as Record<string, unknown>;
+    if (typeof payload === 'string' && payload.trim()) {
+      try {
+        const parsed = JSON.parse(payload);
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) return parsed as Record<string, unknown>;
+      } catch {
+        return { raw: payload };
+      }
+    }
+  }
+  return {};
+}
+
+function readRoadmapText(value: unknown) {
+  if (typeof value === 'string') return value.trim();
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return '';
+}
+
+function stripRoadmapTitlePrefix(value: string) {
+  return value
+    .replace(/^Notatka:\s*/i, '')
+    .replace(/^Dodano notatkę:?\s*/i, '')
+    .replace(/^Dodano zadanie:?\s*/i, '')
+    .replace(/^Wykonano zadanie:?\s*/i, '')
+    .replace(/^Zadanie wykonane:?\s*/i, '')
+    .replace(/^Dodano wydarzenie:?\s*/i, '')
+    .replace(/^Zakończono wydarzenie:?\s*/i, '')
+    .replace(/^Wydarzenie wykonane:?\s*/i, '')
+    .replace(/^Dodano brak:?\s*/i, '')
+    .replace(/^Uzupełniono brak:?\s*/i, '')
+    .replace(/^Zmieniono status:?\s*/i, '')
+    .trim();
+}
+
+export function getRoadmapItemNoteText(item: ActivityRoadmapItem): string {
+  const payload = getRoadmapRawPayload(item);
+  return readRoadmapText(payload.note)
+    || readRoadmapText(payload.description)
+    || readRoadmapText(payload.title)
+    || readRoadmapText((item.raw as Record<string, unknown> | undefined)?.note)
+    || readRoadmapText(item.description)
+    || stripRoadmapTitlePrefix(readRoadmapText(item.title));
+}
+
+function getRoadmapItemSubject(item: ActivityRoadmapItem): string {
+  const payload = getRoadmapRawPayload(item);
+  return readRoadmapText(payload.title)
+    || readRoadmapText(payload.itemTitle)
+    || readRoadmapText(payload.name)
+    || readRoadmapText(payload.label)
+    || stripRoadmapTitlePrefix(readRoadmapText(item.title))
+    || readRoadmapText(item.description);
+}
+
+function getRoadmapItemAmount(item: ActivityRoadmapItem): number | null {
+  if (typeof item.amount === 'number' && Number.isFinite(item.amount)) return item.amount;
+  const payload = getRoadmapRawPayload(item);
+  const raw = payload.amount ?? payload.value ?? (item.raw as Record<string, unknown> | undefined)?.amount ?? (item.raw as Record<string, unknown> | undefined)?.value;
+  if (typeof raw === 'number' && Number.isFinite(raw)) return raw;
+  if (typeof raw === 'string' && raw.trim()) {
+    const parsed = Number(raw.replace(/\s/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+  return null;
+}
+
+function getRoadmapItemCurrency(item: ActivityRoadmapItem): string {
+  const payload = getRoadmapRawPayload(item);
+  const value = readRoadmapText(item.currency) || readRoadmapText(payload.currency) || readRoadmapText((item.raw as Record<string, unknown> | undefined)?.currency) || 'PLN';
+  return value.toUpperCase();
+}
+
+function formatRoadmapMoney(amount: number | null, currency: string) {
+  if (amount == null) return '';
+  return amount.toLocaleString('pl-PL') + ' ' + (currency || 'PLN');
+}
+
+function getStatusChangeLabel(item: ActivityRoadmapItem) {
+  const payload = getRoadmapRawPayload(item);
+  const from = readRoadmapText(payload.from) || readRoadmapText(payload.previousStatus) || readRoadmapText(payload.oldStatus);
+  const to = readRoadmapText(payload.to) || readRoadmapText(payload.nextStatus) || readRoadmapText(payload.status);
+  if (from && to) return from + ' → ' + to;
+  return to || getRoadmapItemSubject(item);
+}
+
+export function formatRoadmapActivityTitle(item: ActivityRoadmapItem): string {
+  const subject = getRoadmapItemSubject(item);
+  const amount = getRoadmapItemAmount(item);
+  const money = formatRoadmapMoney(amount, getRoadmapItemCurrency(item));
+
+  switch (item.kind) {
+    case 'note':
+      return 'Dodano notatkę';
+    case 'task_created':
+      return subject ? 'Dodano zadanie: ' + subject : 'Dodano zadanie';
+    case 'task_done':
+      return subject ? 'Wykonano zadanie: ' + subject : 'Wykonano zadanie';
+    case 'event_created':
+      return subject ? 'Dodano wydarzenie: ' + subject : 'Dodano wydarzenie';
+    case 'event_done':
+      return subject ? 'Zakończono wydarzenie: ' + subject : 'Zakończono wydarzenie';
+    case 'payment_added':
+      return money ? 'Dodano wpłatę ' + money : 'Dodano wpłatę';
+    case 'payment_removed':
+      return money ? 'Usunięto wpłatę ' + money : 'Usunięto wpłatę';
+    case 'payment_updated':
+      return money ? 'Zmieniono wpłatę ' + money : 'Zmieniono wpłatę';
+    case 'case_created':
+      return 'Utworzono sprawę';
+    case 'case_updated':
+      return 'Zmieniono sprawę';
+    case 'case_deleted':
+      return 'Usunięto sprawę';
+    case 'missing_item_added':
+      return subject ? 'Dodano brak: ' + subject : 'Dodano brak';
+    case 'missing_item_done':
+      return subject ? 'Uzupełniono brak: ' + subject : 'Uzupełniono brak';
+    case 'status_changed': {
+      const status = getStatusChangeLabel(item);
+      return status ? 'Zmieniono status: ' + status : 'Zmieniono status';
+    }
+    case 'unknown':
+    default:
+      return 'Zaktualizowano sprawę';
+  }
 }
