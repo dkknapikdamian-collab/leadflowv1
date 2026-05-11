@@ -8,7 +8,7 @@ type CloseFlowPageHeaderV2Props = {
 };
 
 export function CloseFlowPageHeaderV2({ pageKey, actions }: CloseFlowPageHeaderV2Props) {
-  const content = PAGE_HEADER_CONTENT[pageKey];
+  const content = PAGE_HEADER_CONTENT[pageKey] || PAGE_HEADER_CONTENT.today;
 
   return (
     <header className="cf-page-header-v2" data-cf-page-header-v2={pageKey}>
