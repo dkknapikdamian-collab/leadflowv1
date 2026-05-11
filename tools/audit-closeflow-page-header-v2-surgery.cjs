@@ -1,0 +1,67 @@
+const fs = require('fs');
+const path = require('path');
+
+const repo = process.argv[2] || process.cwd();
+const files = [
+  'src/pages/TasksStable.tsx',
+  'src/pages/Templates.tsx',
+  'src/pages/Activity.tsx',
+  'src/pages/Clients.tsx',
+  'src/components/CloseFlowPageHeaderV2.tsx',
+  'src/styles/closeflow-page-header-v2.css',
+];
+
+const terms = [
+  'CloseFlowPageHeaderV2',
+  'cf-page-header-v2',
+  'data-cf-page-header',
+  'cf-page-header-row',
+  'page-head',
+  'activity-page-header',
+  'cf-page-hero-layout',
+  'head-actions',
+  'soft-blue',
+];
+
+const rows = [];
+for (const rel of files) {
+  const file = path.join(repo, rel);
+  if (!fs.existsSync(file)) continue;
+  const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/);
+  lines.forEach((line, index) => {
+    if (terms.some((term) => line.includes(term))) {
+      rows.push({ file: rel, line: index + 1, text: line.trim().slice(0, 280) });
+    }
+  });
+}
+
+const outDir = path.join(repo, 'docs', 'ui');
+fs.mkdirSync(outDir, { recursive: true });
+fs.writeFileSync(
+  path.join(outDir, 'CLOSEFLOW_PAGE_HEADER_V2_SURGERY_AUDIT.generated.json'),
+  JSON.stringify({ generatedAt: new Date().toISOString(), count: rows.length, rows }, null, 2),
+  'utf8'
+);
+
+const md = [
+  '# CloseFlow Page Header V2 Surgery Audit',
+  '',
+  'Audyt po chirurgicznym odpięciu wybranych headerów od starego systemu.',
+  '',
+  '## Zakres',
+  '',
+  '- TasksStable',
+  '- Templates',
+  '- Activity',
+  '- Clients',
+  '',
+  '## Zasada',
+  '',
+  'Te cztery ekrany nie używają już top headera opartego o `data-cf-page-header`, `page-head`, `cf-page-header-row` ani `cf-page-hero-layout`.',
+  '',
+].join('\n');
+
+fs.writeFileSync(path.join(outDir, 'CLOSEFLOW_PAGE_HEADER_V2_SURGERY_AUDIT.generated.md'), md, 'utf8');
+
+console.log('CLOSEFLOW_PAGE_HEADER_V2_SURGERY_AUDIT_OK');
+console.log(JSON.stringify({ rows: rows.length }, null, 2));

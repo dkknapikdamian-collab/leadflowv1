@@ -30,11 +30,9 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
 const TASKS_VISIBLE_ACTIONS_STAGE47 = 'TASKS_VISIBLE_ACTIONS_STAGE47';
@@ -78,7 +76,6 @@ const defaultTaskForm = (): TaskFormState => ({
   clientId: null,
 });
 
-
 function localDateKey(date = new Date()) {
   return [
     date.getFullYear(),
@@ -86,7 +83,6 @@ function localDateKey(date = new Date()) {
     String(date.getDate()).padStart(2, '0'),
   ].join('-');
 }
-
 
 function readText(record: any, keys: string[], fallback = '') {
   for (const key of keys) {
@@ -96,7 +92,6 @@ function readText(record: any, keys: string[], fallback = '') {
   }
   return fallback;
 }
-
 
 function getTaskMomentRaw(task: any) {
   const direct = readText(task, ['scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'startAt', 'start_at', 'startsAt', 'starts_at', 'dateTime', 'date_time']);
@@ -108,11 +103,9 @@ function getTaskMomentRaw(task: any) {
   return date.includes('T') ? date : date + 'T' + time;
 }
 
-
 function getTaskDateKey(task: any) {
   return getTaskMomentRaw(task).slice(0, 10);
 }
-
 
 function parseTaskTime(task: any) {
   const raw = getTaskMomentRaw(task);
@@ -122,28 +115,23 @@ function parseTaskTime(task: any) {
   return Number.isFinite(time) ? time : Number.POSITIVE_INFINITY;
 }
 
-
 function isTaskDone(task: any) {
   const status = String(task?.status || '').trim().toLowerCase();
   return status === 'done' || status === 'completed' || status === 'closed' || status === 'cancelled' || status === 'canceled';
 }
 
-
 function isTaskToday(task: any) {
   return getTaskDateKey(task) === localDateKey();
 }
-
 
 function isTaskOverdue(task: any) {
   const dateKey = getTaskDateKey(task);
   return Boolean(dateKey) && dateKey < localDateKey() && !isTaskDone(task);
 }
 
-
 function getTaskTitle(task: any) {
   return readText(task, ['title', 'name'], 'Zadanie bez tytułu');
 }
-
 
 function formatTaskMoment(task: any) {
   const raw = getTaskMomentRaw(task);
@@ -153,11 +141,9 @@ function formatTaskMoment(task: any) {
   return dateKey + (time ? ', ' + time : '');
 }
 
-
 function getCaseTitle(caseRecord: any) {
   return readText(caseRecord, ['title', 'clientName', 'client_name', 'name'], 'Sprawa');
 }
-
 
 function getStatusBadge(task: any) {
   if (isTaskDone(task)) return 'Zrobione';
@@ -173,12 +159,6 @@ function getTaskStatusTone(task: any) {
   return 'neutral';
 }
 
-
-
-
-
-
-
 function getTaskRelationIds(task: any) {
   return {
     leadId: task?.leadId || task?.lead_id || null,
@@ -187,13 +167,11 @@ function getTaskRelationIds(task: any) {
   };
 }
 
-
 function shouldOfferNextStepPrompt(task: any) {
   const relationIds = getTaskRelationIds(task);
   const taskType = readText(task, ['type'], '').toLowerCase();
   return Boolean(relationIds.leadId || relationIds.caseId || relationIds.clientId || taskType.includes('follow'));
 }
-
 
 function buildNextStepDefaultDueAt() {
   const date = new Date();
@@ -201,7 +179,6 @@ function buildNextStepDefaultDueAt() {
   date.setHours(9, 0, 0, 0);
   return toDateTimeLocalValue(date);
 }
-
 
 function buildNextStepPromptState(task: any): NextStepPromptState {
   const cleanTitle = getTaskTitle(task).replace(/^follow[- ]?up:\s*/i, '').trim();
@@ -673,5 +650,4 @@ export default function TasksStable() {
     </Layout>
   );
 }
-
 

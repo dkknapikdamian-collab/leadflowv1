@@ -1,0 +1,291 @@
+/* CLOSEFLOW_PAGE_HEADER_V2_SURGERY_2026_05_11
+   Source of truth for rewritten top headers.
+   This intentionally uses new class names so legacy page-head / cf-page-header CSS cannot move the copy.
+*/
+
+:root {
+  --cf-ph-v2-card-bg: linear-gradient(180deg, rgba(255,255,255,0.995) 0%, rgba(248,250,252,0.98) 100%);
+  --cf-ph-v2-card-border: rgba(203, 213, 225, 0.88);
+  --cf-ph-v2-card-radius: 28px;
+  --cf-ph-v2-card-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
+  --cf-ph-v2-card-padding-y: 22px;
+  --cf-ph-v2-card-padding-x: 26px;
+  --cf-ph-v2-card-min-height: 92px;
+
+  --cf-ph-v2-copy-max: 780px;
+
+  --cf-ph-v2-kicker-bg: #eef4ff;
+  --cf-ph-v2-kicker-border: #bfdbfe;
+  --cf-ph-v2-kicker-text: #2563eb;
+
+  --cf-ph-v2-title: #0f172a;
+  --cf-ph-v2-title-size: clamp(28px, 2.75vw, 40px);
+  --cf-ph-v2-title-weight: 950;
+  --cf-ph-v2-title-line: 1;
+  --cf-ph-v2-title-tracking: -0.058em;
+
+  --cf-ph-v2-description: #64748b;
+  --cf-ph-v2-description-size: 13px;
+  --cf-ph-v2-description-weight: 650;
+  --cf-ph-v2-description-line: 1.45;
+
+  --cf-ph-v2-action-height: 38px;
+  --cf-ph-v2-action-radius: 14px;
+  --cf-ph-v2-action-gap: 8px;
+
+  --cf-ph-v2-neutral-bg: #ffffff;
+  --cf-ph-v2-neutral-hover-bg: #eff6ff;
+  --cf-ph-v2-neutral-border: #bfdbfe;
+  --cf-ph-v2-neutral-hover-border: #93c5fd;
+  --cf-ph-v2-neutral-text: #2563eb;
+  --cf-ph-v2-neutral-hover-text: #1d4ed8;
+  --cf-ph-v2-neutral-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+
+  --cf-ph-v2-ai-bg: #ffffff;
+  --cf-ph-v2-ai-hover-bg: #f5f3ff;
+  --cf-ph-v2-ai-border: #ddd6fe;
+  --cf-ph-v2-ai-hover-border: #c4b5fd;
+  --cf-ph-v2-ai-text: #7c3aed;
+  --cf-ph-v2-ai-hover-text: #6d28d9;
+  --cf-ph-v2-ai-shadow: 0 8px 18px rgba(124, 58, 237, 0.12);
+
+  --cf-ph-v2-danger-bg: #ffffff;
+  --cf-ph-v2-danger-hover-bg: #fef2f2;
+  --cf-ph-v2-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.24));
+  --cf-ph-v2-danger-hover-border: var(--cf-trash-icon-hover-border, rgba(220, 38, 38, 0.36));
+  --cf-ph-v2-danger-text: var(--cf-trash-icon-color, #dc2626);
+  --cf-ph-v2-danger-hover-text: var(--cf-trash-icon-hover-color, #b91c1c);
+  --cf-ph-v2-danger-shadow: 0 8px 18px rgba(220, 38, 38, 0.08);
+}
+
+#root .cf-page-header-v2,
+.cf-page-header-v2 {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: start !important;
+  justify-content: stretch !important;
+  column-gap: 18px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--cf-ph-v2-card-min-height) !important;
+  margin: 0 !important;
+  padding: var(--cf-ph-v2-card-padding-y) var(--cf-ph-v2-card-padding-x) !important;
+  border: 1px solid var(--cf-ph-v2-card-border) !important;
+  border-radius: var(--cf-ph-v2-card-radius) !important;
+  background: var(--cf-ph-v2-card-bg) !important;
+  box-shadow: var(--cf-ph-v2-card-shadow) !important;
+  overflow: visible !important;
+  text-align: left !important;
+  isolation: isolate !important;
+}
+
+#root .cf-page-header-v2__copy,
+.cf-page-header-v2__copy {
+  grid-column: 1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  place-self: center start !important;
+  width: 100% !important;
+  max-width: var(--cf-ph-v2-copy-max) !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  gap: 0 !important;
+  text-align: left !important;
+}
+
+#root .cf-page-header-v2__kicker,
+.cf-page-header-v2__kicker {
+  order: 1 !important;
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 9px 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid var(--cf-ph-v2-kicker-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-ph-v2-kicker-bg) !important;
+  background-color: var(--cf-ph-v2-kicker-bg) !important;
+  background-image: none !important;
+  color: var(--cf-ph-v2-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-kicker-text) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#root .cf-page-header-v2__title,
+.cf-page-header-v2__title {
+  order: 2 !important;
+  display: block !important;
+  max-width: var(--cf-ph-v2-copy-max) !important;
+  margin: 0 !important;
+  color: var(--cf-ph-v2-title) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-title) !important;
+  font-size: var(--cf-ph-v2-title-size) !important;
+  font-weight: var(--cf-ph-v2-title-weight) !important;
+  line-height: var(--cf-ph-v2-title-line) !important;
+  letter-spacing: var(--cf-ph-v2-title-tracking) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#root .cf-page-header-v2__description,
+.cf-page-header-v2__description {
+  order: 3 !important;
+  display: block !important;
+  max-width: var(--cf-ph-v2-copy-max) !important;
+  margin: 8px 0 0 0 !important;
+  color: var(--cf-ph-v2-description) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-description) !important;
+  font-size: var(--cf-ph-v2-description-size) !important;
+  font-weight: var(--cf-ph-v2-description-weight) !important;
+  line-height: var(--cf-ph-v2-description-line) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#root .cf-page-header-v2__actions,
+.cf-page-header-v2__actions {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: start !important;
+  place-self: start end !important;
+  margin: 0 0 0 auto !important;
+  min-width: max-content !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  text-align: left !important;
+}
+
+/* Flatten old action wrappers extracted from legacy headers. */
+#root .cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions),
+.cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
+  display: contents !important;
+}
+
+#root .cf-page-header-v2__actions > *,
+#root .cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) > *,
+.cf-page-header-v2__actions > *,
+.cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) > * {
+  flex: 0 0 auto !important;
+}
+
+/* Header action button source truth. */
+#root .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
+.cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) {
+  min-height: var(--cf-ph-v2-action-height) !important;
+  height: var(--cf-ph-v2-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-ph-v2-action-gap) !important;
+  border: 1px solid var(--cf-ph-v2-neutral-border) !important;
+  border-radius: var(--cf-ph-v2-action-radius) !important;
+  background: var(--cf-ph-v2-neutral-bg) !important;
+  background-color: var(--cf-ph-v2-neutral-bg) !important;
+  background-image: none !important;
+  color: var(--cf-ph-v2-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-neutral-text) !important;
+  box-shadow: var(--cf-ph-v2-neutral-shadow) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+#root .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover,
+.cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover {
+  border-color: var(--cf-ph-v2-neutral-hover-border) !important;
+  background: var(--cf-ph-v2-neutral-hover-bg) !important;
+  color: var(--cf-ph-v2-neutral-hover-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-neutral-hover-text) !important;
+}
+
+/* AI semantic. */
+#root .cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]),
+.cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]) {
+  border-color: var(--cf-ph-v2-ai-border) !important;
+  background: var(--cf-ph-v2-ai-bg) !important;
+  color: var(--cf-ph-v2-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-ai-text) !important;
+  box-shadow: var(--cf-ph-v2-ai-shadow) !important;
+}
+
+#root .cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]):hover,
+.cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]):hover {
+  border-color: var(--cf-ph-v2-ai-hover-border) !important;
+  background: var(--cf-ph-v2-ai-hover-bg) !important;
+  color: var(--cf-ph-v2-ai-hover-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-ai-hover-text) !important;
+}
+
+/* Danger/trash semantic. */
+#root .cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger),
+.cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger) {
+  border-color: var(--cf-ph-v2-danger-border) !important;
+  background: var(--cf-ph-v2-danger-bg) !important;
+  color: var(--cf-ph-v2-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-danger-text) !important;
+  box-shadow: var(--cf-ph-v2-danger-shadow) !important;
+}
+
+#root .cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger):hover,
+.cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger):hover {
+  border-color: var(--cf-ph-v2-danger-hover-border) !important;
+  background: var(--cf-ph-v2-danger-hover-bg) !important;
+  color: var(--cf-ph-v2-danger-hover-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-danger-hover-text) !important;
+}
+
+#root .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) :is(svg, span, i),
+.cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) :is(svg, span, i) {
+  color: currentColor !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-page-header-v2,
+  .cf-page-header-v2 {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #root .cf-page-header-v2__copy,
+  .cf-page-header-v2__copy {
+    max-width: 100% !important;
+  }
+
+  #root .cf-page-header-v2__actions,
+  .cf-page-header-v2__actions {
+    justify-self: stretch !important;
+    align-self: stretch !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+}
