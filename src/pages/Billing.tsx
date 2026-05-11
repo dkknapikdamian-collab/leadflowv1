@@ -507,7 +507,7 @@ export default function Billing() {
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.billing.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.billing.description}</p>
           </div>
-          <div className="billing-header-actions">
+          <div className="billing-header-actions" data-cf-page-header-part="actions">
             <Button type="button" variant="outline" onClick={refresh}>
               <RefreshCw className="h-4 w-4" />
               Odśwież status

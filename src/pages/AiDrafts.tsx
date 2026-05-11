@@ -1023,7 +1023,7 @@ function AiDraftsInner() {
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.aiDrafts.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>
-            <p>Sprawdź, popraw i zatwierdź szkice przed zapisem w CRM.</p>
+            <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>
           </div>
           <div className="ai-drafts-header-actions" data-cf-page-header-part="actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>

@@ -205,9 +205,7 @@ export default function ResponseTemplates() {
             <div>
               <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.responseTemplates.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
-              <p className="mt-2 max-w-2xl text-sm md:text-base app-muted">
-                Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. AI może później pracować na tych szablonach, ale źródłem prawdy jest Twoja biblioteka.
-              </p>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
             </div>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -250,7 +248,7 @@ export default function ResponseTemplates() {
                 <Card key={item.id} className="cf-readable-card border-none app-surface-strong app-shadow">
                   <CardContent className="flex flex-col gap-4 p-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="space-y-2">
+                      <div className="space-y-2" data-cf-page-header-part="copy">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-bold app-text">{item.name}</h3>
                           <Badge variant="outline">{item.category || 'Ogólne'}</Badge>

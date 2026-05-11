@@ -136,9 +136,7 @@ export default function AdminAiSettings() {
             <div>
               <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.adminAi.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.adminAi.description}</p>
-              <p className="max-w-2xl text-sm md:text-base app-muted">
-                Ukryta warstwa diagnostyczna dla Quick Lead Capture. Użytkownik końcowy widzi tylko prosty szkic do potwierdzenia, nie providerów ani kluczy.
-              </p>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.adminAi.description}</p>
             </div>
           </div>
           <Button type="button" variant="outline" onClick={() => void loadDiagnostics()} disabled={loadingDiagnostics}>

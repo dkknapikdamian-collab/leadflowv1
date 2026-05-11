@@ -531,3 +531,133 @@
 }
 /* CLOSEFLOW_PAGE_HEADER_TITLE_COPY_PARITY_TODAY_STAGE4_2026_05_11_END */
 
+/* CLOSEFLOW_PAGE_HEADER_COPY_ACTIONS_STAGE5_2026_05_11_START
+   owner: CloseFlow Visual System
+   reason: unify page header descriptions, action layout and header action color with the top blue command bar.
+   scope: [data-cf-page-header="true"].cf-page-header only.
+   note: card background stays untouched here.
+*/
+
+:root {
+  --cf-page-header-action-accent: #2563eb;
+  --cf-page-header-action-accent-strong: #1d4ed8;
+  --cf-page-header-action-border: #bfdbfe;
+  --cf-page-header-action-border-strong: #93c5fd;
+  --cf-page-header-action-bg: #ffffff;
+  --cf-page-header-action-hover-bg: #eff6ff;
+  --cf-page-header-action-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+  --cf-page-header-action-radius: 14px;
+  --cf-page-header-action-height: 38px;
+
+  --cf-page-header-actions-gap: 10px;
+  --cf-page-header-actions-row-justify: flex-end;
+  --cf-page-header-actions-wrap: nowrap;
+  --cf-page-header-actions-margin-left: auto;
+
+  --cf-page-header-meta-color: #64748b;
+  --cf-page-header-meta-font-size: 12px;
+  --cf-page-header-meta-font-weight: 650;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+  align-items: flex-start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside {
+  margin-left: var(--cf-page-header-actions-margin-left) !important;
+  align-self: flex-start !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: var(--cf-page-header-actions-wrap) !important;
+  align-items: center !important;
+  justify-content: var(--cf-page-header-actions-row-justify) !important;
+  gap: var(--cf-page-header-actions-gap) !important;
+  min-width: max-content !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"] > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > * {
+  flex: 0 0 auto !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .ai-drafts-header-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: var(--cf-page-header-actions-gap) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.text-xs, .text-[12px], small, .cf-page-header-meta),
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-meta="true"] {
+  color: var(--cf-page-header-meta-color) !important;
+  -webkit-text-fill-color: var(--cf-page-header-meta-color) !important;
+  font-size: var(--cf-page-header-meta-font-size) !important;
+  font-weight: var(--cf-page-header-meta-font-weight) !important;
+  line-height: 1.35 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .cf-header-action) {
+  min-height: var(--cf-page-header-action-height) !important;
+  border-radius: var(--cf-page-header-action-radius) !important;
+  border: 1px solid var(--cf-page-header-action-border) !important;
+  background: var(--cf-page-header-action-bg) !important;
+  background-color: var(--cf-page-header-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-page-header-action-accent) !important;
+  -webkit-text-fill-color: var(--cf-page-header-action-accent) !important;
+  box-shadow: var(--cf-page-header-action-shadow) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .cf-header-action):hover {
+  background: var(--cf-page-header-action-hover-bg) !important;
+  background-color: var(--cf-page-header-action-hover-bg) !important;
+  border-color: var(--cf-page-header-action-border-strong) !important;
+  color: var(--cf-page-header-action-accent-strong) !important;
+  -webkit-text-fill-color: var(--cf-page-header-action-accent-strong) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .cf-header-action) svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description {
+  max-width: 780px !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+    align-items: stretch !important;
+  }
+
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside {
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+  }
+}
+/* CLOSEFLOW_PAGE_HEADER_COPY_ACTIONS_STAGE5_2026_05_11_END */
+

@@ -817,7 +817,7 @@ useEffect(() => {
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.settings.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.settings.description}</p>
           </div>
-          <div className="settings-header-actions">
+          <div className="settings-header-actions" data-cf-page-header-part="actions">
             <Button type="button" variant="outline" onClick={refresh}>
               <RefreshCw className="h-4 w-4" />
               Odśwież

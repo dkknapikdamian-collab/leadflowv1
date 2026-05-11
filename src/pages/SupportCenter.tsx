@@ -429,7 +429,7 @@ export default function SupportCenter() {
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.support.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.support.description}</p>
           </div>
-          <div className="support-header-actions">
+          <div className="support-header-actions" data-cf-page-header-part="actions">
             <Button type="button" variant="outline" onClick={() => void loadTickets()}>
               <Search className="h-4 w-4" />
               Odśwież zgłoszenia

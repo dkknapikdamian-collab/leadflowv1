@@ -1515,7 +1515,7 @@ export default function Calendar() {
                       </span>
                       {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
                     </div>
-                    <div className="space-y-1">
+                    <div className="space-y-1" data-cf-page-header-part="copy">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
                         const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
 

@@ -458,7 +458,7 @@ export default function Templates() {
           </DialogHeader>
           <div className="grid gap-6 overflow-y-auto py-2 pr-1 md:grid-cols-[280px_minmax(0,1fr)]">
             <div className="space-y-4">
-              <div className="space-y-2">
+              <div className="space-y-2" data-cf-page-header-part="copy">
                 <Label htmlFor="template-name" className="text-slate-700">Nazwa szablonu</Label>
                 <Input
                   id="template-name"

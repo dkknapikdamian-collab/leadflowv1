@@ -70,12 +70,12 @@ export const PAGE_HEADER_CONTENT: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   aiDrafts: {
     kicker: 'SZKICE DO SPRAWDZENIA',
     title: 'Szkice AI',
-    description: 'Inbox rzeczy do akceptacji. AI może przygotować szkic, ale finalny zapis dzieje się dopiero po Twoim zatwierdzeniu.',
+    description: 'Sprawdź, popraw i zatwierdź szkice przed zapisem.',
   },
   notifications: {
     kicker: 'POWIADOMIENIA',
     title: 'Powiadomienia',
-    description: 'Przypomnienia i alerty z aplikacji. Tu widzisz zaległe rzeczy, nadchodzące terminy i sprawy, których nie można przegapić.',
+    description: 'Przypomnienia, zaległe rzeczy i alerty, których nie możesz przegapić.',
   },
   billing: {
     kicker: 'ROZLICZENIA',
@@ -95,7 +95,7 @@ export const PAGE_HEADER_CONTENT: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   adminAi: {
     kicker: 'AI ADMIN',
     title: 'Konfiguracja AI',
-    description: 'Ukryta diagnostyka providerów i szkiców AI. Użytkownik końcowy widzi prosty szkic do potwierdzenia, nie klucze ani providery.',
+    description: 'Ukryta warstwa diagnostyczna dla Quick Lead Capture. Użytkownik końcowy widzi tylko prosty szkic do potwierdzenia, nie providerów ani kluczy.',
   },
 };
 

@@ -617,7 +617,7 @@ export default function NotificationsCenter() {
             <p className="notifications-kicker">POWIADOMIENIA</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.notifications.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.notifications.description}</p>
-            <p>Przypomnienia, zaległe rzeczy i alerty, których nie możesz przegapić.</p>
+            <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.notifications.description}</p>
           </div>
 
           <div className="notifications-header-actions" data-cf-page-header-part="actions">

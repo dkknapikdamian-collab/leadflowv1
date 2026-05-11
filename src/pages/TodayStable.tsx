@@ -1253,7 +1253,7 @@ export default function TodayStable() {
             <div>
               <p className="cf-section-head-kicker text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
               <p className="cf-section-head-title mt-1 text-xl font-black text-slate-900 sm:text-2xl">Priorytety i najbliższe ruchy</p>
-              <p className="mt-1 text-sm text-slate-500">Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.</p>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.today.description}</p>
             </div>
             <div className="cf-section-head-actions flex flex-col items-end gap-2">
               <div className="flex flex-wrap items-center justify-end gap-2">
