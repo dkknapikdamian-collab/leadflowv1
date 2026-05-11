@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
-import { modalFooterClass } from '../components/entity-actions';
+import { EntityTrashButton, modalFooterClass } from '../components/entity-actions';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -737,7 +737,7 @@ export default function Cases() {
                       <span className="lead-main-cell min-w-0">
                         <span className="case-row-title-line">
                           <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
-                          <button
+                          <EntityTrashButton
                             type="button"
                             className="btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger" data-cf-header-action="danger"
                             data-case-row-delete-action="true"
@@ -752,7 +752,7 @@ export default function Cases() {
                           >
                             <Trash2 className="h-4 w-4" />
                             Usuń
-                          </button>
+                          </EntityTrashButton>
                         </span>
                         <span className="cf-list-row-meta">
                           <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>

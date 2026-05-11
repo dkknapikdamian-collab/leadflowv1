@@ -494,7 +494,7 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
   if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
   if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
-  return 'Zapis operacyjny sprawy';
+  return 'Dodano ruch w sprawie';
 }
 function sortCaseItems(items: CaseItem[]) {
   return [...items].sort((first, second) => {
