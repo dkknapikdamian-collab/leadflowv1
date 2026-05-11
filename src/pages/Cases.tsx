@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
-import { EntityTrashButton, modalFooterClass } from '../components/entity-actions';
+import { modalFooterClass } from '../components/entity-actions';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -390,14 +390,20 @@ export default function Cases() {
   async function handleDeleteCase() {
     if (!caseToDelete) return;
 
+    const caseId = String(caseToDelete.id || '');
+    if (!caseId) return;
+
     try {
       setDeletePending(true);
-      await deleteCaseWithRelations(caseToDelete.id);
-      setCases((prev) => prev.filter((entry) => entry.id !== caseToDelete.id));
-      toast.success('Sprawa usunięta');
+      await deleteCaseWithRelations(caseId);
+      await refreshCases();
+      toast.success('Sprawa została usunięta.');
       setCaseToDelete(null);
     } catch (error: any) {
-      toast.error(`Błąd: ${error.message}`);
+      console.error(error);
+      const message = String(error?.message || '');
+      const hasRelationBlocker = /foreign key|violates|related|powiązan|działani/i.test(message);
+      toast.error(hasRelationBlocker ? 'Nie można usunąć sprawy, bo ma powiązane działania.' : 'Nie udało się usunąć sprawy.');
     } finally {
       setDeletePending(false);
     }
@@ -716,10 +722,9 @@ export default function Cases() {
                       <span className="lead-main-cell min-w-0">
                         <span className="case-row-title-line">
                           <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
-                          <EntityTrashButton
+                          <button
                             type="button"
-                            variant="ghost"
-                            size="icon"
+                            className="btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger"
                             data-case-row-delete-action="true"
                             aria-label="Usuń sprawę"
                             title="Usuń sprawę"
@@ -730,8 +735,9 @@ export default function Cases() {
                               setCaseToDelete(record);
                             }}
                           >
-                            {deletePending && caseToDelete?.id === record.id ? <Loader2 className="cf-trash-action-icon h-4 w-4 animate-spin" /> : <Trash2 className="cf-trash-action-icon h-4 w-4" />}
-                          </EntityTrashButton>
+                            <Trash2 className="h-4 w-4" />
+                            Usuń
+                          </button>
                         </span>
                         <span className="cf-list-row-meta">
                           <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>

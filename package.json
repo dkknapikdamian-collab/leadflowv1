@@ -654,7 +654,8 @@
     "check:etap3-clients-wide-layout": "node scripts/check-closeflow-etap3-clients-wide-layout.cjs",
     "check:modal-visual-system": "node scripts/check-closeflow-modal-visual-system.cjs",
     "check:modal-visual-system-readable-v2": "node scripts/check-closeflow-modal-visual-system-readable-v2.cjs",
-    "check:etap4-client-next-action-accent": "node scripts/check-closeflow-etap4-client-next-action-accent.cjs"
+    "check:etap4-client-next-action-accent": "node scripts/check-closeflow-etap4-client-next-action-accent.cjs",
+    "check:etap5-cases-delete-from-list": "node scripts/check-closeflow-etap5-cases-delete-from-list.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
