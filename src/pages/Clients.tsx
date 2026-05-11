@@ -665,7 +665,7 @@ export default function Clients() {
           />
         </div>
 
-        <div className="layout-list">
+        <div className="layout-list w-full max-w-none" data-clients-wide-layout="true">
           <div className="stack">
             <div className="search">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -673,17 +673,17 @@ export default function Clients() {
             </div>
 
             {loading ? (
-              <div className="table-card"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">Ładowanie klientów</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
+              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">Ładowanie klientów</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
             ) : filtered.length === 0 ? (
-              <div className="table-card"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyświetlenia.'}</span></span></div></div>
+              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyświetlenia.'}</span></span></div></div>
             ) : (
-              <div className="table-card">
+              <div className="table-card w-full max-w-none">
                 {filtered.map((client, index) => {
                    const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
                    const isArchived = Boolean(client.archivedAt);
                    const clientValue = clientValueByClientId.get(client.id) || 0;
                    return (
-                     <div key={client.id} className="relative group/client-card">
+                     <div key={client.id} className="relative group/client-card w-full" data-client-card-wide-layout="true">
                        <Link to={`/clients/${client.id}`} className="block">
                          <div className="row client-row">
                          <span className="index">{index + 1}</span>

@@ -135,3 +135,119 @@
     justify-content: flex-start;
   }
 }
+
+/* CLOSEFLOW_ETAP3_CLIENTS_WIDE_LAYOUT
+   owner: CloseFlow UI system
+   reason: /clients client card regressed into a narrow column on wide desktop screens
+   scope: /clients list only
+   rule: use available content width, never fixed desktop width or transform scale
+*/
+.main-clients-html .layout-list {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  display: block;
+}
+
+.main-clients-html .layout-list > .stack {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+}
+
+.main-clients-html .table-card {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.main-clients-html .table-card > .relative,
+.main-clients-html .group\/client-card,
+.main-clients-html [class*="group/client-card"] {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.main-clients-html .table-card > .relative > a,
+.main-clients-html .table-card > .relative > a.block,
+.main-clients-html [data-client-card-wide-layout="true"] > a {
+  display: block;
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+}
+
+.main-clients-html .client-row {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.main-clients-html .client-row > .lead-main-cell,
+.main-clients-html .client-row > .lead-action-cell,
+.main-clients-html .client-row > .client-card-next-action-block {
+  min-width: 0;
+}
+
+.main-clients-html .cf-list-row-meta,
+.main-clients-html .statusline {
+  max-width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.main-clients-html .cf-list-row-meta > *,
+.main-clients-html .statusline > * {
+  min-width: 0;
+}
+
+.main-clients-html .cf-list-row-contact,
+.main-clients-html .cf-list-row-value,
+.main-clients-html .cf-chip-client-value,
+.main-clients-html .cf-chip-last-contact {
+  overflow-wrap: anywhere;
+}
+
+.cf-client-card-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+  gap: 1rem;
+  align-items: stretch;
+}
+
+@media (min-width: 901px) {
+  .main-clients-html .client-row {
+    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(260px, 360px) !important;
+  }
+
+  .main-clients-html .client-row > .lead-value-cell {
+    min-width: 260px;
+  }
+}
+
+@media (max-width: 900px) {
+  .cf-client-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-clients-html .client-row {
+    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .main-clients-html .layout-list,
+  .main-clients-html .layout-list > .stack,
+  .main-clients-html .table-card,
+  .main-clients-html [class*="group/client-card"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+

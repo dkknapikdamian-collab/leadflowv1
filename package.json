@@ -650,7 +650,8 @@
     "check:case-detail-no-partial-loading": "node scripts/check-closeflow-case-detail-no-partial-loading.cjs",
     "check:case-trash-actions": "node scripts/check-closeflow-case-trash-actions.cjs",
     "check:today-mobile-tile-focus": "node scripts/check-closeflow-today-mobile-tile-focus.cjs",
-    "check:closeflow-cases-loader2-import": "node scripts/check-closeflow-cases-loader2-import.cjs"
+    "check:closeflow-cases-loader2-import": "node scripts/check-closeflow-cases-loader2-import.cjs",
+    "check:etap3-clients-wide-layout": "node scripts/check-closeflow-etap3-clients-wide-layout.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
