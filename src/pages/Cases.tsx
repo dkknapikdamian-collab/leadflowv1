@@ -1,11 +1,4 @@
-import { CheckCircle2, ChevronRight, Clock, EntityIcon } from '../components/ui-system';
-import {
-  useEffect, ExternalLink, FileText, Loader2, Plus, Search, Trash2, type FormEvent } from 'react';
-import { Link, useMemo, useRef, useSearchParams } from 'react-router-dom';
-import { format } from 'date-fns';
-import { pl } from 'date-fns/locale';
-import {
-  AlertTriangle, useState } from 'lucide-react';
+﻿import { ExternalLink, FileText, Loader2, Plus, Search, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -834,5 +827,6 @@ export default function Cases() {
 }
 
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleCaseView('blocked') toggleCaseView('needs_next_step') */
+
 
 
