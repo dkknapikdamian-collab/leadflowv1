@@ -1,8 +1,7 @@
-@import "../closeflow-operator-metric-tiles.css";
 /* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_EMERGENCY_HOTFIXES
-   Owner: CloseFlow Visual System
-   Reason: isolate emergency runtime CSS and hotfixes away from src/index.css.
-   Scope: scoped fixes only. New entries must include owner, reason, scope, remove_after_stage.
+   owner: CloseFlow Visual System
+   reason: isolate emergency runtime CSS and hotfixes away from src/index.css.
+   scope: scoped fixes only. New entries must include owner, reason, scope, remove_after_stage.
    remove_after_stage: each entry below defines its own removal stage.
 */
 
@@ -195,14 +194,13 @@
   color: #334155 !important;
 }
 
-/* CLOSEFLOW_METRIC_TILE_VISUAL_SOURCE_TRUTH_VS5U_IMPORT
-   Owner: CloseFlow Visual System
-   Reason: final visual token layer for metric tiles must load after old page adapters and hotfixes.
-   Scope: Today/Tasks/Notifications/shared MetricTile visual parity only.
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: load final visual token layer for metric tiles after old page adapters and hotfixes.
+   scope: Today/Tasks/Notifications/shared MetricTile visual parity only.
    remove_after_stage: after old metric CSS files are deleted and all active screens use MetricGrid.
 */
 @import '../closeflow-metric-tile-visual-source-truth.css';
-
 
 /* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
    owner: CloseFlow Visual System

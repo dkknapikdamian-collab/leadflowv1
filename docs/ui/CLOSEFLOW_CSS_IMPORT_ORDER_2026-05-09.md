@@ -1,84 +1,83 @@
-# CloseFlow VS-3 — CSS import order cleanup — 2026-05-09
+# CloseFlow CSS import order cleanup
 
-## Status
-
-SHIPPED BY PACKAGE WHEN CHECK PASSES.
+**Data:** 2026-05-09
+**Etap:** VS-3 - CSS import order cleanup
+**Status:** import-order foundation, no selector rewrite
 
 ## Cel
 
-`src/index.css` ma przestać być śmietnikiem importów, hotfixów i inline napraw. Ten etap nie usuwa istniejących CSS-ów. On porządkuje wejście do kaskady, żeby następne etapy mogły bezpiecznie migrować style bez grzebania w dużych legacy stronach.
+`src/index.css` ma byc czytelnym punktem wejscia do kaskady CSS, a nie lista starych `visual-stage*`, `stage*`, `eliteflow*` i `hotfix-*` importow.
 
-## Zakres
+Ten etap uklada CSS w warstwy. Nie usuwa starych plikow i nie przepina ekranow.
 
-Dodano:
+## Docelowe bloki w `src/index.css`
 
-- `src/styles/legacy/legacy-imports.css`
-- `src/styles/temporary/temporary-overrides.css`
-- `src/styles/emergency/emergency-hotfixes.css`
-- `docs/ui/CLOSEFLOW_CSS_IMPORT_ORDER_2026-05-09.md`
-- `scripts/check-closeflow-css-import-order.cjs`
+1. `Tailwind/base`
+2. `Design system`
+3. `Core contracts`
+4. `Page adapters`
+5. `Legacy imports`
+6. `Temporary overrides`
+7. `Emergency hotfixes`
 
-Zmieniono:
+## Agregatory
 
-- `src/index.css`
-- `package.json`
-
-## Docelowa kolejność importów
-
-1. `tailwind/base`
-2. `design-system/index.css`
-3. layout primitives
-4. component contracts
-5. page adapters
-6. legacy imports
-7. temporary overrides
-8. emergency hotfixes
+| Warstwa | Plik | Znaczenie |
+|---|---|---|
+| Core contracts | `src/styles/core/core-contracts.css` | shell, theme, tokeny, kontrakty metryk i akcji |
+| Page adapters | `src/styles/page-adapters/page-adapters.css` | stare page-level `visual-stage*` i etapowe adaptery stron |
+| Legacy imports | `src/styles/legacy/legacy-imports.css` | historyczne style, ktore nie sa juz standardem |
+| Temporary overrides | `src/styles/temporary/temporary-overrides.css` | czasowe naprawy i override'y do usuniecia po migracjach |
+| Emergency hotfixes | `src/styles/emergency/emergency-hotfixes.css` | awaryjne, wasko zakresowe hotfixy runtime |
 
 ## Decyzje
 
-### 1. Nie usuwamy istniejących CSS-ów
+### 1. Nie usuwamy starych CSS-ow
 
-Ten etap nie jest refaktorem wizualnym. Nie zmieniamy selektorów w plikach stage, hotfix ani eliteflow. Przenosimy tylko importy do czytelnej struktury.
+Pliki `visual-stage*`, `stage*`, `eliteflow*` i `hotfix-*` zostaja w repo. Zmieniamy tylko miejsce importu.
 
-### 2. Hotfixy są jawnie opisane
+### 2. `src/index.css` nie importuje juz bezposrednio stage/hotfix/eliteflow
 
-Każdy hotfix w `src/styles/emergency/emergency-hotfixes.css` musi mieć:
+`src/index.css` importuje agregatory. Konkretne stare pliki sa sklasyfikowane w agregatorach.
 
-- `owner`
-- `reason`
-- `scope`
-- `remove_after_stage`
+### 3. Temporary i emergency musza miec metadata
 
-Bez tego check ma paść.
+Kazdy blok temporary albo emergency ma opis:
 
-### 3. Legacy i temporary to dług techniczny, nie nowy standard
+```css
+/* owner:
+   reason:
+   scope:
+   remove_after_stage:
+*/
+```
 
-Nowe style nie powinny trafiać do:
+Bez tego check ma pasc.
 
-- `legacy/legacy-imports.css`
-- `temporary/temporary-overrides.css`
-- `emergency/emergency-hotfixes.css`
+### 4. Brak migracji ekranow w VS-3
 
-bez świadomej decyzji i opisu usunięcia.
+Nie ruszamy JSX, klas Tailwind w ekranach, routingu, danych ani logiki biznesowej.
 
-## Nie zmieniono
+## Czego nie robic po VS-3
 
-- stron `Leads.tsx`, `Clients.tsx`, `Cases.tsx`
-- ikon
-- routing
-- logiki biznesowej
-- tokenów semantycznych VS-2D
-- klas Tailwind w widokach
+- Nie dodawac nowych `@import './styles/hotfix-...'` bezposrednio do `src/index.css`.
+- Nie wrzucac nowego emergency hotfixa bez `owner/reason/scope/remove_after_stage`.
+- Nie traktowac `temporary-overrides.css` jako nowego standardu.
+- Nie usuwac starego CSS bez osobnego etapu i testu wizualnego.
 
-## Kryterium zakończenia
-
-Etap jest zakończony, jeśli przechodzą:
+## Weryfikacja
 
 ```bash
 npm run check:closeflow-css-import-order
 npm run build
 ```
 
-## Następny sensowny etap
+## Kryterium zakonczenia
 
-VS-3A — CSS debt map: policzyć importy legacy/temporary/emergency i stopniowo usuwać po jednym bezpiecznym pliku na etap.
+VS-3 jest zakonczony, gdy:
+
+1. `src/index.css` ma 7 blokow importow w dobrej kolejnosci,
+2. stare `visual-stage*`, `stage*`, `eliteflow*`, `hotfix-*` sa w agregatorach,
+3. temporary/hotfix sa opisane metadanymi,
+4. `npm run check:closeflow-css-import-order` przechodzi,
+5. `npm run build` przechodzi.

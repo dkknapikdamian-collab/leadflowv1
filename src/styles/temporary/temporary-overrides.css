@@ -1,20 +1,54 @@
 /* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_TEMPORARY_OVERRIDES
-   Owner: CloseFlow Visual System
-   Reason: collect stage-scoped UI overrides that are still needed but should not live in src/index.css.
-   Scope: temporary visual polish, mobile locks, sidebar alignment and staged page fixes.
+   owner: CloseFlow Visual System
+   reason: collect stage-scoped UI overrides that are still needed but should not live in src/index.css.
+   scope: temporary visual polish, mobile locks, sidebar alignment and staged page fixes.
    remove_after_stage: after VS page adapters and component contracts replace these overrides.
 */
 
+/* CLOSEFLOW_TEMPORARY_OVERRIDE_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve final metric tile locks until all screens use MetricGrid/OperatorMetricTiles only.
+   scope: metric tile parity, value/icon tone, text clipping and compact desktop scaling.
+   remove_after_stage: after VS metric migration and no-local-metric guard are complete.
+*/
+@import '../eliteflow-final-metric-tiles-hard-lock.css';
+@import '../eliteflow-metric-tiles-color-font-parity.css';
+@import '../eliteflow-metric-text-clip-tasks-repair.css';
+@import '../eliteflow-desktop-compact-scale.css';
+@import '../eliteflow-semantic-badges-and-today-sections.css';
+
+/* CLOSEFLOW_TEMPORARY_OVERRIDE_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve sidebar footer and nav tone repairs until sidebar contract replaces local fixes.
+   scope: sidebar footer, sidebar user area and Today nav tone.
+   remove_after_stage: after sidebar component contract finalization.
+*/
+@import '../eliteflow-sidebar-footer-contrast-repair.css';
+@import '../eliteflow-sidebar-user-footer-below-nav.css';
+@import '../stageA19v2-sidebar-nav-contrast-fix.css';
+@import '../stageA20-sidebar-today-click-fix.css';
+@import '../stageA20c-sidebar-today-hitbox-fix.css';
+@import '../stageA20d-sidebar-unified-nav-tone.css';
+@import '../stageA20e-sidebar-today-tone-lock.css';
+
+/* CLOSEFLOW_TEMPORARY_OVERRIDE_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve mobile/readability polish until responsive component contracts replace local CSS.
+   scope: mobile contrast, full mobile polish, AI drafts generated text, calendar readability and clients cleanup.
+   remove_after_stage: after mobile/responsive UI contract audit.
+*/
 @import '../stage30a-mobile-contrast-lock.css';
 @import '../stage31-full-mobile-polish.css';
 @import '../stage33a-ai-drafts-generated-text-contrast.css';
 @import '../stage34-calendar-readability-status-forms.css';
 @import '../stage34b-calendar-complete-polish.css';
 @import '../stage35-clients-value-detail-cleanup.css';
-@import '../stageA19v2-sidebar-nav-contrast-fix.css';
-@import '../stageA20-sidebar-today-click-fix.css';
-@import '../stageA20c-sidebar-today-hitbox-fix.css';
-@import '../stageA20d-sidebar-unified-nav-tone.css';
-@import '../stageA20e-sidebar-today-tone-lock.css';
+
+/* CLOSEFLOW_TEMPORARY_OVERRIDE_ENTRY
+   owner: CloseFlow Visual System
+   reason: preserve Today relationship label repairs until Today rows use shared relation components.
+   scope: Today relation labels and inline lead badges.
+   remove_after_stage: after Today relation row contract is shipped.
+*/
 @import '../stageA24-today-relations-label-align.css';
 @import '../stageA25-today-relations-lead-badge-inline.css';

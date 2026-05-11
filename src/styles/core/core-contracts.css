@@ -1,0 +1,18 @@
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_CORE_CONTRACTS
+   owner: CloseFlow Visual System
+   reason: keep stable shell, token and component-contract CSS before page adapters.
+   scope: core shell/theme primitives, form actions, action/entity tokens and shared metric contracts.
+   remove_after_stage: never; individual legacy imports below can be removed only after their component contract replacement ships.
+*/
+
+@import '../visual-stage01-shell.css';
+@import '../visual-html-theme-v14.css';
+@import '../closeflow-vnext-ui-contract.css';
+@import '../closeflow-form-actions.css';
+@import '../closeflow-action-tokens.css';
+@import '../closeflow-entity-type-tokens.css';
+@import '../closeflow-stage16c-tasks-cases-parity.css';
+@import '../closeflow-stage16d-tasks-metric-final-lock.css';
+@import '../closeflow-metric-tiles.css';
+@import '../closeflow-operator-metric-tiles.css';
+@import '../closeflow-operator-semantic-tones.css';

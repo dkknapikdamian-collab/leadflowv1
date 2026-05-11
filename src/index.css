@@ -1,78 +1,29 @@
 /* CLOSEFLOW_CSS_IMPORT_ORDER_VS3
-   Owner: CloseFlow Visual System
-   Reason: keep src/index.css as the import orchestration layer, not a hotfix dump.
-   Order:
-   1 tailwind/base
-   2 design-system/index.css
-   3 layout primitives
-   4 component contracts
-   5 page adapters
-   6 legacy imports
-   7 temporary overrides
-   8 emergency hotfixes
+   owner: CloseFlow Visual System
+   reason: keep src/index.css as a readable cascade entrypoint, not a dump of stage, hotfix and legacy imports.
+   scope: import order only; no selector rewrite and no runtime page migration in VS-3.
+   remove_after_stage: never - this is the permanent import-order contract.
 */
 
-/* 1. tailwind/base */
+/* 1. Tailwind/base */
 @import "tailwindcss";
 
-/* 2. design-system/index.css */
+/* 2. Design system */
 @import './styles/design-system/index.css';
 
-/* 3. layout primitives */
-@import "./styles/visual-stage01-shell.css";
-@import "./styles/visual-html-theme-v14.css";
-@import "./styles/closeflow-vnext-ui-contract.css";
-@import './styles/closeflow-form-actions.css';
-@import './styles/visual-stage20-lead-form-vnext.css';
-@import './styles/visual-stage23-client-case-forms-vnext.css';
+/* 3. Core contracts */
+@import './styles/core/core-contracts.css';
 
-/* 4. component contracts */
-@import './styles/closeflow-action-tokens.css';
-@import './styles/closeflow-entity-type-tokens.css';
-@import './styles/closeflow-stage16c-tasks-cases-parity.css';
-@import './styles/closeflow-stage16d-tasks-metric-final-lock.css';
-@import './styles/eliteflow-final-metric-tiles-hard-lock.css';
-@import './styles/eliteflow-metric-tiles-color-font-parity.css';
-@import './styles/eliteflow-metric-text-clip-tasks-repair.css';
-@import './styles/closeflow-metric-tiles.css';
-@import './styles/closeflow-operator-metric-tiles.css';
-@import './styles/closeflow-operator-semantic-tones.css';
-@import './styles/eliteflow-desktop-compact-scale.css';
-@import './styles/eliteflow-sidebar-footer-contrast-repair.css';
-@import './styles/eliteflow-sidebar-user-footer-below-nav.css';
-@import './styles/eliteflow-semantic-badges-and-today-sections.css';
+/* 4. Page adapters */
+@import './styles/page-adapters/page-adapters.css';
 
-/* 5. page adapters */
-@import "./styles/visual-stage02-today.css";
-@import "./styles/visual-stage03-leads.css";
-@import "./styles/visual-stage04-lead-detail.css";
-@import "./styles/visual-stage05-clients.css";
-@import "./styles/visual-stage06-client-detail.css";
-@import "./styles/visual-stage07-cases.css";
-@import "./styles/visual-stage08-case-detail.css";
-@import './styles/visual-stage13-case-detail-vnext.css';
-@import './styles/visual-stage18-leads-hard-1to1.css';
-@import './styles/visual-stage19-clients-safe-css.css';
-@import './styles/visual-stage20-tasks-safe-css.css';
-@import './styles/visual-stage21-today-final-lock.css';
-@import './styles/visual-stage25-leads-full-jsx-html-rebuild.css';
-@import './styles/visual-stage26-leads-visual-alignment-fix.css';
-@import './styles/visual-stage27-cases-vnext.css';
-@import './styles/visual-stage28-tasks-vnext.css';
-@import './styles/visual-stage29-calendar-vnext.css';
-@import './styles/visual-stage30-tasks-compact-after-calendar.css';
-@import './styles/tasks-header-stage45b-cleanup.css';
-@import "./styles/quick-lead-capture-stage27.css";
-@import './styles/stage37-unified-page-head-and-metrics.css';
-@import './styles/stage38-metrics-and-relations-polish.css';
-
-/* 6. legacy imports */
+/* 5. Legacy imports */
 @import './styles/legacy/legacy-imports.css';
 
-/* 7. temporary overrides */
+/* 6. Temporary overrides */
 @import './styles/temporary/temporary-overrides.css';
 
-/* 8. emergency hotfixes */
+/* 7. Emergency hotfixes */
 @import './styles/emergency/emergency-hotfixes.css';
 
 @theme {
