@@ -8,6 +8,7 @@ import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at', 'primary_case_id']);
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
+const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'client delete archives client; active cases/tasks/events hide by archived parent';
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -97,8 +98,10 @@ export default async function handler(req: any, res: any) {
       }
 
       const requestedId = asText(req.query?.id);
-      const base = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
-      const fallback = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
+      const includeArchivedClientsForCascade = ['1', 'true', 'yes'].includes(asText(req.query?.includeArchived).toLowerCase());
+      const activeClientArchiveFilterForCascade = !requestedId && !includeArchivedClientsForCascade ? 'archived_at=is.null&' : '';
+      const base = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
+      const fallback = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
       let normalized: ReturnType<typeof normalizeClient>[] = [];
       try {
         const result = await selectFirstAvailable([base, fallback]);
@@ -188,8 +191,9 @@ export default async function handler(req: any, res: any) {
         return;
       }
       await requireScopedRow('clients', id, workspaceId, 'CLIENT_NOT_FOUND');
-      await deleteByIdScoped('clients', id, workspaceId);
-      res.status(200).json({ ok: true, id });
+      const archivedAt = new Date().toISOString();
+      await updateWithSchemaFallback(id, workspaceId, { archived_at: archivedAt, updated_at: archivedAt });
+      res.status(200).json({ ok: true, id, archivedAt, mode: CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 });
       return;
     }
 

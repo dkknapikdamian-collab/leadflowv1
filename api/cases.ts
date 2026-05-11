@@ -13,6 +13,7 @@ const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
 const CLOSEFLOW_CLIENT_PRIMARY_CASE_ETAP7_API_GUARD = 'primaryForClient replacePrimaryCase clients.primary_case_id';
+const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'case/client archive keeps calendar links and hides by parent archive';
 
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency',
   'contract_value',
@@ -148,6 +149,19 @@ async function setClientPrimaryCaseForApi(workspaceId: string, clientId: string,
   });
 }
 
+async function getArchivedClientIdsForCaseListCascade(workspaceId: string) {
+  const rows = await safeSelectRows(withWorkspaceFilter('clients?select=id,archived_at&archived_at=not.is.null&limit=1000', workspaceId));
+  return new Set(rows.map((row) => asText(row.id)).filter(Boolean));
+}
+
+function caseRowIsArchivedByStatus(row: Record<string, unknown>) {
+  return asText(row.status).toLowerCase() === 'archived';
+}
+
+function caseRowClientId(row: Record<string, unknown>) {
+  return asText(row.client_id || row.clientId);
+}
+
 async function findExistingClient(workspaceId: string, input: { clientId?: unknown; clientEmail?: unknown; clientPhone?: unknown; clientName?: unknown }) {
   const explicitClientId = asNullableUuid(input.clientId);
   if (explicitClientId) {
@@ -224,6 +238,7 @@ export default async function handler(req: any, res: any) {
       const requestedClientId = asNullableUuid(req.query?.clientId);
       const requestedLeadId = asNullableUuid(req.query?.leadId);
       const requestedStatus = asText(req.query?.status);
+      const includeArchivedCasesForCascade = ['1', 'true', 'yes'].includes(asText(req.query?.includeArchived).toLowerCase());
       const caseFilters = [
         requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : '',
         requestedClientId ? `client_id=eq.${encodeURIComponent(requestedClientId)}&` : '',
@@ -238,6 +253,10 @@ export default async function handler(req: any, res: any) {
           withWorkspaceFilter(`cases?select=*&${caseFilters}order=created_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
         ]);
         rows = result.data as Record<string, unknown>[];
+        if (!requestedId && !includeArchivedCasesForCascade) {
+          const archivedClientIdsForCascade = await getArchivedClientIdsForCaseListCascade(workspaceId);
+          rows = rows.filter((row) => !caseRowIsArchivedByStatus(row) && !archivedClientIdsForCascade.has(caseRowClientId(row)));
+        }
       } catch (error) {
         if (!isMissingCasesTableError(error)) throw error;
         rows = [];
@@ -472,15 +491,10 @@ export default async function handler(req: any, res: any) {
 
       const nowIso = new Date().toISOString();
 
-      await bestEffortPatch(withWorkspaceFilter(`work_items?case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
-        case_id: null,
-        case_title: null,
+      await updateCaseWithSchemaFallback(id, workspaceId, {
+        status: 'archived',
         updated_at: nowIso,
-      });
-
-      await bestEffortPatch(withWorkspaceFilter(`leads?linked_case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
-        linked_case_id: null,
-        updated_at: nowIso,
+        last_activity_at: nowIso,
       });
 
       await bestEffortPatch(withWorkspaceFilter(`clients?primary_case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
@@ -488,12 +502,7 @@ export default async function handler(req: any, res: any) {
         updated_at: nowIso,
       });
 
-      await bestEffortDelete(`client_portal_tokens?case_id=eq.${encodeURIComponent(id)}`);
-      await bestEffortDelete(`case_items?case_id=eq.${encodeURIComponent(id)}`);
-      await bestEffortDelete(withWorkspaceFilter(`activities?case_id=eq.${encodeURIComponent(id)}`, workspaceId));
-      await deleteByIdScoped('cases', id, workspaceId);
-
-      res.status(200).json({ ok: true, id });
+      res.status(200).json({ ok: true, id, archivedAt: nowIso, mode: CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 });
       return;
     }
 

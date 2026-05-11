@@ -60,6 +60,7 @@ type EntityConflictCheckInput = {
 
 type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unknown> };
 
+const CLOSEFLOW_CALENDAR_PARENT_ARCHIVE_FILTER_V1 = 'calendar hides tasks/events whose client or case parent is archived';
 const API_GET_CACHE_TTL_MS = 10_000;
 export const CLOSEFLOW_DATA_MUTATED_EVENT = 'closeflow:data-mutated';
 const DEV_PREVIEW_DATA_FLAG = 'closeflow:dev-preview-data';
@@ -270,6 +271,47 @@ async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   }
 }
 
+function getRowIdForArchiveCascade(row: Record<string, unknown>) {
+  return String((row as any).id || '').trim();
+}
+
+function getRowClientIdForArchiveCascade(row: Record<string, unknown>) {
+  return String((row as any).clientId || (row as any).client_id || '').trim();
+}
+
+function getRowCaseIdForArchiveCascade(row: Record<string, unknown>) {
+  return String((row as any).caseId || (row as any).case_id || '').trim();
+}
+
+function rowIsClientArchivedForCascade(row: Record<string, unknown>) {
+  return Boolean((row as any).archivedAt || (row as any).archived_at);
+}
+
+function rowIsCaseArchivedForCascade(row: Record<string, unknown>, archivedClientIds: Set<string>) {
+  const status = String((row as any).status || '').trim().toLowerCase();
+  return status === 'archived' || archivedClientIds.has(getRowClientIdForArchiveCascade(row));
+}
+
+async function buildCalendarParentArchiveIndexForCascade() {
+  const [clientRows, caseRows] = await Promise.all([
+    callApi<Record<string, unknown>[]>('/api/clients?includeArchived=1').catch(() => []),
+    callApi<Record<string, unknown>[]>('/api/cases?includeArchived=1').catch(() => []),
+  ]);
+  const archivedClientIds = new Set(clientRows.filter(rowIsClientArchivedForCascade).map(getRowIdForArchiveCascade).filter(Boolean));
+  const archivedCaseIds = new Set(caseRows.filter((row) => rowIsCaseArchivedForCascade(row, archivedClientIds)).map(getRowIdForArchiveCascade).filter(Boolean));
+  return { archivedClientIds, archivedCaseIds };
+}
+
+function filterCalendarRowsByActiveParentsForCascade(rows: Record<string, unknown>[], index: { archivedClientIds: Set<string>; archivedCaseIds: Set<string> }) {
+  return rows.filter((row) => {
+    const clientId = getRowClientIdForArchiveCascade(row);
+    const caseId = getRowCaseIdForArchiveCascade(row);
+    if (clientId && index.archivedClientIds.has(clientId)) return false;
+    if (caseId && index.archivedCaseIds.has(caseId)) return false;
+    return true;
+  });
+}
+
 function sanitizeLeadCompanyForNotNull(input: LeadInsertInput): LeadInsertInput {
   // CLOSEFLOW_LEAD_COMPANY_NOT_NULL_REPAIR_V25
   return { ...input, company: typeof input.company === 'string' ? input.company.trim() : '' };
@@ -293,9 +335,13 @@ export const createLeadFromAiDraftApprovalInSupabase = insertLeadToSupabase;
 export async function startLeadServiceInSupabase(input: { id: string; title: string; caseStatus?: string; clientName?: string; clientEmail?: string; clientPhone?: string; workspaceId?: string }) {
   return callApi<Record<string, unknown>>('/api/leads', { method: 'POST', body: JSON.stringify({ action: 'start_service', ...input }) });
 }
-export async function fetchClientsFromSupabase() {
-  if (isDevPreviewDataEnabled()) return getDevPreviewData().clients as Record<string, unknown>[];
-  return callApi<Record<string, unknown>[]>('/api/clients').then(normalizeClientListContract);
+export async function fetchClientsFromSupabase(params?: { includeArchived?: boolean }) {
+  if (isDevPreviewDataEnabled()) {
+    const rows = getDevPreviewData().clients as Record<string, unknown>[];
+    return params?.includeArchived ? rows : rows.filter((row) => !rowIsClientArchivedForCascade(row));
+  }
+  const query = params?.includeArchived ? '?includeArchived=1' : '';
+  return callApi<Record<string, unknown>[]>(`/api/clients${query}`).then(normalizeClientListContract);
 }
 export async function fetchClientByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row)); }
 export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>)) }); }
@@ -317,6 +363,7 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
       if (params?.caseId && String((row as any).caseId || '') !== params.caseId) return false;
       if (params?.clientId && String((row as any).clientId || '') !== params.clientId) return false;
       if (params?.status && String((row as any).status || '') !== params.status) return false;
+      if (!params?.includeArchived && String((row as any).status || '').toLowerCase() === 'archived') return false;
       return true;
     }));
   }
@@ -411,16 +458,30 @@ export async function fetchLeadsFromSupabase(params?: { clientId?: string; linke
 }
 export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`).then((row) => normalizeLeadContract(row)); }
 export async function fetchTasksFromSupabase() {
-  if (isDevPreviewDataEnabled()) return normalizeTaskListContract(getDevPreviewData().tasks as Record<string, unknown>[]);
+  if (isDevPreviewDataEnabled()) {
+    const normalizedTasks = normalizeTaskListContract(getDevPreviewData().tasks as Record<string, unknown>[]);
+    const archivedClientIds = new Set((getDevPreviewData().clients as Record<string, unknown>[]).filter(rowIsClientArchivedForCascade).map(getRowIdForArchiveCascade).filter(Boolean));
+    const archivedCaseIds = new Set((getDevPreviewData().cases as Record<string, unknown>[]).filter((row) => rowIsCaseArchivedForCascade(row, archivedClientIds)).map(getRowIdForArchiveCascade).filter(Boolean));
+    return filterCalendarRowsByActiveParentsForCascade(normalizedTasks, { archivedClientIds, archivedCaseIds });
+  }
   if (shouldUseDevNoAuthMocks()) return [];
-  return callApi<Record<string, unknown>[]>('/api/tasks').then(normalizeTaskListContract);
+  const normalizedTasks = await callApi<Record<string, unknown>[]>('/api/tasks').then(normalizeTaskListContract);
+  const archiveIndex = await buildCalendarParentArchiveIndexForCascade();
+  return filterCalendarRowsByActiveParentsForCascade(normalizedTasks, archiveIndex);
 }
 export async function fetchEventsFromSupabase() {
-  if (isDevPreviewDataEnabled()) return normalizeEventListContract(getDevPreviewData().events as Record<string, unknown>[]);
+  if (isDevPreviewDataEnabled()) {
+    const normalizedEvents = normalizeEventListContract(getDevPreviewData().events as Record<string, unknown>[]);
+    const archivedClientIds = new Set((getDevPreviewData().clients as Record<string, unknown>[]).filter(rowIsClientArchivedForCascade).map(getRowIdForArchiveCascade).filter(Boolean));
+    const archivedCaseIds = new Set((getDevPreviewData().cases as Record<string, unknown>[]).filter((row) => rowIsCaseArchivedForCascade(row, archivedClientIds)).map(getRowIdForArchiveCascade).filter(Boolean));
+    return filterCalendarRowsByActiveParentsForCascade(normalizedEvents, { archivedClientIds, archivedCaseIds });
+  }
   if (shouldUseDevNoAuthMocks()) return [];
-  return callApi<Record<string, unknown>[]>('/api/events').then(normalizeEventListContract);
+  const normalizedEvents = await callApi<Record<string, unknown>[]>('/api/events').then(normalizeEventListContract);
+  const archiveIndex = await buildCalendarParentArchiveIndexForCascade();
+  return filterCalendarRowsByActiveParentsForCascade(normalizedEvents, archiveIndex);
 }
-export async function fetchCasesFromSupabase(params?: { clientId?: string; leadId?: string; status?: string }) {
+export async function fetchCasesFromSupabase(params?: { clientId?: string; leadId?: string; status?: string; includeArchived?: boolean }) {
   if (isDevPreviewDataEnabled()) {
     const all = getDevPreviewData().cases as Record<string, unknown>[];
     return normalizeCaseListContract(all.filter((row) => {
@@ -435,6 +496,7 @@ export async function fetchCasesFromSupabase(params?: { clientId?: string; leadI
   if (params?.clientId) query.set('clientId', params.clientId);
   if (params?.leadId) query.set('leadId', params.leadId);
   if (params?.status) query.set('status', params.status);
+  if (params?.includeArchived) query.set('includeArchived', '1');
   return callApi<Record<string, unknown>[]>(`/api/cases${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeCaseListContract);
 }
 export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`).then((row) => normalizeCaseContract(row)); }
