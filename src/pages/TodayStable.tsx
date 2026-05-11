@@ -52,6 +52,7 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
 import '../styles/closeflow-page-header-structure-lock.css';
+import '../styles/closeflow-page-header-copy-left-only.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;

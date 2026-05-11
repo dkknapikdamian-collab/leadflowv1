@@ -93,6 +93,7 @@ import '../styles/visual-stage19-settings-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-structure-lock.css';
+import '../styles/closeflow-page-header-copy-left-only.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';

@@ -33,6 +33,7 @@ import { toDateTimeLocalValue } from '../lib/scheduling';
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
 import '../styles/closeflow-page-header-structure-lock.css';
+import '../styles/closeflow-page-header-copy-left-only.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
@@ -526,7 +527,7 @@ export default function TasksStable() {
           </CardContent>
         </Card>
 
-        <section className="space-y-2" data-cf-page-header-part="copy" data-tasks-compact-list-stage48="true">
+        <section className="space-y-2" data-tasks-compact-list-stage48="true">
           {loading ? (
             <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
           ) : filteredTasks.length ? filteredTasks.map((task) => {

@@ -36,6 +36,7 @@ import {
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
 import '../styles/closeflow-page-header-structure-lock.css';
+import '../styles/closeflow-page-header-copy-left-only.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type ResponseTemplate = {
   id: string;

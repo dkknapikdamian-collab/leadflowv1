@@ -88,6 +88,7 @@ import '../styles/visual-stage20-lead-form-vnext.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
 import '../styles/closeflow-page-header-structure-lock.css';
+import '../styles/closeflow-page-header-copy-left-only.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
