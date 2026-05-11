@@ -714,6 +714,23 @@ function getWorkKindLabel(kind: WorkItem['kind']) {
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CASE_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
+
+function CaseDetailLoadingState() {
+  return (
+    <Layout>
+      <main className="case-detail-page case-detail-page-loading" data-case-detail-loading="true">
+        <section className="case-detail-transition-loader" role="status" aria-live="polite">
+          <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+          <div>
+            <p>Ładowanie sprawy...</p>
+            <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
+          </div>
+        </section>
+      </main>
+    </Layout>
+  );
+}
+
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
@@ -1978,6 +1995,11 @@ function CaseItemDialog({
   onChange: (value: { title: string; description: string; type: string; isRequired: boolean; dueDate: string }) => void;
   onSubmit: () => void;
 }) {
+  /* CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_GUARD_2026_05_11 */
+  if (loading) {
+    return <CaseDetailLoadingState />;
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>

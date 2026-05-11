@@ -1327,3 +1327,40 @@ aside.case-detail-right-rail::after {
   font-weight: 800;
   color: #334155;
 }
+
+
+/* CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_STYLE_2026_05_11 */
+.case-detail-page-loading {
+  min-height: min(72vh, 760px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.case-detail-transition-loader {
+  width: min(520px, 100%);
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  border: 1px solid rgba(139, 92, 246, 0.22);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 22px 70px rgba(15, 23, 42, 0.08);
+  padding: 20px;
+  color: #334155;
+}
+
+.case-detail-transition-loader p {
+  margin: 0;
+  font-weight: 800;
+  color: #111827;
+}
+
+.case-detail-transition-loader span {
+  display: block;
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #64748b;
+}
