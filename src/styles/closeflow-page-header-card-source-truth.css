@@ -603,7 +603,7 @@
   gap: var(--cf-page-header-actions-gap) !important;
 }
 
-#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.text-xs, .text-[12px], small, .cf-page-header-meta),
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.text-xs, .text-\[12px\], small, .cf-page-header-meta),
 #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-meta="true"] {
   color: var(--cf-page-header-meta-color) !important;
   -webkit-text-fill-color: var(--cf-page-header-meta-color) !important;
