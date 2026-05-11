@@ -640,7 +640,8 @@
     "check:closeflow-client-primary-case": "node scripts/check-closeflow-client-primary-case.cjs",
     "check:closeflow-stage-polish-guard": "node scripts/check-closeflow-stage-polish-guard.cjs",
     "check:closeflow-client-finance-summary": "node scripts/check-closeflow-client-finance-summary.cjs",
-    "check:closeflow-client-card-next-action-layout": "node scripts/check-closeflow-client-card-next-action-layout.cjs"
+    "check:closeflow-client-card-next-action-layout": "node scripts/check-closeflow-client-card-next-action-layout.cjs",
+    "check:closeflow-lead-detail-polish-copy": "node scripts/check-closeflow-lead-detail-polish-copy.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
