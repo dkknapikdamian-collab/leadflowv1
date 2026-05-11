@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /* CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_CHECK_2026_05_11 */
-/* CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_CHECK_ACCEPT_INLINE_FIX_2026_05_11 */
-const fs = require('fs');
-const path = require('path');
+/* CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_CHECK_SYNTAX_FIX_2026_05_11 */
+const fs = require('node:fs');
+const path = require('node:path');
 
 const repoRoot = process.cwd();
 const caseDetailPath = path.join(repoRoot, 'src/pages/CaseDetail.tsx');
@@ -16,6 +16,10 @@ function fail(message) {
 
 function assert(condition, message) {
   if (!condition) fail(message);
+}
+
+function read(relativePath) {
+  return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
 assert(fs.existsSync(caseDetailPath), 'Brak src/pages/CaseDetail.tsx');
@@ -47,8 +51,7 @@ for (const forbidden of forbiddenInLoader) {
   assert(!helperBlock.includes(forbidden), 'Loader nie może zawierać danych/paneli biznesowych: ' + forbidden);
 }
 
-const finalReturnIndex = source.lastIndexOf('
-  return (');
+const finalReturnIndex = source.lastIndexOf('\n  return (');
 assert(finalReturnIndex > mainStart, 'Nie znaleziono głównego return JSX w CaseDetail');
 
 const loadingIfMatches = Array.from(source.matchAll(/\bif\s*\(\s*loading\s*\)/g));
@@ -58,13 +61,17 @@ for (const match of loadingIfMatches) {
   const index = match.index || 0;
   assert(index > mainStart, 'if (loading) nie może być poza komponentem CaseDetail');
   assert(index < finalReturnIndex, 'if (loading) musi być przed głównym return JSX CaseDetail');
-  const window = source.slice(index, Math.min(source.length, index + 1400));
+  const loadingBlock = source.slice(index, Math.min(source.length, index + 1800));
   assert(
-    window.includes('<CaseDetailLoadingState') || window.includes('case-detail-loading') || window.includes('Ładowanie sprawy') || window.includes('Ladowanie sprawy'),
+    loadingBlock.includes('<CaseDetailLoadingState') ||
+      loadingBlock.includes('case-detail-loading') ||
+      loadingBlock.includes('case-detail-loading-card') ||
+      loadingBlock.includes('Ładowanie sprawy') ||
+      loadingBlock.includes('Ladowanie sprawy'),
     'Guard loadingu musi zwracać bezpieczny loader albo neutralny loading state'
   );
   for (const forbidden of forbiddenInLoader) {
-    assert(!window.includes(forbidden), 'Guard loadingu nie może renderować paneli biznesowych: ' + forbidden);
+    assert(!loadingBlock.includes(forbidden), 'Guard loadingu nie może renderować paneli biznesowych: ' + forbidden);
   }
 }
 
@@ -79,5 +86,8 @@ const pkgRaw = fs.readFileSync(packagePath, 'utf8').replace(/^\uFEFF/, '');
 const pkg = JSON.parse(pkgRaw);
 assert(pkg.scripts && pkg.scripts['check:case-detail-no-partial-loading'], 'Brak package script check:case-detail-no-partial-loading');
 assert(pkg.scripts['verify:closeflow:quiet'] === 'node scripts/closeflow-release-check-quiet.cjs', 'verify:closeflow:quiet musi zachować kontrakt quiet gate');
+
+const quietGate = read('scripts/closeflow-release-check-quiet.cjs');
+assert(quietGate.includes('case detail no partial loading'), 'Quiet release gate musi uruchamiać case detail no partial loading check');
 
 console.log('✔ CaseDetail nie renderuje częściowych paneli podczas loadingu');
