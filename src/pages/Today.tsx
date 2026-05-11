@@ -326,7 +326,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   if (compact === 'without action' || compact === 'without actions' || compact === 'bez dzialan' || compact === 'bez zaplanowanej akcji') return 'without_action'; // Brak nast─Öpnego kroku
   if (compact === 'without movement' || compact === 'bez ruchu') return 'without_movement';
   if (compact === 'blocked' || compact === 'zablokowane') return 'blocked';
-  if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obs┼éuga') return 'service_transition';
+  if (compact === 'service transition' || compact === 'start i obsluga' || compact === 'start i obsługa') return 'service_transition';
   if (compact === 'calendar' || compact === 'kalendarz') return 'calendar';
   if (compact === 'ai drafts' || compact === 'ai draft' || compact === 'szkice' || compact === 'szkice ai' || compact === 'drafts') return 'ai_drafts';
 
@@ -341,9 +341,9 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
   ) return 'blocked';
 
   if (
-    compact.includes('start i obs┼éuga')
+    compact.includes('start i obsługa')
     || compact.includes('start i obsluga')
-    || compact.includes('obs┼éuga aktywna')
+    || compact.includes('obsługa aktywna')
     || compact.includes('obsluga aktywna')
     || compact.includes('gotowe do uruchomienia')
   ) return 'service_transition';
@@ -405,7 +405,7 @@ function resolveTodayTileShortcutTarget(value: unknown): TodayTileShortcutTarget
 
 function getTodayTileShortcutPatterns(target: TodayTileShortcutTarget) {
   if (target === 'blocked') return ['zablokowane', 'blok'];
-  if (target === 'service_transition') return ['start i obs┼éuga', 'start i obsluga', 'obs┼éuga aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
+  if (target === 'service_transition') return ['start i obsługa', 'start i obsluga', 'obsługa aktywna', 'obsluga aktywna', 'gotowe do uruchomienia'];
   if (target === 'without_action') return ['bez zaplanowanej akcji', 'bez dzialan', 'bez nast─Öpnego', 'bez nastepnego', 'najbli┼╝sza zaplanowana akcja'];
   if (target === 'without_movement') return ['bez ruchu', 'brak zmiany', '7 dni'];
   if (target === 'urgent') return ['pilne', 'zaleg┼ée', 'zalegle', 'dzisiaj', 'dzi┼Ť', 'dzis'];
@@ -1319,7 +1319,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
           </button>
 
           <button type="button" onClick={() => openTodayTopTileShortcut('service_transition')} data-today-pipeline-shortcut="service_transition" className="min-w-[180px] flex-1 rounded-2xl border border-violet-100 bg-violet-50 p-3 transition hover:border-violet-200 hover:bg-violet-100 text-left">
-            <span className="text-xs font-semibold text-violet-700">Start i obs┼éuga</span>
+            <span className="text-xs font-semibold text-violet-700">Start i obsługa</span>
             <strong className="mt-1 block text-2xl text-violet-950">{serviceTransitionCount}</strong>
             <small className="text-xs text-violet-700">Przej┼Ťcia i blokady</small>
           </button>
@@ -2443,7 +2443,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:flex-wrap">
               <div className="min-w-0">
-                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700">Start i obs┼éuga</p>
+                <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-fuchsia-700">Start i obsługa</p>
                 <p className="mt-4 text-4xl font-black tracking-tight text-slate-950">{readyToStartLeads.length + activeServiceLeads.length + blockedCases.length}</p>
               </div>
               <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-fuchsia-200 bg-fuchsia-50 text-fuchsia-700">
@@ -2528,7 +2528,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                       subtitleClassName="text-rose-500 font-medium"
                       className="border-rose-100 bg-rose-50/30"
                       badges={<Badge variant="destructive" className="rounded-full">Przeterminowany</Badge>}
-                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obs┼éugi."
+                      helperText="Lead ma przeterminowany ruch i wymaga decyzji albo przeniesienia do obsługi."
                     />
                   ))}
                 </div>
@@ -2801,7 +2801,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
               <section id="today-section-service-transition" className="space-y-4">
                 <div className="flex items-center gap-2 text-violet-600">
                   <EntityIcon entity="case" className="w-5 h-5" />
-                  <h2 className="text-lg font-bold">Start i obs┼éuga</h2>
+                  <h2 className="text-lg font-bold">Start i obsługa</h2>
                 </div>
                 {readyToStartLeads.length > 0 ? (
                   <TileCard id="today-section-ready-to-start" title="Gotowe do uruchomienia sprawy" subtitle={`${readyToStartLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
@@ -2813,22 +2813,22 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                           title={lead.name}
                           subtitle={lead.company || 'Lead gotowy do startu'}
                           badges={<Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100 border-none">Gotowy do startu</Badge>}
-                          helperText="Wejd┼║ w lead i u┼╝yj akcji ÔÇ×Rozpocznij obs┼éug─ÖÔÇŁ."
+                          helperText="Wejd┼║ w lead i u┼╝yj akcji ÔÇ×Rozpocznij obsług─ÖÔÇŁ."
                         />
                       ))}
                     </div>
                   </TileCard>
                 ) : null}
                 {activeServiceLeads.length > 0 ? (
-                  <TileCard id="today-section-active-service" title="Obs┼éuga aktywna" subtitle={`${activeServiceLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
+                  <TileCard id="today-section-active-service" title="Obsługa aktywna" subtitle={`${activeServiceLeads.length} lead├│w`} collapsedMap={collapsedTiles} onToggle={toggleTile}>
                     <div className="space-y-2">
                       {activeServiceLeads.slice(0, 5).map((lead) => (
                         <LeadLinkCard
                           key={lead.id}
                           leadId={String(lead.id)}
                           title={lead.name}
-                          subtitle={lead.company || 'Obs┼éuga aktywna'}
-                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obs┼éuga aktywna</Badge>}
+                          subtitle={lead.company || 'Obsługa aktywna'}
+                          badges={<Badge variant="outline" className="border-violet-200 text-violet-700">Obsługa aktywna</Badge>}
                         />
                       ))}
                     </div>

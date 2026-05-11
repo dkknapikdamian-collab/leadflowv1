@@ -196,6 +196,15 @@ function compactNextAction(value: string) {
   return firstSentence.slice(0, 56);
 }
 
+function cleanCaseListTitle(value: unknown): string {
+  const text = typeof value === 'string' ? value.trim() : '';
+  if (!text) return '';
+  return text
+    .replace(/\s*-\s*obsługa\s*$/i, '')
+    .replace(/\s*-\s*obs(?:ł|l|\u0142|\u0139\u201a|\u253c\u00e9)uga\s*$/i, '')
+    .trim();
+}
+
 function formatNearestCaseAction(action: ReturnType<typeof getNearestPlannedAction>) {
   if (!action) return 'Brak zaplanowanych działań';
   const parsed = new Date(action.when);
@@ -338,7 +347,7 @@ export default function Cases() {
       clientName: String(client?.name || client?.company || 'Klient'),
       clientEmail: String(client?.email || ''),
       clientPhone: String(client?.phone || ''),
-      title: prev.title.trim() ? prev.title : `${String(client?.name || client?.company || 'Klient')} - obsługa`,
+      title: prev.title.trim() ? cleanCaseListTitle(prev.title) : String(client?.name || client?.company || 'Sprawa bez nazwy'),
     }));
     setShowCreateClientFields(false);
     setIsCreateCaseOpen(true);
@@ -452,7 +461,7 @@ export default function Cases() {
   function handleSelectClientSuggestion(option: ClientOption) {
     setNewCase((prev) => ({
       ...prev,
-      title: prev.title.trim() ? prev.title : `${option.name} - obsługa`,
+      title: prev.title.trim() ? cleanCaseListTitle(prev.title) : option.name || 'Sprawa bez nazwy',
       clientName: option.name,
       clientEmail: option.email,
       clientPhone: option.phone,
@@ -713,7 +722,7 @@ export default function Cases() {
                   const metaParts = [
                     lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
                     lifecycle.waitingApprovalCount > 0 ? `akceptacje ${lifecycle.waitingApprovalCount}` : null,
-                    lifecycle.missingRequiredCount > 0 ? `brakuje ${lifecycle.missingRequiredCount} elementów` : `${percent}% kompletności`,
+                    lifecycle.missingRequiredCount > 0 ? `brakuje ${lifecycle.missingRequiredCount} elementów` : null,
                   ].filter(Boolean);
                   const metaSuffix = metaParts.join(' · ');
                   return (
@@ -721,7 +730,7 @@ export default function Cases() {
                       <span className="index">{index + 1}</span>
                       <span className="lead-main-cell min-w-0">
                         <span className="case-row-title-line">
-                          <Link to={`/case/${record.id}`} className="title">{record.title || 'Sprawa bez tytułu'}</Link>
+                          <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
                           <button
                             type="button"
                             className="btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger"
