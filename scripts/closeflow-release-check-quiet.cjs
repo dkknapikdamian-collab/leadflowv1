@@ -1,3 +1,10 @@
+/* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
+{
+  const { spawnSync } = require('node:child_process');
+  const result = spawnSync(process.execPath, ['scripts/check-closeflow-cases-loader2-import.cjs'], { stdio: 'inherit' });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+/* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_END */
 const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
 const path = require('node:path');
