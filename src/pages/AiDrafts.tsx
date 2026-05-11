@@ -80,6 +80,7 @@ import {
 } from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
+import '../styles/closeflow-page-header-card-source-truth.css';
 type DraftFilter =
   | 'all'
   | 'draft'

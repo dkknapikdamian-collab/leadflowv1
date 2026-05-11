@@ -21,6 +21,7 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
+import '../styles/closeflow-page-header-card-source-truth.css';
 import {
   createCaseInSupabase,
   fetchCasesFromSupabase,

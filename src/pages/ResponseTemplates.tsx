@@ -33,6 +33,7 @@ import {
   updateResponseTemplateInSupabase,
 } from '../lib/supabase-fallback';
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 type ResponseTemplate = {
   id: string;
   name: string;

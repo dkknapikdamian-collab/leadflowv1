@@ -58,6 +58,7 @@ import {
 } from '../lib/supabase-fallback';
 
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 
 type TemplateItemDraft = {

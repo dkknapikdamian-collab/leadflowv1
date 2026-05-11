@@ -104,6 +104,7 @@ import { pl } from 'date-fns/locale';
 import '../styles/visual-stage22-event-form-vnext.css';
 
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 

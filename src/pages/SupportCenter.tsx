@@ -31,6 +31,7 @@ import {
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage17-support-vnext.css';
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 type TicketKind = 'suggestion' | 'problem' | 'support';
 type TicketStatus = 'new' | 'in_progress' | 'answered' | 'closed';
 type TicketReply = { id?: string; authorType?: string; authorLabel?: string; message?: string; createdAt?: any };

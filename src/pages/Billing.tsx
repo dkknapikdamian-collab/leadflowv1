@@ -67,6 +67,7 @@ import {
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage16-billing-vnext.css';
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
 type CheckoutPlanKey = 'basic' | 'pro' | 'ai';

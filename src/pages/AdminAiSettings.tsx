@@ -17,6 +17,7 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
+import '../styles/closeflow-page-header-card-source-truth.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {

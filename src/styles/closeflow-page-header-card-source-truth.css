@@ -1,0 +1,365 @@
+/* CLOSEFLOW_PAGE_HEADER_CARD_SOURCE_TRUTH_STAGE1_2026_05_11
+   owner: CloseFlow Visual System
+   reason: unify top page header cards, typography and header actions without runtime DOM mutation.
+   source_of_truth: this file + closeflow-action-tokens.css variables.
+   scope: top page header cards only.
+*/
+
+:root {
+  --cf-ph-card-bg: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
+  --cf-ph-card-border: rgba(203, 213, 225, 0.86);
+  --cf-ph-card-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
+  --cf-ph-card-radius: 28px;
+  --cf-ph-card-padding-y: 22px;
+  --cf-ph-card-padding-x: 26px;
+
+  --cf-ph-title: #0f172a;
+  --cf-ph-muted: #64748b;
+  --cf-ph-kicker-bg: #eef4ff;
+  --cf-ph-kicker-border: #bfdbfe;
+  --cf-ph-kicker-text: #1d4ed8;
+
+  --cf-ph-primary-bg: #2563eb;
+  --cf-ph-primary-bg-hover: #1d4ed8;
+  --cf-ph-primary-border: #1d4ed8;
+  --cf-ph-primary-text: #ffffff;
+
+  --cf-ph-ai-bg: #eef2ff;
+  --cf-ph-ai-bg-hover: #e0e7ff;
+  --cf-ph-ai-border: #c7d2fe;
+  --cf-ph-ai-text: #4338ca;
+
+  --cf-ph-neutral-bg: #ffffff;
+  --cf-ph-neutral-bg-hover: #f8fafc;
+  --cf-ph-neutral-border: #cbd5e1;
+  --cf-ph-neutral-text: #0f172a;
+
+  --cf-ph-danger-bg: #fff1f2;
+  --cf-ph-danger-bg-hover: #ffe4e6;
+  --cf-ph-danger-border: #fecdd3;
+  --cf-ph-danger-text: #be123c;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 1px solid var(--cf-ph-card-border) !important;
+  border-radius: var(--cf-ph-card-radius) !important;
+  background: var(--cf-ph-card-bg) !important;
+  color: var(--cf-ph-title) !important;
+  box-shadow: var(--cf-ph-card-shadow) !important;
+  padding: var(--cf-ph-card-padding-y) var(--cf-ph-card-padding-x) !important;
+  overflow: visible !important;
+  backdrop-filter: blur(10px);
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+)::before,
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+)::after {
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 0 !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(h1, .cf-page-hero-title) {
+  margin: 6px 0 0 !important;
+  color: var(--cf-ph-title) !important;
+  -webkit-text-fill-color: var(--cf-ph-title) !important;
+  font-size: clamp(24px, 2.4vw, 34px) !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.035em !important;
+  text-shadow: none !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(p, .lead-copy) {
+  color: var(--cf-ph-muted) !important;
+  -webkit-text-fill-color: var(--cf-ph-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  max-width: 760px;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(.kicker, .cf-page-hero-kicker, .ai-drafts-kicker, .activity-kicker, .notifications-kicker, .badge, [class*="kicker"]) {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  gap: 6px !important;
+  border: 1px solid var(--cf-ph-kicker-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-ph-kicker-bg) !important;
+  color: var(--cf-ph-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-kicker-text) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.055em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+  padding: 7px 10px !important;
+  box-shadow: none !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions) {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  min-width: max-content;
+}
+
+/* Header action base. Keep this scoped to top header cards only. */
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(button, a.btn, a[role="button"]) {
+  min-height: 38px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--cf-ph-neutral-border) !important;
+  background: var(--cf-ph-neutral-bg) !important;
+  color: var(--cf-ph-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-neutral-text) !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.075) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(.btn.primary, .cf-header-action--primary, button[type="submit"], .bg-blue-600, .bg-indigo-600, .bg-emerald-600, .bg-green-600) {
+  border-color: var(--cf-ph-primary-border) !important;
+  background: linear-gradient(180deg, #3b82f6 0%, var(--cf-ph-primary-bg) 100%) !important;
+  color: var(--cf-ph-primary-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-primary-text) !important;
+  box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22) !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(.btn.primary, .cf-header-action--primary, button[type="submit"], .bg-blue-600, .bg-indigo-600, .bg-emerald-600, .bg-green-600):hover {
+  background: linear-gradient(180deg, #2563eb 0%, var(--cf-ph-primary-bg-hover) 100%) !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(.btn.soft-blue, [href="/ai-drafts"], [data-stage26-leads-head-ai="true"]) {
+  border-color: var(--cf-ph-ai-border) !important;
+  background: var(--cf-ph-ai-bg) !important;
+  color: var(--cf-ph-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-ai-text) !important;
+  box-shadow: 0 10px 20px rgba(67, 56, 202, 0.12) !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(.btn.soft-blue, [href="/ai-drafts"], [data-stage26-leads-head-ai="true"]):hover {
+  background: var(--cf-ph-ai-bg-hover) !important;
+}
+
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child
+) :is(button, a.btn) svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+@media (max-width: 720px) {
+  :where(
+    .main-leads-html > .page-head,
+    .main-clients-html > .page-head,
+    .main-cases-html > .page-head,
+    .main-calendar-html > .page-head,
+    [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+    .ai-drafts-vnext-page > .ai-drafts-page-header,
+    .activity-vnext-page > .activity-page-header,
+    .notifications-vnext-page > .notifications-page-header,
+    .billing-vnext-page > .billing-header,
+    .support-vnext-page > .support-header,
+    .settings-vnext-page > .settings-header,
+    .cf-html-view > header:first-child
+  ) {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    padding: 20px !important;
+  }
+
+  :where(
+    .main-leads-html > .page-head,
+    .main-clients-html > .page-head,
+    .main-cases-html > .page-head,
+    .main-calendar-html > .page-head,
+    [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+    .ai-drafts-vnext-page > .ai-drafts-page-header,
+    .activity-vnext-page > .activity-page-header,
+    .notifications-vnext-page > .notifications-page-header,
+    .billing-vnext-page > .billing-header,
+    .support-vnext-page > .support-header,
+    .settings-vnext-page > .settings-header,
+    .cf-html-view > header:first-child
+  ) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions) {
+    justify-content: flex-start !important;
+    min-width: 0;
+  }
+}

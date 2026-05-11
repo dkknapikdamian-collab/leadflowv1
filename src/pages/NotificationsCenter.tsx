@@ -53,6 +53,7 @@ import { buildReminderCustomDate } from '../lib/reminders';
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
 

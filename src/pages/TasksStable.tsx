@@ -30,6 +30,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
 const TASKS_VISIBLE_ACTIONS_STAGE47 = 'TASKS_VISIBLE_ACTIONS_STAGE47';
