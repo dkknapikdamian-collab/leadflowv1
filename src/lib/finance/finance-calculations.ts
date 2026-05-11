@@ -1,172 +1,159 @@
-import type {
-  CommissionConfig,
-  CommissionStatus,
-  CommissionStatusInput,
-  FinanceContractInput,
-  FinancePayment,
-  FinanceSummary,
-  FinanceSummaryInput,
-  PaymentStatus,
-  PaymentType,
-} from './finance-types.js';
+import {
+  type CommissionBase,
+  type CommissionMode,
+  type CommissionStatus,
+  type FinanceCommissionInput,
+  type FinancePaymentLike,
+  type FinanceSnapshot,
+  type FinanceSnapshotInput,
+  type NormalizedFinancePayment,
+} from './finance-types';
+import {
+  normalizeCommissionBase,
+  normalizeCommissionMode,
+  normalizeCommissionStatus,
+  normalizeCurrency,
+  normalizeFinanceDate,
+  normalizeFinancePayments,
+  normalizeMoneyAmount,
+} from './finance-normalize';
 
-export function normalizeFinanceNumber(value: unknown) {
-  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
-  if (typeof value !== 'string') return 0;
+export const CLOSEFLOW_FINANCE_CALCULATIONS_FIN1 = 'CLOSEFLOW_FINANCE_CALCULATIONS_FIN1';
 
-  const normalized = value
-    .trim()
-    .replace(/\s+/g, '')
-    .replace(/pln|zł/gi, '')
-    .replace(',', '.')
-    .replace(/[^0-9.-]/g, '');
-  const parsed = Number(normalized);
-  return Number.isFinite(parsed) ? parsed : 0;
+function roundMoney(value: number): number {
+  if (!Number.isFinite(value)) return 0;
+  return Math.round(Math.max(0, value) * 100) / 100;
 }
 
-export function clampFinanceAmount(value: unknown) {
-  return Math.max(0, normalizeFinanceNumber(value));
+function isPaid(payment: NormalizedFinancePayment): boolean {
+  return payment.status === 'paid';
 }
 
-export function normalizeCommissionPercent(value: unknown) {
-  const parsed = normalizeFinanceNumber(value);
-  if (parsed <= 0) return 0;
-  if (parsed > 100) return 100;
-  return parsed;
+function isDue(payment: NormalizedFinancePayment): boolean {
+  return payment.status === 'due';
 }
 
-export function isPaymentStatus(payment: FinancePayment, status: PaymentStatus) {
-  return payment.status === status;
+function isClientCashIn(payment: NormalizedFinancePayment): boolean {
+  return payment.type === 'deposit' || payment.type === 'partial' || payment.type === 'final' || payment.type === 'other';
 }
 
-export function isPaymentType(payment: FinancePayment, type: PaymentType) {
-  return payment.type === type;
+export function calculatePaidAmount(payments: FinancePaymentLike[] | NormalizedFinancePayment[] | null | undefined): number {
+  const normalized = normalizeFinancePayments(payments as FinancePaymentLike[] | null | undefined);
+  const paidIn = normalized
+    .filter((payment) => isPaid(payment) && isClientCashIn(payment))
+    .reduce((sum, payment) => sum + payment.amount, 0);
+  const refunds = normalized
+    .filter((payment) => isPaid(payment) && payment.type === 'refund')
+    .reduce((sum, payment) => sum + payment.amount, 0);
+  return roundMoney(Math.max(0, paidIn - refunds));
 }
 
-export function isCustomerSettlementPayment(payment: FinancePayment) {
-  return ['deposit', 'partial', 'final', 'other'].includes(payment.type);
+export function calculateRemainingAmount(contractValue: unknown, paidAmount: unknown): number {
+  return roundMoney(Math.max(0, normalizeMoneyAmount(contractValue, 0) - normalizeMoneyAmount(paidAmount, 0)));
 }
 
-export function isCommissionPayment(payment: FinancePayment) {
-  return payment.type === 'commission';
-}
-
-export function isRefundPayment(payment: FinancePayment) {
-  return payment.type === 'refund';
-}
-
-export function getSignedPaymentAmount(payment: FinancePayment) {
-  const amount = clampFinanceAmount(payment.amount);
-  return isRefundPayment(payment) ? -amount : amount;
-}
-
-export function sumPayments(payments: FinancePayment[], predicate: (payment: FinancePayment) => boolean) {
-  return payments.reduce((sum, payment) => (predicate(payment) ? sum + getSignedPaymentAmount(payment) : sum), 0);
-}
-
-export function calculatePaidAmount(payments: FinancePayment[] = []) {
-  const paid = sumPayments(
-    payments,
-    (payment) => payment.status === 'paid' && (isCustomerSettlementPayment(payment) || isRefundPayment(payment)),
+export function calculateCommissionPaidAmount(payments: FinancePaymentLike[] | NormalizedFinancePayment[] | null | undefined): number {
+  const normalized = normalizeFinancePayments(payments as FinancePaymentLike[] | null | undefined);
+  return roundMoney(
+    normalized
+      .filter((payment) => isPaid(payment) && payment.type === 'commission')
+      .reduce((sum, payment) => sum + payment.amount, 0),
   );
-  return Math.max(0, paid);
 }
 
-export function calculatePlannedAmount(payments: FinancePayment[] = []) {
-  return sumPayments(payments, (payment) => payment.status === 'planned' && isCustomerSettlementPayment(payment));
+type CommissionAmountInput = FinanceCommissionInput & {
+  contractValue?: number | string | null;
+  paidAmount?: number | string | null;
+};
+
+function getCommissionBaseAmount(base: CommissionBase, input: CommissionAmountInput): number {
+  if (base === 'paid_amount') return normalizeMoneyAmount(input.paidAmount, 0);
+  if (base === 'custom') return normalizeMoneyAmount(input.customBaseAmount, 0);
+  return normalizeMoneyAmount(input.contractValue, 0);
 }
 
-export function calculateDueAmount(payments: FinancePayment[] = []) {
-  return sumPayments(payments, (payment) => payment.status === 'due' && isCustomerSettlementPayment(payment));
+export function calculateCommissionAmount(input: CommissionAmountInput | null | undefined): number {
+  const data = input || {};
+  const mode: CommissionMode = normalizeCommissionMode(data.mode);
+  const base: CommissionBase = normalizeCommissionBase(data.base);
+
+  if (mode === 'none') return 0;
+  if (mode === 'fixed') return roundMoney(normalizeMoneyAmount(data.fixedAmount ?? data.amount, 0));
+
+  const baseAmount = getCommissionBaseAmount(base, data);
+  const rate = normalizeMoneyAmount(data.rate, 0);
+  return roundMoney((baseAmount * rate) / 100);
 }
 
-export function calculateRefundedAmount(payments: FinancePayment[] = []) {
-  return payments
-    .filter((payment) => payment.status === 'paid' && payment.type === 'refund')
-    .reduce((sum, payment) => sum + clampFinanceAmount(payment.amount), 0);
-}
-
-export function calculatePaidCommissionAmount(payments: FinancePayment[] = []) {
-  return payments
-    .filter((payment) => payment.status === 'paid' && isCommissionPayment(payment))
-    .reduce((sum, payment) => sum + clampFinanceAmount(payment.amount), 0);
-}
-
-export function calculateContractValue(input: FinanceContractInput = {}) {
-  const explicit = clampFinanceAmount(input.contractValue ?? input.expectedRevenue);
-  if (explicit > 0) return explicit;
-
-  const paid = clampFinanceAmount(input.paidAmount);
-  const remaining = clampFinanceAmount(input.remainingAmount);
-  return paid + remaining;
-}
-
-export function calculateRemainingAmount(contractValue: unknown, paidAmount: unknown) {
-  return Math.max(0, clampFinanceAmount(contractValue) - clampFinanceAmount(paidAmount));
-}
-
-export function calculateCommissionBaseAmount(config: CommissionConfig, contractValue: unknown, paidAmount: unknown) {
-  if (config.base === 'paid_amount') return clampFinanceAmount(paidAmount);
-  if (config.base === 'custom') return clampFinanceAmount(config.customBaseAmount);
-  return clampFinanceAmount(contractValue);
-}
-
-export function calculateCommissionAmount(config: CommissionConfig | null | undefined, contractValue: unknown, paidAmount: unknown) {
-  if (!config || config.mode === 'none') return 0;
-  if (config.mode === 'fixed') return clampFinanceAmount(config.fixedAmount);
-
-  const baseAmount = calculateCommissionBaseAmount(config, contractValue, paidAmount);
-  const percent = normalizeCommissionPercent(config.percent);
-  return Math.round(baseAmount * (percent / 100) * 100) / 100;
-}
-
-export function isIsoBefore(left: string | null | undefined, right: string | null | undefined) {
-  if (!left || !right) return false;
-  const leftTime = new Date(left).getTime();
-  const rightTime = new Date(right).getTime();
-  if (!Number.isFinite(leftTime) || !Number.isFinite(rightTime)) return false;
-  return leftTime < rightTime;
-}
-
-export function resolveCommissionStatus(input: CommissionStatusInput): CommissionStatus {
-  const commissionAmount = clampFinanceAmount(input.commissionAmount);
-  const paidCommissionAmount = clampFinanceAmount(input.paidCommissionAmount);
-
+function deriveCommissionStatus({
+  explicitStatus,
+  commissionAmount,
+  commissionPaidAmount,
+  dueAt,
+  now,
+}: {
+  explicitStatus?: CommissionStatus;
+  commissionAmount: number;
+  commissionPaidAmount: number;
+  dueAt?: string | null;
+  now?: Date | string | number | null;
+}): CommissionStatus {
+  if (explicitStatus && explicitStatus !== 'not_set') return explicitStatus;
   if (commissionAmount <= 0) return 'not_set';
-  if (paidCommissionAmount >= commissionAmount) return 'paid';
-  if (paidCommissionAmount > 0) return 'partially_paid';
-  if (input.dueAt && input.nowIso && isIsoBefore(input.dueAt, input.nowIso)) return 'overdue';
-  if (input.isDue || input.dueAt) return 'due';
+  if (commissionPaidAmount >= commissionAmount) return 'paid';
+  if (commissionPaidAmount > 0) return 'partially_paid';
+
+  const dueDate = normalizeFinanceDate(dueAt);
+  const nowDate = normalizeFinanceDate(now) || new Date();
+  if (dueDate && dueDate.getTime() < nowDate.getTime()) return 'overdue';
   return 'expected';
 }
 
-export function buildFinanceSummary(input: FinanceSummaryInput = {}): FinanceSummary {
-  const payments = input.payments || [];
-  const paidAmount = calculatePaidAmount(payments);
-  const contractValue = calculateContractValue({
-    contractValue: input.contractValue ?? input.expectedRevenue,
+export function buildFinanceSnapshot(input: FinanceSnapshotInput | null | undefined): FinanceSnapshot {
+  const data = input || {};
+  const currency = normalizeCurrency(data.currency, 'PLN');
+  const payments = normalizeFinancePayments(data.payments, currency);
+  const contractValue = roundMoney(normalizeMoneyAmount(data.contractValue, 0));
+  const explicitPaidAmount = data.paidAmount == null ? Number.NaN : normalizeMoneyAmount(data.paidAmount, Number.NaN);
+  const paidAmount = roundMoney(Number.isFinite(explicitPaidAmount) ? explicitPaidAmount : calculatePaidAmount(payments));
+  const remainingAmount = calculateRemainingAmount(contractValue, paidAmount);
+  const commission = data.commission || {};
+  const commissionMode = normalizeCommissionMode(commission.mode);
+  const commissionBase = normalizeCommissionBase(commission.base);
+  const commissionAmount = calculateCommissionAmount({
+    ...commission,
+    mode: commissionMode,
+    base: commissionBase,
+    contractValue,
     paidAmount,
-    remainingAmount: input.remainingAmount,
   });
-  const commissionAmount = calculateCommissionAmount(input.commission, contractValue, paidAmount);
-  const paidCommissionAmount = calculatePaidCommissionAmount(payments);
-  const commissionStatus = resolveCommissionStatus({
+  const commissionPaidAmount = roundMoney(
+    commission.paidAmount == null ? calculateCommissionPaidAmount(payments) : normalizeMoneyAmount(commission.paidAmount, 0),
+  );
+  const commissionRemainingAmount = calculateRemainingAmount(commissionAmount, commissionPaidAmount);
+  const explicitCommissionStatus = normalizeCommissionStatus(commission.status);
+  const commissionStatus = deriveCommissionStatus({
+    explicitStatus: explicitCommissionStatus,
     commissionAmount,
-    paidCommissionAmount,
-    dueAt: input.commissionDueAt,
-    nowIso: input.nowIso,
+    commissionPaidAmount,
+    dueAt: commission.dueAt,
+    now: data.now,
   });
 
   return {
     contractValue,
     paidAmount,
-    plannedAmount: calculatePlannedAmount(payments),
-    dueAmount: calculateDueAmount(payments),
-    refundedAmount: calculateRefundedAmount(payments),
-    remainingAmount: calculateRemainingAmount(contractValue, paidAmount),
-    commissionAmount,
-    paidCommissionAmount,
+    remainingAmount,
+    commissionMode,
+    commissionBase,
     commissionStatus,
-    currency: String(input.currency || input.commission?.currency || payments[0]?.currency || 'PLN').toUpperCase(),
+    commissionAmount,
+    commissionPaidAmount,
+    commissionRemainingAmount,
+    currency,
+    paymentCount: payments.length,
+    paidPaymentCount: payments.filter(isPaid).length,
+    duePaymentCount: payments.filter(isDue).length,
+    refundAmount: roundMoney(payments.filter((payment) => isPaid(payment) && payment.type === 'refund').reduce((sum, payment) => sum + payment.amount, 0)),
   };
 }

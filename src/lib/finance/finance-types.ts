@@ -1,10 +1,10 @@
-export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT = 'FIN-1_CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_V1' as const;
+export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1 = 'CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1';
 
 export const COMMISSION_MODES = ['none', 'percent', 'fixed'] as const;
-export type CommissionMode = typeof COMMISSION_MODES[number];
+export type CommissionMode = (typeof COMMISSION_MODES)[number];
 
 export const COMMISSION_BASES = ['contract_value', 'paid_amount', 'custom'] as const;
-export type CommissionBase = typeof COMMISSION_BASES[number];
+export type CommissionBase = (typeof COMMISSION_BASES)[number];
 
 export const COMMISSION_STATUSES = [
   'not_set',
@@ -14,84 +14,81 @@ export const COMMISSION_STATUSES = [
   'paid',
   'overdue',
 ] as const;
-export type CommissionStatus = typeof COMMISSION_STATUSES[number];
+export type CommissionStatus = (typeof COMMISSION_STATUSES)[number];
 
 export const PAYMENT_TYPES = ['deposit', 'partial', 'final', 'commission', 'refund', 'other'] as const;
-export type PaymentType = typeof PAYMENT_TYPES[number];
+export type PaymentType = (typeof PAYMENT_TYPES)[number];
 
 export const PAYMENT_STATUSES = ['planned', 'due', 'paid', 'cancelled'] as const;
-export type PaymentStatus = typeof PAYMENT_STATUSES[number];
+export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
-export type FinanceEntityType = 'lead' | 'client' | 'case';
+export type FinanceCurrency = string;
 
-export type CurrencyCode = string;
-
-export type MoneyValue = {
-  amount: number;
-  currency: CurrencyCode;
+export type FinancePaymentLike = {
+  id?: string;
+  type?: PaymentType | string | null;
+  status?: PaymentStatus | string | null;
+  amount?: number | string | null;
+  currency?: FinanceCurrency | string | null;
+  paidAt?: string | null;
+  paid_at?: string | null;
+  dueAt?: string | null;
+  due_at?: string | null;
+  note?: string | null;
 };
 
-export type FinanceRelationRef = {
-  workspaceId: string;
-  leadId?: string | null;
-  clientId?: string | null;
-  caseId?: string | null;
-};
-
-export type FinancePayment = FinanceRelationRef & {
-  id: string;
+export type NormalizedFinancePayment = {
+  id?: string;
   type: PaymentType;
   status: PaymentStatus;
   amount: number;
-  currency: CurrencyCode;
+  currency: FinanceCurrency;
   paidAt: string | null;
   dueAt: string | null;
   note: string;
-  createdAt: string | null;
-  updatedAt: string | null;
 };
 
-export type CommissionConfig = {
-  mode: CommissionMode;
-  base: CommissionBase;
-  percent: number | null;
-  fixedAmount: number | null;
-  customBaseAmount: number | null;
-  currency: CurrencyCode;
-};
-
-export type FinanceContractInput = {
-  contractValue?: number | string | null;
-  expectedRevenue?: number | string | null;
+export type FinanceCommissionInput = {
+  mode?: CommissionMode | string | null;
+  base?: CommissionBase | string | null;
+  status?: CommissionStatus | string | null;
+  rate?: number | string | null;
+  amount?: number | string | null;
+  fixedAmount?: number | string | null;
+  customBaseAmount?: number | string | null;
   paidAmount?: number | string | null;
-  remainingAmount?: number | string | null;
-  currency?: string | null;
-};
-
-export type CommissionStatusInput = {
-  commissionAmount: number;
-  paidCommissionAmount?: number | null;
   dueAt?: string | null;
-  nowIso?: string | null;
-  isDue?: boolean;
 };
 
-export type FinanceSummaryInput = FinanceContractInput & {
-  payments?: FinancePayment[];
-  commission?: CommissionConfig | null;
-  commissionDueAt?: string | null;
-  nowIso?: string | null;
+export type FinanceSnapshotInput = {
+  contractValue?: number | string | null;
+  paidAmount?: number | string | null;
+  currency?: FinanceCurrency | string | null;
+  payments?: FinancePaymentLike[] | null;
+  commission?: FinanceCommissionInput | null;
+  now?: Date | string | number | null;
 };
 
-export type FinanceSummary = {
+export type FinanceSnapshot = {
   contractValue: number;
   paidAmount: number;
-  plannedAmount: number;
-  dueAmount: number;
-  refundedAmount: number;
   remainingAmount: number;
-  commissionAmount: number;
-  paidCommissionAmount: number;
+  commissionMode: CommissionMode;
+  commissionBase: CommissionBase;
   commissionStatus: CommissionStatus;
-  currency: CurrencyCode;
+  commissionAmount: number;
+  commissionPaidAmount: number;
+  commissionRemainingAmount: number;
+  currency: FinanceCurrency;
+  paymentCount: number;
+  paidPaymentCount: number;
+  duePaymentCount: number;
+  refundAmount: number;
 };
+
+export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {
+  contractValue: 'WartoĹ›Ä‡ kontraktu/sprawy. Nie oznacza jeszcze pieniÄ™dzy pobranych od klienta.',
+  paidAmount: 'Suma wpĹ‚at klienta z payment type deposit/partial/final/other o statusie paid, pomniejszona o refundy paid.',
+  commission: 'Prowizja operatora. Nie jest tym samym co pĹ‚atnoĹ›Ä‡ klienta i nie jest tym samym co dealValue leada.',
+  noRuntimeMigration: 'FIN-1 nie tworzy UI, migracji DB ani panelu finansĂłw.',
+} as const;

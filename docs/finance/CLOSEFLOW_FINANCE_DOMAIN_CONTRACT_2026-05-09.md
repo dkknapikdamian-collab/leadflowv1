@@ -1,226 +1,158 @@
-# CloseFlow — FIN-1 Finance domain contract
+# CloseFlow Finance Domain Contract
 
-Data: 2026-05-09  
-Status: wdrożenie kontraktu domenowego bez podpinania do UI/API  
-Zakres: `src/lib/finance/*`, dokumentacja i guard statyczny
+Marker: `CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1`  
+Data dokumentu: 2026-05-09  
+Etap: FIN-1 â€” Finance domain contract  
+Tryb: domenowy kontrakt finansowy bez UI, bez migracji DB, bez panelu prowizji
 
 ## Cel
 
-FIN-1 tworzy jedno miejsce prawdy dla podstawowych pojęć finansowych w CloseFlow.
+FIN-1 ustala jeden model prowizji, wartoĹ›ci i wpĹ‚at, z ktĂłrego pĂłĹşniej majÄ… korzystaÄ‡ Lead, Client i Case.
 
-Ten etap nie wdraża jeszcze płatności jako pełnego modułu. To jest fundament: typy, normalizacja i czyste obliczenia, które później można bezpiecznie podpiąć pod `/api/payments`, widoki spraw, leadów, klientów i rozliczeń.
+To nie jest etap UI. To nie jest etap Supabase migration. To nie jest panel finansĂłw. To jest kontrakt domenowy, ĹĽeby nie mieszaÄ‡ wartoĹ›ci leada, wartoĹ›ci sprawy, wpĹ‚at klienta i prowizji operatora.
 
-## Pliki dodane
+## GĹ‚Ăłwna decyzja modelowa
+
+| PojÄ™cie | Znaczenie | ĹąrĂłdĹ‚o docelowe |
+|---|---|---|
+| `contractValue` | wartoĹ›Ä‡ kontraktu/sprawy; kwota bazowa, niekoniecznie pobrana | Case albo przeniesiony lead |
+| `paidAmount` | realnie zapĹ‚acone przez klienta wpĹ‚aty typu `deposit`, `partial`, `final`, `other` o statusie `paid`, pomniejszone o refundy | Payments |
+| `remainingAmount` | `contractValue - paidAmount`, minimum `0` | funkcja `calculateRemainingAmount` |
+| `commissionAmount` | prowizja naleĹĽna operatorowi/licencjobiorcy | funkcja `calculateCommissionAmount` |
+| `commissionPaidAmount` | suma pĹ‚atnoĹ›ci typu `commission` ze statusem `paid` | Payments |
+| `commissionRemainingAmount` | `commissionAmount - commissionPaidAmount`, minimum `0` | funkcja `calculateRemainingAmount` |
+
+## Typy minimum
+
+```ts
+type CommissionMode = 'none' | 'percent' | 'fixed';
+```
+
+```ts
+type CommissionBase =
+ | 'contract_value'
+ | 'paid_amount'
+ | 'custom';
+```
+
+```ts
+type CommissionStatus =
+ | 'not_set'
+ | 'expected'
+ | 'due'
+ | 'partially_paid'
+ | 'paid'
+ | 'overdue';
+```
+
+```ts
+type PaymentType =
+ | 'deposit'
+ | 'partial'
+ | 'final'
+ | 'commission'
+ | 'refund'
+ | 'other';
+```
+
+```ts
+type PaymentStatus =
+ | 'planned'
+ | 'due'
+ | 'paid'
+ | 'cancelled';
+```
+
+## Pliki kontraktu
 
 - `src/lib/finance/finance-types.ts`
-- `src/lib/finance/finance-calculations.ts`
 - `src/lib/finance/finance-normalize.ts`
-- `docs/finance/CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_2026-05-09.md`
-- `scripts/check-closeflow-finance-domain-contract.cjs`
+- `src/lib/finance/finance-calculations.ts`
 
-## Model domeny
+## Funkcje publiczne
+
+| Funkcja | Rola |
+|---|---|
+| `calculateCommissionAmount` | liczy prowizjÄ™ wedĹ‚ug `CommissionMode` i `CommissionBase` |
+| `calculatePaidAmount` | liczy realnie zapĹ‚acone wpĹ‚aty klienta, z pominiÄ™ciem prowizji i odjÄ™ciem refundĂłw |
+| `calculateRemainingAmount` | liczy pozostaĹ‚Ä… kwotÄ™, zawsze minimum `0` |
+| `calculateCommissionPaidAmount` | liczy zapĹ‚acone prowizje z payments typu `commission` |
+| `buildFinanceSnapshot` | buduje jeden snapshot finansowy dla Lead/Client/Case |
+
+## Zasady liczenia
 
 ### CommissionMode
 
-Dozwolone wartości:
-
-```ts
-none | percent | fixed
-```
-
-Znaczenie:
-
-- `none` — brak prowizji,
-- `percent` — prowizja procentowa,
-- `fixed` — prowizja kwotowa.
+| Tryb | Znaczenie |
+|---|---|
+| `none` | prowizja wyĹ‚Ä…czona, kwota prowizji = `0` |
+| `percent` | prowizja liczona procentem od bazy |
+| `fixed` | prowizja jako rÄ™czna staĹ‚a kwota |
 
 ### CommissionBase
 
-Dozwolone wartości:
-
-```ts
-contract_value | paid_amount | custom
-```
-
-Znaczenie:
-
-- `contract_value` — prowizja liczona od wartości umowy / sprawy,
-- `paid_amount` — prowizja liczona od faktycznie opłaconej kwoty,
-- `custom` — prowizja liczona od ręcznie podanej podstawy.
-
-### CommissionStatus
-
-Dozwolone wartości:
-
-```ts
-not_set | expected | due | partially_paid | paid | overdue
-```
-
-Znaczenie:
-
-- `not_set` — brak prowizji albo prowizja nieustawiona,
-- `expected` — prowizja oczekiwana, ale jeszcze niewymagalna,
-- `due` — prowizja wymagalna,
-- `partially_paid` — prowizja częściowo zapłacona,
-- `paid` — prowizja zapłacona,
-- `overdue` — prowizja po terminie.
+| Baza | Znaczenie |
+|---|---|
+| `contract_value` | procent od wartoĹ›ci kontraktu/sprawy |
+| `paid_amount` | procent od faktycznie wpĹ‚aconych pieniÄ™dzy klienta |
+| `custom` | procent od rÄ™cznie podanej bazy |
 
 ### PaymentType
 
-Dozwolone wartości:
+| Typ pĹ‚atnoĹ›ci | Czy wchodzi do `paidAmount` klienta? | Czy wchodzi do `commissionPaidAmount`? |
+|---|---:|---:|
+| `deposit` | tak, jeĹ›li status `paid` | nie |
+| `partial` | tak, jeĹ›li status `paid` | nie |
+| `final` | tak, jeĹ›li status `paid` | nie |
+| `other` | tak, jeĹ›li status `paid` | nie |
+| `refund` | odejmuje od `paidAmount`, jeĹ›li status `paid` | nie |
+| `commission` | nie | tak, jeĹ›li status `paid` |
+
+## Nie ruszaÄ‡ w FIN-1
+
+- Nie tworzyÄ‡ panelu finansĂłw.
+- Nie tworzyÄ‡ UI prowizji.
+- Nie tworzyÄ‡ migracji DB.
+- Nie zmieniaÄ‡ `api/payments.ts`.
+- Nie zmieniaÄ‡ `api/cases.ts`, `api/leads.ts`, `api/clients.ts`.
+- Nie zmieniaÄ‡ `src/pages/LeadDetail.tsx`, `src/pages/ClientDetail.tsx`, `src/pages/CaseDetail.tsx`.
+- Nie przepinaÄ‡ jeszcze `relation-value.ts`, `data-contract.ts` ani `supabase-fallback.ts` na nowy model.
+
+## Dlaczego bez UI
+
+UI finansĂłw teraz byĹ‚by przedwczesny. Najpierw trzeba mieÄ‡ jednÄ… prawdÄ™ domenowÄ…. Inaczej panel pokaĹĽe Ĺ‚adne cyfry, ale kaĹĽda karta bÄ™dzie liczyÄ‡ je inaczej. To jest ksiÄ™gowy goblin, nie feature.
+
+## Minimalny przykĹ‚ad
 
 ```ts
-deposit | partial | final | commission | refund | other
+const snapshot = buildFinanceSnapshot({
+  contractValue: 10000,
+  payments: [
+    { type: 'deposit', status: 'paid', amount: 2500 },
+    { type: 'commission', status: 'paid', amount: 500 },
+  ],
+  commission: {
+    mode: 'percent',
+    base: 'contract_value',
+    rate: 10,
+  },
+});
+
+snapshot.contractValue; // 10000
+snapshot.paidAmount; // 2500
+snapshot.remainingAmount; // 7500
+snapshot.commissionAmount; // 1000
+snapshot.commissionPaidAmount; // 500
+snapshot.commissionRemainingAmount; // 500
 ```
 
-Znaczenie:
+## Kryterium zakoĹ„czenia FIN-1
 
-- `deposit` — zaliczka,
-- `partial` — płatność częściowa,
-- `final` — płatność końcowa,
-- `commission` — prowizja,
-- `refund` — zwrot,
-- `other` — inna płatność.
+FIN-1 jest zakoĹ„czony, gdy:
 
-### PaymentStatus
-
-Dozwolone wartości:
-
-```ts
-planned | due | paid | cancelled
-```
-
-Znaczenie:
-
-- `planned` — zaplanowana,
-- `due` — wymagalna,
-- `paid` — zapłacona,
-- `cancelled` — anulowana.
-
-## Co istnieje po FIN-1
-
-### Istnieje
-
-- stały typ `CommissionMode`,
-- stały typ `CommissionBase`,
-- stały typ `CommissionStatus`,
-- stały typ `PaymentType`,
-- stały typ `PaymentStatus`,
-- typ `FinancePayment`,
-- typ `CommissionConfig`,
-- typ `FinanceSummary`,
-- normalizacja pojedynczej płatności,
-- normalizacja listy płatności,
-- normalizacja konfiguracji prowizji,
-- obliczanie wartości umowy / kontraktu,
-- obliczanie kwoty zapłaconej,
-- obliczanie kwoty planowanej,
-- obliczanie kwoty wymagalnej,
-- obliczanie kwoty zwrotów,
-- obliczanie kwoty pozostałej,
-- obliczanie prowizji procentowej i kwotowej,
-- rozstrzyganie statusu prowizji,
-- zbiorczy `buildFinanceSummary()`.
-
-### Częściowo istnieje
-
-- powiązanie finansów z leadem, klientem i sprawą przez `leadId`, `clientId`, `caseId`,
-- zgodność z wcześniejszymi polami typu `expectedRevenue`, `paidAmount`, `remainingAmount`, `amount`, `value`,
-- obsługa starych statusów typu `pending`, `awaiting_payment`, `done`, `completed`, `settled`, `canceled` przez normalizację.
-
-### Brakuje
-
-- endpointu `/api/payments`,
-- migracji Supabase dla tabeli `payments`,
-- testów CRUD dla płatności,
-- podpięcia nowego kontraktu do `src/lib/data-contract.ts`,
-- podpięcia nowego kontraktu do `src/lib/supabase-fallback.ts`,
-- podpięcia nowego kontraktu do `CaseDetail`, `LeadDetail`, `ClientDetail`,
-- walidacji backendowej prowizji,
-- panelu rozliczeń i prowizji.
-
-### Nie ruszać w FIN-1
-
-- nie tworzyć `/api/payments.ts`,
-- nie zmieniać migracji Supabase,
-- nie zmieniać widoków operatora,
-- nie zmieniać `CaseDetail.tsx`,
-- nie zmieniać `LeadDetail.tsx`,
-- nie zmieniać `ClientDetail.tsx`,
-- nie zmieniać cennika subskrypcji aplikacji,
-- nie mieszać finansów klienta z billingiem SaaS CloseFlow.
-
-## Zasady obliczeń
-
-### Paid amount
-
-`paidAmount` liczy tylko płatności klienta o statusie `paid`:
-
-- `deposit`,
-- `partial`,
-- `final`,
-- `other`.
-
-Płatność typu `refund` odejmuje się od sumy zapłaconej.
-
-Płatność typu `commission` nie zwiększa `paidAmount` sprawy, bo prowizja jest osobną warstwą rozliczenia.
-
-### Remaining amount
-
-```text
-remainingAmount = max(contractValue - paidAmount, 0)
-```
-
-### Commission amount
-
-Dla `none`:
-
-```text
-0
-```
-
-Dla `fixed`:
-
-```text
-fixedAmount
-```
-
-Dla `percent`:
-
-```text
-baseAmount * percent / 100
-```
-
-Gdzie `baseAmount` zależy od `CommissionBase`:
-
-- `contract_value` — wartość umowy,
-- `paid_amount` — zapłacona kwota,
-- `custom` — ręczna podstawa.
-
-## Kryterium zakończenia FIN-1
-
-Etap jest zakończony, jeśli:
-
-1. istnieją trzy pliki domenowe w `src/lib/finance`,
-2. wszystkie wymagane union type mają dokładne wartości z modelu,
-3. istnieją czyste funkcje obliczeń,
-4. istnieją funkcje normalizacji,
-5. dokument jasno mówi: `istnieje`, `częściowo istnieje`, `brakuje`, `nie ruszać`,
-6. guard `scripts/check-closeflow-finance-domain-contract.cjs` przechodzi.
-
-## Następny etap
-
-Najkrótszy sensowny kolejny etap:
-
-```text
-FIN-2 — Payments backend contract
-```
-
-Zakres FIN-2:
-
-- `api/payments.ts`,
-- migracja Supabase `payments`,
-- normalizacja API → finance domain,
-- workspace scope,
-- CRUD smoke guard,
-- brak zmian wizualnych poza minimalnym użyciem danych, jeśli potrzebne.
+1. istniejÄ… trzy pliki `src/lib/finance/*`,
+2. typy minimum sÄ… zdefiniowane w jednym miejscu,
+3. funkcje obliczeniowe istniejÄ…,
+4. dokument mĂłwi, ĹĽe nie tworzymy UI ani migracji DB,
+5. check przechodzi,
+6. build przechodzi.

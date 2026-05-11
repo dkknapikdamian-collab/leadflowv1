@@ -5,114 +5,96 @@ import {
   PAYMENT_STATUSES,
   PAYMENT_TYPES,
   type CommissionBase,
-  type CommissionConfig,
   type CommissionMode,
   type CommissionStatus,
-  type FinancePayment,
+  type FinanceCurrency,
+  type FinancePaymentLike,
+  type NormalizedFinancePayment,
   type PaymentStatus,
   type PaymentType,
-} from './finance-types.js';
-import { clampFinanceAmount, normalizeCommissionPercent } from './finance-calculations.js';
+} from './finance-types';
 
-type RawFinanceRecord = Record<string, unknown>;
+export const CLOSEFLOW_FINANCE_NORMALIZE_FIN1 = 'CLOSEFLOW_FINANCE_NORMALIZE_FIN1';
 
-type ReadonlyStringList = readonly string[];
+export function normalizeMoneyAmount(value: unknown, fallback = 0): number {
+  if (typeof value === 'number') return Number.isFinite(value) ? Math.max(0, value) : fallback;
+  if (typeof value !== 'string') return fallback;
 
-function asText(value: unknown) {
-  return typeof value === 'string' ? value.trim() : '';
+  const normalized = value
+    .trim()
+    .replace(/\s+/g, '')
+    .replace(/pln|zĹ‚/gi, '')
+    .replace(',', '.')
+    .replace(/[^0-9.-]/g, '');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : fallback;
 }
 
-function pickText(row: RawFinanceRecord, keys: string[], fallback = '') {
-  for (const key of keys) {
-    const value = row[key];
-    if (typeof value === 'string' && value.trim()) return value.trim();
-    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
-  }
-  return fallback;
-}
-
-function pickNullableText(row: RawFinanceRecord, keys: string[]) {
-  const value = pickText(row, keys, '');
-  return value || null;
-}
-
-function isAllowed<T extends string>(value: string, allowed: ReadonlyStringList): value is T {
-  return allowed.includes(value);
-}
-
-export function normalizeCurrency(value: unknown, fallback = 'PLN') {
-  const normalized = asText(value || fallback).toUpperCase();
+export function normalizeCurrency(value: unknown, fallback: FinanceCurrency = 'PLN'): FinanceCurrency {
+  const normalized = typeof value === 'string' ? value.trim().toUpperCase() : '';
   return /^[A-Z]{3}$/.test(normalized) ? normalized : fallback;
 }
 
-export function normalizePaymentType(value: unknown): PaymentType {
-  const normalized = asText(value).toLowerCase();
-  return isAllowed<PaymentType>(normalized, PAYMENT_TYPES) ? normalized : 'other';
-}
-
-export function normalizePaymentStatus(value: unknown): PaymentStatus {
-  const normalized = asText(value).toLowerCase();
-  if (normalized === 'pending' || normalized === 'awaiting_payment') return 'due';
-  if (normalized === 'done' || normalized === 'completed' || normalized === 'settled') return 'paid';
-  if (normalized === 'canceled') return 'cancelled';
-  return isAllowed<PaymentStatus>(normalized, PAYMENT_STATUSES) ? normalized : 'planned';
+function normalizeEnum<T extends readonly string[]>(value: unknown, allowed: T, fallback: T[number]): T[number] {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  return (allowed as readonly string[]).includes(normalized) ? (normalized as T[number]) : fallback;
 }
 
 export function normalizeCommissionMode(value: unknown): CommissionMode {
-  const normalized = asText(value).toLowerCase();
-  return isAllowed<CommissionMode>(normalized, COMMISSION_MODES) ? normalized : 'none';
+  return normalizeEnum(value, COMMISSION_MODES, 'none');
 }
 
 export function normalizeCommissionBase(value: unknown): CommissionBase {
-  const normalized = asText(value).toLowerCase();
-  return isAllowed<CommissionBase>(normalized, COMMISSION_BASES) ? normalized : 'contract_value';
+  return normalizeEnum(value, COMMISSION_BASES, 'contract_value');
 }
 
 export function normalizeCommissionStatus(value: unknown): CommissionStatus {
-  const normalized = asText(value).toLowerCase();
-  return isAllowed<CommissionStatus>(normalized, COMMISSION_STATUSES) ? normalized : 'not_set';
+  return normalizeEnum(value, COMMISSION_STATUSES, 'not_set');
 }
 
-export function normalizeDateTime(value: unknown) {
-  const text = asText(value);
-  if (!text) return null;
-  const date = new Date(text);
-  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+export function normalizePaymentType(value: unknown): PaymentType {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (normalized === 'advance') return 'deposit';
+  if (normalized === 'part') return 'partial';
+  if (normalized === 'rest') return 'final';
+  return normalizeEnum(normalized, PAYMENT_TYPES, 'other');
 }
 
-export function normalizeFinancePayment(row: RawFinanceRecord, fallbackId = 'payment') : FinancePayment {
+export function normalizePaymentStatus(value: unknown): PaymentStatus {
+  const normalized = typeof value === 'string' ? value.trim().toLowerCase() : '';
+  if (normalized === 'pending' || normalized === 'awaiting_payment') return 'due';
+  if (normalized === 'done' || normalized === 'completed' || normalized === 'settled') return 'paid';
+  if (normalized === 'canceled') return 'cancelled';
+  return normalizeEnum(normalized, PAYMENT_STATUSES, 'planned');
+}
+
+function nullableText(value: unknown): string | null {
+  return typeof value === 'string' && value.trim() ? value.trim() : null;
+}
+
+export function normalizeFinancePayment(payment: FinancePaymentLike | null | undefined, fallbackCurrency = 'PLN'): NormalizedFinancePayment {
+  const row = payment || {};
   return {
-    id: pickText(row, ['id'], fallbackId),
-    workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
-    leadId: pickNullableText(row, ['leadId', 'lead_id']),
-    clientId: pickNullableText(row, ['clientId', 'client_id']),
-    caseId: pickNullableText(row, ['caseId', 'case_id']),
-    type: normalizePaymentType(row.type || row.paymentType || row.payment_type),
-    status: normalizePaymentStatus(row.status || row.paymentStatus || row.payment_status),
-    amount: clampFinanceAmount(row.amount ?? row.value ?? row.total ?? row.paidAmount ?? row.paid_amount),
-    currency: normalizeCurrency(row.currency),
-    paidAt: normalizeDateTime(row.paidAt || row.paid_at),
-    dueAt: normalizeDateTime(row.dueAt || row.due_at),
-    note: pickText(row, ['note', 'notes'], ''),
-    createdAt: normalizeDateTime(row.createdAt || row.created_at),
-    updatedAt: normalizeDateTime(row.updatedAt || row.updated_at),
+    id: typeof row.id === 'string' && row.id.trim() ? row.id.trim() : undefined,
+    type: normalizePaymentType(row.type),
+    status: normalizePaymentStatus(row.status),
+    amount: normalizeMoneyAmount(row.amount, 0),
+    currency: normalizeCurrency(row.currency, fallbackCurrency),
+    paidAt: nullableText(row.paidAt ?? row.paid_at),
+    dueAt: nullableText(row.dueAt ?? row.due_at),
+    note: typeof row.note === 'string' ? row.note.trim() : '',
   };
 }
 
-export function normalizeFinancePayments(rows: RawFinanceRecord[] = []) {
-  return rows.map((row, index) => normalizeFinancePayment(row, `payment-${index}`));
+export function normalizeFinancePayments(payments: FinancePaymentLike[] | null | undefined, fallbackCurrency = 'PLN'): NormalizedFinancePayment[] {
+  return Array.isArray(payments) ? payments.map((payment) => normalizeFinancePayment(payment, fallbackCurrency)) : [];
 }
 
-export function normalizeCommissionConfig(row: RawFinanceRecord = {}): CommissionConfig {
-  const mode = normalizeCommissionMode(row.commissionMode || row.commission_mode || row.mode);
-  const base = normalizeCommissionBase(row.commissionBase || row.commission_base || row.base);
-
-  return {
-    mode,
-    base,
-    percent: mode === 'percent' ? normalizeCommissionPercent(row.commissionPercent || row.commission_percent || row.percent) : null,
-    fixedAmount: mode === 'fixed' ? clampFinanceAmount(row.commissionFixedAmount || row.commission_fixed_amount || row.fixedAmount || row.fixed_amount) : null,
-    customBaseAmount: base === 'custom' ? clampFinanceAmount(row.commissionCustomBaseAmount || row.commission_custom_base_amount || row.customBaseAmount || row.custom_base_amount) : null,
-    currency: normalizeCurrency(row.currency),
-  };
+export function normalizeFinanceDate(value: unknown): Date | null {
+  if (value instanceof Date && Number.isFinite(value.getTime())) return value;
+  if (typeof value !== 'string' && typeof value !== 'number') return null;
+  const raw = String(value).trim();
+  if (!raw) return null;
+  const parsed = new Date(/^\d{4}-\d{2}-\d{2}$/.test(raw) ? `${raw}T23:59:59` : raw);
+  return Number.isFinite(parsed.getTime()) ? parsed : null;
 }

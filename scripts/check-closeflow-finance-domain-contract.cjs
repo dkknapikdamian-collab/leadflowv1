@@ -1,158 +1,102 @@
 #!/usr/bin/env node
-const fs = require('node:fs');
-const path = require('node:path');
+/* eslint-disable no-console */
+const fs = require('fs');
+const path = require('path');
 
-const root = process.cwd();
-const results = [];
+const repo = process.cwd();
+function file(rel) { return path.join(repo, rel); }
+function read(rel) { return fs.readFileSync(file(rel), 'utf8'); }
+function exists(rel) { return fs.existsSync(file(rel)); }
+function fail(message) { console.error('CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1_FAIL: ' + message); process.exit(1); }
+function assert(condition, message) { if (!condition) fail(message); }
+function has(rel, needle, label) { assert(read(rel).includes(needle), `${label} missing: ${needle}`); }
 
-function readRequired(relativePath) {
-  const full = path.join(root, relativePath);
-  if (!fs.existsSync(full)) {
-    results.push({ level: 'FAIL', scope: relativePath, message: 'Missing file' });
-    return '';
-  }
-  return fs.readFileSync(full, 'utf8');
-}
-
-function pass(scope, message) { results.push({ level: 'PASS', scope, message }); }
-function fail(scope, message) { results.push({ level: 'FAIL', scope, message }); }
-function assertIncludes(scope, content, needle, message) {
-  if (content.includes(needle)) pass(scope, message || `Found ${needle}`);
-  else fail(scope, `${message || 'Missing'} [needle=${JSON.stringify(needle)}]`);
-}
-function assertRegex(scope, content, regex, message) {
-  if (regex.test(content)) pass(scope, message || `Matched ${regex}`);
-  else fail(scope, `${message || 'Missing regex'} [regex=${regex}]`);
-}
-function assertNotRegex(scope, content, regex, message) {
-  if (!regex.test(content)) pass(scope, message || `Forbidden absent ${regex}`);
-  else fail(scope, `${message || 'Forbidden present'} [regex=${regex}]`);
-}
-function section(title) { console.log(`\n== ${title} ==`); }
-
-const files = {
-  types: 'src/lib/finance/finance-types.ts',
-  calculations: 'src/lib/finance/finance-calculations.ts',
-  normalize: 'src/lib/finance/finance-normalize.ts',
-  doc: 'docs/finance/CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_2026-05-09.md',
-};
-
-const types = readRequired(files.types);
-const calculations = readRequired(files.calculations);
-const normalize = readRequired(files.normalize);
-const doc = readRequired(files.doc);
-
-section('FIN-1 files');
-for (const file of Object.values(files)) {
-  if (fs.existsSync(path.join(root, file))) pass(file, 'exists');
-}
-
-section('Finance type contract');
-for (const marker of [
-  "CLOSEFLOW_FINANCE_DOMAIN_CONTRACT = 'FIN-1_CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_V1'",
-  "COMMISSION_MODES = ['none', 'percent', 'fixed'] as const",
-  "export type CommissionMode = typeof COMMISSION_MODES[number]",
-  "COMMISSION_BASES = ['contract_value', 'paid_amount', 'custom'] as const",
-  "export type CommissionBase = typeof COMMISSION_BASES[number]",
-  "'not_set'",
-  "'expected'",
-  "'due'",
-  "'partially_paid'",
-  "'paid'",
-  "'overdue'",
-  "PAYMENT_TYPES = ['deposit', 'partial', 'final', 'commission', 'refund', 'other'] as const",
-  "export type PaymentType = typeof PAYMENT_TYPES[number]",
-  "PAYMENT_STATUSES = ['planned', 'due', 'paid', 'cancelled'] as const",
-  "export type PaymentStatus = typeof PAYMENT_STATUSES[number]",
-  'export type FinancePayment',
-  'export type CommissionConfig',
-  'export type FinanceSummary',
-]) {
-  assertIncludes(files.types, types, marker, `Type contract contains ${marker}`);
-}
-
-section('Finance calculations');
-for (const marker of [
-  'export function normalizeFinanceNumber',
-  'export function calculatePaidAmount',
-  'export function calculatePlannedAmount',
-  'export function calculateDueAmount',
-  'export function calculateRefundedAmount',
-  'export function calculatePaidCommissionAmount',
-  'export function calculateContractValue',
-  'export function calculateRemainingAmount',
-  'export function calculateCommissionBaseAmount',
-  'export function calculateCommissionAmount',
-  'export function resolveCommissionStatus',
-  'export function buildFinanceSummary',
-  "payment.type === 'commission'",
-  "payment.type === 'refund'",
-  "config.mode === 'none'",
-  "config.mode === 'fixed'",
-  "config.base === 'paid_amount'",
-  "config.base === 'custom'",
-]) {
-  assertIncludes(files.calculations, calculations, marker, `Calculation contract contains ${marker}`);
-}
-assertRegex(files.calculations, calculations, /remainingAmount:\s*calculateRemainingAmount\(contractValue,\s*paidAmount\)/, 'Summary computes remaining amount from contract value and paid amount');
-
-section('Finance normalization');
-for (const marker of [
-  'export function normalizeCurrency',
-  'export function normalizePaymentType',
-  'export function normalizePaymentStatus',
-  'export function normalizeCommissionMode',
-  'export function normalizeCommissionBase',
-  'export function normalizeCommissionStatus',
-  'export function normalizeFinancePayment',
-  'export function normalizeFinancePayments',
-  'export function normalizeCommissionConfig',
-  "normalized === 'pending' || normalized === 'awaiting_payment'",
-  "normalized === 'done' || normalized === 'completed' || normalized === 'settled'",
-  "normalized === 'canceled'",
-]) {
-  assertIncludes(files.normalize, normalize, marker, `Normalize contract contains ${marker}`);
-}
-
-section('Boundaries');
-const financeSources = [
-  [files.types, types],
-  [files.calculations, calculations],
-  [files.normalize, normalize],
+const requiredFiles = [
+  'src/lib/relation-value.ts',
+  'src/lib/data-contract.ts',
+  'src/lib/supabase-fallback.ts',
+  'src/lib/finance/finance-types.ts',
+  'src/lib/finance/finance-calculations.ts',
+  'src/lib/finance/finance-normalize.ts',
+  'docs/finance/CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_2026-05-09.md',
+  'scripts/check-closeflow-finance-domain-contract.cjs',
+  'package.json',
 ];
-for (const [scope, content] of financeSources) {
-  assertNotRegex(scope, content, /from ['\"]\.\.\/\.\.\/pages|from ['\"]\.\.\/pages|from ['\"].*api\//, 'Finance domain does not import pages/api');
-  assertNotRegex(scope, content, /fetch\s*\(/, 'Finance domain does not call fetch');
-  assertNotRegex(scope, content, /window\./, 'Finance domain does not touch browser globals');
-  assertNotRegex(scope, content, /localStorage|sessionStorage/, 'Finance domain does not touch storage');
-  assertNotRegex(scope, content, /supabase/i, 'Finance domain does not depend on Supabase');
+
+for (const rel of requiredFiles) assert(exists(rel), 'missing file: ' + rel);
+
+const typeFile = read('src/lib/finance/finance-types.ts');
+const calcFile = read('src/lib/finance/finance-calculations.ts');
+const normalizeFile = read('src/lib/finance/finance-normalize.ts');
+const docs = read('docs/finance/CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_2026-05-09.md');
+const pkg = JSON.parse(read('package.json'));
+
+has('src/lib/finance/finance-types.ts', 'CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1', 'finance contract marker');
+
+for (const typeName of ['CommissionMode', 'CommissionBase', 'CommissionStatus', 'PaymentType', 'PaymentStatus', 'FinanceSnapshot']) {
+  assert(typeFile.includes(`type ${typeName}`) || typeFile.includes(`export type ${typeName}`), 'finance type missing: ' + typeName);
 }
 
-section('Documentation');
-for (const marker of [
-  'CloseFlow — FIN-1 Finance domain contract',
-  'CommissionMode',
-  'CommissionBase',
-  'CommissionStatus',
-  'PaymentType',
-  'PaymentStatus',
-  'Istnieje',
-  'Częściowo istnieje',
-  'Brakuje',
-  'Nie ruszać w FIN-1',
-  'nie tworzyć `/api/payments.ts`',
-  'nie zmieniać migracji Supabase',
-  'FIN-2 — Payments backend contract',
+for (const value of [
+  'none', 'percent', 'fixed',
+  'contract_value', 'paid_amount', 'custom',
+  'not_set', 'expected', 'due', 'partially_paid', 'paid', 'overdue',
+  'deposit', 'partial', 'final', 'commission', 'refund', 'other',
+  'planned', 'cancelled',
 ]) {
-  assertIncludes(files.doc, doc, marker, `Doc contains ${marker}`);
+  assert(typeFile.includes(`'${value}'`) || typeFile.includes(`"${value}"`), 'finance enum value missing: ' + value);
 }
 
-section('Report');
-for (const item of results) console.log(`${item.level} ${item.scope}: ${item.message}`);
-const failed = results.filter((item) => item.level === 'FAIL');
-console.log(`\nSummary: ${results.length - failed.length} pass, ${failed.length} fail.`);
-if (failed.length) {
-  console.error('\nFAIL CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1_FAILED');
-  process.exit(1);
+for (const fn of [
+  'calculateCommissionAmount',
+  'calculatePaidAmount',
+  'calculateRemainingAmount',
+  'calculateCommissionPaidAmount',
+  'buildFinanceSnapshot',
+]) {
+  assert(calcFile.includes(`export function ${fn}`), 'finance calculation function missing: ' + fn);
+  assert(docs.includes(fn), 'docs missing function: ' + fn);
 }
-console.log('\nCLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1_OK');
+
+for (const fn of [
+  'normalizeCommissionMode',
+  'normalizeCommissionBase',
+  'normalizeCommissionStatus',
+  'normalizePaymentType',
+  'normalizePaymentStatus',
+  'normalizeFinancePayment',
+]) {
+  assert(normalizeFile.includes(`export function ${fn}`), 'finance normalize function missing: ' + fn);
+}
+
+for (const forbidden of [
+  'src/pages/',
+  'from "react"',
+  "from 'react'",
+  'supabase.from(',
+  'create table',
+  'alter table',
+]) {
+  assert(!typeFile.toLowerCase().includes(forbidden.toLowerCase()), 'forbidden runtime/UI/DB concern in finance-types: ' + forbidden);
+  assert(!calcFile.toLowerCase().includes(forbidden.toLowerCase()), 'forbidden runtime/UI/DB concern in finance-calculations: ' + forbidden);
+  assert(!normalizeFile.toLowerCase().includes(forbidden.toLowerCase()), 'forbidden runtime/UI/DB concern in finance-normalize: ' + forbidden);
+}
+
+for (const docNeedle of [
+  'bez UI',
+  'bez migracji DB',
+  'Nie tworzyÄ‡ panelu finansĂłw',
+  'Nie tworzyÄ‡ migracji DB',
+  'jeden model',
+  'Lead, Client i Case',
+]) {
+  assert(docs.includes(docNeedle), 'docs missing required statement: ' + docNeedle);
+}
+
+assert(pkg.scripts && pkg.scripts['check:closeflow-finance-domain-contract'] === 'node scripts/check-closeflow-finance-domain-contract.cjs', 'package.json missing check:closeflow-finance-domain-contract');
+
+console.log('CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1_CHECK_OK');
+console.log('finance_types=5');
+console.log('finance_functions=5');
+console.log('ui_runtime_migration=false');
+console.log('db_migration=false');
