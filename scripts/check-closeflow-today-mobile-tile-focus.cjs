@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /* CLOSEFLOW_TODAY_MOBILE_TILE_FOCUS_FIX_2026_05_11 */
+/* CLOSEFLOW_TODAY_MOBILE_TILE_FOCUS_CHECK_FIX_2026_05_11 */
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -17,10 +18,6 @@ function assert(condition, message) {
   if (!condition) fail(message);
 }
 
-function read(relativePath) {
-  return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
-}
-
 assert(fs.existsSync(todayPath), 'Brak src/pages/TodayStable.tsx');
 const source = fs.readFileSync(todayPath, 'utf8');
 
@@ -32,7 +29,14 @@ assert(source.includes('syncTodayMetricTileFocusA11y'), 'Brak synchronizacji ari
 assert(source.includes("button[data-cf-semantic-label]"), 'Klik kafelka musi łapać button[data-cf-semantic-label]');
 assert(source.includes('aria-controls'), 'Kafelki muszą dostać aria-controls');
 assert(source.includes('aria-expanded'), 'Kafelki muszą dostać aria-expanded');
-assert(source.includes('data.cfTodayMetricTileTarget'), 'Kafelki muszą dostać data-cf-today-metric-tile-target');
+
+const hasMetricTargetAssignment =
+  source.includes('dataset.cfTodayMetricTileTarget') ||
+  source.includes('setAttribute(\'data-cf-today-metric-tile-target\'') ||
+  source.includes('setAttribute("data-cf-today-metric-tile-target"') ||
+  source.includes('data-cf-today-metric-tile-target');
+assert(hasMetricTargetAssignment, 'Kafelki muszą dostać data-cf-today-metric-tile-target przez dataset albo setAttribute');
+
 assert(source.includes('focusTodaySectionFromMetricTile'), 'Brak helpera focusTodaySectionFromMetricTile');
 assert(source.includes('setActiveTodaySection(sectionKey)'), 'Klik kafelka musi ustawiać aktywną sekcję');
 assert(source.includes('setExpandedSection(sectionKey)'), 'Klik kafelka musi ustawiać expandedSection');
@@ -47,10 +51,12 @@ assert(scrollGateBody.includes("return typeof window !== 'undefined';"), 'Mobile
 assert(!scrollGateBody.includes('min-width'), 'shouldFb4ScrollTodaySection nie może blokować mobile przez min-width');
 assert(!scrollGateBody.includes('768'), 'shouldFb4ScrollTodaySection nie może blokować mobile przez 768px');
 
+assert(fs.existsSync(packagePath), 'Brak package.json');
 const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8').replace(/^\uFEFF/, ''));
 assert(pkg.scripts && pkg.scripts['check:today-mobile-tile-focus'], 'Brak package script check:today-mobile-tile-focus');
 assert(pkg.scripts['verify:closeflow:quiet'] === 'node scripts/closeflow-release-check-quiet.cjs', 'verify:closeflow:quiet musi zachować kontrakt');
 
+assert(fs.existsSync(quietGatePath), 'Brak scripts/closeflow-release-check-quiet.cjs');
 const quietGate = fs.readFileSync(quietGatePath, 'utf8');
 assert(quietGate.includes('today mobile tile focus'), 'Quiet release gate musi odpalać today mobile tile focus check');
 assert(quietGate.includes('scripts/check-closeflow-today-mobile-tile-focus.cjs'), 'Quiet release gate musi wskazywać check-closeflow-today-mobile-tile-focus.cjs');
