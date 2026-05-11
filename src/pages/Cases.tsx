@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { ExternalLink, FileText, Loader2, Plus, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system/EntityIcon';
 import { toast } from 'sonner';
 
@@ -60,11 +60,9 @@ type ClientOption = {
 
 type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked';
 
-
 function normalizeClientText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
-
 
 function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = []) {
   const map = new Map<string, ClientOption>();
@@ -102,7 +100,6 @@ function buildClientOptions(cases: CaseRecord[], leads: any[], clients: any[] = 
   return [...map.values()].sort((left, right) => left.name.localeCompare(right.name, 'pl', { sensitivity: 'base' }));
 }
 
-
 function caseStatusLabel(status?: string) {
   switch (status) {
     case 'waiting_on_client':
@@ -122,11 +119,9 @@ function caseStatusLabel(status?: string) {
   }
 }
 
-
 function caseNeedsAttention(caseRecord: CaseRecord) {
   return caseRecord.status === 'blocked' || caseRecord.status === 'waiting_on_client' || (caseRecord.completenessPercent || 0) < 35;
 }
-
 
 function toUpdatedDate(value: CaseRecord['updatedAt']) {
   if (!value) return null;
@@ -139,8 +134,6 @@ function toUpdatedDate(value: CaseRecord['updatedAt']) {
   }
   return null;
 }
-
-
 
 function buildCaseActionMap(actions: any[]) {
   const map = new Map<string, any[]>();
@@ -157,7 +150,6 @@ function buildCaseActionMap(actions: any[]) {
   return map;
 }
 
-
 function resolveCaseListLifecycle(
   record: CaseRecord,
   tasksByCaseId: Map<string, any[]>,
@@ -170,7 +162,6 @@ function resolveCaseListLifecycle(
   });
 }
 
-
 function lifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destructive' | 'outline' {
   if (bucket === 'blocked') return 'destructive';
   if (bucket === 'ready_to_start' || bucket === 'completed') return 'secondary';
@@ -178,13 +169,11 @@ function lifecycleBadgeVariant(bucket: string): 'default' | 'secondary' | 'destr
   return 'default';
 }
 
-
 function lifecycleRiskLabel(level: string) {
   if (level === 'high') return 'Ryzyko wysokie';
   if (level === 'medium') return 'Ryzyko średnie';
   return 'Ryzyko niskie';
 }
-
 
 function lifecycleCompactLabel(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
   if (record.status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'Czeka na klienta';
@@ -192,13 +181,11 @@ function lifecycleCompactLabel(record: CaseRecord, lifecycle: ReturnType<typeof 
   return 'Brak blokerów';
 }
 
-
 function lifecycleCompactVariant(record: CaseRecord, lifecycle: ReturnType<typeof resolveCaseLifecycleV1>) {
   if (record.status === 'waiting_on_client' || lifecycle.bucket === 'waiting_approval') return 'amber';
   if (record.status === 'blocked' || lifecycle.bucket === 'blocked') return 'red';
   return 'green';
 }
-
 
 function compactNextAction(value: string) {
   const text = String(value || '').trim();
@@ -206,7 +193,6 @@ function compactNextAction(value: string) {
   const firstSentence = text.split(/[.!?]/)[0]?.trim() || text;
   return firstSentence.slice(0, 56);
 }
-
 
 function formatNearestCaseAction(action: ReturnType<typeof getNearestPlannedAction>) {
   if (!action) return 'Brak zaplanowanych działań';
@@ -332,7 +318,6 @@ export default function Cases() {
   );
 
   const clientOptions = useMemo(() => buildClientOptions(cases, leadCandidates, clientCandidates), [cases, clientCandidates, leadCandidates]);
-
 
   useEffect(() => {
     if (stage23PrefillHandledRef.current) return;
@@ -829,6 +814,4 @@ export default function Cases() {
 }
 
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleCaseView('blocked') toggleCaseView('needs_next_step') */
-
-
 
