@@ -1,0 +1,306 @@
+/* CLOSEFLOW_PAGE_HEADER_STAGE6_FINAL_LOCK_2026_05_11
+   owner: CloseFlow Visual System
+   reason: previous page header patches did not win against active legacy adapters and local header markup.
+   scope: top page headers and global quick action toolbar only.
+   rule: no modal geometry changes, no business logic changes.
+*/
+
+:root {
+  --cf-header-stage6-bg: #ffffff;
+  --cf-header-stage6-bg-soft: #f8fafc;
+  --cf-header-stage6-border: rgba(203, 213, 225, 0.92);
+  --cf-header-stage6-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
+  --cf-header-stage6-radius: 28px;
+  --cf-header-stage6-pad-y: 22px;
+  --cf-header-stage6-pad-x: 26px;
+  --cf-header-stage6-min-height: 96px;
+
+  --cf-header-stage6-title: #0f172a;
+  --cf-header-stage6-copy: #64748b;
+  --cf-header-stage6-kicker-bg: #eef4ff;
+  --cf-header-stage6-kicker-border: #bfdbfe;
+  --cf-header-stage6-kicker-text: #1d4ed8;
+
+  --cf-header-stage6-blue: #2563eb;
+  --cf-header-stage6-blue-strong: #1d4ed8;
+  --cf-header-stage6-blue-bg: #ffffff;
+  --cf-header-stage6-blue-hover: #eff6ff;
+  --cf-header-stage6-blue-border: #bfdbfe;
+  --cf-header-stage6-blue-border-hover: #93c5fd;
+
+  --cf-header-stage6-ai: #7c3aed;
+  --cf-header-stage6-ai-strong: #6d28d9;
+  --cf-header-stage6-ai-bg: #ffffff;
+  --cf-header-stage6-ai-hover: #f5f3ff;
+  --cf-header-stage6-ai-border: #ddd6fe;
+  --cf-header-stage6-ai-border-hover: #c4b5fd;
+
+  --cf-header-stage6-danger: var(--cf-trash-icon-color, #dc2626);
+  --cf-header-stage6-danger-strong: var(--cf-trash-icon-hover-color, #b91c1c);
+  --cf-header-stage6-danger-bg: #ffffff;
+  --cf-header-stage6-danger-hover: #fef2f2;
+  --cf-header-stage6-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.24));
+
+  --cf-header-stage6-button-h: 38px;
+  --cf-header-stage6-button-radius: 14px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 1. Active page header card: includes data headers and old local classes      */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  gap: 18px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--cf-header-stage6-min-height) !important;
+  border: 1px solid var(--cf-header-stage6-border) !important;
+  border-radius: var(--cf-header-stage6-radius) !important;
+  background: linear-gradient(180deg, var(--cf-header-stage6-bg) 0%, var(--cf-header-stage6-bg-soft) 100%) !important;
+  background-color: var(--cf-header-stage6-bg) !important;
+  color: var(--cf-header-stage6-title) !important;
+  -webkit-text-fill-color: initial !important;
+  box-shadow: var(--cf-header-stage6-shadow) !important;
+  padding: var(--cf-header-stage6-pad-y) var(--cf-header-stage6-pad-x) !important;
+  overflow: visible !important;
+  text-align: left !important;
+  isolation: isolate !important;
+  backdrop-filter: none !important;
+}
+
+/* Old Forteca bars/overlays are not allowed inside the main header card. */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header)::before,
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header)::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* Nested wrappers become layout only. */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(.cf-page-hero-layout, .header-inner, .billing-header-inner, .support-header-inner) {
+  display: contents !important;
+}
+
+/* Copy column */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="copy"], .head-copy, .billing-header-copy, .support-header-copy, .settings-header-copy, .activity-header-copy, .ai-drafts-header-copy, .notifications-header-copy),
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) > :first-child {
+  grid-column: 1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  max-width: 780px !important;
+  text-align: left !important;
+}
+
+/* Actions column */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .billing-header-actions, .support-header-actions, .settings-header-actions, .activity-header-actions, .ai-drafts-header-actions, .notifications-header-actions),
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) > :last-child {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  min-width: max-content !important;
+  width: auto !important;
+  text-align: right !important;
+}
+
+/* Kicker */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="kicker"], .kicker, .cf-page-hero-kicker, .activity-kicker, .ai-drafts-kicker, .notifications-kicker, [class*="kicker"], [data-slot="badge"]) {
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 9px 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid var(--cf-header-stage6-kicker-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-header-stage6-kicker-bg) !important;
+  color: var(--cf-header-stage6-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-kicker-text) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Title */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="title"], h1, .cf-page-hero-title) {
+  display: block !important;
+  margin: 0 !important;
+  color: var(--cf-header-stage6-title) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-title) !important;
+  font-size: clamp(28px, 2.75vw, 40px) !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.058em !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Description */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="description"], .cf-page-header-description, .lead-copy, .subtitle, .hint) {
+  display: block !important;
+  max-width: 780px !important;
+  margin: 9px 0 0 0 !important;
+  color: var(--cf-header-stage6-copy) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-copy) !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  line-height: 1.45 !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Header should never show duplicate descriptions. */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="description"], .cf-page-header-description):nth-of-type(n+2) {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 2. Header button source of truth                                            */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(button, a.btn, a[role="button"]) {
+  min-height: var(--cf-header-stage6-button-h) !important;
+  height: var(--cf-header-stage6-button-h) !important;
+  border-radius: var(--cf-header-stage6-button-radius) !important;
+  border: 1px solid var(--cf-header-stage6-blue-border) !important;
+  background: var(--cf-header-stage6-blue-bg) !important;
+  background-color: var(--cf-header-stage6-blue-bg) !important;
+  color: var(--cf-header-stage6-blue) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-blue) !important;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.10) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+}
+
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(button, a.btn, a[role="button"]):hover {
+  border-color: var(--cf-header-stage6-blue-border-hover) !important;
+  background: var(--cf-header-stage6-blue-hover) !important;
+  color: var(--cf-header-stage6-blue-strong) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-blue-strong) !important;
+}
+
+/* AI actions are violet. */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .btn.soft-blue, a[href="/ai-drafts"]) {
+  border-color: var(--cf-header-stage6-ai-border) !important;
+  background: var(--cf-header-stage6-ai-bg) !important;
+  color: var(--cf-header-stage6-ai) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-ai) !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.12) !important;
+}
+
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .btn.soft-blue, a[href="/ai-drafts"]):hover {
+  border-color: var(--cf-header-stage6-ai-border-hover) !important;
+  background: var(--cf-header-stage6-ai-hover) !important;
+  color: var(--cf-header-stage6-ai-strong) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-ai-strong) !important;
+}
+
+/* Trash/danger actions are red. */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="danger"], [data-cf-trash-action="true"], .cf-trash-action-button, .cf-entity-action-danger, button:has(svg.lucide-trash-2), button:has(svg[class*="Trash"])) {
+  border-color: var(--cf-header-stage6-danger-border) !important;
+  background: var(--cf-header-stage6-danger-bg) !important;
+  color: var(--cf-header-stage6-danger) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-danger) !important;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.10) !important;
+}
+
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="danger"], [data-cf-trash-action="true"], .cf-trash-action-button, .cf-entity-action-danger, button:has(svg.lucide-trash-2), button:has(svg[class*="Trash"])):hover {
+  background: var(--cf-header-stage6-danger-hover) !important;
+  color: var(--cf-header-stage6-danger-strong) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-danger-strong) !important;
+}
+
+/* Every icon follows its action color. Fixes green plan icon and inconsistent header icons. */
+#root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(button, a.btn, a[role="button"]) svg,
+#root .cf-html-shell .global-actions :is(button, a.btn, a[role="button"]) svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
+  opacity: 1 !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 3. Global quick actions toolbar: same action colors                         */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell .global-actions :is(button, a.btn, a[role="button"]) {
+  min-height: 36px !important;
+  border-radius: 14px !important;
+  border: 1px solid var(--cf-header-stage6-blue-border) !important;
+  background: #ffffff !important;
+  color: var(--cf-header-stage6-blue) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-blue) !important;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.08) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-shell .global-actions :is([data-cf-command-action="ai"], .cf-command-action--ai),
+#root .cf-html-shell .global-actions span[data-feature-status="Beta"] :is(button, a.btn, a[role="button"]) {
+  border-color: var(--cf-header-stage6-ai-border) !important;
+  background: #ffffff !important;
+  color: var(--cf-header-stage6-ai) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-ai) !important;
+  box-shadow: 0 8px 18px rgba(124, 58, 237, 0.10) !important;
+}
+
+#root .cf-html-shell .global-actions :is([data-cf-command-action="ai"], .cf-command-action--ai):hover,
+#root .cf-html-shell .global-actions span[data-feature-status="Beta"] :is(button, a.btn, a[role="button"]):hover {
+  border-color: var(--cf-header-stage6-ai-border-hover) !important;
+  background: var(--cf-header-stage6-ai-hover) !important;
+  color: var(--cf-header-stage6-ai-strong) !important;
+  -webkit-text-fill-color: var(--cf-header-stage6-ai-strong) !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* 4. Responsive lock                                                          */
+/* -------------------------------------------------------------------------- */
+
+@media (max-width: 820px) {
+  #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) {
+    grid-template-columns: minmax(0, 1fr) !important;
+    padding: 20px !important;
+  }
+
+  #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .billing-header-actions, .support-header-actions, .settings-header-actions, .activity-header-actions, .ai-drafts-header-actions, .notifications-header-actions),
+  #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) > :last-child {
+    grid-column: 1 !important;
+    justify-self: start !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="title"], h1, .cf-page-hero-title) {
+    font-size: clamp(25px, 7vw, 32px) !important;
+    letter-spacing: -0.045em !important;
+  }
+}

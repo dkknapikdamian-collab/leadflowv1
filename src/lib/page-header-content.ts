@@ -60,7 +60,7 @@ export const PAGE_HEADER_CONTENT: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   responseTemplates: {
     kicker: 'ODPOWIEDZI',
     title: 'Biblioteka odpowiedzi',
-    description: 'Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. AI może później pracować na tych szablonach, ale źródłem prawdy jest Twoja biblioteka.',
+    description: 'Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. Źródłem prawdy jest Twoja biblioteka.',
   },
   activity: {
     kicker: 'AKTYWNOŚĆ',
@@ -95,7 +95,7 @@ export const PAGE_HEADER_CONTENT: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   adminAi: {
     kicker: 'AI ADMIN',
     title: 'Konfiguracja AI',
-    description: 'Ukryta warstwa diagnostyczna dla Quick Lead Capture.',
+    description: 'Diagnostyka Quick Lead Capture i operatora AI. Ekran techniczny, bez providerów i kluczy dla użytkownika końcowego.',
   },
 };
 

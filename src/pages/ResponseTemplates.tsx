@@ -208,13 +208,13 @@ export default function ResponseTemplates() {
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
             </div>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+          <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
             {!hasAccess ? (
               <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-400">
                 <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis
               </div>
             ) : null}
-            <Button className="rounded-2xl" onClick={openCreate}>
+            <Button className="rounded-2xl" data-cf-header-action="primary" onClick={openCreate}>
               <Plus className="h-4 w-4" /> Nowy szablon
             </Button>
           </div>
@@ -260,7 +260,7 @@ export default function ResponseTemplates() {
                           <Copy className="h-4 w-4" /> Kopiuj
                         </Button>
                         <Button variant="outline" size="sm" className="rounded-2xl" onClick={() => openEdit(item)}>Edytuj</Button>
-                        <Button variant="outline" size="icon" className="rounded-2xl text-amber-600 hover:bg-amber-500/10 hover:text-amber-700" onClick={() => void remove(item.id)}>
+                        <Button variant="outline" size="icon" data-cf-header-action="danger" className="rounded-2xl text-amber-600 hover:bg-amber-500/10 hover:text-amber-700" onClick={() => void remove(item.id)}>
                           <Archive className="h-4 w-4" />
                         </Button>
                       </div>

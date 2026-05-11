@@ -17,7 +17,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle} from '../components/ui/dialog';
-import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2, Plus } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   deleteTaskFromSupabase,
@@ -487,6 +487,10 @@ export default function TasksStable() {
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.tasks.description}</p>
             </div>
             <div className="cf-page-hero-actions flex flex-wrap gap-2" data-cf-page-header-part="actions">
+              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800')} onClick={openNewTask} data-cf-header-action="primary" data-page-header-new-task-stage6="true">
+                <Plus className="mr-2 h-4 w-4" />
+                Nowe zadanie
+              </Button>
               <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
                 {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                 Odśwież

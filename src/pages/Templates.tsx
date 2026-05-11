@@ -332,13 +332,13 @@ export default function Templates() {
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.templates.description}</p>
               </div>
             </div>
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
               {!hasAccess ? (
                 <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
                   <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
                 </div>
               ) : null}
-              <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" onClick={openCreateDialog}>
+              <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" data-cf-header-action="primary" onClick={openCreateDialog}>
                 <Plus className="h-4 w-4" /> Nowy szablon
               </Button>
             </div>

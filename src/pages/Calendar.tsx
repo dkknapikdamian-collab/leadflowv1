@@ -13,7 +13,7 @@ import {
   ChevronRight,
   Loader2,
   Repeat,
-  Trash2
+  Trash2, Plus
 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
@@ -1255,6 +1255,14 @@ export default function Calendar() {
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.calendar.description}</p>
                       </div>
           <div className="head-actions" data-cf-page-header-part="actions">
+            <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-event-stage6="true" onClick={() => setIsNewEventOpen(true)}>
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              Dodaj wydarzenie
+            </button>
+            <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-task-stage6="true" onClick={() => setIsNewTaskOpen(true)}>
+              <Plus className="mr-1 h-3.5 w-3.5" />
+              Dodaj zadanie
+            </button>
             <Link to="/ai-drafts" className="btn soft-blue">
               <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Link>
