@@ -1764,20 +1764,7 @@ export default function CaseDetail() {
                 onAddPayment={() => setIsCasePaymentOpen(true)}
               />
             </div>
-
-
-        
-
-            <section className="right-card case-detail-right-card">
-              <div className="case-detail-card-title-row">
-                <Send className="h-4 w-4" />
-                <h2>Szybkie akcje</h2>
-              </div>
-              <div className="case-detail-right-actions">
-                <button type="button" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>Dodaj brak</button>
-              </div>
-            </section>
-            <section className="right-card case-detail-right-card" data-case-finance-panel="true">
+<section className="right-card case-detail-right-card" data-case-finance-panel="true">
               <div className="case-detail-card-title-row">
                 <Paperclip className="h-4 w-4" />
                 <h2>Rozliczenie sprawy</h2>

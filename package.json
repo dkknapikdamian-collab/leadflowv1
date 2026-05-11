@@ -659,7 +659,9 @@
     "check:etap6-cases-clean-list-title-completeness": "node scripts/check-closeflow-etap6-cases-clean-list-title-completeness.cjs",
     "check:closeflow-admin-feedback-2026-05-11": "node scripts/check-closeflow-admin-feedback-2026-05-11.cjs",
     "check:etap8-client-card-inline-row": "node scripts/check-closeflow-etap8-client-card-inline-row.cjs",
-    "check:stage39-page-headers-copy-visual-system": "node scripts/check-stage39-page-headers-copy-visual-system.cjs"
+    "check:stage39-page-headers-copy-visual-system": "node scripts/check-stage39-page-headers-copy-visual-system.cjs",
+    "check:stage40-page-header-action-overflow-hardening": "node scripts/check-stage40-page-header-action-overflow-hardening.cjs",
+    "check:case-detail-quick-actions-cleanup": "node scripts/check-closeflow-case-detail-quick-actions-cleanup.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
