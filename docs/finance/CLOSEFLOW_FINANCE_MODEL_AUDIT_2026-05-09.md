@@ -1,545 +1,149 @@
-# CLOSEFLOW — FIN-0 — Finance model audit
+# CloseFlow Finance Model Audit
+
+Marker: `CLOSEFLOW_FINANCE_MODEL_AUDIT_FIN0`  
+Data dokumentu: 2026-05-09  
+Wygenerowano: 2026-05-11T04:50:46.053Z  
+Etap: FIN-0 — Finance model audit  
+Tryb: audyt bez migracji runtime, bez zmian DB, bez zmian UI
+
+## Werdykt główny
+
+FIN-0 ma status: **audyt wykonany, nie ruszać modelu finansowego w tym etapie**.
+
+Ten dokument odpowiada, co **istnieje**, co **częściowo istnieje**, czego **brakuje** i czego **nie ruszać** przed wdrożeniem prowizji. Jeżeli odpowiedź brzmi „częściowo istnieje”, nie wolno traktować tego jako gotowego modelu produkcyjnego.
+
+## Legenda statusów
+
+| Status | Znaczenie |
+|---|---|
+| istnieje | Element jest wykryty w źródłach i wygląda na intencjonalny kontrakt. |
+| częściowo istnieje | Są ślady w kodzie, UI, helperach albo migracjach, ale model nie jest domknięty end-to-end. |
+| brakuje | Nie wykryto stabilnego źródła prawdy w sprawdzonych plikach. |
+| nie ruszać | FIN-0 tylko dokumentuje. Zmiana wymaga osobnego etapu wdrożeniowego. |
+
+## Podsumowanie statusów
+
+| Status | Liczba |
+|---|---:|
+| istnieje | 2 |
+| częściowo istnieje | 5 |
+| brakuje | 0 |
+
+## Odpowiedzi audytu
+
+| Pytanie | Status | Odpowiedź | Dowód statyczny | Decyzja |
+|---|---|---|---|---|
+| Czy payments istnieje w DB/migracjach? | istnieje | Tabela albo alteracje `payments` są wykryte w migracjach Supabase. | Sprawdzono migracje: 35; payments_table_detected=tak | nie ruszać w FIN-0; tylko audyt i decyzja przed prowizjami |
+| Czy payments ma lead_id, client_id, case_id, type, status, amount, currency, paid_at, due_at, note? | istnieje | Wykryte kolumny: lead_id, client_id, case_id, type, status, amount, currency, paid_at, due_at, note. Braki: brak. | Kolumny sprawdzono w bloku/alterach `payments` w migracjach. | nie ruszać w FIN-0; brakujące kolumny mają wejść dopiero w osobnym etapie migracji DB |
+| Czy cases ma pola prowizji? | częściowo istnieje | W kodzie/migracjach są ślady prowizji przy sprawach, ale FIN-0 nie zakłada, że model jest produkcyjnie kompletny bez osobnej migracji i testu API. | api/cases.ts, src/pages/CaseDetail.tsx, src/lib/data-contract.ts, supabase/migrations/20260423_closeflow_v1_domain_model.sql, supabase/migrations/20260509_finance_contract_fin2.sql, supabase/migrations/20260509_lead_value_ux_fin4.sql | nie ruszać w FIN-0; prowizje projektować dopiero po domknięciu payments |
+| Czy leads ma tylko dealValue, czy też prowizję? | częściowo istnieje | Leady mają ślady wartości/dealValue. Prowizja przy leadach: wykryto ślady, ale wymagają weryfikacji kontraktu. | dealValue: api/leads.ts, src/pages/Leads.tsx, src/pages/LeadDetail.tsx, src/lib/data-contract.ts, src/lib/relation-value.ts, supabase/migrations/2026-05-01_stage05_supabase_data_contract.sql; commission: api/leads.ts, src/lib/data-contract.ts, supabase/migrations/20260423_closeflow_v1_domain_model.sql, supabase/migrations/20260509_finance_contract_fin2.sql, supabase/migrations/20260509_lead_value_ux_fin4.sql | nie ruszać w FIN-0; nie dokładać prowizji do leadów bez decyzji modelowej |
+| Czy clients ma tylko summary, czy własne pola wartości? | częściowo istnieje | Wykryto ślady własnych pól wartości klienta; trzeba zweryfikować, czy to źródło prawdy, czy tylko UI/helper. | summary/value: api/clients.ts, src/pages/Clients.tsx, src/pages/ClientDetail.tsx, src/lib/data-contract.ts, src/lib/relation-value.ts, supabase/migrations/2026-05-01_stage01_supabase_auth_identity.sql, supabase/migrations/2026-05-01_stage05_supabase_data_contract.sql, supabase/migrations/2026-05-01_stage12_data_contract_columns.sql, supabase/migrations/2026-05-01_stageA19v2_admin_role_schema_repair.sql, supabase/migrations/2026-05-01_stageA19_admin_role_policy.sql, ... +14; own-value: api/clients.ts, src/pages/Clients.tsx, src/lib/relation-value.ts | nie ruszać w FIN-0; klient powinien mieć jasne źródło wartości po decyzji payments/cases/leads |
+| Czy UI pokazuje płatności? | częściowo istnieje | UI zawiera ślady płatności/kwot/statusów finansowych, ale FIN-0 traktuje to jako częściowy obraz, dopóki payments i semantyki finansowe nie są spięte end-to-end. | src/pages/Clients.tsx, src/pages/LeadDetail.tsx, src/pages/ClientDetail.tsx, src/pages/CaseDetail.tsx | nie ruszać w FIN-0; nie rozbudowywać UI płatności bez modelu DB/API |
+| Czy helpery API są używane? | częściowo istnieje | api/payments.ts istnieje. Użycie helperów/callsite payments: wykryto ślady. | api: api/payments.ts, api/cases.ts, api/leads.ts, api/system.ts; helpers/callsites: src/lib/supabase-fallback.ts, src/lib/data-contract.ts, src/pages/Clients.tsx, src/pages/LeadDetail.tsx, src/pages/ClientDetail.tsx, src/pages/CaseDetail.tsx, api/payments.ts, api/cases.ts, api/leads.ts, api/system.ts | nie ruszać w FIN-0; helpery porządkować dopiero po decyzji modelu i kontraktu API |
+
+## Kolumny payments wymagane przez FIN-0
+
+| Kolumna | Status w migracjach |
+|---|---|
+| lead_id | istnieje |
+| client_id | istnieje |
+| case_id | istnieje |
+| type | istnieje |
+| status | istnieje |
+| amount | istnieje |
+| currency | istnieje |
+| paid_at | istnieje |
+| due_at | istnieje |
+| note | istnieje |
+
+## Pliki sprawdzone
+
+### Pliki wymagane w etapie
+
+- istnieje — `src/lib/relation-value.ts`
+- istnieje — `src/lib/supabase-fallback.ts`
+- istnieje — `src/lib/data-contract.ts`
+- istnieje — `api/payments.ts`
+- istnieje — `api/cases.ts`
+- istnieje — `api/leads.ts`
+- istnieje — `api/clients.ts`
+- istnieje — `api/system.ts`
+- istnieje — `src/pages/Leads.tsx`
+- istnieje — `src/pages/Clients.tsx`
+- istnieje — `src/pages/Cases.tsx`
+- istnieje — `src/pages/LeadDetail.tsx`
+- istnieje — `src/pages/ClientDetail.tsx`
+- istnieje — `src/pages/CaseDetail.tsx`
+
+### Migracje Supabase
+
+- liczba plików w `supabase/migrations`: 35
+- `supabase/migrations/2026-05-01_stage01_supabase_auth_identity.sql`
+- `supabase/migrations/2026-05-01_stage05_supabase_data_contract.sql`
+- `supabase/migrations/2026-05-01_stage06_client_portal_token_hardening.sql`
+- `supabase/migrations/2026-05-01_stage07_billing_webhook_idempotency.sql`
+- `supabase/migrations/2026-05-01_stage08_response_templates.sql`
+- `supabase/migrations/2026-05-01_stage09_case_templates.sql`
+- `supabase/migrations/2026-05-01_stage10_client_portal_tokens_v2.sql`
+- `supabase/migrations/2026-05-01_stage11_access_statuses_trial21_free.sql`
+- `supabase/migrations/2026-05-01_stage12_data_contract_columns.sql`
+- `supabase/migrations/2026-05-01_stage13_billing_events_and_workspace_columns.sql`
+- `supabase/migrations/2026-05-01_stageA19v2_admin_role_schema_repair.sql`
+- `supabase/migrations/2026-05-01_stageA19_admin_role_policy.sql`
+- `supabase/migrations/2026-05-01_stageA20_status_contract_checks.sql`
+- `supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql`
+- `supabase/migrations/2026-05-01_stageA24_lead_to_case_service_rpc.sql`
+- `supabase/migrations/20260422_support_requests.sql`
+- `supabase/migrations/20260423_closeflow_v1_domain_model.sql`
+- `supabase/migrations/20260423_lead_service_transition_simplification.sql`
+- `supabase/migrations/20260423_profile_workspace_settings_unification.sql`
+- `supabase/migrations/20260423_v1_unblock_minimal.sql`
+- `supabase/migrations/20260423_work_items_bootstrap_digest_recovery.sql`
+- `supabase/migrations/20260501192800_stage_a28_digest_logs_weekly_report.sql`
+- `supabase/migrations/20260501194000_p0_supabase_rls_schema_confirmation.sql`
+- `supabase/migrations/20260501_a26_ai_drafts_supabase.sql`
+- `supabase/migrations/20260501_a27_response_templates_supabase.sql`
+- `supabase/migrations/20260502_p13_app_owners.sql`
+- `supabase/migrations/20260502_portal_uploads_storage_bucket.sql`
+- `supabase/migrations/20260503_google_calendar_lead_parity_columns.sql`
+- `supabase/migrations/20260503_google_calendar_stage10j_inbound_source_columns.sql`
+- `supabase/migrations/20260503_google_calendar_stage10k_inbound_source_columns.sql`
+- ... +5 kolejnych
+
+## Sygnały pomocnicze
+
+| Obszar | Trafienia |
+|---|---|
+| relation-value | src/lib/relation-value.ts |
+| supabase-fallback | src/lib/supabase-fallback.ts |
+| data-contract | src/lib/data-contract.ts |
+| API payments | api/payments.ts istnieje |
+
+## Nie ruszać w FIN-0
+
+- Nie dodawać kolumn prowizji.
+- Nie zmieniać migracji Supabase.
+- Nie zmieniać API płatności, leadów, klientów ani spraw.
+- Nie przepinać UI płatności.
+- Nie zmieniać helperów relation-value ani supabase-fallback.
+- Nie mieszać prowizji z dealValue bez osobnej decyzji modelowej.
+
+## Minimalny następny krok po FIN-0
+
+Najpierw wybrać model źródła prawdy:
+
+1. czy `payments` jest osobną tabelą transakcji,
+2. czy prowizja jest polem na `cases`, osobnym payment type, czy osobną tabelą commission,
+3. czy `leads.dealValue` jest tylko szansą sprzedażową, czy kwotą rozliczeniową,
+4. czy klient ma własną wartość, czy tylko summary liczone z leadów/spraw/płatności.
+
+Dopiero po tej decyzji robić etap FIN-1.
+
+## Kryterium zakończenia FIN-0
+
+- Dokument istnieje.
+- Każde pytanie audytu ma odpowiedź.
+- Dokument zawiera statusy: istnieje / częściowo istnieje / brakuje / nie ruszać.
+- Check przechodzi.
+- Build przechodzi.
 
-**Data:** 2026-05-09  
-**Repo:** `dkknapikdamian-collab/leadflowv1`  
-**Branch:** `dev-rollout-freeze`  
-**Status etapu:** audyt modelu finansowego bez zmian funkcjonalnych  
-**Zakres:** płatności, prowizje, wartość, rozliczenie lead → sprawa → klient
-
----
-
-# 1. Cel
-
-FIN-0 ma ustalić, co faktycznie istnieje w kodzie, API, modelu danych i UI w obszarze finansów.
-
-Ten etap **nie wdraża płatności ani prowizji**. To jest mapa prawdy przed dalszym kodowaniem.
-
-Celem jest uniknięcie sytuacji, w której UI pokazuje „rozliczenia”, ale backend albo baza nie mają pełnego kontraktu. To byłby dokładnie ten typ długu, który później gryzie po kostkach jak miniaturowy fiskus.
-
----
-
-# 2. Zakres audytu
-
-Sprawdzone obszary:
-
-- `src/lib/relation-value.ts`
-- `src/lib/supabase-fallback.ts`
-- `src/lib/data-contract.ts`
-- `api/leads.ts`
-- `api/clients.ts`
-- `api/cases.ts`
-- `api/system.ts`
-- `api/payments.ts`
-- `src/pages/Leads.tsx`
-- `src/pages/Clients.tsx`
-- `src/pages/Cases.tsx`
-- `src/pages/LeadDetail.tsx`
-- `src/pages/ClientDetail.tsx`
-- `src/pages/CaseDetail.tsx`
-- `supabase/migrations/*`
-- `docs/*`
-
----
-
-# 3. Werdykt
-
-## Główna teza
-
-Model finansowy w CloseFlow **częściowo istnieje**, ale nie jest jeszcze pełnym, twardym modułem finansów.
-
-Najważniejszy problem: frontend i kontrakt danych znają `payments`, a część logiki spraw potrafi liczyć wartość / wpłaty / pozostało, ale w repo na tym etapie nie ma potwierdzonego endpointu `api/payments.ts`.
-
-## Poziom przekonania
-
-**8/10**
-
-## Argument za
-
-W kodzie są realne ślady finansów:
-
-- wartości leadów,
-- wartości spraw,
-- wpłaty częściowe,
-- statusy billingowe,
-- model płatności,
-- normalizacja rekordu płatności,
-- UI finansów na sprawie,
-- klient API wołający `/api/payments`.
-
-## Argument przeciw
-
-Nie ma jeszcze spójnej osi finansowej end-to-end. Szczególnie brakuje potwierdzonego backendowego endpointu `api/payments.ts`, a statusy finansowe są rozrzucone między `api/leads.ts`, `api/cases.ts`, `src/lib/data-contract.ts` i UI.
-
-## Co zmieniłoby zdanie
-
-Zielone światło na „model finansowy gotowy” dałbym dopiero po:
-
-1. realnym endpointzie `api/payments.ts`,
-2. migracji tabeli `payments`,
-3. jednym centralnym kontrakcie statusów płatności i modeli rozliczeń,
-4. testach create/read/update/delete płatności,
-5. dowodzie, że `CaseDetail` po reloadzie pokazuje tę samą sumę: wartość / wpłacono / pozostało,
-6. rozstrzygnięciu, czy prowizja to osobna encja, pole w `payments`, czy pole w `cases`.
-
-## Najkrótszy test
-
-1. Utwórz sprawę z `expectedRevenue = 10000 PLN`.
-2. Dodaj wpłatę `2500 PLN`.
-3. Odśwież `CaseDetail`.
-4. Sprawdź, czy pokazuje:
-   - wartość: `10000 PLN`,
-   - wpłacono: `2500 PLN`,
-   - pozostało: `7500 PLN`.
-5. Wejdź w klienta i lead powiązany ze sprawą.
-6. Sprawdź, czy nie ma sprzecznej sumy albo zera.
-
----
-
-# 4. Co istnieje
-
-## 4.1. Wyciąganie wartości z relacji
-
-**Status:** istnieje
-
-Plik:
-
-- `src/lib/relation-value.ts`
-
-Istnieje helper `getRelationValue`, który szuka wartości w wielu polach, m.in.:
-
-- `dealValue`,
-- `net_value`,
-- `gross_value`,
-- `expected_revenue`,
-- `total_revenue`,
-- `lifetime_value`,
-- `client_value`,
-- `deal_value`,
-- `estimatedValue`,
-- `projectValue`,
-- `contractValue`,
-- `budget`,
-- `amount`,
-- `price`.
-
-Istnieje też `buildRelationValueEntries`, który składa wartości dla leadów, klientów i spraw oraz deduplikuje po relacji.
-
-Istnieje `buildRelationFunnelValue`, który sumuje aktywną wartość lejka z leadów i klientów, ale celowo nie podbija głównej sumy sprawami.
-
-### Ocena
-
-To jest przydatny agregator wartości, ale nie jest pełnym modelem finansowym. To warstwa odczytu i prezentacji wartości, nie księgowość ani rozliczenia.
-
----
-
-## 4.2. Kontrakt danych dla wartości leadów i spraw
-
-**Status:** istnieje
-
-Plik:
-
-- `src/lib/data-contract.ts`
-
-Dla leadów istnieje:
-
-- `dealValue`,
-- `currency`.
-
-Dla spraw istnieje:
-
-- `expectedRevenue`,
-- `paidAmount`,
-- `remainingAmount`,
-- `currency`.
-
-Istnieje też typ:
-
-- `NormalizedPaymentRecord`
-
-oraz funkcja:
-
-- `normalizePaymentContract`.
-
-### Ocena
-
-Kontrakt danych jest mocnym zalążkiem. Brakuje jednak potwierdzenia, że każdy poziom aplikacji korzysta z niego jako jedynego źródła prawdy.
-
----
-
-## 4.3. Statusy billingowe i model rozliczenia w leadach
-
-**Status:** częściowo istnieje
-
-Plik:
-
-- `api/leads.ts`
-
-W `api/leads.ts` istnieją statusy billingowe:
-
-- `not_applicable`,
-- `not_started`,
-- `awaiting_payment`,
-- `deposit_paid`,
-- `partially_paid`,
-- `fully_paid`,
-- `commission_pending`,
-- `commission_due`,
-- `paid`,
-- `refunded`,
-- `written_off`.
-
-Istnieją też modele billingowe:
-
-- `upfront_full`,
-- `deposit_then_rest`,
-- `after_completion`,
-- `success_fee`,
-- `recurring`,
-- `manual`.
-
-Istnieje obsługa `partial_payments` oraz funkcja `sumLeadPaidPayments`, która próbuje sumować wpłacone płatności z tabeli `payments`.
-
-Przy `start_service` lead może przenieść do sprawy:
-
-- `expected_revenue`,
-- `paid_amount`,
-- `remaining_amount`,
-- `billing_status`,
-- `billing_model_snapshot`,
-- `currency`.
-
-### Ocena
-
-To jest realna logika finansowa na przejściu lead → sprawa. Problem: zależy od tabeli / endpointu `payments`, którego obecność trzeba domknąć.
-
----
-
-## 4.4. Finanse sprawy w API cases
-
-**Status:** częściowo istnieje
-
-Plik:
-
-- `api/cases.ts`
-
-W `api/cases.ts` istnieją pola opcjonalne:
-
-- `billing_status`,
-- `billing_model_snapshot`,
-- `expected_revenue`,
-- `paid_amount`,
-- `remaining_amount`,
-- `currency`.
-
-Tworzenie i edycja sprawy potrafią przyjąć i zapisać te wartości.
-
-### Ocena
-
-Sprawa jest obecnie najbliżej realnego centrum rozliczenia. To dobry kierunek, bo po pozyskaniu temat przechodzi do sprawy i tam powinna być kontrola operacyjna oraz finansowa.
-
----
-
-## 4.5. Frontendowy klient płatności
-
-**Status:** częściowo istnieje
-
-Plik:
-
-- `src/lib/supabase-fallback.ts`
-
-Istnieją typy i funkcje:
-
-- `PaymentUpsertInput`,
-- `fetchPaymentsFromSupabase`,
-- `createPaymentInSupabase`,
-- `updatePaymentInSupabase`,
-- `deletePaymentFromSupabase`.
-
-Te funkcje wołają:
-
-- `GET /api/payments`,
-- `POST /api/payments`,
-- `PATCH /api/payments`,
-- `DELETE /api/payments`.
-
-Istnieją też mockowe płatności w dev preview.
-
-### Ocena
-
-Frontend jest przygotowany na płatności. Ale bez backendowego `api/payments.ts` to może być ślepa uliczka w produkcji.
-
----
-
-## 4.6. UI finansów na sprawie
-
-**Status:** częściowo istnieje
-
-Plik:
-
-- `src/pages/CaseDetail.tsx`
-
-Widoczne ślady:
-
-- import `fetchPaymentsFromSupabase`,
-- import `createPaymentInSupabase`,
-- typ `CasePaymentRecord`,
-- `getCaseFinanceSummary`,
-- `getCaseExpectedRevenue`,
-- `billingStatusLabel`,
-- liczenie `expected`, `paid`, `remaining`, `progress`.
-
-### Ocena
-
-Na sprawie istnieje realna logika prezentacyjna dla rozliczenia. To nie jest już tylko suchy tekst. Nadal wymaga potwierdzenia backendu płatności i reload persistence.
-
----
-
-# 5. Co częściowo istnieje
-
-## 5.1. Płatności jako encja
-
-**Status:** częściowo istnieje
-
-Istnieje:
-
-- typ `NormalizedPaymentRecord`,
-- normalizacja `normalizePaymentContract`,
-- frontendowe funkcje CRUD,
-- mockowe płatności,
-- odczyt płatności w `CaseDetail`,
-- logika sumowania płatności przy lead → sprawa.
-
-Brakuje / do potwierdzenia:
-
-- `api/payments.ts`,
-- migracja tabeli `payments`,
-- testy API płatności,
-- spójne statusy płatności w jednym pliku domenowym,
-- reguły walidacji kwot,
-- decyzja, czy płatność może być przypięta jednocześnie do `leadId`, `caseId` i `clientId`.
-
----
-
-## 5.2. Prowizje
-
-**Status:** częściowo istnieje jako status, brakuje jako model
-
-Istnieją statusy:
-
-- `commission_pending`,
-- `commission_due`.
-
-Brakuje:
-
-- `commissionAmount`,
-- `commissionRate`,
-- `commissionReceivedAt`,
-- `commissionStatus` jako osobny stan,
-- historii rozliczenia prowizji,
-- UI rozróżniającego przychód klienta / wartość sprawy / prowizję użytkownika.
-
-### Ocena
-
-Słowo „prowizja” jest obecne, ale model prowizji nie jest wdrożony. Nie wolno jeszcze komunikować tego jako działającej funkcji.
-
----
-
-## 5.3. Wartość klienta
-
-**Status:** częściowo istnieje
-
-Istnieją ślady wartości klienta w helperach:
-
-- `clientValue`,
-- `client_value`,
-- `lifetimeValue`,
-- `lifetime_value`,
-- `totalRevenue`,
-- `total_revenue`.
-
-Brakuje twardego modelu w `clients` API. `api/clients.ts` nie zapisuje wprost wartości finansowych klienta poza komentarzem technicznym na końcu pliku.
-
-### Ocena
-
-Wartość klienta jest dziś raczej odczytywana heurystycznie niż prowadzona jako twarda encja finansowa.
-
----
-
-# 6. Czego brakuje
-
-## 6.1. Backend endpoint `api/payments.ts`
-
-**Status:** brakuje
-
-Na tym etapie audytu plik:
-
-```text
-api/payments.ts
-```
-
-nie jest potwierdzony jako istniejący na branchu.
-
-To jest najważniejsza dziura, bo `src/lib/supabase-fallback.ts` już zakłada `/api/payments`.
-
-## 6.2. Migracja tabeli `payments`
-
-**Status:** do potwierdzenia lokalnie
-
-Trzeba sprawdzić `supabase/migrations/*` pod kątem tabeli:
-
-```sql
-payments
-```
-
-Minimalny model powinien mieć:
-
-- `id`,
-- `workspace_id`,
-- `client_id`,
-- `lead_id`,
-- `case_id`,
-- `type`,
-- `status`,
-- `amount`,
-- `currency`,
-- `paid_at`,
-- `due_at`,
-- `note`,
-- `created_at`,
-- `updated_at`.
-
-## 6.3. Jeden centralny model statusów finansowych
-
-**Status:** brakuje
-
-Dzisiaj statusy finansowe są powtarzane w API leadów i spraw. Powinny trafić do jednego pliku domenowego, np.:
-
-```text
-src/lib/finance-statuses.ts
-```
-
-albo do istniejącego `domain-statuses`, jeśli pasuje do obecnej architektury.
-
-## 6.4. Testy CRUD płatności
-
-**Status:** brakuje
-
-Potrzebne testy:
-
-- create payment,
-- read payments by case,
-- read payments by lead,
-- update payment,
-- delete payment,
-- workspace isolation,
-- calculation after reload.
-
-## 6.5. Rozróżnienie wartości biznesowej i realnie pobranych pieniędzy
-
-**Status:** częściowo istnieje, do doprecyzowania
-
-Trzeba jasno rozdzielić:
-
-- wartość potencjalna leada,
-- wartość sprawy / umowy,
-- wpłacono,
-- pozostało,
-- prowizja należna,
-- prowizja otrzymana,
-- przychód powtarzalny.
-
-Bez tego aplikacja może mieszać „wartość klienta” z realną kasą.
-
----
-
-# 7. Nie ruszać w tym etapie
-
-FIN-0 nie może zmieniać działania aplikacji.
-
-Nie ruszać:
-
-- UI,
-- formularzy,
-- migracji Supabase,
-- endpointów danych,
-- statusów biznesowych,
-- logiki lead → sprawa,
-- billing/subskrypcji aplikacji,
-- Stripe / checkout,
-- Google Calendar,
-- AI Drafts,
-- access gates.
-
-Ten etap ma tylko udokumentować stan i dodać guard audytu.
-
----
-
-# 8. Rekomendacja kolejnego etapu
-
-## FIN-1 — Payments backend contract
-
-Cel: domknąć brakujący endpoint i kontrakt płatności.
-
-Pliki do sprawdzenia:
-
-- `api/payments.ts`
-- `src/lib/data-contract.ts`
-- `src/lib/supabase-fallback.ts`
-- `supabase/migrations/*`
-- `src/pages/CaseDetail.tsx`
-- `tests/*payments*`
-
-Zmień:
-
-1. Dodać `api/payments.ts` z metodami:
-   - `GET`,
-   - `POST`,
-   - `PATCH`,
-   - `DELETE`.
-2. Każda operacja musi być scopeowana po `workspace_id`.
-3. Dodać walidację:
-   - kwota >= 0,
-   - currency ISO 3 znaki,
-   - status z dozwolonej listy,
-   - minimum jedno powiązanie: `caseId`, `leadId` albo `clientId`.
-4. Dodać migrację tabeli `payments`, jeśli jej nie ma.
-5. Dodać testy CRUD i workspace isolation.
-
-Nie zmieniaj:
-
-- wyglądu `CaseDetail`,
-- logiki billing/subskrypcji CloseFlow,
-- prowizji jako osobnego modelu, dopóki płatności nie są domknięte.
-
-Kryterium zakończenia:
-
-- `CaseDetail` po reloadzie pokazuje poprawne wpłaty z backendu,
-- płatność nie przecieka między workspace,
-- brak `404` na `/api/payments`.
-
----
-
-# 9. Kryterium zakończenia FIN-0
-
-FIN-0 jest zakończony, jeśli:
-
-1. istnieje dokument:
-
-```text
-docs/finance/CLOSEFLOW_FINANCE_MODEL_AUDIT_2026-05-09.md
-```
-
-2. istnieje guard:
-
-```text
-scripts/check-closeflow-finance-model-audit.cjs
-```
-
-3. dokument jawnie mówi:
-
-- istnieje,
-- częściowo istnieje,
-- brakuje,
-- nie ruszać.
-
-4. guard sprawdza, że audyt nie jest pustą notatką, tylko odnosi się do realnych plików i realnych śladów finansów.
