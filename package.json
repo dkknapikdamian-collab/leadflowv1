@@ -638,7 +638,8 @@
     "check:closeflow-case-quick-actions": "node scripts/check-closeflow-case-quick-actions.cjs",
     "check:closeflow-finance-runtime-esm-imports": "node scripts/check-closeflow-finance-runtime-esm-imports.cjs",
     "check:closeflow-client-primary-case": "node scripts/check-closeflow-client-primary-case.cjs",
-    "check:closeflow-stage-polish-guard": "node scripts/check-closeflow-stage-polish-guard.cjs"
+    "check:closeflow-stage-polish-guard": "node scripts/check-closeflow-stage-polish-guard.cjs",
+    "check:closeflow-client-finance-summary": "node scripts/check-closeflow-client-finance-summary.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

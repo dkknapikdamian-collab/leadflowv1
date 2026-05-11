@@ -1395,6 +1395,7 @@ export default function ClientDetail() {
       <Layout>
         <div data-fin7-client-detail-finance-summary="true">
           <ClientFinanceRelationSummary clientId={String((client as any)?.id || '')} />
+                    client={client}
         </div>
 
         <main className="client-detail-vnext-page">

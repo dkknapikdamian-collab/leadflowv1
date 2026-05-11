@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CommissionMode, CommissionStatus, FinanceSummary } from '../../lib/finance/finance-types';
-import { buildClientFinanceSummary } from '../../lib/finance/finance-client-summary';
+import { calculateClientFinanceSummary } from '../../lib/client-finance';
 import { fetchCasesFromSupabase, fetchPaymentsFromSupabase } from '../../lib/supabase-fallback';
 import { StatusPill, SurfaceCard } from '../ui-system';
 
@@ -102,6 +102,7 @@ export function FinanceMiniSummary({
 
 
 type ClientFinanceRelationSummaryProps = {
+  client?: Record<string, unknown> | null;
   clientId?: string | null;
   cases?: Array<Record<string, unknown>>;
   payments?: Array<Record<string, unknown>>;
@@ -111,10 +112,11 @@ type ClientFinanceRelationSummaryProps = {
 export const FIN7_CLIENT_FINANCE_RELATION_SUMMARY_COMPONENT = 'FIN-7_CLIENT_FINANCE_RELATION_SUMMARY_COMPONENT_V1' as const;
 
 export function ClientFinanceRelationSummary({
+  client,
   clientId,
   cases,
   payments,
-  title = 'Finanse relacji',
+  title = 'Podsumowanie finansów',
 }: ClientFinanceRelationSummaryProps) {
   const [loadedCases, setLoadedCases] = useState<Array<Record<string, unknown>>>([]);
   const [loadedPayments, setLoadedPayments] = useState<Array<Record<string, unknown>>>([]);
@@ -138,33 +140,35 @@ export function ClientFinanceRelationSummary({
     return () => { cancelled = true; };
   }, [payments, resolvedClientId]);
 
-  const summary = useMemo(() => buildClientFinanceSummary({
+  const summary = useMemo(() => calculateClientFinanceSummary({
+    client: client || { id: resolvedClientId },
     cases: Array.isArray(cases) ? cases : loadedCases,
     payments: Array.isArray(payments) ? payments : loadedPayments,
-  }), [cases, loadedCases, loadedPayments, payments]);
+    mode: 'primary_case_first',
+  }), [cases, client, loadedCases, loadedPayments, payments, resolvedClientId]);
 
   return (
-    <SurfaceCard className="cf-finance-mini-summary cf-finance-client-summary" data-fin7-client-finance-summary="true" aria-label={title}>
+    <SurfaceCard className="cf-finance-mini-summary cf-finance-client-summary" data-fin8-client-finance-summary="true" aria-label={title}>
       <div className="cf-finance-mini-summary__header">
-        <p className="cf-finance-kicker">FIN-7</p>
+        <p className="cf-finance-kicker">FIN-8</p>
         <strong className="cf-finance-mini-summary__value">{title}</strong>
       </div>
       <dl className="cf-finance-mini-summary__grid">
         <div className="cf-finance-metric">
-          <dt>Suma spraw</dt>
-          <dd>{formatMoney(summary.contractValue, summary.currency)}</dd>
+          <dt>Wartość</dt>
+          <dd>{formatMoney(summary.totalValue)}</dd>
         </div>
         <div className="cf-finance-metric">
-          <dt>Prowizja należna</dt>
-          <dd>{formatMoney(summary.commissionAmount, summary.currency)}</dd>
+          <dt>Opłacone</dt>
+          <dd>{formatMoney(summary.paidValue)}</dd>
         </div>
         <div className="cf-finance-metric">
-          <dt>Wpłacono</dt>
-          <dd>{formatMoney(summary.paidAmount, summary.currency)}</dd>
+          <dt>Do domknięcia</dt>
+          <dd>{formatMoney(summary.remainingValue)}</dd>
         </div>
         <div className="cf-finance-metric">
-          <dt>Pozostało</dt>
-          <dd>{formatMoney(summary.remainingAmount, summary.currency)}</dd>
+          <dt>Rozliczenia</dt>
+          <dd>{summary.settlementsCount.toLocaleString('pl-PL')}</dd>
         </div>
       </dl>
     </SurfaceCard>
