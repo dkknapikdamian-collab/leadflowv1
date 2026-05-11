@@ -388,3 +388,11 @@ Nie zmieniać:
 - sposobu renderowania ClientDetail / CaseDetail / Clients / Cases.
 
 Ten etap to mapa, nie operacja na żywym organizmie.
+
+## Guardy
+
+```powershell
+npm.cmd run check:closeflow-case-client-roadmap-repair
+npm.cmd run build
+npm.cmd run verify:closeflow:quiet
+```
