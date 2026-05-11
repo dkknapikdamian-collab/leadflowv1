@@ -7,6 +7,7 @@ import {
   type CommissionBase,
   type CommissionMode,
   type CommissionStatus,
+  type FinanceCommissionConfig,
   type FinanceCurrency,
   type FinancePaymentLike,
   type NormalizedFinancePayment,
@@ -15,6 +16,7 @@ import {
 } from './finance-types';
 
 export const CLOSEFLOW_FINANCE_NORMALIZE_FIN1 = 'CLOSEFLOW_FINANCE_NORMALIZE_FIN1';
+export const CLOSEFLOW_FINANCE_NORMALIZE_FIN1_COMPAT = 'CLOSEFLOW_FIN1_COMPAT_NORMALIZE_COMMISSION_CONFIG';
 
 export function normalizeMoneyAmount(value: unknown, fallback = 0): number {
   if (typeof value === 'number') return Number.isFinite(value) ? Math.max(0, value) : fallback;
@@ -23,7 +25,7 @@ export function normalizeMoneyAmount(value: unknown, fallback = 0): number {
   const normalized = value
     .trim()
     .replace(/\s+/g, '')
-    .replace(/pln|zĹ‚/gi, '')
+    .replace(/pln|zł|zĹ‚/gi, '')
     .replace(',', '.')
     .replace(/[^0-9.-]/g, '');
   const parsed = Number(normalized);
@@ -72,6 +74,12 @@ function nullableText(value: unknown): string | null {
   return typeof value === 'string' && value.trim() ? value.trim() : null;
 }
 
+function nullableAmount(value: unknown): number | null {
+  if (value == null || value === '') return null;
+  const normalized = normalizeMoneyAmount(value, Number.NaN);
+  return Number.isFinite(normalized) ? normalized : null;
+}
+
 export function normalizeFinancePayment(payment: FinancePaymentLike | null | undefined, fallbackCurrency = 'PLN'): NormalizedFinancePayment {
   const row = payment || {};
   return {
@@ -97,4 +105,26 @@ export function normalizeFinanceDate(value: unknown): Date | null {
   if (!raw) return null;
   const parsed = new Date(/^\d{4}-\d{2}-\d{2}$/.test(raw) ? `${raw}T23:59:59` : raw);
   return Number.isFinite(parsed.getTime()) ? parsed : null;
+}
+
+/**
+ * Compatibility normalizer for the existing FIN-5 CaseSettlementPanel.
+ * It does not mutate UI or DB. It only translates legacy field names into the FIN-1 domain shape.
+ */
+export function normalizeCommissionConfig(value: Record<string, unknown> | null | undefined): FinanceCommissionConfig {
+  const row = value || {};
+  const rate = normalizeMoneyAmount(row.rate ?? row.percent ?? row.commissionRate ?? row.commission_rate, 0);
+  return {
+    mode: normalizeCommissionMode(row.mode ?? row.commissionMode ?? row.commission_mode),
+    base: normalizeCommissionBase(row.base ?? row.commissionBase ?? row.commission_base),
+    status: normalizeCommissionStatus(row.status ?? row.commissionStatus ?? row.commission_status),
+    rate,
+    percent: rate,
+    amount: nullableAmount(row.amount ?? row.commissionAmount ?? row.commission_amount),
+    fixedAmount: nullableAmount(row.fixedAmount ?? row.fixed_amount ?? row.commissionAmount ?? row.commission_amount),
+    customBaseAmount: nullableAmount(row.customBaseAmount ?? row.custom_base_amount),
+    paidAmount: nullableAmount(row.paidAmount ?? row.paid_amount ?? row.commissionPaidAmount ?? row.commission_paid_amount),
+    dueAt: nullableText(row.dueAt ?? row.due_at ?? row.commissionDueAt ?? row.commission_due_at),
+    currency: normalizeCurrency(row.currency, 'PLN'),
+  };
 }

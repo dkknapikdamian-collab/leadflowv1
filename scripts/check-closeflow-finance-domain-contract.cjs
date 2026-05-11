@@ -28,6 +28,7 @@ for (const rel of requiredFiles) assert(exists(rel), 'missing file: ' + rel);
 const typeFile = read('src/lib/finance/finance-types.ts');
 const calcFile = read('src/lib/finance/finance-calculations.ts');
 const normalizeFile = read('src/lib/finance/finance-normalize.ts');
+const panelFile = exists('src/components/finance/CaseSettlementPanel.tsx') ? read('src/components/finance/CaseSettlementPanel.tsx') : '';
 const docs = read('docs/finance/CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_2026-05-09.md');
 const pkg = JSON.parse(read('package.json'));
 
@@ -58,6 +59,14 @@ for (const fn of [
   assert(docs.includes(fn), 'docs missing function: ' + fn);
 }
 
+for (const compatFn of [
+  'clampFinanceAmount',
+  'normalizeCommissionPercent',
+  'buildFinanceSummary',
+]) {
+  assert(calcFile.includes(`export function ${compatFn}`), 'FIN-1 compatibility export missing from finance-calculations: ' + compatFn);
+}
+
 for (const fn of [
   'normalizeCommissionMode',
   'normalizeCommissionBase',
@@ -65,8 +74,19 @@ for (const fn of [
   'normalizePaymentType',
   'normalizePaymentStatus',
   'normalizeFinancePayment',
+  'normalizeCommissionConfig',
 ]) {
   assert(normalizeFile.includes(`export function ${fn}`), 'finance normalize function missing: ' + fn);
+}
+
+for (const typeName of ['FinancePayment', 'FinanceSummary', 'FinanceCommissionConfig']) {
+  assert(typeFile.includes(`export type ${typeName}`), 'FIN-1 compatibility type missing: ' + typeName);
+}
+
+if (panelFile) {
+  for (const importedName of ['buildFinanceSummary', 'clampFinanceAmount', 'normalizeCommissionPercent', 'normalizeCommissionConfig', 'FinancePayment']) {
+    assert(panelFile.includes(importedName), 'CaseSettlementPanel compatibility surface no longer detected: ' + importedName);
+  }
 }
 
 for (const forbidden of [
@@ -98,5 +118,6 @@ assert(pkg.scripts && pkg.scripts['check:closeflow-finance-domain-contract'] ===
 console.log('CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1_CHECK_OK');
 console.log('finance_types=5');
 console.log('finance_functions=5');
+console.log('compat_exports=5');
 console.log('ui_runtime_migration=false');
 console.log('db_migration=false');

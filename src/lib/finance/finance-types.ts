@@ -1,4 +1,5 @@
 export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1 = 'CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1';
+export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_FIN1_COMPAT = 'CLOSEFLOW_FIN1_COMPAT_CASE_SETTLEMENT_PANEL_EXPORTS';
 
 export const COMMISSION_MODES = ['none', 'percent', 'fixed'] as const;
 export type CommissionMode = (typeof COMMISSION_MODES)[number];
@@ -48,16 +49,37 @@ export type NormalizedFinancePayment = {
   note: string;
 };
 
+/** Backward-compatible alias used by existing FIN-5 components. */
+export type FinancePayment = NormalizedFinancePayment;
+
 export type FinanceCommissionInput = {
   mode?: CommissionMode | string | null;
   base?: CommissionBase | string | null;
   status?: CommissionStatus | string | null;
   rate?: number | string | null;
+  /** Backward-compatible alias used by existing settlement UI. */
+  percent?: number | string | null;
   amount?: number | string | null;
   fixedAmount?: number | string | null;
   customBaseAmount?: number | string | null;
   paidAmount?: number | string | null;
   dueAt?: string | null;
+  currency?: FinanceCurrency | string | null;
+};
+
+export type FinanceCommissionConfig = {
+  mode: CommissionMode;
+  base: CommissionBase;
+  status: CommissionStatus;
+  rate: number;
+  /** Backward-compatible alias for rate. */
+  percent: number;
+  amount: number | null;
+  fixedAmount: number | null;
+  customBaseAmount: number | null;
+  paidAmount: number | null;
+  dueAt: string | null;
+  currency: FinanceCurrency;
 };
 
 export type FinanceSnapshotInput = {
@@ -67,6 +89,8 @@ export type FinanceSnapshotInput = {
   payments?: FinancePaymentLike[] | null;
   commission?: FinanceCommissionInput | null;
   now?: Date | string | number | null;
+  /** Backward-compatible alias used by older CaseSettlementPanel code. */
+  nowIso?: string | null;
 };
 
 export type FinanceSnapshot = {
@@ -86,9 +110,19 @@ export type FinanceSnapshot = {
   refundAmount: number;
 };
 
+/** Backward-compatible summary shape used by existing FIN-5 components. */
+export type FinanceSummary = FinanceSnapshot & {
+  paidCommissionAmount: number;
+  remainingCommissionAmount: number;
+  paidClientAmount: number;
+  clientPaidAmount: number;
+  paymentPaidAmount: number;
+};
+
 export const CLOSEFLOW_FINANCE_DOMAIN_CONTRACT_NOTE = {
-  contractValue: 'WartoĹ›Ä‡ kontraktu/sprawy. Nie oznacza jeszcze pieniÄ™dzy pobranych od klienta.',
-  paidAmount: 'Suma wpĹ‚at klienta z payment type deposit/partial/final/other o statusie paid, pomniejszona o refundy paid.',
-  commission: 'Prowizja operatora. Nie jest tym samym co pĹ‚atnoĹ›Ä‡ klienta i nie jest tym samym co dealValue leada.',
-  noRuntimeMigration: 'FIN-1 nie tworzy UI, migracji DB ani panelu finansĂłw.',
+  contractValue: 'Wartość kontraktu/sprawy. Nie oznacza jeszcze pieniędzy pobranych od klienta.',
+  paidAmount: 'Suma wpłat klienta z payment type deposit/partial/final/other o statusie paid, pomniejszona o refundy paid.',
+  commission: 'Prowizja operatora. Nie jest tym samym co płatność klienta i nie jest tym samym co dealValue leada.',
+  noRuntimeMigration: 'FIN-1 nie tworzy UI, migracji DB ani panelu finansów.',
+  compat: 'FIN-1 repair zostawia stare eksporty używane przez CaseSettlementPanel: FinancePayment, FinanceSummary i FinanceCommissionConfig.',
 } as const;

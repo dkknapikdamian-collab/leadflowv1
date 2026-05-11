@@ -6,6 +6,7 @@ import {
   type FinancePaymentLike,
   type FinanceSnapshot,
   type FinanceSnapshotInput,
+  type FinanceSummary,
   type NormalizedFinancePayment,
 } from './finance-types';
 import {
@@ -19,10 +20,21 @@ import {
 } from './finance-normalize';
 
 export const CLOSEFLOW_FINANCE_CALCULATIONS_FIN1 = 'CLOSEFLOW_FINANCE_CALCULATIONS_FIN1';
+export const CLOSEFLOW_FINANCE_CALCULATIONS_FIN1_COMPAT = 'CLOSEFLOW_FIN1_COMPAT_CASE_SETTLEMENT_PANEL_EXPORTS';
 
 function roundMoney(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.round(Math.max(0, value) * 100) / 100;
+}
+
+/** Backward-compatible public clamp used by existing finance UI. */
+export function clampFinanceAmount(value: unknown, fallback = 0): number {
+  return roundMoney(normalizeMoneyAmount(value, fallback));
+}
+
+/** Backward-compatible percent normalizer used by existing finance UI. */
+export function normalizeCommissionPercent(value: unknown): number {
+  return Math.min(100, clampFinanceAmount(value, 0));
 }
 
 function isPaid(payment: NormalizedFinancePayment): boolean {
@@ -64,6 +76,8 @@ export function calculateCommissionPaidAmount(payments: FinancePaymentLike[] | N
 type CommissionAmountInput = FinanceCommissionInput & {
   contractValue?: number | string | null;
   paidAmount?: number | string | null;
+  /** Legacy alias used by existing CaseSettlementPanel. */
+  percent?: number | string | null;
 };
 
 function getCommissionBaseAmount(base: CommissionBase, input: CommissionAmountInput): number {
@@ -72,8 +86,18 @@ function getCommissionBaseAmount(base: CommissionBase, input: CommissionAmountIn
   return normalizeMoneyAmount(input.contractValue, 0);
 }
 
-export function calculateCommissionAmount(input: CommissionAmountInput | null | undefined): number {
-  const data = input || {};
+export function calculateCommissionAmount(
+  input: CommissionAmountInput | null | undefined,
+  legacyContractValue?: number | string | null,
+  legacyPaidAmount?: number | string | null,
+  legacyCustomBaseAmount?: number | string | null,
+): number {
+  const data: CommissionAmountInput = {
+    ...(input || {}),
+    contractValue: input?.contractValue ?? legacyContractValue,
+    paidAmount: input?.paidAmount ?? legacyPaidAmount,
+    customBaseAmount: input?.customBaseAmount ?? legacyCustomBaseAmount,
+  };
   const mode: CommissionMode = normalizeCommissionMode(data.mode);
   const base: CommissionBase = normalizeCommissionBase(data.base);
 
@@ -81,7 +105,7 @@ export function calculateCommissionAmount(input: CommissionAmountInput | null | 
   if (mode === 'fixed') return roundMoney(normalizeMoneyAmount(data.fixedAmount ?? data.amount, 0));
 
   const baseAmount = getCommissionBaseAmount(base, data);
-  const rate = normalizeMoneyAmount(data.rate, 0);
+  const rate = normalizeCommissionPercent(data.rate ?? data.percent);
   return roundMoney((baseAmount * rate) / 100);
 }
 
@@ -137,7 +161,7 @@ export function buildFinanceSnapshot(input: FinanceSnapshotInput | null | undefi
     commissionAmount,
     commissionPaidAmount,
     dueAt: commission.dueAt,
-    now: data.now,
+    now: data.now ?? data.nowIso,
   });
 
   return {
@@ -155,5 +179,18 @@ export function buildFinanceSnapshot(input: FinanceSnapshotInput | null | undefi
     paidPaymentCount: payments.filter(isPaid).length,
     duePaymentCount: payments.filter(isDue).length,
     refundAmount: roundMoney(payments.filter((payment) => isPaid(payment) && payment.type === 'refund').reduce((sum, payment) => sum + payment.amount, 0)),
+  };
+}
+
+/** Backward-compatible alias for existing FIN-5 CaseSettlementPanel. */
+export function buildFinanceSummary(input: FinanceSnapshotInput | null | undefined): FinanceSummary {
+  const snapshot = buildFinanceSnapshot(input);
+  return {
+    ...snapshot,
+    paidCommissionAmount: snapshot.commissionPaidAmount,
+    remainingCommissionAmount: snapshot.commissionRemainingAmount,
+    paidClientAmount: snapshot.paidAmount,
+    clientPaidAmount: snapshot.paidAmount,
+    paymentPaidAmount: snapshot.paidAmount,
   };
 }
