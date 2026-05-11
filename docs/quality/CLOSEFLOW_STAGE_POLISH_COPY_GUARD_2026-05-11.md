@@ -1,17 +1,29 @@
 # CLOSEFLOW_STAGE_POLISH_COPY_GUARD_2026-05-11
 
+## Status
+Repair2: guard polskich znaków działa zbiorczo na plikach etapu oraz na plikach zmienionych w `git diff`.
+
 ## Cel
-Nowe etapy mają zbiorczo pilnować polskich znaków, zamiast poprawiać pojedyncze słowa po fakcie.
+Nowe etapy mają blokować mojibake i błędy kodowania zbiorczo, zanim trafią do commita. Nie poprawiamy pojedynczych słów ręcznie po fakcie, tylko skanujemy cały zakres etapu.
 
-## Zakres
-Guard `check:closeflow-stage-polish-guard` skanuje pliki zmieniane przez bieżący etap i blokuje typowe ślady mojibake:
+## Zakres domyślny
+`check:closeflow-stage-polish-guard` skanuje:
 
-- `Ĺ`
-- `Ä`
-- `Ă`
-- `Â`
-- `â`
-- `�`
+- stałą listę plików danego etapu,
+- pliki zmienione względem `HEAD`,
+- pliki staged.
 
-## Zasada
-Jeżeli etap dodaje dokument, check albo tekst UI, musi przejść przez ten guard przed commitem.
+## Tryb szeroki
+Dla większego skanu można odpalić:
+
+```powershell
+$env:CLOSEFLOW_POLISH_GUARD_SCOPE="all"; npm.cmd run check:closeflow-stage-polish-guard; Remove-Item Env:CLOSEFLOW_POLISH_GUARD_SCOPE
+```
+
+Tryb `all` skanuje foldery `src`, `api`, `scripts`, `docs` i `supabase`, z pominięciem `dist`, `node_modules`, `.git`, `.vercel`, `coverage` oraz `.closeflow-recovery-backups`.
+
+## Zasada techniczna
+Skrypt nie zawiera dosłownych uszkodzonych znaków. Markery są zapisane jako kody Unicode, żeby guard nie wykrywał samego siebie.
+
+## Kryterium
+Guard ma wypisać wszystkie trafienia z plikiem, linią, kolumną i krótkim wycinkiem tekstu.
