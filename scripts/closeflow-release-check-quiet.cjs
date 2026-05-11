@@ -172,6 +172,9 @@ runQuiet('case detail no partial loading', process.execPath, [
   'scripts/check-closeflow-case-detail-no-partial-loading.cjs',
 ]);
 
+runQuiet('case detail no partial loading', process.execPath, ['scripts/check-closeflow-case-detail-no-partial-loading.cjs']);
+runQuiet('case detail loading reference', process.execPath, ['scripts/check-closeflow-case-detail-loading-reference.cjs']);
+
 runNpmScript('production build', 'build');
 
 for (const relativePath of requiredTests) {

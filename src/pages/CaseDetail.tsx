@@ -1995,12 +1995,7 @@ function CaseItemDialog({
   onChange: (value: { title: string; description: string; type: string; isRequired: boolean; dueDate: string }) => void;
   onSubmit: () => void;
 }) {
-  /* CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_GUARD_2026_05_11 */
-  if (loading) {
-    return <CaseDetailLoadingState />;
-  }
-
-  return (
+return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader><DialogTitle>Dodaj brak</DialogTitle></DialogHeader>
