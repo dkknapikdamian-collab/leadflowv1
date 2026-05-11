@@ -69,6 +69,8 @@ const TODAY_STABLE_STAGE14_REMAINING_SEVERITY = 'TODAY_STABLE_STAGE14_REMAINING_
 const TODAY_VIEW_STORAGE_KEY = 'closeflow:today:view-sections:v1';
 const CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP = 'CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP';
 void CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP;
+const CLOSEFLOW_TODAY_MOBILE_TILE_FOCUS_FIX_2026_05_11 = 'CLOSEFLOW_TODAY_MOBILE_TILE_FOCUS_FIX_2026_05_11';
+void CLOSEFLOW_TODAY_MOBILE_TILE_FOCUS_FIX_2026_05_11;
 void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
 void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
@@ -475,6 +477,17 @@ const TODAY_SECTION_TITLES: Record<TodaySectionKey, string> = {
   drafts: 'Szkice AI do sprawdzenia',
 };
 
+const TODAY_SECTION_DOM_IDS: Record<TodaySectionKey, string> = {
+  no_action: 'today-section-leads-without-next-action',
+  risk: 'today-section-high-value-risk',
+  waiting: 'today-section-waiting-leads',
+  leads: 'today-section-leads-today',
+  tasks: 'today-section-tasks-today',
+  events: 'today-section-events-today',
+  upcoming: 'today-section-upcoming-7-days',
+  drafts: 'today-section-ai-drafts',
+};
+
 function normalizeSemanticLabel(value: unknown) {
   return String(value || '')
     .toLowerCase()
@@ -664,11 +677,46 @@ function getFb4TodayTasksSectionTitle(tasks: any[]) {
 }
 
 function shouldFb4ScrollTodaySection() {
-  if (typeof window === 'undefined') return false;
-  try {
-    return window.matchMedia('(min-width: 768px)').matches;
-  } catch {
-    return true;
+  return typeof window !== 'undefined';
+}
+
+function getTodaySectionDomId(key: TodaySectionKey) {
+  return TODAY_SECTION_DOM_IDS[key] || 'today-section-' + key.replace(/_/g, '-');
+}
+
+function getTodaySectionKeyFromMetricTile(element: HTMLElement): TodaySectionKey | null {
+  const value = [
+    element.dataset.cfSemanticLabel,
+    element.dataset.cfTodayMetricTileTarget,
+    element.getAttribute('aria-label'),
+    element.textContent,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  return getTodaySectionFromTileText(value);
+}
+
+function syncTodayMetricTileFocusA11y(activeKey: TodaySectionKey | null, collapsedSections: TodaySectionKey[]) {
+  if (typeof document === 'undefined') return;
+  const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
+  if (!root) return;
+
+  for (const key of TODAY_SECTION_KEYS) {
+    const section = getTodaySectionCardElement(key);
+    if (!section) continue;
+    section.id = getTodaySectionDomId(key);
+    section.dataset.cfTodaySection = getTodaySectionDomId(key);
+    section.dataset.cfExpanded = collapsedSections.includes(key) ? 'false' : 'true';
+  }
+
+  const tiles = Array.from(root.querySelectorAll<HTMLElement>('button[data-cf-semantic-label]'));
+  for (const tile of tiles) {
+    const key = getTodaySectionKeyFromMetricTile(tile);
+    if (!key) continue;
+    tile.dataset.cfTodayMetricTileTarget = key;
+    tile.setAttribute('aria-controls', getTodaySectionDomId(key));
+    tile.setAttribute('aria-expanded', activeKey === key && !collapsedSections.includes(key) ? 'true' : 'false');
   }
 }
 
@@ -754,6 +802,42 @@ export default function TodayStable() {
   const [actionPendingId, setActionPendingId] = useState<string>('');
   const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
   const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
+
+  const focusTodaySectionFromMetricTile = useCallback((sectionKey: TodaySectionKey) => {
+    setActiveTodaySection(sectionKey);
+    setExpandedSection(sectionKey);
+    setCollapsedSections((prev) => prev.filter((entry) => entry !== sectionKey));
+
+    window.setTimeout(() => {
+      moveTodaySectionToTop(sectionKey);
+      scrollToTodaySection(sectionKey);
+    }, 80);
+  }, []);
+
+  useEffect(() => {
+    syncTodayMetricTileFocusA11y(activeTodaySection, collapsedSections);
+
+    if (typeof document === 'undefined') return undefined;
+    const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
+    if (!root) return undefined;
+
+    const handleMetricTileClick = (event: MouseEvent) => {
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      const tile = target?.closest('button[data-cf-semantic-label]');
+      if (!(tile instanceof HTMLElement)) return;
+
+      const sectionKey = getTodaySectionKeyFromMetricTile(tile);
+      if (!sectionKey) return;
+
+      window.setTimeout(() => {
+        focusTodaySectionFromMetricTile(sectionKey);
+        syncTodayMetricTileFocusA11y(sectionKey, collapsedSections.filter((entry) => entry !== sectionKey));
+      }, 0);
+    };
+
+    root.addEventListener('click', handleMetricTileClick);
+    return () => root.removeEventListener('click', handleMetricTileClick);
+  }, [activeTodaySection, collapsedSections, focusTodaySectionFromMetricTile, status, visibleTodaySections]);
 
   useEffect(() => {
     normalizeAdminFeedbackP1TodayHeaderActions();

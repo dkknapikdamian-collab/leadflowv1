@@ -176,6 +176,7 @@ runQuiet('case detail no partial loading', process.execPath, ['scripts/check-clo
 runQuiet('case detail loading reference', process.execPath, ['scripts/check-closeflow-case-detail-loading-reference.cjs']);
 
 runQuiet('today header actions stack', process.execPath, ['scripts/check-closeflow-today-header-actions-stack.cjs']);
+runQuiet('today mobile tile focus', process.execPath, ['scripts/check-closeflow-today-mobile-tile-focus.cjs']);
 
 runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-trash-actions.cjs']);
 
