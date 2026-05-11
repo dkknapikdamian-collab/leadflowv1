@@ -1,82 +1,109 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 
-const file = path.join(process.cwd(), 'src', 'pages', 'Cases.tsx');
-const src = fs.readFileSync(file, 'utf8');
+const root = process.cwd();
+const casesPath = path.join(root, 'src', 'pages', 'Cases.tsx');
 
 function fail(message) {
-  console.error('FAILED closeflow cases import contract: ' + message);
+  console.error(`FAILED closeflow cases import contract: ${message}`);
   process.exit(1);
 }
 
-function allImportDeclarations() {
-  const re = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]\s*;/g;
-  const out = [];
+if (!fs.existsSync(casesPath)) {
+  fail('src/pages/Cases.tsx is missing');
+}
+
+const source = fs.readFileSync(casesPath, 'utf8');
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function importClauses(moduleName) {
+  const escaped = escapeRegExp(moduleName);
+  const pattern = new RegExp(`import\\s+([^;]*?)\\s+from\\s+['"]${escaped}['"]\\s*;`, 'g');
+  const clauses = [];
   let match;
-  while ((match = re.exec(src)) !== null) {
-    out.push({ full: match[0], spec: match[1], source: match[2] });
+  while ((match = pattern.exec(source)) !== null) {
+    clauses.push(match[1]);
   }
-  return out;
+  return clauses;
 }
 
-const imports = allImportDeclarations();
-
-function namedImportsFrom(sourceName) {
-  const found = [];
-  for (const item of imports.filter((entry) => entry.source === sourceName)) {
-    const named = item.spec.match(/\{([\s\S]*?)\}/);
-    if (!named) continue;
-    for (const raw of named[1].split(',')) {
-      const name = raw
-        .trim()
-        .replace(/^type\s+/, '')
-        .replace(/\s+as\s+.*$/, '')
-        .trim();
-      if (name) found.push(name);
-    }
-  }
-  return new Set(found);
+function importNames(clauses) {
+  return clauses.flatMap((clause) => {
+    return clause
+      .replace(/[{}\r\n]/g, ',')
+      .split(',')
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => part.replace(/^type\s+/, '').split(/\s+as\s+/)[0].trim())
+      .filter(Boolean);
+  });
 }
 
-function importBlocksFrom(sourceName) {
-  return imports.filter((entry) => entry.source === sourceName).map((entry) => entry.full);
+function hasName(clauses, name) {
+  return importNames(clauses).includes(name);
 }
 
-function requireAll(set, source, names) {
-  for (const name of names) {
-    if (!set.has(name)) fail(source + ' import is missing ' + name);
+function requireName(clauses, name, moduleName) {
+  if (!hasName(clauses, name)) {
+    fail(`${moduleName} import is missing ${name}`);
   }
 }
 
-function requireNone(set, source, names) {
-  for (const name of names) {
-    if (set.has(name)) fail(source + ' import must not contain ' + name);
+function forbidName(clauses, name, moduleName) {
+  if (hasName(clauses, name)) {
+    fail(`${name} must not be imported from ${moduleName}`);
   }
 }
 
-const react = namedImportsFrom('react');
-const router = namedImportsFrom('react-router-dom');
-const lucide = namedImportsFrom('lucide-react');
+const reactImport = importClauses('react');
+const routerImport = importClauses('react-router-dom');
+const lucideImport = importClauses('lucide-react');
 
-requireAll(react, 'react', ['useEffect', 'useMemo', 'useRef', 'FormEvent']);
-requireNone(react, 'react', ['ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2', 'Link', 'useSearchParams']);
+if (reactImport.length === 0) fail('missing import from react');
+if (routerImport.length === 0) fail('missing import from react-router-dom');
+if (lucideImport.length === 0) fail('missing import from lucide-react');
 
-requireAll(router, 'react-router-dom', ['Link', 'useSearchParams']);
-requireNone(router, 'react-router-dom', ['useEffect', 'useMemo', 'useRef', 'FormEvent', 'ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2']);
-
-requireAll(lucide, 'lucide-react', ['ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2']);
-requireNone(lucide, 'lucide-react', ['useEffect', 'useMemo', 'useRef', 'FormEvent', 'Link', 'useSearchParams']);
-
-if (importBlocksFrom('react-router-dom').some((block) => /\buseRef\b|\buseMemo\b|\buseEffect\b|\bFormEvent\b/.test(block))) {
-  fail('react-router-dom import contains React imports');
+for (const name of ['useEffect', 'useMemo', 'useRef', 'useState', 'FormEvent']) {
+  requireName(reactImport, name, 'react');
 }
 
-if (importBlocksFrom('react').some((block) => /\bLoader2\b|\bTrash2\b|\bExternalLink\b|\bFileText\b|\bPlus\b|\bSearch\b/.test(block))) {
-  fail('react import contains lucide icons');
+for (const name of ['Link', 'useSearchParams']) {
+  requireName(routerImport, name, 'react-router-dom');
 }
 
-if (!/\bLoader2\b/.test(src)) {
-  fail('Cases.tsx no longer references Loader2; guard should be revisited instead of silently passing');
+for (const name of ['ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2']) {
+  requireName(lucideImport, name, 'lucide-react');
+}
+
+for (const name of ['useEffect', 'useMemo', 'useRef', 'useState', 'FormEvent']) {
+  forbidName(routerImport, name, 'react-router-dom');
+  forbidName(lucideImport, name, 'lucide-react');
+}
+
+for (const name of ['ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2']) {
+  forbidName(reactImport, name, 'react');
+  forbidName(routerImport, name, 'react-router-dom');
+}
+
+for (const name of ['Link', 'useSearchParams']) {
+  forbidName(reactImport, name, 'react');
+  forbidName(lucideImport, name, 'lucide-react');
+}
+
+if (/\buseState\s*\(/.test(source) && !hasName(reactImport, 'useState')) {
+  fail('Cases.tsx calls useState but react import does not include useState');
+}
+
+if (/\buseRef\s*\(/.test(source) && !hasName(reactImport, 'useRef')) {
+  fail('Cases.tsx calls useRef but react import does not include useRef');
+}
+
+if (/\bLoader2\b/.test(source) && !hasName(lucideImport, 'Loader2')) {
+  fail('Cases.tsx references Loader2 but lucide-react import does not include Loader2');
 }
 
 console.log('CLOSEFLOW_CASES_IMPORT_CONTRACT_OK');
