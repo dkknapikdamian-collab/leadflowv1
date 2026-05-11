@@ -66,6 +66,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs'
 import { Textarea } from '../components/ui/textarea';
 import { CaseSettlementPanel, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementPanel';
 import { ActivityRoadmap } from '../components/ActivityRoadmap';
+import CaseQuickActions from '../components/CaseQuickActions';
 import {
   createClientPortalTokenInSupabase,
   deleteCaseItemFromSupabase,
@@ -1687,26 +1688,18 @@ export default function CaseDetail() {
           </section>
 
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
+            <div data-case-quick-actions-anchor="case-detail">
+              <CaseQuickActions
+                caseId={caseData.id}
+                caseTitle={getCaseTitle(caseData)}
+                clientId={caseData.clientId || null}
+                leadId={caseData.leadId || null}
+                onAddPayment={() => setIsCasePaymentOpen(true)}
+              />
+            </div>
 
-        <div className="case-detail-right-card case-detail-create-action-card" data-case-create-actions-panel="true">
-          <small>Dodaj do sprawy</small>
-          <p>Zadanie, wydarzenie albo notatka</p>
-          <div className="case-detail-right-actions case-detail-create-actions">
-            <Button type="button" variant="outline" size="sm" onClick={openCaseTaskDialog} data-case-create-action="task" data-case-quick-action="true">
-              <ListChecks className="h-4 w-4" />
-              Zadanie
-            </Button>
-            <Button type="button" variant="outline" size="sm" onClick={openCaseEventDialog} data-case-create-action="event" data-case-quick-action="true">
-              <CalendarClock className="h-4 w-4" />
-              Wydarzenie
-            </Button>
-            <Button type="button" variant="outline" data-case-create-action="note" onClick={openCaseNoteDialog}>
-              <StickyNote className="h-4 w-4" />
-              Dodaj notatkę
-            </Button>
-          </div>
-          <small className="case-detail-right-note">Zadanie i wydarzenie zostaną automatycznie podpięte pod tę sprawę oraz klienta.</small>
-        </div>
+
+        
 
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
@@ -1741,7 +1734,7 @@ export default function CaseDetail() {
             emptyText="Brak ruchów w tej sprawie."
           />
         </section>
-
+
 
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
