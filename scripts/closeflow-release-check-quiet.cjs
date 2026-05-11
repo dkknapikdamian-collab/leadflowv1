@@ -166,6 +166,12 @@ for (const relativePath of requiredTests) {
   }
 }
 
+
+// CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_QUIET_GATE_REPAIR
+runQuiet('case detail no partial loading', process.execPath, [
+  'scripts/check-closeflow-case-detail-no-partial-loading.cjs',
+]);
+
 runNpmScript('production build', 'build');
 
 for (const relativePath of requiredTests) {
