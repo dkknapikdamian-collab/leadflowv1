@@ -14,6 +14,7 @@
     "test": "node scripts/run-tests-compact.cjs",
     "verify:closeflow": "node scripts/closeflow-release-check.cjs",
     "verify:closeflow:quiet": "node scripts/closeflow-release-check-quiet.cjs",
+    "check:today-header-actions-stack": "node scripts/check-closeflow-today-header-actions-stack.cjs",
     "check:polish-mojibake": "node scripts/check-polish-mojibake.cjs",
     "check:data-contract-v1": "node scripts/check-data-contract-v1.cjs",
     "test:data-contract-normalization": "node --test tests/data-contract-normalization.test.cjs",

@@ -79,6 +79,9 @@ void STAGE16AN_TODAY_VIEW_CUSTOMIZER;
 void STAGE16AR_TODAY_VIEW_ALL_OPTIONS_FIXED;
 void TODAY_STABLE_STAGE14_REMAINING_SEVERITY;
 
+const ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX = 'ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX';
+void ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX;
+
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
 type DashboardData = {
@@ -692,6 +695,52 @@ function normalizeFb4TodayActionClusterOrder() {
   if (refreshButton.nextSibling !== viewButton) refreshParent.insertBefore(viewButton, refreshButton.nextSibling);
 }
 
+
+function normalizeAdminFeedbackP1TodayHeaderActions() {
+  if (typeof document === 'undefined') return;
+  const root = document.querySelector('[data-p0-today-stable-rebuild="true"]') as HTMLElement | null;
+  if (!root) return;
+
+  const normalize = (value: unknown) =>
+    String(value || '')
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const buttons = Array.from(root.querySelectorAll('button')) as HTMLButtonElement[];
+  const refreshButton = buttons.find((button) => normalize(button.textContent).includes('odswiez'));
+  const viewButton = buttons.find((button) => {
+    const label = normalize(button.textContent);
+    return label === 'widok' || label.includes('widok');
+  });
+
+  if (!refreshButton || !viewButton || refreshButton === viewButton) return;
+
+  const refreshParent = refreshButton.parentElement;
+  if (!refreshParent) return;
+
+  if (viewButton.parentElement !== refreshParent) refreshParent.appendChild(viewButton);
+  if (refreshButton.nextSibling !== viewButton) refreshParent.insertBefore(viewButton, refreshButton.nextSibling);
+
+  refreshParent.classList.add('cf-section-head-action-stack', 'cf-today-section-head-action-stack');
+  refreshButton.classList.add('cf-section-head-refresh-button');
+  viewButton.classList.add('cf-section-head-view-button');
+
+  const actionRoot =
+    (refreshParent.closest('.cf-section-head-actions') as HTMLElement | null) ||
+    refreshParent.parentElement;
+
+  if (actionRoot) {
+    actionRoot.classList.add('cf-section-head-actions', 'cf-today-section-head-actions');
+    const lastRead = Array.from(actionRoot.querySelectorAll('span,p,div')).find((element) =>
+      normalize(element.textContent).includes('ostatni odczyt'),
+    ) as HTMLElement | undefined;
+    if (lastRead) lastRead.classList.add('cf-section-head-last-read');
+  }
+}
+
 export default function TodayStable() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<DashboardStatus>('idle');
@@ -705,6 +754,10 @@ export default function TodayStable() {
   const [actionPendingId, setActionPendingId] = useState<string>('');
   const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
   const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
+
+  useEffect(() => {
+    normalizeAdminFeedbackP1TodayHeaderActions();
+  }, [status, lastLoadedAt, manualRefreshing, todayViewOpen]);
 
   const refreshData = useCallback(async (options?: { manual?: boolean }) => {
     const manual = Boolean(options?.manual);
