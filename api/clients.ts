@@ -5,7 +5,7 @@ import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from
 import { normalizeClientContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 
-const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at']);
+const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at', 'primary_case_id']);
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 
@@ -16,6 +16,11 @@ function asText(value: unknown) {
 function asNullableUuid(value: unknown) {
   const normalized = asText(value);
   return normalized && isUuid(normalized) ? normalized : null;
+}
+
+function asPrimaryCaseId(value: unknown) {
+  if (value === null || value === '') return null;
+  return asNullableUuid(value);
 }
 
 function asStringArray(value: unknown) {
@@ -143,6 +148,7 @@ export default async function handler(req: any, res: any) {
         updated_at: nowIso,
         last_activity_at: toIso(body.lastActivityAt),
         archived_at: toIso(body.archivedAt),
+        primary_case_id: asPrimaryCaseId(body.primaryCaseId ?? body.primary_case_id),
       };
       const result = await insertWithSchemaFallback(payload);
       const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
@@ -167,6 +173,7 @@ export default async function handler(req: any, res: any) {
       if (body.sourcePrimary !== undefined) payload.source_primary = asText(body.sourcePrimary) || 'other';
       if (body.lastActivityAt !== undefined) payload.last_activity_at = toIso(body.lastActivityAt);
       if (body.archivedAt !== undefined) payload.archived_at = toIso(body.archivedAt);
+      if (body.primaryCaseId !== undefined || body.primary_case_id !== undefined) payload.primary_case_id = asPrimaryCaseId(body.primaryCaseId ?? body.primary_case_id);
 
       const data = await updateWithSchemaFallback(id, workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id, ...payload };

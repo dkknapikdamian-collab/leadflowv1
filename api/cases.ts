@@ -12,6 +12,8 @@ import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 const CASE_STATUSES = new Set<string>(CASE_STATUS_VALUES);
 const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_payment', 'deposit_paid', 'partially_paid', 'fully_paid', 'commission_pending', 'commission_due', 'paid', 'refunded', 'written_off']);
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
+const CLOSEFLOW_CLIENT_PRIMARY_CASE_ETAP7_API_GUARD = 'primaryForClient replacePrimaryCase clients.primary_case_id';
+
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency',
   'contract_value',
   'commission_mode',
@@ -130,6 +132,20 @@ async function safeSelectRows(query: string) {
   } catch {
     return [];
   }
+}
+
+async function getClientPrimaryCaseIdForApi(workspaceId: string, clientId: string) {
+  if (!clientId) return '';
+  const rows = await safeSelectRows(withWorkspaceFilter(`clients?select=id,primary_case_id&id=eq.${encodeURIComponent(clientId)}&limit=1`, workspaceId));
+  return asText(rows[0]?.primary_case_id);
+}
+
+async function setClientPrimaryCaseForApi(workspaceId: string, clientId: string, caseId: string | null, nowIso: string) {
+  if (!clientId) return;
+  await bestEffortPatch(withWorkspaceFilter(`clients?id=eq.${encodeURIComponent(clientId)}`, workspaceId), {
+    primary_case_id: caseId,
+    updated_at: nowIso,
+  });
 }
 
 async function findExistingClient(workspaceId: string, input: { clientId?: unknown; clientEmail?: unknown; clientPhone?: unknown; clientName?: unknown }) {
@@ -280,6 +296,13 @@ export default async function handler(req: any, res: any) {
         throw new Error('CLIENT_NOT_FOUND');
       }
       const normalizedClientId = asNullableUuid(ensuredClient?.id || body.clientId || linkedLead?.client_id || linkedLead?.clientId);
+      const wantsPrimaryCase = Boolean(body.primaryForClient || body.primary_for_client);
+      const replacePrimaryCase = Boolean(body.replacePrimaryCase || body.replace_primary_case);
+      const existingPrimaryCaseId = wantsPrimaryCase && normalizedClientId ? await getClientPrimaryCaseIdForApi(finalWorkspaceId, normalizedClientId) : '';
+      if (wantsPrimaryCase && existingPrimaryCaseId && !replacePrimaryCase) {
+        res.status(409).json({ error: 'PRIMARY_CASE_ALREADY_EXISTS', primaryCaseId: existingPrimaryCaseId });
+        return;
+      }
 
       const contractValue = asNumber(body.contractValue ?? body.contract_value ?? body.expectedRevenue ?? body.dealValue ?? linkedLead?.contract_value ?? linkedLead?.expected_revenue ?? linkedLead?.value ?? linkedLead?.deal_value);
       const paidAmount = asNumber(body.paidAmount ?? body.paid_amount);
@@ -339,6 +362,9 @@ export default async function handler(req: any, res: any) {
               updatedAt: nowIso,
             }),
           );
+        }
+        if (wantsPrimaryCase && normalizedClientId) {
+          await setClientPrimaryCaseForApi(finalWorkspaceId, normalizedClientId, insertedId, nowIso);
         }
       }
 
@@ -454,6 +480,11 @@ export default async function handler(req: any, res: any) {
 
       await bestEffortPatch(withWorkspaceFilter(`leads?linked_case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
         linked_case_id: null,
+        updated_at: nowIso,
+      });
+
+      await bestEffortPatch(withWorkspaceFilter(`clients?primary_case_id=eq.${encodeURIComponent(id)}`, workspaceId), {
+        primary_case_id: null,
         updated_at: nowIso,
       });
 

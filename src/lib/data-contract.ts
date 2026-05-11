@@ -49,6 +49,7 @@ export const DATA_CONTRACT_FIELD_MAP = {
     updatedAt: ['updatedAt', 'updated_at'],
     lastActivityAt: ['lastActivityAt', 'last_activity_at'],
     archivedAt: ['archivedAt', 'archived_at'],
+    primaryCaseId: ['primaryCaseId', 'primary_case_id'],
   },
   cases: {
     id: ['id'],
@@ -193,6 +194,7 @@ export type ClientDto = DataRecord & {
   updatedAt: string | null;
   lastActivityAt: string | null;
   archivedAt: string | null;
+  primaryCaseId: string | null;
 };
 
 export type CaseDto = DataRecord & {
@@ -580,6 +582,7 @@ export function normalizeClientContract(row: DataRecord): ClientDto {
     updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
     lastActivityAt: toIsoDateTime(row.lastActivityAt) || toIsoDateTime(row.last_activity_at),
     archivedAt: toIsoDateTime(row.archivedAt) || toIsoDateTime(row.archived_at),
+    primaryCaseId: pickOptionalText(row, ['primaryCaseId', 'primary_case_id']) || null,
   };
 }
 
