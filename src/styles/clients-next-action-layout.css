@@ -251,3 +251,39 @@
   }
 }
 
+
+/* CLOSEFLOW_ETAP4_CLIENT_NEXT_ACTION_ACCENT
+   owner: CloseFlow UI system
+   reason: /clients nearest action panel needs a subtle separate slate-blue surface
+   scope: /clients client card nearest action panel only
+   rule: calm neutral accent, status-free color, no full-card color change
+*/
+.main-clients-html .client-row > .cf-client-next-action-panel {
+  border: 1px solid rgba(37, 99, 235, 0.18) !important;
+  background:
+    linear-gradient(180deg, rgba(239, 246, 255, 0.92), rgba(248, 250, 252, 0.98)) !important;
+  border-radius: 1rem;
+  padding: 0.875rem;
+  color: #0f172a;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.74);
+}
+
+.main-clients-html .client-row > .cf-client-next-action-panel .cf-muted,
+.main-clients-html .client-row > .cf-client-next-action-panel small,
+.main-clients-html .client-row > .cf-client-next-action-panel .mini {
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+.main-clients-html .client-row > .cf-client-next-action-panel strong {
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+}
+
+@media (max-width: 520px) {
+  .main-clients-html .client-row > .cf-client-next-action-panel {
+    padding: 0.75rem;
+    border-radius: 0.9rem;
+  }
+}
+

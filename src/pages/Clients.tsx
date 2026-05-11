@@ -702,7 +702,7 @@ export default function Clients() {
                            </span>
                          </span>
                          <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell client-card-next-action-block"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
+                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
                          <span className="lead-actions client-card-action-buttons">
                            <span className="btn ghost cf-icon-action-button" aria-hidden="true"><EntityIcon entity="client" className="h-4 w-4" /></span>
                            <button
