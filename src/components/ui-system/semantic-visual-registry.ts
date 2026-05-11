@@ -1,21 +1,5 @@
 export const CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D = 'CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D';
 
-export type CloseflowSemanticVisualName =
-  | 'danger-delete'
-  | 'session-logout'
-  | 'alert-error'
-  | 'alert-warning'
-  | 'status-open'
-  | 'status-done'
-  | 'status-overdue'
-  | 'entity-client'
-  | 'entity-lead'
-  | 'entity-case'
-  | 'payment-paid'
-  | 'payment-due'
-  | 'commission-due'
-  | 'commission-paid';
-
 export type CloseflowSemanticVisualTone =
   | 'danger'
   | 'warning'
@@ -24,6 +8,14 @@ export type CloseflowSemanticVisualTone =
   | 'entity'
   | 'payment'
   | 'commission';
+
+export type CloseflowSemanticVisualIntent =
+  | 'destructive-action'
+  | 'session-action'
+  | 'system-alert'
+  | 'status-state'
+  | 'entity-identity'
+  | 'money-state';
 
 export type CloseflowSemanticVisualClasses = {
   text: string;
@@ -39,6 +31,7 @@ export type CloseflowSemanticVisualClasses = {
 export type CloseflowSemanticVisualEntry = {
   name: CloseflowSemanticVisualName;
   tone: CloseflowSemanticVisualTone;
+  intent: CloseflowSemanticVisualIntent;
   label: string;
   meaning: string;
   allowedUse: string;
@@ -46,89 +39,94 @@ export type CloseflowSemanticVisualEntry = {
   classes: CloseflowSemanticVisualClasses;
 };
 
-export const closeflowSemanticVisualRegistry: Record<
-  CloseflowSemanticVisualName,
-  CloseflowSemanticVisualEntry
-> = {
+const RED_CLASSES: CloseflowSemanticVisualClasses = {
+  text: 'text-red-700',
+  subtleText: 'text-red-600',
+  icon: 'text-red-600',
+  surface: 'bg-red-50',
+  surfaceStrong: 'bg-red-100',
+  border: 'border-red-200',
+  badge: 'bg-red-50 text-red-700 border border-red-200',
+  ring: 'focus-visible:ring-red-500',
+};
+
+const ROSE_CLASSES: CloseflowSemanticVisualClasses = {
+  text: 'text-rose-700',
+  subtleText: 'text-rose-600',
+  icon: 'text-rose-600',
+  surface: 'bg-rose-50',
+  surfaceStrong: 'bg-rose-100',
+  border: 'border-rose-200',
+  badge: 'bg-rose-50 text-rose-700 border border-rose-200',
+  ring: 'focus-visible:ring-rose-500',
+};
+
+const AMBER_CLASSES: CloseflowSemanticVisualClasses = {
+  text: 'text-amber-800',
+  subtleText: 'text-amber-700',
+  icon: 'text-amber-600',
+  surface: 'bg-amber-50',
+  surfaceStrong: 'bg-amber-100',
+  border: 'border-amber-200',
+  badge: 'bg-amber-50 text-amber-800 border border-amber-200',
+  ring: 'focus-visible:ring-amber-500',
+};
+
+const EMERALD_CLASSES: CloseflowSemanticVisualClasses = {
+  text: 'text-emerald-700',
+  subtleText: 'text-emerald-600',
+  icon: 'text-emerald-600',
+  surface: 'bg-emerald-50',
+  surfaceStrong: 'bg-emerald-100',
+  border: 'border-emerald-200',
+  badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+  ring: 'focus-visible:ring-emerald-500',
+};
+
+export const SEMANTIC_VISUAL_MAP = {
   'danger-delete': {
-    name: 'danger-delete',
     tone: 'danger',
+    intent: 'destructive-action',
     label: 'Usuwanie',
-    meaning: 'Akcja usuwa, kasuje albo przenosi rekord do kosza.',
-    allowedUse: 'Przyciski i komunikaty związane z usuwaniem danych.',
-    forbiddenUse: 'Zwykły status, priorytet, wyróżnienie marketingowe albo dekoracja.',
-    classes: {
-      text: 'text-red-700',
-      subtleText: 'text-red-600',
-      icon: 'text-red-600',
-      surface: 'bg-red-50',
-      surfaceStrong: 'bg-red-100',
-      border: 'border-red-200',
-      badge: 'bg-red-50 text-red-700 border border-red-200',
-      ring: 'focus-visible:ring-red-500',
-    },
+    meaning: 'Czerwony oznacza destrukcyjnÄ… akcjÄ™: usuwa, kasuje albo przenosi rekord do kosza.',
+    allowedUse: 'Przyciski UsuĹ„, UsuĹ„ rekord, PrzenieĹ› do kosza oraz potwierdzenia usuwania.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla zwykĹ‚ego bĹ‚Ä™du, zalegĹ‚ego terminu, wylogowania ani statusu biznesowego.',
+    classes: RED_CLASSES,
   },
   'session-logout': {
-    name: 'session-logout',
     tone: 'danger',
+    intent: 'session-action',
     label: 'Wylogowanie',
-    meaning: 'Akcja kończy sesję użytkownika, ale nie usuwa danych.',
-    allowedUse: 'Wylogowanie, zakończenie sesji, utrata aktywnej sesji.',
-    forbiddenUse: 'Usuwanie rekordu albo błąd systemowy.',
-    classes: {
-      text: 'text-rose-700',
-      subtleText: 'text-rose-600',
-      icon: 'text-rose-600',
-      surface: 'bg-rose-50',
-      surfaceStrong: 'bg-rose-100',
-      border: 'border-rose-200',
-      badge: 'bg-rose-50 text-rose-700 border border-rose-200',
-      ring: 'focus-visible:ring-rose-500',
-    },
+    meaning: 'Rose oznacza zakoĹ„czenie sesji uĹĽytkownika. To nie jest usuniÄ™cie danych.',
+    allowedUse: 'Wyloguj, zakoĹ„czenie sesji, komunikat o utracie aktywnej sesji.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla delete, bĹ‚Ä™du API, zalegĹ‚oĹ›ci albo pĹ‚atnoĹ›ci.',
+    classes: ROSE_CLASSES,
   },
   'alert-error': {
-    name: 'alert-error',
     tone: 'danger',
-    label: 'Błąd',
-    meaning: 'Systemowy błąd, blokada, awaria albo walidacja uniemożliwiająca wykonanie akcji.',
-    allowedUse: 'Alerty błędu, błędy API, błędy walidacji, krytyczne ostrzeżenia.',
-    forbiddenUse: 'Priorytet sprzedażowy, zwykła etykieta albo akcja usuwania.',
-    classes: {
-      text: 'text-red-700',
-      subtleText: 'text-red-600',
-      icon: 'text-red-600',
-      surface: 'bg-red-50',
-      surfaceStrong: 'bg-red-100',
-      border: 'border-red-200',
-      badge: 'bg-red-50 text-red-700 border border-red-200',
-      ring: 'focus-visible:ring-red-500',
-    },
+    intent: 'system-alert',
+    label: 'BĹ‚Ä…d',
+    meaning: 'Czerwony oznacza bĹ‚Ä…d systemu, blokadÄ™ albo walidacjÄ™ uniemoĹĽliwiajÄ…cÄ… wykonanie akcji.',
+    allowedUse: 'BĹ‚Ä™dy API, bĹ‚Ä™dy walidacji, brak uprawnieĹ„, awarie i krytyczne alerty.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla delete, overdue, logout ani zwykĹ‚ego priorytetu.',
+    classes: RED_CLASSES,
   },
   'alert-warning': {
-    name: 'alert-warning',
     tone: 'warning',
-    label: 'Ostrzeżenie',
-    meaning: 'Stan wymaga uwagi, ale nie jest jeszcze błędem ani usunięciem.',
-    allowedUse: 'Ryzyko, niepełna konfiguracja, zbliżający się termin, brakujące dane.',
-    forbiddenUse: 'Błąd krytyczny, sukces albo zwykła dekoracja.',
-    classes: {
-      text: 'text-amber-800',
-      subtleText: 'text-amber-700',
-      icon: 'text-amber-600',
-      surface: 'bg-amber-50',
-      surfaceStrong: 'bg-amber-100',
-      border: 'border-amber-200',
-      badge: 'bg-amber-50 text-amber-800 border border-amber-200',
-      ring: 'focus-visible:ring-amber-500',
-    },
+    intent: 'system-alert',
+    label: 'OstrzeĹĽenie',
+    meaning: 'Amber oznacza stan wymagajÄ…cy uwagi, ale jeszcze nie bĹ‚Ä…d blokujÄ…cy.',
+    allowedUse: 'Brak konfiguracji, ryzyko, dane do uzupeĹ‚nienia, ostrzeĹĽenie przed skutkiem akcji.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla sukcesu, delete, bĹ‚Ä™du krytycznego ani pĹ‚atnoĹ›ci po terminie.',
+    classes: AMBER_CLASSES,
   },
   'status-open': {
-    name: 'status-open',
     tone: 'status',
+    intent: 'status-state',
     label: 'Otwarte',
     meaning: 'Rekord jest aktywny i wymaga dalszej pracy.',
     allowedUse: 'Otwarte leady, sprawy, zadania, tickety i szkice.',
-    forbiddenUse: 'Encja klienta, płatność albo status zakończony.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla encji klienta, pĹ‚atnoĹ›ci, prowizji ani zakoĹ„czenia.',
     classes: {
       text: 'text-sky-700',
       subtleText: 'text-sky-600',
@@ -141,48 +139,30 @@ export const closeflowSemanticVisualRegistry: Record<
     },
   },
   'status-done': {
-    name: 'status-done',
     tone: 'success',
+    intent: 'status-state',
     label: 'Zrobione',
-    meaning: 'Rekord albo akcja została ukończona poprawnie.',
-    allowedUse: 'Zadania zrobione, sprawy zakończone, pozytywne potwierdzenia.',
-    forbiddenUse: 'Płatność, prowizja albo status encji bez zakończenia.',
-    classes: {
-      text: 'text-emerald-700',
-      subtleText: 'text-emerald-600',
-      icon: 'text-emerald-600',
-      surface: 'bg-emerald-50',
-      surfaceStrong: 'bg-emerald-100',
-      border: 'border-emerald-200',
-      badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-      ring: 'focus-visible:ring-emerald-500',
-    },
+    meaning: 'Zielony oznacza ukoĹ„czony rekord albo poprawnie wykonanÄ… akcjÄ™.',
+    allowedUse: 'Zadanie zrobione, sprawa zakoĹ„czona, pozytywne potwierdzenie wykonania.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla pĹ‚atnoĹ›ci ani prowizji, bo one majÄ… osobne semantyki finansowe.',
+    classes: EMERALD_CLASSES,
   },
   'status-overdue': {
-    name: 'status-overdue',
     tone: 'danger',
-    label: 'Zaległe',
-    meaning: 'Termin minął i element wymaga reakcji.',
-    allowedUse: 'Zaległe zadania, wydarzenia, follow-upy i terminy.',
-    forbiddenUse: 'Usuwanie danych, zwykły wysoki priorytet albo błąd API.',
-    classes: {
-      text: 'text-red-700',
-      subtleText: 'text-red-600',
-      icon: 'text-red-600',
-      surface: 'bg-red-50',
-      surfaceStrong: 'bg-red-100',
-      border: 'border-red-200',
-      badge: 'bg-red-50 text-red-700 border border-red-200',
-      ring: 'focus-visible:ring-red-500',
-    },
+    intent: 'status-state',
+    label: 'ZalegĹ‚e',
+    meaning: 'Czerwony oznacza przekroczony termin. To nie jest delete ani bĹ‚Ä…d systemowy.',
+    allowedUse: 'ZalegĹ‚e zadania, wydarzenia, follow-upy, terminy i aktywnoĹ›ci po czasie.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla usuwania danych, bĹ‚Ä™du API, logout ani pĹ‚atnoĹ›ci po terminie.',
+    classes: RED_CLASSES,
   },
   'entity-client': {
-    name: 'entity-client',
     tone: 'entity',
+    intent: 'entity-identity',
     label: 'Klient',
-    meaning: 'Osoba albo firma w tle, łącząca leady i sprawy.',
-    allowedUse: 'Ikony, pigułki, nagłówki i subtelne wyróżnienia encji klienta.',
-    forbiddenUse: 'Status, błąd, płatność albo prowizja.',
+    meaning: 'Kolor oznacza encjÄ™ klienta: osobÄ™ albo firmÄ™ w tle Ĺ‚Ä…czÄ…cÄ… leady i sprawy.',
+    allowedUse: 'Ikony, piguĹ‚ki, nagĹ‚Ăłwki i subtelne wyrĂłĹĽnienia encji klienta.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ jako status, bĹ‚Ä…d, pĹ‚atnoĹ›Ä‡ ani prowizja.',
     classes: {
       text: 'text-indigo-700',
       subtleText: 'text-indigo-600',
@@ -195,12 +175,12 @@ export const closeflowSemanticVisualRegistry: Record<
     },
   },
   'entity-lead': {
-    name: 'entity-lead',
     tone: 'entity',
+    intent: 'entity-identity',
     label: 'Lead',
-    meaning: 'Temat do pozyskania, wymagający ruchu sprzedażowego.',
-    allowedUse: 'Ikony, pigułki, nagłówki i subtelne wyróżnienia encji leada.',
-    forbiddenUse: 'Alert, płatność albo status wykonania.',
+    meaning: 'Kolor oznacza encjÄ™ leada: temat do pozyskania i pracy sprzedaĹĽowej.',
+    allowedUse: 'Ikony, piguĹ‚ki, nagĹ‚Ăłwki i subtelne wyrĂłĹĽnienia encji leada.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ jako alert, pĹ‚atnoĹ›Ä‡, delete ani status wykonania.',
     classes: {
       text: 'text-violet-700',
       subtleText: 'text-violet-600',
@@ -213,12 +193,12 @@ export const closeflowSemanticVisualRegistry: Record<
     },
   },
   'entity-case': {
-    name: 'entity-case',
     tone: 'entity',
+    intent: 'entity-identity',
     label: 'Sprawa',
-    meaning: 'Temat już prowadzony operacyjnie.',
-    allowedUse: 'Ikony, pigułki, nagłówki i subtelne wyróżnienia encji sprawy.',
-    forbiddenUse: 'Alert, płatność albo status wykonania.',
+    meaning: 'Kolor oznacza encjÄ™ sprawy: temat prowadzony operacyjnie.',
+    allowedUse: 'Ikony, piguĹ‚ki, nagĹ‚Ăłwki i subtelne wyrĂłĹĽnienia encji sprawy.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ jako alert, pĹ‚atnoĹ›Ä‡, delete ani status wykonania.',
     classes: {
       text: 'text-blue-700',
       subtleText: 'text-blue-600',
@@ -231,78 +211,63 @@ export const closeflowSemanticVisualRegistry: Record<
     },
   },
   'payment-paid': {
-    name: 'payment-paid',
     tone: 'payment',
-    label: 'Zapłacone',
-    meaning: 'Płatność została uregulowana.',
-    allowedUse: 'Statusy wpłat, rozliczeń i opłaconych pozycji.',
-    forbiddenUse: 'Zwykłe zakończenie zadania albo status encji.',
-    classes: {
-      text: 'text-emerald-700',
-      subtleText: 'text-emerald-600',
-      icon: 'text-emerald-600',
-      surface: 'bg-emerald-50',
-      surfaceStrong: 'bg-emerald-100',
-      border: 'border-emerald-200',
-      badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-      ring: 'focus-visible:ring-emerald-500',
-    },
+    intent: 'money-state',
+    label: 'PĹ‚atnoĹ›Ä‡ zapĹ‚acona',
+    meaning: 'Zielony oznacza, ĹĽe pĹ‚atnoĹ›Ä‡ klienta zostaĹ‚a uregulowana.',
+    allowedUse: 'Status wpĹ‚aty, opĹ‚aconej raty, rozliczonej pozycji pĹ‚atnoĹ›ci.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla ogĂłlnego done ani dla prowizji.',
+    classes: EMERALD_CLASSES,
   },
   'payment-due': {
-    name: 'payment-due',
     tone: 'payment',
-    label: 'Płatność do pobrania',
-    meaning: 'Płatność jest należna, ale nie została jeszcze pobrana.',
-    allowedUse: 'Rozliczenia, raty, kwoty do pobrania i zaległe płatności.',
-    forbiddenUse: 'Zwykłe ostrzeżenie niezwiązane z pieniędzmi.',
-    classes: {
-      text: 'text-amber-800',
-      subtleText: 'text-amber-700',
-      icon: 'text-amber-600',
-      surface: 'bg-amber-50',
-      surfaceStrong: 'bg-amber-100',
-      border: 'border-amber-200',
-      badge: 'bg-amber-50 text-amber-800 border border-amber-200',
-      ring: 'focus-visible:ring-amber-500',
-    },
+    intent: 'money-state',
+    label: 'PĹ‚atnoĹ›Ä‡ do pobrania',
+    meaning: 'Amber oznacza naleĹĽnÄ… pĹ‚atnoĹ›Ä‡, ktĂłrej termin jeszcze nie jest po czasie.',
+    allowedUse: 'Raty, kwoty do pobrania, zaplanowane pĹ‚atnoĹ›ci i naleĹĽnoĹ›ci przed terminem.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla prowizji, zwykĹ‚ego ostrzeĹĽenia ani overdue po terminie.',
+    classes: AMBER_CLASSES,
+  },
+  'payment-overdue': {
+    tone: 'danger',
+    intent: 'money-state',
+    label: 'PĹ‚atnoĹ›Ä‡ po terminie',
+    meaning: 'Czerwony oznacza zalegĹ‚Ä… pĹ‚atnoĹ›Ä‡ klienta. To osobna semantyka od status-overdue.',
+    allowedUse: 'PĹ‚atnoĹ›ci po terminie, zalegĹ‚e raty, kwoty klienta wymagajÄ…ce pilnej reakcji.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla delete, bĹ‚Ä™du API, zwykĹ‚ego taska overdue ani prowizji.',
+    classes: RED_CLASSES,
   },
   'commission-due': {
-    name: 'commission-due',
     tone: 'commission',
+    intent: 'money-state',
     label: 'Prowizja do pobrania',
-    meaning: 'Prowizja jest należna i wymaga obsługi.',
-    allowedUse: 'Prowizje, fee, kwoty należne operatorowi.',
-    forbiddenUse: 'Ogólna płatność klienta albo zwykłe ostrzeżenie.',
-    classes: {
-      text: 'text-amber-800',
-      subtleText: 'text-amber-700',
-      icon: 'text-amber-600',
-      surface: 'bg-amber-50',
-      surfaceStrong: 'bg-amber-100',
-      border: 'border-amber-200',
-      badge: 'bg-amber-50 text-amber-800 border border-amber-200',
-      ring: 'focus-visible:ring-amber-500',
-    },
+    meaning: 'Amber oznacza naleĹĽnÄ… prowizjÄ™ albo fee, ktĂłre wymaga obsĹ‚ugi.',
+    allowedUse: 'Prowizje, fee i kwoty naleĹĽne operatorowi przed pobraniem.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla pĹ‚atnoĹ›ci klienta ani zwykĹ‚ego ostrzeĹĽenia.',
+    classes: AMBER_CLASSES,
   },
   'commission-paid': {
-    name: 'commission-paid',
     tone: 'commission',
+    intent: 'money-state',
     label: 'Prowizja pobrana',
-    meaning: 'Prowizja została pobrana albo rozliczona.',
-    allowedUse: 'Rozliczone prowizje i fee.',
-    forbiddenUse: 'Zwykłe zakończenie zadania albo płatność klienta bez prowizji.',
-    classes: {
-      text: 'text-emerald-700',
-      subtleText: 'text-emerald-600',
-      icon: 'text-emerald-600',
-      surface: 'bg-emerald-50',
-      surfaceStrong: 'bg-emerald-100',
-      border: 'border-emerald-200',
-      badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
-      ring: 'focus-visible:ring-emerald-500',
-    },
+    meaning: 'Zielony oznacza rozliczonÄ… albo pobranÄ… prowizjÄ™.',
+    allowedUse: 'Rozliczone prowizje, pobrane fee i zamkniÄ™te rozliczenia operatora.',
+    forbiddenUse: 'Nie uĹĽywaÄ‡ dla zwykĹ‚ego done ani pĹ‚atnoĹ›ci klienta.',
+    classes: EMERALD_CLASSES,
   },
-};
+} satisfies Record<string, Omit<CloseflowSemanticVisualEntry, 'name'>>;
+
+export type CloseflowSemanticVisualName = keyof typeof SEMANTIC_VISUAL_MAP;
+
+export const closeflowSemanticVisualRegistry = Object.fromEntries(
+  (Object.keys(SEMANTIC_VISUAL_MAP) as CloseflowSemanticVisualName[]).map((name) => [
+    name,
+    {
+      name,
+      ...SEMANTIC_VISUAL_MAP[name],
+    },
+  ]),
+) as Record<CloseflowSemanticVisualName, CloseflowSemanticVisualEntry>;
 
 export const closeflowDefaultSemanticVisual: CloseflowSemanticVisualName = 'status-open';
 
@@ -317,3 +282,16 @@ export function getCloseflowSemanticVisualClasses(
 ): CloseflowSemanticVisualClasses {
   return getCloseflowSemanticVisual(name).classes;
 }
+
+export function getCloseflowSemanticVisualMeaning(name: CloseflowSemanticVisualName): string {
+  return getCloseflowSemanticVisual(name).meaning;
+}
+
+/* CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D_RULES
+   Red is not one meaning:
+   - danger-delete = destructive data action,
+   - alert-error = system/API/validation error,
+   - status-overdue = overdue work item,
+   - payment-overdue = overdue money state,
+   - session-logout = session ending, not deletion.
+*/

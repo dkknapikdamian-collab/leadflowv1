@@ -1,76 +1,131 @@
-# CloseFlow VS-2D — Semantic Visual Registry — 2026-05-09
+# CloseFlow Semantic Visual Registry
 
-## Status
-
-Foundation shipped. Runtime migration is intentionally not included in this stage.
+**Data:** 2026-05-09  
+**Etap:** VS-2D â€” Semantic visual registry  
+**Status:** centralny rejestr znaczeĹ„ kolorĂłw i tonĂłw, bez migracji ekranĂłw
 
 ## Cel
 
-Kolory stanu mają mieć znaczenie semantyczne, a nie być losową klasą Tailwind w ekranie.
+VS-2D ustala, co znaczÄ… kolory i tony w CloseFlow.
 
-VS-2D dodaje jedno źródło prawdy dla czerwieni, amber i zieleni używanych w znaczeniu operacyjnym.
+NajwaĹĽniejsza zasada: **kolor nie jest dekoracjÄ…**. Kolor ma znaczenie operacyjne.
 
-## Plik źródłowy
+Developer ma wiedzieÄ‡, kiedy czerwony oznacza:
 
-`src/components/ui-system/semantic-visual-registry.ts`
+- usuwanie danych,
+- wylogowanie,
+- bĹ‚Ä…d systemowy,
+- zalegĹ‚y termin,
+- zalegĹ‚Ä… pĹ‚atnoĹ›Ä‡.
 
-## Semantyki obowiązkowe
+To nie sÄ… te same przypadki i nie wolno ich mieszaÄ‡ lokalnymi klasami bez znaczenia.
 
-- `danger-delete`
-- `session-logout`
-- `alert-error`
-- `alert-warning`
-- `status-open`
-- `status-done`
-- `status-overdue`
-- `entity-client`
-- `entity-lead`
-- `entity-case`
-- `payment-paid`
-- `payment-due`
-- `commission-due`
-- `commission-paid`
+## Plik ĹşrĂłdĹ‚owy
 
-## Zasada użycia
+```text
+src/components/ui-system/semantic-visual-registry.ts
+```
 
-Ekrany nie powinny wybierać `text-red-*`, `bg-amber-*` albo `text-emerald-*` tylko dlatego, że kolor wygląda dobrze.
-
-Ekran ma wybrać semantykę, np.:
+## Minimalne uĹĽycie
 
 ```ts
-getCloseflowSemanticVisualClasses('status-overdue')
-getCloseflowSemanticVisualClasses('payment-due')
+import { getCloseflowSemanticVisualClasses } from '../components/ui-system';
+
+const classes = getCloseflowSemanticVisualClasses('status-overdue');
+```
+
+## Semantyki minimum
+
+| Semantyka | Znaczenie | Czego nie oznacza |
+|---|---|---|
+| `danger-delete` | akcja usuwa albo przenosi dane do kosza | bĹ‚Ä…d, overdue, logout |
+| `session-logout` | zakoĹ„czenie sesji uĹĽytkownika | delete, bĹ‚Ä…d API, zalegĹ‚oĹ›Ä‡ |
+| `alert-error` | bĹ‚Ä…d systemu, API albo walidacji | delete, overdue, priorytet |
+| `alert-warning` | ostrzeĹĽenie, niepeĹ‚na konfiguracja, ryzyko | bĹ‚Ä…d krytyczny, sukces, pĹ‚atnoĹ›Ä‡ po terminie |
+| `status-open` | rekord aktywny i otwarty | encja, pĹ‚atnoĹ›Ä‡, zakoĹ„czenie |
+| `status-done` | zadanie/akcja/status ukoĹ„czony | pĹ‚atnoĹ›Ä‡ zapĹ‚acona, prowizja pobrana |
+| `status-overdue` | termin pracy minÄ…Ĺ‚ | delete, bĹ‚Ä…d systemowy, pĹ‚atnoĹ›Ä‡ po terminie |
+| `entity-client` | identyfikacja encji klienta | status, bĹ‚Ä…d, pĹ‚atnoĹ›Ä‡ |
+| `entity-lead` | identyfikacja encji leada | alert, payment, delete |
+| `entity-case` | identyfikacja encji sprawy | alert, payment, delete |
+| `payment-paid` | pĹ‚atnoĹ›Ä‡ klienta zapĹ‚acona | zwykĹ‚e done, prowizja |
+| `payment-due` | pĹ‚atnoĹ›Ä‡ klienta naleĹĽna, ale nie po terminie | warning ogĂłlny, prowizja, overdue |
+| `payment-overdue` | pĹ‚atnoĹ›Ä‡ klienta po terminie | zwykĹ‚y task overdue, delete, error |
+| `commission-due` | prowizja/fee do pobrania | pĹ‚atnoĹ›Ä‡ klienta, warning ogĂłlny |
+| `commission-paid` | prowizja/fee pobrana | zwykĹ‚e done, payment-paid |
+
+## Czerwony nie jest jeden
+
+Czerwony w CloseFlow ma rĂłĹĽne znaczenia:
+
+```text
+danger-delete     = usuwasz dane
+alert-error       = system nie moĹĽe wykonaÄ‡ akcji
+status-overdue    = termin pracy minÄ…Ĺ‚
+payment-overdue   = pieniÄ…dze sÄ… po terminie
+session-logout    = koĹ„czysz sesjÄ™, ale nie usuwasz danych
+```
+
+JeĹ›li ekran uĹĽywa `text-red-*` albo `bg-red-*`, developer musi umieÄ‡ wskazaÄ‡ jednÄ… z powyĹĽszych semantyk.
+
+## PrzykĹ‚ady poprawnego wyboru
+
+### Kosz / usuĹ„ rekord
+
+```ts
 getCloseflowSemanticVisualClasses('danger-delete')
 ```
 
-Dopiero registry decyduje, jakie klasy wizualne reprezentują daną semantykę.
+### BĹ‚Ä…d API
 
-## Zakaz
+```ts
+getCloseflowSemanticVisualClasses('alert-error')
+```
 
-Nie migrować legacy pages hurtowo.
+### Zadanie po terminie
 
-Szczególnie nie ruszać ponownie masowo:
+```ts
+getCloseflowSemanticVisualClasses('status-overdue')
+```
 
-- `src/pages/Leads.tsx`
-- `src/pages/Clients.tsx`
-- `src/pages/Cases.tsx`
+### PĹ‚atnoĹ›Ä‡ po terminie
 
-## Dlaczego nie ma runtime migration w tym etapie
+```ts
+getCloseflowSemanticVisualClasses('payment-overdue')
+```
 
-Po VS-2C-2 wiadomo, że szerokie regexowe migracje importów w dużych stronach legacy są zbyt ryzykowne.
+### Wylogowanie
 
-Ten etap daje fundament i check. Przepięcie ekranów ma iść później małymi etapami, maksymalnie jeden legacy page na etap.
+```ts
+getCloseflowSemanticVisualClasses('session-logout')
+```
 
-## Check
+## Czego nie robi VS-2D
+
+- Nie przepina hurtowo aktywnych ekranĂłw.
+- Nie usuwa lokalnych klas Tailwind z legacy pages.
+- Nie zmienia wyglÄ…du Today, LeadDetail, ClientDetail ani CaseDetail.
+- Nie miesza tego etapu z migracjÄ… action icons albo entity icons.
+- Nie usuwa dotychczasowych hotfixĂłw wizualnych.
+
+## Zasada dla kolejnych etapĂłw
+
+KaĹĽda nowa migracja koloru powinna wybraÄ‡ semantykÄ™ z rejestru. JeĹ›li nie ma pasujÄ…cej semantyki, nie dopisuj lokalnego koloru na skrĂłty. Najpierw rozszerz registry i dokument.
+
+## Weryfikacja
 
 ```bash
 npm run check:closeflow-semantic-visual-registry
+npm run build
 ```
 
-## Kryterium zakończenia
+## Kryterium zakoĹ„czenia
 
-- registry istnieje,
-- wszystkie wymagane semantyki są opisane,
-- registry jest eksportowany z `src/components/ui-system/index.ts`,
-- package.json ma check,
-- etap nie rusza VS-2C-2 ani dużych stron legacy.
+VS-2D jest zakoĹ„czony, gdy:
+
+1. `SEMANTIC_VISUAL_MAP` istnieje,
+2. zawiera wszystkie semantyki minimum,
+3. dokument jasno rozrĂłĹĽnia delete, error, overdue, payment-overdue i logout,
+4. `src/components/ui-system/index.ts` eksportuje `semantic-visual-registry`,
+5. check przechodzi,
+6. build przechodzi.

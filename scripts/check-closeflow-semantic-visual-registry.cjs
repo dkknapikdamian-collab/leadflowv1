@@ -1,25 +1,15 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');
 
 const repo = process.cwd();
-
-function read(rel) {
-  return fs.readFileSync(path.join(repo, rel), 'utf8');
-}
-
-function exists(rel) {
-  return fs.existsSync(path.join(repo, rel));
-}
-
-function fail(message) {
-  console.error('CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D_FAIL: ' + message);
-  process.exit(1);
-}
-
-function assert(condition, message) {
-  if (!condition) fail(message);
-}
+function file(rel) { return path.join(repo, rel); }
+function read(rel) { return fs.readFileSync(file(rel), 'utf8'); }
+function exists(rel) { return fs.existsSync(file(rel)); }
+function fail(message) { console.error('CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D_FAIL: ' + message); process.exit(1); }
+function assert(condition, message) { if (!condition) fail(message); }
+function has(rel, needle, label) { assert(read(rel).includes(needle), `${label} missing: ${needle}`); }
 
 const requiredFiles = [
   'src/components/ui-system/semantic-visual-registry.ts',
@@ -29,20 +19,7 @@ const requiredFiles = [
   'package.json',
 ];
 
-for (const rel of requiredFiles) {
-  assert(exists(rel), 'missing file: ' + rel);
-}
-
-const registry = read('src/components/ui-system/semantic-visual-registry.ts');
-const index = read('src/components/ui-system/index.ts');
-const docs = read('docs/ui/CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_2026-05-09.md');
-const pkg = JSON.parse(read('package.json'));
-
-assert(registry.includes('CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D'), 'registry marker missing');
-assert(index.includes("export * from './semantic-visual-registry';"), 'ui-system index does not export semantic-visual-registry');
-assert(pkg.scripts && pkg.scripts['check:closeflow-semantic-visual-registry'], 'package script check:closeflow-semantic-visual-registry missing');
-assert(docs.includes('VS-2D'), 'docs missing VS-2D label');
-assert(docs.includes('Nie migrować legacy pages hurtowo'), 'docs missing no bulk legacy migration rule');
+for (const rel of requiredFiles) assert(exists(rel), 'missing file: ' + rel);
 
 const semantics = [
   'danger-delete',
@@ -57,43 +34,68 @@ const semantics = [
   'entity-case',
   'payment-paid',
   'payment-due',
+  'payment-overdue',
   'commission-due',
   'commission-paid',
 ];
 
-for (const semantic of semantics) {
-  assert(registry.includes("'" + semantic + "'"), 'semantic missing from registry: ' + semantic);
-  assert(docs.includes(semantic), 'semantic missing from docs: ' + semantic);
-}
+const registry = read('src/components/ui-system/semantic-visual-registry.ts');
+const index = read('src/components/ui-system/index.ts');
+const docs = read('docs/ui/CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_2026-05-09.md');
+const pkg = JSON.parse(read('package.json'));
 
-for (const requiredExport of [
-  'CloseflowSemanticVisualName',
-  'CloseflowSemanticVisualTone',
-  'CloseflowSemanticVisualClasses',
-  'CloseflowSemanticVisualEntry',
-  'closeflowSemanticVisualRegistry',
-  'getCloseflowSemanticVisual',
-  'getCloseflowSemanticVisualClasses',
-]) {
-  assert(registry.includes(requiredExport), 'registry export missing: ' + requiredExport);
+has('src/components/ui-system/semantic-visual-registry.ts', 'CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D', 'registry marker');
+has('src/components/ui-system/semantic-visual-registry.ts', 'export const SEMANTIC_VISUAL_MAP', 'semantic map');
+has('src/components/ui-system/semantic-visual-registry.ts', 'export type CloseflowSemanticVisualName = keyof typeof SEMANTIC_VISUAL_MAP', 'semantic name type');
+has('src/components/ui-system/semantic-visual-registry.ts', 'closeflowSemanticVisualRegistry', 'registry export');
+has('src/components/ui-system/semantic-visual-registry.ts', 'getCloseflowSemanticVisual', 'semantic getter');
+has('src/components/ui-system/semantic-visual-registry.ts', 'getCloseflowSemanticVisualClasses', 'semantic classes getter');
+has('src/components/ui-system/semantic-visual-registry.ts', 'allowedUse', 'allowedUse field');
+has('src/components/ui-system/semantic-visual-registry.ts', 'forbiddenUse', 'forbiddenUse field');
+has('src/components/ui-system/semantic-visual-registry.ts', 'intent', 'intent field');
+
+assert(index.includes("export * from './semantic-visual-registry';"), 'ui-system index does not export semantic-visual-registry');
+assert(pkg.scripts && pkg.scripts['check:closeflow-semantic-visual-registry'] === 'node scripts/check-closeflow-semantic-visual-registry.cjs', 'package script check:closeflow-semantic-visual-registry missing or wrong');
+
+for (const semantic of semantics) {
+  assert(registry.includes(`'${semantic}'`), 'semantic missing from registry: ' + semantic);
+  assert(docs.includes('`' + semantic + '`'), 'semantic missing from docs: ' + semantic);
 }
 
 for (const requiredClass of [
   'text-red-700',
   'bg-red-50',
   'border-red-200',
+  'text-rose-700',
+  'bg-rose-50',
+  'border-rose-200',
   'text-amber-800',
   'bg-amber-50',
   'border-amber-200',
   'text-emerald-700',
   'bg-emerald-50',
   'border-emerald-200',
+  'text-indigo-700',
+  'text-violet-700',
+  'text-blue-700',
 ]) {
   assert(registry.includes(requiredClass), 'semantic color class missing from registry: ' + requiredClass);
 }
 
-assert(registry.includes('forbiddenUse'), 'registry must document forbiddenUse');
-assert(registry.includes('allowedUse'), 'registry must document allowedUse');
+for (const requiredDoc of [
+  'Czerwony nie jest jeden',
+  'danger-delete     = usuwasz dane',
+  'alert-error       = system nie moĹĽe wykonaÄ‡ akcji',
+  'status-overdue    = termin pracy minÄ…Ĺ‚',
+  'payment-overdue   = pieniÄ…dze sÄ… po terminie',
+  'session-logout    = koĹ„czysz sesjÄ™',
+  'Nie przepina hurtowo aktywnych ekranĂłw',
+]) {
+  assert(docs.includes(requiredDoc), 'docs missing required distinction: ' + requiredDoc);
+}
+
+assert(registry.indexOf("'danger-delete'") !== registry.indexOf("'alert-error'"), 'danger-delete and alert-error must be separate semantics');
+assert(registry.indexOf("'status-overdue'") !== registry.indexOf("'payment-overdue'"), 'status-overdue and payment-overdue must be separate semantics');
 
 console.log('CLOSEFLOW_SEMANTIC_VISUAL_REGISTRY_VS2D_CHECK_OK');
 console.log('semantic_count=' + semantics.length);
