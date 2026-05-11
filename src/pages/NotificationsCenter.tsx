@@ -50,11 +50,8 @@ import { buildReminderCustomDate } from '../lib/reminders';
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
 
@@ -612,33 +609,31 @@ export default function NotificationsCenter() {
   return (
     <Layout>
       <main className="notifications-vnext-page">
-        <header data-cf-page-header="true" className="cf-page-header notifications-page-header">
-          <div data-cf-page-header-part="copy">
-            <p data-cf-page-header-part="kicker" className="notifications-kicker">POWIADOMIENIA</p>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.notifications.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.notifications.description}</p>
-            
-          </div>
-
-          <div className="notifications-header-actions" data-cf-page-header-part="actions">
-            {permission === 'default' ? (
-              <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
-                <EntityIcon entity="notification" className="h-4 w-4" />
-                Włącz powiadomienia
-              </button>
-            ) : null}
-            <Link to="/settings" className="notifications-header-button">
-              <Settings2 className="h-4 w-4" />
-              Ustawienia przypomnień
-            </Link>
-            {notificationLog.length ? (
-              <button type="button" className="notifications-header-button" onClick={handleClearLog}>
-                <Trash2 className="h-4 w-4" />
-                Wyczyść przeczytane
-              </button>
-            ) : null}
-          </div>
-        </header>
+        <CloseFlowPageHeaderV2
+          pageKey="notifications"
+          actions={
+            <>
+              <div className="notifications-header-actions">
+                          {permission === 'default' ? (
+                            <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
+                              <EntityIcon entity="notification" className="h-4 w-4" />
+                              Włącz powiadomienia
+                            </button>
+                          ) : null}
+                          <Link to="/settings" className="notifications-header-button">
+                            <Settings2 className="h-4 w-4" />
+                            Ustawienia przypomnień
+                          </Link>
+                          {notificationLog.length ? (
+                            <button type="button" className="notifications-header-button" onClick={handleClearLog}>
+                              <Trash2 className="h-4 w-4" />
+                              Wyczyść przeczytane
+                            </button>
+                          ) : null}
+                        </div>
+            </>
+          }
+        />
 
         <OperatorMetricTiles
           items={notificationMetricTiles}

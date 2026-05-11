@@ -322,7 +322,7 @@ export default function Templates() {
           pageKey="templates"
           actions={
             <>
-              <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                             {!hasAccess ? (
                               <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
                                 <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
@@ -449,7 +449,7 @@ export default function Templates() {
           </DialogHeader>
           <div className="grid gap-6 overflow-y-auto py-2 pr-1 md:grid-cols-[280px_minmax(0,1fr)]">
             <div className="space-y-4">
-              <div className="space-y-2" data-cf-page-header-part="copy">
+              <div className="space-y-2">
                 <Label htmlFor="template-name" className="text-slate-700">Nazwa szablonu</Label>
                 <Input
                   id="template-name"

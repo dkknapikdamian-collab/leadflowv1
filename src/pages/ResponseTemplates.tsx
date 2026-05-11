@@ -33,11 +33,8 @@ import {
   updateResponseTemplateInSupabase,
 } from '../lib/supabase-fallback';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 type ResponseTemplate = {
   id: string;
   name: string;
@@ -202,26 +199,7 @@ export default function ResponseTemplates() {
   return (
     <Layout>
       <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
-        <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div data-cf-page-header-part="copy" className="space-y-3">
-            <div data-cf-page-header-part="kicker" className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">{PAGE_HEADER_CONTENT.responseTemplates.kicker}</div>
-            <div>
-              <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.responseTemplates.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
-              
-            </div>
-          </div>
-          <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            {!hasAccess ? (
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-3 py-2 text-sm font-medium text-amber-600 dark:text-amber-400">
-                <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis
-              </div>
-            ) : null}
-            <Button className="rounded-2xl" data-cf-header-action="primary" onClick={openCreate}>
-              <Plus className="h-4 w-4" /> Nowy szablon
-            </Button>
-          </div>
-        </header>
+        <CloseFlowPageHeaderV2 pageKey="responseTemplates" />
 
         <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <StatShortcutCard label="Szablony" value={stats.total} icon={AiEntityIcon} iconClassName="app-primary-chip" valueClassName="app-text" />
@@ -251,7 +229,7 @@ export default function ResponseTemplates() {
                 <Card key={item.id} className="cf-readable-card border-none app-surface-strong app-shadow">
                   <CardContent className="flex flex-col gap-4 p-5">
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div className="space-y-2" data-cf-page-header-part="copy">
+                      <div className="space-y-2">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-lg font-bold app-text">{item.name}</h3>
                           <Badge variant="outline">{item.category || 'Ogólne'}</Badge>
@@ -305,7 +283,7 @@ export default function ResponseTemplates() {
                       {(selectedTemplate.variables || []).map((variable) => <Badge key={variable} className="bg-emerald-500/12 text-emerald-600 border-emerald-500/20">{`{{${variable}}}`}</Badge>)}
                       {!(selectedTemplate.variables || []).length ? <span className="text-sm app-muted">Ten szablon nie ma zmiennych.</span> : null}
                     </div>
-                    <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row">
+                    <div className="flex flex-col gap-2 sm:flex-row">
                       <Button className="rounded-2xl" onClick={() => void handleCopy(selectedTemplate)}><Copy className="h-4 w-4" /> Kopiuj treść</Button>
                       <Button variant="outline" className="rounded-2xl" onClick={() => openEdit(selectedTemplate)}>Edytuj</Button>
                     </div>

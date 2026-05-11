@@ -64,15 +64,11 @@ import { toast } from 'sonner';
 // VISUAL_STAGE25_LEADS_FULL_JSX_HTML_REBUILD
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1
 
-
 import { pl } from 'date-fns/locale';
-
 
 import Layout from '../components/Layout';
 
-
 // STAGE30A_LINT_GUARD_COMPAT: legacy visual guard expects exact text: consumeGlobalQuickAction() === 'lead'
-
 
 import { useWorkspace } from '../hooks/useWorkspace';
 
@@ -82,14 +78,10 @@ import { getNearestPlannedAction } from '../lib/nearest-action';
 
 import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValue } from '../lib/relation-value';
 
-
 import '../styles/visual-stage20-lead-form-vnext.css';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
@@ -688,178 +680,178 @@ export default function Leads() {
   return (
     <Layout>
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
-        <div data-cf-page-header="true" className="cf-page-header page-head">
-          <div>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.leads.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.leads.description}</p>
-          </div>
+        <CloseFlowPageHeaderV2
+          pageKey="leads"
+          actions={
+            <>
+              <div className="head-actions">
+                          <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true" data-cf-header-action="ai">
+                            <EntityIcon entity="ai" className="h-4 w-4" />
+                            Zapytaj AI
+                          </Link>
+                          <button
+                            type="button"
+                            className="btn"
+                            onClick={toggleTrashView}
+                          >
+                            {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                            {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+                            <span className="pill">{showTrash ? stats.total : stats.trash}</span>
+                          </button>
 
-          <div className="head-actions" data-cf-page-header-part="actions">
-            <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true" data-cf-header-action="ai">
-              <EntityIcon entity="ai" className="h-4 w-4" />
-              Zapytaj AI
-            </Link>
-            <button
-              type="button"
-              className="btn"
-              onClick={toggleTrashView}
-            >
-              {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-              {showTrash ? 'Pokaż aktywne' : 'Kosz'}
-              <span className="pill">{showTrash ? stats.total : stats.trash}</span>
-            </button>
+                          <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
+                            <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
+                              <DialogHeader className="lead-form-vnext-header">
+                                <div>
+                                  <span className="lead-form-vnext-kicker">{PAGE_HEADER_CONTENT.leads.kicker}</span>
+                                  <DialogTitle>Nowy lead</DialogTitle>
+                                  <p id="lead-form-stage20-description">
+                                    Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
+                                  </p>
+                                </div>
+                              </DialogHeader>
 
-            <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
-              <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
-                <DialogHeader className="lead-form-vnext-header">
-                  <div data-cf-page-header-part="copy">
-                    <span data-cf-page-header-part="kicker" className="lead-form-vnext-kicker">{PAGE_HEADER_CONTENT.leads.kicker}</span>
-                    <DialogTitle>Nowy lead</DialogTitle>
-                    <p id="lead-form-stage20-description">
-                      Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
-                    </p>
-                  </div>
-                </DialogHeader>
+                              <form onSubmit={handleCreateLead} className="lead-form-vnext" data-lead-form-visual-rebuild="LEAD_FORM_VISUAL_REBUILD_STAGE20">
+                                <section className="lead-form-section lead-form-primary-section">
+                                  <div className="lead-form-section-head">
+                                    <h3>Podstawowe dane</h3>
+                                    <p>Najważniejsze pola do szybkiego zapisania kontaktu.</p>
+                                  </div>
 
-                <form onSubmit={handleCreateLead} className="lead-form-vnext" data-lead-form-visual-rebuild="LEAD_FORM_VISUAL_REBUILD_STAGE20">
-                  <section className="lead-form-section lead-form-primary-section">
-                    <div className="lead-form-section-head">
-                      <h3>Podstawowe dane</h3>
-                      <p>Najważniejsze pola do szybkiego zapisania kontaktu.</p>
-                    </div>
+                                  <div className="lead-form-grid">
+                                    <div className="lead-form-field lead-form-field-wide">
+                                      <Label>Nazwa / kontakt</Label>
+                                      <Input
+                                        value={newLead.name}
+                                        onChange={(event) => setNewLead({ ...newLead, name: event.target.value })}
+                                        placeholder="Np. Jan Kowalski albo Firma ABC"
+                                      />
+                                    </div>
 
-                    <div className="lead-form-grid">
-                      <div className="lead-form-field lead-form-field-wide">
-                        <Label>Nazwa / kontakt</Label>
-                        <Input
-                          value={newLead.name}
-                          onChange={(event) => setNewLead({ ...newLead, name: event.target.value })}
-                          placeholder="Np. Jan Kowalski albo Firma ABC"
-                        />
-                      </div>
+                                    <div className="lead-form-field">
+                                      <Label>Telefon</Label>
+                                      <Input
+                                        value={newLead.phone}
+                                        onChange={(event) => setNewLead({ ...newLead, phone: event.target.value })}
+                                        placeholder="np. 516 000 000"
+                                      />
+                                    </div>
 
-                      <div className="lead-form-field">
-                        <Label>Telefon</Label>
-                        <Input
-                          value={newLead.phone}
-                          onChange={(event) => setNewLead({ ...newLead, phone: event.target.value })}
-                          placeholder="np. 516 000 000"
-                        />
-                      </div>
+                                    <div className="lead-form-field">
+                                      <Label>E-mail</Label>
+                                      <Input
+                                        type="email"
+                                        value={newLead.email}
+                                        onChange={(event) => setNewLead({ ...newLead, email: event.target.value })}
+                                        placeholder="kontakt@email.pl"
+                                      />
+                                    </div>
 
-                      <div className="lead-form-field">
-                        <Label>E-mail</Label>
-                        <Input
-                          type="email"
-                          value={newLead.email}
-                          onChange={(event) => setNewLead({ ...newLead, email: event.target.value })}
-                          placeholder="kontakt@email.pl"
-                        />
-                      </div>
+                                    <div className="lead-form-field">
+                                      <Label>Źródło</Label>
+                                      <select
+                                        className="lead-form-select"
+                                        value={newLead.source}
+                                        onChange={(event) => setNewLead({ ...newLead, source: event.target.value })}
+                                      >
+                                        {SOURCE_OPTIONS.map((source) => (
+                                          <option key={source.value} value={source.value}>{source.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
 
-                      <div className="lead-form-field">
-                        <Label>Źródło</Label>
-                        <select
-                          className="lead-form-select"
-                          value={newLead.source}
-                          onChange={(event) => setNewLead({ ...newLead, source: event.target.value })}
-                        >
-                          {SOURCE_OPTIONS.map((source) => (
-                            <option key={source.value} value={source.value}>{source.label}</option>
-                          ))}
-                        </select>
-                      </div>
+                                    <div className="lead-form-field">
+                                      <Label>Wartość</Label>
+                                      <Input
+                                        type="number"
+                                        value={newLead.dealValue}
+                                        onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
+                                        placeholder="0"
+                                      />
+                                    </div>
 
-                      <div className="lead-form-field">
-                        <Label>Wartość</Label>
-                        <Input
-                          type="number"
-                          value={newLead.dealValue}
-                          onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
-                          placeholder="0"
-                        />
-                      </div>
+                                    <div className="lead-form-field lead-form-field-wide">
+                                      <Label>Temat / potrzeba</Label>
+                                      <Input
+                                        value={newLead.summary}
+                                        onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
+                                        placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
+                                      />
+                                    </div>
 
-                      <div className="lead-form-field lead-form-field-wide">
-                        <Label>Temat / potrzeba</Label>
-                        <Input
-                          value={newLead.summary}
-                          onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                          placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
-                        />
-                      </div>
+                                    <div className="lead-form-field lead-form-field-wide">
+                                      <Label>Notatka</Label>
+                                      <textarea
+                                        className="lead-form-textarea"
+                                        value={newLead.notes}
+                                        onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
+                                        placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
+                                      />
+                                    </div>
+                                  </div>
+                                </section>
 
-                      <div className="lead-form-field lead-form-field-wide">
-                        <Label>Notatka</Label>
-                        <textarea
-                          className="lead-form-textarea"
-                          value={newLead.notes}
-                          onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                          placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
-                        />
-                      </div>
-                    </div>
-                  </section>
+                                <details className="lead-form-section lead-form-details">
+                                  <summary>Dodatkowe pola</summary>
+                                  <div className="lead-form-grid lead-form-details-grid">
+                                    <div className="lead-form-field">
+                                      <Label>Firma</Label>
+                                      <Input
+                                        value={newLead.company}
+                                        onChange={(event) => setNewLead({ ...newLead, company: event.target.value })}
+                                        placeholder="Opcjonalnie"
+                                      />
+                                    </div>
 
-                  <details className="lead-form-section lead-form-details">
-                    <summary>Dodatkowe pola</summary>
-                    <div className="lead-form-grid lead-form-details-grid">
-                      <div className="lead-form-field">
-                        <Label>Firma</Label>
-                        <Input
-                          value={newLead.company}
-                          onChange={(event) => setNewLead({ ...newLead, company: event.target.value })}
-                          placeholder="Opcjonalnie"
-                        />
-                      </div>
+                                    <div className="lead-form-field">
+                                      <Label>Status</Label>
+                                      <select
+                                        className="lead-form-select"
+                                        value={newLead.status}
+                                        onChange={(event) => setNewLead({ ...newLead, status: event.target.value })}
+                                      >
+                                        {STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
+                                          <option key={status.value} value={status.value}>{status.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
 
-                      <div className="lead-form-field">
-                        <Label>Status</Label>
-                        <select
-                          className="lead-form-select"
-                          value={newLead.status}
-                          onChange={(event) => setNewLead({ ...newLead, status: event.target.value })}
-                        >
-                          {STATUS_OPTIONS.filter((status) => status.value !== 'archived').map((status) => (
-                            <option key={status.value} value={status.value}>{status.label}</option>
-                          ))}
-                        </select>
-                      </div>
+                                    <label className="lead-form-checkbox">
+                                      <input
+                                        type="checkbox"
+                                        checked={newLead.isAtRisk}
+                                        onChange={(event) => setNewLead({ ...newLead, isAtRisk: event.target.checked })}
+                                      />
+                                      <span>
+                                        <strong>Wysoki priorytet</strong>
+                                        <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
+                                      </span>
+                                    </label>
+                                  </div>
+                                </details>
 
-                      <label className="lead-form-checkbox">
-                        <input
-                          type="checkbox"
-                          checked={newLead.isAtRisk}
-                          onChange={(event) => setNewLead({ ...newLead, isAtRisk: event.target.checked })}
-                        />
-                        <span>
-                          <strong>Wysoki priorytet</strong>
-                          <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
-                        </span>
-                      </label>
-                    </div>
-                  </details>
+                                <section className="lead-form-section lead-form-planning-note">
+                                  <Clock3 className="h-4 w-4" />
+                                  <div>
+                                    <h3>Szybkie planowanie</h3>
+                                    <p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
+                                  </div>
+                                </section>
 
-                  <section className="lead-form-section lead-form-planning-note">
-                    <Clock3 className="h-4 w-4" />
-                    <div>
-                      <h3>Szybkie planowanie</h3>
-                      <p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
-                    </div>
-                  </section>
-
-                  <DialogFooter className={modalFooterClass('lead-form-footer')}>
-                    <Button type="button" variant="outline" onClick={() => setIsNewLeadOpen(false)}>
-                      Anuluj
-                    </Button>
-                    <Button type="submit" disabled={leadSubmitting || !workspaceReady}>
-                      {leadSubmitting ? 'Zapisywanie...' : 'Zapisz leada'}
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>          </div>
-        </div>
+                                <DialogFooter className={modalFooterClass('lead-form-footer')}>
+                                  <Button type="button" variant="outline" onClick={() => setIsNewLeadOpen(false)}>
+                                    Anuluj
+                                  </Button>
+                                  <Button type="submit" disabled={leadSubmitting || !workspaceReady}>
+                                    {leadSubmitting ? 'Zapisywanie...' : 'Zapisz leada'}
+                                  </Button>
+                                </DialogFooter>
+                              </form>
+                            </DialogContent>
+                          </Dialog>          </div>
+            </>
+          }
+        />
 
         <div className="grid-5">
           <StatShortcutCard
@@ -1143,7 +1135,6 @@ export default function Leads() {
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleQuickFilter('active') toggleValueSorting */
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_LEAD_MODAL_EVENT_BUS */
-
 
 /*
 CLOSEFLOW_REPAIR12_STAGE32_VALUE_MARKERS

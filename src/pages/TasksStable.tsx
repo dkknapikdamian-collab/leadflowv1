@@ -462,7 +462,7 @@ export default function TasksStable() {
           pageKey="tasks"
           actions={
             <>
-              <div className="cf-page-hero-actions flex flex-wrap gap-2" data-cf-page-header-part="actions">
+              <div className="cf-page-hero-actions flex flex-wrap gap-2">
                             <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800')} onClick={openNewTask} data-cf-header-action="primary" data-page-header-new-task-stage6="true">
                               <Plus className="mr-2 h-4 w-4" />
                               Nowe zadanie

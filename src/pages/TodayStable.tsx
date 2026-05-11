@@ -49,11 +49,8 @@ import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';
@@ -404,7 +401,6 @@ function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadR
   };
 }
 
-
 function getSectionHeaderSeverity(tone: string): 'error' | 'warning' | 'info' | 'success' | null {
   if (tone === 'cf-severity:error') return 'error';
   if (tone === 'cf-severity:warning') return 'warning';
@@ -662,7 +658,6 @@ async function loadStableTodayData(): Promise<DashboardData> {
   };
 }
 
-
 function getFb4TodayTasksSectionTitle(tasks: any[]) {
   const today = localDateKey();
   let todayCount = 0;
@@ -747,7 +742,6 @@ function normalizeFb4TodayActionClusterOrder() {
   if (viewButton.parentElement !== refreshParent) refreshParent.appendChild(viewButton);
   if (refreshButton.nextSibling !== viewButton) refreshParent.insertBefore(viewButton, refreshButton.nextSibling);
 }
-
 
 function normalizeAdminFeedbackP1TodayHeaderActions() {
   if (typeof document === 'undefined') return;
@@ -905,7 +899,6 @@ export default function TodayStable() {
       unsubscribe();
     };
   }, [refreshData]);
-
 
   useEffect(() => {
     // CLOSEFLOW_FB4_TODAY_BEHAVIOR_CLEANUP: Today tiles control one expanded list, move it to the top and avoid mobile scroll jump.
@@ -1253,11 +1246,7 @@ export default function TodayStable() {
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
         <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
           <div className="cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <p data-cf-page-header-part="kicker" className="cf-section-head-kicker text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
-              <p className="cf-section-head-title mt-1 text-xl font-black text-slate-900 sm:text-2xl">Priorytety i najbliższe ruchy</p>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.today.description}</p>
-            </div>
+            <CloseFlowPageHeaderV2 pageKey="today" />
             <div className="cf-section-head-actions flex flex-col items-end gap-2">
               <div className="flex flex-wrap items-center justify-end gap-2">
                 {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}

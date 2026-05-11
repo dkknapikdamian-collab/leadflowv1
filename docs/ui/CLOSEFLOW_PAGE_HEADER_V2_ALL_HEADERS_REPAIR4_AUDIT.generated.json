@@ -1,0 +1,187 @@
+{
+  "generatedAt": "2026-05-11T20:45:56.092Z",
+  "result": {
+    "importsAdded": [
+      "src/pages/AdminAiSettings.tsx:component",
+      "src/pages/AdminAiSettings.tsx:css"
+    ],
+    "importsCleaned": [
+      "src/pages/AdminAiSettings.tsx"
+    ],
+    "headers": {
+      "src/pages/TodayStable.tsx": "already-v2",
+      "src/pages/Leads.tsx": "already-v2",
+      "src/pages/Clients.tsx": "already-v2",
+      "src/pages/Cases.tsx": "already-v2",
+      "src/pages/TasksStable.tsx": "already-v2",
+      "src/pages/Calendar.tsx": "already-v2",
+      "src/pages/Templates.tsx": "already-v2",
+      "src/pages/ResponseTemplates.tsx": "already-v2",
+      "src/pages/Activity.tsx": "already-v2",
+      "src/pages/AiDrafts.tsx": "replaced",
+      "src/pages/NotificationsCenter.tsx": "already-v2",
+      "src/pages/Billing.tsx": "already-v2",
+      "src/pages/SupportCenter.tsx": "already-v2",
+      "src/pages/Settings.tsx": "no-header",
+      "src/pages/AdminAiSettings.tsx": "replaced"
+    },
+    "duplicateCleanup": []
+  },
+  "rows": [
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 52,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1249,
+      "text": "<CloseFlowPageHeaderV2 pageKey=\"today\" />"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 83,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 683,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 706,
+      "text": "<span className=\"lead-form-vnext-kicker\">{PAGE_HEADER_CONTENT.leads.kicker}</span>"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 88,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 522,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 34,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 479,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 33,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 461,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 105,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1246,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 58,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 321,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 36,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 202,
+      "text": "<CloseFlowPageHeaderV2 pageKey=\"responseTemplates\" />"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 49,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 716,
+      "text": "<CloseFlowPageHeaderV2 pageKey=\"activity\" />"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 84,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 1022,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 1026,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 53,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 612,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 70,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 504,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 34,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 426,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 93,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 21,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 133,
+      "text": "<CloseFlowPageHeaderV2 pageKey=\"adminAi\" />"
+    }
+  ]
+}

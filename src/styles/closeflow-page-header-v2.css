@@ -1,6 +1,6 @@
-/* CLOSEFLOW_PAGE_HEADER_KICKER_SOURCE_TRUTH_PACKET5_2026_05_11
-   One source of truth for page-header kicker chip color + card placement.
-   Wzór: ekran Dziś.
+/* CLOSEFLOW_PAGE_HEADER_V2_ALL_HEADERS_REPAIR4_2026_05_11
+   Final source of truth for top page header cards.
+   Blue kicker labels, left copy, right actions, no old header-lock ownership.
 */
 
 :root {
@@ -13,10 +13,10 @@
   --cf-ph-v2-card-min-height: 92px;
   --cf-ph-v2-copy-max: 780px;
 
-  /* kicker / top label source of truth */
-  --cf-ph-v2-kicker-bg: #f8fafc;
-  --cf-ph-v2-kicker-border: #cbd5e1;
-  --cf-ph-v2-kicker-text: #64748b;
+  /* one source of truth for the text above title: CENTRUM DNIA / ZADANIA / AKTYWNOŚĆ */
+  --cf-ph-v2-kicker-bg: #eff6ff;
+  --cf-ph-v2-kicker-border: #bfdbfe;
+  --cf-ph-v2-kicker-text: #2563eb;
 
   --cf-ph-v2-title: #0f172a;
   --cf-ph-v2-title-size: clamp(28px, 2.75vw, 40px);
@@ -114,6 +114,7 @@
   border-radius: 999px !important;
   background: var(--cf-ph-v2-kicker-bg) !important;
   background-color: var(--cf-ph-v2-kicker-bg) !important;
+  background-image: none !important;
   color: var(--cf-ph-v2-kicker-text) !important;
   -webkit-text-fill-color: var(--cf-ph-v2-kicker-text) !important;
   font-size: 11px !important;
@@ -175,6 +176,70 @@
   justify-content: flex-end !important;
   gap: 10px !important;
   text-align: left !important;
+}
+
+/* If a preserved action wrapper is inserted into V2, flatten it visually. */
+#root .cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions),
+.cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
+  display: contents !important;
+}
+
+/* Header action button source truth. */
+#root .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
+.cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) {
+  min-height: var(--cf-ph-v2-action-height) !important;
+  height: var(--cf-ph-v2-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-ph-v2-action-gap) !important;
+  border: 1px solid var(--cf-ph-v2-neutral-border) !important;
+  border-radius: var(--cf-ph-v2-action-radius) !important;
+  background: var(--cf-ph-v2-neutral-bg) !important;
+  background-color: var(--cf-ph-v2-neutral-bg) !important;
+  background-image: none !important;
+  color: var(--cf-ph-v2-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-neutral-text) !important;
+  box-shadow: var(--cf-ph-v2-neutral-shadow) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+/* AI actions: violet */
+#root .cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]),
+.cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]) {
+  border-color: var(--cf-ph-v2-ai-border) !important;
+  background: var(--cf-ph-v2-ai-bg) !important;
+  color: var(--cf-ph-v2-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-ai-text) !important;
+  box-shadow: var(--cf-ph-v2-ai-shadow) !important;
+}
+
+/* Danger/trash actions: red */
+#root .cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger),
+.cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger) {
+  border-color: var(--cf-ph-v2-danger-border) !important;
+  background: var(--cf-ph-v2-danger-bg) !important;
+  color: var(--cf-ph-v2-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-danger-text) !important;
+  box-shadow: var(--cf-ph-v2-danger-shadow) !important;
+}
+
+/* Emergency fallback for any old header left during rollout: same kicker color, no duplicate-looking pale text. */
+#root [data-cf-page-header="true"] [data-cf-page-header-part="kicker"],
+#root [data-cf-page-header="true"] .kicker,
+#root [data-cf-page-header="true"] .activity-kicker,
+#root [data-cf-page-header="true"] .notifications-kicker,
+#root [data-cf-page-header="true"] .ai-drafts-kicker,
+#root [data-cf-page-header="true"] .cf-page-hero-kicker {
+  border-color: var(--cf-ph-v2-kicker-border) !important;
+  background: var(--cf-ph-v2-kicker-bg) !important;
+  color: var(--cf-ph-v2-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-v2-kicker-text) !important;
+  opacity: 1 !important;
 }
 
 @media (max-width: 900px) {

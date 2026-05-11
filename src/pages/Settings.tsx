@@ -37,7 +37,6 @@ import {
   verifyBeforeUpdateEmail
 } from 'firebase/auth';
 
-
 import {
   toast
 } from 'sonner';
@@ -91,9 +90,8 @@ import {
 } from '../lib/google-calendar-reminder-preferences';
 import '../styles/visual-stage19-settings-vnext.css';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';
@@ -129,7 +127,6 @@ type DigestDiagnosticsState = {
   };
   hints?: string[];
 };
-
 
 type GoogleCalendarStatusState = {
   ok?: boolean;
@@ -1119,7 +1116,6 @@ useEffect(() => {
               ) : null}
             </section>
 
-
             
             <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true">
               <div className="settings-section-head">
@@ -1417,8 +1413,6 @@ useEffect(() => {
     </Layout>
   );
 }
-
-
 
 {/* STAGE16M_SETTINGS_PLAN_VISIBILITY_COMPAT
 const loadGoogleCalendarStatus = async () => { if (!canUseGoogleCalendarByPlan) { DISABLED_BY_PLAN return; } setCheckingGoogleCalendar(true) }

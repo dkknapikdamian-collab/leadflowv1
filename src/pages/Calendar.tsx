@@ -94,24 +94,16 @@ import {
 import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 
-
 import Layout from '../components/Layout';
-
 
 import { pl } from 'date-fns/locale';
 
-
 import '../styles/visual-stage22-event-form-vnext.css';
 
-
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
-
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -1251,143 +1243,143 @@ export default function Calendar() {
   return (
     <Layout>
       <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
-        <div data-cf-page-header="true" className="cf-page-header page-head">
-          <div data-cf-page-header-part="copy">
-            <span data-cf-page-header-part="kicker" className="kicker">{PAGE_HEADER_CONTENT.calendar.kicker}</span>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.calendar.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.calendar.description}</p>
-                      </div>
-          <div className="head-actions" data-cf-page-header-part="actions">
-            <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-event-stage6="true" onClick={() => setIsNewEventOpen(true)}>
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Dodaj wydarzenie
-            </button>
-            <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-task-stage6="true" onClick={() => setIsNewTaskOpen(true)}>
-              <Plus className="mr-1 h-3.5 w-3.5" />
-              Dodaj zadanie
-            </button>
-            <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
-              <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
-            </Link>
-            <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
-              <DialogContent className="event-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
-                <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
-                <form onSubmit={handleAddEvent} className="event-form-vnext space-y-6 py-4" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
-                  <div className="space-y-4">
-                    <div className="event-form-field">
-                      <Label>Tytuł</Label>
-                      <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="event-form-field">
-                        <Label>Typ</Label>
-                        <select className="event-form-select" value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
-                          {EVENT_TYPES.map((eventType) => (
-                            <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <TopicContactPicker
-                      options={topicContactOptions}
-                      selectedOption={selectedNewEventOption}
-                      query={newEvent.relationQuery}
-                      onQueryChange={(value) => setNewEvent((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
-                      onSelect={handleSelectNewEventRelation}
-                    />
-                  </div>
+        <CloseFlowPageHeaderV2
+          pageKey="calendar"
+          actions={
+            <>
+              <div className="head-actions">
+                          <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-event-stage6="true" onClick={() => setIsNewEventOpen(true)}>
+                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            Dodaj wydarzenie
+                          </button>
+                          <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-task-stage6="true" onClick={() => setIsNewTaskOpen(true)}>
+                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            Dodaj zadanie
+                          </button>
+                          <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
+                            <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
+                          </Link>
+                          <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
+                            <DialogContent className="event-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+                              <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
+                              <form onSubmit={handleAddEvent} className="event-form-vnext space-y-6 py-4" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+                                <div className="space-y-4">
+                                  <div className="event-form-field">
+                                    <Label>Tytuł</Label>
+                                    <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="event-form-field">
+                                      <Label>Typ</Label>
+                                      <select className="event-form-select" value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
+                                        {EVENT_TYPES.map((eventType) => (
+                                          <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <TopicContactPicker
+                                    options={topicContactOptions}
+                                    selectedOption={selectedNewEventOption}
+                                    query={newEvent.relationQuery}
+                                    onQueryChange={(value) => setNewEvent((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                                    onSelect={handleSelectNewEventRelation}
+                                  />
+                                </div>
 
-                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">Od do</p>
-                      <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="event-form-field">
-                        <Label>Start</Label>
-                        <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleStartChange(e.target.value)} required />
-                      </div>
-                      <div className="event-form-field">
-                        <Label>Koniec</Label>
-                        <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
-                      </div>
-                    </div>
-                  </div>
+                                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900">Od do</p>
+                                    <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="event-form-field">
+                                      <Label>Start</Label>
+                                      <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleStartChange(e.target.value)} required />
+                                    </div>
+                                    <div className="event-form-field">
+                                      <Label>Koniec</Label>
+                                      <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
+                                    </div>
+                                  </div>
+                                </div>
 
-                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
-                      <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="space-y-2 md:col-span-2">
-                        <Label>Powtarzanie</Label>
-                        <select className="event-form-select" value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
-                          {RECURRENCE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="event-form-field">
-                        <Label>Co ile</Label>
-                        <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
-                      </div>
-                    </div>
-                    <div className="event-form-field">
-                      <Label>Powtarzaj do</Label>
-                      <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
-                    </div>
-                  </div>
+                                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.</p>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-2 md:col-span-2">
+                                      <Label>Powtarzanie</Label>
+                                      <select className="event-form-select" value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
+                                        {RECURRENCE_OPTIONS.map((option) => (
+                                          <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="event-form-field">
+                                      <Label>Co ile</Label>
+                                      <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
+                                    </div>
+                                  </div>
+                                  <div className="event-form-field">
+                                    <Label>Powtarzaj do</Label>
+                                    <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
+                                  </div>
+                                </div>
 
-                  <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                    <div>
-                      <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                      <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cykliczność.</p>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="event-form-field">
-                        <Label>Tryb</Label>
-                        <select className="event-form-select" value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
-                          {REMINDER_MODE_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                      <div className="event-form-field">
-                        <Label>Kiedy przypomnieć</Label>
-                        <select className="event-form-select" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
-                          {REMINDER_OFFSET_OPTIONS.map((option) => (
-                            <option key={option.value} value={option.value}>{option.label}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    {newEvent.reminder.mode === 'recurring' && (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="space-y-2 md:col-span-2">
-                          <Label>Cykliczność przypomnienia</Label>
-                          <select className="event-form-select" value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
-                            {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
-                              <option key={option.value} value={option.value}>{option.label}</option>
-                            ))}
-                          </select>
+                                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                                    <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cykliczność.</p>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="event-form-field">
+                                      <Label>Tryb</Label>
+                                      <select className="event-form-select" value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
+                                        {REMINDER_MODE_OPTIONS.map((option) => (
+                                          <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="event-form-field">
+                                      <Label>Kiedy przypomnieć</Label>
+                                      <select className="event-form-select" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
+                                        {REMINDER_OFFSET_OPTIONS.map((option) => (
+                                          <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+                                  {newEvent.reminder.mode === 'recurring' && (
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                      <div className="space-y-2 md:col-span-2">
+                                        <Label>Cykliczność przypomnienia</Label>
+                                        <select className="event-form-select" value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
+                                          {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                                            <option key={option.value} value={option.value}>{option.label}</option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                      <div className="event-form-field">
+                                        <Label>Co ile</Label>
+                                        <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <DialogFooter className="event-form-footer">
+                                  <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
+                                </DialogFooter>
+                              </form>
+                            </DialogContent>
+                          </Dialog>
                         </div>
-                        <div className="event-form-field">
-                          <Label>Co ile</Label>
-                          <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <DialogFooter className="event-form-footer">
-                    <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+            </>
+          }
+        />
 
         <div className="calendar-toolbar">
           <div className="calendar-seg" role="tablist" aria-label="Widok kalendarza">
@@ -1526,7 +1518,7 @@ export default function Calendar() {
                       </span>
                       {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
                     </div>
-                    <div className="space-y-1" data-cf-page-header-part="copy">
+                    <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
                         const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
 
@@ -1688,7 +1680,7 @@ export default function Calendar() {
                     <section key={day.toISOString()} className={`calendar-week-day ${isActiveDay ? 'is-active' : ''}`}>
                       <header className="calendar-week-day-head">
                         <div>
-                          <div data-cf-page-header-part="kicker" className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
+                          <div className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
                           <div className="calendar-week-day-title">{format(day, 'd MMM', { locale: pl })}</div>
                         </div>
                         <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisów'}</div>

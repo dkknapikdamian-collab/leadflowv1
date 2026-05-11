@@ -67,11 +67,8 @@ import {
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage16-billing-vnext.css';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
 type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
@@ -504,23 +501,23 @@ export default function Billing() {
   return (
     <Layout>
       <main className="billing-vnext-page" data-billing-stage={BILLING_VISUAL_REBUILD_STAGE16}>
-        <header data-cf-page-header="true" className="cf-page-header billing-header">
-          <div data-cf-page-header-part="copy">
-            <p data-cf-page-header-part="kicker" className="billing-kicker">ROZLICZENIA</p>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.billing.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.billing.description}</p>
-          </div>
-          <div className="billing-header-actions" data-cf-page-header-part="actions">
-            <Button type="button" variant="outline" onClick={refresh}>
-              <RefreshCw className="h-4 w-4" />
-              Odśwież status
-            </Button>
-            <Button type="button" onClick={() => setTab('plan')}>
-              <EntityIcon entity="payment" className="h-4 w-4" />
-              {accessCopy.cta}
-            </Button>
-          </div>
-        </header>
+        <CloseFlowPageHeaderV2
+          pageKey="billing"
+          actions={
+            <>
+              <div className="billing-header-actions">
+                          <Button type="button" variant="outline" onClick={refresh}>
+                            <RefreshCw className="h-4 w-4" />
+                            Odśwież status
+                          </Button>
+                          <Button type="button" onClick={() => setTab('plan')}>
+                            <EntityIcon entity="payment" className="h-4 w-4" />
+                            {accessCopy.cta}
+                          </Button>
+                        </div>
+            </>
+          }
+        />
 
         <nav className="billing-tabs" aria-label="Zakładki rozliczeń">
           <button type="button" className={tab === 'plan' ? 'billing-tab-active' : ''} onClick={() => setTab('plan')}>
@@ -642,7 +639,6 @@ export default function Billing() {
                 })}
               </section>
 
-
 </section>
 
             <aside className="billing-right-rail" aria-label="Panel rozliczeń">
@@ -761,8 +757,6 @@ export default function Billing() {
     </Layout>
   );
 }
-
-
 
 /* STAGE16M_BILLING_UI_TRUTH_COMPAT
 Płatność kartą lub BLIK

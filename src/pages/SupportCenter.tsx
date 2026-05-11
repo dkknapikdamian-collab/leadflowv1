@@ -31,11 +31,8 @@ import {
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage17-support-vnext.css';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 function formatSupportStatus(status: unknown) {
   const value = String(status || '').toLowerCase();
   if (value === 'open' || value === 'new') return 'Nowe';
@@ -426,19 +423,19 @@ export default function SupportCenter() {
   return (
     <Layout>
       <main className="support-vnext-page" data-support-stage={SUPPORT_VISUAL_REBUILD_STAGE17}>
-        <header data-cf-page-header="true" className="cf-page-header support-header">
-          <div data-cf-page-header-part="copy">
-            <p data-cf-page-header-part="kicker" className="support-kicker">POMOC</p>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.support.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.support.description}</p>
-          </div>
-          <div className="support-header-actions" data-cf-page-header-part="actions">
-            <Button type="button" variant="outline" onClick={() => void loadTickets()}>
-              <Search className="h-4 w-4" />
-              Odśwież zgłoszenia
-            </Button>
-          </div>
-        </header>
+        <CloseFlowPageHeaderV2
+          pageKey="support"
+          actions={
+            <>
+              <div className="support-header-actions">
+                          <Button type="button" variant="outline" onClick={() => void loadTickets()}>
+                            <Search className="h-4 w-4" />
+                            Odśwież zgłoszenia
+                          </Button>
+                        </div>
+            </>
+          }
+        />
 
         <section className="support-hero-grid">
           <article className="support-hero-card support-hero-card-blue">

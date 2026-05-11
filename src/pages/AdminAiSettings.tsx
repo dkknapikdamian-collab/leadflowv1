@@ -17,11 +17,9 @@ import { Button } from '../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {
@@ -132,21 +130,7 @@ export default function AdminAiSettings() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-8">
-        <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2" data-cf-page-header-part="copy">
-            <div data-cf-page-header-part="kicker" className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip"><EntityIcon entity="ai" className="h-3.5 w-3.5" />
-              {PAGE_HEADER_CONTENT.adminAi.kicker}</div>
-            <div>
-              <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.adminAi.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.adminAi.description}</p>
-              
-            </div>
-          </div>
-          <Button type="button" variant="outline" onClick={() => void loadDiagnostics()} disabled={loadingDiagnostics}>
-            <RefreshCw className={`mr-2 h-4 w-4 ${loadingDiagnostics ? 'animate-spin' : ''}`} />
-            Odśwież status
-          </Button>
-        </header>
+        <CloseFlowPageHeaderV2 pageKey="adminAi" />
 
         <Card className="cf-readable-card border-none app-surface-strong">
           <CardHeader>

@@ -523,7 +523,7 @@ export default function Clients() {
           pageKey="clients"
           actions={
             <>
-              <div className="head-actions" data-cf-page-header-part="actions">
+              <div className="head-actions">
                           <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
                           <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
                             {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
