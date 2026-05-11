@@ -22,6 +22,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import {
   createCaseInSupabase,
@@ -482,7 +483,7 @@ export default function Cases() {
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.cases.description}</p>
                       </div>
           <div className="head-actions" data-cf-page-header-part="actions">
-            <Button type="button" variant="outline" className="btn soft-blue">
+            <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">
               <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Button>
             <Dialog open={isCreateCaseOpen} onOpenChange={(open) => {
@@ -736,7 +737,7 @@ export default function Cases() {
                           <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
                           <button
                             type="button"
-                            className="btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger"
+                            className="btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger" data-cf-header-action="danger"
                             data-case-row-delete-action="true"
                             aria-label="Usuń sprawę"
                             title="Usuń sprawę"

@@ -54,6 +54,7 @@ import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
@@ -613,11 +614,11 @@ export default function NotificationsCenter() {
     <Layout>
       <main className="notifications-vnext-page">
         <header data-cf-page-header="true" className="cf-page-header notifications-page-header">
-          <div>
-            <p className="notifications-kicker">POWIADOMIENIA</p>
+          <div data-cf-page-header-part="copy">
+            <p data-cf-page-header-part="kicker" className="notifications-kicker">POWIADOMIENIA</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.notifications.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.notifications.description}</p>
-            <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.notifications.description}</p>
+            
           </div>
 
           <div className="notifications-header-actions" data-cf-page-header-part="actions">

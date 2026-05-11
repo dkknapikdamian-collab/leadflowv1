@@ -81,6 +81,7 @@ import {
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type DraftFilter =
   | 'all'
@@ -1019,11 +1020,11 @@ function AiDraftsInner() {
     <Layout>
       <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER} data-ai-draft-command-center="true">
         <header data-cf-page-header="true" className="cf-page-header ai-drafts-page-header">
-          <div>
-            <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
+          <div data-cf-page-header-part="copy">
+            <p data-cf-page-header-part="kicker" className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.aiDrafts.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>
-            <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>
+            
           </div>
           <div className="ai-drafts-header-actions" data-cf-page-header-part="actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>

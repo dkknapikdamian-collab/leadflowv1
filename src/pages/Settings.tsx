@@ -93,6 +93,7 @@ import {
 import '../styles/visual-stage19-settings-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
@@ -813,7 +814,7 @@ useEffect(() => {
       <main className="settings-vnext-page" data-settings-stage={SETTINGS_VISUAL_REBUILD_STAGE19}>
         <header className="settings-header">
           <div>
-            <p className="settings-kicker">USTAWIENIA</p>
+            <p data-cf-page-header-part="kicker" className="settings-kicker">USTAWIENIA</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.settings.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.settings.description}</p>
           </div>

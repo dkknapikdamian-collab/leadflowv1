@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
@@ -136,7 +137,7 @@ export default function AdminAiSettings() {
             <div>
               <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.adminAi.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.adminAi.description}</p>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.adminAi.description}</p>
+              
             </div>
           </div>
           <Button type="button" variant="outline" onClick={() => void loadDiagnostics()} disabled={loadingDiagnostics}>

@@ -50,6 +50,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
@@ -1251,7 +1252,7 @@ export default function TodayStable() {
         <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
           <div className="cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <p className="cf-section-head-kicker text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
+              <p data-cf-page-header-part="kicker" className="cf-section-head-kicker text-xs font-bold uppercase tracking-wide text-slate-500">Centrum dnia</p>
               <p className="cf-section-head-title mt-1 text-xl font-black text-slate-900 sm:text-2xl">Priorytety i najbliższe ruchy</p>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.today.description}</p>
             </div>

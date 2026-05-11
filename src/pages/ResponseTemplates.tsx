@@ -34,6 +34,7 @@ import {
 } from '../lib/supabase-fallback';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type ResponseTemplate = {
   id: string;
@@ -200,12 +201,12 @@ export default function ResponseTemplates() {
     <Layout>
       <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
         <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="space-y-3">
+          <div data-cf-page-header-part="copy" className="space-y-3">
             <div data-cf-page-header-part="kicker" className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">{PAGE_HEADER_CONTENT.responseTemplates.kicker}</div>
             <div>
               <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.responseTemplates.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
+              
             </div>
           </div>
           <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
@@ -302,7 +303,7 @@ export default function ResponseTemplates() {
                       {(selectedTemplate.variables || []).map((variable) => <Badge key={variable} className="bg-emerald-500/12 text-emerald-600 border-emerald-500/20">{`{{${variable}}}`}</Badge>)}
                       {!(selectedTemplate.variables || []).length ? <span className="text-sm app-muted">Ten szablon nie ma zmiennych.</span> : null}
                     </div>
-                    <div className="flex flex-col gap-2 sm:flex-row">
+                    <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row">
                       <Button className="rounded-2xl" onClick={() => void handleCopy(selectedTemplate)}><Copy className="h-4 w-4" /> Kopiuj treść</Button>
                       <Button variant="outline" className="rounded-2xl" onClick={() => openEdit(selectedTemplate)}>Edytuj</Button>
                     </div>

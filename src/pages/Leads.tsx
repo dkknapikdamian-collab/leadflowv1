@@ -86,6 +86,7 @@ import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValu
 import '../styles/visual-stage20-lead-form-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
@@ -692,7 +693,7 @@ export default function Leads() {
           </div>
 
           <div className="head-actions" data-cf-page-header-part="actions">
-            <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
+            <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true" data-cf-header-action="ai">
               <EntityIcon entity="ai" className="h-4 w-4" />
               Zapytaj AI
             </Link>

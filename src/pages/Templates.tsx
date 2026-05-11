@@ -59,6 +59,7 @@ import {
 
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 
@@ -322,7 +323,7 @@ export default function Templates() {
     <Layout>
       <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-a16-template-light-ui="true">
         <header data-cf-page-header="true" className="cf-page-header rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+          <div data-cf-page-header-part="copy" className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-3">
               <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
                 <FolderKanban className="h-3.5 w-3.5" /> Szablony spraw

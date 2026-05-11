@@ -30,6 +30,7 @@ import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import {
   StatShortcutCard
@@ -716,8 +717,8 @@ export default function Activity() {
     <Layout>
       <main className="activity-vnext-page">
         <header data-cf-page-header="true" className="cf-page-header activity-page-header">
-          <div>
-            <p className="activity-kicker">AKTYWNOŚĆ</p>
+          <div data-cf-page-header-part="copy">
+            <p data-cf-page-header-part="kicker" className="activity-kicker">AKTYWNOŚĆ</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.activity.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.activity.description}</p>
           </div>

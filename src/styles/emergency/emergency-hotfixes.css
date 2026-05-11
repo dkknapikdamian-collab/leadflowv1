@@ -229,3 +229,8 @@
 @import '../closeflow-page-header-action-semantics-packet1.css';
 /* CLOSEFLOW_PAGE_HEADER_STAGE6_FINAL_LOCK_IMPORT_2026_05_11 */
 @import '../closeflow-page-header-stage6-final-lock.css';
+
+/* CLOSEFLOW_PAGE_HEADER_FINAL_LOCK_PACKET2_ENTRY
+   Final source of truth for top page header layout/copy/actions. Must stay last.
+*/
+@import '../closeflow-page-header-final-lock.css';

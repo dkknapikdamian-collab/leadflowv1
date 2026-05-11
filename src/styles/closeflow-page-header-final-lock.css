@@ -1,0 +1,394 @@
+/* CLOSEFLOW_PAGE_HEADER_FINAL_LOCK_PACKET2_2026_05_11
+   owner: CloseFlow Visual System
+   reason: previous page-header fixes still lost because page-level CSS chunks and old :last-child action selectors moved copy to the right.
+   scope: [data-cf-page-header="true"].cf-page-header and global command actions.
+   rule: header copy is never inferred from :last-child; actions must be explicit via data-cf-page-header-part="actions" or known action classes.
+*/
+
+/* -------------------------------------------------------------------------- */
+/* FINAL TOKENS                                                               */
+/* -------------------------------------------------------------------------- */
+:root {
+  --cf-ph-card-bg: linear-gradient(180deg, rgba(255,255,255,0.995) 0%, rgba(248,250,252,0.98) 100%);
+  --cf-ph-card-bg-solid: #ffffff;
+  --cf-ph-card-border: rgba(203, 213, 225, 0.88);
+  --cf-ph-card-radius: 28px;
+  --cf-ph-card-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
+  --cf-ph-card-padding-y: 22px;
+  --cf-ph-card-padding-x: 26px;
+  --cf-ph-card-min-height: 92px;
+
+  --cf-ph-kicker-bg: #eef4ff;
+  --cf-ph-kicker-border: #bfdbfe;
+  --cf-ph-kicker-text: #2563eb;
+
+  --cf-ph-title-color: #0f172a;
+  --cf-ph-title-size: clamp(28px, 2.75vw, 40px);
+  --cf-ph-title-weight: 950;
+  --cf-ph-title-line: 1;
+  --cf-ph-title-tracking: -0.058em;
+
+  --cf-ph-desc-color: #64748b;
+  --cf-ph-desc-size: 13px;
+  --cf-ph-desc-weight: 650;
+  --cf-ph-desc-line: 1.45;
+
+  --cf-ph-action-h: 38px;
+  --cf-ph-action-radius: 14px;
+  --cf-ph-action-gap: 8px;
+  --cf-ph-actions-gap: 10px;
+
+  --cf-ph-neutral-bg: #ffffff;
+  --cf-ph-neutral-hover-bg: #eff6ff;
+  --cf-ph-neutral-border: #bfdbfe;
+  --cf-ph-neutral-hover-border: #93c5fd;
+  --cf-ph-neutral-text: #2563eb;
+  --cf-ph-neutral-hover-text: #1d4ed8;
+  --cf-ph-neutral-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+
+  --cf-ph-ai-bg: #ffffff;
+  --cf-ph-ai-hover-bg: #f5f3ff;
+  --cf-ph-ai-border: #ddd6fe;
+  --cf-ph-ai-hover-border: #c4b5fd;
+  --cf-ph-ai-text: #7c3aed;
+  --cf-ph-ai-hover-text: #6d28d9;
+  --cf-ph-ai-shadow: 0 8px 18px rgba(124, 58, 237, 0.12);
+
+  --cf-ph-danger-bg: #ffffff;
+  --cf-ph-danger-hover-bg: #fef2f2;
+  --cf-ph-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.24));
+  --cf-ph-danger-hover-border: var(--cf-trash-icon-hover-border, rgba(220, 38, 38, 0.36));
+  --cf-ph-danger-text: var(--cf-trash-icon-color, #dc2626);
+  --cf-ph-danger-hover-text: var(--cf-trash-icon-hover-color, #b91c1c);
+  --cf-ph-danger-shadow: 0 8px 18px rgba(220, 38, 38, 0.08);
+}
+
+/* -------------------------------------------------------------------------- */
+/* CARD + LAYOUT                                                              */
+/* -------------------------------------------------------------------------- */
+#root [data-cf-page-header="true"].cf-page-header,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+#root main [data-cf-page-header="true"].cf-page-header {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  grid-auto-flow: column !important;
+  align-items: start !important;
+  justify-content: stretch !important;
+  gap: 18px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--cf-ph-card-min-height) !important;
+  padding: var(--cf-ph-card-padding-y) var(--cf-ph-card-padding-x) !important;
+  border: 1px solid var(--cf-ph-card-border) !important;
+  border-radius: var(--cf-ph-card-radius) !important;
+  background: var(--cf-ph-card-bg) !important;
+  background-color: var(--cf-ph-card-bg-solid) !important;
+  color: var(--cf-ph-title-color) !important;
+  box-shadow: var(--cf-ph-card-shadow) !important;
+  overflow: visible !important;
+  text-align: left !important;
+  isolation: isolate !important;
+}
+
+#root [data-cf-page-header="true"].cf-page-header::before,
+#root [data-cf-page-header="true"].cf-page-header::after,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header::before,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Internal wrapper if page uses cf-page-hero-layout. */
+#root [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: start !important;
+  gap: 18px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+/* CRITICAL FIX:
+   Older source CSS used `.cf-page-header > :last-child` as action selector.
+   On screens without actions, copy is both first and last, so it was pushed to the right.
+   This rule wins that fight and keeps the only child on the left.
+*/
+#root [data-cf-page-header="true"].cf-page-header > :first-child:last-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child:last-child {
+  grid-column: 1 / -1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  margin-left: 0 !important;
+  max-width: 780px !important;
+  text-align: left !important;
+}
+
+/* Copy column. */
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+#root [data-cf-page-header="true"].cf-page-header > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+  grid-column: 1 !important;
+  justify-self: start !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  max-width: 780px !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+/* Actions must be explicit, never guessed by :last-child. */
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root [data-cf-page-header="true"].cf-page-header .head-actions,
+#root [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root [data-cf-page-header="true"].cf-page-header .support-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: start !important;
+  margin-left: auto !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-ph-actions-gap) !important;
+  min-width: max-content !important;
+  text-align: left !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* COPY TYPOGRAPHY                                                            */
+/* -------------------------------------------------------------------------- */
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+#root [data-cf-page-header="true"].cf-page-header .kicker,
+#root [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+#root [data-cf-page-header="true"].cf-page-header .activity-kicker,
+#root [data-cf-page-header="true"].cf-page-header .ai-drafts-kicker,
+#root [data-cf-page-header="true"].cf-page-header .notifications-kicker,
+#root [data-cf-page-header="true"].cf-page-header [class*="kicker"],
+#root [data-cf-page-header="true"].cf-page-header [data-slot="badge"],
+#root [data-cf-page-header="true"].cf-page-header .badge {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 9px 0 !important;
+  padding: 7px 10px !important;
+  border: 1px solid var(--cf-ph-kicker-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-ph-kicker-bg) !important;
+  background-color: var(--cf-ph-kicker-bg) !important;
+  color: var(--cf-ph-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-kicker-text) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+#root [data-cf-page-header="true"].cf-page-header h1,
+#root [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+  display: block !important;
+  margin: 0 !important;
+  max-width: 780px !important;
+  color: var(--cf-ph-title-color) !important;
+  -webkit-text-fill-color: var(--cf-ph-title-color) !important;
+  font-size: var(--cf-ph-title-size) !important;
+  font-weight: var(--cf-ph-title-weight) !important;
+  line-height: var(--cf-ph-title-line) !important;
+  letter-spacing: var(--cf-ph-title-tracking) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+#root [data-cf-page-header="true"].cf-page-header .cf-page-header-description,
+#root [data-cf-page-header="true"].cf-page-header p:not([class*="kicker"]) {
+  display: block !important;
+  margin: 8px 0 0 0 !important;
+  max-width: 780px !important;
+  color: var(--cf-ph-desc-color) !important;
+  -webkit-text-fill-color: var(--cf-ph-desc-color) !important;
+  font-size: var(--cf-ph-desc-size) !important;
+  font-weight: var(--cf-ph-desc-weight) !important;
+  line-height: var(--cf-ph-desc-line) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Hide repeated descriptions created by source-truth + old local paragraph. */
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
+#root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > p + p,
+#root [data-cf-page-header="true"].cf-page-header > :first-child > .cf-page-header-description + .cf-page-header-description,
+#root [data-cf-page-header="true"].cf-page-header > :first-child > p + p {
+  display: none !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* ACTION BUTTON SKIN                                                         */
+/* -------------------------------------------------------------------------- */
+#root [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
+#root [data-global-quick-actions="true"] :is(button, a.btn, a[role="button"], .btn),
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+#root .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn) {
+  min-height: var(--cf-ph-action-h) !important;
+  height: var(--cf-ph-action-h) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-ph-action-gap) !important;
+  flex: 0 0 auto !important;
+  border: 1px solid var(--cf-ph-neutral-border) !important;
+  border-radius: var(--cf-ph-action-radius) !important;
+  background: var(--cf-ph-neutral-bg) !important;
+  background-color: var(--cf-ph-neutral-bg) !important;
+  background-image: none !important;
+  color: var(--cf-ph-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-neutral-text) !important;
+  box-shadow: var(--cf-ph-neutral-shadow) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+#root [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover,
+#root [data-global-quick-actions="true"] :is(button, a.btn, a[role="button"], .btn):hover,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn):hover,
+#root .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn):hover {
+  border-color: var(--cf-ph-neutral-hover-border) !important;
+  background: var(--cf-ph-neutral-hover-bg) !important;
+  color: var(--cf-ph-neutral-hover-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-neutral-hover-text) !important;
+}
+
+/* AI actions: violet. */
+#root [data-cf-page-header="true"].cf-page-header :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]),
+#root [data-global-quick-actions="true"] :is([data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue) {
+  border-color: var(--cf-ph-ai-border) !important;
+  background: var(--cf-ph-ai-bg) !important;
+  background-color: var(--cf-ph-ai-bg) !important;
+  color: var(--cf-ph-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-ai-text) !important;
+  box-shadow: var(--cf-ph-ai-shadow) !important;
+}
+
+#root [data-cf-page-header="true"].cf-page-header :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]):hover,
+#root [data-global-quick-actions="true"] :is([data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue):hover {
+  border-color: var(--cf-ph-ai-hover-border) !important;
+  background: var(--cf-ph-ai-hover-bg) !important;
+  color: var(--cf-ph-ai-hover-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-ai-hover-text) !important;
+}
+
+/* Trash/danger actions: red, tied to trash token source. */
+#root [data-cf-page-header="true"].cf-page-header :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger),
+#root [data-global-quick-actions="true"] :is([data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger) {
+  border-color: var(--cf-ph-danger-border) !important;
+  background: var(--cf-ph-danger-bg) !important;
+  background-color: var(--cf-ph-danger-bg) !important;
+  color: var(--cf-ph-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-danger-text) !important;
+  box-shadow: var(--cf-ph-danger-shadow) !important;
+}
+
+#root [data-cf-page-header="true"].cf-page-header :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger):hover,
+#root [data-global-quick-actions="true"] :is([data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger):hover {
+  border-color: var(--cf-ph-danger-hover-border) !important;
+  background: var(--cf-ph-danger-hover-bg) !important;
+  color: var(--cf-ph-danger-hover-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-danger-hover-text) !important;
+}
+
+/* Icons always follow button text. This kills local green billing icons. */
+#root [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action) :is(svg, span, i),
+#root [data-global-quick-actions="true"] :is(button, a.btn, a[role="button"], .btn) :is(svg, span, i) {
+  color: currentColor !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Today action stack must be horizontal. */
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+#root .cf-section-head-actions.cf-today-section-head-actions,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+#root .cf-section-head-action-stack {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-ph-actions-gap) !important;
+  min-width: max-content !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack > *,
+#root .cf-section-head-action-stack > * {
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* MOBILE                                                                     */
+/* -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  #root [data-cf-page-header="true"].cf-page-header,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+  #root [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+  #root [data-cf-page-header="true"].cf-page-header > :first-child,
+  #root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+  #root [data-cf-page-header="true"].cf-page-header .notifications-header-actions {
+    grid-column: auto !important;
+    justify-self: stretch !important;
+    align-self: stretch !important;
+    margin-left: 0 !important;
+    min-width: 0 !important;
+  }
+
+  #root [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root [data-cf-page-header="true"].cf-page-header .head-actions {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+}

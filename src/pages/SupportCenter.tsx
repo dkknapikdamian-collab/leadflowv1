@@ -32,6 +32,7 @@ import {
 import '../styles/visual-stage17-support-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 function formatSupportStatus(status: unknown) {
   const value = String(status || '').toLowerCase();
@@ -424,8 +425,8 @@ export default function SupportCenter() {
     <Layout>
       <main className="support-vnext-page" data-support-stage={SUPPORT_VISUAL_REBUILD_STAGE17}>
         <header data-cf-page-header="true" className="cf-page-header support-header">
-          <div>
-            <p className="support-kicker">POMOC</p>
+          <div data-cf-page-header-part="copy">
+            <p data-cf-page-header-part="kicker" className="support-kicker">POMOC</p>
             <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.support.title}</h1>
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.support.description}</p>
           </div>
@@ -446,12 +447,12 @@ export default function SupportCenter() {
           <article className="support-hero-card">
             <ShieldCheck className="h-5 w-5" />
             <span>Status zgłoszeń</span>
-            <strong>{ticketCounts.all}</strong>
+            <strong>{ticketCounts.all}</strong>
           </article>
           <article className="support-hero-card">
             <Clock3 className="h-5 w-5" />
             <span>W trakcie</span>
-            <strong>{ticketCounts.byStatus.get('in_progress') || 0}</strong>
+            <strong>{ticketCounts.byStatus.get('in_progress') || 0}</strong>
           </article>
         </section>
 

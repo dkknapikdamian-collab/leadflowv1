@@ -105,6 +105,7 @@ import '../styles/visual-stage22-event-form-vnext.css';
 
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
@@ -1263,7 +1264,7 @@ export default function Calendar() {
               <Plus className="mr-1 h-3.5 w-3.5" />
               Dodaj zadanie
             </button>
-            <Link to="/ai-drafts" className="btn soft-blue">
+            <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
               <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Link>
             <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
@@ -1685,7 +1686,7 @@ export default function Calendar() {
                     <section key={day.toISOString()} className={`calendar-week-day ${isActiveDay ? 'is-active' : ''}`}>
                       <header className="calendar-week-day-head">
                         <div>
-                          <div className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
+                          <div data-cf-page-header-part="kicker" className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
                           <div className="calendar-week-day-title">{format(day, 'd MMM', { locale: pl })}</div>
                         </div>
                         <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisów'}</div>

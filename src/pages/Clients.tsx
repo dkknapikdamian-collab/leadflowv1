@@ -91,6 +91,7 @@ import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import '../styles/closeflow-page-header-final-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
@@ -535,7 +536,7 @@ export default function Clients() {
               <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.clients.description}</p>
           </div>
           <div className="head-actions" data-cf-page-header-part="actions">
-            <Button type="button" variant="outline" className="btn soft-blue">? Zapytaj AI</Button>
+            <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
             <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
               {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
               {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
