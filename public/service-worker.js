@@ -1,11 +1,12 @@
 /* PWA_STAGE13_MOBILE_SAFE_MODE
- * CloseFlow service worker caches only app shell and static assets.
+ * CLOSEFLOW_ASSET_CACHE_STALE_CHUNK_HOTFIX_2026_05_11
+ * CloseFlow service worker no longer caches HTML shell or hashed Vite JS/CSS chunks.
+ * Reason: after Vercel deploy, stale cached index/chunk maps can request deleted /assets/*.js or /assets/*.css and crash routes.
  * Business data, auth, API, portal, Supabase REST/storage/functions and tokenized URLs stay network-only.
  */
-const CACHE_VERSION = 'closeflow-v1-pwa-stage13-mobile-safe-2026-05-06';
+const CACHE_VERSION = 'closeflow-v2-asset-cache-hotfix-2026-05-11';
 
-const APP_SHELL_URLS = [
-  '/',
+const STATIC_SAFE_URLS = [
   '/manifest.webmanifest',
   '/icons/closeflow-icon.svg',
   '/icons/closeflow-icon-192.png',
@@ -13,7 +14,6 @@ const APP_SHELL_URLS = [
   '/favicon.ico',
 ];
 
-// PWA_NETWORK_ONLY_PREFIXES: nothing below these paths may be cached by the service worker.
 const PWA_NETWORK_ONLY_PREFIXES = [
   '/api',
   '/auth',
@@ -23,10 +23,11 @@ const PWA_NETWORK_ONLY_PREFIXES = [
   '/functions',
   '/portal',
   '/client-portal',
+  '/assets',
 ];
 
-// BUSINESS_RUNTIME_PATHS: authenticated app screens are never treated as offline data cache.
 const BUSINESS_RUNTIME_PATHS = [
+  '/',
   '/leads',
   '/tasks',
   '/calendar',
@@ -42,7 +43,6 @@ const BUSINESS_RUNTIME_PATHS = [
   '/support',
 ];
 
-// PWA_AUTH_STORAGE_MARKERS: external provider paths and Supabase-style endpoints stay network-only.
 const PWA_NETWORK_ONLY_CONTAINS = [
   '/auth/v1/',
   '/rest/v1/',
@@ -56,7 +56,6 @@ const PWA_NETWORK_ONLY_CONTAINS = [
   '/workspace',
 ];
 
-// PWA_SECRET_QUERY_KEYS: URLs carrying auth, workspace or portal material must never enter Cache Storage.
 const PWA_SECRET_QUERY_KEYS = [
   'access_token',
   'refresh_token',
@@ -81,12 +80,17 @@ function getUrl(request) {
 
 function isLocalGetRequest(request) {
   if (request.method !== 'GET') return false;
-
   const url = getUrl(request);
   if (!url) return false;
-  if (url.origin !== self.location.origin) return false;
+  return url.origin === self.location.origin;
+}
 
-  return true;
+function startsWithAny(path, prefixes) {
+  return prefixes.some((prefix) => path === prefix || path.startsWith(prefix + '/'));
+}
+
+function containsAny(value, needles) {
+  return needles.some((needle) => value.includes(needle));
 }
 
 function hasSensitiveQueryOrHeaders(request, url) {
@@ -102,35 +106,17 @@ function hasSensitiveQueryOrHeaders(request, url) {
   );
 }
 
-function startsWithAny(path, prefixes) {
-  return prefixes.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
-}
-
-function containsAny(value, needles) {
-  return needles.some((needle) => value.includes(needle));
-}
-
-// P13_API_NETWORK_ONLY: API, auth, REST and storage requests are never cached by the PWA service worker.
 function isApiOrDataRequest(request) {
   const url = getUrl(request);
   if (!url) return true;
 
   const path = url.pathname.toLowerCase();
-  const full = `${url.pathname}${url.search}`.toLowerCase();
-  const legacyApiPathCompat = url.pathname.startsWith('/api/');
-  const legacySupabasePathCompat = url.pathname.startsWith('/supabase/');
+  const full = (url.pathname + url.search).toLowerCase();
 
   return (
     hasSensitiveQueryOrHeaders(request, url) ||
-    legacyApiPathCompat ||
-    legacySupabasePathCompat ||
     startsWithAny(path, PWA_NETWORK_ONLY_PREFIXES) ||
     containsAny(full, PWA_NETWORK_ONLY_CONTAINS) ||
-    path.startsWith('/api/') ||
-    path.startsWith('/api') ||
-    path.startsWith('/supabase/') ||
-    path.startsWith('/storage/') ||
-    path.startsWith('/auth/') ||
     path.includes('/auth/') ||
     path.includes('/rest/v1/') ||
     path.includes('/storage/v1/') ||
@@ -142,34 +128,19 @@ function isBusinessRuntimePath(path) {
   return startsWithAny(path.toLowerCase(), BUSINESS_RUNTIME_PATHS);
 }
 
-function isCacheableAsset(request) {
+function isStaticSafeAsset(request) {
   if (!isLocalGetRequest(request)) return false;
   if (isApiOrDataRequest(request)) return false;
-
   const url = getUrl(request);
   if (!url) return false;
-
-  const path = url.pathname.toLowerCase();
-
-  if (request.mode === 'navigate') {
-    return path === '/' && !url.searchParams.has('token');
-  }
-
-  return (
-    path === '/manifest.webmanifest' ||
-    path === '/favicon.ico' ||
-    path === '/icons/closeflow-icon.svg' ||
-    path === '/icons/closeflow-icon-192.png' ||
-    path === '/icons/closeflow-icon-512.png' ||
-    path.startsWith('/assets/')
-  );
+  return STATIC_SAFE_URLS.includes(url.pathname);
 }
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE_VERSION)
-      .then((cache) => cache.addAll(APP_SHELL_URLS))
+      .then((cache) => cache.addAll(STATIC_SAFE_URLS))
       .then(() => self.skipWaiting()),
   );
 });
@@ -178,60 +149,35 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key !== CACHE_VERSION && key.startsWith('closeflow-'))
-            .map((key) => caches.delete(key)),
-        ),
-      )
+      .then((keys) => Promise.all(keys.filter((key) => key.startsWith('closeflow-')).map((key) => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
 
 self.addEventListener('fetch', (event) => {
   const request = event.request;
-
   if (!isLocalGetRequest(request)) return;
-  if (isApiOrDataRequest(request)) return;
 
   const url = getUrl(request);
   if (!url) return;
-
   const path = url.pathname.toLowerCase();
 
   if (request.mode === 'navigate') {
-    if (isBusinessRuntimePath(path) || path !== '/') return;
-
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok && response.type === 'basic') {
-            const copy = response.clone();
-            caches.open(CACHE_VERSION).then((cache) => cache.put('/', copy));
-          }
-
-          return response;
-        })
-        .catch(() => caches.match('/')),
-    );
+    if (isBusinessRuntimePath(path)) return;
     return;
   }
 
-  if (!isCacheableAsset(request)) return;
+  if (!isStaticSafeAsset(request)) return;
 
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(request).then((response) => {
+    fetch(request)
+      .then((response) => {
         if (response.ok && response.type === 'basic') {
           const copy = response.clone();
           caches.open(CACHE_VERSION).then((cache) => cache.put(request, copy));
         }
-
         return response;
-      });
-    }),
+      })
+      .catch(() => caches.match(request)),
   );
 });

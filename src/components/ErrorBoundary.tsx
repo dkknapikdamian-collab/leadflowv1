@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { reloadOnceForChunkAssetFailure } from '../pwa/chunk-asset-reload-guard';
 
 interface Props {
   children: ReactNode;
@@ -22,6 +23,7 @@ export class ErrorBoundary extends Component<any, any> {
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
+    reloadOnceForChunkAssetFailure(error, 'react-error-boundary');
   }
 
   render() {

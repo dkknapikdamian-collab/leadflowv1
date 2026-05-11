@@ -5,7 +5,9 @@ import './index.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppearanceProvider } from './components/appearance-provider';
 import { registerCloseFlowServiceWorker } from './pwa/register-service-worker';
+import { registerChunkAssetReloadGuard } from './pwa/chunk-asset-reload-guard';
 
+registerChunkAssetReloadGuard();
 registerCloseFlowServiceWorker();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
