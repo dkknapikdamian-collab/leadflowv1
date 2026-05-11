@@ -1,32 +1,62 @@
 /* CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1
    CLOSEFLOW_MODAL_VISUAL_SYSTEM_READABLE_V2
+   CLOSEFLOW_MODAL_DARK_SHELL_SKIN_ONLY_V3
    owner: CloseFlow UI system
-   reason: unified, readable, light operator dialogs without dark header/body split.
+   reason: unified operator dialogs with dark application shell and readable white form controls.
    source_of_truth: src/components/ui/dialog.tsx + this stylesheet
    scope: all Radix DialogContent surfaces in the operator app
+
+   Skin-only rule:
+   - no business logic
+   - no form submit behavior
+   - no routing
+   - no button wiring
+   - only visual tokens and selectors for existing modal surfaces
 */
 
 :root {
-  --cf-modal-bg: #f8fafc;
-  --cf-modal-panel: #ffffff;
-  --cf-modal-ink: #0f172a;
-  --cf-modal-muted: #475569;
-  --cf-modal-soft: #eef2f7;
-  --cf-modal-border: rgba(148, 163, 184, 0.38);
-  --cf-modal-border-strong: rgba(15, 23, 42, 0.14);
+  --cf-modal-shell: #0b1220;
+  --cf-modal-shell-2: #101827;
+  --cf-modal-shell-3: #111c2f;
+  --cf-modal-ink-on-dark: #f8fafc;
+  --cf-modal-muted-on-dark: #a8b3c7;
+  --cf-modal-soft-on-dark: #d6deeb;
+  --cf-modal-border: rgba(148, 163, 184, 0.30);
+  --cf-modal-border-strong: rgba(209, 250, 229, 0.34);
   --cf-modal-accent: #16a34a;
-  --cf-modal-accent-soft: rgba(22, 163, 74, 0.10);
-  --cf-modal-accent-strong: #15803d;
-  --cf-modal-focus: rgba(22, 163, 74, 0.20);
-  --cf-modal-danger: #dc2626;
-  --cf-modal-shadow: 0 28px 80px rgba(15, 23, 42, 0.26), 0 0 0 1px rgba(255, 255, 255, 0.86) inset;
+  --cf-modal-accent-strong: #059669;
+  --cf-modal-accent-hover: #047857;
+  --cf-modal-focus: rgba(34, 197, 94, 0.28);
+  --cf-modal-danger: #ef4444;
+  --cf-modal-danger-soft: rgba(239, 68, 68, 0.10);
+  --cf-modal-warning: #f59e0b;
+  --cf-modal-warning-soft: rgba(245, 158, 11, 0.12);
+  --cf-modal-info: #38bdf8;
+  --cf-modal-info-soft: rgba(56, 189, 248, 0.11);
+  --cf-modal-success-soft: rgba(34, 197, 94, 0.12);
+
+  --cf-modal-field-bg: #ffffff;
+  --cf-modal-field-ink: #0f172a;
+  --cf-modal-field-muted: #64748b;
+  --cf-modal-field-border: #cbd5e1;
+  --cf-modal-field-border-hover: #94a3b8;
+  --cf-modal-field-disabled-bg: #eef2f7;
+  --cf-modal-field-disabled-ink: #64748b;
+
+  --cf-modal-radius: 1.35rem;
+  --cf-modal-radius-sm: 0.85rem;
+  --cf-modal-shadow: 0 34px 96px rgba(0, 0, 0, 0.58), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
 }
 
+/* Main modal shell. This selector is already applied globally by src/components/ui/dialog.tsx. */
 .cf-modal-surface,
 [data-closeflow-modal-visual-system="true"] {
-  color: var(--cf-modal-ink) !important;
-  background: linear-gradient(180deg, var(--cf-modal-panel) 0%, var(--cf-modal-bg) 100%) !important;
-  border: 1px solid var(--cf-modal-border) !important;
+  color: var(--cf-modal-ink-on-dark) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(34, 197, 94, 0.16), transparent 34%),
+    linear-gradient(180deg, var(--cf-modal-shell-2) 0%, var(--cf-modal-shell) 58%, #07101e 100%) !important;
+  border: 1px solid var(--cf-modal-border-strong) !important;
+  border-radius: var(--cf-modal-radius) !important;
   box-shadow: var(--cf-modal-shadow) !important;
   overflow-y: auto;
   max-height: min(92vh, 920px);
@@ -37,18 +67,20 @@
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
-  height: 0.26rem;
-  background: linear-gradient(90deg, var(--cf-modal-accent), rgba(22, 163, 74, 0.22), transparent);
+  height: 0.22rem;
+  background: linear-gradient(90deg, var(--cf-modal-accent), rgba(34, 197, 94, 0.46), transparent);
   pointer-events: none;
+  z-index: 1;
 }
 
 .cf-modal-header,
 [data-closeflow-modal-visual-system="true"] .cf-modal-header,
 [data-closeflow-modal-visual-system="true"] .client-case-form-header {
   margin: -1.5rem -1.5rem 0 !important;
-  padding: 1.25rem 1.5rem 1.05rem !important;
-  color: var(--cf-modal-ink) !important;
-  background: linear-gradient(180deg, #ffffff 0%, rgba(248, 250, 252, 0.96) 100%) !important;
+  padding: 1.15rem 1.5rem 1.05rem !important;
+  color: var(--cf-modal-ink-on-dark) !important;
+  background:
+    linear-gradient(180deg, rgba(17, 28, 47, 0.98) 0%, rgba(11, 18, 32, 0.98) 100%) !important;
   border-bottom: 1px solid var(--cf-modal-border) !important;
   border-radius: inherit;
   border-bottom-left-radius: 0 !important;
@@ -60,16 +92,17 @@
 [data-closeflow-modal-visual-system="true"] [data-radix-dialog-title],
 [data-closeflow-modal-visual-system="true"] .client-case-form-header h2,
 [data-closeflow-modal-visual-system="true"] .client-case-form-header h3 {
-  color: var(--cf-modal-ink) !important;
-  -webkit-text-fill-color: var(--cf-modal-ink) !important;
-  letter-spacing: -0.02em;
+  color: var(--cf-modal-ink-on-dark) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink-on-dark) !important;
+  letter-spacing: -0.025em;
 }
 
 [data-closeflow-modal-visual-system="true"] .client-case-form-header p,
 [data-closeflow-modal-visual-system="true"] .cf-modal-header p,
+[data-closeflow-modal-visual-system="true"] [data-radix-dialog-description],
 [data-closeflow-modal-visual-system="true"] .client-case-form-kicker {
-  color: var(--cf-modal-muted) !important;
-  -webkit-text-fill-color: var(--cf-modal-muted) !important;
+  color: var(--cf-modal-muted-on-dark) !important;
+  -webkit-text-fill-color: var(--cf-modal-muted-on-dark) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] .client-case-form-kicker {
@@ -77,9 +110,9 @@
   width: fit-content;
   align-items: center;
   border-radius: 999px;
-  background: var(--cf-modal-accent-soft) !important;
-  color: var(--cf-modal-accent-strong) !important;
-  -webkit-text-fill-color: var(--cf-modal-accent-strong) !important;
+  background: rgba(34, 197, 94, 0.11) !important;
+  color: #bbf7d0 !important;
+  -webkit-text-fill-color: #bbf7d0 !important;
   padding: 0.18rem 0.55rem;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -88,45 +121,58 @@
 [data-closeflow-modal-visual-system="true"] form,
 [data-closeflow-modal-visual-system="true"] .client-case-form,
 [data-closeflow-modal-visual-system="true"] .space-y-4 {
-  color: var(--cf-modal-ink) !important;
+  color: var(--cf-modal-ink-on-dark) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] label,
 [data-closeflow-modal-visual-system="true"] .client-case-form-field label,
 [data-closeflow-modal-visual-system="true"] .client-case-form-section h3,
-[data-closeflow-modal-visual-system="true"] .client-case-form-section-head h3 {
-  color: var(--cf-modal-ink) !important;
-  -webkit-text-fill-color: var(--cf-modal-ink) !important;
-  font-weight: 750;
+[data-closeflow-modal-visual-system="true"] .client-case-form-section-head h3,
+[data-closeflow-modal-visual-system="true"] .font-semibold,
+[data-closeflow-modal-visual-system="true"] .font-bold {
+  color: var(--cf-modal-ink-on-dark) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink-on-dark) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] .client-case-form-section-head p,
 [data-closeflow-modal-visual-system="true"] p,
+[data-closeflow-modal-visual-system="true"] .text-slate-400,
 [data-closeflow-modal-visual-system="true"] .text-slate-500,
 [data-closeflow-modal-visual-system="true"] .text-slate-600,
+[data-closeflow-modal-visual-system="true"] .text-muted-foreground,
 [data-closeflow-modal-visual-system="true"] .sub,
 [data-closeflow-modal-visual-system="true"] .mini {
-  color: var(--cf-modal-muted) !important;
-  -webkit-text-fill-color: var(--cf-modal-muted) !important;
+  color: var(--cf-modal-muted-on-dark) !important;
+  -webkit-text-fill-color: var(--cf-modal-muted-on-dark) !important;
 }
 
-[data-closeflow-modal-visual-system="true"] input:not([type="checkbox"]):not([type="radio"]),
+/* White, readable form controls. */
+[data-closeflow-modal-visual-system="true"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 [data-closeflow-modal-visual-system="true"] textarea,
 [data-closeflow-modal-visual-system="true"] select,
-[data-closeflow-modal-visual-system="true"] .client-case-form-textarea {
-  color: var(--cf-modal-ink) !important;
-  -webkit-text-fill-color: var(--cf-modal-ink) !important;
+[data-closeflow-modal-visual-system="true"] .client-case-form-textarea,
+[data-closeflow-modal-visual-system="true"] [role="combobox"] {
+  color: var(--cf-modal-field-ink) !important;
+  -webkit-text-fill-color: var(--cf-modal-field-ink) !important;
   caret-color: var(--cf-modal-accent-strong) !important;
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+  background: var(--cf-modal-field-bg) !important;
+  border: 1px solid var(--cf-modal-field-border) !important;
+  border-radius: 0.8rem !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):hover,
+[data-closeflow-modal-visual-system="true"] textarea:hover,
+[data-closeflow-modal-visual-system="true"] select:hover,
+[data-closeflow-modal-visual-system="true"] [role="combobox"]:hover {
+  border-color: var(--cf-modal-field-border-hover) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] input::placeholder,
 [data-closeflow-modal-visual-system="true"] textarea::placeholder,
 [data-closeflow-modal-visual-system="true"] .client-case-form-textarea::placeholder {
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
+  color: var(--cf-modal-field-muted) !important;
+  -webkit-text-fill-color: var(--cf-modal-field-muted) !important;
   opacity: 1 !important;
 }
 
@@ -136,33 +182,51 @@
 [data-closeflow-modal-visual-system="true"] input:focus-visible,
 [data-closeflow-modal-visual-system="true"] textarea:focus-visible,
 [data-closeflow-modal-visual-system="true"] select:focus-visible,
+[data-closeflow-modal-visual-system="true"] [role="combobox"]:focus,
+[data-closeflow-modal-visual-system="true"] [role="combobox"]:focus-visible,
 [data-closeflow-modal-visual-system="true"] .client-case-form-textarea:focus {
-  border-color: var(--cf-modal-accent-strong) !important;
+  border-color: var(--cf-modal-accent) !important;
   outline: none !important;
-  box-shadow: 0 0 0 3px var(--cf-modal-focus), 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+  box-shadow: 0 0 0 3px var(--cf-modal-focus), 0 1px 2px rgba(15, 23, 42, 0.06) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] input:disabled,
 [data-closeflow-modal-visual-system="true"] textarea:disabled,
-[data-closeflow-modal-visual-system="true"] select:disabled {
-  background: #f1f5f9 !important;
-  color: #64748b !important;
-  -webkit-text-fill-color: #64748b !important;
+[data-closeflow-modal-visual-system="true"] select:disabled,
+[data-closeflow-modal-visual-system="true"] [aria-disabled="true"] {
+  background: var(--cf-modal-field-disabled-bg) !important;
+  color: var(--cf-modal-field-disabled-ink) !important;
+  -webkit-text-fill-color: var(--cf-modal-field-disabled-ink) !important;
+  opacity: 0.85 !important;
 }
 
+/* Modal sections/cards inside the dark shell. */
 [data-closeflow-modal-visual-system="true"] .client-case-form-section,
+[data-closeflow-modal-visual-system="true"] .rounded-3xl.border,
 [data-closeflow-modal-visual-system="true"] .rounded-2xl.border,
-[data-closeflow-modal-visual-system="true"] .rounded-xl.border {
-  background-color: rgba(255, 255, 255, 0.92) !important;
-  border-color: var(--cf-modal-border) !important;
-  color: var(--cf-modal-ink) !important;
+[data-closeflow-modal-visual-system="true"] .rounded-xl.border,
+[data-closeflow-modal-visual-system="true"] [class*="cf-modal-section"] {
+  background: rgba(15, 23, 42, 0.62) !important;
+  border-color: rgba(148, 163, 184, 0.26) !important;
+  color: var(--cf-modal-ink-on-dark) !important;
 }
 
+[data-closeflow-modal-visual-system="true"] .bg-white,
 [data-closeflow-modal-visual-system="true"] .bg-slate-50,
-[data-closeflow-modal-visual-system="true"] .bg-white {
-  color: var(--cf-modal-ink) !important;
+[data-closeflow-modal-visual-system="true"] .bg-gray-50 {
+  background-color: rgba(15, 23, 42, 0.54) !important;
+  color: var(--cf-modal-ink-on-dark) !important;
 }
 
+/* Keep only form controls truly white. The rule above darkens random white panels. */
+[data-closeflow-modal-visual-system="true"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+[data-closeflow-modal-visual-system="true"] textarea,
+[data-closeflow-modal-visual-system="true"] select,
+[data-closeflow-modal-visual-system="true"] [role="combobox"] {
+  background-color: #ffffff !important;
+}
+
+/* Footer/action rail. */
 .cf-modal-footer,
 [data-closeflow-modal-visual-system="true"] .cf-modal-footer,
 [data-closeflow-modal-visual-system="true"] .client-case-form-footer,
@@ -170,45 +234,113 @@
 [data-closeflow-modal-visual-system="true"] [class*="cf-form-actions"] {
   margin: 0 -1.5rem -1.5rem !important;
   padding: 0.9rem 1.5rem !important;
-  background: rgba(248, 250, 252, 0.98) !important;
+  background: rgba(7, 16, 30, 0.96) !important;
   border-top: 1px solid var(--cf-modal-border) !important;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 }
 
 [data-closeflow-modal-visual-system="true"] button[type="submit"],
-[data-closeflow-modal-visual-system="true"] .btn.primary {
+[data-closeflow-modal-visual-system="true"] .btn.primary,
+[data-closeflow-modal-visual-system="true"] .cf-modal-btn--primary,
+[data-closeflow-modal-visual-system="true"] button.bg-green-600,
+[data-closeflow-modal-visual-system="true"] button.bg-emerald-600 {
   background: var(--cf-modal-accent) !important;
   border-color: var(--cf-modal-accent-strong) !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  box-shadow: 0 10px 20px rgba(22, 163, 74, 0.20) !important;
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.22) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] button[type="submit"]:hover,
-[data-closeflow-modal-visual-system="true"] .btn.primary:hover {
-  background: var(--cf-modal-accent-strong) !important;
+[data-closeflow-modal-visual-system="true"] .btn.primary:hover,
+[data-closeflow-modal-visual-system="true"] .cf-modal-btn--primary:hover,
+[data-closeflow-modal-visual-system="true"] button.bg-green-600:hover,
+[data-closeflow-modal-visual-system="true"] button.bg-emerald-600:hover {
+  background: var(--cf-modal-accent-hover) !important;
 }
 
 [data-closeflow-modal-visual-system="true"] button[type="button"].border,
 [data-closeflow-modal-visual-system="true"] button[type="button"][class*="outline"],
-[data-closeflow-modal-visual-system="true"] .cf-modal-footer button[type="button"] {
-  border-color: #cbd5e1 !important;
+[data-closeflow-modal-visual-system="true"] .cf-modal-footer button[type="button"],
+[data-closeflow-modal-visual-system="true"] .client-case-form-footer button[type="button"] {
+  border-color: rgba(203, 213, 225, 0.92) !important;
   background: #ffffff !important;
-  color: var(--cf-modal-ink) !important;
-  -webkit-text-fill-color: var(--cf-modal-ink) !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.14) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] button[type="button"].border:hover,
+[data-closeflow-modal-visual-system="true"] button[type="button"][class*="outline"]:hover,
+[data-closeflow-modal-visual-system="true"] .cf-modal-footer button[type="button"]:hover,
+[data-closeflow-modal-visual-system="true"] .client-case-form-footer button[type="button"]:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+[data-closeflow-modal-visual-system="true"] button[class*="destructive"],
+[data-closeflow-modal-visual-system="true"] button.text-red-600,
+[data-closeflow-modal-visual-system="true"] button.text-rose-600 {
+  color: #fecaca !important;
+  -webkit-text-fill-color: #fecaca !important;
+  background: var(--cf-modal-danger-soft) !important;
+  border-color: rgba(248, 113, 113, 0.26) !important;
 }
 
 .cf-modal-close,
 [data-closeflow-modal-visual-system="true"] .cf-modal-close {
-  color: #64748b !important;
-  background: rgba(255, 255, 255, 0.84) !important;
-  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+  color: #cbd5e1 !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(203, 213, 225, 0.36) !important;
 }
 
 .cf-modal-close:hover,
 [data-closeflow-modal-visual-system="true"] .cf-modal-close:hover {
-  color: var(--cf-modal-ink) !important;
-  background: #ffffff !important;
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Small pills/badges/callouts. */
+[data-closeflow-modal-visual-system="true"] .badge,
+[data-closeflow-modal-visual-system="true"] [class*="Badge"],
+[data-closeflow-modal-visual-system="true"] .rounded-full {
+  border-color: rgba(148, 163, 184, 0.28) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] .cf-modal-callout,
+[data-closeflow-modal-visual-system="true"] [class*="callout"],
+[data-closeflow-modal-visual-system="true"] .bg-amber-50,
+[data-closeflow-modal-visual-system="true"] .bg-yellow-50 {
+  background: var(--cf-modal-warning-soft) !important;
+  border-color: rgba(245, 158, 11, 0.36) !important;
+  color: #fde68a !important;
+  -webkit-text-fill-color: #fde68a !important;
+}
+
+[data-closeflow-modal-visual-system="true"] .bg-blue-50,
+[data-closeflow-modal-visual-system="true"] .bg-sky-50 {
+  background: var(--cf-modal-info-soft) !important;
+  border-color: rgba(56, 189, 248, 0.28) !important;
+  color: #bae6fd !important;
+  -webkit-text-fill-color: #bae6fd !important;
+}
+
+[data-closeflow-modal-visual-system="true"] .bg-green-50,
+[data-closeflow-modal-visual-system="true"] .bg-emerald-50 {
+  background: var(--cf-modal-success-soft) !important;
+  border-color: rgba(34, 197, 94, 0.28) !important;
+  color: #bbf7d0 !important;
+  -webkit-text-fill-color: #bbf7d0 !important;
+}
+
+[data-closeflow-modal-visual-system="true"] hr,
+[data-closeflow-modal-visual-system="true"] .border-t,
+[data-closeflow-modal-visual-system="true"] .border-b {
+  border-color: rgba(148, 163, 184, 0.24) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] svg {
+  flex-shrink: 0;
 }
 
 @media (max-width: 640px) {
@@ -217,7 +349,13 @@
     width: calc(100vw - 1rem) !important;
     max-width: calc(100vw - 1rem) !important;
     max-height: calc(100dvh - 1rem) !important;
-    border-radius: 1.25rem !important;
+    border-radius: 1.15rem !important;
+  }
+
+  .cf-modal-header,
+  [data-closeflow-modal-visual-system="true"] .cf-modal-header,
+  [data-closeflow-modal-visual-system="true"] .client-case-form-header {
+    padding-right: 3.15rem !important;
   }
 
   .cf-modal-footer,
