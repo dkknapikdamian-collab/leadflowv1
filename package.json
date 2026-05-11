@@ -665,7 +665,8 @@
     "check:billing-cleanup-2026-05-11": "node scripts/check-closeflow-billing-cleanup-2026-05-11.cjs",
     "check:support-visible-ticket-list": "node scripts/check-closeflow-support-visible-ticket-list.cjs",
     "check:closeflow-admin-feedback-2026-05-11-p2": "node scripts/check-closeflow-admin-feedback-2026-05-11-p2.cjs",
-    "check:settings-rollback-2026-05-11": "node scripts/check-closeflow-settings-rollback-2026-05-11.cjs"
+    "check:settings-rollback-2026-05-11": "node scripts/check-closeflow-settings-rollback-2026-05-11.cjs",
+    "check:settings-tabs-inplace": "node scripts/check-closeflow-settings-tabs-inplace.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
