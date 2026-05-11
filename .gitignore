@@ -40,3 +40,5 @@ faza4_etap43_critical_crud_smoke_report.txt
 .stage70-backup-*
 .stage70-82-backup-*
 .stage*-backup-*
+
+.closeflow-recovery-backups/
