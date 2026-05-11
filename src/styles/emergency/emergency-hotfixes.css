@@ -209,3 +209,11 @@
    remove_after_stage: never; keep with OperatorMetricTiles contract.
 */
 @import '../closeflow-operator-metric-tiles.css';
+
+/* CLOSEFLOW_EMERGENCY_HOTFIX_ENTRY
+   owner: CloseFlow Visual System
+   reason: final page header source-of-truth must load after old page adapters and hotfixes.
+   scope: [data-cf-page-header="true"] top page headers only.
+   remove_after_stage: after all page headers are native PageHeader components.
+*/
+@import '../closeflow-page-header-card-source-truth.css';

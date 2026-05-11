@@ -198,7 +198,7 @@ export default function ResponseTemplates() {
   return (
     <Layout>
       <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
-        <header className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
               <MessageSquareText className="h-3.5 w-3.5" /> Szablony odpowiedzi

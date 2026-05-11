@@ -684,7 +684,7 @@ export default function Leads() {
   return (
     <Layout>
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
-        <div className="page-head">
+        <div data-cf-page-header="true" className="cf-page-header page-head">
           <div>
             <h1>Leady</h1>
           </div>

@@ -611,7 +611,7 @@ export default function NotificationsCenter() {
   return (
     <Layout>
       <main className="notifications-vnext-page">
-        <header className="notifications-page-header">
+        <header data-cf-page-header="true" className="cf-page-header notifications-page-header">
           <div>
             <p className="notifications-kicker">POWIADOMIENIA</p>
             <h1>Powiadomienia</h1>

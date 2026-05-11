@@ -4,6 +4,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import SettingsLegacyContent from './SettingsLegacy';
 import '../styles/Settings.css';
 
+import '../styles/closeflow-page-header-card-source-truth.css';
 // CLOSEFLOW_STAGE13_SETTINGS_TABS_LAYOUT
 type SettingsTab =
   | 'plans'
@@ -338,7 +339,7 @@ export default function Settings() {
 
   return (
     <main className="settings-vnext-page">
-      <header className="settings-header">
+      <header data-cf-page-header="true" className="cf-page-header settings-header">
         <p className="settings-kicker">USTAWIENIA</p>
         <h1>Ustawienia aplikacji</h1>
       </header>

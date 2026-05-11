@@ -527,7 +527,7 @@ export default function Clients() {
           onCreateAnyway={handleCreateClientAnyway}
           onCancel={() => { setClientConflictOpen(false); setIsCreateOpen(true); }}
         />
-        <div className="page-head">
+        <div data-cf-page-header="true" className="cf-page-header page-head">
           <div>
             <span className="kicker">Baza relacji</span>
             <h1>Klienci</h1>

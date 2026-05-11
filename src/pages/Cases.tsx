@@ -474,7 +474,7 @@ export default function Cases() {
   return (
     <Layout>
       <div className="cf-html-view main-cases-html" data-cases-real-view="true" data-stage16c-tasks-cases-repair="cases">
-        <div className="page-head" data-stage16c-page-head="cases">
+        <div data-cf-page-header="true" className="cf-page-header page-head" data-stage16c-page-head="cases">
           <div>
             <span className="kicker">Centrum obsługi</span>
             <h1 className="text-3xl font-bold app-text">Sprawy</h1>

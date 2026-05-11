@@ -1247,7 +1247,7 @@ export default function Calendar() {
   return (
     <Layout>
       <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
-        <div className="page-head">
+        <div data-cf-page-header="true" className="cf-page-header page-head">
           <div>
             <span className="kicker">Terminy</span>
             <h1>Kalendarz</h1>

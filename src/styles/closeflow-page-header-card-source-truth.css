@@ -1,113 +1,105 @@
-/* CLOSEFLOW_PAGE_HEADER_REBUILD_LIGHT_SOURCE_TRUTH_2026_05_11
+/* CLOSEFLOW_PAGE_HEADER_SOURCE_TRUTH_REBUILD_STAGE2_2026_05_11
    owner: CloseFlow Visual System
-   reason: rebuild every top page header to the same light visual contract as Today.
-   scope: top page header / hero cards only. No runtime, no MutationObserver, no layout migration.
+   reason: previous source truth used :where() and lost against old high-specificity !important CSS.
+   scope: only elements marked data-cf-page-header="true".
+   rule: no runtime, no MutationObserver, no DOM patching, no modal/layout migration.
 */
 
+/* 1) BACKGROUND SOURCE OF TRUTH */
 :root {
-  --cf-ph-bg: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,250,252,0.98));
-  --cf-ph-bg-solid: #ffffff;
-  --cf-ph-border: rgba(203, 213, 225, 0.82);
-  --cf-ph-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
-  --cf-ph-radius: 28px;
-  --cf-ph-padding-y: 22px;
-  --cf-ph-padding-x: 26px;
-
-  --cf-ph-title: #0f172a;
-  --cf-ph-muted: #64748b;
-
-  --cf-ph-kicker-bg: #eef4ff;
-  --cf-ph-kicker-border: #bfdbfe;
-  --cf-ph-kicker-text: #1d4ed8;
-
-  --cf-ph-primary-bg: #2563eb;
-  --cf-ph-primary-hover: #1d4ed8;
-  --cf-ph-primary-border: #1d4ed8;
-  --cf-ph-primary-text: #ffffff;
-
-  --cf-ph-ai-bg: #eef2ff;
-  --cf-ph-ai-hover: #e0e7ff;
-  --cf-ph-ai-border: #c7d2fe;
-  --cf-ph-ai-text: #4338ca;
-
-  --cf-ph-neutral-bg: #ffffff;
-  --cf-ph-neutral-hover: #f8fafc;
-  --cf-ph-neutral-border: #cbd5e1;
-  --cf-ph-neutral-text: #0f172a;
-
-  --cf-ph-danger-bg: #fff1f2;
-  --cf-ph-danger-hover: #ffe4e6;
-  --cf-ph-danger-border: #fecdd3;
-  --cf-ph-danger-text: #be123c;
+  --cf-page-header-bg-solid: #ffffff;
+  --cf-page-header-bg: linear-gradient(180deg, rgba(255,255,255,0.99) 0%, rgba(248,250,252,0.98) 100%);
+  --cf-page-header-border: rgba(203, 213, 225, 0.86);
+  --cf-page-header-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
+  --cf-page-header-radius: 28px;
+  --cf-page-header-padding-y: 22px;
+  --cf-page-header-padding-x: 26px;
+  --cf-page-header-min-height: 92px;
 }
 
-/* Hard reset old dark/experimental header skins. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) {
+/* 2) TEXT SOURCE OF TRUTH */
+:root {
+  --cf-page-header-title: #0f172a;
+  --cf-page-header-description: #64748b;
+  --cf-page-header-title-size: clamp(24px, 2.35vw, 34px);
+  --cf-page-header-description-size: 13px;
+}
+
+/* 3) KICKER SOURCE OF TRUTH */
+:root {
+  --cf-page-header-kicker-bg: #eef4ff;
+  --cf-page-header-kicker-border: #bfdbfe;
+  --cf-page-header-kicker-text: #1d4ed8;
+}
+
+/* 4) BUTTON SOURCE OF TRUTH */
+:root {
+  --cf-page-header-button-radius: 14px;
+  --cf-page-header-button-height: 38px;
+
+  --cf-page-header-button-neutral-bg: #ffffff;
+  --cf-page-header-button-neutral-hover: #f8fafc;
+  --cf-page-header-button-neutral-border: #cbd5e1;
+  --cf-page-header-button-neutral-text: #0f172a;
+
+  --cf-page-header-button-primary-bg: #2563eb;
+  --cf-page-header-button-primary-hover: #1d4ed8;
+  --cf-page-header-button-primary-border: #1d4ed8;
+  --cf-page-header-button-primary-text: #ffffff;
+
+  --cf-page-header-button-ai-bg: #eef2ff;
+  --cf-page-header-button-ai-hover: #e0e7ff;
+  --cf-page-header-button-ai-border: #c7d2fe;
+  --cf-page-header-button-ai-text: #4338ca;
+
+  --cf-page-header-button-danger-bg: #fff1f2;
+  --cf-page-header-button-danger-hover: #ffe4e6;
+  --cf-page-header-button-danger-border: #fecdd3;
+  --cf-page-header-button-danger-text: #be123c;
+}
+
+/*
+  High-specificity selector on purpose.
+  Old visual-stage CSS has !important and selectors like:
+  .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] ...
+  A weak :where() source truth loses. This does not.
+*/
+.cf-html-shell main.main .view.active [data-cf-page-header="true"].cf-page-header,
+.cf-html-shell main.main [data-cf-page-header="true"].cf-page-header,
+.cf-html-shell main[data-current-section] [data-cf-page-header="true"].cf-page-header,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   gap: 18px !important;
   width: 100% !important;
   min-width: 0 !important;
-  min-height: 92px !important;
-  border: 1px solid var(--cf-ph-border) !important;
-  border-radius: var(--cf-ph-radius) !important;
-  background: var(--cf-ph-bg) !important;
-  background-color: var(--cf-ph-bg-solid) !important;
-  background-image: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,250,252,0.98)) !important;
-  color: var(--cf-ph-title) !important;
+  min-height: var(--cf-page-header-min-height) !important;
+
+  border: 1px solid var(--cf-page-header-border) !important;
+  border-radius: var(--cf-page-header-radius) !important;
+  background: var(--cf-page-header-bg) !important;
+  background-color: var(--cf-page-header-bg-solid) !important;
+  background-image: var(--cf-page-header-bg) !important;
+  color: var(--cf-page-header-title) !important;
   -webkit-text-fill-color: initial !important;
-  box-shadow: var(--cf-ph-shadow) !important;
-  padding: var(--cf-ph-padding-y) var(--cf-ph-padding-x) !important;
+  box-shadow: var(--cf-page-header-shadow) !important;
+  padding: var(--cf-page-header-padding-y) var(--cf-page-header-padding-x) !important;
+
   overflow: visible !important;
+  isolation: isolate !important;
   backdrop-filter: none !important;
 }
 
-/* Remove old decorative bars/overlays from older page adapters. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-)::before,
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-)::after {
+/* Kill old dark overlays and decorative bars only on the header card. */
+.cf-html-shell main.main .view.active [data-cf-page-header="true"].cf-page-header::before,
+.cf-html-shell main.main .view.active [data-cf-page-header="true"].cf-page-header::after,
+.cf-html-shell main.main [data-cf-page-header="true"].cf-page-header::before,
+.cf-html-shell main.main [data-cf-page-header="true"].cf-page-header::after,
+.cf-html-shell main[data-current-section] [data-cf-page-header="true"].cf-page-header::before,
+.cf-html-shell main[data-current-section] [data-cf-page-header="true"].cf-page-header::after,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header::before,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header::after {
   content: none !important;
   display: none !important;
   background: transparent !important;
@@ -115,46 +107,33 @@
   box-shadow: none !important;
 }
 
-/* Left text column. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) > :first-child,
-:where([data-p0-tasks-stable-rebuild="true"] > .cf-page-hero) .cf-page-hero-layout > :first-child {
+/* Internal hero layout stays layout-only. */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 18px !important;
+  width: 100% !important;
   min-width: 0 !important;
 }
 
-/* Title typography. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(h1, .cf-page-hero-title) {
+/* Text column */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-copy="true"] {
+  min-width: 0 !important;
+  max-width: 820px !important;
+}
+
+/* Title */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1 {
   margin: 6px 0 0 !important;
-  color: var(--cf-ph-title) !important;
-  -webkit-text-fill-color: var(--cf-ph-title) !important;
-  font-size: clamp(24px, 2.35vw, 34px) !important;
+  color: var(--cf-page-header-title) !important;
+  -webkit-text-fill-color: var(--cf-page-header-title) !important;
+  font-size: var(--cf-page-header-title-size) !important;
   line-height: 1.05 !important;
   font-weight: 950 !important;
   letter-spacing: -0.035em !important;
@@ -162,59 +141,42 @@
   opacity: 1 !important;
 }
 
-/* Description typography. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(p, .lead-copy) {
+/* Description */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .hint,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header p {
   margin-top: 8px !important;
-  color: var(--cf-ph-muted) !important;
-  -webkit-text-fill-color: var(--cf-ph-muted) !important;
-  font-size: 13px !important;
+  color: var(--cf-page-header-description) !important;
+  -webkit-text-fill-color: var(--cf-page-header-description) !important;
+  font-size: var(--cf-page-header-description-size) !important;
   line-height: 1.45 !important;
   font-weight: 600 !important;
   max-width: 760px !important;
   opacity: 1 !important;
 }
 
-/* Kicker / badge. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(.kicker, .cf-page-hero-kicker, .ai-drafts-kicker, .activity-kicker, .notifications-kicker, [class*="kicker"], .badge, [data-slot="badge"]) {
+/* Kicker */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-kicker,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-kicker,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-kicker,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"],
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-slot="badge"],
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .badge {
   display: inline-flex !important;
   width: fit-content !important;
   align-items: center !important;
   gap: 6px !important;
-  border: 1px solid var(--cf-ph-kicker-border) !important;
+  border: 1px solid var(--cf-page-header-kicker-border) !important;
   border-radius: 999px !important;
-  background: var(--cf-ph-kicker-bg) !important;
-  background-color: var(--cf-ph-kicker-bg) !important;
+  background: var(--cf-page-header-kicker-bg) !important;
+  background-color: var(--cf-page-header-kicker-bg) !important;
   background-image: none !important;
-  color: var(--cf-ph-kicker-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-kicker-text) !important;
+  color: var(--cf-page-header-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-kicker-text) !important;
   font-size: 11px !important;
   font-weight: 850 !important;
   letter-spacing: 0.055em !important;
@@ -225,22 +187,16 @@
   opacity: 1 !important;
 }
 
-/* Actions container. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
+/* Action container */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
@@ -249,30 +205,18 @@
   min-width: max-content !important;
 }
 
-/* Action button base. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(button, a.btn, a[role="button"]) {
-  min-height: 38px !important;
-  border-radius: 14px !important;
-  border: 1px solid var(--cf-ph-neutral-border) !important;
-  background: var(--cf-ph-neutral-bg) !important;
-  background-color: var(--cf-ph-neutral-bg) !important;
+/* Button base */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header button,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header a.btn,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header a[role="button"] {
+  min-height: var(--cf-page-header-button-height) !important;
+  border-radius: var(--cf-page-header-button-radius) !important;
+  border: 1px solid var(--cf-page-header-button-neutral-border) !important;
+  background: var(--cf-page-header-button-neutral-bg) !important;
+  background-color: var(--cf-page-header-button-neutral-bg) !important;
   background-image: none !important;
-  color: var(--cf-ph-neutral-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-neutral-text) !important;
+  color: var(--cf-page-header-button-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-button-neutral-text) !important;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.075) !important;
   font-size: 12px !important;
   font-weight: 850 !important;
@@ -280,91 +224,50 @@
   opacity: 1 !important;
 }
 
-/* Main CTA: blue/indigo, not green. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(.btn.primary, .cf-header-action--primary, [data-tasks-new-task-header-action="true"], .bg-blue-600, .bg-indigo-600, .bg-emerald-600, .bg-green-600) {
-  border-color: var(--cf-ph-primary-border) !important;
-  background: linear-gradient(180deg, #3b82f6 0%, var(--cf-ph-primary-bg) 100%) !important;
-  background-color: var(--cf-ph-primary-bg) !important;
-  color: var(--cf-ph-primary-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-primary-text) !important;
+/* Primary CTA: blue/indigo, never green. */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.primary,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-header-action--primary,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="primary"],
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-tasks-new-task-header-action="true"],
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-blue-600,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-indigo-600,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-emerald-600,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-green-600 {
+  border-color: var(--cf-page-header-button-primary-border) !important;
+  background: linear-gradient(180deg, #3b82f6 0%, var(--cf-page-header-button-primary-bg) 100%) !important;
+  background-color: var(--cf-page-header-button-primary-bg) !important;
+  color: var(--cf-page-header-button-primary-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-button-primary-text) !important;
   box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22) !important;
 }
 
-/* AI action. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(.btn.soft-blue, [href="/ai-drafts"], [data-stage26-leads-head-ai="true"]) {
-  border-color: var(--cf-ph-ai-border) !important;
-  background: var(--cf-ph-ai-bg) !important;
-  background-color: var(--cf-ph-ai-bg) !important;
-  color: var(--cf-ph-ai-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-ai-text) !important;
+/* AI action */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-stage26-leads-head-ai="true"],
+.cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"] {
+  border-color: var(--cf-page-header-button-ai-border) !important;
+  background: var(--cf-page-header-button-ai-bg) !important;
+  background-color: var(--cf-page-header-button-ai-bg) !important;
+  color: var(--cf-page-header-button-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-button-ai-text) !important;
   box-shadow: 0 10px 20px rgba(67, 56, 202, 0.12) !important;
 }
 
-/* Danger header actions, for Kosz / Clear read etc. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(.cf-entity-action-danger, .cf-trash-action-button) {
-  border-color: var(--cf-ph-danger-border) !important;
-  background: var(--cf-ph-danger-bg) !important;
-  color: var(--cf-ph-danger-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-danger-text) !important;
+/* Danger / trash */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"] {
+  border-color: var(--cf-page-header-button-danger-border) !important;
+  background: var(--cf-page-header-button-danger-bg) !important;
+  background-color: var(--cf-page-header-button-danger-bg) !important;
+  color: var(--cf-page-header-button-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-button-danger-text) !important;
 }
 
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(button, a.btn) svg {
+/* Icons follow button text. */
+.cf-html-shell [data-cf-page-header="true"].cf-page-header button svg,
+.cf-html-shell [data-cf-page-header="true"].cf-page-header a.btn svg {
   width: 1rem !important;
   height: 1rem !important;
   color: currentColor !important;
@@ -372,61 +275,24 @@
   opacity: 1 !important;
 }
 
-/* If a local page adapter put dark text over dark background earlier, this forces all direct readable text back. */
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child,
-  .cf-html-view > .rounded-\[28px\].border:first-child
-) :is(span, div, small, strong) {
-  text-shadow: none !important;
-}
-
 @media (max-width: 720px) {
-  :where(
-    .main-leads-html > .page-head,
-    .main-clients-html > .page-head,
-    .main-cases-html > .page-head,
-    .main-calendar-html > .page-head,
-    [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-    .ai-drafts-vnext-page > .ai-drafts-page-header,
-    .activity-vnext-page > .activity-page-header,
-    .notifications-vnext-page > .notifications-page-header,
-    .billing-vnext-page > .billing-header,
-    .support-vnext-page > .support-header,
-    .settings-vnext-page > .settings-header,
-    .cf-html-view > header:first-child,
-    .cf-html-view > .rounded-\[28px\].border:first-child
-  ) {
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header {
     flex-direction: column !important;
     align-items: stretch !important;
     padding: 20px !important;
   }
 
-  :where(
-    .main-leads-html > .page-head,
-    .main-clients-html > .page-head,
-    .main-cases-html > .page-head,
-    .main-calendar-html > .page-head,
-    [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-    .ai-drafts-vnext-page > .ai-drafts-page-header,
-    .activity-vnext-page > .activity-page-header,
-    .notifications-vnext-page > .notifications-page-header,
-    .billing-vnext-page > .billing-header,
-    .support-vnext-page > .support-header,
-    .settings-vnext-page > .settings-header,
-    .cf-html-view > header:first-child,
-    .cf-html-view > .rounded-\[28px\].border:first-child
-  ) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+  .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
     justify-content: flex-start !important;
     min-width: 0 !important;
   }

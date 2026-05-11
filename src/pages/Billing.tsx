@@ -500,7 +500,7 @@ export default function Billing() {
   return (
     <Layout>
       <main className="billing-vnext-page" data-billing-stage={BILLING_VISUAL_REBUILD_STAGE16}>
-        <header className="billing-header">
+        <header data-cf-page-header="true" className="cf-page-header billing-header">
           <div>
             <p className="billing-kicker">ROZLICZENIA</p>
             <h1>Rozliczenia</h1>

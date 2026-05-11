@@ -1017,7 +1017,7 @@ function AiDraftsInner() {
   return (
     <Layout>
       <main className="ai-drafts-vnext-page" data-ai-drafts-stage={AI_DRAFT_STAGE9_MARKER} data-ai-draft-command-center="true">
-        <header className="ai-drafts-page-header">
+        <header data-cf-page-header="true" className="cf-page-header ai-drafts-page-header">
           <div>
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
             <h1>Szkice AI</h1>

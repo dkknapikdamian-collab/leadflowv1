@@ -422,7 +422,7 @@ export default function SupportCenter() {
   return (
     <Layout>
       <main className="support-vnext-page" data-support-stage={SUPPORT_VISUAL_REBUILD_STAGE17}>
-        <header className="support-header">
+        <header data-cf-page-header="true" className="cf-page-header support-header">
           <div>
             <p className="support-kicker">POMOC</p>
             <h1>Pomoc</h1>

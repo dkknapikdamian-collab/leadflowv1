@@ -714,7 +714,7 @@ export default function Activity() {
   return (
     <Layout>
       <main className="activity-vnext-page">
-        <header className="activity-page-header">
+        <header data-cf-page-header="true" className="cf-page-header activity-page-header">
           <div>
             <p className="activity-kicker">AKTYWNOŚĆ</p>
             <h1>Aktywność</h1>

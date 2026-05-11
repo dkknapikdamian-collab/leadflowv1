@@ -128,7 +128,7 @@ export default function AdminAiSettings() {
   return (
     <Layout>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-8">
-        <header className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
               <EntityIcon entity="ai" className="h-3.5 w-3.5" />
