@@ -1741,20 +1741,7 @@ export default function CaseDetail() {
             emptyText="Brak ruchów w tej sprawie."
           />
         </section>
-
-            <section className="right-card case-detail-right-card">
-              <div className="case-detail-card-title-row">
-                <EntityIcon entity="client" className="h-4 w-4" />
-                <h2>Klient w tle</h2>
-              </div>
-              <p>{caseData.clientName || 'Brak klienta'}</p>
-              <small>{caseData.clientPhone || 'Brak telefonu'}</small>
-              <small>{caseData.clientEmail || 'Brak e-maila'}</small>
-              <div className="case-detail-right-actions case-detail-right-actions-inline">
-                <button type="button" disabled={!caseData.clientId} onClick={() => navigate(`/clients/${String(caseData.clientId)}`)}>Otwórz klienta</button>
-                <button type="button" disabled={!caseData.leadId} onClick={() => navigate(`/leads/${String(caseData.leadId)}`)}>Otwórz lead</button>
-              </div>
-            </section>
+
 
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
