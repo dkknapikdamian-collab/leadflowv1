@@ -11,6 +11,15 @@ Guard `check:closeflow-stage-polish-guard` skanuje:
 
 To jest tryb do commitów etapowych.
 
+## Raport etapowy
+Domyślny raport jest deterministyczny i może być trzymany w repo:
+
+```text
+docs/quality/closeflow-stage-polish-guard-report.json
+```
+
+Nie zawiera dynamicznej daty, żeby samo uruchomienie checka nie brudziło `git status`.
+
 ## Tryb globalny
 Szeroki audyt można uruchomić tak:
 
@@ -18,10 +27,10 @@ Szeroki audyt można uruchomić tak:
 $env:CLOSEFLOW_POLISH_GUARD_SCOPE="all"; npm.cmd run check:closeflow-stage-polish-guard; Remove-Item Env:CLOSEFLOW_POLISH_GUARD_SCOPE
 ```
 
-Tryb globalny może znaleźć stary dług techniczny. Nie powinien zalewać terminala pełną listą. Skrypt pokazuje skrót, a pełny raport zapisuje do:
+Tryb globalny może znaleźć stary dług techniczny. Domyślnie zapisuje raport poza tracked flow:
 
 ```text
-docs/quality/closeflow-stage-polish-guard-report.json
+.closeflow-recovery-backups/closeflow-stage-polish-guard-report-all.json
 ```
 
 ## Zasada

@@ -51,7 +51,8 @@ const BAD_CODEPOINTS = [
 ];
 const BAD_MARKERS = BAD_CODEPOINTS.map((code) => String.fromCodePoint(code));
 
-const REPORT_PATH = 'docs/quality/closeflow-stage-polish-guard-report.json';
+const STAGE_REPORT_PATH = 'docs/quality/closeflow-stage-polish-guard-report.json';
+const GLOBAL_REPORT_PATH = process.env.CLOSEFLOW_POLISH_GUARD_REPORT || '.closeflow-recovery-backups/closeflow-stage-polish-guard-report-all.json';
 const MAX_OUTPUT = Number.parseInt(process.env.CLOSEFLOW_POLISH_GUARD_MAX_OUTPUT || '60', 10);
 
 function toPosix(rel) {
@@ -104,8 +105,7 @@ function walk(dir, out = []) {
   return out;
 }
 
-function getFilesToScan() {
-  const scope = String(process.env.CLOSEFLOW_POLISH_GUARD_SCOPE || 'stage').toLowerCase();
+function getFilesToScan(scope) {
   const files = new Set([...STAGE_FILES, ...getGitChangedFiles()].map(toPosix));
 
   if (scope === 'all') {
@@ -135,28 +135,39 @@ function markerName(marker) {
   return 'U+' + marker.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
 }
 
-function ensureReportDir() {
-  fs.mkdirSync(path.dirname(path.join(root, REPORT_PATH)), { recursive: true });
+function ensureReportDir(reportPath) {
+  fs.mkdirSync(path.dirname(path.join(root, reportPath)), { recursive: true });
+}
+
+function reportPathForScope(scope) {
+  return scope === 'all' ? GLOBAL_REPORT_PATH : STAGE_REPORT_PATH;
 }
 
 function writeReport(findings, files, scope) {
-  ensureReportDir();
+  const reportPath = reportPathForScope(scope);
+  ensureReportDir(reportPath);
+
+  const payload = {
+    status: findings.length ? 'FAILED' : 'OK',
+    scope,
+    filesChecked: files.length,
+    findingsCount: findings.length,
+    reportPolicy: scope === 'all'
+      ? 'global report is written outside the tracked stage report by default'
+      : 'stage report is deterministic and safe to keep tracked',
+    findings,
+  };
+
   fs.writeFileSync(
-    path.join(root, REPORT_PATH),
-    JSON.stringify({
-      status: findings.length ? 'FAILED' : 'OK',
-      scope,
-      filesChecked: files.length,
-      findingsCount: findings.length,
-      generatedAt: new Date().toISOString(),
-      findings,
-    }, null, 2) + '\n',
+    path.join(root, reportPath),
+    JSON.stringify(payload, null, 2) + '\n',
     'utf8',
   );
+  return reportPath;
 }
 
 const scope = String(process.env.CLOSEFLOW_POLISH_GUARD_SCOPE || 'stage').toLowerCase();
-const filesToScan = getFilesToScan();
+const filesToScan = getFilesToScan(scope);
 const findings = [];
 
 for (const rel of filesToScan) {
@@ -178,14 +189,14 @@ for (const rel of filesToScan) {
   }
 }
 
-writeReport(findings, filesToScan, scope);
+const reportPath = writeReport(findings, filesToScan, scope);
 
 if (findings.length) {
   const visibleLimit = Number.isFinite(MAX_OUTPUT) && MAX_OUTPUT > 0 ? MAX_OUTPUT : 60;
   console.error('CLOSEFLOW_STAGE_POLISH_GUARD_FAILED');
   console.error('found=' + findings.length);
   console.error('files_checked=' + filesToScan.length);
-  console.error('full_report=' + REPORT_PATH);
+  console.error('full_report=' + reportPath);
   for (const item of findings.slice(0, visibleLimit)) {
     console.error(`${item.file}:${item.line}:${item.column} ${item.marker} :: ${item.snippet}`);
   }
@@ -198,4 +209,4 @@ if (findings.length) {
 console.log('CLOSEFLOW_STAGE_POLISH_GUARD_OK');
 console.log('files_checked=' + filesToScan.length);
 console.log('scope=' + scope);
-console.log('report=' + REPORT_PATH);
+console.log('report=' + reportPath);
