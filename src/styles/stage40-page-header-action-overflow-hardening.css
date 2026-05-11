@@ -1,0 +1,77 @@
+/* CLOSEFLOW_STAGE40_PAGE_HEADER_ACTION_OVERFLOW_HARDENING
+   owner: CloseFlow Visual System
+   intent: make page-head actions readable when a page has many buttons or long Polish labels.
+   scope: .cf-html-view .page-head and .head-actions only.
+   rule: CSS-only; no business logic, no data contract change, no metric tile rewrite.
+*/
+
+.cf-html-view .page-head {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cf-html-view .page-head::after {
+  content: "";
+  position: absolute;
+  inset: auto 18px 0 18px;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--color-primary, #2563eb) 18%, transparent),
+    transparent
+  );
+  pointer-events: none;
+  opacity: 0.75;
+}
+
+.cf-html-view .head-actions {
+  max-width: min(620px, 100%);
+}
+
+.cf-html-view .head-actions .btn,
+.cf-html-view .page-head .btn {
+  max-width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.cf-html-view .head-actions .btn span,
+.cf-html-view .page-head .btn span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cf-html-view .head-actions .btn.soft-blue,
+.cf-html-view .page-head .btn.soft-blue {
+  border: 1px solid color-mix(in srgb, var(--color-primary, #2563eb) 20%, var(--app-border, #e2e8f0)) !important;
+  background: color-mix(in srgb, var(--color-primary, #2563eb) 9%, var(--app-surface-strong, #ffffff)) !important;
+  color: var(--color-primary, #2563eb) !important;
+}
+
+@media (max-width: 760px) {
+  .cf-html-view .page-head {
+    gap: 14px;
+  }
+
+  .cf-html-view .head-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+
+  .cf-html-view .head-actions .btn,
+  .cf-html-view .page-head .btn {
+    width: 100%;
+    min-height: 40px;
+    padding-inline: 12px !important;
+  }
+}
+
+@media (max-width: 460px) {
+  .cf-html-view .head-actions {
+    grid-template-columns: 1fr;
+  }
+}
