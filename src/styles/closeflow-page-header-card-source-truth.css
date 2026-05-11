@@ -297,3 +297,159 @@
     min-width: 0 !important;
   }
 }
+
+/* CLOSEFLOW_PAGE_HEADER_TEXT_SOURCE_TRUTH_STAGE3_2026_05_11_START
+   owner: CloseFlow Visual System
+   reason: one source of truth for text color, size, placement and typography inside top page header cards.
+   scope: [data-cf-page-header="true"].cf-page-header only.
+   rule: background/card color is not changed here.
+*/
+
+/* TEXT TOKENS */
+:root {
+  --cf-page-header-copy-align: flex-start;
+  --cf-page-header-copy-max-width: 820px;
+
+  --cf-page-header-kicker-margin-bottom: 8px;
+  --cf-page-header-kicker-font-size: 11px;
+  --cf-page-header-kicker-font-weight: 850;
+  --cf-page-header-kicker-letter-spacing: 0.055em;
+  --cf-page-header-kicker-line-height: 1;
+  --cf-page-header-kicker-padding-y: 7px;
+  --cf-page-header-kicker-padding-x: 10px;
+
+  --cf-page-header-title-color: #0f172a;
+  --cf-page-header-title-font-size: clamp(24px, 2.15vw, 32px);
+  --cf-page-header-title-font-weight: 950;
+  --cf-page-header-title-line-height: 1.05;
+  --cf-page-header-title-letter-spacing: -0.035em;
+  --cf-page-header-title-margin-top: 0;
+
+  --cf-page-header-description-color: #64748b;
+  --cf-page-header-description-font-size: 13px;
+  --cf-page-header-description-font-weight: 600;
+  --cf-page-header-description-line-height: 1.45;
+  --cf-page-header-description-margin-top: 8px;
+  --cf-page-header-description-max-width: 760px;
+}
+
+/* COPY COLUMN: same position everywhere */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: var(--cf-page-header-copy-align) !important;
+  justify-content: center !important;
+  min-width: 0 !important;
+  max-width: var(--cf-page-header-copy-max-width) !important;
+  text-align: left !important;
+}
+
+/* KICKER: one visual language */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-slot="badge"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .badge {
+  display: inline-flex !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin: 0 0 var(--cf-page-header-kicker-margin-bottom) 0 !important;
+  padding: var(--cf-page-header-kicker-padding-y) var(--cf-page-header-kicker-padding-x) !important;
+  font-size: var(--cf-page-header-kicker-font-size) !important;
+  font-weight: var(--cf-page-header-kicker-font-weight) !important;
+  line-height: var(--cf-page-header-kicker-line-height) !important;
+  letter-spacing: var(--cf-page-header-kicker-letter-spacing) !important;
+  text-transform: uppercase !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* TITLE: same size/color/weight everywhere */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+  display: block !important;
+  margin: var(--cf-page-header-title-margin-top) 0 0 0 !important;
+  color: var(--cf-page-header-title-color) !important;
+  -webkit-text-fill-color: var(--cf-page-header-title-color) !important;
+  font-size: var(--cf-page-header-title-font-size) !important;
+  font-weight: var(--cf-page-header-title-font-weight) !important;
+  line-height: var(--cf-page-header-title-line-height) !important;
+  letter-spacing: var(--cf-page-header-title-letter-spacing) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* DESCRIPTION: same size/color/spacing everywhere */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .hint {
+  display: block !important;
+  max-width: var(--cf-page-header-description-max-width) !important;
+  margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;
+  color: var(--cf-page-header-description-color) !important;
+  -webkit-text-fill-color: var(--cf-page-header-description-color) !important;
+  font-size: var(--cf-page-header-description-font-size) !important;
+  font-weight: var(--cf-page-header-description-font-weight) !important;
+  line-height: var(--cf-page-header-description-line-height) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+/* Header actions alignment only. Button colors stay in button/action source of truth. */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions {
+  align-self: center !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  min-width: max-content !important;
+}
+
+/* Mobile: copy and actions stack predictably, without changing card skin. */
+@media (max-width: 720px) {
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child {
+    max-width: none !important;
+  }
+
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions {
+    align-self: stretch !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+  }
+}
+/* CLOSEFLOW_PAGE_HEADER_TEXT_SOURCE_TRUTH_STAGE3_2026_05_11_END */
+

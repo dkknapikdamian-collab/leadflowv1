@@ -1,0 +1,206 @@
+{
+  "generatedAt": "2026-05-11T18:40:30.758Z",
+  "count": 40,
+  "rows": [
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 32,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 717,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header activity-page-header\">"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 20,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 131,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header flex flex-col gap-4 md:flex-row md:items-end md:justify-between\">"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 83,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 1020,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header ai-drafts-page-header\">"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 70,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 503,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header billing-header\">"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 508,
+      "text": "<div className=\"billing-header-actions\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 107,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1250,
+      "text": "<div data-cf-page-header=\"true\" className=\"cf-page-header page-head\">"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 24,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 477,
+      "text": "<div data-cf-page-header=\"true\" className=\"cf-page-header page-head\" data-stage16c-page-head=\"cases\">"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 93,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 530,
+      "text": "<div data-cf-page-header=\"true\" className=\"cf-page-header page-head\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 88,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 687,
+      "text": "<div data-cf-page-header=\"true\" className=\"cf-page-header page-head\">"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 56,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 614,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header notifications-page-header\">"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 36,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 201,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between\">"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 386,
+      "text": "<header className=\"settings-header\">"
+    },
+    {
+      "file": "src/pages/SettingsLegacy.tsx",
+      "line": 94,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/SettingsLegacy.tsx",
+      "line": 812,
+      "text": "<header className=\"settings-header\">"
+    },
+    {
+      "file": "src/pages/SettingsLegacy.tsx",
+      "line": 817,
+      "text": "<div className=\"settings-header-actions\">"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 34,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 425,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header support-header\">"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 430,
+      "text": "<div className=\"support-header-actions\">"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1094,
+      "text": "<header className=\"page-head flex flex-col md:flex-row md:items-center justify-between gap-4\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 33,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 481,
+      "text": "<section data-cf-page-header=\"true\" className=\"cf-page-header cf-page-hero rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 482,
+      "text": "<div className=\"cf-page-hero-layout flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 484,
+      "text": "<Badge className=\"cf-page-hero-kicker mb-3 rounded-full bg-slate-50 text-slate-600 hover:bg-slate-50\">Zadania</Badge>"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 485,
+      "text": "<h1 className=\"cf-page-hero-title text-2xl font-black tracking-tight text-slate-950 sm:text-3xl\">Lista zadań</h1>"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 487,
+      "text": "<div className=\"cf-page-hero-actions flex flex-wrap gap-2\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 61,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 323,
+      "text": "<header data-cf-page-header=\"true\" className=\"cf-page-header rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 52,
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/UiPreviewVNext.tsx",
+      "line": 23,
+      "text": "<div className=\"cfv-page-head\">"
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20,
+      "text": "const FULL_CLOSEFLOW_HTML = \"<!doctype html>\\n<html lang=\\\"pl\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\" />\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\" />\\n  <title>CloseFlow - pełny kierunek UI</title>\\n  <style>\\n    :root {\\n      --bg: #f4f6f8;\\n    "
+    }
+  ]
+}
