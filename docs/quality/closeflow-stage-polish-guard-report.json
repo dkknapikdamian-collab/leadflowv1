@@ -1,8 +1,0 @@
-{
-  "status": "OK",
-  "scope": "stage",
-  "filesChecked": 11,
-  "findingsCount": 0,
-  "reportPolicy": "stage report is deterministic and safe to keep tracked",
-  "findings": []
-}

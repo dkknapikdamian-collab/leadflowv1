@@ -11,14 +11,14 @@ Guard `check:closeflow-stage-polish-guard` skanuje:
 
 To jest tryb do commitów etapowych.
 
-## Raport etapowy
-Domyślny raport jest deterministyczny i może być trzymany w repo:
+## Raporty
+Guard nie zapisuje już raportu do śledzonego pliku repo przy zwykłym uruchomieniu. Raport runtime trafia poza tracked flow:
 
 ```text
-docs/quality/closeflow-stage-polish-guard-report.json
+.closeflow-recovery-backups/closeflow-stage-polish-guard-report-stage.json
 ```
 
-Nie zawiera dynamicznej daty, żeby samo uruchomienie checka nie brudziło `git status`.
+Dzięki temu samo uruchomienie checka nie brudzi `git status`.
 
 ## Tryb globalny
 Szeroki audyt można uruchomić tak:

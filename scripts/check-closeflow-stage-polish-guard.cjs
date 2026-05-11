@@ -37,8 +37,7 @@ const INTENTIONAL_REPAIR_FILE_PATTERNS = [
   /^scripts\/sanitize-polish-text-reports\.cjs$/,
 ];
 
-// Mojibake is detected through code points, not literal broken glyphs.
-// This prevents the guard from becoming its own false positive.
+// Mojibake is detected by code points, not literal broken glyphs.
 const BAD_CODEPOINTS = [
   0x0139,
   0x00C5,
@@ -51,7 +50,7 @@ const BAD_CODEPOINTS = [
 ];
 const BAD_MARKERS = BAD_CODEPOINTS.map((code) => String.fromCodePoint(code));
 
-const STAGE_REPORT_PATH = 'docs/quality/closeflow-stage-polish-guard-report.json';
+const DEFAULT_REPORT_PATH = '.closeflow-recovery-backups/closeflow-stage-polish-guard-report-stage.json';
 const GLOBAL_REPORT_PATH = process.env.CLOSEFLOW_POLISH_GUARD_REPORT || '.closeflow-recovery-backups/closeflow-stage-polish-guard-report-all.json';
 const MAX_OUTPUT = Number.parseInt(process.env.CLOSEFLOW_POLISH_GUARD_MAX_OUTPUT || '60', 10);
 
@@ -140,29 +139,21 @@ function ensureReportDir(reportPath) {
 }
 
 function reportPathForScope(scope) {
-  return scope === 'all' ? GLOBAL_REPORT_PATH : STAGE_REPORT_PATH;
+  return scope === 'all' ? GLOBAL_REPORT_PATH : DEFAULT_REPORT_PATH;
 }
 
 function writeReport(findings, files, scope) {
   const reportPath = reportPathForScope(scope);
   ensureReportDir(reportPath);
-
   const payload = {
     status: findings.length ? 'FAILED' : 'OK',
     scope,
     filesChecked: files.length,
     findingsCount: findings.length,
-    reportPolicy: scope === 'all'
-      ? 'global report is written outside the tracked stage report by default'
-      : 'stage report is deterministic and safe to keep tracked',
+    reportPolicy: 'runtime report is written outside tracked files',
     findings,
   };
-
-  fs.writeFileSync(
-    path.join(root, reportPath),
-    JSON.stringify(payload, null, 2) + '\n',
-    'utf8',
-  );
+  fs.writeFileSync(path.join(root, reportPath), JSON.stringify(payload, null, 2) + '\n', 'utf8');
   return reportPath;
 }
 
