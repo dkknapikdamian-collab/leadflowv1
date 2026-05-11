@@ -151,3 +151,302 @@
     width: 100%;
   }
 }
+
+/* CLOSEFLOW_PAGE_HEADER_CARD_SKIN_2026_05_11_START
+   Skin-only contract for top page header cards/kafelki.
+   Do not mutate DOM. Do not move modal positions. Do not change business logic.
+*/
+:root {
+  --cf-page-header-card-bg:
+    radial-gradient(circle at 0% 0%, rgba(59, 130, 246, 0.075), transparent 32%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  --cf-page-header-card-border: rgba(148, 163, 184, 0.32);
+  --cf-page-header-card-shadow: 0 18px 42px rgba(15, 23, 42, 0.07);
+  --cf-page-header-title: #0f172a;
+  --cf-page-header-text: #475569;
+  --cf-page-header-muted: #64748b;
+  --cf-page-header-kicker-bg: rgba(37, 99, 235, 0.075);
+  --cf-page-header-kicker-border: rgba(37, 99, 235, 0.16);
+  --cf-page-header-kicker-text: #1d4ed8;
+  --cf-page-header-radius: 28px;
+  --cf-page-header-padding-y: 22px;
+  --cf-page-header-padding-x: 26px;
+  --cf-page-header-title-size: clamp(26px, 2.55vw, 34px);
+  --cf-page-header-description-size: 14px;
+  --cf-page-header-action-gap: 8px;
+}
+
+.page-head,
+.cf-page-hero,
+.ai-drafts-page-header,
+.activity-page-header,
+.notifications-page-header,
+.settings-header,
+.support-header,
+.billing-header,
+.cf-html-view > header:first-child {
+  border: 1px solid var(--cf-page-header-card-border) !important;
+  border-radius: var(--cf-page-header-radius) !important;
+  background: var(--cf-page-header-card-bg) !important;
+  box-shadow: var(--cf-page-header-card-shadow) !important;
+  color: var(--cf-page-header-title) !important;
+  padding: var(--cf-page-header-padding-y) var(--cf-page-header-padding-x) !important;
+}
+
+.page-head,
+.cf-page-hero .cf-page-hero-layout,
+.ai-drafts-page-header,
+.activity-page-header,
+.notifications-page-header,
+.settings-header,
+.support-header,
+.billing-header,
+.cf-html-view > header:first-child {
+  gap: 18px !important;
+}
+
+.page-head h1,
+.cf-page-hero h1,
+.cf-page-hero-title,
+.ai-drafts-page-header h1,
+.activity-page-header h1,
+.notifications-page-header h1,
+.settings-header h1,
+.support-header h1,
+.billing-header h1,
+.cf-html-view > header:first-child h1,
+.cf-html-view > header:first-child h2 {
+  margin: 6px 0 0 !important;
+  color: var(--cf-page-header-title) !important;
+  -webkit-text-fill-color: var(--cf-page-header-title) !important;
+  font-size: var(--cf-page-header-title-size) !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.035em !important;
+}
+
+.page-head p:not(.kicker):not(.pill),
+.cf-page-hero p:not(.kicker):not(.pill),
+.ai-drafts-page-header p:not(.ai-drafts-kicker):not(.pill),
+.activity-page-header p:not(.activity-kicker):not(.pill),
+.notifications-page-header p:not(.notifications-kicker):not(.pill),
+.settings-header p:not(.kicker):not(.pill),
+.support-header p:not(.kicker):not(.pill),
+.billing-header p:not(.kicker):not(.pill),
+.cf-html-view > header:first-child p:not(.kicker):not(.pill) {
+  max-width: 760px;
+  margin-top: 8px;
+  color: var(--cf-page-header-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-text) !important;
+  font-size: var(--cf-page-header-description-size) !important;
+  line-height: 1.52 !important;
+  font-weight: 500 !important;
+}
+
+.page-head .kicker,
+.cf-page-hero-kicker,
+.ai-drafts-kicker,
+.activity-kicker,
+.notifications-kicker,
+.settings-header .kicker,
+.support-header .kicker,
+.billing-header .kicker,
+.cf-html-view > header:first-child .kicker,
+.cf-html-view > header:first-child span:first-child:not(.pill) {
+  display: inline-flex !important;
+  width: fit-content !important;
+  align-items: center !important;
+  border: 1px solid var(--cf-page-header-kicker-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-page-header-kicker-bg) !important;
+  color: var(--cf-page-header-kicker-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-kicker-text) !important;
+  padding: 7px 10px !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.045em !important;
+  line-height: 1 !important;
+  text-transform: uppercase !important;
+}
+
+.head-actions,
+.cf-page-hero-actions,
+.ai-drafts-header-actions,
+.activity-header-actions,
+.notifications-header-actions,
+.settings-header .head-actions,
+.support-header .head-actions,
+.billing-header .head-actions,
+.cf-html-view > header:first-child > div:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--cf-page-header-action-gap) !important;
+}
+
+.page-head .head-actions .btn,
+.page-head .head-actions button,
+.page-head .head-actions a,
+.cf-page-hero-actions .btn,
+.cf-page-hero-actions button,
+.cf-page-hero-actions a,
+.ai-drafts-header-actions .btn,
+.ai-drafts-header-actions button,
+.ai-drafts-header-actions a,
+.activity-header-actions .btn,
+.activity-header-actions button,
+.activity-header-actions a,
+.notifications-header-actions .btn,
+.notifications-header-actions button,
+.notifications-header-actions a,
+.settings-header button,
+.settings-header a,
+.support-header button,
+.support-header a,
+.billing-header button,
+.billing-header a,
+.cf-html-view > header:first-child > div:last-child button,
+.cf-html-view > header:first-child > div:last-child a {
+  min-height: 40px;
+  border-radius: 14px !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.01em;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.page-head .head-actions .btn.primary,
+.page-head .head-actions button[type="submit"],
+.page-head .head-actions button[class*="bg-primary"],
+.page-head .head-actions button[class*="bg-green"],
+.page-head .head-actions button[class*="bg-emerald"],
+.cf-page-hero-actions .btn.primary,
+.cf-page-hero-actions button[type="submit"],
+.cf-page-hero-actions button[class*="bg-primary"],
+.cf-page-hero-actions button[class*="bg-green"],
+.cf-page-hero-actions button[class*="bg-emerald"],
+.settings-header button[class*="bg-primary"],
+.support-header button[class*="bg-primary"],
+.billing-header button[class*="bg-primary"],
+.cf-html-view > header:first-child > div:last-child button[class*="bg-primary"],
+.cf-html-view > header:first-child > div:last-child button[class*="bg-green"],
+.cf-html-view > header:first-child > div:last-child button[class*="bg-emerald"] {
+  border-color: var(--cf-header-action-primary-border) !important;
+  background: var(--cf-header-action-primary-bg) !important;
+  color: var(--cf-header-action-primary-text) !important;
+  -webkit-text-fill-color: var(--cf-header-action-primary-text) !important;
+  box-shadow: var(--cf-header-action-primary-shadow) !important;
+}
+
+.page-head .head-actions .btn.primary:hover,
+.page-head .head-actions button[type="submit"]:hover,
+.cf-page-hero-actions .btn.primary:hover,
+.cf-page-hero-actions button[type="submit"]:hover,
+.settings-header button[class*="bg-primary"]:hover,
+.support-header button[class*="bg-primary"]:hover,
+.billing-header button[class*="bg-primary"]:hover {
+  border-color: var(--cf-header-action-primary-border-hover) !important;
+  background: var(--cf-header-action-primary-bg-hover) !important;
+}
+
+.page-head .head-actions .btn.soft-blue,
+.page-head .head-actions a[href*="ai"],
+.page-head .head-actions button[aria-label*="AI"],
+.cf-page-hero-actions .btn.soft-blue,
+.cf-page-hero-actions a[href*="ai"],
+.cf-page-hero-actions button[aria-label*="AI"],
+.settings-header a[href*="ai"],
+.settings-header button[aria-label*="AI"],
+.support-header a[href*="ai"],
+.support-header button[aria-label*="AI"],
+.billing-header a[href*="ai"],
+.billing-header button[aria-label*="AI"] {
+  border-color: var(--cf-header-action-ai-border) !important;
+  background: var(--cf-header-action-ai-bg) !important;
+  color: var(--cf-header-action-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-header-action-ai-text) !important;
+  box-shadow: var(--cf-header-action-ai-shadow) !important;
+}
+
+.page-head .head-actions .btn.soft-blue:hover,
+.page-head .head-actions a[href*="ai"]:hover,
+.cf-page-hero-actions .btn.soft-blue:hover,
+.cf-page-hero-actions a[href*="ai"]:hover {
+  border-color: var(--cf-header-action-ai-border-hover) !important;
+  background: var(--cf-header-action-ai-bg-hover) !important;
+}
+
+.page-head .head-actions .btn:not(.primary):not(.soft-blue),
+.page-head .head-actions button:not([type="submit"]):not([class*="bg-primary"]):not([class*="bg-green"]):not([class*="bg-emerald"]),
+.page-head .head-actions a:not(.primary):not(.soft-blue):not([href*="ai"]),
+.cf-page-hero-actions .btn:not(.primary):not(.soft-blue),
+.cf-page-hero-actions button:not([type="submit"]):not([class*="bg-primary"]):not([class*="bg-green"]):not([class*="bg-emerald"]),
+.cf-page-hero-actions a:not(.primary):not(.soft-blue):not([href*="ai"]),
+.ai-drafts-header-actions button,
+.activity-header-actions button,
+.notifications-header-actions button,
+.settings-header button:not([class*="bg-primary"]),
+.support-header button:not([class*="bg-primary"]),
+.billing-header button:not([class*="bg-primary"]) {
+  border-color: var(--cf-header-action-secondary-border) !important;
+  background: var(--cf-header-action-secondary-bg) !important;
+  color: var(--cf-header-action-secondary-text) !important;
+  -webkit-text-fill-color: var(--cf-header-action-secondary-text) !important;
+  box-shadow: var(--cf-header-action-secondary-shadow) !important;
+}
+
+.page-head .head-actions .btn:not(.primary):not(.soft-blue):hover,
+.page-head .head-actions button:not([type="submit"]):hover,
+.cf-page-hero-actions .btn:not(.primary):not(.soft-blue):hover,
+.cf-page-hero-actions button:not([type="submit"]):hover,
+.ai-drafts-header-actions button:hover,
+.activity-header-actions button:hover,
+.notifications-header-actions button:hover {
+  border-color: var(--cf-header-action-secondary-border-hover) !important;
+  background: var(--cf-header-action-secondary-bg-hover) !important;
+}
+
+.page-head .head-actions .cf-trash-action-button,
+.cf-page-hero-actions .cf-trash-action-button,
+.ai-drafts-header-actions .cf-trash-action-button,
+.activity-header-actions .cf-trash-action-button,
+.notifications-header-actions .cf-trash-action-button,
+.settings-header .cf-trash-action-button,
+.support-header .cf-trash-action-button,
+.billing-header .cf-trash-action-button {
+  border-color: var(--cf-action-danger-border) !important;
+  background: var(--cf-action-danger-bg) !important;
+  color: var(--cf-action-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-action-danger-text) !important;
+}
+
+@media (max-width: 720px) {
+  .page-head,
+  .cf-page-hero .cf-page-hero-layout,
+  .ai-drafts-page-header,
+  .activity-page-header,
+  .notifications-page-header,
+  .settings-header,
+  .support-header,
+  .billing-header,
+  .cf-html-view > header:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .head-actions,
+  .cf-page-hero-actions,
+  .ai-drafts-header-actions,
+  .activity-header-actions,
+  .notifications-header-actions,
+  .cf-html-view > header:first-child > div:last-child {
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+}
+/* CLOSEFLOW_PAGE_HEADER_CARD_SKIN_2026_05_11_END */

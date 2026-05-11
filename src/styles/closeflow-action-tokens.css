@@ -230,3 +230,31 @@
     width: 100%;
   }
 }
+
+/* CLOSEFLOW_HEADER_ACTION_TOKENS_2026_05_11_START
+   Source of truth for header/page-card action colors.
+   Primary CTA is blue/indigo. AI is violet/indigo. Green is reserved for success states only.
+*/
+:root {
+  --cf-header-action-primary-bg: #2563eb;
+  --cf-header-action-primary-bg-hover: #1d4ed8;
+  --cf-header-action-primary-border: #1d4ed8;
+  --cf-header-action-primary-border-hover: #1e40af;
+  --cf-header-action-primary-text: #ffffff;
+  --cf-header-action-primary-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+
+  --cf-header-action-ai-bg: #eef2ff;
+  --cf-header-action-ai-bg-hover: #e0e7ff;
+  --cf-header-action-ai-border: #c7d2fe;
+  --cf-header-action-ai-border-hover: #a5b4fc;
+  --cf-header-action-ai-text: #4338ca;
+  --cf-header-action-ai-shadow: 0 8px 18px rgba(79, 70, 229, 0.10);
+
+  --cf-header-action-secondary-bg: #ffffff;
+  --cf-header-action-secondary-bg-hover: #f8fafc;
+  --cf-header-action-secondary-border: #cbd5e1;
+  --cf-header-action-secondary-border-hover: #94a3b8;
+  --cf-header-action-secondary-text: #334155;
+  --cf-header-action-secondary-shadow: 0 6px 14px rgba(15, 23, 42, 0.05);
+}
+/* CLOSEFLOW_HEADER_ACTION_TOKENS_2026_05_11_END */
