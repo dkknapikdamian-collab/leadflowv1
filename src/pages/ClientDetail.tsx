@@ -1394,8 +1394,10 @@ export default function ClientDetail() {
     return (
       <Layout>
         <div data-fin7-client-detail-finance-summary="true">
-          <ClientFinanceRelationSummary clientId={String((client as any)?.id || '')} />
-                    client={client}
+          <ClientFinanceRelationSummary
+            client={client}
+            clientId={String((client as any)?.id || '')}
+          />
         </div>
 
         <main className="client-detail-vnext-page">

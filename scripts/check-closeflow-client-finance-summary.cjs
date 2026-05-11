@@ -44,6 +44,13 @@ assertNotIncludes(component, '<dt>Suma spraw</dt>', 'Old misleading label must b
 assertNotIncludes(component, '<dt>Prowizja należna</dt>', 'Client tile must not show commission in FIN-8');
 
 assertIncludes(clientDetail, 'client={client}', 'ClientDetail must pass client to finance summary');
+const clientDetailSource = read(clientDetail);
+if (/ClientFinanceRelationSummary[^>]*\/>\s*client=\{client\}/m.test(clientDetailSource)) {
+  throw new Error('ClientDetail passes client={client} outside ClientFinanceRelationSummary tag.');
+}
+if (!/<ClientFinanceRelationSummary[\s\S]*?client=\{client\}[\s\S]*?\/>/m.test(clientDetailSource)) {
+  throw new Error('ClientDetail must pass client={client} inside ClientFinanceRelationSummary tag.');
+}
 assertIncludes(pkg, 'check:closeflow-client-finance-summary', 'package script must exist');
 
 console.log('CLOSEFLOW_CLIENT_FINANCE_SUMMARY_ETAP8_CHECK_OK');
