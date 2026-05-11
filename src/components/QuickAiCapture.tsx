@@ -20,6 +20,7 @@ import {
 } from '../lib/ai-usage-guard';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
+import '../styles/closeflow-command-actions-source-truth.css';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
@@ -276,7 +277,7 @@ export default function QuickAiCapture({ initialText = '', openSignal = 0, draft
       }}
     >
       <DialogTrigger asChild>
-        <Button type="button" variant="outline" className="rounded-xl" disabled={!workspaceReady}>
+        <Button type="button" variant="outline" className="rounded-xl cf-command-action cf-command-action--ai" data-cf-command-action="ai" disabled={!workspaceReady}>
           <Sparkles className="mr-2 h-4 w-4" /> Szybki szkic
         </Button>
       </DialogTrigger>

@@ -1,0 +1,320 @@
+/* CLOSEFLOW_HEADER_COMMAND_BUTTONS_SOURCE_TRUTH_STAGE6_2026_05_11
+   owner: CloseFlow Visual System
+   goal: one source of truth for action button background/text/icon color and action placement in global toolbar + top page header cards.
+   scope:
+   - [data-global-quick-actions="true"]
+   - [data-cf-page-header="true"].cf-page-header
+   - Today header action stack classes used by the current stable Today screen
+   rule: no modal layout changes, no business logic changes, no runtime DOM patcher.
+*/
+
+:root {
+  /* One blue used by the top command bar and page-header buttons. */
+  --cf-command-action-blue: #2563eb;
+  --cf-command-action-blue-hover: #1d4ed8;
+
+  /* One neutral button skin. This is intentionally white for all header/toolbar actions. */
+  --cf-command-action-bg: #ffffff;
+  --cf-command-action-bg-hover: #eff6ff;
+  --cf-command-action-border: #bfdbfe;
+  --cf-command-action-border-hover: #93c5fd;
+  --cf-command-action-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+  --cf-command-action-shadow-hover: 0 10px 22px rgba(37, 99, 235, 0.14);
+  --cf-command-action-radius: 14px;
+  --cf-command-action-height: 38px;
+  --cf-command-action-padding-x: 14px;
+  --cf-command-action-gap: 8px;
+
+  /* Action placement source of truth. */
+  --cf-command-actions-row-gap: 10px;
+  --cf-command-actions-justify: flex-end;
+  --cf-command-actions-align: flex-start;
+}
+
+/* -------------------------------------------------------------------------- */
+/* GLOBAL QUICK ACTIONS BAR                                                   */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell [data-global-quick-actions="true"].global-actions,
+#root [data-global-quick-actions="true"].global-actions,
+[data-global-quick-actions="true"].global-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+  overflow-x: auto !important;
+  padding: 8px 12px !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border-bottom: 1px solid rgba(191, 219, 254, 0.55) !important;
+}
+
+/* Force every global-toolbar action to use the same white/blue skin.
+   This includes QuickAiCapture trigger because it renders only a Button, not a stable custom class. */
+#root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn),
+#root [data-global-quick-actions="true"] :is(button, a, .btn),
+[data-global-quick-actions="true"] :is(button, a, .btn) {
+  min-height: var(--cf-command-action-height) !important;
+  height: var(--cf-command-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-command-action-gap) !important;
+  flex: 0 0 auto !important;
+
+  padding-left: var(--cf-command-action-padding-x) !important;
+  padding-right: var(--cf-command-action-padding-x) !important;
+  border-radius: var(--cf-command-action-radius) !important;
+  border: 1px solid var(--cf-command-action-border) !important;
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  box-shadow: var(--cf-command-action-shadow) !important;
+
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+}
+
+/* The previous dark QuickAiCapture state used local component/variant styling.
+   In the toolbar it must never become dark, even when it has rounded-xl only. */
+#root [data-global-quick-actions="true"] button.rounded-xl,
+#root .cf-html-shell [data-global-quick-actions="true"] button.rounded-xl,
+[data-global-quick-actions="true"] button.rounded-xl {
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  border-color: var(--cf-command-action-border) !important;
+}
+
+#root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn):hover,
+#root [data-global-quick-actions="true"] :is(button, a, .btn):hover,
+[data-global-quick-actions="true"] :is(button, a, .btn):hover {
+  background: var(--cf-command-action-bg-hover) !important;
+  background-color: var(--cf-command-action-bg-hover) !important;
+  color: var(--cf-command-action-blue-hover) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue-hover) !important;
+  border-color: var(--cf-command-action-border-hover) !important;
+  box-shadow: var(--cf-command-action-shadow-hover) !important;
+}
+
+#root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn) svg,
+#root [data-global-quick-actions="true"] :is(button, a, .btn) svg,
+[data-global-quick-actions="true"] :is(button, a, .btn) svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* TOP PAGE HEADER ACTION PLACEMENT                                           */
+/* -------------------------------------------------------------------------- */
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: start !important;
+  column-gap: 18px !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+  align-items: start !important;
+  column-gap: 18px !important;
+  width: 100% !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  justify-self: start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+  grid-column: 2 !important;
+  justify-self: end !important;
+  align-self: var(--cf-command-actions-align) !important;
+  margin-left: auto !important;
+
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: var(--cf-command-actions-justify) !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+  min-width: max-content !important;
+}
+
+/* Flatten nested action stacks in headers. */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"] > * {
+  flex: 0 0 auto !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .notifications-header-actions, .cf-section-head-action-stack) {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+}
+
+/* Button skin inside top page header cards. This intentionally wins against old visual-stage CSS. */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).primary,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).soft-blue,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-blue-600,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-green-600,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-emerald-600 {
+  min-height: var(--cf-command-action-height) !important;
+  height: var(--cf-command-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-command-action-gap) !important;
+  flex: 0 0 auto !important;
+
+  padding-left: var(--cf-command-action-padding-x) !important;
+  padding-right: var(--cf-command-action-padding-x) !important;
+  border-radius: var(--cf-command-action-radius) !important;
+  border: 1px solid var(--cf-command-action-border) !important;
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  box-shadow: var(--cf-command-action-shadow) !important;
+
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover {
+  background: var(--cf-command-action-bg-hover) !important;
+  background-color: var(--cf-command-action-bg-hover) !important;
+  color: var(--cf-command-action-blue-hover) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue-hover) !important;
+  border-color: var(--cf-command-action-border-hover) !important;
+  box-shadow: var(--cf-command-action-shadow-hover) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action) svg {
+  width: 1rem !important;
+  height: 1rem !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* -------------------------------------------------------------------------- */
+/* TODAY STABLE HEADER ACTION STACK                                           */
+/* -------------------------------------------------------------------------- */
+
+/* This directly overrides the old column stack in closeflow-action-tokens.css:
+   .cf-section-head-actions and .cf-section-head-action-stack were explicitly set to flex-direction: column. */
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+#root .cf-section-head-actions.cf-today-section-head-actions,
+[data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+.cf-section-head-actions.cf-today-section-head-actions {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+  min-width: max-content !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+#root .cf-section-head-action-stack,
+[data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+.cf-section-head-action-stack {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-command-actions-row-gap) !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack > *,
+#root .cf-section-head-action-stack > *,
+[data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack > *,
+.cf-section-head-action-stack > * {
+  width: auto !important;
+  flex: 0 0 auto !important;
+}
+
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+#root .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+[data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn),
+.cf-section-head-action-stack :is(button, a.btn, a[role="button"], .btn) {
+  min-height: var(--cf-command-action-height) !important;
+  height: var(--cf-command-action-height) !important;
+  border-radius: var(--cf-command-action-radius) !important;
+  border: 1px solid var(--cf-command-action-border) !important;
+  background: var(--cf-command-action-bg) !important;
+  background-color: var(--cf-command-action-bg) !important;
+  background-image: none !important;
+  color: var(--cf-command-action-blue) !important;
+  -webkit-text-fill-color: var(--cf-command-action-blue) !important;
+  box-shadow: var(--cf-command-action-shadow) !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+    grid-column: auto !important;
+    justify-self: stretch !important;
+    align-self: stretch !important;
+    margin-left: 0 !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+  }
+
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+  #root .cf-section-head-actions.cf-today-section-head-actions,
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+  #root .cf-section-head-action-stack {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    min-width: 0 !important;
+  }
+}

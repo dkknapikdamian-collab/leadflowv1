@@ -22,6 +22,7 @@ import './styles/closeflow-page-header.css';
 import './styles/closeflow-list-row-tokens.css';
 import './styles/closeflow-alert-severity.css';
 
+import './styles/closeflow-command-actions-source-truth.css';
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 
 const PublicLanding = lazy(() => import('./pages/PublicLanding'));

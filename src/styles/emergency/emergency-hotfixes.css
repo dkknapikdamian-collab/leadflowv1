@@ -217,3 +217,8 @@
    remove_after_stage: after all page headers are native PageHeader components.
 */
 @import '../closeflow-page-header-card-source-truth.css';
+
+/* CLOSEFLOW_COMMAND_ACTIONS_SOURCE_TRUTH_STAGE6_ENTRY
+   Final button/action source-of-truth import. Must stay after legacy hotfixes.
+*/
+@import '../closeflow-command-actions-source-truth.css';

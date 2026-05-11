@@ -31,6 +31,7 @@ import QuickAiCapture from './QuickAiCapture';
 import TaskCreateDialog from './TaskCreateDialog';
 import { Button } from './ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
+import '../styles/closeflow-command-actions-source-truth.css';
 
 export type GlobalQuickActionTarget = 'lead' | 'task' | 'event';
 
@@ -83,25 +84,25 @@ export default function GlobalQuickActions() {
       >
         {canUseQuickAiCaptureByPlan ? <span data-feature-status="Beta" title="Beta"><QuickAiCapture /></span> : null}
         {canUseAiDraftsByPlan ? (
-          <Button asChild variant="outline" className="btn soft-blue" data-global-quick-action="ai-drafts" data-feature-status="Beta" title="Beta">
+          <Button asChild variant="outline" className="btn soft-blue cf-command-action cf-command-action--ai" data-global-quick-action="ai-drafts" data-cf-command-action="ai" data-feature-status="Beta" title="Beta">
             <Link to="/ai-drafts" aria-label="Otwórz Inbox szkiców">
               <ClipboardList className="mr-2 h-4 w-4" />
               Inbox szkiców
             </Link>
           </Button>
         ) : null}
-        <Button asChild variant="outline" className="btn" data-global-quick-action="lead" data-feature-status="Gotowe" title="Gotowe">
+        <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="lead" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
           <Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>
             <AddActionIcon className="mr-2 h-4 w-4" />
             Lead
           </Link>
         </Button>
         {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45M: rememberGlobalQuickAction('task') marker only. Direct task modal opens in place, without Link/asChild route. */}
-        <Button type="button" variant="outline" className="btn" data-global-quick-action="task" data-global-task-direct-modal-trigger="true" data-feature-status="Gotowe" title="Gotowe" onClick={() => setIsTaskCreateOpen(true)}>
+        <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="task" data-cf-command-action="neutral" data-global-task-direct-modal-trigger="true" data-feature-status="Gotowe" title="Gotowe" onClick={() => setIsTaskCreateOpen(true)}>
           <AddActionIcon className="mr-2 h-4 w-4" />
           Zadanie
         </Button>
-        <Button asChild variant="outline" className="btn" data-global-quick-action="event" data-feature-status="Gotowe" title="Gotowe">
+        <Button asChild variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="event" data-cf-command-action="neutral" data-feature-status="Gotowe" title="Gotowe">
           <Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>
             <AddActionIcon className="mr-2 h-4 w-4" />
             Wydarzenie

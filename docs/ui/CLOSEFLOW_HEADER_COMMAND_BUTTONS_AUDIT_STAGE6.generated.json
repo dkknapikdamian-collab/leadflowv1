@@ -1,0 +1,1867 @@
+{
+  "generatedAt": "2026-05-11T19:01:05.627Z",
+  "count": 361,
+  "byFile": {
+    "src/styles/admin-tools.css": 1,
+    "src/styles/closeflow-action-tokens.css": 12,
+    "src/styles/closeflow-command-actions-source-truth.css": 51,
+    "src/styles/closeflow-modal-visual-system.css": 3,
+    "src/styles/closeflow-page-header-card-source-truth.css": 25,
+    "src/styles/closeflow-page-header.css": 55,
+    "src/styles/closeflow-stage16c-tasks-cases-parity.css": 7,
+    "src/styles/stage30a-mobile-contrast-lock.css": 32,
+    "src/styles/stage31-full-mobile-polish.css": 21,
+    "src/styles/stage35-clients-value-detail-cleanup.css": 1,
+    "src/styles/stage39-page-headers-copy-visual-system.css": 7,
+    "src/styles/stage40-page-header-action-overflow-hardening.css": 9,
+    "src/styles/visual-stage01-shell.css": 6,
+    "src/styles/visual-stage02-today.css": 1,
+    "src/styles/visual-stage05-clients.css": 3,
+    "src/styles/visual-stage07-cases.css": 1,
+    "src/styles/visual-stage17-today-hard-1to1.css": 9,
+    "src/styles/visual-stage18-leads-hard-1to1.css": 4,
+    "src/styles/visual-stage19-clients-safe-css.css": 1,
+    "src/styles/visual-stage20-tasks-safe-css.css": 3,
+    "src/styles/visual-stage21-today-final-lock.css": 8,
+    "src/styles/visual-stage22-leads-final-lock.css": 1,
+    "src/styles/visual-stage23-leads-html-parity-fix.css": 1,
+    "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css": 3,
+    "src/styles/visual-stage26-leads-visual-alignment-fix.css": 6,
+    "src/styles/visual-stage27-cases-vnext.css": 3,
+    "src/styles/visual-stage28-tasks-vnext.css": 2,
+    "src/styles/visual-stage29-calendar-vnext.css": 2,
+    "src/components/admin-tools/AdminDebugToolbar.tsx": 1,
+    "src/components/confirm-dialog.tsx": 2,
+    "src/components/EmailVerificationGate.tsx": 3,
+    "src/components/ErrorBoundary.tsx": 1,
+    "src/components/GlobalQuickActions.tsx": 13,
+    "src/components/lead-picker.tsx": 1,
+    "src/components/LeadAiFollowupDraft.tsx": 4,
+    "src/components/LeadAiNextAction.tsx": 4,
+    "src/components/PwaInstallPrompt.tsx": 4,
+    "src/components/QuickAiCapture.tsx": 1,
+    "src/components/topic-contact-picker.tsx": 1,
+    "src/components/ui/card.tsx": 1,
+    "src/components/ui-system/OperatorMetricToneRuntime.tsx": 1,
+    "src/components/ui-system/PageHero.tsx": 1,
+    "src/pages/Calendar.tsx": 2,
+    "src/pages/Cases.tsx": 2,
+    "src/pages/ClientPortal.tsx": 2,
+    "src/pages/Clients.tsx": 2,
+    "src/pages/Dashboard.tsx": 4,
+    "src/pages/Leads.tsx": 2,
+    "src/pages/Login.tsx": 8,
+    "src/pages/Tasks.tsx": 8,
+    "src/pages/TasksStable.tsx": 1,
+    "src/pages/Today.tsx": 8,
+    "src/pages/TodayStable.tsx": 5,
+    "src/pages/UiPreviewVNextFull.tsx": 1
+  },
+  "rows": [
+    {
+      "file": "src/styles/admin-tools.css",
+      "line": 368,
+      "text": ".admin-tool-quick-editor-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 118,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 119,
+      "text": ".cf-section-head-actions.cf-today-section-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 134,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 135,
+      "text": ".cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 142,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 143,
+      "text": ".cf-section-head-action-stack > * {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 148,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 149,
+      "text": ".cf-section-head-actions.cf-today-section-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 155,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 156,
+      "text": ".cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 160,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 161,
+      "text": ".cf-section-head-action-stack > * {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 5,
+      "text": "- [data-global-quick-actions=\"true\"]"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 38,
+      "text": "#root .cf-html-shell [data-global-quick-actions=\"true\"].global-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 39,
+      "text": "#root [data-global-quick-actions=\"true\"].global-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 40,
+      "text": "[data-global-quick-actions=\"true\"].global-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 54,
+      "text": "#root .cf-html-shell [data-global-quick-actions=\"true\"] :is(button, a, .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 55,
+      "text": "#root [data-global-quick-actions=\"true\"] :is(button, a, .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 56,
+      "text": "[data-global-quick-actions=\"true\"] :is(button, a, .btn) {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 84,
+      "text": "In the toolbar it must never become dark, even when it has rounded-xl only. */"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 85,
+      "text": "#root [data-global-quick-actions=\"true\"] button.rounded-xl,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 86,
+      "text": "#root .cf-html-shell [data-global-quick-actions=\"true\"] button.rounded-xl,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 87,
+      "text": "[data-global-quick-actions=\"true\"] button.rounded-xl {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 96,
+      "text": "#root .cf-html-shell [data-global-quick-actions=\"true\"] :is(button, a, .btn):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 97,
+      "text": "#root [data-global-quick-actions=\"true\"] :is(button, a, .btn):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 98,
+      "text": "[data-global-quick-actions=\"true\"] :is(button, a, .btn):hover {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 107,
+      "text": "#root .cf-html-shell [data-global-quick-actions=\"true\"] :is(button, a, .btn) svg,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 108,
+      "text": "#root [data-global-quick-actions=\"true\"] :is(button, a, .btn) svg,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 109,
+      "text": "[data-global-quick-actions=\"true\"] :is(button, a, .btn) svg {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 145,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 146,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 147,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 170,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 171,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 172,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 177,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .notifications-header-actions, .cf-section-head-action-stack) {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 189,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action).soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 190,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action).bg-blue-600,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 191,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action).bg-green-600,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 240,
+      "text": ".cf-section-head-actions and .cf-section-head-action-stack were explicitly set to flex-direction: column. */"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 241,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 242,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 243,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 244,
+      "text": ".cf-section-head-actions.cf-today-section-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 254,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 255,
+      "text": "#root .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 256,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 257,
+      "text": ".cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 266,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 267,
+      "text": "#root .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 268,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 269,
+      "text": ".cf-section-head-action-stack > * {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 274,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 275,
+      "text": "#root .cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 276,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 277,
+      "text": ".cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn) {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 299,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 300,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 301,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 312,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 313,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 314,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 315,
+      "text": "#root .cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 207,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] .rounded-xl.border,"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 237,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] button.bg-green-600,"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 249,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] button.bg-green-600:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 191,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 192,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 232,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .bg-blue-600,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 235,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .bg-green-600 {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 245,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 290,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 291,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 415,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 416,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 441,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 442,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 568,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 569,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 576,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 589,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 590,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 591,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside > * {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 595,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 596,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 597,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside .notifications-header-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 598,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside .ai-drafts-header-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 606,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside :is(.text-xs, .text-[12px], small, .cf-page-header-meta),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 653,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 654,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 655,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 107,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 111,
+      "text": ".cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 112,
+      "text": ".cf-page-hero-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 144,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 148,
+      "text": ".cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 149,
+      "text": ".cf-page-hero-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 272,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 273,
+      "text": ".cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 277,
+      "text": ".settings-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 278,
+      "text": ".support-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 279,
+      "text": ".billing-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 288,
+      "text": ".page-head .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 289,
+      "text": ".page-head .head-actions button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 290,
+      "text": ".page-head .head-actions a,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 291,
+      "text": ".cf-page-hero-actions .btn,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 292,
+      "text": ".cf-page-hero-actions button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 293,
+      "text": ".cf-page-hero-actions a,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 323,
+      "text": ".page-head .head-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 324,
+      "text": ".page-head .head-actions button[type=\"submit\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 325,
+      "text": ".page-head .head-actions button[class*=\"bg-primary\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 326,
+      "text": ".page-head .head-actions button[class*=\"bg-green\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 327,
+      "text": ".page-head .head-actions button[class*=\"bg-emerald\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 328,
+      "text": ".cf-page-hero-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 329,
+      "text": ".cf-page-hero-actions button[type=\"submit\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 330,
+      "text": ".cf-page-hero-actions button[class*=\"bg-primary\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 331,
+      "text": ".cf-page-hero-actions button[class*=\"bg-green\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 332,
+      "text": ".cf-page-hero-actions button[class*=\"bg-emerald\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 346,
+      "text": ".page-head .head-actions .btn.primary:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 347,
+      "text": ".page-head .head-actions button[type=\"submit\"]:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 348,
+      "text": ".cf-page-hero-actions .btn.primary:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 349,
+      "text": ".cf-page-hero-actions button[type=\"submit\"]:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 357,
+      "text": ".page-head .head-actions .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 358,
+      "text": ".page-head .head-actions a[href*=\"ai\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 359,
+      "text": ".page-head .head-actions button[aria-label*=\"AI\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 360,
+      "text": ".cf-page-hero-actions .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 361,
+      "text": ".cf-page-hero-actions a[href*=\"ai\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 362,
+      "text": ".cf-page-hero-actions button[aria-label*=\"AI\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 376,
+      "text": ".page-head .head-actions .btn.soft-blue:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 377,
+      "text": ".page-head .head-actions a[href*=\"ai\"]:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 378,
+      "text": ".cf-page-hero-actions .btn.soft-blue:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 379,
+      "text": ".cf-page-hero-actions a[href*=\"ai\"]:hover {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 384,
+      "text": ".page-head .head-actions .btn:not(.primary):not(.soft-blue),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 385,
+      "text": ".page-head .head-actions button:not([type=\"submit\"]):not([class*=\"bg-primary\"]):not([class*=\"bg-green\"]):not([class*=\"bg-emerald\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 386,
+      "text": ".page-head .head-actions a:not(.primary):not(.soft-blue):not([href*=\"ai\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 387,
+      "text": ".cf-page-hero-actions .btn:not(.primary):not(.soft-blue),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 388,
+      "text": ".cf-page-hero-actions button:not([type=\"submit\"]):not([class*=\"bg-primary\"]):not([class*=\"bg-green\"]):not([class*=\"bg-emerald\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 389,
+      "text": ".cf-page-hero-actions a:not(.primary):not(.soft-blue):not([href*=\"ai\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 403,
+      "text": ".page-head .head-actions .btn:not(.primary):not(.soft-blue):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 404,
+      "text": ".page-head .head-actions button:not([type=\"submit\"]):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 405,
+      "text": ".cf-page-hero-actions .btn:not(.primary):not(.soft-blue):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 406,
+      "text": ".cf-page-hero-actions button:not([type=\"submit\"]):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 414,
+      "text": ".page-head .head-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 415,
+      "text": ".cf-page-hero-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 442,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 443,
+      "text": ".cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 61,
+      "text": "main[data-p0-tasks-stable-rebuild=\"true\"] .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 63,
+      "text": ".cf-html-view.main-cases-html > .page-head .head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 119,
+      "text": ".cf-html-view.main-cases-html .head-actions .btn {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 145,
+      "text": "main[data-p0-tasks-stable-rebuild=\"true\"] .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 147,
+      "text": ".cf-html-view.main-cases-html > .page-head .head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 152,
+      "text": "main[data-p0-tasks-stable-rebuild=\"true\"] .cf-page-hero-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 154,
+      "text": ".cf-html-view.main-cases-html > .page-head .head-actions > * {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 35,
+      "text": ".closeflow-visual-stage01 .global-actions,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 36,
+      "text": ".cf-html-shell .global-actions,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 37,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"],"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 38,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 42,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 43,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 44,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 45,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 46,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 47,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] .btn {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 59,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 60,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 61,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 62,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] button svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 63,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] a svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 64,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] .btn svg {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 69,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 70,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 71,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 72,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] button:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 73,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] a:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 74,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] .btn:hover {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 124,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"],"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 125,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 134,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"]::-webkit-scrollbar,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 135,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"]::-webkit-scrollbar {"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 139,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 140,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 141,
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 142,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 143,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 144,
+      "text": ".cf-html-shell [data-global-quick-actions=\"true\"] .btn {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 191,
+      "text": ".rounded-xl,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 316,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 346,
+      "text": ".head-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 377,
+      "text": ".head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 406,
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 421,
+      "text": ".closeflow-visual-stage01 .global-actions::-webkit-scrollbar {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 425,
+      "text": ".closeflow-visual-stage01 .global-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 426,
+      "text": ".closeflow-visual-stage01 .global-actions button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 427,
+      "text": ".closeflow-visual-stage01 .global-actions a {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 799,
+      "text": ".head-actions > .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 800,
+      "text": ".head-actions > button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 801,
+      "text": ".head-actions > a,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 855,
+      "text": ".closeflow-visual-stage01 .global-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 856,
+      "text": ".closeflow-visual-stage01 .global-actions button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 857,
+      "text": ".closeflow-visual-stage01 .global-actions a {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 896,
+      "text": ".closeflow-visual-stage01 .global-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 897,
+      "text": ".closeflow-visual-stage01 .global-actions button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 898,
+      "text": ".closeflow-visual-stage01 .global-actions a {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 902,
+      "text": ".head-actions > .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 903,
+      "text": ".head-actions > button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 904,
+      "text": ".head-actions > a,"
+    },
+    {
+      "file": "src/styles/stage35-clients-value-detail-cleanup.css",
+      "line": 196,
+      "text": ".global-actions[data-global-quick-actions=\"true\"] {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 4,
+      "text": "scope: existing .cf-html-view .page-head and .head-actions only."
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 48,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 57,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 66,
+      "text": ".cf-html-view .head-actions .btn svg,"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 77,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 92,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 96,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 4,
+      "text": "scope: .cf-html-view .page-head and .head-actions only."
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 29,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 33,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 40,
+      "text": ".cf-html-view .head-actions .btn span,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 47,
+      "text": ".cf-html-view .head-actions .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 48,
+      "text": ".cf-html-view .page-head .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 59,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 65,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 74,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 353,
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 364,
+      "text": ".closeflow-visual-stage01 .global-actions > button {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 385,
+      "text": ".closeflow-visual-stage01 .global-actions > button:hover {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 397,
+      "text": ".closeflow-visual-stage01 .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 569,
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 573,
+      "text": ".closeflow-visual-stage01 .global-actions::-webkit-scrollbar {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 133,
+      "text": ".closeflow-visual-stage01 .main-today .rounded-xl {"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css",
+      "line": 61,
+      "text": ".cf-html-view.main-clients-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css",
+      "line": 92,
+      "text": ".cf-html-view.main-clients-html .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css",
+      "line": 267,
+      "text": ".cf-html-view.main-clients-html .head-actions { justify-content: flex-start; width: 100%; overflow-x: auto; }"
+    },
+    {
+      "file": "src/styles/visual-stage07-cases.css",
+      "line": 92,
+      "text": ".main-cases [class*=\"rounded-xl\"][class*=\"border\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 202,
+      "text": ".cf-html-shell .global-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 203,
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 228,
+      "text": ".cf-html-shell .global-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 229,
+      "text": ".closeflow-visual-stage01 .global-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 230,
+      "text": ".main-today .head-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 238,
+      "text": ".cf-html-shell .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 239,
+      "text": ".closeflow-visual-stage01 .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 240,
+      "text": ".main-today .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 254,
+      "text": ".main-today .rounded-xl,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 135,
+      "text": ".main-leads .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 296,
+      "text": ".main-leads .rounded-xl.border,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 555,
+      "text": ".main-leads .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 561,
+      "text": ".main-leads .head-actions button {"
+    },
+    {
+      "file": "src/styles/visual-stage19-clients-safe-css.css",
+      "line": 72,
+      "text": ".cf-html-shell .main-clients header .rounded-xl,"
+    },
+    {
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 247,
+      "text": ".cf-html-shell main[data-current-section=\"zadania\"] button.rounded-xl,"
+    },
+    {
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 248,
+      "text": ".cf-html-shell main[data-current-section=\"zadania\"] [role=\"button\"].rounded-xl,"
+    },
+    {
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 249,
+      "text": ".cf-html-shell main[data-current-section=\"zadania\"] .rounded-xl {"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 111,
+      "text": ".cf-html-shell .main-today .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 112,
+      "text": ".cf-html-shell .main-today [data-visual-head-actions],"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 120,
+      "text": ".cf-html-shell .main-today .head-actions button,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 121,
+      "text": ".cf-html-shell .main-today .head-actions a,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 137,
+      "text": ".cf-html-shell .main-today .head-actions button[class*=\"primary\"],"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 138,
+      "text": ".cf-html-shell .main-today .head-actions button[class*=\"bg-primary\"],"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 624,
+      "text": ".cf-html-shell .main-today .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 625,
+      "text": ".cf-html-shell .main-today [data-visual-head-actions],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 54,
+      "text": "/* HTML: .page-head + .kicker + h1 + .lead-copy + .head-actions */"
+    },
+    {
+      "file": "src/styles/visual-stage23-leads-html-parity-fix.css",
+      "line": 280,
+      "text": "#root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .rounded-xl,"
+    },
+    {
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "line": 52,
+      "text": ".cf-html-view.main-leads-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "line": 98,
+      "text": ".cf-html-view.main-leads-html .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "line": 549,
+      "text": ".cf-html-view.main-leads-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 50,
+      "text": ".cf-html-view.main-leads-html .page-head .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 245,
+      "text": ".cf-html-view.main-leads-html .right-card .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 297,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .head-actions .btn.primary {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 304,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .head-actions .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 311,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .head-actions .btn:not(.primary):not(.soft-blue) {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 407,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-ai-card .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "line": 54,
+      "text": ".cf-html-view.main-cases-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "line": 85,
+      "text": ".cf-html-view.main-cases-html .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "line": 286,
+      "text": ".cf-html-view.main-cases-html .head-actions { justify-content: flex-start; width: 100%; overflow-x: auto; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 49,
+      "text": ".cf-html-view.main-tasks-html .head-actions { display: flex; gap: 8px; align-items: center; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 124,
+      "text": ".cf-html-view.main-tasks-html .task-action-col .rounded-xl { min-height: 34px; }"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 50,
+      "text": ".cf-html-view.main-calendar-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 367,
+      "text": ".cf-html-view.main-calendar-html .pill.soft-blue {"
+    },
+    {
+      "file": "src/components/admin-tools/AdminDebugToolbar.tsx",
+      "line": 496,
+      "text": "<div className=\"admin-tool-row admin-tool-quick-editor-head-actions\">"
+    },
+    {
+      "file": "src/components/confirm-dialog.tsx",
+      "line": 37,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"rounded-xl\" onClick={() => onOpenChange(false)} disabled={pending}>"
+    },
+    {
+      "file": "src/components/confirm-dialog.tsx",
+      "line": 42,
+      "text": "className=\"rounded-xl\""
+    },
+    {
+      "file": "src/components/EmailVerificationGate.tsx",
+      "line": 93,
+      "text": "<Button type=\"button\" className=\"h-12 rounded-xl\" onClick={handleResend} disabled={resending || checking || signingOut || !email}>"
+    },
+    {
+      "file": "src/components/EmailVerificationGate.tsx",
+      "line": 97,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"h-12 rounded-xl\" onClick={handleRefresh} disabled={checking || resending || signingOut}>"
+    },
+    {
+      "file": "src/components/EmailVerificationGate.tsx",
+      "line": 104,
+      "text": "<Button type=\"button\" variant=\"ghost\" className=\"rounded-xl text-slate-500\" onClick={handleSignOut} disabled={signingOut || checking || resending}>"
+    },
+    {
+      "file": "src/components/ErrorBoundary.tsx",
+      "line": 43,
+      "text": "className=\"w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 6,
+      "text": "* to=\"/leads?quick=lead\" data-global-task-direct-modal-trigger=\"true\" to=\"/calendar?quick=event\" data-global-quick-actions"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 12,
+      "text": "/* legacy-guard-global-actions-class-top: className=\"global-actions\" */"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 18,
+      "text": "Pasek działa jako toolbar i jest czytelny na telefonie: role=\"toolbar\", aria-label=\"Szybkie akcje aplikacji\", data-global-quick-actions-contract=\"v97\"."
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 80,
+      "text": "className=\"global-actions sticky top-16 z-20 overflow-x-auto\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 81,
+      "text": "data-global-quick-actions=\"true\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 82,
+      "text": "data-global-quick-actions-contract=\"v97\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 83,
+      "text": "data-visual-stage=\"01-global-actions\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 87,
+      "text": "<Button asChild variant=\"outline\" className=\"btn soft-blue cf-command-action cf-command-action--ai\" data-global-quick-action=\"ai-drafts\" data-cf-command-action=\"ai\" data-feature-status=\"Beta\" title=\"Beta\">"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 123,
+      "text": "data-global-quick-actions-contract=\"v97\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 124,
+      "text": "data-global-quick-actions"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 131,
+      "text": "/* PHASE0_AI_ASSISTANT_GLOBAL_TOOLBAR_LAST7 GlobalAiAssistant data-global-quick-actions-contract */"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 132,
+      "text": "/* PHASE0_GLOBAL_QUICK_ACTIONS_AI_FINAL4 GlobalAiAssistant data-global-quick-actions-contract */"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 151,
+      "text": "data-global-quick-actions"
+    },
+    {
+      "file": "src/components/lead-picker.tsx",
+      "line": 87,
+      "text": "<div className=\"absolute z-50 mt-2 max-h-64 w-full overflow-y-auto rounded-xl border bg-white p-1 shadow-xl\">"
+    },
+    {
+      "file": "src/components/LeadAiFollowupDraft.tsx",
+      "line": 97,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"rounded-xl bg-white\" disabled={disabled}>"
+    },
+    {
+      "file": "src/components/LeadAiFollowupDraft.tsx",
+      "line": 133,
+      "text": "<div className=\"rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600\">"
+    },
+    {
+      "file": "src/components/LeadAiFollowupDraft.tsx",
+      "line": 140,
+      "text": "<div className=\"rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800\">"
+    },
+    {
+      "file": "src/components/LeadAiFollowupDraft.tsx",
+      "line": 152,
+      "text": "<div className=\"rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm text-emerald-800\">"
+    },
+    {
+      "file": "src/components/LeadAiNextAction.tsx",
+      "line": 152,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"rounded-xl bg-white\" disabled={disabled}>"
+    },
+    {
+      "file": "src/components/LeadAiNextAction.tsx",
+      "line": 173,
+      "text": "<div className=\"rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600\">"
+    },
+    {
+      "file": "src/components/LeadAiNextAction.tsx",
+      "line": 180,
+      "text": "<div className=\"rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800\">"
+    },
+    {
+      "file": "src/components/LeadAiNextAction.tsx",
+      "line": 184,
+      "text": "<div className=\"rounded-xl border border-emerald-100 bg-white p-4\">"
+    },
+    {
+      "file": "src/components/PwaInstallPrompt.tsx",
+      "line": 153,
+      "text": "<div className=\"flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary\">"
+    },
+    {
+      "file": "src/components/PwaInstallPrompt.tsx",
+      "line": 173,
+      "text": "className=\"min-h-10 rounded-xl px-3 text-xs font-bold\""
+    },
+    {
+      "file": "src/components/PwaInstallPrompt.tsx",
+      "line": 185,
+      "text": "className=\"min-h-10 rounded-xl px-3 text-xs font-bold text-slate-500\""
+    },
+    {
+      "file": "src/components/PwaInstallPrompt.tsx",
+      "line": 196,
+      "text": "className=\"flex min-h-10 min-w-10 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700\""
+    },
+    {
+      "file": "src/components/QuickAiCapture.tsx",
+      "line": 280,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"rounded-xl cf-command-action cf-command-action--ai\" data-cf-command-action=\"ai\" disabled={!workspaceReady}>"
+    },
+    {
+      "file": "src/components/topic-contact-picker.tsx",
+      "line": 74,
+      "text": "<div className=\"absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border bg-white p-1 shadow-xl\">"
+    },
+    {
+      "file": "src/components/ui/card.tsx",
+      "line": 11,
+      "text": "\"rounded-xl border bg-card text-card-foreground shadow-sm\","
+    },
+    {
+      "file": "src/components/ui-system/OperatorMetricToneRuntime.tsx",
+      "line": 84,
+      "text": "|| element.closest<HTMLElement>('.rounded-xl')"
+    },
+    {
+      "file": "src/components/ui-system/PageHero.tsx",
+      "line": 29,
+      "text": "{actions ? <div className=\"head-actions flex flex-wrap items-center gap-2 md:justify-end\">{actions}</div> : null}"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1257,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1258,
+      "text": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\">"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 484,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 485,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"btn soft-blue\">"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 242,
+      "text": "<div className=\"inline-flex items-center justify-center w-12 h-12 bg-white/20 rounded-xl mb-4\">"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 285,
+      "text": "<div className=\"mb-4 p-3 bg-slate-100 rounded-xl text-sm space-y-2\">"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 537,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 538,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"btn soft-blue\">? Zapytaj AI</Button>"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "line": 296,
+      "text": "<div className=\"bg-blue-50 p-3 rounded-xl\">"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "line": 309,
+      "text": "<div className=\"bg-amber-50 p-3 rounded-xl\">"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "line": 322,
+      "text": "<div className=\"bg-blue-50 p-3 rounded-xl\">"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "line": 348,
+      "text": "<div className=\"bg-green-50 p-3 rounded-xl\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 694,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 695,
+      "text": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\" data-stage26-leads-head-ai=\"true\">"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 189,
+      "text": "<Button type=\"submit\" className=\"h-12 w-full rounded-xl\" disabled={loading || !authConfig.configured}>{loading ? <Loader2 className=\"h-5 w-5 animate-spin\" /> : 'Wyślij link'}</Button>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 219,
+      "text": "<TabsTrigger value=\"login\" className=\"rounded-xl\">Logowanie</TabsTrigger>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 220,
+      "text": "<TabsTrigger value=\"register\" className=\"rounded-xl\">Rejestracja</TabsTrigger>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 242,
+      "text": "<Button type=\"submit\" className=\"h-11 w-full rounded-xl font-semibold\" disabled={loading || !authConfig.configured}>{loading ? <Loader2 className=\"h-5 w-5 animate-spin\" /> : 'Zaloguj się'}</Button>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 255,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"rounded-xl bg-white\" onClick={handleOpenExternalBrowserHint}>Otwórz w Chrome albo Safari</Button>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 256,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"rounded-xl bg-white\" onClick={() => void handleCopyLoginUrl()}>Kopiuj link</Button>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 261,
+      "text": "<Button variant=\"outline\" onClick={handleGoogleLogin} className=\"flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50\" disabled={loading || !authConfig.configured}>"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 290,
+      "text": "<Button type=\"submit\" className=\"h-11 w-full rounded-xl font-semibold\" disabled={loading || !authConfig.configured}>{loading ? <Loader2 className=\"h-5 w-5 animate-spin\" /> : 'Utwórz konto'}</Button>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1068,
+      "text": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() => openEditTask(task)}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1071,
+      "text": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() => rescheduleTask(task, 1, 'hour')}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1074,
+      "text": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() => rescheduleTask(task, 1, 'day')}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1077,
+      "text": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} disabled={done} onClick={() => rescheduleTask(task, 1, 'week')}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1080,
+      "text": "<Button variant={done ? 'outline' : 'default'} size=\"sm\" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() => toggleTask(task.id, task.status)}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1083,
+      "text": "<Button variant=\"outline\" size=\"sm\" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() => deleteTask(task.id)}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1100,
+      "text": "<div className=\"head-actions\">"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1386,
+      "text": "<Input placeholder=\"Szukaj po tytule, typie, leadzie albo sprawie...\" className=\"pl-10 rounded-xl bg-slate-50 border-none h-11\" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 489,
+      "text": "<div className=\"cf-page-hero-actions flex flex-wrap gap-2\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 306,
+      "text": "target.closest('.rounded-xl'),"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 651,
+      "text": "<div className=\"rounded-xl bg-slate-100 p-2 text-slate-500 transition-colors group-hover:bg-primary group-hover:text-white\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 836,
+      "text": "className=\"relative z-50 mt-3 flex w-full max-w-full flex-wrap items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 p-2 pointer-events-auto isolate\""
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 1343,
+      "text": "className=\"rounded-xl border border-red-100 bg-white p-2 text-sm transition hover:border-red-200 hover:bg-red-50\""
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 1364,
+      "text": "className=\"rounded-xl border border-emerald-100 bg-white p-2 text-sm transition hover:border-emerald-200 hover:bg-emerald-50\""
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2561,
+      "text": "<div className=\"rounded-xl bg-amber-50 p-2 text-amber-600 transition-colors group-hover:bg-primary group-hover:text-white\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2960,
+      "text": "<div className=\"rounded-xl border border-slate-200 p-3\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2964,
+      "text": "<div className=\"rounded-xl border border-slate-200 p-3\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 538,
+      "text": "return (header.closest('[data-cf-today-section-card=\"true\"], .rounded-xl.border, .rounded-xl, section') || header.parentElement) as HTMLElement | null;"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 777,
+      "text": "refreshParent.classList.add('cf-section-head-action-stack', 'cf-today-section-head-action-stack');"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 782,
+      "text": "(refreshParent.closest('.cf-section-head-actions') as HTMLElement | null) ||"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 786,
+      "text": "actionRoot.classList.add('cf-section-head-actions', 'cf-today-section-head-actions');"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1258,
+      "text": "<div className=\"cf-section-head-actions flex flex-col items-end gap-2\">"
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20,
+      "text": "const FULL_CLOSEFLOW_HTML = \"<!doctype html>\\n<html lang=\\\"pl\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\" />\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\" />\\n  <title>CloseFlow - pełny kierunek UI</title>\\n  <style>\\n    :root {\\n      --bg: #f4f6f8;\\n      --bg-2: #eef2f6;\\n"
+    }
+  ]
+}
