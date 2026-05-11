@@ -287,3 +287,67 @@
   }
 }
 
+/* CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW */
+.main-clients-html .client-row.cf-client-row-inline {
+  display: grid;
+  grid-template-columns:
+    minmax(2.25rem, auto)
+    minmax(280px, 1.5fr)
+    minmax(120px, 0.45fr)
+    minmax(260px, 0.95fr)
+    auto;
+  align-items: center;
+  gap: 0.875rem;
+}
+
+.main-clients-html .cf-client-main-cell {
+  min-width: 0;
+}
+
+.main-clients-html .cf-client-next-action-inline {
+  min-width: 0;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.main-clients-html .cf-client-row-actions {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 1200px) {
+  .main-clients-html .client-row.cf-client-row-inline {
+    grid-template-columns:
+      minmax(2.25rem, auto)
+      minmax(240px, 1fr)
+      minmax(220px, 0.9fr);
+  }
+
+  .main-clients-html .cf-client-cases-cell,
+  .main-clients-html .cf-client-row-actions {
+    grid-column: 2 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .main-clients-html .client-row.cf-client-row-inline {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .main-clients-html .cf-client-next-action-inline,
+  .main-clients-html .cf-client-cases-cell,
+  .main-clients-html .cf-client-row-actions {
+    grid-column: 2 / -1;
+  }
+
+  .main-clients-html .cf-client-row-actions {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
