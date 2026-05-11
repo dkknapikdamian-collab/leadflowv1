@@ -13,7 +13,7 @@ import {
   type NormalizedFinancePayment,
   type PaymentStatus,
   type PaymentType,
-} from './finance-types';
+} from './finance-types.js';
 
 export const CLOSEFLOW_FINANCE_NORMALIZE_FIN1 = 'CLOSEFLOW_FINANCE_NORMALIZE_FIN1';
 export const CLOSEFLOW_FINANCE_NORMALIZE_FIN1_COMPAT = 'CLOSEFLOW_FIN1_COMPAT_NORMALIZE_COMMISSION_CONFIG';

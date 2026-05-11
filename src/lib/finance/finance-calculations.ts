@@ -8,7 +8,7 @@ import {
   type FinanceSnapshotInput,
   type FinanceSummary,
   type NormalizedFinancePayment,
-} from './finance-types';
+} from './finance-types.js';
 import {
   normalizeCommissionBase,
   normalizeCommissionMode,
@@ -17,7 +17,7 @@ import {
   normalizeFinanceDate,
   normalizeFinancePayments,
   normalizeMoneyAmount,
-} from './finance-normalize';
+} from './finance-normalize.js';
 
 export const CLOSEFLOW_FINANCE_CALCULATIONS_FIN1 = 'CLOSEFLOW_FINANCE_CALCULATIONS_FIN1';
 export const CLOSEFLOW_FINANCE_CALCULATIONS_FIN1_COMPAT = 'CLOSEFLOW_FIN1_COMPAT_CASE_SETTLEMENT_PANEL_EXPORTS';
