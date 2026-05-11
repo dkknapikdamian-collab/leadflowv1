@@ -1,0 +1,157 @@
+/* CLOSEFLOW_PAGE_HEADER_ACTION_SEMANTICS_PACKET1_2026_05_11
+   owner: CloseFlow Visual System
+   purpose: one source of truth for header/global action color semantics.
+   semantics:
+   - neutral/default: white background + blue text
+   - ai: white/violet treatment
+   - danger/delete/trash: red tied to trash tokens
+*/
+:root {
+  --cf-page-header-neutral-text: #2563eb;
+  --cf-page-header-neutral-text-hover: #1d4ed8;
+  --cf-page-header-neutral-bg: #ffffff;
+  --cf-page-header-neutral-bg-hover: #eff6ff;
+  --cf-page-header-neutral-border: #bfdbfe;
+  --cf-page-header-neutral-border-hover: #93c5fd;
+  --cf-page-header-neutral-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);
+
+  --cf-page-header-ai-text: #7c3aed;
+  --cf-page-header-ai-text-hover: #6d28d9;
+  --cf-page-header-ai-bg: #ffffff;
+  --cf-page-header-ai-bg-hover: #f5f3ff;
+  --cf-page-header-ai-border: #ddd6fe;
+  --cf-page-header-ai-border-hover: #c4b5fd;
+  --cf-page-header-ai-shadow: 0 8px 18px rgba(124, 58, 237, 0.12);
+
+  --cf-page-header-danger-text: var(--cf-trash-icon-color, #dc2626);
+  --cf-page-header-danger-text-hover: var(--cf-trash-icon-hover-color, #b91c1c);
+  --cf-page-header-danger-bg: #ffffff;
+  --cf-page-header-danger-bg-hover: #fef2f2;
+  --cf-page-header-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.22));
+  --cf-page-header-danger-border-hover: var(--cf-trash-icon-hover-border, rgba(220, 38, 38, 0.34));
+  --cf-page-header-danger-shadow: 0 8px 18px rgba(220, 38, 38, 0.08);
+
+  --cf-page-header-action-height: 38px;
+  --cf-page-header-action-radius: 14px;
+  --cf-page-header-action-gap: 8px;
+  --cf-page-header-actions-gap: 10px;
+}
+
+/* Base action layout for top page headers and Today header actions */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+#root .cf-section-head-actions.cf-today-section-head-actions,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+#root .cf-section-head-action-stack {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: var(--cf-page-header-actions-gap) !important;
+}
+
+/* Base button skin */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action),
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn),
+#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn),
+#root [data-global-quick-actions="true"] :is(button,a.btn,a[role="button"],.btn) {
+  min-height: var(--cf-page-header-action-height) !important;
+  height: var(--cf-page-header-action-height) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: var(--cf-page-header-action-gap) !important;
+  border-radius: var(--cf-page-header-action-radius) !important;
+  border: 1px solid var(--cf-page-header-neutral-border) !important;
+  background: var(--cf-page-header-neutral-bg) !important;
+  background-color: var(--cf-page-header-neutral-bg) !important;
+  background-image: none !important;
+  color: var(--cf-page-header-neutral-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-neutral-text) !important;
+  box-shadow: var(--cf-page-header-neutral-shadow) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action):hover,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn):hover,
+#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn):hover,
+#root [data-global-quick-actions="true"] :is(button,a.btn,a[role="button"],.btn):hover {
+  background: var(--cf-page-header-neutral-bg-hover) !important;
+  color: var(--cf-page-header-neutral-text-hover) !important;
+  -webkit-text-fill-color: var(--cf-page-header-neutral-text-hover) !important;
+  border-color: var(--cf-page-header-neutral-border-hover) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action) svg,
+#root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack :is(button,a.btn,a[role="button"],.btn) svg,
+#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role="button"],.btn) svg,
+#root [data-global-quick-actions="true"] :is(button,a.btn,a[role="button"],.btn) svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+/* AI semantic */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"],
+#root [data-global-quick-actions="true"] [data-cf-command-action="ai"],
+#root [data-global-quick-actions="true"] .cf-command-action--ai {
+  border-color: var(--cf-page-header-ai-border) !important;
+  background: var(--cf-page-header-ai-bg) !important;
+  background-color: var(--cf-page-header-ai-bg) !important;
+  color: var(--cf-page-header-ai-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-ai-text) !important;
+  box-shadow: var(--cf-page-header-ai-shadow) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"]:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"]:hover,
+#root [data-global-quick-actions="true"] [data-cf-command-action="ai"]:hover,
+#root [data-global-quick-actions="true"] .cf-command-action--ai:hover {
+  border-color: var(--cf-page-header-ai-border-hover) !important;
+  background: var(--cf-page-header-ai-bg-hover) !important;
+  color: var(--cf-page-header-ai-text-hover) !important;
+  -webkit-text-fill-color: var(--cf-page-header-ai-text-hover) !important;
+}
+
+/* Danger semantic follows trash tokens */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,
+#root [data-global-quick-actions="true"] [data-cf-command-action="danger"] {
+  border-color: var(--cf-page-header-danger-border) !important;
+  background: var(--cf-page-header-danger-bg) !important;
+  background-color: var(--cf-page-header-danger-bg) !important;
+  color: var(--cf-page-header-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-page-header-danger-text) !important;
+  box-shadow: var(--cf-page-header-danger-shadow) !important;
+}
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"]:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger:hover,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button:hover,
+#root [data-global-quick-actions="true"] [data-cf-command-action="danger"]:hover {
+  border-color: var(--cf-page-header-danger-border-hover) !important;
+  background: var(--cf-page-header-danger-bg-hover) !important;
+  color: var(--cf-page-header-danger-text-hover) !important;
+  -webkit-text-fill-color: var(--cf-page-header-danger-text-hover) !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-actions,
+  #root .cf-section-head-actions.cf-today-section-head-actions,
+  #root [data-p0-today-stable-rebuild="true"] .cf-section-head-action-stack,
+  #root .cf-section-head-action-stack {
+    justify-content: flex-start !important;
+  }
+}

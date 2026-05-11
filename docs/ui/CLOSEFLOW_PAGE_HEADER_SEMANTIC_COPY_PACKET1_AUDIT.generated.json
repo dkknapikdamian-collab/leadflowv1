@@ -1,0 +1,1954 @@
+{
+  "count": 377,
+  "byFile": {
+    "src/styles/admin-tools.css": 1,
+    "src/styles/closeflow-action-tokens.css": 24,
+    "src/styles/closeflow-command-actions-source-truth.css": 31,
+    "src/styles/closeflow-modal-visual-system.css": 6,
+    "src/styles/closeflow-page-header-action-semantics-packet1.css": 24,
+    "src/styles/closeflow-page-header-card-source-truth.css": 54,
+    "src/styles/closeflow-page-header-copy-source-truth.css": 6,
+    "src/styles/closeflow-page-header.css": 65,
+    "src/styles/closeflow-stage16c-tasks-cases-parity.css": 8,
+    "src/styles/stage31-full-mobile-polish.css": 9,
+    "src/styles/stage34-calendar-readability-status-forms.css": 4,
+    "src/styles/stage36-unified-light-pages.css": 2,
+    "src/styles/stage39-page-headers-copy-visual-system.css": 7,
+    "src/styles/stage40-page-header-action-overflow-hardening.css": 9,
+    "src/styles/visual-stage01-shell.css": 1,
+    "src/styles/visual-stage05-clients.css": 3,
+    "src/styles/visual-stage17-today-hard-1to1.css": 4,
+    "src/styles/visual-stage18-leads-hard-1to1.css": 3,
+    "src/styles/visual-stage20-tasks-safe-css.css": 2,
+    "src/styles/visual-stage21-today-final-lock.css": 10,
+    "src/styles/visual-stage22-leads-final-lock.css": 7,
+    "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css": 3,
+    "src/styles/visual-stage26-leads-visual-alignment-fix.css": 6,
+    "src/styles/visual-stage27-cases-vnext.css": 3,
+    "src/styles/visual-stage28-tasks-vnext.css": 1,
+    "src/styles/visual-stage29-calendar-vnext.css": 2,
+    "src/components/admin-tools/AdminDebugToolbar.tsx": 1,
+    "src/components/entity-actions.tsx": 3,
+    "src/components/GlobalQuickActions.tsx": 1,
+    "src/components/LeadAiFollowupDraft.tsx": 1,
+    "src/components/LeadAiNextAction.tsx": 1,
+    "src/components/sidebar-mini-calendar.tsx": 1,
+    "src/components/topic-contact-picker.tsx": 1,
+    "src/components/ui-system/PageHero.tsx": 1,
+    "src/components/ui-system/semantic-visual-registry.ts": 3,
+    "src/components/ui-system/StatusPill.tsx": 1,
+    "src/components/ui-system/SurfaceCard.tsx": 1,
+    "src/pages/Activity.tsx": 2,
+    "src/pages/AdminAiSettings.tsx": 3,
+    "src/pages/AiDrafts.tsx": 2,
+    "src/pages/Billing.tsx": 1,
+    "src/pages/Calendar.tsx": 4,
+    "src/pages/Cases.tsx": 4,
+    "src/pages/ClientPortal.tsx": 2,
+    "src/pages/Clients.tsx": 3,
+    "src/pages/Dashboard.tsx": 1,
+    "src/pages/Leads.tsx": 3,
+    "src/pages/Login.tsx": 3,
+    "src/pages/NotificationsCenter.tsx": 2,
+    "src/pages/ResponseTemplates.tsx": 5,
+    "src/pages/Settings.tsx": 1,
+    "src/pages/SupportCenter.tsx": 1,
+    "src/pages/Tasks.tsx": 2,
+    "src/pages/TasksStable.tsx": 2,
+    "src/pages/Templates.tsx": 9,
+    "src/pages/Today.tsx": 5,
+    "src/pages/TodayStable.tsx": 6,
+    "src/pages/UiPreviewVNextFull.tsx": 1,
+    "src/lib/access.ts": 2,
+    "src/lib/clients.ts": 1,
+    "src/lib/domain-statuses.ts": 1,
+    "src/lib/scheduling.ts": 1
+  },
+  "hits": [
+    {
+      "file": "src/styles/admin-tools.css",
+      "line": 368,
+      "text": ".admin-tool-quick-editor-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 36,
+      "text": ".cf-entity-action-danger,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 37,
+      "text": ".cf-entity-action-danger svg {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 43,
+      "text": ".cf-entity-action-danger {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 48,
+      "text": ".cf-entity-action-danger:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 49,
+      "text": ".cf-entity-action-danger:focus-visible {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 56,
+      "text": ".cf-entity-action-danger:focus-visible {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 118,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 119,
+      "text": ".cf-section-head-actions.cf-today-section-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 134,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 135,
+      "text": ".cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 142,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 143,
+      "text": ".cf-section-head-action-stack > * {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 148,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 149,
+      "text": ".cf-section-head-actions.cf-today-section-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 155,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 156,
+      "text": ".cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 160,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 161,
+      "text": ".cf-section-head-action-stack > * {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 179,
+      "text": ".cf-trash-action-button {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 185,
+      "text": ".cf-trash-action-button:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 186,
+      "text": ".cf-trash-action-button:focus-visible {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 193,
+      "text": ".cf-trash-action-button .cf-trash-action-icon {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 215,
+      "text": ".cf-case-detail-delete-shortcut .cf-trash-action-button {"
+    },
+    {
+      "file": "src/styles/closeflow-action-tokens.css",
+      "line": 229,
+      "text": ".cf-case-detail-delete-shortcut .cf-trash-action-button {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 145,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 147,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 171,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 172,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 177,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .notifications-header-actions, .cf-section-head-action-stack) {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 189,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action).soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 191,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action).bg-green-600,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 192,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action).bg-emerald-600 {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 240,
+      "text": ".cf-section-head-actions and .cf-section-head-action-stack were explicitly set to flex-direction: column. */"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 241,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 242,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 243,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 244,
+      "text": ".cf-section-head-actions.cf-today-section-head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 254,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 255,
+      "text": "#root .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 256,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 257,
+      "text": ".cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 266,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 267,
+      "text": "#root .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 268,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack > *,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 269,
+      "text": ".cf-section-head-action-stack > * {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 274,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 275,
+      "text": "#root .cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 276,
+      "text": "[data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn),"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 277,
+      "text": ".cf-section-head-action-stack :is(button, a.btn, a[role=\"button\"], .btn) {"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 299,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 301,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 312,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 313,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 314,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-command-actions-source-truth.css",
+      "line": 315,
+      "text": "#root .cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 237,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] button.bg-green-600,"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 238,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] button.bg-emerald-600 {"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 249,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] button.bg-green-600:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 250,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] button.bg-emerald-600:hover {"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 320,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] .bg-green-50,"
+    },
+    {
+      "file": "src/styles/closeflow-modal-visual-system.css",
+      "line": 321,
+      "text": "[data-closeflow-modal-visual-system=\"true\"] .bg-emerald-50 {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 42,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 43,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 51,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 52,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 53,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 54,
+      "text": "#root .cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 65,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button,a.btn,a[role=\"button\"],.btn),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 66,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role=\"button\"],.btn),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 84,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button,a.btn,a[role=\"button\"],.btn):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 85,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role=\"button\"],.btn):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 93,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack :is(button,a.btn,a[role=\"button\"],.btn) svg,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 94,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions :is(button,a.btn,a[role=\"button\"],.btn) svg,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 102,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 114,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .btn.soft-blue:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 126,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-entity-action-danger,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 127,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 137,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-entity-action-danger:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 138,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-trash-action-button:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 148,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 149,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 151,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 152,
+      "text": "#root .cf-section-head-actions.cf-today-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 153,
+      "text": "#root [data-p0-today-stable-rebuild=\"true\"] .cf-section-head-action-stack,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-action-semantics-packet1.css",
+      "line": 154,
+      "text": "#root .cf-section-head-action-stack {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 23,
+      "text": "--cf-page-header-description: #64748b;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 25,
+      "text": "--cf-page-header-description-size: 13px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 151,
+      "text": "color: var(--cf-page-header-description) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 152,
+      "text": "-webkit-text-fill-color: var(--cf-page-header-description) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 153,
+      "text": "font-size: var(--cf-page-header-description-size) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 191,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 192,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 234,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .bg-emerald-600,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 235,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .bg-green-600 {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 245,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 258,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-entity-action-danger,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 259,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 290,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 291,
+      "text": ".cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 328,
+      "text": "--cf-page-header-description-color: #64748b;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 329,
+      "text": "--cf-page-header-description-font-size: 13px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 330,
+      "text": "--cf-page-header-description-font-weight: 600;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 331,
+      "text": "--cf-page-header-description-line-height: 1.45;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 332,
+      "text": "--cf-page-header-description-margin-top: 8px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 333,
+      "text": "--cf-page-header-description-max-width: 760px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 401,
+      "text": "max-width: var(--cf-page-header-description-max-width) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 402,
+      "text": "margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 403,
+      "text": "color: var(--cf-page-header-description-color) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 404,
+      "text": "-webkit-text-fill-color: var(--cf-page-header-description-color) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 405,
+      "text": "font-size: var(--cf-page-header-description-font-size) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 406,
+      "text": "font-weight: var(--cf-page-header-description-font-weight) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 407,
+      "text": "line-height: var(--cf-page-header-description-line-height) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 415,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 416,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 441,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 442,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 472,
+      "text": "--cf-page-header-description-color: #64748b;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 473,
+      "text": "--cf-page-header-description-font-size: 13px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 474,
+      "text": "--cf-page-header-description-font-weight: 650;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 475,
+      "text": "--cf-page-header-description-line-height: 1.45;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 476,
+      "text": "--cf-page-header-description-margin-top: 9px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 477,
+      "text": "--cf-page-header-description-max-width: 780px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 512,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-header-description {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 514,
+      "text": "max-width: var(--cf-page-header-description-max-width) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 515,
+      "text": "margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 516,
+      "text": "color: var(--cf-page-header-description-color) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 517,
+      "text": "-webkit-text-fill-color: var(--cf-page-header-description-color) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 518,
+      "text": "font-size: var(--cf-page-header-description-font-size) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 519,
+      "text": "font-weight: var(--cf-page-header-description-font-weight) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 520,
+      "text": "line-height: var(--cf-page-header-description-line-height) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 568,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 569,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 589,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 590,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 595,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 596,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-aside .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 642,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-header-description {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 653,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-card-source-truth.css",
+      "line": 654,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-copy-source-truth.css",
+      "line": 17,
+      "text": "--cf-page-header-description-margin-top: 8px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-copy-source-truth.css",
+      "line": 18,
+      "text": "--cf-page-header-description-max-width: 760px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-copy-source-truth.css",
+      "line": 52,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header .cf-page-header-description,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-copy-source-truth.css",
+      "line": 57,
+      "text": "margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-copy-source-truth.css",
+      "line": 58,
+      "text": "max-width: var(--cf-page-header-description-max-width) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-copy-source-truth.css",
+      "line": 67,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"copy\"] > .cf-page-header-description + .cf-page-header-description,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 107,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 111,
+      "text": ".cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 112,
+      "text": ".cf-page-hero-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 144,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 148,
+      "text": ".cf-section-head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 149,
+      "text": ".cf-page-hero-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 175,
+      "text": "--cf-page-header-description-size: 14px;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 241,
+      "text": "font-size: var(--cf-page-header-description-size) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 272,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 273,
+      "text": ".cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 277,
+      "text": ".settings-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 278,
+      "text": ".support-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 279,
+      "text": ".billing-header .head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 288,
+      "text": ".page-head .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 289,
+      "text": ".page-head .head-actions button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 290,
+      "text": ".page-head .head-actions a,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 291,
+      "text": ".cf-page-hero-actions .btn,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 292,
+      "text": ".cf-page-hero-actions button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 293,
+      "text": ".cf-page-hero-actions a,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 323,
+      "text": ".page-head .head-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 324,
+      "text": ".page-head .head-actions button[type=\"submit\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 325,
+      "text": ".page-head .head-actions button[class*=\"bg-primary\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 326,
+      "text": ".page-head .head-actions button[class*=\"bg-green\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 327,
+      "text": ".page-head .head-actions button[class*=\"bg-emerald\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 328,
+      "text": ".cf-page-hero-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 329,
+      "text": ".cf-page-hero-actions button[type=\"submit\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 330,
+      "text": ".cf-page-hero-actions button[class*=\"bg-primary\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 331,
+      "text": ".cf-page-hero-actions button[class*=\"bg-green\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 332,
+      "text": ".cf-page-hero-actions button[class*=\"bg-emerald\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 337,
+      "text": ".cf-html-view > header:first-child > div:last-child button[class*=\"bg-green\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 338,
+      "text": ".cf-html-view > header:first-child > div:last-child button[class*=\"bg-emerald\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 346,
+      "text": ".page-head .head-actions .btn.primary:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 347,
+      "text": ".page-head .head-actions button[type=\"submit\"]:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 348,
+      "text": ".cf-page-hero-actions .btn.primary:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 349,
+      "text": ".cf-page-hero-actions button[type=\"submit\"]:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 357,
+      "text": ".page-head .head-actions .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 358,
+      "text": ".page-head .head-actions a[href*=\"ai\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 359,
+      "text": ".page-head .head-actions button[aria-label*=\"AI\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 360,
+      "text": ".cf-page-hero-actions .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 361,
+      "text": ".cf-page-hero-actions a[href*=\"ai\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 362,
+      "text": ".cf-page-hero-actions button[aria-label*=\"AI\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 376,
+      "text": ".page-head .head-actions .btn.soft-blue:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 377,
+      "text": ".page-head .head-actions a[href*=\"ai\"]:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 378,
+      "text": ".cf-page-hero-actions .btn.soft-blue:hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 379,
+      "text": ".cf-page-hero-actions a[href*=\"ai\"]:hover {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 384,
+      "text": ".page-head .head-actions .btn:not(.primary):not(.soft-blue),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 385,
+      "text": ".page-head .head-actions button:not([type=\"submit\"]):not([class*=\"bg-primary\"]):not([class*=\"bg-green\"]):not([class*=\"bg-emerald\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 386,
+      "text": ".page-head .head-actions a:not(.primary):not(.soft-blue):not([href*=\"ai\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 387,
+      "text": ".cf-page-hero-actions .btn:not(.primary):not(.soft-blue),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 388,
+      "text": ".cf-page-hero-actions button:not([type=\"submit\"]):not([class*=\"bg-primary\"]):not([class*=\"bg-green\"]):not([class*=\"bg-emerald\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 389,
+      "text": ".cf-page-hero-actions a:not(.primary):not(.soft-blue):not([href*=\"ai\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 403,
+      "text": ".page-head .head-actions .btn:not(.primary):not(.soft-blue):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 404,
+      "text": ".page-head .head-actions button:not([type=\"submit\"]):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 405,
+      "text": ".cf-page-hero-actions .btn:not(.primary):not(.soft-blue):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 406,
+      "text": ".cf-page-hero-actions button:not([type=\"submit\"]):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 414,
+      "text": ".page-head .head-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 415,
+      "text": ".cf-page-hero-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 416,
+      "text": ".ai-drafts-header-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 417,
+      "text": ".activity-header-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 418,
+      "text": ".notifications-header-actions .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 419,
+      "text": ".settings-header .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 420,
+      "text": ".support-header .cf-trash-action-button,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 421,
+      "text": ".billing-header .cf-trash-action-button {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 442,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header.css",
+      "line": 443,
+      "text": ".cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 61,
+      "text": "main[data-p0-tasks-stable-rebuild=\"true\"] .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 63,
+      "text": ".cf-html-view.main-cases-html > .page-head .head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 119,
+      "text": ".cf-html-view.main-cases-html .head-actions .btn {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 125,
+      "text": ".cf-html-view.main-cases-html .cf-entity-action-danger {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 145,
+      "text": "main[data-p0-tasks-stable-rebuild=\"true\"] .cf-page-hero-actions,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 147,
+      "text": ".cf-html-view.main-cases-html > .page-head .head-actions {"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 152,
+      "text": "main[data-p0-tasks-stable-rebuild=\"true\"] .cf-page-hero-actions > *,"
+    },
+    {
+      "file": "src/styles/closeflow-stage16c-tasks-cases-parity.css",
+      "line": 154,
+      "text": ".cf-html-view.main-cases-html > .page-head .head-actions > * {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 316,
+      "text": ".head-actions,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 346,
+      "text": ".head-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 377,
+      "text": ".head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 799,
+      "text": ".head-actions > .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 800,
+      "text": ".head-actions > button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 801,
+      "text": ".head-actions > a,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 902,
+      "text": ".head-actions > .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 903,
+      "text": ".head-actions > button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 904,
+      "text": ".head-actions > a,"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 171,
+      "text": "[data-radix-dialog-content] button[class*=\"bg-emerald\"],"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 172,
+      "text": "[data-radix-dialog-content] button[class*=\"bg-green\"],"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 173,
+      "text": "[role=\"dialog\"] button[class*=\"bg-emerald\"],"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 174,
+      "text": "[role=\"dialog\"] button[class*=\"bg-green\"] {"
+    },
+    {
+      "file": "src/styles/stage36-unified-light-pages.css",
+      "line": 37,
+      "text": "html[data-skin] [data-a16-template-light-ui] > header [class*=\"bg-emerald-50\"],"
+    },
+    {
+      "file": "src/styles/stage36-unified-light-pages.css",
+      "line": 38,
+      "text": "[data-a16-template-light-ui] > header [class*=\"bg-emerald-50\"] {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 4,
+      "text": "scope: existing .cf-html-view .page-head and .head-actions only."
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 48,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 57,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 66,
+      "text": ".cf-html-view .head-actions .btn svg,"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 77,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 92,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage39-page-headers-copy-visual-system.css",
+      "line": 96,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 4,
+      "text": "scope: .cf-html-view .page-head and .head-actions only."
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 29,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 33,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 40,
+      "text": ".cf-html-view .head-actions .btn span,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 47,
+      "text": ".cf-html-view .head-actions .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 48,
+      "text": ".cf-html-view .page-head .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 59,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 65,
+      "text": ".cf-html-view .head-actions .btn,"
+    },
+    {
+      "file": "src/styles/stage40-page-header-action-overflow-hardening.css",
+      "line": 74,
+      "text": ".cf-html-view .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 397,
+      "text": ".closeflow-visual-stage01 .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css",
+      "line": 61,
+      "text": ".cf-html-view.main-clients-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css",
+      "line": 92,
+      "text": ".cf-html-view.main-clients-html .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage05-clients.css",
+      "line": 267,
+      "text": ".cf-html-view.main-clients-html .head-actions { justify-content: flex-start; width: 100%; overflow-x: auto; }"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 230,
+      "text": ".main-today .head-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 238,
+      "text": ".cf-html-shell .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 239,
+      "text": ".closeflow-visual-stage01 .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 240,
+      "text": ".main-today .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 135,
+      "text": ".main-leads .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 555,
+      "text": ".main-leads .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 561,
+      "text": ".main-leads .head-actions button {"
+    },
+    {
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 233,
+      "text": ".cf-html-shell main[data-current-section=\"zadania\"] .bg-emerald-100,"
+    },
+    {
+      "file": "src/styles/visual-stage20-tasks-safe-css.css",
+      "line": 234,
+      "text": ".cf-html-shell main[data-current-section=\"zadania\"] .bg-green-50 {"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 111,
+      "text": ".cf-html-shell .main-today .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 112,
+      "text": ".cf-html-shell .main-today [data-visual-head-actions],"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 120,
+      "text": ".cf-html-shell .main-today .head-actions button,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 121,
+      "text": ".cf-html-shell .main-today .head-actions a,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 137,
+      "text": ".cf-html-shell .main-today .head-actions button[class*=\"primary\"],"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 138,
+      "text": ".cf-html-shell .main-today .head-actions button[class*=\"bg-primary\"],"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 460,
+      "text": ".cf-html-shell .main-today .bg-emerald-50,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 461,
+      "text": ".cf-html-shell .main-today .bg-green-50 {"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 624,
+      "text": ".cf-html-shell .main-today .head-actions,"
+    },
+    {
+      "file": "src/styles/visual-stage21-today-final-lock.css",
+      "line": 625,
+      "text": ".cf-html-shell .main-today [data-visual-head-actions],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 54,
+      "text": "/* HTML: .page-head + .kicker + h1 + .lead-copy + .head-actions */"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 448,
+      "text": ".cf-html-shell .main-leads .bg-emerald-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 449,
+      "text": ".cf-html-shell .main-leads .bg-green-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 450,
+      "text": ".closeflow-visual-stage01 .main-leads .bg-emerald-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 451,
+      "text": ".closeflow-visual-stage01 .main-leads .bg-green-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 452,
+      "text": "main[data-current-section=\"leads\"] .bg-emerald-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 453,
+      "text": "main[data-current-section=\"leads\"] .bg-green-50 {"
+    },
+    {
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "line": 52,
+      "text": ".cf-html-view.main-leads-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "line": 98,
+      "text": ".cf-html-view.main-leads-html .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
+      "line": 549,
+      "text": ".cf-html-view.main-leads-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 50,
+      "text": ".cf-html-view.main-leads-html .page-head .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 245,
+      "text": ".cf-html-view.main-leads-html .right-card .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 297,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .head-actions .btn.primary {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 304,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .head-actions .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 311,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .head-actions .btn:not(.primary):not(.soft-blue) {"
+    },
+    {
+      "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
+      "line": 407,
+      "text": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-ai-card .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "line": 54,
+      "text": ".cf-html-view.main-cases-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "line": 85,
+      "text": ".cf-html-view.main-cases-html .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage27-cases-vnext.css",
+      "line": 286,
+      "text": ".cf-html-view.main-cases-html .head-actions { justify-content: flex-start; width: 100%; overflow-x: auto; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 49,
+      "text": ".cf-html-view.main-tasks-html .head-actions { display: flex; gap: 8px; align-items: center; }"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 50,
+      "text": ".cf-html-view.main-calendar-html .head-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 367,
+      "text": ".cf-html-view.main-calendar-html .pill.soft-blue {"
+    },
+    {
+      "file": "src/components/admin-tools/AdminDebugToolbar.tsx",
+      "line": 496,
+      "text": "<div className=\"admin-tool-row admin-tool-quick-editor-head-actions\">"
+    },
+    {
+      "file": "src/components/entity-actions.tsx",
+      "line": 37,
+      "text": "danger: 'cf-entity-action-danger',"
+    },
+    {
+      "file": "src/components/entity-actions.tsx",
+      "line": 127,
+      "text": "buttonClass: 'cf-trash-action-button',"
+    },
+    {
+      "file": "src/components/entity-actions.tsx",
+      "line": 134,
+      "text": "return cn('cf-trash-action-button', className);"
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 87,
+      "text": "<Button asChild variant=\"outline\" className=\"btn soft-blue cf-command-action cf-command-action--ai\" data-global-quick-action=\"ai-drafts\" data-cf-command-action=\"ai\" data-feature-status=\"Beta\" title=\"Beta\">"
+    },
+    {
+      "file": "src/components/LeadAiFollowupDraft.tsx",
+      "line": 152,
+      "text": "<div className=\"rounded-xl border border-emerald-100 bg-emerald-50 p-3 text-sm text-emerald-800\">"
+    },
+    {
+      "file": "src/components/LeadAiNextAction.tsx",
+      "line": 141,
+      "text": "<Card className=\"border-emerald-100 bg-emerald-50/40 shadow-sm\" data-ai-next-action-card=\"true\">"
+    },
+    {
+      "file": "src/components/sidebar-mini-calendar.tsx",
+      "line": 33,
+      "text": "if (hasTask) return 'bg-emerald-100 text-emerald-800';"
+    },
+    {
+      "file": "src/components/topic-contact-picker.tsx",
+      "line": 24,
+      "text": "return 'border-emerald-200 bg-emerald-50 text-emerald-700';"
+    },
+    {
+      "file": "src/components/ui-system/PageHero.tsx",
+      "line": 29,
+      "text": "{actions ? <div className=\"head-actions flex flex-wrap items-center gap-2 md:justify-end\">{actions}</div> : null}"
+    },
+    {
+      "file": "src/components/ui-system/semantic-visual-registry.ts",
+      "line": 79,
+      "text": "surface: 'bg-emerald-50',"
+    },
+    {
+      "file": "src/components/ui-system/semantic-visual-registry.ts",
+      "line": 80,
+      "text": "surfaceStrong: 'bg-emerald-100',"
+    },
+    {
+      "file": "src/components/ui-system/semantic-visual-registry.ts",
+      "line": 82,
+      "text": "badge: 'bg-emerald-50 text-emerald-700 border border-emerald-200',"
+    },
+    {
+      "file": "src/components/ui-system/StatusPill.tsx",
+      "line": 14,
+      "text": "green: 'bg-emerald-50 text-emerald-700 border-emerald-100',"
+    },
+    {
+      "file": "src/components/ui-system/SurfaceCard.tsx",
+      "line": 19,
+      "text": "success: 'border-emerald-200 bg-emerald-50 text-emerald-950',"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 722,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.activity.description}</p>"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 731,
+      "text": "<StatShortcutCard label=\"Zadania\" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName=\"bg-emerald-50 text-emerald-500\" valueClassName=\"text-emerald-600\" />"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 26,
+      "text": "return <Badge className=\"bg-emerald-100 text-emerald-700 hover:bg-emerald-100\">Gotowe</Badge>;"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 138,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.adminAi.description}</p>"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 139,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.adminAi.description}</p>"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 1025,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 1026,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 508,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.billing.description}</p>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 385,
+      "text": "const doneActionClass = `${actionButtonClass} border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100`;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1255,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.calendar.description}</p>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1257,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1258,
+      "text": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\">"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 482,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.cases.description}</p>"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 484,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 485,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"btn soft-blue\">"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 739,
+      "text": "className=\"btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger\""
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 267,
+      "text": "item.status === 'accepted' ? 'bg-green-100 text-green-600' :"
+    },
+    {
+      "file": "src/pages/ClientPortal.tsx",
+      "line": 377,
+      "text": "<Button size=\"sm\" variant=\"outline\" className=\"gap-2 text-green-600 hover:bg-green-50\" onClick={() => handleDecision(item.id, 'accepted', item.title)}>"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 535,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.clients.description}</p>"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 537,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 538,
+      "text": "<Button type=\"button\" variant=\"outline\" className=\"btn soft-blue\">? Zapytaj AI</Button>"
+    },
+    {
+      "file": "src/pages/Dashboard.tsx",
+      "line": 348,
+      "text": "<div className=\"bg-green-50 p-3 rounded-xl\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 691,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.leads.description}</p>"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 694,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 695,
+      "text": "<Link to=\"/ai-drafts\" className=\"btn soft-blue\" data-stage26-leads-head-ai=\"true\">"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 295,
+      "text": "<div className=\"mt-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-4 py-3\">"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 319,
+      "text": "<div className=\"mt-5 grid gap-3 sm:grid-cols-3\">{HERO_POINTS.map((point) => (<div key={point} className=\"rounded-2xl border border-white/10 bg-white/5 p-3\"><div className=\"mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/15 text"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 321,
+      "text": "<div className=\"mt-6 pt-4\"><div className=\"rounded-3xl border border-emerald-400/20 bg-emerald-500/10 p-4\"><div className=\"flex items-start gap-3\"><div className=\"inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-emerald-400/15 text-eme"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 619,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.notifications.description}</p>"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 620,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.notifications.description}</p>"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 207,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 208,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 227,
+      "text": "<StatShortcutCard label=\"Zmienne\" value={stats.withVariables} icon={Copy} iconClassName=\"bg-emerald-500/12 text-emerald-600\" valueClassName=\"text-emerald-600\" />"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 270,
+      "text": "{(item.variables || []).length ? (item.variables || []).map((variable) => <Badge key={variable} className=\"bg-emerald-500/12 text-emerald-600 border-emerald-500/20\">{`{{${variable}}}`}</Badge>) : null}"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 302,
+      "text": "{(selectedTemplate.variables || []).map((variable) => <Badge key={variable} className=\"bg-emerald-500/12 text-emerald-600 border-emerald-500/20\">{`{{${variable}}}`}</Badge>)}"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 818,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.settings.description}</p>"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 430,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.support.description}</p>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1053,
+      "text": "{completedSection ? <Badge className=\"bg-emerald-100 text-emerald-700 hover:bg-emerald-100 text-[10px] uppercase font-bold h-5\">Archiwum</Badge> : null}"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1100,
+      "text": "<div className=\"head-actions\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 487,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.tasks.description}</p>"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 489,
+      "text": "<div className=\"cf-page-hero-actions flex flex-wrap gap-2\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 82,
+      "text": "{ value: 'access', label: 'Dostęp / login', badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700' },"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 137,
+      "text": "<StatShortcutCard label=\"Szablony\" value={stats.totalTemplates} icon={AiEntityIcon} iconClassName=\"bg-emerald-50 text-emerald-700\" />"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 140,
+      "text": "<StatShortcutCard label=\"Akceptacje\" value={stats.decisionItems} icon={CheckCircle2} iconClassName=\"bg-emerald-50 text-emerald-700\" valueClassName=\"text-emerald-600\" />"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 327,
+      "text": "<div className=\"inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 332,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.templates.description}</p>"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 341,
+      "text": "<Button className=\"rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700\" onClick={openCreateDialog}>"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 378,
+      "text": "<div className=\"rounded-3xl bg-emerald-50 p-4 text-emerald-700\"><FolderKanban className=\"h-8 w-8\" /></div>"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 385,
+      "text": "<Button className=\"rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700\" onClick={openCreateDialog}>"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 540,
+      "text": "<Button className=\"bg-emerald-600 text-white hover:bg-emerald-700\" onClick={() => void handleSaveTemplate()} disabled={saving}>"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 1278,
+      "text": "<Badge className=\"w-fit bg-emerald-50 text-emerald-700 border border-emerald-100\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 1354,
+      "text": "<div className=\"rounded-2xl border border-emerald-100 bg-emerald-50/60 p-3\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 1364,
+      "text": "className=\"rounded-xl border border-emerald-100 bg-white p-2 text-sm transition hover:border-emerald-200 hover:bg-emerald-50\""
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2785,
+      "text": "<Card key={`completed-${entry.id}`} className=\"border-emerald-100 bg-emerald-50/30\">"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2791,
+      "text": "<Badge className=\"bg-emerald-100 text-emerald-700 hover:bg-emerald-100 border-none\">Zamkni─Öte</Badge>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 777,
+      "text": "refreshParent.classList.add('cf-section-head-action-stack', 'cf-today-section-head-action-stack');"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 782,
+      "text": "(refreshParent.closest('.cf-section-head-actions') as HTMLElement | null) ||"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 786,
+      "text": "actionRoot.classList.add('cf-section-head-actions', 'cf-today-section-head-actions');"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1256,
+      "text": "<p data-cf-page-header-part=\"description\" className=\"cf-page-header-description\">{PAGE_HEADER_CONTENT.today.description}</p>"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1258,
+      "text": "<div className=\"cf-section-head-actions flex flex-col items-end gap-2\">"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 1451,
+      "text": "<SectionHeader title={todaySectionLabels.tasks} count={operatorTasks.length} icon={<CheckSquare className=\"h-5 w-5\" />} tone=\"bg-emerald-50 text-emerald-700\" collapsed={isCollapsed('tasks')} onToggle={() => toggleSectionCollapse('tasks')} />"
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20,
+      "text": "const FULL_CLOSEFLOW_HTML = \"<!doctype html>\\n<html lang=\\\"pl\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\" />\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\" />\\n  <title>CloseFlow - pełny kierunek UI</title>\\n  <style>\\n    :root {\\n      "
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 149,
+      "text": "toneClassName: 'text-emerald-500 bg-emerald-500/10',"
+    },
+    {
+      "file": "src/lib/access.ts",
+      "line": 150,
+      "text": "chipClassName: 'bg-emerald-500/12 text-emerald-600 dark:text-emerald-400',"
+    },
+    {
+      "file": "src/lib/clients.ts",
+      "line": 124,
+      "text": "return 'bg-emerald-500/12 text-emerald-500 border-emerald-500/20';"
+    },
+    {
+      "file": "src/lib/domain-statuses.ts",
+      "line": 229,
+      "text": "won: { value: 'won', label: 'Wygrany', color: 'bg-emerald-100 text-emerald-700' },"
+    },
+    {
+      "file": "src/lib/scheduling.ts",
+      "line": 689,
+      "text": "if (entry.kind === 'task') return 'bg-emerald-50 text-emerald-700 border-emerald-100';"
+    }
+  ]
+}

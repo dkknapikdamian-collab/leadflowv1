@@ -95,7 +95,7 @@ export const PAGE_HEADER_CONTENT: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
   adminAi: {
     kicker: 'AI ADMIN',
     title: 'Konfiguracja AI',
-    description: 'Ukryta warstwa diagnostyczna dla Quick Lead Capture. Użytkownik końcowy widzi tylko prosty szkic do potwierdzenia, nie providerów ani kluczy.',
+    description: 'Ukryta warstwa diagnostyczna dla Quick Lead Capture.',
   },
 };
 

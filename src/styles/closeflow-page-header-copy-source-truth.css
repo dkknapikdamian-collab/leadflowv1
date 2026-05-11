@@ -1,0 +1,82 @@
+/* CLOSEFLOW_PAGE_HEADER_COPY_SOURCE_TRUTH_PACKET1_2026_05_11
+   owner: CloseFlow Visual System
+   purpose: one source of truth for page-header copy placement and duplicate-description cleanup.
+   scope: [data-cf-page-header="true"].cf-page-header only.
+   rule: copy column on the left, actions on the right, title/description/kicker aligned like Today.
+*/
+:root {
+  --cf-page-header-copy-max-width: 760px;
+  --cf-page-header-copy-align: flex-start;
+  --cf-page-header-copy-justify: center;
+  --cf-page-header-copy-text-align: left;
+  --cf-page-header-copy-top-offset: 0px;
+
+  --cf-page-header-kicker-margin-bottom: 9px;
+  --cf-page-header-title-margin-top: 0;
+  --cf-page-header-title-max-width: 760px;
+  --cf-page-header-description-margin-top: 8px;
+  --cf-page-header-description-max-width: 760px;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: var(--cf-page-header-copy-align) !important;
+  justify-content: var(--cf-page-header-copy-justify) !important;
+  min-width: 0 !important;
+  max-width: var(--cf-page-header-copy-max-width) !important;
+  text-align: var(--cf-page-header-copy-text-align) !important;
+  transform: translateY(var(--cf-page-header-copy-top-offset)) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"] {
+  margin: 0 0 var(--cf-page-header-kicker-margin-bottom) 0 !important;
+  align-self: flex-start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+  margin: var(--cf-page-header-title-margin-top) 0 0 0 !important;
+  max-width: var(--cf-page-header-title-max-width) !important;
+  text-align: left !important;
+  align-self: flex-start !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .hint {
+  margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;
+  max-width: var(--cf-page-header-description-max-width) !important;
+  text-align: left !important;
+  align-self: flex-start !important;
+}
+
+/* Duplicate descriptions started appearing after source-truth + local-page copy mixed together.
+   First packet hides repeated sibling descriptions inside the same header copy area.
+*/
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > p + p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child > p + p,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child > p + p {
+  display: none !important;
+}
+
+/* Some legacy pages center their copy container or text. Force left alignment. */
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header * {
+  text-align: inherit;
+}
+
+@media (max-width: 900px) {
+  :root {
+    --cf-page-header-copy-max-width: 100%;
+  }
+}
