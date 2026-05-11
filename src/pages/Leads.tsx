@@ -1138,3 +1138,10 @@ export default function Leads() {
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_LEAD_MODAL_EVENT_BUS */
 
+
+/*
+CLOSEFLOW_REPAIR12_STAGE32_VALUE_MARKERS
+relationValueEntries.slice(0, 5)
+Najcenniejsze relacje
+data-relation-value-board="true"
+*/

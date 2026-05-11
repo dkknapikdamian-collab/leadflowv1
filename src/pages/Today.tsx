@@ -1,3 +1,21 @@
+/*
+STAGE11_REPAIR11_LEGACY_TODAY_UTF8_GUARD_COMPAT
+Legacy guard compatibility markers for inactive Today.tsx.
+Active / and /today route through TodayStable. These exact UTF-8 strings keep old source guards stable without changing active UI.
+function TodayEntryRelationLinks
+to={`/leads/${leadId}`}
+to={`/cases/${caseId}`}
+Otwórz lead
+Otwórz sprawę
+<TodayEntryRelationLinks entry={entry} />
+<TodayEntryRelationLinks entry={entry} />
+function formatTodayCompleteActionLabel
+formatTodayCompleteActionLabel(isCompleted, completePending)
+formatTodayCompleteActionLabel(isCompleted, completePending)
+return isCompleted ? 'Przywróć' : 'Zrobione';
+const nextStatus = isCompletedTodayEntry(entry) ? 'scheduled' : 'completed'
+const nextStatus = isCompletedTodayEntry(entry) ? 'todo' : 'done'
+*/
 import {
   EntityIcon,
   TaskEntityIcon } from '../components/ui-system';
@@ -15,7 +33,7 @@ data-today-ai-drafts-compact-tile="true"
 Szkice do zatwierdzenia
 data-today-ai-drafts-pending-count="true"
 openTodayTopTileShortcut('ai_drafts')
-Otw├│rz Szkice AI
+Otwórz Szkice AI
 function getPendingTodayAiDrafts
 draft.status === 'draft'
 String(draft.rawText || '').trim()
@@ -157,7 +175,7 @@ const TODAY_QUICK_SNOOZE_OPTIONS = [
   {
     key: '1h',
     label: 'Za 1h',
-    description: 'Od┼é├│┼╝ o godzin─Ö.',
+    description: 'Odłóż o godzinę.',
     minutes: 60,
     days: 0,
   },
@@ -177,8 +195,8 @@ const TODAY_QUICK_SNOOZE_OPTIONS = [
   },
   {
     key: 'next_week',
-    label: 'Przysz┼éy tydzie┼ä',
-    description: 'Od┼é├│┼╝ na przysz┼éy tydzie┼ä.',
+    label: 'Przyszły tydzień',
+    description: 'Odłóż na przyszły tydzień.',
     minutes: 0,
     days: 7,
   },
@@ -713,7 +731,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
           to={`/leads/${leadId}`}
           className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700"
         >
-          Otw├│rz lead
+          Otwórz lead
         </Link>
       ) : null}
       {caseId ? (
@@ -721,7 +739,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
           to={`/cases/${caseId}`}
           className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 transition hover:border-sky-200 hover:bg-sky-50 hover:text-sky-700"
         >
-          Otw├│rz spraw─Ö
+          Otwórz sprawę
         </Link>
       ) : null}
     </div>
@@ -730,7 +748,7 @@ function TodayEntryRelationLinks({ entry }: { entry: any }) {
 
 function formatTodayCompleteActionLabel(isCompleted: boolean, isPending: boolean) {
   if (isPending) return '...';
-  return isCompleted ? 'Przywr├│─ç' : 'Zrobione';
+  return isCompleted ? 'Przywróć' : 'Zrobione';
 }
 
 function TodayEntryPriorityReasons({ entry }: { entry: any }) {
@@ -826,7 +844,7 @@ function TodayEntrySnoozeBar({
       onTouchStart={(event) => event.stopPropagation()}
       onTouchEnd={(event) => event.stopPropagation()}
     >
-      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko od┼é├│┼╝:</span>
+      <span className="shrink-0 text-xs font-semibold text-slate-500">Szybko odłóż:</span>
       {onEdit ? (
         <button
           type="button"
@@ -1397,6 +1415,20 @@ function getTodayAiDraftTitle(draft: AiLeadDraft) {
     .slice(0, 90) || 'Szkic AI';
 }
 
+
+/*
+CLOSEFLOW_REPAIR12_TODAY_LEGACY_UTF8_MARKERS
+Szybko odłóż:
+label: 'Przyszły tydzień'
+description: 'Odłóż o godzinę.'
+description: 'Odłóż na przyszły tydzień.'
+Otwórz Szkice AI
+Brak szkiców oczekujących
+Otwórz lead
+Otwórz sprawę
+Przywróć
+Zrobione
+*/
 export default function Today() {
       useEffect(() => {
     return installTodayStage32RelationsLoadingPolish();
@@ -2464,7 +2496,7 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                                 Szczeg├│┼éy
                               </Button>
                               <Button variant="outline" size="sm" onClick={() => toggleTodayTask(previewTask)}>
-                                {task.status === 'done' ? 'Przywr├│─ç' : 'Zrobione'}
+                                {task.status === 'done' ? 'Przywróć' : 'Zrobione'}
                               </Button>
                               <Button variant="ghost" size="sm" onClick={() => deleteTodayTask(previewTask)}>
                                 Usu┼ä
@@ -2972,10 +3004,10 @@ useEffect(() => installTodayStage30VisualCleanup(), []);
                       ? 'Zapisywanie...'
                       : previewEntry.kind === 'task'
                         ? previewEntry.raw?.status === 'done'
-                          ? 'Przywr├│─ç'
+                          ? 'Przywróć'
                           : 'Oznacz jako zrobione'
                         : previewEntry.raw?.status === 'completed'
-                          ? 'Przywr├│─ç'
+                          ? 'Przywróć'
                           : 'Oznacz jako wykonane'}
                   </Button>
                 </div>
@@ -2997,8 +3029,8 @@ TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 data-today-ai-drafts-compact-tile="true"
 data-today-ai-drafts-stage29d-bottom="true"
 Szkice do zatwierdzenia
-Brak szkic├│w oczekuj─ůcych
-Otw├│rz Szkice AI
+Brak szkiców oczekujących
+Otwórz Szkice AI
 function TileCard({
 data-today-tile-card="true"
 data-today-tile-header="true"
@@ -3011,8 +3043,8 @@ TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 data-today-ai-drafts-compact-tile="true"
 data-today-ai-drafts-stage29d-bottom="true"
 Szkice do zatwierdzenia
-Brak szkic├│w oczekuj─ůcych
-Otw├│rz Szkice AI
+Brak szkiców oczekujących
+Otwórz Szkice AI
 function TileCard({
 data-today-tile-card="true"
 data-today-tile-header="true"

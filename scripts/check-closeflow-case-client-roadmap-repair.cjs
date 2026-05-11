@@ -35,7 +35,7 @@ function fail(message, details = []) {
 }
 
 function readText(filePath) {
-  return fs.readFileSync(filePath, 'utf8');
+  return fs.readFileSync(filePath, 'utf8').replace(/^\uFEFF/, '');
 }
 
 function assertPackageScript() {

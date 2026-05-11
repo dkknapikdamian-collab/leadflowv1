@@ -147,3 +147,20 @@ ready_to_remove_fallback
 ```
 
 Only after that should we remove fallback entries.
+
+
+## Repair12 auto evidence rows
+
+| leads | `contract_value` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| leads | `commission_mode` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| leads | `commission_base` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| leads | `commission_rate` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| leads | `commission_amount` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| leads | `commission_status` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| leads | `finance_note` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| cases | `contract_value` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| cases | `commission_mode` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| cases | `commission_base` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| cases | `commission_rate` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| cases | `commission_amount` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |
+| cases | `commission_status` | fallback_allowed_pending_migration_evidence | Auto-added by repair12 so every optional fallback column has an explicit evidence row before fallback removal. |

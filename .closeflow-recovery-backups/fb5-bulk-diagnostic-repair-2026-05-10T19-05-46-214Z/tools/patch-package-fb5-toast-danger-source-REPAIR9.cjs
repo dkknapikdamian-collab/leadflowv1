@@ -1,0 +1,10 @@
+const fs = require('fs');
+const path = require('path');
+const pkgPath = path.join(process.cwd(), 'package.json');
+const raw = fs.readFileSync(pkgPath, 'utf8').replace(/^\uFEFF/, '');
+const pkg = JSON.parse(raw);
+pkg.scripts = pkg.scripts || {};
+pkg.scripts['check:closeflow-fb5-toast-danger-source'] = 'node scripts/check-closeflow-fb5-toast-danger-source.cjs';
+pkg.scripts['check:closeflow-fb5-heavy-ui-guards'] = 'node scripts/check-closeflow-fb5-heavy-ui-guards.cjs';
+fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
+console.log('CLOSEFLOW_FB5_REPAIR9_PACKAGE_OK');

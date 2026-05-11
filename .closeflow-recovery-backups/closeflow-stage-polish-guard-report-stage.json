@@ -1,0 +1,8 @@
+{
+  "status": "OK",
+  "scope": "stage",
+  "filesChecked": 10,
+  "findingsCount": 0,
+  "reportPolicy": "runtime report is written outside tracked files",
+  "findings": []
+}

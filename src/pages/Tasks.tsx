@@ -76,10 +76,10 @@ import {
   fetchTasksFromSupabase,
   insertActivityToSupabase,
   insertTaskToSupabase,
-  subscribeCloseflowDataMutations,
   updateLeadInSupabase,
   updateTaskInSupabase
 } from '../lib/supabase-fallback';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { auth } from '../firebase';
 import {
   addDays,

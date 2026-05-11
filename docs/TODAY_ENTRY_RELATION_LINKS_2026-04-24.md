@@ -25,3 +25,9 @@ caseId -> Otwórz sprawę
 
 Zmiana dotyczy tylko prezentacji wpisów na ekranie Dziś.
 Nie zmienia SQL ani zapisu danych.
+
+## STAGE11_REPAIR11_TODAY_RELATION_LINKS_DOC_COMPAT
+
+- leadId -> Otwórz lead
+- caseId -> Otwórz sprawę
+- Today pozostaje pulpitem operacyjnym, a linki relacyjne mają prowadzić do źródłowego leada albo sprawy.

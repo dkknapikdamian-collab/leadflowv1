@@ -112,7 +112,7 @@
     },
     {
       "source": "/api/support",
-      "destination": "/api/support"
+      "destination": "/api/system?kind=support"
     },
     {
       "source": "/api/portal",
