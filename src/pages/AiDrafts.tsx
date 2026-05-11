@@ -82,6 +82,7 @@ import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
+import '../styles/closeflow-page-header-structure-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type DraftFilter =
   | 'all'

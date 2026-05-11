@@ -106,6 +106,7 @@ import '../styles/visual-stage22-event-form-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
+import '../styles/closeflow-page-header-structure-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 

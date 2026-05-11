@@ -32,6 +32,7 @@ import { toDateTimeLocalValue } from '../lib/scheduling';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
+import '../styles/closeflow-page-header-structure-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
@@ -481,7 +482,7 @@ export default function TasksStable() {
     <Layout>
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true" data-stage16c-tasks-cases-repair="tasks">
         <section data-cf-page-header="true" className="cf-page-header cf-page-hero rounded-[28px] border border-slate-100 bg-white p-5 shadow-sm sm:p-6">
-          <div className="cf-page-hero-layout flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="cf-page-header-row cf-page-hero-layout flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div data-cf-page-header-part="copy">
               <Badge data-cf-page-header-part="kicker" className="cf-page-hero-kicker mb-3 rounded-full bg-slate-50 text-slate-600 hover:bg-slate-50">{PAGE_HEADER_CONTENT.tasks.kicker}</Badge>
               <h1 data-cf-page-header-part="title" className="cf-page-hero-title text-2xl font-black tracking-tight text-slate-950 sm:text-3xl">{PAGE_HEADER_CONTENT.tasks.title}</h1>

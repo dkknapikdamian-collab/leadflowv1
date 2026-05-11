@@ -234,3 +234,8 @@
    Final source of truth for top page header layout/copy/actions. Must stay last.
 */
 @import '../closeflow-page-header-final-lock.css';
+
+/* CLOSEFLOW_PAGE_HEADER_STRUCTURE_LOCK_PACKET3_ENTRY
+   Final source of truth for kicker/title/description placement. Must stay last.
+*/
+@import '../closeflow-page-header-structure-lock.css';

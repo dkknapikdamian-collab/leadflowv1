@@ -19,6 +19,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
+import '../styles/closeflow-page-header-structure-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 

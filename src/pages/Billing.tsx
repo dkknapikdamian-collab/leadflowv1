@@ -69,6 +69,7 @@ import '../styles/visual-stage16-billing-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
 import '../styles/closeflow-page-header-final-lock.css';
+import '../styles/closeflow-page-header-structure-lock.css';
 import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';

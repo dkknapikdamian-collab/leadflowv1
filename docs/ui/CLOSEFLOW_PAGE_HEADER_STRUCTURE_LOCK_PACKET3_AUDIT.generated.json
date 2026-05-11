@@ -1,0 +1,181 @@
+{
+  "generatedAt": "2026-05-11T19:34:04.505Z",
+  "count": 35,
+  "rows": [
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 721,
+      "text": "<div data-cf-page-header-part=\"copy\">"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 722,
+      "text": "<p data-cf-page-header-part=\"kicker\" className=\"activity-kicker\">AKTYWNOŚĆ</p>"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 327,
+      "text": "<div className=\"cf-page-header-row flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 328,
+      "text": "<div data-cf-page-header-part=\"copy\" className=\"space-y-3\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 329,
+      "text": "<div data-cf-page-header-part=\"kicker\" className=\"inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 463,
+      "text": "<div className=\"space-y-2\" data-cf-page-header-part=\"copy\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 485,
+      "text": "<div className=\"cf-page-header-row cf-page-hero-layout flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 486,
+      "text": "<div data-cf-page-header-part=\"copy\">"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 487,
+      "text": "<Badge data-cf-page-header-part=\"kicker\" className=\"cf-page-hero-kicker mb-3 rounded-full bg-slate-50 text-slate-600 hover:bg-slate-50\">{PAGE_HEADER_CONTENT.tasks.kicker}</Badge>"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 529,
+      "text": "<section className=\"space-y-2\" data-cf-page-header-part=\"copy\" data-tasks-compact-list-stage48=\"true\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1254,
+      "text": "<div data-cf-page-header-part=\"copy\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1255,
+      "text": "<span data-cf-page-header-part=\"kicker\" className=\"kicker\">{PAGE_HEADER_CONTENT.calendar.kicker}</span>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1528,
+      "text": "<div className=\"space-y-1\" data-cf-page-header-part=\"copy\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1690,
+      "text": "<div data-cf-page-header-part=\"kicker\" className=\"calendar-week-day-kicker\">{getCalendarDayNavLabel(day, index)}</div>"
+    },
+    {
+      "file": "src/styles/visual-stage8-activity-vnext.css",
+      "line": 10,
+      "text": ".activity-page-header {"
+    },
+    {
+      "file": "src/styles/visual-stage8-activity-vnext.css",
+      "line": 19,
+      "text": ".activity-page-header h1 {"
+    },
+    {
+      "file": "src/styles/visual-stage8-activity-vnext.css",
+      "line": 27,
+      "text": ".activity-page-header p:not(.activity-kicker) {"
+    },
+    {
+      "file": "src/styles/visual-stage8-activity-vnext.css",
+      "line": 634,
+      "text": ".activity-page-header {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 114,
+      "text": "Older source CSS used `.cf-page-header > :last-child` as action selector."
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 129,
+      "text": "#root [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"copy\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 132,
+      "text": "#root .cf-html-shell [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"copy\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 184,
+      "text": "#root [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"kicker\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 250,
+      "text": "#root [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"copy\"] > .cf-page-header-description + .cf-page-header-description,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 251,
+      "text": "#root [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"copy\"] > p + p,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-final-lock.css",
+      "line": 374,
+      "text": "#root [data-cf-page-header=\"true\"].cf-page-header [data-cf-page-header-part=\"copy\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 43,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] .cf-page-header-row,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 57,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] [data-cf-page-header-part=\"copy\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 100,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] [data-cf-page-header-part=\"copy\"]:only-child,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 101,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] .cf-page-header-row > [data-cf-page-header-part=\"copy\"]:only-child,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 102,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] .cf-page-hero-layout > [data-cf-page-header-part=\"copy\"]:only-child {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 109,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] [data-cf-page-header-part=\"kicker\"],"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 165,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] p:not([data-cf-page-header-part=\"kicker\"]):not(.kicker):not(.cf-page-hero-kicker):not(.activity-kicker) {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 181,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] [data-cf-page-header-part=\"copy\"] > .cf-page-header-description + .cf-page-header-description,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 182,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] [data-cf-page-header-part=\"copy\"] > p + p {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-structure-lock.css",
+      "line": 188,
+      "text": "#root .cf-page-header[data-cf-page-header=\"true\"] .cf-page-header-row,"
+    }
+  ]
+}
