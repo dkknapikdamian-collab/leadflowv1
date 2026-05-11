@@ -22,6 +22,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import {
   createCaseInSupabase,
   fetchCasesFromSupabase,
@@ -475,11 +476,12 @@ export default function Cases() {
     <Layout>
       <div className="cf-html-view main-cases-html" data-cases-real-view="true" data-stage16c-tasks-cases-repair="cases">
         <div data-cf-page-header="true" className="cf-page-header page-head" data-stage16c-page-head="cases">
-          <div>
-            <span className="kicker">Centrum obsługi</span>
-            <h1 className="text-3xl font-bold app-text">Sprawy</h1>
+          <div data-cf-page-header-part="copy">
+            <span data-cf-page-header-part="kicker" className="kicker">{PAGE_HEADER_CONTENT.cases.kicker}</span>
+            <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.cases.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.cases.description}</p>
                       </div>
-          <div className="head-actions">
+          <div className="head-actions" data-cf-page-header-part="actions">
             <Button type="button" variant="outline" className="btn soft-blue">
               <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Button>

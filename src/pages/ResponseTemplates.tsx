@@ -34,6 +34,7 @@ import {
 } from '../lib/supabase-fallback';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type ResponseTemplate = {
   id: string;
   name: string;
@@ -200,11 +201,10 @@ export default function ResponseTemplates() {
       <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
         <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="space-y-3">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-              <MessageSquareText className="h-3.5 w-3.5" /> Szablony odpowiedzi
-            </div>
+            <div data-cf-page-header-part="kicker" className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">{PAGE_HEADER_CONTENT.responseTemplates.kicker}</div>
             <div>
-              <h1 className="text-3xl font-bold app-text">Biblioteka odpowiedzi</h1>
+              <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.responseTemplates.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.responseTemplates.description}</p>
               <p className="mt-2 max-w-2xl text-sm md:text-base app-muted">
                 Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. AI może później pracować na tych szablonach, ale źródłem prawdy jest Twoja biblioteka.
               </p>

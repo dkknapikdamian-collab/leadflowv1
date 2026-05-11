@@ -50,6 +50,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';

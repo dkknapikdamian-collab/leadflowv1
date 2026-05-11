@@ -32,6 +32,7 @@ import {
 import '../styles/visual-stage17-support-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 function formatSupportStatus(status: unknown) {
   const value = String(status || '').toLowerCase();
   if (value === 'open' || value === 'new') return 'Nowe';
@@ -425,7 +426,8 @@ export default function SupportCenter() {
         <header data-cf-page-header="true" className="cf-page-header support-header">
           <div>
             <p className="support-kicker">POMOC</p>
-            <h1>Pomoc</h1>
+            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.support.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.support.description}</p>
           </div>
           <div className="support-header-actions">
             <Button type="button" variant="outline" onClick={() => void loadTickets()}>

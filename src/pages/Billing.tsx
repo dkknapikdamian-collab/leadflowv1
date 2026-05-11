@@ -68,6 +68,7 @@ import {
 import '../styles/visual-stage16-billing-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
 type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
@@ -503,7 +504,8 @@ export default function Billing() {
         <header data-cf-page-header="true" className="cf-page-header billing-header">
           <div>
             <p className="billing-kicker">ROZLICZENIA</p>
-            <h1>Rozliczenia</h1>
+            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.billing.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.billing.description}</p>
           </div>
           <div className="billing-header-actions">
             <Button type="button" variant="outline" onClick={refresh}>

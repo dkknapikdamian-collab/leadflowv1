@@ -86,6 +86,7 @@ import { buildRelationFunnelValue, buildRelationValueEntries, formatRelationValu
 import '../styles/visual-stage20-lead-form-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
@@ -686,10 +687,11 @@ export default function Leads() {
       <div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">
         <div data-cf-page-header="true" className="cf-page-header page-head">
           <div>
-            <h1>Leady</h1>
+            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.leads.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.leads.description}</p>
           </div>
 
-          <div className="head-actions">
+          <div className="head-actions" data-cf-page-header-part="actions">
             <Link to="/ai-drafts" className="btn soft-blue" data-stage26-leads-head-ai="true">
               <EntityIcon entity="ai" className="h-4 w-4" />
               Zapytaj AI
@@ -707,8 +709,8 @@ export default function Leads() {
             <Dialog open={isNewLeadOpen} onOpenChange={setIsNewLeadOpen}>
               <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
                 <DialogHeader className="lead-form-vnext-header">
-                  <div>
-                    <span className="lead-form-vnext-kicker">SZYBKIE DODANIE LEADA</span>
+                  <div data-cf-page-header-part="copy">
+                    <span data-cf-page-header-part="kicker" className="lead-form-vnext-kicker">{PAGE_HEADER_CONTENT.leads.kicker}</span>
                     <DialogTitle>Nowy lead</DialogTitle>
                     <p id="lead-form-stage20-description">
                       Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.

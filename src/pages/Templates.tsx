@@ -59,6 +59,7 @@ import {
 
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 
 type TemplateItemDraft = {
@@ -327,7 +328,8 @@ export default function Templates() {
                 <FolderKanban className="h-3.5 w-3.5" /> Szablony spraw
               </div>
               <div>
-                <h1 className="text-3xl font-black tracking-tight text-slate-950">Szablony spraw i checklist</h1>
+                <h1 data-cf-page-header-part="title" className="text-3xl font-black tracking-tight text-slate-950">{PAGE_HEADER_CONTENT.templates.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.templates.description}</p>
               </div>
             </div>
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">

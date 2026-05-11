@@ -105,6 +105,7 @@ import '../styles/visual-stage22-event-form-vnext.css';
 
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 
@@ -1248,11 +1249,12 @@ export default function Calendar() {
     <Layout>
       <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
         <div data-cf-page-header="true" className="cf-page-header page-head">
-          <div>
-            <span className="kicker">Terminy</span>
-            <h1>Kalendarz</h1>
+          <div data-cf-page-header-part="copy">
+            <span data-cf-page-header-part="kicker" className="kicker">{PAGE_HEADER_CONTENT.calendar.kicker}</span>
+            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.calendar.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.calendar.description}</p>
                       </div>
-          <div className="head-actions">
+          <div className="head-actions" data-cf-page-header-part="actions">
             <Link to="/ai-drafts" className="btn soft-blue">
               <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
             </Link>

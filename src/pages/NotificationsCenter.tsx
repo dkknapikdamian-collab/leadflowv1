@@ -54,6 +54,7 @@ import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
 
@@ -614,11 +615,12 @@ export default function NotificationsCenter() {
         <header data-cf-page-header="true" className="cf-page-header notifications-page-header">
           <div>
             <p className="notifications-kicker">POWIADOMIENIA</p>
-            <h1>Powiadomienia</h1>
+            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.notifications.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.notifications.description}</p>
             <p>Przypomnienia, zaległe rzeczy i alerty, których nie możesz przegapić.</p>
           </div>
 
-          <div className="notifications-header-actions">
+          <div className="notifications-header-actions" data-cf-page-header-part="actions">
             {permission === 'default' ? (
               <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
                 <EntityIcon entity="notification" className="h-4 w-4" />

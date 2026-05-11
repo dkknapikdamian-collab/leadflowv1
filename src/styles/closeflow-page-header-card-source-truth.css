@@ -453,3 +453,81 @@
 }
 /* CLOSEFLOW_PAGE_HEADER_TEXT_SOURCE_TRUTH_STAGE3_2026_05_11_END */
 
+/* CLOSEFLOW_PAGE_HEADER_TITLE_COPY_PARITY_TODAY_STAGE4_2026_05_11_START
+   owner: CloseFlow Visual System
+   reason: make every main page header title/description use the Today-like visual style.
+   scope: [data-cf-page-header="true"].cf-page-header only.
+   note: this does not change card background color.
+*/
+
+:root {
+  --cf-page-header-copy-top-offset: 0px;
+  --cf-page-header-title-color: #0f172a;
+  --cf-page-header-title-font-size: clamp(28px, 2.75vw, 40px);
+  --cf-page-header-title-font-weight: 950;
+  --cf-page-header-title-line-height: 1;
+  --cf-page-header-title-letter-spacing: -0.058em;
+  --cf-page-header-title-margin-top: 0px;
+
+  --cf-page-header-description-color: #64748b;
+  --cf-page-header-description-font-size: 13px;
+  --cf-page-header-description-font-weight: 650;
+  --cf-page-header-description-line-height: 1.45;
+  --cf-page-header-description-margin-top: 9px;
+  --cf-page-header-description-max-width: 780px;
+
+  --cf-page-header-kicker-margin-bottom: 9px;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child {
+  transform: translateY(var(--cf-page-header-copy-top-offset)) !important;
+  justify-content: center !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"] {
+  margin-bottom: var(--cf-page-header-kicker-margin-bottom) !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+  margin-top: var(--cf-page-header-title-margin-top) !important;
+  color: var(--cf-page-header-title-color) !important;
+  -webkit-text-fill-color: var(--cf-page-header-title-color) !important;
+  font-size: var(--cf-page-header-title-font-size) !important;
+  font-weight: var(--cf-page-header-title-font-weight) !important;
+  line-height: var(--cf-page-header-title-line-height) !important;
+  letter-spacing: var(--cf-page-header-title-letter-spacing) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description {
+  display: block !important;
+  max-width: var(--cf-page-header-description-max-width) !important;
+  margin: var(--cf-page-header-description-margin-top) 0 0 0 !important;
+  color: var(--cf-page-header-description-color) !important;
+  -webkit-text-fill-color: var(--cf-page-header-description-color) !important;
+  font-size: var(--cf-page-header-description-font-size) !important;
+  font-weight: var(--cf-page-header-description-font-weight) !important;
+  line-height: var(--cf-page-header-description-line-height) !important;
+  text-align: left !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --cf-page-header-title-font-size: clamp(25px, 7vw, 32px);
+    --cf-page-header-title-letter-spacing: -0.045em;
+  }
+}
+/* CLOSEFLOW_PAGE_HEADER_TITLE_COPY_PARITY_TODAY_STAGE4_2026_05_11_END */
+

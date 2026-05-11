@@ -18,6 +18,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { useWorkspace } from '../hooks/useWorkspace';
 import { fetchAiConfigDiagnostics, type AiConfigDiagnostics, type AiProviderDiagnostics } from '../lib/ai-config';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_ADMIN_AI
 
 function StatusBadge({ configured, available }: { configured: boolean; available?: boolean }) {
@@ -129,13 +130,12 @@ export default function AdminAiSettings() {
     <Layout>
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 p-4 md:p-8">
         <header data-cf-page-header="true" className="cf-page-header flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="space-y-2">
-            <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip">
-              <EntityIcon entity="ai" className="h-3.5 w-3.5" />
-              AI admin
-            </div>
+          <div className="space-y-2" data-cf-page-header-part="copy">
+            <div data-cf-page-header-part="kicker" className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] app-primary-chip"><EntityIcon entity="ai" className="h-3.5 w-3.5" />
+              {PAGE_HEADER_CONTENT.adminAi.kicker}</div>
             <div>
-              <h1 className="text-3xl font-bold app-text">Konfiguracja AI</h1>
+              <h1 data-cf-page-header-part="title" className="text-3xl font-bold app-text">{PAGE_HEADER_CONTENT.adminAi.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.adminAi.description}</p>
               <p className="max-w-2xl text-sm md:text-base app-muted">
                 Ukryta warstwa diagnostyczna dla Quick Lead Capture. Użytkownik końcowy widzi tylko prosty szkic do potwierdzenia, nie providerów ani kluczy.
               </p>

@@ -81,6 +81,7 @@ import {
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-page-header-card-source-truth.css';
+import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
 type DraftFilter =
   | 'all'
   | 'draft'
@@ -1020,10 +1021,11 @@ function AiDraftsInner() {
         <header data-cf-page-header="true" className="cf-page-header ai-drafts-page-header">
           <div>
             <p className="ai-drafts-kicker">SZKICE DO SPRAWDZENIA</p>
-            <h1>Szkice AI</h1>
+            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.aiDrafts.title}</h1>
+              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.aiDrafts.description}</p>
             <p>Sprawdź, popraw i zatwierdź szkice przed zapisem w CRM.</p>
           </div>
-          <div className="ai-drafts-header-actions">
+          <div className="ai-drafts-header-actions" data-cf-page-header-part="actions">
             <button type="button" className="ai-drafts-header-button" onClick={() => void reloadDrafts()}>
               Odśwież
             </button>
