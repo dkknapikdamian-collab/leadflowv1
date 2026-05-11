@@ -128,3 +128,13 @@ export function normalizeCommissionConfig(value: Record<string, unknown> | null 
     currency: normalizeCurrency(row.currency, 'PLN'),
   };
 }
+
+/**
+ * API compatibility normalizer used by server functions such as api/payments.ts.
+ * Returns an ISO string or null, so Vercel functions do not crash on a missing export.
+ */
+export function normalizeDateTime(value: unknown): string | null {
+  const parsed = normalizeFinanceDate(value);
+  return parsed ? parsed.toISOString() : null;
+}
+
