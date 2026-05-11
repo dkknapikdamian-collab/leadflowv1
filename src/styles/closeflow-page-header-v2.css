@@ -1,6 +1,6 @@
-/* CLOSEFLOW_PAGE_HEADER_V2_SURGERY_2026_05_11
+/* CLOSEFLOW_PAGE_HEADER_V2_SURGERY_REPAIR2_2026_05_11
    Source of truth for rewritten top headers.
-   This intentionally uses new class names so legacy page-head / cf-page-header CSS cannot move the copy.
+   New class names are intentional: old page-head/cf-page-header adapters do not own this header.
 */
 
 :root {
@@ -11,7 +11,6 @@
   --cf-ph-v2-card-padding-y: 22px;
   --cf-ph-v2-card-padding-x: 26px;
   --cf-ph-v2-card-min-height: 92px;
-
   --cf-ph-v2-copy-max: 780px;
 
   --cf-ph-v2-kicker-bg: #eef4ff;
@@ -114,7 +113,6 @@
   border-radius: 999px !important;
   background: var(--cf-ph-v2-kicker-bg) !important;
   background-color: var(--cf-ph-v2-kicker-bg) !important;
-  background-image: none !important;
   color: var(--cf-ph-v2-kicker-text) !important;
   -webkit-text-fill-color: var(--cf-ph-v2-kicker-text) !important;
   font-size: 11px !important;
@@ -178,20 +176,11 @@
   text-align: left !important;
 }
 
-/* Flatten old action wrappers extracted from legacy headers. */
 #root .cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions),
 .cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
   display: contents !important;
 }
 
-#root .cf-page-header-v2__actions > *,
-#root .cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) > *,
-.cf-page-header-v2__actions > *,
-.cf-page-header-v2__actions > :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) > * {
-  flex: 0 0 auto !important;
-}
-
-/* Header action button source truth. */
 #root .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
 .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) {
   min-height: var(--cf-ph-v2-action-height) !important;
@@ -223,7 +212,6 @@
   -webkit-text-fill-color: var(--cf-ph-v2-neutral-hover-text) !important;
 }
 
-/* AI semantic. */
 #root .cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]),
 .cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]) {
   border-color: var(--cf-ph-v2-ai-border) !important;
@@ -233,15 +221,6 @@
   box-shadow: var(--cf-ph-v2-ai-shadow) !important;
 }
 
-#root .cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]):hover,
-.cf-page-header-v2 :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .soft-blue, a[href="/ai-drafts"]):hover {
-  border-color: var(--cf-ph-v2-ai-hover-border) !important;
-  background: var(--cf-ph-v2-ai-hover-bg) !important;
-  color: var(--cf-ph-v2-ai-hover-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-v2-ai-hover-text) !important;
-}
-
-/* Danger/trash semantic. */
 #root .cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger),
 .cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger) {
   border-color: var(--cf-ph-v2-danger-border) !important;
@@ -249,14 +228,6 @@
   color: var(--cf-ph-v2-danger-text) !important;
   -webkit-text-fill-color: var(--cf-ph-v2-danger-text) !important;
   box-shadow: var(--cf-ph-v2-danger-shadow) !important;
-}
-
-#root .cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger):hover,
-.cf-page-header-v2 :is([data-cf-header-action="danger"], [data-cf-command-action="danger"], .cf-trash-action-button, .cf-entity-action-danger):hover {
-  border-color: var(--cf-ph-v2-danger-hover-border) !important;
-  background: var(--cf-ph-v2-danger-hover-bg) !important;
-  color: var(--cf-ph-v2-danger-hover-text) !important;
-  -webkit-text-fill-color: var(--cf-ph-v2-danger-hover-text) !important;
 }
 
 #root .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) :is(svg, span, i),

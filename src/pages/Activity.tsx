@@ -29,11 +29,7 @@ import {
 import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+
 import {
   StatShortcutCard
 } from '../components/StatShortcutCard';
@@ -50,6 +46,8 @@ import {
 import {
   useWorkspace
 } from '../hooks/useWorkspace';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const sourceOptions = [
   { value: 'all', label: 'Wszystko' },
   { value: 'today', label: 'Dziś' },
@@ -268,7 +266,6 @@ function getActivityIconTone(activity: any) {
   if (entity === 'event') return 'sky';
   return 'neutral';
 }
-
 
 function getActivityTitle(activity: any) {
   const eventType = normalizeLower(activity?.eventType);
@@ -514,7 +511,6 @@ function getActivitySeverity(activity: any) {
   return requiresAttention(activity) ? 'warning' : undefined;
 }
 
-
 function shouldShowByFilter(activity: any, filter: string) {
   if (filter === 'all') return true;
   if (filter === 'today') return isActivityToday(activity);
@@ -522,7 +518,6 @@ function shouldShowByFilter(activity: any, filter: string) {
   if (filter === 'system') return getActivityEntity(activity) === 'system' || getActivityEntity(activity) === 'client';
   return getActivityEntity(activity) === filter;
 }
-
 
 function ActivityRow({
   activity,
@@ -718,13 +713,7 @@ export default function Activity() {
   return (
     <Layout>
       <main className="activity-vnext-page">
-        <header data-cf-page-header="true" className="cf-page-header">
-          <div data-cf-page-header-part="copy">
-            <p data-cf-page-header-part="kicker" className="activity-kicker">AKTYWNOŚĆ</p>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.activity.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.activity.description}</p>
-          </div>
-        </header>
+        <CloseFlowPageHeaderV2 pageKey="activity" />
 
         <section className="activity-stats-grid" aria-label="Statystyki aktywności">
           <StatShortcutCard label="Wszystkie" value={metrics.all} icon={TemplateEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />

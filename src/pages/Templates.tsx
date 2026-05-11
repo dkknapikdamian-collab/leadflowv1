@@ -37,7 +37,6 @@ import { EntityActionButton } from '../components/entity-actions';
 
 import { useWorkspace } from '../hooks/useWorkspace';
 
-
 import {
   Select,
   SelectContent,
@@ -48,7 +47,6 @@ import {
 
 import { Checkbox } from '../components/ui/checkbox';
 
-
 import {
   // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_TEMPLATES
   createCaseTemplateInSupabase,
@@ -57,12 +55,8 @@ import {
   updateCaseTemplateInSupabase
 } from '../lib/supabase-fallback';
 
-
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 
 type TemplateItemDraft = {
@@ -324,29 +318,23 @@ export default function Templates() {
   return (
     <Layout>
       <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-a16-template-light-ui="true">
-        <header data-cf-page-header="true" className="cf-page-header rounded-[28px] border border-slate-200 bg-white p-5 shadow-sm md:p-6">
-          <div className="cf-page-header-row flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div data-cf-page-header-part="copy" className="space-y-3">
-              <div data-cf-page-header-part="kicker" className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-[0.18em] text-emerald-700">
-                <FolderKanban className="h-3.5 w-3.5" /> Szablony spraw
-              </div>
-              <div>
-                <h1 data-cf-page-header-part="title" className="text-3xl font-black tracking-tight text-slate-950">{PAGE_HEADER_CONTENT.templates.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.templates.description}</p>
-              </div>
-            </div>
-            <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
-              {!hasAccess ? (
-                <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
-                  <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
-                </div>
-              ) : null}
-              <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" data-cf-header-action="primary" onClick={openCreateDialog}>
-                <Plus className="h-4 w-4" /> Nowy szablon
-              </Button>
-            </div>
-          </div>
-        </header>
+        <CloseFlowPageHeaderV2
+          pageKey="templates"
+          actions={
+            <>
+              <div data-cf-page-header-part="actions" className="flex flex-col gap-2 sm:flex-row sm:items-center">
+                            {!hasAccess ? (
+                              <div className="inline-flex items-center gap-2 rounded-2xl border border-amber-200 bg-amber-50 px-3 py-2 text-sm font-semibold text-amber-700">
+                                <ShieldAlert className="h-4 w-4" /> Tryb podglądu blokuje zapis szablonów
+                              </div>
+                            ) : null}
+                            <Button className="rounded-2xl bg-emerald-600 text-white hover:bg-emerald-700" data-cf-header-action="primary" onClick={openCreateDialog}>
+                              <Plus className="h-4 w-4" /> Nowy szablon
+                            </Button>
+                          </div>
+            </>
+          }
+        />
 
         <LightMetricCardRow stats={stats} />
 

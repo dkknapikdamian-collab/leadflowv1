@@ -24,11 +24,6 @@ import {
   Trash2
 } from 'lucide-react';
 
-
-
-
-
-
 // CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1
 import {
   RotateCcw
@@ -90,11 +85,8 @@ import {
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
 
-import '../styles/closeflow-page-header-card-source-truth.css';
-import '../styles/closeflow-page-header-final-lock.css';
-import '../styles/closeflow-page-header-structure-lock.css';
-import '../styles/closeflow-page-header-copy-left-only.css';
-import { PAGE_HEADER_CONTENT } from '../lib/page-header-content';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
 
@@ -108,14 +100,12 @@ type ClientRecord = {
 };
 const STAGE35_REAL_CLIENT_VALUE = 'STAGE35_REAL_CLIENT_VALUE';
 
-
 function getStage35NumericValue(value: unknown) {
   if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
   const normalized = String(value || '').replace(/[^0-9,.-]/g, '').replace(',', '.');
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : 0;
 }
-
 
 function getStage35FirstMoneyValue(row: Record<string, unknown>, keys: string[]) {
   for (const key of keys) {
@@ -125,11 +115,9 @@ function getStage35FirstMoneyValue(row: Record<string, unknown>, keys: string[])
   return 0;
 }
 
-
 function getStage35RelationClientId(row: Record<string, unknown>) {
   return String(row.clientId || row.client_id || row.customerId || row.customer_id || '').trim();
 }
-
 
 function formatClientMoney(value: number) {
   return `${Math.round(Number(value || 0)).toLocaleString('pl-PL')} PLN`;
@@ -531,101 +519,101 @@ export default function Clients() {
           onCreateAnyway={handleCreateClientAnyway}
           onCancel={() => { setClientConflictOpen(false); setIsCreateOpen(true); }}
         />
-        <div data-cf-page-header="true" className="cf-page-header page-head">
-          <div data-cf-page-header-part="copy">
-            <span data-cf-page-header-part="kicker" className="kicker">{PAGE_HEADER_CONTENT.clients.kicker}</span>
-            <h1 data-cf-page-header-part="title">{PAGE_HEADER_CONTENT.clients.title}</h1>
-              <p data-cf-page-header-part="description" className="cf-page-header-description">{PAGE_HEADER_CONTENT.clients.description}</p>
-          </div>
-          <div className="head-actions" data-cf-page-header-part="actions">
-            <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
-            <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
-              {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
-              {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
-              <span className="pill">{showArchived ? activeCount : archivedCount}</span>
-            </Button>
-            <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-              <DialogTrigger asChild>
-                <Button className="btn primary" disabled={!workspace?.id}><Plus className="w-4 h-4" /> Dodaj klienta</Button>
-              </DialogTrigger>
-              <DialogContent className="client-case-form-content client-form-stage23-content" data-client-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS}>
-                <DialogHeader className="client-case-form-header">
-                  <span className="client-case-form-kicker">KLIENT</span>
-                  <DialogTitle>Nowy klient</DialogTitle>
-                  <p>Dodaj tylko najważniejsze dane kontaktowe. Resztę można uzupełnić później.</p>
-                </DialogHeader>
+        <CloseFlowPageHeaderV2
+          pageKey="clients"
+          actions={
+            <>
+              <div className="head-actions" data-cf-page-header-part="actions">
+                          <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
+                          <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
+                            {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
+                            {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
+                            <span className="pill">{showArchived ? activeCount : archivedCount}</span>
+                          </Button>
+                          <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
+                            <DialogTrigger asChild>
+                              <Button className="btn primary" disabled={!workspace?.id}><Plus className="w-4 h-4" /> Dodaj klienta</Button>
+                            </DialogTrigger>
+                            <DialogContent className="client-case-form-content client-form-stage23-content" data-client-form-stage23="true" data-client-case-form-visual-rebuild={CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS}>
+                              <DialogHeader className="client-case-form-header">
+                                <span className="client-case-form-kicker">KLIENT</span>
+                                <DialogTitle>Nowy klient</DialogTitle>
+                                <p>Dodaj tylko najważniejsze dane kontaktowe. Resztę można uzupełnić później.</p>
+                              </DialogHeader>
 
-                <form onSubmit={handleCreateClient} className="client-case-form" data-client-form-fields="contact">
-                  <section className="client-case-form-section">
-                    <div className="client-case-form-section-head">
-                      <h3>Dane podstawowe</h3>
-                      <p>Minimum potrzebne do zapisania klienta i rozpoczęcia sprawy.</p>
-                    </div>
+                              <form onSubmit={handleCreateClient} className="client-case-form" data-client-form-fields="contact">
+                                <section className="client-case-form-section">
+                                  <div className="client-case-form-section-head">
+                                    <h3>Dane podstawowe</h3>
+                                    <p>Minimum potrzebne do zapisania klienta i rozpoczęcia sprawy.</p>
+                                  </div>
 
-                    <div className="client-case-form-grid">
-                      <div className="client-case-form-field client-case-form-field-wide">
-                        <Label>Imię / nazwa</Label>
-                        <Input
-                          value={newClient.name}
-                          onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
-                          placeholder="Np. Jan Kowalski albo Firma ABC"
-                          required
-                        />
-                      </div>
+                                  <div className="client-case-form-grid">
+                                    <div className="client-case-form-field client-case-form-field-wide">
+                                      <Label>Imię / nazwa</Label>
+                                      <Input
+                                        value={newClient.name}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
+                                        placeholder="Np. Jan Kowalski albo Firma ABC"
+                                        required
+                                      />
+                                    </div>
 
-                      <div className="client-case-form-field">
-                        <Label>Telefon</Label>
-                        <Input
-                          value={newClient.phone}
-                          onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))}
-                          placeholder="np. 516 000 000"
-                        />
-                      </div>
+                                    <div className="client-case-form-field">
+                                      <Label>Telefon</Label>
+                                      <Input
+                                        value={newClient.phone}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, phone: event.target.value }))}
+                                        placeholder="np. 516 000 000"
+                                      />
+                                    </div>
 
-                      <div className="client-case-form-field">
-                        <Label>E-mail</Label>
-                        <Input
-                          type="email"
-                          value={newClient.email}
-                          onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))}
-                          placeholder="kontakt@email.pl"
-                        />
-                      </div>
+                                    <div className="client-case-form-field">
+                                      <Label>E-mail</Label>
+                                      <Input
+                                        type="email"
+                                        value={newClient.email}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))}
+                                        placeholder="kontakt@email.pl"
+                                      />
+                                    </div>
 
-                      <div className="client-case-form-field client-case-form-field-wide">
-                        <Label>Firma</Label>
-                        <Input
-                          value={newClient.company}
-                          onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))}
-                          placeholder="Opcjonalnie"
-                        />
-                      </div>
+                                    <div className="client-case-form-field client-case-form-field-wide">
+                                      <Label>Firma</Label>
+                                      <Input
+                                        value={newClient.company}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, company: event.target.value }))}
+                                        placeholder="Opcjonalnie"
+                                      />
+                                    </div>
 
-                      <div className="client-case-form-field client-case-form-field-wide">
-                        <Label>Notatka</Label>
-                        <textarea
-                          className="client-case-form-textarea"
-                          value={newClient.notes}
-                          onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
-                          placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
-                        />
-                      </div>
-                    </div>
-                  </section>
+                                    <div className="client-case-form-field client-case-form-field-wide">
+                                      <Label>Notatka</Label>
+                                      <textarea
+                                        className="client-case-form-textarea"
+                                        value={newClient.notes}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
+                                        placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
+                                      />
+                                    </div>
+                                  </div>
+                                </section>
 
-                  <DialogFooter className={modalFooterClass('client-case-form-footer')}>
-                    <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
-                      Anuluj
-                    </Button>
-                    <Button type="submit" disabled={createPending}>
-                      {createPending ? 'Zapisywanie...' : 'Zapisz klienta'}
-                    </Button>
-                  </DialogFooter>
-                </form>
-              </DialogContent>
-            </Dialog>
-          </div>
-        </div>
+                                <DialogFooter className={modalFooterClass('client-case-form-footer')}>
+                                  <Button type="button" variant="outline" onClick={() => setIsCreateOpen(false)}>
+                                    Anuluj
+                                  </Button>
+                                  <Button type="submit" disabled={createPending}>
+                                    {createPending ? 'Zapisywanie...' : 'Zapisz klienta'}
+                                  </Button>
+                                </DialogFooter>
+                              </form>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+            </>
+          }
+        />
 
         <div className="grid-4">
           <StatShortcutCard
@@ -762,5 +750,4 @@ export default function Clients() {
     </Layout>
   );
 }
-
 

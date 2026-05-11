@@ -1,0 +1,255 @@
+{
+  "generatedAt": "2026-05-11T20:00:29.824Z",
+  "rows": [
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 33,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 461,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 465,
+      "text": "<div className=\"cf-page-hero-actions flex flex-wrap gap-2\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 58,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 321,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 325,
+      "text": "<div data-cf-page-header-part=\"actions\" className=\"flex flex-col gap-2 sm:flex-row sm:items-center\">"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 452,
+      "text": "<div className=\"space-y-2\" data-cf-page-header-part=\"copy\">"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 49,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 716,
+      "text": "<CloseFlowPageHeaderV2 pageKey=\"activity\" />"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 88,
+      "text": "import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 522,
+      "text": "<CloseFlowPageHeaderV2"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 526,
+      "text": "<div className=\"head-actions\" data-cf-page-header-part=\"actions\">"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 5,
+      "text": "type CloseFlowPageHeaderV2Props = {"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 10,
+      "text": "export function CloseFlowPageHeaderV2({ pageKey, actions }: CloseFlowPageHeaderV2Props) {"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 14,
+      "text": "<header className=\"cf-page-header-v2\" data-cf-page-header-v2={pageKey}>"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 15,
+      "text": "<div className=\"cf-page-header-v2__copy\">"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 16,
+      "text": "<span className=\"cf-page-header-v2__kicker\">{content.kicker}</span>"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 17,
+      "text": "<h1 className=\"cf-page-header-v2__title\">{content.title}</h1>"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 18,
+      "text": "<p className=\"cf-page-header-v2__description\">{content.description}</p>"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 21,
+      "text": "{actions ? <div className=\"cf-page-header-v2__actions\">{actions}</div> : null}"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 60,
+      "text": "#root .cf-page-header-v2,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 61,
+      "text": ".cf-page-header-v2 {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 82,
+      "text": "#root .cf-page-header-v2__copy,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 83,
+      "text": ".cf-page-header-v2__copy {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 102,
+      "text": "#root .cf-page-header-v2__kicker,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 103,
+      "text": ".cf-page-header-v2__kicker {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 129,
+      "text": "#root .cf-page-header-v2__title,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 130,
+      "text": ".cf-page-header-v2__title {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 146,
+      "text": "#root .cf-page-header-v2__description,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 147,
+      "text": ".cf-page-header-v2__description {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 162,
+      "text": "#root .cf-page-header-v2__actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 163,
+      "text": ".cf-page-header-v2__actions {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 179,
+      "text": "#root .cf-page-header-v2__actions > :is([data-cf-page-header-part=\"actions\"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 180,
+      "text": ".cf-page-header-v2__actions > :is([data-cf-page-header-part=\"actions\"], .head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 184,
+      "text": "#root .cf-page-header-v2 :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 185,
+      "text": ".cf-page-header-v2 :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action) {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 207,
+      "text": "#root .cf-page-header-v2 :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action):hover,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 208,
+      "text": ".cf-page-header-v2 :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action):hover {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 215,
+      "text": "#root .cf-page-header-v2 :is([data-cf-header-action=\"ai\"], [data-cf-command-action=\"ai\"], .cf-command-action--ai, .soft-blue, a[href=\"/ai-drafts\"]),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 216,
+      "text": ".cf-page-header-v2 :is([data-cf-header-action=\"ai\"], [data-cf-command-action=\"ai\"], .cf-command-action--ai, .soft-blue, a[href=\"/ai-drafts\"]) {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 224,
+      "text": "#root .cf-page-header-v2 :is([data-cf-header-action=\"danger\"], [data-cf-command-action=\"danger\"], .cf-trash-action-button, .cf-entity-action-danger),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 225,
+      "text": ".cf-page-header-v2 :is([data-cf-header-action=\"danger\"], [data-cf-command-action=\"danger\"], .cf-trash-action-button, .cf-entity-action-danger) {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 233,
+      "text": "#root .cf-page-header-v2 :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action) :is(svg, span, i),"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 234,
+      "text": ".cf-page-header-v2 :is(button, a.btn, a[role=\"button\"], .btn, .cf-header-action) :is(svg, span, i) {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 241,
+      "text": "#root .cf-page-header-v2,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 242,
+      "text": ".cf-page-header-v2 {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 248,
+      "text": "#root .cf-page-header-v2__copy,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 249,
+      "text": ".cf-page-header-v2__copy {"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 253,
+      "text": "#root .cf-page-header-v2__actions,"
+    },
+    {
+      "file": "src/styles/closeflow-page-header-v2.css",
+      "line": 254,
+      "text": ".cf-page-header-v2__actions {"
+    }
+  ]
+}
