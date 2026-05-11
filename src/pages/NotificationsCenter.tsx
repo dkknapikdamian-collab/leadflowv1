@@ -27,7 +27,6 @@ import Layout from '../components/Layout';
 
 import { useWorkspace } from '../hooks/useWorkspace';
 
-
 import {
   buildTodayNotificationItems,
   clearNotificationLog,
@@ -46,9 +45,7 @@ import {
   type NotificationSnoozeMode
 } from '../lib/notifications';
 
-
 import { buildReminderCustomDate } from '../lib/reminders';
-
 
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';

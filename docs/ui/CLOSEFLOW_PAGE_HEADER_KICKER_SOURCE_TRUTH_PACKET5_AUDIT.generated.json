@@ -1,0 +1,263 @@
+{
+  "generatedAt": "2026-05-11T20:36:40.961Z",
+  "rows": [
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 20,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 21,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 22,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 23,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 83,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 84,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 85,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 86,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 70,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 71,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 72,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 73,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 107,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 108,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 109,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 110,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 24,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 25,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 26,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 27,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 88,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 89,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 90,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 91,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 53,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 54,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 55,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 56,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 36,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 37,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 38,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 39,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 94,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 95,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 96,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 34,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 35,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 36,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 37,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 52,
+      "marker": "closeflow-page-header-card-source-truth.css",
+      "text": "import '../styles/closeflow-page-header-card-source-truth.css';"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 53,
+      "marker": "closeflow-page-header-final-lock.css",
+      "text": "import '../styles/closeflow-page-header-final-lock.css';"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 54,
+      "marker": "closeflow-page-header-structure-lock.css",
+      "text": "import '../styles/closeflow-page-header-structure-lock.css';"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 55,
+      "marker": "closeflow-page-header-copy-left-only.css",
+      "text": "import '../styles/closeflow-page-header-copy-left-only.css';"
+    }
+  ]
+}
