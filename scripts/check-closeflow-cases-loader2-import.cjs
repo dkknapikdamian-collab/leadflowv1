@@ -2,92 +2,112 @@
 const fs = require('fs');
 const path = require('path');
 
-const file = path.join(process.cwd(), 'src', 'pages', 'Cases.tsx');
-if (!fs.existsSync(file)) {
-  console.error('FAILED closeflow cases import contract: missing src/pages/Cases.tsx');
-  process.exit(1);
-}
-const source = fs.readFileSync(file, 'utf8');
+const repo = process.cwd();
+const casesPath = path.join(repo, 'src/pages/Cases.tsx');
 
 function fail(message) {
-  console.error('FAILED closeflow cases import contract: ' + message);
+  console.error(`FAILED closeflow cases import contract: ${message}`);
   process.exit(1);
 }
 
-function importStatements() {
-  const out = [];
-  const re = /import\s+([\s\S]*?)\s+from\s+['"]([^'"]+)['"]\s*;?/g;
+function read(file) {
+  if (!fs.existsSync(file)) fail(`missing file ${path.relative(repo, file)}`);
+  return fs.readFileSync(file, 'utf8');
+}
+
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function importBlocks(source) {
+  const blocks = [];
+  const re = /^import[\s\S]*?from\s+['"]([^'"]+)['"];\s*$/gm;
   let match;
-  while ((match = re.exec(source))) out.push({ full: match[0], clause: match[1].trim(), moduleName: match[2] });
-  return out;
+  while ((match = re.exec(source))) blocks.push({ full: match[0], source: match[1] });
+  return blocks;
 }
 
-function importsFrom(moduleName) {
-  return importStatements().filter((item) => item.moduleName === moduleName);
+function blockFor(blocks, source) {
+  return blocks.find((block) => block.source === source) || null;
 }
 
-function namedImports(moduleName) {
-  const set = new Set();
-  for (const item of importsFrom(moduleName)) {
-    const named = item.clause.match(/\{([\s\S]*?)\}/);
-    if (!named) continue;
-    for (const raw of named[1].split(',')) {
-      const name = raw.trim().replace(/^type\s+/, '').split(/\s+as\s+/)[0].trim();
-      if (name) set.add(name);
-    }
-  }
-  return set;
+function has(block, name) {
+  return !!block && new RegExp(`\\b${escapeRegExp(name)}\\b`).test(block.full);
 }
 
-function anyImported(name) {
-  for (const item of importStatements()) {
-    const beforeNamed = item.clause.split('{')[0].replace(/,$/, '').trim();
-    if (beforeNamed === name) return true;
-    const named = item.clause.match(/\{([\s\S]*?)\}/);
-    if (!named) continue;
-    for (const raw of named[1].split(',')) {
-      const imported = raw.trim().replace(/^type\s+/, '').split(/\s+as\s+/)[0].trim();
-      if (imported === name) return true;
-    }
-  }
-  return false;
+function uses(source, name) {
+  return new RegExp(`\\b${escapeRegExp(name)}\\b`).test(source);
 }
 
-function declared(name) {
-  return new RegExp('(?:function|const|class)\\s+' + name + '\\b').test(source);
+function resolveImportSource(fromFile, source) {
+  if (!source.startsWith('.')) return null;
+  const base = path.resolve(path.dirname(fromFile), source);
+  const candidates = [
+    base,
+    `${base}.tsx`,
+    `${base}.ts`,
+    `${base}.jsx`,
+    `${base}.js`,
+    path.join(base, 'index.tsx'),
+    path.join(base, 'index.ts'),
+    path.join(base, 'index.jsx'),
+    path.join(base, 'index.js'),
+  ];
+  return candidates.find((candidate) => fs.existsSync(candidate)) || null;
 }
 
-function usesCall(name) {
-  return new RegExp('\\b' + name + '\\s*\\(').test(source);
+function exportContainsEntityIcon(file) {
+  if (!file) return false;
+  const content = read(file);
+  return /export\s+(function|const|class)\s+EntityIcon\b/.test(content)
+    || /export\s*\{[\s\S]*\bEntityIcon\b[\s\S]*\}/.test(content);
 }
 
-function usesJsx(name) {
-  return new RegExp('<' + name + '(?:\\s|/|>)').test(source);
-}
+const source = read(casesPath);
+const blocks = importBlocks(source);
+const reactImport = blockFor(blocks, 'react');
+const routerImport = blockFor(blocks, 'react-router-dom');
+const lucideImport = blockFor(blocks, 'lucide-react');
+const entityImport = blocks.find((block) => has(block, 'EntityIcon')) || null;
 
-const react = namedImports('react');
 for (const hook of ['useEffect', 'useMemo', 'useRef', 'useState']) {
-  if (usesCall(hook) && !react.has(hook)) fail(hook + ' is used but not imported from react');
-}
-if (/\bFormEvent\b/.test(source) && !react.has('FormEvent')) fail('FormEvent is used but not imported from react');
-
-const router = namedImports('react-router-dom');
-if (usesJsx('Link') && !router.has('Link')) fail('Link is used but not imported from react-router-dom');
-if (usesCall('useSearchParams') && !router.has('useSearchParams')) fail('useSearchParams is used but not imported from react-router-dom');
-for (const wrong of ['useEffect', 'useMemo', 'useRef', 'useState']) {
-  if (router.has(wrong)) fail(wrong + ' must not be imported from react-router-dom');
+  if (uses(source, hook) && !has(reactImport, hook)) fail(`${hook} is used in Cases.tsx but not imported from react`);
 }
 
-const lucide = namedImports('lucide-react');
+if (uses(source, 'FormEvent') && !has(reactImport, 'FormEvent')) {
+  fail('FormEvent is used in Cases.tsx but not imported from react');
+}
+
+for (const routerSymbol of ['Link', 'useSearchParams']) {
+  if (uses(source, routerSymbol) && !has(routerImport, routerSymbol)) {
+    fail(`${routerSymbol} is used in Cases.tsx but not imported from react-router-dom`);
+  }
+}
+
 for (const icon of ['ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2']) {
-  if (usesJsx(icon) && !lucide.has(icon)) fail(icon + ' is used but not imported from lucide-react');
-}
-for (const wrong of ['ExternalLink', 'FileText', 'Loader2', 'Plus', 'Search', 'Trash2']) {
-  if (react.has(wrong) || router.has(wrong)) fail(wrong + ' must not be imported from react or react-router-dom');
+  if (uses(source, icon) && !has(lucideImport, icon)) {
+    fail(`${icon} is used in Cases.tsx but not imported from lucide-react`);
+  }
 }
 
-if (/\bEntityIcon\b/.test(source) && !anyImported('EntityIcon') && !declared('EntityIcon')) {
-  fail('EntityIcon is used but not imported or declared');
+if (uses(source, 'EntityIcon')) {
+  if (!entityImport) fail('EntityIcon is used in Cases.tsx but missing from imports');
+  if (['react', 'react-router-dom', 'lucide-react'].includes(entityImport.source)) {
+    fail(`EntityIcon is imported from invalid module ${entityImport.source}`);
+  }
+  const resolved = resolveImportSource(casesPath, entityImport.source);
+  if (!resolved) fail(`EntityIcon import source cannot be resolved: ${entityImport.source}`);
+  if (!exportContainsEntityIcon(resolved)) {
+    fail(`EntityIcon import source does not visibly export EntityIcon: ${entityImport.source}`);
+  }
+}
+
+if (routerImport && (has(routerImport, 'useMemo') || has(routerImport, 'useRef') || has(routerImport, 'useState') || has(routerImport, 'useEffect'))) {
+  fail('react hook imported from react-router-dom');
+}
+
+if (reactImport && (has(reactImport, 'Loader2') || has(reactImport, 'ExternalLink') || has(reactImport, 'FileText') || has(reactImport, 'Plus') || has(reactImport, 'Search') || has(reactImport, 'Trash2'))) {
+  fail('lucide icon imported from react');
 }
 
 console.log('CLOSEFLOW_CASES_IMPORT_CONTRACT_OK');

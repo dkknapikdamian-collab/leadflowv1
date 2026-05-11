@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ExternalLink, FileText, Loader2, Plus, Search, Trash2 } from 'lucide-react';
+import { EntityIcon } from '../components/ui-system/EntityIcon';
 import { toast } from 'sonner';
 
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -27,7 +28,6 @@ import {
   isSupabaseConfigured,
   fetchClientsFromSupabase,
 } from '../lib/supabase-fallback';
-import { EntityIcon } from '../components/ui-system/EntityIcon';
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
 const CASES_LIFECYCLE_NEEDS_NEXT_STEP_GUARD = 'Bez kroku';
