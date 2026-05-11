@@ -30,19 +30,29 @@ const EXCLUDED_DIRS = [
   '.vercel/',
 ];
 
+const INTENTIONAL_REPAIR_FILE_PATTERNS = [
+  /^scripts\/repair-.*mojibake.*\.cjs$/,
+  /^scripts\/repair-stage14.*\.cjs$/,
+  /^scripts\/repair-stage20h-case-detail-mojibake\.cjs$/,
+  /^scripts\/sanitize-polish-text-reports\.cjs$/,
+];
+
 // Mojibake is detected through code points, not literal broken glyphs.
 // This prevents the guard from becoming its own false positive.
 const BAD_CODEPOINTS = [
-  0x0139, // common leading char in broken Polish sequences
-  0x00C5, // common leading char in broken Polish sequences
-  0x00C4, // common leading char in broken Polish sequences
-  0x0102, // common leading char in double-broken UTF-8 sequences
-  0x00C2, // stray non-breaking-space / encoding artefact prefix
-  0x00C3, // common Latin-1 mojibake prefix
-  0x00E2, // smart quotes / dash mojibake prefix
-  0xFFFD, // replacement character
+  0x0139,
+  0x00C5,
+  0x00C4,
+  0x0102,
+  0x00C2,
+  0x00C3,
+  0x00E2,
+  0xFFFD,
 ];
 const BAD_MARKERS = BAD_CODEPOINTS.map((code) => String.fromCodePoint(code));
+
+const REPORT_PATH = 'docs/quality/closeflow-stage-polish-guard-report.json';
+const MAX_OUTPUT = Number.parseInt(process.env.CLOSEFLOW_POLISH_GUARD_MAX_OUTPUT || '60', 10);
 
 function toPosix(rel) {
   return String(rel || '').replace(/\\/g, '/').replace(/^\.\//, '');
@@ -54,7 +64,8 @@ function exists(rel) {
 
 function isExcluded(rel) {
   const normalized = toPosix(rel);
-  return EXCLUDED_DIRS.some((prefix) => normalized.startsWith(prefix));
+  if (EXCLUDED_DIRS.some((prefix) => normalized.startsWith(prefix))) return true;
+  return INTENTIONAL_REPAIR_FILE_PATTERNS.some((pattern) => pattern.test(normalized));
 }
 
 function isTextFile(rel) {
@@ -115,8 +126,8 @@ function lineColumnAt(content, index) {
 }
 
 function snippetAt(content, index) {
-  const start = Math.max(0, index - 36);
-  const end = Math.min(content.length, index + 36);
+  const start = Math.max(0, index - 44);
+  const end = Math.min(content.length, index + 44);
   return content.slice(start, end).replace(/\r?\n/g, ' ').trim();
 }
 
@@ -124,8 +135,31 @@ function markerName(marker) {
   return 'U+' + marker.codePointAt(0).toString(16).toUpperCase().padStart(4, '0');
 }
 
+function ensureReportDir() {
+  fs.mkdirSync(path.dirname(path.join(root, REPORT_PATH)), { recursive: true });
+}
+
+function writeReport(findings, files, scope) {
+  ensureReportDir();
+  fs.writeFileSync(
+    path.join(root, REPORT_PATH),
+    JSON.stringify({
+      status: findings.length ? 'FAILED' : 'OK',
+      scope,
+      filesChecked: files.length,
+      findingsCount: findings.length,
+      generatedAt: new Date().toISOString(),
+      findings,
+    }, null, 2) + '\n',
+    'utf8',
+  );
+}
+
+const scope = String(process.env.CLOSEFLOW_POLISH_GUARD_SCOPE || 'stage').toLowerCase();
+const filesToScan = getFilesToScan();
 const findings = [];
-for (const rel of getFilesToScan()) {
+
+for (const rel of filesToScan) {
   const abs = path.join(root, rel);
   const content = fs.readFileSync(abs, 'utf8');
   for (const marker of BAD_MARKERS) {
@@ -144,15 +178,24 @@ for (const rel of getFilesToScan()) {
   }
 }
 
+writeReport(findings, filesToScan, scope);
+
 if (findings.length) {
+  const visibleLimit = Number.isFinite(MAX_OUTPUT) && MAX_OUTPUT > 0 ? MAX_OUTPUT : 60;
   console.error('CLOSEFLOW_STAGE_POLISH_GUARD_FAILED');
   console.error('found=' + findings.length);
-  for (const item of findings) {
+  console.error('files_checked=' + filesToScan.length);
+  console.error('full_report=' + REPORT_PATH);
+  for (const item of findings.slice(0, visibleLimit)) {
     console.error(`${item.file}:${item.line}:${item.column} ${item.marker} :: ${item.snippet}`);
+  }
+  if (findings.length > visibleLimit) {
+    console.error(`output_truncated=true shown=${visibleLimit} hidden=${findings.length - visibleLimit}`);
   }
   process.exit(1);
 }
 
 console.log('CLOSEFLOW_STAGE_POLISH_GUARD_OK');
-console.log('files_checked=' + getFilesToScan().length);
-console.log('scope=' + String(process.env.CLOSEFLOW_POLISH_GUARD_SCOPE || 'stage').toLowerCase());
+console.log('files_checked=' + filesToScan.length);
+console.log('scope=' + scope);
+console.log('report=' + REPORT_PATH);

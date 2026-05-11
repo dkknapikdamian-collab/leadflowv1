@@ -33,4 +33,6 @@ Migracja używa `ON DELETE SET NULL`, więc usunięcie głównej sprawy czyści 
 Jeżeli frontend zobaczy `primaryCaseId`, którego nie ma na liście spraw, może pokazać fallback do najnowszej aktywnej sprawy tylko do wyświetlenia. Nie wolno automatycznie zapisywać nowej głównej sprawy bez zgody użytkownika.
 
 ## Guard polskich znaków
-ETAP 7 dodaje stage-scoped guard `check:closeflow-stage-polish-guard`, który pilnuje nowych i zmienianych plików etapu przed mojibake typu `Ĺ›`, `Ä‡`, `Ăł`, `Â`.
+ETAP 7 dodaje stage-scoped guard `check:closeflow-stage-polish-guard`, który pilnuje nowych i zmienianych plików etapu przed typowymi sekwencjami mojibake. Guard rozpoznaje je po kodach Unicode, a nie przez wpisywanie popsutych przykładów w dokumentach, żeby dokumentacja sama nie była fałszywym trafieniem.
+
+Domyślnie guard skanuje pliki etapu oraz pliki zmienione lokalnie. Szeroki audyt można uruchomić przez `CLOSEFLOW_POLISH_GUARD_SCOPE=all`, ale wtedy wynik jest traktowany jako raport długu technicznego, nie jako etapowy warunek commita.
