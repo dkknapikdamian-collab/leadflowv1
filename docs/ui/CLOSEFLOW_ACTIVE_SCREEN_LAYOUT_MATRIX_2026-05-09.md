@@ -1,67 +1,80 @@
-# CloseFlow VS-4 — Active screen layout matrix — 2026-05-09
+# CloseFlow Active Screen Layout Matrix
 
-Marker: `CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4`
+**Data:** 2026-05-09  
+**Etap:** VS-4 — Active screen layout matrix  
+**Status:** audyt źródeł UI aktywnych ekranów, bez migracji runtime
 
 ## Cel
 
-Każdy aktywny ekran ma jawnie przypisane źródła UI. Ten plik jest generowany z `src/App.tsx` oraz plików stron, żeby nie zgadywać ręcznie, które ekrany używają komponentów systemu wizualnego.
+Każdy aktywny ekran ma jawnie opisane źródła UI. Ten etap nie przepina ekranów. Tworzy mapę, która mówi, gdzie ekran używa aktualnego UI systemu, a gdzie nadal opiera się o lokalny JSX, stare klasy, legacy CSS, temporary overrides albo emergency hotfixes.
 
-## Zakres
+## Źródła prawdy
 
-- etap audytowy, bez zmian runtime UI;
-- matrix obejmuje route, plik strony, komponenty UI systemu, lokalne importy CSS i lokalne override’y;
-- legacy CSS i lokalne override’y są na tym etapie raportowane, ale nie blokowane;
-- VS-2C-2 pozostaje deferred, brak migracji list pages.
+- Route'y: `src/App.tsx`
+- Ekrany: `src/pages/*`
+- CSS warstwy: `src/index.css`, `src/styles/core/*`, `src/styles/page-adapters/*`, `src/styles/legacy/*`, `src/styles/temporary/*`, `src/styles/emergency/*`
+- Wygenerowany JSON: `docs/ui/closeflow-active-screen-layout-matrix.generated.json`
 
-## Summary
+## Statusy
 
-- generated_at: `2026-05-09T17:36:57.161Z`
-- route_count: `27`
-- screen_file_count: `22`
-- rows_with_legacy_css_non_blocking: `15`
-- rows_with_local_overrides_non_blocking: `21`
+| Status | Znaczenie |
+|---|---|
+| `OK` | Ekran w większości używa źródeł UI z rejestru i nie wymaga pilnej migracji. |
+| `MIGRATE` | Ekran działa, ale ma lokalne lub mieszane źródła UI i powinien wejść do kolejnej migracji. |
+| `LEGACY` | Ekran jest ciężki albo mocno oparty o stare CSS/JSX. Ruszać tylko osobnym etapem. |
+| `OUT_OF_SCOPE` | Ekran nie jest aktywny albo plik nie istnieje w aktualnym branchu. |
+
+## Wynik audytu
+
+- Liczba ekranów: **16**
+- OK: **0**
+- MIGRATE: **12**
+- LEGACY: **4**
+- OUT_OF_SCOPE: **0**
 
 ## Matrix
 
-| route |file |status |PageShell |PageHero |MetricGrid |MetricTile |EntityIcon |ActionIcon |SurfaceCard |ListRow |ActionCluster |FormFooter |FinanceSnapshot |legacy CSS |local overrides |
-| --- |--- |--- |--- |--- |--- |--- |--- |--- |--- |--- |--- |--- |--- |--- |--- |
-| /login | src/pages/Login.tsx | public_auth | no | no | no | no | yes | no | no | no | no | no | no | - | semantic_tailwind_color_classes |
-| /portal/:caseId/:token | src/pages/ClientPortal.tsx | public_portal | no | no | no | no | yes | no | no | no | no | no | no | - | template_className<br>semantic_tailwind_color_classes |
-| / | src/pages/TodayStable.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | - | semantic_tailwind_color_classes |
-| /today | src/pages/TodayStable.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | - | semantic_tailwind_color_classes |
-| /leads | src/pages/Leads.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage20-lead-form-vnext.css | - |
-| /leads/:leadId | src/pages/LeadDetail.tsx | protected | no | no | no | no | yes | no | no | no | yes | no | no | ../styles/visual-stage14-lead-detail-vnext.css | template_className<br>local_class_or_tone_map |
-| /tasks | src/pages/TasksStable.tsx | protected | no | no | no | no | no | no | no | no | no | no | no | - | - |
-| /calendar | src/pages/Calendar.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage22-event-form-vnext.css | inline_style<br>template_className<br>semantic_tailwind_color_classes<br>local_class_or_tone_map |
-| /cases | src/pages/Cases.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage23-client-case-forms-vnext.css | inline_style<br>local_class_or_tone_map |
-| /case/:caseId | src/pages/CaseDetail.tsx | protected | no | no | no | no | yes | no | no | no | yes | no | no | ../styles/visual-stage13-case-detail-vnext.css | inline_style<br>template_className |
-| /cases/:caseId | src/pages/CaseDetail.tsx | protected | no | no | no | no | yes | no | no | no | yes | no | no | ../styles/visual-stage13-case-detail-vnext.css | inline_style<br>template_className |
-| /clients | src/pages/Clients.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage23-client-case-forms-vnext.css | - |
-| /clients/:clientId | src/pages/ClientDetail.tsx | protected | no | no | no | no | yes | no | no | no | yes | no | no | ../styles/visual-stage12-client-detail-vnext.css | inline_style<br>template_className |
-| /activity | src/pages/Activity.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage8-activity-vnext.css<br>../styles/hotfix-right-rail-dark-wrappers.css | inline_style<br>semantic_tailwind_color_classes |
-| /ai-drafts | src/pages/AiDrafts.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage9-ai-drafts-vnext.css<br>../styles/hotfix-right-rail-dark-wrappers.css | local_class_or_tone_map |
-| /notifications | src/pages/NotificationsCenter.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage10-notifications-vnext.css<br>../styles/hotfix-right-rail-dark-wrappers.css | inline_style<br>semantic_tailwind_color_classes |
-| /templates | src/pages/Templates.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | - | semantic_tailwind_color_classes |
-| /case-templates | - | protected | no | no | no | no | no | no | no | no | no | no | no | - | - |
-| /response-templates | src/pages/ResponseTemplates.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | - | semantic_tailwind_color_classes |
-| /billing | src/pages/Billing.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage16-billing-vnext.css | template_className |
-| /help | src/pages/SupportCenter.tsx | protected | no | no | no | no | no | no | no | no | no | no | no | ../styles/visual-stage17-support-vnext.css | template_className |
-| /support | src/pages/SupportCenter.tsx | protected | no | no | no | no | no | no | no | no | no | no | no | ../styles/visual-stage17-support-vnext.css | template_className |
-| /settings/ai | src/pages/AdminAiSettings.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | - | template_className<br>semantic_tailwind_color_classes |
-| /settings | src/pages/Settings.tsx | protected | no | no | no | no | yes | no | no | no | no | no | no | ../styles/visual-stage19-settings-vnext.css | - |
-| /ui-preview-vnext | src/pages/UiPreviewVNext.tsx | public_preview | no | no | no | no | no | no | no | no | no | no | no | - | inline_style<br>template_className |
-| /ui-preview-vnext-full | src/pages/UiPreviewVNextFull.tsx | public_preview | no | no | no | no | no | no | no | no | no | no | no | - | inline_style<br>style_tag |
-| * | - | fallback_redirect | no | no | no | no | no | no | no | no | no | no | no | - | - |
+| Route | File | PageShell source | PageHero source | Metric source | EntityIcon source | ActionIcon source | SurfaceCard source | ListRow source | ActionCluster source | FormFooter source | Finance source | Legacy CSS | Temporary overrides | Status | Next migration stage |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| /, /today | src/pages/TodayStable.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | ui-system/ActionCluster | not_detected | local finance/status markup detected | page-adapters: visual-stage02-today.css; page-adapters: visual-stage21-today-final-lock.css; temporary: stageA24/stageA25 today relations | stageA24-today-relations-label-align.css; stageA25-today-relations-lead-badge-inline.css | LEGACY | VS-5A decision hub screen adapter audit |
+| /tasks | src/pages/TasksStable.tsx | legacy/shared layout wrapper | local/legacy header markup | ui-system metric components | not_detected | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | local/shared footer markup | none | page-adapters: visual-stage20-tasks-safe-css.css; page-adapters: visual-stage28-tasks-vnext.css; page-adapters: visual-stage30-tasks-compact-after-calendar.css; page-adapters: tasks-header-stage45b-cleanup.css | none | MIGRATE | VS-5B tasks list component migration |
+| /leads | src/pages/Leads.tsx | legacy/shared layout wrapper | local/legacy header markup | shared adapter: StatShortcutCard -> OperatorMetricTile | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | local/shared footer markup | local finance/status markup detected | page-adapters: visual-stage03-leads.css; page-adapters: visual-stage18/25/26 leads CSS | none | MIGRATE | VS-5C leads list component migration |
+| /clients | src/pages/Clients.tsx | legacy/shared layout wrapper | local/legacy header markup | shared adapter: StatShortcutCard -> OperatorMetricTile | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | local/shared footer markup | local finance/status markup detected | page-adapters: visual-stage05-clients.css; temporary: stage35 clients cleanup | stage35-clients-value-detail-cleanup.css | MIGRATE | VS-5D clients list component migration |
+| /cases | src/pages/Cases.tsx | legacy/shared layout wrapper | local/legacy header markup | shared adapter: StatShortcutCard -> OperatorMetricTile | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | local/shared footer markup | none | page-adapters: visual-stage07-cases.css; page-adapters: visual-stage27-cases-vnext.css | none | MIGRATE | VS-5E cases list component migration |
+| /calendar | src/pages/Calendar.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | local/shared footer markup | none | page-adapters: visual-stage29-calendar-vnext.css; temporary: stage34 calendar readability; emergency: calendar week/card readability | stage34-calendar-readability-status-forms.css; stage34b-calendar-complete-polish.css | MIGRATE | VS-5F calendar surface migration |
+| /ai-drafts | src/pages/AiDrafts.tsx | legacy/shared layout wrapper | local/legacy header markup | shared adapter: StatShortcutCard -> OperatorMetricTile | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | not_detected | local finance/status markup detected | temporary: stage33 AI drafts text contrast; emergency: ai drafts right rail hotfixes | stage33a-ai-drafts-generated-text-contrast.css | MIGRATE | VS-5G AI drafts screen registry alignment |
+| /notifications | src/pages/NotificationsCenter.tsx | legacy/shared layout wrapper | local/legacy header markup | ui-system metric components | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | not_detected | none | core/metric contracts only unless local page classes detected | none | MIGRATE | VS-5H notifications list registry alignment |
+| /templates | src/pages/Templates.tsx | legacy/shared layout wrapper | local/legacy header markup | shared adapter: StatShortcutCard -> OperatorMetricTile | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | local/shared footer markup | local finance/status markup detected | core/page shell contracts only unless local page classes detected | none | MIGRATE | VS-5I templates screen registry alignment |
+| /activity | src/pages/Activity.tsx | legacy/shared layout wrapper | local/legacy header markup | shared adapter: StatShortcutCard -> OperatorMetricTile | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | not_detected | local finance/status markup detected | emergency: activity right rail hotfixes | none | MIGRATE | VS-5J activity list registry alignment |
+| /leads/:leadId | src/pages/LeadDetail.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | ui-system/ActionCluster | local/shared footer markup | local finance/status markup detected | page-adapters: visual-stage04-lead-detail.css; emergency: lead right rail wrappers | none | LEGACY | VS-6A lead detail heavy screen migration |
+| /clients/:clientId | src/pages/ClientDetail.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | ui-system/ActionCluster | local/shared footer markup | local finance/status markup detected | page-adapters: visual-stage06-client-detail.css; emergency: client note/event/lead visibility finalizer | none | LEGACY | VS-6B client detail heavy screen migration |
+| /case/:caseId, /cases/:caseId | src/pages/CaseDetail.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | ui-system/ActionCluster | local/shared footer markup | local finance/status markup detected | page-adapters: visual-stage08-case-detail.css; page-adapters: visual-stage13-case-detail-vnext.css; legacy: case-detail-simplified/stage2 | none | LEGACY | VS-6C case detail heavy screen migration |
+| /billing | src/pages/Billing.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | not_detected | billing screen finance UI, semantic finance registry pending | finance semantics pending VS-5K | none | MIGRATE | VS-5K billing finance semantic alignment |
+| /settings | src/pages/Settings.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | ui-system/EntityIcon registry | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | not_detected | local finance/status markup detected | core/settings icon/action contracts pending VS-5L | sidebar/settings polish inherited from temporary overrides | MIGRATE | VS-5L settings actions and forms alignment |
+| /help, /support | src/pages/SupportCenter.tsx | legacy/shared layout wrapper | local/legacy header markup | local/legacy metric markup | direct lucide entity icons | direct lucide action icons | local/legacy card or panel markup | local/legacy list row markup | local/entity action cluster markup | not_detected | none | support surface contracts pending VS-5M | none | MIGRATE | VS-5M support center surface/list alignment |
 
-## Interpretacja
+## Zasady po VS-4
 
-- `yes` przy komponencie oznacza, że nazwa komponentu występuje w pliku strony. To jest audyt statyczny, nie test runtime renderowania.
-- `legacy CSS` pokazuje lokalne importy CSS wykryte w pliku strony, jeżeli nazwa wygląda jak stage/hotfix/repair/legacy.
-- `local overrides` pokazuje ryzyka utrzymaniowe: inline style, template className, lokalne mapy klas albo ręczne klasy semantycznych kolorów.
+1. Nie migrować kilku ciężkich ekranów naraz.
+2. Today, LeadDetail, ClientDetail i CaseDetail traktować jako ekrany wysokiego ryzyka.
+3. Każda kolejna migracja ma wskazać, który wiersz z tej macierzy zmienia status.
+4. Jeśli ekran dostaje nowy lokalny kolor, ikonę, kafelek, kartę albo row bez rejestru, check powinien zostać rozszerzony.
+5. Finance UI ma używać semantyk z VS-2D, nie lokalnych kolorów bez znaczenia.
 
-## Kryterium zakończenia VS-4
+## Weryfikacja
 
-- `docs/ui/closeflow-active-screen-layout-matrix.generated.json` istnieje i zawiera matrix tras.
-- `docs/ui/CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_2026-05-09.md` istnieje i zawiera tabelę matrix.
-- `npm run check:closeflow-active-screen-layout-matrix` przechodzi.
-- Etap nie zmienia runtime UI.
+```bash
+npm run audit:closeflow-active-screen-layout-matrix
+npm run check:closeflow-active-screen-layout-matrix
+npm run build
+```
+
+## Kryterium zakończenia
+
+VS-4 jest zakończony, gdy:
+
+1. dokument istnieje,
+2. JSON generated istnieje,
+3. każdy aktywny ekran z listy ma wpis,
+4. każdy wpis ma status `OK`, `MIGRATE`, `LEGACY` albo `OUT_OF_SCOPE`,
+5. check i build przechodzą.

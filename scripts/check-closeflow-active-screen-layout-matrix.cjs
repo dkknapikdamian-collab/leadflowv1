@@ -1,122 +1,143 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 const fs = require('fs');
 const path = require('path');
+const { spawnSync } = require('child_process');
 
 const repo = process.cwd();
-const marker = 'CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4';
-const jsonRel = 'docs/ui/closeflow-active-screen-layout-matrix.generated.json';
-const docRel = 'docs/ui/CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_2026-05-09.md';
-const auditRel = 'scripts/audit-closeflow-active-screen-layout-matrix.cjs';
-const checkRel = 'scripts/check-closeflow-active-screen-layout-matrix.cjs';
+function file(rel) { return path.join(repo, rel); }
+function read(rel) { return fs.readFileSync(file(rel), 'utf8'); }
+function exists(rel) { return fs.existsSync(file(rel)); }
+function fail(message) { console.error('CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4_FAIL: ' + message); process.exit(1); }
+function assert(condition, message) { if (!condition) fail(message); }
+function has(rel, needle, label) { assert(read(rel).includes(needle), `${label} missing: ${needle}`); }
 
+const audit = spawnSync(process.execPath, ['scripts/audit-closeflow-active-screen-layout-matrix.cjs'], {
+  cwd: repo,
+  stdio: 'inherit',
+});
+if (audit.status !== 0) fail('audit script failed');
+
+const requiredFiles = [
+  'src/App.tsx',
+  'docs/ui/CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_2026-05-09.md',
+  'docs/ui/closeflow-active-screen-layout-matrix.generated.json',
+  'scripts/audit-closeflow-active-screen-layout-matrix.cjs',
+  'scripts/check-closeflow-active-screen-layout-matrix.cjs',
+  'package.json',
+];
+for (const rel of requiredFiles) assert(exists(rel), 'missing file: ' + rel);
+
+const requiredScreens = [
+  'TodayStable',
+  'TasksStable',
+  'Leads',
+  'Clients',
+  'Cases',
+  'Calendar',
+  'AiDrafts',
+  'NotificationsCenter',
+  'Templates',
+  'Activity',
+  'LeadDetail',
+  'ClientDetail',
+  'CaseDetail',
+  'Billing',
+  'Settings',
+  'SupportCenter',
+];
+
+const requiredScreenFiles = [
+  'src/pages/TodayStable.tsx',
+  'src/pages/TasksStable.tsx',
+  'src/pages/Leads.tsx',
+  'src/pages/Clients.tsx',
+  'src/pages/Cases.tsx',
+  'src/pages/Calendar.tsx',
+  'src/pages/AiDrafts.tsx',
+  'src/pages/NotificationsCenter.tsx',
+  'src/pages/Templates.tsx',
+  'src/pages/Activity.tsx',
+  'src/pages/LeadDetail.tsx',
+  'src/pages/ClientDetail.tsx',
+  'src/pages/CaseDetail.tsx',
+  'src/pages/Billing.tsx',
+  'src/pages/Settings.tsx',
+  'src/pages/SupportCenter.tsx',
+];
+for (const rel of requiredScreenFiles) assert(exists(rel), 'active screen file missing: ' + rel);
+
+const app = read('src/App.tsx');
+for (const screen of requiredScreens) {
+  assert(app.includes(`./pages/${screen}`) || app.includes(`./pages/${screen.replace('Stable', '')}`), 'App.tsx missing lazy/import reference for screen: ' + screen);
+}
+
+const generated = JSON.parse(read('docs/ui/closeflow-active-screen-layout-matrix.generated.json'));
+assert(generated.marker === 'CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4', 'generated JSON marker mismatch');
+assert(generated.stage === 'VS-4', 'generated JSON stage mismatch');
+assert(Array.isArray(generated.matrix), 'generated matrix is not an array');
+assert(generated.matrix.length === requiredScreens.length, 'matrix screen count mismatch');
+
+const allowedStatus = new Set(['OK', 'MIGRATE', 'LEGACY', 'OUT_OF_SCOPE']);
 const requiredFields = [
   'route',
   'file',
-  'PageShell',
-  'PageHero',
-  'MetricGrid',
-  'MetricTile',
-  'EntityIcon',
-  'ActionIcon',
-  'SurfaceCard',
-  'ListRow',
-  'ActionCluster',
-  'FormFooter',
-  'FinanceSnapshot',
+  'pageShellSource',
+  'pageHeroSource',
+  'metricSource',
+  'entityIconSource',
+  'actionIconSource',
+  'surfaceCardSource',
+  'listRowSource',
+  'actionClusterSource',
+  'formFooterSource',
+  'financeSource',
   'legacyCss',
-  'localOverrides',
+  'temporaryOverrides',
   'status',
+  'nextMigrationStage',
 ];
 
-const expectedRoutes = [
-  '/',
-  '/today',
-  '/leads',
-  '/leads/:leadId',
-  '/tasks',
-  '/calendar',
-  '/cases',
-  '/cases/:caseId',
-  '/clients',
-  '/clients/:clientId',
-  '/activity',
-  '/ai-drafts',
-  '/notifications',
-  '/templates',
-  '/response-templates',
-  '/billing',
-  '/settings',
-];
-
-function repoPath(rel) {
-  return path.join(repo, rel);
-}
-
-function exists(rel) {
-  return fs.existsSync(repoPath(rel));
-}
-
-function read(rel) {
-  return fs.readFileSync(repoPath(rel), 'utf8');
-}
-
-function fail(message) {
-  console.error('CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4_CHECK_FAIL: ' + message);
-  process.exit(1);
-}
-
-function assert(condition, message) {
-  if (!condition) fail(message);
-}
-
-function main() {
-  for (const rel of [jsonRel, docRel, auditRel, checkRel, 'src/App.tsx', 'package.json']) {
-    assert(exists(rel), 'missing file: ' + rel);
+const byScreen = new Map(generated.matrix.map((row) => [row.screen, row]));
+for (const screen of requiredScreens) {
+  assert(byScreen.has(screen), 'matrix missing screen: ' + screen);
+  const row = byScreen.get(screen);
+  for (const field of requiredFields) {
+    assert(Object.prototype.hasOwnProperty.call(row, field), `matrix row ${screen} missing field: ${field}`);
+    assert(row[field] !== null && row[field] !== undefined && String(row[field]).length > 0, `matrix row ${screen} empty field: ${field}`);
   }
-
-  const payload = JSON.parse(read(jsonRel));
-  const doc = read(docRel);
-  const audit = read(auditRel);
-  const pkg = JSON.parse(read('package.json'));
-
-  assert(payload.marker === marker, 'json marker mismatch');
-  assert(doc.includes(marker), 'doc marker missing');
-  assert(audit.includes(marker), 'audit marker missing');
-  assert(pkg.scripts && pkg.scripts['audit:closeflow-active-screen-layout-matrix'], 'package script audit missing');
-  assert(pkg.scripts && pkg.scripts['check:closeflow-active-screen-layout-matrix'], 'package script check missing');
-  assert(Array.isArray(payload.matrix), 'matrix is not array');
-  assert(payload.matrix.length >= expectedRoutes.length, 'matrix has too few routes');
-  assert(payload.source && payload.source.runtimeChanges === false, 'runtimeChanges must be false');
-  assert(payload.source && payload.source.vs2c2Migration === 'deferred_not_touched', 'VS-2C-2 must remain deferred_not_touched');
-
-  const byRoute = new Map(payload.matrix.map((row) => [row.route, row]));
-  for (const route of expectedRoutes) {
-    assert(byRoute.has(route), 'missing active route in matrix: ' + route);
-  }
-
-  for (const row of payload.matrix) {
-    for (const field of requiredFields) {
-      assert(Object.prototype.hasOwnProperty.call(row, field), 'row missing field ' + field + ' for route ' + row.route);
-    }
-    assert(Array.isArray(row.legacyCss), 'legacyCss must be array for route ' + row.route);
-    assert(Array.isArray(row.localOverrides), 'localOverrides must be array for route ' + row.route);
-    if (row.file) assert(typeof row.file === 'string' && row.file.startsWith('src/'), 'file must be src/* for route ' + row.route);
-  }
-
-  const protectedRoutes = payload.matrix.filter((row) => row.status === 'protected').length;
-  const readableFiles = payload.matrix.filter((row) => row.sourceStatus === 'read').length;
-  const legacyRows = payload.matrix.filter((row) => row.legacyCss.length > 0).length;
-  const overrideRows = payload.matrix.filter((row) => row.localOverrides.length > 0).length;
-
-  assert(protectedRoutes >= 10, 'too few protected routes detected');
-  assert(readableFiles >= 10, 'too few readable screen files detected');
-
-  console.log('CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4_CHECK_OK');
-  console.log('route_count=' + payload.matrix.length);
-  console.log('protected_route_count=' + protectedRoutes);
-  console.log('readable_screen_file_rows=' + readableFiles);
-  console.log('legacy_css_rows_non_blocking=' + legacyRows);
-  console.log('local_override_rows_non_blocking=' + overrideRows);
+  assert(allowedStatus.has(row.status), `matrix row ${screen} has invalid status: ${row.status}`);
 }
 
-main();
+const doc = read('docs/ui/CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_2026-05-09.md');
+for (const screen of requiredScreens) assert(doc.includes(screen) || doc.includes(byScreen.get(screen).file), 'docs missing screen/file: ' + screen);
+for (const label of [
+  'PageShell source',
+  'PageHero source',
+  'Metric source',
+  'EntityIcon source',
+  'ActionIcon source',
+  'SurfaceCard source',
+  'ListRow source',
+  'ActionCluster source',
+  'FormFooter source',
+  'Finance source',
+  'Legacy CSS',
+  'Temporary overrides',
+  'Next migration stage',
+]) {
+  assert(doc.includes(label), 'docs matrix missing column label: ' + label);
+}
+for (const status of ['OK', 'MIGRATE', 'LEGACY', 'OUT_OF_SCOPE']) assert(doc.includes('`' + status + '`'), 'docs missing status legend: ' + status);
+
+has('scripts/audit-closeflow-active-screen-layout-matrix.cjs', 'SCREEN_TARGETS', 'audit screen target registry');
+has('scripts/audit-closeflow-active-screen-layout-matrix.cjs', 'LEGACY_CSS_HINTS', 'audit legacy CSS mapping');
+has('scripts/audit-closeflow-active-screen-layout-matrix.cjs', 'TEMPORARY_HINTS', 'audit temporary override mapping');
+
+const pkg = JSON.parse(read('package.json'));
+assert(pkg.scripts && pkg.scripts['audit:closeflow-active-screen-layout-matrix'] === 'node scripts/audit-closeflow-active-screen-layout-matrix.cjs', 'package script audit:closeflow-active-screen-layout-matrix missing or wrong');
+assert(pkg.scripts && pkg.scripts['check:closeflow-active-screen-layout-matrix'] === 'node scripts/check-closeflow-active-screen-layout-matrix.cjs', 'package script check:closeflow-active-screen-layout-matrix missing or wrong');
+
+console.log('CLOSEFLOW_ACTIVE_SCREEN_LAYOUT_MATRIX_VS4_CHECK_OK');
+console.log('screen_count=' + generated.matrix.length);
+console.log('allowed_statuses=OK,MIGRATE,LEGACY,OUT_OF_SCOPE');
