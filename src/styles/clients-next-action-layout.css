@@ -304,6 +304,10 @@
   min-width: 0;
 }
 
+.main-clients-html .cf-client-cases-cell {
+  min-width: 0;
+}
+
 .main-clients-html .cf-client-next-action-inline {
   min-width: 0;
   align-self: stretch;
@@ -320,7 +324,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 75rem) {
   .main-clients-html .client-row.cf-client-row-inline {
     grid-template-columns:
       minmax(2.25rem, auto)
@@ -334,7 +338,7 @@
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 47.5rem) {
   .main-clients-html .client-row.cf-client-row-inline {
     grid-template-columns: auto minmax(0, 1fr);
     align-items: start;

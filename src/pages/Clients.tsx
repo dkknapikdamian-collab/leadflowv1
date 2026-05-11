@@ -685,9 +685,9 @@ export default function Clients() {
                    return (
                      <div key={client.id} className="relative group/client-card w-full" data-client-card-wide-layout="true">
                        <Link to={`/clients/${client.id}`} className="block">
-                         <div className="row client-row">
+                         <div className="row client-row cf-client-row-inline">
                          <span className="index">{index + 1}</span>
-                         <span className="lead-main-cell min-w-0">
+                         <span className="lead-main-cell min-w-0 cf-client-main-cell">
                            <span className="title">{client.name || 'Klient'}</span>
                            <span className="cf-list-row-meta">
                              <span className="sub">{client.company || 'Bez firmy'}</span>
@@ -701,9 +701,9 @@ export default function Clients() {
                              <span className="pill cf-chip-last-contact">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
                            </span>
                          </span>
-                         <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
-                         <span className="lead-actions client-card-action-buttons">
+                         <span className="lead-value-cell cf-client-cases-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
+                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
+                         <span className="lead-actions client-card-action-buttons cf-client-row-actions cf-client-row-inline">
                            <span className="btn ghost cf-icon-action-button" aria-hidden="true"><EntityIcon entity="client" className="h-4 w-4" /></span>
                            <button
                              type="button"

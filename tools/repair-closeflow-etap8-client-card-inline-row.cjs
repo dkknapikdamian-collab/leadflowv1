@@ -1,50 +1,107 @@
 #!/usr/bin/env node
-/* CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW repair */
-const fs = require("fs");
-const path = require("path");
+/* CLOSEFLOW_ETAP8_REPAIR3_CLIENT_CARD_INLINE_ROW_GUARDED */
+const fs = require('fs');
+const path = require('path');
 
 const root = process.cwd();
 
-function file(rel) {
+function abs(rel) {
   return path.join(root, rel);
 }
 
 function read(rel) {
-  const abs = file(rel);
-  if (!fs.existsSync(abs)) {
-    throw new Error(`Missing required file: ${rel}`);
-  }
-  return fs.readFileSync(abs, "utf8");
+  const file = abs(rel);
+  if (!fs.existsSync(file)) throw new Error(`Missing required file: ${rel}`);
+  return fs.readFileSync(file, 'utf8');
 }
 
 function write(rel, content) {
-  fs.writeFileSync(file(rel), content, "utf8");
+  fs.writeFileSync(abs(rel), content, 'utf8');
 }
 
-function addClassValue(classes, cls) {
-  const parts = classes.split(/\s+/).filter(Boolean);
-  if (!parts.includes(cls)) parts.push(cls);
-  return parts.join(" ");
+function backup(rel) {
+  const file = abs(rel);
+  if (!fs.existsSync(file)) return;
+  const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const dest = abs(path.join('.closeflow-recovery-backups', `etap8-repair3-${stamp}`, rel));
+  fs.mkdirSync(path.dirname(dest), { recursive: true });
+  fs.copyFileSync(file, dest);
 }
 
-function addClassToStaticClassNames(src, predicate, cls) {
-  return src.replace(/className=(["'`])([^"'`]*?)\1/g, (match, quote, classes) => {
+function uniqClassList(value) {
+  return value.split(/\s+/).filter(Boolean).filter((item, index, arr) => arr.indexOf(item) === index).join(' ');
+}
+
+function addClass(value, token) {
+  return uniqClassList(`${value || ''} ${token}`);
+}
+
+function addClassToExact(src, from, token) {
+  if (!src.includes(from)) return src;
+  const next = from.replace(/className="([^"]*)"/, (_m, cls) => `className="${addClass(cls, token)}"`);
+  return src.split(from).join(next);
+}
+
+function addClassToStaticClassName(src, predicate, token) {
+  let changed = false;
+  const next = src.replace(/className=(["'`])([^"'`]*?)\1/g, (match, quote, classes) => {
     if (!predicate(classes)) return match;
-    return `className=${quote}${addClassValue(classes, cls)}${quote}`;
+    changed = true;
+    return `className=${quote}${addClass(classes, token)}${quote}`;
   });
+  return { src: next, changed };
+}
+
+function addClassToBraceStringClassName(src, predicate, token) {
+  let changed = false;
+  const next = src.replace(/className=\{(["'`])([^"'`]*?)\1\}/g, (match, quote, classes) => {
+    if (!predicate(classes)) return match;
+    changed = true;
+    return `className={${quote}${addClass(classes, token)}${quote}}`;
+  });
+  return { src: next, changed };
+}
+
+function addTokenEverywhereInClassNames(src, predicate, token) {
+  let result = src;
+  let any = false;
+  for (const fn of [addClassToStaticClassName, addClassToBraceStringClassName]) {
+    const out = fn(result, predicate, token);
+    result = out.src;
+    any = any || out.changed;
+  }
+  return { src: result, changed: any };
 }
 
 function ensurePackageScript() {
-  const rel = "package.json";
+  const rel = 'package.json';
+  backup(rel);
   const pkg = JSON.parse(read(rel));
   pkg.scripts = pkg.scripts || {};
-  pkg.scripts["check:etap8-client-card-inline-row"] = "node scripts/check-closeflow-etap8-client-card-inline-row.cjs";
+  pkg.scripts['check:etap8-client-card-inline-row'] = 'node scripts/check-closeflow-etap8-client-card-inline-row.cjs';
   write(rel, `${JSON.stringify(pkg, null, 2)}\n`);
 }
 
+function removeEtap8Blocks(css) {
+  const marker = '/* CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW */';
+  let output = css;
+  while (output.includes(marker)) {
+    const start = output.indexOf(marker);
+    const next = output.indexOf('\n/* CLOSEFLOW_', start + marker.length);
+    if (next >= 0) {
+      output = `${output.slice(0, start).trimEnd()}\n\n${output.slice(next + 1).trimStart()}`;
+    } else {
+      output = output.slice(0, start).trimEnd();
+    }
+  }
+  return output;
+}
+
 function ensureCss() {
-  const rel = "src/styles/clients-next-action-layout.css";
+  const rel = 'src/styles/clients-next-action-layout.css';
+  backup(rel);
   let css = read(rel);
+  css = removeEtap8Blocks(css);
 
   const block = `
 /* CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW */
@@ -64,6 +121,10 @@ function ensureCss() {
   min-width: 0;
 }
 
+.main-clients-html .cf-client-cases-cell {
+  min-width: 0;
+}
+
 .main-clients-html .cf-client-next-action-inline {
   min-width: 0;
   align-self: stretch;
@@ -80,7 +141,7 @@ function ensureCss() {
   white-space: nowrap;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 75rem) {
   .main-clients-html .client-row.cf-client-row-inline {
     grid-template-columns:
       minmax(2.25rem, auto)
@@ -94,7 +155,7 @@ function ensureCss() {
   }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 47.5rem) {
   .main-clients-html .client-row.cf-client-row-inline {
     grid-template-columns: auto minmax(0, 1fr);
     align-items: start;
@@ -113,90 +174,66 @@ function ensureCss() {
 }
 `.trim();
 
-  const marker = "/* CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW */";
-  if (css.includes(marker)) {
-    const start = css.indexOf(marker);
-    const nextMarker = css.indexOf("\n/* CLOSEFLOW_", start + marker.length);
-    if (nextMarker >= 0) {
-      css = `${css.slice(0, start).trimEnd()}\n\n${block}\n\n${css.slice(nextMarker + 1).trimStart()}`;
-    } else {
-      css = `${css.slice(0, start).trimEnd()}\n\n${block}\n`;
-    }
-  } else {
-    css = `${css.trimEnd()}\n\n${block}\n`;
+  css = `${css.trimEnd()}\n\n${block}\n`;
+
+  // ETAP3 guard is intentionally strict and flags literal fixed desktop widths.
+  // Breakpoints use rem values, so do not reintroduce forbidden px literals here.
+  if (/\b(?:1100|1200)px\b/i.test(css)) {
+    throw new Error('clients-next-action-layout.css still contains forbidden 1100px/1200px literal after ETAP8 repair. Remove fixed-width leftovers before continuing.');
   }
+
   write(rel, css);
 }
 
 function ensureClientsMarkup() {
-  const rel = "src/pages/Clients.tsx";
+  const rel = 'src/pages/Clients.tsx';
+  backup(rel);
   let src = read(rel);
 
   if (!src.includes('data-client-card-wide-layout="true"')) {
     throw new Error('Clients.tsx does not contain data-client-card-wide-layout="true". Stop: wrong file state.');
   }
-
-  src = addClassToStaticClassNames(
-    src,
-    (classes) => /\bclient-row\b/.test(classes) && /\brow\b/.test(classes),
-    "cf-client-row-inline"
-  );
-
-  src = addClassToStaticClassNames(
-    src,
-    (classes) => /\blead-main-cell\b/.test(classes),
-    "cf-client-main-cell"
-  );
-
-  src = addClassToStaticClassNames(
-    src,
-    (classes) => /\blead-value-cell\b/.test(classes) || /\bclient-cases-cell\b/.test(classes) || /\bclient-case-cell\b/.test(classes),
-    "cf-client-cases-cell"
-  );
-
-  src = addClassToStaticClassNames(
-    src,
-    (classes) => /\bcf-client-next-action-panel\b/.test(classes) || /\bclient-card-next-action-block\b/.test(classes),
-    "cf-client-next-action-inline"
-  );
-
-  src = addClassToStaticClassNames(
-    src,
-    (classes) => (
-      /\bcf-client-row-actions\b/.test(classes) ||
-      /\bclient-row-actions\b/.test(classes) ||
-      /\bclient-card-actions\b/.test(classes) ||
-      /\blead-row-actions\b/.test(classes) ||
-      /\blead-card-actions\b/.test(classes) ||
-      /\bcard-actions\b/.test(classes)
-    ),
-    "cf-client-row-actions"
-  );
-
-  if (!src.includes("cf-client-row-actions")) {
-    // Conservative fallback: add the class to likely inline action containers inside Clients page.
-    // This avoids touching global components while still handling common utility-only action wrappers.
-    let changed = false;
-    src = src.replace(/className=(["'`])([^"'`]*(?:inline-flex|flex)[^"'`]*items-center[^"'`]*(?:justify-end|justify-start|gap-[0-9.]+)[^"'`]*)\1/g, (match, quote, classes, offset) => {
-      const before = src.slice(Math.max(0, offset - 1400), offset);
-      const after = src.slice(offset, Math.min(src.length, offset + 1400));
-      const localClientContext = before.includes("data-client-card-wide-layout") || before.includes("client-row") || after.includes("Otwórz") || after.includes("openClient") || after.includes("client.id");
-      const looksLikeActions = after.includes("<button") || after.includes("<Button") || after.includes("onClick");
-      if (!localClientContext || !looksLikeActions) return match;
-      changed = true;
-      return `className=${quote}${addClassValue(classes, "cf-client-row-actions")}${quote}`;
-    });
-    if (!changed && !src.includes("cf-client-row-actions")) {
-      throw new Error(
-        "Could not detect row action buttons container in Clients.tsx. Add cf-client-row-actions manually to the container with client card buttons, then rerun checks."
-      );
-    }
+  if (!src.includes('className="relative group/client-card w-full"')) {
+    throw new Error('Clients.tsx does not contain the expected client card wrapper class. Stop: wrong file state.');
+  }
+  if (!src.includes('cf-client-next-action-panel')) {
+    throw new Error('Clients.tsx must keep cf-client-next-action-panel before ETAP8 repair can continue.');
   }
 
-  for (const token of ["cf-client-row-inline", "cf-client-main-cell", "cf-client-cases-cell", "cf-client-next-action-inline", "cf-client-row-actions"]) {
-    if (!src.includes(token)) {
-      throw new Error(`Clients.tsx patch did not create required token: ${token}`);
-    }
+  // Exact current markup on dev-rollout-freeze after the failed ETAP8 commit.
+  src = addClassToExact(src, '<div className="row client-row">', 'cf-client-row-inline');
+  src = addClassToExact(src, '<span className="lead-main-cell min-w-0">', 'cf-client-main-cell');
+  src = addClassToExact(src, '<span className="lead-value-cell">', 'cf-client-cases-cell');
+  src = addClassToExact(src, '<span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel">', 'cf-client-next-action-inline');
+  src = addClassToExact(src, '<span className="lead-actions client-card-action-buttons">', 'cf-client-row-actions');
+
+  // Conservative fallbacks for formatted or slightly changed markup.
+  let out = addTokenEverywhereInClassNames(src, (classes) => /\brow\b/.test(classes) && /\bclient-row\b/.test(classes), 'cf-client-row-inline');
+  src = out.src;
+  out = addTokenEverywhereInClassNames(src, (classes) => /\blead-main-cell\b/.test(classes), 'cf-client-main-cell');
+  src = out.src;
+  out = addTokenEverywhereInClassNames(src, (classes) => /\blead-value-cell\b/.test(classes) || /\bclient-cases-cell\b/.test(classes) || /\bclient-case-cell\b/.test(classes), 'cf-client-cases-cell');
+  src = out.src;
+  out = addTokenEverywhereInClassNames(src, (classes) => /\bcf-client-next-action-panel\b/.test(classes) || /\bclient-card-next-action-block\b/.test(classes), 'cf-client-next-action-inline');
+  src = out.src;
+  out = addTokenEverywhereInClassNames(src, (classes) => /\blead-actions\b/.test(classes) || /\bclient-card-action-buttons\b/.test(classes) || /\bclient-row-actions\b/.test(classes), 'cf-client-row-actions');
+  src = out.src;
+
+  const required = [
+    'cf-client-row-inline',
+    'cf-client-main-cell',
+    'cf-client-cases-cell',
+    'cf-client-next-action-inline',
+    'cf-client-row-actions',
+  ];
+  const missing = required.filter((token) => !src.includes(token));
+  if (missing.length) {
+    const cardAt = src.indexOf('data-client-card-wide-layout="true"');
+    const snippet = cardAt >= 0 ? src.slice(Math.max(0, cardAt - 1800), Math.min(src.length, cardAt + 5200)) : src.slice(0, 5200);
+    const diagPath = abs('docs/feedback/CLOSEFLOW_ETAP8_REPAIR3_MARKUP_DIAGNOSTIC.txt');
+    fs.mkdirSync(path.dirname(diagPath), { recursive: true });
+    fs.writeFileSync(diagPath, snippet, 'utf8');
+    throw new Error(`ETAP8 repair could not add required classes: ${missing.join(', ')}. Diagnostic snippet saved to docs/feedback/CLOSEFLOW_ETAP8_REPAIR3_MARKUP_DIAGNOSTIC.txt. No commit should be made.`);
   }
 
   write(rel, src);
@@ -206,7 +243,7 @@ function main() {
   ensurePackageScript();
   ensureCss();
   ensureClientsMarkup();
-  console.log("✔ Applied CLOSEFLOW_ETAP8_CLIENT_CARD_INLINE_ROW patch.");
+  console.log('✔ Applied CLOSEFLOW_ETAP8_REPAIR3_CLIENT_CARD_INLINE_ROW_GUARDED patch.');
 }
 
 main();
