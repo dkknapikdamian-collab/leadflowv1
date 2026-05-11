@@ -1,45 +1,47 @@
-/* CLOSEFLOW_PAGE_HEADER_CARD_SOURCE_TRUTH_STAGE1_2026_05_11
+/* CLOSEFLOW_PAGE_HEADER_REBUILD_LIGHT_SOURCE_TRUTH_2026_05_11
    owner: CloseFlow Visual System
-   reason: unify top page header cards, typography and header actions without runtime DOM mutation.
-   source_of_truth: this file + closeflow-action-tokens.css variables.
-   scope: top page header cards only.
+   reason: rebuild every top page header to the same light visual contract as Today.
+   scope: top page header / hero cards only. No runtime, no MutationObserver, no layout migration.
 */
 
 :root {
-  --cf-ph-card-bg: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(248,250,252,0.96));
-  --cf-ph-card-border: rgba(203, 213, 225, 0.86);
-  --cf-ph-card-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
-  --cf-ph-card-radius: 28px;
-  --cf-ph-card-padding-y: 22px;
-  --cf-ph-card-padding-x: 26px;
+  --cf-ph-bg: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,250,252,0.98));
+  --cf-ph-bg-solid: #ffffff;
+  --cf-ph-border: rgba(203, 213, 225, 0.82);
+  --cf-ph-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);
+  --cf-ph-radius: 28px;
+  --cf-ph-padding-y: 22px;
+  --cf-ph-padding-x: 26px;
 
   --cf-ph-title: #0f172a;
   --cf-ph-muted: #64748b;
+
   --cf-ph-kicker-bg: #eef4ff;
   --cf-ph-kicker-border: #bfdbfe;
   --cf-ph-kicker-text: #1d4ed8;
 
   --cf-ph-primary-bg: #2563eb;
-  --cf-ph-primary-bg-hover: #1d4ed8;
+  --cf-ph-primary-hover: #1d4ed8;
   --cf-ph-primary-border: #1d4ed8;
   --cf-ph-primary-text: #ffffff;
 
   --cf-ph-ai-bg: #eef2ff;
-  --cf-ph-ai-bg-hover: #e0e7ff;
+  --cf-ph-ai-hover: #e0e7ff;
   --cf-ph-ai-border: #c7d2fe;
   --cf-ph-ai-text: #4338ca;
 
   --cf-ph-neutral-bg: #ffffff;
-  --cf-ph-neutral-bg-hover: #f8fafc;
+  --cf-ph-neutral-hover: #f8fafc;
   --cf-ph-neutral-border: #cbd5e1;
   --cf-ph-neutral-text: #0f172a;
 
   --cf-ph-danger-bg: #fff1f2;
-  --cf-ph-danger-bg-hover: #ffe4e6;
+  --cf-ph-danger-hover: #ffe4e6;
   --cf-ph-danger-border: #fecdd3;
   --cf-ph-danger-text: #be123c;
 }
 
+/* Hard reset old dark/experimental header skins. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -52,7 +54,8 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 ) {
   display: flex !important;
   align-items: center !important;
@@ -60,16 +63,21 @@
   gap: 18px !important;
   width: 100% !important;
   min-width: 0 !important;
-  border: 1px solid var(--cf-ph-card-border) !important;
-  border-radius: var(--cf-ph-card-radius) !important;
-  background: var(--cf-ph-card-bg) !important;
+  min-height: 92px !important;
+  border: 1px solid var(--cf-ph-border) !important;
+  border-radius: var(--cf-ph-radius) !important;
+  background: var(--cf-ph-bg) !important;
+  background-color: var(--cf-ph-bg-solid) !important;
+  background-image: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(248,250,252,0.98)) !important;
   color: var(--cf-ph-title) !important;
-  box-shadow: var(--cf-ph-card-shadow) !important;
-  padding: var(--cf-ph-card-padding-y) var(--cf-ph-card-padding-x) !important;
+  -webkit-text-fill-color: initial !important;
+  box-shadow: var(--cf-ph-shadow) !important;
+  padding: var(--cf-ph-padding-y) var(--cf-ph-padding-x) !important;
   overflow: visible !important;
-  backdrop-filter: blur(10px);
+  backdrop-filter: none !important;
 }
 
+/* Remove old decorative bars/overlays from older page adapters. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -82,7 +90,8 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 )::before,
 :where(
   .main-leads-html > .page-head,
@@ -96,13 +105,17 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 )::after {
+  content: none !important;
+  display: none !important;
   background: transparent !important;
+  background-image: none !important;
   box-shadow: none !important;
-  opacity: 0 !important;
 }
 
+/* Left text column. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -115,18 +128,41 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
+) > :first-child,
+:where([data-p0-tasks-stable-rebuild="true"] > .cf-page-hero) .cf-page-hero-layout > :first-child {
+  min-width: 0 !important;
+}
+
+/* Title typography. */
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 ) :is(h1, .cf-page-hero-title) {
   margin: 6px 0 0 !important;
   color: var(--cf-ph-title) !important;
   -webkit-text-fill-color: var(--cf-ph-title) !important;
-  font-size: clamp(24px, 2.4vw, 34px) !important;
+  font-size: clamp(24px, 2.35vw, 34px) !important;
   line-height: 1.05 !important;
   font-weight: 950 !important;
   letter-spacing: -0.035em !important;
   text-shadow: none !important;
+  opacity: 1 !important;
 }
 
+/* Description typography. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -139,15 +175,20 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 ) :is(p, .lead-copy) {
+  margin-top: 8px !important;
   color: var(--cf-ph-muted) !important;
   -webkit-text-fill-color: var(--cf-ph-muted) !important;
   font-size: 13px !important;
   line-height: 1.45 !important;
-  max-width: 760px;
+  font-weight: 600 !important;
+  max-width: 760px !important;
+  opacity: 1 !important;
 }
 
+/* Kicker / badge. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -160,8 +201,9 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
-) :is(.kicker, .cf-page-hero-kicker, .ai-drafts-kicker, .activity-kicker, .notifications-kicker, .badge, [class*="kicker"]) {
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
+) :is(.kicker, .cf-page-hero-kicker, .ai-drafts-kicker, .activity-kicker, .notifications-kicker, [class*="kicker"], .badge, [data-slot="badge"]) {
   display: inline-flex !important;
   width: fit-content !important;
   align-items: center !important;
@@ -169,6 +211,8 @@
   border: 1px solid var(--cf-ph-kicker-border) !important;
   border-radius: 999px !important;
   background: var(--cf-ph-kicker-bg) !important;
+  background-color: var(--cf-ph-kicker-bg) !important;
+  background-image: none !important;
   color: var(--cf-ph-kicker-text) !important;
   -webkit-text-fill-color: var(--cf-ph-kicker-text) !important;
   font-size: 11px !important;
@@ -178,8 +222,10 @@
   text-transform: uppercase !important;
   padding: 7px 10px !important;
   box-shadow: none !important;
+  opacity: 1 !important;
 }
 
+/* Actions container. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -192,17 +238,18 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
-) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions) {
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
+) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
   display: flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: flex-end !important;
   gap: 10px !important;
-  min-width: max-content;
+  min-width: max-content !important;
 }
 
-/* Header action base. Keep this scoped to top header cards only. */
+/* Action button base. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -215,20 +262,25 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 ) :is(button, a.btn, a[role="button"]) {
   min-height: 38px !important;
   border-radius: 14px !important;
   border: 1px solid var(--cf-ph-neutral-border) !important;
   background: var(--cf-ph-neutral-bg) !important;
+  background-color: var(--cf-ph-neutral-bg) !important;
+  background-image: none !important;
   color: var(--cf-ph-neutral-text) !important;
   -webkit-text-fill-color: var(--cf-ph-neutral-text) !important;
   box-shadow: 0 8px 18px rgba(15, 23, 42, 0.075) !important;
   font-size: 12px !important;
   font-weight: 850 !important;
   line-height: 1 !important;
+  opacity: 1 !important;
 }
 
+/* Main CTA: blue/indigo, not green. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -241,15 +293,18 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
-) :is(.btn.primary, .cf-header-action--primary, button[type="submit"], .bg-blue-600, .bg-indigo-600, .bg-emerald-600, .bg-green-600) {
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
+) :is(.btn.primary, .cf-header-action--primary, [data-tasks-new-task-header-action="true"], .bg-blue-600, .bg-indigo-600, .bg-emerald-600, .bg-green-600) {
   border-color: var(--cf-ph-primary-border) !important;
   background: linear-gradient(180deg, #3b82f6 0%, var(--cf-ph-primary-bg) 100%) !important;
+  background-color: var(--cf-ph-primary-bg) !important;
   color: var(--cf-ph-primary-text) !important;
   -webkit-text-fill-color: var(--cf-ph-primary-text) !important;
   box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22) !important;
 }
 
+/* AI action. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -262,32 +317,18 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
-) :is(.btn.primary, .cf-header-action--primary, button[type="submit"], .bg-blue-600, .bg-indigo-600, .bg-emerald-600, .bg-green-600):hover {
-  background: linear-gradient(180deg, #2563eb 0%, var(--cf-ph-primary-bg-hover) 100%) !important;
-}
-
-:where(
-  .main-leads-html > .page-head,
-  .main-clients-html > .page-head,
-  .main-cases-html > .page-head,
-  .main-calendar-html > .page-head,
-  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
-  .ai-drafts-vnext-page > .ai-drafts-page-header,
-  .activity-vnext-page > .activity-page-header,
-  .notifications-vnext-page > .notifications-page-header,
-  .billing-vnext-page > .billing-header,
-  .support-vnext-page > .support-header,
-  .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 ) :is(.btn.soft-blue, [href="/ai-drafts"], [data-stage26-leads-head-ai="true"]) {
   border-color: var(--cf-ph-ai-border) !important;
   background: var(--cf-ph-ai-bg) !important;
+  background-color: var(--cf-ph-ai-bg) !important;
   color: var(--cf-ph-ai-text) !important;
   -webkit-text-fill-color: var(--cf-ph-ai-text) !important;
   box-shadow: 0 10px 20px rgba(67, 56, 202, 0.12) !important;
 }
 
+/* Danger header actions, for Kosz / Clear read etc. */
 :where(
   .main-leads-html > .page-head,
   .main-clients-html > .page-head,
@@ -300,9 +341,13 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
-) :is(.btn.soft-blue, [href="/ai-drafts"], [data-stage26-leads-head-ai="true"]):hover {
-  background: var(--cf-ph-ai-bg-hover) !important;
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
+) :is(.cf-entity-action-danger, .cf-trash-action-button) {
+  border-color: var(--cf-ph-danger-border) !important;
+  background: var(--cf-ph-danger-bg) !important;
+  color: var(--cf-ph-danger-text) !important;
+  -webkit-text-fill-color: var(--cf-ph-danger-text) !important;
 }
 
 :where(
@@ -317,12 +362,33 @@
   .billing-vnext-page > .billing-header,
   .support-vnext-page > .support-header,
   .settings-vnext-page > .settings-header,
-  .cf-html-view > header:first-child
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
 ) :is(button, a.btn) svg {
   width: 1rem !important;
   height: 1rem !important;
   color: currentColor !important;
   stroke: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* If a local page adapter put dark text over dark background earlier, this forces all direct readable text back. */
+:where(
+  .main-leads-html > .page-head,
+  .main-clients-html > .page-head,
+  .main-cases-html > .page-head,
+  .main-calendar-html > .page-head,
+  [data-p0-tasks-stable-rebuild="true"] > .cf-page-hero,
+  .ai-drafts-vnext-page > .ai-drafts-page-header,
+  .activity-vnext-page > .activity-page-header,
+  .notifications-vnext-page > .notifications-page-header,
+  .billing-vnext-page > .billing-header,
+  .support-vnext-page > .support-header,
+  .settings-vnext-page > .settings-header,
+  .cf-html-view > header:first-child,
+  .cf-html-view > .rounded-\[28px\].border:first-child
+) :is(span, div, small, strong) {
+  text-shadow: none !important;
 }
 
 @media (max-width: 720px) {
@@ -338,7 +404,8 @@
     .billing-vnext-page > .billing-header,
     .support-vnext-page > .support-header,
     .settings-vnext-page > .settings-header,
-    .cf-html-view > header:first-child
+    .cf-html-view > header:first-child,
+    .cf-html-view > .rounded-\[28px\].border:first-child
   ) {
     flex-direction: column !important;
     align-items: stretch !important;
@@ -357,9 +424,10 @@
     .billing-vnext-page > .billing-header,
     .support-vnext-page > .support-header,
     .settings-vnext-page > .settings-header,
-    .cf-html-view > header:first-child
-  ) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions) {
+    .cf-html-view > header:first-child,
+    .cf-html-view > .rounded-\[28px\].border:first-child
+  ) :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .activity-header-actions, .notifications-header-actions, .settings-header-actions, .billing-header-actions, .support-header-actions) {
     justify-content: flex-start !important;
-    min-width: 0;
+    min-width: 0 !important;
   }
 }
