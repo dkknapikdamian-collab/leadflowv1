@@ -88,6 +88,7 @@ import {
   getNearestPlannedAction
 } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
+import '../styles/clients-next-action-layout.css';
 
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
@@ -128,6 +129,8 @@ function getStage35RelationClientId(row: Record<string, unknown>) {
 function formatClientMoney(value: number) {
   return `${Math.round(Number(value || 0)).toLocaleString('pl-PL')} PLN`;
 }
+
+const CLOSEFLOW_CLIENT_CARD_NEXT_ACTION_LAYOUT_ETAP10 = 'nearest action is full-width before client card buttons';
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 
@@ -363,7 +366,7 @@ export default function Clients() {
         items: [...tasks, ...events],
       });
       if (!nearest) {
-        map.set(clientId, 'Brak zaplanowanych działań');
+        map.set(clientId, 'Brak zaplanowanej akcji');
         continue;
       }
       const parsed = new Date(nearest.when);
@@ -699,8 +702,8 @@ export default function Clients() {
                            </span>
                          </span>
                          <span className="lead-value-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell"><span className="mini">Najbliższa zaplanowana akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanych działań'}</strong></span>
-                         <span className="lead-actions">
+                         <span className="lead-action-cell client-card-next-action-block"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
+                         <span className="lead-actions client-card-action-buttons">
                            <span className="btn ghost cf-icon-action-button" aria-hidden="true"><EntityIcon entity="client" className="h-4 w-4" /></span>
                            <button
                              type="button"

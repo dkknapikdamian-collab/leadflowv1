@@ -1,0 +1,137 @@
+/* CLOSEFLOW_ETAP10_CLIENT_CARD_NEXT_ACTION_LAYOUT
+   owner: CloseFlow UI system
+   reason: nearest client action was squeezed next to action buttons
+   scope: /clients client cards only
+   remove_after_stage: never, this is the client card layout contract
+*/
+
+.main-clients-html .client-row {
+  display: grid !important;
+  grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(7.5rem, auto);
+  grid-template-areas:
+    "index main value"
+    "index next next"
+    "index actions actions";
+  align-items: start;
+  gap: 0.75rem 1rem;
+}
+
+.main-clients-html .client-row > .index {
+  grid-area: index;
+}
+
+.main-clients-html .client-row > .lead-main-cell {
+  grid-area: main;
+  min-width: 0;
+}
+
+.main-clients-html .client-row > .lead-value-cell {
+  grid-area: value;
+  justify-self: end;
+  align-self: start;
+}
+
+.main-clients-html .client-row > .lead-action-cell,
+.main-clients-html .client-row > .client-card-next-action-block {
+  grid-area: next;
+  width: 100%;
+  min-width: 0;
+  display: flex !important;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+  padding: 0.72rem 0.85rem;
+  border-radius: 0.95rem;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.32);
+  white-space: normal;
+}
+
+.main-clients-html .client-row > .lead-action-cell .mini,
+.main-clients-html .client-row > .client-card-next-action-block .mini {
+  letter-spacing: 0.02em;
+  text-transform: none;
+  opacity: 0.78;
+}
+
+.main-clients-html .client-row > .lead-action-cell strong,
+.main-clients-html .client-row > .client-card-next-action-block strong {
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.28;
+}
+
+.main-clients-html .client-row > .lead-actions-cell,
+.main-clients-html .client-row > .lead-actions,
+.main-clients-html .client-row > .row-actions,
+.main-clients-html .client-row > .client-actions,
+.main-clients-html .client-row > .client-card-action-buttons {
+  grid-area: actions;
+  justify-self: end;
+  width: 100%;
+  min-width: 0;
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.main-clients-html .client-row > .lead-actions-cell button,
+.main-clients-html .client-row > .lead-actions-cell a,
+.main-clients-html .client-row > .lead-actions button,
+.main-clients-html .client-row > .lead-actions a,
+.main-clients-html .client-row > .row-actions button,
+.main-clients-html .client-row > .row-actions a,
+.main-clients-html .client-row > .client-actions button,
+.main-clients-html .client-row > .client-actions a,
+.main-clients-html .client-row > .client-card-action-buttons button,
+.main-clients-html .client-row > .client-card-action-buttons a {
+  min-width: max-content;
+}
+
+@media (max-width: 1024px) {
+  .main-clients-html .client-row {
+    grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr);
+    grid-template-areas:
+      "index main"
+      "index value"
+      "index next"
+      "index actions";
+  }
+
+  .main-clients-html .client-row > .lead-value-cell,
+  .main-clients-html .client-row > .lead-actions-cell,
+  .main-clients-html .client-row > .lead-actions,
+  .main-clients-html .client-row > .row-actions,
+  .main-clients-html .client-row > .client-actions,
+  .main-clients-html .client-row > .client-card-action-buttons {
+    justify-self: stretch;
+  }
+}
+
+@media (max-width: 520px) {
+  .main-clients-html .client-row {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "index"
+      "main"
+      "value"
+      "next"
+      "actions";
+    gap: 0.65rem;
+  }
+
+  .main-clients-html .client-row > .index {
+    justify-self: start;
+  }
+
+  .main-clients-html .client-row > .lead-actions-cell,
+  .main-clients-html .client-row > .lead-actions,
+  .main-clients-html .client-row > .row-actions,
+  .main-clients-html .client-row > .client-actions,
+  .main-clients-html .client-row > .client-card-action-buttons {
+    justify-content: flex-start;
+  }
+}
