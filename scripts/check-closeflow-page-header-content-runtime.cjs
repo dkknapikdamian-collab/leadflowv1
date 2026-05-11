@@ -32,17 +32,17 @@ if (!/export\s+const\s+PAGE_HEADER_CONTENT\b/.test(registry)) {
 }
 
 const component = read(componentPath);
-if (/import\s+type\s+\{[^}]*\bPAGE_HEADER_CONTENT\b[^}]*\}\s+from\s+['"][^'"]*page-header-content['"]/.test(component)) {
-  fail('CloseFlowPageHeaderV2 imports PAGE_HEADER_CONTENT as type-only. It must be a runtime import.');
+if (!/const\s+CLOSEFLOW_PAGE_HEADER_COPY\s*:/.test(component)) {
+  fail('CloseFlowPageHeaderV2 must use local CLOSEFLOW_PAGE_HEADER_COPY to avoid runtime free-variable leaks');
 }
-if (!/import\s+\{[^}]*\bPAGE_HEADER_CONTENT\b[^}]*\}\s+from\s+['"][^'"]*page-header-content['"]/.test(component)) {
-  fail('CloseFlowPageHeaderV2 is missing runtime import for PAGE_HEADER_CONTENT');
+if (/\bPAGE_HEADER_CONTENT\b/.test(component)) {
+  fail('CloseFlowPageHeaderV2 must not reference PAGE_HEADER_CONTENT at runtime');
 }
-if (!/PAGE_HEADER_CONTENT\[pageKey\]/.test(component)) {
-  fail('CloseFlowPageHeaderV2 no longer reads page content from PAGE_HEADER_CONTENT[pageKey]');
-}
-if (!/PAGE_HEADER_CONTENT\[pageKey\]\s*\|\|\s*PAGE_HEADER_CONTENT\.today/.test(component)) {
+if (!/CLOSEFLOW_PAGE_HEADER_COPY\[pageKey\]\s*\|\|\s*CLOSEFLOW_PAGE_HEADER_COPY\.today/.test(component)) {
   fail('CloseFlowPageHeaderV2 is missing safe fallback for unknown pageKey');
+}
+if (!/import\s+type\s+\{[^}]*CloseFlowPageHeaderContent[^}]*CloseFlowPageHeaderKey[^}]*\}\s+from\s+['"][^'"]*page-header-content['"]/.test(component)) {
+  fail('CloseFlowPageHeaderV2 should import only page-header types from page-header-content');
 }
 
 const srcDir = path.join(root, 'src');
