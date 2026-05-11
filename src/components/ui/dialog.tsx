@@ -31,6 +31,7 @@ const DialogContent = React.forwardRef<
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
+      data-closeflow-modal-visual-system="true"
       ref={ref}
       aria-describedby={ariaDescribedBy ?? undefined}
       className={cn(
