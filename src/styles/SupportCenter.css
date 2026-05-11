@@ -1,0 +1,97 @@
+
+
+.support-ticket-list-card {
+  display: grid;
+  gap: 14px;
+  border: 1px solid var(--cf-border, rgba(148, 163, 184, 0.18));
+  border-radius: var(--cf-radius-xl, 24px);
+  background: var(--cf-surface, rgba(15, 23, 42, 0.72));
+  padding: clamp(18px, 2vw, 24px);
+  box-shadow: var(--cf-shadow-card, 0 18px 44px rgba(2, 6, 23, 0.18));
+}
+
+.support-ticket-list-card > header {
+  display: grid;
+  gap: 4px;
+}
+
+.support-ticket-list-card h2 {
+  margin: 0;
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.15;
+}
+
+.support-ticket-list-card p {
+  margin: 0;
+}
+
+.support-ticket-list {
+  display: grid;
+  gap: 12px;
+}
+
+.support-ticket-row,
+.support-ticket-empty {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--cf-border-soft, rgba(148, 163, 184, 0.14));
+  border-radius: var(--cf-radius-lg, 18px);
+  background: var(--cf-surface-soft, rgba(15, 23, 42, 0.52));
+  padding: 14px;
+}
+
+.support-ticket-main {
+  display: grid;
+  gap: 4px;
+}
+
+.support-ticket-main strong,
+.support-ticket-empty strong,
+.support-ticket-answer strong {
+  color: var(--cf-text-strong, #f8fafc);
+}
+
+.support-ticket-main p,
+.support-ticket-empty p,
+.support-ticket-answer p,
+.support-ticket-no-answer {
+  color: var(--cf-text-muted, #94a3b8);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.support-ticket-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.support-ticket-status {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid var(--cf-border, rgba(148, 163, 184, 0.18));
+  border-radius: 999px;
+  padding: 5px 10px;
+  color: var(--cf-text-strong, #f8fafc);
+  background: var(--cf-surface-raised, rgba(30, 41, 59, 0.72));
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.support-ticket-answer {
+  display: grid;
+  gap: 4px;
+  border-radius: var(--cf-radius-md, 14px);
+  background: var(--cf-surface-raised, rgba(30, 41, 59, 0.58));
+  padding: 12px;
+}
+
+.support-ticket-no-answer {
+  border-radius: var(--cf-radius-md, 14px);
+  background: var(--cf-surface-raised, rgba(30, 41, 59, 0.46));
+  padding: 12px;
+}

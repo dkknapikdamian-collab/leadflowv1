@@ -662,7 +662,8 @@
     "check:stage39-page-headers-copy-visual-system": "node scripts/check-stage39-page-headers-copy-visual-system.cjs",
     "check:stage40-page-header-action-overflow-hardening": "node scripts/check-stage40-page-header-action-overflow-hardening.cjs",
     "check:case-detail-quick-actions-cleanup": "node scripts/check-closeflow-case-detail-quick-actions-cleanup.cjs",
-    "check:billing-cleanup-2026-05-11": "node scripts/check-closeflow-billing-cleanup-2026-05-11.cjs"
+    "check:billing-cleanup-2026-05-11": "node scripts/check-closeflow-billing-cleanup-2026-05-11.cjs",
+    "check:support-visible-ticket-list": "node scripts/check-closeflow-support-visible-ticket-list.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

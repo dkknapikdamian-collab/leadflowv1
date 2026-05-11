@@ -32,6 +32,32 @@ import {
 import '../styles/visual-stage17-support-vnext.css';
 
 import '../styles/closeflow-page-header-card-source-truth.css';
+function formatSupportStatus(status: unknown) {
+  const value = String(status || '').toLowerCase();
+  if (value === 'open' || value === 'new') return 'Nowe';
+  if (value === 'in_progress' || value === 'pending') return 'W trakcie';
+  if (value === 'answered' || value === 'resolved') return 'Odpowiedziane';
+  if (value === 'closed') return 'Zamknięte';
+  return 'Status nieznany';
+}
+
+function formatSupportTicketDate(value: unknown) {
+  if (!value) return 'Brak daty';
+  const date = new Date(String(value));
+  if (Number.isNaN(date.getTime())) return String(value);
+  return new Intl.DateTimeFormat('pl-PL', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+}
+
+function asSupportTicketList(value: unknown): any[] {
+  return Array.isArray(value) ? value : [];
+}
+
 type TicketKind = 'suggestion' | 'problem' | 'support';
 type TicketStatus = 'new' | 'in_progress' | 'answered' | 'closed';
 type TicketReply = { id?: string; authorType?: string; authorLabel?: string; message?: string; createdAt?: any };
@@ -400,7 +426,6 @@ export default function SupportCenter() {
           <div>
             <p className="support-kicker">POMOC</p>
             <h1>Pomoc</h1>
-            <p>Zgłoszenia i status.</p>
           </div>
           <div className="support-header-actions">
             <Button type="button" variant="outline" onClick={() => void loadTickets()}>
@@ -502,6 +527,49 @@ export default function SupportCenter() {
                     )}
                   </Button>
                 </form>
+
+        <section className="support-ticket-list-card" data-support-ticket-list="true">
+          <header>
+            <h2>Moje zgłoszenia</h2>
+            <p>Status, odpowiedź i ostatnia aktualizacja.</p>
+          </header>
+
+          {asSupportTicketList(tickets).length > 0 ? (
+            <div className="support-ticket-list">
+              {asSupportTicketList(tickets).map((ticket: any) => {
+                const title = ticket.title || ticket.subject || 'Zgłoszenie';
+                const message = ticket.message || ticket.description || ticket.body || '';
+                const answer = ticket.answer || ticket.response || ticket.reply || ticket.adminResponse || ticket.lastReply || '';
+                const updatedAt = ticket.updatedAt || ticket.updated_at || ticket.createdAt || ticket.created_at;
+                return (
+                  <article className="support-ticket-row" key={ticket.id || title || updatedAt}>
+                    <div className="support-ticket-main">
+                      <strong>{title}</strong>
+                      {message ? <p>{message}</p> : null}
+                    </div>
+                    <div className="support-ticket-meta">
+                      <span className="support-ticket-status">{formatSupportStatus(ticket.status)}</span>
+                      <small>{formatSupportTicketDate(updatedAt)}</small>
+                    </div>
+                    {answer ? (
+                      <div className="support-ticket-answer">
+                        <strong>Odpowiedź</strong>
+                        <p>{answer}</p>
+                      </div>
+                    ) : (
+                      <p className="support-ticket-no-answer">Brak odpowiedzi.</p>
+                    )}
+                  </article>
+                );
+              })}
+            </div>
+          ) : (
+            <div className="support-ticket-empty">
+              <strong>Nie masz jeszcze zgłoszeń.</strong>
+              <p>Po wysłaniu formularza zgłoszenie pojawi się tutaj ze statusem.</p>
+            </div>
+          )}
+        </section>
               </section>
             ) : null}
 
@@ -628,40 +696,6 @@ export default function SupportCenter() {
 
             
           </section>
-
-          <aside className="support-right-rail" aria-label="Panel pomocy">
-            <section className="right-card support-right-card">
-              <div className="support-right-title">
-                <MessageSquare className="h-4 w-4" />
-                <h2>Szybkie linki</h2>
-              </div>
-              <div className="support-right-list">
-                <button type="button" onClick={() => setKind('support')}>Zadaj pytanie</button>
-                <button type="button" onClick={() => setKind('problem')}>Zgłoś problem</button>
-                <button type="button" onClick={() => setKind('suggestion')}>Dodaj sugestię</button>
-              </div>
-            </section>
-
-            <section className="right-card support-right-card">
-              <div className="support-right-title">
-                <Mail className="h-4 w-4" />
-                <h2>Kontakt</h2>
-              </div>
-              <p>{userEmail || 'Brak e-maila konta'}</p>
-              <small>Odpowiedzi wracają do listy zgłoszeń w aplikacji. Jeżeli backend tylko forwarduje wiadomość, formularz nadal zapisuje jasny kontekst zgłoszenia.</small>
-            </section>
-
-            <section className="right-card support-right-card">
-              <div className="support-right-title">
-                <ShieldCheck className="h-4 w-4" />
-                <h2>Status aplikacji</h2>
-              </div>
-              <p>Aplikacja działa lokalnie w Twoim workspace.</p>
-              <small>Jeśli coś nie działa, sprawdź najpierw trasę, przeglądarkę i czy problem powtarza się po odświeżeniu.</small>
-            </section>
-
-            
-          </aside>
         </div>
       </main>
     </Layout>
