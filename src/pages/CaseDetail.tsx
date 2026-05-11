@@ -65,6 +65,7 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import { CaseSettlementPanel, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementPanel';
+import { ActivityRoadmap } from '../components/ActivityRoadmap';
 import {
   createClientPortalTokenInSupabase,
   deleteCaseItemFromSupabase,
@@ -89,6 +90,7 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { buildCaseActivityRoadmap } from '../lib/activity-roadmap';
 import '../styles/visual-stage13-case-detail-vnext.css';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
@@ -489,7 +491,7 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
   if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
   if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
-  return 'Dodano ruch w sprawie';
+  return 'Zapis operacyjny sprawy';
 }
 function sortCaseItems(items: CaseItem[]) {
   return [...items].sort((first, second) => {
@@ -1362,6 +1364,16 @@ export default function CaseDetail() {
       setCaseSettlementSaving(false);
     }
   };
+  
+  const caseActivityRoadmap = useMemo(() => buildCaseActivityRoadmap({
+    caseRecord: caseData,
+    notes: activities,
+    tasks: tasks,
+    events: events,
+    payments: payments,
+    activities: activities,
+  }), [caseData, activities, tasks, events, payments]);
+
   if (loading) {
     return (
       <Layout>
@@ -1720,51 +1732,15 @@ export default function CaseDetail() {
                 <button type="button" onClick={markCaseFullyPaid}>Oznacz opłacone</button>
               </div>
             </section>
-              <section className="case-detail-card case-detail-recent-moves-panel" data-case-recent-moves-panel="true">
-                <div className="case-detail-section-heading">
-                  <div>
-                    <p className="case-detail-eyebrow">Kontekst</p>
-                    <h2>Ostatnie 5 ruchów</h2>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="case-detail-link-button"
-                    onClick={() => setActiveTab('history')}
-                    data-case-recent-moves-open-history="true"
-                  >
-                    Zobacz całą aktywność
-                    <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {recentCaseMoves.length === 0 ? (
-                  <div className="case-detail-empty-state" data-case-recent-moves-empty="true">
-                    Brak ruchów w tej sprawie. Dodaj notatkę, zadanie albo brak, żeby historia zaczęła żyć.
-                  </div>
-                ) : (
-                  <div className="case-detail-recent-moves-list">
-                    {recentCaseMoves.map((move) => {
-                      const meta = getCaseRecentMoveMeta(move);
-                      const noteText = typeof move.payload?.note === 'string' ? move.payload.note.trim() : '';
-                      return (
-                        <article key={move.id} className="case-detail-recent-move" data-case-recent-move="true">
-                          <span className={`case-detail-recent-move-dot ${meta.className}`} aria-hidden="true" />
-                          <div>
-                            <div className="case-detail-recent-move-topline">
-                              <span>{meta.label}</span>
-                              <time>{formatDateTime(move.createdAt, 'Brak daty')}</time>
-                            </div>
-                            <p>{getActivityText(move)}</p>
-                            {noteText ? <small>{noteText}</small> : null}
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-                )}
-              </section>
+              <section className="case-detail-panel case-detail-roadmap-panel" data-case-roadmap-source-of-truth="true">
+          <ActivityRoadmap
+            items={caseActivityRoadmap}
+            limit={5}
+            title="Roadmapa sprawy"
+            subtitle="Notatki, zadania, wydarzenia, płatności i statusy tej sprawy."
+            emptyText="Brak ruchów w tej sprawie."
+          />
+        </section>
 
             <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
