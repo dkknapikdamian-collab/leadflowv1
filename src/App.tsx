@@ -16,6 +16,7 @@ import './styles/closeflow-action-clusters.css';
 import './styles/closeflow-form-actions.css';
 import './styles/closeflow-card-readability.css';
 import './styles/closeflow-surface-tokens.css';
+import './styles/closeflow-modal-visual-system.css';
 import './styles/closeflow-metric-tiles.css';
 import './styles/closeflow-page-header.css';
 import './styles/closeflow-list-row-tokens.css';

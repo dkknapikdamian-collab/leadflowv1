@@ -1,0 +1,209 @@
+/* CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1
+   owner: CloseFlow UI system
+   reason: New lead/client/case/event/task/template/AI draft dialogs had divergent surfaces and unreadable dark inputs.
+   source_of_truth: src/components/ui/dialog.tsx + this stylesheet
+   scope: all Radix DialogContent surfaces in the operator app
+*/
+
+:root {
+  --cf-modal-bg: #f8fafc;
+  --cf-modal-panel: #ffffff;
+  --cf-modal-ink: #0f172a;
+  --cf-modal-muted: #475569;
+  --cf-modal-soft: #eef2f7;
+  --cf-modal-border: rgba(148, 163, 184, 0.34);
+  --cf-modal-border-strong: rgba(15, 23, 42, 0.14);
+  --cf-modal-header-bg: #0f172a;
+  --cf-modal-header-bg-2: #12233f;
+  --cf-modal-header-ink: #f8fafc;
+  --cf-modal-accent: #22c55e;
+  --cf-modal-accent-strong: #16a34a;
+  --cf-modal-focus: rgba(34, 197, 94, 0.22);
+  --cf-modal-danger: #dc2626;
+}
+
+.cf-modal-surface,
+[data-closeflow-modal-visual-system="true"] {
+  color: var(--cf-modal-ink) !important;
+  background:
+    radial-gradient(circle at 12% -10%, rgba(34, 197, 94, 0.12), transparent 28%),
+    linear-gradient(180deg, #ffffff 0%, var(--cf-modal-bg) 100%) !important;
+  border: 1px solid var(--cf-modal-border) !important;
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.36), 0 0 0 1px rgba(255, 255, 255, 0.72) inset !important;
+  overflow-y: auto;
+  max-height: min(92vh, 920px);
+}
+
+.cf-modal-surface::before,
+[data-closeflow-modal-visual-system="true"]::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 0.38rem;
+  background: linear-gradient(90deg, var(--cf-modal-accent), #38bdf8, var(--cf-modal-header-bg));
+  pointer-events: none;
+}
+
+.cf-modal-header,
+[data-closeflow-modal-visual-system="true"] .cf-modal-header,
+[data-closeflow-modal-visual-system="true"] .client-case-form-header {
+  margin: -1.5rem -1.5rem 0 !important;
+  padding: 1.25rem 1.5rem 1.15rem !important;
+  color: var(--cf-modal-header-ink) !important;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(34, 197, 94, 0.22), transparent 32%),
+    linear-gradient(135deg, var(--cf-modal-header-bg), var(--cf-modal-header-bg-2)) !important;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.28) !important;
+  border-radius: inherit;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
+
+.cf-modal-title,
+[data-closeflow-modal-visual-system="true"] .cf-modal-title,
+[data-closeflow-modal-visual-system="true"] [data-radix-dialog-title],
+[data-closeflow-modal-visual-system="true"] .client-case-form-header h2,
+[data-closeflow-modal-visual-system="true"] .client-case-form-header h3 {
+  color: var(--cf-modal-header-ink) !important;
+  letter-spacing: -0.02em;
+}
+
+[data-closeflow-modal-visual-system="true"] .client-case-form-header p,
+[data-closeflow-modal-visual-system="true"] .cf-modal-header p,
+[data-closeflow-modal-visual-system="true"] .client-case-form-kicker {
+  color: rgba(248, 250, 252, 0.82) !important;
+  -webkit-text-fill-color: rgba(248, 250, 252, 0.82) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] form,
+[data-closeflow-modal-visual-system="true"] .client-case-form,
+[data-closeflow-modal-visual-system="true"] .space-y-4 {
+  color: var(--cf-modal-ink) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] label,
+[data-closeflow-modal-visual-system="true"] .client-case-form-field label,
+[data-closeflow-modal-visual-system="true"] .client-case-form-section h3,
+[data-closeflow-modal-visual-system="true"] .client-case-form-section-head h3 {
+  color: var(--cf-modal-ink) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink) !important;
+  font-weight: 750;
+}
+
+[data-closeflow-modal-visual-system="true"] .client-case-form-section-head p,
+[data-closeflow-modal-visual-system="true"] p,
+[data-closeflow-modal-visual-system="true"] .text-slate-500,
+[data-closeflow-modal-visual-system="true"] .text-slate-600,
+[data-closeflow-modal-visual-system="true"] .sub,
+[data-closeflow-modal-visual-system="true"] .mini {
+  color: var(--cf-modal-muted) !important;
+  -webkit-text-fill-color: var(--cf-modal-muted) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] input:not([type="checkbox"]):not([type="radio"]),
+[data-closeflow-modal-visual-system="true"] textarea,
+[data-closeflow-modal-visual-system="true"] select,
+[data-closeflow-modal-visual-system="true"] .client-case-form-textarea {
+  color: var(--cf-modal-ink) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink) !important;
+  caret-color: var(--cf-modal-accent-strong) !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] input::placeholder,
+[data-closeflow-modal-visual-system="true"] textarea::placeholder,
+[data-closeflow-modal-visual-system="true"] .client-case-form-textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1 !important;
+}
+
+[data-closeflow-modal-visual-system="true"] input:focus,
+[data-closeflow-modal-visual-system="true"] textarea:focus,
+[data-closeflow-modal-visual-system="true"] select:focus,
+[data-closeflow-modal-visual-system="true"] input:focus-visible,
+[data-closeflow-modal-visual-system="true"] textarea:focus-visible,
+[data-closeflow-modal-visual-system="true"] select:focus-visible,
+[data-closeflow-modal-visual-system="true"] .client-case-form-textarea:focus {
+  border-color: var(--cf-modal-accent-strong) !important;
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--cf-modal-focus), 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] input:disabled,
+[data-closeflow-modal-visual-system="true"] textarea:disabled,
+[data-closeflow-modal-visual-system="true"] select:disabled {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+[data-closeflow-modal-visual-system="true"] .client-case-form-section,
+[data-closeflow-modal-visual-system="true"] .rounded-2xl.border,
+[data-closeflow-modal-visual-system="true"] .rounded-xl.border {
+  background-color: rgba(255, 255, 255, 0.88) !important;
+  border-color: var(--cf-modal-border) !important;
+  color: var(--cf-modal-ink) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] .bg-slate-50,
+[data-closeflow-modal-visual-system="true"] .bg-white {
+  color: var(--cf-modal-ink) !important;
+}
+
+.cf-modal-footer,
+[data-closeflow-modal-visual-system="true"] .cf-modal-footer,
+[data-closeflow-modal-visual-system="true"] .client-case-form-footer,
+[data-closeflow-modal-visual-system="true"] [class*="cf-modal-footer"],
+[data-closeflow-modal-visual-system="true"] [class*="cf-form-actions"] {
+  margin: 0 -1.5rem -1.5rem !important;
+  padding: 0.9rem 1.5rem !important;
+  background: rgba(248, 250, 252, 0.94) !important;
+  border-top: 1px solid var(--cf-modal-border) !important;
+  backdrop-filter: blur(10px);
+}
+
+[data-closeflow-modal-visual-system="true"] button[type="submit"],
+[data-closeflow-modal-visual-system="true"] .btn.primary {
+  background: linear-gradient(135deg, var(--cf-modal-accent), var(--cf-modal-accent-strong)) !important;
+  border-color: rgba(22, 163, 74, 0.55) !important;
+  color: #04130a !important;
+  -webkit-text-fill-color: #04130a !important;
+  box-shadow: 0 12px 24px rgba(22, 163, 74, 0.22) !important;
+}
+
+[data-closeflow-modal-visual-system="true"] button[type="button"].border,
+[data-closeflow-modal-visual-system="true"] button[type="button"][class*="outline"],
+[data-closeflow-modal-visual-system="true"] .cf-modal-footer button[type="button"] {
+  border-color: #cbd5e1 !important;
+}
+
+.cf-modal-close,
+[data-closeflow-modal-visual-system="true"] .cf-modal-close {
+  color: rgba(248, 250, 252, 0.72) !important;
+}
+
+.cf-modal-close:hover,
+[data-closeflow-modal-visual-system="true"] .cf-modal-close:hover {
+  color: #ffffff !important;
+}
+
+@media (max-width: 640px) {
+  .cf-modal-surface,
+  [data-closeflow-modal-visual-system="true"] {
+    width: calc(100vw - 1rem) !important;
+    max-width: calc(100vw - 1rem) !important;
+    max-height: calc(100dvh - 1rem) !important;
+    border-radius: 1.25rem !important;
+  }
+
+  .cf-modal-footer,
+  [data-closeflow-modal-visual-system="true"] .cf-modal-footer,
+  [data-closeflow-modal-visual-system="true"] .client-case-form-footer {
+    position: sticky;
+    bottom: -1.5rem;
+    z-index: 2;
+  }
+}
