@@ -135,7 +135,7 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
     copy: 'info-row-inline-action',
   },
 } as const;
-type ClientTab = 'summary' | 'cases' | 'contact' | 'history';
+type ClientTab = 'cases' | 'summary' | 'contact' | 'history';
 
 type ClientNextAction = {
   kind: 'task' | 'event' | 'case' | 'lead' | 'empty';
@@ -368,6 +368,9 @@ function normalizeClientActivitiesForA1(activities: any[]) {
 
 const STAGE14A_CLIENT_DETAIL_NOTES_HISTORY_GUARD = 'ClientDetail shows cases first, real client notes, readable history and recent moves';
 void STAGE14A_CLIENT_DETAIL_NOTES_HISTORY_GUARD;
+
+const STAGE14A_REPAIR2_CLIENT_DETAIL_NOTES_HISTORY_GUARD = 'STAGE14A Repair2 removes side add-note quick action and hardens visible notes/history';
+void STAGE14A_REPAIR2_CLIENT_DETAIL_NOTES_HISTORY_GUARD;
 
 type Stage14AActivityLike = Record<string, any>;
 
@@ -1536,6 +1539,18 @@ export default function ClientDetail() {
       </Layout>
     );
   }
+  const clientNotesStage14A = useMemo(() => {
+    const sourceActivities = Array.isArray(activities) ? activities : [];
+    const safeClientId = String(client?.id || clientId || '');
+    return sourceActivities
+      .filter((activity: any) => isClientNoteActivityStage14A(activity, safeClientId))
+      .sort((left: any, right: any) => {
+        const leftTime = asDate(formatClientActivityDateStage14A(left))?.getTime() || asDate(getActivityTime(left))?.getTime() || 0;
+        const rightTime = asDate(formatClientActivityDateStage14A(right))?.getTime() || asDate(getActivityTime(right))?.getTime() || 0;
+        return rightTime - leftTime;
+      });
+  }, [activities, client?.id, clientId, id]);
+
 
   if (!client) {
     return (
@@ -2183,19 +2198,6 @@ export default function ClientDetail() {
                     type="button"
                     variant="outline"
                     size="sm"
-                    data-context-action-kind="note"
-                    data-context-record-type="client"
-                    data-context-record-id={String(client.id)}
-                    data-context-record-label={getClientName(client)}
-                    onClick={() => openClientContextAction('note')}
-                    disabled={!hasAccess}
-                  >
-                    Dodaj notatkę
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
                     onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
                   >
                     Finanse w sprawie
@@ -2211,9 +2213,6 @@ export default function ClientDetail() {
               <p className="client-detail-note-text">
                 {client.notes ? String(client.notes) : ''}
               </p>
-                    <Button type="button" variant="outline" size="sm" onClick={() => openClientContextAction('note')} disabled={!hasAccess}>
-                      Dodaj notatkę
-                    </Button>
               <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
                 {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 Dyktuj
@@ -2253,7 +2252,18 @@ export default function ClientDetail() {
                     ))}
                   </div>
                 ) : (
-                  <p className="client-detail-notes-empty">Brak zapisanych notatek dla klienta.</p>
+                  <div className="client-detail-note-list" data-client-notes-list="true">
+                    {clientNotesStage14A.length > 0 ? (
+                      clientNotesStage14A.slice(0, 5).map((note: any) => (
+                        <article className="client-detail-note-row" key={String(note.id || note.createdAt || note.created_at || getClientActivityBodyStage14A(note))}>
+                          <strong>{formatClientActivityTitleStage14A(note)}</strong>
+                          <p title={getClientActivityBodyStage14A(note)}>{getClientActivityBodyStage14A(note)}</p>
+                        </article>
+                      ))
+                    ) : (
+                      <p>Brak zapisanych notatek dla klienta.</p>
+                    )}
+                  </div>
                 )}
               </div>
 </section>

@@ -3144,3 +3144,20 @@ button.client-detail-top-tile-link {
   gap: 8px;
   min-width: 0;
 }
+
+/* STAGE14A_REPAIR2_CLIENT_DETAIL_NOTES_HISTORY */
+.client-detail-note-list,
+.client-detail-note-row,
+.client-detail-activity-row,
+.client-detail-recent-move-row {
+  min-width: 0;
+}
+
+.client-detail-note-row p,
+.client-detail-activity-row p,
+.client-detail-recent-move-row p {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
