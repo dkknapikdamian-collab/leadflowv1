@@ -176,7 +176,7 @@ const ACCESS_COPY: Record<string, { label: string; headline: string; description
   paid_active: {
     label: 'Dostęp aktywny',
     headline: 'Plan jest aktywny',
-    description: 'Plan aktywny.',
+    description: 'Plan jest aktywny',
     tone: 'green',
     cta: 'Zarządzaj planem',
   },
@@ -521,10 +521,8 @@ export default function Billing() {
           <button type="button" className={tab === 'plan' ? 'billing-tab-active' : ''} onClick={() => setTab('plan')}>
             Plan i dostęp
           </button>
-          <button type="button" className={tab === 'settlements' ? 'billing-tab-active' : ''} onClick={() => setTab('settlements')}>
-            Rozliczenia lead/case
-          </button>
-        </nav>
+
+</nav>
 
         {tab === 'plan' ? (
           <div className="billing-shell">
@@ -545,7 +543,12 @@ export default function Billing() {
                   <strong>{currentPlanName}</strong>
                   <small>{access?.isTrialActive ? `Trial do: ${trialEndsAtLabel}` : `Następny okres: ${nextBillingAtLabel}`}</small>
                 </div>
-              </section>
+
+        <div className="billing-status-meta">
+          <span>Następna płatność</span>
+          <strong>{nextBillingAtLabel}</strong>
+        </div>
+      </section>
 
                             <section className="billing-metrics-grid" aria-label="Podsumowanie rozliczeń">
                 <article className="billing-metric-card">
@@ -553,12 +556,8 @@ export default function Billing() {
                   <strong>{currentPlanName}</strong>
                   <span>{accessCopy.label}</span>
                 </article>
-                <article className="billing-metric-card">
-                  <small>Następna płatność / status płatności</small>
-                  <strong>{nextBillingAtLabel}</strong>
-                  <span>{workspace.cancelAtPeriodEnd ? 'Anulowanie na koniec okresu' : accessCopy.label}</span>
-                </article>
-              </section>
+
+</section>
 
               {blockedState ? (
                 <section className="billing-expired-card">
@@ -638,24 +637,8 @@ export default function Billing() {
                 })}
               </section>
 
-              <section className="billing-limits-card" data-plan-visibility-stage32e="billing-feature-matrix">
-                <div className="billing-section-head">
-                  <h2>Co jest dostępne teraz</h2>
-                  <p>Zakres pokazuje obecny kierunek planów. Funkcji nieudostępnionych backendowo nie udajemy.</p>
-                </div>
-                <div className="billing-limit-list">
-                  {LIMIT_ITEMS.map((item) => {
-                    const value = getLimitValue(item, effectivePlan.key);
-                    return (
-                      <div key={item.name} className="billing-limit-row">
-                        <span>{item.name}</span>
-                        <strong className={getLimitTone(value)}>{value}</strong>
-                      </div>
-                    );
-                  })}
-                </div>
-              </section>
-            </section>
+
+</section>
 
             <aside className="billing-right-rail" aria-label="Panel rozliczeń">
               <section className="right-card billing-right-card">
@@ -687,11 +670,8 @@ export default function Billing() {
               </section>
 
               <section className="right-card billing-right-card">
-                <div className="billing-right-title">
-                  <Check className="h-4 w-4" />
-                  <h2>Co masz w planie</h2>
-                </div>
-                <div className="billing-right-list">
+
+<div className="billing-right-list">
                   <span>Plan: {currentPlanName}</span>
                   <span>Dostęp: {paidConfirmed ? 'opłacony aktywny' : access?.hasAccess ? 'trial/free aktywny' : 'ograniczony'}</span>
                   <span>Okres: {daysLeftLabel}</span>
@@ -734,11 +714,8 @@ export default function Billing() {
         ) : (
           <section className="billing-settlements-card">
             <div className="billing-section-head">
-              <div>
-                <h2>Rozliczenia lead/case</h2>
-                <p>Widok rozliczeń powiązanych z klientami, leadami i sprawami. Statusy są pokazane ludzkim językiem.</p>
-              </div>
-            </div>
+
+</div>
             <div className="billing-filter-row">
               {settlementFilters.map((status) => (
                 <button key={status} type="button" className={statusFilter === status ? 'billing-filter-active' : ''} onClick={() => setStatusFilter(status)}>
