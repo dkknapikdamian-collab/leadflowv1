@@ -1,4 +1,4 @@
-// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
+﻿// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
 import {
   useCallback,
@@ -82,23 +82,23 @@ import '../styles/visual-stage20-lead-form-vnext.css';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
-const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
-const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
-// Guard marker: \n\nTen lead ma powiązaną sprawę
+const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadĂłw jest pusty';
+const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'PrzywrĂłÄ‡ leada';
+const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiÄ…zanÄ… sprawÄ™';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
+// Guard marker: \n\nTen lead ma powiÄ…zanÄ… sprawÄ™
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', tone: 'blue' },
   { value: 'contacted', label: 'Skontaktowany', tone: 'blue' },
   { value: 'qualification', label: 'Kwalifikacja', tone: 'blue' },
-  { value: 'proposal_sent', label: 'Oferta wysłana', tone: 'amber' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedź', tone: 'amber' },
+  { value: 'proposal_sent', label: 'Oferta wysĹ‚ana', tone: 'amber' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedĹş', tone: 'amber' },
   { value: 'accepted', label: 'Zaakceptowany', tone: 'green' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', tone: 'blue' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', tone: 'blue' },
   { value: 'negotiation', label: 'Negocjacje', tone: 'amber' },
   { value: 'lost', label: 'Przegrany', tone: 'neutral' },
   { value: 'archived', label: 'W koszu', tone: 'amber' },
@@ -185,7 +185,7 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     leadValueLabel,
     company,
     caseLabel,
-  ].filter(Boolean).join(' · ');
+  ].filter(Boolean).join(' Â· ');
 }
 
 function sanitizeNewLeadCreatePayloadA1(input: any) {
@@ -217,7 +217,7 @@ function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
 function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
   if (!action?.at || !action?.title) {
     return {
-      title: 'Brak zaplanowanych działań',
+      title: 'Brak zaplanowanych dziaĹ‚aĹ„',
       subtitle: '',
       overdue: false,
     };
@@ -229,7 +229,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
 
   return {
     title: action.title,
-    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel} · ${String(action.status || 'todo')}`,
+    subtitle: `${getNextActionKindLabel(action)} Â· ${dateLabel} Â· ${String(action.status || 'todo')}`,
     overdue,
   };
 }
@@ -328,9 +328,9 @@ export default function Leads() {
       setEvents(eventRows as any[]);
       setClients(clientRows as any[]);
     } catch (error: any) {
-      const message = error?.message || 'Nie udało się pobrać leadów';
+      const message = error?.message || 'Nie udaĹ‚o siÄ™ pobraÄ‡ leadĂłw';
       setLoadError(message);
-      toast.error(`Błąd odczytu leadów: ${message}`);
+      toast.error(`BĹ‚Ä…d odczytu leadĂłw: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -418,31 +418,31 @@ export default function Leads() {
   };
 
   const restoreConflictCandidate = async (candidate: EntityConflictCandidate) => {
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historiÄ™. Najpierw go otwĂłrz i zdecyduj, co zrobiÄ‡.'); return; }
     try {
       setLeadSubmitting(true);
       if (candidate.entityType === 'lead') {
         await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
-        toast.success('Lead przywrócony');
+        toast.success('Lead przywrĂłcony');
       } else {
         await updateClientInSupabase({ id: candidate.id, archivedAt: null });
-        toast.success('Klient przywrócony');
+        toast.success('Klient przywrĂłcony');
       }
       setLeadConflictOpen(false);
       await loadLeads();
-    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
-    if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
+    if (!hasLeadIdentity) return toast.error('Podaj nazwÄ™ albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
@@ -452,14 +452,14 @@ export default function Leads() {
       const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
       if (candidates.length) { setLeadConflictCandidates(candidates); setLeadConflictPendingInput(preparedLead); setIsNewLeadOpen(false); setLeadConflictOpen(true); return; }
       await createLeadFromPreparedInput(preparedLead);
-    } catch (error: any) { toast.error(`Błąd zapisu leada: ${error.message}`); }
+    } catch (error: any) { toast.error(`BĹ‚Ä…d zapisu leada: ${error.message}`); }
     finally { createLeadSubmitLockRef.current = false; setLeadSubmitting(false); }
   };
 
   const handleCreateLeadAnyway = async () => {
     if (!leadConflictPendingInput || leadSubmitting) return;
     try { setLeadSubmitting(true); await createLeadFromPreparedInput(leadConflictPendingInput, { forceDuplicate: true }); setLeadConflictOpen(false); setLeadConflictPendingInput(null); setLeadConflictCandidates([]); }
-    catch (error: any) { toast.error('Błąd zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
+    catch (error: any) { toast.error('BĹ‚Ä…d zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
@@ -472,7 +472,7 @@ export default function Leads() {
   const handleArchiveConflictCandidate = async (candidate: EntityConflictCandidate) => {
     const label = candidate.label || (candidate.entityType === 'client' ? 'klienta' : 'leada');
     const confirmed = window.confirm(
-      'Przenieść rekord z konfliktu do kosza: ' + label + '? Rekord nie zostanie trwale skasowany i będzie możliwy do przywrócenia.',
+      'PrzenieĹ›Ä‡ rekord z konfliktu do kosza: ' + label + '? Rekord nie zostanie trwale skasowany i bÄ™dzie moĹĽliwy do przywrĂłcenia.',
     );
     if (!confirmed) return;
 
@@ -493,7 +493,7 @@ export default function Leads() {
       toast.success('Rekord przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Nie udało się przenieść rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ przenieĹ›Ä‡ rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -504,7 +504,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
@@ -513,10 +513,10 @@ export default function Leads() {
 
     const linkedCase = resolveLinkedCaseForLead(lead);
     const relationText = linkedCase
-      ? '\\n\\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
-      : '\\n\\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
+      ? '\\n\\nTen lead ma powiÄ…zanÄ… sprawÄ™: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+      : '\\n\\nLead zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.';
 
-    if (!window.confirm('Przenieść leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
+    if (!window.confirm('PrzenieĹ›Ä‡ leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
 
     try {
       setArchivePendingId(leadId);
@@ -530,7 +530,7 @@ export default function Leads() {
       toast.success('Lead przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('BĹ‚Ä…d przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -541,7 +541,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
@@ -553,7 +553,7 @@ export default function Leads() {
     const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
     const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
 
-    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+    if (!window.confirm('PrzywrĂłciÄ‡ leada do listy: ' + (lead.name || 'Lead') + '?')) return;
 
     try {
       setArchivePendingId(leadId);
@@ -564,10 +564,10 @@ export default function Leads() {
         salesOutcome: nextOutcome,
         closedAt: null,
       });
-      toast.success('Lead przywrócony');
+      toast.success('Lead przywrĂłcony');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('BĹ‚Ä…d przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -595,7 +595,7 @@ export default function Leads() {
     [activeLeads, clients, cases],
   );
 
-  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientów i spraw.
+  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientĂłw i spraw.
   const mostValuableRelations = useMemo(
     () => buildRelationValueEntries({ leads: activeLeads, clients: [], cases: [] }).slice(0, 5),
     [activeLeads],
@@ -695,7 +695,7 @@ export default function Leads() {
                             onClick={toggleTrashView}
                           >
                             {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                            {showTrash ? 'Pokaż aktywne' : 'Kosz'}
+                            {showTrash ? 'PokaĹĽ aktywne' : 'Kosz'}
                             <span className="pill">{showTrash ? stats.total : stats.trash}</span>
                           </button>
 
@@ -703,10 +703,10 @@ export default function Leads() {
                             <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
                               <DialogHeader className="lead-form-vnext-header">
                                 <div>
-                                  <span className="lead-form-vnext-kicker">{PAGE_HEADER_CONTENT.leads.kicker}</span>
+                                  <span className="lead-form-vnext-kicker">LISTA SPRZEDAŻOWA</span>
                                   <DialogTitle>Nowy lead</DialogTitle>
                                   <p id="lead-form-stage20-description">
-                                    Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
+                                    Wpisz minimum danych i zapisz kontakt. SzczegĂłĹ‚y moĹĽesz uzupeĹ‚niÄ‡ pĂłĹşniej.
                                   </p>
                                 </div>
                               </DialogHeader>
@@ -715,7 +715,7 @@ export default function Leads() {
                                 <section className="lead-form-section lead-form-primary-section">
                                   <div className="lead-form-section-head">
                                     <h3>Podstawowe dane</h3>
-                                    <p>Najważniejsze pola do szybkiego zapisania kontaktu.</p>
+                                    <p>NajwaĹĽniejsze pola do szybkiego zapisania kontaktu.</p>
                                   </div>
 
                                   <div className="lead-form-grid">
@@ -748,7 +748,7 @@ export default function Leads() {
                                     </div>
 
                                     <div className="lead-form-field">
-                                      <Label>Źródło</Label>
+                                      <Label>ĹąrĂłdĹ‚o</Label>
                                       <select
                                         className="lead-form-select"
                                         value={newLead.source}
@@ -761,7 +761,7 @@ export default function Leads() {
                                     </div>
 
                                     <div className="lead-form-field">
-                                      <Label>Wartość</Label>
+                                      <Label>WartoĹ›Ä‡</Label>
                                       <Input
                                         type="number"
                                         value={newLead.dealValue}
@@ -775,7 +775,7 @@ export default function Leads() {
                                       <Input
                                         value={newLead.summary}
                                         onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                                        placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
+                                        placeholder="Np. strona www, kampania, nieruchomoĹ›Ä‡, dokumenty..."
                                       />
                                     </div>
 
@@ -785,7 +785,7 @@ export default function Leads() {
                                         className="lead-form-textarea"
                                         value={newLead.notes}
                                         onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                                        placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
+                                        placeholder="KrĂłtki kontekst rozmowy. Bez dĹ‚ugiej odprawy."
                                       />
                                     </div>
                                   </div>
@@ -824,7 +824,7 @@ export default function Leads() {
                                       />
                                       <span>
                                         <strong>Wysoki priorytet</strong>
-                                        <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
+                                        <small>Oznacz, jeĹ›li lead wymaga szybkiej reakcji.</small>
                                       </span>
                                     </label>
                                   </div>
@@ -834,7 +834,7 @@ export default function Leads() {
                                   <Clock3 className="h-4 w-4" />
                                   <div>
                                     <h3>Szybkie planowanie</h3>
-                                    <p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
+                                    <p>Dodanie zadania albo wydarzenia bezpoĹ›rednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
                                   </div>
                                 </section>
 
@@ -860,8 +860,8 @@ export default function Leads() {
             icon={LeadEntityIcon}
             active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
-            title="Pokaż wszystkie leady"
-            ariaLabel="Pokaż wszystkie leady"
+            title="PokaĹĽ wszystkie leady"
+            ariaLabel="PokaĹĽ wszystkie leady"
           />
 
           <StatShortcutCard
@@ -870,31 +870,31 @@ export default function Leads() {
             icon={TrendingUp}
             active={quickFilter === 'active' && !showTrash}
             onClick={() => toggleQuickFilter('active')}
-            title="Pokaż aktywne leady"
-            ariaLabel="Pokaż aktywne leady"
+            title="PokaĹĽ aktywne leady"
+            ariaLabel="PokaĹĽ aktywne leady"
             valueClassName="text-slate-900"
             iconClassName="bg-blue-50 text-blue-500"
           />
 
           <StatShortcutCard
-            label="Wartość"
+            label="WartoĹ›Ä‡"
             value={`${stats.value.toLocaleString('pl-PL')} PLN`}
             icon={TrendingUp}
             active={valueSortEnabled && !showTrash}
             onClick={toggleValueSorting}
-            title="Sortuj leady po wartości"
-            ariaLabel="Sortuj leady po wartości"
-            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}
+            title="Sortuj leady po wartoĹ›ci"
+            ariaLabel="Sortuj leady po wartoĹ›ci"
+            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortowaÄ‡!'}
           />
 
           <StatShortcutCard
-            label="Zagrożone"
+            label="ZagroĹĽone"
             value={stats.atRisk}
             icon={AlertTriangle}
             active={quickFilter === 'at-risk' && !showTrash}
             onClick={() => toggleQuickFilter('at-risk')}
-            title="Pokaż zagrożone leady"
-            ariaLabel="Pokaż zagrożone leady"
+            title="PokaĹĽ zagroĹĽone leady"
+            ariaLabel="PokaĹĽ zagroĹĽone leady"
             tone="risk"
           />
 
@@ -904,8 +904,8 @@ export default function Leads() {
             icon={CaseEntityIcon}
             active={quickFilter === 'history' && !showTrash}
             onClick={() => toggleQuickFilter('history')}
-            title="Pokaż leady przeniesione do obsługi"
-            ariaLabel="Pokaż leady przeniesione do obsługi"
+            title="PokaĹĽ leady przeniesione do obsĹ‚ugi"
+            ariaLabel="PokaĹĽ leady przeniesione do obsĹ‚ugi"
           />
         </div>
 
@@ -919,7 +919,7 @@ export default function Leads() {
             <div className="search" data-leads-search="true">
               <span aria-hidden="true">?</span>
               <input
-                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
+                placeholder={showTrash ? 'Szukaj w koszu leadĂłw...' : 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...'}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 list="lead-search-suggestions-stage25"
@@ -944,7 +944,7 @@ export default function Leads() {
                 </div>
               ) : (
                 <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true">
-                  <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
+                  <span className="sub">Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
@@ -954,7 +954,7 @@ export default function Leads() {
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
                   <span>
-                    <span className="title">Ładowanie leadów</span>
+                    <span className="title">Ĺadowanie leadĂłw</span>
                     <span className="sub">Pobieram dane z aplikacji.</span>
                   </span>
                 </div>
@@ -962,7 +962,7 @@ export default function Leads() {
                 <div className="row row-empty">
                   <span className="index">!</span>
                   <span>
-                    <span className="title">Nie udało się pobrać leadów</span>
+                    <span className="title">Nie udaĹ‚o siÄ™ pobraÄ‡ leadĂłw</span>
                     <span className="sub">{loadError}</span>
                   </span>
                 </div>
@@ -1000,12 +1000,12 @@ export default function Leads() {
                         </span>
 
                         <span className="lead-value-cell">
-                          <span className="mini">Wartość</span>
+                          <span className="mini">WartoĹ›Ä‡</span>
                           <strong className="cf-list-row-value">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">Najbliższa zaplanowana akcja</span>
+                          <span className="mini">NajbliĹĽsza zaplanowana akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
@@ -1019,8 +1019,8 @@ export default function Leads() {
                             className={actionIconClass('danger', 'btn ghost lead-icon-btn')}
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                            aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
-                            title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                            aria-label={showTrash ? 'PrzywrĂłÄ‡ leada' : 'PrzenieĹ› leada do kosza'}
+                            title={showTrash ? 'PrzywrĂłÄ‡ leada' : 'PrzenieĹ› leada do kosza'}
                           >
                             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                           </button>
@@ -1034,8 +1034,8 @@ export default function Leads() {
                 <div className="row row-empty">
                   <span className="index">0</span>
                   <span>
-                    <span className="title">{showTrash ? 'Kosz leadów jest pusty.' : 'Brak leadów w tym widoku'}</span>
-                    <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
+                    <span className="title">{showTrash ? 'Kosz leadĂłw jest pusty.' : 'Brak leadĂłw w tym widoku'}</span>
+                    <span className="sub">{showTrash ? 'Nie ma rekordĂłw do przywrĂłcenia.' : 'ZmieĹ„ filtr albo dodaj pierwszego leada.'}</span>
                   </span>
                 </div>
               )}
@@ -1069,7 +1069,7 @@ export default function Leads() {
                   ))}
                 </div>
               ) : (
-                <div className="note">Brak relacji z wyliczoną wartością.</div>
+                <div className="note">Brak relacji z wyliczonÄ… wartoĹ›ciÄ….</div>
               )}
             </aside>
 
@@ -1142,3 +1142,4 @@ relationValueEntries.slice(0, 5)
 Najcenniejsze relacje
 data-relation-value-board="true"
 */
+
