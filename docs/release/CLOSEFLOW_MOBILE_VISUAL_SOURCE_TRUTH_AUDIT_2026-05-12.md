@@ -1,0 +1,1677 @@
+# CloseFlow — Mobile Visual Source Truth Audit — 2026-05-12
+
+## Cel
+
+Sprawdzić, czy problem z widocznością górnych kafelków na telefonie wynika z:
+
+- starej logiki wizualnej,
+- wielu warstw CSS/hotfix/stage,
+- aktywnego komponentu innego niż zakładany,
+- braku twardego wrappera w TSX,
+- konfliktu reguł CSS.
+
+Ten audyt **nie zmienia UI aplikacji**. Zostawia tylko raport i skrypt diagnostyczny.
+
+## Werdykt
+
+RYZYKO: nie znaleziono twardego atrybutu wrappera w TSX/JSX. Jeśli kafle nadal widać, trzeba wejść w realny komponent Today/TodayStable i oznaczyć dokładny wrapper, zamiast dokładać kolejne fallbacki CSS.
+
+## Najważniejsze ryzyka / ustalenia
+
+- Brak `data-cf-mobile-start-tile-trim` w plikach TSX/JSX. Obecna poprawka opiera się na CSS fallbackach, a nie na twardo oznaczonym wrapperze.
+- Dużo plików stylu o nazwach hotfix/stage/repair/visual/metric/mobile: 101. To nie znaczy automatycznie błąd, ale podnosi ryzyko konfliktów i nadpisywania.
+- W CSS istnieją reguły z `display: grid/flex/block !important` lub podobne. Mogą przebić mobile hide, jeśli są później w kolejności importu albo mają mocniejszy selektor.
+
+## Aktywne/importowane CSS z `src/index.css`
+
+- `tailwindcss`
+- `./styles/design-system/index.css`
+- `./styles/core/core-contracts.css`
+- `./styles/page-adapters/page-adapters.css`
+- `./styles/legacy/legacy-imports.css`
+- `./styles/temporary/temporary-overrides.css`
+- `./styles/emergency/emergency-hotfixes.css`
+- `./styles/closeflow-mobile-start-tile-trim.css`
+
+## Kandydaci na aktywny widok Today / Dziś
+
+- `src/App.tsx`
+- `src/components/Layout.tsx`
+- `src/components/TodayAiAssistant.tsx`
+- `src/lib/ai-assistant.ts`
+- `src/lib/stage30-today-cleanup.ts`
+- `src/lib/stage31-today-tiles-interaction.ts`
+- `src/lib/stage32-today-relations-loading-polish.ts`
+- `src/lib/today-sections.ts`
+- `src/lib/today-v1-final.ts`
+- `src/pages/Activity.tsx`
+- `src/pages/AiDrafts.tsx`
+- `src/pages/Billing.tsx`
+- `src/pages/CaseDetail.tsx`
+- `src/pages/Login.tsx`
+- `src/pages/PublicLanding.tsx`
+- `src/pages/SupportCenter.tsx`
+- `src/pages/Tasks.tsx`
+- `src/pages/TasksStable.tsx`
+- `src/pages/Today.tsx`
+- `src/pages/TodayStable.tsx`
+- `src/pages/UiPreviewVNext.tsx`
+- `src/pages/UiPreviewVNextFull.tsx`
+- `src/server/_digest.ts`
+
+## Trafienia routingu / renderowania Today
+
+- `src/App.tsx`
+  - L31: `const Today = lazy(() => import('./pages/TodayStable'));`
+  - L199: `<Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />`
+  - L200: `<Route path="/start" element={!isLoggedIn ? <PublicLanding /> : <Navigate to="/" />} />`
+  - L201: `<Route path="/portal/:caseId/:token" element={<ClientPortal />} />`
+  - L202: `<Route path="/" element={isLoggedIn ? <Today /> : <PublicLanding />} />`
+  - L203: `<Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />`
+  - L204: `<Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />`
+  - L205: `<Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />`
+  - L206: `<Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />`
+  - L207: `<Route path="/calendar" element={isLoggedIn ? <Calendar /> : <Navigate to="/login" />} />`
+  - L208: `<Route path="/cases" element={isLoggedIn ? <Cases /> : <Navigate to="/login" />} />`
+  - L209: `<Route path="/case/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />`
+- `src/App.tsx`
+  - L31: `const Today = lazy(() => import('./pages/TodayStable'));`
+  - L199: `<Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />`
+  - L200: `<Route path="/start" element={!isLoggedIn ? <PublicLanding /> : <Navigate to="/" />} />`
+  - L201: `<Route path="/portal/:caseId/:token" element={<ClientPortal />} />`
+  - L202: `<Route path="/" element={isLoggedIn ? <Today /> : <PublicLanding />} />`
+  - L203: `<Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />`
+  - L204: `<Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />`
+  - L205: `<Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />`
+  - L206: `<Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />`
+  - L207: `<Route path="/calendar" element={isLoggedIn ? <Calendar /> : <Navigate to="/login" />} />`
+  - L208: `<Route path="/cases" element={isLoggedIn ? <Cases /> : <Navigate to="/login" />} />`
+  - L209: `<Route path="/case/:caseId" element={isLoggedIn ? <CaseDetail /> : <Navigate to="/login" />} />`
+- `src/components/Layout.tsx`
+  - L4: `* ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])`
+  - L157: `{ icon: LayoutDashboard, label: 'Dziś', path: '/' },`
+  - L158: `{ icon: Users, label: 'Leady', path: '/leads' },`
+  - L159: `{ icon: Users, label: 'Klienci', path: '/clients' },`
+  - L160: `{ icon: Briefcase, label: 'Sprawy', path: '/cases' },`
+  - L166: `{ icon: CheckSquare, label: 'Zadania', path: '/tasks' },`
+  - L167: `{ icon: Calendar, label: 'Kalendarz', path: '/calendar' },`
+  - L168: `{ icon: FolderKanban, label: 'Szablony', path: '/templates' },`
+  - L169: `{ icon: MessageSquareText, label: 'Odpowiedzi', path: '/response-templates' },`
+  - L170: `{ icon: History, label: 'Aktywność', path: '/activity' },`
+  - L176: `...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : []),`
+  - L177: `{ icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },`
+- `src/server/ai-application-operator.ts`
+  - L9: `| 'summarize_today'`
+  - L317: `if (/\b(dzis|dzisiaj|dziś|na dziś|na dzis|plan dnia|co mam)\b/u.test(query)) return 'summarize_today';`
+  - L329: `if (operatorIntent === 'summarize_today' || operatorIntent === 'summarize_tomorrow' || operatorIntent === 'summarize_week' || operatorIntent === 'overdue') return 'today_briefing';`
+  - L703: `if (operatorIntent === 'summarize_today' || operatorIntent === 'summarize_tomorrow') {`
+
+## Trafienia komponentów kafelków / skrótów / nagłówków
+
+- `src/components/CloseFlowPageHeaderV2.tsx`
+  - L5: `type CloseFlowPageHeaderV2Props = {`
+  - L12: `kicker: 'CENTRUM DNIA',`
+  - L18: `title: 'Leady',`
+  - L19: `description: 'Lista aktywnych tematów sprzedażowych. Tu zapisujesz kontakty, pilnujesz wartości i szybko widzisz, które leady wymagają ruchu.',`
+  - L24: `description: 'Baza osób i firm w tle. Klient łączy kontakt, leady, sprawy i historię relacji.',`
+  - L32: `kicker: 'ZADANIA',`
+  - L34: `description: 'Konkretne rzeczy do wykonania. Zadania mają pilnować ruchu, a nie leżeć jako martwe notatki.',`
+  - L38: `title: 'Kalendarz',`
+  - L88: `export function CloseFlowPageHeaderV2({ pageKey, actions }: CloseFlowPageHeaderV2Props) {`
+- `src/components/ContextNoteDialog.tsx`
+  - L104: `<p className="text-xs font-medium text-slate-500">Notatka zostanie przypięta do aktualnego rekordu. Nie tworzy zadania ani wydarzenia bez osobnego kliknięcia.</p>`
+- `src/components/GlobalQuickActions.tsx`
+  - L6: `* to="/leads?quick=lead" data-global-task-direct-modal-trigger="true" to="/calendar?quick=event" data-global-quick-actions`
+  - L95: `<Link to="/leads?quick=lead" aria-label="Otwórz leady lub dodaj leada" onClick={() => rememberGlobalQuickAction('lead')}>`
+  - L106: `<Link to="/calendar?quick=event" aria-label="Otwórz kalendarz lub dodaj wydarzenie" onClick={() => rememberGlobalQuickAction('event')}>`
+  - L126: `to="/leads"`
+  - L133: `/* GLOBAL_QUICK_ACTIONS_STAGE08D_SAME_ROUTE_MODAL_FIX to="/leads?quick=lead" to="/calendar?quick=event" subscribeGlobalQuickAction */`
+  - L148: `to="/leads?quick=lead"`
+- `src/components/Layout.tsx`
+  - L158: `{ icon: Users, label: 'Leady', path: '/leads' },`
+  - L166: `{ icon: CheckSquare, label: 'Zadania', path: '/tasks' },`
+  - L167: `{ icon: Calendar, label: 'Kalendarz', path: '/calendar' },`
+  - L189: `{ icon: Users, label: 'Leady', path: '/leads' },`
+  - L192: `{ icon: CheckSquare, label: 'Zadania', path: '/tasks' },`
+- `src/components/LeadAiNextAction.tsx`
+  - L134: `toast.error(\`Błąd tworzenia zadania: ${error?.message || 'REQUEST_FAILED'}\`);`
+- `src/components/QuickAiCapture.tsx`
+  - L5: `* bez automatycznego tworzenia leada, zadania ani wydarzenia speechSupported SpeechRecognition autoSpeech autoStart`
+  - L291: `Wklej albo podyktuj notatkę. AI przygotuje szkic do sprawdzenia i zapisze go w Szkicach AI — bez automatycznego tworzenia leada, zadania ani wydarzenia.`
+  - L370: `bez automatycznego tworzenia leada, zadania ani wydarzenia`
+- `src/components/StatShortcutCard.tsx`
+  - L10: `const CLOSEFLOW_VS2_STAT_SHORTCUT_CARD_METRIC_TILE_ADAPTER = 'StatShortcutCard delegates rendering to ui-system OperatorMetricTile';`
+  - L11: `const CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3 = 'StatShortcutCard is a compatibility adapter to OperatorMetricTile';`
+  - L32: `export type StatShortcutCardProps = {`
+  - L99: `export function StatShortcutCard({`
+  - L113: `}: StatShortcutCardProps) {`
+  - L142: `/* CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5_GUARD StatShortcutCard delegates to OperatorMetricTile and must not render local card markup */`
+- `src/components/TaskCreateDialog.tsx`
+  - L86: `if (!form.title.trim()) return toast.error('Podaj tytuł zadania.');`
+  - L113: `toast.error('Nie udało się zapisać zadania.');`
+- `src/components/task-editor-dialog.tsx`
+  - L72: `() => 'Popraw tytuł, termin, priorytet i powiązanie zadania. Zapis od razu odświeży listę i kalendarz.',`
+- `src/components/ui-system/MetricTile.tsx`
+  - L2: `import { OperatorMetricTile, type OperatorMetricTone } from './OperatorMetricTiles';`
+- `src/components/ui-system/OperatorMetricTiles.tsx`
+  - L8: `const CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_OPERATOR_METRIC_TONE_PARITY_VS5W: OperatorMetricTiles owns value/icon tone and metric identity';`
+  - L9: `const CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3 = 'CLOSEFLOW_METRIC_TILES_FINAL_SYSTEM_VS5X_REPAIR3: OperatorMetricTile is the shared final renderer for StatShortcutCard and OperatorMetricTiles';`
+  - L10: `const CLOSEFLOW_VS7_SEMANTIC_METRIC_TONE_SOURCE_OF_TRUTH_COMPAT = 'CLOSEFLOW_VS7_SEMANTIC_METRIC_TONE_SOURCE_OF_TRUTH: OperatorMetricTiles resolves tones from semantic id/label before local screen colors';`
+  - L31: `export type OperatorMetricTilesProps<TId extends string = string> = Omit<HTMLAttributes<HTMLElement>, 'onSelect'> & {`
+  - L39: `export function OperatorMetricTiles<TId extends string = string>({`
+  - L46: `}: OperatorMetricTilesProps<TId>) {`
+  - L52: `data-cf-metric-renderer="OperatorMetricTiles"`
+  - L143: `export default OperatorMetricTiles;`
+- `src/components/ui-system/OperatorMetricToneRuntime.tsx`
+  - L18: `'Leady czekające',`
+- `src/components/ui-system/action-icon-registry.ts`
+  - L69: `calendar: 'Kalendarz',`
+  - L78: `restore: 'PrzywrĂłcenie rekordu, zadania, wydarzenia albo szkicu.',`
+  - L89: `calendar: 'Akcja zwiÄ…zana z kalendarzem, terminem, datÄ… albo widokiem planowania.',`
+- `src/components/ui-system/index.ts`
+  - L19: `export * from './OperatorMetricTiles';`
+  - L20: `export { OperatorMetricTiles, OperatorMetricTile } from './OperatorMetricTiles';`
+  - L21: `export type { OperatorMetricTilesProps, OperatorMetricTileItem, OperatorMetricTone } from './OperatorMetricTiles';`
+- `src/components/ui-system/operator-metric-tone-contract.ts`
+  - L42: `leady: 'blue',`
+  - L66: `'leady czekajace': 'amber',`
+  - L107: `'leady czekajace',`
+  - L127: `'leady',`
+  - L209: `'Leady',`
+  - L219: `'Leady czekające',`
+- `src/components/ui-system/semantic-visual-registry.ts`
+  - L128: `allowedUse: 'Otwarte leady, sprawy, zadania, tickety i szkice.',`
+  - L155: `allowedUse: 'ZalegĹ‚e zadania, wydarzenia, follow-upy, terminy i aktywnoĹ›ci po czasie.',`
+  - L163: `meaning: 'Kolor oznacza encjÄ™ klienta: osobÄ™ albo firmÄ™ w tle Ĺ‚Ä…czÄ…cÄ… leady i sprawy.',`
+- `src/lib/action-visual-taxonomy.ts`
+  - L76: `if (/wydarzenie|event|kalendarz/.test(title)) return 'event';`
+- `src/lib/ai-assistant.ts`
+  - L67: `// Lokalna warstwa rozumienia danych aplikacji: pytania analityczne o zadania, terminy i mapę systemu`
+  - L254: `&& /\b(zadan|zadania|zadanie|task|taskow)\b/u.test(query)`
+  - L260: `&& /\b(zadanie|zadania|zadan|task)\b/u.test(query);`
+  - L265: `return /\b(zadanie|zadania|zadan|task|taski|co mam|pokaz|pokaż|lista|terminy)\b/u.test(query);`
+  - L342: `: 'Nie znalazłem otwartego zadania' + (range ? ' w ' + range.label : '') + '.',`
+  - L351: `title: first ? 'Pierwsze zadanie' : 'Nie znalazłem zadania',`
+  - L357: `warnings: first ? [] : ['Sprawdziłem zadania z terminem. Zadania bez daty nie wchodzą do odpowiedzi o kolejności.'],`
+  - L378: `title: 'Zadania w ' + range.label,`
+  - L384: `warnings: tasks.length > 10 ? ['Pokazuję 10 pierwszych zadań. Pełną listę otwórz w zakładce Zadania.'] : [],`
+  - L402: `answer: 'CloseFlow to system pracy na leadach: Dziś pokazuje priorytety, Leady zbierają kontakty, Klienci są kartoteką osób, Sprawy prowadzą obsługę, Zadania i Kalendarz pilnują terminów, a Szkice AI czekają na zatwierdzenie.',`
+  - L412: `summary: 'Asystent ma używać mapy aplikacji i aktualnych danych, a nie gotowych odpowiedzi tekstowych. Aktualny kontekst: leady ' + counts.leads + ', klienci ' + counts.clients + ', sprawy ' + counts.cases + ', zadania ' + counts.tasks + ',`
+  - L415: `{ label: 'Dziś', detail: 'Priorytety, pilne zadania, terminy i skróty do pracy.', href: '/', priority: 'high', entityType: 'app_section' },`
+  - L416: `{ label: 'Leady', detail: 'Kontakty sprzedażowe przed przejściem do klienta lub sprawy.', href: '/leads', priority: 'medium', entityType: 'app_section' },`
+  - L419: `{ label: 'Zadania', detail: 'Rzeczy do wykonania, terminy, statusy i priorytety.', href: '/tasks', priority: 'high', entityType: 'app_section' },`
+  - L420: `{ label: 'Kalendarz', detail: 'Wydarzenia, spotkania i plan najbliższych dni.', href: '/calendar', priority: 'high', entityType: 'app_section' },`
+- `src/lib/ai-draft-approval.ts`
+  - L112: `if (/\b(spotkanie|spotkaj|wizyta|rozmowa|call|wideorozmowa|wydarzenie|kalendarz)\b/u.test(text)) return 'event';`
+- `src/lib/case-lifecycle-v1.ts`
+  - L111: `nextOperatorAction: hasNextStep ? 'Kontynuuj według najbliższego zadania albo wydarzenia.' : 'Dodaj zadanie albo wydarzenie, żeby sprawa nie wisiała w próżni.',`
+- `src/lib/page-header-content.ts`
+  - L26: `kicker: 'CENTRUM DNIA',`
+  - L32: `title: 'Leady',`
+  - L33: `description: 'Lista aktywnych tematów sprzedażowych. Tu zapisujesz kontakty, pilnujesz wartości i szybko widzisz, które leady wymagają ruchu.',`
+  - L38: `description: 'Baza osób i firm w tle. Klient łączy kontakt, leady, sprawy i historię relacji.',`
+  - L46: `kicker: 'ZADANIA',`
+  - L48: `description: 'Konkretne rzeczy do wykonania. Zadania mają pilnować ruchu, a nie leżeć jako martwe notatki.',`
+  - L52: `title: 'Kalendarz',`
+- `src/lib/plans.ts`
+  - L60: `/** Cykliczne zadania i wydarzenia. */`
+- `src/lib/stage31-today-tiles-interaction.ts`
+  - L38: `'zaległe zadania',`
+  - L39: `'zalegle zadania',`
+  - L44: `'zaległe zadania',`
+  - L45: `'zalegle zadania',`
+  - L50: `'zadania po terminie',`
+  - L55: `hash: 'zalegle-zadania',`
+  - L71: `'zadania na dziś',`
+  - L72: `'zadania na dzis',`
+- `src/lib/ui-truth.ts`
+  - L33: `{ label: 'Leady', badge: 'Gotowe' },`
+- `src/pages/Activity.tsx`
+  - L34: `StatShortcutCard`
+  - L35: `} from '../components/StatShortcutCard';`
+  - L49: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L55: `{ value: 'calendar', label: 'Kalendarz' },`
+  - L80: `{ value: 'lead', label: 'Leady' },`
+  - L82: `{ value: 'task', label: 'Zadania' },`
+  - L275: `if (eventType === 'calendar_entry_completed') return 'Kalendarz: oznaczono wpis jako zrobiony';`
+  - L276: `if (eventType === 'calendar_entry_restored') return 'Kalendarz: przywrócono wpis do pracy';`
+  - L277: `if (eventType === 'calendar_entry_deleted') return 'Kalendarz: usunięto wpis';`
+  - L326: `if (entity === 'task') return 'Aktywność zadania';`
+  - L731: `<CloseFlowPageHeaderV2 pageKey="activity" />`
+  - L734: `<StatShortcutCard label="Wszystkie" value={metrics.all} icon={TemplateEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />`
+  - L735: `<StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />`
+  - L736: `<StatShortcutCard label="Leady" value={metrics.leads} icon={LeadEntityIcon} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="bg-indigo-50 text-indigo-500" />`
+  - L737: `<StatShortcutCard label="Sprawy" value={metrics.cases} icon={CaseEntityIcon} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="bg-slate-100 text-slate-500" />`
+  - L738: `<StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />`
+  - L739: `<StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={NotificationEntityIcon} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} tone="red" />`
+  - L822: `<p>Gdy dodasz leady, zadania, wydarzenia albo sprawy, zobaczysz tu ostatnie ruchy.</p>`
+- `src/pages/AdminAiSettings.tsx`
+  - L21: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L133: `<CloseFlowPageHeaderV2 pageKey="adminAi" />`
+- `src/pages/AiDrafts.tsx`
+  - L35: `StatShortcutCard`
+  - L36: `} from '../components/StatShortcutCard';`
+  - L84: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L111: `{ value: 'task', label: 'Zadanie', helper: 'Prawdziwe zadanie widoczne w Dziś i kalendarzu.' },`
+  - L112: `{ value: 'event', label: 'Wydarzenie', helper: 'Prawdziwe wydarzenie widoczne w kalendarzu.' },`
+  - L119: `{ key: 'lead', label: 'Leady' },`
+  - L120: `{ key: 'task', label: 'Zadania' },`
+  - L133: `const MetricCard = StatShortcutCard;`
+  - L833: `<label>Typ zadania<select className={approvalSelectClass} value={approvalForm.taskType} onChange={(event) => updateApprovalForm({ taskType: event.target.value })}>{TASK_TYPES.map((option) => <option key={option.value} value={option.value}>{`
+  - L1022: `<CloseFlowPageHeaderV2`
+  - L1026: `<CloseFlowPageHeaderV2`
+  - L1044: `<MetricCard label="Leady" value={stats.leads} icon={LeadEntityIcon} tone="active" active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} dataTab="lead" />`
+  - L1045: `<MetricCard label="Zadania" value={stats.tasks} icon={Clipboard} tone="waiting" active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} dataTab="task" />`
+- `src/pages/Billing.tsx`
+  - L70: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L122: `'Leady, klienci i zadania',`
+  - L123: `'Dziś, kalendarz w aplikacji, digest po konfiguracji mail providera i powiadomienia',`
+  - L187: `description: 'Twoje dane zostają. Aby dodawać nowe leady, zadania i wydarzenia, wybierz plan.',`
+  - L208: `description: 'Wybierz plan, żeby odblokować pracę na leadach, zadaniach i wydarzeniach.',`
+  - L222: `{ name: 'Leady', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },`
+  - L223: `{ name: 'Zadania', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },`
+  - L225: `{ name: 'Kalendarz w aplikacji', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' },`
+  - L318: `return item.name === 'Leady' || item.name === 'Zadania' || item.name === 'Wydarzenia' ? 'Gotowe' : 'W przygotowaniu';`
+  - L504: `<CloseFlowPageHeaderV2`
+  - L569: `<p>Aby dodawać nowe leady, zadania i wydarzenia, wybierz plan. Nie usuwamy danych i nie robimy czerwonej ściany paniki.</p>`
+- `src/pages/Calendar.tsx`
+  - L105: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L951: `toast.error(\`Błąd odczytu kalendarza: ${error.message}\`);`
+  - L1113: `toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');`
+  - L1435: `if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;`
+  - L1559: `<CloseFlowPageHeaderV2`
+  - L1698: `<div className="calendar-seg" role="tablist" aria-label="Widok kalendarza">`
+  - L1757: `<Label>Tytuł zadania</Label>`
+  - L2038: `<DialogTitle>Edytuj wpis z kalendarza</DialogTitle>`
+- `src/pages/CaseDetail.tsx`
+  - L503: `if (activity.eventType === 'task_status_changed') return \`Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}\`;`
+  - L1177: `if (!guardCaseDetailWriteAccess('dodać zadania')) return;`
+  - L1389: `if (!guardCaseDetailWriteAccess('oznaczyc zadania jako zrobione')) return;`
+  - L1396: `toast.error(\`Nie udało się zamknąć zadania: ${error?.message || 'REQUEST_FAILED'}\`);`
+  - L1408: `toast.error(\`Nie udało się przełożyć zadania: ${error?.message || 'REQUEST_FAILED'}\`);`
+  - L1831: `<p>Realne notatki, zadania, wydarzenia, wpłaty i zmiany zapisane przy tej sprawie.</p>`
+  - L1891: `<PathCard label="Zadania" value={openTasks.length} helper="Otwarte zadania powiązane ze sprawą." tone="green" />`
+- `src/pages/Cases.tsx`
+  - L10: `import { StatShortcutCard } from '../components/StatShortcutCard';`
+  - L34: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L479: `<CloseFlowPageHeaderV2`
+  - L650: `<StatShortcutCard`
+  - L658: `<StatShortcutCard`
+  - L666: `<StatShortcutCard`
+  - L674: `<StatShortcutCard`
+  - L837: `/* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= toggleCaseView('blocked') toggleCaseView('needs_next_step') */`
+- `src/pages/ClientDetail.tsx`
+  - L512: `return title ? \`Wpis kalendarza wykonany: ${title}\` : 'Wpis kalendarza wykonany';`
+  - L514: `return title ? \`Wpis kalendarza przywrócony: ${title}\` : 'Wpis kalendarza przywrócony';`
+  - L516: `return title ? \`Wpis kalendarza usunięty: ${title}\` : 'Wpis kalendarza usunięty';`
+  - L817: `subtitle: 'Ten klient nie ma teraz otwartego zadania, wydarzenia, leada ani sprawy.',`
+  - L2219: `<span>Zadania klienta</span>`
+- `src/pages/Clients.tsx`
+  - L45: `StatShortcutCard`
+  - L46: `} from '../components/StatShortcutCard';`
+  - L88: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L466: `? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostaną trwale skasowane.'`
+  - L522: `<CloseFlowPageHeaderV2`
+  - L619: `<StatShortcutCard`
+  - L630: `<StatShortcutCard`
+  - L640: `<StatShortcutCard`
+  - L650: `<StatShortcutCard`
+  - L693: `<span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>`
+  - L740: `<span><strong>{client.name || 'Klient'}</strong><small>Leady {counters.leads} · Sprawy {counters.cases}</small></span>`
+- `src/pages/LeadDetail.tsx`
+  - L669: `if (leadOperationalArchive) return toast.error('Dodawaj dalsze zadania w sprawie.');`
+  - L790: `riskReason = 'Aktywny lead nie ma żadnego zaplanowanego zadania ani wydarzenia.';`
+  - L1175: `toast.error(\`Błąd zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}\`);`
+  - L1216: `toast.error(\`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}\`);`
+  - L1292: `if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuł zadania');`
+  - L1314: `toast.error(\`Błąd zapisu zadania: ${error?.message || 'REQUEST_FAILED'}\`);`
+  - L1472: `Leady`
+  - L1551: `<p>powiązane zadania i wydarzenia sprzedażowe.</p>`
+  - L1580: `<h2>Zadania i wydarzenia</h2>`
+- `src/pages/Leads.tsx`
+  - L46: `import { StatShortcutCard } from '../components/StatShortcutCard';`
+  - L84: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L599: `// CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientów i spraw.`
+  - L684: `<CloseFlowPageHeaderV2`
+  - L838: `<p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>`
+  - L858: `<StatShortcutCard`
+  - L864: `title="Pokaż wszystkie leady"`
+  - L865: `ariaLabel="Pokaż wszystkie leady"`
+  - L868: `<StatShortcutCard`
+  - L874: `title="Pokaż aktywne leady"`
+  - L875: `ariaLabel="Pokaż aktywne leady"`
+  - L880: `<StatShortcutCard`
+  - L886: `title="Sortuj leady po wartości"`
+  - L887: `ariaLabel="Sortuj leady po wartości"`
+  - L891: `<StatShortcutCard`
+  - L897: `title="Pokaż zagrożone leady"`
+  - L898: `ariaLabel="Pokaż zagrożone leady"`
+  - L902: `<StatShortcutCard`
+  - L908: `title="Pokaż leady przeniesione do obsługi"`
+  - L909: `ariaLabel="Pokaż leady przeniesione do obsługi"`
+- `src/pages/Login.tsx`
+  - L61: `'Leady, zadania, wydarzenia i sprawy w jednym miejscu.',`
+  - L68: `{ icon: CalendarDays, title: 'Kalendarz operacyjny', text: 'Spotkania, follow-upy i zadania siedzą na jednej osi czasu.' },`
+  - L297: `<p className="mt-1 text-sm text-emerald-700">Możesz od razu wejść, dodać leady i sprawdzić cały przepływ pracy.</p>`
+  - L312: `<h1 className="text-3xl font-bold leading-tight sm:text-4xl">Domykaj leady i prowadź sprawy bez chaosu.</h1>`
+  - L321: `<div className="mt-6 pt-4"><div className="rounded-3xl border border-emerald-400/20 bg-emerald-500/10 p-4"><div className="flex items-start gap-3"><div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-eme`
+- `src/pages/NotificationsCenter.tsx`
+  - L21: `OperatorMetricTiles,`
+  - L53: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L185: `if (item.kind === 'event') return 'Termin w kalendarzu';`
+  - L343: `<span>Możesz je włączyć, żeby terminy i pilne zadania nie uciekały z ekranu.</span>`
+  - L612: `<CloseFlowPageHeaderV2`
+  - L638: `<OperatorMetricTiles`
+  - L689: `<p>Sprawdzam zadania, wydarzenia i historię wysłanych alertów.</p>`
+  - L695: `<p>Gdy pojawią się zaległe zadania, terminy albo szkice do sprawdzenia, zobaczysz je tutaj.</p>`
+  - L698: `<Link to="/calendar">Przejdź do kalendarza</Link>`
+- `src/pages/PublicLanding.tsx`
+  - L21: `text: 'Otwierasz aplikację i widzisz leady, zadania, spotkania oraz sprawy, które wymagają ruchu teraz.',`
+  - L31: `text: 'Po sprzedaży temat nie znika. Przechodzi w obsługę, zadania, terminy i historię działań.',`
+  - L36: `text: 'Spotkania i wydarzenia mogą pracować razem z Twoim kalendarzem Google. Wpisujesz w jednym miejscu, widzisz w drugim.',`
+  - L46: `text: 'Mail z tym, co dziś wymaga uwagi: follow-upy, zadania, spotkania i sprawy, których nie warto zostawiać na później.',`
+  - L79: `text: 'Klient, zadania, spotkania i historia zostają w jednym procesie.',`
+  - L99: `answer: 'Nie próbujemy robić kombajnu do wszystkiego. CloseFlow skupia się na codziennym pilnowaniu leadów, follow-upów, zadań, kalendarza i spraw po sprzedaży.',`
+  - L124: `<span>Leady do ruchu</span>`
+  - L128: `<span>Zadania dziś</span>`
+  - L187: `CloseFlow pokazuje, które leady, zadania, spotkania i sprawy wymagają ruchu dzisiaj.`
+  - L188: `Jeden widok zamiast pamiętania o wszystkim w mailu, Messengerze, notatkach i kalendarzu.`
+  - L208: `<h2 id="problem-title">Leady rzadko giną od razu. One cichną po drodze.</h2>`
+  - L221: `<p>Klient wygrany, ale dalej trzeba dowieźć zadania, terminy, notatki i ustalenia.</p>`
+  - L313: `<p>Pierwszy dzień w CloseFlow jest prosty: kontakty, zadania, terminy i sprawy w jednym widoku.</p>`
+- `src/pages/ResponseTemplates.tsx`
+  - L19: `import { StatShortcutCard } from '../components/StatShortcutCard';`
+  - L36: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L202: `<CloseFlowPageHeaderV2 pageKey="responseTemplates" />`
+  - L205: `<StatShortcutCard label="Szablony" value={stats.total} icon={AiEntityIcon} iconClassName="app-primary-chip" valueClassName="app-text" />`
+  - L206: `<StatShortcutCard label="Kategorie" value={stats.categories} icon={MessageSquareText} iconClassName="bg-indigo-500/12 text-indigo-600" valueClassName="app-text" />`
+  - L207: `<StatShortcutCard label="Tagi" value={stats.tags} icon={Tags} iconClassName="bg-amber-500/12 text-amber-600" valueClassName="text-amber-600" />`
+  - L208: `<StatShortcutCard label="Zmienne" value={stats.withVariables} icon={Copy} iconClassName="bg-emerald-500/12 text-emerald-600" valueClassName="text-emerald-600" />`
+- `src/pages/Settings.tsx`
+  - L93: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L840: `<p>Zsynchronizuj istniejące zadania i wydarzenia z CloseFlow z Google Calendar. To pomaga po świeżym połączeniu konta albo po błędzie synchronizacji.</p>`
+  - L902: `Przy opcji domyślnej Google użyje ustawień z Twojego kalendarza. Przy popup/e-mail CloseFlow wysyła override do Google Calendar.`
+  - L1254: `<span>Przy dodawaniu lub edycji zadania albo wydarzenia aplikacja ostrzeże o konflikcie.</span>`
+- `src/pages/SupportCenter.tsx`
+  - L34: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L114: `answer: 'Wejdź w Leady i użyj dodawania nowego kontaktu. Potem ustaw zadanie albo wydarzenie, żeby lead nie zniknął z radarów.',`
+  - L117: `question: 'Jak działają zadania?',`
+  - L118: `answer: 'Zadania są konkretnymi ruchami do wykonania. Powiąż je z leadem, klientem albo sprawą i pilnuj ich z widoku Dziś.',`
+  - L121: `question: 'Jak działa kalendarz?',`
+  - L122: `answer: 'Kalendarz pokazuje wydarzenia i terminy. W tym etapie nie obiecujemy synchronizacji Google Calendar, jeśli nie jest jeszcze podpięta.',`
+  - L426: `<CloseFlowPageHeaderV2`
+- `src/pages/Tasks.tsx`
+  - L42: `import { StatShortcutCard } from '../components/StatShortcutCard';`
+  - L114: `Podaj tytuł zadania.`
+  - L115: `Nie udało się zapisać zadania. Spróbuj ponownie.`
+  - L117: `/* TASKS_PAGE_GREEN_ADD_BUTTON_REMOVED_HOTFIX: dodawanie zadania zostaje w globalnym pasku Zadanie; zielony przycisk w /tasks jest skasowany. */`
+  - L137: `const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';`
+  - L138: `const TASK_REMINDERS_STAGE45A_GUARD = 'Zadania mają opcje przypomnienia, a mutacje nie gubią reminderAt ani recurrenceRule.';`
+  - L246: `<p className="text-xs text-slate-500">Tak samo jak przy tworzeniu zadania: możesz wyłączyć, ustawić jednorazowe albo cykliczne przypomnienie.</p>`
+  - L665: `if (!newTask.title.trim()) return toast.error('Podaj tytuł zadania.');`
+  - L722: `toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');`
+  - L760: `toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');`
+  - L804: `toast.success('Termin zadania przesunięty');`
+  - L806: `toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');`
+  - L817: `toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');`
+  - L826: `if (!editTask.title?.trim()) return toast.error('Podaj tytuł zadania.');`
+  - L883: `toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');`
+  - L1097: `<h1 className="text-3xl font-bold text-slate-900">Zadania</h1>`
+  - L1107: `<Label>Tytuł zadania</Label>`
+  - L1140: `<p className="text-xs text-slate-500">Najpierw ustaw konkretny moment wykonania zadania.</p>`
+  - L1235: `<p className="task-form-vnext-description">Popraw termin, status, priorytet albo powiązanie zadania.</p></DialogHeader>`
+  - L1240: `<Label>Tytuł zadania</Label>`
+- `src/pages/TasksStable.tsx`
+  - L7: `import { OperatorMetricTiles, type OperatorMetricTileItem } from '../components/ui-system';`
+  - L33: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L322: `if (!form.title.trim()) return toast.error('Podaj tytuł zadania.');`
+  - L354: `toast.error('Nie udało się zapisać zadania.');`
+  - L387: `toast.error('Nie udało się zapisać zadania.');`
+  - L438: `toast.error('Nie udało się usunąć zadania.');`
+  - L476: `<CloseFlowPageHeaderV2`
+  - L494: `<OperatorMetricTiles`
+  - L512: `<Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj zadania, sprawy albo priorytetu..." className="pl-9" />`
+- `src/pages/Templates.tsx`
+  - L33: `import { StatShortcutCard } from '../components/StatShortcutCard';`
+  - L58: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L134: `<StatShortcutCard label="Szablony" value={stats.totalTemplates} icon={AiEntityIcon} iconClassName="bg-emerald-50 text-emerald-700" />`
+  - L135: `<StatShortcutCard label="Pozycje" value={stats.totalItems} icon={TemplateEntityIcon} iconClassName="bg-indigo-50 text-indigo-700" />`
+  - L136: `<StatShortcutCard label="Obowiązkowe" value={stats.requiredItems} icon={AlertTriangle} iconClassName="bg-amber-50 text-amber-700" valueClassName="text-amber-600" />`
+  - L137: `<StatShortcutCard label="Akceptacje" value={stats.decisionItems} icon={CheckCircle2} iconClassName="bg-emerald-50 text-emerald-700" valueClassName="text-emerald-600" />`
+  - L321: `<CloseFlowPageHeaderV2`
+- `src/pages/Today.tsx`
+  - L253: `|| compact.includes('kalendarz')`
+  - L279: `compact.includes('kalendarz') ||`
+  - L330: `if (compact === 'calendar' || compact === 'kalendarz') return 'calendar';`
+  - L388: `compact.includes('kalendarz')`
+  - L412: `if (target === 'calendar') return ['kalendarz', 'najbli┼╝sze', 'najblizsze', 'terminy', 'wydarzenia'];`
+  - L459: `if (target === 'calendar') return 'kalendarz';`
+  - L1275: `Pilne leady, brak najbli┼╝szej zaplanowanej akcji, brak ruchu i sprawy zatrzymane w miejscu.`
+  - L1298: `<span className="text-xs font-semibold text-blue-700">Pilne leady</span>`
+  - L1857: `if (!hasAccess) return toast.error('Tw├│j trial wygas┼é. Op┼éa─ç subskrypcj─Ö, aby dodawa─ç leady.');`
+  - L2462: `title="Zaleg┼ée zadania"`
+  - L2518: `<h2 className="text-lg font-bold">Leady przeterminowane</h2>`
+  - L2548: `<TileCard id="today-section-leads" title="Leady do ruchu" subtitle={\`${todayLeadActions.length} wpis├│w\`} collapsedMap={collapsedTiles} onToggle={toggleTile}>`
+  - L2650: `<TileCard id="today-section-tasks" title="Zadania na dzi┼Ť" subtitle={\`${todayTasks.length} wpis├│w\`} collapsedMap={collapsedTiles} onToggle={toggleTile}>`
+  - L2945: `<DialogTitle>{previewEntry?.kind === 'task' ? 'Podgl─ůd zadania' : 'Podgl─ůd wydarzenia'}</DialogTitle>`
+  - L3016: `{previewEntry.kind === 'task' ? 'Otw├│rz zadania' : 'Otw├│rz kalendarz'}`
+- `src/pages/TodayStable.tsx`
+  - L52: `import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';`
+  - L373: `suggestedAction: 'obsłuż ten kontakt przed zwykłymi zadaniami',`
+  - L472: `no_action: 'Leady bez najbliższej akcji',`
+  - L474: `waiting: 'Leady czekające',`
+  - L475: `leads: 'Leady do obsługi dziś',`
+  - L476: `tasks: 'Zadania do wykonania dziś',`
+  - L506: `if (/(wydarzenie|spotkanie|kalendarz|calendar|termin|lead|leady|sprawa|sprawy|klient|klienci)/.test(normalized)) return 'blue';`
+  - L514: `if (text.includes('leady bez najblizszej akcji') || text.includes('bez najblizszej zaplanowanej akcji')) return 'no_action';`
+  - L516: `if (text.includes('leady czekajace') || text.includes('czeka za dlugo')) return 'waiting';`
+  - L517: `if (text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';`
+  - L518: `if (text.includes('zadania do wykonania dzis') || text.includes('zadania dzis')) return 'tasks';`
+  - L675: `if (todayCount > 0 && overdueCount > 0) return 'Zadania do obsługi';`
+  - L676: `if (overdueCount > 0) return 'Zaległe zadania';`
+  - L677: `return 'Zadania do wykonania dziś';`
+  - L1173: `no_action: 'Leady bez najbliższej akcji',`
+  - L1175: `waiting: 'Leady czekające',`
+  - L1176: `leads: 'Leady do obsługi dziś',`
+  - L1177: `tasks: 'Zadania do wykonania dziś',`
+  - L1264: `<CloseFlowPageHeaderV2 pageKey="today" />`
+- `src/pages/UiPreviewVNext.tsx`
+  - L13: `{['Dziś', 'Leady', 'Klienci', 'Sprawy', 'Zadania', 'Kalendarz', 'Szkice AI', 'Ustawienia'].map((item, index) => (`
+- `src/pages/UiPreviewVNextFull.tsx`
+  - L20: `const FULL_CLOSEFLOW_HTML = "<!doctype html>\n<html lang=\"pl\">\n<head>\n  <meta charset=\"utf-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>CloseFlow - pełny kierunek UI</title>\n  <style>\`
+- `src/server/_digest.ts`
+  - L522: `\`Leady bez akcji: ${payload.summary.noStepCount}\`,`
+  - L528: `...sectionPlain('Zaległe zadania', payload.overdueTasks),`
+  - L532: `...sectionPlain('Leady po terminie', payload.overdueLeads),`
+  - L534: `...sectionPlain('Zadania na dziś', payload.todayTasks),`
+  - L538: `...sectionPlain('Leady bez zaplanowanej akcji', payload.noStepLeads),`
+  - L546: `'Top leady do ruszenia:',`
+  - L559: `<tr><td style="padding:8px;border:1px solid #e2e8f0">Leady bez akcji</td><td style="padding:8px;border:1px solid #e2e8f0"><strong>${payload.summary.noStepCount}</strong></td></tr>`
+  - L563: `${sectionHtml('Zaległe zadania', payload.overdueTasks)}`
+  - L565: `${sectionHtml('Leady bez zaplanowanej akcji', payload.noStepLeads)}`
+  - L751: `\`Nowe leady: ${payload.summary.newLeadsCount}\`,`
+  - L753: `\`Wykonane zadania: ${payload.summary.completedTasksCount}\`,`
+  - L759: `...sectionPlain('Nowe leady', payload.newLeads),`
+  - L763: `...sectionPlain('Wykonane zadania', payload.completedTasks),`
+  - L781: `<tr><td style="padding:8px;border:1px solid #e2e8f0">Nowe leady</td><td style="padding:8px;border:1px solid #e2e8f0"><strong>${payload.summary.newLeadsCount}</strong></td></tr>`
+  - L783: `<tr><td style="padding:8px;border:1px solid #e2e8f0">Wykonane zadania</td><td style="padding:8px;border:1px solid #e2e8f0"><strong>${payload.summary.completedTasksCount}</strong></td></tr>`
+  - L788: `${sectionHtml('Nowe leady', payload.newLeads)}`
+  - L790: `${sectionHtml('Wykonane zadania', payload.completedTasks)}`
+- `src/server/ai-application-operator.ts`
+  - L685: `? 'Szkic zadania do sprawdzenia'`
+  - L746: `return responseBase(input, operatorIntent, items, 'Leady zagrożone', answerForItems(items, \`Znalazłem ${items.length} leadów wymagających uwagi.\`, NOT_FOUND), null, meta);`
+  - L751: `return responseBase(input, operatorIntent, items, 'Leady bez zaplanowanej akcji', answerForItems(items, \`Znalazłem ${items.length} leadów bez zaplanowanej akcji.\`, NOT_FOUND), null, meta);`
+- `src/server/ai-next-action.ts`
+  - L145: `\`Otwarte zadania: ${openTasks.length}\`,`
+  - L159: `summary: 'Najpilniejszy ruch to wrócić do zaległego zadania, bo blokuje dalszy proces sprzedaży.',`
+  - L199: `warnings.push('Lead nie ma otwartego zadania ani wydarzenia. To zwiększa ryzyko zgubienia kontaktu.');`
+  - L288: `'Nie twórz zadania samodzielnie. Nie wysyłaj wiadomości. Zwróć wyłącznie sugestię do zatwierdzenia przez użytkownika.',`
+- `src/server/google-calendar-inbound.ts`
+  - L181: `return \`Wpis z Google Calendar „${title}” nakłada się z: ${conflictTitle}. Sprawdź kalendarz przed potwierdzeniem terminu.\`;`
+
+## Obecny stan mobile tile trim
+
+- `src/index.css`
+  - L237: `@import "./styles/closeflow-mobile-start-tile-trim.css";`
+- `src/styles/closeflow-mobile-start-tile-trim.css`
+  - L12: `[data-cf-mobile-start-tile-trim="true"],`
+
+## Pliki stylów potencjalnie historyczne / warstwowe / ryzykowne
+
+- `src/styles/case-detail-stage2.css`
+- `src/styles/closeflow-calendar-color-tooltip-v2.css`
+- `src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css`
+- `src/styles/closeflow-calendar-month-entry-structural-fix-v3.css`
+- `src/styles/closeflow-calendar-month-plain-text-rows-v4.css`
+- `src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css`
+- `src/styles/closeflow-calendar-selected-day-full-text-repair11.css`
+- `src/styles/closeflow-calendar-skin-only-v1.css`
+- `src/styles/closeflow-client-event-modal-runtime-repair.css`
+- `src/styles/closeflow-command-actions-source-truth.css`
+- `src/styles/closeflow-metric-tile-visual-source-truth.css`
+- `src/styles/closeflow-metric-tiles.css`
+- `src/styles/closeflow-mobile-start-tile-trim.css`
+- `src/styles/closeflow-modal-visual-system.css`
+- `src/styles/closeflow-operator-metric-tiles.css`
+- `src/styles/closeflow-page-header-action-semantics-packet1.css`
+- `src/styles/closeflow-page-header-card-source-truth.css`
+- `src/styles/closeflow-page-header-copy-left-only.css`
+- `src/styles/closeflow-page-header-copy-source-truth.css`
+- `src/styles/closeflow-page-header-final-lock.css`
+- `src/styles/closeflow-page-header-stage6-final-lock.css`
+- `src/styles/closeflow-page-header-structure-lock.css`
+- `src/styles/closeflow-page-header-v2.css`
+- `src/styles/closeflow-page-header.css`
+- `src/styles/closeflow-stage16c-tasks-cases-parity.css`
+- `src/styles/closeflow-stage16d-tasks-metric-final-lock.css`
+- `src/styles/closeflow-vnext-ui-contract.css`
+- `src/styles/eliteflow-admin-feedback-p1-hotfix.css`
+- `src/styles/eliteflow-desktop-compact-scale.css`
+- `src/styles/eliteflow-final-metric-tiles-hard-lock.css`
+- `src/styles/eliteflow-metric-text-clip-tasks-repair.css`
+- `src/styles/eliteflow-metric-tiles-color-font-parity.css`
+- `src/styles/eliteflow-semantic-badges-and-today-sections.css`
+- `src/styles/eliteflow-sidebar-footer-contrast-repair.css`
+- `src/styles/eliteflow-sidebar-user-footer-below-nav.css`
+- `src/styles/emergency/emergency-hotfixes.css`
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css`
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css`
+- `src/styles/hotfix-lead-client-right-rail-dark-wrappers.css`
+- `src/styles/hotfix-right-rail-dark-wrappers.css`
+- `src/styles/hotfix-task-stat-tiles-clean.css`
+- `src/styles/legacy/legacy-imports.css`
+- `src/styles/quick-lead-capture-stage27.css`
+- `src/styles/stage30a-mobile-contrast-lock.css`
+- `src/styles/stage31-full-mobile-polish.css`
+- `src/styles/stage33a-ai-drafts-generated-text-contrast.css`
+- `src/styles/stage34-calendar-readability-status-forms.css`
+- `src/styles/stage34b-calendar-complete-polish.css`
+- `src/styles/stage35-clients-value-detail-cleanup.css`
+- `src/styles/stage36-unified-light-pages.css`
+- `src/styles/stage37-unified-page-head-and-metrics.css`
+- `src/styles/stage38-metrics-and-relations-polish.css`
+- `src/styles/stage39-page-headers-copy-visual-system.css`
+- `src/styles/stage40-page-header-action-overflow-hardening.css`
+- `src/styles/stage7a-tasks-blue-outline-fix.css`
+- `src/styles/stageA19v2-sidebar-nav-contrast-fix.css`
+- `src/styles/stageA20-sidebar-today-click-fix.css`
+- `src/styles/stageA20c-sidebar-today-hitbox-fix.css`
+- `src/styles/stageA20d-sidebar-unified-nav-tone.css`
+- `src/styles/stageA20e-sidebar-today-tone-lock.css`
+- `src/styles/stageA24-today-relations-label-align.css`
+- `src/styles/stageA25-today-relations-lead-badge-inline.css`
+- `src/styles/tasks-header-stage45b-cleanup.css`
+- `src/styles/visual-html-theme-v14.css`
+- `src/styles/visual-stage01-shell.css`
+- `src/styles/visual-stage02-today.css`
+- `src/styles/visual-stage03-leads.css`
+- `src/styles/visual-stage04-lead-detail.css`
+- `src/styles/visual-stage05-clients.css`
+- `src/styles/visual-stage06-client-detail.css`
+- `src/styles/visual-stage07-cases.css`
+- `src/styles/visual-stage08-case-detail.css`
+- `src/styles/visual-stage10-notifications-vnext.css`
+- `src/styles/visual-stage12-client-detail-vnext.css`
+- `src/styles/visual-stage13-case-detail-vnext.css`
+- `src/styles/visual-stage14-lead-detail-vnext.css`
+- `src/styles/visual-stage16-billing-vnext.css`
+- `src/styles/visual-stage16-today-html-reset.css`
+- `src/styles/visual-stage17-support-vnext.css`
+- `src/styles/visual-stage17-today-hard-1to1.css`
+- `src/styles/visual-stage18-leads-hard-1to1.css`
+- `src/styles/visual-stage19-clients-safe-css.css`
+- `src/styles/visual-stage19-settings-vnext.css`
+- `src/styles/visual-stage20-lead-form-vnext.css`
+- `src/styles/visual-stage20-tasks-safe-css.css`
+- `src/styles/visual-stage21-task-form-vnext.css`
+- `src/styles/visual-stage21-today-final-lock.css`
+- `src/styles/visual-stage22-event-form-vnext.css`
+- `src/styles/visual-stage22-leads-final-lock.css`
+- `src/styles/visual-stage23-client-case-forms-vnext.css`
+- `src/styles/visual-stage23-leads-html-parity-fix.css`
+- `src/styles/visual-stage24-leads-html-dom-parity-hardfix.css`
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css`
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css`
+- `src/styles/visual-stage27-cases-vnext.css`
+- `src/styles/visual-stage28-tasks-vnext.css`
+- `src/styles/visual-stage29-calendar-vnext.css`
+- `src/styles/visual-stage3-pipeline-and-case.css`
+- `src/styles/visual-stage30-tasks-compact-after-calendar.css`
+- `src/styles/visual-stage8-activity-vnext.css`
+- `src/styles/visual-stage9-ai-drafts-vnext.css`
+
+## Mobile media queries w CSS
+
+- `src/styles/admin-tools.css`
+  - L175: `@media (max-width: 900px) {`
+  - L332: `@media (max-width: 760px) {`
+  - L373: `@media (max-width: 760px) {`
+- `src/styles/case-detail-simplified.css`
+  - L111: `@media (max-width: 768px) {`
+- `src/styles/case-detail-stage2.css`
+  - L223: `@media (max-width: 1120px) {`
+  - L233: `@media (max-width: 768px) {`
+- `src/styles/clients-next-action-layout.css`
+  - L94: `@media (max-width: 1024px) {`
+  - L114: `@media (max-width: 520px) {`
+  - L234: `@media (max-width: 900px) {`
+  - L244: `@media (max-width: 520px) {`
+  - L283: `@media (max-width: 520px) {`
+  - L327: `@media (max-width: 75rem) {`
+  - L341: `@media (max-width: 47.5rem) {`
+- `src/styles/closeflow-action-clusters.css`
+  - L39: `@media (max-width: 640px) {`
+  - L81: `@media (max-width: 640px) {`
+- `src/styles/closeflow-action-tokens.css`
+  - L147: `@media (max-width: 640px) {`
+  - L219: `@media (max-width: 640px) {`
+- `src/styles/closeflow-calendar-selected-day-full-text-repair11.css`
+  - L91: `@media (max-width: 900px) {`
+- `src/styles/closeflow-case-detail-focus.css`
+  - L769: `@media (max-width: 1180px) {`
+  - L785: `@media (max-width: 760px) {`
+  - L980: `@media (max-width: 760px) {`
+  - L1047: `@media (max-width: 760px) {`
+- `src/styles/closeflow-client-event-modal-runtime-repair.css`
+  - L119: `@media (max-width: 640px) {`
+- `src/styles/closeflow-command-actions-source-truth.css`
+  - L290: `@media (max-width: 900px) {`
+- `src/styles/closeflow-form-actions.css`
+  - L67: `@media (max-width: 640px) {`
+- `src/styles/closeflow-metric-tile-visual-source-truth.css`
+  - L227: `@media (max-width: 1180px) {`
+  - L233: `@media (max-width: 640px) {`
+- `src/styles/closeflow-metric-tiles.css`
+  - L341: `@media (max-width: 1180px) {`
+  - L359: `@media (max-width: 640px) {`
+  - L416: `@media (max-width: 1180px) {`
+  - L420: `@media (max-width: 640px) {`
+  - L472: `@media (max-width: 1180px) {`
+  - L479: `@media (max-width: 640px) {`
+  - L579: `@media (max-width: 1180px) {`
+  - L587: `@media (max-width: 640px) {`
+- `src/styles/closeflow-mobile-start-tile-trim.css`
+  - L10: `@media (max-width: 767px) {`
+- `src/styles/closeflow-modal-visual-system.css`
+  - L338: `@media (max-width: 640px) {`
+- `src/styles/closeflow-operator-metric-tiles.css`
+  - L177: `@media (max-width: 1180px) {`
+  - L183: `@media (max-width: 640px) {`
+- `src/styles/closeflow-page-header-action-semantics-packet1.css`
+  - L146: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header-card-source-truth.css`
+  - L278: `@media (max-width: 720px) {`
+  - L433: `@media (max-width: 720px) {`
+  - L526: `@media (max-width: 720px) {`
+  - L646: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header-copy-left-only.css`
+  - L224: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header-copy-source-truth.css`
+  - L78: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header-final-lock.css`
+  - L365: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header-stage6-final-lock.css`
+  - L286: `@media (max-width: 820px) {`
+- `src/styles/closeflow-page-header-structure-lock.css`
+  - L186: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header-v2.css`
+  - L245: `@media (max-width: 900px) {`
+- `src/styles/closeflow-page-header.css`
+  - L129: `@media (max-width: 720px) {`
+  - L428: `@media (max-width: 720px) {`
+- `src/styles/closeflow-public-landing.css`
+  - L599: `@media (max-width: 1040px) {`
+  - L617: `@media (max-width: 720px) {`
+- `src/styles/closeflow-stage16c-tasks-cases-parity.css`
+  - L129: `@media (max-width: 1180px) {`
+  - L136: `@media (max-width: 720px) {`
+  - L159: `@media (max-width: 640px) {`
+- `src/styles/closeflow-stage16d-tasks-metric-final-lock.css`
+  - L120: `@media (max-width: 1180px) {`
+  - L126: `@media (max-width: 640px) {`
+- `src/styles/closeflow-vnext-ui-contract.css`
+  - L9: `@media(max-width:1220px){.cfv-layout{grid-template-columns:86px minmax(0,1fr)}.cfv-layout-detail,.cfv-layout-list{grid-template-columns:1fr}.cfv-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.cfv-layout{grid-`
+- `src/styles/design-system/closeflow-layout.css`
+  - L58: `@media (max-width: 900px) {`
+- `src/styles/eliteflow-admin-feedback-p1-hotfix.css`
+  - L187: `@media (max-width: 1220px) {`
+  - L193: `@media (max-width: 760px) {`
+- `src/styles/eliteflow-desktop-compact-scale.css`
+  - L43: `@media (max-width: 1023px), (max-height: 639px) {`
+- `src/styles/eliteflow-final-metric-tiles-hard-lock.css`
+  - L270: `@media (max-width: 1180px) {`
+  - L288: `@media (max-width: 640px) {`
+- `src/styles/eliteflow-metric-text-clip-tasks-repair.css`
+  - L72: `@media (max-width: 1180px) {`
+  - L78: `@media (max-width: 640px) {`
+- `src/styles/eliteflow-sidebar-footer-contrast-repair.css`
+  - L122: `@media (max-width: 1220px) {`
+  - L128: `@media (max-width: 760px) {`
+- `src/styles/finance/closeflow-finance.css`
+  - L298: `@media (max-width: 960px) {`
+  - L304: `@media (max-width: 720px) {`
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css`
+  - L112: `@media (max-width: 1180px) {`
+  - L121: `@media (max-width: 760px) {`
+- `src/styles/hotfix-lead-client-right-rail-dark-wrappers.css`
+  - L200: `@media (max-width: 1260px) {`
+  - L208: `@media (max-width: 980px) {`
+  - L215: `@media (max-width: 760px) {`
+- `src/styles/quick-lead-capture-stage27.css`
+  - L95: `@media (max-width: 720px) {`
+- `src/styles/stage30a-mobile-contrast-lock.css`
+  - L82: `@media (max-width: 760px) {`
+  - L410: `@media (max-width: 760px) {`
+- `src/styles/stage31-full-mobile-polish.css`
+  - L8: `@media (max-width: 900px) {`
+  - L753: `@media (max-width: 768px) {`
+  - L814: `@media (max-width: 430px) {`
+  - L883: `@media (max-width: 390px) {`
+- `src/styles/stage33a-ai-drafts-generated-text-contrast.css`
+  - L114: `@media (max-width: 860px) {`
+- `src/styles/stage34-calendar-readability-status-forms.css`
+  - L200: `@media (max-width: 768px) {`
+  - L251: `@media (max-width: 430px) {`
+- `src/styles/stage34b-calendar-complete-polish.css`
+  - L173: `@media (max-width: 768px) {`
+- `src/styles/stage35-clients-value-detail-cleanup.css`
+  - L195: `@media (max-width: 768px) {`
+  - L264: `@media (max-width: 768px) {`
+- `src/styles/stage36-unified-light-pages.css`
+  - L261: `@media (max-width: 860px) {`
+- `src/styles/stage39-page-headers-copy-visual-system.css`
+  - L71: `@media (max-width: 920px) {`
+  - L82: `@media (max-width: 640px) {`
+- `src/styles/stage40-page-header-action-overflow-hardening.css`
+  - L54: `@media (max-width: 760px) {`
+  - L73: `@media (max-width: 460px) {`
+- `src/styles/visual-html-theme-v14.css`
+  - L94: `@media (max-width: 1100px) {`
+  - L105: `@media (max-width: 640px) {`
+- `src/styles/visual-stage01-shell.css`
+  - L456: `@media (max-width: 1220px) {`
+  - L489: `@media (max-width: 760px) {`
+- `src/styles/visual-stage02-today.css`
+  - L150: `@media (max-width: 760px) {`
+- `src/styles/visual-stage03-leads.css`
+  - L66: `@media (max-width:1180px){ .main-leads [data-stage32-leads-value-layout='true']{ grid-template-columns:1fr; } .main-leads aside[data-stage32-leads-value-rail='true']{ position:static; } }`
+  - L67: `@media (max-width:760px){ .main-leads .p-4.md\:p-8,.main-leads .max-w-7xl{ padding:14px !important; } .main-leads header{ border-radius:22px; padding:18px; } .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,.main-leads .grid.gr`
+- `src/styles/visual-stage04-lead-detail.css`
+  - L118: `@media (max-width: 1180px) {`
+  - L125: `@media (max-width: 760px) {`
+- `src/styles/visual-stage05-clients.css`
+  - L259: `@media (max-width: 1220px) {`
+  - L264: `@media (max-width: 760px) {`
+- `src/styles/visual-stage06-client-detail.css`
+  - L145: `@media (max-width: 760px) {`
+- `src/styles/visual-stage07-cases.css`
+  - L126: `@media (max-width: 980px) {`
+  - L138: `@media (max-width: 760px) {`
+- `src/styles/visual-stage08-case-detail.css`
+  - L160: `@media (max-width: 760px) {`
+- `src/styles/visual-stage10-notifications-vnext.css`
+  - L693: `@media (max-width: 1280px) {`
+  - L709: `@media (max-width: 920px) {`
+  - L800: `@media (max-width: 560px) {`
+- `src/styles/visual-stage12-client-detail-vnext.css`
+  - L969: `@media (max-width: 1260px) {`
+  - L989: `@media (max-width: 980px) {`
+  - L1031: `@media (max-width: 640px) {`
+  - L1483: `@media (max-width: 1180px) {`
+  - L1573: `@media (max-width: 1320px) {`
+  - L1580: `@media (max-width: 980px) {`
+  - L1966: `@media (max-width: 1260px) {`
+  - L1972: `@media (max-width: 640px) {`
+  - L1988: `@media (max-width: 640px) {`
+  - L2145: `@media (max-width: 1260px) {`
+  - L2152: `@media (max-width: 640px) {`
+  - L2226: `@media (max-width: 920px) {`
+  - L2368: `@media (max-width: 760px) {`
+  - L2850: `@media (max-width: 900px) {`
+  - L2928: `@media (max-width: 900px) {`
+- `src/styles/visual-stage13-case-detail-vnext.css`
+  - L617: `@media (max-width: 1220px) {`
+  - L632: `@media (max-width: 860px) {`
+  - L655: `@media (max-width: 640px) {`
+  - L901: `@media (max-width: 720px) {`
+  - L977: `@media (max-width: 720px) {`
+  - L1177: `@media (max-width: 760px) {`
+  - L1473: `@media (max-width: 720px) {`
+- `src/styles/visual-stage14-lead-detail-vnext.css`
+  - L604: `@media (max-width: 1120px) {`
+  - L628: `@media (max-width: 760px) {`
+  - L802: `@media (max-width: 780px) {`
+  - L875: `@media (max-width: 1120px) {`
+  - L949: `@media (max-width: 1280px) {`
+  - L967: `@media (max-width: 1120px) {`
+  - L981: `@media (max-width: 760px) {`
+- `src/styles/visual-stage16-billing-vnext.css`
+  - L631: `@media (max-width: 1280px) {`
+  - L646: `@media (max-width: 860px) {`
+  - L668: `@media (max-width: 640px) {`
+- `src/styles/visual-stage16-today-html-reset.css`
+  - L328: `@media (max-width: 1100px) {`
+  - L335: `@media (max-width: 720px) {`
+- `src/styles/visual-stage17-support-vnext.css`
+  - L627: `@media (max-width: 1240px) {`
+  - L646: `@media (max-width: 860px) {`
+  - L670: `@media (max-width: 640px) {`
+- `src/styles/visual-stage17-today-hard-1to1.css`
+  - L542: `@media (max-width: 1220px) {`
+  - L562: `@media (max-width: 760px) {`
+- `src/styles/visual-stage18-leads-hard-1to1.css`
+  - L523: `@media (max-width: 1180px) {`
+  - L538: `@media (max-width: 760px) {`
+- `src/styles/visual-stage19-clients-safe-css.css`
+  - L189: `@media (max-width: 760px) {`
+- `src/styles/visual-stage19-settings-vnext.css`
+  - L392: `@media (max-width: 1240px) {`
+  - L408: `@media (max-width: 860px) {`
+  - L436: `@media (max-width: 640px) {`
+- `src/styles/visual-stage20-lead-form-vnext.css`
+  - L252: `@media (max-width: 640px) {`
+- `src/styles/visual-stage20-tasks-safe-css.css`
+  - L259: `@media (max-width: 1220px) {`
+  - L268: `@media (max-width: 760px) {`
+- `src/styles/visual-stage21-task-form-vnext.css`
+  - L237: `@media (max-width: 640px) {`
+- `src/styles/visual-stage21-today-final-lock.css`
+  - L586: `@media (max-width: 1220px) {`
+  - L610: `@media (max-width: 760px) {`
+- `src/styles/visual-stage22-event-form-vnext.css`
+  - L158: `@media (max-width: 640px) {`
+- `src/styles/visual-stage22-leads-final-lock.css`
+  - L508: `@media (max-width: 1180px) {`
+  - L522: `@media (max-width: 920px) {`
+  - L530: `@media (max-width: 760px) {`
+- `src/styles/visual-stage23-client-case-forms-vnext.css`
+  - L276: `@media (max-width: 640px) {`
+- `src/styles/visual-stage23-leads-html-parity-fix.css`
+  - L327: `@media (max-width: 1220px) {`
+  - L342: `@media (max-width: 760px) {`
+- `src/styles/visual-stage24-leads-html-dom-parity-hardfix.css`
+  - L433: `@media (max-width: 1220px) {`
+  - L456: `@media (max-width: 760px) {`
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css`
+  - L529: `@media (max-width: 1220px) {`
+  - L539: `@media (max-width: 760px) {`
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css`
+  - L252: `@media (max-width: 1220px) {`
+  - L267: `@media (max-width: 760px) {`
+  - L413: `@media (max-width: 1220px) {`
+- `src/styles/visual-stage27-cases-vnext.css`
+  - L277: `@media (max-width: 1220px) {`
+  - L283: `@media (max-width: 760px) {`
+- `src/styles/visual-stage28-tasks-vnext.css`
+  - L154: `@media (max-width: 1220px) {`
+  - L158: `@media (max-width: 760px) {`
+- `src/styles/visual-stage29-calendar-vnext.css`
+  - L388: `@media (max-width: 1220px) {`
+  - L392: `@media (max-width: 760px) {`
+- `src/styles/visual-stage3-pipeline-and-case.css`
+  - L154: `@media (max-width: 920px) {`
+  - L160: `@media (max-width: 560px) {`
+- `src/styles/visual-stage30-tasks-compact-after-calendar.css`
+  - L130: `@media (max-width: 1180px) {`
+  - L141: `@media (max-width: 760px) {`
+- `src/styles/visual-stage8-activity-vnext.css`
+  - L613: `@media (max-width: 1180px) {`
+  - L629: `@media (max-width: 860px) {`
+  - L721: `@media (max-width: 520px) {`
+- `src/styles/visual-stage9-ai-drafts-vnext.css`
+  - L973: `@media (max-width: 1180px) {`
+  - L997: `@media (max-width: 860px) {`
+  - L1103: `@media (max-width: 520px) {`
+
+## Reguły CSS, które mogą przebijać ukrywanie
+
+- `src/styles/clients-next-action-layout.css`
+  - L9: `display: grid !important;`
+  - L39: `display: flex !important;`
+  - L75: `display: flex !important;`
+- `src/styles/closeflow-calendar-color-tooltip-v2.css`
+  - L52: `opacity: 1 !important;`
+  - L141: `opacity: 1 !important;`
+  - L154: `opacity: 1 !important;`
+- `src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css`
+  - L38: `display: grid !important;`
+  - L56: `display: grid !important;`
+- `src/styles/closeflow-calendar-month-entry-structural-fix-v3.css`
+  - L37: `display: flex !important;`
+  - L114: `display: block !important;`
+  - L184: `display: block !important;`
+- `src/styles/closeflow-calendar-month-plain-text-rows-v4.css`
+  - L26: `display: flex !important;`
+  - L117: `display: block !important;`
+  - L155: `display: block !important;`
+- `src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css`
+  - L62: `display: block !important;`
+  - L83: `display: flex !important;`
+- `src/styles/closeflow-calendar-selected-day-full-text-repair11.css`
+  - L8: `display: block !important;`
+  - L20: `display: grid !important;`
+  - L66: `display: block !important;`
+- `src/styles/closeflow-calendar-skin-only-v1.css`
+  - L345: `display: flex !important;`
+  - L368: `display: block !important;`
+- `src/styles/closeflow-case-detail-focus.css`
+  - L267: `display: flex !important;`
+  - L834: `display: grid !important;`
+- `src/styles/closeflow-client-event-modal-runtime-repair.css`
+  - L12: `display: flex !important;`
+  - L47: `display: grid !important;`
+  - L64: `opacity: 1 !important;`
+  - L81: `opacity: 1 !important;`
+  - L95: `display: flex !important;`
+  - L131: `display: grid !important;`
+- `src/styles/closeflow-command-actions-source-truth.css`
+  - L41: `display: flex !important;`
+  - L80: `opacity: 1 !important;`
+  - L122: `display: grid !important;`
+  - L129: `display: grid !important;`
+  - L160: `display: flex !important;`
+  - L178: `display: flex !important;`
+  - L216: `opacity: 1 !important;`
+  - L245: `display: flex !important;`
+  - L258: `display: flex !important;`
+  - L293: `display: flex !important;`
+- `src/styles/closeflow-metric-tile-visual-source-truth.css`
+  - L56: `display: grid !important;`
+  - L67: `display: block !important;`
+  - L94: `display: flex !important;`
+  - L135: `display: block !important;`
+  - L148: `display: block !important;`
+  - L168: `display: flex !important;`
+  - L183: `display: block !important;`
+- `src/styles/closeflow-metric-tiles.css`
+  - L63: `display: flex !important;`
+  - L125: `display: flex !important;`
+  - L236: `display: grid !important;`
+  - L244: `display: block !important;`
+  - L255: `display: flex !important;`
+  - L278: `display: flex !important;`
+  - L294: `display: flex !important;`
+  - L398: `display: grid !important;`
+  - L432: `display: grid !important;`
+  - L441: `display: block !important;`
+  - L496: `display: grid !important;`
+  - L506: `display: block !important;`
+  - L518: `display: flex !important;`
+  - L532: `display: block !important;`
+  - L553: `display: flex !important;`
+- `src/styles/closeflow-modal-visual-system.css`
+  - L176: `opacity: 1 !important;`
+  - L489: `opacity: 1 !important;`
+- `src/styles/closeflow-operator-metric-tiles.css`
+  - L47: `display: grid !important;`
+  - L58: `display: block !important;`
+  - L76: `display: flex !important;`
+  - L105: `html body #root .cf-operator-metric-text { min-width: 0 !important; flex: 1 1 auto !important; display: block !important; }`
+  - L108: `display: block !important;`
+  - L127: `html body #root .cf-operator-metric-helper { display: block !important; margin-top: 4px !important; color: #667085 !important; font-size: 11px !important; line-height: 1.25 !important; font-weight: 700 !important; text-transform: none !impo`
+  - L131: `display: block !important;`
+- `src/styles/closeflow-page-header-action-semantics-packet1.css`
+  - L55: `display: flex !important;`
+- `src/styles/closeflow-page-header-card-source-truth.css`
+  - L71: `display: flex !important;`
+  - L112: `display: flex !important;`
+  - L141: `opacity: 1 !important;`
+  - L157: `opacity: 1 !important;`
+  - L187: `opacity: 1 !important;`
+  - L200: `display: flex !important;`
+  - L224: `opacity: 1 !important;`
+  - L275: `opacity: 1 !important;`
+  - L340: `display: flex !important;`
+  - L373: `opacity: 1 !important;`
+  - L381: `display: block !important;`
+  - L391: `opacity: 1 !important;`
+  - L400: `display: block !important;`
+  - L410: `opacity: 1 !important;`
+  - L424: `display: flex !important;`
+- `src/styles/closeflow-page-header-copy-left-only.css`
+  - L33: `display: grid !important;`
+  - L61: `display: grid !important;`
+  - L90: `display: flex !important;`
+  - L128: `display: flex !important;`
+  - L174: `opacity: 1 !important;`
+  - L183: `display: block !important;`
+  - L195: `opacity: 1 !important;`
+  - L204: `display: block !important;`
+  - L215: `opacity: 1 !important;`
+  - L228: `display: flex !important;`
+- `src/styles/closeflow-page-header-copy-source-truth.css`
+  - L24: `display: flex !important;`
+- `src/styles/closeflow-page-header-final-lock.css`
+  - L73: `display: grid !important;`
+  - L105: `display: grid !important;`
+  - L138: `display: flex !important;`
+  - L171: `display: flex !important;`
+  - L213: `opacity: 1 !important;`
+  - L219: `display: block !important;`
+  - L230: `opacity: 1 !important;`
+  - L236: `display: block !important;`
+  - L246: `opacity: 1 !important;`
+  - L282: `opacity: 1 !important;`
+  - L347: `display: flex !important;`
+  - L369: `display: flex !important;`
+- `src/styles/closeflow-page-header-stage6-final-lock.css`
+  - L53: `display: grid !important;`
+  - L95: `display: flex !important;`
+  - L110: `display: flex !important;`
+  - L143: `opacity: 1 !important;`
+  - L148: `display: block !important;`
+  - L158: `opacity: 1 !important;`
+  - L163: `display: block !important;`
+  - L173: `opacity: 1 !important;`
+  - L199: `opacity: 1 !important;`
+  - L246: `opacity: 1 !important;`
+- `src/styles/closeflow-page-header-structure-lock.css`
+  - L34: `display: grid !important;`
+  - L45: `display: grid !important;`
+  - L65: `display: flex !important;`
+  - L90: `display: flex !important;`
+  - L140: `opacity: 1 !important;`
+  - L148: `display: block !important;`
+  - L159: `opacity: 1 !important;`
+  - L167: `display: block !important;`
+  - L177: `opacity: 1 !important;`
+  - L190: `display: flex !important;`
+- `src/styles/closeflow-page-header-v2.css`
+  - L64: `display: grid !important;`
+  - L95: `display: flex !important;`
+  - L128: `opacity: 1 !important;`
+  - L134: `display: block !important;`
+  - L145: `opacity: 1 !important;`
+  - L151: `display: block !important;`
+  - L161: `opacity: 1 !important;`
+  - L172: `display: flex !important;`
+  - L207: `opacity: 1 !important;`
+  - L242: `opacity: 1 !important;`
+  - L248: `display: flex !important;`
+- `src/styles/closeflow-stage16c-tasks-cases-parity.css`
+  - L19: `display: flex !important;`
+  - L38: `display: flex !important;`
+  - L64: `display: flex !important;`
+  - L75: `display: grid !important;`
+- `src/styles/closeflow-stage16d-tasks-metric-final-lock.css`
+  - L22: `display: grid !important;`
+  - L32: `display: block !important;`
+  - L43: `display: flex !important;`
+  - L68: `display: block !important;`
+- `src/styles/eliteflow-admin-feedback-p1-hotfix.css`
+  - L12: `display: grid !important;`
+  - L35: `display: grid !important;`
+  - L52: `display: grid !important;`
+  - L77: `display: block !important;`
+  - L88: `opacity: 1 !important;`
+- `src/styles/eliteflow-final-metric-tiles-hard-lock.css`
+  - L33: `display: grid !important;`
+  - L47: `display: block !important;`
+  - L68: `display: flex !important;`
+  - L102: `display: block !important;`
+  - L108: `display: flex !important;`
+  - L116: `display: block !important;`
+  - L146: `display: block !important;`
+  - L188: `display: flex !important;`
+  - L207: `display: grid !important;`
+  - L216: `display: grid !important;`
+- `src/styles/eliteflow-metric-text-clip-tasks-repair.css`
+  - L58: `display: grid !important;`
+- `src/styles/eliteflow-sidebar-footer-contrast-repair.css`
+  - L61: `opacity: 1 !important;`
+  - L74: `opacity: 1 !important;`
+  - L84: `opacity: 1 !important;`
+  - L119: `opacity: 1 !important;`
+- `src/styles/eliteflow-sidebar-user-footer-below-nav.css`
+  - L8: `display: flex !important;`
+  - L37: `display: grid !important;`
+  - L64: `display: grid !important;`
+  - L76: `opacity: 1 !important;`
+  - L88: `display: grid !important;`
+  - L96: `opacity: 1 !important;`
+  - L108: `display: block !important;`
+  - L119: `opacity: 1 !important;`
+  - L158: `opacity: 1 !important;`
+- `src/styles/emergency/emergency-hotfixes.css`
+  - L104: `opacity: 1 !important;`
+  - L105: `visibility: visible !important;`
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css`
+  - L21: `display: flex !important;`
+  - L116: `display: grid !important;`
+  - L124: `display: flex !important;`
+- `src/styles/hotfix-lead-client-right-rail-dark-wrappers.css`
+  - L35: `display: flex !important;`
+  - L203: `display: grid !important;`
+  - L211: `display: flex !important;`
+- `src/styles/hotfix-right-rail-dark-wrappers.css`
+  - L23: `display: flex !important;`
+- `src/styles/stage30a-mobile-contrast-lock.css`
+  - L55: `opacity: 1 !important;`
+  - L98: `opacity: 1 !important;`
+  - L126: `display: flex !important;`
+  - L158: `opacity: 1 !important;`
+  - L214: `opacity: 1 !important;`
+  - L234: `opacity: 1 !important;`
+  - L245: `opacity: 1 !important;`
+  - L307: `opacity: 1 !important;`
+  - L346: `opacity: 1 !important;`
+  - L363: `opacity: 1 !important;`
+  - L429: `opacity: 1 !important;`
+- `src/styles/stage31-full-mobile-polish.css`
+  - L277: `display: grid !important;`
+  - L339: `display: flex !important;`
+  - L410: `display: flex !important;`
+  - L452: `display: flex !important;`
+  - L543: `display: grid !important;`
+  - L715: `display: grid !important;`
+- `src/styles/stage33a-ai-drafts-generated-text-contrast.css`
+  - L88: `opacity: 1 !important;`
+- `src/styles/stage34-calendar-readability-status-forms.css`
+  - L110: `opacity: 1 !important;`
+- `src/styles/stage34b-calendar-complete-polish.css`
+  - L97: `opacity: 1 !important;`
+  - L114: `opacity: 1 !important;`
+- `src/styles/stage38-metrics-and-relations-polish.css`
+  - L69: `opacity: 1 !important;`
+  - L76: `opacity: 1 !important;`
+- `src/styles/stageA19v2-sidebar-nav-contrast-fix.css`
+  - L9: `opacity: 1 !important;`
+  - L72: `opacity: 1 !important;`
+- `src/styles/stageA20-sidebar-today-click-fix.css`
+  - L55: `opacity: 1 !important;`
+- `src/styles/stageA20d-sidebar-unified-nav-tone.css`
+  - L22: `opacity: 1 !important;`
+- `src/styles/stageA20e-sidebar-today-tone-lock.css`
+  - L9: `opacity: 1 !important;`
+  - L18: `opacity: 1 !important;`
+- `src/styles/stageA24-today-relations-label-align.css`
+  - L24: `display: flex !important;`
+  - L56: `display: block !important;`
+- `src/styles/stageA25-today-relations-lead-badge-inline.css`
+  - L12: `display: grid !important;`
+  - L29: `opacity: 1 !important;`
+  - L40: `display: flex !important;`
+  - L77: `opacity: 1 !important;`
+- `src/styles/visual-html-theme-v14.css`
+  - L21: `display: grid !important;`
+  - L64: `.cf-html-shell [data-shell-content="true"] { max-width: 1500px !important; margin: 0 auto !important; display: block !important; }`
+  - L73: `.cf-html-shell .main-cases header { display: flex !important; align-items: flex-start !important; justify-content: space-between !important; gap: 22px !important; margin-bottom: 20px !important; padding: 0 !important; }`
+  - L79: `.cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 13px !important; margin-bottom: 18px !important; }`
+  - L81: `.cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type > * { min-height: 106px !important; border-radius: 22px !important; padding: 16px !important; background: rgba(255,255,255,.82) !important; border: 1px sol`
+  - L87: `.cf-html-shell .main-cases [data-shell-content="true"] > div > section:last-of-type { display: grid !important; grid-template-columns: minmax(0, 1fr) 342px !important; gap: 18px !important; align-items: start !important; }`
+  - L95: `.app.cf-html-shell, .app.closeflow-visual-stage01.cf-html-shell { display: block !important; padding-bottom: 72px !important; }`
+  - L97: `.cf-html-shell .mobile-top { display: flex !important; }`
+  - L109: `.cf-html-shell .main-cases header { display: grid !important; }`
+- `src/styles/visual-stage12-client-detail-vnext.css`
+  - L1192: `display: flex !important;`
+  - L1355: `display: grid !important;`
+  - L1360: `display: grid !important;`
+  - L1373: `display: block !important;`
+  - L1381: `display: block !important;`
+  - L1543: `display: block !important;`
+  - L1623: `visibility: visible !important;`
+  - L1624: `opacity: 1 !important;`
+  - L2195: `display: flex !important;`
+  - L2290: `display: flex !important;`
+  - L2329: `opacity: 1 !important;`
+  - L2400: `opacity: 1 !important;`
+  - L2401: `visibility: visible !important;`
+  - L2430: `opacity: 1 !important;`
+  - L2431: `visibility: visible !important;`
+- `src/styles/visual-stage13-case-detail-vnext.css`
+  - L611: `display: flex !important;`
+  - L763: `display: grid !important;`
+  - L1250: `opacity: 1 !important;`
+  - L1251: `visibility: visible !important;`
+- `src/styles/visual-stage14-lead-detail-vnext.css`
+  - L1040: `opacity: 1 !important;`
+  - L1041: `visibility: visible !important;`
+  - L1048: `visibility: visible !important;`
+- `src/styles/visual-stage16-today-html-reset.css`
+  - L71: `display: grid !important;`
+  - L187: `display: grid !important;`
+- `src/styles/visual-stage17-today-hard-1to1.css`
+  - L312: `display: grid !important;`
+  - L356: `display: grid !important;`
+  - L365: `display: grid !important;`
+  - L393: `display: flex !important;`
+  - L492: `display: grid !important;`
+  - L572: `display: flex !important;`
+  - L634: `display: grid !important;`
+- `src/styles/visual-stage18-leads-hard-1to1.css`
+  - L75: `display: flex !important;`
+  - L137: `display: flex !important;`
+  - L183: `display: grid !important;`
+  - L199: `display: flex !important;`
+  - L250: `display: grid !important;`
+  - L259: `display: grid !important;`
+  - L334: `display: grid !important;`
+  - L355: `display: grid !important;`
+  - L435: `display: grid !important;`
+  - L454: `display: flex !important;`
+  - L487: `display: grid !important;`
+  - L500: `display: flex !important;`
+  - L551: `display: grid !important;`
+- `src/styles/visual-stage20-lead-form-vnext.css`
+  - L279: `display: grid !important;`
+  - L291: `display: flex !important;`
+- `src/styles/visual-stage21-task-form-vnext.css`
+  - L123: `display: grid !important;`
+  - L264: `display: grid !important;`
+  - L309: `opacity: 1 !important;`
+  - L319: `opacity: 1 !important;`
+  - L329: `opacity: 1 !important;`
+- `src/styles/visual-stage21-today-final-lock.css`
+  - L60: `display: flex !important;`
+  - L114: `display: flex !important;`
+  - L156: `display: grid !important;`
+  - L213: `display: block !important;`
+  - L240: `display: grid !important;`
+  - L251: `display: grid !important;`
+  - L345: `display: flex !important;`
+  - L395: `display: grid !important;`
+  - L403: `display: flex !important;`
+  - L515: `display: grid !important;`
+  - L533: `display: flex !important;`
+- `src/styles/visual-stage22-event-form-vnext.css`
+  - L88: `display: grid !important;`
+  - L182: `display: grid !important;`
+- `src/styles/visual-stage22-leads-final-lock.css`
+  - L60: `display: flex !important;`
+  - L131: `display: flex !important;`
+  - L194: `display: grid !important;`
+  - L261: `display: grid !important;`
+  - L278: `display: grid !important;`
+  - L326: `display: grid !important;`
+  - L348: `display: grid !important;`
+  - L378: `display: flex !important;`
+  - L543: `display: grid !important;`
+- `src/styles/visual-stage23-client-case-forms-vnext.css`
+  - L302: `display: grid !important;`
+- `src/styles/visual-stage23-leads-html-parity-fix.css`
+  - L41: `display: grid !important;`
+  - L49: `display: flex !important;`
+  - L90: `display: block !important;`
+  - L101: `display: flex !important;`
+  - L134: `display: grid !important;`
+  - L143: `display: block !important;`
+  - L164: `display: grid !important;`
+  - L261: `display: grid !important;`
+  - L295: `display: block !important;`
+  - L344: `display: grid !important;`
+  - L351: `display: grid !important;`
+- `src/styles/visual-stage24-leads-html-dom-parity-hardfix.css`
+  - L55: `display: flex !important;`
+  - L110: `display: block !important;`
+  - L121: `display: flex !important;`
+  - L157: `display: grid !important;`
+  - L167: `display: block !important;`
+  - L197: `display: flex !important;`
+  - L239: `display: grid !important;`
+  - L246: `display: grid !important;`
+  - L288: `display: block !important;`
+  - L323: `display: flex !important;`
+  - L341: `display: grid !important;`
+  - L392: `display: block !important;`
+  - L465: `display: grid !important;`
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css`
+  - L145: `display: flex !important;`
+  - L216: `display: grid !important;`
+  - L226: `display: flex !important;`
+  - L231: `opacity: 1 !important;`
+  - L237: `opacity: 1 !important;`
+  - L242: `opacity: 1 !important;`
+  - L370: `display: flex !important;`
+
+## Reguły CSS ukrywające elementy
+
+- `src/styles/case-detail-stage2.css`
+  - L82: `overflow: hidden;`
+  - L156: `height: 0.55rem;`
+  - L157: `overflow: hidden;`
+- `src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css`
+  - L42: `overflow: hidden !important;`
+  - L72: `overflow: hidden !important;`
+  - L99: `overflow: hidden !important;`
+  - L135: `overflow: hidden !important;`
+  - L152: `overflow: hidden !important;`
+- `src/styles/closeflow-calendar-month-entry-structural-fix-v3.css`
+  - L57: `overflow: hidden !important;`
+  - L81: `min-height: 0 !important;`
+  - L105: `overflow: hidden !important;`
+  - L123: `overflow: hidden !important;`
+- `src/styles/closeflow-calendar-month-plain-text-rows-v4.css`
+  - L59: `overflow: hidden !important;`
+  - L78: `min-height: 0 !important;`
+  - L85: `overflow: hidden !important;`
+  - L108: `overflow: hidden !important;`
+  - L123: `overflow: hidden !important;`
+  - L166: `overflow: hidden !important;`
+- `src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css`
+  - L66: `overflow: hidden !important;`
+  - L108: `overflow: hidden !important;`
+  - L153: `min-height: 0 !important;`
+  - L163: `overflow: hidden !important;`
+  - L190: `overflow: hidden !important;`
+  - L214: `overflow: hidden !important;`
+  - L251: `overflow: hidden !important;`
+- `src/styles/closeflow-calendar-selected-day-full-text-repair11.css`
+  - L61: `display: none !important;`
+- `src/styles/closeflow-calendar-skin-only-v1.css`
+  - L225: `overflow: hidden !important;`
+  - L356: `overflow: hidden;`
+  - L364: `overflow: hidden;`
+  - L373: `overflow: hidden;`
+  - L381: `overflow: hidden;`
+- `src/styles/closeflow-case-detail-focus.css`
+  - L103: `overflow: hidden;`
+  - L147: `overflow: hidden;`
+  - L375: `overflow: hidden;`
+  - L386: `overflow: hidden;`
+- `src/styles/closeflow-client-event-modal-runtime-repair.css`
+  - L14: `overflow: hidden !important;`
+  - L26: `display: none !important;`
+  - L42: `min-height: 0 !important;`
+- `src/styles/closeflow-list-row-tokens.css`
+  - L117: `overflow: hidden;`
+  - L162: `overflow: hidden;`
+  - L181: `overflow: hidden;`
+- `src/styles/closeflow-metric-tile-visual-source-truth.css`
+  - L69: `min-height: 0 !important;`
+  - L107: `overflow: hidden !important;`
+- `src/styles/closeflow-metric-tiles.css`
+  - L109: `overflow: hidden !important;`
+  - L243: `min-height: 0 !important;`
+  - L319: `overflow: hidden !important;`
+  - L406: `min-height: 0 !important;`
+  - L440: `min-height: 0 !important;`
+  - L461: `overflow: hidden !important;`
+  - L504: `min-height: 0 !important;`
+  - L528: `overflow: hidden !important;`
+  - L546: `overflow: hidden !important;`
+- `src/styles/closeflow-mobile-start-tile-trim.css`
+  - L18: `display: none !important;`
+  - L37: `display: none !important;`
+  - L47: `display: none !important;`
+- `src/styles/closeflow-modal-visual-system.css`
+  - L70: `height: 0.22rem;`
+  - L384: `display: none !important;`
+- `src/styles/closeflow-operator-metric-tiles.css`
+  - L87: `overflow: hidden !important;`
+  - L122: `overflow: hidden !important;`
+- `src/styles/closeflow-page-header-card-source-truth.css`
+  - L104: `display: none !important;`
+- `src/styles/closeflow-page-header-copy-left-only.css`
+  - L221: `display: none !important;`
+- `src/styles/closeflow-page-header-copy-source-truth.css`
+  - L70: `display: none !important;`
+- `src/styles/closeflow-page-header-final-lock.css`
+  - L99: `display: none !important;`
+  - L254: `display: none !important;`
+- `src/styles/closeflow-page-header-stage6-final-lock.css`
+  - L79: `display: none !important;`
+  - L178: `display: none !important;`
+- `src/styles/closeflow-page-header-structure-lock.css`
+  - L183: `display: none !important;`
+- `src/styles/closeflow-public-landing.css`
+  - L123: `line-height: 0.92;`
+  - L198: `overflow: hidden;`
+  - L452: `overflow: hidden;`
+  - L639: `min-height: 0;`
+- `src/styles/closeflow-stage16c-tasks-cases-parity.css`
+  - L98: `overflow: hidden !important;`
+  - L140: `min-height: 0;`
+- `src/styles/closeflow-stage16d-tasks-metric-final-lock.css`
+  - L64: `overflow: hidden !important;`
+  - L80: `overflow: hidden !important;`
+- `src/styles/closeflow-vnext-ui-contract.css`
+  - L8: `.cfv-layout{min-height:100vh;display:grid;grid-template-columns:286px minmax(0,1fr)}.cfv-sidebar{position:sticky;top:0;height:100vh;padding:18px;background:linear-gradient(180deg,var(--cfv-sidebar) 0%,#000 100%);border-right:1px solid var(-`
+- `src/styles/eliteflow-admin-feedback-p1-hotfix.css`
+  - L15: `overflow: hidden !important;`
+  - L23: `min-height: 0 !important;`
+  - L47: `display: none !important;`
+  - L66: `overflow: hidden !important;`
+  - L72: `overflow: hidden !important;`
+  - L80: `overflow: hidden !important;`
+  - L121: `display: none !important;`
+  - L184: `display: none !important;`
+  - L189: `display: none !important;`
+  - L195: `display: none !important;`
+- `src/styles/eliteflow-final-metric-tiles-hard-lock.css`
+  - L45: `min-height: 0 !important;`
+  - L83: `overflow: hidden !important;`
+  - L202: `overflow: hidden !important;`
+- `src/styles/eliteflow-sidebar-footer-contrast-repair.css`
+  - L14: `overflow: hidden !important;`
+  - L18: `min-height: 0 !important;`
+  - L124: `display: none !important;`
+  - L130: `display: none !important;`
+- `src/styles/eliteflow-sidebar-user-footer-below-nav.css`
+  - L25: `min-height: 0 !important;`
+  - L53: `display: none !important;`
+  - L79: `overflow: hidden !important;`
+  - L103: `overflow: hidden !important;`
+  - L111: `overflow: hidden !important;`
+- `src/styles/emergency/emergency-hotfixes.css`
+  - L63: `display: none !important;`
+  - L92: `display: none !important;`
+- `src/styles/finance/closeflow-finance.css`
+  - L240: `overflow: hidden;`
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css`
+  - L35: `display: none !important;`
+  - L55: `overflow: hidden !important;`
+  - L65: `display: none !important;`
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css`
+  - L41: `display: none !important;`
+  - L62: `overflow: hidden;`
+  - L74: `display: none !important;`
+- `src/styles/hotfix-lead-client-right-rail-dark-wrappers.css`
+  - L59: `display: none !important;`
+  - L96: `overflow: hidden !important;`
+  - L123: `display: none !important;`
+- `src/styles/hotfix-right-rail-dark-wrappers.css`
+  - L37: `display: none !important;`
+  - L57: `overflow: hidden !important;`
+  - L73: `display: none !important;`
+- `src/styles/hotfix-task-stat-tiles-clean.css`
+  - L33: `overflow: hidden !important;`
+- `src/styles/stage31-full-mobile-polish.css`
+  - L140: `overflow: hidden !important;`
+  - L216: `overflow: hidden !important;`
+  - L403: `overflow: hidden !important;`
+  - L783: `overflow: hidden !important;`
+  - L789: `overflow: hidden !important;`
+  - L794: `overflow: hidden;`
+- `src/styles/stage34b-calendar-complete-polish.css`
+  - L22: `overflow: hidden;`
+  - L33: `overflow: hidden !important;`
+- `src/styles/stage35-clients-value-detail-cleanup.css`
+  - L69: `display: none !important;`
+  - L73: `display: none !important;`
+- `src/styles/stage36-unified-light-pages.css`
+  - L26: `line-height: 0.95 !important;`
+- `src/styles/stage37-unified-page-head-and-metrics.css`
+  - L59: `display: none !important;`
+- `src/styles/stage38-metrics-and-relations-polish.css`
+  - L27: `overflow: hidden;`
+  - L34: `overflow: hidden;`
+  - L40: `overflow: hidden;`
+  - L48: `overflow: hidden;`
+  - L93: `display: none !important;`
+  - L171: `overflow: hidden;`
+- `src/styles/stage40-page-header-action-overflow-hardening.css`
+  - L10: `overflow: hidden;`
+  - L43: `overflow: hidden;`
+- `src/styles/stageA20-sidebar-today-click-fix.css`
+  - L38: `display: none !important;`
+- `src/styles/stageA25-today-relations-lead-badge-inline.css`
+  - L74: `min-height: 0 !important;`
+- `src/styles/today-collapsible-masonry.css`
+  - L12: `min-height: 0 !important;`
+  - L18: `min-height: 0 !important;`
+  - L26: `min-height: 0 !important;`
+- `src/styles/visual-html-theme-v14.css`
+  - L96: `.cf-html-shell .sidebar { display: none !important; }`
+- `src/styles/visual-stage01-shell.css`
+  - L179: `overflow: hidden;`
+  - L229: `overflow: hidden;`
+- `src/styles/visual-stage05-clients.css`
+  - L163: `overflow: hidden;`
+- `src/styles/visual-stage07-cases.css`
+  - L112: `overflow: hidden;`
+- `src/styles/visual-stage10-notifications-vnext.css`
+  - L23: `line-height: 0.95;`
+  - L200: `overflow: hidden;`
+  - L347: `overflow: hidden;`
+  - L752: `min-height: 0;`
+  - L841: `display: none !important;`
+  - L858: `overflow: hidden;`
+- `src/styles/visual-stage12-client-detail-vnext.css`
+  - L139: `display: none !important;`
+  - L169: `overflow: hidden;`
+  - L625: `overflow: hidden;`
+  - L1188: `display: none !important;`
+  - L1438: `overflow: hidden !important;`
+  - L1449: `overflow: hidden !important;`
+  - L1469: `overflow: hidden !important;`
+  - L1495: `display: none !important;`
+  - L1509: `overflow: hidden !important;`
+  - L1525: `overflow: hidden !important;`
+  - L1536: `overflow: hidden !important;`
+  - L1545: `overflow: hidden !important;`
+  - L1557: `overflow: hidden !important;`
+  - L1866: `overflow: hidden;`
+  - L2020: `overflow: hidden;`
+  - L2129: `display: none !important;`
+  - L2179: `display: none !important;`
+  - L2187: `display: none !important;`
+  - L2218: `display: none !important;`
+  - L2248: `display: none !important;`
+- `src/styles/visual-stage13-case-detail-vnext.css`
+  - L130: `overflow: hidden;`
+  - L193: `overflow: hidden;`
+  - L229: `display: none !important;`
+  - L1095: `overflow: hidden;`
+  - L1227: `display: none !important;`
+  - L1376: `overflow: hidden !important;`
+  - L1450: `overflow: hidden;`
+  - L1461: `overflow: hidden;`
+- `src/styles/visual-stage14-lead-detail-vnext.css`
+  - L202: `display: none !important;`
+  - L218: `overflow: hidden;`
+  - L997: `min-height: 0 !important;`
+  - L1013: `overflow: hidden !important;`
+- `src/styles/visual-stage16-billing-vnext.css`
+  - L509: `display: none !important;`
+- `src/styles/visual-stage17-support-vnext.css`
+  - L387: `overflow: hidden;`
+  - L565: `display: none !important;`
+- `src/styles/visual-stage17-today-hard-1to1.css`
+  - L417: `overflow: hidden !important;`
+  - L567: `display: none !important;`
+  - L603: `display: none !important;`
+- `src/styles/visual-stage18-leads-hard-1to1.css`
+  - L202: `overflow: hidden !important;`
+  - L302: `overflow: hidden !important;`
+- `src/styles/visual-stage19-clients-safe-css.css`
+  - L28: `overflow: hidden;`
+  - L57: `line-height: 0.95;`
+- `src/styles/visual-stage19-settings-vnext.css`
+  - L349: `display: none !important;`
+- `src/styles/visual-stage20-lead-form-vnext.css`
+  - L7: `overflow: hidden;`
+  - L23: `display: none !important;`
+  - L150: `overflow: hidden;`
+- `src/styles/visual-stage20-tasks-safe-css.css`
+  - L41: `overflow: hidden;`
+- `src/styles/visual-stage21-task-form-vnext.css`
+  - L7: `overflow: hidden;`
+  - L23: `display: none !important;`
+  - L164: `overflow: hidden;`
+- `src/styles/visual-stage21-today-final-lock.css`
+  - L326: `overflow: hidden !important;`
+- `src/styles/visual-stage22-event-form-vnext.css`
+  - L7: `overflow: hidden;`
+  - L23: `display: none !important;`
+- `src/styles/visual-stage22-leads-final-lock.css`
+  - L59: `overflow: hidden;`
+  - L224: `overflow: hidden !important;`
+  - L295: `overflow: hidden !important;`
+  - L361: `overflow: hidden !important;`
+- `src/styles/visual-stage23-client-case-forms-vnext.css`
+  - L7: `overflow: hidden;`
+  - L23: `display: none !important;`
+- `src/styles/visual-stage23-leads-html-parity-fix.css`
+  - L158: `overflow: hidden !important;`
+  - L221: `overflow: hidden !important;`
+  - L276: `overflow: hidden !important;`
+- `src/styles/visual-stage24-leads-html-dom-parity-hardfix.css`
+  - L189: `overflow: hidden !important;`
+  - L301: `display: none !important;`
+  - L313: `overflow: hidden !important;`
+  - L348: `overflow: hidden !important;`
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css`
+  - L255: `overflow: hidden;`
+  - L268: `overflow: hidden;`
+  - L483: `overflow: hidden;`
+  - L489: `overflow: hidden;`
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css`
+  - L101: `overflow: hidden !important;`
+  - L172: `overflow: hidden !important;`
+  - L194: `display: none !important;`
+  - L330: `display: none !important;`
+  - L345: `overflow: hidden !important;`
+  - L387: `display: none !important;`
+  - L396: `overflow: hidden !important;`
+- `src/styles/visual-stage27-cases-vnext.css`
+  - L171: `overflow: hidden;`
+  - L232: `.cf-html-view.main-cases-html .next-action-text { font-size: 16px !important; line-height: 1.25 !important; font-weight: 700 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`
+  - L241: `overflow: hidden;`
+  - L289: `.cf-html-view.main-cases-html .row { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 18px 16px; min-height: 0; }`
+- `src/styles/visual-stage28-tasks-vnext.css`
+  - L76: `.cf-html-view.main-tasks-html .tasks-right-card::after { content: none !important; display: none !important; }`
+  - L85: `overflow: hidden;`
+  - L112: `.cf-html-view.main-tasks-html .task-title { margin: 0; color: #111827; font-size: 16px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }`
+  - L113: `.cf-html-view.main-tasks-html .task-meta { margin: 4px 0 0; color: #667085; font-size: 12px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`
+  - L121: `.cf-html-view.main-tasks-html .task-type-col strong { font-size: 14px; color: #111827; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`
+  - L132: `overflow: hidden;`
+  - L165: `min-height: 0;`
+- `src/styles/visual-stage29-calendar-vnext.css`
+  - L206: `overflow: hidden;`
+  - L244: `overflow: hidden;`
+- `src/styles/visual-stage3-pipeline-and-case.css`
+  - L8: `overflow: hidden;`
+  - L22: `height: 0.28rem;`
+  - L124: `overflow: hidden;`
+- `src/styles/visual-stage30-tasks-compact-after-calendar.css`
+  - L36: `overflow: hidden;`
+- `src/styles/visual-stage8-activity-vnext.css`
+  - L22: `line-height: 0.95;`
+  - L223: `overflow: hidden;`
+  - L381: `overflow: hidden;`
+  - L680: `min-height: 0;`
+  - L768: `display: none !important;`
+  - L769: `visibility: hidden !important;`
+  - L771: `height: 0 !important;`
+  - L784: `overflow: hidden;`
+- `src/styles/visual-stage9-ai-drafts-vnext.css`
+  - L31: `line-height: 0.95;`
+  - L242: `overflow: hidden;`
+  - L391: `overflow: hidden;`
+  - L867: `display: none !important;`
+  - L1143: `display: none !important;`
+  - L1160: `overflow: hidden;`
+
+## Skrypty package.json związane z UI/mobile/style/tile
+
+_brak_
+
+## Decyzja techniczna po audycie
+
+1. Jeśli kafelki zniknęły po repair2: zostawić obecne CSS jako hotfix, ale przy najbliższym porządku dodać twardy wrapper w realnym komponencie Today/TodayStable.
+2. Jeśli kafelki nadal są widoczne: nie dodawać kolejnego blind CSS. Otworzyć plik wskazany w sekcji „Kandydaci na aktywny widok Today / Dziś”, znaleźć blok renderujący kafelki i dodać dokładnie tam:
+
+```tsx
+data-cf-mobile-start-tile-trim="true"
+```
+
+3. Następnie CSS mobile powinien celować tylko w:
+
+```css
+@media (max-width: 767px) {
+  [data-cf-mobile-start-tile-trim="true"] {
+    display: none !important;
+  }
+}
+```
+
+## Kryterium zamknięcia problemu
+
+- mobile: górne kafelki startowe nie są widoczne na pierwszym ekranie,
+- desktop: kafelki nadal są widoczne,
+- kod: istnieje jedno twarde źródło prawdy, czyli wrapper oznaczony atrybutem w komponencie, a nie wyłącznie zgadywanie po klasach CSS,
+- repo: brak nieśledzonych plików po wdrożeniu.
+
+## JSON evidence
+
+Raport maszynowy: `docs/release/closeflow_mobile_visual_source_truth_audit_2026-05-12.json`
