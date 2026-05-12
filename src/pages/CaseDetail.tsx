@@ -11,7 +11,8 @@ const { hasAccess,
  * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess
  * Zrobione Do akceptacji
  */
-﻿/* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
+﻿/* STAGE14C_CASE_DETAIL_CLEANUP */
+/* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
 /* STAGE66_CASE_HISTORY_PASSIVE_COPY */
 /* STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE */
 /* STAGE63_CASE_MAIN_NOTE_HEADER_BUTTON_REMOVE */
@@ -66,7 +67,6 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import { CaseSettlementPanel, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementPanel';
-import { ActivityRoadmap } from '../components/ActivityRoadmap';
 import CaseQuickActions from '../components/CaseQuickActions';
 import {
   createClientPortalTokenInSupabase,
@@ -93,7 +93,6 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
-import { buildCaseActivityRoadmap } from '../lib/activity-roadmap';
 import '../styles/visual-stage13-case-detail-vnext.css';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
@@ -1401,15 +1400,6 @@ export default function CaseDetail() {
     }
   };
   
-  const caseActivityRoadmap = useMemo(() => buildCaseActivityRoadmap({
-    caseRecord: caseData,
-    notes: activities,
-    tasks: tasks,
-    events: events,
-    payments: payments,
-    activities: activities,
-  }), [caseData, activities, tasks, events, payments]);
-
   async function handleConfirmDeleteCaseRecord() {
     if (!caseData?.id) return;
 
@@ -1493,7 +1483,7 @@ export default function CaseDetail() {
               <ArrowLeft className="h-4 w-4" />
               Sprawy
             </button>
-            <p className="case-detail-breadcrumb">Sprawy / {getCaseTitle(caseData)}</p>
+            <p className="case-detail-breadcrumb">Sprawy</p>
             <div className="case-detail-title-row">
               <h1>{getCaseTitle(caseData)}</h1>
               <span className={`case-detail-pill ${getStatusClass(effectiveStatus)}`}>{getCaseStatusLabel(effectiveStatus)}</span>
@@ -1504,18 +1494,7 @@ export default function CaseDetail() {
               <span>Źródło: {caseData.leadId ? 'Lead' : caseData.createdFromLead ? 'Lead' : 'Sprawa ręczna'}</span>
             </div>
           </div>
-          <div className="case-detail-header-actions">
-            <Button type="button" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>
-              <Copy className="h-4 w-4" />
-              Kopiuj portal
-            </Button>
-            <Button type="button" variant="outline" className="cf-btn-tone-gap" onClick={() => setIsAddItemOpen(true)}>
-              <Paperclip className="h-4 w-4" />
-              Dodaj brak
-            </Button>
-            <div hidden data-case-detail-stage35-removed-local-create-actions="true" />
-          </div>
-        </header>
+                  </header>
 
         <section className="case-detail-top-grid">
           <article className="case-detail-top-card case-detail-top-card-blue">
@@ -1779,18 +1758,7 @@ export default function CaseDetail() {
                 <button type="button" onClick={markCaseFullyPaid}>Oznacz opłacone</button>
               </div>
             </section>
-              <section className="case-detail-panel case-detail-roadmap-panel" data-case-roadmap-source-of-truth="true">
-          <ActivityRoadmap
-            items={caseActivityRoadmap}
-            limit={5}
-            title="Roadmapa sprawy"
-            subtitle="Notatki, zadania, wydarzenia, płatności i statusy tej sprawy."
-            emptyText="Brak ruchów w tej sprawie."
-          />
-        </section>
-
-
-            <section className="right-card case-detail-right-card">
+                          <section className="right-card case-detail-right-card">
               <div className="case-detail-card-title-row">
                 <MessageSquare className="h-4 w-4" />
                 <h2>Status operacyjny</h2>
@@ -1813,16 +1781,7 @@ export default function CaseDetail() {
               </div>
             </section>
 
-            <section className="right-card case-detail-right-card">
-              <div className="case-detail-card-title-row">
-                <ExternalLink className="h-4 w-4" />
-                <h2>Portal i źródła</h2>
-              </div>
-              <p>{caseData.portalReady ? 'Portal klienta jest gotowy' : 'Portal można skopiować z akcji w nagłówku'}</p>
-              <small>Powiązany lead: {caseData.leadId || 'Brak'}</small>
-              <Button type="button" size="sm" variant="outline" className="cf-btn-tone-portal" onClick={handleCopyPortal}>Kopiuj portal</Button>
-            </section>
-          </aside>
+                      </aside>
         </div>
 
         <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
