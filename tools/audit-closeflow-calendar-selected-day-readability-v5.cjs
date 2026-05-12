@@ -1,0 +1,23 @@
+const fs = require('fs');
+const path = require('path');
+const repo = process.argv[2] || process.cwd();
+const read = (rel) => fs.existsSync(path.join(repo, rel)) ? fs.readFileSync(path.join(repo, rel),'utf8') : '';
+const calendar = read('src/pages/Calendar.tsx');
+const css = read('src/styles/closeflow-calendar-selected-day-readability-v5.css');
+const failures = [];
+const expect = (label, ok) => { if (!ok) failures.push(label); };
+expect('Calendar imports V5 CSS', calendar.includes("import '../styles/closeflow-calendar-selected-day-readability-v5.css';"));
+expect('Calendar has V5 marker', calendar.includes('CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_2026_05_12'));
+expect('CSS has row selector', css.includes('.cf-calendar-month-text-row'));
+expect('CSS has readable text color', css.includes('--cf-cal-selected-row-text-v5'));
+expect('CSS has dark row bg', css.includes('--cf-cal-selected-row-bg-v5'));
+expect('CSS keeps ellipsis', css.includes('text-overflow: ellipsis !important'));
+expect('CSS scoped to calendar', css.includes('[data-cf-page-header-v2="calendar"] ~ *'));
+expect('CSS avoids sidebar selectors', !/\[class\*=["'](?:sidebar|side|rail|left)["']\]/.test(css));
+const outDir = path.join(repo, 'docs', 'ui');
+fs.mkdirSync(outDir, { recursive: true });
+const result = { generatedAt: new Date().toISOString(), stage: 'CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_2026_05_12', verdict: failures.length ? 'fail' : 'pass', failures };
+fs.writeFileSync(path.join(outDir,'CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_AUDIT.generated.json'), JSON.stringify(result,null,2),'utf8');
+fs.writeFileSync(path.join(outDir,'CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_AUDIT.generated.md'), ['# CloseFlow — Calendar Selected Day Readability V5 Audit','',`Verdict: **${result.verdict.toUpperCase()}**`,'', failures.length ? failures.map(f=>`- ${f}`).join('\n') : '- none',''].join('\n'),'utf8');
+if (failures.length) { console.error('CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_AUDIT_FAILED'); console.error(failures.join('\n')); process.exit(1); }
+console.log('CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_AUDIT_OK');
