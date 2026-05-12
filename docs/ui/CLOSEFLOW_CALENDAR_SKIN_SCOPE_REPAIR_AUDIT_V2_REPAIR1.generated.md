@@ -1,0 +1,389 @@
+# CloseFlow — Calendar Skin Scope Repair Audit V2 Repair1
+
+Generated: 2026-05-12T04:39:42.202Z
+
+Verdict: **PASS**
+
+## Failures
+
+- none
+
+## Active visual imports
+
+- src/App.tsx:21 -> ./styles/closeflow-page-header.css
+- src/App.tsx:26 -> ./styles/closeflow-page-header-copy-source-truth.css
+- src/App.tsx:27 -> ./styles/closeflow-page-header-action-semantics-packet1.css
+- src/components/CloseFlowPageHeaderV2.tsx:3 -> ../styles/closeflow-page-header-v2.css
+- src/components/task-editor-dialog.tsx:10 -> ../styles/visual-stage21-task-form-vnext.css
+- src/index.css:18 -> ./styles/page-adapters/page-adapters.css
+- src/index.css:27 -> ./styles/emergency/emergency-hotfixes.css
+- src/pages/Activity.tsx:30 -> ../styles/visual-stage8-activity-vnext.css
+- src/pages/Activity.tsx:50 -> ../styles/closeflow-page-header-v2.css
+- src/pages/AdminAiSettings.tsx:22 -> ../styles/closeflow-page-header-v2.css
+- src/pages/AiDrafts.tsx:81 -> ../styles/visual-stage9-ai-drafts-vnext.css
+- src/pages/AiDrafts.tsx:85 -> ../styles/closeflow-page-header-v2.css
+- src/pages/Billing.tsx:68 -> ../styles/visual-stage16-billing-vnext.css
+- src/pages/Billing.tsx:71 -> ../styles/closeflow-page-header-v2.css
+- src/pages/Calendar.tsx:101 -> ../styles/visual-stage22-event-form-vnext.css
+- src/pages/Calendar.tsx:106 -> ../styles/closeflow-page-header-v2.css
+- src/pages/Calendar.tsx:107 -> ../styles/closeflow-calendar-skin-only-v1.css
+- src/pages/CaseDetail.tsx:97 -> ../styles/visual-stage13-case-detail-vnext.css
+- src/pages/Cases.tsx:23 -> ../styles/visual-stage23-client-case-forms-vnext.css
+- src/pages/Cases.tsx:35 -> ../styles/closeflow-page-header-v2.css
+- src/pages/ClientDetail.tsx:116 -> ../styles/visual-stage12-client-detail-vnext.css
+- src/pages/Clients.tsx:85 -> ../styles/visual-stage23-client-case-forms-vnext.css
+- src/pages/Clients.tsx:89 -> ../styles/closeflow-page-header-v2.css
+- src/pages/LeadDetail.tsx:87 -> ../styles/visual-stage14-lead-detail-vnext.css
+- src/pages/Leads.tsx:81 -> ../styles/visual-stage20-lead-form-vnext.css
+- src/pages/Leads.tsx:84 -> ../styles/closeflow-page-header-v2.css
+- src/pages/NotificationsCenter.tsx:50 -> ../styles/visual-stage10-notifications-vnext.css
+- src/pages/NotificationsCenter.tsx:54 -> ../styles/closeflow-page-header-v2.css
+- src/pages/ResponseTemplates.tsx:37 -> ../styles/closeflow-page-header-v2.css
+- src/pages/Settings.tsx:91 -> ../styles/visual-stage19-settings-vnext.css
+- src/pages/Settings.tsx:94 -> ../styles/closeflow-page-header-v2.css
+- src/pages/SupportCenter.tsx:32 -> ../styles/visual-stage17-support-vnext.css
+- src/pages/SupportCenter.tsx:35 -> ../styles/closeflow-page-header-v2.css
+- src/pages/Tasks.tsx:133 -> ../styles/visual-stage21-task-form-vnext.css
+- src/pages/TasksStable.tsx:34 -> ../styles/closeflow-page-header-v2.css
+- src/pages/Templates.tsx:59 -> ../styles/closeflow-page-header-v2.css
+- src/pages/TodayStable.tsx:53 -> ../styles/closeflow-page-header-v2.css
+- src/styles/core/core-contracts.css:8 -> ../visual-stage01-shell.css
+- src/styles/emergency/emergency-hotfixes.css:219 -> ../closeflow-page-header-card-source-truth.css
+- src/styles/emergency/emergency-hotfixes.css:228 -> ../closeflow-page-header-copy-source-truth.css
+- src/styles/emergency/emergency-hotfixes.css:229 -> ../closeflow-page-header-action-semantics-packet1.css
+- src/styles/emergency/emergency-hotfixes.css:231 -> ../closeflow-page-header-stage6-final-lock.css
+- src/styles/emergency/emergency-hotfixes.css:236 -> ../closeflow-page-header-final-lock.css
+- src/styles/emergency/emergency-hotfixes.css:241 -> ../closeflow-page-header-structure-lock.css
+- src/styles/emergency/emergency-hotfixes.css:246 -> ../closeflow-page-header-copy-left-only.css
+- src/styles/legacy/legacy-imports.css:10 -> ../visual-stage3-pipeline-and-case.css
+- src/styles/page-adapters/page-adapters.css:8 -> ../visual-stage02-today.css
+- src/styles/page-adapters/page-adapters.css:9 -> ../visual-stage03-leads.css
+- src/styles/page-adapters/page-adapters.css:10 -> ../visual-stage04-lead-detail.css
+- src/styles/page-adapters/page-adapters.css:11 -> ../visual-stage05-clients.css
+- src/styles/page-adapters/page-adapters.css:12 -> ../visual-stage06-client-detail.css
+- src/styles/page-adapters/page-adapters.css:13 -> ../visual-stage07-cases.css
+- src/styles/page-adapters/page-adapters.css:14 -> ../visual-stage08-case-detail.css
+- src/styles/page-adapters/page-adapters.css:15 -> ../visual-stage13-case-detail-vnext.css
+- src/styles/page-adapters/page-adapters.css:16 -> ../visual-stage18-leads-hard-1to1.css
+- src/styles/page-adapters/page-adapters.css:17 -> ../visual-stage19-clients-safe-css.css
+- src/styles/page-adapters/page-adapters.css:18 -> ../visual-stage20-lead-form-vnext.css
+- src/styles/page-adapters/page-adapters.css:19 -> ../visual-stage20-tasks-safe-css.css
+- src/styles/page-adapters/page-adapters.css:20 -> ../visual-stage21-today-final-lock.css
+- src/styles/page-adapters/page-adapters.css:21 -> ../visual-stage23-client-case-forms-vnext.css
+- src/styles/page-adapters/page-adapters.css:22 -> ../visual-stage25-leads-full-jsx-html-rebuild.css
+- src/styles/page-adapters/page-adapters.css:23 -> ../visual-stage26-leads-visual-alignment-fix.css
+- src/styles/page-adapters/page-adapters.css:24 -> ../visual-stage27-cases-vnext.css
+- src/styles/page-adapters/page-adapters.css:25 -> ../visual-stage28-tasks-vnext.css
+- src/styles/page-adapters/page-adapters.css:26 -> ../visual-stage29-calendar-vnext.css
+- src/styles/page-adapters/page-adapters.css:27 -> ../visual-stage30-tasks-compact-after-calendar.css
+- src/styles/page-adapters/page-adapters.css:30 -> ../stage37-unified-page-head-and-metrics.css
+- src/styles/page-adapters/page-adapters.css:32 -> ../stage39-page-headers-copy-visual-system.css
+- src/styles/page-adapters/page-adapters.css:33 -> ../stage40-page-header-action-overflow-hardening.css
+- src/styles/temporary/temporary-overrides.css:43 -> ../stage34-calendar-readability-status-forms.css
+- src/styles/temporary/temporary-overrides.css:44 -> ../stage34b-calendar-complete-polish.css
+- tools/patch-closeflow-calendar-skin-only-v1.cjs:23 -> ../styles/closeflow-calendar-skin-only-v1.css
+- tools/patch-closeflow-calendar-skin-scope-repair-audit-v2.cjs:20 -> ../styles/closeflow-calendar-skin-only-v1.css
+- tools/patch-closeflow-calendar-skin-scope-repair-audit-v2.cjs:22 -> ../styles/closeflow-page-header-v2.css
+- tools/patch-closeflow-etap10-client-card-next-action-layout.cjs:26 -> ../styles/visual-stage23-client-case-forms-vnext.css
+- tools/patch-closeflow-page-header-copy-left-only-packet4.cjs:40 -> ../styles/closeflow-page-header-copy-left-only.css
+- tools/patch-closeflow-page-header-copy-left-only-packet4.cjs:83 -> ../closeflow-page-header-copy-left-only.css
+- tools/patch-closeflow-page-header-final-lock-packet2.cjs:41 -> ../styles/closeflow-page-header-final-lock.css
+- tools/patch-closeflow-page-header-final-lock-packet2.cjs:83 -> ../closeflow-page-header-final-lock.css
+- tools/patch-closeflow-page-header-rebuild-light-source-truth.cjs:5 -> ../styles/closeflow-page-header-card-source-truth.css
+- tools/patch-closeflow-page-header-semantic-copy-packet1.cjs:28 -> ../closeflow-page-header-copy-source-truth.css
+- tools/patch-closeflow-page-header-semantic-copy-packet1.cjs:28 -> ../closeflow-page-header-action-semantics-packet1.css
+- tools/patch-closeflow-page-header-semantic-copy-packet1.cjs:78 -> ./styles/closeflow-page-header-copy-source-truth.css
+- tools/patch-closeflow-page-header-semantic-copy-packet1.cjs:79 -> ./styles/closeflow-page-header-action-semantics-packet1.css
+- tools/patch-closeflow-page-header-source-truth-rebuild-stage2.cjs:5 -> ../styles/closeflow-page-header-card-source-truth.css
+- tools/patch-closeflow-page-header-source-truth-rebuild-stage2.cjs:137 -> ../closeflow-page-header-card-source-truth.css
+- tools/patch-closeflow-page-header-stage6-final-lock.cjs:45 -> ../closeflow-page-header-stage6-final-lock.css
+- tools/patch-closeflow-page-header-structure-lock-packet3.cjs:41 -> ../styles/closeflow-page-header-structure-lock.css
+- tools/patch-closeflow-page-header-structure-lock-packet3.cjs:82 -> ../closeflow-page-header-structure-lock.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:46 -> ../styles/closeflow-page-header-card-source-truth.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:47 -> ../styles/closeflow-page-header-final-lock.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:48 -> ../styles/closeflow-page-header-structure-lock.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:49 -> ../styles/closeflow-page-header-copy-left-only.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:50 -> ../styles/closeflow-page-header-copy-source-truth.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:51 -> ../styles/closeflow-page-header-action-semantics-packet1.css
+- tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs:282 -> ../styles/closeflow-page-header-v2.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:40 -> ../styles/closeflow-page-header-card-source-truth.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:41 -> ../styles/closeflow-page-header-final-lock.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:42 -> ../styles/closeflow-page-header-structure-lock.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:43 -> ../styles/closeflow-page-header-copy-left-only.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:44 -> ../styles/closeflow-page-header-copy-source-truth.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:45 -> ../styles/closeflow-page-header-action-semantics-packet1.css
+- tools/patch-closeflow-page-header-v2-surgery-repair2.cjs:181 -> ../styles/closeflow-page-header-v2.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:47 -> ../styles/closeflow-page-header-card-source-truth.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:48 -> ../styles/closeflow-page-header-final-lock.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:49 -> ../styles/closeflow-page-header-structure-lock.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:50 -> ../styles/closeflow-page-header-copy-left-only.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:51 -> ../styles/closeflow-page-header-copy-source-truth.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:52 -> ../styles/closeflow-page-header-action-semantics-packet1.css
+- tools/patch-closeflow-page-header-v2-surgery.cjs:223 -> ../styles/closeflow-page-header-v2.css
+- tools/patch-closeflow-page-header-visual-unification-stage1.cjs:5 -> ../styles/closeflow-page-header-card-source-truth.css
+- tools/repair-closeflow-etap3-clients-wide-layout.cjs:39 -> ../styles/visual-stage23-client-case-forms-vnext.css
+- tools/repair-closeflow-stage14a-clientdetail-notes-history-repair2.cjs:58 -> ../styles/visual-stage12-client-detail-vnext.css
+- scripts/apply-stage34-calendar-readability-status-forms.cjs:21 -> ./styles/stage34-calendar-readability-status-forms.css
+- scripts/apply-stage34b-calendar-complete-polish.cjs:44 -> ./styles/stage34b-calendar-complete-polish.css
+- scripts/check-closeflow-calendar-skin-only-v1.cjs:24 -> ../styles/closeflow-calendar-skin-only-v1.css
+- scripts/check-closeflow-calendar-skin-scope-repair-audit-v2.cjs:21 -> ../styles/closeflow-calendar-skin-only-v1.css
+- scripts/check-closeflow-css-import-order.cjs:74 -> ./styles/page-adapters/page-adapters.css
+- scripts/check-closeflow-css-import-order.cjs:75 -> ./styles/page-adapters/page-adapters.css
+- scripts/check-closeflow-css-import-order.cjs:77 -> ./styles/emergency/emergency-hotfixes.css
+- scripts/check-closeflow-page-header-copy-contract.cjs:16 -> ./styles/closeflow-page-header.css
+- scripts/check-closeflow-page-header-source-truth-rebuild-stage2.cjs:30 -> ../closeflow-page-header-card-source-truth.css
+- scripts/check-stage39-page-headers-copy-visual-system.cjs:33 -> ../stage39-page-headers-copy-visual-system.css
+- scripts/check-stage40-page-header-action-overflow-hardening.cjs:37 -> ../stage39-page-headers-copy-visual-system.css
+- scripts/check-stage40-page-header-action-overflow-hardening.cjs:41 -> ../stage40-page-header-action-overflow-hardening.css
+- scripts/check-visual-stage01-shell.cjs:83 -> ./styles/visual-stage01-shell.css
+- scripts/check-visual-stage02-today.cjs:66 -> ./styles/visual-stage02-today.css
+- scripts/check-visual-stage03-leads.cjs:26 -> ./styles/visual-stage03-leads.css
+- scripts/check-visual-stage04-lead-detail.cjs:44 -> ./styles/visual-stage04-lead-detail.css
+- scripts/check-visual-stage05-clients.cjs:23 -> ./styles/visual-stage05-clients.css
+- scripts/check-visual-stage06-client-detail.cjs:31 -> ./styles/visual-stage06-client-detail.css
+- scripts/check-visual-stage07-cases.cjs:26 -> ./styles/visual-stage07-cases.css
+- scripts/check-visual-stage08-case-detail.cjs:31 -> ./styles/visual-stage08-case-detail.css
+- scripts/check-visual-stage16-today-html-reset.cjs:17 -> ./styles/visual-stage16-today-html-reset.css
+
+## Risk rows
+
+- src/App.tsx:21 [page-header] `import './styles/closeflow-page-header.css';`
+- src/App.tsx:26 [page-header] `import './styles/closeflow-page-header-copy-source-truth.css';`
+- src/App.tsx:27 [page-header] `import './styles/closeflow-page-header-action-semantics-packet1.css';`
+- src/components/AppChunkErrorBoundary.tsx:88 [bg-slate-900] `className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"`
+- src/components/AppChunkErrorBoundary.tsx:105 [bg-slate-900] `className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"`
+- src/components/CloseFlowPageHeaderV2.tsx:2 [page-header] `import type { CloseFlowPageHeaderContent, CloseFlowPageHeaderKey } from '../lib/page-header-content';`
+- src/components/CloseFlowPageHeaderV2.tsx:3 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/components/CloseFlowPageHeaderV2.tsx:92 [page-header] `<header className="cf-page-header-v2" data-cf-page-header-v2={pageKey}>`
+- src/components/CloseFlowPageHeaderV2.tsx:93 [page-header] `<div className="cf-page-header-v2__copy">`
+- src/components/CloseFlowPageHeaderV2.tsx:94 [page-header] `<span className="cf-page-header-v2__kicker">{content.kicker}</span>`
+- src/components/CloseFlowPageHeaderV2.tsx:95 [page-header] `<h1 className="cf-page-header-v2__title">{content.title}</h1>`
+- src/components/CloseFlowPageHeaderV2.tsx:96 [page-header] `<p className="cf-page-header-v2__description">{content.description}</p>`
+- src/components/CloseFlowPageHeaderV2.tsx:99 [page-header] `{actions ? <div className="cf-page-header-v2__actions">{actions}</div> : null}`
+- src/components/GlobalQuickActions.tsx:83 [visual-stage] `data-visual-stage="01-global-actions"`
+- src/components/Layout.tsx:9 [visual-stage] `/* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */`
+- src/components/Layout.tsx:267 [visual-stage] `className="app closeflow-visual-stage01 cf-html-shell"`
+- src/components/Layout.tsx:268 [visual-stage] `data-visual-stage="01-shell-sidebar"`
+- src/components/Layout.tsx:372 [visual-stage] `<div className="view active" data-shell-content="true" data-visual-stage-today={isTodayRoute ? '02-today' : undefined} data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined} data-visual-stage-lead-detail={isLeadDetailRoute ? '04-le`
+- src/components/task-editor-dialog.tsx:10 [visual-stage] `import '../styles/visual-stage21-task-form-vnext.css';`
+- src/index.css:13 [page-adapters] `@import './styles/page-adapters/page-adapters.css';`
+- src/index.css:22 [emergency-hotfixes] `@import './styles/emergency/emergency-hotfixes.css';`
+- src/pages/Activity.tsx:30 [visual-stage] `import '../styles/visual-stage8-activity-vnext.css';`
+- src/pages/Activity.tsx:50 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/AdminAiSettings.tsx:22 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/AiDrafts.tsx:81 [visual-stage] `import '../styles/visual-stage9-ai-drafts-vnext.css';`
+- src/pages/AiDrafts.tsx:85 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/AiDrafts.tsx:1205 [bg-slate-950] `<a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">`
+- src/pages/Billing.tsx:68 [visual-stage] `import '../styles/visual-stage16-billing-vnext.css';`
+- src/pages/Billing.tsx:71 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/Calendar.tsx:101 [visual-stage] `import '../styles/visual-stage22-event-form-vnext.css';`
+- src/pages/Calendar.tsx:106 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/Calendar.tsx:107 [closeflow-calendar-skin-only-v1.css] `import '../styles/closeflow-calendar-skin-only-v1.css';`
+- src/pages/Calendar.tsx:388 [calendar-entry-card] `<div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={'calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-`
+- src/pages/CaseDetail.tsx:97 [visual-stage] `import '../styles/visual-stage13-case-detail-vnext.css';`
+- src/pages/Cases.tsx:23 [visual-stage] `import '../styles/visual-stage23-client-case-forms-vnext.css';`
+- src/pages/Cases.tsx:35 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/ClientDetail.tsx:116 [visual-stage] `import '../styles/visual-stage12-client-detail-vnext.css';`
+- src/pages/Clients.tsx:85 [visual-stage] `import '../styles/visual-stage23-client-case-forms-vnext.css';`
+- src/pages/Clients.tsx:89 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/LeadDetail.tsx:87 [visual-stage] `import '../styles/visual-stage14-lead-detail-vnext.css';`
+- src/pages/Leads.tsx:81 [visual-stage] `import '../styles/visual-stage20-lead-form-vnext.css';`
+- src/pages/Leads.tsx:84 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/Leads.tsx:682 [visual-stage] `<div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">`
+- src/pages/Login.tsx:178 [bg-slate-950] `<div className="min-h-screen bg-slate-950">`
+- src/pages/Login.tsx:304 [bg-slate-950] `<div className="min-h-screen bg-slate-950">`
+- src/pages/Login.tsx:320 [bg-slate-900] `<div className="mt-5 grid gap-3 sm:grid-cols-2">{FEATURE_CARDS.map((card) => { const Icon = card.icon; return (<div key={card.title} className="rounded-3xl border border-white/10 bg-slate-900/40 p-4 backdrop-blur-sm"><div className="inline-`
+- src/pages/NotificationsCenter.tsx:50 [visual-stage] `import '../styles/visual-stage10-notifications-vnext.css';`
+- src/pages/NotificationsCenter.tsx:54 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/ResponseTemplates.tsx:37 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/Settings.tsx:91 [visual-stage] `import '../styles/visual-stage19-settings-vnext.css';`
+- src/pages/Settings.tsx:94 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/SupportCenter.tsx:32 [visual-stage] `import '../styles/visual-stage17-support-vnext.css';`
+- src/pages/SupportCenter.tsx:35 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/Tasks.tsx:133 [visual-stage] `import '../styles/visual-stage21-task-form-vnext.css';`
+- src/pages/TasksStable.tsx:34 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/TasksStable.tsx:466 [page-header] `<Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800')} onClick={openNewTask} data-cf-header-action="primary" data-page-header-new-task-`
+- src/pages/Templates.tsx:59 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/pages/TodayStable.tsx:53 [page-header] `import '../styles/closeflow-page-header-v2.css';`
+- src/styles/case-detail-simplified.css:14 [bg-slate-950] `section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {`
+- src/styles/case-detail-simplified.css:114 [bg-slate-950] `section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {`
+- src/styles/closeflow-calendar-skin-only-v1.css:59 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * {`
+- src/styles/closeflow-calendar-skin-only-v1.css:64 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:82 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:83 [calendar-entry-card] `.calendar-entry-card,`
+- src/styles/closeflow-calendar-skin-only-v1.css:84 [calendar-entry-card] `.calendar-entry-card.cf-readable-card,`
+- src/styles/closeflow-calendar-skin-only-v1.css:118 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:119 [bg-slate-950] `[class*="bg-slate-950"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:120 [bg-slate-900] `[class*="bg-slate-900"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:122 [from-slate-950] `[class*="from-slate-950"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:124 [to-slate-950] `[class*="to-slate-950"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:137 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:147 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:159 [page-header, calendar-entry-card] `#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card {`
+- src/styles/closeflow-calendar-skin-only-v1.css:167 [page-header, calendar-entry-card] `#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card:hover {`
+- src/styles/closeflow-calendar-skin-only-v1.css:172 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:182 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:194 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:214 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:225 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:235 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:245 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:259 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:260 [calendar-entry-card] `.calendar-entry-card button,`
+- src/styles/closeflow-calendar-skin-only-v1.css:279 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:292 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:305 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:319 [page-header] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-command-actions-source-truth.css:111 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header {`
+- src/styles/closeflow-command-actions-source-truth.css:118 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {`
+- src/styles/closeflow-command-actions-source-truth.css:126 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],`
+- src/styles/closeflow-command-actions-source-truth.css:127 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,`
+- src/styles/closeflow-command-actions-source-truth.css:128 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {`
+- src/styles/closeflow-command-actions-source-truth.css:134 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],`
+- src/styles/closeflow-command-actions-source-truth.css:135 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:136 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,`
+- src/styles/closeflow-command-actions-source-truth.css:137 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:138 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:139 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:140 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:141 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:142 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:143 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:144 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {`
+- src/styles/closeflow-command-actions-source-truth.css:160 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > *,`
+- src/styles/closeflow-command-actions-source-truth.css:161 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,`
+- src/styles/closeflow-command-actions-source-truth.css:162 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,`
+- src/styles/closeflow-command-actions-source-truth.css:163 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"] > * {`
+- src/styles/closeflow-command-actions-source-truth.css:167 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .notifications-header-actions, .cf-section-head-action-stack) {`
+- src/styles/closeflow-command-actions-source-truth.css:177 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action),`
+- src/styles/closeflow-command-actions-source-truth.css:178 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).primary,`
+- src/styles/closeflow-command-actions-source-truth.css:179 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).soft-blue,`
+- src/styles/closeflow-command-actions-source-truth.css:180 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-blue-600,`
+- src/styles/closeflow-command-actions-source-truth.css:181 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-green-600,`
+- src/styles/closeflow-command-actions-source-truth.css:182 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-emerald-600 {`
+- src/styles/closeflow-command-actions-source-truth.css:209 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover {`
+- src/styles/closeflow-command-actions-source-truth.css:218 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action) svg {`
+- src/styles/closeflow-command-actions-source-truth.css:280 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header,`
+- src/styles/closeflow-command-actions-source-truth.css:281 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {`
+- src/styles/closeflow-command-actions-source-truth.css:287 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],`
+- src/styles/closeflow-command-actions-source-truth.css:288 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:289 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,`
+- src/styles/closeflow-command-actions-source-truth.css:290 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,`
+- src/styles/closeflow-command-actions-source-truth.css:291 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:3 [page-header] `--cf-page-header-neutral-text: #2563eb;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:4 [page-header] `--cf-page-header-neutral-text-hover: #1d4ed8;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:5 [page-header] `--cf-page-header-neutral-bg: #ffffff;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:6 [page-header] `--cf-page-header-neutral-bg-hover: #eff6ff;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:7 [page-header] `--cf-page-header-neutral-border: #bfdbfe;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:8 [page-header] `--cf-page-header-neutral-border-hover: #93c5fd;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:9 [page-header] `--cf-page-header-neutral-shadow: 0 8px 18px rgba(37, 99, 235, 0.10);`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:11 [page-header] `--cf-page-header-ai-text: #7c3aed;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:12 [page-header] `--cf-page-header-ai-text-hover: #6d28d9;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:13 [page-header] `--cf-page-header-ai-bg: #ffffff;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:14 [page-header] `--cf-page-header-ai-bg-hover: #f5f3ff;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:15 [page-header] `--cf-page-header-ai-border: #ddd6fe;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:16 [page-header] `--cf-page-header-ai-border-hover: #c4b5fd;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:17 [page-header] `--cf-page-header-ai-shadow: 0 8px 18px rgba(124, 58, 237, 0.12);`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:19 [page-header] `--cf-page-header-danger-text: var(--cf-trash-icon-color, #dc2626);`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:20 [page-header] `--cf-page-header-danger-text-hover: var(--cf-trash-icon-hover-color, #b91c1c);`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:21 [page-header] `--cf-page-header-danger-bg: #ffffff;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:22 [page-header] `--cf-page-header-danger-bg-hover: #fef2f2;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:23 [page-header] `--cf-page-header-danger-border: var(--cf-trash-icon-border, rgba(220, 38, 38, 0.22));`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:24 [page-header] `--cf-page-header-danger-border-hover: var(--cf-trash-icon-hover-border, rgba(220, 38, 38, 0.34));`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:25 [page-header] `--cf-page-header-danger-shadow: 0 8px 18px rgba(220, 38, 38, 0.08);`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:27 [page-header] `--cf-page-header-action-height: 38px;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:28 [page-header] `--cf-page-header-action-radius: 14px;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:29 [page-header] `--cf-page-header-action-gap: 8px;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:30 [page-header] `--cf-page-header-actions-gap: 10px;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:34 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:35 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:36 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:37 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:38 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:39 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:40 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:41 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:42 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:43 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:53 [page-header] `gap: var(--cf-page-header-actions-gap) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:57 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action),`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:61 [page-header] `min-height: var(--cf-page-header-action-height) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:62 [page-header] `height: var(--cf-page-header-action-height) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:66 [page-header] `gap: var(--cf-page-header-action-gap) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:67 [page-header] `border-radius: var(--cf-page-header-action-radius) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:68 [page-header] `border: 1px solid var(--cf-page-header-neutral-border) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:69 [page-header] `background: var(--cf-page-header-neutral-bg) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:70 [page-header] `background-color: var(--cf-page-header-neutral-bg) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:72 [page-header] `color: var(--cf-page-header-neutral-text) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:73 [page-header] `-webkit-text-fill-color: var(--cf-page-header-neutral-text) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:74 [page-header] `box-shadow: var(--cf-page-header-neutral-shadow) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:76 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action):hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:80 [page-header] `background: var(--cf-page-header-neutral-bg-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:81 [page-header] `color: var(--cf-page-header-neutral-text-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:82 [page-header] `-webkit-text-fill-color: var(--cf-page-header-neutral-text-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:83 [page-header] `border-color: var(--cf-page-header-neutral-border-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:85 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action) svg,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:94 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:95 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:96 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"],`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:99 [page-header] `border-color: var(--cf-page-header-ai-border) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:100 [page-header] `background: var(--cf-page-header-ai-bg) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:101 [page-header] `background-color: var(--cf-page-header-ai-bg) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:102 [page-header] `color: var(--cf-page-header-ai-text) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:103 [page-header] `-webkit-text-fill-color: var(--cf-page-header-ai-text) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:104 [page-header] `box-shadow: var(--cf-page-header-ai-shadow) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:106 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"]:hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:107 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue:hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:108 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"]:hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:111 [page-header] `border-color: var(--cf-page-header-ai-border-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:112 [page-header] `background: var(--cf-page-header-ai-bg-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:113 [page-header] `color: var(--cf-page-header-ai-text-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:114 [page-header] `-webkit-text-fill-color: var(--cf-page-header-ai-text-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:118 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"],`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:119 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:120 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:122 [page-header] `border-color: var(--cf-page-header-danger-border) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:123 [page-header] `background: var(--cf-page-header-danger-bg) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:124 [page-header] `background-color: var(--cf-page-header-danger-bg) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:125 [page-header] `color: var(--cf-page-header-danger-text) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:126 [page-header] `-webkit-text-fill-color: var(--cf-page-header-danger-text) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:127 [page-header] `box-shadow: var(--cf-page-header-danger-shadow) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:129 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"]:hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:130 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger:hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:131 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button:hover,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:133 [page-header] `border-color: var(--cf-page-header-danger-border-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:134 [page-header] `background: var(--cf-page-header-danger-bg-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:135 [page-header] `color: var(--cf-page-header-danger-text-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:136 [page-header] `-webkit-text-fill-color: var(--cf-page-header-danger-text-hover) !important;`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:140 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:141 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:142 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,`
+- src/styles/closeflow-page-header-action-semantics-packet1.css:143 [page-header] `#root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,`
+- src/styles/closeflow-page-header-card-source-truth.css:5 [page-header] `--cf-page-header-bg-solid: #ffffff;`
+- src/styles/closeflow-page-header-card-source-truth.css:6 [page-header] `--cf-page-header-bg: linear-gradient(180deg, rgba(255,255,255,0.99) 0%, rgba(248,250,252,0.98) 100%);`
+- src/styles/closeflow-page-header-card-source-truth.css:7 [page-header] `--cf-page-header-border: rgba(203, 213, 225, 0.86);`
+- src/styles/closeflow-page-header-card-source-truth.css:8 [page-header] `--cf-page-header-shadow: 0 18px 42px rgba(15, 23, 42, 0.075);`
+- src/styles/closeflow-page-header-card-source-truth.css:9 [page-header] `--cf-page-header-radius: 28px;`
+- src/styles/closeflow-page-header-card-source-truth.css:10 [page-header] `--cf-page-header-padding-y: 22px;`
+- src/styles/closeflow-page-header-card-source-truth.css:11 [page-header] `--cf-page-header-padding-x: 26px;`
+- src/styles/closeflow-page-header-card-source-truth.css:12 [page-header] `--cf-page-header-min-height: 92px;`
+- src/styles/closeflow-page-header-card-source-truth.css:17 [page-header] `--cf-page-header-title: #0f172a;`
+- src/styles/closeflow-page-header-card-source-truth.css:18 [page-header] `--cf-page-header-description: #64748b;`
+- src/styles/closeflow-page-header-card-source-truth.css:19 [page-header] `--cf-page-header-title-size: clamp(24px, 2.35vw, 34px);`
+- src/styles/closeflow-page-header-card-source-truth.css:20 [page-header] `--cf-page-header-description-size: 13px;`
+- src/styles/closeflow-page-header-card-source-truth.css:25 [page-header] `--cf-page-header-kicker-bg: #eef4ff;`
+- src/styles/closeflow-page-header-card-source-truth.css:26 [page-header] `--cf-page-header-kicker-border: #bfdbfe;`
+- src/styles/closeflow-page-header-card-source-truth.css:27 [page-header] `--cf-page-header-kicker-text: #1d4ed8;`
+- src/styles/closeflow-page-header-card-source-truth.css:32 [page-header] `--cf-page-header-button-radius: 14px;`
+- src/styles/closeflow-page-header-card-source-truth.css:33 [page-header] `--cf-page-header-button-height: 38px;`
+- src/styles/closeflow-page-header-card-source-truth.css:35 [page-header] `--cf-page-header-button-neutral-bg: #ffffff;`
+- src/styles/closeflow-page-header-card-source-truth.css:36 [page-header] `--cf-page-header-button-neutral-hover: #f8fafc;`
+- src/styles/closeflow-page-header-card-source-truth.css:37 [page-header] `--cf-page-header-button-neutral-border: #cbd5e1;`
+- src/styles/closeflow-page-header-card-source-truth.css:38 [page-header] `--cf-page-header-button-neutral-text: #0f172a;`
+- src/styles/closeflow-page-header-card-source-truth.css:40 [page-header] `--cf-page-header-button-primary-bg: #2563eb;`
+- src/styles/closeflow-page-header-card-source-truth.css:41 [page-header] `--cf-page-header-button-primary-hover: #1d4ed8;`
+- src/styles/closeflow-page-header-card-source-truth.css:42 [page-header] `--cf-page-header-button-primary-border: #1d4ed8;`
+- src/styles/closeflow-page-header-card-source-truth.css:43 [page-header] `--cf-page-header-button-primary-text: #ffffff;`
+- src/styles/closeflow-page-header-card-source-truth.css:45 [page-header] `--cf-page-header-button-ai-bg: #eef2ff;`
+- src/styles/closeflow-page-header-card-source-truth.css:46 [page-header] `--cf-page-header-button-ai-hover: #e0e7ff;`
+- src/styles/closeflow-page-header-card-source-truth.css:47 [page-header] `--cf-page-header-button-ai-border: #c7d2fe;`
