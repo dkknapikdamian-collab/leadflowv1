@@ -348,3 +348,37 @@
   font-size: 13px !important;
   font-weight: 750 !important;
 }
+/* STAGE14J_CALENDAR_MONTH_ENTRY_ELLIPSIS */
+html body #root [data-calendar-month-day="true"],
+html body #root .calendar-month-day,
+html body #root .month-day {
+  min-width: 0;
+  overflow: hidden;
+}
+
+html body #root [data-calendar-month-day-entries="true"],
+html body #root .calendar-month-day-entries,
+html body #root .month-day-entries {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+html body #root [data-calendar-month-entry="true"] {
+  display: block !important;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+html body #root [data-calendar-month-entry="true"] > * {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

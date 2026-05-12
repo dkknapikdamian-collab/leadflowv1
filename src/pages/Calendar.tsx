@@ -94,6 +94,83 @@ import {
 import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 
+// STAGE14J_CALENDAR_MONTH_ENTRY_ELLIPSIS
+function useStage14JMonthEntryEllipsis() {
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    let frame = 0;
+
+    const normalizeText = (value) => String(value || "").replace(/\s+/g, " ").trim();
+
+    const isMoreCounter = (label) => /^\+\s*\d+/.test(label) || /\bwiecej\b|\bwi[eę]cej\b/i.test(label);
+
+    const isInsideMonth = (element) => Boolean(element.closest([
+      '[data-calendar-month-grid="true"]',
+      '[data-calendar-month-day="true"]',
+      '.calendar-month-grid',
+      '.calendar-month-view',
+      '.calendar-month-day',
+      '.month-grid',
+      '.month-day',
+      '.month-view'
+    ].join(',')));
+
+    const markMonthEntries = () => {
+      frame = 0;
+      const selector = [
+        '[data-calendar-month-entry="true"]',
+        '.calendar-month-entry',
+        '.calendar-month-item',
+        '.calendar-month-event',
+        '.calendar-month-task',
+        '.cf-calendar-month-entry',
+        '.calendar-month-day button',
+        '.calendar-month-day [role="button"]',
+        '.month-day button',
+        '[data-calendar-month-day="true"] button',
+        '[data-calendar-month-day="true"] [role="button"]'
+      ].join(',');
+
+      document.querySelectorAll(selector).forEach((node) => {
+        const element = node instanceof HTMLElement ? node : null;
+        if (!element) return;
+        if (!isInsideMonth(element)) return;
+
+        const label = normalizeText(element.textContent);
+        if (!label || isMoreCounter(label)) return;
+
+        element.setAttribute('data-calendar-month-entry', 'true');
+        element.setAttribute("title", label);
+
+        const day = element.closest('[data-calendar-month-day="true"], .calendar-month-day, .month-day');
+        if (day instanceof HTMLElement) day.setAttribute('data-calendar-month-day', 'true');
+
+        const parent = element.parentElement;
+        if (parent) parent.setAttribute('data-calendar-month-day-entries', 'true');
+      });
+    };
+
+    const scheduleMark = () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(markMonthEntries);
+    };
+
+    scheduleMark();
+
+    const observer = new MutationObserver(scheduleMark);
+    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    window.addEventListener('resize', scheduleMark);
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener('resize', scheduleMark);
+    };
+  }, []);
+}
+
+
 import Layout from '../components/Layout';
 
 import { pl } from 'date-fns/locale';
