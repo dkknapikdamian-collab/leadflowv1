@@ -1,0 +1,287 @@
+/* CLOSEFLOW_RECORD_LIST_SOURCE_TRUTH_2026_05_12
+   owner: CloseFlow Visual System
+   scope: /leads and /clients list rows
+   goal: one visual source of truth for operator record cards
+   rule: compact horizontal row on desktop, readable stacked row on mobile
+*/
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.55rem !important;
+  padding: 0.65rem !important;
+  border-radius: 1.35rem !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > .relative,
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > [class*="group/"],
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) [data-client-card-wide-layout="true"],
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) [data-lead-card-wide-layout="true"] {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > .relative > a,
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card > [class*="group/"] > a,
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card a.block {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
+#root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns:
+    minmax(2.15rem, 2.5rem)
+    minmax(15rem, 1.35fr)
+    minmax(7.75rem, 0.55fr)
+    minmax(15.5rem, 1fr)
+    minmax(5rem, auto) !important;
+  grid-auto-rows: minmax(0, auto) !important;
+  align-items: center !important;
+  gap: 0.55rem 0.8rem !important;
+  padding: 0.68rem 0.82rem !important;
+  border-radius: 1rem !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > .index {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: start !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  min-width: 2rem !important;
+  min-height: 2rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  line-height: 1 !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-main-cell, .cf-client-main-cell) {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  align-self: center !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  align-self: center !important;
+  justify-self: start !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) {
+  grid-column: 4 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0.16rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
+  grid-column: 5 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  width: auto !important;
+  min-width: max-content !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: nowrap !important;
+  gap: 0.42rem !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) .title {
+  display: block !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.15 !important;
+  font-size: 0.92rem !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.sub, .mini, small) {
+  line-height: 1.1 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-list-row-meta, .statusline) {
+  max-width: 100% !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.28rem 0.38rem !important;
+  margin-top: 0.22rem !important;
+  line-height: 1 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-list-row-meta, .statusline) > * {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.pill, .cf-status-pill, .badge, [class*="badge"], [data-cf-status-tone]) {
+  min-height: 1.35rem !important;
+  height: auto !important;
+  max-width: 100% !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.24rem 0.46rem !important;
+  border-radius: 999px !important;
+  line-height: 1 !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-list-row-contact, .cf-list-row-value) {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) :is(.mini, small) {
+  display: block !important;
+  margin-bottom: 0.12rem !important;
+  font-size: 0.61rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) :is(strong, .title) {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  line-height: 1.08 !important;
+  font-size: 0.82rem !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) :is(.mini, small) {
+  display: block !important;
+  margin-bottom: 0.1rem !important;
+  font-size: 0.61rem !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) :is(strong, .title) {
+  max-width: 100% !important;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2 !important;
+  -webkit-box-orient: vertical !important;
+  overflow: hidden !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+  line-height: 1.12 !important;
+  font-size: 0.82rem !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) :is(button, a) {
+  width: 2.05rem !important;
+  min-width: 2.05rem !important;
+  height: 2.05rem !important;
+  min-height: 2.05rem !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0.72rem !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
+  #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
+    grid-template-columns:
+      minmax(2.15rem, 2.5rem)
+      minmax(0, 1fr)
+      minmax(12rem, 0.75fr)
+      minmax(4.75rem, auto) !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-main-cell, .cf-client-main-cell) {
+    grid-column: 2 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) {
+    grid-column: 3 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) {
+    grid-column: 2 / 4 !important;
+    grid-row: 2 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
+    grid-column: 4 !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
+  #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
+    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 0.48rem 0.62rem !important;
+    padding: 0.72rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > .index {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-main-cell, .cf-client-main-cell),
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell),
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline),
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
+    grid-column: 2 !important;
+    grid-row: auto !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) {
+    justify-content: flex-start !important;
+  }
+}
