@@ -1,16 +1,24 @@
 /*
-  CLOSEFLOW_MOBILE_START_TILE_TRIM_2026_05_12
+  CLOSEFLOW_MOBILE_START_TILE_TRIM_REPAIR2_2026_05_12
 
   Cel:
-  - na telefonie ukryc startowe kafelki/skroty z naglowka strony,
-    np. Centrum dnia / Leady / Zadania / Kalendarz,
-  - zostawic desktop i tablet bez zmian,
-  - nie usuwac komponentow z Reacta, tylko schowac warstwe wizualna na mobile.
+  - schowac na telefonie startowe kafelki/skroty typu Centrum dnia / Leady / Zadania / Kalendarz,
+  - nie ruszac desktopu i tabletu,
+  - preferowac jawny data-attribute, a CSS :has() traktowac jako awaryjny bezpiecznik.
 */
 
 @media (max-width: 767px) {
-  #root .cf-html-shell :is(
+  #root :is(
     [data-cf-mobile-start-tile-trim="true"],
+    [data-cf-page-header-shortcuts="true"],
+    [data-cf-page-header-tiles="true"],
+    [data-cf-stat-shortcut-grid="true"],
+    [data-cf-start-shortcuts="true"]
+  ) {
+    display: none !important;
+  }
+
+  #root :is(
     [data-cf-page-header="true"] .cf-page-hero-aside,
     [data-cf-page-header="true"] .cf-page-header-tiles,
     [data-cf-page-header="true"] .cf-page-header-stats,
@@ -18,19 +26,32 @@
     [data-cf-page-header="true"] .cf-page-hero-stats,
     [data-cf-page-header="true"] .cf-page-hero-shortcuts,
     [data-cf-page-header="true"] .cf-page-quick-links,
-    [data-cf-page-header="true"] [data-cf-page-header-shortcuts="true"],
-    [data-cf-page-header="true"] [data-cf-page-header-tiles="true"],
-    [data-cf-page-header="true"] [data-cf-stat-shortcut-grid="true"]
+    .cf-page-header .cf-page-hero-aside,
+    .cf-page-header .cf-page-header-tiles,
+    .cf-page-header .cf-page-header-stats,
+    .cf-page-header .cf-page-header-metrics,
+    .cf-page-header .cf-page-hero-stats,
+    .cf-page-header .cf-page-hero-shortcuts,
+    .cf-page-header .cf-page-quick-links
   ) {
     display: none !important;
   }
 
-  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
-  #root .cf-html-shell [data-cf-page-header="true"] {
+  /*
+    Awaryjny selektor dla wariantu, w ktorym kafelki nie maja jeszcze klas/atrybutow,
+    ale sa bezposrednimi linkami/przyciskami do glownych modulow.
+    Nie dotyka nav/sidebaru, bo dziala tylko wewnatrz main/header/sekcji i wymaga
+    jednoczesnie kilku shortcutow jako dzieci tego samego malego wrappera.
+  */
+  #root :is(main, header, section, [role="main"]) :is(.grid, .flex):not(nav):not([role="navigation"]):has(> :is(a, button)[href*="leads"], > :is(a, button)[aria-label*="Lead"], > :is(a, button)[title*="Lead"]):has(> :is(a, button)[href*="tasks"], > :is(a, button)[aria-label*="Zad"], > :is(a, button)[title*="Zad"]):has(> :is(a, button)[href*="calendar"], > :is(a, button)[aria-label*="Kalendarz"], > :is(a, button)[title*="Kalendarz"]) {
+    display: none !important;
+  }
+
+  #root :is([data-cf-page-header="true"], .cf-page-header) {
     margin-bottom: 12px !important;
   }
 
-  #root .cf-html-shell [data-cf-page-header="true"] .cf-page-hero-main {
+  #root :is([data-cf-page-header="true"], .cf-page-header) .cf-page-hero-main {
     min-width: 0 !important;
   }
 }
