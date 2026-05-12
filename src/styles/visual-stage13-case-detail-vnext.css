@@ -1424,7 +1424,7 @@ aside.case-detail-right-rail::after {
   color: #2563eb !important;
   stroke: currentColor !important;
 }
-/* STAGE14D_REAL_CASE_HISTORY_REPAIR1 */
+/* STAGE14D_REAL_CASE_HISTORY_REPAIR3 */
 .case-detail-vnext-page .case-history-list {
   display: grid;
   gap: 10px;
@@ -1433,9 +1433,9 @@ aside.case-detail-right-rail::after {
 .case-detail-vnext-page .case-history-row {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(120px, 0.42fr) minmax(0, 1fr) auto;
-  align-items: center;
+  grid-template-columns: 150px minmax(0, 1fr) auto;
   gap: 12px;
+  align-items: center;
   border: 1px solid #e4e7ec;
   border-radius: 18px;
   background: #fff;
@@ -1446,7 +1446,7 @@ aside.case-detail-right-rail::after {
   min-width: 0;
   color: #111827;
   font-size: 12px;
-  font-weight: 900;
+  font-weight: 850;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1466,7 +1466,7 @@ aside.case-detail-right-rail::after {
 .case-detail-vnext-page .case-history-row time {
   color: #667085;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 750;
   white-space: nowrap;
 }
 

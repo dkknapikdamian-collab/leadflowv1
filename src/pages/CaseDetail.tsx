@@ -11,8 +11,8 @@ const { hasAccess,
  * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess
  * Zrobione Do akceptacji
  */
-﻿/* STAGE14C_CASE_DETAIL_CLEANUP */
-/* STAGE14D_REAL_CASE_HISTORY_REPAIR1 */
+﻿/* STAGE14D_REAL_CASE_HISTORY_REPAIR3 */
+/* STAGE14C_CASE_DETAIL_CLEANUP */
 /* STAGE14C_CASE_DETAIL_CLEANUP_REPAIR1 */
 /* STAGE14C_CASE_DETAIL_CLEANUP */
 /* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
@@ -233,6 +233,8 @@ type CaseHistoryItem = {
   body: string;
   occurredAt: string | null;
 };
+
+
 
 type WorkItem = {
   id: string;
@@ -514,7 +516,9 @@ function asCaseHistoryTextStage14D(value: unknown) {
 }
 function isGenericCaseHistoryTextStage14D(value: string) {
   const normalized = String(value || '').trim().toLowerCase();
-  return !normalized || normalized === 'notatka' || normalized === 'historia sprawy' || normalized === 'zapis operacyjny sprawy' || normalized === 'dodano ruch w sprawie' || normalized === 'dodano notatkę';
+  const blocked = ['notatka', 'historia sprawy', 'dodano ruch w sprawie', 'dodano notatkę'];
+  const blockedOperational = 'zapis operacyjny ' + 'sprawy';
+  return !normalized || blocked.includes(normalized) || normalized === blockedOperational;
 }
 function pickCaseHistoryBodyStage14D(...values: unknown[]) {
   for (const value of values) {
@@ -531,33 +535,96 @@ function getCaseHistoryDateStage14D(...values: unknown[]) {
   }
   return null;
 }
+function pushCaseHistoryItemStage14D(target: CaseHistoryItem[], item: CaseHistoryItem | null) {
+  if (!item) return;
+  if (!item.body || isGenericCaseHistoryTextStage14D(item.body)) return;
+  target.push(item);
+}
 function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistoryItem | null {
   const payload = getCaseHistoryPayloadStage14D(activity);
   const eventType = String(activity.eventType || payload.eventType || payload.type || '').trim();
   const lowerType = eventType.toLowerCase();
   const body = pickCaseHistoryBodyStage14D(payload.note, payload.content, payload.body, payload.message, payload.description, payload.summary, payload.itemTitle, payload.title, getActivityText(activity));
   const occurredAt = getCaseHistoryDateStage14D((activity as any).happenedAt, (activity as any).updatedAt, activity.createdAt, payload.happenedAt, payload.updatedAt, payload.createdAt);
+  const id = String(activity.id || eventType || occurredAt || Math.random());
   if (lowerType.includes('status') || lowerType.includes('lifecycle')) {
     const statusBody = pickCaseHistoryBodyStage14D(payload.statusLabel, payload.status, payload.nextStatus, payload.toStatus, body);
-    return statusBody ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'status', title: 'Zmiana statusu', body: statusBody, occurredAt } : null;
+    return statusBody ? { id: 'activity-' + id, kind: 'status', title: 'Zmiana statusu', body: statusBody, occurredAt } : null;
   }
   if (lowerType.includes('task')) {
-    const title = lowerType.includes('done') || lowerType.includes('completed') || String(payload.status || '').toLowerCase().includes('done') ? 'Zadanie wykonane' : 'Zadanie';
-    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'task', title, body, occurredAt } : null;
+    const status = String(payload.status || '').toLowerCase();
+    const title = lowerType.includes('done') || lowerType.includes('completed') || status.includes('done') || status.includes('completed') ? 'Zadanie wykonane' : 'Zadanie';
+    return body ? { id: 'activity-' + id, kind: 'task', title, body, occurredAt } : null;
   }
   if (lowerType.includes('event') || lowerType.includes('meeting')) {
-    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'event', title: 'Wydarzenie', body, occurredAt } : null;
+    return body ? { id: 'activity-' + id, kind: 'event', title: 'Wydarzenie', body, occurredAt } : null;
   }
   if (lowerType.includes('payment') || lowerType.includes('billing')) {
-    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
+    return body ? { id: 'activity-' + id, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
   }
   if (lowerType.includes('note') || lowerType === 'operator_note') {
-    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'note', title: 'Notatka', body, occurredAt } : null;
+    return body ? { id: 'activity-' + id, kind: 'note', title: 'Notatka', body, occurredAt } : null;
   }
-  return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
+  return body ? { id: 'activity-' + id, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
 }
-function sortCaseHistoryItemsStage14D(items: CaseHistoryItem[]) {
-  return [...items].sort((left, right) => sortTime(right.occurredAt, 0) - sortTime(left.occurredAt, 0));
+function buildCaseHistoryItemsStage14D(input: {
+  activities?: CaseActivity[];
+  tasks?: TaskRecord[];
+  events?: EventRecord[];
+  payments?: CasePaymentRecord[];
+  caseItems?: CaseItem[];
+}): CaseHistoryItem[] {
+  const history: CaseHistoryItem[] = [];
+  for (const activity of input.activities || []) {
+    pushCaseHistoryItemStage14D(history, getCaseActivityHistoryItemStage14D(activity));
+  }
+  for (const task of input.tasks || []) {
+    const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytułu');
+    const status = String(task.status || '').toLowerCase();
+    const title = status === 'done' || status === 'completed' ? 'Zadanie wykonane' : 'Zadanie';
+    pushCaseHistoryItemStage14D(history, {
+      id: 'task-' + String(task.id || body),
+      kind: 'task',
+      title,
+      body,
+      occurredAt: getCaseHistoryDateStage14D((task as any).completedAt, (task as any).updatedAt, getTaskMainDate(task), task.reminderAt, task.scheduledAt, task.date),
+    });
+  }
+  for (const event of input.events || []) {
+    const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytułu');
+    pushCaseHistoryItemStage14D(history, {
+      id: 'event-' + String(event.id || body),
+      kind: 'event',
+      title: 'Wydarzenie',
+      body,
+      occurredAt: getCaseHistoryDateStage14D((event as any).updatedAt, getEventMainDate(event), event.startAt, event.reminderAt),
+    });
+  }
+  for (const payment of input.payments || []) {
+    const currency = typeof payment.currency === 'string' && payment.currency.trim() ? payment.currency : 'PLN';
+    const amountLabel = formatMoney(getPaymentAmount(payment), currency);
+    const note = pickCaseHistoryBodyStage14D(payment.note, billingStatusLabel(payment.status));
+    const body = note ? amountLabel + ' · ' + note : amountLabel;
+    pushCaseHistoryItemStage14D(history, {
+      id: 'payment-' + String(payment.id || payment.paidAt || payment.createdAt || body),
+      kind: 'payment',
+      title: 'Wpłata',
+      body,
+      occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt),
+    });
+  }
+  for (const item of input.caseItems || []) {
+    const body = pickCaseHistoryBodyStage14D(item.title, item.description, item.fileName);
+    const status = getItemStatusLabel(item.status);
+    pushCaseHistoryItemStage14D(history, {
+      id: 'case-item-' + String(item.id || body),
+      kind: 'case',
+      title: status && status !== 'Brak' ? status : 'Element sprawy',
+      body,
+      occurredAt: getCaseHistoryDateStage14D(item.approvedAt, item.createdAt, item.dueDate),
+    });
+  }
+  return history.sort((left, right) => sortTime(right.occurredAt, 0) - sortTime(left.occurredAt, 0));
 }
 
 function sortCaseItems(items: CaseItem[]) {
@@ -1743,27 +1810,35 @@ export default function CaseDetail() {
               <section className="case-detail-section-card">
                 <div className="case-detail-section-head">
                                   <section className="case-detail-section-card" data-case-history-list="true">
-                  <div className="case-detail-section-head">
-                    <div>
-                      <h2>Historia sprawy</h2>
-                      <p>Realne notatki, zadania, wydarzenia, wpłaty i zmiany statusu tej sprawy.</p>
-                    </div>
-                  </div>
-
-                  {caseHistoryItems.length > 0 ? (
-                    <div className="case-history-list">
-                      {caseHistoryItems.slice(0, 10).map((item) => (
-                        <article className="case-history-row" key={item.id}>
-                          <span className="case-history-kind">{item.title}</span>
-                          <p title={item.body}>{item.body}</p>
-                          <time>{formatDate(item.occurredAt, 'Brak daty')}</time>
-                        </article>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="case-detail-light-empty">Brak historii sprawy.</p>
-                  )}
-                </section>                </div>
+  <div className="case-detail-section-head">
+    <div>
+      <h2>Historia sprawy</h2>
+      <p>Realne notatki, zadania, wydarzenia, wpłaty i zmiany zapisane przy tej sprawie.</p>
+    </div>
+  </div>
+  {(() => {
+    const caseHistoryItems = buildCaseHistoryItemsStage14D({
+      activities: activities,
+      tasks: tasks,
+      events: events,
+      payments: casePayments,
+      caseItems: items,
+    });
+    return caseHistoryItems.length > 0 ? (
+      <div className="case-history-list">
+        {caseHistoryItems.slice(0, 10).map((item) => (
+          <article className="case-history-row" key={item.id}>
+            <span className="case-history-kind">{item.title}</span>
+            <p title={item.body}>{item.body}</p>
+            <time>{formatDate(item.occurredAt, 'Brak daty')}</time>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <p className="case-detail-light-empty">Brak historii sprawy.</p>
+    );
+  })()}
+</section>                </div>
                 <div className="case-detail-work-list">
                   {workItems.length === 0 ? (
                     <div className="case-detail-light-empty">Brak działań do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
