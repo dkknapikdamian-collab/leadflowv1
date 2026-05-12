@@ -1,0 +1,27 @@
+{
+  "generatedAt": "2026-05-12T15:14:44.391Z",
+  "stage": "CLOSEFLOW_CALENDAR_MONTH_V4_VISUAL_FREEZE_GUARD_REPAIR1_2026_05_12",
+  "verdict": "pass",
+  "frozenBaseline": {
+    "commit": "53e1dca",
+    "visualReference": "user screenshot after restore: monthly calendar is acceptable and frozen",
+    "sourceTruth": [
+      "src/pages/Calendar.tsx",
+      "src/styles/closeflow-calendar-month-plain-text-rows-v4.css"
+    ]
+  },
+  "repair1": {
+    "reason": "Previous guard was too strict because it blocked generic replaceChildren(); V4 baseline can contain it. Repair1 blocks only post-V4 visual layers and markers.",
+    "replaceChildrenPolicy": "allowed only if not tied to post-V4 visual layer markers"
+  },
+  "protectedAgainst": [
+    "post-V4 calendar visual CSS imports",
+    "post-V4 runtime visual markers",
+    "dark inner pill rows in monthly calendar",
+    "V5/V6/Repair2/Repair3/Repair4/Repair5 calendar layers"
+  ],
+  "warnings": [
+    "Calendar.tsx contains replaceChildren(); allowed in Repair1 because it exists in accepted V4 baseline. Do not use it for post-V4 visual normalizers."
+  ],
+  "failures": []
+}
