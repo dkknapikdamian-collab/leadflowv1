@@ -1625,7 +1625,7 @@ export default function ClientDetail() {
 
 */
 
-useMemo(() => null, []);
+useMemo(() => [], [activities, client?.id, clientId, id]);
 
 return (
       <Layout>
@@ -2321,11 +2321,11 @@ return (
               <div className="client-detail-notes-list" data-client-notes-list="true">
                 <div className="client-detail-notes-list-head">
                   <strong>Notatki</strong>
-                  <span>{getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds).length}</span>
+                  <span>{(getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds) || []).length}</span>
                 </div>
-                {getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds).length ? (
+                {(getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds) || []).length ? (
                   <div className="client-detail-notes-items">
-                    {getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds).map((note) => (
+                    {(getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds) || []).map((note) => (
                       <article
                         key={note.id}
                         className="client-detail-note-item"
@@ -2353,8 +2353,8 @@ return (
                   </div>
                 ) : (
                   <div className="client-detail-note-list" data-client-notes-list="true">
-                    {clientNotesStage14A.length > 0 ? (
-                      clientNotesStage14A.slice(0, 5).map((note: any) => (
+                    {(Array.isArray(clientNotesStage14A) ? clientNotesStage14A : []).length > 0 ? (
+                      (Array.isArray(clientNotesStage14A) ? clientNotesStage14A : []).slice(0, 5).map((note: any) => (
                         <article className="client-detail-note-row" key={String(note.id || note.createdAt || note.created_at || getClientActivityBodyStage14A(note))}>
                           <strong>{formatClientActivityTitleStage14A(note)}</strong>
                           <p title={getClientActivityBodyStage14A(note)}>{getClientActivityBodyStage14A(note)}</p>

@@ -1,0 +1,15 @@
+const fs = require('fs');
+const path = require('path');
+const source = fs.readFileSync(path.join(process.cwd(), 'src/pages/ClientDetail.tsx'), 'utf8');
+const loadingNeedle = 'if (loading || workspaceLoading) {';
+const loadingStart = source.indexOf(loadingNeedle);
+if (loadingStart < 0) throw new Error('Missing ClientDetail loading branch.');
+const noteHookStart = source.indexOf('const clientNotesStage14A = useMemo(() => {', loadingStart);
+if (noteHookStart < 0) throw new Error('Missing clientNotesStage14A hook after loading branch.');
+const loadingBranch = source.slice(loadingStart, noteHookStart);
+if (source.includes('useMemo(() => null, []);')) throw new Error('Forbidden null hook padding still exists.');
+if (!loadingBranch.includes('useMemo(() => [], [activities, client?.id, clientId, id]);')) throw new Error('Loading branch must use safe empty array hook slot.');
+if (!loadingBranch.includes('client-detail-loading-card')) throw new Error('Loading branch card missing.');
+if (!source.includes('(Array.isArray(clientNotesStage14A) ? clientNotesStage14A : []).length > 0')) throw new Error('clientNotesStage14A length guard missing.');
+if (!source.includes('(Array.isArray(clientNotesStage14A) ? clientNotesStage14A : []).slice(0, 5).map(')) throw new Error('clientNotesStage14A slice/map guard missing.');
+console.log('OK closeflow-clientdetail-notes-hook-slot-repair5: ClientDetail note hook slot and note lists are null-safe.');
