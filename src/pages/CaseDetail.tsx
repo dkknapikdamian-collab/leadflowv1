@@ -12,6 +12,8 @@ const { hasAccess,
  * Zrobione Do akceptacji
  */
 ﻿/* STAGE14C_CASE_DETAIL_CLEANUP */
+/* STAGE14C_CASE_DETAIL_CLEANUP_REPAIR1 */
+/* STAGE14C_CASE_DETAIL_CLEANUP */
 /* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
 /* STAGE66_CASE_HISTORY_PASSIVE_COPY */
 /* STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE */
@@ -1758,30 +1760,7 @@ export default function CaseDetail() {
                 <button type="button" onClick={markCaseFullyPaid}>Oznacz opłacone</button>
               </div>
             </section>
-                          <section className="right-card case-detail-right-card">
-              <div className="case-detail-card-title-row">
-                <MessageSquare className="h-4 w-4" />
-                <h2>Status operacyjny</h2>
-              </div>
-              <div className="case-detail-right-metrics">
-                <span><strong>{getCaseStatusLabel(effectiveStatus)}</strong> stan sprawy</span>
-                <span><strong>{completionPercent}%</strong> gotowość</span>
-                <span><strong>{openTasks.length}</strong> powiązane zadania</span>
-                <span><strong>{plannedEvents.length}</strong> powiązane wydarzenia</span>
-              </div>
-              <p className="case-detail-right-note">{getCaseStatusHint(effectiveStatus)}</p>
-              <div className="case-detail-right-actions case-detail-right-actions-inline">
-                <CaseDetailV1CommandCenter
-                  status={effectiveStatus}
-                  lifecycle={caseLifecycleV1}
-                  onSetStatus={setCaseLifecycleStatusV1}
-                  onOpenAddItem={() => setIsAddItemOpen(true)}
-                  onCopyPortal={handleCopyPortal}
-                />
-              </div>
-            </section>
-
-                      </aside>
+                                                </aside>
         </div>
 
         <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
@@ -1889,12 +1868,7 @@ function CaseDetailV1CommandCenter({
         <h2>Centrum dowodzenia sprawy V1</h2>
       </div>
 
-      <div className="case-detail-command-actions">
-        <button type="button" onClick={onOpenAddItem}>Dodaj brak</button>
-        <button type="button" onClick={onCopyPortal}>Portal klienta</button>
-      </div>
-
-      <div className="case-detail-command-status">
+            <div className="case-detail-command-status">
         <button type="button" onClick={() => onSetStatus('in_progress')} disabled={!isCompleted && status === 'in_progress'}>
           Start
         </button>
