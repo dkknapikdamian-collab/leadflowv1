@@ -1,0 +1,168 @@
+/* CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_2026_05_12
+
+   Final direction for month cells:
+   - no mini cards inside day tile
+   - each entry is a plain one-line row
+   - text never wraps
+   - ellipsis when too long
+   - full text via native title on hover
+
+   Calendar page content only. No sidebar changes.
+*/
+
+:root {
+  --cf-cal-month-line-height-v4: 18px;
+  --cf-cal-month-line-gap-v4: 4px;
+  --cf-cal-month-line-text-v4: #0f172a;
+  --cf-cal-month-line-muted-v4: #64748b;
+  --cf-cal-month-line-event-v4: #7c3aed;
+  --cf-cal-month-line-task-v4: #16a34a;
+  --cf-cal-month-line-phone-v4: #0284c7;
+  --cf-cal-month-line-lead-v4: #2563eb;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 5px !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+
+  height: var(--cf-cal-month-line-height-v4) !important;
+  min-height: var(--cf-cal-month-line-height-v4) !important;
+  max-height: var(--cf-cal-month-line-height-v4) !important;
+
+  margin: 0 0 var(--cf-cal-month-line-gap-v4) 0 !important;
+  padding: 0 2px !important;
+
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+
+  color: var(--cf-cal-month-line-text-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-text-v4) !important;
+
+  font-size: 10.5px !important;
+  font-weight: 850 !important;
+  line-height: var(--cf-cal-month-line-height-v4) !important;
+  text-align: left !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+
+  position: relative !important;
+  transform: none !important;
+  float: none !important;
+  clear: both !important;
+  z-index: auto !important;
+  cursor: help !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row * {
+  box-sizing: border-box !important;
+  position: static !important;
+  transform: none !important;
+  float: none !important;
+  clear: none !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  min-height: 0 !important;
+  max-height: var(--cf-cal-month-line-height-v4) !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  line-height: var(--cf-cal-month-line-height-v4) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-type {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 22px !important;
+  max-width: 28px !important;
+  height: 14px !important;
+  min-height: 14px !important;
+  max-height: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  padding: 0 4px !important;
+  font-size: 8.5px !important;
+  font-weight: 950 !important;
+  line-height: 14px !important;
+  letter-spacing: -0.01em !important;
+  background: transparent !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-title {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+  display: block !important;
+  height: var(--cf-cal-month-line-height-v4) !important;
+  max-height: var(--cf-cal-month-line-height-v4) !important;
+  color: var(--cf-cal-month-line-text-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-text-v4) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Colors are text/badge only. No mini-card background. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row[data-cf-month-text-kind="event"] .cf-calendar-month-text-type {
+  color: var(--cf-cal-month-line-event-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-event-v4) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row[data-cf-month-text-kind="task"] .cf-calendar-month-text-type {
+  color: var(--cf-cal-month-line-task-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-task-v4) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row[data-cf-month-text-kind="phone"] .cf-calendar-month-text-type {
+  color: var(--cf-cal-month-line-phone-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-phone-v4) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row[data-cf-month-text-kind="lead"] .cf-calendar-month-text-type {
+  color: var(--cf-cal-month-line-lead-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-lead-v4) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row[data-cf-month-text-completed="true"] .cf-calendar-month-text-title {
+  color: var(--cf-cal-month-line-muted-v4) !important;
+  -webkit-text-fill-color: var(--cf-cal-month-line-muted-v4) !important;
+  text-decoration: line-through !important;
+  text-decoration-thickness: 1px !important;
+}
+
+/* Keep +X more as own row. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-more-row,
+#root [data-cf-page-header-v2="calendar"] ~ * :is([class*="more"], [class*="remaining"], [class*="overflow"]) {
+  display: block !important;
+  width: 100% !important;
+  margin-top: 2px !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+  font-size: 10.5px !important;
+  font-weight: 950 !important;
+  line-height: 17px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}

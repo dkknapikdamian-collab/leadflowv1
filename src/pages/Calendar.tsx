@@ -109,6 +109,7 @@ import '../styles/closeflow-calendar-color-tooltip-v2.css';
 import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
 import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
 import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
+import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -142,6 +143,7 @@ const CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2 = 'CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2
 const CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1 = 'CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4 = 'CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -758,6 +760,122 @@ export default function Calendar() {
     const timerA = window.setTimeout(normalizeMonthEntries, 120);
     const timerB = window.setTimeout(normalizeMonthEntries, 420);
     const timerC = window.setTimeout(normalizeMonthEntries, 900);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timerA);
+      window.clearTimeout(timerB);
+      window.clearTimeout(timerC);
+    };
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_EFFECT:
+    // Month cells must use plain one-line text rows, not mini-cards.
+    if (calendarView !== 'month') return;
+    if (typeof document === 'undefined') return;
+
+    const normalizeLabel = (rawLabel: string) => {
+      const value = rawLabel.trim().toLowerCase();
+      if (value === 'wyd' || value === 'wydarzenie') return { label: 'Wyd', kind: 'event' };
+      if (value === 'zad' || value === 'zadanie') return { label: 'Zad', kind: 'task' };
+      if (value === 'tel' || value === 'telefon') return { label: 'Tel', kind: 'phone' };
+      if (value === 'lead') return { label: 'Lead', kind: 'lead' };
+      return null;
+    };
+
+    const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const stripLeadingType = (fullText: string, label: string) => {
+      const lower = fullText.toLowerCase();
+      const normalizedLabel = label.toLowerCase();
+      if (lower.startsWith(normalizedLabel)) {
+        return cleanText(fullText.slice(label.length));
+      }
+      return fullText;
+    };
+
+    const chooseRowCandidate = (labelNode: HTMLElement) => {
+      let current: HTMLElement | null = labelNode;
+      for (let depth = 0; current && depth < 7; depth += 1) {
+        const raw = cleanText(current.innerText || current.textContent || '');
+        const directLabel = cleanText(labelNode.innerText || labelNode.textContent || '');
+        const labelCount = Array.from(current.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+          .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || '')))).length;
+
+        if (raw && raw !== directLabel && raw.length <= 120 && labelCount === 1 && !/^\+\s*\d+\s*więcej$/i.test(raw)) {
+          return current;
+        }
+
+        current = current.parentElement;
+      }
+      return null;
+    };
+
+    const normalizeMonthPlainRows = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const moreRows = Array.from(scope.querySelectorAll<HTMLElement>('a,button,div,span,p,strong'));
+      for (const node of moreRows) {
+        const raw = cleanText(node.innerText || node.textContent || '');
+        if (/^\+\s*\d+\s*więcej$/i.test(raw)) {
+          node.classList.add('cf-calendar-month-more-row');
+          node.setAttribute('title', raw);
+        }
+      }
+
+      const labelNodes = Array.from(scope.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+        .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || ''))));
+
+      const seen = new Set<HTMLElement>();
+
+      for (const labelNode of labelNodes) {
+        const normalized = normalizeLabel(cleanText(labelNode.innerText || labelNode.textContent || ''));
+        if (!normalized) continue;
+
+        const row = chooseRowCandidate(labelNode);
+        if (!row || seen.has(row)) continue;
+        seen.add(row);
+
+        const fullText = cleanText(row.innerText || row.textContent || '');
+        if (!fullText || fullText.length < 4) continue;
+
+        const titleText = stripLeadingType(fullText, normalized.label);
+        if (!titleText || titleText.length < 2) continue;
+
+        const completed = Boolean(
+          row.matches('[data-calendar-entry-completed="true"], .calendar-entry-completed') ||
+          row.querySelector('[data-calendar-entry-completed="true"], .calendar-entry-completed, .line-through, [class*="line-through"], s, del')
+        );
+
+        row.className = 'cf-calendar-month-text-row';
+        row.dataset.cfMonthTextKind = normalized.kind;
+        row.dataset.cfMonthTextCompleted = completed ? 'true' : 'false';
+        row.dataset.cfMonthTextRow = 'v4';
+        row.setAttribute('title', fullText);
+        row.setAttribute('aria-label', fullText);
+
+        row.replaceChildren();
+
+        const type = document.createElement('span');
+        type.className = 'cf-calendar-month-text-type';
+        type.textContent = normalized.label;
+
+        const title = document.createElement('span');
+        title.className = 'cf-calendar-month-text-title';
+        title.textContent = titleText;
+
+        row.appendChild(type);
+        row.appendChild(title);
+      }
+    };
+
+    const raf = window.requestAnimationFrame(normalizeMonthPlainRows);
+    const timerA = window.setTimeout(normalizeMonthPlainRows, 120);
+    const timerB = window.setTimeout(normalizeMonthPlainRows, 420);
+    const timerC = window.setTimeout(normalizeMonthPlainRows, 900);
 
     return () => {
       window.cancelAnimationFrame(raf);
