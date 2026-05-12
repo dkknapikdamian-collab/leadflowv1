@@ -568,6 +568,21 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
   }
   return body ? { id: 'activity-' + id, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
 }
+
+/* CLOSEFLOW_CASE_DETAIL_HISTORY_SORT_REPAIR_2026_05_12
+   Runtime guard: CaseDetail used sortCaseHistoryItemsStage14D from the Stage14D history path,
+   but the helper was missing from the built chunk on some deployments. Keep the sorter named,
+   pure and hoisted so both buildCaseHistoryItemsStage14D and any older JSX/useMemo reference can call it.
+*/
+function sortCaseHistoryItemsStage14D(items: CaseHistoryItem[]) {
+  return [...(Array.isArray(items) ? items : [])].sort((left, right) => {
+    const rightTime = sortTime(right?.occurredAt, 0);
+    const leftTime = sortTime(left?.occurredAt, 0);
+    if (rightTime !== leftTime) return rightTime - leftTime;
+    return String(left?.id || '').localeCompare(String(right?.id || ''), 'pl');
+  });
+}
+
 function buildCaseHistoryItemsStage14D(input: {
   activities?: CaseActivity[];
   tasks?: TaskRecord[];
@@ -625,7 +640,7 @@ function buildCaseHistoryItemsStage14D(input: {
       occurredAt: getCaseHistoryDateStage14D(item.approvedAt, item.createdAt, item.dueDate),
     });
   }
-  return history.sort((left, right) => sortTime(right.occurredAt, 0) - sortTime(left.occurredAt, 0));
+  return sortCaseHistoryItemsStage14D(history);
 }
 
 function sortCaseItems(items: CaseItem[]) {
