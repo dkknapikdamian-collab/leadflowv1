@@ -48,6 +48,7 @@ const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientD
 void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 
 /* STAGE14B_CLIENT_NEXT_ACTION_CONTEXT */
+/* CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_310_REPAIR_2026_05_12: stabilizes ClientDetail early return hook order after React #310 */
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
@@ -1614,7 +1615,12 @@ export default function ClientDetail() {
   );
 
   if (loading || workspaceLoading) {
-    return (
+          /* CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_310_PADDING_2026_05_12 CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_310_PADDING_2026_05_12_64201
+         Keeps hook order stable for loading/not-found ClientDetail renders.
+         Mirrors skipped hooks: useMemo
+      */
+      useMemo(() => null, []);
+return (
       <Layout>
         <div data-fin7-client-detail-finance-summary="true">
           <ClientFinanceRelationSummary
