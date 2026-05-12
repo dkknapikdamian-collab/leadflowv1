@@ -1,0 +1,85 @@
+/* CLOSEFLOW_CALENDAR_V6_REPAIR1_SCOPE_TEXT_2026_05_12
+
+   Repair after V6:
+   - V6 enhancer was too broad and could affect month grid rows.
+   - Month grid rows stay as they were: readable black text, ellipsis.
+   - Bottom selected-day white bars get black text.
+   - No sidebar/data/API/handler changes.
+*/
+
+:root {
+  --cf-calendar-v6r1-text: #0f172a;
+  --cf-calendar-v6r1-muted: #475569;
+  --cf-calendar-v6r1-border: #dbe7f4;
+  --cf-calendar-v6r1-white: #ffffff;
+  --cf-calendar-v6r1-task: #16a34a;
+  --cf-calendar-v6r1-event: #7c3aed;
+  --cf-calendar-v6r1-phone: #0284c7;
+  --cf-calendar-v6r1-lead: #2563eb;
+}
+
+/* Restore month grid / plain month rows: black readable text, no forced white text. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row .cf-calendar-month-text-title {
+  color: var(--cf-calendar-v6r1-text) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-text) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Bottom selected-day rows after V6: if they are white bars, text must be black. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6 {
+  background: var(--cf-calendar-v6r1-white) !important;
+  border: 1px solid var(--cf-calendar-v6r1-border) !important;
+  color: var(--cf-calendar-v6r1-text) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-text) !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6 .cf-calendar-selected-day-title-v6 {
+  color: var(--cf-calendar-v6r1-text) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-text) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6 .cf-calendar-selected-day-kind-v6 {
+  background: rgba(15, 23, 42, 0.04) !important;
+  border: 1px solid var(--cf-calendar-v6r1-border) !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Keep type colors. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-row, .cf-calendar-selected-day-row-v6)[data-cf-month-text-kind="task"] .cf-calendar-month-text-type,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="task"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-calendar-v6r1-task) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-task) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-row, .cf-calendar-selected-day-row-v6)[data-cf-month-text-kind="event"] .cf-calendar-month-text-type,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="event"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-calendar-v6r1-event) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-event) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-row, .cf-calendar-selected-day-row-v6)[data-cf-month-text-kind="phone"] .cf-calendar-month-text-type,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="phone"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-calendar-v6r1-phone) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-phone) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-row, .cf-calendar-selected-day-row-v6)[data-cf-month-text-kind="lead"] .cf-calendar-month-text-type,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="lead"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-calendar-v6r1-lead) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-lead) !important;
+}
+
+/* Completed rows remain visible, not white-on-white. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row[data-cf-month-text-completed="true"] .cf-calendar-month-text-title,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-completed-v6="true"] .cf-calendar-selected-day-title-v6 {
+  color: var(--cf-calendar-v6r1-muted) !important;
+  -webkit-text-fill-color: var(--cf-calendar-v6r1-muted) !important;
+  text-decoration: line-through !important;
+}
