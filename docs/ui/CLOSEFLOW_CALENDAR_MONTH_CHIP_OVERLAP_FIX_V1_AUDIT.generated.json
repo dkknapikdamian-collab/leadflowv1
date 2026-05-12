@@ -1,0 +1,184 @@
+{
+  "generatedAt": "2026-05-12T05:02:36.191Z",
+  "stage": "CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1_2026_05_12",
+  "verdict": "pass",
+  "failures": [],
+  "rows": [
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 109,
+      "hits": [
+        "calendar-month-chip"
+      ],
+      "text": "import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 624,
+      "hits": [
+        "cfCalendarKind"
+      ],
+      "text": "node.dataset.cfCalendarKind = kind;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 629,
+      "hits": [
+        "cfCalendarRowKind"
+      ],
+      "text": "parent.dataset.cfCalendarRowKind = kind;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 21,
+      "hits": [
+        "calendar-month-chip"
+      ],
+      "text": "--cf-calendar-month-chip-overlap-fix-v1: 1;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 52,
+      "hits": [
+        "grid-template-columns"
+      ],
+      "text": "grid-template-columns: auto minmax(0, 1fr) !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 65,
+      "hits": [
+        "line-height"
+      ],
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 66,
+      "hits": [
+        "white-space"
+      ],
+      "text": "white-space: nowrap !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 68,
+      "hits": [
+        "text-overflow"
+      ],
+      "text": "text-overflow: clip !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 92,
+      "hits": [
+        "line-height"
+      ],
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 93,
+      "hits": [
+        "white-space"
+      ],
+      "text": "white-space: nowrap !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 95,
+      "hits": [
+        "text-overflow"
+      ],
+      "text": "text-overflow: ellipsis !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 126,
+      "hits": [
+        "line-height"
+      ],
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 129,
+      "hits": [
+        "white-space"
+      ],
+      "text": "white-space: nowrap !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 131,
+      "hits": [
+        "text-overflow"
+      ],
+      "text": "text-overflow: clip !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 145,
+      "hits": [
+        "line-height"
+      ],
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 146,
+      "hits": [
+        "white-space"
+      ],
+      "text": "white-space: nowrap !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 148,
+      "hits": [
+        "text-overflow"
+      ],
+      "text": "text-overflow: ellipsis !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 178,
+      "hits": [
+        "cf-calendar-tooltip"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-tooltip=\"true\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 39,
+      "hits": [
+        "line-height"
+      ],
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 41,
+      "hits": [
+        "white-space"
+      ],
+      "text": "white-space: nowrap !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 114,
+      "hits": [
+        "cf-calendar-tooltip"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-tooltip=\"true\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 210,
+      "hits": [
+        "text-overflow"
+      ],
+      "text": "text-overflow: ellipsis !important;"
+    }
+  ]
+}
