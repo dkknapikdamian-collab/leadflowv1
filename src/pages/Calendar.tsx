@@ -110,6 +110,7 @@ import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
 import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
 import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
 import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
+import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -144,6 +145,7 @@ const CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1 = 'CLOSEFLOW_CALENDAR_MONTH_C
 const CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4 = 'CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_2026_05_12';
+const CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -395,16 +397,16 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const deleteActionClass = entityActionButtonClass('danger', actionButtonClass);
 
   return (
-    <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
+    <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} data-cf-calendar-entry-card-repair11="true" className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
       <div className="grid gap-2 lg:grid-cols-[auto_minmax(220px,1fr)_76px_118px_auto] lg:items-center">
         <div className="flex min-w-0 items-center gap-1.5">
-          <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`} data-cf-entity-type={getCalendarEntryTypeValue(entry)}>
+          <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`} data-cf-entity-type={getCalendarEntryTypeValue(entry)} data-cf-entry-type-label="true" title={getCalendarEntryTypeLabel(entry)}>
             {getCalendarEntryTypeLabel(entry)}
           </span>
         </div>
 
         <div className="min-w-0">
-          <p className={`truncate text-[14px] font-bold leading-5 ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`} title={entry.title}>
+          <p className={`truncate text-[14px] font-bold leading-5 ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`} title={entry.title} data-cf-entry-title="true">
             {entry.title}
           </p>
           {relationLabel ? (
@@ -1864,7 +1866,7 @@ export default function Calendar() {
 
             <div className="cf-readable-panel mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
               <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-                <div>
+                <div data-cf-calendar-selected-day="true" data-cf-calendar-selected-day-repair11="true">
                   <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>
                   <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
                 </div>

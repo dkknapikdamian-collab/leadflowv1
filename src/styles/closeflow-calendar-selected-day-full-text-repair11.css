@@ -1,0 +1,103 @@
+/* CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11_2026_05_12
+   Cel: naprawić wyłącznie sekcję "Wybrany dzień" pod miesiącem.
+   Nie dotyka V4 month grid ani src/styles/closeflow-calendar-month-plain-text-rows-v4.css.
+*/
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card {
+  display: block !important;
+  width: 100% !important;
+  min-height: 52px !important;
+  overflow: visible !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-color: rgba(148, 163, 184, 0.45) !important;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08) !important;
+}
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card > div,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card > div {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+#root [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-width: 94px !important;
+  max-width: none !important;
+  height: 26px !important;
+  padding: 0 12px !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  text-indent: 0 !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  color: #1e3a8a !important;
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 999px !important;
+}
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::before,
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::after,
+#root [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::before,
+#root [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::after,
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::before,
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::after,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::before,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::after {
+  content: none !important;
+  display: none !important;
+}
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-title="true"],
+#root [data-cf-calendar-selected-day="true"] [data-cf-entry-title="true"] {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  line-height: 1.35 !important;
+  font-weight: 800 !important;
+}
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card a,
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card p,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card a,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card p {
+  max-width: 100% !important;
+}
+
+#root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .truncate,
+#root [data-cf-calendar-selected-day="true"] .calendar-entry-card .truncate {
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+@media (max-width: 900px) {
+  #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card > div,
+  #root [data-cf-calendar-selected-day="true"] .calendar-entry-card > div {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+
+  #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+  #root [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"] {
+    width: fit-content !important;
+    min-width: 94px !important;
+  }
+}
