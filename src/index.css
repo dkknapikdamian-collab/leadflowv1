@@ -234,3 +234,4 @@ html[data-skin] select option {
   background-color: var(--app-surface-strong);
   color: var(--app-text);
 }
+@import "./styles/closeflow-mobile-start-tile-trim.css";

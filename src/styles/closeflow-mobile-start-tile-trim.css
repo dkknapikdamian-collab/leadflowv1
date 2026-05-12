@@ -1,0 +1,36 @@
+/*
+  CLOSEFLOW_MOBILE_START_TILE_TRIM_2026_05_12
+
+  Cel:
+  - na telefonie ukryc startowe kafelki/skroty z naglowka strony,
+    np. Centrum dnia / Leady / Zadania / Kalendarz,
+  - zostawic desktop i tablet bez zmian,
+  - nie usuwac komponentow z Reacta, tylko schowac warstwe wizualna na mobile.
+*/
+
+@media (max-width: 767px) {
+  #root .cf-html-shell :is(
+    [data-cf-mobile-start-tile-trim="true"],
+    [data-cf-page-header="true"] .cf-page-hero-aside,
+    [data-cf-page-header="true"] .cf-page-header-tiles,
+    [data-cf-page-header="true"] .cf-page-header-stats,
+    [data-cf-page-header="true"] .cf-page-header-metrics,
+    [data-cf-page-header="true"] .cf-page-hero-stats,
+    [data-cf-page-header="true"] .cf-page-hero-shortcuts,
+    [data-cf-page-header="true"] .cf-page-quick-links,
+    [data-cf-page-header="true"] [data-cf-page-header-shortcuts="true"],
+    [data-cf-page-header="true"] [data-cf-page-header-tiles="true"],
+    [data-cf-page-header="true"] [data-cf-stat-shortcut-grid="true"]
+  ) {
+    display: none !important;
+  }
+
+  #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+  #root .cf-html-shell [data-cf-page-header="true"] {
+    margin-bottom: 12px !important;
+  }
+
+  #root .cf-html-shell [data-cf-page-header="true"] .cf-page-hero-main {
+    min-width: 0 !important;
+  }
+}
