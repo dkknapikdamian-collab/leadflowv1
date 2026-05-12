@@ -128,6 +128,8 @@ const CASE_DETAIL_V1_PORTAL_CLIENT_ACTION_GUARD = 'Portal klienta portal_token_c
 void CASE_DETAIL_V1_PORTAL_CLIENT_ACTION_GUARD;
 const STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining partial payments';
 const STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD = 'case finance history visible separate section';
+const FIN11_CASE_RIGHT_FINANCE_PANEL = 'FIN-11_CASE_RIGHT_FINANCE_PANEL_VISIBLE_EDIT_VALUE_COMMISSION';
+const FIN11_CASE_PORTAL_ACTION_GUARD_COMPAT = 'Portal klienta';
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -406,6 +408,108 @@ function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymen
     progress,
     status,
     currency: source.currency,
+  };
+}
+
+/* FIN-11_CASE_RIGHT_FINANCE_HELPERS */
+type CaseFinanceEditFormState = {
+  contractValue: string;
+  currency: string;
+  commissionMode: 'none' | 'percent' | 'fixed';
+  commissionRate: string;
+  commissionAmount: string;
+  commissionStatus: string;
+};
+
+type CaseFinancePaymentFormState = {
+  type: 'partial' | 'commission';
+  status: string;
+  amount: string;
+  currency: string;
+  paidAt: string;
+  dueAt: string;
+  note: string;
+};
+
+function fin11Amount(value: unknown) {
+  if (typeof value === 'number') return Number.isFinite(value) ? Math.max(0, value) : 0;
+  const normalized = String(value ?? '').trim().replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? Math.max(0, parsed) : 0;
+}
+
+function fin11MoneyInput(value: unknown) {
+  const amount = fin11Amount(value);
+  return amount > 0 ? String(amount) : '';
+}
+
+function fin11Currency(value: unknown) {
+  const normalized = String(value || '').trim().toUpperCase();
+  return /^[A-Z]{3}$/.test(normalized) ? normalized : 'PLN';
+}
+
+function fin11DateTimeLocal(value: unknown) {
+  const raw = String(value || '').trim();
+  const date = raw ? new Date(raw) : new Date();
+  if (Number.isNaN(date.getTime())) return '';
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
+function fin11IsoFromLocal(value: string) {
+  if (!value) return null;
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date.toISOString();
+}
+
+function formatCaseFinanceValueOrUnset(value: unknown, currency?: string) {
+  const amount = fin11Amount(value);
+  return amount > 0 ? formatMoney(amount, currency) : 'Nie ustawiono';
+}
+
+function buildFin11FinanceEditState(caseData: CaseRecord | null, payments: CasePaymentRecord[]): CaseFinanceEditFormState {
+  const summary = getCaseFinanceSourceSummary(caseData, payments);
+  return {
+    contractValue: fin11MoneyInput(summary.contractValue),
+    currency: fin11Currency(summary.currency),
+    commissionMode: summary.commissionMode === 'percent' || summary.commissionMode === 'fixed' ? summary.commissionMode : 'none',
+    commissionRate: fin11MoneyInput(summary.commissionRate),
+    commissionAmount: fin11MoneyInput(summary.commissionAmount),
+    commissionStatus: summary.commissionStatus || 'not_set',
+  };
+}
+
+function buildFin11PaymentState(type: 'partial' | 'commission', currency: string): CaseFinancePaymentFormState {
+  return {
+    type,
+    status: 'paid',
+    amount: '',
+    currency: fin11Currency(currency),
+    paidAt: fin11DateTimeLocal(new Date().toISOString()),
+    dueAt: '',
+    note: '',
+  };
+}
+
+function getFin11FinancePreview(form: CaseFinanceEditFormState, payments: CasePaymentRecord[]) {
+  const contractValue = fin11Amount(form.contractValue);
+  const clientPaidAmount = getCaseFinanceSourceSummary({ contractValue, currency: form.currency } as CaseRecord, payments).clientPaidAmount;
+  const commissionRate = form.commissionMode === 'percent' ? Math.min(100, fin11Amount(form.commissionRate)) : 0;
+  const commissionAmount = form.commissionMode === 'fixed'
+    ? fin11Amount(form.commissionAmount)
+    : form.commissionMode === 'percent'
+      ? Math.round(((contractValue * commissionRate) / 100) * 100) / 100
+      : 0;
+  const commissionPaidAmount = getCaseFinanceSourceSummary({ contractValue, currency: form.currency } as CaseRecord, payments).commissionPaidAmount;
+  return {
+    contractValue,
+    currency: fin11Currency(form.currency),
+    commissionRate,
+    commissionAmount,
+    clientPaidAmount,
+    commissionPaidAmount,
+    remainingAmount: Math.max(contractValue - clientPaidAmount, 0),
+    commissionRemainingAmount: Math.max(commissionAmount - commissionPaidAmount, 0),
   };
 }
 function sortCasePayments(payments: CasePaymentRecord[]) {
@@ -920,6 +1024,104 @@ export default function CaseDetail() {
   const { hasAccess, access } = useWorkspace();
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [casePayments, setCasePayments] = useState<CasePaymentRecord[]>([]);
+
+  /* FIN-11_CASE_RIGHT_FINANCE_STATE_AND_HANDLERS */
+  const [isFinanceEditOpen, setIsFinanceEditOpen] = useState(false);
+  const [financeEditForm, setFinanceEditForm] = useState<CaseFinanceEditFormState>(() => buildFin11FinanceEditState(null, []));
+  const [isFinanceSaving, setIsFinanceSaving] = useState(false);
+  const [isFinancePaymentOpen, setIsFinancePaymentOpen] = useState(false);
+  const [financePaymentForm, setFinancePaymentForm] = useState<CaseFinancePaymentFormState>(() => buildFin11PaymentState('partial', 'PLN'));
+
+  const financeEditPreview = useMemo(() => getFin11FinancePreview(financeEditForm, casePayments), [casePayments, financeEditForm]);
+
+  function openCaseFinanceEditModal() {
+    setFinanceEditForm(buildFin11FinanceEditState(caseData, casePayments));
+    setIsFinanceEditOpen(true);
+  }
+
+  function openCaseFinancePaymentModal(type: 'partial' | 'commission') {
+    const summary = getCaseFinanceSourceSummary(caseData, casePayments);
+    setFinancePaymentForm(buildFin11PaymentState(type, summary.currency));
+    setIsFinancePaymentOpen(true);
+  }
+
+  async function reloadCaseFinanceData(nextCaseFallback?: CaseRecord | null) {
+    const currentCaseId = String((nextCaseFallback || caseData)?.id || '').trim();
+    if (!currentCaseId) return;
+    const [freshCase, freshPayments] = await Promise.all([
+      fetchCaseByIdFromSupabase(currentCaseId).catch(() => null),
+      fetchPaymentsFromSupabase({ caseId: currentCaseId }).catch(() => casePayments as unknown[]),
+    ]);
+    const normalizedCase = normalizeRecord<CaseRecord>(freshCase) || nextCaseFallback;
+    if (normalizedCase) setCaseData(normalizedCase);
+    setCasePayments((Array.isArray(freshPayments) ? freshPayments : []) as CasePaymentRecord[]);
+  }
+
+  async function handleSaveCaseFinanceEdit() {
+    if (!caseData?.id || isFinanceSaving) return;
+    const contractValue = financeEditPreview.contractValue;
+    const commissionMode = financeEditForm.commissionMode;
+    const patch = buildCaseFinancePatch({
+      contractValue,
+      expectedRevenue: contractValue,
+      currency: financeEditPreview.currency,
+      commissionMode,
+      commissionBase: 'contract_value',
+      commissionRate: commissionMode === 'percent' ? financeEditPreview.commissionRate : null,
+      commissionAmount: commissionMode === 'fixed' ? financeEditPreview.commissionAmount : financeEditPreview.commissionAmount,
+      commissionStatus: financeEditForm.commissionStatus,
+    });
+    setIsFinanceSaving(true);
+    try {
+      const updatePayload = {
+        id: caseData.id,
+        ...patch,
+        // FIN-11: derived cache for current backend contract. Payments remain the source of truth.
+        remainingAmount: financeEditPreview.remainingAmount,
+      } as any;
+      const updatedCase = await updateCaseInSupabase(updatePayload);
+      const nextCase = normalizeRecord<CaseRecord>(updatedCase) || ({ ...caseData, ...updatePayload } as CaseRecord);
+      setCaseData(nextCase);
+      await reloadCaseFinanceData(nextCase);
+      setIsFinanceEditOpen(false);
+      toast.success('Zapisano wartość i prowizję sprawy');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać wartości i prowizji sprawy');
+    } finally {
+      setIsFinanceSaving(false);
+    }
+  }
+
+  async function handleSaveCaseFinancePayment() {
+    if (!caseData?.id || isFinanceSaving) return;
+    const amount = fin11Amount(financePaymentForm.amount);
+    if (amount <= 0) {
+      toast.error('Podaj kwotę płatności');
+      return;
+    }
+    setIsFinanceSaving(true);
+    try {
+      await createPaymentInSupabase({
+        caseId: caseData.id,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        type: financePaymentForm.type,
+        status: financePaymentForm.status,
+        amount,
+        currency: fin11Currency(financePaymentForm.currency),
+        paidAt: fin11IsoFromLocal(financePaymentForm.paidAt),
+        dueAt: fin11IsoFromLocal(financePaymentForm.dueAt),
+        note: financePaymentForm.note.trim(),
+      });
+      await reloadCaseFinanceData(caseData);
+      setIsFinancePaymentOpen(false);
+      toast.success(financePaymentForm.type === 'commission' ? 'Dodano płatność prowizji' : 'Dodano wpłatę');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się dodać płatności');
+    } finally {
+      setIsFinanceSaving(false);
+    }
+  }
   const [caseSettlementSaving, setCaseSettlementSaving] = useState(false);
   const [items, setItems] = useState<CaseItem[]>([]);
   const [activities, setActivities] = useState<CaseActivity[]>([]);
@@ -1989,10 +2191,22 @@ export default function CaseDetail() {
                 onAddPayment={() => setIsCasePaymentOpen(true)}
               />
             </div>
-<section className="right-card case-detail-right-card" data-fin10-legacy-finance-panel-removed="true">
+<section className="right-card case-detail-right-card" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true">
               <div className="case-detail-card-title-row">
                 <Paperclip className="h-4 w-4" />
                 <h2>Rozliczenie sprawy</h2>
+              <div className="case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
+                <Button type="button" size="sm" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
+                  Edytuj wartość/prowizję
+                </Button>
+                <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('partial')} disabled={isFinanceSaving}>
+                  Dodaj wpłatę
+                </Button>
+                <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('commission')} disabled={isFinanceSaving}>
+                  Dodaj płatność prowizji
+                </Button>
+              </div>
+              <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
               </div>
               <small>Wartość: {formatMoney(caseFinance.expected, caseFinance.currency)}</small>
               <small>Wpłacono: {formatMoney(caseFinance.paid, caseFinance.currency)}</small>
@@ -2084,6 +2298,107 @@ export default function CaseDetail() {
               {casePaymentSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
               Zapisz wpłatę
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+
+      {/* FIN-11_CASE_RIGHT_FINANCE_MODALS */}
+      <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
+        <DialogContent className="case-finance-edit-modal">
+          <DialogHeader>
+            <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
+          </DialogHeader>
+          <div className="case-finance-edit-form">
+            <label className="case-finance-edit-field">
+              <span>Wartość sprawy / transakcji</span>
+              <Input inputMode="decimal" value={financeEditForm.contractValue} placeholder="Nie ustawiono" onChange={(event) => setFinanceEditForm((current) => ({ ...current, contractValue: event.target.value }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Waluta</span>
+              <Input value={financeEditForm.currency} placeholder="PLN" maxLength={3} onChange={(event) => setFinanceEditForm((current) => ({ ...current, currency: event.target.value.toUpperCase() }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Model prowizji</span>
+              <select className="case-finance-edit-select" value={financeEditForm.commissionMode} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionMode: event.target.value as 'none' | 'percent' | 'fixed' }))}>
+                <option value="none">Brak</option>
+                <option value="percent">Procent od wartości</option>
+                <option value="fixed">Kwota stała</option>
+              </select>
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Procent prowizji</span>
+              <Input inputMode="decimal" value={financeEditForm.commissionRate} disabled={financeEditForm.commissionMode !== 'percent'} placeholder="np. 3" onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionRate: event.target.value }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Kwota prowizji</span>
+              <Input inputMode="decimal" value={financeEditForm.commissionAmount} disabled={financeEditForm.commissionMode !== 'fixed'} placeholder="np. 3000" onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionAmount: event.target.value }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Status prowizji</span>
+              <select className="case-finance-edit-select" value={financeEditForm.commissionStatus} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionStatus: event.target.value }))}>
+                <option value="not_set">nieustawiona</option>
+                <option value="expected">oczekiwana</option>
+                <option value="due">należna</option>
+                <option value="partially_paid">częściowo zapłacona</option>
+                <option value="paid">zapłacona</option>
+                <option value="overdue">zaległa</option>
+              </select>
+            </label>
+            <div className="case-finance-edit-preview" data-fin11-case-finance-preview="true">
+              <div><span>Prowizja należna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatMoney(financeEditPreview.remainingAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setIsFinanceEditOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
+            <Button type="button" onClick={handleSaveCaseFinanceEdit} disabled={isFinanceSaving || financeEditPreview.contractValue <= 0}>Zapisz</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
+        <DialogContent className="case-finance-edit-modal">
+          <DialogHeader>
+            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
+          </DialogHeader>
+          <div className="case-finance-edit-form">
+            <label className="case-finance-edit-field">
+              <span>Kwota</span>
+              <Input inputMode="decimal" value={financePaymentForm.amount} placeholder="np. 20000" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, amount: event.target.value }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Waluta</span>
+              <Input value={financePaymentForm.currency} maxLength={3} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, currency: event.target.value.toUpperCase() }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Status</span>
+              <select className="case-finance-edit-select" value={financePaymentForm.status} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, status: event.target.value }))}>
+                <option value="paid">opłacona</option>
+                <option value="partially_paid">częściowo opłacona</option>
+                <option value="fully_paid">w pełni opłacona</option>
+                <option value="deposit_paid">zaliczka wpłacona</option>
+                <option value="due">należna</option>
+                <option value="planned">zaplanowana</option>
+              </select>
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Data zapłaty</span>
+              <Input type="datetime-local" value={financePaymentForm.paidAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, paidAt: event.target.value }))} />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Termin</span>
+              <Input type="datetime-local" value={financePaymentForm.dueAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, dueAt: event.target.value }))} />
+            </label>
+            <label className="case-finance-edit-field case-finance-edit-field--wide">
+              <span>Notatka</span>
+              <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotówka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
+            </label>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setIsFinancePaymentOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
+            <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz płatność</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

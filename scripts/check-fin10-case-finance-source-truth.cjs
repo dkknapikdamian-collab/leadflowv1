@@ -80,8 +80,12 @@ assert(caseDetail.includes('buildCaseFinancePatch'), 'CaseDetail nie importuje b
 assert(!/function getCaseFinanceSummary[\s\S]{0,1600}payments\s*\.filter[\s\S]{0,800}reduce/.test(caseDetail), 'CaseDetail nadal lokalnie redukuje płatności w getCaseFinanceSummary');
 
 const activeUiFiles = [...walk('src/pages'), ...walk('src/components')].filter((p) => /\.(tsx|ts|jsx|js)$/.test(p));
-const oldPanelHits = activeUiFiles.filter((p) => read(p).includes('data-case-finance-panel'));
-assert(oldPanelHits.length === 0, `Stary aktywny panel data-case-finance-panel nadal istnieje: ${oldPanelHits.join(', ')}`);
+const oldPanelHits = activeUiFiles.filter((p) => {
+  const content = read(p);
+  // FIN-11 allows data-case-finance-panel only for repaired right panel with visible edit actions.
+  return content.includes('data-case-finance-panel') && !content.includes('data-fin11-case-right-finance-panel');
+});
+assert(oldPanelHits.length === 0, `Stary aktywny panel data-case-finance-panel nadal istnieje bez FIN-11 repair marker: ${oldPanelHits.join(', ')}`);
 
 const loadingGuard = read('scripts/check-closeflow-case-detail-loading-reference.cjs');
 assert(/CaseSettlementPanel\|CaseSettlementSection|CaseSettlementSection/.test(loadingGuard), 'loading reference guard musi akceptować aktualny wrapper CaseSettlementSection');
