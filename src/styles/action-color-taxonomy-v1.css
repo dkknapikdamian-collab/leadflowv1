@@ -1,0 +1,48 @@
+/* CLOSEFLOW_ACTION_COLOR_TAXONOMY_V1 */
+/* CLOSEFLOW_ACTION_COLOR_TAXONOMY_V1_REPAIR6 */
+:root {
+  --cf-action-task: #38bdf8;
+  --cf-action-event: #a78bfa;
+  --cf-action-note: #f59e0b;
+  --cf-action-followup: #22c55e;
+  --cf-action-deadline: #fb7185;
+  --cf-action-meeting: #818cf8;
+  --cf-action-call: #06b6d4;
+  --cf-action-email: #60a5fa;
+  --cf-action-payment: #34d399;
+  --cf-action-system: #94a3b8;
+  --cf-action-default: #cbd5e1;
+}
+
+.cf-action-kind-task, [data-action-kind="task"], [data-closeflow-action-kind="task"] { --cf-action-accent: var(--cf-action-task); }
+.cf-action-kind-event, [data-action-kind="event"], [data-closeflow-action-kind="event"] { --cf-action-accent: var(--cf-action-event); }
+.cf-action-kind-note, [data-action-kind="note"], [data-closeflow-action-kind="note"] { --cf-action-accent: var(--cf-action-note); }
+.cf-action-kind-followup, [data-action-kind="followup"], [data-closeflow-action-kind="followup"] { --cf-action-accent: var(--cf-action-followup); }
+.cf-action-kind-deadline, [data-action-kind="deadline"], [data-closeflow-action-kind="deadline"] { --cf-action-accent: var(--cf-action-deadline); }
+.cf-action-kind-meeting, [data-action-kind="meeting"], [data-closeflow-action-kind="meeting"] { --cf-action-accent: var(--cf-action-meeting); }
+.cf-action-kind-call, [data-action-kind="call"], [data-closeflow-action-kind="call"] { --cf-action-accent: var(--cf-action-call); }
+.cf-action-kind-email, [data-action-kind="email"], [data-closeflow-action-kind="email"] { --cf-action-accent: var(--cf-action-email); }
+.cf-action-kind-payment, [data-action-kind="payment"], [data-closeflow-action-kind="payment"] { --cf-action-accent: var(--cf-action-payment); }
+.cf-action-kind-system, [data-action-kind="system"], [data-closeflow-action-kind="system"] { --cf-action-accent: var(--cf-action-system); }
+.cf-action-kind-default, [data-action-kind="default"], [data-closeflow-action-kind="default"] { --cf-action-accent: var(--cf-action-default); }
+
+:is(.cf-action-kind-task,.cf-action-kind-event,.cf-action-kind-note,.cf-action-kind-followup,.cf-action-kind-deadline,.cf-action-kind-meeting,.cf-action-kind-call,.cf-action-kind-email,.cf-action-kind-payment,.cf-action-kind-system,.cf-action-kind-default,[data-action-kind],[data-closeflow-action-kind]) {
+  border-color: color-mix(in srgb, var(--cf-action-accent, var(--cf-action-default)) 48%, rgba(15,23,42,.35)) !important;
+}
+
+:is(.cf-action-kind-task,.cf-action-kind-event,.cf-action-kind-note,.cf-action-kind-followup,.cf-action-kind-deadline,.cf-action-kind-meeting,.cf-action-kind-call,.cf-action-kind-email,.cf-action-kind-payment,.cf-action-kind-system,.cf-action-kind-default,[data-action-kind],[data-closeflow-action-kind])::before {
+  background: var(--cf-action-accent, var(--cf-action-default));
+}
+
+.cf-action-color-chip {
+  border: 1px solid color-mix(in srgb, var(--cf-action-accent, var(--cf-action-default)) 54%, rgba(15,23,42,.2));
+  background: color-mix(in srgb, var(--cf-action-accent, var(--cf-action-default)) 14%, transparent);
+  color: color-mix(in srgb, var(--cf-action-accent, var(--cf-action-default)) 70%, #ffffff);
+}
+
+/* Broad fallback for older cards that do not yet expose data-action-kind. */
+[class*="task-card"], [class*="TaskCard"], [class*="task-row"] { --cf-action-accent: var(--cf-action-task); }
+[class*="event-card"], [class*="calendar-event"], [class*="event-row"] { --cf-action-accent: var(--cf-action-event); }
+[class*="note-card"], [class*="client-note"], [class*="case-note"] { --cf-action-accent: var(--cf-action-note); }
+[class*="followup"], [class*="follow-up"] { --cf-action-accent: var(--cf-action-followup); }
+[class*="deadline"], [class*="overdue"] { --cf-action-accent: var(--cf-action-deadline); }

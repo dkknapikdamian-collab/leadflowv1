@@ -115,6 +115,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 import '../styles/visual-stage12-client-detail-vnext.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
   entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),
@@ -1044,6 +1045,20 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpe
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENT_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
+
+const CLIENTDETAIL_ACTION_COLOR_TAXONOMY_V1 = 'client detail action visual taxonomy V1';
+function clientDetailActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function clientDetailActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function clientDetailActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function clientDetailActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function ClientDetail() {
   const { clientId } = useParams();
   const id = clientId; // CLIENT_DETAIL_CLIENT_ID_ROUTE_ALIAS_HOTFIX: legacy local references must resolve to route clientId

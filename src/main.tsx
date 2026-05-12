@@ -6,6 +6,7 @@ import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppearanceProvider } from './components/appearance-provider';
 import { registerCloseFlowServiceWorker } from './pwa/register-service-worker';
 import { registerChunkAssetReloadGuard } from './pwa/chunk-asset-reload-guard';
+import './styles/action-color-taxonomy-v1.css';
 
 registerChunkAssetReloadGuard();
 registerCloseFlowServiceWorker();

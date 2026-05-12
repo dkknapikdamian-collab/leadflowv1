@@ -48,6 +48,7 @@ import {
 } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const sourceOptions = [
   { value: 'all', label: 'Wszystko' },
   { value: 'today', label: 'Dziś' },
@@ -609,6 +610,20 @@ function ActivityRow({
   );
 }
 
+
+const ACTIVITY_ACTION_COLOR_TAXONOMY_V1 = 'activity action visual taxonomy V1';
+function activityActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function activityActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function activityActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function activityActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function Activity() {
   const { workspace, loading: workspaceLoading } = useWorkspace();
   const [activities, setActivities] = useState<any[]>([]);

@@ -32,6 +32,7 @@ import { toDateTimeLocalValue } from '../lib/scheduling';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
 const TASKS_VISIBLE_ACTIONS_STAGE47 = 'TASKS_VISIBLE_ACTIONS_STAGE47';
@@ -191,6 +192,20 @@ function buildNextStepPromptState(task: any): NextStepPromptState {
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_TASKS_STABLE = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
+
+const TASKS_ACTION_COLOR_TAXONOMY_V1 = 'tasks action visual taxonomy V1';
+function tasksActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function tasksActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function tasksActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function tasksActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function TasksStable() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);

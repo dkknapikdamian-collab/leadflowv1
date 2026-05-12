@@ -665,10 +665,13 @@
     "check:billing-cleanup-2026-05-11": "node scripts/check-closeflow-billing-cleanup-2026-05-11.cjs",
     "check:support-visible-ticket-list": "node scripts/check-closeflow-support-visible-ticket-list.cjs",
     "check:closeflow-admin-feedback-2026-05-11-p2": "node scripts/check-closeflow-admin-feedback-2026-05-11-p2.cjs",
+    "check:closeflow-admin-feedback-2026-05-11-p3": "node scripts/check-closeflow-admin-feedback-2026-05-11-p3.cjs",
     "check:page-header-stage6-final-lock": "node scripts/check-closeflow-page-header-stage6-final-lock.cjs",
     "check:stage14a-clientdetail-notes-history": "node scripts/check-closeflow-stage14a-clientdetail-notes-history.cjs",
     "check:stage14a-clientdetail-notes-history-repair2": "node scripts/check-closeflow-stage14a-clientdetail-notes-history-repair2.cjs",
-    "check:hotfix-asset-cache-stale-chunks": "node scripts/check-hotfix-asset-cache-stale-chunks.cjs"
+    "check:hotfix-asset-cache-stale-chunks": "node scripts/check-hotfix-asset-cache-stale-chunks.cjs",
+    "check:closeflow:action-colors:v1": "node scripts/check-closeflow-action-color-taxonomy-v1.cjs",
+    "check:closeflow:action-colors:v1:repair6": "node scripts/check-closeflow-action-color-taxonomy-v1-repair6.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

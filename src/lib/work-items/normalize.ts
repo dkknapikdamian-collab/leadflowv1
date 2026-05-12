@@ -319,3 +319,6 @@ export function normalizeCaseV1(input: unknown): CanonicalCase {
     updatedAt: pickIso(row, ['updatedAt', 'updated_at']),
   };
 }
+
+// CLOSEFLOW_ACTION_COLOR_TAXONOMY_V1_NORMALIZE
+export const CLOSEFLOW_ACTION_COLOR_TAXONOMY_V1_NORMALIZE = 'normalized work items can carry visual kind in UI layers';

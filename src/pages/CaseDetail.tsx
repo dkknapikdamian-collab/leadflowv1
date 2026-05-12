@@ -97,6 +97,7 @@ import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
   entity: 'case',
@@ -878,6 +879,20 @@ function CaseDetailLoadingState() {
   );
 }
 
+
+const CASEDETAIL_ACTION_COLOR_TAXONOMY_V1 = 'case detail action visual taxonomy V1';
+function caseDetailActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function caseDetailActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function caseDetailActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function caseDetailActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();

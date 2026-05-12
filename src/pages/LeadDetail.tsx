@@ -89,6 +89,7 @@ import {
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage14-lead-detail-vnext.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {
   entity: 'lead',
@@ -448,6 +449,20 @@ function LeadActionButton({ children, onClick, disabled }: { children: ReactNode
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEAD_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 
+
+const LEADDETAIL_ACTION_COLOR_TAXONOMY_V1 = 'lead detail action visual taxonomy V1';
+function leadDetailActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function leadDetailActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function leadDetailActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function leadDetailActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();

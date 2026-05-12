@@ -106,6 +106,7 @@ import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-calendar-skin-only-v1.css';
 import '../styles/closeflow-calendar-render-pipeline-repair3.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 
 
@@ -480,6 +481,20 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   );
 }
 
+
+const CALENDAR_ACTION_COLOR_TAXONOMY_V1 = 'calendar action visual taxonomy V1';
+function calendarActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function calendarActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function calendarActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function calendarActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function Calendar() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [searchParams, setSearchParams] = useSearchParams();

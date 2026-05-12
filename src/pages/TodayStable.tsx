@@ -51,6 +51,7 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';
@@ -788,6 +789,20 @@ function normalizeAdminFeedbackP1TodayHeaderActions() {
   }
 }
 
+
+const TODAY_ACTION_COLOR_TAXONOMY_V1 = 'today action visual taxonomy V1';
+function todayActionVisualKind(row: Record<string, unknown> | null | undefined) {
+  return inferCloseFlowActionVisualKind(row);
+}
+function todayActionVisualClass(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualClass(row);
+}
+function todayActionDataKind(row: Record<string, unknown> | null | undefined) {
+  return getCloseFlowActionVisualDataKind(row);
+}
+function todayActionKindClass(kind: unknown) {
+  return getCloseFlowActionKindClass(kind);
+}
 export default function TodayStable() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<DashboardStatus>('idle');
