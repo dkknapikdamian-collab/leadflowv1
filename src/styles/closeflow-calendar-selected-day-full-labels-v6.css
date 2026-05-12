@@ -1,0 +1,143 @@
+/* CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_LABELS_V6_2026_05_12
+
+   Selected day readability + full semantic labels.
+   Goal:
+   - not only "Zad" / "Wy"
+   - show "Zadanie" / "Wydarzenie" / "Telefon" / "Lead"
+   - show actual item text after the label
+   - ellipsis if long
+   - full text on hover
+   - scoped to Calendar content only
+*/
+
+:root {
+  --cf-cal-selected-v6-row-bg: #0f172a;
+  --cf-cal-selected-v6-row-border: rgba(148, 163, 184, 0.38);
+  --cf-cal-selected-v6-text: #f8fafc;
+  --cf-cal-selected-v6-muted: #cbd5e1;
+  --cf-cal-selected-v6-task: #22c55e;
+  --cf-cal-selected-v6-event: #a78bfa;
+  --cf-cal-selected-v6-phone: #38bdf8;
+  --cf-cal-selected-v6-lead: #60a5fa;
+}
+
+/* V6 selected-day rows. These are explicit, readable rows, not month mini chips. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6 {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+
+  height: 38px !important;
+  min-height: 38px !important;
+  max-height: 38px !important;
+
+  margin: 0 0 8px 0 !important;
+  padding: 8px 10px !important;
+
+  border: 1px solid var(--cf-cal-selected-v6-row-border) !important;
+  border-radius: 12px !important;
+  background: var(--cf-cal-selected-v6-row-bg) !important;
+  box-shadow: none !important;
+
+  color: var(--cf-cal-selected-v6-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-text) !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  cursor: help !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6 * {
+  box-sizing: border-box !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-kind-v6 {
+  flex: 0 0 auto !important;
+  min-width: 68px !important;
+  max-width: 92px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.14) !important;
+  background: rgba(255,255,255,0.08) !important;
+
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  line-height: 20px !important;
+  letter-spacing: -0.01em !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-title-v6 {
+  flex: 1 1 auto !important;
+  display: block !important;
+
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+
+  height: 20px !important;
+  min-height: 20px !important;
+  max-height: 20px !important;
+
+  color: var(--cf-cal-selected-v6-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-text) !important;
+
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 20px !important;
+  letter-spacing: -0.01em !important;
+
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Keep old V4 selected-day rows readable if they still appear before enhancer runs. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-text-row {
+  color: var(--cf-cal-selected-v6-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-text) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="task"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-cal-selected-v6-task) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-task) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="event"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-cal-selected-v6-event) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-event) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="phone"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-cal-selected-v6-phone) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-phone) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-kind-v6="lead"] .cf-calendar-selected-day-kind-v6 {
+  color: var(--cf-cal-selected-v6-lead) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-lead) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6[data-cf-selected-completed-v6="true"] .cf-calendar-selected-day-title-v6 {
+  color: var(--cf-cal-selected-v6-muted) !important;
+  -webkit-text-fill-color: var(--cf-cal-selected-v6-muted) !important;
+  text-decoration: line-through !important;
+  text-decoration-color: rgba(203,213,225,0.75) !important;
+}
