@@ -1,0 +1,143 @@
+/* CLOSEFLOW_COMPACT_TOP_SHELL_SOURCE_TRUTH_2026_05_12
+   owner: CloseFlow Visual System
+   scope: desktop operator shell + page header v2
+   goal: remove heavy page hero cards and move operational content up
+   rule: desktop compact shell only; mobile is a separate source of truth
+*/
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  #root .cf-html-shell .global-bar {
+    min-height: 56px !important;
+    height: 56px !important;
+    padding: 0 24px !important;
+    align-items: center !important;
+    border-bottom: 1px solid rgba(203, 213, 225, 0.72) !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(14px) !important;
+  }
+
+  #root .cf-html-shell .global-title {
+    gap: 0.62rem !important;
+    align-items: center !important;
+  }
+
+  #root .cf-html-shell .global-dot {
+    width: 1.72rem !important;
+    height: 1.72rem !important;
+    min-width: 1.72rem !important;
+    min-height: 1.72rem !important;
+  }
+
+  #root .cf-html-shell .global-title-copy {
+    display: inline-flex !important;
+    align-items: baseline !important;
+    gap: 0.42rem !important;
+    color: #64748b !important;
+    -webkit-text-fill-color: #64748b !important;
+    font-size: 0.78rem !important;
+    line-height: 1 !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  #root .cf-html-shell .global-title-copy strong {
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+    font-size: 0.92rem !important;
+    line-height: 1 !important;
+    font-weight: 950 !important;
+    letter-spacing: -0.025em !important;
+  }
+
+  #root .cf-html-shell [data-shell-content="true"],
+  #root .cf-html-shell .view.active {
+    padding-top: 0.85rem !important;
+  }
+
+  #root .cf-html-shell [data-shell-content="true"] > .cf-html-view,
+  #root .cf-html-shell .cf-html-view {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    gap: 0.75rem !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2 {
+    width: 100% !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    margin: 0 0 0.62rem 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    column-gap: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    isolation: auto !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2__copy {
+    display: none !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2__actions {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    min-height: 2.25rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 0.48rem !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2__actions:empty {
+    display: none !important;
+    min-height: 0 !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2:has(.cf-page-header-v2__actions:empty) {
+    display: none !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) {
+    min-height: 2.2rem !important;
+    height: 2.2rem !important;
+    padding: 0 0.9rem !important;
+    border-radius: 0.82rem !important;
+    font-size: 0.74rem !important;
+    font-weight: 880 !important;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.08) !important;
+  }
+
+  #root .cf-html-shell .cf-page-header-v2 + .grid-4,
+  #root .cf-html-shell .cf-page-header-v2 + .stats,
+  #root .cf-html-shell .cf-page-header-v2 + [class*="grid-"],
+  #root .cf-html-shell .cf-page-header-v2 + .layout-list,
+  #root .cf-html-shell .cf-page-header-v2 + .stack {
+    margin-top: 0 !important;
+  }
+}
+
+@media (min-width: 1440px) and (hover: hover) and (pointer: fine) {
+  #root .cf-html-shell .global-bar {
+    min-height: 54px !important;
+    height: 54px !important;
+  }
+
+  #root .cf-html-shell [data-shell-content="true"],
+  #root .cf-html-shell .view.active {
+    padding-top: 0.7rem !important;
+  }
+}

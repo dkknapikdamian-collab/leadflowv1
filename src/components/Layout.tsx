@@ -50,6 +50,7 @@ import { signOutFromSupabase } from '../lib/supabase-auth';
 import GlobalQuickActions from './GlobalQuickActions';
 import ContextActionDialogsHost from './ContextActionDialogs';
 import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
+import '../styles/closeflow-compact-top-shell-source-truth.css';
 import { OperatorMetricToneRuntime } from './ui-system';
 import { parseISO, differenceInDays } from 'date-fns';
 import '../styles/closeflow-desktop-density-source-truth.css';
@@ -407,4 +408,5 @@ Inbox szkicĂłw
 const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
 ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : [])
 */
+
 
