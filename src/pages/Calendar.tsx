@@ -113,6 +113,7 @@ import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
 import '../styles/closeflow-calendar-selected-day-readability-v5.css';
 import '../styles/closeflow-calendar-selected-day-full-labels-v6.css';
 import '../styles/closeflow-calendar-v6-repair1-scope-text.css';
+import '../styles/closeflow-calendar-month-light-selected-day-real-entries-repair2.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -150,6 +151,7 @@ const CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4 = 'CLOSEFLOW_CALENDAR_MONTH_PL
 const CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_2026_05_12';
 const CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_LABELS_V6 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_LABELS_V6_2026_05_12';
 const CLOSEFLOW_CALENDAR_V6_REPAIR1_SCOPE_TEXT = 'CLOSEFLOW_CALENDAR_V6_REPAIR1_SCOPE_TEXT_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_LIGHT_SELECTED_DAY_REAL_ENTRIES_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_LIGHT_SELECTED_DAY_REAL_ENTRIES_REPAIR2_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -802,6 +804,7 @@ export default function Calendar() {
     };
 
     const chooseRowCandidate = (labelNode: HTMLElement) => {
+      if (labelNode.closest('.calendar-entry-card, .cf-readable-card, [data-calendar-entry-completed]')) return null;
       let current: HTMLElement | null = labelNode;
       for (let depth = 0; current && depth < 7; depth += 1) {
         const raw = cleanText(current.innerText || current.textContent || '');
