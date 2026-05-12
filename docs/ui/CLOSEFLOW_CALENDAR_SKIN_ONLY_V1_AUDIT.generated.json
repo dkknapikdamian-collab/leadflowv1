@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-05-12T04:31:08.796Z",
+  "stage": "CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12",
+  "changed": [
+    "src/pages/Calendar.tsx",
+    "src/styles/closeflow-calendar-skin-only-v1.css"
+  ],
+  "hardRules": [
+    "skin only",
+    "do not change calendar structure",
+    "do not hide left side panel",
+    "do not change data handlers",
+    "do not change routing"
+  ]
+}

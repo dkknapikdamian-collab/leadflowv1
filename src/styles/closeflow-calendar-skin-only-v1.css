@@ -1,0 +1,468 @@
+/* CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12
+   Calendar visual skin only.
+   Scope: Calendar page after header V2.
+   Hard rule: do not change Calendar.tsx structure, handlers, sidebar, data, API, month/week logic.
+   The left side panel remains visible.
+*/
+
+:root {
+  --cf-cal-page-bg: #eef4fb;
+  --cf-cal-page-glow: rgba(37, 99, 235, 0.09);
+
+  --cf-cal-surface: #ffffff;
+  --cf-cal-surface-soft: #f8fbff;
+  --cf-cal-surface-muted: #f3f7fc;
+  --cf-cal-surface-selected: #eff6ff;
+
+  --cf-cal-border: #dbe7f4;
+  --cf-cal-border-strong: #bfdbfe;
+  --cf-cal-border-selected: #60a5fa;
+
+  --cf-cal-shadow: 0 20px 48px rgba(15, 23, 42, 0.075);
+  --cf-cal-shadow-soft: 0 12px 28px rgba(15, 23, 42, 0.055);
+
+  --cf-cal-text: #0f172a;
+  --cf-cal-text-muted: #64748b;
+  --cf-cal-text-soft: #94a3b8;
+
+  --cf-cal-blue: #2563eb;
+  --cf-cal-blue-strong: #1d4ed8;
+  --cf-cal-blue-soft: #eff6ff;
+
+  --cf-cal-violet: #7c3aed;
+  --cf-cal-violet-soft: #f5f3ff;
+
+  --cf-cal-green: #16a34a;
+  --cf-cal-green-soft: #ecfdf3;
+
+  --cf-cal-red: #dc2626;
+  --cf-cal-red-soft: #fef2f2;
+
+  --cf-cal-phone: #0284c7;
+  --cf-cal-phone-soft: #e0f2fe;
+
+  --cf-cal-radius-xl: 28px;
+  --cf-cal-radius-lg: 22px;
+  --cf-cal-radius-md: 16px;
+  --cf-cal-radius-sm: 10px;
+  --cf-cal-radius-pill: 999px;
+
+  --cf-cal-button-height: 38px;
+  --cf-cal-button-radius: 14px;
+
+  --cf-cal-month-day-min-height: 136px;
+  --cf-cal-month-day-padding: 14px;
+  --cf-cal-event-chip-height: 28px;
+}
+
+/* Calendar page background only */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]),
+#root .cf-html-view:has([data-cf-page-header-v2="calendar"]),
+#root main:has([data-cf-page-header-v2="calendar"]) {
+  background:
+    radial-gradient(circle at 0% 0%, var(--cf-cal-page-glow), transparent 28%),
+    linear-gradient(180deg, #f7fbff 0%, var(--cf-cal-page-bg) 100%) !important;
+}
+
+/* Keep Calendar page layout and side panel visible.
+   We intentionally do not set display:none on anything. */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  aside,
+  [class*="side"],
+  [class*="sidebar"],
+  [class*="rail"],
+  [class*="left"],
+  [class*="nearest"],
+  [class*="upcoming"],
+  [class*="week"]
+) {
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+/* Neutralize old dark slabs on calendar page only */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="bg-slate-950"],
+  [class*="bg-slate-900"],
+  [class*="bg-slate-800"],
+  [class*="from-slate-950"],
+  [class*="from-slate-900"],
+  [class*="to-slate-950"],
+  [class*="to-slate-900"],
+  [class*="calendar"][class*="dark"],
+  [class*="schedule"][class*="dark"]
+) {
+  background: var(--cf-cal-surface) !important;
+  background-color: var(--cf-cal-surface) !important;
+  background-image: none !important;
+  color: var(--cf-cal-text) !important;
+  border-color: var(--cf-cal-border) !important;
+}
+
+/* Text contrast after dark-slab cleanup */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="text-white"],
+  [class*="text-slate-50"],
+  [class*="text-slate-100"],
+  [class*="text-slate-200"]
+) {
+  color: var(--cf-cal-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-text) !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="text-slate-300"],
+  [class*="text-slate-400"],
+  [class*="text-slate-500"],
+  small,
+  .muted
+) {
+  color: var(--cf-cal-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-cal-text-muted) !important;
+}
+
+/* Main calendar surfaces: cards, day cards, agenda cards, selected panel */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .calendar-entry-card,
+  .calendar-entry-card.cf-readable-card,
+  .cf-readable-card,
+  .calendar-day-card,
+  .calendar-month-day,
+  .calendar-week-day,
+  .calendar-day-section,
+  .calendar-agenda-day,
+  .calendar-agenda-card,
+  .calendar-month-card,
+  .calendar-panel,
+  .calendar-sidebar,
+  .calendar-list-panel,
+  .calendar-selected-day,
+  .calendar-selected-day-panel,
+  .calendar-day-details,
+  .calendar-day-detail-panel,
+  .calendar-grid-card,
+  [class*="calendar"][class*="panel"],
+  [class*="calendar"][class*="card"],
+  [class*="calendar"][class*="section"],
+  [class*="calendar"][class*="list"],
+  [class*="schedule"][class*="panel"],
+  [class*="schedule"][class*="card"],
+  [class*="schedule"][class*="section"],
+  [class*="schedule"][class*="list"]
+) {
+  background: var(--cf-cal-surface) !important;
+  background-color: var(--cf-cal-surface) !important;
+  background-image: none !important;
+  color: var(--cf-cal-text) !important;
+  border-color: var(--cf-cal-border) !important;
+  box-shadow: var(--cf-cal-shadow-soft) !important;
+}
+
+/* Month grid cells / day tiles */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="month"] [class*="day"],
+  [class*="calendar"] [class*="day"],
+  [class*="grid"] [class*="day"]
+) {
+  background: var(--cf-cal-surface) !important;
+  color: var(--cf-cal-text) !important;
+  border-color: var(--cf-cal-border) !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="selected"],
+  [aria-selected="true"]
+) {
+  border-color: var(--cf-cal-border-selected) !important;
+}
+
+/* Month selected day: pale blue, not dark slab */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="day"][class*="selected"],
+  [class*="selected"][class*="day"],
+  [aria-selected="true"]
+) {
+  background: var(--cf-cal-surface-selected) !important;
+  color: var(--cf-cal-text) !important;
+  outline-color: var(--cf-cal-border-selected) !important;
+}
+
+/* Event/task chips in month cards */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="month"] [class*="entry"],
+  [class*="month"] [class*="item"],
+  [class*="month"] [class*="chip"],
+  [class*="month"] [class*="event"],
+  [class*="month"] [class*="task"],
+  [class*="calendar"] [class*="chip"]
+) {
+  background: #ffffff !important;
+  border: 1px solid var(--cf-cal-border) !important;
+  border-radius: var(--cf-cal-radius-sm) !important;
+  color: var(--cf-cal-text) !important;
+  min-height: var(--cf-cal-event-chip-height) !important;
+  max-width: 100% !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Keep month entries legible but compact */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="month"] [class*="entry"] *,
+  [class*="month"] [class*="item"] *,
+  [class*="month"] [class*="chip"] *
+) {
+  color: inherit !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Overflow hint: if existing DOM has 'more' / overflow text, make it obvious */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="more"],
+  [class*="overflow"],
+  [class*="hidden-count"],
+  [class*="remaining"]
+) {
+  color: var(--cf-cal-blue) !important;
+  font-weight: 950 !important;
+}
+
+/* Generic compact pills: event/task/phone types */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [data-cf-entity-type="event"],
+  [class*="event-type"],
+  [class*="type-event"]
+) {
+  border-color: #ddd6fe !important;
+  background: var(--cf-cal-violet-soft) !important;
+  color: var(--cf-cal-violet) !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [data-cf-entity-type="task"],
+  [class*="task-type"],
+  [class*="type-task"]
+) {
+  border-color: #bbf7d0 !important;
+  background: var(--cf-cal-green-soft) !important;
+  color: var(--cf-cal-green) !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [data-cf-entity-type="lead"],
+  [data-cf-entity-type="phone"],
+  [class*="phone-type"],
+  [class*="lead-type"],
+  [class*="type-phone"],
+  [class*="type-lead"]
+) {
+  border-color: #bae6fd !important;
+  background: var(--cf-cal-phone-soft) !important;
+  color: var(--cf-cal-phone) !important;
+}
+
+/* Existing calendar entry row: light and readable */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) .calendar-entry-card {
+  min-height: 54px !important;
+  border-radius: var(--cf-cal-radius-md) !important;
+  border: 1px solid var(--cf-cal-border) !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) .calendar-entry-card:hover {
+  background: #f8fbff !important;
+}
+
+/* Existing sidebar / nearest days list */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="sidebar"],
+  [class*="side"],
+  [class*="rail"],
+  [class*="nearest"],
+  [class*="upcoming"]
+) :is(button, a, [role="button"]) {
+  background: #ffffff !important;
+  border: 1px solid var(--cf-cal-border) !important;
+  color: var(--cf-cal-text) !important;
+  border-radius: var(--cf-cal-radius-md) !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  [class*="sidebar"],
+  [class*="side"],
+  [class*="rail"],
+  [class*="nearest"],
+  [class*="upcoming"]
+) :is(button, a, [role="button"]):hover {
+  background: var(--cf-cal-blue-soft) !important;
+  border-color: var(--cf-cal-border-strong) !important;
+  color: var(--cf-cal-blue) !important;
+}
+
+/* Calendar toolbar / segmented buttons */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .calendar-view-toggle,
+  .calendar-scale-toggle,
+  .calendar-toolbar,
+  .calendar-controls,
+  .calendar-month-controls,
+  [class*="view-toggle"],
+  [class*="scale-toggle"],
+  [class*="density"],
+  [class*="toolbar"]
+) {
+  background: var(--cf-cal-surface) !important;
+  border: 1px solid var(--cf-cal-border) !important;
+  border-radius: var(--cf-cal-radius-md) !important;
+  box-shadow: var(--cf-cal-shadow-soft) !important;
+  color: var(--cf-cal-text) !important;
+}
+
+/* Buttons inside calendar */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .calendar-entry-card button,
+  .calendar-toolbar button,
+  .calendar-controls button,
+  .calendar-month-controls button,
+  .calendar-view-toggle button,
+  .calendar-scale-toggle button,
+  [class*="calendar"] button,
+  [class*="schedule"] button
+) {
+  min-height: 32px !important;
+  border-radius: 12px !important;
+  border-color: var(--cf-cal-border) !important;
+  background: #ffffff !important;
+  color: var(--cf-cal-text) !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .calendar-toolbar button[aria-pressed="true"],
+  .calendar-controls button[aria-pressed="true"],
+  .calendar-month-controls button[aria-pressed="true"],
+  .calendar-view-toggle button[aria-pressed="true"],
+  .calendar-scale-toggle button[aria-pressed="true"],
+  [class*="active"]
+) {
+  border-color: var(--cf-cal-border-strong) !important;
+  background: var(--cf-cal-blue-soft) !important;
+  color: var(--cf-cal-blue) !important;
+}
+
+/* Destructive actions */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .cf-entity-action-danger,
+  [data-cf-action-variant="danger"],
+  button[class*="red"],
+  button[class*="rose"],
+  button[aria-label*="Usuń"],
+  button[title*="Usuń"]
+) {
+  border-color: #fecaca !important;
+  background: #ffffff !important;
+  color: var(--cf-cal-red) !important;
+}
+
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .cf-entity-action-danger,
+  [data-cf-action-variant="danger"],
+  button[class*="red"],
+  button[class*="rose"],
+  button[aria-label*="Usuń"],
+  button[title*="Usuń"]
+):hover {
+  background: var(--cf-cal-red-soft) !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+/* Empty states should be pale, not dark */
+#root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+  .calendar-empty-state,
+  .calendar-empty-day,
+  [class*="empty"]
+) {
+  min-height: 52px !important;
+  border: 1px dashed #cbd5e1 !important;
+  border-radius: var(--cf-cal-radius-md) !important;
+  background: #f8fafc !important;
+  color: var(--cf-cal-text-muted) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 750 !important;
+}
+
+/* VNext classes for the next structural phase, kept ready but harmless if unused */
+#root .cf-calendar-vnext {
+  display: grid;
+  gap: 24px;
+}
+
+#root .cf-calendar-vnext__grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--cf-cal-border);
+  border-radius: var(--cf-cal-radius-lg);
+  background: var(--cf-cal-surface);
+  box-shadow: var(--cf-cal-shadow);
+}
+
+#root .cf-calendar-vnext__day {
+  min-height: var(--cf-cal-month-day-min-height);
+  padding: var(--cf-cal-month-day-padding);
+  border-right: 1px solid var(--cf-cal-border);
+  border-bottom: 1px solid var(--cf-cal-border);
+  background: var(--cf-cal-surface);
+  color: var(--cf-cal-text);
+  overflow: hidden;
+}
+
+#root .cf-calendar-vnext__event-chip {
+  min-height: var(--cf-cal-event-chip-height);
+  padding: 5px 7px;
+  border: 1px solid var(--cf-cal-border);
+  border-radius: var(--cf-cal-radius-sm);
+  background: #ffffff;
+  color: var(--cf-cal-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#root .cf-calendar-vnext__more {
+  color: var(--cf-cal-blue);
+  font-weight: 950;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  :root {
+    --cf-cal-month-day-min-height: 118px;
+  }
+
+  #root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) :is(
+    [class*="month"],
+    [class*="grid"]
+  ) {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  :root {
+    --cf-cal-month-day-min-height: 108px;
+    --cf-cal-month-day-padding: 10px;
+  }
+
+  #root .cf-html-shell:has([data-cf-page-header-v2="calendar"]) .calendar-entry-card {
+    min-height: 48px !important;
+  }
+}

@@ -104,6 +104,7 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-calendar-skin-only-v1.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -131,6 +132,7 @@ const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł 
 
 const CLOSEFLOW_FB1_CALENDAR_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
 const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
+const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
