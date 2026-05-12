@@ -158,6 +158,7 @@ const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05
 const CLOSEFLOW_CALENDAR_RENDER_PIPELINE_REPAIR3 = 'CLOSEFLOW_CALENDAR_RENDER_PIPELINE_REPAIR3_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4 = 'CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
+const CLOSEFLOW_STAGE14H_CALENDAR_WEEK_NEAREST7_DEDUPE_2026_05_12 = 'CLOSEFLOW_STAGE14H_CALENDAR_WEEK_NEAREST7_DEDUPE_2026_05_12';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function readCalendarRawText(value: unknown, fallback = '') {
@@ -1710,43 +1711,7 @@ export default function Calendar() {
                   );
                 })}
               </div>
-              <div className="calendar-week-filter-list hidden">
-                {(() => {
-                  const nextWeekStart = addDays(selectedWeekStart, 7);
-                  const days = weekDays.map((day, index) => ({
-                    key: day.toISOString(),
-                    label: isToday(day) ? 'Dzisiaj' : getCalendarDayNavLabel(day, index),
-                    date: day,
-                    count: sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day)).length,
-                  }));
-                  const quick = [
-                    ...days,
-                    {
-                      key: `next:${nextWeekStart.toISOString()}`,
-                      label: 'Przyszły tydzień',
-                      date: nextWeekStart,
-                      count: sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, nextWeekStart)).length,
-                    },
-                  ];
-
-                  return quick.map((item) => {
-                    const isActive = isSameDay(item.date, selectedDate);
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        className={`calendar-week-filter-btn ${isActive ? 'active' : ''}`}
-                        onClick={() => {
-                          setSelectedDate(item.date);
-                          setCurrentMonth(item.date);
-                        }}
-                      >
-                        <span>{item.label} · {item.count} {item.count === 1 ? 'rzecz' : 'rzeczy'}</span>
-                      </button>
-                    );
-                  });
-                })()}
-              </div>
+              {/* CLOSEFLOW_STAGE14H_CALENDAR_WEEK_NEAREST7_DEDUPE_2026_05_12: duplicate legacy nearest-7 summary removed. */}
             </aside>
 
             <section className="right-card calendar-week-plan">
