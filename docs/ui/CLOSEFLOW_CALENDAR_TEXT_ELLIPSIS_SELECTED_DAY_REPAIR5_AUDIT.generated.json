@@ -1,0 +1,28 @@
+{
+  "generatedAt": "2026-05-12T12:11:27.067Z",
+  "stage": "CLOSEFLOW_CALENDAR_TEXT_ELLIPSIS_SELECTED_DAY_REPAIR5_2026_05_12",
+  "changed": [
+    "src/pages/Calendar.tsx",
+    "src/styles/closeflow-calendar-text-ellipsis-selected-day-repair5.css"
+  ],
+  "whyRepair4WasNotEnough": [
+    "older Calendar skins did not expose stable class names for every month chip",
+    "the previous selector relied too much on sibling scope from the page header",
+    "selected-day cards were still two columns, so action buttons had no horizontal room"
+  ],
+  "fix": [
+    "Calendar route body class while Calendar is mounted",
+    "runtime classes for month entries based on actual rendered nodes",
+    "native title tooltip on month and selected-day text",
+    "selected day cards forced into one full-width column",
+    "selected-day action rail kept on one line on desktop"
+  ],
+  "notChanged": [
+    "API",
+    "Supabase",
+    "calendar data",
+    "sidebar",
+    "routing",
+    "create/edit/delete logic"
+  ]
+}
