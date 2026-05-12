@@ -692,7 +692,8 @@
     "check:closeflow-case-history-visual-source-truth": "node scripts/check-closeflow-case-history-visual-source-truth.cjs",
     "check:closeflow-clientdetail-hook-order-310-repair": "node scripts/check-closeflow-clientdetail-hook-order-310-repair.cjs",
     "check:closeflow-clientdetail-hook-order-real-refactor": "node scripts/check-closeflow-clientdetail-hook-order-real-refactor.cjs",
-    "check:closeflow-clientdetail-hook-order-stabilizer-repair1": "node scripts/check-closeflow-clientdetail-hook-order-stabilizer-repair1.cjs"
+    "check:closeflow-clientdetail-hook-order-stabilizer-repair1": "node scripts/check-closeflow-clientdetail-hook-order-stabilizer-repair1.cjs",
+    "check:closeflow-clientdetail-loading-null-safe": "node scripts/check-closeflow-clientdetail-loading-null-safe.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

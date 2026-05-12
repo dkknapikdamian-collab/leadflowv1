@@ -1629,14 +1629,7 @@ useMemo(() => null, []);
 
 return (
       <Layout>
-        <div data-fin7-client-detail-finance-summary="true">
-          <ClientFinanceRelationSummary
-            client={client}
-            clientId={String((client as any)?.id || '')}
-          />
-        </div>
-
-        <main className="client-detail-vnext-page">
+<main className="client-detail-vnext-page">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Ładowanie klienta...</span>
