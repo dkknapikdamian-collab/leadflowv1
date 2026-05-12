@@ -35,6 +35,8 @@ import '../../styles/finance/closeflow-finance.css';
 
 import { SurfaceCard, FormFooter } from '../ui-system';
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1' as const;
+const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
+void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
 void CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD;
 
@@ -377,12 +379,12 @@ function CommissionDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="cf-finance-dialog cf-finance-settlement-dialog">
         <DialogHeader>
-          <DialogTitle>Edytuj prowizję sprawy</DialogTitle>
+          <DialogTitle>Ustaw wartość transakcji i prowizję</DialogTitle>
         </DialogHeader>
         <form className="cf-finance-form" onSubmit={handleSubmit}>
           <label className="cf-finance-field">
-            <span>Wartość transakcji</span>
-            <Input value={contractValue} inputMode="decimal" placeholder="105000" onChange={(event) => setContractValue(event.target.value)} />
+            <span>Wartość transakcji / sprawy</span>
+            <Input value={contractValue} inputMode="decimal" placeholder="np. 105000" onChange={(event) => setContractValue(event.target.value)} />
           </label>
           <label className="cf-finance-field">
             <span>Model prowizji</span>
@@ -418,9 +420,12 @@ function CommissionDialog({
           <div className="cf-finance-settlement-preview" aria-label="Podgląd prowizji">
             Prowizja należna: <strong>{formatMoney(previewCommission, currency)}</strong>
           </div>
+          <p className="cf-finance-settlement-help" data-cf-case-settlement-commission-note="true">
+            Przy prowizji procentowej kwota liczy się od wartości transakcji. Przy kwocie stałej wpisana kwota jest prowizją należną.
+          </p>
           <FormFooter className="cf-finance-dialog__footer" align="right">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button>
-            <Button type="submit" disabled={isSaving}>Zapisz prowizję</Button>
+            <Button type="submit" disabled={isSaving}>Zapisz wartość i prowizję</Button>
           </FormFooter>
         </form>
       </DialogContent>
@@ -462,6 +467,7 @@ export function CaseSettlementPanel({
   const commissionStatus = getInitialCommissionStatus(record, summary.commissionStatus);
   const commissionPaid = summary.paidCommissionAmount;
   const commissionRemaining = Math.max(0, commissionAmount - commissionPaid);
+  const hasCaseSettlementValue = contractValue > 0;
 
   return (
     <SurfaceCard className="cf-finance-settlement-panel" tone="default">
@@ -469,16 +475,32 @@ export function CaseSettlementPanel({
         <div>
           <p className="cf-finance-kicker">FIN-5</p>
           <h2>Rozliczenie sprawy</h2>
-          <span>Jedno miejsce na wartość transakcji, wpłaty klienta i prowizję.</span>
+          <span>Ustaw wartość transakcji, wpłaty klienta i prowizję. Prowizja procentowa liczy się od wartości sprawy.</span>
         </div>
         {!readonly ? (
           <div className="cf-finance-settlement-actions">
             <Button type="button" variant="outline" onClick={() => setPaymentOpen(true)} disabled={isSaving}>Dodaj wpłatę</Button>
             <Button type="button" variant="outline" onClick={() => setCommissionPaymentOpen(true)} disabled={isSaving}>Dodaj płatność prowizji</Button>
-            <Button type="button" onClick={() => setCommissionOpen(true)} disabled={isSaving}>Edytuj prowizję</Button>
+            <Button type="button" onClick={() => setCommissionOpen(true)} disabled={isSaving}>
+              {hasCaseSettlementValue ? 'Edytuj wartość/prowizję' : 'Ustaw wartość i prowizję'}
+            </Button>
           </div>
         ) : null}
       </div>
+
+      {!hasCaseSettlementValue ? (
+        <div className="cf-finance-settlement-empty-value" data-cf-case-settlement-value-cta="true">
+          <div>
+            <strong>Ustaw wartość sprawy</strong>
+            <span>Bez wartości transakcji panel pokazuje zera. Ustaw ją tutaj, a system policzy pozostało do zapłaty i prowizję.</span>
+          </div>
+          {!readonly ? (
+            <Button type="button" onClick={() => setCommissionOpen(true)} disabled={isSaving}>
+              Ustaw wartość i prowizję
+            </Button>
+          ) : null}
+        </div>
+      ) : null}
 
       <dl className="cf-finance-settlement-grid">
         <Metric label="Wartość transakcji" value={formatMoney(contractValue, currency)} />
