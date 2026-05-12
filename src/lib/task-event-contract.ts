@@ -1,16 +1,42 @@
 import { normalizeEventV1, normalizeTaskV1 } from './work-items/normalize';
 
+// STAGE14I_CALENDAR_SNAKE_CASE_TASK_DATES: keep camelCase and snake_case task/event date keys in one contract.
 export type TaskEventDateSource = {
   scheduledAt?: string | Date | null;
+  scheduled_at?: string | Date | null;
+  scheduledDate?: string | Date | null;
+  scheduled_date?: string | Date | null;
+  scheduledTime?: string | null;
+  scheduled_time?: string | null;
   dueAt?: string | Date | null;
+  due_at?: string | Date | null;
+  dueDate?: string | Date | null;
+  due_date?: string | Date | null;
+  dueTime?: string | null;
+  due_time?: string | null;
   dateTime?: string | Date | null;
+  date_time?: string | Date | null;
   startsAt?: string | Date | null;
+  starts_at?: string | Date | null;
   startAt?: string | Date | null;
+  start_at?: string | Date | null;
+  startDate?: string | Date | null;
+  start_date?: string | Date | null;
+  startTime?: string | null;
+  start_time?: string | null;
+  endAt?: string | Date | null;
+  end_at?: string | Date | null;
+  endsAt?: string | Date | null;
+  ends_at?: string | Date | null;
+  endDate?: string | Date | null;
+  end_date?: string | Date | null;
+  endTime?: string | null;
+  end_time?: string | null;
   date?: string | Date | null;
   time?: string | null;
   reminderAt?: string | Date | null;
+  reminder_at?: string | Date | null;
 };
-
 export type TaskLike = TaskEventDateSource & {
   id?: string | number;
   title?: string;

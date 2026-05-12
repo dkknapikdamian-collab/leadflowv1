@@ -147,6 +147,13 @@ function pickIso(row: Record<string, unknown>, keys: string[]) {
   return null;
 }
 
+function combineDateAndTimeFields(row: Record<string, unknown>, dateKeys: string[], timeKeys: string[], fallbackTime = '09:00') {
+  const date = pickIso(row, dateKeys);
+  if (!date) return null;
+  if (date.includes('T')) return date;
+  const time = pickIso(row, timeKeys) || fallbackTime;
+  return date + 'T' + time;
+}
 function asBool(value: unknown) {
   if (typeof value === 'boolean') return value;
   if (typeof value === 'number') return value !== 0;
@@ -189,16 +196,15 @@ function normalizeReminderRule(value: unknown): CalendarReminderRule {
 export function normalizeWorkItem(input: unknown): WorkItem {
   const row = (input && typeof input === 'object' ? input : {}) as Record<string, unknown>;
 
-  const scheduledAt = pickIso(row, ['scheduledAt', 'scheduled_at', 'dueAt', 'dateTime'])
-    || (() => {
-      const date = asText(row.date);
-      if (!date) return null;
-      const time = asText(row.time) || '09:00';
-      return date.includes('T') ? date : `${date}T${time}`;
-    })();
+  // STAGE14I_CALENDAR_SNAKE_CASE_TASK_DATES: calendar must read Supabase/API snake_case date fields so due_at/date_time tasks do not disappear.
+  const scheduledAt = pickIso(row, ['scheduledAt', 'scheduled_at', 'dueAt', 'due_at', 'dateTime', 'date_time', 'startsAt', 'starts_at', 'startAt', 'start_at', 'scheduledDate', 'scheduled_date'])
+    || combineDateAndTimeFields(row, ['scheduledDate', 'scheduled_date', 'dueDate', 'due_date', 'date'], ['scheduledTime', 'scheduled_time', 'dueTime', 'due_time', 'time']);
 
-  const startAt = pickIso(row, ['startAt', 'start_at', 'startsAt']) || scheduledAt;
-  const endAt = pickIso(row, ['endAt', 'end_at', 'endsAt']);
+  const startAt = pickIso(row, ['startAt', 'start_at', 'startsAt', 'starts_at', 'scheduledAt', 'scheduled_at'])
+    || combineDateAndTimeFields(row, ['startDate', 'start_date'], ['startTime', 'start_time', 'time'])
+    || scheduledAt;
+  const endAt = pickIso(row, ['endAt', 'end_at', 'endsAt', 'ends_at'])
+    || combineDateAndTimeFields(row, ['endDate', 'end_date'], ['endTime', 'end_time'], '10:00');
   const reminderAt = pickIso(row, ['reminderAt', 'reminder_at', 'reminder']);
   const reminderRule = normalizeReminderRule(row.reminderRule)
     || normalizeReminderRule(row.reminder)

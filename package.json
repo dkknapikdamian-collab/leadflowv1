@@ -667,6 +667,7 @@
     "check:closeflow-admin-feedback-2026-05-11-p2": "node scripts/check-closeflow-admin-feedback-2026-05-11-p2.cjs",
     "check:closeflow-admin-feedback-2026-05-11-p3": "node scripts/check-closeflow-admin-feedback-2026-05-11-p3.cjs",
     "check:stage14h-calendar-week-nearest7-dedupe": "node scripts/check-stage14h-calendar-week-nearest7-dedupe.cjs",
+    "check:stage14i-calendar-snake-case-task-dates": "node scripts/check-stage14i-calendar-snake-case-task-dates.cjs",
     "check:page-header-stage6-final-lock": "node scripts/check-closeflow-page-header-stage6-final-lock.cjs",
     "check:stage14a-clientdetail-notes-history": "node scripts/check-closeflow-stage14a-clientdetail-notes-history.cjs",
     "check:stage14a-clientdetail-notes-history-repair2": "node scripts/check-closeflow-stage14a-clientdetail-notes-history-repair2.cjs",
