@@ -1,0 +1,60 @@
+{
+  "generatedAt": "2026-05-12T06:19:11.891Z",
+  "stage": "CLOSEFLOW_BUILD_BLOCKERS_MASSCHECK_LEADDETAIL_FIX_2026_05_12",
+  "verdict": "pass",
+  "failures": [],
+  "riskyRows": [
+    {
+      "file": "tools/patch-closeflow-build-blockers-masscheck-leaddetail-fix.cjs",
+      "line": 21,
+      "hits": [
+        "broken-polish-fallback-quote",
+        "common-broken-jsx-string-before-tag"
+      ],
+      "text": "const before = \"{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy}</small>\";"
+    },
+    {
+      "file": "tools/repair-stage14d-real-case-history-repair3.cjs",
+      "line": 70,
+      "hits": [
+        "bad-calendar-regex-token-from-v3"
+      ],
+      "text": "const re = new RegExp('const\\\\s*\\\\[\\\\s*([A-Za-z_$][\\\\w$]*)\\\\s*,\\\\s*[A-Za-z_$][\\\\w$]*\\\\s*\\\\]\\\\s*=\\\\s*useState\\\\s*<\\\\s*' + escapeRegex(typeName) + '\\\\s*\\\\[\\\\]\\\\s*>', 'm');"
+    },
+    {
+      "file": "tools/repair-stage14f-lead-detail-right-rail-cleanup-repair1.cjs",
+      "line": 40,
+      "hits": [
+        "broken-polish-fallback-quote",
+        "common-broken-jsx-string-before-tag"
+      ],
+      "text": "\"<small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy}</small>\","
+    },
+    {
+      "file": "tools/repair-stage14f-lead-detail-right-rail-cleanup-repair1.cjs",
+      "line": 98,
+      "hits": [
+        "broken-polish-fallback-quote"
+      ],
+      "text": "if (source.includes(\"'Brak powiązanej sprawy}</small>\")) {"
+    },
+    {
+      "file": "scripts/check-stage14f-lead-detail-right-rail-cleanup.cjs",
+      "line": 26,
+      "hits": [
+        "broken-polish-fallback-quote",
+        "common-broken-jsx-string-before-tag"
+      ],
+      "text": "assertNotIncludes(source, \"serviceCaseStatusLabel : 'Brak powiązanej sprawy}</small>\", 'uszkodzony literal linked case');"
+    },
+    {
+      "file": "scripts/check-stage14f-lead-detail-right-rail-cleanup.cjs",
+      "line": 27,
+      "hits": [
+        "broken-polish-fallback-quote"
+      ],
+      "text": "assertNotIncludes(source, \"'Brak powiązanej sprawy}</small>\", 'brakujący apostrof w linked case empty state');"
+    }
+  ],
+  "scannedFiles": 1104
+}
