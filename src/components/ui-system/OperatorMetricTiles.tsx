@@ -45,7 +45,7 @@ export function OperatorMetricTiles<TId extends string = string>({
   ...rest
 }: OperatorMetricTilesProps<TId>) {
   return (
-    <section
+    <section data-cf-mobile-start-tile-trim="true"
       {...rest}
       className={['cf-operator-metric-grid', 'cf-operator-metric-grid-' + columns, className].filter(Boolean).join(' ')}
       data-cf-operator-metric-grid="true"
