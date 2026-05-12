@@ -1620,6 +1620,11 @@ export default function ClientDetail() {
          Mirrors skipped hooks: useMemo
       */
       useMemo(() => null, []);
+      /* CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_310_PADDING_2026_05_12 CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_310_PADDING_2026_05_12_64487
+         Keeps hook order stable for loading/not-found ClientDetail renders.
+         Mirrors skipped hooks: useMemo
+      */
+      useMemo(() => null, []);
 return (
       <Layout>
         <div data-fin7-client-detail-finance-summary="true">
