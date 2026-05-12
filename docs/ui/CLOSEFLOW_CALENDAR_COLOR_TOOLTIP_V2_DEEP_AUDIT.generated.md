@@ -1,0 +1,252 @@
+# CloseFlow — Calendar Color Tooltip V2 Deep Audit
+
+Generated: 2026-05-12T04:49:58.369Z
+
+Verdict: **PASS**
+
+## Failures
+
+- none
+
+## Visual rows
+
+- src/components/AppChunkErrorBoundary.tsx:88 [bg-slate-900] `className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"`
+- src/components/AppChunkErrorBoundary.tsx:105 [bg-slate-900] `className="mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white"`
+- src/components/GlobalQuickActions.tsx:83 [visual-stage] `data-visual-stage="01-global-actions"`
+- src/components/Layout.tsx:9 [visual-stage] `/* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */`
+- src/components/Layout.tsx:267 [visual-stage] `className="app closeflow-visual-stage01 cf-html-shell"`
+- src/components/Layout.tsx:268 [visual-stage] `data-visual-stage="01-shell-sidebar"`
+- src/components/Layout.tsx:372 [visual-stage] `<div className="view active" data-shell-content="true" data-visual-stage-today={isTodayRoute ? '02-today' : undefined} data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined} data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefin`
+- src/components/task-editor-dialog.tsx:10 [visual-stage] `import '../styles/visual-stage21-task-form-vnext.css';`
+- src/index.css:13 [page-adapters] `@import './styles/page-adapters/page-adapters.css';`
+- src/index.css:22 [emergency-hotfixes] `@import './styles/emergency/emergency-hotfixes.css';`
+- src/pages/Activity.tsx:30 [visual-stage] `import '../styles/visual-stage8-activity-vnext.css';`
+- src/pages/AiDrafts.tsx:81 [visual-stage] `import '../styles/visual-stage9-ai-drafts-vnext.css';`
+- src/pages/AiDrafts.tsx:1205 [bg-slate-950] `<a href="/billing" className="mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white">`
+- src/pages/Billing.tsx:68 [visual-stage] `import '../styles/visual-stage16-billing-vnext.css';`
+- src/pages/Calendar.tsx:101 [visual-stage] `import '../styles/visual-stage22-event-form-vnext.css';`
+- src/pages/Calendar.tsx:107 [closeflow-calendar] `import '../styles/closeflow-calendar-skin-only-v1.css';`
+- src/pages/Calendar.tsx:108 [closeflow-calendar] `import '../styles/closeflow-calendar-color-tooltip-v2.css';`
+- src/pages/Calendar.tsx:390 [calendar-entry-card] `<div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={'calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:`
+- src/pages/Calendar.tsx:604 [calendar-entry-card] `'.calendar-entry-card',`
+- src/pages/Calendar.tsx:605 [calendar-entry-card] `'.calendar-entry-card *',`
+- src/pages/CaseDetail.tsx:97 [visual-stage] `import '../styles/visual-stage13-case-detail-vnext.css';`
+- src/pages/Cases.tsx:23 [visual-stage] `import '../styles/visual-stage23-client-case-forms-vnext.css';`
+- src/pages/ClientDetail.tsx:117 [visual-stage] `import '../styles/visual-stage12-client-detail-vnext.css';`
+- src/pages/Clients.tsx:85 [visual-stage] `import '../styles/visual-stage23-client-case-forms-vnext.css';`
+- src/pages/LeadDetail.tsx:87 [visual-stage] `import '../styles/visual-stage14-lead-detail-vnext.css';`
+- src/pages/Leads.tsx:81 [visual-stage] `import '../styles/visual-stage20-lead-form-vnext.css';`
+- src/pages/Leads.tsx:682 [visual-stage] `<div className="cf-html-view main-leads-html" data-visual-stage25-leads-full-jsx="true" data-leads-real-view="true">`
+- src/pages/Login.tsx:178 [bg-slate-950] `<div className="min-h-screen bg-slate-950">`
+- src/pages/Login.tsx:304 [bg-slate-950] `<div className="min-h-screen bg-slate-950">`
+- src/pages/Login.tsx:320 [bg-slate-900] `<div className="mt-5 grid gap-3 sm:grid-cols-2">{FEATURE_CARDS.map((card) => { const Icon = card.icon; return (<div key={card.title} className="rounded-3xl border border-white/10 bg-slate-900/40 p-4 backdrop-blur-sm"><div className="inline-flex h-10 w-10 items`
+- src/pages/NotificationsCenter.tsx:50 [visual-stage] `import '../styles/visual-stage10-notifications-vnext.css';`
+- src/pages/Settings.tsx:91 [visual-stage] `import '../styles/visual-stage19-settings-vnext.css';`
+- src/pages/SupportCenter.tsx:32 [visual-stage] `import '../styles/visual-stage17-support-vnext.css';`
+- src/pages/Tasks.tsx:133 [visual-stage] `import '../styles/visual-stage21-task-form-vnext.css';`
+- src/styles/case-detail-simplified.css:14 [bg-slate-950] `section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {`
+- src/styles/case-detail-simplified.css:114 [bg-slate-950] `section[data-testid="case-detail-v1-command-center"] .bg-slate-950 {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:22 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:27 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-type-badge,`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:28 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-kind] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:46 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="event"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:53 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="task"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:60 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="lead"],`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:61 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="phone"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:69 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="event"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:76 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="task"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:83 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="lead"],`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:84 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="phone"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:92 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * .cf-entity-type-pill[data-cf-entity-type="event"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:99 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * .cf-entity-type-pill[data-cf-entity-type="task"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:106 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * .cf-entity-type-pill[data-cf-entity-type="lead"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:114 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-tooltip="true"] {`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:123 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:135 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:148 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-color-tooltip-v2.css:162 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:59 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * {`
+- src/styles/closeflow-calendar-skin-only-v1.css:64 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:82 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:83 [calendar-entry-card] `.calendar-entry-card,`
+- src/styles/closeflow-calendar-skin-only-v1.css:84 [calendar-entry-card] `.calendar-entry-card.cf-readable-card,`
+- src/styles/closeflow-calendar-skin-only-v1.css:118 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:119 [bg-slate-950] `[class*="bg-slate-950"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:120 [bg-slate-900] `[class*="bg-slate-900"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:122 [from-slate-950] `[class*="from-slate-950"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:124 [to-slate-950] `[class*="to-slate-950"],`
+- src/styles/closeflow-calendar-skin-only-v1.css:137 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:147 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:159 [calendar-entry-card, [data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card {`
+- src/styles/closeflow-calendar-skin-only-v1.css:167 [calendar-entry-card, [data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card:hover {`
+- src/styles/closeflow-calendar-skin-only-v1.css:172 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:182 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:194 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:214 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:225 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:235 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:245 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:259 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:260 [calendar-entry-card] `.calendar-entry-card button,`
+- src/styles/closeflow-calendar-skin-only-v1.css:279 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:292 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:305 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/closeflow-calendar-skin-only-v1.css:319 [[data-cf-page-header-v2="calendar"] ~ *] `#root [data-cf-page-header-v2="calendar"] ~ * :is(`
+- src/styles/core/core-contracts.css:3 [visual-stage] `@import '../visual-stage01-shell.css';`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:3 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:14 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:24 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:37 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before,`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:38 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::after {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:43 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:61 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] > .min-w-0 {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:67 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:68 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:83 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:91 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:100 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:180 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {`
+- src/styles/eliteflow-admin-feedback-p1-hotfix.css:186 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {`
+- src/styles/eliteflow-desktop-compact-scale.css:25 [visual-stage] `.closeflow-visual-stage01.app {`
+- src/styles/eliteflow-desktop-compact-scale.css:33 [visual-stage] `.closeflow-visual-stage01 .global-bar {`
+- src/styles/eliteflow-desktop-compact-scale.css:40 [visual-stage] `.closeflow-visual-stage01.app {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:3 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:11 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:16 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:30 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:42 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"],`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:43 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer .user-card[data-shell-user-card="true"] {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:60 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] .user-avatar {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:71 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:72 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:81 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:87 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:93 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:104 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout:hover {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:111 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout svg {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:117 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {`
+- src/styles/eliteflow-sidebar-footer-contrast-repair.css:123 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:4 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:16 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .brand {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:20 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:30 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:47 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before,`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:48 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::after {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:53 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"],`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:54 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer .user-card[data-shell-user-card="true"] {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:79 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] .user-avatar {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:96 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] > .min-w-0 {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:103 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:104 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:119 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:128 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:137 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:151 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout svg,`
+- src/styles/eliteflow-sidebar-user-footer-below-nav.css:152 [visual-stage] `html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout span {`
+- src/styles/emergency/emergency-hotfixes.css:106 [calendar-entry-card] `:where(.main-calendar-html .right-card.calendar-week-filter, .main-calendar-html .calendar-week-plan, .main-calendar-html .calendar-entry-card) {`
+- src/styles/emergency/emergency-hotfixes.css:115 [calendar-entry-card] `.main-calendar-html .calendar-entry-card :is(h1, h2, h3, h4, p, span, div, button, small, strong) {`
+- src/styles/emergency/emergency-hotfixes.css:119 [calendar-entry-card] `.main-calendar-html .calendar-entry-card .text-slate-400,`
+- src/styles/emergency/emergency-hotfixes.css:120 [calendar-entry-card] `.main-calendar-html .calendar-entry-card p.text-slate-400,`
+- src/styles/emergency/emergency-hotfixes.css:121 [calendar-entry-card] `.main-calendar-html .calendar-entry-card .font-semibold.text-slate-400 {`
+- src/styles/emergency/emergency-hotfixes.css:125 [calendar-entry-card] `.main-calendar-html .calendar-entry-card .text-slate-600,`
+- src/styles/emergency/emergency-hotfixes.css:126 [calendar-entry-card] `.main-calendar-html .calendar-entry-card div.text-slate-600,`
+- src/styles/emergency/emergency-hotfixes.css:127 [calendar-entry-card] `.main-calendar-html .calendar-entry-card .font-bold.text-slate-600 {`
+- src/styles/emergency/emergency-hotfixes.css:141 [calendar-entry-card] `.main-calendar-html .calendar-entry-card :is(.text-white, .text-slate-50, .text-slate-100),`
+- src/styles/legacy/legacy-imports.css:5 [visual-stage] `@import '../visual-stage3-pipeline-and-case.css';`
+- src/styles/page-adapters/page-adapters.css:3 [visual-stage] `@import '../visual-stage02-today.css';`
+- src/styles/page-adapters/page-adapters.css:4 [visual-stage] `@import '../visual-stage03-leads.css';`
+- src/styles/page-adapters/page-adapters.css:5 [visual-stage] `@import '../visual-stage04-lead-detail.css';`
+- src/styles/page-adapters/page-adapters.css:6 [visual-stage] `@import '../visual-stage05-clients.css';`
+- src/styles/page-adapters/page-adapters.css:7 [visual-stage] `@import '../visual-stage06-client-detail.css';`
+- src/styles/page-adapters/page-adapters.css:8 [visual-stage] `@import '../visual-stage07-cases.css';`
+- src/styles/page-adapters/page-adapters.css:9 [visual-stage] `@import '../visual-stage08-case-detail.css';`
+- src/styles/page-adapters/page-adapters.css:10 [visual-stage] `@import '../visual-stage13-case-detail-vnext.css';`
+- src/styles/page-adapters/page-adapters.css:11 [visual-stage] `@import '../visual-stage18-leads-hard-1to1.css';`
+- src/styles/page-adapters/page-adapters.css:12 [visual-stage] `@import '../visual-stage19-clients-safe-css.css';`
+- src/styles/page-adapters/page-adapters.css:13 [visual-stage] `@import '../visual-stage20-lead-form-vnext.css';`
+- src/styles/page-adapters/page-adapters.css:14 [visual-stage] `@import '../visual-stage20-tasks-safe-css.css';`
+- src/styles/page-adapters/page-adapters.css:15 [visual-stage] `@import '../visual-stage21-today-final-lock.css';`
+- src/styles/page-adapters/page-adapters.css:16 [visual-stage] `@import '../visual-stage23-client-case-forms-vnext.css';`
+- src/styles/page-adapters/page-adapters.css:17 [visual-stage] `@import '../visual-stage25-leads-full-jsx-html-rebuild.css';`
+- src/styles/page-adapters/page-adapters.css:18 [visual-stage] `@import '../visual-stage26-leads-visual-alignment-fix.css';`
+- src/styles/page-adapters/page-adapters.css:19 [visual-stage] `@import '../visual-stage27-cases-vnext.css';`
+- src/styles/page-adapters/page-adapters.css:20 [visual-stage] `@import '../visual-stage28-tasks-vnext.css';`
+- src/styles/page-adapters/page-adapters.css:21 [visual-stage] `@import '../visual-stage29-calendar-vnext.css';`
+- src/styles/page-adapters/page-adapters.css:22 [visual-stage] `@import '../visual-stage30-tasks-compact-after-calendar.css';`
+- src/styles/page-adapters/page-adapters.css:25 [stage37] `@import '../stage37-unified-page-head-and-metrics.css';`
+- src/styles/page-adapters/page-adapters.css:27 [stage39] `@import '../stage39-page-headers-copy-visual-system.css';`
+- src/styles/page-adapters/page-adapters.css:28 [stage40] `@import '../stage40-page-header-action-overflow-hardening.css';`
+- src/styles/stage30a-mobile-contrast-lock.css:17 [visual-stage] `.closeflow-visual-stage01 .global-bar,`
+- src/styles/stage30a-mobile-contrast-lock.css:24 [visual-stage] `.closeflow-visual-stage01 .global-actions,`
+- src/styles/stage30a-mobile-contrast-lock.css:26 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"],`
+- src/styles/stage30a-mobile-contrast-lock.css:31 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] button,`
+- src/styles/stage30a-mobile-contrast-lock.css:32 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] a,`
+- src/styles/stage30a-mobile-contrast-lock.css:33 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:48 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] button svg,`
+- src/styles/stage30a-mobile-contrast-lock.css:49 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] a svg,`
+- src/styles/stage30a-mobile-contrast-lock.css:50 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn svg,`
+- src/styles/stage30a-mobile-contrast-lock.css:58 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] button:hover,`
+- src/styles/stage30a-mobile-contrast-lock.css:59 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] a:hover,`
+- src/styles/stage30a-mobile-contrast-lock.css:60 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn:hover,`
+- src/styles/stage30a-mobile-contrast-lock.css:72 [visual-stage] `.closeflow-visual-stage01 .mobile-top,`
+- src/styles/stage30a-mobile-contrast-lock.css:74 [visual-stage] `.closeflow-visual-stage01 .mobile-nav,`
+- src/styles/stage30a-mobile-contrast-lock.css:81 [visual-stage] `.closeflow-visual-stage01 .mobile-brand,`
+- src/styles/stage30a-mobile-contrast-lock.css:83 [visual-stage] `.closeflow-visual-stage01 .mobile-brand span,`
+- src/styles/stage30a-mobile-contrast-lock.css:90 [visual-stage] `.closeflow-visual-stage01 .mobile-menu-btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:98 [visual-stage] `.closeflow-visual-stage01 .mobile-menu-btn svg,`
+- src/styles/stage30a-mobile-contrast-lock.css:104 [visual-stage] `.closeflow-visual-stage01 .global-bar,`
+- src/styles/stage30a-mobile-contrast-lock.css:113 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"],`
+- src/styles/stage30a-mobile-contrast-lock.css:123 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"]::-webkit-scrollbar,`
+- src/styles/stage30a-mobile-contrast-lock.css:128 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] button,`
+- src/styles/stage30a-mobile-contrast-lock.css:129 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] a,`
+- src/styles/stage30a-mobile-contrast-lock.css:130 [visual-stage] `.closeflow-visual-stage01 [data-global-quick-actions="true"] .btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:143 [visual-stage] `.closeflow-visual-stage01 .mobile-nav-btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:150 [visual-stage] `.closeflow-visual-stage01 .mobile-nav-btn svg,`
+- src/styles/stage30a-mobile-contrast-lock.css:156 [visual-stage] `.closeflow-visual-stage01 .mobile-nav-btn.active,`
+- src/styles/stage30a-mobile-contrast-lock.css:164 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel,`
+- src/styles/stage30a-mobile-contrast-lock.css:172 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-head,`
+- src/styles/stage30a-mobile-contrast-lock.css:173 [visual-stage] `.closeflow-visual-stage01 .mobile-user-wrap,`
+- src/styles/stage30a-mobile-contrast-lock.css:174 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-footer,`
+- src/styles/stage30a-mobile-contrast-lock.css:183 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .brand,`
+- src/styles/stage30a-mobile-contrast-lock.css:189 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .brand-logo,`
+- src/styles/stage30a-mobile-contrast-lock.css:197 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .brand-title strong,`
+- src/styles/stage30a-mobile-contrast-lock.css:198 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,`
+- src/styles/stage30a-mobile-contrast-lock.css:206 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,`
+- src/styles/stage30a-mobile-contrast-lock.css:212 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:219 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-caption,`
+- src/styles/stage30a-mobile-contrast-lock.css:226 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:227 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn span,`
+- src/styles/stage30a-mobile-contrast-lock.css:228 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn .nav-label,`
+- src/styles/stage30a-mobile-contrast-lock.css:237 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,`
+- src/styles/stage30a-mobile-contrast-lock.css:243 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-ico,`
+- src/styles/stage30a-mobile-contrast-lock.css:249 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover,`
+- src/styles/stage30a-mobile-contrast-lock.css:251 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active,`
+- src/styles/stage30a-mobile-contrast-lock.css:253 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel a[aria-current="page"],`
+- src/styles/stage30a-mobile-contrast-lock.css:262 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover span,`
+- src/styles/stage30a-mobile-contrast-lock.css:263 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active span,`
+- src/styles/stage30a-mobile-contrast-lock.css:270 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .user-card,`
+- src/styles/stage30a-mobile-contrast-lock.css:272 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .trial-card,`
+- src/styles/stage30a-mobile-contrast-lock.css:279 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .user-avatar,`
+- src/styles/stage30a-mobile-contrast-lock.css:286 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .user-card strong,`
+- src/styles/stage30a-mobile-contrast-lock.css:287 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .user-card span,`
+- src/styles/stage30a-mobile-contrast-lock.css:288 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .trial-card,`
+- src/styles/stage30a-mobile-contrast-lock.css:289 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .trial-card *,`
+- src/styles/stage30a-mobile-contrast-lock.css:299 [visual-stage] `.closeflow-visual-stage01 .mobile-drawer-panel .sidebar-logout,`
+- src/styles/stage30a-mobile-contrast-lock.css:400 [visual-stage] `.closeflow-visual-stage01 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),`
+- src/styles/stage30a-mobile-contrast-lock.css:401 [visual-stage] `.closeflow-visual-stage01 textarea,`
+- src/styles/stage30a-mobile-contrast-lock.css:402 [visual-stage] `.closeflow-visual-stage01 select,`
+- src/styles/stage30a-mobile-contrast-lock.css:412 [visual-stage] `.closeflow-visual-stage01 input::placeholder,`
+- src/styles/stage30a-mobile-contrast-lock.css:413 [visual-stage] `.closeflow-visual-stage01 textarea::placeholder,`
+- src/styles/stage31-full-mobile-polish.css:36 [visual-stage] `.closeflow-visual-stage01.app,`
+- src/styles/stage31-full-mobile-polish.css:38 [visual-stage] `.closeflow-visual-stage01 .main,`
+- src/styles/stage31-full-mobile-polish.css:39 [visual-stage] `.closeflow-visual-stage01 main,`
+- src/styles/stage31-full-mobile-polish.css:40 [visual-stage] `.closeflow-visual-stage01 .view,`
+- src/styles/stage31-full-mobile-polish.css:41 [visual-stage] `.closeflow-visual-stage01 [data-shell-content="true"],`
+- src/styles/stage31-full-mobile-polish.css:55 [visual-stage] `.closeflow-visual-stage01 .main,`
+- src/styles/stage31-full-mobile-polish.css:56 [visual-stage] `.closeflow-visual-stage01 main {`
+- src/styles/stage31-full-mobile-polish.css:61 [visual-stage] `.closeflow-visual-stage01 .view,`
+- src/styles/stage31-full-mobile-polish.css:62 [visual-stage] `.closeflow-visual-stage01 [data-shell-content="true"] {`
+- src/styles/stage31-full-mobile-polish.css:164 [bg-slate-950] `.bg-slate-950,`
+- src/styles/stage31-full-mobile-polish.css:165 [bg-slate-900] `.bg-slate-900,`
+- src/styles/stage31-full-mobile-polish.css:174 [bg-slate-950] `.mobile-drawer-panel .bg-slate-950,`
+- src/styles/stage31-full-mobile-polish.css:175 [bg-slate-900] `.mobile-drawer-panel .bg-slate-900,`

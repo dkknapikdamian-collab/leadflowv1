@@ -1,0 +1,4646 @@
+{
+  "generatedAt": "2026-05-12T04:49:58.369Z",
+  "stage": "CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_2026_05_12",
+  "verdict": "pass",
+  "failures": [],
+  "summary": {
+    "scannedFiles": 369,
+    "riskyRows": 579
+  },
+  "rows": [
+    {
+      "file": "src/components/AppChunkErrorBoundary.tsx",
+      "line": 88,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "className=\"mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white\""
+    },
+    {
+      "file": "src/components/AppChunkErrorBoundary.tsx",
+      "line": 105,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "className=\"mt-4 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white\""
+    },
+    {
+      "file": "src/components/GlobalQuickActions.tsx",
+      "line": 83,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "data-visual-stage=\"01-global-actions\""
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 9,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "/* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className=\"app closeflow-visual-stage01\" */"
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 267,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "className=\"app closeflow-visual-stage01 cf-html-shell\""
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 268,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "data-visual-stage=\"01-shell-sidebar\""
+    },
+    {
+      "file": "src/components/Layout.tsx",
+      "line": 372,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "<div className=\"view active\" data-shell-content=\"true\" data-visual-stage-today={isTodayRoute ? '02-today' : undefined} data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined} data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefin"
+    },
+    {
+      "file": "src/components/task-editor-dialog.tsx",
+      "line": 10,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage21-task-form-vnext.css';"
+    },
+    {
+      "file": "src/index.css",
+      "line": 13,
+      "hits": [
+        "page-adapters"
+      ],
+      "text": "@import './styles/page-adapters/page-adapters.css';"
+    },
+    {
+      "file": "src/index.css",
+      "line": 22,
+      "hits": [
+        "emergency-hotfixes"
+      ],
+      "text": "@import './styles/emergency/emergency-hotfixes.css';"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 30,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage8-activity-vnext.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 81,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage9-ai-drafts-vnext.css';"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 1205,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "<a href=\"/billing\" className=\"mt-5 inline-flex rounded-2xl bg-slate-950 px-4 py-2 text-sm font-bold text-white\">"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 68,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage16-billing-vnext.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 101,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage22-event-form-vnext.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 107,
+      "hits": [
+        "closeflow-calendar"
+      ],
+      "text": "import '../styles/closeflow-calendar-skin-only-v1.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 108,
+      "hits": [
+        "closeflow-calendar"
+      ],
+      "text": "import '../styles/closeflow-calendar-color-tooltip-v2.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 390,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": "<div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 604,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": "'.calendar-entry-card',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 605,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": "'.calendar-entry-card *',"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 97,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage13-case-detail-vnext.css';"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 23,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage23-client-case-forms-vnext.css';"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 117,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage12-client-detail-vnext.css';"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 85,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage23-client-case-forms-vnext.css';"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 87,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage14-lead-detail-vnext.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 81,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage20-lead-form-vnext.css';"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 682,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "<div className=\"cf-html-view main-leads-html\" data-visual-stage25-leads-full-jsx=\"true\" data-leads-real-view=\"true\">"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 178,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "<div className=\"min-h-screen bg-slate-950\">"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 304,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "<div className=\"min-h-screen bg-slate-950\">"
+    },
+    {
+      "file": "src/pages/Login.tsx",
+      "line": 320,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "<div className=\"mt-5 grid gap-3 sm:grid-cols-2\">{FEATURE_CARDS.map((card) => { const Icon = card.icon; return (<div key={card.title} className=\"rounded-3xl border border-white/10 bg-slate-900/40 p-4 backdrop-blur-sm\"><div className=\"inline-flex h-10 w-10 items"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 50,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage10-notifications-vnext.css';"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 91,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage19-settings-vnext.css';"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 32,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage17-support-vnext.css';"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 133,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "import '../styles/visual-stage21-task-form-vnext.css';"
+    },
+    {
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 14,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "section[data-testid=\"case-detail-v1-command-center\"] .bg-slate-950 {"
+    },
+    {
+      "file": "src/styles/case-detail-simplified.css",
+      "line": 114,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "section[data-testid=\"case-detail-v1-command-center\"] .bg-slate-950 {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 22,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 27,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * .cf-calendar-type-badge,"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 28,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-kind] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 46,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind=\"event\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 53,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind=\"task\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 60,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind=\"lead\"],"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 61,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind=\"phone\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 69,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-row-kind=\"event\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 76,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-row-kind=\"task\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 83,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-row-kind=\"lead\"],"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 84,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-row-kind=\"phone\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 92,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * .cf-entity-type-pill[data-cf-entity-type=\"event\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 99,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * .cf-entity-type-pill[data-cf-entity-type=\"task\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 106,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * .cf-entity-type-pill[data-cf-entity-type=\"lead\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 114,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-tooltip=\"true\"] {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 123,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 135,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 148,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 162,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 59,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 64,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 82,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 83,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".calendar-entry-card,"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 84,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".calendar-entry-card.cf-readable-card,"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 118,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 119,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "[class*=\"bg-slate-950\"],"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 120,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "[class*=\"bg-slate-900\"],"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 122,
+      "hits": [
+        "from-slate-950"
+      ],
+      "text": "[class*=\"from-slate-950\"],"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 124,
+      "hits": [
+        "to-slate-950"
+      ],
+      "text": "[class*=\"to-slate-950\"],"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 137,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 147,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 159,
+      "hits": [
+        "calendar-entry-card",
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * .calendar-entry-card {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 167,
+      "hits": [
+        "calendar-entry-card",
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * .calendar-entry-card:hover {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 172,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 182,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 194,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 214,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 225,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 235,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 245,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 259,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 260,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".calendar-entry-card button,"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 279,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 292,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 305,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/closeflow-calendar-skin-only-v1.css",
+      "line": 319,
+      "hits": [
+        "[data-cf-page-header-v2=\"calendar\"] ~ *"
+      ],
+      "text": "#root [data-cf-page-header-v2=\"calendar\"] ~ * :is("
+    },
+    {
+      "file": "src/styles/core/core-contracts.css",
+      "line": 3,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage01-shell.css';"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 3,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 14,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .nav-scroll {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 24,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 37,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer::before,"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 38,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer::after {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 43,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 61,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] > .min-w-0 {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 67,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] strong,"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 68,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] span {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 83,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] strong {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 91,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] span {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 100,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 180,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/eliteflow-admin-feedback-p1-hotfix.css",
+      "line": 186,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-desktop-compact-scale.css",
+      "line": 25,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/eliteflow-desktop-compact-scale.css",
+      "line": 33,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/eliteflow-desktop-compact-scale.css",
+      "line": 40,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 3,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 11,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .nav-scroll {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 16,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 30,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer::before {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 42,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"],"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 43,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer .user-card[data-shell-user-card=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 60,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] .user-avatar {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 71,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] strong,"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 72,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] span {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 81,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] strong {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 87,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] span {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 93,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 104,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout:hover {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 111,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout svg {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 117,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-footer-contrast-repair.css",
+      "line": 123,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 4,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 16,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .brand {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 20,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .nav-scroll {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 30,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 47,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer::before,"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 48,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer::after {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 53,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"],"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 54,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-footer .user-card[data-shell-user-card=\"true\"] {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 79,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] .user-avatar {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 96,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] > .min-w-0 {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 103,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] strong,"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 104,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] span {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 119,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] strong {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 128,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .user-card[data-shell-user-card=\"true\"] span {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 137,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout {"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 151,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout svg,"
+    },
+    {
+      "file": "src/styles/eliteflow-sidebar-user-footer-below-nav.css",
+      "line": 152,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar=\"true\"] .sidebar-logout span {"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 106,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ":where(.main-calendar-html .right-card.calendar-week-filter, .main-calendar-html .calendar-week-plan, .main-calendar-html .calendar-entry-card) {"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 115,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card :is(h1, h2, h3, h4, p, span, div, button, small, strong) {"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 119,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card .text-slate-400,"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 120,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card p.text-slate-400,"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 121,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card .font-semibold.text-slate-400 {"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 125,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card .text-slate-600,"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 126,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card div.text-slate-600,"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 127,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card .font-bold.text-slate-600 {"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 141,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": ".main-calendar-html .calendar-entry-card :is(.text-white, .text-slate-50, .text-slate-100),"
+    },
+    {
+      "file": "src/styles/legacy/legacy-imports.css",
+      "line": 5,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage3-pipeline-and-case.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 3,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage02-today.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 4,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage03-leads.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 5,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage04-lead-detail.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 6,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage05-clients.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 7,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage06-client-detail.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 8,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage07-cases.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 9,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage08-case-detail.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 10,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage13-case-detail-vnext.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 11,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage18-leads-hard-1to1.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 12,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage19-clients-safe-css.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 13,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage20-lead-form-vnext.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 14,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage20-tasks-safe-css.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 15,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage21-today-final-lock.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 16,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage23-client-case-forms-vnext.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 17,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage25-leads-full-jsx-html-rebuild.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 18,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage26-leads-visual-alignment-fix.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 19,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage27-cases-vnext.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 20,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage28-tasks-vnext.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 21,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage29-calendar-vnext.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 22,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "@import '../visual-stage30-tasks-compact-after-calendar.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 25,
+      "hits": [
+        "stage37"
+      ],
+      "text": "@import '../stage37-unified-page-head-and-metrics.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 27,
+      "hits": [
+        "stage39"
+      ],
+      "text": "@import '../stage39-page-headers-copy-visual-system.css';"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 28,
+      "hits": [
+        "stage40"
+      ],
+      "text": "@import '../stage40-page-header-action-overflow-hardening.css';"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 17,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 24,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 26,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"],"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 31,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 32,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 33,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 48,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 49,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 50,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 58,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 59,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 60,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 72,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-top,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 74,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 81,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-brand,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 83,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-brand span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 90,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-menu-btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 98,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-menu-btn svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 104,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 113,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"],"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 123,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"]::-webkit-scrollbar,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 128,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 129,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 130,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-global-quick-actions=\"true\"] .btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 143,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 150,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn svg,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 156,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn.active,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 164,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 172,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-head,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 173,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-user-wrap,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 174,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-footer,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 183,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .brand,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 189,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .brand-logo,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 197,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .brand-title strong,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 198,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 206,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 212,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 219,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-caption,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 226,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 227,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 228,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn .nav-label,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 237,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 243,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-ico,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 249,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 251,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 253,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel a[aria-current=\"page\"],"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 262,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 263,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 270,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .user-card,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 272,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .trial-card,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 279,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .user-avatar,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 286,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .user-card strong,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 287,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .user-card span,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 288,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .trial-card,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 289,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .trial-card *,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 299,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel .sidebar-logout,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 400,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 input:not([type=\"checkbox\"]):not([type=\"radio\"]):not([type=\"range\"]),"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 401,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 textarea,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 402,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 select,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 412,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 input::placeholder,"
+    },
+    {
+      "file": "src/styles/stage30a-mobile-contrast-lock.css",
+      "line": 413,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 textarea::placeholder,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 36,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 38,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 39,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 main,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 40,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .view,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 41,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-shell-content=\"true\"],"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 55,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 56,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 main {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 61,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .view,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 62,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-shell-content=\"true\"] {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 164,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": ".bg-slate-950,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 165,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": ".bg-slate-900,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 174,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": ".mobile-drawer-panel .bg-slate-950,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 175,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": ".mobile-drawer-panel .bg-slate-900,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 176,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": ".sidebar .bg-slate-950,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 177,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": ".sidebar .bg-slate-900 {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 361,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 362,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 363,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 a.btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 364,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [role=\"button\"],"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 365,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [type=\"button\"],"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 366,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [type=\"submit\"] {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 370,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 371,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 a.btn,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 396,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 401,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 416,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions::-webkit-scrollbar {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 420,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 421,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 422,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions a {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 732,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 h1,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 733,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 h2,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 734,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 h3,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 735,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 p,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 736,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 span,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 737,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 strong,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 738,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 small,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 739,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 a,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 740,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 td,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 741,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 th,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 742,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 label {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 749,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 753,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 757,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-top {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 762,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 768,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-nav,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 769,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-footer,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 770,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-user-wrap {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 775,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 781,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 787,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn span {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 810,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 811,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 main {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 816,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 850,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 851,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 852,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions a {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 872,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 879,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 885,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn {"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 891,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions > *,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 892,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions button,"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 893,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions a {"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 145,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "[data-radix-dialog-content] [class*=\"bg-slate-950\"],"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 146,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "[data-radix-dialog-content] [class*=\"bg-slate-900\"],"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 147,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "[role=\"dialog\"] [class*=\"bg-slate-950\"],"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 148,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "[role=\"dialog\"] [class*=\"bg-slate-900\"] {"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 143,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "[data-radix-dialog-content] [class*=\"bg-slate-950\"],"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 144,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "[data-radix-dialog-content] [class*=\"bg-slate-900\"],"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 147,
+      "hits": [
+        "bg-slate-950"
+      ],
+      "text": "[role=\"dialog\"] [class*=\"bg-slate-950\"],"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 148,
+      "hits": [
+        "bg-slate-900"
+      ],
+      "text": "[role=\"dialog\"] [class*=\"bg-slate-900\"],"
+    },
+    {
+      "file": "src/styles/stage38-metrics-and-relations-polish.css",
+      "line": 65,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar .user-card,"
+    },
+    {
+      "file": "src/styles/stage38-metrics-and-relations-polish.css",
+      "line": 72,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar .user-card strong,"
+    },
+    {
+      "file": "src/styles/stage38-metrics-and-relations-polish.css",
+      "line": 73,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar .user-card span,"
+    },
+    {
+      "file": "src/styles/stage38-metrics-and-relations-polish.css",
+      "line": 80,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar .user-card strong,"
+    },
+    {
+      "file": "src/styles/stage38-metrics-and-relations-polish.css",
+      "line": 86,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar .user-card span,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 19,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".app.closeflow-visual-stage01.cf-html-shell {"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 70,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 72,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] header,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 74,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] header h1,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 76,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] .app-primary-chip,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 78,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:first-of-type,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 80,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:first-of-type > *,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 82,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:first-of-type > *:hover,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 84,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] [class*=\"app-surface\"],"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 86,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:last-of-type,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 88,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:last-of-type::after,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 90,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] .app-muted,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 92,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] .app-text,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 95,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".app.cf-html-shell, .app.closeflow-visual-stage01.cf-html-shell { display: block !important; padding-bottom: 72px !important; }"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 100,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:first-of-type,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 102,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:last-of-type,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 106,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] > div > section:first-of-type,"
+    },
+    {
+      "file": "src/styles/visual-html-theme-v14.css",
+      "line": 108,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".cf-html-shell [data-visual-stage-cases=\"07-cases\"] header,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 28,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 39,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 55,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 65,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-logo {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 79,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-title {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 83,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-title strong {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 89,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-title span {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 97,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-scroll {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 103,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-group {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 107,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-group:first-child {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 111,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-stack {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 116,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-caption {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 125,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 144,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn:hover {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 149,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn.active {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 157,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-ico {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 168,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn.active .nav-ico {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 173,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-label {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 180,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-badge {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 194,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 201,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .trial-card {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 208,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .trial-card .top {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 220,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .bar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 228,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .bar span {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 235,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .trial-link {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 246,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .user-card {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 256,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .user-avatar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 268,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .user-card strong {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 274,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .user-card span {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 281,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar-logout {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 297,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar-logout:hover {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 303,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 308,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 323,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-title {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 333,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-dot {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 344,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-title strong {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 349,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 359,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 360,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions > button {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 380,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 381,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions > button:hover {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 386,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn.primary {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 393,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn.soft-blue {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 400,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .view {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 405,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .view.active {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 409,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .access-warning {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 426,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .access-warning p {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 430,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .access-warning-action {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 443,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-top,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 444,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 448,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 453,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 457,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 461,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-title,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 462,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-caption,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 463,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-label,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 464,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-badge,"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 465,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar-footer {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 469,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 474,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 479,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-ico {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 486,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 492,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 496,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 500,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-top {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 517,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-brand {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 529,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-brand .brand-logo {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 538,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-menu-btn {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 552,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 561,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-title {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 565,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 569,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions::-webkit-scrollbar {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 573,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .view {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 577,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .access-warning {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 585,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 601,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 617,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav-btn.active {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 622,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 629,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-backdrop {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 636,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-panel {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 652,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-head {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 662,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-brand {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 667,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 674,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-user-wrap {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 679,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-nav {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 684,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-drawer-footer {"
+    },
+    {
+      "file": "src/styles/visual-stage01-shell.css",
+      "line": 691,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn-compact {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 2,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-shell-content] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 7,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-shell-content] > * {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 13,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today h1,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 14,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-shell-content] h1 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 21,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today h1 + p,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 22,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-shell-content] h1 + p {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 28,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-card=\"true\"],"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 29,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .shadow-sm.border-slate-100,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 30,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-2xl.border,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 31,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-3xl.border {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 38,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-card=\"true\"]:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 39,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-2xl.border:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 40,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-3xl.border:hover {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 44,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-header=\"true\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 50,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-header=\"true\"] p:first-child,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 51,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-card=\"true\"] .font-semibold {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 57,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-header=\"true\"] p + p,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 58,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-card=\"true\"] .text-xs,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 59,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-card=\"true\"] .text-sm.text-slate-500 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 63,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-shortcut-section=\"urgent\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 67,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-shortcut-section=\"without_action\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 71,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-shortcut-section=\"without_movement\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 75,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-shortcut-section=\"calendar\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 79,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 86,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar=\"true\"] button,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 87,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar=\"true\"] [role=\"button\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 93,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today a[href^=\"/leads/\"],"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 94,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today a[href^=\"/cases/\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 98,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .text-slate-900,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 99,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .text-slate-800,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 100,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .text-slate-700 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 104,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .text-slate-600,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 105,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .text-slate-500,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 106,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .text-slate-400 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 110,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .bg-white,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 111,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .bg-white\\/80,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 112,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .bg-white\\/95 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 116,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .bg-slate-50,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 117,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .bg-slate-100,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 118,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .bg-slate-50\\/50 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 122,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .border-slate-100,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 123,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .border-slate-200,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 124,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .border-slate-300 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 128,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-xl {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 132,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-2xl {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 136,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today .rounded-3xl {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 140,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today button,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 141,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today a {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 146,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-shell-content] > * {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 151,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today h1,"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 152,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-shell-content] h1 {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 156,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-card=\"true\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 160,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-tile-header=\"true\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage02-today.css",
+      "line": 164,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar=\"true\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage08-case-detail.css",
+      "line": 7,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".main-case-detail .view[data-visual-stage-case-detail=\"08-case-detail\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 53,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".app.closeflow-visual-stage01,"
+    },
+    {
+      "file": "src/styles/visual-stage16-today-html-reset.css",
+      "line": 64,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".app.closeflow-visual-stage01,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 40,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": "body:has(.closeflow-visual-stage01),"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 53,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 63,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 64,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01.app {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 70,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 72,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 aside.sidebar,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 74,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 [data-sidebar] {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 84,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 89,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-logo {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 99,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-title strong {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 105,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .brand-title span {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 111,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-caption {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 120,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 122,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar a {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 130,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 132,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar a:hover {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 138,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn.active,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 140,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar a[aria-current=\"page\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 147,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-ico {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 153,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-btn.active .nav-ico {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 159,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .nav-badge {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 165,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .trial-card,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 167,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .user-card {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 174,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 176,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 main {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 182,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 193,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-title {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 200,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 211,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 215,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 button[data-variant=\"outline\"] {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 224,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn.primary,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 226,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-actions .btn.primary,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 236,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .btn.soft-blue,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 239,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .ai-open {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 247,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .card,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 431,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .pill,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 561,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .sidebar,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 563,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 aside.sidebar {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 568,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-top {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 582,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main,"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 584,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 main {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 591,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-bar {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 599,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .global-title {"
+    },
+    {
+      "file": "src/styles/visual-stage17-today-hard-1to1.css",
+      "line": 626,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .mobile-nav {"
+    },
+    {
+      "file": "src/styles/visual-stage18-leads-hard-1to1.css",
+      "line": 34,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01:has(.main-leads) {"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 4,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 43,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads > [data-shell-content=\"true\"] > .p-4,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 44,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads > [data-shell-content=\"true\"] > .md\\:p-8,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 52,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 71,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header::before,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 93,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header > div:first-child,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 100,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header h1,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 111,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header h1::after,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 125,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header > div:last-child,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 136,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads button,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 144,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header button,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 154,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header button:first-child,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 163,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header button:last-child,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 173,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads svg,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 180,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header button svg,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 188,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 197,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 > button,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 205,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 > button:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 212,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 [data-slot=\"card\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 213,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 .h-full,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 224,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 [class*=\"min-h\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 232,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 p,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 243,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 h3,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 253,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 .rounded-2xl,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 264,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5 .rounded-2xl svg,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 272,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout=\"true\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 284,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout=\"true\"] > [data-slot=\"card\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 285,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout=\"true\"] > .border-none,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 295,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .relative:has(input[list=\"lead-search-suggestions-stage31\"]),"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 301,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads input[list=\"lead-search-suggestions-stage31\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 314,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads input[list=\"lead-search-suggestions-stage31\"]::placeholder,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 320,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage31-lead-search-suggestions=\"true\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 327,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage31-lead-search-suggestions=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 339,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 350,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"] > [data-slot=\"card\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 351,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"] > .border-none,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 361,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"] [data-slot=\"card-content\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 367,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"] a,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 383,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"] a:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 393,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .space-y-3 > a[href^=\"/leads/\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 396,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .space-y-3 > div:has(a[href^=\"/leads/\"]),"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 406,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .space-y-3 > a[href^=\"/leads/\"]:hover,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 409,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .space-y-3 > div:has(a[href^=\"/leads/\"]):hover,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 419,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-slot=\"badge\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 420,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .inline-flex.items-center.rounded-full,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 435,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-blue-100,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 436,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-blue-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 446,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-emerald-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 447,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-green-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 457,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-rose-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 458,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-red-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 468,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-amber-50,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 469,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-amber-100,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 479,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-violet-100,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 480,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .bg-purple-100,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 490,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [role=\"dialog\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 497,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [role=\"dialog\"] input,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 498,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [role=\"dialog\"] select,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 506,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout=\"true\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 512,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail=\"true\"],"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 520,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 530,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads > [data-shell-content=\"true\"] > .p-4,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 531,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads > [data-shell-content=\"true\"] > .md\\:p-8,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 537,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 545,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header::before,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 552,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header > div:first-child,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 558,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header > div:last-child,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 564,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads header button,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 570,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\\:grid-cols-2.xl\\:grid-cols-5,"
+    },
+    {
+      "file": "src/styles/visual-stage22-leads-final-lock.css",
+      "line": 576,
+      "hits": [
+        "visual-stage"
+      ],
+      "text": ".closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout=\"true\"],"
+    }
+  ]
+}

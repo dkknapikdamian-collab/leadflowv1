@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-05-12T04:49:58.204Z",
+  "stage": "CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_2026_05_12",
+  "changed": [
+    "src/pages/Calendar.tsx",
+    "src/styles/closeflow-calendar-color-tooltip-v2.css"
+  ],
+  "scope": "Calendar content only",
+  "behavior": [
+    "native title tooltip added when text is clipped or long",
+    "task/event/lead/phone type badges get strong colors",
+    "parent chips receive light color accents"
+  ],
+  "notChanged": [
+    "API",
+    "Supabase",
+    "create/edit/delete handlers",
+    "global left sidebar",
+    "Calendar layout structure"
+  ]
+}

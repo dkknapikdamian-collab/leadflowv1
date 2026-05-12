@@ -105,6 +105,7 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-calendar-skin-only-v1.css';
+import '../styles/closeflow-calendar-color-tooltip-v2.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -134,6 +135,7 @@ const CLOSEFLOW_FB1_CALENDAR_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEA
 const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
 const CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2 = 'CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_REPAIR1 = 'CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_REPAIR1_2026_05_12';
+const CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2 = 'CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -577,6 +579,76 @@ export default function Calendar() {
       window.localStorage.setItem(CALENDAR_VIEW_STORAGE_KEY, calendarView);
     }
   }, [calendarView]);
+
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_EFFECT: native hover tooltips for clipped calendar text + visual type hints.
+    if (typeof document === 'undefined') return;
+
+    const inferKind = (value: string) => {
+      const textValue = value.trim().toLowerCase();
+      if (!textValue) return '';
+      if (textValue === 'wyd' || textValue === 'wydarzenie' || textValue.startsWith('wydarzenie')) return 'event';
+      if (textValue === 'zad' || textValue === 'zadanie' || textValue.startsWith('zadanie')) return 'task';
+      if (textValue === 'tel' || textValue === 'telefon' || textValue.startsWith('telefon')) return 'phone';
+      if (textValue === 'lead' || textValue.startsWith('lead')) return 'lead';
+      return '';
+    };
+
+    const applyCalendarTextEnhancements = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const contentCandidates = Array.from(scope.querySelectorAll<HTMLElement>([
+        '.calendar-entry-card',
+        '.calendar-entry-card *',
+        '[class*="month"] [class*="entry"]',
+        '[class*="month"] [class*="entry"] *',
+        '[class*="month"] [class*="item"]',
+        '[class*="month"] [class*="item"] *',
+        '[class*="month"] [class*="chip"]',
+        '[class*="month"] [class*="chip"] *',
+        '[class*="calendar"] [class*="chip"]',
+        '[class*="calendar"] [class*="chip"] *'
+      ].join(',')));
+
+      for (const node of contentCandidates) {
+        const raw = (node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!raw) continue;
+
+        const kind = inferKind(raw);
+        if (kind) {
+          node.dataset.cfCalendarKind = kind;
+          node.classList.add('cf-calendar-type-badge');
+
+          const parent = node.parentElement;
+          if (parent && parent !== scope) {
+            parent.dataset.cfCalendarRowKind = kind;
+          }
+        }
+
+        const isProbablyText = raw.length >= 8;
+        const isClipped = node.scrollWidth > node.clientWidth + 2 || node.scrollHeight > node.clientHeight + 2;
+        const isCompactCalendarText = node.matches('p,span,strong,a,button,div');
+
+        if (isCompactCalendarText && isProbablyText && (isClipped || raw.length >= 28)) {
+          if (!node.getAttribute('title')) {
+            node.setAttribute('title', raw);
+          }
+          node.dataset.cfCalendarTooltip = 'true';
+        }
+      }
+    };
+
+    const raf = window.requestAnimationFrame(applyCalendarTextEnhancements);
+    const timer = window.setTimeout(applyCalendarTextEnhancements, 180);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+    };
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
 
   async function refreshSupabaseBundle() {
     const [bundle, caseRows, clientRows] = await Promise.all([

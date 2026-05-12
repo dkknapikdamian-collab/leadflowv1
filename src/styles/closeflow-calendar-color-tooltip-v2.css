@@ -1,0 +1,181 @@
+/* CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_SKIN_V2_2026_05_12
+
+   Calendar visual repair after skin-only V1:
+   - add visible color accents to month chips and agenda rows
+   - add native hover tooltip support via data attributes set in Calendar.tsx
+   - keep global left sidebar untouched
+   - no data/API/handler changes
+
+   Source of truth for Calendar colors:
+   task = green, event = violet, lead/phone = blue, delete = red.
+*/
+
+:root {
+  --cf-cal-v2-text: #0f172a;
+  --cf-cal-v2-muted: #64748b;
+  --cf-cal-v2-border: #dbe7f4;
+  --cf-cal-v2-blue: #2563eb;
+  --cf-cal-v2-blue-soft: #eff6ff;
+  --cf-cal-v2-blue-border: #bfdbfe;
+  --cf-cal-v2-violet: #7c3aed;
+  --cf-cal-v2-violet-soft: #f5f3ff;
+  --cf-cal-v2-violet-border: #ddd6fe;
+  --cf-cal-v2-green: #16a34a;
+  --cf-cal-v2-green-soft: #ecfdf3;
+  --cf-cal-v2-green-border: #bbf7d0;
+  --cf-cal-v2-red: #dc2626;
+  --cf-cal-v2-red-soft: #fef2f2;
+  --cf-cal-v2-red-border: #fecaca;
+}
+
+/* Strict scope: Calendar content only, never the global left app sidebar */
+#root [data-cf-page-header-v2="calendar"] ~ * {
+  --cf-calendar-color-scope-v2: 1;
+}
+
+/* Stronger colors for type badges created by the tooltip enhancer */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-type-badge,
+#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-kind] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  border-radius: 999px !important;
+  padding: 4px 8px !important;
+  border: 1px solid var(--cf-cal-v2-border) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  letter-spacing: -0.01em !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="event"] {
+  border-color: var(--cf-cal-v2-violet-border) !important;
+  background: var(--cf-cal-v2-violet-soft) !important;
+  color: var(--cf-cal-v2-violet) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-violet) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="task"] {
+  border-color: var(--cf-cal-v2-green-border) !important;
+  background: var(--cf-cal-v2-green-soft) !important;
+  color: var(--cf-cal-v2-green) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-green) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="lead"],
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-type-badge, [data-cf-calendar-kind])[data-cf-calendar-kind="phone"] {
+  border-color: var(--cf-cal-v2-blue-border) !important;
+  background: var(--cf-cal-v2-blue-soft) !important;
+  color: var(--cf-cal-v2-blue) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-blue) !important;
+}
+
+/* Color the whole compact month/agenda chip when the enhancer can infer the type */
+#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="event"] {
+  border-color: var(--cf-cal-v2-violet-border) !important;
+  background:
+    linear-gradient(90deg, rgba(124, 58, 237, 0.10), rgba(255, 255, 255, 0.94) 36%),
+    #ffffff !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="task"] {
+  border-color: var(--cf-cal-v2-green-border) !important;
+  background:
+    linear-gradient(90deg, rgba(22, 163, 74, 0.10), rgba(255, 255, 255, 0.94) 36%),
+    #ffffff !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="lead"],
+#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-row-kind="phone"] {
+  border-color: var(--cf-cal-v2-blue-border) !important;
+  background:
+    linear-gradient(90deg, rgba(37, 99, 235, 0.10), rgba(255, 255, 255, 0.94) 36%),
+    #ffffff !important;
+}
+
+/* Existing official entity pills: make them stronger too */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-entity-type-pill[data-cf-entity-type="event"] {
+  border-color: var(--cf-cal-v2-violet-border) !important;
+  background: var(--cf-cal-v2-violet-soft) !important;
+  color: var(--cf-cal-v2-violet) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-violet) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-entity-type-pill[data-cf-entity-type="task"] {
+  border-color: var(--cf-cal-v2-green-border) !important;
+  background: var(--cf-cal-v2-green-soft) !important;
+  color: var(--cf-cal-v2-green) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-green) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-entity-type-pill[data-cf-entity-type="lead"] {
+  border-color: var(--cf-cal-v2-blue-border) !important;
+  background: var(--cf-cal-v2-blue-soft) !important;
+  color: var(--cf-cal-v2-blue) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-blue) !important;
+}
+
+/* Make clipped text feel intentional. Native title tooltip is added by Calendar.tsx. */
+#root [data-cf-page-header-v2="calendar"] ~ * [data-cf-calendar-tooltip="true"] {
+  cursor: help !important;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: rgba(37, 99, 235, 0.35);
+  text-underline-offset: 3px;
+}
+
+/* Month cards: keep text readable, compact, and colored */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  [class*="month"] [class*="entry"],
+  [class*="month"] [class*="item"],
+  [class*="month"] [class*="chip"],
+  [class*="calendar"] [class*="chip"]
+) {
+  color: var(--cf-cal-v2-text) !important;
+  font-weight: 850 !important;
+  opacity: 1 !important;
+}
+
+/* Visible overflow link */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  [class*="more"],
+  [class*="overflow"],
+  [class*="hidden-count"],
+  [class*="remaining"]
+) {
+  color: var(--cf-cal-v2-blue) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-blue) !important;
+  font-weight: 950 !important;
+  opacity: 1 !important;
+}
+
+/* Delete stays red and obvious */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-entity-action-danger,
+  [data-cf-action-variant="danger"],
+  button[class*="red"],
+  button[class*="rose"],
+  button[aria-label*="Usuń"],
+  button[title*="Usuń"]
+) {
+  border-color: var(--cf-cal-v2-red-border) !important;
+  background: #ffffff !important;
+  color: var(--cf-cal-v2-red) !important;
+  -webkit-text-fill-color: var(--cf-cal-v2-red) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-entity-action-danger,
+  [data-cf-action-variant="danger"],
+  button[class*="red"],
+  button[class*="rose"],
+  button[aria-label*="Usuń"],
+  button[title*="Usuń"]
+):hover {
+  background: var(--cf-cal-v2-red-soft) !important;
+}
