@@ -94,83 +94,6 @@ import {
 import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 
-// STAGE14J_CALENDAR_MONTH_ENTRY_ELLIPSIS
-function useStage14JMonthEntryEllipsis() {
-  useEffect(() => {
-    if (typeof document === "undefined") return;
-
-    let frame = 0;
-
-    const normalizeText = (value) => String(value || "").replace(/\s+/g, " ").trim();
-
-    const isMoreCounter = (label) => /^\+\s*\d+/.test(label) || /\bwiecej\b|\bwi[eę]cej\b/i.test(label);
-
-    const isInsideMonth = (element) => Boolean(element.closest([
-      '[data-calendar-month-grid="true"]',
-      '[data-calendar-month-day="true"]',
-      '.calendar-month-grid',
-      '.calendar-month-view',
-      '.calendar-month-day',
-      '.month-grid',
-      '.month-day',
-      '.month-view'
-    ].join(',')));
-
-    const markMonthEntries = () => {
-      frame = 0;
-      const selector = [
-        '[data-calendar-month-entry="true"]',
-        '.calendar-month-entry',
-        '.calendar-month-item',
-        '.calendar-month-event',
-        '.calendar-month-task',
-        '.cf-calendar-month-entry',
-        '.calendar-month-day button',
-        '.calendar-month-day [role="button"]',
-        '.month-day button',
-        '[data-calendar-month-day="true"] button',
-        '[data-calendar-month-day="true"] [role="button"]'
-      ].join(',');
-
-      document.querySelectorAll(selector).forEach((node) => {
-        const element = node instanceof HTMLElement ? node : null;
-        if (!element) return;
-        if (!isInsideMonth(element)) return;
-
-        const label = normalizeText(element.textContent);
-        if (!label || isMoreCounter(label)) return;
-
-        element.setAttribute('data-calendar-month-entry', 'true');
-        element.setAttribute("title", label);
-
-        const day = element.closest('[data-calendar-month-day="true"], .calendar-month-day, .month-day');
-        if (day instanceof HTMLElement) day.setAttribute('data-calendar-month-day', 'true');
-
-        const parent = element.parentElement;
-        if (parent) parent.setAttribute('data-calendar-month-day-entries', 'true');
-      });
-    };
-
-    const scheduleMark = () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(markMonthEntries);
-    };
-
-    scheduleMark();
-
-    const observer = new MutationObserver(scheduleMark);
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
-    window.addEventListener('resize', scheduleMark);
-
-    return () => {
-      if (frame) window.cancelAnimationFrame(frame);
-      observer.disconnect();
-      window.removeEventListener('resize', scheduleMark);
-    };
-  }, []);
-}
-
-
 import Layout from '../components/Layout';
 
 import { pl } from 'date-fns/locale';
@@ -182,18 +105,11 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-calendar-skin-only-v1.css';
-import '../styles/closeflow-calendar-render-pipeline-repair3.css';
-import '../styles/closeflow-calendar-month-tooltip-actions-repair4.css';
-import '../styles/closeflow-calendar-text-ellipsis-selected-day-repair5.css';
-import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
-
-
-
-
-
-
-
-
+import '../styles/closeflow-calendar-color-tooltip-v2.css';
+import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
+import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
+import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
+import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -228,16 +144,8 @@ const CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1 = 'CLOSEFLOW_CALENDAR_MONTH_C
 const CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4 = 'CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_2026_05_12';
-const CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_READABILITY_V5_2026_05_12';
-const CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_LABELS_V6 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_LABELS_V6_2026_05_12';
-const CLOSEFLOW_CALENDAR_V6_REPAIR1_SCOPE_TEXT = 'CLOSEFLOW_CALENDAR_V6_REPAIR1_SCOPE_TEXT_2026_05_12';
-const CLOSEFLOW_CALENDAR_MONTH_LIGHT_SELECTED_DAY_REAL_ENTRIES_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_LIGHT_SELECTED_DAY_REAL_ENTRIES_REPAIR2_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
-const CLOSEFLOW_CALENDAR_RENDER_PIPELINE_REPAIR3 = 'CLOSEFLOW_CALENDAR_RENDER_PIPELINE_REPAIR3_2026_05_12';
-const CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4 = 'CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_2026_05_12';
-const CLOSEFLOW_CALENDAR_TEXT_ELLIPSIS_SELECTED_DAY_REPAIR5 = 'CLOSEFLOW_CALENDAR_TEXT_ELLIPSIS_SELECTED_DAY_REPAIR5_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
-const CLOSEFLOW_STAGE14H_CALENDAR_WEEK_NEAREST7_DEDUPE_2026_05_12 = 'CLOSEFLOW_STAGE14H_CALENDAR_WEEK_NEAREST7_DEDUPE_2026_05_12';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 function readCalendarRawText(value: unknown, fallback = '') {
@@ -546,7 +454,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
           )}
         </div>
 
-        <div data-cf-calendar-entry-actions="true" className="flex flex-wrap gap-1.5 lg:justify-end">
+        <div className="flex flex-wrap gap-1.5 lg:justify-end">
           <button type="button" className={neutralActionClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
           <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
           <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
@@ -563,20 +471,6 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   );
 }
 
-
-const CALENDAR_ACTION_COLOR_TAXONOMY_V1 = 'calendar action visual taxonomy V1';
-function calendarActionVisualKind(row: Record<string, unknown> | null | undefined) {
-  return inferCloseFlowActionVisualKind(row);
-}
-function calendarActionVisualClass(row: Record<string, unknown> | null | undefined) {
-  return getCloseFlowActionVisualClass(row);
-}
-function calendarActionDataKind(row: Record<string, unknown> | null | undefined) {
-  return getCloseFlowActionVisualDataKind(row);
-}
-function calendarActionKindClass(kind: unknown) {
-  return getCloseFlowActionKindClass(kind);
-}
 export default function Calendar() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -625,170 +519,6 @@ export default function Calendar() {
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
-
-  useEffect(() => {
-    if (typeof document === 'undefined') return undefined;
-
-    const body = document.body;
-    body.classList.add('cf-calendar-route-active');
-
-    const addTitle = (element: HTMLElement | null | undefined) => {
-      if (!element) return;
-      const fullText = (element.textContent || '').replace(/\s+/g, ' ').trim();
-      if (!fullText) return;
-      element.setAttribute('title', fullText);
-      element.setAttribute('aria-label', fullText);
-    };
-
-    const looksLikeCalendarEntry = (element: HTMLElement) => {
-      if (element.closest('.calendar-entry-card')) return false;
-      if (element.closest('.cf-cal-r5-selected-day-section')) return false;
-      if (element.matches('button, [role="button"]') && element.textContent?.includes('+')) return false;
-
-      const textValue = (element.textContent || '').replace(/\s+/g, ' ').trim();
-      if (!textValue) return false;
-      if (textValue.length < 6) return false;
-      if (/^\+\s*\d+\s*więcej$/i.test(textValue)) return false;
-      if (/^(pon|wt|śro|czw|pt|sob|ndz)$/i.test(textValue)) return false;
-
-      const hasKindSignal =
-        element.matches('[data-action-kind], [data-closeflow-action-kind], [data-cf-calendar-row-kind], [data-cf-month-text-kind], .cf-action-kind-task, .cf-action-kind-event, .cf-action-color-chip') ||
-        Boolean(element.querySelector('[data-action-kind], [data-closeflow-action-kind], [data-cf-entity-type], [data-cf-calendar-kind], .cf-action-color-chip'));
-
-      const hasTextSignal = /\b(Zad|Wyd|Lead|Tel|Mail|Spot)\b/i.test(textValue) || /\b\d{1,2}:\d{2}\b/.test(textValue);
-
-      let rectOk = true;
-      try {
-        const rect = element.getBoundingClientRect();
-        rectOk = rect.width >= 40 && rect.height >= 10 && rect.height <= 42;
-      } catch {
-        rectOk = true;
-      }
-
-      return rectOk && (hasKindSignal || hasTextSignal);
-    };
-
-    const annotate = () => {
-      const calendarHeader = document.querySelector('[data-cf-page-header-v2="calendar"]');
-      if (!calendarHeader) return;
-
-      const root =
-        calendarHeader.closest('main') ||
-        calendarHeader.closest('[role="main"]') ||
-        calendarHeader.closest('.cf-html-shell') ||
-        document.querySelector('#root') ||
-        document.body;
-
-      root.querySelectorAll<HTMLElement>('*').forEach((node) => {
-        if (!looksLikeCalendarEntry(node)) return;
-
-        const textValue = (node.textContent || '').replace(/\s+/g, ' ').trim();
-        if (!textValue) return;
-
-        node.classList.add('cf-cal-r5-month-entry');
-        addTitle(node);
-
-        const lower = textValue.toLowerCase();
-        const kind =
-          lower.includes('wyd') || lower.includes('spotkanie') ? 'event' :
-          lower.includes('lead') ? 'lead' :
-          'task';
-
-        node.setAttribute('data-cf-r5-kind', kind);
-
-        Array.from(node.children).forEach((child) => {
-          if (!(child instanceof HTMLElement)) return;
-          const childText = (child.textContent || '').replace(/\s+/g, ' ').trim();
-          if (!childText) return;
-
-          if (/^(Zad|Wyd|Lead|Tel|Mail)$/i.test(childText) || child.hasAttribute('data-cf-entity-type') || child.hasAttribute('data-cf-calendar-kind') || child.hasAttribute('data-action-kind') || child.hasAttribute('data-closeflow-action-kind') || child.classList.contains('cf-action-color-chip')) {
-            child.classList.add('cf-cal-r5-month-badge');
-            return;
-          }
-
-          child.classList.add('cf-cal-r5-month-title');
-          addTitle(child);
-        });
-
-        const titleChild = node.querySelector<HTMLElement>('.cf-cal-r5-month-title');
-        if (!titleChild && node.children.length === 0) {
-          node.classList.add('cf-cal-r5-month-title');
-        }
-      });
-
-      const labelNodes = Array.from(root.querySelectorAll<HTMLElement>('*')).filter((node) =>
-        /WYBRANY\s+DZIEŃ/i.test((node.textContent || '').replace(/\s+/g, ' '))
-      );
-
-      labelNodes.forEach((label) => {
-        let section: HTMLElement | null = label;
-        for (let i = 0; i < 8 && section; i += 1) {
-          if (section.querySelector('.calendar-entry-card')) break;
-          section = section.parentElement;
-        }
-
-        if (!section || !section.querySelector('.calendar-entry-card')) return;
-        section.classList.add('cf-cal-r5-selected-day-section');
-
-        const cards = Array.from(section.querySelectorAll<HTMLElement>('.calendar-entry-card'));
-        const commonParent = cards[0]?.parentElement;
-        if (commonParent && cards.every((card) => card.parentElement === commonParent)) {
-          commonParent.classList.add('cf-cal-r5-selected-day-list');
-        }
-
-        cards.forEach((card) => {
-          addTitle(card.querySelector<HTMLElement>('p[title], p, a[title], a'));
-          const actions = card.querySelector<HTMLElement>('[data-cf-calendar-entry-actions="true"]');
-          actions?.classList.add('cf-cal-r5-selected-day-actions');
-        });
-      });
-    };
-
-    const raf = window.requestAnimationFrame(annotate);
-    const timeout = window.setTimeout(annotate, 180);
-
-    return () => {
-      window.cancelAnimationFrame(raf);
-      window.clearTimeout(timeout);
-      body.classList.remove('cf-calendar-route-active');
-    };
-  }, [calendarView, calendarScale, currentMonth, selectedDate, events.length, tasks.length, leads.length]);
-  // CLOSEFLOW_CALENDAR_TEXT_ELLIPSIS_SELECTED_DAY_REPAIR5_EFFECT
-
-
-  useEffect(() => {
-    if (typeof document === 'undefined') return;
-
-    const raf = window.requestAnimationFrame(() => {
-      const calendarHeader = document.querySelector('[data-cf-page-header-v2="calendar"]');
-      if (!calendarHeader) return;
-
-      const candidates = document.querySelectorAll<HTMLElement>([
-        '.cf-calendar-month-text-row',
-        '.cf-calendar-month-text-title',
-        '[data-cf-month-text-kind]',
-        '[data-cf-calendar-row-kind]',
-        '.calendar-entry-card p',
-        '.calendar-entry-card a',
-        '.cf-calendar-selected-day-title-v6'
-      ].join(','));
-
-      candidates.forEach((element) => {
-        const fullText = (element.textContent || '').replace(/\s+/g, ' ').trim();
-        if (!fullText) return;
-        if (!element.getAttribute('title')) {
-          element.setAttribute('title', fullText);
-        }
-        if (!element.getAttribute('aria-label')) {
-          element.setAttribute('aria-label', fullText);
-        }
-      });
-    });
-
-    return () => window.cancelAnimationFrame(raf);
-  }, [calendarView, calendarScale, currentMonth, selectedDate, events.length, tasks.length, leads.length]);
-  // CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_EFFECT
-
 
   useEffect(() => {
     const action = consumeGlobalQuickAction();
@@ -859,13 +589,301 @@ export default function Calendar() {
   }, [calendarView]);
 
 
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_EFFECT: native hover tooltips for clipped calendar text + visual type hints.
+    if (typeof document === 'undefined') return;
 
+    const inferKind = (value: string) => {
+      const textValue = value.trim().toLowerCase();
+      if (!textValue) return '';
+      if (textValue === 'wyd' || textValue === 'wydarzenie' || textValue.startsWith('wydarzenie')) return 'event';
+      if (textValue === 'zad' || textValue === 'zadanie' || textValue.startsWith('zadanie')) return 'task';
+      if (textValue === 'tel' || textValue === 'telefon' || textValue.startsWith('telefon')) return 'phone';
+      if (textValue === 'lead' || textValue.startsWith('lead')) return 'lead';
+      return '';
+    };
 
+    const applyCalendarTextEnhancements = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
 
+      const contentCandidates = Array.from(scope.querySelectorAll<HTMLElement>([
+        '.calendar-entry-card',
+        '.calendar-entry-card *',
+        '[class*="month"] [class*="entry"]',
+        '[class*="month"] [class*="entry"] *',
+        '[class*="month"] [class*="item"]',
+        '[class*="month"] [class*="item"] *',
+        '[class*="month"] [class*="chip"]',
+        '[class*="month"] [class*="chip"] *',
+        '[class*="calendar"] [class*="chip"]',
+        '[class*="calendar"] [class*="chip"] *'
+      ].join(',')));
 
+      for (const node of contentCandidates) {
+        const raw = (node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!raw) continue;
 
+        const kind = inferKind(raw);
+        if (kind) {
+          node.dataset.cfCalendarKind = kind;
+          node.classList.add('cf-calendar-type-badge');
 
+          const parent = node.parentElement;
+          if (parent && parent !== scope) {
+            parent.dataset.cfCalendarRowKind = kind;
+          }
+        }
 
+        const isProbablyText = raw.length >= 8;
+        const isClipped = node.scrollWidth > node.clientWidth + 2 || node.scrollHeight > node.clientHeight + 2;
+        const isCompactCalendarText = node.matches('p,span,strong,a,button,div');
+
+        if (isCompactCalendarText && isProbablyText && (isClipped || raw.length >= 28)) {
+          if (!node.getAttribute('title')) {
+            node.setAttribute('title', raw);
+          }
+          const row = node.closest('[data-cf-calendar-row-kind]') as HTMLElement | null;
+          if (row && !row.getAttribute('title')) {
+            row.setAttribute('title', (row.innerText || row.textContent || raw).replace(/\\s+/g, ' ').trim()); // CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_TOOLTIP_ROW_TITLE
+          }
+          node.dataset.cfCalendarTooltip = 'true';
+        }
+      }
+    };
+
+    const raf = window.requestAnimationFrame(applyCalendarTextEnhancements);
+    const timer = window.setTimeout(applyCalendarTextEnhancements, 180);
+    const lateTimer = window.setTimeout(applyCalendarTextEnhancements, 520); // CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1_TOOLTIP_RERUN
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+      window.clearTimeout(lateTimer);
+    };
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_EFFECT:
+    // normalize compact month entries into stable one-row chips.
+    if (calendarView !== 'month') return;
+    if (typeof document === 'undefined') return;
+
+    const normalizeLabel = (rawLabel: string) => {
+      const value = rawLabel.trim().toLowerCase();
+      if (value === 'wyd' || value === 'wydarzenie') return { label: 'Wyd', kind: 'event' };
+      if (value === 'zad' || value === 'zadanie') return { label: 'Zad', kind: 'task' };
+      if (value === 'tel' || value === 'telefon') return { label: 'Tel', kind: 'phone' };
+      if (value === 'lead') return { label: 'Lead', kind: 'lead' };
+      return null;
+    };
+
+    const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const escapeRegExp = (value: string) => value.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+
+    const normalizeMonthEntries = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const candidates = Array.from(scope.querySelectorAll<HTMLElement>([
+        '[class*="month"] [class*="entry"]',
+        '[class*="month"] [class*="item"]',
+        '[class*="month"] [class*="chip"]',
+        '[class*="month"] [class*="event"]',
+        '[class*="month"] [class*="task"]',
+        '[class*="calendar"] [class*="chip"]'
+      ].join(',')));
+
+      for (const candidate of candidates) {
+        if (candidate.classList.contains('cf-month-entry-chip-structural')) continue;
+        if (candidate.closest('.cf-month-entry-chip-structural')) continue;
+
+        const fullText = cleanText(candidate.innerText || candidate.textContent || '');
+        if (!fullText) continue;
+
+        if (/^\+\s*\d+\s*więcej$/i.test(fullText)) {
+          candidate.classList.add('cf-month-entry-more');
+          continue;
+        }
+
+        const labelNode = Array.from(candidate.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+          .find((node) => {
+            const value = cleanText(node.innerText || node.textContent || '');
+            return Boolean(normalizeLabel(value));
+          });
+
+        const labelText = cleanText(labelNode?.innerText || labelNode?.textContent || '');
+        const directMatch = fullText.match(/^(Wyd|Wydarzenie|Zad|Zadanie|Tel|Telefon|Lead)\b\s*(.*)$/i);
+        const normalized = normalizeLabel(labelText) || normalizeLabel(directMatch?.[1] || '');
+        if (!normalized) continue;
+
+        let titleText = '';
+        if (labelNode && labelText) {
+          titleText = cleanText(fullText.replace(new RegExp('^' + escapeRegExp(labelText) + '\\b\\s*', 'i'), ''));
+        } else {
+          titleText = cleanText(directMatch?.[2] || '');
+        }
+
+        if (!titleText || titleText.length < 2) continue;
+
+        const completed = Boolean(
+          candidate.matches('[data-calendar-entry-completed="true"], .calendar-entry-completed') ||
+          candidate.querySelector('[data-calendar-entry-completed="true"], .calendar-entry-completed, .line-through, [class*="line-through"], s, del')
+        );
+
+        candidate.classList.add('cf-month-entry-chip-structural');
+        candidate.dataset.cfMonthEntryKind = normalized.kind;
+        candidate.dataset.cfMonthEntryCompleted = completed ? 'true' : 'false';
+        candidate.dataset.cfMonthEntryStructural = 'v3-repair2';
+        candidate.setAttribute('title', fullText);
+        candidate.setAttribute('aria-label', fullText);
+
+        candidate.replaceChildren();
+
+        const badge = document.createElement('span');
+        badge.className = 'cf-month-entry-chip-structural__badge';
+        badge.textContent = normalized.label;
+
+        const title = document.createElement('span');
+        title.className = 'cf-month-entry-chip-structural__title';
+        title.textContent = titleText;
+
+        candidate.appendChild(badge);
+        candidate.appendChild(title);
+      }
+    };
+
+    const raf = window.requestAnimationFrame(normalizeMonthEntries);
+    const timerA = window.setTimeout(normalizeMonthEntries, 120);
+    const timerB = window.setTimeout(normalizeMonthEntries, 420);
+    const timerC = window.setTimeout(normalizeMonthEntries, 900);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timerA);
+      window.clearTimeout(timerB);
+      window.clearTimeout(timerC);
+    };
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_EFFECT:
+    // Month cells must use plain one-line text rows, not mini-cards.
+    if (calendarView !== 'month') return;
+    if (typeof document === 'undefined') return;
+
+    const normalizeLabel = (rawLabel: string) => {
+      const value = rawLabel.trim().toLowerCase();
+      if (value === 'wyd' || value === 'wydarzenie') return { label: 'Wyd', kind: 'event' };
+      if (value === 'zad' || value === 'zadanie') return { label: 'Zad', kind: 'task' };
+      if (value === 'tel' || value === 'telefon') return { label: 'Tel', kind: 'phone' };
+      if (value === 'lead') return { label: 'Lead', kind: 'lead' };
+      return null;
+    };
+
+    const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const stripLeadingType = (fullText: string, label: string) => {
+      const lower = fullText.toLowerCase();
+      const normalizedLabel = label.toLowerCase();
+      if (lower.startsWith(normalizedLabel)) {
+        return cleanText(fullText.slice(label.length));
+      }
+      return fullText;
+    };
+
+    const chooseRowCandidate = (labelNode: HTMLElement) => {
+      let current: HTMLElement | null = labelNode;
+      for (let depth = 0; current && depth < 7; depth += 1) {
+        const raw = cleanText(current.innerText || current.textContent || '');
+        const directLabel = cleanText(labelNode.innerText || labelNode.textContent || '');
+        const labelCount = Array.from(current.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+          .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || '')))).length;
+
+        if (raw && raw !== directLabel && raw.length <= 120 && labelCount === 1 && !/^\+\s*\d+\s*więcej$/i.test(raw)) {
+          return current;
+        }
+
+        current = current.parentElement;
+      }
+      return null;
+    };
+
+    const normalizeMonthPlainRows = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const moreRows = Array.from(scope.querySelectorAll<HTMLElement>('a,button,div,span,p,strong'));
+      for (const node of moreRows) {
+        const raw = cleanText(node.innerText || node.textContent || '');
+        if (/^\+\s*\d+\s*więcej$/i.test(raw)) {
+          node.classList.add('cf-calendar-month-more-row');
+          node.setAttribute('title', raw);
+        }
+      }
+
+      const labelNodes = Array.from(scope.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+        .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || ''))));
+
+      const seen = new Set<HTMLElement>();
+
+      for (const labelNode of labelNodes) {
+        const normalized = normalizeLabel(cleanText(labelNode.innerText || labelNode.textContent || ''));
+        if (!normalized) continue;
+
+        const row = chooseRowCandidate(labelNode);
+        if (!row || seen.has(row)) continue;
+        seen.add(row);
+
+        const fullText = cleanText(row.innerText || row.textContent || '');
+        if (!fullText || fullText.length < 4) continue;
+
+        const titleText = stripLeadingType(fullText, normalized.label);
+        if (!titleText || titleText.length < 2) continue;
+
+        const completed = Boolean(
+          row.matches('[data-calendar-entry-completed="true"], .calendar-entry-completed') ||
+          row.querySelector('[data-calendar-entry-completed="true"], .calendar-entry-completed, .line-through, [class*="line-through"], s, del')
+        );
+
+        row.className = 'cf-calendar-month-text-row';
+        row.dataset.cfMonthTextKind = normalized.kind;
+        row.dataset.cfMonthTextCompleted = completed ? 'true' : 'false';
+        row.dataset.cfMonthTextRow = 'v4';
+        row.setAttribute('title', fullText);
+        row.setAttribute('aria-label', fullText);
+
+        row.replaceChildren();
+
+        const type = document.createElement('span');
+        type.className = 'cf-calendar-month-text-type';
+        type.textContent = normalized.label;
+
+        const title = document.createElement('span');
+        title.className = 'cf-calendar-month-text-title';
+        title.textContent = titleText;
+
+        row.appendChild(type);
+        row.appendChild(title);
+      }
+    };
+
+    const raf = window.requestAnimationFrame(normalizeMonthPlainRows);
+    const timerA = window.setTimeout(normalizeMonthPlainRows, 120);
+    const timerB = window.setTimeout(normalizeMonthPlainRows, 420);
+    const timerC = window.setTimeout(normalizeMonthPlainRows, 900);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timerA);
+      window.clearTimeout(timerB);
+      window.clearTimeout(timerC);
+    };
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
 
   async function refreshSupabaseBundle() {
     const [bundle, caseRows, clientRows] = await Promise.all([
@@ -1920,7 +1938,43 @@ export default function Calendar() {
                   );
                 })}
               </div>
-              {/* CLOSEFLOW_STAGE14H_CALENDAR_WEEK_NEAREST7_DEDUPE_2026_05_12: duplicate legacy nearest-7 summary removed. */}
+              <div className="calendar-week-filter-list hidden">
+                {(() => {
+                  const nextWeekStart = addDays(selectedWeekStart, 7);
+                  const days = weekDays.map((day, index) => ({
+                    key: day.toISOString(),
+                    label: isToday(day) ? 'Dzisiaj' : getCalendarDayNavLabel(day, index),
+                    date: day,
+                    count: sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day)).length,
+                  }));
+                  const quick = [
+                    ...days,
+                    {
+                      key: `next:${nextWeekStart.toISOString()}`,
+                      label: 'Przyszły tydzień',
+                      date: nextWeekStart,
+                      count: sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, nextWeekStart)).length,
+                    },
+                  ];
+
+                  return quick.map((item) => {
+                    const isActive = isSameDay(item.date, selectedDate);
+                    return (
+                      <button
+                        key={item.key}
+                        type="button"
+                        className={`calendar-week-filter-btn ${isActive ? 'active' : ''}`}
+                        onClick={() => {
+                          setSelectedDate(item.date);
+                          setCurrentMonth(item.date);
+                        }}
+                      >
+                        <span>{item.label} · {item.count} {item.count === 1 ? 'rzecz' : 'rzeczy'}</span>
+                      </button>
+                    );
+                  });
+                })()}
+              </div>
             </aside>
 
             <section className="right-card calendar-week-plan">

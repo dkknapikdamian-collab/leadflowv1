@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-05-12T13:15:27.251Z",
+  "stage": "CLOSEFLOW_CALENDAR_RESTORE_TO_V4_BASELINE_REPAIR1_2026_05_12",
+  "baseline": "ca8404f",
+  "restorePaths": [
+    "src/pages/Calendar.tsx",
+    "src/styles/closeflow-calendar-month-plain-text-rows-v4.css"
+  ],
+  "removedPostV4Files": [
+    "src/styles/closeflow-calendar-selected-day-readability-v5.css",
+    "src/styles/closeflow-calendar-selected-day-full-labels-v6.css",
+    "src/styles/closeflow-calendar-v6-repair1-scope-text.css",
+    "src/styles/closeflow-calendar-month-light-selected-day-real-entries-repair2.css",
+    "src/styles/closeflow-calendar-render-pipeline-repair3.css",
+    "src/styles/closeflow-calendar-month-tooltip-actions-repair4.css",
+    "src/styles/closeflow-calendar-text-ellipsis-selected-day-repair5.css"
+  ],
+  "badImports": [],
+  "missingMustHave": [],
+  "verdict": "pass",
+  "note": "Repair1 fixes the restore script bug and restores only Calendar.tsx plus V4 month plain text CSS."
+}
