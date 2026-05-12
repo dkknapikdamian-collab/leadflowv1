@@ -50,7 +50,9 @@ import { signOutFromSupabase } from '../lib/supabase-auth';
 import GlobalQuickActions from './GlobalQuickActions';
 import ContextActionDialogsHost from './ContextActionDialogs';
 import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
+import OperatorTopBarRuntime from './OperatorTopBarRuntime';
 import '../styles/closeflow-compact-top-shell-source-truth.css';
+import '../styles/closeflow-operator-top-trim-source-truth.css';
 import { OperatorMetricToneRuntime } from './ui-system';
 import { parseISO, differenceInDays } from 'date-fns';
 import '../styles/closeflow-desktop-density-source-truth.css';
@@ -272,6 +274,7 @@ export default function Layout({ children }: LayoutProps) {
       onPointerDownCapture={handleSidebarPointerRouter}
     >
       <OperatorMetricToneRuntime />
+      <OperatorTopBarRuntime />
       <aside className="sidebar" data-shell-sidebar="true">
         <Link to="/" className="brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
           <span className="brand-logo" aria-hidden="true">
