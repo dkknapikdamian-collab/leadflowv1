@@ -500,7 +500,7 @@ export default function Billing() {
 
   return (
     <Layout>
-      <main className="billing-vnext-page" data-billing-stage={BILLING_VISUAL_REBUILD_STAGE16}>
+      <main className="billing-vnext-page" data-billing-stage={BILLING_VISUAL_REBUILD_STAGE16} data-billing-top-duplicates-removed="true">
         <CloseFlowPageHeaderV2
           pageKey="billing"
           actions={
@@ -518,14 +518,6 @@ export default function Billing() {
             </>
           }
         />
-
-        <nav className="billing-tabs" aria-label="Zakładki rozliczeń">
-          <button type="button" className={tab === 'plan' ? 'billing-tab-active' : ''} onClick={() => setTab('plan')}>
-            Plan i dostęp
-          </button>
-
-</nav>
-
         {tab === 'plan' ? (
           <div className="billing-shell">
             <section className="billing-main-column">
@@ -551,16 +543,6 @@ export default function Billing() {
           <strong>{nextBillingAtLabel}</strong>
         </div>
       </section>
-
-                            <section className="billing-metrics-grid" aria-label="Podsumowanie rozliczeń">
-                <article className="billing-metric-card">
-                  <small>Plan</small>
-                  <strong>{currentPlanName}</strong>
-                  <span>{accessCopy.label}</span>
-                </article>
-
-</section>
-
               {blockedState ? (
                 <section className="billing-expired-card">
                   <AlertTriangle className="h-5 w-5" />
