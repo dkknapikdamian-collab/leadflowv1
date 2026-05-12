@@ -106,6 +106,7 @@ import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-calendar-skin-only-v1.css';
 import '../styles/closeflow-calendar-render-pipeline-repair3.css';
+import '../styles/closeflow-calendar-month-tooltip-actions-repair4.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 
@@ -155,6 +156,7 @@ const CLOSEFLOW_CALENDAR_V6_REPAIR1_SCOPE_TEXT = 'CLOSEFLOW_CALENDAR_V6_REPAIR1_
 const CLOSEFLOW_CALENDAR_MONTH_LIGHT_SELECTED_DAY_REAL_ENTRIES_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_LIGHT_SELECTED_DAY_REAL_ENTRIES_REPAIR2_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CLOSEFLOW_CALENDAR_RENDER_PIPELINE_REPAIR3 = 'CLOSEFLOW_CALENDAR_RENDER_PIPELINE_REPAIR3_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4 = 'CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
@@ -464,7 +466,7 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
           )}
         </div>
 
-        <div className="flex flex-wrap gap-1.5 lg:justify-end">
+        <div data-cf-calendar-entry-actions="true" className="flex flex-wrap gap-1.5 lg:justify-end">
           <button type="button" className={neutralActionClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
           <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
           <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
@@ -543,6 +545,40 @@ export default function Calendar() {
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
   const [editSubmitting, setEditSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+
+    const raf = window.requestAnimationFrame(() => {
+      const calendarHeader = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      if (!calendarHeader) return;
+
+      const candidates = document.querySelectorAll<HTMLElement>([
+        '.cf-calendar-month-text-row',
+        '.cf-calendar-month-text-title',
+        '[data-cf-month-text-kind]',
+        '[data-cf-calendar-row-kind]',
+        '.calendar-entry-card p',
+        '.calendar-entry-card a',
+        '.cf-calendar-selected-day-title-v6'
+      ].join(','));
+
+      candidates.forEach((element) => {
+        const fullText = (element.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!fullText) return;
+        if (!element.getAttribute('title')) {
+          element.setAttribute('title', fullText);
+        }
+        if (!element.getAttribute('aria-label')) {
+          element.setAttribute('aria-label', fullText);
+        }
+      });
+    });
+
+    return () => window.cancelAnimationFrame(raf);
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events.length, tasks.length, leads.length]);
+  // CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_EFFECT
+
 
   useEffect(() => {
     const action = consumeGlobalQuickAction();

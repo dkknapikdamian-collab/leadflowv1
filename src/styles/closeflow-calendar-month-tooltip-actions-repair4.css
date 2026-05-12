@@ -1,0 +1,294 @@
+/* CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_2026_05_12
+
+   Final visual source of truth for the two reported Calendar problems:
+
+   1) Month grid:
+      - every visible entry is one line
+      - it never wraps into another event
+      - overflow ends with ellipsis
+      - full value is available by native title tooltip added in Calendar.tsx
+
+   2) Selected day / week cards:
+      - entry content stays readable on white cards
+      - type badge + title + time + status + actions are aligned
+      - action buttons stay in one readable line on desktop
+      - no badge-only rows
+*/
+
+:root {
+  --cf-cal-r4-text: #0f172a;
+  --cf-cal-r4-muted: #475569;
+  --cf-cal-r4-bg: #ffffff;
+  --cf-cal-r4-bg-soft: #f8fafc;
+  --cf-cal-r4-border: #dbe7f4;
+  --cf-cal-r4-border-strong: #bfdbfe;
+  --cf-cal-r4-blue: #2563eb;
+  --cf-cal-r4-task: #15803d;
+  --cf-cal-r4-task-bg: #ecfdf3;
+  --cf-cal-r4-task-border: #bbf7d0;
+  --cf-cal-r4-event: #7c3aed;
+  --cf-cal-r4-event-bg: #f5f3ff;
+  --cf-cal-r4-event-border: #ddd6fe;
+  --cf-cal-r4-lead: #1d4ed8;
+  --cf-cal-r4-lead-bg: #eff6ff;
+  --cf-cal-r4-lead-border: #bfdbfe;
+}
+
+/* Month cell entry source of truth. This intentionally wins over old dark-chip layers. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-calendar-month-text-row,
+  [data-cf-month-text-kind],
+  [data-cf-calendar-row-kind],
+  [class*="month"] [class*="entry"],
+  [class*="month"] [class*="item"],
+  [class*="month"] [class*="chip"]
+) {
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: 22px !important;
+  min-height: 22px !important;
+  max-height: 22px !important;
+  margin: 0 0 5px 0 !important;
+  padding: 2px 6px !important;
+  border: 1px solid var(--cf-cal-r4-border) !important;
+  border-radius: 999px !important;
+  background: var(--cf-cal-r4-bg) !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+  font-size: 10.5px !important;
+  font-weight: 850 !important;
+  line-height: 16px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+}
+
+/* One title line, ellipsis. No wrapping, no second hidden line under another event. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-calendar-month-text-title,
+  .cf-calendar-month-entry-title,
+  [class*="month"] [class*="title"],
+  [class*="month"] [class*="label"],
+  [class*="month"] [class*="name"],
+  [class*="calendar"] [class*="title"]
+) {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  display: block !important;
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+  font-size: 10.5px !important;
+  font-weight: 850 !important;
+  line-height: 16px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  text-decoration: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Neutralize old line-through/dark completed states inside month chips.
+   Completed can still be sorted, but it must remain readable. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-calendar-month-text-row,
+  [data-cf-month-text-kind],
+  [data-cf-calendar-row-kind],
+  [class*="month"] [class*="entry"],
+  [class*="month"] [class*="item"],
+  [class*="month"] [class*="chip"]
+).calendar-entry-completed,
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-calendar-month-text-row,
+  [data-cf-month-text-kind],
+  [data-cf-calendar-row-kind],
+  [class*="month"] [class*="entry"],
+  [class*="month"] [class*="item"],
+  [class*="month"] [class*="chip"]
+) .line-through {
+  opacity: 1 !important;
+  text-decoration: none !important;
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+}
+
+/* Badge: small colored type marker, but never the only visible content. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .cf-calendar-month-text-type,
+  .cf-calendar-type-badge,
+  [data-cf-calendar-kind],
+  [data-cf-entity-type]
+) {
+  flex: 0 0 auto !important;
+  min-width: 24px !important;
+  max-width: 78px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  max-height: 16px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 6px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--cf-cal-r4-border) !important;
+  background: var(--cf-cal-r4-bg-soft) !important;
+  background-image: none !important;
+  font-size: 8.5px !important;
+  font-weight: 950 !important;
+  line-height: 15px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  -webkit-text-fill-color: currentColor !important;
+}
+
+/* Type colors. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is([data-cf-month-text-kind="task"], [data-cf-calendar-row-kind="task"]) :is(.cf-calendar-month-text-type,.cf-calendar-type-badge,[data-cf-calendar-kind],[data-cf-entity-type]),
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-type,.cf-calendar-type-badge)[data-cf-calendar-kind="task"] {
+  color: var(--cf-cal-r4-task) !important;
+  background: var(--cf-cal-r4-task-bg) !important;
+  border-color: var(--cf-cal-r4-task-border) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is([data-cf-month-text-kind="event"], [data-cf-calendar-row-kind="event"]) :is(.cf-calendar-month-text-type,.cf-calendar-type-badge,[data-cf-calendar-kind],[data-cf-entity-type]),
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-type,.cf-calendar-type-badge)[data-cf-calendar-kind="event"] {
+  color: var(--cf-cal-r4-event) !important;
+  background: var(--cf-cal-r4-event-bg) !important;
+  border-color: var(--cf-cal-r4-event-border) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * :is([data-cf-month-text-kind="lead"], [data-cf-calendar-row-kind="lead"]) :is(.cf-calendar-month-text-type,.cf-calendar-type-badge,[data-cf-calendar-kind],[data-cf-entity-type]),
+#root [data-cf-page-header-v2="calendar"] ~ * :is(.cf-calendar-month-text-type,.cf-calendar-type-badge)[data-cf-calendar-kind="lead"] {
+  color: var(--cf-cal-r4-lead) !important;
+  background: var(--cf-cal-r4-lead-bg) !important;
+  border-color: var(--cf-cal-r4-lead-border) !important;
+}
+
+/* Selected-day and week cards: readable white card, not a dark/badge-only artifact. */
+#root [data-cf-page-header-v2="calendar"] ~ * :is(
+  .calendar-entry-card,
+  .cf-readable-card,
+  [data-calendar-entry-completed]
+) {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  min-height: 74px !important;
+  max-height: none !important;
+  padding: 12px 14px !important;
+  border: 1px solid var(--cf-cal-r4-border) !important;
+  border-radius: 16px !important;
+  background: var(--cf-cal-r4-bg) !important;
+  background-image: none !important;
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.04) !important;
+  overflow: visible !important;
+  opacity: 1 !important;
+}
+
+/* Main grid inside entry card: one logical row on wide desktop, safe stack on smaller screens. */
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card > div:first-child {
+  display: grid !important;
+  grid-template-columns: auto minmax(260px, 1fr) 76px 118px auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 1180px) {
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card > div:first-child {
+    grid-template-columns: auto minmax(180px, 1fr) auto !important;
+  }
+}
+
+/* Entry card text: always visible. */
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card :is(p, span, small, a, strong, div) {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card p {
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card p[title] {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Actions in selected day card: keep the icon/buttons aligned in one line on desktop. */
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card > div:first-child > div:last-child {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 5px !important;
+  min-width: max-content !important;
+  max-width: none !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card > div:first-child > div:last-child button {
+  flex: 0 0 auto !important;
+  height: 30px !important;
+  min-width: 34px !important;
+  max-width: none !important;
+  padding-left: 9px !important;
+  padding-right: 9px !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* Completed entries must remain readable. */
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card.calendar-entry-completed,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card [data-calendar-entry-completed="true"] {
+  opacity: 0.78 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-entry-card .line-through {
+  color: var(--cf-cal-r4-muted) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-muted) !important;
+  text-decoration-thickness: 1px !important;
+}
+
+/* Selected day legacy normalized rows, if any still survive, are readable fallback. */
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-row-v6 {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-height: 36px !important;
+  padding: 8px 10px !important;
+  border: 1px solid var(--cf-cal-r4-border) !important;
+  border-radius: 12px !important;
+  background: var(--cf-cal-r4-bg) !important;
+  background-image: none !important;
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-selected-day-title-v6 {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  color: var(--cf-cal-r4-text) !important;
+  -webkit-text-fill-color: var(--cf-cal-r4-text) !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}

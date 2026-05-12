@@ -1,0 +1,22 @@
+{
+  "generatedAt": "2026-05-12T12:04:28.819Z",
+  "stage": "CLOSEFLOW_CALENDAR_MONTH_TOOLTIP_ACTIONS_REPAIR4_2026_05_12",
+  "changed": [
+    "src/pages/Calendar.tsx",
+    "src/styles/closeflow-calendar-month-tooltip-actions-repair4.css"
+  ],
+  "fix": [
+    "month entries one-line ellipsis",
+    "native title tooltip on hover",
+    "selected-day/week action rail kept in one line",
+    "selected-day/week cards remain readable white cards"
+  ],
+  "notChanged": [
+    "API",
+    "Supabase",
+    "calendar data",
+    "sidebar",
+    "create/edit/delete logic",
+    "routing"
+  ]
+}
