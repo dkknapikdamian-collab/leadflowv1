@@ -1,4 +1,4 @@
-/* CLIENT_DETAIL_VISUAL_REBUILD_STAGE12 */
+﻿/* CLIENT_DETAIL_VISUAL_REBUILD_STAGE12 */
 
 .client-detail-vnext-page {
   min-height: 100%;
@@ -3172,3 +3172,125 @@ button.client-detail-top-tile-link {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* CLOSEFLOW_CLIENT_DETAIL_NEXT_ACTION_TILE_POLISH_2026_05_12_START */
+/*
+  Cel: poprawiÄ‡ kafelek "NajbliĹĽsza zaplanowana akcja" w Kliencie.
+  Problem ze zrzutu: kafel jest za niski/Ĺ›ciĹ›niÄ™ty, tekst i chip sÄ… zbyt blisko siebie,
+  a ukĹ‚ad bocznej kolumny moĹĽe wymuszaÄ‡ rĂłwne, za maĹ‚e rzÄ™dy.
+  Zakres: tylko ClientDetail vnext, bez zmiany danych, sygnaĹ‚Ăłw ani logiki akcji.
+*/
+.client-detail-vnext-page .client-detail-top-cards-side {
+  grid-template-rows: auto auto !important;
+  align-content: start !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child {
+  min-height: 156px !important;
+  height: auto !important;
+  padding: 18px 18px 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 7px !important;
+  overflow: visible !important;
+  border-radius: 26px !important;
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.09) !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish .client-detail-card-title-row,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child .client-detail-card-title-row {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish .client-detail-card-title-row svg,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child .client-detail-card-title-row svg {
+  flex: 0 0 auto !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish .client-detail-card-title-row h2,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child .client-detail-card-title-row h2 {
+  margin: 0 !important;
+  min-width: 0 !important;
+  color: #101828 !important;
+  font-size: 13px !important;
+  line-height: 1.18 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.02em !important;
+  white-space: normal !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish > strong,
+.client-detail-vnext-page .client-detail-next-action-tile-polish > a:not(.client-detail-mini-button):not(.client-detail-icon-button),
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child > strong,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child > a:not(.client-detail-mini-button):not(.client-detail-icon-button) {
+  display: block !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: #1d4ed8 !important;
+  font-size: 17px !important;
+  line-height: 1.16 !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.035em !important;
+  text-decoration: none !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere !important;
+  word-break: normal !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish > p,
+.client-detail-vnext-page .client-detail-next-action-tile-polish > small,
+.client-detail-vnext-page .client-detail-next-action-tile-polish .client-detail-next-action-context,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child > p,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child > small,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child .client-detail-next-action-context {
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: #475467 !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  font-weight: 750 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere !important;
+}
+
+.client-detail-vnext-page .client-detail-next-action-tile-polish .client-detail-pill,
+.client-detail-vnext-page .client-detail-next-action-tile-polish > button,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child .client-detail-pill,
+.client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child > button {
+  align-self: flex-start !important;
+  width: fit-content !important;
+  min-height: 27px !important;
+  margin: 0 !important;
+  padding: 5px 10px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  line-height: 1.1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1260px) {
+  .client-detail-vnext-page .client-detail-top-cards-side {
+    grid-template-rows: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .client-detail-vnext-page .client-detail-next-action-tile-polish,
+  .client-detail-vnext-page .client-detail-top-cards-side > .client-detail-summary-card:first-child {
+    min-height: 0 !important;
+    padding: 16px !important;
+    gap: 8px !important;
+  }
+}
+/* CLOSEFLOW_CLIENT_DETAIL_NEXT_ACTION_TILE_POLISH_2026_05_12_END */
