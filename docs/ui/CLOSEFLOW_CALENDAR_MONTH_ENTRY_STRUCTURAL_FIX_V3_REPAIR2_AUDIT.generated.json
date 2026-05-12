@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-05-12T05:55:07.601Z",
+  "stage": "CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12",
+  "verdict": "pass",
+  "failures": [],
+  "checks": {
+    "Calendar imports structural CSS": true,
+    "Calendar has Repair2 marker": true,
+    "Calendar has repaired Repair2 effect marker": true,
+    "Calendar has no old Repair1 effect marker": true,
+    "Calendar uses escapeRegExp helper": true,
+    "Calendar replaces children": true,
+    "Calendar creates badge": true,
+    "Calendar creates title": true,
+    "Calendar sets title attribute": true,
+    "Calendar only runs in month view": true,
+    "CSS has repair2 marker": true,
+    "CSS has structural class": true,
+    "CSS scoped to calendar content": true,
+    "CSS no broad shell scope": true,
+    "CSS no sidebar selectors": true,
+    "CSS row nowrap": true,
+    "CSS badge fixed width": true,
+    "CSS title ellipsis": true
+  }
+}

@@ -108,6 +108,7 @@ import '../styles/closeflow-calendar-skin-only-v1.css';
 import '../styles/closeflow-calendar-color-tooltip-v2.css';
 import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
 import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
+import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -140,6 +141,7 @@ const CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_REPAIR1 = 'CLOSEFLOW_CALENDA
 const CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2 = 'CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1 = 'CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1_2026_05_12';
 const CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
@@ -657,6 +659,111 @@ export default function Calendar() {
       window.cancelAnimationFrame(raf);
       window.clearTimeout(timer);
       window.clearTimeout(lateTimer);
+    };
+  }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_EFFECT:
+    // normalize compact month entries into stable one-row chips.
+    if (calendarView !== 'month') return;
+    if (typeof document === 'undefined') return;
+
+    const normalizeLabel = (rawLabel: string) => {
+      const value = rawLabel.trim().toLowerCase();
+      if (value === 'wyd' || value === 'wydarzenie') return { label: 'Wyd', kind: 'event' };
+      if (value === 'zad' || value === 'zadanie') return { label: 'Zad', kind: 'task' };
+      if (value === 'tel' || value === 'telefon') return { label: 'Tel', kind: 'phone' };
+      if (value === 'lead') return { label: 'Lead', kind: 'lead' };
+      return null;
+    };
+
+    const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const escapeRegExp = (value: string) => value.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+
+    const normalizeMonthEntries = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const candidates = Array.from(scope.querySelectorAll<HTMLElement>([
+        '[class*="month"] [class*="entry"]',
+        '[class*="month"] [class*="item"]',
+        '[class*="month"] [class*="chip"]',
+        '[class*="month"] [class*="event"]',
+        '[class*="month"] [class*="task"]',
+        '[class*="calendar"] [class*="chip"]'
+      ].join(',')));
+
+      for (const candidate of candidates) {
+        if (candidate.classList.contains('cf-month-entry-chip-structural')) continue;
+        if (candidate.closest('.cf-month-entry-chip-structural')) continue;
+
+        const fullText = cleanText(candidate.innerText || candidate.textContent || '');
+        if (!fullText) continue;
+
+        if (/^\+\s*\d+\s*więcej$/i.test(fullText)) {
+          candidate.classList.add('cf-month-entry-more');
+          continue;
+        }
+
+        const labelNode = Array.from(candidate.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+          .find((node) => {
+            const value = cleanText(node.innerText || node.textContent || '');
+            return Boolean(normalizeLabel(value));
+          });
+
+        const labelText = cleanText(labelNode?.innerText || labelNode?.textContent || '');
+        const directMatch = fullText.match(/^(Wyd|Wydarzenie|Zad|Zadanie|Tel|Telefon|Lead)\b\s*(.*)$/i);
+        const normalized = normalizeLabel(labelText) || normalizeLabel(directMatch?.[1] || '');
+        if (!normalized) continue;
+
+        let titleText = '';
+        if (labelNode && labelText) {
+          titleText = cleanText(fullText.replace(new RegExp('^' + escapeRegExp(labelText) + '\\b\\s*', 'i'), ''));
+        } else {
+          titleText = cleanText(directMatch?.[2] || '');
+        }
+
+        if (!titleText || titleText.length < 2) continue;
+
+        const completed = Boolean(
+          candidate.matches('[data-calendar-entry-completed="true"], .calendar-entry-completed') ||
+          candidate.querySelector('[data-calendar-entry-completed="true"], .calendar-entry-completed, .line-through, [class*="line-through"], s, del')
+        );
+
+        candidate.classList.add('cf-month-entry-chip-structural');
+        candidate.dataset.cfMonthEntryKind = normalized.kind;
+        candidate.dataset.cfMonthEntryCompleted = completed ? 'true' : 'false';
+        candidate.dataset.cfMonthEntryStructural = 'v3-repair2';
+        candidate.setAttribute('title', fullText);
+        candidate.setAttribute('aria-label', fullText);
+
+        candidate.replaceChildren();
+
+        const badge = document.createElement('span');
+        badge.className = 'cf-month-entry-chip-structural__badge';
+        badge.textContent = normalized.label;
+
+        const title = document.createElement('span');
+        title.className = 'cf-month-entry-chip-structural__title';
+        title.textContent = titleText;
+
+        candidate.appendChild(badge);
+        candidate.appendChild(title);
+      }
+    };
+
+    const raf = window.requestAnimationFrame(normalizeMonthEntries);
+    const timerA = window.setTimeout(normalizeMonthEntries, 120);
+    const timerB = window.setTimeout(normalizeMonthEntries, 420);
+    const timerC = window.setTimeout(normalizeMonthEntries, 900);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timerA);
+      window.clearTimeout(timerB);
+      window.clearTimeout(timerC);
     };
   }, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);
 

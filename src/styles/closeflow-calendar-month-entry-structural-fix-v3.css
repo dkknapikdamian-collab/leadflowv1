@@ -1,0 +1,192 @@
+/* CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12
+
+   Repair2 after broken V3/Repair1 patch scripts.
+   This package adds mass checks:
+   - node --check on every package .cjs before patch
+   - broad repo syntax check for touched JS/CJS tools after copy
+   - audit + build
+
+   Purpose:
+   month entries are normalized to stable badge + title rows:
+   [Zad] 12:41 Example...
+*/
+
+:root {
+  --cf-month-entry-height-v3: 30px;
+  --cf-month-entry-gap-v3: 6px;
+  --cf-month-entry-radius-v3: 12px;
+  --cf-month-entry-border-v3: #dbe7f4;
+  --cf-month-entry-text-v3: #0f172a;
+  --cf-month-entry-muted-v3: #64748b;
+  --cf-month-entry-event-v3: #7c3aed;
+  --cf-month-entry-event-bg-v3: #f5f3ff;
+  --cf-month-entry-event-border-v3: #ddd6fe;
+  --cf-month-entry-task-v3: #16a34a;
+  --cf-month-entry-task-bg-v3: #ecfdf3;
+  --cf-month-entry-task-border-v3: #bbf7d0;
+  --cf-month-entry-phone-v3: #0284c7;
+  --cf-month-entry-phone-bg-v3: #e0f2fe;
+  --cf-month-entry-phone-border-v3: #bae6fd;
+  --cf-month-entry-lead-v3: #2563eb;
+  --cf-month-entry-lead-bg-v3: #eff6ff;
+  --cf-month-entry-lead-border-v3: #bfdbfe;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural {
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: var(--cf-month-entry-gap-v3) !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: var(--cf-month-entry-height-v3) !important;
+  min-height: var(--cf-month-entry-height-v3) !important;
+  max-height: var(--cf-month-entry-height-v3) !important;
+  margin: 0 0 7px 0 !important;
+  padding: 5px 7px !important;
+  border: 1px solid var(--cf-month-entry-border-v3) !important;
+  border-radius: var(--cf-month-entry-radius-v3) !important;
+  background: #ffffff !important;
+  color: var(--cf-month-entry-text-v3) !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+  position: relative !important;
+  isolation: isolate !important;
+  transform: none !important;
+  float: none !important;
+  clear: both !important;
+  box-shadow: none !important;
+  z-index: auto !important;
+  cursor: help !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural:last-child {
+  margin-bottom: 0 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural > * {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  float: none !important;
+  clear: none !important;
+  z-index: auto !important;
+  box-sizing: border-box !important;
+  min-height: 0 !important;
+  max-height: 20px !important;
+  margin: 0 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural__badge {
+  flex: 0 0 34px !important;
+  width: 34px !important;
+  min-width: 34px !important;
+  max-width: 34px !important;
+  height: 18px !important;
+  min-height: 18px !important;
+  max-height: 18px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0 5px !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--cf-month-entry-border-v3) !important;
+  font-size: 9px !important;
+  font-weight: 950 !important;
+  line-height: 18px !important;
+  letter-spacing: -0.01em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: clip !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural__title {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
+  display: block !important;
+  height: 18px !important;
+  max-height: 18px !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  line-height: 18px !important;
+  color: var(--cf-month-entry-text-v3) !important;
+  -webkit-text-fill-color: var(--cf-month-entry-text-v3) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="event"] {
+  border-color: var(--cf-month-entry-event-border-v3) !important;
+  background: linear-gradient(90deg, rgba(124, 58, 237, 0.12), rgba(255,255,255,0.96) 42%), #ffffff !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="event"] .cf-month-entry-chip-structural__badge {
+  border-color: var(--cf-month-entry-event-border-v3) !important;
+  background: var(--cf-month-entry-event-bg-v3) !important;
+  color: var(--cf-month-entry-event-v3) !important;
+  -webkit-text-fill-color: var(--cf-month-entry-event-v3) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="task"] {
+  border-color: var(--cf-month-entry-task-border-v3) !important;
+  background: linear-gradient(90deg, rgba(22, 163, 74, 0.12), rgba(255,255,255,0.96) 42%), #ffffff !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="task"] .cf-month-entry-chip-structural__badge {
+  border-color: var(--cf-month-entry-task-border-v3) !important;
+  background: var(--cf-month-entry-task-bg-v3) !important;
+  color: var(--cf-month-entry-task-v3) !important;
+  -webkit-text-fill-color: var(--cf-month-entry-task-v3) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="phone"] {
+  border-color: var(--cf-month-entry-phone-border-v3) !important;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.12), rgba(255,255,255,0.96) 42%), #ffffff !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="phone"] .cf-month-entry-chip-structural__badge {
+  border-color: var(--cf-month-entry-phone-border-v3) !important;
+  background: var(--cf-month-entry-phone-bg-v3) !important;
+  color: var(--cf-month-entry-phone-v3) !important;
+  -webkit-text-fill-color: var(--cf-month-entry-phone-v3) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="lead"] {
+  border-color: var(--cf-month-entry-lead-border-v3) !important;
+  background: linear-gradient(90deg, rgba(37, 99, 235, 0.12), rgba(255,255,255,0.96) 42%), #ffffff !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-kind="lead"] .cf-month-entry-chip-structural__badge {
+  border-color: var(--cf-month-entry-lead-border-v3) !important;
+  background: var(--cf-month-entry-lead-bg-v3) !important;
+  color: var(--cf-month-entry-lead-v3) !important;
+  -webkit-text-fill-color: var(--cf-month-entry-lead-v3) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-completed="true"] {
+  opacity: 0.72 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-chip-structural[data-cf-month-entry-completed="true"] .cf-month-entry-chip-structural__title {
+  text-decoration: line-through !important;
+  text-decoration-thickness: 1px !important;
+  color: var(--cf-month-entry-muted-v3) !important;
+  -webkit-text-fill-color: var(--cf-month-entry-muted-v3) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-month-entry-more,
+#root [data-cf-page-header-v2="calendar"] ~ * :is([class*="more"], [class*="remaining"], [class*="overflow"]) {
+  display: block !important;
+  clear: both !important;
+  margin-top: 2px !important;
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+  font-weight: 950 !important;
+  line-height: 18px !important;
+  white-space: nowrap !important;
+}
