@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 
-const CLOSEFLOW_OPERATOR_TOP_TRIM_RUNTIME_2026_05_12 = 'CLOSEFLOW_OPERATOR_TOP_TRIM_RUNTIME_2026_05_12';
-void CLOSEFLOW_OPERATOR_TOP_TRIM_RUNTIME_2026_05_12;
+const CLOSEFLOW_OPERATOR_TOP_TRIM_RUNTIME_REPAIR3_2026_05_12 = 'CLOSEFLOW_OPERATOR_TOP_TRIM_RUNTIME_REPAIR3_2026_05_12';
+void CLOSEFLOW_OPERATOR_TOP_TRIM_RUNTIME_REPAIR3_2026_05_12;
+
+const PROXY_WRAP_ID = 'cf-global-promoted-page-actions';
+const VIEW_PROXY_ID = 'cf-global-promoted-view-action';
 
 function normalizeActionLabel(value: unknown) {
   return String(value || '')
@@ -13,12 +16,14 @@ function normalizeActionLabel(value: unknown) {
 }
 
 function isViewAction(element: Element) {
-  const explicit = normalizeActionLabel((element as HTMLElement).dataset?.cfHeaderAction);
+  const node = element as HTMLElement;
+  const explicit = normalizeActionLabel(node.dataset?.cfHeaderAction);
   const aria = normalizeActionLabel(element.getAttribute('aria-label'));
   const title = normalizeActionLabel(element.getAttribute('title'));
   const text = normalizeActionLabel(element.textContent);
 
   return explicit === 'view'
+    || explicit === 'widok'
     || aria === 'widok'
     || title === 'widok'
     || text === 'widok'
@@ -26,9 +31,22 @@ function isViewAction(element: Element) {
     || text.endsWith(' widok');
 }
 
-function markOperatorHeaderActions() {
-  if (typeof document === 'undefined') return;
+function findOriginalViewAction() {
+  const headers = Array.from(document.querySelectorAll<HTMLElement>('.cf-page-header-v2'));
 
+  for (const header of headers) {
+    const actions = header.querySelector<HTMLElement>('.cf-page-header-v2__actions');
+    if (!actions) continue;
+
+    const controls = Array.from(actions.querySelectorAll<HTMLElement>('button, a, [role="button"]'));
+    const viewControl = controls.find(isViewAction);
+    if (viewControl) return viewControl;
+  }
+
+  return null;
+}
+
+function markOldPageHeaders() {
   const headers = Array.from(document.querySelectorAll<HTMLElement>('.cf-page-header-v2'));
 
   for (const header of headers) {
@@ -41,23 +59,62 @@ function markOperatorHeaderActions() {
     if (!actions) continue;
 
     actions.dataset.cfOperatorTopTrimActions = 'true';
-
     const controls = Array.from(actions.querySelectorAll<HTMLElement>('button, a, [role="button"]'));
-    let promotedView = false;
 
     for (const control of controls) {
       if (isViewAction(control)) {
-        control.dataset.cfTopbarPromotedAction = 'view';
-        control.removeAttribute('data-cf-topbar-hidden-action');
-        promotedView = true;
+        control.dataset.cfTopbarOriginalViewAction = 'true';
       } else {
         control.dataset.cfTopbarHiddenAction = 'true';
-        control.removeAttribute('data-cf-topbar-promoted-action');
       }
     }
-
-    actions.dataset.cfOperatorTopTrimHasView = promotedView ? 'true' : 'false';
   }
+}
+
+function ensureGlobalViewProxy(originalViewAction: HTMLElement | null) {
+  const globalBar = document.querySelector<HTMLElement>('#root .cf-html-shell .global-bar');
+  if (!globalBar) return;
+
+  let wrapper = document.getElementById(PROXY_WRAP_ID) as HTMLDivElement | null;
+  let proxy = document.getElementById(VIEW_PROXY_ID) as HTMLButtonElement | null;
+
+  if (!originalViewAction) {
+    wrapper?.remove();
+    return;
+  }
+
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.id = PROXY_WRAP_ID;
+    wrapper.className = 'cf-global-promoted-page-actions';
+    wrapper.dataset.cfGlobalPromotedPageActions = 'true';
+    globalBar.appendChild(wrapper);
+  }
+
+  if (!proxy) {
+    proxy = document.createElement('button');
+    proxy.id = VIEW_PROXY_ID;
+    proxy.type = 'button';
+    proxy.className = 'cf-global-promoted-view-action';
+    proxy.dataset.cfGlobalViewProxy = 'true';
+    proxy.setAttribute('aria-label', 'Widok');
+    proxy.textContent = 'Widok';
+    wrapper.appendChild(proxy);
+  }
+
+  const sourceLabel = String(originalViewAction.textContent || '').trim();
+  proxy.textContent = sourceLabel || 'Widok';
+  proxy.onclick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    originalViewAction.click();
+  };
+}
+
+function syncOperatorTopTrim() {
+  if (typeof document === 'undefined') return;
+  markOldPageHeaders();
+  ensureGlobalViewProxy(findOriginalViewAction());
 }
 
 export default function OperatorTopBarRuntime() {
@@ -66,7 +123,7 @@ export default function OperatorTopBarRuntime() {
 
     const sync = () => {
       window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(markOperatorHeaderActions);
+      frame = window.requestAnimationFrame(syncOperatorTopTrim);
     };
 
     sync();
@@ -76,6 +133,8 @@ export default function OperatorTopBarRuntime() {
       childList: true,
       subtree: true,
       characterData: true,
+      attributes: true,
+      attributeFilter: ['class', 'data-cf-header-action', 'aria-label', 'title'],
     });
 
     window.addEventListener('popstate', sync);

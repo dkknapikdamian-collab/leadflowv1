@@ -1,7 +1,7 @@
-/* CLOSEFLOW_OPERATOR_TOP_TRIM_SOURCE_TRUTH_2026_05_12
+/* CLOSEFLOW_OPERATOR_TOP_TRIM_SOURCE_TRUTH_REPAIR3_2026_05_12
    owner: CloseFlow Visual System
    scope: desktop operator shell after heavy page-header removal
-   goal: remove leftover hero/header bars, promote only the Today "Widok" action, and unify page background tone
+   goal: remove old page-header bars completely and promote only Widok into the real global top bar
    rule: desktop only; mobile gets a separate pass
 */
 
@@ -15,11 +15,7 @@
   html,
   body,
   #root,
-  #root .cf-html-shell {
-    background: var(--cf-operator-bg) !important;
-    background-color: var(--cf-operator-bg) !important;
-  }
-
+  #root .cf-html-shell,
   #root .cf-html-shell .main,
   #root .cf-html-shell [data-shell-main="true"],
   #root .cf-html-shell .view.active,
@@ -36,87 +32,82 @@
   }
 
   #root .cf-html-shell .global-bar {
+    min-height: 54px !important;
+    height: 54px !important;
+    margin-bottom: 0 !important;
+    padding: 0 24px !important;
+    align-items: center !important;
     background: var(--cf-operator-topbar-bg) !important;
     background-color: var(--cf-operator-topbar-bg) !important;
     background-image: none !important;
-    border-bottom-color: rgba(203, 213, 225, 0.76) !important;
+    border-bottom: 1px solid rgba(203, 213, 225, 0.76) !important;
+    box-shadow: 0 1px 0 rgba(15, 23, 42, 0.03) !important;
   }
 
   #root .cf-html-shell .global-title-copy {
-    font-size: 0.84rem !important;
+    font-size: 0.86rem !important;
     font-weight: 850 !important;
+    color: #64748b !important;
+    -webkit-text-fill-color: #64748b !important;
   }
 
   #root .cf-html-shell .global-title-copy strong {
-    font-size: 1.05rem !important;
+    font-size: 1.08rem !important;
     font-weight: 960 !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
   }
 
-  /* Kill the old hero surface without deleting the component. The content card was visual noise. */
+  /* The old page hero/header is no longer part of the desktop layout. */
   #root .cf-html-shell .cf-page-header-v2,
   #root .cf-html-shell .cf-page-header-v2[data-cf-operator-top-trimmed="true"] {
-    position: relative !important;
-    width: 100% !important;
-    min-width: 0 !important;
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
     height: 0 !important;
+    min-width: 0 !important;
     min-height: 0 !important;
+    max-width: 0 !important;
     max-height: 0 !important;
     margin: 0 !important;
     padding: 0 !important;
-    display: block !important;
     border: 0 !important;
     border-radius: 0 !important;
-    outline: 0 !important;
     background: transparent !important;
     background-color: transparent !important;
     background-image: none !important;
     box-shadow: none !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     pointer-events: none !important;
   }
 
   #root .cf-html-shell .cf-page-header-v2__copy,
-  #root .cf-html-shell .cf-page-header-v2__copy[data-cf-operator-top-trim-hidden="copy"],
   #root .cf-html-shell .cf-page-header-v2__kicker,
   #root .cf-html-shell .cf-page-header-v2__title,
-  #root .cf-html-shell .cf-page-header-v2__description {
-    display: none !important;
-  }
-
+  #root .cf-html-shell .cf-page-header-v2__description,
   #root .cf-html-shell .cf-page-header-v2__actions,
-  #root .cf-html-shell .cf-page-header-v2__actions[data-cf-operator-top-trim-actions="true"] {
-    position: absolute !important;
-    top: 0 !important;
-    right: 0 !important;
-    width: auto !important;
-    min-width: 0 !important;
-    height: 0 !important;
-    min-height: 0 !important;
-    max-height: 0 !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: block !important;
-    border: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    overflow: visible !important;
-    pointer-events: none !important;
-  }
-
-  #root .cf-html-shell .cf-page-header-v2__actions [data-cf-topbar-hidden-action="true"] {
+  #root .cf-html-shell .cf-page-header-v2__actions [data-cf-topbar-hidden-action="true"],
+  #root .cf-html-shell .cf-page-header-v2__actions [data-cf-topbar-original-view-action="true"] {
     display: none !important;
   }
 
-  /* The only page-header survivor: Today view customizer. It floats above content and does not reserve a white strip. */
-  #root .cf-html-shell .cf-page-header-v2__actions [data-cf-topbar-promoted-action="view"] {
-    position: relative !important;
-    z-index: 20 !important;
+  /* Real top-bar promoted actions. This is the only allowed survivor from the old page header. */
+  #root .cf-html-shell .cf-global-promoted-page-actions {
     display: inline-flex !important;
-    pointer-events: auto !important;
-    transform: translateY(-0.25rem) !important;
-    min-height: 2.24rem !important;
-    height: 2.24rem !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 0.5rem !important;
+    margin-left: auto !important;
+    min-width: max-content !important;
+    order: 80 !important;
+  }
+
+  #root .cf-html-shell .cf-global-promoted-view-action,
+  #root .cf-html-shell [data-cf-global-view-proxy="true"] {
+    min-height: 2.25rem !important;
+    height: 2.25rem !important;
     padding: 0 0.95rem !important;
+    display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
     border: 1px solid #bfdbfe !important;
@@ -131,21 +122,25 @@
     font-weight: 900 !important;
     line-height: 1 !important;
     white-space: nowrap !important;
+    cursor: pointer !important;
   }
 
-  #root .cf-html-shell .cf-page-header-v2__actions[data-cf-operator-top-trim-has-view="false"] {
-    display: none !important;
+  #root .cf-html-shell .cf-global-promoted-view-action:hover,
+  #root .cf-html-shell [data-cf-global-view-proxy="true"]:hover {
+    border-color: #93c5fd !important;
+    background: #eff6ff !important;
+    background-color: #eff6ff !important;
   }
 
-  /* Old page/header adapters sometimes leave pastel pills or cards in the first content slot. Keep them dead on desktop. */
-  #root .cf-html-shell [data-shell-content="true"] > .cf-html-view > :is(.cf-page-header, [data-cf-page-header="true"], .page-hero, .page-card, .header-card):first-child,
+  /* Old page/header adapters sometimes leave pastel pills or cards in the first content slot. Kill only first-slot header artifacts. */
+  #root .cf-html-shell [data-shell-content="true"] > .cf-html-view > :is(.cf-page-header, [data-cf-page-header="true"], .page-hero, .header-card):first-child,
   #root .cf-html-shell [data-shell-content="true"] > .cf-html-view > :is(.kicker, .activity-kicker, .notifications-kicker, .ai-drafts-kicker):first-child {
     display: none !important;
   }
 
   #root .cf-html-shell [data-shell-content="true"],
   #root .cf-html-shell .view.active {
-    padding-top: 0.68rem !important;
+    padding-top: 0.62rem !important;
   }
 
   #root .cf-html-shell [data-shell-content="true"] > .cf-html-view,
