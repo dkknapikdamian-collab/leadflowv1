@@ -1048,3 +1048,16 @@
   visibility: visible !important;
   cursor: not-allowed;
 }
+
+/* STAGE14F_REPAIR7_FINALIZE_RIGHT_RAIL */
+.lead-detail-vnext-page [data-lead-next-action-empty="-"] {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+.lead-detail-vnext-page .lead-detail-risk-reason {
+  margin: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}

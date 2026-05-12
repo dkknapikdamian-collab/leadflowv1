@@ -6,6 +6,7 @@ import {
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX */
+/* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR7_FINALIZE */
 /*
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
@@ -824,9 +825,13 @@ useEffect(() => {
 
       <div className="lead-detail-work-reason" data-lead-risk-reason="true">
   <small>Powód ryzyka</small>
-  <p className="lead-detail-risk-reason" title={leadRiskReasonStage14F || undefined}>
-    Powód: {leadRiskReasonStage14F || '-'}
-  </p>
+  {leadRiskReasonStage14F ? (
+    <p className="lead-detail-risk-reason" title={leadRiskReasonStage14F}>
+      Powód: {leadRiskReasonStage14F}
+    </p>
+  ) : (
+    <p className="lead-detail-risk-reason">Powód: -</p>
+  )}
 </div>
 
       {!leadInService ? (
@@ -1675,7 +1680,11 @@ useEffect(() => {
 
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
-              <p>{nextTimelineEntry ? nextTimelineEntry.title : '-'}</p>
+              {nextTimelineEntry ? (
+                <p>{nextTimelineEntry.title}</p>
+              ) : (
+                <p className="lead-detail-empty-value" data-lead-next-action-empty="-">-</p>
+              )}
               <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
             </section>
 
