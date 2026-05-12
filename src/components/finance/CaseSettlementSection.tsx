@@ -41,6 +41,7 @@ export function CaseSettlementSection({
   return (
     <section
       data-cf-case-finance-section="case-detail-only"
+      data-case-settlement-section="fin10"
       data-cf-case-id={recordId}
       aria-label="Rozliczenie sprawy"
     >

@@ -5,11 +5,11 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import {
-  buildFinanceSummary,
   calculateCommissionAmount,
   clampFinanceAmount,
   normalizeCommissionPercent,
 } from '../../lib/finance/finance-calculations';
+import { getCaseFinanceSummary } from '../../lib/finance/case-finance-source';
 import {
   normalizeCommissionBase,
   normalizeCommissionConfig,
@@ -35,6 +35,7 @@ import '../../styles/finance/closeflow-finance.css';
 
 import { SurfaceCard, FormFooter } from '../ui-system';
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1' as const;
+export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN10 = 'FIN-10_CASE_FINANCE_SOURCE_TRUTH_PANEL_V1' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
 void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
@@ -447,26 +448,19 @@ export function CaseSettlementPanel({
   const [commissionPaymentOpen, setCommissionPaymentOpen] = useState(false);
   const [commissionOpen, setCommissionOpen] = useState(false);
 
-  const currency = normalizeCurrency(record?.currency || payments.find((payment) => (payment as Record<string, unknown>).currency)?.currency || 'PLN');
-  const contractValue = getContractValue(record);
   const normalizedPayments = useMemo(() => normalizeFinancePayments(payments as Record<string, unknown>[]), [payments]);
+  const summary = useMemo(() => getCaseFinanceSummary(record, normalizedPayments), [record, normalizedPayments]);
+  const currency = summary.currency;
+  const contractValue = summary.contractValue;
   const financeDuplicateCandidates = useMemo(() => {
     return duplicateCandidatesProp.length ? duplicateCandidatesProp : buildFinanceDuplicateCandidatesFromRecord(record);
   }, [duplicateCandidatesProp, record]);
   const commissionConfig = useMemo(() => getCommissionConfig(record, currency), [currency, record]);
-  const explicitCommissionAmount = getExplicitCommissionAmount(record);
-  const summary = useMemo(() => buildFinanceSummary({
-    contractValue,
-    currency,
-    payments: normalizedPayments,
-    commission: commissionConfig,
-    nowIso: new Date().toISOString(),
-  }), [commissionConfig, contractValue, currency, normalizedPayments]);
 
-  const commissionAmount = explicitCommissionAmount > 0 && summary.commissionAmount <= 0 ? explicitCommissionAmount : summary.commissionAmount;
-  const commissionStatus = getInitialCommissionStatus(record, summary.commissionStatus);
-  const commissionPaid = summary.paidCommissionAmount;
-  const commissionRemaining = Math.max(0, commissionAmount - commissionPaid);
+  const commissionAmount = summary.commissionAmount;
+  const commissionStatus = summary.commissionStatus;
+  const commissionPaid = summary.commissionPaidAmount;
+  const commissionRemaining = summary.commissionRemainingAmount;
   const hasCaseSettlementValue = contractValue > 0;
 
   return (
@@ -504,9 +498,9 @@ export function CaseSettlementPanel({
 
       <dl className="cf-finance-settlement-grid">
         <Metric label="Wartość transakcji" value={formatMoney(contractValue, currency)} />
-        <Metric label="Prowizja" value={getCommissionLine(commissionConfig.mode, commissionConfig.percent, commissionAmount, currency)} />
+        <Metric label="Prowizja" value={getCommissionLine(summary.commissionMode, summary.commissionRate, commissionAmount, currency)} />
         <Metric label="Prowizja należna" value={formatMoney(commissionAmount, currency)} />
-        <Metric label="Wpłacono od klienta" value={formatMoney(summary.paidAmount, currency)} />
+        <Metric label="Wpłacono od klienta" value={formatMoney(summary.clientPaidAmount, currency)} />
         <Metric label="Pozostało" value={formatMoney(summary.remainingAmount, currency)} />
         <Metric label="Prowizja opłacona" value={formatMoney(commissionPaid, currency)} />
         <Metric label="Prowizja do zapłaty" value={formatMoney(commissionRemaining, currency)} />
@@ -552,7 +546,7 @@ export function CaseSettlementPanel({
         onSubmit={onEditCommission}
         isSaving={isSaving}
       />
-      <span hidden data-fin5-case-settlement-panel="true" data-fin8-finance-visual-integration={CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5} data-fin9-finance-duplicate-safety="CLOSEFLOW_FIN9_CASE_SETTLEMENT_DUPLICATE_WARNING_ONLY" />
+      <span hidden data-fin5-case-settlement-panel="true" data-fin8-finance-visual-integration={CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5} data-fin9-finance-duplicate-safety="CLOSEFLOW_FIN9_CASE_SETTLEMENT_DUPLICATE_WARNING_ONLY" data-case-settlement-panel="fin10" data-fin10-case-finance-source-truth="true" />
     </SurfaceCard>
   );
 }

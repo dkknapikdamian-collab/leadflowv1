@@ -698,7 +698,10 @@
     "check:case-finance-ghosts": "node scripts/check-case-finance-ghosts-2026-05-12.cjs",
     "diagnose:finance-ghosts": "node scripts/diagnose-finance-ghosts-2026-05-12.cjs",
     "check:case-settlement-edit-values": "node scripts/check-case-settlement-edit-values-2026-05-12.cjs",
-    "diagnose:case-settlement-edit-values": "node scripts/diagnose-case-settlement-edit-values-2026-05-12.cjs"
+    "diagnose:case-settlement-edit-values": "node scripts/diagnose-case-settlement-edit-values-2026-05-12.cjs",
+    "check:fin10": "node scripts/check-fin10-case-finance-source-truth.cjs",
+    "test:fin10": "node --test tests/case-finance-source.test.cjs",
+    "verify:fin10": "npm.cmd run check:fin10 && npm.cmd run test:fin10"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

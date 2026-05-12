@@ -99,6 +99,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
 import '../styles/closeflow-case-history-visual-source-truth.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
   entity: 'case',
@@ -386,22 +387,24 @@ function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
   return totalFromSettlement > 0 ? totalFromSettlement : 0;
 }
 function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymentRecord[]) {
-  const currency = String(caseData?.currency || payments.find((payment) => payment.currency)?.currency || 'PLN').toUpperCase();
-  const expected = getCaseExpectedRevenue(caseData);
-  const paid = payments
-    .filter((payment) => isPaidPaymentStatus(payment.status || 'paid'))
-    .reduce((sum, payment) => sum + getPaymentAmount(payment), 0);
-  const remaining = Math.max(expected - paid, 0);
-  const progress = expected > 0 ? Math.min(100, Math.round((paid / expected) * 100)) : 0;
+  const source = getCaseFinanceSourceSummary(caseData, payments);
+  const progress = source.contractValue > 0 ? Math.min(100, Math.round((source.clientPaidAmount / source.contractValue) * 100)) : 0;
   const status =
-    expected <= 0
+    source.contractValue <= 0
       ? 'Ustal wartość'
-      : paid <= 0
+      : source.clientPaidAmount <= 0
         ? 'Brak wpłaty'
-        : remaining <= 0
+        : source.remainingAmount <= 0
           ? 'Opłacone'
           : 'Częściowo opłacone';
-  return { expected, paid, remaining, progress, status, currency };
+  return {
+    expected: source.contractValue,
+    paid: source.clientPaidAmount,
+    remaining: source.remainingAmount,
+    progress,
+    status,
+    currency: source.currency,
+  };
 }
 function sortCasePayments(payments: CasePaymentRecord[]) {
   return [...payments].sort((first, second) => {
@@ -1984,7 +1987,7 @@ export default function CaseDetail() {
                 onAddPayment={() => setIsCasePaymentOpen(true)}
               />
             </div>
-<section className="right-card case-detail-right-card" data-case-finance-panel="true">
+<section className="right-card case-detail-right-card" data-fin10-legacy-finance-panel-removed="true">
               <div className="case-detail-card-title-row">
                 <Paperclip className="h-4 w-4" />
                 <h2>Rozliczenie sprawy</h2>

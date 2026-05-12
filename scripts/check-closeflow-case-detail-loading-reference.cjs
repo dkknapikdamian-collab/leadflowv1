@@ -32,9 +32,13 @@ assert.ok(loadingStateIndex > componentStart, 'loading state must be declared in
 const firstLoadingGuard = source.indexOf('if (loading)', loadingStateIndex);
 assert.ok(firstLoadingGuard > loadingStateIndex, 'CaseDetail must keep an early loading guard');
 
-const settlementIndex = source.indexOf('<CaseSettlementPanel', componentStart);
-assert.ok(settlementIndex > componentStart, 'CaseSettlementPanel must still exist in CaseDetail');
-assert.ok(firstLoadingGuard < settlementIndex, 'loading guard must appear before CaseSettlementPanel');
+const settlementCandidates = [
+  source.indexOf('<CaseSettlementPanel', componentStart),
+  source.indexOf('<CaseSettlementSection', componentStart),
+].filter((index) => index >= 0);
+assert.ok(settlementCandidates.length > 0, 'CaseSettlementPanel or CaseSettlementSection must still exist in CaseDetail');
+const settlementIndex = Math.min(...settlementCandidates);
+assert.ok(firstLoadingGuard < settlementIndex, 'loading guard must appear before case settlement render');
 
 const afterSettlement = source.slice(settlementIndex);
 assert.ok(!/if\s*\(\s*loading\s*\)/.test(afterSettlement), 'loading must not be referenced after CaseSettlementPanel render scope');

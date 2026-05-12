@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CommissionMode, CommissionStatus, FinanceSummary } from '../../lib/finance/finance-types';
+import type { CaseFinanceSummary } from '../../lib/finance/case-finance-source';
 import { calculateClientFinanceSummary } from '../../lib/client-finance';
 import { fetchCasesFromSupabase, fetchPaymentsFromSupabase } from '../../lib/supabase-fallback';
 import { StatusPill, SurfaceCard } from '../ui-system';
 
 type FinanceMiniSummaryProps = {
-  summary: FinanceSummary;
+  summary: FinanceSummary | CaseFinanceSummary;
   commissionMode?: CommissionMode;
   commissionRate?: number | null;
   commissionStatus?: CommissionStatus;
@@ -62,7 +63,7 @@ export function FinanceMiniSummary({
   const resolvedCommissionStatus = commissionStatus || summary.commissionStatus;
 
   return (
-    <SurfaceCard className="cf-finance-mini-summary" aria-label={title}>
+    <SurfaceCard className="cf-finance-mini-summary" aria-label={title} data-fin10-finance-mini-summary="case-source">
       <div className="cf-finance-mini-summary__header">
         <p className="cf-finance-kicker">{title}</p>
         <strong className="cf-finance-mini-summary__value">
