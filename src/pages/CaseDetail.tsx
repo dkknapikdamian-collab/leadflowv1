@@ -12,6 +12,7 @@ const { hasAccess,
  * Zrobione Do akceptacji
  */
 ﻿/* STAGE14C_CASE_DETAIL_CLEANUP */
+/* STAGE14D_REAL_CASE_HISTORY_REPAIR1 */
 /* STAGE14C_CASE_DETAIL_CLEANUP_REPAIR1 */
 /* STAGE14C_CASE_DETAIL_CLEANUP */
 /* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
@@ -223,6 +224,14 @@ type CaseActivity = {
   eventType?: string;
   payload?: Record<string, any>;
   createdAt?: any;
+};
+
+type CaseHistoryItem = {
+  id: string;
+  kind: 'note' | 'task' | 'event' | 'payment' | 'status' | 'case';
+  title: string;
+  body: string;
+  occurredAt: string | null;
 };
 
 type WorkItem = {
@@ -497,6 +506,60 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
   return 'Dodano ruch w sprawie';
 }
+function getCaseHistoryPayloadStage14D(activity: CaseActivity) {
+  return activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+}
+function asCaseHistoryTextStage14D(value: unknown) {
+  return typeof value === 'string' ? value.trim() : '';
+}
+function isGenericCaseHistoryTextStage14D(value: string) {
+  const normalized = String(value || '').trim().toLowerCase();
+  return !normalized || normalized === 'notatka' || normalized === 'historia sprawy' || normalized === 'zapis operacyjny sprawy' || normalized === 'dodano ruch w sprawie' || normalized === 'dodano notatkę';
+}
+function pickCaseHistoryBodyStage14D(...values: unknown[]) {
+  for (const value of values) {
+    const text = asCaseHistoryTextStage14D(value);
+    if (text && !isGenericCaseHistoryTextStage14D(text)) return text;
+  }
+  return '';
+}
+function getCaseHistoryDateStage14D(...values: unknown[]) {
+  for (const value of values) {
+    if (!value) continue;
+    const date = toDate(value);
+    if (date) return date.toISOString();
+  }
+  return null;
+}
+function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistoryItem | null {
+  const payload = getCaseHistoryPayloadStage14D(activity);
+  const eventType = String(activity.eventType || payload.eventType || payload.type || '').trim();
+  const lowerType = eventType.toLowerCase();
+  const body = pickCaseHistoryBodyStage14D(payload.note, payload.content, payload.body, payload.message, payload.description, payload.summary, payload.itemTitle, payload.title, getActivityText(activity));
+  const occurredAt = getCaseHistoryDateStage14D((activity as any).happenedAt, (activity as any).updatedAt, activity.createdAt, payload.happenedAt, payload.updatedAt, payload.createdAt);
+  if (lowerType.includes('status') || lowerType.includes('lifecycle')) {
+    const statusBody = pickCaseHistoryBodyStage14D(payload.statusLabel, payload.status, payload.nextStatus, payload.toStatus, body);
+    return statusBody ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'status', title: 'Zmiana statusu', body: statusBody, occurredAt } : null;
+  }
+  if (lowerType.includes('task')) {
+    const title = lowerType.includes('done') || lowerType.includes('completed') || String(payload.status || '').toLowerCase().includes('done') ? 'Zadanie wykonane' : 'Zadanie';
+    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'task', title, body, occurredAt } : null;
+  }
+  if (lowerType.includes('event') || lowerType.includes('meeting')) {
+    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'event', title: 'Wydarzenie', body, occurredAt } : null;
+  }
+  if (lowerType.includes('payment') || lowerType.includes('billing')) {
+    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
+  }
+  if (lowerType.includes('note') || lowerType === 'operator_note') {
+    return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'note', title: 'Notatka', body, occurredAt } : null;
+  }
+  return body ? { id: `activity-${activity.id || eventType || occurredAt}`, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
+}
+function sortCaseHistoryItemsStage14D(items: CaseHistoryItem[]) {
+  return [...items].sort((left, right) => sortTime(right.occurredAt, 0) - sortTime(left.occurredAt, 0));
+}
+
 function sortCaseItems(items: CaseItem[]) {
   return [...items].sort((first, second) => {
     const firstOrder = typeof first.order === 'number' ? first.order : Number.MAX_SAFE_INTEGER;
@@ -1418,6 +1481,58 @@ export default function CaseDetail() {
     }
   }
 
+  const caseHistoryItems = useMemo<CaseHistoryItem[]>(() => {
+    const history: CaseHistoryItem[] = [];
+
+    for (const activity of activities) {
+      const item = getCaseActivityHistoryItemStage14D(activity);
+      if (item) history.push(item);
+    }
+
+    for (const task of tasks) {
+      const normalizedStatus = String(task.status || '').toLowerCase();
+      const title = ['done', 'completed'].includes(normalizedStatus) ? 'Zadanie wykonane' : 'Zadanie';
+      const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytułu');
+      if (body) {
+        history.push({
+          id: `task-${task.id || body}`,
+          kind: 'task',
+          title,
+          body,
+          occurredAt: getCaseHistoryDateStage14D((task as any).completedAt, (task as any).doneAt, (task as any).updatedAt, getTaskMainDate(task), task.reminderAt, task.date),
+        });
+      }
+    }
+
+    for (const event of events) {
+      const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytułu');
+      if (body) {
+        history.push({ id: `event-${event.id || body}`, kind: 'event', title: 'Wydarzenie', body, occurredAt: getCaseHistoryDateStage14D((event as any).updatedAt, getEventMainDate(event), event.reminderAt, event.startAt, event.endAt) });
+      }
+    }
+
+    for (const payment of visibleCasePayments) {
+      const amountLabel = formatMoney(getPaymentAmount(payment), payment.currency || caseFinanceSummary.currency);
+      const note = pickCaseHistoryBodyStage14D(payment.note);
+      const body = note ? `${amountLabel} · ${note}` : amountLabel;
+      history.push({ id: `payment-${payment.id || body}`, kind: 'payment', title: 'Wpłata', body, occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt) });
+    }
+
+    for (const item of items) {
+      const body = pickCaseHistoryBodyStage14D(item.title, item.description);
+      if (body) {
+        const title = item.status === 'accepted' ? 'Element zaakceptowany' : item.status === 'uploaded' ? 'Element przesłany' : 'Element sprawy';
+        history.push({ id: `item-${item.id || body}`, kind: 'case', title, body, occurredAt: getCaseHistoryDateStage14D(item.approvedAt, item.createdAt, item.dueDate) });
+      }
+    }
+
+    const unique = new Map<string, CaseHistoryItem>();
+    for (const item of history) {
+      const key = `${item.kind}|${item.title}|${item.body}|${item.occurredAt || ''}`;
+      if (!unique.has(key)) unique.set(key, item);
+    }
+    return sortCaseHistoryItemsStage14D(Array.from(unique.values())).slice(0, 25);
+  }, [activities, tasks, events, visibleCasePayments, items, caseFinanceSummary.currency]);
   if (loading) {
     return (
       <Layout>
@@ -1627,11 +1742,28 @@ export default function CaseDetail() {
             {activeTab === 'service' ? (
               <section className="case-detail-section-card">
                 <div className="case-detail-section-head">
-                  <div>
-                    <h2>Najważniejsze działania</h2>
-                    <p></p>
+                                  <section className="case-detail-section-card" data-case-history-list="true">
+                  <div className="case-detail-section-head">
+                    <div>
+                      <h2>Historia sprawy</h2>
+                      <p>Realne notatki, zadania, wydarzenia, wpłaty i zmiany statusu tej sprawy.</p>
+                    </div>
                   </div>
-                </div>
+
+                  {caseHistoryItems.length > 0 ? (
+                    <div className="case-history-list">
+                      {caseHistoryItems.slice(0, 10).map((item) => (
+                        <article className="case-history-row" key={item.id}>
+                          <span className="case-history-kind">{item.title}</span>
+                          <p title={item.body}>{item.body}</p>
+                          <time>{formatDate(item.occurredAt, 'Brak daty')}</time>
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="case-detail-light-empty">Brak historii sprawy.</p>
+                  )}
+                </section>                </div>
                 <div className="case-detail-work-list">
                   {workItems.length === 0 ? (
                     <div className="case-detail-light-empty">Brak działań do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
