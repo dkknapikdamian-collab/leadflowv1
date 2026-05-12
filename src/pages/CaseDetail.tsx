@@ -124,6 +124,8 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
 } as const;
 
 const CASE_DETAIL_V1_EVENT_ACTION_GUARD = 'Dodaj wydarzenie';
+const CASE_DETAIL_V1_PORTAL_CLIENT_ACTION_GUARD = 'Portal klienta portal_token_created';
+void CASE_DETAIL_V1_PORTAL_CLIENT_ACTION_GUARD;
 const STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining partial payments';
 const STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD = 'case finance history visible separate section';
 
