@@ -4,6 +4,7 @@ import {
   LeadEntityIcon,
   TemplateEntityIcon } from '../components/ui-system';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
+/* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
 /*
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
@@ -428,8 +429,15 @@ function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; valu
   );
 }
 function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
+  const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
   return (
-    <button type="button" className="lead-detail-chip-button" onClick={onClick} disabled={disabled}>
+    <button
+      type="button"
+      className={isStartServiceActionStage14F ? "lead-detail-chip-button cf-action-button cf-action-button-primary" : "lead-detail-chip-button cf-action-button"}
+      data-lead-start-service={isStartServiceActionStage14F ? "true" : undefined}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {children}
     </button>
   );
@@ -569,6 +577,13 @@ export default function LeadDetail() {
   const serviceMovedAtLabel = formatDateTime(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
   const leadInService = Boolean(leadOperationalArchive || isLeadInServiceStatus(lead?.status));
+  const leadRiskReasonStage14F =
+    asText(lead?.riskReason) ||
+    asText((lead as any)?.risk_reason) ||
+    asText(lead?.riskNote) ||
+    asText((lead as any)?.risk_note) ||
+    asText(lead?.atRiskReason) ||
+    asText((lead as any)?.at_risk_reason);
   const showServiceBanner = leadInService;
   const leadFinance = useMemo(() => getLeadFinance(lead), [lead]);
   const leadFinancePanel = useMemo(() => {
@@ -768,7 +783,7 @@ useEffect(() => {
     return {
       lastTouchLabel: lastTouch ? formatDateTime(lastTouch) : 'Brak zapisanego ruchu',
       daysWithoutMovementLabel: typeof daysWithoutMovement === 'number' ? `${daysWithoutMovement} dni` : 'Brak danych',
-      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} ┬Ě ${nextTimelineEntry.dateLabel}` : 'Brak zaplanowanych działań',
+      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} ┬Ě ${nextTimelineEntry.dateLabel}` : '-',
       isOverdue,
       hasNoPlannedAction,
       riskLabel,
@@ -782,8 +797,8 @@ useEffect(() => {
       <div className="lead-detail-work-center-header">
         <div>
           <span>Centrum pracy leada</span>
-          <h2>Co tu trzeba zrobić teraz</h2>
-          <p>Krótki panel decyzyjny bez skakania po zadaniach, kalendarzu i historii.</p>
+          <h2>AI wsparcie</h2>
+          
         </div>
         <span className={`lead-detail-work-risk lead-detail-work-risk-${leadWorkCenter.riskTone}`}>
           {leadWorkCenter.riskLabel}
@@ -805,10 +820,12 @@ useEffect(() => {
         </div>
       </div>
 
-      <div className="lead-detail-work-reason">
-        <small>Powód ryzyka</small>
-        <p>{leadWorkCenter.riskReason}</p>
-      </div>
+      <div className="lead-detail-work-reason" data-lead-risk-reason="true">
+  <small>Powód ryzyka</small>
+  <p className="lead-detail-risk-reason" title={leadRiskReasonStage14F || undefined}>
+    Powód: {leadRiskReasonStage14F || '-'}
+  </p>
+</div>
 
       {!leadInService ? (
         <div className="lead-detail-work-actions" aria-label="Szybkie akcje na leadzie">
@@ -1498,7 +1515,7 @@ useEffect(() => {
                       <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status)}`}>{nextTimelineEntry.statusLabel}</span>
                     </>
                   ) : (
-                    <p>Brak zaplanowanych działań.</p>
+                    <p>-</p>
                   )}
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-green">
@@ -1539,13 +1556,12 @@ useEffect(() => {
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Zadania i wydarzenia</h2>
-                    <p></p>
-                  </div>
+</div>
                   <div hidden data-lead-detail-stage35-removed-local-create-actions="true" />
                 </div>
                 <div className="lead-detail-work-list">
                   {timeline.length === 0 ? (
-                    <div className="lead-detail-light-empty">Brak zaplanowanych działań.</div>
+                    <div className="lead-detail-light-empty">-</div>
                   ) : (
                     timeline.map((entry) => (
                       <article key={entry.id} className="lead-detail-work-row">
@@ -1622,13 +1638,13 @@ useEffect(() => {
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
             <section className="right-card lead-detail-right-card">
               <span className={`lead-detail-pill ${statusClass(String(lead.status || 'new'))}`}>{statusLabel(String(lead.status || 'new'))}</span>
-              <p>{leadInService ? 'Lead jest już źródłem historii. Pracuj dalej w sprawie.' : 'Lead aktywny. Możesz prowadzić kontakt sprzedażowy.'}</p>
+              <p>{leadInService ? 'Lead jest już źródłem historii. Pracuj dalej w sprawie.' : 'Lead aktywny.'}</p>
             </section>
 
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
               <p>{serviceCaseId ? serviceCaseTitle : 'Brak powiązanej sprawy'}</p>
-              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Po rozpoczęciu obsługi pojawi się tutaj link do sprawy.'}</small>
+              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy}</small>
               {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
             </section>
 
@@ -1657,7 +1673,7 @@ useEffect(() => {
 
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
-              <p>{nextTimelineEntry ? nextTimelineEntry.title : 'Brak zaplanowanych działań.'}</p>
+              <p>{nextTimelineEntry ? nextTimelineEntry.title : '-'}</p>
               <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
             </section>
 

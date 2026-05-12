@@ -983,3 +983,68 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
+.lead-detail-vnext-page .lead-detail-right-rail {
+  max-height: none !important;
+  overflow: visible !important;
+  padding-right: 0 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-right-card,
+.lead-detail-vnext-page .right-card.lead-detail-right-card {
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+.lead-detail-vnext-page .lead-detail-right-card p,
+.lead-detail-vnext-page .lead-detail-right-card dd,
+.lead-detail-vnext-page .lead-detail-right-card li,
+.lead-detail-vnext-page .lead-detail-right-card strong,
+.lead-detail-vnext-page .lead-detail-right-card span {
+  min-width: 0 !important;
+  white-space: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+.lead-detail-vnext-page .lead-detail-right-card .one-line,
+.lead-detail-vnext-page .lead-detail-right-card [data-one-line="true"] {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.lead-detail-vnext-page .lead-detail-empty-value,
+.lead-detail-vnext-page [data-lead-next-action-empty="-"] {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  white-space: nowrap !important;
+}
+
+.lead-detail-vnext-page .lead-detail-risk-reason {
+  margin: 0 !important;
+  color: #334155 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-right-card [data-lead-start-service],
+.lead-detail-vnext-page .lead-detail-right-card .cf-action-button {
+  display: inline-flex !important;
+  width: 100% !important;
+  min-height: 38px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  text-align: center !important;
+}
+
+.lead-detail-vnext-page .lead-detail-right-card [data-lead-start-service]:disabled,
+.lead-detail-vnext-page .lead-detail-right-card .cf-action-button:disabled {
+  opacity: 0.72 !important;
+  visibility: visible !important;
+  cursor: not-allowed;
+}
