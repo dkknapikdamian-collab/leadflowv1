@@ -1,0 +1,208 @@
+/* CLOSEFLOW_CASE_HISTORY_VISUAL_SOURCE_TRUTH_2026_05_12
+   owner: CloseFlow Visual System
+   scope: CaseDetail history surfaces only
+   goal: lower history/work rows must match the compact visual rhythm of the upper "Historia sprawy" card
+   rule: visual-only; no Supabase/write/history data changes
+*/
+
+.case-detail-vnext-page {
+  --cf-case-history-bg: #ffffff;
+  --cf-case-history-line: #e2e8f0;
+  --cf-case-history-text: #0f172a;
+  --cf-case-history-muted: #64748b;
+  --cf-case-history-blue: #2563eb;
+  --cf-case-history-blue-soft: #eff6ff;
+}
+
+/* The history tab/list is a compact ledger, not a stack of large cards. */
+.case-detail-vnext-page .case-detail-history-list {
+  display: grid !important;
+  gap: 0.48rem !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Native history rows: same pill-row rhythm as the compact history card above. */
+.case-detail-vnext-page .case-detail-history-row {
+  min-height: 2.85rem !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 0 !important;
+  padding: 0.46rem 0.72rem !important;
+  border: 1px solid var(--cf-case-history-line) !important;
+  border-radius: 1rem !important;
+  background: var(--cf-case-history-bg) !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .case-detail-history-row > span {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-history-row > div {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 0.72rem !important;
+}
+
+.case-detail-vnext-page .case-detail-history-row .case-detail-kind-pill {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: fit-content !important;
+  min-height: 1.42rem !important;
+  padding: 0.16rem 0.5rem !important;
+  border-radius: 999px !important;
+  border-color: #dbeafe !important;
+  background: var(--cf-case-history-blue-soft) !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+  font-size: 0.68rem !important;
+  font-weight: 920 !important;
+  line-height: 1 !important;
+}
+
+.case-detail-vnext-page .case-detail-history-row h3 {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  color: var(--cf-case-history-text) !important;
+  -webkit-text-fill-color: var(--cf-case-history-text) !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  line-height: 1.22 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-history-row p {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  margin: 0.12rem 0 0 !important;
+  min-width: 0 !important;
+  color: var(--cf-case-history-muted) !important;
+  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
+  font-size: 0.72rem !important;
+  line-height: 1.25 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Some history entries are rendered through the generic work-row contract. In history context they must stop looking like task cards. */
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-row {
+  min-height: 2.85rem !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 8.5rem !important;
+  align-items: center !important;
+  gap: 0.72rem !important;
+  padding: 0.46rem 0.72rem !important;
+  border: 1px solid var(--cf-case-history-line) !important;
+  border-radius: 1rem !important;
+  background: var(--cf-case-history-bg) !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-icon,
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-row > span,
+.case-detail-vnext-page .case-detail-history-list .case-detail-row-actions,
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-row > .case-detail-pill,
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill) {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-main {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 0.72rem !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-main .case-detail-kind-pill {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: fit-content !important;
+  min-height: 1.42rem !important;
+  padding: 0.16rem 0.5rem !important;
+  border-radius: 999px !important;
+  font-size: 0.68rem !important;
+  font-weight: 920 !important;
+  line-height: 1 !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-main h3 {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  color: var(--cf-case-history-text) !important;
+  -webkit-text-fill-color: var(--cf-case-history-text) !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  line-height: 1.22 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-main p {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-date {
+  justify-self: end !important;
+  min-width: 0 !important;
+  text-align: right !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-date small {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-history-list .case-detail-work-date strong {
+  display: block !important;
+  margin: 0 !important;
+  color: var(--cf-case-history-muted) !important;
+  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 820 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+}
+
+/* Keep the compact summary card clean if older CSS tries to inflate it. */
+.case-detail-vnext-page [data-case-history-summary="true"],
+.case-detail-vnext-page .case-detail-history-summary-card {
+  max-width: 44rem !important;
+}
+
+@media (max-width: 760px) {
+  .case-detail-vnext-page .case-detail-history-row > div,
+  .case-detail-vnext-page .case-detail-history-list .case-detail-work-main {
+    grid-template-columns: 1fr !important;
+    gap: 0.28rem !important;
+  }
+
+  .case-detail-vnext-page .case-detail-history-list .case-detail-work-row {
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+  }
+
+  .case-detail-vnext-page .case-detail-history-row h3,
+  .case-detail-vnext-page .case-detail-history-row p,
+  .case-detail-vnext-page .case-detail-history-list .case-detail-work-main h3 {
+    white-space: normal !important;
+  }
+
+  .case-detail-vnext-page .case-detail-history-list .case-detail-work-date {
+    justify-self: start !important;
+    text-align: left !important;
+  }
+}
