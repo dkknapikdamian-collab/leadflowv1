@@ -69,7 +69,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
-import { CaseSettlementPanel, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementPanel';
+import { CaseSettlementSection, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementSection';
 import CaseQuickActions from '../components/CaseQuickActions';
 import {
   createClientPortalTokenInSupabase,
@@ -1637,7 +1637,8 @@ export default function CaseDetail() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-loading-card">
               <div data-fin5-case-settlement-instance="true">
-                <CaseSettlementPanel
+                <CaseSettlementSection
+              routeCaseId={caseId}
                   record={caseData}
                   payments={casePayments}
                   readonly={!hasAccess}
