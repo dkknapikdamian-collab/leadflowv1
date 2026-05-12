@@ -1,0 +1,3176 @@
+{
+  "generatedAt": "2026-05-12T05:21:52.111Z",
+  "stage": "CLOSEFLOW_CALENDAR_MONTH_OVERLAP_DEEP_AUDIT_2026_05_12",
+  "verdict": {
+    "mainDiagnosis": [
+      "CSS-only fixes are now at the limit. The screenshot still shows overlapping because the month entry DOM is not a clean single row component.",
+      "Multiple active calendar skin layers are imported into Calendar.tsx and can compete by selector weight/import order.",
+      "The safer next implementation should be structural: replace the month item render with MonthEntryChip(label, text, title), not another broad CSS override.",
+      "The hover-title idea is good and should stay, but it belongs on the real chip element, not on guessed nested nodes."
+    ],
+    "likelyRootCause": [
+      "Month cell entries are rendered with nested existing classes/utilities that allow multiple children/text nodes to paint in the same vertical space.",
+      "The current enhancer guesses type labels after render, then CSS tries to force layout across unknown nested DOM. That is brittle.",
+      "Old and new calendar CSS layers remain active at the same time."
+    ],
+    "recommendedFix": [
+      "Stop adding more CSS bandaids for overlap.",
+      "Patch Calendar.tsx month-view render only: create a MonthEntryChip component with fixed markup.",
+      "Use title={fullText} directly on the chip.",
+      "Show max visible entries in the tile and render +X więcej as a separate row.",
+      "Keep the left Calendar side panel and all existing handlers."
+    ]
+  },
+  "importOrderIssues": [],
+  "calendarCssImports": [
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 101,
+      "import": "../styles/visual-stage22-event-form-vnext.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 106,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 107,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 108,
+      "import": "../styles/closeflow-calendar-color-tooltip-v2.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 109,
+      "import": "../styles/closeflow-calendar-month-chip-overlap-fix-v1.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 110,
+      "import": "../styles/closeflow-calendar-month-rows-no-overlap-repair2.css"
+    }
+  ],
+  "activeVisualCssImports": [
+    {
+      "file": "src/App.tsx",
+      "line": 21,
+      "import": "./styles/closeflow-page-header.css"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 26,
+      "import": "./styles/closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "src/App.tsx",
+      "line": 27,
+      "import": "./styles/closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "src/components/CloseFlowPageHeaderV2.tsx",
+      "line": 3,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/components/task-editor-dialog.tsx",
+      "line": 10,
+      "import": "../styles/visual-stage21-task-form-vnext.css"
+    },
+    {
+      "file": "src/index.css",
+      "line": 18,
+      "import": "./styles/page-adapters/page-adapters.css"
+    },
+    {
+      "file": "src/index.css",
+      "line": 27,
+      "import": "./styles/emergency/emergency-hotfixes.css"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 30,
+      "import": "../styles/visual-stage8-activity-vnext.css"
+    },
+    {
+      "file": "src/pages/Activity.tsx",
+      "line": 50,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/AdminAiSettings.tsx",
+      "line": 22,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 81,
+      "import": "../styles/visual-stage9-ai-drafts-vnext.css"
+    },
+    {
+      "file": "src/pages/AiDrafts.tsx",
+      "line": 85,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 68,
+      "import": "../styles/visual-stage16-billing-vnext.css"
+    },
+    {
+      "file": "src/pages/Billing.tsx",
+      "line": 71,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 101,
+      "import": "../styles/visual-stage22-event-form-vnext.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 106,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 107,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 108,
+      "import": "../styles/closeflow-calendar-color-tooltip-v2.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 109,
+      "import": "../styles/closeflow-calendar-month-chip-overlap-fix-v1.css"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 110,
+      "import": "../styles/closeflow-calendar-month-rows-no-overlap-repair2.css"
+    },
+    {
+      "file": "src/pages/CaseDetail.tsx",
+      "line": 98,
+      "import": "../styles/visual-stage13-case-detail-vnext.css"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 23,
+      "import": "../styles/visual-stage23-client-case-forms-vnext.css"
+    },
+    {
+      "file": "src/pages/Cases.tsx",
+      "line": 35,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/ClientDetail.tsx",
+      "line": 117,
+      "import": "../styles/visual-stage12-client-detail-vnext.css"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 85,
+      "import": "../styles/visual-stage23-client-case-forms-vnext.css"
+    },
+    {
+      "file": "src/pages/Clients.tsx",
+      "line": 89,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/LeadDetail.tsx",
+      "line": 87,
+      "import": "../styles/visual-stage14-lead-detail-vnext.css"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 81,
+      "import": "../styles/visual-stage20-lead-form-vnext.css"
+    },
+    {
+      "file": "src/pages/Leads.tsx",
+      "line": 84,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 50,
+      "import": "../styles/visual-stage10-notifications-vnext.css"
+    },
+    {
+      "file": "src/pages/NotificationsCenter.tsx",
+      "line": 54,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/ResponseTemplates.tsx",
+      "line": 37,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 91,
+      "import": "../styles/visual-stage19-settings-vnext.css"
+    },
+    {
+      "file": "src/pages/Settings.tsx",
+      "line": 94,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 32,
+      "import": "../styles/visual-stage17-support-vnext.css"
+    },
+    {
+      "file": "src/pages/SupportCenter.tsx",
+      "line": 35,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 133,
+      "import": "../styles/visual-stage21-task-form-vnext.css"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 34,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/Templates.tsx",
+      "line": 59,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/pages/TodayStable.tsx",
+      "line": 53,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "src/styles/core/core-contracts.css",
+      "line": 8,
+      "import": "../visual-stage01-shell.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 219,
+      "import": "../closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 228,
+      "import": "../closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 229,
+      "import": "../closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 231,
+      "import": "../closeflow-page-header-stage6-final-lock.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 236,
+      "import": "../closeflow-page-header-final-lock.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 241,
+      "import": "../closeflow-page-header-structure-lock.css"
+    },
+    {
+      "file": "src/styles/emergency/emergency-hotfixes.css",
+      "line": 246,
+      "import": "../closeflow-page-header-copy-left-only.css"
+    },
+    {
+      "file": "src/styles/legacy/legacy-imports.css",
+      "line": 10,
+      "import": "../visual-stage3-pipeline-and-case.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 8,
+      "import": "../visual-stage02-today.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 9,
+      "import": "../visual-stage03-leads.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 10,
+      "import": "../visual-stage04-lead-detail.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 11,
+      "import": "../visual-stage05-clients.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 12,
+      "import": "../visual-stage06-client-detail.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 13,
+      "import": "../visual-stage07-cases.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 14,
+      "import": "../visual-stage08-case-detail.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 15,
+      "import": "../visual-stage13-case-detail-vnext.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 16,
+      "import": "../visual-stage18-leads-hard-1to1.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 17,
+      "import": "../visual-stage19-clients-safe-css.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 18,
+      "import": "../visual-stage20-lead-form-vnext.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 19,
+      "import": "../visual-stage20-tasks-safe-css.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 20,
+      "import": "../visual-stage21-today-final-lock.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 21,
+      "import": "../visual-stage23-client-case-forms-vnext.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 22,
+      "import": "../visual-stage25-leads-full-jsx-html-rebuild.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 23,
+      "import": "../visual-stage26-leads-visual-alignment-fix.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 24,
+      "import": "../visual-stage27-cases-vnext.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 25,
+      "import": "../visual-stage28-tasks-vnext.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 26,
+      "import": "../visual-stage29-calendar-vnext.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 27,
+      "import": "../visual-stage30-tasks-compact-after-calendar.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 30,
+      "import": "../stage37-unified-page-head-and-metrics.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 32,
+      "import": "../stage39-page-headers-copy-visual-system.css"
+    },
+    {
+      "file": "src/styles/page-adapters/page-adapters.css",
+      "line": 33,
+      "import": "../stage40-page-header-action-overflow-hardening.css"
+    },
+    {
+      "file": "src/styles/temporary/temporary-overrides.css",
+      "line": 43,
+      "import": "../stage34-calendar-readability-status-forms.css"
+    },
+    {
+      "file": "src/styles/temporary/temporary-overrides.css",
+      "line": 44,
+      "import": "../stage34b-calendar-complete-polish.css"
+    },
+    {
+      "file": "tools/audit-closeflow-calendar-month-chip-overlap-fix-v1.cjs",
+      "line": 20,
+      "import": "../styles/closeflow-calendar-month-chip-overlap-fix-v1.css"
+    },
+    {
+      "file": "tools/audit-closeflow-calendar-month-rows-no-overlap-repair2.cjs",
+      "line": 18,
+      "import": "../styles/closeflow-calendar-month-rows-no-overlap-repair2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-color-tooltip-v2.cjs",
+      "line": 22,
+      "import": "../styles/closeflow-calendar-color-tooltip-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-color-tooltip-v2.cjs",
+      "line": 24,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-month-chip-overlap-fix-v1.cjs",
+      "line": 20,
+      "import": "../styles/closeflow-calendar-month-chip-overlap-fix-v1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-month-chip-overlap-fix-v1.cjs",
+      "line": 22,
+      "import": "../styles/closeflow-calendar-color-tooltip-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-month-chip-overlap-fix-v1.cjs",
+      "line": 23,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-month-rows-no-overlap-repair2.cjs",
+      "line": 20,
+      "import": "../styles/closeflow-calendar-month-rows-no-overlap-repair2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-month-rows-no-overlap-repair2.cjs",
+      "line": 22,
+      "import": "../styles/closeflow-calendar-month-chip-overlap-fix-v1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-month-rows-no-overlap-repair2.cjs",
+      "line": 23,
+      "import": "../styles/closeflow-calendar-color-tooltip-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-skin-only-v1.cjs",
+      "line": 23,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-skin-scope-repair-audit-v2.cjs",
+      "line": 20,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-calendar-skin-scope-repair-audit-v2.cjs",
+      "line": 22,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-etap10-client-card-next-action-layout.cjs",
+      "line": 26,
+      "import": "../styles/visual-stage23-client-case-forms-vnext.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-copy-left-only-packet4.cjs",
+      "line": 40,
+      "import": "../styles/closeflow-page-header-copy-left-only.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-copy-left-only-packet4.cjs",
+      "line": 83,
+      "import": "../closeflow-page-header-copy-left-only.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-final-lock-packet2.cjs",
+      "line": 41,
+      "import": "../styles/closeflow-page-header-final-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-final-lock-packet2.cjs",
+      "line": 83,
+      "import": "../closeflow-page-header-final-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-rebuild-light-source-truth.cjs",
+      "line": 5,
+      "import": "../styles/closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-semantic-copy-packet1.cjs",
+      "line": 28,
+      "import": "../closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-semantic-copy-packet1.cjs",
+      "line": 28,
+      "import": "../closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-semantic-copy-packet1.cjs",
+      "line": 78,
+      "import": "./styles/closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-semantic-copy-packet1.cjs",
+      "line": 79,
+      "import": "./styles/closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-source-truth-rebuild-stage2.cjs",
+      "line": 5,
+      "import": "../styles/closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-source-truth-rebuild-stage2.cjs",
+      "line": 137,
+      "import": "../closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-stage6-final-lock.cjs",
+      "line": 45,
+      "import": "../closeflow-page-header-stage6-final-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-structure-lock-packet3.cjs",
+      "line": 41,
+      "import": "../styles/closeflow-page-header-structure-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-structure-lock-packet3.cjs",
+      "line": 82,
+      "import": "../closeflow-page-header-structure-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 46,
+      "import": "../styles/closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 47,
+      "import": "../styles/closeflow-page-header-final-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 48,
+      "import": "../styles/closeflow-page-header-structure-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 49,
+      "import": "../styles/closeflow-page-header-copy-left-only.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 50,
+      "import": "../styles/closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 51,
+      "import": "../styles/closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-all-headers-repair4.cjs",
+      "line": 282,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 40,
+      "import": "../styles/closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 41,
+      "import": "../styles/closeflow-page-header-final-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 42,
+      "import": "../styles/closeflow-page-header-structure-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 43,
+      "import": "../styles/closeflow-page-header-copy-left-only.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 44,
+      "import": "../styles/closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 45,
+      "import": "../styles/closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery-repair2.cjs",
+      "line": 181,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 47,
+      "import": "../styles/closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 48,
+      "import": "../styles/closeflow-page-header-final-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 49,
+      "import": "../styles/closeflow-page-header-structure-lock.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 50,
+      "import": "../styles/closeflow-page-header-copy-left-only.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 51,
+      "import": "../styles/closeflow-page-header-copy-source-truth.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 52,
+      "import": "../styles/closeflow-page-header-action-semantics-packet1.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-v2-surgery.cjs",
+      "line": 223,
+      "import": "../styles/closeflow-page-header-v2.css"
+    },
+    {
+      "file": "tools/patch-closeflow-page-header-visual-unification-stage1.cjs",
+      "line": 5,
+      "import": "../styles/closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "tools/repair-closeflow-etap3-clients-wide-layout.cjs",
+      "line": 39,
+      "import": "../styles/visual-stage23-client-case-forms-vnext.css"
+    },
+    {
+      "file": "tools/repair-closeflow-stage14a-clientdetail-notes-history-repair2.cjs",
+      "line": 58,
+      "import": "../styles/visual-stage12-client-detail-vnext.css"
+    },
+    {
+      "file": "scripts/apply-stage34-calendar-readability-status-forms.cjs",
+      "line": 21,
+      "import": "./styles/stage34-calendar-readability-status-forms.css"
+    },
+    {
+      "file": "scripts/apply-stage34b-calendar-complete-polish.cjs",
+      "line": 44,
+      "import": "./styles/stage34b-calendar-complete-polish.css"
+    },
+    {
+      "file": "scripts/check-closeflow-calendar-color-tooltip-v2.cjs",
+      "line": 22,
+      "import": "../styles/closeflow-calendar-color-tooltip-v2.css"
+    },
+    {
+      "file": "scripts/check-closeflow-calendar-month-chip-overlap-fix-v1.cjs",
+      "line": 22,
+      "import": "../styles/closeflow-calendar-month-chip-overlap-fix-v1.css"
+    },
+    {
+      "file": "scripts/check-closeflow-calendar-month-rows-no-overlap-repair2.cjs",
+      "line": 21,
+      "import": "../styles/closeflow-calendar-month-rows-no-overlap-repair2.css"
+    },
+    {
+      "file": "scripts/check-closeflow-calendar-skin-only-v1.cjs",
+      "line": 24,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "scripts/check-closeflow-calendar-skin-scope-repair-audit-v2.cjs",
+      "line": 21,
+      "import": "../styles/closeflow-calendar-skin-only-v1.css"
+    },
+    {
+      "file": "scripts/check-closeflow-css-import-order.cjs",
+      "line": 74,
+      "import": "./styles/page-adapters/page-adapters.css"
+    },
+    {
+      "file": "scripts/check-closeflow-css-import-order.cjs",
+      "line": 75,
+      "import": "./styles/page-adapters/page-adapters.css"
+    },
+    {
+      "file": "scripts/check-closeflow-css-import-order.cjs",
+      "line": 77,
+      "import": "./styles/emergency/emergency-hotfixes.css"
+    },
+    {
+      "file": "scripts/check-closeflow-page-header-copy-contract.cjs",
+      "line": 16,
+      "import": "./styles/closeflow-page-header.css"
+    },
+    {
+      "file": "scripts/check-closeflow-page-header-source-truth-rebuild-stage2.cjs",
+      "line": 30,
+      "import": "../closeflow-page-header-card-source-truth.css"
+    },
+    {
+      "file": "scripts/check-stage39-page-headers-copy-visual-system.cjs",
+      "line": 33,
+      "import": "../stage39-page-headers-copy-visual-system.css"
+    },
+    {
+      "file": "scripts/check-stage40-page-header-action-overflow-hardening.cjs",
+      "line": 37,
+      "import": "../stage39-page-headers-copy-visual-system.css"
+    },
+    {
+      "file": "scripts/check-stage40-page-header-action-overflow-hardening.cjs",
+      "line": 41,
+      "import": "../stage40-page-header-action-overflow-hardening.css"
+    },
+    {
+      "file": "scripts/check-visual-stage01-shell.cjs",
+      "line": 83,
+      "import": "./styles/visual-stage01-shell.css"
+    },
+    {
+      "file": "scripts/check-visual-stage02-today.cjs",
+      "line": 66,
+      "import": "./styles/visual-stage02-today.css"
+    },
+    {
+      "file": "scripts/check-visual-stage03-leads.cjs",
+      "line": 26,
+      "import": "./styles/visual-stage03-leads.css"
+    },
+    {
+      "file": "scripts/check-visual-stage04-lead-detail.cjs",
+      "line": 44,
+      "import": "./styles/visual-stage04-lead-detail.css"
+    },
+    {
+      "file": "scripts/check-visual-stage05-clients.cjs",
+      "line": 23,
+      "import": "./styles/visual-stage05-clients.css"
+    },
+    {
+      "file": "scripts/check-visual-stage06-client-detail.cjs",
+      "line": 31,
+      "import": "./styles/visual-stage06-client-detail.css"
+    },
+    {
+      "file": "scripts/check-visual-stage07-cases.cjs",
+      "line": 26,
+      "import": "./styles/visual-stage07-cases.css"
+    },
+    {
+      "file": "scripts/check-visual-stage08-case-detail.cjs",
+      "line": 31,
+      "import": "./styles/visual-stage08-case-detail.css"
+    },
+    {
+      "file": "scripts/check-visual-stage16-today-html-reset.cjs",
+      "line": 17,
+      "import": "./styles/visual-stage16-today-html-reset.css"
+    }
+  ],
+  "exactOldCalendarLayers": [
+    "src/styles/closeflow-calendar-color-tooltip-v2.css",
+    "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+    "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+    "src/styles/closeflow-calendar-skin-only-v1.css",
+    "src/styles/emergency/emergency-hotfixes.css",
+    "src/styles/stage34-calendar-readability-status-forms.css",
+    "src/styles/stage34b-calendar-complete-polish.css",
+    "src/styles/visual-stage22-event-form-vnext.css",
+    "src/styles/visual-stage29-calendar-vnext.css"
+  ],
+  "likelyConflictRows": [
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20,
+      "selector": "",
+      "hits": [
+        "absolute-position",
+        "translate-transform",
+        "height-hard",
+        "line-height-too-small",
+        "display-grid",
+        "display-flex",
+        "flex-wrap",
+        "top-left-inset",
+        "line-through"
+      ],
+      "weight": 20,
+      "text": "const FULL_CLOSEFLOW_HTML = \"<!doctype html>\\n<html lang=\\\"pl\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\" />\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\" />\\n  <title>CloseFlow - pełny kierunek UI</title>\\n  <style>\\n    :root {\\n      "
+    },
+    {
+      "file": "tools/repair-closeflow-stage5-case-quick-actions.cjs",
+      "line": 97,
+      "selector": "",
+      "hits": [
+        "translate-transform",
+        "line-height-too-small",
+        "display-grid",
+        "display-flex"
+      ],
+      "weight": 7,
+      "text": "css += `\\n\\n/* CLOSEFLOW_STAGE5_CASE_QUICK_ACTIONS */\\n.case-quick-actions {\\n  display: grid;\\n  gap: 12px;\\n}\\n.case-quick-actions__header {\\n  display: flex;\\n  align-items: flex-start;\\n  justify-content: space-between;\\n  gap: 12px;\\n}\\n.case-quick-action"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 192,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill):not([data-cf-calendar-kind]):not([data-cf-entity-type])",
+      "hits": [
+        "height-hard",
+        "max-height-hard"
+      ],
+      "weight": 6,
+      "text": "max-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 114,
+      "selector": ".cf-html-view.main-tasks-html .task-pills",
+      "hits": [
+        "display-flex",
+        "flex-wrap",
+        "top-left-inset"
+      ],
+      "weight": 6,
+      "text": ".cf-html-view.main-tasks-html .task-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }"
+    },
+    {
+      "file": "tools/repair-closeflow-modal-visual-system-readable-v2.cjs",
+      "line": 64,
+      "selector": "",
+      "hits": [
+        "absolute-position",
+        "top-left-inset"
+      ],
+      "weight": 6,
+      "text": "const css = \"/* CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1\\n   CLOSEFLOW_MODAL_VISUAL_SYSTEM_READABLE_V2\\n   owner: CloseFlow UI system\\n   reason: unified, readable, light operator dialogs without dark header/body split.\\n   source_of_truth: src/components/ui/dialog.ts"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 145,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill)",
+      "hits": [
+        "height-hard",
+        "line-height-too-small"
+      ],
+      "weight": 5,
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 190,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill):not([data-cf-calendar-kind]):not([data-cf-entity-type])",
+      "hits": [
+        "height-hard",
+        "line-height-too-small"
+      ],
+      "weight": 5,
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "scripts/check-stage34-calendar-readability-status-forms.cjs",
+      "line": 20,
+      "selector": "",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": "expect('src/styles/stage34-calendar-readability-status-forms.css', 'white-space: normal !important', 'month text wrapping');"
+    },
+    {
+      "file": "scripts/check-stage34b-calendar-complete-polish.cjs",
+      "line": 20,
+      "selector": "",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": "expect('src/styles/stage34b-calendar-complete-polish.css', 'white-space: normal !important', 'month entry text wrap');"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 191,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill):not([data-cf-calendar-kind]):not([data-cf-entity-type])",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 91,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer=\"true\"], [data-radix-dialog-footer])",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 382,
+      "selector": ".calendar-action",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": "white-space: normal !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 697,
+      "selector": ".calendar-day-actions",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap !important;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 221,
+      "selector": ".task-form-action-strip",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 116,
+      "selector": ".cf-html-view.main-tasks-html .task-done-btn",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": ".cf-html-view.main-tasks-html .task-done-btn { width: 26px; height: 26px; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 174,
+      "selector": ".cf-html-view.main-tasks-html .task-meta",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": ".cf-html-view.main-tasks-html .task-meta { white-space: normal; }"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 61,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 68,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar-right",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 162,
+      "selector": ".cf-html-view.main-calendar-html .calendar-day-cell:hover",
+      "hits": [
+        "translate-transform"
+      ],
+      "weight": 3,
+      "text": "transform: translateY(-1px);"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 212,
+      "selector": ".cf-html-view.main-calendar-html .calendar-pill-type",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "height: 16px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 350,
+      "selector": ".cf-html-view.main-calendar-html .pill",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "height: 24px;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 22,
+      "selector": ".cf-html-view.main-tasks-html .task-type-badge",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "min-height: 24px;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 103,
+      "selector": ".cf-html-view.main-tasks-html .task-action-col.task-action-col-compact",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    }
+  ],
+  "allCssRiskRows": [
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 387,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "const relationClass = `truncate text-[12px] font-semibold ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 403,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className={`truncate text-[14px] font-bold leading-5 ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`} title={entry.title}>"
+    },
+    {
+      "file": "src/pages/Tasks.tsx",
+      "line": 1049,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className={`task-title font-bold text-slate-900 break-words ${done ? 'line-through' : ''}`}>{task.title}</p>"
+    },
+    {
+      "file": "src/pages/TasksStable.tsx",
+      "line": 520,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<h2 className={'text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2600,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2601,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2673,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className={`font-semibold break-words ${isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}`}>{entry.title}</p>"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2674,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className={`text-sm break-words ${isCompleted ? 'text-slate-400 line-through' : 'text-slate-500'}`}>{TASK_TYPES.find((item) => item.value === entry.raw.type)?.label || 'Zadanie'} ÔÇó {format(parseISO(entry.startsAt), 'HH:mm')}{entry.leadName ? ` ÔÇó Lead: $"
+    },
+    {
+      "file": "src/pages/Today.tsx",
+      "line": 2788,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "<p className=\"font-semibold text-slate-900 line-through\">{entry.title}</p>"
+    },
+    {
+      "file": "src/pages/UiPreviewVNextFull.tsx",
+      "line": 20,
+      "selector": "",
+      "hits": [
+        "absolute-position",
+        "translate-transform",
+        "height-hard",
+        "line-height-too-small",
+        "display-grid",
+        "display-flex",
+        "flex-wrap",
+        "top-left-inset",
+        "line-through"
+      ],
+      "weight": 20,
+      "text": "const FULL_CLOSEFLOW_HTML = \"<!doctype html>\\n<html lang=\\\"pl\\\">\\n<head>\\n  <meta charset=\\\"utf-8\\\" />\\n  <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1\\\" />\\n  <title>CloseFlow - pełny kierunek UI</title>\\n  <style>\\n    :root {\\n      "
+    },
+    {
+      "file": "src/styles/closeflow-a1-client-note-event-lead-visibility-finalizer.css",
+      "line": 24,
+      "selector": ".closeflow-event-modal-readable[data-a1-event-modal-readable-finalizer=\"true\"] .event-form-footer",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-top: 1px solid #e2e8f0;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 39,
+      "selector": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-kind]",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 43,
+      "selector": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-kind]",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: none !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 116,
+      "selector": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-tooltip=\"true\"]",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: underline;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 117,
+      "selector": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-tooltip=\"true\"]",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-style: dotted;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-color-tooltip-v2.css",
+      "line": 118,
+      "selector": "#root [data-cf-page-header-v2=\"calendar\"] ~ * [data-cf-calendar-tooltip=\"true\"]",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-color: rgba(37, 99, 235, 0.35);"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 145,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill)",
+      "hits": [
+        "height-hard",
+        "line-height-too-small"
+      ],
+      "weight": 5,
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 156,
+      "selector": ") :is(.line-through, [class*=\"line-through\"])",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": ") :is(.line-through, [class*=\"line-through\"]) {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-chip-overlap-fix-v1.css",
+      "line": 157,
+      "selector": ") :is(.line-through, [class*=\"line-through\"])",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-thickness: 1px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 190,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill):not([data-cf-calendar-kind]):not([data-cf-entity-type])",
+      "hits": [
+        "height-hard",
+        "line-height-too-small"
+      ],
+      "weight": 5,
+      "text": "line-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 191,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill):not([data-cf-calendar-kind]):not([data-cf-entity-type])",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 192,
+      "selector": ") :is(p, span, strong, a, div):not(.cf-calendar-type-badge):not(.cf-entity-type-pill):not([data-cf-calendar-kind]):not([data-cf-entity-type])",
+      "hits": [
+        "height-hard",
+        "max-height-hard"
+      ],
+      "weight": 6,
+      "text": "max-height: 18px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 227,
+      "selector": ") :is(.line-through, [class*=\"line-through\"], s, del)",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": ") :is(.line-through, [class*=\"line-through\"], s, del) {"
+    },
+    {
+      "file": "src/styles/closeflow-calendar-month-rows-no-overlap-repair2.css",
+      "line": 230,
+      "selector": ") :is(.line-through, [class*=\"line-through\"], s, del)",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-thickness: 1px !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 7,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable)",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 31,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is([data-radix-dialog-header], .event-form-vnext-header)",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-bottom: 1px solid #e5edf7 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 42,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-vnext, .event-form-vnext-grid, form)",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 88,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer=\"true\"], [data-radix-dialog-footer])",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "bottom: 0 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 90,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer=\"true\"], [data-radix-dialog-footer])",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 91,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer=\"true\"], [data-radix-dialog-footer])",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 96,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer=\"true\"], [data-radix-dialog-footer])",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-top: 1px solid #e5edf7 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-client-event-modal-runtime-repair.css",
+      "line": 126,
+      "selector": ":where(.event-form-vnext-content, [data-event-create-dialog-stage85=\"true\"], [data-event-create-dialog-stage22b=\"true\"], .closeflow-event-modal-readable) :is(.event-form-footer, [data-event-modal-save-footer=\"true\"], [data-radix-dialog-footer])",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 236,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"] section[data-eliteflow-task-stat-grid=\"true\"]",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 255,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"] section[data-eliteflow-task-stat-grid=\"true\"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 278,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"] > section.grid > button:not([data-stat-shortcut-card]):not(.cf-top-metric-tile)",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 393,
+      "selector": ":where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild=\"true\"] section[data-eliteflow-task-stat-grid=\"true\"])",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 422,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"] section[data-eliteflow-task-stat-grid=\"true\"]",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 458,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"] section[data-eliteflow-task-stat-grid=\"true\"] .cf-top-metric-tile-value",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-metric-tiles.css",
+      "line": 481,
+      "selector": "html body #root main[data-p0-tasks-stable-rebuild=\"true\"] [data-cf-metric-grid-contract=\"final-vs5\"]",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "line": 18,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"][data-stage16c-tasks-cases-repair=\"tasks\"] section[data-eliteflow-task-stat-grid=\"true\"]",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "line": 39,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"][data-stage16c-tasks-cases-repair=\"tasks\"] section[data-eliteflow-task-stat-grid=\"true\"] > [data-stat-shortcut-card] > .cf-top-metric-tile-content",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex !important;"
+    },
+    {
+      "file": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "line": 68,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"][data-stage16c-tasks-cases-repair=\"tasks\"] section[data-eliteflow-task-stat-grid=\"true\"] .cf-top-metric-tile-label",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/closeflow-stage16d-tasks-metric-final-lock.css",
+      "line": 92,
+      "selector": "main[data-p0-tasks-stable-rebuild=\"true\"][data-stage16c-tasks-cases-repair=\"tasks\"] section[data-eliteflow-task-stat-grid=\"true\"] .cf-top-metric-tile-value",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 204,
+      "selector": "html body #root main[data-p0-tasks-stable-rebuild=\"true\"] > section.grid",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 213,
+      "selector": "html body #root main[data-p0-tasks-stable-rebuild=\"true\"] > section.grid > button",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 239,
+      "selector": "html body #root main[data-p0-tasks-stable-rebuild=\"true\"] > section.grid > button p:first-of-type",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.18 !important;"
+    },
+    {
+      "file": "src/styles/eliteflow-final-metric-tiles-hard-lock.css",
+      "line": 250,
+      "selector": "html body #root main[data-p0-tasks-stable-rebuild=\"true\"] > section.grid > button p:last-of-type",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "src/styles/eliteflow-metric-text-clip-tasks-repair.css",
+      "line": 54,
+      "selector": "html body #root main[data-p0-tasks-stable-rebuild=\"true\"] section[data-eliteflow-task-stat-grid=\"true\"]",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 382,
+      "selector": ".calendar-action",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": "white-space: normal !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 383,
+      "selector": ".calendar-action",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.15 !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 447,
+      "selector": ".calendar-view-tabs",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 452,
+      "selector": ".calendar-view-tabs",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "padding-bottom: 8px !important;"
+    },
+    {
+      "file": "src/styles/stage31-full-mobile-polish.css",
+      "line": 697,
+      "selector": ".calendar-day-actions",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap !important;"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 58,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] *",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: line-through !important;"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 59,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] *",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-thickness: 2px !important;"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 60,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] *",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-color: rgba(71, 85, 105, 0.75) !important;"
+    },
+    {
+      "file": "src/styles/stage34-calendar-readability-status-forms.css",
+      "line": 68,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] button *",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: none !important;"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 68,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] :not(button):not(svg)",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-line: line-through !important;"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 69,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] :not(button):not(svg)",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-thickness: 2px !important;"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 70,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] :not(button):not(svg)",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration-color: rgba(71, 85, 105, 0.72) !important;"
+    },
+    {
+      "file": "src/styles/stage34b-calendar-complete-polish.css",
+      "line": 77,
+      "selector": ".main[data-current-section=\"kalendarz\"] [data-calendar-entry-completed=\"true\"] button *",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: none !important;"
+    },
+    {
+      "file": "src/styles/visual-stage12-client-detail-vnext.css",
+      "line": 2067,
+      "selector": ".client-detail-vnext-page .entity-overview-tile-chip",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: none;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 39,
+      "selector": ".task-form-vnext-header",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-bottom: 1px solid #e4e7ec;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 44,
+      "selector": ".task-form-vnext-title-block",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 58,
+      "selector": ".task-form-vnext-content h2",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.1;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 67,
+      "selector": ".task-form-vnext-content [data-description]",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.5;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 74,
+      "selector": ".task-form-vnext",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 91,
+      "selector": ".task-form-section-head",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-bottom: 14px;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 106,
+      "selector": ".task-form-section-head p",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.5;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 110,
+      "selector": ".task-form-grid",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 123,
+      "selector": ".task-form-field",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 192,
+      "selector": ".task-form-details .task-form-grid",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-top: 1px solid #e4e7ec;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 198,
+      "selector": ".task-form-footer",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "bottom: -22px;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 199,
+      "selector": ".task-form-footer",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-top: 1px solid #e4e7ec;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 220,
+      "selector": ".task-form-action-strip",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 221,
+      "selector": ".task-form-action-strip",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 264,
+      "selector": ".task-form-footer",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 278,
+      "selector": ".task-form-vnext-description",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.5;"
+    },
+    {
+      "file": "src/styles/visual-stage21-task-form-vnext.css",
+      "line": 296,
+      "selector": ".task-form-footer",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 31,
+      "selector": ".event-form-vnext-content > div:first-child",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-bottom: 1px solid #e4e7ec;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 41,
+      "selector": ".event-form-vnext-content h2",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.1;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 49,
+      "selector": ".event-form-vnext-description",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.5;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 57,
+      "selector": ".event-form-vnext-grid",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 75,
+      "selector": ".event-form-grid",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 88,
+      "selector": ".event-form-field",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 132,
+      "selector": ".event-form-footer",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "bottom: -22px;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 133,
+      "selector": ".event-form-footer",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-top: 1px solid #e4e7ec;"
+    },
+    {
+      "file": "src/styles/visual-stage22-event-form-vnext.css",
+      "line": 182,
+      "selector": ".event-form-footer",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid !important;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 6,
+      "selector": ".cf-html-view.main-tasks-html",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 11,
+      "selector": ".cf-html-view.main-tasks-html .page-head",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 15,
+      "selector": ".cf-html-view.main-tasks-html .page-head",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-bottom: 8px;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 36,
+      "selector": ".cf-html-view.main-tasks-html h1",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 45,
+      "selector": ".cf-html-view.main-tasks-html .lead-copy",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.45;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 49,
+      "selector": ".cf-html-view.main-tasks-html .head-actions",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": ".cf-html-view.main-tasks-html .head-actions { display: flex; gap: 8px; align-items: center; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 54,
+      "selector": ".cf-html-view.main-tasks-html .layout-list",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 61,
+      "selector": ".cf-html-view.main-tasks-html .tasks-right-rail",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": ".cf-html-view.main-tasks-html .tasks-right-rail { display: grid; gap: 14px; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 64,
+      "selector": ".cf-html-view.main-tasks-html .tasks-right-rail",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 89,
+      "selector": ".cf-html-view.main-tasks-html .task-row",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 95,
+      "selector": ".cf-html-view.main-tasks-html .task-row",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "border-top: 1px solid #e4e7ec;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 97,
+      "selector": ".cf-html-view.main-tasks-html .task-row:first-child",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": ".cf-html-view.main-tasks-html .task-row:first-child { border-top: 0; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 104,
+      "selector": ".cf-html-view.main-tasks-html .task-index",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 112,
+      "selector": ".cf-html-view.main-tasks-html .task-title",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": ".cf-html-view.main-tasks-html .task-title { margin: 0; color: #111827; font-size: 16px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 113,
+      "selector": ".cf-html-view.main-tasks-html .task-meta",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": ".cf-html-view.main-tasks-html .task-meta { margin: 4px 0 0; color: #667085; font-size: 12px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 114,
+      "selector": ".cf-html-view.main-tasks-html .task-pills",
+      "hits": [
+        "display-flex",
+        "flex-wrap",
+        "top-left-inset"
+      ],
+      "weight": 6,
+      "text": ".cf-html-view.main-tasks-html .task-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 116,
+      "selector": ".cf-html-view.main-tasks-html .task-done-btn",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": ".cf-html-view.main-tasks-html .task-done-btn { width: 26px; height: 26px; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 118,
+      "selector": ".cf-html-view.main-tasks-html .task-type-col",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": ".cf-html-view.main-tasks-html .task-type-col { display: grid; gap: 2px; min-width: 0; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 121,
+      "selector": ".cf-html-view.main-tasks-html .task-type-col strong",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": ".cf-html-view.main-tasks-html .task-type-col strong { font-size: 14px; color: #111827; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 122,
+      "selector": ".cf-html-view.main-tasks-html .task-priority-chip",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": ".cf-html-view.main-tasks-html .task-priority-chip { width: fit-content; margin-top: 2px; border-radius: 999px; padding: 1px 8px; font-size: 10px; font-weight: 800; background: #fff1f3; color: #b42318; border: 1px solid #fecdd3; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 123,
+      "selector": ".cf-html-view.main-tasks-html .task-action-col",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": ".cf-html-view.main-tasks-html .task-action-col { display: flex; justify-content: flex-end; align-items: center; gap: 6px; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 138,
+      "selector": ".cf-html-view.main-tasks-html .quick-list",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": ".cf-html-view.main-tasks-html .quick-list { display: grid; gap: 8px; }"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 146,
+      "selector": ".cf-html-view.main-tasks-html .quick-note",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 170,
+      "selector": ".cf-html-view.main-tasks-html .task-type-col",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage28-tasks-vnext.css",
+      "line": 174,
+      "selector": ".cf-html-view.main-tasks-html .task-meta",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": ".cf-html-view.main-tasks-html .task-meta { white-space: normal; }"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 7,
+      "selector": ".cf-html-view.main-calendar-html",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 12,
+      "selector": ".cf-html-view.main-calendar-html .page-head",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 16,
+      "selector": ".cf-html-view.main-calendar-html .page-head",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-bottom: 6px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 37,
+      "selector": ".cf-html-view.main-calendar-html h1",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 46,
+      "selector": ".cf-html-view.main-calendar-html .lead-copy",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.45;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 51,
+      "selector": ".cf-html-view.main-calendar-html .head-actions",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 57,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 61,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 62,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-bottom: 8px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 66,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar-right",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 68,
+      "selector": ".cf-html-view.main-calendar-html .calendar-toolbar-right",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 122,
+      "selector": ".cf-html-view.main-calendar-html .calendar-nav .nav-btn",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 144,
+      "selector": ".cf-html-view.main-calendar-html .calendar-month-grid",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 162,
+      "selector": ".cf-html-view.main-calendar-html .calendar-day-cell:hover",
+      "hits": [
+        "translate-transform"
+      ],
+      "weight": 3,
+      "text": "transform: translateY(-1px);"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 181,
+      "selector": ".cf-html-view.main-calendar-html .calendar-day-number",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 201,
+      "selector": ".cf-html-view.main-calendar-html .calendar-day-pill",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1.25;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 212,
+      "selector": ".cf-html-view.main-calendar-html .calendar-pill-type",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "height: 16px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 220,
+      "selector": ".cf-html-view.main-calendar-html .calendar-pill-type",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-right: 6px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 228,
+      "selector": ".cf-html-view.main-calendar-html .calendar-day-pill .is-done-text",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "text-decoration: line-through;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 252,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-layout",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 256,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-layout",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-top: 6px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 260,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-filter-list",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-top: 12px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 261,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-filter-list",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 271,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-filter-btn",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 287,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-plan-list",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-top: 12px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 288,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-plan-list",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 305,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-day-head",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 309,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-day-head",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-bottom: 12px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 321,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-day-title",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-top: 4px;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 343,
+      "selector": ".cf-html-view.main-calendar-html .calendar-week-day-entries",
+      "hits": [
+        "display-grid"
+      ],
+      "weight": 1,
+      "text": "display: grid;"
+    },
+    {
+      "file": "src/styles/visual-stage29-calendar-vnext.css",
+      "line": 350,
+      "selector": ".cf-html-view.main-calendar-html .pill",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "height: 24px;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 12,
+      "selector": ".cf-html-view.main-tasks-html .task-status-col",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 22,
+      "selector": ".cf-html-view.main-tasks-html .task-type-badge",
+      "hits": [
+        "height-hard"
+      ],
+      "weight": 3,
+      "text": "min-height: 24px;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 31,
+      "selector": ".cf-html-view.main-tasks-html .task-type-badge",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 46,
+      "selector": ".cf-html-view.main-tasks-html .task-row.task-row-compact .task-meta",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-top: 3px;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 51,
+      "selector": ".cf-html-view.main-tasks-html .task-row.task-row-compact .task-pills",
+      "hits": [
+        "top-left-inset"
+      ],
+      "weight": 2,
+      "text": "margin-top: 5px;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 68,
+      "selector": ".cf-html-view.main-tasks-html .task-status-chip",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 100,
+      "selector": ".cf-html-view.main-tasks-html .task-action-col.task-action-col-compact",
+      "hits": [
+        "display-flex"
+      ],
+      "weight": 1,
+      "text": "display: flex;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 103,
+      "selector": ".cf-html-view.main-tasks-html .task-action-col.task-action-col-compact",
+      "hits": [
+        "flex-wrap"
+      ],
+      "weight": 3,
+      "text": "flex-wrap: wrap;"
+    },
+    {
+      "file": "src/styles/visual-stage30-tasks-compact-after-calendar.css",
+      "line": 116,
+      "selector": ".cf-html-view.main-tasks-html .task-action-col.task-action-col-compact .task-action-btn",
+      "hits": [
+        "line-height-too-small"
+      ],
+      "weight": 2,
+      "text": "line-height: 1 !important;"
+    },
+    {
+      "file": "tools/audit-closeflow-calendar-month-overlap-deep.cjs",
+      "line": 84,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "{ id: 'line-through', re: /(line-through|text-decoration)/i, weight: 1 },"
+    },
+    {
+      "file": "tools/audit-closeflow-calendar-month-overlap-deep.cjs",
+      "line": 94,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "'line-through',"
+    },
+    {
+      "file": "tools/audit-closeflow-calendar-month-overlap-deep.cjs",
+      "line": 151,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "/calendar-entry-card|calendar-month|calendar.*chip|month.*chip|month.*entry|cf-entity-type-pill|line-through|bg-slate-950|bg-slate-900/i.test(scan)"
+    },
+    {
+      "file": "tools/audit-closeflow-calendar-month-overlap-deep.cjs",
+      "line": 165,
+      "selector": "",
+      "hits": [
+        "line-through"
+      ],
+      "weight": 1,
+      "text": "'line-through',"
+    },
+    {
+      "file": "tools/repair-closeflow-modal-visual-system-readable-v2.cjs",
+      "line": 64,
+      "selector": "",
+      "hits": [
+        "absolute-position",
+        "top-left-inset"
+      ],
+      "weight": 6,
+      "text": "const css = \"/* CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1\\n   CLOSEFLOW_MODAL_VISUAL_SYSTEM_READABLE_V2\\n   owner: CloseFlow UI system\\n   reason: unified, readable, light operator dialogs without dark header/body split.\\n   source_of_truth: src/components/ui/dialog.ts"
+    },
+    {
+      "file": "tools/repair-closeflow-stage5-case-quick-actions.cjs",
+      "line": 97,
+      "selector": "",
+      "hits": [
+        "translate-transform",
+        "line-height-too-small",
+        "display-grid",
+        "display-flex"
+      ],
+      "weight": 7,
+      "text": "css += `\\n\\n/* CLOSEFLOW_STAGE5_CASE_QUICK_ACTIONS */\\n.case-quick-actions {\\n  display: grid;\\n  gap: 12px;\\n}\\n.case-quick-actions__header {\\n  display: flex;\\n  align-items: flex-start;\\n  justify-content: space-between;\\n  gap: 12px;\\n}\\n.case-quick-action"
+    },
+    {
+      "file": "scripts/check-stage34-calendar-readability-status-forms.cjs",
+      "line": 20,
+      "selector": "",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": "expect('src/styles/stage34-calendar-readability-status-forms.css', 'white-space: normal !important', 'month text wrapping');"
+    },
+    {
+      "file": "scripts/check-stage34b-calendar-complete-polish.cjs",
+      "line": 20,
+      "selector": "",
+      "hits": [
+        "white-space-normal"
+      ],
+      "weight": 3,
+      "text": "expect('src/styles/stage34b-calendar-complete-polish.css', 'white-space: normal !important', 'month entry text wrap');"
+    }
+  ],
+  "calendarRenderSignals": [
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 109,
+      "hits": [
+        "month"
+      ],
+      "text": "import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 110,
+      "hits": [
+        "month"
+      ],
+      "text": "import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 130,
+      "hits": [
+        "month"
+      ],
+      "text": "type CalendarView = 'week' | 'month';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 142,
+      "hits": [
+        "CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2"
+      ],
+      "text": "const CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_2026_05_12';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 292,
+      "hits": [
+        "cf-entity-type-pill"
+      ],
+      "text": "return 'cf-entity-type-pill';"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 387,
+      "hits": [
+        "line-through"
+      ],
+      "text": "const relationClass = `truncate text-[12px] font-semibold ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 394,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": "<div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 403,
+      "hits": [
+        "line-through",
+        "title="
+      ],
+      "text": "<p className={`truncate text-[14px] font-bold leading-5 ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`} title={entry.title}>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 408,
+      "hits": [
+        "title="
+      ],
+      "text": "<Link to={`/cases/${entry.raw.caseId}`} className={`${relationClass} transition hover:text-sky-700`} title={relationLabel}>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 412,
+      "hits": [
+        "title="
+      ],
+      "text": "<Link to={`/leads/${entry.raw.leadId}`} className={`${relationClass} transition hover:text-blue-700`} title={relationLabel}>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 416,
+      "hits": [
+        "title="
+      ],
+      "text": "<p className={relationClass} title={relationLabel}>{relationLabel}</p>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 474,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const [selectedDate, setSelectedDate] = useState(new Date());"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 476,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "const [calendarScale, setCalendarScale] = useState<CalendarScale>('default');"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 541,
+      "hits": [
+        "month"
+      ],
+      "text": "if (forcedCalendarView === 'week' || forcedCalendarView === 'month') {"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 570,
+      "hits": [
+        "month"
+      ],
+      "text": "if (storedView === 'week' || storedView === 'month') {"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 577,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "window.localStorage.setItem(CALENDAR_SCALE_STORAGE_KEY, calendarScale);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 579,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "}, [calendarScale]);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 589,
+      "hits": [
+        "CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_EFFECT"
+      ],
+      "text": "// CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_EFFECT: native hover tooltips for clipped calendar text + visual type hints."
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 608,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": "'.calendar-entry-card',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 609,
+      "hits": [
+        "calendar-entry-card"
+      ],
+      "text": "'.calendar-entry-card *',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 610,
+      "hits": [
+        "month"
+      ],
+      "text": "'[class*=\"month\"] [class*=\"entry\"]',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 611,
+      "hits": [
+        "month"
+      ],
+      "text": "'[class*=\"month\"] [class*=\"entry\"] *',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 612,
+      "hits": [
+        "month"
+      ],
+      "text": "'[class*=\"month\"] [class*=\"item\"]',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 613,
+      "hits": [
+        "month"
+      ],
+      "text": "'[class*=\"month\"] [class*=\"item\"] *',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 614,
+      "hits": [
+        "month"
+      ],
+      "text": "'[class*=\"month\"] [class*=\"chip\"]',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 615,
+      "hits": [
+        "month"
+      ],
+      "text": "'[class*=\"month\"] [class*=\"chip\"] *',"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 643,
+      "hits": [
+        "data-cf-calendar"
+      ],
+      "text": "const row = node.closest('[data-cf-calendar-row-kind]') as HTMLElement | null;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 645,
+      "hits": [
+        "CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2"
+      ],
+      "text": "row.setAttribute('title', (row.innerText || row.textContent || raw).replace(/\\\\s+/g, ' ').trim()); // CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_TOOLTIP_ROW_TITLE"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 661,
+      "hits": [
+        "calendarScale",
+        "selectedDate"
+      ],
+      "text": "}, [calendarView, calendarScale, currentMonth, selectedDate, events, tasks, leads, cases, clients, loading]);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 945,
+      "hits": [
+        "month"
+      ],
+      "text": "const monthStart = startOfMonth(currentMonth);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 946,
+      "hits": [
+        "month"
+      ],
+      "text": "const monthEnd = endOfMonth(monthStart);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 947,
+      "hits": [
+        "month"
+      ],
+      "text": "const monthRangeStart = startOfWeek(monthStart, { weekStartsOn: 1 });"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 948,
+      "hits": [
+        "month"
+      ],
+      "text": "const monthRangeEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 955,
+      "hits": [
+        "month"
+      ],
+      "text": "const calendarDataRangeEnd = rollingWeekEnd.getTime() > monthRangeEnd.getTime() ? rollingWeekEnd : monthRangeEnd;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 956,
+      "hits": [
+        "month"
+      ],
+      "text": "const calendarDays = eachDayOfInterval({ start: monthRangeStart, end: monthRangeEnd });"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 961,
+      "hits": [
+        "month"
+      ],
+      "text": "rangeStart: monthRangeStart,"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 973,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const selectedDayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate));"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 988,
+      "hits": [
+        "calendarScale",
+        "month"
+      ],
+      "text": "const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1473,
+      "hits": [
+        "month"
+      ],
+      "text": "<button type=\"button\" className={`seg-btn ${calendarView === 'month' ? 'active' : ''}`} onClick={() => setCalendarView('month')}>Miesiąc</button>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1477,
+      "hits": [
+        "month"
+      ],
+      "text": "{calendarView === 'month' ? ("
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1479,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "<button type=\"button\" className={`seg-btn ${calendarScale === 'compact' ? 'active' : ''}`} onClick={() => setCalendarScale('compact')}>Małe kafelki</button>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1480,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "<button type=\"button\" className={`seg-btn ${calendarScale === 'default' ? 'active' : ''}`} onClick={() => setCalendarScale('default')}>Standard</button>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1481,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "<button type=\"button\" className={`seg-btn ${calendarScale === 'large' ? 'active' : ''}`} onClick={() => setCalendarScale('large')}>Duże kafelki</button>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1491,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const next = addDays(selectedDate, -7);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1510,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const next = addDays(selectedDate, 7);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1571,
+      "hits": [
+        "month"
+      ],
+      "text": "{calendarView === 'month' ? ("
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1579,
+      "hits": [
+        "month"
+      ],
+      "text": "<div className=\"calendar-month-grid\">"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1582,
+      "hits": [
+        "month"
+      ],
+      "text": "const isCurrentMonth = isSameMonth(day, monthStart);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1584,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const isSelectedDay = isSameDay(day, selectedDate);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1598,
+      "hits": [
+        "month"
+      ],
+      "text": "style={{ minHeight: monthCellMinHeight }}"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1608,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "{dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1615,
+      "hits": [
+        "month"
+      ],
+      "text": "className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCom"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1621,
+      "hits": [
+        "title="
+      ],
+      "text": "title={entry.title}"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1631,
+      "hits": [
+        "calendarScale"
+      ],
+      "text": "{dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && ("
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1632,
+      "hits": [
+        "calendarScale",
+        "więcej"
+      ],
+      "text": "<div className=\"calendar-more\">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</div>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1644,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "<h2 className=\"text-xl font-bold text-slate-900\">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1683,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const active = isSameDay(day, selectedDate);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1736,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const isActive = isSameDay(item.date, selectedDate);"
+    },
+    {
+      "file": "src/pages/Calendar.tsx",
+      "line": 1763,
+      "hits": [
+        "selectedDate"
+      ],
+      "text": "const isActiveDay = isSameDay(day, selectedDate);"
+    }
+  ]
+}
