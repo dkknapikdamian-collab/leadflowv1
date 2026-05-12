@@ -284,3 +284,29 @@
     width: 100% !important;
   }
 }
+
+/* STAGE14E_LEADS_VALUE_DEDUP_BADGE_REPAIR1 */
+.main-leads-html .lead-card-value-block,
+.main-leads-html [data-stage14e-leads-value-layout="true"] {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  gap: 0.35rem !important;
+  min-width: 0 !important;
+}
+
+.main-leads-html .lead-card-value-pill,
+.main-leads-html [data-lead-value-pill="true"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: max-content !important;
+  max-width: fit-content !important;
+  flex: 0 0 auto !important;
+  align-self: flex-start !important;
+  white-space: nowrap !important;
+  padding: 0.25rem 0.55rem !important;
+  border-radius: 999px !important;
+  box-sizing: border-box !important;
+}

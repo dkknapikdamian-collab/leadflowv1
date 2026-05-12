@@ -1,5 +1,6 @@
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
+// STAGE14E_LEADS_VALUE_DEDUP_BADGE_REPAIR1
 import {
   useCallback,
   useEffect,
@@ -175,14 +176,14 @@ function buildLeadValueLabel(lead: any) {
   return value.toLocaleString('pl-PL') + ' PLN';
 }
 
-function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string, leadValueLabel: string = '') {
-  // CLOSEFLOW_FB2_LEADS_PHONE_SINGLE_SOURCE: kontakt jest pokazywany raz w sekcji kontaktu, bez drugiego "..." w meta.
+function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sourceLabel: string, _leadValueLabel: string = '') {
+  // STAGE14E_LEADS_VALUE_META_DEDUP: value belongs only to the dedicated value block/pill, never to compact meta.
+  void _leadValueLabel;
   const company = String(lead?.company || '').trim();
   const caseLabel = linkedCase ? 'sprawa: ' + (linkedCase.title || 'otwarta') : '';
 
   return [
     sourceLabel,
-    leadValueLabel,
     company,
     caseLabel,
   ].filter(Boolean).join(' · ');
@@ -982,7 +983,7 @@ export default function Leads() {
                   return (
                     <div key={leadId || leadIndex} className="relative group/lead-row">
                       <Link to={`/leads/${leadId}`} className="block">
-                        <div className="row lead-row" data-stage25-lead-row="true" data-stage31-lead-thin-row="true">
+                        <div className="row lead-row lead-card-value-block" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true">
                         <span className="index">{leadIndex + 1}</span>
 
                         <span className="lead-main-cell">
@@ -1001,7 +1002,7 @@ export default function Leads() {
 
                         <span className="lead-value-cell">
                           <span className="mini">Wartość</span>
-                          <strong className="cf-list-row-value">{leadValueLabel}</strong>
+                          <strong className="cf-list-row-value lead-card-value-pill" data-lead-value-pill="true">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
