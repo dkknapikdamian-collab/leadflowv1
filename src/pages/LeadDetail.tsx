@@ -5,6 +5,7 @@ import {
   TemplateEntityIcon } from '../components/ui-system';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
+/* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX */
 /*
 LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
@@ -1644,7 +1645,7 @@ useEffect(() => {
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
               <p>{serviceCaseId ? serviceCaseTitle : 'Brak powiązanej sprawy'}</p>
-              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy}</small>
+              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy'}</small>
               {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
             </section>
 

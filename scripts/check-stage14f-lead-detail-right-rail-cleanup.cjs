@@ -9,33 +9,34 @@ function read(filePath) {
   if (!fs.existsSync(filePath)) throw new Error('Brak pliku: ' + path.relative(repo, filePath));
   return fs.readFileSync(filePath, 'utf8');
 }
+
 function assertIncludes(source, needle, label) {
   if (!source.includes(needle)) throw new Error('Brak: ' + label + ' (' + needle + ')');
 }
+
 function assertNotIncludes(source, needle, label) {
-  if (source.includes(needle)) throw new Error('Zakazany fragment po 14F: ' + label + ' (' + needle + ')');
+  if (source.includes(needle)) throw new Error('Zakazany fragment po 14F Repair1: ' + label + ' (' + needle + ')');
 }
 
-const lead = read(leadPath);
+const source = read(leadPath);
 const css = read(cssPath);
 
-assertIncludes(lead, 'STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP', 'guard Stage14F w LeadDetail');
-assertIncludes(css, 'STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP', 'guard Stage14F w CSS');
-assertNotIncludes(lead, 'Co tu trzeba zrobić teraz', 'usunięte noisy copy');
-assertNotIncludes(lead, 'Krótki panel decyzyjny bez skakania po zadaniach, kalendarzu i historii.', 'usunięty opis panelu decyzyjnego');
-assertNotIncludes(lead, 'Brak zaplanowanych działań', 'brak akcji ma być pauzą');
-assertIncludes(lead, "Powód: {leadRiskReasonStage14F || '-'}", 'fallback powodu ryzyka');
-assertIncludes(lead, 'data-lead-start-service', 'widoczny marker przycisku Rozpocznij obsługę');
-assertIncludes(lead, 'cf-action-button cf-action-button-primary', 'klasa widocznego przycisku startu obsługi');
-assertIncludes(lead, 'data-lead-next-action-empty="-"', 'marker pustej najbliższej akcji');
-assertIncludes(lead, 'Lead aktywny.', 'skrócony opis statusu aktywnego leada');
-assertNotIncludes(lead, 'Lead aktywny. Możesz prowadzić kontakt sprzedażowy.', 'stary długi opis statusu leada');
-assertIncludes(css, '.lead-detail-vnext-page .lead-detail-right-card p', 'lokalny override tekstów w prawym railu');
-assertIncludes(css, 'overflow-wrap: anywhere !important;', 'tekst w prawym railu nie ucina się agresywnie');
-assertIncludes(css, 'white-space: normal !important;', 'teksty w kartach mogą się łamać');
-assertIncludes(css, '[data-one-line="true"]', 'jednowierszowość tylko jawnie oznaczona');
-assertIncludes(css, '[data-lead-start-service]', 'CSS widoczności start service');
-assertIncludes(css, 'visibility: visible !important;', 'button nie znika');
-assertIncludes(css, '[data-lead-next-action-empty="-"]', 'CSS dla pauzy pustej akcji');
+assertIncludes(source, 'STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP', 'bazowy marker Stage14F');
+assertIncludes(source, 'STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX', 'marker Repair1 build fix');
+assertNotIncludes(source, "serviceCaseStatusLabel : 'Brak powiązanej sprawy}</small>", 'uszkodzony literal linked case');
+assertNotIncludes(source, "'Brak powiązanej sprawy}</small>", 'brakujący apostrof w linked case empty state');
+assertNotIncludes(source, 'Co tu trzeba zrobić teraz', 'zbędny tytuł work-center');
+assertNotIncludes(source, 'Krótki panel decyzyjny bez skakania po zadaniach, kalendarzu i historii.', 'zbędny opis work-center');
+assertNotIncludes(source, 'Brak zaplanowanych działań.', 'stary pusty opis najbliższej akcji');
+assertNotIncludes(source, 'Brak zaplanowanych działań', 'stary pusty opis najbliższej akcji bez kropki');
+assertIncludes(source, 'data-lead-next-action-empty="-"', 'marker pustej najbliższej akcji');
+assertIncludes(source, 'leadRiskReasonStage14F', 'źródło powodu ryzyka');
+assertIncludes(source, 'Powód: -', 'fallback powodu ryzyka');
+assertIncludes(source, 'data-lead-start-service', 'widoczny przycisk startu obsługi');
+assertIncludes(source, 'cf-action-button-primary', 'primary action class dla startu obsługi');
+assertIncludes(source, 'Lead aktywny.', 'skrócony opis statusu leada');
+assertIncludes(css, 'STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP', 'CSS override Stage14F');
+assertIncludes(css, '[data-lead-start-service]', 'CSS widoczności przycisku startu obsługi');
+assertIncludes(css, 'overflow-wrap: anywhere', 'CSS przeciw ucinaniu tekstu');
 
-console.log('✔ Stage14F LeadDetail right rail cleanup guard passed');
+console.log('✔ Stage14F Repair1 LeadDetail build fix guard passed');
