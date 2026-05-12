@@ -48,6 +48,7 @@ const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientD
 void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 
 /* STAGE14B_CLIENT_NEXT_ACTION_CONTEXT */
+/* CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_STABILIZER_REPAIR1_2026_05_12: keeps ClientDetail production-safe after React #310 */
 /* CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_310_REPAIR_2026_05_12: stabilizes ClientDetail early return hook order after React #310 */
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
@@ -1615,6 +1616,16 @@ export default function ClientDetail() {
   );
 
   if (loading || workspaceLoading) {
+
+/* CLOSEFLOW_CLIENTDETAIL_HOOK_ORDER_STABILIZER_REPAIR1_2026_05_12
+
+   Production stabilizer for React #310 until ClientDetail is split into route shell + loaded view.
+
+   This mirrors the single useMemo executed only by the loaded branch.
+
+*/
+
+useMemo(() => null, []);
 
 return (
       <Layout>
