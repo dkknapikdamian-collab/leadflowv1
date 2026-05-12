@@ -1,8 +1,8 @@
-
+﻿
 /* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS
  * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
- * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
- * GlobalQuickActions Inbox szkiców <GlobalQuickActions
+ * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : [])
+ * GlobalQuickActions Inbox szkicĂłw <GlobalQuickActions
  */
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
@@ -17,9 +17,9 @@ VISUAL_STAGE_05_CLIENTS_ROUTE_SCOPE
 VISUAL_STAGE_06_CLIENT_DETAIL_ROUTE_SCOPE
 VISUAL_STAGE_07_CASES_ROUTE_SCOPE
 VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE
-Globalny shell CloseFlow został przepięty na docelowy system wizualny z HTML-a.
+Globalny shell CloseFlow zostaĹ‚ przepiÄ™ty na docelowy system wizualny z HTML-a.
 Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
-Nie zmienia logiki ekranów, routingu, Supabase, AI, auth ani billing/access.
+Nie zmienia logiki ekranĂłw, routingu, Supabase, AI, auth ani billing/access.
 */
 import { ReactNode, useMemo, useState } from 'react';
 import {
@@ -52,6 +52,7 @@ import ContextActionDialogsHost from './ContextActionDialogs';
 import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
 import { OperatorMetricToneRuntime } from './ui-system';
 import { parseISO, differenceInDays } from 'date-fns';
+import '../styles/closeflow-desktop-density-source-truth.css';
 
 interface LayoutProps {
   children: ReactNode;
@@ -154,26 +155,26 @@ export default function Layout({ children }: LayoutProps) {
     {
       caption: 'Start pracy',
       items: [
-        { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+        { icon: LayoutDashboard, label: 'DziĹ›', path: '/' },
         { icon: Users, label: 'Leady', path: '/leads' },
         { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: Briefcase, label: 'Sprawy', path: '/cases' },
       ],
     },
     {
-      caption: 'Czas i obowiązki',
+      caption: 'Czas i obowiÄ…zki',
       items: [
         { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
         { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
         { icon: FolderKanban, label: 'Szablony', path: '/templates' },
         { icon: MessageSquareText, label: 'Odpowiedzi', path: '/response-templates' },
-        { icon: History, label: 'Aktywność', path: '/activity' },
+        { icon: History, label: 'AktywnoĹ›Ä‡', path: '/activity' },
       ],
     },
     {
       caption: 'System',
       items: [
-        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : []),
+        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : []),
         { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
         { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
@@ -185,7 +186,7 @@ export default function Layout({ children }: LayoutProps) {
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [
-      { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+      { icon: LayoutDashboard, label: 'DziĹ›', path: '/' },
       { icon: Users, label: 'Leady', path: '/leads' },
       { icon: Users, label: 'Klienci', path: '/clients' },
       { icon: Briefcase, label: 'Sprawy', path: '/cases' },
@@ -206,7 +207,7 @@ export default function Layout({ children }: LayoutProps) {
   const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
   const trialDaysLeft = workspace?.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
   const userEmail = profile?.email || supabaseUser?.email || '';
-  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';
+  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'UĹĽytkownik';
   const userInitial = (userName.trim().charAt(0) || userEmail.trim().charAt(0) || 'U').toUpperCase();
 
   const handleSignOut = async () => {
@@ -271,7 +272,7 @@ export default function Layout({ children }: LayoutProps) {
     >
       <OperatorMetricToneRuntime />
       <aside className="sidebar" data-shell-sidebar="true">
-        <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
+        <Link to="/" className="brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
           <span className="brand-logo" aria-hidden="true">
             CF
           </span>
@@ -280,7 +281,7 @@ export default function Layout({ children }: LayoutProps) {
           </span>
         </Link>
 
-        <nav className="nav-scroll" aria-label="Główne menu CloseFlow">
+        <nav className="nav-scroll" aria-label="GĹ‚Ăłwne menu CloseFlow">
           {renderNavGroups()}
         </nav>
 
@@ -289,17 +290,17 @@ export default function Layout({ children }: LayoutProps) {
           <UserCard userInitial={userInitial} name={userName} email={userEmail} />
           <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
             <LogOut className="h-4 w-4" />
-            <span>Wyloguj się</span>
+            <span>Wyloguj siÄ™</span>
           </button>
         </div>
       </aside>
 
       <div className="mobile-top" data-shell-mobile-top="true">
-        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
+        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
           <span className="brand-logo" aria-hidden="true">CF</span>
           <span>CloseFlow</span>
         </Link>
-        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Otwórz menu">
+        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="OtwĂłrz menu">
           <Menu className="h-6 w-6" />
         </button>
       </div>
@@ -333,7 +334,7 @@ export default function Layout({ children }: LayoutProps) {
               {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
               <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
                 <LogOut className="h-4 w-4" />
-                <span>Wyloguj się</span>
+                <span>Wyloguj siÄ™</span>
               </button>
             </div>
           </div>
@@ -362,7 +363,7 @@ export default function Layout({ children }: LayoutProps) {
         {workspace && !hasAccess && (
           <div className="access-warning" data-shell-access-warning="true">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            <p>Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
+            <p>TwĂłj okres prĂłbny wygasĹ‚. NiektĂłre funkcje sÄ… zablokowane.</p>
             <Link to="/billing" className="access-warning-action">
               Aktywuj plan
             </Link>
@@ -374,7 +375,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </main>
 
-      <nav className="mobile-nav" aria-label="Najważniejsze zakładki" data-shell-mobile-nav="true">
+      <nav className="mobile-nav" aria-label="NajwaĹĽniejsze zakĹ‚adki" data-shell-mobile-nav="true">
         {mobileNavItems.map((item) => {
           const isActive = isNavItemActive(location.pathname, item.path);
           return (
@@ -402,7 +403,8 @@ export default function Layout({ children }: LayoutProps) {
 /* STAGE16M_LAYOUT_AI_DRAFTS_COMPAT
 GlobalQuickActions
 <GlobalQuickActions
-Inbox szkiców
+Inbox szkicĂłw
 const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
-...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
+...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : [])
 */
+

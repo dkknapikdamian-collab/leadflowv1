@@ -1,0 +1,106 @@
+/* CLOSEFLOW_DESKTOP_DENSITY_SOURCE_TRUTH_2026_05_12
+   owner: CloseFlow Visual System
+   scope: desktop shell and operator pages only
+   goal: reproduce the calmer 80%-zoom feeling with real responsive density, not browser zoom/transform hacks
+   rule: desktop density is a visual contract; mobile remains untouched and will be handled separately
+*/
+
+@media (min-width: 1280px) and (pointer: fine) {
+  html {
+    /* Browser zoom 80% felt readable, but full 0.80 would be too aggressive for real UI.
+       14px gives a controlled desktop-density mode while preserving accessibility and hit targets. */
+    font-size: 14px;
+  }
+
+  #root .cf-html-shell {
+    --cf-desktop-density-page-max: 96rem;
+    --cf-desktop-density-page-gap: clamp(1rem, 1.15vw, 1.65rem);
+    --cf-desktop-density-card-radius: 1.35rem;
+  }
+
+  #root .cf-html-shell .global-bar {
+    min-height: 3.25rem !important;
+    padding-block: 0.48rem !important;
+    padding-inline: clamp(0.75rem, 1vw, 1.25rem) !important;
+  }
+
+  #root .cf-html-shell .view.active,
+  #root .cf-html-shell [data-shell-content="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    padding: var(--cf-desktop-density-page-gap) !important;
+  }
+
+  #root .cf-html-view {
+    width: 100% !important;
+    max-width: var(--cf-desktop-density-page-max) !important;
+    margin-inline: auto !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html, .main-today-html) {
+    gap: 0.85rem !important;
+  }
+
+  #root .cf-html-view :is(.cf-page-header, [data-cf-page-header="true"], .hero, .page-hero, .page-card, .header-card) {
+    border-radius: var(--cf-desktop-density-card-radius) !important;
+  }
+
+  #root .cf-html-view :is(.cf-page-header, [data-cf-page-header="true"]) {
+    padding: clamp(1.05rem, 1.35vw, 1.75rem) !important;
+  }
+
+  #root .cf-html-view :is(.grid-4, .stats-grid, .metrics-grid) {
+    gap: 0.62rem !important;
+  }
+
+  #root .cf-html-view :is(.layout-list, .stack) {
+    gap: 0.72rem !important;
+  }
+
+  #root .cf-html-view :is(.search, .cf-search, .search-card) {
+    min-height: 3rem !important;
+    border-radius: 0.95rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .table-card {
+    gap: 0.42rem !important;
+    padding: 0.5rem !important;
+    border-radius: 1.15rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty),
+  #root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
+    padding: 0.52rem 0.68rem !important;
+    gap: 0.42rem 0.7rem !important;
+    border-radius: 0.92rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > .index {
+    width: 1.75rem !important;
+    height: 1.75rem !important;
+    min-width: 1.75rem !important;
+    min-height: 1.75rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) .title {
+    font-size: 0.88rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.pill, .cf-status-pill, .badge, [class*="badge"], [data-cf-status-tone]) {
+    min-height: 1.24rem !important;
+    padding: 0.2rem 0.4rem !important;
+    font-size: 0.64rem !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-actions-cell, .lead-actions, .row-actions, .client-actions, .client-card-action-buttons, .cf-client-row-actions) :is(button, a) {
+    width: 1.9rem !important;
+    min-width: 1.9rem !important;
+    height: 1.9rem !important;
+    min-height: 1.9rem !important;
+  }
+}
+
+@media (max-width: 1279px) {
+  /* Mobile/tablet stays on current scale. Separate mobile pass will own this surface. */
+}
