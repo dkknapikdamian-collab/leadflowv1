@@ -285,3 +285,45 @@
     justify-content: flex-start !important;
   }
 }
+
+/* CLOSEFLOW_RECORD_LIST_DEDUPED_ROW_CONTENT_2026_05_12
+   owner: CloseFlow Visual System
+   scope: /leads and /clients record lists
+   reason: remove duplicate source/value chips after shared row layout was introduced
+   rule: one factual slot per fact: contact in main cell, value in value cell, next action in action cell
+*/
+
+#root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .sub,
+#root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .cf-list-row-value,
+#root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .cf-chip-lead-value,
+#root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .pill:not(:first-child) {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-main-cell .statusline > .pill:not(.cf-status-pill):not([data-cf-status-tone]) {
+  display: none !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-main-cell .cf-list-row-meta > .pill:first-child {
+  background: rgb(219 234 254) !important;
+  border: 1px solid rgb(147 197 253) !important;
+  color: rgb(29 78 216) !important;
+  -webkit-text-fill-color: rgb(29 78 216) !important;
+}
+
+#root .cf-html-view.main-clients-html .cf-chip-leads-count,
+#root .cf-html-view.main-clients-html .cf-chip-client-value {
+  display: none !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) :is(.cf-status-pill, [data-cf-status-tone]) {
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-value-cell, .cf-client-cases-cell) :is(.mini, small),
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) > :is(.lead-action-cell, .client-card-next-action-block, .cf-client-next-action-panel, .cf-client-next-action-inline) :is(.mini, small) {
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+  font-weight: 850 !important;
+}
+

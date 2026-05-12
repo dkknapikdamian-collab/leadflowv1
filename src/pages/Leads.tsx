@@ -155,7 +155,14 @@ function normalizeLeadSearchValue(value: unknown) {
 }
 
 function getLeadPrimaryContact(lead: any) {
-  return String(lead?.phone || lead?.email || '').trim();
+  const phone = String(lead?.phone || '').trim();
+  const email = String(lead?.email || '').trim();
+  const company = String(lead?.company || '').trim();
+
+  if (phone) return `Telefon: ${phone}`;
+  if (email) return `E-mail: ${email}`;
+  if (company) return `Firma: ${company}`;
+  return 'Kontakt: -';
 }
 
 function buildLeadSearchText(lead: any, linkedCase?: CaseRecord) {
