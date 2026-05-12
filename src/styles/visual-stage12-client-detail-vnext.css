@@ -3161,3 +3161,14 @@ button.client-detail-top-tile-link {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* STAGE14B_CLIENT_NEXT_ACTION_CONTEXT */
+.client-detail-next-action-context {
+  margin: 0.25rem 0 0;
+  color: var(--cf-muted-text, #64748b);
+  font-size: 0.82rem;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

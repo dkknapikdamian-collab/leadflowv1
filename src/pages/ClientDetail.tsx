@@ -47,6 +47,7 @@ void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
 const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
 void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 
+/* STAGE14B_CLIENT_NEXT_ACTION_CONTEXT */
 /* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
 /* STAGE55_CLIENT_CASE_OPERATIONAL_PACK */
 /* STAGE54_CLIENT_CASES_COMPACT_FIT */
@@ -144,6 +145,9 @@ type ClientNextAction = {
   to?: string;
   date?: string;
   relationId?: string;
+  contextKind?: 'case' | 'lead';
+  contextTitle?: string;
+  contextTo?: string;
   tone: 'red' | 'amber' | 'blue' | 'emerald' | 'slate';
 };
 
@@ -372,6 +376,9 @@ void STAGE14A_CLIENT_DETAIL_NOTES_HISTORY_GUARD;
 const STAGE14A_REPAIR2_CLIENT_DETAIL_NOTES_HISTORY_GUARD = 'STAGE14A Repair2 removes side add-note quick action and hardens visible notes/history';
 void STAGE14A_REPAIR2_CLIENT_DETAIL_NOTES_HISTORY_GUARD;
 
+const STAGE14B_CLIENT_NEXT_ACTION_CONTEXT_GUARD = 'STAGE14B ClientDetail nearest planned action shows Sprawa or Lead context';
+void STAGE14B_CLIENT_NEXT_ACTION_CONTEXT_GUARD;
+
 type Stage14AActivityLike = Record<string, any>;
 
 function getClientActivityPayloadStage14A(activity: Stage14AActivityLike) {
@@ -553,6 +560,75 @@ function getCaseTitle(caseRecord: any) {
   }
   return String(rawTitle || 'Sprawa obsługowa');
 }
+
+function getStage14BLeadTitle(lead: any) {
+  return (
+    asText(lead?.title) ||
+    asText(lead?.name) ||
+    asText(lead?.contactName) ||
+    asText(lead?.contact_name) ||
+    asText(lead?.clientName) ||
+    asText(lead?.client_name) ||
+    asText(lead?.company) ||
+    asText(lead?.companyName) ||
+    asText(lead?.company_name) ||
+    'Lead'
+  );
+}
+
+function readStage14BRelationId(item: any, keys: string[]) {
+  const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+  for (const key of keys) {
+    const direct = asText(item?.[key]);
+    if (direct) return direct;
+    const nested = asText((payload as any)?.[key]);
+    if (nested) return nested;
+  }
+  return '';
+}
+
+function getClientNextActionContextStage14B(item: any, leads: any[], cases: any[]) {
+  const caseId = readStage14BRelationId(item, ['caseId', 'case_id', 'relatedCaseId', 'related_case_id']);
+  const leadId = readStage14BRelationId(item, ['leadId', 'lead_id', 'relatedLeadId', 'related_lead_id']);
+  const caseRecord = caseId
+    ? cases.find((caseItem) => String(caseItem?.id || '').trim() === caseId)
+    : null;
+
+  if (caseRecord) {
+    const contextTitle = getCaseTitle(caseRecord);
+    return contextTitle
+      ? { contextKind: 'case' as const, contextTitle, contextTo: `/cases/${caseId}` }
+      : {};
+  }
+
+  const leadRecord = leadId
+    ? leads.find((leadItem) => String(leadItem?.id || '').trim() === leadId)
+    : null;
+
+  if (leadRecord) {
+    const contextTitle = getStage14BLeadTitle(leadRecord);
+    return contextTitle
+      ? { contextKind: 'lead' as const, contextTitle, contextTo: `/leads/${leadId}` }
+      : {};
+  }
+
+  return {};
+}
+
+function renderClientNextActionContextStage14B(action: ClientNextAction) {
+  const contextTitle = asText(action?.contextTitle);
+  if (!contextTitle) return null;
+  const normalized = contextTitle.toLowerCase();
+  if (normalized === 'undefined' || normalized === 'null' || normalized === 'brak') return null;
+
+  const label = action.contextKind === 'case' ? 'Sprawa' : 'Lead';
+  return (
+    <p className="client-detail-next-action-context" title={contextTitle}>
+      {label}: {contextTitle}
+    </p>
+  );
+}
+
 function getCaseValueLabel(caseRecord: any) {
   const raw =
     caseRecord?.value ??
@@ -644,6 +720,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     const isEvent = nearest.type === 'event' || nearest.type === 'meeting';
     const targetCaseId = String(nearest.caseId || '');
     const targetLeadId = String(nearest.leadId || '');
+    const nearestActionContextStage14B = getClientNextActionContextStage14B(nearest, leads, cases);
     return {
       kind: isEvent ? 'event' : 'task',
       title: nearest.title,
@@ -651,6 +728,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       date: nearest.when,
       relationId: targetCaseId || targetLeadId || String(clientId || ''),
       to: targetCaseId ? `/cases/${targetCaseId}` : targetLeadId ? `/leads/${targetLeadId}` : '/today',
+      ...nearestActionContextStage14B,
       tone: 'amber',
     };
   }
@@ -1627,6 +1705,7 @@ export default function ClientDetail() {
                   <small>Najbliższa zaplanowana akcja</small>
                   <strong>{clientNextAction.title}</strong>
                   <p>{clientNextAction.subtitle}</p>
+                  {renderClientNextActionContextStage14B(clientNextAction)}
                 </div>
                 {clientNextAction.to ? (
                   <Button
