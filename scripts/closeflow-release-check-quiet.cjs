@@ -33,6 +33,7 @@ const requiredTests = [
   'tests/cases-v1-lifecycle-command-board.test.cjs',
   'tests/cases-filetext-runtime.test.cjs',
   'tests/case-detail-v1-command-center.test.cjs',
+  'tests/p1-case-detail-history-quick-actions-visual-2026-05-13.test.cjs',
   'tests/client-detail-v1-operational-center.test.cjs',
   'tests/client-detail-simplified-card-view.test.cjs',
   'tests/client-detail-final-operating-model.test.cjs',

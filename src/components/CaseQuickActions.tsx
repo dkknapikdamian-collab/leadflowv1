@@ -46,7 +46,6 @@ export default function CaseQuickActions({
       <header className="case-quick-actions__header">
         <span>
           <strong>Szybkie akcje</strong>
-          <small>Dodaj operacyjny ruch bez starego kafelka formularza.</small>
         </span>
       </header>
 

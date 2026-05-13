@@ -206,3 +206,136 @@
     text-align: left !important;
   }
 }
+/* CLOSEFLOW_P1_CASE_DETAIL_HISTORY_VISUAL_UNIFIED_2026_05_13
+   Admin feedback: CaseDetail history had two visual systems at once.
+   The history section that contains the compact summary must force every lower history/work row into the same compact ledger rhythm.
+   Visual-only: no history data/write logic changes.
+*/
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) {
+  max-width: 44rem !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-history-list,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-history-list {
+  display: grid !important;
+  gap: 0.48rem !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-row,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row {
+  min-height: 2.85rem !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 8.25rem !important;
+  align-items: center !important;
+  gap: 0.72rem !important;
+  padding: 0.46rem 0.72rem !important;
+  border: 1px solid var(--cf-case-history-line) !important;
+  border-radius: 1rem !important;
+  background: var(--cf-case-history-bg) !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-icon,
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-row-actions,
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-row > .case-detail-pill,
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill),
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-icon,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-row-actions,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row > .case-detail-pill,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row > [class*="pill"]:not(.case-detail-kind-pill) {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 0.72rem !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main .case-detail-kind-pill,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main .case-detail-kind-pill {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: fit-content !important;
+  min-height: 1.42rem !important;
+  padding: 0.16rem 0.5rem !important;
+  border-radius: 999px !important;
+  border-color: #dbeafe !important;
+  background: var(--cf-case-history-blue-soft) !important;
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+  font-size: 0.68rem !important;
+  font-weight: 920 !important;
+  line-height: 1 !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main h3,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main h3 {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  color: var(--cf-case-history-text) !important;
+  -webkit-text-fill-color: var(--cf-case-history-text) !important;
+  font-size: 0.82rem !important;
+  font-weight: 900 !important;
+  line-height: 1.22 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main p,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main p,
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date small,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date small {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date {
+  justify-self: end !important;
+  min-width: 0 !important;
+  text-align: right !important;
+}
+
+.case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date strong,
+.case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date strong {
+  display: block !important;
+  margin: 0 !important;
+  color: var(--cf-case-history-muted) !important;
+  -webkit-text-fill-color: var(--cf-case-history-muted) !important;
+  font-size: 0.72rem !important;
+  font-weight: 820 !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 760px) {
+  .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-row,
+  .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-row {
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+  }
+
+  .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main,
+  .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main {
+    grid-template-columns: 1fr !important;
+    gap: 0.28rem !important;
+  }
+
+  .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-main h3,
+  .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-main h3 {
+    white-space: normal !important;
+  }
+
+  .case-detail-vnext-page .case-detail-section-card:has([data-case-history-summary="true"]) .case-detail-work-date,
+  .case-detail-vnext-page .case-detail-section-card:has(.case-detail-history-summary-card) .case-detail-work-date {
+    justify-self: start !important;
+    text-align: left !important;
+  }
+}
