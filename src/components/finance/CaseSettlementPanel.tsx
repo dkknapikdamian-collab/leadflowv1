@@ -33,12 +33,14 @@ import { FINANCE_DUPLICATE_PAYMENT_WARNING_COPY, buildFinanceDuplicateCandidates
 import { PaymentList } from './PaymentList';
 import { CaseFinanceEditorDialog } from './CaseFinanceEditorDialog';
 import { CaseFinanceActionButtons } from './CaseFinanceActionButtons';
+import { CaseFinancePaymentDialog } from './CaseFinancePaymentDialog';
 import '../../styles/finance/closeflow-finance.css';
 
 import { SurfaceCard, FormFooter } from '../ui-system';
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1' as const;
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN10 = 'FIN-10_CASE_FINANCE_SOURCE_TRUTH_PANEL_V1' as const;
 export const FIN13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR = 'FIN-13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR' as const;
+export const FIN14_CASE_SETTLEMENT_PAYMENT_TYPES = 'FIN-14_CASE_SETTLEMENT_PAYMENT_TYPES_DEPOSIT_PARTIAL_COMMISSION' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
 void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
@@ -447,8 +449,7 @@ export function CaseSettlementPanel({
   onAddPayment,
   onEditCommission,
 }: CaseSettlementPanelProps) {
-  const [paymentOpen, setPaymentOpen] = useState(false);
-  const [commissionPaymentOpen, setCommissionPaymentOpen] = useState(false);
+  const [paymentDialogType, setPaymentDialogType] = useState<PaymentType | null>(null);
   const [commissionOpen, setCommissionOpen] = useState(false);
 
   const normalizedPayments = useMemo(() => normalizeFinancePayments(payments as Record<string, unknown>[]), [payments]);
@@ -478,8 +479,10 @@ export function CaseSettlementPanel({
           <CaseFinanceActionButtons
               className="cf-finance-settlement-actions"
               onEdit={() => setCommissionOpen(true)}
-              onAddPayment={() => setPaymentOpen(true)}
-              onAddCommissionPayment={() => setCommissionPaymentOpen(true)}
+              onAddDepositPayment={() => setPaymentDialogType('deposit')}
+              onAddPayment={() => setPaymentDialogType('partial')}
+              onAddCommissionPayment={() => setPaymentDialogType('commission')}
+              showDepositPayment
               showCommissionPayment
               disabled={isSaving}
             />
@@ -522,25 +525,14 @@ export function CaseSettlementPanel({
         payments={normalizedPayments}
       />
 
-      <PaymentDialog
-        open={paymentOpen}
-        onOpenChange={setPaymentOpen}
+      <CaseFinancePaymentDialog
+        open={Boolean(paymentDialogType)}
+        onOpenChange={(open) => { if (!open) setPaymentDialogType(null); }}
+        caseRecord={record}
         defaultCurrency={currency}
-        defaultType="partial"
+        defaultType={paymentDialogType || 'partial'}
         onSubmit={onAddPayment}
         isSaving={isSaving}
-        duplicateCandidates={financeDuplicateCandidates}
-        duplicateWarningCopy={duplicateWarningCopy}
-      />
-      <PaymentDialog
-        open={commissionPaymentOpen}
-        onOpenChange={setCommissionPaymentOpen}
-        defaultCurrency={currency}
-        defaultType="commission"
-        onSubmit={onAddPayment}
-        isSaving={isSaving}
-        duplicateCandidates={financeDuplicateCandidates}
-        duplicateWarningCopy={duplicateWarningCopy}
       />
       <CaseFinanceEditorDialog
         open={commissionOpen}

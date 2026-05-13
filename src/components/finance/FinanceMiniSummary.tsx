@@ -14,6 +14,7 @@ import { Textarea } from '../ui/textarea';
 import { StatusPill, SurfaceCard } from '../ui-system';
 import { CaseFinanceActionButtons } from './CaseFinanceActionButtons';
 import { CaseFinanceEditorDialog, formatCaseFinanceMoney, parseCaseFinanceNumber, type CaseFinancePatch } from './CaseFinanceEditorDialog';
+import { CaseFinancePaymentDialog, type CaseFinancePaymentInput } from './CaseFinancePaymentDialog';
 import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES_V1' as const;
@@ -121,19 +122,21 @@ function buildClientCaseRows(cases: Record<string, unknown>[], payments: Record<
 }
 
 function sumRows(rows: ClientFinanceCaseRow[]) {
-  return rows.reduce((acc, row) => ({
-    totalValue: acc.totalValue + row.summary.contractValue,
-    paidValue: acc.paidValue + row.summary.clientPaidAmount,
-    remainingValue: acc.remainingValue + row.summary.remainingAmount,
-    commissionAmount: acc.commissionAmount + row.summary.commissionAmount,
-    commissionPaidAmount: acc.commissionPaidAmount + row.summary.commissionPaidAmount,
-  }), {
+  const total = {
     totalValue: 0,
     paidValue: 0,
     remainingValue: 0,
     commissionAmount: 0,
     commissionPaidAmount: 0,
-  });
+  };
+  for (const row of rows) {
+    total.totalValue += row.summary.contractValue;
+    total.paidValue += row.summary.clientPaidAmount;
+    total.remainingValue += row.summary.remainingAmount;
+    total.commissionAmount += row.summary.commissionAmount;
+    total.commissionPaidAmount += row.summary.commissionPaidAmount;
+  }
+  return total;
 }
 
 function formatMoney(value: unknown, currency = 'PLN') {
@@ -278,6 +281,7 @@ export function ClientFinanceRelationSummary({
   const [loadedPayments, setLoadedPayments] = useState<Array<Record<string, unknown>>>([]);
   const [editingRow, setEditingRow] = useState<ClientFinanceCaseRow | null>(null);
   const [paymentRow, setPaymentRow] = useState<ClientFinanceCaseRow | null>(null);
+  const [paymentType, setPaymentType] = useState<'deposit' | 'partial' | 'commission'>('partial');
   const [savingCaseFinance, setSavingCaseFinance] = useState(false);
   const resolvedClientId = getClientId(client, clientId);
 
@@ -380,8 +384,12 @@ export function ClientFinanceRelationSummary({
             <CaseFinanceActionButtons
               compact
               onEdit={() => setEditingRow(row)}
-              onAddPayment={() => setPaymentRow(row)}
+              onAddDepositPayment={() => { setPaymentType('deposit'); setPaymentRow(row); }}
+              onAddPayment={() => { setPaymentType('partial'); setPaymentRow(row); }}
+              onAddCommissionPayment={() => { setPaymentType('commission'); setPaymentRow(row); }}
               onOpenCase={() => navigate(`/cases/${row.caseId}`)}
+              showDepositPayment
+              showCommissionPayment
               showOpenCase
               disabled={!row.caseId}
             />
@@ -397,11 +405,33 @@ export function ClientFinanceRelationSummary({
         onSave={handleSaveCaseFinance}
         isSaving={savingCaseFinance}
       />
-      <ClientPaymentDialog
+      <CaseFinancePaymentDialog
         open={Boolean(paymentRow)}
         onOpenChange={(open) => { if (!open) setPaymentRow(null); }}
-        row={paymentRow}
-        onSaved={reloadClientFinanceData}
+        caseRecord={paymentRow?.caseRecord || null}
+        defaultType={paymentType}
+        defaultCurrency={paymentRow?.summary.currency || 'PLN'}
+        onSubmit={async (payment: CaseFinancePaymentInput) => {
+          if (!payment.caseId) {
+            toast.error('Nie można dodać płatności bez wskazania sprawy');
+            return;
+          }
+          await createPaymentInSupabase({
+            caseId: payment.caseId,
+            clientId: payment.clientId,
+            leadId: payment.leadId,
+            type: payment.type,
+            status: payment.status,
+            amount: payment.amount,
+            currency: payment.currency,
+            paidAt: payment.paidAt,
+            dueAt: payment.dueAt,
+            note: payment.note,
+          });
+          toast.success(payment.type === 'commission' ? 'Dodano płatność prowizji' : payment.type === 'deposit' ? 'Dodano zaliczkę' : 'Dodano wpłatę do sprawy');
+          await reloadClientFinanceData();
+          setPaymentRow(null);
+        }}
       />
     </SurfaceCard>
   );

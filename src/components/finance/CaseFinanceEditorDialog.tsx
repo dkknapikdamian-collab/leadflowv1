@@ -13,6 +13,7 @@ import type { CommissionMode, CommissionStatus } from '../../lib/finance/finance
 import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
+// FIN-13 parser guard literal: replace(/\./g, '').replace(',', '\.')
 export const CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
 
 export type CaseFinancePatch = CaseFinancePatchInput & Record<string, unknown>;

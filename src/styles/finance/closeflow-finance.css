@@ -520,3 +520,19 @@
     width: 100%;
   }
 }
+
+
+/* FIN-14_PAYMENT_TYPE_ACTIONS_STYLES */
+.cf-case-finance-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cf-case-finance-action-buttons--compact {
+  gap: 6px;
+}
+.cf-finance-payment-dialog .cf-finance-editor-dialog__subtitle {
+  margin: 0;
+  color: rgba(71, 85, 105, 0.92);
+  font-size: 13px;
+}
