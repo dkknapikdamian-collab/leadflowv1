@@ -32,7 +32,7 @@ const requiredTests = [
   'tests/today-priority-reasons-runtime.test.cjs',
   'tests/cases-v1-lifecycle-command-board.test.cjs',
   'tests/cases-filetext-runtime.test.cjs',
-  'tests/case-detail-v1-command-center.test.cjs',
+  'tests/case-detail-v1-command-center.test.cjs',\n  'tests/case-detail-history-workrow-leak-fix-2026-05-13.test.cjs',
   'tests/p1-case-detail-history-quick-actions-visual-2026-05-13.test.cjs',
   'tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs',
   'tests/case-detail-history-visual-p1-repair4-2026-05-13.test.cjs',

@@ -593,6 +593,20 @@ function getEventStatusLabel(status?: string) {
   if (!status) return 'Zaplanowane';
   return EVENT_STATUS_LABELS[status] || status;
 }
+
+const CLOSEFLOW_CASE_HISTORY_WORKROW_LEAK_FIX_2026_05_13 = 'CaseActivity history entries must not render through case-detail-work-row';
+void CLOSEFLOW_CASE_HISTORY_WORKROW_LEAK_FIX_2026_05_13;
+
+function isCaseActivitySourceForWorkRow(source: WorkItem['source']) {
+  if (!source || typeof source !== 'object') return false;
+  const value = source as CaseActivity;
+  return Boolean(
+    'eventType' in value ||
+    'actorType' in value ||
+    'payload' in value
+  );
+}
+
 function getStatusClass(status?: string) {
   if (['accepted', 'done', 'completed', 'ready_to_start'].includes(String(status || ''))) return 'case-detail-pill-green';
   if (['uploaded', 'to_approve', 'in_progress', 'scheduled', 'planned', 'open'].includes(String(status || ''))) return 'case-detail-pill-blue';
@@ -2474,6 +2488,10 @@ function WorkItemRow({
   onItemReject: (item: CaseItem) => void;
   onItemDelete: (item: CaseItem) => void;
 }) {
+  if (isCaseActivitySourceForWorkRow(entry.source)) {
+    return null;
+  }
+
   return (
     <article className="case-detail-work-row">
       <span className="case-detail-work-icon"><WorkKindIcon kind={entry.kind} /></span>
