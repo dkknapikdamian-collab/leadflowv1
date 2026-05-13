@@ -1,8 +1,8 @@
 ﻿
 /* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS
  * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
- * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : [])
- * GlobalQuickActions Inbox szkicĂłw <GlobalQuickActions
+ * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
+ * GlobalQuickActions Inbox szkiców <GlobalQuickActions
  */
 // VISUAL_STAGE18_LEADS_HTML_HARD_1TO1_LAYOUT
 // VISUAL_STAGE17_TODAY_HTML_HARD_1TO1_LAYOUT
@@ -17,7 +17,7 @@ VISUAL_STAGE_05_CLIENTS_ROUTE_SCOPE
 VISUAL_STAGE_06_CLIENT_DETAIL_ROUTE_SCOPE
 VISUAL_STAGE_07_CASES_ROUTE_SCOPE
 VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE
-Globalny shell CloseFlow zostaĹ‚ przepiÄ™ty na docelowy system wizualny z HTML-a.
+Globalny shell CloseFlow został przepięty na docelowy system wizualny z HTML-a.
 Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
 Nie zmienia logiki ekranĂłw, routingu, Supabase, AI, auth ani billing/access.
 */
@@ -158,26 +158,26 @@ export default function Layout({ children }: LayoutProps) {
     {
       caption: 'Start pracy',
       items: [
-        { icon: LayoutDashboard, label: 'DziĹ›', path: '/' },
+        { icon: LayoutDashboard, label: 'Dziś', path: '/' },
         { icon: Users, label: 'Leady', path: '/leads' },
         { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: Briefcase, label: 'Sprawy', path: '/cases' },
       ],
     },
     {
-      caption: 'Czas i obowiÄ…zki',
+      caption: 'Czas i obowiązki',
       items: [
         { icon: CheckSquare, label: 'Zadania', path: '/tasks' },
         { icon: Calendar, label: 'Kalendarz', path: '/calendar' },
         { icon: FolderKanban, label: 'Szablony', path: '/templates' },
         { icon: MessageSquareText, label: 'Odpowiedzi', path: '/response-templates' },
-        { icon: History, label: 'AktywnoĹ›Ä‡', path: '/activity' },
+        { icon: History, label: 'Aktywność', path: '/activity' },
       ],
     },
     {
       caption: 'System',
       items: [
-        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : []),
+        ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : []),
         { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
         { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
@@ -189,7 +189,7 @@ export default function Layout({ children }: LayoutProps) {
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [
-      { icon: LayoutDashboard, label: 'DziĹ›', path: '/' },
+      { icon: LayoutDashboard, label: 'Dziś', path: '/' },
       { icon: Users, label: 'Leady', path: '/leads' },
       { icon: Users, label: 'Klienci', path: '/clients' },
       { icon: Briefcase, label: 'Sprawy', path: '/cases' },
@@ -210,7 +210,7 @@ export default function Layout({ children }: LayoutProps) {
   const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
   const trialDaysLeft = workspace?.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
   const userEmail = profile?.email || supabaseUser?.email || '';
-  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'UĹĽytkownik';
+  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';
   const userInitial = (userName.trim().charAt(0) || userEmail.trim().charAt(0) || 'U').toUpperCase();
 
   const handleSignOut = async () => {
@@ -276,7 +276,7 @@ export default function Layout({ children }: LayoutProps) {
       <OperatorMetricToneRuntime />
       <OperatorTopBarRuntime />
       <aside className="sidebar" data-shell-sidebar="true">
-        <Link to="/" className="brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
+        <Link to="/" className="brand" aria-label="CloseFlow - przejdĹş do Dziś">
           <span className="brand-logo" aria-hidden="true">
             CF
           </span>
@@ -300,7 +300,7 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
 
       <div className="mobile-top" data-shell-mobile-top="true">
-        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdĹş do DziĹ›">
+        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdĹş do Dziś">
           <span className="brand-logo" aria-hidden="true">CF</span>
           <span>CloseFlow</span>
         </Link>
@@ -407,9 +407,9 @@ export default function Layout({ children }: LayoutProps) {
 /* STAGE16M_LAYOUT_AI_DRAFTS_COMPAT
 GlobalQuickActions
 <GlobalQuickActions
-Inbox szkicĂłw
+Inbox szkiców
 const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
-...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkicĂłw', path: '/ai-drafts' }] : [])
+...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
 */
 
 
