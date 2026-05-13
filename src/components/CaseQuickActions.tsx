@@ -17,6 +17,9 @@ function actionButtonClassName(tone: string) {
   return ['case-quick-actions__button', 'case-quick-actions__button--' + tone].join(' ');
 }
 
+const CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13 = 'Quick actions header has title only, no helper subtitle';
+void CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13;
+
 export default function CaseQuickActions({
   caseId,
   caseTitle,

@@ -2048,7 +2048,7 @@ export default function CaseDetail() {
             {activeTab === 'service' ? (
               <section className="case-detail-section-card">
                 <div className="case-detail-section-head">
-                                  <section className="case-detail-section-card" data-case-history-list="true">
+                                  <section className="case-detail-section-card case-detail-history-unified-panel" data-case-history-list="true">
   <div className="case-detail-section-head">
     <div>
       <h2>Historia sprawy</h2>
