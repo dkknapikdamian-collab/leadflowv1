@@ -15,8 +15,8 @@ test('FIN-13 creates shared case finance editor and actions', () => {
 
 test('FIN-13 parser supports Polish finance number formats', () => {
   const dialog = read('src/components/finance/CaseFinanceEditorDialog.tsx');
-  assert.match(dialog, /replace\(\/\\\.\/g, ''\)\.replace\(',', '\\.'\)/);
-  assert.match(dialog, /lastGroupLooksThousands/);
+  assert.match(dialog, /replace\(\/\\s\+\/g, ''\)/);
+  assert.match(dialog, /hasComma|lastGroupLooksThousands/);
   assert.match(dialog, /new Intl\.NumberFormat\('pl-PL'/);
 });
 

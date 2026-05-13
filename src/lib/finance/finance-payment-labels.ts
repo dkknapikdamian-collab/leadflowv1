@@ -1,10 +1,11 @@
 import type { PaymentStatus, PaymentType } from './finance-types.js';
 
+export const FIN14_PAYMENT_TYPE_LABELS = 'FIN14_PAYMENT_TYPE_LABELS_DEPOSIT_PARTIAL_COMMISSION' as const;
 export const FIN6_PAYMENTS_LIST_AND_PAYMENT_TYPES = 'FIN-6_PAYMENTS_LIST_AND_PAYMENT_TYPES_V1' as const;
 
 export const PAYMENT_TYPE_LABELS: Record<PaymentType, string> = {
   deposit: 'Zaliczka',
-  partial: 'Częściowa wpłata',
+  partial: 'Wpłata klienta',
   final: 'Końcowa wpłata',
   commission: 'Prowizja',
   refund: 'Zwrot',

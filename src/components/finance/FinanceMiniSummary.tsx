@@ -121,24 +121,6 @@ function buildClientCaseRows(cases: Record<string, unknown>[], payments: Record<
   });
 }
 
-function sumRows(rows: ClientFinanceCaseRow[]) {
-  const total = {
-    totalValue: 0,
-    paidValue: 0,
-    remainingValue: 0,
-    commissionAmount: 0,
-    commissionPaidAmount: 0,
-  };
-  for (const row of rows) {
-    total.totalValue += row.summary.contractValue;
-    total.paidValue += row.summary.clientPaidAmount;
-    total.remainingValue += row.summary.remainingAmount;
-    total.commissionAmount += row.summary.commissionAmount;
-    total.commissionPaidAmount += row.summary.commissionPaidAmount;
-  }
-  return total;
-}
-
 function formatMoney(value: unknown, currency = 'PLN') {
   return formatCaseFinanceMoney(value, currency);
 }
@@ -186,83 +168,6 @@ export function FinanceMiniSummary({
         </div>
       </dl>
     </SurfaceCard>
-  );
-}
-
-function ClientPaymentDialog({
-  open,
-  onOpenChange,
-  row,
-  onSaved,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  row: ClientFinanceCaseRow | null;
-  onSaved: () => Promise<void> | void;
-}) {
-  const [amount, setAmount] = useState('');
-  const [note, setNote] = useState('');
-  const [saving, setSaving] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-    setAmount('');
-    setNote('');
-  }, [open, row?.caseId]);
-
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    if (!row?.caseId) {
-      toast.error('Nie można dodać płatności bez wskazania sprawy');
-      return;
-    }
-    const parsedAmount = parseCaseFinanceNumber(amount);
-    if (parsedAmount <= 0) return;
-    setSaving(true);
-    try {
-      await createPaymentInSupabase({
-        caseId: row.caseId,
-        clientId: readId(row.caseRecord, ['clientId', 'client_id']) || null,
-        leadId: getCaseLeadId(row.caseRecord) || null,
-        type: 'partial',
-        status: 'paid',
-        amount: parsedAmount,
-        currency: row.summary.currency || 'PLN',
-        paidAt: new Date().toISOString(),
-        dueAt: null,
-        note: note.trim(),
-      });
-      toast.success('Dodano wpłatę do sprawy');
-      await onSaved();
-      onOpenChange(false);
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="cf-finance-dialog cf-finance-client-payment-dialog" data-fin13-client-case-payment-dialog="true">
-        <DialogHeader>
-          <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
-          <p className="cf-finance-editor-dialog__subtitle">Płatność będzie przypisana do sprawy: {row?.title || 'sprawa'}.</p>
-        </DialogHeader>
-        <form className="cf-finance-form" onSubmit={handleSubmit}>
-          <label className="cf-finance-field">
-            <span>Kwota wpłaty</span>
-            <Input value={amount} inputMode="decimal" placeholder="np. 10000" onChange={(event) => setAmount(event.target.value)} />
-          </label>
-          <label className="cf-finance-field cf-finance-field--wide">
-            <span>Notatka</span>
-            <Textarea value={note} placeholder="np. zaliczka / przelew / gotówka" onChange={(event) => setNote(event.target.value)} />
-          </label>
-          <DialogFooter className="cf-finance-dialog__footer">
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>Anuluj</Button>
-            <Button type="submit" disabled={saving || parseCaseFinanceNumber(amount) <= 0}>{saving ? 'Zapisywanie...' : 'Zapisz wpłatę'}</Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
   );
 }
 
@@ -316,8 +221,7 @@ export function ClientFinanceRelationSummary({
   const resolvedCases = Array.isArray(cases) ? cases : loadedCases;
   const resolvedPayments = Array.isArray(payments) ? payments : loadedPayments;
   const rows = useMemo(() => buildClientCaseRows(resolvedCases, resolvedPayments), [resolvedCases, resolvedPayments]);
-  const totals = useMemo(() => sumRows(rows), [rows]);
-  const legacySummary = useMemo(() => calculateClientFinanceSummary({
+  const totals = useMemo(() => calculateClientFinanceSummary({
     client: client || { id: resolvedClientId },
     cases: resolvedCases,
     payments: resolvedPayments,
@@ -352,9 +256,9 @@ export function ClientFinanceRelationSummary({
       </div>
 
       <dl className="cf-finance-mini-summary__grid cf-fin13-client-finance-totals">
-        <div className="cf-finance-metric"><dt>Suma wartości spraw</dt><dd>{formatMoney(totals.totalValue || legacySummary.totalValue)}</dd></div>
-        <div className="cf-finance-metric"><dt>Suma wpłat klienta</dt><dd>{formatMoney(totals.paidValue || legacySummary.paidValue)}</dd></div>
-        <div className="cf-finance-metric"><dt>Suma pozostała</dt><dd>{formatMoney(totals.remainingValue || legacySummary.remainingValue)}</dd></div>
+        <div className="cf-finance-metric"><dt>Suma wartości spraw</dt><dd>{formatMoney(totals.totalValue)}</dd></div>
+        <div className="cf-finance-metric"><dt>Suma wpłat klienta</dt><dd>{formatMoney(totals.paidValue)}</dd></div>
+        <div className="cf-finance-metric"><dt>Suma pozostała</dt><dd>{formatMoney(totals.remainingValue)}</dd></div>
         <div className="cf-finance-metric"><dt>Suma prowizji należnej</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
         <div className="cf-finance-metric"><dt>Suma prowizji zapłaconej</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
       </dl>
