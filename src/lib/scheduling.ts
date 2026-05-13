@@ -675,11 +675,21 @@ export function combineScheduleEntries({
     .sort((a, b) => parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime());
 }
 
+function getSafeScheduleEntryDate(entry: Pick<ScheduleEntry, 'startsAt'> | null | undefined) {
+  // CLOSEFLOW_CALENDAR_SAFE_ENTRY_DATES_RUNTIME_V3: never pass undefined/null into date-fns parseISO.
+  const rawStart = typeof entry?.startsAt === 'string' ? entry.startsAt.trim() : '';
+  if (!rawStart) return null;
+
+  const date = parseISO(rawStart);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 export function getEntriesForDay(entries: ScheduleEntry[], day: Date) {
   const start = startOfDay(day);
   const end = endOfDay(day);
   return entries.filter((entry) => {
-    const date = parseISO(entry.startsAt);
+    const date = getSafeScheduleEntryDate(entry);
+    if (!date) return false;
     return (isEqual(date, start) || isAfter(date, start)) && (isEqual(date, end) || isBefore(date, end));
   });
 }

@@ -255,6 +255,14 @@ function isCompletedCalendarEntry(entry: ScheduleEntry) {
   );
 }
 
+function getCalendarEntryDateMs(entry: ScheduleEntry) {
+  // CLOSEFLOW_CALENDAR_SAFE_ENTRY_DATES_RUNTIME_V3_CALENDAR_SORT
+  const rawStart = typeof entry?.startsAt === 'string' ? entry.startsAt.trim() : '';
+  if (!rawStart) return Number.POSITIVE_INFINITY;
+  const date = parseISO(rawStart);
+  return Number.isNaN(date.getTime()) ? Number.POSITIVE_INFINITY : date.getTime();
+}
+
 function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
   return [...entries].sort((a, b) => {
     const aDone = isCompletedCalendarEntry(a);
@@ -264,7 +272,7 @@ function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
       return aDone ? 1 : -1;
     }
 
-    return parseISO(a.startsAt).getTime() - parseISO(b.startsAt).getTime();
+    return getCalendarEntryDateMs(a) - getCalendarEntryDateMs(b);
   });
 }
 
@@ -327,10 +335,14 @@ function getCalendarEntryStatusPillClass(entry: ScheduleEntry) {
 }
 
 function getCalendarEntryTimeLabel(entry: ScheduleEntry) {
+  // CLOSEFLOW_CALENDAR_SAFE_ENTRY_DATES_RUNTIME_V3_TIME_LABEL
   const rawTime = String(entry.raw?.time || '').trim();
   if (rawTime) return rawTime.slice(0, 5);
 
-  const date = parseISO(entry.startsAt);
+  const rawStart = typeof entry?.startsAt === 'string' ? entry.startsAt.trim() : '';
+  if (!rawStart) return 'bez godziny';
+
+  const date = parseISO(rawStart);
   if (Number.isNaN(date.getTime())) return 'bez godziny';
 
   const formatted = format(date, 'HH:mm');
@@ -339,7 +351,7 @@ function getCalendarEntryTimeLabel(entry: ScheduleEntry) {
     entry.raw?.dueAt ||
     entry.raw?.startAt ||
     entry.raw?.startsAt ||
-    entry.startsAt.includes('T')
+    rawStart.includes('T')
   );
 
   if (!hasExplicitHour || formatted === '00:00') return 'bez godziny';
