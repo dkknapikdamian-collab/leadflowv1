@@ -922,6 +922,9 @@ function dedupeCaseWorkItems(workItems: WorkItem[]) {
 const CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13 = 'CaseActivity notes belong only to history rows, never to workItems cards';
 void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13;
 
+const CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_FINAL_2026_05_13 = 'CaseActivity rows are history only; activities must not be converted to workItems';
+void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_FINAL_2026_05_13;
+
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
   const taskItems: WorkItem[] = tasks.map((task) => ({
     id: `task-${task.id}`,
