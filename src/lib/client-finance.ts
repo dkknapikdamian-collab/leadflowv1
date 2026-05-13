@@ -23,3 +23,5 @@ export function calculateClientFinanceSummary(input: {
 }): ClientFinanceSummary {
   return getClientCasesFinanceSummary(input);
 }
+
+export const FIN13_CLIENT_FINANCE_IS_CASE_FINANCE = 'FIN13_CLIENT_FINANCE_IS_CASE_FINANCE';

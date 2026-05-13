@@ -70,6 +70,7 @@ const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Ed
 const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu Drugorzędne akcje menu pomocnicze';
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
+const FIN13_CLIENT_DETAIL_CASE_FINANCES_VISIBLE = 'FIN13_CLIENT_DETAIL_CASE_FINANCES_VISIBLE';
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
 const CLIENT_DETAIL_CLIENT_NEXT_ACTION_V10_GUARD = 'clientNextAction defined before client detail render';

@@ -3294,3 +3294,8 @@ button.client-detail-top-tile-link {
   }
 }
 /* CLOSEFLOW_CLIENT_DETAIL_NEXT_ACTION_TILE_POLISH_2026_05_12_END */
+
+/* FIN-13_CLIENT_CASE_FINANCES_STYLES */
+.client-detail-page .cf-fin13-client-case-finances {
+  margin-top: 14px;
+}

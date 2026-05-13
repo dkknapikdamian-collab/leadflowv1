@@ -31,11 +31,14 @@ import type {
 import { PAYMENT_STATUS_OPTIONS, PAYMENT_TYPE_OPTIONS } from '../../lib/finance/finance-payment-labels';
 import { FINANCE_DUPLICATE_PAYMENT_WARNING_COPY, buildFinanceDuplicateCandidatesFromRecord, type FinanceDuplicateCandidate } from '../../lib/finance/finance-duplicate-safety';
 import { PaymentList } from './PaymentList';
+import { CaseFinanceEditorDialog } from './CaseFinanceEditorDialog';
+import { CaseFinanceActionButtons } from './CaseFinanceActionButtons';
 import '../../styles/finance/closeflow-finance.css';
 
 import { SurfaceCard, FormFooter } from '../ui-system';
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1' as const;
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN10 = 'FIN-10_CASE_FINANCE_SOURCE_TRUTH_PANEL_V1' as const;
+export const FIN13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR = 'FIN-13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
 void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
@@ -472,13 +475,14 @@ export function CaseSettlementPanel({
           <span>Ustaw wartość transakcji, wpłaty klienta i prowizję. Prowizja procentowa liczy się od wartości sprawy.</span>
         </div>
         {!readonly ? (
-          <div className="cf-finance-settlement-actions">
-            <Button type="button" variant="outline" onClick={() => setPaymentOpen(true)} disabled={isSaving}>Dodaj wpłatę</Button>
-            <Button type="button" variant="outline" onClick={() => setCommissionPaymentOpen(true)} disabled={isSaving}>Dodaj płatność prowizji</Button>
-            <Button type="button" onClick={() => setCommissionOpen(true)} disabled={isSaving}>
-              {hasCaseSettlementValue ? 'Edytuj wartość/prowizję' : 'Ustaw wartość i prowizję'}
-            </Button>
-          </div>
+          <CaseFinanceActionButtons
+              className="cf-finance-settlement-actions"
+              onEdit={() => setCommissionOpen(true)}
+              onAddPayment={() => setPaymentOpen(true)}
+              onAddCommissionPayment={() => setCommissionPaymentOpen(true)}
+              showCommissionPayment
+              disabled={isSaving}
+            />
         ) : null}
       </div>
 
@@ -538,13 +542,23 @@ export function CaseSettlementPanel({
         duplicateCandidates={financeDuplicateCandidates}
         duplicateWarningCopy={duplicateWarningCopy}
       />
-      <CommissionDialog
+      <CaseFinanceEditorDialog
         open={commissionOpen}
         onOpenChange={setCommissionOpen}
-        record={record}
-        currency={currency}
-        onSubmit={onEditCommission}
+        caseRecord={record}
+        payments={normalizedPayments as unknown as Record<string, unknown>[]}
         isSaving={isSaving}
+        onSave={async (patch) => {
+          await onEditCommission?.({
+            contractValue: Number(patch.contractValue || 0),
+            commissionMode: normalizeCommissionMode(patch.commissionMode),
+            commissionBase: normalizeCommissionBase(patch.commissionBase),
+            commissionRate: patch.commissionRate == null ? null : Number(patch.commissionRate || 0),
+            commissionAmount: patch.commissionAmount == null ? null : Number(patch.commissionAmount || 0),
+            commissionStatus: normalizeCommissionStatus(patch.commissionStatus),
+            currency: normalizeCurrency(patch.currency),
+          });
+        }}
       />
       <span hidden data-fin5-case-settlement-panel="true" data-fin8-finance-visual-integration={CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5} data-fin9-finance-duplicate-safety="CLOSEFLOW_FIN9_CASE_SETTLEMENT_DUPLICATE_WARNING_ONLY" data-case-settlement-panel="fin10" data-fin10-case-finance-source-truth="true" />
     </SurfaceCard>

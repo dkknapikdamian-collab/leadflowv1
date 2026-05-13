@@ -704,7 +704,10 @@
     "verify:fin10": "npm.cmd run check:fin10 && npm.cmd run test:fin10",
     "check:fin11": "node scripts/check-fin11-case-right-finance-panel.cjs",
     "test:fin11": "node --test tests/fin11-case-right-finance-panel.test.cjs",
-    "verify:fin11": "npm.cmd run check:fin11 && npm.cmd run test:fin11 && npm.cmd run check:fin10 && npm.cmd run test:fin10"
+    "verify:fin11": "npm.cmd run check:fin11 && npm.cmd run test:fin11 && npm.cmd run check:fin10 && npm.cmd run test:fin10",
+    "check:fin13": "node scripts/check-fin13-client-case-finances.cjs",
+    "test:fin13": "node --test tests/fin13-client-case-finances.test.cjs",
+    "verify:fin13": "npm.cmd run check:fin13 && npm.cmd run test:fin13"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
