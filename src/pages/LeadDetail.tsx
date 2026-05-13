@@ -1538,6 +1538,7 @@ useEffect(() => {
           </section>
 
           {!leadInService ? (
+          <aside className="lead-detail-right-rail" aria-label="Panel leada">
             <LeadAiFollowupDraft
               lead={lead}
               tasks={linkedTasks}
@@ -1545,10 +1546,7 @@ useEffect(() => {
               activities={activities}
               disabled={leadOperationalArchive}
             />
-
-          <aside className="lead-detail-right-rail" aria-label="Panel leada">
-            
-          {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
+{/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
 
 
             <section className="right-card lead-detail-right-card">

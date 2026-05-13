@@ -14,9 +14,9 @@ test('LeadDetail removes noisy work-center AI card but keeps draft-only follow-u
 });
 
 test('LeadDetail history delegates to shared source-of-truth formatter', () => {
-  assert.match(leadDetail, /from ['"]../lib/activity-timeline['"]/);
-  assert.match(leadDetail, /getActivityTimelineTitle(activity/);
-  assert.match(leadDetail, /getActivityTimelineDescription(activity/);
+  assert.ok(leadDetail.includes("from '../lib/activity-timeline'") || leadDetail.includes('from "../lib/activity-timeline"'));
+  assert.ok(leadDetail.includes('getActivityTimelineTitle(activity'));
+  assert.ok(leadDetail.includes('getActivityTimelineDescription(activity'));
 });
 
 test('activity timeline formatter covers concrete business history payloads', () => {

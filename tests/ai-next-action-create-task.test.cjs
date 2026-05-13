@@ -20,10 +20,11 @@ test('AI next action can create a confirmed follow-up task without autopilot', (
   assert.ok(!component.includes('useEffect(() => {\n    handleCreateSuggestedTask'), 'task creation must not run automatically');
 });
 
-test('Lead detail refreshes after creating a task from AI suggestion', () => {
+test('Lead detail no longer renders noisy AI next-action card after feedback P1', () => {
   const source = read('src/pages/LeadDetail.tsx');
 
-  assert.ok(source.includes('onTaskCreated={() => void loadLead()}'), 'LeadDetail should refresh lead data after AI-created task');
+  assert.ok(!source.includes('<LeadAiNextAction'), 'LeadDetail should not render the noisy AI next-action card after feedback P1');
+  assert.ok(source.includes('<LeadAiFollowupDraft'), 'LeadDetail should keep the safe draft-only AI follow-up flow');
 });
 
 test('AI next action create-task test is included in quiet release gate', () => {
