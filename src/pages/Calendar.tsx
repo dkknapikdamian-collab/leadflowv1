@@ -111,7 +111,7 @@ import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
 import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
 import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
 import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
-import '../styles/closeflow-calendar-selected-day-agenda-actions-v2.css';
+import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -483,6 +483,100 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
         </div>
       </div>
     </div>
+  );
+}
+
+
+
+type CalendarSelectedDayTileV9Props = {
+  selectedDate: Date;
+  entries: ScheduleEntry[];
+  actionPendingId: string | null;
+  onEdit: (entry: ScheduleEntry) => void;
+  onShift: (entry: ScheduleEntry, days: number) => void;
+  onShiftHours: (entry: ScheduleEntry, hours: number) => void;
+  onComplete: (entry: ScheduleEntry) => void;
+  onDelete: (entry: ScheduleEntry) => void;
+};
+
+function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift, onShiftHours, onComplete, onDelete }: Omit<CalendarSelectedDayTileV9Props, 'selectedDate' | 'entries'> & { entry: ScheduleEntry }) {
+  const pendingEdit = actionPendingId === `${entry.id}:edit`;
+  const pendingDay = actionPendingId === `${entry.id}:1`;
+  const pendingWeek = actionPendingId === `${entry.id}:7`;
+  const pendingHour = actionPendingId === `${entry.id}:h1`;
+  const pendingDone = actionPendingId === `${entry.id}:done`;
+  const pendingDelete = actionPendingId === `${entry.id}:delete`;
+  const isCompletedEntry = isCompletedCalendarEntry(entry);
+  const title = String(entry.title || getCalendarEntryTypeLabel(entry) || 'Wpis').trim();
+  const relationLabel = getCalendarEntryRelationLabel(entry);
+
+  return (
+    <div data-cf-calendar-selected-day-entry-v9="true" data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}>
+      <div className="cf-selected-day-v9-main">
+        <div className="cf-selected-day-v9-meta">
+          <span className="cf-selected-day-v9-type" data-cf-entity-type={getCalendarEntryTypeValue(entry)}>{getCalendarEntryTypeLabel(entry)}</span>
+          <span className="cf-selected-day-v9-time">{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-selected-day-v9-status">{getCalendarEntryStatusLabel(entry)}</span>
+        </div>
+        <p className="cf-selected-day-v9-entry-title" title={title} data-cf-entry-title="true">{title}</p>
+        <div className="cf-selected-day-v9-relation">
+          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiązania</span>}
+          {entry.raw?.leadId ? (
+            <Link to={`/leads/${entry.raw.leadId}`}>Otwórz lead</Link>
+          ) : null}
+          {entry.raw?.caseId ? (
+            <Link to={`/cases/${entry.raw.caseId}`}>Otwórz sprawę</Link>
+          ) : null}
+        </div>
+      </div>
+      <div className="cf-selected-day-v9-actions">
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
+        </button>
+        <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-danger" onClick={() => onDelete(entry)} disabled={pendingDelete}>
+          <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onEdit, onShift, onShiftHours, onComplete, onDelete }: CalendarSelectedDayTileV9Props) {
+  const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
+  const title = capitalizeCalendarLabel(format(selectedDate, 'eeee, d MMMM yyyy', { locale: pl }));
+
+  return (
+    <section data-cf-calendar-selected-day-new-tile-v9="true" aria-label="Wybrany dzień">
+      <div className="cf-selected-day-v9-header">
+        <div>
+          <p className="cf-selected-day-v9-kicker">Wybrany dzień</p>
+          <h2 className="cf-selected-day-v9-title">{title}</h2>
+        </div>
+        <span className="cf-selected-day-v9-count">{formatCalendarItemCount(safeEntries.length)}</span>
+      </div>
+      <div className="cf-selected-day-v9-body">
+        {safeEntries.length ? (
+          safeEntries.map((entry) => (
+            <CalendarSelectedDayEntryRowV9
+              key={entry.id}
+              entry={entry}
+              actionPendingId={actionPendingId}
+              onEdit={onEdit}
+              onShift={onShift}
+              onShiftHours={onShiftHours}
+              onComplete={onComplete}
+              onDelete={onDelete}
+            />
+          ))
+        ) : (
+          <p className="cf-selected-day-v9-empty">Brak zadań, wydarzeń i zaplanowanych akcji w tym dniu.</p>
+        )}
+      </div>
+    </section>
   );
 }
 
@@ -1881,46 +1975,18 @@ export default function Calendar() {
 
             <div className="cf-readable-panel mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
               <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-                
-        <section
-          data-cf-calendar-selected-day="true"
-          data-cf-calendar-selected-day-agenda-v2="true"
-          className="cf-selected-day-agenda-v2 mt-5 rounded-3xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm"
-        >
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Wybrany dzien</p>
-              <h2 className="mt-1 text-lg font-black text-slate-950">
-                {format(selectedDate, 'd MMMM yyyy', { locale: pl })}
-              </h2>
-            </div>
-            <Badge className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] font-black text-slate-700 shadow-sm">
-              {formatCalendarItemCount(selectedDayAgendaEntriesV2.length)}
-            </Badge>
-          </div>
 
-          {selectedDayAgendaEntriesV2.length > 0 ? (
-            <div className="grid gap-2" data-cf-selected-day-entry-list-v2="true">
-              {selectedDayAgendaEntriesV2.map((entry) => (
-                <ScheduleEntryCard
-                  entry={entry}
-                  actionButtonClass={actionButtonClass}
-                  actionPendingId={actionPendingId}
-                  caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
-                  onEdit={handleOpenEdit}
-                  onShift={handleShiftEntry}
-                  onShiftHours={handleShiftEntryHours}
-                  onComplete={handleCompleteEntry}
-                  onDelete={handleDeleteEntry}
-                  />
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-5 text-sm font-semibold text-slate-500">
-              Brak zadan i wydarzen w tym dniu.
-            </div>
-          )}
-        </section>
+
+        <CalendarSelectedDayTileV9
+          selectedDate={selectedDate}
+          entries={sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate))}
+          actionPendingId={actionPendingId}
+          onEdit={handleEditEntry}
+          onShift={handleShiftEntry}
+          onShiftHours={handleShiftEntryHours}
+          onComplete={handleCompleteEntry}
+          onDelete={handleDeleteEntry}
+        />
                 <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
               </div>
               <div className="grid gap-3 lg:grid-cols-2">
@@ -2229,7 +2295,7 @@ export default function Calendar() {
                 </div>
               ) : null}
 
-              
+
                 {editEntry?.kind === 'event' ? (
                   <div className="event-form-field" data-calendar-event-edit-status="true">
                     <Label>Status wydarzenia</Label>
