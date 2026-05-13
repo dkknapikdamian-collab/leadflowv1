@@ -59,6 +59,7 @@ const requiredTests = [
   'tests/ai-followup-draft.test.cjs',
   'tests/ai-next-action-suggestion.test.cjs',
   'tests/ai-next-action-create-task.test.cjs',
+  'tests/p1a-no-global-focus-refresh-2026-05-13.test.cjs',
   'tests/ai-assistant-command-center.test.cjs',
   'tests/ai-capture-speech-parser.test.cjs',
   'tests/ai-assistant-scope-budget-guard.test.cjs',

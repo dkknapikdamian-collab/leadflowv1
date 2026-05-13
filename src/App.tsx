@@ -26,6 +26,7 @@ import './styles/closeflow-command-actions-source-truth.css';
 import './styles/closeflow-page-header-copy-source-truth.css';
 import './styles/closeflow-page-header-action-semantics-packet1.css';
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
+const CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13 = 'App bootstrap sync is one-shot; no focus/visibility/interval profile refresh on protected pages';
 
 const PublicLanding = lazy(() => import('./pages/PublicLanding'));
 const Today = lazy(() => import('./pages/TodayStable'));
@@ -142,22 +143,15 @@ export default function App() {
         if (!cancelled && showLoading) setProfileLoading(false);
       }
     };
-
     void syncProfileFromApi(true);
 
-    const interval = window.setInterval(() => void syncProfileFromApi(false), 60_000);
-    const handleVisibilityRefresh = () => {
-      if (document.visibilityState === 'visible') void syncProfileFromApi(false);
-    };
-
-    window.addEventListener('focus', handleVisibilityRefresh);
-    document.addEventListener('visibilitychange', handleVisibilityRefresh);
+    // CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13
+    // Nie odswiezamy profilu w tle, na focus ani po visibilitychange.
+    // Wczesniejszy globalny refresh powodowal ponowne renderowanie widokow szczegolow
+    // po zmianie zakladki przegladarki i potrafil cofnieac operatora do wczesniejszego ekranu.
 
     return () => {
       cancelled = true;
-      window.clearInterval(interval);
-      window.removeEventListener('focus', handleVisibilityRefresh);
-      document.removeEventListener('visibilitychange', handleVisibilityRefresh);
     };
   }, [user]);
 
