@@ -35,6 +35,8 @@ const requiredTests = [
   'tests/case-detail-v1-command-center.test.cjs',
   'tests/p1-case-detail-history-quick-actions-visual-2026-05-13.test.cjs',
   'tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs',
+  'tests/case-detail-history-visual-p1-repair4-2026-05-13.test.cjs',
+  'tests/case-detail-history-visual-p1-repair5-2026-05-13.test.cjs',
   'tests/client-detail-v1-operational-center.test.cjs',
   'tests/client-detail-simplified-card-view.test.cjs',
   'tests/client-detail-final-operating-model.test.cjs',
@@ -190,7 +192,8 @@ runQuiet('today mobile tile focus', process.execPath, ['scripts/check-closeflow-
 
 runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-trash-actions.cjs']);
 
-runNpmScript('production build', 'build');
+// CLOSEFLOW_QUIET_GATE_VITE_BUILD_RUNNER_2026_05_13
+runQuiet('production build', process.execPath, ['scripts/closeflow-vite-build-runner.mjs']);
 
 for (const relativePath of requiredTests) {
   runQuiet(relativePath, process.execPath, ['--test', relativePath]);

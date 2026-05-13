@@ -28,7 +28,9 @@ test('quiet release gate keeps output compact and prints details only on failure
 test('quiet release gate runs build and core regression tests', () => {
   const source = read('scripts/closeflow-release-check-quiet.cjs');
 
-  assert.match(source, /runNpmScript\('production build', 'build'\)/);
+  assert.match(source, /CLOSEFLOW_QUIET_GATE_VITE_BUILD_RUNNER_2026_05_13/);
+  assert.match(source, /scripts\/closeflow-vite-build-runner\.mjs/);
+  assert.equal(source.includes("runNpmScript('production build', 'build');"), false);
   assert.match(source, /calendar-entry-relation-links\.test\.cjs/);
   assert.match(source, /today-entry-relation-links\.test\.cjs/);
   assert.match(source, /today-calendar-activity-logging\.test\.cjs/);
