@@ -478,7 +478,7 @@ export default function TasksStable() {
           actions={
             <>
               <div className="cf-page-hero-actions flex flex-wrap gap-2">
-                            <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800')} onClick={openNewTask} data-cf-header-action="primary" data-page-header-new-task-stage6="true">
+                            <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-blue-200 bg-white text-blue-700 hover:bg-blue-50 hover:text-blue-800')} onClick={() => openNewTask()} data-cf-header-action="primary" data-page-header-new-task-stage6="true">
                               <Plus className="mr-2 h-4 w-4" />
                               Nowe zadanie
                             </Button>
@@ -663,3 +663,5 @@ export default function TasksStable() {
   );
 }
 
+const FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD = 'FIN-14_REPAIR4_TASKS_HEADER_CLICK_GUARD_inline_openNewTask';
+void FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD;
