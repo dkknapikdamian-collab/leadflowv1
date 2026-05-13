@@ -919,7 +919,10 @@ function dedupeCaseWorkItems(workItems: WorkItem[]) {
   }
   return Array.from(byKey.values()).sort((first, second) => first.sortTime - second.sortTime);
 }
-function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[], activities: CaseActivity[]) {
+const CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13 = 'CaseActivity notes belong only to history rows, never to workItems cards';
+void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13;
+
+function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
   const taskItems: WorkItem[] = tasks.map((task) => ({
     id: `task-${task.id}`,
     kind: 'task',
@@ -958,19 +961,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
       source: item,
     }));
 
-  const noteItems: WorkItem[] = activities.slice(0, 6).map((activity) => ({
-    id: `activity-${activity.id}`,
-    kind: 'note',
-    title: getActivityText(activity),
-    subtitle: typeof activity.payload?.note === 'string' ? activity.payload.note : 'Historia sprawy',
-    status: 'Historia',
-    statusClass: 'case-detail-pill-muted',
-    dateLabel: formatDateTime(activity.createdAt, 'Brak daty'),
-    sortTime: sortTime(activity.createdAt, 0),
-    source: activity,
-  }));
 
-  return [...taskItems, ...eventItems, ...missingItems, ...noteItems].sort((first, second) => first.sortTime - second.sortTime);
+  return [...taskItems, ...eventItems, ...missingItems].sort((first, second) => first.sortTime - second.sortTime);
 }
 function WorkKindIcon({ kind }: { kind: WorkItem['kind'] }) {
   if (kind === 'task') return <ListChecks className="h-4 w-4" />;
@@ -1363,7 +1355,7 @@ export default function CaseDetail() {
       }),
     [effectiveStatus, events, items, tasks],
   );
-  const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items, activities)), [activities, items, openTasks, plannedEvents]);
+  const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items)), [items, openTasks, plannedEvents]);
   const caseFinance = useMemo(() => {
     const expected = Number(caseData?.expectedRevenue || 0);
     const paidFromPayments = payments
