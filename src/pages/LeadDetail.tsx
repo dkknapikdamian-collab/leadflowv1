@@ -17,6 +17,7 @@ const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ost
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
 const CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP_V1 = 'Lead status visible in header, duplicated right-rail status card removed';
 const CLOSEFLOW_BUILD_BLOCKERS_MASSCHECK_LEADDETAIL_FIX_2026_05_12 = 'LeadDetail service case small fallback quote fixed';
+const CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13 = 'Right rail noisy AI/status cards removed and contact history uses shared activity timeline formatter';
 import {
   useEffect,
   useMemo,
@@ -46,9 +47,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
-import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
-import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
-import LeadAiNextAction from '../components/LeadAiNextAction';
+import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
@@ -63,6 +62,7 @@ import { isLeadInServiceStatus } from '../lib/lead-service-state';
 import { buildStartEndPair, toDateTimeLocalValue } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/nearest-action';
+import { getActivityTimelineDescription, getActivityTimelineTitle } from '../lib/activity-timeline';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
@@ -346,40 +346,10 @@ function isLinkedThroughLeadOrCase(item: Record<string, unknown>, leadId: string
   return false;
 }
 function getActivityTitle(activity: any) {
-  switch (activity?.eventType) {
-    case 'status_changed':
-      return 'Zmieniono status';
-    case 'note_added':
-      return 'Dodano notatkę';
-    case 'case_created':
-      return 'Utworzono sprawę';
-    case 'case_linked':
-      return 'Podpięto sprawę';
-    case 'lead_moved_to_service':
-      return 'Ten temat jest już w obsłudze';
-    case 'task_updated':
-    case 'task_status_toggled':
-      return 'Zmieniono zadanie';
-    case 'task_deleted':
-      return 'Usunięto zadanie';
-    case 'event_updated':
-    case 'event_status_toggled':
-      return 'Zmieniono wydarzenie';
-    case 'event_deleted':
-      return 'Usunięto wydarzenie';
-    default:
-      return 'Aktywność';
-  }
+  return getActivityTimelineTitle(activity, { statusLabel, formatDateTime, formatMoney });
 }
 function getActivityDescription(activity: any) {
-  const payload = activity?.payload || {};
-  return (
-    asText(payload.content) ||
-    asText(payload.note) ||
-    asText(payload.title) ||
-    asText(payload.status && statusLabel(String(payload.status))) ||
-    'Ruch zapisany w historii leada.'
-  );
+  return getActivityTimelineDescription(activity, { statusLabel, formatDateTime, formatMoney });
 }
 function addDuration(value: unknown, amountMs: number) {
   const base = asDate(value) || new Date();
@@ -1568,10 +1538,9 @@ useEffect(() => {
 
           {!leadInService ? (
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
-            <section className="right-card lead-detail-right-card">
-              <span className={`lead-detail-pill ${statusClass(String(lead.status || 'new'))}`}>{statusLabel(String(lead.status || 'new'))}</span>
-              <p>{leadInService ? 'Lead jest już źródłem historii. Pracuj dalej w sprawie.' : 'Lead aktywny.'}</p>
-            </section>
+            
+          {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
+
 
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
@@ -1613,29 +1582,9 @@ useEffect(() => {
               <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
             </section>
 
-            <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><EntityIcon entity="ai" className="h-4 w-4" /><h2>AI wsparcie</h2></div>
-              {workCenterPanel}
-              <Tabs defaultValue="next-action">
-                <TabsList className="lead-detail-ai-tabs-list w-full">
-                  <TabsTrigger value="next-action" className="lead-detail-ai-tabs-trigger flex-1">Nastepny ruch</TabsTrigger>
-                  <TabsTrigger value="followup" className="lead-detail-ai-tabs-trigger flex-1">Follow-up</TabsTrigger>
-                </TabsList>
-                <TabsContent value="next-action" className="lead-detail-ai-tabs-content mt-3">
-                  <LeadAiNextAction
-                    lead={lead}
-                    tasks={linkedTasks}
-                    events={linkedEvents}
-                     activities={activities}
-                     disabled={leadInService}
-                     onTaskCreated={() => void loadLead()}
-                   />
-                </TabsContent>
-                <TabsContent value="followup" className="lead-detail-ai-tabs-content mt-3">
-                  {!leadInService && (<LeadAiFollowupDraft lead={lead} tasks={linkedTasks} events={linkedEvents} activities={activities} disabled={leadInService} />)}
-                </TabsContent>
-              </Tabs>
-            </section>
+            
+          {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (LeadAiNextAction) */}
+
           </aside>
           ) : null}
         </div>
