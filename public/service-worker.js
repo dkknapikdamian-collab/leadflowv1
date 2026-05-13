@@ -113,6 +113,9 @@ function isApiOrDataRequest(request) {
   const path = url.pathname.toLowerCase();
   const full = (url.pathname + url.search).toLowerCase();
 
+  if (url.pathname.startsWith('/api/')) return true;
+  if (url.pathname.startsWith('/supabase/')) return true;
+
   return (
     hasSensitiveQueryOrHeaders(request, url) ||
     startsWithAny(path, PWA_NETWORK_ONLY_PREFIXES) ||
