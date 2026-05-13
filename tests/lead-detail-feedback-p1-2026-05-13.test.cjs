@@ -7,10 +7,10 @@ const root = path.resolve(__dirname, '..');
 const leadDetail = fs.readFileSync(path.join(root, 'src/pages/LeadDetail.tsx'), 'utf8');
 const helper = fs.readFileSync(path.join(root, 'src/lib/activity-timeline.ts'), 'utf8');
 
-test('LeadDetail removes noisy AI/right rail support components', () => {
+test('LeadDetail removes noisy work-center AI card but keeps draft-only follow-up', () => {
   assert.equal(leadDetail.includes('<LeadAiNextAction'), false);
-  assert.equal(leadDetail.includes('<LeadAiFollowupDraft'), false);
-  assert.equal(leadDetail.includes('Centrum pracy leada'), false);
+  assert.equal(leadDetail.includes('<LeadAiFollowupDraft'), true);
+  assert.equal(leadDetail.includes('<LeadAiNextAction'), false);
 });
 
 test('LeadDetail history delegates to shared source-of-truth formatter', () => {

@@ -47,8 +47,8 @@ const helper = read(helperPath);
 
 if (!leadDetail.includes("../lib/activity-timeline")) fail('LeadDetail nie importuje wspólnego formattera activity-timeline.');
 if (!leadDetail.includes('getActivityTimelineTitle') || !leadDetail.includes('getActivityTimelineDescription')) fail('LeadDetail nie używa wspólnego formattera historii.');
-if (leadDetail.includes('<LeadAiNextAction') || leadDetail.includes('<LeadAiFollowupDraft')) fail('LeadDetail nadal renderuje kafelek AI wsparcia w JSX.');
-if (leadDetail.includes('Centrum pracy leada')) fail('LeadDetail nadal zawiera tekst Centrum pracy leada.');
+if (leadDetail.includes('<LeadAiNextAction')) fail('LeadDetail nadal renderuje kafelek LeadAiNextAction / centrum pracy AI w JSX.');
+if (!leadDetail.includes('<LeadAiFollowupDraft')) fail('LeadDetail nie renderuje bezpiecznego szkicu follow-up draft-only.');
 
 const badRightCards = sections(leadDetail)
   .filter((section) => section.includes('right-card') || section.includes('lead-detail-right-card'))

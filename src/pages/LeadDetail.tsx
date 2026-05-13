@@ -47,7 +47,8 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
-import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
+import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
+import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
@@ -1537,6 +1538,14 @@ useEffect(() => {
           </section>
 
           {!leadInService ? (
+            <LeadAiFollowupDraft
+              lead={lead}
+              tasks={linkedTasks}
+              events={linkedEvents}
+              activities={activities}
+              disabled={leadOperationalArchive}
+            />
+
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
             
           {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
