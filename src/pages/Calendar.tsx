@@ -111,6 +111,7 @@ import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
 import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
 import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
 import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
+import '../styles/closeflow-calendar-selected-day-agenda-actions-v2.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -1553,6 +1554,8 @@ export default function Calendar() {
 
   const actionButtonClass = createEntryActionClass();
 
+  const selectedDayAgendaEntriesV2 = sortCalendarEntriesForDisplay(getEntriesForDay(topicContactOptions, selectedDate)); // CLOSEFLOW_CALENDAR_SELECTED_DAY_AGENDA_ACTIONS_V2_2026_05_13
+
   return (
     <Layout>
       <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
@@ -1866,10 +1869,46 @@ export default function Calendar() {
 
             <div className="cf-readable-panel mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
               <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-                <div data-cf-calendar-selected-day="true" data-cf-calendar-selected-day-repair11="true">
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-slate-500">Wybrany dzień</p>
-                  <h2 className="text-xl font-bold text-slate-900">{format(selectedDate, 'EEEE, d MMMM yyyy', { locale: pl })}</h2>
-                </div>
+                
+        <section
+          data-cf-calendar-selected-day="true"
+          data-cf-calendar-selected-day-agenda-v2="true"
+          className="cf-selected-day-agenda-v2 mt-5 rounded-3xl border border-slate-200 bg-slate-50/80 p-4 shadow-sm"
+        >
+          <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.18em] text-slate-500">Wybrany dzien</p>
+              <h2 className="mt-1 text-lg font-black text-slate-950">
+                {format(selectedDate, 'd MMMM yyyy', { locale: pl })}
+              </h2>
+            </div>
+            <Badge className="rounded-full border border-slate-200 bg-white px-3 py-1 text-[12px] font-black text-slate-700 shadow-sm">
+              {formatCalendarItemCount(selectedDayAgendaEntriesV2.length)}
+            </Badge>
+          </div>
+
+          {selectedDayAgendaEntriesV2.length > 0 ? (
+            <div className="grid gap-2" data-cf-selected-day-entry-list-v2="true">
+              {selectedDayAgendaEntriesV2.map((entry) => (
+                <ScheduleEntryCard
+                  entry={entry}
+                  actionButtonClass={actionButtonClass}
+                  actionPendingId={actionPendingId}
+                  caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
+                  onEdit={handleOpenEdit}
+                  onShift={handleShiftEntry}
+                  onShiftHours={handleShiftEntryHours}
+                  onComplete={handleCompleteEntry}
+                  onDelete={handleDeleteEntry}
+                  />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-5 text-sm font-semibold text-slate-500">
+              Brak zadan i wydarzen w tym dniu.
+            </div>
+          )}
+        </section>
                 <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
               </div>
               <div className="grid gap-3 lg:grid-cols-2">
