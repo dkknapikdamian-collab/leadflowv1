@@ -73,10 +73,8 @@ import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadByIdFromSupabase,
-  fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   insertActivityToSupabase,
-  createPaymentInSupabase,
   insertEventToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
@@ -475,7 +473,6 @@ export default function LeadDetail() {
   const [allCases, setAllCases] = useState<any[]>([]);
   const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
   const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
-  const [leadPayments, setLeadPayments] = useState<any[]>([]);
   const [note, setNote] = useState('');
   const [addingNote, setAddingNote] = useState(false);
   const [noteListening, setNoteListening] = useState(false);
@@ -501,15 +498,6 @@ export default function LeadDetail() {
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
-  const [isLeadPaymentOpen, setIsLeadPaymentOpen] = useState(false);
-  const [leadPaymentSubmitting, setLeadPaymentSubmitting] = useState(false);
-  const [leadPaymentDraft, setLeadPaymentDraft] = useState({
-    type: 'deposit',
-    amount: '',
-    status: 'deposit_paid',
-    dueAt: '',
-    note: '',
-  });
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const noteVoiceDirtyRef = useRef(false);
 
@@ -518,13 +506,12 @@ export default function LeadDetail() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRow, caseRows, taskRows, eventRows, activityRows, paymentRows] = await Promise.all([
+      const [leadRow, caseRows, taskRows, eventRows, activityRows] = await Promise.all([
         fetchLeadByIdFromSupabase(leadId),
         fetchCasesFromSupabase(),
         fetchTasksFromSupabase(),
         fetchEventsFromSupabase(),
         fetchActivitiesFromSupabase({ leadId, limit: 100 }),
-        fetchPaymentsFromSupabase({ leadId }),
       ]);
 
       const allCaseRows = Array.isArray(caseRows) ? (caseRows as Record<string, unknown>[]) : [];
@@ -533,15 +520,6 @@ export default function LeadDetail() {
         allCaseRows.find((item) => String(item.id || '') === String((leadRow as any)?.linkedCaseId || (leadRow as any)?.caseId || '')) ||
         null;
       const currentCaseId = currentCase?.id ? String(currentCase.id) : null;
-      // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29_PAYMENTS
-      const basePaymentRows = Array.isArray(paymentRows) ? paymentRows : [];
-      const casePaymentRows = currentCaseId
-        ? await fetchPaymentsFromSupabase({ caseId: currentCaseId }).catch(() => [])
-        : [];
-      const mergedPaymentRows = dedupeById([
-        ...basePaymentRows,
-        ...(Array.isArray(casePaymentRows) ? casePaymentRows : []),
-      ] as any[]);
       const linkedTaskRows = dedupeById(
         (Array.isArray(taskRows) ? taskRows : [])
           .map((item: any) => ({ ...item, ...normalizeWorkItem(item) }))
@@ -560,7 +538,6 @@ export default function LeadDetail() {
       setLinkedTasks(linkedTaskRows);
       setLinkedEvents(linkedEventRows);
       setActivities(Array.isArray(activityRows) ? activityRows : []);
-      setLeadPayments(mergedPaymentRows);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
         title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
@@ -605,29 +582,14 @@ export default function LeadDetail() {
   const showServiceBanner = leadInService;
   const leadFinance = useMemo(() => getLeadFinance(lead), [lead]);
   const leadFinancePanel = useMemo(() => {
-    const paidFromPayments = leadPayments
-      .filter((entry) => isPaidPaymentStatus(entry?.status))
-      .reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
-    const legacyPaid = Array.isArray(lead?.partialPayments)
-      ? lead.partialPayments.reduce((sum: number, entry: any) => sum + (Number(entry?.amount) || 0), 0)
-      : 0;
-    const paid = paidFromPayments > 0 ? paidFromPayments : legacyPaid;
-    // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29_CASE_VALUE
-    const casePotentialRaw =
-      associatedCase?.expectedRevenue ??
-      (associatedCase as any)?.expected_revenue ??
-      (associatedCase as any)?.caseValue ??
-      (associatedCase as any)?.case_value ??
-      (associatedCase as any)?.dealValue ??
-      (associatedCase as any)?.deal_value ??
-      (associatedCase as any)?.value ??
-      0;
-    const casePotential = Number(casePotentialRaw || 0);
-    const potential = Math.max(0, Number.isFinite(casePotential) && casePotential > 0 ? casePotential : Number(leadFinance.dealValue || 0));
-    const remaining = Math.max(0, potential - paid);
-    const billingStatus = deriveBillingStatus(potential, paid, leadPayments);
-    return { potential, paid, remaining, billingStatus };
-  }, [associatedCase, lead?.partialPayments, leadFinance.dealValue, leadPayments]);
+    const potential = Math.max(0, Number(leadFinance.dealValue || 0));
+    return {
+      potential,
+      paid: 0,
+      remaining: potential,
+      billingStatus: 'source_only',
+    };
+  }, [leadFinance.dealValue]);
 
   const leadPrimaryNoteText = useMemo(() => {
     const directNote =
@@ -674,60 +636,8 @@ export default function LeadDetail() {
     openLeadContextAction('event');
   };
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
-    setLeadPaymentDraft({
-      type,
-      amount: '',
-      status: type === 'deposit' ? 'deposit_paid' : 'partially_paid',
-      dueAt: '',
-      note: '',
-    });
-    setIsLeadPaymentOpen(true);
   };
-  const handleSaveLeadPayment = async () => {
-    if (!leadId || !hasAccess) return;
-    const amount = Number(leadPaymentDraft.amount || 0);
-    if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawną kwotę płatności.');
-      return;
-    }
-    try {
-      setLeadPaymentSubmitting(true);
-      await createPaymentInSupabase({
-        leadId,
-        clientId: lead?.clientId || null,
-        caseId: serviceCaseId || null,
-        type: leadPaymentDraft.type,
-        status: leadPaymentDraft.status || 'awaiting_payment',
-        amount,
-        currency: leadFinance.currency || 'PLN',
-        dueAt: leadPaymentDraft.dueAt || null,
-        paidAt: isPaidPaymentStatus(leadPaymentDraft.status) ? new Date().toISOString() : null,
-        note: leadPaymentDraft.note || '',
-      });
-      const paidAfter = leadFinancePanel.paid + (isPaidPaymentStatus(leadPaymentDraft.status) ? amount : 0);
-      const nextBillingStatus = deriveBillingStatus(leadFinancePanel.potential, paidAfter, [
-        ...leadPayments,
-        { type: leadPaymentDraft.type, status: leadPaymentDraft.status, amount },
-      ]);
-      await updateLeadInSupabase({ id: leadId, billingStatus: nextBillingStatus }).catch(() => null);
-      // CLOSEFLOW_LEAD_SETTLEMENT_DYNAMIC_V29_CASE_UPDATE
-      if (serviceCaseId) {
-        await updateCaseInSupabase({
-          id: serviceCaseId,
-          paidAmount: paidAfter,
-          remainingAmount: Math.max(0, leadFinancePanel.potential - paidAfter),
-          billingStatus: nextBillingStatus,
-        }).catch(() => null);
-      }
-      setIsLeadPaymentOpen(false);
-      await loadLead();
-      toast.success('Płatność leada zapisana.');
-    } catch (error: any) {
-      toast.error(`Nie udało się zapisać płatności: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setLeadPaymentSubmitting(false);
-    }
-  };
+
 useEffect(() => {
     if (!startServiceSuccess?.caseId) return;
     navigate(`/case/${startServiceSuccess.caseId}`);
@@ -1730,18 +1640,7 @@ useEffect(() => {
           ) : null}
         </div>
 
-        <Dialog open={isLeadPaymentOpen} onOpenChange={setIsLeadPaymentOpen}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>{leadPaymentDraft.type === 'deposit' ? 'Dodaj zaliczkę' : 'Dodaj płatność częściową'}</DialogTitle></DialogHeader>
-            <div className="lead-detail-dialog-grid">
-              <Label>Kwota<Input type="number" min="0" step="0.01" value={leadPaymentDraft.amount} onChange={(event) => setLeadPaymentDraft((current) => ({ ...current, amount: event.target.value }))} /></Label>
-              <Label>Status<select className={modalSelectClass} value={leadPaymentDraft.status} onChange={(event) => setLeadPaymentDraft((current) => ({ ...current, status: event.target.value }))}><option value="awaiting_payment">Czeka na płatność</option><option value="deposit_paid">Zaliczka wpłacona</option><option value="partially_paid">Częściowo opłacone</option><option value="paid">Opłacone</option></select></Label>
-              <Label>Termin płatności<Input type="date" value={leadPaymentDraft.dueAt} onChange={(event) => setLeadPaymentDraft((current) => ({ ...current, dueAt: event.target.value }))} /></Label>
-              <Label>Notatka<Textarea value={leadPaymentDraft.note} onChange={(event) => setLeadPaymentDraft((current) => ({ ...current, note: event.target.value }))} /></Label>
-            </div>
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsLeadPaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveLeadPayment} disabled={leadPaymentSubmitting}>{leadPaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
-          </DialogContent>
-        </Dialog>
+        
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent>
