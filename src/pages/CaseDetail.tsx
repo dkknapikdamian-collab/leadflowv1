@@ -925,6 +925,9 @@ void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13;
 const CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_FINAL_2026_05_13 = 'CaseActivity rows are history only; activities must not be converted to workItems';
 void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_FINAL_2026_05_13;
 
+const CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13 = 'buildWorkItems contains only operational task/event/missing items; activities stay in history rows';
+void CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13;
+
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
   const taskItems: WorkItem[] = tasks.map((task) => ({
     id: `task-${task.id}`,
@@ -963,7 +966,6 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
       sortTime: sortTime(item.dueDate),
       source: item,
     }));
-
 
   return [...taskItems, ...eventItems, ...missingItems].sort((first, second) => first.sortTime - second.sortTime);
 }
