@@ -1,0 +1,841 @@
+# Audyt źródeł bocznych kart i starych styli
+
+Wygenerowano: 2026-05-14T06:27:07.126Z
+Repo: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+
+## Zakres
+
+Ten audyt nie zmienia UI. Celem jest wskazanie, skąd realnie biorą się style bocznych kart i czarne tła.
+
+## Pliki priorytetowe
+
+| Plik | Istnieje |
+|---|---:|
+| `src/pages/Leads.tsx` | tak |
+| `src/pages/Cases.tsx` | tak |
+| `src/pages/Clients.tsx` | tak |
+| `src/components/StatShortcutCard.tsx` | tak |
+| `src/components/ui-system/index.ts` | tak |
+| `src/styles/page-adapters.css` | nie |
+
+## Mapa selector -> TSX -> CSS -> aktualne tło -> docelowe tło
+
+| Selector | Pliki TSX | Pliki CSS | Aktualne tło | Docelowe tło | Podejrzane źródło |
+|---|---|---|---|---|---|
+| `.right-card` | `src/pages/Leads.tsx`<br>`src/pages/Cases.tsx`<br>`src/pages/Clients.tsx`<br>`src/components/CaseQuickActions.tsx`<br>`src/pages/Activity.tsx`<br>`src/pages/AiDrafts.tsx`<br>`src/pages/Billing.tsx`<br>`src/pages/Calendar.tsx`<br>`src/pages/CaseDetail.tsx`<br>`src/pages/ClientDetail.tsx`<br>`src/pages/LeadDetail.tsx`<br>`src/pages/NotificationsCenter.tsx`<br>`src/pages/Settings.tsx`<br>`src/pages/Tasks.tsx`<br>`src/pages/Today.tsx`<br>`src/pages/UiPreviewVNext.tsx`<br>`src/pages/UiPreviewVNextFull.tsx` | `src/styles/closeflow-list-row-tokens.css`<br>`src/styles/closeflow-right-rail-source-truth.css`<br>`src/styles/closeflow-surface-tokens.css`<br>`src/styles/closeflow-vnext-ui-contract.css`<br>`src/styles/emergency/emergency-hotfixes.css`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css`<br>`src/styles/hotfix-ai-drafts-right-rail-stage28.css`<br>`src/styles/hotfix-lead-client-right-rail-dark-wrappers.css`<br>`src/styles/hotfix-right-rail-dark-wrappers.css`<br>`src/styles/stage31-full-mobile-polish.css`<br>`src/styles/stage35-clients-value-detail-cleanup.css`<br>`src/styles/stage36-unified-light-pages.css`<br>`src/styles/stage38-metrics-and-relations-polish.css`<br>`src/styles/stageA24-today-relations-label-align.css`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css`<br>`src/styles/visual-stage04-lead-detail.css`<br>`src/styles/visual-stage05-clients.css`<br>`src/styles/visual-stage06-client-detail.css`<br>`src/styles/visual-stage07-cases.css`<br>`src/styles/visual-stage08-case-detail.css`<br>`src/styles/visual-stage10-notifications-vnext.css`<br>`src/styles/visual-stage12-client-detail-vnext.css`<br>`src/styles/visual-stage13-case-detail-vnext.css`<br>`src/styles/visual-stage14-lead-detail-vnext.css`<br>`src/styles/visual-stage16-billing-vnext.css`<br>`src/styles/visual-stage16-today-html-reset.css`<br>`src/styles/visual-stage17-support-vnext.css`<br>`src/styles/visual-stage17-today-hard-1to1.css`<br>`src/styles/visual-stage18-leads-hard-1to1.css`<br>`src/styles/visual-stage19-settings-vnext.css`<br>`src/styles/visual-stage21-today-final-lock.css`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css`<br>`src/styles/visual-stage27-cases-vnext.css`<br>`src/styles/visual-stage28-tasks-vnext.css`<br>`src/styles/visual-stage29-calendar-vnext.css`<br>`src/styles/visual-stage8-activity-vnext.css`<br>`src/styles/visual-stage9-ai-drafts-vnext.css` | `src/styles/closeflow-list-row-tokens.css:141 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-list-row-tokens.css:149 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-list-row-tokens.css:159 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-list-row-tokens.css:170 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:17 -> background: var(--cf-right-rail-card-bg) !important`<br>`src/styles/closeflow-right-rail-source-truth.css:30 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:36 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:41 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:55 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-surface-tokens.css:9 -> background: var(--cf-surface-card) !important; background-color: var(--cf-surface-card) !important`<br>`src/styles/closeflow-surface-tokens.css:34 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-vnext-ui-contract.css:4 -> background: rgba(16,20,18,.9)`<br>`src/styles/emergency/emergency-hotfixes.css:30 -> background: #ffffff !important`<br>`src/styles/emergency/emergency-hotfixes.css:41 -> background: transparent !important`<br>`src/styles/emergency/emergency-hotfixes.css:49 -> brak jawnego tła w tej regule`<br>`src/styles/emergency/emergency-hotfixes.css:62 -> background: #ffffff !important`<br>`src/styles/emergency/emergency-hotfixes.css:72 -> background: #f1f5f9 !important`<br>`src/styles/emergency/emergency-hotfixes.css:81 -> background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.97)) !important`<br>`src/styles/emergency/emergency-hotfixes.css:90 -> background: transparent !important`<br>`src/styles/emergency/emergency-hotfixes.css:96 -> brak jawnego tła w tej regule`<br>`src/styles/emergency/emergency-hotfixes.css:100 -> brak jawnego tła w tej regule`<br>`src/styles/emergency/emergency-hotfixes.css:104 -> background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.98)) !important`<br>`src/styles/emergency/emergency-hotfixes.css:111 -> brak jawnego tła w tej regule`<br>`src/styles/emergency/emergency-hotfixes.css:139 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:39 -> background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:55 -> background: transparent !important; background-image: none !important`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:69 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:74 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:83 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:90 -> background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`<br>`src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:103 -> background: transparent !important; background-image: none !important`<br>`src/styles/hotfix-ai-drafts-right-rail-stage28.css:40 -> background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`<br>`src/styles/hotfix-ai-drafts-right-rail-stage28.css:61 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-stage28.css:73 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-stage28.css:80 -> brak jawnego tła w tej regule`<br>`src/styles/hotfix-ai-drafts-right-rail-stage28.css:91 -> background: #f8fafc !important`<br>`src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:57 -> background: var(--cf-detail-hotfix-card) !important; background-color: var(--cf-detail-hotfix-card) !important; background-image: none !important`<br>`src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:92 -> background: transparent !important; background-image: none !important`<br>`src/styles/hotfix-right-rail-dark-wrappers.css:35 -> background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`<br>`src/styles/hotfix-right-rail-dark-wrappers.css:53 -> brak jawnego tła w tej regule`<br>`src/styles/stage31-full-mobile-polish.css:101 -> background: #ffffff !important`<br>`src/styles/stage31-full-mobile-polish.css:136 -> brak jawnego tła w tej regule`<br>`src/styles/stage31-full-mobile-polish.css:147 -> brak jawnego tła w tej regule`<br>`src/styles/stage31-full-mobile-polish.css:821 -> brak jawnego tła w tej regule`<br>`src/styles/stage35-clients-value-detail-cleanup.css:231 -> background: #fff !important`<br>`src/styles/stage35-clients-value-detail-cleanup.css:238 -> brak jawnego tła w tej regule`<br>`src/styles/stage35-clients-value-detail-cleanup.css:242 -> background: #f8fafc !important`<br>`src/styles/stage36-unified-light-pages.css:158 -> background: #ffffff !important`<br>`src/styles/stage36-unified-light-pages.css:187 -> brak jawnego tła w tej regule`<br>`src/styles/stage38-metrics-and-relations-polish.css:144 -> background: #ffffff !important`<br>`src/styles/stage38-metrics-and-relations-polish.css:150 -> brak jawnego tła w tej regule`<br>`src/styles/stage38-metrics-and-relations-polish.css:155 -> background: #f8fafc`<br>`src/styles/stage38-metrics-and-relations-polish.css:161 -> brak jawnego tła w tej regule`<br>`src/styles/stageA24-today-relations-label-align.css:1 -> brak jawnego tła w tej regule`<br>`src/styles/stageA24-today-relations-label-align.css:14 -> brak jawnego tła w tej regule`<br>`src/styles/stageA24-today-relations-label-align.css:28 -> brak jawnego tła w tej regule`<br>`src/styles/stageA24-today-relations-label-align.css:43 -> brak jawnego tła w tej regule`<br>`src/styles/stageA24-today-relations-label-align.css:58 -> brak jawnego tła w tej regule`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css:1 -> brak jawnego tła w tej regule`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css:18 -> brak jawnego tła w tej regule`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css:29 -> brak jawnego tła w tej regule`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css:44 -> brak jawnego tła w tej regule`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css:57 -> brak jawnego tła w tej regule`<br>`src/styles/stageA25-today-relations-lead-badge-inline.css:80 -> background: #eff6ff !important`<br>`src/styles/visual-stage04-lead-detail.css:60 -> background: var(--cf-card) !important`<br>`src/styles/visual-stage04-lead-detail.css:139 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage05-clients.css:214 -> background: rgba(255, 255, 255, .9)`<br>`src/styles/visual-stage05-clients.css:272 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage05-clients.css:278 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage05-clients.css:290 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage05-clients.css:302 -> background: #ffffff !important`<br>`src/styles/visual-stage06-client-detail.css:46 -> background: var(--cf-client-card) !important`<br>`src/styles/visual-stage06-client-detail.css:113 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage07-cases.css:89 -> background: #fff`<br>`src/styles/visual-stage08-case-detail.css:55 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage08-case-detail.css:133 -> background: #ffffff`<br>`src/styles/visual-stage08-case-detail.css:173 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage10-notifications-vnext.css:536 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage10-notifications-vnext.css:544 -> background: rgba(255, 255, 255, 0.92)`<br>`src/styles/visual-stage10-notifications-vnext.css:554 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage10-notifications-vnext.css:562 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage10-notifications-vnext.css:723 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage10-notifications-vnext.css:827 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage10-notifications-vnext.css:842 -> background: #ffffff !important; background-image: none !important`<br>`src/styles/visual-stage12-client-detail-vnext.css:126 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage12-client-detail-vnext.css:143 -> background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`<br>`src/styles/visual-stage12-client-detail-vnext.css:163 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:279 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:897 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:903 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:911 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:1307 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:1317 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage12-client-detail-vnext.css:1330 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage13-case-detail-vnext.css:100 -> background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`<br>`src/styles/visual-stage13-case-detail-vnext.css:121 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage13-case-detail-vnext.css:220 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage13-case-detail-vnext.css:503 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage13-case-detail-vnext.css:509 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage13-case-detail-vnext.css:517 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage13-case-detail-vnext.css:1230 -> background: #ffffff !important; background-image: none !important`<br>`src/styles/visual-stage13-case-detail-vnext.css:1244 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage13-case-detail-vnext.css:1252 -> background: #ffffff !important`<br>`src/styles/visual-stage14-lead-detail-vnext.css:96 -> background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`<br>`src/styles/visual-stage14-lead-detail-vnext.css:137 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:193 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage14-lead-detail-vnext.css:212 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:305 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:480 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:485 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:830 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:836 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:841 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:851 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:856 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:992 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:999 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:1009 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:1031 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage14-lead-detail-vnext.css:1043 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage16-billing-vnext.css:101 -> background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`<br>`src/styles/visual-stage16-billing-vnext.css:289 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage16-billing-vnext.css:500 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage16-billing-vnext.css:513 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage16-billing-vnext.css:526 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage16-billing-vnext.css:534 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage16-today-html-reset.css:299 -> background: var(--cf16-card)`<br>`src/styles/visual-stage17-support-vnext.css:62 -> background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`<br>`src/styles/visual-stage17-support-vnext.css:146 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage17-support-vnext.css:556 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage17-support-vnext.css:569 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage17-support-vnext.css:582 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage17-support-vnext.css:590 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage17-support-vnext.css:620 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage17-today-hard-1to1.css:345 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage17-today-hard-1to1.css:472 -> background: rgba(255,255,255,.86) !important`<br>`src/styles/visual-stage17-today-hard-1to1.css:547 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage18-leads-hard-1to1.css:423 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage18-leads-hard-1to1.css:435 -> background: rgba(255,255,255,.90) !important`<br>`src/styles/visual-stage18-leads-hard-1to1.css:525 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage19-settings-vnext.css:62 -> background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`<br>`src/styles/visual-stage19-settings-vnext.css:138 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage19-settings-vnext.css:340 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage19-settings-vnext.css:353 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage19-settings-vnext.css:366 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage19-settings-vnext.css:374 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage21-today-final-lock.css:226 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage21-today-final-lock.css:492 -> background: rgba(255, 255, 255, 0.86) !important`<br>`src/styles/visual-stage21-today-final-lock.css:592 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage21-today-final-lock.css:657 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:401 -> background: rgba(255, 255, 255, .86)`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:157 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:165 -> background: rgba(255, 255, 255, .86) !important`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:184 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:192 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:199 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:204 -> background: #f8fafc !important`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:240 -> background: #eff6ff !important`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:334 -> background: rgba(255, 255, 255, .86) !important`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:377 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:385 -> background: rgba(255, 255, 255, .9) !important`<br>`src/styles/visual-stage27-cases-vnext.css:233 -> background: rgba(255, 255, 255, .9)`<br>`src/styles/visual-stage28-tasks-vnext.css:72 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage28-tasks-vnext.css:124 -> background: rgba(255,255,255,.9)`<br>`src/styles/visual-stage29-calendar-vnext.css:236 -> background: rgba(255, 255, 255, .9)`<br>`src/styles/visual-stage8-activity-vnext.css:510 -> background: rgba(255, 255, 255, 0.92)`<br>`src/styles/visual-stage8-activity-vnext.css:520 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage8-activity-vnext.css:528 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage8-activity-vnext.css:649 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage8-activity-vnext.css:756 -> background: transparent !important; background-color: transparent !important; background-image: none !important`<br>`src/styles/visual-stage8-activity-vnext.css:776 -> background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`<br>`src/styles/visual-stage8-activity-vnext.css:790 -> background: transparent !important; background-color: transparent !important; background-image: none !important`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:860 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:868 -> background: rgba(255, 255, 255, 0.92) !important`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:878 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:886 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:1022 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:1132 -> background: transparent !important; background-image: none !important`<br>`src/styles/visual-stage9-ai-drafts-vnext.css:1147 -> background: #ffffff !important; background-image: none !important` | docelowo: wspólne jasne tło bocznej karty z jednego źródła prawdy, nie lokalny/stage CSS | inline className w TSX<br>globalne .right-card<br>lokalna klasa selektora<br>wrapper .cf-html-view<br>deklaracja wygląda na ciemne tło/ciemny shell<br>stary/stage CSS albo adapter<br>dark shell / layout wrapper |
+| `.lead-right-card` | `src/pages/Leads.tsx` | `src/styles/closeflow-right-rail-source-truth.css`<br>`src/styles/closeflow-surface-tokens.css`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css` | `src/styles/closeflow-right-rail-source-truth.css:17 -> background: var(--cf-right-rail-card-bg) !important`<br>`src/styles/closeflow-surface-tokens.css:9 -> background: var(--cf-surface-card) !important; background-color: var(--cf-surface-card) !important`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:377 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:385 -> background: rgba(255, 255, 255, .9) !important` | docelowo: wspólne jasne tło bocznej karty z jednego źródła prawdy, nie lokalny/stage CSS | inline className w TSX<br>globalne .right-card<br>lokalna klasa selektora<br>wrapper .cf-html-view<br>stary/stage CSS albo adapter<br>dark shell / layout wrapper<br>deklaracja wygląda na ciemne tło/ciemny shell |
+| `.lead-top-relations` | `src/pages/Leads.tsx` | `src/styles/closeflow-right-rail-source-truth.css`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css` | `src/styles/closeflow-right-rail-source-truth.css:17 -> background: var(--cf-right-rail-card-bg) !important`<br>`src/styles/closeflow-right-rail-source-truth.css:45 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:464 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:468 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:472 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:477 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:483 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:489 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage26-leads-visual-alignment-fix.css:395 -> background: #ffffff !important` | docelowo: wspólne jasne tło karty relacji z jednego tokena UI, bez lokalnego czarnego override | inline className w TSX<br>globalne .right-card<br>lokalna klasa selektora<br>wrapper .cf-html-view<br>stary/stage CSS albo adapter<br>deklaracja wygląda na ciemne tło/ciemny shell<br>dark shell / layout wrapper |
+| `.cases-shortcuts-rail-card` | `src/pages/Cases.tsx` | `src/styles/closeflow-right-rail-source-truth.css`<br>`src/styles/closeflow-surface-tokens.css` | `src/styles/closeflow-right-rail-source-truth.css:17 -> background: var(--cf-right-rail-card-bg) !important`<br>`src/styles/closeflow-surface-tokens.css:9 -> background: var(--cf-surface-card) !important; background-color: var(--cf-surface-card) !important` | docelowo: wspólne jasne tło bocznej karty z jednego źródła prawdy, nie lokalny/stage CSS | inline className w TSX<br>globalne .right-card<br>lokalna klasa selektora<br>wrapper .cf-html-view |
+| `.cases-risk-rail-card` | `src/pages/Cases.tsx` | `src/styles/closeflow-right-rail-source-truth.css`<br>`src/styles/stage38-metrics-and-relations-polish.css` | `src/styles/closeflow-right-rail-source-truth.css:17 -> background: var(--cf-right-rail-card-bg) !important`<br>`src/styles/stage38-metrics-and-relations-polish.css:165 -> brak jawnego tła w tej regule` | docelowo: jasna karta + kolor ryzyka tylko na badge/akcentach, nie pełne czarne tło | inline className w TSX<br>globalne .right-card<br>lokalna klasa selektora<br>wrapper .cf-html-view<br>stary/stage CSS albo adapter |
+| `.clients-right-rail` | `src/pages/Clients.tsx` | `src/styles/closeflow-right-rail-source-truth.css`<br>`src/styles/stage35-clients-value-detail-cleanup.css`<br>`src/styles/visual-stage05-clients.css` | `src/styles/closeflow-right-rail-source-truth.css:10 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:49 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:59 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:67 -> background: rgba(255, 255, 255, 0.94) !important`<br>`src/styles/closeflow-right-rail-source-truth.css:84 -> background: rgb(248 250 252) !important`<br>`src/styles/closeflow-right-rail-source-truth.css:89 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:96 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:109 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:122 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:129 -> brak jawnego tła w tej regule`<br>`src/styles/closeflow-right-rail-source-truth.css:142 -> background: rgb(220 252 231) !important`<br>`src/styles/closeflow-right-rail-source-truth.css:149 -> background: rgb(254 242 242) !important`<br>`src/styles/closeflow-right-rail-source-truth.css:156 -> background: rgb(248 250 252) !important`<br>`src/styles/stage35-clients-value-detail-cleanup.css:211 -> brak jawnego tła w tej regule`<br>`src/styles/stage35-clients-value-detail-cleanup.css:217 -> brak jawnego tła w tej regule`<br>`src/styles/stage35-clients-value-detail-cleanup.css:222 -> brak jawnego tła w tej regule`<br>`src/styles/stage35-clients-value-detail-cleanup.css:226 -> brak jawnego tła w tej regule`<br>`src/styles/stage35-clients-value-detail-cleanup.css:273 -> brak jawnego tła w tej regule`<br>`src/styles/visual-stage05-clients.css:135 -> brak jawnego tła w tej regule` | docelowo: wspólne jasne tło bocznej karty z jednego źródła prawdy, nie lokalny/stage CSS | inline className w TSX<br>lokalna klasa selektora<br>wrapper .cf-html-view<br>dark shell / layout wrapper<br>stary/stage CSS albo adapter<br>deklaracja wygląda na ciemne tło/ciemny shell |
+
+## Wnioski automatyczne
+
+- `.right-card`: prawdopodobnie stary/stage CSS z ciemnym tłem
+- `.lead-right-card`: prawdopodobnie stary/stage CSS z ciemnym tłem
+- `.lead-top-relations`: prawdopodobnie stary/stage CSS z ciemnym tłem
+- `.cases-shortcuts-rail-card`: reguły znalezione, brak oczywistego ciemnego tła
+- `.cases-risk-rail-card`: reguły znalezione, brak oczywistego ciemnego tła
+- `.clients-right-rail`: prawdopodobnie stary/stage CSS z ciemnym tłem
+
+## Szczegóły reguł CSS
+
+### .right-card
+
+- `src/styles/closeflow-list-row-tokens.css:141` — `.main-leads-html .right-card, .main-leads-html .right-card *, .main-leads-html [data-fb2-leads-right-rail], .main-leads-html [data-fb2-leads-right-rail] *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/closeflow-list-row-tokens.css:149` — `.main-leads-html .right-card a, .main-leads-html .right-card button, .main-leads-html .right-card article, .main-leads-html [data-fb2-leads-right-rail] a, .main-leads-html [data-fb2-leads-right-rail] button, .main-leads-html [data-fb2-leads-right-rail] article`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/closeflow-list-row-tokens.css:159` — `.main-leads-html .right-card h3, .main-leads-html .right-card strong, .main-leads-html .right-card p, .main-leads-html [data-fb2-leads-right-rail] h3, .main-leads-html [data-fb2-leads-right-rail] strong, .main-leads-html [data-fb2-leads-right-rail] p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/closeflow-list-row-tokens.css:170` — `.main-leads-html .right-card h3, .main-leads-html .right-card p, .main-leads-html [data-fb2-leads-right-rail-name], .main-leads-html .fb2-lead-right-rail-name`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/closeflow-right-rail-source-truth.css:17` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card`
+  - tło: `background: var(--cf-right-rail-card-bg) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:30` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(h1, h2, h3, h4, p, li, small, strong), #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.title, .right-card-title, .rail-title)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:36` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.sub, .mini, .description, .helper, .muted, .right-card-subtitle, .rail-subtitle)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:41` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.pill, .cf-status-pill, .badge, [data-cf-status-tone], [data-cf-severity])`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:55` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(a, button)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-surface-tokens.css:9` — `.right-card, [class$="-right-card"], .settings-right-card, .billing-right-card, .activity-right-card, .lead-right-card, .cases-shortcuts-rail-card, .calendar-week-filter, .calendar-week-plan`
+  - tło: `background: var(--cf-surface-card) !important; background-color: var(--cf-surface-card) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/closeflow-surface-tokens.css:34` — `.right-card p, .right-card small, .right-card [class*="text-slate-500"], .right-card [class*="text-slate-600"], [class$="-right-card"] p, [class$="-right-card"] small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/closeflow-vnext-ui-contract.css:4` — `.cfv-right-card`
+  - tło: `background: rgba(16,20,18,.9)`
+  - źródła: deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:30` — `.ai-drafts-right-card, .activity-right-card, .right-card.ai-drafts-right-card, .right-card.activity-right-card`
+  - tło: `background: #ffffff !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:41` — `.ai-drafts-right-card::before, .ai-drafts-right-card::after, .activity-right-card::before, .activity-right-card::after`
+  - tło: `background: transparent !important`
+- `src/styles/emergency/emergency-hotfixes.css:49` — `.ai-drafts-right-card *, .activity-right-card *, .activity-rail-button, .activity-rail-button *, .ai-drafts-rail-button, .ai-drafts-rail-button *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:62` — `.activity-rail-button, .ai-drafts-rail-button, .activity-right-card button, .ai-drafts-right-card button`
+  - tło: `background: #ffffff !important`
+  - źródła: deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:72` — `.activity-rail-button:hover, .ai-drafts-rail-button:hover, .activity-right-card button:hover, .ai-drafts-right-card button:hover`
+  - tło: `background: #f1f5f9 !important`
+  - źródła: deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:81` — `:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])`
+  - tło: `background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.97)) !important`
+  - źródła: deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:90` — `:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::before, :where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"])::after`
+  - tło: `background: transparent !important`
+- `src/styles/emergency/emergency-hotfixes.css:96` — `:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(h1, h2, h3, h4, p, span, div, label, small, strong)`
+  - tło: `brak jawnego tła w tej regule`
+- `src/styles/emergency/emergency-hotfixes.css:100` — `:where(.case-detail-right-card.case-detail-create-action-card, [data-case-create-actions-panel="true"]) :is(button, a)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:104` — `:where(.main-calendar-html .right-card.calendar-week-filter, .main-calendar-html .calendar-week-plan, .main-calendar-html .calendar-entry-card)`
+  - tło: `background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(248, 250, 252, 0.98)) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/emergency/emergency-hotfixes.css:111` — `.main-calendar-html .right-card.calendar-week-filter :is(h1, h2, h3, h4, p, span, div, button, small, strong), .main-calendar-html .calendar-week-plan :is(h1, h2, h3, h4, p, span, div, button, small, strong), .main-calendar-html .calendar-entry-card :is(h1, h2, h3, h4, p, span, div, button, small, strong)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/emergency/emergency-hotfixes.css:139` — `.main-calendar-html .calendar-entry-card :is(.text-white, .text-slate-50, .text-slate-100), .main-calendar-html .right-card.calendar-week-filter :is(.text-white, .text-slate-50, .text-slate-100), .main-calendar-html .calendar-week-plan :is(.text-white, .text-slate-50, .text-slate-100)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:39` — `.ai-drafts-vnext-page .ai-drafts-right-card, .ai-drafts-vnext-page .right-card.ai-drafts-right-card, .ai-drafts-vnext-page .ai-drafts-right-rail > .right-card, .ai-drafts-vnext-page .ai-drafts-right-rail > section, .ai-drafts-vnext-page .ai-drafts-right-rail > article, .ai-drafts-vnext-page [class*="ai-drafts-right-card"]`
+  - tło: `background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:55` — `.ai-drafts-vnext-page .ai-drafts-right-card::before, .ai-drafts-vnext-page .ai-drafts-right-card::after, .ai-drafts-vnext-page .right-card.ai-drafts-right-card::before, .ai-drafts-vnext-page .right-card.ai-drafts-right-card::after, .ai-drafts-vnext-page [class*="ai-drafts-right-card"]::before, .ai-drafts-vnext-page [class*="ai-drafts-right-card"]::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:69` — `.ai-drafts-vnext-page .ai-drafts-right-card *, .ai-drafts-vnext-page .right-card.ai-drafts-right-card *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:74` — `.ai-drafts-vnext-page .ai-drafts-right-card h1, .ai-drafts-vnext-page .ai-drafts-right-card h2, .ai-drafts-vnext-page .ai-drafts-right-card h3, .ai-drafts-vnext-page .ai-drafts-right-card strong, .ai-drafts-vnext-page .ai-drafts-rail-item strong, .ai-drafts-vnext-page .ai-drafts-rail-button`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:83` — `.ai-drafts-vnext-page .ai-drafts-right-card p, .ai-drafts-vnext-page .ai-drafts-right-card span, .ai-drafts-vnext-page .ai-drafts-rail-item span, .ai-drafts-vnext-page .ai-drafts-rail-empty`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:90` — `.ai-drafts-vnext-page .ai-drafts-rail-button, .ai-drafts-vnext-page .ai-drafts-rail-item, .ai-drafts-vnext-page .ai-drafts-right-card li, .ai-drafts-vnext-page .ai-drafts-right-card .mini-row, .ai-drafts-vnext-page .ai-drafts-right-card [class*="rail-item"]`
+  - tło: `background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css:103` — `.ai-drafts-vnext-page .ai-drafts-right-card-head`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css:40` — `.cf-html-view .ai-drafts-right-card, .cf-html-view .ai-drafts-side-card, .cf-html-view .drafts-right-card, .cf-html-view .drafts-side-card, .cf-html-view .ai-drafts-right-rail > *, .cf-html-view .ai-drafts-side > *, .cf-html-view .ai-drafts-sidebar > *, .cf-html-view .drafts-right-rail > *, .cf-html-view .drafts-side > *, .cf-html-view [data-ai-drafts-right-rail="true"] > *, .cf-html-view [data-ai-drafts-side="true"] > *`
+  - tło: `background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css:61` — `.cf-html-view .ai-drafts-right-card::before, .cf-html-view .ai-drafts-right-card::after, .cf-html-view .ai-drafts-side-card::before, .cf-html-view .ai-drafts-side-card::after, .cf-html-view .drafts-right-card::before, .cf-html-view .drafts-right-card::after, .cf-html-view .drafts-side-card::before, .cf-html-view .drafts-side-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, wrapper .cf-html-view
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css:73` — `.cf-html-view .ai-drafts-right-card *, .cf-html-view .ai-drafts-side-card *, .cf-html-view .drafts-right-card *, .cf-html-view .drafts-side-card *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, wrapper .cf-html-view
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css:80` — `.cf-html-view .ai-drafts-right-card p, .cf-html-view .ai-drafts-side-card p, .cf-html-view .drafts-right-card p, .cf-html-view .drafts-side-card p, .cf-html-view .ai-drafts-right-card small, .cf-html-view .ai-drafts-side-card small, .cf-html-view .drafts-right-card small, .cf-html-view .drafts-side-card small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, wrapper .cf-html-view
+- `src/styles/hotfix-ai-drafts-right-rail-stage28.css:91` — `.cf-html-view .ai-drafts-right-card .pill, .cf-html-view .ai-drafts-side-card .pill, .cf-html-view .drafts-right-card .pill, .cf-html-view .drafts-side-card .pill`
+  - tło: `background: #f8fafc !important`
+  - źródła: stary/stage CSS albo adapter, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:57` — `html body #root .lead-detail-vnext-page .lead-detail-right-rail > *, html body #root .main-lead-detail .lead-detail-right-rail > *, html body #root .lead-detail-vnext-page .lead-detail-right-card, html body #root .main-lead-detail .lead-detail-right-card, html body #root .lead-detail-vnext-page .right-card.lead-detail-right-card, html body #root .main-lead-detail .right-card.lead-detail-right-card, html body #root .client-detail-vnext-page .client-detail-left-rail > *, html body #root .client-detail-vnext-page .client-detail-right-rail > *, html body #root .main-client-detail .client-detail-left-rail > *, html body #root .main-client-detail .client-detail-right-rail > *, html body #root .client-detail-vnext-page .client-detail-side-card, html body #root .client-detail-vnext-page .client-detail-profile-card, html body #root .client-detail-vnext-page .client-detail-actions-card, html body #root .client-detail-vnext-page .client-detail-right-card, html body #root .client-detail-vnext-page .right-card.client-detail-right-card, html body #root .main-client-detail .client-detail-side-card, html body #root .main-client-detail .client-detail-profile-card, html body #root .main-client-detail .client-detail-actions-card, html body #root .main-client-detail .client-detail-right-card, html body #root .main-client-detail .right-card.client-detail-right-card`
+  - tło: `background: var(--cf-detail-hotfix-card) !important; background-color: var(--cf-detail-hotfix-card) !important; background-image: none !important`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/hotfix-lead-client-right-rail-dark-wrappers.css:92` — `html body #root .lead-detail-vnext-page .lead-detail-right-card::before, html body #root .lead-detail-vnext-page .lead-detail-right-card::after, html body #root .main-lead-detail .lead-detail-right-card::before, html body #root .main-lead-detail .lead-detail-right-card::after, html body #root .client-detail-vnext-page .client-detail-side-card::before, html body #root .client-detail-vnext-page .client-detail-side-card::after, html body #root .client-detail-vnext-page .client-detail-profile-card::before, html body #root .client-detail-vnext-page .client-detail-profile-card::after, html body #root .client-detail-vnext-page .client-detail-actions-card::before, html body #root .client-detail-vnext-page .client-detail-actions-card::after, html body #root .client-detail-vnext-page .client-detail-right-card::before, html body #root .client-detail-vnext-page .client-detail-right-card::after, html body #root .main-client-detail .client-detail-side-card::before, html body #root .main-client-detail .client-detail-side-card::after, html body #root .main-client-detail .client-detail-profile-card::before, html body #root .main-client-detail .client-detail-profile-card::after, html body #root .main-client-detail .client-detail-actions-card::before, html body #root .main-client-detail .client-detail-actions-card::after, html body #root .main-client-detail .client-detail-right-card::before, html body #root .main-client-detail .client-detail-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+- `src/styles/hotfix-right-rail-dark-wrappers.css:35` — `.activity-vnext-page .right-card.activity-right-card, .activity-vnext-page .activity-right-card, .ai-drafts-vnext-page .right-card.ai-drafts-right-card, .ai-drafts-vnext-page .ai-drafts-right-card, .notifications-vnext-page .right-card.notifications-right-card, .notifications-vnext-page .notifications-right-card`
+  - tło: `background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/hotfix-right-rail-dark-wrappers.css:53` — `.activity-vnext-page .right-card.activity-right-card::before, .activity-vnext-page .right-card.activity-right-card::after, .activity-vnext-page .activity-right-card::before, .activity-vnext-page .activity-right-card::after, .ai-drafts-vnext-page .right-card.ai-drafts-right-card::before, .ai-drafts-vnext-page .right-card.ai-drafts-right-card::after, .ai-drafts-vnext-page .ai-drafts-right-card::before, .ai-drafts-vnext-page .ai-drafts-right-card::after, .notifications-vnext-page .right-card.notifications-right-card::before, .notifications-vnext-page .right-card.notifications-right-card::after, .notifications-vnext-page .notifications-right-card::before, .notifications-vnext-page .notifications-right-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/stage31-full-mobile-polish.css:101` — `.right-card, .right-rail, .today-right-rail, .today-sidebar, .notifications-right-rail, .notifications-right-card, .activity-right-rail, .ai-drafts-right-rail, .billing-right-rail, .support-right-rail, .settings-side-column, .settings-aside, .client-right-rail, .case-right-rail, .lead-right-rail, [data-visual-right-rail], [data-stage32-leads-value-rail], [class*="right-rail"], [class*="rightRail"], [class*="side-panel"], [class*="sidePanel"]`
+  - tło: `background: #ffffff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage31-full-mobile-polish.css:136` — `.right-card *, .right-rail *, [data-visual-right-rail] *, [data-stage32-leads-value-rail] *, [class*="right-rail"] *, [class*="rightRail"] *, [class*="side-panel"] *, [class*="sidePanel"] *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stage31-full-mobile-polish.css:147` — `.right-card a, .right-rail a, [data-visual-right-rail] a, [data-stage32-leads-value-rail] a, [class*="right-rail"] a, [class*="rightRail"] a, [class*="side-panel"] a, [class*="sidePanel"] a`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stage31-full-mobile-polish.css:821` — `.card, [data-slot="card"], .right-card, .table-card, [data-today-tile-card="true"], .settings-section-card, .notifications-list-card, .activity-list-card, .ai-drafts-list-card, .billing-section-card, .support-section-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stage35-clients-value-detail-cleanup.css:231` — `.case-detail-right-rail, .case-detail-right-card, .right-card.case-detail-right-card`
+  - tło: `background: #fff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage35-clients-value-detail-cleanup.css:238` — `.case-detail-right-card :is(h2, p, small, span, strong, button)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/stage35-clients-value-detail-cleanup.css:242` — `.case-detail-right-card .case-detail-right-actions button`
+  - tło: `background: #f8fafc !important`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage36-unified-light-pages.css:158` — `html[data-skin] .ai-drafts-stat-card, .ai-drafts-stat-card, html[data-skin] .ai-drafts-list-card, .ai-drafts-list-card, html[data-skin] .ai-drafts-row, .ai-drafts-row, html[data-skin] .right-card.ai-drafts-right-card, .right-card.ai-drafts-right-card, html[data-skin] .ai-drafts-right-card, .ai-drafts-right-card`
+  - tło: `background: #ffffff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage36-unified-light-pages.css:187` — `html[data-skin] .ai-drafts-stat-value, .ai-drafts-stat-value, html[data-skin] .ai-drafts-row-main h2, .ai-drafts-row-main h2, html[data-skin] .ai-drafts-list-head h2, .ai-drafts-list-head h2, html[data-skin] .ai-drafts-right-card-head h2, .ai-drafts-right-card-head h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage38-metrics-and-relations-polish.css:144` — `.cf-html-view.main-cases-html .cases-right-rail .right-card`
+  - tło: `background: #ffffff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/stage38-metrics-and-relations-polish.css:150` — `.cf-html-view.main-cases-html .cases-right-rail .right-card, .cf-html-view.main-cases-html .cases-right-rail .right-card *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage38-metrics-and-relations-polish.css:155` — `.cf-html-view.main-cases-html .cases-right-rail .right-card .quick-list button, .cf-html-view.main-cases-html .cases-right-rail .right-card .quick-list a`
+  - tło: `background: #f8fafc`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/stage38-metrics-and-relations-polish.css:161` — `.cf-html-view.main-cases-html .cases-right-rail .right-card .quick-list small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/stageA24-today-relations-label-align.css:1` — `.main-today .right-card a[href^="/leads/"], .main-today .today-right-rail a[href^="/leads/"], .main-today .today-sidebar a[href^="/leads/"], .main-today [data-visual-right-rail] a[href^="/leads/"], .main-today aside a[href^="/leads/"]`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA24-today-relations-label-align.css:14` — `.main-today .right-card a[href^="/leads/"] > :first-child, .main-today .today-right-rail a[href^="/leads/"] > :first-child, .main-today .today-sidebar a[href^="/leads/"] > :first-child, .main-today [data-visual-right-rail] a[href^="/leads/"] > :first-child, .main-today aside a[href^="/leads/"] > :first-child`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA24-today-relations-label-align.css:28` — `.main-today .right-card a[href^="/leads/"] span, .main-today .right-card a[href^="/leads/"] small, .main-today .right-card a[href^="/leads/"] p, .main-today .today-right-rail a[href^="/leads/"] span, .main-today .today-right-rail a[href^="/leads/"] small, .main-today .today-right-rail a[href^="/leads/"] p, .main-today aside a[href^="/leads/"] span, .main-today aside a[href^="/leads/"] small, .main-today aside a[href^="/leads/"] p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA24-today-relations-label-align.css:43` — `.main-today .right-card a[href^="/leads/"] [class*="text-blue"], .main-today .right-card a[href^="/leads/"] [class*="text-sky"], .main-today .right-card a[href^="/leads/"] [class*="text-primary"], .main-today .today-right-rail a[href^="/leads/"] [class*="text-blue"], .main-today .today-right-rail a[href^="/leads/"] [class*="text-sky"], .main-today .today-right-rail a[href^="/leads/"] [class*="text-primary"], .main-today aside a[href^="/leads/"] [class*="text-blue"], .main-today aside a[href^="/leads/"] [class*="text-sky"], .main-today aside a[href^="/leads/"] [class*="text-primary"]`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA24-today-relations-label-align.css:58` — `.main-today .right-card a[href^="/leads/"] > :last-child, .main-today .today-right-rail a[href^="/leads/"] > :last-child, .main-today .today-sidebar a[href^="/leads/"] > :last-child, .main-today [data-visual-right-rail] a[href^="/leads/"] > :last-child, .main-today aside a[href^="/leads/"] > :last-child`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA25-today-relations-lead-badge-inline.css:1` — `.main-today .right-card a[href^="/leads/"], .main-today .today-right-rail a[href^="/leads/"], .main-today .today-sidebar a[href^="/leads/"], .main-today [data-visual-right-rail] a[href^="/leads/"], .main-today aside a[href^="/leads/"]`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA25-today-relations-lead-badge-inline.css:18` — `.main-today .right-card a[href^="/leads/"] > *, .main-today .today-right-rail a[href^="/leads/"] > *, .main-today .today-sidebar a[href^="/leads/"] > *, .main-today [data-visual-right-rail] a[href^="/leads/"] > *, .main-today aside a[href^="/leads/"] > *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA25-today-relations-lead-badge-inline.css:29` — `.main-today .right-card a[href^="/leads/"] > :first-child, .main-today .today-right-rail a[href^="/leads/"] > :first-child, .main-today .today-sidebar a[href^="/leads/"] > :first-child, .main-today [data-visual-right-rail] a[href^="/leads/"] > :first-child, .main-today aside a[href^="/leads/"] > :first-child`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA25-today-relations-lead-badge-inline.css:44` — `.main-today .right-card a[href^="/leads/"] > :last-child, .main-today .today-right-rail a[href^="/leads/"] > :last-child, .main-today .today-sidebar a[href^="/leads/"] > :last-child, .main-today [data-visual-right-rail] a[href^="/leads/"] > :last-child, .main-today aside a[href^="/leads/"] > :last-child`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA25-today-relations-lead-badge-inline.css:57` — `.main-today .right-card a[href^="/leads/"] span, .main-today .right-card a[href^="/leads/"] small, .main-today .right-card a[href^="/leads/"] p, .main-today .today-right-rail a[href^="/leads/"] span, .main-today .today-right-rail a[href^="/leads/"] small, .main-today .today-right-rail a[href^="/leads/"] p, .main-today aside a[href^="/leads/"] span, .main-today aside a[href^="/leads/"] small, .main-today aside a[href^="/leads/"] p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/stageA25-today-relations-lead-badge-inline.css:80` — `.main-today .right-card a[href^="/leads/"] [class*="text-blue"], .main-today .right-card a[href^="/leads/"] [class*="text-sky"], .main-today .right-card a[href^="/leads/"] [class*="text-primary"], .main-today .today-right-rail a[href^="/leads/"] [class*="text-blue"], .main-today .today-right-rail a[href^="/leads/"] [class*="text-sky"], .main-today .today-right-rail a[href^="/leads/"] [class*="text-primary"], .main-today aside a[href^="/leads/"] [class*="text-blue"], .main-today aside a[href^="/leads/"] [class*="text-sky"], .main-today aside a[href^="/leads/"] [class*="text-primary"]`
+  - tło: `background: #eff6ff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage04-lead-detail.css:60` — `.main-lead-detail .person-card, .main-lead-detail .hero, .main-lead-detail .hero.light, .main-lead-detail .right-card, .main-lead-detail .work-card, .main-lead-detail .rounded-2xl.bg-white, .main-lead-detail .border-none.shadow-sm, .main-lead-detail [data-lead-service-banner], .main-lead-detail [data-lead-operational-archive], .main-lead-detail [data-lead-linked-work-card]`
+  - tło: `background: var(--cf-card) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage04-lead-detail.css:139` — `.main-lead-detail .person-card, .main-lead-detail .hero, .main-lead-detail .hero.light, .main-lead-detail .right-card, .main-lead-detail .work-card, .main-lead-detail .rounded-2xl.bg-white`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage05-clients.css:214` — `.cf-html-view.main-clients-html .right-card`
+  - tło: `background: rgba(255, 255, 255, .9)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage05-clients.css:272` — `.clients-page .right-card, .clients-page .right-card *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage05-clients.css:278` — `.clients-page .right-card p, .clients-page .right-card small, .clients-page .right-card .muted, .clients-page .clients-filter-caption, .clients-page .clients-filter-description, .clients-page [data-clients-simple-filters="true"] p, .clients-page [data-clients-simple-filters="true"] small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage05-clients.css:290` — `.clients-page .right-card strong, .clients-page .right-card h2, .clients-page .right-card h3, .clients-page .right-card button, .clients-page .right-card [role="button"], .clients-page [data-clients-simple-filters="true"] strong, .clients-page [data-clients-simple-filters="true"] button, .clients-page [data-clients-simple-filters="true"] h2, .clients-page [data-clients-simple-filters="true"] h3`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage05-clients.css:302` — `.clients-page .right-card button, .clients-page .right-card [role="button"], .clients-page [data-clients-simple-filters="true"] button, .clients-page [data-clients-simple-filters="true"] [role="button"]`
+  - tło: `background: #ffffff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage06-client-detail.css:46` — `.main-client-detail [class*="bg-white"], .main-client-detail .card, .main-client-detail .person-card, .main-client-detail .right-card, .main-client-detail .work-card`
+  - tło: `background: var(--cf-client-card) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage06-client-detail.css:113` — `.main-client-detail .right-card, .main-client-detail [data-client-right-card]`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage07-cases.css:89` — `.main-cases .right-card, .main-cases [data-case-operations-rail]`
+  - tło: `background: #fff`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage08-case-detail.css:55` — `.main-case-detail [class*="bg-white"], .main-case-detail [data-testid="case-detail-v1-command-center"], .main-case-detail .cf-card, .main-case-detail .card, .main-case-detail .work-card, .main-case-detail .right-card, .main-case-detail .person-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage08-case-detail.css:133` — `.main-case-detail .quick-list, .main-case-detail .right-card`
+  - tło: `background: #ffffff`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage08-case-detail.css:173` — `.main-case-detail [class*="rounded-2xl"], .main-case-detail [data-testid="case-detail-v1-command-center"], .main-case-detail .card, .main-case-detail .work-card, .main-case-detail .right-card, .main-case-detail .person-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage10-notifications-vnext.css:536` — `.notifications-right-rail::before, .notifications-right-rail::after, .notifications-right-card::before, .notifications-right-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage10-notifications-vnext.css:544` — `.right-card.notifications-right-card, .notifications-right-card`
+  - tło: `background: rgba(255, 255, 255, 0.92)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage10-notifications-vnext.css:554` — `.notifications-right-card-head`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage10-notifications-vnext.css:562` — `.notifications-right-card-head h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage10-notifications-vnext.css:723` — `.notifications-toolbar-card, .notifications-list-card, .notifications-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage10-notifications-vnext.css:827` — `.notifications-vnext-page .notifications-right-rail::before, .notifications-vnext-page .notifications-right-rail::after, .notifications-vnext-page [aria-label="Panel powiadomien"]::before, .notifications-vnext-page [aria-label="Panel powiadomien"]::after, .notifications-vnext-page .right-card.notifications-right-card::before, .notifications-vnext-page .right-card.notifications-right-card::after, .notifications-vnext-page .notifications-right-card::before, .notifications-vnext-page .notifications-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage10-notifications-vnext.css:842` — `.notifications-vnext-page .right-card.notifications-right-card, .notifications-vnext-page .notifications-right-rail > .notifications-right-card, .notifications-vnext-page .notifications-right-card`
+  - tło: `background: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage12-client-detail-vnext.css:126` — `.client-detail-left-rail::before, .client-detail-left-rail::after, .client-detail-right-rail::before, .client-detail-right-rail::after, .client-detail-side-card::before, .client-detail-side-card::after, .client-detail-right-card::before, .client-detail-right-card::after, .right-card.client-detail-right-card::before, .right-card.client-detail-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage12-client-detail-vnext.css:143` — `.client-detail-side-card, .client-detail-profile-card, .client-detail-actions-card, .right-card.client-detail-right-card, .client-detail-right-card, .client-detail-section-card, .client-detail-summary-card, .client-detail-tabs, .client-detail-empty-card, .client-detail-loading-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage12-client-detail-vnext.css:163` — `.client-detail-side-card, .client-detail-right-card, .client-detail-section-card, .client-detail-summary-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage12-client-detail-vnext.css:279` — `.client-detail-info-row small, .client-detail-source-grid small, .client-detail-right-card small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage12-client-detail-vnext.css:897` — `.client-detail-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage12-client-detail-vnext.css:903` — `.client-detail-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage12-client-detail-vnext.css:911` — `.client-detail-right-card small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage12-client-detail-vnext.css:1307` — `.client-detail-vnext-page .client-detail-right-card p, .client-detail-vnext-page .client-detail-case-row strong, .client-detail-vnext-page .client-detail-summary-card strong, .client-detail-vnext-page .client-detail-relation-main h3, .client-detail-vnext-page .client-detail-history-row h3, .client-detail-vnext-page .client-detail-source-grid strong`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage12-client-detail-vnext.css:1317` — `.client-detail-vnext-page .client-detail-relation-main p, .client-detail-vnext-page .client-detail-history-row p, .client-detail-vnext-page .client-detail-note-inline p, .client-detail-vnext-page .client-detail-section-head p, .client-detail-vnext-page .client-detail-case-row p, .client-detail-vnext-page .client-detail-right-card small, .client-detail-vnext-page .client-detail-info-row small, .client-detail-vnext-page .client-detail-note-text`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage12-client-detail-vnext.css:1330` — `.client-detail-vnext-page .client-detail-case-row strong, .client-detail-vnext-page .client-detail-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage13-case-detail-vnext.css:100` — `.case-detail-top-card, .case-detail-section-card, .case-detail-tabs, .right-card.case-detail-right-card, .case-detail-right-card, .case-detail-loading-card, .case-detail-empty-card, .case-detail-work-row, .case-detail-checklist-row, .case-detail-history-row, .case-detail-path-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage13-case-detail-vnext.css:121` — `.case-detail-top-card, .case-detail-section-card, .case-detail-right-card, .case-detail-work-row, .case-detail-checklist-row, .case-detail-history-row, .case-detail-path-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage13-case-detail-vnext.css:220` — `.case-detail-right-rail::before, .case-detail-right-rail::after, .case-detail-right-card::before, .case-detail-right-card::after, .right-card.case-detail-right-card::before, .right-card.case-detail-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage13-case-detail-vnext.css:503` — `.case-detail-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage13-case-detail-vnext.css:509` — `.case-detail-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage13-case-detail-vnext.css:517` — `.case-detail-right-card small, .case-detail-right-note`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage13-case-detail-vnext.css:1230` — `.case-detail-vnext-page .case-detail-right-card, .case-detail-vnext-page [data-case-create-actions-panel="true"], .case-detail-vnext-page .case-detail-create-action-card, .case-detail-shell .case-detail-right-card, .case-detail-shell [data-case-create-actions-panel="true"], .case-detail-shell .case-detail-create-action-card`
+  - tło: `background: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, dark shell / layout wrapper, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage13-case-detail-vnext.css:1244` — `.case-detail-vnext-page .case-detail-right-card *, .case-detail-vnext-page [data-case-create-actions-panel="true"] *, .case-detail-vnext-page .case-detail-create-action-card *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage13-case-detail-vnext.css:1252` — `.case-detail-vnext-page .case-detail-right-card button, .case-detail-vnext-page [data-case-create-actions-panel="true"] button, .case-detail-vnext-page .case-detail-create-action-card button`
+  - tło: `background: #ffffff !important`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage14-lead-detail-vnext.css:96` — `.lead-detail-service-box, .lead-detail-section-card, .lead-detail-top-card, .lead-detail-right-card, .right-card.lead-detail-right-card, .lead-detail-empty-card, .lead-detail-loading-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage14-lead-detail-vnext.css:137` — `.lead-detail-service-box p, .lead-detail-section-head p, .lead-detail-top-card p, .lead-detail-right-card p, .lead-detail-note-box p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:193` — `.lead-detail-right-rail::before, .lead-detail-right-rail::after, .lead-detail-right-card::before, .lead-detail-right-card::after, .right-card.lead-detail-right-card::before, .right-card.lead-detail-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage14-lead-detail-vnext.css:212` — `.lead-detail-top-card, .lead-detail-section-card, .lead-detail-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:305` — `.lead-detail-info-line small, .lead-detail-note-box small, .lead-detail-work-row small, .lead-detail-right-card small, .lead-detail-history-row small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:480` — `.lead-detail-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:485` — `.lead-detail-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:830` — `.lead-detail-right-rail .lead-detail-right-card, .lead-detail-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage14-lead-detail-vnext.css:836` — `.lead-detail-right-rail .lead-detail-right-card *, .lead-detail-right-card *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:841` — `.lead-detail-right-card p, .lead-detail-right-card small, .lead-detail-right-card span, .lead-detail-right-card li, .lead-detail-ai-tabs-content, .lead-detail-ai-tabs-content *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage14-lead-detail-vnext.css:851` — `.lead-detail-right-card p, .lead-detail-ai-tabs-content p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:856` — `.lead-detail-right-card .lead-detail-pill, .lead-detail-right-card .lead-detail-pill *, .lead-detail-right-card button, .lead-detail-right-card button *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:992` — `.lead-detail-vnext-page .lead-detail-right-card, .lead-detail-vnext-page .right-card.lead-detail-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage14-lead-detail-vnext.css:999` — `.lead-detail-vnext-page .lead-detail-right-card p, .lead-detail-vnext-page .lead-detail-right-card dd, .lead-detail-vnext-page .lead-detail-right-card li, .lead-detail-vnext-page .lead-detail-right-card strong, .lead-detail-vnext-page .lead-detail-right-card span`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:1009` — `.lead-detail-vnext-page .lead-detail-right-card .one-line, .lead-detail-vnext-page .lead-detail-right-card [data-one-line="true"]`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:1031` — `.lead-detail-vnext-page .lead-detail-right-card [data-lead-start-service], .lead-detail-vnext-page .lead-detail-right-card .cf-action-button`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage14-lead-detail-vnext.css:1043` — `.lead-detail-vnext-page .lead-detail-right-card [data-lead-start-service]:disabled, .lead-detail-vnext-page .lead-detail-right-card .cf-action-button:disabled`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage16-billing-vnext.css:101` — `.billing-status-card, .billing-metric-card, .billing-period-card, .billing-plan-card, .billing-limits-card, .billing-expired-card, .billing-settlements-card, .billing-loading-card, .right-card.billing-right-card, .billing-right-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage16-billing-vnext.css:289` — `.billing-period-card h2, .billing-section-head h2, .billing-right-card h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage16-billing-vnext.css:500` — `.billing-right-rail::before, .billing-right-rail::after, .right-card.billing-right-card::before, .right-card.billing-right-card::after, .billing-right-card::before, .billing-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage16-billing-vnext.css:513` — `.billing-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage16-billing-vnext.css:526` — `.billing-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage16-billing-vnext.css:534` — `.billing-right-card small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage16-today-html-reset.css:299` — `.table-card, .right-card, .work-card`
+  - tło: `background: var(--cf16-card)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage17-support-vnext.css:62` — `.support-hero-card, .support-form-card, .support-tickets-card, .support-faq-card, .support-loading-card, .support-ticket-detail, .right-card.support-right-card, .support-right-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage17-support-vnext.css:146` — `.support-section-head h2, .support-right-card h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage17-support-vnext.css:556` — `.support-right-rail::before, .support-right-rail::after, .right-card.support-right-card::before, .right-card.support-right-card::after, .support-right-card::before, .support-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage17-support-vnext.css:569` — `.support-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage17-support-vnext.css:582` — `.support-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage17-support-vnext.css:590` — `.support-right-card small, .support-right-card li`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage17-support-vnext.css:620` — `.support-right-card ul`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage17-today-hard-1to1.css:345` — `.main-today .layout-list, .main-today [data-visual-layout-list], .main-today .today-main-grid, .main-today .today-layout, .main-today .grid:has(.right-card), .main-today .grid:has([data-visual-right-rail])`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage17-today-hard-1to1.css:472` — `.main-today .right-card, .main-today aside, .main-today [data-visual-right-rail], .main-today .today-right-rail, .main-today .today-sidebar`
+  - tło: `background: rgba(255,255,255,.86) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage17-today-hard-1to1.css:547` — `.main-today .layout-list, .main-today [data-visual-layout-list], .main-today .today-main-grid, .main-today .today-layout, .main-today .grid:has(.right-card), .main-today .grid:has([data-visual-right-rail])`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage18-leads-hard-1to1.css:423` — `.main-leads .right-card, .main-leads aside, .main-leads [data-stage32-leads-value-rail='true'], .main-leads [data-stage32-relation-funnel-rail='true']`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage18-leads-hard-1to1.css:435` — `.main-leads .right-card, .main-leads aside > *, .main-leads [data-stage32-leads-value-rail='true'] > *, .main-leads [data-stage32-relation-funnel-rail='true'] > *`
+  - tło: `background: rgba(255,255,255,.90) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage18-leads-hard-1to1.css:525` — `.main-leads .right-card, .main-leads aside, .main-leads [data-stage32-leads-value-rail='true'], .main-leads [data-stage32-relation-funnel-rail='true']`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage19-settings-vnext.css:62` — `.settings-summary-card, .settings-section-card, .settings-loading-card, .right-card.settings-right-card, .settings-right-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage19-settings-vnext.css:138` — `.settings-section-head h2, .settings-right-card h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage19-settings-vnext.css:340` — `.settings-right-rail::before, .settings-right-rail::after, .right-card.settings-right-card::before, .right-card.settings-right-card::after, .settings-right-card::before, .settings-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage19-settings-vnext.css:353` — `.settings-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage19-settings-vnext.css:366` — `.settings-right-card p`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage19-settings-vnext.css:374` — `.settings-right-card small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage21-today-final-lock.css:226` — `.cf-html-shell .main-today .layout-list, .cf-html-shell .main-today [data-visual-layout-list], .cf-html-shell .main-today .today-layout, .cf-html-shell .main-today .today-main-grid, .cf-html-shell .main-today .grid:has(.right-card), .cf-html-shell .main-today .grid:has([data-visual-right-rail]), .cf-html-shell .main-today .grid:has(.today-right-rail), .cf-html-shell .main-today .grid:has(.today-sidebar)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage21-today-final-lock.css:492` — `.cf-html-shell .main-today .right-card, .cf-html-shell .main-today [data-visual-right-rail], .cf-html-shell .main-today .today-right-rail, .cf-html-shell .main-today .today-sidebar, .cf-html-shell .main-today aside:not(.sidebar)`
+  - tło: `background: rgba(255, 255, 255, 0.86) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage21-today-final-lock.css:592` — `.cf-html-shell .main-today .layout-list, .cf-html-shell .main-today [data-visual-layout-list], .cf-html-shell .main-today .today-layout, .cf-html-shell .main-today .today-main-grid, .cf-html-shell .main-today .grid:has(.right-card), .cf-html-shell .main-today .grid:has([data-visual-right-rail]), .cf-html-shell .main-today .grid:has(.today-right-rail), .cf-html-shell .main-today .grid:has(.today-sidebar)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage21-today-final-lock.css:657` — `.cf-html-shell .main-today .card, .cf-html-shell .main-today [data-slot="card"], .cf-html-shell .main-today .today-card, .cf-html-shell .main-today .today-section, .cf-html-shell .main-today .today-tile-card, .cf-html-shell .main-today .today-list-card, .cf-html-shell .main-today .table-card, .cf-html-shell .main-today .right-card, .cf-html-shell .main-today [data-visual-right-rail], .cf-html-shell .main-today .today-right-rail, .cf-html-shell .main-today .today-sidebar, .cf-html-shell .main-today aside:not(.sidebar)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:401` — `.cf-html-view.main-leads-html .right-card`
+  - tło: `background: rgba(255, 255, 255, .86)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:157` — `.cf-html-view.main-leads-html .right-card, .cf-html-view.main-leads-html .right-card *, .cf-html-view.main-leads-html .quick-list, .cf-html-view.main-leads-html .quick-list *`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:165` — `.cf-html-view.main-leads-html .right-card`
+  - tło: `background: rgba(255, 255, 255, .86) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:184` — `.cf-html-view.main-leads-html .right-card::before, .cf-html-view.main-leads-html .right-card::after, .cf-html-view.main-leads-html .quick-list::before, .cf-html-view.main-leads-html .quick-list::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:192` — `.cf-html-view.main-leads-html .right-card h3`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:199` — `.cf-html-view.main-leads-html .right-card p, .cf-html-view.main-leads-html .right-card small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:204` — `.cf-html-view.main-leads-html .right-card .pill.dark`
+  - tło: `background: #f8fafc !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:240` — `.cf-html-view.main-leads-html .right-card .btn.soft-blue`
+  - tło: `background: #eff6ff !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:334` — `.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail .right-card`
+  - tło: `background: rgba(255, 255, 255, .86) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, dark shell / layout wrapper, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:377` — `.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::before, .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::after, .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::before, .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, dark shell / layout wrapper
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:385` — `.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card`
+  - tło: `background: rgba(255, 255, 255, .9) !important`
+  - źródła: stary/stage CSS albo adapter, dark shell / layout wrapper, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage27-cases-vnext.css:233` — `.cf-html-view.main-cases-html .right-card`
+  - tło: `background: rgba(255, 255, 255, .9)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage28-tasks-vnext.css:72` — `.cf-html-view.main-tasks-html .tasks-right-rail::before, .cf-html-view.main-tasks-html .tasks-right-rail::after, .cf-html-view.main-tasks-html .tasks-right-card::before, .cf-html-view.main-tasks-html .tasks-right-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, wrapper .cf-html-view
+- `src/styles/visual-stage28-tasks-vnext.css:124` — `.cf-html-view.main-tasks-html .right-card`
+  - tło: `background: rgba(255,255,255,.9)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage29-calendar-vnext.css:236` — `.cf-html-view.main-calendar-html .right-card`
+  - tło: `background: rgba(255, 255, 255, .9)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage8-activity-vnext.css:510` — `.right-card.activity-right-card, .activity-right-card`
+  - tło: `background: rgba(255, 255, 255, 0.92)`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage8-activity-vnext.css:520` — `.activity-right-card-head`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage8-activity-vnext.css:528` — `.activity-right-card-head h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage8-activity-vnext.css:649` — `.activity-toolbar-card, .activity-list-card, .activity-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage8-activity-vnext.css:756` — `.activity-vnext-page .activity-right-rail::before, .activity-vnext-page .activity-right-rail::after, .activity-vnext-page .activity-right-rail .right-card::before, .activity-vnext-page .activity-right-rail .right-card::after, .activity-vnext-page .activity-right-rail .activity-right-card::before, .activity-vnext-page .activity-right-rail .activity-right-card::after`
+  - tło: `background: transparent !important; background-color: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage8-activity-vnext.css:776` — `.activity-vnext-page .activity-right-rail > .right-card.activity-right-card, .activity-vnext-page .activity-right-rail > .activity-right-card`
+  - tło: `background: #ffffff !important; background-color: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage8-activity-vnext.css:790` — `.activity-vnext-page .activity-right-rail .activity-right-card-head, .activity-vnext-page .activity-right-rail .activity-rail-list, .activity-vnext-page .activity-right-rail .activity-rail-empty`
+  - tło: `background: transparent !important; background-color: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage9-ai-drafts-vnext.css:860` — `.ai-drafts-vnext-page .ai-drafts-right-rail::before, .ai-drafts-vnext-page .ai-drafts-right-rail::after, .ai-drafts-vnext-page .ai-drafts-right-card::before, .ai-drafts-vnext-page .ai-drafts-right-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage9-ai-drafts-vnext.css:868` — `.right-card.ai-drafts-right-card, .ai-drafts-vnext-page .ai-drafts-right-card`
+  - tło: `background: rgba(255, 255, 255, 0.92) !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage9-ai-drafts-vnext.css:878` — `.ai-drafts-right-card-head`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage9-ai-drafts-vnext.css:886` — `.ai-drafts-right-card-head h2`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage9-ai-drafts-vnext.css:1022` — `.ai-drafts-toolbar-card, .ai-drafts-list-card, .ai-drafts-right-card`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter
+- `src/styles/visual-stage9-ai-drafts-vnext.css:1132` — `.ai-drafts-vnext-page .ai-drafts-right-rail::before, .ai-drafts-vnext-page .ai-drafts-right-rail::after, .ai-drafts-vnext-page [aria-label="Skrot szkicow AI"]::before, .ai-drafts-vnext-page [aria-label="Skrot szkicow AI"]::after, .ai-drafts-vnext-page .right-card.ai-drafts-right-card::before, .ai-drafts-vnext-page .right-card.ai-drafts-right-card::after, .ai-drafts-vnext-page .ai-drafts-right-card::before, .ai-drafts-vnext-page .ai-drafts-right-card::after`
+  - tło: `background: transparent !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage9-ai-drafts-vnext.css:1147` — `.ai-drafts-vnext-page .right-card.ai-drafts-right-card, .ai-drafts-vnext-page .ai-drafts-right-rail > .ai-drafts-right-card, .ai-drafts-vnext-page .ai-drafts-right-card`
+  - tło: `background: #ffffff !important; background-image: none !important`
+  - źródła: stary/stage CSS albo adapter, globalne .right-card, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+
+Użycia TSX/JS:
+- `src/pages/Leads.tsx:1055` — inline/className — `<aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">`
+- `src/pages/Cases.tsx:792` — inline/className — `<aside className="right-card cases-shortcuts-rail-card">`
+- `src/pages/Cases.tsx:802` — inline/className — `<aside className="right-card cases-risk-rail-card">`
+- `src/pages/Clients.tsx:740` — inline/className — `<aside className="right-card">`
+- `src/pages/Clients.tsx:750` — inline/className — `<aside className="right-card" data-clients-lead-attention-rail="true">`
+- `src/components/CaseQuickActions.tsx:48` — inline/className — `<section className="right-card case-quick-actions" data-case-quick-actions-panel="true" aria-label="Szybkie akcje sprawy">`
+- `src/pages/Activity.tsx:848` — inline/className — `<section className="right-card activity-right-card">`
+- `src/pages/Activity.tsx:849` — inline/className — `<div className="activity-right-card-head">`
+- `src/pages/Activity.tsx:863` — inline/className — `<section className="right-card activity-right-card">`
+- `src/pages/Activity.tsx:864` — inline/className — `<div className="activity-right-card-head">`
+- `src/pages/Activity.tsx:885` — inline/className — `<section className="right-card activity-right-card">`
+- `src/pages/Activity.tsx:886` — inline/className — `<div className="activity-right-card-head">`
+- `src/pages/AiDrafts.tsx:1107` — inline/className — `<section className="right-card ai-drafts-right-card">`
+- `src/pages/AiDrafts.tsx:1108` — inline/className — `<div className="ai-drafts-right-card-head">`
+- `src/pages/AiDrafts.tsx:1126` — inline/className — `<section className="right-card ai-drafts-right-card">`
+- `src/pages/AiDrafts.tsx:1127` — inline/className — `<div className="ai-drafts-right-card-head">`
+- `src/pages/AiDrafts.tsx:1145` — inline/className — `<section className="right-card ai-drafts-right-card">`
+- `src/pages/AiDrafts.tsx:1146` — inline/className — `<div className="ai-drafts-right-card-head">`
+- `src/pages/AiDrafts.tsx:1164` — inline/className — `<section className="right-card ai-drafts-right-card">`
+- `src/pages/AiDrafts.tsx:1165` — inline/className — `<div className="ai-drafts-right-card-head">`
+- `src/pages/Billing.tsx:627` — inline/className — `<section className="right-card billing-right-card">`
+- `src/pages/Billing.tsx:655` — inline/className — `<section className="right-card billing-right-card">`
+- `src/pages/Billing.tsx:664` — inline/className — `<section className="right-card billing-right-card billing-right-featured">`
+- `src/pages/Billing.tsx:676` — inline/className — `<section className="right-card billing-right-card">`
+- `src/pages/Billing.tsx:688` — inline/className — `<section className="right-card billing-right-card">`
+- ...oraz 30 kolejnych użyć
+
+### .lead-right-card
+
+- `src/styles/closeflow-right-rail-source-truth.css:17` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card`
+  - tło: `background: var(--cf-right-rail-card-bg) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-surface-tokens.css:9` — `.right-card, [class$="-right-card"], .settings-right-card, .billing-right-card, .activity-right-card, .lead-right-card, .cases-shortcuts-rail-card, .calendar-week-filter, .calendar-week-plan`
+  - tło: `background: var(--cf-surface-card) !important; background-color: var(--cf-surface-card) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:377` — `.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::before, .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::after, .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::before, .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::after`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, dark shell / layout wrapper
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:385` — `.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card`
+  - tło: `background: rgba(255, 255, 255, .9) !important`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, dark shell / layout wrapper, deklaracja wygląda na ciemne tło/ciemny shell
+
+Użycia TSX/JS:
+- `src/pages/Leads.tsx:1055` — inline/className — `<aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">`
+
+### .lead-top-relations
+
+- `src/styles/closeflow-right-rail-source-truth.css:17` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card`
+  - tło: `background: var(--cf-right-rail-card-bg) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:45` — `#root .cf-html-view.main-leads-html .lead-right-rail .lead-top-relations`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:464` — `.cf-html-view.main-leads-html .lead-top-relations .panel-head`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:468` — `.cf-html-view.main-leads-html .lead-top-relations .quick-list a`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:472` — `.cf-html-view.main-leads-html .lead-top-relations .quick-list a > span`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:477` — `.cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:483` — `.cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/visual-stage25-leads-full-jsx-html-rebuild.css:489` — `.cf-html-view.main-leads-html .lead-top-relations .quick-list a > strong.lead-relation-money`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/visual-stage26-leads-visual-alignment-fix.css:395` — `.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-top-relations .quick-list a`
+  - tło: `background: #ffffff !important`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, dark shell / layout wrapper
+
+Użycia TSX/JS:
+- `src/pages/Leads.tsx:1055` — inline/className — `<aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">`
+
+### .cases-shortcuts-rail-card
+
+- `src/styles/closeflow-right-rail-source-truth.css:17` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card`
+  - tło: `background: var(--cf-right-rail-card-bg) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-surface-tokens.css:9` — `.right-card, [class$="-right-card"], .settings-right-card, .billing-right-card, .activity-right-card, .lead-right-card, .cases-shortcuts-rail-card, .calendar-week-filter, .calendar-week-plan`
+  - tło: `background: var(--cf-surface-card) !important; background-color: var(--cf-surface-card) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora
+
+Użycia TSX/JS:
+- `src/pages/Cases.tsx:792` — inline/className — `<aside className="right-card cases-shortcuts-rail-card">`
+
+### .cases-risk-rail-card
+
+- `src/styles/closeflow-right-rail-source-truth.css:17` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card`
+  - tło: `background: var(--cf-right-rail-card-bg) !important`
+  - źródła: globalne .right-card, lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/stage38-metrics-and-relations-polish.css:165` — `.cf-html-view.main-cases-html .cases-risk-rail-card .quick-list a > span > strong`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+
+Użycia TSX/JS:
+- `src/pages/Cases.tsx:802` — inline/className — `<aside className="right-card cases-risk-rail-card">`
+
+### .clients-right-rail
+
+- `src/styles/closeflow-right-rail-source-truth.css:10` — `#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(.lead-right-rail, .clients-right-rail, .cases-right-rail)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:49` — `#root .cf-html-view.main-leads-html .layout-list:has(.lead-right-rail), #root .cf-html-view.main-clients-html .layout-list:has(.clients-right-rail), #root .cf-html-view.main-cases-html .layout-list:has(.cases-right-rail)`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view, dark shell / layout wrapper
+- `src/styles/closeflow-right-rail-source-truth.css:59` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:67` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row`
+  - tło: `background: rgba(255, 255, 255, 0.94) !important`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:84` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row:hover`
+  - tło: `background: rgb(248 250 252) !important`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:89` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row-main`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:96` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-title`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:109` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-meta`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:122` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-badges`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:129` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:142` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-ok`
+  - tło: `background: rgb(220 252 231) !important`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:149` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-warn`
+  - tło: `background: rgb(254 242 242) !important`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/closeflow-right-rail-source-truth.css:156` — `#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-empty`
+  - tło: `background: rgb(248 250 252) !important`
+  - źródła: lokalna klasa selektora, wrapper .cf-html-view
+- `src/styles/stage35-clients-value-detail-cleanup.css:211` — `.main-clients-html .clients-right-rail .quick-list a`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage35-clients-value-detail-cleanup.css:217` — `.main-clients-html .clients-right-rail .quick-list a strong`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, deklaracja wygląda na ciemne tło/ciemny shell
+- `src/styles/stage35-clients-value-detail-cleanup.css:222` — `.main-clients-html .clients-right-rail .quick-list a small`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora
+- `src/styles/stage35-clients-value-detail-cleanup.css:226` — `.main-clients-html .clients-right-rail .quick-list a svg`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora
+- `src/styles/stage35-clients-value-detail-cleanup.css:273` — `.main-clients-html .clients-right-rail .quick-list a`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora
+- `src/styles/visual-stage05-clients.css:135` — `.cf-html-view.main-clients-html .stack, .cf-html-view.main-clients-html .clients-right-rail`
+  - tło: `brak jawnego tła w tej regule`
+  - źródła: stary/stage CSS albo adapter, lokalna klasa selektora, wrapper .cf-html-view
+
+Użycia TSX/JS:
+- `src/pages/Clients.tsx:739` — inline/className — `<div className="clients-right-rail">`
+
+## Importy CSS znalezione w skanie
+
+- `src/index.css` importuje `tailwindcss`
+- `src/index.css` importuje `./styles/design-system/index.css`
+- `src/index.css` importuje `./styles/core/core-contracts.css`
+- `src/index.css` importuje `./styles/page-adapters/page-adapters.css`
+- `src/index.css` importuje `./styles/legacy/legacy-imports.css`
+- `src/index.css` importuje `./styles/temporary/temporary-overrides.css`
+- `src/index.css` importuje `./styles/emergency/emergency-hotfixes.css`
+- `src/index.css` importuje `./styles/closeflow-mobile-start-tile-trim.css`
+- `src/styles/closeflow-vnext-ui-contract.css` importuje `./styles/closeflow-vnext-ui-contract.css`
+- `src/styles/core/core-contracts.css` importuje `../visual-stage01-shell.css`
+- `src/styles/core/core-contracts.css` importuje `../visual-html-theme-v14.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-vnext-ui-contract.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-form-actions.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-action-tokens.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-entity-type-tokens.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-stage16c-tasks-cases-parity.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-stage16d-tasks-metric-final-lock.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-metric-tiles.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-operator-metric-tiles.css`
+- `src/styles/core/core-contracts.css` importuje `../closeflow-operator-semantic-tones.css`
+- `src/styles/design-system/index.css` importuje `./closeflow-tokens.css`
+- `src/styles/design-system/index.css` importuje `./closeflow-icons.css`
+- `src/styles/design-system/index.css` importuje `./closeflow-layout.css`
+- `src/styles/design-system/index.css` importuje `./closeflow-components.css`
+- `src/styles/design-system/index.css` importuje `./closeflow-utilities.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../hotfix-lead-client-right-rail-dark-wrappers.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../hotfix-ai-drafts-right-rail-dark-wrapper-stage28.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../hotfix-ai-drafts-right-rail-stage28.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../eliteflow-admin-feedback-p1-hotfix.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-client-event-modal-runtime-repair.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-a1-client-note-event-lead-visibility-finalizer.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-metric-tile-visual-source-truth.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-operator-metric-tiles.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-card-source-truth.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-command-actions-source-truth.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-copy-source-truth.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-action-semantics-packet1.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-stage6-final-lock.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-final-lock.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-structure-lock.css`
+- `src/styles/emergency/emergency-hotfixes.css` importuje `../closeflow-page-header-copy-left-only.css`
+- `src/styles/legacy/legacy-imports.css` importuje `../case-detail-simplified.css`
+- `src/styles/legacy/legacy-imports.css` importuje `../case-detail-stage2.css`
+- `src/styles/legacy/legacy-imports.css` importuje `../visual-stage3-pipeline-and-case.css`
+- `src/styles/legacy/legacy-imports.css` importuje `../stage7a-tasks-blue-outline-fix.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage02-today.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage03-leads.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage04-lead-detail.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage05-clients.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage06-client-detail.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage07-cases.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage08-case-detail.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage13-case-detail-vnext.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage18-leads-hard-1to1.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage19-clients-safe-css.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage20-lead-form-vnext.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage20-tasks-safe-css.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage21-today-final-lock.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage23-client-case-forms-vnext.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage25-leads-full-jsx-html-rebuild.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage26-leads-visual-alignment-fix.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage27-cases-vnext.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage28-tasks-vnext.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage29-calendar-vnext.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../visual-stage30-tasks-compact-after-calendar.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../quick-lead-capture-stage27.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../tasks-header-stage45b-cleanup.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../stage37-unified-page-head-and-metrics.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../stage38-metrics-and-relations-polish.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../stage39-page-headers-copy-visual-system.css`
+- `src/styles/page-adapters/page-adapters.css` importuje `../stage40-page-header-action-overflow-hardening.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-final-metric-tiles-hard-lock.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-metric-tiles-color-font-parity.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-metric-text-clip-tasks-repair.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-desktop-compact-scale.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-semantic-badges-and-today-sections.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-sidebar-footer-contrast-repair.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../eliteflow-sidebar-user-footer-below-nav.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA19v2-sidebar-nav-contrast-fix.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA20-sidebar-today-click-fix.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA20c-sidebar-today-hitbox-fix.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA20d-sidebar-unified-nav-tone.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA20e-sidebar-today-tone-lock.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stage30a-mobile-contrast-lock.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stage31-full-mobile-polish.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stage33a-ai-drafts-generated-text-contrast.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stage34-calendar-readability-status-forms.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stage34b-calendar-complete-polish.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stage35-clients-value-detail-cleanup.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA24-today-relations-label-align.css`
+- `src/styles/temporary/temporary-overrides.css` importuje `../stageA25-today-relations-lead-badge-inline.css`
+
+## Kryterium zakończenia Etapu 1
+
+Etap 1 jest zakończony, gdy ten raport jasno pokazuje, czy problem tła jest globalny, lokalny, ze starego stage CSS, wrappera `.cf-html-view`, dark shell albo inline `className`. Dopiero po tym wolno przejść do zmiany styli.
