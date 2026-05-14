@@ -738,7 +738,9 @@
     "check:stage76-today-event-done-action": "node scripts/check-stage76-today-event-done-action.cjs",
     "test:stage76-today-event-done-action": "node --test tests/stage76-today-event-done-action.test.cjs",
     "check:stage77-lead-detail-single-status-pill": "node scripts/check-stage77-lead-detail-single-status-pill.cjs",
-    "test:stage77-lead-detail-single-status-pill": "node --test tests/stage77-lead-detail-single-status-pill.test.cjs"
+    "test:stage77-lead-detail-single-status-pill": "node --test tests/stage77-lead-detail-single-status-pill.test.cjs",
+    "check:stage78-lead-detail-no-static-ai-followup-card": "node scripts/check-stage78-lead-detail-no-static-ai-followup-card.cjs",
+    "test:stage78-lead-detail-no-static-ai-followup-card": "node --test tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

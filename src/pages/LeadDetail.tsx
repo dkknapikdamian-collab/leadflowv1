@@ -20,6 +20,11 @@ const STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL = 'LeadDetail header renders lead s
 void STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL;
 const CLOSEFLOW_BUILD_BLOCKERS_MASSCHECK_LEADDETAIL_FIX_2026_05_12 = 'LeadDetail service case small fallback quote fixed';
 const CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13 = 'Right rail noisy AI/status cards removed and contact history uses shared activity timeline formatter';
+
+const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
+void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
+const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL = 'LeadDetail does not render the static AI follow-up right-rail card';
+void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL;
 import {
   useEffect,
   useMemo,
@@ -50,7 +55,6 @@ import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
-import LeadAiFollowupDraft from '../components/LeadAiFollowupDraft';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
@@ -1540,13 +1544,6 @@ useEffect(() => {
 
           {!leadInService ? (
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
-            <LeadAiFollowupDraft
-              lead={lead}
-              tasks={linkedTasks}
-              events={linkedEvents}
-              activities={activities}
-              disabled={leadOperationalArchive}
-            />
 {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
 
 

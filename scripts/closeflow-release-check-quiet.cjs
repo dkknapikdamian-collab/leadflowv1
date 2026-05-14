@@ -148,6 +148,7 @@ const requiredTests = [
   'tests/stage94-ai-layer-separation-copy.test.cjs',
   'tests/stage76-today-event-done-action.test.cjs',
   'tests/stage77-lead-detail-single-status-pill.test.cjs',
+  'tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
