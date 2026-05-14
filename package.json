@@ -732,7 +732,9 @@
     "audit:right-rail-cards": "node tools/audit-right-rail-card-styles.cjs",
     "check:right-rail-cards": "node tools/audit-right-rail-card-styles.cjs --check",
     "check:stage74-clients-leads-to-link-panel": "node scripts/check-stage74-clients-leads-to-link-panel.cjs",
-    "test:stage74-clients-leads-to-link-panel": "node --test tests/stage74-clients-leads-to-link-panel.test.cjs"
+    "test:stage74-clients-leads-to-link-panel": "node --test tests/stage74-clients-leads-to-link-panel.test.cjs",
+    "check:right-rail-card-source-of-truth": "node scripts/check-right-rail-card-source-of-truth-stage75.cjs",
+    "test:right-rail-card-source-of-truth": "node --test tests/right-rail-card-source-of-truth.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

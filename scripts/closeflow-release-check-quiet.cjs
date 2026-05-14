@@ -12,6 +12,7 @@ const path = require('node:path');
 const repoRoot = path.resolve(__dirname, '..');
 
 const requiredTests = [
+  'tests/right-rail-card-source-of-truth.test.cjs',
   'tests/closeflow-release-gate.test.cjs',
   'tests/closeflow-release-gate-quiet.test.cjs',
   'tests/lead-next-action-title-not-null.test.cjs',
