@@ -182,6 +182,7 @@ const STAGE35_MONEY_KEYS = [
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENTS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 const CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FULL = 'lead and client duplicate warning modal before write';
 const CLOSEFLOW_A2_CLIENT_DUPLICATE_WARNING_BEFORE_WRITE = 'client duplicate warning before write';
+const STAGE74_CLIENTS_LEADS_TO_LINK_EMPTY_COPY = 'Brak leadów wymagających spięcia.';
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -389,8 +390,8 @@ export default function Clients() {
     [clients, countersByClientId],
   );
 
-  const followupLeadCandidates = useMemo(() => {
-    // STAGE71_CLIENTS_LEADS_ONLY_ATTENTION: this rail is about lead records that still need relation cleanup.
+  const leadsNeedingClientOrCaseLink = useMemo(() => {
+    // STAGE74_CLIENTS_LEADS_TO_LINK_PANEL: this rail is about lead records that still need relation cleanup.
     // It must not render client records under the lead attention operational card.
     const caseLeadIds = new Set<string>();
     const caseClientIds = new Set<string>();
@@ -750,12 +751,12 @@ export default function Clients() {
                                                 <aside className="right-card" data-clients-lead-attention-rail="true">
               <div className="panel-head">
                 <div>
-                  <h3>Leady do uwagi</h3>
-                  <p>Tematy sprzedażowe bez pełnego spięcia z klientem albo sprawą.</p>
+                  <h3>Leady do spięcia</h3>
+                  <p>Brak klienta albo sprawy przy aktywnym temacie.</p>
                 </div>
               </div>
               <div className="right-list" data-right-rail-list="lead-attention">
-                {followupLeadCandidates.length ? followupLeadCandidates.map((lead) => {
+                {leadsNeedingClientOrCaseLink.length ? leadsNeedingClientOrCaseLink.map((lead) => {
                   const leadId = String(lead.id || '').trim();
                   const clientId = getStage35RelationClientId(lead);
                   const hasClient = Boolean(clientId);
