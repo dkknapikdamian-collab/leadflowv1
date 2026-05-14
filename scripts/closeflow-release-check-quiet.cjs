@@ -147,6 +147,7 @@ const requiredTests = [
   'tests/supabase-first-readiness-stage16.test.cjs',
   'tests/stage94-ai-layer-separation-copy.test.cjs',
   'tests/stage76-today-event-done-action.test.cjs',
+  'tests/stage77-lead-detail-single-status-pill.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
