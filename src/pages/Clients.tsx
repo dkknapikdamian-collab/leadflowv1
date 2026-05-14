@@ -747,10 +747,14 @@ export default function Clients() {
               </div>
             </aside>
 
-                        <aside className="right-card" data-clients-lead-attention-rail="true">
-              <h3>Leady do uwagi</h3>
-              <p>Tematy sprzedażowe bez pełnego spięcia z klientem albo sprawą.</p>
-              <div className="right-list">
+                                                <aside className="right-card" data-clients-lead-attention-rail="true">
+              <div className="panel-head">
+                <div>
+                  <h3>Leady do uwagi</h3>
+                  <p>Tematy sprzedażowe bez pełnego spięcia z klientem albo sprawą.</p>
+                </div>
+              </div>
+              <div className="right-list" data-right-rail-list="lead-attention">
                 {followupLeadCandidates.length ? followupLeadCandidates.map((lead) => {
                   const leadId = String(lead.id || '').trim();
                   const clientId = getStage35RelationClientId(lead);
@@ -761,15 +765,26 @@ export default function Clients() {
                     return Boolean((leadId && caseLeadId === leadId) || (clientId && caseClientId === clientId));
                   });
                   const leadLabel = String(lead.name || lead.company || lead.phone || lead.email || 'Lead bez nazwy');
+                  const leadSecondaryText = String(lead.company || lead.phone || lead.email || lead.source || 'Lead do spięcia');
 
                   return (
-                    <Link key={leadId || leadLabel} to={leadId ? '/leads/' + leadId : '/leads'} className="right-list-row">
-                      <strong>{leadLabel}</strong>
-                      <span>{hasClient ? 'Klient OK' : 'Brak klienta'} · {hasCase ? 'Sprawa OK' : 'Brak sprawy'}</span>
+                    <Link key={leadId || leadLabel} to={leadId ? '/leads/' + leadId : '/leads'} className="right-list-row" data-right-rail-row="lead-attention">
+                      <span className="right-list-row-main">
+                        <span className="right-list-title">{leadLabel}</span>
+                        <span className="right-list-meta">{leadSecondaryText}</span>
+                      </span>
+                      <span className="right-list-badges" aria-label="Status spięcia leada">
+                        <span className={hasClient ? 'right-list-pill right-list-pill-ok' : 'right-list-pill right-list-pill-warn'}>
+                          {hasClient ? 'Klient OK' : 'Brak klienta'}
+                        </span>
+                        <span className={hasCase ? 'right-list-pill right-list-pill-ok' : 'right-list-pill right-list-pill-warn'}>
+                          {hasCase ? 'Sprawa OK' : 'Brak sprawy'}
+                        </span>
+                      </span>
                     </Link>
                   );
                 }) : (
-                  <p className="sub">Brak leadów do spięcia.</p>
+                  <p className="right-list-empty">Brak leadów do spięcia.</p>
                 )}
               </div>
             </aside>

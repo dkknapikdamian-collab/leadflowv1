@@ -62,3 +62,118 @@
 #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(a, button) {
   -webkit-text-fill-color: currentColor !important;
 }
+
+/* CLOSEFLOW_RIGHT_RAIL_LIST_ROW_VISUAL_STAGE72_2026_05_14
+   owner: CloseFlow Visual System
+   scope: shared right rail list rows on /leads, /clients, /cases
+   rule: right rail row content must never collapse into one inline text run
+*/
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.62rem !important;
+  margin-top: 0.72rem !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.48rem !important;
+  padding: 0.72rem 0.78rem !important;
+  border-radius: 0.95rem !important;
+  border: 1px solid rgba(148, 163, 184, 0.24) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+  text-decoration: none !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row:hover {
+  border-color: rgba(59, 130, 246, 0.36) !important;
+  background: rgb(248 250 252) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row-main {
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.16rem !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-title {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  font-size: 0.86rem !important;
+  font-weight: 850 !important;
+  line-height: 1.18 !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-meta {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  font-size: 0.74rem !important;
+  font-weight: 650 !important;
+  line-height: 1.3 !important;
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+  overflow-wrap: anywhere !important;
+  white-space: normal !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-badges {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.34rem !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill {
+  min-height: 1.35rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 0.22rem 0.48rem !important;
+  border-radius: 999px !important;
+  font-size: 0.66rem !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-ok {
+  border: 1px solid rgb(134 239 172) !important;
+  background: rgb(220 252 231) !important;
+  color: rgb(22 101 52) !important;
+  -webkit-text-fill-color: rgb(22 101 52) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-warn {
+  border: 1px solid rgb(252 165 165) !important;
+  background: rgb(254 242 242) !important;
+  color: rgb(153 27 27) !important;
+  -webkit-text-fill-color: rgb(153 27 27) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-empty {
+  margin: 0 !important;
+  padding: 0.72rem 0.78rem !important;
+  border-radius: 0.95rem !important;
+  border: 1px dashed rgba(148, 163, 184, 0.38) !important;
+  background: rgb(248 250 252) !important;
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+}
+

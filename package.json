@@ -723,9 +723,10 @@
     "check:calendar:selected-day-new-tile-v9": "node scripts/check-calendar-selected-day-new-tile-v9-massfix.cjs",
     "check:calendar:selected-day-new-tile-v9-massfix": "node scripts/check-calendar-selected-day-new-tile-v9-massfix.cjs",
     "check:calendar-selected-day-handler-scope": "node scripts/check-calendar-selected-day-handler-scope.cjs",
-    "prebuild": "node scripts/check-calendar-selected-day-handler-scope.cjs && node scripts/check-right-rail-source-truth.cjs && node scripts/check-clients-leads-only-attention-stage71.cjs",
+    "prebuild": "node scripts/check-calendar-selected-day-handler-scope.cjs && node scripts/check-right-rail-source-truth.cjs && node scripts/check-clients-leads-only-attention-stage71.cjs && node scripts/check-clients-attention-rail-visual-stage72.cjs",
     "check:right-rail-source-truth": "node scripts/check-right-rail-source-truth.cjs",
-    "check:clients-leads-only-attention-stage71": "node scripts/check-clients-leads-only-attention-stage71.cjs"
+    "check:clients-leads-only-attention-stage71": "node scripts/check-clients-leads-only-attention-stage71.cjs",
+    "check:clients-attention-rail-visual-stage72": "node scripts/check-clients-attention-rail-visual-stage72.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
