@@ -568,6 +568,8 @@ function RowLink({
   onEdit,
   onDelete,
   deleting,
+  taskId,
+  doneKind,
 }: {
   key?: string;
   to: string;
@@ -581,8 +583,34 @@ function RowLink({
   onEdit?: () => void;
   onDelete?: () => void;
   deleting?: boolean;
+  taskId?: string;
+  doneKind?: 'task' | 'event';
 }) {
   const fb4TaskId = typeof to === 'string' && to.startsWith('/tasks/') ? (to.split('/').filter(Boolean).pop() || '') : '';
+  const normalizedStage79TaskId = String(taskId || fb4TaskId || '').trim();
+  const isStage79TaskRow = doneKind === 'task' || Boolean(fb4TaskId);
+  const [stage79TaskDoneLocal, setStage79TaskDoneLocal] = useState(false);
+  const [stage79TaskDoneSaving, setStage79TaskDoneSaving] = useState(false);
+
+  async function markStage79TaskDoneFromRow() {
+    if (!normalizedStage79TaskId || stage79TaskDoneSaving) return;
+    setStage79TaskDoneSaving(true);
+    try {
+      await updateTaskInSupabase({ id: normalizedStage79TaskId, status: 'done' } as any);
+      setStage79TaskDoneLocal(true);
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('closeflow:today:mark-task-done', { detail: { id: normalizedStage79TaskId, stage79Done: true } }));
+        window.dispatchEvent(new CustomEvent('closeflow:data-mutated', { detail: { entity: 'task', id: normalizedStage79TaskId, action: 'done', source: 'today' } }));
+      }
+    } catch (error) {
+      console.error('Nie udało się oznaczyć zadania jako zrobione z panelu Dziś.', error);
+    } finally {
+      setStage79TaskDoneSaving(false);
+    }
+  }
+
+  if (stage79TaskDoneLocal) return null;
+
   return (
     <div className="border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
       <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
@@ -626,18 +654,20 @@ function RowLink({
               {doneBusy ? 'Zapisywanie...' : (doneLabel || 'Zrobione')}
             </Button>
           ) : null}
-          {!onDone && fb4TaskId ? (
+          {!onDone && isStage79TaskRow ? (
             <Button
               type="button"
               size="sm"
               variant="outline"
+              data-stage79-task-done-action="true"
+              disabled={!normalizedStage79TaskId || stage79TaskDoneSaving}
               onClick={(event) => {
                 event.preventDefault();
                 event.stopPropagation();
-                window.dispatchEvent(new CustomEvent('closeflow:today:mark-task-done', { detail: { id: fb4TaskId } }));
+                void markStage79TaskDoneFromRow();
               }}
             >
-              Zrobione
+              {stage79TaskDoneSaving ? 'Zapisywanie...' : 'Zrobione'}
             </Button>
           ) : null}
           {onEdit ? <Button type="button" size="sm" variant="outline" onClick={onEdit}>Edytuj</Button> : null}
@@ -1420,6 +1450,8 @@ export default function TodayStable() {
             <div hidden={isCollapsed('no_action')}>
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
               <RowLink
+                      doneKind="task"
+                      taskId={String(task.id)}
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}

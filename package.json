@@ -740,7 +740,11 @@
     "check:stage77-lead-detail-single-status-pill": "node scripts/check-stage77-lead-detail-single-status-pill.cjs",
     "test:stage77-lead-detail-single-status-pill": "node --test tests/stage77-lead-detail-single-status-pill.test.cjs",
     "check:stage78-lead-detail-no-static-ai-followup-card": "node scripts/check-stage78-lead-detail-no-static-ai-followup-card.cjs",
-    "test:stage78-lead-detail-no-static-ai-followup-card": "node --test tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs"
+    "test:stage78-lead-detail-no-static-ai-followup-card": "node --test tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs",
+    "check:stage79-today-task-done-action": "node scripts/check-stage79-today-task-done-action.cjs",
+    "test:stage79-today-task-done-action": "node --test tests/stage79-today-task-done-action.test.cjs",
+    "check:stage79-release-gate-mass-guard": "node scripts/check-stage79-release-gate-mass-guard.cjs",
+    "test:stage79-release-gate-mass-guard": "node --test tests/stage79-release-gate-mass-guard.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
