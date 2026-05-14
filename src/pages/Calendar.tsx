@@ -148,6 +148,7 @@ const CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2 = 'CLOSEFLOW_CALE
 const CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4 = 'CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_2026_05_12';
 const CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11_2026_05_12';
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
+const CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
@@ -627,6 +628,22 @@ export default function Calendar() {
   const editEntrySubmitLockRef = useRef(false);
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
+
+  // CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14
+  const handleEditEntry = (entry: ScheduleEntry) => {
+    if (!entry) return;
+    const entryId = String(entry.id || entry.raw?.id || 'entry');
+
+    setActionPendingId(entryId + ':edit');
+    try {
+      setIsNewEventOpen(false);
+      setIsNewTaskOpen(false);
+      setEditEntry(entry);
+      setEditDraft(buildEditDraft(entry));
+    } finally {
+      setActionPendingId(null);
+    }
+  };
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   useEffect(() => {
