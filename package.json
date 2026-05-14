@@ -744,7 +744,9 @@
     "check:stage79-today-task-done-action": "node scripts/check-stage79-today-task-done-action.cjs",
     "test:stage79-today-task-done-action": "node --test tests/stage79-today-task-done-action.test.cjs",
     "check:stage79-release-gate-mass-guard": "node scripts/check-stage79-release-gate-mass-guard.cjs",
-    "test:stage79-release-gate-mass-guard": "node --test tests/stage79-release-gate-mass-guard.test.cjs"
+    "test:stage79-release-gate-mass-guard": "node --test tests/stage79-release-gate-mass-guard.test.cjs",
+    "check:stage80-today-task-done-desktop-visibility": "node scripts/check-stage80-today-task-done-desktop-visibility.cjs",
+    "test:stage80-today-task-done-desktop-visibility": "node --test tests/stage80-today-task-done-desktop-visibility.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

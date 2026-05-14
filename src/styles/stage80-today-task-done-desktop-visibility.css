@@ -1,0 +1,39 @@
+/* STAGE80_TODAY_TASK_DONE_DESKTOP_VISIBILITY
+   Desktop lock for Today task rows. Stage79 already owns the data write; this file only prevents desktop layouts/stage CSS from hiding the action button.
+*/
+[data-p0-today-stable-rebuild="true"] [data-cf-today-row-link="true"] {
+  overflow: visible !important;
+}
+
+[data-p0-today-stable-rebuild="true"] .cf-today-row-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.5rem !important;
+  flex-wrap: wrap !important;
+  min-width: max-content;
+  overflow: visible !important;
+}
+
+[data-p0-today-stable-rebuild="true"] .cf-today-task-done-button[data-stage79-task-done-action="true"] {
+  display: inline-flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  white-space: nowrap !important;
+  flex: 0 0 auto !important;
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+@media (min-width: 640px) {
+  [data-p0-today-stable-rebuild="true"] .cf-today-row-actions {
+    flex-direction: row !important;
+    width: auto !important;
+  }
+
+  [data-p0-today-stable-rebuild="true"] .cf-today-task-done-button[data-stage79-task-done-action="true"] {
+    min-width: max-content !important;
+    transform: none !important;
+  }
+}

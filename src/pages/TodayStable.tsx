@@ -586,9 +586,13 @@ function RowLink({
   taskId?: string;
   doneKind?: 'task' | 'event';
 }) {
-  const fb4TaskId = typeof to === 'string' && to.startsWith('/tasks/') ? (to.split('/').filter(Boolean).pop() || '') : '';
+  const stage80TaskRoute = typeof to === 'string' ? to : '';
+  const stage80TaskPathId = stage80TaskRoute.startsWith('/tasks/') ? (stage80TaskRoute.split('?')[0].split('/').filter(Boolean).pop() || '') : '';
+  const stage80TaskQueryId = stage80TaskRoute.includes('?') ? (new URLSearchParams(stage80TaskRoute.split('?')[1] || '').get('id') || '') : '';
+  const fb4TaskId = stage80TaskPathId || stage80TaskQueryId;
+  const isStage80TaskBadge = normalizeSemanticLabel(badge).includes('zadanie');
   const normalizedStage79TaskId = String(taskId || fb4TaskId || '').trim();
-  const isStage79TaskRow = doneKind === 'task' || Boolean(fb4TaskId);
+  const isStage79TaskRow = doneKind === 'task' || Boolean(fb4TaskId) || isStage80TaskBadge;
   const [stage79TaskDoneLocal, setStage79TaskDoneLocal] = useState(false);
   const [stage79TaskDoneSaving, setStage79TaskDoneSaving] = useState(false);
 
@@ -612,7 +616,7 @@ function RowLink({
   if (stage79TaskDoneLocal) return null;
 
   return (
-    <div className="border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
+    <div data-cf-today-row-link="true" className="border-b border-slate-100 last:border-b-0 transition hover:bg-slate-50">
       <div className="flex flex-col gap-2 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
@@ -637,7 +641,7 @@ function RowLink({
             </p>
           ) : null}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="cf-today-row-actions flex items-center gap-2">
           {onDone ? (
             <Button
               type="button"
@@ -660,6 +664,7 @@ function RowLink({
               size="sm"
               variant="outline"
               data-stage79-task-done-action="true"
+              className="cf-today-task-done-button"
               disabled={!normalizedStage79TaskId || stage79TaskDoneSaving}
               onClick={(event) => {
                 event.preventDefault();
