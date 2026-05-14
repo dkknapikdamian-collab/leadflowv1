@@ -42,7 +42,8 @@ import {
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
   updateLeadInSupabase,
-  updateTaskInSupabase
+  updateTaskInSupabase,
+  updateEventInSupabase
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
@@ -561,6 +562,9 @@ function RowLink({
   meta,
   helper,
   badge,
+  onDone,
+  doneLabel,
+  doneBusy,
   onEdit,
   onDelete,
   deleting,
@@ -571,6 +575,9 @@ function RowLink({
   meta?: string;
   helper?: string;
   badge?: string;
+  onDone?: () => void;
+  doneLabel?: string;
+  doneBusy?: boolean;
   onEdit?: () => void;
   onDelete?: () => void;
   deleting?: boolean;
@@ -603,7 +610,23 @@ function RowLink({
           ) : null}
         </div>
         <div className="flex items-center gap-2">
-          {fb4TaskId ? (
+          {onDone ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              data-stage76-event-done-action="true"
+              disabled={doneBusy}
+              onClick={(event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                onDone();
+              }}
+            >
+              {doneBusy ? 'Zapisywanie...' : (doneLabel || 'Zrobione')}
+            </Button>
+          ) : null}
+          {!onDone && fb4TaskId ? (
             <Button
               type="button"
               size="sm"
@@ -1256,6 +1279,22 @@ export default function TodayStable() {
     }
   }, [refreshData]);
 
+  const handleMarkEventDone = useCallback(async (eventId: string) => {
+    // STAGE76_TODAY_EVENT_DONE_ACTION: events use the same operational closeout status contract as tasks.
+    if (!eventId) return;
+    try {
+      await updateEventInSupabase({ id: eventId, status: 'done' });
+      setData((current) => ({
+        ...current,
+        events: Array.isArray(current.events)
+          ? current.events.map((event) => String(event?.id || '') === eventId ? { ...event, status: 'done' } : event)
+          : [],
+      }));
+    } catch (error) {
+      console.error('Nie udało się oznaczyć wydarzenia jako zrobione', error);
+    }
+  }, [setData]);
+
   return (
     <Layout>
       <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
@@ -1490,6 +1529,8 @@ export default function TodayStable() {
               onEdit={() => navigate('/calendar')}
                 onDelete={() => void handleDeleteEvent(event)}
                 deleting={actionPendingId === `event:${String(event.id || '')}`}
+                  onDone={() => handleMarkEventDone(String(event.id || ''))}
+                  doneLabel="Zrobione"
               />
             )) : <EmptyState text="Brak wydarzeń na dziś." />}
             </div>
