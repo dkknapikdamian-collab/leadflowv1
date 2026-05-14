@@ -723,7 +723,8 @@
     "check:calendar:selected-day-new-tile-v9": "node scripts/check-calendar-selected-day-new-tile-v9-massfix.cjs",
     "check:calendar:selected-day-new-tile-v9-massfix": "node scripts/check-calendar-selected-day-new-tile-v9-massfix.cjs",
     "check:calendar-selected-day-handler-scope": "node scripts/check-calendar-selected-day-handler-scope.cjs",
-    "prebuild": "node scripts/check-calendar-selected-day-handler-scope.cjs"
+    "prebuild": "node scripts/check-calendar-selected-day-handler-scope.cjs && node scripts/check-right-rail-source-truth.cjs",
+    "check:right-rail-source-truth": "node scripts/check-right-rail-source-truth.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

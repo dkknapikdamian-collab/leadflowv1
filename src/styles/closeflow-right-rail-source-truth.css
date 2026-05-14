@@ -1,0 +1,64 @@
+/* CLOSEFLOW_RIGHT_RAIL_SOURCE_TRUTH_STAGE70_2026_05_14
+   owner: CloseFlow Visual System
+   scope: shared right rail side cards on /leads, /clients and /cases
+   reason: admin feedback P1 - side rail cards must use one light surface truth, not per-page dark backgrounds
+   rule: all operator side rail cards are light, readable, compact and aligned to the content column start
+*/
+
+:root {
+  --cf-right-rail-card-bg: #ffffff;
+  --cf-right-rail-card-bg-muted: #f8fafc;
+  --cf-right-rail-card-border: #e2e8f0;
+  --cf-right-rail-card-text: #0f172a;
+  --cf-right-rail-card-muted: #64748b;
+  --cf-right-rail-card-shadow: 0 16px 38px rgba(15, 23, 42, 0.07);
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(.lead-right-rail, .clients-right-rail, .cases-right-rail) {
+  align-self: start !important;
+  min-width: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card),
+#root .cf-html-view.main-leads-html aside.right-card.lead-right-card,
+#root .cf-html-view.main-leads-html aside.right-card.lead-top-relations,
+#root .cf-html-view.main-clients-html aside.right-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card {
+  background: var(--cf-right-rail-card-bg) !important;
+  color: var(--cf-right-rail-card-text) !important;
+  border: 1px solid var(--cf-right-rail-card-border) !important;
+  box-shadow: var(--cf-right-rail-card-shadow) !important;
+  -webkit-text-fill-color: var(--cf-right-rail-card-text) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(h1, h2, h3, h4, p, li, small, strong),
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.title, .right-card-title, .rail-title) {
+  color: var(--cf-right-rail-card-text) !important;
+  -webkit-text-fill-color: var(--cf-right-rail-card-text) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.sub, .mini, .description, .helper, .muted, .right-card-subtitle, .rail-subtitle) {
+  color: var(--cf-right-rail-card-muted) !important;
+  -webkit-text-fill-color: var(--cf-right-rail-card-muted) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.pill, .cf-status-pill, .badge, [data-cf-status-tone], [data-cf-severity]) {
+  -webkit-text-fill-color: currentColor !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-right-rail .lead-top-relations {
+  margin-top: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .layout-list:has(.lead-right-rail),
+#root .cf-html-view.main-clients-html .layout-list:has(.clients-right-rail),
+#root .cf-html-view.main-cases-html .layout-list:has(.cases-right-rail) {
+  align-items: start !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(a, button) {
+  -webkit-text-fill-color: currentColor !important;
+}

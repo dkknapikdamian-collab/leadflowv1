@@ -21,6 +21,7 @@ import './styles/closeflow-metric-tiles.css';
 import './styles/closeflow-page-header.css';
 import './styles/closeflow-list-row-tokens.css';
 import './styles/closeflow-alert-severity.css';
+import './styles/closeflow-right-rail-source-truth.css';
 
 import './styles/closeflow-command-actions-source-truth.css';
 import './styles/closeflow-page-header-copy-source-truth.css';
