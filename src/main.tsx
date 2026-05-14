@@ -8,6 +8,7 @@ import { registerCloseFlowServiceWorker } from './pwa/register-service-worker';
 import { registerChunkAssetReloadGuard } from './pwa/chunk-asset-reload-guard';
 import './styles/action-color-taxonomy-v1.css';
 import './styles/closeflow-right-rail-source-truth.css';
+import './styles/closeflow-leads-right-rail-layout-lock.css';
 
 registerChunkAssetReloadGuard();
 registerCloseFlowServiceWorker();
