@@ -389,17 +389,33 @@ export default function Clients() {
     [clients, countersByClientId],
   );
 
-  const followupCandidates = useMemo(
-    () =>
-      clients
-        .filter((client) => {
-          if (client.archivedAt) return false;
-          const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
-          return counters.cases === 0 || counters.leads === 0;
-        })
-        .slice(0, 5),
-    [clients, countersByClientId],
-  );
+  const followupLeadCandidates = useMemo(() => {
+    // STAGE71_CLIENTS_LEADS_ONLY_ATTENTION: this rail is about lead records that still need relation cleanup.
+    // It must not render client records under the lead attention operational card.
+    const caseLeadIds = new Set<string>();
+    const caseClientIds = new Set<string>();
+
+    for (const caseRow of cases as Record<string, unknown>[]) {
+      const caseLeadId = String(caseRow.leadId || caseRow.lead_id || caseRow.linkedLeadId || caseRow.linked_lead_id || '').trim();
+      const caseClientId = getStage35RelationClientId(caseRow);
+      if (caseLeadId) caseLeadIds.add(caseLeadId);
+      if (caseClientId) caseClientIds.add(caseClientId);
+    }
+
+    return (leads as Record<string, unknown>[])
+      .filter((lead) => {
+        const status = String(lead.status || '').trim().toLowerCase();
+        const visibility = String(lead.leadVisibility || lead.lead_visibility || '').trim().toLowerCase();
+        if (status === 'archived' || visibility === 'trash') return false;
+
+        const leadId = String(lead.id || '').trim();
+        const clientId = getStage35RelationClientId(lead);
+        const hasCase = Boolean((leadId && caseLeadIds.has(leadId)) || (clientId && caseClientIds.has(clientId)));
+
+        return !clientId || !hasCase;
+      })
+      .slice(0, 5);
+  }, [cases, leads]);
 
   const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '' }); };
 
@@ -731,18 +747,30 @@ export default function Clients() {
               </div>
             </aside>
 
-            <aside className="right-card">
-              <div className="panel-head"><div><h3>Klienci do uwagi</h3><p>Relacje bez pełnego spięcia lead/sprawa.</p></div></div>
-              <div className="quick-list">
-                {followupCandidates.length ? followupCandidates.map((client) => {
-                  const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
+                        <aside className="right-card" data-clients-lead-attention-rail="true">
+              <h3>Leady do uwagi</h3>
+              <p>Tematy sprzedażowe bez pełnego spięcia z klientem albo sprawą.</p>
+              <div className="right-list">
+                {followupLeadCandidates.length ? followupLeadCandidates.map((lead) => {
+                  const leadId = String(lead.id || '').trim();
+                  const clientId = getStage35RelationClientId(lead);
+                  const hasClient = Boolean(clientId);
+                  const hasCase = (cases as Record<string, unknown>[]).some((caseRow) => {
+                    const caseLeadId = String(caseRow.leadId || caseRow.lead_id || caseRow.linkedLeadId || caseRow.linked_lead_id || '').trim();
+                    const caseClientId = getStage35RelationClientId(caseRow);
+                    return Boolean((leadId && caseLeadId === leadId) || (clientId && caseClientId === clientId));
+                  });
+                  const leadLabel = String(lead.name || lead.company || lead.phone || lead.email || 'Lead bez nazwy');
+
                   return (
-                    <Link key={client.id} to={`/clients/${client.id}`}>
-                      <span><strong>{client.name || 'Klient'}</strong><small>Leady {counters.leads} · Sprawy {counters.cases}</small></span>
-                      <EntityIcon entity="client" className="h-4 w-4" />
+                    <Link key={leadId || leadLabel} to={leadId ? '/leads/' + leadId : '/leads'} className="right-list-row">
+                      <strong>{leadLabel}</strong>
+                      <span>{hasClient ? 'Klient OK' : 'Brak klienta'} · {hasCase ? 'Sprawa OK' : 'Brak sprawy'}</span>
                     </Link>
                   );
-                }) : <div className="note">Brak klientów wymagających natychmiastowej uwagi.</div>}
+                }) : (
+                  <p className="sub">Brak leadów do spięcia.</p>
+                )}
               </div>
             </aside>
           </div>
