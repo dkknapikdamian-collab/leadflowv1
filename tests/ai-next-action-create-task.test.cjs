@@ -22,9 +22,15 @@ test('AI next action can create a confirmed follow-up task without autopilot', (
 
 test('Lead detail no longer renders noisy AI next-action card after feedback P1', () => {
   const source = read('src/pages/LeadDetail.tsx');
+  const followup = read('src/components/LeadAiFollowupDraft.tsx');
 
   assert.ok(!source.includes('<LeadAiNextAction'), 'LeadDetail should not render the noisy AI next-action card after feedback P1');
-  assert.ok(source.includes('<LeadAiFollowupDraft'), 'LeadDetail should keep the safe draft-only AI follow-up flow');
+  assert.ok(!source.includes('<LeadAiFollowupDraft'), 'LeadDetail should not render the static AI follow-up card after Stage78');
+  assert.ok(!source.includes("from '../components/LeadAiFollowupDraft'"), 'LeadDetail should not import the static AI follow-up card after Stage78');
+  assert.ok(!source.includes('from "../components/LeadAiFollowupDraft"'), 'LeadDetail should not import the static AI follow-up card after Stage78');
+  assert.ok(followup.includes('data-ai-followup-draft-card="true"'), 'safe draft-only AI follow-up component should remain available outside LeadDetail');
+  assert.ok(followup.includes('Szkic odpowiedzi'), 'safe draft-only AI follow-up action copy should remain available outside LeadDetail');
+  assert.ok(followup.includes('Kopiuj tre'), 'safe draft-only AI follow-up copy action should remain available outside LeadDetail');
 });
 
 test('AI next action create-task test is included in quiet release gate', () => {

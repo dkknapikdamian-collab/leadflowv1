@@ -24,14 +24,19 @@ test('AI follow-up draft is consolidated under system API without creating a new
   assert.match(client, /\/api\/system\?kind=ai-followup-draft/);
 });
 
-test('Lead detail exposes AI follow-up as a draft-only copy flow', () => {
+test('AI follow-up draft remains draft-only while LeadDetail does not render the static card', () => {
   const component = read('src/components/LeadAiFollowupDraft.tsx');
   const detail = read('src/pages/LeadDetail.tsx');
 
-  assert.match(detail, /LeadAiFollowupDraft/);
-  assert.match(component, /AI niczego nie wysyła automatycznie/);
+  assert.equal(detail.includes("from '../components/LeadAiFollowupDraft'"), false);
+  assert.equal(detail.includes('from "../components/LeadAiFollowupDraft"'), false);
+  assert.equal(detail.includes('<LeadAiFollowupDraft'), false);
+  assert.equal(detail.includes('data-ai-followup-draft-card='), false);
+
+  assert.match(component, /data-ai-followup-draft-card="true"/);
+  assert.match(component, /AI niczego nie wysy\u0142a automatycznie/);
   assert.match(component, /Szkic do potwierdzenia/);
-  assert.match(component, /Kopiuj treść/);
+  assert.match(component, /Kopiuj tre\u015b\u0107/);
   assert.doesNotMatch(component, /sendEmail/i);
   assert.doesNotMatch(component, /autoSend/i);
   assert.doesNotMatch(component, /GEMINI_API_KEY/);

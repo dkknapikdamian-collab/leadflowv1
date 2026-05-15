@@ -1109,7 +1109,7 @@ export default function TodayStable() {
         return Boolean(dateKey) && dateKey > todayKey && dateKey <= next7EndKey;
       })
       .map((entry) => ({
-        id: 'task:' + String(entry.task.id || getTaskTitle(entry.task)),
+        id: 'task:' + String(entry.entry.id || getTaskTitle(entry.task)),
         kind: 'task' as const,
         title: getTaskTitle(entry.task),
         helper: 'Powód: zaplanowane zadanie w najbliższych dniach',
@@ -1455,8 +1455,6 @@ export default function TodayStable() {
             <div hidden={isCollapsed('no_action')}>
             {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
               <RowLink
-                      doneKind="task"
-                      taskId={String(task.id)}
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}

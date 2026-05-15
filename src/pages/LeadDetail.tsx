@@ -1,4 +1,4 @@
-import {
+﻿import {
   ClientEntityIcon,
   EntityIcon,
   LeadEntityIcon,
@@ -12,7 +12,7 @@ LEAD_DETAIL_VISUAL_REBUILD_STAGE14
 Active lead is sales work. Moved lead is acquisition history with a link to Case.
 */
 const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dictation-silence';
-const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
+const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsĹ‚ugÄ™ | Ten temat jest juĹĽ w obsĹ‚udze | OtwĂłrz sprawÄ™';
 const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
 const CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP_V1 = 'Lead status visible in header, duplicated right-rail status card removed';
@@ -118,16 +118,28 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {
   },
 } as const;
 
+const LEAD_STATUS_LABELS_STAGE77 = {
+  new: 'Nowy',
+  contacted: 'Skontaktowany',
+  qualification: 'Kwalifikacja',
+  proposal_sent: 'Oferta wysłana',
+  waiting_response: 'Czeka na odpowiedź',
+  accepted: 'Zaakceptowany',
+  moved_to_service: 'Przeniesiony do obsĹ‚ugi',
+  negotiation: 'Negocjacje',
+  lost: 'Przegrany',
+} as const;
+
 const STATUS_OPTIONS = [
-  { value: 'new', label: 'Nowy' },
-  { value: 'contacted', label: 'Skontaktowany' },
-  { value: 'qualification', label: 'Kwalifikacja' },
-  { value: 'proposal_sent', label: 'Oferta wysłana' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedź' },
-  { value: 'accepted', label: 'Zaakceptowany' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsługi' },
-  { value: 'negotiation', label: 'Negocjacje' },
-  { value: 'lost', label: 'Przegrany' },
+  { value: 'new', label: LEAD_STATUS_LABELS_STAGE77.new },
+  { value: 'contacted', label: LEAD_STATUS_LABELS_STAGE77.contacted },
+  { value: 'qualification', label: LEAD_STATUS_LABELS_STAGE77.qualification },
+  { value: 'proposal_sent', label: LEAD_STATUS_LABELS_STAGE77.proposal_sent },
+  { value: 'waiting_response', label: LEAD_STATUS_LABELS_STAGE77.waiting_response },
+  { value: 'accepted', label: LEAD_STATUS_LABELS_STAGE77.accepted },
+  { value: 'moved_to_service', label: LEAD_STATUS_LABELS_STAGE77.moved_to_service },
+  { value: 'negotiation', label: LEAD_STATUS_LABELS_STAGE77.negotiation },
+  { value: 'lost', label: LEAD_STATUS_LABELS_STAGE77.lost },
 ];
 
 const SOURCE_OPTIONS = [
@@ -145,9 +157,9 @@ const SOURCE_OPTIONS = [
 
 const SIMPLE_RECURRENCE_OPTIONS = [
   { value: 'none', label: 'Bez powtarzania' },
-  { value: 'daily', label: 'Codzieńnie' },
-  { value: 'weekly', label: 'Co tydzień' },
-  { value: 'monthly', label: 'Co miesiąc' },
+  { value: 'daily', label: 'CodzieĹ„nie' },
+  { value: 'weekly', label: 'Co tydzieĹ„' },
+  { value: 'monthly', label: 'Co miesiÄ…c' },
 ];
 
 const modalSelectClass = 'lead-detail-modal-select';
@@ -278,24 +290,25 @@ function getLeadName(lead: any) {
   return String(lead?.name || lead?.company || 'Lead bez nazwy');
 }
 function statusLabel(status?: string) {
-  return STATUS_OPTIONS.find((entry) => entry.value === status)?.label || status || 'Lead';
+  const normalized = String(status || '').trim();
+  return LEAD_STATUS_LABELS_STAGE77[normalized as keyof typeof LEAD_STATUS_LABELS_STAGE77] || normalized || 'Lead';
 }
 function sourceLabel(source?: string) {
-  return SOURCE_OPTIONS.find((entry) => entry.value === source)?.label || source || 'Brak źródła';
+  return SOURCE_OPTIONS.find((entry) => entry.value === source)?.label || source || 'Brak ĹşrĂłdĹ‚a';
 }
 function billingStatusLabel(status?: string) {
   switch (String(status || '').toLowerCase()) {
     case 'deposit_paid':
-      return 'Zaliczka wpłacona';
+      return 'Zaliczka wpĹ‚acona';
     case 'partially_paid':
-      return 'Częściowo opłacone';
+      return 'CzÄ™Ĺ›ciowo opĹ‚acone';
     case 'fully_paid':
     case 'paid':
-      return 'Opłacone';
+      return 'OpĹ‚acone';
     case 'awaiting_payment':
-      return 'Czeka na płatność';
+      return 'Czeka na pĹ‚atnoĹ›Ä‡';
     case 'not_started':
-      return 'Brak wpłaty';
+      return 'Brak wpĹ‚aty';
     default:
       return status || 'Brak statusu';
   }
@@ -370,7 +383,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
   const taskEntries = tasks.map((task) => ({
     id: `task:${String(task.id || '')}`,
     kind: 'task' as const,
-    title: String(task.title || 'Zadanie bez tytułu'),
+    title: String(task.title || 'Zadanie bez tytuĹ‚u'),
     status: String(task.status || 'todo'),
     statusLabel: taskStatusLabel(String(task.status || 'todo')),
     dateValue: getTaskDate(task),
@@ -381,7 +394,7 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
   const eventEntries = events.map((event) => ({
     id: `event:${String(event.id || '')}`,
     kind: 'event' as const,
-    title: String(event.title || 'Wydarzenie bez tytułu'),
+    title: String(event.title || 'Wydarzenie bez tytuĹ‚u'),
     status: String(event.status || 'scheduled'),
     statusLabel: eventStatusLabel(String(event.status || 'scheduled')),
     dateValue: getEventDate(event),
@@ -408,7 +421,7 @@ function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; valu
   );
 }
 function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
-  const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
+  const isStartServiceActionStage14F = children === 'Rozpocznij obsĹ‚ugÄ™';
   return (
     <button
       type="button"
@@ -517,16 +530,16 @@ export default function LeadDetail() {
       setActivities(Array.isArray(activityRows) ? activityRows : []);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
-        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
+        title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsĹ‚uga`,
         clientName: String((leadRow as any)?.name || ''),
         clientEmail: String((leadRow as any)?.email || ''),
         clientPhone: String((leadRow as any)?.phone || ''),
         status: 'ready_to_start',
       });
     } catch (error: any) {
-      const message = error?.message || 'Nie udało się pobrać danych leada';
+      const message = error?.message || 'Nie udaĹ‚o siÄ™ pobraÄ‡ danych leada';
       setLoadError(message);
-      toast.error(`Błąd odczytu leada: ${message}`);
+      toast.error(`BĹ‚Ä…d odczytu leada: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -544,7 +557,7 @@ export default function LeadDetail() {
 
   const leadMovedToService = isLeadMovedToService(lead);
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || lead?.linkedCaseId || lead?.caseId || '');
-  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'Powiązana sprawa');
+  const serviceCaseTitle = String(startServiceSuccess?.title || associatedCase?.title || associatedCase?.clientName || 'PowiÄ…zana sprawa');
   const serviceCaseStatusLabel = String(associatedCase?.status || createCaseDraft.status || 'ready_to_start').replaceAll('_', ' ');
   const serviceMovedAtLabel = formatDateTime(lead?.movedToServiceAt || lead?.serviceStartedAt || associatedCase?.serviceStartedAt || associatedCase?.createdAt);
   const leadOperationalArchive = Boolean(leadMovedToService || associatedCase || startServiceSuccess);
@@ -592,7 +605,7 @@ export default function LeadDetail() {
   }, [activities, lead?.note, lead?.notes, lead?.noteText, lead?.note_text]);
 
   
-  const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
+  const leadServiceLockedMessage = 'Ten temat jest juĹĽ w obsĹ‚udze. DalszÄ… pracÄ™ prowadĹş w sprawie.';
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Lead detail uses shared context action dialogs instead of local simplified quick forms';
   const openLeadContextAction = (kind: ContextActionKind) => {
     if (!leadId) return;
@@ -661,34 +674,34 @@ useEffect(() => {
     const dealValue = Number(lead?.dealValue || 0);
     const isHighValueCold = Boolean(dealValue >= 5000 && typeof daysWithoutMovement === 'number' && daysWithoutMovement >= 5 && !leadInService);
 
-    let riskLabel = 'Ogarnięty';
+    let riskLabel = 'OgarniÄ™ty';
     let riskTone = 'good';
     let riskReason = leadInService
-      ? 'Temat jest już w obsłudze. Dalsza praca powinna iść przez sprawę.'
+      ? 'Temat jest juĹĽ w obsĹ‚udze. Dalsza praca powinna iĹ›Ä‡ przez sprawÄ™.'
       : 'Lead ma zaplanowany ruch albo nie wymaga pilnej reakcji.';
 
     if (isOverdue) {
       riskLabel = 'Po terminie';
       riskTone = 'danger';
-      riskReason = 'Najbliższa zaplanowana akcja ma termin w przeszłości.';
+      riskReason = 'NajbliĹĽsza zaplanowana akcja ma termin w przeszĹ‚oĹ›ci.';
     } else if (hasNoPlannedAction) {
       riskLabel = 'Brak akcji';
       riskTone = 'danger';
-      riskReason = 'Aktywny lead nie ma żadnego zaplanowanego zadania ani wydarzenia.';
+      riskReason = 'Aktywny lead nie ma ĹĽadnego zaplanowanego zadania ani wydarzenia.';
     } else if (isWaitingTooLong) {
-      riskLabel = 'Czeka za długo';
+      riskLabel = 'Czeka za dĹ‚ugo';
       riskTone = 'warn';
-      riskReason = 'Lead jest w statusie oczekiwania i nie miał ruchu od kilku dni.';
+      riskReason = 'Lead jest w statusie oczekiwania i nie miaĹ‚ ruchu od kilku dni.';
     } else if (isHighValueCold) {
-      riskLabel = 'Wysoka wartość bez ruchu';
+      riskLabel = 'Wysoka wartoĹ›Ä‡ bez ruchu';
       riskTone = 'warn';
-      riskReason = 'Lead ma wysoką wartość i długo nie było przy nim aktywności.';
+      riskReason = 'Lead ma wysokÄ… wartoĹ›Ä‡ i dĹ‚ugo nie byĹ‚o przy nim aktywnoĹ›ci.';
     }
 
     return {
       lastTouchLabel: lastTouch ? formatDateTime(lastTouch) : 'Brak zapisanego ruchu',
       daysWithoutMovementLabel: typeof daysWithoutMovement === 'number' ? `${daysWithoutMovement} dni` : 'Brak danych',
-      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} ┬Ě ${nextTimelineEntry.dateLabel}` : '-',
+      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} â”¬Äš ${nextTimelineEntry.dateLabel}` : '-',
       isOverdue,
       hasNoPlannedAction,
       riskLabel,
@@ -720,19 +733,19 @@ useEffect(() => {
           <strong>{leadWorkCenter.daysWithoutMovementLabel}</strong>
         </div>
         <div className="lead-detail-work-metric lead-detail-work-metric-wide">
-          <small>Najbliższa zaplanowana akcja</small>
+          <small>NajbliĹĽsza zaplanowana akcja</small>
           <strong>{leadWorkCenter.nextActionLabel}</strong>
         </div>
       </div>
 
       <div className="lead-detail-work-reason" data-lead-risk-reason="true">
-  <small>Powód ryzyka</small>
+  <small>PowĂłd ryzyka</small>
   {leadRiskReasonStage14F ? (
     <p className="lead-detail-risk-reason" title={leadRiskReasonStage14F}>
-      Powód: {leadRiskReasonStage14F}
+      PowĂłd: {leadRiskReasonStage14F}
     </p>
   ) : (
-    <p className="lead-detail-risk-reason">Powód: -</p>
+    <p className="lead-detail-risk-reason">PowĂłd: -</p>
   )}
 </div>
 
@@ -748,24 +761,24 @@ useEffect(() => {
             <CheckCircle2 className="h-4 w-4" /> Kontakt wykonany
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('proposal_sent')} disabled={!hasAccess}>
-            <Mail className="h-4 w-4" /> Oferta wysłana
+            <Mail className="h-4 w-4" /> Oferta wysĹ‚ana
           </LeadActionButton>
           <LeadActionButton onClick={() => handleUpdateStatus('waiting_response')} disabled={!hasAccess}>
             <Clock className="h-4 w-4" /> Oznacz waiting
           </LeadActionButton>
           <LeadActionButton onClick={() => openLeadContextAction('note')} disabled={!hasAccess}>
-            <EntityIcon entity="template" className="h-4 w-4" /> Dopisz notatkę
+            <EntityIcon entity="template" className="h-4 w-4" /> Dopisz notatkÄ™
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(`/cases/${serviceCaseId}`)}>
-              <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
+              <EntityIcon entity="case" className="h-4 w-4" /> OtwĂłrz sprawÄ™
             </LeadActionButton>
           ) : null}
         </div>
       ) : (
         <div className="lead-detail-work-actions lead-detail-work-actions-service">
           <LeadActionButton onClick={() => serviceCaseId && navigate(`/cases/${serviceCaseId}`)} disabled={!serviceCaseId}>
-            <EntityIcon entity="case" className="h-4 w-4" /> Otwórz sprawę
+            <EntityIcon entity="case" className="h-4 w-4" /> OtwĂłrz sprawÄ™
           </LeadActionButton>
           <span>{leadServiceLockedMessage}</span>
         </div>
@@ -806,20 +819,20 @@ useEffect(() => {
       if (successMessage) toast.success(successMessage);
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zapisu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu: ${error?.message || 'REQUEST_FAILED'}`);
       throw error;
     }
   };
 
   const handleUpdateStatus = async (status: string) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadInService) return toast.error('Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (leadInService) return toast.error('Ten temat jest juĹĽ w obsĹ‚udze. DalszÄ… pracÄ™ prowadĹş w sprawie.');
     await patchLead({ status }, 'Status zaktualizowany');
     await addActivity('status_changed', { status });
   };
 
   const handleUpdateLead = async () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     if (!editLead || !leadId) return;
     await patchLead(
       {
@@ -831,7 +844,7 @@ useEffect(() => {
         dealValue: Number(editLead.dealValue) || 0,
         note: editLead.note || editLead.notes || '',
       },
-      leadInService ? 'Dane źródłowe leada zaktualizowane' : 'Dane zaktualizowane',
+      leadInService ? 'Dane ĹşrĂłdĹ‚owe leada zaktualizowane' : 'Dane zaktualizowane',
     );
     setIsEditing(false);
   };
@@ -855,13 +868,13 @@ useEffect(() => {
 
   const handleDeleteLead = async () => {
     if (!leadId) return;
-    if (!window.confirm('Czy na pewno chcesz usunąć tego leada?')) return;
+    if (!window.confirm('Czy na pewno chcesz usunÄ…Ä‡ tego leada?')) return;
     try {
       await deleteLeadFromSupabase(leadId);
-      toast.success('Lead usunięty');
+      toast.success('Lead usuniÄ™ty');
       navigate('/leads');
     } catch (error: any) {
-      toast.error(`Błąd usuwania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d usuwania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -883,7 +896,7 @@ useEffect(() => {
   };
 
   const handleToggleNoteSpeech = () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     if (noteListening) {
       stopNoteSpeech();
       return;
@@ -891,7 +904,7 @@ useEffect(() => {
 
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
-      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
+      toast.error('Dyktowanie nie jest dostÄ™pne w tej przeglÄ…darce.');
       return;
     }
 
@@ -919,7 +932,7 @@ useEffect(() => {
         setNoteInterimText(interimTranscript);
       };
       recognition.onerror = () => {
-        toast.error('Nie udało się dokończyć dyktowania notatki.');
+        toast.error('Nie udaĹ‚o siÄ™ dokoĹ„czyÄ‡ dyktowania notatki.');
         stopNoteSpeech();
       };
       recognition.onend = () => {
@@ -930,9 +943,9 @@ useEffect(() => {
       noteRecognitionRef.current = recognition;
       recognition.start();
       setNoteListening(true);
-      toast.success('Dyktowanie notatki włączone');
+      toast.success('Dyktowanie notatki wĹ‚Ä…czone');
     } catch {
-      toast.error('Nie udało się uruchomić dyktowania.');
+      toast.error('Nie udaĹ‚o siÄ™ uruchomiÄ‡ dyktowania.');
       stopNoteSpeech();
     }
   };
@@ -970,9 +983,9 @@ useEffect(() => {
 
   const handleSaveEditedNote = async () => {
     if (!leadId || !editingNote?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     const content = editingNoteContent.trim();
-    if (!content) return toast.error('Treść notatki nie może być pusta');
+    if (!content) return toast.error('TreĹ›Ä‡ notatki nie moĹĽe byÄ‡ pusta');
 
     try {
       await updateActivityInSupabase({
@@ -985,23 +998,23 @@ useEffect(() => {
       setEditingNoteContent('');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d edycji notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleDeleteNote = async (activityId: string) => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!window.confirm('Usunąć tę notatkę?')) return;
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!window.confirm('UsunÄ…Ä‡ tÄ™ notatkÄ™?')) return;
     try {
       await deleteActivityFromSupabase(activityId);
-      toast.success('Notatka usunięta');
+      toast.success('Notatka usuniÄ™ta');
       if (editingNote?.id && String(editingNote.id) === activityId) {
         setEditingNote(null);
         setEditingNoteContent('');
       }
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d usuwania notatki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1056,10 +1069,10 @@ useEffect(() => {
         caseId: task.caseId ? String(task.caseId) : null,
       });
       await addActivity('task_status_toggled', { title: String(task.title || 'Zadanie'), status: nextStatus, taskId: task.id });
-      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
+      toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrĂłcone');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1082,25 +1095,25 @@ useEffect(() => {
         caseId: task.caseId ? String(task.caseId) : null,
       });
       await addActivity('task_updated', { title: String(task.title || 'Zadanie'), scheduledAt, label });
-      toast.success(`Zadanie przesunięte: ${label}`);
+      toast.success(`Zadanie przesuniÄ™te: ${label}`);
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const handleDeleteLinkedTask = async (task: any) => {
-    if (!window.confirm('Usunąć to zadanie?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ to zadanie?')) return;
     try {
       setLinkedEntryActionId(`task:${task.id}:delete`);
       await deleteTaskFromSupabase(String(task.id));
       await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId: task.id });
-      toast.success('Zadanie usunięte');
+      toast.success('Zadanie usuniÄ™te');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1121,10 +1134,10 @@ useEffect(() => {
         caseId: event.caseId ? String(event.caseId) : null,
       });
       await addActivity('event_status_toggled', { title: String(event.title || 'Wydarzenie'), status: nextStatus, eventId: event.id });
-      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako zrobione' : 'Wydarzenie przywrócone');
+      toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako zrobione' : 'Wydarzenie przywrĂłcone');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1149,25 +1162,25 @@ useEffect(() => {
         caseId: event.caseId ? String(event.caseId) : null,
       });
       await addActivity('event_updated', { title: String(event.title || 'Wydarzenie'), startAt, label });
-      toast.success(`Wydarzenie przesunięte: ${label}`);
+      toast.success(`Wydarzenie przesuniÄ™te: ${label}`);
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
   };
 
   const handleDeleteLinkedEvent = async (event: any) => {
-    if (!window.confirm('Usunąć to wydarzenie?')) return;
+    if (!window.confirm('UsunÄ…Ä‡ to wydarzenie?')) return;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
       await deleteEventFromSupabase(String(event.id));
       await addActivity('event_deleted', { title: String(event.title || 'Wydarzenie'), eventId: event.id });
-      toast.success('Wydarzenie usunięte');
+      toast.success('Wydarzenie usuniÄ™te');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1175,8 +1188,8 @@ useEffect(() => {
 
   const handleSaveLinkedTaskEdit = async () => {
     if (!editLinkedTask?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuł zadania');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!editLinkedTask.title.trim()) return toast.error('Podaj tytuĹ‚ zadania');
     try {
       setEditLinkedTaskSubmitting(true);
       await updateTaskInSupabase({
@@ -1198,7 +1211,7 @@ useEffect(() => {
       setEditLinkedTask(null);
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zapisu zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEditLinkedTaskSubmitting(false);
     }
@@ -1206,8 +1219,8 @@ useEffect(() => {
 
   const handleSaveLinkedEventEdit = async () => {
     if (!editLinkedEvent?.id) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!editLinkedEvent.title.trim()) return toast.error('Podaj tytuł wydarzenia');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!editLinkedEvent.title.trim()) return toast.error('Podaj tytuĹ‚ wydarzenia');
     try {
       setEditLinkedEventSubmitting(true);
       await updateEventInSupabase({
@@ -1227,7 +1240,7 @@ useEffect(() => {
       setEditLinkedEvent(null);
       await loadLead();
     } catch (error: any) {
-      toast.error(`Błąd zapisu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setEditLinkedEventSubmitting(false);
     }
@@ -1237,7 +1250,7 @@ useEffect(() => {
     event?.preventDefault?.();
 
     if (!leadId || !lead) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     if (leadInService && serviceCaseId) {
       navigate(`/cases/${serviceCaseId}`);
       return;
@@ -1274,17 +1287,17 @@ useEffect(() => {
         movedToServiceAt: result.movedToServiceAt,
       }));
       setIsCreateCaseOpen(false);
-      toast.success('Sprawa utworzona. Przechodzę do obsługi.');
+      toast.success('Sprawa utworzona. PrzechodzÄ™ do obsĹ‚ugi.');
       await loadLead();
       navigate(`/cases/${result.caseId}`);
     } catch (error: any) {
       const message = String(error?.message || 'REQUEST_FAILED');
       if (message.includes('LEAD_ALREADY_HAS_CASE') && serviceCaseId) {
-        toast.success('Temat jest już w obsłudze. Otwieram sprawę.');
+        toast.success('Temat jest juĹĽ w obsĹ‚udze. Otwieram sprawÄ™.');
         navigate(`/cases/${serviceCaseId}`);
         return;
       }
-      toast.error(`Nie udało się rozpocząć obsługi: ${message}`);
+      toast.error(`Nie udaĹ‚o siÄ™ rozpoczÄ…Ä‡ obsĹ‚ugi: ${message}`);
     } finally {
       setCreateCasePending(false);
     }
@@ -1292,7 +1305,7 @@ useEffect(() => {
 
   const handleLinkExistingCase = async () => {
     if (!leadId || !linkCaseId) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
     try {
       setLinkingCase(true);
       const selected = allCases.find((entry) => String(entry.id || '') === linkCaseId);
@@ -1302,11 +1315,11 @@ useEffect(() => {
         const { updateCaseInSupabase } = await import('../lib/supabase-fallback');
         await updateCaseInSupabase({ id: linkCaseId, leadId }).catch(() => null);
       }
-      await addActivity('case_linked', { caseId: linkCaseId, title: selected?.title || selected?.clientName || 'Powiązana sprawa' });
-      toast.success('Sprawa podpięta do leada');
+      await addActivity('case_linked', { caseId: linkCaseId, title: selected?.title || selected?.clientName || 'PowiÄ…zana sprawa' });
+      toast.success('Sprawa podpiÄ™ta do leada');
       await loadLead();
     } catch (error: any) {
-      toast.error(`Nie udało się podpiąć sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ podpiÄ…Ä‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkingCase(false);
     }
@@ -1322,7 +1335,7 @@ useEffect(() => {
         <main className="lead-detail-vnext-page">
           <section className="lead-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ładowanie leada...</span>
+            <span>Ĺadowanie leada...</span>
           </section>
         </main>
       </Layout>
@@ -1336,10 +1349,10 @@ useEffect(() => {
           <section className="lead-detail-empty-card">
             <EntityIcon entity="lead" className="h-8 w-8" />
             <h1>Nie znaleziono leada</h1>
-            <p>{loadError || 'Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.'}</p>
+            <p>{loadError || 'Ten rekord mĂłgĹ‚ zostaÄ‡ usuniÄ™ty albo nie naleĹĽy do aktualnego workspace.'}</p>
             <Button type="button" variant="outline" onClick={() => navigate('/leads')}>
               <ArrowLeft className="h-4 w-4" />
-              Wróć do leadów
+              WrĂłÄ‡ do leadĂłw
             </Button>
           </section>
         </main>
@@ -1377,12 +1390,12 @@ useEffect(() => {
             {leadInService ? (
               <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
                 <EntityIcon entity="case" className="h-4 w-4" />
-                Otwórz sprawę
+                OtwĂłrz sprawÄ™
               </Button>
             ) : (
               <Button type="button" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>
                 <EntityIcon entity="case" className="h-4 w-4" />
-                Rozpocznij obsługę
+                Rozpocznij obsĹ‚ugÄ™
               </Button>
             )}
             <Button type="button" variant="outline" onClick={handleStartLeadEditing}>
@@ -1395,31 +1408,31 @@ useEffect(() => {
         {showServiceBanner ? (
           <section className="lead-detail-service-box" data-lead-in-service-box="true">
             <div>
-              <p className="lead-detail-box-kicker">LEAD JUŻ W OBSŁUDZE</p>
-              <h2>Ten temat jest już w obsłudze</h2>
-              <p>Lead zostaje jako historia pozyskania. Dalszą pracę prowadź w powiązanej sprawie.</p>
+              <p className="lead-detail-box-kicker">LEAD JUĹ» W OBSĹUDZE</p>
+              <h2>Ten temat jest juĹĽ w obsĹ‚udze</h2>
+              <p>Lead zostaje jako historia pozyskania. DalszÄ… pracÄ™ prowadĹş w powiÄ…zanej sprawie.</p>
             </div>
             <div className="lead-detail-service-meta">
               <span><strong>Sprawa</strong>{serviceCaseTitle}</span>
               <span><strong>Status sprawy</strong>{serviceCaseStatusLabel}</span>
-              <span><strong>Data przejścia</strong>{serviceMovedAtLabel}</span>
+              <span><strong>Data przejĹ›cia</strong>{serviceMovedAtLabel}</span>
             </div>
             <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
-              Otwórz sprawę <ArrowRight className="h-4 w-4" />
+              OtwĂłrz sprawÄ™ <ArrowRight className="h-4 w-4" />
             </Button>
           </section>
         ) : null}
 
         <div className="lead-detail-shell">
           <section className="lead-detail-main-column">
-            {!leadInService ? (
+          {!leadInService ? (
               <section className="lead-detail-top-grid">
                 <article className="lead-detail-top-card lead-detail-callout-blue">
-                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa zaplanowana akcja</h2></div>
+                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>NajbliĹĽsza zaplanowana akcja</h2></div>
                   {nextTimelineEntry ? (
                     <>
                       <strong>{nextTimelineEntry.title}</strong>
-                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} ┬Ě {nextTimelineEntry.dateLabel}</p>
+                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â”¬Äš {nextTimelineEntry.dateLabel}</p>
                       <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status)}`}>{nextTimelineEntry.statusLabel}</span>
                     </>
                   ) : (
@@ -1427,14 +1440,14 @@ useEffect(() => {
                   )}
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-green">
-                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Wartość</h2></div>
+                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>WartoĹ›Ä‡</h2></div>
                   <strong>{leadFinance.formatted}</strong>
-                  <p>{sourceLabel(lead.source)} ┬Ě {statusLabel(lead.status)}</p>
+                  <p>{sourceLabel(lead.source)} â”¬Äš {statusLabel(lead.status)}</p>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber">
                   <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Aktywny lead</h2></div>
                   <strong>{sortedLinkedTasks.length + sortedLinkedEvents.length}</strong>
-                  <p>powiązane zadania i wydarzenia sprzedażowe.</p>
+                  <p>powiÄ…zane zadania i wydarzenia sprzedaĹĽowe.</p>
                 </article>
               </section>
             ) : null}
@@ -1443,7 +1456,7 @@ useEffect(() => {
               <div className="lead-detail-section-head">
                 <div>
                   <h2>Dane kontaktowe</h2>
-                  <p>Najważniejsze dane źródłowe leada.</p>
+                  <p>NajwaĹĽniejsze dane ĹşrĂłdĹ‚owe leada.</p>
                 </div>
               </div>
               <div className="lead-detail-contact-grid">
@@ -1486,7 +1499,7 @@ useEffect(() => {
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, '+1D') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, '+1D'))} disabled={linkedEntryActionId !== null}>+1D</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W') : handleRescheduleLinkedEvent(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W'))} disabled={linkedEntryActionId !== null}>+1W</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>UsuĹ„</LeadActionButton>
                         </div>
                       </article>
                     ))
@@ -1532,7 +1545,7 @@ useEffect(() => {
                       {activity.eventType === 'note_added' ? (
                         <div className="lead-detail-history-actions">
                           <LeadActionButton onClick={() => openEditNote(activity)}>Edytuj</LeadActionButton>
-                          <LeadActionButton onClick={() => handleDeleteNote(String(activity.id))}>Usuń</LeadActionButton>
+                          <LeadActionButton onClick={() => handleDeleteNote(String(activity.id))}>UsuĹ„</LeadActionButton>
                         </div>
                       ) : null}
                     </article>
@@ -1548,22 +1561,22 @@ useEffect(() => {
 
 
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
-              <p>{serviceCaseId ? serviceCaseTitle : 'Brak powiązanej sprawy'}</p>
-              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy'}</small>
-              {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
+              <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>PowiÄ…zana sprawa</h2></div>
+              <p>{serviceCaseId ? serviceCaseTitle : 'Brak powiÄ…zanej sprawy'}</p>
+              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiÄ…zanej sprawy'}</small>
+              {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>OtwĂłrz sprawÄ™</Button> : null}
             </section>
 
             <section className="right-card lead-detail-right-card" data-lead-finance-panel="true">
               <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse leada</h2></div>
-              <small>Potencjał: {Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Wpłacono: {Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Do zapłaty: {Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Status płatności: {billingStatusLabel(String(lead?.billingStatus || leadFinancePanel.billingStatus || 'not_started'))}</small>
+              <small>PotencjaĹ‚: {Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
+              <small>WpĹ‚acono: {Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
+              <small>Do zapĹ‚aty: {Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
+              <small>Status pĹ‚atnoĹ›ci: {billingStatusLabel(String(lead?.billingStatus || leadFinancePanel.billingStatus || 'not_started'))}</small>
               {!leadInService ? (
                 <div className="lead-detail-right-actions">
-                  <button type="button" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
-                  <button type="button" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
+                  <button type="button" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkÄ™</button>
+                  <button type="button" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>PĹ‚atnoĹ›Ä‡ czÄ™Ĺ›ciowa</button>
                 </div>
               ) : null}
             </section>
@@ -1572,13 +1585,13 @@ useEffect(() => {
               <section className="right-card lead-detail-right-card">
                 <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
                 <div className="lead-detail-right-actions">
-                  <button type="button" onClick={() => setIsCreateCaseOpen(true)}>Rozpocznij obsługę</button>
+                  <button type="button" onClick={() => setIsCreateCaseOpen(true)}>Rozpocznij obsĹ‚ugÄ™</button>
                 </div>
               </section>
             ) : null}
 
             <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>NajbliĹĽsza akcja</h2></div>
               {nextTimelineEntry ? (
                 <p>{nextTimelineEntry.title}</p>
               ) : (
@@ -1598,14 +1611,14 @@ useEffect(() => {
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Rozpocznij obsĹ‚ugÄ™</DialogTitle></DialogHeader>
             <div className="lead-detail-dialog-grid">
-              <Label>Tytuł sprawy<Input value={createCaseDraft.title} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, title: event.target.value }))} /></Label>
+              <Label>TytuĹ‚ sprawy<Input value={createCaseDraft.title} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Klient<Input value={createCaseDraft.clientName} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientName: event.target.value }))} /></Label>
               <Label>E-mail<Input value={createCaseDraft.clientEmail} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientEmail: event.target.value }))} /></Label>
               <Label>Telefon<Input value={createCaseDraft.clientPhone} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientPhone: event.target.value }))} /></Label>
               {availableCasesToLink.length > 0 ? (
-                <Label>Podłącz istniejącą sprawę
+                <Label>PodĹ‚Ä…cz istniejÄ…cÄ… sprawÄ™
                   <select className={modalSelectClass} value={linkCaseId} onChange={(event) => setLinkCaseId(event.target.value)}>
                     <option value="">Nie podpinaj</option>
                     {availableCasesToLink.map((entry: any) => (
@@ -1617,8 +1630,8 @@ useEffect(() => {
             </div>
             <DialogFooter className={modalFooterClass()}>
               <Button type="button" variant="outline" onClick={() => setIsCreateCaseOpen(false)}>Anuluj</Button>
-              {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawę'}</Button> : null}
-              <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'Tworzę...' : 'Rozpocznij obsługę'}</Button>
+              {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawÄ™'}</Button> : null}
+              <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'TworzÄ™...' : 'Rozpocznij obsĹ‚ugÄ™'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -1631,8 +1644,8 @@ useEffect(() => {
               <Label>Firma<Input value={editLead?.company || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, company: event.target.value }))} /></Label>
               <Label>Telefon<Input value={editLead?.phone || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, phone: event.target.value }))} /></Label>
               <Label>E-mail<Input value={editLead?.email || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, email: event.target.value }))} /></Label>
-              <Label>Źródło<select className={modalSelectClass} value={editLead?.source || 'other'} onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}>{SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <Label>Wartość<Input type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
+              <Label>ĹąrĂłdĹ‚o<select className={modalSelectClass} value={editLead?.source || 'other'} onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}>{SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
+              <Label>WartoĹ›Ä‡<Input type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
               <Label>Notatka<Textarea value={editLead?.note || editLead?.notes || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, note: event.target.value }))} /></Label>
             </div>
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button><Button type="button" onClick={handleUpdateLead}>Zapisz</Button></DialogFooter>
@@ -1643,13 +1656,13 @@ useEffect(() => {
           <DialogContent>
             <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle></DialogHeader>
             {editLinkedTask ? <div className="lead-detail-dialog-grid">
-              <Label>Tytuł<Input value={editLinkedTask.title} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, title: event.target.value }))} /></Label>
+              <Label>TytuĹ‚<Input value={editLinkedTask.title} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Typ<select className={modalSelectClass} value={editLinkedTask.type} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, type: event.target.value }))}>{TASK_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
               <Label>Termin<Input type="datetime-local" value={editLinkedTask.dueAt} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, dueAt: event.target.value }))} /></Label>
               <Label>Status<select className={modalSelectClass} value={editLinkedTask.status} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, status: event.target.value }))}><option value="todo">Do zrobienia</option><option value="in_progress">W trakcie</option><option value="done">Zrobione</option></select></Label>
               <Label>Powtarzanie<select className={modalSelectClass} value={editLinkedTask.recurrenceRule} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, recurrenceRule: event.target.value }))}>{SIMPLE_RECURRENCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
             </div> : null}
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedTaskEdit} disabled={editLinkedTaskSubmitting}>{editLinkedTaskSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedTask(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedTaskEdit} disabled={editLinkedTaskSubmitting}>{editLinkedTaskSubmitting ? 'ZapisujÄ™...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
@@ -1657,19 +1670,19 @@ useEffect(() => {
           <DialogContent>
             <DialogHeader><DialogTitle>Edytuj wydarzenie</DialogTitle></DialogHeader>
             {editLinkedEvent ? <div className="lead-detail-dialog-grid">
-              <Label>Tytuł<Input value={editLinkedEvent.title} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, title: event.target.value }))} /></Label>
+              <Label>TytuĹ‚<Input value={editLinkedEvent.title} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Typ<select className={modalSelectClass} value={editLinkedEvent.type} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, type: event.target.value }))}>{EVENT_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
               <Label>Start<Input type="datetime-local" value={editLinkedEvent.startAt} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, startAt: event.target.value }))} /></Label>
               <Label>Koniec<Input type="datetime-local" value={editLinkedEvent.endAt} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, endAt: event.target.value }))} /></Label>
               <Label>Status<select className={modalSelectClass} value={editLinkedEvent.status} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, status: event.target.value }))}><option value="scheduled">Zaplanowane</option><option value="completed">Zrobione</option><option value="cancelled">Anulowane</option></select></Label>
             </div> : null}
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'Zapisuję...' : 'Zapisz'}</Button></DialogFooter>
+            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditLinkedEvent(null)}>Anuluj</Button><Button type="button" onClick={handleSaveLinkedEventEdit} disabled={editLinkedEventSubmitting}>{editLinkedEventSubmitting ? 'ZapisujÄ™...' : 'Zapisz'}</Button></DialogFooter>
           </DialogContent>
         </Dialog>
 
         <Dialog open={Boolean(editingNote)} onOpenChange={(open) => !open && setEditingNote(null)}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Edytuj notatkÄ™</DialogTitle></DialogHeader>
             <Textarea value={editingNoteContent} onChange={(event) => setEditingNoteContent(event.target.value)} />
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditingNote(null)}>Anuluj</Button><Button type="button" onClick={handleSaveEditedNote}>Zapisz</Button></DialogFooter>
           </DialogContent>
@@ -1678,5 +1691,12 @@ useEffect(() => {
     </Layout>
   );
 }
+
+
+
+
+
+
+
 
 
