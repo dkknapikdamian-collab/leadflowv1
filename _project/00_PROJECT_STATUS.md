@@ -5,10 +5,10 @@
 - Expected GitHub repo: dkknapikdamian-collab/leadflowv1.
 - Expected branch: dev-rollout-freeze.
 - Active branch after scan: dev-rollout-freeze.
-- App commit after scan: d944705.
+- App commit after scan: fc549b3.
 - Obsidian vault: C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT.
 - Obsidian branch after scan: main.
-- Obsidian commit after scan: 1edd247.
+- Obsidian commit after scan: 8700046.
 
 ## DECYZJA
 - Project memory lives in AGENTS.md and _project/.

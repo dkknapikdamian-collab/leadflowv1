@@ -1,5 +1,15 @@
 # 10_PROJECT_TIMELINE - CloseFlow Lead App
 
+## 2026-05-15_21-59-45
+- FAKT - Project memory scan-first stage executed.
+- DECYZJA - Future agents must scan repo and Obsidian first.
+- HIPOTEZA / PROPOZYCJA - Old notes may contain useful decisions.
+- DO POTWIERDZENIA - User should verify latest run report.
+
+---
+
+# 10_PROJECT_TIMELINE - CloseFlow Lead App
+
 ## 2026-05-15_20-25-11
 - FAKT - Project memory scan-first stage executed.
 - DECYZJA - Future agents must scan repo and Obsidian first.

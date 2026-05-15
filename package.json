@@ -754,7 +754,8 @@
                     "check:operator-rail-stage5-guard-compat":  "node scripts/check-operator-rail-stage5-guard-compat.cjs",
                     "check:project-memory":  "node scripts/check-project-memory.cjs",
                     "check:stage83-right-rail-stale-cleanup":  "node --test tests/stage83-right-rail-stale-cleanup.test.cjs",
-                    "test:stage83-right-rail-stale-cleanup":  "node --test tests/stage83-right-rail-stale-cleanup.test.cjs"
+                    "test:stage83-right-rail-stale-cleanup":  "node --test tests/stage83-right-rail-stale-cleanup.test.cjs",
+                    "check:stage84-import-doctor-right-rail":  "node --test tests/stage84-import-doctor-right-rail.test.cjs"
                 },
     "dependencies":  {
                          "@base-ui/react":  "^1.3.0",
