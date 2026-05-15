@@ -1545,3 +1545,27 @@ aside.case-detail-right-rail::after {
     grid-template-columns: 1fr;
   }
 }
+
+/* Stage 7: destructive action placement in CaseDetail header */
+.cf-case-detail-delete-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(220, 38, 38, 0.24);
+  background: rgba(254, 242, 242, 0.88);
+  color: #b91c1c;
+  line-height: 1;
+}
+.cf-case-detail-delete-action:hover {
+  background: rgba(254, 226, 226, 0.98);
+  border-color: rgba(220, 38, 38, 0.42);
+}
+.cf-case-detail-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}

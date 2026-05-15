@@ -1894,24 +1894,17 @@ export default function CaseDetail() {
 
   return (
     <Layout>
-      {caseData?.id ? (
-        <div className="cf-case-detail-delete-shortcut">
-          <EntityTrashButton
-            type="button"
-            variant="ghost"
-            data-case-detail-delete-action="true"
-            aria-label="Usuń sprawę"
-            title="Usuń sprawę"
-            disabled={deleteCasePending}
-            onClick={() => setDeleteCaseOpen(true)}
-          >
-            {deleteCasePending ? <Loader2 className="cf-trash-action-icon h-4 w-4 animate-spin" /> : <Trash2 className="cf-trash-action-icon h-4 w-4" />}
-            Usuń sprawę
-          </EntityTrashButton>
-        </div>
-      ) : null}
+
       <main className="case-detail-vnext-page">
         <header className="case-detail-header">
+        <EntityTrashButton
+          className="cf-case-detail-delete-action"
+          data-case-detail-delete-action="true"
+          title="Usuń sprawę"
+          aria-label="Usuń sprawę"
+          onClick={() => setDeleteCaseOpen(true)}
+        />
+
           <div className="case-detail-header-copy">
             <button type="button" className="case-detail-back-button" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />

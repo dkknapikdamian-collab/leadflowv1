@@ -190,3 +190,20 @@ export function DangerActionZone({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={dangerActionZoneClass(className)} data-cf-action-region="danger-action-zone" data-standard-action-cluster="true" data-cf-action-cluster-contract="VS6" {...props} />;
 }
+
+export type ContextQuickActionPayload = {
+  kind?: string;
+  recordType?: string;
+  recordId?: string | null;
+  clientId?: string | null;
+  leadId?: string | null;
+  caseId?: string | null;
+  recordLabel?: string | null;
+};
+
+export function openContextQuickAction(payload: ContextQuickActionPayload) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("closeflow:context-quick-action", { detail: payload }));
+  }
+  return payload;
+}

@@ -1,0 +1,38 @@
+.context-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 2.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(255, 255, 255, 0.92);
+  color: #111827;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.context-action-button:hover {
+  border-color: rgba(15, 23, 42, 0.2);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+}
+
+.context-action-button:active {
+  transform: translateY(1px);
+}
+
+.context-action-button--event {
+  background: rgba(239, 246, 255, 0.96);
+}
+
+.context-action-button--task {
+  background: rgba(240, 253, 244, 0.96);
+}
+
+.context-action-button--note {
+  background: rgba(255, 251, 235, 0.96);
+}

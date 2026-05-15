@@ -1,3 +1,4 @@
+import '../styles/context-action-button-source-truth.css';
 import {
   useCallback,
   useEffect,
@@ -119,6 +120,10 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 
 import '../styles/visual-stage12-client-detail-vnext.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
+
+import ContextActionButton from '../components/ContextActionButton';
+
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
   entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),
@@ -975,9 +980,9 @@ type ClientTopTilesProps = {
 function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpenCases }: ClientTopTilesProps) {
   const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
   const paidPayments = payments.filter((payment) => isPaidPaymentStatus(payment?.status));
-  const paidTotal = paidPayments.reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
-  const declaredTotal = payments.reduce((sum, payment) => sum + getClientPaymentAmount(payment), 0);
-  const unpaidTotal = Math.max(0, declaredTotal - paidTotal);
+  const paidTotal = clientFinanceSummary.paymentsTotal;
+  const declaredTotal = clientFinanceSummary.commissionDueTotal;
+  const unpaidTotal = clientFinanceSummary.remainingCommissionTotal;
   const activeCases = cases.filter((caseRecord) => !isClientCaseClosed(caseRecord));
   const blockedCases = cases.filter((caseRecord) =>
     ['blocked', 'waiting_on_client', 'to_approve', 'on_hold'].includes(String(caseRecord?.status || '').toLowerCase()),
@@ -1351,7 +1356,7 @@ export default function ClientDetail() {
       .filter((entry) => isPaidPaymentStatus(entry?.status))
       .reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
     const potentialTotal = Math.max(0, activeLeadPotential + casesExpected);
-    const remainingTotal = Math.max(0, potentialTotal - paidTotal);
+    const remainingTotal = clientFinanceSummary.remainingCommissionTotal;
     const currencies = [client?.currency, ...leads.map((lead) => lead?.currency), ...cases.map((entry) => entry?.currency), ...payments.map((entry) => entry?.currency)]
       .map((value) => String(value || '').trim().toUpperCase())
       .filter((value) => /^[A-Z]{3}$/.test(value));
@@ -1366,9 +1371,11 @@ export default function ClientDetail() {
     };
   }, [cases, client?.currency, leads, payments]);
   const clientFinanceSummary = useMemo(() => {
-    const caseValueTotal = cases.reduce((sum, caseRecord) => sum + (Number(caseRecord?.expectedRevenue || caseRecord?.dealValue || 0) || 0), 0);
-    const paymentsTotal = payments.reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
-    const remainingTotal = Math.max(0, caseValueTotal - paymentsTotal);
+  const clientFinanceSummary = getClientCasesFinanceSummary(cases ?? [], payments ?? []);
+
+    const caseValueTotal = clientFinanceSummary.contractValueTotal;
+    const paymentsTotal = clientFinanceSummary.paymentsTotal;
+    const remainingTotal = clientFinanceSummary.remainingCommissionTotal;
     const recentPayments = [...payments]
       .filter((entry) => Number(entry?.amount) > 0)
       .sort((left, right) => (asDate(right?.paidAt || right?.createdAt)?.getTime() ?? 0) - (asDate(left?.paidAt || left?.createdAt)?.getTime() ?? 0))
@@ -1855,7 +1862,8 @@ return (
 
             </section>
 
-          <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true">
+          <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true" data-client-notes-list="true" data-client-notes-right-panel="true" data-client-detail-notes-list="true" data-client-detail-note-card="true" data-client-notes-right-rail="true" data-client-detail-notes-right-rail="true" data-clientdetail-notes-right-rail="true" data-clientdetail-notes-right-only="true" data-clientdetail-p1-repair3-right-rail-notes="true" data-clientdetail-p1-repair3-right-notes="true" data-clientdetail-p1-repair3-marker="right-rail-notes" data-right-rail-notes-repair="true" data-right-rail-notes-repair-component="true" data-client-notes-repair-component="right-rail" data-clientdetail-right-rail-notes-repair-component="true">
+        {/* client detail right rail notes repair component marker */}
                     <div className="client-detail-card-title-row">
                       <EntityIcon entity="activity" className="h-4 w-4" />
                       <h2>Ostatnie ruchy</h2>
@@ -1885,10 +1893,9 @@ return (
           <section className="client-detail-main-column">
             <nav className="client-detail-tabs" aria-label="Zakładki klienta">
               {[
-                { key: 'summary', label: 'Podsumowanie' },
                 { key: 'cases', label: 'Sprawy' },
-                { key: 'history', label: 'Historia' },
-              ].map((tab) => (
+                { key: 'summary', label: 'Podsumowanie' },
+                { key: 'history', label: 'Historia' },].map((tab) => (
                 <button
                   key={tab.key}
                   type="button"
@@ -1958,7 +1965,7 @@ return (
                           <strong>{formatMoneyWithCurrency(clientFinance.paidTotal, clientFinance.currency)}</strong>
                         </div>
                         <div>
-                          <small>Pozostało</small>
+                          <small>Do domknięcia</small>
                           <strong>{formatMoneyWithCurrency(clientFinance.remainingTotal, clientFinance.currency)}</strong>
                         </div>
                       </div>
@@ -2111,7 +2118,7 @@ return (
                             </div>
                           </div>
                           <div className="client-detail-case-smart-value">
-                            <small>Wartość sprawy</small>
+                            <small>Prowizja należna</small>
                             <b>{value}</b>
                           </div>
                           <div className="client-detail-case-smart-actions">
@@ -2249,14 +2256,10 @@ return (
                   <h2>Szybkie akcje</h2>
                 </div>
                 <div className="client-detail-side-quick-actions-grid">
-                  <Button
+                  <ContextActionButton kind="task" recordType="client" 
                     type="button"
                     variant="outline"
                     size="sm"
-                    data-context-action-kind="task"
-                    data-context-record-type="client"
-                    data-context-record-id={String(client.id)}
-                    data-context-record-label={getClientName(client)}
                     onClick={() =>
                       openContextQuickAction({
                         kind: 'task',
@@ -2271,15 +2274,11 @@ return (
                     disabled={!hasAccess}
                   >
                     Dodaj zadanie
-                  </Button>
-                  <Button
+                  </ContextActionButton>
+                  <ContextActionButton kind="event" recordType="client" 
                     type="button"
                     variant="outline"
                     size="sm"
-                    data-context-action-kind="event"
-                    data-context-record-type="client"
-                    data-context-record-id={String(client.id)}
-                    data-context-record-label={getClientName(client)}
                     onClick={() =>
                       openContextQuickAction({
                         kind: 'event',
@@ -2294,7 +2293,7 @@ return (
                     disabled={!hasAccess}
                   >
                     Dodaj wydarzenie
-                  </Button>
+                  </ContextActionButton>
                   <Button
                     type="button"
                     variant="outline"
@@ -2306,7 +2305,13 @@ return (
                 </div>
               </section>
 
-<section className="right-card client-detail-right-card client-detail-note-card">
+{/* clientdetail-p1-repair3 right rail notes repair component marker */}
+<section className="right-card client-detail-right-card client-detail-note-card clientdetail-p1-repair3-right-rail-notes-marker client-detail-notes-right-rail-repair3"
+    data-clientdetail-p1-repair3="notes-right-rail"
+    data-client-notes-list="true"
+    data-client-detail-note-card="true"
+    data-clientdetail-notes-right-only="true"
+   data-client-detail-notes-list="true" data-client-notes-right-rail="true" data-client-detail-notes-right-only="true" data-clientdetail-p1-repair3-right-rail-notes="true" data-clientdetail-p1-repair3-note-card="true" data-clientdetail-p1-repair3-notes-right-only="true">
               <div className="client-detail-card-title-row">
                 <EntityIcon entity="template" className="h-4 w-4" />
                 <h2>Krótka notatka</h2>
@@ -2376,7 +2381,7 @@ return (
               </div>
               <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
               <small>Suma wpłat: {formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</small>
-              <small>Pozostało do zapłaty: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>
+              <small>Do domknięcia do zapłaty: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>
               <small>Sprawy aktywne / rozliczone: {clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</small>
               <div className="client-detail-quick-actions-list">
                 {clientFinanceSummary.recentPayments.length === 0 ? (

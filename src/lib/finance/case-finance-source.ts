@@ -427,3 +427,23 @@ export function getClientCasesFinanceSummary(input: ClientCasesFinanceInput): Cl
     commissionRemainingAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionRemainingAmount, 0)),
   };
 }
+
+
+// FIN-PUSH-V19: semantic finance helper used by ClientDetail/CaseDetail guards.
+export function getCaseFinanceSemanticValues(caseLike: any = {}) {
+  const rawContract = caseLike?.contractValue ?? caseLike?.transactionValue ?? caseLike?.dealValue ?? caseLike?.expectedRevenue ?? 0;
+  const contractValue = Number.isFinite(Number(rawContract)) ? Number(rawContract) : 0;
+  const commissionMode = String(caseLike?.commissionMode ?? caseLike?.commission_mode ?? "fixed").toLowerCase();
+  const rawRate = caseLike?.commissionRate ?? caseLike?.commission_rate ?? 0;
+  const commissionRate = Number.isFinite(Number(rawRate)) ? Number(rawRate) : 0;
+  const rawAmount = caseLike?.commissionAmount ?? caseLike?.commission_amount;
+  const explicitAmount = Number.isFinite(Number(rawAmount)) ? Number(rawAmount) : null;
+  const commissionDue = explicitAmount !== null ? explicitAmount : (commissionMode === "percent" ? contractValue * commissionRate / 100 : commissionRate);
+  return {
+    transactionValue: contractValue,
+    contractValue,
+    commissionDue,
+    commissionAmount: commissionDue,
+    expectedRevenue: commissionDue,
+  };
+}
