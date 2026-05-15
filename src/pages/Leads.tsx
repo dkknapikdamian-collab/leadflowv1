@@ -44,6 +44,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { TopValueRecordsCard } from '../components/operator-rail';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
@@ -1052,35 +1053,26 @@ export default function Leads() {
           </div>
 
           <div className="lead-right-rail" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true">
-            <aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">
-              <div className="panel-head">
-                <div>
-                  <h3>Najcenniejsze leady</h3>
-                </div>
-                <span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>
-              </div>
-
-              {mostValuableRelations.length ? (
-                <div className="quick-list">
-                  {mostValuableRelations.map((entry) => (
-                    <Link
-                      key={entry.key}
-                      to={entry.href || '/leads'}
-                      title={`${entry.label} - ${formatRelationValue(entry.value)}`}
-                      data-stage25-valuable-relation-row="true"
-                      data-stage32-valuable-relation-row="true"
-                    >
-                      <span className="lead-relation-label-wrap">
-                        <strong className="lead-relation-label">{entry.label}</strong>
-                      </span>
-                      <strong className="lead-relation-money">{formatRelationValue(entry.value)}</strong>
-                    </Link>
-                  ))}
-                </div>
-              ) : (
-                <div className="note">Brak relacji z wyliczoną wartością.</div>
-              )}
-            </aside>
+            {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-stage32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
+            <TopValueRecordsCard
+              title="Najcenniejsze leady"
+              className="lead-right-card lead-top-relations"
+              dataTestId="leads-top-value-records-card"
+              dataAttrs={{ 'data-relation-value-board': true }}
+              headerAside={<span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>}
+              items={mostValuableRelations.map((entry) => ({
+                key: entry.key,
+                href: entry.href || '/leads',
+                label: entry.label,
+                valueLabel: formatRelationValue(entry.value),
+                title: entry.label + ' - ' + formatRelationValue(entry.value),
+                dataAttrs: {
+                  'data-stage25-valuable-relation-row': true,
+                  'data-stage32-valuable-relation-row': true,
+                },
+              }))}
+              emptyLabel="Brak relacji z wyliczoną wartością."
+            />
 
             <div hidden data-leads-stage35-removed-ai-side-card="true" />
           </div>

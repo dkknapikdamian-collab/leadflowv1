@@ -45,6 +45,10 @@ import {
   StatShortcutCard
 } from '../components/StatShortcutCard';
 import {
+  OperatorSideCard,
+  SimpleFiltersCard
+} from '../components/operator-rail';
+import {
   Button
 } from '../components/ui/button';
 import {
@@ -738,23 +742,24 @@ export default function Clients() {
           </div>
 
           <div className="clients-right-rail">
-            <aside className="right-card">
-              <div className="panel-head"><div><h3>Filtry proste</h3><p>Bez przesady, tylko najpotrzebniejsze.</p></div></div>
-              <div className="quick-list">
-                <button type="button" onClick={() => setShowArchived(false)}><span>Aktywni</span><strong>{activeCount}</strong></button>
-                <button type="button" onClick={() => setShowArchived(false)}><span>Bez sprawy</span><strong>{clientsWithoutCases}</strong></button>
-                <button type="button" onClick={() => setShowArchived(false)}><span>Bez ruchu</span><strong>{staleClients}</strong></button>
-                <button type="button" onClick={() => setShowArchived(true)}><span>Kosz</span><strong>{archivedCount}</strong></button>
-              </div>
-            </aside>
+            <SimpleFiltersCard
+              title="Filtry proste"
+              description="Bez przesady, tylko najpotrzebniejsze."
+              dataTestId="clients-simple-filters-card"
+              items={[
+                { key: 'active', label: 'Aktywni', value: activeCount, onClick: () => setShowArchived(false) },
+                { key: 'without-case', label: 'Bez sprawy', value: clientsWithoutCases, onClick: () => setShowArchived(false) },
+                { key: 'stale', label: 'Bez ruchu', value: staleClients, onClick: () => setShowArchived(false) },
+                { key: 'trash', label: 'Kosz', value: archivedCount, onClick: () => setShowArchived(true) },
+              ]}
+            />
 
-                                                <aside className="right-card" data-clients-lead-attention-rail="true">
-              <div className="panel-head">
-                <div>
-                  <h3>Leady do spięcia</h3>
-                  <p>Brak klienta albo sprawy przy aktywnym temacie.</p>
-                </div>
-              </div>
+            <OperatorSideCard
+              title="Leady do spięcia"
+              description="Brak klienta albo sprawy przy aktywnym temacie."
+              dataTestId="clients-lead-attention-card"
+              dataAttrs={{ 'data-clients-lead-attention-rail': true }}
+            >
               <div className="right-list" data-right-rail-list="lead-attention">
                 {leadsNeedingClientOrCaseLink.length ? leadsNeedingClientOrCaseLink.map((lead) => {
                   const leadId = String(lead.id || '').trim();
@@ -788,7 +793,7 @@ export default function Clients() {
                   <p className="right-list-empty">Brak leadów do spięcia.</p>
                 )}
               </div>
-            </aside>
+            </OperatorSideCard>
           </div>
         </div>
       </div>
