@@ -1,5 +1,25 @@
 # 08_CHANGELOG_AI - CloseFlow Lead App
 
+## 2026-05-15_20-25-11 - project journal scan-first setup
+
+## FAKT
+- Refreshed AGENTS.md and _project memory files.
+- Added scripts/check-project-memory.cjs.
+- Created run report.
+
+## DECYZJA
+- Continue future work from scan-first process.
+
+## HIPOTEZA / PROPOZYCJA
+- Review old Obsidian notes.
+
+## DO POTWIERDZENIA
+- User acceptance after run report.
+
+---
+
+# 08_CHANGELOG_AI - CloseFlow Lead App
+
 ## 2026-05-15_20-20-53 - project journal scan-first setup
 
 ## FAKT
