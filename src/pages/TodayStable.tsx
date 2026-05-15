@@ -1109,7 +1109,7 @@ export default function TodayStable() {
         return Boolean(dateKey) && dateKey > todayKey && dateKey <= next7EndKey;
       })
       .map((entry) => ({
-        id: 'task:' + String(entry.entry.id || getTaskTitle(entry.task)),
+        id: 'task:' + String(entry.task?.id || getTaskTitle(entry.task)),
         kind: 'task' as const,
         title: getTaskTitle(entry.task),
         helper: 'Powód: zaplanowane zadanie w najbliższych dniach',
