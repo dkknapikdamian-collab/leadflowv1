@@ -1662,3 +1662,5 @@ export default function TodayStable() {
   );
 }
 
+/* CLOSEFLOW_V21_TODAYSTABLE_NAMED_EXPORT: fallback for lazyPage runtime interop. */
+export { TodayStable };
