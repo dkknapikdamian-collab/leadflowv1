@@ -1,6 +1,5 @@
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, type ComponentType, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
-import { Activity, Calendar, Settings } from 'lucide-react';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
 
@@ -30,29 +29,47 @@ import './styles/closeflow-page-header-action-semantics-packet1.css';
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 const CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13 = 'App bootstrap sync is one-shot; no focus/visibility/interval profile refresh on protected pages';
 
-const PublicLanding = lazy(() => import('./pages/PublicLanding'));
-const Today = lazy(() => import('./pages/TodayStable'));
-const Leads = lazy(() => import('./pages/Leads'));
-const LeadDetail = lazy(() => import('./pages/LeadDetail'));
-const Cases = lazy(() => import('./pages/Cases'));
-const CaseDetail = lazy(() => import('./pages/CaseDetail'));
-const Clients = lazy(() => import('./pages/Clients'));
-const ClientDetail = lazy(() => import('./pages/ClientDetail'));
-const ClientPortal = lazy(() => import('./pages/ClientPortal'));
-const Activity = lazy(() => import('./pages/Activity'));
-const AiDrafts = lazy(() => import('./pages/AiDrafts'));
-const Settings = lazy(() => import('./pages/Settings'));
-const AdminAiSettings = lazy(() => import('./pages/AdminAiSettings'));
-const Login = lazy(() => import('./pages/Login'));
-const Tasks = lazy(() => import('./pages/TasksStable'));
-const Calendar = lazy(() => import('./pages/Calendar'));
-const Billing = lazy(() => import('./pages/Billing'));
-const SupportCenter = lazy(() => import('./pages/SupportCenter'));
-const NotificationsCenter = lazy(() => import('./pages/NotificationsCenter'));
-const Templates = lazy(() => import('./pages/Templates'));
-const ResponseTemplates = lazy(() => import('./pages/ResponseTemplates'));
-const UiPreviewVNextFull = lazy(() => import('./pages/UiPreviewVNextFull'));
-const UiPreviewVNext = lazy(() => import('./pages/UiPreviewVNext'));
+type LazyPageModule = { default?: ComponentType<any>; [key: string]: any };
+
+const lazyPage = (loader: () => Promise<LazyPageModule>, exportName: string) =>
+  lazy(async () => {
+    const mod = await loader();
+    const component = mod?.default ?? mod?.[exportName];
+
+    if (!component) {
+      console.error('CLOSEFLOW_LAZY_PAGE_EXPORT_MISSING', {
+        exportName,
+        moduleKeys: mod ? Object.keys(mod) : [],
+      });
+      throw new Error('Missing lazy page export: ' + exportName);
+    }
+
+    return { default: component as ComponentType<any> };
+  });
+
+const PublicLanding = lazyPage(() => import('./pages/PublicLanding'), 'PublicLanding');
+const Today = lazyPage(() => import('./pages/TodayStable'), 'TodayStable');
+const Leads = lazyPage(() => import('./pages/Leads'), 'Leads');
+const LeadDetail = lazyPage(() => import('./pages/LeadDetail'), 'LeadDetail');
+const Cases = lazyPage(() => import('./pages/Cases'), 'Cases');
+const CaseDetail = lazyPage(() => import('./pages/CaseDetail'), 'CaseDetail');
+const Clients = lazyPage(() => import('./pages/Clients'), 'Clients');
+const ClientDetail = lazyPage(() => import('./pages/ClientDetail'), 'ClientDetail');
+const ClientPortal = lazyPage(() => import('./pages/ClientPortal'), 'ClientPortal');
+const Activity = lazyPage(() => import('./pages/Activity'), 'Activity');
+const AiDrafts = lazyPage(() => import('./pages/AiDrafts'), 'AiDrafts');
+const Settings = lazyPage(() => import('./pages/Settings'), 'Settings');
+const AdminAiSettings = lazyPage(() => import('./pages/AdminAiSettings'), 'AdminAiSettings');
+const Login = lazyPage(() => import('./pages/Login'), 'Login');
+const Tasks = lazyPage(() => import('./pages/TasksStable'), 'TasksStable');
+const Calendar = lazyPage(() => import('./pages/Calendar'), 'Calendar');
+const Billing = lazyPage(() => import('./pages/Billing'), 'Billing');
+const SupportCenter = lazyPage(() => import('./pages/SupportCenter'), 'SupportCenter');
+const NotificationsCenter = lazyPage(() => import('./pages/NotificationsCenter'), 'NotificationsCenter');
+const Templates = lazyPage(() => import('./pages/Templates'), 'Templates');
+const ResponseTemplates = lazyPage(() => import('./pages/ResponseTemplates'), 'ResponseTemplates');
+const UiPreviewVNextFull = lazyPage(() => import('./pages/UiPreviewVNextFull'), 'UiPreviewVNextFull');
+const UiPreviewVNext = lazyPage(() => import('./pages/UiPreviewVNext'), 'UiPreviewVNext');
 
 function AppRouteFallback() {
   return (
