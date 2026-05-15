@@ -19,3 +19,7 @@
 
 ## DO POTWIERDZENIA
 - Which commands are hard gates.
+
+## 2026-05-15_22-15-44 - Calendar relation link guard v8
+- FAKT: Guard tests/calendar-entry-relation-links.test.cjs was relaxed to accept combined named import from react-router-dom when it includes Link.
+- DECYZJA: This is a guard repair only, not a Calendar UI change.

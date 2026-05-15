@@ -11,7 +11,7 @@ function read(relativePath) {
 
 test('Calendar imports router Link for relation navigation', () => {
   const source = read('src/pages/Calendar.tsx');
-  assert.match(source, /import \{ Link \} from 'react-router-dom'/);
+  assert.match(source, /import\s+\{[^}]*\bLink\b[^}]*\}\s+from\s+['"]react-router-dom['"]/);
 });
 
 test('Calendar entry card links to related lead and case', () => {

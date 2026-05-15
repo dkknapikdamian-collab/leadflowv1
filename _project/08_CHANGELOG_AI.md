@@ -92,3 +92,8 @@ Dokumentacja, pamięć projektu, Obsidian, guard pamięci.
 - Poprawiono `_project/01_PROJECT_GOAL.md`, aby spełniał istniejący guard `scripts/check-project-memory.cjs`.
 - Dodano jawny token `klient` przy definicji modelu domenowego, bez zmiany kierunku produktu.
 
+
+
+## 2026-05-15_22-15-44 - v8 calendar relation link guard repair
+- Fixed false-negative calendar relation link guard after build passed.
+- Did not change UI, routing, or product logic.

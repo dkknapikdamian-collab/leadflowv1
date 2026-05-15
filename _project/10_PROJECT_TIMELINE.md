@@ -50,3 +50,7 @@ Priorytet: dyktafon notatek przy leadzie/kliencie/sprawie, zamiana notatki w zad
 
 ## 2026-05-15 - Pełny mózg projektu v2
 Dodano paczkę pamięci projektu do repo i Obsidiana. Celem jest koniec gubienia ustaleń między czatami i etapami.
+
+
+## 2026-05-15_22-15-44
+- v8 repaired the Calendar relation Link guard after v7 confirmed build passes and verify fails only on a brittle assertion.
