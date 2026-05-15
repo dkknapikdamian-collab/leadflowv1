@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { type FormEvent, useMemo, useState } from 'react';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
@@ -35,7 +35,6 @@ import { CaseFinanceEditorDialog } from './CaseFinanceEditorDialog';
 import { CaseFinanceActionButtons } from './CaseFinanceActionButtons';
 import { CaseFinancePaymentDialog } from './CaseFinancePaymentDialog';
 import '../../styles/finance/closeflow-finance.css';
-
 import { SurfaceCard, FormFooter } from '../ui-system';
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1' as const;
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN10 = 'FIN-10_CASE_FINANCE_SOURCE_TRUTH_PANEL_V1' as const;

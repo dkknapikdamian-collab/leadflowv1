@@ -1,7 +1,6 @@
-import { useEffect, useState, type FormEvent } from 'react';
+import { type FormEvent, useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
-
 import { Button } from './ui/button';
 import {
   Dialog,

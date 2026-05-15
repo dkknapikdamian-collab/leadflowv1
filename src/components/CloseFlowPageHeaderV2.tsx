@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import type { CloseFlowPageHeaderContent, CloseFlowPageHeaderKey } from '../lib/page-header-content';
 import '../styles/closeflow-page-header-v2.css';
 

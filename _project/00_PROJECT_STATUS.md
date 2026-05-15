@@ -1,21 +1,13 @@
-# 00_PROJECT_STATUS - CloseFlow Lead App
+# 00_PROJECT_STATUS - CloseFlow / LeadFlow
 
-## FAKT
-- App repo: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
-- Expected GitHub repo: dkknapikdamian-collab/leadflowv1.
-- Expected branch: dev-rollout-freeze.
-- Active branch after scan: dev-rollout-freeze.
-- App commit after scan: fc549b3.
-- Obsidian vault: C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT.
-- Obsidian branch after scan: main.
-- Obsidian commit after scan: 8700046.
+Status: projekt kodowo-biznesowy w trybie ciaglosci.
 
-## DECYZJA
-- Project memory lives in AGENTS.md and _project/.
-- Obsidian is mirror/index, not replacement for repo memory.
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+Lokalna sciezka: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
 
-## HIPOTEZA / PROPOZYCJA
-- Review backup notes after this run.
+## Teza
+CloseFlow ma codziennie pokazywac komu odpisac, co ruszyc, czego nie przegapic i ktore leady moga uciec.
 
-## DO POTWIERDZENIA
-- Confirm if old Obsidian notes contain active decisions.
+## Wymaganie operacyjne
+Po kazdym etapie aktualizuj _project, Obsidiana, test history, implementation ledger i run report.

@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { isPlanFeatureEnabled, type PlanFeatureKey } from '../lib/plans';
 

@@ -1,3 +1,6 @@
+import { type FormEvent, type MouseEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { AlertTriangle, ArrowRight, CheckSquare, ChevronDown, ChevronUp, Clock, Loader2, Plus, Repeat, ShieldAlert, TrendingUp } from 'lucide-react';
 /*
 STAGE11_REPAIR11_LEGACY_TODAY_UTF8_GUARD_COMPAT
 Legacy guard compatibility markers for inactive Today.tsx.
@@ -68,13 +71,7 @@ TODAY_AI_DRAFTS_TILE_STAGE29D_COMPACT_BOTTOM
 Dzi┼Ť pokazuje ma┼éy dolny kafelek Szkice z liczb─ů niezatwierdzonych szkic├│w AI. Bez du┼╝ej sekcji i bez ingerencji w zwijane listy.
 */
 
-import {
-  useState,
-  useEffect,
-  FormEvent,
-  ReactNode,
-  useMemo,
-  useRef } from 'react';
+
 import { useWorkspace } from '../hooks/useWorkspace';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import Layout from '../components/Layout';
@@ -82,19 +79,7 @@ import { Card,
   CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import {
-  Plus,
-  CheckSquare,
-  AlertTriangle,
-  ArrowRight,
-  TrendingUp,
-  Loader2,
-  Repeat,
-  Clock,
-  ChevronDown,
-  ChevronUp,
-  ShieldAlert
-} from 'lucide-react';
+
 import {
   format,
   isPast,
@@ -106,7 +91,7 @@ import {
   endOfDay,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { Link } from 'react-router-dom';
+
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -156,7 +141,6 @@ import {
   updateLeadInSupabase,
   updateTaskInSupabase,
 } from '../lib/supabase-fallback';
-
 import { getTodayEntryPriorityReasons } from '../lib/today-v1-final';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { installTodayStage30VisualCleanup } from '../lib/stage30-today-cleanup';
@@ -165,7 +149,6 @@ import { installTodayStage32RelationsLoadingPolish } from '../lib/stage32-today-
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/nearest-action';
 import { buildTodaySections, dedupeTodaySectionEntries } from '../lib/today-sections';
-
 import '../styles/today-collapsible-masonry.css';
 
 const TODAY_TILE_STORAGE_KEY = 'closeflow:today:collapsed:v1';

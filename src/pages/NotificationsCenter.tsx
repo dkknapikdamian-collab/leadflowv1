@@ -1,20 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowUpRight,
-  CalendarClock,
-  Check,
-  CheckCircle2,
-  Clock3,
-  Filter,
-  Link2,
-  Mail,
-  RotateCcw,
-  Search,
-  Settings2,
-  ShieldAlert,
-  Trash2
-} from 'lucide-react';
+import { ArrowUpRight, CalendarClock, Check, CheckCircle2, Clock3, Filter, Link2, Mail, RotateCcw, Search, Settings2, ShieldAlert, Trash2 } from 'lucide-react';
 import {
   EntityIcon,
   NotificationEntityIcon,
@@ -24,9 +10,7 @@ import {
 import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
-
 import { useWorkspace } from '../hooks/useWorkspace';
-
 import {
   buildTodayNotificationItems,
   clearNotificationLog,
@@ -44,12 +28,9 @@ import {
   type NotificationLogItem,
   type NotificationSnoozeMode
 } from '../lib/notifications';
-
 import { buildReminderCustomDate } from '../lib/reminders';
-
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';

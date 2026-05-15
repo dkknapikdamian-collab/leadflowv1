@@ -1,3 +1,6 @@
+import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 /*
@@ -6,34 +9,15 @@ Stable Today screen reads the same Supabase API collections that Network diagnos
 This page intentionally bypasses the legacy Today.tsx scheduler stack for operator sections.
 */
 
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode
-} from 'react';
-import { Link,
-  useNavigate } from 'react-router-dom';
+
+
 import Layout from '../components/Layout';
 import { EntityActionButton } from '../components/entity-actions';
 import { Card,
   CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
-import {
-  AlertTriangle,
-  ArrowRight,
-  CalendarDays,
-  ChevronDown,
-  ChevronUp,
-  CheckSquare,
-  Loader2,
-  RefreshCcw,
-  SlidersHorizontal,
-  Trash2,
-  TrendingUp
-} from 'lucide-react';
+
 import {
   deleteEventFromSupabase,
   deleteTaskFromSupabase,
@@ -49,7 +33,6 @@ import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';

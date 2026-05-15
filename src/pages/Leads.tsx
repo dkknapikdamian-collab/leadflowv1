@@ -8,25 +8,26 @@ import {
   useRef,
   useState,
   type FormEvent,
-  type MouseEvent
+  type MouseEvent,
 } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import {
   AlertTriangle,
   ChevronRight,
   Clock3,
+  Filter,
   Loader2,
   Mail,
   RotateCcw,
   Search,
   Trash2,
-  TrendingUp
+  TrendingUp,
 } from 'lucide-react';
 import {
   CaseEntityIcon,
   EntityIcon,
   LeadEntityIcon,
-  TemplateEntityIcon
+  TemplateEntityIcon,
 } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionIconClass, modalFooterClass } from '../components/entity-actions';
@@ -36,7 +37,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -44,7 +45,7 @@ import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
-import { TopValueRecordsCard } from '../components/operator-rail';
+import { SimpleFiltersCard, TopValueRecordsCard } from '../components/operator-rail';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   fetchCasesFromSupabase,
@@ -56,7 +57,7 @@ import {
   insertLeadToSupabase,
   isSupabaseConfigured,
   updateClientInSupabase,
-  updateLeadInSupabase
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 import { format, isPast, parseISO } from 'date-fns';
 import { toast } from 'sonner';
@@ -1054,9 +1055,57 @@ export default function Leads() {
 
           <div className="lead-right-rail" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true">
             {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-stage32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
+            <SimpleFiltersCard
+              title="Filtry proste"
+              description="Bez przesady, tylko najpotrzebniejsze."
+              dataTestId="leads-simple-filters-card"
+              items={[
+                {
+                  key: 'active',
+                  label: 'Aktywne',
+                  value: stats.active,
+                  onClick: () => {
+                    setShowTrash(false);
+                    setQuickFilter('active');
+                    setValueSortEnabled(false);
+                  },
+                },
+                {
+                  key: 'at-risk',
+                  label: 'Zagrożone',
+                  value: stats.atRisk,
+                  onClick: () => {
+                    setShowTrash(false);
+                    setQuickFilter('at-risk');
+                    setValueSortEnabled(false);
+                  },
+                },
+                {
+                  key: 'history',
+                  label: 'Historia',
+                  value: stats.linkedToCase,
+                  onClick: () => {
+                    setShowTrash(false);
+                    setQuickFilter('history');
+                    setValueSortEnabled(false);
+                  },
+                },
+                {
+                  key: 'trash',
+                  label: 'Kosz',
+                  value: stats.trash,
+                  onClick: () => {
+                    setShowTrash(true);
+                    setQuickFilter('all');
+                    setValueSortEnabled(false);
+                  },
+                },
+              ]}
+            />
+
             <TopValueRecordsCard
               title="Najcenniejsze leady"
-              className="lead-right-card lead-top-relations"
+              className="lead-right-card operator-top-value-card"
               dataTestId="leads-top-value-records-card"
               dataAttrs={{ 'data-relation-value-board': true }}
               headerAside={<span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>}

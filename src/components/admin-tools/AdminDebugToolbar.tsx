@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState, type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
+import { type CSSProperties, type KeyboardEvent, type PointerEvent as ReactPointerEvent, useEffect, useMemo, useState } from 'react';
+import { Copy } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import {
   AdminBugItem,

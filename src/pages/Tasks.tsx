@@ -1,23 +1,6 @@
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FormEvent
-} from 'react';
+import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import {
-  AlertTriangle,
-  CheckCircle2,
-  CheckSquare,
-  Clock,
-  Link2,
-  Loader2,
-  MoreVertical,
-  Repeat,
-  Search,
-  Trash2
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Link2, Loader2, MoreVertical, Repeat, Search, Trash2 } from 'lucide-react';
 import { NotificationEntityIcon, TaskEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass } from '../components/entity-actions';
@@ -119,17 +102,10 @@ Nie udało się zapisać zadania. Spróbuj ponownie.
 
 
 import { useWorkspace } from '../hooks/useWorkspace';
-
 import Layout from '../components/Layout';
-
-
 import { pl } from 'date-fns/locale';
-
-
 import { isActiveSalesLead } from '../lib/lead-health';
-
 import { normalizeWorkItem } from '../lib/work-items/normalize';
-
 import '../styles/visual-stage21-task-form-vnext.css';
 
 

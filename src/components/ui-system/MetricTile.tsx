@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react';
+import { ComponentType, type ReactNode } from 'react';
 import { OperatorMetricTile, type OperatorMetricTone } from './OperatorMetricTiles';
 
 export type MetricTileTone =

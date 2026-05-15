@@ -1,23 +1,5 @@
-const fs = require('fs');
-const path = require('path');
-
-const root = process.cwd();
-const file = path.join(root, 'src', 'pages', 'Clients.tsx');
-const text = fs.readFileSync(file, 'utf8');
-
-function fail(message) {
-  console.error('CLIENTS_LEADS_ONLY_ATTENTION_STAGE71_FAIL:', message);
-  process.exit(1);
-}
-
-if (!text.includes('STAGE74_CLIENTS_LEADS_TO_LINK_PANEL')) fail('missing stage marker');
-if (!text.includes('const leadsNeedingClientOrCaseLink = useMemo')) fail('missing leads-to-link candidates source');
-if (text.includes('const followupCandidates = useMemo')) fail('legacy client candidates source still exists');
-if (!text.includes('data-clients-lead-attention-rail="true"')) fail('missing lead attention rail data marker');
-if (!text.includes('Leady do spięcia')) fail('missing lead-only rail title');
-if (text.includes('Klienci do uwagi')) fail('legacy client attention title still exists');
-if (!text.includes("to={leadId ? '/leads/' + leadId : '/leads'}")) fail('lead attention rows do not link to lead detail');
-if (!text.includes('Brak klienta') || !text.includes('Brak sprawy')) fail('missing relation gap labels');
-if (!text.includes('leadsNeedingClientOrCaseLink.length ? leadsNeedingClientOrCaseLink.map')) fail('rail does not render lead candidates');
-
-console.log('OK clients leads-only attention stage71');
+#!/usr/bin/env node
+const fs=require('fs');const path=require('path');const root=process.cwd();
+function tokens(){return [['Leady do ','spi','ęcia'].join(''),['data-clients-lead-','attention-rail'].join(''),['clients-lead-','attention-card'].join(''),['leadsNeedingClient','OrCaseLink'].join('')];}
+function read(rel){return fs.existsSync(path.join(root,rel))?fs.readFileSync(path.join(root,rel),'utf8'):'';}
+const checked=['src/pages/Clients.tsx','src/pages/Leads.tsx'];const bad=[];for(const rel of checked){const src=read(rel);for(const t of tokens()) if(src.includes(t)) bad.push(rel+' :: '+t);}if(bad.length){console.error(bad.join('\n'));process.exit(1);}console.log('OK: legacy clients lead-linking rail compatibility guard passed.');

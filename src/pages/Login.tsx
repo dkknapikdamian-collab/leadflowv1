@@ -1,14 +1,6 @@
-import { FormEvent, useState } from 'react';
-import {
-  ArrowRight,
-  CalendarDays,
-  CheckCircle2,
-  Loader2,
-  Lock,
-  LogIn,
-  Mail,
-  User
-} from 'lucide-react';
+import { type FormEvent, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ArrowRight, CalendarDays, CheckCircle2, Loader2, Lock, LogIn, Mail, User } from 'lucide-react';
 import { CaseEntityIcon, LeadEntityIcon, NotificationEntityIcon } from '../components/ui-system';
 import {
   Tabs,

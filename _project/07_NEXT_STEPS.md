@@ -1,13 +1,6 @@
-# 07_NEXT_STEPS - CloseFlow Lead App
+# 07_NEXT_STEPS - CloseFlow / LeadFlow
 
-## FAKT
-- Project memory was created or refreshed.
-
-## DECYZJA
-- Next work starts by reading AGENTS.md and _project/.
-
-## HIPOTEZA / PROPOZYCJA
-- Next step: review run report and backup list.
-
-## DO POTWIERDZENIA
-- Whether old Obsidian content should be promoted.
+1. Uruchomic paczke V9 bez push.
+2. Sprawdzic wynik check:project-memory:closeflow.
+3. Sprawdzic git status aplikacji i Obsidiana.
+4. Dopiero potem wracac do kolejnego etapu produktowego.

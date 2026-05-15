@@ -1,15 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import {
-  AlertTriangle,
-  CheckCircle2,
-  Copy,
-  FolderKanban,
-  MoreVertical,
-  Plus,
-  Search,
-  ShieldAlert,
-  Trash2
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle2, Copy, FolderKanban, MoreVertical, Plus, Search, ShieldAlert, Trash2 } from 'lucide-react';
 import { AiEntityIcon, TemplateEntityIcon } from '../components/ui-system';
 import { Card, CardContent } from '../components/ui/card';
 import {
@@ -34,9 +24,7 @@ import { StatShortcutCard } from '../components/StatShortcutCard';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { EntityActionButton } from '../components/entity-actions';
-
 import { useWorkspace } from '../hooks/useWorkspace';
-
 import {
   Select,
   SelectContent,
@@ -44,9 +32,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '../components/ui/select';
-
 import { Checkbox } from '../components/ui/checkbox';
-
 import {
   // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_TEMPLATES
   createCaseTemplateInSupabase,
@@ -54,7 +40,6 @@ import {
   fetchCaseTemplatesFromSupabase,
   updateCaseTemplateInSupabase
 } from '../lib/supabase-fallback';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';

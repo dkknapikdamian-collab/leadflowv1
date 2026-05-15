@@ -1,13 +1,4 @@
-import {
-  CalendarDays,
-  CircleDot,
-  FileText,
-  MessageSquareReply,
-  Phone,
-  UserRound,
-  type LucideIcon,
-} from 'lucide-react';
-
+import { Calendar, CalendarDays, CircleDot, FileText, type LucideIcon, MessageSquareReply, Phone, UserRound } from 'lucide-react';
 import { LEAD_STATUS_OPTIONS } from './domain-statuses';
 
 export const SOURCE_OPTIONS = [

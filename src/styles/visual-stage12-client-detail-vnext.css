@@ -2237,7 +2237,6 @@ button.client-detail-top-tile-link {
 }
 /* STAGE21_CLIENT_DETAIL_ADMIN_FEEDBACK_LAYOUT_END */
 
-
 /* stage21c admin feedback client detail cleanup */
 .client-detail-vnext-page [data-client-finance-summary="true"],
 .client-detail-vnext-page [data-client-left-finance-tile="true"],
@@ -2272,7 +2271,6 @@ button.client-detail-top-tile-link {
 .client-detail-vnext-page .client-detail-right-rail [data-client-finance-summary="true"] {
   display: none !important;
 }
-
 
 /* stage22a client detail feedback ui cleanup */
 .client-detail-vnext-page .client-detail-top-tiles.entity-overview-tiles {
@@ -2415,7 +2413,6 @@ button.client-detail-top-tile-link {
   }
 }
 
-
 /* stage23a client detail cases visibility contrast */
 .client-detail-vnext-page .client-detail-profile-card .client-detail-icon-button,
 .client-detail-vnext-page .client-detail-contact-list .client-detail-icon-button,
@@ -2529,7 +2526,6 @@ button.client-detail-top-tile-link {
   color: #ffffff !important;
   stroke: #ffffff !important;
 }
-
 
 /* stage24a client detail actions cases roadmap */
 .client-detail-vnext-page [data-client-summary-source-lead-panel="true"] {
@@ -2675,7 +2671,6 @@ button.client-detail-top-tile-link {
   background: #22c55e !important;
   box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.18) !important;
 }
-
 
 /* stage25b client detail feedback complete repair */
 .client-detail-vnext-page .client-detail-top-cards-side,
@@ -2861,7 +2856,6 @@ button.client-detail-top-tile-link {
   }
 }
 
-
 /* stage26a feedback after 4ec client detail */
 .client-detail-vnext-page [data-client-case-smart-card="true"] {
   grid-template-columns: minmax(0, 1.12fr) minmax(130px, 0.75fr) auto !important;
@@ -2930,7 +2924,6 @@ button.client-detail-top-tile-link {
     grid-template-columns: 1fr !important;
   }
 }
-
 
 /* stage27a client notes visible after save */
 .client-detail-vnext-page [data-client-notes-list="true"] {
@@ -3005,7 +2998,6 @@ button.client-detail-top-tile-link {
   -webkit-text-fill-color: #dc2626 !important;
 }
 
-
 /* stage27e client notes event final */
 .client-detail-vnext-page [data-client-notes-list="true"] {
   order: 40 !important;
@@ -3079,7 +3071,6 @@ button.client-detail-top-tile-link {
   -webkit-text-fill-color: #dc2626 !important;
 }
 
-
 /* stage29a client note actions */
 .client-detail-vnext-page [data-client-note-pinned="true"] {
   border-color: #f59e0b !important;
@@ -3121,7 +3112,6 @@ button.client-detail-top-tile-link {
 .client-detail-vnext-page .client-detail-note-item-toolbar .client-detail-note-delete-button svg {
   stroke: #dc2626 !important;
 }
-
 
 /* STAGE14A_CLIENT_DETAIL_NOTES_HISTORY: readable one-line note/history/recent-move content */
 .client-detail-note-row p,

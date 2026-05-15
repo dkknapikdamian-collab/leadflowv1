@@ -84,7 +84,6 @@
   color: var(--cf-alert-success-text);
 }
 
-
 .cf-severity-pill {
   width: fit-content;
   border: 1px solid var(--cf-alert-info-border);

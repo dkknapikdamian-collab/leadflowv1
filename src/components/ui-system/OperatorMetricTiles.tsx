@@ -1,4 +1,4 @@
-import { Fragment, type ComponentType, type HTMLAttributes, type ReactNode } from 'react';
+import { type ComponentType, Fragment, type HTMLAttributes, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { resolveOperatorMetricTone, type OperatorMetricTone } from './operator-metric-tone-contract';
 export type { OperatorMetricTone } from './operator-metric-tone-contract';

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 
@@ -22,18 +21,17 @@ const leads = read('src/pages/Leads.tsx');
 
 if (!clients.includes("from '../components/operator-rail'")) fail('Clients.tsx does not import operator-rail.');
 if (!clients.includes('<SimpleFiltersCard')) fail('Clients.tsx does not use SimpleFiltersCard.');
-if (!clients.includes('<OperatorSideCard')) fail('Clients.tsx does not use OperatorSideCard for lead attention rail.');
+if (!clients.includes('<TopValueRecordsCard')) fail('Clients.tsx does not use TopValueRecordsCard for top clients rail.');
 if (/<aside\s+className="right-card"/.test(clients)) fail('Clients.tsx still contains raw aside.right-card.');
-if (!clients.includes('data-clients-lead-attention-rail')) fail('Clients lead attention marker was lost.');
-if (!clients.includes('leadsNeedingClientOrCaseLink.length')) fail('Clients lead attention data flow was lost.');
-if (!clients.includes('slice(0, 5)')) fail('Clients lead attention top-5 limit was lost.');
+if (!clients.includes('Najcenniejsi klienci')) fail('Clients top clients rail copy was lost.');
+if (!clients.includes('buildTopClientValueEntries')) fail('Clients top clients data flow was lost.');
 
 if (!leads.includes("from '../components/operator-rail'")) fail('Leads.tsx does not import operator-rail.');
 if (!leads.includes('<TopValueRecordsCard')) fail('Leads.tsx does not use TopValueRecordsCard.');
 if (/<aside\s+className="right-card lead-right-card lead-top-relations"/.test(leads)) fail('Leads.tsx still contains raw top value aside.');
 if (!leads.includes('data-relation-value-board')) fail('Leads relation value marker was lost.');
 if (!leads.includes('mostValuableRelations.map')) fail('Leads most valuable data flow was lost.');
-if (!leads.includes('slice(0, 5)')) fail('Leads top value top-5 limit was lost.');
+if (!leads.includes('buildTopActiveLeadValueEntries') && !leads.includes('slice(0, 5)')) fail('Leads top value top-5 limit was lost.');
 
 const operatorSideCard = read('src/components/operator-rail/OperatorSideCard.tsx');
 if (!operatorSideCard.includes('right-card')) fail('OperatorSideCard must preserve right-card class contract.');

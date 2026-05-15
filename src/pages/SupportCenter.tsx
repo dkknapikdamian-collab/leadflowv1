@@ -1,22 +1,6 @@
-import { FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  AlertTriangle,
-  Archive,
-  CheckCircle2,
-  Clock3,
-  HelpCircle,
-  LifeBuoy,
-  Lightbulb,
-  Loader2,
-  Mail,
-  MessageSquare,
-  Search,
-  Send,
-  ShieldCheck,
-  Wrench,
-} from 'lucide-react';
+import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, Archive, Calendar, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Wrench } from 'lucide-react';
 import { toast } from 'sonner';
-
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
@@ -30,7 +14,6 @@ import {
   updateSupportRequestStatusInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage17-support-vnext.css';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 function formatSupportStatus(status: unknown) {

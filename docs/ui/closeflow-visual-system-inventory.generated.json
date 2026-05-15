@@ -1666,7 +1666,7 @@
         "kind": "local right-card/right-rail class",
         "file": "src/pages/Leads.tsx",
         "line": 1027,
-        "match": "className=\"right-card lead-right-card lead-top-relations\"",
+        "match": "className=\"right-card lead-right-card operator-top-value-card\"",
         "decision": "migrujemy"
       },
       {

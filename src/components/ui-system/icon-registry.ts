@@ -1,20 +1,4 @@
-import type { LucideIcon } from 'lucide-react';
-import {
-  Activity,
-  BadgeDollarSign,
-  Bell,
-  Briefcase,
-  Calendar,
-  ClipboardList,
-  CreditCard,
-  FileText,
-  Settings,
-  Sparkles,
-  Target,
-  UserRound,
-  Wallet,
-} from 'lucide-react';
-
+import { Activity, BadgeDollarSign, Bell, Briefcase, Calendar, ClipboardList, CreditCard, FileText, LucideIcon, Settings, Sparkles, Target, UserRound, Wallet } from 'lucide-react';
 export const CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B = 'CLOSEFLOW_ENTITY_ICON_REGISTRY_VS2B';
 
 export const ENTITY_ICON_MAP = {

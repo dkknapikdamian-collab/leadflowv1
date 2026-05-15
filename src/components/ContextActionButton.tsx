@@ -1,4 +1,4 @@
-import React from "react";
+import { type ReactNode } from 'react';
 import "../styles/context-action-button-source-truth.css";
 
 export type ContextActionKind = "task" | "event" | "note" | string;

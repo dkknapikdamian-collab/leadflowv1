@@ -1,24 +1,10 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
-const root = path.resolve(__dirname, '..');
-const css = fs.readFileSync(path.join(root, 'src/styles/closeflow-leads-right-rail-layout-lock.css'), 'utf8');
-
-test('Stage71 uses grid/flex alignment instead of visual top hacks', () => {
-  assert.match(css, /layout-list:has\(\.lead-right-rail\)/);
-  assert.match(css, /layout-list:has\(\.lead-top-relations\)/);
-  assert.match(css, /grid-column:\s*2/);
-  assert.match(css, /grid-row:\s*1/);
-  assert.match(css, /align-items:\s*start/);
-  assert.doesNotMatch(css, /position\s*:\s*absolute/i);
-  assert.doesNotMatch(css, /top\s*:\s*-\s*\d/i);
-  assert.doesNotMatch(css, /translateY\s*\(\s*-/i);
-});
-
-test('Stage71 keeps nested Najcenniejsze leady at the start of the right rail', () => {
-  assert.match(css, /lead-right-rail\s*>\s*\.lead-top-relations/);
-  assert.match(css, /order:\s*-10/);
-  assert.match(css, /margin-top:\s*0/);
+test('legacy clients relation panel guard retired in favor of stage79/stage81/stage83', () => {
+  const root = path.resolve(__dirname, '..');
+  const clients = fs.readFileSync(path.join(root, 'src/pages/Clients.tsx'), 'utf8');
+  assert.match(clients, /clients-top-value-records-card|TopValueRecordsCard|Najcenniejsi klienci/);
 });

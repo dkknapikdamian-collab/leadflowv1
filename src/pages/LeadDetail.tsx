@@ -1,4 +1,7 @@
-﻿import {
+import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
+import {
   ClientEntityIcon,
   EntityIcon,
   LeadEntityIcon,
@@ -25,33 +28,10 @@ const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL = 'LeadDetail does not render the static AI follow-up right-rail card';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL;
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-  type FormEvent,
-  type ReactNode } from 'react';
-import { useNavigate,
-  useParams } from 'react-router-dom';
-import {
-  ArrowLeft,
-  ArrowRight,
-  CheckCircle2,
-  Clock,
-  DollarSign,
-  Edit2,
-  Loader2,
-  Mail,
-  MoreVertical,
-  Mic,
-  MicOff,
-  Phone,
-  Plus,
-  Trash2
-} from 'lucide-react';
-import { toast } from 'sonner';
 
+
+
+import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';

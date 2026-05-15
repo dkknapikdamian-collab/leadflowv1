@@ -1,14 +1,5 @@
 import { useMemo, useState } from 'react';
-import {
-  CalendarClock,
-  CheckCircle2,
-  CircleDollarSign,
-  FileCheck2,
-  FileText,
-  ListChecks,
-  Pencil,
-  StickyNote,
-} from 'lucide-react';
+import { CalendarClock, CheckCircle2, CircleDollarSign, FileCheck2, FileText, ListChecks, Pencil, StickyNote } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';

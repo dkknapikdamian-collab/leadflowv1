@@ -397,7 +397,7 @@
   color: #111827 !important;
 }
 
-.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-top-relations .quick-list a {
+.cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .operator-top-value-card .quick-list a {
   background: #ffffff !important;
   border: 1px solid #e4e7ec !important;
   border-radius: 18px !important;

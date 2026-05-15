@@ -1,5 +1,6 @@
+import { type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
-import type { ReactNode } from 'react';
+import { OperatorSideCard, TopValueRecordsCard } from '../components/operator-rail';
 import { OperatorSideCard, type OperatorRailDataAttrs } from './OperatorSideCard';
 
 export type TopValueRecordItem = {

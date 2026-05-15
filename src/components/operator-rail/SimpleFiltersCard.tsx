@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react';
+import { type ReactNode } from 'react';
+import { OperatorSideCard, SimpleFiltersCard } from '../components/operator-rail';
 import { OperatorSideCard, type OperatorRailDataAttrs } from './OperatorSideCard';
 
 export type SimpleFilterItem = {

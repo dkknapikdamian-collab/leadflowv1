@@ -1,5 +1,4 @@
-import type { ComponentPropsWithoutRef } from 'react';
-
+import { ComponentPropsWithoutRef } from 'react';
 import { cn } from '../../lib/utils';
 import { ENTITY_ICON_MAP, resolveEntityIcon, type CloseflowEntityIconName } from './icon-registry';
 

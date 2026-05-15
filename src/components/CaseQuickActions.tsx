@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { CalendarClock, CircleDollarSign, FileWarning, ListChecks, StickyNote } from 'lucide-react';
-
 import { openContextQuickAction } from './ContextActionDialogs';
 import AddCaseMissingItemDialog from './AddCaseMissingItemDialog';
 

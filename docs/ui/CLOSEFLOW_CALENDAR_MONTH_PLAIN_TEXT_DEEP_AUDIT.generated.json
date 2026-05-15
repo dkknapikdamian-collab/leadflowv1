@@ -62972,7 +62972,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 480,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > strong",
       "hits": [
         "overflow"
       ],
@@ -62981,7 +62981,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 481,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > strong",
       "hits": [
         "overflow"
       ],
@@ -62990,7 +62990,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 482,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > strong",
       "hits": [
         "white-space"
       ],
@@ -62999,7 +62999,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 486,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > small",
       "hits": [
         "overflow"
       ],
@@ -63008,7 +63008,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 487,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > small",
       "hits": [
         "overflow"
       ],
@@ -63017,7 +63017,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 488,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > small",
       "hits": [
         "white-space"
       ],
@@ -63026,7 +63026,7 @@
     {
       "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
       "line": 495,
-      "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > strong.lead-relation-money",
+      "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > strong.lead-relation-money",
       "hits": [
         "fixed-height",
         "line-height"
@@ -64852,7 +64852,7 @@
     {
       "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
       "line": 398,
-      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-top-relations .quick-list a",
+      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .operator-top-value-card .quick-list a",
       "hits": [
         "important"
       ],
@@ -64861,7 +64861,7 @@
     {
       "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
       "line": 399,
-      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-top-relations .quick-list a",
+      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .operator-top-value-card .quick-list a",
       "hits": [
         "border-pill-card",
         "important"
@@ -64871,7 +64871,7 @@
     {
       "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
       "line": 400,
-      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-top-relations .quick-list a",
+      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .operator-top-value-card .quick-list a",
       "hits": [
         "border-pill-card",
         "important"
@@ -64881,7 +64881,7 @@
     {
       "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
       "line": 401,
-      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-top-relations .quick-list a",
+      "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .operator-top-value-card .quick-list a",
       "hits": [
         "important"
       ],

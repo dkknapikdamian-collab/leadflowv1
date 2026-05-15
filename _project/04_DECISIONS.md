@@ -1,15 +1,9 @@
-# 04_DECISIONS - CloseFlow Lead App
+# 04_DECISIONS - CloseFlow / LeadFlow
 
-## FAKT
-- Project memory structure exists.
-
-## DECYZJA
-- Maintain AGENTS.md plus _project/ as source-of-truth for future agents.
-- Active Obsidian files should contain CloseFlow lead app in filename.
-- Do not write hypotheses as facts.
-
-## HIPOTEZA / PROPOZYCJA
-- Old notes can be promoted after manual review.
-
-## DO POTWIERDZENIA
-- Which backup notes return to active section.
+- Pracujemy na branchu dev-rollout-freeze.
+- Nie tworzymy nowych branchy.
+- AGENTS.md jest dopisywany, nie nadpisywany.
+- Obsidian jest dashboardem i indeksem, a repo + _project sa zrodlem prawdy.
+- AI confirm-first: AI tworzy szkic, uzytkownik zatwierdza.
+- UI ma mowic prawde o funkcjach, integracjach, billingu i gotowosci release.
+- Aktywne pliki Obsidiana maja miec czytelne nazwy z kontekstem CloseFlow_LeadFlow.

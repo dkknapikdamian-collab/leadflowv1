@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import {
   addMonths,
   eachDayOfInterval,
@@ -14,8 +16,7 @@ import {
   subMonths,
 } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+
 
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { isSupabaseConfigured } from '../lib/supabase-fallback';

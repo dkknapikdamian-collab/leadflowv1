@@ -31,7 +31,7 @@
   "watchedSelectors": [
     "right-card",
     "lead-right-card",
-    "lead-top-relations",
+    "operator-top-value-card",
     "cases-shortcuts-rail-card",
     "cases-risk-rail-card",
     "clients-right-rail"
@@ -469,7 +469,7 @@
         {
           "file": "src/pages/Leads.tsx",
           "line": 1055,
-          "snippet": "<aside className=\"right-card lead-right-card lead-top-relations\" data-relation-value-board=\"true\">",
+          "snippet": "<aside className=\"right-card lead-right-card operator-top-value-card\" data-relation-value-board=\"true\">",
           "context": "inline/className"
         },
         {
@@ -493,7 +493,7 @@
         {
           "file": "src/pages/Clients.tsx",
           "line": 750,
-          "snippet": "<aside className=\"right-card\" data-clients-lead-attention-rail=\"true\">",
+          "snippet": "<aside className=\"right-card\" data-clients-top-value-board=\"true\">",
           "context": "inline/className"
         },
         {
@@ -873,7 +873,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 26,
-          "snippet": "#root .cf-html-view.main-leads-html aside.right-card.lead-top-relations,",
+          "snippet": "#root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card,",
           "context": "CSS rule/reference"
         },
         {
@@ -3007,7 +3007,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 17,
-          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
+          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
           "background": "background: var(--cf-right-rail-card-bg) !important",
           "suspectedSources": [
             "globalne .right-card",
@@ -5716,7 +5716,7 @@
         {
           "file": "src/pages/Leads.tsx",
           "line": 1055,
-          "snippet": "<aside className=\"right-card lead-right-card lead-top-relations\" data-relation-value-board=\"true\">",
+          "snippet": "<aside className=\"right-card lead-right-card operator-top-value-card\" data-relation-value-board=\"true\">",
           "context": "inline/className"
         }
       ],
@@ -5756,7 +5756,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 17,
-          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
+          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
           "background": "background: var(--cf-right-rail-card-bg) !important",
           "suspectedSources": [
             "globalne .right-card",
@@ -5838,7 +5838,7 @@
       ]
     },
     {
-      "selector": "lead-top-relations",
+      "selector": "operator-top-value-card",
       "tsxFiles": [
         "src/pages/Leads.tsx"
       ],
@@ -5852,7 +5852,7 @@
         {
           "file": "src/pages/Leads.tsx",
           "line": 1055,
-          "snippet": "<aside className=\"right-card lead-right-card lead-top-relations\" data-relation-value-board=\"true\">",
+          "snippet": "<aside className=\"right-card lead-right-card operator-top-value-card\" data-relation-value-board=\"true\">",
           "context": "inline/className"
         }
       ],
@@ -5860,55 +5860,55 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 26,
-          "snippet": "#root .cf-html-view.main-leads-html aside.right-card.lead-top-relations,",
+          "snippet": "#root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card,",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 52,
-          "snippet": "#root .cf-html-view.main-leads-html .lead-right-rail .lead-top-relations {",
+          "snippet": "#root .cf-html-view.main-leads-html .lead-right-rail .operator-top-value-card {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 469,
-          "snippet": ".cf-html-view.main-leads-html .lead-top-relations .panel-head {",
+          "snippet": ".cf-html-view.main-leads-html .operator-top-value-card .panel-head {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 473,
-          "snippet": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a {",
+          "snippet": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 477,
-          "snippet": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span {",
+          "snippet": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 482,
-          "snippet": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong {",
+          "snippet": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > strong {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 488,
-          "snippet": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small {",
+          "snippet": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > small {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 494,
-          "snippet": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > strong.lead-relation-money {",
+          "snippet": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > strong.lead-relation-money {",
           "context": "CSS rule/reference"
         },
         {
           "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
           "line": 400,
-          "snippet": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-top-relations .quick-list a {",
+          "snippet": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .operator-top-value-card .quick-list a {",
           "context": "CSS rule/reference"
         }
       ],
@@ -5916,7 +5916,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 17,
-          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
+          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
           "background": "background: var(--cf-right-rail-card-bg) !important",
           "suspectedSources": [
             "globalne .right-card",
@@ -5934,7 +5934,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 45,
-          "selector": "#root .cf-html-view.main-leads-html .lead-right-rail .lead-top-relations",
+          "selector": "#root .cf-html-view.main-leads-html .lead-right-rail .operator-top-value-card",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "lokalna klasa selektora",
@@ -5945,7 +5945,7 @@
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 464,
-          "selector": ".cf-html-view.main-leads-html .lead-top-relations .panel-head",
+          "selector": ".cf-html-view.main-leads-html .operator-top-value-card .panel-head",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -5957,7 +5957,7 @@
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 468,
-          "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a",
+          "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -5969,7 +5969,7 @@
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 472,
-          "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span",
+          "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -5981,7 +5981,7 @@
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 477,
-          "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > strong",
+          "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > strong",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -5993,7 +5993,7 @@
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 483,
-          "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > span > small",
+          "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > span > small",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -6005,7 +6005,7 @@
         {
           "file": "src/styles/visual-stage25-leads-full-jsx-html-rebuild.css",
           "line": 489,
-          "selector": ".cf-html-view.main-leads-html .lead-top-relations .quick-list a > strong.lead-relation-money",
+          "selector": ".cf-html-view.main-leads-html .operator-top-value-card .quick-list a > strong.lead-relation-money",
           "background": "brak jawnego tła w tej regule",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -6020,7 +6020,7 @@
         {
           "file": "src/styles/visual-stage26-leads-visual-alignment-fix.css",
           "line": 395,
-          "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .lead-top-relations .quick-list a",
+          "selector": ".cf-html-shell main[data-current-section=\"leady\"] [data-leads-real-view=\"true\"] .operator-top-value-card .quick-list a",
           "background": "background: #ffffff !important",
           "suspectedSources": [
             "stary/stage CSS albo adapter",
@@ -6092,7 +6092,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 17,
-          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
+          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
           "background": "background: var(--cf-right-rail-card-bg) !important",
           "suspectedSources": [
             "globalne .right-card",
@@ -6173,7 +6173,7 @@
         {
           "file": "src/styles/closeflow-right-rail-source-truth.css",
           "line": 17,
-          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.lead-top-relations, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
+          "selector": "#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card), #root .cf-html-view.main-leads-html aside.right-card.lead-right-card, #root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card, #root .cf-html-view.main-clients-html aside.right-card, #root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card, #root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card",
           "background": "background: var(--cf-right-rail-card-bg) !important",
           "suspectedSources": [
             "globalne .right-card",
@@ -6648,7 +6648,7 @@
       "status": "prawdopodobnie stary/stage CSS z ciemnym tłem"
     },
     {
-      "selector": "lead-top-relations",
+      "selector": "operator-top-value-card",
       "status": "prawdopodobnie stary/stage CSS z ciemnym tłem"
     },
     {

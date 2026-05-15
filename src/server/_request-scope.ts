@@ -1,4 +1,3 @@
-
 /* STAGE16O_REQUEST_SCOPE_STATIC_COMPAT
  * export function getRequestIdentity(req: any, bodyInput?: any)
  * const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : parseBody(req)

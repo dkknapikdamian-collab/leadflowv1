@@ -219,7 +219,7 @@ This means: style Calendar content after the Calendar header, not the global ope
 - src/pages/LeadDetail.tsx:1687 [aside] `</aside>`
 - src/pages/Leads.tsx:84 [page-head] `import '../styles/closeflow-page-header-v2.css';`
 - src/pages/Leads.tsx:687 [head-actions] `<div className="head-actions">`
-- src/pages/Leads.tsx:1046 [aside] `<aside className="right-card lead-right-card lead-top-relations" data-relation-value-board="true">`
+- src/pages/Leads.tsx:1046 [aside] `<aside className="right-card lead-right-card operator-top-value-card" data-relation-value-board="true">`
 - src/pages/Leads.tsx:1074 [aside] `</aside>`
 - src/pages/Login.tsx:178 [bg-slate-950] `<div className="min-h-screen bg-slate-950">`
 - src/pages/Login.tsx:304 [bg-slate-950] `<div className="min-h-screen bg-slate-950">`

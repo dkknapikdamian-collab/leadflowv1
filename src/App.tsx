@@ -1,7 +1,9 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useState } from 'react';
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
+import { Activity, Calendar, Settings } from 'lucide-react';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';
-import { Suspense, lazy, useEffect, useState } from 'react';
+
 import { TooltipProvider } from './components/ui/tooltip';
 import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallback';
 import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
@@ -22,7 +24,6 @@ import './styles/closeflow-page-header.css';
 import './styles/closeflow-list-row-tokens.css';
 import './styles/closeflow-alert-severity.css';
 import './styles/closeflow-right-rail-source-truth.css';
-
 import './styles/closeflow-command-actions-source-truth.css';
 import './styles/closeflow-page-header-copy-source-truth.css';
 import './styles/closeflow-page-header-action-semantics-packet1.css';

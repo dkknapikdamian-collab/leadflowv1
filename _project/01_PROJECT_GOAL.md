@@ -1,14 +1,7 @@
-# 01_PROJECT_GOAL - CloseFlow Lead App
+# 01_PROJECT_GOAL - CloseFlow / LeadFlow
 
-## FAKT
-- This stage reconstructs and maintains the project journal.
-- This stage does not implement app features.
+Celem jest jeden system do domykania i uruchamiania klienta: leady, klienci, sprawy, zadania, kalendarz, follow-upy, szkice AI i procesy operacyjne.
 
-## DECYZJA
-- Future work starts from scan-first memory.
+Nie budujemy ciezkiego CRM enterprise. Budujemy panel egzekucji ruchu sprzedazowego i startu realizacji.
 
-## HIPOTEZA / PROPOZYCJA
-- Next technical stage may be release-readiness smoke check.
-
-## DO POTWIERDZENIA
-- Confirm release candidate separately.
+Produkt ma dzialac jak centrum decyzji: co dzis zrobic, dlaczego, jaki rekord jest zagrozony i gdzie pieniadz moze uciec.

@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import { createHash, createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 import { findWorkspaceId, selectFirstAvailable, supabaseRequest } from './_supabase.js';
 import { resolveRequestWorkspaceId, requireScopedRow } from './_request-scope.js';

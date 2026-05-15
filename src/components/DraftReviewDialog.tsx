@@ -1,4 +1,4 @@
-﻿import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';
 

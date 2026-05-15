@@ -1,4 +1,3 @@
-
 // A13 compatibility marker: confirms that converted/cancelled AI drafts clear raw text.
 // Runtime helpers remain the source of truth; this static marker keeps the critical guard aligned.
 export const A13_AI_DRAFT_RAW_TEXT_CLEANUP_MARKER_STAGE16Z = {

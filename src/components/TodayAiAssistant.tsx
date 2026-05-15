@@ -1,3 +1,4 @@
+import { useMemo, useState } from 'react';
 // STAGE16T_AI_ASSISTANT_STATIC_CONTRACT_MARKERS_REPAIR_START
 // Static-release-gate compatibility markers for tests/ai-assistant-*.test.cjs.
 // This block is intentionally text-only. Runtime code below must still keep the real assistant query path.
@@ -71,7 +72,7 @@
  * scope: 'assistant_read_or_draft_only'
  * noAutoWrite: true
  */
-import React, { useMemo, useState } from "react";
+
 import { askAssistantQueryApi, type AssistantQueryClientResult } from "../lib/assistant-query-client";
 import { assistantDraftToAiLeadDraftInput } from "../lib/ai-draft-assistant-bridge";
 import { saveAiLeadDraftAsync } from "../lib/ai-drafts";

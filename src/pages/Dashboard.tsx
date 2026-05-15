@@ -1,23 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AlertCircle, CheckCircle2, ChevronRight, Clock, Filter, LayoutDashboard, LogOut, Plus, Search, Settings, Users, X } from 'lucide-react';
 import { auth } from '../firebase';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Input } from '../components/ui/input';
 import { Badge } from '../components/ui/badge';
-import {
-  Plus,
-  Search,
-  AlertCircle,
-  Clock,
-  CheckCircle2,
-  LayoutDashboard,
-  Users,
-  Settings,
-  LogOut,
-  ChevronRight,
-  Filter,
-} from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+
+
 import { toast } from 'sonner';
 import { Progress } from '../components/ui/progress';
 import {

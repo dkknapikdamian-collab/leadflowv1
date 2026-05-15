@@ -1,20 +1,6 @@
-import {
-  FormEvent,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
-import { Link } from 'react-router-dom';
-import { useSearchParams } from 'react-router-dom';
-import {
-  CheckSquare,
-  ChevronLeft,
-  ChevronRight,
-  Loader2,
-  Repeat,
-  Trash2, Plus
-} from 'lucide-react';
+import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Calendar, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
@@ -93,15 +79,10 @@ import {
 } from 'date-fns';
 import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
-
 import Layout from '../components/Layout';
-
 import { pl } from 'date-fns/locale';
-
 import '../styles/visual-stage22-event-form-vnext.css';
-
 import { normalizeWorkItem } from '../lib/work-items/normalize';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-calendar-skin-only-v1.css';

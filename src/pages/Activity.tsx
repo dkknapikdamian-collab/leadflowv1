@@ -1,11 +1,6 @@
-import {
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-import {
-  Link
-} from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Activity, ArrowUpRight, CalendarClock, CheckCircle2, Clock, Filter, Link2, ListChecks, Loader2, Search } from 'lucide-react';
 import {
   CaseEntityIcon,
   ClientEntityIcon,
@@ -14,26 +9,13 @@ import {
   NotificationEntityIcon,
   TemplateEntityIcon
 } from '../components/ui-system';
-import {
-  ArrowUpRight,
-  CalendarClock,
-  CheckCircle2,
-  Clock,
-  Filter,
-  Link2,
-  ListChecks,
-  Loader2,
-  Search
-} from 'lucide-react';
 
 import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
-
 import {
   StatShortcutCard
 } from '../components/StatShortcutCard';
-
 import {
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,

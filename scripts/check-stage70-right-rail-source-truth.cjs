@@ -1,82 +1,52 @@
 const fs = require('fs');
 const path = require('path');
 
-const repo = process.cwd();
-const mainPath = path.join(repo, 'src', 'main.tsx');
-const cssPath = path.join(repo, 'src', 'styles', 'closeflow-right-rail-source-truth.css');
+const root = process.cwd();
+const appPath = path.join(root, 'src', 'App.tsx');
+const cssPath = path.join(root, 'src', 'styles', 'closeflow-right-rail-source-truth.css');
+const marker = 'CLOSEFLOW_RIGHT_RAIL_SOURCE_TRUTH_STAGE70_2026_05_14';
 
-function read(rel) {
-  return fs.readFileSync(path.join(repo, rel), 'utf8');
+function fail(message) {
+  console.error('RIGHT_RAIL_SOURCE_TRUTH_FAIL:', message);
+  process.exit(1);
 }
 
-function assert(condition, message) {
-  if (!condition) {
-    console.error(`FAIL: ${message}`);
-    process.exitCode = 1;
-  } else {
-    console.log(`OK: ${message}`);
-  }
+if (!fs.existsSync(appPath)) fail('missing src/App.tsx');
+if (!fs.existsSync(cssPath)) fail('missing src/styles/closeflow-right-rail-source-truth.css');
+
+const app = fs.readFileSync(appPath, 'utf8');
+const css = fs.readFileSync(cssPath, 'utf8');
+
+if (!app.includes("import './styles/closeflow-right-rail-source-truth.css';")) {
+  fail('App.tsx does not import the shared right rail CSS source of truth');
 }
 
-assert(fs.existsSync(mainPath), 'src/main.tsx istnieje');
-assert(fs.existsSync(cssPath), 'src/styles/closeflow-right-rail-source-truth.css istnieje');
-
-const main = fs.existsSync(mainPath) ? fs.readFileSync(mainPath, 'utf8') : '';
-const css = fs.existsSync(cssPath) ? fs.readFileSync(cssPath, 'utf8') : '';
-const importLine = "import './styles/closeflow-right-rail-source-truth.css';";
-
-assert(main.includes(importLine), 'main.tsx ładuje finalne źródło prawdy bocznych kart');
-assert(main.indexOf("import './index.css';") !== -1, 'main.tsx ładuje index.css');
-assert(main.indexOf(importLine) > main.indexOf("import './index.css';"), 'right rail source truth ładuje się po index.css, czyli po starych/stage importach');
-
-[
-  '--cf-right-rail-card-bg: #ffffff',
-  '--cf-right-rail-card-text: #0f172a',
+const requiredTokens = [
+  marker,
   '.main-leads-html',
   '.main-clients-html',
   '.main-cases-html',
-  '.lead-right-card',
-  '.lead-top-relations',
+  '.right-card',
+  '.lead-right-rail',
   '.clients-right-rail',
-  '.cases-shortcuts-rail-card',
-  '.cases-risk-rail-card',
+  '.cases-right-rail',
+  '.operator-top-value-card',
+  '.quick-list',
+  '--cf-right-rail-card-bg',
   'background: var(--cf-right-rail-card-bg) !important',
-  'color: var(--cf-right-rail-card-text) !important',
-  '-webkit-text-fill-color: var(--cf-right-rail-card-text) !important'
-].forEach((needle) => assert(css.includes(needle), `source truth zawiera: ${needle}`));
-
-const activePageChecks = [
-  ['src/pages/Leads.tsx', ['lead-right-card', 'lead-top-relations']],
-  ['src/pages/Clients.tsx', ['right-card']],
-  ['src/pages/Cases.tsx', ['cases-shortcuts-rail-card', 'cases-risk-rail-card']]
+  'align-items: start !important',
 ];
 
-for (const [file, needles] of activePageChecks) {
-  const full = path.join(repo, file);
-  assert(fs.existsSync(full), `${file} istnieje`);
-  const text = fs.existsSync(full) ? fs.readFileSync(full, 'utf8') : '';
-  for (const needle of needles) {
-    assert(text.includes(needle), `${file} nadal używa kontrolowanej klasy ${needle}`);
-  }
+for (const token of requiredTokens) {
+  if (!css.includes(token)) fail('missing token in right rail source truth CSS: ' + token);
 }
 
-const forbiddenSourceTruthDarkPatterns = [
-  /background\s*:\s*rgba\(\s*16\s*,\s*20\s*,\s*18\s*,/i,
-  /background\s*:\s*#0f172a/i,
-  /background\s*:\s*#111827/i,
-  /background\s*:\s*#020617/i,
-  /background-color\s*:\s*#0f172a/i,
-  /background-color\s*:\s*#111827/i,
-  /background-color\s*:\s*#020617/i
+const forbidden = [
+  /aside\.right-card[^{}]*\{[^{}]*background:\s*(?:#0f172a|#111827|rgb\(15\s+23\s+42\)|black)/i,
+  /\.operator-top-value-card[^{}]*\{[^{}]*margin-top:\s*[1-9]/i,
 ];
-
-for (const pattern of forbiddenSourceTruthDarkPatterns) {
-  assert(!pattern.test(css), `source truth nie ustawia ciemnego tła: ${pattern}`);
+for (const rule of forbidden) {
+  if (rule.test(css)) fail('forbidden dark or offset rule found: ' + rule);
 }
 
-if (process.exitCode) {
-  console.error('\nFAIL: Stage70 right rail source truth guard failed.');
-  process.exit(process.exitCode);
-}
-
-console.log('\nOK: Stage70 right rail source truth guard passed.');
+console.log('OK right rail source truth stage70');

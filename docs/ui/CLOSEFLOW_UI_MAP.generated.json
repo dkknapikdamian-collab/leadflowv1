@@ -22623,9 +22623,9 @@
       "classes": [
         "right-card",
         "lead-right-card",
-        "lead-top-relations"
+        "operator-top-value-card"
       ],
-      "snippet": "<aside className=\"right-card lead-right-card lead-top-relations\" data-relation-value-board=\"true\">"
+      "snippet": "<aside className=\"right-card lead-right-card operator-top-value-card\" data-relation-value-board=\"true\">"
     },
     {
       "file": "src/pages/Leads.tsx",

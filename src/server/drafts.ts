@@ -1,4 +1,4 @@
-﻿import { insertWithVariants, selectFirstAvailable, updateById, withWorkspaceFilter } from './_supabase.js';
+import { insertWithVariants, selectFirstAvailable, updateById, withWorkspaceFilter } from './_supabase.js';
 import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId } from './_request-scope.js';
 import { assertWorkspaceWriteAccess, assertWorkspaceAiAllowed } from './_access-gate.js';
 

@@ -1,3 +1,6 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { ClipboardList } from 'lucide-react';
 /* STAGE16AA_PLAN_ACCESS_LOCKED_AI_BUTTON_COPY: Asystent AI jest w planie AI */
 
 /* STAGE16O_GLOBAL_ACTIONS_AI_COMPAT
@@ -22,10 +25,9 @@ Pasek działa jako toolbar i jest czytelny na telefonie: role="toolbar", aria-la
  * GlobalQuickActions uses GlobalAiAssistant, which wraps the TodayAiAssistant behavior
  * with full app context. Keep this short marker for the legacy draft-inbox contract test.
  */
-import { useState } from 'react';
-import { ClipboardList } from 'lucide-react';
+
+
 import { AddActionIcon } from './ui-system';
-import { Link } from 'react-router-dom';
 
 import QuickAiCapture from './QuickAiCapture';
 import TaskCreateDialog from './TaskCreateDialog';

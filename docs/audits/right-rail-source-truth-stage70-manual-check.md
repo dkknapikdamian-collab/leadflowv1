@@ -2,7 +2,7 @@
 
 ## Cel
 
-Dopiąć realne źródło prawdy jasnych bocznych kart operatora po audycie klas `right-card`, `lead-right-card`, `lead-top-relations`, `cases-shortcuts-rail-card`, `cases-risk-rail-card`, `clients-right-rail`.
+Dopiąć realne źródło prawdy jasnych bocznych kart operatora po audycie klas `right-card`, `lead-right-card`, `operator-top-value-card`, `cases-shortcuts-rail-card`, `cases-risk-rail-card`, `clients-right-rail`.
 
 ## Co zostało spięte
 
@@ -26,7 +26,7 @@ Powód: `src/index.css` ładuje stare/stage/temporary/emergency importy, więc f
 
 - prawa karta / boczny panel ma jasne tło,
 - `lead-right-card` jest jasny,
-- `lead-top-relations` jest jasny,
+- `operator-top-value-card` jest jasny,
 - tekst jest czytelny,
 - nie ma czarnego panelu,
 - lista leadów po lewej nie zmieniła układu.

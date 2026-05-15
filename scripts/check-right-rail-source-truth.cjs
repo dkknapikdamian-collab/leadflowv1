@@ -30,7 +30,8 @@ const requiredTokens = [
   '.lead-right-rail',
   '.clients-right-rail',
   '.cases-right-rail',
-  '.lead-top-relations',
+  '.operator-top-value-card',
+  '.quick-list',
   '--cf-right-rail-card-bg',
   'background: var(--cf-right-rail-card-bg) !important',
   'align-items: start !important',
@@ -42,7 +43,7 @@ for (const token of requiredTokens) {
 
 const forbidden = [
   /aside\.right-card[^{}]*\{[^{}]*background:\s*(?:#0f172a|#111827|rgb\(15\s+23\s+42\)|black)/i,
-  /\.lead-top-relations[^{}]*\{[^{}]*margin-top:\s*[1-9]/i,
+  /\.operator-top-value-card[^{}]*\{[^{}]*margin-top:\s*[1-9]/i,
 ];
 for (const rule of forbidden) {
   if (rule.test(css)) fail('forbidden dark or offset rule found: ' + rule);

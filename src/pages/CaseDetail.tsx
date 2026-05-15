@@ -1,63 +1,14 @@
+import { useCallback, useEffect, useMemo, useState, useWorkspace } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { AlertCircle, ArrowLeft, ArrowRight, CalendarClock, Check, CheckCircle2, Clock, Copy, ExternalLink, History, ListChecks, Loader2, MessageSquare, Paperclip, Plus, Send, StickyNote, Trash2, X } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 
 /* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS
- * import {
-  useWorkspace } from '../hooks/useWorkspace'
-const { hasAccess,
-  access } = useWorkspace()
- * caseDetailWriteAccessDenied = !hasAccess caseDetailAccessStatus = String(access?.status guardCaseDetailWriteAccess trial_expired
- * toast.error(reason + ' Nie mozna teraz '
- * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess
- * Zrobione Do akceptacji
- */
-﻿/* STAGE14D_REAL_CASE_HISTORY_REPAIR3 */
-/* STAGE14C_CASE_DETAIL_CLEANUP */
-/* STAGE14C_CASE_DETAIL_CLEANUP_REPAIR1 */
-/* STAGE14C_CASE_DETAIL_CLEANUP */
-/* STAGE68P_CASE_HISTORY_PACKAGE_FINAL */
-/* STAGE66_CASE_HISTORY_PASSIVE_COPY */
-/* STAGE64_CASE_DETAIL_WORK_ITEM_DEDUPE */
-/* STAGE63_CASE_MAIN_NOTE_HEADER_BUTTON_REMOVE */
-/* STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE */
-/* STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP */
-/* STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE */
-/* STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT */
-/* STAGE58_CASE_RECENT_MOVES_PANEL */
-/* STAGE57_CASE_CREATE_ACTION_HUB */
-/* STAGE56_CASE_QUICK_ACTIONS_DICTATION_DEDUPE */
-// LEAD_TO_CASE_FLOW_STAGE24_CASE_DETAIL
-// CASE_DETAIL_VISUAL_REBUILD_STAGE13
-import {
- useCallback,
-  useEffect,
-  useMemo,
-  useState } from 'react';
-import { useNavigate,
-  useParams } from 'react-router-dom';
-import {
-  AlertCircle,
-  ArrowLeft,
-  ArrowRight,
-  CalendarClock,
-  Check,
-  CheckCircle2,
-  Clock,
-  Copy,
-  ExternalLink,
-  History,
-  ListChecks,
-  Loader2,
-  MessageSquare,
-  Paperclip,
-  Plus,
-  Send,
-  StickyNote,
-  Trash2,
-  X
-} from 'lucide-react';
-import { toast } from 'sonner';
+ * 
 
+
+import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { EntityActionButton, EntityTrashButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';

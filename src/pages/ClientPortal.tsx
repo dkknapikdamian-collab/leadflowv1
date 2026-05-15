@@ -1,24 +1,15 @@
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { AlertCircle, Check, CheckCircle2, Clock, Loader2, MessageSquare, Paperclip, Upload, X } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
-import {
-  useState,
-  useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+
+
 import { Button } from '../components/ui/button';
 import { Card,
   CardContent } from '../components/ui/card';
 import { Progress } from '../components/ui/progress';
-import {
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  Upload,
-  MessageSquare,
-  Check,
-  X,
-  Paperclip,
-  Loader2
-} from 'lucide-react';
+
 import { toast } from 'sonner';
 import {
   Dialog,

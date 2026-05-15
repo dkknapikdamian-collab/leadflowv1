@@ -1,4 +1,4 @@
-import type { ComponentProps } from 'react';
+import { ComponentProps } from 'react';
 import CaseSettlementPanel from './CaseSettlementPanel';
 export type { CaseSettlementCommissionInput, CaseSettlementPaymentInput } from './CaseSettlementPanel';
 

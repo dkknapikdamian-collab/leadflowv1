@@ -1,12 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { DEFAULT_SKIN, getSkinOption, isSkinId, SKIN_OPTIONS, type SkinId } from '../lib/appearance';
 import { fetchMeFromSupabase, isSupabaseConfigured, updateProfileSettingsInSupabase } from '../lib/supabase-fallback';
 import { useClientAuthSnapshot } from '../hooks/useClientAuthSnapshot';

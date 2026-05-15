@@ -6685,7 +6685,7 @@
     {
       "file": "src/pages/Leads.tsx",
       "line": 916,
-      "className": "right-card lead-right-card lead-top-relations"
+      "className": "right-card lead-right-card operator-top-value-card"
     },
     {
       "file": "src/pages/Leads.tsx",

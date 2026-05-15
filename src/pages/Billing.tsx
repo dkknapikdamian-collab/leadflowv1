@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, ArrowRight, BadgeCheck, Calendar, CalendarClock, Check, Loader2, LockKeyhole, RefreshCw, Shield } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 
@@ -34,26 +36,12 @@ Raport tygodniowy
 const BILLING_UI_STRIPE_BLIK_LABEL_GUARD = 'Stripe/BLIK';
 const BILLING_UI_STRIPE_BLIK_COPY_GUARD = 'BLIK przez Stripe';
 const BILLING_UI_STRIPE_BLIK_ERROR_UTF8_GUARD = 'Błąd uruchamiania płatności Stripe/BLIK';
-import {
-  useEffect,
-  useMemo,
-  useState } from 'react';
+
 import { format,
   parseISO } from 'date-fns';
 import { pl } from 'date-fns/locale';
-import {
-  AlertTriangle,
-  ArrowRight,
-  BadgeCheck,
-  CalendarClock,
-  Check,
-  Loader2,
-  LockKeyhole,
-  RefreshCw,
-  Shield
-} from 'lucide-react';
-import { toast } from 'sonner';
 
+import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
@@ -66,7 +54,6 @@ import {
   createBillingCheckoutSessionInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage16-billing-vnext.css';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 type BillingPeriod = 'monthly' | 'yearly';

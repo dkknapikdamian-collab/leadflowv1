@@ -359,7 +359,6 @@
   }
 }
 
-
 /* CLOSEFLOW_MODAL_SAFE_SKIN_ONLY_ROLLBACK_POSITION_V4
    This block fixes the forms whose own local CSS is loaded after the global modal CSS.
    It changes only colors/backgrounds/borders/text contrast. It does not set transform, top, left, width,

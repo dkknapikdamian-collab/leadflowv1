@@ -1,7 +1,6 @@
-import { useMemo, useState, type FormEvent } from 'react';
+import { type FormEvent, useMemo, useState } from 'react';
 import { CheckCircle2, Copy, Loader2, MessageSquare, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle } from './ui/card';

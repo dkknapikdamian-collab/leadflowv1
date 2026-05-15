@@ -1,7 +1,6 @@
 import { useMemo, useState } from 'react';
 import { CheckCircle2, ClipboardList, Copy, Loader2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
-
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle } from './ui/card';

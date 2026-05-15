@@ -1,20 +1,10 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Tags } from 'lucide-react';
 import {
   AiEntityIcon } from '../components/ui-system';
-import {
-  useEffect,
-  useMemo,
-  useState } from 'react';
-import { Archive,
-  Copy,
-  MessageSquareText,
-  Plus,
-  Save,
-  Search,
-  ShieldAlert,
-  Tags
-} from 'lucide-react';
-import { toast } from 'sonner';
 
+
+import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { Button } from '../components/ui/button';
@@ -32,7 +22,6 @@ import {
   fetchResponseTemplatesFromSupabase,
   updateResponseTemplateInSupabase,
 } from '../lib/supabase-fallback';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 type ResponseTemplate = {

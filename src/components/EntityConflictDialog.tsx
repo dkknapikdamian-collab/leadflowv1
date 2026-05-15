@@ -1,9 +1,10 @@
+import { AlertTriangle } from 'lucide-react';
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_ENTITY_CONFLICT_DIALOG_V1
 // CLOSEFLOW_A2_DUPLICATE_WARNING_ACTIONS: Pokaż / Przywróć / Dodaj mimo to / Anuluj
 // CLOSEFLOW_FIN9_ENTITY_CONFLICT_CASE_SUPPORT
 // CLOSEFLOW_CONFLICT_DELETE_COMPANY_NOT_NULL_V25
-import { AlertTriangle } from 'lucide-react';
+
 import { DeleteActionIcon, OpenActionIcon, RestoreActionIcon } from './ui-system';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { Button } from './ui/button';

@@ -1,31 +1,9 @@
-import {
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { Building2, Calendar, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
 import {
   EntityIcon,
   NotificationEntityIcon
 } from '../components/ui-system';
-import {
-  Building2,
-  CalendarDays,
-  Database,
-  KeyRound,
-  LockKeyhole,
-  LogOut,
-  Mail,
-  Menu,
-  MonitorCog,
-  RefreshCw,
-  Save,
-  Shield,
-  SlidersHorizontal,
-  Smartphone,
-  User,
-  Users,
-  WalletCards
-} from 'lucide-react';
 
 import {
   EmailAuthProvider,
@@ -36,11 +14,9 @@ import {
   signOut,
   verifyBeforeUpdateEmail
 } from 'firebase/auth';
-
 import {
   toast
 } from 'sonner';
-
 import Layout from '../components/Layout';
 import {
   useAppearance
@@ -89,7 +65,6 @@ import {
   setGoogleCalendarReminderPreference
 } from '../lib/google-calendar-reminder-preferences';
 import '../styles/visual-stage19-settings-vnext.css';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';

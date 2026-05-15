@@ -1,4 +1,6 @@
-﻿
+import { type ReactNode, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { AlertTriangle, Bell, Briefcase, Calendar, CheckCircle2, CheckSquare, ChevronRight, CreditCard, FolderKanban, History, LayoutDashboard, LifeBuoy, LogOut, Menu, MessageSquareText, Settings, Sparkles, Users, X } from 'lucide-react';
 /* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS
  * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
  * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
@@ -21,29 +23,9 @@ Globalny shell CloseFlow został przepięty na docelowy system wizualny z HTML-a
 Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
 Nie zmienia logiki ekranĂłw, routingu, Supabase, AI, auth ani billing/access.
 */
-import { ReactNode, useMemo, useState } from 'react';
-import {
-  LayoutDashboard,
-  Users,
-  Settings,
-  LogOut,
-  CheckCircle2,
-  Briefcase,
-  History,
-  Calendar,
-  CheckSquare,
-  CreditCard,
-  AlertTriangle,
-  Bell,
-  LifeBuoy,
-  Sparkles,
-  ChevronRight,
-  Menu,
-  X,
-  FolderKanban,
-  MessageSquareText,
-} from 'lucide-react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+
+
+
 import { useWorkspace } from '../hooks/useWorkspace';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { signOutFromSupabase } from '../lib/supabase-auth';

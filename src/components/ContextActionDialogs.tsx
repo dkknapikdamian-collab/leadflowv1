@@ -1,7 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CONTEXT_ACTION_CONTRACT, STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1 } from '../lib/context-action-contract';
-
 import TaskCreateDialog, { type TaskCreateDialogContext } from './TaskCreateDialog';
 import EventCreateDialog from './EventCreateDialog';
 import ContextNoteDialog from './ContextNoteDialog';

@@ -1,17 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-  ArrowRight,
-  BellRing,
-  CalendarDays,
-  CheckCircle2,
-  Clock3,
-  FileText,
-  Mail,
-  Mic,
-  ShieldCheck,
-  Sparkles,
-  Users,
-} from 'lucide-react';
+import { ArrowRight, BellRing, Calendar, CalendarDays, CheckCircle2, Clock3, FileText, Mail, Mic, ShieldCheck, Sparkles, Users } from 'lucide-react';
 import '../styles/closeflow-public-landing.css';
 
 const FEATURES = [

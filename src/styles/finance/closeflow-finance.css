@@ -338,7 +338,6 @@
   }
 }
 
-
 /* FIN-9_FINANCE_DUPLICATE_SAFETY_STYLE */
 .cf-finance-duplicate-warning {
   display: grid;
@@ -359,7 +358,6 @@
   font-size: var(--cf-text-xs, 0.75rem);
   color: var(--cf-text-muted, var(--muted-foreground));
 }
-
 
 /* CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 */
 .cf-finance-settlement-empty-value {
@@ -520,7 +518,6 @@
     width: 100%;
   }
 }
-
 
 /* FIN-14_PAYMENT_TYPE_ACTIONS_STYLES */
 .cf-case-finance-action-buttons {

@@ -350,7 +350,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | src/pages/LeadDetail.tsx | 1646 | className="right-card lead-detail-right-card" | migrujemy |
 | src/pages/LeadDetail.tsx | 1652 | className="right-card lead-detail-right-card" | migrujemy |
 | src/pages/Leads.tsx | 1026 | className="lead-right-rail" | migrujemy |
-| src/pages/Leads.tsx | 1027 | className="right-card lead-right-card lead-top-relations" | migrujemy |
+| src/pages/Leads.tsx | 1027 | className="right-card lead-right-card operator-top-value-card" | migrujemy |
 | src/pages/NotificationsCenter.tsx | 727 | className="notifications-right-rail" | migrujemy |
 | src/pages/NotificationsCenter.tsx | 728 | className="right-card notifications-right-card" | migrujemy |
 | src/pages/NotificationsCenter.tsx | 729 | className="notifications-right-card-head" | migrujemy |

@@ -1,32 +1,18 @@
-import {
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { AlertTriangle, CalendarClock, CheckCircle2, Clipboard, Clock, Loader2, Pencil, Search, Trash2 } from 'lucide-react';
 import {
   AiEntityIcon,
   EntityIcon,
   LeadEntityIcon,
   TemplateEntityIcon
 } from '../components/ui-system';
-import {
-  AlertTriangle,
-  CalendarClock,
-  CheckCircle2,
-  Clipboard,
-  Clock,
-  Loader2,
-  Pencil,
-  Search,
-  Trash2
-} from 'lucide-react';
+
 
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_PAGE
 
 import {
   toast
 } from 'sonner';
-
 import Layout from '../components/Layout';
 import {
   useWorkspace
@@ -80,7 +66,6 @@ import {
 } from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
-
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 type DraftFilter =

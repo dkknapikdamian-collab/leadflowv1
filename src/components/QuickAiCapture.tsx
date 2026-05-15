@@ -1,13 +1,13 @@
-
+import { useEffect, useRef, useState } from 'react';
+import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
 /* STAGE16O_QUICK_AI_CAPTURE_STATIC_CONTRACTS
  * saveAiLeadDraft Zapisz szkic Zatwierdź jako lead
  * buildAiUsageKey(workspace?.id, profile?.id) getAiUsageSnapshot(aiUsageKey registerAiUsage(aiUsageKey !usage.canUse AI_COMMAND_MAX_LENGTH data-ai-usage-badge="quick-capture"
  * bez automatycznego tworzenia leada, zadania ani wydarzenia speechSupported SpeechRecognition autoSpeech autoStart
  */
-import { useEffect, useRef, useState } from 'react';
-import { Loader2, Mic, MicOff, Sparkles } from 'lucide-react';
-import { toast } from 'sonner';
 
+
+import { toast } from 'sonner';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { createQuickAiCaptureDraft, type QuickAiCaptureDraft } from '../lib/ai-capture';
 import { saveAiLeadDraftAsync, type AiLeadDraftSource } from '../lib/ai-drafts';

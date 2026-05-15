@@ -1,5 +1,6 @@
-/* PWA_STAGE13_NOTIFICATION_RUNTIME_SAFE: runtime powiadomień bez offline sejfu danych i bez ukrytych klików poza aplikację. */
 import { useEffect, useRef } from 'react';
+/* PWA_STAGE13_NOTIFICATION_RUNTIME_SAFE: runtime powiadomień bez offline sejfu danych i bez ukrytych klików poza aplikację. */
+
 import { toast } from 'sonner';
 import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
 import { useWorkspace } from '../hooks/useWorkspace';

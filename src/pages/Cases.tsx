@@ -4,8 +4,8 @@ import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileTex
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { EntityIcon } from '../components/ui-system/EntityIcon';
-import { toast } from 'sonner';
 
+import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
@@ -21,7 +21,6 @@ import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
-
 import {
   createCaseInSupabase,
   fetchCasesFromSupabase,

@@ -1,6 +1,8 @@
-/* STAGE13_PWA_MOBILE_SAFE_MODE: instalacja PWA bez natywnej apki i bez obietnicy offline danych biznesowych. */
 import { useEffect, useMemo, useState } from 'react';
 import { Download, ShieldCheck, Smartphone, X } from 'lucide-react';
+/* STAGE13_PWA_MOBILE_SAFE_MODE: instalacja PWA bez natywnej apki i bez obietnicy offline danych biznesowych. */
+
+
 import { Button } from './ui/button';
 
 type BeforeInstallPromptChoice = {

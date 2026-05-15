@@ -1,16 +1,7 @@
-# 03_CURRENT_STAGE - CloseFlow Lead App
+# 03_CURRENT_STAGE - CloseFlow / LeadFlow
 
-## FAKT
-- Current stage: project journal / memory reconstruction / scan-first setup.
-- UI changed: no.
-- Routing changed: no.
-- Product logic changed: no.
+Aktualny etap: pelna pamiec projektu + Obsidian + czytelne nazwy + raporty wykonania.
 
-## DECYZJA
-- Next work must read AGENTS.md and _project/ first.
+Powod: bez zrodla prawdy kolejne etapy UI/API/AI beda robione na mgle, starych pozostalosciach i niedowodach.
 
-## HIPOTEZA / PROPOZYCJA
-- Review Obsidian backup before product work resumes.
-
-## DO POTWIERDZENIA
-- User acceptance after run report.
+Po wykonaniu tej paczki nalezy sprawdzic guardy i git status aplikacji oraz Obsidiana.

@@ -5,72 +5,43 @@ import {
   useCallback,
   useEffect,
   useMemo,
-  useState
+  useState,
 } from 'react';
-import {
-  Link
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   CaseEntityIcon,
   EntityIcon,
   LeadEntityIcon,
-  PaymentEntityIcon
+  PaymentEntityIcon,
 } from '../components/ui-system';
 import {
   AlertTriangle,
   Loader2,
   Plus,
+  RotateCcw,
   Search,
-  Trash2
+  Trash2,
 } from 'lucide-react';
-
-// CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1
-import {
-  RotateCcw
-} from 'lucide-react';
-import {
-  toast
-} from 'sonner';
+import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
-import {
-  EntityConflictDialog,
-  type EntityConflictCandidate
-} from '../components/EntityConflictDialog';
-import {
-  actionIconClass,
-  modalFooterClass
-} from '../components/entity-actions';
-import {
-  StatShortcutCard
-} from '../components/StatShortcutCard';
-import {
-  OperatorSideCard,
-  SimpleFiltersCard
-} from '../components/operator-rail';
-import {
-  Button
-} from '../components/ui/button';
+import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import { actionIconClass, modalFooterClass } from '../components/entity-actions';
+import { StatShortcutCard } from '../components/StatShortcutCard';
+import { OperatorSideCard, SimpleFiltersCard, TopValueRecordsCard } from '../components/operator-rail';
+import { Button } from '../components/ui/button';
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger
+  DialogTrigger,
 } from '../components/ui/dialog';
-import {
-  Input
-} from '../components/ui/input';
-import {
-  Label
-} from '../components/ui/label';
-import {
-  useWorkspace
-} from '../hooks/useWorkspace';
-import {
-  requireWorkspaceId
-} from '../lib/workspace-context';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { useWorkspace } from '../hooks/useWorkspace';
+import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   createClientInSupabase,
   findEntityConflictsInSupabase,
@@ -81,11 +52,10 @@ import {
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   updateClientInSupabase,
-  updateLeadInSupabase
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
-import {
-  getNearestPlannedAction
-} from '../lib/work-items/planned-actions';
+import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { buildTopClientValueEntries } from '../lib/client-value';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
 
@@ -186,7 +156,6 @@ const STAGE35_MONEY_KEYS = [
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENTS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 const CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FULL = 'lead and client duplicate warning modal before write';
 const CLOSEFLOW_A2_CLIENT_DUPLICATE_WARNING_BEFORE_WRITE = 'client duplicate warning before write';
-const STAGE74_CLIENTS_LEADS_TO_LINK_EMPTY_COPY = 'Brak leadów wymagających spięcia.';
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -394,8 +363,8 @@ export default function Clients() {
     [clients, countersByClientId],
   );
 
-  const leadsNeedingClientOrCaseLink = useMemo(() => {
-    // STAGE74_CLIENTS_LEADS_TO_LINK_PANEL: this rail is about lead records that still need relation cleanup.
+  const topClientValueEntries = useMemo(() => {
+    // STAGE74_CLIENTS_TOP_VALUE_PANEL: this rail is about lead records that still need relation cleanup.
     // It must not render client records under the lead attention operational card.
     const caseLeadIds = new Set<string>();
     const caseClientIds = new Set<string>();
@@ -754,46 +723,43 @@ export default function Clients() {
               ]}
             />
 
-            <OperatorSideCard
-              title="Leady do spięcia"
-              description="Brak klienta albo sprawy przy aktywnym temacie."
-              dataTestId="clients-lead-attention-card"
-              dataAttrs={{ 'data-clients-lead-attention-rail': true }}
-            >
-              <div className="right-list" data-right-rail-list="lead-attention">
-                {leadsNeedingClientOrCaseLink.length ? leadsNeedingClientOrCaseLink.map((lead) => {
-                  const leadId = String(lead.id || '').trim();
-                  const clientId = getStage35RelationClientId(lead);
-                  const hasClient = Boolean(clientId);
-                  const hasCase = (cases as Record<string, unknown>[]).some((caseRow) => {
-                    const caseLeadId = String(caseRow.leadId || caseRow.lead_id || caseRow.linkedLeadId || caseRow.linked_lead_id || '').trim();
-                    const caseClientId = getStage35RelationClientId(caseRow);
-                    return Boolean((leadId && caseLeadId === leadId) || (clientId && caseClientId === clientId));
-                  });
-                  const leadLabel = String(lead.name || lead.company || lead.phone || lead.email || 'Lead bez nazwy');
-                  const leadSecondaryText = String(lead.company || lead.phone || lead.email || lead.source || 'Lead do spięcia');
+            <TopValueRecordsCard
+              title="Najcenniejsi klienci"
+              description="5 klientów z największą wartością."
+              className="operator-top-value-card clients-top-value-card"
+              dataTestId="clients-top-value-records-card"
+              dataAttrs={{ 'data-clients-top-value-board': true }}
+              items={topClientValueEntries.map((entry) => ({
+                key: entry.key,
+                href: entry.href || '/clients',
+                label: entry.label,
+                valueLabel: formatClientValue(entry.value),
+                description: entry.description,
+                title: entry.label + ' - ' + formatClientValue(entry.value),
+                dataAttrs: {
+                  'data-clients-top-value-row': true,
+                },
+              }))}
+              emptyLabel="Brak klientów z wyliczoną wartością."
+            />
 
-                  return (
-                    <Link key={leadId || leadLabel} to={leadId ? '/leads/' + leadId : '/leads'} className="right-list-row" data-right-rail-row="lead-attention">
-                      <span className="right-list-row-main">
-                        <span className="right-list-title">{leadLabel}</span>
-                        <span className="right-list-meta">{leadSecondaryText}</span>
-                      </span>
-                      <span className="right-list-badges" aria-label="Status spięcia leada">
-                        <span className={hasClient ? 'right-list-pill right-list-pill-ok' : 'right-list-pill right-list-pill-warn'}>
-                          {hasClient ? 'Klient OK' : 'Brak klienta'}
-                        </span>
-                        <span className={hasCase ? 'right-list-pill right-list-pill-ok' : 'right-list-pill right-list-pill-warn'}>
-                          {hasCase ? 'Sprawa OK' : 'Brak sprawy'}
-                        </span>
-                      </span>
-                    </Link>
-                  );
-                }) : (
-                  <p className="right-list-empty">Brak leadów do spięcia.</p>
-                )}
-              </div>
-            </OperatorSideCard>
+            <TopValueRecordsCard
+              title="Najcenniejsi klienci"
+              description="5 klientów z największą wartością."
+              className="operator-top-value-card"
+              dataTestId="clients-top-value-records-card"
+              dataAttrs={{ 'data-clients-top-value-board': true }}
+              items={topClientValueEntries.map((entry) => ({
+                key: entry.key,
+                href: entry.href || '/clients',
+                label: entry.label,
+                valueLabel: formatClientMoney(entry.value),
+                description: 'description' in entry ? String(entry.description || '') : undefined,
+                title: entry.label + ' - ' + formatClientMoney(entry.value),
+                dataAttrs: { 'data-clients-top-value-row': true },
+              }))}
+              emptyLabel="Brak klientów z wyliczoną wartością."
+            />
           </div>
         </div>
       </div>

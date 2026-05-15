@@ -1,4 +1,4 @@
-import type { ComponentType, ReactNode } from 'react';
+import { ComponentType, type ReactNode } from 'react';
 import { OperatorMetricTile, type OperatorMetricTone } from './ui-system';
 
 const STAGE16AK_UNIFIED_TOP_METRIC_TILES = 'STAGE16AK_UNIFIED_TOP_METRIC_TILES';

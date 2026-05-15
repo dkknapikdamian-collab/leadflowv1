@@ -1,6 +1,5 @@
 import { format, isToday, isTomorrow, isValid, parseISO, startOfToday } from 'date-fns';
 import { pl } from 'date-fns/locale';
-
 import type { RecurrenceEndType, RecurrenceRule } from './scheduling';
 
 export const TASK_TYPES = [

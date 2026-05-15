@@ -1,19 +1,12 @@
-# 05_MANUAL_TESTS - CloseFlow Lead App
+# 05_MANUAL_TESTS - CloseFlow / LeadFlow
 
-## FAKT
-- Memory-only stage needs no UI click test.
+## Krytyczna sciezka reczna
+1. Login -> workspace -> Today.
+2. Dodanie leada, zadania i wydarzenia.
+3. Lead -> sprawa, jesli flow jest aktywny.
+4. AI Draft -> przeglad -> zatwierdzenie/anulowanie.
+5. Billing/trial/access.
+6. Reload kluczowych stron.
+7. Drugi workspace/uzytkownik bez przecieku danych.
 
-## Manual checks
-- Open AGENTS.md.
-- Open _project/00_PROJECT_STATUS.md.
-- Open Obsidian 10_PROJEKTY/CloseFlow_Lead_App.
-- Open latest _project/runs report.
-
-## DECYZJA
-- Product manual tests belong in product stages.
-
-## HIPOTEZA / PROPOZYCJA
-- Future smoke test should cover login, lead, task, event, case, AI draft, billing.
-
-## DO POTWIERDZENIA
-- Damian manual confirmation.
+Po kazdym etapie dopisz realny wynik testu.

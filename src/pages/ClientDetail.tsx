@@ -1,32 +1,6 @@
-import '../styles/context-action-button-source-truth.css';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  Activity,
-  AlertTriangle,
-  ArrowLeft,
-  Building2,
-  CheckCircle2,
-  Clock,
-  Copy,
-  Eye,
-  Loader2,
-  Mail,
-  Mic,
-  MicOff,
-  Pencil,
-  Phone,
-  Pin,
-  Plus,
-  Save,
-  Trash2
-} from 'lucide-react';
+import { Activity, AlertTriangle, ArrowLeft, Building2, CheckCircle2, Clock, Copy, Eye, Loader2, Mail, Mic, MicOff, Pencil, Phone, Pin, Plus, Save, Trash2 } from 'lucide-react';
 import { EntityIcon, EventEntityIcon } from '../components/ui-system';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
@@ -96,16 +70,10 @@ const CLIENT_DETAIL_HISTORY_ACQUISITION_COPY_GUARD = 'Historia pozyskania';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
-
-
 import Layout from '../components/Layout';
 import { EntityActionButton, formActionsClass } from '../components/entity-actions';
-
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
-
-
 import { useWorkspace } from '../hooks/useWorkspace';
-
 import {
   deleteActivityFromSupabase,
   fetchActivitiesFromSupabase,
@@ -113,15 +81,11 @@ import {
   fetchPaymentsFromSupabase,
   updateActivityInSupabase
 } from '../lib/supabase-fallback';
-
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
-
 import { normalizeWorkItem } from '../lib/work-items/normalize';
-
 import '../styles/visual-stage12-client-detail-vnext.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
-
 import ContextActionButton from '../components/ContextActionButton';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {

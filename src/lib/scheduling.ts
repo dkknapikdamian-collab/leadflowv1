@@ -17,7 +17,6 @@ export {
   normalizeTaskRecord,
   syncTaskDerivedFields,
 } from './task-event-contract';
-
 import {
   addDays,
   addMonths,
