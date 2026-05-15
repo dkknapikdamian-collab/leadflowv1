@@ -7,3 +7,7 @@
 - Dopisano zasady do AGENTS.md bez nadpisywania.
 - Dodano guard pamieci projektu.
 - Dodano synchronizacje do Obsidiana i audyt nazw.
+
+## 2026-05-15 - v14 runtime React StrictMode fix
+- Added missing React import in src/main.tsx when React.StrictMode is used.
+- Added runtime import guard. No UI/routing/product logic change.
