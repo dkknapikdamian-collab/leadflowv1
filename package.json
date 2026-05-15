@@ -747,7 +747,8 @@
     "test:stage79-release-gate-mass-guard": "node --test tests/stage79-release-gate-mass-guard.test.cjs",
     "check:stage80-today-task-done-desktop-visibility": "node scripts/check-stage80-today-task-done-desktop-visibility.cjs",
     "test:stage80-today-task-done-desktop-visibility": "node --test tests/stage80-today-task-done-desktop-visibility.test.cjs",
-    "check:todaystable:no-free-task": "node tools/check-todaystable-no-free-task.cjs"
+    "check:todaystable:no-free-task": "node tools/check-todaystable-no-free-task.cjs",
+    "check:todaystable-next7-v30": "node tools/check-todaystable-next7-v30.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
