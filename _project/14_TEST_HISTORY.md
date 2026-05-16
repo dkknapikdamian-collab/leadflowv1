@@ -1,4 +1,4 @@
-# 14_TEST_HISTORY - CloseFlow / LeadFlow
+﻿# 14_TEST_HISTORY - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
 
@@ -133,16 +133,41 @@ git -C $Vault status --short
 ### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
 Expected checks: Stage98, Stage99, Stage100, Stage32, Stage96 and CloseFlow quiet release gate.
 
-## STAGE102_CALENDAR_EDIT_MODAL_FORM_SOURCE â€” 2026-05-16
+## STAGE102_CALENDAR_EDIT_MODAL_FORM_SOURCE - 2026-05-16
 
 ### TESTY AUTOMATYCZNE / GUARDY
 
-- `node --test tests/stage102-calendar-edit-modal-form-source.test.cjs` â€” uruchamiane przez apply script.
-- `npm run build` â€” uruchamiane przez apply script, jeĹ›li nie podano `-SkipBuild`.
-- `npm run verify:closeflow:quiet` â€” uruchamiane przez apply script, jeĹ›li podano `-RunQuietGate`.
+- `node --test tests/stage102-calendar-edit-modal-form-source.test.cjs` - target guard.
+- `npm run build` - build check.
+- `npm run verify:closeflow:quiet` - full quiet gate when requested.
+- Stage102C local-only fix: remove mojibake introduced in Stage102 test history before rerunning Stage98.
 
-### TEST RÄCZNY
+### TEST RECZNY
 
-Status: `TEST RÄCZNY DO WYKONANIA` na `/calendar`.
+Status: `TEST RECZNY DO WYKONANIA` na `/calendar`.
 
-SprawdziÄ‡ create event, create task, edit event, edit task, wyglÄ…d jasnych pĂłl/selectĂłw/scrolla/stopki i zapis po edycji.
+Sprawdzic create event, create task, edit event, edit task, jasne pola/selecty/scroll/stopke i zapis po edycji.
+
+### UWAGA LOCAL-ONLY
+
+Ten fix jest local-only. Skrypt nie tworzy commita i niczego nie wysyla. Po testach decyzja o dalszym ruchu nalezy do Damiana.
+
+
+
+<!-- STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3_TEST_HISTORY -->
+## Stage103 V3 â€” Calendar month grid day states
+
+Automatyczne:
+- 
+ode tests/stage103-calendar-month-grid-day-states.test.cjs
+- 
+ode scripts/closeflow-release-check-quiet.cjs
+
+RÄ™czne â€” DO WYKONANIA:
+1. WejĹ›Ä‡ w /calendar.
+2. PrzeĹ‚Ä…czyÄ‡ na MiesiÄ…c.
+3. SprawdziÄ‡ zielonkawy aktualny dzieĹ„.
+4. SprawdziÄ‡ szare stare dni.
+5. SprawdziÄ‡ spokojny niebieski border selected day.
+6. PotwierdziÄ‡ brak gĂłrnego licznika przy dacie.
+7. KliknÄ…Ä‡ + wiÄ™cej i potwierdziÄ‡ przewiniÄ™cie/wybĂłr panelu dnia.

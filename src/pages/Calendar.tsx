@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Calendar, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
@@ -540,7 +540,7 @@ function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onE
   const title = capitalizeCalendarLabel(format(selectedDate, 'eeee, d MMMM yyyy', { locale: pl }));
 
   return (
-    <section data-cf-calendar-selected-day-new-tile-v9="true" aria-label="Wybrany dzień">
+    <section data-cf-calendar-selected-day-new-tile-v9="true" data-calendar-selected-day-panel="true" aria-label="Wybrany dzień">
       <div className="cf-selected-day-v9-header">
         <div>
           <p className="cf-selected-day-v9-kicker">Wybrany dzień</p>
@@ -633,6 +633,26 @@ export default function Calendar() {
       setActionPendingId(null);
     }
   };
+
+
+  const handleSelectMonthDay = (day: Date) => {
+    setSelectedDate(day);
+    setCurrentMonth(day);
+  };
+
+  const handleShowMoreMonthDay = (event: MouseEvent<HTMLButtonElement>, day: Date) => {
+    event.stopPropagation();
+    handleSelectMonthDay(day);
+
+    if (typeof window === 'undefined') return;
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>('[data-calendar-selected-day-panel="true"]')
+        ?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  };
+
   const [editSubmitting, setEditSubmitting] = useState(false);
 
   useEffect(() => {
@@ -1928,7 +1948,7 @@ export default function Calendar() {
                     key={index}
                     role="button"
                     tabIndex={0}
-                    onClick={() => { setSelectedDate(day); setCurrentMonth(day); }}
+                    onClick={() => handleSelectMonthDay(day)}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
@@ -1936,13 +1956,12 @@ export default function Calendar() {
                       }
                     }}
                     style={{ minHeight: monthCellMinHeight }}
-                    className={`calendar-day-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isSelectedDay ? 'is-selected' : ''} ${isTodayDay ? 'is-today' : ''}`}
+                    className={`calendar-day-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isSelectedDay ? 'is-selected' : ''} ${isTodayDay ? 'is-today' : ''} ${isPastDay ? 'is-past' : ''}`}
                   >
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-start mb-2">
                       <span className="calendar-day-number">
                         {format(day, 'd')}
-                      </span>
-                      {dayEntries.length > 0 && <Badge variant="secondary" className="h-5 text-[10px]">{dayEntries.length}</Badge>}
+                      </span>
                     </div>
                     <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
@@ -1969,7 +1988,12 @@ export default function Calendar() {
                         );
                       })}
                       {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
-                        <div className="calendar-more">+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</div>
+                        <button
+                          type="button"
+                          className="calendar-more cf-calendar-month-more"
+                          data-calendar-month-more-button="true"
+                          onClick={(event) => handleShowMoreMonthDay(event, day)}
+                        >+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</button>
                       )}
                     </div>
                   </div>

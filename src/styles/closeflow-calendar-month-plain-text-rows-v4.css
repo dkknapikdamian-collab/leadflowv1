@@ -175,3 +175,76 @@
 /* CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_MONTH_FREEZE_NOTE
    Do not expand month grid labels here. Compact Wyd/Zad labels remain a documented month-grid exception.
 */
+
+
+/* STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3
+   Final override for month day states. This file is imported after the older month-grid repair layers,
+   so these selectors intentionally win over skin-only, overlap, rows-no-overlap and structural repairs. */
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell {
+  transition: background-color 140ms ease, border-color 140ms ease, box-shadow 140ms ease, opacity 140ms ease !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-today {
+  border-color: rgba(22, 163, 74, 0.46) !important;
+  background: linear-gradient(180deg, rgba(22, 163, 74, 0.11), rgba(255, 255, 255, 0.94)) !important;
+  box-shadow: 0 0 0 1px rgba(22, 163, 74, 0.10) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-past:not(.is-today) {
+  background: rgba(148, 163, 184, 0.13) !important;
+  color: rgba(71, 85, 105, 0.78) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-past:not(.is-today) .calendar-day-number {
+  color: rgba(71, 85, 105, 0.76) !important;
+  -webkit-text-fill-color: rgba(71, 85, 105, 0.76) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-selected {
+  border-color: rgba(37, 99, 235, 0.58) !important;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.14) !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-outside {
+  opacity: 0.58 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-outside.is-selected,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-day-cell.is-outside.is-today {
+  opacity: 0.82 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-more,
+#root [data-cf-page-header-v2="calendar"] ~ * button[data-calendar-month-more-button="true"] {
+  appearance: none !important;
+  display: block !important;
+  width: 100% !important;
+  margin: 2px 0 0 0 !important;
+  padding: 2px 0 !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: #2563eb !important;
+  -webkit-text-fill-color: #2563eb !important;
+  cursor: pointer !important;
+  font: inherit !important;
+  font-size: 10.5px !important;
+  font-weight: 950 !important;
+  line-height: 17px !important;
+  text-align: left !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-more:hover,
+#root [data-cf-page-header-v2="calendar"] ~ * button[data-calendar-month-more-button="true"]:hover,
+#root [data-cf-page-header-v2="calendar"] ~ * .cf-calendar-month-more:focus-visible,
+#root [data-cf-page-header-v2="calendar"] ~ * button[data-calendar-month-more-button="true"]:focus-visible {
+  color: #1d4ed8 !important;
+  -webkit-text-fill-color: #1d4ed8 !important;
+  text-decoration: underline !important;
+  outline: 2px solid rgba(37, 99, 235, 0.28) !important;
+  outline-offset: 2px !important;
+}

@@ -118,3 +118,15 @@ Zakres:
 - Guard: `tests/stage102-calendar-edit-modal-form-source.test.cjs`.
 - Scope: `/calendar` create/edit modal form visual source of truth.
 - Checks: shared `data-calendar-entry-form-source`, edit/create modes, `modalFooterClass('event-form-footer')`, bright input/select contract, no dark footer bar, quiet gate wiring.
+
+<!-- STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3_GUARD -->
+## Stage103 V3 â€” Calendar month grid day states
+
+Guard: 	ests/stage103-calendar-month-grid-day-states.test.cjs
+
+Zakres guardu:
+- wymusza klasy is-today, is-past, is-selected, is-outside,
+- blokuje powrĂłt gĂłrnego Badge count przy numerze dnia,
+- wymusza data-calendar-month-more-button i handler handleShowMoreMonthDay,
+- wymusza target data-calendar-selected-day-panel,
+- wymusza finalny CSS override Stage103.
