@@ -757,7 +757,8 @@
     "test:stage83-right-rail-stale-cleanup": "node --test tests/stage83-right-rail-stale-cleanup.test.cjs",
     "check:stage84-import-doctor-right-rail": "node --test tests/stage84-import-doctor-right-rail.test.cjs",
     "check:stage86-leads-dangling-assignment-guard": "node --test tests/stage86-leads-dangling-assignment-guard.test.cjs",
-    "check:project-memory:closeflow": "node scripts/check-closeflow-project-memory-readable-names.cjs"
+    "check:project-memory:closeflow": "node scripts/check-closeflow-project-memory-readable-names.cjs",
+    "check:stage88-lazy-page-export-contract": "node tests/stage88-lazy-page-export-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

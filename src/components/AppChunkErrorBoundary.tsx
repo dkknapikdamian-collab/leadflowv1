@@ -22,7 +22,7 @@ function getErrorMessage(error: unknown) {
 function isChunkLoadError(error: unknown) {
   const message = getErrorMessage(error);
 
-  return /Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk|ChunkLoadError|dynamically imported module/i.test(message);
+  return /Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk|ChunkLoadError|dynamically imported module|Missing lazy page export/i.test(message);
 }
 
 async function clearBrowserRuntimeCaches() {

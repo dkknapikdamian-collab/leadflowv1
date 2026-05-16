@@ -9,9 +9,41 @@ function read(relativePath) {
   return fs.readFileSync(path.join(repoRoot, relativePath), 'utf8');
 }
 
+function importBlocksFrom(source, moduleName) {
+  const blocks = [];
+  const text = String(source).replace(/\r\n/g, '\n');
+  const re = /import\s+[\s\S]*?\s+from\s+['"]([^'"]+)['"]\s*;/g;
+  let match;
+  while ((match = re.exec(text))) {
+    if (match[1] === moduleName) blocks.push(match[0]);
+  }
+  return blocks;
+}
+
+function blockHasNamedImport(block, name) {
+  const named = block.match(/\{([\s\S]*?)\}/);
+  if (!named) return false;
+  return named[1]
+    .split(',')
+    .map((part) => part.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/g, '').trim())
+    .filter(Boolean)
+    .map((part) => part.replace(/^type\s+/, '').trim())
+    .map((part) => {
+      const alias = part.match(/\s+as\s+(.+)$/);
+      return (alias ? alias[1] : part).trim();
+    })
+    .includes(name);
+}
+
 test('Calendar imports router Link for relation navigation', () => {
   const source = read('src/pages/Calendar.tsx');
-  assert.match(source, /import\s+\{[^}]*\bLink\b[^}]*\}\s+from\s+['"]react-router-dom['"]/);
+  const routerBlocks = importBlocksFrom(source, 'react-router-dom');
+  assert.ok(routerBlocks.some((block) => blockHasNamedImport(block, 'Link')), 'Calendar.tsx must import Link from react-router-dom.');
+
+  for (const moduleName of ['lucide-react', 'react', '../components/operator-rail']) {
+    const badBlocks = importBlocksFrom(source, moduleName).filter((block) => blockHasNamedImport(block, 'Link'));
+    assert.equal(badBlocks.length, 0, 'Calendar.tsx must not import Link from ' + moduleName + '.');
+  }
 });
 
 test('Calendar entry card links to related lead and case', () => {
