@@ -161,3 +161,8 @@ DECYZJA:
 - Restored completed calendar entry visual contract after Stage94 week plan readable card rebuild.
 - Completed entries again expose opacity-60 and line-through text class expected by calendar-completed-event-behavior guard.
 
+
+## HOTFIX_STAGE94_COMPLETED_EVENT_VISUAL_CONTRACT_2026_05_16
+- Restored completed calendar entry visual contract after Stage94 week plan readable card rebuild.
+- Completed entries again expose opacity-60 and line-through text class expected by calendar-completed-event-behavior guard.
+

@@ -125,3 +125,8 @@ git -C $Vault status --short
 - Required: node --test tests/calendar-completed-event-behavior.test.cjs
 - Required: node scripts/closeflow-release-check-quiet.cjs
 
+
+## HOTFIX_STAGE94_COMPLETED_EVENT_VISUAL_CONTRACT_2026_05_16
+- Required: node --test tests/calendar-completed-event-behavior.test.cjs
+- Required: node scripts/closeflow-release-check-quiet.cjs
+
