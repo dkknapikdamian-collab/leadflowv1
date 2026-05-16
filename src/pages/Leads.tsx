@@ -929,7 +929,6 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
           data-stage25-leads-layout-list="true"
           data-stage32-leads-value-layout="true"
           data-stage96-leads-right-rail-source-truth="true"
-          data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
             <div className="search" data-leads-search="true">
