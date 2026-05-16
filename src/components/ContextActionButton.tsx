@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react';
+﻿import * as React from 'react';
 import "../styles/context-action-button-source-truth.css";
 
 export type ContextActionKind = "task" | "event" | "note" | string;
@@ -20,7 +20,7 @@ export type ContextActionButtonProps = React.ButtonHTMLAttributes<HTMLButtonElem
 const defaultLabelByKind: Record<string, string> = {
   task: "Dodaj zadanie",
   event: "Dodaj wydarzenie",
-  note: "Dodaj notatkę",
+  note: "Dodaj notatkÄ™",
 };
 
 export function ContextActionButton({
@@ -64,3 +64,4 @@ export function ContextActionButton({
 }
 
 export default ContextActionButton;
+

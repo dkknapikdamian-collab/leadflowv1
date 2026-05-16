@@ -153,6 +153,7 @@ const requiredTests = [
   'tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs',
   'tests/stage88-lazy-page-export-contract.test.cjs',
   'tests/stage89-todaystable-named-export-contract.test.cjs',
+  'tests/stage90-react-namespace-runtime-import.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
@@ -213,6 +214,7 @@ for (const relativePath of requiredTests) {
 
 console.log('');
 console.log('CloseFlow quiet release gate passed.');
+
 
 
 
