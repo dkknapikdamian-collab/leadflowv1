@@ -113,3 +113,8 @@ Decision: week plan and selected day use the same readable text contract. Month 
 DECYZJA:
 - / TodayStable task rows use existing RowLink completion path; no new dead handler.
 - Zalegle and today task rows must expose Zrobione besides Edytuj.
+
+## HOTFIX_STAGE96_CSS_MEDIA_BRACE_2026_05_16
+FAKT: commit 4adba47 was pushed after a failed quiet gate because the PowerShell flow did not stop on external command failure.
+DECYZJA: fix CSS syntax, rerun full quiet gate, then push a second hotfix commit.
+

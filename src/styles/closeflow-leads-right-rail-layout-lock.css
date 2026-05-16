@@ -1,4 +1,4 @@
-/* CLOSEFLOW_LEADS_RIGHT_RAIL_LAYOUT_LOCK_STAGE71_2026_05_14
+﻿/* CLOSEFLOW_LEADS_RIGHT_RAIL_LAYOUT_LOCK_STAGE71_2026_05_14
    owner: CloseFlow Visual System
    scope: /leads right rail alignment only
    reason: stage 3 feedback - the "Najcenniejsze leady" rail card must start at the same vertical line as the search/list area, not with an empty top offset.
@@ -37,6 +37,7 @@
     top: auto !important;
     transform: none !important;
   }
+}
 
 @media (max-width: 1220px) {
   #root .cf-html-view.main-leads-html .lead-right-rail,
@@ -71,3 +72,4 @@
     order: 10 !important;
   }
 }
+

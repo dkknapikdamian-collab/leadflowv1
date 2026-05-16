@@ -151,3 +151,8 @@ FAKTY:
 
 DECYZJA:
 - Today overdue task rows must not be edit-only.
+
+## HOTFIX_STAGE96_CSS_MEDIA_BRACE_2026_05_16
+- Fixed missing closing brace in closeflow-leads-right-rail-layout-lock.css after Stage96 push.
+- Reason: full quiet gate build failed on Tailwind/Vite CSS parser before commit was pushed.
+

@@ -116,3 +116,7 @@ git -C $Vault status --short
 
 - Added: tests/stage97-today-overdue-task-done-button.test.cjs.
 - Scope: verifies overdue task rows are not edit-only and pass taskId + doneKind=task to RowLink.
+
+## HOTFIX_STAGE96_CSS_MEDIA_BRACE_2026_05_16
+- Required: node scripts/closeflow-release-check-quiet.cjs after CSS brace fix.
+
