@@ -1,4 +1,4 @@
-import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
 import {
@@ -881,7 +881,7 @@ function todayActionDataKind(row: Record<string, unknown> | null | undefined) {
 function todayActionKindClass(kind: unknown) {
   return getCloseFlowActionKindClass(kind);
 }
-export default function TodayStable() {
+function TodayStable() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<DashboardStatus>('idle');
   const [data, setData] = useState<DashboardData>(emptyData);
@@ -1661,6 +1661,7 @@ export default function TodayStable() {
     </Layout>
   );
 }
-
-/* CLOSEFLOW_V21_TODAYSTABLE_NAMED_EXPORT: fallback for lazyPage runtime interop. */
+/* CLOSEFLOW_STAGE89_TODAYSTABLE_EXPLICIT_EXPORT_CONTRACT: lazy runtime needs both named and default exports. */
 export { TodayStable };
+export default TodayStable;
+

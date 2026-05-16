@@ -1,4 +1,4 @@
-/* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
+﻿/* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
 {
   const { spawnSync } = require('node:child_process');
   const result = spawnSync(process.execPath, ['scripts/check-closeflow-cases-loader2-import.cjs'], { stdio: 'inherit' });
@@ -151,6 +151,8 @@ const requiredTests = [
   'tests/stage76-today-event-done-action.test.cjs',
   'tests/stage77-lead-detail-single-status-pill.test.cjs',
   'tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs',
+  'tests/stage88-lazy-page-export-contract.test.cjs',
+  'tests/stage89-todaystable-named-export-contract.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
@@ -211,6 +213,7 @@ for (const relativePath of requiredTests) {
 
 console.log('');
 console.log('CloseFlow quiet release gate passed.');
+
 
 
 
