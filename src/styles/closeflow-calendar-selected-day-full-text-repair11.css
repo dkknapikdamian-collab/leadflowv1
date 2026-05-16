@@ -101,3 +101,12 @@
     min-width: 94px !important;
   }
 }
+
+/* STAGE94_WEEK_PLAN_FULL_TEXT_NOTE_2026_05_16
+   ScheduleEntryCard now carries the readable text model for week plan entries.
+   This legacy selected-day repair remains scoped to [data-cf-calendar-selected-day="true"] only.
+*/
+
+/* CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_SCOPE_NOTE
+   Week plan full-entry text rules are scoped in closeflow-calendar-selected-day-new-tile-v9.css.
+*/

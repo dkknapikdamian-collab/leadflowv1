@@ -167,7 +167,7 @@
   justify-content: flex-end !important;
   flex-wrap: wrap !important;
   gap: 6px !important;
-  min-width: 260px !important;
+  min-width: 0 !important;
 }
 
 #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action {
@@ -228,4 +228,395 @@
     justify-content: flex-start !important;
     min-width: 0 !important;
   }
+}
+
+/* STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS_START
+   One active V9 render: content left, actions right, no white bottom strip.
+*/
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(224px, 324px) !important;
+  align-items: start !important;
+  gap: 14px !important;
+  padding: 14px !important;
+  border: 1px solid rgba(203, 213, 225, 0.78) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  display: block !important;
+  margin: 0 !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  line-height: 1.35 !important;
+  overflow: visible !important;
+  white-space: normal !important;
+  text-overflow: clip !important;
+  word-break: normal !important;
+  overflow-wrap: anywhere !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  display: grid !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 8px 12px !important;
+  min-width: 0 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  color: #64748b !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation-links {
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  align-items: center !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: start !important;
+  justify-items: stretch !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-row {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(48px, 1fr)) !important;
+  gap: 6px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-row-secondary {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action {
+  width: 100% !important;
+  min-height: 30px !important;
+  min-width: 0 !important;
+  padding: 0 8px !important;
+  border-radius: 10px !important;
+  border: 1px solid #dbe3ef !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-done {
+  border-color: #86efac !important;
+  background: #ffffff !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-danger {
+  border-color: #fecaca !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-done:hover {
+  border-color: #4ade80 !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-danger:hover {
+  border-color: #fca5a5 !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"]::after,
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-bottom-bar,
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-empty-bar {
+  display: none !important;
+  content: none !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions {
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-row,
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-row-secondary {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+/* STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS_END */
+
+/* STAGE94_CALENDAR_WEEK_PLAN_FULL_ENTRY_TEXT_2026_05_16
+   Week plan uses the readable selected-day text model, but this scope does not touch month grid chips.
+*/
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-card {
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 1px solid rgba(203, 213, 225, 0.82) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055) !important;
+  overflow: visible !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-content {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, auto) !important;
+  align-items: start !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+  padding: 12px !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-main {
+  display: grid !important;
+  gap: 7px !important;
+  min-width: 0 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-meta,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-actions,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-relation {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-type,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-time,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-status {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 22px !important;
+  border-radius: 999px !important;
+  padding: 0 8px !important;
+  border: 1px solid #dbe3ef !important;
+  background: #f8fafc !important;
+  color: #334155 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-indent: 0 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-title {
+  display: block !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  line-height: 1.35 !important;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  text-indent: 0 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-title.is-completed {
+  color: #64748b !important;
+  text-decoration: line-through !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-relation,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-relation a,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-relation span {
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  text-decoration: none !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-relation a:hover {
+  color: #2563eb !important;
+  text-decoration: underline !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-actions {
+  justify-content: flex-end !important;
+  align-content: start !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-action {
+  min-height: 28px !important;
+  border-radius: 999px !important;
+  padding: 0 9px !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-action-done {
+  border-color: #bbf7d0 !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-action-danger {
+  border-color: #fecaca !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-content {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-calendar-week-entry-actions {
+    justify-content: flex-start !important;
+  }
+}
+
+/* CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V2_2026_05_16
+   Week plan uses the same human-readable text model as selected day V9.
+   Scope is intentionally limited to .calendar-week-plan; month grid remains frozen.
+*/
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, auto) !important;
+  align-items: start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(203, 213, 225, 0.82) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-main { display: grid !important; gap: 7px !important; min-width: 0 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-meta { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 6px !important; min-width: 0 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan :is(.cf-week-plan-entry-type, .cf-week-plan-entry-time, .cf-week-plan-entry-status) { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-height: 22px !important; border-radius: 999px !important; padding: 0 9px !important; font-size: 11px !important; font-weight: 950 !important; line-height: 1 !important; white-space: nowrap !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-type { border: 1px solid #bfdbfe !important; background: #eff6ff !important; color: #1d4ed8 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-time { border: 1px solid #e2e8f0 !important; background: #f8fafc !important; color: #475569 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-status { border: 1px solid #bbf7d0 !important; background: #ecfdf5 !important; color: #047857 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-title[data-cf-entry-title="true"] { display: block !important; margin: 0 !important; max-width: 100% !important; overflow: visible !important; white-space: normal !important; text-overflow: clip !important; color: #0f172a !important; font-size: 14px !important; font-weight: 950 !important; line-height: 1.35 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-relation { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important; min-width: 0 !important; color: #64748b !important; font-size: 12px !important; font-weight: 800 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-link { color: #2563eb !important; text-decoration: none !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-link:hover { text-decoration: underline !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-actions { display: grid !important; grid-template-columns: repeat(3, minmax(72px, auto)) !important; justify-content: end !important; align-content: start !important; gap: 6px !important; min-width: 0 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action { min-height: 28px !important; border-radius: 999px !important; border: 1px solid #dbe3ef !important; background: #ffffff !important; color: #334155 !important; padding: 0 10px !important; font-size: 11px !important; font-weight: 950 !important; line-height: 1 !important; box-shadow: none !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action-postpone { border-color: #bfdbfe !important; background: #eff6ff !important; color: #1d4ed8 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action-done { border-color: #bbf7d0 !important; background: #ecfdf5 !important; color: #047857 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action-danger { border-color: #fecaca !important; background: #ffffff !important; color: #b91c1c !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"][data-calendar-entry-completed="true"] { opacity: 0.68 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"][data-calendar-entry-completed="true"] .cf-week-plan-entry-title { color: #64748b !important; text-decoration: line-through !important; }
+@media (max-width: 900px) {
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"] { grid-template-columns: 1fr !important; }
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-actions { grid-template-columns: repeat(2, minmax(72px, auto)) !important; justify-content: start !important; }
+}
+
+/* CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V3_2026_05_16
+   Week plan uses the same human-readable text model as selected day V9.
+   Scope is intentionally limited to .calendar-week-plan; month grid remains frozen.
+*/
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, auto) !important;
+  align-items: start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(203, 213, 225, 0.82) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055) !important;
+}
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-main { display: grid !important; gap: 7px !important; min-width: 0 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-meta { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 6px !important; min-width: 0 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan :is(.cf-week-plan-entry-type, .cf-week-plan-entry-time, .cf-week-plan-entry-status) { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-height: 22px !important; border-radius: 999px !important; padding: 0 9px !important; font-size: 11px !important; font-weight: 950 !important; line-height: 1 !important; white-space: nowrap !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-type { border: 1px solid #bfdbfe !important; background: #eff6ff !important; color: #1d4ed8 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-time { border: 1px solid #e2e8f0 !important; background: #f8fafc !important; color: #475569 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-status { border: 1px solid #bbf7d0 !important; background: #ecfdf5 !important; color: #047857 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-title[data-cf-entry-title="true"] { display: block !important; margin: 0 !important; max-width: 100% !important; overflow: visible !important; white-space: normal !important; text-overflow: clip !important; color: #0f172a !important; font-size: 14px !important; font-weight: 950 !important; line-height: 1.35 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-relation { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important; min-width: 0 !important; color: #64748b !important; font-size: 12px !important; font-weight: 800 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-link { color: #2563eb !important; text-decoration: none !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-link:hover { text-decoration: underline !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-actions { display: grid !important; grid-template-columns: repeat(3, minmax(72px, auto)) !important; justify-content: end !important; align-content: start !important; gap: 6px !important; min-width: 0 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action { min-height: 28px !important; border-radius: 999px !important; border: 1px solid #dbe3ef !important; background: #ffffff !important; color: #334155 !important; padding: 0 10px !important; font-size: 11px !important; font-weight: 950 !important; line-height: 1 !important; box-shadow: none !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action-postpone { border-color: #bfdbfe !important; background: #eff6ff !important; color: #1d4ed8 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action-done { border-color: #bbf7d0 !important; background: #ecfdf5 !important; color: #047857 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-action-danger { border-color: #fecaca !important; background: #ffffff !important; color: #b91c1c !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"][data-calendar-entry-completed="true"] { opacity: 0.68 !important; }
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"][data-calendar-entry-completed="true"] .cf-week-plan-entry-title { color: #64748b !important; text-decoration: line-through !important; }
+@media (max-width: 900px) {
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"] { grid-template-columns: 1fr !important; }
+  #root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-plan .cf-week-plan-entry-actions { grid-template-columns: repeat(2, minmax(72px, auto)) !important; justify-content: start !important; }
+}
+
+/* CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V4
+   Week plan uses the same readable text contract as selected day V9.
+   Scope is deliberately limited to .calendar-week-plan. Month grid stays frozen.
+*/
+#root .calendar-week-plan .cf-calendar-week-plan-entry-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: start !important;
+  gap: 12px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  border: 1px solid rgba(203, 213, 225, 0.82) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  padding: 12px !important;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.055) !important;
+  color: #0f172a !important;
+}
+#root .calendar-week-plan .cf-calendar-week-plan-entry-main { display: grid !important; gap: 6px !important; min-width: 0 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-meta { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 6px !important; min-width: 0 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-type,
+#root .calendar-week-plan .cf-calendar-week-plan-entry-time,
+#root .calendar-week-plan .cf-calendar-week-plan-entry-status { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-height: 22px !important; border-radius: 999px !important; padding: 0 8px !important; font-size: 11px !important; font-weight: 950 !important; line-height: 1 !important; white-space: nowrap !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-type { border: 1px solid #bfdbfe !important; background: #eff6ff !important; color: #1d4ed8 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-time { border: 1px solid #e2e8f0 !important; background: #f8fafc !important; color: #475569 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-status { border: 1px solid #bbf7d0 !important; background: #ecfdf5 !important; color: #047857 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-title { display: block !important; margin: 0 !important; min-width: 0 !important; max-width: 100% !important; overflow: visible !important; white-space: normal !important; text-overflow: clip !important; color: #0f172a !important; font-size: 14px !important; font-weight: 950 !important; line-height: 1.35 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-relation { display: flex !important; flex-wrap: wrap !important; align-items: center !important; gap: 10px !important; min-width: 0 !important; color: #64748b !important; font-size: 12px !important; font-weight: 800 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-relation a { color: #2563eb !important; text-decoration: none !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-relation a:hover { text-decoration: underline !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-actions { display: grid !important; grid-template-columns: repeat(3, minmax(54px, auto)) !important; justify-content: end !important; gap: 6px !important; min-width: 0 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-action { display: inline-flex !important; align-items: center !important; justify-content: center !important; min-height: 28px !important; border-radius: 999px !important; border: 1px solid #dbe3ef !important; background: #ffffff !important; color: #334155 !important; padding: 0 9px !important; font-size: 11px !important; font-weight: 950 !important; line-height: 1 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-action-done { border-color: #bbf7d0 !important; background: #ecfdf5 !important; color: #047857 !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-action-danger { border-color: #fecaca !important; background: #fff7f7 !important; color: #b91c1c !important; }
+#root .calendar-week-plan .cf-calendar-week-plan-entry-card[data-calendar-entry-completed="true"] .cf-calendar-week-plan-entry-title { color: #64748b !important; text-decoration: line-through !important; }
+@media (max-width: 900px) {
+  #root .calendar-week-plan .cf-calendar-week-plan-entry-card { grid-template-columns: 1fr !important; }
+  #root .calendar-week-plan .cf-calendar-week-plan-entry-actions { justify-content: start !important; grid-template-columns: repeat(3, minmax(54px, auto)) !important; }
 }

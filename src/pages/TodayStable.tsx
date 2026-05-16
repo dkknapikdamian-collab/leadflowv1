@@ -684,6 +684,7 @@ function RowLink({
               size="sm"
               variant="outline"
               data-stage79-task-done-action="true"
+              data-stage97-overdue-task-done-action="true"
               className="cf-today-task-done-button"
               disabled={!normalizedStage79TaskId || stage79TaskDoneSaving}
               onClick={(event) => {
@@ -1563,6 +1564,8 @@ function TodayStable() {
                   helper={caseRecord ? getCaseTitle(caseRecord) : readText(task, ['leadName', 'lead_name'], '')}
                   meta={formatDateTime(momentRaw)}
                   badge={getDateKey(momentRaw) < todayKey ? 'Zaległe' : 'Dziś'}
+                taskId={String(task.id || '')}
+                doneKind="task"
                 onEdit={() => navigate('/tasks')}
                   onDelete={() => void handleDeleteTask(task)}
                   deleting={actionPendingId === `task:${String(task.id || '')}`}

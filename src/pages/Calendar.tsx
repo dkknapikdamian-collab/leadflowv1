@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import { Calendar, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { actionButtonClass as entityActionButtonClass } from '../components/entity-actions';
+import { actionButtonClass as entityActionButtonClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
 import {
   Dialog,
   DialogContent,
@@ -384,90 +384,59 @@ function ScheduleEntryCard({ entry, actionButtonClass, actionPendingId, caseTitl
   const pendingDone = actionPendingId === `${entry.id}:done`;
   const pendingDelete = actionPendingId === `${entry.id}:delete`;
   const isCompletedEntry = isCompletedCalendarEntry(entry);
+  const title = String(entry.title || getCalendarEntryTypeLabel(entry) || 'Wpis').trim();
   const relationLabel = getCalendarEntryRelationLabel(entry, caseTitle);
-  const relationClass = `truncate text-[12px] font-semibold ${isCompletedEntry ? 'text-slate-400 line-through' : 'text-slate-500'}`;
-  const neutralActionClass = actionButtonClass;
-  const postponeActionClass = `${actionButtonClass} border-blue-200 bg-blue-50 text-blue-700 hover:border-blue-300 hover:bg-blue-100`;
-  const doneActionClass = `${actionButtonClass} border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300 hover:bg-emerald-100`;
-  const deleteActionClass = entityActionButtonClass('danger', actionButtonClass);
 
   return (
-    <div data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined} data-cf-calendar-entry-card-repair11="true" className={`calendar-entry-card cf-readable-card ${isCompletedEntry ? 'calendar-entry-completed' : ''} rounded-2xl border border-slate-200 bg-white px-3 py-2 shadow-sm transition hover:border-slate-300 hover:shadow-md ${isCompletedEntry ? 'opacity-60' : ''}`}>
-      <div className="grid gap-2 lg:grid-cols-[auto_minmax(220px,1fr)_76px_118px_auto] lg:items-center">
-        <div className="flex min-w-0 items-center gap-1.5">
-          <span className={`inline-flex h-6 shrink-0 items-center rounded-full border px-2.5 text-[12px] font-bold leading-none ${getCalendarEntryTypeClass(entry)}`} data-cf-entity-type={getCalendarEntryTypeValue(entry)} data-cf-entry-type-label="true" title={getCalendarEntryTypeLabel(entry)}>
+    <div
+      data-cf-calendar-week-plan-entry-card="true"
+      data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}
+      className={`calendar-entry-card cf-calendar-week-plan-entry-card ${isCompletedEntry ? 'calendar-entry-completed is-completed' : ''}`}
+    >
+      <div className="cf-calendar-week-plan-entry-main">
+        <div className="cf-calendar-week-plan-entry-meta" data-cf-calendar-week-plan-entry-meta="true">
+          <span
+            className="cf-calendar-week-plan-entry-type"
+            data-cf-entry-type-label="true"
+            data-cf-entity-type={getCalendarEntryTypeValue(entry)}
+            title={getCalendarEntryTypeLabel(entry)}
+          >
             {getCalendarEntryTypeLabel(entry)}
           </span>
+          <span className="cf-calendar-week-plan-entry-time">{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-calendar-week-plan-entry-status">{getCalendarEntryStatusLabel(entry)}</span>
         </div>
 
-        <div className="min-w-0">
-          <p className={`truncate text-[14px] font-bold leading-5 ${isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900'}`} title={entry.title} data-cf-entry-title="true">
-            {entry.title}
-          </p>
-          {relationLabel ? (
-            entry.raw?.caseId ? (
-              <Link to={`/cases/${entry.raw.caseId}`} className={`${relationClass} transition hover:text-sky-700`} title={relationLabel}>
-                {relationLabel}
-              </Link>
-            ) : entry.raw?.leadId ? (
-              <Link to={`/leads/${entry.raw.leadId}`} className={`${relationClass} transition hover:text-blue-700`} title={relationLabel}>
-                {relationLabel}
-              </Link>
-            ) : (
-              <p className={relationClass} title={relationLabel}>{relationLabel}</p>
-            )
-          ) : (
-            <p className="truncate text-[12px] font-semibold text-slate-400">Brak powiązania</p>
-          )}
-          {entry.raw?.leadId || entry.raw?.caseId ? (
-            <div className="mt-1 flex flex-wrap gap-3 text-[12px] font-bold">
-              {entry.raw?.leadId ? (
-                <Link to={`/leads/${entry.raw.leadId}`} className="text-blue-700 hover:underline">
-                  Otwórz lead
-                </Link>
-              ) : null}
-              {entry.raw?.caseId ? (
-                <Link to={`/cases/${entry.raw.caseId}`} className="text-sky-700 hover:underline">
-                  Otwórz sprawę
-                </Link>
-              ) : null}
-            </div>
+        <p className="cf-calendar-week-plan-entry-title" title={title} data-cf-entry-title="true">
+          {title}
+        </p>
+
+        <div className="cf-calendar-week-plan-entry-relation" data-cf-entry-relation="true">
+          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiązania</span>}
+          {entry.raw?.leadId ? (
+            <Link to={`/leads/${entry.raw.leadId}`}>Otwórz lead</Link>
+          ) : null}
+          {entry.raw?.caseId ? (
+            <Link to={`/cases/${entry.raw.caseId}`}>Otwórz sprawę</Link>
           ) : null}
         </div>
+      </div>
 
-        <div className="text-[12px] font-bold text-slate-600 lg:text-center">
-          {getCalendarEntryTimeLabel(entry)}
-        </div>
-
-        <div className="lg:text-center">
-          {getCalendarEntrySeverity(entry) ? (
-            <span className="cf-severity-pill" data-cf-severity={getCalendarEntrySeverity(entry)}>
-              {getCalendarEntryStatusLabel(entry)}
-            </span>
-          ) : (
-            <span className="cf-status-pill" data-cf-status-tone={getCalendarEntryStatusTone(entry)}>
-              {getCalendarEntryStatusLabel(entry)}
-            </span>
-          )}
-        </div>
-
-        <div className="flex flex-wrap gap-1.5 lg:justify-end">
-          <button type="button" className={neutralActionClass} onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-          <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
-          <button type="button" className={postponeActionClass} onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
-          <button type="button" className={postponeActionClass} onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
-          <button type="button" className={doneActionClass} onClick={() => onComplete(entry)} disabled={pendingDone}>
-            <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
-          </button>
-          <button type="button" className={deleteActionClass} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-            <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
-          </button>
-        </div>
+      <div className="cf-calendar-week-plan-entry-actions" data-cf-calendar-week-plan-entry-actions="true">
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
+        </button>
+        <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" onClick={() => onDelete(entry)} disabled={pendingDelete}>
+          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
+        </button>
       </div>
     </div>
   );
 }
-
 
 
 type CalendarSelectedDayTileV9Props = {
@@ -482,46 +451,69 @@ type CalendarSelectedDayTileV9Props = {
 };
 
 function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift, onShiftHours, onComplete, onDelete }: Omit<CalendarSelectedDayTileV9Props, 'selectedDate' | 'entries'> & { entry: ScheduleEntry }) {
-  const pendingEdit = actionPendingId === `${entry.id}:edit`;
-  const pendingDay = actionPendingId === `${entry.id}:1`;
-  const pendingWeek = actionPendingId === `${entry.id}:7`;
-  const pendingHour = actionPendingId === `${entry.id}:h1`;
-  const pendingDone = actionPendingId === `${entry.id}:done`;
-  const pendingDelete = actionPendingId === `${entry.id}:delete`;
+  const entryId = String(entry.id || entry.raw?.id || 'entry');
+  const pendingEdit = actionPendingId === entryId + ':edit';
+  const pendingDay = actionPendingId === entryId + ':1';
+  const pendingWeek = actionPendingId === entryId + ':7';
+  const pendingHour = actionPendingId === entryId + ':h1';
+  const pendingDone = actionPendingId === entryId + ':done';
+  const pendingDelete = actionPendingId === entryId + ':delete';
   const isCompletedEntry = isCompletedCalendarEntry(entry);
-  const title = String(entry.title || getCalendarEntryTypeLabel(entry) || 'Wpis').trim();
+  const typeLabel = getCalendarEntryTypeLabel(entry);
+  const title = String(entry.title || typeLabel || 'Wpis').trim();
   const relationLabel = getCalendarEntryRelationLabel(entry);
+  const relationFallback = relationLabel || 'Brak powiązania';
+  const hasRelationLink = Boolean(entry.raw?.leadId || entry.raw?.caseId || entry.raw?.clientId);
 
   return (
-    <div data-cf-calendar-selected-day-entry-v9="true" data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}>
+    <div
+      data-cf-calendar-selected-day-entry-v9="true"
+      data-cf-selected-day-v9-no-bottom-bar="true"
+      data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}
+      className="cf-selected-day-v9-entry-shell"
+    >
       <div className="cf-selected-day-v9-main">
-        <div className="cf-selected-day-v9-meta">
-          <span className="cf-selected-day-v9-type" data-cf-entity-type={getCalendarEntryTypeValue(entry)}>{getCalendarEntryTypeLabel(entry)}</span>
-          <span className="cf-selected-day-v9-time">{getCalendarEntryTimeLabel(entry)}</span>
-          <span className="cf-selected-day-v9-status">{getCalendarEntryStatusLabel(entry)}</span>
+        <div className="cf-selected-day-v9-meta" aria-label="Typ, godzina i status wpisu">
+          <span className="cf-selected-day-v9-type" data-cf-entity-type={getCalendarEntryTypeValue(entry)} data-cf-entry-type-label="true" title={typeLabel}>{typeLabel}</span>
+          <span className="cf-selected-day-v9-time" title={getCalendarEntryTimeLabel(entry)}>{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-selected-day-v9-status" title={getCalendarEntryStatusLabel(entry)}>{getCalendarEntryStatusLabel(entry)}</span>
         </div>
+
         <p className="cf-selected-day-v9-entry-title" title={title} data-cf-entry-title="true">{title}</p>
-        <div className="cf-selected-day-v9-relation">
-          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiązania</span>}
-          {entry.raw?.leadId ? (
-            <Link to={`/leads/${entry.raw.leadId}`}>Otwórz lead</Link>
-          ) : null}
-          {entry.raw?.caseId ? (
-            <Link to={`/cases/${entry.raw.caseId}`}>Otwórz sprawę</Link>
+
+        <div className="cf-selected-day-v9-relation" data-cf-entry-relation="true">
+          <span title={relationFallback}>{relationFallback}</span>
+          {hasRelationLink ? (
+            <span className="cf-selected-day-v9-relation-links" aria-label="Powiązane rekordy">
+              {entry.raw?.leadId ? (
+                <Link to={'/leads/' + entry.raw.leadId}>Otwórz lead</Link>
+              ) : null}
+              {entry.raw?.caseId ? (
+                <Link to={'/cases/' + entry.raw.caseId}>Otwórz sprawę</Link>
+              ) : null}
+              {entry.raw?.clientId ? (
+                <Link to={'/clients/' + entry.raw.clientId}>Otwórz klienta</Link>
+              ) : null}
+            </span>
           ) : null}
         </div>
       </div>
-      <div className="cf-selected-day-v9-actions">
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
-        <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
-          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
-        </button>
-        <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-danger" onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className="mr-1 h-3.5 w-3.5" /> {pendingDelete ? '...' : 'Usuń'}
-        </button>
+
+      <div className="cf-selected-day-v9-actions" aria-label={'Akcje wpisu: ' + title}>
+        <div className="cf-selected-day-v9-action-row cf-selected-day-v9-action-row-primary">
+          <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+          <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+          <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+          <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        </div>
+        <div className="cf-selected-day-v9-action-row cf-selected-day-v9-action-row-secondary">
+          <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
+            <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
+          </button>
+          <button type="button" className={trashActionButtonClass("cf-selected-day-v9-action cf-selected-day-v9-action-danger")} onClick={() => onDelete(entry)} disabled={pendingDelete}>
+            <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -1658,8 +1650,6 @@ export default function Calendar() {
 
   const actionButtonClass = createEntryActionClass();
 
-  const selectedDayAgendaEntriesV2 = sortCalendarEntriesForDisplay(getEntriesForDay(topicContactOptions, selectedDate)); // CLOSEFLOW_CALENDAR_SELECTED_DAY_AGENDA_ACTIONS_V2_2026_05_13
-
   return (
     <Layout>
       <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
@@ -1922,7 +1912,7 @@ export default function Calendar() {
                     key={index}
                     role="button"
                     tabIndex={0}
-                    onClick={() => setSelectedDate(day)}
+                    onClick={() => { setSelectedDate(day); setCurrentMonth(day); }}
                     onKeyDown={(event) => {
                       if (event.key === 'Enter' || event.key === ' ') {
                         event.preventDefault();
@@ -1946,7 +1936,7 @@ export default function Calendar() {
                           <button
                             key={entry.id}
                             type="button"
-                            className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedEntry ? 'is-done' : ''}`}
+                            className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedEntry ? 'is-done' : ''}`}
                             onClick={(event) => {
                               event.stopPropagation();
                               setSelectedDate(day);
@@ -1971,44 +1961,16 @@ export default function Calendar() {
               })}
             </div>
 
-            <div className="cf-readable-panel mt-8 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm md:p-5">
-              <div className="mb-4 flex items-center justify-between gap-3 flex-wrap">
-
-
-        <CalendarSelectedDayTileV9
-          selectedDate={selectedDate}
-          entries={sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate))}
-          actionPendingId={actionPendingId}
-          onEdit={handleEditEntry}
-          onShift={handleShiftEntry}
-          onShiftHours={handleShiftEntryHours}
-          onComplete={handleCompleteEntry}
-          onDelete={handleDeleteEntry}
-        />
-                <Badge variant="secondary" className="h-7 px-3">{selectedDayEntries.length} wpisów</Badge>
-              </div>
-              <div className="grid gap-3 lg:grid-cols-2">
-                {selectedDayEntries.length === 0 ? (
-                  <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50/50 px-4 py-8 text-center text-sm text-slate-400 lg:col-span-2">
-                    Brak wpisów dla tego dnia.
-                  </div>
-                ) : selectedDayEntries.map((entry) => (
-                  <div key={`selected:${entry.id}`}>
-                    <ScheduleEntryCard
-                      entry={entry}
-                      actionButtonClass={actionButtonClass}
-                      actionPendingId={actionPendingId}
-                      caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
-                      onEdit={handleOpenEdit}
-                      onShift={handleShiftEntry}
-                      onShiftHours={handleShiftEntryHours}
-                      onComplete={handleCompleteEntry}
-                      onDelete={handleDeleteEntry}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
+                        <CalendarSelectedDayTileV9
+              selectedDate={selectedDate}
+              entries={sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, selectedDate))}
+              actionPendingId={actionPendingId}
+              onEdit={handleEditEntry}
+              onShift={handleShiftEntry}
+              onShiftHours={handleShiftEntryHours}
+              onComplete={handleCompleteEntry}
+              onDelete={handleDeleteEntry}
+            />
           </>
         ) : null}
 
@@ -2019,19 +1981,23 @@ export default function Calendar() {
                 <h3>Najbliższe 7 dni</h3>
                 <p>Najszybszy filtr.</p>
               </div>
-              <div className="calendar-week-visible-days-v3 mt-3 space-y-2">
+              <div className="calendar-week-visible-days-v3 mt-3 space-y-2" data-cf-calendar-week-rail-stage93="clean">
                 {weekDays.map((day, index) => {
                   const dayEntries = sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day));
                   const active = isSameDay(day, selectedDate);
                   const label = getCalendarDayNavLabel(day, index);
                   const weekday = capitalizeCalendarLabel(format(day, 'EEEE', { locale: pl }));
                   const dateLabel = format(day, 'd MMM', { locale: pl });
+                  const fullDateLabel = weekday + ', ' + dateLabel;
 
                   return (
                     <button
                       key={day.toISOString()}
                       type="button"
-                      onClick={() => setSelectedDate(day)}
+                      onClick={() => {
+                        setSelectedDate(day);
+                        setCurrentMonth(day);
+                      }}
                       className={
                         active
                           ? 'w-full rounded-2xl border border-blue-200 bg-blue-50 px-3 py-2.5 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100'
@@ -2044,53 +2010,16 @@ export default function Calendar() {
                             {label}
                           </div>
                           <div className={active ? "truncate text-[11px] font-semibold text-blue-600" : "truncate text-[11px] font-semibold text-slate-500"}>
-                            {index === 0 ? weekday + ' · ' + dateLabel : dateLabel}
+                            {fullDateLabel}
                           </div>
                         </div>
-                        <span className={active ? "shrink-0 rounded-full border border-blue-200 bg-white px-2 py-1 text-[11px] font-bold text-blue-700" : "shrink-0 rounded-full border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-bold text-slate-600"}>
+                        <span className={active ? "calendar-week-day-count-text is-active" : "calendar-week-day-count-text"}>
                           {formatCalendarItemCount(dayEntries.length)}
                         </span>
                       </div>
                     </button>
                   );
                 })}
-              </div>
-              <div className="calendar-week-filter-list hidden">
-                {(() => {
-                  const nextWeekStart = addDays(selectedWeekStart, 7);
-                  const days = weekDays.map((day, index) => ({
-                    key: day.toISOString(),
-                    label: isToday(day) ? 'Dzisiaj' : getCalendarDayNavLabel(day, index),
-                    date: day,
-                    count: sortCalendarEntriesForDisplay(getEntriesForDay(weekEntries, day)).length,
-                  }));
-                  const quick = [
-                    ...days,
-                    {
-                      key: `next:${nextWeekStart.toISOString()}`,
-                      label: 'Przyszły tydzień',
-                      date: nextWeekStart,
-                      count: sortCalendarEntriesForDisplay(getEntriesForDay(scheduleEntries, nextWeekStart)).length,
-                    },
-                  ];
-
-                  return quick.map((item) => {
-                    const isActive = isSameDay(item.date, selectedDate);
-                    return (
-                      <button
-                        key={item.key}
-                        type="button"
-                        className={`calendar-week-filter-btn ${isActive ? 'active' : ''}`}
-                        onClick={() => {
-                          setSelectedDate(item.date);
-                          setCurrentMonth(item.date);
-                        }}
-                      >
-                        <span>{item.label} · {item.count} {item.count === 1 ? 'rzecz' : 'rzeczy'}</span>
-                      </button>
-                    );
-                  });
-                })()}
               </div>
             </aside>
 

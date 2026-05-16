@@ -327,3 +327,27 @@
   font-weight: 850 !important;
 }
 
+/* CLOSEFLOW_STAGE95_RECORD_TRASH_ACTION_SOURCE_OF_TRUTH
+   Record rows may size the button, but they must not repaint destructive actions as red slabs.
+*/
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button {
+  border-color: var(--cf-trash-border-color, #fecaca) !important;
+  background: var(--cf-trash-bg, #ffffff) !important;
+  color: var(--cf-trash-text-color, #334155) !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button:hover {
+  border-color: var(--cf-trash-border-hover-color, #fca5a5) !important;
+  background: var(--cf-trash-bg-hover, rgba(254, 242, 242, 0.72)) !important;
+}
+
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-icon,
+#root .cf-html-view :is(.row-actions, .lead-actions, .client-actions, .cf-client-row-actions, .case-row-title-line, .calendar-week-plan, .tasks-stage48-task-card) .cf-trash-action-button svg {
+  color: var(--cf-trash-icon-color, #dc2626) !important;
+}
+
+
+/* CLOSEFLOW_RECORD_LIST_DOES_NOT_OWN_RIGHT_RAIL_STAGE96_2026_05_16
+   Record list CSS may style list rows only. Right rail width/order is owned by closeflow-right-rail-source-truth.css.
+*/

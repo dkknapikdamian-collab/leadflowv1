@@ -60,8 +60,7 @@
 }
 
 /* The only broad selector allowed: page background. This does not style sidebar buttons/cards. */
-#root .cf-html-viewold broad calendar scope,
-#root mainold broad calendar scope {
+#root .cf-html-view.main-calendar-html {
   background:
     radial-gradient(circle at 0% 0%, var(--cf-cal-page-glow), transparent 28%),
     linear-gradient(180deg, #f7fbff 0%, var(--cf-cal-page-bg) 100%) !important;
@@ -381,4 +380,58 @@ html body #root [data-calendar-month-entry="true"] > * {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+
+/* CLOSEFLOW_STAGE93_CALENDAR_WEEK_RAIL_CLEANUP_V5_2026_05_16
+   Week rail: one visible selector list, no hidden legacy list, no dark/plaque count badge.
+*/
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-visible-days-v3 .calendar-week-day-count-text {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-width: max-content !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-visible-days-v3 .calendar-week-day-count-text.is-active {
+  color: #2563eb !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-filter-list,
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-filter-btn {
+  display: none !important;
+}
+
+
+/* STAGE94_CALENDAR_CONSOLIDATED_CLEANUP_WEEK_RAIL_TEXT_COUNT
+   Week rail counts are plain text, not badges/plaque UI.
+*/
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-visible-days-v3 .calendar-week-day-count-text {
+  display: inline !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-page-header-v2="calendar"] ~ * .calendar-week-visible-days-v3 .calendar-week-day-count-text::before {
+  content: none !important;
 }

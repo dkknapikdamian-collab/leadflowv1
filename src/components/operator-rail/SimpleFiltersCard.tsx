@@ -1,5 +1,4 @@
 import { type ReactNode } from 'react';
-import { OperatorSideCard, SimpleFiltersCard } from '../components/operator-rail';
 import { OperatorSideCard, type OperatorRailDataAttrs } from './OperatorSideCard';
 
 export type SimpleFilterItem = {
@@ -10,6 +9,8 @@ export type SimpleFilterItem = {
   ariaLabel?: string;
   dataAttrs?: OperatorRailDataAttrs;
 };
+
+export const CLOSEFLOW_SIMPLE_FILTERS_CARD_SOURCE_TRUTH_STAGE96 = 'SimpleFiltersCard is the shared operator rail filter card for leads/clients';
 
 export type SimpleFiltersCardProps = {
   title: string;
@@ -34,7 +35,7 @@ export function SimpleFiltersCard({
       description={description}
       className={className}
       dataTestId={dataTestId}
-      dataAttrs={dataAttrs}
+      dataAttrs={{ ...(dataAttrs || {}), 'data-cf-simple-filters-card': true }}
     >
       <div className="quick-list">
         {items.map((item) => (

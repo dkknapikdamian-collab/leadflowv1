@@ -166,3 +166,12 @@
   overflow: hidden !important;
   text-overflow: ellipsis !important;
 }
+
+/* STAGE94_WEEK_PLAN_FULL_TEXT_MONTH_GRID_FREEZE_NOTE_2026_05_16
+   Month grid remains frozen: compact Wyd/Zad labels are allowed only inside month chips/normalizers.
+   Week plan and selected day must use full labels and visible titles.
+*/
+
+/* CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_MONTH_FREEZE_NOTE
+   Do not expand month grid labels here. Compact Wyd/Zad labels remain a documented month-grid exception.
+*/

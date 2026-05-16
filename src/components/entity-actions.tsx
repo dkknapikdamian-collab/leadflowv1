@@ -137,14 +137,20 @@ export function trashActionIconClass(className?: string) {
   return cn('cf-trash-action-icon', className);
 }
 
-export const EntityTrashButton = React.forwardRef<HTMLButtonElement, Omit<EntityActionButtonProps, 'tone' | 'iconOnly'>>(
-  ({ className, ...props }, ref) => (
+
+export type EntityTrashButtonProps = Omit<EntityActionButtonProps, 'tone'> & {
+  iconOnly?: boolean;
+};
+
+export const EntityTrashButton = React.forwardRef<HTMLButtonElement, EntityTrashButtonProps>(
+  ({ className, iconOnly = false, ...props }, ref) => (
     <EntityActionButton
       ref={ref}
       tone="danger"
-      iconOnly
+      iconOnly={iconOnly}
       className={trashActionButtonClass(className)}
       data-cf-trash-action="true"
+      data-cf-destructive-source="trash-action-source"
       {...props}
     />
   )

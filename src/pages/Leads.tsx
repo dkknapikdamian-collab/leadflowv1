@@ -922,9 +922,12 @@ export default function Leads() {
 
         {/* STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
         <div
-          className="layout-list xl:grid-cols-[minmax(0,1fr)_300px]"
+          className="layout-list"
+          data-cf-right-rail-layout-source="shared"
           data-stage25-leads-layout-list="true"
           data-stage32-leads-value-layout="true"
+          data-stage96-leads-right-rail-source-truth="true"
+          data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
             <div className="search" data-leads-search="true">
@@ -1053,9 +1056,10 @@ export default function Leads() {
             </div>
           </div>
 
-          <div className="lead-right-rail" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true">
+          <div className="lead-right-rail cf-operator-right-rail" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
             {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-stage32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
             <SimpleFiltersCard
+              className="lead-right-card operator-simple-filters-card"
               title="Filtry proste"
               description="Bez przesady, tylko najpotrzebniejsze."
               dataTestId="leads-simple-filters-card"

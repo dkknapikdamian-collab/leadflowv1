@@ -1,4 +1,4 @@
-﻿/* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
+/* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
 {
   const { spawnSync } = require('node:child_process');
   const result = spawnSync(process.execPath, ['scripts/check-closeflow-cases-loader2-import.cjs'], { stdio: 'inherit' });
@@ -147,7 +147,10 @@ const requiredTests = [
   'tests/today-ai-drafts-tile-stage29.test.cjs',
   'tests/stage29d-today-ai-drafts-compact-tile.test.cjs',
   'tests/supabase-first-readiness-stage16.test.cjs',
+  'tests/stage93-calendar-week-rail-cleanup.test.cjs',
   'tests/stage94-ai-layer-separation-copy.test.cjs',
+  'tests/stage94-calendar-week-plan-full-entry-text.test.cjs',
+  'tests/stage95-destructive-action-visual-source.test.cjs',
   'tests/stage76-today-event-done-action.test.cjs',
   'tests/stage77-lead-detail-single-status-pill.test.cjs',
   'tests/stage78-lead-detail-no-static-ai-followup-card.test.cjs',
@@ -155,6 +158,10 @@ const requiredTests = [
   'tests/stage89-todaystable-named-export-contract.test.cjs',
   'tests/stage90-react-namespace-runtime-import.test.cjs',
   'tests/stage91-clients-top-value-runtime-contract.test.cjs',
+  'tests/stage94-calendar-consolidated-cleanup.test.cjs',
+  'tests/stage92-calendar-selected-day-readable-actions.test.cjs',
+  'tests/stage96-leads-right-rail-width-position.test.cjs',
+  'tests/stage97-today-overdue-task-done-button.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

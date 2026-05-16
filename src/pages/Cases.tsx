@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import Layout from '../components/Layout';
-import { EntityTrashButton, modalFooterClass } from '../components/entity-actions';
+import { EntityTrashButton, modalFooterClass, trashActionIconClass } from '../components/entity-actions';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -736,7 +736,7 @@ export default function Cases() {
                           <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
                           <EntityTrashButton
                             type="button"
-                            className="btn ghost cf-case-row-delete-text-action cf-entity-action cf-entity-action-danger" data-cf-header-action="danger"
+                            className="btn ghost cf-case-row-delete-text-action" data-cf-destructive-source="trash-action-source" data-cf-header-action="danger"
                             data-case-row-delete-action="true"
                             aria-label="Usuń sprawę"
                             title="Usuń sprawę"
@@ -747,7 +747,7 @@ export default function Cases() {
                               setCaseToDelete(record);
                             }}
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className={trashActionIconClass("h-4 w-4")} />
                             Usuń
                           </EntityTrashButton>
                         </span>
@@ -777,7 +777,7 @@ export default function Cases() {
                         </Button>
                         <span className="sr-only">
                           {record.leadId ? <Link to={`/leads/${record.leadId}`}><ExternalLink className="h-4 w-4" /></Link> : null}
-                          <button type="button" onClick={() => setCaseToDelete(record)}><Trash2 className="h-4 w-4" /></button>
+                          <EntityTrashButton type="button" iconOnly onClick={() => setCaseToDelete(record)}><Trash2 className={trashActionIconClass("h-4 w-4")} /></EntityTrashButton>
                         </span>
                       </span>
                     </div>

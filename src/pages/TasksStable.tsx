@@ -7,7 +7,7 @@ P0_TASKS_STABLE_REBUILD
 
 import Layout from '../components/Layout';
 import { OperatorMetricTiles, type OperatorMetricTileItem } from '../components/ui-system';
-import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
+import { actionButtonClass, modalFooterClass, EntityTrashButton, trashActionIconClass } from '../components/entity-actions';
 import { Card, CardContent } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
@@ -545,7 +545,9 @@ export default function TasksStable() {
                       <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
                         Edytuj
                       </Button>
-                      <Button type="button" variant="outline" className={actionButtonClass('danger', 'tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action')} data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}><Trash2 className="mr-2 h-4 w-4" /> Usuń</Button>
+                      <EntityTrashButton type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}>
+                        <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                      </EntityTrashButton>
                     </div>
                   </div>
                 </CardContent>

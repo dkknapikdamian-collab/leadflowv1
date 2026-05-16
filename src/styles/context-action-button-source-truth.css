@@ -36,3 +36,49 @@
 .context-action-button--note {
   background: rgba(255, 251, 235, 0.96);
 }
+
+/* CLOSEFLOW_STAGE95_DESTRUCTIVE_ACTION_SOURCE_OF_TRUTH
+   One visual source for destructive icon/text actions.
+   Rule: red icon/border, white or nearly-white background, no solid red plaque.
+*/
+:root {
+  --cf-trash-icon-color: #dc2626;
+  --cf-trash-border-color: #fecaca;
+  --cf-trash-border-hover-color: #fca5a5;
+  --cf-trash-bg: rgba(255, 255, 255, 0.96);
+  --cf-trash-bg-hover: rgba(254, 242, 242, 0.72);
+  --cf-trash-text-color: #334155;
+}
+
+.cf-trash-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  min-height: 2rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--cf-trash-border-color) !important;
+  background: var(--cf-trash-bg) !important;
+  color: var(--cf-trash-text-color) !important;
+  box-shadow: none !important;
+}
+
+.cf-trash-action-button:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: var(--cf-trash-bg-hover) !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+
+.cf-trash-action-button:focus-visible {
+  outline: 2px solid rgba(220, 38, 38, 0.22);
+  outline-offset: 2px;
+}
+
+.cf-trash-action-icon,
+.cf-trash-action-button svg {
+  color: var(--cf-trash-icon-color) !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+

@@ -189,3 +189,57 @@
   background: #ffffff !important;
   color: var(--cf-right-rail-card-text) !important;
 }
+
+/* CLOSEFLOW_RIGHT_RAIL_WIDTH_POSITION_STAGE96_2026_05_16
+   owner: CloseFlow Visual System
+   scope: shared right rail width and vertical order on /leads and /clients
+   rule: SimpleFiltersCard is above TopValueRecordsCard; right rail width is shared and must not collapse into the old narrow rail.
+*/
+:root {
+  --cf-right-rail-width-min: 300px;
+  --cf-right-rail-width-preferred: 320px;
+  --cf-right-rail-width-max: 340px;
+  --cf-right-rail-gap: 18px;
+}
+
+@media (min-width: 1221px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(var(--cf-right-rail-width-min), var(--cf-right-rail-width-max)) !important;
+    align-items: start !important;
+    column-gap: var(--cf-right-rail-gap) !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail, .cf-operator-right-rail) {
+    width: 100% !important;
+    min-width: var(--cf-right-rail-width-min) !important;
+    max-width: var(--cf-right-rail-width-max) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: start !important;
+    align-content: start !important;
+    gap: 14px !important;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.operator-simple-filters-card, [data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"]) {
+  order: 0 !important;
+  width: 100% !important;
+  align-self: stretch !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card {
+  order: 10 !important;
+  width: 100% !important;
+  align-self: stretch !important;
+}
+
+@media (max-width: 1220px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail, .cf-operator-right-rail) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}

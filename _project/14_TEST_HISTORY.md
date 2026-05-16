@@ -35,3 +35,84 @@ Select-String -Path "$Vault\PROJECTS.md" -Pattern "CloseFlow_Lead_App"
 git -C $AppRepo status --short
 git -C $Vault status --short
 ```
+
+## 2026-05-16 — Stage92 calendar selected day readable actions {#STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS}
+
+- Test/guard: `node --test tests/stage92-calendar-selected-day-readable-actions.test.cjs`.
+- Wymusza pełne typy wpisów, `data-cf-entry-title`, pełny zestaw akcji, brak aktywnego legacy selected-day renderu i brak osobnego pustego paska.
+- Status testu ręcznego: TEST RĘCZNY DO WYKONANIA na `/calendar`.
+
+## 2026-05-16 — Stage93 calendar week rail cleanup
+- Added and ran `tests/stage93-calendar-week-rail-cleanup.test.cjs`.
+- Guard checks no active `calendar-week-filter-list hidden`, no legacy week filter buttons, plain count text, and quiet gate wiring.
+
+## STAGE93_GUARD_FIX_AND_STAGE94_SWEEP_2026_05_16
+
+- `node --test tests/stage93-calendar-week-rail-cleanup.test.cjs` - do wykonania przez skrypt paczki.
+- `node scripts/check-closeflow-calendar-ui-sweep-stage94.cjs` - raport diagnostyczny, nie pełny test release.
+
+## STAGE94 calendar consolidated cleanup tests
+
+- Added/updated tests/stage94-calendar-consolidated-cleanup.test.cjs.
+- Runs Stage92, Stage93, Stage94 targeted guards from the local ZIP apply script.
+- Runs scripts/check-closeflow-calendar-ui-sweep-stage94.cjs as P1/P2 regression scanner.
+- Full quiet gate remains optional via -RunQuietGate.
+
+## STAGE94_SWEEP_REGEX_FIX_V4_TEST_HISTORY_2026_05_16
+
+- node --check scripts/check-closeflow-calendar-ui-sweep-stage94.cjs
+- node --test tests/stage92-calendar-selected-day-readable-actions.test.cjs
+- node --test tests/stage93-calendar-week-rail-cleanup.test.cjs
+- node --test tests/stage94-calendar-consolidated-cleanup.test.cjs
+- node scripts/check-closeflow-calendar-ui-sweep-stage94.cjs
+
+## Stage94 Calendar weekly plan full entry text - 2026-05-16
+
+- Added and ran tests/stage94-calendar-week-plan-full-entry-text.test.cjs.
+- Guard verifies full labels, visible data-cf-entry-title, full actions and frozen month grid exception.
+
+## STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V2
+- Added/ran `tests/stage94-calendar-week-plan-full-entry-text.test.cjs`.
+- Required before push: manual /calendar week view check.
+
+## STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V3
+- Added/ran `tests/stage94-calendar-week-plan-full-entry-text.test.cjs`.
+- Required before push: manual /calendar week view check.
+
+## STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V4
+
+- Target guard: `node --test tests/stage94-calendar-week-plan-full-entry-text.test.cjs`.
+- Manual test required: /calendar, week view, full entry title and full type visible.
+
+## Stage95 destructive action guard
+- Added and ran tests/stage95-destructive-action-visual-source.test.cjs.
+- Existing Stage92/93/94 calendar guards remain optional regression checks in the local apply script.
+
+## Stage95 V2 destructive action guard rerun
+- Re-ran tests/stage95-destructive-action-visual-source.test.cjs after removing the CSS selector that contained bg-red/bg-rose class names.
+
+
+## Stage96 leads right rail width and position
+- Guard: `node --test tests/stage96-leads-right-rail-width-position.test.cjs`.
+- Sprawdza kolejność SimpleFiltersCard przed TopValueRecordsCard, brak 195px/300px lokalnego override i wspólne CSS variables.
+
+- Stage96 V2: `tests/stage96-leads-right-rail-width-position.test.cjs` guards /leads SimpleFiltersCard before TopValueRecordsCard, shared rail width tokens, no 195px rail, and SimpleFiltersCard import hygiene.
+
+### Stage96 V3 - Leads right rail width/position
+- Targeted guard: tests/stage96-leads-right-rail-width-position.test.cjs
+- Scope: /leads right rail width and position parity with /clients.
+- Expected: Filtry proste before Najcenniejsze leady; no local narrow rail override.
+
+### Stage96 V4 - Leads right rail width/position
+- Targeted guard: tests/stage96-leads-right-rail-width-position.test.cjs
+- Expected: filters above top value card, shared rail width source truth, no local rail grid class on /leads.
+
+## STAGE96_V5_TEST_HISTORY
+- Added/finalized tests/stage96-leads-right-rail-width-position.test.cjs.
+- Targeted command: node --test tests/stage96-leads-right-rail-width-position.test.cjs.
+
+
+## Stage97 test - Today overdue task done button
+
+- Added: tests/stage97-today-overdue-task-done-button.test.cjs.
+- Scope: verifies overdue task rows are not edit-only and pass taskId + doneKind=task to RowLink.

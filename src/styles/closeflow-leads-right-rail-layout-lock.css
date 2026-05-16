@@ -9,7 +9,7 @@
   #root .cf-html-view.main-leads-html .layout-list:has(.lead-right-rail),
   #root .cf-html-view.main-leads-html .layout-list:has(.operator-top-value-card) {
     display: grid !important;
-    grid-template-columns: minmax(0, 1fr) minmax(280px, 315px) !important;
+    grid-template-columns: minmax(0, 1fr) minmax(var(--cf-right-rail-width-min, 300px), var(--cf-right-rail-width-max, 340px)) !important;
     align-items: start !important;
     column-gap: 18px !important;
   }
@@ -30,37 +30,13 @@
   }
 
   #root .cf-html-view.main-leads-html .lead-right-rail > .operator-top-value-card {
-    order: -10 !important;
+    order: 10 !important;
     margin-top: 0 !important;
     padding-top: 16px !important;
     align-self: stretch !important;
     top: auto !important;
     transform: none !important;
   }
-
-  #root .cf-html-view.main-leads-html .layout-list > aside.right-card.operator-top-value-card {
-    grid-column: 2 !important;
-    grid-row: 1 !important;
-    align-self: start !important;
-    margin-top: 0 !important;
-    top: auto !important;
-    transform: none !important;
-  }
-
-  #root .cf-html-view.main-leads-html .layout-list > aside.right-card.lead-right-card:not(.operator-top-value-card) {
-    grid-column: 2 !important;
-    align-self: start !important;
-    margin-top: 0 !important;
-    top: auto !important;
-    transform: none !important;
-  }
-
-  #root .cf-html-view.main-leads-html .operator-top-value-card {
-    margin-top: 0 !important;
-    top: auto !important;
-    transform: none !important;
-  }
-}
 
 @media (max-width: 1220px) {
   #root .cf-html-view.main-leads-html .lead-right-rail,
@@ -73,5 +49,25 @@
     padding-top: 0 !important;
     top: auto !important;
     transform: none !important;
+  }
+}
+
+
+/* CLOSEFLOW_LEADS_RIGHT_RAIL_WIDTH_POSITION_STAGE96_2026_05_16
+   Leads rail inherits shared right rail width from closeflow-right-rail-source-truth.css.
+   SimpleFiltersCard must stay above TopValueRecordsCard.
+*/
+@media (min-width: 1221px) {
+  #root .cf-html-view.main-leads-html .lead-right-rail {
+    min-width: var(--cf-right-rail-width-min, 300px) !important;
+    max-width: var(--cf-right-rail-width-max, 340px) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .lead-right-rail :is(.operator-simple-filters-card, [data-testid="leads-simple-filters-card"]) {
+    order: 0 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .lead-right-rail .operator-top-value-card {
+    order: 10 !important;
   }
 }
