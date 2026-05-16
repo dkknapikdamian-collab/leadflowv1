@@ -23,7 +23,7 @@ import { Textarea } from '../components/ui/textarea';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
-import { EntityActionButton } from '../components/entity-actions';
+import { EntityActionButton, EntityTrashButton, trashActionIconClass } from '../components/entity-actions';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
   Select,
@@ -42,6 +42,7 @@ import {
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-record-list-source-truth.css';
 type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
 
 type TemplateItemDraft = {
@@ -285,14 +286,28 @@ export default function Templates() {
     }
   }
 
-  async function handleDeleteTemplate(templateId: string) {
+  async function handleDeleteTemplate(template: TemplateRecord) {
     if (!hasAccess) {
       toast.error('Tryb podglądu blokuje zapis.');
       return;
     }
 
+    const templateName = template.name || 'Szablon bez nazwy';
+    const itemCount = getTemplateItemCount(template);
+    const firstConfirm = window.confirm(
+      `Usunąć szablon "${templateName}"?\n\nTo usuwa wzorzec szablonu oraz ${itemCount} pozycji checklisty zapisanych w tym szablonie. Pozycje już skopiowane do istniejących spraw nie są usuwane z tego ekranu.`,
+    );
+    if (!firstConfirm) return;
+
+    if (itemCount > 0) {
+      const itemConfirm = window.confirm(
+        `Potwierdź usunięcie pozycji checklisty z szablonu "${templateName}".\n\nNie usuwaj szablonu, jeśli nadal jest potrzebny jako wzorzec dla aktywnych spraw.`,
+      );
+      if (!itemConfirm) return;
+    }
+
     try {
-      await deleteCaseTemplateFromSupabase(templateId);
+      await deleteCaseTemplateFromSupabase(template.id);
       toast.success('Szablon został usunięty.');
       await loadTemplates();
     } catch (error: any) {
@@ -302,7 +317,7 @@ export default function Templates() {
 
   return (
     <Layout>
-      <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-a16-template-light-ui="true">
+      <div className="cf-html-view main-templates-html mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-cf-templates-page-source="record-list-source-truth">
         <CloseFlowPageHeaderV2
           pageKey="templates"
           actions={
@@ -369,7 +384,7 @@ export default function Templates() {
               const requiredCount = items.filter((item) => item.isRequired).length;
 
               return (
-                <Card key={template.id} className="cf-readable-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+                <Card key={template.id} data-cf-template-card-source="record-list-source-truth" data-cf-template-card-delete-visible="true" className="cf-template-card cf-readable-card border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                   <CardContent className="flex flex-col gap-5 p-5">
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
                       <div className="space-y-3">
@@ -382,7 +397,21 @@ export default function Templates() {
                           Po wybraniu szablonu pozycje zostaną skopiowane do checklisty nowej sprawy.
                         </p>
                       </div>
-                      <DropdownMenu>
+                      <div className="cf-template-card-actions" data-cf-template-card-actions="true">
+                        <Button type="button" variant="outline" className="cf-template-card-action" onClick={() => openEditDialog(template)}>Edytuj</Button>
+                        <Button type="button" variant="outline" className="cf-template-card-action" onClick={() => void handleDuplicateTemplate(template)}>
+                          <Copy className="mr-2 h-4 w-4" /> Duplikuj
+                        </Button>
+                        <EntityTrashButton
+                          type="button"
+                          variant="outline"
+                          className="cf-template-card-action cf-template-delete-action"
+                          data-cf-template-delete-action="true"
+                          onClick={() => void handleDeleteTemplate(template)}
+                        >
+                          <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                        </EntityTrashButton>
+                        <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                           <Button variant="outline" size="icon" className="rounded-2xl border-slate-200 bg-white text-slate-700 hover:bg-slate-50">
                             <MoreVertical className="h-4 w-4" />
@@ -394,15 +423,16 @@ export default function Templates() {
                             <Copy className="mr-2 h-4 w-4" /> Duplikuj
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
-                            <EntityActionButton type="button" tone="danger" className="w-full justify-start rounded-sm px-2 py-1.5 text-sm font-normal shadow-none" onClick={() => void handleDeleteTemplate(template.id)}>
-                            <Trash2 className="mr-2 h-4 w-4" /> Usuń
-                            </EntityActionButton>
+                            <EntityTrashButton type="button" className="w-full justify-start rounded-sm px-2 py-1.5 text-sm font-normal shadow-none" data-cf-template-delete-action="menu" onClick={() => void handleDeleteTemplate(template)}>
+                            <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                            </EntityTrashButton>
                           </DropdownMenuItem>
                         </DropdownMenuContent>
-                      </DropdownMenu>
+                        </DropdownMenu>
+                      </div>
                     </div>
 
-                    <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="cf-template-card-items grid gap-3 md:grid-cols-2 xl:grid-cols-3" data-cf-template-card-items="true">
                       {items.map((item, index) => {
                         const meta = itemTypeMeta(item.type);
                         return (
