@@ -1,4 +1,4 @@
-﻿export type AppDraftType = "lead" | "task" | "event" | "note";
+export type AppDraftType = "lead" | "task" | "event" | "note";
 
 export type AppDraftStatus = "pending" | "confirmed" | "cancelled" | "expired" | "failed";
 

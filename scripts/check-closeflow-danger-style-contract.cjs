@@ -58,11 +58,11 @@ function categorizeFinding(file, className) {
   if (/AppChunkErrorBoundary/.test(file)) return 'real system alert/error';
   if (/TodayStable/.test(file)) return 'real system alert/error or schedule/status surface';
   if (/Templates/.test(file)) return 'status/progress';
-  return 'unrelated legacy visual style do później';
+  return 'unrelated legacy visual style do p\u00F3\u017Aniej';
 }
 
-const actionPattern = /(Trash2|Usuń|UsuĹ„|delete|Delete|destructive)/;
-const blockingActionPattern = /(Trash2|Usuń|UsuĹ„)/;
+const actionPattern = /(Trash2|Usu\u0144|Usu\u0144|delete|Delete|destructive)/;
+const blockingActionPattern = /(Trash2|Usu\u0144|Usu\u0144)/;
 const localDangerPattern = /(text|bg|border|ring)-(red|rose)-[0-9]{2,3}/;
 const localDangerGlobalPattern = /(text|bg|border|ring)-(red|rose)-[0-9]{2,3}/g;
 const allowedSharedFiles = new Set(['src/components/entity-actions.tsx']);

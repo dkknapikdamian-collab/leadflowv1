@@ -30,29 +30,28 @@ const doc = read(docPath);
 const pkg = JSON.parse(read(packagePath));
 
 assert(!/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(today), 'TodayStable zawiera control chars');
-assert(!/(?:BĹ|CyklicznoĹ|Ĺş|Ĺź|Ĺ‚|Ĺ„|Ä…|Ä™|Å¼|Åº|Å‚|Å„|Â|Ã|�)/.test(today + '\n' + doc), 'Wykryto mojibake w Stage14');
-assert(!/today-(?:severity|status)-(?:fix|v2|repair)|today-repair|today-severity-fix|today-status-v2/i.test(today), 'Wykryto lokalną klasę fix/v2/repair');
+assert(!/(?:B\u0139|Cykliczno\u0139|\u017A|\u015F|\u0142|\u0144|\u0105|\u0119|\u017C|\u017A|\u0142|\u0144|\u00c2|\u00c3|\ufffd)/.test(today + '\n' + doc), 'Wykryto mojibake w Stage14');
+assert(!/today-(?:severity|status)-(?:fix|v2|repair)|today-repair|today-severity-fix|today-status-v2/i.test(today), 'Wykryto lokaln\u0105 klas\u0119 fix/v2/repair');
 assert(today.includes('TODAY_STABLE_STAGE14_REMAINING_SEVERITY'), 'Brakuje markera Stage14 w TodayStable');
-assert(today.includes('cf-severity-dot') || today.includes('cf-severity-panel') || today.includes('cf-severity-pill') || today.includes('cf-alert') || today.includes('cf-severity-text-warning') || today.includes('cf-severity-text-error'), 'TodayStable nie używa kontraktu cf-severity/cf-alert');
-assert(today.includes('cf-status-pill') || today.includes('cf-progress-pill'), 'TodayStable nie używa kontraktu cf-status/cf-progress');
-assert(today.includes('<SectionHeaderIcon tone={tone} icon={icon} />'), 'SectionHeader nie używa SectionHeaderIcon z tone oraz icon');
+assert(today.includes('cf-severity-dot') || today.includes('cf-severity-panel') || today.includes('cf-severity-pill') || today.includes('cf-alert') || today.includes('cf-severity-text-warning') || today.includes('cf-severity-text-error'), 'TodayStable nie u\u017Cywa kontraktu cf-severity/cf-alert');
+assert(today.includes('cf-status-pill') || today.includes('cf-progress-pill'), 'TodayStable nie u\u017Cywa kontraktu cf-status/cf-progress');
+assert(today.includes('<SectionHeaderIcon tone={tone} icon={icon} />'), 'SectionHeader nie u\u017Cywa SectionHeaderIcon z tone oraz icon');
 
 const sectionHeaderIconMatch = today.match(/function\s+SectionHeaderIcon\s*\([^)]*\)\s*\{([\s\S]*?)\n\}/);
 assert(sectionHeaderIconMatch, 'Nie znaleziono funkcji SectionHeaderIcon');
-assert(!/<SectionHeaderIcon\b/.test(sectionHeaderIconMatch[1]), 'SectionHeaderIcon wywołuje samego siebie');
+assert(!/<SectionHeaderIcon\b/.test(sectionHeaderIconMatch[1]), 'SectionHeaderIcon wywo\u0142uje samego siebie');
 
 const rawTokens = today.match(/\b(?:(?:hover|focus|active):)?(?:bg|text|border|ring|from|via|to)-(red|rose|amber)-(?:50|100|200|300|400|500|600|700|800|900|950)\b/g) || [];
 const exceptionLines = doc.match(/^\| .*\| legacy-exception \|/gm) || [];
-assert(rawTokens.length === 0 || exceptionLines.length > 0, 'Pozostały lokalne red/rose/amber klasy bez udokumentowanego wyjątku');
+assert(rawTokens.length === 0 || exceptionLines.length > 0, 'Pozosta\u0142y lokalne red/rose/amber klasy bez udokumentowanego wyj\u0105tku');
 
 const scriptValue = pkg.scripts && pkg.scripts['check:closeflow-today-stable-remaining-severity-contract'];
 assert(scriptValue === 'node scripts/check-closeflow-today-stable-remaining-severity-contract.cjs', 'Brakuje komendy package.json dla Stage14');
 for (const name of previousScripts) {
-  assert(pkg.scripts && pkg.scripts[name], 'Wcześniejszy kontrakt nie istnieje w package.json: ' + name);
+  assert(pkg.scripts && pkg.scripts[name], 'Wcze\u015Bniejszy kontrakt nie istnieje w package.json: ' + name);
 }
 
-assert(doc.includes('Today.tsx jest poza zakresem') || doc.includes('Today.tsx pozostaje poza zakresem'), 'Dokument nie potwierdza wyłączenia starego Today.tsx');
+assert(doc.includes('Today.tsx jest poza zakresem') || doc.includes('Today.tsx pozostaje poza zakresem'), 'Dokument nie potwierdza wy\u0142\u0105czenia starego Today.tsx');
 assert(doc.includes('Etap 15'), 'Dokument nie opisuje, co zostaje na Etap 15');
 
 console.log('[TodayStable Stage14 contract] OK');
-

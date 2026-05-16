@@ -36,12 +36,12 @@ assertIncludes(component, "../../lib/client-finance", 'Finance component must us
 assertIncludes(component, 'calculateClientFinanceSummary({', 'Finance component must calculate via helper');
 assertIncludes(component, 'client:', 'Finance component must pass client into helper');
 assertIncludes(component, 'data-fin8-client-finance-summary', 'FIN-8 data marker must exist');
-assertIncludes(component, '<dt>Wartość</dt>', 'UI label Wartość must exist');
-assertIncludes(component, '<dt>Opłacone</dt>', 'UI label Opłacone must exist');
-assertIncludes(component, '<dt>Do domknięcia</dt>', 'UI label Do domknięcia must exist');
+assertIncludes(component, '<dt>Warto\u015B\u0107</dt>', 'UI label Warto\u015B\u0107 must exist');
+assertIncludes(component, '<dt>Op\u0142acone</dt>', 'UI label Op\u0142acone must exist');
+assertIncludes(component, '<dt>Do domkni\u0119cia</dt>', 'UI label Do domkni\u0119cia must exist');
 assertIncludes(component, '<dt>Rozliczenia</dt>', 'UI label Rozliczenia must exist');
 assertNotIncludes(component, '<dt>Suma spraw</dt>', 'Old misleading label must be removed');
-assertNotIncludes(component, '<dt>Prowizja należna</dt>', 'Client tile must not show commission in FIN-8');
+assertNotIncludes(component, '<dt>Prowizja nale\u017Cna</dt>', 'Client tile must not show commission in FIN-8');
 
 assertIncludes(clientDetail, 'client={client}', 'ClientDetail must pass client to finance summary');
 const clientDetailSource = read(clientDetail);
@@ -56,4 +56,4 @@ assertIncludes(pkg, 'check:closeflow-client-finance-summary', 'package script mu
 console.log('CLOSEFLOW_CLIENT_FINANCE_SUMMARY_ETAP8_CHECK_OK');
 console.log('helper=src/lib/client-finance.ts');
 console.log('source_rule=primary_case_first_then_all_active_cases');
-console.log('labels=Wartość|Opłacone|Do domknięcia|Rozliczenia');
+console.log('labels=Warto\u015B\u0107|Op\u0142acone|Do domkni\u0119cia|Rozliczenia');

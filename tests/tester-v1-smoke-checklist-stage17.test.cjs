@@ -7,7 +7,7 @@ const docPath = path.join(process.cwd(), 'docs/STAGE17_TESTER_V1_SMOKE_CHECKLIST
 
 test('Stage17 tester smoke checklist exists and covers core flow', () => {
   const doc = fs.readFileSync(docPath, 'utf8');
-  for (const phrase of ['Logowanie', 'Dziś', 'Lead', 'Klient', 'Szkice AI', 'Billing', 'PWA']) {
+  for (const phrase of ['Logowanie', 'Dzi\u015B', 'Lead', 'Klient', 'Szkice AI', 'Billing', 'PWA']) {
     assert.match(doc, new RegExp(phrase));
   }
 });

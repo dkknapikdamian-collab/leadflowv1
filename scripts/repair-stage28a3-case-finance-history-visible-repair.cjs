@@ -37,15 +37,15 @@ function patchCaseDetail() {
     throw new Error("Brakuje caseFinanceSummary ze Stage28A.");
   }
 
-  if (!text.includes("Historia wpłat")) {
-    // Najbezpieczniej: osobna sekcja widoczna zaraz przed Tabs. Nie zależy od klas z poprzedniego patcha.
+  if (!text.includes("Historia wp\u0142at")) {
+    // Najbezpieczniej: osobna sekcja widoczna zaraz przed Tabs. Nie zale\u017Cy od klas z poprzedniego patcha.
     const match = text.match(/\n(\s*)<Tabs\b/);
     if (!match) throw new Error("Nie znaleziono <Tabs> anchor w CaseDetail.");
     const indent = match[1];
     const historyPanel = `
 ${indent}<section className="case-detail-finance-history-panel" data-case-finance-history-panel="true">
 ${indent}  <div className="case-detail-finance-payments-head">
-${indent}    <strong>Historia wpłat</strong>
+${indent}    <strong>Historia wp\u0142at</strong>
 ${indent}    <span>{visibleCasePayments.length}</span>
 ${indent}  </div>
 ${indent}  {visibleCasePayments.length ? (
@@ -61,7 +61,7 @@ ${indent}        </article>
 ${indent}      ))}
 ${indent}    </div>
 ${indent}  ) : (
-${indent}    <p className="case-detail-finance-empty">Brak wpłat. Dodaj pierwszą zaliczkę albo płatność częściową.</p>
+${indent}    <p className="case-detail-finance-empty">Brak wp\u0142at. Dodaj pierwsz\u0105 zaliczk\u0119 albo p\u0142atno\u015B\u0107 cz\u0119\u015Bciow\u0105.</p>
 ${indent}  )}
 ${indent}</section>
 
@@ -69,7 +69,7 @@ ${indent}</section>
     text = text.slice(0, match.index) + historyPanel + text.slice(match.index);
   }
 
-  if (!text.includes("Historia wpłat")) throw new Error("Brakuje tekstu Historia wpłat po Stage28A3.");
+  if (!text.includes("Historia wp\u0142at")) throw new Error("Brakuje tekstu Historia wp\u0142at po Stage28A3.");
   if (!text.includes('data-case-finance-history-panel="true"') && !text.includes("case-detail-finance-payments-head")) {
     throw new Error("Brakuje widocznej historii wplat po Stage28A3.");
   }

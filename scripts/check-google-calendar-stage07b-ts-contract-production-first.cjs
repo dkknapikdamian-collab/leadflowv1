@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -38,9 +38,9 @@ for (const marker of [
   'CloseFlow pracuje production-first',
   'Vercel ENV ustawiamy przynajmniej dla `Production`',
   'Redirect URI ustawiamy na produkcyjny publiczny adres aplikacji',
-  'Jeżeli dostawca technicznie blokuje publikację produkcyjną do czasu weryfikacji',
+  'Je\u017Celi dostawca technicznie blokuje publikacj\u0119 produkcyjn\u0105 do czasu weryfikacji',
   'https://closeflowapp.vercel.app/api/google-calendar?route=callback',
-  'Nie używać `/api/system` jako redirect URI',
+  'Nie u\u017Cywa\u0107 `/api/system` jako redirect URI',
 ]) {
   assert(prod.includes(marker), 'production-first doc missing marker: ' + marker);
 }

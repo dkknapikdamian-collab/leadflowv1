@@ -99,7 +99,7 @@ for (const marker of [
 
 section('Documentation');
 for (const marker of [
-  'FAZA 4 - Etap 4.2 - Normalizacja tasków i eventów',
+  'FAZA 4 - Etap 4.2 - Normalizacja task\u00F3w i event\u00F3w',
   'normalizeTaskContract',
   'normalizeEventContract',
   'api/work-items.ts',

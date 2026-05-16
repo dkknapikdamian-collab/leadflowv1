@@ -10,9 +10,9 @@ const targets = [
 ];
 
 const forbiddenSnippets = [
-  'Następny krok',
+  'Nast\u0119pny krok',
   'Nastepny krok',
-  'Co teraz zrobić z tym leadem',
+  'Co teraz zrobi\u0107 z tym leadem',
   'Co teraz zrobic z tym leadem',
 ];
 

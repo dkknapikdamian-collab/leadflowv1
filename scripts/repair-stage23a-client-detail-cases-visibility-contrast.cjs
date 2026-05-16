@@ -23,13 +23,13 @@ function patchClientDetail() {
   let text = readUtf8NoBom(file);
   const before = text;
 
-  // Stage22A ukrył panel acquisition-only CSS-em. W zakładce Sprawy to ma być normalny panel listy spraw.
+  // Stage22A ukry\u0142 panel acquisition-only CSS-em. W zak\u0142adce Sprawy to ma by\u0107 normalny panel listy spraw.
   text = text.replace(/data-client-relations-acquisition-only="true"/g, 'data-client-cases-list-panel="true"');
 
   // Ujednolicenie copy dla panelu spraw.
   text = text
-    .replace(/Aktywne sprawy klienta i przejście do prowadzenia tematu\./g, "Lista spraw klienta z szybkim wejściem do prowadzenia.")
-    .replace(/Aktywne sprawy klienta\. Wejdź w sprawę, żeby prowadzić zadania, wydarzenia i notatki\./g, "Lista spraw klienta. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę.");
+    .replace(/Aktywne sprawy klienta i przej\u015Bcie do prowadzenia tematu\./g, "Lista spraw klienta z szybkim wej\u015Bciem do prowadzenia.")
+    .replace(/Aktywne sprawy klienta\. Wejd\u017A w spraw\u0119, \u017Ceby prowadzi\u0107 zadania, wydarzenia i notatki\./g, "Lista spraw klienta. Wejd\u017A w spraw\u0119, \u017Ceby edytowa\u0107 nazw\u0119, warto\u015B\u0107, zadania i dalsz\u0105 obs\u0142ug\u0119.");
 
   // Dodajemy lekkie hinty przy panelu, bez udawania destrukcyjnego delete z poziomu klienta.
   if (!text.includes("STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD")) {
@@ -39,8 +39,8 @@ function patchClientDetail() {
     );
   }
 
-  // Jeżeli w panelu istnieją przyciski przejścia do sprawy, nie zmieniamy logiki. Copy zostaje jednoznaczne.
-  text = text.replace(/>Przejdź do sprawy</g, ">Wejdź w sprawę<");
+  // Je\u017Celi w panelu istniej\u0105 przyciski przej\u015Bcia do sprawy, nie zmieniamy logiki. Copy zostaje jednoznaczne.
+  text = text.replace(/>Przejd\u017A do sprawy</g, ">Wejd\u017A w spraw\u0119<");
 
   if (text !== before) {
     writeUtf8NoBom(file, text);

@@ -37,22 +37,22 @@ function patchClientDetail() {
     );
   }
 
-  // Kompatybilność z historycznym guardem Stage23A, który wymaga dosłownego tekstu "Wejdź w sprawę".
+  // Kompatybilno\u015B\u0107 z historycznym guardem Stage23A, kt\u00F3ry wymaga dos\u0142ownego tekstu "Wejd\u017A w spraw\u0119".
   if (!text.includes("STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT")) {
     const anchor =
       text.includes("const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD")
         ? "const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';"
-        : "const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Przejdź do sprawy';";
+        : "const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Przejd\u017A do sprawy';";
     text = text.replace(
       anchor,
-      `${anchor}\nconst STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejdź w sprawę';`
+      `${anchor}\nconst STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejd\u017A w spraw\u0119';`
     );
   }
 
-  // Użytkowo też lepiej, żeby główna akcja w nowej karcie była jednoznaczna.
-  text = text.replace(/>\s*Wejdź\s*<\/Button>/g, ">\n                              Wejdź w sprawę\n                            </Button>");
+  // U\u017Cytkowo te\u017C lepiej, \u017Ceby g\u0142\u00F3wna akcja w nowej karcie by\u0142a jednoznaczna.
+  text = text.replace(/>\s*Wejd\u017A\s*<\/Button>/g, ">\n                              Wejd\u017A w spraw\u0119\n                            </Button>");
 
-  // Gdyby Stage25B nie zdążył dopisać helpera przez wcześniejszy fail, zatrzymaj się jasno.
+  // Gdyby Stage25B nie zd\u0105\u017Cy\u0142 dopisa\u0107 helpera przez wcze\u015Bniejszy fail, zatrzymaj si\u0119 jasno.
   if (!text.includes("function getCaseValueLabel(caseRecord: any)")) {
     throw new Error("Brakuje getCaseValueLabel po Stage25B. Uruchom ponownie Stage25B/25C na stanie po failed Stage25B.");
   }

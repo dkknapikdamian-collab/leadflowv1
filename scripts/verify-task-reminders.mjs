@@ -36,7 +36,7 @@ if (!rescheduleBlock.includes('reminderAt: nextReminderAt')) fail('reschedule fl
 const localAddTaskCta = /<Button\b(?=[\s\S]{0,900}?setIsNewTaskOpen\(true\))(?=[\s\S]{0,900}?(?:\+\s*)?Dodaj zadanie)[\s\S]{0,1200}?<\/Button>/m;
 if (localAddTaskCta.test(tasks)) fail('local Dodaj zadanie CTA still exists in /tasks page');
 
-if (!options.includes("{ value: 15, label: '15 minut wcześniej' }")) fail('REMINDER_OFFSET_OPTIONS misses 15 minutes option');
+if (!options.includes("{ value: 15, label: '15 minut wcze\u015Bniej' }")) fail('REMINDER_OFFSET_OPTIONS misses 15 minutes option');
 if (/Odpisac|Wyslij oferte|Wlasne wydarzenie|Co tydzien|Co miesiac|wczesniej|Sredni/.test(options)) fail('options.ts still contains known mojibake/no-diacritic labels');
 
 pass('Tasks page has reminder editor, preserved reminder fields, shifted reminderAt on reschedule, and no local add-task CTA.');

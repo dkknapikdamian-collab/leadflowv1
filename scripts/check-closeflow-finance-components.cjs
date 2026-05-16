@@ -78,15 +78,15 @@ includes(files.commissionDialog, commissionDialog, 'CommissionBase', 'Commission
 includes(files.commissionDialog, commissionDialog, 'CommissionStatus', 'Commission dialog uses CommissionStatus');
 
 section('Minimum UI surface');
-for (const needle of ['Rozliczenie', 'Wartość', 'Prowizja', 'Wpłacono', 'Pozostało', 'Status prowizji']) {
+for (const needle of ['Rozliczenie', 'Warto\u015B\u0107', 'Prowizja', 'Wp\u0142acono', 'Pozosta\u0142o', 'Status prowizji']) {
   includes(files.mini, mini, needle, `Mini summary contains ${needle}`);
 }
-includes(files.snapshot, snapshot, 'Dodaj wpłatę', 'Snapshot has Add payment action');
-includes(files.snapshot, snapshot, 'Edytuj prowizję', 'Snapshot has Edit commission action');
-includes(files.paymentDialog, paymentDialog, 'Dodaj wpłatę', 'Payment dialog title exists');
-includes(files.paymentDialog, paymentDialog, 'Zapisz wpłatę', 'Payment dialog submit exists');
-includes(files.commissionDialog, commissionDialog, 'Edytuj prowizję', 'Commission dialog title exists');
-includes(files.commissionDialog, commissionDialog, 'Zapisz prowizję', 'Commission dialog submit exists');
+includes(files.snapshot, snapshot, 'Dodaj wp\u0142at\u0119', 'Snapshot has Add payment action');
+includes(files.snapshot, snapshot, 'Edytuj prowizj\u0119', 'Snapshot has Edit commission action');
+includes(files.paymentDialog, paymentDialog, 'Dodaj wp\u0142at\u0119', 'Payment dialog title exists');
+includes(files.paymentDialog, paymentDialog, 'Zapisz wp\u0142at\u0119', 'Payment dialog submit exists');
+includes(files.commissionDialog, commissionDialog, 'Edytuj prowizj\u0119', 'Commission dialog title exists');
+includes(files.commissionDialog, commissionDialog, 'Zapisz prowizj\u0119', 'Commission dialog submit exists');
 
 section('No direct persistence from FIN-3 components');
 for (const [scope, text] of [
@@ -129,8 +129,8 @@ for (const needle of [
   'PaymentList',
   'PaymentFormDialog',
   'CommissionFormDialog',
-  'Nie podłącza jeszcze komponentów do `CaseDetail`',
-  'FIN-4 powinien być dopiero etapem integracyjnym',
+  'Nie pod\u0142\u0105cza jeszcze komponent\u00F3w do `CaseDetail`',
+  'FIN-4 powinien by\u0107 dopiero etapem integracyjnym',
 ]) {
   includes(files.doc, doc, needle, `Doc contains ${needle}`);
 }

@@ -21,7 +21,7 @@ test('stage31 helper keeps top tile visual and interaction contract', () => {
 
   assert.match(source, /TOP_TILE_CLASS_NAME/);
   assert.match(source, /pilne teraz/);
-  assert.match(source, /zaległe zadania/);
+  assert.match(source, /zaleg\u0142e zadania/);
   assert.match(source, /collapseOtherSections/);
   assert.match(source, /moveSectionToTop/);
 });

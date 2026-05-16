@@ -29,11 +29,11 @@ assert(inventory.localSurfaces && Array.isArray(inventory.localSurfaces.localMod
 assert(inventory.routes && Array.isArray(inventory.routes.active), 'JSON missing routes.active[]');
 assert(Array.isArray(inventory.activeScreenContracts), 'JSON missing activeScreenContracts[]');
 const blob = JSON.stringify(inventory) + '\n' + md;
-['zostaje', 'migrujemy', 'legacy', 'usunąć później'].forEach((word) => assert(blob.includes(word), 'Missing decision word: ' + word));
+['zostaje', 'migrujemy', 'legacy', 'usun\u0105\u0107 p\u00F3\u017Aniej'].forEach((word) => assert(blob.includes(word), 'Missing decision word: ' + word));
 [
   'Importy CSS z src/index.css',
   'Rodziny CSS do opanowania',
-  'Aktywne ekrany bez pełnego kontraktu',
+  'Aktywne ekrany bez pe\u0142nego kontraktu',
   'Lokalne kafelki',
   'Lokalne page headery',
   'Lokalne list rows',

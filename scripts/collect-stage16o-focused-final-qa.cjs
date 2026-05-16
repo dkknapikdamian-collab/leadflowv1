@@ -23,7 +23,7 @@ function safeName(label) { return label.replace(/[^a-z0-9_.-]+/gi, '_'); }
 function extractLines(text) {
   return String(text || '')
     .split(/\r?\n/)
-    .filter((line) => /FAIL|FAILED|✖|AssertionError|Error:|Expected|actual|expected|missing|forbidden|RollupError|SyntaxError|TS\d+/i.test(line))
+    .filter((line) => /FAIL|FAILED|\u2716|AssertionError|Error:|Expected|actual|expected|missing|forbidden|RollupError|SyntaxError|TS\d+/i.test(line))
     .slice(0, 40);
 }
 

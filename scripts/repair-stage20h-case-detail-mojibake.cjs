@@ -7,23 +7,23 @@ if (!fs.existsSync(target)) throw new Error(targetRel + ' missing');
 let text = fs.readFileSync(target, 'utf8');
 const before = text;
 const replacements = [
-  ['Ă„â€¦','Ä…'], ['Ă„â€ˇ','Ä‡'], ['Ă„â„˘','Ä™'], ['Ă„Ĺ‚','Ĺ‚'], ['Ă„â€ž','Ä„'], ['Ă„â€ ','Ä†'], ['Ă„Ä','Ä'],
-  ['Äąâ€š','Ĺ‚'], ['Äąâ€ž','Ĺ„'], ['Äąâ€ş','Ĺ›'], ['ÄąĹź','Ĺş'], ['ÄąÄ˝','ĹĽ'], ['ÄąÂ»','Ĺ»'], ['ÄąĹˇ','Ĺš'], ['ÄąÄ…','Ĺš'],
-  ['Ă…â€š','Ĺ‚'], ['Ă…â€ž','Ĺ„'], ['Ă…â€ş','Ĺ›'], ['Ă…Âş','Ĺş'], ['Ă…ÂĽ','ĹĽ'], ['Ă…Â»','Ĺ»'], ['Ă…Ĺˇ','Ĺš'],
-  ['Ä‚Ĺ‚','Ăł'], ['Ä‚â€ś','Ă“'],
-  ['\u0139\u0081','Ĺ'], ['\u00c5\u0081','Ĺ'],
-  ['Ă˘â‚¬Ĺľ','â€ž'], ['Ă˘â‚¬ĹĄ','â€ť'], ['Ă˘â‚¬Ĺ“','â€ś'], ['Ă˘â‚¬Ĺ›','â€ť'], ['Ă˘â‚¬â„˘','â€™'], ['Ă˘â‚¬â€ś','â€“'], ['Ă˘â‚¬â€ť','â€”'],
-  ['Ă‚Â·','Â·'], ['Ă‚ ', ' '], ['Ă‚', '']
+  ['\u00c4\u00E2\u20AC\u00A6','\u0105'], ['\u00c4\u00E2\u20AC\u02C7','\u0107'], ['\u00c4\u00E2\u201E\u02D8','\u0119'], ['\u0133','\u0142'], ['\u00c4\u00E2\u20AC\u017E','\u0104'], ['\u00c4\u00E2\u20AC\u00A0','\u0106'], ['\u00c4\u00c4\u0098','\u00c4\u0098'],
+  ['\u0139\u00E2\u20AC\u0161','\u0142'], ['\u0139\u00E2\u20AC\u017E','\u0144'], ['\u0139\u00E2\u20AC\u015F','\u015B'], ['\u017A','\u017A'], ['\u017C','\u017C'], ['\u017B','\u017B'], ['\u015A','\u015A'], ['\u0179','\u015A'],
+  ['\u00c5\u00E2\u20AC\u0161','\u0142'], ['\u00c5\u00E2\u20AC\u017E','\u0144'], ['\u00c5\u00E2\u20AC\u015F','\u015B'], ['\u017A','\u017A'], ['\u017C','\u017C'], ['\u017B','\u017B'], ['\u015A','\u015A'],
+  ['\u00F3','\u00F3'], ['\u0102\u00E2\u20AC\u015B','\u00D3'],
+  ['\u0139\u0081','\u0139\u0081'], ['\u00c5\u0081','\u0139\u0081'],
+  ['\u00E2\u00E2\u201A\u00AC\u017E','\u00E2\u20AC\u017E'], ['\u00E2\u00E2\u201A\u00AC\u0165','\u00E2\u20AC\u0165'], ['\u00E2\u00E2\u201A\u00AC\u0153','\u00E2\u20AC\u015B'], ['\u00E2\u00E2\u201A\u00AC\u015B','\u00E2\u20AC\u0165'], ['\u00E2\u00E2\u201A\u00AC\u00E2\u201E\u02D8','\u00E2\u20AC\u2122'], ['\u00E2\u00E2\u201A\u00AC\u00E2\u20AC\u015B','\u00E2\u20AC\u201C'], ['\u00E2\u00E2\u201A\u00AC\u00E2\u20AC\u0165','\u00E2\u20AC\u201D'],
+  ['\u00B7','\u00B7'], ['\u00c2 ', ' '], ['\u00c2', '']
 ];
 for (const [from, to] of replacements) {
   text = text.split(from).join(to);
 }
-// Drugi przebieg pomaga, gdy plik miaĹ‚ mieszane warianty po wczeĹ›niejszych czÄ™Ĺ›ciowych naprawach.
+// Drugi przebieg pomaga, gdy plik mia\u0142 mieszane warianty po wcze\u015Bniejszych cz\u0119\u015Bciowych naprawach.
 for (const [from, to] of replacements) {
   text = text.split(from).join(to);
 }
 fs.writeFileSync(target, text, 'utf8');
-const forbidden = ['Äą', 'Ă„', 'Ä‚', 'Ă…ÂĽ', 'ĂÂł', 'Ă˘â‚¬', 'Ă‚Â·'];
+const forbidden = ['\u0139', '\u00c4', '\u0102', '\u017C', '\u0102\u0083\u00B3', '\u00E2\u00E2\u201A\u00AC', '\u00B7'];
 const leftovers = [];
 const lines = text.split(/\r?\n/);
 for (const token of forbidden) {

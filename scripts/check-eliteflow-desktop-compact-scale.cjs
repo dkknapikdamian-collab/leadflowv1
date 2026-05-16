@@ -30,4 +30,3 @@ if (!indexCss.trim().endsWith(importLine)) fail('desktop compact scale CSS must 
 });
 
 console.log('[eliteflow-desktop-compact-scale] OK: desktop compact scale is imported last and is disabled on mobile/tablet');
-

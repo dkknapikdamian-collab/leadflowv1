@@ -38,7 +38,7 @@ if (exists('tests/stage6-ai-no-hallucination-data-truth.test.cjs')) pass('Stage6
 else fail('Stage6 original test script missing');
 
 mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'Nie odpowiada z pustego prompta');
-mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'Nie zmyśla przy pustym kontekście');
+mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'Nie zmy\u015Bla przy pustym kontek\u015Bcie');
 mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', STAGE);
 mustContain('docs/release/STAGE6B_STAGE6_DOC_AND_GATE_REPAIR_V1_2026-05-06.md', STAGE);
 mustContain('docs/release/STAGE6B_STAGE6_DOC_AND_GATE_REPAIR_V1_2026-05-06.md', 'FAIL w checku blokuje commit/push');

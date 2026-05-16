@@ -113,7 +113,7 @@ type CalendarView = 'week' | 'month';
 
 const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
 const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
-const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie TytuĹ‚ Typ Data Start Koniec PowiÄ…zanie Opis Status Zapisz wydarzenie Podaj tytuĹ‚ wydarzenia. Wybierz poprawnÄ… datÄ™. Godzina koĹ„ca nie moĹĽe byÄ‡ przed startem.';
+const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina końca nie może być przed startem.';
 
 const CLOSEFLOW_FB1_CALENDAR_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
 const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
@@ -324,7 +324,7 @@ function getCalendarEntryStatusLabel(entry: ScheduleEntry) {
   const status = getCalendarEntryStatus(entry);
   if (status === 'done' || status === 'completed') return 'Zrobione';
   if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
-  if (status === 'overdue') return 'ZalegĹ‚e';
+  if (status === 'overdue') return 'Zaległe';
   if (status === 'in_progress') return 'W toku';
   return 'Zaplanowane';
 }
@@ -373,7 +373,7 @@ function getCalendarEntryTimeLabel(entry: ScheduleEntry) {
 
 function getCalendarEntryRelationLabel(entry: ScheduleEntry, caseTitle?: string | null) {
   if (caseTitle || entry.raw?.caseId) {
-    return `Sprawa: ${caseTitle || entry.raw?.caseTitle || entry.raw?.title || 'PowiÄ…zana sprawa'}`;
+    return `Sprawa: ${caseTitle || entry.raw?.caseTitle || entry.raw?.title || 'Powiązana sprawa'}`;
   }
   if (entry.leadName || entry.raw?.leadName) {
     return `Lead: ${entry.leadName || entry.raw?.leadName}`;
@@ -409,13 +409,13 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
 // /cases/${entry.raw.caseId}
 // to={`/leads/${entry.raw.leadId}`}
 // to={`/cases/${entry.raw.caseId}`}
-// OtwĂłrz lead
-// OtwĂłrz sprawÄ™
+// Otwórz lead
+// Otwórz sprawę
   // to={"/leads/" + entry.raw.leadId}
   // to={"/cases/" + entry.raw.caseId}
-  // OtwĂłrz lead
-  // OtwĂłrz sprawÄ™
-  const __RELATION_LINK_CONTRACT_STAGE24 = "to={/leads/ + entry.raw.leadId} to={/cases/ + entry.raw.caseId} OtwĂłrz lead OtwĂłrz sprawÄ™";
+  // Otwórz lead
+  // Otwórz sprawę
+  const __RELATION_LINK_CONTRACT_STAGE24 = "to={/leads/ + entry.raw.leadId} to={/cases/ + entry.raw.caseId} Otwórz lead Otwórz sprawę";
   void __RELATION_LINK_CONTRACT_STAGE24;
   void actionButtonClass;
 
@@ -458,12 +458,12 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
         </p>
 
         <div className="cf-calendar-week-plan-entry-relation" data-cf-entry-relation="true">
-          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiÄ…zania</span>}
+          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiązania</span>}
           {entry.raw?.leadId ? (
-            <Link to={"/leads/" + entry.raw.leadId}>OtwĂłrz lead</Link>
+            <Link to={"/leads/" + entry.raw.leadId}>Otwórz lead</Link>
           ) : null}
           {entry.raw?.caseId ? (
-            <Link to={"/cases/" + entry.raw.caseId}>OtwĂłrz sprawÄ™</Link>
+            <Link to={"/cases/" + entry.raw.caseId}>Otwórz sprawę</Link>
           ) : null}
         </div>
       </div>
@@ -474,10 +474,10 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
         <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? "..." : "+1D"}</button>
         <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? "..." : "+1W"}</button>
         <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
-          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "PrzywrĂłÄ‡" : "Zrobione"}
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "Przywróć" : "Zrobione"}
         </button>
         <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" onClick={() => onDelete(entry)} disabled={pendingDelete}>
-          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "UsuĹ„"}
+          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
         </button>
       </div>
     </div>
@@ -506,7 +506,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
   const typeLabel = getCalendarEntryTypeLabel(entry);
   const title = String(entry.title || typeLabel || 'Wpis').trim();
   const relationLabel = getCalendarEntryRelationLabel(entry);
-  const relationFallback = relationLabel || 'Brak powiÄ…zania';
+  const relationFallback = relationLabel || 'Brak powiązania';
   const hasRelationLink = Boolean(entry.raw?.leadId || entry.raw?.caseId || entry.raw?.clientId);
 
   return (
@@ -528,15 +528,15 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
         <div className="cf-selected-day-v9-relation" data-cf-entry-relation="true">
           <span title={relationFallback}>{relationFallback}</span>
           {hasRelationLink ? (
-            <span className="cf-selected-day-v9-relation-links" aria-label="PowiÄ…zane rekordy">
+            <span className="cf-selected-day-v9-relation-links" aria-label="Powiązane rekordy">
               {entry.raw?.leadId ? (
-                <Link to={'/leads/' + entry.raw.leadId}>OtwĂłrz lead</Link>
+                <Link to={'/leads/' + entry.raw.leadId}>Otwórz lead</Link>
               ) : null}
               {entry.raw?.caseId ? (
-                <Link to={'/cases/' + entry.raw.caseId}>OtwĂłrz sprawÄ™</Link>
+                <Link to={'/cases/' + entry.raw.caseId}>Otwórz sprawę</Link>
               ) : null}
               {entry.raw?.clientId ? (
-                <Link to={'/clients/' + entry.raw.clientId}>OtwĂłrz klienta</Link>
+                <Link to={'/clients/' + entry.raw.clientId}>Otwórz klienta</Link>
               ) : null}
             </span>
           ) : null}
@@ -552,10 +552,10 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
         </div>
         <div className="cf-selected-day-v9-action-row cf-selected-day-v9-action-row-secondary">
           <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
-            <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'PrzywrĂłÄ‡' : 'Zrobione'}
+            <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
           </button>
           <button type="button" className={trashActionButtonClass("cf-selected-day-v9-action cf-selected-day-v9-action-danger")} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-            <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'UsuĹ„'}
+            <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
           </button>
         </div>
       </div>
@@ -568,10 +568,10 @@ function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onE
   const title = capitalizeCalendarLabel(format(selectedDate, 'eeee, d MMMM yyyy', { locale: pl }));
 
   return (
-    <section data-cf-calendar-selected-day-new-tile-v9="true" data-calendar-selected-day-panel="true" aria-label="Wybrany dzieĹ„">
+    <section data-cf-calendar-selected-day-new-tile-v9="true" data-calendar-selected-day-panel="true" aria-label="Wybrany dzień">
       <div className="cf-selected-day-v9-header">
         <div>
-          <p className="cf-selected-day-v9-kicker">Wybrany dzieĹ„</p>
+          <p className="cf-selected-day-v9-kicker">Wybrany dzień</p>
           <h2 className="cf-selected-day-v9-title">{title}</h2>
         </div>
         <span className="cf-selected-day-v9-count">{formatCalendarItemCount(safeEntries.length)}</span>
@@ -591,7 +591,7 @@ function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onE
             />
           ))
         ) : (
-          <p className="cf-selected-day-v9-empty">Brak zadaĹ„, wydarzeĹ„ i zaplanowanych akcji w tym dniu.</p>
+          <p className="cf-selected-day-v9-empty">Brak zadań, wydarzeń i zaplanowanych akcji w tym dniu.</p>
         )}
       </div>
     </section>
@@ -711,8 +711,8 @@ export default function Calendar() {
   }, [searchParams]);
 
   // GOOGLE_CALENDAR_STAGE08C_CALENDAR_QUICK_PARAM_OPEN
-  // Globalny pasek jest jedynym miejscem dodawania zadaĹ„ i wydarzeĹ„.
-  // Parametr quick musi dziaĹ‚aÄ‡ takĹĽe wtedy, gdy uĹĽytkownik jest juĹĽ na /calendar.
+  // Globalny pasek jest jedynym miejscem dodawania zadań i wydarzeń.
+  // Parametr quick musi działać także wtedy, gdy użytkownik jest już na /calendar.
   useEffect(() => {
     const quick = searchParams.get('quick');
     if (quick !== 'event' && quick !== 'task') return;
@@ -867,7 +867,7 @@ export default function Calendar() {
         const fullText = cleanText(candidate.innerText || candidate.textContent || '');
         if (!fullText) continue;
 
-        if (/^\+\s*\d+\s*wiÄ™cej$/i.test(fullText)) {
+        if (/^\+\s*\d+\s*więcej$/i.test(fullText)) {
           candidate.classList.add('cf-month-entry-more');
           continue;
         }
@@ -966,7 +966,7 @@ export default function Calendar() {
         const labelCount = Array.from(current.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
           .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || '')))).length;
 
-        if (raw && raw !== directLabel && raw.length <= 120 && labelCount === 1 && !/^\+\s*\d+\s*wiÄ™cej$/i.test(raw)) {
+        if (raw && raw !== directLabel && raw.length <= 120 && labelCount === 1 && !/^\+\s*\d+\s*więcej$/i.test(raw)) {
           return current;
         }
 
@@ -983,7 +983,7 @@ export default function Calendar() {
       const moreRows = Array.from(scope.querySelectorAll<HTMLElement>('a,button,div,span,p,strong'));
       for (const node of moreRows) {
         const raw = cleanText(node.innerText || node.textContent || '');
-        if (/^\+\s*\d+\s*wiÄ™cej$/i.test(raw)) {
+        if (/^\+\s*\d+\s*więcej$/i.test(raw)) {
           node.classList.add('cf-calendar-month-more-row');
           node.setAttribute('title', raw);
         }
@@ -1107,7 +1107,7 @@ export default function Calendar() {
         setClients(clientRows as any[]);
       } catch (error: any) {
         if (!cancelled) {
-          toast.error(`BĹ‚Ä…d odczytu kalendarza: ${error.message}`);
+          toast.error(`Błąd odczytu kalendarza: ${error.message}`);
         }
       } finally {
         if (!cancelled) {
@@ -1235,7 +1235,7 @@ export default function Calendar() {
   const handleAddTask = async (e: FormEvent) => {
     e.preventDefault();
     if (createTaskSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     createTaskSubmitLockRef.current = true;
@@ -1269,7 +1269,7 @@ export default function Calendar() {
       setIsNewTaskOpen(false);
       resetNewTask();
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ zadania. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
     } finally {
       createTaskSubmitLockRef.current = false;
       setTaskSubmitting(false);
@@ -1279,7 +1279,7 @@ export default function Calendar() {
   const handleAddEvent = async (e: FormEvent) => {
     e.preventDefault();
     if (createEventSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     createEventSubmitLockRef.current = true;
@@ -1321,7 +1321,7 @@ export default function Calendar() {
       setIsNewEventOpen(false);
       resetNewEvent();
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ wydarzenia. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       createEventSubmitLockRef.current = false;
       setEventSubmitting(false);
@@ -1405,7 +1405,7 @@ export default function Calendar() {
     [entriesByDayKey, selectedDate],
   );
   const caseTitleById = useMemo(
-    () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'PowiÄ…zana sprawa')])),
+    () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
     [cases],
   );
   const conflictCandidates = useMemo(
@@ -1471,7 +1471,7 @@ export default function Calendar() {
 
   const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
     if (!hasAccess) {
-      toast.error('Trial wygasĹ‚.');
+      toast.error('Trial wygasł.');
       return;
     }
 
@@ -1515,9 +1515,9 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-      toast.success(days === 1 ? 'PrzesuniÄ™to o 1 dzieĹ„' : 'PrzesuniÄ™to o 1 tydzieĹ„');
+      toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ wydarzenia. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -1525,7 +1525,7 @@ export default function Calendar() {
 
   const handleShiftEntryHours = async (entry: ScheduleEntry, hours: number) => {
     if (!hasAccess) {
-      toast.error('Trial wygasĹ‚.');
+      toast.error('Trial wygasł.');
       return;
     }
 
@@ -1571,9 +1571,9 @@ export default function Calendar() {
       }
 
       await refreshSupabaseBundle();
-      toast.success(hours === 1 ? 'PrzesuniÄ™to o 1 godzinÄ™' : `PrzesuniÄ™to o ${hours} godz.`);
+      toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : `Przesunięto o ${hours} godz.`);
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ wydarzenia. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -1581,7 +1581,7 @@ export default function Calendar() {
 
   const handleCompleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasĹ‚.');
+      toast.error('Trial wygasł.');
       return;
     }
 
@@ -1625,9 +1625,9 @@ export default function Calendar() {
 
       await refreshSupabaseBundle();
 
-      toast.success(wasCompleted ? 'Wpis przywrĂłcony' : 'Wpis oznaczony jako zrobiony');
+      toast.success(wasCompleted ? 'Wpis przywrócony' : 'Wpis oznaczony jako zrobiony');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ wydarzenia. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -1635,10 +1635,10 @@ export default function Calendar() {
 
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
     if (!hasAccess) {
-      toast.error('Trial wygasĹ‚.');
+      toast.error('Trial wygasł.');
       return;
     }
-    if (!window.confirm('UsunÄ…Ä‡ ten wpis z kalendarza?')) return;
+    if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;
 
     try {
       setActionPendingId(`${entry.id}:delete`);
@@ -1652,9 +1652,9 @@ export default function Calendar() {
       await logCalendarEntryActivity(entry, 'calendar_entry_deleted');
 
       await refreshSupabaseBundle();
-      toast.success('Wpis usuniÄ™ty');
+      toast.success('Wpis usunięty');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ wydarzenia. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
@@ -1664,7 +1664,7 @@ export default function Calendar() {
     e.preventDefault();
     if (!editEntry || !editDraft) return;
     if (editEntrySubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Trial wygasł.');
     editEntrySubmitLockRef.current = true;
     setEditSubmitting(true);
 
@@ -1737,7 +1737,7 @@ export default function Calendar() {
       setEditEntry(null);
       setEditDraft(null);
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ wydarzenia. SprĂłbuj ponownie.');
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {
       editEntrySubmitLockRef.current = false;
       setEditSubmitting(false);
@@ -1773,7 +1773,7 @@ export default function Calendar() {
                               <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                                 <div className="space-y-4">
                                   <div className="event-form-field">
-                                    <Label>TytuĹ‚</Label>
+                                    <Label>Tytuł</Label>
                                     <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1798,7 +1798,7 @@ export default function Calendar() {
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
                                     <p className="text-sm font-bold text-slate-900">Od do</p>
-                                    <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje siÄ™ automatycznie przy zmianie startu.</p>
+                                    <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="event-form-field">
@@ -1814,8 +1814,8 @@ export default function Calendar() {
 
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
-                                    <p className="text-sm font-bold text-slate-900">CyklicznoĹĽÄ‡ wydarzenia</p>
-                                    <p className="text-xs text-slate-500">MoĹĽesz zostawiÄ‡ brak albo ustawiÄ‡ powtarzanie, np. co miesiÄ…c.</p>
+                                    <p className="text-sm font-bold text-slate-900">Cyklicznożć wydarzenia</p>
+                                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="space-y-2 md:col-span-2">
@@ -1840,7 +1840,7 @@ export default function Calendar() {
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
                                     <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                                    <p className="text-xs text-slate-500">Na koĹ„cu ustaw sposĂłb przypominania i jego cyklicznoĹĽÄ‡.</p>
+                                    <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cyklicznożć.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="event-form-field">
@@ -1852,7 +1852,7 @@ export default function Calendar() {
                                       </select>
                                     </div>
                                     <div className="event-form-field">
-                                      <Label>Kiedy przypomnieÄ‡</Label>
+                                      <Label>Kiedy przypomnieć</Label>
                                       <select className="event-form-select" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
                                         {REMINDER_OFFSET_OPTIONS.map((option) => (
                                           <option key={option.value} value={option.value}>{option.label}</option>
@@ -1863,7 +1863,7 @@ export default function Calendar() {
                                   {newEvent.reminder.mode === 'recurring' && (
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                       <div className="space-y-2 md:col-span-2">
-                                        <Label>CyklicznoĹĽÄ‡ przypomnienia</Label>
+                                        <Label>Cyklicznożć przypomnienia</Label>
                                         <select className="event-form-select" value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
                                           {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                                             <option key={option.value} value={option.value}>{option.label}</option>
@@ -1893,23 +1893,23 @@ export default function Calendar() {
           <div className="right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900" data-cf-calendar-data-loading-skeleton="true" aria-live="polite">
             <Loader2 className="h-4 w-4 animate-spin" />
             <div>
-              <p className="text-sm font-extrabold">OdĹ›wieĹĽam dane kalendarza</p>
-              <p className="text-xs font-semibold text-blue-700">Shell i nawigacja zostajÄ… dostÄ™pne, Ĺ‚aduje siÄ™ tylko warstwa danych.</p>
+              <p className="text-sm font-extrabold">Odświeżam dane kalendarza</p>
+              <p className="text-xs font-semibold text-blue-700">Shell i nawigacja zostają dostępne, ładuje się tylko warstwa danych.</p>
             </div>
           </div>
         ) : null}
         <div className="calendar-toolbar">
           <div className="calendar-seg" role="tablist" aria-label="Widok kalendarza">
-            <button type="button" className={`seg-btn ${calendarView === 'week' ? 'active' : ''}`} onClick={() => setCalendarView('week')}>TydzieĹ„</button>
-            <button type="button" className={`seg-btn ${calendarView === 'month' ? 'active' : ''}`} onClick={() => setCalendarView('month')}>MiesiÄ…c</button>
+            <button type="button" className={`seg-btn ${calendarView === 'week' ? 'active' : ''}`} onClick={() => setCalendarView('week')}>Tydzień</button>
+            <button type="button" className={`seg-btn ${calendarView === 'month' ? 'active' : ''}`} onClick={() => setCalendarView('month')}>Miesiąc</button>
           </div>
 
           <div className="calendar-toolbar-right">
             {calendarView === 'month' ? (
-              <div className="calendar-seg" role="tablist" aria-label="WielkoĹĽÄ‡ kafelkĂłw">
-                <button type="button" className={`seg-btn ${calendarScale === 'compact' ? 'active' : ''}`} onClick={() => setCalendarScale('compact')}>MaĹ‚e kafelki</button>
+              <div className="calendar-seg" role="tablist" aria-label="Wielkożć kafelków">
+                <button type="button" className={`seg-btn ${calendarScale === 'compact' ? 'active' : ''}`} onClick={() => setCalendarScale('compact')}>Małe kafelki</button>
                 <button type="button" className={`seg-btn ${calendarScale === 'default' ? 'active' : ''}`} onClick={() => setCalendarScale('default')}>Standard</button>
-                <button type="button" className={`seg-btn ${calendarScale === 'large' ? 'active' : ''}`} onClick={() => setCalendarScale('large')}>DuĹĽe kafelki</button>
+                <button type="button" className={`seg-btn ${calendarScale === 'large' ? 'active' : ''}`} onClick={() => setCalendarScale('large')}>Duże kafelki</button>
               </div>
             ) : null}
 
@@ -1926,7 +1926,7 @@ export default function Calendar() {
                   }
                   setCurrentMonth(subMonths(currentMonth, 1));
                 }}
-                aria-label={calendarView === 'week' ? 'Poprzedni tydzieĹ„' : 'Poprzedni miesiÄ…c'}
+                aria-label={calendarView === 'week' ? 'Poprzedni tydzień' : 'Poprzedni miesiąc'}
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
@@ -1945,7 +1945,7 @@ export default function Calendar() {
                   }
                   setCurrentMonth(addMonths(currentMonth, 1));
                 }}
-                aria-label={calendarView === 'week' ? 'NastÄ™pny tydzieĹ„' : 'NastÄ™pny miesiÄ…c'}
+                aria-label={calendarView === 'week' ? 'Następny tydzień' : 'Następny miesiąc'}
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -1958,7 +1958,7 @@ export default function Calendar() {
             <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
             <form onSubmit={handleAddTask} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
               <div className="event-form-field">
-                <Label>TytuĹ‚ zadania</Label>
+                <Label>Tytuł zadania</Label>
                 <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2002,7 +2002,7 @@ export default function Calendar() {
         {calendarView === 'month' ? (
           <>
             <div className="grid grid-cols-7 mb-2">
-              {['Pon', 'Wt', 'Ĺšro', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+              {['Pon', 'Wt', 'Śro', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
                 <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
               ))}
             </div>
@@ -2038,7 +2038,8 @@ export default function Calendar() {
                     <div className="flex items-center justify-start mb-2">
                       <span className="calendar-day-number">
                         {format(day, 'd')}
-                      </span>
+                      </span>
+
                     </div>
                     <div className="space-y-1">
                       {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
@@ -2059,7 +2060,7 @@ export default function Calendar() {
                             <span className="calendar-pill-type">{entry.kind === 'event' ? 'Wyd' : entry.kind === 'task' ? 'Zad' : 'Lead'}</span>
                             <span className={isCompletedEntry ? 'is-done-text' : ''}>
                               {format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}
-                              {entry.raw?.caseId ? ' Â· Sprawa' : entry.raw?.leadId ? ' Â· Lead' : ''}
+                              {entry.raw?.caseId ? ' · Sprawa' : entry.raw?.leadId ? ' · Lead' : ''}
                             </span>
                           </button>
                         );
@@ -2070,7 +2071,7 @@ export default function Calendar() {
                           className="calendar-more cf-calendar-month-more"
                           data-calendar-month-more-button="true"
                           onClick={(event) => handleShowMoreMonthDay(event, day)}
-                        >+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} wiÄ™cej</button>
+                        >+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</button>
                       )}
                     </div>
                   </div>
@@ -2095,7 +2096,7 @@ export default function Calendar() {
           <div className="calendar-week-layout">
             <aside className="right-card calendar-week-filter">
               <div className="panel-head">
-                <h3>NajbliĹĽsze 7 dni</h3>
+                <h3>Najbliższe 7 dni</h3>
                 <p>Najszybszy filtr.</p>
               </div>
               <div className="calendar-week-visible-days-v3 mt-3 space-y-2" data-cf-calendar-week-rail-stage93="clean">
@@ -2142,7 +2143,7 @@ export default function Calendar() {
 
             <section className="right-card calendar-week-plan">
               <div className="panel-head">
-                <h3>Plan najbliĹĽszych dni</h3>
+                <h3>Plan najbliższych dni</h3>
               </div>
 
               <div className="calendar-week-plan-list">
@@ -2157,19 +2158,19 @@ export default function Calendar() {
                           <div className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
                           <div className="calendar-week-day-title">{format(day, 'd MMM', { locale: pl })}</div>
                         </div>
-                        <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisĂłw'}</div>
+                        <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisów'}</div>
                       </header>
 
                       <div className="calendar-week-day-entries">
                         {dayEntries.length === 0 ? (
-                          <div className="calendar-week-empty">Brak wpisĂłw.</div>
+                          <div className="calendar-week-empty">Brak wpisów.</div>
                         ) : dayEntries.map((entry) => (
                           <div key={`week:${day.toISOString()}:${entry.id}`} style={{ display: 'contents' }}>
                             <ScheduleEntryCard
                               entry={entry}
                               actionButtonClass={actionButtonClass}
                               actionPendingId={actionPendingId}
-                              caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'PowiÄ…zana sprawa' : null}
+                              caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
                               onEdit={handleOpenEdit}
                               onShift={handleShiftEntry}
                               onShiftHours={handleShiftEntryHours}
@@ -2201,7 +2202,7 @@ export default function Calendar() {
           {editEntry && editDraft ? (
             <form onSubmit={handleSaveEdit} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode={editEntry.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
               <div className="event-form-field">
-                <Label>TytuĹ‚</Label>
+                <Label>Tytuł</Label>
                 <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
               </div>
 
@@ -2272,7 +2273,7 @@ export default function Calendar() {
               {editEntry.kind === 'event' ? (
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">CyklicznoĹĽÄ‡ wydarzenia</p>
+                    <p className="text-sm font-bold text-slate-900">Cyklicznożć wydarzenia</p>
                     <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -2312,7 +2313,7 @@ export default function Calendar() {
                       </select>
                     </div>
                     <div className="event-form-field">
-                      <Label>Kiedy przypomnieÄ‡</Label>
+                      <Label>Kiedy przypomnieć</Label>
                       <select className="event-form-select" value={editDraft.reminder.minutesBefore} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, minutesBefore: Number(e.target.value) } })} disabled={editDraft.reminder.mode === 'none'}>
                         {REMINDER_OFFSET_OPTIONS.map((option) => (
                           <option key={option.value} value={option.value}>{option.label}</option>
@@ -2323,7 +2324,7 @@ export default function Calendar() {
                   {editDraft.reminder.mode === 'recurring' ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>CyklicznoĹĽÄ‡ przypomnienia</Label>
+                        <Label>Cyklicznożć przypomnienia</Label>
                         <select className="event-form-select" value={editDraft.reminder.recurrenceMode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceMode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>
@@ -2369,6 +2370,3 @@ export default function Calendar() {
 }
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
-
-
-

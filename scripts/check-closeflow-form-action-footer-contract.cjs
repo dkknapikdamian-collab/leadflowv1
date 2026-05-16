@@ -23,7 +23,7 @@ function read(relPath) {
 }
 
 function hasMojibakeOrControls(text) {
-  return /BĹ|Ä…|Ä‡|Ä™|Ĺ‚|Ĺ„|Ĺ›|Ĺş|Ĺź|ĹĽ|Ã|Â|\uFFFD/.test(text)
+  return /B\u0139|\u0105|\u0107|\u0119|\u0142|\u0144|\u015B|\u017A|\u015F|\u017C|\u00c3|\u00c2|\uFFFD/.test(text)
     || /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/.test(text);
 }
 
@@ -60,7 +60,7 @@ const entityActions = read('src/components/entity-actions.tsx');
   'modalFooterRightClass',
   'mobileActionStackClass',
 ].forEach((needle) => assert(entityActions.includes(needle), `Brakuje helpera/kontraktu ${needle} w entity-actions.tsx`));
-assert(/actionButtonClass\(tone/.test(entityActions) && /danger/.test(entityActions), 'Destructive tone nie przechodzi przez wspólny actionButtonClass');
+assert(/actionButtonClass\(tone/.test(entityActions) && /danger/.test(entityActions), 'Destructive tone nie przechodzi przez wsp\u00F3lny actionButtonClass');
 assert(!hasMojibakeOrControls(entityActions), 'entity-actions.tsx zawiera mojibake albo control chars');
 
 const targetFiles = [
@@ -73,7 +73,7 @@ const targetFiles = [
   app.includes("import('./pages/TasksStable')") ? 'src/pages/TasksStable.tsx' : 'src/pages/Tasks.tsx',
 ].filter((relPath, index, arr) => exists(relPath) && arr.indexOf(relPath) === index);
 
-assert(targetFiles.length >= 7, `Za mało plików objętych kontraktem: ${targetFiles.join(', ')}`);
+assert(targetFiles.length >= 7, `Za ma\u0142o plik\u00F3w obj\u0119tych kontraktem: ${targetFiles.join(', ')}`);
 
 const forbiddenLocalClasses = /form-footer-fix|modal-actions-v2|mobile-button-repair|form-actions-fix|modal-footer-fix|footer-action-repair|button-stack-repair/i;
 const footerUsage = /modalFooterClass\(|formActionsClass\(|cf-modal-footer|cf-form-actions/;
@@ -82,18 +82,18 @@ const sharedDangerUsage = /actionButtonClass\(\s*['"]danger|actionIconClass\(\s*
 for (const relPath of targetFiles) {
   const text = read(relPath);
   assert(!hasMojibakeOrControls(text), `${relPath} zawiera mojibake albo control chars`);
-  assert(!forbiddenLocalClasses.test(text), `${relPath} zawiera lokalną klasę fix/v2/repair dla akcji`);
+  assert(!forbiddenLocalClasses.test(text), `${relPath} zawiera lokaln\u0105 klas\u0119 fix/v2/repair dla akcji`);
 
-  const hasFooterSurface = /DialogFooter|type=['"]submit|Zapisz|Zapisz zmiany|Anuluj|Zamknij|Odśwież|Odswiez/.test(text);
+  const hasFooterSurface = /DialogFooter|type=['"]submit|Zapisz|Zapisz zmiany|Anuluj|Zamknij|Od\u015Bwie\u017C|Odswiez/.test(text);
   if (hasFooterSurface) {
-    assert(footerUsage.test(text), `${relPath} ma stopkę/akcje formularza, ale nie używa wspólnego cf-form/modal helpera`);
+    assert(footerUsage.test(text), `${relPath} ma stopk\u0119/akcje formularza, ale nie u\u017Cywa wsp\u00F3lnego cf-form/modal helpera`);
   }
 
-  const hasDangerSurface = /Trash2|Usuń|Usun|delete|archive|Przenieść|Przeniesc|Kosz/i.test(text);
+  const hasDangerSurface = /Trash2|Usu\u0144|Usun|delete|archive|Przenie\u015B\u0107|Przeniesc|Kosz/i.test(text);
   if (hasDangerSurface && /DialogFooter|cf-form-actions|cf-modal-footer|modalFooterClass|formActionsClass/.test(text)) {
     assert(
       sharedDangerUsage.test(text) || /CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT|STAGE_PANEL_DELETE|Trash/.test(text),
-      `${relPath} ma delete/danger surface bez śladu wspólnego kontraktu danger`,
+      `${relPath} ma delete/danger surface bez \u015Bladu wsp\u00F3lnego kontraktu danger`,
     );
   }
 }

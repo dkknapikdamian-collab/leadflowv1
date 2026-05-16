@@ -41,9 +41,9 @@ const requiredUi = [
   '+1W',
   '+1H',
   'Zrobione',
-  'Usuń',
-  'Otwórz lead',
-  'Otwórz sprawę',
+  'Usu\u0144',
+  'Otw\u00F3rz lead',
+  'Otw\u00F3rz spraw\u0119',
   'data-cf-calendar-selected-day-new-tile-v9'
 ];
 
@@ -51,7 +51,7 @@ for (const text of requiredUi) {
   assert.ok(source.includes(text), `Missing selected-day UI/contract text: ${text}`);
 }
 
-assert.ok(source.includes("isCompletedEntry ? 'Przywróć' : 'Zrobione'"), 'Done/restore label contract must remain stable');
+assert.ok(source.includes("isCompletedEntry ? 'Przywr\u00F3\u0107' : 'Zrobione'"), 'Done/restore label contract must remain stable');
 
 // Check JSX-bound handler references, not prop names such as onEdit inside component props.
 const boundHandlerNames = Array.from(source.matchAll(/\bon[A-Z][A-Za-z0-9]*=\{([A-Za-z_$][A-Za-z0-9_$]*)\}/g)).map((match) => match[1]);

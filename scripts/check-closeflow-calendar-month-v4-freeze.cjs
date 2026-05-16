@@ -131,7 +131,7 @@ const outDir = path.join(repo, 'docs', 'ui');
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'CLOSEFLOW_CALENDAR_MONTH_V4_VISUAL_FREEZE_GUARD_REPAIR1_2026-05-12.generated.json'), JSON.stringify(report, null, 2), 'utf8');
 fs.writeFileSync(path.join(outDir, 'CLOSEFLOW_CALENDAR_MONTH_V4_VISUAL_FREEZE_GUARD_REPAIR1_2026-05-12.generated.md'), [
-  '# CloseFlow — Calendar Month V4 Visual Freeze Guard Repair1',
+  '# CloseFlow \u2014 Calendar Month V4 Visual Freeze Guard Repair1',
   '',
   `Verdict: **${report.verdict.toUpperCase()}**`,
   '',

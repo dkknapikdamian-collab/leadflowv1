@@ -28,9 +28,9 @@ test('Stage92 selected-day row uses full labels, readable title, relation and co
   assert.match(row, /data-cf-entry-type-label="true"/, 'Visible entry type must be explicitly marked.');
   assert.match(row, /data-cf-entry-title="true"/, 'Entry title must have data-cf-entry-title.');
   assert.match(row, /data-cf-entry-relation="true"/, 'Entry relation must be rendered.');
-  assert.match(row, /Brak powiązania/, 'Missing relation fallback must be visible.');
+  assert.match(row, /Brak powi\u0105zania/, 'Missing relation fallback must be visible.');
 
-  for (const label of ['Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Przywróć', 'Usuń']) {
+  for (const label of ['Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Przywr\u00F3\u0107', 'Usu\u0144']) {
     assert.ok(row.includes(label), 'Missing selected-day action label: ' + label);
   }
 

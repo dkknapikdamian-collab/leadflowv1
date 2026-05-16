@@ -1211,7 +1211,7 @@ function TodayAiDraftsTopTile({ drafts }: { drafts: AiLeadDraft[] }) {
       ) : (
         <span className="mt-2 block text-[11px] text-violet-700">Brak szkic├│w do decyzji.</span>
       )}
-    
+
               <span className="text-xs font-semibold">Przejrzyj</span></Link>
   );
 }
@@ -3034,5 +3034,3 @@ data-today-tile-header="true"
 aria-expanded={!collapsed}
 expandTodayShortcutSection(section)
 */
-
-

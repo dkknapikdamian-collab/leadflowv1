@@ -26,18 +26,18 @@ const requiredContent = [
   'TASK_FORM_VISUAL_REBUILD_STAGE21',
   'Nowe zadanie',
   'Edytuj zadanie',
-  'Tytuł',
+  'Tytu\u0142',
   'Typ',
   'Termin',
   'Priorytet',
-  'Powiązanie',
+  'Powi\u0105zanie',
   'Zapisz zadanie',
   '+1H',
   '+1D',
   '+1W',
   'Zrobione',
-  'Podaj tytuł zadania.',
-  'Nie udało się zapisać zadania. Spróbuj ponownie.',
+  'Podaj tytu\u0142 zadania.',
+  'Nie uda\u0142o si\u0119 zapisa\u0107 zadania. Spr\u00F3buj ponownie.',
 ];
 
 for (const needle of requiredContent) {

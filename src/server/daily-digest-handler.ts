@@ -177,7 +177,7 @@ async function loadWorkspaceBundle(workspaceId: string) {
   const taskRows = Array.isArray(workItemsForTasks.data) ? workItemsForTasks.data : [];
   const eventRows = Array.isArray(workItemsForEvents.data) ? workItemsForEvents.data : [];
 
-  
+
   let draftRows: Record<string, unknown>[] = [];
 
   // AI_DRAFTS_DAILY_DIGEST_STAGE05_API: brak tabeli ai_drafts nie blokuje maila z planem dnia.
@@ -583,4 +583,3 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'DAILY_DIGEST_FAILED' });
   }
 }
-

@@ -24,15 +24,15 @@ function assertNotIncludes(source, needle, label) {
 
 test('Today assistant uses compact save/search guidance and clears input after answer', () => {
   const source = read('src/components/TodayAiAssistant.tsx');
-  const oldLongSaveHint = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI';
-  const oldLongDraftHint = 'Leady, kontakty i niejasne notatki nadal trafiają do Szkiców AI';
+  const oldLongSaveHint = 'Je\u017Celi chcesz, \u017Ceby notatka albo kontakt trafi\u0142y do Szkic\u00F3w AI';
+  const oldLongDraftHint = 'Leady, kontakty i niejasne notatki nadal trafiaj\u0105 do Szkic\u00F3w AI';
 
   assertIncludes(source, 'STAGE35_AI_ASSISTANT_COMPACT_UI', 'compact assistant marker');
   assertIncludes(source, 'data-stage35-ai-assistant-compact-ui', 'compact assistant wrapper');
   assertIncludes(source, 'Dodaj leada: Pan Marek, 516 439 989, Facebook', 'clear lead example');
-  assertIncludes(source, 'Co mam dziś do zrobienia?', 'today plan example');
-  assertIncludes(source, 'Zapisz zadanie jutro o 10 oddzwonić do klienta', 'task example');
-  assertIncludes(source, 'Max {AI_COMMAND_MAX_LENGTH} znaków', 'short input limit copy');
+  assertIncludes(source, 'Co mam dzi\u015B do zrobienia?', 'today plan example');
+  assertIncludes(source, 'Zapisz zadanie jutro o 10 oddzwoni\u0107 do klienta', 'task example');
+  assertIncludes(source, 'Max {AI_COMMAND_MAX_LENGTH} znak\u00F3w', 'short input limit copy');
   assertIncludes(source, 'Zapytaj asystenta', 'ask button');
   assertIncludes(source, 'Dyktuj', 'dictation button');
   assert.match(source, /setRawText\(['"]['"]\)/, 'assistant clears input after answer');

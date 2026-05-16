@@ -679,7 +679,7 @@ export default function SupportCenter() {
               )}
             </section>
 
-            
+
           </section>
         </div>
       </main>

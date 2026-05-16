@@ -1187,7 +1187,7 @@ await updateTaskInSupabase({
                   ) : null}
                 </div>
 
-                
+
           {/* TASK_REMINDER_OPTIONS_STAGE45A_NEW */}
           <TaskReminderEditor
             reminder={newTask.reminder}
@@ -1233,7 +1233,7 @@ await updateTaskInSupabase({
                       onQueryChange={(value) => setEditTask({ ...editTask, relationQuery: value, leadId: '', caseId: '' })}
                       onSelect={handleSelectEditTaskRelation}
                     />
-                    
+
                   <div className="space-y-2">
                     <Label>Status zadania</Label>
                     <select
@@ -1317,7 +1317,7 @@ await updateTaskInSupabase({
                     ) : null}
                   </div>
 
-                  
+
                 <TaskReminderEditor
                   reminder={editTask?.reminder}
                   onChange={(reminder) => setEditTask((prev: any) => prev ? { ...prev, reminder } : prev)}
@@ -1458,4 +1458,3 @@ await updateTaskInSupabase({
 /* PHASE0_STAT_CARD_PAGE_GUARD StatShortcutCard onClick= activateScope(stat.id) */
 
 /* GLOBAL_QUICK_ACTIONS_STAGE08D_TASK_MODAL_EVENT_BUS */
-

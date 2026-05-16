@@ -24,13 +24,13 @@ const requiredPage = [
   'Nazwa / kontakt',
   'Telefon',
   'E-mail',
-  'Źródło',
+  '\u0179r\u00F3d\u0142o',
   'Temat / potrzeba',
-  'Wartość',
+  'Warto\u015B\u0107',
   'Notatka',
   'Zapisz leada',
   'Anuluj',
-  'Podaj nazwę albo kontakt.',
+  'Podaj nazw\u0119 albo kontakt.',
   'Podaj telefon, e-mail albo opis potrzeby.',
 ];
 

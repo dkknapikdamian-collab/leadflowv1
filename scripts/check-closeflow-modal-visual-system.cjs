@@ -5,7 +5,7 @@ const path = require('path');
 const root = process.cwd();
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
 function exists(rel) { return fs.existsSync(path.join(root, rel)); }
-function fail(msg) { console.error('✖ ' + msg); process.exit(1); }
+function fail(msg) { console.error('\u2716 ' + msg); process.exit(1); }
 function assertIncludes(rel, needle, label = needle) {
   if (!exists(rel)) fail('missing file: ' + rel);
   const text = read(rel);
@@ -55,5 +55,5 @@ for (const rel of mappedFiles) {
 
 assertIncludes('docs/feedback/CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1_2026-05-11.md', 'Nowy lead', 'modal mapping evidence');
 assertIncludes('docs/feedback/CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1_2026-05-11.md', 'Szybki szkic', 'quick draft mapping evidence');
-assertIncludes('docs/feedback/CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1_2026-05-11.md', 'Nie przywracać ciemnego tła w inputach', 'dark input regression note');
-console.log('✔ CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1 guard passed');
+assertIncludes('docs/feedback/CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1_2026-05-11.md', 'Nie przywraca\u0107 ciemnego t\u0142a w inputach', 'dark input regression note');
+console.log('\u2714 CLOSEFLOW_MODAL_VISUAL_SYSTEM_V1 guard passed');

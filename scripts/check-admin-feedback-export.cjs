@@ -17,7 +17,7 @@ expect(exportFile.includes('downloadAdminFeedbackFile'), 'Browser download helpe
 expect(exportFile.includes('buildAdminFeedbackMarkdown'), 'Markdown export builder missing');
 expect(exportFile.includes('Blokery P0'), 'Markdown must include P0 section');
 expect(exportFile.includes('Button Matrix'), 'Markdown must include Button Matrix section');
-expect(exportFile.includes('Zmiany tekstów do wdrożenia'), 'Markdown must include Copy Changes section');
+expect(exportFile.includes('Zmiany tekst\u00F3w do wdro\u017Cenia'), 'Markdown must include Copy Changes section');
 expect(storage.includes('readFullAdminFeedbackExport'), 'Storage must expose full export reader');
 expect(toolbar.includes('exportAdminFeedbackJson') && toolbar.includes('exportAdminFeedbackMarkdown'), 'Toolbar must call export actions');
 expect(!exportFile.includes('fetch('), 'Export must not send data to backend');

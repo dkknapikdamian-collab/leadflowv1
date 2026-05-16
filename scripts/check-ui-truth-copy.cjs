@@ -27,7 +27,7 @@ function validateUiTruthCopy(root = process.cwd()) {
   const adminAi = read(root, 'src/pages/AdminAiSettings.tsx', failures);
   const pkgText = read(root, 'package.json', failures);
 
-  for (const badge of ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu']) {
+  for (const badge of ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedost\u0119pne w Twoim planie', 'W przygotowaniu']) {
     expect(failures, uiTruth.includes(badge), `src/lib/ui-truth.ts missing feature truth badge: ${badge}`);
     expect(failures, billing.includes(badge) || adminAi.includes(badge) || globalQuickActions.includes(badge), `runtime UI missing feature truth badge: ${badge}`);
   }
@@ -36,11 +36,11 @@ function validateUiTruthCopy(root = process.cwd()) {
   expect(failures, billing.includes('Stripe wymaga konfiguracji') || billing.includes('Wymaga konfiguracji'), 'Billing must not present Stripe checkout as always ready');
   expect(failures, billing.includes('webhook') || billing.includes('Webhook'), 'Billing must explain paid access is confirmed by webhook');
 
-  expect(failures, !support.includes('Wyślij zgłoszenie'), 'SupportCenter should not say Wyślij zgłoszenie when it stores an in-app support request');
-  expect(failures, !support.includes('Wyślij odpowiedź'), 'SupportCenter should not say Wyślij odpowiedź when it stores an in-app reply');
-  expect(failures, support.includes('Zapisz zgłoszenie') || support.includes('Zapisz odpowiedź'), 'SupportCenter missing save-based support copy');
+  expect(failures, !support.includes('Wy\u015Blij zg\u0142oszenie'), 'SupportCenter should not say Wy\u015Blij zg\u0142oszenie when it stores an in-app support request');
+  expect(failures, !support.includes('Wy\u015Blij odpowied\u017A'), 'SupportCenter should not say Wy\u015Blij odpowied\u017A when it stores an in-app reply');
+  expect(failures, support.includes('Zapisz zg\u0142oszenie') || support.includes('Zapisz odpowied\u017A'), 'SupportCenter missing save-based support copy');
 
-  expect(failures, globalQuickActions.includes('Niedostępne w Twoim planie') || globalQuickActions.includes('Wymaga konfiguracji') || globalQuickActions.includes('Beta'), 'GlobalQuickActions should carry truth-status copy for gated AI actions');
+  expect(failures, globalQuickActions.includes('Niedost\u0119pne w Twoim planie') || globalQuickActions.includes('Wymaga konfiguracji') || globalQuickActions.includes('Beta'), 'GlobalQuickActions should carry truth-status copy for gated AI actions');
 
   try {
     const pkg = JSON.parse(pkgText);

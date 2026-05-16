@@ -27,7 +27,7 @@ mustContain('src/lib/ai-drafts.ts', 'createAiDraftInSupabase');
 mustContain('src/lib/ai-drafts.ts', 'LEGACY_STAGE3_STORAGE_KEY');
 mustContain('src/components/TodayAiAssistant.tsx', 'saveAiLeadDraftAsync');
 mustContain('src/components/TodayAiAssistant.tsx', 'assistantDraftToAiLeadDraftInput');
-mustContain('src/components/TodayAiAssistant.tsx', 'Finalny rekord nie został utworzony');
+mustContain('src/components/TodayAiAssistant.tsx', 'Finalny rekord nie zosta\u0142 utworzony');
 mustNotContain('src/components/TodayAiAssistant.tsx', 'saveLocalAiDraft(data.draft)');
 mustContain('src/server/ai-assistant.ts', 'status: "pending_review"');
 mustContain('api/assistant/query.ts', 'buildAssistantContextFromRequest');

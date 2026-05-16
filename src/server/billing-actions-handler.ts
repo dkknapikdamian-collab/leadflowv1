@@ -86,7 +86,7 @@ export default async function handler(req: any, res: any) {
         ok: true,
         action: 'cancel',
         cancelAtPeriodEnd: true,
-        note: 'Plan nie odnawia siÄ™ po bieĹĽÄ…cym okresie. Aktywacja/dezaktywacja dostÄ™pu jest liczona przez webhook + next_billing_at.',
+        note: 'Plan nie odnawia się po bieżącym okresie. Aktywacja/dezaktywacja dostępu jest liczona przez webhook + next_billing_at.',
       });
       return;
     }

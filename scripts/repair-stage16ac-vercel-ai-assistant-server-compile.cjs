@@ -33,9 +33,9 @@ const header = `/* STAGE16AC_VERCEL_AI_ASSISTANT_SERVER_COMPILE_SCRIPT_FIX
  * STAGE16O_SERVER_ASSISTANT_STATIC_CONTRACTS
  * Order contract: if (detectCaptureIntent(query)) before if (wantsFunnelValue(query)) before if (wantsLookup(query)) before return buildGlobalAppSearchAnswer(context, rawText)
  * Global app search is a final in-app fallback after value and lookup routing.
- * saveCommandPattern leadCommandPattern słowo „zapisz” tworzy szkic. Bez „zapisz” asystent tylko szuka po danych aplikacji.
+ * saveCommandPattern leadCommandPattern s\u0142owo \u201Ezapisz\u201D tworzy szkic. Bez \u201Ezapisz\u201D asystent tylko szuka po danych aplikacji.
  * ASSISTANT_MAX_COMMAND_LENGTH OUT_OF_SCOPE_BLOCK_PATTERNS isClearlyOutOfScope Poza zakresem aplikacji hardBlock: true pogoda kosmos wiersz
- * ASSISTANT_ALLOWED_SCOPE buildOutOfScopeAnswer blocked_out_of_scope Twarda blokada zakresu Nie odpowiadam na pytania ogólne
+ * ASSISTANT_ALLOWED_SCOPE buildOutOfScopeAnswer blocked_out_of_scope Twarda blokada zakresu Nie odpowiadam na pytania og\u00F3lne
  * today_briefing lead_lookup lead_capture global_app_search scope: 'assistant_read_or_draft_only' noAutoWrite: true Szkic leada zapisany do sprawdzenia
  */
 import { buildAssistantContextFromRequest, type AssistantContext, type AssistantContextItem } from "./assistant-context.js";
@@ -87,7 +87,7 @@ ensureIncludes(queryHandler, "from '../lib/assistant-result-schema.js'", queryRe
 write(queryRel, queryHandler);
 
 const docRel = 'docs/release/STAGE16AC_VERCEL_AI_ASSISTANT_SERVER_COMPILE_SCRIPT_FIX_2026-05-06.md';
-write(docRel, `# Stage16AB - Vercel AI assistant server compile repair\n\nZakres naprawy:\n\n- naprawiono uszkodzony nagłówek i importy w src/server/ai-assistant.ts, które lokalny Vite build pomijał, ale Vercel TypeScript/serverless build widział jako błąd składni,\n- przywrócono default export handlera aiAssistantHandler,\n- utrzymano named export runAssistantQuery dla assistant-query-handler,\n- zmieniono server-side importy assistant-context/ai-assistant/assistant-result-schema na jawne .js, zgodne z runtime Vercel ESM,\n- nie zmieniono logiki produktu ani UI.\n\nWeryfikacja paczki:\n\n- npm run build\n- node --test tests/ai-assistant-global-app-search.test.cjs\n- node --test tests/ai-assistant-save-vs-search-rule.test.cjs\n- node --test tests/ai-assistant-command-center.test.cjs\n- npm run verify:closeflow:quiet\n- npm run test:critical\n\nNO_PRODUCT_LOGIC_CHANGE=True\nVERCEL_SERVER_COMPILE_REPAIR=True
+write(docRel, `# Stage16AB - Vercel AI assistant server compile repair\n\nZakres naprawy:\n\n- naprawiono uszkodzony nag\u0142\u00F3wek i importy w src/server/ai-assistant.ts, kt\u00F3re lokalny Vite build pomija\u0142, ale Vercel TypeScript/serverless build widzia\u0142 jako b\u0142\u0105d sk\u0142adni,\n- przywr\u00F3cono default export handlera aiAssistantHandler,\n- utrzymano named export runAssistantQuery dla assistant-query-handler,\n- zmieniono server-side importy assistant-context/ai-assistant/assistant-result-schema na jawne .js, zgodne z runtime Vercel ESM,\n- nie zmieniono logiki produktu ani UI.\n\nWeryfikacja paczki:\n\n- npm run build\n- node --test tests/ai-assistant-global-app-search.test.cjs\n- node --test tests/ai-assistant-save-vs-search-rule.test.cjs\n- node --test tests/ai-assistant-command-center.test.cjs\n- npm run verify:closeflow:quiet\n- npm run test:critical\n\nNO_PRODUCT_LOGIC_CHANGE=True\nVERCEL_SERVER_COMPILE_REPAIR=True
 POWERSHELL_SCRIPT_ASCII_SAFE=True\n`);
 
 console.log('OK: Stage16AC Vercel AI assistant server compile repair applied.');

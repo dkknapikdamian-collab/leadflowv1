@@ -26,23 +26,23 @@ assert(dataContract.includes('primaryCaseId'), 'data-contract nie normalizuje pr
 assert(dataContract.includes('primary_case_id'), 'data-contract nie normalizuje primary_case_id');
 
 const clientsApi = read('api/clients.ts');
-assert(clientsApi.includes('primary_case_id'), 'api/clients.ts nie obsługuje primary_case_id');
-assert(clientsApi.includes('primaryCaseId'), 'api/clients.ts nie obsługuje primaryCaseId');
+assert(clientsApi.includes('primary_case_id'), 'api/clients.ts nie obs\u0142uguje primary_case_id');
+assert(clientsApi.includes('primaryCaseId'), 'api/clients.ts nie obs\u0142uguje primaryCaseId');
 
 const casesApi = read('api/cases.ts');
-assert(casesApi.includes('primaryForClient'), 'api/cases.ts nie obsługuje primaryForClient');
-assert(casesApi.includes('replacePrimaryCase'), 'api/cases.ts nie obsługuje replacePrimaryCase');
+assert(casesApi.includes('primaryForClient'), 'api/cases.ts nie obs\u0142uguje primaryForClient');
+assert(casesApi.includes('replacePrimaryCase'), 'api/cases.ts nie obs\u0142uguje replacePrimaryCase');
 assert(casesApi.includes('PRIMARY_CASE_ALREADY_EXISTS'), 'api/cases.ts nie zwraca PRIMARY_CASE_ALREADY_EXISTS');
 
 const fallback = read('src/lib/supabase-fallback.ts');
-assert(fallback.includes('primaryCaseId'), 'supabase-fallback nie obsługuje primaryCaseId');
+assert(fallback.includes('primaryCaseId'), 'supabase-fallback nie obs\u0142uguje primaryCaseId');
 assert(fallback.includes('updateClientPrimaryCaseInSupabase'), 'supabase-fallback nie ma updateClientPrimaryCaseInSupabase');
 
 const helper = read('src/lib/client-cases.ts');
 assert(helper.includes('getClientPrimaryCaseId'), 'client-cases.ts nie ma getClientPrimaryCaseId');
 assert(helper.includes('getClientPrimaryCase'), 'client-cases.ts nie ma getClientPrimaryCase');
 assert(helper.includes('sortClientCasesWithPrimaryFirst'), 'client-cases.ts nie ma sortClientCasesWithPrimaryFirst');
-assert(helper.includes('primaryCaseId'), 'client-cases.ts nie używa primaryCaseId');
+assert(helper.includes('primaryCaseId'), 'client-cases.ts nie u\u017Cywa primaryCaseId');
 
 const pkg = JSON.parse(read('package.json'));
 assert(pkg.scripts?.['check:closeflow-client-primary-case'] === 'node scripts/check-closeflow-client-primary-case.cjs', 'package.json nie ma check:closeflow-client-primary-case');

@@ -21,10 +21,10 @@ test('relation funnel value is based on active leads and clients, not case dupli
   assert.ok(leads.includes('buildRelationFunnelValue({ leads: activeLeads, clients })'));
   assert.ok(leads.includes('value: relationFunnelValue'));
   assert.ok(leads.includes('Lejek razem: {formatRelationValue(relationFunnelValue)}'));
-  // STAGE32F_RELATION_FUNNEL_CONTRACT: stary opis UI został usunięty, ale wartość lejka dalej musi być liczona z aktywnych leadów i klientów.
+  // STAGE32F_RELATION_FUNNEL_CONTRACT: stary opis UI zosta\u0142 usuni\u0119ty, ale warto\u015B\u0107 lejka dalej musi by\u0107 liczona z aktywnych lead\u00F3w i klient\u00F3w.
   assert.ok(leads.includes('Lejek razem: {formatRelationValue(relationFunnelValue)}'));
   assert.ok(leads.includes('Najcenniejsze'));
-  assert.ok(!leads.includes('Suma lejka liczona z aktywnych leadów i klientów'));
+  assert.ok(!leads.includes('Suma lejka liczona z aktywnych lead\u00F3w i klient\u00F3w'));
   assert.ok(leads.includes('Najcenniejsze relacje'));
   assert.ok(leads.includes('data-relation-value-board="true"'));
   assert.ok(!leads.includes('relationValueEntries.reduce((sum, entry) => sum + entry.value, 0)'));

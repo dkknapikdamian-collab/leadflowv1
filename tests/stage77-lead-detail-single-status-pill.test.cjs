@@ -50,7 +50,7 @@ test('LeadDetail keeps one shared status mapping and required labels', () => {
   const text = read('src/pages/LeadDetail.tsx');
   assert.match(text, /function statusLabel\(status\?: string\)/);
   assert.match(text, /function statusClass\(status\?: string\)/);
-  for (const label of ['Oferta wysłana', 'Nowy', 'Czeka na odpowiedź', 'Przegrany']) {
+  for (const label of ['Oferta wys\u0142ana', 'Nowy', 'Czeka na odpowied\u017A', 'Przegrany']) {
     assert.ok(text.includes(label), 'missing label: ' + label);
   }
 });
@@ -60,4 +60,3 @@ test('package scripts expose Stage77 guard and test', () => {
   assert.equal(pkg.scripts['check:stage77-lead-detail-single-status-pill'], 'node scripts/check-stage77-lead-detail-single-status-pill.cjs');
   assert.equal(pkg.scripts['test:stage77-lead-detail-single-status-pill'], 'node --test tests/stage77-lead-detail-single-status-pill.test.cjs');
 });
-

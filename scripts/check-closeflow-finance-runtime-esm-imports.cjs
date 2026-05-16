@@ -52,7 +52,7 @@ for (const file of files) {
 }
 
 if (bad.length) {
-  fail(`Zostały extensionless runtime imports w src/lib/finance:\n${bad.join('\n')}`);
+  fail(`Zosta\u0142y extensionless runtime imports w src/lib/finance:\n${bad.join('\n')}`);
 }
 
 const pkg = JSON.parse(read('package.json'));

@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -41,11 +41,11 @@ test('Faza 3 Etap 3.2E keeps Billing as allowed upsell/comparison surface', () =
 
   assert.match(billing, /data-plan-visibility-stage32e="billing-plan-comparison"/);
   assert.match(billing, /data-plan-visibility-stage32e="billing-feature-matrix"/);
-  assert.match(billing, /Google Calendar sync — w przygotowaniu \/ wymaga konfiguracji OAuth/);
+  assert.match(billing, /Google Calendar sync \u2014 w przygotowaniu \/ wymaga konfiguracji OAuth/);
   assert.match(billing, /Asystent aplikacji i dyktowanie AI w trybie warunkowym \(provider \+ env\)/);
   assert.ok(billing.includes('Warstwy AI: lokalne/regu'));
-  assert.ok(billing.includes('zewnętrzny model dopiero po konfiguracji providera i env w Vercel.'));
-  assert.match(billing, /Funkcji nieudostępnionych backendowo nie udajemy\./);
+  assert.ok(billing.includes('zewn\u0119trzny model dopiero po konfiguracji providera i env w Vercel.'));
+  assert.match(billing, /Funkcji nieudost\u0119pnionych backendowo nie udajemy\./);
 
   assert.equal(pkg.scripts['check:faza3-etap32e-settings-digest-billing-visibility-smoke'], 'node scripts/check-faza3-etap32e-settings-digest-billing-visibility-smoke.cjs');
   assert.equal(pkg.scripts['test:faza3-etap32e-settings-digest-billing-visibility-smoke'], 'node --test tests/faza3-etap32e-settings-digest-billing-visibility-smoke.test.cjs');

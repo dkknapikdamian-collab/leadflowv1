@@ -68,14 +68,14 @@ for (const file of [
 
 section('Checklist contract');
 for (const needle of [
-  'User B nie może widzieć żadnego tekstu',
+  'User B nie mo\u017Ce widzie\u0107 \u017Cadnego tekstu',
   'AUDIT_A_LEAD',
   'AUDIT_A_TASK',
   'AUDIT_A_EVENT',
   'AUDIT_A_CASE',
-  'bezpośredni URL do rekordu A nie działa dla User B',
+  'bezpo\u015Bredni URL do rekordu A nie dzia\u0142a dla User B',
   'Faza 2 - Etap 2.2 - RLS / backend security proof',
-  'Nie twierdzimy, że security jest gotowe produkcyjnie',
+  'Nie twierdzimy, \u017Ce security jest gotowe produkcyjnie',
   'body.workspaceId',
   'manual_evidence_required',
 ]) {

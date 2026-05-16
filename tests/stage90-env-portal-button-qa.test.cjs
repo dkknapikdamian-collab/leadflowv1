@@ -20,7 +20,7 @@ test('Stage90E documents that env smoke is required and not faked', () => {
 
   assert.ok(readFirst.includes('QA_SMOKE_REQUIRED'));
   assert.match(readFirst, /CUMULATIVE_STAGE90[A-Z]/);
-  assert.ok(readFirst.includes('Kod i guardy nie są dowodem'));
+  assert.ok(readFirst.includes('Kod i guardy nie s\u0105 dowodem'));
   assert.ok(evidence.includes('Live smoke required'));
   assert.ok(evidence.includes('Do not mark Stage13/14/15 as fully DONE'));
 });

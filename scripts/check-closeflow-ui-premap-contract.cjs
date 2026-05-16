@@ -16,7 +16,7 @@ const required = [
   'src/components/ui/button.tsx',
   'src/components/confirm-dialog.tsx',
   'Trash2',
-  'Dodaj notatkę',
+  'Dodaj notatk\u0119',
 ];
 
 for (const needle of required) {

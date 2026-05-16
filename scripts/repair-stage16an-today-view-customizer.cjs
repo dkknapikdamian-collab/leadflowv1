@@ -184,7 +184,7 @@ const panelMarkup = `        <div className="col-span-full rounded-2xl border bo
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500">Widok</p>
-              <p className="text-xs font-medium text-slate-500">Wybierz, które kafelki i listy w sekcji Dziś są widoczne.</p>
+              <p className="text-xs font-medium text-slate-500">Wybierz, kt\u00F3re kafelki i listy w sekcji Dzi\u015B s\u0105 widoczne.</p>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Badge variant="secondary" className="rounded-full bg-slate-100 text-slate-700">
@@ -195,7 +195,7 @@ const panelMarkup = `        <div className="col-span-full rounded-2xl border bo
               </Button>
               {hiddenTodaySectionsCount > 0 ? (
                 <Button type="button" size="sm" variant="ghost" onClick={showAllTodaySections} data-today-view-show-all="true">
-                  Pokaż wszystko
+                  Poka\u017C wszystko
                 </Button>
               ) : null}
             </div>

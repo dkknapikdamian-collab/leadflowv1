@@ -29,11 +29,11 @@ const pkg = JSON.parse(read('package.json'));
 assert(panel.includes('CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1'), 'Missing edit values guard in CaseSettlementPanel');
 assert(panel.includes('hasCaseSettlementValue'), 'Missing hasCaseSettlementValue calculation');
 assert(panel.includes('data-cf-case-settlement-value-cta="true"'), 'Missing visible value CTA');
-assert(panel.includes('Ustaw wartość i prowizję'), 'Missing explicit value and commission action copy');
-assert(panel.includes('Edytuj wartość/prowizję'), 'Missing edit value/commission action copy');
-assert(panel.includes('Ustaw wartość transakcji i prowizję'), 'Missing commission dialog title focused on value and commission');
-assert(panel.includes('Wartość transakcji / sprawy'), 'Missing explicit transaction/case value input label');
-assert(panel.includes('Zapisz wartość i prowizję'), 'Missing explicit save button copy');
+assert(panel.includes('Ustaw warto\u015B\u0107 i prowizj\u0119'), 'Missing explicit value and commission action copy');
+assert(panel.includes('Edytuj warto\u015B\u0107/prowizj\u0119'), 'Missing edit value/commission action copy');
+assert(panel.includes('Ustaw warto\u015B\u0107 transakcji i prowizj\u0119'), 'Missing commission dialog title focused on value and commission');
+assert(panel.includes('Warto\u015B\u0107 transakcji / sprawy'), 'Missing explicit transaction/case value input label');
+assert(panel.includes('Zapisz warto\u015B\u0107 i prowizj\u0119'), 'Missing explicit save button copy');
 assert(panel.includes('data-cf-case-settlement-commission-note="true"'), 'Missing commission calculation explanation');
 
 assert(section.includes('data-cf-case-finance-section="case-detail-only"'), 'CaseSettlementSection must keep case-detail-only wrapper');
@@ -51,11 +51,11 @@ assert(caseDetail.includes('updateCaseInSupabase'), 'CaseDetail must use updateC
 assert(caseDetail.includes('createPaymentInSupabase'), 'CaseDetail must use createPaymentInSupabase for settlement payments');
 
 assert(!clientDetail.includes('CaseSettlementPanel'), 'ClientDetail must not render full CaseSettlementPanel');
-assert(!clientDetail.includes('Dodaj płatność prowizji'), 'ClientDetail must not expose full commission payment action');
-assert(!clientDetail.includes('Edytuj wartość/prowizję'), 'ClientDetail must not expose full value/commission editor');
+assert(!clientDetail.includes('Dodaj p\u0142atno\u015B\u0107 prowizji'), 'ClientDetail must not expose full commission payment action');
+assert(!clientDetail.includes('Edytuj warto\u015B\u0107/prowizj\u0119'), 'ClientDetail must not expose full value/commission editor');
 assert(!leadDetail.includes('CaseSettlementPanel'), 'LeadDetail must not render full CaseSettlementPanel');
-assert(!leadDetail.includes('Dodaj płatność prowizji'), 'LeadDetail must not expose commission payment action');
-assert(!leadDetail.includes('Edytuj wartość/prowizję'), 'LeadDetail must not expose full value/commission editor');
+assert(!leadDetail.includes('Dodaj p\u0142atno\u015B\u0107 prowizji'), 'LeadDetail must not expose commission payment action');
+assert(!leadDetail.includes('Edytuj warto\u015B\u0107/prowizj\u0119'), 'LeadDetail must not expose full value/commission editor');
 
 assert(css.includes('cf-finance-settlement-empty-value'), 'Missing CSS for value CTA');
 assert(pkg.scripts['check:case-settlement-edit-values'], 'Missing package script check:case-settlement-edit-values');

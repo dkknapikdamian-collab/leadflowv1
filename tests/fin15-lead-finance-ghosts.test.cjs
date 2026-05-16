@@ -30,8 +30,8 @@ test('FIN-15 keeps lead as service archive with direct case handoff', () => {
   assert.ok(source.includes('leadMovedToService || associatedCase || startServiceSuccess'));
   assert.ok(source.includes('navigate(`/case/${startServiceSuccess.caseId}`);'));
   assert.equal(source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);'), false);
-  assert.ok(source.includes('Ten temat jest już w obsłudze'));
-  assert.ok(source.includes('Otwórz sprawę'));
+  assert.ok(source.includes('Ten temat jest ju\u017C w obs\u0142udze'));
+  assert.ok(source.includes('Otw\u00F3rz spraw\u0119'));
 });
 
 test('FIN-15 preserves quick action blockers after handoff', () => {

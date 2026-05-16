@@ -14,10 +14,10 @@ const pkg = JSON.parse(read('package.json'));
 expect(rootDoc.includes('Status: ACCEPTED_MANUAL_BY_USER'), 'root acceptance doc must mark accepted status');
 expect(rootDoc.includes('Admin Debug Toolbar'), 'root acceptance doc must mention Admin Debug Toolbar');
 expect(rootDoc.includes('LeadDetail right rail'), 'root acceptance doc must mention LeadDetail right rail');
-expect(rootDoc.includes('Nie wracaj do kolejnego łatania'), 'root acceptance doc must warn against blind rework');
+expect(rootDoc.includes('Nie wracaj do kolejnego \u0142atania'), 'root acceptance doc must warn against blind rework');
 
 expect(releaseDoc.includes('Stage89C - Manual acceptance ledger'), 'release doc title missing');
-expect(releaseDoc.includes('ale działa poprawnie'), 'release doc must cite user acceptance phrase');
+expect(releaseDoc.includes('ale dzia\u0142a poprawnie'), 'release doc must cite user acceptance phrase');
 expect(releaseDoc.includes('Stage87G'), 'release doc must list Stage87G');
 expect(releaseDoc.includes('Stage88'), 'release doc must list Stage88');
 expect(releaseDoc.includes('Stage89'), 'release doc must list Stage89');

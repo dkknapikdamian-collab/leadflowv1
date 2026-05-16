@@ -29,8 +29,8 @@ if (!/21\s*dni|21-dni/i.test(login)) problems.push('Login.tsx: login/trial copy 
 const billing = read('src/pages/Billing.tsx');
 if (billing.includes('Stripe nie jest jeszcze skonfigurowany w Vercel.')) problems.push('Billing.tsx: Stripe copy still says generic not configured instead of Wymaga konfiguracji.');
 if (!billing.includes('Stripe wymaga konfiguracji w Vercel.')) problems.push('Billing.tsx: missing Stripe Wymaga konfiguracji copy.');
-if (/Google Calendar[^\n]+pro:\s*'Dostępne'[^\n]+ai:\s*'Dostępne'/.test(billing)) problems.push('Billing.tsx: Google Calendar is still shown as fully available.');
-if (!/Pełny asystent AI[^\n]+ai:\s*'Beta'/.test(billing)) problems.push('Billing.tsx: AI assistant must be marked Beta.');
+if (/Google Calendar[^\n]+pro:\s*'Dost\u0119pne'[^\n]+ai:\s*'Dost\u0119pne'/.test(billing)) problems.push('Billing.tsx: Google Calendar is still shown as fully available.');
+if (!/Pe\u0142ny asystent AI[^\n]+ai:\s*'Beta'/.test(billing)) problems.push('Billing.tsx: AI assistant must be marked Beta.');
 if (!billing.includes("badge: 'Beta'")) problems.push('Billing.tsx: AI plan card must show Beta badge.');
 if (!billing.includes('W przygotowaniu')) problems.push('Billing.tsx: missing W przygotowaniu state.');
 if (!billing.includes('Wymaga konfiguracji')) problems.push('Billing.tsx: missing Wymaga konfiguracji state.');

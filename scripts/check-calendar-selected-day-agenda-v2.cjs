@@ -67,7 +67,7 @@ if (panel.includes('cf-calendar-month-text-row') || panel.includes('cf-month-ent
 }
 ok('selected-day panel renders full ScheduleEntryCard with actions');
 
-for (const label of ['Edytuj', '+1D', '+1W', '+1H', 'Usuń']) {
+for (const label of ['Edytuj', '+1D', '+1W', '+1H', 'Usu\u0144']) {
   if (!calendar.includes(label)) fail(`missing action label: ${label}`);
 }
 if (!calendar.includes('data-cf-entry-title="true"')) fail('ScheduleEntryCard has no data-cf-entry-title marker');

@@ -27,15 +27,15 @@ const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'))
 const checks = [
   [clients.includes("import '../styles/clients-next-action-layout.css';"), 'Clients.tsx must import clients-next-action-layout.css'],
   [clients.includes('client-card-next-action-block'), 'nearest action cell must have client-card-next-action-block'],
-  [clients.includes('Najbliższa akcja'), 'UI label must be Najbliższa akcja'],
+  [clients.includes('Najbli\u017Csza akcja'), 'UI label must be Najbli\u017Csza akcja'],
   [clients.includes('Brak zaplanowanej akcji'), 'empty fallback must be Brak zaplanowanej akcji'],
-  [!clients.includes('Brak zaplanowanych działań'), 'old fallback Brak zaplanowanych działań must not remain in Clients.tsx'],
+  [!clients.includes('Brak zaplanowanych dzia\u0142a\u0144'), 'old fallback Brak zaplanowanych dzia\u0142a\u0144 must not remain in Clients.tsx'],
   [css.includes('grid-area: next'), 'CSS must assign nearest action to grid-area next'],
   [css.includes('grid-area: actions'), 'CSS must assign actions to grid-area actions'],
   [css.includes('client-card-next-action-block'), 'CSS must style client-card-next-action-block'],
   [css.includes('grid-template-areas') && css.indexOf('next next') < css.indexOf('actions actions'), 'CSS grid must place next action before actions'],
   [css.includes('flex-wrap: wrap'), 'Actions must wrap on small width'],
-  [doc.includes('Najbliższa akcja') && doc.includes('Akcje na dole'), 'Doc must describe final card order'],
+  [doc.includes('Najbli\u017Csza akcja') && doc.includes('Akcje na dole'), 'Doc must describe final card order'],
   [pkg.scripts && pkg.scripts['check:closeflow-client-card-next-action-layout'] === 'node scripts/check-closeflow-client-card-next-action-layout.cjs', 'package.json must expose check:closeflow-client-card-next-action-layout'],
 ];
 

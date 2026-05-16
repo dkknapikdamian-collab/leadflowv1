@@ -78,8 +78,8 @@ test('stage30: install prompt component only uses browser install prompt flow', 
 
   assert.match(component, /beforeinstallprompt/);
   assert.match(component, /appinstalled/);
-  assert.match(component, /Dodaj CloseFlow do ekranu głównego telefonu/);
-  assert.match(component, /Otwieraj aplikację jak zwykłą apkę/);
+  assert.match(component, /Dodaj CloseFlow do ekranu g\u0142\u00F3wnego telefonu/);
+  assert.match(component, /Otwieraj aplikacj\u0119 jak zwyk\u0142\u0105 apk\u0119/);
   assert.match(component, /if \(!shouldShow\) return null/);
   assert.match(app, /PwaInstallPrompt/);
   assert.match(app, /<PwaInstallPrompt \/>/);
@@ -89,10 +89,10 @@ test('stage30: settings include short Android and iPhone add-to-home-screen inst
   const settings = read('src/pages/Settings.tsx');
 
   assert.match(settings, /data-settings-pwa-help="true"/);
-  assert.match(settings, /Dodaj CloseFlow do ekranu głównego telefonu/);
+  assert.match(settings, /Dodaj CloseFlow do ekranu g\u0142\u00F3wnego telefonu/);
   assert.match(settings, /Android Chrome/);
   assert.match(settings, /iPhone Safari/);
-  assert.match(settings, /Do ekranu początkowego/);
+  assert.match(settings, /Do ekranu pocz\u0105tkowego/);
 });
 
 test('stage30: Today removes local funnel/noisy global-actions helper copy', () => {
@@ -100,9 +100,9 @@ test('stage30: Today removes local funnel/noisy global-actions helper copy', () 
   const cleanup = read('src/lib/stage30-today-cleanup.ts');
 
   assert.doesNotMatch(today, /TODAY_FUNNEL_DEDUP_VALUE_STAGE11/);
-  assert.doesNotMatch(today, /Globalne akcje są tylko w górnym pasku:/);
+  assert.doesNotMatch(today, /Globalne akcje s\u0105 tylko w g\u00F3rnym pasku:/);
   assert.match(today, /installTodayStage30VisualCleanup/);
   assert.match(cleanup, /data-today-pipeline-shortcut/);
-  assert.match(cleanup, /Globalne akcje są tylko w górnym pasku/);
+  assert.match(cleanup, /Globalne akcje s\u0105 tylko w g\u00F3rnym pasku/);
   assert.match(cleanup, /lejek\|funnel/);
 });

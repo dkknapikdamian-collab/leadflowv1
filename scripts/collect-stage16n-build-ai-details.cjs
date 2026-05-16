@@ -46,7 +46,7 @@ function runTarget(target) {
   const failureLines = (stdout + '\n' + stderr)
     .split(/\r?\n/)
     .filter((line) =>
-      /error TS|Failed to resolve|Could not resolve|Unexpected token|SyntaxError|ReferenceError|AssertionError|Expected values|The input did not match|doesNotMatch|failing tests|✖|FAILED:|FAIL:|Error:/.test(line)
+      /error TS|Failed to resolve|Could not resolve|Unexpected token|SyntaxError|ReferenceError|AssertionError|Expected values|The input did not match|doesNotMatch|failing tests|\u2716|FAILED:|FAIL:|Error:/.test(line)
     )
     .slice(0, 80);
 

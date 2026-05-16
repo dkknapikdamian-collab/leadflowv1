@@ -1,4 +1,4 @@
-﻿const test = require('node:test');
+const test = require('node:test');
 const assert = require('assert');
 const { execFileSync } = require('child_process');
 const path = require('path');

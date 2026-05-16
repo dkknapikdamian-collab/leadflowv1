@@ -1091,7 +1091,7 @@ useEffect(() => {
               ) : null}
             </section>
 
-            
+
             <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true">
               <div className="settings-section-head">
                 <div>
@@ -1363,7 +1363,7 @@ useEffect(() => {
               <small>Plan: {planLabel}</small>
             </section>
 
-            
+
 
             <section className="right-card settings-right-card">
               <div className="settings-right-title">

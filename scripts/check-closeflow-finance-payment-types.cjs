@@ -21,8 +21,8 @@ const labels = read('src/lib/finance/finance-payment-labels.ts');
 must(labels, 'FIN-6_PAYMENTS_LIST_AND_PAYMENT_TYPES_V1', 'payment labels contract marker');
 const requiredTypes = [
   ['deposit', 'Zaliczka'],
-  ['partial', 'Częściowa wpłata'],
-  ['final', 'Końcowa wpłata'],
+  ['partial', 'Cz\u0119\u015Bciowa wp\u0142ata'],
+  ['final', 'Ko\u0144cowa wp\u0142ata'],
   ['commission', 'Prowizja'],
   ['refund', 'Zwrot'],
   ['other', 'Inne'],
@@ -33,8 +33,8 @@ for (const [value, label] of requiredTypes) {
 }
 for (const [value, label] of [
   ['planned', 'Planowana'],
-  ['due', 'Należna'],
-  ['paid', 'Zapłacona'],
+  ['due', 'Nale\u017Cna'],
+  ['paid', 'Zap\u0142acona'],
   ['cancelled', 'Anulowana'],
 ]) {
   must(labels, value, 'payment status value exists: ' + value);
@@ -49,7 +49,7 @@ must(paymentList, 'getPaymentTypeLabel', 'PaymentList renders shared type label'
 must(paymentList, 'getPaymentStatusLabel', 'PaymentList renders shared status label');
 must(paymentList, 'StatusPill', 'PaymentList renders status with StatusPill');
 must(paymentList, 'getPaymentStatusTone', 'PaymentList maps status tone');
-for (const oldLabel of ['Wpłata częściowa', 'Wpłata końcowa', 'Inna wpłata']) {
+for (const oldLabel of ['Wp\u0142ata cz\u0119\u015Bciowa', 'Wp\u0142ata ko\u0144cowa', 'Inna wp\u0142ata']) {
   mustNot(paymentList, oldLabel, 'PaymentList does not use old label: ' + oldLabel);
 }
 

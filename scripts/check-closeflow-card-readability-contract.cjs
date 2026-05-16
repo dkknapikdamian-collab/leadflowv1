@@ -71,7 +71,7 @@ for (const target of [...required, ...optional]) {
   const text = read(target.file);
   if (!text.includes(target.marker)) fail(target.file + ' nie zawiera markera kontraktu ' + target.marker);
   for (const cls of target.must) {
-    if (!text.includes(cls)) fail(target.file + ' nie używa wspólnej klasy ' + cls);
+    if (!text.includes(cls)) fail(target.file + ' nie u\u017Cywa wsp\u00F3lnej klasy ' + cls);
   }
 }
 
@@ -80,16 +80,16 @@ const inspectedFiles = [...required, ...optional]
   .map((entry) => entry.file);
 
 const forbiddenClass = /(?:card|readability|empty-state)[-_](?:fix|v2|repair)|(?:fix|v2|repair)[-_](?:card|readability|empty-state)/i;
-const mojibake = /(?:Ä|Å|Æ|Ĺ|Â|â€|Ă|ďż˝)/;
+const mojibake = /(?:\u00c4|\u00c5|\u00C6|\u0139|\u00c2|\u00E2\u20AC|\u0102|\u010F\u017C\u02DD)/;
 const badControlChars = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/;
 const whiteOnWhite = /(?:bg-white[^"'`]*text-white|text-white[^"'`]*bg-white)/;
 
 for (const file of [cssPath, ...inspectedFiles]) {
   const text = read(file);
-  if (forbiddenClass.test(text)) fail(file + ' zawiera lokalną klasę fix/v2/repair dla card/readability/empty-state');
+  if (forbiddenClass.test(text)) fail(file + ' zawiera lokaln\u0105 klas\u0119 fix/v2/repair dla card/readability/empty-state');
   if (mojibake.test(text)) fail(file + ' zawiera podejrzany mojibake');
   if (badControlChars.test(text)) fail(file + ' zawiera control chars');
-  if (whiteOnWhite.test(text)) fail(file + ' zawiera oczywisty wzorzec białe-na-białym');
+  if (whiteOnWhite.test(text)) fail(file + ' zawiera oczywisty wzorzec bia\u0142e-na-bia\u0142ym');
 }
 
 const responseTemplates = read('src/pages/ResponseTemplates.tsx');

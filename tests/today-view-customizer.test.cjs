@@ -11,7 +11,7 @@ test('Today view customizer has one storage key and controls tiles plus lists', 
   assert.strictEqual((today.match(/const TODAY_VIEW_STORAGE_KEY\s*=/g) || []).length, 1);
   assert.match(today, /STAGE16AN_TODAY_VIEW_CUSTOMIZER/);
   assert.match(today, /Widok/);
-  assert.match(today, /Pokaż wszystko|Pokaz wszystko/);
+  assert.match(today, /Poka\u017C wszystko|Pokaz wszystko/);
   assert.match(today, /localStorage\.getItem\(TODAY_VIEW_STORAGE_KEY\)/);
   assert.match(today, /localStorage\.setItem\(TODAY_VIEW_STORAGE_KEY/);
   assert.match(today, /type=["']checkbox["']/);

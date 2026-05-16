@@ -70,7 +70,7 @@ const lines = [
   '',
   '## Checks',
   '',
-  ...checks.map((entry) => '- ' + (entry.ok ? 'PASS' : 'FAIL') + ' — ' + entry.name + (entry.details ? ' — `' + entry.details + '`' : '')),
+  ...checks.map((entry) => '- ' + (entry.ok ? 'PASS' : 'FAIL') + ' \u2014 ' + entry.name + (entry.details ? ' \u2014 `' + entry.details + '`' : '')),
   '',
   '## Physical API functions',
   '',

@@ -63,7 +63,7 @@ for (const token of [
   if (token === 'Zapisz wydarzenie') assert(eventDialog.includes(token), 'event dialog missing save button copy');
   else assert(css.includes(token), 'repair css missing token: ' + token);
 }
-for (const token of ['deleteActivityFromSupabase', 'modal wydarzeń', 'widoczny save footer', 'nie zmienia danych']) {
+for (const token of ['deleteActivityFromSupabase', 'modal wydarze\u0144', 'widoczny save footer', 'nie zmienia danych']) {
   assert(doc.toLowerCase().includes(token.toLowerCase()), 'doc missing decision token: ' + token);
 }
 console.log('CLOSEFLOW_CLIENT_EVENT_MODAL_RUNTIME_REPAIR_OK: ClientDetail note delete and event modal readability are guarded');

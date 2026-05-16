@@ -11,6 +11,6 @@ const doc = fs.readFileSync('docs/bugs/CLOSEFLOW_LEAD_HIDDEN_DUPLICATE_RESTORE_V
   'LEAD_DUPLICATE_IN_HISTORY_OPEN_RECORD',
   'findHiddenLeadDuplicateCandidates',
 ].forEach((needle) => { if (!api.includes(needle)) fail('Brak w api/leads.ts: ' + needle); });
-if (!leads.includes('Ten kontakt istnieje już w historii albo obsłudze')) fail('Brak czytelnego komunikatu UI dla duplikatu historycznego');
+if (!leads.includes('Ten kontakt istnieje ju\u017C w historii albo obs\u0142udze')) fail('Brak czytelnego komunikatu UI dla duplikatu historycznego');
 if (!doc.includes('Lead hidden duplicate restore v1')) fail('Brak dokumentacji fixa');
 console.log('CLOSEFLOW_LEAD_HIDDEN_DUPLICATE_RESTORE_V1_OK');

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -26,10 +26,10 @@ for (const marker of [
   '/api/google-calendar?route=status',
   '/api/google-calendar?route=connect',
   '/api/google-calendar?route=disconnect',
-  'Połącz Google',
-  'Rozłącz Google',
-  'Brakujące ENV',
-  'CloseFlow jest źródłem prawdy',
+  'Po\u0142\u0105cz Google',
+  'Roz\u0142\u0105cz Google',
+  'Brakuj\u0105ce ENV',
+  'CloseFlow jest \u017Ar\u00F3d\u0142em prawdy',
 ]) {
   assert(settings.includes(marker), 'Settings.tsx missing marker: ' + marker);
 }

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 /* STAGE16O_GLOBAL_ASSISTANT_CONTEXT_COMPAT
  * leads={context.leads} tasks={context.tasks} events={context.events} cases={context.cases} clients={context.clients}
  */
-﻿// STAGE7_ASSISTANT_OPERATOR_CONTEXT_FIX
+// STAGE7_ASSISTANT_OPERATOR_CONTEXT_FIX
 // Global assistant now loads real workspace snapshot via backend and passes it to TodayAiAssistant.
 
 

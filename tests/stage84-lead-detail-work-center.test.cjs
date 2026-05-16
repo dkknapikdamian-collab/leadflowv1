@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -16,11 +16,11 @@ test('Stage84 LeadDetail exposes work center contract with clean Polish copy', (
   assert.match(leadDetail, /Centrum pracy leada/);
   assert.match(leadDetail, /Ostatni ruch/);
   assert.match(leadDetail, /Dni bez ruchu/);
-  assert.match(leadDetail, /Najbliższa zaplanowana akcja/);
-  assert.match(leadDetail, /Powód ryzyka/);
-  assert.match(leadDetail, /Otwórz sprawę/);
-  assert.match(leadDetail, /Dopisz notatkę/);
-  assert.match(leadDetail, /Oferta wysłana/);
+  assert.match(leadDetail, /Najbli\u017Csza zaplanowana akcja/);
+  assert.match(leadDetail, /Pow\u00F3d ryzyka/);
+  assert.match(leadDetail, /Otw\u00F3rz spraw\u0119/);
+  assert.match(leadDetail, /Dopisz notatk\u0119/);
+  assert.match(leadDetail, /Oferta wys\u0142ana/);
 const forbiddenMojibakePatterns = [
     chars(0x0139),
     chars(0x00c4),
@@ -44,4 +44,3 @@ test('Stage84 styles are present', () => {
   assert.match(css, /STAGE84_LEAD_DETAIL_WORK_CENTER/);
   assert.match(css, /\.lead-detail-work-center/);
 });
-

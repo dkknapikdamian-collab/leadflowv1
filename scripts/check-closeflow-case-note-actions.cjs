@@ -12,7 +12,7 @@ const lib = read('src/lib/activity-roadmap.ts');
 const pkg = JSON.parse(read('package.json'));
 if (!exists('src/components/ActivityItemPreviewDialog.tsx')) fail('missing preview dialog');
 if (!exists('src/components/EditActivityNoteDialog.tsx')) fail('missing edit dialog');
-for (const text of ['Podgląd', 'Edytuj', 'Usuń']) {
+for (const text of ['Podgl\u0105d', 'Edytuj', 'Usu\u0144']) {
   if (!component.includes(text)) fail('missing note action button: ' + text);
 }
 if (!component.includes("item.kind === 'note'")) fail('note actions must be scoped to kind note');
@@ -20,9 +20,9 @@ if (!component.includes('updateActivityInSupabase')) fail('missing activity upda
 if (!component.includes('deleteActivityFromSupabase')) fail('missing activity delete call');
 if (!component.includes('insertActivityToSupabase')) fail('missing note_deleted activity log call');
 if (!component.includes('setHiddenIds')) fail('delete must hide roadmap item without reload');
-if (!preview.includes('Notatka') || !preview.includes('Dodano') || !preview.includes('Powiązanie')) fail('preview dialog missing required copy');
-if (!edit.includes('Edytuj notatkę') || !edit.includes('Textarea') || !edit.includes('Zapisz')) fail('edit dialog missing required form');
-if (!component.includes('Usunąć notatkę?') || !component.includes('Tej akcji nie da się łatwo cofnąć.')) fail('delete confirmation missing');
+if (!preview.includes('Notatka') || !preview.includes('Dodano') || !preview.includes('Powi\u0105zanie')) fail('preview dialog missing required copy');
+if (!edit.includes('Edytuj notatk\u0119') || !edit.includes('Textarea') || !edit.includes('Zapisz')) fail('edit dialog missing required form');
+if (!component.includes('Usun\u0105\u0107 notatk\u0119?') || !component.includes('Tej akcji nie da si\u0119 \u0142atwo cofn\u0105\u0107.')) fail('delete confirmation missing');
 if (!fallback.includes('updateActivityInSupabase') || !fallback.includes('deleteActivityFromSupabase')) fail('supabase fallback activity mutations missing');
 if (!lib.includes('getRoadmapItemNoteText')) fail('missing note text extractor');
 if (pkg.scripts?.['check:closeflow-case-note-actions'] !== 'node scripts/check-closeflow-case-note-actions.cjs') fail('missing package script');

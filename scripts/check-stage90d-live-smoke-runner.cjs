@@ -35,10 +35,10 @@ expect(!runner.includes('SUPABASE_SERVICE_ROLE_KEY'), 'runner must not read serv
 
 expect(commands.includes('READY_TO_RUN_AFTER_DEPLOY'), 'commands doc must be deploy-run oriented');
 expect(commands.includes('npm.cmd run stage90d:live-smoke'), 'commands doc must include live smoke command');
-expect(commands.includes('DIGEST_ROUTE_NOT_CALLED_BY_DEFAULT=True') || /digest[\s\S]{0,160}(not|nie|domyślnie|domyslnie)/i.test(commands), 'commands doc must state digest is not auto-called');
+expect(commands.includes('DIGEST_ROUTE_NOT_CALLED_BY_DEFAULT=True') || /digest[\s\S]{0,160}(not|nie|domy\u015Blnie|domyslnie)/i.test(commands), 'commands doc must state digest is not auto-called');
 expect(release.includes('LIVE_SMOKE_RUNNER_ADDED'), 'release doc must mark runner added');
 expect(releaseF.includes('DIGEST_SAFETY_GUARD_FIXED'), 'Stage90F release doc missing');
-expect(release.includes('nie odpala daily digest route domyślnie'), 'release doc must explain digest safety');
+expect(release.includes('nie odpala daily digest route domy\u015Blnie'), 'release doc must explain digest safety');
 
 expect(Boolean(pkg.scripts?.['stage90d:live-smoke']), 'package missing stage90d live smoke script');
 expect(Boolean(pkg.scripts?.['check:stage90d-live-smoke-runner']), 'package missing Stage90D check');

@@ -104,12 +104,12 @@ function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymen
   const progress = expected > 0 ? Math.min(100, Math.round((paid / expected) * 100)) : 0;
   const status =
     expected <= 0
-      ? 'Ustal wartość'
+      ? 'Ustal warto\u015B\u0107'
       : paid <= 0
-        ? 'Brak wpłaty'
+        ? 'Brak wp\u0142aty'
         : remaining <= 0
-          ? 'Opłacone'
-          : 'Częściowo opłacone';
+          ? 'Op\u0142acone'
+          : 'Cz\u0119\u015Bciowo op\u0142acone';
   return { expected, paid, remaining, progress, status, currency };
 }
 
@@ -137,12 +137,12 @@ function sortCasePayments(payments: CasePaymentRecord[]) {
   const handleCreateCasePayment = async () => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('Brak dostępu do zapisu płatności.');
+      toast.error('Brak dost\u0119pu do zapisu p\u0142atno\u015Bci.');
       return;
     }
     const amount = Number(casePaymentDraft.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawną kwotę wpłaty.');
+      toast.error('Podaj poprawn\u0105 kwot\u0119 wp\u0142aty.');
       return;
     }
     try {
@@ -167,14 +167,14 @@ function sortCasePayments(payments: CasePaymentRecord[]) {
         leadId: caseData.leadId || null,
         actorType: 'operator',
         eventType: 'payment_added',
-        payload: { title: 'Dodano wpłatę', amount, status: input.status, note: input.note },
+        payload: { title: 'Dodano wp\u0142at\u0119', amount, status: input.status, note: input.note },
       } as any).catch(() => null);
       setCasePaymentDraft({ type: 'payment', amount: '', status: 'partially_paid', dueAt: '', note: '' });
       setIsCasePaymentOpen(false);
-      toast.success('Wpłata dodana');
+      toast.success('Wp\u0142ata dodana');
     } catch (error) {
       console.error(error);
-      toast.error('Nie udało się dodać wpłaty.');
+      toast.error('Nie uda\u0142o si\u0119 doda\u0107 wp\u0142aty.');
     } finally {
       setCasePaymentSubmitting(false);
     }
@@ -198,29 +198,29 @@ ${indent}      <h2>{caseFinanceSummary.status}</h2>
 ${indent}    </div>
 ${indent}    <Button type="button" size="sm" onClick={() => setIsCasePaymentOpen(true)} disabled={!hasAccess}>
 ${indent}      <Plus className="h-4 w-4" />
-${indent}      Dodaj wpłatę
+${indent}      Dodaj wp\u0142at\u0119
 ${indent}    </Button>
 ${indent}  </div>
 ${indent}  <div className="case-detail-finance-grid">
 ${indent}    <div className="case-detail-finance-stat">
-${indent}      <span>Wartość</span>
+${indent}      <span>Warto\u015B\u0107</span>
 ${indent}      <strong>{formatMoney(caseFinanceSummary.expected, caseFinanceSummary.currency)}</strong>
 ${indent}    </div>
 ${indent}    <div className="case-detail-finance-stat is-paid">
-${indent}      <span>Wpłacono</span>
+${indent}      <span>Wp\u0142acono</span>
 ${indent}      <strong>{formatMoney(caseFinanceSummary.paid, caseFinanceSummary.currency)}</strong>
 ${indent}    </div>
 ${indent}    <div className="case-detail-finance-stat is-left">
-${indent}      <span>Pozostało</span>
+${indent}      <span>Pozosta\u0142o</span>
 ${indent}      <strong>{formatMoney(caseFinanceSummary.remaining, caseFinanceSummary.currency)}</strong>
 ${indent}    </div>
 ${indent}  </div>
-${indent}  <div className="case-detail-finance-progress" aria-label={\`Opłacono \${caseFinanceSummary.progress}%\`}>
+${indent}  <div className="case-detail-finance-progress" aria-label={\`Op\u0142acono \${caseFinanceSummary.progress}%\`}>
 ${indent}    <span style={{ width: \`\${caseFinanceSummary.progress}%\` }} />
 ${indent}  </div>
 ${indent}  <div className="case-detail-finance-payments">
 ${indent}    <div className="case-detail-finance-payments-head">
-${indent}      <strong>Historia wpłat</strong>
+${indent}      <strong>Historia wp\u0142at</strong>
 ${indent}      <span>{visibleCasePayments.length}</span>
 ${indent}    </div>
 ${indent}    {visibleCasePayments.length ? (
@@ -234,7 +234,7 @@ ${indent}          <small>{formatDate(payment.paidAt || payment.createdAt || pay
 ${indent}        </article>
 ${indent}      ))
 ${indent}    ) : (
-${indent}      <p className="case-detail-finance-empty">Brak wpłat. Dodaj pierwszą zaliczkę albo płatność częściową.</p>
+${indent}      <p className="case-detail-finance-empty">Brak wp\u0142at. Dodaj pierwsz\u0105 zaliczk\u0119 albo p\u0142atno\u015B\u0107 cz\u0119\u015Bciow\u0105.</p>
 ${indent}    )}
 ${indent}  </div>
 ${indent}</section>
@@ -250,11 +250,11 @@ ${indent}</section>
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
         <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
           <DialogHeader>
-            <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
+            <DialogTitle>Dodaj wp\u0142at\u0119 do sprawy</DialogTitle>
           </DialogHeader>
           <div className="case-detail-payment-form">
             <div>
-              <Label htmlFor="case-payment-amount">Kwota wpłaty</Label>
+              <Label htmlFor="case-payment-amount">Kwota wp\u0142aty</Label>
               <Input
                 id="case-payment-amount"
                 type="number"
@@ -272,10 +272,10 @@ ${indent}</section>
                 value={casePaymentDraft.status}
                 onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, status: event.target.value }))}
               >
-                <option value="deposit_paid">Zaliczka wpłacona</option>
-                <option value="partially_paid">Częściowo opłacone</option>
-                <option value="fully_paid">Opłacone</option>
-                <option value="awaiting_payment">Czeka na płatność</option>
+                <option value="deposit_paid">Zaliczka wp\u0142acona</option>
+                <option value="partially_paid">Cz\u0119\u015Bciowo op\u0142acone</option>
+                <option value="fully_paid">Op\u0142acone</option>
+                <option value="awaiting_payment">Czeka na p\u0142atno\u015B\u0107</option>
               </select>
             </div>
             <div>
@@ -286,9 +286,9 @@ ${indent}</section>
                 onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, type: event.target.value }))}
               >
                 <option value="deposit">Zaliczka</option>
-                <option value="partial">Wpłata częściowa</option>
-                <option value="final">Dopłata końcowa</option>
-                <option value="other">Inna wpłata</option>
+                <option value="partial">Wp\u0142ata cz\u0119\u015Bciowa</option>
+                <option value="final">Dop\u0142ata ko\u0144cowa</option>
+                <option value="other">Inna wp\u0142ata</option>
               </select>
             </div>
             <div>
@@ -307,7 +307,7 @@ ${indent}</section>
             </Button>
             <Button type="button" onClick={handleCreateCasePayment} disabled={casePaymentSubmitting || !hasAccess}>
               {casePaymentSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              Zapisz wpłatę
+              Zapisz wp\u0142at\u0119
             </Button>
           </DialogFooter>
         </DialogContent>

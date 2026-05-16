@@ -53,11 +53,11 @@ test('Clients and leads expose trash view toggles', () => {
   const leads = read('src/pages/Leads.tsx');
 
   assert.match(clients, /showArchived/);
-  assert.match(clients, /Kosz klientów jest pusty/);
-  assert.match(clients, /Przywróć klienta/);
+  assert.match(clients, /Kosz klient\u00F3w jest pusty/);
+  assert.match(clients, /Przywr\u00F3\u0107 klienta/);
   assert.match(leads, /showTrash/);
-  assert.match(leads, /Kosz leadów jest pusty/);
-  assert.match(leads, /Przywróć leada/);
+  assert.match(leads, /Kosz lead\u00F3w jest pusty/);
+  assert.match(leads, /Przywr\u00F3\u0107 leada/);
 });
 
 test('Panel trash mode is soft-delete and restore, not hard delete', () => {
@@ -78,11 +78,11 @@ test('Panel delete confirmation strings are valid escaped strings', () => {
   const leads = read('src/pages/Leads.tsx');
   const clients = read('src/pages/Clients.tsx');
 
-  assert.doesNotMatch(leads, /\?\s*'\r?\n\r?\n\s*Ten lead ma powiązaną sprawę/);
-  assert.doesNotMatch(clients, /\?\s*'\r?\n\r?\n\s*Ten klient ma powiązania/);
+  assert.doesNotMatch(leads, /\?\s*'\r?\n\r?\n\s*Ten lead ma powi\u0105zan\u0105 spraw\u0119/);
+  assert.doesNotMatch(clients, /\?\s*'\r?\n\r?\n\s*Ten klient ma powi\u0105zania/);
 
-  assert.match(leads, /\\n\\nTen lead ma powiązaną sprawę/);
-  assert.match(clients, /\\n\\nTen klient ma powiązania/);
+  assert.match(leads, /\\n\\nTen lead ma powi\u0105zan\u0105 spraw\u0119/);
+  assert.match(clients, /\\n\\nTen klient ma powi\u0105zania/);
 });
 
 test('Panel delete actions documentation explains safe trash mode', () => {
@@ -93,5 +93,5 @@ test('Panel delete actions documentation explains safe trash mode', () => {
   assert.match(doc, /Klienci/);
   assert.match(doc, /potwierdzenie/);
   assert.match(doc, /Kosz w V1 nie kasuje danych trwale/);
-  assert.match(doc, /przywrócić rekord/);
+  assert.match(doc, /przywr\u00F3ci\u0107 rekord/);
 });

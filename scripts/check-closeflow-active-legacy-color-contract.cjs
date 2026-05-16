@@ -112,7 +112,7 @@ function createDangerSmoke(rootDir, dangerText) {
   fs.writeFileSync(path.join(rootDir, APP), "const Today = lazy(() => import('./pages/TodayStable'));\n<Route path=\"/\" element={isLoggedIn ? <Today /> : null} />\n<Route path=\"/today\" element={isLoggedIn ? <Today /> : null} />\n", 'utf8');
   fs.writeFileSync(path.join(rootDir, TODAY_LEGACY), LEGACY_TODAY_MARKER + '\n', 'utf8');
   fs.writeFileSync(path.join(rootDir, 'src/pages/TodayStable.tsx'), 'TODAY_STABLE_STAGE14_REMAINING_SEVERITY\n', 'utf8');
-  fs.writeFileSync(path.join(rootDir, 'src/pages/__Stage16DangerSmoke.tsx'), "import { Trash2 } from 'lucide-react';\nexport function Smoke(){return <button className=\"text-red-600\"><Trash2 />Usuń</button>}\n", 'utf8');
+  fs.writeFileSync(path.join(rootDir, 'src/pages/__Stage16DangerSmoke.tsx'), "import { Trash2 } from 'lucide-react';\nexport function Smoke(){return <button className=\"text-red-600\"><Trash2 />Usu\u0144</button>}\n", 'utf8');
 }
 
 const required = [
@@ -195,7 +195,7 @@ try {
     cwd: tmpRoot,
     encoding: 'utf8',
   });
-  assert(smoke.status !== 0, 'Danger style audit did not block local text-red near Trash2/Usuń in smoke test');
+  assert(smoke.status !== 0, 'Danger style audit did not block local text-red near Trash2/Usu\u0144 in smoke test');
   assert(String(smoke.stderr || smoke.stdout || '').includes('FAIL'), 'Danger smoke did not report blocking failure');
 } finally {
   fs.rmSync(tmpRoot, { recursive: true, force: true });

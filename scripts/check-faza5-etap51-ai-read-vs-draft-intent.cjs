@@ -76,12 +76,12 @@ assertNotRegex(files.intents, intents, /mayCreateFinalRecord:\s*true/, 'No final
 section('Required examples');
 const requiredExamples = [
   'Co mam jutro?',
-  'Znajdź numer do Marka',
-  'Dorota Kołodziej',
-  'Zapisz zadanie jutro 12:00 oddzwonić do Anny',
+  'Znajd\u017A numer do Marka',
+  'Dorota Ko\u0142odziej',
+  'Zapisz zadanie jutro 12:00 oddzwoni\u0107 do Anny',
   'Dodaj wydarzenie spotkanie z klientem jutro o 12:00',
-  'Zapisz kontakt Jan Kowalski, dzwonił w sprawie strony',
-  'Zanotuj notatkę: klient chce ofertę do piątku',
+  'Zapisz kontakt Jan Kowalski, dzwoni\u0142 w sprawie strony',
+  'Zanotuj notatk\u0119: klient chce ofert\u0119 do pi\u0105tku',
   'Zapisz to',
   'expectedMayCreateDraft: false',
   'expectedMayCreateDraft: true',

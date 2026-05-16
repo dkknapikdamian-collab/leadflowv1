@@ -34,9 +34,9 @@ function patchEntityConflictDialog() {
     "import { AlertTriangle } from 'lucide-react';\nimport { DeleteActionIcon, OpenActionIcon, RestoreActionIcon } from './ui-system';"
   );
 
-  text = replaceAll(text, '<ExternalLink className="mr-1 h-4 w-4" />Pokaż', '<OpenActionIcon className="mr-1 h-4 w-4" />Pokaż', rel);
-  text = replaceAll(text, '<RotateCcw className="mr-1 h-4 w-4" />Przywróć', '<RestoreActionIcon className="mr-1 h-4 w-4" />Przywróć', rel);
-  text = replaceAll(text, '<Trash2 className="mr-1 h-4 w-4" />Usuń', '<DeleteActionIcon className="mr-1 h-4 w-4" />Usuń', rel);
+  text = replaceAll(text, '<ExternalLink className="mr-1 h-4 w-4" />Poka\u017C', '<OpenActionIcon className="mr-1 h-4 w-4" />Poka\u017C', rel);
+  text = replaceAll(text, '<RotateCcw className="mr-1 h-4 w-4" />Przywr\u00F3\u0107', '<RestoreActionIcon className="mr-1 h-4 w-4" />Przywr\u00F3\u0107', rel);
+  text = replaceAll(text, '<Trash2 className="mr-1 h-4 w-4" />Usu\u0144', '<DeleteActionIcon className="mr-1 h-4 w-4" />Usu\u0144', rel);
 
   write(rel, text);
   console.log('patched:', rel);

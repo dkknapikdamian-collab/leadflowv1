@@ -11,7 +11,7 @@ for (const needle of ['buildClientFinanceSummary', 'contractValue', 'commissionA
 }
 
 const mini = has('src/components/finance/FinanceMiniSummary.tsx', 'FIN-7_CLIENT_FINANCE_RELATION_SUMMARY_COMPONENT_V1', 'component marker');
-for (const needle of ['ClientFinanceRelationSummary', 'Finanse relacji', 'Suma spraw', 'Prowizja należna', 'Wpłacono', 'Pozostało', 'fetchCasesFromSupabase', 'fetchPaymentsFromSupabase']) {
+for (const needle of ['ClientFinanceRelationSummary', 'Finanse relacji', 'Suma spraw', 'Prowizja nale\u017Cna', 'Wp\u0142acono', 'Pozosta\u0142o', 'fetchCasesFromSupabase', 'fetchPaymentsFromSupabase']) {
   if(mini.includes(needle)) pass(`FinanceMiniSummary contains ${needle}`); else fail(`FinanceMiniSummary missing ${needle}`);
 }
 
@@ -29,7 +29,7 @@ try {
 } catch(error) { fail(`package.json parse ${error.message}`); }
 
 const doc = has('docs/finance/CLOSEFLOW_FIN7_CLIENT_FINANCE_SUMMARY_2026-05-10.md', 'FIN-7', 'doc marker');
-for (const needle of ['Finanse relacji', 'Suma spraw', 'Prowizja należna', 'Wpłacono', 'Pozostało']) {
+for (const needle of ['Finanse relacji', 'Suma spraw', 'Prowizja nale\u017Cna', 'Wp\u0142acono', 'Pozosta\u0142o']) {
   if(doc.includes(needle)) pass(`doc contains ${needle}`); else fail(`doc missing ${needle}`);
 }
 

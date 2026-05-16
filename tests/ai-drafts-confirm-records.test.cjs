@@ -39,8 +39,8 @@ const requiredPage = [
   'linkedRecordType',
   "rawText: ''",
   'Follow-up: ',
-  'Wybierz powiązanie dla notatki.',
-  'Otwórz rekord',
+  'Wybierz powi\u0105zanie dla notatki.',
+  'Otw\u00F3rz rekord',
 ];
 
 for (const needle of requiredPage) {

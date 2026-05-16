@@ -29,8 +29,8 @@ const pkg = JSON.parse(read('package.json'));
 
 has(dialog, 'EntityConflictDialog', 'EntityConflictDialog export');
 has(dialog, 'matchFields', 'EntityConflictDialog reason list');
-has(dialog, 'Pokaż', 'EntityConflictDialog show action');
-has(dialog, 'Przywróć', 'EntityConflictDialog restore action');
+has(dialog, 'Poka\u017C', 'EntityConflictDialog show action');
+has(dialog, 'Przywr\u00F3\u0107', 'EntityConflictDialog restore action');
 has(dialog, 'Dodaj mimo to', 'EntityConflictDialog create anyway action');
 
 for (const [name, source, targetType] of [['Leads', leads, 'lead'], ['Clients', clients, 'client']]) {
@@ -68,4 +68,3 @@ assert(pkg.scripts && pkg.scripts['check:closeflow-duplicate-warning-ux-full'] =
 console.log('CLOSEFLOW_DUPLICATE_WARNING_UX_FULL_CHECK_OK');
 console.log('fields=email,phone,name,company');
 console.log('entities=lead,client');
-

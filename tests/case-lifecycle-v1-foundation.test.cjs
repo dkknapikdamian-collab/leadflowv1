@@ -42,6 +42,6 @@ test('Case lifecycle foundation documentation exists', () => {
   const doc = read('docs/CASE_LIFECYCLE_V1_FOUNDATION_2026-04-24.md');
 
   assert.match(doc, /Case lifecycle V1 foundation/);
-  assert.match(doc, /jedną prawdą operacyjną/);
+  assert.match(doc, /jedn\u0105 prawd\u0105 operacyjn\u0105/);
   assert.match(doc, /needs_next_step/);
 });

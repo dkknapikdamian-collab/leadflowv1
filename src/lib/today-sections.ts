@@ -1,4 +1,4 @@
-﻿export type TodaySectionKey =
+export type TodaySectionKey =
   | 'review'
   | 'overdue'
   | 'move_today'

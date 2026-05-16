@@ -19,7 +19,7 @@ if (!indexCss.trim().endsWith(importLine)) fail('semantic badges css import must
 
 [
   'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES',
-  "czeka za długo bez świeżego ruchu",
+  "czeka za d\u0142ugo bez \u015Bwie\u017Cego ruchu",
   'semanticBadgeClass',
   'openTodaySection',
   'scrollToTodaySection',

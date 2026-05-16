@@ -25,7 +25,7 @@ if (!quick.includes("import { saveAiLeadDraftAsync, type AiLeadDraftSource } fro
   fail('QuickAiCapture must import saveAiLeadDraftAsync');
 }
 if (!quick.includes('await saveAiLeadDraftAsync({')) fail('QuickAiCapture must await saveAiLeadDraftAsync');
-if (!quick.includes('Nie udało się zapisać szkicu AI w Supabase')) fail('QuickAiCapture missing Supabase save error copy');
+if (!quick.includes('Nie uda\u0142o si\u0119 zapisa\u0107 szkicu AI w Supabase')) fail('QuickAiCapture missing Supabase save error copy');
 
 const runtimeBody = quick.slice(0, quick.indexOf('/*\nPHASE0_QUICK_AI_CAPTURE_GUARD'));
 if (runtimeBody.includes('saveAiLeadDraft({')) {

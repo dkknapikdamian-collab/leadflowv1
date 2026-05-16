@@ -84,7 +84,7 @@ assert(stable.includes(STAGE14_MARKER), 'TodayStable is missing Stage14 marker')
 assert(sectionHeaderIconIsSafe(stable), 'SectionHeaderIcon recursion detected');
 assert(today.includes(LEGACY_MARKER), 'Today.tsx is not marked as legacy inactive');
 assert(doc.includes(LEGACY_MARKER), 'Stage15 document does not record Today.tsx legacy marker');
-assert(doc.includes('Aktywny route Dziś'), 'Stage15 document missing active route section');
+assert(doc.includes('Aktywny route Dzi\u015B'), 'Stage15 document missing active route section');
 assert(doc.includes('legacy inactive'), 'Stage15 document missing legacy inactive decision');
 assert(danger.includes('legacy inactive Today.tsx exception'), 'Danger audit does not separate legacy Today.tsx exception');
 assert(danger.includes('blockingFindings.length'), 'Danger audit blocking logic appears weakened');
@@ -98,4 +98,3 @@ for (const rel of ['scripts/check-closeflow-legacy-today-route-contract.cjs', 'd
 }
 
 console.log('CLOSEFLOW_LEGACY_TODAY_ROUTE_CONTRACT_STAGE15_OK: active=TodayStable legacyToday=inactive dangerAudit=legacy-exception');
-

@@ -10,7 +10,7 @@ test(marker, () => {
   const pkg = fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8');
   assert.ok(tsx.includes(marker));
   assert.ok(!tsx.includes('Klient jest rekordem zbiorczym'));
-  assert.ok(!tsx.includes('Po wejściu w obsługę pracuj na konkretnej sprawie'));
+  assert.ok(!tsx.includes('Po wej\u015Bciu w obs\u0142ug\u0119 pracuj na konkretnej sprawie'));
   assert.ok(css.includes(marker));
   assert.ok(css.includes('grid-template-columns: minmax(0, 1.15fr)'));
   assert.ok(css.includes('-webkit-line-clamp: 2 !important;'));

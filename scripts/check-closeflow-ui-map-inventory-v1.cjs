@@ -20,16 +20,16 @@ for (const file of [auditScript, cleanScannerScript, jsonPath, mdPath]) {
 
 let data;
 try { data = JSON.parse(fs.readFileSync(jsonPath, 'utf8')); }
-catch (error) { fail('Nie da się odczytać JSON: ' + error.message); }
+catch (error) { fail('Nie da si\u0119 odczyta\u0107 JSON: ' + error.message); }
 
 if (data.inventoryVersion !== 'CLOSEFLOW_UI_MAP_INVENTORY_V1') fail('Niepoprawna inventoryVersion');
 if (data.scannerVersion !== 'CLEAN_SCANNER_V4') fail('Brak scannerVersion=CLEAN_SCANNER_V4');
-if (!Number.isFinite(data.filesScanned) || data.filesScanned < 5) fail('Podejrzanie mało przeskanowanych plików');
+if (!Number.isFinite(data.filesScanned) || data.filesScanned < 5) fail('Podejrzanie ma\u0142o przeskanowanych plik\u00F3w');
 if (!Array.isArray(data.directLucideIconImports)) fail('Brak directLucideIconImports[]');
 if (!Array.isArray(data.metricTileUsages)) fail('Brak metricTileUsages[]');
 if (!Array.isArray(data.layoutEvidence)) fail('Brak layoutEvidence[]');
 if (!data.semanticIconRoles || typeof data.semanticIconRoles !== 'object') fail('Brak semanticIconRoles');
-if (data.directLucideIconImports.length < 80) fail('Podejrzanie mało importów lucide-react. Skaner może nie łapać realnych ikon.');
+if (data.directLucideIconImports.length < 80) fail('Podejrzanie ma\u0142o import\u00F3w lucide-react. Skaner mo\u017Ce nie \u0142apa\u0107 realnych ikon.');
 
 const forbiddenNonIconNames = new Set([
   'useEffect','useState','useMemo','useCallback','useRef','ReactNode','FormEvent','ChangeEvent','MouseEvent',
@@ -45,16 +45,16 @@ const md = fs.readFileSync(mdPath, 'utf8');
 for (const needle of [
   'CloseFlow UI Map Inventory v1',
   'Scanner: **CLEAN_SCANNER_V4**',
-  'Mapa ikon według roli',
-  'Użycia kafelków / StatShortcutCard',
-  'Położenie / layout CSS',
-  'Następny krok po zatwierdzeniu mapy'
+  'Mapa ikon wed\u0142ug roli',
+  'U\u017Cycia kafelk\u00F3w / StatShortcutCard',
+  'Po\u0142o\u017Cenie / layout CSS',
+  'Nast\u0119pny krok po zatwierdzeniu mapy'
 ]) {
   if (!md.includes(needle)) fail('Brak sekcji w MD: ' + needle);
 }
 
 for (const bad of forbiddenNonIconNames) {
-  if (md.includes(bad + ' (') || md.includes('>' + bad + '<')) fail('MD nadal zawiera nie-ikonę w mapie: ' + bad);
+  if (md.includes(bad + ' (') || md.includes('>' + bad + '<')) fail('MD nadal zawiera nie-ikon\u0119 w mapie: ' + bad);
 }
 
 console.log('CLOSEFLOW_UI_MAP_INVENTORY_V1_CHECK_OK');

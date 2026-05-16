@@ -28,7 +28,7 @@ assert(scheduling.includes("from './task-event-contract'"), 'scheduling does not
 assert(scheduling.includes('getTaskStartAt'), 'scheduling does not export getTaskStartAt');
 assert(!scheduling.includes('function normalizeScheduleDateTimeValue'), 'scheduling still owns normalizeScheduleDateTimeValue');
 assert(today.includes('Zablokowane sprawy'), 'Today missing blocked cases tile');
-assert(today.includes('Brak następnego kroku'), 'Today missing clear without-action explanation');
+assert(today.includes('Brak nast\u0119pnego kroku'), 'Today missing clear without-action explanation');
 assert(today.includes('Brak zmiany 7+ dni'), 'Today missing clear without-movement explanation');
 assert(today.includes('<TodayPipelineValueCard leads={leads} cases={cases} />'), 'TodayPipelineValueCard call missing cases');
 

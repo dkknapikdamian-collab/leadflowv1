@@ -10,6 +10,6 @@ test(marker, () => {
   assert.ok(!tsx.includes('Klient jako centrum relacji'));
   assert.ok(tsx.includes('recentClientMovements'));
   assert.ok(tsx.includes('data-client-recent-moves-panel="true"'));
-  assert.ok(tsx.includes('Zobacz całą aktywność'));
+  assert.ok(tsx.includes('Zobacz ca\u0142\u0105 aktywno\u015B\u0107'));
   assert.ok(css.includes(marker));
 });

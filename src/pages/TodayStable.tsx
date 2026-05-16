@@ -1,4 +1,4 @@
-﻿import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
 import {
@@ -1667,4 +1667,3 @@ function TodayStable() {
 /* CLOSEFLOW_STAGE89_TODAYSTABLE_EXPLICIT_EXPORT_CONTRACT: lazy runtime needs both named and default exports. */
 export { TodayStable };
 export default TodayStable;
-

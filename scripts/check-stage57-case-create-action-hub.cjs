@@ -39,5 +39,3 @@ contains('package.json', 'check:stage57-case-create-action-hub && npm.cmd run ch
 contains('tests/stage57-case-create-action-hub.test.cjs', marker, 'Stage57 test marker');
 contains('docs/release/STAGE57_CASE_CREATE_ACTION_HUB_2026-05-04.md', marker, 'Stage57 release marker');
 console.log('PASS ' + marker);
-
-

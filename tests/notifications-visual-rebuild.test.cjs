@@ -16,13 +16,13 @@ function has(text) {
 
 has('Powiadomienia');
 has('POWIADOMIENIA');
-has('Przypomnienia, zaległe rzeczy i alerty, których nie możesz przegapić.');
+has('Przypomnienia, zaleg\u0142e rzeczy i alerty, kt\u00F3rych nie mo\u017Cesz przegapi\u0107.');
 
-['Wszystkie', 'Do reakcji', 'Zaległe', 'Dzisiaj', 'Nadchodzące'].forEach(has);
+['Wszystkie', 'Do reakcji', 'Zaleg\u0142e', 'Dzisiaj', 'Nadchodz\u0105ce'].forEach(has);
 ['kindLabel(row.kind)', 'row.title', 'row.relationLabel', 'row.timeLabel', 'row.statusLabel'].forEach((needle) => {
   assert.ok(page.includes(needle), `Notification row does not include ${needle}`);
 });
-['Otwórz', 'Odłóż', 'Przeczytane'].forEach(has);
+['Otw\u00F3rz', 'Od\u0142\u00F3\u017C', 'Przeczytane'].forEach(has);
 ['15m', '1h', 'Jutro'].forEach(has);
 
 ['notification_runtime', 'browser_permission_denied', 'digest_job_failed'].forEach((technicalLabel) => {

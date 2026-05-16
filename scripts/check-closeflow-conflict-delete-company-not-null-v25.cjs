@@ -13,7 +13,7 @@ if (!fallback.includes('JSON.stringify(sanitizeLeadCompanyForNotNull(input))')) 
 if (!fallback.includes('export async function deleteLeadFromSupabase')) fail('deleteLeadFromSupabase export missing');
 const dialog = read('src/components/EntityConflictDialog.tsx');
 if (!dialog.includes('onDeleteCandidate')) fail('EntityConflictDialog missing onDeleteCandidate');
-if (!dialog.includes('>Usuń')) fail('EntityConflictDialog missing delete button label');
+if (!dialog.includes('>Usu\u0144')) fail('EntityConflictDialog missing delete button label');
 const leads = read('src/pages/Leads.tsx');
 if (!leads.includes('deleteLeadFromSupabase')) fail('Leads.tsx missing deleteLeadFromSupabase');
 if (!leads.includes('deleteClientFromSupabase')) fail('Leads.tsx missing deleteClientFromSupabase');

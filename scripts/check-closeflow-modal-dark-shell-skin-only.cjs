@@ -46,4 +46,4 @@ if (!app.includes("./styles/closeflow-modal-visual-system.css")) {
   throw new Error('App.tsx does not import closeflow-modal-visual-system.css');
 }
 
-console.log('✔ CloseFlow modal dark shell skin-only contract OK');
+console.log('\u2714 CloseFlow modal dark shell skin-only contract OK');

@@ -53,7 +53,7 @@ ok(pkg.includes('"check:closeflow-fb2-leads-list-right-rail-cleanup"'), 'package
 ok(doc.includes('CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP'), 'doc has FB-2 marker');
 ok(doc.includes('Najcenniejsze leady'), 'doc records right rail label decision');
 ok(doc.includes('Telefon nie jest zdublowany'), 'doc records phone dedupe decision');
-ok(doc.includes('nie zmienia finansów'), 'doc records finance untouched constraint');
+ok(doc.includes('nie zmienia finans\u00F3w'), 'doc records finance untouched constraint');
 
 console.log(`\nSummary: ${pass} pass, ${failures.length} fail.`);
 if (failures.length) {

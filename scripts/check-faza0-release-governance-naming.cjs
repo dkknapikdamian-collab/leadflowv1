@@ -30,12 +30,12 @@ assert(exists('docs/release/CLOSEFLOW_PUBLIC_SOURCE_MAP_2026-05-02.md'), 'Etap 0
 const stageIndex = read('docs/release/RELEASE_GOVERNANCE_STAGE_INDEX_2026-05-03.md');
 const sourceMap = read('docs/release/CLOSEFLOW_PUBLIC_SOURCE_MAP_2026-05-02.md');
 
-assert(stageIndex.includes('FAZA 0 — Release governance i jedno źródło prawdy'), 'stage index missing exact FAZA 0 name');
-assert(stageIndex.includes('Etap 0.1 — Release Candidate Evidence Gate'), 'stage index missing exact Etap 0.1 name');
-assert(stageIndex.includes('Etap 0.2 — Mapa domen / deploymentów / publicznych źródeł'), 'stage index missing exact Etap 0.2 name');
-assert(stageIndex.includes('FAZA 1 — UI truth, copy truth, legal truth'), 'stage index missing next FAZA 1 name');
+assert(stageIndex.includes('FAZA 0 \u2014 Release governance i jedno \u017Ar\u00F3d\u0142o prawdy'), 'stage index missing exact FAZA 0 name');
+assert(stageIndex.includes('Etap 0.1 \u2014 Release Candidate Evidence Gate'), 'stage index missing exact Etap 0.1 name');
+assert(stageIndex.includes('Etap 0.2 \u2014 Mapa domen / deployment\u00F3w / publicznych \u017Ar\u00F3de\u0142'), 'stage index missing exact Etap 0.2 name');
+assert(stageIndex.includes('FAZA 1 \u2014 UI truth, copy truth, legal truth'), 'stage index missing next FAZA 1 name');
 
-assert(sourceMap.includes('FAZA 0 — Etap 0.2 — Mapa domen / deploymentów / publicznych źródeł'), 'source map missing exact Etap 0.2 title');
+assert(sourceMap.includes('FAZA 0 \u2014 Etap 0.2 \u2014 Mapa domen / deployment\u00F3w / publicznych \u017Ar\u00F3de\u0142'), 'source map missing exact Etap 0.2 title');
 assert(sourceMap.includes('github.com/dkknapikdamian-collab/leadflowv1'), 'source map missing repo source of truth');
 assert(sourceMap.includes('dev-rollout-freeze'), 'source map missing branch source of truth');
 assert(sourceMap.includes('closeflow.studio'), 'source map must classify closeflow.studio');

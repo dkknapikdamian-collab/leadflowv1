@@ -12,7 +12,7 @@ import { ClipboardList } from 'lucide-react';
  * {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}
  * {canUseAiDraftsByPlan ? ( to="/ai-drafts" ) : null}
  */
-﻿/* legacy-guard-global-actions-class-top: className="global-actions" */
+/* legacy-guard-global-actions-class-top: className="global-actions" */
 /*
 GLOBAL_QUICK_ACTIONS_SINGLE_SOURCE_V97
 GLOBAL_QUICK_ACTIONS_TOOLBAR_A11Y_V97

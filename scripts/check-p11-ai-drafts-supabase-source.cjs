@@ -38,10 +38,10 @@ expect(today.includes('await saveAiLeadDraftAsync'), 'TodayAiAssistant must awai
 // P11C_FINISH_GUARD
 expect(!today.includes('saveAiLeadDraft({'), 'TodayAiAssistant must not contain sync saveAiLeadDraft call after Supabase-first migration');
 expect(!today.includes('if (!latestUsage.canUse && !latestUsage.adminExempt) {\n    if (!latestUsage.canUse && !latestUsage.adminExempt) {'), 'TodayAiAssistant must not contain duplicated latestUsage newline seam');
-expect(today.includes('Nie udało się zapisać szkicu AI w Supabase'), 'TodayAiAssistant must show Supabase save error');
+expect(today.includes('Nie uda\u0142o si\u0119 zapisa\u0107 szkicu AI w Supabase'), 'TodayAiAssistant must show Supabase save error');
 expect(today.includes('Szkic zapisany w Supabase'), 'TodayAiAssistant success copy must be Supabase-backed');
 
-expect(page.includes('Nie udało się pobrać szkiców AI z Supabase'), 'AiDrafts page must show Supabase fetch error');
+expect(page.includes('Nie uda\u0142o si\u0119 pobra\u0107 szkic\u00F3w AI z Supabase'), 'AiDrafts page must show Supabase fetch error');
 expect(page.includes('await getAiLeadDraftsAsync()'), 'AiDrafts page must load drafts from async Supabase source');
 expect(page.includes("rawText: ''"), 'AiDrafts approval/archive must clear rawText');
 

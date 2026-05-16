@@ -4,7 +4,7 @@ const path = require('path');
 const root = process.cwd();
 const STAGE = 'CLOSEFLOW_METRIC_TILES_FINAL_MIGRATION_VS5';
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
-function countTaskTiles(text) { const jsx = (text.match(/<StatShortcutCard\b/g) || []).length; const labels = ['Aktywne','Dziś','Zaległe','Zrobione'].filter((label) => text.includes("label: '" + label + "'") || text.includes('label: "' + label + '"')).length; return Math.max(jsx, labels); }
+function countTaskTiles(text) { const jsx = (text.match(/<StatShortcutCard\b/g) || []).length; const labels = ['Aktywne','Dzi\u015B','Zaleg\u0142e','Zrobione'].filter((label) => text.includes("label: '" + label + "'") || text.includes('label: "' + label + '"')).length; return Math.max(jsx, labels); }
 const screens = [
   { route: '/tasks', file: 'src/pages/TasksStable.tsx', marker: 'MetricGrid', count: countTaskTiles(read('src/pages/TasksStable.tsx')) },
   { route: '/cases', file: 'src/pages/Cases.tsx', marker: 'legacy grid evidence', count: (read('src/pages/Cases.tsx').match(/<StatShortcutCard\b/g) || []).length },

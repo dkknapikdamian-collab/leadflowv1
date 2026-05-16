@@ -1,4 +1,4 @@
-﻿export type AssistantResultMode = 'read' | 'draft' | 'unknown';
+export type AssistantResultMode = 'read' | 'draft' | 'unknown';
 
 export type AssistantResultShape = {
   mode: AssistantResultMode;

@@ -137,7 +137,7 @@ function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
                     {getClientVisibleNotes(activities, client).map((note) => (
                       <article key={note.id} className="client-detail-note-item" data-client-note-item="true">
                         <p>{note.content}</p>
-                        <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
+                        <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwil\u0105'}</small>
                       </article>
                     ))}
                   </div>
@@ -151,14 +151,14 @@ function getClientVisibleNotes(activityRows: any[], clientRecord: any) {
 
   if (!text.includes('className="client-detail-case-smart-delete-icon-button"')) {
     text = text.replace(
-      /<Button type="button" size="sm" variant="outline" onClick=\{\(\) => toast\.info\('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy\.'\)\}>\s*Usuń\s*<\/Button>/g,
+      /<Button type="button" size="sm" variant="outline" onClick=\{\(\) => toast\.info\('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy\.'\)\}>\s*Usu\u0144\s*<\/Button>/g,
       `<Button
                               type="button"
                               size="sm"
                               variant="outline"
                               className="client-detail-case-smart-delete-icon-button"
-                              aria-label="Usuń sprawę"
-                              title="Usuń sprawę"
+                              aria-label="Usu\u0144 spraw\u0119"
+                              title="Usu\u0144 spraw\u0119"
                               onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
                             >
                               <Trash2 className="h-4 w-4" aria-hidden="true" />

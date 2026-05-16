@@ -61,7 +61,7 @@ function patchLayout() {
 
   const userLabelsBlock = [
     "  const userEmail = profile?.email || supabaseUser?.email || '';",
-    "  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';",
+    "  const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'U\u017Cytkownik';",
     "  const userInitial = (userName.trim().charAt(0) || userEmail.trim().charAt(0) || 'U').toUpperCase();",
   ].join('\n');
 
@@ -145,7 +145,7 @@ function patchFirebaseLegacyMarker() {
   if (!content.includes(marker)) {
     content = content.replace(
       'const app = initializeApp(firebaseConfig);',
-      `// ${marker}: Firebase zostaje tylko jako legacy compatibility do późniejszego wygaszenia.\n// Runtime shell i ekran Dziś nie mogą używać Firebase Auth.\nconst app = initializeApp(firebaseConfig);`,
+      `// ${marker}: Firebase zostaje tylko jako legacy compatibility do p\u00F3\u017Aniejszego wygaszenia.\n// Runtime shell i ekran Dzi\u015B nie mog\u0105 u\u017Cywa\u0107 Firebase Auth.\nconst app = initializeApp(firebaseConfig);`,
     );
     write(firebasePath, content);
   }

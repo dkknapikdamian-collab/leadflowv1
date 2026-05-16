@@ -25,7 +25,7 @@ test('admin AI config foundation is wired behind admin navigation and consolidat
   assert.match(layout, /isAdmin/);
   assert.match(layout, /AI admin/);
   assert.match(layout, /\/settings\/ai/);
-  assert.match(page, /Dostęp tylko dla admina/);
+  assert.match(page, /Dost\u0119p tylko dla admina/);
   assert.match(page, /Konfiguracja AI/);
   assert.match(client, /fetchAiConfigDiagnostics/);
   assert.match(client, /\/api\/system\?kind=ai-config/);

@@ -5,7 +5,7 @@
  * Dodaj wydarzenie spotkanie z klientem jutro o 12:00 Zapisz kontakt Jan Kowalski, dzwonił w sprawie strony Zapisz to
  * expectedMayCreateDraft: false expectedMayCreateDraft: true
  */
-﻿export type AssistantIntent = 'read' | 'draft' | 'unknown';
+export type AssistantIntent = 'read' | 'draft' | 'unknown';
 
 const WRITE_RE = /\b(zapisz|dodaj|utw[oó]rz|stw[oó]rz|za[lł][oó][zż]|wpisz|przygotuj\s+szkic|mam\s+leada)\b/i;
 const READ_RE = /\b(co|czy|kiedy|na\s+kiedy|znajd[zź]|poka[zż]|wyszukaj|mam|najbli[zż]szy|najbli[zż]sza|gdzie|ile)\b/i;

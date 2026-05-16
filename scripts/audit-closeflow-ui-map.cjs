@@ -21,7 +21,7 @@ function walk(dir, acc = []) {
 function rel(file) { return path.relative(root, file).replace(/\\/g, '/'); }
 function lineNo(text, idx) { return text.slice(0, idx).split(/\r?\n/).length; }
 
-const actionTerms = ['Dodaj notatkę','Dodaj zadanie','Dodaj sprawę','Usuń','Edytuj','Zapisz','Anuluj','Kopiuj','Dyktuj','Nowa sprawa','Dodaj'];
+const actionTerms = ['Dodaj notatk\u0119','Dodaj zadanie','Dodaj spraw\u0119','Usu\u0144','Edytuj','Zapisz','Anuluj','Kopiuj','Dyktuj','Nowa sprawa','Dodaj'];
 const files = walk(srcDir);
 const result = {
   generatedAt: new Date().toISOString(),
@@ -71,7 +71,7 @@ for (const file of files) {
 }
 
 const md = [];
-md.push('# CloseFlow UI Map — generated');
+md.push('# CloseFlow UI Map \u2014 generated');
 md.push('');
 md.push(`Generated: ${result.generatedAt}`);
 md.push(`Source files scanned: ${result.sourceFiles}`);

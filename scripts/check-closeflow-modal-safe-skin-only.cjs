@@ -21,4 +21,4 @@ const forbidden = [
 for (const needle of forbidden) {
   if (css.includes(needle)) throw new Error(`Forbidden layout/position override in skin-only CSS: ${needle}`);
 }
-console.log('✔ closeflow modal safe skin-only CSS keeps position and covers lead/client/case form local skins');
+console.log('\u2714 closeflow modal safe skin-only CSS keeps position and covers lead/client/case form local skins');

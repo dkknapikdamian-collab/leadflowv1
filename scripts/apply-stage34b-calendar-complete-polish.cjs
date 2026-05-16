@@ -188,7 +188,7 @@ function patchCalendarItems() {
 
   const dateField = firstText(row.date, row.eventDate, row.event_date, row.scheduledDate, row.scheduled_date);
   const timeField = firstText(row.time, row.eventTime, row.event_time, row.scheduled_time) || '09:00';
-  const composed = dateField ? dateField + 'T' + timeField : ''; 
+  const composed = dateField ? dateField + 'T' + timeField : '';
   return composed && isIsoLike(composed) ? composed : '';
 }`;
 

@@ -117,19 +117,19 @@ const hasCasesDeleteAction =
   casesAll.includes('deleteCaseWithRelations') ||
   casesAll.includes('deleteCaseFromSupabase');
 
-if (!hasCasesDeleteAction || !casesAll.includes('Usuń')) {
+if (!hasCasesDeleteAction || !casesAll.includes('Usu\u0144')) {
   fail('Cases list must expose a visible delete action.');
 }
 
-if (casesPage.includes('% kompletności')) {
-  fail('Cases list source must not render literal x% kompletności.');
+if (casesPage.includes('% kompletno\u015Bci')) {
+  fail('Cases list source must not render literal x% kompletno\u015Bci.');
 }
 
 const forbiddenCaseTitleGenerators = [
-  "`${String(client?.name || client?.company || 'Klient')} - obsługa`",
-  "`${option.name} - obsługa`",
-  ' - obs┼',
-  ' - obsĹ',
+  "`${String(client?.name || client?.company || 'Klient')} - obs\u0142uga`",
+  "`${option.name} - obs\u0142uga`",
+  ' - obs\u253C',
+  ' - obs\u0139',
 ];
 
 for (const forbidden of forbiddenCaseTitleGenerators) {
@@ -141,7 +141,7 @@ for (const forbidden of forbiddenCaseTitleGenerators) {
 const hasCleanTitleStrategy =
   casesPage.includes('cleanCaseListTitle') ||
   casesPage.includes('sanitizeCaseListTitle') ||
-  (!casesPage.includes(' - obsługa') && !casesPage.includes('obs┼') && !casesPage.includes('obsĹ'));
+  (!casesPage.includes(' - obs\u0142uga') && !casesPage.includes('obs\u253C') && !casesPage.includes('obs\u0139'));
 
 if (!hasCleanTitleStrategy) {
   fail('Cases list must clean or avoid technical title suffix.');

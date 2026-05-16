@@ -9,7 +9,7 @@ test(marker, () => {
   const css = fs.readFileSync(path.join(process.cwd(), 'src/styles/visual-stage12-client-detail-vnext.css'), 'utf8');
   assert.ok(tsx.includes(marker));
   assert.ok(!tsx.includes('Klient jest rekordem zbiorczym'));
-  assert.ok(!tsx.includes('Po wejściu w obsługę pracuj na konkretnej sprawie'));
+  assert.ok(!tsx.includes('Po wej\u015Bciu w obs\u0142ug\u0119 pracuj na konkretnej sprawie'));
   assert.ok(css.includes(marker));
   assert.ok(css.includes('.client-detail-case-row-wide'));
   assert.ok(css.includes('-webkit-line-clamp: 2;'));

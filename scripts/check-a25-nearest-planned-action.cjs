@@ -37,7 +37,7 @@ if (exists('src/lib/planned-actions.ts')) {
   expect(helper.includes("'client'"), 'helper must support client');
   expect(helper.includes('normalizeCalendarTask'), 'helper must use tasks');
   expect(helper.includes('normalizeCalendarEvent'), 'helper must use events');
-  expect(helper.includes('Brak zaplanowanych działań'), 'helper must expose empty planned action label');
+  expect(helper.includes('Brak zaplanowanych dzia\u0142a\u0144'), 'helper must expose empty planned action label');
   expect(helper.includes('Bez zaplanowanej akcji'), 'helper must expose Today planned action label');
 }
 
@@ -57,7 +57,7 @@ const uiFiles = ['src/pages/Today.tsx', 'src/pages/Leads.tsx', 'src/pages/LeadDe
 for (const file of uiFiles) {
   if (!exists(file)) continue;
   const content = read(file);
-  expect(!content.includes('Następny krok'), file + ' still contains old label "Następny krok"');
+  expect(!content.includes('Nast\u0119pny krok'), file + ' still contains old label "Nast\u0119pny krok"');
 }
 
 const today = exists('src/pages/Today.tsx') ? read('src/pages/Today.tsx') : '';

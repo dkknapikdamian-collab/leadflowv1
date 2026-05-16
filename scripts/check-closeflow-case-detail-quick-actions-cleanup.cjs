@@ -4,10 +4,10 @@ const ROOT = process.cwd();
 function read(rel) { return fs.readFileSync(path.join(ROOT, rel), 'utf8').replace(/\r\n/g, '\n'); }
 function exists(rel) { return fs.existsSync(path.join(ROOT, rel)); }
 function fail(message) {
-  console.error(`✘ ETAP9 CaseDetail quick actions cleanup guard failed: ${message}`);
+  console.error(`\u2718 ETAP9 CaseDetail quick actions cleanup guard failed: ${message}`);
   process.exit(1);
 }
-function ok(message) { console.log(`✔ ${message}`); }
+function ok(message) { console.log(`\u2714 ${message}`); }
 function findMatchingTagEnd(text, startIndex, tagName) {
   const tagRe = new RegExp(`<\\/?${tagName}\\b[^>]*>`, 'gi');
   tagRe.lastIndex = startIndex;

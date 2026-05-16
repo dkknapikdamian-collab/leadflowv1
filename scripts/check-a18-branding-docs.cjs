@@ -59,7 +59,7 @@ if (/public-prefixed Gemini API key\s*=/.test(env)) errors.push('.env.example mu
 if (/AI Studio automatically injects|Google AI Studio App/i.test(env)) errors.push('.env.example still contains AI Studio copy');
 
 const prod = read('docs/PRODUCTION_READINESS_STATUS.md');
-for (const needle of ['nie oznaczać jako w pełni produkcyjnie gotowe', 'Supabase-first', 'legacy/decommission', 'backend-only']) {
+for (const needle of ['nie oznacza\u0107 jako w pe\u0142ni produkcyjnie gotowe', 'Supabase-first', 'legacy/decommission', 'backend-only']) {
   if (!prod.includes(needle)) errors.push(`PRODUCTION_READINESS_STATUS.md missing: ${needle}`);
 }
 

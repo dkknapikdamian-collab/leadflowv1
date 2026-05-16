@@ -17,9 +17,9 @@ expect(toolbar.includes('clearAdminFeedbackItems'), 'toolbar must import/use cle
 expect(toolbar.includes('refreshAdminFeedbackCounters'), 'toolbar must refresh local counters after export');
 expect(toolbar.includes('exportJsonAndClear'), 'JSON export must clear counters');
 expect(toolbar.includes('exportMarkdownAndClear'), 'Markdown export must clear counters');
-expect(toolbar.includes('Pobierz JSON i wyczyść licznik'), 'JSON export button copy must be explicit');
-expect(toolbar.includes('Pobierz Markdown i wyczyść licznik'), 'Markdown export button copy must be explicit');
-expect(toolbar.includes('Wyeksportowano ${kind} i wyczyszczono licznik zgłoszeń'), 'success toast must tell counters were cleared');
+expect(toolbar.includes('Pobierz JSON i wyczy\u015B\u0107 licznik'), 'JSON export button copy must be explicit');
+expect(toolbar.includes('Pobierz Markdown i wyczy\u015B\u0107 licznik'), 'Markdown export button copy must be explicit');
+expect(toolbar.includes('Wyeksportowano ${kind} i wyczyszczono licznik zg\u0142osze\u0144'), 'success toast must tell counters were cleared');
 expect(storage.includes('ADMIN_FEEDBACK_EXPORT_CLEAR_COUNTERS_STAGE89'), 'storage must carry Stage89 clear marker');
 expect(storage.includes('export function clearAdminFeedbackItems()'), 'storage must expose clearAdminFeedbackItems');
 expect(storage.includes('writeReviewItems([])'), 'clearAdminFeedbackItems must clear review items');

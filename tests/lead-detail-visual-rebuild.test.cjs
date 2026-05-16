@@ -1,4 +1,4 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const { mojibakeWords } = require('../scripts/mojibake-markers.cjs');
@@ -21,12 +21,12 @@ const css = fs.readFileSync(cssPath, 'utf8');
 const requiredPage = [
   'LEAD_DETAIL_VISUAL_REBUILD_STAGE14',
   'Leady /',
-  'SZCZEGĂ“ĹY LEADA',
-  'Najbliższa zaplanowana akcja',
-  'Brak zaplanowanych dziaĹ‚aĹ„.',
-  'Ten temat jest juĹĽ w obsĹ‚udze',
-  'OtwĂłrz sprawÄ™',
-  'Rozpocznij obsĹ‚ugÄ™',
+  'SZCZEG\u00D3\u0139\u0081Y LEADA',
+  'Najbli\u017Csza zaplanowana akcja',
+  'Brak zaplanowanych dzia\u0142a\u0144.',
+  'Ten temat jest ju\u017C w obs\u0142udze',
+  'Otw\u00F3rz spraw\u0119',
+  'Rozpocznij obs\u0142ug\u0119',
   'Dane kontaktowe',
   'Zadania i wydarzenia',
   'Historia kontaktu',
@@ -34,14 +34,14 @@ const requiredPage = [
   '+1D',
   '+1W',
   'Zrobione',
-  'UsuĹ„',
+  'Usu\u0144',
 ];
 
 for (const needle of requiredPage) {
   if (!page.includes(needle)) fail(`missing page copy: ${needle}`);
 }
 
-if (page.includes('NastÄ™pny krok')) fail('sales next step field returned');
+if (page.includes('Nast\u0119pny krok')) fail('sales next step field returned');
 
 const technicalLabels = ['task_updated', 'lead_status_changed', 'event_deleted'];
 for (const label of technicalLabels) {
@@ -80,4 +80,3 @@ for (const mojibake of Object.values(mojibakeWords)) {
 }
 
 console.log('PASS lead detail visual rebuild');
-

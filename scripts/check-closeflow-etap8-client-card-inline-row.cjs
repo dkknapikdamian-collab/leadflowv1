@@ -5,10 +5,10 @@ const path = require('path');
 
 const root = process.cwd();
 const fail = (message) => {
-  console.error(`✘ ETAP8 repair3 client inline guard failed: ${message}`);
+  console.error(`\u2718 ETAP8 repair3 client inline guard failed: ${message}`);
   process.exit(1);
 };
-const ok = (message) => console.log(`✔ ${message}`);
+const ok = (message) => console.log(`\u2714 ${message}`);
 
 function read(rel) {
   const file = path.join(root, rel);

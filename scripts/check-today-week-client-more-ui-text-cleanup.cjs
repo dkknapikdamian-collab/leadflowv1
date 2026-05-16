@@ -109,7 +109,7 @@ assert(today.includes('/calendar?view=week'), 'Today missing weekly calendar URL
 
 assert(!clientDetailUi.includes("key: 'more'"), 'ClientDetail still contains more tab key');
 assert(!clientDetailUi.includes('key: "more"'), 'ClientDetail still contains more tab key');
-assert(!clientDetailUi.includes('Więcej'), 'ClientDetail still contains Więcej text');
+assert(!clientDetailUi.includes('Wi\u0119cej'), 'ClientDetail still contains Wi\u0119cej text');
 assert(!clientDetailUi.includes('Wiecej'), 'ClientDetail still contains Wiecej text');
 assert(!clientDetailUi.includes('CLIENT_DETAIL_MORE_MENU_SECONDARY'), 'ClientDetail still contains old more marker');
 assert(!clientDetailUi.includes('CLIENT_DETAIL_TABS_KARTOTEKA_RELACJE_HISTORIA_WIECEJ'), 'ClientDetail still contains old more tabs marker');
@@ -118,13 +118,13 @@ const forbiddenTexts = [
   'Zasada tego panelu',
   'Tu nie prowadzimy pracy',
   'Nie usuwamy funkcji',
-  'Przenosimy je tam, gdzie mają sens',
+  'Przenosimy je tam, gdzie maj\u0105 sens',
   'Przenosimy je tam, gdzie maja sens',
-  'To będzie osobnym etapem',
+  'To b\u0119dzie osobnym etapem',
   'To bedzie osobnym etapem',
-  'Krótki pulpit. Tylko rzeczy',
+  'Kr\u00F3tki pulpit. Tylko rzeczy',
   'Krotki pulpit. Tylko rzeczy',
-  'Najważniejsze dla tego klienta',
+  'Najwa\u017Cniejsze dla tego klienta',
   'Najwazniejsze dla tego klienta',
 ];
 

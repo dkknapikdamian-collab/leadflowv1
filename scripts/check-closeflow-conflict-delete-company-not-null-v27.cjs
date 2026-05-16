@@ -26,7 +26,7 @@ if (!/company\s*:\s*[^,}]*\|\|\s*''/.test(leadsApi) && !leadsApi.includes('asLea
 
 const dialog = read('src/components/EntityConflictDialog.tsx');
 if (!dialog.includes('onDeleteCandidate')) fail('EntityConflictDialog missing onDeleteCandidate');
-if (!dialog.includes('Usuń')) fail('EntityConflictDialog missing Usuń button copy');
+if (!dialog.includes('Usu\u0144')) fail('EntityConflictDialog missing Usu\u0144 button copy');
 
 const leads = read('src/pages/Leads.tsx');
 if (!leads.includes('handleDeleteConflictCandidate')) fail('Leads.tsx missing handleDeleteConflictCandidate');

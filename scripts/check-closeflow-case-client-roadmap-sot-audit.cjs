@@ -15,10 +15,10 @@ const text = fs.readFileSync(DOC, 'utf8');
 const requiredSnippets = [
   'ETAP 0',
   'audyt realnego kodu',
-  'Nie zmieniać:',
-  'Lista bugów',
-  'Obecne źródło danych',
-  'Docelowe źródło danych',
+  'Nie zmienia\u0107:',
+  'Lista bug\u00F3w',
+  'Obecne \u017Ar\u00F3d\u0142o danych',
+  'Docelowe \u017Ar\u00F3d\u0142o danych',
   'src/pages/CaseDetail.tsx',
   'src/pages/ClientDetail.tsx',
   'src/pages/Clients.tsx',
@@ -59,9 +59,9 @@ for (const snippet of requiredSnippets) {
 }
 
 const forbiddenRuntimeChangeClaims = [
-  'UI zostało zmienione',
-  'logika została zmieniona',
-  'dane zostały zmienione',
+  'UI zosta\u0142o zmienione',
+  'logika zosta\u0142a zmieniona',
+  'dane zosta\u0142y zmienione',
   'naprawiono runtime',
 ];
 

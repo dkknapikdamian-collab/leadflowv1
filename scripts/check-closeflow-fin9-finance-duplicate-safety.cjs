@@ -9,7 +9,7 @@ function mustNot(text, needle, label){ if(!text.includes(needle)) pass(label); e
 const lib = read('src/lib/finance/finance-duplicate-safety.ts');
 must(lib, 'CLOSEFLOW_FIN9_FINANCE_DUPLICATE_SAFETY_V1', 'finance duplicate safety marker');
 must(lib, 'FINANCE_DUPLICATE_PAYMENT_WARNING_COPY', 'shared warning copy');
-must(lib, 'Ten klient może mieć duplikat. Upewnij się, że dodajesz wpłatę do właściwego rekordu.', 'required UX copy');
+must(lib, 'Ten klient mo\u017Ce mie\u0107 duplikat. Upewnij si\u0119, \u017Ce dodajesz wp\u0142at\u0119 do w\u0142a\u015Bciwego rekordu.', 'required UX copy');
 must(lib, "'lead' | 'client' | 'case'", 'duplicate entity type includes case');
 must(lib, 'buildFinanceDuplicateCandidatesFromRecord', 'record duplicate extraction');
 must(lib, 'buildFinanceDuplicateCandidatesFromRows', 'rows duplicate matching helper');
@@ -23,7 +23,7 @@ const form = read('src/components/finance/PaymentFormDialog.tsx');
 must(form, 'finance-duplicate-safety', 'PaymentFormDialog imports duplicate safety');
 must(form, 'duplicateCandidates?: FinanceDuplicateCandidate[]', 'PaymentFormDialog duplicate candidates prop');
 must(form, 'data-fin9-payment-duplicate-warning="true"', 'PaymentFormDialog warning rendered');
-must(form, 'Możliwy duplikat klienta', 'PaymentFormDialog warning title');
+must(form, 'Mo\u017Cliwy duplikat klienta', 'PaymentFormDialog warning title');
 must(form, 'duplicateWarningCopy', 'PaymentFormDialog warning copy prop');
 mustNot(form, 'disabled={duplicateCandidates', 'PaymentFormDialog does not block submit by duplicate warning');
 
@@ -52,8 +52,8 @@ const pkg = JSON.parse(read('package.json').replace(/^\uFEFF/, ''));
 if (pkg.scripts && pkg.scripts['check:closeflow-fin9-finance-duplicate-safety']) pass('package FIN-9 script present'); else fail('package FIN-9 script present');
 const doc = read('docs/finance/CLOSEFLOW_FIN9_FINANCE_DUPLICATE_SAFETY_2026-05-10.md');
 must(doc, 'FIN-9', 'FIN-9 doc marker');
-must(doc, 'Nie blokować. Ostrzegać.', 'FIN-9 doc warning-only rule');
-must(doc, 'Ten klient może mieć duplikat', 'FIN-9 doc UX copy');
+must(doc, 'Nie blokowa\u0107. Ostrzega\u0107.', 'FIN-9 doc warning-only rule');
+must(doc, 'Ten klient mo\u017Ce mie\u0107 duplikat', 'FIN-9 doc UX copy');
 
 const failed = checks.filter(x => !x.ok);
 console.log(`\nSummary: ${checks.length - failed.length} pass, ${failed.length} fail.`);

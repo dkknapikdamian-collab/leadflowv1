@@ -34,7 +34,7 @@ assertIncludes(clientDetail, "kind: 'event'", "szybka akcja wydarzenie");
 assertIncludes(clientDetail, "leadId: firstSourceLead?.id", "prefill leadId przy task/event");
 assertIncludes(clientDetail, "caseId: mainCase?.id", "prefill caseId przy task/event");
 assertIncludes(clientDetail, 'data-client-summary-source-lead-panel="true"', "panel summary do ukrycia");
-assertNotIncludes(clientDetail, "<p>Lista spraw klienta. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę.</p>", "opis panelu spraw do skasowania");
+assertNotIncludes(clientDetail, "<p>Lista spraw klienta. Wejd\u017A w spraw\u0119, \u017Ceby edytowa\u0107 nazw\u0119, warto\u015B\u0107, zadania i dalsz\u0105 obs\u0142ug\u0119.</p>", "opis panelu spraw do skasowania");
 
 assertIncludes(css, "stage24a client detail actions cases roadmap", "marker CSS Stage24A");
 assertIncludes(css, '[data-client-summary-source-lead-panel="true"]', "ukrycie summary source lead panel");

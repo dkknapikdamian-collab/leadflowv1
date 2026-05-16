@@ -56,7 +56,7 @@ test('Visible heavy-grid rationale sentence is removed from UI source files', ()
 
   for (const file of files) {
     const content = fs.readFileSync(file, 'utf8');
-    assert.doesNotMatch(content, /Układ osi czasu jest szybszy niż ciężka siatka/i, path.relative(root, file));
+    assert.doesNotMatch(content, /Uk\u0142ad osi czasu jest szybszy ni\u017C ci\u0119\u017Cka siatka/i, path.relative(root, file));
     assert.doesNotMatch(content, /Uklad osi czasu jest szybszy niz ciezka siatka/i, path.relative(root, file));
   }
 });

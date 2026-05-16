@@ -26,8 +26,8 @@ test('STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE: removes only the
   const noteButtons = findButtonBlocks(page, 'openCaseNoteDialog').filter((block) => block.includes('Dodaj notat'));
   const headerButtons = noteButtons.filter((block) => !block.includes('data-case-create-action="note"'));
   const panelButtons = noteButtons.filter((block) => block.includes('data-case-create-action="note"'));
-  assert.equal(headerButtons.length, 0, 'header/top Dodaj notatkę button must be removed');
-  assert.equal(panelButtons.length, 1, 'exactly one create-panel Dodaj notatkę button must remain');
+  assert.equal(headerButtons.length, 0, 'header/top Dodaj notatk\u0119 button must be removed');
+  assert.equal(panelButtons.length, 1, 'exactly one create-panel Dodaj notatk\u0119 button must remain');
 });
 test('STAGE62_CASE_IMPORTANT_ACTIONS_HEADER_NOTE_BUTTON_REMOVE: verify chain includes Stage62', () => {
   const pkg = read('package.json');

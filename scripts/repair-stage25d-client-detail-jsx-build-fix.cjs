@@ -61,12 +61,12 @@ function patchClientDetail() {
     text = text.slice(0, match.index) + "\n                  </>" + text.slice(match.index);
   }
 
-  text = text.replace(/>\s*Wejdź\s*<\/Button>/g, ">\n                              Wejdź w sprawę\n                            </Button>");
+  text = text.replace(/>\s*Wejd\u017A\s*<\/Button>/g, ">\n                              Wejd\u017A w spraw\u0119\n                            </Button>");
 
   if (!text.includes("function getCaseValueLabel(caseRecord: any)")) throw new Error("Brakuje helpera getCaseValueLabel.");
   if (!text.includes("STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT")) {
     const anchor = "const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';";
-    text = text.replace(anchor, `${anchor}\nconst STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejdź w sprawę';`);
+    text = text.replace(anchor, `${anchor}\nconst STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejd\u017A w spraw\u0119';`);
   }
 
   if (text !== before) {

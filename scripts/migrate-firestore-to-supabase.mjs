@@ -220,7 +220,7 @@ async function run() {
       workspace_id: workspaceId,
       created_by_user_id: null,
       lead_id: leadId || null,
-      title: String(data.title || data.name || 'Sprawa bez tytułu'),
+      title: String(data.title || data.name || 'Sprawa bez tytu\u0142u'),
       client_name: String(data.clientName || data.client_name || ''),
       status: String(data.status || 'in_progress'),
       completeness_percent: Number(data.completenessPercent || 0),
@@ -251,7 +251,7 @@ async function run() {
   console.log(`Firestore leads: ${leadsSnap.size} -> Supabase leads upserted: ${leadInsertResult.length}`);
   console.log(`Firestore tasks: ${tasksSnap.size} + events: ${eventsSnap.size} -> Supabase work_items upserted: ${workItemInsertResult.length}`);
   console.log(`Firestore cases: ${casesSnap.size} -> Supabase cases upserted: ${caseInsertResult.length}`);
-  console.log('\nLosowa próbka leadów (do ręcznej kontroli):');
+  console.log('\nLosowa pr\u00F3bka lead\u00F3w (do r\u0119cznej kontroli):');
   console.table(sample);
 }
 

@@ -107,7 +107,7 @@ for (const marker of [
   'CLOSEFLOW_SMOKE_BASE_URL',
   'CLOSEFLOW_SMOKE_ACCESS_TOKEN',
   'Manualny reload UI nadal zostaje wymagany',
-  'FAZA 4 - Etap 4.4 - Live refresh bez ręcznego odświeżania',
+  'FAZA 4 - Etap 4.4 - Live refresh bez r\u0119cznego od\u015Bwie\u017Cania',
 ]) {
   assertIncludes(files.releaseDoc, releaseDoc, marker, 'Release doc contains: ' + marker);
 }
@@ -118,7 +118,7 @@ for (const marker of [
   '/api/events',
   '/api/system?kind=ai-drafts',
   'CLOSEFLOW_SMOKE_ACCESS_TOKEN',
-  'FAZA 4 - Etap 4.4 - Live refresh bez ręcznego odświeżania',
+  'FAZA 4 - Etap 4.4 - Live refresh bez r\u0119cznego od\u015Bwie\u017Cania',
 ]) {
   assertIncludes(files.technicalDoc, technicalDoc, marker, 'Technical doc contains: ' + marker);
 }

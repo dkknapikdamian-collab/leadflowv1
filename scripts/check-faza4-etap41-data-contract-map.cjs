@@ -115,7 +115,7 @@ for (const marker of [
   'ai_drafts',
   'activities',
   'workspaces',
-  'FAZA 4 - Etap 4.2 - Normalizacja tasków i eventów',
+  'FAZA 4 - Etap 4.2 - Normalizacja task\u00F3w i event\u00F3w',
 ]) {
   assertIncludes(files.releaseDoc, releaseDoc, marker, 'Release doc contains: ' + marker);
 }
@@ -124,7 +124,7 @@ for (const marker of [
   'src/lib/data-contract.ts',
   'Legacy aliases are allowed only inside normalizers and this map',
   'normalizeWorkspaceContract',
-  'FAZA 4 - Etap 4.2 - Normalizacja tasków i eventów',
+  'FAZA 4 - Etap 4.2 - Normalizacja task\u00F3w i event\u00F3w',
 ]) {
   assertIncludes(files.technicalDoc, technicalDoc, marker, 'Technical doc contains: ' + marker);
 }

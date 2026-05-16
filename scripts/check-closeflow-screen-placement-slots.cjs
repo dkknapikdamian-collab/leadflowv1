@@ -64,8 +64,8 @@ mustMatch(contractRel, /list:\s*\[\s*'list\.filters',\s*'list\.search',\s*'list\
 mustInclude('src/components/ui-system/index.ts', "export * from './screen-slots';");
 
 mustInclude(docsRel, 'VS-7');
-mustInclude(docsRel, 'Lead / Client / Case mają akcje w tych samych logicznych miejscach.');
-mustInclude(docsRel, 'Nie przepinać jeszcze konkretnych ekranów na siłę.');
+mustInclude(docsRel, 'Lead / Client / Case maj\u0105 akcje w tych samych logicznych miejscach.');
+mustInclude(docsRel, 'Nie przepina\u0107 jeszcze konkretnych ekran\u00F3w na si\u0142\u0119.');
 mustInclude(docsRel, 'npm.cmd run check:closeflow-screen-placement-slots');
 
 const pkg = JSON.parse(read('package.json'));

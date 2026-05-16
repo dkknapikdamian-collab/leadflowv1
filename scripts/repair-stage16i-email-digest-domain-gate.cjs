@@ -37,12 +37,12 @@ settings = replaceExact(
 
 // Keep the digest runtime hint aligned with daily-digest-email-runtime.test.cjs.
 settings = settings.replace(
-  /Na darmowym Vercel cron działa raz dzieńnie/g,
-  "Na darmowym Vercel cron działa raz dziennie"
+  /Na darmowym Vercel cron dzia\u0142a raz dzie\u0144nie/g,
+  "Na darmowym Vercel cron dzia\u0142a raz dziennie"
 );
 settings = settings.replace(
   /Na darmowym Vercel cron dzia\u0142a raz dzie\u0144nie/g,
-  "Na darmowym Vercel cron działa raz dziennie"
+  "Na darmowym Vercel cron dzia\u0142a raz dziennie"
 );
 
 write(rel, settings);

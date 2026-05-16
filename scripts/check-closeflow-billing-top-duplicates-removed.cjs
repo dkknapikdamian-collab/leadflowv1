@@ -7,7 +7,7 @@ const billing = fs.readFileSync(billingPath, 'utf8');
 
 const forbidden = [
   'className="billing-tabs"',
-  'aria-label="Zakładki rozliczeń"',
+  'aria-label="Zak\u0142adki rozlicze\u0144"',
   'billing-metrics-grid',
   'billing-metric-card',
   '<small>Plan</small>',

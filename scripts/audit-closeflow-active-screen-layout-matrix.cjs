@@ -95,7 +95,7 @@ function actionIconSource(text) {
 }
 
 function financeSource(text, screen) {
-  const financeNeedles = ['payment', 'Payment', 'commission', 'Commission', 'billing', 'Billing', 'settlement', 'Settlement', 'invoice', 'Invoice', 'amount', 'Amount', 'warto', 'płat', 'plat', 'prowiz'];
+  const financeNeedles = ['payment', 'Payment', 'commission', 'Commission', 'billing', 'Billing', 'settlement', 'Settlement', 'invoice', 'Invoice', 'amount', 'Amount', 'warto', 'p\u0142at', 'plat', 'prowiz'];
   if (screen === 'Billing') return 'billing screen finance UI, semantic finance registry pending';
   if (includesAny(text, financeNeedles)) return 'local finance/status markup detected';
   return 'none';
@@ -189,15 +189,15 @@ fs.writeFileSync(jsonPath, JSON.stringify(generated, null, 2) + '\n');
 
 const doc = `# CloseFlow Active Screen Layout Matrix
 
-**Data:** 2026-05-09  
-**Etap:** VS-4 — Active screen layout matrix  
-**Status:** audyt źródeł UI aktywnych ekranów, bez migracji runtime
+**Data:** 2026-05-09
+**Etap:** VS-4 \u2014 Active screen layout matrix
+**Status:** audyt \u017Ar\u00F3de\u0142 UI aktywnych ekran\u00F3w, bez migracji runtime
 
 ## Cel
 
-Każdy aktywny ekran ma jawnie opisane źródła UI. Ten etap nie przepina ekranów. Tworzy mapę, która mówi, gdzie ekran używa aktualnego UI systemu, a gdzie nadal opiera się o lokalny JSX, stare klasy, legacy CSS, temporary overrides albo emergency hotfixes.
+Ka\u017Cdy aktywny ekran ma jawnie opisane \u017Ar\u00F3d\u0142a UI. Ten etap nie przepina ekran\u00F3w. Tworzy map\u0119, kt\u00F3ra m\u00F3wi, gdzie ekran u\u017Cywa aktualnego UI systemu, a gdzie nadal opiera si\u0119 o lokalny JSX, stare klasy, legacy CSS, temporary overrides albo emergency hotfixes.
 
-## Źródła prawdy
+## \u0179r\u00F3d\u0142a prawdy
 
 - Route'y: \`src/App.tsx\`
 - Ekrany: \`src/pages/*\`
@@ -208,14 +208,14 @@ Każdy aktywny ekran ma jawnie opisane źródła UI. Ten etap nie przepina ekran
 
 | Status | Znaczenie |
 |---|---|
-| \`OK\` | Ekran w większości używa źródeł UI z rejestru i nie wymaga pilnej migracji. |
-| \`MIGRATE\` | Ekran działa, ale ma lokalne lub mieszane źródła UI i powinien wejść do kolejnej migracji. |
-| \`LEGACY\` | Ekran jest ciężki albo mocno oparty o stare CSS/JSX. Ruszać tylko osobnym etapem. |
+| \`OK\` | Ekran w wi\u0119kszo\u015Bci u\u017Cywa \u017Ar\u00F3de\u0142 UI z rejestru i nie wymaga pilnej migracji. |
+| \`MIGRATE\` | Ekran dzia\u0142a, ale ma lokalne lub mieszane \u017Ar\u00F3d\u0142a UI i powinien wej\u015B\u0107 do kolejnej migracji. |
+| \`LEGACY\` | Ekran jest ci\u0119\u017Cki albo mocno oparty o stare CSS/JSX. Rusza\u0107 tylko osobnym etapem. |
 | \`OUT_OF_SCOPE\` | Ekran nie jest aktywny albo plik nie istnieje w aktualnym branchu. |
 
 ## Wynik audytu
 
-- Liczba ekranów: **${rows.length}**
+- Liczba ekran\u00F3w: **${rows.length}**
 - OK: **${statusCounts.OK || 0}**
 - MIGRATE: **${statusCounts.MIGRATE || 0}**
 - LEGACY: **${statusCounts.LEGACY || 0}**
@@ -227,11 +227,11 @@ ${markdownTable(rows)}
 
 ## Zasady po VS-4
 
-1. Nie migrować kilku ciężkich ekranów naraz.
-2. Today, LeadDetail, ClientDetail i CaseDetail traktować jako ekrany wysokiego ryzyka.
-3. Każda kolejna migracja ma wskazać, który wiersz z tej macierzy zmienia status.
-4. Jeśli ekran dostaje nowy lokalny kolor, ikonę, kafelek, kartę albo row bez rejestru, check powinien zostać rozszerzony.
-5. Finance UI ma używać semantyk z VS-2D, nie lokalnych kolorów bez znaczenia.
+1. Nie migrowa\u0107 kilku ci\u0119\u017Ckich ekran\u00F3w naraz.
+2. Today, LeadDetail, ClientDetail i CaseDetail traktowa\u0107 jako ekrany wysokiego ryzyka.
+3. Ka\u017Cda kolejna migracja ma wskaza\u0107, kt\u00F3ry wiersz z tej macierzy zmienia status.
+4. Je\u015Bli ekran dostaje nowy lokalny kolor, ikon\u0119, kafelek, kart\u0119 albo row bez rejestru, check powinien zosta\u0107 rozszerzony.
+5. Finance UI ma u\u017Cywa\u0107 semantyk z VS-2D, nie lokalnych kolor\u00F3w bez znaczenia.
 
 ## Weryfikacja
 
@@ -241,15 +241,15 @@ npm run check:closeflow-active-screen-layout-matrix
 npm run build
 \`\`\`
 
-## Kryterium zakończenia
+## Kryterium zako\u0144czenia
 
-VS-4 jest zakończony, gdy:
+VS-4 jest zako\u0144czony, gdy:
 
 1. dokument istnieje,
 2. JSON generated istnieje,
-3. każdy aktywny ekran z listy ma wpis,
-4. każdy wpis ma status \`OK\`, \`MIGRATE\`, \`LEGACY\` albo \`OUT_OF_SCOPE\`,
-5. check i build przechodzą.
+3. ka\u017Cdy aktywny ekran z listy ma wpis,
+4. ka\u017Cdy wpis ma status \`OK\`, \`MIGRATE\`, \`LEGACY\` albo \`OUT_OF_SCOPE\`,
+5. check i build przechodz\u0105.
 `;
 
 fs.writeFileSync(docPath, doc);

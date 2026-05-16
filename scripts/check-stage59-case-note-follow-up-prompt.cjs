@@ -1,4 +1,4 @@
-﻿// STAGE60_STAGE59_GUARD_COMPAT_HOTFIX
+// STAGE60_STAGE59_GUARD_COMPAT_HOTFIX
 const fs = require('fs');
 const path = require('path');
 const marker = 'STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT';
@@ -38,4 +38,3 @@ contains('package.json', 'check:stage58-case-recent-moves-panel && npm.cmd run c
 contains('tests/stage59-case-note-follow-up-prompt.test.cjs', marker, 'Stage59 test marker');
 contains('docs/release/STAGE59_CASE_NOTE_FOLLOW_UP_PROMPT_2026-05-04.md', marker, 'Stage59 release marker');
 console.log('PASS ' + marker);
-

@@ -34,7 +34,7 @@ const executableTasks = stripComments(tasks);
 
 const forbidden = [
   'Stabilny widok Supabase bez bramki Firebase',
-  'Dane ładują się od razu po wejściu w zakładkę',
+  'Dane \u0142aduj\u0105 si\u0119 od razu po wej\u015Bciu w zak\u0142adk\u0119',
 ];
 
 for (const rel of walk('src', (item) => /\.(tsx|ts|css)$/.test(item))) {
@@ -48,7 +48,7 @@ if (!tasks.includes('TASKS_VISIBLE_ACTIONS_STAGE47')) fail('missing Stage47 mark
 if (!tasks.includes('data-tasks-action-visible-stage47="done"')) fail('missing visible done/restore action marker');
 if (!tasks.includes('data-tasks-action-visible-stage47="edit"')) fail('missing visible edit action marker');
 if (!tasks.includes('tasks-stage47-action-button')) fail('missing shared visible action class');
-if (!tasks.includes("isTaskDone(task) ? 'Przywróć' : 'Zrobione'")) fail('done/restore label contract changed');
+if (!tasks.includes("isTaskDone(task) ? 'Przywr\u00F3\u0107' : 'Zrobione'")) fail('done/restore label contract changed');
 if (!executableTasks.includes('Edytuj')) fail('edit label missing');
 if (!css.includes('TASKS_VISIBLE_ACTIONS_STAGE47')) fail('missing Stage47 CSS marker');
 if (!css.includes('color: #0f172a !important')) fail('CSS does not force readable text color');

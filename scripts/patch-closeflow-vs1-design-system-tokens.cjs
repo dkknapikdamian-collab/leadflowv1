@@ -386,10 +386,10 @@ const indexCss = `/* CLOSEFLOW_DESIGN_SYSTEM_INDEX_VS1 */
 @import './closeflow-utilities.css';
 `;
 
-const docMd = `# CloseFlow Design System Tokens — VS-1
+const docMd = `# CloseFlow Design System Tokens \u2014 VS-1
 
-**Data:** 2026-05-09  
-**Status:** fundament tokenow, bez migracji ekranow  
+**Data:** 2026-05-09
+**Status:** fundament tokenow, bez migracji ekranow
 **Import:** \`src/styles/design-system/index.css\` w \`src/index.css\`
 
 ## Cel

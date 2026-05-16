@@ -61,20 +61,20 @@ assertIncludes(leads, 'STAGE14E_LEADS_VALUE_DEDUP_BADGE_REPAIR1', 'marker Stage1
 assertIncludes(leads, 'STAGE14E_LEADS_VALUE_META_DEDUP', 'komentarz dedupe meta');
 assertIncludes(leads, 'void _leadValueLabel;', 'leadValueLabel ignorowany w meta');
 if (returnArray.includes('leadValueLabel') || returnArray.includes('_leadValueLabel')) {
-  throw new Error('Wartość leada nadal jest zwracana w buildLeadCompactMeta.');
+  throw new Error('Warto\u015B\u0107 leada nadal jest zwracana w buildLeadCompactMeta.');
 }
-assertIncludes(leads, 'data-lead-value-pill="true"', 'wartość ma data-lead-value-pill');
-assertIncludes(leads, 'data-stage14e-leads-value-layout="true"', 'blok wartości ma data-stage14e marker');
+assertIncludes(leads, 'data-lead-value-pill="true"', 'warto\u015B\u0107 ma data-lead-value-pill');
+assertIncludes(leads, 'data-stage14e-leads-value-layout="true"', 'blok warto\u015Bci ma data-stage14e marker');
 
 assertIncludes(css, 'STAGE14E_LEADS_VALUE_DEDUP_BADGE_REPAIR1', 'CSS marker Stage14E');
 assertIncludes(css, '[data-lead-value-pill="true"]', 'CSS targetuje tylko value pill');
 assertIncludes(css, 'display: inline-flex !important;', 'value pill inline-flex');
 assertIncludes(css, 'width: max-content !important;', 'value pill max-content');
 assertIncludes(css, 'max-width: fit-content !important;', 'value pill fit-content');
-assertIncludes(css, 'flex: 0 0 auto !important;', 'value pill nie rozciąga się');
+assertIncludes(css, 'flex: 0 0 auto !important;', 'value pill nie rozci\u0105ga si\u0119');
 assertIncludes(css, 'align-self: flex-start !important;', 'value pill nie stretchuje');
 assertIncludes(css, 'white-space: nowrap !important;', 'value pill jedna linia');
 assertIncludes(css, 'border-radius: 999px !important;', 'value pill rounded');
 assertNotIncludes(returnArray, 'PLN', 'meta nie ma kwoty PLN');
 
-console.log('✔ Stage14E Repair1 Leads value dedupe badge guard passed');
+console.log('\u2714 Stage14E Repair1 Leads value dedupe badge guard passed');

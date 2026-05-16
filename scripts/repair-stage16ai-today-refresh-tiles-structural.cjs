@@ -88,7 +88,7 @@ function patchRefresh(src) {
       setLastLoadedAt(new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' }));
       setStatus('ready');
     } catch (error: any) {
-      setErrorMessage(error?.message || 'Nie udało się pobrać danych.');
+      setErrorMessage(error?.message || 'Nie uda\u0142o si\u0119 pobra\u0107 danych.');
       setStatus('error');
     } finally {
       if (manual) setManualRefreshing(false);
@@ -98,14 +98,14 @@ function patchRefresh(src) {
   src = src.slice(0, start) + replacement + src.slice(end + endToken.length);
 
   src = src.replace(
-    '<Button type="button" variant="outline" onClick={() => void refreshData()} disabled={loading}>\n                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}\n                Odśwież dane\n              </Button>',
-    '<Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>\n                {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}\n                {manualRefreshing ? \'Odświeżanie...\' : \'Odśwież dane\'}\n              </Button>'
+    '<Button type="button" variant="outline" onClick={() => void refreshData()} disabled={loading}>\n                {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}\n                Od\u015Bwie\u017C dane\n              </Button>',
+    '<Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>\n                {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}\n                {manualRefreshing ? \'Od\u015Bwie\u017Canie...\' : \'Od\u015Bwie\u017C dane\'}\n              </Button>'
   );
 
   if (!src.includes('refreshData({ manual: true })')) {
     src = src.replace(
-      /<Button type="button" variant="outline" onClick=\{\(\) => void refreshData\(\)\} disabled=\{loading\}>[\s\S]*?Odśwież dane\s*<\/Button>/,
-      '<Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>\n                {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}\n                {manualRefreshing ? \'Odświeżanie...\' : \'Odśwież dane\'}\n              </Button>'
+      /<Button type="button" variant="outline" onClick=\{\(\) => void refreshData\(\)\} disabled=\{loading\}>[\s\S]*?Od\u015Bwie\u017C dane\s*<\/Button>/,
+      '<Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>\n                {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}\n                {manualRefreshing ? \'Od\u015Bwie\u017Canie...\' : \'Od\u015Bwie\u017C dane\'}\n              </Button>'
     );
   }
 
@@ -118,13 +118,13 @@ function patchTileLabelsAndSectionHeaders(src) {
     const anchor = "  const sectionVisible = (key: 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming') =>\n    expandedSection === 'all' || expandedSection === key;\n";
     const block = `${anchor}
   const todaySectionLabels = {
-    no_action: 'Leady bez najbliższej akcji',
-    risk: 'Wysoka wartość / ryzyko',
-    waiting: 'Leady czekające',
-    leads: 'Leady do obsługi dziś',
-    tasks: 'Zadania do wykonania dziś',
-    events: 'Wydarzenia dziś',
-    upcoming: 'Najbliższe 7 dni',
+    no_action: 'Leady bez najbli\u017Cszej akcji',
+    risk: 'Wysoka warto\u015B\u0107 / ryzyko',
+    waiting: 'Leady czekaj\u0105ce',
+    leads: 'Leady do obs\u0142ugi dzi\u015B',
+    tasks: 'Zadania do wykonania dzi\u015B',
+    events: 'Wydarzenia dzi\u015B',
+    upcoming: 'Najbli\u017Csze 7 dni',
     drafts: 'Szkice AI do sprawdzenia',
   } as const;
 
@@ -171,7 +171,7 @@ function patchTileLabelsAndSectionHeaders(src) {
                       <span className={'rounded-full bg-slate-50 p-2 ' + tile.tone}>{tile.icon}</span>
                     </div>
                     <p className={'mt-2 text-3xl font-black ' + tile.tone}>{tile.count}</p>
-                    <p className="mt-1 text-xs font-medium text-slate-500">Tyle samo co w sekcji poniżej</p>
+                    <p className="mt-1 text-xs font-medium text-slate-500">Tyle samo co w sekcji poni\u017Cej</p>
                   </CardContent>
                 </Card>
               </button>

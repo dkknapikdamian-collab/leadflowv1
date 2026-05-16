@@ -227,7 +227,7 @@ function mdEscape(value) { return String(value ?? '').replace(/\|/g, '\\|').repl
 const roleRows = Object.entries(inventory.semanticIconRoles)
   .sort(([a], [b]) => a.localeCompare(b))
   .map(([role, entries]) => {
-    const filesList = entries.slice(0, 12).map((e) => e.icon + ' (' + e.file + ':' + e.importLine + ', użycia: ' + e.usageCount + ')').join('<br>');
+    const filesList = entries.slice(0, 12).map((e) => e.icon + ' (' + e.file + ':' + e.importLine + ', u\u017Cycia: ' + e.usageCount + ')').join('<br>');
     return '| ' + mdEscape(role) + ' | ' + entries.length + ' | ' + mdEscape(filesList) + ' |';
   });
 const metricRows = inventory.metricTileUsages.slice(0, 80).map((e) => '| ' + mdEscape(e.file) + ' | ' + e.line + ' | ' + mdEscape(e.snippet.slice(0, 420)) + ' |');
@@ -239,41 +239,41 @@ const regionRows = inventory.placementRegions.slice(0, 140).map((e) => '| ' + md
 const md = '# CloseFlow UI Map Inventory v1\n\n' +
 'Generated: ' + inventory.generatedAt + '\n\n' +
 'Scanner: **' + inventory.scannerVersion + '**\n\n' +
-'Status: **mapa/inwentaryzacja, nie refactor UI**. Ten plik ma pokazać, gdzie dziś żyją ikony, kafelki, sekcje, notatki, akcje i położenia. Dopiero po tej mapie wolno robić przepięcie na wspólne komponenty.\n\n' +
+'Status: **mapa/inwentaryzacja, nie refactor UI**. Ten plik ma pokaza\u0107, gdzie dzi\u015B \u017Cyj\u0105 ikony, kafelki, sekcje, notatki, akcje i po\u0142o\u017Cenia. Dopiero po tej mapie wolno robi\u0107 przepi\u0119cie na wsp\u00F3lne komponenty.\n\n' +
 '## Wynik skanowania\n\n' +
 '- Pliki przeskanowane: **' + inventory.filesScanned + '**\n' +
-'- Bezpośrednie importy ikon z lucide-react: **' + inventory.directLucideIconImports.length + '**\n' +
-'- Użycia StatShortcutCard: **' + inventory.metricTileUsages.length + '**\n' +
+'- Bezpo\u015Brednie importy ikon z lucide-react: **' + inventory.directLucideIconImports.length + '**\n' +
+'- U\u017Cycia StatShortcutCard: **' + inventory.metricTileUsages.length + '**\n' +
 '- Lokalne implementacje InfoRow/InfoLine/StatCell/ActionButton: **' + inventory.infoRowImplementations.length + '**\n' +
 '- Kontrakty akcji encji: **' + inventory.entityActionContracts.length + '**\n' +
-'- Dowody położenia/layoutu CSS: **' + inventory.layoutEvidence.length + '**\n\n' +
+'- Dowody po\u0142o\u017Cenia/layoutu CSS: **' + inventory.layoutEvidence.length + '**\n\n' +
 '## Decyzja architektoniczna\n\n' +
-'Następny etap UI nie powinien naprawiać pojedynczych kolorów. Najpierw trzeba zatwierdzić mapę:\n\n' +
-'1. każda ikona standardowa ma dostać rolę semantyczną,\n' +
-'2. każdy kafelek/metrika ma zostać przypisana do wspólnego typu,\n' +
-'3. każda sekcja detail view ma dostać data-ui-region,\n' +
-'4. LeadDetail i ClientDetail mają mieć wspólny układ regionów,\n' +
-'5. dopiero później przepinamy kod na SemanticIcon, EntityInfoRow, EntityNoteCard i EntityDetailShell.\n\n' +
-'## Mapa ikon według roli\n\n' +
-'| Rola | Liczba importów | Przykłady |\n|---|---:|---|\n' + (roleRows.join('\n') || '| brak | 0 | - |') + '\n\n' +
-'## Użycia kafelków / StatShortcutCard\n\n' +
+'Nast\u0119pny etap UI nie powinien naprawia\u0107 pojedynczych kolor\u00F3w. Najpierw trzeba zatwierdzi\u0107 map\u0119:\n\n' +
+'1. ka\u017Cda ikona standardowa ma dosta\u0107 rol\u0119 semantyczn\u0105,\n' +
+'2. ka\u017Cdy kafelek/metrika ma zosta\u0107 przypisana do wsp\u00F3lnego typu,\n' +
+'3. ka\u017Cda sekcja detail view ma dosta\u0107 data-ui-region,\n' +
+'4. LeadDetail i ClientDetail maj\u0105 mie\u0107 wsp\u00F3lny uk\u0142ad region\u00F3w,\n' +
+'5. dopiero p\u00F3\u017Aniej przepinamy kod na SemanticIcon, EntityInfoRow, EntityNoteCard i EntityDetailShell.\n\n' +
+'## Mapa ikon wed\u0142ug roli\n\n' +
+'| Rola | Liczba import\u00F3w | Przyk\u0142ady |\n|---|---:|---|\n' + (roleRows.join('\n') || '| brak | 0 | - |') + '\n\n' +
+'## U\u017Cycia kafelk\u00F3w / StatShortcutCard\n\n' +
 '| Plik | Linia | Fragment |\n|---|---:|---|\n' + (metricRows.join('\n') || '| brak | - | - |') + '\n\n' +
 '## Kontrakty akcji encji\n\n' +
 '| Plik | Linia | Fragment |\n|---|---:|---|\n' + (contractRows.join('\n') || '| brak | - | - |') + '\n\n' +
-'## Lokalne implementacje do przepięcia\n\n' +
-'Te elementy są kandydatami do przeniesienia do wspólnego UI systemu.\n\n' +
+'## Lokalne implementacje do przepi\u0119cia\n\n' +
+'Te elementy s\u0105 kandydatami do przeniesienia do wsp\u00F3lnego UI systemu.\n\n' +
 '| Nazwa | Plik | Linia |\n|---|---|---:|\n' + (infoRows.join('\n') || '| brak | - | - |') + '\n\n' +
 '## Regiony / data attributes\n\n' +
-'| Plik | Linia | Wartość |\n|---|---:|---|\n' + (regionRows.join('\n') || '| brak | - | - |') + '\n\n' +
-'## Położenie / layout CSS\n\n' +
-'| Plik | Linia | Selektor/kontekst | Reguła |\n|---|---:|---|---|\n' + (layoutRows.join('\n') || '| brak | - | - | - |') + '\n\n' +
-'## Następny krok po zatwierdzeniu mapy\n\n' +
-'Pakiet UI-2 powinien zrobić dopiero wtedy:\n\n' +
-'- SemanticIcon jako jedyne źródło ikon standardowych,\n' +
-'- EntityInfoRow dla telefonu, maila, źródła i danych kontaktowych,\n' +
+'| Plik | Linia | Warto\u015B\u0107 |\n|---|---:|---|\n' + (regionRows.join('\n') || '| brak | - | - |') + '\n\n' +
+'## Po\u0142o\u017Cenie / layout CSS\n\n' +
+'| Plik | Linia | Selektor/kontekst | Regu\u0142a |\n|---|---:|---|---|\n' + (layoutRows.join('\n') || '| brak | - | - | - |') + '\n\n' +
+'## Nast\u0119pny krok po zatwierdzeniu mapy\n\n' +
+'Pakiet UI-2 powinien zrobi\u0107 dopiero wtedy:\n\n' +
+'- SemanticIcon jako jedyne \u017Ar\u00F3d\u0142o ikon standardowych,\n' +
+'- EntityInfoRow dla telefonu, maila, \u017Ar\u00F3d\u0142a i danych kontaktowych,\n' +
 '- EntityNoteCard / EntityNoteComposer / EntityNoteList,\n' +
 '- EntityDetailShell z regionami dla LeadDetail i ClientDetail,\n' +
-'- guard blokujący nowe lokalne style ikon/notatek/kontaktów.\n';
+'- guard blokuj\u0105cy nowe lokalne style ikon/notatek/kontakt\u00F3w.\n';
 
 fs.writeFileSync(outMd, md, 'utf8');
 console.log('CLOSEFLOW_UI_MAP_INVENTORY_V1_OK');

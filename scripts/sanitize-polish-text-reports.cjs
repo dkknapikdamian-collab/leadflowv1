@@ -5,7 +5,7 @@ const repo = process.cwd();
 const reportsDir = path.join(repo, 'docs', 'reports');
 
 function escapeSuspiciousChars(value) {
-  return value.replace(/[ÄĹĂÅÃ]/g, function (ch) {
+  return value.replace(/[\u00c4\u0139\u0102\u00c5\u00c3]/g, function (ch) {
     return '\\u' + ch.charCodeAt(0).toString(16).padStart(4, '0');
   }).replace(/\uFFFD/g, '\\ufffd');
 }

@@ -23,7 +23,7 @@ test('Faza 2 Etap 2.2 RLS/backend security proof is documented and wired', () =>
   assert.match(doc, /FAZA 2 - Etap 2\.2 - RLS \/ backend security proof/);
   assert.match(doc, /manual_evidence_required/);
   assert.match(doc, /SQL proof/);
-  assert.match(doc, /FAZA 3 - Etap 3\.1 - Jedno źródło prawdy dla planów/);
+  assert.match(doc, /FAZA 3 - Etap 3\.1 - Jedno \u017Ar\u00F3d\u0142o prawdy dla plan\u00F3w/);
   assert.match(doc, /FAZA 2 - Etap 2\.2B - RLS hardening SQL fix/);
 
   assert.match(sql, /CLOSEFLOW RLS WORKSPACE SECURITY PROOF/);

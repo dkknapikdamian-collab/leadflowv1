@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const assert = require('assert');
 
@@ -33,7 +33,7 @@ mustInclude(quickCapture, 'Tryb: szkic do potwierdzenia', 'src/components/QuickA
 
 const todayAiAssistant = read('src/components/TodayAiAssistant.tsx');
 mustInclude(todayAiAssistant, 'saveAiLeadDraftAsync', 'src/components/TodayAiAssistant.tsx');
-mustInclude(todayAiAssistant, 'Finalny rekord nie został utworzony', 'src/components/TodayAiAssistant.tsx');
+mustInclude(todayAiAssistant, 'Finalny rekord nie zosta\u0142 utworzony', 'src/components/TodayAiAssistant.tsx');
 
 const todayPage = read('src/pages/Today.tsx');
 mustInclude(todayPage, 'title="Do sprawdzenia"', 'src/pages/Today.tsx');

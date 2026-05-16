@@ -1,4 +1,4 @@
-﻿const test = require('node:test');
+const test = require('node:test');
 const assert = require('assert');
 
 const { buildTodaySections, dedupeTodaySectionEntries } = require('../dist-test-today-sections.cjs');
@@ -17,13 +17,13 @@ test('buildTodaySections returns required decision-center sections', () => {
   const titles = sections.map((s) => s.title);
   assert.deepEqual(titles, [
     'Do sprawdzenia',
-    'Zaległe',
-    'Do ruchu dziś',
+    'Zaleg\u0142e',
+    'Do ruchu dzi\u015B',
     'Bez zaplanowanej akcji',
-    'Waiting za długo',
-    'Najbliższe dni',
-    'Wysoka wartość / ryzyko',
-    'Dzisiaj zakończone',
+    'Waiting za d\u0142ugo',
+    'Najbli\u017Csze dni',
+    'Wysoka warto\u015B\u0107 / ryzyko',
+    'Dzisiaj zako\u0144czone',
   ]);
 });
 

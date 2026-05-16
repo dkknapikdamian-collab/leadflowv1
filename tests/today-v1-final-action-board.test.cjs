@@ -16,7 +16,7 @@ test('Today V1 final helper exposes priority reasons and quick snooze options', 
   assert.match(source, /resolveTodaySnoozeAt/);
   assert.match(source, /getTodayEntryPriorityReasons/);
   assert.match(source, /buildTodayV1Digest/);
-  assert.match(source, /Odłóż 2h/);
+  assert.match(source, /Od\u0142\u00F3\u017C 2h/);
   assert.match(source, /Jutro 9:00/);
   assert.match(source, /Za 3 dni/);
 });
@@ -47,8 +47,8 @@ test('Activity recognizes Today snooze activity labels', () => {
 
   assert.match(source, /today_task_snoozed/);
   assert.match(source, /today_event_snoozed/);
-  assert.match(source, /odłożył zadanie z Dziś/);
-  assert.match(source, /odłożył wydarzenie z Dziś/);
+  assert.match(source, /od\u0142o\u017Cy\u0142 zadanie z Dzi\u015B/);
+  assert.match(source, /od\u0142o\u017Cy\u0142 wydarzenie z Dzi\u015B/);
 });
 
 test('Today V1 final documentation exists', () => {
@@ -56,5 +56,5 @@ test('Today V1 final documentation exists', () => {
 
   assert.match(doc, /Today V1 final action board/);
   assert.match(doc, /today_task_snoozed/);
-  assert.match(doc, /Odłóż 2h/);
+  assert.match(doc, /Od\u0142\u00F3\u017C 2h/);
 });

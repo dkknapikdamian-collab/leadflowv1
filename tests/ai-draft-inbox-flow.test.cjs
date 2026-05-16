@@ -14,7 +14,7 @@ test('AI draft inbox stores dictated notes before lead conversion', () => {
 
   const page = read('src/pages/AiDrafts.tsx');
   assert.ok(page.includes('Szkice AI'));
-  assert.ok(page.includes('Przejrzyj i zatwierdź'));
+  assert.ok(page.includes('Przejrzyj i zatwierd\u017A'));
   assert.ok(page.includes('markAiLeadDraftConverted'));
 });
 
@@ -22,7 +22,7 @@ test('Quick AI Capture saves notes as drafts and requires explicit lead confirma
   const source = read('src/components/QuickAiCapture.tsx');
   assert.ok(source.includes('saveAiLeadDraft'));
   assert.ok(source.includes('Zapisz szkic'));
-  assert.ok(source.includes('Zatwierdź jako lead'));
+  assert.ok(source.includes('Zatwierd\u017A jako lead'));
   assert.ok(!source.includes('Zapisz po sprawdzeniu'));
 });
 
@@ -30,7 +30,7 @@ test('Today assistant can save lead-capture commands into AI drafts', () => {
   const source = read('src/components/TodayAiAssistant.tsx');
   assert.ok(source.includes('saveAiLeadDraft'));
   assert.ok(source.includes('Zapisz w szkicach AI'));
-  assert.ok(source.includes('Otwórz w Szybkim szkicu'));
+  assert.ok(source.includes('Otw\u00F3rz w Szybkim szkicu'));
 });
 
 test('Global quick actions are available from protected app layout', () => {
@@ -40,7 +40,7 @@ test('Global quick actions are available from protected app layout', () => {
 
   assert.ok(layout.includes('GlobalQuickActions'), 'Layout must import/render GlobalQuickActions');
   assert.ok(layout.includes('<GlobalQuickActions'), 'Layout must render the global action bar');
-  assert.ok(layout.includes('Inbox szkiców'));
+  assert.ok(layout.includes('Inbox szkic\u00F3w'));
   assert.ok(app.includes('AiDrafts'));
   assert.ok(app.includes('path="/ai-drafts"'));
   assert.ok(global.includes('TodayAiAssistant'));

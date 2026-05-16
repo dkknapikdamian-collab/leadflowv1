@@ -9,7 +9,7 @@ function read(relativePath) { return fs.readFileSync(path.join(root, relativePat
 test('AI safety gates allow direct clear records only behind explicit mode', () => {
   const today = read('src/components/TodayAiAssistant.tsx');
   const guard = read('src/lib/ai-direct-write-guard.ts');
-  assert.match(today, /Bramki bezpieczeństwa AI/);
+  assert.match(today, /Bramki bezpiecze\u0144stwa AI/);
   assert.match(today, /Wszystko przez Szkice AI/);
   assert.match(today, /Jasne rekordy od razu/);
   assert.match(today, /insertTaskToSupabase/);

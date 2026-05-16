@@ -17,7 +17,7 @@ if (!caseText.includes('EntityTrashButton')) fail('CaseDetail nie uzywa EntityTr
 if (!/import\s+\{[^}]*EntityTrashButton[^}]*\}\s+from\s+['"]\.\.\/components\/entity-actions['"]/.test(caseText)) fail('brak importu EntityTrashButton z entity-actions');
 if (!/export\s+function\s+EntityTrashButton\b/.test(actionsText) && !/export\s+const\s+EntityTrashButton\b/.test(actionsText)) fail('entity-actions.tsx nie eksportuje EntityTrashButton');
 if (!cssText.includes('.cf-case-detail-delete-action')) fail('brak CSS dla cf-case-detail-delete-action');
-if (!/title="Usuń sprawę"/.test(caseText) && !/title='Usuń sprawę'/.test(caseText)) fail('brak tooltip/title Usuń sprawę');
+if (!/title="Usu\u0144 spraw\u0119"/.test(caseText) && !/title='Usu\u0144 spraw\u0119'/.test(caseText)) fail('brak tooltip/title Usu\u0144 spraw\u0119');
 if (/onClick=\{\s*deleteCaseWithRelations\s*\(/.test(caseText)) fail('delete action omija confirm dialog przez bezposredni deleteCaseWithRelations');
 console.log('OK tests/case-detail-delete-placement.test.cjs');
 console.log('deleteShortcutTokens=0');

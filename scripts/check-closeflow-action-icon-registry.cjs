@@ -112,8 +112,8 @@ for (const alias of [
 }
 
 for (const needle of [
-  'Jak zmieniÄ‡ ikonÄ™ kosza globalnie',
-  'Nie przepina masowo aktywnych ekranĂłw',
+  'Jak zmieni\u0107 ikon\u0119 kosza globalnie',
+  'Nie przepina masowo aktywnych ekran\u00F3w',
   'osobny od ikon encji',
   'ACTION_ICON_MAP',
 ]) {

@@ -55,7 +55,7 @@ assertIncludes(files.serverDrafts, serverDrafts, 'WORKSPACE_ENTITY_LIMIT_REACHED
 
 section('Client archive flow');
 assertIncludes(files.libDrafts, libDrafts, 'action: (patch as any).action', 'Client forwards draft action to backend');
-assertRegex(files.pageDrafts, pageDrafts, /const handleArchive = async \(draft: AiLeadDraft\) => \{[\s\S]{0,700}archiveAiLeadDraftAsync\(draft\.id\)[\s\S]{0,700}Nie udało się anulować szkicu/, 'AiDrafts page has single-call archive flow with visible error');
+assertRegex(files.pageDrafts, pageDrafts, /const handleArchive = async \(draft: AiLeadDraft\) => \{[\s\S]{0,700}archiveAiLeadDraftAsync\(draft\.id\)[\s\S]{0,700}Nie uda\u0142o si\u0119 anulowa\u0107 szkicu/, 'AiDrafts page has single-call archive flow with visible error');
 
 section('Documentation');
 for (const marker of [

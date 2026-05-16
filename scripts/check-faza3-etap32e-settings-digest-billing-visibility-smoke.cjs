@@ -81,18 +81,18 @@ assertRegex(files.settings, settings, /digestUiVisibleByPlan\s*=\s*DAILY_DIGEST_
 section('Billing visibility surface');
 assertIncludes(files.billing, billing, 'data-plan-visibility-stage32e="billing-plan-comparison"', 'Billing plan comparison marker exists');
 assertIncludes(files.billing, billing, 'data-plan-visibility-stage32e="billing-feature-matrix"', 'Billing feature matrix marker exists');
-assertIncludes(files.billing, billing, 'Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth', 'Billing keeps Google truth copy');
-assertIncludes(files.billing, billing, 'Pełny asystent AI Beta, po konfiguracji providera', 'Billing keeps AI truth copy');
+assertIncludes(files.billing, billing, 'Google Calendar sync \u2014 w przygotowaniu / wymaga konfiguracji OAuth', 'Billing keeps Google truth copy');
+assertIncludes(files.billing, billing, 'Pe\u0142ny asystent AI Beta, po konfiguracji providera', 'Billing keeps AI truth copy');
 assertIncludes(files.billing, billing, 'Poranny digest', 'Billing lists digest as configured feature');
-assertIncludes(files.billing, billing, 'Funkcji nieudostępnionych backendowo nie udajemy.', 'Billing keeps truthful feature matrix note');
+assertIncludes(files.billing, billing, 'Funkcji nieudost\u0119pnionych backendowo nie udajemy.', 'Billing keeps truthful feature matrix note');
 
 section('Documentation');
 for (const marker of [
   'FAZA 3 - Etap 3.2E - Settings/Digest/Billing plan visibility smoke',
   'v4 duplicate-declaration cleanup',
-  'Google Calendar w Settings jest widoczny tylko dla planów z googleCalendar',
-  'Digest jest funkcją od Basic',
-  'Billing może pokazywać wszystkie plany',
+  'Google Calendar w Settings jest widoczny tylko dla plan\u00F3w z googleCalendar',
+  'Digest jest funkcj\u0105 od Basic',
+  'Billing mo\u017Ce pokazywa\u0107 wszystkie plany',
   'FAZA 3 - Etap 3.2F - backend entity limits smoke',
 ]) {
   assertIncludes(files.releaseDoc, releaseDoc, marker, 'Release doc contains: ' + marker);

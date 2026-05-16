@@ -52,10 +52,10 @@ if (/color:\s*['\"][^'\"]*(rose|red|amber|orange|pink)-/i.test(leads)) {
 if (!/STATUS_OPTIONS[\s\S]*tone:\s*['\"]amber['\"][\s\S]*SOURCE_OPTIONS/.test(leads)) {
   fail('Leads status metadata does not expose status tones before source options');
 }
-if (/label=\"Zagrożone\"[\s\S]{0,900}(text-(rose|red|amber)-|bg-(rose|red|amber)-)/.test(leads)) {
+if (/label=\"Zagro\u017Cone\"[\s\S]{0,900}(text-(rose|red|amber)-|bg-(rose|red|amber)-)/.test(leads)) {
   fail('Leads risk metric still contains local warm metric classes');
 }
-if (leads.includes('label="Zagrożone"') && !/label=\"Zagrożone\"[\s\S]{0,900}tone=\"risk\"/.test(leads)) {
+if (leads.includes('label="Zagro\u017Cone"') && !/label=\"Zagro\u017Cone\"[\s\S]{0,900}tone=\"risk\"/.test(leads)) {
   fail('Leads risk metric does not use StatShortcutCard risk tone');
 }
 if (/(leads-status-fix|tasks-progress-v2|status-local-patch|status-temp-class)/i.test(leads)) {

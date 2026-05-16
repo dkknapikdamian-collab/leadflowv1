@@ -16,7 +16,7 @@ const types = read('src/components/admin-tools/admin-tools-types.ts');
 });
 expect(toolbar.includes('scanButtons'), 'Toolbar must expose scanButtons');
 expect(toolbar.includes('qaStatus'), 'Button Matrix must have qaStatus');
-expect(toolbar.includes('Nie działa') && toolbar.includes('Przenieść') && toolbar.includes('Zły tekst'), 'Button Matrix QA actions missing');
+expect(toolbar.includes('Nie dzia\u0142a') && toolbar.includes('Przenie\u015B\u0107') && toolbar.includes('Z\u0142y tekst'), 'Button Matrix QA actions missing');
 expect(types.includes('button_matrix_item'), 'Button Matrix data contract missing');
 expect(types.includes('unchecked|ok|bug|move|rename|remove') || types.includes("'unchecked' | 'ok' | 'bug' | 'move' | 'rename' | 'remove'"), 'Button Matrix QA statuses missing');
 

@@ -22,7 +22,7 @@ test('Stage93 removes obsolete hidden week filter render', () => {
   const source = read(calendarPath);
   assert.equal(source.includes('calendar-week-filter-list hidden'), false, 'Old hidden week filter list must not be rendered.');
   assert.equal(source.includes('calendar-week-filter-btn'), false, 'Old week filter buttons must not remain in Calendar.tsx.');
-  assert.equal(source.includes('Przyszły tydzień'), false, 'Legacy future-week shortcut must not remain in the removed rail.');
+  assert.equal(source.includes('Przysz\u0142y tydzie\u0144'), false, 'Legacy future-week shortcut must not remain in the removed rail.');
 });
 
 test('Stage93 keeps one visible week rail with full date and plain count text', () => {

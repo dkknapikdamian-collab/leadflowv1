@@ -91,7 +91,7 @@ if(exists('scripts/check-stage86-context-action-explicit-triggers.cjs')) {
 if(failed) process.exit(1);
 
 const evidence = [
-  '# Stage20 â€” context action real button trigger',
+  '# Stage20 \u00E2\u20AC\u201D context action real button trigger',
   '',
   `Marker: ${STAGE}`,
   '',

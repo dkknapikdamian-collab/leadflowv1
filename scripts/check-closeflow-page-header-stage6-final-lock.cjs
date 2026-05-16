@@ -27,9 +27,9 @@ must('src/styles/closeflow-page-header-stage6-final-lock.css', 'header.billing-h
 must('src/styles/closeflow-page-header-stage6-final-lock.css', 'header.support-header');
 must('src/styles/closeflow-page-header-stage6-final-lock.css', 'data-cf-command-action="ai"');
 must('src/styles/closeflow-page-header-stage6-final-lock.css', 'button:has(svg.lucide-trash-2)');
-must('src/lib/page-header-content.ts', "Źródłem prawdy jest Twoja biblioteka.");
-must('src/lib/page-header-content.ts', "Sprawdź, popraw i zatwierdź szkice przed zapisem.");
-must('src/lib/page-header-content.ts', "Przypomnienia, zaległe rzeczy i alerty, których nie możesz przegapić.");
+must('src/lib/page-header-content.ts', "\u0179r\u00F3d\u0142em prawdy jest Twoja biblioteka.");
+must('src/lib/page-header-content.ts', "Sprawd\u017A, popraw i zatwierd\u017A szkice przed zapisem.");
+must('src/lib/page-header-content.ts', "Przypomnienia, zaleg\u0142e rzeczy i alerty, kt\u00F3rych nie mo\u017Cesz przegapi\u0107.");
 mustNot('src/lib/page-header-content.ts', 'w CRM');
 must('src/pages/TasksStable.tsx', 'data-page-header-new-task-stage6="true"');
 must('src/pages/TasksStable.tsx', 'Nowe zadanie');

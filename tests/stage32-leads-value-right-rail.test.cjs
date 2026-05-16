@@ -35,7 +35,7 @@ test('Stage32 keeps relation value logic unchanged and removes the large old boa
   assertHas(leads, 'buildRelationValueEntries({ leads: activeLeads, clients, cases })', 'existing value calculation');
   assertHas(leads, 'relationValueEntries.slice(0, 5)', 'top 5 entries');
   assertNotHas(leads, 'Suma lejka liczona z aktywnych leadow i klientow', 'old long description ascii');
-  assertNotHas(leads, 'Suma lejka liczona z aktywnych leadów i klientów', 'old long description polish');
+  assertNotHas(leads, 'Suma lejka liczona z aktywnych lead\u00F3w i klient\u00F3w', 'old long description polish');
   assertNotHas(leads, 'md:grid-cols-2 xl:grid-cols-3', 'old large relation grid');
 });
 

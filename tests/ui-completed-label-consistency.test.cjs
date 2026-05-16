@@ -20,8 +20,8 @@ const uiFiles = [
 test('completed action/status wording is consistent in main UI screens', () => {
   for (const file of uiFiles) {
     const source = read(file);
-    assert.doesNotMatch(source, /Zakończ/u, file + ' must use Zrobione instead of Zakończ labels');
-    assert.doesNotMatch(source, /zakończ/u, file + ' must use zrobione instead of zakończ copy');
+    assert.doesNotMatch(source, /Zako\u0144cz/u, file + ' must use Zrobione instead of Zako\u0144cz labels');
+    assert.doesNotMatch(source, /zako\u0144cz/u, file + ' must use zrobione instead of zako\u0144cz copy');
     assert.doesNotMatch(source, /Do akceptu/u, file + ' must use Do akceptacji');
   }
 

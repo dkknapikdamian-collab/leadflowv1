@@ -20,4 +20,3 @@ test('Stage92 guard exists and validates core date contract markers', () => {
   assert.match(calendarItems, /import \{ normalizeWorkItem \}/);
   assert.match(taskEvent, /import \{ normalizeWorkItem \}/);
 });
-

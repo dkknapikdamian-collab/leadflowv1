@@ -19,16 +19,16 @@ function warn(message) {
 }
 
 const fullFinanceActionCopy = [
-  'Dodaj wpłatę',
-  'Dodaj płatność prowizji',
-  'Edytuj prowizję',
+  'Dodaj wp\u0142at\u0119',
+  'Dodaj p\u0142atno\u015B\u0107 prowizji',
+  'Edytuj prowizj\u0119',
 ];
 
 const fullFinanceMetricCopy = [
-  'Wartość transakcji',
-  'Prowizja należna',
-  'Prowizja do zapłaty',
-  'Wpłacono od klienta',
+  'Warto\u015B\u0107 transakcji',
+  'Prowizja nale\u017Cna',
+  'Prowizja do zap\u0142aty',
+  'Wp\u0142acono od klienta',
   'Status prowizji',
 ];
 
@@ -39,15 +39,15 @@ const section = read('src/components/finance/CaseSettlementSection.tsx');
 const panel = read('src/components/finance/CaseSettlementPanel.tsx');
 
 if (!section) fail('Brak src/components/finance/CaseSettlementSection.tsx');
-if (!caseDetail.includes('CaseSettlementSection')) fail('CaseDetail nie używa CaseSettlementSection. Pełny panel rozliczeń nie ma bramki loading/route.');
-if (caseDetail.includes('CaseSettlementPanel')) fail('CaseDetail nadal używa CaseSettlementPanel bezpośrednio.');
-if (caseDetail.includes('../components/finance/CaseSettlementPanel')) fail('CaseDetail nadal importuje bezpośredni CaseSettlementPanel.');
-if (!caseDetail.includes('routeCaseId=')) warn('CaseDetail nie przekazuje routeCaseId do CaseSettlementSection. Wrapper nadal blokuje pusty rekord, ale słabiej chroni przed starym rekordem przy zmianie route.');
+if (!caseDetail.includes('CaseSettlementSection')) fail('CaseDetail nie u\u017Cywa CaseSettlementSection. Pe\u0142ny panel rozlicze\u0144 nie ma bramki loading/route.');
+if (caseDetail.includes('CaseSettlementPanel')) fail('CaseDetail nadal u\u017Cywa CaseSettlementPanel bezpo\u015Brednio.');
+if (caseDetail.includes('../components/finance/CaseSettlementPanel')) fail('CaseDetail nadal importuje bezpo\u015Bredni CaseSettlementPanel.');
+if (!caseDetail.includes('routeCaseId=')) warn('CaseDetail nie przekazuje routeCaseId do CaseSettlementSection. Wrapper nadal blokuje pusty rekord, ale s\u0142abiej chroni przed starym rekordem przy zmianie route.');
 
 if (!section.includes('data-cf-case-finance-section="case-detail-only"')) fail('CaseSettlementSection nie ma znacznika case-detail-only.');
 if (!section.includes('!recordId')) fail('CaseSettlementSection nie blokuje pustego record.id.');
 if (!section.includes('expectedRouteId && expectedRouteId !== recordId')) fail('CaseSettlementSection nie blokuje rozjazdu routeCaseId vs record.id.');
-if (!panel.includes('FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1')) fail('CaseSettlementPanel utracił FIN-5 guard.');
+if (!panel.includes('FIN-5_CLOSEFLOW_CASE_SETTLEMENT_PANEL_V1')) fail('CaseSettlementPanel utraci\u0142 FIN-5 guard.');
 
 for (const pair of [
   ['src/pages/ClientDetail.tsx', clientDetail],
@@ -56,20 +56,20 @@ for (const pair of [
   const rel = pair[0];
   const content = pair[1];
   if (/CaseSettlement(?:Panel|Section)/.test(content)) {
-    fail(rel + ' importuje albo renderuje pełny panel rozliczenia sprawy. Klient/lead mogą mieć tylko skrót, nie edycję płatności sprawy.');
+    fail(rel + ' importuje albo renderuje pe\u0142ny panel rozliczenia sprawy. Klient/lead mog\u0105 mie\u0107 tylko skr\u00F3t, nie edycj\u0119 p\u0142atno\u015Bci sprawy.');
   }
   const actionHits = fullFinanceActionCopy.filter((copy) => content.includes(copy));
   const metricHits = fullFinanceMetricCopy.filter((copy) => content.includes(copy));
   if (actionHits.length >= 2) {
-    fail(rel + ' zawiera kilka pełnych akcji finansowych sprawy: ' + actionHits.join(', ') + '.');
+    fail(rel + ' zawiera kilka pe\u0142nych akcji finansowych sprawy: ' + actionHits.join(', ') + '.');
   }
   if (metricHits.length >= 3) {
-    fail(rel + ' wygląda jak pełny panel rozliczenia sprawy, bo zawiera metryki: ' + metricHits.join(', ') + '.');
+    fail(rel + ' wygl\u0105da jak pe\u0142ny panel rozliczenia sprawy, bo zawiera metryki: ' + metricHits.join(', ') + '.');
   }
 }
 
 if (!clientDetail.includes('ClientFinanceRelationSummary')) {
-  warn('ClientDetail nie używa ClientFinanceRelationSummary. To może być OK, ale klient powinien mieć najwyżej skrót relacji finansowych, nie pełny panel.');
+  warn('ClientDetail nie u\u017Cywa ClientFinanceRelationSummary. To mo\u017Ce by\u0107 OK, ale klient powinien mie\u0107 najwy\u017Cej skr\u00F3t relacji finansowych, nie pe\u0142ny panel.');
 }
 
 if (warnings.length) {

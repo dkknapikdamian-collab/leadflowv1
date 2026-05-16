@@ -94,7 +94,7 @@ function decisionForCssFile(file) {
 function decisionForLocalSurface(match, file) {
   const lower = `${file} ${match}`.toLowerCase();
   if (lower.includes('legacy') || lower.includes('inactive')) return 'legacy';
-  if (lower.includes('todo') || lower.includes('temporary')) return 'usunąć później';
+  if (lower.includes('todo') || lower.includes('temporary')) return 'usun\u0105\u0107 p\u00F3\u017Aniej';
   return 'migrujemy';
 }
 function hasAny(text, markers) { return markers.some((m) => text.includes(m)); }
@@ -131,7 +131,7 @@ function classifyActiveScreen(file) {
   };
 }
 function makeDecisionSummary(items) {
-  const summary = { zostaje: 0, migrujemy: 0, legacy: 0, 'usunąć później': 0 };
+  const summary = { zostaje: 0, migrujemy: 0, legacy: 0, 'usun\u0105\u0107 p\u00F3\u017Aniej': 0 };
   for (const item of items) {
     const decision = item.decision || 'migrujemy';
     summary[decision] = (summary[decision] || 0) + 1;
@@ -191,7 +191,7 @@ function buildInventory() {
   const activeScreenContracts = routes.active.map((p) => classifyActiveScreen(p.file));
   const allDecisions = [...cssImports, ...namedCssFamilies, ...localTiles, ...localHeaders, ...localRows, ...localForms, ...localRightCards, ...localModals, ...activeScreenContracts];
   return {
-    meta: { generatedAt: new Date().toISOString(), stage: 'VS-0 — Visual system inventory freeze', branchExpected: 'dev-rollout-freeze', purpose: 'Freeze visual-system inventory before visual cleanup/migration.', rules: ['zostaje', 'migrujemy', 'legacy', 'usunąć później'], note: 'Audit inventory only. No UI migration.' },
+    meta: { generatedAt: new Date().toISOString(), stage: 'VS-0 \u2014 Visual system inventory freeze', branchExpected: 'dev-rollout-freeze', purpose: 'Freeze visual-system inventory before visual cleanup/migration.', rules: ['zostaje', 'migrujemy', 'legacy', 'usun\u0105\u0107 p\u00F3\u017Aniej'], note: 'Audit inventory only. No UI migration.' },
     cssImports,
     namedCssFamilies,
     localSurfaces: { localTiles, localPageHeaders: localHeaders, localListRows: localRows, localForms, localRightCards, localModals },
@@ -220,31 +220,31 @@ function tableRows(rows, cols, limit = 250) {
   if (!rows.length) return '\n_Brak wykrytych pozycji._\n';
   const head = `| ${cols.join(' | ')} |\n| ${cols.map(() => '---').join(' | ')} |`;
   const body = rows.slice(0, limit).map((row) => `| ${cols.map((col) => esc(row[col])).join(' | ')} |`).join('\n');
-  const tail = rows.length > limit ? `\n\n_Pokazano ${limit} z ${rows.length}. Pełna lista w JSON._` : '';
+  const tail = rows.length > limit ? `\n\n_Pokazano ${limit} z ${rows.length}. Pe\u0142na lista w JSON._` : '';
   return `${head}\n${body}${tail}\n`;
 }
 function surfaceRows(rows) { return rows.map((x) => ({ file: x.file, line: x.line, match: x.match, decision: x.decision })); }
 function toMd(inv) {
   const activeMissing = inv.activeScreenContracts.filter((x) => x.missing.length).map((x) => ({ file: x.file, page: x.page, missing: x.missing.join(', '), decision: x.decision }));
-  return `# CloseFlow — Visual System Inventory Freeze
+  return `# CloseFlow \u2014 Visual System Inventory Freeze
 
-**Data:** ${TODAY}  
-**Etap:** VS-0  
-**Tryb:** audyt / freeze, bez migracji UI  
-**Źródło JSON:** \`docs/ui/closeflow-visual-system-inventory.generated.json\`
+**Data:** ${TODAY}
+**Etap:** VS-0
+**Tryb:** audyt / freeze, bez migracji UI
+**\u0179r\u00F3d\u0142o JSON:** \`docs/ui/closeflow-visual-system-inventory.generated.json\`
 
 ## Werdykt
 
-Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć rozjazdy przed porządkowaniem, nie poprawiać wygląd.
+Ten dokument jest stop-klatk\u0105 obecnego systemu wizualnego. Celem jest policzy\u0107 rozjazdy przed porz\u0105dkowaniem, nie poprawia\u0107 wygl\u0105d.
 
 ## Legenda decyzji
 
 | Decyzja | Znaczenie |
 |---|---|
-| zostaje | Element jest częścią bazowego kontraktu albo tokenów i nie migrujemy go w najbliższym cleanupie. |
-| migrujemy | Element jest aktywny albo wpływa na aktywne UI, ale powinien zostać przeniesiony do standardowego komponentu/kontraktu. |
-| legacy | Element wygląda na historyczny, kompatybilnościowy albo wyłączony z aktywnej ścieżki. Nie ruszać bez osobnego etapu. |
-| usunąć później | Element wygląda na tymczasowy/zbędny, ale usuwanie wymaga osobnego, bezpiecznego etapu. |
+| zostaje | Element jest cz\u0119\u015Bci\u0105 bazowego kontraktu albo token\u00F3w i nie migrujemy go w najbli\u017Cszym cleanupie. |
+| migrujemy | Element jest aktywny albo wp\u0142ywa na aktywne UI, ale powinien zosta\u0107 przeniesiony do standardowego komponentu/kontraktu. |
+| legacy | Element wygl\u0105da na historyczny, kompatybilno\u015Bciowy albo wy\u0142\u0105czony z aktywnej \u015Bcie\u017Cki. Nie rusza\u0107 bez osobnego etapu. |
+| usun\u0105\u0107 p\u00F3\u017Aniej | Element wygl\u0105da na tymczasowy/zb\u0119dny, ale usuwanie wymaga osobnego, bezpiecznego etapu. |
 
 ## Podsumowanie liczb
 
@@ -260,7 +260,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | Lokalne modale / dialogi | ${inv.summary.localModals} |
 | Aktywne ekrany | ${inv.summary.activeScreens} |
 | Aktywne ekrany bez standardowego wrappera | ${inv.summary.activeScreensWithoutStandardWrapper} |
-| Aktywne ekrany bez standardowych kafelków | ${inv.summary.activeScreensWithoutStandardTiles} |
+| Aktywne ekrany bez standardowych kafelk\u00F3w | ${inv.summary.activeScreensWithoutStandardTiles} |
 | Aktywne ekrany bez standardowego page hero | ${inv.summary.activeScreensWithoutStandardPageHero} |
 
 ## Decyzje zbiorcze
@@ -270,7 +270,7 @@ Ten dokument jest stop-klatką obecnego systemu wizualnego. Celem jest policzyć
 | zostaje | ${inv.summary.decisions.zostaje || 0} |
 | migrujemy | ${inv.summary.decisions.migrujemy || 0} |
 | legacy | ${inv.summary.decisions.legacy || 0} |
-| usunąć później | ${inv.summary.decisions['usunąć później'] || 0} |
+| usun\u0105\u0107 p\u00F3\u017Aniej | ${inv.summary.decisions['usun\u0105\u0107 p\u00F3\u017Aniej'] || 0} |
 
 ## Importy CSS z src/index.css
 
@@ -280,7 +280,7 @@ ${tableRows(inv.cssImports.map((x) => ({ line: x.line, import: x.import, decisio
 
 ${tableRows(inv.namedCssFamilies.map((x) => ({ family: x.family, file: x.file, decision: x.decision })), ['family', 'file', 'decision'])}
 
-## Aktywne ekrany bez pełnego kontraktu wrapper / tiles / hero
+## Aktywne ekrany bez pe\u0142nego kontraktu wrapper / tiles / hero
 
 ${tableRows(activeMissing, ['file', 'page', 'missing', 'decision'])}
 
@@ -310,17 +310,17 @@ ${tableRows(surfaceRows(inv.localSurfaces.localModals), ['file', 'line', 'match'
 
 ## Co wolno dalej
 
-1. Najpierw migrować aktywne ekrany bez standardowego wrappera.
-2. Potem migrować aktywne ekrany bez standardowych kafelków.
-3. Potem migrować lokalne page hero/headery.
-4. Potem porządkować lokalne right-card i modale.
-5. Dopiero na końcu usuwać legacy/hotfix CSS.
+1. Najpierw migrowa\u0107 aktywne ekrany bez standardowego wrappera.
+2. Potem migrowa\u0107 aktywne ekrany bez standardowych kafelk\u00F3w.
+3. Potem migrowa\u0107 lokalne page hero/headery.
+4. Potem porz\u0105dkowa\u0107 lokalne right-card i modale.
+5. Dopiero na ko\u0144cu usuwa\u0107 legacy/hotfix CSS.
 
-## Czego nie wolno robić po tym etapie
+## Czego nie wolno robi\u0107 po tym etapie
 
-- Nie usuwać hurtowo \`visual-stage*\`, \`hotfix-*\`, \`eliteflow-*\` ani \`stage*.css\`.
-- Nie przepinać UI bez sprawdzenia aktywnego routingu.
-- Nie robić cleanupu wizualnego bez checka i aktualizacji tego inventory.
+- Nie usuwa\u0107 hurtowo \`visual-stage*\`, \`hotfix-*\`, \`eliteflow-*\` ani \`stage*.css\`.
+- Nie przepina\u0107 UI bez sprawdzenia aktywnego routingu.
+- Nie robi\u0107 cleanupu wizualnego bez checka i aktualizacji tego inventory.
 `;
 }
 const inventory = buildInventory();

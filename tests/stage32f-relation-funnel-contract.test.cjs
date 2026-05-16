@@ -12,7 +12,7 @@ const fullGate = fs.readFileSync(path.join(root, 'scripts/closeflow-release-chec
 test('Stage32f keeps compact relation rail while relation funnel contract stays valid', () => {
   assert.ok(leads.includes('Lejek razem: {formatRelationValue(relationFunnelValue)}'));
   assert.ok(leads.includes('Najcenniejsze'));
-  assert.ok(!leads.includes('Suma lejka liczona z aktywnych leadów i klientów'));
+  assert.ok(!leads.includes('Suma lejka liczona z aktywnych lead\u00F3w i klient\u00F3w'));
   assert.ok(relationTest.includes('STAGE32F_RELATION_FUNNEL_CONTRACT'));
 });
 

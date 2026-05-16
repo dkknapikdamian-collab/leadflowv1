@@ -9,7 +9,7 @@ const mainPath = path.join(root, 'src', 'main.tsx');
 const packagePath = path.join(root, 'package.json');
 
 function fail(message) {
-  console.error(`✖ ${message}`);
+  console.error(`\u2716 ${message}`);
   process.exit(1);
 }
 
@@ -62,4 +62,4 @@ if (!pkg.scripts || pkg.scripts['check:mobile-start-tile-trim'] !== 'node script
   fail('package.json nie zawiera skryptu check:mobile-start-tile-trim');
 }
 
-console.log('✔ mobile start tile trim CSS is mobile-only and wired');
+console.log('\u2714 mobile start tile trim CSS is mobile-only and wired');

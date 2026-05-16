@@ -38,14 +38,14 @@ test('Stage24 keeps final AI draft writes in approval flow with relation IDs sel
   assert.match(source, /caseId: form\.caseId \|\| null/);
   assert.match(source, /clientId: form\.clientId \|\| null/);
   assert.match(source, /updateApprovalForm\(\{ \[field\]: option\.id \}/);
-  assert.match(source, /Nie wpisuj ID recznie|Nie wpisuj ID ręcznie/);
+  assert.match(source, /Nie wpisuj ID recznie|Nie wpisuj ID r\u0119cznie/);
 });
 
 test('Stage24 docs keep Polish encoding clean', () => {
   const doc = read(docPath);
-  for (const marker of ['Ä', 'Å', 'Ã', 'Ĺ']) {
+  for (const marker of ['\u00c4', '\u00c5', '\u00c3', '\u0139']) {
     assert.equal(doc.includes(marker), false, `mojibake marker found: ${marker}`);
   }
   assert.match(doc, /wyszukiwanie klienta/);
-  assert.match(doc, /Kryterium zakończenia/);
+  assert.match(doc, /Kryterium zako\u0144czenia/);
 });

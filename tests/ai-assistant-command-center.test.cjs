@@ -50,7 +50,7 @@ test('AI assistant is available from global toolbar for daily plan lead lookup a
   assert.match(component, /Asystent AI/);
   assert.match(component, /SpeechRecognition/);
   assert.match(component, /webkitSpeechRecognition/);
-  assertSourceMatches(component, /Co mam dziś do zrobienia\?/, 'today assistant example');
+  assertSourceMatches(component, /Co mam dzi\u015B do zrobienia\?/, 'today assistant example');
   assertSourceMatches(component, /Dodaj leada: Pan Marek/, 'lead capture example copy');
   assert.match(component, /STAGE35_AI_ASSISTANT_COMPACT_UI/);
   assert.match(server, /today_briefing/);
@@ -62,7 +62,7 @@ test('AI assistant writes tasks and events only behind explicit safety gate', ()
   const localPath = require('node:path');
   const source = localFs.readFileSync(localPath.join(process.cwd(), 'src', 'components', 'TodayAiAssistant.tsx'), 'utf8');
 
-  // AI_DIRECT_WRITE_TEST_CONTRACT_V79: leady nadal bez bezpośredniego zapisu, zadania i wydarzenia tylko za bramką bezpieczeństwa.
+  // AI_DIRECT_WRITE_TEST_CONTRACT_V79: leady nadal bez bezpo\u015Bredniego zapisu, zadania i wydarzenia tylko za bramk\u0105 bezpiecze\u0144stwa.
   assert.doesNotMatch(source, /insertLeadToSupabase/);
   assert.match(source, /AI_DIRECT_WRITE_MODE_STATE/);
   assert.match(source, /parseAiDirectWriteCommand/);
@@ -84,11 +84,11 @@ test('AI assistant hard-blocks out-of-scope questions to protect usage limits', 
   assert.match(server, /blocked_out_of_scope/);
   assert.match(server, /hardBlock: true/);
   assert.match(server, /Twarda blokada zakresu/);
-  assert.match(server, /Nie odpowiadam na pytania ogólne/);
+  assert.match(server, /Nie odpowiadam na pytania og\u00F3lne/);
   assert.match(client, /blocked_out_of_scope/);
   assert.match(component, /Poza zakresem aplikacji/);
   assert.match(component, /Blokada zakresu/);
-  assert.match(component, /Asystent działa tylko w obrębie CloseFlow/);
+  assert.match(component, /Asystent dzia\u0142a tylko w obr\u0119bie CloseFlow/);
   assert.doesNotMatch(server, /OPENAI_API_KEY/);
   assert.doesNotMatch(server, /GEMINI_API_KEY/);
 });

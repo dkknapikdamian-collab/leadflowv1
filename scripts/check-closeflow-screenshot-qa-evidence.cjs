@@ -105,7 +105,7 @@ function assertContract() {
     mustInclude(DOC_REL, route.routeTemplate);
   }
 
-  mustInclude(DOC_REL, '13 ekranów x 3 viewporty = 39 screenshotów');
+  mustInclude(DOC_REL, '13 ekran\u00F3w x 3 viewporty = 39 screenshot\u00F3w');
   mustInclude(DOC_REL, 'CLOSEFLOW_SCREENSHOT_QA_EVIDENCE_2026-05-09.json');
   mustInclude(SCRIPT_REL, 'CLOSEFLOW_SCREENSHOT_QA_EVIDENCE_CHECK_OK');
 }

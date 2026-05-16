@@ -11,7 +11,7 @@ test('Stage18 keeps Billing compatible with old Stripe BLIK contract and new sho
   assert.equal(billing.includes('BLIK przez Stripe'), true);
   assert.equal(billing.includes('Stripe/BLIK'), true);
   assert.equal(billing.includes('wiec caly workflow dziala bez blokad'), false);
-  assert.equal(billing.includes('Jak działa V1'), false);
+  assert.equal(billing.includes('Jak dzia\u0142a V1'), false);
 });
 
 test('Stage18 keeps Stage16 test contract parse-safe', () => {

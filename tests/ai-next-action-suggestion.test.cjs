@@ -29,10 +29,10 @@ test('Lead detail exposes AI next action as a controlled suggestion flow', () =>
   const detail = read('src/pages/LeadDetail.tsx');
 
   assert.match(detail, /LeadAiNextAction/);
-  assert.match(component, /AI niczego nie tworzy bez Twojego kliknięcia/);
+  assert.match(component, /AI niczego nie tworzy bez Twojego klikni\u0119cia/);
   assert.match(component, /Tylko sugestia/);
   assert.match(component, /Kopiuj plan/);
-  assert.match(component, /Utwórz zadanie/);
+  assert.match(component, /Utw\u00F3rz zadanie/);
   assert.match(component, /handleCreateSuggestedTask/);
   assert.match(component, /insertTaskToSupabase/);
   assert.doesNotMatch(component, /useEffect\s*\(.*handleCreateSuggestedTask/s);

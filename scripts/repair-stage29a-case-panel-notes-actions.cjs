@@ -123,11 +123,11 @@ function patchClientDetail() {
     async (note: any) => {
       const noteId = String(note?.id || '').trim();
       const previousContent = String(note?.content || '');
-      const nextContent = typeof window !== 'undefined' ? window.prompt('Edytuj notatkę', previousContent) : previousContent;
+      const nextContent = typeof window !== 'undefined' ? window.prompt('Edytuj notatk\u0119', previousContent) : previousContent;
       if (nextContent === null) return;
       const cleanContent = String(nextContent || '').trim();
       if (!cleanContent) {
-        toast.error('Notatka nie może być pusta.');
+        toast.error('Notatka nie mo\u017Ce by\u0107 pusta.');
         return;
       }
       try {
@@ -160,7 +160,7 @@ function patchClientDetail() {
         toast.success('Notatka zaktualizowana');
       } catch (error) {
         console.error(error);
-        toast.error('Nie udało się edytować notatki.');
+        toast.error('Nie uda\u0142o si\u0119 edytowa\u0107 notatki.');
       }
     },
     [client?.id],
@@ -170,15 +170,15 @@ function patchClientDetail() {
     async (note: any) => {
       const noteId = String(note?.id || '').trim();
       if (!noteId) return;
-      if (typeof window !== 'undefined' && !window.confirm('Usunąć tę notatkę?')) return;
+      if (typeof window !== 'undefined' && !window.confirm('Usun\u0105\u0107 t\u0119 notatk\u0119?')) return;
       try {
         await deleteActivityFromSupabase(noteId);
         setActivities((previous) => previous.filter((activity) => String(activity?.id || '') !== noteId));
         persistClientPinnedNotes(clientPinnedNoteIds.filter((id) => id !== noteId));
-        toast.success('Notatka usunięta');
+        toast.success('Notatka usuni\u0119ta');
       } catch (error) {
         console.error(error);
-        toast.error('Nie udało się usunąć notatki.');
+        toast.error('Nie uda\u0142o si\u0119 usun\u0105\u0107 notatki.');
       }
     },
     [clientPinnedNoteIds, persistClientPinnedNotes],
@@ -215,16 +215,16 @@ function getClientNotesForRender(notes: any[], pinnedIds: string[] = []) {
                         data-client-note-pinned={clientPinnedNoteIds.includes(note.id) ? 'true' : 'false'}
                       >
                         <div className="client-detail-note-item-toolbar" data-client-note-actions="true">
-                          <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() => handleToggleClientNotePin(note)}>
+                          <button type="button" title="Przypnij notatk\u0119" aria-label="Przypnij notatk\u0119" onClick={() => handleToggleClientNotePin(note)}>
                             <Pin className="h-3.5 w-3.5" />
                           </button>
-                          <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() => handlePreviewClientNote(note)}>
+                          <button type="button" title="Podgl\u0105d ca\u0142ej notatki" aria-label="Podgl\u0105d ca\u0142ej notatki" onClick={() => handlePreviewClientNote(note)}>
                             <Eye className="h-3.5 w-3.5" />
                           </button>
-                          <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() => handleEditClientNote(note)}>
+                          <button type="button" title="Edytuj notatk\u0119" aria-label="Edytuj notatk\u0119" onClick={() => handleEditClientNote(note)}>
                             <Pencil className="h-3.5 w-3.5" />
                           </button>
-                          <button type="button" className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
+                          <button type="button" className="client-detail-note-delete-button" title="Usu\u0144 notatk\u0119" aria-label="Usu\u0144 notatk\u0119" onClick={() => handleDeleteClientNote(note)}>
                             <Trash2 className="h-3.5 w-3.5" />
                           </button>
                         </div>`

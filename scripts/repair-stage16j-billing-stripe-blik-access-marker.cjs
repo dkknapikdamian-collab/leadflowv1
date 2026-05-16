@@ -29,7 +29,7 @@ if (!source.includes('Oplacony okres dostepu minal')) {
 }
 
 // Keep the real UI copy with Polish signs. The ASCII marker is only for legacy release gate compatibility.
-if (!source.includes('Opłacony okres dostępu minął')) {
+if (!source.includes('Op\u0142acony okres dost\u0119pu min\u0105\u0142')) {
   console.error('Expected real Polish billing expiry copy is missing. Refusing to replace UI text with ASCII marker.');
   process.exit(1);
 }

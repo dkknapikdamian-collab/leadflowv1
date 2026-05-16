@@ -36,16 +36,16 @@ assertNotIncludes(source, 'buildCaseActivityRoadmap(', 'budowanie roadmapy w Cas
 assertNotIncludes(source, 'Roadmapa sprawy', 'tytul roadmapy');
 assertNotIncludes(source, 'case-detail-roadmap-panel', 'panel roadmapy');
 assertNotIncludes(source, 'cf-activity-roadmap', 'roadmap class');
-assertNotIncludes(source, 'Portal i źródła', 'panel Portal i źródła');
+assertNotIncludes(source, 'Portal i \u017Ar\u00F3d\u0142a', 'panel Portal i \u017Ar\u00F3d\u0142a');
 assertNotIncludes(source, 'Kopiuj portal', 'przycisk kopiowania portalu w usunietym panelu');
 assertNotIncludes(source, 'Sprawy /', 'powtarzany breadcrumb z nazwa sprawy');
 
 if (!header) throw new Error('Nie znaleziono headera CaseDetail do kontroli duplikacji.');
 if (countIn(header, 'getCaseTitle(caseData)') > 1) {
-  throw new Error('Header nadal powtarza getCaseTitle(caseData) więcej niż raz.');
+  throw new Error('Header nadal powtarza getCaseTitle(caseData) wi\u0119cej ni\u017C raz.');
 }
 if (countIn(header, 'getCaseStatusLabel(caseData?.status)') + countIn(header, 'getCaseStatusLabel(caseData.status)') > 1) {
-  throw new Error('Header nadal powtarza status sprawy więcej niż raz.');
+  throw new Error('Header nadal powtarza status sprawy wi\u0119cej ni\u017C raz.');
 }
 
 assertIncludes(source, '<h1', 'glowny tytul sprawy zostaje');
@@ -53,4 +53,4 @@ assertIncludes(source, 'CaseSettlementPanel', 'historia/rozliczenia finansowe ni
 assertIncludes(source, 'fetchTasksFromSupabase', 'zadania nie zostaly usuniete');
 assertIncludes(source, 'fetchEventsFromSupabase', 'wydarzenia nie zostaly usuniete');
 
-console.log('✔ Stage14C CaseDetail cleanup guard passed');
+console.log('\u2714 Stage14C CaseDetail cleanup guard passed');

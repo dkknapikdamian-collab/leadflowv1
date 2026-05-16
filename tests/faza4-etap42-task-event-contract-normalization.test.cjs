@@ -52,7 +52,7 @@ nodeTest('Faza 4 Etap 4.2 docs, package and quiet release gate are wired', () =>
   const pkg = JSON.parse(read('package.json'));
   const quiet = read('scripts/closeflow-release-check-quiet.cjs');
 
-  assert.match(releaseDoc, /FAZA 4 - Etap 4\.2 - Normalizacja tasków i eventów/);
+  assert.match(releaseDoc, /FAZA 4 - Etap 4\.2 - Normalizacja task\u00F3w i event\u00F3w/);
   assert.match(technicalDoc, /TASK \/ EVENT CONTRACT NORMALIZATION/);
   assert.equal(pkg.scripts['check:faza4-etap42-task-event-contract-normalization'], 'node scripts/check-faza4-etap42-task-event-contract-normalization.cjs');
   assert.equal(pkg.scripts['test:faza4-etap42-task-event-contract-normalization'], 'node --test tests/faza4-etap42-task-event-contract-normalization.test.cjs');

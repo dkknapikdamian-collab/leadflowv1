@@ -49,7 +49,7 @@ expect(release.includes('Etap 14'), 'release doc must mention Etap 14');
 expect(release.includes('Etap 15'), 'release doc must mention Etap 15');
 expect(releaseE.includes('GUARD_COMPAT_FIXED'), 'Stage90E guard compatibility doc missing');
 
-expect(checklist.includes('CHECKLISTA QA PRZYCISKÓW CLOSEFLOW 2026-05-05'), 'Button Matrix checklist title missing');
+expect(checklist.includes('CHECKLISTA QA PRZYCISK\u00D3W CLOSEFLOW 2026-05-05'), 'Button Matrix checklist title missing');
 expect(checklist.includes('| Trasa | Przycisk / akcja | Oczekiwany efekt |'), 'Button Matrix checklist table missing');
 expect(checklist.includes('/billing'), 'Button Matrix checklist must include billing');
 expect(checklist.includes('/client-portal'), 'Button Matrix checklist must include portal');

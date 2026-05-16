@@ -15,15 +15,15 @@ source = source.replace(
   /const DAILY_DIGEST_EMAIL_UI_VISIBLE = true;/g,
   'const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;',
 );
-source = source.replace(/Na darmowym Vercel cron działa raz dzieńnie/g, 'Na darmowym Vercel cron działa raz dziennie');
-source = source.replace(/Na darmowym Vercel cron dziala raz dziennie/g, 'Na darmowym Vercel cron działa raz dziennie');
+source = source.replace(/Na darmowym Vercel cron dzia\u0142a raz dzie\u0144nie/g, 'Na darmowym Vercel cron dzia\u0142a raz dziennie');
+source = source.replace(/Na darmowym Vercel cron dziala raz dziennie/g, 'Na darmowym Vercel cron dzia\u0142a raz dziennie');
 
 const cleanBlock = `  const settingsSummary = useMemo(
     () => [
       { label: 'Konto', value: asText(profile.fullName || accountEmail, 'Operator') },
       { label: 'Workspace', value: workspaceName },
       { label: 'Plan', value: planLabel },
-      { label: 'Dostęp', value: accessLabel },
+      { label: 'Dost\u0119p', value: accessLabel },
     ],
     [accessLabel, accountEmail, planLabel, profile.fullName, workspaceName],
   );

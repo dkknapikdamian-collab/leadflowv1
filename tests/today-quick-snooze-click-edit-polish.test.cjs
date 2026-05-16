@@ -34,10 +34,10 @@ function rejectPattern(source, pattern, label) {
 test('Today quick snooze section has Polish labels with correct characters', () => {
   const source = read('src/pages/Today.tsx');
 
-  expectText(source, 'Szybko odłóż:');
-  expectText(source, "label: 'Przyszły tydzień'");
-  expectText(source, "description: 'Odłóż o godzinę.'");
-  expectText(source, "description: 'Odłóż na przyszły tydzień.'");
+  expectText(source, 'Szybko od\u0142\u00F3\u017C:');
+  expectText(source, "label: 'Przysz\u0142y tydzie\u0144'");
+  expectText(source, "description: 'Od\u0142\u00F3\u017C o godzin\u0119.'");
+  expectText(source, "description: 'Od\u0142\u00F3\u017C na przysz\u0142y tydzie\u0144.'");
 
   rejectPattern(source, /Odloz/, 'Odloz');
   rejectPattern(source, /Przyszly tydzien/, 'Przyszly tydzien');

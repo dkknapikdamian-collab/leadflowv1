@@ -9,7 +9,7 @@ const mainPath = path.join(root, 'src', 'main.tsx');
 const packagePath = path.join(root, 'package.json');
 
 function fail(message) {
-  console.error(`✖ ${message}`);
+  console.error(`\u2716 ${message}`);
   process.exit(1);
 }
 function read(file) {
@@ -59,6 +59,6 @@ const files = walk(path.join(root, 'src'));
 const hasDataAttr = files.some((file) => read(file).includes('data-cf-mobile-start-tile-trim="true"'));
 const knownWrapperExists = files.some((file) => /cf-page-(hero-aside|header-tiles|quick-links|hero-shortcuts|header-stats|header-metrics)/.test(read(file)));
 if (knownWrapperExists && !hasDataAttr) {
-  console.warn('⚠ Nie znaleziono jawnego data-cf-mobile-start-tile-trim w TSX, ale CSS repair2 ma fallback po klasach i :has().');
+  console.warn('\u26A0 Nie znaleziono jawnego data-cf-mobile-start-tile-trim w TSX, ale CSS repair2 ma fallback po klasach i :has().');
 }
-console.log('✔ mobile start tile trim repair2 is mobile-only and wired');
+console.log('\u2714 mobile start tile trim repair2 is mobile-only and wired');

@@ -15,14 +15,14 @@ function assertIncludes(content, needle, label) {
 
 test('Quick Lead Capture parser detects phone, Facebook source and tomorrow after 10', () => {
   const now = new Date('2026-04-30T08:00:00');
-  const draft = parseQuickLeadNote('Pani Anna z Tarnowa chce wycenę mieszkania, 608 123 456, zadzwonić jutro po 10, przyszła z Facebooka.', now);
+  const draft = parseQuickLeadNote('Pani Anna z Tarnowa chce wycen\u0119 mieszkania, 608 123 456, zadzwoni\u0107 jutro po 10, przysz\u0142a z Facebooka.', now);
 
   assert.equal(draft.contactName, 'Anna');
   assert.equal(draft.phone, '608123456');
   assert.equal(draft.source, 'facebook');
   assert.equal(draft.priority, 'medium');
   assert.equal(draft.dueAt, '2026-05-01T10:00');
-  assert.match(draft.nextAction, /zadzwonić/i);
+  assert.match(draft.nextAction, /zadzwoni\u0107/i);
 });
 
 test('Quick Lead Capture creates pending draft before final lead save', () => {
@@ -41,7 +41,7 @@ test('Quick Lead Capture confirm creates lead and clears rawText', () => {
   assertIncludes(component, 'insertTaskToSupabase', 'QuickLeadCaptureModal');
   assertIncludes(component, "rawText: ''", 'QuickLeadCaptureModal');
   assertIncludes(component, 'setRawText(\'\')', 'QuickLeadCaptureModal');
-  assertIncludes(component, 'Zatwierdź i zapisz', 'QuickLeadCaptureModal');
+  assertIncludes(component, 'Zatwierd\u017A i zapisz', 'QuickLeadCaptureModal');
 });
 
 test('Quick Lead Capture cancel does not create final lead and clears rawText', () => {
@@ -68,5 +68,5 @@ test('Quick Lead Capture entry points exist in Leads and global quick actions', 
 test('Quick Lead Capture documentation exists', () => {
   const doc = read('docs/STAGE27_QUICK_LEAD_CAPTURE.md');
   assertIncludes(doc, 'Quick Lead Capture', 'STAGE27 doc');
-  assertIncludes(doc, 'Finalny lead powstaje dopiero po zatwierdzeniu użytkownika', 'STAGE27 doc');
+  assertIncludes(doc, 'Finalny lead powstaje dopiero po zatwierdzeniu u\u017Cytkownika', 'STAGE27 doc');
 });

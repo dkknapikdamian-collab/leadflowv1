@@ -23,7 +23,7 @@ const pkg = JSON.parse(read('package.json'));
 
 const forbiddenToday = [
   'Jasne rekordy od razu',
-  'Możesz pozwolić na natychmiastowy zapis',
+  'Mo\u017Cesz pozwoli\u0107 na natychmiastowy zapis',
   'AI_DIRECT_WRITE_TASK_EVENT_BRANCH',
   'AI_DIRECT_WRITE_LEAD_BRANCH',
   'insertTaskToSupabase',

@@ -17,19 +17,19 @@ test('ClientDetail keeps final four-tab operating model', () => {
 
 test('ClientDetail leaves process work in case or active lead, not in client cockpit', () => {
   assert.ok(source.includes('CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD'));
-  assert.ok(source.includes('Praca dzieje się w sprawie'));
-  assert.ok(source.includes('Otwórz sprawę'));
-  assert.ok(source.includes('Otwórz lead'));
+  assert.ok(source.includes('Praca dzieje si\u0119 w sprawie'));
+  assert.ok(source.includes('Otw\u00F3rz spraw\u0119'));
+  assert.ok(source.includes('Otw\u00F3rz lead'));
 });
 
 test('ClientDetail exposes secondary more menu without turning it into main workflow', () => {
   assert.ok(source.includes('client-detail-more-menu'));
   assert.ok(source.includes('Dodatkowe'));
-  assert.ok(source.includes('Drugorzędne akcje') || source.includes('drugorzędne akcje') || source.includes('menu pomocnicze'));
+  assert.ok(source.includes('Drugorz\u0119dne akcje') || source.includes('drugorz\u0119dne akcje') || source.includes('menu pomocnicze'));
 });
 
 test('ClientDetail keeps source lead as history signal', () => {
-  assert.ok(source.includes('Źródłowy lead') || source.includes('sourceLead'));
+  assert.ok(source.includes('\u0179r\u00F3d\u0142owy lead') || source.includes('sourceLead'));
   assert.ok(source.includes('Historia'));
 });
 

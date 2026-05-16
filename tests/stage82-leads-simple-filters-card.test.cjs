@@ -17,7 +17,7 @@ assert(source.includes('dataTestId="leads-simple-filters-card"'), 'Missing leads
 assert(source.includes('title="Filtry proste"'), 'Missing simple filters title.');
 assert(source.includes('description="Bez przesady, tylko najpotrzebniejsze."'), 'Missing simple filters description.');
 assert(source.includes("label: 'Aktywne'"), 'Missing Aktywne filter.');
-assert(source.includes("label: 'Zagrożone'"), 'Missing Zagrozone filter.');
+assert(source.includes("label: 'Zagro\u017Cone'"), 'Missing Zagrozone filter.');
 assert(source.includes("label: 'Historia'"), 'Missing Historia filter.');
 assert(source.includes("label: 'Kosz'"), 'Missing Kosz filter.');
 assert(source.includes('value: stats.active'), 'Aktywne must use stats.active.');

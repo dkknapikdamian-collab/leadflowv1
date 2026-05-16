@@ -13,7 +13,7 @@ test('Quick AI Capture understands common Polish speech-to-text lead aliases', (
 
   assert.ok(source.includes('QUICK_CAPTURE_SPEECH_NAME_PATTERNS'), 'capture parser should have speech-specific name patterns');
   assert.ok(source.includes('cleanSpeechNameCandidate'), 'capture parser should clean voice filler words');
-  assert.ok(source.includes('znajd'), 'capture parser should handle "znajdź mi leada" voice commands');
+  assert.ok(source.includes('znajd'), 'capture parser should handle "znajd\u017A mi leada" voice commands');
   assert.ok(source.includes('lida'), 'capture parser should handle speech recognition alias "lida" for lead/leada');
   assert.ok(source.includes('patrzcie'), 'capture parser should strip common accidental voice filler after a name');
 });

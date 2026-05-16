@@ -41,15 +41,15 @@ function patchAiDrafts() {
     const indent = line.match(/^\s*/)?.[0] || '';
 
     if (line.includes('ai-drafts-relation-empty')) {
-      return line.replace(/(<p className="ai-drafts-relation-empty">)[^<]*(<\/p>)/, '$1Ładuję dane z bazy...$2');
+      return line.replace(/(<p className="ai-drafts-relation-empty">)[^<]*(<\/p>)/, '$1\u0141aduj\u0119 dane z bazy...$2');
     }
 
     if (line.includes('<p>') && line.includes('szkic') && line.includes('...</p>')) {
-      return line.replace(/<p>[^<]*szkic[^<]*<\/p>/, '<p>Ładowanie szkiców...</p>');
+      return line.replace(/<p>[^<]*szkic[^<]*<\/p>/, '<p>\u0141adowanie szkic\u00F3w...</p>');
     }
 
-    if (line.includes('dost') && line.includes('...') && /[ŁL]adowanie|dost[eę]p/.test(line)) {
-      return `${indent}Ładowanie dostępu...`;
+    if (line.includes('dost') && line.includes('...') && /[\u0141L]adowanie|dost[e\u0119]p/.test(line)) {
+      return `${indent}\u0141adowanie dost\u0119pu...`;
     }
 
     return line;
@@ -65,16 +65,16 @@ function patchTemplates() {
     const suffix = "${error?.message || 'REQUEST_FAILED'}";
 
     if (line.includes('pobra')) {
-      return `${indent}toast.error(\`Nie udało się pobrać szablonów: ${suffix}\`);`;
+      return `${indent}toast.error(\`Nie uda\u0142o si\u0119 pobra\u0107 szablon\u00F3w: ${suffix}\`);`;
     }
     if (line.includes('zapisa')) {
-      return `${indent}toast.error(\`Nie udało się zapisać szablonu: ${suffix}\`);`;
+      return `${indent}toast.error(\`Nie uda\u0142o si\u0119 zapisa\u0107 szablonu: ${suffix}\`);`;
     }
     if (line.includes('skopiowa')) {
-      return `${indent}toast.error(\`Nie udało się skopiować szablonu: ${suffix}\`);`;
+      return `${indent}toast.error(\`Nie uda\u0142o si\u0119 skopiowa\u0107 szablonu: ${suffix}\`);`;
     }
     if (line.includes('usun') || line.includes('usu')) {
-      return `${indent}toast.error(\`Nie udało się usunąć szablonu: ${suffix}\`);`;
+      return `${indent}toast.error(\`Nie uda\u0142o si\u0119 usun\u0105\u0107 szablonu: ${suffix}\`);`;
     }
 
     return line;
@@ -93,9 +93,9 @@ function patchGenericLeftovers() {
     const before = text;
 
     // Structural residue cleanups that do not rely on broken characters being encoded consistently.
-    text = text.replace(/<p className="ai-drafts-relation-empty">[^<]*<\/p>/g, '<p className="ai-drafts-relation-empty">Ładuję dane z bazy...</p>');
-    text = text.replace(/<p>[^<]*szkiców\.\.\.<\/p>/g, '<p>Ładowanie szkiców...</p>');
-    text = text.replace(/(^\s*)[^\r\n<>{}]*dostępu\.\.\./gm, '$1Ładowanie dostępu...');
+    text = text.replace(/<p className="ai-drafts-relation-empty">[^<]*<\/p>/g, '<p className="ai-drafts-relation-empty">\u0141aduj\u0119 dane z bazy...</p>');
+    text = text.replace(/<p>[^<]*szkic\u00F3w\.\.\.<\/p>/g, '<p>\u0141adowanie szkic\u00F3w...</p>');
+    text = text.replace(/(^\s*)[^\r\n<>{}]*dost\u0119pu\.\.\./gm, '$1\u0141adowanie dost\u0119pu...');
 
     if (text !== before) {
       write(rel, text);
@@ -107,8 +107,8 @@ function patchGenericLeftovers() {
 
 function findKnownLeftovers() {
   const checks = [
-    ['src/pages/AiDrafts.tsx', ['ai-drafts-relation-empty', 'szkiców...', 'dostępu...']],
-    ['src/pages/Templates.tsx', ['Nie udaBo', 'pobra szablonów', 'zapisa szablonu', 'skopiowa szablonu', 'usun szablonu']],
+    ['src/pages/AiDrafts.tsx', ['ai-drafts-relation-empty', 'szkic\u00F3w...', 'dost\u0119pu...']],
+    ['src/pages/Templates.tsx', ['Nie udaBo', 'pobra szablon\u00F3w', 'zapisa szablonu', 'skopiowa szablonu', 'usun szablonu']],
   ];
 
   const leftovers = [];
@@ -117,12 +117,12 @@ function findKnownLeftovers() {
     const lines = text.split(/\r?\n/);
     lines.forEach((line, index) => {
       if (rel.endsWith('AiDrafts.tsx')) {
-        if (line.includes('ai-drafts-relation-empty') && !line.includes('Ładuję dane z bazy')) leftovers.push(`${rel}:${index + 1}: relation loading copy not repaired: ${line.trim()}`);
-        if (line.includes('szkiców...') && !line.includes('Ładowanie szkiców')) leftovers.push(`${rel}:${index + 1}: draft loading copy not repaired: ${line.trim()}`);
-        if (line.includes('dostępu...') && !line.includes('Ładowanie dostępu')) leftovers.push(`${rel}:${index + 1}: access loading copy not repaired: ${line.trim()}`);
+        if (line.includes('ai-drafts-relation-empty') && !line.includes('\u0141aduj\u0119 dane z bazy')) leftovers.push(`${rel}:${index + 1}: relation loading copy not repaired: ${line.trim()}`);
+        if (line.includes('szkic\u00F3w...') && !line.includes('\u0141adowanie szkic\u00F3w')) leftovers.push(`${rel}:${index + 1}: draft loading copy not repaired: ${line.trim()}`);
+        if (line.includes('dost\u0119pu...') && !line.includes('\u0141adowanie dost\u0119pu')) leftovers.push(`${rel}:${index + 1}: access loading copy not repaired: ${line.trim()}`);
       }
       if (rel.endsWith('Templates.tsx')) {
-        if (line.includes('Nie udaBo') || line.includes('pobra szablonów') || line.includes('zapisa szablonu') || line.includes('skopiowa szablonu') || line.includes('usun szablonu')) {
+        if (line.includes('Nie udaBo') || line.includes('pobra szablon\u00F3w') || line.includes('zapisa szablonu') || line.includes('skopiowa szablonu') || line.includes('usun szablonu')) {
           leftovers.push(`${rel}:${index + 1}: template toast copy not repaired: ${line.trim()}`);
         }
       }

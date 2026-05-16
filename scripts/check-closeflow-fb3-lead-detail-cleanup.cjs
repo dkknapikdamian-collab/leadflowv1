@@ -42,12 +42,12 @@ contains(leadDetail, 'data-fb3-lead-status-header-pill="true"', 'LeadDetail has 
 contains(leadDetail, 'statusLabel(lead?.status)', 'LeadDetail status label remains visible');
 contains(leadDetail, 'statusClass(lead?.status)', 'LeadDetail status tone remains visible');
 notContains(leadDetail, 'Status leada', 'duplicated right rail Status leada card removed');
-notContains(leadDetail, 'Lead aktywny. Możesz prowadzić kontakt sprzedażowy.', 'duplicated active lead helper copy removed');
+notContains(leadDetail, 'Lead aktywny. Mo\u017Cesz prowadzi\u0107 kontakt sprzeda\u017Cowy.', 'duplicated active lead helper copy removed');
 notContains(leadDetail, 'Lead aktywny. Mozesz prowadzic kontakt sprzedazowy.', 'duplicated active lead helper copy ASCII removed');
 
 contains(pkg, '"check:closeflow-fb3-lead-detail-cleanup"', 'package.json has FB-3 script');
 contains(doc, 'CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP', 'FB-3 doc marker');
-contains(doc, 'Nie zmienia statusów leadów', 'FB-3 doc preserves lead statuses');
+contains(doc, 'Nie zmienia status\u00F3w lead\u00F3w', 'FB-3 doc preserves lead statuses');
 contains(doc, 'status leada nadal jest widoczny', 'FB-3 doc states status remains visible');
 
 console.log(`\nSummary: ${pass} pass, ${fail} fail.`);

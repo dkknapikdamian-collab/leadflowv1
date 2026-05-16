@@ -21,9 +21,9 @@ function roleEntries(map, role) { return asArray((map.semanticIconRoles || {})[r
 
 if (!fs.existsSync(mapPath)) fail('Brak docs/ui/CLOSEFLOW_UI_MAP.generated.json. Uruchom najpierw audit mapy UI.');
 let uiMap;
-try { uiMap = JSON.parse(fs.readFileSync(mapPath, 'utf8')); } catch (error) { fail('Nie można odczytać mapy UI: ' + error.message); }
-if (uiMap.inventoryVersion !== 'CLOSEFLOW_UI_MAP_INVENTORY_V1') fail('Mapa UI ma niepoprawną inventoryVersion.');
-if (uiMap.scannerVersion !== 'CLEAN_SCANNER_V4') fail('Mapa UI musi pochodzić ze skanera CLEAN_SCANNER_V4.');
+try { uiMap = JSON.parse(fs.readFileSync(mapPath, 'utf8')); } catch (error) { fail('Nie mo\u017Cna odczyta\u0107 mapy UI: ' + error.message); }
+if (uiMap.inventoryVersion !== 'CLOSEFLOW_UI_MAP_INVENTORY_V1') fail('Mapa UI ma niepoprawn\u0105 inventoryVersion.');
+if (uiMap.scannerVersion !== 'CLEAN_SCANNER_V4') fail('Mapa UI musi pochodzi\u0107 ze skanera CLEAN_SCANNER_V4.');
 
 const canonicalIconRoles = {
   add: { component: 'SemanticIcon', tone: 'primary', targetIcon: 'Plus', migration: 'UI-2' },
@@ -107,7 +107,7 @@ const contract = {
     currentCanonicalComponent: 'StatShortcutCard',
     currentUsageCount: asArray(uiMap.metricTileUsages).length,
     usageByFile: tileUsageByFile,
-    ruleNow: 'Nie dodawać nowych lokalnych kafelków metryk. Istniejące użycia StatShortcutCard zostają bazą.',
+    ruleNow: 'Nie dodawa\u0107 nowych lokalnych kafelk\u00F3w metryk. Istniej\u0105ce u\u017Cycia StatShortcutCard zostaj\u0105 baz\u0105.',
     ruleAfterUI2: 'Nowe kafelki metryk tylko przez StatShortcutCard lub jawnie zatwierdzony wrapper w ui-system.',
   },
   localImplementationsToMigrate: asArray(uiMap.infoRowImplementations),
@@ -123,7 +123,7 @@ const contract = {
       'entity-relations',
       'entity-right-rail',
     ],
-    rule: 'LeadDetail i ClientDetail mają mieć te same regiony logiczne. Mobile może układać je w jedną kolumnę, desktop może mieć rail, ale semantyczne regiony muszą zostać wspólne.',
+    rule: 'LeadDetail i ClientDetail maj\u0105 mie\u0107 te same regiony logiczne. Mobile mo\u017Ce uk\u0142ada\u0107 je w jedn\u0105 kolumn\u0119, desktop mo\u017Ce mie\u0107 rail, ale semantyczne regiony musz\u0105 zosta\u0107 wsp\u00F3lne.',
   },
   migrationStages: [
     { stage: 'UI-2', name: 'SemanticIcon + first guard', scope: 'critical icon roles only' },
@@ -160,11 +160,11 @@ const md = [
   '',
   'Status: **kontrakt semantyczny, nie refactor runtime UI**.',
   '',
-  '## Wynik źródłowej mapy UI',
+  '## Wynik \u017Ar\u00F3d\u0142owej mapy UI',
   '',
   '- Pliki przeskanowane: **' + contract.source.filesScanned + '**',
-  '- Bezpośrednie importy ikon z lucide-react: **' + contract.source.directLucideIconImports + '**',
-  '- Użycia StatShortcutCard: **' + contract.source.metricTileUsages + '**',
+  '- Bezpo\u015Brednie importy ikon z lucide-react: **' + contract.source.directLucideIconImports + '**',
+  '- U\u017Cycia StatShortcutCard: **' + contract.source.metricTileUsages + '**',
   '- Lokalne implementacje InfoRow/InfoLine/StatCell/ActionButton: **' + contract.source.infoRowImplementations + '**',
   '- Kontrakty akcji encji: **' + contract.source.entityActionContracts + '**',
   '- Dowody layoutu CSS: **' + contract.source.layoutEvidence + '**',
@@ -183,19 +183,19 @@ const md = [
   '',
   '## Role ikon',
   '',
-  '| Rola | Importy | Użycia | Komponent | Ton | Ikona docelowa | Migracja |',
+  '| Rola | Importy | U\u017Cycia | Komponent | Ton | Ikona docelowa | Migracja |',
   '|---|---:|---:|---|---|---|---|',
   roleRows.join('\n') || '| brak | 0 | 0 | - | - | - | - |',
   '',
   '## Kafelki / metryki',
   '',
-  'Reguła teraz: ' + contract.metricTileContract.ruleNow,
+  'Regu\u0142a teraz: ' + contract.metricTileContract.ruleNow,
   '',
-  '| Plik | Liczba użyć | Standard |',
+  '| Plik | Liczba u\u017Cy\u0107 | Standard |',
   '|---|---:|---|',
   tileRows.join('\n') || '| brak | 0 | - |',
   '',
-  '## Lokalne implementacje do przepięcia',
+  '## Lokalne implementacje do przepi\u0119cia',
   '',
   '| Nazwa | Plik | Linia | Docelowo |',
   '|---|---|---:|---|',
@@ -203,13 +203,13 @@ const md = [
   '',
   '## Regiony detail view',
   '',
-  'Wspólna kolejność dla `LeadDetail` i `ClientDetail`:',
+  'Wsp\u00F3lna kolejno\u015B\u0107 dla `LeadDetail` i `ClientDetail`:',
   '',
   contract.detailRegionContract.requiredOrderForLeadAndClient.map((r, i) => String(i + 1) + '. `' + r + '`').join('\n'),
   '',
   contract.detailRegionContract.rule,
   '',
-  '## Kolejność migracji',
+  '## Kolejno\u015B\u0107 migracji',
   '',
   '| Etap | Nazwa | Zakres |',
   '|---|---|---|',

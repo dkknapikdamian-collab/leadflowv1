@@ -44,7 +44,7 @@ if (casesContent.includes("to={`/cases/${record.id}`}") || casesContent.includes
 } else {
   throw new Error('src/pages/Cases.tsx: missing CaseDetail link remains present');
 }
-if (casesContent.includes("to={`/leads/${record.leadId}`}") || casesContent.includes("to={`/leads/${String(record.leadId)}`}") || casesContent.includes('Otwórz historię pozyskania')) {
+if (casesContent.includes("to={`/leads/${record.leadId}`}") || casesContent.includes("to={`/leads/${String(record.leadId)}`}") || casesContent.includes('Otw\u00F3rz histori\u0119 pozyskania')) {
   console.log('OK: src/pages/Cases.tsx contains source lead link remains present');
 } else {
   throw new Error('src/pages/Cases.tsx: missing source lead link remains present');

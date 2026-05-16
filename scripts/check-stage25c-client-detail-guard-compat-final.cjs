@@ -28,16 +28,16 @@ const css = "src/styles/visual-stage12-client-detail-vnext.css";
 
 assertIncludes(clientDetail, "STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL", "guard Stage25C");
 assertIncludes(clientDetail, "STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT", "compat dla starego Stage23A guarda");
-assertIncludes(clientDetail, "Wejdź w sprawę", "tekst wymagany przez Stage23A i UI");
+assertIncludes(clientDetail, "Wejd\u017A w spraw\u0119", "tekst wymagany przez Stage23A i UI");
 assertIncludes(clientDetail, "function getCaseValueLabel(caseRecord: any)", "helper wartosci sprawy");
 assertIncludes(clientDetail, 'data-client-case-smart-list="true"', "nowa lista spraw");
 assertIncludes(clientDetail, 'data-client-case-smart-card="true"', "nowa karta sprawy");
-assertIncludes(clientDetail, "Wartość sprawy", "wartosc sprawy widoczna");
+assertIncludes(clientDetail, "Warto\u015B\u0107 sprawy", "wartosc sprawy widoczna");
 assertIncludes(clientDetail, "Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.", "bezpieczne usuwanie bez destrukcyjnego delete");
-assertNotIncludes(clientDetail, "<p>Lista spraw klienta. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę.</p>", "opis panelu spraw usuniety");
+assertNotIncludes(clientDetail, "<p>Lista spraw klienta. Wejd\u017A w spraw\u0119, \u017Ceby edytowa\u0107 nazw\u0119, warto\u015B\u0107, zadania i dalsz\u0105 obs\u0142ug\u0119.</p>", "opis panelu spraw usuniety");
 
 assertIncludes(css, "stage25b client detail feedback complete repair", "CSS Stage25B");
-assertIncludes(css, ".client-detail-top-cards-side", "ukrycie top-card kompletność/finanse");
+assertIncludes(css, ".client-detail-top-cards-side", "ukrycie top-card kompletno\u015B\u0107/finanse");
 assertIncludes(css, ".client-detail-relations-list-acquisition-only", "ukrycie starej historii pozyskania");
 assertIncludes(css, "max-height: 340px", "roadmapa powiekszona");
 assertIncludes(css, "order: 30 !important", "notatki na dole");

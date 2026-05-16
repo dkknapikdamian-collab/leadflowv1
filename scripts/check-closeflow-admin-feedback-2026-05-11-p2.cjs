@@ -89,16 +89,16 @@ console.log('Billing');
 const billing = read('src/pages/Billing.tsx', true);
 assertNotIncludes('billing', billing, 'Plan aktywny.');
 assertNotIncludes('billing', billing, 'Co masz w planie');
-assertNotIncludes('billing', billing, 'Co jest dostępne teraz');
+assertNotIncludes('billing', billing, 'Co jest dost\u0119pne teraz');
 assertNotIncludes('billing', billing, 'Rozliczenia lead/case');
 assertNotIncludes('billing', billing, 'billing-limits-card');
-assertIncludes('billing', billing, 'Następna płatność');
+assertIncludes('billing', billing, 'Nast\u0119pna p\u0142atno\u015B\u0107');
 assertIncludes('billing', billing, 'billing-status-card');
 
 console.log('Help');
 const support = readMany(['src/pages/SupportCenter.tsx', 'src/pages/Help.tsx']);
 if (!support.trim()) fail('support page source is missing');
-assertNotIncludes('support', support, 'Zgłoszenia i status.');
+assertNotIncludes('support', support, 'Zg\u0142oszenia i status.');
 assertNotIncludes('support', support, 'Szybkie linki');
 assertNotIncludes('support', support, 'Status aplikacji');
 if (/support-right-card[\s\S]{0,400}Kontakt|Kontakt[\s\S]{0,400}support-right-card/.test(support)) {
@@ -106,7 +106,7 @@ if (/support-right-card[\s\S]{0,400}Kontakt|Kontakt[\s\S]{0,400}support-right-ca
 } else {
   pass("support does not include support-right-card Kontakt panel");
 }
-assertIncludes('support', support, 'Moje zgłoszenia');
+assertIncludes('support', support, 'Moje zg\u0142oszenia');
 assertIncludes('support', support, 'data-support-ticket-list="true"');
 assertIncludes('support', support, 'Brak odpowiedzi');
 assertIncludes('support', support, 'support-ticket-status');
@@ -115,7 +115,7 @@ console.log('Settings');
 const settings = read('src/pages/Settings.tsx', true);
 assertIncludes('settings', settings, 'settings-tabs');
 assertIncludes('settings', settings, 'Plany');
-assertIncludes('settings', settings, 'Bezpieczeństwo');
+assertIncludes('settings', settings, 'Bezpiecze\u0144stwo');
 assertIncludes('settings', settings, 'Workspace');
 assertIncludes('settings', settings, 'Integracje');
 assertIncludes('settings', settings, 'data-settings-account-rail="true"');

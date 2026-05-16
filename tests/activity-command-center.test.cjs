@@ -43,8 +43,8 @@ test('Activity includes metrics and payload preview', () => {
   assert.doesNotMatch(source, /function MetricCard/);
   assert.match(source, /expandedPayloadIds/);
   assert.match(source, /safePayloadPreview/);
-  assert.match(source, /Pokaż szczegóły techniczne/);
-  assert.match(source, /Ukryj szczegóły techniczne/);
+  assert.match(source, /Poka\u017C szczeg\u00F3\u0142y techniczne/);
+  assert.match(source, /Ukryj szczeg\u00F3\u0142y techniczne/);
 });
 
 test('Activity links relations to current lead and case routes', () => {
@@ -59,7 +59,7 @@ test('Activity command center documentation exists', () => {
   const doc = read('docs/ACTIVITY_COMMAND_CENTER_2026-04-24.md');
 
   assert.match(doc, /Activity command center/);
-  assert.match(doc, /wyszukiwarkę/);
+  assert.match(doc, /wyszukiwark\u0119/);
   assert.match(doc, /calendar_entry_completed/);
   assert.match(doc, /today_event_deleted/);
 });

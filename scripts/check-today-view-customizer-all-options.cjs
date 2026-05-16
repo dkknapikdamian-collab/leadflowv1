@@ -19,7 +19,7 @@ need(src.includes('const checked = visibleTodaySectionSet.has(tile.key);'), 'che
 need(src.includes('checked={checked}'), 'checkbox input must be controlled');
 need(src.includes('setVisibleTodaySections((current) => {'), 'checkbox must update visible sections by callback');
 need(src.includes('writeTodayVisibleSections(next);'), 'visibility changes must persist to localStorage');
-need(src.includes('Pokaż wszystko'), 'view panel must allow restoring all options');
+need(src.includes('Poka\u017C wszystko'), 'view panel must allow restoring all options');
 need(src.includes("setExpandedSection('all')"), 'restore all must reset expanded section to all');
 need(!/visibleTodaySections\.map\s*\(/.test(src), 'panel cannot source options from visibleTodaySections.map');
 need(!/todayTiles\.filter\s*\([^\)]*visibleTodaySectionSet\.has[\s\S]{0,120}?\.map\s*\(/.test(src), 'panel cannot filter todayTiles by visible set before options map');

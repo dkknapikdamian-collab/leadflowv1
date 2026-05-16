@@ -14,16 +14,16 @@ function read(filePath) {
 test('Stage14 removes dead trash explanation copy from Leads trash view', () => {
   const source = read(leadsPath);
   assert.match(source, /LEADS_TRASH_COPY_REMOVED_STAGE14/);
-  assert.doesNotMatch(source, /To jest kosz leadów\. Rekordy są ukryte z aktywnej listy, ale można je przywrócić\. Nie kasujemy ich trwale w V1\./u);
+  assert.doesNotMatch(source, /To jest kosz lead\u00F3w\. Rekordy s\u0105 ukryte z aktywnej listy, ale mo\u017Cna je przywr\u00F3ci\u0107\. Nie kasujemy ich trwale w V1\./u);
   assert.doesNotMatch(source, /Nie kasujemy ich trwale w V1/u);
 });
 
 test('Stage14 keeps trash functionality labels without the old V1 explainer', () => {
   const source = read(leadsPath);
   assert.match(source, /Kosz/u);
-  assert.match(source, /Pokaż aktywne/u);
-  assert.match(source, /Kosz leadów jest pusty/u);
-  assert.match(source, /Przeniesione do kosza leady pojawią się tutaj\./u);
+  assert.match(source, /Poka\u017C aktywne/u);
+  assert.match(source, /Kosz lead\u00F3w jest pusty/u);
+  assert.match(source, /Przeniesione do kosza leady pojawi\u0105 si\u0119 tutaj\./u);
 });
 
 test('Stage14 documentation exists and Polish encoding is clean', () => {

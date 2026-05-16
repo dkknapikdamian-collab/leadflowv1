@@ -24,7 +24,7 @@ test('Faza 3 Etap 3.2G client sends archive action and UI has cancellable note d
 
   assert.match(libDrafts, /action: \(patch as any\)\.action/);
   assert.match(pageDrafts, /archiveAiLeadDraftAsync\(draft\.id\)/);
-  assert.match(pageDrafts, /Nie udało się anulować szkicu/);
+  assert.match(pageDrafts, /Nie uda\u0142o si\u0119 anulowa\u0107 szkicu/);
 });
 
 test('Faza 3 Etap 3.2G package and quiet release gate are wired', () => {

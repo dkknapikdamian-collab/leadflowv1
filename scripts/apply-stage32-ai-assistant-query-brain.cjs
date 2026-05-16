@@ -15,8 +15,8 @@ const marker = 'AI_ASSISTANT_QUERY_BRAIN_STAGE32';
 const helperBlock = String.raw`
 
 // AI_ASSISTANT_QUERY_BRAIN_STAGE32
-// Lokalna warstwa rozumienia danych aplikacji: pytania analityczne o zadania, terminy i mapę systemu
-// odpowiadają z przekazanego kontekstu aplikacji, bez zgadywania i bez zapisu do bazy.
+// Lokalna warstwa rozumienia danych aplikacji: pytania analityczne o zadania, terminy i map\u0119 systemu
+// odpowiadaj\u0105 z przekazanego kontekstu aplikacji, bez zgadywania i bez zapisu do bazy.
 const AI_ASSISTANT_QUERY_BRAIN_STAGE32 = true;
 
 type Stage32DateRange = {
@@ -105,10 +105,10 @@ function stage32DayRange(now: Date, dayOffset: number, label: string): Stage32Da
 
 function stage32ResolveDateRange(query: string, now: Date): Stage32DateRange | null {
   if (/\b(nastepnym miesiacu|nastepny miesiac|przyszly miesiac|kolejny miesiac)\b/u.test(query)) {
-    return stage32MonthRange(now, 1, 'następnym miesiącu');
+    return stage32MonthRange(now, 1, 'nast\u0119pnym miesi\u0105cu');
   }
   if (/\b(tym miesiacu|biezacy miesiac|obecny miesiac|ten miesiac)\b/u.test(query)) {
-    return stage32MonthRange(now, 0, 'tym miesiącu');
+    return stage32MonthRange(now, 0, 'tym miesi\u0105cu');
   }
   if (/\b(jutro|jutrzejszy|jutrzejsze)\b/u.test(query)) {
     return stage32DayRange(now, 1, 'jutro');
@@ -116,13 +116,13 @@ function stage32ResolveDateRange(query: string, now: Date): Stage32DateRange | n
   if (/\b(pojutrze|po jutrze)\b/u.test(query)) {
     return stage32DayRange(now, 2, 'pojutrze');
   }
-  if (/\b(dzis|dzisiaj|dzisiejszy|dziś)\b/u.test(query)) {
+  if (/\b(dzis|dzisiaj|dzisiejszy|dzi\u015B)\b/u.test(query)) {
     return stage32DayRange(now, 0, 'dzisiaj');
   }
   if (/\b(nastepne 7 dni|najblizsze 7 dni|kolejne 7 dni|przyszly tydzien|nastepny tydzien)\b/u.test(query)) {
     const from = stage32StartOfDay(now);
     const to = stage32EndOfDay(new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7));
-    return { label: 'najbliższych 7 dniach', from, to };
+    return { label: 'najbli\u017Cszych 7 dniach', from, to };
   }
   return null;
 }
@@ -213,7 +213,7 @@ function stage32WantsFirstTask(query: string) {
 
 function stage32WantsTaskListInRange(query: string, range: Stage32DateRange | null) {
   if (!range) return false;
-  return /\b(zadanie|zadania|zadan|task|taski|co mam|pokaz|pokaż|lista|terminy)\b/u.test(query);
+  return /\b(zadanie|zadania|zadan|task|taski|co mam|pokaz|poka\u017C|lista|terminy)\b/u.test(query);
 }
 
 function stage32WantsAppMap(query: string) {
@@ -225,7 +225,7 @@ function stage32BuildTaskItem(task: Stage32TaskRow): TodayAiAssistantItem {
   const moment = task._stage32Moment;
   return {
     label: stage32TaskTitle(task),
-    detail: 'Zadanie · ' + (moment ? stage32FormatMoment(moment) : 'bez terminu'),
+    detail: 'Zadanie \u00B7 ' + (moment ? stage32FormatMoment(moment) : 'bez terminu'),
     href: stage32TaskHref(task),
     priority: stage32Normalize(task.priority) === 'high' || stage32Normalize(task.priority) === 'pilne' ? 'high' : 'medium',
     entityType: 'task',
@@ -254,8 +254,8 @@ function stage32BuildMostTasksDayAnswer(input: TodayAiAssistantInput, query: str
     ok: true,
     mode: 'read',
     answer: top
-      ? 'Najwięcej zadań masz w dniu: ' + stage32FormatDay(top.date) + ' — ' + top.tasks.length + ' zadań.'
-      : 'Nie znalazłem otwartych zadań z terminem' + (range ? ' w ' + range.label : '') + '.',
+      ? 'Najwi\u0119cej zada\u0144 masz w dniu: ' + stage32FormatDay(top.date) + ' \u2014 ' + top.tasks.length + ' zada\u0144.'
+      : 'Nie znalaz\u0142em otwartych zada\u0144 z terminem' + (range ? ' w ' + range.label : '') + '.',
     draft: null,
     operatorIntent: 'task_day_with_most_tasks',
     snapshotMeta: { stage: 'AI_ASSISTANT_QUERY_BRAIN_STAGE32', range: range?.label || 'all_open_tasks_with_date' },
@@ -264,14 +264,14 @@ function stage32BuildMostTasksDayAnswer(input: TodayAiAssistantInput, query: str
     costGuard: 'local_rules',
     noAutoWrite: true,
     intent: 'global_app_search',
-    title: top ? 'Dzień z największą liczbą zadań' : 'Brak zadań do policzenia',
+    title: top ? 'Dzie\u0144 z najwi\u0119ksz\u0105 liczb\u0105 zada\u0144' : 'Brak zada\u0144 do policzenia',
     summary: top
-      ? 'Najwięcej otwartych zadań przypada na ' + stage32FormatDay(top.date) + ': ' + top.tasks.length + ' zadań.'
-      : 'Nie mam z czego policzyć obciążenia dni, bo nie widzę otwartych zadań z terminem' + (range ? ' w ' + range.label : '') + '.',
+      ? 'Najwi\u0119cej otwartych zada\u0144 przypada na ' + stage32FormatDay(top.date) + ': ' + top.tasks.length + ' zada\u0144.'
+      : 'Nie mam z czego policzy\u0107 obci\u0105\u017Cenia dni, bo nie widz\u0119 otwartych zada\u0144 z terminem' + (range ? ' w ' + range.label : '') + '.',
     rawText: input.rawText,
     items: ranked.slice(0, 8).map((group) => ({
       label: stage32FormatDay(group.date),
-      detail: group.tasks.length + ' zadań · pierwsze: ' + stage32TaskTitle(group.tasks[0]),
+      detail: group.tasks.length + ' zada\u0144 \u00B7 pierwsze: ' + stage32TaskTitle(group.tasks[0]),
       href: '/tasks',
       priority: group === top ? 'high' : 'medium',
       entityType: 'task_day_group',
@@ -289,8 +289,8 @@ function stage32BuildFirstTaskAnswer(input: TodayAiAssistantInput, range: Stage3
     ok: true,
     mode: 'read',
     answer: first && first._stage32Moment
-      ? 'Pierwsze zadanie ' + (range ? 'w ' + range.label : 'w danych aplikacji') + ': ' + stage32TaskTitle(first) + ' — ' + stage32FormatMoment(first._stage32Moment) + '.'
-      : 'Nie znalazłem otwartego zadania' + (range ? ' w ' + range.label : '') + '.',
+      ? 'Pierwsze zadanie ' + (range ? 'w ' + range.label : 'w danych aplikacji') + ': ' + stage32TaskTitle(first) + ' \u2014 ' + stage32FormatMoment(first._stage32Moment) + '.'
+      : 'Nie znalaz\u0142em otwartego zadania' + (range ? ' w ' + range.label : '') + '.',
     draft: null,
     operatorIntent: 'first_task_in_range',
     snapshotMeta: { stage: 'AI_ASSISTANT_QUERY_BRAIN_STAGE32', range: range?.label || 'all_open_tasks_with_date' },
@@ -299,13 +299,13 @@ function stage32BuildFirstTaskAnswer(input: TodayAiAssistantInput, range: Stage3
     costGuard: 'local_rules',
     noAutoWrite: true,
     intent: 'global_app_search',
-    title: first ? 'Pierwsze zadanie' : 'Nie znalazłem zadania',
+    title: first ? 'Pierwsze zadanie' : 'Nie znalaz\u0142em zadania',
     summary: first && first._stage32Moment
       ? 'Pierwsze otwarte zadanie ' + (range ? 'w ' + range.label : 'w aplikacji') + ' to: ' + stage32TaskTitle(first) + ', termin ' + stage32FormatMoment(first._stage32Moment) + '.'
-      : 'Nie widzę otwartych zadań z terminem' + (range ? ' w ' + range.label : '') + '.',
+      : 'Nie widz\u0119 otwartych zada\u0144 z terminem' + (range ? ' w ' + range.label : '') + '.',
     rawText: input.rawText,
     items: first ? [stage32BuildTaskItem(first)] : [],
-    warnings: first ? [] : ['Sprawdziłem zadania z terminem. Zadania bez daty nie wchodzą do odpowiedzi o kolejności.'],
+    warnings: first ? [] : ['Sprawdzi\u0142em zadania z terminem. Zadania bez daty nie wchodz\u0105 do odpowiedzi o kolejno\u015Bci.'],
   };
 }
 
@@ -316,8 +316,8 @@ function stage32BuildTaskListAnswer(input: TodayAiAssistantInput, range: Stage32
     ok: true,
     mode: 'read',
     answer: tasks.length
-      ? 'Widzę ' + tasks.length + ' otwartych zadań w ' + range.label + '.'
-      : 'Nie widzę otwartych zadań w ' + range.label + '.',
+      ? 'Widz\u0119 ' + tasks.length + ' otwartych zada\u0144 w ' + range.label + '.'
+      : 'Nie widz\u0119 otwartych zada\u0144 w ' + range.label + '.',
     draft: null,
     operatorIntent: 'task_list_in_range',
     snapshotMeta: { stage: 'AI_ASSISTANT_QUERY_BRAIN_STAGE32', range: range.label },
@@ -328,11 +328,11 @@ function stage32BuildTaskListAnswer(input: TodayAiAssistantInput, range: Stage32
     intent: 'global_app_search',
     title: 'Zadania w ' + range.label,
     summary: tasks.length
-      ? 'Lista jest posortowana od najwcześniejszego terminu. Pokazuję maksymalnie 10 pierwszych pozycji.'
-      : 'Brak otwartych zadań w wybranym zakresie dat.',
+      ? 'Lista jest posortowana od najwcze\u015Bniejszego terminu. Pokazuj\u0119 maksymalnie 10 pierwszych pozycji.'
+      : 'Brak otwartych zada\u0144 w wybranym zakresie dat.',
     rawText: input.rawText,
     items: tasks.slice(0, 10).map(stage32BuildTaskItem),
-    warnings: tasks.length > 10 ? ['Pokazuję 10 pierwszych zadań. Pełną listę otwórz w zakładce Zadania.'] : [],
+    warnings: tasks.length > 10 ? ['Pokazuj\u0119 10 pierwszych zada\u0144. Pe\u0142n\u0105 list\u0119 otw\u00F3rz w zak\u0142adce Zadania.'] : [],
   };
 }
 
@@ -350,7 +350,7 @@ function stage32BuildAppMapAnswer(input: TodayAiAssistantInput): TodayAiAssistan
   return {
     ok: true,
     mode: 'read',
-    answer: 'CloseFlow to system pracy na leadach: Dziś pokazuje priorytety, Leady zbierają kontakty, Klienci są kartoteką osób, Sprawy prowadzą obsługę, Zadania i Kalendarz pilnują terminów, a Szkice AI czekają na zatwierdzenie.',
+    answer: 'CloseFlow to system pracy na leadach: Dzi\u015B pokazuje priorytety, Leady zbieraj\u0105 kontakty, Klienci s\u0105 kartotek\u0105 os\u00F3b, Sprawy prowadz\u0105 obs\u0142ug\u0119, Zadania i Kalendarz pilnuj\u0105 termin\u00F3w, a Szkice AI czekaj\u0105 na zatwierdzenie.',
     draft: null,
     operatorIntent: 'app_map',
     snapshotMeta: { stage: 'AI_ASSISTANT_QUERY_BRAIN_STAGE32', counts },
@@ -360,16 +360,16 @@ function stage32BuildAppMapAnswer(input: TodayAiAssistantInput): TodayAiAssistan
     noAutoWrite: true,
     intent: 'global_app_search',
     title: 'Mapa CloseFlow',
-    summary: 'Asystent ma używać mapy aplikacji i aktualnych danych, a nie gotowych odpowiedzi tekstowych. Aktualny kontekst: leady ' + counts.leads + ', klienci ' + counts.clients + ', sprawy ' + counts.cases + ', zadania ' + counts.tasks + ', wydarzenia ' + counts.events + ', szkice AI ' + counts.drafts + '.',
+    summary: 'Asystent ma u\u017Cywa\u0107 mapy aplikacji i aktualnych danych, a nie gotowych odpowiedzi tekstowych. Aktualny kontekst: leady ' + counts.leads + ', klienci ' + counts.clients + ', sprawy ' + counts.cases + ', zadania ' + counts.tasks + ', wydarzenia ' + counts.events + ', szkice AI ' + counts.drafts + '.',
     rawText: input.rawText,
     items: [
-      { label: 'Dziś', detail: 'Priorytety, pilne zadania, terminy i skróty do pracy.', href: '/', priority: 'high', entityType: 'app_section' },
-      { label: 'Leady', detail: 'Kontakty sprzedażowe przed przejściem do klienta lub sprawy.', href: '/leads', priority: 'medium', entityType: 'app_section' },
-      { label: 'Klienci', detail: 'Kartoteka osób i firm, bez dublowania pracy ze spraw.', href: '/clients', priority: 'medium', entityType: 'app_section' },
-      { label: 'Sprawy', detail: 'Obsługa procesu po sprzedaży lub po przyjęciu zlecenia.', href: '/cases', priority: 'medium', entityType: 'app_section' },
+      { label: 'Dzi\u015B', detail: 'Priorytety, pilne zadania, terminy i skr\u00F3ty do pracy.', href: '/', priority: 'high', entityType: 'app_section' },
+      { label: 'Leady', detail: 'Kontakty sprzeda\u017Cowe przed przej\u015Bciem do klienta lub sprawy.', href: '/leads', priority: 'medium', entityType: 'app_section' },
+      { label: 'Klienci', detail: 'Kartoteka os\u00F3b i firm, bez dublowania pracy ze spraw.', href: '/clients', priority: 'medium', entityType: 'app_section' },
+      { label: 'Sprawy', detail: 'Obs\u0142uga procesu po sprzeda\u017Cy lub po przyj\u0119ciu zlecenia.', href: '/cases', priority: 'medium', entityType: 'app_section' },
       { label: 'Zadania', detail: 'Rzeczy do wykonania, terminy, statusy i priorytety.', href: '/tasks', priority: 'high', entityType: 'app_section' },
-      { label: 'Kalendarz', detail: 'Wydarzenia, spotkania i plan najbliższych dni.', href: '/calendar', priority: 'high', entityType: 'app_section' },
-      { label: 'Szkice AI', detail: 'Robocze zapisy od AI, które trzeba zatwierdzić ręcznie.', href: '/ai-drafts', priority: 'medium', entityType: 'app_section' },
+      { label: 'Kalendarz', detail: 'Wydarzenia, spotkania i plan najbli\u017Cszych dni.', href: '/calendar', priority: 'high', entityType: 'app_section' },
+      { label: 'Szkice AI', detail: 'Robocze zapisy od AI, kt\u00F3re trzeba zatwierdzi\u0107 r\u0119cznie.', href: '/ai-drafts', priority: 'medium', entityType: 'app_section' },
     ],
     warnings: [],
   };

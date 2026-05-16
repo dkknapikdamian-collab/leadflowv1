@@ -15,17 +15,17 @@ const allowedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx']);
 const bannedPatterns = [
   {
     id: 'timeline-faster-than-heavy-grid',
-    pattern: /(?:uklad|układ)\s+osi\s+czasu\s+jest\s+szybsz[ay]\s+niż\s+(?:ciezka|ciężka)\s+siatka/i,
+    pattern: /(?:uklad|uk\u0142ad)\s+osi\s+czasu\s+jest\s+szybsz[ay]\s+ni\u017C\s+(?:ciezka|ci\u0119\u017Cka)\s+siatka/i,
     reason: 'Do not expose internal layout rationale in paid UI.',
   },
   {
     id: 'faster-than-heavy-grid',
-    pattern: /szybsz[ay]\s+niż\s+(?:ciezk|ciężk)[a-ząćęłńóśźż]*\s+siatk/i,
+    pattern: /szybsz[ay]\s+ni\u017C\s+(?:ciezk|ci\u0119\u017Ck)[a-z\u0105\u0107\u0119\u0142\u0144\u00F3\u015B\u017A\u017C]*\s+siatk/i,
     reason: 'Do not compare implementation choices in user-facing copy.',
   },
   {
     id: 'heavy-grid-rationale',
-    pattern: /(?:ciezka|ciężka)\s+siatka/i,
+    pattern: /(?:ciezka|ci\u0119\u017Cka)\s+siatka/i,
     reason: 'Internal design comparison belongs in docs, not UI.',
   },
   {
@@ -40,17 +40,17 @@ const bannedPatterns = [
   },
   {
     id: 'technical-visible-copy',
-    pattern: /\btechnicznie\s+(?:bezpiecz|szyb|latw|łatw|prost)/i,
+    pattern: /\btechnicznie\s+(?:bezpiecz|szyb|latw|\u0142atw|prost)/i,
     reason: 'Technical rationale must stay out of visible copy.',
   },
 ];
 
 function normalizeForAsciiFallback(text) {
   return text
-    .replace(/ą/g, 'a').replace(/ć/g, 'c').replace(/ę/g, 'e').replace(/ł/g, 'l')
-    .replace(/ń/g, 'n').replace(/ó/g, 'o').replace(/ś/g, 's').replace(/ż/g, 'z').replace(/ź/g, 'z')
-    .replace(/Ą/g, 'A').replace(/Ć/g, 'C').replace(/Ę/g, 'E').replace(/Ł/g, 'L')
-    .replace(/Ń/g, 'N').replace(/Ó/g, 'O').replace(/Ś/g, 'S').replace(/Ż/g, 'Z').replace(/Ź/g, 'Z');
+    .replace(/\u0105/g, 'a').replace(/\u0107/g, 'c').replace(/\u0119/g, 'e').replace(/\u0142/g, 'l')
+    .replace(/\u0144/g, 'n').replace(/\u00F3/g, 'o').replace(/\u015B/g, 's').replace(/\u017C/g, 'z').replace(/\u017A/g, 'z')
+    .replace(/\u0104/g, 'A').replace(/\u0106/g, 'C').replace(/\u0118/g, 'E').replace(/\u0141/g, 'L')
+    .replace(/\u0143/g, 'N').replace(/\u00D3/g, 'O').replace(/\u015A/g, 'S').replace(/\u017B/g, 'Z').replace(/\u0179/g, 'Z');
 }
 
 function listFiles(target) {
@@ -104,7 +104,7 @@ function extractQuotedText(line) {
       .replace(/\\"/g, '"')
       .replace(/\\'/g, "'")
       .replace(/\\`/g, '`');
-    if (/[A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż]/.test(value)) result.push(value);
+    if (/[A-Za-z\u0104\u0106\u0118\u0141\u0143\u00D3\u015A\u0179\u017B\u0105\u0107\u0119\u0142\u0144\u00F3\u015B\u017A\u017C]/.test(value)) result.push(value);
   }
   return result;
 }
@@ -115,7 +115,7 @@ function extractJsxText(line) {
   let match;
   while ((match = regex.exec(line)) !== null) {
     const value = match[1].trim();
-    if (/[A-Za-zĄĆĘŁŃÓŚŹŻąćęłńóśźż]/.test(value)) result.push(value);
+    if (/[A-Za-z\u0104\u0106\u0118\u0141\u0143\u00D3\u015A\u0179\u017B\u0105\u0107\u0119\u0142\u0144\u00F3\u015B\u017A\u017C]/.test(value)) result.push(value);
   }
   return result;
 }

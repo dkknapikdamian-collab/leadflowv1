@@ -1,4 +1,4 @@
-﻿import * as React from 'react';
+import * as React from 'react';
 import { cn } from '../lib/utils';
 import { Button, type ButtonProps } from './ui/button';
 
@@ -212,5 +212,3 @@ export function openContextQuickAction(payload: ContextQuickActionPayload) {
   }
   return payload;
 }
-
-

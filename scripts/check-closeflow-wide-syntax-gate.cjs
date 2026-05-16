@@ -121,7 +121,7 @@ for (const file of srcFiles) {
     fail(rel, 'Broken import brace near start of import block');
   }
 
-  if (/import\s*\{[^}]*\b(?:dni bez ruchu|najblizsza akcja|asystent aplikacji|Pełny asystent AI|Digest gotowy|workspace\?\.)/s.test(text)) {
+  if (/import\s*\{[^}]*\b(?:dni bez ruchu|najblizsza akcja|asystent aplikacji|Pe\u0142ny asystent AI|Digest gotowy|workspace\?\.)/s.test(text)) {
     fail(rel, 'Non-import text leaked into import block');
   }
 

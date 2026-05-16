@@ -221,8 +221,8 @@ expectIncludes(billingPage, 'BILLING_STRIPE_STAGE86_E2E_GATE', 'Billing UI must 
 expectIncludes(billingPage, "type CheckoutPlanKey = 'basic' | 'pro' | 'ai'", 'Billing checkout plan keys must be basic/pro/ai');
 expectIncludes(billingPage, "checkoutKey: 'ai'", 'Billing UI must send ai checkout key');
 expectNotIncludes(billingPage, "checkoutKey: 'business'", 'Billing UI must not send business checkout key');
-expectAny(billingPage, ['Aktywny plan pojawi siÄ™ dopiero po webhooku Stripe', 'paid plan appears only after Stripe webhook confirmation'], 'Billing UI must explain webhook activation');
-expectNotIncludes(billingPage, 'PĹ‚atnoĹ›Ä‡ zakoĹ„czona. OdĹ›wieĹĽam status dostÄ™pu', 'Billing UI must not imply checkout success activates access before webhook');
+expectAny(billingPage, ['Aktywny plan pojawi si\u0119 dopiero po webhooku Stripe', 'paid plan appears only after Stripe webhook confirmation'], 'Billing UI must explain webhook activation');
+expectNotIncludes(billingPage, 'P\u0142atno\u015B\u0107 zako\u0144czona. Od\u015Bwie\u017Cam status dost\u0119pu', 'Billing UI must not imply checkout success activates access before webhook');
 
 console.log('== Stage86M Google Calendar config and sync contract ==');
 expectIncludes(googleHandler, 'resolveRequestWorkspaceId(req, body)', 'Google Calendar handler must resolve workspace through request scope');

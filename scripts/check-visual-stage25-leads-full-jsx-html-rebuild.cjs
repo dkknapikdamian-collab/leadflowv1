@@ -64,7 +64,7 @@ assertContains(css, '.cf-html-view.main-leads-html .page-head', 'scoped page-hea
 assertContains(css, '.cf-html-view.main-leads-html .grid-5', 'scoped grid-5 CSS');
 assertContains(css, '.cf-html-view.main-leads-html .row', 'scoped row CSS');
 
-assertContains(docs, '| Funkcja obecna w repo | Gdzie jest teraz | Gdzie będzie w HTML UI | Czy zachowana | Uwagi |', 'mapping table header');
+assertContains(docs, '| Funkcja obecna w repo | Gdzie jest teraz | Gdzie b\u0119dzie w HTML UI | Czy zachowana | Uwagi |', 'mapping table header');
 assertContains(docs, 'handleCreateLead', 'mapping includes create handler');
 assertContains(docs, 'handleArchiveLead', 'mapping includes archive handler');
 assertContains(docs, 'handleRestoreLead', 'mapping includes restore handler');

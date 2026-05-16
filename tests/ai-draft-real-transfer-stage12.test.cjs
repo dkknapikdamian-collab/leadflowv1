@@ -23,7 +23,7 @@ test('Stage12 AI draft approval keeps final writes in approval flow only', () =>
   assert.match(page, /insertEventToSupabase/);
   assert.match(page, /insertActivityToSupabase/);
   assert.match(page, /markAiLeadDraftConvertedAsync\(draft\.id\)/);
-  assert.match(page, /Przenieś do aplikacji/);
+  assert.match(page, /Przenie\u015B do aplikacji/);
   assert.match(page, /przeniesiony ze szkicu AI/);
 });
 

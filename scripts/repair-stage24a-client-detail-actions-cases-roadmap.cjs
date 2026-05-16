@@ -30,36 +30,36 @@ function patchClientDetail() {
     );
   }
 
-  // Lepszy fallback tytułu sprawy: gdy tytuł jest tylko nazwą klienta/leada, pokaż roboczą nazwę sprawy.
+  // Lepszy fallback tytu\u0142u sprawy: gdy tytu\u0142 jest tylko nazw\u0105 klienta/leada, poka\u017C robocz\u0105 nazw\u0119 sprawy.
   text = text.replace(
     /function getCaseTitle\(caseRecord: any\) \{\n\s*return String\(caseRecord\?\.title \|\| caseRecord\?\.clientName \|\| 'Sprawa klienta'\);\n\}/,
     `function getCaseTitle(caseRecord: any) {
   const rawTitle = asText(caseRecord?.title) || asText(caseRecord?.name);
   const clientName = asText(caseRecord?.clientName);
   if (rawTitle && clientName && rawTitle.toLowerCase() === clientName.toLowerCase()) {
-    return \`\${clientName} - obsługa\`;
+    return \`\${clientName} - obs\u0142uga\`;
   }
   return String(rawTitle || clientName || 'Sprawa klienta');
 }`
   );
 
-  // Usuń opis w zakładce Sprawy.
+  // Usu\u0144 opis w zak\u0142adce Sprawy.
   text = text.replace(
-    /\s*<p>Lista spraw klienta\. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę\.<\/p>/g,
+    /\s*<p>Lista spraw klienta\. Wejd\u017A w spraw\u0119, \u017Ceby edytowa\u0107 nazw\u0119, warto\u015B\u0107, zadania i dalsz\u0105 obs\u0142ug\u0119\.<\/p>/g,
     ""
   );
 
-  // Panel w podsumowaniu z leadem źródłowym kasujemy z widoku.
+  // Panel w podsumowaniu z leadem \u017Ar\u00F3d\u0142owym kasujemy z widoku.
   text = text.replace(
-    /<section className="client-detail-section-card">\s*\n\s*<div className="client-detail-section-head">\s*\n\s*<div>\s*\n\s*<h2>Aktywne sprawy<\/h2>\s*\n\s*<p>Lista spraw klienta z szybkim wejściem do prowadzenia\.<\/p>/,
+    /<section className="client-detail-section-card">\s*\n\s*<div className="client-detail-section-head">\s*\n\s*<div>\s*\n\s*<h2>Aktywne sprawy<\/h2>\s*\n\s*<p>Lista spraw klienta z szybkim wej\u015Bciem do prowadzenia\.<\/p>/,
     `<section className="client-detail-section-card" data-client-summary-source-lead-panel="true">
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Aktywne sprawy</h2>
-                      <p>Lista spraw klienta z szybkim wejściem do prowadzenia.</p>`
+                      <p>Lista spraw klienta z szybkim wej\u015Bciem do prowadzenia.</p>`
   );
 
-  // Boczny kafel szybkich akcji nad notatką. Task/event/note idą przez to samo źródło prawdy.
+  // Boczny kafel szybkich akcji nad notatk\u0105. Task/event/note id\u0105 przez to samo \u017Ar\u00F3d\u0142o prawdy.
   const noteNeedle = '<section className="right-card client-detail-right-card client-detail-note-card">';
   if (!text.includes('data-client-side-quick-actions="true"')) {
     const quickActionsCard = `
@@ -126,13 +126,13 @@ function patchClientDetail() {
                     onClick={() => openClientContextAction('note')}
                     disabled={!hasAccess}
                   >
-                    Dodaj notatkę
+                    Dodaj notatk\u0119
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => (mainCase?.id ? navigate(\`/cases/\${String(mainCase.id)}\`) : toast.info('Najpierw utwórz sprawę klienta.'))}
+                    onClick={() => (mainCase?.id ? navigate(\`/cases/\${String(mainCase.id)}\`) : toast.info('Najpierw utw\u00F3rz spraw\u0119 klienta.'))}
                   >
                     Finanse w sprawie
                   </Button>

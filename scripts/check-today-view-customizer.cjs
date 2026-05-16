@@ -20,7 +20,7 @@ expect(today.includes('STAGE16AN_TODAY_VIEW_CUSTOMIZER'), 'Stage16AN Today view 
 expect(today.includes('localStorage.getItem(TODAY_VIEW_STORAGE_KEY)'), 'Today view must read localStorage');
 expect(today.includes('localStorage.setItem(TODAY_VIEW_STORAGE_KEY'), 'Today view must persist localStorage');
 expect(today.includes('Widok'), 'Today header must expose Widok control');
-expect(today.includes('Pokaż wszystko') || today.includes('Pokaz wszystko'), 'Today view must expose show-all action');
+expect(today.includes('Poka\u017C wszystko') || today.includes('Pokaz wszystko'), 'Today view must expose show-all action');
 expect(today.includes('type="checkbox"') || today.includes("type='checkbox'"), 'Today view must expose checkbox controls');
 expect(/visibleTodaySectionKeys|visibleTodaySections|todayVisibleSections|hiddenTodaySections/.test(today), 'Today view must keep visible/hidden section state');
 expect(/todayTiles\.filter|visibleTodaySectionKeys\.includes|sectionVisible\(tile\.key\)/.test(today), 'Today tiles must respect view visibility');

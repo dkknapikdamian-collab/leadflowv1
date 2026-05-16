@@ -38,7 +38,7 @@ if (relationsBlock.includes('clientCaseRows.map')) fail('relations tab still ren
 if (/<Link\b/.test(relationsBlock) || /to=\{?\s*[`'\"]\/leads\//.test(relationsBlock) || /navigate\(\s*[`'\"]\/leads\//.test(relationsBlock)) {
   fail('relations tab still exposes lead-detail route actions');
 }
-if (relationsBlock.includes('Otwórz lead') || relationsBlock.includes('Historia leada') || relationsBlock.includes('Zobacz lead')) {
+if (relationsBlock.includes('Otw\u00F3rz lead') || relationsBlock.includes('Historia leada') || relationsBlock.includes('Zobacz lead')) {
   fail('relations tab still exposes duplicate lead actions');
 }
 if (!css.includes('CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY')) fail('missing CSS Stage46 marker');

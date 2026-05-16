@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -42,7 +42,7 @@ if (!tsx.includes('nextActionToneClass(clientNextAction.tone)')) {
 const hasPreciseClass = tsx.includes('client-detail-next-action-tile-polish');
 const hasFallbackSelector = css.includes('.client-detail-top-cards-side > .client-detail-summary-card:first-child');
 if (!hasPreciseClass && !hasFallbackSelector) {
-  fail('Brak precyzyjnej klasy i brak fallback selector dla kafelka najbliĹĽszej akcji.');
+  fail('Brak precyzyjnej klasy i brak fallback selector dla kafelka najbli\u017Cszej akcji.');
 }
 
 console.log('OK: client detail next action tile polish guard passed');

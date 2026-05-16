@@ -30,7 +30,7 @@ test('stage32 helper targets valuable relations and aligns type badges', () => {
 test('stage32 helper adds loading shell for Today summary', () => {
   const source = read('src/lib/stage32-today-relations-loading-polish.ts');
 
-  assert.match(source, /Ładuję dzisiejszy plan/);
+  assert.match(source, /\u0141aduj\u0119 dzisiejszy plan/);
   assert.match(source, /data-stage32-today-summary-loading/);
   assert.match(source, /hasLoadedTopTiles/);
 });

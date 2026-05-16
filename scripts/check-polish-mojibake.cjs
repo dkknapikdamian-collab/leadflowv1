@@ -7,9 +7,9 @@ const RUNTIME_ROOTS = ['src/pages', 'src/components', 'src/lib'];
 const EXTS = new Set(['.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs']);
 
 const BAD_PATTERNS = [
-  'Ĺ', 'Ä', 'Ă', 'Â', 'â€', 'â†', '�',
+  '\u0139', '\u00c4', '\u0102', '\u00c2', '\u00E2\u20AC', '\u00E2\u2020', '\ufffd',
   'Aadowanie', 'podgldu', 'Nie udaBo', 'wyja[nienie',
-  'ju�', 'obs�udze', 'obs�ug�', 'Najbli�sza', 'szablon�w', 'kr�tkie', 'Utw�rz',
+  'ju\ufffd', 'obs\ufffdudze', 'obs\ufffdug\ufffd', 'Najbli\ufffdsza', 'szablon\ufffdw', 'kr\ufffdtkie', 'Utw\ufffdrz',
 ];
 
 const SKIP_PARTS = [

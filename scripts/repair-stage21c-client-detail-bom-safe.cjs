@@ -31,10 +31,10 @@ function removeClientPanelDescription() {
   const before = text;
 
   const phrases = [
-    "Klient ma przypięte sprawy i bieżący kontekst pracy.",
+    "Klient ma przypi\u0119te sprawy i bie\u017C\u0105cy kontekst pracy.",
     "Klient ma przypiete sprawy i biezacy kontekst pracy.",
-    "Klient ma przypiete sprawy i bieżący kontekst pracy.",
-    "Klient ma przypięte sprawy i biezacy kontekst pracy.",
+    "Klient ma przypiete sprawy i bie\u017C\u0105cy kontekst pracy.",
+    "Klient ma przypi\u0119te sprawy i biezacy kontekst pracy.",
     "Klient ma przypi\u0119te sprawy i bie\u017c\u0105cy kontekst pracy."
   ];
 
@@ -44,7 +44,7 @@ function removeClientPanelDescription() {
     text = text.split(phrase).join("");
   }
 
-  // Usuwa puste paragrafy/opisy po wcześniejszych próbach czyszczenia.
+  // Usuwa puste paragrafy/opisy po wcze\u015Bniejszych pr\u00F3bach czyszczenia.
   text = text.replace(/<p\s+className=["']client-detail-[^"']*(?:description|subtitle|copy)[^"']*["']\s*>\s*<\/p>/gu, "");
   text = text.replace(/<p\s*>\s*<\/p>/gu, "");
 

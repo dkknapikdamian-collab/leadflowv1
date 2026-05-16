@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -32,8 +32,8 @@ const banned = [
   { label: 'SOC 2 certified', pattern: /SOC\s*2\s*certified/i },
   { label: 'SOC2 certified', pattern: /SOC2\s*certified/i },
   { label: 'ISO certified without proof', pattern: /ISO\s*27001\s*certified/i },
-  { label: 'GDPR/RODO guaranteed compliant', pattern: /(GDPR|RODO)\s*(certified|guaranteed|gwarantowane|w pełni zgodne)/i },
-  { label: 'bank level security', pattern: /bank[- ]?level security|bezpieczeństwo bankowe/i },
+  { label: 'GDPR/RODO guaranteed compliant', pattern: /(GDPR|RODO)\s*(certified|guaranteed|gwarantowane|w pe\u0142ni zgodne)/i },
+  { label: 'bank level security', pattern: /bank[- ]?level security|bezpiecze\u0144stwo bankowe/i },
 ];
 
 for (const file of files) {
@@ -55,7 +55,7 @@ const socSlice = socIndex >= 0 ? truth.slice(socIndex, socIndex + 900) : '';
 if (!/SOC\s*2\s*certified/i.test(socSlice)) {
   problems.push('product truth registry missing SOC 2 certified warning reference');
 }
-if (!/(certyfikat|certyfikatu|dowód|dowodu|dokument)/i.test(socSlice)) {
+if (!/(certyfikat|certyfikatu|dow\u00F3d|dowodu|dokument)/i.test(socSlice)) {
   problems.push('product truth registry missing proof/document requirement for SOC/security claims');
 }
 

@@ -77,7 +77,7 @@ expect(checkout.includes('dryRun'), 'checkout handler must keep dryRun');
 expect(checkout.includes('checkoutConfigured'), 'dryRun must return checkoutConfigured');
 expect(checkout.includes('webhookConfigured'), 'dryRun must return webhookConfigured');
 expect(checkout.includes('STRIPE_SECRET_KEY'), 'checkout copy must mention STRIPE_SECRET_KEY configuration');
-expect(checkout.includes('BILLING_CHECKOUT_WEBHOOK_SOURCE_OF_TRUTH_STAGE86J') || includesAny(checkout, ['DostÄ™p pĹ‚atny aktywuje wyĹ‚Ä…cznie webhook Stripe', 'Dostep platny aktywuje wylacznie webhook Stripe']), 'checkout must state webhook is paid access source');
+expect(checkout.includes('BILLING_CHECKOUT_WEBHOOK_SOURCE_OF_TRUTH_STAGE86J') || includesAny(checkout, ['Dost\u0119p p\u0142atny aktywuje wy\u0142\u0105cznie webhook Stripe', 'Dostep platny aktywuje wylacznie webhook Stripe']), 'checkout must state webhook is paid access source');
 expect(checkout.includes('BILLING_CHECKOUT_RESOLVES_SCOPED_WORKSPACE_STAGE86K'), 'checkout must resolve workspace through verified request scope');
 expect(checkout.includes('resolveRequestWorkspaceId(req, body)'), 'checkout must use resolveRequestWorkspaceId(req, body)');
 expect(!checkout.includes('const workspaceId = asNullableText(authContext.workspaceId)'), 'checkout must not rely only on authContext.workspaceId');
@@ -102,8 +102,8 @@ expect(billing.includes("type CheckoutPlanKey = 'basic' | 'pro' | 'ai'"), 'Billi
 expect(billing.includes("checkoutKey: 'ai'"), 'Billing UI must send ai checkout key');
 expect(billing.includes("id: 'closeflow_ai'"), 'Billing UI AI plan must use closeflow_ai');
 expect(!billing.includes("checkoutKey: 'business'"), 'Billing UI must not send business checkout key');
-expect(billing.includes('BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J') || includesAny(billing, ['Aktywny plan pojawi siÄ™ dopiero po webhooku Stripe', 'Aktywny plan pojawi sie dopiero po webhooku Stripe']), 'Billing UI must say webhook activates paid plan');
-expect(!billing.includes('PĹ‚atnoĹ›Ä‡ zakoĹ„czona. OdĹ›wieĹĽam status dostÄ™pu'), 'Billing UI must not imply checkout success activates access');
+expect(billing.includes('BILLING_UI_WEBHOOK_ACTIVATES_PAID_PLAN_STAGE86J') || includesAny(billing, ['Aktywny plan pojawi si\u0119 dopiero po webhooku Stripe', 'Aktywny plan pojawi sie dopiero po webhooku Stripe']), 'Billing UI must say webhook activates paid plan');
+expect(!billing.includes('P\u0142atno\u015B\u0107 zako\u0144czona. Od\u015Bwie\u017Cam status dost\u0119pu'), 'Billing UI must not imply checkout success activates access');
 
 expect(plans.includes('closeflow_ai'), 'plans.ts must know closeflow_ai alias');
 expect(plans.includes('closeflow_ai_yearly'), 'plans.ts must know closeflow_ai_yearly alias');

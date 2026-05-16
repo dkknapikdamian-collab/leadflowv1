@@ -8,7 +8,7 @@ const ROOT = process.cwd();
 const file = path.join(ROOT, 'docs/release/BUTTON_ACTION_MAP_2026-05-06.json');
 const requiredFields = ['route', 'text', 'component', 'action', 'write', 'accessGate', 'toast', 'loading', 'error', 'status'];
 const requiredRoutes = ['/', '/today', '/leads', '/leads/:id', '/clients', '/clients/:id', '/cases', '/cases/:id', '/tasks', '/calendar', '/activity', '/billing', '/settings', '/templates', '/ai-drafts', '/support'];
-const allowedStatuses = new Set(['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu']);
+const allowedStatuses = new Set(['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedost\u0119pne w Twoim planie', 'W przygotowaniu']);
 
 function fail(items) {
   console.error('Button action map guard failed.');

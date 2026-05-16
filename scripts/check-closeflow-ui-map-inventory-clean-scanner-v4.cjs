@@ -15,7 +15,7 @@ if (!roleKeys.includes('delete')) fail('Brak roli delete w mapie ikon');
 if (!roleKeys.includes('phone')) fail('Brak roli phone w mapie ikon');
 if (!roleKeys.includes('email')) fail('Brak roli email w mapie ikon');
 if (!roleKeys.includes('finance')) fail('Brak roli finance w mapie ikon');
-if ((data.metricTileUsages || []).length < 10) fail('Za mało użyć StatShortcutCard w mapie');
+if ((data.metricTileUsages || []).length < 10) fail('Za ma\u0142o u\u017Cy\u0107 StatShortcutCard w mapie');
 console.log('CLOSEFLOW_UI_MAP_INVENTORY_CLEAN_SCANNER_REPAIR_V4_CHECK_OK');
 console.log('directLucideIconImports=' + data.directLucideIconImports.length);
 console.log('roles=' + roleKeys.sort().join(','));

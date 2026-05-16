@@ -11,7 +11,7 @@ test('Stage89C records manual acceptance where future agents will see it', () =>
   assert.ok(rootDoc.includes('ACCEPTED_MANUAL_BY_USER'));
   assert.ok(rootDoc.includes('Admin Debug Toolbar'));
   assert.ok(rootDoc.includes('LeadDetail right rail'));
-  assert.ok(rootDoc.includes('Nie wracaj do kolejnego łatania'));
+  assert.ok(rootDoc.includes('Nie wracaj do kolejnego \u0142atania'));
 });
 
 test('Stage89C release doc lists accepted stages and guard status', () => {

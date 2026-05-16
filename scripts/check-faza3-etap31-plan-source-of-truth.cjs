@@ -144,7 +144,7 @@ assertNotRegex(
 
 section('Documentation');
 for (const needle of [
-  'FAZA 3 - Etap 3.1 - Jedno źródło prawdy dla planów',
+  'FAZA 3 - Etap 3.1 - Jedno \u017Ar\u00F3d\u0142o prawdy dla plan\u00F3w',
   'src/lib/plans.ts',
   'trial_active',
   'free_active',
@@ -154,7 +154,7 @@ for (const needle of [
   'FAZA 3 - Etap 3.2 - Backendowe blokady funkcji',
 ]) {
   assertIncludes(files.doc, doc, needle, 'Release doc contains: ' + needle);
-  assertIncludes(files.technical, technical, needle === 'FAZA 3 - Etap 3.1 - Jedno źródło prawdy dla planów' ? 'Plan Source of Truth' : needle, 'Technical doc contains expected contract content');
+  assertIncludes(files.technical, technical, needle === 'FAZA 3 - Etap 3.1 - Jedno \u017Ar\u00F3d\u0142o prawdy dla plan\u00F3w' ? 'Plan Source of Truth' : needle, 'Technical doc contains expected contract content');
 }
 
 section('Package and quiet gate');

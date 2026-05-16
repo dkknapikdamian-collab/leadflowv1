@@ -85,11 +85,11 @@ for (const match of appNoComments.matchAll(/<Route\s+path=["']([^"']+)["'][\s\S]
 const tasksRoute = routes.find((route) => route.path === '/tasks');
 
 if (!tasksRoute) {
-  addFinding(findings, 'HIGH', 'routing', 'src/App.tsx', 1, 'Nie znaleziono route /tasks', 'App.tsx nie zawiera czytelnej trasy /tasks.', 'Najpierw ustalić realny komponent ekranu zadań, zanim cokolwiek łatać.');
+  addFinding(findings, 'HIGH', 'routing', 'src/App.tsx', 1, 'Nie znaleziono route /tasks', 'App.tsx nie zawiera czytelnej trasy /tasks.', 'Najpierw ustali\u0107 realny komponent ekranu zada\u0144, zanim cokolwiek \u0142ata\u0107.');
 } else {
   if (tasksRoute.file !== 'src/pages/TasksStable.tsx') {
     const { line } = fileLine('src/App.tsx', app, '/tasks');
-    addFinding(findings, 'MEDIUM', 'routing', 'src/App.tsx', line, `Route /tasks wskazuje na ${tasksRoute.file}`, `Komponent: ${tasksRoute.component}, plik: ${tasksRoute.file}`, 'Wszystkie testy i guardy muszą celować w faktyczny plik route, nie w starszy ekran.');
+    addFinding(findings, 'MEDIUM', 'routing', 'src/App.tsx', line, `Route /tasks wskazuje na ${tasksRoute.file}`, `Komponent: ${tasksRoute.component}, plik: ${tasksRoute.file}`, 'Wszystkie testy i guardy musz\u0105 celowa\u0107 w faktyczny plik route, nie w starszy ekran.');
   }
 }
 
@@ -111,7 +111,7 @@ if (tasksRoute?.file === 'src/pages/TasksStable.tsx') {
         lineOf(source, source.indexOf('src/pages/Tasks.tsx')),
         'Guard/test sprawdza martwy Tasks.tsx zamiast realnego TasksStable.tsx',
         excerpt(source, source.indexOf('src/pages/Tasks.tsx')),
-        'Przepiąć guard/test na src/pages/TasksStable.tsx albo sprawdzać komponent z mapowania App.tsx.'
+        'Przepi\u0105\u0107 guard/test na src/pages/TasksStable.tsx albo sprawdza\u0107 komponent z mapowania App.tsx.'
       );
     }
   }
@@ -124,28 +124,28 @@ const tasksNoComments = stripComments(tasksSource);
 if (tasksSource) {
   const techPatterns = [
     /Stabilny widok Supabase bez bramki Firebase/i,
-    /Dane (ładują|laduja) się od razu po wejściu w zakładkę/i,
+    /Dane (\u0142aduj\u0105|laduja) si\u0119 od razu po wej\u015Bciu w zak\u0142adk\u0119/i,
     /Stable Tasks screen avoids the legacy Firebase auth\.currentUser load gate/i,
     /Supabase API helpers used by the rest of the app/i,
   ];
   for (const pattern of techPatterns) {
     const index = tasksNoComments.search(pattern);
     if (index >= 0) {
-      addFinding(findings, 'HIGH', 'ui-copy', tasksFile, lineOf(tasksSource, tasksSource.search(pattern)), 'Widoczny techniczny tekst na ekranie Zadań', excerpt(tasksSource, tasksSource.search(pattern)), 'Usunąć techniczne copy z UI. Użytkownik nie powinien widzieć Firebase/Supabase/Stable.');
+      addFinding(findings, 'HIGH', 'ui-copy', tasksFile, lineOf(tasksSource, tasksSource.search(pattern)), 'Widoczny techniczny tekst na ekranie Zada\u0144', excerpt(tasksSource, tasksSource.search(pattern)), 'Usun\u0105\u0107 techniczne copy z UI. U\u017Cytkownik nie powinien widzie\u0107 Firebase/Supabase/Stable.');
     }
   }
 
   for (const item of findButtonBlocks(tasksNoComments)) {
     const block = item.block;
     if (/(Nowe|Dodaj)\s+zadanie/i.test(block) && /openNewTask|setIsDialogOpen\(true\)|setIsNewTaskOpen\(true\)/.test(block)) {
-      addFinding(findings, 'HIGH', 'duplicate-action', tasksFile, lineOf(tasksNoComments, item.start), 'Lokalny przycisk dodawania zadania jest nadal w realnym ekranie', block.replace(/\s+/g, ' ').trim(), 'Usunąć lokalny CTA z nagłówka. Dodawanie ma iść z globalnego panelu operatora.');
+      addFinding(findings, 'HIGH', 'duplicate-action', tasksFile, lineOf(tasksNoComments, item.start), 'Lokalny przycisk dodawania zadania jest nadal w realnym ekranie', block.replace(/\s+/g, ' ').trim(), 'Usun\u0105\u0107 lokalny CTA z nag\u0142\u00F3wka. Dodawanie ma i\u015B\u0107 z globalnego panelu operatora.');
     }
   }
 
   for (const item of findButtonBlocks(tasksNoComments)) {
     const block = item.block;
-    if (/Odśwież|Odswiez/i.test(block) && !/className=/.test(block)) {
-      addFinding(findings, 'MEDIUM', 'visual-contrast', tasksFile, lineOf(tasksNoComments, item.start), 'Przycisk Odśwież nie ma jawnej klasy kontrastu', block.replace(/\s+/g, ' ').trim(), 'Dodać jawne klasy text/background/border dla czytelności na jasnym tle.');
+    if (/Od\u015Bwie\u017C|Odswiez/i.test(block) && !/className=/.test(block)) {
+      addFinding(findings, 'MEDIUM', 'visual-contrast', tasksFile, lineOf(tasksNoComments, item.start), 'Przycisk Od\u015Bwie\u017C nie ma jawnej klasy kontrastu', block.replace(/\s+/g, ' ').trim(), 'Doda\u0107 jawne klasy text/background/border dla czytelno\u015Bci na jasnym tle.');
     }
   }
 }
@@ -157,13 +157,13 @@ const globalNoComments = stripComments(globalSource);
 if (globalSource) {
   const taskButton = findButtonBlocks(globalNoComments).find((item) => /data-global-quick-action=["']task["']/.test(item.block));
   if (!taskButton) {
-    addFinding(findings, 'HIGH', 'global-action', globalFile, 1, 'Nie znaleziono globalnego przycisku Zadanie', 'Brak data-global-quick-action="task".', 'Dodać globalny przycisk, który otwiera modal dodawania zadania.');
+    addFinding(findings, 'HIGH', 'global-action', globalFile, 1, 'Nie znaleziono globalnego przycisku Zadanie', 'Brak data-global-quick-action="task".', 'Doda\u0107 globalny przycisk, kt\u00F3ry otwiera modal dodawania zadania.');
   } else {
     if (/\basChild\b|<Link\b|to=["']\/tasks/.test(taskButton.block)) {
-      addFinding(findings, 'HIGH', 'global-action', globalFile, lineOf(globalNoComments, taskButton.start), 'Globalny + Zadanie używa Link/routingu zamiast otwierać modal', taskButton.block.replace(/\s+/g, ' ').trim(), 'Zamienić na zwykły Button z onClick otwierającym TaskCreateDialog bez przejścia do /tasks.');
+      addFinding(findings, 'HIGH', 'global-action', globalFile, lineOf(globalNoComments, taskButton.start), 'Globalny + Zadanie u\u017Cywa Link/routingu zamiast otwiera\u0107 modal', taskButton.block.replace(/\s+/g, ' ').trim(), 'Zamieni\u0107 na zwyk\u0142y Button z onClick otwieraj\u0105cym TaskCreateDialog bez przej\u015Bcia do /tasks.');
     }
     if (!/TaskCreateDialog/.test(globalNoComments)) {
-      addFinding(findings, 'HIGH', 'global-action', globalFile, 1, 'GlobalQuickActions nie renderuje wspólnego TaskCreateDialog', 'Brak TaskCreateDialog w pliku globalnego panelu.', 'Dodać wspólny komponent modala tworzenia zadania do GlobalQuickActions.');
+      addFinding(findings, 'HIGH', 'global-action', globalFile, 1, 'GlobalQuickActions nie renderuje wsp\u00F3lnego TaskCreateDialog', 'Brak TaskCreateDialog w pliku globalnego panelu.', 'Doda\u0107 wsp\u00F3lny komponent modala tworzenia zadania do GlobalQuickActions.');
     }
   }
 }
@@ -187,7 +187,7 @@ for (const route of routes) {
       const around = excerpt(noComments, match.index, 160);
       // Reduce false positives: imports/function names are not UI copy.
       if (/import |from |function |const |type |interface |await |Supabase\(|Firebase\(/.test(around)) continue;
-      addFinding(findings, 'LOW', 'possible-tech-copy', route.file, lineOf(noComments, match.index), `Możliwy techniczny tekst w routowanym ekranie: ${label}`, around, 'Sprawdzić, czy to nie jest tekst widoczny dla użytkownika. Jeśli widoczny, usunąć albo przepisać na język produktowy.');
+      addFinding(findings, 'LOW', 'possible-tech-copy', route.file, lineOf(noComments, match.index), `Mo\u017Cliwy techniczny tekst w routowanym ekranie: ${label}`, around, 'Sprawdzi\u0107, czy to nie jest tekst widoczny dla u\u017Cytkownika. Je\u015Bli widoczny, usun\u0105\u0107 albo przepisa\u0107 na j\u0119zyk produktowy.');
     }
   }
 }
@@ -197,7 +197,7 @@ for (const file of allCodeFiles) {
   const source = read(file);
   const noComments = stripComments(source);
   if (file !== tasksFile && /DialogTitle>[\s\S]{0,80}Nowe zadanie|setIsNewTaskOpen\(true\)|openNewTask/.test(noComments)) {
-    addFinding(findings, 'MEDIUM', 'duplicate-modal-surface', file, lineOf(source, source.search(/Nowe zadanie|setIsNewTaskOpen|openNewTask/)), 'Inny plik poza realnym route zawiera modal/otwieranie zadania', excerpt(source, source.search(/Nowe zadanie|setIsNewTaskOpen|openNewTask/)), 'Ustalić, czy to aktywny ekran, czy martwy legacy. Dla aktywnych powierzchni użyć wspólnego TaskCreateDialog.');
+    addFinding(findings, 'MEDIUM', 'duplicate-modal-surface', file, lineOf(source, source.search(/Nowe zadanie|setIsNewTaskOpen|openNewTask/)), 'Inny plik poza realnym route zawiera modal/otwieranie zadania', excerpt(source, source.search(/Nowe zadanie|setIsNewTaskOpen|openNewTask/)), 'Ustali\u0107, czy to aktywny ekran, czy martwy legacy. Dla aktywnych powierzchni u\u017Cy\u0107 wsp\u00F3lnego TaskCreateDialog.');
   }
 }
 
@@ -225,8 +225,8 @@ const md = [
   '## Werdykt',
   '',
   summary.counts.high > 0
-    ? `NIE WDRAŻAĆ kolejnych punktowych patchy. Jest ${summary.counts.high} wysokich problemów powierzchni UI/guardów.`
-    : 'Brak wysokich problemów w tym audycie.',
+    ? `NIE WDRA\u017BA\u0106 kolejnych punktowych patchy. Jest ${summary.counts.high} wysokich problem\u00F3w powierzchni UI/guard\u00F3w.`
+    : 'Brak wysokich problem\u00F3w w tym audycie.',
   '',
   '## Route map',
   '',
@@ -246,9 +246,9 @@ const md = [
     '',
   ].join('\n')).join('\n') : 'No findings.',
   '',
-  '## Następny krok',
+  '## Nast\u0119pny krok',
   '',
-  'Najpierw naprawić wszystkie HIGH w jednym patchu. Dopiero potem uruchamiać pełny release gate.',
+  'Najpierw naprawi\u0107 wszystkie HIGH w jednym patchu. Dopiero potem uruchamia\u0107 pe\u0142ny release gate.',
   '',
 ].join('\n');
 

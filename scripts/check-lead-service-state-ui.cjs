@@ -17,9 +17,9 @@ assert.match(serviceState, /in_service/);
 assert.match(serviceState, /moved_to_service/);
 assert.match(serviceState, /isLeadInServiceStatus/);
 
-assert.match(leadDetail, /Ten temat jest.*obsłudze|Ten temat jest ju/);
+assert.match(leadDetail, /Ten temat jest.*obs\u0142udze|Ten temat jest ju/);
 assert.match(leadDetail, /!leadInService \? \(/);
-assert.doesNotMatch(leadDetail, /Najbliższa akcja[\s\S]*leadInService \? \(/);
+assert.doesNotMatch(leadDetail, /Najbli\u017Csza akcja[\s\S]*leadInService \? \(/);
 
 assert.match(leads, /!isLeadInTrash\(lead\) && !isLeadMovedToService\(lead\)/);
 assert.match(today, /isActiveSalesLead\(lead\) && !isLeadMovedToService\(lead\)/);

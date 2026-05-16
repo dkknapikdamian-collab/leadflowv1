@@ -216,7 +216,7 @@ fs.mkdirSync(path.dirname(outJson), { recursive: true });
 fs.writeFileSync(outJson, JSON.stringify(summary, null, 2) + '\n', 'utf8');
 
 const md = [];
-md.push('# CloseFlow metric tiles deep source map — VS5T');
+md.push('# CloseFlow metric tiles deep source map \u2014 VS5T');
 md.push('');
 md.push('Marker: \`' + STAGE + '\`');
 md.push('');
@@ -248,7 +248,7 @@ md.push('');
 md.push('## CSS files influencing metric tiles');
 md.push('');
 for (const css of cssMap) {
-  md.push('- \`' + css.rel + '\` — signals: ' + css.signals.map((s) => '\`' + s + '\`').join(', '));
+  md.push('- \`' + css.rel + '\` \u2014 signals: ' + css.signals.map((s) => '\`' + s + '\`').join(', '));
 }
 md.push('');
 md.push('## Next implementation direction');

@@ -104,8 +104,8 @@ assert(uiIndex.includes("export * from './icon-registry';"), 'ui-system index mi
 const dsIndex = read('src/styles/design-system/index.css');
 assert(dsIndex.includes('closeflow-icons.css'), 'design-system index missing closeflow-icons import');
 
-assert(docs.includes('Jak zmienić ikonę klienta globalnie'), 'Docs must explain how to change client icon globally');
-assert(docs.includes('Nie przepina wszystkich aktywnych ekranów'), 'Docs must say VS-2B does not migrate all screens');
+assert(docs.includes('Jak zmieni\u0107 ikon\u0119 klienta globalnie'), 'Docs must explain how to change client icon globally');
+assert(docs.includes('Nie przepina wszystkich aktywnych ekran\u00F3w'), 'Docs must say VS-2B does not migrate all screens');
 
 const actionIcons = ['Plus', 'Search', 'Trash2', 'Pencil', 'Save'];
 for (const actionIcon of actionIcons) {

@@ -300,36 +300,36 @@ for (const file of envFiles) {
 }
 
 const expectedEnv = [
-  { key: "APP_URL", area: "release/app", note: "Publiczny URL aplikacji, używany w linkach i callbackach." },
+  { key: "APP_URL", area: "release/app", note: "Publiczny URL aplikacji, u\u017Cywany w linkach i callbackach." },
   { key: "RELEASE_PREVIEW_URL", area: "release/app", note: "Opcjonalny jawny URL preview do raportu release." },
   { key: "VERCEL_URL", area: "release/app", note: "URL deploymentu Vercel, zwykle ustawiany automatycznie." },
   { key: "VITE_SUPABASE_URL", area: "data/auth", note: "Frontend Supabase URL." },
   { key: "VITE_SUPABASE_ANON_KEY", area: "data/auth", note: "Frontend Supabase anon key." },
   { key: "SUPABASE_URL", area: "data/auth", note: "Backend Supabase URL." },
-  { key: "SUPABASE_ANON_KEY", area: "data/auth", note: "Backend Supabase anon key, jeśli używany." },
+  { key: "SUPABASE_ANON_KEY", area: "data/auth", note: "Backend Supabase anon key, je\u015Bli u\u017Cywany." },
   { key: "SUPABASE_SERVICE_ROLE_KEY", area: "data/auth", note: "Backend service role key, tylko server-side." },
-  { key: "VITE_FIREBASE_API_KEY", area: "auth", note: "Firebase auth frontend, jeśli używany." },
-  { key: "VITE_FIREBASE_AUTH_DOMAIN", area: "auth", note: "Firebase auth domain, jeśli używany." },
-  { key: "VITE_FIREBASE_PROJECT_ID", area: "auth", note: "Firebase project id, jeśli używany." },
+  { key: "VITE_FIREBASE_API_KEY", area: "auth", note: "Firebase auth frontend, je\u015Bli u\u017Cywany." },
+  { key: "VITE_FIREBASE_AUTH_DOMAIN", area: "auth", note: "Firebase auth domain, je\u015Bli u\u017Cywany." },
+  { key: "VITE_FIREBASE_PROJECT_ID", area: "auth", note: "Firebase project id, je\u015Bli u\u017Cywany." },
   { key: "STRIPE_SECRET_KEY", area: "billing", note: "Stripe server key do checkoutu." },
   { key: "STRIPE_WEBHOOK_SECRET", area: "billing", note: "Stripe webhook signing secret." },
-  { key: "VITE_STRIPE_PUBLISHABLE_KEY", area: "billing", note: "Stripe publishable key dla frontu, jeśli używany." },
-  { key: "STRIPE_PRICE_ID_BASIC", area: "billing", note: "Price ID planu Basic, jeśli używany." },
-  { key: "STRIPE_PRICE_ID_PRO", area: "billing", note: "Price ID planu Pro, jeśli używany." },
-  { key: "STRIPE_PRICE_ID_AI", area: "billing", note: "Price ID planu AI, jeśli używany." },
-  { key: "RESEND_API_KEY", area: "mail/digest", note: "Mail provider. Bez tego digest może przejść logikę, ale nie wyśle maila." },
+  { key: "VITE_STRIPE_PUBLISHABLE_KEY", area: "billing", note: "Stripe publishable key dla frontu, je\u015Bli u\u017Cywany." },
+  { key: "STRIPE_PRICE_ID_BASIC", area: "billing", note: "Price ID planu Basic, je\u015Bli u\u017Cywany." },
+  { key: "STRIPE_PRICE_ID_PRO", area: "billing", note: "Price ID planu Pro, je\u015Bli u\u017Cywany." },
+  { key: "STRIPE_PRICE_ID_AI", area: "billing", note: "Price ID planu AI, je\u015Bli u\u017Cywany." },
+  { key: "RESEND_API_KEY", area: "mail/digest", note: "Mail provider. Bez tego digest mo\u017Ce przej\u015B\u0107 logik\u0119, ale nie wy\u015Ble maila." },
   { key: "DIGEST_FROM_EMAIL", area: "mail/digest", note: "Adres nadawcy digestu." },
-  { key: "CRON_SECRET", area: "mail/digest", note: "Sekret chroniący endpointy cron." },
+  { key: "CRON_SECRET", area: "mail/digest", note: "Sekret chroni\u0105cy endpointy cron." },
   { key: "DIGEST_ENFORCE_WORKSPACE_HOUR", area: "mail/digest", note: "Wymuszanie godziny workspace dla digestu." },
-  { key: "AI_ENABLED", area: "ai", note: "Włączenie/wyłączenie AI." },
+  { key: "AI_ENABLED", area: "ai", note: "W\u0142\u0105czenie/wy\u0142\u0105czenie AI." },
   { key: "AI_PRIMARY_PROVIDER", area: "ai", note: "Primary provider AI, np. gemini." },
-  { key: "GEMINI_API_KEY", area: "ai", note: "Gemini key, jeśli AI używa Gemini." },
+  { key: "GEMINI_API_KEY", area: "ai", note: "Gemini key, je\u015Bli AI u\u017Cywa Gemini." },
   { key: "GEMINI_MODEL", area: "ai", note: "Model Gemini." },
   { key: "AI_FALLBACK_PROVIDER", area: "ai", note: "Fallback provider AI." },
   { key: "CLOUDFLARE_ACCOUNT_ID", area: "ai", note: "Cloudflare Workers AI account." },
   { key: "CLOUDFLARE_API_TOKEN", area: "ai", note: "Cloudflare Workers AI token." },
   { key: "CLOUDFLARE_AI_MODEL", area: "ai", note: "Cloudflare Workers AI model." },
-  { key: "GOOGLE_CLIENT_ID", area: "google-calendar", note: "OAuth Google Calendar, jeśli sync jest aktywny." },
+  { key: "GOOGLE_CLIENT_ID", area: "google-calendar", note: "OAuth Google Calendar, je\u015Bli sync jest aktywny." },
   { key: "GOOGLE_CLIENT_SECRET", area: "google-calendar", note: "OAuth Google Calendar secret." },
   { key: "GOOGLE_REDIRECT_URI", area: "google-calendar", note: "OAuth Google Calendar callback." },
 ];
@@ -385,25 +385,25 @@ const failedChecks = checkResults.filter((result) => !result.ok);
 const limitations = [...EXTRA_LIMITATIONS];
 
 if (!previewUrl) {
-  limitations.push("Preview URL nie został wykryty automatycznie. Podaj go przez --preview-url albo RELEASE_PREVIEW_URL.");
+  limitations.push("Preview URL nie zosta\u0142 wykryty automatycznie. Podaj go przez --preview-url albo RELEASE_PREVIEW_URL.");
 }
 if (!pkg) {
-  limitations.push("Brak możliwego do odczytu package.json w katalogu repo. Skrypt nie może zebrać listy skryptów ani uruchomić build/testów.");
+  limitations.push("Brak mo\u017Cliwego do odczytu package.json w katalogu repo. Skrypt nie mo\u017Ce zebra\u0107 listy skrypt\u00F3w ani uruchomi\u0107 build/test\u00F3w.");
 }
 if (missingChecks.length) {
-  limitations.push(`Nie wykryto wymaganych checków w package.json: ${missingChecks.join(", ")}.`);
+  limitations.push(`Nie wykryto wymaganych check\u00F3w w package.json: ${missingChecks.join(", ")}.`);
 }
 if (!scriptNames.includes("test:critical") && !scriptNames.includes("e2e") && !scriptNames.some((name) => /playwright|cypress|smoke/i.test(name))) {
-  limitations.push("Nie wykryto jawnego skryptu E2E/smoke. Manualny smoke test release’u pozostaje obowiązkowy.");
+  limitations.push("Nie wykryto jawnego skryptu E2E/smoke. Manualny smoke test release\u2019u pozostaje obowi\u0105zkowy.");
 }
 if (envStatus("RESEND_API_KEY") === "MISSING" || envStatus("DIGEST_FROM_EMAIL") === "MISSING" || envStatus("CRON_SECRET") === "MISSING") {
-  limitations.push("Jeśli digest/cron mailowy jest częścią testu release, brak RESEND_API_KEY/DIGEST_FROM_EMAIL/CRON_SECRET oznacza brak fizycznej wysyłki maila lub brak pełnego zabezpieczenia cron.");
+  limitations.push("Je\u015Bli digest/cron mailowy jest cz\u0119\u015Bci\u0105 testu release, brak RESEND_API_KEY/DIGEST_FROM_EMAIL/CRON_SECRET oznacza brak fizycznej wysy\u0142ki maila lub brak pe\u0142nego zabezpieczenia cron.");
 }
 if (envStatus("GOOGLE_CLIENT_ID") === "MISSING" || envStatus("GOOGLE_CLIENT_SECRET") === "MISSING") {
-  limitations.push("Jeśli Google Calendar sync jest w zakresie release, brak GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET oznacza brak pełnego testu OAuth/sync.");
+  limitations.push("Je\u015Bli Google Calendar sync jest w zakresie release, brak GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET oznacza brak pe\u0142nego testu OAuth/sync.");
 }
-limitations.push("Wartości sekretów nie są drukowane. Raport pokazuje tylko status obecności kluczy i nazwy źródeł.");
-limitations.push("Commit hash w pliku markdown jest snapshotem z chwili uruchomienia. Najświeższy dowód dla audytora daje ponowne uruchomienie `npm run audit:release-evidence` na sprawdzanym branche.");
+limitations.push("Warto\u015Bci sekret\u00F3w nie s\u0105 drukowane. Raport pokazuje tylko status obecno\u015Bci kluczy i nazwy \u017Ar\u00F3de\u0142.");
+limitations.push("Commit hash w pliku markdown jest snapshotem z chwili uruchomienia. Naj\u015Bwie\u017Cszy dow\u00F3d dla audytora daje ponowne uruchomienie `npm run audit:release-evidence` na sprawdzanym branche.");
 
 let overall = "PASS";
 if (!pkg || failedChecks.length > 0) {
@@ -412,7 +412,7 @@ if (!pkg || failedChecks.length > 0) {
   overall = "WARN";
 }
 
-const statusEmoji = overall === "PASS" ? "✅" : overall === "WARN" ? "⚠️" : "❌";
+const statusEmoji = overall === "PASS" ? "\u2705" : overall === "WARN" ? "\u26A0\uFE0F" : "\u274C";
 
 const detectedScriptsTable = detectedScripts.length
   ? detectedScripts.map((name) => `| \`${escapeMd(name)}\` | \`${escapeMd(scripts[name])}\` |`).join("\n")
@@ -422,7 +422,7 @@ const checkResultsTable = SKIP_CHECKS
   ? "| SKIPPED | - | - | - |\n"
   : (checkResults.length
     ? checkResults.map((r) => `| \`${escapeMd(r.script)}\` | ${r.ok ? "PASS" : "FAIL"} | ${r.code} | ${(r.durationMs / 1000).toFixed(1)}s |`).join("\n")
-    : "| _brak uruchomionych checków_ | - | - | - |");
+    : "| _brak uruchomionych check\u00F3w_ | - | - | - |");
 
 const missingChecksTable = missingChecks.length
   ? missingChecks.map((name) => `- \`${name}\``).join("\n")
@@ -433,7 +433,7 @@ const envTable = envRows.map((row) => {
 }).join("\n");
 
 const checkOutputSections = SKIP_CHECKS
-  ? "Checki zostały pominięte flagą `--skip-checks`.\n"
+  ? "Checki zosta\u0142y pomini\u0119te flag\u0105 `--skip-checks`.\n"
   : checkResults.map((r) => {
     const combined = [
       r.stdoutTail ? `STDOUT:\n${r.stdoutTail}` : "",
@@ -443,28 +443,28 @@ const checkOutputSections = SKIP_CHECKS
   }).join("\n\n");
 
 const manualSmokeChecklist = [
-  "Zaloguj się zwykłym userem.",
-  "Utwórz leada, zadanie i wydarzenie.",
-  "Przekształć leada w sprawę / rozpocznij obsługę.",
-  "Wygeneruj szkic AI i zatwierdź go dopiero ręcznie.",
-  "Odśwież Today, Leads, Tasks, Calendar, Lead Detail, Case Detail.",
-  "Sprawdź, czy dane wracają po reloadzie.",
-  "Wyloguj się i zaloguj drugim userem z innego workspace.",
-  "Potwierdź brak przecieku danych i brak widoczności admin-only dla zwykłego usera.",
+  "Zaloguj si\u0119 zwyk\u0142ym userem.",
+  "Utw\u00F3rz leada, zadanie i wydarzenie.",
+  "Przekszta\u0142\u0107 leada w spraw\u0119 / rozpocznij obs\u0142ug\u0119.",
+  "Wygeneruj szkic AI i zatwierd\u017A go dopiero r\u0119cznie.",
+  "Od\u015Bwie\u017C Today, Leads, Tasks, Calendar, Lead Detail, Case Detail.",
+  "Sprawd\u017A, czy dane wracaj\u0105 po reloadzie.",
+  "Wyloguj si\u0119 i zaloguj drugim userem z innego workspace.",
+  "Potwierd\u017A brak przecieku danych i brak widoczno\u015Bci admin-only dla zwyk\u0142ego usera.",
 ];
 
-const markdown = `# Release Candidate Evidence — CloseFlow / LeadFlow
+const markdown = `# Release Candidate Evidence \u2014 CloseFlow / LeadFlow
 
-**Data wygenerowania:** ${nowIso()}  
-**Status evidence gate:** ${statusEmoji} **${overall}**  
-**Zakres:** ETAP 0.1 — Release Candidate Evidence Gate  
-**Uwaga:** ten dokument nie zmienia działania aplikacji. To dowód release’u dla audytu.
+**Data wygenerowania:** ${nowIso()}
+**Status evidence gate:** ${statusEmoji} **${overall}**
+**Zakres:** ETAP 0.1 \u2014 Release Candidate Evidence Gate
+**Uwaga:** ten dokument nie zmienia dzia\u0142ania aplikacji. To dow\u00F3d release\u2019u dla audytu.
 
 ---
 
-## 1. Źródło prawdy release candidate
+## 1. \u0179r\u00F3d\u0142o prawdy release candidate
 
-| Pole | Wartość |
+| Pole | Warto\u015B\u0107 |
 |---|---|
 | Repo root | \`${escapeMd(git.repoRoot || "UNKNOWN")}\` |
 | Repo remote | \`${escapeMd(git.remote || "UNKNOWN")}\` |
@@ -486,7 +486,7 @@ ${codeBlock(git.statusShort || "clean", "text")}
 
 ---
 
-## 2. Lista skryptów testowych / release guardów wykrytych w package.json
+## 2. Lista skrypt\u00F3w testowych / release guard\u00F3w wykrytych w package.json
 
 | Script | Command |
 |---|---|
@@ -498,7 +498,7 @@ ${missingChecksTable}
 
 ---
 
-## 3. Wyniki uruchomionych checków
+## 3. Wyniki uruchomionych check\u00F3w
 
 | Script | Status | Exit code | Czas |
 |---|---:|---:|---:|
@@ -506,22 +506,22 @@ ${checkResultsTable}
 
 ### Wynik builda
 
-| Pole | Wartość |
+| Pole | Warto\u015B\u0107 |
 |---|---|
 | Build script present | ${scripts.build ? "tak" : "nie"} |
 | Build result | ${buildResult ? checkStatusText(buildResult) : (SKIP_CHECKS ? "SKIPPED" : "NOT_RUN")} |
 
 ---
 
-## 4. Env matrix bez sekretów
+## 4. Env matrix bez sekret\u00F3w
 
 Statusy:
-- \`SET_IN_PROCESS\` — zmienna ustawiona w procesie uruchomienia,
-- \`PRESENT_IN_ENV_FILE\` — zmienna istnieje z wartością w pliku env repo,
-- \`EXAMPLE_ONLY\` — zmienna jest tylko w przykładzie/template,
-- \`MISSING\` — brak wykrycia.
+- \`SET_IN_PROCESS\` \u2014 zmienna ustawiona w procesie uruchomienia,
+- \`PRESENT_IN_ENV_FILE\` \u2014 zmienna istnieje z warto\u015Bci\u0105 w pliku env repo,
+- \`EXAMPLE_ONLY\` \u2014 zmienna jest tylko w przyk\u0142adzie/template,
+- \`MISSING\` \u2014 brak wykrycia.
 
-| Env key | Obszar | Status | Źródła | Notatka |
+| Env key | Obszar | Status | \u0179r\u00F3d\u0142a | Notatka |
 |---|---|---|---|---|
 ${envTable}
 
@@ -539,7 +539,7 @@ ${manualSmokeChecklist.map((item, idx) => `${idx + 1}. ${item}`).join("\n")}
 
 ---
 
-## 7. Szczegółowy output checków
+## 7. Szczeg\u00F3\u0142owy output check\u00F3w
 
 ${checkOutputSections}
 
@@ -547,9 +547,9 @@ ${checkOutputSections}
 
 ## 8. Decyzja gate
 
-${overall === "PASS" ? "✅ Gate techniczny przeszedł. Nadal wymagany jest manualny smoke test krytycznych ścieżek." : ""}
-${overall === "WARN" ? "⚠️ Gate ma ostrzeżenia. Nie podpisywać release’u bez wyjaśnienia preview URL / dirty tree / braków E2E." : ""}
-${overall === "FAIL" ? "❌ Gate nie przeszedł. Nie przekazywać aplikacji użytkownikowi, dopóki czerwone checki lub brak package.json / brak builda nie zostaną naprawione." : ""}
+${overall === "PASS" ? "\u2705 Gate techniczny przeszed\u0142. Nadal wymagany jest manualny smoke test krytycznych \u015Bcie\u017Cek." : ""}
+${overall === "WARN" ? "\u26A0\uFE0F Gate ma ostrze\u017Cenia. Nie podpisywa\u0107 release\u2019u bez wyja\u015Bnienia preview URL / dirty tree / brak\u00F3w E2E." : ""}
+${overall === "FAIL" ? "\u274C Gate nie przeszed\u0142. Nie przekazywa\u0107 aplikacji u\u017Cytkownikowi, dop\u00F3ki czerwone checki lub brak package.json / brak builda nie zostan\u0105 naprawione." : ""}
 `;
 
 if (SHOULD_WRITE) {

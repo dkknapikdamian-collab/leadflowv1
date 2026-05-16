@@ -30,7 +30,7 @@ const pageFile = candidates.find((file) => read(file).includes('data-support-tic
 const support = read(pageFile);
 
 const forbidden = [
-  'Zgłoszenia i status.',
+  'Zg\u0142oszenia i status.',
   'Szybkie linki',
   'Status aplikacji',
 ];
@@ -49,7 +49,7 @@ if (forbiddenKontaktRightCard.test(support)) {
 
 const required = [
   'data-support-ticket-list="true"',
-  'Moje zgłoszenia',
+  'Moje zg\u0142oszenia',
   'Brak odpowiedzi',
   'support-ticket-status',
   'formatSupportStatus',

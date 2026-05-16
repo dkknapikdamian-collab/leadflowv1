@@ -21,10 +21,10 @@ const deleteActionTokens = (src.match(/data-case-detail-delete-action/g) || []).
 const confirmHandlerTokens = (src.match(/setDeleteCaseOpen\(true\)/g) || []).length;
 const entityTrashButtonExport = /export\s+function\s+EntityTrashButton|export\s+const\s+EntityTrashButton/.test(entity);
 
-if (emptyTernary) fail('pozostał pusty JSX ternary `{caseData?.id ? ( ) : null}`');
-if (deleteShortcutTokens !== 0) fail(`pozostał cf-case-detail-delete-shortcut: ${deleteShortcutTokens}`);
+if (emptyTernary) fail('pozosta\u0142 pusty JSX ternary `{caseData?.id ? ( ) : null}`');
+if (deleteShortcutTokens !== 0) fail(`pozosta\u0142 cf-case-detail-delete-shortcut: ${deleteShortcutTokens}`);
 if (deleteActionTokens !== 1) fail(`oczekiwano jednego data-case-detail-delete-action, jest: ${deleteActionTokens}`);
-if (confirmHandlerTokens < 1) fail('brak setDeleteCaseOpen(true), confirm dialog może być ominięty');
+if (confirmHandlerTokens < 1) fail('brak setDeleteCaseOpen(true), confirm dialog mo\u017Ce by\u0107 omini\u0119ty');
 if (!entityTrashButtonExport) fail('brak eksportu EntityTrashButton w entity-actions.tsx');
 
 console.log('OK tests/case-detail-delete-placement-stage7b.test.cjs');

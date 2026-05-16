@@ -100,8 +100,8 @@ function patchClient() {
 
   const nextFunction = `export async function askTodayAiAssistant(input: TodayAiAssistantInput) {
   // AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_CLIENT
-  // Modelowy router semantyczny jest pierwszą ścieżką dla pytań o aplikację.
-  // Lokalny Stage32 zostaje tylko jako offline/error fallback, a nie jako główny mózg oparty o frazy.
+  // Modelowy router semantyczny jest pierwsz\u0105 \u015Bcie\u017Ck\u0105 dla pyta\u0144 o aplikacj\u0119.
+  // Lokalny Stage32 zostaje tylko jako offline/error fallback, a nie jako g\u0142\u00F3wny m\u00F3zg oparty o frazy.
   const stage32LocalFallback = buildStage32LocalQueryBrainAnswer(input);
   const auth = getClientAuthSnapshot();
   const workspaceId = getContextWorkspaceId(input.context);
@@ -141,7 +141,7 @@ function patchClient() {
         ...stage32LocalFallback,
         warnings: [
           ...(stage32LocalFallback.warnings || []),
-          'Fallback lokalny: modelowy router semantyczny nie odpowiedział, więc użyto awaryjnych reguł z danych aplikacji.',
+          'Fallback lokalny: modelowy router semantyczny nie odpowiedzia\u0142, wi\u0119c u\u017Cyto awaryjnych regu\u0142 z danych aplikacji.',
         ],
       };
     }
@@ -157,7 +157,7 @@ function patchClient() {
 
 const semanticServerHelpers = String.raw`
 // AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_SERVER
-// To nie jest słownik fraz. Model dostaje mapę aplikacji i kompaktowy snapshot danych,
+// To nie jest s\u0142ownik fraz. Model dostaje map\u0119 aplikacji i kompaktowy snapshot danych,
 // sam tworzy plan odpowiedzi i zwraca ustrukturyzowany JSON zgodny z UI asystenta.
 const AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_SERVER = true;
 
@@ -211,15 +211,15 @@ function stage33BuildCompactSnapshot(context: Record<string, unknown>) {
   const take = (kind: string, value: unknown, limit: number) => safeArray(value).slice(0, limit).map((row, index) => stage33CompactRecord(kind, row, index));
   return {
     appMap: {
-      today: 'Dziś: priorytety, zadania, terminy, skróty pracy i szkice AI do sprawdzenia.',
-      leads: 'Leady: kontakty sprzedażowe przed przejściem do klienta/sprawy.',
-      clients: 'Klienci: kartoteka osób i firm oraz przejście do aktywnych spraw.',
-      cases: 'Sprawy: obsługa procesu po sprzedaży lub przyjęciu zlecenia.',
+      today: 'Dzi\u015B: priorytety, zadania, terminy, skr\u00F3ty pracy i szkice AI do sprawdzenia.',
+      leads: 'Leady: kontakty sprzeda\u017Cowe przed przej\u015Bciem do klienta/sprawy.',
+      clients: 'Klienci: kartoteka os\u00F3b i firm oraz przej\u015Bcie do aktywnych spraw.',
+      cases: 'Sprawy: obs\u0142uga procesu po sprzeda\u017Cy lub przyj\u0119ciu zlecenia.',
       tasks: 'Zadania: rzeczy do wykonania, statusy, terminy, priorytety.',
-      calendar: 'Kalendarz: wydarzenia, spotkania i plan najbliższych dni.',
-      aiDrafts: 'Szkice AI: robocze zapisy do ręcznego zatwierdzenia.',
+      calendar: 'Kalendarz: wydarzenia, spotkania i plan najbli\u017Cszych dni.',
+      aiDrafts: 'Szkice AI: robocze zapisy do r\u0119cznego zatwierdzenia.',
       notifications: 'Powiadomienia: alerty i przypomnienia.',
-      billing: 'Rozliczenia: plan, trial, płatności.',
+      billing: 'Rozliczenia: plan, trial, p\u0142atno\u015Bci.',
       settings: 'Ustawienia: profil, aplikacja, PWA, preferencje i konfiguracje.',
     },
     counts: {
@@ -242,15 +242,15 @@ function stage33BuildCompactSnapshot(context: Record<string, unknown>) {
 function stage33SemanticRouterPrompt(rawText: string, context: Record<string, unknown>, nowIso: string) {
   const snapshot = stage33BuildCompactSnapshot(context);
   return [
-    'Jesteś semantycznym operatorem danych aplikacji CloseFlow.',
-    'Nie jesteś słownikiem fraz. Nie dopasowuj gotowych pytań do gotowych odpowiedzi.',
-    'Zrozum intencję użytkownika dowolnie sformułowaną po polsku, utwórz plan zapytania, użyj WYŁĄCZNIE danych z JSON i odpowiedz krótko.',
-    'Jeżeli pytanie dotyczy zapisu/utworzenia rekordu, nie twórz finalnego rekordu. Zwróć canAnswer=false, bo zapis obsługują Szkice AI.',
-    'Jeżeli nie da się odpowiedzieć z danych aplikacji, zwróć canAnswer=false.',
-    'Zwróć tylko poprawny JSON bez markdown. Kształt:',
+    'Jeste\u015B semantycznym operatorem danych aplikacji CloseFlow.',
+    'Nie jeste\u015B s\u0142ownikiem fraz. Nie dopasowuj gotowych pyta\u0144 do gotowych odpowiedzi.',
+    'Zrozum intencj\u0119 u\u017Cytkownika dowolnie sformu\u0142owan\u0105 po polsku, utw\u00F3rz plan zapytania, u\u017Cyj WY\u0141\u0104CZNIE danych z JSON i odpowiedz kr\u00F3tko.',
+    'Je\u017Celi pytanie dotyczy zapisu/utworzenia rekordu, nie tw\u00F3rz finalnego rekordu. Zwr\u00F3\u0107 canAnswer=false, bo zapis obs\u0142uguj\u0105 Szkice AI.',
+    'Je\u017Celi nie da si\u0119 odpowiedzie\u0107 z danych aplikacji, zwr\u00F3\u0107 canAnswer=false.',
+    'Zwr\u00F3\u0107 tylko poprawny JSON bez markdown. Kszta\u0142t:',
     '{"canAnswer":true,"intent":"global_app_search|today_briefing|lead_lookup|unknown","title":"...","summary":"...","items":[{"label":"...","detail":"...","href":"/tasks","priority":"low|medium|high"}],"warnings":[]}',
     'Dzisiaj/teraz ISO: ' + nowIso,
-    'Pytanie użytkownika: ' + rawText,
+    'Pytanie u\u017Cytkownika: ' + rawText,
     'Snapshot aplikacji JSON:',
     JSON.stringify(snapshot),
   ].join('\n');
@@ -301,8 +301,8 @@ async function tryStage33SemanticAiAnswer(context: Record<string, unknown>, rawT
   const json = generated?.json;
   if (!json || json.canAnswer !== true) return null;
 
-  const title = asText(json.title) || 'Odpowiedź z danych aplikacji';
-  const summary = asText(json.summary || json.answer) || 'Sprawdziłem dane aplikacji.';
+  const title = asText(json.title) || 'Odpowied\u017A z danych aplikacji';
+  const summary = asText(json.summary || json.answer) || 'Sprawdzi\u0142em dane aplikacji.';
 
   return {
     ok: true,

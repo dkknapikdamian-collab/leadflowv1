@@ -13,10 +13,10 @@ function read(file) {
 
 test('Stage22 keeps Billing compatible with UI and release gate payment labels', () => {
   const page = read(billingPath);
-  assert.match(page, /Płatność kartą lub BLIK/);
+  assert.match(page, /P\u0142atno\u015B\u0107 kart\u0105 lub BLIK/);
   assert.match(page, /Stripe\/BLIK/);
-  assert.match(page, /Błąd uruchamiania płatności Stripe\/BLIK/);
-  assert.doesNotMatch(page, /Błąd uruchamiania płatności Stripe BLIK/);
+  assert.match(page, /B\u0142\u0105d uruchamiania p\u0142atno\u015Bci Stripe\/BLIK/);
+  assert.doesNotMatch(page, /B\u0142\u0105d uruchamiania p\u0142atno\u015Bci Stripe BLIK/);
 });
 
 test('Stage22 docs exist and keep encoding clean', () => {

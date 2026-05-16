@@ -5,7 +5,7 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 function read(p) { return fs.readFileSync(path.join(root, p), 'utf8'); }
 const legacyTokens = [
-  ['Leady do ', 'spięcia'].join(''),
+  ['Leady do ', 'spi\u0119cia'].join(''),
   ['Brak klienta albo sprawy przy aktywnym ', 'temacie'].join(''),
   ['data-clients-lead-', 'attention-rail'].join(''),
   ['clients-lead-', 'attention-card'].join(''),

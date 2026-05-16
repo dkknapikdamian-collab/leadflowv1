@@ -77,7 +77,7 @@ function assertRoadmapGuardSection() {
 
   const missing = requiredDocSnippets.filter((snippet) => !doc.includes(snippet));
   if (missing.length > 0) {
-    fail('Dokument nie zawiera pełnej sekcji Guardy dla pakietu.', missing);
+    fail('Dokument nie zawiera pe\u0142nej sekcji Guardy dla pakietu.', missing);
   }
 }
 
@@ -88,7 +88,7 @@ function assertRequiredChecksExist() {
     .map(({ name }) => name);
 
   if (missing.length > 0) {
-    fail('Brakuje jednego lub więcej guardów składowych.', missing);
+    fail('Brakuje jednego lub wi\u0119cej guard\u00F3w sk\u0142adowych.', missing);
   }
 }
 
@@ -103,11 +103,11 @@ function runCheck(name) {
   });
 
   if (result.error) {
-    fail(`Nie udało się uruchomić guardu: ${name}`, [String(result.error.message || result.error)]);
+    fail(`Nie uda\u0142o si\u0119 uruchomi\u0107 guardu: ${name}`, [String(result.error.message || result.error)]);
   }
 
   if (result.status !== 0) {
-    fail(`Guard składowy zakończył się błędem: ${name}`, [`exit code: ${result.status}`]);
+    fail(`Guard sk\u0142adowy zako\u0144czy\u0142 si\u0119 b\u0142\u0119dem: ${name}`, [`exit code: ${result.status}`]);
   }
 }
 

@@ -26,7 +26,7 @@ test('Stage85 task dialog accepts relation context instead of local simplified f
   assert.ok(taskDialog.includes('leadId: context?.leadId || undefined'));
   assert.ok(taskDialog.includes('caseId: context?.caseId || undefined'));
   assert.ok(taskDialog.includes('clientId: context?.clientId || undefined'));
-  assert.match(taskDialog, /Powiązanie:/);
+  assert.match(taskDialog, /Powi\u0105zanie:/);
 });
 
 test('Stage85 guards do not store mojibake literals', () => {

@@ -24,10 +24,10 @@ test('Stage30 lead trash view uses strict trash visibility only', () => {
 test('Stage30 clients trash helper copy is removed', () => {
   const clients = read('src/pages/Clients.tsx');
 
-  assert.doesNotMatch(clients, /To jest kosz klientów\./);
-  assert.doesNotMatch(clients, /Rekordy są ukryte z aktywnej listy, ale nadal można je przywrócić\./);
+  assert.doesNotMatch(clients, /To jest kosz klient\u00F3w\./);
+  assert.doesNotMatch(clients, /Rekordy s\u0105 ukryte z aktywnej listy, ale nadal mo\u017Cna je przywr\u00F3ci\u0107\./);
   assert.match(clients, /STAGE30_CLIENTS_TRASH_COPY_REMOVED/);
-  assert.match(clients, /Kosz klientów jest pusty\./);
+  assert.match(clients, /Kosz klient\u00F3w jest pusty\./);
 });
 
 test('Stage30 contract is included in release gates', () => {

@@ -21,7 +21,7 @@ function notContains(rel, needle){
   if(!text.includes(needle)) { pass(rel + ' does not contain ' + needle); return true; }
   fail(rel + ' still contains ' + needle); return false;
 }
-function line(rel, label){ return '- `' + rel + '` â€” ' + label; }
+function line(rel, label){ return '- `' + rel + '` \u00E2\u20AC\u201D ' + label; }
 
 for (const rel of [
   'src/lib/context-action-contract.ts',
@@ -57,23 +57,23 @@ contains('src/components/EventCreateDialog.tsx', 'insertEventToSupabase');
 if(failed) process.exit(1);
 
 const evidence = [
-  '# Stage19 â€” context action route map evidence',
+  '# Stage19 \u00E2\u20AC\u201D context action route map evidence',
   '',
   `Marker: ${STAGE}`,
   '',
   '## Cel',
   '',
-  'Stage19 dokumentuje mapÄ™ tras i miejsc wywoĹ‚ania wspĂłlnego hosta akcji kontekstowych dla task/event/note.',
+  'Stage19 dokumentuje map\u0119 tras i miejsc wywo\u0142ania wsp\u00F3lnego hosta akcji kontekstowych dla task/event/note.',
   '',
   '## Mapa routingu akcji',
   '',
-  line('src/lib/context-action-contract.ts', 'centralny kontrakt typĂłw `task`, `event`, `note`, targetĂłw zapisu i relacji.'),
-  line('src/components/ContextActionDialogs.tsx', 'jeden host dialogĂłw, obsĹ‚uga explicit trigger i legacy fallback.'),
-  line('src/pages/LeadDetail.tsx', 'routing akcji przez `openContextQuickAction`, bez bezpoĹ›rednich importĂłw task/event dialogĂłw.'),
-  line('src/pages/ClientDetail.tsx', 'routing akcji przez `openContextQuickAction`, bez bezpoĹ›rednich importĂłw task/event dialogĂłw.'),
-  line('src/pages/CaseDetail.tsx', 'routing akcji przez `openContextQuickAction`, bez bezpoĹ›rednich importĂłw task/event dialogĂłw.'),
+  line('src/lib/context-action-contract.ts', 'centralny kontrakt typ\u00F3w `task`, `event`, `note`, target\u00F3w zapisu i relacji.'),
+  line('src/components/ContextActionDialogs.tsx', 'jeden host dialog\u00F3w, obs\u0142uga explicit trigger i legacy fallback.'),
+  line('src/pages/LeadDetail.tsx', 'routing akcji przez `openContextQuickAction`, bez bezpo\u015Brednich import\u00F3w task/event dialog\u00F3w.'),
+  line('src/pages/ClientDetail.tsx', 'routing akcji przez `openContextQuickAction`, bez bezpo\u015Brednich import\u00F3w task/event dialog\u00F3w.'),
+  line('src/pages/CaseDetail.tsx', 'routing akcji przez `openContextQuickAction`, bez bezpo\u015Brednich import\u00F3w task/event dialog\u00F3w.'),
   '',
-  '## DowĂłd runtime contract',
+  '## Dow\u00F3d runtime contract',
   '',
   '- task zapisuje przez `TaskCreateDialog` / `insertTaskToSupabase`.',
   '- event zapisuje przez `EventCreateDialog` / `insertEventToSupabase`.',
@@ -81,7 +81,7 @@ const evidence = [
   '',
   '## Kryterium',
   '',
-  'Nie ma osobnych fizycznych dialogĂłw task/event na stronach detail. Wszystkie strony idÄ… przez jeden host i jeden kontrakt.',
+  'Nie ma osobnych fizycznych dialog\u00F3w task/event na stronach detail. Wszystkie strony id\u0105 przez jeden host i jeden kontrakt.',
   ''
 ].join('\n');
 fs.mkdirSync(path.join(root, 'docs/release'), { recursive: true });

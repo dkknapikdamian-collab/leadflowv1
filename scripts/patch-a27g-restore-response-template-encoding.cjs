@@ -58,8 +58,8 @@ page = page.replace(
   "import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags } from 'lucide-react';",
 );
 
-page = page.replace("toast.success('Usunięto szablon.');", "toast.success('Zarchiwizowano szablon.');");
-page = page.replace('Nie udało się usunąć:', 'Nie udało się zarchiwizować:');
+page = page.replace("toast.success('Usuni\u0119to szablon.');", "toast.success('Zarchiwizowano szablon.');");
+page = page.replace('Nie uda\u0142o si\u0119 usun\u0105\u0107:', 'Nie uda\u0142o si\u0119 zarchiwizowa\u0107:');
 page = page.replace('text-rose-500 hover:bg-rose-500/10 hover:text-rose-500', 'text-amber-600 hover:bg-amber-500/10 hover:text-amber-700');
 page = page.replace('<Trash2 className="h-4 w-4" />', '<Archive className="h-4 w-4" />');
 

@@ -1,4 +1,4 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 
@@ -12,7 +12,7 @@ assert.match(digestHandler, /cronSecretConfigured/, 'Digest diagnostics must exp
 assert.match(digestHandler, /if \(!cronSecret\) return false/, 'Digest manual route must require CRON_SECRET');
 assert.match(digestHandler, /canSend/, 'Digest diagnostics must expose canSend truth');
 assert.match(settings, /Digest wymaga konfiguracji/, 'Settings must show digest configuration truth');
-assert.match(notificationsCenter, /Digest działa tylko po konfiguracji/, 'Notifications center must not claim digest always active');
+assert.match(notificationsCenter, /Digest dzia\u0142a tylko po konfiguracji/, 'Notifications center must not claim digest always active');
 assert.match(systemApi, /kind === 'weekly-report'/, 'System API must route weekly report handler');
 
 console.log('PASS check:digest-env-truth');

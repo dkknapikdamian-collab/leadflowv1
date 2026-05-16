@@ -45,8 +45,8 @@ function sections(source) {
 const leadDetail = read(leadDetailPath);
 const helper = read(helperPath);
 
-if (!leadDetail.includes("../lib/activity-timeline")) fail('LeadDetail nie importuje wspólnego formattera activity-timeline.');
-if (!leadDetail.includes('getActivityTimelineTitle') || !leadDetail.includes('getActivityTimelineDescription')) fail('LeadDetail nie używa wspólnego formattera historii.');
+if (!leadDetail.includes("../lib/activity-timeline")) fail('LeadDetail nie importuje wsp\u00F3lnego formattera activity-timeline.');
+if (!leadDetail.includes('getActivityTimelineTitle') || !leadDetail.includes('getActivityTimelineDescription')) fail('LeadDetail nie u\u017Cywa wsp\u00F3lnego formattera historii.');
 if (leadDetail.includes('<LeadAiNextAction')) fail('LeadDetail nadal renderuje kafelek LeadAiNextAction / centrum pracy AI w JSX.');
 if (!leadDetail.includes('<LeadAiFollowupDraft')) fail('LeadDetail nie renderuje bezpiecznego szkicu follow-up draft-only.');
 
@@ -60,8 +60,8 @@ for (const required of [
   'getActivityTimelineDescription',
   'normalizeActivityTimelineItem',
   'Zmieniono status',
-  'Dodano notatkę',
-  'Wpłata',
+  'Dodano notatk\u0119',
+  'Wp\u0142ata',
   'Zadanie',
   'Wydarzenie',
 ]) {

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -23,7 +23,7 @@ test('STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP: note action is restored in create ac
   expectIncludes(page, 'const openCaseNoteDialog = () =>', 'note dialog helper');
   expectIncludes(page, 'setIsAddNoteOpen(true)', 'note modal opener');
   expectIncludes(page, 'pendingNoteFollowUp', 'Stage59 follow-up prompt retained');
-  expectNotIncludes(page, 'Zadania, wydarzenia, braki i notatki powiązane ze sprawą.', 'duplicated helper copy');
+  expectNotIncludes(page, 'Zadania, wydarzenia, braki i notatki powi\u0105zane ze spraw\u0105.', 'duplicated helper copy');
   expectNotIncludes(page, 'Zadania, wydarzenia, braki i notatki powiazane ze sprawa.', 'duplicated helper copy without diacritics');
 
   const panelIndex = page.indexOf('data-case-create-actions-panel="true"');
@@ -31,7 +31,7 @@ test('STAGE61_CASE_NOTE_ACTION_BUTTON_SWAP: note action is restored in create ac
   assert.ok(noteIndex > panelIndex, 'note action should be placed inside/after the create actions panel');
   assert.ok(countIn(page, 'openCaseNoteDialog') >= 2, 'note dialog helper and at least one UI action should remain');
 
-  const headerIndex = page.indexOf('Najważniejsze działania');
+  const headerIndex = page.indexOf('Najwa\u017Cniejsze dzia\u0142ania');
   const workListIndex = page.indexOf('data-case-work-list');
   if (headerIndex >= 0 && workListIndex > headerIndex) {
     const headerSlice = page.slice(headerIndex, workListIndex);

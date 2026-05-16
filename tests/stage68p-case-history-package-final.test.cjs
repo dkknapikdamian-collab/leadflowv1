@@ -20,12 +20,12 @@ function getBlock() {
 test('STAGE68P: case history copy is clean UTF-8 passive Polish', () => {
   const block = getBlock();
   assert.match(block, /Dodano brak: \$\{title\}/);
-  assert.match(block, /Dodano decyzję: \$\{title\}/);
-  assert.match(block, /Dodano notatkę/);
-  assert.match(block, /Przełożono zadanie/);
-  assert.match(block, /Rozpoczęto realizację sprawy/);
-  assert.doesNotMatch(block, /â|Ä|Ĺ|Ă|ď|�/);
-  assert.doesNotMatch(block, /\$\{actor\}|Ty dodał|Ty podjął/);
+  assert.match(block, /Dodano decyzj\u0119: \$\{title\}/);
+  assert.match(block, /Dodano notatk\u0119/);
+  assert.match(block, /Prze\u0142o\u017Cono zadanie/);
+  assert.match(block, /Rozpocz\u0119to realizacj\u0119 sprawy/);
+  assert.doesNotMatch(block, /\u00E2|\u00c4|\u0139|\u0102|\u010F|\ufffd/);
+  assert.doesNotMatch(block, /\$\{actor\}|Ty doda\u0142|Ty podj\u0105\u0142/);
 });
 
 test('STAGE68P: package.json is machine-safe and verify uses only final Stage68 guard', () => {

@@ -29,8 +29,8 @@ assert.match(meApi, /TRIAL_DAYS/);
 assert.match(useWorkspace, /trial_21d/);
 
 assert.match(billing, /21/);
-assert.match(billing, /5 aktywnych zadań\/wydarzeń/);
-assert.match(billing, /30\/dzień i 300\/miesiąc/);
+assert.match(billing, /5 aktywnych zada\u0144\/wydarze\u0144/);
+assert.match(billing, /30\/dzie\u0144 i 300\/miesi\u0105c/);
 
 assert.match(accessGateComponent, /isPlanFeatureEnabled/);
 assert.match(workspaceSubscriptionApi, /workspace-subscription/);

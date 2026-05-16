@@ -21,8 +21,8 @@ test('AiDrafts can approve drafts into final records manually through safe helpe
   const page = read('src/pages/AiDrafts.tsx');
 
   assert.match(page, /AI_DRAFT_APPROVAL_TO_FINAL_RECORD_STAGE03/);
-  assert.match(page, /Przejrzyj i zatwierdź/);
-  assert.match(page, /Zatwierdź szkic jako finalny rekord/);
+  assert.match(page, /Przejrzyj i zatwierd\u017A/);
+  assert.match(page, /Zatwierd\u017A szkic jako finalny rekord/);
   assert.match(page, /createLeadFromAiDraftApprovalInSupabase/);
   assert.match(page, /insertTaskToSupabase/);
   assert.match(page, /insertEventToSupabase/);
@@ -34,7 +34,7 @@ test('AiDrafts can approve drafts into final records manually through safe helpe
 test('AI draft approval keeps manual confirmation rule', () => {
   const page = read('src/pages/AiDrafts.tsx');
 
-  assert.match(page, /Utwórz rekord/);
+  assert.match(page, /Utw\u00F3rz rekord/);
   assert.match(page, /approvalSaving/);
   assert.match(page, /handleApproveDraftToRecord/);
   assert.doesNotMatch(page, /useEffect\([^)]*handleApproveDraftToRecord/s);

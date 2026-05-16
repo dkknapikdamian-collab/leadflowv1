@@ -173,7 +173,7 @@ if (!client.includes('renderClientNextActionContextStage14B(clientNextAction)'))
       break;
     }
   }
-  if (!patched) throw new Error('Nie znaleziono renderu clientNextAction.subtitle do dopięcia kontekstu.');
+  if (!patched) throw new Error('Nie znaleziono renderu clientNextAction.subtitle do dopi\u0119cia kontekstu.');
 }
 
 const cssBlock = `

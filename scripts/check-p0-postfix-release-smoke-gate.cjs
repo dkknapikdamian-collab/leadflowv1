@@ -59,9 +59,9 @@ assertIncludes('api/leads.ts', "await requireScopedRow('leads'", 'lead API scope
 
 // P0: AI must remain read/draft-only, not direct-write.
 assertIncludes('src/server/ai-application-operator.ts', 'AI_APP_CONTEXT_OPERATOR_STAGE26', 'AI application operator marker');
-assertIncludes('src/server/ai-application-operator.ts', 'Nie znalazłem tego w danych aplikacji.', 'AI no-hallucination fallback');
+assertIncludes('src/server/ai-application-operator.ts', 'Nie znalaz\u0142em tego w danych aplikacji.', 'AI no-hallucination fallback');
 assertIncludes('src/server/ai-application-operator.ts', 'noAutoWrite: true', 'AI no-auto-write contract');
-assertIncludes('src/server/ai-application-operator.ts', 'Z komendą zapisu utwórz szkic do sprawdzenia, nigdy finalny rekord.', 'AI draft-only instruction');
+assertIncludes('src/server/ai-application-operator.ts', 'Z komend\u0105 zapisu utw\u00F3rz szkic do sprawdzenia, nigdy finalny rekord.', 'AI draft-only instruction');
 
 // Vercel Hobby/API consolidation guard. Parse JSON instead of matching fragile formatting.
 assertMissing('api/assistant.ts');

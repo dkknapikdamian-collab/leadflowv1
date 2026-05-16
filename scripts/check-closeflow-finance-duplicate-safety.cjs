@@ -17,7 +17,7 @@ function mustNot(text, needle, label) {
   else fail(label + ' [forbidden=' + needle + ']');
 }
 
-const copy = 'Ten klient może mieć duplikat. Upewnij się, że dodajesz wpłatę do właściwego rekordu.';
+const copy = 'Ten klient mo\u017Ce mie\u0107 duplikat. Upewnij si\u0119, \u017Ce dodajesz wp\u0142at\u0119 do w\u0142a\u015Bciwego rekordu.';
 
 const lib = read('src/lib/finance/finance-duplicate-safety.ts');
 must(lib, 'CLOSEFLOW_FIN9_FINANCE_DUPLICATE_SAFETY_V1', 'duplicate safety marker');
@@ -39,7 +39,7 @@ must(paymentForm, 'FinanceDuplicateCandidate', 'PaymentFormDialog accepts duplic
 must(paymentForm, 'duplicateCandidates?: FinanceDuplicateCandidate[]', 'PaymentFormDialog prop duplicateCandidates');
 must(paymentForm, 'duplicateWarningCopy?: string', 'PaymentFormDialog prop duplicateWarningCopy');
 must(paymentForm, 'data-fin9-payment-duplicate-warning="true"', 'PaymentFormDialog renders warning data marker');
-must(paymentForm, 'Możliwy duplikat klienta', 'PaymentFormDialog warning title');
+must(paymentForm, 'Mo\u017Cliwy duplikat klienta', 'PaymentFormDialog warning title');
 must(paymentForm, 'duplicateWarningCopy', 'PaymentFormDialog renders shared warning copy');
 mustNot(paymentForm, 'disabled={duplicateCandidates', 'PaymentFormDialog does not block submit by duplicate warning');
 
@@ -66,7 +66,7 @@ if (/(#[0-9a-fA-F]{3,8}\b|rgba?\s*\()/g.test(css)) fail('finance CSS has no raw 
 else pass('finance CSS has no raw rgb/rgba/hex colors');
 
 const doc = read('docs/finance/CLOSEFLOW_FIN9_FINANCE_DUPLICATE_SAFETY_2026-05-10.md');
-must(doc, 'Nie blokować. Ostrzegać.', 'FIN-9 doc states warning-only rule');
+must(doc, 'Nie blokowa\u0107. Ostrzega\u0107.', 'FIN-9 doc states warning-only rule');
 must(doc, copy, 'FIN-9 doc includes exact UX copy');
 
 const failed = checks.filter((item) => !item.ok);

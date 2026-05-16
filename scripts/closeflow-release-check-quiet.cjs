@@ -1,3 +1,17 @@
+// STAGE98B_MOJIBAKE_PREFLIGHT_V22_START
+{
+  const { spawnSync } = require('node:child_process');
+  const result = spawnSync(process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs'], { stdio: 'inherit' });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+// STAGE98B_MOJIBAKE_PREFLIGHT_V22_END
+/* STAGE98B_MOJIBAKE_PREFLIGHT_V20_START */
+{
+  const { spawnSync } = require('node:child_process');
+  const stage98bResult = spawnSync(process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs'], { stdio: 'inherit' });
+  if (stage98bResult.status !== 0) process.exit(stage98bResult.status || 1);
+}
+/* STAGE98B_MOJIBAKE_PREFLIGHT_V20_END */
 /* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
 {
   const { spawnSync } = require('node:child_process');
@@ -10,6 +24,17 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
+
+/* STAGE98B_MOJIBAKE_PREFLIGHT_QUIET_GATE */
+{
+  const result = spawnSync(process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs'], {
+    cwd: repoRoot,
+    stdio: 'inherit',
+  });
+  if (result.status !== 0) process.exit(result.status || 1);
+}
+/* STAGE98B_MOJIBAKE_PREFLIGHT_QUIET_GATE_END */
+
 
 const requiredTests = [
   'tests/stage79-release-gate-mass-guard.test.cjs',
@@ -218,6 +243,10 @@ runQuiet('today mobile tile focus', process.execPath, ['scripts/check-closeflow-
 
 runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-trash-actions.cjs']);
 
+
+// CLOSEFLOW_STAGE98B_MOJIBAKE_PREFLIGHT
+runQuiet('stage98 mojibake hard gate preflight', process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs']);
+
 // CLOSEFLOW_QUIET_GATE_VITE_BUILD_RUNNER_2026_05_13
 runQuiet('production build', process.execPath, ['scripts/closeflow-vite-build-runner.mjs']);
 
@@ -227,8 +256,3 @@ for (const relativePath of requiredTests) {
 
 console.log('');
 console.log('CloseFlow quiet release gate passed.');
-
-
-
-
-

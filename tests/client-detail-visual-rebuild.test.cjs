@@ -24,7 +24,7 @@ const requiredPage = [
   'Klienci /',
   'Zapytaj AI',
   '+ Nowa sprawa',
-  'Otwórz główną sprawę',
+  'Otw\u00F3rz g\u0142\u00F3wn\u0105 spraw\u0119',
   'Telefon',
   'E-mail',
   'Sprawy',
@@ -33,8 +33,8 @@ const requiredPage = [
   'Relacje klienta',
   'Historia pozyskania',
   'Szybkie akcje',
-  'Krótka notatka',
-  'Dodaj notatkę',
+  'Kr\u00F3tka notatka',
+  'Dodaj notatk\u0119',
   'Edytuj dane kontaktowe',
 ];
 
@@ -87,4 +87,3 @@ for (const marker of markerChars) {
 }
 
 console.log('PASS client detail visual rebuild');
-

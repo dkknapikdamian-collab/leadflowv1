@@ -26,8 +26,8 @@ const required = [
   'const openLinkedTaskEditor',
   'Dodawaj dalsze zadania w sprawie',
   'Dodawaj dalsze wydarzenia w sprawie',
-  'Ten temat jest już w obsłudze',
-  'Otwórz sprawę',
+  'Ten temat jest ju\u017C w obs\u0142udze',
+  'Otw\u00F3rz spraw\u0119',
   'navigate(`/case/${startServiceSuccess.caseId}`);',
 ];
 
@@ -38,11 +38,11 @@ for (const token of forbidden) {
 }
 
 for (const token of required) {
-  if (!source.includes(token)) errors.push(`LeadDetail utracił wymagany kontrakt: ${token}`);
+  if (!source.includes(token)) errors.push(`LeadDetail utraci\u0142 wymagany kontrakt: ${token}`);
 }
 
 if (source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);')) {
-  errors.push('LeadDetail nie może kierować po starcie obsługi do /cases/:id.');
+  errors.push('LeadDetail nie mo\u017Ce kierowa\u0107 po starcie obs\u0142ugi do /cases/:id.');
 }
 
 if (errors.length) {
@@ -51,4 +51,4 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log('FIN-15 check passed: lead nie obsługuje finansów sprawy i kieruje pracę do sprawy.');
+console.log('FIN-15 check passed: lead nie obs\u0142uguje finans\u00F3w sprawy i kieruje prac\u0119 do sprawy.');

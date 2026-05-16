@@ -22,15 +22,15 @@ const requiredPage = [
   'EVENT_FORM_VISUAL_REBUILD_STAGE22',
   'Nowe wydarzenie',
   'Edytuj wydarzenie',
-  'Tytuł',
+  'Tytu\u0142',
   'Data',
   'Start',
   'Koniec',
-  'Powiązanie',
+  'Powi\u0105zanie',
   'Zapisz wydarzenie',
-  'Podaj tytuł wydarzenia.',
-  'Wybierz poprawną datę.',
-  'Godzina zakończenia nie może być przed startem.',
+  'Podaj tytu\u0142 wydarzenia.',
+  'Wybierz poprawn\u0105 dat\u0119.',
+  'Godzina zako\u0144czenia nie mo\u017Ce by\u0107 przed startem.',
 ];
 
 for (const needle of requiredPage) {

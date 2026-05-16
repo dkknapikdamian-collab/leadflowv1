@@ -70,7 +70,7 @@ for (const prop of ['onEdit={', 'onShift={', 'onShiftHours={', 'onComplete={', '
 ok('selected-day panel uses full ScheduleEntryCard with edit/shift/complete/delete actions');
 
 if (!calendar.includes('data-cf-entry-title="true"')) fail('ScheduleEntryCard does not expose data-cf-entry-title="true"');
-for (const label of ['Edytuj', '+1D', '+1W', '+1H', 'Usuń']) {
+for (const label of ['Edytuj', '+1D', '+1W', '+1H', 'Usu\u0144']) {
   if (!calendar.includes(label)) fail(`Calendar action label missing: ${label}`);
 }
 ok('entry title marker and action labels exist');

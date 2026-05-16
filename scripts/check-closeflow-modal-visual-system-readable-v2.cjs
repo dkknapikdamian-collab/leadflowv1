@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const root = process.cwd();
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
-const fail = (msg) => { console.error('✖ ' + msg); process.exit(1); };
+const fail = (msg) => { console.error('\u2716 ' + msg); process.exit(1); };
 const css = read('src/styles/closeflow-modal-visual-system.css');
 const dialog = read('src/components/ui/dialog.tsx');
 
@@ -35,4 +35,4 @@ const dialog = read('src/components/ui/dialog.tsx');
 
 if (!dialog.includes('data-closeflow-modal-visual-system="true"')) fail('dialog marker missing');
 if (!dialog.includes('cf-modal-surface')) fail('dialog surface class missing');
-console.log('✔ CLOSEFLOW_MODAL_VISUAL_SYSTEM_READABLE_V2 guard passed');
+console.log('\u2714 CLOSEFLOW_MODAL_VISUAL_SYSTEM_READABLE_V2 guard passed');

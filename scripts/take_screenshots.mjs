@@ -27,4 +27,3 @@ for (const entry of pages) {
 }
 
 await browser.close();
-

@@ -130,3 +130,137 @@ DECYZJA: restore completed event visual class contract in ScheduleEntryCard inst
 
 ### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
 Decision: after failed Stage101 iterations, recover only proven Stage98/99/100 scope from clean HEAD. Stage101 remains out of scope.
+
+
+## Stage98B V5 - Polish mojibake hard gate - 2026-05-16
+
+STATUS: prepared by ZIP package.
+
+FACTS:
+- V3 guard reached a real repo-wide scan and found mojibake in multiple scripts/tests plus active UI files.
+- Calendar-only repair was not enough.
+- Stage98B V5 uses an ASCII-only PowerShell runner and a Node repair helper.
+
+DECISION:
+- Mojibake in `src`, `tests`, `scripts` and `_project` is a local release blocker.
+- Stage98 must run before the expensive build/Vercel path.
+
+FILES:
+- `src/**`, `tests/**`, `scripts/**`, `_project/**` repaired where needed.
+- `tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `scripts/closeflow-release-check-quiet.cjs`
+- `_project/runs/2026-05-16_stage98b_mojibake_hard_gate_v5.md`
+
+RISK:
+- Legacy repair/check scripts may contain old mojibake fixtures. V5 converts remaining literal banned markers in legacy scripts/tests to unicode escapes so `rg` and Stage98 stay clean without keeping bad bytes in repo.
+
+
+- V5 C1-control mojibake repair: handles leftover raw control-byte mojibake that V4 exposed in LeadDetail.tsx.
+
+
+## Stage98B V6 - Polish mojibake hard gate resume
+
+- Decision: mojibake cleanup is repo-wide, not Calendar-only.
+- Fix: V6 resumes over partial V4/V5 local changes, verifies package payloads before touching repo, installs the widened Stage98 guard, reruns the repair helper, updates project memory and Obsidian, and only then runs the release gate.
+- Test gate: `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs` plus `npm run verify:closeflow:quiet`.
+- Risk controlled: previous partial changes are committed only after full local gate passes.
+<!-- STAGE98B_V6_LEDGER -->
+
+
+## Stage98B V7 - Polish mojibake hard gate resume
+
+- Decision: mojibake cleanup is repo-wide, not Calendar-only.
+- Fix: V7 resumes over partial V4/V5 local changes, verifies package payloads before touching repo, installs the widened Stage98 guard, reruns the repair helper, updates project memory and Obsidian, and only then runs the release gate.
+- Test gate: `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs` plus `npm run verify:closeflow:quiet`.
+- Risk controlled: previous partial changes are committed only after full local gate passes.
+<!-- STAGE98B_V7_LEDGER -->
+
+
+## Stage98B V8 - Polish mojibake hard gate resume
+
+- Decision: mojibake cleanup is repo-wide, not Calendar-only.
+- Fix: V8 resumes over partial V4/V5 local changes, verifies package payloads before touching repo, installs the widened Stage98 guard, reruns the repair helper, updates project memory and Obsidian, and only then runs the release gate.
+- Test gate: `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs` plus `npm run verify:closeflow:quiet`.
+- Risk controlled: previous partial changes are committed only after full local gate passes.
+<!-- STAGE98B_V8_LEDGER -->
+
+- V8: Windows-safe git ProcessStartInfo wrapper; resume after V7 stderr warning failure.
+
+
+## Stage98B V9 - Polish mojibake hard gate resume
+
+- Decision: mojibake cleanup is repo-wide, not Calendar-only.
+- Fix: V9 resumes over partial V4/V5 local changes, verifies package payloads before touching repo, installs the widened Stage98 guard, reruns the repair helper, updates project memory and Obsidian, and only then runs the release gate.
+- Test gate: `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs` plus `npm run verify:closeflow:quiet`.
+- Risk controlled: previous partial changes are committed only after full local gate passes.
+<!-- STAGE98B_V9_LEDGER -->
+
+- V9: whitespace cleanup before git diff --check; resume after V8 real trailing-whitespace failure.
+
+<!-- STAGE98B_V10_LEDGER -->
+## 2026-05-16 - Stage98B V10 encoding gate ledger
+
+- Scope: repo-wide Polish mojibake/BOM cleanup and release-gate hardening.
+- Files touched by script: active changed text files under `src`, `tests`, `scripts`, `_project`, plus Stage98 guard and quiet gate.
+- Guard: `tests/stage98-polish-mojibake-calendar-guard.test.cjs`.
+- Verification: Stage98, changed JS syntax batch, `git diff --check`, `npm run verify:closeflow:quiet`.
+- Risk: wide cleanup can touch legacy guard fixtures; V10 uses escaped Unicode or proper UTF-8, not literal corrupted bytes.
+
+<!-- STAGE98B_V11_LEDGER -->
+## 2026-05-16 - Stage98B V11 encoding gate ledger
+
+- Scope: repo-wide Polish mojibake/BOM cleanup and release-gate hardening.
+- Files touched by script: active changed text files under `src`, `tests`, `scripts`, `tools`, `_project`, plus Stage98 guard and quiet gate.
+- Guard: `tests/stage98-polish-mojibake-calendar-guard.test.cjs`.
+- Verification: Stage98, changed JS syntax batch, `git diff --check`, `npm run verify:closeflow:quiet`.
+- Risk: wide cleanup can touch legacy guard fixtures; V11 escapes non-ASCII inside script/test JS sources to keep legacy fixture maps valid without literal mojibake/BOM-like glyphs.
+
+
+<!-- STAGE98B_V16_FINALIZER -->
+
+## Stage98B V16 mojibake hard gate finalizer
+
+- Status: package-run finalizer after V15 raw BOM regression in quiet gate.
+- Scope: repo-wide encoding hygiene, Stage98B preflight in quiet release gate, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: encoding hygiene must run after every generated write, especially after hardening quiet gate.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V17_SAFE_GUARD_FINALIZER -->
+
+## Stage98B V17 safe guard finalizer
+
+- Status: resume-safe finalizer after V16 false-positive guard corruption.
+- Scope: safe ASCII Stage98B guard, repo-wide encoding hygiene, quiet release gate preflight, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: Stage98 guard must not contain literal bad fragments that hygiene can erase into empty strings.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V18_SAFE_GUARD_FINALIZER -->
+
+## Stage98B V18 safe guard finalizer
+
+- Status: resume-safe finalizer after V16 false-positive guard corruption.
+- Scope: safe ASCII Stage98B guard, repo-wide encoding hygiene, quiet release gate preflight, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: Stage98 guard must not contain literal bad fragments that hygiene can erase into empty strings.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V19_LEDGER -->
+## Stage98B V19
+- Fix class: src files must not contain Node test scaffolds.
+- Tests: Stage98B, broad syntax, billing regression, git diff, quiet gate.
+
+
+<!-- STAGE98B_V20_LEDGER -->
+## Stage98B V20
+- Fix class: contaminated src files are restored from origin/dev-rollout-freeze or HEAD, then rechecked.
+- Tests: Stage98B, src scaffold hard scan, broad syntax, billing regression, git diff, quiet gate.
+
+
+## STAGE98B_V21_REMOTE_BILLING_RESTORE
+
+- Status: prepared by V21 package.
+- Scope: Stage98B mojibake hard gate plus clean Billing.tsx restoration from remote branch.
+- Tests: Stage98B, src test-scaffold scan, billing regression, broad syntax sweep, git diff --check, quiet gate.
+- Risk: local repo had many dirty leftovers from failed packages; V21 excludes backups/logs/stage98 helpers from commit.

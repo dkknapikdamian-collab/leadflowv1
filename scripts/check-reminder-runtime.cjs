@@ -1,4 +1,4 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 const assert = require('node:assert/strict');
 
@@ -18,8 +18,8 @@ assert.match(runtime, /liveNotificationsEnabled/, 'NotificationRuntime must supp
 assert.match(center, /setNotificationSnoozeCustom/, 'NotificationsCenter must support custom snooze');
 assert.match(center, /onSnoozeCustom/, 'NotificationsCenter must expose custom date snooze action');
 assert.match(settings, /Powiadomienia in-app/, 'Settings must expose in-app notifications toggle');
-assert.match(settings, /Domyślne przypomnienie \(min\)/, 'Settings must expose default reminder minutes');
-assert.match(settings, /Domyślne odłożenie \(min\)/, 'Settings must expose default snooze minutes');
+assert.match(settings, /Domy\u015Blne przypomnienie \(min\)/, 'Settings must expose default reminder minutes');
+assert.match(settings, /Domy\u015Blne od\u0142o\u017Cenie \(min\)/, 'Settings must expose default snooze minutes');
 assert.match(notifications, /buildAdditionalReminderItems/, 'Notification builder must include reminder extensions');
 
 console.log('PASS check:reminder-runtime');

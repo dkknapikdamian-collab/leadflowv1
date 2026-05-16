@@ -6,7 +6,7 @@ const path = require('path');
 const root = process.cwd();
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 const fail = (message) => {
-  console.error('✖ ' + message);
+  console.error('\u2716 ' + message);
   process.exit(1);
 };
 
@@ -22,13 +22,13 @@ const fallback = read('src/lib/supabase-fallback.ts');
   'async function handleDeleteCase()',
   'await deleteCaseWithRelations(caseId);',
   'await refreshCases();',
-  "toast.success('Sprawa została usunięta.');",
-  "toast.error(hasRelationBlocker ? 'Nie można usunąć sprawy, bo ma powiązane działania.' : 'Nie udało się usunąć sprawy.');",
+  "toast.success('Sprawa zosta\u0142a usuni\u0119ta.');",
+  "toast.error(hasRelationBlocker ? 'Nie mo\u017Cna usun\u0105\u0107 sprawy, bo ma powi\u0105zane dzia\u0142ania.' : 'Nie uda\u0142o si\u0119 usun\u0105\u0107 sprawy.');",
   'className="case-row-title-line"',
   'data-case-row-delete-action="true"',
   'cf-case-row-delete-text-action',
   '<Trash2 className="h-4 w-4" />',
-  'Usuń',
+  'Usu\u0144',
   'event.preventDefault();',
   'event.stopPropagation();',
   'setCaseToDelete(record);',
@@ -71,4 +71,4 @@ const fallback = read('src/lib/supabase-fallback.ts');
   if (!fallback.includes(needle)) fail('src/lib/supabase-fallback.ts missing: ' + needle);
 });
 
-console.log('✔ CLOSEFLOW_ETAP5_CASES_DELETE_FROM_LIST guard passed');
+console.log('\u2714 CLOSEFLOW_ETAP5_CASES_DELETE_FROM_LIST guard passed');

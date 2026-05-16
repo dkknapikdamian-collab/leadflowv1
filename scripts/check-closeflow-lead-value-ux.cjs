@@ -49,7 +49,7 @@ for (const [scope, text] of [[files.component, component], [files.css, css], [fi
 }
 
 section('LeadValuePanel contract');
-for (const needle of ['export function LeadValuePanel', 'Wartość i prowizja opcjonalnie', 'Wartość potencjalna', 'Model prowizji', 'Procent prowizji', 'Notatka finansowa', 'normalizeCommissionMode', 'calculateCommissionAmount']) {
+for (const needle of ['export function LeadValuePanel', 'Warto\u015B\u0107 i prowizja opcjonalnie', 'Warto\u015B\u0107 potencjalna', 'Model prowizji', 'Procent prowizji', 'Notatka finansowa', 'normalizeCommissionMode', 'calculateCommissionAmount']) {
   includes(files.component, component, needle, `Component contains ${needle}`);
 }
 notIncludes(files.component, component, 'fetch(', 'Component has no raw fetch');
@@ -95,7 +95,7 @@ for (const needle of ['leadValue', 'lead_value', 'leadPotentialValue', 'lead_pot
 }
 
 section('Documentation');
-for (const needle of ['Źródłem prawdy dla wyglądu', 'Nie tworzy lokalnej wyspy wizualnej', 'Leads.tsx', 'LeadDetail.tsx']) {
+for (const needle of ['\u0179r\u00F3d\u0142em prawdy dla wygl\u0105du', 'Nie tworzy lokalnej wyspy wizualnej', 'Leads.tsx', 'LeadDetail.tsx']) {
   includes(files.doc, doc, needle, `Doc contains ${needle}`);
 }
 

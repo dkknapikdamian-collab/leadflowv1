@@ -12,7 +12,7 @@ notContains('src/pages/ClientDetail.tsx', forbidden, 'marketing relation copy');
 contains('src/pages/ClientDetail.tsx', 'recentClientMovements', 'recent moves memo');
 contains('src/pages/ClientDetail.tsx', 'data-client-recent-moves-panel="true"', 'recent moves panel hook');
 contains('src/pages/ClientDetail.tsx', 'Ostatnie ruchy', 'recent moves title');
-contains('src/pages/ClientDetail.tsx', 'Zobacz całą aktywność', 'activity link copy');
+contains('src/pages/ClientDetail.tsx', 'Zobacz ca\u0142\u0105 aktywno\u015B\u0107', 'activity link copy');
 contains('src/pages/ClientDetail.tsx', 'to="/activity"', 'activity route link');
 contains('src/styles/visual-stage12-client-detail-vnext.css', marker, 'Stage53 CSS marker');
 contains('src/styles/visual-stage12-client-detail-vnext.css', '.client-detail-recent-move-row', 'recent move row CSS');

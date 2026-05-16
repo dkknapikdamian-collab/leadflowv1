@@ -13,12 +13,12 @@ const files = [
 ];
 
 const requiredLeadTexts = [
-  'Najbliższa zaplanowana akcja',
-  'Powód ryzyka',
-  'Otwórz sprawę',
-  'Dopisz notatkę',
-  'Oferta wysłana',
-  'Brak zaplanowanych działań',
+  'Najbli\u017Csza zaplanowana akcja',
+  'Pow\u00F3d ryzyka',
+  'Otw\u00F3rz spraw\u0119',
+  'Dopisz notatk\u0119',
+  'Oferta wys\u0142ana',
+  'Brak zaplanowanych dzia\u0142a\u0144',
 ];
 
 const forbidden = [

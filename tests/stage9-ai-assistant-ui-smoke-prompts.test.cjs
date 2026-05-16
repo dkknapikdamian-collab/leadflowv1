@@ -12,10 +12,10 @@ test('Stage9 adds manual smoke prompts for every required AI query path', () => 
   const ui = read('src/components/TodayAiAssistant.tsx');
   for (const prompt of [
     'Co mam jutro?',
-    'Czy jutro o 17 coś mam?',
-    'Czy w przeciągu 4 godzin mam spotkanie?',
-    'Na kiedy mam najbliższy akt notarialny?',
-    'Znajdź numer do Marka.',
+    'Czy jutro o 17 co\u015B mam?',
+    'Czy w przeci\u0105gu 4 godzin mam spotkanie?',
+    'Na kiedy mam najbli\u017Cszy akt notarialny?',
+    'Znajd\u017A numer do Marka.',
     'Zapisz zadanie jutro 12 rozgraniczenie.',
   ]) {
     assert.ok(ui.includes(prompt), 'missing prompt: ' + prompt);

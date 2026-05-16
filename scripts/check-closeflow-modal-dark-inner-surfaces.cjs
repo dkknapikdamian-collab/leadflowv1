@@ -40,4 +40,4 @@ if (presentForbidden.length) {
   process.exit(1);
 }
 
-console.log('✔ CloseFlow modal dark shell inner surfaces contract is present');
+console.log('\u2714 CloseFlow modal dark shell inner surfaces contract is present');

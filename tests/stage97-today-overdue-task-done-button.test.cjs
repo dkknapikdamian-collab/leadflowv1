@@ -35,11 +35,11 @@ test('Stage97 operator overdue/today task rows pass task identity into RowLink',
   const block = sliceBetween(
     today,
     '{operatorTasks.length ? operatorTasks.map',
-    '}) : <EmptyState text="Brak zadań zaległych lub na dziś." />'
+    '}) : <EmptyState text="Brak zada\u0144 zaleg\u0142ych lub na dzi\u015B." />'
   );
 
   assert.ok(block.includes('to="/tasks"'), 'Task rows must still route to /tasks.');
-  assert.ok(block.includes("badge={getDateKey(momentRaw) < todayKey ? 'Zaległe' : 'Dziś'}"), 'Task rows must still distinguish overdue vs today.');
+  assert.ok(block.includes("badge={getDateKey(momentRaw) < todayKey ? 'Zaleg\u0142e' : 'Dzi\u015B'}"), 'Task rows must still distinguish overdue vs today.');
   assert.ok(block.includes('onEdit={() => navigate(\'/tasks\')}'), 'Task rows must keep edit action.');
   assert.ok(block.includes('onDelete={() => void handleDeleteTask(task)}'), 'Task rows must keep delete action.');
   assert.ok(block.includes('taskId={String(task.id || \'\')}'), 'Task rows must pass taskId to RowLink.');
@@ -51,7 +51,7 @@ test('Stage97 task rows are not edit-only', () => {
   const block = sliceBetween(
     today,
     '{operatorTasks.length ? operatorTasks.map',
-    '}) : <EmptyState text="Brak zadań zaległych lub na dziś." />'
+    '}) : <EmptyState text="Brak zada\u0144 zaleg\u0142ych lub na dzi\u015B." />'
   );
 
   const editIndex = block.indexOf('onEdit={() => navigate(\'/tasks\')}');

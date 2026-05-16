@@ -28,17 +28,17 @@ const css = "src/styles/visual-stage12-client-detail-vnext.css";
 
 assertIncludes(clientDetail, "STAGE25B_CLIENT_DETAIL_FEEDBACK_COMPLETE_REPAIR_GUARD", "guard Stage25B");
 assertIncludes(clientDetail, "function getCaseValueLabel(caseRecord: any)", "wartosc sprawy helper");
-assertIncludes(clientDetail, "Sprawa obsługowa", "fallback bez nazwy klienta");
+assertIncludes(clientDetail, "Sprawa obs\u0142ugowa", "fallback bez nazwy klienta");
 assertIncludes(clientDetail, 'data-client-case-smart-list="true"', "nowa lista spraw");
 assertIncludes(clientDetail, 'data-client-case-smart-card="true"', "nowa karta sprawy");
-assertIncludes(clientDetail, "Wartość sprawy", "wartosc sprawy w karcie");
+assertIncludes(clientDetail, "Warto\u015B\u0107 sprawy", "wartosc sprawy w karcie");
 assertIncludes(clientDetail, "Edytuj", "akcja edycji sprawy");
-assertIncludes(clientDetail, "Usuń", "akcja usuniecia sprawy z komunikatem bezpiecznym");
-assertNotIncludes(clientDetail, "<p>Lista spraw klienta. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę.</p>", "opis panelu spraw usuniety");
+assertIncludes(clientDetail, "Usu\u0144", "akcja usuniecia sprawy z komunikatem bezpiecznym");
+assertNotIncludes(clientDetail, "<p>Lista spraw klienta. Wejd\u017A w spraw\u0119, \u017Ceby edytowa\u0107 nazw\u0119, warto\u015B\u0107, zadania i dalsz\u0105 obs\u0142ug\u0119.</p>", "opis panelu spraw usuniety");
 
 assertIncludes(css, "stage25b client detail feedback complete repair", "marker CSS Stage25B");
-assertIncludes(css, ".client-detail-top-cards-side", "kasowanie panelu kompletności/finansów");
-assertIncludes(css, ".client-detail-completeness-card", "kasowanie kompletności sprawy");
+assertIncludes(css, ".client-detail-top-cards-side", "kasowanie panelu kompletno\u015Bci/finans\u00F3w");
+assertIncludes(css, ".client-detail-completeness-card", "kasowanie kompletno\u015Bci sprawy");
 assertIncludes(css, ".client-detail-relations-list-acquisition-only", "ukrycie starego wiersza historii lead");
 assertIncludes(css, "[data-client-case-smart-list=\"true\"]", "style nowej listy spraw");
 assertIncludes(css, "[data-client-side-quick-actions=\"true\"] *", "kontrast szybkich akcji");

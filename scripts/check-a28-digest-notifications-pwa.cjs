@@ -94,7 +94,7 @@ mustContain('vercel.json', '/api/weekly-report', 'weekly report cron');
 mustContain('public/service-worker.js', 'isApiOrDataRequest', 'API cache guard');
 mustContain('public/service-worker.js', "path.startsWith('/api/')", 'no aggressive API cache');
 mustContain('src/components/PwaInstallPrompt.tsx', 'beforeinstallprompt', 'install prompt event');
-mustContain('src/components/PwaInstallPrompt.tsx', 'Do ekranu początkowego', 'iOS manual install fallback');
+mustContain('src/components/PwaInstallPrompt.tsx', 'Do ekranu pocz\u0105tkowego', 'iOS manual install fallback');
 mustContain('src/pages/Settings.tsx', 'DAILY_DIGEST_EMAIL_UI_VISIBLE = true', 'digest settings visible');
 mustContain('public/manifest.webmanifest', '"display": "standalone"', 'standalone display');
 mustContain('public/manifest.webmanifest', 'closeflow-icon-192.png', '192 png icon');

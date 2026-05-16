@@ -17,7 +17,7 @@ if (!caseDetail.includes('case-detail-history-unified-panel')) fail('CaseDetail 
 if (quick.includes('Dodaj operacyjny ruch bez starego kafelka formularza.')) fail('CaseQuickActions nadal zawiera helper copy.');
 if (!quick.includes('CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13')) fail('Brak markera quick actions no helper copy.');
 if (!runnerExists) fail('Brak scripts/closeflow-vite-build-runner.mjs.');
-if (!quiet.includes('CLOSEFLOW_QUIET_GATE_VITE_BUILD_RUNNER_2026_05_13')) fail('Quiet gate nie używa Vite build runnera.');
+if (!quiet.includes('CLOSEFLOW_QUIET_GATE_VITE_BUILD_RUNNER_2026_05_13')) fail('Quiet gate nie u\u017Cywa Vite build runnera.');
 if (quiet.includes("runNpmScript('production build', 'build');")) fail('Quiet gate nadal uruchamia production build przez npm.cmd.');
 
 for (const token of [

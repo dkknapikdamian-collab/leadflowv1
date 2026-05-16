@@ -105,8 +105,8 @@ for (const forbidden of [
 for (const docNeedle of [
   'bez UI',
   'bez migracji DB',
-  'Nie tworzyÄ‡ panelu finansĂłw',
-  'Nie tworzyÄ‡ migracji DB',
+  'Nie tworzy\u0107 panelu finans\u00F3w',
+  'Nie tworzy\u0107 migracji DB',
   'jeden model',
   'Lead, Client i Case',
 ]) {

@@ -46,7 +46,7 @@ for (const status of requiredStatuses) {
   if (!text.includes("value: '" + status + "'")) fail('missing lead status option: ' + status);
 }
 
-const requiredLabels = ['Oferta wysłana', 'Nowy', 'Czeka na odpowiedź', 'Przegrany'];
+const requiredLabels = ['Oferta wys\u0142ana', 'Nowy', 'Czeka na odpowied\u017A', 'Przegrany'];
 for (const label of requiredLabels) {
   if (!text.includes(label)) fail('missing lead status label: ' + label);
 }
@@ -55,4 +55,3 @@ const duplicatedLiteralStatus = /\{statusLabel\([^)]*lead[^)]*status[^)]*\)\}[\s
 if (duplicatedLiteralStatus.test(titleRow)) fail('duplicate statusLabel renderers are still adjacent in title row');
 
 console.log('OK stage77 lead detail single status pill');
-

@@ -67,7 +67,7 @@ for (const [label, block] of [['base', baseRule], ['hover', hoverRule]]) {
 }
 
 const doc = read('docs/feedback/CLOSEFLOW_FB5_TOAST_DANGER_SOURCE_2026-05-09.md');
-for (const phrase of ['FB-5', 'Toast top-center', 'richColors', 'closeButton', 'danger source of truth', 'brak lokalnych czerwonych klas', 'nie zmieniamy delete logic', 'nie usuwamy toastów', 'nie zmieniamy Google Calendar sync']) {
+for (const phrase of ['FB-5', 'Toast top-center', 'richColors', 'closeButton', 'danger source of truth', 'brak lokalnych czerwonych klas', 'nie zmieniamy delete logic', 'nie usuwamy toast\u00F3w', 'nie zmieniamy Google Calendar sync']) {
   assert(doc.includes(phrase), `doc missing phrase: ${phrase}`);
 }
 

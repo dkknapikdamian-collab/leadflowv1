@@ -34,11 +34,11 @@ const doc = 'docs/release/STAGE84_LEAD_DETAIL_WORK_CENTER_2026-05-05.md';
   'Centrum pracy leada',
   'Ostatni ruch',
   'Dni bez ruchu',
-  'Najbliższa zaplanowana akcja',
-  'Powód ryzyka',
-  'Otwórz sprawę',
-  'Dopisz notatkę',
-  'Oferta wysłana',
+  'Najbli\u017Csza zaplanowana akcja',
+  'Pow\u00F3d ryzyka',
+  'Otw\u00F3rz spraw\u0119',
+  'Dopisz notatk\u0119',
+  'Oferta wys\u0142ana',
   'lead-detail-note-box',
 ].forEach((text) => assertContains(leadDetail, text));
 

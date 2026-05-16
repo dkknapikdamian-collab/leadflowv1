@@ -91,7 +91,7 @@ assertIncludes(files.aiDrafts, aiDrafts, 'function AiDraftsInner()', 'AiDrafts o
 assertIncludes(files.aiDrafts, aiDrafts, 'export default function AiDrafts()', 'AiDrafts wrapper exists');
 assertIncludes(files.aiDrafts, aiDrafts, 'data-plan-route-blocker="ai-drafts"', 'AiDrafts direct route blocker exists');
 assertRegex(files.aiDrafts, aiDrafts, /canUseAiDraftsByPlan\s*=\s*Boolean\([\s\S]*lightDrafts[\s\S]*fullAi[\s\S]*\)/, 'AiDrafts route blocker uses lightDrafts/fullAi');
-assertIncludes(files.aiDrafts, aiDrafts, 'Dostępne od planu Basic', 'AiDrafts route blocker has user-facing plan message');
+assertIncludes(files.aiDrafts, aiDrafts, 'Dost\u0119pne od planu Basic', 'AiDrafts route blocker has user-facing plan message');
 assertIncludes(files.aiDrafts, aiDrafts, 'href="/billing"', 'AiDrafts route blocker links to Billing');
 
 section('Documentation');
@@ -100,7 +100,7 @@ for (const marker of [
   'Free nie widzi AI',
   'Basic widzi lekkie szkice',
   'Pro widzi lekkie szkice',
-  'AI i Trial widzą pełny AI',
+  'AI i Trial widz\u0105 pe\u0142ny AI',
   'FAZA 3 - Etap 3.2E - Settings/Digest/Billing plan visibility smoke',
 ]) {
   assertIncludes(files.releaseDoc, releaseDoc, marker, 'Release doc contains: ' + marker);

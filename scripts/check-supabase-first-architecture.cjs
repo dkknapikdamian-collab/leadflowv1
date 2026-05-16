@@ -57,7 +57,7 @@ function normalizedText(value) {
   return String(value || '')
     .normalize('NFC')
     .replace(/\r\n/g, '\n')
-    .replace(/[–—]/g, '-')
+    .replace(/[\u2013\u2014]/g, '-')
     .toLowerCase();
 }
 function walk(dir, out = []) {
@@ -87,19 +87,19 @@ const deployReadmeA = exists('README-WDROZENIE.md') ? read('README-WDROZENIE.md'
 const deployReadmeB = exists('README_WDROZENIE.md') ? read('README_WDROZENIE.md') : '';
 const combinedDocs = normalizedText([readme, deployReadmeA, deployReadmeB].join('\n'));
 
-push(architecture.includes('supabase jest docelowym źródłem prawdy'), 'architecture doc must state Supabase as target source of truth');
-push(architecture.includes('firebase / firestore jest warstwą legacy'), 'architecture doc must mark Firebase / Firestore as legacy');
-push(architecture.includes('nie wolno tworzyć dwóch równoległych źródeł prawdy'), 'architecture doc must forbid two sources of truth');
-push(architecture.includes('ai nie może zapisywać finalnych danych bez potwierdzenia użytkownika'), 'architecture doc must preserve AI confirmation rule');
+push(architecture.includes('supabase jest docelowym \u017Ar\u00F3d\u0142em prawdy'), 'architecture doc must state Supabase as target source of truth');
+push(architecture.includes('firebase / firestore jest warstw\u0105 legacy'), 'architecture doc must mark Firebase / Firestore as legacy');
+push(architecture.includes('nie wolno tworzy\u0107 dw\u00F3ch r\u00F3wnoleg\u0142ych \u017Ar\u00F3de\u0142 prawdy'), 'architecture doc must forbid two sources of truth');
+push(architecture.includes('ai nie mo\u017Ce zapisywa\u0107 finalnych danych bez potwierdzenia u\u017Cytkownika'), 'architecture doc must preserve AI confirmation rule');
 push(architecture.includes('x-user-id') && architecture.includes('x-user-email') && architecture.includes('x-workspace-id'), 'architecture doc must forbid trusting frontend identity headers');
 
 for (const screen of requiredScreens) push(mapRaw.includes(screen), 'DATA_SOURCE_MAP.md must include ' + screen);
-push(map.includes('docelowym źródłem prawdy jest supabase'), 'data source map must state Supabase target');
+push(map.includes('docelowym \u017Ar\u00F3d\u0142em prawdy jest supabase'), 'data source map must state Supabase target');
 push(map.includes('legacy do migracji'), 'data source map must mark legacy paths');
 push(mapRaw.includes('Supabase + Stripe'), 'data source map must include Billing as Supabase + Stripe');
 push(mapRaw.includes('Supabase + Supabase Storage'), 'data source map must include Portal as Supabase + Supabase Storage');
 push(combinedDocs.includes('supabase-first'), 'README/deployment docs must mention Supabase-first');
-push(!combinedDocs.includes('# leadflow - wdrożenie (firebase)'), 'deployment README must not present Firebase as target deployment architecture');
+push(!combinedDocs.includes('# leadflow - wdro\u017Cenie (firebase)'), 'deployment README must not present Firebase as target deployment architecture');
 
 for (const runtimeRoot of runtimeRoots) {
   for (const file of walk(runtimeRoot)) {

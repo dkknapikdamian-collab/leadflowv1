@@ -20,7 +20,7 @@ test('Faza 3 Etap 3.1 plan source of truth is documented and wired', () => {
   assert.equal(pkg.scripts['test:faza3-etap31-plan-source-of-truth'], 'node --test tests/faza3-etap31-plan-source-of-truth.test.cjs');
   assert.match(quiet, /tests\/faza3-etap31-plan-source-of-truth\.test\.cjs/);
 
-  assert.match(doc, /FAZA 3 - Etap 3\.1 - Jedno źródło prawdy dla planów/);
+  assert.match(doc, /FAZA 3 - Etap 3\.1 - Jedno \u017Ar\u00F3d\u0142o prawdy dla plan\u00F3w/);
   assert.match(doc, /src\/lib\/plans\.ts/);
   assert.match(doc, /FAZA 3 - Etap 3\.2 - Backendowe blokady funkcji/);
 

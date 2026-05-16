@@ -80,10 +80,10 @@ for (const file of [
 
 section('Required audit themes');
 for (const theme of [
-  'Podwójne fetchowanie',
-  'Reload całej listy po drobnej mutacji',
+  'Podw\u00F3jne fetchowanie',
+  'Reload ca\u0142ej listy po drobnej mutacji',
   'Brak cache invalidation tylko dla encji',
-  'Ciężkie useMemo po dużych listach',
+  'Ci\u0119\u017Ckie useMemo po du\u017Cych listach',
   'Filtrowanie/sortowanie bez normalizacji danych',
   'Zbyt szerokie importy ikon',
 ]) {
@@ -111,11 +111,11 @@ for (const marker of [
 
 section('No feature-cut guardrails');
 for (const marker of [
-  'Nie usuwać funkcji.',
-  'Nie usuwać ekranów.',
-  'Nie zmieniać UX.',
-  'Nie kasować działających flow.',
-  'Nie mieszać tego etapu z visual systemem.',
+  'Nie usuwa\u0107 funkcji.',
+  'Nie usuwa\u0107 ekran\u00F3w.',
+  'Nie zmienia\u0107 UX.',
+  'Nie kasowa\u0107 dzia\u0142aj\u0105cych flow.',
+  'Nie miesza\u0107 tego etapu z visual systemem.',
 ]) {
   assertIncludes(docPath, doc, marker, 'Guardrail present: ' + marker);
 }
@@ -132,7 +132,7 @@ for (const marker of [
   'PERF-5 - TasksStable/Calendar mutation refresh narrowing',
   'PERF-6 - List screens derived data normalization',
   'PERF-7 - Icon import and bundle audit',
-  'Kryterium zakończenia PERF-0',
+  'Kryterium zako\u0144czenia PERF-0',
 ]) {
   assertIncludes(docPath, doc, marker, 'Evidence/stage marker present: ' + marker);
 }

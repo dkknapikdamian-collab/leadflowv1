@@ -7,9 +7,9 @@ function read(p) { return fs.readFileSync(path.join(root, p), 'utf8'); }
 
 test('FIN-14 exposes three payment type actions', () => {
   const buttons = read('src/components/finance/CaseFinanceActionButtons.tsx');
-  assert.match(buttons, /Dodaj zaliczkę/);
-  assert.match(buttons, /Dodaj wpłatę/);
-  assert.match(buttons, /Dodaj płatność prowizji/);
+  assert.match(buttons, /Dodaj zaliczk\u0119/);
+  assert.match(buttons, /Dodaj wp\u0142at\u0119/);
+  assert.match(buttons, /Dodaj p\u0142atno\u015B\u0107 prowizji/);
 });
 
 test('FIN-14 payment dialog builds complete payment payload', () => {

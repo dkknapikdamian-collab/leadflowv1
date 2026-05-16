@@ -22,16 +22,16 @@ const requiredPage = [
   'SUPPORT_VISUAL_REBUILD_STAGE17',
   'POMOC',
   '<h1>Pomoc</h1>',
-  'Zgłoszenia, odpowiedzi i kontakt w jednym miejscu.',
-  'Wyślij zgłoszenie',
+  'Zg\u0142oszenia, odpowiedzi i kontakt w jednym miejscu.',
+  'Wy\u015Blij zg\u0142oszenie',
   '<Label>Temat</Label>',
   '<Label>Opis</Label>',
-  'Najczęstsze pytania',
-  'Status zgłoszeń',
+  'Najcz\u0119stsze pytania',
+  'Status zg\u0142osze\u0144',
   'Nowe',
   'W trakcie',
   'Odpowiedziano',
-  'Zamknięte',
+  'Zamkni\u0119te',
 ];
 
 for (const needle of requiredPage) {

@@ -174,52 +174,209 @@ Manual UI test - TO DO:
 <!-- STAGE104_CALENDAR_PERFORMANCE_F -->
 ## 2026-05-16 â€” Stage104 / Paczka F â€” Calendar loading performance
 
-STATUS: WDROĹ»ONE LOKALNIE PO APPLY, TEST RÄCZNY DO WYKONANIA.
+STATUS: WDROŻONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
 
 FAKTY:
-- Kalendarz nie powinien juĹĽ liczyÄ‡ `combineScheduleEntries` wprost w renderze.
-- Dni miesiÄ…ca i tygodnia korzystajÄ… z `entriesByDayKey` / `weekEntriesByDayKey`.
-- `Calendar.tsx` nie powinien juĹĽ uĹĽywaÄ‡ `getEntriesForDay(...)` w render path.
-- `cases` idÄ… z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
-- PeĹ‚nostronicowy loader zostaĹ‚ zastÄ…piony maĹ‚ym skeletonem danych.
+- Kalendarz nie powinien już liczyć `combineScheduleEntries` wprost w renderze.
+- Dni miesiąca i tygodnia korzystają z `entriesByDayKey` / `weekEntriesByDayKey`.
+- `Calendar.tsx` nie powinien już używać `getEntriesForDay(...)` w render path.
+- `cases` idą z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
+- Pełnostronicowy loader został zastąpiony małym skeletonem danych.
 
 TESTY:
 - `node tests/stage104-calendar-loading-performance-contract.test.cjs`
-- `npm run build` jeĹ›li nie uĹĽyto `-SkipBuild`.
+- `npm run build` jeśli nie użyto `-SkipBuild`.
 
 RYZYKA:
 - Range fetch backendowy jest DO POTWIERDZENIA.
-- Stare DOM-normalizatory miesiÄ…ca zostaĹ‚y nietkniÄ™te i wymagajÄ… osobnego audytu w Paczce G.
+- Stare DOM-normalizatory miesiąca zostały nietknięte i wymagają osobnego audytu w Paczce G.
 
-NASTÄPNY KROK:
-- Test rÄ™czny `/calendar`: start, tydzieĹ„, miesiÄ…c, wybrany dzieĹ„, edycja, +1H/+1D/+1W, zrobione, usuĹ„.
+NAST\u00c4\u0098PNY KROK:
+- Test ręczny `/calendar`: start, tydzień, miesiąc, wybrany dzień, edycja, +1H/+1D/+1W, zrobione, usuń.
 <!-- /STAGE104_CALENDAR_PERFORMANCE_F -->
 
 
 ---
 ## Stage105 / Paczka G â€” Templates delete + visual contract â€” 2026-05-16
 
-STATUS: WDROĹ»ONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
+STATUS: WDROŻONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
 
 FAKTY:
-- /templates dostaĹ‚ widoczny przycisk UsuĹ„ na karcie szablonu.
-- Delete uĹĽywa EntityTrashButton i shared trash action source of truth.
-- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeĹ›li szablon ma pozycje checklisty.
-- Karta szablonu uĹĽywa cf-template-card cf-readable-card i markerĂłw ecord-list-source-truth.
+- /templates dostał widoczny przycisk Usuń na karcie szablonu.
+- Delete używa EntityTrashButton i shared trash action source of truth.
+- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeśli szablon ma pozycje checklisty.
+- Karta szablonu używa cf-template-card cf-readable-card i markerów
+ecord-list-source-truth.
 - Stary marker data-a16-template-light-ui nie jest aktywnym source of truth dla stylu.
 
 TESTY:
-- 
+-
 ode tests/stage105-templates-delete-and-visual-contract.test.cjs
-- 
+-
 pm run build
 
-TEST RÄCZNY:
+TEST R\u00c4\u0098CZNY:
 - DO WYKONANIA na /templates: create/edit/duplicate/delete z confirmami.
 
 RYZYKO:
-- Ten etap nie dodaje backendowego sprawdzania, czy szablon zostaĹ‚ uĹĽyty w aktywnych sprawach. Wymusza Ĺ›wiadome potwierdzenie usuwania wzorca i jego pozycji.
+- Ten etap nie dodaje backendowego sprawdzania, czy szablon został użyty w aktywnych sprawach. Wymusza świadome potwierdzenie usuwania wzorca i jego pozycji.
 
-NASTÄPNY KROK:
-- PrzetestowaÄ‡ /templates; dopiero potem zdecydowaÄ‡, czy robimy kolejny lokalny etap czy wspĂłlny commit/push Stage104+Stage105.
+NAST\u00c4\u0098PNY KROK:
+- Przetestować /templates; dopiero potem zdecydować, czy robimy kolejny lokalny etap czy wspólny commit/push Stage104+Stage105.
 <!-- STAGE105_TEMPLATES_DELETE_VISUAL_G -->
+
+
+## Stage98B V5 mojibake hard gate - 2026-05-16
+
+AUTOMATIC TESTS REQUIRED BY PACKAGE:
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `npm run verify:closeflow:quiet`
+
+EXPECTED RESULT:
+- Stage98 guard returns zero mojibake hits in `src`, `tests`, `scripts` and `_project`.
+- Quiet release gate runs Stage98 preflight before production build.
+
+MANUAL TEST:
+- `/calendar`: verify Polish labels in selected day, next-days plan, relation links and entry actions.
+- Status: TEST RECZNY DO WYKONANIA.
+
+
+- V5 C1-control mojibake repair: handles leftover raw control-byte mojibake that V4 exposed in LeadDetail.tsx.
+
+
+## 2026-05-16 - Stage98B V6 mojibake hard gate resume
+
+Expected automatic checks:
+
+- PASS: package self-check finds all payload files.
+- PASS: `node --check` on Stage98 guard and repair helper.
+- PASS: Stage98 repo-wide mojibake guard.
+- PASS: `git diff --check`.
+- PASS: `npm run verify:closeflow:quiet`.
+
+Manual check remains required: `/calendar` and `/lead/:id` Polish labels after deployment.
+<!-- STAGE98B_V6_TEST_HISTORY -->
+
+
+## 2026-05-16 - Stage98B V7 mojibake hard gate resume
+
+Expected automatic checks:
+
+- PASS: package self-check finds all payload files.
+- PASS: `node --check` on Stage98 guard and repair helper.
+- PASS: Stage98 repo-wide mojibake guard.
+- PASS: `git diff --check`.
+- PASS: `npm run verify:closeflow:quiet`.
+
+Manual check remains required: `/calendar` and `/lead/:id` Polish labels after deployment.
+<!-- STAGE98B_V7_TEST_HISTORY -->
+
+
+## 2026-05-16 - Stage98B V8 mojibake hard gate resume
+
+Expected automatic checks:
+
+- PASS: package self-check finds all payload files.
+- PASS: `node --check` on Stage98 guard and repair helper.
+- PASS: Stage98 repo-wide mojibake guard.
+- PASS: `git diff --check`.
+- PASS: `npm run verify:closeflow:quiet`.
+
+Manual check remains required: `/calendar` and `/lead/:id` Polish labels after deployment.
+<!-- STAGE98B_V8_TEST_HISTORY -->
+
+- V8: Windows-safe git ProcessStartInfo wrapper; resume after V7 stderr warning failure.
+
+
+## 2026-05-16 - Stage98B V9 mojibake hard gate resume
+
+Expected automatic checks:
+
+- PASS: package self-check finds all payload files.
+- PASS: `node --check` on Stage98 guard and repair helper.
+- PASS: Stage98 repo-wide mojibake guard.
+- PASS: `git diff --check`.
+- PASS: `npm run verify:closeflow:quiet`.
+
+Manual check remains required: `/calendar` and `/lead/:id` Polish labels after deployment.
+<!-- STAGE98B_V9_TEST_HISTORY -->
+
+- V9: whitespace cleanup before git diff --check; resume after V8 real trailing-whitespace failure.
+
+<!-- STAGE98B_V10_TEST_HISTORY -->
+## 2026-05-16 - Stage98B V10 broad test history
+
+Required checks:
+- `node --check tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --check` for every changed `.js/.cjs/.mjs`
+- `git diff --check`
+- `npm run verify:closeflow:quiet`
+
+Status after package run:
+- To be filled by local PowerShell output.
+- Manual test: `/calendar` selected-day and week-plan Polish labels.
+
+<!-- STAGE98B_V11_TEST_HISTORY -->
+## 2026-05-16 - Stage98B V11 broad test history
+
+Required checks:
+- `node --check tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- ``node --check` for all `.js/.cjs/.mjs` under `scripts`, `tests`, `tools`, plus every changed `.js/.cjs/.mjs`
+- `git diff --check`
+- `npm run verify:closeflow:quiet`
+
+Status after package run:
+- To be filled by local PowerShell output.
+- Manual test: `/calendar` selected-day and week-plan Polish labels.
+
+
+<!-- STAGE98B_V16_FINALIZER -->
+
+## Stage98B V16 mojibake hard gate finalizer
+
+- Status: package-run finalizer after V15 raw BOM regression in quiet gate.
+- Scope: repo-wide encoding hygiene, Stage98B preflight in quiet release gate, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: encoding hygiene must run after every generated write, especially after hardening quiet gate.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V17_SAFE_GUARD_FINALIZER -->
+
+## Stage98B V17 safe guard finalizer
+
+- Status: resume-safe finalizer after V16 false-positive guard corruption.
+- Scope: safe ASCII Stage98B guard, repo-wide encoding hygiene, quiet release gate preflight, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: Stage98 guard must not contain literal bad fragments that hygiene can erase into empty strings.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V18_SAFE_GUARD_FINALIZER -->
+
+## Stage98B V18 safe guard finalizer
+
+- Status: resume-safe finalizer after V16 false-positive guard corruption.
+- Scope: safe ASCII Stage98B guard, repo-wide encoding hygiene, quiet release gate preflight, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: Stage98 guard must not contain literal bad fragments that hygiene can erase into empty strings.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V19_TEST_HISTORY -->
+## Stage98B V19
+- V18 reached quiet gate and exposed Billing.tsx/source-test contamination.
+- V19 restores contaminated src files from HEAD before broad verification.
+
+
+<!-- STAGE98B_V20_TEST_HISTORY -->
+## Stage98B V20
+- V19 reached billing regression but restore-from-HEAD was insufficient.
+- V20 uses origin/dev-rollout-freeze first and validates Billing.tsx before continuing.
+
+
+## STAGE98B_V21_REMOTE_BILLING_RESTORE
+
+- Status: prepared by V21 package.
+- Scope: Stage98B mojibake hard gate plus clean Billing.tsx restoration from remote branch.
+- Tests: Stage98B, src test-scaffold scan, billing regression, broad syntax sweep, git diff --check, quiet gate.
+- Risk: local repo had many dirty leftovers from failed packages; V21 excludes backups/logs/stage98 helpers from commit.

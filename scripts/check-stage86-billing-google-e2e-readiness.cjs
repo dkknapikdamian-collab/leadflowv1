@@ -61,9 +61,9 @@ expect(settings.includes('GOOGLE_CALENDAR_CONFIG_REQUIRED_IS_NOT_USER_ERROR_STAG
 expect(settings.includes('Google Calendar wymaga konfiguracji w Vercel'), 'Settings must show missing Google env as configuration requirement');
 expect(!settings.includes('Brakuje ENV Google:'), 'Settings must not show missing Google env as raw user error');
 
-expect(docs.includes('checkout → webhook → paid_active → access refresh → cancel/resume'), 'release doc must include Stripe E2E chain');
-expect(docs.includes('Google Calendar: env → OAuth → status connected → event sync'), 'release doc must include Google Calendar E2E chain');
-expect(docs.includes('NIE SPRZEDAWAĆ PUBLICZNIE'), 'release doc must keep public-sale gate');
+expect(docs.includes('checkout \u2192 webhook \u2192 paid_active \u2192 access refresh \u2192 cancel/resume'), 'release doc must include Stripe E2E chain');
+expect(docs.includes('Google Calendar: env \u2192 OAuth \u2192 status connected \u2192 event sync'), 'release doc must include Google Calendar E2E chain');
+expect(docs.includes('NIE SPRZEDAWA\u0106 PUBLICZNIE'), 'release doc must keep public-sale gate');
 
 expect(pkg.scripts && pkg.scripts['check:stage86-billing-google-e2e-readiness'], 'package.json missing check:stage86-billing-google-e2e-readiness');
 expect(pkg.scripts && pkg.scripts['test:stage86-billing-google-e2e-readiness'], 'package.json missing test:stage86-billing-google-e2e-readiness');

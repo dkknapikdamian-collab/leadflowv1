@@ -67,10 +67,10 @@ for (const [rel, key] of targets) {
 }
 
 const duplicateTexts = [
-  'Własne gotowce do follow-upów, przypomnień i wiadomości do klientów. AI może później pracować na tych szablonach, ale źródłem prawdy jest Twoja biblioteka.',
-  'Sprawdź, popraw i zatwierdź szkice przed zapisem w CRM.',
-  'Przypomnienia, zaległe rzeczy i alerty z aplikacji. Tu widzisz zaległe rzeczy, nadchodzące terminy i sprawy, których nie można przegapić.',
-  'Ukryta warstwa diagnostyczna dla Quick Lead Capture. Użytkownik końcowy widzi tylko prosty szkic do potwierdzenia, nie providerów ani kluczy.',
+  'W\u0142asne gotowce do follow-up\u00F3w, przypomnie\u0144 i wiadomo\u015Bci do klient\u00F3w. AI mo\u017Ce p\u00F3\u017Aniej pracowa\u0107 na tych szablonach, ale \u017Ar\u00F3d\u0142em prawdy jest Twoja biblioteka.',
+  'Sprawd\u017A, popraw i zatwierd\u017A szkice przed zapisem w CRM.',
+  'Przypomnienia, zaleg\u0142e rzeczy i alerty z aplikacji. Tu widzisz zaleg\u0142e rzeczy, nadchodz\u0105ce terminy i sprawy, kt\u00F3rych nie mo\u017Cna przegapi\u0107.',
+  'Ukryta warstwa diagnostyczna dla Quick Lead Capture. U\u017Cytkownik ko\u0144cowy widzi tylko prosty szkic do potwierdzenia, nie provider\u00F3w ani kluczy.',
 ];
 
 const pageFiles = targets.map(([rel]) => rel).concat(['src/pages/Settings.tsx']);

@@ -15,7 +15,7 @@ test('Faza 3 Etap 3.2D hides AI navigation and global actions by plan', () => {
   const quickAi = read('src/components/QuickAiCapture.tsx');
 
   assert.match(layout, /canUseAiDraftsByPlan\s*=\s*Boolean\([\s\S]*lightDrafts[\s\S]*fullAi[\s\S]*\)/);
-  assert.match(layout, /\.\.\.\(canUseAiDraftsByPlan\s*\?\s*\[\{ icon: CheckCircle2, label: 'Inbox szkiców', path: '\/ai-drafts' \}\]\s*:\s*\[\]\)/);
+  assert.match(layout, /\.\.\.\(canUseAiDraftsByPlan\s*\?\s*\[\{ icon: CheckCircle2, label: 'Inbox szkic\u00F3w', path: '\/ai-drafts' \}\]\s*:\s*\[\]\)/);
 
   assert.match(globalActions, /canUseFullAiAssistantByPlan\s*=\s*Boolean\([\s\S]*fullAi[\s\S]*\)/);
   assert.match(globalActions, /\{canUseFullAiAssistantByPlan \? \([\s\S]*<GlobalAiAssistant \/>[\s\S]*\) : null\}/);
@@ -37,7 +37,7 @@ test('Faza 3 Etap 3.2D blocks /ai-drafts direct route for plans without drafts',
   assert.match(aiDrafts, /export default function AiDrafts\(\)/);
   assert.match(aiDrafts, /data-plan-route-blocker="ai-drafts"/);
   assert.match(aiDrafts, /canUseAiDraftsByPlan\s*=\s*Boolean\([\s\S]*lightDrafts[\s\S]*fullAi[\s\S]*\)/);
-  assert.match(aiDrafts, /Dostępne od planu Basic/);
+  assert.match(aiDrafts, /Dost\u0119pne od planu Basic/);
   assert.match(aiDrafts, /href="\/billing"/);
 
   assert.equal(pkg.scripts['check:faza3-etap32d-plan-based-ui-visibility'], 'node scripts/check-faza3-etap32d-plan-based-ui-visibility.cjs');

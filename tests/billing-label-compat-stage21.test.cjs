@@ -8,11 +8,11 @@ const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 
 test('Stage21 keeps Billing labels compatible with old and new Stripe BLIK contracts', () => {
   const billing = read('src/pages/Billing.tsx');
-  assert.match(billing, /Płatność kartą lub BLIK/);
+  assert.match(billing, /P\u0142atno\u015B\u0107 kart\u0105 lub BLIK/);
   assert.match(billing, /BLIK przez Stripe/);
   assert.match(billing, /Stripe\/BLIK/);
   assert.doesNotMatch(billing, /wiec caly workflow dziala bez blokad/);
-  assert.doesNotMatch(billing, /Jak działa V1/);
+  assert.doesNotMatch(billing, /Jak dzia\u0142a V1/);
 });
 
 test('Stage21 docs keep Polish encoding clean', () => {

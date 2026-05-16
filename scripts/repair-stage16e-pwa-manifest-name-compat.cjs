@@ -44,9 +44,9 @@ for (const icon of requiredIcons) {
 if (!Array.isArray(manifest.shortcuts)) manifest.shortcuts = [];
 if (!manifest.shortcuts.some((shortcut) => shortcut && shortcut.url === '/today')) {
   manifest.shortcuts.unshift({
-    name: 'Dziś',
-    short_name: 'Dziś',
-    description: 'Otwórz dzisiejszy widok pracy',
+    name: 'Dzi\u015B',
+    short_name: 'Dzi\u015B',
+    description: 'Otw\u00F3rz dzisiejszy widok pracy',
     url: '/today',
     icons: [{ src: '/icons/closeflow-icon-192.png', sizes: '192x192' }],
   });

@@ -18,8 +18,8 @@ assert(clientDetailText.includes("STAGE25D_CLIENT_DETAIL_JSX_BUILD_FIX_GUARD"), 
 assert(clientDetailText.includes('data-client-case-smart-list="true"'), "Brakuje smart listy spraw");
 assert(clientDetailText.includes('data-client-case-smart-card="true"'), "Brakuje smart karty sprawy");
 assert(clientDetailText.includes("function getCaseValueLabel(caseRecord: any)"), "Brakuje helpera wartosci sprawy");
-assert(clientDetailText.includes("Wejdź w sprawę"), "Brakuje copy Wejdź w sprawę");
-assert(clientDetailText.includes("STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT"), "Brakuje kompatybilności Stage23A");
+assert(clientDetailText.includes("Wejd\u017A w spraw\u0119"), "Brakuje copy Wejd\u017A w spraw\u0119");
+assert(clientDetailText.includes("STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT"), "Brakuje kompatybilno\u015Bci Stage23A");
 assert(clientDetailText.includes("leads.length ? (<>"), "Smart list musi byc opakowana fragmentem w ternary leads.length");
 assert(clientDetailText.includes("</>\n                  ) : ("), "Brakuje zamkniecia fragmentu przed else ternary leads.length");
 assertIncludes("package.json", "check:stage25d-client-detail-jsx-build-fix", "npm script Stage25D");

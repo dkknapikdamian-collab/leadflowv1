@@ -59,7 +59,7 @@ for (const file of files) {
 }
 
 const md = [];
-md.push('# CloseFlow Style Map — generated');
+md.push('# CloseFlow Style Map \u2014 generated');
 md.push('');
 md.push(`Generated: ${result.generatedAt}`);
 md.push('');

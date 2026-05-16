@@ -11,7 +11,7 @@ const files = {
 };
 
 function fail(message) {
-  console.error(`✖ ${message}`);
+  console.error(`\u2716 ${message}`);
   process.exitCode = 1;
 }
 
@@ -64,4 +64,4 @@ if (pkg?.scripts?.['check:etap3-clients-wide-layout'] !== 'node scripts/check-cl
 }
 
 if (process.exitCode) process.exit(process.exitCode);
-console.log('✔ ETAP 3 clients wide layout guard passed');
+console.log('\u2714 ETAP 3 clients wide layout guard passed');

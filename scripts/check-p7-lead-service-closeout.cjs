@@ -12,13 +12,13 @@ const lead = read('src/pages/LeadDetail.tsx');
 
 expect(!api.includes('Klient - obsluga'), 'api/leads.ts still contains Klient - obsluga');
 expect(!api.includes('obsuga'), 'api/leads.ts still contains mojibake obsuga');
-expect(api.includes('Klient - obsługa') || api.includes('obsługa'), 'api/leads.ts should contain obsługa copy');
+expect(api.includes('Klient - obs\u0142uga') || api.includes('obs\u0142uga'), 'api/leads.ts should contain obs\u0142uga copy');
 
 expect(lead.includes('leadServiceLockedMessage'), 'LeadDetail must define moved-to-service lock message');
 expect(lead.includes('setIsQuickTaskOpen(false);'), 'LeadDetail must close quick task dialog after service move');
 expect(lead.includes('setIsQuickEventOpen(false);'), 'LeadDetail must close quick event dialog after service move');
 expect(lead.includes('setIsCreateCaseOpen(false);'), 'LeadDetail must close create case dialog after service move');
-expect(lead.includes('Ten temat jest już w obsłudze'), 'LeadDetail must keep moved-to-service user copy');
+expect(lead.includes('Ten temat jest ju\u017C w obs\u0142udze'), 'LeadDetail must keep moved-to-service user copy');
 
 const hasTaskOpenGuard = !lead.includes('setIsQuickTaskOpen(true);') || lead.includes('toast.error(leadServiceLockedMessage); return;');
 const hasEventOpenGuard = !lead.includes('setIsQuickEventOpen(true);') || lead.includes('toast.error(leadServiceLockedMessage); return;');

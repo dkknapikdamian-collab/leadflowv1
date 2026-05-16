@@ -18,8 +18,8 @@ test('assistant uses save word for drafts and otherwise searches app data', () =
 
   assertIncludes(source, 'saveCommandPattern', 'explicit save command pattern');
   assertIncludes(source, 'leadCommandPattern', 'lead command pattern');
-  assertIncludes(source, 'słowo „zapisz” tworzy szkic', 'save instruction warning');
-  assertIncludes(source, 'Bez „zapisz” asystent tylko szuka po danych aplikacji', 'search instruction warning');
+  assertIncludes(source, 's\u0142owo \u201Ezapisz\u201D tworzy szkic', 'save instruction warning');
+  assertIncludes(source, 'Bez \u201Ezapisz\u201D asystent tylko szuka po danych aplikacji', 'search instruction warning');
   assertIncludes(source, 'return buildGlobalAppSearchAnswer(context, rawText);', 'global app search fallback');
 });
 
@@ -37,4 +37,3 @@ test('save versus search test is included in quiet release gate', () => {
   const gate = read('scripts/closeflow-release-check-quiet.cjs');
   assertIncludes(gate, 'tests/ai-assistant-save-vs-search-rule.test.cjs', 'quiet release gate must run save/search test');
 });
-

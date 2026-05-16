@@ -144,4 +144,3 @@ export default async function handler(req: any, res: any) {
     res.status(500).json({ error: error?.message || 'CASE_TEMPLATES_API_FAILED' });
   }
 }
-

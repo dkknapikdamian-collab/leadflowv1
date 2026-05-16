@@ -31,6 +31,6 @@ mustContain('package.json', 'check:stage6-ai-no-hallucination-data-truth-v1');
 mustContain('package.json', 'test:stage6-ai-no-hallucination-data-truth-v1');
 mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1');
 mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'Nie odpowiada z pustego prompta');
-mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'Nie zmyśla przy pustym kontekście');
+mustContain('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md', 'Nie zmy\u015Bla przy pustym kontek\u015Bcie');
 
 if (!process.exitCode) pass('STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1');

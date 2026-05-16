@@ -24,13 +24,13 @@ const combined = `${clients}\n${cases}`;
 
 const requiredClient = [
   'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS',
-  'Imię / nazwa',
+  'Imi\u0119 / nazwa',
   'Telefon',
   'E-mail',
   'Firma',
   'Notatka',
   'Zapisz klienta',
-  'Podaj nazwę klienta.',
+  'Podaj nazw\u0119 klienta.',
 ];
 
 for (const needle of requiredClient) {
@@ -39,14 +39,14 @@ for (const needle of requiredClient) {
 
 const requiredCase = [
   'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES',
-  'Tytuł sprawy',
+  'Tytu\u0142 sprawy',
   'Klient',
   'Status',
   'Opis',
-  'Powiązany lead',
-  'Zapisz sprawę',
-  'Sprawa będzie przypięta do tego klienta',
-  'Wybierz klienta albo utwórz nowego.',
+  'Powi\u0105zany lead',
+  'Zapisz spraw\u0119',
+  'Sprawa b\u0119dzie przypi\u0119ta do tego klienta',
+  'Wybierz klienta albo utw\u00F3rz nowego.',
   'useSearchParams',
   'clientId: newCase.clientId || null',
 ];
@@ -55,7 +55,7 @@ for (const needle of requiredCase) {
   if (!cases.includes(needle)) fail(`missing case form content: ${needle}`);
 }
 
-if (combined.includes('zamknięty sprzedażowo')) fail('forbidden copy found: zamknięty sprzedażowo');
+if (combined.includes('zamkni\u0119ty sprzeda\u017Cowo')) fail('forbidden copy found: zamkni\u0119ty sprzeda\u017Cowo');
 
 const requiredCss = [
   '.client-case-form-content',

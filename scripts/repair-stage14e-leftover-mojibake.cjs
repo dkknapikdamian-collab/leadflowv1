@@ -45,52 +45,52 @@ const touched = [];
  * This only repairs runtime UI strings and truth-copy labels.
  */
 patchFile('src/pages/AiDrafts.tsx', (text) => replaceAll(text, [
-  ['Ĺaduję dane z bazy...', 'Ładuję dane z bazy...'],
-  ['Ĺadowanie szkiców...', 'Ładowanie szkiców...'],
-  ['Ĺadowanie dostępu...', 'Ładowanie dostępu...'],
-  ['Ĺąródło', 'Źródło'],
-  ['Ĺaduję', 'Ładuję'],
-  ['Ĺadowanie', 'Ładowanie'],
+  ['\u0139aduj\u0119 dane z bazy...', '\u0141aduj\u0119 dane z bazy...'],
+  ['\u0139adowanie szkic\u00F3w...', '\u0141adowanie szkic\u00F3w...'],
+  ['\u0139adowanie dost\u0119pu...', '\u0141adowanie dost\u0119pu...'],
+  ['\u0179r\u00F3d\u0142o', '\u0179r\u00F3d\u0142o'],
+  ['\u0139aduj\u0119', '\u0141aduj\u0119'],
+  ['\u0139adowanie', '\u0141adowanie'],
 ]));
 
 patchFile('src/pages/Templates.tsx', (text) => replaceAll(text, [
-  ['Nie udaBo si pobra szablonów', 'Nie udało się pobrać szablonów'],
-  ['Nie udaBo si zapisa szablonu', 'Nie udało się zapisać szablonu'],
-  ['Nie udaBo si skopiowa szablonu', 'Nie udało się skopiować szablonu'],
-  ['Nie udaBo si usun szablonu', 'Nie udało się usunąć szablonu'],
-  ['Tryb podgldu blokuje zapis szablonów', 'Tryb podglądu blokuje zapis szablonów'],
-  ['Aadowanie szablonów...', 'Ładowanie szablonów...'],
-  ['Brak szablonów w tym widoku', 'Brak szablonów w tym widoku'],
-  ['krótkie wyja[nienie', 'krótkie wyjaśnienie'],
-  ['Utwórz szablon', 'Utwórz szablon'],
+  ['Nie udaBo si pobra szablon\u00F3w', 'Nie uda\u0142o si\u0119 pobra\u0107 szablon\u00F3w'],
+  ['Nie udaBo si zapisa szablonu', 'Nie uda\u0142o si\u0119 zapisa\u0107 szablonu'],
+  ['Nie udaBo si skopiowa szablonu', 'Nie uda\u0142o si\u0119 skopiowa\u0107 szablonu'],
+  ['Nie udaBo si usun szablonu', 'Nie uda\u0142o si\u0119 usun\u0105\u0107 szablonu'],
+  ['Tryb podgldu blokuje zapis szablon\u00F3w', 'Tryb podgl\u0105du blokuje zapis szablon\u00F3w'],
+  ['Aadowanie szablon\u00F3w...', '\u0141adowanie szablon\u00F3w...'],
+  ['Brak szablon\u00F3w w tym widoku', 'Brak szablon\u00F3w w tym widoku'],
+  ['kr\u00F3tkie wyja[nienie', 'kr\u00F3tkie wyja\u015Bnienie'],
+  ['Utw\u00F3rz szablon', 'Utw\u00F3rz szablon'],
 ]));
 
 patchFile('src/pages/SupportCenter.tsx', (text) => replaceAll(text, [
-  ['Wyślij zgłoszenie', 'Zapisz zgłoszenie'],
-  ['Wyślij odpowiedź', 'Zapisz odpowiedź'],
-  ['Wysyłanie...', 'Zapisywanie...'],
-  ['Zgłoszenie wysłane.', 'Zgłoszenie zapisane.'],
-  ['Nie udało się wysłać zgłoszenia', 'Nie udało się zapisać zgłoszenia'],
-  ['Wysyłka zapisuje zgłoszenie w systemie supportu.', 'Zapis tworzy zgłoszenie w systemie supportu.'],
+  ['Wy\u015Blij zg\u0142oszenie', 'Zapisz zg\u0142oszenie'],
+  ['Wy\u015Blij odpowied\u017A', 'Zapisz odpowied\u017A'],
+  ['Wysy\u0142anie...', 'Zapisywanie...'],
+  ['Zg\u0142oszenie wys\u0142ane.', 'Zg\u0142oszenie zapisane.'],
+  ['Nie uda\u0142o si\u0119 wys\u0142a\u0107 zg\u0142oszenia', 'Nie uda\u0142o si\u0119 zapisa\u0107 zg\u0142oszenia'],
+  ['Wysy\u0142ka zapisuje zg\u0142oszenie w systemie supportu.', 'Zapis tworzy zg\u0142oszenie w systemie supportu.'],
 ]));
 
 patchFile('src/pages/Billing.tsx', (text) => {
   let next = text;
   next = next
-    .split("const BILLING_UI_STRIPE_BLIK_MOJIBAKE_GUARD = 'PrzejdĹş do pĹ‚atnoĹ›ci';\n").join('')
-    .split("const BILLING_UI_STRIPE_BLIK_ERROR_MOJIBAKE_GUARD = 'BĹ‚Ä…d uruchamiania pĹ‚atnoĹ›ci Stripe/BLIK';\n").join('');
+    .split("const BILLING_UI_STRIPE_BLIK_MOJIBAKE_GUARD = 'Przejd\u017A do p\u0142atno\u015Bci';\n").join('')
+    .split("const BILLING_UI_STRIPE_BLIK_ERROR_MOJIBAKE_GUARD = 'B\u0142\u0105d uruchamiania p\u0142atno\u015Bci Stripe/BLIK';\n").join('');
 
   if (!next.includes('UI_TRUTH_BADGE_LABELS_STAGE14E')) {
     next = next.replace(
       "type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';",
-      "type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';\n\nconst UI_TRUTH_BADGE_LABELS_STAGE14E = ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedostępne w Twoim planie', 'W przygotowaniu'] as const;"
+      "type PlanAvailability = 'current' | 'available' | 'disabled' | 'soon';\n\nconst UI_TRUTH_BADGE_LABELS_STAGE14E = ['Gotowe', 'Beta', 'Wymaga konfiguracji', 'Niedost\u0119pne w Twoim planie', 'W przygotowaniu'] as const;"
     );
   }
 
   // Normalize the feature matrix wording to the required truth-badge language.
   next = next
-    .split("'Dostępne (limity AI)'").join("'Beta'")
-    .split("'Nie'").join("'Niedostępne w Twoim planie'");
+    .split("'Dost\u0119pne (limity AI)'").join("'Beta'")
+    .split("'Nie'").join("'Niedost\u0119pne w Twoim planie'");
 
   return next;
 });
@@ -103,7 +103,7 @@ export const UI_TRUTH_STATUSES_STAGE14E = [
   'Gotowe',
   'Beta',
   'Wymaga konfiguracji',
-  'Niedostępne w Twoim planie',
+  'Niedost\u0119pne w Twoim planie',
   'W przygotowaniu',
 ] as const;
 `;

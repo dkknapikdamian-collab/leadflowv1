@@ -14,12 +14,12 @@ test('Lead service handoff opens case detail directly after start', () => {
 
   assert.ok(
     source.includes('navigate(`/case/${startServiceSuccess.caseId}`);'),
-    'Po starcie obsługi ma kierować bezpośrednio do /case/:id.',
+    'Po starcie obs\u0142ugi ma kierowa\u0107 bezpo\u015Brednio do /case/:id.',
   );
 
   assert.ok(
     !source.includes('navigate(`/cases/${startServiceSuccess.caseId}`);'),
-    'Nie może zostać błędny redirect na /cases/:id.',
+    'Nie mo\u017Ce zosta\u0107 b\u0142\u0119dny redirect na /cases/:id.',
   );
 });
 

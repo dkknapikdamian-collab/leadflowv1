@@ -7,7 +7,7 @@ const lib = read('src/lib/activity-roadmap.ts');
 const component = read('src/components/ActivityRoadmap.tsx');
 const pkg = JSON.parse(read('package.json'));
 if (!lib.includes('export function formatRoadmapActivityTitle')) fail('missing formatRoadmapActivityTitle export');
-for (const phrase of ['Dodano wpłatę', 'Usunięto wpłatę', 'Zmieniono wpłatę', 'Wykonano zadanie', 'Zakończono wydarzenie', 'Zaktualizowano sprawę']) {
+for (const phrase of ['Dodano wp\u0142at\u0119', 'Usuni\u0119to wp\u0142at\u0119', 'Zmieniono wp\u0142at\u0119', 'Wykonano zadanie', 'Zako\u0144czono wydarzenie', 'Zaktualizowano spraw\u0119']) {
   if (!lib.includes(phrase)) fail('missing label phrase: ' + phrase);
 }
 if (!component.includes('formatRoadmapActivityTitle(item)')) fail('ActivityRoadmap must render formatter output');

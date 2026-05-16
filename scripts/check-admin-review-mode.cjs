@@ -36,7 +36,7 @@ expect(
 
 if (isClickToAnnotate) {
   expect(
-    hasAny(toolbar, ['Większy cel', 'WiÄ™kszy cel']) && hasAny(toolbar, ['Mniejszy cel']),
+    hasAny(toolbar, ['Wi\u0119kszy cel', 'Wi\u0119kszy cel']) && hasAny(toolbar, ['Mniejszy cel']),
     'Stage87D quick editor must support bigger/smaller target selection',
   );
   expect(toolbar.includes('admin-tool-quick-editor'), 'Stage87D quick editor missing');
@@ -46,7 +46,7 @@ if (isClickToAnnotate) {
   expect(toolbar.includes('data-admin-debug-saved-stage87d'), 'Stage87D must mark saved element');
 } else {
   expect(
-    hasAny(toolbar, ['Zaznacz większy', 'Zaznacz wiÄ™kszy']) && hasAny(toolbar, ['Zaznacz mniejszy']),
+    hasAny(toolbar, ['Zaznacz wi\u0119kszy', 'Zaznacz wi\u0119kszy']) && hasAny(toolbar, ['Zaznacz mniejszy']),
     'Inspector must support bigger/smaller target selection',
   );
   expect(hasAny(toolbar, ['Komentarz *', 'Uwaga *']), 'Review dialog must require/comment field');

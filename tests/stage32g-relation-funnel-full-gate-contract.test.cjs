@@ -24,5 +24,5 @@ test('Stage32g compact relation rail contract stays separate from old long copy'
 
   assert.ok(leads.includes('Lejek razem: {formatRelationValue(relationFunnelValue)}'));
   assert.ok(leads.includes('Najcenniejsze'));
-  assert.equal(leads.includes('Suma lejka liczona z aktywnych leadów i klientów'), false);
+  assert.equal(leads.includes('Suma lejka liczona z aktywnych lead\u00F3w i klient\u00F3w'), false);
 });

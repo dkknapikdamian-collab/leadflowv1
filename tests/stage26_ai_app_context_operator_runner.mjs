@@ -14,12 +14,12 @@ const baseContext = {
   ],
   cases: [],
   tasks: [
-    { id: 'task-tomorrow', workspaceId: 'w1', title: 'Oddzwonić do Marka', status: 'todo', scheduledAt: '2026-05-01T10:00:00+02:00', leadId: 'lead-marek' },
-    { id: 'task-overdue', workspaceId: 'w1', title: 'Wysłać ofertę', status: 'todo', scheduledAt: '2026-04-28T12:00:00+02:00', leadId: 'lead-risk' },
+    { id: 'task-tomorrow', workspaceId: 'w1', title: 'Oddzwoni\u0107 do Marka', status: 'todo', scheduledAt: '2026-05-01T10:00:00+02:00', leadId: 'lead-marek' },
+    { id: 'task-overdue', workspaceId: 'w1', title: 'Wys\u0142a\u0107 ofert\u0119', status: 'todo', scheduledAt: '2026-04-28T12:00:00+02:00', leadId: 'lead-risk' },
     { id: 'task-foreign', workspaceId: 'w2', title: 'Obce zadanie', status: 'todo', scheduledAt: '2026-05-01T11:00:00+02:00' },
   ],
   events: [
-    { id: 'event-tomorrow', workspaceId: 'w1', title: 'Spotkanie z Anną', status: 'scheduled', startAt: '2026-05-01T14:00:00+02:00', leadId: 'lead-risk' },
+    { id: 'event-tomorrow', workspaceId: 'w1', title: 'Spotkanie z Ann\u0105', status: 'scheduled', startAt: '2026-05-01T14:00:00+02:00', leadId: 'lead-risk' },
   ],
   drafts: [],
 };
@@ -33,13 +33,13 @@ function ask(rawText, context = baseContext) {
   assert.equal(result.mode, 'read');
   assert.equal(result.operatorIntent, 'summarize_tomorrow');
   assert.equal(result.items.length, 2);
-  assert.ok(result.items.some((item) => item.label.includes('Oddzwonić do Marka')));
-  assert.ok(result.items.some((item) => item.label.includes('Spotkanie z Anną')));
+  assert.ok(result.items.some((item) => item.label.includes('Oddzwoni\u0107 do Marka')));
+  assert.ok(result.items.some((item) => item.label.includes('Spotkanie z Ann\u0105')));
   assert.ok(!result.items.some((item) => item.label.includes('Obce zadanie')));
 }
 
 {
-  const result = ask('Znajdź numer do Marka');
+  const result = ask('Znajd\u017A numer do Marka');
   assert.equal(result.mode, 'read');
   assert.equal(result.operatorIntent, 'find_contact');
   assert.equal(result.items.length, 1);
@@ -47,9 +47,9 @@ function ask(rawText, context = baseContext) {
 }
 
 {
-  const result = ask('Znajdź numer do Nieistniejący');
+  const result = ask('Znajd\u017A numer do Nieistniej\u0105cy');
   assert.equal(result.mode, 'read');
-  assert.equal(result.answer, 'Nie znalazłem tego w danych aplikacji.');
+  assert.equal(result.answer, 'Nie znalaz\u0142em tego w danych aplikacji.');
   assert.equal(result.items.length, 0);
 }
 
@@ -69,7 +69,7 @@ function ask(rawText, context = baseContext) {
 }
 
 {
-  const result = ask('Które leady są zagrożone?');
+  const result = ask('Kt\u00F3re leady s\u0105 zagro\u017Cone?');
   assert.equal(result.operatorIntent, 'at_risk_leads');
   assert.ok(result.items.some((item) => item.label.includes('Anna Ryzyko')));
 }
@@ -83,4 +83,4 @@ function ask(rawText, context = baseContext) {
 }
 
 assert.equal(detectAssistantIntent('zapisz wydarzenie jutro o 15 spotkanie z klientem'), 'create_draft_event');
-assert.equal(detectAssistantIntent('pokaż leady bez zaplanowanej akcji'), 'no_planned_action');
+assert.equal(detectAssistantIntent('poka\u017C leady bez zaplanowanej akcji'), 'no_planned_action');

@@ -28,7 +28,7 @@ const css = "src/styles/visual-stage12-client-detail-vnext.css";
 
 assertIncludes(clientDetail, "STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD", "guard Stage23A w ClientDetail");
 assertIncludes(clientDetail, 'data-client-cases-list-panel="true"', "jawny panel listy spraw");
-assertIncludes(clientDetail, "Wejdź w sprawę", "copy wejscia w sprawe");
+assertIncludes(clientDetail, "Wejd\u017A w spraw\u0119", "copy wejscia w sprawe");
 assertNotIncludes(clientDetail, 'data-client-relations-acquisition-only="true"', "stary ukrywany panel acquisition-only w JSX");
 
 assertIncludes(css, "stage23a client detail cases visibility contrast", "marker CSS Stage23A");

@@ -5,7 +5,7 @@ import {
   EntityIcon } from '../components/ui-system';
 
 /* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS
- * 
+ *
 
 
 import { toast } from 'sonner';
@@ -1731,7 +1731,7 @@ export default function CaseDetail() {
       setCaseSettlementSaving(false);
     }
   };
-  
+
   async function handleConfirmDeleteCaseRecord() {
     if (!caseData?.id) return;
 
@@ -1912,7 +1912,7 @@ export default function CaseDetail() {
 
         <div className="case-detail-shell">
           <section className="case-detail-main-column">
-      
+
       {pendingNoteFollowUp ? (
         <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
           <div className="case-detail-note-follow-up-head">
@@ -2190,7 +2190,7 @@ export default function CaseDetail() {
         </Dialog>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
       </main>
-    
+
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
         <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
           <DialogHeader>

@@ -50,4 +50,4 @@ assert.match(
   'quiet release gate must run the CaseDetail loading reference guard',
 );
 
-console.log('✔ CaseDetail loading reference is scoped and guarded');
+console.log('\u2714 CaseDetail loading reference is scoped and guarded');

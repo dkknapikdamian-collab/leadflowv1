@@ -22,7 +22,7 @@ for (const token of [
 }
 
 if (!source.includes('CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13')) fail('Brak markera P1A w App.tsx.');
-if (!source.includes('void syncProfileFromApi(true);')) fail('Initial profile sync musi zostaÄ‡.');
-if (!source.includes('return () => {') || !source.includes('cancelled = true;')) fail('Cleanup cancelled=true musi zostaÄ‡.');
+if (!source.includes('void syncProfileFromApi(true);')) fail('Initial profile sync musi zosta\u0107.');
+if (!source.includes('return () => {') || !source.includes('cancelled = true;')) fail('Cleanup cancelled=true musi zosta\u0107.');
 
 console.log('OK check:p1a-no-global-focus-refresh');

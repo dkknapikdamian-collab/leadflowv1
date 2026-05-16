@@ -3,9 +3,9 @@ const path = require('path');
 const marker = 'STAGE55_CLIENT_CASE_OPERATIONAL_PACK';
 const forbidden = [
   'Klient jest rekordem zbiorczym',
-  'Po wejściu w obsługę pracuj na konkretnej sprawie',
+  'Po wej\u015Bciu w obs\u0142ug\u0119 pracuj na konkretnej sprawie',
   'Klient jako centrum relacji',
-  'Ścieżka klienta: Lead → Klient → Sprawa → Rozliczenia',
+  '\u015Acie\u017Cka klienta: Lead \u2192 Klient \u2192 Sprawa \u2192 Rozliczenia',
 ];
 function read(file) { return fs.readFileSync(path.join(process.cwd(), file), 'utf8'); }
 function pass(message) { console.log('PASS ' + message); }

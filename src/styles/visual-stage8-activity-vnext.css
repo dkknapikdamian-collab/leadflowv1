@@ -1,4 +1,4 @@
-﻿.activity-vnext-page {
+.activity-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
   background:
@@ -829,4 +829,3 @@
   color: #111827 !important;
 }
 /* STAGE8A_ACTIVITY_RIGHT_RAIL_LIGHT_HOTFIX_END */
-

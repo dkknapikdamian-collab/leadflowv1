@@ -26,7 +26,7 @@ assertIncludes(contract, 'CLOSEFLOW_VS7_REPORTED_ADMIN_FEEDBACK_LABELS');
 
 const requiredLabels = [
   'Wszystkie',
-  'Nadchodzące',
+  'Nadchodz\u0105ce',
   'Leady',
   'Sprawy',
   'Szablony',
@@ -35,9 +35,9 @@ const requiredLabels = [
   'Bez sprawy',
   'Aktywni',
   'Historia',
-  'Najbliższe 7 dni',
+  'Najbli\u017Csze 7 dni',
   'Szkice AI do sprawdzenia',
-  'Leady czekające',
+  'Leady czekaj\u0105ce',
 ];
 for (const label of requiredLabels) {
   assertIncludes(contract, label);
@@ -48,9 +48,9 @@ assertIncludes(operator, 'resolveOperatorMetricTone');
 assertIncludes(operator, 'data-cf-operator-metric-icon-tone');
 assertIncludes(operator, 'data-cf-semantic-tone');
 assertIncludes(runtime, 'MutationObserver');
-assertIncludes(runtime, 'Najbliższe 7 dni');
+assertIncludes(runtime, 'Najbli\u017Csze 7 dni');
 assertIncludes(runtime, 'Szkice AI do sprawdzenia');
-assertIncludes(runtime, 'Leady czekające');
+assertIncludes(runtime, 'Leady czekaj\u0105ce');
 assertIncludes(runtime, 'data-cf-semantic-section-card');
 assertIncludes(layout, 'OperatorMetricToneRuntime');
 assertIncludes(index, './operator-metric-tone-contract');

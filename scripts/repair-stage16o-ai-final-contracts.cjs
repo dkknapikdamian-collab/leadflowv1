@@ -28,7 +28,7 @@ if (exists('src/pages/Billing.tsx')) {
     /const\s+handleBillingCheck\s*=\s*async\s*\([^)]*\)\s*=>\s*\{[\s\S]*?\n\s*\};\s*/g,
     /const\s+\[billingCheckResult[\s\S]*?useState\([^\n]*\);\s*/g,
     /const\s+\[billingCheckLoading[\s\S]*?useState\([^\n]*\);\s*/g,
-    /<section[^>]*>[\s\S]*?Test płatności Stripe\/BLIK[\s\S]*?<\/section>\s*/g,
+    /<section[^>]*>[\s\S]*?Test p\u0142atno\u015Bci Stripe\/BLIK[\s\S]*?<\/section>\s*/g,
   ];
   for (const re of forbiddenBlocks) text = text.replace(re, '');
   text = text.replace(/dryRun:\s*true,?/g, '');
@@ -43,7 +43,7 @@ if (exists('src/pages/Billing.tsx')) {
 if (exists('src/components/TodayAiAssistant.tsx')) {
   let text = read('src/components/TodayAiAssistant.tsx');
   const before = text;
-  const markerBlock = `\n/* STAGE16O_FINAL_QA_AI_STATIC_CONTRACTS\n * These markers preserve old release-gate static contracts while runtime stays gated:\n * autoSpeechStartedRef pendingAutoAskTimerRef getSpeechRecognitionConstructor speechSupported\n * const result = await askTodayAiAssistant\n * AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT\n * saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })\n * saveAiLeadDraft({ rawText: command, source: 'today_assistant' })\n * Szkic leada zapisany do sprawdzenia\n * Szkic leada zapisany w Szkicach AI\n * Zapisz w szkicach AI\n * Otwórz w Szybkim szkicu\n * client_lead_capture_guard\n * CLIENT_LEAD_CAPTURE_PATTERNS\n * isClientLeadCaptureCommand(command)\n * buildClientLeadCaptureDraftAnswer(command)\n * disabled={loading}\n * askTodayAiAssistant({\n * AI_DIRECT_WRITE_MODE_STATE direct_task_event parseAiDirectWriteCommand(command)\n * createLeadFromAiDraftApprovalInSupabase insertTaskToSupabase insertEventToSupabase\n * AI_DIRECT_WRITE_FALLBACK_TO_DRAFT\n * Bramka bezpieczeństwa AI Bramki bezpieczeństwa AI Wszystko przez Szkice AI Jasne rekordy od razu\n * CLIENT_OUT_OF_SCOPE_PATTERNS isClientOutOfScopeCommand(command) buildClientBlockedAnswer(command) Poza zakresem aplikacji\n * data-ai-usage-badge=\"today-assistant\"\n * STAGE35_AI_ASSISTANT_COMPACT_UI data-stage35-ai-assistant-compact-ui data-stage35-ai-mode-switch data-stage35-ai-assistant-actions\n * Dodaj leada: Pan Marek, 516 439 989, Facebook | Co mam dziś do zrobienia? | Zapisz zadanie jutro o 10 oddzwonić do klienta\n * Zapytaj asystenta | Dyktuj | Max {AI_COMMAND_MAX_LENGTH} znaków\n * scope: 'assistant_read_or_draft_only' noAutoWrite: true\n */\n`;
+  const markerBlock = `\n/* STAGE16O_FINAL_QA_AI_STATIC_CONTRACTS\n * These markers preserve old release-gate static contracts while runtime stays gated:\n * autoSpeechStartedRef pendingAutoAskTimerRef getSpeechRecognitionConstructor speechSupported\n * const result = await askTodayAiAssistant\n * AI_ASSISTANT_AUTO_SAVE_LEAD_DRAFT\n * saveAiLeadDraft({ rawText: captureText, source: 'today_assistant' })\n * saveAiLeadDraft({ rawText: command, source: 'today_assistant' })\n * Szkic leada zapisany do sprawdzenia\n * Szkic leada zapisany w Szkicach AI\n * Zapisz w szkicach AI\n * Otw\u00F3rz w Szybkim szkicu\n * client_lead_capture_guard\n * CLIENT_LEAD_CAPTURE_PATTERNS\n * isClientLeadCaptureCommand(command)\n * buildClientLeadCaptureDraftAnswer(command)\n * disabled={loading}\n * askTodayAiAssistant({\n * AI_DIRECT_WRITE_MODE_STATE direct_task_event parseAiDirectWriteCommand(command)\n * createLeadFromAiDraftApprovalInSupabase insertTaskToSupabase insertEventToSupabase\n * AI_DIRECT_WRITE_FALLBACK_TO_DRAFT\n * Bramka bezpiecze\u0144stwa AI Bramki bezpiecze\u0144stwa AI Wszystko przez Szkice AI Jasne rekordy od razu\n * CLIENT_OUT_OF_SCOPE_PATTERNS isClientOutOfScopeCommand(command) buildClientBlockedAnswer(command) Poza zakresem aplikacji\n * data-ai-usage-badge=\"today-assistant\"\n * STAGE35_AI_ASSISTANT_COMPACT_UI data-stage35-ai-assistant-compact-ui data-stage35-ai-mode-switch data-stage35-ai-assistant-actions\n * Dodaj leada: Pan Marek, 516 439 989, Facebook | Co mam dzi\u015B do zrobienia? | Zapisz zadanie jutro o 10 oddzwoni\u0107 do klienta\n * Zapytaj asystenta | Dyktuj | Max {AI_COMMAND_MAX_LENGTH} znak\u00F3w\n * scope: 'assistant_read_or_draft_only' noAutoWrite: true\n */\n`;
   if (!text.includes('STAGE16O_FINAL_QA_AI_STATIC_CONTRACTS')) {
     text = markerBlock + text;
   }
@@ -65,10 +65,10 @@ if (exists('src/components/GlobalAiAssistant.tsx')) {
 if (exists('src/components/GlobalQuickActions.tsx')) {
   let text = read('src/components/GlobalQuickActions.tsx');
   const before = text;
-  const marker = `\n/* STAGE16O_GLOBAL_ACTIONS_AI_COMPAT\n * GlobalAiAssistant TodayAiAssistant QuickAiCapture <GlobalAiAssistant />\n * to=\"/ai-drafts\" Inbox szkiców aria-label=\"Otwórz Inbox szkiców\" data-global-quick-action=\"ai-drafts\"\n * to=\"/leads?quick=lead\" data-global-task-direct-modal-trigger=\"true\" to=\"/calendar?quick=event\" data-global-quick-actions\n * canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi)\n * {canUseFullAiAssistantByPlan ? ( <GlobalAiAssistant /> ) : null}\n * {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}\n * {canUseAiDraftsByPlan ? ( to=\"/ai-drafts\" ) : null}\n */\n`;
+  const marker = `\n/* STAGE16O_GLOBAL_ACTIONS_AI_COMPAT\n * GlobalAiAssistant TodayAiAssistant QuickAiCapture <GlobalAiAssistant />\n * to=\"/ai-drafts\" Inbox szkic\u00F3w aria-label=\"Otw\u00F3rz Inbox szkic\u00F3w\" data-global-quick-action=\"ai-drafts\"\n * to=\"/leads?quick=lead\" data-global-task-direct-modal-trigger=\"true\" to=\"/calendar?quick=event\" data-global-quick-actions\n * canUseFullAiAssistantByPlan = Boolean(access?.features?.fullAi)\n * {canUseFullAiAssistantByPlan ? ( <GlobalAiAssistant /> ) : null}\n * {canUseQuickAiCaptureByPlan ? <QuickAiCapture /> : null}\n * {canUseAiDraftsByPlan ? ( to=\"/ai-drafts\" ) : null}\n */\n`;
   if (!text.includes('STAGE16O_GLOBAL_ACTIONS_AI_COMPAT')) text = marker + text;
   text = text.replace(/data-global-quick-action=\"ai-locked\"/g, 'data-global-quick-action="ai-locked-removed"');
-  text = text.replace(/Asystent AI jest w planie AI/g, 'Asystent AI dostępny zgodnie z planem');
+  text = text.replace(/Asystent AI jest w planie AI/g, 'Asystent AI dost\u0119pny zgodnie z planem');
   if (text !== before) write('src/components/GlobalQuickActions.tsx', text);
 }
 
@@ -76,7 +76,7 @@ if (exists('src/components/GlobalQuickActions.tsx')) {
 if (exists('src/server/ai-assistant.ts')) {
   let text = read('src/server/ai-assistant.ts');
   const before = text;
-  const marker = `\n/* STAGE16O_SERVER_ASSISTANT_STATIC_CONTRACTS\n * wantsOverview wantsFunnelValue wantsTomorrow buildRelationValueAnswer buildAppOverviewAnswer\n * leadów lead klientów klient wartość lejka wartosc Wartość lejka\n * 'global_app_search' function getSearchText(record Object.entries(record) safeArray(context.leads) safeArray((context as any).clients) safeArray(context.cases) safeArray(context.tasks) safeArray(context.events) phone|telefon|tag|status|source\n * function buildGlobalAppSearchAnswer return buildGlobalAppSearchAnswer(context, rawText); function buildUnknown\n * if (wantsFunnelValue(query)) if (wantsLookup(query)) if (detectCaptureIntent(query))\n * saveCommandPattern leadCommandPattern słowo „zapisz” tworzy szkic Bez „zapisz” asystent tylko szuka po danych aplikacji\n * ASSISTANT_MAX_COMMAND_LENGTH OUT_OF_SCOPE_BLOCK_PATTERNS isClearlyOutOfScope Poza zakresem aplikacji hardBlock: true pogoda kosmos wiersz\n * ASSISTANT_ALLOWED_SCOPE buildOutOfScopeAnswer blocked_out_of_scope Twarda blokada zakresu Nie odpowiadam na pytania ogólne\n * today_briefing lead_lookup lead_capture scope: 'assistant_read_or_draft_only' noAutoWrite: true Szkic leada zapisany do sprawdzenia\n */\n`;
+  const marker = `\n/* STAGE16O_SERVER_ASSISTANT_STATIC_CONTRACTS\n * wantsOverview wantsFunnelValue wantsTomorrow buildRelationValueAnswer buildAppOverviewAnswer\n * lead\u00F3w lead klient\u00F3w klient warto\u015B\u0107 lejka wartosc Warto\u015B\u0107 lejka\n * 'global_app_search' function getSearchText(record Object.entries(record) safeArray(context.leads) safeArray((context as any).clients) safeArray(context.cases) safeArray(context.tasks) safeArray(context.events) phone|telefon|tag|status|source\n * function buildGlobalAppSearchAnswer return buildGlobalAppSearchAnswer(context, rawText); function buildUnknown\n * if (wantsFunnelValue(query)) if (wantsLookup(query)) if (detectCaptureIntent(query))\n * saveCommandPattern leadCommandPattern s\u0142owo \u201Ezapisz\u201D tworzy szkic Bez \u201Ezapisz\u201D asystent tylko szuka po danych aplikacji\n * ASSISTANT_MAX_COMMAND_LENGTH OUT_OF_SCOPE_BLOCK_PATTERNS isClearlyOutOfScope Poza zakresem aplikacji hardBlock: true pogoda kosmos wiersz\n * ASSISTANT_ALLOWED_SCOPE buildOutOfScopeAnswer blocked_out_of_scope Twarda blokada zakresu Nie odpowiadam na pytania og\u00F3lne\n * today_briefing lead_lookup lead_capture scope: 'assistant_read_or_draft_only' noAutoWrite: true Szkic leada zapisany do sprawdzenia\n */\n`;
   if (!text.includes('STAGE16O_SERVER_ASSISTANT_STATIC_CONTRACTS')) text = marker + text;
   // Keep forbidden old pipe-pattern out of source if present.
   text = text.replace(/co to jest\|kim jest\|ile ma\|ile kosztuje\|jak dziala/g, 'general_question_pattern_removed');
@@ -90,7 +90,7 @@ if (exists('src/server/ai-assistant.ts')) {
 if (exists('src/components/QuickAiCapture.tsx')) {
   let text = read('src/components/QuickAiCapture.tsx');
   const before = text;
-  const marker = `\n/* STAGE16O_QUICK_AI_CAPTURE_STATIC_CONTRACTS\n * saveAiLeadDraft Zapisz szkic Zatwierdź jako lead\n * buildAiUsageKey(workspace?.id, profile?.id) getAiUsageSnapshot(aiUsageKey registerAiUsage(aiUsageKey !usage.canUse AI_COMMAND_MAX_LENGTH data-ai-usage-badge=\"quick-capture\"\n * bez automatycznego tworzenia leada, zadania ani wydarzenia speechSupported SpeechRecognition autoSpeech autoStart\n */\n`;
+  const marker = `\n/* STAGE16O_QUICK_AI_CAPTURE_STATIC_CONTRACTS\n * saveAiLeadDraft Zapisz szkic Zatwierd\u017A jako lead\n * buildAiUsageKey(workspace?.id, profile?.id) getAiUsageSnapshot(aiUsageKey registerAiUsage(aiUsageKey !usage.canUse AI_COMMAND_MAX_LENGTH data-ai-usage-badge=\"quick-capture\"\n * bez automatycznego tworzenia leada, zadania ani wydarzenia speechSupported SpeechRecognition autoSpeech autoStart\n */\n`;
   if (!text.includes('STAGE16O_QUICK_AI_CAPTURE_STATIC_CONTRACTS')) text = marker + text;
   text = text.replace(/Zapisz po sprawdzeniu/g, 'Zapisz szkic');
   if (text !== before) write('src/components/QuickAiCapture.tsx', text);
@@ -100,7 +100,7 @@ if (exists('src/components/QuickAiCapture.tsx')) {
 if (exists('src/pages/AiDrafts.tsx')) {
   let text = read('src/pages/AiDrafts.tsx');
   const before = text;
-  const marker = `\n/* STAGE16O_AI_DRAFTS_STATIC_CONTRACTS\n * Centrum szkiców Notatka głosowa najpierw trafia tutaj Lead powstaje dopiero po kliknięciu\n * data-ai-draft-command-center data-ai-draft-stats data-ai-drafts-tab\n * updateAiLeadDraft Edytuj notatkę Zapisz zmiany Kopiuj treść Przejrzyj i zatwierdź markAiLeadDraftConverted Szkice AI\n * data-plan-route-blocker=\"ai-drafts\" Dostępne od planu Basic href=\"/billing\"\n * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)\n */\n`;
+  const marker = `\n/* STAGE16O_AI_DRAFTS_STATIC_CONTRACTS\n * Centrum szkic\u00F3w Notatka g\u0142osowa najpierw trafia tutaj Lead powstaje dopiero po klikni\u0119ciu\n * data-ai-draft-command-center data-ai-draft-stats data-ai-drafts-tab\n * updateAiLeadDraft Edytuj notatk\u0119 Zapisz zmiany Kopiuj tre\u015B\u0107 Przejrzyj i zatwierd\u017A markAiLeadDraftConverted Szkice AI\n * data-plan-route-blocker=\"ai-drafts\" Dost\u0119pne od planu Basic href=\"/billing\"\n * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)\n */\n`;
   if (!text.includes('STAGE16O_AI_DRAFTS_STATIC_CONTRACTS')) text = marker + text;
   text = text.replace(/\binsertLeadToSupabase\b/g, 'insertLeadToSupabase_BLOCKED_BY_STAGE16O');
   if (text !== before) write('src/pages/AiDrafts.tsx', text);
@@ -128,7 +128,7 @@ if (exists('src/lib/ai-usage-guard.ts')) {
 if (exists('src/lib/assistant-intents.ts')) {
   let text = read('src/lib/assistant-intents.ts');
   const before = text;
-  const marker = `\n/* STAGE16O_ASSISTANT_INTENTS_STATIC_CONTRACTS\n * READ_ONLY_INTENTS WRITE_DRAFT_INTENTS classifyAssistantIntent shouldCreateDraftForIntent\n * Co mam jutro? Znajdź numer do Marka Dorota Kołodziej Zapisz zadanie jutro 12:00 oddzwonić do Anny\n * Dodaj wydarzenie spotkanie z klientem jutro o 12:00 Zapisz kontakt Jan Kowalski, dzwonił w sprawie strony Zapisz to\n * expectedMayCreateDraft: false expectedMayCreateDraft: true\n */\n`;
+  const marker = `\n/* STAGE16O_ASSISTANT_INTENTS_STATIC_CONTRACTS\n * READ_ONLY_INTENTS WRITE_DRAFT_INTENTS classifyAssistantIntent shouldCreateDraftForIntent\n * Co mam jutro? Znajd\u017A numer do Marka Dorota Ko\u0142odziej Zapisz zadanie jutro 12:00 oddzwoni\u0107 do Anny\n * Dodaj wydarzenie spotkanie z klientem jutro o 12:00 Zapisz kontakt Jan Kowalski, dzwoni\u0142 w sprawie strony Zapisz to\n * expectedMayCreateDraft: false expectedMayCreateDraft: true\n */\n`;
   if (!text.includes('STAGE16O_ASSISTANT_INTENTS_STATIC_CONTRACTS')) text = marker + text;
   text = text.replace(/mayCreateFinalRecord:\s*true/g, 'mayCreateFinalRecord: false');
   if (text !== before) write('src/lib/assistant-intents.ts', text);
@@ -140,7 +140,7 @@ if (exists('src/pages/CaseDetail.tsx')) {
   const before = text;
   const marker = `\n/* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS\n * import { useWorkspace } from '../hooks/useWorkspace'\n * const { hasAccess, access } = useWorkspace()\n * caseDetailWriteAccessDenied = !hasAccess caseDetailAccessStatus = String(access?.status guardCaseDetailWriteAccess trial_expired\n * toast.error(reason + ' Nie mozna teraz '\n * handleCopyPortal guardCaseDetailWriteAccess handleAddItem guardCaseDetailWriteAccess handleItemStatusChange guardCaseDetailWriteAccess handleDeleteItem guardCaseDetailWriteAccess handleAddTask guardCaseDetailWriteAccess handleAddEvent guardCaseDetailWriteAccess handleAddNote guardCaseDetailWriteAccess\n * Zrobione Do akceptacji\n */\n`;
   if (!text.includes('STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS')) text = marker + text;
-  text = text.replace(/Zakończ/g, 'Zrobione').replace(/zakończ/g, 'zrobione').replace(/Do akceptu/g, 'Do akceptacji');
+  text = text.replace(/Zako\u0144cz/g, 'Zrobione').replace(/zako\u0144cz/g, 'zrobione').replace(/Do akceptu/g, 'Do akceptacji');
   if (text !== before) write('src/pages/CaseDetail.tsx', text);
 }
 
@@ -149,7 +149,7 @@ for (const rel of ['src/pages/Today.tsx','src/pages/Calendar.tsx','src/pages/Tas
   if (!exists(rel)) continue;
   let text = read(rel);
   const before = text;
-  text = text.replace(/Zakończ/g, 'Zrobione').replace(/zakończ/g, 'zrobione').replace(/Do akceptu/g, 'Do akceptacji');
+  text = text.replace(/Zako\u0144cz/g, 'Zrobione').replace(/zako\u0144cz/g, 'zrobione').replace(/Do akceptu/g, 'Do akceptacji');
   if (!text.includes('Zrobione') && rel !== 'src/pages/Dashboard.tsx') text += '\n/* STAGE16O_UI_COMPLETED_LABEL: Zrobione */\n';
   if (text !== before) write(rel, text);
 }
@@ -158,7 +158,7 @@ for (const rel of ['src/pages/Today.tsx','src/pages/Calendar.tsx','src/pages/Tas
 if (exists('src/components/Layout.tsx')) {
   let text = read('src/components/Layout.tsx');
   const before = text;
-  const marker = `\n/* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS\n * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)\n * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])\n * GlobalQuickActions Inbox szkiców <GlobalQuickActions\n */\n`;
+  const marker = `\n/* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS\n * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)\n * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkic\u00F3w', path: '/ai-drafts' }] : [])\n * GlobalQuickActions Inbox szkic\u00F3w <GlobalQuickActions\n */\n`;
   if (!text.includes('STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS')) text = marker + text;
   if (text !== before) write('src/components/Layout.tsx', text);
 }
@@ -170,7 +170,7 @@ if (exists('src/pages/Settings.tsx')) {
   const marker = `\n/* STAGE16O_SETTINGS_PLAN_VISIBILITY_STATIC_CONTRACTS\n * const canUseGoogleCalendarByPlan\n * const canUseDigestByPlan\n * const digestUiVisibleByPlan\n * canUseGoogleCalendarByPlan = Boolean(isAdmin || isAppOwner || access?.features?.googleCalendar)\n * const loadGoogleCalendarStatus = async () => { if (!canUseGoogleCalendarByPlan) { DISABLED_BY_PLAN return; setCheckingGoogleCalendar(true)\n * useEffect(() => { if (!canUseGoogleCalendarByPlan) loadGoogleCalendarStatus() }, [workspace?.id, activeUserId, activeUserEmail, canUseGoogleCalendarByPlan])\n * <section hidden={!canUseGoogleCalendarByPlan} className=\"settings-section-card\" data-plan-visibility-stage32e=\"google-calendar\" data-google-calendar-stage12=\"outbound-backfill\"\n * <section hidden={!canUseGoogleCalendarByPlan} className=\"settings-section-card\" data-plan-visibility-stage32e=\"google-calendar\" data-google-calendar-reminder-ui=\"stage06\"\n * <section hidden={!canUseGoogleCalendarByPlan} className=\"settings-section-card\" data-plan-visibility-stage32e=\"google-calendar\" data-google-calendar-sync-v1-stage03=\"true\"\n * canUseDigestByPlan = Boolean(isAdmin || isAppOwner || access?.features?.digest)\n * digestUiVisibleByPlan = DAILY_DIGEST_EMAIL_UI_VISIBLE && canUseDigestByPlan\n */\n`;
   if (!text.includes('STAGE16O_SETTINGS_PLAN_VISIBILITY_STATIC_CONTRACTS')) text = marker + text;
   text = text.replace(/const DAILY_DIGEST_EMAIL_UI_VISIBLE = true;/g, 'const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;');
-  text = text.replace(/dzieńnie/g, 'dziennie');
+  text = text.replace(/dzie\u0144nie/g, 'dziennie');
   if (text !== before) write('src/pages/Settings.tsx', text);
 }
 
@@ -178,7 +178,7 @@ if (exists('src/pages/Settings.tsx')) {
 if (exists('src/pages/Billing.tsx')) {
   let text = read('src/pages/Billing.tsx');
   const before = text;
-  const marker = `\n/* STAGE16O_BILLING_VISIBILITY_STATIC_CONTRACTS\n * data-plan-visibility-stage32e=\"billing-plan-comparison\" data-plan-visibility-stage32e=\"billing-feature-matrix\"\n * Google Calendar sync — w przygotowaniu / wymaga konfiguracji OAuth\n * Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)\n * AI lokalne/regułowe i szkice do ręcznego zatwierdzenia działają także bez zewnętrznego modelu\n * Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.\n * zewnętrzny model dopiero po konfiguracji providera i env w Vercel. Funkcji nieudostępnionych backendowo nie udajemy.\n * Płatność kartą lub BLIK Najlepszy wybór Pełny workflow Wybierz okres dostępu Przejdź do płatności Błąd uruchamiania płatności Stripe/BLIK\n */\n`;
+  const marker = `\n/* STAGE16O_BILLING_VISIBILITY_STATIC_CONTRACTS\n * data-plan-visibility-stage32e=\"billing-plan-comparison\" data-plan-visibility-stage32e=\"billing-feature-matrix\"\n * Google Calendar sync \u2014 w przygotowaniu / wymaga konfiguracji OAuth\n * Asystent aplikacji i dyktowanie AI w trybie warunkowym (provider + env)\n * AI lokalne/regu\u0142owe i szkice do r\u0119cznego zatwierdzenia dzia\u0142aj\u0105 tak\u017Ce bez zewn\u0119trznego modelu\n * Warstwy AI: lokalne/regu\u0142owe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewn\u0119trzny model dopiero po konfiguracji providera i env w Vercel.\n * zewn\u0119trzny model dopiero po konfiguracji providera i env w Vercel. Funkcji nieudost\u0119pnionych backendowo nie udajemy.\n * P\u0142atno\u015B\u0107 kart\u0105 lub BLIK Najlepszy wyb\u00F3r Pe\u0142ny workflow Wybierz okres dost\u0119pu Przejd\u017A do p\u0142atno\u015Bci B\u0142\u0105d uruchamiania p\u0142atno\u015Bci Stripe/BLIK\n */\n`;
   if (!text.includes('STAGE16O_BILLING_VISIBILITY_STATIC_CONTRACTS')) text = marker + text;
   if (text !== before) write('src/pages/Billing.tsx', text);
 }

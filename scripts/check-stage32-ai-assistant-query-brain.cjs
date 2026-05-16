@@ -19,7 +19,7 @@ expect('stage32BuildMostTasksDayAnswer', 'most tasks day answer');
 expect('stage32WantsFirstTask', 'first task recognizer');
 expect('stage32BuildFirstTaskAnswer', 'first task in range answer');
 expect('stage32ResolveDateRange', 'date range resolver');
-expect('następnym miesiącu', 'next month Polish range label');
+expect('nast\u0119pnym miesi\u0105cu', 'next month Polish range label');
 expect("costGuard: 'local_rules'", 'local rules cost guard');
 expect("operatorIntent: 'task_day_with_most_tasks'", 'task day analytics intent');
 expect("operatorIntent: 'first_task_in_range'", 'first task analytics intent');

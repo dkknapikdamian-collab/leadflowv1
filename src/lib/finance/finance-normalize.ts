@@ -25,7 +25,7 @@ export function normalizeMoneyAmount(value: unknown, fallback = 0): number {
   const normalized = value
     .trim()
     .replace(/\s+/g, '')
-    .replace(/pln|zł|zĹ‚/gi, '')
+    .replace(/pln|zł|zł/gi, '')
     .replace(',', '.')
     .replace(/[^0-9.-]/g, '');
   const parsed = Number(normalized);
@@ -137,4 +137,3 @@ export function normalizeDateTime(value: unknown): string | null {
   const parsed = normalizeFinanceDate(value);
   return parsed ? parsed.toISOString() : null;
 }
-

@@ -101,7 +101,7 @@ if (skin.includes('cf-html-viewold broad calendar scope') || skin.includes('main
 }
 
 const weekRail = sliceBetween(calendar, 'calendar-week-visible-days-v3', '</aside>');
-if (weekRail.includes('calendar-week-filter-list hidden') || weekRail.includes('calendar-week-filter-btn') || weekRail.includes('Przyszły tydzień')) {
+if (weekRail.includes('calendar-week-filter-list hidden') || weekRail.includes('calendar-week-filter-btn') || weekRail.includes('Przysz\u0142y tydzie\u0144')) {
   addFinding(
     findings,
     'P1',

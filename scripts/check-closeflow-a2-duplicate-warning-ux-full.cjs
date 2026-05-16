@@ -36,9 +36,9 @@ const pkg = JSON.parse(read('package.json'));
 
 has(fallback, 'findEntityConflictsInSupabase', 'Supabase fallback exposes conflict lookup');
 has(system, 'entity-conflicts', 'System API routes entity conflicts');
-has(dialog, 'Możliwy duplikat', 'Conflict dialog default title/copy');
-has(dialog, 'Pokaż', 'Conflict dialog show action');
-has(dialog, 'Przywróć', 'Conflict dialog restore action');
+has(dialog, 'Mo\u017Cliwy duplikat', 'Conflict dialog default title/copy');
+has(dialog, 'Poka\u017C', 'Conflict dialog show action');
+has(dialog, 'Przywr\u00F3\u0107', 'Conflict dialog restore action');
 has(dialog, 'Dodaj mimo to', 'Conflict dialog create-anyway default action');
 
 has(leads, 'findEntityConflictsInSupabase', 'Leads imports/uses conflict lookup');
@@ -57,7 +57,7 @@ has(clients, 'setClientConflictPendingInput', 'Clients stores pending input');
 has(clients, 'handleCreateClientAnyway', 'Clients has create-anyway action');
 has(clients, 'forceDuplicate: true', 'Clients creates anyway only after explicit confirmation');
 has(clients, '<EntityConflictDialog', 'Clients renders conflict dialog');
-hasAny(clients, ['title="Możliwy duplikat"', 'title="Możliwy duplikat klienta lub leada"'], 'Clients duplicate modal title');
+hasAny(clients, ['title="Mo\u017Cliwy duplikat"', 'title="Mo\u017Cliwy duplikat klienta lub leada"'], 'Clients duplicate modal title');
 hasAny(clients, ['createAnywayLabel="Dodaj mimo to"', 'createAnywayLabel="Dodaj klienta mimo to"'], 'Clients create-anyway label');
 has(clients, 'onRestore={restoreClientConflictCandidate}', 'Clients restore action is wired');
 has(clients, 'onCancel={() => { setClientConflictOpen(false); setIsCreateOpen(true); }}', 'Clients cancel returns to form');

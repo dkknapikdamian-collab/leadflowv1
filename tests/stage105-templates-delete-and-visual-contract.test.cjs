@@ -20,7 +20,7 @@ assert(templates.includes('data-cf-template-delete-action="menu"'), 'Template ov
 assert(templates.includes('deleteCaseTemplateFromSupabase(template.id)'), 'Delete handler must delete by template.id from a TemplateRecord, not a loose id string.');
 assert(templates.includes('window.confirm'), 'Template delete must require an explicit confirmation.');
 assert(templates.includes('getTemplateItemCount(template)'), 'Delete confirmation must account for checklist items stored in the template.');
-assert(templates.includes('Pozycje już skopiowane do istniejących spraw nie są usuwane z tego ekranu'), 'Delete copy must state that existing case checklist items are not deleted from this screen.');
+assert(templates.includes('Pozycje ju\u017C skopiowane do istniej\u0105cych spraw nie s\u0105 usuwane z tego ekranu'), 'Delete copy must state that existing case checklist items are not deleted from this screen.');
 
 assert(templates.includes('main-templates-html'), 'Templates page must have a stable visual scope class.');
 assert(templates.includes('data-cf-templates-page-source="record-list-source-truth"'), 'Templates page must declare record-list source of truth.');

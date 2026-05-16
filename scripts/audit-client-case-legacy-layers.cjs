@@ -253,7 +253,7 @@ function table(headers, rows) {
 }
 
 function matchesTable(matches, extraColumns = []) {
-  if (!matches.length) return "_Brak trafień._";
+  if (!matches.length) return "_Brak trafie\u0144._";
   const headers = ["Plik", "Linia", ...extraColumns.map((c) => c.title), "Fragment"];
   const rows = matches.map((item) => [
     code(item.file),
@@ -300,16 +300,16 @@ function main() {
     .map(([label, count]) => [code(label), String(count)]);
 
   const report = [
-    "# Audyt ClientDetail / CaseDetail — stare warstwy, style i helpery",
+    "# Audyt ClientDetail / CaseDetail \u2014 stare warstwy, style i helpery",
     "",
     `**Data wygenerowania:** ${timestamp}`,
     `**Repo root:** ${code(REPO_ROOT)}`,
     "",
     "## Werdykt techniczny",
     "",
-    "Ten raport jest tylko mapą audytową. Skrypt nie zmienia UI, logiki ani danych. Jego zadanie to pokazać, które stare warstwy mogą nadal wpływać na `ClientDetail` i `CaseDetail`, zanim zaczniemy kolejne poprawki.",
+    "Ten raport jest tylko map\u0105 audytow\u0105. Skrypt nie zmienia UI, logiki ani danych. Jego zadanie to pokaza\u0107, kt\u00F3re stare warstwy mog\u0105 nadal wp\u0142ywa\u0107 na `ClientDetail` i `CaseDetail`, zanim zaczniemy kolejne poprawki.",
     "",
-    "## 1. Pliki objęte audytem",
+    "## 1. Pliki obj\u0119te audytem",
     "",
     table(
       ["Plik", "Status"],
@@ -317,8 +317,8 @@ function main() {
     ),
     "",
     missing.length
-      ? `**Uwaga:** brakuje ${missing.length} plików z listy wejściowej. To nie blokuje raportu, ale wymaga ręcznej oceny, czy ścieżki są stare, przeniesione albo usunięte.`
-      : "**Status:** wszystkie pliki z listy wejściowej istnieją.",
+      ? `**Uwaga:** brakuje ${missing.length} plik\u00F3w z listy wej\u015Bciowej. To nie blokuje raportu, ale wymaga r\u0119cznej oceny, czy \u015Bcie\u017Cki s\u0105 stare, przeniesione albo usuni\u0119te.`
+      : "**Status:** wszystkie pliki z listy wej\u015Bciowej istniej\u0105.",
     "",
     "## 2. Importy CSS w ClientDetail.tsx i CaseDetail.tsx",
     "",
@@ -332,21 +332,21 @@ function main() {
             code(item.raw),
           ])
         )
-      : "_Brak importów CSS w audytowanych stronach albo pliki stron nie istnieją._",
+      : "_Brak import\u00F3w CSS w audytowanych stronach albo pliki stron nie istniej\u0105._",
     "",
     "## 3. Klasy `client-detail-*`, `case-detail-*`, `right-card`",
     "",
-    "### 3.1. Podsumowanie tokenów klas",
+    "### 3.1. Podsumowanie token\u00F3w klas",
     "",
     classSummaryRows.length
-      ? table(["Klasa / token", "Liczba wystąpień"], classSummaryRows)
-      : "_Brak trafień._",
+      ? table(["Klasa / token", "Liczba wyst\u0105pie\u0144"], classSummaryRows)
+      : "_Brak trafie\u0144._",
     "",
-    "### 3.2. Wystąpienia z lokalizacją",
+    "### 3.2. Wyst\u0105pienia z lokalizacj\u0105",
     "",
     matchesTable(classMatches, [{ title: "Token", value: (item) => code(item.label) }]),
     "",
-    "## 4. Wystąpienia `!important`",
+    "## 4. Wyst\u0105pienia `!important`",
     "",
     importantMatches.length
       ? matchesTable(importantMatches)
@@ -354,29 +354,29 @@ function main() {
     "",
     "## 5. Lokalne helpery finansowe w ClientDetail / CaseDetail",
     "",
-    "### 5.1. Kandydaci na lokalne definicje helperów finansowych",
+    "### 5.1. Kandydaci na lokalne definicje helper\u00F3w finansowych",
     "",
-    financeStrict.length ? matchesTable(financeStrict) : "_Brak kandydatów na lokalne definicje helperów finansowych._",
+    financeStrict.length ? matchesTable(financeStrict) : "_Brak kandydat\u00F3w na lokalne definicje helper\u00F3w finansowych._",
     "",
-    "### 5.2. Luźne referencje finansowe do ręcznej oceny",
+    "### 5.2. Lu\u017Ane referencje finansowe do r\u0119cznej oceny",
     "",
-    financeLoose.length ? matchesTable(financeLoose) : "_Brak luźnych referencji finansowych._",
+    financeLoose.length ? matchesTable(financeLoose) : "_Brak lu\u017Anych referencji finansowych._",
     "",
     "## 6. Lokalne helpery notatek w ClientDetail / CaseDetail",
     "",
-    noteHelpers.length ? matchesTable(noteHelpers) : "_Brak kandydatów na lokalne helpery notatek._",
+    noteHelpers.length ? matchesTable(noteHelpers) : "_Brak kandydat\u00F3w na lokalne helpery notatek._",
     "",
     "## 7. Lokalne formularze / dialogi task/event/note w ClientDetail / CaseDetail",
     "",
-    localForms.length ? matchesTable(localForms, [{ title: "Token", value: (item) => code(item.label) }]) : "_Brak trafień formularzy/dialogów task/event/note._",
+    localForms.length ? matchesTable(localForms, [{ title: "Token", value: (item) => code(item.label) }]) : "_Brak trafie\u0144 formularzy/dialog\u00F3w task/event/note._",
     "",
-    "## 8. `getCaseFinanceSummary` poza źródłem prawdy",
+    "## 8. `getCaseFinanceSummary` poza \u017Ar\u00F3d\u0142em prawdy",
     "",
-    "Docelowe źródło prawdy: `src/lib/finance/case-finance-source.ts`.",
+    "Docelowe \u017Ar\u00F3d\u0142o prawdy: `src/lib/finance/case-finance-source.ts`.",
     "",
     summaryOccurrences.length
       ? table(
-          ["Plik", "Linia", "Poza źródłem prawdy?", "Fragment"],
+          ["Plik", "Linia", "Poza \u017Ar\u00F3d\u0142em prawdy?", "Fragment"],
           summaryOccurrences.map((item) => [
             code(item.file),
             String(item.line),
@@ -384,24 +384,24 @@ function main() {
             code(item.text),
           ])
         )
-      : "_Brak wystąpień `getCaseFinanceSummary` w skanowanych katalogach._",
+      : "_Brak wyst\u0105pie\u0144 `getCaseFinanceSummary` w skanowanych katalogach._",
     "",
     summaryOutsideSource.length
-      ? `**Do oceny:** znaleziono ${summaryOutsideSource.length} wystąpień poza źródłem prawdy. Nie każde jest błędem, bo import/wywołanie w UI może być poprawne, ale trzeba sprawdzić, czy nie powstała druga logika liczenia finansów.`
-      : "**Status:** brak wystąpień poza źródłem prawdy albo wywołania są tylko w dozwolonym pliku.",
+      ? `**Do oceny:** znaleziono ${summaryOutsideSource.length} wyst\u0105pie\u0144 poza \u017Ar\u00F3d\u0142em prawdy. Nie ka\u017Cde jest b\u0142\u0119dem, bo import/wywo\u0142anie w UI mo\u017Ce by\u0107 poprawne, ale trzeba sprawdzi\u0107, czy nie powsta\u0142a druga logika liczenia finans\u00F3w.`
+      : "**Status:** brak wyst\u0105pie\u0144 poza \u017Ar\u00F3d\u0142em prawdy albo wywo\u0142ania s\u0105 tylko w dozwolonym pliku.",
     "",
     "## 9. Interpretacja dla kolejnego etapu",
     "",
-    "- Jeśli `!important` jest w aktywnych warstwach `visual-stage12` / `visual-stage13`, nie dokładamy kolejnego CSS-a na wierzch. Najpierw trzeba zdecydować, która warstwa jest źródłem prawdy.",
-    "- Jeśli notatki lub formularze są renderowane lokalnie w `ClientDetail.tsx` w więcej niż jednym miejscu, nie maskować duplikatu CSS-em. Trzeba usunąć drugi render albo przenieść go do jednego komponentu.",
-    "- Jeśli wartości finansowe są liczone lokalnie w ekranach, przenieść je do `src/lib/finance/case-finance-source.ts` albo używać wyłącznie `getCaseFinanceSummary`.",
-    "- Jeśli `right-card` jest używany w wielu warstwach stylu, kolejny etap musi wskazać jedną klasę bazową i jedną warstwę override.",
+    "- Je\u015Bli `!important` jest w aktywnych warstwach `visual-stage12` / `visual-stage13`, nie dok\u0142adamy kolejnego CSS-a na wierzch. Najpierw trzeba zdecydowa\u0107, kt\u00F3ra warstwa jest \u017Ar\u00F3d\u0142em prawdy.",
+    "- Je\u015Bli notatki lub formularze s\u0105 renderowane lokalnie w `ClientDetail.tsx` w wi\u0119cej ni\u017C jednym miejscu, nie maskowa\u0107 duplikatu CSS-em. Trzeba usun\u0105\u0107 drugi render albo przenie\u015B\u0107 go do jednego komponentu.",
+    "- Je\u015Bli warto\u015Bci finansowe s\u0105 liczone lokalnie w ekranach, przenie\u015B\u0107 je do `src/lib/finance/case-finance-source.ts` albo u\u017Cywa\u0107 wy\u0142\u0105cznie `getCaseFinanceSummary`.",
+    "- Je\u015Bli `right-card` jest u\u017Cywany w wielu warstwach stylu, kolejny etap musi wskaza\u0107 jedn\u0105 klas\u0119 bazow\u0105 i jedn\u0105 warstw\u0119 override.",
     "",
-    "## 10. Kryterium zamknięcia ETAPU 0",
+    "## 10. Kryterium zamkni\u0119cia ETAPU 0",
     "",
-    "- Raport został wygenerowany w `docs/audits/client-case-legacy-layers-2026-05-14.md`.",
+    "- Raport zosta\u0142 wygenerowany w `docs/audits/client-case-legacy-layers-2026-05-14.md`.",
     "- Skrypt audytu istnieje w `scripts/audit-client-case-legacy-layers.cjs`.",
-    "- UI, dane i logika biznesowa nie zostały zmienione.",
+    "- UI, dane i logika biznesowa nie zosta\u0142y zmienione.",
     "- Wynik raportu jest gotowy jako mapa do REPAIR4 / kolejnego etapu naprawy.",
     "",
   ].join("\n");
@@ -413,15 +413,15 @@ function main() {
   console.log(rel(REPORT_PATH));
   console.log("");
   console.log("Podsumowanie:");
-  console.log(`- Pliki istniejące: ${existing.length}/${TARGET_FILES.length}`);
-  console.log(`- Brakujące pliki: ${missing.length}`);
+  console.log(`- Pliki istniej\u0105ce: ${existing.length}/${TARGET_FILES.length}`);
+  console.log(`- Brakuj\u0105ce pliki: ${missing.length}`);
   console.log(`- Importy CSS w stronach: ${cssImports.length}`);
   console.log(`- Tokeny klas client/case/right-card: ${classMatches.length}`);
   console.log(`- !important: ${importantMatches.length}`);
   console.log(`- Kandydaci finance helper: ${financeStrict.length}`);
   console.log(`- Kandydaci note helper: ${noteHelpers.length}`);
   console.log(`- Formularze/dialogi task/event/note: ${localForms.length}`);
-  console.log(`- getCaseFinanceSummary poza źródłem prawdy: ${summaryOutsideSource.length}`);
+  console.log(`- getCaseFinanceSummary poza \u017Ar\u00F3d\u0142em prawdy: ${summaryOutsideSource.length}`);
 }
 
 main();

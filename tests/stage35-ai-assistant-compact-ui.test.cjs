@@ -25,21 +25,21 @@ test('Stage35 keeps AI assistant panel compact and useful', () => {
   assertIncludes(source, 'data-stage35-ai-mode-switch', 'compact mode switch');
   assertIncludes(source, 'data-stage35-ai-assistant-actions', 'compact action row');
   assertIncludes(source, 'Dodaj leada: Pan Marek, 516 439 989, Facebook', 'new lead example');
-  assertIncludes(source, 'Co mam dziś do zrobienia?', 'today example');
-  assertIncludes(source, 'Zapisz zadanie jutro o 10 oddzwonić do klienta', 'task example');
+  assertIncludes(source, 'Co mam dzi\u015B do zrobienia?', 'today example');
+  assertIncludes(source, 'Zapisz zadanie jutro o 10 oddzwoni\u0107 do klienta', 'task example');
   assertIncludes(source, 'Zapytaj asystenta', 'ask button');
   assertIncludes(source, 'Dyktuj', 'dictation button');
-  assertIncludes(source, 'Max {AI_COMMAND_MAX_LENGTH} znaków', 'short limit hint');
+  assertIncludes(source, 'Max {AI_COMMAND_MAX_LENGTH} znak\u00F3w', 'short limit hint');
 });
 
 test('Stage35 removes noisy assistant helper copy and old examples', () => {
   const source = read('src/components/TodayAiAssistant.tsx');
 
-  assertNotIncludes(source, 'Dorota Kołodziej', 'old person example');
+  assertNotIncludes(source, 'Dorota Ko\u0142odziej', 'old person example');
   assertNotIncludes(source, 'Mam leada Warszawa', 'old vague lead example');
   assertNotIncludes(source, 'SAVE_SEARCH_HINT', 'long save/search helper constant');
-  assertNotIncludes(source, 'Leady, kontakty i niejasne notatki nadal trafiają do Szkiców AI', 'long safety helper');
-  assertNotIncludes(source, 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI', 'long save helper');
+  assertNotIncludes(source, 'Leady, kontakty i niejasne notatki nadal trafiaj\u0105 do Szkic\u00F3w AI', 'long safety helper');
+  assertNotIncludes(source, 'Je\u017Celi chcesz, \u017Ceby notatka albo kontakt trafi\u0142y do Szkic\u00F3w AI', 'long save helper');
   assertNotIncludes(source, 'Bez autopilota', 'diagnostic badge');
   assertNotIncludes(source, 'Tylko CloseFlow', 'diagnostic badge');
   assertNotIncludes(source, 'Parser: {answer.provider}', 'technical answer badge');

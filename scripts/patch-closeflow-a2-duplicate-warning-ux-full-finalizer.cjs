@@ -29,25 +29,25 @@ function replaceAll(text, from, to) {
 
 patchFile('src/pages/Clients.tsx', (source) => {
   let text = source;
-  text = replaceAll(text, 'title="Możliwy duplikat klienta lub leada"', 'title="Możliwy duplikat"');
-  text = replaceAll(text, 'title="Mozliwy duplikat klienta lub leada"', 'title="Możliwy duplikat"');
-  text = replaceAll(text, 'title="Możliwy duplikat w bazie"', 'title="Możliwy duplikat"');
-  text = replaceAll(text, 'title="Mozliwy duplikat w bazie"', 'title="Możliwy duplikat"');
+  text = replaceAll(text, 'title="Mo\u017Cliwy duplikat klienta lub leada"', 'title="Mo\u017Cliwy duplikat"');
+  text = replaceAll(text, 'title="Mozliwy duplikat klienta lub leada"', 'title="Mo\u017Cliwy duplikat"');
+  text = replaceAll(text, 'title="Mo\u017Cliwy duplikat w bazie"', 'title="Mo\u017Cliwy duplikat"');
+  text = replaceAll(text, 'title="Mozliwy duplikat w bazie"', 'title="Mo\u017Cliwy duplikat"');
   text = replaceAll(text, 'createAnywayLabel="Dodaj klienta mimo to"', 'createAnywayLabel="Dodaj mimo to"');
-  text = replaceAll(text, 'createAnywayLabel="Dodaj klienta pomimo ostrzeżenia"', 'createAnywayLabel="Dodaj mimo to"');
+  text = replaceAll(text, 'createAnywayLabel="Dodaj klienta pomimo ostrze\u017Cenia"', 'createAnywayLabel="Dodaj mimo to"');
   text = replaceAll(text, 'createAnywayLabel="Dodaj klienta pomimo ostrzezenia"', 'createAnywayLabel="Dodaj mimo to"');
   return text;
 });
 
 patchFile('src/pages/Leads.tsx', (source) => {
   let text = source;
-  text = replaceAll(text, 'title="Możliwy duplikat leada lub klienta"', 'title="Możliwy duplikat"');
-  text = replaceAll(text, 'title="Mozliwy duplikat leada lub klienta"', 'title="Możliwy duplikat"');
-  text = replaceAll(text, 'title="Możliwy duplikat w bazie"', 'title="Możliwy duplikat"');
-  text = replaceAll(text, 'title="Mozliwy duplikat w bazie"', 'title="Możliwy duplikat"');
+  text = replaceAll(text, 'title="Mo\u017Cliwy duplikat leada lub klienta"', 'title="Mo\u017Cliwy duplikat"');
+  text = replaceAll(text, 'title="Mozliwy duplikat leada lub klienta"', 'title="Mo\u017Cliwy duplikat"');
+  text = replaceAll(text, 'title="Mo\u017Cliwy duplikat w bazie"', 'title="Mo\u017Cliwy duplikat"');
+  text = replaceAll(text, 'title="Mozliwy duplikat w bazie"', 'title="Mo\u017Cliwy duplikat"');
   text = replaceAll(text, 'createAnywayLabel="Dodaj leada mimo to"', 'createAnywayLabel="Dodaj mimo to"');
   text = replaceAll(text, 'createAnywayLabel="Dodaj lead mimo to"', 'createAnywayLabel="Dodaj mimo to"');
-  text = replaceAll(text, 'createAnywayLabel="Dodaj leada pomimo ostrzeżenia"', 'createAnywayLabel="Dodaj mimo to"');
+  text = replaceAll(text, 'createAnywayLabel="Dodaj leada pomimo ostrze\u017Cenia"', 'createAnywayLabel="Dodaj mimo to"');
   text = replaceAll(text, 'createAnywayLabel="Dodaj leada pomimo ostrzezenia"', 'createAnywayLabel="Dodaj mimo to"');
   return text;
 });
@@ -96,8 +96,8 @@ const pkg = JSON.parse(read('package.json'));
 
 has(dialog, 'EntityConflictDialog', 'EntityConflictDialog export');
 has(dialog, 'matchFields', 'EntityConflictDialog reason list');
-has(dialog, 'Pokaż', 'EntityConflictDialog show action');
-has(dialog, 'Przywróć', 'EntityConflictDialog restore action');
+has(dialog, 'Poka\u017C', 'EntityConflictDialog show action');
+has(dialog, 'Przywr\u00F3\u0107', 'EntityConflictDialog restore action');
 has(dialog, 'Dodaj mimo to', 'EntityConflictDialog create anyway action');
 
 for (const [name, source, targetType] of [['Leads', leads, 'lead'], ['Clients', clients, 'client']]) {
@@ -138,30 +138,30 @@ console.log('entities=lead,client');
 `;
 write('scripts/check-closeflow-duplicate-warning-ux-full.cjs', checkScript + '\n');
 
-const doc = `# CloseFlow A2 — Duplicate warning UX full finalizer
+const doc = `# CloseFlow A2 \u2014 Duplicate warning UX full finalizer
 
-**Data:** 2026-05-09  
-**Etap:** A2 — Duplicate warning UX full  
+**Data:** 2026-05-09
+**Etap:** A2 \u2014 Duplicate warning UX full
 **Tryb:** finalizer / guard / runtime smoke checklist
 
 ## Werdykt
 
-A2 nie jest przepisywany od zera. Istniejący flow konfliktów zostaje, a ten finalizer dopina guard oraz ujednolica kopię modala.
+A2 nie jest przepisywany od zera. Istniej\u0105cy flow konflikt\u00F3w zostaje, a ten finalizer dopina guard oraz ujednolica kopi\u0119 modala.
 
 ## Zakres
 
-- Lead i klient używają \`EntityConflictDialog\`.
-- Przed zapisem wywoływany jest \`findEntityConflictsInSupabase\`.
+- Lead i klient u\u017Cywaj\u0105 \`EntityConflictDialog\`.
+- Przed zapisem wywo\u0142ywany jest \`findEntityConflictsInSupabase\`.
 - Backend \`api/system?kind=entity-conflicts\` wykrywa konflikt po: \`email\`, \`phone\`, \`name\`, \`company\`.
 - Modal pokazuje powody przez \`matchFields\`.
-- Użytkownik może kliknąć \`Pokaż\`, \`Przywróć\` jeśli dotyczy, \`Dodaj mimo to\` albo anulować.
+- U\u017Cytkownik mo\u017Ce klikn\u0105\u0107 \`Poka\u017C\`, \`Przywr\u00F3\u0107\` je\u015Bli dotyczy, \`Dodaj mimo to\` albo anulowa\u0107.
 
 ## Nie robimy
 
 - Brak automatycznego scalania.
 - Brak automatycznego usuwania.
 - Brak AI dedupe.
-- Brak blokady zapisu po świadomym kliknięciu \`Dodaj mimo to\`.
+- Brak blokady zapisu po \u015Bwiadomym klikni\u0119ciu \`Dodaj mimo to\`.
 
 ## Check automatyczny
 
@@ -170,28 +170,28 @@ A2 nie jest przepisywany od zera. Istniejący flow konfliktów zostaje, a ten fi
 Sprawdza:
 
 - dialog konfliktu,
-- flow dla leadów,
-- flow dla klientów,
+- flow dla lead\u00F3w,
+- flow dla klient\u00F3w,
 - backend fields: email / phone / name / company,
 - routing \`entity-conflicts\` w \`api/system.ts\`,
-- konsekwencję override \`allowDuplicate / forceDuplicate\` na poziomie typów/ścieżek tworzenia.
+- konsekwencj\u0119 override \`allowDuplicate / forceDuplicate\` na poziomie typ\u00F3w/\u015Bcie\u017Cek tworzenia.
 
-## Runtime smoke po wdrożeniu
+## Runtime smoke po wdro\u017Ceniu
 
-1. W \`Leady\` dodaj lead z telefonem istniejącego leada.
-2. Ma pojawić się modal \`Możliwy duplikat\`.
-3. Lista powodów ma pokazać \`telefon\`.
-4. Kliknij \`Pokaż\` i sprawdź, czy prowadzi do istniejącego rekordu.
-5. Powtórz i kliknij \`Dodaj mimo to\`; zapis ma przejść dopiero po tym kliknięciu.
-6. W \`Klienci\` dodaj klienta z telefonem istniejącego klienta.
-7. Ma pojawić się modal \`Możliwy duplikat\`.
-8. Powód ma obejmować \`telefon\` albo inne zgodne pole.
-9. Jeśli kandydat jest archiwalny, ma być dostępne \`Przywróć\`.
+1. W \`Leady\` dodaj lead z telefonem istniej\u0105cego leada.
+2. Ma pojawi\u0107 si\u0119 modal \`Mo\u017Cliwy duplikat\`.
+3. Lista powod\u00F3w ma pokaza\u0107 \`telefon\`.
+4. Kliknij \`Poka\u017C\` i sprawd\u017A, czy prowadzi do istniej\u0105cego rekordu.
+5. Powt\u00F3rz i kliknij \`Dodaj mimo to\`; zapis ma przej\u015B\u0107 dopiero po tym klikni\u0119ciu.
+6. W \`Klienci\` dodaj klienta z telefonem istniej\u0105cego klienta.
+7. Ma pojawi\u0107 si\u0119 modal \`Mo\u017Cliwy duplikat\`.
+8. Pow\u00F3d ma obejmowa\u0107 \`telefon\` albo inne zgodne pole.
+9. Je\u015Bli kandydat jest archiwalny, ma by\u0107 dost\u0119pne \`Przywr\u00F3\u0107\`.
 10. \`Anuluj\` nie zapisuje nowego rekordu.
 
-## Kryterium zamknięcia
+## Kryterium zamkni\u0119cia
 
-A2 jest domknięte dopiero, gdy check przechodzi, build przechodzi i ręcznie zobaczysz modal duplikatu dla leada oraz klienta.
+A2 jest domkni\u0119te dopiero, gdy check przechodzi, build przechodzi i r\u0119cznie zobaczysz modal duplikatu dla leada oraz klienta.
 `;
 write('docs/runtime/CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FULL_FINALIZER_2026-05-09.md', doc);
 

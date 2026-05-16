@@ -21,10 +21,10 @@ test('Today assistant keeps only off-topic hard blocks and allows full app scope
   assert.match(server, /wantsTomorrow/);
   assert.match(server, /buildRelationValueAnswer/);
   assert.match(server, /buildAppOverviewAnswer/);
-  assert.match(server, /leadów|lead/);
-  assert.match(server, /klientów|klient/);
-  assert.match(server, /wartość lejka|wartosc|Wartość lejka/);
-  assert.match(component, /Pełny zakres aplikacji/);
+  assert.match(server, /lead\u00F3w|lead/);
+  assert.match(server, /klient\u00F3w|klient/);
+  assert.match(server, /warto\u015B\u0107 lejka|wartosc|Warto\u015B\u0107 lejka/);
+  assert.match(component, /Pe\u0142ny zakres aplikacji/);
   assert.doesNotMatch(server, /co to jest\|kim jest\|ile ma\|ile kosztuje\|jak dziala/);
   assert.doesNotMatch(component, /co to jest\|kim jest\|ile ma\|ile kosztuje\|jak dziala/);
 });

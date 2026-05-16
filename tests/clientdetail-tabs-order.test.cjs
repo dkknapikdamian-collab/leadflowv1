@@ -22,7 +22,7 @@ function walk(dir, out = []) {
 }
 
 function extractRelevantSnippet(content) {
-  const anchors = ['client-detail-tabs', 'Zakładki klienta', 'CLIENT_TABS', 'clientTabs', 'tabs'];
+  const anchors = ['client-detail-tabs', 'Zak\u0142adki klienta', 'CLIENT_TABS', 'clientTabs', 'tabs'];
   for (const anchor of anchors) {
     const idx = content.indexOf(anchor);
     if (idx !== -1) {
@@ -40,7 +40,7 @@ function main() {
     return (
       /ClientDetail/i.test(rel) ||
       content.includes('client-detail-tabs') ||
-      content.includes('Zakładki klienta') ||
+      content.includes('Zak\u0142adki klienta') ||
       (content.includes('Podsumowanie') && content.includes('Sprawy') && /client/i.test(rel))
     );
   });
@@ -58,12 +58,12 @@ function main() {
     const rel = path.relative(ROOT, file).replace(/\\/g, '/');
     hits.push(rel);
     if (!(casesIdx < summaryIdx)) {
-      failures.push(`${rel}: oczekiwano, że "Sprawy" będzie przed "Podsumowanie" w zakładkach klienta.`);
+      failures.push(`${rel}: oczekiwano, \u017Ce "Sprawy" b\u0119dzie przed "Podsumowanie" w zak\u0142adkach klienta.`);
     }
   }
 
   if (!hits.length) {
-    throw new Error('Nie znaleziono zakładek klienta zawierających etykiety "Sprawy" i "Podsumowanie". Guard nie ma czego sprawdzić.');
+    throw new Error('Nie znaleziono zak\u0142adek klienta zawieraj\u0105cych etykiety "Sprawy" i "Podsumowanie". Guard nie ma czego sprawdzi\u0107.');
   }
 
   if (failures.length) {
@@ -72,7 +72,7 @@ function main() {
     process.exit(1);
   }
 
-  console.log(`OK clientdetail-tabs-order.test.cjs — sprawdzono: ${hits.join(', ')}`);
+  console.log(`OK clientdetail-tabs-order.test.cjs \u2014 sprawdzono: ${hits.join(', ')}`);
 }
 
 try {

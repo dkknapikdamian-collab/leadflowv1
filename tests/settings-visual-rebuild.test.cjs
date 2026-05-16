@@ -27,7 +27,7 @@ const requiredPage = [
   'Workspace',
   'Powiadomienia',
   'Preferencje aplikacji',
-  'Dostęp i bezpieczeństwo',
+  'Dost\u0119p i bezpiecze\u0144stwo',
   'Dane',
   'Integracje',
 ];

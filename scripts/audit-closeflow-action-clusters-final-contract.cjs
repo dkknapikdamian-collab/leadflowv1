@@ -74,7 +74,7 @@ Status: ${evidence.status}
 
 ## Cel
 
-Jedno źródło prawdy dla grup przycisków akcji: nagłówki encji, nagłówki paneli, akcje inline i strefy danger.
+Jedno \u017Ar\u00F3d\u0142o prawdy dla grup przycisk\u00F3w akcji: nag\u0142\u00F3wki encji, nag\u0142\u00F3wki paneli, akcje inline i strefy danger.
 
 ## Pliki kontraktu
 
@@ -84,18 +84,18 @@ Jedno źródło prawdy dla grup przycisków akcji: nagłówki encji, nagłówki 
 
 ## Polityka migracji
 
-- Nie wykonywać hurtowych migracji legacy stron przez regex.
-- Duże strony migrować tylko ręcznie, jeden plik na etap.
+- Nie wykonywa\u0107 hurtowych migracji legacy stron przez regex.
+- Du\u017Ce strony migrowa\u0107 tylko r\u0119cznie, jeden plik na etap.
 - Ten etap domyka kontrakt komponentowy i CSS, nie zmienia logiki biznesowej.
 
 ## Regiony
 
 ${evidence.regions.map((entry) => `- \`${entry.region}\` - occurrences: ${entry.occurrences}`).join('\n')}
 
-## Kryterium zakończenia
+## Kryterium zako\u0144czenia
 
 - \`ActionCluster\` ma jawny marker VS-6.
-- Legacy wrappery z \`entity-actions.tsx\` mają \`data-standard-action-cluster=\"true\"\`.
+- Legacy wrappery z \`entity-actions.tsx\` maj\u0105 \`data-standard-action-cluster=\"true\"\`.
 - CSS zawiera metadata: owner, reason, scope, remove_after_stage.
 - Check blokuje brak kontraktu.
 

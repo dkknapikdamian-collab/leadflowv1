@@ -63,10 +63,10 @@ if (!login.includes('21 dni testu')) failures.push('src/pages/Login.tsx nie poka
 if (login.includes('14 dni testu')) failures.push('src/pages/Login.tsx dalej pokazuje 14 dni testu');
 
 mustInclude('src/pages/Billing.tsx', 'Google Calendar sync', 'Billing shows Google Calendar in Pro/AI');
-mustInclude('src/pages/Billing.tsx', 'Pełny asystent AI', 'Billing distinguishes full AI');
+mustInclude('src/pages/Billing.tsx', 'Pe\u0142ny asystent AI', 'Billing distinguishes full AI');
 mustInclude('src/pages/Billing.tsx', 'Raport tygodniowy', 'Billing shows weekly report on Pro');
-mustInclude('src/pages/Billing.tsx', "{ name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' }", 'Billing feature matrix gates Google Calendar');
-mustInclude('src/pages/Billing.tsx', "{ name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dostępne' }", 'Billing feature matrix gates full AI');
+mustInclude('src/pages/Billing.tsx', "{ name: 'Google Calendar', basic: 'Nie', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", 'Billing feature matrix gates Google Calendar');
+mustInclude('src/pages/Billing.tsx', "{ name: 'Pe\u0142ny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dost\u0119pne' }", 'Billing feature matrix gates full AI');
 
 mustInclude('src/components/GlobalQuickActions.tsx', 'access?.features?.ai', 'global assistant is gated by plan feature');
 mustInclude('src/components/GlobalQuickActions.tsx', 'Asystent AI jest w planie AI', 'locked AI button copy');

@@ -14,14 +14,14 @@ const statCard = read('src/components/StatShortcutCard.tsx');
 if (!statCard.includes('data-eliteflow-metric-tone={resolvedTone}')) fail('StatShortcutCard must own data-eliteflow-metric-tone.');
 if (!statCard.includes('METRIC_TONE_ALIAS')) fail('StatShortcutCard must map semantic tone aliases centrally.');
 const forbiddenMojibakeMarkers = [
-  'wartoĹ›Ä‡',
-  'dziĹ›',
-  'pĹ‚atn',
-  'obsĹ‚ugi',
-  'obowiÄ…zk',
-  'Ä…',
-  'Ä™',
-  'Ĺ‚',
+  'warto\u015B\u0107',
+  'dzi\u015B',
+  'p\u0142atn',
+  'obs\u0142ugi',
+  'obowi\u0105zk',
+  '\u0105',
+  '\u0119',
+  '\u0142',
 ];
 for (const marker of forbiddenMojibakeMarkers) {
   if (statCard.includes(marker)) fail(`StatShortcutCard contains mojibake marker: ${marker}`);

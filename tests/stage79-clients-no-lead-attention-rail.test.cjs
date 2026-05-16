@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const tokens = [
-  ['Leady do ', 'spięcia'].join(''),
+  ['Leady do ', 'spi\u0119cia'].join(''),
   ['Brak klienta albo sprawy przy aktywnym ', 'temacie'].join(''),
   ['data-clients-lead-', 'attention-rail'].join(''),
   ['clients-lead-', 'attention-card'].join(''),

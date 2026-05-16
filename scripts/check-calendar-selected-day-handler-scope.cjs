@@ -62,13 +62,13 @@ if (!fs.existsSync(packagePath)) {
 
 const pkgText = fs.readFileSync(packagePath, 'utf8');
 if (!/"build"\s*:\s*"[^"]*vite build[^"]*"/.test(pkgText)) {
-  fail('package.json nie ma rozpoznawalnego skryptu build z vite build. Nie dokładam fałszywego sukcesu.');
+  fail('package.json nie ma rozpoznawalnego skryptu build z vite build. Nie dok\u0142adam fa\u0142szywego sukcesu.');
 }
 if (!pkgText.includes('check:calendar-selected-day-handler-scope')) {
-  fail('package.json nie ma check:calendar-selected-day-handler-scope. Guard nie jest podpięty.');
+  fail('package.json nie ma check:calendar-selected-day-handler-scope. Guard nie jest podpi\u0119ty.');
 }
 if (!pkgText.includes('prebuild') || !pkgText.includes('check-calendar-selected-day-handler-scope.cjs')) {
-  fail('prebuild nie uruchamia check-calendar-selected-day-handler-scope.cjs. Vercel/build może przepuścić ten sam błąd.');
+  fail('prebuild nie uruchamia check-calendar-selected-day-handler-scope.cjs. Vercel/build mo\u017Ce przepu\u015Bci\u0107 ten sam b\u0142\u0105d.');
 }
 
 ok('Calendar handler scope guard passed');

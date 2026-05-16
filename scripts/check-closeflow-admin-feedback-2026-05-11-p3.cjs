@@ -79,8 +79,8 @@ const leadCss = readExisting([
 ]);
 
 // ClientDetail: semantic checks for the repaired feedback areas.
-failIfIncludes(client, 'Lekka oś ostatnich ruchów', 'ClientDetail old recent-moves copy');
-failIfIncludes(client, 'Aktywność klientaBrak daty', 'ClientDetail glued activity/date fallback');
+failIfIncludes(client, 'Lekka o\u015B ostatnich ruch\u00F3w', 'ClientDetail old recent-moves copy');
+failIfIncludes(client, 'Aktywno\u015B\u0107 klientaBrak daty', 'ClientDetail glued activity/date fallback');
 passIfIncludes(client, 'data-client-notes-list="true"', 'ClientDetail notes list marker');
 passIfIncludes(client, 'data-client-side-quick-actions', 'ClientDetail side quick actions marker');
 passIfIncludes(client, 'Sprawy', 'ClientDetail cases copy');
@@ -88,7 +88,7 @@ passIfIncludes(client, 'Podsumowanie', 'ClientDetail summary copy');
 const quickActionsStart = client.indexOf('data-client-side-quick-actions');
 if (quickActionsStart !== -1) {
   const quickActionsBlock = client.slice(quickActionsStart, quickActionsStart + 1800);
-  failIfIncludes(quickActionsBlock, 'Dodaj notatkę', 'ClientDetail side quick actions must not contain add-note action');
+  failIfIncludes(quickActionsBlock, 'Dodaj notatk\u0119', 'ClientDetail side quick actions must not contain add-note action');
 }
 const tabOrder = client.match(/type\s+ClientTab\s*=\s*([^;]+);/);
 if (tabOrder && !(tabOrder[1].indexOf("'cases'") !== -1 && tabOrder[1].indexOf("'summary'") !== -1 && tabOrder[1].indexOf("'cases'") < tabOrder[1].indexOf("'summary'"))) {
@@ -97,7 +97,7 @@ if (tabOrder && !(tabOrder[1].indexOf("'cases'") !== -1 && tabOrder[1].indexOf("
 
 // CaseDetail: removed panels and real history marker.
 failIfIncludes(caseDetail, 'Roadmapa sprawy', 'CaseDetail roadmap panel');
-failIfIncludes(caseDetail, 'Portal i źródła', 'CaseDetail portal/source panel');
+failIfIncludes(caseDetail, 'Portal i \u017Ar\u00F3d\u0142a', 'CaseDetail portal/source panel');
 failIfIncludes(caseDetail, 'case-detail-roadmap-panel', 'CaseDetail roadmap class');
 failIfIncludes(caseDetail, 'cf-activity-roadmap', 'CaseDetail activity roadmap usage');
 failIfIncludes(caseDetail, 'Zapis operacyjny sprawy', 'CaseDetail fake history copy');
@@ -113,11 +113,11 @@ const compactReturn = stripComments(getReturnArrayBlock(compactMeta, 'buildLeadC
 failIfRegex(compactReturn, /\b(_?leadValueLabel|dealValue|leadValue|budget|value|formatCurrency|formatMoney|buildLeadValueLabel)\b/i, 'raw value field inside compact lead meta return array');
 
 // LeadDetail: removed copy, visible actions, empty state marker.
-failIfIncludes(leadDetail, 'Co tu trzeba zrobić teraz', 'LeadDetail removed decision title');
-failIfIncludes(leadDetail, 'Krótki panel decyzyjny', 'LeadDetail removed decision description');
+failIfIncludes(leadDetail, 'Co tu trzeba zrobi\u0107 teraz', 'LeadDetail removed decision title');
+failIfIncludes(leadDetail, 'Kr\u00F3tki panel decyzyjny', 'LeadDetail removed decision description');
 passIfAny(leadDetail, ['data-lead-quick-actions', 'aria-label="Szybkie akcje na leadzie"'], 'LeadDetail quick actions marker');
 passIfIncludes(leadDetail, 'data-lead-next-action-empty', 'LeadDetail next action empty marker');
-passIfIncludes(leadDetail, 'Powód: -', 'LeadDetail risk reason empty fallback');
+passIfIncludes(leadDetail, 'Pow\u00F3d: -', 'LeadDetail risk reason empty fallback');
 
 // LeadDetail CSS: allow descendant one-line ellipsis, require the local Stage14F readability override.
 passIfRegexLike(leadCss, /\.lead-detail-right-card[\s\S]{0,500}height\s*:\s*auto/i, 'LeadDetail card local height:auto override');
@@ -129,7 +129,7 @@ passIfRegexLike(leadCss, /\.lead-detail-right-card[\s\S]{0,1500}overflow-wrap\s*
 passIfIncludes(packageJson, '"check:closeflow-admin-feedback-2026-05-11-p3"', 'package.json P3 script key');
 passIfIncludes(packageJson, 'scripts/check-closeflow-admin-feedback-2026-05-11-p3.cjs', 'package.json P3 script target');
 
-console.log('✔ CloseFlow admin feedback P3 guard passed');
+console.log('\u2714 CloseFlow admin feedback P3 guard passed');
 
 function passIfRegexLike(source, regex, label) {
   if (!regex.test(source)) fail('Missing pattern: ' + label + ' (' + regex + ')');

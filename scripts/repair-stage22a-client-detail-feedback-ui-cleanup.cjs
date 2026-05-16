@@ -30,18 +30,18 @@ function patchClientDetail() {
   const replacements = [
     ["Ostatnie ruchy", "Roadmapa"],
     ["Historia pozyskania", "Aktywne sprawy"],
-    ["Pierwszy kontakt, źródło i połączenie z leadem źródłowym.", "Aktywne sprawy klienta i przejście do prowadzenia tematu."],
-    ["Jedno miejsce pokazujące, skąd przyszedł klient. Bez dublowania przejść do tego samego leada.", "Aktywne sprawy klienta. Wejdź w sprawę, żeby prowadzić zadania, wydarzenia i notatki."],
-    ["Brak osobnej notatki. Dodaj, jeśli jest coś ważnego.", ""],
-    ["Otwórz sprawę", "Przejdź do sprawy"],
+    ["Pierwszy kontakt, \u017Ar\u00F3d\u0142o i po\u0142\u0105czenie z leadem \u017Ar\u00F3d\u0142owym.", "Aktywne sprawy klienta i przej\u015Bcie do prowadzenia tematu."],
+    ["Jedno miejsce pokazuj\u0105ce, sk\u0105d przyszed\u0142 klient. Bez dublowania przej\u015B\u0107 do tego samego leada.", "Aktywne sprawy klienta. Wejd\u017A w spraw\u0119, \u017Ceby prowadzi\u0107 zadania, wydarzenia i notatki."],
+    ["Brak osobnej notatki. Dodaj, je\u015Bli jest co\u015B wa\u017Cnego.", ""],
+    ["Otw\u00F3rz spraw\u0119", "Przejd\u017A do sprawy"],
   ];
 
   for (const [from, to] of replacements) {
     text = replaceAll(text, from, to);
   }
 
-  // Gdy wcześniejsze paczki zostawiły pusty string w ternary, niech UI nie pokazuje pustego opisu.
-  text = text.replace(/\?\s*''\s*:\s*'Brak spraw przypiętych do klienta\.'/g, "? 'Brak dodatkowego opisu.' : 'Brak spraw przypiętych do klienta.'");
+  // Gdy wcze\u015Bniejsze paczki zostawi\u0142y pusty string w ternary, niech UI nie pokazuje pustego opisu.
+  text = text.replace(/\?\s*''\s*:\s*'Brak spraw przypi\u0119tych do klienta\.'/g, "? 'Brak dodatkowego opisu.' : 'Brak spraw przypi\u0119tych do klienta.'");
 
   if (text !== before) {
     writeUtf8NoBom(file, text);

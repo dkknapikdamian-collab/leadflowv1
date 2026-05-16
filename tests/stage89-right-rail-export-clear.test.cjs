@@ -15,8 +15,8 @@ test('Stage89 export clears feedback counters after JSON/Markdown export', () =>
   assert.ok(toolbar.includes('refreshAdminFeedbackCounters'));
   assert.ok(toolbar.includes('exportJsonAndClear'));
   assert.ok(toolbar.includes('exportMarkdownAndClear'));
-  assert.ok(toolbar.includes('Pobierz JSON i wyczyść licznik'));
-  assert.ok(toolbar.includes('Pobierz Markdown i wyczyść licznik'));
+  assert.ok(toolbar.includes('Pobierz JSON i wyczy\u015B\u0107 licznik'));
+  assert.ok(toolbar.includes('Pobierz Markdown i wyczy\u015B\u0107 licznik'));
 
   assert.ok(storage.includes('ADMIN_FEEDBACK_EXPORT_CLEAR_COUNTERS_STAGE89'));
   assert.ok(storage.includes('export function clearAdminFeedbackItems()'));

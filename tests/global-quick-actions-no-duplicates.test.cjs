@@ -25,7 +25,7 @@ test('global quick actions stay in one top bar', () => {
   assert.match(global, /GLOBAL_QUICK_ACTIONS_SINGLE_SOURCE_V9[257]/);
   assert.match(global, /Asystent AI|GlobalAiAssistant/);
   assert.match(global, /Szybki szkic|QuickAiCapture/);
-  assert.match(global, /Inbox szkiców/);
+  assert.match(global, /Inbox szkic\u00F3w/);
   assert.match(global, /Lead/);
   assert.match(global, /Zadanie/);
   assert.match(global, /Wydarzenie/);

@@ -1,4 +1,4 @@
-﻿/* CLIENT_DETAIL_VISUAL_REBUILD_STAGE12 */
+/* CLIENT_DETAIL_VISUAL_REBUILD_STAGE12 */
 
 .client-detail-vnext-page {
   min-height: 100%;
@@ -1841,7 +1841,7 @@
   color: #047857;
 }
 /* CLIENT_DETAIL_TOP_TILES_REPAIR2
-   Kafelki klienta majÄ… staÄ‡ nad zakĹ‚adkami Podsumowanie / Sprawy / Historia.
+   Kafelki klienta mają stać nad zakładkami Podsumowanie / Sprawy / Historia.
    Styl jest lekki, czytelny i zgodny z kartami aplikacji. */
 .client-detail-top-tiles {
   display: grid;
@@ -3165,10 +3165,10 @@ button.client-detail-top-tile-link {
 
 /* CLOSEFLOW_CLIENT_DETAIL_NEXT_ACTION_TILE_POLISH_2026_05_12_START */
 /*
-  Cel: poprawiÄ‡ kafelek "NajbliĹĽsza zaplanowana akcja" w Kliencie.
-  Problem ze zrzutu: kafel jest za niski/Ĺ›ciĹ›niÄ™ty, tekst i chip sÄ… zbyt blisko siebie,
-  a ukĹ‚ad bocznej kolumny moĹĽe wymuszaÄ‡ rĂłwne, za maĹ‚e rzÄ™dy.
-  Zakres: tylko ClientDetail vnext, bez zmiany danych, sygnaĹ‚Ăłw ani logiki akcji.
+  Cel: poprawić kafelek "Najbliższa zaplanowana akcja" w Kliencie.
+  Problem ze zrzutu: kafel jest za niski/ściśnięty, tekst i chip są zbyt blisko siebie,
+  a układ bocznej kolumny może wymuszać równe, za małe rzędy.
+  Zakres: tylko ClientDetail vnext, bez zmiany danych, sygnałów ani logiki akcji.
 */
 .client-detail-vnext-page .client-detail-top-cards-side {
   grid-template-rows: auto auto !important;

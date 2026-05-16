@@ -20,8 +20,8 @@ test('Stage29d renders Szkice as one compact bottom tile, not a large preview se
   expectIncludes(today, 'data-today-ai-drafts-compact-tile="true"');
   expectIncludes(today, 'data-today-ai-drafts-stage29d-bottom="true"');
   expectIncludes(today, 'Szkice do zatwierdzenia');
-  expectIncludes(today, 'Brak szkiców oczekujących');
-  expectIncludes(today, 'Otwórz Szkice AI');
+  expectIncludes(today, 'Brak szkic\u00F3w oczekuj\u0105cych');
+  expectIncludes(today, 'Otw\u00F3rz Szkice AI');
   assert.equal(today.includes('data-today-ai-drafts-preview-list="true"'), false);
   assert.equal(today.includes('pendingTodayAiDrafts.slice(0, 3)'), false);
 });

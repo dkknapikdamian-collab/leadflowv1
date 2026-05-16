@@ -920,7 +920,7 @@ export default function Leads() {
           />
         </div>
 
-        {/* 
+        {/*
 // STAGE32_STAGE96_COMPAT_WIDTH_MARKER: xl:grid-cols-[minmax(0,1fr)_300px] is a legacy guard marker only; real rail width is delegated to Stage96 source truth CSS.
 STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
         <div
@@ -1132,7 +1132,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
           </div>
         </div>
       </div>
-    
+
         <EntityConflictDialog
           open={leadConflictOpen}
           candidates={leadConflictCandidates}

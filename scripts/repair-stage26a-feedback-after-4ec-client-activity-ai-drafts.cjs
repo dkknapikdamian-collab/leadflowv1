@@ -38,16 +38,16 @@ function patchClientDetail() {
     );
   }
 
-  // Kosz jako czerwona ikonka zamiast tekstu "Usuń".
+  // Kosz jako czerwona ikonka zamiast tekstu "Usu\u0144".
   text = text.replace(
-    /<Button type="button" size="sm" variant="outline" onClick=\{\(\) => toast\.info\('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy\.'\)\}>\s*Usuń\s*<\/Button>/g,
+    /<Button type="button" size="sm" variant="outline" onClick=\{\(\) => toast\.info\('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy\.'\)\}>\s*Usu\u0144\s*<\/Button>/g,
     `<Button
                               type="button"
                               size="sm"
                               variant="outline"
                               className="client-detail-case-smart-delete-icon-button"
-                              aria-label="Usuń sprawę"
-                              title="Usuń sprawę"
+                              aria-label="Usu\u0144 spraw\u0119"
+                              title="Usu\u0144 spraw\u0119"
                               onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
                             >
                               <Trash2 className="h-4 w-4" aria-hidden="true" />

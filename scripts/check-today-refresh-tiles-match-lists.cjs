@@ -10,7 +10,7 @@ check(src.includes('STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE'), 'missing manu
 check(src.includes('STAGE16AI_TODAY_TILES_MATCH_LISTS'), 'missing tile/list marker');
 check(src.includes('const [manualRefreshing, setManualRefreshing]'), 'missing manualRefreshing state');
 check(src.includes('refreshData({ manual: true })'), 'refresh button must call manual refresh path');
-check(src.includes("manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'"), 'refresh button must show manual loading copy');
+check(src.includes("manualRefreshing ? 'Od\u015Bwie\u017Canie...' : 'Od\u015Bwie\u017C dane'"), 'refresh button must show manual loading copy');
 check(src.includes('const todaySectionLabels = {'), 'missing single source of truth labels');
 check(src.includes('const todayTiles:'), 'missing todayTiles model');
 check(src.includes('data-stage16ai-today-tiles-match-lists="true"'), 'missing tile section marker');

@@ -85,11 +85,11 @@ for (const requiredClass of [
 for (const requiredDoc of [
   'Czerwony nie jest jeden',
   'danger-delete     = usuwasz dane',
-  'alert-error       = system nie moĹĽe wykonaÄ‡ akcji',
-  'status-overdue    = termin pracy minÄ…Ĺ‚',
-  'payment-overdue   = pieniÄ…dze sÄ… po terminie',
-  'session-logout    = koĹ„czysz sesjÄ™',
-  'Nie przepina hurtowo aktywnych ekranĂłw',
+  'alert-error       = system nie mo\u017Ce wykona\u0107 akcji',
+  'status-overdue    = termin pracy min\u0105\u0142',
+  'payment-overdue   = pieni\u0105dze s\u0105 po terminie',
+  'session-logout    = ko\u0144czysz sesj\u0119',
+  'Nie przepina hurtowo aktywnych ekran\u00F3w',
 ]) {
   assert(docs.includes(requiredDoc), 'docs missing required distinction: ' + requiredDoc);
 }

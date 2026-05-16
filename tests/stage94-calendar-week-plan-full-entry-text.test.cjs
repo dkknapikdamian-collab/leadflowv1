@@ -62,15 +62,15 @@ test('Stage94 week plan card exposes a visible full title', () => {
 });
 
 test('Stage94 week plan card keeps full action labels and handlers', () => {
-  for (const label of ['Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Usuń']) assert.ok(card.includes(label), 'Missing action label: ' + label);
+  for (const label of ['Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Usu\u0144']) assert.ok(card.includes(label), 'Missing action label: ' + label);
   for (const handler of ['onEdit(entry)', 'onShiftHours(entry, 1)', 'onShift(entry, 1)', 'onShift(entry, 7)', 'onComplete(entry)', 'onDelete(entry)']) assert.ok(card.includes(handler), 'Missing action handler: ' + handler);
 });
 
 test('Stage94 week plan card shows relation or explicit no-relation text', () => {
   assert.match(card, /getCalendarEntryRelationLabel\(entry, caseTitle\)/);
-  assert.ok(card.includes('Brak powiązania'));
-  assert.ok(card.includes('Otwórz lead'));
-  assert.ok(card.includes('Otwórz sprawę'));
+  assert.ok(card.includes('Brak powi\u0105zania'));
+  assert.ok(card.includes('Otw\u00F3rz lead'));
+  assert.ok(card.includes('Otw\u00F3rz spraw\u0119'));
 });
 
 test('Stage94 CSS is scoped to week plan and does not touch month grid', () => {

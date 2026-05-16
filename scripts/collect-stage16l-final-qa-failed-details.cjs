@@ -159,7 +159,7 @@ function extractUsefulFailure(result) {
   const patterns = [
     /FAILED:/,
     /failing tests:/,
-    /^✖ /,
+    /^\u2716 /,
     /AssertionError/,
     /Expected values/,
     /expected:/,
@@ -222,9 +222,9 @@ const failed = results.filter((x) => !x.ok);
 const passed = results.filter((x) => x.ok);
 
 const md = [
-  "# FINAL QA FAILED DETAILS — 2026-05-06",
+  "# FINAL QA FAILED DETAILS \u2014 2026-05-06",
   "",
-  "Cel: zebrać dokładne assertiony dla wszystkich czerwonych gateów bez zatrzymywania się na pierwszym błędzie.",
+  "Cel: zebra\u0107 dok\u0142adne assertiony dla wszystkich czerwonych gate\u00F3w bez zatrzymywania si\u0119 na pierwszym b\u0142\u0119dzie.",
   "",
   `- Passed: ${passed.length}`,
   `- Failed: ${failed.length}`,
@@ -282,7 +282,7 @@ if (failed.length) {
   console.log("");
   console.log("Top failed details:");
   failed.slice(0, 20).forEach((x, i) => {
-    const firstLine = x.usefulFailure.split("\n").find((line) => /AssertionError|missing|forbidden|Expected|FAILED|✖/.test(line)) || "";
+    const firstLine = x.usefulFailure.split("\n").find((line) => /AssertionError|missing|forbidden|Expected|FAILED|\u2716/.test(line)) || "";
     console.log(`${i + 1}. ${x.label} :: ${firstLine.slice(0, 180)}`);
   });
 }

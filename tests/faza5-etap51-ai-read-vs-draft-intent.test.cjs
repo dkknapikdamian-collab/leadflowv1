@@ -24,11 +24,11 @@ test('Faza 5 Etap 5.1 fixtures lock read/search/write examples', () => {
 
   for (const phrase of [
     'Co mam jutro?',
-    'Znajdź numer do Marka',
-    'Dorota Kołodziej',
-    'Zapisz zadanie jutro 12:00 oddzwonić do Anny',
+    'Znajd\u017A numer do Marka',
+    'Dorota Ko\u0142odziej',
+    'Zapisz zadanie jutro 12:00 oddzwoni\u0107 do Anny',
     'Dodaj wydarzenie spotkanie z klientem jutro o 12:00',
-    'Zapisz kontakt Jan Kowalski, dzwonił w sprawie strony',
+    'Zapisz kontakt Jan Kowalski, dzwoni\u0142 w sprawie strony',
     'Zapisz to',
   ]) {
     assert.match(source, new RegExp(phrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));

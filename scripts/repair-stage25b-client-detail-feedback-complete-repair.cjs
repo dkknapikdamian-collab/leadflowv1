@@ -37,13 +37,13 @@ function patchClientDetail() {
     "  if (rawTitle && clientName) {",
     "    const titleLower = rawTitle.toLowerCase();",
     "    const clientLower = clientName.toLowerCase();",
-    "    if (titleLower === clientLower) return 'Sprawa obsługowa';",
+    "    if (titleLower === clientLower) return 'Sprawa obs\u0142ugowa';",
     "    if (titleLower.includes(clientLower)) {",
-    "      const cleaned = rawTitle.replace(clientName, '').replace(/^\\s*[-–—:]\\s*/g, '').trim();",
-    "      return cleaned || 'Sprawa obsługowa';",
+    "      const cleaned = rawTitle.replace(clientName, '').replace(/^\\s*[-\u2013\u2014:]\\s*/g, '').trim();",
+    "      return cleaned || 'Sprawa obs\u0142ugowa';",
     "    }",
     "  }",
-    "  return String(rawTitle || 'Sprawa obsługowa');",
+    "  return String(rawTitle || 'Sprawa obs\u0142ugowa');",
     "}",
     "",
     "function getCaseValueLabel(caseRecord: any) {",
@@ -68,7 +68,7 @@ function patchClientDetail() {
     text = text.replace(titleBlockRegex, replacementTitleBlock);
   }
 
-  text = text.replace(/\s*<p>Lista spraw klienta\. Wejdź w sprawę, żeby edytować nazwę, wartość, zadania i dalszą obsługę\.<\/p>/g, "");
+  text = text.replace(/\s*<p>Lista spraw klienta\. Wejd\u017A w spraw\u0119, \u017Ceby edytowa\u0107 nazw\u0119, warto\u015B\u0107, zadania i dalsz\u0105 obs\u0142ug\u0119\.<\/p>/g, "");
 
   const insertionNeedle = '<div className="client-detail-relations-list client-detail-relations-list-acquisition-only">';
   if (!text.includes('data-client-case-smart-list="true"') && text.includes(insertionNeedle)) {
@@ -114,22 +114,22 @@ function patchClientDetail() {
                             <strong>{title}</strong>
                             <div className="client-detail-case-smart-meta">
                               <span>{status}</span>
-                              <span>Kompletność {completeness}%</span>
+                              <span>Kompletno\u015B\u0107 {completeness}%</span>
                             </div>
                           </div>
                           <div className="client-detail-case-smart-value">
-                            <small>Wartość sprawy</small>
+                            <small>Warto\u015B\u0107 sprawy</small>
                             <b>{value}</b>
                           </div>
                           <div className="client-detail-case-smart-actions">
                             <Button type="button" size="sm" onClick={() => (caseId ? navigate(\`/cases/\${caseId}\`) : toast.info('Brak ID sprawy.'))}>
-                              Wejdź
+                              Wejd\u017A
                             </Button>
                             <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate(\`/cases/\${caseId}\`) : toast.info('Brak ID sprawy.'))}>
                               Edytuj
                             </Button>
                             <Button type="button" size="sm" variant="outline" onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}>
-                              Usuń
+                              Usu\u0144
                             </Button>
                           </div>
                         </article>

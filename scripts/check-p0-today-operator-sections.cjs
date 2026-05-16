@@ -14,7 +14,7 @@ for (const marker of [
   'expandOperatorTodayTaskEntries',
   'expandOperatorTodayLeadEntries',
   'isActiveOpenLeadForOperatorToday',
-  'Ustal następny krok',
+  'Ustal nast\u0119pny krok',
   "...expandOperatorTodayTaskEntries(tasks, rangeStart, rangeEnd)",
   "...expandOperatorTodayLeadEntries(leads, rangeStart, rangeEnd)",
 ]) {

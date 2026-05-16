@@ -15,12 +15,12 @@ const caseDetail = read("src/pages/CaseDetail.tsx");
 assert(caseDetail.includes("STAGE28A_CASE_FINANCE_CORE_GUARD"), "Brakuje bazowego guard Stage28A");
 assert(caseDetail.includes("STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD"), "Brakuje guard Stage28A3");
 assert(caseDetail.includes('data-case-finance-panel="true"'), "Brakuje panelu finansow");
-assert(caseDetail.includes("Historia wpłat"), "Brakuje naglowka Historia wplat");
+assert(caseDetail.includes("Historia wp\u0142at"), "Brakuje naglowka Historia wplat");
 assert(caseDetail.includes("visibleCasePayments.length"), "Brakuje licznika historii wplat");
 assert(caseDetail.includes("case-detail-finance-payment-row"), "Brakuje wiersza historii wplat");
 assert(caseDetail.includes("getPaymentAmount(payment)"), "Brakuje kwoty w historii wplat");
 assert(caseDetail.includes("billingStatusLabel(payment.status)"), "Brakuje statusu platnosci w historii");
-assert(caseDetail.includes("Dodaj wpłatę"), "Brakuje akcji Dodaj wplate");
+assert(caseDetail.includes("Dodaj wp\u0142at\u0119"), "Brakuje akcji Dodaj wplate");
 
 const css = read("src/styles/visual-stage13-case-detail-vnext.css");
 assert(css.includes("stage28a3 case finance history visible repair"), "Brakuje CSS Stage28A3");

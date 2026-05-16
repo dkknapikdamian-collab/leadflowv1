@@ -46,8 +46,8 @@ if (manifest) {
   if (!manifest.theme_color) failures.push('manifest theme_color missing');
   if (!Array.isArray(manifest.icons) || !manifest.icons.some((icon) => icon.src === '/icons/closeflow-icon.svg')) failures.push('manifest must include SVG app icon');
   const shortcuts = Array.isArray(manifest.shortcuts) ? manifest.shortcuts : [];
-  const todayShortcuts = shortcuts.filter((shortcut) => shortcut && (shortcut.url === '/today' || String(shortcut.name || '').toLowerCase() === 'dziś' || String(shortcut.name || '').toLowerCase() === 'dzis'));
-  if (todayShortcuts.length !== 1) failures.push('manifest must include exactly one Dziś /today shortcut');
+  const todayShortcuts = shortcuts.filter((shortcut) => shortcut && (shortcut.url === '/today' || String(shortcut.name || '').toLowerCase() === 'dzi\u015B' || String(shortcut.name || '').toLowerCase() === 'dzis'));
+  if (todayShortcuts.length !== 1) failures.push('manifest must include exactly one Dzi\u015B /today shortcut');
 }
 
 mustInclude('public/service-worker.js', 'PWA_STAGE13_MOBILE_SAFE_MODE', 'Stage13 PWA safe mode marker');

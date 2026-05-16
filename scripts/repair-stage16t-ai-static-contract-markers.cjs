@@ -34,9 +34,9 @@ const markerBlock = `${blockStart}
 // STAGE35_AI_ASSISTANT_COMPACT_UI
 // data-stage35-ai-assistant-compact-ui
 // Dodaj leada: Pan Marek, 516 439 989, Facebook
-// Co mam dziś do zrobienia?
-// Zapisz zadanie jutro o 10 oddzwonić do klienta
-// Max {AI_COMMAND_MAX_LENGTH} znaków
+// Co mam dzi\u015B do zrobienia?
+// Zapisz zadanie jutro o 10 oddzwoni\u0107 do klienta
+// Max {AI_COMMAND_MAX_LENGTH} znak\u00F3w
 // Zapytaj asystenta
 // Dyktuj
 // setRawText('')

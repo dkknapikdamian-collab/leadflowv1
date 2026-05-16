@@ -25,12 +25,12 @@ function expectOrder(file, first, second, label) {
 expect('src/lib/ai-assistant.ts', 'AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_CLIENT', 'Stage33 client marker');
 expect('src/lib/ai-assistant.ts', 'semanticRouter: true', 'semantic router request flag');
 expect('src/lib/ai-assistant.ts', 'const stage32LocalFallback = buildStage32LocalQueryBrainAnswer(input);', 'Stage32 as fallback only');
-expect('src/lib/ai-assistant.ts', 'Fallback lokalny: modelowy router semantyczny nie odpowiedział', 'local fallback warning');
+expect('src/lib/ai-assistant.ts', 'Fallback lokalny: modelowy router semantyczny nie odpowiedzia\u0142', 'local fallback warning');
 expectOrder('src/lib/ai-assistant.ts', "fetch('/api/system?kind=ai-assistant'", 'if (stage32LocalFallback)', 'server semantic router before local fallback return');
 
 expect('src/server/ai-assistant.ts', "import { tryGenerateJsonWithAiProvider } from './ai-provider.js';", 'AI provider import');
 expect('src/server/ai-assistant.ts', 'AI_ASSISTANT_SEMANTIC_ROUTER_STAGE33_SERVER', 'Stage33 server marker');
-expect('src/server/ai-assistant.ts', 'Nie jesteś słownikiem fraz', 'semantic prompt not phrase dictionary');
+expect('src/server/ai-assistant.ts', 'Nie jeste\u015B s\u0142ownikiem fraz', 'semantic prompt not phrase dictionary');
 expect('src/server/ai-assistant.ts', 'stage33BuildCompactSnapshot', 'compact app snapshot builder');
 expect('src/server/ai-assistant.ts', 'tryStage33SemanticAssistantFromRequest(req)', 'semantic router early handler');
 expect('src/server/ai-assistant.ts', "provider: 'semantic_ai:' + generated.provider", 'semantic provider label');

@@ -14,26 +14,26 @@ const css = fs.readFileSync(cssPath, 'utf8');
 
 const { markerChars: mojibake } = require('../scripts/mojibake-markers.cjs');
 
-test('Tasks ma kafelki statystyk i aktywacja widoku dalej działa', () => {
-  assert.ok(tasks.includes('StatShortcutCard'), 'Tasks nie używa kafelków StatShortcutCard');
+test('Tasks ma kafelki statystyk i aktywacja widoku dalej dzia\u0142a', () => {
+  assert.ok(tasks.includes('StatShortcutCard'), 'Tasks nie u\u017Cywa kafelk\u00F3w StatShortcutCard');
   assert.ok(tasks.includes('const statCards = ['), 'brak listy statCards');
-  for (const label of ['Aktywne', 'Dziś', 'Ten tydzień', 'Zaległe', 'Zrobione']) {
+  for (const label of ['Aktywne', 'Dzi\u015B', 'Ten tydzie\u0144', 'Zaleg\u0142e', 'Zrobione']) {
     assert.ok(tasks.includes(label), `brak kafelka: ${label}`);
   }
   assert.ok(tasks.includes('const activateScope = (scope: TaskScope) =>'), 'brak handlera activateScope');
   assert.ok(tasks.includes('setTaskScope(scope)'), 'activateScope nie zmienia taskScope');
-  assert.ok(/onClick=\{[\s\S]{0,800}activateScope[\s\S]{0,800}\}/.test(tasks) || tasks.includes('activateScope(card.id)'), 'kafelki nie mają podpiętej aktywacji widoku');
+  assert.ok(/onClick=\{[\s\S]{0,800}activateScope[\s\S]{0,800}\}/.test(tasks) || tasks.includes('activateScope(card.id)'), 'kafelki nie maj\u0105 podpi\u0119tej aktywacji widoku');
 });
 
-test('Tasks ma podpięty scoped CSS hotfix Stage 7A po stylu Stage 30', () => {
+test('Tasks ma podpi\u0119ty scoped CSS hotfix Stage 7A po stylu Stage 30', () => {
   const stage30 = "@import './styles/visual-stage30-tasks-compact-after-calendar.css';";
   const stage7a = "@import './styles/stage7a-tasks-blue-outline-fix.css';";
   assert.ok(indexCss.includes(stage30), 'brak importu Stage 30');
   assert.ok(indexCss.includes(stage7a), 'brak importu Stage 7A');
-  assert.ok(indexCss.indexOf(stage7a) > indexCss.indexOf(stage30), 'Stage 7A musi być po Stage 30, żeby przykrywał wcześniejsze style');
+  assert.ok(indexCss.indexOf(stage7a) > indexCss.indexOf(stage30), 'Stage 7A musi by\u0107 po Stage 30, \u017Ceby przykrywa\u0142 wcze\u015Bniejsze style');
 });
 
-test('Aktywny kafelek Tasks ma neutralny styl bez kolorowej ramki i poświaty', () => {
+test('Aktywny kafelek Tasks ma neutralny styl bez kolorowej ramki i po\u015Bwiaty', () => {
   assert.match(css, /\.cf-html-view\.main-tasks-html \.grid-5 > a/);
   assert.match(css, /\.cf-html-view\.main-tasks-html \.grid-5 > button/);
   assert.match(css, /outline:\s*none\s*!important/);

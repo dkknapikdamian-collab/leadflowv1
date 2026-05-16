@@ -20,7 +20,7 @@ const assert = require('node:assert/strict');
     const result = mod.getNearestPlannedAction({
       leadId: 'l1',
       tasks: [{ id: 't1', title: 'Task jutro', leadId: 'l1', scheduledAt: '2026-05-07T09:00:00.000Z', status: 'todo' }],
-      events: [{ id: 'e1', title: 'Event dziś', leadId: 'l1', startAt: '2026-05-06T14:00:00.000Z', status: 'scheduled' }],
+      events: [{ id: 'e1', title: 'Event dzi\u015B', leadId: 'l1', startAt: '2026-05-06T14:00:00.000Z', status: 'scheduled' }],
       now: new Date('2026-05-06T10:00:00.000Z'),
     });
     assert.equal(result.kind, 'event');
@@ -31,7 +31,7 @@ const assert = require('node:assert/strict');
   test('marks overdue when action is in the past', () => {
     const result = mod.getNearestPlannedAction({
       leadId: 'l1',
-      tasks: [{ id: 't2', title: 'Task zaległy', leadId: 'l1', dueAt: '2026-05-05T09:00:00.000Z', status: 'todo' }],
+      tasks: [{ id: 't2', title: 'Task zaleg\u0142y', leadId: 'l1', dueAt: '2026-05-05T09:00:00.000Z', status: 'todo' }],
       events: [],
       now: new Date('2026-05-06T10:00:00.000Z'),
     });

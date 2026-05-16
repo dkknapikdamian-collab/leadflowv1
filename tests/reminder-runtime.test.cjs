@@ -1,4 +1,4 @@
-﻿const test = require('node:test');
+const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -21,6 +21,6 @@ test('Notification runtime uses reminder settings and additional reminder builde
 test('Settings exposes reminder defaults and live notifications controls', () => {
   const settings = read('src/pages/Settings.tsx');
   assert.match(settings, /Powiadomienia in-app/);
-  assert.match(settings, /Domyślne przypomnienie \(min\)/);
-  assert.match(settings, /Domyślne odłożenie \(min\)/);
+  assert.match(settings, /Domy\u015Blne przypomnienie \(min\)/);
+  assert.match(settings, /Domy\u015Blne od\u0142o\u017Cenie \(min\)/);
 });

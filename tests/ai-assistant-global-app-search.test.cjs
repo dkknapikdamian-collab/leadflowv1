@@ -24,7 +24,7 @@ function assertBefore(source, firstNeedle, secondNeedle, message) {
 test('assistant recognizes value questions before contact lookup', () => {
   const source = read('src/server/ai-assistant.ts');
 
-  assert.ok(/najdrozsz|najdroższ|najcenniejsz|wartosc|wartość|lejek|lejka/u.test(source), 'value question keywords missing');
+  assert.ok(/najdrozsz|najdro\u017Csz|najcenniejsz|wartosc|warto\u015B\u0107|lejek|lejka/u.test(source), 'value question keywords missing');
   assertBefore(source, 'if (wantsFunnelValue(query))', 'if (wantsLookup(query))', 'value questions must be routed before lookup');
 });
 
@@ -55,4 +55,3 @@ test('global app search test is included in quiet release gate', () => {
   const gate = read('scripts/closeflow-release-check-quiet.cjs');
   assertIncludes(gate, 'tests/ai-assistant-global-app-search.test.cjs', 'quiet release gate must run global app search test');
 });
-

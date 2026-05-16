@@ -23,7 +23,7 @@ const conflictDialog = read('src/components/EntityConflictDialog.tsx');
 must(conflictDialog, marker, 'EntityConflictDialog has A2 marker');
 must(conflictDialog, "'lead' | 'client' | 'case'", 'EntityConflictDialog supports lead/client/case candidate types');
 for (const field of ['email', 'phone', 'name', 'company']) must(conflictDialog, `field === '${field}'`, `EntityConflictDialog reason label for ${field}`);
-for (const action of ['Pokaż', 'Przywróć', 'Dodaj mimo to', 'Anuluj']) must(conflictDialog, action, `EntityConflictDialog action/copy: ${action}`);
+for (const action of ['Poka\u017C', 'Przywr\u00F3\u0107', 'Dodaj mimo to', 'Anuluj']) must(conflictDialog, action, `EntityConflictDialog action/copy: ${action}`);
 must(conflictDialog, 'onShow(candidate)', 'EntityConflictDialog has show action');
 must(conflictDialog, 'onRestore(candidate)', 'EntityConflictDialog has restore action');
 must(conflictDialog, 'onCreateAnyway', 'EntityConflictDialog has add anyway action');
@@ -96,8 +96,8 @@ else fail('package.json has A2 check script');
 
 const doc = read('docs/release/CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER_2026-05-09.md');
 must(doc, 'CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER', 'A2 doc marker');
-must(doc, 'Nie scalać', 'A2 doc says no merge');
-must(doc, 'nie blokować zapisu', 'A2 doc says no blocking');
+must(doc, 'Nie scala\u0107', 'A2 doc says no merge');
+must(doc, 'nie blokowa\u0107 zapisu', 'A2 doc says no blocking');
 must(doc, 'Dodaj mimo to', 'A2 doc includes add anyway action');
 must(doc, 'findEntityConflictsInSupabase', 'A2 doc documents conflict check helper');
 

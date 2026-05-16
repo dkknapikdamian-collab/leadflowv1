@@ -14,7 +14,7 @@ test('AI next action can create a confirmed follow-up task without autopilot', (
   assert.ok(component.includes('insertTaskToSupabase'), 'component should create a task only after user click');
   assert.ok(component.includes('requireWorkspaceId'), 'component should keep workspace scoping');
   assert.ok(component.includes('handleCreateSuggestedTask'), 'component should expose explicit confirmed creation handler');
-  assert.ok(component.includes('Utwórz zadanie'), 'UI should have a clear create task action');
+  assert.ok(component.includes('Utw\u00F3rz zadanie'), 'UI should have a clear create task action');
   assert.ok(component.includes('Zadanie z sugestii AI utworzone'), 'success copy should confirm user-triggered task creation');
   assert.ok(component.includes('onTaskCreated?.()'), 'parent view should refresh after task creation');
   assert.ok(!component.includes('useEffect(() => {\n    handleCreateSuggestedTask'), 'task creation must not run automatically');

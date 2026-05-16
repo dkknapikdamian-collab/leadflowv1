@@ -3,8 +3,8 @@ const path = require('path');
 const marker = 'STAGE54_CLIENT_CASES_COMPACT_FIT';
 const forbidden = [
   'Klient jest rekordem zbiorczym',
-  'Po wejściu w obsługę pracuj na konkretnej sprawie',
-  'Po wejściu w obsluge pracuj na konkretnej sprawie',
+  'Po wej\u015Bciu w obs\u0142ug\u0119 pracuj na konkretnej sprawie',
+  'Po wej\u015Bciu w obsluge pracuj na konkretnej sprawie',
 ];
 function read(file) { return fs.readFileSync(path.join(process.cwd(), file), 'utf8'); }
 function pass(label) { console.log('PASS ' + label); }

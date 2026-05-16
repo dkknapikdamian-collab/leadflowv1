@@ -22,11 +22,11 @@ assert(caseDetail.includes("const visibleCasePayments = useMemo("), "Brakuje vis
 assert(caseDetail.includes("const handleCreateCasePayment = async () =>"), "Brakuje handlera dodawania wplaty");
 assert(caseDetail.includes('data-case-finance-panel="true"'), "Brakuje panelu finansow sprawy");
 assert(caseDetail.includes('data-case-payment-dialog="true"'), "Brakuje dialogu dodawania wplaty");
-assert(caseDetail.includes("Wartość"), "Brakuje etykiety Wartość");
-assert(caseDetail.includes("Wpłacono"), "Brakuje etykiety Wpłacono");
-assert(caseDetail.includes("Pozostało"), "Brakuje etykiety Pozostało");
-assert(caseDetail.includes("Historia wpłat"), "Brakuje historii wplat");
-assert(caseDetail.includes("Dodaj wpłatę"), "Brakuje akcji Dodaj wplate");
+assert(caseDetail.includes("Warto\u015B\u0107"), "Brakuje etykiety Warto\u015B\u0107");
+assert(caseDetail.includes("Wp\u0142acono"), "Brakuje etykiety Wp\u0142acono");
+assert(caseDetail.includes("Pozosta\u0142o"), "Brakuje etykiety Pozosta\u0142o");
+assert(caseDetail.includes("Historia wp\u0142at"), "Brakuje historii wplat");
+assert(caseDetail.includes("Dodaj wp\u0142at\u0119"), "Brakuje akcji Dodaj wplate");
 assert(caseDetail.includes("createPaymentInSupabase(input as any)"), "Brakuje zapisu platnosci do Supabase");
 assert(caseDetail.includes("eventType: 'payment_added'"), "Brakuje activity payment_added");
 

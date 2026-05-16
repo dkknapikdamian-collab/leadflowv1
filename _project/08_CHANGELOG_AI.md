@@ -175,52 +175,174 @@ DECYZJA:
 <!-- STAGE104_CALENDAR_PERFORMANCE_F -->
 ## 2026-05-16 â€” Stage104 / Paczka F â€” Calendar loading performance
 
-STATUS: WDROĹ»ONE LOKALNIE PO APPLY, TEST RÄCZNY DO WYKONANIA.
+STATUS: WDROŻONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
 
 FAKTY:
-- Kalendarz nie powinien juĹĽ liczyÄ‡ `combineScheduleEntries` wprost w renderze.
-- Dni miesiÄ…ca i tygodnia korzystajÄ… z `entriesByDayKey` / `weekEntriesByDayKey`.
-- `Calendar.tsx` nie powinien juĹĽ uĹĽywaÄ‡ `getEntriesForDay(...)` w render path.
-- `cases` idÄ… z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
-- PeĹ‚nostronicowy loader zostaĹ‚ zastÄ…piony maĹ‚ym skeletonem danych.
+- Kalendarz nie powinien już liczyć `combineScheduleEntries` wprost w renderze.
+- Dni miesiąca i tygodnia korzystają z `entriesByDayKey` / `weekEntriesByDayKey`.
+- `Calendar.tsx` nie powinien już używać `getEntriesForDay(...)` w render path.
+- `cases` idą z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
+- Pełnostronicowy loader został zastąpiony małym skeletonem danych.
 
 TESTY:
 - `node tests/stage104-calendar-loading-performance-contract.test.cjs`
-- `npm run build` jeĹ›li nie uĹĽyto `-SkipBuild`.
+- `npm run build` jeśli nie użyto `-SkipBuild`.
 
 RYZYKA:
 - Range fetch backendowy jest DO POTWIERDZENIA.
-- Stare DOM-normalizatory miesiÄ…ca zostaĹ‚y nietkniÄ™te i wymagajÄ… osobnego audytu w Paczce G.
+- Stare DOM-normalizatory miesiąca zostały nietknięte i wymagają osobnego audytu w Paczce G.
 
-NASTÄPNY KROK:
-- Test rÄ™czny `/calendar`: start, tydzieĹ„, miesiÄ…c, wybrany dzieĹ„, edycja, +1H/+1D/+1W, zrobione, usuĹ„.
+NAST\u00c4\u0098PNY KROK:
+- Test ręczny `/calendar`: start, tydzień, miesiąc, wybrany dzień, edycja, +1H/+1D/+1W, zrobione, usuń.
 <!-- /STAGE104_CALENDAR_PERFORMANCE_F -->
 
 
 ---
 ## Stage105 / Paczka G â€” Templates delete + visual contract â€” 2026-05-16
 
-STATUS: WDROĹ»ONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
+STATUS: WDROŻONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
 
 FAKTY:
-- /templates dostaĹ‚ widoczny przycisk UsuĹ„ na karcie szablonu.
-- Delete uĹĽywa EntityTrashButton i shared trash action source of truth.
-- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeĹ›li szablon ma pozycje checklisty.
-- Karta szablonu uĹĽywa cf-template-card cf-readable-card i markerĂłw ecord-list-source-truth.
+- /templates dostał widoczny przycisk Usuń na karcie szablonu.
+- Delete używa EntityTrashButton i shared trash action source of truth.
+- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeśli szablon ma pozycje checklisty.
+- Karta szablonu używa cf-template-card cf-readable-card i markerów
+ecord-list-source-truth.
 - Stary marker data-a16-template-light-ui nie jest aktywnym source of truth dla stylu.
 
 TESTY:
-- 
+-
 ode tests/stage105-templates-delete-and-visual-contract.test.cjs
-- 
+-
 pm run build
 
-TEST RÄCZNY:
+TEST R\u00c4\u0098CZNY:
 - DO WYKONANIA na /templates: create/edit/duplicate/delete z confirmami.
 
 RYZYKO:
-- Ten etap nie dodaje backendowego sprawdzania, czy szablon zostaĹ‚ uĹĽyty w aktywnych sprawach. Wymusza Ĺ›wiadome potwierdzenie usuwania wzorca i jego pozycji.
+- Ten etap nie dodaje backendowego sprawdzania, czy szablon został użyty w aktywnych sprawach. Wymusza świadome potwierdzenie usuwania wzorca i jego pozycji.
 
-NASTÄPNY KROK:
-- PrzetestowaÄ‡ /templates; dopiero potem zdecydowaÄ‡, czy robimy kolejny lokalny etap czy wspĂłlny commit/push Stage104+Stage105.
+NAST\u00c4\u0098PNY KROK:
+- Przetestować /templates; dopiero potem zdecydować, czy robimy kolejny lokalny etap czy wspólny commit/push Stage104+Stage105.
 <!-- STAGE105_TEMPLATES_DELETE_VISUAL_G -->
+
+
+## Stage98B V5 mojibake hard gate - 2026-05-16
+
+- Fixed Stage98B package after V3 exposed repo-wide mojibake outside Calendar.tsx.
+- Repaired mojibake across active `src/`, `tests/`, `scripts/` and `_project/` files.
+- Replaced Stage98 guard with repo-wide scan over `src`, `tests`, `scripts` and `_project`.
+- Added Stage98 guard as quiet release preflight before production build.
+- Kept month calendar view logic untouched.
+- Manual UI test remains required for `/calendar`.
+
+
+- V5 C1-control mojibake repair: handles leftover raw control-byte mojibake that V4 exposed in LeadDetail.tsx.
+
+
+## 2026-05-16 - Stage98B V6 mojibake hard gate resume
+
+- Fixed Stage98B package process after V5 reached the real repo-wide repair but failed on a missing Obsidian payload file.
+- Stage98 guard remains repo-wide for `src`, `tests`, `scripts`, `_project`.
+- Added package self-check before repo mutation and wider post-repair checks: guard syntax, helper syntax, Stage98 test, git diff check, quiet release gate.
+- Commit scope after green tests intentionally stages all changed files under `src`, `tests`, `scripts`, `_project`, because V4/V5 left partial local cleanup changes that must not be omitted from the final commit.
+<!-- STAGE98B_V6_CHANGELOG -->
+
+
+## 2026-05-16 - Stage98B V7 mojibake hard gate resume
+
+- Fixed Stage98B package process after V5 reached the real repo-wide repair but failed on a missing Obsidian payload file.
+- Stage98 guard remains repo-wide for `src`, `tests`, `scripts`, `_project`.
+- Added package self-check before repo mutation and wider post-repair checks: guard syntax, helper syntax, Stage98 test, git diff check, quiet release gate.
+- Commit scope after green tests intentionally stages all changed files under `src`, `tests`, `scripts`, `_project`, because V4/V5 left partial local cleanup changes that must not be omitted from the final commit.
+<!-- STAGE98B_V7_CHANGELOG -->
+
+
+## 2026-05-16 - Stage98B V8 mojibake hard gate resume
+
+- Fixed Stage98B package process after V5 reached the real repo-wide repair but failed on a missing Obsidian payload file.
+- Stage98 guard remains repo-wide for `src`, `tests`, `scripts`, `_project`.
+- Added package self-check before repo mutation and wider post-repair checks: guard syntax, helper syntax, Stage98 test, git diff check, quiet release gate.
+- Commit scope after green tests intentionally stages all changed files under `src`, `tests`, `scripts`, `_project`, because V4/V5 left partial local cleanup changes that must not be omitted from the final commit.
+<!-- STAGE98B_V8_CHANGELOG -->
+
+- V8: Windows-safe git ProcessStartInfo wrapper; resume after V7 stderr warning failure.
+
+
+## 2026-05-16 - Stage98B V9 mojibake hard gate resume
+
+- Fixed Stage98B package process after V5 reached the real repo-wide repair but failed on a missing Obsidian payload file.
+- Stage98 guard remains repo-wide for `src`, `tests`, `scripts`, `_project`.
+- Added package self-check before repo mutation and wider post-repair checks: guard syntax, helper syntax, Stage98 test, git diff check, quiet release gate.
+- Commit scope after green tests intentionally stages all changed files under `src`, `tests`, `scripts`, `_project`, because V4/V5 left partial local cleanup changes that must not be omitted from the final commit.
+<!-- STAGE98B_V9_CHANGELOG -->
+
+- V9: whitespace cleanup before git diff --check; resume after V8 real trailing-whitespace failure.
+
+<!-- STAGE98B_V10_CHANGELOG -->
+## 2026-05-16 - Stage98B V10 mojibake hard gate broad preflight
+
+- Strengthened Stage98B as a repo-wide hard fail for mojibake/BOM leftovers in `src`, `tests`, `scripts`, `_project`.
+- Added hygiene for mangled BOM strings and raw UTF-8 BOM before JS syntax checks.
+- Added broad changed-file syntax pass before quiet release gate.
+- Kept CRLF/autocrlf warnings non-fatal while keeping real whitespace/conflict errors fatal.
+- Manual UI test remains required for `/calendar`.
+
+<!-- STAGE98B_V11_CHANGELOG -->
+## 2026-05-16 - Stage98B V11 mojibake hard gate broad preflight
+
+- Strengthened Stage98B as a repo-wide hard fail for mojibake/BOM leftovers in `src`, `tests`, `scripts`, `tools`, `_project`.
+- Added hygiene for mangled BOM strings and raw UTF-8 BOM before JS syntax checks.
+- Added broad all scripts/tests/tools JS syntax sweep plus changed-file syntax pass before quiet release gate.
+- Kept CRLF/autocrlf warnings non-fatal while keeping real whitespace/conflict errors fatal.
+- Manual UI test remains required for `/calendar`.
+
+
+<!-- STAGE98B_V16_FINALIZER -->
+
+## Stage98B V16 mojibake hard gate finalizer
+
+- Status: package-run finalizer after V15 raw BOM regression in quiet gate.
+- Scope: repo-wide encoding hygiene, Stage98B preflight in quiet release gate, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: encoding hygiene must run after every generated write, especially after hardening quiet gate.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V17_SAFE_GUARD_FINALIZER -->
+
+## Stage98B V17 safe guard finalizer
+
+- Status: resume-safe finalizer after V16 false-positive guard corruption.
+- Scope: safe ASCII Stage98B guard, repo-wide encoding hygiene, quiet release gate preflight, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: Stage98 guard must not contain literal bad fragments that hygiene can erase into empty strings.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V18_SAFE_GUARD_FINALIZER -->
+
+## Stage98B V18 safe guard finalizer
+
+- Status: resume-safe finalizer after V16 false-positive guard corruption.
+- Scope: safe ASCII Stage98B guard, repo-wide encoding hygiene, quiet release gate preflight, broad syntax sweep for scripts/tests/tools, whitespace diff check and quiet release gate.
+- Decision: Stage98 guard must not contain literal bad fragments that hygiene can erase into empty strings.
+- Manual test: calendar UI still requires Damian confirmation after push.
+
+
+<!-- STAGE98B_V19_CHANGELOG -->
+## 2026-05-16 - Stage98B V19
+- Added source/test contamination repair after V18 quiet gate failure.
+- Stage98B remains repo-wide and strict.
+
+
+<!-- STAGE98B_V20_CHANGELOG -->
+## 2026-05-16 - Stage98B V20
+- Added remote/HEAD restore for active src test-scaffold contamination after V19 billing regression failure.
+- Keeps Stage98B repo-wide hard gate and broad preflight checks.
+
+
+## STAGE98B_V21_REMOTE_BILLING_RESTORE
+
+- Status: prepared by V21 package.
+- Scope: Stage98B mojibake hard gate plus clean Billing.tsx restoration from remote branch.
+- Tests: Stage98B, src test-scaffold scan, billing regression, broad syntax sweep, git diff --check, quiet gate.
+- Risk: local repo had many dirty leftovers from failed packages; V21 excludes backups/logs/stage98 helpers from commit.

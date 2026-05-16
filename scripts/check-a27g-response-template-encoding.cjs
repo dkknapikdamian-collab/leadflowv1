@@ -37,14 +37,14 @@ const layout = read(layoutFile);
 const page = read(pageFile);
 
 for (const marker of [
-  'Globalny shell CloseFlow został przepięty',
-  "label: 'Dziś'",
-  "caption: 'Czas i obowiązki'",
-  "label: 'Aktywność'",
+  'Globalny shell CloseFlow zosta\u0142 przepi\u0119ty',
+  "label: 'Dzi\u015B'",
+  "caption: 'Czas i obowi\u0105zki'",
+  "label: 'Aktywno\u015B\u0107'",
   "label: 'Odpowiedzi', path: '/response-templates'",
-  'aria-label="Otwórz menu"',
-  'Wyloguj się',
-  'Najważniejsze zakładki',
+  'aria-label="Otw\u00F3rz menu"',
+  'Wyloguj si\u0119',
+  'Najwa\u017Cniejsze zak\u0142adki',
 ]) {
   requireIncludes(layoutFile, layout, marker);
 }
@@ -53,40 +53,40 @@ requireOneOf(
   layoutFile,
   layout,
   [
-    "const userName = user?.displayName || 'Użytkownik';",
-    "const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';",
+    "const userName = user?.displayName || 'U\u017Cytkownik';",
+    "const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'U\u017Cytkownik';",
   ],
   'user name marker',
 );
 
 for (const marker of [
   "import { Archive, Copy, MessageSquareText, Plus, Save, Search, ShieldAlert, Sparkles, Tags } from 'lucide-react';",
-  'Nie udało się pobrać szablonów odpowiedzi',
-  'Tryb podglądu blokuje zapis',
-  'Nazwa i treść są wymagane',
-  'Nie udało się zarchiwizować',
-  'Skopiowano treść szablonu',
-  'Własne gotowce do follow-upów',
-  'Szukaj po nazwie, kategorii, tagach, zmiennych albo treści',
-  'Szablony odpowiedzi są osobne od checklist spraw',
-  'Ładowanie szablonów',
-  'Brak szablonów odpowiedzi',
-  'Podgląd',
-  'Kopiuj treść',
+  'Nie uda\u0142o si\u0119 pobra\u0107 szablon\u00F3w odpowiedzi',
+  'Tryb podgl\u0105du blokuje zapis',
+  'Nazwa i tre\u015B\u0107 s\u0105 wymagane',
+  'Nie uda\u0142o si\u0119 zarchiwizowa\u0107',
+  'Skopiowano tre\u015B\u0107 szablonu',
+  'W\u0142asne gotowce do follow-up\u00F3w',
+  'Szukaj po nazwie, kategorii, tagach, zmiennych albo tre\u015Bci',
+  'Szablony odpowiedzi s\u0105 osobne od checklist spraw',
+  '\u0141adowanie szablon\u00F3w',
+  'Brak szablon\u00F3w odpowiedzi',
+  'Podgl\u0105d',
+  'Kopiuj tre\u015B\u0107',
   '<Archive className="h-4 w-4" />',
-  'Treść',
-  'Możesz używać',
+  'Tre\u015B\u0107',
+  'Mo\u017Cesz u\u017Cywa\u0107',
 ]) {
   requireIncludes(pageFile, page, marker);
 }
 
 for (const marker of [
-  'Ĺ',
-  'Ä',
-  'Ă',
-  'â',
-  'Ľ',
-  '˘',
+  '\u0139',
+  '\u00c4',
+  '\u0102',
+  '\u00E2',
+  '\u013D',
+  '\u02D8',
   'Trash2',
 ]) {
   requireNotIncludes(layoutFile, layout, marker);

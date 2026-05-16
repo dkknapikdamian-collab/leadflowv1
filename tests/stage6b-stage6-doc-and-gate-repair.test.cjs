@@ -13,7 +13,7 @@ function read(rel) {
 test('Stage6 release doc contains exact guard phrases required by original check', () => {
   const doc = read('docs/release/STAGE6_AI_NO_HALLUCINATION_DATA_TRUTH_V1_2026-05-06.md');
   assert.match(doc, /Nie odpowiada z pustego prompta/);
-  assert.match(doc, /Nie zmyśla przy pustym kontekście/);
+  assert.match(doc, /Nie zmy\u015Bla przy pustym kontek\u015Bcie/);
   assert.match(doc, new RegExp(STAGE));
 });
 

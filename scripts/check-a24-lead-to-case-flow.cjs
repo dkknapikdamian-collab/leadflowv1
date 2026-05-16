@@ -45,19 +45,19 @@ expect(leadDetail.includes('startLeadToCaseHandoff'), 'LeadDetail must use lead-
 expect(leadDetail.includes('isLeadMovedToService'), 'LeadDetail must detect moved lead');
 expect(leadDetail.includes('startLeadServiceInSupabase'), 'LeadDetail must call backend start_service flow');
 expect(
-  leadDetail.includes('Rozpocznij obsługę') ||
-  leadDetail.includes('Przekaż do obsługi') ||
+  leadDetail.includes('Rozpocznij obs\u0142ug\u0119') ||
+  leadDetail.includes('Przeka\u017C do obs\u0142ugi') ||
   leadDetail.includes('startLeadToCaseHandoff'),
   'LeadDetail must expose start service action'
 );
 expect(
-  leadDetail.includes('Ten temat jest już w obsłudze') ||
+  leadDetail.includes('Ten temat jest ju\u017C w obs\u0142udze') ||
   leadDetail.includes('leadInService') ||
   leadDetail.includes('leadOperationalArchive'),
   'LeadDetail must show moved-to-service state'
 );
 expect(
-  leadDetail.includes('Otwórz sprawę') ||
+  leadDetail.includes('Otw\u00F3rz spraw\u0119') ||
   leadDetail.includes('/case/${startServiceSuccess.caseId}') ||
   leadDetail.includes('serviceCaseId'),
   'LeadDetail must link moved lead to case'

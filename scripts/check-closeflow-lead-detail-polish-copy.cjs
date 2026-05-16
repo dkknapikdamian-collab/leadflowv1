@@ -11,20 +11,20 @@ const badCodes = new Set([
 ]);
 
 const required = [
-  'Oferta wysłana',
-  'Czeka na odpowiedź',
-  'Przeniesiony do obsługi',
-  'Brak źródła',
-  'Źródło',
-  'Zaliczka wpłacona',
-  'Częściowo opłacone',
-  'Czeka na płatność',
-  'Dodano notatkę',
-  'Utworzono sprawę',
-  'Podpięto sprawę',
-  'Aktywność',
-  'Ładowanie leada',
-  'LEAD JUŻ W OBSŁUDZE',
+  'Oferta wys\u0142ana',
+  'Czeka na odpowied\u017A',
+  'Przeniesiony do obs\u0142ugi',
+  'Brak \u017Ar\u00F3d\u0142a',
+  '\u0179r\u00F3d\u0142o',
+  'Zaliczka wp\u0142acona',
+  'Cz\u0119\u015Bciowo op\u0142acone',
+  'Czeka na p\u0142atno\u015B\u0107',
+  'Dodano notatk\u0119',
+  'Utworzono spraw\u0119',
+  'Podpi\u0119to spraw\u0119',
+  'Aktywno\u015B\u0107',
+  '\u0141adowanie leada',
+  'LEAD JU\u017B W OBS\u0141UDZE',
 ];
 
 const findings = [];

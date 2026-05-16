@@ -37,15 +37,15 @@ const caseDeleteSignals = [
   'onDeleteCase',
   'client-case-delete',
   'data-client-case-delete',
-  'Usuń sprawę',
-  'Usun sprawę',
+  'Usu\u0144 spraw\u0119',
+  'Usun spraw\u0119',
   'Usun sprawe',
 ];
 
 const confirmSignals = [
   'window.confirm(',
   'confirm(',
-  'Potwierdź usunięcie',
+  'Potwierd\u017A usuni\u0119cie',
   'Potwierdz usuniecie',
   'potwierd',
   'confirmScheduleConflicts',
@@ -62,8 +62,8 @@ const hasDangerZone = clientDetail.includes('cf-danger-action-zone')
   || clientDetail.includes('dangerActionZone');
 
 if (exposesCaseDelete && !hasConfirmation) {
-  fail('ClientDetail pokazuje lub obsługuje usuwanie sprawy bez widocznego potwierdzenia.', [
-    'Dodaj confirm/dialog przed usunięciem sprawy z klienta.',
+  fail('ClientDetail pokazuje lub obs\u0142uguje usuwanie sprawy bez widocznego potwierdzenia.', [
+    'Dodaj confirm/dialog przed usuni\u0119ciem sprawy z klienta.',
   ]);
 }
 

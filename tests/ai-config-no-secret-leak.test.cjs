@@ -23,8 +23,8 @@ test('AI config endpoint exposes only diagnostics and never raw secret values', 
 test('AI admin page describes backend-only key storage', () => {
   const source = read('src/pages/AdminAiSettings.tsx');
 
-  assert.match(source, /Klucze są sprawdzane po stronie backendu/);
-  assert.match(source, /Frontend dostaje tylko informację/);
+  assert.match(source, /Klucze s\u0105 sprawdzane po stronie backendu/);
+  assert.match(source, /Frontend dostaje tylko informacj\u0119/);
   assert.doesNotMatch(source, /<Input[^>]+GEMINI_API_KEY/);
   assert.doesNotMatch(source, /<Input[^>]+CLOUDFLARE_API_TOKEN/);
 });

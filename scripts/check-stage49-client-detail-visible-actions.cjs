@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const assert = require('assert');
 
 const css = fs.readFileSync('src/styles/visual-stage12-client-detail-vnext.css', 'utf8');

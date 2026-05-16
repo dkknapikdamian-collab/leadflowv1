@@ -23,9 +23,9 @@ test('ClientDetail keeps API-level client filters', () => {
 test('ClientDetail exposes relation command center actions', () => {
   const file = read('src/pages/ClientDetail.tsx');
   assert.ok(file.includes('Klient jako centrum relacji'));
-  assert.ok(file.includes('Ścieżka klienta'));
-  assert.ok(file.includes('Otwórz lead'));
-  assert.ok(file.includes('Otwórz sprawę'));
+  assert.ok(file.includes('\u015Acie\u017Cka klienta'));
+  assert.ok(file.includes('Otw\u00F3rz lead'));
+  assert.ok(file.includes('Otw\u00F3rz spraw\u0119'));
 });
 
 test('ClientDetail links leads and cases both ways from client screen', () => {

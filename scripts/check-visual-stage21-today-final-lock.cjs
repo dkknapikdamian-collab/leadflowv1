@@ -61,9 +61,9 @@ expectIncludes('src/styles/visual-stage21-today-final-lock.css', '.cf-html-shell
 expectIncludes('src/styles/visual-stage21-today-final-lock.css', '.cf-html-shell .main-today .right-card', 'right rail lock');
 expectIncludes('src/styles/visual-stage21-today-final-lock.css', '@media (max-width: 760px)', 'mobile breakpoint');
 expectAny('src/components/Layout.tsx', ['main-today', 'data-current-section={currentSection}'], 'Today scoped shell support');
-expectAny('src/pages/Today.tsx', ['VISUAL_STAGE17_TODAY_HTML_HARD_1TO1', 'Dziś'], 'Today existing screen kept');
+expectAny('src/pages/Today.tsx', ['VISUAL_STAGE17_TODAY_HTML_HARD_1TO1', 'Dzi\u015B'], 'Today existing screen kept');
 expectIncludes('docs/VISUAL_STAGE21_TODAY_FINAL_LOCK_2026-04-29.md', 'Funkcja obecna w repo', 'mapping table header');
-expectIncludes('docs/VISUAL_STAGE21_TODAY_FINAL_LOCK_2026-04-29.md', 'Nie zmieniać', 'do-not-change section');
+expectIncludes('docs/VISUAL_STAGE21_TODAY_FINAL_LOCK_2026-04-29.md', 'Nie zmienia\u0107', 'do-not-change section');
 
 for (const file of filesToScan) {
   const body = read(file);

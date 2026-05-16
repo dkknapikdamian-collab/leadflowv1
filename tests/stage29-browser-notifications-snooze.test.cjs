@@ -66,12 +66,12 @@ test('Stage 29 Notifications Center persists snooze and exposes clear states', (
   assert.match(source, /setNotificationSnooze\(key, mode\)/);
   assert.match(source, /clearNotificationSnooze\(key\)/);
   assert.match(source, /useState<Record<string, string>>\(\(\) => getNotificationSnoozedUntilByKey\(\)\)/);
-  assert.match(source, /Odłożone/);
+  assert.match(source, /Od\u0142o\u017Cone/);
   assert.match(source, /Do reakcji/);
   assert.match(source, /Przeczytane/);
-  assert.match(source, /Włącz powiadomienia/);
-  assert.match(source, /Powiadomienia są zablokowane w przeglądarce/);
-  assert.match(source, /Ta przeglądarka może nie obsługiwać powiadomień/);
+  assert.match(source, /W\u0142\u0105cz powiadomienia/);
+  assert.match(source, /Powiadomienia s\u0105 zablokowane w przegl\u0105darce/);
+  assert.match(source, /Ta przegl\u0105darka mo\u017Ce nie obs\u0142ugiwa\u0107 powiadomie\u0144/);
 });
 
 test('Stage 29 does not change tasks/events while snoozing', () => {

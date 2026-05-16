@@ -23,7 +23,7 @@ test('Stage29 Today shows a compact pending AI drafts tile', () => {
   expectIncludes(today, 'Szkice do zatwierdzenia');
   expectIncludes(today, 'data-today-ai-drafts-pending-count="true"');
   expectIncludes(today, "openTodayTopTileShortcut('ai_drafts')");
-  expectIncludes(today, 'Otwórz Szkice AI');
+  expectIncludes(today, 'Otw\u00F3rz Szkice AI');
   assert.equal(today.includes('data-today-ai-drafts-preview-list="true"'), false);
   assert.equal(today.includes('pendingTodayAiDrafts.slice(0, 3)'), false);
 });

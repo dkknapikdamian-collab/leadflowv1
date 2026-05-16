@@ -59,10 +59,10 @@ requireContains('src/components/TodayAiAssistant.tsx', 'data-assistant-mode={res
 requireContains('src/components/TodayAiAssistant.tsx', 'data-assistant-snapshot-count={snapshotItemsCount}');
 requireContains('src/components/TodayAiAssistant.tsx', 'askAssistant(prompt)');
 requireContains('src/components/TodayAiAssistant.tsx', 'Co mam jutro?');
-requireContains('src/components/TodayAiAssistant.tsx', 'Czy jutro o 17 coś mam?');
-requireContains('src/components/TodayAiAssistant.tsx', 'Czy w przeciągu 4 godzin mam spotkanie?');
-requireContains('src/components/TodayAiAssistant.tsx', 'Na kiedy mam najbliższy akt notarialny?');
-requireContains('src/components/TodayAiAssistant.tsx', 'Znajdź numer do Marka.');
+requireContains('src/components/TodayAiAssistant.tsx', 'Czy jutro o 17 co\u015B mam?');
+requireContains('src/components/TodayAiAssistant.tsx', 'Czy w przeci\u0105gu 4 godzin mam spotkanie?');
+requireContains('src/components/TodayAiAssistant.tsx', 'Na kiedy mam najbli\u017Cszy akt notarialny?');
+requireContains('src/components/TodayAiAssistant.tsx', 'Znajd\u017A numer do Marka.');
 requireContains('src/components/TodayAiAssistant.tsx', 'Zapisz zadanie jutro 12 rozgraniczenie.');
 requireContains('src/components/TodayAiAssistant.tsx', 'Odczyt z danych aplikacji');
 requireContains('src/components/TodayAiAssistant.tsx', 'Szkic do sprawdzenia');

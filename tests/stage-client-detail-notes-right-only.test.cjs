@@ -9,5 +9,5 @@ const noteSources = ['payload?.note','payload.note','payload?.content','payload.
 const matchedSources = noteSources.filter(s => src.includes(s)).length;
 if (matchedSources < 2) fail('getClientVisibleNotes nie czyta wystarczajaco wielu zrodel notatki');
 if (!/Edytuj|edit/i.test(src)) fail('brak sygnalu edycji notatek');
-if (!/Usuń|Usun|delete|remove/i.test(src)) fail('brak sygnalu usuwania notatek');
+if (!/Usu\u0144|Usun|delete|remove/i.test(src)) fail('brak sygnalu usuwania notatek');
 console.log('OK tests/stage-client-detail-notes-right-only.test.cjs');

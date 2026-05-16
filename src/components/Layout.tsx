@@ -21,7 +21,7 @@ VISUAL_STAGE_07_CASES_ROUTE_SCOPE
 VISUAL_STAGE_08_CASE_DETAIL_ROUTE_SCOPE
 Globalny shell CloseFlow został przepięty na docelowy system wizualny z HTML-a.
 Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
-Nie zmienia logiki ekranĂłw, routingu, Supabase, AI, auth ani billing/access.
+Nie zmienia logiki ekranów, routingu, Supabase, AI, auth ani billing/access.
 */
 
 
@@ -258,7 +258,7 @@ export default function Layout({ children }: LayoutProps) {
       <OperatorMetricToneRuntime />
       <OperatorTopBarRuntime />
       <aside className="sidebar" data-shell-sidebar="true">
-        <Link to="/" className="brand" aria-label="CloseFlow - przejdĹş do Dziś">
+        <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">
             CF
           </span>
@@ -267,7 +267,7 @@ export default function Layout({ children }: LayoutProps) {
           </span>
         </Link>
 
-        <nav className="nav-scroll" aria-label="GĹ‚Ăłwne menu CloseFlow">
+        <nav className="nav-scroll" aria-label="Główne menu CloseFlow">
           {renderNavGroups()}
         </nav>
 
@@ -276,17 +276,17 @@ export default function Layout({ children }: LayoutProps) {
           <UserCard userInitial={userInitial} name={userName} email={userEmail} />
           <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
             <LogOut className="h-4 w-4" />
-            <span>Wyloguj siÄ™</span>
+            <span>Wyloguj się</span>
           </button>
         </div>
       </aside>
 
       <div className="mobile-top" data-shell-mobile-top="true">
-        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdĹş do Dziś">
+        <Link to="/" className="mobile-brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">CF</span>
           <span>CloseFlow</span>
         </Link>
-        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="OtwĂłrz menu">
+        <button type="button" className="mobile-menu-btn" onClick={() => setMobileMenuOpen(true)} aria-label="Otwórz menu">
           <Menu className="h-6 w-6" />
         </button>
       </div>
@@ -320,7 +320,7 @@ export default function Layout({ children }: LayoutProps) {
               {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
               <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
                 <LogOut className="h-4 w-4" />
-                <span>Wyloguj siÄ™</span>
+                <span>Wyloguj się</span>
               </button>
             </div>
           </div>
@@ -349,7 +349,7 @@ export default function Layout({ children }: LayoutProps) {
         {workspace && !hasAccess && (
           <div className="access-warning" data-shell-access-warning="true">
             <AlertTriangle className="h-4 w-4 shrink-0" />
-            <p>TwĂłj okres prĂłbny wygasĹ‚. NiektĂłre funkcje sÄ… zablokowane.</p>
+            <p>Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
             <Link to="/billing" className="access-warning-action">
               Aktywuj plan
             </Link>
@@ -361,7 +361,7 @@ export default function Layout({ children }: LayoutProps) {
         </div>
       </main>
 
-      <nav className="mobile-nav" aria-label="NajwaĹĽniejsze zakĹ‚adki" data-shell-mobile-nav="true">
+      <nav className="mobile-nav" aria-label="Najważniejsze zakładki" data-shell-mobile-nav="true">
         {mobileNavItems.map((item) => {
           const isActive = isNavItemActive(location.pathname, item.path);
           return (
@@ -393,7 +393,3 @@ Inbox szkiców
 const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
 ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
 */
-
-
-
-

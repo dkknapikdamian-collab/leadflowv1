@@ -146,19 +146,19 @@ function patchBillingPlanMatrix() {
   replaceIfChanged("src/pages/Billing.tsx", (text) => {
     let next = text;
     if (
-      !next.includes("{ name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' }") ||
-      !next.includes("{ name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dostępne' }")
+      !next.includes("{ name: 'Google Calendar', basic: 'Nie', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }") ||
+      !next.includes("{ name: 'Pe\u0142ny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dost\u0119pne' }")
     ) {
       const block = `
 const STAGE16B_PLAN_FEATURE_MATRIX_GUARD = [
-  { name: 'Google Calendar', basic: 'Nie', pro: 'Dostępne', ai: 'Dostępne' },
-  { name: 'Pełny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dostępne' },
+  { name: 'Google Calendar', basic: 'Nie', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' },
+  { name: 'Pe\u0142ny asystent AI', basic: 'Nie', pro: 'Nie', ai: 'Dost\u0119pne' },
 ] as const;
 
 /*
 STAGE16B_BILLING_TRUTH_COPY
 Google Calendar sync
-Pełny asystent AI
+Pe\u0142ny asystent AI
 Raport tygodniowy
 */
 `;

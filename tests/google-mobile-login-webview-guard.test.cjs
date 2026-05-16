@@ -12,8 +12,8 @@ test('Google login is guarded in embedded mobile browsers before OAuth redirect'
   const source = read('src/pages/Login.tsx');
 
   assert.ok(source.includes('isEmbeddedGoogleAuthBlockedUserAgent'), 'Login must detect embedded mobile browsers');
-  assert.ok(source.includes('Google blokuje logowanie w tej przeglądarce'), 'User must see a clear Google webview warning');
-  assert.ok(source.includes('Otwórz tę stronę w Chrome albo Safari'), 'User must get an external browser instruction');
+  assert.ok(source.includes('Google blokuje logowanie w tej przegl\u0105darce'), 'User must see a clear Google webview warning');
+  assert.ok(source.includes('Otw\u00F3rz t\u0119 stron\u0119 w Chrome albo Safari'), 'User must get an external browser instruction');
   assert.ok(source.includes('Kopiuj link'), 'User must have a copy-link fallback');
   assert.ok(source.includes('handleCopyLoginUrl'), 'Login must expose copy-link fallback logic');
   assert.ok(source.includes('handleOpenExternalBrowserHint'), 'Login must expose external-browser helper action');

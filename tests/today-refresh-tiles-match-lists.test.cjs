@@ -8,7 +8,7 @@ test('Today refresh button has manual state and tiles match expandable list labe
   assert.match(src, /STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE/);
   assert.match(src, /STAGE16AI_TODAY_TILES_MATCH_LISTS/);
   assert.match(src, /refreshData\(\{ manual: true \}\)/);
-  assert.match(src, /manualRefreshing \? 'Odświeżanie\.\.\.' : 'Odśwież dane'/);
+  assert.match(src, /manualRefreshing \? 'Od\u015Bwie\u017Canie\.\.\.' : 'Od\u015Bwie\u017C dane'/);
   assert.match(src, /const todaySectionLabels = \{/);
   assert.match(src, /data-stage16ai-today-tiles-match-lists="true"/);
 

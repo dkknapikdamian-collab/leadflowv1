@@ -15,7 +15,7 @@ function mustInclude(source, value, label) {
 
 mustInclude(page, 'Szkice AI', 'header');
 mustInclude(page, 'SZKICE DO SPRAWDZENIA', 'kicker');
-mustInclude(page, 'Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopiero wtedy zapisz.', 'description');
+mustInclude(page, 'Rzeczy przygotowane przez asystenta. Sprawd\u017A, popraw i dopiero wtedy zapisz.', 'description');
 
 ['Wszystkie', 'Do sprawdzenia', 'Leady', 'Zadania', 'Wydarzenia'].forEach((label) => {
   mustInclude(page, label, `filter ${label}`);
@@ -25,10 +25,10 @@ mustInclude(page, 'Rzeczy przygotowane przez asystenta. Sprawdź, popraw i dopie
   mustInclude(page, needle, `draft row field ${needle}`);
 });
 
-['Sprawdź', 'Edytuj', 'Zatwierdź'].forEach((label) => {
+['Sprawd\u017A', 'Edytuj', 'Zatwierd\u017A'].forEach((label) => {
   mustInclude(page, label, `pending action ${label}`);
 });
-assert(page.includes('Anuluj') || page.includes('Usuń'), 'Missing pending remove/cancel action');
+assert(page.includes('Anuluj') || page.includes('Usu\u0144'), 'Missing pending remove/cancel action');
 
 assert(!page.includes('JSON.stringify(draft'), 'Main list must not render draft JSON');
 assert(!page.includes('<pre'), 'Main list must not render raw technical pre blocks');

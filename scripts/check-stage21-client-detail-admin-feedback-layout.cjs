@@ -26,7 +26,7 @@ function assertIncludes(file, needle, label) {
 const clientDetail = "src/pages/ClientDetail.tsx";
 const css = "src/styles/visual-stage12-client-detail-vnext.css";
 
-assertNotIncludes(clientDetail, "Klient ma przypięte sprawy i bieżący kontekst pracy.", "opis panelu klienta do usuniecia");
+assertNotIncludes(clientDetail, "Klient ma przypi\u0119te sprawy i bie\u017C\u0105cy kontekst pracy.", "opis panelu klienta do usuniecia");
 assertNotIncludes(clientDetail, "Klient ma przypiete sprawy i biezacy kontekst pracy.", "opis panelu klienta bez polskich znakow do usuniecia");
 
 assertIncludes(css, "stage21c admin feedback client detail cleanup", "marker Stage21C CSS");

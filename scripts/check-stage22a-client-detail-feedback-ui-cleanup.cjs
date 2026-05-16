@@ -28,10 +28,10 @@ const css = "src/styles/visual-stage12-client-detail-vnext.css";
 
 assertIncludes(clientDetail, "Roadmapa", "zmiana Ostatnie ruchy na Roadmapa");
 assertIncludes(clientDetail, "Aktywne sprawy", "zmiana Historia pozyskania na Aktywne sprawy");
-assertIncludes(clientDetail, "Przejdź do sprawy", "copy przycisku przejscia do sprawy");
+assertIncludes(clientDetail, "Przejd\u017A do sprawy", "copy przycisku przejscia do sprawy");
 assertNotIncludes(clientDetail, "Ostatnie ruchy", "stara nazwa panelu ostatnich ruchow");
 assertNotIncludes(clientDetail, "Historia pozyskania", "stara sekcja historia pozyskania");
-assertNotIncludes(clientDetail, "Brak osobnej notatki. Dodaj, jeśli jest coś ważnego.", "pusty opis notatki do skasowania");
+assertNotIncludes(clientDetail, "Brak osobnej notatki. Dodaj, je\u015Bli jest co\u015B wa\u017Cnego.", "pusty opis notatki do skasowania");
 
 assertIncludes(css, "stage22a client detail feedback ui cleanup", "marker CSS Stage22A");
 assertIncludes(css, ".client-detail-note-card", "kontrast notatek");

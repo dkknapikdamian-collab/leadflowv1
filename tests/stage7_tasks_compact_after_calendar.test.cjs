@@ -12,13 +12,13 @@ const css = fs.readFileSync(cssPath, 'utf8');
 const { markerChars: mojibake } = require('../scripts/mojibake-markers.cjs');
 
 test('Tasks ma wymagane widoki operacyjne', () => {
-  for (const label of ['Aktywne', 'Dziś', 'Ten tydzień', 'Zaległe', 'Zrobione']) {
+  for (const label of ['Aktywne', 'Dzi\u015B', 'Ten tydzie\u0144', 'Zaleg\u0142e', 'Zrobione']) {
     assert.match(tasks, new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   }
   assert.match(tasks, /id:\s*'week' as TaskScope/);
 });
 
-test('Kompaktowy task row pokazuje typ, tytuł, termin, status i powiązanie', () => {
+test('Kompaktowy task row pokazuje typ, tytu\u0142, termin, status i powi\u0105zanie', () => {
   for (const needle of [
     'data-task-compact-row="true"',
     'task-type-badge-col',
@@ -33,8 +33,8 @@ test('Kompaktowy task row pokazuje typ, tytuł, termin, status i powiązanie', (
   }
 });
 
-test('Akcje taska są krótkie i spójne z kalendarzem', () => {
-  for (const label of ['Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Usuń']) {
+test('Akcje taska s\u0105 kr\u00F3tkie i sp\u00F3jne z kalendarzem', () => {
+  for (const label of ['Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Usu\u0144']) {
     assert.ok(tasks.includes(label), `brak akcji: ${label}`);
   }
   assert.match(tasks, /rescheduleTask\(task, 1, 'hour'\)/);
@@ -44,7 +44,7 @@ test('Akcje taska są krótkie i spójne z kalendarzem', () => {
   assert.match(tasks, /deleteTask\(task\.id\)/);
 });
 
-test('Akcje taska nie mają szerokich full-width buttonów', () => {
+test('Akcje taska nie maj\u0105 szerokich full-width button\u00F3w', () => {
   assert.match(css, /\.task-action-col\.task-action-col-compact[\s\S]*flex-wrap:\s*wrap/);
   assert.match(css, /\.task-action-btn[\s\S]*width:\s*auto\s*!important/);
   assert.match(css, /\.task-action-btn[\s\S]*max-width:\s*max-content\s*!important/);

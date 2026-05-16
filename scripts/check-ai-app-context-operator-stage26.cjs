@@ -24,7 +24,7 @@ function assertMissing(file) {
 
 // Stage 26: AI app context operator is present on the server side.
 assertIncludes('src/server/ai-application-operator.ts', 'AI_APP_CONTEXT_OPERATOR_STAGE26');
-assertIncludes('src/server/ai-application-operator.ts', 'Nie znalazłem tego w danych aplikacji.');
+assertIncludes('src/server/ai-application-operator.ts', 'Nie znalaz\u0142em tego w danych aplikacji.');
 assertIncludes('src/server/ai-application-operator.ts', 'buildAiApplicationOperatorAnswer');
 assertIncludes('src/server/ai-application-operator.ts', 'dedupeIncrementalTranscript');
 

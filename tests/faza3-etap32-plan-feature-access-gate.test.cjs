@@ -21,9 +21,9 @@ test('Faza 3 Etap 3.2A plan feature access gate is documented and wired', () => 
   assert.match(quiet, /tests\/faza3-etap32-plan-feature-access-gate\.test\.cjs/);
 
   assert.match(doc, /Free = demo z limitami/);
-  assert.match(doc, /Basic = proste CRM bez ciężkich integracji/);
+  assert.match(doc, /Basic = proste CRM bez ci\u0119\u017Ckich integracji/);
   assert.match(doc, /Pro = integracje i automatyzacje operacyjne/);
-  assert.match(doc, /AI = pełny asystent AI/);
+  assert.match(doc, /AI = pe\u0142ny asystent AI/);
   assert.match(doc, /FAZA 3 - Etap 3\.2B - Plan-based UI visibility and feature smoke/);
 
   assert.match(technical, /PLAN FEATURE MATRIX/);

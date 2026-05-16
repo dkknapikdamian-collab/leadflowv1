@@ -27,7 +27,7 @@ test('billing page uses Stripe BLIK checkout and does not activate paid plan dir
 });
 
 test('Stripe BLIK API foundation exists and uses Stripe env contract', () => {
-  assert.ok(exists('src/server/_stripe.ts')); 
+  assert.ok(exists('src/server/_stripe.ts'));
   assert.ok(exists('api/billing-checkout.ts'));
   assert.ok(exists('api/stripe-webhook.ts'));
 

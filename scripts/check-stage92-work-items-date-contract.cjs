@@ -46,7 +46,7 @@ expect(!optionsBody.includes('15 minut'), 'forbidden reminder preset 15m detecte
 expect(!optionsBody.includes('30 minut'), 'forbidden reminder preset 30m detected');
 expect(!optionsBody.includes('1 godzin'), 'forbidden reminder preset 1h detected');
 
-expect(tasksView.includes('Niepowiązane z leadem/sprawą/klientem') || calendarView.includes('Brak powiązania'), 'standalone copy marker is required');
+expect(tasksView.includes('Niepowi\u0105zane z leadem/spraw\u0105/klientem') || calendarView.includes('Brak powi\u0105zania'), 'standalone copy marker is required');
 expect(!tasksView.includes('standalone next step'), 'standalone must not define next-step helper');
 expect(!calendarView.includes('standalone next step'), 'standalone must not define next-step helper');
 
@@ -56,4 +56,3 @@ if (fail.length) {
   process.exit(1);
 }
 console.log('PASS STAGE92_WORK_ITEMS_DATE_CONTRACT');
-

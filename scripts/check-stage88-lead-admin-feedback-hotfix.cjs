@@ -14,8 +14,8 @@ const candidates = read('src/components/admin-tools/dom-candidates.ts');
 const pkg = JSON.parse(read('package.json'));
 
 expect(lead.includes('STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX'), 'LeadDetail must carry Stage88 marker');
-expect(!lead.includes('Dodaj zadanie albo wydarzenie, jeśli lead jest aktywny.'), 'LeadDetail must remove noisy nearest-move helper copy');
-expect(!lead.includes('Krótka historia kontaktu i przekazania tematu.'), 'LeadDetail must remove noisy history helper copy');
+expect(!lead.includes('Dodaj zadanie albo wydarzenie, je\u015Bli lead jest aktywny.'), 'LeadDetail must remove noisy nearest-move helper copy');
+expect(!lead.includes('Kr\u00F3tka historia kontaktu i przekazania tematu.'), 'LeadDetail must remove noisy history helper copy');
 expect(css.includes('STAGE88_LEAD_DETAIL_RIGHT_RAIL_READABILITY'), 'LeadDetail CSS must carry Stage88 readability marker');
 expect(css.includes('max-height: calc(100vh - 132px)'), 'Right rail must have bounded viewport height');
 expect(css.includes('overflow-y: auto'), 'Right rail/cards must allow vertical scroll');

@@ -19,7 +19,7 @@ const contrastCssPath = 'src/styles/stage30a-mobile-contrast-lock.css';
 
 assert(
   indexCss.includes("@import './styles/stage30a-mobile-contrast-lock.css';"),
-  'src/index.css musi importować stage30a-mobile-contrast-lock.css jako ostatnią warstwę kontrastu.',
+  'src/index.css musi importowa\u0107 stage30a-mobile-contrast-lock.css jako ostatni\u0105 warstw\u0119 kontrastu.',
 );
 
 assert(
@@ -46,17 +46,17 @@ for (const marker of requiredMarkers) {
 
 assert(
   /background:\s*#ffffff\s*!important/.test(css) || /background-color:\s*#ffffff\s*!important/.test(css),
-  'CSS musi wymuszać jasne tło dla mobilnych paneli i menu.',
+  'CSS musi wymusza\u0107 jasne t\u0142o dla mobilnych paneli i menu.',
 );
 
 assert(
   /color:\s*var\(--cf30a-text\)\s*!important/.test(css),
-  'CSS musi wymuszać ciemny tekst dla jasnych paneli.',
+  'CSS musi wymusza\u0107 ciemny tekst dla jasnych paneli.',
 );
 
 assert(
   /color:\s*var\(--cf30a-blue-strong\)\s*!important/.test(css),
-  'CSS musi wymuszać niebieski tekst dla globalnych akcji.',
+  'CSS musi wymusza\u0107 niebieski tekst dla globalnych akcji.',
 );
 
 console.log('stage30a-mobile-contrast: PASS');

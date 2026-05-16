@@ -23,7 +23,7 @@ assert(
 );
 assert(api.includes('matchFields') && api.includes('service_history'), 'Conflict source must detect match fields and service history');
 assert(dialog.includes('CLOSEFLOW_ENTITY_CONFLICT_DIALOG_V1'), 'Missing conflict dialog marker');
-assert(dialog.includes('Dodaj mimo to') && dialog.includes('Pokaż') && dialog.includes('Przywróć'), 'Dialog must expose show/restore/create-anyway actions');
+assert(dialog.includes('Dodaj mimo to') && dialog.includes('Poka\u017C') && dialog.includes('Przywr\u00F3\u0107'), 'Dialog must expose show/restore/create-anyway actions');
 assert(leads.includes('CLOSEFLOW_LEAD_CONFLICT_RESOLUTION_V1'), 'Missing lead conflict marker');
 assert(leads.includes('findEntityConflictsInSupabase') && leads.includes('handleCreateLeadAnyway'), 'Lead page not wired to conflict flow');
 assert(clients.includes('CLOSEFLOW_CLIENT_CONFLICT_RESOLUTION_V1'), 'Missing client conflict marker');

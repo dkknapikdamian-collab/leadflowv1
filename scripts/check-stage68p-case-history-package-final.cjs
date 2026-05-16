@@ -34,26 +34,26 @@ const pkg = JSON.parse(packageRaw.replace(/^\uFEFF/, ''));
 
 const expected = [
   "if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;",
-  "if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;",
+  "if (activity.eventType === 'status_changed') return `Zmieniono status \u201E${title}\u201D na: ${getItemStatusLabel(activity.payload?.status)}`;",
   "if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;",
-  "if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;",
-  "if (activity.eventType === 'operator_note') return 'Dodano notatkę';",
+  "if (activity.eventType === 'decision_made') return `Dodano decyzj\u0119: ${title}`;",
+  "if (activity.eventType === 'operator_note') return 'Dodano notatk\u0119';",
   "if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;",
   "if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;",
-  "if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;",
-  "if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;",
-  "if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;",
-  "if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;",
-  "if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';",
-  "if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';",
-  "if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';",
+  "if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania \u201E${title}\u201D na: ${getTaskStatusLabel(activity.payload?.status)}`;",
+  "if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia \u201E${title}\u201D na: ${getEventStatusLabel(activity.payload?.status)}`;",
+  "if (activity.eventType === 'task_rescheduled') return `Prze\u0142o\u017Cono zadanie \u201E${title}\u201D na: ${formatDateTime(activity.payload?.scheduledAt)}`;",
+  "if (activity.eventType === 'event_rescheduled') return `Prze\u0142o\u017Cono wydarzenie \u201E${title}\u201D na: ${formatDateTime(activity.payload?.startAt)}`;",
+  "if (activity.eventType === 'case_lifecycle_started') return 'Rozpocz\u0119to realizacj\u0119 sprawy';",
+  "if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono spraw\u0119 jako zrobion\u0105';",
+  "if (activity.eventType === 'case_lifecycle_reopened') return 'Przywr\u00F3cono spraw\u0119 do pracy';",
   "return 'Dodano ruch w sprawie';",
 ];
 for (const fragment of expected) {
   if (!block.includes(fragment)) fail(`getActivityText missing expected copy: ${fragment}`);
   pass(`getActivityText contains: ${fragment}`);
 }
-for (const marker of ['â', 'Ä', 'Ĺ', 'Ă', 'ď', '�', '${actor}', 'Ty dodał', 'Ty podjął']) {
+for (const marker of ['\u00E2', '\u00c4', '\u0139', '\u0102', '\u010F', '\ufffd', '${actor}', 'Ty doda\u0142', 'Ty podj\u0105\u0142']) {
   if (block.includes(marker)) fail(`getActivityText still contains forbidden marker: ${marker}`);
 }
 pass('getActivityText has no known mojibake or actor grammar markers');

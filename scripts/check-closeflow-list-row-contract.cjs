@@ -40,17 +40,17 @@ const files = [
 ];
 
 const mojibakePatterns = [
-  'Äą',
-  'Ă„',
-  'Ä‚',
-  'Ă‚',
-  'Ă˘â‚¬',
-  'Ă˘â€',
-  'ďż˝',
-  'powiÄ',
-  'potrĹ',
-  'PrzenieĹ',
-  'OdĹ',
+  '\u0139',
+  '\u00c4',
+  '\u0102',
+  '\u00c2',
+  '\u00E2\u00E2\u201A\u00AC',
+  '\u00E2\u00E2\u20AC',
+  '\u010F\u017C\u02DD',
+  'powi\u00c4',
+  'potr\u0139',
+  'Przenie\u0139',
+  'Od\u0139',
   '`r`n',
 ];
 

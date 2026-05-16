@@ -30,9 +30,9 @@ assert.ok(source.includes("onEdit(entry)"), 'Entry edit action must remain avail
 assert.ok(source.includes("onShift(entry, 1)"), 'Entry +1D action must remain available');
 assert.ok(source.includes("onShift(entry, 7)"), 'Entry +1W action must remain available');
 assert.ok(source.includes("onShiftHours(entry, 1)"), 'Entry +1H action must remain available');
-assert.ok(source.includes("isCompletedEntry ? 'Przywróć' : 'Zrobione'"), 'Done/restore label contract must remain intact');
-assert.ok(source.includes('Otwórz lead'), 'Lead relation link label must remain available');
-assert.ok(source.includes('Otwórz sprawę'), 'Case relation link label must remain available');
+assert.ok(source.includes("isCompletedEntry ? 'Przywr\u00F3\u0107' : 'Zrobione'"), 'Done/restore label contract must remain intact');
+assert.ok(source.includes('Otw\u00F3rz lead'), 'Lead relation link label must remain available');
+assert.ok(source.includes('Otw\u00F3rz spraw\u0119'), 'Case relation link label must remain available');
 assert.ok(source.includes('/leads/${entry.raw.leadId}'), 'Lead route relation contract must remain available');
 assert.ok(source.includes('/cases/${entry.raw.caseId}'), 'Case route relation contract must remain available');
 

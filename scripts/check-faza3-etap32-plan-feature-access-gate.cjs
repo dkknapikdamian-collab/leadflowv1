@@ -116,9 +116,9 @@ assertNotRegex(files.settings, settings, /const\s+canUseGoogleCalendarByPlan\s*=
 section('Documentation');
 for (const marker of [
   'Free = demo z limitami',
-  'Basic = proste CRM bez ciężkich integracji',
+  'Basic = proste CRM bez ci\u0119\u017Ckich integracji',
   'Pro = integracje i automatyzacje operacyjne',
-  'AI = pełny asystent AI',
+  'AI = pe\u0142ny asystent AI',
   'Full AI assistant',
   'assertWorkspaceFeatureAccess',
   'FAZA 3 - Etap 3.2B - Plan-based UI visibility and feature smoke',

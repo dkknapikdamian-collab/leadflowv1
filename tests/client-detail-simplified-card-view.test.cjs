@@ -23,18 +23,18 @@ test('Client detail uses simplified card view with tabs and inline contact edit'
   assert.match(source, /\+ Nowa sprawa dla klienta/);
   assert.match(source, /data-client-inline-contact-edit="true"/);
   assert.match(source, /contactEditing \? 'Zapisz' : 'Edytuj'/);
-  assert.match(source, /Praca dzieje się w sprawie/);
+  assert.match(source, /Praca dzieje si\u0119 w sprawie/);
 
   assert.doesNotMatch(source, /Leady klienta/);
   assert.doesNotMatch(source, /Dodaj follow-up/);
-  assert.doesNotMatch(source, /Następny krok klienta/);
+  assert.doesNotMatch(source, /Nast\u0119pny krok klienta/);
 });
 
 test('Client detail keeps source lead as history instead of workspace', () => {
   const source = read('src/pages/ClientDetail.tsx');
 
-  assert.match(source, /Lead źródłowy/);
+  assert.match(source, /Lead \u017Ar\u00F3d\u0142owy/);
   assert.match(source, /Historia pozyskania/);
-  assert.match(source, /Źródło:/);
-  assert.match(source, /Otwórz sprawę/);
+  assert.match(source, /\u0179r\u00F3d\u0142o:/);
+  assert.match(source, /Otw\u00F3rz spraw\u0119/);
 });

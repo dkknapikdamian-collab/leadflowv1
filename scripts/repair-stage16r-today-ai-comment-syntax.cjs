@@ -56,7 +56,7 @@ source = normalizeNewlines(source).replace(/^\uFEFF/, '');
     }
 
     const runText = run.join('\n');
-    const looksLikeAiMarker = /saveAiLeadDraft|askTodayAiAssistant|Szkic leada|Zapisz w szkicach AI|Otwórz w Szybkim szkicu|SpeechRecognition|AI_DIRECT_WRITE|direct_task_event|STAGE35_AI_ASSISTANT_COMPACT_UI/.test(runText);
+    const looksLikeAiMarker = /saveAiLeadDraft|askTodayAiAssistant|Szkic leada|Zapisz w szkicach AI|Otw\u00F3rz w Szybkim szkicu|SpeechRecognition|AI_DIRECT_WRITE|direct_task_event|STAGE35_AI_ASSISTANT_COMPACT_UI/.test(runText);
     const previous = out.slice().reverse().find((entry) => entry.trim().length > 0) || '';
     const alreadyInComment = /\/\*|\*/.test(previous.trim());
 

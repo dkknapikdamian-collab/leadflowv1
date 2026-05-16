@@ -6,7 +6,7 @@ const path = require('path');
 const root = process.cwd();
 const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 const fail = (message) => {
-  console.error('✖ ' + message);
+  console.error('\u2716 ' + message);
   process.exit(1);
 };
 
@@ -31,4 +31,4 @@ const blockWithoutComments = blockMatch[0].replace(/\/\*[\s\S]*?\*\//g, '').toLo
   if (blockWithoutComments.includes(forbidden)) fail('ETAP4 CSS declarations contain forbidden alert color: ' + forbidden);
 });
 
-console.log('✔ CLOSEFLOW_ETAP4_CLIENT_NEXT_ACTION_ACCENT guard passed');
+console.log('\u2714 CLOSEFLOW_ETAP4_CLIENT_NEXT_ACTION_ACCENT guard passed');

@@ -1,4 +1,4 @@
-﻿const assert = require('node:assert/strict');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const test = require('node:test');
@@ -36,7 +36,7 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
       'items',
       'caseItems',
     ]),
-    'Command center powinien mieć akcję albo kontekst dodawania elementów/checklisty.',
+    'Command center powinien mie\u0107 akcj\u0119 albo kontekst dodawania element\u00F3w/checklisty.',
   );
 
   assert.ok(
@@ -46,7 +46,7 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
       'quickTask',
       'task_created',
     ]),
-    'Command center powinien mieć akcję zadania.',
+    'Command center powinien mie\u0107 akcj\u0119 zadania.',
   );
 
   assert.ok(
@@ -56,7 +56,7 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
       'quickEvent',
       'event_created',
     ]),
-    'Command center powinien mieć akcję wydarzenia.',
+    'Command center powinien mie\u0107 akcj\u0119 wydarzenia.',
   );
 
   assert.ok(
@@ -66,7 +66,7 @@ test('CaseDetail exposes V1 command center UI and quick actions', () => {
       'portal_token_created',
       'client portal',
     ]),
-    'Command center powinien mieć akcję portalu klienta.',
+    'Command center powinien mie\u0107 akcj\u0119 portalu klienta.',
   );
 });
 

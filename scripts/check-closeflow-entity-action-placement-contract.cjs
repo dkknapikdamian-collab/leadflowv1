@@ -32,7 +32,7 @@ const badMarkers = [
   'action-repair',
 ];
 
-const mojibakeFragments = ['Ä', 'Å', 'Ĺ', '�', 'Ã', 'Â', 'â€', 'â€™', 'â€œ', 'â€ť', '?ród', 'Cykliczno?', 'Otw?rz'];
+const mojibakeFragments = ['\u00c4', '\u00c5', '\u0139', '\ufffd', '\u00c3', '\u00c2', '\u00E2\u20AC', '\u00E2\u20AC\u2122', '\u00E2\u20AC\u0153', '\u00E2\u20AC\u0165', '?r\u00F3d', 'Cykliczno?', 'Otw?rz'];
 const detailFiles = [files.lead, files.client, files.case];
 
 for (const file of detailFiles) {

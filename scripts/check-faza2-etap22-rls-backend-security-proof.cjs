@@ -170,7 +170,7 @@ for (const needle of [
   'manual_evidence_required',
   'SQL proof',
   'User B nie widzi danych User A',
-  'FAZA 3 - Etap 3.1 - Jedno źródło prawdy dla planów',
+  'FAZA 3 - Etap 3.1 - Jedno \u017Ar\u00F3d\u0142o prawdy dla plan\u00F3w',
   'FAZA 2 - Etap 2.2B - RLS hardening SQL fix',
 ]) {
   assertIncludes(docPath, doc, needle, 'Doc contains: ' + needle);

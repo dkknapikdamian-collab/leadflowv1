@@ -15,10 +15,10 @@ test('Quick AI Capture supports browser voice input without exposing AI settings
   assert.ok(source.includes('webkitSpeechRecognition'), 'component should support Chromium webkitSpeechRecognition');
   assert.ok(source.includes('Dyktuj'), 'component should expose a simple voice button');
   assert.ok(source.includes('Zatrzymaj dyktowanie'), 'component should allow stopping voice capture');
-  assert.ok(source.includes('Notatka źródłowa'), 'raw dictated text field should remain visible before save');
-  assert.ok(source.includes('Tekst źródłowy zostaje widoczny'), 'raw dictated text must remain visible before final lead save');
+  assert.ok(source.includes('Notatka \u017Ar\u00F3d\u0142owa'), 'raw dictated text field should remain visible before save');
+  assert.ok(source.includes('Tekst \u017Ar\u00F3d\u0142owy zostaje widoczny'), 'raw dictated text must remain visible before final lead save');
   assert.ok(source.includes('Zapisz szkic'), 'raw note must be savable into AI drafts before conversion');
-  assert.ok(source.includes('Zatwierdź jako lead'), 'lead conversion must remain an explicit confirmation action');
+  assert.ok(source.includes('Zatwierd\u017A jako lead'), 'lead conversion must remain an explicit confirmation action');
   assert.ok(!source.includes('GEMINI_API_KEY'), 'ordinary capture UI must not expose provider keys');
 });
 

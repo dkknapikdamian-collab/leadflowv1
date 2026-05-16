@@ -1660,7 +1660,7 @@ return (
             </div>
           </div>
           <div className="client-detail-header-actions">
-            
+
             <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
                 <EntityIcon entity="ai" className="h-4 w-4" />
@@ -1688,7 +1688,7 @@ return (
         />
         <div className="client-detail-shell">
           <aside className="client-detail-left-rail">
-            
+
                       <section className="client-detail-today-info-tiles" data-client-left-management-tiles="true" data-client-today-style-info-tiles="true" aria-label="Informacje o kliencie">
               <article className={`client-detail-today-info-tile ${nextActionToneClass(clientNextAction.tone)}`} data-client-left-next-action-tile="true">
                 <div className="client-detail-today-info-tile-icon">
@@ -2036,7 +2036,7 @@ return (
                   </div>
 
                   {leads.length ? (<>
-                    
+
                   <div className="client-detail-case-smart-list" data-client-case-smart-list="true">
                     {(cases.filter((caseRecord: any) => {
                       const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
@@ -2186,7 +2186,7 @@ return (
           </section>
 
           <aside className="client-detail-right-rail" aria-label="Panel klienta">
-                    
+
 <section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
               <div className="client-detail-card-title-row">
                 <Clock className="h-4 w-4" />
@@ -2213,14 +2213,14 @@ return (
 
             {/* STAGE35_CLIENT_DETAIL_HIDE_DODATKOWO */}
 
-            
+
               <section className="right-card client-detail-right-card client-detail-side-quick-actions-card" data-client-side-quick-actions="true">
                 <div className="client-detail-card-title-row">
                   <EntityIcon entity="ai" className="h-4 w-4" />
                   <h2>Szybkie akcje</h2>
                 </div>
                 <div className="client-detail-side-quick-actions-grid">
-                  <ContextActionButton kind="task" recordType="client" 
+                  <ContextActionButton kind="task" recordType="client"
                     type="button"
                     variant="outline"
                     size="sm"
@@ -2239,7 +2239,7 @@ return (
                   >
                     Dodaj zadanie
                   </ContextActionButton>
-                  <ContextActionButton kind="event" recordType="client" 
+                  <ContextActionButton kind="event" recordType="client"
                     type="button"
                     variant="outline"
                     size="sm"
@@ -2287,7 +2287,7 @@ return (
                 {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                 Dyktuj
               </Button>
-            
+
               <div className="client-detail-notes-list" data-client-notes-list="true">
                 <div className="client-detail-notes-list-head">
                   <strong>Notatki</strong>

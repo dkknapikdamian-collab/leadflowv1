@@ -100,7 +100,7 @@ function extractLikelyFailures(result) {
   const patterns = [
     /^FAILED:/,
     /^FAIL:/,
-    /^✖ /,
+    /^\u2716 /,
     /AssertionError/i,
     /Error:/,
     /P0 .*failed/i,
@@ -219,21 +219,21 @@ const failedTable = failed.length
 
 const failureSections = failed.length
   ? failed.map((r, index) => {
-      const hints = (r.likelyFailures || []).length ? (r.likelyFailures || []).map((line) => '- ' + line).join('\n') : '- brak krótkiego wzorca, sprawdź tail outputu';
+      const hints = (r.likelyFailures || []).length ? (r.likelyFailures || []).map((line) => '- ' + line).join('\n') : '- brak kr\u00F3tkiego wzorca, sprawd\u017A tail outputu';
       return '### ' + (index + 1) + '. `' + r.name + '`\n\n' +
         '- Test file: `' + (r.testFile || '-') + '`\n' +
         '- Command: `' + escapeMd(r.command) + '`\n' +
         '- Exit: `' + r.code + '`\n' +
         '- Duration: `' + (r.durationMs / 1000).toFixed(1) + 's`\n\n' +
-        '**Najważniejsze linie:**\n\n' + hints + '\n\n' +
+        '**Najwa\u017Cniejsze linie:**\n\n' + hints + '\n\n' +
         '**STDOUT tail:**\n\n' + codeBlock(tail(r.stdout, 80, 12000)) + '\n\n' +
         '**STDERR tail:**\n\n' + codeBlock(tail(r.stderr, 80, 12000));
     }).join('\n\n')
-  : 'Brak czerwonych gateów.';
+  : 'Brak czerwonych gate\u00F3w.';
 
-const md = '# Stage16K Final QA Red Gates — zbiorczy raport\n\n' +
+const md = '# Stage16K Final QA Red Gates \u2014 zbiorczy raport\n\n' +
   '**Generated:** ' + report.generatedAt + '\n\n' +
-  '| Pole | Wartość |\n|---|---|\n' +
+  '| Pole | Warto\u015B\u0107 |\n|---|---|\n' +
   '| Repo | `' + escapeMd(root) + '` |\n' +
   '| Branch | `' + escapeMd(gitInfo.branch || 'UNKNOWN') + '` |\n' +
   '| HEAD | `' + escapeMd(gitInfo.head || 'UNKNOWN') + '` |\n' +
@@ -243,9 +243,9 @@ const md = '# Stage16K Final QA Red Gates — zbiorczy raport\n\n' +
   '| Failed | `' + failed.length + '` |\n\n' +
   '## Czerwone gatey\n\n' +
   '| # | Check | Test file | Exit | Czas |\n|---:|---|---|---:|---:|\n' + failedTable + '\n\n' +
-  '## Szczegóły czerwonych gateów\n\n' + failureSections + '\n\n' +
-  '## Pełne logi\n\n' +
-  'Pełne logi zapisane w: `test-results/stage16k-red-gates/`\n\n' +
+  '## Szczeg\u00F3\u0142y czerwonych gate\u00F3w\n\n' + failureSections + '\n\n' +
+  '## Pe\u0142ne logi\n\n' +
+  'Pe\u0142ne logi zapisane w: `test-results/stage16k-red-gates/`\n\n' +
   '## JSON\n\n' +
   'Maszynowy raport: `docs/release/FINAL_QA_RED_GATES_2026-05-06.json`\n';
 

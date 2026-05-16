@@ -57,18 +57,18 @@ assertNotIncludes(source, 'Sprawy /', 'powtarzany breadcrumb z nazwa sprawy');
 
 if (!header) throw new Error('Nie znaleziono headera CaseDetail do kontroli duplikacji.');
 if (countIn(header, 'getCaseTitle(caseData)') > 1) {
-  throw new Error('Header nadal powtarza getCaseTitle(caseData) więcej niż raz.');
+  throw new Error('Header nadal powtarza getCaseTitle(caseData) wi\u0119cej ni\u017C raz.');
 }
 if (countIn(header, 'getCaseStatusLabel(caseData?.status)') + countIn(header, 'getCaseStatusLabel(caseData.status)') > 1) {
-  throw new Error('Header nadal powtarza status sprawy więcej niż raz.');
+  throw new Error('Header nadal powtarza status sprawy wi\u0119cej ni\u017C raz.');
 }
 
 if (rightRail) {
-  for (const forbidden of ['Portal i źródła', 'Portal i zrodla', 'Portal klienta', 'Kopiuj portal', 'Powiązany lead', 'Powiazany lead', 'case-detail-roadmap-helper', 'case-detail-purple-panel']) {
+  for (const forbidden of ['Portal i \u017Ar\u00F3d\u0142a', 'Portal i zrodla', 'Portal klienta', 'Kopiuj portal', 'Powi\u0105zany lead', 'Powiazany lead', 'case-detail-roadmap-helper', 'case-detail-purple-panel']) {
     if (rightRail.includes(forbidden)) {
-      throw new Error(`Prawy rail nadal zawiera zbędny panel/tekst: ${forbidden}`);
+      throw new Error(`Prawy rail nadal zawiera zb\u0119dny panel/tekst: ${forbidden}`);
     }
   }
 }
 
-console.log('✔ Stage14C Repair1 actual CaseDetail cleanup guard passed');
+console.log('\u2714 Stage14C Repair1 actual CaseDetail cleanup guard passed');

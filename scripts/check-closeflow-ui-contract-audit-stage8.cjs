@@ -20,9 +20,9 @@ for (const token of [
   'metric tone',
   'readable card/empty state',
   'real system alert/error',
-  'unrelated legacy visual style do później',
+  'unrelated legacy visual style do p\u00F3\u017Aniej',
   'co naprawiono',
-  'co zostawiono jako wyjątek',
+  'co zostawiono jako wyj\u0105tek',
   'co zostaje na kolejny etap',
 ]) {
   if (!doc.includes(token)) fail('dokument Stage8 nie zawiera: ' + token);
@@ -49,15 +49,15 @@ if (pkg.scripts?.['check:closeflow-ui-contract-audit-stage8'] !== 'node scripts/
 }
 
 const dangerCheck = read('scripts/check-closeflow-danger-style-contract.cjs');
-if (!dangerCheck.includes('STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS')) fail('danger check nie rozpoznaje dokumentowanych wyjątków Stage8');
-if (!dangerCheck.includes('categorizeFinding')) fail('danger check nie klasyfikuje legacy kolorów');
+if (!dangerCheck.includes('STAGE8_DOCUMENTED_LEGACY_EXCEPTIONS')) fail('danger check nie rozpoznaje dokumentowanych wyj\u0105tk\u00F3w Stage8');
+if (!dangerCheck.includes('categorizeFinding')) fail('danger check nie klasyfikuje legacy kolor\u00F3w');
 
 const templates = read('src/pages/Templates.tsx');
-if (templates.includes('<Badge className="bg-rose-600 text-white">Obowiązkowe</Badge>')) {
-  fail('Templates nadal ma lokalny bg-rose-600 dla badge Obowiązkowe');
+if (templates.includes('<Badge className="bg-rose-600 text-white">Obowi\u0105zkowe</Badge>')) {
+  fail('Templates nadal ma lokalny bg-rose-600 dla badge Obowi\u0105zkowe');
 }
 if (!templates.includes('className="cf-status-pill" data-cf-status-tone="red"')) {
-  fail('Templates nie używa cf-status-pill red dla badge Obowiązkowe');
+  fail('Templates nie u\u017Cywa cf-status-pill red dla badge Obowi\u0105zkowe');
 }
 
 const forbiddenLocalNames = /(?:color|danger|status|legacy)[-_](?:fix|v2|repair|cleanup)|(?:fix|v2|repair|cleanup)[-_](?:color|danger|status|legacy)/i;
@@ -69,7 +69,7 @@ for (const file of [
 ]) {
   const text = read(file);
   if (forbiddenLocalNames.test(text.replace(/CLOSEFLOW_UI_CONTRACT_AUDIT_STAGE8/g, ''))) {
-    fail(file + ' zawiera lokalną nazwę fix/v2/repair/cleanup dla color/danger/status/legacy');
+    fail(file + ' zawiera lokaln\u0105 nazw\u0119 fix/v2/repair/cleanup dla color/danger/status/legacy');
   }
 }
 

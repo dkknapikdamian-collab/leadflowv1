@@ -12,7 +12,7 @@ function read(relativePath) {
 test('Stage35c repairs autospeech test contract after compact assistant UI', () => {
   const autospeechTest = read('tests/ai-assistant-autospeech-and-clear-input.test.cjs');
   const assistant = read('src/components/TodayAiAssistant.tsx');
-  const removedLongHint = 'Jeżeli chcesz, żeby notatka albo kontakt trafiły do Szkiców AI';
+  const removedLongHint = 'Je\u017Celi chcesz, \u017Ceby notatka albo kontakt trafi\u0142y do Szkic\u00F3w AI';
 
   assert.ok(autospeechTest.includes('compact save/search guidance'));
   assert.ok(autospeechTest.includes('STAGE35_AI_ASSISTANT_COMPACT_UI'));

@@ -233,12 +233,12 @@ function parseRelativeWindow(query: string, now: Date): { start: Date; end: Date
   }
   if (text.includes("dzis") || text.includes("dzisiaj")) {
     const day = windowForDay(now, 0);
-    return { ...day, label: "dziĹ›" };
+    return { ...day, label: "dziś" };
   }
   const hoursMatch = text.match(/(?:w\s+przeciagu|przez|za)\s+(\d{1,2})\s+godzin/);
   if (hoursMatch) {
     const hours = Math.max(1, Math.min(48, Number(hoursMatch[1])));
-    return { start: now, end: new Date(now.getTime() + hours * 60 * 60 * 1000), label: `w ciÄ…gu ${hours} godzin` };
+    return { start: now, end: new Date(now.getTime() + hours * 60 * 60 * 1000), label: `w ciągu ${hours} godzin` };
   }
   return null;
 }
@@ -266,11 +266,11 @@ function answerTimeWindow(query: string, context: AssistantContext, now: Date): 
 
   const items = sortByDate(candidates).map((item) => structured(item, `Pasuje do okna: ${window.label}`));
   const answer = items.length
-    ? `Masz ${items.length} pozycj${items.length === 1 ? "Ä™" : "e"} ${window.label}: ${items
+    ? `Masz ${items.length} pozycj${items.length === 1 ? "ę" : "e"} ${window.label}: ${items
         .slice(0, 5)
         .map((item) => `${item.title} (${formatDate(item.startAt || item.scheduledAt)})`)
         .join("; ")}.`
-    : `Nie znalazĹ‚em zaplanowanych pozycji ${window.label} w danych aplikacji.`;
+    : `Nie znalazłem zaplanowanych pozycji ${window.label} w danych aplikacji.`;
 
   return result("read", answer, items, null, context);
 }
@@ -290,9 +290,9 @@ function answerNearest(query: string, context: AssistantContext): AssistantQuery
 
   const first = sortByDate(candidates)[0];
   if (!first) {
-    return result("read", `Nie znalazĹ‚em w danych aplikacji najbliĹĽszego terminu dla: ${words.join(" ")}.`, [], null, context);
+    return result("read", `Nie znalazłem w danych aplikacji najbliższego terminu dla: ${words.join(" ")}.`, [], null, context);
   }
-  return result("read", `NajbliĹĽszy termin: ${first.title}, ${formatDate(first.startAt || first.scheduledAt)}.`, [structured(first, "NajbliĹĽszy pasujÄ…cy termin")], null, context);
+  return result("read", `Najbliższy termin: ${first.title}, ${formatDate(first.startAt || first.scheduledAt)}.`, [structured(first, "Najbliższy pasujący termin")], null, context);
 }
 
 function answerPhoneLookup(query: string, context: AssistantContext): AssistantQueryResult | null {
@@ -306,14 +306,14 @@ function answerPhoneLookup(query: string, context: AssistantContext): AssistantQ
     .filter((item) => itemMatchesLookup(item, wanted));
 
   if (!candidates.length) {
-    return result("read", `Nie znalazĹ‚em numeru ani kontaktu dla: ${match?.[1] || wanted}.`, [], null, context);
+    return result("read", `Nie znalazłem numeru ani kontaktu dla: ${match?.[1] || wanted}.`, [], null, context);
   }
 
-  const items = candidates.map((item) => structured(item, "PasujÄ…cy kontakt"));
+  const items = candidates.map((item) => structured(item, "Pasujący kontakt"));
   const first = candidates[0];
   const answer = first.phone
-    ? `ZnalazĹ‚em kontakt: ${first.title}, telefon ${first.phone}${first.email ? `, e-mail ${first.email}` : ""}.`
-    : `ZnalazĹ‚em kontakt: ${first.title}, e-mail ${first.email}. Telefonu nie widzÄ™ w danych aplikacji.`;
+    ? `Znalazłem kontakt: ${first.title}, telefon ${first.phone}${first.email ? `, e-mail ${first.email}` : ""}.`
+    : `Znalazłem kontakt: ${first.title}, e-mail ${first.email}. Telefonu nie widzę w danych aplikacji.`;
   return result("read", answer, items, null, context);
 }
 
@@ -329,11 +329,11 @@ function answerGenericSearch(query: string, context: AssistantContext): Assistan
 
   const items = sortByDate(candidates).slice(0, 10).map((item) => structured(item, "Wynik wyszukiwania"));
   const answer = items.length
-    ? `ZnalazĹ‚em ${items.length} pasujÄ…c${items.length === 1 ? "Ä… pozycjÄ™" : "ych pozycji"}: ${items
+    ? `Znalazłem ${items.length} pasując${items.length === 1 ? "ą pozycję" : "ych pozycji"}: ${items
         .slice(0, 5)
         .map((item) => item.title)
         .join("; ")}.`
-    : "Nie znalazĹ‚em tego w danych aplikacji.";
+    : "Nie znalazłem tego w danych aplikacji.";
   return result("read", answer, items, null, context);
 }
 
@@ -427,7 +427,7 @@ function createDraft(query: string, context: AssistantContext, now: Date): Assis
       draftType,
       timezone: context.timezone,
     },
-    warnings: scheduledAt ? [] : ["Nie rozpoznaĹ‚em pewnego terminu. SprawdĹş szkic przed zatwierdzeniem."],
+    warnings: scheduledAt ? [] : ["Nie rozpoznałem pewnego terminu. Sprawdź szkic przed zatwierdzeniem."],
     createdAt: now.toISOString(),
   };
 }
@@ -477,7 +477,7 @@ export function runAssistantQuery(input: RunAssistantQueryInput): AssistantQuery
     const draft = createDraft(query, context, now);
     return result(
       "draft",
-      `PrzygotowaĹ‚em szkic typu ${draft.draftType}. Nic nie zostaĹ‚o zapisane finalnie. SprawdĹş i zatwierdĹş w Szkicach AI.`,
+      `Przygotowałem szkic typu ${draft.draftType}. Nic nie zostało zapisane finalnie. Sprawdź i zatwierdź w Szkicach AI.`,
       [],
       draft,
       context,

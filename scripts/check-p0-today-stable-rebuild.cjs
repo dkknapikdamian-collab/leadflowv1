@@ -32,7 +32,7 @@ for (const marker of [
   'getAiLeadDraftsAsync().catch(() => [])',
   'operatorTasks.length',
   'operatorLeads.length',
-  'Bez najbliższej zaplanowanej akcji',
+  'Bez najbli\u017Cszej zaplanowanej akcji',
   'dateKey <= todayKey',
 ]) {
   if (!today.includes(marker)) failures.push('TodayStable.tsx missing: ' + marker);

@@ -54,7 +54,7 @@ function yesNo(value) {
 
 function statusFrom({ existsAny, complete }) {
   if (complete) return 'istnieje';
-  if (existsAny) return 'częściowo istnieje';
+  if (existsAny) return 'cz\u0119\u015Bciowo istnieje';
   return 'brakuje';
 }
 
@@ -76,7 +76,7 @@ function detectTerms(files, terms) {
 
 function evidenceFiles(hits, limit = 10) {
   const files = unique(hits.map((hit) => hit.file));
-  if (!files.length) return 'brak trafień statycznych';
+  if (!files.length) return 'brak trafie\u0144 statycznych';
   const trimmed = files.slice(0, limit).join(', ');
   return files.length > limit ? `${trimmed}, ... +${files.length - limit}` : trimmed;
 }
@@ -145,8 +145,8 @@ const presentPaymentColumns = requiredPaymentColumns.filter((column) => paymentC
 const paymentsComplete = paymentsTableExists && missingPaymentColumns.length === 0;
 
 const commissionTerms = ['commission', 'commission_', 'commissionAmount', 'commission_amount', 'commissionStatus', 'commission_status', 'prowiz'];
-const dealValueTerms = ['dealValue', 'deal_value', 'deal value', 'value_estimate', 'estimated_value', 'wartość', 'wartosc'];
-const paymentTerms = ['payment', 'payments', 'płatn', 'platn', 'paid_at', 'due_at', 'amount', 'currency'];
+const dealValueTerms = ['dealValue', 'deal_value', 'deal value', 'value_estimate', 'estimated_value', 'warto\u015B\u0107', 'wartosc'];
+const paymentTerms = ['payment', 'payments', 'p\u0142atn', 'platn', 'paid_at', 'due_at', 'amount', 'currency'];
 const summaryTerms = ['summary', 'totalValue', 'total_value', 'relationValue', 'relation-value', 'lifetime', 'revenue', 'dealValue', 'deal_value', 'value'];
 
 const caseFiles = ['api/cases.ts', 'src/pages/Cases.tsx', 'src/pages/CaseDetail.tsx', 'src/lib/data-contract.ts', ...migrationFiles];
@@ -172,70 +172,70 @@ const answers = [
     question: 'Czy payments istnieje w DB/migracjach?',
     status: statusFrom({ existsAny: paymentsTableExists || /\bpayments\b/i.test(allMigrationText), complete: paymentsTableExists }),
     answer: paymentsTableExists
-      ? 'Tabela albo alteracje `payments` są wykryte w migracjach Supabase.'
+      ? 'Tabela albo alteracje `payments` s\u0105 wykryte w migracjach Supabase.'
       : 'Nie wykryto `create table payments` ani `alter table payments` w migracjach Supabase.',
-    evidence: migrationFiles.length ? `Sprawdzono migracje: ${migrationFiles.length}; payments_table_detected=${yesNo(paymentsTableExists)}` : 'Brak katalogu albo plików supabase/migrations.',
-    decision: 'nie ruszać w FIN-0; tylko audyt i decyzja przed prowizjami',
+    evidence: migrationFiles.length ? `Sprawdzono migracje: ${migrationFiles.length}; payments_table_detected=${yesNo(paymentsTableExists)}` : 'Brak katalogu albo plik\u00F3w supabase/migrations.',
+    decision: 'nie rusza\u0107 w FIN-0; tylko audyt i decyzja przed prowizjami',
   },
   {
     id: 'payments-columns',
     question: 'Czy payments ma lead_id, client_id, case_id, type, status, amount, currency, paid_at, due_at, note?',
     status: statusFrom({ existsAny: paymentsTableExists || presentPaymentColumns.length > 0, complete: paymentsComplete }),
     answer: `Wykryte kolumny: ${presentPaymentColumns.length ? presentPaymentColumns.join(', ') : 'brak'}. Braki: ${missingPaymentColumns.length ? missingPaymentColumns.join(', ') : 'brak'}.`,
-    evidence: paymentsSpecificText ? 'Kolumny sprawdzono w bloku/alterach `payments` w migracjach.' : 'Nie znaleziono bloku/alterów `payments` do sprawdzenia kolumn.',
-    decision: 'nie ruszać w FIN-0; brakujące kolumny mają wejść dopiero w osobnym etapie migracji DB',
+    evidence: paymentsSpecificText ? 'Kolumny sprawdzono w bloku/alterach `payments` w migracjach.' : 'Nie znaleziono bloku/alter\u00F3w `payments` do sprawdzenia kolumn.',
+    decision: 'nie rusza\u0107 w FIN-0; brakuj\u0105ce kolumny maj\u0105 wej\u015B\u0107 dopiero w osobnym etapie migracji DB',
   },
   {
     id: 'cases-commission',
     question: 'Czy cases ma pola prowizji?',
-    status: caseCommissionHits.length ? 'częściowo istnieje' : 'brakuje',
+    status: caseCommissionHits.length ? 'cz\u0119\u015Bciowo istnieje' : 'brakuje',
     answer: caseCommissionHits.length
-      ? 'W kodzie/migracjach są ślady prowizji przy sprawach, ale FIN-0 nie zakłada, że model jest produkcyjnie kompletny bez osobnej migracji i testu API.'
-      : 'Nie wykryto stabilnych pól prowizji dla `cases` w sprawdzonych plikach.',
+      ? 'W kodzie/migracjach s\u0105 \u015Blady prowizji przy sprawach, ale FIN-0 nie zak\u0142ada, \u017Ce model jest produkcyjnie kompletny bez osobnej migracji i testu API.'
+      : 'Nie wykryto stabilnych p\u00F3l prowizji dla `cases` w sprawdzonych plikach.',
     evidence: evidenceFiles(caseCommissionHits),
-    decision: 'nie ruszać w FIN-0; prowizje projektować dopiero po domknięciu payments',
+    decision: 'nie rusza\u0107 w FIN-0; prowizje projektowa\u0107 dopiero po domkni\u0119ciu payments',
   },
   {
     id: 'leads-deal-value-commission',
-    question: 'Czy leads ma tylko dealValue, czy też prowizję?',
-    status: leadDealValueHits.length && leadCommissionHits.length ? 'częściowo istnieje' : leadDealValueHits.length ? 'częściowo istnieje' : 'brakuje',
+    question: 'Czy leads ma tylko dealValue, czy te\u017C prowizj\u0119?',
+    status: leadDealValueHits.length && leadCommissionHits.length ? 'cz\u0119\u015Bciowo istnieje' : leadDealValueHits.length ? 'cz\u0119\u015Bciowo istnieje' : 'brakuje',
     answer: leadDealValueHits.length
-      ? `Leady mają ślady wartości/dealValue. Prowizja przy leadach: ${leadCommissionHits.length ? 'wykryto ślady, ale wymagają weryfikacji kontraktu' : 'brak stabilnych śladów prowizji'}.`
+      ? `Leady maj\u0105 \u015Blady warto\u015Bci/dealValue. Prowizja przy leadach: ${leadCommissionHits.length ? 'wykryto \u015Blady, ale wymagaj\u0105 weryfikacji kontraktu' : 'brak stabilnych \u015Blad\u00F3w prowizji'}.`
       : 'Nie wykryto stabilnego `dealValue` ani prowizji przy leadach w sprawdzonych plikach.',
     evidence: `dealValue: ${evidenceFiles(leadDealValueHits)}; commission: ${evidenceFiles(leadCommissionHits)}`,
-    decision: 'nie ruszać w FIN-0; nie dokładać prowizji do leadów bez decyzji modelowej',
+    decision: 'nie rusza\u0107 w FIN-0; nie dok\u0142ada\u0107 prowizji do lead\u00F3w bez decyzji modelowej',
   },
   {
     id: 'clients-summary-own-value',
-    question: 'Czy clients ma tylko summary, czy własne pola wartości?',
-    status: clientSummaryHits.length || clientOwnValueHits.length ? 'częściowo istnieje' : 'brakuje',
+    question: 'Czy clients ma tylko summary, czy w\u0142asne pola warto\u015Bci?',
+    status: clientSummaryHits.length || clientOwnValueHits.length ? 'cz\u0119\u015Bciowo istnieje' : 'brakuje',
     answer: clientOwnValueHits.length
-      ? 'Wykryto ślady własnych pól wartości klienta; trzeba zweryfikować, czy to źródło prawdy, czy tylko UI/helper.'
+      ? 'Wykryto \u015Blady w\u0142asnych p\u00F3l warto\u015Bci klienta; trzeba zweryfikowa\u0107, czy to \u017Ar\u00F3d\u0142o prawdy, czy tylko UI/helper.'
       : clientSummaryHits.length
-        ? 'Wykryto summary/derived value przy klientach, ale nie potwierdzono stabilnego własnego źródła wartości klienta.'
-        : 'Nie wykryto stabilnego modelu wartości klienta.',
+        ? 'Wykryto summary/derived value przy klientach, ale nie potwierdzono stabilnego w\u0142asnego \u017Ar\u00F3d\u0142a warto\u015Bci klienta.'
+        : 'Nie wykryto stabilnego modelu warto\u015Bci klienta.',
     evidence: `summary/value: ${evidenceFiles(clientSummaryHits)}; own-value: ${evidenceFiles(clientOwnValueHits)}`,
-    decision: 'nie ruszać w FIN-0; klient powinien mieć jasne źródło wartości po decyzji payments/cases/leads',
+    decision: 'nie rusza\u0107 w FIN-0; klient powinien mie\u0107 jasne \u017Ar\u00F3d\u0142o warto\u015Bci po decyzji payments/cases/leads',
   },
   {
     id: 'ui-payments',
-    question: 'Czy UI pokazuje płatności?',
-    status: uiPaymentHits.length ? 'częściowo istnieje' : 'brakuje',
+    question: 'Czy UI pokazuje p\u0142atno\u015Bci?',
+    status: uiPaymentHits.length ? 'cz\u0119\u015Bciowo istnieje' : 'brakuje',
     answer: uiPaymentHits.length
-      ? 'UI zawiera ślady płatności/kwot/statusów finansowych, ale FIN-0 traktuje to jako częściowy obraz, dopóki payments i semantyki finansowe nie są spięte end-to-end.'
-      : 'Nie wykryto jednoznacznej prezentacji płatności w sprawdzonych ekranach.',
+      ? 'UI zawiera \u015Blady p\u0142atno\u015Bci/kwot/status\u00F3w finansowych, ale FIN-0 traktuje to jako cz\u0119\u015Bciowy obraz, dop\u00F3ki payments i semantyki finansowe nie s\u0105 spi\u0119te end-to-end.'
+      : 'Nie wykryto jednoznacznej prezentacji p\u0142atno\u015Bci w sprawdzonych ekranach.',
     evidence: evidenceFiles(uiPaymentHits),
-    decision: 'nie ruszać w FIN-0; nie rozbudowywać UI płatności bez modelu DB/API',
+    decision: 'nie rusza\u0107 w FIN-0; nie rozbudowywa\u0107 UI p\u0142atno\u015Bci bez modelu DB/API',
   },
   {
     id: 'api-helpers-used',
-    question: 'Czy helpery API są używane?',
-    status: exists('api/payments.ts') || helperPaymentHits.length ? 'częściowo istnieje' : 'brakuje',
+    question: 'Czy helpery API s\u0105 u\u017Cywane?',
+    status: exists('api/payments.ts') || helperPaymentHits.length ? 'cz\u0119\u015Bciowo istnieje' : 'brakuje',
     answer: exists('api/payments.ts')
-      ? `api/payments.ts istnieje. Użycie helperów/callsite payments: ${helperPaymentHits.length ? 'wykryto ślady' : 'brak jednoznacznych callsite w sprawdzonych plikach'}.`
-      : 'api/payments.ts nie istnieje, więc helpery płatności nie są domknięte.',
+      ? `api/payments.ts istnieje. U\u017Cycie helper\u00F3w/callsite payments: ${helperPaymentHits.length ? 'wykryto \u015Blady' : 'brak jednoznacznych callsite w sprawdzonych plikach'}.`
+      : 'api/payments.ts nie istnieje, wi\u0119c helpery p\u0142atno\u015Bci nie s\u0105 domkni\u0119te.',
     evidence: `api: ${evidenceFiles(apiPaymentHits)}; helpers/callsites: ${evidenceFiles(helperPaymentHits)}`,
-    decision: 'nie ruszać w FIN-0; helpery porządkować dopiero po decyzji modelu i kontraktu API',
+    decision: 'nie rusza\u0107 w FIN-0; helpery porz\u0105dkowa\u0107 dopiero po decyzji modelu i kontraktu API',
   },
 ];
 
@@ -259,38 +259,38 @@ function renderDoc() {
 
   return `# CloseFlow Finance Model Audit
 
-Marker: \`${MARKER}\`  
-Data dokumentu: 2026-05-09  
-Wygenerowano: ${timestamp}  
-Etap: FIN-0 — Finance model audit  
+Marker: \`${MARKER}\`
+Data dokumentu: 2026-05-09
+Wygenerowano: ${timestamp}
+Etap: FIN-0 \u2014 Finance model audit
 Tryb: audyt bez migracji runtime, bez zmian DB, bez zmian UI
 
-## Werdykt główny
+## Werdykt g\u0142\u00F3wny
 
-FIN-0 ma status: **audyt wykonany, nie ruszać modelu finansowego w tym etapie**.
+FIN-0 ma status: **audyt wykonany, nie rusza\u0107 modelu finansowego w tym etapie**.
 
-Ten dokument odpowiada, co **istnieje**, co **częściowo istnieje**, czego **brakuje** i czego **nie ruszać** przed wdrożeniem prowizji. Jeżeli odpowiedź brzmi „częściowo istnieje”, nie wolno traktować tego jako gotowego modelu produkcyjnego.
+Ten dokument odpowiada, co **istnieje**, co **cz\u0119\u015Bciowo istnieje**, czego **brakuje** i czego **nie rusza\u0107** przed wdro\u017Ceniem prowizji. Je\u017Celi odpowied\u017A brzmi \u201Ecz\u0119\u015Bciowo istnieje\u201D, nie wolno traktowa\u0107 tego jako gotowego modelu produkcyjnego.
 
-## Legenda statusów
+## Legenda status\u00F3w
 
 | Status | Znaczenie |
 |---|---|
-| istnieje | Element jest wykryty w źródłach i wygląda na intencjonalny kontrakt. |
-| częściowo istnieje | Są ślady w kodzie, UI, helperach albo migracjach, ale model nie jest domknięty end-to-end. |
-| brakuje | Nie wykryto stabilnego źródła prawdy w sprawdzonych plikach. |
-| nie ruszać | FIN-0 tylko dokumentuje. Zmiana wymaga osobnego etapu wdrożeniowego. |
+| istnieje | Element jest wykryty w \u017Ar\u00F3d\u0142ach i wygl\u0105da na intencjonalny kontrakt. |
+| cz\u0119\u015Bciowo istnieje | S\u0105 \u015Blady w kodzie, UI, helperach albo migracjach, ale model nie jest domkni\u0119ty end-to-end. |
+| brakuje | Nie wykryto stabilnego \u017Ar\u00F3d\u0142a prawdy w sprawdzonych plikach. |
+| nie rusza\u0107 | FIN-0 tylko dokumentuje. Zmiana wymaga osobnego etapu wdro\u017Ceniowego. |
 
-## Podsumowanie statusów
+## Podsumowanie status\u00F3w
 
 | Status | Liczba |
 |---|---:|
 | istnieje | ${counts['istnieje'] || 0} |
-| częściowo istnieje | ${counts['częściowo istnieje'] || 0} |
+| cz\u0119\u015Bciowo istnieje | ${counts['cz\u0119\u015Bciowo istnieje'] || 0} |
 | brakuje | ${counts['brakuje'] || 0} |
 
 ## Odpowiedzi audytu
 
-| Pytanie | Status | Odpowiedź | Dowód statyczny | Decyzja |
+| Pytanie | Status | Odpowied\u017A | Dow\u00F3d statyczny | Decyzja |
 |---|---|---|---|---|
 ${rows}
 
@@ -304,14 +304,14 @@ ${columnRows}
 
 ### Pliki wymagane w etapie
 
-${auditedFiles.map((rel) => `- ${exists(rel) ? 'istnieje' : 'brakuje'} — \`${rel}\``).join('\n')}
+${auditedFiles.map((rel) => `- ${exists(rel) ? 'istnieje' : 'brakuje'} \u2014 \`${rel}\``).join('\n')}
 
 ### Migracje Supabase
 
-- liczba plików w \`supabase/migrations\`: ${migrationFiles.length}
+- liczba plik\u00F3w w \`supabase/migrations\`: ${migrationFiles.length}
 ${migrationFiles.slice(0, 30).map((rel) => `- \`${rel}\``).join('\n') || '- brak migracji'}${migrationFiles.length > 30 ? `\n- ... +${migrationFiles.length - 30} kolejnych` : ''}
 
-## Sygnały pomocnicze
+## Sygna\u0142y pomocnicze
 
 | Obszar | Trafienia |
 |---|---|
@@ -320,35 +320,35 @@ ${migrationFiles.slice(0, 30).map((rel) => `- \`${rel}\``).join('\n') || '- brak
 | data-contract | ${escapeMd(evidenceFiles(dataContractHits))} |
 | API payments | ${exists('api/payments.ts') ? 'api/payments.ts istnieje' : 'api/payments.ts brakuje'} |
 
-## Nie ruszać w FIN-0
+## Nie rusza\u0107 w FIN-0
 
-- Nie dodawać kolumn prowizji.
-- Nie zmieniać migracji Supabase.
-- Nie zmieniać API płatności, leadów, klientów ani spraw.
-- Nie przepinać UI płatności.
-- Nie zmieniać helperów relation-value ani supabase-fallback.
-- Nie mieszać prowizji z dealValue bez osobnej decyzji modelowej.
+- Nie dodawa\u0107 kolumn prowizji.
+- Nie zmienia\u0107 migracji Supabase.
+- Nie zmienia\u0107 API p\u0142atno\u015Bci, lead\u00F3w, klient\u00F3w ani spraw.
+- Nie przepina\u0107 UI p\u0142atno\u015Bci.
+- Nie zmienia\u0107 helper\u00F3w relation-value ani supabase-fallback.
+- Nie miesza\u0107 prowizji z dealValue bez osobnej decyzji modelowej.
 
-## Minimalny następny krok po FIN-0
+## Minimalny nast\u0119pny krok po FIN-0
 
-Najpierw wybrać model źródła prawdy:
+Najpierw wybra\u0107 model \u017Ar\u00F3d\u0142a prawdy:
 
-1. czy \`payments\` jest osobną tabelą transakcji,
-2. czy prowizja jest polem na \`cases\`, osobnym payment type, czy osobną tabelą commission,
-3. czy \`leads.dealValue\` jest tylko szansą sprzedażową, czy kwotą rozliczeniową,
-4. czy klient ma własną wartość, czy tylko summary liczone z leadów/spraw/płatności.
+1. czy \`payments\` jest osobn\u0105 tabel\u0105 transakcji,
+2. czy prowizja jest polem na \`cases\`, osobnym payment type, czy osobn\u0105 tabel\u0105 commission,
+3. czy \`leads.dealValue\` jest tylko szans\u0105 sprzeda\u017Cow\u0105, czy kwot\u0105 rozliczeniow\u0105,
+4. czy klient ma w\u0142asn\u0105 warto\u015B\u0107, czy tylko summary liczone z lead\u00F3w/spraw/p\u0142atno\u015Bci.
 
-Dopiero po tej decyzji robić etap FIN-1.
+Dopiero po tej decyzji robi\u0107 etap FIN-1.
 
-## Kryterium zakończenia FIN-0
+## Kryterium zako\u0144czenia FIN-0
 
 - Dokument istnieje.
-- Każde pytanie audytu ma odpowiedź.
-- Dokument zawiera statusy: istnieje / częściowo istnieje / brakuje / nie ruszać.
+- Ka\u017Cde pytanie audytu ma odpowied\u017A.
+- Dokument zawiera statusy: istnieje / cz\u0119\u015Bciowo istnieje / brakuje / nie rusza\u0107.
 - Check przechodzi.
 - Build przechodzi.
 
-${missingAuditedFiles.length ? `## Brakujące pliki z listy audytu\n\n${missingAuditedFiles.map((rel) => `- \`${rel}\``).join('\n')}\n` : ''}`;
+${missingAuditedFiles.length ? `## Brakuj\u0105ce pliki z listy audytu\n\n${missingAuditedFiles.map((rel) => `- \`${rel}\``).join('\n')}\n` : ''}`;
 }
 
 function verifyDoc(text) {
@@ -356,7 +356,7 @@ function verifyDoc(text) {
   for (const item of answers) {
     assert(text.includes(item.question), 'audit answer missing from doc: ' + item.question);
   }
-  for (const phrase of ['istnieje', 'częściowo istnieje', 'brakuje', 'nie ruszać']) {
+  for (const phrase of ['istnieje', 'cz\u0119\u015Bciowo istnieje', 'brakuje', 'nie rusza\u0107']) {
     assert(text.includes(phrase), 'required status phrase missing from doc: ' + phrase);
   }
   for (const column of requiredPaymentColumns) {

@@ -155,7 +155,7 @@ let map;
 try {
   map = JSON.parse(fs.readFileSync(mapPath, 'utf8'));
 } catch (error) {
-  fail('Nie można odczytać CLOSEFLOW_UI_MAP.generated.json: ' + error.message);
+  fail('Nie mo\u017Cna odczyta\u0107 CLOSEFLOW_UI_MAP.generated.json: ' + error.message);
 }
 const scanner = String(map.scannerVersion || map.sourceScanner || '');
 if (scanner !== 'CLEAN_SCANNER_V4') fail('Mapa UI nie jest z CLEAN_SCANNER_V4');
@@ -174,7 +174,7 @@ let baseline;
 try {
   baseline = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
 } catch (error) {
-  fail('Nie można odczytać baseline ikon: ' + error.message);
+  fail('Nie mo\u017Cna odczyta\u0107 baseline ikon: ' + error.message);
 }
 if (baseline.version !== 'CLOSEFLOW_UI2_SEMANTIC_ICON_GUARD_V1') fail('Niepoprawna wersja baseline');
 for (const role of criticalRoles) {
@@ -186,7 +186,7 @@ const currentCritical = collectCriticalPageImports();
 const newCritical = currentCritical.filter((entry) => !baselineKeys.has(entry.key));
 if (newCritical.length) {
   fail(
-    'Wykryto nowe bezpośrednie importy krytycznych ikon w src/pages/*. Użyj SemanticIcon albo dodaj świadomy wyjątek: ' +
+    'Wykryto nowe bezpo\u015Brednie importy krytycznych ikon w src/pages/*. U\u017Cyj SemanticIcon albo dodaj \u015Bwiadomy wyj\u0105tek: ' +
       newCritical.slice(0, 12).map((entry) => entry.imported + '@' + entry.file + ':' + entry.importLine + '[' + entry.role + ']').join(', ')
   );
 }

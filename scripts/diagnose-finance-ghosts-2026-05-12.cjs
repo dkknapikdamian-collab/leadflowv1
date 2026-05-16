@@ -7,13 +7,13 @@ const patterns = [
   'CaseSettlementPanel',
   'CaseSettlementSection',
   'ClientFinanceRelationSummary',
-  'Dodaj wpłatę',
-  'Dodaj płatność prowizji',
-  'Edytuj prowizję',
+  'Dodaj wp\u0142at\u0119',
+  'Dodaj p\u0142atno\u015B\u0107 prowizji',
+  'Edytuj prowizj\u0119',
   'Rozliczenie sprawy',
-  'Wartość transakcji',
-  'Prowizja należna',
-  'Wpłacono od klienta',
+  'Warto\u015B\u0107 transakcji',
+  'Prowizja nale\u017Cna',
+  'Wp\u0142acono od klienta',
 ];
 
 function walk(dir, out = []) {
@@ -42,7 +42,7 @@ for (const rel of files) {
 }
 
 if (!hits.length) {
-  console.log('Brak trafień finansowych w skanowanym zakresie.');
+  console.log('Brak trafie\u0144 finansowych w skanowanym zakresie.');
   process.exit(0);
 }
 

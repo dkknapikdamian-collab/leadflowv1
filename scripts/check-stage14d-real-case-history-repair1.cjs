@@ -26,7 +26,7 @@ assertIncludes(source, 'getCaseActivityHistoryItemStage14D', 'mapowanie aktywnos
 assertIncludes(source, 'for (const activity of activities)', 'aktywnosci w historii');
 assertIncludes(source, 'for (const task of tasks)', 'taski w historii');
 assertIncludes(source, 'for (const event of events)', 'wydarzenia w historii');
-assertIncludes(source, 'for (const payment of visibleCasePayments)', 'wpłaty w historii');
+assertIncludes(source, 'for (const payment of visibleCasePayments)', 'wp\u0142aty w historii');
 assertIncludes(source, 'for (const item of items)', 'checklisty w historii');
 assertIncludes(source, 'data-case-history-list="true"', 'render sekcji historii');
 assertIncludes(source, '<h2>Historia sprawy</h2>', 'naglowek Historia sprawy');
@@ -37,11 +37,11 @@ assertIncludes(source, '<time>{formatDate(item.occurredAt', 'data wpisu historii
 assertIncludes(source, "title: 'Notatka'", 'notatki mapowane jako Notatka');
 assertIncludes(source, "title: 'Zadanie wykonane'", 'zadania wykonane mapowane');
 assertIncludes(source, "title: 'Wydarzenie'", 'wydarzenia mapowane');
-assertIncludes(source, "title: 'Wpłata'", 'wpłaty mapowane');
+assertIncludes(source, "title: 'Wp\u0142ata'", 'wp\u0142aty mapowane');
 assertIncludes(source, "title: 'Zmiana statusu'", 'status mapowany');
-assertNotIncludes(source, 'Zapis operacyjny sprawy', 'nie wolno pokazywać atrapy historii');
-assertNotIncludes(source, '<h2>Najważniejsze działania</h2>', 'stary naglowek Najważniejsze działania usuniety');
-assertNotIncludes(source, 'workItems.length === 0 ? (\n                    <p>Brak działań do pokazania', 'stara lista workItems nie powinna byc sekcja historii');
+assertNotIncludes(source, 'Zapis operacyjny sprawy', 'nie wolno pokazywa\u0107 atrapy historii');
+assertNotIncludes(source, '<h2>Najwa\u017Cniejsze dzia\u0142ania</h2>', 'stary naglowek Najwa\u017Cniejsze dzia\u0142ania usuniety');
+assertNotIncludes(source, 'workItems.length === 0 ? (\n                    <p>Brak dzia\u0142a\u0144 do pokazania', 'stara lista workItems nie powinna byc sekcja historii');
 
 assertIncludes(css, 'STAGE14D_REAL_CASE_HISTORY_REPAIR1', 'guard CSS Stage14D');
 assertIncludes(css, '.case-history-row', 'CSS case-history-row');
@@ -49,4 +49,4 @@ assertIncludes(css, 'text-overflow: ellipsis;', 'ellipsis dla body');
 assertIncludes(css, 'white-space: nowrap;', 'jeden wiersz historii');
 assertIncludes(css, '.case-history-row time', 'czas wpisu');
 
-console.log('✔ Stage14D Repair1 real CaseDetail history guard passed');
+console.log('\u2714 Stage14D Repair1 real CaseDetail history guard passed');

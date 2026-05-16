@@ -22,81 +22,81 @@ const targetFiles = [
 ];
 
 const replacements = [
-  ['Trial wygasl', 'Trial wygasł'],
-  ['Podglad', 'Podgląd'],
-  ['dziala', 'działa'],
-  ['Platnosc', 'Płatność'],
-  ['Oplacony', 'Opłacony'],
-  ['dostepu', 'dostępu'],
-  ['minal', 'minął'],
-  ['Mozesz', 'Możesz'],
-  ['przegladac', 'przeglądać'],
-  ['sa zablokowane', 'są zablokowane'],
-  ['platnosci', 'płatności'],
-  ['Platnosc wymagana', 'Płatność wymagana'],
-  ['Platnosc nieudana', 'Płatność nieudana'],
-  ['Wznow plan', 'Wznów plan'],
-  ['wylaczony', 'wyłączony'],
-  ['zostal', 'został'],
-  ['przelaczony', 'przełączony'],
-  ['zostaja', 'zostają'],
+  ['Trial wygasl', 'Trial wygas\u0142'],
+  ['Podglad', 'Podgl\u0105d'],
+  ['dziala', 'dzia\u0142a'],
+  ['Platnosc', 'P\u0142atno\u015B\u0107'],
+  ['Oplacony', 'Op\u0142acony'],
+  ['dostepu', 'dost\u0119pu'],
+  ['minal', 'min\u0105\u0142'],
+  ['Mozesz', 'Mo\u017Cesz'],
+  ['przegladac', 'przegl\u0105da\u0107'],
+  ['sa zablokowane', 's\u0105 zablokowane'],
+  ['platnosci', 'p\u0142atno\u015Bci'],
+  ['Platnosc wymagana', 'P\u0142atno\u015B\u0107 wymagana'],
+  ['Platnosc nieudana', 'P\u0142atno\u015B\u0107 nieudana'],
+  ['Wznow plan', 'Wzn\u00F3w plan'],
+  ['wylaczony', 'wy\u0142\u0105czony'],
+  ['zostal', 'zosta\u0142'],
+  ['przelaczony', 'prze\u0142\u0105czony'],
+  ['zostaja', 'zostaj\u0105'],
   ['Tryb Free aktywny', 'Tryb Free aktywny'],
-  ['Tryb demo z limitami. Podglad', 'Tryb demo z limitami. Podgląd'],
-  ['czesc', 'część'],
-  ['Przejdz', 'Przejdź'],
-  ['konczy', 'kończy'],
-  ['zostalo', 'zostało'],
-  ['dzien', 'dzień'],
-  ['zeby', 'żeby'],
-  ['aktywowac', 'aktywować'],
-  ['przerwac', 'przerwać'],
-  ['polowie', 'połowie'],
-  ['Jestes', 'Jesteś'],
-  ['okresie probnym', 'okresie próbnym'],
-  ['glowne moduly', 'główne moduły'],
-  ['odblokowane, wiec mozesz', 'odblokowane, więc możesz'],
-  ['sprawdzic', 'sprawdzić'],
-  ['caly workflow przed przejsciem', 'cały workflow przed przejściem'],
-  ['Dostep', 'Dostęp'],
-  ['dostep', 'dostęp'],
-  ['wlaczony', 'włączony'],
-  ['Brak dostepu', 'Brak dostępu'],
+  ['Tryb demo z limitami. Podglad', 'Tryb demo z limitami. Podgl\u0105d'],
+  ['czesc', 'cz\u0119\u015B\u0107'],
+  ['Przejdz', 'Przejd\u017A'],
+  ['konczy', 'ko\u0144czy'],
+  ['zostalo', 'zosta\u0142o'],
+  ['dzien', 'dzie\u0144'],
+  ['zeby', '\u017Ceby'],
+  ['aktywowac', 'aktywowa\u0107'],
+  ['przerwac', 'przerwa\u0107'],
+  ['polowie', 'po\u0142owie'],
+  ['Jestes', 'Jeste\u015B'],
+  ['okresie probnym', 'okresie pr\u00F3bnym'],
+  ['glowne moduly', 'g\u0142\u00F3wne modu\u0142y'],
+  ['odblokowane, wiec mozesz', 'odblokowane, wi\u0119c mo\u017Cesz'],
+  ['sprawdzic', 'sprawdzi\u0107'],
+  ['caly workflow przed przejsciem', 'ca\u0142y workflow przed przej\u015Bciem'],
+  ['Dostep', 'Dost\u0119p'],
+  ['dostep', 'dost\u0119p'],
+  ['wlaczony', 'w\u0142\u0105czony'],
+  ['Brak dostepu', 'Brak dost\u0119pu'],
   ['Uruchom trial', 'Uruchom trial'],
 
-  ['PrzejdĹş do pĹ‚atnoĹ›ci', 'Przejdź do płatności'],
-  ['BĹ‚Ä…d uruchamiania pĹ‚atnoĹ›ci Stripe/BLIK', 'Błąd uruchamiania płatności Stripe/BLIK'],
-  ['PrzejdĹş', 'Przejdź'],
-  ['pĹ‚atnoĹ›ci', 'płatności'],
-  ['BĹ‚Ä…d', 'Błąd'],
+  ['Przejd\u017A do p\u0142atno\u015Bci', 'Przejd\u017A do p\u0142atno\u015Bci'],
+  ['B\u0142\u0105d uruchamiania p\u0142atno\u015Bci Stripe/BLIK', 'B\u0142\u0105d uruchamiania p\u0142atno\u015Bci Stripe/BLIK'],
+  ['Przejd\u017A', 'Przejd\u017A'],
+  ['p\u0142atno\u015Bci', 'p\u0142atno\u015Bci'],
+  ['B\u0142\u0105d', 'B\u0142\u0105d'],
 
-  ['Ĺaduję', 'Ładuję'],
-  ['Ĺadowanie', 'Ładowanie'],
-  ['Ĺąródło', 'Źródło'],
-  ['Najbli�sza', 'Najbliższa'],
-  ['â†’', '→'],
-  ['â€ž', '„'],
-  ['„${title}"', '„${title}”'],
-  ['„${title}`', '„${title}`'],
+  ['\u0139aduj\u0119', '\u0141aduj\u0119'],
+  ['\u0139adowanie', '\u0141adowanie'],
+  ['\u0179r\u00F3d\u0142o', '\u0179r\u00F3d\u0142o'],
+  ['Najbli\ufffdsza', 'Najbli\u017Csza'],
+  ['\u00E2\u2020\u2019', '\u2192'],
+  ['\u00E2\u20AC\u017E', '\u201E'],
+  ['\u201E${title}"', '\u201E${title}\u201D'],
+  ['\u201E${title}`', '\u201E${title}`'],
 
-  ['Nie udaBo si pobra szablon�w', 'Nie udało się pobrać szablonów'],
-  ['Nie udaBo się pobra szablon�w', 'Nie udało się pobrać szablonów'],
-  ['Tryb podgldu blokuje zapis szablon�w', 'Tryb podglądu blokuje zapis szablonów'],
-  ['Aadowanie szablon�w', 'Ładowanie szablonów'],
-  ['Brak szablon�w w tym widoku', 'Brak szablonów w tym widoku'],
-  ['Bez opisu. Warto dopisa kr�tkie wyja[nienie dla klienta.', 'Bez opisu. Warto dopisać krótkie wyjaśnienie dla klienta.'],
-  ['Utw�rz szablon', 'Utwórz szablon'],
-  ['szablon�w', 'szablonów'],
-  ['podgldu', 'podglądu'],
-  ['kr�tkie', 'krótkie'],
-  ['wyja[nienie', 'wyjaśnienie'],
-  ['Utw�rz', 'Utwórz'],
-  ['ju�', 'już'],
-  ['obs�udze', 'obsłudze'],
-  ['obs�ug�', 'obsługę'],
+  ['Nie udaBo si pobra szablon\ufffdw', 'Nie uda\u0142o si\u0119 pobra\u0107 szablon\u00F3w'],
+  ['Nie udaBo si\u0119 pobra szablon\ufffdw', 'Nie uda\u0142o si\u0119 pobra\u0107 szablon\u00F3w'],
+  ['Tryb podgldu blokuje zapis szablon\ufffdw', 'Tryb podgl\u0105du blokuje zapis szablon\u00F3w'],
+  ['Aadowanie szablon\ufffdw', '\u0141adowanie szablon\u00F3w'],
+  ['Brak szablon\ufffdw w tym widoku', 'Brak szablon\u00F3w w tym widoku'],
+  ['Bez opisu. Warto dopisa kr\ufffdtkie wyja[nienie dla klienta.', 'Bez opisu. Warto dopisa\u0107 kr\u00F3tkie wyja\u015Bnienie dla klienta.'],
+  ['Utw\ufffdrz szablon', 'Utw\u00F3rz szablon'],
+  ['szablon\ufffdw', 'szablon\u00F3w'],
+  ['podgldu', 'podgl\u0105du'],
+  ['kr\ufffdtkie', 'kr\u00F3tkie'],
+  ['wyja[nienie', 'wyja\u015Bnienie'],
+  ['Utw\ufffdrz', 'Utw\u00F3rz'],
+  ['ju\ufffd', 'ju\u017C'],
+  ['obs\ufffdudze', 'obs\u0142udze'],
+  ['obs\ufffdug\ufffd', 'obs\u0142ug\u0119'],
 
-  ['Ä…', 'ą'], ['Ä‡', 'ć'], ['Ä™', 'ę'], ['Äł', 'ł'], ['Ĺ‚', 'ł'], ['Ĺ„', 'ń'],
-  ['Ăł', 'ó'], ['Äś', 'ś'], ['Ĺ›', 'ś'], ['Ĺş', 'ź'], ['ĹĽ', 'ż'], ['Ĺ»', 'Ż'],
-  ['Ä„', 'Ą'], ['ÄĆ', 'Ć'], ['ÄĘ', 'Ę'], ['ĹŁ', 'Ł'], ['ĹŃ', 'Ń'], ['Ă“', 'Ó'], ['Ĺš', 'Ś'], ['ĹŹ', 'Ź'],
+  ['\u0105', '\u0105'], ['\u0107', '\u0107'], ['\u0119', '\u0119'], ['\u0133', '\u0142'], ['\u0142', '\u0142'], ['\u0144', '\u0144'],
+  ['\u00F3', '\u00F3'], ['\u011C', '\u015B'], ['\u015B', '\u015B'], ['\u017A', '\u017A'], ['\u017C', '\u017C'], ['\u017B', '\u017B'],
+  ['\u0104', '\u0104'], ['\u00c4\u0106', '\u0106'], ['\u00c4\u0118', '\u0118'], ['\u0163', '\u0141'], ['\u0139\u0143', '\u0143'], ['\u00D3', '\u00D3'], ['\u015A', '\u015A'], ['\u014F', '\u0179'],
 ];
 
 function replaceAll(text, from, to) {
@@ -118,10 +118,10 @@ function patchSupportCopy() {
   if (!fs.existsSync(full)) return false;
   let text = fs.readFileSync(full, 'utf8');
   const before = text;
-  text = text.replace(/Wyślij zgłoszenie/g, 'Zapisz zgłoszenie');
-  text = text.replace(/Wyślij odpowiedź/g, 'Zapisz odpowiedź');
-  text = text.replace(/Wysyłka zapisuje zgłoszenie/g, 'Zapis zgłoszenia tworzy wpis');
-  text = text.replace(/Wysyłanie\.\.\./g, 'Zapisywanie...');
+  text = text.replace(/Wy\u015Blij zg\u0142oszenie/g, 'Zapisz zg\u0142oszenie');
+  text = text.replace(/Wy\u015Blij odpowied\u017A/g, 'Zapisz odpowied\u017A');
+  text = text.replace(/Wysy\u0142ka zapisuje zg\u0142oszenie/g, 'Zapis zg\u0142oszenia tworzy wpis');
+  text = text.replace(/Wysy\u0142anie\.\.\./g, 'Zapisywanie...');
   if (text !== before) fs.writeFileSync(full, text, 'utf8');
   return text !== before;
 }
@@ -133,15 +133,15 @@ function patchBillingTruth() {
   let text = fs.readFileSync(full, 'utf8');
   const before = text;
   text = text.replace(/^const .*MOJIBAKE_GUARD.*\r?\n/gm, '');
-  text = text.replace("{ name: 'Leady', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' }", "{ name: 'Leady', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
-  text = text.replace("{ name: 'Zadania', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' }", "{ name: 'Zadania', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
-  text = text.replace("{ name: 'Wydarzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' }", "{ name: 'Wydarzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
-  text = text.replace("{ name: 'Kalendarz w aplikacji', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' }", "{ name: 'Kalendarz w aplikacji', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
-  text = text.replace("{ name: 'Szkice do sprawdzenia', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' }", "{ name: 'Szkice do sprawdzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
-  text = text.replace("{ name: 'Parser tekstu', basic: 'Dostępne', pro: 'Dostępne', ai: 'Dostępne' }", "{ name: 'Parser tekstu', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
-  text = text.replace(/basic: 'Nie'/g, "basic: 'Niedostępne w Twoim planie'");
-  text = text.replace(/pro: 'Nie'/g, "pro: 'Niedostępne w Twoim planie'");
-  text = text.replace(/if \(value === 'Dostępne'\) return 'billing-limit-ok';/, "if (value === 'Gotowe' || value === 'Dostępne') return 'billing-limit-ok';");
+  text = text.replace("{ name: 'Leady', basic: 'Dost\u0119pne', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", "{ name: 'Leady', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
+  text = text.replace("{ name: 'Zadania', basic: 'Dost\u0119pne', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", "{ name: 'Zadania', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
+  text = text.replace("{ name: 'Wydarzenia', basic: 'Dost\u0119pne', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", "{ name: 'Wydarzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
+  text = text.replace("{ name: 'Kalendarz w aplikacji', basic: 'Dost\u0119pne', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", "{ name: 'Kalendarz w aplikacji', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
+  text = text.replace("{ name: 'Szkice do sprawdzenia', basic: 'Dost\u0119pne', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", "{ name: 'Szkice do sprawdzenia', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
+  text = text.replace("{ name: 'Parser tekstu', basic: 'Dost\u0119pne', pro: 'Dost\u0119pne', ai: 'Dost\u0119pne' }", "{ name: 'Parser tekstu', basic: 'Gotowe', pro: 'Gotowe', ai: 'Gotowe' }");
+  text = text.replace(/basic: 'Nie'/g, "basic: 'Niedost\u0119pne w Twoim planie'");
+  text = text.replace(/pro: 'Nie'/g, "pro: 'Niedost\u0119pne w Twoim planie'");
+  text = text.replace(/if \(value === 'Dost\u0119pne'\) return 'billing-limit-ok';/, "if (value === 'Gotowe' || value === 'Dost\u0119pne') return 'billing-limit-ok';");
   if (text !== before) fs.writeFileSync(full, text, 'utf8');
   return text !== before;
 }
@@ -155,7 +155,7 @@ function patchGlobalActionsTruth() {
   if (!text.includes('STAGE14_UI_TRUTH_GLOBAL_ACTIONS')) {
     text = text.replace(
       "const QUICK_ACTION_EVENT = 'closeflow:global-quick-action';",
-      "const QUICK_ACTION_EVENT = 'closeflow:global-quick-action';\nconst STAGE14_UI_TRUTH_GLOBAL_ACTIONS = 'Beta / Wymaga konfiguracji / Niedostępne w Twoim planie';"
+      "const QUICK_ACTION_EVENT = 'closeflow:global-quick-action';\nconst STAGE14_UI_TRUTH_GLOBAL_ACTIONS = 'Beta / Wymaga konfiguracji / Niedost\u0119pne w Twoim planie';"
     );
   }
   if (text !== before) fs.writeFileSync(full, text, 'utf8');

@@ -38,14 +38,14 @@ test('Stage31 lead search covers phone, email, company, source and case with sug
   expectIncludes(leads, 'leadSearchSuggestions');
   expectIncludes(leads, 'data-stage31-lead-search-suggestions="true"');
   expectIncludes(leads, 'lead-search-suggestions-stage31');
-  expectIncludes(leads, 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...');
+  expectIncludes(leads, 'Szukaj: nazwa, telefon, e-mail, firma, \u017Ar\u00F3d\u0142o albo sprawa...');
 });
 
 test('Stage31 removes noisy empty search helper copy', () => {
   const leads = fs.readFileSync(leadsPath, 'utf8');
 
-  expectNotIncludes(leads, 'Spróbuj zmienić wyszukiwanie, kliknąć inny kafelek u góry albo dodać nowego leada.');
-  expectIncludes(leads, 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.');
+  expectNotIncludes(leads, 'Spr\u00F3buj zmieni\u0107 wyszukiwanie, klikn\u0105\u0107 inny kafelek u g\u00F3ry albo doda\u0107 nowego leada.');
+  expectIncludes(leads, 'Podpowiedzi pojawiaj\u0105 si\u0119 pod wyszukiwark\u0105. Usu\u0144 cz\u0119\u015B\u0107 tekstu albo wybierz inny filtr.');
 });
 
 test('Stage31 test is included in quiet release gate', () => {

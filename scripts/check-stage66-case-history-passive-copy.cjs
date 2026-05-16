@@ -35,16 +35,16 @@ try {
 const requiredFragments = [
   'STAGE66_CASE_HISTORY_PASSIVE_COPY',
   "if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;",
-  "if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;",
+  "if (activity.eventType === 'status_changed') return `Zmieniono status \u201E${title}\u201D na: ${getItemStatusLabel(activity.payload?.status)}`;",
   "if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;",
-  "if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;",
-  "if (activity.eventType === 'operator_note') return 'Dodano notatkę';",
+  "if (activity.eventType === 'decision_made') return `Dodano decyzj\u0119: ${title}`;",
+  "if (activity.eventType === 'operator_note') return 'Dodano notatk\u0119';",
   "if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;",
   "if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;",
-  "if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;",
-  "if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;",
-  "if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;",
-  "if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;",
+  "if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania \u201E${title}\u201D na: ${getTaskStatusLabel(activity.payload?.status)}`;",
+  "if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia \u201E${title}\u201D na: ${getEventStatusLabel(activity.payload?.status)}`;",
+  "if (activity.eventType === 'task_rescheduled') return `Prze\u0142o\u017Cono zadanie \u201E${title}\u201D na: ${formatDateTime(activity.payload?.scheduledAt)}`;",
+  "if (activity.eventType === 'event_rescheduled') return `Prze\u0142o\u017Cono wydarzenie \u201E${title}\u201D na: ${formatDateTime(activity.payload?.startAt)}`;",
   "return 'Dodano ruch w sprawie';",
 ];
 
@@ -55,15 +55,15 @@ for (const fragment of requiredFragments) {
 
 const forbiddenFragments = [
   "const actor = activity.actorType === 'operator' ? 'Ty' : 'Klient';",
-  "${actor} dodał",
-  "${actor} zmienił",
-  "${actor} wgrał",
-  "${actor} podjął",
-  "${actor} przełożył",
-  "${actor} wykonał",
-  'Ty dodał',
-  'Ty podjął',
-  'Ty zmienił',
+  "${actor} doda\u0142",
+  "${actor} zmieni\u0142",
+  "${actor} wgra\u0142",
+  "${actor} podj\u0105\u0142",
+  "${actor} prze\u0142o\u017Cy\u0142",
+  "${actor} wykona\u0142",
+  'Ty doda\u0142',
+  'Ty podj\u0105\u0142',
+  'Ty zmieni\u0142',
 ];
 
 for (const fragment of forbiddenFragments) {

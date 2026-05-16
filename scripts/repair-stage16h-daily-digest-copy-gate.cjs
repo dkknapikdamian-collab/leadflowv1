@@ -24,12 +24,12 @@ let text = read(target);
 const before = text;
 
 const replacements = [
-  ["Na darmowym Vercel cron działa raz dzieńnie", "Na darmowym Vercel cron działa raz dziennie"],
-  ["Na darmowym Vercel cron dziala raz dzieńnie", "Na darmowym Vercel cron dziala raz dziennie"],
-  ["Na darmowym Vercel cron dzia\\u0142a raz dzie\\u0144nie", "Na darmowym Vercel cron działa raz dziennie"],
-  ["działa raz dzieńnie", "działa raz dziennie"],
-  ["dziala raz dzieńnie", "dziala raz dziennie"],
-  ["raz dzieńnie", "raz dziennie"],
+  ["Na darmowym Vercel cron dzia\u0142a raz dzie\u0144nie", "Na darmowym Vercel cron dzia\u0142a raz dziennie"],
+  ["Na darmowym Vercel cron dziala raz dzie\u0144nie", "Na darmowym Vercel cron dziala raz dziennie"],
+  ["Na darmowym Vercel cron dzia\\u0142a raz dzie\\u0144nie", "Na darmowym Vercel cron dzia\u0142a raz dziennie"],
+  ["dzia\u0142a raz dzie\u0144nie", "dzia\u0142a raz dziennie"],
+  ["dziala raz dzie\u0144nie", "dziala raz dziennie"],
+  ["raz dzie\u0144nie", "raz dziennie"],
 ];
 
 for (const [from, to] of replacements) {
@@ -39,11 +39,11 @@ for (const [from, to] of replacements) {
 if (text === before && text.includes("DAILY_DIGEST_EMAIL_CRON_HINT_GUARD")) {
   text = text.replace(
     /const\s+DAILY_DIGEST_EMAIL_CRON_HINT_GUARD\s*=\s*['\"][^'\"]*['\"];?/,
-    "const DAILY_DIGEST_EMAIL_CRON_HINT_GUARD = 'Na darmowym Vercel cron działa raz dziennie';",
+    "const DAILY_DIGEST_EMAIL_CRON_HINT_GUARD = 'Na darmowym Vercel cron dzia\u0142a raz dziennie';",
   );
 }
 
-if (!/Na darmowym Vercel cron dzia(?:ł|l)a raz dziennie/.test(text)) {
+if (!/Na darmowym Vercel cron dzia(?:\u0142|l)a raz dziennie/.test(text)) {
   console.error("Daily digest cron hint repair did not produce required copy.");
   process.exit(1);
 }

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /*
   CloseFlow compact test runner.
-  Cel: uruchamiać testy bez zalewania konsoli pełną zawartością plików z AssertionError.actual.
-  Pełny log zawsze trafia do test-results/last-test-full.log.
+  Cel: uruchamia\u0107 testy bez zalewania konsoli pe\u0142n\u0105 zawarto\u015Bci\u0105 plik\u00F3w z AssertionError.actual.
+  Pe\u0142ny log zawsze trafia do test-results/last-test-full.log.
 */
 const { spawnSync } = require('node:child_process');
 const fs = require('node:fs');
@@ -43,7 +43,7 @@ function normalizeLine(line) {
 function truncate(value, max = 220) {
   const text = normalizeLine(value).replace(/\s+/g, ' ');
   if (text.length <= max) return text;
-  return text.slice(0, max - 1) + '…';
+  return text.slice(0, max - 1) + '\u2026';
 }
 
 function extractFailures(log) {
@@ -79,7 +79,7 @@ function extractFailures(log) {
       continue;
     }
 
-    const crossMatch = line.match(/^(?:✖|×|x)\s+(.+?)(?:\s+\([^)]+\))?$/i);
+    const crossMatch = line.match(/^(?:\u2716|\u00D7|x)\s+(.+?)(?:\s+\([^)]+\))?$/i);
     if (crossMatch && !line.includes('tests failed')) {
       failures.push({
         name: truncate(crossMatch[1], 180),
@@ -139,19 +139,19 @@ function printSummary({ status, log, selectedTests }) {
   summaryLines.push('');
 
   if (status === 0) {
-    summaryLines.push('OK: testy przeszły.');
+    summaryLines.push('OK: testy przesz\u0142y.');
   } else {
-    summaryLines.push(`FAIL: testy nie przeszły. Pokazuję tylko krótką listę, bez pełnych diffów i bez zawartości plików.`);
+    summaryLines.push(`FAIL: testy nie przesz\u0142y. Pokazuj\u0119 tylko kr\u00F3tk\u0105 list\u0119, bez pe\u0142nych diff\u00F3w i bez zawarto\u015Bci plik\u00F3w.`);
     summaryLines.push('');
     if (!failures.length) {
-      summaryLines.push('Nie udało się wyciągnąć nazw testów z logu. Otwórz pełny log z pliku powyżej.');
+      summaryLines.push('Nie uda\u0142o si\u0119 wyci\u0105gn\u0105\u0107 nazw test\u00F3w z logu. Otw\u00F3rz pe\u0142ny log z pliku powy\u017Cej.');
     } else {
       failures.slice(0, 40).forEach((failure, index) => {
         summaryLines.push(`${index + 1}. ${failure.name}`);
         if (failure.location) summaryLines.push(`   ${failure.location}`);
         if (failure.reason) summaryLines.push(`   ${failure.reason}`);
       });
-      if (failures.length > 40) summaryLines.push(`... oraz ${failures.length - 40} kolejnych błędów w pełnym logu.`);
+      if (failures.length > 40) summaryLines.push(`... oraz ${failures.length - 40} kolejnych b\u0142\u0119d\u00F3w w pe\u0142nym logu.`);
     }
   }
 
@@ -168,7 +168,7 @@ const nodeArgs = mode === 'critical'
   : ['--test', '--test-reporter=tap', 'tests/**/*.test.cjs', ...passthrough];
 
 if (mode === 'critical' && selectedTests.length === 0) {
-  console.error('FAIL: nie znaleziono plików testów krytycznych.');
+  console.error('FAIL: nie znaleziono plik\u00F3w test\u00F3w krytycznych.');
   process.exit(1);
 }
 

@@ -33,6 +33,6 @@ test('Completed calendar behavior documentation exists', () => {
 
   assert.match(doc, /event\.status = completed/);
   assert.match(doc, /wyszarzony/);
-  assert.match(doc, /przekreślony/);
-  assert.match(doc, /dół listy dnia/);
+  assert.match(doc, /przekre\u015Blony/);
+  assert.match(doc, /d\u00F3\u0142 listy dnia/);
 });

@@ -52,14 +52,14 @@ test('Calendar entry card links to related lead and case', () => {
   assert.ok(source.includes('/leads/${entry.raw.leadId}'));
   assert.ok(source.includes('/cases/${entry.raw.caseId}'));
 
-  assert.ok(source.includes('Otwórz lead'));
-  assert.ok(source.includes('Otwórz sprawę'));
+  assert.ok(source.includes('Otw\u00F3rz lead'));
+  assert.ok(source.includes('Otw\u00F3rz spraw\u0119'));
 });
 
 test('Calendar entry relation links documentation exists', () => {
   const doc = read('docs/CALENDAR_ENTRY_RELATION_LINKS_2026-04-24.md');
 
-  assert.ok(doc.includes('leadId -> Otwórz lead'));
-  assert.ok(doc.includes('caseId -> Otwórz sprawę'));
+  assert.ok(doc.includes('leadId -> Otw\u00F3rz lead'));
+  assert.ok(doc.includes('caseId -> Otw\u00F3rz spraw\u0119'));
   assert.match(doc, /centrum operacyjnym/);
 });
