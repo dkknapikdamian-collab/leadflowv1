@@ -95,3 +95,20 @@ Jesli Damian chce ZIP, pliki Obsidiana i pamiec projektu musza wejsc do ZIP-a.
 Jesli chce push, pushuj dopiero po przejsciu guardow albo po jawnym raporcie SKIP z powodem.
 <!-- CLOSEFLOW_PROJECT_MEMORY_RULES_V9_END -->
 
+<!-- DAMIAN_MINIMAL_PROJECT_MEMORY_PROTOCOL_START -->
+# Damian minimal project memory protocol - CloseFlow / LeadFlow
+
+Ten blok wskazuje na krotki protokol pamieci projektu. Nie usuwa ani nie zastepuje starszych blokow V8/V9.
+
+## Aktywne pliki protokolu
+- `_project/00_PROJECT_MEMORY_PROTOCOL.md`
+- `_project/STAGE_TEMPLATE_MINIMAL.md`
+- `_project/runs/`
+- Obsidian: `10_PROJEKTY/CloseFlow_Lead_App/`
+
+## Zasada zamkniecia etapu
+Etap jest niewazny, jesli nie ma dowodu skanu repo, `_project/`, Obsidiana, wpisu testow/guardow, statusu testu recznego oraz aktualizacji Obsidiana albo jawnego SKIP z powodem.
+
+## Granica tego etapu
+Zmiany organizacyjne moga dotykac tylko `AGENTS.md`, `_project/` i dashboardu Obsidiana. Nie zmieniac runtime UI, routingu, logiki produktu, styli ani architektury aplikacji bez osobnego etapu.
+<!-- DAMIAN_MINIMAL_PROJECT_MEMORY_PROTOCOL_END -->
