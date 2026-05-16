@@ -1,5 +1,11 @@
 # 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
 
+## 2026-05-16 - memory protocol and Obsidian mapping closeout
+- Remote GitHub closeout added minimal project memory protocol, minimal stage template, required 08:54 run checkpoint and AGENTS marker.
+- Obsidian dashboard mapping was prepared as the canonical high-level section: `10_PROJEKTY/CloseFlow_Lead_App/`.
+- This was an organizational stage only. No runtime app files were changed.
+- Next step after confirmed pulls: separate archive/merge stage for old CloseFlow paths.
+
 ## 2026-05-15
 Paczka V9 odbudowuje pamiec projektu, Obsidiana i guardy po bledach parsera w V6/V7.
 
