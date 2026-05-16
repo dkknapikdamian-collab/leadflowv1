@@ -112,3 +112,9 @@ Zakres:
 - Stage99: Calendar JSX/CSS class contract.
 - Stage100: one visible week-plan entry DOM model.
 - Stage101 intentionally excluded from this recovery.
+
+## STAGE102_CALENDAR_EDIT_MODAL_FORM_SOURCE â€” 2026-05-16
+
+- Guard: `tests/stage102-calendar-edit-modal-form-source.test.cjs`.
+- Scope: `/calendar` create/edit modal form visual source of truth.
+- Checks: shared `data-calendar-entry-form-source`, edit/create modes, `modalFooterClass('event-form-footer')`, bright input/select contract, no dark footer bar, quiet gate wiring.

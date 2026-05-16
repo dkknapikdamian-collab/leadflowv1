@@ -1,9 +1,9 @@
-﻿import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Calendar, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
-import { actionButtonClass as entityActionButtonClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
+import { actionButtonClass as entityActionButtonClass, modalFooterClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
 import {
   Dialog,
   DialogContent,
@@ -132,6 +132,9 @@ const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05
 const CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+const CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102 = 'CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102';
+const CALENDAR_ENTRY_FORM_SHARED_SOURCE_STAGE102 = 'event-form-vnext';
+const calendarEntryModalFooterClass = modalFooterClass('event-form-footer');
 
 function readCalendarRawText(value: unknown, fallback = '') {
   if (typeof value === 'string') return value;
@@ -1683,9 +1686,9 @@ export default function Calendar() {
                             <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
                           </Link>
                           <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
-                            <DialogContent className="event-form-vnext-content sm:max-w-2xl max-h-[90vh] overflow-y-auto" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+                            <DialogContent className="event-form-vnext-content sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                               <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle></DialogHeader>
-                              <form onSubmit={handleAddEvent} className="event-form-vnext space-y-6 py-4" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+                              <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                                 <div className="space-y-4">
                                   <div className="event-form-field">
                                     <Label>Tytuł</Label>
@@ -1793,7 +1796,7 @@ export default function Calendar() {
                                   )}
                                 </div>
 
-                                <DialogFooter className="event-form-footer">
+                                <DialogFooter className={calendarEntryModalFooterClass}>
                                   <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
                                 </DialogFooter>
                               </form>
@@ -1860,9 +1863,9 @@ export default function Calendar() {
         </div>
 
         <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
-          <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="event-form-vnext-content sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
             <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle></DialogHeader>
-            <form onSubmit={handleAddTask} className="space-y-6 py-4">
+            <form onSubmit={handleAddTask} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
               <div className="event-form-field">
                 <Label>Tytuł zadania</Label>
                 <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
@@ -1898,7 +1901,7 @@ export default function Calendar() {
                   <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
                 </div>
               </div>
-              <DialogFooter className="event-form-footer">
+              <DialogFooter className={calendarEntryModalFooterClass}>
                 <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
               </DialogFooter>
             </form>
@@ -2090,12 +2093,12 @@ export default function Calendar() {
           setEditDraft(null);
         }
       }}>
-        <DialogContent className="event-form-vnext-content sm:max-w-xl" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+        <DialogContent className="event-form-vnext-content sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode={editEntry?.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
           <DialogHeader>
             <DialogTitle>Edytuj wpis z kalendarza</DialogTitle>
           </DialogHeader>
           {editEntry && editDraft ? (
-            <form onSubmit={handleSaveEdit} className="event-form-vnext space-y-4 py-2" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+            <form onSubmit={handleSaveEdit} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-calendar-entry-form-mode={editEntry.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
               <div className="event-form-field">
                 <Label>Tytuł</Label>
                 <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
@@ -2251,7 +2254,7 @@ export default function Calendar() {
                   </div>
                 ) : null}
 
-<DialogFooter className="event-form-footer">
+<DialogFooter className={calendarEntryModalFooterClass}>
                 <Button type="submit" disabled={editSubmitting || actionPendingId === `${editEntry.id}:edit`}>
                   {editSubmitting || actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
                 </Button>

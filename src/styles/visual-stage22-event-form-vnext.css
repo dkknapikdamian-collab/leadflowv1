@@ -114,6 +114,7 @@
   font-size: 14px;
   outline: none;
   box-shadow: 0 4px 12px rgba(16, 24, 40, 0.03);
+  caret-color: #2563eb;
 }
 
 .event-form-vnext input:focus,
@@ -129,10 +130,10 @@
 
 .event-form-footer {
   position: sticky;
-  bottom: -22px;
+  bottom: 0;
   border-top: 1px solid #e4e7ec;
-  background: rgba(255, 255, 255, 0.94);
-  padding: 14px 0 0;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 14px 24px 18px;
   gap: 10px;
 }
 
@@ -185,5 +186,58 @@
 
   .event-form-footer button {
     width: 100% !important;
+  }
+}
+
+/* CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102 */
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] {
+  background: rgba(255, 255, 255, 0.98) !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext {
+  background: #f9fafb !important;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext::-webkit-scrollbar {
+  width: 10px;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext::-webkit-scrollbar-thumb {
+  border: 3px solid #f9fafb;
+  border-radius: 999px;
+  background: #cbd5e1;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer {
+  margin: 6px -24px -22px;
+  border-top: 1px solid #e4e7ec;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05);
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e4e7ec !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:hover,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:hover,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:hover {
+  border-color: #bfdbfe !important;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer {
+    margin: 4px -14px -14px;
+    padding: 14px;
   }
 }

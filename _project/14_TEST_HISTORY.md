@@ -132,3 +132,17 @@ git -C $Vault status --short
 
 ### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
 Expected checks: Stage98, Stage99, Stage100, Stage32, Stage96 and CloseFlow quiet release gate.
+
+## STAGE102_CALENDAR_EDIT_MODAL_FORM_SOURCE â€” 2026-05-16
+
+### TESTY AUTOMATYCZNE / GUARDY
+
+- `node --test tests/stage102-calendar-edit-modal-form-source.test.cjs` â€” uruchamiane przez apply script.
+- `npm run build` â€” uruchamiane przez apply script, jeĹ›li nie podano `-SkipBuild`.
+- `npm run verify:closeflow:quiet` â€” uruchamiane przez apply script, jeĹ›li podano `-RunQuietGate`.
+
+### TEST RÄCZNY
+
+Status: `TEST RÄCZNY DO WYKONANIA` na `/calendar`.
+
+SprawdziÄ‡ create event, create task, edit event, edit task, wyglÄ…d jasnych pĂłl/selectĂłw/scrolla/stopki i zapis po edycji.
