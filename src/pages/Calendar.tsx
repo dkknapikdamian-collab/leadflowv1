@@ -12,7 +12,6 @@ import {
   DialogTitle
 } from '../components/ui/dialog';
 import { Button } from '../components/ui/button';
-import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { TopicContactPicker } from '../components/topic-contact-picker';
@@ -1942,10 +1941,16 @@ export default function Calendar() {
                 const isCurrentMonth = isSameMonth(day, monthStart);
                 const isTodayDay = isToday(day);
                 const isSelectedDay = isSameDay(day, selectedDate);
+                const dayStart = new Date(day);
+                dayStart.setHours(0, 0, 0, 0);
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+                const isPastDay = dayStart.getTime() < todayStart.getTime() && !isTodayDay;
 
                 return (
                   <div
                     key={index}
+                    data-calendar-month-day-cell="true"
                     role="button"
                     tabIndex={0}
                     onClick={() => handleSelectMonthDay(day)}

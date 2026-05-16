@@ -1,4 +1,4 @@
-﻿# 14_TEST_HISTORY - CloseFlow / LeadFlow
+# 14_TEST_HISTORY - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
 
@@ -60,11 +60,11 @@ git -C $Vault status --short
 
 ## STAGE94_SWEEP_REGEX_FIX_V4_TEST_HISTORY_2026_05_16
 
-- node --check scripts/check-closeflow-calendar-ui-sweep-stage94.cjs
-- node --test tests/stage92-calendar-selected-day-readable-actions.test.cjs
-- node --test tests/stage93-calendar-week-rail-cleanup.test.cjs
-- node --test tests/stage94-calendar-consolidated-cleanup.test.cjs
-- node scripts/check-closeflow-calendar-ui-sweep-stage94.cjs
+- node --check scripts/check-closeflow-calendar-ui-sweep-stage94.cjs`
+- node --test tests/stage92-calendar-selected-day-readable-actions.test.cjs`
+- node --test tests/stage93-calendar-week-rail-cleanup.test.cjs`
+- node --test tests/stage94-calendar-consolidated-cleanup.test.cjs`
+- node scripts/check-closeflow-calendar-ui-sweep-stage94.cjs`
 
 ## Stage94 Calendar weekly plan full entry text - 2026-05-16
 
@@ -99,12 +99,12 @@ git -C $Vault status --short
 - Stage96 V2: `tests/stage96-leads-right-rail-width-position.test.cjs` guards /leads SimpleFiltersCard before TopValueRecordsCard, shared rail width tokens, no 195px rail, and SimpleFiltersCard import hygiene.
 
 ### Stage96 V3 - Leads right rail width/position
-- Targeted guard: tests/stage96-leads-right-rail-width-position.test.cjs
+- Targeted guard: tests/stage96-leads-right-rail-width-position.test.cjs`
 - Scope: /leads right rail width and position parity with /clients.
 - Expected: Filtry proste before Najcenniejsze leady; no local narrow rail override.
 
 ### Stage96 V4 - Leads right rail width/position
-- Targeted guard: tests/stage96-leads-right-rail-width-position.test.cjs
+- Targeted guard: tests/stage96-leads-right-rail-width-position.test.cjs`
 - Expected: filters above top value card, shared rail width source truth, no local rail grid class on /leads.
 
 ## STAGE96_V5_TEST_HISTORY
@@ -122,13 +122,13 @@ git -C $Vault status --short
 
 
 ## HOTFIX_STAGE94_COMPLETED_EVENT_VISUAL_CONTRACT_2026_05_16
-- Required: node --test tests/calendar-completed-event-behavior.test.cjs
-- Required: node scripts/closeflow-release-check-quiet.cjs
+- Required: node --test tests/calendar-completed-event-behavior.test.cjs`
+- Required: node scripts/closeflow-release-check-quiet.cjs`
 
 
 ## HOTFIX_STAGE94_COMPLETED_EVENT_VISUAL_CONTRACT_2026_05_16
-- Required: node --test tests/calendar-completed-event-behavior.test.cjs
-- Required: node scripts/closeflow-release-check-quiet.cjs
+- Required: node --test tests/calendar-completed-event-behavior.test.cjs`
+- Required: node scripts/closeflow-release-check-quiet.cjs`
 
 ### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
 Expected checks: Stage98, Stage99, Stage100, Stage32, Stage96 and CloseFlow quiet release gate.
@@ -152,22 +152,20 @@ Sprawdzic create event, create task, edit event, edit task, jasne pola/selecty/s
 
 Ten fix jest local-only. Skrypt nie tworzy commita i niczego nie wysyla. Po testach decyzja o dalszym ruchu nalezy do Damiana.
 
-
-
 <!-- STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3_TEST_HISTORY -->
-## Stage103 V3 â€” Calendar month grid day states
+## Stage103 V3 / Stage103F - Calendar month grid day states
 
-Automatyczne:
-- 
-ode tests/stage103-calendar-month-grid-day-states.test.cjs
-- 
-ode scripts/closeflow-release-check-quiet.cjs
+Automatic checks:
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --test tests/stage103-calendar-month-grid-day-states.test.cjs`
+- `npm run build`
+- `node scripts/closeflow-release-check-quiet.cjs`
 
-RÄ™czne â€” DO WYKONANIA:
-1. WejĹ›Ä‡ w /calendar.
-2. PrzeĹ‚Ä…czyÄ‡ na MiesiÄ…c.
-3. SprawdziÄ‡ zielonkawy aktualny dzieĹ„.
-4. SprawdziÄ‡ szare stare dni.
-5. SprawdziÄ‡ spokojny niebieski border selected day.
-6. PotwierdziÄ‡ brak gĂłrnego licznika przy dacie.
-7. KliknÄ…Ä‡ + wiÄ™cej i potwierdziÄ‡ przewiniÄ™cie/wybĂłr panelu dnia.
+Manual UI test - TO DO:
+1. Open /calendar.
+2. Switch to Month.
+3. Confirm today has a subtle green tint/border.
+4. Confirm past days are greyed but readable.
+5. Confirm selected day has a calm blue border.
+6. Confirm there is no top count Badge near the day number.
+7. Click + wiecej and confirm the selected-day panel is selected/scrolled into view.

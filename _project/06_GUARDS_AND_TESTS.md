@@ -9,23 +9,23 @@ npm run verify:closeflow:quiet, jesli istnieje w package.json.
 Etap nie jest zamkniety bez logu guardow albo jawnego wpisu SKIP z powodem.
 
 ## 2026-05-15 - React StrictMode runtime import guard v14
-- node scripts/check-react-strictmode-runtime-import-stage87.cjs
+- node scripts/check-react-strictmode-runtime-import-stage87.cjs`
 
 ## 2026-05-15 - Lazy page default runtime guard v15
-- node scripts/check-lazy-page-default-runtime-stage88.cjs
+- node scripts/check-lazy-page-default-runtime-stage88.cjs`
 
 ## 2026-05-15 - Lazy page default runtime guard v17
-- node scripts/check-lazy-page-default-runtime-stage88.cjs
+- node scripts/check-lazy-page-default-runtime-stage88.cjs`
 
 ## 2026-05-15 - lazy page default runtime guard v18
-- node scripts/check-lazy-page-default-runtime-stage88.cjs
+- node scripts/check-lazy-page-default-runtime-stage88.cjs`
 
 ## 2026-05-15 - Lazy page runtime guard v19
-- node scripts/check-lazy-page-default-runtime-stage88.cjs
+- node scripts/check-lazy-page-default-runtime-stage88.cjs`
 - Guard wymusza jeden lazyPage i 23 trasy lazyPage bez bezposrednich React.lazy imports.
 
 ## 2026-05-15 - Lazy page runtime guard v19
-- node scripts/check-lazy-page-default-runtime-stage88.cjs
+- node scripts/check-lazy-page-default-runtime-stage88.cjs`
 - Guard wymusza jeden lazyPage i 23 trasy lazyPage bez bezposrednich React.lazy imports.
 
 ## 2026-05-16 — Guard Stage92: calendar selected day readable actions {#STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS}
@@ -54,7 +54,7 @@ Zakres:
 
 - tests/stage94-calendar-consolidated-cleanup.test.cjs guards one selected-day render, no wrong source, no duplicate month completed class, clean week rail, and valid calendar skin selector.
 - scripts/check-closeflow-calendar-ui-sweep-stage94.cjs is now a regression sweep that fails on P1/P2 calendar UI debt.
-- Run: node --test tests/stage94-calendar-consolidated-cleanup.test.cjs && node scripts/check-closeflow-calendar-ui-sweep-stage94.cjs
+- Run: node --test tests/stage94-calendar-consolidated-cleanup.test.cjs && node scripts/check-closeflow-calendar-ui-sweep-stage94.cjs`
 
 ## Stage94 Calendar weekly plan full entry text - 2026-05-16
 
@@ -113,20 +113,26 @@ Zakres:
 - Stage100: one visible week-plan entry DOM model.
 - Stage101 intentionally excluded from this recovery.
 
-## STAGE102_CALENDAR_EDIT_MODAL_FORM_SOURCE â€” 2026-05-16
+## STAGE102_CALENDAR_EDIT_MODAL_FORM_SOURCE - 2026-05-16
 
 - Guard: `tests/stage102-calendar-edit-modal-form-source.test.cjs`.
 - Scope: `/calendar` create/edit modal form visual source of truth.
 - Checks: shared `data-calendar-entry-form-source`, edit/create modes, `modalFooterClass('event-form-footer')`, bright input/select contract, no dark footer bar, quiet gate wiring.
 
 <!-- STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3_GUARD -->
-## Stage103 V3 â€” Calendar month grid day states
+## Stage103 V3 / Stage103F - Calendar month grid day states
 
-Guard: 	ests/stage103-calendar-month-grid-day-states.test.cjs
+Guard: `tests/stage103-calendar-month-grid-day-states.test.cjs`
 
-Zakres guardu:
-- wymusza klasy is-today, is-past, is-selected, is-outside,
-- blokuje powrĂłt gĂłrnego Badge count przy numerze dnia,
-- wymusza data-calendar-month-more-button i handler handleShowMoreMonthDay,
-- wymusza target data-calendar-selected-day-panel,
-- wymusza finalny CSS override Stage103.
+Scope:
+- requires day state classes: is-today, is-past, is-selected, is-outside,
+- blocks the top Badge count near the day number,
+- requires data-calendar-month-day-cell on active month cells,
+- requires data-calendar-month-more-button and handleShowMoreMonthDay,
+- requires data-calendar-selected-day-panel target,
+- requires the final Stage103 CSS override in closeflow-calendar-month-plain-text-rows-v4.css.
+
+Stage103F note:
+- fixes the missing day-cell marker required by the guard,
+- keeps month-grid UI logic minimal,
+- cleans Stage103 mojibake introduced by the earlier package.

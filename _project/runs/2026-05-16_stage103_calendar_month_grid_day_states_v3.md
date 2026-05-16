@@ -1,52 +1,52 @@
-﻿<!-- STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3_RUN -->
-# Stage103 V3 â€” Calendar month grid day states
+<!-- STAGE103_CALENDAR_MONTH_GRID_DAY_STATES_V3_RUN -->
+# Stage103 V3 - Calendar month grid day states
 
-## FAKTY Z KODU / PLIKĂ“W
-- Aktywny month grid jest renderowany w src/pages/Calendar.tsx w gaĹ‚Ä™zi calendarView === 'month'.
-- Przed naprawÄ… komĂłrka miesiÄ…ca renderowaĹ‚a gĂłrny Badge przy numerze dnia.
-- Przed naprawÄ… + wiÄ™cej byĹ‚o martwym div.calendar-more.
-- Importy CSS kalendarza majÄ… kilka warstw historycznych: skin, overlap, rows no-overlap, structural, plain text rows. Finalny override Stage103 dopisano do ostatniej warstwy closeflow-calendar-month-plain-text-rows-v4.css.
+## FACTS FROM CODE / FILES
+- Active month grid render is in `src/pages/Calendar.tsx` under `calendarView === 'month'`.
+- Before Stage103, the month day cell rendered a top Badge count near the day number.
+- Before Stage103, `+ wiecej` was a dead `div.calendar-more`.
+- Calendar month grid has older CSS repair layers. Stage103 puts the final override in `closeflow-calendar-month-plain-text-rows-v4.css`, which is imported after older month-grid layers.
 
-## DECYZJE DAMIANA
-- Aktualny dzieĹ„ ma byÄ‡ lekko zielonkawy.
-- Stare dni majÄ… byÄ‡ szare / mniej kontrastowe.
-- Wybrany dzieĹ„ ma mieÄ‡ spokojny niebieski border.
-- GĂłrny count badge przy dacie ma zniknÄ…Ä‡.
-- + wiÄ™cej ma byÄ‡ realnÄ… akcjÄ…, nie martwym tekstem.
+## DAMIAN DECISIONS
+- Today should be lightly green-tinted.
+- Past days should be greyed / lower contrast.
+- Selected day should have a calm blue border.
+- The top count Badge near the date should be removed.
+- `+ wiecej` must be a real action, not dead text.
 
-## HIPOTEZY / PROPOZYCJE AI
-- Najbezpieczniejsza naprawa to maĹ‚a zmiana aktywnego renderu i finalny CSS override w ostatnim importowanym pliku month grid.
+## AI HYPOTHESIS / PROPOSAL
+- Minimal safe fix: change the active month-cell render and add a final CSS override in the last imported month-grid CSS file.
 
-## DO POTWIERDZENIA
-- Test rÄ™czny w przeglÄ…darce: dzisiejszy dzieĹ„, stare dni, selected day i klikniÄ™cie + wiÄ™cej.
+## TO CONFIRM
+- Manual browser test: today, past days, selected day and clicking `+ wiecej`.
 
-## TESTY AUTOMATYCZNE
-- 
-ode tests/stage103-calendar-month-grid-day-states.test.cjs
-- 
-ode scripts/closeflow-release-check-quiet.cjs
+## AUTOMATIC TESTS
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --test tests/stage103-calendar-month-grid-day-states.test.cjs`
+- `npm run build`
+- `node scripts/closeflow-release-check-quiet.cjs`
 
-## GUARDY
-- 	ests/stage103-calendar-month-grid-day-states.test.cjs wymusza brak gĂłrnego count badge, klasy stanĂłw dnia, aktywny przycisk + wiÄ™cej, target selected day i CSS Stage103.
+## GUARDS
+- `tests/stage103-calendar-month-grid-day-states.test.cjs` protects day classes, missing top Badge count, real `+ wiecej` button, selected-day target and final CSS override.
 
-## TESTY RÄCZNE
-- TEST RÄCZNY DO WYKONANIA PRZEZ DAMIANA.
+## MANUAL TESTS
+- TEST MANUALNY DO WYKONANIA PRZEZ DAMIANA.
 
-## POTWIERDZENIA DAMIANA
-- Brak potwierdzenia rÄ™cznego na moment wdroĹĽenia.
+## DAMIAN CONFIRMATIONS
+- No manual confirmation yet.
 
-## BRAKI I RYZYKA
-- Stare warstwy CSS kalendarza nadal istniejÄ…, ale Stage103 celowo dopisuje finalny override w ostatniej aktywnej warstwie.
-- JeĹ›li przeglÄ…darka pokaĹĽe inny efekt, trzeba sprawdziÄ‡ computed styles dla .calendar-day-cell i .cf-calendar-month-more.
+## RISKS
+- Older month-grid CSS layers still exist, but Stage103 override is placed in the last active month-grid CSS import.
+- If browser output differs, inspect computed styles for `.calendar-day-cell` and `.cf-calendar-month-more`.
 
-## WPĹYW NA OBSIDIANA
-- Dopisano status Stage103 i test rÄ™czny do notatek CloseFlow w vault.
+## OBSIDIAN IMPACT
+- CloseFlow Obsidian dashboard records Stage103 and the pending manual test.
 
-## WPĹYW NA KIERUNEK ROZWOJU
-- Month grid pozostaje zamroĹĽony funkcjonalnie, zmienione sÄ… tylko stany komĂłrki i martwy + wiÄ™cej.
+## PRODUCT DIRECTION IMPACT
+- Month grid stays functionally frozen; only day states and dead `+ wiecej` are changed.
 
-## NASTÄPNY KROK
-- Damian uruchamia test rÄ™czny /calendar -> MiesiÄ…c i potwierdza wyglÄ…d oraz klikniÄ™cie + wiÄ™cej.
+## NEXT STEP
+- Damian runs manual test: /calendar -> Month -> today/past/selected/+ wiecej.
 
 ## GIT / ZIP STATUS
-- WdroĹĽenie przez lokalny ZIP Stage103 V3.
+- Stage103 delivered by local ZIP package and followed by Stage103F cleanup.
