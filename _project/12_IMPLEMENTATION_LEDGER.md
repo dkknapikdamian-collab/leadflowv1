@@ -128,3 +128,5 @@ DECYZJA: restore completed event visual class contract in ScheduleEntryCard inst
 FAKT: full quiet gate passed production build after CSS brace hotfix but failed calendar-completed-event-behavior guard.
 DECYZJA: restore completed event visual class contract in ScheduleEntryCard instead of weakening the existing guard.
 
+### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
+Decision: after failed Stage101 iterations, recover only proven Stage98/99/100 scope from clean HEAD. Stage101 remains out of scope.

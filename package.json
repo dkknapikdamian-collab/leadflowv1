@@ -758,7 +758,10 @@
     "check:stage84-import-doctor-right-rail": "node --test tests/stage84-import-doctor-right-rail.test.cjs",
     "check:stage86-leads-dangling-assignment-guard": "node --test tests/stage86-leads-dangling-assignment-guard.test.cjs",
     "check:project-memory:closeflow": "node scripts/check-closeflow-project-memory-readable-names.cjs",
-    "check:stage88-lazy-page-export-contract": "node tests/stage88-lazy-page-export-contract.test.cjs"
+    "check:stage88-lazy-page-export-contract": "node tests/stage88-lazy-page-export-contract.test.cjs",
+    "check:stage98-calendar-mojibake": "node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs",
+    "check:stage99-calendar-classes": "node --test tests/stage99-calendar-active-class-contract.test.cjs",
+    "check:stage100-calendar-week-plan-entry-visible": "node --test tests/stage100-calendar-week-plan-entry-visible.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

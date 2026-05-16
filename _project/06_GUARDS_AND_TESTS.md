@@ -106,3 +106,9 @@ Zakres:
 ## Stage97 today overdue task done button
 
 - tests/stage97-today-overdue-task-done-button.test.cjs protects Today overdue/today task rows from edit-only regression.
+
+### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
+- Stage98: calendar mojibake hard fail.
+- Stage99: Calendar JSX/CSS class contract.
+- Stage100: one visible week-plan entry DOM model.
+- Stage101 intentionally excluded from this recovery.

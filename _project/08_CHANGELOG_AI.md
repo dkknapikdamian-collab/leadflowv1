@@ -166,3 +166,7 @@ DECYZJA:
 - Restored completed calendar entry visual contract after Stage94 week plan readable card rebuild.
 - Completed entries again expose opacity-60 and line-through text class expected by calendar-completed-event-behavior guard.
 
+### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
+- Recovered Stage98/99/100 from clean HEAD after Stage101 rollback.
+- Restored Calendar.tsx UTF-8 strings, week-plan entry DOM model, Stage32/96 compatibility marker and quiet-gate wiring.
+- No commit. No push.

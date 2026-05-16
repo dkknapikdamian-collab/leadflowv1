@@ -162,6 +162,9 @@ const requiredTests = [
   'tests/stage92-calendar-selected-day-readable-actions.test.cjs',
   'tests/stage96-leads-right-rail-width-position.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
+  'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
+  'tests/stage99-calendar-active-class-contract.test.cjs',
+  'tests/stage100-calendar-week-plan-entry-visible.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

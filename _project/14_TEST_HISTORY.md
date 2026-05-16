@@ -130,3 +130,5 @@ git -C $Vault status --short
 - Required: node --test tests/calendar-completed-event-behavior.test.cjs
 - Required: node scripts/closeflow-release-check-quiet.cjs
 
+### STAGE98_100_RECOVERY_FROM_CLEAN_V3 - 2026-05-16
+Expected checks: Stage98, Stage99, Stage100, Stage32, Stage96 and CloseFlow quiet release gate.
