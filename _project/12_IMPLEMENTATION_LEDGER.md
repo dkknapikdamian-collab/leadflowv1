@@ -118,3 +118,8 @@ DECYZJA:
 FAKT: commit 4adba47 was pushed after a failed quiet gate because the PowerShell flow did not stop on external command failure.
 DECYZJA: fix CSS syntax, rerun full quiet gate, then push a second hotfix commit.
 
+
+## HOTFIX_STAGE94_COMPLETED_EVENT_VISUAL_CONTRACT_2026_05_16
+FAKT: full quiet gate passed production build after CSS brace hotfix but failed calendar-completed-event-behavior guard.
+DECYZJA: restore completed event visual class contract in ScheduleEntryCard instead of weakening the existing guard.
+

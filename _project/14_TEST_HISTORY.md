@@ -120,3 +120,8 @@ git -C $Vault status --short
 ## HOTFIX_STAGE96_CSS_MEDIA_BRACE_2026_05_16
 - Required: node scripts/closeflow-release-check-quiet.cjs after CSS brace fix.
 
+
+## HOTFIX_STAGE94_COMPLETED_EVENT_VISUAL_CONTRACT_2026_05_16
+- Required: node --test tests/calendar-completed-event-behavior.test.cjs
+- Required: node scripts/closeflow-release-check-quiet.cjs
+
