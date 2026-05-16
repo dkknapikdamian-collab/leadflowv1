@@ -364,32 +364,22 @@ export default function Clients() {
   );
 
   const topClientValueEntries = useMemo(() => {
-    // STAGE74_CLIENTS_TOP_VALUE_PANEL: this rail is about lead records that still need relation cleanup.
-    // It must not render client records under the lead attention operational card.
-    const caseLeadIds = new Set<string>();
-    const caseClientIds = new Set<string>();
-
-    for (const caseRow of cases as Record<string, unknown>[]) {
-      const caseLeadId = String(caseRow.leadId || caseRow.lead_id || caseRow.linkedLeadId || caseRow.linked_lead_id || '').trim();
-      const caseClientId = getStage35RelationClientId(caseRow);
-      if (caseLeadId) caseLeadIds.add(caseLeadId);
-      if (caseClientId) caseClientIds.add(caseClientId);
-    }
-
-    return (leads as Record<string, unknown>[])
-      .filter((lead) => {
-        const status = String(lead.status || '').trim().toLowerCase();
-        const visibility = String(lead.leadVisibility || lead.lead_visibility || '').trim().toLowerCase();
-        if (status === 'archived' || visibility === 'trash') return false;
-
-        const leadId = String(lead.id || '').trim();
-        const clientId = getStage35RelationClientId(lead);
-        const hasCase = Boolean((leadId && caseLeadIds.has(leadId)) || (clientId && caseClientIds.has(clientId)));
-
-        return !clientId || !hasCase;
+    return clients
+      .filter((client) => !client.archivedAt)
+      .map((client) => {
+        const value = clientValueByClientId.get(client.id) || 0;
+        return {
+          key: client.id,
+          href: '/clients/' + client.id,
+          label: client.name || 'Klient',
+          value,
+          description: client.company || client.email || client.phone || 'Klient',
+        };
       })
+      .filter((entry) => entry.value > 0)
+      .sort((a, b) => b.value - a.value)
       .slice(0, 5);
-  }, [cases, leads]);
+  }, [clients, clientValueByClientId]);
 
   const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '' }); };
 
@@ -722,27 +712,6 @@ export default function Clients() {
                 { key: 'trash', label: 'Kosz', value: archivedCount, onClick: () => setShowArchived(true) },
               ]}
             />
-
-            <TopValueRecordsCard
-              title="Najcenniejsi klienci"
-              description="5 klientów z największą wartością."
-              className="operator-top-value-card clients-top-value-card"
-              dataTestId="clients-top-value-records-card"
-              dataAttrs={{ 'data-clients-top-value-board': true }}
-              items={topClientValueEntries.map((entry) => ({
-                key: entry.key,
-                href: entry.href || '/clients',
-                label: entry.label,
-                valueLabel: formatClientValue(entry.value),
-                description: entry.description,
-                title: entry.label + ' - ' + formatClientValue(entry.value),
-                dataAttrs: {
-                  'data-clients-top-value-row': true,
-                },
-              }))}
-              emptyLabel="Brak klientów z wyliczoną wartością."
-            />
-
             <TopValueRecordsCard
               title="Najcenniejsi klienci"
               description="5 klientów z największą wartością."

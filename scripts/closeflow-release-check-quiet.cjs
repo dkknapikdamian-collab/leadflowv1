@@ -154,6 +154,7 @@ const requiredTests = [
   'tests/stage88-lazy-page-export-contract.test.cjs',
   'tests/stage89-todaystable-named-export-contract.test.cjs',
   'tests/stage90-react-namespace-runtime-import.test.cjs',
+  'tests/stage91-clients-top-value-runtime-contract.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
