@@ -1,5 +1,13 @@
 # 08_CHANGELOG_AI - CloseFlow / LeadFlow
 
+## 2026-05-16 - Memory protocol and Obsidian mapping closeout
+- Added `_project/00_PROJECT_MEMORY_PROTOCOL.md`.
+- Added `_project/STAGE_TEMPLATE_MINIMAL.md`.
+- Restored required run checkpoint `_project/runs/2026-05-16_0854_closeflow_memory_protocol_v1.md`.
+- Added `DAMIAN_MINIMAL_PROJECT_MEMORY_PROTOCOL_START` marker to `AGENTS.md` without removing V8/V9 blocks.
+- Updated next steps for post-push archive/merge stage.
+- No runtime UI, routing, product logic, styles or architecture changed.
+
 ## 2026-05-15 - V9
 - Zastapiono uszkodzona paczke V7.
 - PowerShell zostal uproszczony: tresci sa w payload, skrypt tylko je kopiuje i uruchamia guardy.
