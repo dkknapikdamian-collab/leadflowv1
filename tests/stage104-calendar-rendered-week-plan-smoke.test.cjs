@@ -1,4 +1,4 @@
-const test = require('node:test');
+﻿const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
@@ -59,28 +59,30 @@ function assertNotHidden(selectorFragment) {
 }
 
 const card = extractFunction(calendar, 'ScheduleEntryCard');
-const renderedSkeleton = [
-  '<div data-cf-calendar-week-plan-entry-card="true" class="calendar-entry-card cf-calendar-week-plan-entry-card">',
-  '<div class="cf-calendar-week-plan-entry-main">',
-  '<div class="cf-calendar-week-plan-entry-meta"><span>Wydarzenie</span><span>10:00</span><span>Zaplanowane</span></div>',
-  '<p class="cf-calendar-week-plan-entry-title">Testowy wpis</p>',
-  '<div class="cf-calendar-week-plan-entry-relation"><span>Brak powiązania</span></div>',
-  '</div>',
-  '<div class="cf-calendar-week-plan-entry-actions"><button>Edytuj</button><button>+1H</button><button>+1D</button><button>+1W</button><button>Zrobione</button><button>Usuń</button></div>',
-  '</div>',
-].join('');
 
-test('Stage104 week plan rendered skeleton contains the complete visible entry payload', () => {
-  for (const text of ['Wydarzenie', '10:00', 'Zaplanowane', 'Testowy wpis', 'Brak powiązania', 'Edytuj', '+1H', '+1D', '+1W', 'Zrobione', 'Usuń']) {
-    assert.ok(renderedSkeleton.includes(text), 'Rendered skeleton missing ' + text);
-  }
+test('Stage104C ScheduleEntryCard is isolated from legacy global card CSS', () => {
+  assert.ok(card.includes('data-cf-calendar-week-plan-entry-card="true"'));
+  assert.ok(card.includes('cf-calendar-week-plan-entry-card'));
+  assert.doesNotMatch(card, /className=\{['"]calendar-entry-card\b/);
+  assert.doesNotMatch(card, /calendar-entry-card cf-calendar-week-plan-entry-card/);
 });
 
-test('Stage104 ScheduleEntryCard has source for title, relation and all actions', () => {
+test('Stage104C week plan map renders ScheduleEntryCard directly, without display contents wrapper', () => {
+  assert.ok(calendar.includes('dayEntries.map((entry) => ('));
+  assert.ok(calendar.includes('<ScheduleEntryCard'));
+  assert.ok(calendar.includes('key={`week:${day.toISOString()}:${entry.id}`}'));
+  assert.doesNotMatch(calendar, /style=\{\{\s*display:\s*['"]contents['"]\s*\}\}/);
+});
+
+test('Stage104C ScheduleEntryCard has visible title, relation and all actions', () => {
   for (const needle of [
-    'data-cf-calendar-week-plan-entry-card="true"',
+    'cf-calendar-week-plan-entry-main',
+    'cf-calendar-week-plan-entry-meta',
+    'cf-calendar-week-plan-entry-title',
     'data-cf-entry-title="true"',
+    'cf-calendar-week-plan-entry-relation',
     'data-cf-entry-relation="true"',
+    'cf-calendar-week-plan-entry-actions',
     'Brak powiązania',
     'Edytuj',
     '+1H',
@@ -93,7 +95,7 @@ test('Stage104 ScheduleEntryCard has source for title, relation and all actions'
   }
 });
 
-test('Stage104 week plan active classes are not hidden or zero-sized in CSS', () => {
+test('Stage104C week plan active classes are not hidden or zero-sized in CSS', () => {
   for (const selector of [
     '[data-cf-calendar-week-plan-entry-card="true"]',
     '.cf-calendar-week-plan-entry-main',
@@ -107,13 +109,23 @@ test('Stage104 week plan active classes are not hidden or zero-sized in CSS', ()
   }
 });
 
-test('Stage104 CSS has no malformed orphan media fragment and no legacy week-plan families', () => {
+test('Stage104C CSS has anti-collapse contract for week plan cards', () => {
+  const blocks = cssBlocksFor('[data-cf-calendar-week-plan-entry-card="true"]');
+  const joined = blocks.join('\n');
+  assert.match(joined, /width\s*:\s*100%\s*!important/i);
+  assert.match(joined, /max-width\s*:\s*none\s*!important/i);
+  assert.match(joined, /min-height\s*:\s*92px\s*!important/i);
+  assert.match(joined, /overflow\s*:\s*visible\s*!important/i);
+  assert.match(joined, /visibility\s*:\s*visible\s*!important/i);
+});
+
+test('Stage104C CSS has no malformed orphan media fragment and no legacy week-plan families', () => {
   assert.doesNotMatch(css, /@media\s*\([^)]*\)\s*\{\s*grid-template-columns\s*:/);
   assert.doesNotMatch(css, /\.cf-week-plan-entry-/);
   assert.doesNotMatch(css, /\.cf-calendar-week-entry-/);
   assert.doesNotMatch(css, /CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V[234]/);
 });
 
-test('Stage104 quiet release gate includes rendered week plan smoke', () => {
+test('Stage104C quiet release gate includes rendered week plan smoke', () => {
   assert.ok(quietGate.includes('tests/stage104-calendar-rendered-week-plan-smoke.test.cjs'));
 });

@@ -1,5 +1,5 @@
-/* CLOSEFLOW_CALENDAR_SELECTED_DAY_NEW_TILE_V9_STAGE98B_100B_CANONICAL_2026_05_17
-   One active selected-day V9 tile and one active week-plan entry model.
+/* CLOSEFLOW_CALENDAR_SELECTED_DAY_NEW_TILE_V9_STAGE104C_CARD_UNCLAMP_2026_05_17
+   One active selected-day V9 tile and one active week-plan entry model. Stage104C forbids legacy calendar-entry-card on week-plan cards.
    Do not append Stage92/94/100 repair layers below this file again.
 */
 
@@ -350,11 +350,17 @@
 
 #root .calendar-week-plan [data-cf-calendar-week-plan-entry-card="true"] {
   display: grid !important;
-  grid-template-columns: minmax(0, 1fr) minmax(216px, auto) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(216px, 330px) !important;
   align-items: start !important;
   gap: 12px !important;
+  width: 100% !important;
+  max-width: none !important;
   min-width: 0 !important;
-  min-height: 86px !important;
+  min-height: 92px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
   background: #ffffff !important;
   border: 1px solid #dbeafe !important;
   border-radius: 18px !important;

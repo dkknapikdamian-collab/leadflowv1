@@ -437,7 +437,7 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
     <div
       data-cf-calendar-week-plan-entry-card="true"
       data-calendar-entry-completed={isCompletedEntry ? "true" : undefined}
-      className={'calendar-entry-card cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
+      className={'cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
     >
       <div className="cf-calendar-week-plan-entry-main">
         <div className="cf-calendar-week-plan-entry-meta" data-cf-calendar-week-plan-entry-meta="true">

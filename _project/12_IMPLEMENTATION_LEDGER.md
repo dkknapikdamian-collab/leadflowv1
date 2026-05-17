@@ -287,3 +287,29 @@ Guardy/testy do uruchomienia przez paczkę:
 
 Test ręczny: DO WYKONANIA na `/calendar`.
 Kryterium: dzień z wpisem nie może wyglądać jak pusty biały pasek/mini-kafelek.
+
+<!-- STAGE104C_WEEK_PLAN_CARD_UNCLAMP -->
+
+## 2026-05-17 — Stage104C: Calendar week plan card unclamp
+
+### FAKTY Z KODU / PLIKÓW
+- Poprzednia paczka Stage104B nie wykonała patchera: plik CJS miał błąd składni przez nieucieczony backtick w osadzonym teście.
+- Faktyczny problem UI: w Plan najbliższych dni wpis istnieje, ale renderuje się jako wąski pionowy fragment akcji.
+- Naprawa Stage104C: root week-plan card nie używa legacy klasy calendar-entry-card i dostaje anti-collapse CSS: width 100%, max-width none, min-height 92px, overflow visible, visibility visible, opacity 1.
+
+### GUARDY
+- Stage99 pilnuje klas i zakazu mieszania calendar-entry-card z cf-calendar-week-plan-entry-card.
+- Stage100 pilnuje DOM modelu, pełnych labeli, braku display contents wrappera i anti-collapse CSS.
+- Stage104 pilnuje widocznego payloadu karty oraz braku hidden/zero-size reguł.
+
+### TESTY AUTOMATYCZNE
+Do potwierdzenia przez run:
+- node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
+- node --test tests/stage99-calendar-active-class-contract.test.cjs
+- node --test tests/stage100-calendar-week-plan-entry-visible.test.cjs
+- node --test tests/stage104-calendar-rendered-week-plan-smoke.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+
+### TEST RĘCZNY
+Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 wpis oraz dzień z 0 wpisów.
