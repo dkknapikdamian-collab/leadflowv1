@@ -202,3 +202,6 @@ Do potwierdzenia przez run:
 
 ### TEST RĘCZNY
 Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 wpis oraz dzień z 0 wpisów.
+
+## Stage104E - do rozważenia
+- Audyt opóźnienia po Usuń / Zrobione: optimistic update albo refresh bez Google inbound pull po lokalnej mutacji.

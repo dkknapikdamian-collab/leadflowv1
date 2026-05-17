@@ -109,12 +109,12 @@ test('Stage104C week plan active classes are not hidden or zero-sized in CSS', (
   }
 });
 
-test('Stage104C CSS has anti-collapse contract for week plan cards', () => {
+test('Stage104D CSS has compact anti-collapse contract for week plan cards', () => {
   const blocks = cssBlocksFor('[data-cf-calendar-week-plan-entry-card="true"]');
   const joined = blocks.join('\n');
   assert.match(joined, /width\s*:\s*100%\s*!important/i);
   assert.match(joined, /max-width\s*:\s*none\s*!important/i);
-  assert.match(joined, /min-height\s*:\s*92px\s*!important/i);
+  assert.match(joined, /min-height\s*:\s*50px\s*!important/i);
   assert.match(joined, /overflow\s*:\s*visible\s*!important/i);
   assert.match(joined, /visibility\s*:\s*visible\s*!important/i);
 });

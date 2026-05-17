@@ -51,11 +51,11 @@ test('Stage100 week plan map does not wrap cards in display contents', () => {
   assert.equal(calendar.includes('style={{ display: "contents" }}'), false);
 });
 
-test('Stage100 CSS has anti-collapse week-plan entry selector contract', () => {
-  assert.ok(css.includes('STAGE104C_CARD_UNCLAMP'));
+test('Stage100 CSS has compact anti-collapse week-plan entry selector contract', () => {
+  assert.ok(css.includes('STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW'));
   assert.ok(css.includes('[data-cf-calendar-week-plan-entry-card="true"]'));
   assert.ok(css.includes('.cf-calendar-week-plan-entry-title'));
-  for (const needle of ['width: 100%', 'max-width: none', 'min-height: 92px', 'overflow: visible', 'visibility: visible', 'opacity: 1']) {
+  for (const needle of ['width: 100%', 'max-width: none', 'min-height: 50px', 'overflow: visible', 'visibility: visible', 'opacity: 1']) {
     assert.ok(css.includes(needle), 'Missing anti-collapse CSS: ' + needle);
   }
 });
