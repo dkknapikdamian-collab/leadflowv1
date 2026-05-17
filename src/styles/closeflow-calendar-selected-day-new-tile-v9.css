@@ -259,11 +259,7 @@
 }
 
 #root [data-cf-calendar-selected-day-entry-v9="true"]::after,
-#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-bottom-bar,
-#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-empty-bar {
-  display: none !important;
-  content: none !important;
-}
+
 
 /* Legacy selected-day panels are intentionally hidden after V9. */
 #root [data-cf-calendar-selected-day="true"] {
@@ -558,3 +554,931 @@
     border-radius: 10px !important;
   }
 }
+
+
+/* STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS_START */
+/* Compatibility marker retained. Stage101B V3 supersedes the two-row selected-day action layout. */
+/* STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS_END */
+
+/* STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_V3
+   Selected day V9 reuses the frozen Stage104D week-plan visual contract: one readable desktop row, subtle actions, completed entries grey and lower by sort.
+*/
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 50px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: #ffffff !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 16px !important;
+  padding: 8px 10px !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.045) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract::after {
+  display: none !important;
+  content: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-meta {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-type,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-time,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-status {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 20px !important;
+  border-radius: 999px !important;
+  padding: 0 7px !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-type {
+  border: 1px solid #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-time {
+  border: 1px solid #e2e8f0 !important;
+  background: #f8fafc !important;
+  color: #475569 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-status {
+  border: 1px solid #bbf7d0 !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-entry-title {
+  display: block !important;
+  flex: 0 1 auto !important;
+  min-width: 96px !important;
+  max-width: clamp(140px, 28vw, 360px) !important;
+  margin: 0 !important;
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-relation {
+  display: inline-flex !important;
+  flex: 1 1 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 70px !important;
+  max-width: 260px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-relation span,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-relation a {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-relation a {
+  flex: 0 0 auto !important;
+  color: #2563eb !important;
+  text-decoration: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-relation a:hover {
+  text-decoration: underline !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-actions-single-row {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 26px !important;
+  width: auto !important;
+  min-width: 0 !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid #dbe3ef !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action:hover,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action-shift:hover {
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action-done {
+  border-color: #86efac !important;
+  background: #ffffff !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action-done:hover {
+  border-color: #4ade80 !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action-danger,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-trash-action-button.cf-selected-day-v9-action-danger {
+  border-color: #fecaca !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action-danger:hover,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-trash-action-button.cf-selected-day-v9-action-danger:hover {
+  border-color: #fca5a5 !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract[data-calendar-entry-completed="true"],
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract.is-completed {
+  background: #f1f5f9 !important;
+  border-color: #e2e8f0 !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract[data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract.is-completed .cf-selected-day-v9-entry-title {
+  color: #64748b !important;
+  text-decoration: line-through !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-main {
+    display: grid !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-actions-single-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    justify-content: stretch !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-week-contract .cf-selected-day-v9-action {
+    width: 100% !important;
+    border-radius: 10px !important;
+  }
+}
+
+/* STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_START */
+/* Selected-day V9 uses the frozen compact week-plan visual contract without changing the month grid. */
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 50px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: #ffffff !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 16px !important;
+  padding: 8px 10px !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.045) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-meta {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  display: block !important;
+  flex: 0 1 auto !important;
+  min-width: 96px !important;
+  max-width: clamp(140px, 28vw, 360px) !important;
+  margin: 0 !important;
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  word-break: normal !important;
+  overflow-wrap: normal !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+  display: inline-flex !important;
+  flex: 1 1 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 70px !important;
+  max-width: 260px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation span,
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation a {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: auto !important;
+  min-height: 26px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid #dbe3ef !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action:hover {
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-done {
+  border-color: #bbf7d0 !important;
+  background: #ffffff !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-done:hover {
+  border-color: #86efac !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-danger {
+  border-color: #fecaca !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-danger:hover {
+  border-color: #fca5a5 !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  opacity: 0.72 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title {
+  color: #64748b !important;
+  text-decoration: line-through !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"]::after,
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+    display: grid !important;
+    gap: 7px !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title,
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+    max-width: none !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action {
+    border-radius: 10px !important;
+  }
+}
+/* STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_END */
+
+/* STAGE101B_V12_SELECTED_DAY_WEEK_VISUAL_CONTRACT
+   Emergency restore: selected-day V9 follows compact week-plan card behavior while Stage92 no-bottom-bar marker stays in JSX.
+*/
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell,
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-week-visual-contract {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 50px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  background: #ffffff !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 16px !important;
+  padding: 8px 10px !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.045) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-meta {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 5px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  flex: 0 1 auto !important;
+  min-width: 96px !important;
+  max-width: clamp(140px, 28vw, 360px) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+  display: inline-flex !important;
+  flex: 1 1 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 70px !important;
+  max-width: 260px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions[data-cf-selected-day-action-group="single-row"] {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  width: auto !important;
+  white-space: nowrap !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions[data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action {
+  width: auto !important;
+  min-height: 26px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] {
+  opacity: 0.68 !important;
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title {
+  color: #64748b !important;
+  text-decoration: line-through !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"]::after,
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell,
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-week-visual-contract {
+    grid-template-columns: minmax(0, 1fr) !important;
+    align-items: stretch !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+    display: grid !important;
+    white-space: normal !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions[data-cf-selected-day-action-group="single-row"] {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+  }
+}
+
+
+/* STAGE101B_V14_SELECTED_DAY_CSS_BOTTOM_BAR_CLEANUP
+   Selected-day V9 must not contain separate bottom/empty bar layers.
+   It uses one card row and one inline action group, aligned with the compact week-plan card contract.
+*/
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions[data-cf-selected-day-action-group="single-row"] {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"],
+#root [data-cf-calendar-selected-day-entry-v9="true"].is-completed {
+  background: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  opacity: 0.76 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title,
+#root [data-cf-calendar-selected-day-entry-v9="true"].is-completed .cf-selected-day-v9-entry-title {
+  text-decoration: line-through !important;
+  color: #64748b !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions[data-cf-selected-day-action-group="single-row"] {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+  }
+}
+
+/* STAGE101B_V16_SELECTED_DAY_WEEK_VISUAL_CONTRACT */
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 50px !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: #ffffff !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 16px !important;
+  padding: 8px 10px !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.045) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-meta {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 5px !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  display: block !important;
+  flex: 0 1 auto !important;
+  min-width: 96px !important;
+  max-width: clamp(140px, 28vw, 360px) !important;
+  margin: 0 !important;
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+  display: inline-flex !important;
+  flex: 1 1 auto !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 70px !important;
+  max-width: 260px !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions {
+  display: flex !important;
+  flex: 0 0 auto !important;
+  flex-wrap: nowrap !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 26px !important;
+  padding: 0 8px !important;
+  border-radius: 999px !important;
+  border: 1px solid #dbe3ef !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-done {
+  border-color: #bbf7d0 !important;
+  color: #047857 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-action-danger {
+  border-color: #fecaca !important;
+  background: #fff7f7 !important;
+  color: #b91c1c !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+  opacity: 0.74 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title {
+  color: #64748b !important;
+  text-decoration: line-through !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main,
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-actions {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    white-space: normal !important;
+  }
+}
+
+
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 50px !important;
+  overflow: visible !important;
+  visibility: visible !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell[data-calendar-entry-completed="true"],
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell.is-completed {
+  background: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  color: #64748b !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title,
+#root [data-cf-calendar-selected-day-entry-v9="true"].is-completed .cf-selected-day-v9-entry-title {
+  text-decoration: line-through !important;
+  color: #64748b !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  min-width: max-content !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action-done {
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action-danger {
+  border-color: #fecaca !important;
+  color: #b91c1c !important;
+  background: #ffffff !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+  #root [data-cf-selected-day-action-group="single-row"] {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+  }
+}
+
+
+/* STAGE101B_V18_SELECTED_DAY_FINALIZER */
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 50px !important;
+  overflow: visible !important;
+  visibility: visible !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell[data-calendar-entry-completed="true"],
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell.is-completed {
+  background: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  color: #64748b !important;
+  box-shadow: none !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title,
+#root [data-cf-calendar-selected-day-entry-v9="true"].is-completed .cf-selected-day-v9-entry-title {
+  text-decoration: line-through !important;
+  color: #64748b !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 6px !important;
+  min-width: max-content !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action {
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action-done {
+  border-color: #86efac !important;
+  color: #15803d !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action-danger {
+  border-color: #fecaca !important;
+  color: #b91c1c !important;
+  background: #ffffff !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+  #root [data-cf-selected-day-action-group="single-row"] {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+  }
+}
+
+
+/* STAGE101B_V19_SELECTED_DAY_GUARD_REGEX_CSS_FINALIZE */
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: #f8fafc !important;
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"].cf-selected-day-v9-entry-shell {
+  background: #f1f5f9 !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"][data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title {
+  color: #64748b !important;
+  text-decoration: line-through !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"].cf-selected-day-v9-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+#root [data-cf-selected-day-action-group="single-row"] .cf-selected-day-v9-action {
+  min-height: 30px !important;
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  #root [data-cf-selected-day-action-group="single-row"].cf-selected-day-v9-actions {
+    justify-content: flex-start !important;
+  }
+}
+/* END_STAGE101B_V19_SELECTED_DAY */

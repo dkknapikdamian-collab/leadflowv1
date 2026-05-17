@@ -194,6 +194,7 @@ const requiredTests = [
   'tests/stage104d-calendar-week-plan-compact-one-row.test.cjs',
   'tests/stage102-calendar-edit-modal-form-source.test.cjs',
   'tests/stage103-calendar-month-grid-day-states.test.cjs',
+  'tests/stage101-calendar-selected-day-one-row-readable.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

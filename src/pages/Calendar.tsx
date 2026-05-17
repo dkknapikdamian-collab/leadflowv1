@@ -132,6 +132,7 @@ const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-whit
 const CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102 = 'CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102';
 const CALENDAR_ENTRY_FORM_SHARED_SOURCE_STAGE102 = 'event-form-vnext';
 const calendarEntryModalFooterClass = modalFooterClass('event-form-footer');
+const STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_V3 = 'STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_V3';
 
 function readCalendarRawText(value: unknown, fallback = '') {
   if (typeof value === 'string') return value;
@@ -483,6 +484,7 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
     </div>
   );
 }
+
 type CalendarSelectedDayTileV9Props = {
   selectedDate: Date;
   entries: ScheduleEntry[];
@@ -514,7 +516,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
       data-cf-calendar-selected-day-entry-v9="true"
       data-cf-selected-day-v9-no-bottom-bar="true"
       data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}
-      className="cf-selected-day-v9-entry-shell"
+      className={'cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '')}
     >
       <div className="cf-selected-day-v9-main">
         <div className="cf-selected-day-v9-meta" aria-label="Typ, godzina i status wpisu">
@@ -543,21 +545,17 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
         </div>
       </div>
 
-      <div className="cf-selected-day-v9-actions" aria-label={'Akcje wpisu: ' + title}>
-        <div className="cf-selected-day-v9-action-row cf-selected-day-v9-action-row-primary">
-          <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-          <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
-          <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
-          <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
-        </div>
-        <div className="cf-selected-day-v9-action-row cf-selected-day-v9-action-row-secondary">
-          <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
-            <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
-          </button>
-          <button type="button" className={trashActionButtonClass("cf-selected-day-v9-action cf-selected-day-v9-action-danger")} onClick={() => onDelete(entry)} disabled={pendingDelete}>
-            <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
-          </button>
-        </div>
+      <div className="cf-selected-day-v9-actions" aria-label={'Akcje wpisu: ' + title} data-cf-selected-day-action-group="single-row">
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
+        </button>
+        <button type="button" className={trashActionButtonClass("cf-selected-day-v9-action cf-selected-day-v9-action-danger")} onClick={() => onDelete(entry)} disabled={pendingDelete}>
+          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
+        </button>
       </div>
     </div>
   );
@@ -565,6 +563,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
 
 function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onEdit, onShift, onShiftHours, onComplete, onDelete }: CalendarSelectedDayTileV9Props) {
   const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
+  const displayEntries = sortCalendarEntriesForDisplay(safeEntries);
   const title = capitalizeCalendarLabel(format(selectedDate, 'eeee, d MMMM yyyy', { locale: pl }));
 
   return (
@@ -574,11 +573,11 @@ function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onE
           <p className="cf-selected-day-v9-kicker">Wybrany dzień</p>
           <h2 className="cf-selected-day-v9-title">{title}</h2>
         </div>
-        <span className="cf-selected-day-v9-count">{formatCalendarItemCount(safeEntries.length)}</span>
+        <span className="cf-selected-day-v9-count">{formatCalendarItemCount(displayEntries.length)}</span>
       </div>
       <div className="cf-selected-day-v9-body">
-        {safeEntries.length ? (
-          safeEntries.map((entry) => (
+        {displayEntries.length ? (
+          displayEntries.map((entry) => (
             <CalendarSelectedDayEntryRowV9
               key={entry.id}
               entry={entry}
