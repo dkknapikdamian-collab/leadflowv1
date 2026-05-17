@@ -74,12 +74,13 @@ test('Stage94 week plan card shows relation or explicit no-relation text', () =>
 });
 
 test('Stage94 CSS is scoped to week plan and does not touch month grid', () => {
-  const markerIndex = css.indexOf('CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V4');
-  assert.notStrictEqual(markerIndex, -1, 'Missing Stage94 V4 CSS marker');
+  const markerIndex = css.indexOf('STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW');
+  assert.notStrictEqual(markerIndex, -1, 'Missing Stage104D compact week-plan CSS marker');
   const block = css.slice(markerIndex);
-  assert.match(block, /\.calendar-week-plan \.cf-calendar-week-plan-entry-card/);
+  assert.match(block, /\.calendar-week-plan \[data-cf-calendar-week-plan-entry-card="true"\]/);
   assert.doesNotMatch(block, /\.calendar-month-grid/);
   assert.doesNotMatch(block, /cf-calendar-month-text-row/);
+  assert.doesNotMatch(css, /CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V[234]/);
 });
 
 test('Stage94 week plan guard is included in quiet release gate', () => {

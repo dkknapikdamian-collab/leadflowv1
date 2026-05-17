@@ -436,3 +436,7 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 - Zakres: src/styles/closeflow-calendar-selected-day-new-tile-v9.css, guardy Stage100/104/104D, quiet gate.
 - Nie ruszano logiki Usuń / Zrobione ani Google Calendar syncu. Opóźnienie syncu zostaje do osobnego Stage104E.
 - Test ręczny: /calendar, dzień z 1 wpisem ma być jednym kompaktowym wierszem; dzień z 0 wpisów bez zmian.
+## Stage104D - Stage94 guard compatibility hotfix - 2026-05-17
+- Naprawiono stary guard Stage94, który wymagał markera CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V4.
+- Aktualny kontrakt: STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW + [data-cf-calendar-week-plan-entry-card="true"].
+- Powód: Stage100/104D celowo blokują powrót starych warstw Stage94 V2/V3/V4.
