@@ -191,3 +191,126 @@ RYZYKO:
 NAST\u00c4\u0098PNY KROK:
 - Przetestować /templates; dopiero potem zdecydować, czy robimy kolejny lokalny etap czy wspólny commit/push Stage104+Stage105.
 <!-- STAGE105_TEMPLATES_DELETE_VISUAL_G -->
+
+<!-- STAGE98B_100B_CALENDAR_POLISH_WEEK_PLAN_GUARDS_2026_05_17 -->
+## Stage98B-100B Calendar guards
+
+- `tests/stage98-polish-mojibake-calendar-guard.test.cjs` — hard fail for mojibake in `src/`, `tests/`, `scripts/`, `_project/`.
+- `tests/stage99-calendar-active-class-contract.test.cjs` — active class/CSS contract for Calendar and V9 CSS.
+- `tests/stage100-calendar-week-plan-entry-visible.test.cjs` — one active week-plan DOM/CSS model and no Stage94 V2/V3/V4 week-plan CSS markers.
+- `tests/stage104-calendar-rendered-week-plan-smoke.test.cjs` — rendered-skeleton smoke for visible title/relation/actions plus CSS non-hidden checks.
+- `scripts/closeflow-release-check-quiet.cjs` — includes Stage104 in required tests.
+
+## Stage104 V2 - calendar performance guard fix
+
+V1 guard was too broad and falsely failed on `sortCalendarEntriesForDisplay(dayEntries)` inside `buildEntriesByDayKey`. V2 permits sorting in the precompute helper and forbids it only inside month/week render scopes.
+
+
+## STAGE104_V4_CALENDAR_PERFORMANCE_GUARD_FIX
+
+- Local-only guard repair for Calendar performance contract.
+- Guard forbids selectedDate-driven DOM post-processing reruns but allows data-driven updates.
+- No git add/commit/push in this package.
+
+## STAGE107_TEMPLATES_DELETE_VISUAL_LOCAL_ONLY
+
+- Test: `node --test tests/stage107-templates-delete-and-visual-contract.test.cjs`.
+- Zakres: /templates delete action + shared visual card/action source of truth.
+- Guard jest podpięty do `scripts/closeflow-release-check-quiet.cjs`.
+
+## STAGE107_TEMPLATES_DELETE_AND_VISUAL_CONTRACT
+
+Status: LOCAL-ONLY, do potwierdzenia recznego przed pushem.
+
+Guard:
+- node --test tests/stage107-templates-delete-and-visual-contract.test.cjs
+- npm run build
+- opcjonalnie: npm run verify:closeflow:quiet
+
+Kontrakt:
+- /templates uzywa EntityTrashButton + trashActionIconClass.
+- Usuwanie szablonu wymaga window.confirm.
+- Szablon z pozycjami checklisty wymaga dodatkowego potwierdzenia.
+- Karty szablonow korzystaja z record-list/readable-card visual source of truth.
+
+## Stage107 templates delete and visual contract
+- Guard: `tests/stage107-templates-delete-and-visual-contract.test.cjs`.
+- Scope: /templates visual/delete only.
+- Required: EntityTrashButton, trashActionIconClass, confirm before delete, second confirm for checklist items, record-list visual source marker.
+
+
+## STAGE108_CALENDAR_RENDER_CONTRACT_SMOKE_2026_05_17
+
+Status: LOCAL-ONLY, do manualnej walidacji przed pushem.
+
+Cel: guard UI ma sprawdzac efekt renderu, nie tylko markery/stringi w pliku.
+
+Dodane:
+- tests/fixtures/calendar-entry-fixtures.cjs
+- tests/stage108-calendar-render-contract-smoke.test.cjs
+- scripts/check-stage108-calendar-render-contract-smoke.cjs
+- wpis w scripts/closeflow-release-check-quiet.cjs
+
+Kontrakt:
+- fixture event: Akt jaskiniowiec, 10:29, Zaplanowane, Brak powiazania.
+- tytul musi trafic do HTML.
+- typ ma byc pelny: Wydarzenie, nie Wyd.
+- relacja i akcje nie moga byc puste.
+- CSS selected-day nie moze ukrywac title/meta/relation/actions.
+- guard blokuje mojibake, ReferenceError, Missing lazy page export marker.
+
+
+## STAGE108_V2_CALENDAR_RENDER_CONTRACT_SMOKE_GUARD_SCOPE_2026_05_17
+
+Status: LOCAL-ONLY, do manualnej walidacji przed pushem.
+
+Decyzja: guardy UI maja sprawdzac efekt renderu, nie tylko markery/stringi.
+
+V2 poprawia zakres V1:
+- rendered HTML i fixture: brak mojibake,
+- Calendar.tsx: brak mojibake i runtime-markerow,
+- CSS selected-day: krytyczne klasy title/meta/relation/actions nie moga byc ukryte.
+
+Test:
+- node --test tests/stage108-calendar-render-contract-smoke.test.cjs
+
+## STAGE108_RENDER_SMOKE_GUARD_V4 - calendar selected-day render smoke
+
+Status: LOCAL-ONLY, do finalizacji po walidacji.
+
+Decyzja: guardy UI maja sprawdzac efekt renderu, a nie tylko markery, klasy i stringi w plikach.
+
+Zakres:
+- fixture: Akt jaskiniowiec, 10:29, Wydarzenie, Zaplanowane, Brak powiazania,
+- akcje musza byc widoczne: Edytuj, +1H, +1D, +1W, Zrobione, Usun,
+- rendered/semi-rendered HTML nie moze zawierac markerow runtime: ReferenceError, APP_ROUTE_RENDER_FAILED, Missing lazy page export,
+- CSS selected-day nie moze ukrywac title/meta/type/time/status/relation/actions.
+
+Test:
+- node --test tests/stage108-calendar-render-contract-smoke.test.cjs
+- node scripts/check-stage108-calendar-render-contract-smoke.cjs
+
+## STAGE108_RENDER_SMOKE_GUARD_V5 - calendar selected-day render smoke
+
+Status: LOCAL ONLY / DO ZWERYFIKOWANIA PRZED PUSHEM.
+
+Decyzja: guardy UI mają sprawdzać efekt renderu/semi-renderu, nie tylko markery, klasy i stringi w źródłach.
+
+Zakres:
+- fixture: Akt jaskiniowiec, 10:29, Wydarzenie, Zaplanowane, Brak powiązania,
+- visible action labels: Edytuj, +1H, +1D, +1W, Zrobione, Usuń,
+- brak runtime markerów: ReferenceError, APP_ROUTE_RENDER_FAILED, Missing lazy page export,
+- CSS selected-day V9 nie może ukrywać krytycznych slotów renderu,
+- usunięty orphan selector V9 ::after, który mógł podpinać V9 pod legacy hidden selected-day panel.
+
+Test:
+- node --test tests/stage108-calendar-render-contract-smoke.test.cjs
+- node scripts/check-stage108-calendar-render-contract-smoke.cjs
+
+## Stage108 V8 - calendar render-smoke guard
+- Added tests/stage108-calendar-render-contract-smoke.test.cjs.
+- Added tests/fixtures/calendar-entry-fixtures.cjs.
+- Added scripts/check-stage108-calendar-render-contract-smoke.cjs.
+- Guard checks rendered user content, full type label, relation, actions, runtime markers and critical CSS visibility.
+- Local-only package. No git add/commit/push.
+

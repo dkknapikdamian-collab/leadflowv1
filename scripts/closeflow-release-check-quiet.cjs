@@ -190,6 +190,7 @@ const requiredTests = [
   'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
   'tests/stage99-calendar-active-class-contract.test.cjs',
   'tests/stage100-calendar-week-plan-entry-visible.test.cjs',
+  'tests/stage104-calendar-loading-performance-contract.test.cjs',
   'tests/stage104-calendar-rendered-week-plan-smoke.test.cjs',
   'tests/stage104d-calendar-week-plan-compact-one-row.test.cjs',
   'tests/stage102-calendar-edit-modal-form-source.test.cjs',
@@ -197,6 +198,8 @@ const requiredTests = [
   'tests/stage101-calendar-selected-day-one-row-readable.test.cjs',
   'tests/stage105-calendar-modal-no-dark-inputs.test.cjs',
   'tests/stage106-calendar-modal-inverted-visual-contract.test.cjs',
+  'tests/stage107-templates-delete-and-visual-contract.test.cjs',
+  'tests/stage108-calendar-render-contract-smoke.test.cjs',
 ];
 
 function runQuiet(label, command, args) {

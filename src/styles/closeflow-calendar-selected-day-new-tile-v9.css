@@ -1,4 +1,4 @@
-/* CLOSEFLOW_CALENDAR_SELECTED_DAY_NEW_TILE_V9_STAGE104C_CARD_UNCLAMP_2026_05_17
+﻿/* CLOSEFLOW_CALENDAR_SELECTED_DAY_NEW_TILE_V9_STAGE104C_CARD_UNCLAMP_2026_05_17
    One active selected-day V9 tile and one active week-plan entry model. Stage104C forbids legacy calendar-entry-card on week-plan cards.
    Do not append Stage92/94/100 repair layers below this file again.
 */
@@ -257,9 +257,6 @@
   color: #64748b !important;
   text-decoration: line-through !important;
 }
-
-#root [data-cf-calendar-selected-day-entry-v9="true"]::after,
-
 
 /* Legacy selected-day panels are intentionally hidden after V9. */
 #root [data-cf-calendar-selected-day="true"] {
@@ -950,7 +947,6 @@
   text-decoration: line-through !important;
 }
 
-#root [data-cf-calendar-selected-day-entry-v9="true"]::after,
 @media (max-width: 900px) {
   #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
     grid-template-columns: minmax(0, 1fr) !important;
@@ -1081,7 +1077,6 @@
   text-decoration: line-through !important;
 }
 
-#root [data-cf-calendar-selected-day-entry-v9="true"]::after,
 @media (max-width: 900px) {
   #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell,
   #root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-week-visual-contract {
@@ -1482,3 +1477,117 @@
   }
 }
 /* END_STAGE101B_V19_SELECTED_DAY */
+
+/* STAGE108_V2_SELECTED_DAY_ROW_READABILITY_LOCAL_ONLY
+   Local visual review only. Selected-day rows keep the accepted shell.
+   Meta becomes plain inline text and title starts directly after status.
+   Do not commit/push until manual visual approval.
+*/
+#root [data-cf-calendar-selected-day-entry-v9="true"].cf-selected-day-v9-entry-shell {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+  display: grid !important;
+  grid-template-columns: max-content minmax(260px, 1fr) minmax(90px, 0.45fr) !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  row-gap: 4px !important;
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-meta {
+  display: inline-flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  min-width: max-content !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+  color: #0f172a !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-type,
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-time,
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-status {
+  display: inline !important;
+  min-height: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  color: #0f172a !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  white-space: nowrap !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-time::before,
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-status::before {
+  content: "Â·" !important;
+  margin-right: 4px !important;
+  color: #94a3b8 !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title {
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+#root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation > span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+@media (max-width: 1100px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+    grid-template-columns: max-content minmax(180px, 1fr) minmax(80px, 0.35fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-main {
+    grid-template-columns: minmax(0, 1fr) !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-meta,
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-entry-title,
+  #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-relation {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: clip !important;
+  }
+}
+
+
+
+/* STAGE108_RENDER_SMOKE_CSS_ORPHAN_FIX
+   V9 selected-day entry slots must not be chained into legacy hidden selected-day panels.
+*/
+
