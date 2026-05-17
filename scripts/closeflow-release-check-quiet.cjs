@@ -190,6 +190,7 @@ const requiredTests = [
   'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
   'tests/stage99-calendar-active-class-contract.test.cjs',
   'tests/stage100-calendar-week-plan-entry-visible.test.cjs',
+  'tests/stage104-calendar-rendered-week-plan-smoke.test.cjs',
   'tests/stage102-calendar-edit-modal-form-source.test.cjs',
   'tests/stage103-calendar-month-grid-day-states.test.cjs',
 ];

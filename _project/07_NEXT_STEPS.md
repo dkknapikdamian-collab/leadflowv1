@@ -166,3 +166,13 @@ RYZYKO:
 NAST\u00c4\u0098PNY KROK:
 - Przetestować /templates; dopiero potem zdecydować, czy robimy kolejny lokalny etap czy wspólny commit/push Stage104+Stage105.
 <!-- STAGE105_TEMPLATES_DELETE_VISUAL_G -->
+
+<!-- STAGE98B_100B_CALENDAR_POLISH_WEEK_PLAN_NEXT_2026_05_17 -->
+## Następny krok po Stage98B-100B
+
+1. Uruchomić paczkę lokalnie na `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`.
+2. Jeżeli wszystkie testy i `verify:closeflow:quiet` przejdą, paczka wykona commit/push.
+3. Otworzyć `/calendar`.
+4. Zrobić screen dnia z `1 wpis` i dnia z `0 wpisów`.
+5. Zamknąć etap dopiero po potwierdzeniu braku mojibake i braku pustego białego mini-kafelka.
+6. Dopiero potem ruszać modal i templates.

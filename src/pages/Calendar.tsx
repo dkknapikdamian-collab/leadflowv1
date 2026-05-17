@@ -1814,7 +1814,7 @@ export default function Calendar() {
 
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
-                                    <p className="text-sm font-bold text-slate-900">Cyklicznożć wydarzenia</p>
+                                    <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
                                     <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1840,7 +1840,7 @@ export default function Calendar() {
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
                                     <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                                    <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cyklicznożć.</p>
+                                    <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cykliczność.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="event-form-field">
@@ -1863,7 +1863,7 @@ export default function Calendar() {
                                   {newEvent.reminder.mode === 'recurring' && (
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                       <div className="space-y-2 md:col-span-2">
-                                        <Label>Cyklicznożć przypomnienia</Label>
+                                        <Label>Cykliczność przypomnienia</Label>
                                         <select className="event-form-select" value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
                                           {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                                             <option key={option.value} value={option.value}>{option.label}</option>
@@ -1906,7 +1906,7 @@ export default function Calendar() {
 
           <div className="calendar-toolbar-right">
             {calendarView === 'month' ? (
-              <div className="calendar-seg" role="tablist" aria-label="Wielkożć kafelków">
+              <div className="calendar-seg" role="tablist" aria-label="Wielkość kafelków">
                 <button type="button" className={`seg-btn ${calendarScale === 'compact' ? 'active' : ''}`} onClick={() => setCalendarScale('compact')}>Małe kafelki</button>
                 <button type="button" className={`seg-btn ${calendarScale === 'default' ? 'active' : ''}`} onClick={() => setCalendarScale('default')}>Standard</button>
                 <button type="button" className={`seg-btn ${calendarScale === 'large' ? 'active' : ''}`} onClick={() => setCalendarScale('large')}>Duże kafelki</button>
@@ -2165,8 +2165,8 @@ export default function Calendar() {
                         {dayEntries.length === 0 ? (
                           <div className="calendar-week-empty">Brak wpisów.</div>
                         ) : dayEntries.map((entry) => (
-                          <div key={`week:${day.toISOString()}:${entry.id}`} style={{ display: 'contents' }}>
                             <ScheduleEntryCard
+                            key={`week:${day.toISOString()}:${entry.id}`}
                               entry={entry}
                               actionButtonClass={actionButtonClass}
                               actionPendingId={actionPendingId}
@@ -2177,7 +2177,6 @@ export default function Calendar() {
                               onComplete={handleCompleteEntry}
                               onDelete={handleDeleteEntry}
                             />
-                          </div>
                         ))}
                       </div>
                     </section>
@@ -2273,7 +2272,7 @@ export default function Calendar() {
               {editEntry.kind === 'event' ? (
                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                   <div>
-                    <p className="text-sm font-bold text-slate-900">Cyklicznożć wydarzenia</p>
+                    <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
                     <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -2324,7 +2323,7 @@ export default function Calendar() {
                   {editDraft.reminder.mode === 'recurring' ? (
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div className="space-y-2 md:col-span-2">
-                        <Label>Cyklicznożć przypomnienia</Label>
+                        <Label>Cykliczność przypomnienia</Label>
                         <select className="event-form-select" value={editDraft.reminder.recurrenceMode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceMode: e.target.value as any } })}>
                           {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
                             <option key={option.value} value={option.value}>{option.label}</option>

@@ -264,3 +264,26 @@ RISK:
 - Scope: Stage98B mojibake hard gate plus clean Billing.tsx restoration from remote branch.
 - Tests: Stage98B, src test-scaffold scan, billing regression, broad syntax sweep, git diff --check, quiet gate.
 - Risk: local repo had many dirty leftovers from failed packages; V21 excludes backups/logs/stage98 helpers from commit.
+
+<!-- STAGE98B_100B_CALENDAR_POLISH_WEEK_PLAN_2026_05_17 -->
+## 2026-05-17 — Stage98B-100B Calendar polish copy and week-plan visibility
+
+Status: PATCH PACKAGE PREPARED / LOCAL APPLY REQUIRED.
+
+Zakres:
+- naprawa mojibake i błędnych polskich znaków w aktywnym `/calendar`,
+- uporządkowanie `closeflow-calendar-selected-day-new-tile-v9.css` do jednego modelu V9 + Stage100,
+- wygaszenie aktywnego CSS po Stage94 V2/V3/V4 i starych rodzin `.cf-week-plan-entry-*` / `.cf-calendar-week-entry-*`,
+- nowy guard `tests/stage104-calendar-rendered-week-plan-smoke.test.cjs`,
+- aktualizacja quiet release gate.
+
+Guardy/testy do uruchomienia przez paczkę:
+- `node tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node tests/stage99-calendar-active-class-contract.test.cjs`
+- `node tests/stage100-calendar-week-plan-entry-visible.test.cjs`
+- `node tests/stage104-calendar-rendered-week-plan-smoke.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+
+Test ręczny: DO WYKONANIA na `/calendar`.
+Kryterium: dzień z wpisem nie może wyglądać jak pusty biały pasek/mini-kafelek.

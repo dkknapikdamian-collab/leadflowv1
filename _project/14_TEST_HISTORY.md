@@ -380,3 +380,22 @@ Status after package run:
 - Scope: Stage98B mojibake hard gate plus clean Billing.tsx restoration from remote branch.
 - Tests: Stage98B, src test-scaffold scan, billing regression, broad syntax sweep, git diff --check, quiet gate.
 - Risk: local repo had many dirty leftovers from failed packages; V21 excludes backups/logs/stage98 helpers from commit.
+
+<!-- STAGE98B_100B_CALENDAR_POLISH_WEEK_PLAN_TESTS_2026_05_17 -->
+## Stage98B-100B Calendar polish and week plan visibility — test history
+
+Automatyczne testy wymagane przez paczkę:
+- `node tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node tests/stage99-calendar-active-class-contract.test.cjs`
+- `node tests/stage100-calendar-week-plan-entry-visible.test.cjs`
+- `node tests/stage104-calendar-rendered-week-plan-smoke.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+
+Status testu ręcznego: `TEST RĘCZNY DO WYKONANIA`.
+
+Do sprawdzenia na `/calendar`:
+- brak mojibake w `Plan najbliższych dni`, licznikach i akcjach,
+- dzień z `1 wpis` pokazuje typ, godzinę, status, tytuł, relację i akcje,
+- brak pustego białego mini-kafelka,
+- dzień z `0 wpisów` pokazuje `Brak wpisów.`.

@@ -16,9 +16,14 @@ const required = [
   'cf-selected-day-v9-main',
   'cf-selected-day-v9-actions'
 ];
+
 test('Stage99 active calendar classes have CSS contract coverage', () => {
   const missingInCalendar = required.filter((name) => !calendar.includes(name));
   const missingInCss = required.filter((name) => !css.includes('.' + name) && !css.includes(name));
   assert.deepStrictEqual(missingInCalendar, [], 'Classes missing in Calendar.tsx: ' + missingInCalendar.join(', '));
   assert.deepStrictEqual(missingInCss, [], 'Classes missing in CSS: ' + missingInCss.join(', '));
+});
+
+test('Stage99 active week plan has no orphan display-contents wrapper around cards', () => {
+  assert.doesNotMatch(calendar, /<div\s+key=\{`week:\$\{day\.toISOString\(\)\}:\$\{entry\.id\}`}\s+style=\{\{\s*display:\s*['"]contents['"]\s*\}\}>/);
 });
