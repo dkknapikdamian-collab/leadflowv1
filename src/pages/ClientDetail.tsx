@@ -914,6 +914,8 @@ const STAGE27G_CLIENT_NOTE_LISTENER_ID_RUNTIME_FINAL_GUARD = 'client note listen
 const STAGE27D_CLIENT_NOTES_RUNTIME_FINAL_GUARD = 'client notes runtime visibility final';
 const STAGE27A_CLIENT_NOTES_TRASH2_GUARD = 'client notes visible after save and Trash2 imported';
 const STAGE27B_TRASH2_IMPORT_AND_NOTES_FINAL_GUARD = 'Trash2 import fixed and client notes final';
+const CLOSEFLOW_STAGE107_CLIENT_DETAIL_TDZ_FINANCE_RUNTIME_FIX = 'ClientDetail finance summary is declared before use and passed into ClientTopTiles';
+void CLOSEFLOW_STAGE107_CLIENT_DETAIL_TDZ_FINANCE_RUNTIME_FIX;
 function getClientPaymentAmount(payment: any) {
   const raw =
     payment?.amount ??
@@ -932,6 +934,11 @@ function isClientCaseClosed(caseRecord: any) {
   return ['completed', 'done', 'canceled', 'cancelled', 'archived', 'lost'].includes(String(caseRecord?.status || '').toLowerCase());
 }
 
+type ClientFinanceSummaryForTopTiles = {
+  paymentsTotal: number;
+  remainingTotal: number;
+};
+
 type ClientTopTilesProps = {
   clientId: string;
   leads: any[];
@@ -939,14 +946,13 @@ type ClientTopTilesProps = {
   payments: any[];
   tasks: any[];
   events: any[];
+  financeSummary: ClientFinanceSummaryForTopTiles;
   onOpenCases: () => void;
 };
-function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, onOpenCases }: ClientTopTilesProps) {
+function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, financeSummary, onOpenCases }: ClientTopTilesProps) {
   const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
-  const paidPayments = payments.filter((payment) => isPaidPaymentStatus(payment?.status));
-  const paidTotal = clientFinanceSummary.paymentsTotal;
-  const declaredTotal = clientFinanceSummary.commissionDueTotal;
-  const unpaidTotal = clientFinanceSummary.remainingCommissionTotal;
+  const paidTotal = financeSummary.paymentsTotal;
+  const unpaidTotal = financeSummary.remainingTotal;
   const activeCases = cases.filter((caseRecord) => !isClientCaseClosed(caseRecord));
   const blockedCases = cases.filter((caseRecord) =>
     ['blocked', 'waiting_on_client', 'to_approve', 'on_hold'].includes(String(caseRecord?.status || '').toLowerCase()),
@@ -1306,6 +1312,30 @@ export default function ClientDetail() {
     [cases],
   );
 
+  const clientFinanceSummary = useMemo(() => {
+    const financeSummary = getClientCasesFinanceSummary({ client, cases: cases ?? [], payments: payments ?? [] });
+
+    const caseValueTotal = financeSummary.totalValue;
+    const paymentsTotal = financeSummary.paidValue;
+    const remainingTotal = financeSummary.remainingValue;
+    const recentPayments = [...payments]
+      .filter((entry) => Number(entry?.amount) > 0)
+      .sort((left, right) => (asDate(right?.paidAt || right?.createdAt)?.getTime() ?? 0) - (asDate(left?.paidAt || left?.createdAt)?.getTime() ?? 0))
+      .slice(0, 3);
+    return {
+      caseValueTotal,
+      paymentsTotal,
+      remainingTotal,
+      contractValueTotal: financeSummary.totalValue,
+      commissionDueTotal: financeSummary.commissionAmount,
+      remainingCommissionTotal: financeSummary.commissionRemainingAmount,
+      settlementsCount: financeSummary.settlementsCount,
+      source: financeSummary.source,
+      recentPayments,
+      activeCases: activeCases.length,
+      settledCases: closedCases.length,
+    };
+  }, [activeCases.length, cases, client, closedCases.length, payments]);
   const clientFinance = useMemo(() => {
     const activeLeadPotential = leads
       .filter((lead) => {
@@ -1320,7 +1350,7 @@ export default function ClientDetail() {
       .filter((entry) => isPaidPaymentStatus(entry?.status))
       .reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
     const potentialTotal = Math.max(0, activeLeadPotential + casesExpected);
-    const remainingTotal = clientFinanceSummary.remainingCommissionTotal;
+    const remainingTotal = clientFinanceSummary.remainingTotal;
     const currencies = [client?.currency, ...leads.map((lead) => lead?.currency), ...cases.map((entry) => entry?.currency), ...payments.map((entry) => entry?.currency)]
       .map((value) => String(value || '').trim().toUpperCase())
       .filter((value) => /^[A-Z]{3}$/.test(value));
@@ -1333,26 +1363,7 @@ export default function ClientDetail() {
       currency,
       hasMixedCurrencies: new Set(currencies).size > 1,
     };
-  }, [cases, client?.currency, leads, payments]);
-  const clientFinanceSummary = useMemo(() => {
-  const clientFinanceSummary = getClientCasesFinanceSummary(cases ?? [], payments ?? []);
-
-    const caseValueTotal = clientFinanceSummary.contractValueTotal;
-    const paymentsTotal = clientFinanceSummary.paymentsTotal;
-    const remainingTotal = clientFinanceSummary.remainingCommissionTotal;
-    const recentPayments = [...payments]
-      .filter((entry) => Number(entry?.amount) > 0)
-      .sort((left, right) => (asDate(right?.paidAt || right?.createdAt)?.getTime() ?? 0) - (asDate(left?.paidAt || left?.createdAt)?.getTime() ?? 0))
-      .slice(0, 3);
-    return {
-      caseValueTotal,
-      paymentsTotal,
-      remainingTotal,
-      recentPayments,
-      activeCases: activeCases.length,
-      settledCases: closedCases.length,
-    };
-  }, [activeCases.length, cases, closedCases.length, payments]);
+  }, [cases, client?.currency, clientFinanceSummary.remainingTotal, leads, payments]);
   const mainCase = activeCases[0] || cases[0] || null;
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
@@ -1678,13 +1689,14 @@ return (
           </div>
         </header>
         <ClientTopTiles
-        clientId={String(clientId || '')}
-        leads={leads}
-        cases={cases}
-        payments={payments}
-        tasks={clientTasks}
-        events={clientEvents}
-        onOpenCases={() => setActiveTab('cases')}
+          clientId={String(clientId || '')}
+          leads={leads}
+          cases={cases}
+          payments={payments}
+          tasks={clientTasks}
+          events={clientEvents}
+          financeSummary={clientFinanceSummary}
+          onOpenCases={() => setActiveTab('cases')}
         />
         <div className="client-detail-shell">
           <aside className="client-detail-left-rail">

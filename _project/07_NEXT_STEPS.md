@@ -205,3 +205,11 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 
 ## Stage104E - do rozważenia
 - Audyt opóźnienia po Usuń / Zrobione: optimistic update albo refresh bez Google inbound pull po lokalnej mutacji.
+
+
+## STAGE107_CLIENT_DETAIL_RUNTIME_TDZ_FINANCE_FIX_2026_05_17
+
+- Po wdrozeniu Stage107 wykonac reczny test ClientDetail.
+- Jezeli console nadal pokazuje Radix `Missing Description`, zrobic osobny etap aria-dialog-accessibility.
+- Jezeli console nadal pokazuje `DEP0169 url.parse`, zrobic osobny etap backend dependency/runtime warning audit.
+

@@ -440,3 +440,14 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 - Naprawiono stary guard Stage94, który wymagał markera CLOSEFLOW_STAGE94_WEEK_PLAN_FULL_ENTRY_TEXT_V4.
 - Aktualny kontrakt: STAGE104D_CALENDAR_WEEK_PLAN_COMPACT_ONE_ROW + [data-cf-calendar-week-plan-entry-card="true"].
 - Powód: Stage100/104D celowo blokują powrót starych warstw Stage94 V2/V3/V4.
+
+
+## STAGE107_CLIENT_DETAIL_RUNTIME_TDZ_FINANCE_FIX_2026_05_17
+
+- Typ: P0 runtime regression.
+- Zakres: ClientDetail, finance summary, ClientTopTiles.
+- Powod: `clientFinance` czytal `clientFinanceSummary` przed deklaracja, a `ClientTopTiles` czytal finance summary spoza propsow.
+- Guard: `scripts/check-stage107-client-detail-runtime-tdz-finance.cjs`.
+- Test: `tests/stage107-client-detail-runtime-tdz-finance.test.cjs`.
+- Test reczny: otwarcie szczegolow klienta bez `APP_ROUTE_RENDER_FAILED`.
+

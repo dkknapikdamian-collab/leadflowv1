@@ -402,3 +402,14 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 - Zakres: src/styles/closeflow-calendar-selected-day-new-tile-v9.css, guardy Stage100/104/104D, quiet gate.
 - Nie ruszano logiki Usuń / Zrobione ani Google Calendar syncu. Opóźnienie syncu zostaje do osobnego Stage104E.
 - Test ręczny: /calendar, dzień z 1 wpisem ma być jednym kompaktowym wierszem; dzień z 0 wpisów bez zmian.
+
+
+## STAGE107_CLIENT_DETAIL_RUNTIME_TDZ_FINANCE_FIX_2026_05_17
+
+- Typ: P0 runtime regression.
+- Zakres: ClientDetail, finance summary, ClientTopTiles.
+- Powod: `clientFinance` czytal `clientFinanceSummary` przed deklaracja, a `ClientTopTiles` czytal finance summary spoza propsow.
+- Guard: `scripts/check-stage107-client-detail-runtime-tdz-finance.cjs`.
+- Test: `tests/stage107-client-detail-runtime-tdz-finance.test.cjs`.
+- Test reczny: otwarcie szczegolow klienta bez `APP_ROUTE_RENDER_FAILED`.
+
