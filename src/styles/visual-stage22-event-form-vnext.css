@@ -241,3 +241,222 @@
     padding: 14px;
   }
 }
+
+/* STAGE105_CALENDAR_MODAL_NO_DARK_INPUTS
+   Calendar and global quick task entry dialogs share one light event-form-vnext visual source.
+   Rule: white fields, dark text, blue focus, light footer. No dark footer bar and no green focus ring.
+*/
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext {
+  background: #f9fafb !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e4e7ec !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-modal-footer {
+  border-top: 1px solid #e4e7ec !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05) !important;
+}
+
+/* STAGE105_MODAL_VISUAL_UNIFICATION_NO_DARK_INPUTS_START */
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext {
+  background: #f9fafb !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e4e7ec !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .cf-modal-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-modal-footer {
+  border-top: 1px solid #e4e7ec !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05) !important;
+}
+/* STAGE105_MODAL_VISUAL_UNIFICATION_NO_DARK_INPUTS_END */
+
+/* STAGE105_MODAL_VISUAL_UNIFICATION_START */
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"],
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #111827 !important;
+  border-color: #e4e7ec !important;
+}
+
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext {
+  background: #f9fafb !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e4e7ec !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-modal-footer {
+  border-top: 1px solid #e4e7ec !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05) !important;
+}
+
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button,
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action[data-cf-destructive-source="trash-action-source"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.32rem !important;
+  min-height: 1.72rem !important;
+  width: auto !important;
+  min-width: 0 !important;
+  padding: 0 0.52rem !important;
+  border-radius: 999px !important;
+  border: 1px solid #fecaca !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #b91c1c !important;
+  box-shadow: none !important;
+  font-size: 0.68rem !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button:hover,
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action[data-cf-destructive-source="trash-action-source"]:hover {
+  border-color: #fca5a5 !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+/* STAGE105_MODAL_VISUAL_UNIFICATION_END */
+
+/* STAGE105_CALENDAR_MODAL_NO_DARK_INPUTS_START */
+/* One visual source for quick task, calendar create task, calendar create event and calendar edit entry modals. */
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext {
+  background: #f9fafb !important;
+  color: #111827 !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e4e7ec !important;
+  -webkit-text-fill-color: #111827 !important;
+  outline: none !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:focus,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+  outline: none !important;
+}
+
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .cf-modal-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-footer,
+.event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-modal-footer {
+  border-top: 1px solid #e4e7ec !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  color: #111827 !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05) !important;
+}
+/* STAGE105_CALENDAR_MODAL_NO_DARK_INPUTS_END */

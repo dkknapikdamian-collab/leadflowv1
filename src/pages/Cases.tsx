@@ -736,7 +736,7 @@ export default function Cases() {
                           <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
                           <EntityTrashButton
                             type="button"
-                            className="btn ghost cf-case-row-delete-text-action" data-cf-destructive-source="trash-action-source" data-cf-header-action="danger"
+                            className="cf-case-row-delete-text-action" data-cf-destructive-source="trash-action-source"
                             data-case-row-delete-action="true"
                             aria-label="Usuń sprawę"
                             title="Usuń sprawę"

@@ -81,3 +81,71 @@
   stroke: currentColor !important;
   fill: none !important;
 }
+
+/* STAGE105_CASE_ROW_DELETE_NO_RED_BLOB
+   Case list delete action uses the shared trash source: red border/icon, light background, no solid red plaque.
+*/
+#root .main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button,
+#root .main-cases-html .cf-case-row-delete-text-action[data-cf-trash-action="true"] {
+  min-height: 1.75rem !important;
+  border: 1px solid var(--cf-trash-border-color) !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+  padding: 0 0.55rem !important;
+  box-shadow: none !important;
+}
+
+#root .main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button:hover,
+#root .main-cases-html .cf-case-row-delete-text-action[data-cf-trash-action="true"]:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+
+/* STAGE105_CASE_DELETE_NO_RED_BLOB_START */
+#root .cf-case-row-delete-text-action.cf-trash-action-button,
+#root .cf-case-row-delete-text-action {
+  min-height: 1.75rem !important;
+  padding: 0.18rem 0.48rem !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--cf-trash-border-color) !important;
+  background: #ffffff !important;
+  color: #b91c1c !important;
+  box-shadow: none !important;
+}
+
+#root .cf-case-row-delete-text-action.cf-trash-action-button:hover,
+#root .cf-case-row-delete-text-action:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: #fff7f7 !important;
+  color: #991b1b !important;
+  box-shadow: 0 8px 18px rgba(153, 27, 27, 0.06) !important;
+}
+/* STAGE105_CASE_DELETE_NO_RED_BLOB_END */
+
+/* STAGE105_CASE_DELETE_NO_RED_PLAQUE_START */
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action,
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button {
+  border: 1px solid var(--cf-trash-border-color) !important;
+  background: var(--cf-trash-bg) !important;
+  color: var(--cf-trash-text-color) !important;
+  box-shadow: none !important;
+  min-height: 2rem !important;
+  border-radius: 0.75rem !important;
+  padding: 0.42rem 0.68rem !important;
+}
+
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action:hover,
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action.cf-trash-action-button:hover {
+  border-color: var(--cf-trash-border-hover-color) !important;
+  background: var(--cf-trash-bg-hover) !important;
+  color: #991b1b !important;
+}
+
+#root .cf-html-view.main-cases-html .cf-case-row-delete-text-action svg {
+  color: var(--cf-trash-icon-color) !important;
+  stroke: currentColor !important;
+}
+/* STAGE105_CASE_DELETE_NO_RED_PLAQUE_END */
