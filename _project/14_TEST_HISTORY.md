@@ -425,3 +425,8 @@ Do potwierdzenia przez run:
 
 ### TEST RĘCZNY
 Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 wpis oraz dzień z 0 wpisów.
+
+## Stage104C BOM hotfix - 2026-05-17
+- Usunięto BOM z tests/stage104-calendar-rendered-week-plan-smoke.test.cjs po failu Stage98.
+- Status testów: do ponownego uruchomienia w tym hotfixie.
+
