@@ -460,3 +460,186 @@
   box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.05) !important;
 }
 /* STAGE105_CALENDAR_MODAL_NO_DARK_INPUTS_END */
+
+/* STAGE106_MODAL_INVERTED_VISUAL_CONTRACT_START
+   Product correction after Stage105 technical PASS.
+   Goal: no mixed light/dark modal. Calendar create task, calendar create event,
+   calendar edit entry and global quick task share one inverted modal contract:
+   dark shell, dark cards, white readable fields, dark field text, blue focus,
+   integrated dark footer. This intentionally overrides skin-level input rules.
+*/
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"],
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"],
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] {
+  background: #0f172a !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+  box-shadow: 0 28px 90px rgba(2, 6, 23, 0.58) !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] > .cf-modal-header,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] > .cf-modal-header,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] > div:first-child,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] > div:first-child,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] > .cf-modal-header,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] > .cf-modal-header,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] > div:first-child,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] > div:first-child {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.18), transparent 34%),
+    #0f172a !important;
+  color: #f8fafc !important;
+  border-bottom: 1px solid #334155 !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] h2,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] h2,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] h2,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] h2 {
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext {
+  background: #0b1220 !important;
+  color: #e5e7eb !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-card,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-card,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext > .rounded-2xl,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext > .rounded-2xl,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] [data-event-edit-reminder-panel="true"],
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] [data-event-edit-reminder-panel="true"],
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-card,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-card,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-vnext > .rounded-2xl,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-vnext > .rounded-2xl,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] [data-event-edit-reminder-panel="true"],
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] [data-event-edit-reminder-panel="true"] {
+  background: #111827 !important;
+  color: #e5e7eb !important;
+  border-color: #334155 !important;
+  box-shadow: 0 12px 26px rgba(2, 6, 23, 0.25) !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] label,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] label,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] label,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] label {
+  color: #e2e8f0 !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] p,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] small,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .text-slate-500,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] p,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] small,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .text-slate-500,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] p,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] small,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .text-slate-500,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] p,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] small,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .text-slate-500 {
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.16) !important;
+  caret-color: #2563eb !important;
+  outline: none !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input::placeholder,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea::placeholder,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input::placeholder,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea::placeholder,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input::placeholder,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea::placeholder,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input::placeholder,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:focus,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:focus,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:focus,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:focus,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:focus,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:focus,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:focus,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:focus,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:focus {
+  border-color: #93c5fd !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12), 0 8px 20px rgba(2, 6, 23, 0.16) !important;
+  outline: none !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select option,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select option,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select option,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select option {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:disabled,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:disabled,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:disabled,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:disabled,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:disabled,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:disabled,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] input:disabled,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] select:disabled,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] textarea:disabled,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] input:disabled,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] select:disabled,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] textarea:disabled {
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1 !important;
+}
+
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
+html[data-skin] body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .cf-modal-footer,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-footer,
+html[data-skin] body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-modal-footer,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .event-form-footer,
+body .event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"] .cf-modal-footer,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .event-form-footer,
+body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-modal-footer {
+  border-top: 1px solid #334155 !important;
+  background: rgba(15, 23, 42, 0.98) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 -16px 26px rgba(2, 6, 23, 0.32) !important;
+}
+/* STAGE106_MODAL_INVERTED_VISUAL_CONTRACT_END */

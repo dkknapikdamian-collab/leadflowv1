@@ -196,6 +196,7 @@ const requiredTests = [
   'tests/stage103-calendar-month-grid-day-states.test.cjs',
   'tests/stage101-calendar-selected-day-one-row-readable.test.cjs',
   'tests/stage105-calendar-modal-no-dark-inputs.test.cjs',
+  'tests/stage106-calendar-modal-inverted-visual-contract.test.cjs',
 ];
 
 function runQuiet(label, command, args) {
