@@ -46,10 +46,11 @@ test('LeadDetail title row renders one status label only', () => {
   assert.doesNotMatch(titleRow, /\{statusLabel\([^)]*lead[^)]*status[^)]*\)\}[\s\S]{0,260}\{statusLabel\([^)]*lead[^)]*status[^)]*\)\}/);
 });
 
+// STAGE118B_RELEASE_GATE_STAGE77_COMPAT: statusClass may accept optional dateValue for overdue tone after Stage115D.
 test('LeadDetail keeps one shared status mapping and required labels', () => {
   const text = read('src/pages/LeadDetail.tsx');
   assert.match(text, /function statusLabel\(status\?: string\)/);
-  assert.match(text, /function statusClass\(status\?: string\)/);
+  assert.match(text, /function statusClass\(status\?: string(?:,\s*dateValue\?: unknown)?\)/);
   for (const label of ['Oferta wys\u0142ana', 'Nowy', 'Czeka na odpowied\u017A', 'Przegrany']) {
     assert.ok(text.includes(label), 'missing label: ' + label);
   }

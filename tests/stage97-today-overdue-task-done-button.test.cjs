@@ -5,6 +5,7 @@ const test = require('node:test');
 
 const repoRoot = path.resolve(__dirname, '..');
 const todayPath = path.join(repoRoot, 'src/pages/TodayStable.tsx');
+const workItemCardPath = path.join(repoRoot, 'src/components/work-item-card.tsx');
 const quietGatePath = path.join(repoRoot, 'scripts/closeflow-release-check-quiet.cjs');
 
 function read(file) {
@@ -19,47 +20,48 @@ function sliceBetween(text, startNeedle, endNeedle) {
   return text.slice(start, end);
 }
 
-test('Stage97 RowLink exposes a real task done button, not text only', () => {
-  const today = read(todayPath);
-  const rowLink = sliceBetween(today, 'function RowLink({', 'async function loadStableTodayData');
-
-  assert.ok(rowLink.includes('data-stage79-task-done-action="true"'), 'RowLink must keep existing Stage79 done action button.');
-  assert.ok(rowLink.includes('data-stage97-overdue-task-done-action="true"'), 'RowLink must expose Stage97 marker on the task done button.');
-  assert.ok(rowLink.includes("{stage79TaskDoneSaving ? 'Zapisywanie...' : 'Zrobione'}"), 'Done button must visibly render Zrobione.');
-  assert.ok(rowLink.includes('markStage79TaskDoneFromRow'), 'Done button must call the existing complete handler.');
-  assert.ok(rowLink.includes("updateTaskInSupabase({ id: normalizedStage79TaskId, status: 'done' } as any)"), 'Existing handler must use real updateTaskInSupabase completion.');
+test('Stage97 WorkItemCard exposes a real task done button, not text only', () => {
+  const card = read(workItemCardPath);
+  assert.ok(card.includes('data-stage116-work-item-done-action="true"'), 'WorkItemCard must expose the shared done action marker.');
+  assert.ok(card.includes("{doneBusy ? 'Zapisywanie...' : <><CheckCircle2"), 'Done action must render busy state and real Zrobione label.');
+  assert.ok(card.includes('onDone();'), 'Done button must call the provided completion handler.');
+  assert.ok(card.includes('event.preventDefault();'), 'Done action must not accidentally open the row link.');
+  assert.ok(card.includes('event.stopPropagation();'), 'Done action must not bubble into card navigation.');
 });
 
-test('Stage97 operator overdue/today task rows pass task identity into RowLink', () => {
+test('Stage97 operator overdue/today task rows use WorkItemCard with task identity and /tasks route', () => {
   const today = read(todayPath);
   const block = sliceBetween(
     today,
     '{operatorTasks.length ? operatorTasks.map',
-    '}) : <EmptyState text="Brak zada\u0144 zaleg\u0142ych lub na dzi\u015B." />'
+    '}) : <EmptyState text="Brak zadań zaległych lub na dziś." />'
   );
 
-  assert.ok(block.includes('to="/tasks"'), 'Task rows must still route to /tasks.');
-  assert.ok(block.includes("badge={getDateKey(momentRaw) < todayKey ? 'Zaleg\u0142e' : 'Dzi\u015B'}"), 'Task rows must still distinguish overdue vs today.');
-  assert.ok(block.includes('onEdit={() => navigate(\'/tasks\')}'), 'Task rows must keep edit action.');
+  assert.ok(block.includes('<WorkItemCard'), 'Today task rows must render through WorkItemCard after Stage116.');
+  assert.ok(block.includes('kind="task"'), 'Task rows must pass WorkItemCard kind=task.');
+  assert.ok(block.includes('href="/tasks"'), 'Task rows must still route to /tasks.');
+  assert.ok(block.includes("statusLabel={getTodayWorkItemStatusLabel('task'"), 'Task rows must keep overdue/today status label source.');
+  assert.ok(block.includes('tone={getTodayWorkItemTone(task?.status, momentRaw, todayKey)}'), 'Task rows must keep red overdue tone source.');
+  assert.ok(block.includes("onDone={() => void handleMarkTaskDone(String(task.id || ''))}"), 'Task rows must pass task identity into done handler.');
+  assert.ok(block.includes('doneBusy={actionPendingId === `task-done:'), 'Task rows must expose done busy state keyed by task id.');
+  assert.ok(block.includes("onEdit={() => navigate('/tasks')}"), 'Task rows must keep edit action.');
   assert.ok(block.includes('onDelete={() => void handleDeleteTask(task)}'), 'Task rows must keep delete action.');
-  assert.ok(block.includes('taskId={String(task.id || \'\')}'), 'Task rows must pass taskId to RowLink.');
-  assert.ok(block.includes('doneKind="task"'), 'Task rows must mark RowLink as task kind so Zrobione renders.');
 });
 
-test('Stage97 task rows are not edit-only', () => {
+test('Stage97 task rows are not edit-only after WorkItemCard migration', () => {
   const today = read(todayPath);
   const block = sliceBetween(
     today,
     '{operatorTasks.length ? operatorTasks.map',
-    '}) : <EmptyState text="Brak zada\u0144 zaleg\u0142ych lub na dzi\u015B." />'
+    '}) : <EmptyState text="Brak zadań zaległych lub na dziś." />'
   );
 
-  const editIndex = block.indexOf('onEdit={() => navigate(\'/tasks\')}');
-  const taskIdIndex = block.indexOf('taskId={String(task.id || \'\')}');
-  const doneKindIndex = block.indexOf('doneKind="task"');
+  const editIndex = block.indexOf("onEdit={() => navigate('/tasks')}");
+  const doneIndex = block.indexOf("onDone={() => void handleMarkTaskDone(String(task.id || ''))}");
+  const hrefIndex = block.indexOf('href="/tasks"');
   assert.ok(editIndex !== -1, 'Missing edit action.');
-  assert.ok(taskIdIndex !== -1, 'Missing task identity for done button.');
-  assert.ok(doneKindIndex !== -1, 'Missing done task kind.');
+  assert.ok(doneIndex !== -1, 'Missing done action with task identity.');
+  assert.ok(hrefIndex !== -1, 'Missing /tasks route.');
 });
 
 test('Stage97 guard is included in quiet release gate', () => {
