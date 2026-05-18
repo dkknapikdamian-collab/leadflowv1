@@ -213,3 +213,67 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 - Jezeli console nadal pokazuje Radix `Missing Description`, zrobic osobny etap aria-dialog-accessibility.
 - Jezeli console nadal pokazuje `DEP0169 url.parse`, zrobic osobny etap backend dependency/runtime warning audit.
 
+
+## Stage113 manual visual check
+1. Sprawdzić logo w desktop sidebar, mobile top, mobile drawer i login.
+2. Zgłosić tylko jedną korektę, jeśli potrzebna: rozmiar, kontrast, margines albo obrys.
+
+
+- After Stage114A V8 passes, proceed to Stage114B: fix /calendar refresh loading behavior.
+
+- 2026-05-17 Stage114B local-only: calendar hard-refresh data load waits for workspaceReady; added guard tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs; no git add/commit/push.
+
+
+## Stage114C V2 - calendar shift persistence guard fix local only
+- Local-only ZIP stage.
+- Guard repaired after V1 regex false negative.
+- Task shifts must write date, scheduledAt, dueAt and time before success toast.
+- Manual QA still required on /calendar for +1D, +1W and +1H.
+
+## STAGE114D_NEXT_PUSH_READY
+
+Po recznym potwierdzeniu modala Stage114 A-D spiac w jeden selektywny push. Nie uzywac git add .
+
+## STAGE114D_V2_CALENDAR_MODAL_VIEWPORT_AND_DOC_GUARD_LOCAL_ONLY
+
+- Status: local-only, no git add, no commit, no push.
+- Scope: /calendar modal viewport, Radix DialogDescription, Stage114 docs encoding cleanup after broad Stage98 guard failed on _project reports.
+- Guards: stage98 polish mojibake calendar guard, Stage114B, Stage114C, Stage114D modal viewport, Stage108 render smoke, build, verify:closeflow:quiet.
+- Manual QA: edit calendar entry, title not clipped, scroll body works, sticky footer does not cover fields, no Radix description warning.
+
+## STAGE114D_V3_NEXT_MANUAL_QA
+Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no Radix missing description warning. If accepted, Stage114 batch can move to selective local commit/push planning.
+
+
+## Stage114 manual confirmation after V5
+- Damian checks /calendar hard refresh, +1D/+1W/+1H task persistence and edit modal viewport.
+
+## Stage114 next
+- Manual QA: /calendar edit modal title, scroll, footer, Radix description warning.
+- If manual QA passes, prepare selective batch push later.
+
+## STAGE114D_V8_CALENDAR_MODAL_VIEWPORT_STAGE102_GUARD_FIX_LOCAL_ONLY
+
+- Status: LOCAL ONLY, no git add, no commit, no push.
+- Zakres: /calendar modal viewport, Stage102 guard compatibility, Stage114D guard.
+- Decyzja: calendar-entry-modal-viewport is allowed as a viewport safety class and is not a local dark overflow shell.
+- Guardy: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smoke, build, verify:closeflow:quiet.
+- Test reczny: otworzyc /calendar, edycje wpisu i tworzenie wpisu; tytul nie moze byc uciety, footer nie moze przykrywac pol, konsola bez Radix Missing Description.
+
+## Stage114 after V9
+- Manual browser QA: hard refresh calendar, shift task +1D/+1W/+1H, open calendar create/edit modals.
+- If manual QA passes, prepare selective batch commit later. Do not use git add .
+
+## Stage114D V10 next manual check
+- Open /calendar.
+- Open create event, create task and edit entry modals.
+- Confirm header is not clipped and footer does not cover fields.
+- Confirm browser console has no Radix missing description warning.
+
+<!-- STAGE115_LEAD_CONTACT_CLIENT_PARITY -->
+
+## Stage115 - następny krok po 3.1
+
+1. Damian: test ręczny /leads/:id: karta kontaktowa po lewej, telefon/e-mail/firma/ostatni kontakt, copy button.
+2. Jeżeli 3.1 OK: osobny podetap Stage115.2 dla notatek leada.
+3. Potem osobno: Stage115.3 overdue taski i Stage115.4 finanse leada, bez mieszania przyczyn w jednym patchu.

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Activity, AlertTriangle, ArrowLeft, Building2, CheckCircle2, Clock, Copy, Eye, Loader2, Mail, Mic, MicOff, Pencil, Phone, Pin, Plus, Save, Trash2 } from 'lucide-react';
-import { EntityIcon, EventEntityIcon } from '../components/ui-system';
+import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save, Trash2 } from 'lucide-react';
+import { EntityIcon } from '../components/ui-system';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
 import { ClientFinanceRelationSummary } from '../components/finance/FinanceMiniSummary';
@@ -87,6 +87,7 @@ import '../styles/visual-stage12-client-detail-vnext.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
 import ContextActionButton from '../components/ContextActionButton';
+import { EntityContactInfoList } from '../components/entity-contact-card';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
@@ -868,25 +869,6 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
           </div>
         ))}
       </div>
-    </div>
-  );
-}
-function InfoRow({ icon: Icon, label, value, onCopy }: { icon: any; label: string; value: string; onCopy?: () => void }) {
-  const copyLabel = label === 'Telefon' ? 'Kopiuj telefon' : label === 'E-mail' ? 'Kopiuj email' : `Kopiuj ${label}`;
-  return (
-    <div className="client-detail-info-row">
-      <span className="client-detail-info-icon">
-        <Icon className="h-4 w-4" />
-      </span>
-      <span>
-        <small>{label}</small>
-        <strong>{value || '-'}</strong>
-      </span>
-      {onCopy && value ? (
-        <button type="button" className="client-detail-icon-button" onClick={onCopy} aria-label={copyLabel} title={copyLabel}>
-          <Copy className="h-4 w-4" />
-        </button>
-      ) : null}
     </div>
   );
 }
@@ -1828,12 +1810,13 @@ return (
                   </div>
                 </div>
               ) : (
-                <div className="client-detail-contact-list">
-                  <InfoRow icon={Phone} label="Telefon" value={client.phone || '-'} onCopy={() => copyValue('Telefon', client.phone)} />
-                  <InfoRow icon={Mail} label="E-mail" value={client.email || '-'} onCopy={() => copyValue('E-mail', client.email)} />
-                  <InfoRow icon={Building2} label="Firma" value={client.company || 'Brak firmy'} />
-                  <InfoRow icon={EventEntityIcon} label="Ostatni kontakt" value={formatDate(lastActivityDate)} />
-                </div>
+                <EntityContactInfoList
+                  phone={client.phone}
+                  email={client.email}
+                  company={client.company || 'Brak firmy'}
+                  lastContact={formatDate(lastActivityDate)}
+                  onCopy={copyValue}
+                />
               )}
 
             </section>

@@ -331,3 +331,68 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 - Test: `tests/stage107-client-detail-runtime-tdz-finance.test.cjs`.
 - Test reczny: otwarcie szczegolow klienta bez `APP_ROUTE_RENDER_FAILED`.
 
+
+## Stage113 - Logo CloseFlow mapping
+- Lokalny ZIP bez pushowania. Zmiana dotyka shell logo, login logo, CSS kontraktu i guardu.
+
+
+- 2026-05-17 Stage114B local-only: calendar hard-refresh data load waits for workspaceReady; added guard tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs; no git add/commit/push.
+
+
+## Stage114C V2 - calendar shift persistence guard fix local only
+- Local-only ZIP stage.
+- Guard repaired after V1 regex false negative.
+- Task shifts must write date, scheduledAt, dueAt and time before success toast.
+- Manual QA still required on /calendar for +1D, +1W and +1H.
+
+## STAGE114D_CALENDAR_MODAL_VIEWPORT_LEDGER
+
+Pliki:
+- src/pages/Calendar.tsx
+- src/styles/visual-stage22-event-form-vnext.css
+- tests/stage114-calendar-modal-viewport-contract.test.cjs
+- package.json
+
+## STAGE114D_V2_CALENDAR_MODAL_VIEWPORT_AND_DOC_GUARD_LOCAL_ONLY
+
+- Status: local-only, no git add, no commit, no push.
+- Scope: /calendar modal viewport, Radix DialogDescription, Stage114 docs encoding cleanup after broad Stage98 guard failed on _project reports.
+- Guards: stage98 polish mojibake calendar guard, Stage114B, Stage114C, Stage114D modal viewport, Stage108 render smoke, build, verify:closeflow:quiet.
+- Manual QA: edit calendar entry, title not clipped, scroll body works, sticky footer does not cover fields, no Radix description warning.
+
+## STAGE114D_V3_LEDGER
+Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for related calendar files. Local-only ZIP workflow. No git add, no commit, no push.
+
+
+## Stage114D V5 local-only modal viewport
+- Applied modal viewport CSS, DialogDescription, guard cleanup and documentation updates.
+
+## Stage114D V6
+- src/pages/Calendar.tsx: modal class and DialogDescription contract.
+- src/styles/visual-stage22-event-form-vnext.css: viewport-safe modal CSS.
+- tests/stage114-calendar-modal-viewport-contract.test.cjs: stable guard.
+
+## STAGE114D_V8_CALENDAR_MODAL_VIEWPORT_STAGE102_GUARD_FIX_LOCAL_ONLY
+
+- Status: LOCAL ONLY, no git add, no commit, no push.
+- Zakres: /calendar modal viewport, Stage102 guard compatibility, Stage114D guard.
+- Decyzja: calendar-entry-modal-viewport is allowed as a viewport safety class and is not a local dark overflow shell.
+- Guardy: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smoke, build, verify:closeflow:quiet.
+- Test reczny: otworzyc /calendar, edycje wpisu i tworzenie wpisu; tytul nie moze byc uciety, footer nie moze przykrywac pol, konsola bez Radix Missing Description.
+
+## Stage114D V9
+- Files touched: src/pages/Calendar.tsx, src/styles/visual-stage22-event-form-vnext.css, tests/stage114-calendar-modal-viewport-contract.test.cjs, tests/stage102-calendar-edit-modal-form-source.test.cjs, package.json, _project updates.
+- Mode: local-only ZIP. No commit, no push.
+
+## Stage114D V10 implementation ledger
+- Scope: /calendar modal viewport, accessibility descriptions and guards.
+- Touched: Calendar.tsx, visual-stage22-event-form-vnext.css, Stage102/Stage114D tests, quiet gate if needed.
+
+<!-- STAGE115_LEAD_CONTACT_CLIENT_PARITY -->
+
+## Stage115 - LeadDetail contact card client parity
+
+- Decyzja Damiana: dane kontaktowe leada mają wyglądać 1:1 jak klient po lewej stronie.
+- Zakres tej paczki: tylko punkt 3.1 Stage115. Notatki, overdue i finanse zostają jako kolejne podetapy, bo nie było tu pełnej specyfikacji naprawy.
+- Źródło prawdy UI kontaktu: `src/components/entity-contact-card.tsx`.
+- Legacy wygaszone: `LeadDetail.InfoLine`, `lead-detail-contact-grid`, lokalny `ClientDetail.InfoRow`.

@@ -413,3 +413,69 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 - Test: `tests/stage107-client-detail-runtime-tdz-finance.test.cjs`.
 - Test reczny: otwarcie szczegolow klienta bez `APP_ROUTE_RENDER_FAILED`.
 
+
+## Stage113 - Logo CloseFlow mapping
+- Dodano brand assety i przepięto tekstowe CF / login icon na komponent logo.
+
+
+- 2026-05-17 Stage114A V8: calendar mojibake final fixer and guard repair, local-only, no push.
+
+- 2026-05-17 Stage114B local-only: calendar hard-refresh data load waits for workspaceReady; added guard tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs; no git add/commit/push.
+
+
+## Stage114C V2 - calendar shift persistence guard fix local only
+- Local-only ZIP stage.
+- Guard repaired after V1 regex false negative.
+- Task shifts must write date, scheduledAt, dueAt and time before success toast.
+- Manual QA still required on /calendar for +1D, +1W and +1H.
+
+## STAGE114D_CALENDAR_MODAL_VIEWPORT_CHANGELOG
+
+- Dodano viewport-safe modal contract dla calendar entry modals.
+- Dodano DialogDescription dla Radix a11y.
+- Dodano guard Stage114D.
+
+## STAGE114D_V2_CALENDAR_MODAL_VIEWPORT_AND_DOC_GUARD_LOCAL_ONLY
+
+- Status: local-only, no git add, no commit, no push.
+- Scope: /calendar modal viewport, Radix DialogDescription, Stage114 docs encoding cleanup after broad Stage98 guard failed on _project reports.
+- Guards: stage98 polish mojibake calendar guard, Stage114B, Stage114C, Stage114D modal viewport, Stage108 render smoke, build, verify:closeflow:quiet.
+- Manual QA: edit calendar entry, title not clipped, scroll body works, sticky footer does not cover fields, no Radix description warning.
+
+## STAGE114D_V3_CHANGELOG
+Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended to related Stage108/114 guard files after Stage98 failure.
+
+
+## Stage114D V5 calendar modal viewport guard fix
+- Repaired Stage114D guard and modal viewport contract in local-only ZIP.
+
+## 2026-05-17 - Stage114D V6 calendar modal viewport
+- Repaired Stage114D guard and ensured viewport-safe modal contract.
+- Local only, no push.
+
+## STAGE114D_V8_CALENDAR_MODAL_VIEWPORT_STAGE102_GUARD_FIX_LOCAL_ONLY
+
+- Status: LOCAL ONLY, no git add, no commit, no push.
+- Zakres: /calendar modal viewport, Stage102 guard compatibility, Stage114D guard.
+- Decyzja: calendar-entry-modal-viewport is allowed as a viewport safety class and is not a local dark overflow shell.
+- Guardy: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smoke, build, verify:closeflow:quiet.
+- Test reczny: otworzyc /calendar, edycje wpisu i tworzenie wpisu; tytul nie moze byc uciety, footer nie moze przykrywac pol, konsola bez Radix Missing Description.
+
+## Stage114D V9 - calendar modal description guard fix
+- Ensured DialogDescription exists for all calendar entry modals.
+- Preserved viewport-safe modal class and CSS contract.
+- Updated Stage102 guard compatibility.
+
+## Stage114D V10 - local only
+- Repaired Stage102 modal guard after Stage114D viewport class.
+- Repaired Stage114D modal viewport guard.
+- Kept local-only mode: no git add, no commit, no push.
+
+<!-- STAGE115_LEAD_CONTACT_CLIENT_PARITY -->
+
+## 2026-05-18 - Stage115 LeadDetail contact card client parity
+
+- Dodano wspólny komponent `src/components/entity-contact-card.tsx` i CSS `src/styles/entity-contact-card.css`.
+- LeadDetail dostał lewą kartę kontaktową w układzie klienta.
+- ClientDetail używa wspólnej listy danych kontaktowych zamiast lokalnego `InfoRow`.
+- Usunięto lokalną wyspę UI LeadDetail: `InfoLine` / `lead-detail-contact-grid`.

@@ -314,3 +314,72 @@ Test:
 - Guard checks rendered user content, full type label, relation, actions, runtime markers and critical CSS visibility.
 - Local-only package. No git add/commit/push.
 
+
+## STAGE113_LOGO_SOURCE_CONTRACT
+- 
+ode --test tests/stage113-closeflow-logo-source-contract.test.cjs pilnuje assetów i mapowania logo w Layout/Login.
+
+
+- 2026-05-17 Stage114A V8: npm run check:calendar:stage114-mojibake protects src/pages/Calendar.tsx against mojibake markers.
+
+- 2026-05-17 Stage114B local-only: calendar hard-refresh data load waits for workspaceReady; added guard tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs; no git add/commit/push.
+
+
+## Stage114C V2 - calendar shift persistence guard fix local only
+- Local-only ZIP stage.
+- Guard repaired after V1 regex false negative.
+- Task shifts must write date, scheduledAt, dueAt and time before success toast.
+- Manual QA still required on /calendar for +1D, +1W and +1H.
+
+## STAGE114D_CALENDAR_MODAL_VIEWPORT_CONTRACT
+
+Guard: tests/stage114-calendar-modal-viewport-contract.test.cjs
+
+Chroni:
+- DialogDescription w modalach kalendarza,
+- viewport-safe class na DialogContent,
+- top offset i max-height modala,
+- padding-bottom formularza,
+- sticky footer bez przykrywania ostatnich pol.
+
+## STAGE114D_V2_CALENDAR_MODAL_VIEWPORT_AND_DOC_GUARD_LOCAL_ONLY
+
+- Status: local-only, no git add, no commit, no push.
+- Scope: /calendar modal viewport, Radix DialogDescription, Stage114 docs encoding cleanup after broad Stage98 guard failed on _project reports.
+- Guards: stage98 polish mojibake calendar guard, Stage114B, Stage114C, Stage114D modal viewport, Stage108 render smoke, build, verify:closeflow:quiet.
+- Manual QA: edit calendar entry, title not clipped, scroll body works, sticky footer does not cover fields, no Radix description warning.
+
+## STAGE114D_V3_CALENDAR_MODAL_VIEWPORT_GUARD_CLEANUP
+- Added/repaired tests/stage114-calendar-modal-viewport-contract.test.cjs.
+- Stage98 guard cleanup covers BOM/mojibake in Stage108/Stage114 calendar files.
+- Required command set includes Stage98, Stage108, Stage114B, Stage114C, Stage114D, build, and quiet gate.
+
+## Stage114D V6 - Calendar modal viewport guard
+- test:stage114-calendar-modal-viewport-contract
+- Confirms DialogDescription, viewport-safe class, safe max-height, scroll body and sticky footer.
+
+## STAGE114D_V8_CALENDAR_MODAL_VIEWPORT_STAGE102_GUARD_FIX_LOCAL_ONLY
+
+- Status: LOCAL ONLY, no git add, no commit, no push.
+- Zakres: /calendar modal viewport, Stage102 guard compatibility, Stage114D guard.
+- Decyzja: calendar-entry-modal-viewport is allowed as a viewport safety class and is not a local dark overflow shell.
+- Guardy: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smoke, build, verify:closeflow:quiet.
+- Test reczny: otworzyc /calendar, edycje wpisu i tworzenie wpisu; tytul nie moze byc uciety, footer nie moze przykrywac pol, konsola bez Radix Missing Description.
+
+## Stage114D V9 - calendar modal viewport and description guard
+- Added/updated tests/stage114-calendar-modal-viewport-contract.test.cjs.
+- Updated Stage102 modal source guard to allow calendar-entry-modal-viewport as a safe viewport class.
+- Gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smoke, build, verify:closeflow:quiet.
+
+## Stage114D V10 - calendar modal viewport and Stage102 guard fix
+- tests/stage102-calendar-edit-modal-form-source.test.cjs rewritten without fragile regex literals.
+- tests/stage114-calendar-modal-viewport-contract.test.cjs verifies viewport class, descriptions, scroll body and sticky footer.
+
+<!-- STAGE115_LEAD_CONTACT_CLIENT_PARITY -->
+
+## Stage115 - LeadDetail contact card client parity
+
+- Guard: `tests/stage115-lead-contact-card-client-parity.test.cjs`.
+- Cel: LeadDetail nie może mieć własnej wyspy `InfoLine` / `lead-detail-contact-grid`; LeadDetail i ClientDetail mają używać wspólnego `src/components/entity-contact-card.tsx`.
+- Komenda: `node --test tests/stage115-lead-contact-card-client-parity.test.cjs`.
+- Test ręczny: /leads/:id, porównać lewą kartę kontaktową z lewą kartą klienta: telefon, e-mail, firma, ostatni kontakt, ikony, przyciski kopiowania.

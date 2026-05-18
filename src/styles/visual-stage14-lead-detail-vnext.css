@@ -169,7 +169,7 @@
 
 .lead-detail-shell {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 310px;
+  grid-template-columns: 300px minmax(0, 1fr) 310px;
   gap: 22px;
   align-items: start;
 }
@@ -180,6 +180,7 @@
   gap: 18px;
 }
 
+.lead-detail-left-rail,
 .lead-detail-right-rail {
   background: transparent !important;
   background-image: none !important;
@@ -192,6 +193,8 @@
   min-width: 0;
 }
 
+.lead-detail-left-rail::before,
+.lead-detail-left-rail::after,
 .lead-detail-right-rail::before,
 .lead-detail-right-rail::after,
 .lead-detail-right-card::before,
@@ -1058,4 +1061,16 @@
   margin: 0 !important;
   white-space: normal !important;
   overflow-wrap: anywhere !important;
+}
+
+
+/* STAGE115_LEAD_CONTACT_CLIENT_PARITY layout guard */
+.lead-detail-client-parity-contact-card {
+  width: 100%;
+}
+
+@media (max-width: 1120px) {
+  .lead-detail-left-rail {
+    width: 100%;
+  }
 }

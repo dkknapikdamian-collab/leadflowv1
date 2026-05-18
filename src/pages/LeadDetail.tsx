@@ -1,11 +1,7 @@
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
-import {
-  ClientEntityIcon,
-  EntityIcon,
-  LeadEntityIcon,
-  TemplateEntityIcon } from '../components/ui-system';
+import { EntityIcon } from '../components/ui-system';
 // LEAD_TO_CASE_FLOW_STAGE24_LEAD_DETAIL
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP */
 /* STAGE14F_LEAD_DETAIL_RIGHT_RAIL_CLEANUP_REPAIR1_BUILD_FIX */
@@ -33,6 +29,7 @@ void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL;
 
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
+import EntityContactCard from '../components/entity-contact-card';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
@@ -388,17 +385,6 @@ function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
     if (leftDone !== rightDone) return leftDone - rightDone;
     return (asDate(left.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER) - (asDate(right.dateValue)?.getTime() ?? Number.MAX_SAFE_INTEGER);
   });
-}
-function InfoLine({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
-  return (
-    <div className="lead-detail-info-line">
-      <span><Icon className="h-4 w-4" /></span>
-      <div>
-        <small>{label}</small>
-        <strong>{value || '-'}</strong>
-      </div>
-    </div>
-  );
 }
 function LeadActionButton({ children, onClick, disabled }: { children: ReactNode; onClick?: () => void; disabled?: boolean }) {
   const isStartServiceActionStage14F = children === 'Rozpocznij obsługę';
@@ -844,6 +830,17 @@ useEffect(() => {
     resetLeadEditDraft();
     setIsEditing(false);
   };
+  const copyValue = async (label: string, value: string) => {
+    const cleanValue = String(value || '').trim();
+    if (!cleanValue || cleanValue === '-') return toast.error(`Brak wartości: ${label}`);
+    try {
+      await navigator.clipboard.writeText(cleanValue);
+      toast.success(`${label} skopiowano`);
+    } catch {
+      toast.error('Nie udało się skopiować.');
+    }
+  };
+
 
 
   const handleDeleteLead = async () => {
@@ -1404,6 +1401,27 @@ useEffect(() => {
         ) : null}
 
         <div className="lead-detail-shell">
+          <aside
+            className="lead-detail-left-rail"
+            aria-label="Dane kontaktowe leada"
+            data-stage115-lead-contact-client-parity="true"
+          >
+            <EntityContactCard
+              entity="lead"
+              name={String(lead.name || lead.company || 'Lead bez nazwy')}
+              subtitle={leadInService ? 'Lead · historia pozyskania' : 'Lead · aktywny kontakt sprzedażowy'}
+              initialsSource={String(lead.name || lead.company || 'Lead')}
+              phone={String(lead.phone || '')}
+              email={String(lead.email || '')}
+              company={String(lead.company || 'Brak firmy')}
+              lastContact={formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}
+              note={leadPrimaryNoteText || 'Brak notatki.'}
+              onCopy={copyValue}
+              className="lead-detail-client-parity-contact-card"
+              dataStage="stage115-lead-contact-client-parity"
+            />
+          </aside>
+
           <section className="lead-detail-main-column">
           {!leadInService ? (
               <section className="lead-detail-top-grid">
@@ -1431,26 +1449,6 @@ useEffect(() => {
                 </article>
               </section>
             ) : null}
-
-            <section className="lead-detail-section-card">
-              <div className="lead-detail-section-head">
-                <div>
-                  <h2>Dane kontaktowe</h2>
-                  <p>Najważniejsze dane źródłowe leada.</p>
-                </div>
-              </div>
-              <div className="lead-detail-contact-grid">
-                <InfoLine icon={ClientEntityIcon} label="Osoba" value={String(lead.name || '-')} />
-                <InfoLine icon={Phone} label="Telefon" value={String(lead.phone || '-')} />
-                <InfoLine icon={Mail} label="E-mail" value={String(lead.email || '-')} />
-                <InfoLine icon={TemplateEntityIcon} label="Firma" value={String(lead.company || '-')} />
-                <InfoLine icon={LeadEntityIcon} label="Zrodlo" value={sourceLabel(lead.source)} />
-              </div>
-              <div className="lead-detail-note-box">
-                <small>Notatka</small>
-                <p className="lead-detail-note-text" lang="pl-PL">{leadPrimaryNoteText || 'Brak notatki.'}</p>
-              </div>
-            </section>
 
             {!leadInService ? (
               <section className="lead-detail-section-card">
