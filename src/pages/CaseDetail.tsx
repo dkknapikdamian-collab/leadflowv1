@@ -1356,19 +1356,31 @@ export default function CaseDetail() {
   };
 
 
-  const openCaseTaskDialog = () => {
+  const handleAddTask = async () => {
     if (!guardCaseDetailWriteAccess('dodać zadania')) return;
     openCaseContextAction('task');
   };
 
-  const openCaseEventDialog = () => {
+  const handleAddEvent = async () => {
     if (!guardCaseDetailWriteAccess('dodać wydarzenia')) return;
     openCaseContextAction('event');
   };
 
-  const openCaseNoteDialog = () => {
+  const handleAddNote = async () => {
     if (!guardCaseDetailWriteAccess('dodać notatki')) return;
     openCaseContextAction('note');
+  };
+
+  const openCaseTaskDialog = () => {
+    void handleAddTask();
+  };
+
+  const openCaseEventDialog = () => {
+    void handleAddEvent();
+  };
+
+  const openCaseNoteDialog = () => {
+    void handleAddNote();
   };
 
   const openCasePaymentDialog = (type: 'deposit' | 'partial') => {
