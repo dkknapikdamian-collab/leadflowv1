@@ -16,6 +16,7 @@ const requiredTests = [
   'tests/stage119-calendar-release-gate-trust.test.cjs',
   'tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs',
   'tests/stage121-calendar-shift-lead-branch-contract.test.cjs',
+  'tests/stage122-runtime-auth-api-pwa-hardening.test.cjs',
   'tests/stage113-closeflow-logo-source-contract.test.cjs',
   'tests/stage79-release-gate-mass-guard.test.cjs',
   'tests/stage79-today-task-done-action.test.cjs',

@@ -775,6 +775,22 @@ async function handleWorkspaceRecovery(req: any, res: any) {
   }
 }
 
+function handleStage122Version(req: any, res: any) {
+  // STAGE122_RUNTIME_AUTH_API_PWA_HARDENING_VERSION_ROUTE
+  void req;
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  res.status(200).json({
+    ok: true,
+    app: 'closeflow',
+    stage: 'STAGE122_RUNTIME_AUTH_API_PWA_HARDENING',
+    commit: process.env.VERCEL_GIT_COMMIT_SHA || process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA || '',
+    branch: process.env.VERCEL_GIT_COMMIT_REF || '',
+    deploymentUrl: process.env.VERCEL_URL || '',
+    checkedAt: new Date().toISOString(),
+  });
+}
+
+
 export default async function handler(req: any, res: any) {
   const body = parseBody(req.body);
   // CLOSEFLOW_ENTITY_CONFLICTS_SYSTEM_KIND_ROUTE_V1: keep entity-conflicts inside /api/system to stay under Vercel Hobby function limit.
@@ -792,7 +808,11 @@ export default async function handler(req: any, res: any) {
   const identity = getRequestIdentity(req, body);
   void identity.fullName;
   const kind = routeKind(req, body);
-  // API0_VERCEL_HOBBY_DIGEST_CONSOLIDATION: digest/report endpoints are consolidated behind api/system.
+
+  if (kind === 'version') {
+    return handleStage122Version(req, res);
+  }
+// API0_VERCEL_HOBBY_DIGEST_CONSOLIDATION: digest/report endpoints are consolidated behind api/system.
     if (kind === 'entity-conflicts') {
       await entityConflictsHandler(req, res);
       return;

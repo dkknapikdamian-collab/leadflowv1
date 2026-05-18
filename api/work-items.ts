@@ -2,6 +2,7 @@
 import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter, requireScopedRow } from '../src/server/_request-scope.js';
 import { normalizeEventStatus, normalizeTaskStatus } from '../src/lib/domain-statuses.js';
+import { RequestAuthError } from '../src/server/_supabase-auth.js';
 import { normalizeWorkItem } from '../src/lib/work-items/normalize.js';
 import { assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { createGoogleCalendarEvent, deleteGoogleCalendarEvent, getGoogleCalendarConnection, updateGoogleCalendarEvent } from '../src/server/google-calendar-sync.js';
@@ -739,13 +740,26 @@ export default async function handler(req: any, res: any) {
     await syncGoogleCalendarEventAfterMutation({ action: 'create', req, workspaceId: finalWorkspaceId, row: inserted as any, body });
     res.status(200).json(normalizeEvent(inserted));
   } catch (error: any) {
+    // STAGE122_RUNTIME_AUTH_API_PWA_HARDENING: auth/workspace failures must be visible as 401/403, not masked as 500.
+    if (error instanceof RequestAuthError) {
+      res.status(error.status).json({ error: error.code });
+      return;
+    }
+
     const message = error?.message || 'WORK_ITEMS_API_FAILED';
     const notFound = new Set(['TASK_NOT_FOUND', 'EVENT_NOT_FOUND', 'LEAD_NOT_FOUND']);
-    const workspaceCodes = new Set(['SUPABASE_WORKSPACE_ID_MISSING', 'EVENT_WORKSPACE_REQUIRED', 'TASK_WORKSPACE_REQUIRED']);
-    const isWorkspaceError = workspaceCodes.has(message) || message === 'WORKSPACE_CONTEXT_REQUIRED' || message.endsWith('_WORKSPACE_REQUIRED');
-    const statusCode = notFound.has(message) ? 404 : isWorkspaceError ? 401 : 500;
+    const authCodes = new Set([
+      'AUTHORIZATION_BEARER_REQUIRED',
+      'INVALID_SUPABASE_ACCESS_TOKEN',
+      'REQUEST_IDENTITY_REQUIRED',
+      'AUTH_WORKSPACE_REQUIRED',
+      'WORKSPACE_CONTEXT_REQUIRED',
+      'SUPABASE_WORKSPACE_ID_MISSING',
+      'EVENT_WORKSPACE_REQUIRED',
+      'TASK_WORKSPACE_REQUIRED',
+    ]);
+    const forbiddenCodes = new Set(['WORKSPACE_MEMBERSHIP_REQUIRED', 'WORKSPACE_OWNER_OR_ADMIN_REQUIRED', 'EMAIL_CONFIRMATION_REQUIRED']);
+    const statusCode = notFound.has(message) ? 404 : forbiddenCodes.has(message) ? 403 : authCodes.has(message) || message.endsWith('_WORKSPACE_REQUIRED') ? 401 : 500;
     res.status(statusCode).json({ error: message });
   }
 }
-
-

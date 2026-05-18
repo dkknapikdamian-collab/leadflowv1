@@ -353,15 +353,15 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikuje equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
-- 
+-
 ode --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
-- 
+-
 ode --test tests/stage119-calendar-release-gate-trust.test.cjs
-- 
+-
 pm run verify:closeflow:quiet
 
 Test reczny:
@@ -387,3 +387,40 @@ Testy:
 Test reczny:
 - DO WYKONANIA na /calendar po zielonym gate.
 <!-- /STAGE119_V5_RELEASE_GATE_HARNESS_AND_MISSING_TESTS_AUDIT -->
+
+
+<!-- STAGE120_CALENDAR_LOCAL_FIRST_SYNC_AND_FOCUS -->
+## 2026-05-18 - Stage120 Calendar local-first sync and focus
+
+- Calendar reads local Supabase data before Google Calendar inbound sync.
+- Google inbound runs in background after first local render and refreshes only if it changed rows.
+- /calendar?focus=YYYY-MM-DD is now honored by Calendar.
+- Guard: tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs.
+- Manual QA: hard refresh, week/month/selected day, focus link, add/edit, shift, done/delete.
+<!-- /STAGE120_CALENDAR_LOCAL_FIRST_SYNC_AND_FOCUS -->
+
+
+<!-- STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
+## 2026-05-18 - Stage121 calendar shift persistence optimistic state
+
+Status: WDRAŻANE.
+
+Cel: +1H/+1D/+1W musi wizualnie przesuwać wpis od razu po udanym PATCH, zamiast polegać wyłącznie na refreshSupabaseBundle().
+
+Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta ma zmienić dzień/godzinę.
+<!-- /STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
+
+## 2026-05-18 - STAGE122_RUNTIME_AUTH_API_PWA_HARDENING
+
+1. Deploy Stage122 and verify /api/version returns stage marker.
+2. In DevTools Network, confirm runtime marker appears and the old service worker is unregistered.
+3. Retest Calendar shift actions.
+4. If 401 remains, repair auth/session flow next; do not patch calendar UI again before API status is clean.
+
+## 2026-05-18 - STAGE122_V9_SYSTEM_VERSION_ROUTE_RESILIENT_AND_MASS_GATE
+
+1. Deploy Stage122 V9.
+2. Check /api/version.
+3. Check console marker and JS bundle hash.
+4. Check /api/me.
+5. If /api/me remains 401, fix auth/session/workspace before touching Calendar UI.

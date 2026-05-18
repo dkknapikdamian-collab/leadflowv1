@@ -570,15 +570,15 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikuje equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
-- 
+-
 ode --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
-- 
+-
 ode --test tests/stage119-calendar-release-gate-trust.test.cjs
-- 
+-
 pm run verify:closeflow:quiet
 
 Test reczny:
@@ -604,3 +604,43 @@ Testy:
 Test reczny:
 - DO WYKONANIA na /calendar po zielonym gate.
 <!-- /STAGE119_V5_RELEASE_GATE_HARNESS_AND_MISSING_TESTS_AUDIT -->
+
+
+<!-- STAGE120_CALENDAR_LOCAL_FIRST_SYNC_AND_FOCUS -->
+## 2026-05-18 - Stage120 Calendar local-first sync and focus
+
+- Calendar reads local Supabase data before Google Calendar inbound sync.
+- Google inbound runs in background after first local render and refreshes only if it changed rows.
+- /calendar?focus=YYYY-MM-DD is now honored by Calendar.
+- Guard: tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs.
+- Manual QA: hard refresh, week/month/selected day, focus link, add/edit, shift, done/delete.
+<!-- /STAGE120_CALENDAR_LOCAL_FIRST_SYNC_AND_FOCUS -->
+
+
+<!-- STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
+## 2026-05-18 - Stage121 calendar shift persistence optimistic state
+
+Status: WDRAŻANE.
+
+Cel: +1H/+1D/+1W musi wizualnie przesuwać wpis od razu po udanym PATCH, zamiast polegać wyłącznie na refreshSupabaseBundle().
+
+Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta ma zmienić dzień/godzinę.
+<!-- /STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
+
+## 2026-05-18 - STAGE122_RUNTIME_AUTH_API_PWA_HARDENING
+
+FAKTY: production console showed repeated /api/me 401 plus /api/tasks and /api/events 500 during calendar shift. DevTools also showed an active CloseFlow service worker and old bundle initiator. Stage122 disables stale PWA cache/register behavior, adds /api/version, adds a runtime console marker, and makes work-items auth failures return 401/403 instead of masked 500.
+
+TESTY: node --test tests/stage122-runtime-auth-api-pwa-hardening.test.cjs; npm run build; npm run verify:closeflow:quiet.
+
+NASTĘPNY KROK: after deployment, verify Network JS hash changes, call /api/version, and retest Calendar +1D/+1W/+1H. If /api/me still returns 401, user must re-auth via Google/Supabase without clearing localStorage first.
+
+## 2026-05-18 - STAGE122_V9_SYSTEM_VERSION_ROUTE_RESILIENT_AND_MASS_GATE
+
+FAKTY: Stage122 V7 passed Stage122/PWA/Stage98/Stage121/build, then failed Vercel Hobby function budget because api/version.ts raised api/*.ts to 13. V8 chose system rewrite architecture but failed on a brittle api/system.ts anchor.
+
+DECYZJA: /api/version stays available through /api/system?kind=version, without adding a physical Vercel function.
+
+TESTY: Stage122 guard, PWA foundation, Vercel budget, Stage98, Stage121, build, verify:closeflow:quiet.
+
+NASTĘPNY KROK: verify production /api/version and runtime marker, then retest calendar shift only if /api/me is clean.

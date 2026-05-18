@@ -103,6 +103,10 @@
       "destination": "/api/billing-checkout?route=checkout"
     },
     {
+      "source": "/api/version",
+      "destination": "/api/system?kind=version"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/"
     },

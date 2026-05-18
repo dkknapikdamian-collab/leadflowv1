@@ -14,6 +14,8 @@ import './styles/closeflow-leads-right-rail-layout-lock.css';
 registerChunkAssetReloadGuard();
 registerCloseFlowServiceWorker();
 
+console.info('CLOSEFLOW_STAGE122_RUNTIME_MARKER', 'runtime-auth-api-pwa-hardening-2026-05-18');
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>
