@@ -8,6 +8,8 @@ const calendarPath = path.join(repoRoot, 'src', 'pages', 'Calendar.tsx');
 const quietGatePath = path.join(repoRoot, 'scripts', 'closeflow-release-check-quiet.cjs');
 const calendar = fs.readFileSync(calendarPath, 'utf8');
 const quietGate = fs.readFileSync(quietGatePath, 'utf8');
+const STAGE104_V7_GUARD_RESILIENT_WEEK_RENDER_ANCHOR = 'STAGE104_V7_GUARD_RESILIENT_WEEK_RENDER_ANCHOR';
+void STAGE104_V7_GUARD_RESILIENT_WEEK_RENDER_ANCHOR;
 
 function countMatches(text, regex) {
   return (text.match(regex) || []).length;
@@ -21,14 +23,6 @@ function dependencySegmentAfterMarker(marker) {
   const depEnd = calendar.indexOf(']);', depStart);
   assert.notEqual(depEnd, -1, `missing dependency array end after ${marker}`);
   return calendar.slice(depStart, depEnd + 3);
-}
-
-function sliceBetween(startNeedle, endNeedle) {
-  const start = calendar.indexOf(startNeedle);
-  assert.notEqual(start, -1, `missing start needle: ${startNeedle}`);
-  const end = calendar.indexOf(endNeedle, start);
-  assert.notEqual(end, -1, `missing end needle after ${startNeedle}: ${endNeedle}`);
-  return calendar.slice(start, end);
 }
 
 test('Stage104 keeps schedule combination and day buckets memoized', () => {
@@ -54,17 +48,17 @@ test('Stage104 uses precomputed day maps in month, week and selected day panel',
   assert.doesNotMatch(calendar, /getEntriesForDay\s*\(/);
 });
 
-test('Stage104 allows sorting once in day-map precompute and avoids render-time full-list work', () => {
+test('Stage104 avoids render-time full-list work without depending on brittle JSX closing text', () => {
   assert.match(calendar, /function\s+buildEntriesByDayKey[\s\S]*sortCalendarEntriesForDisplay\(dayEntries\)/);
   assert.equal(countMatches(calendar, /sortCalendarEntriesForDisplay\(dayEntries\)/g), 1, 'dayEntries should only be sorted in buildEntriesByDayKey');
 
-  const monthRender = sliceBetween('{calendarView === \'month\' ? (', '<CalendarSelectedDayTileV9');
-  assert.doesNotMatch(monthRender, /scheduleEntries\s*\.\s*(filter|sort|reduce)\s*\(/, 'month render must not filter/sort/reduce the full scheduleEntries list');
-  assert.match(monthRender, /getPrecomputedEntriesForDay\(entriesByDayKey,\s*day\)/);
+  assert.match(calendar, /\{calendarView\s*===\s*'month'\s*\?\s*\(/, 'month conditional render block missing');
+  assert.match(calendar, /\{calendarView\s*===\s*'week'\s*\?\s*\(/, 'week conditional render block missing');
+  assert.match(calendar, /getPrecomputedEntriesForDay\(entriesByDayKey,\s*day\)/, 'month render must use precomputed month day map');
+  assert.match(calendar, /getPrecomputedEntriesForDay\(weekEntriesByDayKey,\s*day\)/, 'week render must use precomputed week day map');
 
-  const weekRender = sliceBetween('{calendarView === \'week\' ? (', '<\/section>\n          <\/div>\n        ) : null}');
-  assert.doesNotMatch(weekRender, /weekEntries\s*\.\s*(filter|sort|reduce)\s*\(/, 'week render must not filter/sort/reduce the full weekEntries list');
-  assert.match(weekRender, /getPrecomputedEntriesForDay\(weekEntriesByDayKey,\s*day\)/);
+  assert.equal(countMatches(calendar, /scheduleEntries\s*\.\s*(filter|sort|reduce)\s*\(/g), 0, 'Calendar must not filter/sort/reduce the full scheduleEntries list during render');
+  assert.equal(countMatches(calendar, /weekEntries\s*\.\s*(filter|sort|reduce)\s*\(/g), 0, 'Calendar must not filter/sort/reduce the full weekEntries list during render');
 });
 
 test('Stage104 DOM post-processing does not rerun only because selectedDate changes', () => {

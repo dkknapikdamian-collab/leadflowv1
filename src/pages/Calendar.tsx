@@ -55,7 +55,9 @@ import {
   insertEventToSupabase,
   insertTaskToSupabase,
   updateEventInSupabase,
+  updateLeadInSupabase,
   updateTaskInSupabase
+
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { auth } from '../firebase';
@@ -1080,6 +1082,66 @@ export default function Calendar() {
     return { ...bundle, cases: (bundle.cases || []) as any[], clients: clientRows as any[] };
   }
 
+  function applyCalendarShiftOptimisticState(entry: ScheduleEntry, nextStartAt: string, nextEndAt?: string | null) {
+    // STAGE121_CALENDAR_SHIFT_LEAD_BRANCH_AND_OPTIMISTIC_STATE:
+    // Do not show a success toast while the visible calendar still points at the old date.
+    const sourceId = String(entry.sourceId || entry.raw?.id || entry.id || '');
+    const rawLeadId = String(entry.leadId || entry.raw?.leadId || entry.raw?.lead_id || entry.sourceId || '');
+    const nextDate = parseISO(nextStartAt);
+    if (!Number.isNaN(nextDate.getTime())) {
+      setSelectedDate(nextDate);
+      setCurrentMonth(nextDate);
+    }
+
+    setLeads((previousLeads: any[]) => previousLeads.map((lead: any) => {
+      const leadId = String(lead?.id || '');
+      if (!rawLeadId || leadId !== rawLeadId) return lead;
+      const currentItemId = String(lead?.nextActionItemId || lead?.next_action_item_id || '');
+      const canUpdateLeadShadow = !currentItemId || !sourceId || currentItemId === sourceId || entry.kind === 'lead';
+      if (!canUpdateLeadShadow) return lead;
+      return {
+        ...lead,
+        nextActionAt: nextStartAt,
+        next_action_at: nextStartAt,
+        nextActionTitle: lead?.nextActionTitle || lead?.next_action_title || entry.title,
+        next_action_title: lead?.next_action_title || lead?.nextActionTitle || entry.title,
+        nextActionItemId: currentItemId || sourceId || null,
+        next_action_item_id: currentItemId || sourceId || null,
+      };
+    }));
+
+    if (entry.kind === 'event') {
+      setEvents((previousEvents: any[]) => previousEvents.map((row: any) => {
+        const rowId = String(row?.id || '');
+        if (rowId !== sourceId) return row;
+        return {
+          ...row,
+          startAt: nextStartAt,
+          startsAt: nextStartAt,
+          scheduledAt: nextStartAt,
+          endAt: nextEndAt ?? row?.endAt ?? null,
+        };
+      }));
+      return;
+    }
+
+    if (entry.kind === 'task') {
+      setTasks((previousTasks: any[]) => previousTasks.map((row: any) => {
+        const rowId = String(row?.id || '');
+        if (rowId !== sourceId) return row;
+        return {
+          ...row,
+          dueAt: nextStartAt,
+          scheduledAt: nextStartAt,
+          startAt: nextStartAt,
+          startsAt: nextStartAt,
+          date: nextStartAt.slice(0, 10),
+          time: nextStartAt.slice(11, 16),
+        };
+      }));
+    }
+  }
+
   useEffect(() => {
     // STAGE114B_CALENDAR_LIVE_REFRESH_WORKSPACE_READY_CONTRACT: subscribe/refetch only after workspace is fully ready.
     // FAZA4_ETAP44A_CALENDAR_LIVE_REFRESH: refetch mounted Calendar after task/event/lead mutations.
@@ -1530,12 +1592,15 @@ export default function Calendar() {
     }
 
     try {
-      setActionPendingId(`${entry.id}:${days}`);
+      setActionPendingId(String(entry.id) + ':' + String(days));
       const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+      let shiftedStartAt = '';
+      let shiftedEndAt: string | null = null;
 
       if (entry.kind === 'event') {
-        const nextStart = toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.startAt, entry.startsAt)), days));
-        const nextEnd = entry.raw?.endAt
+        const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
+        shiftedStartAt = toDateTimeLocalValue(addDays(baseStart, days));
+        shiftedEndAt = entry.raw?.endAt
           ? toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), days))
           : null;
 
@@ -1543,8 +1608,8 @@ export default function Calendar() {
           id: sourceId,
           title: readCalendarRawText(entry.raw?.title, entry.title),
           type: readCalendarRawText(entry.raw?.type, 'meeting'),
-          startAt: nextStart,
-          endAt: nextEnd,
+          startAt: shiftedStartAt,
+          endAt: shiftedEndAt,
           leadId: readCalendarRawText(entry.raw?.leadId) || null,
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
@@ -1556,6 +1621,7 @@ export default function Calendar() {
           date: format(nextStart, 'yyyy-MM-dd'),
           time: format(nextStart, 'HH:mm'),
         });
+        shiftedStartAt = String(taskPayload.dueAt || toDateTimeLocalValue(nextStart));
 
         await updateTaskInSupabase({
           id: sourceId,
@@ -1570,9 +1636,22 @@ export default function Calendar() {
           leadId: taskPayload.leadId ?? null,
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
+      } else if (entry.kind === 'lead') {
+        const nextStart = addDays(parseISO(entry.startsAt), days);
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        await updateLeadInSupabase({
+          id: sourceId,
+          nextActionAt: shiftedStartAt,
+          nextActionTitle: readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+        });
+      } else {
+        toast.error('Nie można przesunąć tego typu wpisu.');
+        return;
       }
 
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
       await refreshSupabaseBundle();
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
       toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
     } catch (error: any) {
       toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
@@ -1588,13 +1667,15 @@ export default function Calendar() {
     }
 
     try {
-      setActionPendingId(`${entry.id}:h${hours}`);
+      setActionPendingId(String(entry.id) + ':h' + String(hours));
       const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+      let shiftedStartAt = '';
+      let shiftedEndAt: string | null = null;
 
       if (entry.kind === 'event') {
         const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
-        const nextStart = toDateTimeLocalValue(addHours(baseStart, hours));
-        const nextEnd = entry.raw?.endAt
+        shiftedStartAt = toDateTimeLocalValue(addHours(baseStart, hours));
+        shiftedEndAt = entry.raw?.endAt
           ? toDateTimeLocalValue(addHours(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), hours))
           : null;
 
@@ -1602,8 +1683,8 @@ export default function Calendar() {
           id: sourceId,
           title: readCalendarRawText(entry.raw?.title, entry.title),
           type: readCalendarRawText(entry.raw?.type, 'meeting'),
-          startAt: nextStart,
-          endAt: nextEnd,
+          startAt: shiftedStartAt,
+          endAt: shiftedEndAt,
           leadId: readCalendarRawText(entry.raw?.leadId) || null,
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
@@ -1616,6 +1697,7 @@ export default function Calendar() {
           date: format(nextStart, 'yyyy-MM-dd'),
           time: format(nextStart, 'HH:mm'),
         });
+        shiftedStartAt = String(taskPayload.dueAt || toDateTimeLocalValue(nextStart));
 
         await updateTaskInSupabase({
           id: sourceId,
@@ -1630,10 +1712,23 @@ export default function Calendar() {
           leadId: taskPayload.leadId ?? null,
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
+      } else if (entry.kind === 'lead') {
+        const nextStart = addHours(parseISO(entry.startsAt), hours);
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        await updateLeadInSupabase({
+          id: sourceId,
+          nextActionAt: shiftedStartAt,
+          nextActionTitle: readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+        });
+      } else {
+        toast.error('Nie można przesunąć tego typu wpisu.');
+        return;
       }
 
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
       await refreshSupabaseBundle();
-      toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : `Przesunięto o ${hours} godz.`);
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : 'Przesunięto o ' + String(hours) + ' godz.');
     } catch (error: any) {
       toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
     } finally {

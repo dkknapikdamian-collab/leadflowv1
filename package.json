@@ -775,7 +775,8 @@
     "check:stage117-leads-right-rail-layout-contract": "node --test tests/stage117-leads-right-rail-layout-contract.test.cjs",
     "check:stage118b-release-gate-stage77-compat": "node --test tests/stage118b-release-gate-stage77-compat.test.cjs",
     "check:stage118c-release-gate-stage97-workitemcard-compat": "node --test tests/stage118c-release-gate-stage97-workitemcard-compat.test.cjs",
-    "test:stage120-calendar-local-first-sync-and-focus": "node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs"
+    "test:stage120-calendar-local-first-sync-and-focus": "node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs",
+    "test:stage121-calendar-shift-lead-branch": "node --test tests/stage121-calendar-shift-lead-branch-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
