@@ -16,7 +16,7 @@ import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { TopicContactPicker } from '../components/topic-contact-picker';
-import { fetchCalendarBundleFromSupabase } from '../lib/calendar-items';
+import { fetchCalendarBundleFromSupabase, shouldRefreshCalendarAfterGoogleInboundSync, syncGoogleCalendarInboundForCalendar } from '../lib/calendar-items';
 import {
   buildStartEndPair,
   combineScheduleEntries,
@@ -648,6 +648,7 @@ export default function Calendar() {
   const editEntrySubmitLockRef = useRef(false);
   const calendarLoadSeqRef = useRef(0);
   const calendarReadyRetryTimersRef = useRef<number[]>([]);
+  const calendarGoogleInboundRefreshSeqRef = useRef(0);
 
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
@@ -714,6 +715,16 @@ export default function Calendar() {
     if (forcedCalendarView === 'week' || forcedCalendarView === 'month') {
       setCalendarView(forcedCalendarView);
     }
+  }, [searchParams]);
+
+  useEffect(() => {
+    // STAGE120_CALENDAR_FOCUS_QUERY_PARAM_CONTRACT: sidebar mini-calendar links to /calendar?focus=YYYY-MM-DD.
+    const focus = searchParams.get('focus');
+    if (!focus || !/^\d{4}-\d{2}-\d{2}$/.test(focus)) return;
+    const focusedDate = parseISO(focus + 'T12:00:00');
+    if (Number.isNaN(focusedDate.getTime())) return;
+    setSelectedDate(focusedDate);
+    setCurrentMonth(focusedDate);
   }, [searchParams]);
 
   // GOOGLE_CALENDAR_STAGE08C_CALENDAR_QUICK_PARAM_OPEN
@@ -1120,6 +1131,24 @@ export default function Calendar() {
       try {
         if (reason === 'initial') setLoading(true);
         await refreshSupabaseBundle();
+
+        if (reason === 'initial') {
+          // STAGE120_CALENDAR_LOCAL_FIRST_BACKGROUND_GOOGLE_SYNC:
+          // show local Supabase data first, then refresh only if Google inbound sync changed something.
+          const googleSyncRunId = runId;
+          calendarGoogleInboundRefreshSeqRef.current += 1;
+          void syncGoogleCalendarInboundForCalendar()
+            .then((result) => {
+              if (cancelled || googleSyncRunId !== calendarLoadSeqRef.current) return;
+              if (!shouldRefreshCalendarAfterGoogleInboundSync(result)) return;
+              void refreshSupabaseBundle().catch((syncRefreshError: any) => {
+                console.warn('CALENDAR_STAGE120_GOOGLE_INBOUND_REFRESH_FAILED', syncRefreshError);
+              });
+            })
+            .catch((syncError: any) => {
+              console.warn('CALENDAR_STAGE120_GOOGLE_BACKGROUND_SYNC_FAILED', syncError);
+            });
+        }
       } catch (error: any) {
         if (!cancelled && reason === 'initial') {
           toast.error(`Błąd odczytu kalendarza: ${error.message}`);

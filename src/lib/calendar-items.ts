@@ -210,26 +210,60 @@ export function normalizeCalendarEvent(row: Record<string, unknown>): CalendarEv
 }
 
 let lastGoogleCalendarInboundPullAt = 0;
+let googleCalendarInboundPullInFlight: Promise<GoogleCalendarInboundSyncResult | null> | null = null;
 const GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_THROTTLE_MS = 60_000;
 
-async function maybePullGoogleCalendarInboundBeforeBundle() {
-  // GOOGLE_CALENDAR_STAGE10K_AUTO_PULL_BEFORE_BUNDLE
-  if (typeof window === 'undefined') return;
+export type GoogleCalendarInboundSyncResult = {
+  ok?: boolean;
+  connected?: boolean;
+  scanned?: number;
+  created?: number;
+  updated?: number;
+  deleted?: number;
+  conflicts?: Array<{
+    googleEventId?: string;
+    title?: string;
+    startAt?: string | null;
+    endAt?: string | null;
+    conflictCount?: number;
+    message?: string | null;
+  }>;
+};
+
+export function shouldRefreshCalendarAfterGoogleInboundSync(result?: GoogleCalendarInboundSyncResult | null) {
+  if (!result || result.connected === false) return false;
+  return Boolean((result.created || 0) > 0 || (result.updated || 0) > 0 || (result.deleted || 0) > 0);
+}
+
+export async function syncGoogleCalendarInboundForCalendar(options: { force?: boolean } = {}): Promise<GoogleCalendarInboundSyncResult | null> {
+  // STAGE120_CALENDAR_LOCAL_FIRST_READ_GOOGLE_BACKGROUND
+  // Calendar must render local Supabase data first. Google inbound sync is a background refresh, not a bootstrap blocker.
+  if (typeof window === 'undefined') return null;
   const now = Date.now();
-  if (now - lastGoogleCalendarInboundPullAt < GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_THROTTLE_MS) return;
+  if (!options.force && now - lastGoogleCalendarInboundPullAt < GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_THROTTLE_MS) return null;
+  if (googleCalendarInboundPullInFlight) return googleCalendarInboundPullInFlight;
+
   lastGoogleCalendarInboundPullAt = now;
-  try {
-    const result = await syncGoogleCalendarInboundInSupabase({ daysBack: 30, daysForward: 90 });
-    const conflicts = Array.isArray(result?.conflicts) ? result.conflicts : [];
-    if (conflicts.length) {
-      const first = conflicts[0] || {};
-      toast.warning('Konflikt z Google Calendar', {
-        description: first.message || ('Wykryto ' + conflicts.length + ' konfliktów terminów po synchronizacji z Google Calendar.'),
-      });
-    }
-  } catch (error) {
-    console.warn('GOOGLE_CALENDAR_STAGE10K_INBOUND_PULL_FAILED', error);
-  }
+  googleCalendarInboundPullInFlight = syncGoogleCalendarInboundInSupabase({ daysBack: 30, daysForward: 90 })
+    .then((result) => {
+      const conflicts = Array.isArray(result?.conflicts) ? result.conflicts : [];
+      if (conflicts.length) {
+        const first = conflicts[0] || {};
+        toast.warning('Konflikt z Google Calendar', {
+          description: first.message || ('Wykryto ' + conflicts.length + ' konfliktów terminów po synchronizacji z Google Calendar.'),
+        });
+      }
+      return result || null;
+    })
+    .catch((error) => {
+      console.warn('GOOGLE_CALENDAR_STAGE120_BACKGROUND_INBOUND_PULL_FAILED', error);
+      return null;
+    })
+    .finally(() => {
+      googleCalendarInboundPullInFlight = null;
+    });
+
+  return googleCalendarInboundPullInFlight;
 }
 
 // P0_TODAY_403_RESILIENT_BUNDLE
@@ -239,8 +273,9 @@ export async function fetchCalendarBundleFromSupabase(): Promise<CalendarBundle>
   if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
   await ensureWorkspaceContext();
-
-  await maybePullGoogleCalendarInboundBeforeBundle(); // GOOGLE_CALENDAR_STAGE10N_AUTO_PULL_CALL
+  // STAGE120_CALENDAR_LOCAL_FIRST_READ_GOOGLE_BACKGROUND:
+  // Local Supabase reads must not await Google Calendar inbound sync.
+  // The Calendar page triggers syncGoogleCalendarInboundForCalendar() after the first local render.
 
   const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
     readCollection(() => fetchTasksFromSupabase()),
