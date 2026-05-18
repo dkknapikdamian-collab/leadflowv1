@@ -432,3 +432,8 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Scope: guard compatibility after Stage116 V1 patch.
 - File: `src/pages/TodayStable.tsx`.
 - Decision: preserve WorkItemCard source-of-truth and satisfy legacy Stage76 token guard with explicit compatibility marker.
+## Stage117 Leads right rail layout contract
+
+- Scope: P1 visual/layout fix for /leads.
+- Files: `src/pages/Leads.tsx`, `src/styles/closeflow-leads-right-rail-layout-lock.css`, `tests/stage117-leads-right-rail-layout-contract.test.cjs`, `package.json`.
+- Decision: fix only Leads layout. Do not modify shared operator rail component or other pages in this stage.

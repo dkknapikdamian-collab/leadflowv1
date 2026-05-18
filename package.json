@@ -770,7 +770,8 @@
     "check:stage115c-lead-inline-note-submit-contract": "node --test tests/stage115c-lead-inline-note-submit-contract.test.cjs",
     "check:stage115d-lead-overdue-work-items-red-contract": "node --test tests/stage115-lead-overdue-work-items-red-contract.test.cjs",
     "check:stage115e-lead-finance-actions-open-dialog": "node --test tests/stage115-lead-finance-actions-open-dialog.test.cjs",
-    "check:stage116-today-work-item-card-source-truth": "node --test tests/stage116-today-work-item-card-source-truth.test.cjs"
+    "check:stage116-today-work-item-card-source-truth": "node --test tests/stage116-today-work-item-card-source-truth.test.cjs",
+    "check:stage117-leads-right-rail-layout-contract": "node --test tests/stage117-leads-right-rail-layout-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -418,3 +418,9 @@ Chroni:
 - Script: `npm run check:stage116-today-work-item-card-source-truth`
 - Purpose: Today task/event cards must use `WorkItemCard` as source-of-truth for type/title/date/status/Zrobione and status tones.
 - Marker: STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH
+## Stage117 - Leads right rail layout contract
+
+- Guard: `tests/stage117-leads-right-rail-layout-contract.test.cjs`
+- Script: `npm run check:stage117-leads-right-rail-layout-contract`
+- Purpose: /leads right rail must start at search anchor, render simple filters first, top value below, and avoid overlap at desktop zooms and mobile.
+- Marker: STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT

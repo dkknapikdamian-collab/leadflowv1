@@ -93,6 +93,8 @@ const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma
 const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
+const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
+void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -925,13 +927,14 @@ export default function Leads() {
 STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
         <div
           className="layout-list"
+          data-stage117-leads-right-rail-layout="true"
           data-cf-right-rail-layout-source="shared"
           data-stage25-leads-layout-list="true"
           data-stage32-leads-value-layout="true"
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className="search" data-leads-search="true">
+            <div className="search" data-leads-search="true" data-stage117-leads-search-anchor="true">
               <span aria-hidden="true">?</span>
               <input
                 placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
@@ -948,7 +951,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
 
             {searchQuery.trim() ? (
               leadSearchSuggestions.length ? (
-                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true">
+                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true">
                   {leadSearchSuggestions.map((suggestion, index) => (
                     <Link key={suggestion.id} to={`/leads/${suggestion.id}`}>
                       <span>{index + 1}. {suggestion.name}</span>
@@ -958,13 +961,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
                   ))}
                 </div>
               ) : (
-                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true">
+                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true">
                   <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
 
-            <div className="table-card lead-table-card" data-stage25-lead-table-card="true">
+            <div className="table-card lead-table-card" data-stage25-lead-table-card="true" data-stage117-leads-list="true">
               {loading || workspaceLoading ? (
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
@@ -1057,8 +1060,9 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
             </div>
           </div>
 
-          <div className="lead-right-rail cf-operator-right-rail" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
+          <div className="lead-right-rail cf-operator-right-rail" data-stage117-leads-right-rail="true" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
             {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-stage32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
+            {/* STAGE117_RAIL_ORDER_SIMPLE_FILTERS_FIRST */}
             <SimpleFiltersCard
               className="lead-right-card operator-simple-filters-card"
               title="Filtry proste"
@@ -1108,6 +1112,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
               ]}
             />
 
+            {/* STAGE117_RAIL_ORDER_TOP_VALUE_BELOW_FILTERS */}
             <TopValueRecordsCard
               title="Najcenniejsze leady"
               className="lead-right-card operator-top-value-card"

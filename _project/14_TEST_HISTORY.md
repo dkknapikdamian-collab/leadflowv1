@@ -580,3 +580,8 @@ Expected gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smok
 - Planned/Run by package: `npm run check:todaystable-next7-v30`.
 - Planned/Run by package: `node --test tests/stage116-today-work-item-card-source-truth.test.cjs`.
 - Planned/Run by package: `npm run build`.
+## Stage117 - Leads right rail layout contract
+
+- Planned/Run by package: `npm run check:stage117-leads-right-rail-layout-contract`.
+- Planned/Run by package: `npm run build`.
+- Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.

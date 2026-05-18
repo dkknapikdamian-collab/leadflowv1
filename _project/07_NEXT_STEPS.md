@@ -305,3 +305,8 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 - Manual QA: /today task/event rows and Najbliższe 7 dni task/event rows.
 - If accepted, plan Stage117 to migrate Calendar selected-day/week-plan to the same card contract.
 - Do not migrate LeadDetail/ClientDetail/CaseDetail in this stage.
+## Stage117 next step
+
+- Manual QA: /leads at 80%, 90%, 100% zoom and mobile width.
+- Confirm Filtry proste starts level with search, Najcenniejsze leady sits directly below, no overlap or squeezed rail.
+- If accepted, continue with next P1 visual/layout item.

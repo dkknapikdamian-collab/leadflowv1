@@ -72,3 +72,126 @@
     order: 10 !important;
   }
 }
+
+/* STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT
+   owner: CloseFlow Visual System
+   scope: /leads layout only
+   rule: search is the left-column anchor; right rail starts at the same grid row, SimpleFiltersCard is first, TopValueRecordsCard is directly below, no overlap at 80/90/100 zoom.
+*/
+@media (min-width: 1080px) {
+  #root .cf-html-view.main-leads-html .layout-list[data-stage117-leads-right-rail-layout='true'] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, min(32vw, var(--cf-right-rail-width-max, 340px))) !important;
+    grid-template-areas:
+      "search rail"
+      "suggestions rail"
+      "list rail" !important;
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+    align-items: start !important;
+    column-gap: clamp(14px, 1.8vw, 22px) !important;
+    row-gap: 12px !important;
+    overflow: visible !important;
+  }
+
+  #root .cf-html-view.main-leads-html .layout-list[data-stage117-leads-right-rail-layout='true'] > .stack {
+    display: contents !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-search-anchor='true'] {
+    grid-area: search !important;
+    min-width: 0 !important;
+    align-self: start !important;
+    margin: 0 !important;
+    z-index: 1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-search-suggestions='true'] {
+    grid-area: suggestions !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    z-index: 1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-list='true'] {
+    grid-area: list !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-right-rail='true'] {
+    grid-area: rail !important;
+    grid-column: 2 !important;
+    grid-row: 1 / span 3 !important;
+    align-self: start !important;
+    width: 100% !important;
+    min-width: 280px !important;
+    max-width: var(--cf-right-rail-width-max, 340px) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: 0 !important;
+    overflow: visible !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-right-rail='true'] :is(.operator-simple-filters-card, [data-testid='leads-simple-filters-card']) {
+    order: 0 !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: 1 !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-right-rail='true'] .operator-top-value-card {
+    order: 1 !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    position: relative !important;
+    top: auto !important;
+    transform: none !important;
+    z-index: 1 !important;
+  }
+}
+
+@media (max-width: 1079px) {
+  #root .cf-html-view.main-leads-html .layout-list[data-stage117-leads-right-rail-layout='true'] {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-areas:
+      "search"
+      "suggestions"
+      "rail"
+      "list" !important;
+    gap: 12px !important;
+    overflow: visible !important;
+  }
+
+  #root .cf-html-view.main-leads-html .layout-list[data-stage117-leads-right-rail-layout='true'] > .stack {
+    display: contents !important;
+  }
+
+  #root .cf-html-view.main-leads-html [data-stage117-leads-search-anchor='true'] { grid-area: search !important; }
+  #root .cf-html-view.main-leads-html [data-stage117-leads-search-suggestions='true'] { grid-area: suggestions !important; }
+  #root .cf-html-view.main-leads-html [data-stage117-leads-right-rail='true'] {
+    grid-area: rail !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    top: auto !important;
+    transform: none !important;
+  }
+  #root .cf-html-view.main-leads-html [data-stage117-leads-list='true'] { grid-area: list !important; min-width: 0 !important; }
+  #root .cf-html-view.main-leads-html [data-stage117-leads-right-rail='true'] :is(.operator-simple-filters-card, [data-testid='leads-simple-filters-card']) { order: 0 !important; margin: 0 !important; }
+  #root .cf-html-view.main-leads-html [data-stage117-leads-right-rail='true'] .operator-top-value-card { order: 1 !important; margin: 0 !important; padding-top: 0 !important; }
+}

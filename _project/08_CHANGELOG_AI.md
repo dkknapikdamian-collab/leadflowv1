@@ -516,3 +516,9 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 
 - Added TodayStable compatibility literal for legacy Stage76 event-done guard after moving event done UI to WorkItemCard.
 - No visual behavior change; this only protects the existing Stage76 guard contract.
+## Stage117 Leads right rail layout contract
+
+- Added explicit /leads Stage117 layout markers.
+- Right rail now uses search/suggestions/list/rail grid areas.
+- Simple filters are locked first and top-value card directly below.
+- Mobile layout stacks search, suggestions, rail and list without squeeze.
