@@ -553,3 +553,13 @@ Expected gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smok
 - Planned/Run by package: `node --test tests/stage115-lead-overdue-work-items-red-contract.test.cjs`.
 - Planned/Run by package: `npm run build`.
 - Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.
+
+## Stage115E - LeadDetail finance actions dialog
+
+- Planned/Run by package: `node --test tests/stage115-lead-contact-card-client-parity.test.cjs`.
+- Planned/Run by package: `node --test tests/stage115-lead-notes-visible-source-contract.test.cjs`.
+- Planned/Run by package: `node --test tests/stage115c-lead-inline-note-submit-contract.test.cjs`.
+- Planned/Run by package: `node --test tests/stage115-lead-overdue-work-items-red-contract.test.cjs`.
+- Planned/Run by package: `node --test tests/stage115-lead-finance-actions-open-dialog.test.cjs`.
+- Planned/Run by package: `npm run build`.
+- Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.

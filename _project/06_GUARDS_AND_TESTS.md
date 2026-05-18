@@ -404,3 +404,10 @@ Chroni:
 - Script: `npm run check:stage115d-lead-overdue-work-items-red-contract`
 - Purpose: overdue LeadDetail work items must show `Zaległe`, use red/danger styling, and remove mojibake separators.
 - Marker: STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT
+
+## Stage115E - LeadDetail finance actions dialog contract
+
+- Guard: `tests/stage115-lead-finance-actions-open-dialog.test.cjs`
+- Script: `npm run check:stage115e-lead-finance-actions-open-dialog`
+- Purpose: LeadDetail finance actions must open typed payment dialogs and persist payment records.
+- Marker: STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT

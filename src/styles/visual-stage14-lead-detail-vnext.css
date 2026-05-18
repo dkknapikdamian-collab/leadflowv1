@@ -1134,3 +1134,31 @@
   background: #fef2f2;
   color: #dc2626;
 }
+
+
+/* STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT */
+.lead-detail-finance-dialog [data-stage115e-lead-payment-dialog='true'],
+.lead-detail-finance-dialog-form {
+  color: #111827;
+}
+
+.lead-detail-finance-dialog-summary {
+  display: grid;
+  gap: 8px;
+  border: 1px solid #e4e7ec;
+  border-radius: 18px;
+  background: #f8fafc;
+  padding: 12px;
+}
+
+.lead-detail-finance-dialog-summary span {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #475467;
+  font-size: 13px;
+}
+
+.lead-detail-finance-dialog-summary strong {
+  color: #111827;
+}

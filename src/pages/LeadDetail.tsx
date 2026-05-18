@@ -18,6 +18,8 @@ const STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT = 'LeadDetail history note subm
 void STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT;
 const STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT = 'LeadDetail overdue work items show Zaległe with red danger tone and readable separators';
 void STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT;
+const STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT = 'LeadDetail finance actions open payment dialog and persist payment records';
+void STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT;
 const CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP_V1 = 'Lead status visible in header, duplicated right-rail status card removed';
 const STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL = 'LeadDetail header renders lead status pill once in title row';
 void STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL;
@@ -61,8 +63,10 @@ import {
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
   fetchLeadByIdFromSupabase,
+  fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   insertActivityToSupabase,
+  createPaymentInSupabase,
   insertEventToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
@@ -289,6 +293,8 @@ function billingStatusLabel(status?: string) {
       return 'Opłacone';
     case 'awaiting_payment':
       return 'Czeka na płatność';
+    case 'source_only':
+      return 'Źródłowe dane leada';
     case 'not_started':
       return 'Brak wpłaty';
     default:
@@ -478,6 +484,11 @@ export default function LeadDetail() {
   });
   const [startServiceSuccess, setStartServiceSuccess] = useState<{ caseId: string; title: string } | null>(null);
   const [linkedEntryActionId, setLinkedEntryActionId] = useState<string | null>(null);
+  const [leadPayments, setLeadPayments] = useState<any[]>([]);
+  const [leadPaymentDialogType, setLeadPaymentDialogType] = useState<'deposit' | 'partial' | null>(null);
+  const [leadPaymentAmount, setLeadPaymentAmount] = useState('');
+  const [leadPaymentNote, setLeadPaymentNote] = useState('');
+  const [leadPaymentSaving, setLeadPaymentSaving] = useState(false);
   const [editLinkedTask, setEditLinkedTask] = useState<any | null>(null);
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
@@ -490,12 +501,13 @@ export default function LeadDetail() {
     setLoading(true);
     setLoadError(null);
     try {
-      const [leadRow, caseRows, taskRows, eventRows, activityRows] = await Promise.all([
+      const [leadRow, caseRows, taskRows, eventRows, activityRows, paymentRows] = await Promise.all([
         fetchLeadByIdFromSupabase(leadId),
         fetchCasesFromSupabase(),
         fetchTasksFromSupabase(),
         fetchEventsFromSupabase(),
         fetchActivitiesFromSupabase({ leadId, limit: 100 }),
+        fetchPaymentsFromSupabase({ leadId }),
       ]);
 
       const allCaseRows = Array.isArray(caseRows) ? (caseRows as Record<string, unknown>[]) : [];
@@ -522,6 +534,7 @@ export default function LeadDetail() {
       setLinkedTasks(linkedTaskRows);
       setLinkedEvents(linkedEventRows);
       setActivities(Array.isArray(activityRows) ? activityRows : []);
+      setLeadPayments(Array.isArray(paymentRows) ? paymentRows : []);
       setLinkCaseId(currentCase?.id ? String(currentCase.id) : '');
       setCreateCaseDraft({
         title: `${String((leadRow as any)?.name || 'Lead').trim() || 'Lead'} - obsługa`,
@@ -567,13 +580,28 @@ export default function LeadDetail() {
   const leadFinance = useMemo(() => getLeadFinance(lead), [lead]);
   const leadFinancePanel = useMemo(() => {
     const potential = Math.max(0, Number(leadFinance.dealValue || 0));
+    const amountOfPayment = (payment: any) =>
+      Number(
+        payment?.amount ??
+          payment?.grossAmount ??
+          payment?.totalAmount ??
+          payment?.value ??
+          payment?.price ??
+          0,
+      ) || 0;
+    const paidFromPayments = leadPayments
+      .filter((payment) => isPaidPaymentStatus(payment?.status))
+      .reduce((sum, payment) => sum + amountOfPayment(payment), 0);
+    const paidFromLead = Number(lead?.paidAmount ?? lead?.paid_amount ?? 0) || 0;
+    const paid = Math.max(0, paidFromPayments, paidFromLead);
+    const remaining = Math.max(0, potential - paid);
     return {
       potential,
-      paid: 0,
-      remaining: potential,
-      billingStatus: 'source_only',
+      paid,
+      remaining,
+      billingStatus: deriveBillingStatus(potential, paid, leadPayments),
     };
-  }, [leadFinance.dealValue]);
+  }, [lead, leadFinance.dealValue, leadPayments]);
 
   const leadSourceNoteText = useMemo(() => {
     return (
@@ -639,6 +667,72 @@ export default function LeadDetail() {
     openLeadContextAction('event');
   };
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    setLeadPaymentDialogType(type);
+    setLeadPaymentAmount('');
+    setLeadPaymentNote('');
+  };
+
+  const closeLeadPaymentDialog = () => {
+    if (leadPaymentSaving) return;
+    setLeadPaymentDialogType(null);
+    setLeadPaymentAmount('');
+    setLeadPaymentNote('');
+  };
+
+  const handleSaveLeadPayment = async (event?: FormEvent) => {
+    event?.preventDefault();
+    if (!leadId || !leadPaymentDialogType) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+
+    const amount = Number(String(leadPaymentAmount || '').replace(',', '.'));
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Podaj poprawną kwotę płatności.');
+      return;
+    }
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+
+    const paidAt = new Date().toISOString();
+    const currency = leadFinance.currency || 'PLN';
+    const paymentType = leadPaymentDialogType;
+    const paymentLabel = paymentType === 'deposit' ? 'Zaliczka' : 'Płatność częściowa';
+
+    try {
+      setLeadPaymentSaving(true);
+      await createPaymentInSupabase({
+        leadId,
+        caseId: serviceCaseId || null,
+        clientId: lead?.clientId ? String(lead.clientId) : null,
+        type: paymentType,
+        status: 'paid',
+        amount,
+        currency,
+        paidAt,
+        note: leadPaymentNote.trim(),
+        workspaceId,
+      });
+
+      await addActivity('payment_recorded', {
+        type: paymentType,
+        label: paymentLabel,
+        amount,
+        currency,
+        paidAt,
+        note: leadPaymentNote.trim(),
+      });
+
+      toast.success(`${paymentLabel} zapisana`);
+      setLeadPaymentDialogType(null);
+      setLeadPaymentAmount('');
+      setLeadPaymentNote('');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Nie udało się zapisać płatności: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLeadPaymentSaving(false);
+    }
   };
 
 useEffect(() => {
@@ -1634,16 +1728,16 @@ useEffect(() => {
               {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
             </section>
 
-            <section className="right-card lead-detail-right-card" data-lead-finance-panel="true">
+            <section className="right-card lead-detail-right-card" data-lead-finance-panel="true" data-stage115e-lead-finance-actions="true">
               <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse leada</h2></div>
               <small>Potencjał: {Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
               <small>Wpłacono: {Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
               <small>Do zapłaty: {Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Status płatności: {billingStatusLabel(String(lead?.billingStatus || leadFinancePanel.billingStatus || 'not_started'))}</small>
+              <small>Status płatności: {billingStatusLabel(String(leadFinancePanel.billingStatus || lead?.billingStatus || 'not_started'))}</small>
               {!leadInService ? (
                 <div className="lead-detail-right-actions">
-                  <button type="button" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
-                  <button type="button" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
+                  <button type="button" data-stage115e-open-deposit-payment="true" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
+                  <button type="button" data-stage115e-open-partial-payment="true" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
                 </div>
               ) : null}
             </section>
@@ -1700,6 +1794,46 @@ useEffect(() => {
               {linkCaseId ? <Button type="button" variant="outline" onClick={handleLinkExistingCase} disabled={linkingCase}>{linkingCase ? 'Podpinam...' : 'Podepnij sprawę'}</Button> : null}
               <Button type="button" onClick={handleStartService} disabled={createCasePending}>{createCasePending ? 'Tworzę...' : 'Rozpocznij obsługę'}</Button>
             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+
+        <Dialog open={Boolean(leadPaymentDialogType)} onOpenChange={(open) => !open && closeLeadPaymentDialog()}>
+          <DialogContent className="lead-detail-finance-dialog" data-stage115e-lead-payment-dialog="true">
+            <DialogHeader>
+              <DialogTitle>{leadPaymentDialogType === 'deposit' ? 'Dodaj zaliczkę' : 'Płatność częściowa'}</DialogTitle>
+            </DialogHeader>
+            <form className="lead-detail-dialog-grid lead-detail-finance-dialog-form" onSubmit={handleSaveLeadPayment}>
+              <div className="lead-detail-finance-dialog-summary">
+                <span>Potencjał: <strong>{Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+                <span>Wpłacono: <strong>{Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+                <span>Do zapłaty: <strong>{Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+              </div>
+              <Label>Kwota
+                <Input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={leadPaymentAmount}
+                  onChange={(event) => setLeadPaymentAmount(event.target.value)}
+                  placeholder="0,00"
+                  autoFocus
+                />
+              </Label>
+              <Label>Notatka
+                <Textarea
+                  value={leadPaymentNote}
+                  onChange={(event) => setLeadPaymentNote(event.target.value)}
+                  placeholder="Opcjonalnie: czego dotyczy płatność"
+                />
+              </Label>
+              <DialogFooter className={modalFooterClass()}>
+                <Button type="button" variant="outline" onClick={closeLeadPaymentDialog} disabled={leadPaymentSaving}>Anuluj</Button>
+                <Button type="submit" disabled={leadPaymentSaving || !leadPaymentAmount.trim()}>
+                  {leadPaymentSaving ? 'Zapisuję...' : 'Zapisz płatność'}
+                </Button>
+              </DialogFooter>
+            </form>
           </DialogContent>
         </Dialog>
 

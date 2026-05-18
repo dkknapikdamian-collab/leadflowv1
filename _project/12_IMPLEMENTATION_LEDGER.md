@@ -414,3 +414,9 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Scope: P1 UX/status correctness for LeadDetail overdue task/work item visibility.
 - Files: `src/pages/LeadDetail.tsx`, `src/styles/visual-stage14-lead-detail-vnext.css`, `tests/stage115-lead-overdue-work-items-red-contract.test.cjs`, `package.json`.
 - Decision: overdue status is derived from date + non-done status, not stored as a separate task status.
+
+## Stage115E LeadDetail finance actions dialog
+
+- Scope: P1 functional repair for LeadDetail finance buttons.
+- Files: `src/pages/LeadDetail.tsx`, `src/styles/visual-stage14-lead-detail-vnext.css`, `tests/stage115-lead-finance-actions-open-dialog.test.cjs`, `package.json`.
+- Decision: use existing payments API for minimal working repair. Do not build invoice/accounting workflow here.

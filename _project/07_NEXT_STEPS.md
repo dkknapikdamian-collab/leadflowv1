@@ -294,3 +294,8 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 - Damian manual check: create or find a lead task with a date in the past and status todo/open. Expected: `Zaległe` red pill in work list and nearest action.
 - If confirmed, continue Stage115E finance repair.
 - Do not mix finance with overdue logic.
+
+## Stage115E next step
+
+- Damian manual check: click Dodaj zaliczkę and Płatność częściowa in /leads/:id. Expected: modal opens, positive amount saves, finance panel refreshes.
+- After manual QA, close Stage115 LeadDetail P1 batch or schedule full finance unification.

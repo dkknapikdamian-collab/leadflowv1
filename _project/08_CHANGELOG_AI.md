@@ -498,3 +498,9 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - Timeline tasks/events with past date and open status now render `Zaległe`.
 - Added red danger pill and overdue row styling.
 - Replaced mojibake separator `â”¬Ě` with `•`.
+
+## Stage115E LeadDetail finance actions dialog
+
+- Wired LeadDetail finance action buttons to a typed payment dialog.
+- LeadDetail now fetches lead payments and derives paid/remaining/status from payment records.
+- Saving a lead payment creates a payment and a payment_recorded activity.
