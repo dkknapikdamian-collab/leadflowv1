@@ -1117,9 +1117,13 @@ export default function Calendar() {
         return {
           ...row,
           startAt: nextStartAt,
+          start_at: nextStartAt,
           startsAt: nextStartAt,
+          starts_at: nextStartAt,
           scheduledAt: nextStartAt,
-          endAt: nextEndAt ?? row?.endAt ?? null,
+          scheduled_at: nextStartAt,
+          endAt: nextEndAt ?? row?.endAt ?? row?.end_at ?? null,
+          end_at: nextEndAt ?? row?.end_at ?? row?.endAt ?? null,
         };
       }));
       return;
@@ -1132,9 +1136,13 @@ export default function Calendar() {
         return {
           ...row,
           dueAt: nextStartAt,
+          due_at: nextStartAt,
           scheduledAt: nextStartAt,
+          scheduled_at: nextStartAt,
           startAt: nextStartAt,
+          start_at: nextStartAt,
           startsAt: nextStartAt,
+          starts_at: nextStartAt,
           date: nextStartAt.slice(0, 10),
           time: nextStartAt.slice(11, 16),
         };
@@ -1614,14 +1622,25 @@ export default function Calendar() {
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       } else if (entry.kind === 'task') {
-        const nextStart = addDays(parseISO(getTaskStartAt(entry.raw) || entry.startsAt), days);
-        const taskPayload = syncTaskDerivedFields({
+        // STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE:
+        // syncTaskDerivedFields prefers scheduledAt, so the shifted value must overwrite
+        // scheduledAt/scheduled_at before normalization. Otherwise dueAt loses to the old date.
+        const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
+        const nextStart = addDays(baseStart, days);
+        const shiftedDate = format(nextStart, 'yyyy-MM-dd');
+        const shiftedTime = format(nextStart, 'HH:mm');
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        const shiftedTaskDraft = {
           ...entry.raw,
-          dueAt: toDateTimeLocalValue(nextStart),
-          date: format(nextStart, 'yyyy-MM-dd'),
-          time: format(nextStart, 'HH:mm'),
-        });
-        shiftedStartAt = String(taskPayload.dueAt || toDateTimeLocalValue(nextStart));
+          scheduledAt: shiftedStartAt,
+          scheduled_at: shiftedStartAt,
+          dueAt: shiftedStartAt,
+          due_at: shiftedStartAt,
+          date: shiftedDate,
+          time: shiftedTime,
+        };
+        const taskPayload = syncTaskDerivedFields(shiftedTaskDraft);
+        shiftedStartAt = String(taskPayload.scheduledAt || taskPayload.dueAt || shiftedStartAt);
 
         await updateTaskInSupabase({
           id: sourceId,
@@ -1633,8 +1652,8 @@ export default function Calendar() {
           time: taskPayload.time,
           status: taskPayload.status,
           priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
-          leadId: taskPayload.leadId ?? null,
-          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+          leadId: (taskPayload as any).leadId ?? (taskPayload as any).lead_id ?? null,
+          caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
         });
       } else if (entry.kind === 'lead') {
         const nextStart = addDays(parseISO(entry.startsAt), days);
@@ -1689,15 +1708,24 @@ export default function Calendar() {
           caseId: readCalendarRawText(entry.raw?.caseId) || null,
         });
       } else if (entry.kind === 'task') {
+        // STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE_HOURS:
+        // See day shift branch: scheduledAt/scheduled_at must be overwritten before normalization.
         const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
         const nextStart = addHours(baseStart, hours);
-        const taskPayload = syncTaskDerivedFields({
+        const shiftedDate = format(nextStart, 'yyyy-MM-dd');
+        const shiftedTime = format(nextStart, 'HH:mm');
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        const shiftedTaskDraft = {
           ...entry.raw,
-          dueAt: toDateTimeLocalValue(nextStart),
-          date: format(nextStart, 'yyyy-MM-dd'),
-          time: format(nextStart, 'HH:mm'),
-        });
-        shiftedStartAt = String(taskPayload.dueAt || toDateTimeLocalValue(nextStart));
+          scheduledAt: shiftedStartAt,
+          scheduled_at: shiftedStartAt,
+          dueAt: shiftedStartAt,
+          due_at: shiftedStartAt,
+          date: shiftedDate,
+          time: shiftedTime,
+        };
+        const taskPayload = syncTaskDerivedFields(shiftedTaskDraft);
+        shiftedStartAt = String(taskPayload.scheduledAt || taskPayload.dueAt || shiftedStartAt);
 
         await updateTaskInSupabase({
           id: sourceId,
@@ -1709,8 +1737,8 @@ export default function Calendar() {
           time: taskPayload.time,
           status: taskPayload.status,
           priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
-          leadId: taskPayload.leadId ?? null,
-          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+          leadId: (taskPayload as any).leadId ?? (taskPayload as any).lead_id ?? null,
+          caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
         });
       } else if (entry.kind === 'lead') {
         const nextStart = addHours(parseISO(entry.startsAt), hours);
