@@ -442,3 +442,35 @@ STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
 - Guard blocks `useWorkspace` imported from React and requires `../hooks/useWorkspace`.
 - Guard checks that CaseDetail import zone does not hide import-like text in block comments.
 
+
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST START -->
+## Stage119 - Calendar release gate trust guard
+
+Added:
+- tests/stage119-calendar-release-gate-trust.test.cjs
+
+Required commands:
+- node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
+- node --test tests/stage119-calendar-release-gate-trust.test.cjs
+- npm run verify:closeflow:quiet
+
+Rule:
+- Stage98 calendar mojibake guard must be a single pre-build hard gate in scripts/closeflow-release-check-quiet.cjs.
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST END -->
+
+<!-- STAGE119_V2_CALENDAR_RELEASE_GATE_TRUST_REPAIR -->
+## 2026-05-18 - Stage119 V2 calendar release gate trust repair
+
+- Guard: `tests/stage119-calendar-release-gate-trust.test.cjs`.
+- Stage98 guard file is copied before Stage98 is run.
+- Stage98 active roots: `src`, `tests`, `scripts`.
+- Quiet gate has one Stage119 preflight before production build.
+<!-- /STAGE119_V2_CALENDAR_RELEASE_GATE_TRUST_REPAIR -->
+
+<!-- STAGE119_V3_RELEASE_GATE_GUARD_FALSE_POSITIVE_REPAIR -->
+## 2026-05-18 - Stage119 V3 release gate guard false positive repair
+
+- Guard repaired: `tests/stage119-calendar-release-gate-trust.test.cjs` now checks Stage98 preflight and `requiredTests` separately.
+- Release gate normalized to one Stage119 Stage98 preflight before production build.
+- Stage98 active roots remain `src`, `tests`, `scripts`.
+<!-- /STAGE119_V3_RELEASE_GATE_GUARD_FALSE_POSITIVE_REPAIR -->

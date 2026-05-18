@@ -1,17 +1,3 @@
-// STAGE98B_MOJIBAKE_PREFLIGHT_V22_START
-{
-  const { spawnSync } = require('node:child_process');
-  const result = spawnSync(process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs'], { stdio: 'inherit' });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-// STAGE98B_MOJIBAKE_PREFLIGHT_V22_END
-/* STAGE98B_MOJIBAKE_PREFLIGHT_V20_START */
-{
-  const { spawnSync } = require('node:child_process');
-  const stage98bResult = spawnSync(process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs'], { stdio: 'inherit' });
-  if (stage98bResult.status !== 0) process.exit(stage98bResult.status || 1);
-}
-/* STAGE98B_MOJIBAKE_PREFLIGHT_V20_END */
 /* CLOSEFLOW_CASES_LOADER2_IMPORT_GUARD_START */
 {
   const { spawnSync } = require('node:child_process');
@@ -25,19 +11,10 @@ const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
 
-/* STAGE98B_MOJIBAKE_PREFLIGHT_QUIET_GATE */
-{
-  const result = spawnSync(process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs'], {
-    cwd: repoRoot,
-    stdio: 'inherit',
-  });
-  if (result.status !== 0) process.exit(result.status || 1);
-}
-/* STAGE98B_MOJIBAKE_PREFLIGHT_QUIET_GATE_END */
-
-
 const requiredTests = [
-  'tests/stage113-closeflow-logo-source-contract.test.cjs',
+  'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
+  'tests/stage119-calendar-release-gate-trust.test.cjs',
+'tests/stage113-closeflow-logo-source-contract.test.cjs',
   'tests/stage79-release-gate-mass-guard.test.cjs',
   'tests/stage79-today-task-done-action.test.cjs',
   'tests/right-rail-card-source-of-truth.test.cjs',
@@ -188,7 +165,6 @@ const requiredTests = [
   'tests/stage92-calendar-selected-day-readable-actions.test.cjs',
   'tests/stage96-leads-right-rail-width-position.test.cjs',
   'tests/stage97-today-overdue-task-done-button.test.cjs',
-  'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
   'tests/stage99-calendar-active-class-contract.test.cjs',
   'tests/stage100-calendar-week-plan-entry-visible.test.cjs',
   'tests/stage104-calendar-loading-performance-contract.test.cjs',
@@ -197,8 +173,7 @@ const requiredTests = [
   'tests/stage102-calendar-edit-modal-form-source.test.cjs',
   'tests/stage114-calendar-modal-viewport-contract.test.cjs',
   'tests/stage114-calendar-shift-persistence-contract.test.cjs',
-  'tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs',
-  'tests/stage103-calendar-month-grid-day-states.test.cjs',
+  'tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs','tests/stage103-calendar-month-grid-day-states.test.cjs',
   'tests/stage101-calendar-selected-day-one-row-readable.test.cjs',
   'tests/stage105-calendar-modal-no-dark-inputs.test.cjs',
   'tests/stage106-calendar-modal-inverted-visual-contract.test.cjs',
@@ -246,7 +221,6 @@ for (const relativePath of requiredTests) {
   }
 }
 
-
 // CLOSEFLOW_CASE_DETAIL_NO_PARTIAL_LOADING_QUIET_GATE_REPAIR
 runQuiet('case detail no partial loading', process.execPath, [
   'scripts/check-closeflow-case-detail-no-partial-loading.cjs',
@@ -260,10 +234,13 @@ runQuiet('today mobile tile focus', process.execPath, ['scripts/check-closeflow-
 
 runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-trash-actions.cjs']);
 
+// STAGE119_CALENDAR_RELEASE_GATE_TRUST_START
+// Stage98 calendar mojibake guard is the single pre-build hard gate for the quiet release gate.
+// STAGE119_CALENDAR_RELEASE_GATE_TRUST_END
 
-// CLOSEFLOW_STAGE98B_MOJIBAKE_PREFLIGHT
-runQuiet('stage98 mojibake hard gate preflight', process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs']);
-
+// STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_START
+runQuiet('stage98 calendar mojibake hard gate preflight', process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs']);
+// STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_END
 // CLOSEFLOW_QUIET_GATE_VITE_BUILD_RUNNER_2026_05_13
 runQuiet('production build', process.execPath, ['scripts/closeflow-vite-build-runner.mjs']);
 

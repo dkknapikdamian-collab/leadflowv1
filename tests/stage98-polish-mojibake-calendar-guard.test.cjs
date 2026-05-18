@@ -4,7 +4,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const repoRoot = path.resolve(__dirname, '..');
-const roots = ['src', 'tests', 'scripts', '_project'];
+const roots = ['src', 'tests', 'scripts'];
 const excludedDirNames = new Set(['.git', 'node_modules', 'dist', 'build', '.vercel', '.next', '_backup_local']);
 const allowedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs', '.css', '.md', '.json']);
 const cp = (...codes) => String.fromCodePoint(...codes);
@@ -37,9 +37,6 @@ function walk(abs, out = []) {
   if (stat.isDirectory()) {
     const name = path.basename(abs);
     if (excludedDirNames.has(name)) return out;
-    const relative = rel(abs);
-    if (relative.startsWith('_project/stage98b_') && relative.includes('command_logs')) return out;
-    if (relative.startsWith('_project/backups/')) return out;
     for (const child of fs.readdirSync(abs)) walk(path.join(abs, child), out);
   } else {
     out.push(abs);
@@ -50,8 +47,6 @@ function walk(abs, out = []) {
 function shouldScan(relative) {
   if (relative.includes('/.git/') || relative.includes('/node_modules/')) return false;
   if (relative.startsWith('_backup_local/')) return false;
-  if (relative.startsWith('_project/stage98b_') && relative.includes('command_logs')) return false;
-  if (relative.startsWith('_project/backups/')) return false;
   return allowedExtensions.has(path.extname(relative));
 }
 
@@ -61,7 +56,8 @@ function near(text, index) {
   return text.slice(start, end).replace(/\r/g, '\\r').replace(/\n/g, '\\n');
 }
 
-test('Stage98B Polish mojibake is a hard fail in src/tests/scripts/_project', () => {
+test('Stage98B Polish mojibake is a hard fail in active code/test/script sources', () => {
+  assert.equal(roots.includes('_project'), false, 'Stage119: historical _project reports are not active runtime/test/script sources for this hard gate.');
   assert.equal(bannedFragments.some((fragment) => fragment.length === 0), false, 'Stage98B guard cannot use empty banned fragments.');
   const files = roots.flatMap((root) => walk(path.join(repoRoot, root))).map(rel).filter(shouldScan);
   const hits = [];

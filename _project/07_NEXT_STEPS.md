@@ -320,3 +320,28 @@ STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
 3. If CaseDetail is stable, next batch: Radix Dialog Description warning + client should not show leads + lead detail spacing.
 4. Do not mark Stage113/Stage114 as closed until Damian confirms their separate fixes.
 
+
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST START -->
+## Next after Stage119
+
+1. Run ZIP apply with -DoPush.
+2. Confirm verify:closeflow:quiet passes.
+3. Manual QA on /calendar: hard refresh, week/month/selected day, modals, +1H/+1D/+1W, done/delete.
+4. If manual QA still shows calendar P0 issues, prepare the next batch as a runtime/data patch, not another release-gate patch.
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST END -->
+
+<!-- STAGE119_V2_NEXT_CALENDAR_MANUAL_QA -->
+## Stage119 V2 next - calendar manual QA
+
+After Stage119 V2 passes and push completes, Damian should test `/calendar`: hard refresh, week, month, selected day, create/edit modals, +1H, +1D, +1W, Zrobione, Usun.
+
+If manual QA exposes a real runtime issue, make the next package a narrow Calendar P0/P1 fix using the trusted gate.
+<!-- /STAGE119_V2_NEXT_CALENDAR_MANUAL_QA -->
+
+<!-- STAGE119_V3_NEXT_CALENDAR_MANUAL_QA -->
+## Stage119 V3 next - calendar manual QA
+
+After Stage119 V3 passes and push completes, Damian should test `/calendar`: hard refresh, week, month, selected day, create/edit modals, +1H, +1D, +1W, Zrobione, Usun.
+
+If manual QA exposes a real runtime issue, make the next package a narrow Calendar P0/P1 fix using the now-trusted gate.
+<!-- /STAGE119_V3_NEXT_CALENDAR_MANUAL_QA -->

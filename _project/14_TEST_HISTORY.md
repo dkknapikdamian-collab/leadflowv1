@@ -608,3 +608,32 @@ npm run verify:closeflow:quiet
 
 Manual check remains required after push: open `/case/...` and `/cases/...` if available, then hard refresh and confirm no `p.useWorkspace is not a function` and no `APP_ROUTE_RENDER_FAILED`.
 
+
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST START -->
+## Stage119 test history
+
+Planned/required during apply:
+- node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
+- node --test tests/stage119-calendar-release-gate-trust.test.cjs
+- npm run verify:closeflow:quiet
+
+Manual browser QA: pending Damian confirmation.
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST END -->
+
+<!-- STAGE119_V2_TEST_HISTORY -->
+## 2026-05-18 - Stage119 V2 tests
+
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --test tests/stage119-calendar-release-gate-trust.test.cjs`
+- `npm run verify:closeflow:quiet` unless skipped explicitly.
+- Manual `/calendar` QA remains required.
+<!-- /STAGE119_V2_TEST_HISTORY -->
+
+<!-- STAGE119_V3_TEST_HISTORY -->
+## 2026-05-18 - Stage119 V3 tests
+
+- `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`
+- `node --test tests/stage119-calendar-release-gate-trust.test.cjs`
+- `npm run verify:closeflow:quiet` unless skipped explicitly.
+- Manual `/calendar` QA remains required.
+<!-- /STAGE119_V3_TEST_HISTORY -->

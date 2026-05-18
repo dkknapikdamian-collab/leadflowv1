@@ -15,6 +15,7 @@
     "test": "node scripts/run-tests-compact.cjs",
     "test:stage114-calendar-hard-refresh-data-load-contract": "node --test tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs",
     "test:stage114-calendar-shift-persistence-contract": "node --test tests/stage114-calendar-shift-persistence-contract.test.cjs",
+    "test:stage119-calendar-release-gate-trust": "node --test tests/stage119-calendar-release-gate-trust.test.cjs",
     "verify:closeflow": "node scripts/closeflow-release-check.cjs",
     "verify:closeflow:quiet": "node scripts/closeflow-release-check-quiet.cjs",
     "check:operator-rail-stage5": "node scripts/check-operator-rail-stage5.cjs",

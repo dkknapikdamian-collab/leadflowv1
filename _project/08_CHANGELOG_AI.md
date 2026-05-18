@@ -537,3 +537,28 @@ STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
 - Added Stage115 regression tests and quiet release gate wiring.
 - Added project memory and Obsidian updates that explicitly mark Stage113/Stage114 as partial/not closed after Damian's manual test.
 
+
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST START -->
+## Stage119 - Calendar release gate trust repair
+
+- Normalized scripts/closeflow-release-check-quiet.cjs so Stage98 calendar mojibake guard is one pre-build hard gate.
+- Removed duplicated Stage98 preflight blocks from quiet gate.
+- Added tests/stage119-calendar-release-gate-trust.test.cjs.
+- Added package script test:stage119-calendar-release-gate-trust.
+- Updated project memory and Obsidian package files.
+<!-- STAGE119_CALENDAR_RELEASE_GATE_TRUST END -->
+
+<!-- STAGE119_V2_CALENDAR_RELEASE_GATE_TRUST_CHANGELOG -->
+## 2026-05-18 - Stage119 V2 calendar release gate trust repair
+
+- Fixed unsafe Stage119 V1 apply order by copying Stage98 guard before running it.
+- Repaired quiet release gate to use one Stage119 Stage98 preflight before build.
+- Added Stage119 release-gate trust guard and package script.
+<!-- /STAGE119_V2_CALENDAR_RELEASE_GATE_TRUST_CHANGELOG -->
+
+<!-- STAGE119_V3_CHANGELOG -->
+## 2026-05-18 - Stage119 V3 release gate guard false positive repair
+
+- Repaired Stage119 guard false-positive after V2 counted raw Stage98 path occurrences globally.
+- Normalized quiet release gate to one trusted Stage119 preflight.
+<!-- /STAGE119_V3_CHANGELOG -->
