@@ -277,3 +277,8 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 1. Damian: test ręczny /leads/:id: karta kontaktowa po lewej, telefon/e-mail/firma/ostatni kontakt, copy button.
 2. Jeżeli 3.1 OK: osobny podetap Stage115.2 dla notatek leada.
 3. Potem osobno: Stage115.3 overdue taski i Stage115.4 finanse leada, bez mieszania przyczyn w jednym patchu.
+
+## Stage115B next step
+
+- Damian manual check: verify LeadDetail note section placement and content for leads with/without source note and note activity.
+- Continue Stage115 with overdue and finance fixes only after this placement is accepted.

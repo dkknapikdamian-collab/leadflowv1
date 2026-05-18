@@ -383,3 +383,10 @@ Chroni:
 - Cel: LeadDetail nie może mieć własnej wyspy `InfoLine` / `lead-detail-contact-grid`; LeadDetail i ClientDetail mają używać wspólnego `src/components/entity-contact-card.tsx`.
 - Komenda: `node --test tests/stage115-lead-contact-card-client-parity.test.cjs`.
 - Test ręczny: /leads/:id, porównać lewą kartę kontaktową z lewą kartą klienta: telefon, e-mail, firma, ostatni kontakt, ikony, przyciski kopiowania.
+
+## Stage115B - LeadDetail notes visible source contract
+
+- Guard: `tests/stage115-lead-notes-visible-source-contract.test.cjs`
+- Script: `npm run check:stage115-lead-notes-visible-source-contract`
+- Purpose: note from lead creation and latest note activity are rendered in a separate LeadDetail notes section, not inside contact card.
+- Marker: STAGE115B_LEAD_NOTES_VISIBLE_SOURCE_CONTRACT

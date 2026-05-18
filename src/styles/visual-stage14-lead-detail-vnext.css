@@ -1074,3 +1074,45 @@
     width: 100%;
   }
 }
+
+
+/* STAGE115B_LEAD_NOTES_VISIBLE_SOURCE_CONTRACT */
+.lead-detail-notes-section {
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+.lead-detail-notes-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.lead-detail-note-source-card {
+  border: 1px solid #e4e7ec;
+  border-radius: 18px;
+  background: #fff;
+  padding: 14px;
+  display: grid;
+  gap: 6px;
+}
+
+.lead-detail-note-source-card small {
+  display: block;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.02em;
+}
+
+.lead-detail-note-source-card strong {
+  display: block;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.lead-detail-note-source-card p {
+  margin: 0;
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.55;
+}

@@ -396,3 +396,9 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Zakres tej paczki: tylko punkt 3.1 Stage115. Notatki, overdue i finanse zostają jako kolejne podetapy, bo nie było tu pełnej specyfikacji naprawy.
 - Źródło prawdy UI kontaktu: `src/components/entity-contact-card.tsx`.
 - Legacy wygaszone: `LeadDetail.InfoLine`, `lead-detail-contact-grid`, lokalny `ClientDetail.InfoRow`.
+
+## Stage115B LeadDetail notes visible source contract
+
+- Scope: P1 UX/data visibility fix for LeadDetail notes.
+- Files: `src/pages/LeadDetail.tsx`, `src/styles/visual-stage14-lead-detail-vnext.css`, `tests/stage115-lead-notes-visible-source-contract.test.cjs`.
+- Decision: do not render leadPrimaryNoteText inside contact card; keep notes as their own section.

@@ -531,3 +531,9 @@ Expected gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smok
 - Automatyczny guard: `node --test tests/stage115-lead-contact-card-client-parity.test.cjs`.
 - Build: `npm run build` w APPLY script.
 - Test ręczny do wykonania przez Damiana: wejść w dowolny lead i porównać kartę po lewej z kartą klienta. Sprawdzić kopiowanie telefonu/e-maila.
+
+## Stage115B - LeadDetail notes visible source contract
+
+- Planned/Run by package: `node --test tests/stage115-lead-notes-visible-source-contract.test.cjs`
+- Planned/Run by package: `npm run build`
+- Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.

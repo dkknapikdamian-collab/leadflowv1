@@ -547,28 +547,47 @@ export default function LeadDetail() {
     };
   }, [leadFinance.dealValue]);
 
-  const leadPrimaryNoteText = useMemo(() => {
-    const directNote =
+  const leadSourceNoteText = useMemo(() => {
+    return (
       asText(lead?.note) ||
       asText(lead?.notes) ||
       asText(lead?.noteText) ||
-      asText(lead?.note_text);
+      asText(lead?.note_text)
+    );
+  }, [lead?.note, lead?.notes, lead?.noteText, lead?.note_text]);
 
-    if (directNote) return directNote;
-
-    const noteActivities = [...activities]
+  const leadNoteActivityItems = useMemo(() => {
+    return [...activities]
       .filter((activity) => {
-        const type = String(activity?.eventType || activity?.event_type || activity?.type || '').toLowerCase();
-        return type === 'note_added' || type.includes('note');
+        const type = String(activity?.eventType || activity?.event_type || activity?.type || activity?.activityType || '').toLowerCase();
+        return type === 'note_added' || type === 'lead_note_added' || type === 'operator_note' || type.includes('note');
       })
-      .sort((left, right) => {
-        const leftDate = asDate(left?.happenedAt || left?.createdAt || left?.updatedAt);
-        const rightDate = asDate(right?.happenedAt || right?.createdAt || right?.updatedAt);
-        return (rightDate?.getTime() || 0) - (leftDate?.getTime() || 0);
-      });
+      .map((activity, index) => {
+        const payload = activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+        const content =
+          asText(payload?.content) ||
+          asText(payload?.note) ||
+          asText(payload?.text) ||
+          asText(activity?.content) ||
+          asText(activity?.note) ||
+          getActivityDescription(activity);
+        const dateValue = activity?.happenedAt || activity?.createdAt || activity?.updatedAt || payload?.createdAt || payload?.happenedAt;
+        return {
+          id: String(activity?.id || activity?.eventType || activity?.createdAt || index),
+          content,
+          dateValue,
+          dateLabel: formatDateTime(dateValue, 'Brak daty'),
+        };
+      })
+      .filter((entry) => Boolean(entry.content))
+      .sort((left, right) => (asDate(right.dateValue)?.getTime() || 0) - (asDate(left.dateValue)?.getTime() || 0));
+  }, [activities]);
 
-    return noteActivities[0] ? getActivityDescription(noteActivities[0]) : '';
-  }, [activities, lead?.note, lead?.notes, lead?.noteText, lead?.note_text]);
+  const leadPrimaryNoteText = useMemo(() => {
+    return leadSourceNoteText || leadNoteActivityItems[0]?.content || '';
+  }, [leadNoteActivityItems, leadSourceNoteText]);
+
+  const hasLeadNotesStage115B = Boolean(leadSourceNoteText || leadNoteActivityItems.length);
 
 
   const leadServiceLockedMessage = 'Ten temat jest już w obsłudze. Dalszą pracę prowadź w sprawie.';
@@ -1337,7 +1356,6 @@ useEffect(() => {
     );
   }
 
-  const noteText = String(lead.note || lead.notes || 'Brak notatki.');
 
   return (
     <Layout>
@@ -1415,7 +1433,6 @@ useEffect(() => {
               email={String(lead.email || '')}
               company={String(lead.company || 'Brak firmy')}
               lastContact={formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}
-              note={leadPrimaryNoteText || 'Brak notatki.'}
               onCopy={copyValue}
               className="lead-detail-client-parity-contact-card"
               dataStage="stage115-lead-contact-client-parity"
@@ -1423,6 +1440,42 @@ useEffect(() => {
           </aside>
 
           <section className="lead-detail-main-column">
+            <section
+              className="lead-detail-section-card lead-detail-notes-section"
+              data-stage115-lead-notes-section="true"
+              data-lead-primary-note-text={leadPrimaryNoteText ? 'true' : 'false'}
+              aria-label="Notatki leada"
+            >
+              <div className="lead-detail-section-head">
+                <div>
+                  <h2>Notatki leada</h2>
+                  <p>Notatka z tworzenia leada i ostatnia notatka z historii kontaktu.</p>
+                </div>
+              </div>
+              {hasLeadNotesStage115B ? (
+                <div className="lead-detail-notes-stack" data-lead-notes-stack="true">
+                  {leadSourceNoteText ? (
+                    <article className="lead-detail-note-source-card" data-lead-source-note="true">
+                      <small>Notatka źródłowa z leada</small>
+                      <strong>{formatDateTime(lead?.noteUpdatedAt || lead?.updatedAt || lead?.createdAt, 'Brak daty')}</strong>
+                      <p className="lead-detail-note-text" lang="pl-PL">{leadSourceNoteText}</p>
+                    </article>
+                  ) : null}
+                  {leadNoteActivityItems[0] ? (
+                    <article className="lead-detail-note-source-card" data-lead-activity-note="true">
+                      <small>Ostatnia notatka z historii</small>
+                      <strong>{leadNoteActivityItems[0].dateLabel}</strong>
+                      <p className="lead-detail-note-text" lang="pl-PL">{leadNoteActivityItems[0].content}</p>
+                    </article>
+                  ) : null}
+                </div>
+              ) : (
+                <div className="lead-detail-light-empty" data-lead-notes-empty="true">
+                  Brak notatek zapisanych przy tym leadzie.
+                </div>
+              )}
+            </section>
+
           {!leadInService ? (
               <section className="lead-detail-top-grid">
                 <article className="lead-detail-top-card lead-detail-callout-blue">

@@ -479,3 +479,9 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - LeadDetail dostał lewą kartę kontaktową w układzie klienta.
 - ClientDetail używa wspólnej listy danych kontaktowych zamiast lokalnego `InfoRow`.
 - Usunięto lokalną wyspę UI LeadDetail: `InfoLine` / `lead-detail-contact-grid`.
+
+## Stage115B LeadDetail notes visible source contract
+
+- Split LeadDetail note display from contact card.
+- Added dedicated `Notatki leada` section with source lead note and latest note activity.
+- Added guard for source/placement contract.
