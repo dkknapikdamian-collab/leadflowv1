@@ -64,12 +64,12 @@ test('Stage116 every target DialogContent has DialogDescription or explicit aria
 
 test('Stage116 Calendar edit modal is explicitly covered', () => {
   const calendar = read('src/pages/Calendar.tsx');
-  assert.match(calendar, /<DialogDescription>[\s\S]*kalendarz[\s\S]*<\/DialogDescription>/i);
+  assert.match(calendar, /<DialogDescription\b[^>]*>[\s\S]*kalendarz[\s\S]*<\/DialogDescription>/i);
 });
 
 test('Stage116 CaseDetail, LeadDetail and Templates dialogs are explicitly covered', () => {
   for (const relativePath of ['src/pages/CaseDetail.tsx', 'src/pages/LeadDetail.tsx', 'src/pages/Templates.tsx']) {
     const source = read(relativePath);
-    assert.match(source, /<DialogDescription>[\s\S]*<\/DialogDescription>/, `${relativePath} has no DialogDescription`);
+    assert.match(source, /<DialogDescription\b[^>]*>[\s\S]*<\/DialogDescription>/, `${relativePath} has no DialogDescription`);
   }
 });

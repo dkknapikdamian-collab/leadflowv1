@@ -1787,8 +1787,10 @@ export default function Calendar() {
                           </Link>
                           <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
                             <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
-                              <DialogHeader><DialogTitle>Zaplanuj wydarzenie</DialogTitle><DialogDescription className="event-form-vnext-description">Ustaw tytuł, relację, czas, cykliczność i przypomnienia wydarzenia.</DialogDescription>                                <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event">Ustaw termin, powiazanie, przypomnienia i cyklicznosc wydarzenia.</DialogDescription>
-</DialogHeader>
+                                                                      <DialogHeader>
+            <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event">Ustaw termin, powiązanie, przypomnienia i cykliczność wydarzenia w kalendarzu.</DialogDescription>
+          </DialogHeader>
                               <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                                 <div className="space-y-4">
                                   <div className="event-form-field">
@@ -1974,8 +1976,10 @@ export default function Calendar() {
 
         <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
           <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
-            <DialogHeader><DialogTitle>Dodaj zadanie</DialogTitle><DialogDescription className="event-form-vnext-description">Ustaw tytuł, relację, priorytet oraz termin zadania.</DialogDescription>              <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-task">Ustaw termin, priorytet i powiazanie zadania w kalendarzu.</DialogDescription>
-</DialogHeader>
+                                  <DialogHeader>
+            <DialogTitle>Dodaj zadanie</DialogTitle>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-task" data-stage114-calendar-modal-description="create-task">Ustaw termin, priorytet i powiązanie zadania w kalendarzu.</DialogDescription>
+          </DialogHeader>
             <form onSubmit={handleAddTask} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
               <div className="event-form-field">
                 <Label>Tytuł zadania</Label>
@@ -2215,12 +2219,10 @@ export default function Calendar() {
         }
       }}>
         <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode={editEntry?.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
-          <DialogHeader>
+                              <DialogHeader>
             <DialogTitle>Edytuj wpis z kalendarza</DialogTitle>
-            <DialogDescription className="event-form-vnext-description" id="calendar-edit-entry-description">Zmien termin, opis, relacje oraz status wpisu kalendarza.</DialogDescription>
-              <DialogDescription className="event-form-vnext-description" data-stage114-calendar-modal-description="edit-entry">Zmień datę, godzinę, relację lub status wpisu.</DialogDescription>
-                      <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="edit-entry">Zmien termin, typ, powiazanie, przypomnienia albo status wpisu.</DialogDescription>
-</DialogHeader>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="edit-entry" data-stage114-calendar-modal-description="edit-entry">Zmień datę, godzinę, relację, przypomnienia albo status wpisu w kalendarzu.</DialogDescription>
+          </DialogHeader>
           {editEntry && editDraft ? (
             <form onSubmit={handleSaveEdit} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode={editEntry.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
               <div className="event-form-field">
