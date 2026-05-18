@@ -637,3 +637,45 @@ Manual browser QA: pending Damian confirmation.
 - `npm run verify:closeflow:quiet` unless skipped explicitly.
 - Manual `/calendar` QA remains required.
 <!-- /STAGE119_V3_TEST_HISTORY -->
+
+<!-- STAGE119_V4_RELEASE_GATE_REQUIREDTESTS_DEDUPE -->
+## 2026-05-18 - Stage119 V4 - release gate requiredTests dedupe
+
+Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
+
+Fakty:
+- Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
+- Stage119 V4 deduplikuje equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
+
+Testy:
+- 
+ode --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
+- 
+ode --test tests/stage119-calendar-release-gate-trust.test.cjs
+- 
+pm run verify:closeflow:quiet
+
+Test reczny:
+- DO WYKONANIA na /calendar po zielonym gate.
+<!-- /STAGE119_V4_RELEASE_GATE_REQUIREDTESTS_DEDUPE -->
+
+<!-- STAGE119_V5_RELEASE_GATE_HARNESS_AND_MISSING_TESTS_AUDIT -->
+## 2026-05-18 - Stage119 V5 - release gate harness and missing tests audit
+
+Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
+
+Fakty:
+- Apply V5 kopiuje Stage98 i Stage119 przed pierwszym node --test.
+- Wszystkie komendy testowe sa uruchamiane z cwd repo aplikacji.
+- V5 deduplikuje requiredTests i wypisuje wszystkie brakujace testy przed verify:closeflow:quiet.
+
+Testy:
+- node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
+- node --test tests/stage119-calendar-release-gate-trust.test.cjs
+- node tools/audit-stage119-v5-required-tests.cjs <repo>
+- npm run verify:closeflow:quiet
+
+Test reczny:
+- DO WYKONANIA na /calendar po zielonym gate.
+<!-- /STAGE119_V5_RELEASE_GATE_HARNESS_AND_MISSING_TESTS_AUDIT -->

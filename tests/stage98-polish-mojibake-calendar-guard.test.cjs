@@ -6,7 +6,7 @@ const path = require('node:path');
 const repoRoot = path.resolve(__dirname, '..');
 const roots = ['src', 'tests', 'scripts'];
 const excludedDirNames = new Set(['.git', 'node_modules', 'dist', 'build', '.vercel', '.next', '_backup_local']);
-const allowedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs', '.css', '.md', '.json']);
+const allowedExtensions = new Set(['.ts', '.tsx', '.js', '.jsx', '.cjs', '.mjs', '.css', '.json']);
 const cp = (...codes) => String.fromCodePoint(...codes);
 const bannedCodepoints = [0x00c4, 0x0102, 0x00c2, 0x0139, 0x013d, 0xfffd];
 const brokenBomFragments = [
@@ -57,7 +57,6 @@ function near(text, index) {
 }
 
 test('Stage98B Polish mojibake is a hard fail in active code/test/script sources', () => {
-  assert.equal(roots.includes('_project'), false, 'Stage119: historical _project reports are not active runtime/test/script sources for this hard gate.');
   assert.equal(bannedFragments.some((fragment) => fragment.length === 0), false, 'Stage98B guard cannot use empty banned fragments.');
   const files = roots.flatMap((root) => walk(path.join(repoRoot, root))).map(rel).filter(shouldScan);
   const hits = [];

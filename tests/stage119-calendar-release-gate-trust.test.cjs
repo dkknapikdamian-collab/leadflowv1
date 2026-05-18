@@ -3,62 +3,82 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const root = path.resolve(__dirname, '..');
-const releaseGatePath = path.join(root, 'scripts', 'closeflow-release-check-quiet.cjs');
-const stage98Path = path.join(root, 'tests', 'stage98-polish-mojibake-calendar-guard.test.cjs');
-const packagePath = path.join(root, 'package.json');
-const stage98TestPath = 'tests/stage98-polish-mojibake-calendar-guard.test.cjs';
-const stage119TestPath = 'tests/stage119-calendar-release-gate-trust.test.cjs';
+const repoRoot = path.resolve(__dirname, '..');
+const gatePath = path.join(repoRoot, 'scripts', 'closeflow-release-check-quiet.cjs');
+const stage98 = 'tests/stage98-polish-mojibake-calendar-guard.test.cjs';
+const stage119 = 'tests/stage119-calendar-release-gate-trust.test.cjs';
 
-function count(text, needle) {
-  return (text.match(new RegExp(needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length;
+function readGate() {
+  return fs.readFileSync(gatePath, 'utf8');
 }
 
-function extractRequiredTestsArray(text) {
+function extractRequiredTests(text) {
   const match = text.match(/const\s+requiredTests\s*=\s*\[([\s\S]*?)\];/);
-  assert.ok(match, 'Missing requiredTests array.');
-  return match[1];
+  assert.ok(match, 'requiredTests array must exist.');
+  return Array.from(match[1].matchAll(/['"]([^'"]+\.test\.cjs)['"]/g)).map((entry) => entry[1]);
 }
 
-function extractStage119Preflight(text) {
-  const start = '// STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_START';
-  const end = '// STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_END';
-  assert.equal(count(text, start), 1, 'Expected exactly one Stage119 preflight start marker.');
-  assert.equal(count(text, end), 1, 'Expected exactly one Stage119 preflight end marker.');
-  const startIndex = text.indexOf(start);
-  const endIndex = text.indexOf(end);
-  assert.ok(startIndex !== -1 && endIndex !== -1 && startIndex < endIndex, 'Invalid Stage119 preflight block markers.');
-  return text.slice(startIndex, endIndex + end.length);
+function count(list, value) {
+  return list.filter((item) => item === value).length;
 }
 
-test('Stage119 keeps one trusted Stage98 calendar preflight before production build', () => {
-  const text = fs.readFileSync(releaseGatePath, 'utf8');
-  const preflightBlock = extractStage119Preflight(text);
-  const requiredTests = extractRequiredTestsArray(text);
+function duplicates(list) {
+  const seen = new Set();
+  const dupes = [];
+  for (const item of list) {
+    if (seen.has(item) && !dupes.includes(item)) dupes.push(item);
+    seen.add(item);
+  }
+  return dupes;
+}
+
+test('Stage119 V5 gate harness has one Stage98 preflight before build and no duplicate requiredTests', () => {
+  const text = readGate();
+  const requiredTests = extractRequiredTests(text);
+  const dupes = duplicates(requiredTests);
+
+  assert.deepStrictEqual(dupes, [], 'requiredTests duplicate paths: ' + dupes.join(', '));
+  assert.equal(count(requiredTests, stage98), 1, 'Expected exactly one Stage98 requiredTests entry.');
+  assert.equal(count(requiredTests, stage119), 1, 'Expected exactly one Stage119 requiredTests entry.');
+
+  const preflightStarts = (text.match(/STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_START/g) || []).length;
+  const preflightEnds = (text.match(/STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_END/g) || []).length;
+  assert.equal(preflightStarts, 1, 'Expected exactly one Stage119 preflight start marker.');
+  assert.equal(preflightEnds, 1, 'Expected exactly one Stage119 preflight end marker.');
+
+  const preflightStart = text.indexOf('// STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_START');
+  const preflightEnd = text.indexOf('// STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_END');
+  const buildIndex = text.indexOf("runQuiet('production build'");
+
+  assert.ok(preflightStart !== -1, 'Stage119 preflight start marker must exist.');
+  assert.ok(preflightEnd > preflightStart, 'Stage119 preflight end marker must follow start marker.');
+  assert.ok(buildIndex > preflightEnd, 'Production build must run after Stage98 calendar preflight.');
+
+  const preflightBlock = text.slice(preflightStart, preflightEnd);
+  assert.match(preflightBlock, /stage98 calendar mojibake hard gate preflight/);
+  assert.match(preflightBlock, /tests\/stage98-polish-mojibake-calendar-guard\.test\.cjs/);
 
   assert.equal(text.includes('STAGE98B_MOJIBAKE_PREFLIGHT_V22_START'), false);
   assert.equal(text.includes('STAGE98B_MOJIBAKE_PREFLIGHT_V20_START'), false);
   assert.equal(text.includes('STAGE98B_MOJIBAKE_PREFLIGHT_QUIET_GATE'), false);
   assert.equal(text.includes('CLOSEFLOW_STAGE98B_MOJIBAKE_PREFLIGHT'), false);
+});
 
-  const preflightIndex = text.indexOf('STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_START');
-  const buildIndex = text.indexOf('production build');
-  assert.ok(buildIndex !== -1, 'missing production build run');
-  assert.ok(preflightIndex < buildIndex, 'Stage98 preflight must run before production build');
-
-  assert.equal(count(preflightBlock, stage98TestPath), 1, 'Expected exactly one Stage98 preflight command.');
-  assert.equal(count(requiredTests, stage98TestPath), 1, 'Expected exactly one Stage98 requiredTests entry.');
-  assert.equal(count(requiredTests, stage119TestPath), 1, 'Expected exactly one Stage119 requiredTests entry.');
+test('Stage119 V5 requiredTests preflight reports all missing tests before quiet gate', () => {
+  const text = readGate();
+  const requiredTests = extractRequiredTests(text);
+  const missing = requiredTests.filter((relativePath) => !fs.existsSync(path.join(repoRoot, relativePath)));
+  assert.deepStrictEqual(missing, [], 'Missing requiredTests files: ' + missing.join(', '));
 });
 
 test('Stage98 hard gate scans active code/test/script sources, not historical _project reports', () => {
-  const text = fs.readFileSync(stage98Path, 'utf8');
-  assert.match(text, /const roots = \['src', 'tests', 'scripts'\]/);
-  assert.equal(text.includes("'src', 'tests', 'scripts', '_project'"), false);
-  assert.equal(text.includes("roots.includes('_project')"), true);
+  const guard = fs.readFileSync(path.join(repoRoot, stage98), 'utf8');
+  assert.match(guard, /const roots = \['src', 'tests', 'scripts'\]/);
+  assert.doesNotMatch(guard, /const roots = \['src', 'tests', 'scripts', '_project'\]/);
+  assert.match(guard, /active code\/test\/script sources/);
 });
 
 test('Stage119 guard is registered in package scripts', () => {
-  const pkg = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+  const pkg = JSON.parse(fs.readFileSync(path.join(repoRoot, 'package.json'), 'utf8'));
   assert.equal(pkg.scripts['test:stage119-calendar-release-gate-trust'], 'node --test tests/stage119-calendar-release-gate-trust.test.cjs');
 });
