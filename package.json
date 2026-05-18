@@ -767,7 +767,8 @@
     "check:stage100-calendar-week-plan-entry-visible": "node --test tests/stage100-calendar-week-plan-entry-visible.test.cjs",
     "test:stage114-calendar-modal-viewport-contract": "node --test tests/stage114-calendar-modal-viewport-contract.test.cjs",
     "check:stage115-lead-notes-visible-source-contract": "node --test tests/stage115-lead-notes-visible-source-contract.test.cjs",
-    "check:stage115c-lead-inline-note-submit-contract": "node --test tests/stage115c-lead-inline-note-submit-contract.test.cjs"
+    "check:stage115c-lead-inline-note-submit-contract": "node --test tests/stage115c-lead-inline-note-submit-contract.test.cjs",
+    "check:stage115d-lead-overdue-work-items-red-contract": "node --test tests/stage115-lead-overdue-work-items-red-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

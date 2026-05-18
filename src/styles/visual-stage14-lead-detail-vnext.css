@@ -1116,3 +1116,21 @@
   font-size: 13px;
   line-height: 1.55;
 }
+
+
+/* STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT */
+.lead-detail-pill-danger {
+  border-color: #fecaca;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+.lead-detail-work-row-overdue {
+  border-color: #fecaca;
+  background: #fff7f7;
+}
+
+.lead-detail-work-row-overdue .lead-detail-work-icon {
+  background: #fef2f2;
+  color: #dc2626;
+}

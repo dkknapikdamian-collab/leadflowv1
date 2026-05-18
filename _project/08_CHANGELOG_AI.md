@@ -491,3 +491,10 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - Locked LeadDetail history note form as inline submit path.
 - Renamed work-center global note action to Otwórz szybki formularz notatki.
 - Fixed Polish inline note copy: placeholder, dictation button and submit button.
+
+## Stage115D LeadDetail overdue work items red contract
+
+- Added overdue detection for LeadDetail work items.
+- Timeline tasks/events with past date and open status now render `Zaległe`.
+- Added red danger pill and overdue row styling.
+- Replaced mojibake separator `â”¬Ě` with `•`.

@@ -397,3 +397,10 @@ Chroni:
 - Script: `npm run check:stage115c-lead-inline-note-submit-contract`
 - Purpose: history contact note button must submit inline through `handleAddNote` and must not call `openLeadContextAction('note')`.
 - Marker: STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT
+
+## Stage115D - LeadDetail overdue work items red contract
+
+- Guard: `tests/stage115-lead-overdue-work-items-red-contract.test.cjs`
+- Script: `npm run check:stage115d-lead-overdue-work-items-red-contract`
+- Purpose: overdue LeadDetail work items must show `Zaległe`, use red/danger styling, and remove mojibake separators.
+- Marker: STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT

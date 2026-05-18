@@ -408,3 +408,9 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Scope: P1 UX fix for note entry in LeadDetail Historia kontaktu.
 - Files: `src/pages/LeadDetail.tsx`, `tests/stage115c-lead-inline-note-submit-contract.test.cjs`, `package.json`.
 - Decision: inline note button in history must never open the context modal; work-center modal action remains but is clearly named.
+
+## Stage115D LeadDetail overdue work items red contract
+
+- Scope: P1 UX/status correctness for LeadDetail overdue task/work item visibility.
+- Files: `src/pages/LeadDetail.tsx`, `src/styles/visual-stage14-lead-detail-vnext.css`, `tests/stage115-lead-overdue-work-items-red-contract.test.cjs`, `package.json`.
+- Decision: overdue status is derived from date + non-done status, not stored as a separate task status.

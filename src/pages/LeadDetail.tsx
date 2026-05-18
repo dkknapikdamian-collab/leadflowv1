@@ -16,6 +16,8 @@ const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ost
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
 const STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT = 'LeadDetail history note submit stays inline; work-center note action is explicitly modal';
 void STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT;
+const STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT = 'LeadDetail overdue work items show Zaległe with red danger tone and readable separators';
+void STAGE115D_LEAD_OVERDUE_WORK_ITEMS_RED_CONTRACT;
 const CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP_V1 = 'Lead status visible in header, duplicated right-rail status card removed';
 const STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL = 'LeadDetail header renders lead status pill once in title row';
 void STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL;
@@ -149,6 +151,7 @@ type TimelineEntry = {
   title: string;
   status: string;
   statusLabel: string;
+  isOverdue: boolean;
   dateValue: string;
   dateLabel: string;
   raw: any;
@@ -298,22 +301,28 @@ function taskTypeLabel(type?: string) {
 function eventTypeLabel(type?: string) {
   return EVENT_TYPES.find((entry) => entry.value === type)?.label || 'Wydarzenie';
 }
-function taskStatusLabel(status?: string) {
-  if (status === 'done' || status === 'completed') return 'Zrobione';
-  if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
-  if (status === 'in_progress') return 'W trakcie';
+function taskStatusLabel(status?: string, dateValue?: unknown) {
+  const normalized = String(status || '').toLowerCase();
+  if (isWorkItemOverdue(dateValue, normalized)) return 'Zaległe';
+  if (normalized === 'done' || normalized === 'completed') return 'Zrobione';
+  if (normalized === 'cancelled' || normalized === 'canceled') return 'Anulowane';
+  if (normalized === 'in_progress') return 'W trakcie';
   return 'Do zrobienia';
 }
-function eventStatusLabel(status?: string) {
-  if (status === 'done' || status === 'completed') return 'Zrobione';
-  if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
+function eventStatusLabel(status?: string, dateValue?: unknown) {
+  const normalized = String(status || '').toLowerCase();
+  if (isWorkItemOverdue(dateValue, normalized)) return 'Zaległe';
+  if (normalized === 'done' || normalized === 'completed') return 'Zrobione';
+  if (normalized === 'cancelled' || normalized === 'canceled') return 'Anulowane';
   return 'Zaplanowane';
 }
-function statusClass(status?: string) {
-  if (status === 'done' || status === 'completed') return 'lead-detail-pill-green';
-  if (status === 'lost' || status === 'cancelled' || status === 'canceled') return 'lead-detail-pill-muted';
-  if (status === 'waiting_response' || status === 'proposal_sent' || status === 'negotiation') return 'lead-detail-pill-amber';
-  if (status === 'moved_to_service' || status === 'accepted') return 'lead-detail-pill-purple';
+function statusClass(status?: string, dateValue?: unknown) {
+  const normalized = String(status || '').toLowerCase();
+  if (isWorkItemOverdue(dateValue, normalized) || normalized === 'overdue') return 'lead-detail-pill-danger';
+  if (normalized === 'done' || normalized === 'completed') return 'lead-detail-pill-green';
+  if (normalized === 'lost' || normalized === 'cancelled' || normalized === 'canceled') return 'lead-detail-pill-muted';
+  if (normalized === 'waiting_response' || normalized === 'proposal_sent' || normalized === 'negotiation') return 'lead-detail-pill-amber';
+  if (normalized === 'moved_to_service' || normalized === 'accepted') return 'lead-detail-pill-purple';
   return 'lead-detail-pill-blue';
 }
 function getTaskDate(task: any) {
@@ -326,6 +335,11 @@ function getEventDate(event: any) {
 }
 function isDoneStatus(status: unknown) {
   return ['done', 'completed', 'cancelled', 'canceled', 'archived'].includes(String(status || '').toLowerCase());
+}
+function isWorkItemOverdue(dateValue: unknown, status: unknown) {
+  const parsed = asDate(dateValue);
+  if (!parsed || isDoneStatus(status)) return false;
+  return parsed.getTime() < Date.now();
 }
 function dedupeById<T extends Record<string, unknown>>(items: T[]) {
   const map = new Map<string, T>();
@@ -359,27 +373,39 @@ function toLocalDateTime(value: unknown) {
   return toDateTimeLocalValue(parsed);
 }
 function buildTimeline(tasks: any[], events: any[]): TimelineEntry[] {
-  const taskEntries = tasks.map((task) => ({
-    id: `task:${String(task.id || '')}`,
-    kind: 'task' as const,
-    title: String(task.title || 'Zadanie bez tytułu'),
-    status: String(task.status || 'todo'),
-    statusLabel: taskStatusLabel(String(task.status || 'todo')),
-    dateValue: getTaskDate(task),
-    dateLabel: formatDateTime(getTaskDate(task)),
-    raw: task,
-  }));
+  const taskEntries = tasks.map((task) => {
+    const status = String(task.status || 'todo');
+    const dateValue = getTaskDate(task);
+    const isOverdue = isWorkItemOverdue(dateValue, status);
+    return {
+      id: `task:${String(task.id || '')}`,
+      kind: 'task' as const,
+      title: String(task.title || 'Zadanie bez tytułu'),
+      status,
+      statusLabel: taskStatusLabel(status, dateValue),
+      isOverdue,
+      dateValue,
+      dateLabel: formatDateTime(dateValue),
+      raw: task,
+    };
+  });
 
-  const eventEntries = events.map((event) => ({
-    id: `event:${String(event.id || '')}`,
-    kind: 'event' as const,
-    title: String(event.title || 'Wydarzenie bez tytułu'),
-    status: String(event.status || 'scheduled'),
-    statusLabel: eventStatusLabel(String(event.status || 'scheduled')),
-    dateValue: getEventDate(event),
-    dateLabel: formatDateTime(getEventDate(event)),
-    raw: event,
-  }));
+  const eventEntries = events.map((event) => {
+    const status = String(event.status || 'scheduled');
+    const dateValue = getEventDate(event);
+    const isOverdue = isWorkItemOverdue(dateValue, status);
+    return {
+      id: `event:${String(event.id || '')}`,
+      kind: 'event' as const,
+      title: String(event.title || 'Wydarzenie bez tytułu'),
+      status,
+      statusLabel: eventStatusLabel(status, dateValue),
+      isOverdue,
+      dateValue,
+      dateLabel: formatDateTime(dateValue),
+      raw: event,
+    };
+  });
 
   return [...taskEntries, ...eventEntries].sort((left, right) => {
     const leftDone = isDoneStatus(left.status) ? 1 : 0;
@@ -688,7 +714,7 @@ useEffect(() => {
     return {
       lastTouchLabel: lastTouch ? formatDateTime(lastTouch) : 'Brak zapisanego ruchu',
       daysWithoutMovementLabel: typeof daysWithoutMovement === 'number' ? `${daysWithoutMovement} dni` : 'Brak danych',
-      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} â”¬Ě ${nextTimelineEntry.dateLabel}` : '-',
+      nextActionLabel: nextTimelineEntry ? `${nextTimelineEntry.title} • ${nextTimelineEntry.statusLabel} • ${nextTimelineEntry.dateLabel}` : '-',
       isOverdue,
       hasNoPlannedAction,
       riskLabel,
@@ -1485,8 +1511,8 @@ useEffect(() => {
                   {nextTimelineEntry ? (
                     <>
                       <strong>{nextTimelineEntry.title}</strong>
-                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â”¬Ě {nextTimelineEntry.dateLabel}</p>
-                      <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status)}`}>{nextTimelineEntry.statusLabel}</span>
+                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {nextTimelineEntry.statusLabel} • {nextTimelineEntry.dateLabel}</p>
+                      <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status, nextTimelineEntry.dateValue)}`}>{nextTimelineEntry.statusLabel}</span>
                     </>
                   ) : (
                     <p>-</p>
@@ -1495,7 +1521,7 @@ useEffect(() => {
                 <article className="lead-detail-top-card lead-detail-callout-green">
                   <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Wartość</h2></div>
                   <strong>{leadFinance.formatted}</strong>
-                  <p>{sourceLabel(lead.source)} â”¬Ě {statusLabel(lead.status)}</p>
+                  <p>{sourceLabel(lead.source)} • {statusLabel(lead.status)}</p>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber">
                   <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Aktywny lead</h2></div>
@@ -1518,14 +1544,18 @@ useEffect(() => {
                     <div className="lead-detail-light-empty">-</div>
                   ) : (
                     timeline.map((entry) => (
-                      <article key={entry.id} className="lead-detail-work-row">
+                      <article
+                        key={entry.id}
+                        className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`}
+                        data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
+                      >
                         <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                         <div>
                           <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}</small>
                           <h3>{entry.title}</h3>
                           <p>{entry.dateLabel}</p>
                         </div>
-                        <span className={`lead-detail-pill ${statusClass(entry.status)}`}>{entry.statusLabel}</span>
+                        <span className={`lead-detail-pill ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
                         <div className="lead-detail-row-actions">
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 60 * 60 * 1000, '+1H') : handleRescheduleLinkedEvent(entry.raw, 60 * 60 * 1000, '+1H'))} disabled={linkedEntryActionId !== null}>+1H</LeadActionButton>
