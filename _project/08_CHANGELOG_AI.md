@@ -485,3 +485,9 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - Split LeadDetail note display from contact card.
 - Added dedicated `Notatki leada` section with source lead note and latest note activity.
 - Added guard for source/placement contract.
+
+## Stage115C LeadDetail inline note submit contract
+
+- Locked LeadDetail history note form as inline submit path.
+- Renamed work-center global note action to Otwórz szybki formularz notatki.
+- Fixed Polish inline note copy: placeholder, dictation button and submit button.

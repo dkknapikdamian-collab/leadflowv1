@@ -402,3 +402,9 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Scope: P1 UX/data visibility fix for LeadDetail notes.
 - Files: `src/pages/LeadDetail.tsx`, `src/styles/visual-stage14-lead-detail-vnext.css`, `tests/stage115-lead-notes-visible-source-contract.test.cjs`.
 - Decision: do not render leadPrimaryNoteText inside contact card; keep notes as their own section.
+
+## Stage115C LeadDetail inline note submit contract
+
+- Scope: P1 UX fix for note entry in LeadDetail Historia kontaktu.
+- Files: `src/pages/LeadDetail.tsx`, `tests/stage115c-lead-inline-note-submit-contract.test.cjs`, `package.json`.
+- Decision: inline note button in history must never open the context modal; work-center modal action remains but is clearly named.

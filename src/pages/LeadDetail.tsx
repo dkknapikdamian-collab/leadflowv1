@@ -14,6 +14,8 @@ const A16_V2_VOICE_NOTE_AUTOSAVE_ALLOWED = 'voice-notes-may-autosave-after-dicta
 const A24_LEAD_TO_CASE_COPY_LOCK = 'Rozpocznij obsługę | Ten temat jest już w obsłudze | Otwórz sprawę';
 const STAGE84_LEAD_DETAIL_WORK_CENTER = 'Lead Detail pokazuje centrum pracy: ostatni ruch, dni bez ruchu, najblizsza akcja i powod ryzyka';
 const STAGE88_LEAD_DETAIL_ADMIN_FEEDBACK_HOTFIX = 'LeadDetail cleans noisy helper copy and protects right rail readability';
+const STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT = 'LeadDetail history note submit stays inline; work-center note action is explicitly modal';
+void STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT;
 const CLOSEFLOW_FB3_LEAD_DETAIL_CLEANUP_V1 = 'Lead status visible in header, duplicated right-rail status card removed';
 const STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL = 'LeadDetail header renders lead status pill once in title row';
 void STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL;
@@ -752,7 +754,7 @@ useEffect(() => {
             <Clock className="h-4 w-4" /> Oznacz waiting
           </LeadActionButton>
           <LeadActionButton onClick={() => openLeadContextAction('note')} disabled={!hasAccess}>
-            <EntityIcon entity="template" className="h-4 w-4" /> Dopisz notatkę
+            <EntityIcon entity="template" className="h-4 w-4" /> Otwórz szybki formularz notatki
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(`/cases/${serviceCaseId}`)}>
@@ -1547,16 +1549,20 @@ useEffect(() => {
                 </div>
               </div>
               {!leadInService ? (
-                <form className="lead-detail-note-form" onSubmit={handleAddNote}>
-                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krotka notatke po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
+                <form className="lead-detail-note-form" data-stage115c-inline-note-form="true" onSubmit={handleAddNote}>
+                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krótką notatkę po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
                   {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
                       {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatk'}
+                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
                     </Button>
-                    <Button type="submit" disabled={!note.trim() || !hasAccess || addingNote}>
-                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatk'}
+                    <Button
+                      type="submit"
+                      data-stage115c-inline-note-submit="true"
+                      disabled={!note.trim() || !hasAccess || addingNote}
+                    >
+                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatkę'}
                     </Button>
                   </div>
                 </form>

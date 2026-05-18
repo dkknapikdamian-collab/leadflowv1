@@ -282,3 +282,9 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 
 - Damian manual check: verify LeadDetail note section placement and content for leads with/without source note and note activity.
 - Continue Stage115 with overdue and finance fixes only after this placement is accepted.
+
+## Stage115C next step
+
+- Damian manual check: type a note in LeadDetail Historia kontaktu and click Dodaj notatkę. Expected: inline save, no modal.
+- If confirmed, continue Stage115D with overdue/task persistence.
+- Keep finance repair as a separate Stage115E step.

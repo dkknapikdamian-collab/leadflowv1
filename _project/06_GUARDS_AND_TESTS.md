@@ -390,3 +390,10 @@ Chroni:
 - Script: `npm run check:stage115-lead-notes-visible-source-contract`
 - Purpose: note from lead creation and latest note activity are rendered in a separate LeadDetail notes section, not inside contact card.
 - Marker: STAGE115B_LEAD_NOTES_VISIBLE_SOURCE_CONTRACT
+
+## Stage115C - LeadDetail inline note submit contract
+
+- Guard: `tests/stage115c-lead-inline-note-submit-contract.test.cjs`
+- Script: `npm run check:stage115c-lead-inline-note-submit-contract`
+- Purpose: history contact note button must submit inline through `handleAddNote` and must not call `openLeadContextAction('note')`.
+- Marker: STAGE115C_LEAD_INLINE_NOTE_SUBMIT_CONTRACT

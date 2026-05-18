@@ -537,3 +537,10 @@ Expected gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smok
 - Planned/Run by package: `node --test tests/stage115-lead-notes-visible-source-contract.test.cjs`
 - Planned/Run by package: `npm run build`
 - Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.
+
+## Stage115C - LeadDetail inline note submit contract
+
+- Planned/Run by package: `node --test tests/stage115c-lead-inline-note-submit-contract.test.cjs`
+- Regression guards: Stage115 contact parity and Stage115B notes visible source contract.
+- Planned/Run by package: `npm run build`
+- Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.
