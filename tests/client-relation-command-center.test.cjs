@@ -20,43 +20,29 @@ test('ClientDetail keeps API-level client filters', () => {
   assert.ok(file.includes('fetchPaymentsFromSupabase({ clientId })'));
 });
 
-test('ClientDetail exposes relation command center actions', () => {
+test('ClientDetail exposes relation command center actions without lead cockpit links', () => {
   const file = read('src/pages/ClientDetail.tsx');
   assert.ok(file.includes('Klient jako centrum relacji'));
   assert.ok(file.includes('\u015Acie\u017Cka klienta'));
-  assert.ok(file.includes('Otw\u00F3rz lead'));
-  assert.ok(file.includes('Otw\u00F3rz spraw\u0119'));
+  assert.ok(!file.includes('Otw\u00F3rz lead'));
+  assert.ok(!file.includes('Otwórz lead'));
+  assert.ok(file.includes('Otw\u00F3rz spraw\u0119') || file.includes('Otwórz sprawę'));
 });
-
-test('ClientDetail links leads and cases both ways from client screen', () => {
+test('ClientDetail keeps lead data scoped but does not link back to the lead cockpit', () => {
   const file = read('src/pages/ClientDetail.tsx');
-
-  assertIncludesOneOf(file, [
-    'navigate(`/leads/${String(lead.id)}`)',
-    "navigate('/leads/' + String(lead.id))",
-    "to={'/leads/' + leadId}",
-  ], 'lead route');
-
+  assert.ok(file.includes('fetchLeadsFromSupabase({ clientId })'));
+  assert.ok(file.includes('fetchCasesFromSupabase({ clientId })'));
+  assert.ok(!file.includes('navigate(`/leads/${String(lead.id)}`)'));
+  assert.ok(!file.includes('navigate(`/leads/${String(caseRecord.leadId)}`)'));
+  assert.ok(!file.includes('navigate(`/leads/${String(firstSourceLead.id)}`)'));
+  assert.ok(!file.includes('openNewLeadForExistingClient'));
   assertIncludesOneOf(file, [
     'navigate(`/cases/${String(caseRecord.id)}`)',
     "navigate('/cases/' + String(caseRecord.id))",
     "to={'/cases/' + caseId}",
   ], 'case route');
-
-  assertIncludesOneOf(file, [
-    'navigate(`/cases/${String(lead.linkedCaseId)}`)',
-    "navigate('/cases/' + String(lead.linkedCaseId))",
-  ], 'lead linked case route');
-
-  assertIncludesOneOf(file, [
-    'navigate(`/leads/${String(caseRecord.leadId)}`)',
-    "navigate('/leads/' + String(caseRecord.leadId))",
-  ], 'case linked lead route');
-
   assert.ok(!file.includes('navigate(`/case/${String(caseRecord.id)}`)'));
-  assert.ok(!file.includes('navigate(`/case/${String(lead.linkedCaseId)}`)'));
 });
-
 test('Client relation command center documentation exists', () => {
   const file = read('docs/CLIENT_RELATION_COMMAND_CENTER_2026-04-24.md');
   assert.ok(file.includes('Lead -> Klient -> Sprawa -> Rozliczenia'));

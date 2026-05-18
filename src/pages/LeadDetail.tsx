@@ -1561,7 +1561,7 @@ useEffect(() => {
             />
           </aside>
 
-          <section className="lead-detail-main-column">
+          <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">
             <section
               className="lead-detail-section-card lead-detail-notes-section"
               data-stage115-lead-notes-section="true"

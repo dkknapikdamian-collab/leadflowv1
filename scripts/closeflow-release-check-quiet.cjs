@@ -206,6 +206,8 @@ const requiredTests = [
   'tests/stage108-calendar-render-contract-smoke.test.cjs',  'tests/stage115-case-detail-useworkspace-import-contract.test.cjs',
   'tests/stage115-case-detail-render-runtime-contract.test.cjs',
   'tests/stage116-dialog-description-accessibility-contract.test.cjs',
+  'tests/stage117-lead-detail-vertical-rhythm-contract.test.cjs',
+  'tests/stage117b-client-detail-no-lead-view-contract.test.cjs',
 
 ];
 

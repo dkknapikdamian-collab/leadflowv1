@@ -643,3 +643,285 @@ body .event-form-vnext-content[data-task-create-dialog-stage45m="true"] .cf-moda
   box-shadow: 0 -16px 26px rgba(2, 6, 23, 0.32) !important;
 }
 /* STAGE106_MODAL_INVERTED_VISUAL_CONTRACT_END */
+
+/* STAGE114D_CALENDAR_MODAL_VIEWPORT_CONTRACT */
+.event-form-vnext-content.calendar-entry-modal-viewport {
+  top: max(32px, env(safe-area-inset-top)) !important;
+  transform: translateX(-50%) !important;
+  max-height: calc(100vh - 64px) !important;
+  max-height: calc(100dvh - 64px) !important;
+  overflow: hidden !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport [data-radix-dialog-header],
+.event-form-vnext-content.calendar-entry-modal-viewport > div:first-child,
+.event-form-vnext-content.calendar-entry-modal-viewport .cf-modal-header {
+  padding-top: 24px !important;
+  padding-right: 56px !important;
+  padding-bottom: 18px !important;
+  padding-left: 24px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+  max-height: calc(100vh - 164px) !important;
+  max-height: calc(100dvh - 164px) !important;
+  overflow-y: auto !important;
+  padding-bottom: 104px !important;
+  scroll-padding-bottom: 104px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content.calendar-entry-modal-viewport {
+    top: max(16px, env(safe-area-inset-top)) !important;
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - 32px) !important;
+  }
+
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+    max-height: calc(100dvh - 140px) !important;
+    padding-bottom: 112px !important;
+    scroll-padding-bottom: 112px !important;
+  }
+}
+
+/* STAGE114D_CALENDAR_MODAL_VIEWPORT_CONTRACT_START */
+.event-form-vnext-content.calendar-entry-modal-viewport {
+  top: max(32px, env(safe-area-inset-top)) !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  max-height: calc(100vh - 64px) !important;
+  max-height: calc(100dvh - 64px) !important;
+  overflow: hidden !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .cf-modal-header,
+.event-form-vnext-content.calendar-entry-modal-viewport > div:first-child {
+  padding-top: 24px !important;
+  padding-right: 56px !important;
+  padding-bottom: 18px !important;
+  padding-left: 24px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .cf-modal-title,
+.event-form-vnext-content.calendar-entry-modal-viewport h2 {
+  line-height: 1.2 !important;
+  overflow: visible !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext {
+  max-height: calc(100vh - 178px) !important;
+  max-height: calc(100dvh - 178px) !important;
+  overflow-y: auto !important;
+  padding-bottom: 104px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 5 !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.08) !important;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content.calendar-entry-modal-viewport {
+    top: max(12px, env(safe-area-inset-top)) !important;
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100vh - 24px) !important;
+    max-height: calc(100dvh - 24px) !important;
+  }
+
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext {
+    max-height: calc(100vh - 148px) !important;
+    max-height: calc(100dvh - 148px) !important;
+    padding-bottom: 110px !important;
+  }
+}
+/* STAGE114D_CALENDAR_MODAL_VIEWPORT_CONTRACT_END */
+
+
+/* STAGE114D_CALENDAR_MODAL_VIEWPORT_SAFE_V8 */
+.event-form-vnext-content.calendar-entry-modal-viewport {
+  top: max(32px, env(safe-area-inset-top)) !important;
+  transform: translateX(-50%) !important;
+  max-height: calc(100vh - 64px) !important;
+  overflow: hidden !important;
+}
+
+@supports (height: 100dvh) {
+  .event-form-vnext-content.calendar-entry-modal-viewport {
+    max-height: calc(100dvh - 64px) !important;
+  }
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .cf-modal-header,
+.event-form-vnext-content.calendar-entry-modal-viewport [data-radix-dialog-header],
+.event-form-vnext-content.calendar-entry-modal-viewport > div:first-child {
+  padding-top: 28px !important;
+  padding-bottom: 18px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .cf-modal-title,
+.event-form-vnext-content.calendar-entry-modal-viewport h2 {
+  line-height: 1.18 !important;
+  padding-right: 42px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+  max-height: calc(100vh - 180px) !important;
+  overflow-y: auto !important;
+  padding-bottom: 104px !important;
+}
+
+@supports (height: 100dvh) {
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+    max-height: calc(100dvh - 180px) !important;
+  }
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+  margin-bottom: -22px !important;
+  box-shadow: 0 -12px 26px rgba(16, 24, 40, 0.08) !important;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content.calendar-entry-modal-viewport {
+    top: max(16px, env(safe-area-inset-top)) !important;
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100vh - 32px) !important;
+  }
+
+  @supports (height: 100dvh) {
+    .event-form-vnext-content.calendar-entry-modal-viewport {
+      max-height: calc(100dvh - 32px) !important;
+    }
+  }
+
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+    max-height: calc(100vh - 146px) !important;
+    padding-bottom: 116px !important;
+  }
+}
+
+/* STAGE114D_CALENDAR_MODAL_VIEWPORT_SAFE_V9 */
+.event-form-vnext-content.calendar-entry-modal-viewport {
+  top: max(32px, env(safe-area-inset-top)) !important;
+  bottom: auto !important;
+  transform: translateX(-50%) !important;
+  max-height: calc(100vh - 64px) !important;
+  max-height: calc(100dvh - 64px) !important;
+  overflow: hidden !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .cf-modal-header,
+.event-form-vnext-content.calendar-entry-modal-viewport [data-radix-dialog-header],
+.event-form-vnext-content.calendar-entry-modal-viewport > div:first-child {
+  padding-top: 24px !important;
+  padding-right: 56px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+  max-height: calc(100vh - 176px) !important;
+  max-height: calc(100dvh - 176px) !important;
+  overflow-y: auto !important;
+  padding-bottom: 96px !important;
+}
+
+.event-form-vnext-content.calendar-entry-modal-viewport .event-form-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 2 !important;
+  margin-bottom: -96px !important;
+  box-shadow: 0 -10px 24px rgba(16, 24, 40, 0.08) !important;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content.calendar-entry-modal-viewport {
+    top: max(16px, env(safe-area-inset-top)) !important;
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100dvh - 32px) !important;
+  }
+
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext,
+  .event-form-vnext-content.calendar-entry-modal-viewport .event-form-vnext-grid {
+    max-height: calc(100dvh - 148px) !important;
+    padding-bottom: 104px !important;
+  }
+}
+
+
+/* STAGE114E_CALENDAR_MODAL_VIEWPORT_REPAIR_START
+   P1/P0 batch repair: calendar create/edit dialogs must fit viewport,
+   keep title off screen edges, let form body scroll and keep footer visible.
+*/
+.event-form-vnext-content[data-calendar-entry-form-source="event-form-vnext"].calendar-entry-modal-viewport,
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] {
+  width: min(780px, calc(100vw - 28px)) !important;
+  max-width: 780px !important;
+  max-height: calc(100vh - 64px) !important;
+  overflow: hidden !important;
+  top: calc(50% + 12px) !important;
+  padding: 0 !important;
+}
+
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] > .cf-modal-header,
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] > div:first-child {
+  padding: 24px 24px 18px !important;
+}
+
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .cf-modal-title,
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] h2 {
+  line-height: 1.18 !important;
+  margin-right: 36px !important;
+}
+
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .event-form-vnext {
+  max-height: calc(100vh - 190px) !important;
+  overflow-y: auto !important;
+  padding: 20px 24px 96px !important;
+  scroll-padding-bottom: 110px !important;
+}
+
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .event-form-footer,
+.event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .cf-modal-footer {
+  position: sticky !important;
+  bottom: 0 !important;
+  z-index: 3 !important;
+  margin: 16px -24px -96px !important;
+  padding: 14px 24px 20px !important;
+}
+
+@media (max-width: 640px) {
+  .event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] {
+    width: calc(100vw - 16px) !important;
+    max-height: calc(100vh - 32px) !important;
+    top: calc(50% + 8px) !important;
+  }
+
+  .event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .event-form-vnext {
+    max-height: calc(100vh - 160px) !important;
+    padding: 16px 16px 92px !important;
+  }
+
+  .event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .event-form-footer,
+  .event-form-vnext-content[data-stage114-calendar-modal-viewport="true"] .cf-modal-footer {
+    margin: 14px -16px -92px !important;
+    padding: 14px 16px 18px !important;
+  }
+}
+/* STAGE114E_CALENDAR_MODAL_VIEWPORT_REPAIR_END */

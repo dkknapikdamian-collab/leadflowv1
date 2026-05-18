@@ -15,24 +15,27 @@ test('ClientDetail keeps final four-tab operating model', () => {
   assert.ok(source.includes('Dodatkowe'));
 });
 
-test('ClientDetail leaves process work in case or active lead, not in client cockpit', () => {
+test('ClientDetail leaves process work in case, not in a client-side lead cockpit', () => {
   assert.ok(source.includes('CLIENT_DETAIL_WORK_IN_CASE_OR_ACTIVE_LEAD'));
   assert.ok(source.includes('Praca dzieje si\u0119 w sprawie'));
-  assert.ok(source.includes('Otw\u00F3rz spraw\u0119'));
-  assert.ok(source.includes('Otw\u00F3rz lead'));
+  assert.ok(source.includes('Otw\u00F3rz spraw\u0119') || source.includes('Otwórz sprawę'));
+  assert.ok(source.includes('STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT'));
+  assert.ok(!source.includes('Otw\u00F3rz lead'));
+  assert.ok(!source.includes('Otwórz lead'));
+  assert.ok(!source.includes('navigate(`/leads/${'));
 });
-
 test('ClientDetail exposes secondary more menu without turning it into main workflow', () => {
   assert.ok(source.includes('client-detail-more-menu'));
   assert.ok(source.includes('Dodatkowe'));
   assert.ok(source.includes('Drugorz\u0119dne akcje') || source.includes('drugorz\u0119dne akcje') || source.includes('menu pomocnicze'));
 });
 
-test('ClientDetail keeps source lead as history signal', () => {
-  assert.ok(source.includes('\u0179r\u00F3d\u0142owy lead') || source.includes('sourceLead'));
-  assert.ok(source.includes('Historia'));
+test('ClientDetail keeps acquisition history as a read-only signal', () => {
+  assert.ok(source.includes('Historia pozyskania'));
+  assert.ok(source.includes('data-client-source-history-readonly'));
+  assert.ok(source.includes('fetchLeadsFromSupabase({ clientId })'));
+  assert.ok(!source.includes('data-client-acquisition-history-row'));
 });
-
 test('ClientDetail final operating model test is included in quiet release gate', () => {
   assert.ok(releaseGate.includes('tests/client-detail-final-operating-model.test.cjs'));
 });

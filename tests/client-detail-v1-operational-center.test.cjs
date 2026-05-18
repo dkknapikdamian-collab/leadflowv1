@@ -38,15 +38,17 @@ test('ClientDetail filters tasks events and activity through lead and case relat
   assert.ok(source.includes('relationIds.caseIds.has(String(activity.caseId'));
 });
 
-test('ClientDetail uses current cases route from client context', () => {
+test('ClientDetail uses current cases route from client context without lead cockpit links', () => {
   const source = read('src/pages/ClientDetail.tsx');
 
   assert.ok(source.includes('`/cases/${String(caseRecord.id)}`'));
-  assert.ok(source.includes('`/cases/${String(lead.linkedCaseId)}`'));
+  assert.ok(source.includes('STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT'));
+  assert.equal(source.includes('`/cases/${String(lead.linkedCaseId)}`'), false);
   assert.equal(source.includes('navigate(`/case/${String(caseRecord.id)}`)'), false);
   assert.equal(source.includes('navigate(`/case/${String(lead.linkedCaseId)}`)'), false);
+  assert.equal(source.includes('navigate(`/leads/${String(lead.id)}`)'), false);
+  assert.equal(source.includes('Otwórz lead'), false);
 });
-
 test('ClientDetail operational center documentation exists', () => {
   const doc = read('docs/CLIENT_DETAIL_V1_OPERATIONAL_CENTER_2026-04-24.md');
 

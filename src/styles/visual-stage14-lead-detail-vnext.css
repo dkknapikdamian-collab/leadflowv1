@@ -1162,3 +1162,44 @@
 .lead-detail-finance-dialog-summary strong {
   color: #111827;
 }
+
+
+/* STAGE117_LEAD_DETAIL_VERTICAL_RHYTHM_START */
+/* Tightens vertical rhythm in LeadDetail without changing cards, data flow or selected business sections. */
+#root .lead-detail-vnext-page .lead-detail-main-column[data-stage117-lead-detail-vertical-rhythm="true"] {
+  gap: 12px !important;
+  align-content: start !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-main-column[data-stage117-lead-detail-vertical-rhythm="true"] > .lead-detail-section-card,
+#root .lead-detail-vnext-page .lead-detail-main-column[data-stage117-lead-detail-vertical-rhythm="true"] > .lead-detail-top-grid {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-section-card {
+  padding: 16px !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-section-head {
+  margin-bottom: 10px !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-top-grid {
+  gap: 10px !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-work-list,
+#root .lead-detail-vnext-page .lead-detail-history-list,
+#root .lead-detail-vnext-page .lead-detail-notes-stack {
+  gap: 8px !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-light-empty {
+  padding: 12px 14px !important;
+}
+
+#root .lead-detail-vnext-page .lead-detail-note-form {
+  margin-bottom: 10px !important;
+}
+/* STAGE117_LEAD_DETAIL_VERTICAL_RHYTHM_END */

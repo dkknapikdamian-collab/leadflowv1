@@ -57,8 +57,8 @@ const CLIENT_RELATION_COMMAND_CENTER_GUARD = 'Klient jako centrum relacji';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD_UTF8 = 'Klient jako centrum relacji';
 const CLIENT_RELATION_PATH_GUARD = 'Ścieżka klienta';
 const CLIENT_RELATION_PATH_GUARD_UTF8 = 'Ścieżka klienta';
-const CLIENT_RELATION_OPEN_LEAD_GUARD = 'Otwórz lead';
-const CLIENT_RELATION_OPEN_LEAD_GUARD_UTF8 = 'Otwórz lead';
+const STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT = 'ClientDetail keeps lead data as acquisition source only and does not render a lead cockpit';
+void STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT;
 const CLIENT_RELATION_OPEN_CASE_GUARD = 'Otwórz sprawę';
 const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
@@ -113,7 +113,7 @@ const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
 type ClientTab = 'cases' | 'summary' | 'contact' | 'history';
 
 type ClientNextAction = {
-  kind: 'task' | 'event' | 'case' | 'lead' | 'empty';
+  kind: 'task' | 'event' | 'case' | 'empty';
   title: string;
   subtitle: string;
   to?: string;
@@ -595,9 +595,9 @@ function renderClientNextActionContextStage14B(action: ClientNextAction) {
   const normalized = contextTitle.toLowerCase();
   if (normalized === 'undefined' || normalized === 'null' || normalized === 'brak') return null;
 
-  const label = action.contextKind === 'case' ? 'Sprawa' : 'Lead';
+  const label = action.contextKind === 'case' ? 'Sprawa' : 'Historia pozyskania';
   return (
-    <p className="client-detail-next-action-context" title={contextTitle}>
+    <p className="client-detail-next-action-context" title={contextTitle} data-client-acquisition-context-only="true">
       {label}: {contextTitle}
     </p>
   );
@@ -701,7 +701,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
       subtitle: `${isEvent ? 'Wydarzenie' : 'Zadanie'} · ${formatDateTime(nearest.when)}`,
       date: nearest.when,
       relationId: targetCaseId || targetLeadId || String(clientId || ''),
-      to: targetCaseId ? `/cases/${targetCaseId}` : targetLeadId ? `/leads/${targetLeadId}` : '/today',
+      to: targetCaseId ? `/cases/${targetCaseId}` : isEvent ? '/calendar' : '/today',
       ...nearestActionContextStage14B,
       tone: 'amber',
     };
@@ -772,22 +772,12 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     };
   }
 
-  const openLead = leads.find((lead) => !['moved_to_service', 'lost', 'archived'].includes(String(lead.status || '')));
-  if (openLead) {
-    return {
-      kind: 'lead',
-      title: String(openLead.name || 'Aktywny lead'),
-      subtitle: leadStatusLabel(String(openLead.status || 'new')),
-      relationId: String(openLead.id || ''),
-      to: `/leads/${String(openLead.id)}`,
-      tone: 'blue',
-    };
-  }
+  // STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT: client next action does not fall back to opening a lead.
 
   return {
     kind: 'empty',
     title: 'Brak zaplanowanych działań',
-    subtitle: 'Ten klient nie ma teraz otwartego zadania, wydarzenia, leada ani sprawy.',
+    subtitle: 'Ten klient nie ma teraz otwartego zadania, wydarzenia ani sprawy.',
     tone: 'slate',
   };
 }
@@ -1563,11 +1553,7 @@ export default function ClientDetail() {
 
   useEffect(() => () => stopClientNoteSpeech(), []);
 
-  const openNewLeadForExistingClient = () => {
-    if (!clientId) return navigate('/leads');
-    navigate(`/leads?clientId=${encodeURIComponent(clientId)}&new=1`);
-  };
-
+  // STAGE117B: no new/open lead shortcut from ClientDetail.
   const openMainCase = () => {
     if (!mainCase?.id) return;
     navigate(`/cases/${String(mainCase.id)}`);
@@ -1686,7 +1672,7 @@ return (
                       <section className="client-detail-today-info-tiles" data-client-left-management-tiles="true" data-client-today-style-info-tiles="true" aria-label="Informacje o kliencie">
               <article className={`client-detail-today-info-tile ${nextActionToneClass(clientNextAction.tone)}`} data-client-left-next-action-tile="true">
                 <div className="client-detail-today-info-tile-icon">
-                  <EntityIcon entity="lead" className="h-4 w-4" />
+                  <EntityIcon entity="client" className="h-4 w-4" />
                 </div>
                 <div className="client-detail-today-info-tile-body">
                   <small>Najbliższa zaplanowana akcja</small>
@@ -1911,7 +1897,7 @@ return (
 
                     <section className="client-detail-summary-card client-detail-finance-card" aria-label="Finanse klienta">
                       <div className="client-detail-card-title-row">
-                        <EntityIcon entity="lead" className="h-4 w-4" />
+                        <EntityIcon entity="client" className="h-4 w-4" />
                         <h2>Finanse klienta</h2>
                       </div>
                       <div className="client-detail-finance-metrics">
@@ -1943,27 +1929,6 @@ return (
                     </Button>
                   </div>
                   <div className="client-detail-relations-list">
-                    {leads.length ? (
-                      leads.slice(0, 3).map((lead) => (
-                        <article key={String(lead.id)} className="client-detail-relation-row">
-                          <div className="client-detail-relation-main">
-                            <h3>{String(lead.name || lead.company || lead.email || 'Lead')}</h3>
-                            <p>Lead powiązany z klientem.</p>
-                          </div>
-                          <span className="client-detail-pill client-detail-pill-muted">Lead</span>
-                          <div className="client-detail-relation-actions">
-                            <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(lead.id)}`)}>
-                              Otwórz lead
-                            </Button>
-                            {lead.linkedCaseId ? (
-                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(lead.linkedCaseId)}`)}>
-                                Otwórz sprawę
-                              </Button>
-                            ) : null}
-                          </div>
-                        </article>
-                      ))
-                    ) : null}
                     {clientCaseRows.length === 0 ? (
                       <div className="client-detail-light-empty">Brak spraw przy tym kliencie. Po pozyskaniu tematu utwórz sprawę i prowadź tam dalszą obsługę.</div>
                     ) : (
@@ -1980,11 +1945,6 @@ return (
                             <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>
                               Otwórz sprawę
                             </Button>
-                            {caseRecord.leadId ? (
-                              <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/leads/${String(caseRecord.leadId)}`)}>
-                                Otwórz lead
-                              </Button>
-                            ) : null}
                           </div>
                         </article>
                       ))
@@ -1998,11 +1958,7 @@ return (
                       <h2>Aktywne sprawy</h2>
                       <p>Lista spraw klienta z szybkim wejściem do prowadzenia.</p>
                     </div>
-                    {firstSourceLead ? (
-                      <Button type="button" variant="outline" onClick={() => navigate(`/leads/${String(firstSourceLead.id)}`)}>
-                        Otwórz lead
-                      </Button>
-                    ) : null}
+                    <span className="client-detail-source-history-chip" data-client-source-history-readonly="true">Historia pozyskania</span>
                   </div>
                   <div className="client-detail-acquisition-line">
                     <span>
@@ -2030,9 +1986,9 @@ return (
                     </div>
                   </div>
 
-                  {leads.length ? (<>
+                  <>
 
-                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true">
+                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true" data-client-cases-without-lead-view="true">
                     {(cases.filter((caseRecord: any) => {
                       const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
                       const caseClientName = asText(caseRecord?.clientName);
@@ -2120,33 +2076,7 @@ return (
                     ) : null}
                   </div>
 
-<div className="client-detail-relations-list client-detail-relations-list-acquisition-only">
-                      {leads.map((lead) => {
-                        const leadId = String(lead.id || lead.leadId || lead.name || lead.createdAt || 'lead');
-                        const leadName = String(lead.name || lead.company || 'Lead bez nazwy');
-                        const source = asText(lead.source) || asText(lead.sourceName) || asText(lead.channel) || asText(lead.origin) || asText(lead.acquisitionSource) || 'Nie podano';
-                        const status = leadStatusLabel(String(lead.status || 'new'));
-                        return (
-                          <div
-                            key={leadId}
-                            className="client-detail-relation-row client-detail-relation-row-acquisition-only"
-                            data-client-acquisition-history-row="true"
-                          >
-                            <div className="client-detail-relation-main">
-                              <h3>{leadName}</h3>
-                              <p><strong>Źródło:</strong> {source}</p>
-                              <p><strong>Status przy pozyskaniu:</strong> {status} · <strong>Utworzono:</strong> {formatDate(lead.createdAt || lead.updatedAt)}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
                   </>
-                  ) : (
-                    <div className="client-detail-light-empty">
-                      Brak zapisanej historii pozyskania dla tego klienta.
-                    </div>
-                  )}
                 </section>
               </div>
             ) : null}
@@ -2204,7 +2134,7 @@ return (
             </section>
 
             <div hidden data-client-detail-stage35-removed-quick-actions="true" />
-            <div hidden data-client-detail-stage35-retain-open-new-lead={String(Boolean(openNewLeadForExistingClient))} />
+            <div hidden data-client-detail-stage117b-no-lead-shortcut="true" />
 
             {/* STAGE35_CLIENT_DETAIL_HIDE_DODATKOWO */}
 
@@ -2335,7 +2265,7 @@ return (
 
             <section className="right-card client-detail-right-card" data-client-finance-summary="true">
               <div className="client-detail-card-title-row">
-                <EntityIcon entity="lead" className="h-4 w-4" />
+                <EntityIcon entity="client" className="h-4 w-4" />
                 <h2>Podsumowanie finansów</h2>
               </div>
               <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>

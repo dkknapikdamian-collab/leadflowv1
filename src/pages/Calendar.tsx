@@ -646,6 +646,9 @@ export default function Calendar() {
   const createTaskSubmitLockRef = useRef(false);
   const createEventSubmitLockRef = useRef(false);
   const editEntrySubmitLockRef = useRef(false);
+  const calendarLoadSeqRef = useRef(0);
+  const calendarReadyRetryTimersRef = useRef<number[]>([]);
+
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [eventSubmitting, setEventSubmitting] = useState(false);
 
@@ -1051,6 +1054,8 @@ export default function Calendar() {
     };
   }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
 
+  const calendarAuthUserId = auth.currentUser?.uid || 'anonymous';
+
   async function refreshSupabaseBundle() {
     const [bundle, clientRows] = await Promise.all([
       fetchCalendarBundleFromSupabase(),
@@ -1089,45 +1094,59 @@ export default function Calendar() {
   }, [workspace?.id, workspaceLoading, workspaceReady]);
 
   useEffect(() => {
-    // STAGE114B_CALENDAR_HARD_REFRESH_DATA_LOAD_CONTRACT:
-    // Wait for workspaceReady before first data load. Do not write a final empty state while auth/workspace is hydrating.
+    // STAGE114E_CALENDAR_HARD_REFRESH_READY_RETRY_CONTRACT:
+    // Do not publish a final empty calendar while auth/workspace is still hydrating.
+    // After workspaceReady, run one immediate bundle load and timed retry reads to cover hard refresh races.
+    for (const timer of calendarReadyRetryTimersRef.current) {
+      window.clearTimeout(timer);
+    }
+    calendarReadyRetryTimersRef.current = [];
+
     if (workspaceLoading || !workspaceReady || !workspace?.id) {
       setLoading(true);
-      return;
+      return undefined;
+    }
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) {
+      setLoading(true);
+      return undefined;
     }
 
     let cancelled = false;
+    const runId = ++calendarLoadSeqRef.current;
 
-    const loadBundle = async () => {
+    const loadBundle = async (reason: 'initial' | 'retry') => {
       try {
-        setLoading(true);
-        const [bundle, clientRows] = await Promise.all([
-          fetchCalendarBundleFromSupabase(),
-          fetchClientsFromSupabase().catch(() => []),
-        ]);
-        if (cancelled) return;
-        setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
-        setTasks((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
-        setLeads(bundle.leads);
-        setCases((bundle.cases || []) as any[]);
-        setClients(clientRows as any[]);
+        if (reason === 'initial') setLoading(true);
+        await refreshSupabaseBundle();
       } catch (error: any) {
-        if (!cancelled) {
+        if (!cancelled && reason === 'initial') {
           toast.error(`Błąd odczytu kalendarza: ${error.message}`);
         }
       } finally {
-        if (!cancelled) {
+        if (!cancelled && runId === calendarLoadSeqRef.current) {
           setLoading(false);
         }
       }
     };
 
-    void loadBundle();
+    void loadBundle('initial');
+
+    calendarReadyRetryTimersRef.current = [250, 900, 1800].map((delayMs) => window.setTimeout(() => {
+      if (!cancelled && runId === calendarLoadSeqRef.current) {
+        void loadBundle('retry');
+      }
+    }, delayMs));
 
     return () => {
       cancelled = true;
+      for (const timer of calendarReadyRetryTimersRef.current) {
+        window.clearTimeout(timer);
+      }
+      calendarReadyRetryTimersRef.current = [];
     };
-  }, [workspace?.id, workspaceLoading, workspaceReady]);
+  }, [workspace?.id, workspaceLoading, workspaceReady, calendarAuthUserId]);
 
   const resetNewEvent = () => {
     const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
@@ -1483,6 +1502,7 @@ export default function Calendar() {
 
     try {
       setActionPendingId(`${entry.id}:${days}`);
+      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
 
       if (entry.kind === 'event') {
         const nextStart = toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.startAt, entry.startsAt)), days));
@@ -1491,7 +1511,7 @@ export default function Calendar() {
           : null;
 
         await updateEventInSupabase({
-          id: entry.sourceId,
+          id: sourceId,
           title: readCalendarRawText(entry.raw?.title, entry.title),
           type: readCalendarRawText(entry.raw?.type, 'meeting'),
           startAt: nextStart,
@@ -1509,7 +1529,7 @@ export default function Calendar() {
         });
 
         await updateTaskInSupabase({
-          id: entry.sourceId,
+          id: sourceId,
           title: taskPayload.title,
           type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
           date: taskPayload.date,
@@ -1540,6 +1560,7 @@ export default function Calendar() {
 
     try {
       setActionPendingId(`${entry.id}:h${hours}`);
+      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
 
       if (entry.kind === 'event') {
         const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
@@ -1549,7 +1570,7 @@ export default function Calendar() {
           : null;
 
         await updateEventInSupabase({
-          id: entry.sourceId,
+          id: sourceId,
           title: readCalendarRawText(entry.raw?.title, entry.title),
           type: readCalendarRawText(entry.raw?.type, 'meeting'),
           startAt: nextStart,
@@ -1568,7 +1589,7 @@ export default function Calendar() {
         });
 
         await updateTaskInSupabase({
-          id: entry.sourceId,
+          id: sourceId,
           title: taskPayload.title,
           type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
           date: taskPayload.date,
