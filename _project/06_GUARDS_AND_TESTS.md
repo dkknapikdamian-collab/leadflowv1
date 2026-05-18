@@ -424,3 +424,21 @@ Chroni:
 - Script: `npm run check:stage117-leads-right-rail-layout-contract`
 - Purpose: /leads right rail must start at search anchor, render simple filters first, top value below, and avoid overlap at desktop zooms and mobile.
 - Marker: STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT
+
+## Stage118B - release gate Stage77 compatibility
+
+- Guard: `tests/stage118b-release-gate-stage77-compat.test.cjs`
+- Script: `npm run check:stage118b-release-gate-stage77-compat`
+- Purpose: Stage77 must accept date-aware `statusClass(status, dateValue)` introduced by overdue work item repair.
+- Marker: STAGE118B_RELEASE_GATE_STAGE77_COMPAT
+
+## Stage115 - CaseDetail runtime crash import guard
+
+STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
+
+- Added `tests/stage115-case-detail-useworkspace-import-contract.test.cjs`.
+- Added `tests/stage115-case-detail-render-runtime-contract.test.cjs`.
+- Wired both tests into `scripts/closeflow-release-check-quiet.cjs`.
+- Guard blocks `useWorkspace` imported from React and requires `../hooks/useWorkspace`.
+- Guard checks that CaseDetail import zone does not hide import-like text in block comments.
+

@@ -585,3 +585,26 @@ Expected gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smok
 - Planned/Run by package: `npm run check:stage117-leads-right-rail-layout-contract`.
 - Planned/Run by package: `npm run build`.
 - Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.
+
+## Stage118B release gate Stage77 compatibility
+
+- Planned/Run by package: `node --test tests/stage118b-release-gate-stage77-compat.test.cjs`.
+- Planned/Run by package: `node --test tests/stage77-lead-detail-single-status-pill.test.cjs`.
+- Planned/Run by package: `node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs`.
+- Planned/Run by package: `npm run verify:closeflow:quiet`.
+
+## Stage115 - CaseDetail crash hotfix tests
+
+STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
+
+Planned/required run:
+
+```powershell
+node --test tests/stage115-case-detail-useworkspace-import-contract.test.cjs
+node --test tests/stage115-case-detail-render-runtime-contract.test.cjs
+npm run build
+npm run verify:closeflow:quiet
+```
+
+Manual check remains required after push: open `/case/...` and `/cases/...` if available, then hard refresh and confirm no `p.useWorkspace is not a function` and no `APP_ROUTE_RENDER_FAILED`.
+

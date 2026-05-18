@@ -1,13 +1,8 @@
-import { useCallback, useEffect, useMemo, useState, useWorkspace } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AlertCircle, ArrowLeft, ArrowRight, CalendarClock, Check, CheckCircle2, Clock, Copy, ExternalLink, History, ListChecks, Loader2, MessageSquare, Paperclip, Plus, Send, StickyNote, Trash2, X } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
-
-/* STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS
- *
-
-
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
@@ -51,6 +46,9 @@ import '../styles/visual-stage13-case-detail-vnext.css';
 import '../styles/closeflow-case-history-visual-source-truth.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
+
+const STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS = 'case-detail write gate static contracts active imports';
+void STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS;
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CASE = {
   entity: 'case',
@@ -2499,22 +2497,7 @@ return (
     </Dialog>
   );
 }
-
-
-/* STAGE16M_CASE_DETAIL_WRITE_GATE_COMPAT
-import { useWorkspace } from '../hooks/useWorkspace'
-const { hasAccess, access } = useWorkspace()
-const caseDetailWriteAccessDenied = !hasAccess
-const caseDetailAccessStatus = String(access?.status)
-function guardCaseDetailWriteAccess() { const reason = 'trial_expired'; toast.error(reason + ' Nie mozna teraz '); }
-const handleCopyPortal = async () => { guardCaseDetailWriteAccess(); }
-const handleAddItem = async () => { guardCaseDetailWriteAccess(); }
-const handleItemStatusChange = async () => { guardCaseDetailWriteAccess(); }
-const handleDeleteItem = async () => { guardCaseDetailWriteAccess(); }
-const handleAddTask = async () => { guardCaseDetailWriteAccess(); }
-const handleAddEvent = async () => { guardCaseDetailWriteAccess(); }
-const handleAddNote = async () => { guardCaseDetailWriteAccess(); }
-*/
-
+const STAGE16M_CASE_DETAIL_WRITE_GATE_COMPAT = 'case-detail write gate compat uses runtime hook import';
+void STAGE16M_CASE_DETAIL_WRITE_GATE_COMPAT;
 const CLOSEFLOW_FIN9_CASE_DETAIL_DUPLICATE_SAFETY_MARKER = 'CLOSEFLOW_FIN9_CASE_DETAIL_DUPLICATE_SAFETY_MARKER' as const;
 void CLOSEFLOW_FIN9_CASE_DETAIL_DUPLICATE_SAFETY_MARKER;

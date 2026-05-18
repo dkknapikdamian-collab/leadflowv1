@@ -522,3 +522,18 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - Right rail now uses search/suggestions/list/rail grid areas.
 - Simple filters are locked first and top-value card directly below.
 - Mobile layout stacks search, suggestions, rail and list without squeeze.
+
+## Stage118B - release gate Stage77 compatibility
+
+- Repaired stale Stage77 release-gate test after LeadDetail statusClass became date-aware for overdue work items.
+- Added package alias `verify:closeflow:quiet` for the quiet release gate documented in Obsidian.
+
+## Stage115 - CaseDetail runtime crash hotfix
+
+STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
+
+- Fixed CaseDetail runtime import direction for `useWorkspace`.
+- Cleaned CaseDetail import/comment soup around Stage16O/Stage16M compatibility markers.
+- Added Stage115 regression tests and quiet release gate wiring.
+- Added project memory and Obsidian updates that explicitly mark Stage113/Stage114 as partial/not closed after Damian's manual test.
+

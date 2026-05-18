@@ -437,3 +437,29 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Scope: P1 visual/layout fix for /leads.
 - Files: `src/pages/Leads.tsx`, `src/styles/closeflow-leads-right-rail-layout-lock.css`, `tests/stage117-leads-right-rail-layout-contract.test.cjs`, `package.json`.
 - Decision: fix only Leads layout. Do not modify shared operator rail component or other pages in this stage.
+
+## Stage118B release gate Stage77 compatibility
+
+- Scope: tests/stage77-lead-detail-single-status-pill.test.cjs, package.json, tests/stage118b-release-gate-stage77-compat.test.cjs.
+- Decision: update stale guard only; do not change runtime LeadDetail behavior.
+
+## Stage115 - implementation ledger
+
+STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
+
+Decision: P0 hotfix goes before further logo/calendar/layout work.
+
+Changed files:
+- `src/pages/CaseDetail.tsx`
+- `tests/stage115-case-detail-useworkspace-import-contract.test.cjs`
+- `tests/stage115-case-detail-render-runtime-contract.test.cjs`
+- `scripts/closeflow-release-check-quiet.cjs`
+- `_project/runs/2026-05-18_stage115_case_detail_runtime_crash_hotfix.md`
+
+Out of scope:
+- logo Stage113,
+- calendar Stage114,
+- Radix warning,
+- lead detail spacing,
+- client lead view removal.
+

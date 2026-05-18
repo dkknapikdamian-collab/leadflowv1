@@ -37,6 +37,7 @@ const repoRoot = path.resolve(__dirname, '..');
 
 
 const requiredTests = [
+  'tests/stage113-closeflow-logo-source-contract.test.cjs',
   'tests/stage79-release-gate-mass-guard.test.cjs',
   'tests/stage79-today-task-done-action.test.cjs',
   'tests/right-rail-card-source-of-truth.test.cjs',
@@ -194,12 +195,17 @@ const requiredTests = [
   'tests/stage104-calendar-rendered-week-plan-smoke.test.cjs',
   'tests/stage104d-calendar-week-plan-compact-one-row.test.cjs',
   'tests/stage102-calendar-edit-modal-form-source.test.cjs',
+  'tests/stage114-calendar-modal-viewport-contract.test.cjs',
+  'tests/stage114-calendar-shift-persistence-contract.test.cjs',
+  'tests/stage114-calendar-hard-refresh-data-load-contract.test.cjs',
   'tests/stage103-calendar-month-grid-day-states.test.cjs',
   'tests/stage101-calendar-selected-day-one-row-readable.test.cjs',
   'tests/stage105-calendar-modal-no-dark-inputs.test.cjs',
   'tests/stage106-calendar-modal-inverted-visual-contract.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
-  'tests/stage108-calendar-render-contract-smoke.test.cjs',
+  'tests/stage108-calendar-render-contract-smoke.test.cjs',  'tests/stage115-case-detail-useworkspace-import-contract.test.cjs',
+  'tests/stage115-case-detail-render-runtime-contract.test.cjs',
+
 ];
 
 function runQuiet(label, command, args) {

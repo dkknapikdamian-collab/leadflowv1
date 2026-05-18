@@ -310,3 +310,13 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 - Manual QA: /leads at 80%, 90%, 100% zoom and mobile width.
 - Confirm Filtry proste starts level with search, Najcenniejsze leady sits directly below, no overlap or squeezed rail.
 - If accepted, continue with next P1 visual/layout item.
+
+## Stage115 - next steps after CaseDetail crash
+
+STAGE115_CASE_DETAIL_RUNTIME_CRASH_HOTFIX_2026_05_18
+
+1. Damian runs the Stage115 package with `-DoPush`.
+2. Damian manually opens a case and hard-refreshes the route.
+3. If CaseDetail is stable, next batch: Radix Dialog Description warning + client should not show leads + lead detail spacing.
+4. Do not mark Stage113/Stage114 as closed until Damian confirms their separate fixes.
+
