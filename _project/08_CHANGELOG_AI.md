@@ -504,3 +504,15 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - Wired LeadDetail finance action buttons to a typed payment dialog.
 - LeadDetail now fetches lead payments and derives paid/remaining/status from payment records.
 - Saving a lead payment creates a payment and a payment_recorded activity.
+
+## Stage116 - Today work item card source of truth
+
+- Added shared WorkItemCard component and CSS.
+- Today task/event rows now use shared card rendering.
+- Next 7 task/event rows now use shared card rendering.
+- Added status/tone helpers for overdue red and completed muted states.
+
+## Stage116 V2 - Stage76 guard compatibility repair
+
+- Added TodayStable compatibility literal for legacy Stage76 event-done guard after moving event done UI to WorkItemCard.
+- No visual behavior change; this only protects the existing Stage76 guard contract.

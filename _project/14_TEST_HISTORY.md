@@ -563,3 +563,20 @@ Expected gate: Stage102, Stage98, Stage114B, Stage114C, Stage114D, Stage108 smok
 - Planned/Run by package: `node --test tests/stage115-lead-finance-actions-open-dialog.test.cjs`.
 - Planned/Run by package: `npm run build`.
 - Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.
+
+## Stage116 - Today work item card source of truth
+
+- Planned/Run by package: `node --test tests/stage76-today-event-done-action.test.cjs`.
+- Planned/Run by package: `node --test tests/stage79-today-task-done-action.test.cjs`.
+- Planned/Run by package: `npm run check:todaystable-next7-v30`.
+- Planned/Run by package: `node --test tests/stage116-today-work-item-card-source-truth.test.cjs`.
+- Planned/Run by package: `npm run build`.
+- Manual test status: TEST RĘCZNY DO WYKONANIA przez Damiana.
+
+## Stage116 V2 - Stage76 guard compatibility repair
+
+- Planned/Run by package: `node --test tests/stage76-today-event-done-action.test.cjs`.
+- Planned/Run by package: `node --test tests/stage79-today-task-done-action.test.cjs`.
+- Planned/Run by package: `npm run check:todaystable-next7-v30`.
+- Planned/Run by package: `node --test tests/stage116-today-work-item-card-source-truth.test.cjs`.
+- Planned/Run by package: `npm run build`.

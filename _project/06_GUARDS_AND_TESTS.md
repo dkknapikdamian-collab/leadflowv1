@@ -411,3 +411,10 @@ Chroni:
 - Script: `npm run check:stage115e-lead-finance-actions-open-dialog`
 - Purpose: LeadDetail finance actions must open typed payment dialogs and persist payment records.
 - Marker: STAGE115E_LEAD_FINANCE_ACTIONS_DIALOG_CONTRACT
+
+## Stage116 - Today work item card source of truth
+
+- Guard: `tests/stage116-today-work-item-card-source-truth.test.cjs`
+- Script: `npm run check:stage116-today-work-item-card-source-truth`
+- Purpose: Today task/event cards must use `WorkItemCard` as source-of-truth for type/title/date/status/Zrobione and status tones.
+- Marker: STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH

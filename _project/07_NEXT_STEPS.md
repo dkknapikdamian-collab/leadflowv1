@@ -299,3 +299,9 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 
 - Damian manual check: click Dodaj zaliczkę and Płatność częściowa in /leads/:id. Expected: modal opens, positive amount saves, finance panel refreshes.
 - After manual QA, close Stage115 LeadDetail P1 batch or schedule full finance unification.
+
+## Stage116 - Today work item card source of truth
+
+- Manual QA: /today task/event rows and Najbliższe 7 dni task/event rows.
+- If accepted, plan Stage117 to migrate Calendar selected-day/week-plan to the same card contract.
+- Do not migrate LeadDetail/ClientDetail/CaseDetail in this stage.

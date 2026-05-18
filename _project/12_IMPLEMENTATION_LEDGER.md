@@ -420,3 +420,15 @@ Scope: /calendar modal viewport, Radix description, Stage98 guard cleanup for re
 - Scope: P1 functional repair for LeadDetail finance buttons.
 - Files: `src/pages/LeadDetail.tsx`, `src/styles/visual-stage14-lead-detail-vnext.css`, `tests/stage115-lead-finance-actions-open-dialog.test.cjs`, `package.json`.
 - Decision: use existing payments API for minimal working repair. Do not build invoice/accounting workflow here.
+
+## Stage116 - Today work item card source of truth
+
+- Scope: TodayStable only.
+- Files: `src/pages/TodayStable.tsx`, `src/components/work-item-card.tsx`, `src/styles/work-item-card.css`, `tests/stage116-today-work-item-card-source-truth.test.cjs`, `package.json`.
+- Decision: prepare component contract in Today first; do not change Calendar/LeadDetail/ClientDetail/CaseDetail in this stage.
+
+## Stage116 V2 - Stage76 guard compatibility repair
+
+- Scope: guard compatibility after Stage116 V1 patch.
+- File: `src/pages/TodayStable.tsx`.
+- Decision: preserve WorkItemCard source-of-truth and satisfy legacy Stage76 token guard with explicit compatibility marker.

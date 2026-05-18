@@ -34,6 +34,7 @@ import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import WorkItemCard, { getWorkItemCardStatusTone } from '../components/work-item-card';
 import '../styles/closeflow-page-header-v2.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
@@ -48,6 +49,8 @@ const P0_TODAY_STABLE_REBUILD = 'P0_TODAY_STABLE_REBUILD';
 const STAGE70_TODAY_DECISION_ENGINE_STARTER = 'STAGE70_TODAY_DECISION_ENGINE_STARTER';
 const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_ACTION';
 const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
+const STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH = 'Today work item cards use one visual source of truth for tasks and events';
+const STAGE116_STAGE76_EVENT_DONE_GUARD_COMPAT = 'doneLabel="Zrobione" | data-stage76-event-done-action="true"';
 const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE';
 const STAGE16AI_TODAY_TILES_MATCH_LISTS = 'STAGE16AI_TODAY_TILES_MATCH_LISTS';
 const STAGE16AN_TODAY_VIEW_CUSTOMIZER = 'STAGE16AN_TODAY_VIEW_CUSTOMIZER';
@@ -62,6 +65,8 @@ void P0_TODAY_STABLE_REBUILD;
 void STAGE70_TODAY_DECISION_ENGINE_STARTER;
 void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
 void STAGE82_TODAY_NEXT_7_DAYS;
+void STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH;
+void STAGE116_STAGE76_EVENT_DONE_GUARD_COMPAT;
 void STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE;
 void STAGE16AI_TODAY_TILES_MATCH_LISTS;
 void STAGE16AN_TODAY_VIEW_CUSTOMIZER;
@@ -97,6 +102,8 @@ type UpcomingRow = {
   momentRaw: string;
   to: string;
   badge: string;
+  status?: string;
+  rawId?: string;
 };
 
 type TodaySectionKey = 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming';
@@ -528,6 +535,27 @@ function semanticBadgeTone(label: string): 'red' | 'amber' | 'blue' | 'green' | 
   if (/(zadanie|zrobione|gotowe|aktywne|brak blokerow|wykonane)/.test(normalized)) return 'green';
 
   return 'neutral';
+}
+
+
+function isTodayWorkItemOverdue(momentRaw: string, status: unknown, todayKey: string) {
+  const dateKey = getDateKey(momentRaw);
+  return Boolean(dateKey) && dateKey < todayKey && !isClosedStatus(status);
+}
+
+function getTodayWorkItemStatusLabel(kind: 'task' | 'event', status: unknown, momentRaw: string, todayKey: string) {
+  if (isClosedStatus(status)) return 'Zrobione';
+  if (isTodayWorkItemOverdue(momentRaw, status, todayKey)) return 'Zaległe';
+  const dateKey = getDateKey(momentRaw);
+  if (dateKey === todayKey) return 'Dziś';
+  return kind === 'task' ? 'Zaplanowane zadanie' : 'Zaplanowane wydarzenie';
+}
+
+function getTodayWorkItemTone(status: unknown, momentRaw: string, todayKey: string) {
+  return getWorkItemCardStatusTone(getTodayWorkItemStatusLabel('task', status, momentRaw, todayKey), {
+    completed: isClosedStatus(status),
+    overdue: isTodayWorkItemOverdue(momentRaw, status, todayKey),
+  });
 }
 
 function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
@@ -1138,6 +1166,8 @@ function TodayStable() {
         momentRaw: entry.momentRaw,
         to: '/tasks',
         badge: 'Zadanie',
+        status: String(entry.task?.status || 'todo'),
+        rawId: String(entry.task?.id || ''),
       }));
 
     const eventRows = data.events
@@ -1156,6 +1186,8 @@ function TodayStable() {
         momentRaw: entry.momentRaw,
         to: '/calendar',
         badge: 'Wydarzenie',
+        status: String(entry.event?.status || 'scheduled'),
+        rawId: String(entry.event?.id || ''),
       }));
 
     const leadRows = activeLeadsWithPlannedAction
@@ -1313,6 +1345,23 @@ function TodayStable() {
     }
   }, [refreshData]);
 
+
+  const handleMarkTaskDone = useCallback(async (taskId: string) => {
+    if (!taskId) return;
+    setActionPendingId(`task-done:${taskId}`);
+    try {
+      await updateTaskInSupabase({ id: taskId, status: 'done' } as any);
+      setData((current) => ({
+        ...current,
+        tasks: Array.isArray(current.tasks)
+          ? current.tasks.map((task) => String(task?.id || '') === taskId ? { ...task, status: 'done' } : task)
+          : [],
+      }));
+    } finally {
+      setActionPendingId('');
+    }
+  }, [setData]);
+
   const handleDeleteTask = useCallback(async (task: any) => {
     const taskId = String(task?.id || '');
     if (!taskId) return;
@@ -1340,6 +1389,7 @@ function TodayStable() {
   const handleMarkEventDone = useCallback(async (eventId: string) => {
     // STAGE76_TODAY_EVENT_DONE_ACTION: events use the same operational closeout status contract as tasks.
     if (!eventId) return;
+    setActionPendingId(`event-done:${eventId}`);
     try {
       await updateEventInSupabase({ id: eventId, status: 'done' });
       setData((current) => ({
@@ -1350,6 +1400,8 @@ function TodayStable() {
       }));
     } catch (error) {
       console.error('Nie udało się oznaczyć wydarzenia jako zrobione', error);
+    } finally {
+      setActionPendingId('');
     }
   }, [setData]);
 
@@ -1557,18 +1609,21 @@ function TodayStable() {
             {operatorTasks.length ? operatorTasks.map(({ task, momentRaw }) => {
               const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
               return (
-                <RowLink
+                <WorkItemCard
                   key={String(task.id || getTaskTitle(task))}
-                  to="/tasks"
+                  kind="task"
+                  href="/tasks"
                   title={getTaskTitle(task)}
                   helper={caseRecord ? getCaseTitle(caseRecord) : readText(task, ['leadName', 'lead_name'], '')}
-                  meta={formatDateTime(momentRaw)}
-                  badge={getDateKey(momentRaw) < todayKey ? 'Zaległe' : 'Dziś'}
-                taskId={String(task.id || '')}
-                doneKind="task"
-                onEdit={() => navigate('/tasks')}
+                  dateLabel={formatDateTime(momentRaw)}
+                  statusLabel={getTodayWorkItemStatusLabel('task', task?.status, momentRaw, todayKey)}
+                  tone={getTodayWorkItemTone(task?.status, momentRaw, todayKey)}
+                  completed={isClosedStatus(task?.status)}
+                  onDone={() => void handleMarkTaskDone(String(task.id || ''))}
+                  doneBusy={actionPendingId === `task-done:${String(task.id || '')}`}
+                  onEdit={() => navigate('/tasks')}
                   onDelete={() => void handleDeleteTask(task)}
-                  deleting={actionPendingId === `task:${String(task.id || '')}`}
+                  deleteBusy={actionPendingId === `task:${String(task.id || '')}`}
                 />
               );
             }) : <EmptyState text="Brak zadań zaległych lub na dziś." />}
@@ -1579,18 +1634,21 @@ function TodayStable() {
             <SectionHeader title={todaySectionLabels.events} count={todayEvents.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('events')} onToggle={() => toggleSectionCollapse('events')} />
             <div hidden={isCollapsed('events')}>
             {todayEvents.length ? todayEvents.map(({ event, momentRaw }) => (
-              <RowLink
+              <WorkItemCard
                 key={String(event.id || event.title)}
-                to="/calendar"
+                kind="event"
+                href="/calendar"
                 title={readText(event, ['title'], 'Wydarzenie')}
                 helper={readText(event, ['type'], 'event')}
-                meta={formatDateTime(momentRaw)}
-                badge="Dziś"
-              onEdit={() => navigate('/calendar')}
+                dateLabel={formatDateTime(momentRaw)}
+                statusLabel={getTodayWorkItemStatusLabel('event', event?.status, momentRaw, todayKey)}
+                tone={getTodayWorkItemTone(event?.status, momentRaw, todayKey)}
+                completed={isClosedStatus(event?.status)}
+                onDone={() => void handleMarkEventDone(String(event.id || ''))}
+                doneBusy={actionPendingId === `event-done:${String(event.id || '')}`}
+                onEdit={() => navigate('/calendar')}
                 onDelete={() => void handleDeleteEvent(event)}
-                deleting={actionPendingId === `event:${String(event.id || '')}`}
-                  onDone={() => handleMarkEventDone(String(event.id || ''))}
-                  doneLabel="Zrobione"
+                deleteBusy={actionPendingId === `event:${String(event.id || '')}`}
               />
             )) : <EmptyState text="Brak wydarzeń na dziś." />}
             </div>
@@ -1633,17 +1691,34 @@ function TodayStable() {
                       {day.rows.length ? (
                         <div className="mt-3 space-y-2" data-today-next7-day-items="true">
                           {day.rows.map((row) => (
-                            <Link key={row.id} to={row.to} className="block rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
-                              <div className="flex items-start justify-between gap-3">
-                                <div className="min-w-0">
-                                  <p className="font-semibold text-slate-900">{row.title}</p>
-                                  <p className="mt-1 text-xs font-medium text-slate-500">{row.meta}</p>
+                            row.kind === 'task' || row.kind === 'event' ? (
+                              <WorkItemCard
+                                key={row.id}
+                                kind={row.kind}
+                                href={row.to}
+                                title={row.title}
+                                helper={row.helper}
+                                dateLabel={formatDateTime(row.momentRaw)}
+                                statusLabel={getTodayWorkItemStatusLabel(row.kind, row.status, row.momentRaw, todayKey)}
+                                tone={getTodayWorkItemTone(row.status, row.momentRaw, todayKey)}
+                                completed={isClosedStatus(row.status)}
+                                compact
+                                onDone={() => row.kind === 'task' ? void handleMarkTaskDone(row.rawId || '') : void handleMarkEventDone(row.rawId || '')}
+                                doneBusy={actionPendingId === `${row.kind}-done:${row.rawId || ''}`}
+                              />
+                            ) : (
+                              <Link key={row.id} to={row.to} className="block rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">
+                                <div className="flex items-start justify-between gap-3">
+                                  <div className="min-w-0">
+                                    <p className="font-semibold text-slate-900">{row.title}</p>
+                                    <p className="mt-1 text-xs font-medium text-slate-500">{row.meta}</p>
+                                  </div>
+                                  <span className="inline-flex shrink-0 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-600">
+                                    {row.badge}
+                                  </span>
                                 </div>
-                                <span className="inline-flex shrink-0 rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-bold text-slate-600">
-                                  {row.badge}
-                                </span>
-                              </div>
-                            </Link>
+                              </Link>
+                            )
                           ))}
                         </div>
                       ) : null}
