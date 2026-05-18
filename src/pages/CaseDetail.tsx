@@ -10,7 +10,7 @@ import { EntityActionButton, EntityTrashButton, actionButtonClass, modalFooterCl
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
@@ -2188,7 +2188,8 @@ export default function CaseDetail() {
 
         <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
           <DialogContent>
-            <DialogHeader><DialogTitle>{casePaymentDraft.type === 'deposit' ? 'Dodaj zaliczkę' : 'Dodaj płatność częściową'}</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{casePaymentDraft.type === 'deposit' ? 'Dodaj zaliczkę' : 'Dodaj płatność częściową'}</DialogTitle>
+<DialogDescription>Uzupełnij dane i zapisz zmiany w sprawie.</DialogDescription></DialogHeader>
             <div className="case-detail-dialog-grid">
               <label>Kwota<Input type="number" min="0" step="0.01" value={casePaymentDraft.amount} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, amount: event.target.value }))} /></label>
               <label>Status<select value={casePaymentDraft.status} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, status: event.target.value }))}><option value="awaiting_payment">Czeka na płatność</option><option value="deposit_paid">Zaliczka wpłacona</option><option value="partially_paid">Częściowo opłacone</option><option value="paid">Opłacone</option></select></label>
@@ -2205,6 +2206,7 @@ export default function CaseDetail() {
         <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
           <DialogHeader>
             <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
+            <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
           </DialogHeader>
           <div className="case-detail-payment-form">
             <div>
@@ -2273,6 +2275,7 @@ export default function CaseDetail() {
         <DialogContent className="case-finance-edit-modal">
           <DialogHeader>
             <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
+            <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form">
             <label className="case-finance-edit-field">
@@ -2327,6 +2330,7 @@ export default function CaseDetail() {
         <DialogContent className="case-finance-edit-modal">
           <DialogHeader>
             <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
+            <DialogDescription>Uzupełnij dane i zapisz zmiany w sprawie.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form">
             <label className="case-finance-edit-field">
@@ -2496,7 +2500,8 @@ function CaseItemDialog({
 return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
-        <DialogHeader><DialogTitle>Dodaj brak</DialogTitle></DialogHeader>
+        <DialogHeader><DialogTitle>Dodaj brak</DialogTitle>
+<DialogDescription>Uzupełnij brakujący element i zapisz go w checklistach sprawy.</DialogDescription></DialogHeader>
         <div className="case-detail-dialog-grid">
           <label>Tytuł<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
           <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="Krótko opisz, czego brakuje." /></label>

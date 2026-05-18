@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle, DialogDescription
 } from '../components/ui/dialog';
 import {
   DropdownMenu,
@@ -461,6 +461,7 @@ export default function Templates() {
         <DialogContent className="max-h-[90vh] overflow-hidden border-slate-200 bg-white text-slate-900 shadow-2xl sm:max-w-4xl">
           <DialogHeader>
             <DialogTitle className="text-slate-950">{editingTemplateId ? 'Edytuj szablon sprawy' : 'Nowy szablon sprawy'}</DialogTitle>
+            <DialogDescription>Uzupełnij dane szablonu i zapisz zmiany w bibliotece szablonów.</DialogDescription>
           </DialogHeader>
           <div className="grid gap-6 overflow-y-auto py-2 pr-1 md:grid-cols-[280px_minmax(0,1fr)]">
             <div className="space-y-4">

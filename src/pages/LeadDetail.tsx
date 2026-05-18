@@ -39,7 +39,7 @@ import EntityContactCard from '../components/entity-contact-card';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../components/ui/dropdown-menu';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -1772,7 +1772,8 @@ useEffect(() => {
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle>
+<DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription></DialogHeader>
             <div className="lead-detail-dialog-grid">
               <Label>Tytuł sprawy<Input value={createCaseDraft.title} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Klient<Input value={createCaseDraft.clientName} onChange={(event) => setCreateCaseDraft((current) => ({ ...current, clientName: event.target.value }))} /></Label>
@@ -1802,6 +1803,7 @@ useEffect(() => {
           <DialogContent className="lead-detail-finance-dialog" data-stage115e-lead-payment-dialog="true">
             <DialogHeader>
               <DialogTitle>{leadPaymentDialogType === 'deposit' ? 'Dodaj zaliczkę' : 'Płatność częściowa'}</DialogTitle>
+              <DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription>
             </DialogHeader>
             <form className="lead-detail-dialog-grid lead-detail-finance-dialog-form" onSubmit={handleSaveLeadPayment}>
               <div className="lead-detail-finance-dialog-summary">
@@ -1839,7 +1841,8 @@ useEffect(() => {
 
         <Dialog open={isEditing} onOpenChange={setIsEditing}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Edytuj leada</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Edytuj leada</DialogTitle>
+<DialogDescription>Uzupełnij dane leada i zapisz zmiany w kartotece.</DialogDescription></DialogHeader>
             <div className="lead-detail-dialog-grid">
               <Label>Nazwa<Input value={editLead?.name || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, name: event.target.value }))} /></Label>
               <Label>Firma<Input value={editLead?.company || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, company: event.target.value }))} /></Label>
@@ -1855,7 +1858,8 @@ useEffect(() => {
 
         <Dialog open={Boolean(editLinkedTask)} onOpenChange={(open) => !open && setEditLinkedTask(null)}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle>
+<DialogDescription>Uzupełnij dane zadania i zapisz, aby zaplanować pracę przy leadzie.</DialogDescription></DialogHeader>
             {editLinkedTask ? <div className="lead-detail-dialog-grid">
               <Label>Tytuł<Input value={editLinkedTask.title} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Typ<select className={modalSelectClass} value={editLinkedTask.type} onChange={(event) => setEditLinkedTask((current: any) => ({ ...current, type: event.target.value }))}>{TASK_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
@@ -1869,7 +1873,8 @@ useEffect(() => {
 
         <Dialog open={Boolean(editLinkedEvent)} onOpenChange={(open) => !open && setEditLinkedEvent(null)}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Edytuj wydarzenie</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Edytuj wydarzenie</DialogTitle>
+<DialogDescription>Uzupełnij dane wydarzenia i zapisz, aby zaplanować termin przy leadzie.</DialogDescription></DialogHeader>
             {editLinkedEvent ? <div className="lead-detail-dialog-grid">
               <Label>Tytuł<Input value={editLinkedEvent.title} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, title: event.target.value }))} /></Label>
               <Label>Typ<select className={modalSelectClass} value={editLinkedEvent.type} onChange={(event) => setEditLinkedEvent((current: any) => ({ ...current, type: event.target.value }))}>{EVENT_TYPES.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
@@ -1883,7 +1888,8 @@ useEffect(() => {
 
         <Dialog open={Boolean(editingNote)} onOpenChange={(open) => !open && setEditingNote(null)}>
           <DialogContent>
-            <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle>
+<DialogDescription>Uzupełnij treść notatki i zapisz ją w historii leada.</DialogDescription></DialogHeader>
             <Textarea value={editingNoteContent} onChange={(event) => setEditingNoteContent(event.target.value)} />
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setEditingNote(null)}>Anuluj</Button><Button type="button" onClick={handleSaveEditedNote}>Zapisz</Button></DialogFooter>
           </DialogContent>

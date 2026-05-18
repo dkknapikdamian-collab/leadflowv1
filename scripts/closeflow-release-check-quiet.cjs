@@ -205,6 +205,7 @@ const requiredTests = [
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
   'tests/stage108-calendar-render-contract-smoke.test.cjs',  'tests/stage115-case-detail-useworkspace-import-contract.test.cjs',
   'tests/stage115-case-detail-render-runtime-contract.test.cjs',
+  'tests/stage116-dialog-description-accessibility-contract.test.cjs',
 
 ];
 
