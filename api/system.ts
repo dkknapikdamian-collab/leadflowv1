@@ -22,6 +22,8 @@ import supportHandler from '../src/server/support-handler.js';
 import dailyDigestHandler from '../src/server/daily-digest-handler.js';
 import weeklyReportHandler from '../src/server/weekly-report-handler.js';
 import googleCalendarHandler from '../src/server/google-calendar-handler.js';
+import taskRouteStage124FHandler from '../src/server/task-route-stage124f.js';
+import eventRouteStage124FHandler from '../src/server/event-route-stage124f.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -828,7 +830,19 @@ export default async function handler(req: any, res: any) {
     if (apiRoute === 'records') {
       await recordsHandler(req, res);
       return;
-    }  if (kind === 'google-calendar') {
+    }  
+    // STAGE124F_VERCEL_HOBBY_TASK_EVENT_CONSOLIDATION
+    // Keep task/event routes behind api/system so Vercel Hobby does not deploy separate serverless functions.
+    if (apiRoute === 'tasks') {
+      await taskRouteStage124FHandler(req, res);
+      return;
+    }
+    if (apiRoute === 'events') {
+      await eventRouteStage124FHandler(req, res);
+      return;
+    }
+
+  if (kind === 'google-calendar') {
     await googleCalendarHandler(req, res);
     return;
   }

@@ -1,9 +1,10 @@
-// STAGE124D_SUPABASE_EGRESS_LIGHT_TASK_ROUTE
-import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped } from '../src/server/_supabase.js';
-import { resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
-import { normalizeTaskListContract } from '../src/lib/data-contract.js';
+// STAGE124F_VERCEL_HOBBY_CONSOLIDATED_EVENT_ROUTE
+// STAGE124D_SUPABASE_EGRESS_LIGHT_EVENT_ROUTE
+import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped } from './_supabase.js';
+import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { normalizeEventListContract } from '../lib/data-contract.js';
 
-const TASK_LIST_SELECT_STAGE124D = [
+const EVENT_LIST_SELECT_STAGE124D = [
   'id',
   'workspace_id',
   'lead_id',
@@ -15,8 +16,6 @@ const TASK_LIST_SELECT_STAGE124D = [
   'status',
   'priority',
   'scheduled_at',
-  'due_at',
-  'date',
   'start_at',
   'end_at',
   'recurrence',
@@ -32,7 +31,7 @@ const TASK_LIST_SELECT_STAGE124D = [
   'updated_at',
 ].join(',');
 
-const TASK_LIST_SELECT_STAGE124D_MIN = [
+const EVENT_LIST_SELECT_STAGE124D_MIN = [
   'id',
   'workspace_id',
   'lead_id',
@@ -40,15 +39,11 @@ const TASK_LIST_SELECT_STAGE124D_MIN = [
   'type',
   'title',
   'status',
-  'priority',
   'scheduled_at',
-  'due_at',
-  'date',
   'start_at',
   'end_at',
   'recurrence',
   'reminder',
-  'show_in_tasks',
   'show_in_calendar',
   'created_at',
   'updated_at',
@@ -87,25 +82,25 @@ function addDateRange(path: string, field: string, from?: string | null, to?: st
   return next;
 }
 
-function normalizeTask(row: Record<string, unknown>) {
-  const normalized = normalizeTaskListContract([row])[0] || row;
-  const scheduledAt = asIsoDate((normalized as any).scheduledAt)
-    || asIsoDate((normalized as any).dueAt)
-    || asIsoDate((normalized as any).date)
-    || asIsoDate((normalized as any).startAt)
-    || asIsoDate((normalized as any).createdAt)
+function normalizeEvent(row: Record<string, unknown>) {
+  const normalized = normalizeEventListContract([row])[0] || row;
+  const startAt = asIsoDate((normalized as any).startAt)
+    || asIsoDate((normalized as any).scheduledAt)
+    || asIsoDate((normalized as any).startsAt)
+    || asIsoDate(row.start_at)
+    || asIsoDate(row.scheduled_at)
     || new Date().toISOString();
 
   return {
     ...normalized,
     id: String((normalized as any).id || row.id || crypto.randomUUID()),
     title: String((normalized as any).title || row.title || ''),
-    type: String((normalized as any).type || row.type || row.task_type || 'task'),
-    date: scheduledAt.slice(0, 10),
-    scheduledAt,
-    dueAt: scheduledAt,
-    status: String((normalized as any).status || row.status || 'todo'),
-    priority: String((normalized as any).priority || row.priority || 'medium'),
+    type: String((normalized as any).type || row.type || 'meeting'),
+    startAt,
+    startsAt: startAt,
+    scheduledAt: startAt,
+    endAt: asIsoDate((normalized as any).endAt) || asIsoDate(row.end_at) || '',
+    status: String((normalized as any).status || row.status || 'scheduled'),
     leadId: (normalized as any).leadId || (row.lead_id ? String(row.lead_id) : undefined),
     caseId: (normalized as any).caseId || (row.case_id ? String(row.case_id) : undefined),
     clientId: (normalized as any).clientId || (row.client_id ? String(row.client_id) : undefined),
@@ -114,32 +109,32 @@ function normalizeTask(row: Record<string, unknown>) {
   };
 }
 
-async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { id?: unknown; title?: unknown; scheduledAt?: unknown }) {
+async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { id?: unknown; title?: unknown; startAt?: unknown }) {
   const normalizedLeadId = asText(leadId);
   if (!normalizedLeadId) return;
   await updateByIdScoped('leads', normalizedLeadId, workspaceId, {
     next_action_title: String(item.title || ''),
-    next_action_at: item.scheduledAt ? new Date(String(item.scheduledAt)).toISOString() : null,
+    next_action_at: item.startAt ? new Date(String(item.startAt)).toISOString() : null,
     next_action_item_id: item.id ? String(item.id) : null,
     updated_at: new Date().toISOString(),
   });
 }
 
-async function readTasks(req: any, workspaceId: string) {
+async function readEvents(req: any, workspaceId: string) {
   const limit = capLimit(queryValue(req, 'limit'));
   const from = asIsoDate(queryValue(req, 'from') || queryValue(req, 'start') || queryValue(req, 'dateFrom'));
   const to = asIsoDate(queryValue(req, 'to') || queryValue(req, 'end') || queryValue(req, 'dateTo'));
 
   const baseQueries = [
-    'work_items?select=' + TASK_LIST_SELECT_STAGE124D + '&show_in_tasks=is.true&order=scheduled_at.asc.nullslast&limit=' + limit,
-    'work_items?select=' + TASK_LIST_SELECT_STAGE124D + '&record_type=eq.task&order=scheduled_at.asc.nullslast&limit=' + limit,
-    'work_items?select=' + TASK_LIST_SELECT_STAGE124D + '&type=eq.task&order=scheduled_at.asc.nullslast&limit=' + limit,
-    'work_items?select=' + TASK_LIST_SELECT_STAGE124D_MIN + '&show_in_tasks=is.true&order=scheduled_at.asc.nullslast&limit=' + limit,
-    'work_items?select=' + TASK_LIST_SELECT_STAGE124D_MIN + '&record_type=eq.task&order=scheduled_at.asc.nullslast&limit=' + limit,
+    'work_items?select=' + EVENT_LIST_SELECT_STAGE124D + '&record_type=eq.event&order=start_at.asc.nullslast&limit=' + limit,
+    'work_items?select=' + EVENT_LIST_SELECT_STAGE124D + '&show_in_calendar=is.true&order=start_at.asc.nullslast&limit=' + limit,
+    'work_items?select=' + EVENT_LIST_SELECT_STAGE124D + '&type=eq.event&order=start_at.asc.nullslast&limit=' + limit,
+    'work_items?select=' + EVENT_LIST_SELECT_STAGE124D_MIN + '&record_type=eq.event&order=start_at.asc.nullslast&limit=' + limit,
+    'work_items?select=' + EVENT_LIST_SELECT_STAGE124D_MIN + '&show_in_calendar=is.true&order=start_at.asc.nullslast&limit=' + limit,
   ];
 
   const queries = baseQueries
-    .map((query) => addDateRange(query, 'scheduled_at', from, to))
+    .map((query) => addDateRange(query, 'start_at', from, to))
     .map((query) => withWorkspaceFilter(query, workspaceId));
 
   const result = await selectFirstAvailable(queries);
@@ -151,12 +146,12 @@ function sendError(res: any, error: any, fallback: string) {
   res.status(status).json({ error: error?.code || error?.message || fallback });
 }
 
-export default async function handler(req: any, res: any) {
+export default async function eventRouteStage124FHandler(req: any, res: any) {
   try {
     if (req.method === 'GET') {
       const workspaceId = await resolveRequestWorkspaceId(req);
-      const rows = await readTasks(req, workspaceId);
-      res.status(200).json(rows.map(normalizeTask));
+      const rows = await readEvents(req, workspaceId);
+      res.status(200).json(rows.map(normalizeEvent));
       return;
     }
 
@@ -165,7 +160,7 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'PATCH') {
       if (!body.id) {
-        res.status(400).json({ error: 'TASK_ID_REQUIRED' });
+        res.status(400).json({ error: 'EVENT_ID_REQUIRED' });
         return;
       }
 
@@ -173,9 +168,12 @@ export default async function handler(req: any, res: any) {
       if (body.title !== undefined) payload.title = body.title;
       if (body.type !== undefined) payload.type = body.type;
       if (body.status !== undefined) payload.status = body.status;
-      if (body.priority !== undefined) payload.priority = body.priority;
-      if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(String(body.date) + 'T09:00:00').toISOString() : null;
-      if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
+      if (body.startAt !== undefined) {
+        const iso = body.startAt ? new Date(body.startAt).toISOString() : null;
+        payload.start_at = iso;
+        payload.scheduled_at = iso;
+      }
+      if (body.endAt !== undefined) payload.end_at = body.endAt ? new Date(body.endAt).toISOString() : null;
       if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
       if (body.caseId !== undefined) payload.case_id = body.caseId || null;
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
@@ -188,17 +186,17 @@ export default async function handler(req: any, res: any) {
         await syncLeadNextAction(workspaceId, body.leadId, {
           id: body.id,
           title: body.title ?? payload.title,
-          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date,
+          startAt: body.startAt ?? payload.start_at,
         });
       }
-      res.status(200).json(normalizeTask(updated as Record<string, unknown>));
+      res.status(200).json(normalizeEvent(updated as Record<string, unknown>));
       return;
     }
 
     if (req.method === 'DELETE') {
       const id = queryValue(req, 'id');
       if (!id) {
-        res.status(400).json({ error: 'TASK_ID_REQUIRED' });
+        res.status(400).json({ error: 'EVENT_ID_REQUIRED' });
         return;
       }
       await deleteByIdScoped('work_items', id, workspaceId);
@@ -212,30 +210,25 @@ export default async function handler(req: any, res: any) {
     }
 
     const nowIso = new Date().toISOString();
-    const scheduledAt = body.scheduledAt
-      ? new Date(body.scheduledAt).toISOString()
-      : body.date
-        ? new Date(String(body.date) + 'T09:00:00').toISOString()
-        : null;
-
+    const startAt = body.startAt ? new Date(body.startAt).toISOString() : nowIso;
     const payload = {
       workspace_id: workspaceId,
       created_by_user_id: null,
       lead_id: body.leadId || null,
       case_id: body.caseId || null,
       client_id: body.clientId || null,
-      record_type: 'task',
-      type: body.type || 'task',
+      record_type: 'event',
+      type: body.type || 'meeting',
       title: body.title,
       description: body.description || '',
-      status: body.status || 'todo',
-      priority: body.priority || 'medium',
-      scheduled_at: scheduledAt,
-      start_at: null,
-      end_at: null,
+      status: body.status || 'scheduled',
+      priority: 'medium',
+      scheduled_at: startAt,
+      start_at: startAt,
+      end_at: body.endAt ? new Date(body.endAt).toISOString() : null,
       recurrence: body.recurrenceRule || 'none',
       reminder: body.reminderAt || 'none',
-      show_in_tasks: true,
+      show_in_tasks: false,
       show_in_calendar: true,
       created_at: nowIso,
       updated_at: nowIso,
@@ -247,12 +240,12 @@ export default async function handler(req: any, res: any) {
       await syncLeadNextAction(workspaceId, body.leadId, {
         id: (inserted as Record<string, unknown>).id,
         title: body.title,
-        scheduledAt,
+        startAt,
       });
     }
 
-    res.status(200).json(normalizeTask(inserted as Record<string, unknown>));
+    res.status(200).json(normalizeEvent(inserted as Record<string, unknown>));
   } catch (error: any) {
-    sendError(res, error, 'TASK_ROUTE_FAILED');
+    sendError(res, error, 'EVENT_ROUTE_FAILED');
   }
 }

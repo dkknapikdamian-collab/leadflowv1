@@ -483,7 +483,7 @@ export async function fetchTasksFromSupabase(params?: TaskEventRangeParamsStage1
     return filterCalendarRowsByActiveParentsForCascade(normalizedTasks, { archivedClientIds, archivedCaseIds });
   }
   if (shouldUseDevNoAuthMocks()) return [];
-  const normalizedTasks = await callApi<Record<string, unknown>[]>('/api/tasks' + buildTaskEventRangeQueryStage124E(params)).then(normalizeTaskListContract);
+  const normalizedTasks = await callApi<Record<string, unknown>[]>('/api/system?apiRoute=tasks' + buildTaskEventRangeQueryStage124E(params).replace('?', '&')).then(normalizeTaskListContract);
   const archiveIndex = await buildCalendarParentArchiveIndexForCascade();
   return filterCalendarRowsByActiveParentsForCascade(normalizedTasks, archiveIndex);
 }
@@ -495,7 +495,7 @@ export async function fetchEventsFromSupabase(params?: TaskEventRangeParamsStage
     return filterCalendarRowsByActiveParentsForCascade(normalizedEvents, { archivedClientIds, archivedCaseIds });
   }
   if (shouldUseDevNoAuthMocks()) return [];
-  const normalizedEvents = await callApi<Record<string, unknown>[]>('/api/events' + buildTaskEventRangeQueryStage124E(params)).then(normalizeEventListContract);
+  const normalizedEvents = await callApi<Record<string, unknown>[]>('/api/system?apiRoute=events' + buildTaskEventRangeQueryStage124E(params).replace('?', '&')).then(normalizeEventListContract);
   const archiveIndex = await buildCalendarParentArchiveIndexForCascade();
   return filterCalendarRowsByActiveParentsForCascade(normalizedEvents, archiveIndex);
 }
