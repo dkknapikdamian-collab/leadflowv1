@@ -1,0 +1,102 @@
+﻿[
+    {
+        "id":  "e2c2a603-6746-4674-bd45-4e989e8f215a",
+        "name":  "Untitled query",
+        "visibility":  "user",
+        "inserted_at":  "2026-05-19T16:29:37.571803+00:00",
+        "updated_at":  "2026-05-19T16:29:37.571803+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-05-19_e2c2a603_Untitled_query.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-05-19_e2c2a603_Untitled_query.sql.stderr.txt",
+        "size":  1192
+    },
+    {
+        "id":  "ea73f39a-5083-4704-80d4-469d8b7db440",
+        "name":  "Google Calendar Sync Foundation Storage",
+        "visibility":  "user",
+        "inserted_at":  "2026-05-03T10:07:59.915228+00:00",
+        "updated_at":  "2026-05-03T10:07:59.915228+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-05-03_ea73f39a_Google_Calendar_Sync_Foundation_Storage.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-05-03_ea73f39a_Google_Calendar_Sync_Foundation_Storage.sql.stderr.txt",
+        "size":  1192
+    },
+    {
+        "id":  "b5adadc6-8d88-4ae4-9181-6dd1f894170e",
+        "name":  "Bootstrap profili i workspace po rejestracji auth",
+        "visibility":  "user",
+        "inserted_at":  "2026-05-01T06:06:46.880838+00:00",
+        "updated_at":  "2026-05-01T06:06:46.880838+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-05-01_b5adadc6_Bootstrap_profili_i_workspace_po_rejestracji_auth.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-05-01_b5adadc6_Bootstrap_profili_i_workspace_po_rejestracji_auth.sql.stderr.txt",
+        "size":  19085
+    },
+    {
+        "id":  "540446f7-99b8-4b42-9689-f04b159bb390",
+        "name":  "Dostosowanie typ├│w i dodanie p├│l w work_items",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-29T11:34:55.053106+00:00",
+        "updated_at":  "2026-04-29T11:34:55.053106+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-29_540446f7_Dostosowanie_typ__w_i_dodanie_p__l_w_work_items.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-29_540446f7_Dostosowanie_typ__w_i_dodanie_p__l_w_work_items.sql.stderr.txt",
+        "size":  1716
+    },
+    {
+        "id":  "49ec78db-2247-49fe-aba1-4cd2f4bda675",
+        "name":  "AI Drafts Table Setup (Stage 19)",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-28T12:21:45.194317+00:00",
+        "updated_at":  "2026-04-28T12:21:45.194317+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-28_49ec78db_AI_Drafts_Table_Setup__Stage_19_.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-28_49ec78db_AI_Drafts_Table_Setup__Stage_19_.sql.stderr.txt",
+        "size":  1716
+    },
+    {
+        "id":  "62f463bd-ccec-4ec5-81dd-ec6775813ac0",
+        "name":  "AI Drafts per Workspace Storage",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-27T21:36:48.826613+00:00",
+        "updated_at":  "2026-04-27T21:36:48.826613+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-27_62f463bd_AI_Drafts_per_Workspace_Storage.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-27_62f463bd_AI_Drafts_per_Workspace_Storage.sql.stderr.txt",
+        "size":  5567
+    },
+    {
+        "id":  "d56256f9-82b7-4c78-8a37-13e817ce151c",
+        "name":  "Fetch Recent Workspace Subscriptions",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-26T08:16:00.577987+00:00",
+        "updated_at":  "2026-04-26T08:16:00.577987+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-26_d56256f9_Fetch_Recent_Workspace_Subscriptions.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-26_d56256f9_Fetch_Recent_Workspace_Subscriptions.sql.stderr.txt",
+        "size":  223
+    },
+    {
+        "id":  "437cfbd0-e795-471f-9f3a-cbf055c41ede",
+        "name":  "Normalize next_action_title defaults",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-24T14:41:34.576181+00:00",
+        "updated_at":  "2026-04-24T14:41:34.576181+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-24_437cfbd0_Normalize_next_action_title_defaults.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-24_437cfbd0_Normalize_next_action_title_defaults.sql.stderr.txt",
+        "size":  179
+    },
+    {
+        "id":  "1ee8e6ec-da18-4f49-b145-8056602fd474",
+        "name":  "Workspace Schema Repair and Seed from Auth Users",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-24T09:11:52.515366+00:00",
+        "updated_at":  "2026-04-24T09:11:52.515366+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-24_1ee8e6ec_Workspace_Schema_Repair_and_Seed_from_Auth_Users.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-24_1ee8e6ec_Workspace_Schema_Repair_and_Seed_from_Auth_Users.sql.stderr.txt",
+        "size":  758
+    },
+    {
+        "id":  "2e4dc0ce-0f68-4128-ac3c-d4633e6dc7f7",
+        "name":  "Fetch Foreign Key Constraint Definition",
+        "visibility":  "user",
+        "inserted_at":  "2026-04-24T08:32:53.451547+00:00",
+        "updated_at":  "2026-04-24T08:32:53.451547+00:00",
+        "file":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-24_2e4dc0ce_Fetch_Foreign_Key_Constraint_Definition.sql",
+        "stderr":  "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\supabase\\rescue\\snippets\\20260519_192150\\downloaded_sql_v2\\2026-04-24_2e4dc0ce_Fetch_Foreign_Key_Constraint_Definition.sql.stderr.txt",
+        "size":  310
+    }
+]
