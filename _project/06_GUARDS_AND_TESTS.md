@@ -516,3 +516,27 @@ Testy:
 Test reczny:
 - DO WYKONANIA na /calendar po zielonym gate.
 <!-- /STAGE119_V5_RELEASE_GATE_HARNESS_AND_MISSING_TESTS_AUDIT -->
+
+
+<!-- STAGE120_CALENDAR_LOCAL_FIRST_SYNC_AND_FOCUS -->
+## 2026-05-18 - Stage120 Calendar local-first sync and focus
+
+- Calendar reads local Supabase data before Google Calendar inbound sync.
+- Google inbound runs in background after first local render and refreshes only if it changed rows.
+- /calendar?focus=YYYY-MM-DD is now honored by Calendar.
+- Guard: tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs.
+- Manual QA: hard refresh, week/month/selected day, focus link, add/edit, shift, done/delete.
+<!-- /STAGE120_CALENDAR_LOCAL_FIRST_SYNC_AND_FOCUS -->
+
+<!-- STAGE124A_SUPABASE_EGRESS_GUARDS_START -->
+## 2026-05-19 - Stage124A V3 Supabase egress guard
+
+Guard:
+- `node scripts/check-stage124-supabase-egress-contract.cjs`
+
+Sprawdza:
+- brak ciezkich list `leads?select=*&limit=300`, `clients?select=*&limit=300`, `cases?select=*&limit=250`, `work_items?select=*&limit=200`,
+- obecność ListDTO constants,
+- cache GET 30s,
+- wpis w package.json.
+<!-- STAGE124A_SUPABASE_EGRESS_GUARDS_END -->

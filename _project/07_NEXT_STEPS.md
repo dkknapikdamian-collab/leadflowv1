@@ -424,3 +424,12 @@ Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta m
 3. Check console marker and JS bundle hash.
 4. Check /api/me.
 5. If /api/me remains 401, fix auth/session/workspace before touching Calendar UI.
+
+<!-- STAGE124A_SUPABASE_EGRESS_NEXT_START -->
+## 2026-05-19 - Po Stage124A V3
+
+1. Test reczny UI bez utraty danych na listach i detailach.
+2. Sprawdzic Supabase Usage / Logs Top Paths po normalnej sesji.
+3. Stage124B: calendar/task date-range queries oraz dalsza deduplikacja auth/workspace, jezeli Usage dalej rosnie.
+4. Nie wracac do `select=*` w listach; brakujace pola dopisywac jawnie do ListDTO constants.
+<!-- STAGE124A_SUPABASE_EGRESS_NEXT_END -->

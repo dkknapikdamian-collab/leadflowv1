@@ -548,3 +548,22 @@ DECYZJA: /api/version stays available through /api/system?kind=version, without 
 TESTY: Stage122 guard, PWA foundation, Vercel budget, Stage98, Stage121, build, verify:closeflow:quiet.
 
 NASTĘPNY KROK: verify production /api/version and runtime marker, then retest calendar shift only if /api/me is clean.
+
+<!-- STAGE124A_SUPABASE_EGRESS_LEDGER_START -->
+## 2026-05-19 - Stage124A V3 Supabase egress P0
+
+FAKTY Z KODU:
+- `api/leads.ts`, `api/clients.ts`, `api/cases.ts` mialy listowe `select=*` z wysokimi limitami.
+- `src/lib/supabase-fallback.ts` mial dedupe/cache GET na 10 sekund.
+
+DECYZJA:
+- Nie ucinac funkcjonalnosci UI. Zmniejszac payload list, nie usuwac modulow.
+
+ZMIANA:
+- List endpoints maja jawne kolumny ListDTO.
+- Detail endpoints po `id` nadal moga uzyc pelnego payloadu.
+- Guard blokuje powrot ciezkich list `select=*`.
+
+RYZYKO:
+- Jesli jakis ekran listowy ukrycie korzystal z pola spoza ListDTO, dopisac to pole do stalej ListDTO, a nie wracac do `select=*`.
+<!-- STAGE124A_SUPABASE_EGRESS_LEDGER_END -->

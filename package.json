@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "check:stage124-supabase-egress-contract": "node scripts/check-stage124-supabase-egress-contract.cjs",
     "check:calendar:stage114-mojibake": "node scripts/check-stage114-calendar-mojibake.cjs",
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",

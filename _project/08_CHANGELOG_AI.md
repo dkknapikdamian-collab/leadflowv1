@@ -644,3 +644,13 @@ DECYZJA: /api/version stays available through /api/system?kind=version, without 
 TESTY: Stage122 guard, PWA foundation, Vercel budget, Stage98, Stage121, build, verify:closeflow:quiet.
 
 NASTĘPNY KROK: verify production /api/version and runtime marker, then retest calendar shift only if /api/me is clean.
+
+<!-- STAGE124A_SUPABASE_EGRESS_CHANGELOG_START -->
+## 2026-05-19 - Stage124A V3 Supabase egress API list DTO guard
+
+- Status: ZIP/local package V3.
+- Zakres: API list endpoints dla leads/clients/cases przechodza z `select=*` na jawne ListDTO select columns; detail route po `id` pozostaje pelny.
+- Dodatkowo: cache GET w `src/lib/supabase-fallback.ts` zwiekszony z 10s do 30s i nadal czyszczony po mutacjach.
+- Guard: `scripts/check-stage124-supabase-egress-contract.cjs`.
+- V3: patch wykonywany przez Node, bez kruchych PowerShell -replace.
+<!-- STAGE124A_SUPABASE_EGRESS_CHANGELOG_END -->

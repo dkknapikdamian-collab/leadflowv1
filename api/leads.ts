@@ -93,6 +93,33 @@ const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activiti
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 
+const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
+const LEAD_LIST_SELECT_STAGE124 = [
+  'id',
+  'workspace_id',
+  'client_id',
+  'linked_case_id',
+  'name',
+  'company',
+  'email',
+  'phone',
+  'source',
+  'status',
+  'value',
+  'deal_value',
+  'currency',
+  'priority',
+  'created_at',
+  'updated_at',
+  'moved_to_service_at',
+  'case_started_at',
+  'next_action_at',
+  'next_action_item_id',
+  'lead_visibility',
+  'sales_outcome',
+].join(',');
+const LEAD_DETAIL_SELECT_STAGE124 = '*';
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -883,8 +910,9 @@ export default async function handler(req: any, res: any) {
         requestedStatus ? `status=eq.${encodeURIComponent(normalizeStatus(requestedStatus))}&` : '',
       ].filter(Boolean).join('');
       const leadLimit = requestedId ? 1 : 300;
-      const base = withWorkspaceFilter(`leads?select=*&${leadFilters}order=updated_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
-      const fallback = withWorkspaceFilter(`leads?select=*&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
+      const leadSelect = requestedId ? LEAD_DETAIL_SELECT_STAGE124 : LEAD_LIST_SELECT_STAGE124;
+      const base = withWorkspaceFilter(`leads?select=${leadSelect}&${leadFilters}order=updated_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
+      const fallback = withWorkspaceFilter(`leads?select=${leadSelect}&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
       const result = await selectFirstAvailable([base, fallback]);
       const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeLead(row));
       const defaultActiveList = !requestedId && !requestedVisibility && !requestedStatus && !requestedClientId && !requestedLinkedCaseId;

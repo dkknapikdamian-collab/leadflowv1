@@ -719,3 +719,20 @@ DECYZJA: /api/version stays available through /api/system?kind=version, without 
 TESTY: Stage122 guard, PWA foundation, Vercel budget, Stage98, Stage121, build, verify:closeflow:quiet.
 
 NASTĘPNY KROK: verify production /api/version and runtime marker, then retest calendar shift only if /api/me is clean.
+
+<!-- STAGE124A_SUPABASE_EGRESS_TESTS_START -->
+## 2026-05-19 - Stage124A V3 Supabase egress API list DTO guard
+
+Automatycznie:
+- `node scripts/check-stage124-supabase-egress-contract.cjs`
+- `node --test tests/stage124-supabase-egress-contract.test.cjs`
+- `npm run build` jeśli nie uruchomiono z `-SkipBuild`.
+
+Manualnie do wykonania:
+- /leads lista + lead detail,
+- /clients lista + client detail,
+- /cases lista + case detail,
+- /tasks lista i status done/delete,
+- /calendar month + selected day + edit modal,
+- Supabase Usage po 1-2h normalnego klikania: sprawdzic spadek API egress / top paths.
+<!-- STAGE124A_SUPABASE_EGRESS_TESTS_END -->

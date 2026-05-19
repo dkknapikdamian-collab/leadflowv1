@@ -61,7 +61,8 @@ type EntityConflictCheckInput = {
 type ApiCacheEntry = { expiresAt: number; data?: unknown; promise?: Promise<unknown> };
 
 const CLOSEFLOW_CALENDAR_PARENT_ARCHIVE_FILTER_V1 = 'calendar hides tasks/events whose client or case parent is archived';
-const API_GET_CACHE_TTL_MS = 10_000;
+const STAGE124_SUPABASE_EGRESS_CACHE_CONTRACT = 'GET cache dedupes API reads and is cleared after mutations';
+const API_GET_CACHE_TTL_MS = 30_000;
 export const CLOSEFLOW_DATA_MUTATED_EVENT = 'closeflow:data-mutated';
 const DEV_PREVIEW_DATA_FLAG = 'closeflow:dev-preview-data';
 

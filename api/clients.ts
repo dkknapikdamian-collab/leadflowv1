@@ -10,6 +10,23 @@ const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'las
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'client delete archives client; active cases/tasks/events hide by archived parent';
 
+const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
+const CLIENT_LIST_SELECT_STAGE124 = [
+  'id',
+  'workspace_id',
+  'name',
+  'company',
+  'email',
+  'phone',
+  'source_primary',
+  'created_at',
+  'updated_at',
+  'last_activity_at',
+  'archived_at',
+  'primary_case_id',
+].join(',');
+const CLIENT_DETAIL_SELECT_STAGE124 = '*';
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -100,8 +117,9 @@ export default async function handler(req: any, res: any) {
       const requestedId = asText(req.query?.id);
       const includeArchivedClientsForCascade = ['1', 'true', 'yes'].includes(asText(req.query?.includeArchived).toLowerCase());
       const activeClientArchiveFilterForCascade = !requestedId && !includeArchivedClientsForCascade ? 'archived_at=is.null&' : '';
-      const base = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
-      const fallback = withWorkspaceFilter(`clients?select=*&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
+      const clientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE124;
+      const base = withWorkspaceFilter(`clients?select=${clientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
+      const fallback = withWorkspaceFilter(`clients?select=${clientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
       let normalized: ReturnType<typeof normalizeClient>[] = [];
       try {
         const result = await selectFirstAvailable([base, fallback]);

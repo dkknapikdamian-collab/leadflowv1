@@ -15,6 +15,33 @@ const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_comp
 const CLOSEFLOW_CLIENT_PRIMARY_CASE_ETAP7_API_GUARD = 'primaryForClient replacePrimaryCase clients.primary_case_id';
 const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'case/client archive keeps calendar links and hides by parent archive';
 
+const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
+const CASE_LIST_SELECT_STAGE124 = [
+  'id',
+  'workspace_id',
+  'client_id',
+  'lead_id',
+  'title',
+  'client_name',
+  'status',
+  'completeness_percent',
+  'portal_ready',
+  'expected_revenue',
+  'contract_value',
+  'commission_mode',
+  'commission_base',
+  'commission_rate',
+  'commission_amount',
+  'commission_status',
+  'paid_amount',
+  'remaining_amount',
+  'currency',
+  'started_at',
+  'created_at',
+  'updated_at',
+].join(',');
+const CASE_DETAIL_SELECT_STAGE124 = '*';
+
 const OPTIONAL_CASE_COLUMNS = new Set(['service_profile_id', 'billing_status', 'billing_model_snapshot', 'started_at', 'completed_at', 'last_activity_at', 'created_from_lead', 'service_started_at', 'expected_revenue', 'paid_amount', 'remaining_amount', 'currency',
   'contract_value',
   'commission_mode',
@@ -248,9 +275,10 @@ export default async function handler(req: any, res: any) {
       const caseLimit = requestedId ? 1 : 250;
       let rows: Record<string, unknown>[] = [];
       try {
+        const caseSelect = requestedId ? CASE_DETAIL_SELECT_STAGE124 : CASE_LIST_SELECT_STAGE124;
         const result = await selectFirstAvailable([
-          withWorkspaceFilter(`cases?select=*&${caseFilters}order=updated_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
-          withWorkspaceFilter(`cases?select=*&${caseFilters}order=created_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
+          withWorkspaceFilter(`cases?select=${caseSelect}&${caseFilters}order=updated_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
+          withWorkspaceFilter(`cases?select=${caseSelect}&${caseFilters}order=created_at.desc.nullslast&limit=${caseLimit}`, workspaceId),
         ]);
         rows = result.data as Record<string, unknown>[];
         if (!requestedId && !includeArchivedCasesForCascade) {
