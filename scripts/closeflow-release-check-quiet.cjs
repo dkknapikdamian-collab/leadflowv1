@@ -14,6 +14,7 @@ const repoRoot = path.resolve(__dirname, '..');
 const requiredTests = [
   'tests/stage98-polish-mojibake-calendar-guard.test.cjs',
   'tests/stage119-calendar-release-gate-trust.test.cjs',
+  'tests/stage124-calendar-shift-freeze-guard.test.cjs',
   'tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs',
   'tests/stage121-calendar-shift-lead-branch-contract.test.cjs',
   'tests/stage122-runtime-auth-api-pwa-hardening.test.cjs',
