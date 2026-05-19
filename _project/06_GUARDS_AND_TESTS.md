@@ -540,3 +540,13 @@ Sprawdza:
 - cache GET 30s,
 - wpis w package.json.
 <!-- STAGE124A_SUPABASE_EGRESS_GUARDS_END -->
+
+## STAGE124D_TASK_EVENT_LIGHT_ROUTES
+
+Guard:
+- scripts/check-stage124d-task-event-routes.cjs
+
+Purpose:
+- Prevent /api/tasks and /api/events from regressing to work_items select=*.
+- Require workspace scoped reads/mutations.
+- Require optional date range support for future Calendar range fetch.

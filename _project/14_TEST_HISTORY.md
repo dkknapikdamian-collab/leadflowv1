@@ -736,3 +736,19 @@ Manualnie do wykonania:
 - /calendar month + selected day + edit modal,
 - Supabase Usage po 1-2h normalnego klikania: sprawdzic spadek API egress / top paths.
 <!-- STAGE124A_SUPABASE_EGRESS_TESTS_END -->
+
+## 2026-05-19 - STAGE124D_TASK_EVENT_LIGHT_ROUTES
+
+Expected tests after local apply:
+- npm run check:stage124d-task-event-routes
+- node --test tests/stage124d-task-event-routes.test.cjs
+- npm run check:stage124-supabase-egress-contract
+- npm run build
+
+## 2026-05-19 - STAGE124D_V2_GUARD_FIX
+
+Expected tests after local apply:
+- npm run check:stage124d-task-event-routes
+- node --test tests/stage124d-task-event-routes.test.cjs
+- npm run check:stage124-supabase-egress-contract
+- npm run build

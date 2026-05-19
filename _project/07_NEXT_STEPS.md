@@ -433,3 +433,8 @@ Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta m
 3. Stage124B: calendar/task date-range queries oraz dalsza deduplikacja auth/workspace, jezeli Usage dalej rosnie.
 4. Nie wracac do `select=*` w listach; brakujace pola dopisywac jawnie do ListDTO constants.
 <!-- STAGE124A_SUPABASE_EGRESS_NEXT_END -->
+
+## STAGE124D_TASK_EVENT_LIGHT_ROUTES - next
+
+- After manual QA, Stage124E should make Calendar pass from/to range params to /api/tasks and /api/events.
+- Check Supabase Usage Dashboard after normal app use to verify reduced API egress.

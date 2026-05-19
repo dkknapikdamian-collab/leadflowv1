@@ -654,3 +654,14 @@ NASTĘPNY KROK: verify production /api/version and runtime marker, then retest c
 - Guard: `scripts/check-stage124-supabase-egress-contract.cjs`.
 - V3: patch wykonywany przez Node, bez kruchych PowerShell -replace.
 <!-- STAGE124A_SUPABASE_EGRESS_CHANGELOG_END -->
+
+## 2026-05-19 - STAGE124D_TASK_EVENT_LIGHT_ROUTES
+
+- Restored tracked /api/tasks and /api/events route files.
+- Replaced historical work_items select=* task/event reads with explicit Stage124D ListDTO select fields.
+- Added workspace-scoped reads/mutations and optional date range filters for future calendar range queries.
+
+## 2026-05-19 - STAGE124D_V2_GUARD_FIX
+
+- Fixed Stage124D guard syntax by replacing fragile regex assertions with string token assertions.
+- No API route behavior change.

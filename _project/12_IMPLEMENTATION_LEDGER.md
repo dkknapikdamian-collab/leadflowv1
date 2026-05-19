@@ -567,3 +567,31 @@ ZMIANA:
 RYZYKO:
 - Jesli jakis ekran listowy ukrycie korzystal z pola spoza ListDTO, dopisac to pole do stalej ListDTO, a nie wracac do `select=*`.
 <!-- STAGE124A_SUPABASE_EGRESS_LEDGER_END -->
+
+## 2026-05-19 - STAGE124D_TASK_EVENT_LIGHT_ROUTES
+
+FACTS:
+- Stage124C audit found frontend /api/tasks and /api/events call sites but no tracked route candidates.
+- Stage124D restores those route files in api/.
+
+DECISIONS:
+- Do not patch supabase-fallback.ts in this stage.
+- Do not reduce app functionality; default list limit remains capped at 200, but payloads are lightweight.
+
+TESTS:
+- npm run check:stage124d-task-event-routes
+- node --test tests/stage124d-task-event-routes.test.cjs
+- npm run build
+
+## 2026-05-19 - STAGE124D_V2_GUARD_FIX
+
+FACTS:
+- Stage124D route files were created and build passed.
+- Stage124D guard failed because the generated guard contained an invalid JavaScript regex: /resolveRequestWorkspaceId(req/.
+- Stage124D V2 fixes only the guard/test assertion style. API route logic is not changed by this V2 patch.
+
+TESTS:
+- npm run check:stage124d-task-event-routes
+- node --test tests/stage124d-task-event-routes.test.cjs
+- npm run check:stage124-supabase-egress-contract
+- npm run build
