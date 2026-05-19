@@ -752,3 +752,12 @@ Expected tests after local apply:
 - node --test tests/stage124d-task-event-routes.test.cjs
 - npm run check:stage124-supabase-egress-contract
 - npm run build
+
+## Stage124E V2 calendar task/event range params
+
+Expected green checks:
+- `npm run check:stage124e-calendar-range-params`
+- `node --test tests/stage124e-calendar-range-params.test.cjs`
+- `npm run check:stage124d-task-event-routes`
+- `npm run check:stage124-supabase-egress-contract`
+- `npm run build`

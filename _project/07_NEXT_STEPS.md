@@ -438,3 +438,7 @@ Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta m
 
 - After manual QA, Stage124E should make Calendar pass from/to range params to /api/tasks and /api/events.
 - Check Supabase Usage Dashboard after normal app use to verify reduced API egress.
+
+## Stage124F visible calendar range wiring
+
+After Stage124E, wire the visible Calendar page/sidebar month/week/day range into `fetchCalendarBundleFromSupabase(options)` so task/event reads are bounded by actual UI range.

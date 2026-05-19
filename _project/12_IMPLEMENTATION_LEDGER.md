@@ -595,3 +595,9 @@ TESTS:
 - node --test tests/stage124d-task-event-routes.test.cjs
 - npm run check:stage124-supabase-egress-contract
 - npm run build
+
+## Stage124E V2 calendar task/event range params
+
+- Files: `src/lib/supabase-fallback.ts`, `src/lib/calendar-items.ts`, `scripts/check-stage124e-calendar-range-params.cjs`, `tests/stage124e-calendar-range-params.test.cjs`.
+- Purpose: prepare frontend for ranged task/event API calls after Stage124D restored lightweight routes.
+- Commit mode: manual selective git add only.

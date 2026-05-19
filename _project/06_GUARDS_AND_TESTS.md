@@ -550,3 +550,10 @@ Purpose:
 - Prevent /api/tasks and /api/events from regressing to work_items select=*.
 - Require workspace scoped reads/mutations.
 - Require optional date range support for future Calendar range fetch.
+
+## Stage124E - calendar task/event range params
+
+- Guard: `npm run check:stage124e-calendar-range-params`
+- Test: `node --test tests/stage124e-calendar-range-params.test.cjs`
+- Contract: task/event frontend fetchers can pass optional `from`, `to`, `limit` params to lightweight /api/tasks and /api/events routes.
+- Marker: STAGE124E_CALENDAR_RANGE_QUERY_PARAMS

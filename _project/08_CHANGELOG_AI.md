@@ -665,3 +665,10 @@ NASTĘPNY KROK: verify production /api/version and runtime marker, then retest c
 
 - Fixed Stage124D guard syntax by replacing fragile regex assertions with string token assertions.
 - No API route behavior change.
+
+## 2026-05-19 - Stage124E V2 calendar task/event range params
+
+- Added optional task/event range params in frontend Supabase fetchers.
+- Added calendar bundle options forwarding.
+- Added guard/test for range param contract.
+- No UI or visual calendar changes.
