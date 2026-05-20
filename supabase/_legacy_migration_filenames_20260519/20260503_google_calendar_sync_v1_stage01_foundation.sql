@@ -1,4 +1,4 @@
-﻿-- GOOGLE_CALENDAR_SYNC_V1_STAGE01_FOUNDATION_2026_05_03
+-- GOOGLE_CALENDAR_SYNC_V1_STAGE01_FOUNDATION_2026_05_03
 -- Foundation only. It prepares storage and sync metadata.
 -- It does not enable automatic event sync by itself.
 
