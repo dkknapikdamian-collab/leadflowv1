@@ -1,20 +1,30 @@
-# 2026-05-20 - Stage125A fresh Supabase core API smoke confirmed
+# 2026-05-20 - Stage125A fresh Supabase core API smoke status correction
 
 ## Status
 
-POTWIERDZONE PRZEZ DAMIANA.
+SKORYGOWANE / NIE ZAMKNIETE.
 
-## Zakres
+Poprzedni wpis tego pliku byl zbyt szeroki. Damian doprecyzowal, ze `dziala` nie oznaczalo pelnego zamkniecia wszystkich integracji ani pelnego smoke calej aplikacji.
 
-CloseFlow / LeadFlow po przepieciu na nowy Supabase project ref:
+## Korekta
 
-- nowy Supabase project ref: `amrxiaetdocrywnnkoct`
-- stary Supabase project ref: `ydntsbkiqwkabhjjlkew`
-- public app: `https://closeflowapp.vercel.app`
-- repo: `dkknapikdamian-collab/leadflowv1`
-- branch: `dev-rollout-freeze`
+FAKT POTWIERDZONY:
 
-## FAKTY Z POPRZEDNIEGO HOTFIXA
+- Do Vercel przepieto nowy Supabase projekt / podstawowa konfiguracje Supabase.
+- Haslo/rejestracja oraz czesc core API mogly dzialac po hotfixie `currency`.
+
+NIEPOTWIERDZONE / DO POPRAWY:
+
+- Google login po nowym Supabase.
+- Google Calendar reconnect i sync.
+- Resend/digest.
+- Stripe/billing.
+- Portal uploads/storage.
+- AI/Gemini/Cloudflare.
+- Import leadow ze starego Supabase.
+- Pelny runtime smoke calej aplikacji.
+
+## Zakres migracji, ktora pozostaje faktem
 
 Po fresh restore nowego Supabase endpointy listowe wykladaly sie na brakujacych kolumnach:
 
@@ -29,61 +39,46 @@ Commit hotfixa:
 
 - `6d975bd Add Supabase currency columns for leads and cases`
 
-## TEST RECZNY / BROWSER API SMOKE
+## Diagnoza po korekcie Damiana
 
-Damian potwierdzil po wykonaniu kolejnego etapu: `Dziala`.
+Nalezy przyjac, ze przepieto tylko podstawowe Supabase env-y w Vercel, a reszta integracji wymaga osobnego przejscia.
 
-Potwierdzenie dotyczy core API smoke po hotfixie currency, ktory mial sprawdzic zalogowana produkcje:
+Kod potwierdza rozdzial konfiguracji:
 
-- `/api/me`
-- `/api/clients`
-- `/api/leads`
-- `/api/cases`
-- `/api/cases?includeArchived=1`
-- `/api/payments`
+- frontend Supabase Auth wymaga `VITE_SUPABASE_URL` i `VITE_SUPABASE_ANON_KEY`,
+- backend Supabase REST wymaga `SUPABASE_URL` / `VITE_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_URL` oraz `SUPABASE_SERVICE_ROLE_KEY`,
+- Google Calendar wymaga osobno `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REDIRECT_URI` albo `GOOGLE_CALENDAR_REDIRECT_URI`, oraz `GOOGLE_TOKEN_ENCRYPTION_KEY` albo fallback `CRON_SECRET`.
 
-## WERDYKT
+Samo przepiecie Supabase URL nie naprawia Google login, Google Calendar, Resend, Stripe, storage ani AI.
 
-Core API po fresh Supabase restore jest uznane za dzialajace na podstawie recznego potwierdzenia Damiana.
+## Następny prawidlowy etap
 
-## DECYZJE
+Stage125B - fresh Supabase integration repair audit.
 
-- Nie robimy recznego SQL w Supabase SQL Editor.
-- Kolejne braki schematu, jezeli sie pojawia, naprawiamy migracja w repo.
-- Import leadow ze starego Supabase zostaje osobnym etapem po stabilizacji core API i po mapowaniu kolumn.
-- Google login oraz Google Calendar po nowym Supabase sa osobnymi tematami i wymagaja reconnect/config check.
+Cel:
 
-## NASTEPNY ETAP
+1. Spisac komplet env-ow wymaganych przez runtime.
+2. Oddzielic: Supabase Auth, Supabase REST/service role, Google Auth provider w Supabase, Google Calendar OAuth, Resend, Stripe, Storage, AI.
+3. Przygotowac liste wartosci do ustawienia w Vercel/Supabase/Google Cloud bez wklejania sekretow do czatu.
+4. Zrobic testy endpointow status/config, zaczynajac od Google Calendar status.
+5. Dopiero po status check przechodzic do naprawy konkretnych integracji.
 
-Stage125B - Google login + Google Calendar reconnect po fresh Supabase.
+## Decyzje
 
-Zakres Stage125B:
-
-1. Przeczytac konfiguracje auth i Google Calendar w repo.
-2. Sprawdzic, czy Google login jest skonfigurowany dla nowego Supabase projektu.
-3. Sprawdzic redirect/callback URL-e po zmianie Supabase project ref.
-4. Sprawdzic tabele/tokeny Google Calendar w nowym Supabase.
-5. Przygotowac reconnect flow: stare tokeny nie byly przenoszone, wiec uzytkownik laczy Google Calendar od nowa.
-6. Dopiero po potwierdzeniu auth/calendar przejsc do Resend, Stripe, storage/uploadow i AI.
-
-## RYZYKA
-
-- Nowy Supabase moze miec brak konfiguracji OAuth provider Google.
-- Vercel env moze nadal miec czesc zmiennych powiazanych ze starym projektem lub starymi callbackami.
-- Google Calendar tokens ze starego Supabase nie sa przeniesione i nie powinny byc traktowane jako aktywne.
+- Nie uznajemy Stage125A za pelne zamkniecie integracji.
+- Nie robimy recznych SQL napraw jako sposobu pracy.
+- Nie importujemy leadow, dopoki nowa produkcja nie ma stabilnego core i konfiguracji integracji.
+- Nie zakladamy, ze stare tokeny Google Calendar dzialaja po fresh Supabase.
 
 ## Czego nie ruszano
 
-- Nie zmieniano kodu runtime.
-- Nie robiono migracji.
-- Nie importowano danych ze starego Supabase.
-- Nie ruszano Google Calendar ani OAuth.
-- Nie ruszano Stripe, Resend, storage ani AI.
+- Nie zmieniono runtime kodu.
+- Nie zrobiono migracji.
+- Nie importowano danych.
+- Nie zmieniano sekretow Vercel/Supabase/Google.
 
 ## Zapis do Obsidiana
 
-Wymagane / wykonane rownolegle:
+Wymagany wpis korygujacy:
 
-- Obsidian folder: `10_PROJEKTY/CloseFlow_Lead_App`
-- wpis: `2026-05-20 - CloseFlow fresh Supabase core API smoke confirmed.md`
-- typ wpisu: test reczny / wdrozenie / next step
+- `10_PROJEKTY/CloseFlow_Lead_App/2026-05-20 - CloseFlow fresh Supabase integration correction.md`
