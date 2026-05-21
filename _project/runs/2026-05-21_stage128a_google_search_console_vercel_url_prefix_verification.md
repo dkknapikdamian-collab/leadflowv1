@@ -22,6 +22,7 @@ Potwierdzić właścicielstwo URL-prefix dla `https://closeflowapp.vercel.app/` 
 - Otrzymany plik weryfikacyjny: `googlee2039c1e7e1639cf.html`.
 - Treść pliku: `google-site-verification: googlee2039c1e7e1639cf.html`.
 - Damian potwierdził publiczny dostęp przez PowerShell: `Invoke-WebRequest` zwrócił oczekiwaną treść z produkcyjnego URL-a.
+- Damian potwierdził w Google Search Console komunikat `Własność zweryfikowana`, metoda: `Plik HTML`.
 
 ## Zmiana w repo
 
@@ -41,7 +42,7 @@ Nie uruchomiono lokalnie w tym kroku, bo zmiana dotyczy wyłącznie statycznego 
 
 ## Test ręczny po deployu
 
-### Potwierdzone przez Damiana
+### Potwierdzone przez Damiana - publiczny plik
 
 ```powershell
 $url = "https://closeflowapp.vercel.app/googlee2039c1e7e1639cf.html"
@@ -56,6 +57,17 @@ google-site-verification: googlee2039c1e7e1639cf.html
 
 Status: OK, plik jest dostępny publicznie z produkcji Vercel.
 
+### Potwierdzone przez Damiana - Search Console
+
+Google Search Console pokazało:
+
+```text
+Własność zweryfikowana
+Metoda weryfikacji: Plik HTML
+```
+
+Status: OK, URL-prefix property dla `https://closeflowapp.vercel.app/` jest zweryfikowane.
+
 ## Czego nie ruszano
 
 - Google Calendar runtime code
@@ -69,12 +81,12 @@ Status: OK, plik jest dostępny publicznie z produkcji Vercel.
 
 ## Ryzyka
 
-- Google może nadal preferować własną domenę przy finalnym branding verification, mimo poprawnego URL-prefix verification.
+- Google Auth Branding może nadal wymagać ponownego przetworzenia po kliknięciu `I have fixed the issues`.
 - Jeżeli Google Auth Branding nie przyjmie URL-prefix dla `vercel.app`, trzeba wrócić do wariantu z własną domeną.
 
 ## Następny krok
 
-1. Wrócić do Google Search Console.
-2. Kliknąć `Verify` dla URL-prefix property `https://closeflowapp.vercel.app/`.
-3. Po sukcesie wrócić do Google Auth Platform Branding i kliknąć `I have fixed the issues`.
-4. Potem wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
+1. Wrócić do Google Auth Platform Branding.
+2. Wybrać `I have fixed the issues`.
+3. Kliknąć `Proceed`.
+4. Po akceptacji albo odświeżeniu statusu wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
