@@ -1,5 +1,5 @@
 import { assertWorkspaceWriteAccess } from './_access-gate.js';
-import { resolveRequestWorkspaceId } from './_request-scope.js';
+import { requireRequestIdentity, resolveRequestWorkspaceId } from './_request-scope.js';
 import {
   buildGoogleCalendarOAuthUrl,
   disconnectGoogleCalendarConnection,
@@ -73,7 +73,15 @@ export default async function handler(req: any, res: any) {
       return;
     }
 
-    const userId = getUserId(req);
+    let requestIdentity: any = null;
+    try {
+      requestIdentity = await requireRequestIdentity(req, body);
+    } catch (error) {
+      if (!getUserId(req)) throw error;
+    }
+
+    const userId = String(requestIdentity?.userId || requestIdentity?.uid || getUserId(req) || '').trim();
+    const userEmail = String(requestIdentity?.email || getUserEmail(req) || '').trim();
     if (!userId) {
       res.status(401).json({ error: 'GOOGLE_CALENDAR_USER_REQUIRED' });
       return;
@@ -149,7 +157,7 @@ export default async function handler(req: any, res: any) {
         userId,
         returnTo: body.returnTo || '/settings',
       });
-      res.status(200).json({ ok: true, authUrl, configured: true, userEmail: getUserEmail(req) });
+      res.status(200).json({ ok: true, authUrl, configured: true, userEmail });
       return;
     }
 

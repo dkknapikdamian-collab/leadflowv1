@@ -58,6 +58,9 @@ import {
   updateWorkspaceSettingsInSupabase
 } from '../lib/supabase-fallback';
 import {
+  getSupabaseAccessToken
+} from '../lib/supabase-auth';
+import {
   GOOGLE_CALENDAR_REMINDER_METHOD_OPTIONS
 } from '../lib/options';
 import {
@@ -282,6 +285,16 @@ useEffect(() => {
     : '';
   const googleCalendarConfigured = googleCalendarStatus?.configured === true;
   const googleCalendarConnected = googleCalendarStatus?.connected === true;
+  const buildGoogleCalendarRequestHeaders = async () => {
+    const token = await getSupabaseAccessToken().catch(() => '');
+    return {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      'x-workspace-id': workspace?.id || '',
+      'x-user-id': activeUserId,
+      'x-user-email': activeUserEmail,
+    };
+  };
 
   // GOOGLE_CALENDAR_SYNC_V1_STAGE03_SETTINGS_UI_CONNECT
   const loadGoogleCalendarStatus = async () => {
@@ -296,12 +309,7 @@ useEffect(() => {
     try {
       const response = await fetch('/api/google-calendar?route=status', {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-workspace-id': workspace.id,
-          'x-user-id': activeUserId,
-          'x-user-email': activeUserEmail,
-        },
+        headers: await buildGoogleCalendarRequestHeaders(),
       });
 
       const data = await response.json().catch(() => ({}));
@@ -339,12 +347,7 @@ useEffect(() => {
     try {
       const response = await fetch('/api/google-calendar?route=connect', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-workspace-id': workspace.id,
-          'x-user-id': activeUserId,
-          'x-user-email': activeUserEmail,
-        },
+        headers: await buildGoogleCalendarRequestHeaders(),
         body: JSON.stringify({ returnTo: '/settings' }),
       });
 
@@ -380,12 +383,7 @@ useEffect(() => {
     try {
       const response = await fetch('/api/google-calendar?route=disconnect', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-workspace-id': workspace.id,
-          'x-user-id': activeUserId,
-          'x-user-email': activeUserEmail,
-        },
+        headers: await buildGoogleCalendarRequestHeaders(),
         body: JSON.stringify({}),
       });
 
@@ -417,12 +415,7 @@ useEffect(() => {
     try {
       const response = await fetch('/api/google-calendar?route=sync-outbound', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-workspace-id': workspace.id,
-          'x-user-id': activeUserId,
-          'x-user-email': activeUserEmail,
-        },
+        headers: await buildGoogleCalendarRequestHeaders(),
         body: JSON.stringify({ mode: 'all', limit: 200, daysBack: 30, daysForward: 365 }),
       });
       const data = await response.json().catch(() => ({}));
