@@ -21,6 +21,7 @@ Potwierdzić właścicielstwo URL-prefix dla `https://closeflowapp.vercel.app/` 
 - Wybrany wariant tymczasowy: Google Search Console `URL prefix`, nie `Domain`.
 - Otrzymany plik weryfikacyjny: `googlee2039c1e7e1639cf.html`.
 - Treść pliku: `google-site-verification: googlee2039c1e7e1639cf.html`.
+- Damian potwierdził publiczny dostęp przez PowerShell: `Invoke-WebRequest` zwrócił oczekiwaną treść z produkcyjnego URL-a.
 
 ## Zmiana w repo
 
@@ -40,19 +41,20 @@ Nie uruchomiono lokalnie w tym kroku, bo zmiana dotyczy wyłącznie statycznego 
 
 ## Test ręczny po deployu
 
-Po deployu Vercel sprawdzić:
+### Potwierdzone przez Damiana
 
-```text
-https://closeflowapp.vercel.app/googlee2039c1e7e1639cf.html
+```powershell
+$url = "https://closeflowapp.vercel.app/googlee2039c1e7e1639cf.html"
+(Invoke-WebRequest -Uri $url -UseBasicParsing).Content
 ```
 
-Oczekiwany tekst:
+Wynik:
 
 ```text
 google-site-verification: googlee2039c1e7e1639cf.html
 ```
 
-Następnie wrócić do Google Search Console i kliknąć `Verify` dla URL-prefix property `https://closeflowapp.vercel.app/`.
+Status: OK, plik jest dostępny publicznie z produkcji Vercel.
 
 ## Czego nie ruszano
 
@@ -68,12 +70,11 @@ Następnie wrócić do Google Search Console i kliknąć `Verify` dla URL-prefix
 ## Ryzyka
 
 - Google może nadal preferować własną domenę przy finalnym branding verification, mimo poprawnego URL-prefix verification.
-- Jeżeli Vercel nie zdeployuje brancha `dev-rollout-freeze` na produkcję, plik nie będzie dostępny pod publicznym URL-em.
+- Jeżeli Google Auth Branding nie przyjmie URL-prefix dla `vercel.app`, trzeba wrócić do wariantu z własną domeną.
 
 ## Następny krok
 
-1. Poczekać na deploy Vercel.
-2. Otworzyć publiczny URL pliku.
-3. Kliknąć `Verify` w Google Search Console.
-4. Po sukcesie wrócić do Google Auth Platform Branding i kliknąć `I have fixed the issues`.
-5. Potem wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
+1. Wrócić do Google Search Console.
+2. Kliknąć `Verify` dla URL-prefix property `https://closeflowapp.vercel.app/`.
+3. Po sukcesie wrócić do Google Auth Platform Branding i kliknąć `I have fixed the issues`.
+4. Potem wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
