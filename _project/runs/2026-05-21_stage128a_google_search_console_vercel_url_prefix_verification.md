@@ -26,6 +26,8 @@ Potwierdzić właścicielstwo URL-prefix dla `https://closeflowapp.vercel.app/` 
 - Po powrocie do Google Auth Platform Branding status nadal pokazuje ostrzeżenie: `Your branding is not being shown to users. Resolve the following issues and verify again.`
 - Po re-submit Google Auth Platform nadal zgłasza ten sam problem: homepage URL `https://closeflowapp.vercel.app/` is not registered to you.
 - W Authorized domains widoczne są: stary Supabase project ref `ydntsbkiqwkabhjjlkew.supabase.co`, `closeflowapp.vercel.app`, nowy Supabase project ref `amrxiaetdocrywnnkoct.supabase.co`.
+- Screenshot z błędem `Invalid supabaseUrl` dotyczył innej aplikacji i nie jest dowodem problemu CloseFlow.
+- Damian wskazał, że przed zmianą Supabase verification działało, więc priorytetem jest powtórzenie verification właściwym kontem Google, nie zmiana domeny ani kodu.
 
 ## Zmiana w repo
 
@@ -38,6 +40,7 @@ Dodano publiczny plik weryfikacyjny:
 - Nie kupujemy teraz własnej domeny.
 - Próbujemy URL-prefix verification dla `https://closeflowapp.vercel.app/`.
 - Nie ruszamy importu leadów ani innych integracji przed domknięciem Google Calendar smoke.
+- Następna próba ma być wykonana na poprawnym koncie Google, które zarządza projektem OAuth / Google Cloud.
 
 ## Testy automatyczne
 
@@ -73,13 +76,13 @@ Status: OK, URL-prefix property dla `https://closeflowapp.vercel.app/` jest zwer
 
 ### Stan Google Auth Platform Branding
 
-Branding nadal pokazuje warning po weryfikacji Search Console i po re-submit. To oznacza, że sam URL-prefix verification nie wystarczył w Google Auth Platform.
+Branding nadal pokazuje warning po weryfikacji Search Console i po re-submit. To oznacza, że sam URL-prefix verification wykonany w tym kontekście nie został uznany przez Google Auth Platform.
 
-Najbardziej prawdopodobne przyczyny:
+Najbardziej prawdopodobne przyczyny po korekcie kontekstu:
 
-1. Google Auth Platform wymaga, aby domenę zweryfikował account będący Owner/Editor projektu GCP, a weryfikacja Search Console mogła zostać wykonana innym kontem.
-2. Google Auth Platform wymaga domeny, którą developer realnie posiada, a `closeflowapp.vercel.app` jest subdomeną cudzej domeny `vercel.app`.
-3. Authorized domains zawierają domeny Supabase `*.supabase.co`, których developer nie posiada.
+1. Google Auth Platform wymaga, aby domenę zweryfikował account będący Owner/Editor projektu GCP, a weryfikacja Search Console została wykonana innym kontem.
+2. Google Auth Platform może czytać verification per konto / per project owner, więc trzeba powtórzyć Search Console URL-prefix verification na właściwym koncie Google.
+3. Dopiero jeśli poprawne konto nie pomoże, wraca hipoteza, że `vercel.app` nie wystarczy dla finalnego brandingu.
 
 ## Czego nie ruszano
 
@@ -94,14 +97,16 @@ Najbardziej prawdopodobne przyczyny:
 
 ## Ryzyka
 
-- Google Auth Branding może nie zaakceptować `vercel.app` mimo URL-prefix verification.
-- Supabase authorized domains mogą blokować pełną verification, jeśli Google wymaga ownership wszystkich domen z Authorized domains.
-- Wariant bez własnej domeny może skończyć się ślepą uliczką, jeśli konto Search Console Owner/Editor check nie rozwiąże problemu.
+- Google Auth Branding może nie zaakceptować `vercel.app` mimo URL-prefix verification, ale to nie jest jeszcze główny wniosek.
+- Najpierw trzeba wykluczyć błąd konta Google.
+- Supabase authorized domains zostają na razie bez zmian do pełnego smoke, żeby nie popsuć callbacków / OAuth flow.
 
 ## Następny krok
 
-1. Sprawdzić, czy konto użyte w Search Console jest Owner/Editor w projekcie GCP `LeadFlow Auth`.
-2. Jeśli nie, zweryfikować `https://closeflowapp.vercel.app/` w Search Console kontem Owner/Editor projektu GCP albo dodać to konto jako verified owner.
-3. Jeżeli dalej nie przejdzie, sprawdzić czy można tymczasowo usunąć `*.supabase.co` z Authorized domains bez łamania obecnego Google Calendar OAuth flow.
-4. Jeżeli dalej nie przejdzie, formalny wniosek: potrzebna własna domena dla produkcyjnego brandingu Google Auth.
-5. Po rozwiązaniu Stage128A wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
+1. Zalogować się do właściwego konta Google, które jest Owner/Editor projektu GCP `LeadFlow Auth`.
+2. W Search Console dodać albo otworzyć URL-prefix property `https://closeflowapp.vercel.app/` na tym koncie.
+3. Jeśli property nie jest zweryfikowane na tym koncie, zweryfikować je metodą HTML file. Plik już istnieje publicznie.
+4. W tym samym koncie wrócić do Google Auth Platform Branding.
+5. Kliknąć `View issues` -> `I have fixed the issues` -> `Proceed`.
+6. Jeśli przejdzie, wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
+7. Jeśli nie przejdzie, dopiero wtedy rozważyć własną domenę albo czyszczenie Authorized domains.
