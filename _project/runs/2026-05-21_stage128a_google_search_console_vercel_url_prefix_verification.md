@@ -23,6 +23,7 @@ Potwierdzić właścicielstwo URL-prefix dla `https://closeflowapp.vercel.app/` 
 - Treść pliku: `google-site-verification: googlee2039c1e7e1639cf.html`.
 - Damian potwierdził publiczny dostęp przez PowerShell: `Invoke-WebRequest` zwrócił oczekiwaną treść z produkcyjnego URL-a.
 - Damian potwierdził w Google Search Console komunikat `Własność zweryfikowana`, metoda: `Plik HTML`.
+- Po powrocie do Google Auth Platform Branding status nadal pokazuje ostrzeżenie: `Your branding is not being shown to users. Resolve the following issues and verify again.`
 
 ## Zmiana w repo
 
@@ -68,6 +69,14 @@ Metoda weryfikacji: Plik HTML
 
 Status: OK, URL-prefix property dla `https://closeflowapp.vercel.app/` jest zweryfikowane.
 
+### Stan Google Auth Platform Branding
+
+Branding nadal pokazuje warning po weryfikacji Search Console. To może oznaczać, że:
+
+1. trzeba wejść w `View issues` i wykonać re-submit przez `I have fixed the issues`, albo
+2. niżej w formularzu brakuje / nie zapisano Terms URL lub Authorized domains, albo
+3. Google Auth Branding nie akceptuje URL-prefix dla `vercel.app` mimo weryfikacji Search Console.
+
 ## Czego nie ruszano
 
 - Google Calendar runtime code
@@ -86,7 +95,10 @@ Status: OK, URL-prefix property dla `https://closeflowapp.vercel.app/` jest zwer
 
 ## Następny krok
 
-1. Wrócić do Google Auth Platform Branding.
-2. Wybrać `I have fixed the issues`.
-3. Kliknąć `Proceed`.
-4. Po akceptacji albo odświeżeniu statusu wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
+1. Kliknąć `View issues` w Google Auth Platform Branding i sprawdzić aktualny komunikat.
+2. Jeśli to ten sam komunikat o homepage, wybrać `I have fixed the issues` i kliknąć `Proceed`.
+3. Jeśli pojawi się inny komunikat, przepisać go dokładnie do raportu.
+4. Sprawdzić niżej w formularzu, czy są ustawione:
+   - `Application terms of service link`: `https://closeflowapp.vercel.app/terms`
+   - Authorized domains: `closeflowapp.vercel.app`
+5. Po akceptacji albo odświeżeniu statusu wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
