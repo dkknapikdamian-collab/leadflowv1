@@ -28,12 +28,15 @@ Potwierdzić właścicielstwo URL-prefix dla `https://closeflowapp.vercel.app/` 
 - W Authorized domains widoczne są: stary Supabase project ref `ydntsbkiqwkabhjjlkew.supabase.co`, `closeflowapp.vercel.app`, nowy Supabase project ref `amrxiaetdocrywnnkoct.supabase.co`.
 - Screenshot z błędem `Invalid supabaseUrl` dotyczył innej aplikacji i nie jest dowodem problemu CloseFlow.
 - Damian wskazał, że przed zmianą Supabase verification działało, więc priorytetem jest powtórzenie verification właściwym kontem Google, nie zmiana domeny ani kodu.
+- Na poprawnym koncie Google / kolejnej próbie otrzymano drugi plik weryfikacyjny: `google0065f9274e496286.html`.
+- Drugi plik weryfikacyjny został dodany do repo jako `public/google0065f9274e496286.html`.
 
 ## Zmiana w repo
 
-Dodano publiczny plik weryfikacyjny:
+Dodano publiczne pliki weryfikacyjne:
 
 - `public/googlee2039c1e7e1639cf.html`
+- `public/google0065f9274e496286.html`
 
 ## Decyzje Damiana
 
@@ -41,14 +44,15 @@ Dodano publiczny plik weryfikacyjny:
 - Próbujemy URL-prefix verification dla `https://closeflowapp.vercel.app/`.
 - Nie ruszamy importu leadów ani innych integracji przed domknięciem Google Calendar smoke.
 - Następna próba ma być wykonana na poprawnym koncie Google, które zarządza projektem OAuth / Google Cloud.
+- Nie usuwamy pierwszego pliku weryfikacyjnego, bo może utrzymywać poprzednią własność Search Console.
 
 ## Testy automatyczne
 
-Nie uruchomiono lokalnie w tym kroku, bo zmiana dotyczy wyłącznie statycznego pliku publicznego.
+Nie uruchomiono lokalnie w tym kroku, bo zmiana dotyczy wyłącznie statycznych plików publicznych.
 
 ## Test ręczny po deployu
 
-### Potwierdzone przez Damiana - publiczny plik
+### Potwierdzone przez Damiana - pierwszy publiczny plik
 
 ```powershell
 $url = "https://closeflowapp.vercel.app/googlee2039c1e7e1639cf.html"
@@ -61,9 +65,22 @@ Wynik:
 google-site-verification: googlee2039c1e7e1639cf.html
 ```
 
-Status: OK, plik jest dostępny publicznie z produkcji Vercel.
+Status: OK, pierwszy plik jest dostępny publicznie z produkcji Vercel.
 
-### Potwierdzone przez Damiana - Search Console
+### Do sprawdzenia po deployu - drugi publiczny plik
+
+```powershell
+$url = "https://closeflowapp.vercel.app/google0065f9274e496286.html"
+(Invoke-WebRequest -Uri $url -UseBasicParsing).Content
+```
+
+Oczekiwany wynik:
+
+```text
+google-site-verification: google0065f9274e496286.html
+```
+
+### Potwierdzone przez Damiana - Search Console pierwsza próba
 
 Google Search Console pokazało:
 
@@ -72,11 +89,11 @@ Własność zweryfikowana
 Metoda weryfikacji: Plik HTML
 ```
 
-Status: OK, URL-prefix property dla `https://closeflowapp.vercel.app/` jest zweryfikowane.
+Status: OK, URL-prefix property dla `https://closeflowapp.vercel.app/` było zweryfikowane na pierwszym koncie / pierwszym kontekście.
 
 ### Stan Google Auth Platform Branding
 
-Branding nadal pokazuje warning po weryfikacji Search Console i po re-submit. To oznacza, że sam URL-prefix verification wykonany w tym kontekście nie został uznany przez Google Auth Platform.
+Branding nadal pokazał warning po pierwszej weryfikacji Search Console i po re-submit. To oznaczało, że URL-prefix verification wykonany w pierwszym kontekście nie został uznany przez Google Auth Platform.
 
 Najbardziej prawdopodobne przyczyny po korekcie kontekstu:
 
@@ -103,9 +120,9 @@ Najbardziej prawdopodobne przyczyny po korekcie kontekstu:
 
 ## Następny krok
 
-1. Zalogować się do właściwego konta Google, które jest Owner/Editor projektu GCP `LeadFlow Auth`.
-2. W Search Console dodać albo otworzyć URL-prefix property `https://closeflowapp.vercel.app/` na tym koncie.
-3. Jeśli property nie jest zweryfikowane na tym koncie, zweryfikować je metodą HTML file. Plik już istnieje publicznie.
+1. Poczekać na deploy Vercel z drugim plikiem.
+2. Sprawdzić URL `https://closeflowapp.vercel.app/google0065f9274e496286.html`.
+3. W Search Console na poprawnym koncie kliknąć `Verify` dla URL-prefix property `https://closeflowapp.vercel.app/`.
 4. W tym samym koncie wrócić do Google Auth Platform Branding.
 5. Kliknąć `View issues` -> `I have fixed the issues` -> `Proceed`.
 6. Jeśli przejdzie, wykonać Stage128B: Google Calendar smoke po zmianie Supabase.
