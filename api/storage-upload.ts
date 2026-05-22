@@ -1,5 +1,6 @@
 import { requirePortalSessionContext } from '../src/server/_portal-token.js';
 import {
+  getPortalStorageHealthSecret,
   isAllowedPortalUploadFileType,
   requirePortalStorageServerConfig,
   sanitizePortalUploadFileName,
@@ -7,6 +8,7 @@ import {
 
 function asText(value: unknown) {
   if (typeof value === 'string') return value.trim();
+  if (Array.isArray(value)) return asText(value[0]);
   if (value === null || value === undefined) return '';
   return String(value).trim();
 }
@@ -25,6 +27,11 @@ function parseBody(req: any) {
 
 function writeJson(res: any, status: number, payload: Record<string, unknown>) {
   res.status(status).json(payload);
+}
+
+function readHeader(req: any, name: string) {
+  const headers = req?.headers || {};
+  return asText(headers[name] || headers[name.toLowerCase()] || headers[name.toUpperCase()]);
 }
 
 function encodeStorageObjectPath(objectPath: string) {
@@ -53,69 +60,147 @@ function readFilePayload(value: unknown) {
   };
 }
 
+async function handleHealth(req: any, res: any) {
+  const expectedSecret = getPortalStorageHealthSecret();
+  if (!expectedSecret) {
+    writeJson(res, 500, { ok: false, error: 'PORTAL_STORAGE_HEALTH_SECRET_MISSING' });
+    return;
+  }
+
+  const providedSecret = readHeader(req, 'x-closeflow-storage-check-secret');
+  if (!providedSecret || providedSecret !== expectedSecret) {
+    writeJson(res, 403, { ok: false, error: 'PORTAL_STORAGE_HEALTH_UNAUTHORIZED' });
+    return;
+  }
+
+  const config = requirePortalStorageServerConfig();
+  const response = await fetch(`${config.supabaseUrl}/storage/v1/bucket/${encodeURIComponent(config.bucket)}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${config.serviceRoleKey}`,
+      apikey: config.serviceRoleKey,
+    },
+  });
+
+  const text = await response.text();
+  let data: Record<string, unknown> = {};
+  try {
+    data = text ? JSON.parse(text) as Record<string, unknown> : {};
+  } catch {
+    data = { raw: text.slice(0, 240) };
+  }
+
+  if (!response.ok) {
+    writeJson(res, 500, {
+      ok: false,
+      error: 'PORTAL_STORAGE_BUCKET_NOT_FOUND_OR_INACCESSIBLE',
+      bucket: config.bucket,
+      status: response.status,
+    });
+    return;
+  }
+
+  const isPublic = Boolean(data.public);
+  if (isPublic) {
+    writeJson(res, 500, {
+      ok: false,
+      error: 'PORTAL_STORAGE_BUCKET_MUST_NOT_BE_PUBLIC',
+      bucket: config.bucket,
+      public: isPublic,
+    });
+    return;
+  }
+
+  const warnings: string[] = [];
+  const fileSizeLimit = Number(data.file_size_limit || 0);
+  if (fileSizeLimit && fileSizeLimit !== config.maxBytes) {
+    warnings.push('PORTAL_STORAGE_FILE_SIZE_LIMIT_DIFFERS_FROM_ENV');
+  }
+
+  writeJson(res, 200, {
+    ok: true,
+    bucket: config.bucket,
+    public: isPublic,
+    fileSizeLimit: data.file_size_limit || null,
+    allowedMimeTypes: data.allowed_mime_types || null,
+    warnings,
+  });
+}
+
+async function handleUpload(req: any, res: any) {
+  const body = parseBody(req);
+  const caseId = asText(body.caseId);
+  const itemId = asText(body.itemId);
+  const portalSession = asText(body.portalSession);
+  const file = readFilePayload(body.file);
+
+  if (!caseId) throw new Error('CASE_ID_REQUIRED');
+  if (!itemId) throw new Error('CASE_ITEM_ID_REQUIRED');
+  if (!portalSession) throw new Error('PORTAL_SESSION_REQUIRED');
+  if (!file) throw new Error('PORTAL_FILE_REQUIRED');
+  if (!file.name || !file.type || !file.dataBase64) throw new Error('PORTAL_FILE_REQUIRED');
+
+  await requirePortalSessionContext(caseId, portalSession);
+
+  const config = requirePortalStorageServerConfig();
+  const fileName = sanitizePortalUploadFileName(file.name);
+
+  if (!isAllowedPortalUploadFileType(file.type, config.allowedMimeTypes)) {
+    throw new Error('PORTAL_FILE_TYPE_NOT_ALLOWED');
+  }
+  if (!Number.isFinite(file.size) || file.size <= 0 || file.size > config.maxBytes) {
+    throw new Error('PORTAL_FILE_SIZE_LIMIT');
+  }
+
+  const binary = Buffer.from(file.dataBase64, 'base64');
+  if (binary.byteLength !== file.size) {
+    throw new Error('PORTAL_FILE_SIZE_MISMATCH');
+  }
+
+  const objectPath = `portal/${caseId}/${itemId}/${Date.now()}-${fileName}`;
+  const uploadUrl = `${config.supabaseUrl}/storage/v1/object/${encodeURIComponent(config.bucket)}/${encodeStorageObjectPath(objectPath)}`;
+  const response = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${config.serviceRoleKey}`,
+      apikey: config.serviceRoleKey,
+      'Content-Type': file.type,
+      'x-upsert': 'false',
+    },
+    body: binary,
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    console.error('PORTAL_FILE_UPLOAD_FAILED', {
+      status: response.status,
+      bucket: config.bucket,
+      objectPath,
+      message: text.slice(0, 240),
+    });
+    throw new Error('PORTAL_FILE_UPLOAD_FAILED');
+  }
+
+  writeJson(res, 200, { ok: true, filePath: objectPath, fileName });
+}
+
 export default async function handler(req: any, res: any) {
   try {
-    if (req.method !== 'POST') {
-      writeJson(res, 405, { error: 'METHOD_NOT_ALLOWED' });
+    const method = String(req?.method || '').toUpperCase();
+
+    if (method === 'GET' || method === 'HEAD') {
+      await handleHealth(req, res);
       return;
     }
 
-    const body = parseBody(req);
-    const caseId = asText(body.caseId);
-    const itemId = asText(body.itemId);
-    const portalSession = asText(body.portalSession);
-    const file = readFilePayload(body.file);
-
-    if (!caseId) throw new Error('CASE_ID_REQUIRED');
-    if (!itemId) throw new Error('CASE_ITEM_ID_REQUIRED');
-    if (!portalSession) throw new Error('PORTAL_SESSION_REQUIRED');
-    if (!file) throw new Error('PORTAL_FILE_REQUIRED');
-    if (!file.name || !file.type || !file.dataBase64) throw new Error('PORTAL_FILE_REQUIRED');
-
-    await requirePortalSessionContext(caseId, portalSession);
-
-    const config = requirePortalStorageServerConfig();
-    const fileName = sanitizePortalUploadFileName(file.name);
-
-    if (!isAllowedPortalUploadFileType(file.type, config.allowedMimeTypes)) {
-      throw new Error('PORTAL_FILE_TYPE_NOT_ALLOWED');
-    }
-    if (!Number.isFinite(file.size) || file.size <= 0 || file.size > config.maxBytes) {
-      throw new Error('PORTAL_FILE_SIZE_LIMIT');
+    if (method === 'POST') {
+      await handleUpload(req, res);
+      return;
     }
 
-    const binary = Buffer.from(file.dataBase64, 'base64');
-    if (binary.byteLength !== file.size) {
-      throw new Error('PORTAL_FILE_SIZE_MISMATCH');
-    }
-
-    const objectPath = `portal/${caseId}/${itemId}/${Date.now()}-${fileName}`;
-    const uploadUrl = `${config.supabaseUrl}/storage/v1/object/${encodeURIComponent(config.bucket)}/${encodeStorageObjectPath(objectPath)}`;
-    const response = await fetch(uploadUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${config.serviceRoleKey}`,
-        apikey: config.serviceRoleKey,
-        'Content-Type': file.type,
-        'x-upsert': 'false',
-      },
-      body: binary,
-    });
-
-    if (!response.ok) {
-      const text = await response.text().catch(() => '');
-      console.error('PORTAL_FILE_UPLOAD_FAILED', {
-        status: response.status,
-        bucket: config.bucket,
-        objectPath,
-        message: text.slice(0, 240),
-      });
-      throw new Error('PORTAL_FILE_UPLOAD_FAILED');
-    }
-
-    writeJson(res, 200, { ok: true, filePath: objectPath, fileName });
+    writeJson(res, 405, { error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
-    const message = String(error?.message || 'PORTAL_FILE_UPLOAD_FAILED');
+    const message = String(error?.message || 'PORTAL_STORAGE_UPLOAD_OR_HEALTH_FAILED');
     writeJson(res, resolveErrorStatus(message), { error: message });
   }
 }
