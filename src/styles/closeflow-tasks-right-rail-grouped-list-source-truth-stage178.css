@@ -1,0 +1,358 @@
+/* CLOSEFLOW_STAGE178_TASKS_RIGHT_RAIL_GROUPED_LIST_SOURCE_TRUTH
+
+   Purpose:
+   - Make /tasks an operational panel, not an empty centered list.
+   - Add the same layout logic used by Leads/Clients:
+     left work stack + right operator rail.
+   - Keep the search bar tied to Stage173/174/175 visual source truth.
+   - Group tasks into operational buckets.
+
+   Owner decision:
+   - Same visual style as recent list/search/right-rail work.
+   - Search should be shortened to the work column, not full page.
+   - Use light card colors similar to metric tiles.
+*/
+
+:root {
+  --closeflow-stage178-tasks-right-rail-grouped-list-source-truth: "active";
+  --cf178-tasks-rail-width: 320px;
+  --cf178-tasks-gap: 18px;
+  --cf178-tasks-card-radius: 22px;
+  --cf178-tasks-soft-border: rgba(148, 163, 184, 0.20);
+  --cf178-tasks-soft-shadow: 0 18px 44px rgba(15, 23, 42, 0.075);
+  --cf178-tasks-card-bg: rgba(255, 255, 255, 0.94);
+  --cf178-tasks-muted: #64748b;
+  --cf178-tasks-ink: #0f172a;
+  --cf178-tone-blue-bg: rgba(37, 99, 235, 0.07);
+  --cf178-tone-blue-border: rgba(37, 99, 235, 0.20);
+  --cf178-tone-red-bg: rgba(225, 29, 72, 0.07);
+  --cf178-tone-red-border: rgba(225, 29, 72, 0.20);
+  --cf178-tone-green-bg: rgba(22, 163, 74, 0.07);
+  --cf178-tone-green-border: rgba(22, 163, 74, 0.20);
+  --cf178-tone-amber-bg: rgba(245, 158, 11, 0.08);
+  --cf178-tone-amber-border: rgba(245, 158, 11, 0.22);
+  --cf178-tone-neutral-bg: rgba(100, 116, 139, 0.07);
+  --cf178-tone-neutral-border: rgba(100, 116, 139, 0.18);
+}
+
+#root main[data-p0-tasks-stable-rebuild="true"][data-stage178-tasks-operational-panel="true"] {
+  max-width: none !important;
+  width: 100% !important;
+  padding-inline: clamp(18px, 2.4vw, 30px) !important;
+}
+
+#root [data-stage178-tasks-operational-panel="true"] .tasks-operator-metric-grid {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* Main /tasks frame: left stack plus right rail. */
+#root .tasks-stage178-workspace {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(var(--cf178-tasks-rail-width), var(--cf178-tasks-rail-width)) !important;
+  gap: var(--cf178-tasks-gap) !important;
+  align-items: start !important;
+  box-sizing: border-box !important;
+}
+
+#root .tasks-stage178-main-stack {
+  min-width: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+}
+
+#root .tasks-stage178-right-rail {
+  width: var(--cf178-tasks-rail-width) !important;
+  min-width: var(--cf178-tasks-rail-width) !important;
+  max-width: var(--cf178-tasks-rail-width) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  flex-shrink: 0 !important;
+}
+
+/* Search card is only a holder; search itself uses the same Stage174/175 source truth. */
+#root [data-tasks-search-panel-stage178="true"] {
+  border-radius: 18px !important;
+  border: 1px solid rgba(191, 219, 254, 0.72) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow: 0 16px 38px rgba(37, 99, 235, 0.065) !important;
+}
+
+#root [data-tasks-search-panel-stage178="true"] .tasks-stage178-search-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 14px !important;
+  align-items: center !important;
+}
+
+#root [data-tasks-search-panel-stage178="true"] .cf-main-search {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Task grouped list. */
+#root .tasks-stage178-grouped-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+#root .tasks-stage178-group {
+  width: 100% !important;
+  max-width: none !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+#root .tasks-stage178-group-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 2px 4px 0 !important;
+}
+
+#root .tasks-stage178-group-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+#root .tasks-stage178-group-title strong {
+  color: var(--cf178-tasks-ink) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.1 !important;
+}
+
+#root .tasks-stage178-group-title span {
+  color: var(--cf178-tasks-muted) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+}
+
+#root .tasks-stage178-group-count {
+  min-width: 26px !important;
+  height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  background: rgba(248, 250, 252, 0.96) !important;
+  border: 1px solid rgba(226, 232, 240, 0.90) !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+/* Task cards fill the left stack like client/lead cards. */
+#root .tasks-stage178-main-stack .tasks-stage48-task-card {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  border-radius: 18px !important;
+  border: 1px solid var(--cf178-tasks-soft-border) !important;
+  background: var(--cf178-tasks-card-bg) !important;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.055) !important;
+}
+
+#root .tasks-stage178-main-stack .tasks-stage48-task-card [data-task-title-date-row-stage48="true"] h2 {
+  font-size: 14px !important;
+  line-height: 1.15 !important;
+  font-weight: 850 !important;
+}
+
+#root .tasks-stage178-main-stack .tasks-stage48-task-card [data-task-date-inline-stage48="true"] {
+  font-size: 11.5px !important;
+  font-weight: 750 !important;
+}
+
+#root .tasks-stage178-main-stack .tasks-stage48-task-action-button {
+  min-height: 32px !important;
+  padding-inline: 12px !important;
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+/* Right rail cards. */
+#root .tasks-stage178-rail-card {
+  width: 100% !important;
+  border-radius: var(--cf178-tasks-card-radius) !important;
+  border: 1px solid var(--cf178-tasks-soft-border) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: var(--cf178-tasks-soft-shadow) !important;
+  padding: 16px !important;
+  box-sizing: border-box !important;
+}
+
+#root .tasks-stage178-rail-head {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  margin-bottom: 12px !important;
+}
+
+#root .tasks-stage178-rail-head h2,
+#root .tasks-stage178-rail-head h3 {
+  color: var(--cf178-tasks-ink) !important;
+  font-size: 14px !important;
+  line-height: 1.16 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.01em !important;
+}
+
+#root .tasks-stage178-rail-head p {
+  color: #475569 !important;
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  font-weight: 650 !important;
+}
+
+#root .tasks-stage178-filter-list,
+#root .tasks-stage178-urgent-list,
+#root .tasks-stage178-focus-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+}
+
+#root .tasks-stage178-filter-button,
+#root .tasks-stage178-urgent-button,
+#root .tasks-stage178-focus-row {
+  width: 100% !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  min-height: 36px !important;
+  padding: 8px 12px !important;
+  border-radius: 13px !important;
+  border: 1px solid rgba(226, 232, 240, 0.92) !important;
+  background: rgba(248, 250, 252, 0.72) !important;
+  color: #0f172a !important;
+  text-align: left !important;
+  box-sizing: border-box !important;
+}
+
+#root .tasks-stage178-filter-button {
+  cursor: pointer !important;
+}
+
+#root .tasks-stage178-filter-button:hover,
+#root .tasks-stage178-urgent-button:hover {
+  background: rgba(239, 246, 255, 0.86) !important;
+  border-color: rgba(147, 197, 253, 0.72) !important;
+}
+
+#root .tasks-stage178-filter-button[data-active="true"] {
+  background: rgba(239, 246, 255, 0.96) !important;
+  border-color: rgba(96, 165, 250, 0.92) !important;
+  box-shadow: 0 0 0 1px rgba(96, 165, 250, 0.10) !important;
+}
+
+#root .tasks-stage178-filter-label,
+#root .tasks-stage178-urgent-title,
+#root .tasks-stage178-focus-label {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: #0f172a !important;
+  font-size: 12.5px !important;
+  line-height: 1.12 !important;
+  font-weight: 850 !important;
+}
+
+#root .tasks-stage178-filter-count,
+#root .tasks-stage178-focus-value {
+  min-width: 26px !important;
+  height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.86) !important;
+  border: 1px solid rgba(226, 232, 240, 0.88) !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  color: #334155 !important;
+}
+
+#root .tasks-stage178-filter-button[data-tone="blue"] {
+  background: var(--cf178-tone-blue-bg) !important;
+  border-color: var(--cf178-tone-blue-border) !important;
+}
+
+#root .tasks-stage178-filter-button[data-tone="red"] {
+  background: var(--cf178-tone-red-bg) !important;
+  border-color: var(--cf178-tone-red-border) !important;
+}
+
+#root .tasks-stage178-filter-button[data-tone="green"] {
+  background: var(--cf178-tone-green-bg) !important;
+  border-color: var(--cf178-tone-green-border) !important;
+}
+
+#root .tasks-stage178-filter-button[data-tone="amber"] {
+  background: var(--cf178-tone-amber-bg) !important;
+  border-color: var(--cf178-tone-amber-border) !important;
+}
+
+#root .tasks-stage178-filter-button[data-tone="neutral"] {
+  background: var(--cf178-tone-neutral-bg) !important;
+  border-color: var(--cf178-tone-neutral-border) !important;
+}
+
+/* Urgent items. */
+#root .tasks-stage178-urgent-button {
+  appearance: none !important;
+  cursor: pointer !important;
+}
+
+#root .tasks-stage178-urgent-meta {
+  color: #64748b !important;
+  font-size: 11px !important;
+  font-weight: 750 !important;
+  white-space: nowrap !important;
+}
+
+#root .tasks-stage178-empty-rail-note {
+  border-radius: 14px !important;
+  background: rgba(248, 250, 252, 0.82) !important;
+  border: 1px dashed rgba(148, 163, 184, 0.42) !important;
+  color: #64748b !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  padding: 12px !important;
+}
+
+/* Responsive: rail goes under list, never squeezes cards. */
+@media (max-width: 1220px) {
+  #root .tasks-stage178-workspace {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  #root .tasks-stage178-right-rail {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 720px) {
+  #root [data-tasks-search-panel-stage178="true"] .tasks-stage178-search-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

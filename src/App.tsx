@@ -26,6 +26,32 @@ import './styles/closeflow-right-rail-source-truth.css';
 import './styles/closeflow-command-actions-source-truth.css';
 import './styles/closeflow-page-header-copy-source-truth.css';
 import './styles/closeflow-page-header-action-semantics-packet1.css';
+import './styles/closeflow-search-source-truth-stage134.css';
+import './styles/closeflow-right-rail-heading-source-truth-stage135.css';
+import './styles/closeflow-clean-desktop-app-shell-canvas-stage149.css';
+import './styles/closeflow-panel-typography-and-width-source-truth-stage150.css';
+import './styles/closeflow-compact-cards-source-truth-stage151.css';
+import './styles/closeflow-dense-cards-80-percent-target-stage152.css';
+import './styles/closeflow-real-density-tokens-no-zoom-stage156.css';
+import './styles/closeflow-viewport-zoom-80-source-truth-stage157.css';
+import './styles/closeflow-overlay-portal-density-stage158.css';
+import './styles/closeflow-overlay-real-density-and-footer-stage159.css';
+import './styles/closeflow-modal-center-and-compact-all-stage160.css';
+import './styles/closeflow-cf-modal-surface-center-fix-stage161.css';
+import './styles/closeflow-cf-modal-surface-lower-smaller-stage162.css';
+import './styles/closeflow-cf-modal-main-center-tall-compact-stage163.css';
+import './styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css';
+import './styles/closeflow-modal-unified-event-motif-source-truth-stage165.css';
+import './styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css';
+import './styles/closeflow-topic-contact-picker-readable-stage169.css';
+import './styles/closeflow-task-dialog-relation-and-field-readability-stage170.css';
+import './styles/closeflow-remove-modal-helper-copy-stage171.css';
+import './styles/closeflow-global-client-create-dialog-stage172.css';
+import './styles/closeflow-main-search-source-truth-stage173.css';
+import './styles/closeflow-main-search-surface-and-text-normalization-stage174.css';
+import './styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css';
+import './styles/closeflow-leads-clients-list-layout-source-truth-stage177.css';
+import './styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css';
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 const CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13 = 'App bootstrap sync is one-shot; no focus/visibility/interval profile refresh on protected pages';
 
@@ -259,4 +285,18 @@ export default function App() {
 /* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: /today and /support route aliases are release-candidate smoke routes. */
 
 /* CLOSEFLOW_PUBLIC_LANDING_ROUTE: / shows PublicLanding for logged-out users and Today for logged-in users. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

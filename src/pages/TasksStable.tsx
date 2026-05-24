@@ -1,4 +1,4 @@
-import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
+﻿import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
 import { AlertTriangle, CheckCircle2, CheckSquare, Clock, Loader2, RefreshCcw, Search, Trash2 } from 'lucide-react';
 /*
 P0_TASKS_STABLE_REBUILD
@@ -45,7 +45,7 @@ void CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR;
 const CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK = 'tasks metric tile compact parity final lock';
 void CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK;
 
-type TaskScope = 'active' | 'today' | 'overdue' | 'done';
+type TaskScope = 'active' | 'today' | 'overdue' | 'done' | 'high' | 'unlinked';
 
 type NextStepPromptState = {
   sourceTask: any;
@@ -128,6 +128,57 @@ function isTaskToday(task: any) {
 function isTaskOverdue(task: any) {
   const dateKey = getTaskDateKey(task);
   return Boolean(dateKey) && dateKey < localDateKey() && !isTaskDone(task);
+}
+
+
+type TaskGroupId = 'overdue' | 'today' | 'upcoming' | 'no_due' | 'done';
+
+function isTaskHighPriority(task: any) {
+  const priority = readText(task, ['priority'], '').trim().toLowerCase();
+  return priority === 'high' || priority === 'urgent' || priority === 'wysoki' || priority === 'pilne';
+}
+
+function isTaskUnlinked(task: any) {
+  const relationIds = getTaskRelationIds(task);
+  return !relationIds.leadId && !relationIds.caseId && !relationIds.clientId;
+}
+
+function getTaskGroupId(task: any): TaskGroupId {
+  if (isTaskDone(task)) return 'done';
+  if (isTaskOverdue(task)) return 'overdue';
+  if (isTaskToday(task)) return 'today';
+  const raw = getTaskMomentRaw(task);
+  if (!raw) return 'no_due';
+  return 'upcoming';
+}
+
+function buildTaskGroups(tasksToGroup: any[]) {
+  const groups: Array<{ id: TaskGroupId; label: string; hint: string; tasks: any[] }> = [
+    { id: 'overdue', label: 'Zaleg\u0142e', hint: 'najpierw odblokuj ryzyko', tasks: [] },
+    { id: 'today', label: 'Dzi\u015b', hint: 'zadania na teraz', tasks: [] },
+    { id: 'upcoming', label: 'Nadchodz\u0105ce', hint: 'najbli\u017csze terminy', tasks: [] },
+    { id: 'no_due', label: 'Bez terminu', hint: 'do uporz\u0105dkowania', tasks: [] },
+    { id: 'done', label: 'Zrobione', hint: 'zamkni\u0119te dzia\u0142ania', tasks: [] },
+  ];
+
+  const byId = new Map(groups.map((group) => [group.id, group]));
+  for (const task of tasksToGroup) {
+    byId.get(getTaskGroupId(task))?.tasks.push(task);
+  }
+
+  return groups.filter((group) => group.tasks.length > 0);
+}
+
+function getUrgentTasks(tasksToRank: any[]) {
+  return tasksToRank
+    .filter((task) => !isTaskDone(task))
+    .slice()
+    .sort((a, b) => {
+      const scoreA = (isTaskOverdue(a) ? -2000000000000000 : 0) + (isTaskToday(a) ? -1000000000000000 : 0) + (isTaskHighPriority(a) ? -500000000000000 : 0) + parseTaskTime(a);
+      const scoreB = (isTaskOverdue(b) ? -2000000000000000 : 0) + (isTaskToday(b) ? -1000000000000000 : 0) + (isTaskHighPriority(b) ? -500000000000000 : 0) + parseTaskTime(b);
+      return scoreA - scoreB;
+    })
+    .slice(0, 5);
 }
 
 function getTaskTitle(task: any) {
@@ -270,6 +321,8 @@ export default function TasksStable() {
         if (scope === 'done') return isTaskDone(task);
         if (scope === 'today') return !isTaskDone(task) && isTaskToday(task);
         if (scope === 'overdue') return isTaskOverdue(task);
+        if (scope === 'high') return !isTaskDone(task) && isTaskHighPriority(task);
+        if (scope === 'unlinked') return !isTaskDone(task) && isTaskUnlinked(task);
         return !isTaskDone(task);
       })
       .filter((task) => {
@@ -290,6 +343,19 @@ export default function TasksStable() {
         return parseTaskTime(a) - parseTaskTime(b);
       });
   }, [casesById, scope, searchQuery, tasks]);
+
+
+  const groupedTasks = useMemo(() => buildTaskGroups(filteredTasks), [filteredTasks]);
+  const urgentTasks = useMemo(() => getUrgentTasks(tasks), [tasks]);
+
+  const taskScopeFilters = useMemo(() => ([
+    { id: 'active' as TaskScope, label: 'Aktywne', count: stats.active, tone: 'blue' },
+    { id: 'today' as TaskScope, label: 'Dzi\u015b', count: stats.today, tone: 'blue' },
+    { id: 'overdue' as TaskScope, label: 'Zaleg\u0142e', count: stats.overdue, tone: 'red' },
+    { id: 'high' as TaskScope, label: 'Wysoki priorytet', count: tasks.filter((task) => !isTaskDone(task) && isTaskHighPriority(task)).length, tone: 'amber' },
+    { id: 'unlinked' as TaskScope, label: 'Bez powi\u0105zania', count: tasks.filter((task) => !isTaskDone(task) && isTaskUnlinked(task)).length, tone: 'neutral' },
+    { id: 'done' as TaskScope, label: 'Zrobione', count: stats.done, tone: 'green' },
+  ]), [stats, tasks]);
 
   const openNewTask = () => {
     setForm(defaultTaskForm());
@@ -473,7 +539,7 @@ export default function TasksStable() {
 
   return (
     <Layout>
-      <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true" data-stage16c-tasks-cases-repair="tasks">
+      <main className="cf-route-work-root flex w-full flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true" data-stage16c-tasks-cases-repair="tasks" data-stage178-tasks-operational-panel="true">
         <CloseFlowPageHeaderV2
           pageKey="tasks"
           actions={
@@ -484,7 +550,7 @@ export default function TasksStable() {
                             </Button>
                             <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
                               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                              Odśwież
+                              OdświeĹĽ
                             </Button>
                           </div>
             </>
@@ -504,59 +570,109 @@ export default function TasksStable() {
           data-stage16d-task-metric-final-lock="replaced-by-operator-metric-tiles"
         />
 
-        <Card className="border-slate-100 shadow-sm">
-          <CardContent className="p-4 sm:p-5">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="relative w-full sm:max-w-md">
-                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                <Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj zadania, sprawy albo priorytetu..." className="pl-9" />
-              </div>
-              <p className="text-sm font-semibold text-slate-500">Widoczne: {filteredTasks.length}</p>
-            </div>
-          </CardContent>
-        </Card>
-
-        <section className="space-y-2" data-tasks-compact-list-stage48="true">
-          {loading ? (
-            <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
-          ) : filteredTasks.length ? filteredTasks.map((task) => {
-            const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
-            return (
-              <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm tasks-stage48-task-card">
-                <CardContent className="p-3 sm:p-4">
-                  <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="cf-status-pill" data-cf-status-tone={getTaskStatusTone(task)}>{getStatusBadge(task)}</span>
-                        <Badge variant="outline" className="rounded-full">{readText(task, ['priority'], 'medium')}</Badge>
-                        <Badge variant="outline" className="rounded-full">{readText(task, ['type'], 'task')}</Badge>
-                      </div>
-                      <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1" data-task-title-date-row-stage48="true">
-                        <h2 className={'text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>
-                        <span className="text-xs font-bold text-slate-500" data-task-date-inline-stage48="true">{formatTaskMoment(task)}</span>
-                      </div>
-                      {caseRecord ? <p className="mt-1 text-sm text-slate-600">Sprawa: {getCaseTitle(caseRecord)}</p> : null}
-                      {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
-                        {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
-                      </Button>
-                      <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
-                        Edytuj
-                      </Button>
-                      <EntityTrashButton type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}>
-                        <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
-                      </EntityTrashButton>
-                    </div>
+        <div className="tasks-stage178-workspace" data-stage178-tasks-workspace="true">
+          <div className="tasks-stage178-main-stack">
+            <Card className="border-slate-100 shadow-sm" data-tasks-search-panel-stage178="true">
+              <CardContent className="p-4 sm:p-5">
+                <div className="tasks-stage178-search-row">
+                  <div className="relative w-full cf-main-search cf-main-search-stage175 cf-main-search-stage178" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true" data-cf-main-search-stage178="true">
+                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj zadania, sprawy albo priorytetu..." />
                   </div>
-                </CardContent>
-              </Card>
-            );
-          }) : (
-            <Card className="border-slate-100"><CardContent className="p-6 text-sm text-slate-500">Brak zadań w tym widoku.</CardContent></Card>
-          )}
-        </section>
+                  <p className="text-sm font-semibold text-slate-500">Widoczne: {filteredTasks.length}</p>
+                </div>
+              </CardContent>
+            </Card>
+
+            <section className="tasks-stage178-grouped-list" data-tasks-compact-list-stage48="true" data-stage178-tasks-grouped-list="true">
+              {loading ? (
+                <Card className="border-slate-100"><CardContent className="flex items-center gap-3 p-5 text-slate-600"><Loader2 className="h-4 w-4 animate-spin" /> Ładowanie zadań...</CardContent></Card>
+              ) : filteredTasks.length ? groupedTasks.map((group) => (
+                <div key={group.id} className="tasks-stage178-group" data-stage178-task-group={group.id}>
+                  <div className="tasks-stage178-group-header">
+                    <div className="tasks-stage178-group-title">
+                      <strong>{group.label}</strong>
+                      <span>{group.hint}</span>
+                    </div>
+                    <span className="tasks-stage178-group-count">{group.tasks.length}</span>
+                  </div>
+
+                  {group.tasks.map((task) => {
+                    const caseRecord = task.caseId ? casesById.get(String(task.caseId)) : null;
+                    return (
+                      <Card key={String(task.id || getTaskTitle(task))} className="border-slate-100 shadow-sm tasks-stage48-task-card">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <span className="cf-status-pill" data-cf-status-tone={getTaskStatusTone(task)}>{getStatusBadge(task)}</span>
+                                <Badge variant="outline" className="rounded-full">{readText(task, ['priority'], 'medium')}</Badge>
+                                <Badge variant="outline" className="rounded-full">{readText(task, ['type'], 'task')}</Badge>
+                              </div>
+                              <div className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1" data-task-title-date-row-stage48="true">
+                                <h2 className={'text-base font-bold text-slate-950 sm:text-lg ' + (isTaskDone(task) ? 'line-through opacity-60' : '')}>{getTaskTitle(task)}</h2>
+                                <span className="text-xs font-bold text-slate-500" data-task-date-inline-stage48="true">{formatTaskMoment(task)}</span>
+                              </div>
+                              {caseRecord ? <p className="mt-1 text-sm text-slate-600">Sprawa: {getCaseTitle(caseRecord)}</p> : null}
+                              {readText(task, ['leadName', 'lead_name'], '') ? <p className="mt-1 text-sm text-slate-600">Lead: {readText(task, ['leadName', 'lead_name'], '')}</p> : null}
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="done-toggle" onClick={() => void toggleTask(task)}>
+                                {isTaskDone(task) ? 'Przywróć' : 'Zrobione'}
+                              </Button>
+                              <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
+                                Edytuj
+                              </Button>
+                              <EntityTrashButton type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}>
+                                <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
+                              </EntityTrashButton>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              )) : (
+                <Card className="border-slate-100"><CardContent className="p-6 text-sm text-slate-500">Brak zadań w tym widoku.</CardContent></Card>
+              )}
+            </section>
+          </div>
+
+          <aside className="tasks-stage178-right-rail cf-operator-right-rail" data-stage178-tasks-right-rail="true" aria-label="Panel operacyjny zadań">
+            <section className="tasks-stage178-rail-card" data-stage178-tasks-filter-card="true">
+              <div className="tasks-stage178-rail-head">
+                <h2>Filtry zadań</h2>
+              </div>
+              <div className="tasks-stage178-filter-list">
+                {taskScopeFilters.map((filter) => (
+                  <button key={filter.id} type="button" className="tasks-stage178-filter-button" data-active={scope === filter.id ? 'true' : 'false'} data-tone={filter.tone} onClick={() => setScope(filter.id)}>
+                    <span className="tasks-stage178-filter-label">{filter.label}</span>
+                    <span className="tasks-stage178-filter-count">{filter.count}</span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            <section className="tasks-stage178-rail-card" data-stage178-tasks-urgent-card="true">
+              <div className="tasks-stage178-rail-head">
+                <h3>Najpilniejsze zadania</h3>
+              </div>
+              {urgentTasks.length ? (
+                <div className="tasks-stage178-urgent-list">
+                  {urgentTasks.map((task) => (
+                    <button key={String(task.id || getTaskTitle(task))} type="button" className="tasks-stage178-urgent-button" onClick={() => { setScope(isTaskDone(task) ? 'done' : 'active'); setSearchQuery(getTaskTitle(task)); }}>
+                      <span className="tasks-stage178-urgent-title">{getTaskTitle(task)}</span>
+                      <span className="tasks-stage178-urgent-meta">{formatTaskMoment(task)}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <p className="tasks-stage178-empty-rail-note">Brak aktywnych pilnych zadań.</p>
+              )}
+            </section>
+</aside>
+        </div>
 
         <Dialog open={isDialogOpen} onOpenChange={(open) => (open ? setIsDialogOpen(true) : closeDialog())}>
           <DialogContent className="max-w-xl">
@@ -617,7 +733,7 @@ export default function TasksStable() {
             </DialogHeader>
             <form onSubmit={handleCreateNextStepTask} className="space-y-4">
               <p className="text-sm text-slate-600">
-                Zadanie jest zrobione. Ustaw następny follow-up, żeby lead albo sprawa nie wypadły z procesu.
+                Zadanie jest zrobione. Ustaw następny follow-up, ĹĽeby lead albo sprawa nie wypadły z procesu.
               </p>
               <div className="space-y-2">
                 <Label>Tytuł kolejnego kroku</Label>
@@ -670,3 +786,7 @@ void FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD;
 
 const FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD = 'FIN-14_REPAIR5_TASKS_HEADER_PLUS_GUARD_no_plus_icon_in_new_task_button';
 void FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD;
+
+
+
+
