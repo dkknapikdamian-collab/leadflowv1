@@ -4,6 +4,7 @@ import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateByI
 import { resolveRequestWorkspaceId, requireScopedRow, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { normalizeClientContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
+import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
 const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at', 'primary_case_id']);
 
@@ -217,6 +218,13 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    // STAGE216A4_CLIENTS_AUTH_ERROR_HOTFIX: align /api/clients auth failures with leads/cases.
+    // Missing bearer or access-gate errors must return structured JSON 401/402/403, not a generic 500.
+    if (error?.code || error?.status || error?.statusCode) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
+
     const message = error?.message || 'CLIENT_API_FAILED';
     res.status(message === 'CLIENT_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
