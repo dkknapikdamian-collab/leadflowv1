@@ -1,4 +1,4 @@
-import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
+import { type MouseEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Calendar, CalendarDays, CheckSquare, ChevronDown, ChevronUp, Loader2, RefreshCcw, SlidersHorizontal, Trash2, TrendingUp } from 'lucide-react';
 import {
@@ -78,6 +78,9 @@ void TODAY_STABLE_STAGE14_REMAINING_SEVERITY;
 
 const ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX = 'ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX';
 void ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX;
+const STAGE213C_C_TODAY_FOCUS_VISIBILITY_THROTTLE = 'Stage213C-C: TodayStable focus/visibility refresh is TTL-gated';
+const TODAY_STABLE_BACKGROUND_REFRESH_TTL_MS = 4 * 60 * 1000;
+void STAGE213C_C_TODAY_FOCUS_VISIBILITY_THROTTLE;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -926,6 +929,8 @@ function TodayStable() {
   const [actionPendingId, setActionPendingId] = useState<string>('');
   const [collapsedSections, setCollapsedSections] = useState<TodaySectionKey[]>(() => [...TODAY_SECTION_KEYS]);
   const [activeTodaySection, setActiveTodaySection] = useState<TodaySectionKey | null>(null);
+  const todayRefreshInFlightRef = useRef<Promise<void> | null>(null);
+  const todayLastSuccessfulRefreshAtRef = useRef(0);
 
   const focusTodaySectionFromMetricTile = useCallback((sectionKey: TodaySectionKey) => {
     setActiveTodaySection(sectionKey);
@@ -967,33 +972,54 @@ function TodayStable() {
     normalizeAdminFeedbackP1TodayHeaderActions();
   }, [status, lastLoadedAt, manualRefreshing, todayViewOpen]);
 
-  const refreshData = useCallback(async (options?: { manual?: boolean }) => {
+  const refreshData = useCallback(async (options?: { manual?: boolean; force?: boolean; reason?: 'initial' | 'manual' | 'focus' | 'visibility' | 'mutation' | 'operation' }) => {
     const manual = Boolean(options?.manual);
+    const reason = options?.reason || (manual ? 'manual' : 'operation');
+    const isBackgroundRefresh = reason === 'focus' || reason === 'visibility';
+    const force = Boolean(options?.force || manual || reason === 'initial' || reason === 'mutation' || reason === 'operation');
+    const now = Date.now();
+
+    if (isBackgroundRefresh) {
+      if (typeof document !== 'undefined' && document.visibilityState !== 'visible') return;
+      if (!force && now - todayLastSuccessfulRefreshAtRef.current < TODAY_STABLE_BACKGROUND_REFRESH_TTL_MS) return;
+    }
+
+    if (todayRefreshInFlightRef.current) return todayRefreshInFlightRef.current;
+
     if (manual) setManualRefreshing(true);
     setStatus((current) => (current === 'ready' ? 'ready' : 'loading'));
     setErrorMessage('');
 
-    try {
-      const nextData = await loadStableTodayData();
-      setData(nextData);
-      setLastLoadedAt(new Date().toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
-      setStatus('ready');
-    } catch (error: any) {
-      setErrorMessage(error?.message || 'Nie udało się pobrać danych.');
-      setStatus('error');
-    } finally {
-      if (manual) setManualRefreshing(false);
-    }
+    const request = (async () => {
+      try {
+        const nextData = await loadStableTodayData();
+        setData(nextData);
+        const loadedAt = new Date();
+        todayLastSuccessfulRefreshAtRef.current = loadedAt.getTime();
+        setLastLoadedAt(loadedAt.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+        setStatus('ready');
+      } catch (error: any) {
+        setErrorMessage(error?.message || 'Nie udało się pobrać danych.');
+        setStatus('error');
+      } finally {
+        if (manual) setManualRefreshing(false);
+        todayRefreshInFlightRef.current = null;
+      }
+    })();
+
+    todayRefreshInFlightRef.current = request;
+    return request;
   }, []);
 
   useEffect(() => {
-    void refreshData({ manual: true });
+    void refreshData({ manual: true, force: true, reason: 'initial' });
   }, [refreshData]);
 
   useEffect(() => {
-    const handleFocus = () => void refreshData({ manual: true });
+    // STAGE213C_C_TODAY_FOCUS_VISIBILITY_THROTTLE: focus/visibility refresh is useful, but not as a full bundle request on every tab return.
+    const handleFocus = () => void refreshData({ reason: 'focus' });
     const handleVisibility = () => {
-      if (document.visibilityState === 'visible') void refreshData({ manual: true });
+      if (document.visibilityState === 'visible') void refreshData({ reason: 'visibility' });
     };
 
     window.addEventListener('focus', handleFocus);
@@ -1013,7 +1039,7 @@ function TodayStable() {
 
       if (refreshTimer) window.clearTimeout(refreshTimer);
       refreshTimer = window.setTimeout(() => {
-        void refreshData({ manual: true }).catch((error: any) => {
+        void refreshData({ manual: true, force: true, reason: 'mutation' }).catch((error: any) => {
           console.warn('TODAY_LIVE_REFRESH_FAILED', error);
         });
       }, 120);
@@ -1051,7 +1077,7 @@ function TodayStable() {
       try {
         setActionPendingId(id);
         await updateTaskInSupabase({ id, status: 'done' } as any);
-        await refreshData({ manual: true });
+        await refreshData({ manual: true, force: true, reason: 'operation' });
       } finally {
         setActionPendingId('');
       }
@@ -1342,7 +1368,7 @@ function TodayStable() {
         leadVisibility: 'trash',
         salesOutcome: 'archived',
       });
-      await refreshData();
+      await refreshData({ force: true, reason: 'operation' });
     } finally {
       setActionPendingId('');
     }
@@ -1371,7 +1397,7 @@ function TodayStable() {
     setActionPendingId(`task:${taskId}`);
     try {
       await deleteTaskFromSupabase(taskId);
-      await refreshData();
+      await refreshData({ force: true, reason: 'operation' });
     } finally {
       setActionPendingId('');
     }
@@ -1383,7 +1409,7 @@ function TodayStable() {
     setActionPendingId(`event:${eventId}`);
     try {
       await deleteEventFromSupabase(eventId);
-      await refreshData();
+      await refreshData({ force: true, reason: 'operation' });
     } finally {
       setActionPendingId('');
     }
@@ -1417,7 +1443,7 @@ function TodayStable() {
             <div className="cf-section-head-actions flex flex-col items-end gap-2">
               <div className="flex flex-wrap items-center justify-end gap-2">
                 {lastLoadedAt ? <span className="text-xs font-semibold text-slate-500">Ostatni odczyt: {lastLoadedAt}</span> : null}
-                <Button type="button" variant="outline" onClick={() => void refreshData({ manual: true })} disabled={loading || manualRefreshing}>
+                <Button type="button" variant="outline" data-stage213c-c-today-manual-refresh="true" onClick={() => void refreshData({ manual: true, force: true, reason: 'manual' })} disabled={loading || manualRefreshing}>
                   {manualRefreshing ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
                   {manualRefreshing ? 'Odświeżanie...' : 'Odśwież dane'}
                 </Button>
