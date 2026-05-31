@@ -321,6 +321,21 @@ function isMissingLeadServiceRpc(error: unknown) {
   );
 }
 
+const CLOSEFLOW_STAGE216A5_LEAD_SERVICE_RPC_FALLBACK_HOTFIX = 'Stage216-A5: closeflow_start_lead_service RPC 55000/v_client falls back to JS path';
+
+function isLeadServiceRpcFallbackError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return (
+    isMissingLeadServiceRpc(error) ||
+    message.includes('55000') ||
+    message.includes('not-yet-assigned record') ||
+    message.includes('tuple structure') ||
+    message.includes('record "v_client" is not assigned yet') ||
+    message.includes('record \"v_client\" is not assigned yet') ||
+    message.includes('v_client')
+  );
+}
+
 async function startLeadServiceWithSupabaseRpc(input: {
   body: Record<string, unknown>;
   workspaceId: string;
@@ -371,7 +386,7 @@ async function startLeadServiceWithSupabaseRpc(input: {
       },
     };
   } catch (error) {
-    if (isMissingLeadServiceRpc(error)) {
+    if (isLeadServiceRpcFallbackError(error)) {
       return null;
     }
     throw error;
