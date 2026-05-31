@@ -31,3 +31,11 @@
 - non nie dostał pełnych praw do tabel.
 - Stage213A można uznać za wykonany.
 - Następny osobny etap: ograniczenie liczby zapytań do Supabase, bo to dotyczy limitów/egress/API usage, nie samych GRANT-ów.
+
+## AKTUALIZACJA - SUPABASE WDROŻONE
+- Migracja jawnych GRANT-ów dla Data API została uruchomiona w Supabase SQL Editor.
+- RLS audit: wszystkie widoczne tabele public mają ls_enabled = true.
+- GRANT audit: wszystkie widoczne tabele mają komplet praw dla uthenticated i service_role.
+- non nie dostał pełnych praw do tabel.
+- Stage213A można uznać za wykonany.
+- Następny osobny etap: ograniczenie liczby zapytań do Supabase, bo to dotyczy limitów/egress/API usage, nie samych GRANT-ów.

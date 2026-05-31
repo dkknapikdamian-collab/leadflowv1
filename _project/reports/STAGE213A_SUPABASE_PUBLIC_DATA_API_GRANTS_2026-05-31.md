@@ -49,3 +49,18 @@
   - service_role_delete
 - Wniosek: Stage213A jest wykonany po stronie Supabase.
 - Nie zmieniano RLS policies ani danych.
+
+## AKTUALIZACJA - SUPABASE WDROŻONE
+- Migracja GRANT została uruchomiona w Supabase SQL Editor.
+- Audyt RLS: wszystkie widoczne tabele w schema public mają ls_enabled = true.
+- Audyt GRANT: wszystkie widoczne tabele mają 	rue dla:
+  - authenticated_select
+  - authenticated_insert
+  - authenticated_update
+  - authenticated_delete
+  - service_role_select
+  - service_role_insert
+  - service_role_update
+  - service_role_delete
+- Wniosek: Stage213A jest wykonany po stronie Supabase.
+- Nie zmieniano RLS policies ani danych.
