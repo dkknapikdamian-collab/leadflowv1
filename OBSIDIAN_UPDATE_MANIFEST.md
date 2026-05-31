@@ -1,21 +1,21 @@
-# OBSIDIAN_UPDATE_MANIFEST - CloseFlow Stage216-B
+# OBSIDIAN_UPDATE_MANIFEST - CloseFlow Stage216-C
 
 ## Cel
 
-Wprowadzić do Obsidiana notatkę Stage216-B dla CloseFlow / LeadFlow: QA/smoke zadań, wydarzeń i kalendarza po migracji Supabase.
+Wprowadzić do Obsidiana notatkę Stage216-C dla CloseFlow / LeadFlow: QA/smoke powiadomień, aktywności i szkiców AI po migracji Supabase.
 
 ## Pliki do przeniesienia do vaulta
 
 Źródło w repo po apply:
 
 ```text
-OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-31 - CloseFlow Stage216-B tasks events calendar QA.md
+OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-31 - CloseFlow Stage216-C notifications activity ai drafts QA.md
 ```
 
 Docelowo w vault:
 
 ```text
-C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT\10_PROJEKTY\CloseFlow_LeadFlow\2026-05-31 - CloseFlow Stage216-B tasks events calendar QA.md
+C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT\10_PROJEKTY\CloseFlow_LeadFlow\2026-05-31 - CloseFlow Stage216-C notifications activity ai drafts QA.md
 ```
 
 ## Status
@@ -27,4 +27,4 @@ C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT\10_PROJEKTY\CloseFlow_LeadFl
 
 ## Uwaga
 
-Jeżeli projektowe pliki map/pulpitu mają inne aktualne nazwy, dopisz link do tej notatki w właściwym pulpicie/statusie projektu ręcznie po apply.
+Vault ma niezależne zmiany Node_RED_Kabelki. Przy CloseFlow nie commitować całego vaulta, tylko konkretną notatkę Stage216-C, jeżeli vault jest repo Git.
