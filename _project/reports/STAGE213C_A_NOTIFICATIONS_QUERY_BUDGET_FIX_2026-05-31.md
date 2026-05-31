@@ -82,3 +82,29 @@ DECYZJA: REPAIR4 nadpisuje pełny plik `NotificationsCenter.tsx` docelową wersj
 
 TESTY: wymagane `node scripts/check-stage213c-a-notifications-query-budget.cjs` oraz `npm run build`.
 
+
+## REPAIR6 - guard parser hotfix
+
+FAKTY:
+- Commit `08bccbd6` zawiera już właściwy kodowy fix `src/pages/NotificationsCenter.tsx`.
+- REPAIR4 build przeszedł, ale guard dawał 2 fałszywe FAIL przez zbyt kruchą analizę bloków `setInterval(...)`.
+- REPAIR6 nie zmienia kodu aplikacji. Naprawia wyłącznie guard Stage213C-A i zapis dokumentacyjny.
+
+DECYZJA:
+- Zostawić kod `NotificationsCenter.tsx` z REPAIR4.
+- Poprawić guard tak, aby sprawdzał semantykę: widoczna zakładka + 5-minutowy interwał oraz lokalny tick 60 sekund bez Supabase bundle.
+
+TESTY:
+- `node scripts/check-stage213c-a-notifications-query-budget.cjs`
+- `npm run build`
+
+CZEGO NIE RUSZANO:
+- SQL
+- RLS
+- GRANT
+- dane Supabase
+- Google Calendar sync
+- Calendar retry
+- TodayStable
+- backupy, `.bak`, `dist`
+

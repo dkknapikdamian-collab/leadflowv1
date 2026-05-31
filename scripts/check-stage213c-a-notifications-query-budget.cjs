@@ -18,20 +18,6 @@ check('NotificationsCenter exists', fs.existsSync(path.join(root, pagePath)));
 check('Stage213C-A report exists', fs.existsSync(path.join(root, reportPath)));
 check('Stage213C-A Obsidian update exists', fs.existsSync(path.join(root, obsidianPath)));
 
-function extractSetIntervalBlocks(src) {
-  const blocks = [];
-  let index = 0;
-  while (index < src.length) {
-    const start = src.indexOf('setInterval(', index);
-    if (start === -1) break;
-    const end = src.indexOf(');', start);
-    if (end === -1) break;
-    blocks.push(src.slice(start, end + 2));
-    index = end + 2;
-  }
-  return blocks;
-}
-
 if (fs.existsSync(path.join(root, pagePath))) {
   const src = read(pagePath);
 
@@ -49,25 +35,29 @@ if (fs.existsSync(path.join(root, pagePath))) {
   check('shows last loaded label', src.includes('data-stage213c-a-notifications-last-refresh="true"'));
 
   check('legacy load() helper removed', !src.includes('const load = async () =>'));
-  check('legacy 60s bundle polling removed', !src.includes('void load();') && !src.includes('window.clearInterval(interval);\n    };\n  }, [workspace?.id, workspaceLoading]);'));
+  check('legacy 60s bundle polling removed', !src.includes('void load();') && !src.includes('fetchCalendarBundleFromSupabase();\n        if (!cancelled)'));
 
-  const intervalBlocks = extractSetIntervalBlocks(src);
-  const directBundlePolling60s = intervalBlocks.some((block) => {
-    const is60s = block.includes('60_000');
-    const doesBundleWork = block.includes('fetchCalendarBundleFromSupabase') || block.includes('refreshNotificationBundle({ reason: \'interval\' })');
-    return is60s && doesBundleWork;
-  });
+  const intervalCount = (src.match(/setInterval\(/g) || []).length;
+  check('has exactly two intervals: background refresh plus local tick', intervalCount === 2);
+
+  const backgroundIntervalIsVisibleGated =
+    src.includes("const refreshIfVisible = (reason: 'visibility' | 'focus' | 'interval') => {") &&
+    src.includes('if (!isDocumentVisible()) return;') &&
+    src.includes("refreshIfVisible('interval');") &&
+    src.includes('}, NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS);');
+  check('background interval is visibility-gated and uses 5 minute constant', backgroundIntervalIsVisibleGated);
+
+  const localTickIsLocalOnly =
+    src.includes('setLogTick((value) => value + 1);') &&
+    src.includes('setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());') &&
+    src.includes('setPermission(getBrowserNotificationPermission());') &&
+    src.includes('}, 60_000);');
+
+  const localTickBundleWindow = /setInterval\(\(\) => \{[\s\S]{0,260}(fetchCalendarBundleFromSupabase|refreshNotificationBundle)[\s\S]{0,260}60_000/.test(src);
+  check('60 second interval is local-only tick', localTickIsLocalOnly && !localTickBundleWindow);
+
+  const directBundlePolling60s = /setInterval\(\(\) => \{[\s\S]{0,500}(fetchCalendarBundleFromSupabase|refreshNotificationBundle\(\{ reason: 'interval' \}\))[\s\S]{0,500}60_000/.test(src);
   check('no full Supabase bundle polling every 60 seconds', !directBundlePolling60s);
-
-  const backgroundInterval = intervalBlocks.some((block) => {
-    return block.includes("refreshIfVisible('interval')") && block.includes('NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS');
-  });
-  check('background interval is visibility-gated and uses 5 minute constant', backgroundInterval);
-
-  const localTick60s = intervalBlocks.some((block) => {
-    return block.includes('60_000') && block.includes('setLogTick') && !block.includes('fetchCalendarBundleFromSupabase') && !block.includes('refreshNotificationBundle');
-  });
-  check('60 second interval is local-only tick', localTick60s);
 }
 
 for (const p of [reportPath, obsidianPath]) {
@@ -76,6 +66,7 @@ for (const p of [reportPath, obsidianPath]) {
     check(`${p} mentions no SQL/RLS/GRANT`, /SQL/.test(text) && /RLS/.test(text) && /GRANT/.test(text));
     check(`${p} mentions NotificationsCenter`, text.includes('NotificationsCenter'));
     check(`${p} mentions REPAIR4`, text.includes('REPAIR4'));
+    check(`${p} mentions REPAIR6`, text.includes('REPAIR6'));
   }
 }
 

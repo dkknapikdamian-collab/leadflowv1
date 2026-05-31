@@ -62,3 +62,22 @@ DECYZJA: REPAIR4 nadpisuje pełny plik `NotificationsCenter.tsx` docelową wersj
 
 TESTY: wymagane `node scripts/check-stage213c-a-notifications-query-budget.cjs` oraz `npm run build`.
 
+
+## REPAIR6 - hotfix guarda Stage213C-A
+
+FAKTY:
+- Kodowy fix `NotificationsCenter.tsx` został wypchnięty w commicie `08bccbd6`.
+- Build po REPAIR4 przeszedł.
+- Guard REPAIR4 miał 2 fałszywe FAIL przez zbyt sztywne rozpoznawanie `setInterval(...)`.
+
+DECYZJA:
+- REPAIR6 poprawia wyłącznie guard i zapis pamięci.
+- Nie zmienia logiki aplikacji ani Supabase.
+
+TESTY:
+- `node scripts/check-stage213c-a-notifications-query-budget.cjs`
+- `npm run build`
+
+NASTĘPNY KROK:
+- Po PASS commitować tylko: guard, raport i ten update Obsidiana.
+
