@@ -134,6 +134,10 @@ const CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11 = 'CLOSEFLOW_CALENDAR_S
 const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
 const CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14';
 const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
+const STAGE213C_B_CALENDAR_RETRY_POLICY = 'Stage213C-B: Calendar retries only once when the initial bundle is empty or failed';
+const CALENDAR_READY_EMPTY_RETRY_DELAY_MS = 900;
+const CALENDAR_READY_MAX_EMPTY_RETRIES = 1;
+void STAGE213C_B_CALENDAR_RETRY_POLICY;
 const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 const CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102 = 'CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102';
 const CALENDAR_ENTRY_FORM_SHARED_SOURCE_STAGE102 = 'event-form-vnext';
@@ -1200,6 +1204,13 @@ export default function Calendar() {
     return [...(rows || []), ...missing];
   }
 
+  function countStage213CBCalendarBundleRows(bundle: { tasks?: any[]; events?: any[]; leads?: any[]; cases?: any[]; clients?: any[] } | null | undefined) {
+    if (!bundle) return 0;
+    return ['tasks', 'events', 'leads', 'cases', 'clients'].reduce((total, key) => {
+      const rows = (bundle as any)[key];
+      return total + (Array.isArray(rows) ? rows.length : 0);
+    }, 0);
+  }
   async function refreshSupabaseBundle() {
     const [bundle, clientRows] = await Promise.all([
       fetchCalendarBundleFromSupabase(),
@@ -1308,7 +1319,8 @@ export default function Calendar() {
   useEffect(() => {
     // STAGE114E_CALENDAR_HARD_REFRESH_READY_RETRY_CONTRACT:
     // Do not publish a final empty calendar while auth/workspace is still hydrating.
-    // After workspaceReady, run one immediate bundle load and timed retry reads to cover hard refresh races.
+    // STAGE213C_B_CALENDAR_RETRY_POLICY:
+    // Run one immediate bundle load and schedule only one retry when the first load is empty or failed.
     for (const timer of calendarReadyRetryTimersRef.current) {
       window.clearTimeout(timer);
     }
@@ -1327,11 +1339,13 @@ export default function Calendar() {
 
     let cancelled = false;
     const runId = ++calendarLoadSeqRef.current;
+    type CalendarLoadResult = 'loaded' | 'empty' | 'failed';
 
-    const loadBundle = async (reason: 'initial' | 'retry') => {
+    const loadBundle = async (reason: 'initial' | 'retry'): Promise<CalendarLoadResult> => {
       try {
         if (reason === 'initial') setLoading(true);
-        await refreshSupabaseBundle();
+        const nextBundle = await refreshSupabaseBundle();
+        const loadedRows = countStage213CBCalendarBundleRows(nextBundle);
 
         if (reason === 'initial') {
           // STAGE120_CALENDAR_LOCAL_FIRST_BACKGROUND_GOOGLE_SYNC:
@@ -1350,10 +1364,13 @@ export default function Calendar() {
               console.warn('CALENDAR_STAGE120_GOOGLE_BACKGROUND_SYNC_FAILED', syncError);
             });
         }
+
+        return loadedRows > 0 ? 'loaded' : 'empty';
       } catch (error: any) {
         if (!cancelled && reason === 'initial') {
-          toast.error(`Błąd odczytu kalendarza: ${error.message}`);
+          toast.error(`B\u0142\u0105d odczytu kalendarza: ${error.message}`);
         }
+        return 'failed';
       } finally {
         if (!cancelled && runId === calendarLoadSeqRef.current) {
           setLoading(false);
@@ -1361,13 +1378,27 @@ export default function Calendar() {
       }
     };
 
-    void loadBundle('initial');
+    const scheduleEmptyRetry = (attempt: number) => {
+      if (attempt > CALENDAR_READY_MAX_EMPTY_RETRIES) return;
 
-    calendarReadyRetryTimersRef.current = [250, 900, 1800].map((delayMs) => window.setTimeout(() => {
-      if (!cancelled && runId === calendarLoadSeqRef.current) {
-        void loadBundle('retry');
+      const timer = window.setTimeout(() => {
+        if (cancelled || runId !== calendarLoadSeqRef.current) return;
+
+        void loadBundle('retry').then((result) => {
+          if (!cancelled && runId === calendarLoadSeqRef.current && result !== 'loaded') {
+            scheduleEmptyRetry(attempt + 1);
+          }
+        });
+      }, CALENDAR_READY_EMPTY_RETRY_DELAY_MS);
+
+      calendarReadyRetryTimersRef.current.push(timer);
+    };
+
+    void loadBundle('initial').then((result) => {
+      if (!cancelled && runId === calendarLoadSeqRef.current && result !== 'loaded') {
+        scheduleEmptyRetry(1);
       }
-    }, delayMs));
+    });
 
     return () => {
       cancelled = true;
@@ -2731,4 +2762,5 @@ export default function Calendar() {
 }
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
+
 
