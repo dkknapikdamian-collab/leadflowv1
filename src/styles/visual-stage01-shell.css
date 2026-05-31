@@ -4,8 +4,8 @@ Wspólny shell wizualny CloseFlow zgodny z closeflow_full_app_modern_5s_ui_conce
 Zakres CSS jest zawężony do .closeflow-visual-stage01, żeby nie przebudować ekranów wewnętrznych przed ich etapami.
 */
 :root {
-  --cf-vs-bg: #f4f6f8;
-  --cf-vs-bg-2: #eef2f6;
+  --cf-vs-bg: #f1f5f9;
+  --cf-vs-bg-2: #f1f5f9;
   --cf-vs-sidebar: #101828;
   --cf-vs-sidebar-2: #172033;
   --cf-vs-card: #ffffff;
@@ -170,8 +170,9 @@ Zakres CSS jest zawężony do .closeflow-visual-stage01, żeby nie przebudować 
 }
 
 .closeflow-visual-stage01 .nav-btn.active .nav-ico {
-  background: #fff;
-  color: #0f172a;
+  background: rgba(96, 165, 250, .18);
+  color: #bfdbfe;
+  box-shadow: none;
 }
 
 .closeflow-visual-stage01 .nav-label {
@@ -695,4 +696,138 @@ Zakres CSS jest zawężony do .closeflow-visual-stage01, żeby nie przebudować 
   .closeflow-visual-stage01 .nav-btn-compact {
     min-height: 42px;
   }
+}
+
+/* STAGE212H_SIDEBAR_ACTIVE_ICON_NO_WHITE_SQUARE */
+.closeflow-visual-stage01 .nav-btn.active .nav-ico {
+  background: rgba(96, 165, 250, .18);
+  color: #bfdbfe;
+  box-shadow: none;
+}
+.closeflow-visual-stage01 .nav-btn.active .nav-ico svg,
+.closeflow-visual-stage01 .nav-ico svg {
+  background: transparent !important;
+  fill: none !important;
+}
+
+
+/* STAGE212I_SIDEBAR_ACTIVE_ICON_SOURCE_TRUTH */
+.closeflow-visual-stage01 .nav-btn.active .nav-ico {
+  background: rgba(96, 165, 250, .18);
+  color: #bfdbfe;
+  box-shadow: none;
+}
+.closeflow-visual-stage01 .nav-btn.active .nav-ico svg,
+.closeflow-visual-stage01 .nav-ico svg {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+
+/* STAGE212J_SIDEBAR_ACTIVE_ICON_SOURCE_FIX */
+.closeflow-visual-stage01 .nav-btn.active .nav-ico {
+  background: rgba(96, 165, 250, .18) !important;
+  color: #bfdbfe !important;
+  box-shadow: none !important;
+}
+.closeflow-visual-stage01 .nav-btn.active .nav-ico svg {
+  background: transparent !important;
+  fill: none !important;
+}
+
+/* STAGE212M_SIDEBAR_ACTIVE_ICON_SOURCE_TRUTH */
+.nav-btn.active .nav-ico,
+.sidebar .nav-btn.active .nav-ico,
+[data-shell-sidebar="true"] .nav-btn.active .nav-ico {
+  background: rgba(255, 255, 255, 0.16) !important;
+  background-color: rgba(255, 255, 255, 0.16) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: none !important;
+}
+.nav-btn.active .nav-ico svg,
+.sidebar .nav-btn.active .nav-ico svg,
+[data-shell-sidebar="true"] .nav-btn.active .nav-ico svg {
+  stroke: currentColor !important;
+  fill: none !important;
+  background: transparent !important;
+}
+
+
+/* STAGE212O_ACTIVE_NAV_ICON_NO_WHITE_SQUARE */
+.sidebar .nav-btn.active .nav-ico,
+.nav-btn.active .nav-ico {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 255, 255, 0.18) !important;
+  box-shadow: none !important;
+  border-radius: 10px !important;
+}
+.sidebar .nav-btn.active .nav-ico svg,
+.nav-btn.active .nav-ico svg {
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+
+/* STAGE212P_ACTIVE_NAV_ICON_FINAL */
+.sidebar .nav-btn.active .nav-ico,
+.nav-btn.active .nav-ico {
+  width: 22px !important;
+  height: 22px !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+.sidebar .nav-btn.active .nav-ico svg,
+.nav-btn.active .nav-ico svg {
+  width: 14px !important;
+  height: 14px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* STAGE212Y_TODAY_ICON_SIZE_FINAL
+   Dziś uses the same nav icon frame size as the rest of the sidebar.
+   The icon itself is Home, not LayoutDashboard.
+*/
+body .sidebar a[data-nav-path="/"] .nav-ico,
+body a[data-nav-path="/"] .nav-ico,
+body .sidebar .nav-btn.active a[data-nav-path="/"] .nav-ico,
+body .sidebar .nav-btn.active .nav-ico,
+body .nav-btn.active .nav-ico {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: 10px !important;
+  color: currentColor !important;
+}
+
+body .sidebar a[data-nav-path="/"] .nav-ico svg,
+body a[data-nav-path="/"] .nav-ico svg,
+body .sidebar .nav-btn.active .nav-ico svg,
+body .nav-btn.active .nav-ico svg {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
 }

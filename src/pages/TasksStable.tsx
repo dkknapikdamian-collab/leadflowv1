@@ -33,6 +33,8 @@ import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 const P0_TASKS_STABLE_REBUILD = 'P0_TASKS_STABLE_REBUILD';
 void P0_TASKS_STABLE_REBUILD;
@@ -550,7 +552,7 @@ export default function TasksStable() {
                             </Button>
                             <Button type="button" variant="outline" className={actionButtonClass('neutral', 'border-slate-300 bg-white text-slate-950 hover:bg-slate-50 hover:text-slate-950')} onClick={() => void refreshData()} disabled={loading || workspaceLoading} data-tasks-refresh-visible-stage45m="true">
                               {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <RefreshCcw className="mr-2 h-4 w-4" />}
-                              OdświeĹĽ
+                              Odśwież
                             </Button>
                           </div>
             </>
@@ -661,8 +663,17 @@ export default function TasksStable() {
               {urgentTasks.length ? (
                 <div className="tasks-stage178-urgent-list">
                   {urgentTasks.map((task) => (
-                    <button key={String(task.id || getTaskTitle(task))} type="button" className="tasks-stage178-urgent-button" onClick={() => { setScope(isTaskDone(task) ? 'done' : 'active'); setSearchQuery(getTaskTitle(task)); }}>
-                      <span className="tasks-stage178-urgent-title">{getTaskTitle(task)}</span>
+                    <button
+                      key={String(task.id || getTaskTitle(task))}
+                      type="button"
+                      className="tasks-stage178-urgent-button"
+                      title={getTaskTitle(task) + ' - ' + formatTaskMoment(task)}
+                      aria-label={getTaskTitle(task) + ' - ' + formatTaskMoment(task)}
+                      data-stage181g-urgent-custom-tooltip="true"
+                      data-cf-tooltip={getTaskTitle(task) + ' - ' + formatTaskMoment(task)}
+                      onClick={() => { setScope(isTaskDone(task) ? 'done' : 'active'); setSearchQuery(getTaskTitle(task)); }}
+                    >
+                      <span className="tasks-stage178-urgent-title" title={getTaskTitle(task)}>{getTaskTitle(task)}</span>
                       <span className="tasks-stage178-urgent-meta">{formatTaskMoment(task)}</span>
                     </button>
                   ))}
@@ -733,7 +744,7 @@ export default function TasksStable() {
             </DialogHeader>
             <form onSubmit={handleCreateNextStepTask} className="space-y-4">
               <p className="text-sm text-slate-600">
-                Zadanie jest zrobione. Ustaw następny follow-up, ĹĽeby lead albo sprawa nie wypadły z procesu.
+                Zadanie jest zrobione. Ustaw następny follow-up, żeby lead albo sprawa nie wypadły z procesu.
               </p>
               <div className="space-y-2">
                 <Label>Tytuł kolejnego kroku</Label>
@@ -786,6 +797,7 @@ void FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD;
 
 const FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD = 'FIN-14_REPAIR5_TASKS_HEADER_PLUS_GUARD_no_plus_icon_in_new_task_button';
 void FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD;
+
 
 
 

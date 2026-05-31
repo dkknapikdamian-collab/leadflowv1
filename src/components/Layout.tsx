@@ -1,6 +1,32 @@
-import { type ReactNode, useMemo, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { AlertTriangle, Bell, Briefcase, Calendar, CheckCircle2, CheckSquare, ChevronRight, CreditCard, FolderKanban, History, LayoutDashboard, LifeBuoy, LogOut, Menu, MessageSquareText, Settings, Sparkles, Users, X } from 'lucide-react';
+
+import {
+  type ReactNode,
+  useMemo,
+  useState,
+  useEffect } from 'react';
+import { Link,
+  useLocation,
+  useNavigate } from 'react-router-dom';
+import { AlertTriangle,
+  Bell,
+  Briefcase,
+  Calendar,
+  CheckCircle2,
+  CheckSquare,
+  ChevronRight,
+  CreditCard,
+  FolderKanban,
+  History,
+  Home,
+  LifeBuoy,
+  LogOut,
+  Menu,
+  MessageSquareText,
+  Settings,
+  Sparkles,
+  Users,
+  X
+} from 'lucide-react';
 /* STAGE16O_LAYOUT_PLAN_VISIBILITY_STATIC_CONTRACTS
  * canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
  * ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
@@ -24,8 +50,6 @@ Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer 
 Nie zmienia logiki ekranów, routingu, Supabase, AI, auth ani billing/access.
 */
 
-
-
 import { useWorkspace } from '../hooks/useWorkspace';
 import { useSupabaseSession } from '../hooks/useSupabaseSession';
 import { signOutFromSupabase } from '../lib/supabase-auth';
@@ -33,12 +57,16 @@ import GlobalQuickActions from './GlobalQuickActions';
 import ContextActionDialogsHost from './ContextActionDialogs';
 import AdminDebugToolbar from './admin-tools/AdminDebugToolbar';
 import OperatorTopBarRuntime from './OperatorTopBarRuntime';
+import VisualFoundationRuntimeStage212M from './VisualFoundationRuntimeStage212M';
+
 import '../styles/closeflow-compact-top-shell-source-truth.css';
 import '../styles/closeflow-operator-top-trim-source-truth.css';
+
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+
 import { OperatorMetricToneRuntime } from './ui-system';
 import { parseISO, differenceInDays } from 'date-fns';
-import '../styles/closeflow-desktop-density-source-truth.css';
-
+// STAGE200 disabled legacy visual/sidebar layer: /* STAGE198B disabled global 80pct density import: closeflow-desktop-density-source-truth.css */
 interface LayoutProps {
   children: ReactNode;
 }
@@ -136,11 +164,171 @@ export default function Layout({ children }: LayoutProps) {
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
   const canUseAdminDebugToolbar = Boolean(isAdmin || isAppOwner);
 
+  /* STAGE209_CENTER_SCROLL_RUNTIME_ENFORCER_START */
+  useEffect(() => {
+    const setImportant = (el: Element | null | undefined, styles: Record<string, string>) => {
+      if (!el || !(el instanceof HTMLElement)) return;
+      for (const [name, value] of Object.entries(styles)) {
+        el.style.setProperty(name, value, 'important');
+      }
+    };
+
+    const applyCenterScrollContract = () => {
+      if (typeof document === 'undefined') return;
+
+      const root = document.querySelector('#root');
+      const appShell = document.querySelector('#root > .app.closeflow-visual-stage01.cf-html-shell');
+      const sidebar = document.querySelector('aside.sidebar[data-shell-sidebar="true"]');
+      const navScroll = document.querySelector('aside.sidebar[data-shell-sidebar="true"] .nav-scroll');
+      const main = document.querySelector('main[data-shell-main="true"]');
+      const globalBar = document.querySelector('[data-shell-global-bar="true"]');
+      const content = document.querySelector('main[data-shell-main="true"] > div.view.active[data-shell-content="true"]');
+
+      const scaledHeight = 'calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333))';
+      const scaledWidth = 'calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333))';
+
+      if (window.innerWidth <= 860) {
+        setImportant(document.documentElement, {
+          height: 'auto',
+          'min-height': '100dvh',
+          'overflow-y': 'auto',
+          'overflow-x': 'hidden'
+        });
+        setImportant(document.body, {
+          height: 'auto',
+          'min-height': '100dvh',
+          'overflow-y': 'auto',
+          'overflow-x': 'hidden'
+        });
+        setImportant(root, {
+          height: 'auto',
+          'min-height': '100dvh',
+          'overflow-y': 'auto',
+          'overflow-x': 'hidden'
+        });
+        setImportant(appShell, {
+          transform: 'none',
+          width: '100%',
+          'min-width': '100%',
+          height: 'auto',
+          'min-height': '100dvh',
+          'max-height': 'none',
+          overflow: 'visible'
+        });
+        setImportant(main, {
+          height: 'auto',
+          'max-height': 'none',
+          overflow: 'visible'
+        });
+        setImportant(content, {
+          height: 'auto',
+          'max-height': 'none',
+          overflow: 'visible'
+        });
+        return;
+      }
+
+      setImportant(document.documentElement, {
+        width: '100%',
+        height: '100%',
+        'min-height': '100%',
+        overflow: 'hidden'
+      });
+
+      setImportant(document.body, {
+        width: '100%',
+        height: '100%',
+        'min-height': '100%',
+        overflow: 'hidden'
+      });
+
+      setImportant(root, {
+        width: '100vw',
+        height: '100dvh',
+        'min-height': '100dvh',
+        overflow: 'hidden',
+        background: '#f1f5f9'
+      });
+
+      setImportant(appShell, {
+        width: scaledWidth,
+        'min-width': scaledWidth,
+        height: scaledHeight,
+        'min-height': scaledHeight,
+        'max-height': scaledHeight,
+        transform: 'scale(var(--cf-stage201-app-scale, 0.75))',
+        'transform-origin': 'top left',
+        overflow: 'hidden',
+        'align-items': 'stretch'
+      });
+
+      setImportant(sidebar, {
+        height: scaledHeight,
+        'min-height': scaledHeight,
+        'max-height': scaledHeight,
+        overflow: 'hidden',
+        'align-self': 'stretch'
+      });
+
+      setImportant(navScroll, {
+        'min-height': '0',
+        'overflow-y': 'auto',
+        'overflow-x': 'hidden'
+      });
+
+      setImportant(main, {
+        height: scaledHeight,
+        'min-height': scaledHeight,
+        'max-height': scaledHeight,
+        overflow: 'hidden',
+        display: 'flex',
+        'flex-direction': 'column',
+        'min-width': '0'
+      });
+
+      setImportant(globalBar, {
+        flex: '0 0 auto',
+        position: 'relative',
+        'z-index': '5'
+      });
+
+      setImportant(content, {
+        flex: '1 1 0',
+        'min-height': '0',
+        height: 'auto',
+        'max-height': 'none',
+        'overflow-y': 'auto',
+        'overflow-x': 'hidden',
+        'overscroll-behavior': 'contain',
+        'scrollbar-gutter': 'stable both-edges',
+        'padding-bottom': 'calc(240px * var(--cf-stage201-app-scale-inverse, 1.3333333333))'
+      });
+
+      content?.setAttribute('data-stage209-scroll-owner', 'true');
+    };
+
+    applyCenterScrollContract();
+
+    const raf = window.requestAnimationFrame(applyCenterScrollContract);
+    const t1 = window.setTimeout(applyCenterScrollContract, 0);
+    const t2 = window.setTimeout(applyCenterScrollContract, 120);
+
+    window.addEventListener('resize', applyCenterScrollContract);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener('resize', applyCenterScrollContract);
+    };
+  }, [location.pathname, mobileMenuOpen]);
+  /* STAGE209_CENTER_SCROLL_RUNTIME_ENFORCER_END */
+
   const navGroups = useMemo<NavGroup[]>(() => ([
     {
       caption: 'Start pracy',
       items: [
-        { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+        { icon: Home, label: 'Dziś', path: '/' },
         { icon: Users, label: 'Leady', path: '/leads' },
         { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: Briefcase, label: 'Sprawy', path: '/cases' },
@@ -162,7 +350,7 @@ export default function Layout({ children }: LayoutProps) {
         ...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : []),
         { icon: AlertTriangle, label: 'Powiadomienia', path: '/notifications' },
         { icon: CreditCard, label: 'Rozliczenia', path: '/billing' },
-        { icon: CheckCircle2, label: 'Pomoc', path: '/help' },
+        { icon: LifeBuoy, label: 'Zgłoszenia', path: '/help' },
         ...(isAdmin ? [{ icon: Settings, label: 'Admin AI', path: '/settings/ai' }] : []),
         { icon: Settings, label: 'Ustawienia', path: '/settings' },
       ],
@@ -171,7 +359,7 @@ export default function Layout({ children }: LayoutProps) {
   const navItems = useMemo(() => navGroups.flatMap((group) => group.items), [navGroups]);
   const mobileNavItems = useMemo(
     () => [
-      { icon: LayoutDashboard, label: 'Dziś', path: '/' },
+      { icon: Home, label: 'Dziś', path: '/' },
       { icon: Users, label: 'Leady', path: '/leads' },
       { icon: Users, label: 'Klienci', path: '/clients' },
       { icon: Briefcase, label: 'Sprawy', path: '/cases' },
@@ -256,8 +444,24 @@ export default function Layout({ children }: LayoutProps) {
       onPointerDownCapture={handleSidebarPointerRouter}
     >
       <OperatorMetricToneRuntime />
+
       <OperatorTopBarRuntime />
-      <aside className="sidebar" data-shell-sidebar="true">
+      <VisualFoundationRuntimeStage212M />
+      
+<aside
+        className="sidebar"
+        data-shell-sidebar="true"
+        data-sidebar-layout-contract="stage195-inline"
+        style={{
+          height: '100dvh',
+          minHeight: '100dvh',
+          maxHeight: '100dvh',
+          display: 'grid',
+          gridTemplateRows: 'auto minmax(0, 1fr) auto',
+          alignSelf: 'stretch',
+          overflow: 'hidden',
+        }}
+      >
         <Link to="/" className="brand" aria-label="CloseFlow - przejdź do Dziś">
           <span className="brand-logo" aria-hidden="true">
             CF
@@ -267,11 +471,27 @@ export default function Layout({ children }: LayoutProps) {
           </span>
         </Link>
 
-        <nav className="nav-scroll" aria-label="Główne menu CloseFlow">
+        <nav
+          className="nav-scroll"
+          aria-label="Główne menu CloseFlow"
+          style={{
+            minHeight: 0,
+            height: 'auto',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
           {renderNavGroups()}
         </nav>
 
-        <div className="sidebar-footer">
+        <div
+          className="sidebar-footer"
+          style={{
+            minHeight: 0,
+            alignSelf: 'end',
+            marginTop: 0,
+          }}
+        >
           {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
           <UserCard userInitial={userInitial} name={userName} email={userEmail} />
           <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
@@ -356,7 +576,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         )}
 
-        <div className="view active" data-shell-content="true" data-visual-stage-today={isTodayRoute ? '02-today' : undefined} data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined} data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefined} data-visual-stage-clients={isClientsRoute ? '05-clients' : undefined} data-visual-stage-client-detail={isClientDetailRoute ? '06-client-detail' : undefined} data-visual-stage-cases={isCasesRoute ? '07-cases' : undefined} data-visual-stage-case-detail={isCaseDetailRoute ? '08-case-detail' : undefined}>
+        <div className="view active" data-shell-content="true" data-cf-shell-content-stage145="true" data-visual-stage-today={isTodayRoute ? '02-today' : undefined} data-visual-stage-leads={isLeadsRoute ? '03-leads' : undefined} data-visual-stage-lead-detail={isLeadDetailRoute ? '04-lead-detail' : undefined} data-visual-stage-clients={isClientsRoute ? '05-clients' : undefined} data-visual-stage-client-detail={isClientDetailRoute ? '06-client-detail' : undefined} data-visual-stage-cases={isCasesRoute ? '07-cases' : undefined} data-visual-stage-case-detail={isCaseDetailRoute ? '08-case-detail' : undefined}>
           {children}
         </div>
       </main>
@@ -386,10 +606,4 @@ export default function Layout({ children }: LayoutProps) {
 
 /* ADMIN_DEBUG_TOOLBAR_LAYOUT_STAGE87 isAdmin || isAppOwner */
 
-/* STAGE16M_LAYOUT_AI_DRAFTS_COMPAT
-GlobalQuickActions
-<GlobalQuickActions
-Inbox szkiców
-const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi)
-...(canUseAiDraftsByPlan ? [{ icon: CheckCircle2, label: 'Inbox szkiców', path: '/ai-drafts' }] : [])
-*/
+

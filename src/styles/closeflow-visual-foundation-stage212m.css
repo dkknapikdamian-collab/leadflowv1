@@ -1,0 +1,409 @@
+/*
+  STAGE212Q_TABS_VISUAL_SOURCE_TRUTH
+  Jeden punkt prawdy dla canvasu, surface i wrapperów zakładek.
+  Canvas: #f1f5f9
+  Surface: #ffffff
+  Surface soft: #f8fafc
+  Border: #e2e8f0
+*/
+
+:root {
+  --cf-canvas: #f1f5f9;
+  --cf-surface: #ffffff;
+  --cf-surface-soft: #f8fafc;
+  --cf-border: #e2e8f0;
+  --cf-admin-dark: rgba(15, 23, 42, 0.96);
+  --cf-admin-dark-solid: #0f172a;
+}
+
+/* L0-L3: główny canvas aplikacji */
+html,
+body,
+#root,
+body #root,
+body #root .app,
+body #root .app.closeflow-visual-stage01,
+body #root .app.closeflow-visual-stage01.cf-html-shell,
+body #root .app.closeflow-visual-stage01.cf-html-shell main.main,
+body #root .app.closeflow-visual-stage01.cf-html-shell .view,
+body #root .app.closeflow-visual-stage01.cf-html-shell .view.active,
+body #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"],
+body #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"],
+body #root .app.closeflow-visual-stage01.cf-html-shell main.cf-route-work-root,
+body #root .app.closeflow-visual-stage01.cf-html-shell .cf-route-work-root,
+body #root .app.closeflow-visual-stage01.cf-html-shell .cf-html-view,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-today,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-leads,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-clients,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-cases,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-tasks,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-calendar,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-activity,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-support,
+body #root .app.closeflow-visual-stage01.cf-html-shell .main-settings {
+  background: var(--cf-canvas) !important;
+  background-color: var(--cf-canvas) !important;
+  background-image: none !important;
+}
+
+/* Route roots wskazane w feedbacku */
+body #root .main-leads-html,
+body #root .main-clients-html,
+body #root .main-cases-html,
+body #root .main-tasks-html,
+body #root .main-calendar-html,
+body #root .main-activity-html,
+body #root .main-notifications-html,
+body #root .main-billing-html,
+body #root .main-ai-drafts-html,
+body #root .main-support-html,
+body #root .main-settings-html {
+  background: var(--cf-canvas) !important;
+  background-color: var(--cf-canvas) !important;
+  background-image: none !important;
+}
+
+/* Layout wrappers: mają pokazywać canvas, nie własny przypadkowy kolor */
+body #root .layout-list,
+body #root .layout-list.w-full,
+body #root .layout-list.w-full.max-w-none,
+body #root .layout-main,
+body #root .layout-content,
+body #root .content-shell,
+body #root .records-shell,
+body #root .records-layout,
+body #root .entity-list-layout,
+body #root .cf-list-layout,
+body #root .cf-record-list,
+body #root main.cf-route-work-root > section.grid,
+body #root main.cf-route-work-root section.grid.gap-3,
+body #root main.cf-route-work-root section.grid.gap-4 {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Karty zostają białe */
+body #root .bg-card:not(section),
+body #root .card,
+body #root [data-cf-card="true"],
+body #root .cf-operator-metric-tile,
+body #root [class*="right-card"],
+body #root [class*="list-card"],
+body #root [class*="toolbar-card"],
+body #root [class*="record-card"],
+body #root [class*="entity-card"],
+body #root [class*="summary-card"] {
+  background: var(--cf-surface) !important;
+  background-color: var(--cf-surface) !important;
+}
+
+/* Soft surfaces */
+body #root input,
+body #root textarea,
+body #root select,
+body #root [role="searchbox"],
+body #root .empty-state,
+body #root [class*="filter"],
+body #root [class*="toolbar"] input {
+  background-color: var(--cf-surface-soft);
+}
+
+/* Debug toolbar zawsze ciemny */
+body .admin-debug-toolbar {
+  background: var(--cf-admin-dark) !important;
+  color: #f8fafc !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.28) !important;
+}
+
+body .admin-debug-toolbar > button,
+body .admin-debug-toolbar button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f8fafc !important;
+  border-color: rgba(226, 232, 240, 0.22) !important;
+}
+
+body .admin-debug-toolbar > button.active,
+body .admin-debug-toolbar button.active {
+  background: rgba(37, 99, 235, 0.9) !important;
+  color: #ffffff !important;
+  border-color: rgba(147, 197, 253, 0.95) !important;
+}
+
+/* Aktywna ikonka w sidebarze: ma być ikoną, nie kafelkiem/kwadratem */
+body .sidebar .nav-btn.active .nav-ico,
+body .nav-btn.active .nav-ico {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+body .sidebar .nav-btn.active .nav-ico svg,
+body .nav-btn.active .nav-ico svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* STAGE212S_TASK_FILTERS_AND_TODAY_ICON */
+
+/* Dziś w sidebarze: ikona ma być samą ikoną, bez kafelka */
+body .sidebar a[data-nav-path="/"] .nav-ico,
+body a[data-nav-path="/"] .nav-ico,
+body .sidebar .nav-btn.active .nav-ico,
+body .nav-btn.active .nav-ico {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  color: currentColor !important;
+}
+
+body .sidebar a[data-nav-path="/"] .nav-ico svg,
+body a[data-nav-path="/"] .nav-ico svg,
+body .sidebar .nav-btn.active .nav-ico svg,
+body .nav-btn.active .nav-ico svg {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+/* Prawy panel zadań: karta i filtry bez białych pasków w labelu */
+body #root .tasks-stage178-right-rail,
+body #root .tasks-stage178-rail-card {
+  background: var(--cf-surface) !important;
+  background-color: var(--cf-surface) !important;
+  background-image: none !important;
+}
+
+body #root .tasks-stage178-filter-list {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+body #root .tasks-stage178-filter-button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  width: 100% !important;
+  min-height: 34px !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+body #root .tasks-stage178-filter-button > span,
+body #root .tasks-stage178-filter-label {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+body #root .tasks-stage178-filter-count {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  background-color: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  box-shadow: none !important;
+}
+
+
+/* STAGE212T_POLISH_AND_VISUAL_GUARDS */
+body .sidebar a[data-nav-path="/"] .nav-ico,
+body a[data-nav-path="/"] .nav-ico,
+body .sidebar .nav-btn.active .nav-ico,
+body .nav-btn.active .nav-ico {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  color: currentColor !important;
+}
+
+body .sidebar a[data-nav-path="/"] .nav-ico svg,
+body a[data-nav-path="/"] .nav-ico svg,
+body .sidebar .nav-btn.active .nav-ico svg,
+body .nav-btn.active .nav-ico svg {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
+
+body #root .tasks-stage178-filter-list,
+body #root .tasks-stage178-filter-button > span,
+body #root .tasks-stage178-filter-label {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+body #root .tasks-stage178-filter-count {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 22px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  background-color: rgba(255, 255, 255, 0.72) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  box-shadow: none !important;
+}
+
+/* STAGE212U_NOTIFICATIONS_METRIC_WIDTH_SOURCE_TRUTH
+   /notifications top metrics use the same full working width as other operator tabs.
+*/
+body #root .notifications-vnext-page {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+body #root .notifications-stats-grid {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 22px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body #root .notifications-vnext-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 1180px) {
+  body #root .notifications-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body #root .notifications-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* STAGE212V_NOTIFICATIONS_METRIC_WIDTH_RUNTIME_REPAIR
+   /notifications top metrics use the same full working width as other operator tabs.
+*/
+body #root .notifications-vnext-page {
+  width: 100% !important;
+  max-width: none !important;
+  box-sizing: border-box !important;
+}
+
+body #root .notifications-stats-grid {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 22px !important;
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+}
+
+body #root .notifications-vnext-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+
+@media (max-width: 1180px) {
+  body #root .notifications-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body #root .notifications-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* STAGE212Y_TODAY_ICON_SIZE_FINAL
+   Dziś uses the same nav icon frame size as the rest of the sidebar.
+   The icon itself is Home, not LayoutDashboard.
+*/
+body .sidebar a[data-nav-path="/"] .nav-ico,
+body a[data-nav-path="/"] .nav-ico,
+body .sidebar .nav-btn.active a[data-nav-path="/"] .nav-ico,
+body .sidebar .nav-btn.active .nav-ico,
+body .nav-btn.active .nav-ico {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  max-width: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: rgba(255, 255, 255, 0.10) !important;
+  background-color: rgba(255, 255, 255, 0.10) !important;
+  background-image: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.16) !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: 10px !important;
+  color: currentColor !important;
+}
+
+body .sidebar a[data-nav-path="/"] .nav-ico svg,
+body a[data-nav-path="/"] .nav-ico svg,
+body .sidebar .nav-btn.active .nav-ico svg,
+body .nav-btn.active .nav-ico svg {
+  width: 16px !important;
+  height: 16px !important;
+  min-width: 16px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none !important;
+}
