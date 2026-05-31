@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 const STAGE = 'Stage216-A2';
+const STAGE216_A3_VITE_API_SOURCE_RESPONSE_GUARD = 'detects Vite dev server returning API TypeScript source instead of JSON';
 const appUrlRaw = process.env.CLOSEFLOW_APP_URL || process.env.VITE_CLOSEFLOW_APP_URL || '';
 const workspaceId = process.env.CLOSEFLOW_WORKSPACE_ID || process.env.VITE_CLOSEFLOW_WORKSPACE_ID || '';
 const writeReport = process.argv.includes('--write');
@@ -26,6 +27,11 @@ function rowId(row) {
 
 function isJsonLike(contentType) {
   return /application\/json|\+json/i.test(String(contentType || ''));
+}
+
+function isLikelyViteApiSourceResponse(text) {
+  const sample = String(text || '').trimStart();
+  return sample.startsWith('import ') || sample.startsWith('export ') || /from ['\"]\.\.\/src\/server\//.test(sample) || /from ['\"]\.\.\/src\/lib\//.test(sample);
 }
 
 async function probeEndpoint(baseUrl, item) {
@@ -85,15 +91,19 @@ async function probeEndpoint(baseUrl, item) {
   }
 
   if (parseError && text) {
+    const viteSourceResponse = isLikelyViteApiSourceResponse(text);
     return {
       label: item.label,
       path: item.path,
       status: 'FAIL',
       httpStatus: response.status,
       durationMs,
-      error: `NON_JSON_RESPONSE:${parseError}`,
+      error: viteSourceResponse ? 'VITE_DEV_API_SOURCE_RESPONSE' : `NON_JSON_RESPONSE:${parseError}`,
       contentType,
       sample: text.slice(0, 180),
+      hint: viteSourceResponse
+        ? 'Local npm run dev is Vite UI-only and can return API TypeScript source for /api/*. Use npm run dev:api / Vercel runtime for API smoke.'
+        : 'Endpoint returned non-JSON content. This can still trigger INVALID_API_RESPONSE in the frontend.',
     };
   }
 
