@@ -1,0 +1,155 @@
+﻿/* STAGE204_OPS_BADGES_AND_ICONS_STRETCH_LOCAL_ONLY
+   Zakres:
+   - Powiadomienia
+   - Inbox szkiców
+   - Aktywność
+
+   Cel:
+   - małe okrągłe liczniki/ikonki zmienić w czytelniejsze, poziome kapsuły,
+   - nie ruszać skali aplikacji,
+   - nie ruszać sidebara,
+   - nie ruszać logiki danych.
+*/
+
+@media (min-width: 861px) {
+  :where(
+    .notifications-vnext-page,
+    .ai-drafts-vnext-page,
+    .activity-vnext-page
+  ) :where(
+    .notifications-filter-pill,
+    .ai-drafts-filter-pill,
+    .activity-filter-pill
+  ) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 0.75rem !important;
+    min-height: 36px !important;
+    padding: 0.48rem 0.72rem 0.48rem 0.92rem !important;
+    border-radius: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  :where(
+    .notifications-vnext-page,
+    .ai-drafts-vnext-page,
+    .activity-vnext-page
+  ) :where(
+    .notifications-filter-pill,
+    .ai-drafts-filter-pill,
+    .activity-filter-pill
+  ) > strong {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 auto !important;
+    min-width: 34px !important;
+    height: 24px !important;
+    padding: 0 0.74rem !important;
+    border-radius: 999px !important;
+    font-size: 0.78rem !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.01em !important;
+    background: rgba(255, 255, 255, 0.82) !important;
+    border: 1px solid rgba(100, 116, 139, 0.26) !important;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.9),
+      0 1px 3px rgba(15, 23, 42, 0.06) !important;
+  }
+
+  :where(
+    .notifications-vnext-page,
+    .ai-drafts-vnext-page,
+    .activity-vnext-page
+  ) :where(
+    .notifications-filter-pill-active,
+    .ai-drafts-filter-pill-active,
+    .activity-filter-pill-active
+  ) > strong {
+    border-color: rgba(37, 99, 235, 0.36) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: inherit !important;
+  }
+
+  :where(
+    .notifications-vnext-page,
+    .ai-drafts-vnext-page,
+    .activity-vnext-page
+  ) :where(
+    .notifications-row-icon,
+    .ai-drafts-row-icon,
+    .activity-row-icon
+  ),
+  .activity-vnext-page .activity-row > .cf-severity-dot,
+  .notifications-vnext-page .notifications-row > .cf-severity-dot {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    max-height: 30px !important;
+    border-radius: 999px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex: 0 0 40px !important;
+  }
+
+  :where(
+    .notifications-vnext-page,
+    .ai-drafts-vnext-page,
+    .activity-vnext-page
+  ) :where(
+    .notifications-row-icon,
+    .ai-drafts-row-icon,
+    .activity-row-icon,
+    .cf-severity-dot
+  ) svg {
+    width: 17px !important;
+    height: 17px !important;
+    stroke-width: 2.35 !important;
+    flex: 0 0 auto !important;
+  }
+
+  :where(
+    .notifications-stats-grid,
+    .ai-drafts-stats-grid,
+    .activity-stats-grid
+  ) :where(svg) {
+    width: 18px !important;
+    height: 18px !important;
+    stroke-width: 2.35 !important;
+  }
+
+  :where(
+    .ai-drafts-right-card,
+    .activity-right-card
+  ) :where(.ai-drafts-rail-button, .activity-rail-button) > strong {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 36px !important;
+    height: 24px !important;
+    padding: 0 0.76rem !important;
+    border-radius: 999px !important;
+    font-weight: 900 !important;
+    background: rgba(255,255,255,0.9) !important;
+    border: 1px solid rgba(100,116,139,0.22) !important;
+  }
+}
+
+@media (max-width: 860px) {
+  :where(
+    .notifications-filter-pill,
+    .ai-drafts-filter-pill,
+    .activity-filter-pill
+  ) > strong {
+    min-width: 30px !important;
+    height: 22px !important;
+    padding: 0 0.62rem !important;
+    border-radius: 999px !important;
+  }
+}
+/* /STAGE204_OPS_BADGES_AND_ICONS_STRETCH_LOCAL_ONLY */

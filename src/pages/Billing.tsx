@@ -56,6 +56,10 @@ import {
 import '../styles/visual-stage16-billing-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-billing-visual-taxonomy-stage181z.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 type BillingPeriod = 'monthly' | 'yearly';
 type BillingTab = 'plan' | 'settlements';
 type CheckoutPlanKey = 'basic' | 'pro' | 'ai';
@@ -411,6 +415,14 @@ export default function Billing() {
   const currentPlanId = getDisplayPlanId(workspace?.planId, workspace?.subscriptionStatus);
   const currentPlanName = getCurrentPlanName(currentPlanId, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive));
   const effectivePlan = BILLING_PLANS.find((plan) => isPlanCurrent(currentPlanId, plan, Boolean(access?.isPaidActive), Boolean(access?.isTrialActive))) || BILLING_PLANS.find((plan) => plan.key === 'pro')!;
+  const statusPlanToneKey =
+    currentPlanId.includes('closeflow_ai') || currentPlanId.includes('ai')
+      ? 'ai'
+      : currentPlanId.includes('closeflow_pro') || currentPlanId.includes('closeflow_business') || currentPlanId === 'pro'
+        ? 'pro'
+        : currentPlanId.includes('closeflow_basic')
+          ? 'basic'
+          : effectivePlan.key;
   const trialEndsAtLabel = safeDateLabel(workspace?.trialEndsAt);
   const nextBillingAtLabel = safeDateLabel(workspace?.nextBillingAt);
   const blockedState = !access?.hasAccess;
@@ -508,7 +520,7 @@ export default function Billing() {
         {tab === 'plan' ? (
           <div className="billing-shell">
             <section className="billing-main-column">
-              <section className={`billing-status-card billing-status-${accessCopy.tone}`}>
+              <section className={`billing-status-card billing-status-${accessCopy.tone} billing-status-plan-${statusPlanToneKey}`}>
                 <div className="billing-status-copy">
                   <span className="billing-status-icon">
                     {blockedState ? <LockKeyhole className="h-5 w-5" /> : <BadgeCheck className="h-5 w-5" />}
@@ -543,7 +555,6 @@ export default function Billing() {
               <section className="billing-period-card">
                 <div>
                   <h2>Wybierz okres dostępu</h2>
-                  <p>Płatność kartą lub BLIK przez Stripe. Aktywny plan pojawi się dopiero po webhooku Stripe. Roczny plan daje niższy koszt w skali roku.</p>
                 </div>
                 <div className="billing-period-switch" role="group" aria-label="Okres rozliczeniowy">
                   <button type="button" className={billingPeriod === 'monthly' ? 'billing-period-active' : ''} onClick={() => setBillingPeriod('monthly')}>
@@ -564,7 +575,7 @@ export default function Billing() {
                   const canCheckout = availability === 'available' && Boolean(plan.checkoutKey) && stripeReady;
 
                   return (
-                    <article key={plan.id} className={['billing-plan-card', availability === 'current' ? 'billing-plan-current' : ''].join(' ')}>
+                    <article key={plan.id} className={['billing-plan-card', availability === 'current' ? 'billing-plan-current' : ''].join(' ')} data-billing-plan-key={plan.key}>
                       <div className="billing-plan-head">
                         <div>
                           <span className="billing-plan-status">{getPlanStatusLabel(availability)}</span>
@@ -611,7 +622,7 @@ export default function Billing() {
 </section>
 
             <aside className="billing-right-rail" aria-label="Panel rozliczeń">
-              <section className="right-card billing-right-card">
+              <section className="right-card billing-right-card" data-billing-rail-card="status">
                 <div className="billing-right-title">
                   <Shield className="h-4 w-4" />
                   <h2>Status konta</h2>
@@ -639,7 +650,7 @@ export default function Billing() {
                 </div>
               </section>
 
-              <section className="right-card billing-right-card">
+              <section className="right-card billing-right-card" data-billing-rail-card="summary">
 
 <div className="billing-right-list">
                   <span>Plan: {currentPlanName}</span>
@@ -648,7 +659,7 @@ export default function Billing() {
                 </div>
               </section>
 
-              <section className="right-card billing-right-card billing-right-featured">
+              <section className="right-card billing-right-card billing-right-featured" data-billing-rail-card="popular">
                 <div className="billing-right-title">
                   <EntityIcon entity="ai" className="h-4 w-4" />
                   <h2>Najczęściej wybierany</h2>
@@ -660,7 +671,7 @@ export default function Billing() {
                 </button>
               </section>
 
-              <section className="right-card billing-right-card">
+              <section className="right-card billing-right-card" data-billing-rail-card="pro">
                 <div className="billing-right-title">
                   <BadgeCheck className="h-4 w-4" />
                   <h2>Co odblokuje Pro</h2>
@@ -672,7 +683,7 @@ export default function Billing() {
                 </div>
               </section>
 
-              <section className="right-card billing-right-card">
+              <section className="right-card billing-right-card" data-billing-rail-card="ai">
                 <div className="billing-right-title">
                   <EntityIcon entity="ai" className="h-4 w-4" />
                   <h2>AI jako dodatek Beta</h2>

@@ -1,4 +1,4 @@
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_TEMPORARY_OVERRIDES
+﻿/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_TEMPORARY_OVERRIDES
    owner: CloseFlow Visual System
    reason: collect stage-scoped UI overrides that are still needed but should not live in src/index.css.
    scope: temporary visual polish, mobile locks, sidebar alignment and staged page fixes.
@@ -24,7 +24,7 @@
    remove_after_stage: after sidebar component contract finalization.
 */
 @import '../eliteflow-sidebar-footer-contrast-repair.css';
-@import '../eliteflow-sidebar-user-footer-below-nav.css';
+/* STAGE200I disabled old fit-content sidebar import: @import '../eliteflow-sidebar-user-footer-below-nav.css'; */
 @import '../stageA19v2-sidebar-nav-contrast-fix.css';
 @import '../stageA20-sidebar-today-click-fix.css';
 @import '../stageA20c-sidebar-today-hitbox-fix.css';
@@ -52,3 +52,4 @@
 */
 @import '../stageA24-today-relations-label-align.css';
 @import '../stageA25-today-relations-lead-badge-inline.css';
+

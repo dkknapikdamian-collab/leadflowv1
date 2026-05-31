@@ -36,7 +36,10 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import WorkItemCard, { getWorkItemCardStatusTone } from '../components/work-item-card';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';
@@ -1407,7 +1410,7 @@ function TodayStable() {
 
   return (
     <Layout>
-      <main className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
+      <main className="cf-route-work-root flex w-full flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
         <section className="rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:p-5">
           <div className="cf-section-head flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <CloseFlowPageHeaderV2 pageKey="today" />

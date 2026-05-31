@@ -1,0 +1,304 @@
+﻿/* STAGE183_FOREST_NAVY_THEME_LOCAL_ONLY
+   Motyw nie jest losową zmianą kolorów.
+   Paleta:
+   - baza: ciemny granat / grafit,
+   - powierzchnie: chłodna ciemna zieleń,
+   - akcent: emerald,
+   - tekst: jasny, nie czysty biały,
+   - muted: szarozielony,
+   - alerty: osobne, kontrolowane kolory.
+*/
+
+html[data-skin="forest-navy"] {
+  --color-primary: #34d399;
+  --color-primary-foreground: #061411;
+
+  --app-bg: #071312;
+  --app-surface: #0b1b22;
+  --app-surface-strong: #0f2428;
+  --app-surface-muted: #15342f;
+  --app-border: #25483f;
+  --app-text: #eef8f2;
+  --app-muted: #9fb7ad;
+  --app-muted-soft: #789188;
+  --app-primary-chip-bg: rgba(52, 211, 153, 0.13);
+  --app-primary-chip-text: #7ee7b7;
+  --app-shadow-color: rgba(0, 0, 0, 0.34);
+
+  --cf-bg: #071312;
+  --cf-bg-2: #0a1820;
+  --cf-shell: #09191d;
+  --cf-surface: #0f2428;
+  --cf-surface-2: #122b2a;
+  --cf-surface-3: #173834;
+  --cf-border: #25483f;
+  --cf-border-strong: #356457;
+  --cf-text: #eef8f2;
+  --cf-text-strong: #ffffff;
+  --cf-muted: #9fb7ad;
+  --cf-muted-2: #789188;
+
+  --cf-primary: #34d399;
+  --cf-primary-hover: #10b981;
+  --cf-primary-dark: #047857;
+  --cf-primary-soft: rgba(52, 211, 153, 0.13);
+  --cf-primary-softer: rgba(52, 211, 153, 0.08);
+
+  --cf-navy: #0b1b2a;
+  --cf-navy-2: #10263a;
+  --cf-focus: rgba(52, 211, 153, 0.28);
+
+  --cf-blue: #60a5fa;
+  --cf-danger: #fb7185;
+  --cf-warning: #fbbf24;
+  --cf-success: #34d399;
+
+  color-scheme: dark;
+}
+
+/* Baza strony */
+html[data-skin="forest-navy"] body,
+html[data-skin="forest-navy"] #root {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(52, 211, 153, 0.11), transparent 30%),
+    radial-gradient(circle at 88% 8%, rgba(96, 165, 250, 0.08), transparent 34%),
+    linear-gradient(180deg, #0a1820 0%, #071312 100%) !important;
+  color: var(--cf-text) !important;
+}
+
+/* Główne widoki */
+html[data-skin="forest-navy"] :where(
+  main,
+  .settings-vnext-page,
+  .app-bg,
+  .min-h-screen,
+  .bg-slate-50,
+  .bg-slate-50\/30,
+  .bg-slate-50\/40,
+  .bg-slate-50\/50
+) {
+  background:
+    radial-gradient(circle at 10% 0%, rgba(52, 211, 153, 0.10), transparent 30%),
+    linear-gradient(180deg, #0a1820 0%, #071312 100%) !important;
+  color: var(--cf-text) !important;
+}
+
+/* Header ustawień i duże bloki */
+html[data-skin="forest-navy"] :where(
+  .settings-header,
+  .settings-summary-card,
+  .settings-section-card,
+  .settings-right-card,
+  .settings-loading-card,
+  .right-card,
+  .card,
+  .rounded-2xl,
+  .rounded-3xl
+) {
+  background:
+    linear-gradient(180deg, rgba(15, 36, 40, 0.96), rgba(11, 27, 34, 0.96)) !important;
+  border: 1px solid var(--cf-border) !important;
+  color: var(--cf-text) !important;
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.30) !important;
+}
+
+/* Kafelki zakładek ustawień.
+   Ważne: neutralne, bez kolorów kategorii. Aktywny stan ma emerald, nie tęczę.
+*/
+html[data-skin="forest-navy"] .settings-summary-grid > * {
+  background:
+    linear-gradient(180deg, rgba(18, 43, 42, 0.98), rgba(11, 27, 34, 0.98)) !important;
+  border-color: var(--cf-border) !important;
+  color: var(--cf-text) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22) !important;
+}
+
+html[data-skin="forest-navy"] .settings-summary-grid > *:hover,
+html[data-skin="forest-navy"] .settings-summary-grid > *[aria-selected="true"],
+html[data-skin="forest-navy"] .settings-summary-grid > *.active,
+html[data-skin="forest-navy"] .settings-summary-grid > *[data-state="active"] {
+  background:
+    linear-gradient(180deg, rgba(25, 66, 56, 0.98), rgba(13, 42, 37, 0.98)) !important;
+  border-color: var(--cf-primary) !important;
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.22),
+    0 14px 34px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Wewnętrzne boxy, formularze, preferencje */
+html[data-skin="forest-navy"] :where(
+  .settings-theme-card,
+  .settings-info-grid article,
+  .settings-toggle-row,
+  .settings-browser-box,
+  .settings-security-box,
+  .settings-inline-panel,
+  .settings-digest-panel,
+  .settings-diagnostics-box
+) {
+  background: rgba(15, 36, 40, 0.94) !important;
+  border-color: var(--cf-border) !important;
+  color: var(--cf-text) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Tekst główny */
+html[data-skin="forest-navy"] :where(
+  h1, h2, h3, h4,
+  strong,
+  .text-slate-950,
+  .text-slate-900,
+  .text-slate-800,
+  .text-slate-700,
+  .settings-header h1,
+  .settings-section-head h2,
+  .settings-right-card h2,
+  .settings-summary-card strong,
+  .settings-info-grid strong,
+  .settings-toggle-row strong,
+  .settings-browser-box strong,
+  .settings-security-box strong,
+  .settings-theme-card strong
+) {
+  color: var(--cf-text-strong) !important;
+}
+
+/* Tekst pomocniczy */
+html[data-skin="forest-navy"] :where(
+  p, small, span,
+  .text-slate-600,
+  .text-slate-500,
+  .text-slate-400,
+  .settings-header p,
+  .settings-section-head p,
+  .settings-right-card small,
+  .settings-theme-card span,
+  .settings-toggle-row span,
+  .settings-browser-box span,
+  .settings-security-box span,
+  .settings-inline-panel p
+) {
+  color: var(--cf-muted) !important;
+}
+
+/* Etykiety i akcenty */
+html[data-skin="forest-navy"] :where(
+  .settings-kicker,
+  .settings-section-head > div > span,
+  .settings-right-title,
+  .settings-right-title h2,
+  .text-blue-600,
+  .text-blue-700
+) {
+  color: var(--cf-primary) !important;
+}
+
+/* Formularze */
+html[data-skin="forest-navy"] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select
+) {
+  background: #0b1b22 !important;
+  border-color: var(--cf-border) !important;
+  color: var(--cf-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+html[data-skin="forest-navy"] :where(input, textarea)::placeholder {
+  color: var(--cf-muted-2) !important;
+}
+
+html[data-skin="forest-navy"] :where(input, textarea, select):focus {
+  border-color: var(--cf-primary) !important;
+  box-shadow: 0 0 0 3px var(--cf-focus) !important;
+}
+
+html[data-skin="forest-navy"] select option {
+  background: #0b1b22 !important;
+  color: var(--cf-text) !important;
+}
+
+html[data-skin="forest-navy"] input[type="checkbox"] {
+  accent-color: var(--cf-primary);
+}
+
+/* Przyciski */
+html[data-skin="forest-navy"] :where(button.bg-primary, .bg-primary) {
+  background: linear-gradient(180deg, var(--cf-primary), var(--cf-primary-hover)) !important;
+  border-color: var(--cf-primary-hover) !important;
+  color: #061411 !important;
+  box-shadow: 0 10px 24px rgba(52, 211, 153, 0.18) !important;
+}
+
+html[data-skin="forest-navy"] :where(button.bg-primary:hover, .bg-primary:hover) {
+  background: linear-gradient(180deg, #6ee7b7, var(--cf-primary-hover)) !important;
+}
+
+html[data-skin="forest-navy"] :where(button:not(.bg-primary):not(.settings-theme-card)) {
+  border-color: var(--cf-border) !important;
+}
+
+html[data-skin="forest-navy"] :where(button:not(.bg-primary):not(.settings-theme-card):hover) {
+  background: rgba(52, 211, 153, 0.10) !important;
+  border-color: var(--cf-primary) !important;
+  color: var(--cf-text-strong) !important;
+}
+
+/* Aktywny motyw w wyborze */
+html[data-skin="forest-navy"] .settings-theme-active {
+  background:
+    linear-gradient(180deg, rgba(52, 211, 153, 0.16), rgba(15, 36, 40, 0.96)) !important;
+  border-color: var(--cf-primary) !important;
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.28) !important;
+}
+
+html[data-skin="forest-navy"] .settings-theme-card:hover {
+  background: rgba(52, 211, 153, 0.10) !important;
+  border-color: var(--cf-primary) !important;
+}
+
+/* Pigułki/statusy */
+html[data-skin="forest-navy"] :where(
+  .settings-soft-pill,
+  .app-primary-chip,
+  .bg-blue-50,
+  .bg-emerald-50
+) {
+  background: var(--cf-primary-soft) !important;
+  color: var(--cf-primary) !important;
+  border-color: rgba(52, 211, 153, 0.30) !important;
+}
+
+/* Bordery i hover */
+html[data-skin="forest-navy"] :where(
+  .border-slate-100,
+  .border-slate-200,
+  .border-slate-300,
+  .app-border
+) {
+  border-color: var(--cf-border) !important;
+}
+
+html[data-skin="forest-navy"] :where(
+  .hover\:bg-slate-50:hover,
+  .hover\:bg-slate-100:hover,
+  .hover\:bg-white:hover
+) {
+  background-color: var(--cf-surface-3) !important;
+}
+
+/* Alerty zostają semantyczne, ale w jednej palecie. */
+html[data-skin="forest-navy"] :where(.text-red-600, .text-red-700) {
+  color: var(--cf-danger) !important;
+}
+
+html[data-skin="forest-navy"] :where(.text-amber-600, .text-yellow-600) {
+  color: var(--cf-warning) !important;
+}
+
+html[data-skin="forest-navy"] :where(.text-emerald-600, .text-green-600) {
+  color: var(--cf-success) !important;
+}
+
+/* /STAGE183_FOREST_NAVY_THEME_LOCAL_ONLY */

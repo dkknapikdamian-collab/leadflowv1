@@ -1,30 +1,27 @@
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3
-   owner: CloseFlow Visual System
-   reason: keep src/index.css as a readable cascade entrypoint, not a dump of stage, hotfix and legacy imports.
-   scope: import order only; no selector rewrite and no runtime page migration in VS-3.
-   remove_after_stage: never - this is the permanent import-order contract.
-*/
-
-/* 1. Tailwind/base */
-@import "tailwindcss";
-
-/* 2. Design system */
+﻿@import "tailwindcss";
+@import "./styles/closeflow-visual-foundation-stage212m.css";
 @import './styles/design-system/index.css';
-
-/* 3. Core contracts */
 @import './styles/core/core-contracts.css';
-
-/* 4. Page adapters */
 @import './styles/page-adapters/page-adapters.css';
-
-/* 5. Legacy imports */
 @import './styles/legacy/legacy-imports.css';
-
-/* 6. Temporary overrides */
 @import './styles/temporary/temporary-overrides.css';
-
-/* 7. Emergency hotfixes */
 @import './styles/emergency/emergency-hotfixes.css';
+/* STAGE212J_INDEX_IMPORT_ORDER_LOCK */
+/* STAGE212I_INDEX_CSS_IMPORT_ORDER_SOURCE_TRUTH */
+
+/* STAGE212H_CSS_IMPORT_ORDER_LOCK: @import rules intentionally start at line 1. Do not place comments before imports. */
+
+/* 2. Visual foundation source truth */
+
+/* 3. Design system */
+
+/* 4. Core contracts */
+
+/* 5. Page adapters */
+
+/* 6. Legacy imports */
+
+/* 7. Temporary overrides */
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -37,7 +34,7 @@
   [data-skin="forteca-light"] {
     --color-primary: #2563eb;
     --color-primary-foreground: #ffffff;
-    --app-bg: #f8fafc;
+    --app-bg: #f1f5f9;
     --app-surface: #f8fafc;
     --app-surface-strong: #ffffff;
     --app-surface-muted: #f1f5f9;
@@ -53,10 +50,10 @@
   [data-skin="forteca-dark"] {
     --color-primary: #60a5fa;
     --color-primary-foreground: #08111f;
-    --app-bg: #0f172a;
-    --app-surface: #111827;
-    --app-surface-strong: #1e293b;
-    --app-surface-muted: #334155;
+    --app-bg: #f1f5f9;
+    --app-surface: #f8fafc;
+    --app-surface-strong: #ffffff;
+    --app-surface-muted: #f1f5f9;
     --app-border: #475569;
     --app-text: #f8fafc;
     --app-muted: #e2e8f0;
@@ -69,10 +66,10 @@
   [data-skin="midnight"] {
     --color-primary: #22c55e;
     --color-primary-foreground: #04110a;
-    --app-bg: #020617;
-    --app-surface: #0f172a;
-    --app-surface-strong: #111827;
-    --app-surface-muted: #1f2937;
+    --app-bg: #f1f5f9;
+    --app-surface: #f8fafc;
+    --app-surface-strong: #ffffff;
+    --app-surface-muted: #f1f5f9;
     --app-border: #334155;
     --app-text: #f8fafc;
     --app-muted: #e2e8f0;
@@ -85,10 +82,10 @@
   [data-skin="sandstone"] {
     --color-primary: #d97706;
     --color-primary-foreground: #fffdf8;
-    --app-bg: #f8f5ef;
-    --app-surface: #f3ede2;
-    --app-surface-strong: #fffdf8;
-    --app-surface-muted: #e7dcc7;
+    --app-bg: #f1f5f9;
+    --app-surface: #f8fafc;
+    --app-surface-strong: #ffffff;
+    --app-surface-muted: #f1f5f9;
     --app-border: #c8b594;
     --app-text: #3f2f20;
     --app-muted: #6f5d49;
@@ -234,4 +231,6 @@ html[data-skin] select option {
   background-color: var(--app-surface-strong);
   color: var(--app-text);
 }
-@import "./styles/closeflow-mobile-start-tile-trim.css";
+
+/* STAGE212G: visual foundation is imported from closeflow-visual-foundation-stage212g.css */
+

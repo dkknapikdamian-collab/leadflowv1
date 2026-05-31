@@ -1,0 +1,88 @@
+/* CLOSEFLOW_STAGE134_SEARCH_SOURCE_TRUTH
+   Jedno źródło wizualne dla głównych wyszukiwarek w ekranach list.
+   Nie zmienia logiki filtrów ani danych.
+*/
+:root {
+  --cf-search-bg: #ffffff;
+  --cf-search-border: #e2e8f0;
+  --cf-search-border-focus: #93c5fd;
+  --cf-search-text: #0f172a;
+  --cf-search-muted: #64748b;
+  --cf-search-placeholder: #94a3b8;
+  --cf-search-shadow: 0 8px 18px rgba(15, 23, 42, 0.04);
+}
+
+.search[data-cf-main-search="true"],
+.search[data-leads-search="true"],
+.search[data-clients-search="true"],
+.cf-main-search {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  border: 1px solid var(--cf-search-border);
+  background: var(--cf-search-bg);
+  border-radius: 16px;
+  padding: 0 13px;
+  box-shadow: var(--cf-search-shadow);
+  color: var(--cf-search-muted);
+}
+
+.search[data-cf-main-search="true"] > span,
+.search[data-leads-search="true"] > span,
+.search[data-clients-search="true"] > span,
+.cf-main-search > span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  min-width: 18px;
+  color: var(--cf-search-muted);
+}
+
+.search[data-cf-main-search="true"] input,
+.search[data-leads-search="true"] input,
+.search[data-clients-search="true"] input,
+.cf-main-search input {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: var(--cf-search-text);
+  font-size: 14px;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+}
+
+.search[data-cf-main-search="true"] input::placeholder,
+.search[data-leads-search="true"] input::placeholder,
+.search[data-clients-search="true"] input::placeholder,
+.cf-main-search input::placeholder {
+  color: var(--cf-search-placeholder);
+  opacity: 1;
+  font-weight: 650;
+}
+
+.search[data-cf-main-search="true"]:focus-within,
+.search[data-leads-search="true"]:focus-within,
+.search[data-clients-search="true"]:focus-within,
+.cf-main-search:focus-within {
+  border-color: var(--cf-search-border-focus);
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.32), var(--cf-search-shadow);
+}
+
+/* Leads value card should follow the same neutral operator-card rhythm as Clients. */
+.lead-right-rail .operator-top-value-card[data-testid="leads-top-value-records-card"] {
+  border-color: #e2e8f0;
+  background: #ffffff;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.055);
+}
+
+.lead-right-rail .operator-top-value-card[data-testid="leads-top-value-records-card"] .pill.dark {
+  display: none;
+}

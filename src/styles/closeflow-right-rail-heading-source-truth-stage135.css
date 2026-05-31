@@ -1,0 +1,91 @@
+/* CLOSEFLOW_STAGE135_RIGHT_RAIL_HEADING_SOURCE_TRUTH
+   Jedno źródło prawdy dla napisów/nagłówków w kafelkach prawej kolumny.
+   Zakres z admin feedback 2026-05-22 21:59:
+   - /leads: Filtry proste, Najcenniejsze leady
+   - /clients: Filtry proste, Najcenniejsi klienci
+   - /cases: Operacyjne skróty, Blokery i ryzyko
+   - /activity: Szybkie filtry, Ostatnie zmiany w sprawach, Ostatnie zmiany w leadach
+*/
+:root {
+  --cf135-rail-heading-color: #0f172a;
+  --cf135-rail-description-color: #64748b;
+  --cf135-rail-heading-font-size: 14px;
+  --cf135-rail-heading-line-height: 18px;
+  --cf135-rail-heading-weight: 850;
+  --cf135-rail-description-font-size: 12px;
+  --cf135-rail-description-line-height: 16px;
+  --cf135-rail-description-weight: 600;
+  --cf135-rail-heading-gap: 4px;
+  --cf135-rail-heading-min-height: 38px;
+  --cf135-rail-heading-margin-bottom: 14px;
+}
+
+.cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: start;
+  justify-items: start;
+  gap: var(--cf135-rail-heading-gap);
+  min-height: var(--cf135-rail-heading-min-height);
+  margin: 0 0 var(--cf135-rail-heading-margin-bottom) 0 !important;
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+.cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) :where(h2,h3) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  min-height: var(--cf135-rail-heading-line-height);
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--cf135-rail-heading-color) !important;
+  font-size: var(--cf135-rail-heading-font-size) !important;
+  font-weight: var(--cf135-rail-heading-weight) !important;
+  line-height: var(--cf135-rail-heading-line-height) !important;
+  letter-spacing: -0.015em !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) :where(p,small) {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: var(--cf135-rail-description-color) !important;
+  font-size: var(--cf135-rail-description-font-size) !important;
+  font-weight: var(--cf135-rail-description-weight) !important;
+  line-height: var(--cf135-rail-description-line-height) !important;
+  letter-spacing: -0.01em !important;
+  font-family: inherit !important;
+  text-transform: none !important;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) {
+  color: var(--cf135-rail-heading-color);
+  font-size: var(--cf135-rail-heading-font-size);
+  font-weight: var(--cf135-rail-heading-weight);
+  line-height: var(--cf135-rail-heading-line-height);
+  letter-spacing: -0.015em;
+}
+
+.cf-html-shell :where([data-testid="leads-simple-filters-card"],[data-testid="leads-top-value-records-card"],[data-testid="clients-simple-filters-card"],[data-testid="clients-top-value-records-card"],.cases-shortcuts-rail-card,.cases-risk-rail-card,.activity-right-card) {
+  --cf135-active: 1;
+}
+
+.cf-html-shell .lead-right-rail .panel-head,
+.cf-html-shell .clients-right-rail .panel-head,
+.cf-html-shell .cases-right-rail .panel-head,
+.cf-html-shell .activity-right-rail .activity-right-card-head {
+  min-height: var(--cf135-rail-heading-min-height) !important;
+}
+
+:root {
+  --closeflow-stage135-right-rail-heading-source-truth: "active";
+}

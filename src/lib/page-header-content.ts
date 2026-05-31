@@ -28,7 +28,6 @@ export const PAGE_HEADER_CONTENT: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
     description: 'Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.',
   },
   leads: {
-    kicker: 'LISTA SPRZEDAŻOWA',
     title: 'Leady',
     description: 'Lista aktywnych tematów sprzedażowych. Tu zapisujesz kontakty, pilnujesz wartości i szybko widzisz, które leady wymagają ruchu.',
   },

@@ -1,0 +1,152 @@
+/* CLOSEFLOW_STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION
+
+   Purpose:
+   - Fix Stage173 visual leftovers:
+     1) cases search placeholder/text looked heavier than leads/clients,
+     2) some search bars had a visible double-surface/layer effect,
+     3) search bars in main sections should fill their working column up to the right rail / dark area,
+        not stop as a tiny pill.
+   - Keep Stage173 source-truth markers and make this a final override layer.
+
+   Source truth:
+   - .cf-main-search
+   - [data-cf-main-search-source="stage173"]
+*/
+
+:root {
+  --closeflow-stage174-main-search-surface-and-text-normalization: "active";
+  --cf174-main-search-height: 42px;
+  --cf174-main-search-radius: 14px;
+  --cf174-main-search-font-size: 13px;
+  --cf174-main-search-font-weight: 600;
+  --cf174-main-search-letter-spacing: 0;
+  --cf174-main-search-padding-x: 16px;
+  --cf174-main-search-bg: rgba(255, 255, 255, 0.96);
+  --cf174-main-search-border: rgba(148, 163, 184, 0.22);
+  --cf174-main-search-fg: #0f172a;
+  --cf174-main-search-placeholder: #64748b;
+  --cf174-main-search-shadow: 0 10px 24px rgba(15, 23, 42, 0.045);
+}
+
+/*
+  The wrapper must not draw a second card. Only the input is the visual surface.
+  This kills the ugly "two layers" effect.
+*/
+#root .cf-html-view .cf-main-search,
+#root .cf-html-view [data-cf-main-search-source="stage173"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: var(--cf174-main-search-height) !important;
+  min-height: var(--cf174-main-search-height) !important;
+  max-height: var(--cf174-main-search-height) !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: var(--cf174-main-search-radius) !important;
+  overflow: visible !important;
+}
+
+/*
+  Direct decorative icons/old symbols are not part of the source truth.
+  They previously collided with placeholder text.
+*/
+#root .cf-html-view .cf-main-search > span[aria-hidden="true"],
+#root .cf-html-view .cf-main-search > svg,
+#root .cf-html-view .cf-main-search > .search-icon,
+#root .cf-html-view [data-cf-main-search-source="stage173"] > span[aria-hidden="true"],
+#root .cf-html-view [data-cf-main-search-source="stage173"] > svg,
+#root .cf-html-view [data-cf-main-search-source="stage173"] > .search-icon {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+#root .cf-html-view .cf-main-search :is(input, [role="combobox"]),
+#root .cf-html-view [data-cf-main-search-source="stage173"] :is(input, [role="combobox"]) {
+  flex: 1 1 auto !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: var(--cf174-main-search-height) !important;
+  min-height: var(--cf174-main-search-height) !important;
+  max-height: var(--cf174-main-search-height) !important;
+  box-sizing: border-box !important;
+  padding: 0 var(--cf174-main-search-padding-x) !important;
+  margin: 0 !important;
+  border-radius: var(--cf174-main-search-radius) !important;
+  border: 1px solid var(--cf174-main-search-border) !important;
+  background: var(--cf174-main-search-bg) !important;
+  background-color: var(--cf174-main-search-bg) !important;
+  color: var(--cf174-main-search-fg) !important;
+  -webkit-text-fill-color: var(--cf174-main-search-fg) !important;
+  font-size: var(--cf174-main-search-font-size) !important;
+  font-weight: var(--cf174-main-search-font-weight) !important;
+  letter-spacing: var(--cf174-main-search-letter-spacing) !important;
+  line-height: 1.2 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  box-shadow: var(--cf174-main-search-shadow) !important;
+  outline: none !important;
+}
+
+#root .cf-html-view .cf-main-search :is(input, [role="combobox"])::placeholder,
+#root .cf-html-view [data-cf-main-search-source="stage173"] :is(input, [role="combobox"])::placeholder {
+  color: var(--cf174-main-search-placeholder) !important;
+  -webkit-text-fill-color: var(--cf174-main-search-placeholder) !important;
+  font-size: var(--cf174-main-search-font-size) !important;
+  font-weight: var(--cf174-main-search-font-weight) !important;
+  letter-spacing: var(--cf174-main-search-letter-spacing) !important;
+  opacity: 1 !important;
+}
+
+/*
+  In pages with layout-list, the search should occupy the left work stack all the way
+  to the right rail / grey boundary. This is the real "ends at dark grey start" behaviour.
+*/
+#root .cf-html-view .layout-list > .stack > .cf-main-search,
+#root .cf-html-view .layout-list > .stack > [data-cf-main-search-source="stage173"],
+#root .cf-html-view .stack > .cf-main-search,
+#root .cf-html-view .stack > [data-cf-main-search-source="stage173"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Suggestions follow the same width, with no separate misaligned surface. */
+#root .cf-html-view .cf-main-search + .suggestions,
+#root .cf-html-view [data-cf-main-search-source="stage173"] + .suggestions,
+#root .cf-html-view .cf-main-search + .lead-search-suggestions,
+#root .cf-html-view [data-cf-main-search-source="stage173"] + .lead-search-suggestions {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 6px 0 0 !important;
+}
+
+/* If the page has no right rail and the search is directly below metrics, cap it softly. */
+@media (min-width: 1280px) {
+  #root .cf-html-view > .cf-main-search,
+  #root .cf-html-view > [data-cf-main-search-source="stage173"] {
+    width: min(100%, 1120px) !important;
+    max-width: min(100%, 1120px) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --cf174-main-search-height: 40px;
+    --cf174-main-search-radius: 12px;
+    --cf174-main-search-font-size: 12px;
+    --cf174-main-search-padding-x: 14px;
+  }
+}

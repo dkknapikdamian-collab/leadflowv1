@@ -84,6 +84,7 @@ import {
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage12-client-detail-vnext.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
 import ContextActionButton from '../components/ContextActionButton';

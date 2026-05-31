@@ -1,0 +1,111 @@
+/* CLOSEFLOW_STAGE173_MAIN_SEARCH_SOURCE_TRUTH
+
+   Purpose:
+   - One visual source of truth for main-section search bars.
+   - Search bars must not stretch across the whole route when there is a right rail.
+   - Decorative search icons / old question-mark markers must not collide with placeholder text.
+   - Applies to main record/search sections, not modal relation pickers.
+
+   Owner decision:
+   - Search bar should end around the third metric card on desktop.
+   - Search icon can be visually removed.
+*/
+
+:root {
+  --closeflow-stage173-main-search-source-truth: "active";
+  --cf173-main-search-max-width: 1060px;
+  --cf173-main-search-height: 42px;
+  --cf173-main-search-radius: 14px;
+  --cf173-main-search-padding-x: 16px;
+  --cf173-main-search-border: rgba(148, 163, 184, 0.26);
+  --cf173-main-search-bg: rgba(255, 255, 255, 0.94);
+  --cf173-main-search-fg: #0f172a;
+  --cf173-main-search-placeholder: #64748b;
+}
+
+#root .cf-html-view .cf-main-search,
+#root .cf-html-view [data-cf-main-search-source="stage173"] {
+  width: min(100%, var(--cf173-main-search-max-width)) !important;
+  max-width: min(100%, var(--cf173-main-search-max-width)) !important;
+  min-width: 0 !important;
+  justify-self: start !important;
+  align-self: stretch !important;
+  position: relative !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 0 !important;
+  margin-right: auto !important;
+}
+
+/* Remove old decorative icons that collide with text. */
+#root .cf-html-view .cf-main-search > span[aria-hidden="true"],
+#root .cf-html-view .cf-main-search > svg,
+#root .cf-html-view [data-cf-main-search-source="stage173"] > span[aria-hidden="true"],
+#root .cf-html-view [data-cf-main-search-source="stage173"] > svg {
+  display: none !important;
+}
+
+/* One input rule for native input and shadcn Input inside main search bars. */
+#root .cf-html-view .cf-main-search :is(input, [role="combobox"]),
+#root .cf-html-view [data-cf-main-search-source="stage173"] :is(input, [role="combobox"]) {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: var(--cf173-main-search-height) !important;
+  min-height: var(--cf173-main-search-height) !important;
+  max-height: var(--cf173-main-search-height) !important;
+  box-sizing: border-box !important;
+  padding-left: var(--cf173-main-search-padding-x) !important;
+  padding-right: var(--cf173-main-search-padding-x) !important;
+  border-radius: var(--cf173-main-search-radius) !important;
+  border: 1px solid var(--cf173-main-search-border) !important;
+  background: var(--cf173-main-search-bg) !important;
+  background-color: var(--cf173-main-search-bg) !important;
+  color: var(--cf173-main-search-fg) !important;
+  -webkit-text-fill-color: var(--cf173-main-search-fg) !important;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.05) !important;
+  opacity: 1 !important;
+  outline: none !important;
+  text-shadow: none !important;
+}
+
+#root .cf-html-view .cf-main-search :is(input, [role="combobox"])::placeholder,
+#root .cf-html-view [data-cf-main-search-source="stage173"] :is(input, [role="combobox"])::placeholder {
+  color: var(--cf173-main-search-placeholder) !important;
+  -webkit-text-fill-color: var(--cf173-main-search-placeholder) !important;
+  opacity: 1 !important;
+}
+
+/* Search suggestions should inherit the same desktop width as the search bar. */
+#root .cf-html-view .cf-main-search + .suggestions,
+#root .cf-html-view [data-cf-main-search-source="stage173"] + .suggestions {
+  width: min(100%, var(--cf173-main-search-max-width)) !important;
+  max-width: min(100%, var(--cf173-main-search-max-width)) !important;
+  margin-right: auto !important;
+}
+
+@media (min-width: 1280px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html, .main-tasks-html, .main-templates-html) .cf-main-search,
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html, .main-tasks-html, .main-templates-html) [data-cf-main-search-source="stage173"] {
+    width: min(72vw, var(--cf173-main-search-max-width)) !important;
+    max-width: min(72vw, var(--cf173-main-search-max-width)) !important;
+  }
+}
+
+@media (max-width: 1100px) {
+  #root .cf-html-view .cf-main-search,
+  #root .cf-html-view [data-cf-main-search-source="stage173"],
+  #root .cf-html-view .cf-main-search + .suggestions,
+  #root .cf-html-view [data-cf-main-search-source="stage173"] + .suggestions {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --cf173-main-search-height: 40px;
+    --cf173-main-search-radius: 12px;
+    --cf173-main-search-padding-x: 14px;
+  }
+}

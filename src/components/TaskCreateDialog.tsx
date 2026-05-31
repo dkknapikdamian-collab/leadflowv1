@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useState } from 'react';
+import { type FormEvent, useEffect, useMemo, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from './ui/button';
@@ -11,12 +11,24 @@ import {
 } from './ui/dialog';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
+import { TopicContactPicker } from './topic-contact-picker';
 import { modalFooterClass } from './entity-actions';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { REMINDER_MODE_OPTIONS, REMINDER_OFFSET_OPTIONS, TASK_TYPES, PRIORITY_OPTIONS } from '../lib/options';
-import { insertTaskToSupabase } from '../lib/supabase-fallback';
+import {
+  fetchCasesFromSupabase,
+  fetchClientsFromSupabase,
+  fetchLeadsFromSupabase,
+  insertTaskToSupabase,
+} from '../lib/supabase-fallback';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  buildTopicContactOptions,
+  findTopicContactOption,
+  resolveTopicContactLink,
+  type TopicContactOption,
+} from '../lib/topic-contact';
 import '../styles/visual-stage22-event-form-vnext.css';
 
 type TaskCreateFormState = {
@@ -27,6 +39,10 @@ type TaskCreateFormState = {
   status: string;
   reminderMode: string;
   reminderOffsetMinutes: number;
+  relationQuery: string;
+  leadId: string;
+  caseId: string;
+  clientId: string;
 };
 
 export type TaskCreateDialogContext = {
@@ -58,6 +74,10 @@ function defaultTaskCreateForm(context?: TaskCreateDialogContext): TaskCreateFor
     status: 'todo',
     reminderMode: 'none',
     reminderOffsetMinutes: 15,
+    relationQuery: context?.recordLabel || '',
+    leadId: context?.leadId || '',
+    caseId: context?.caseId || '',
+    clientId: context?.clientId || '',
   };
 }
 
@@ -72,10 +92,58 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [form, setForm] = useState<TaskCreateFormState>(() => defaultTaskCreateForm(context));
   const [saving, setSaving] = useState(false);
+  const [topicContactOptions, setTopicContactOptions] = useState<TopicContactOption[]>([]);
 
   useEffect(() => {
     if (open) setForm(defaultTaskCreateForm(context));
-  }, [open, context?.recordType, context?.recordId, context?.recordLabel]);
+  }, [open, context?.recordType, context?.recordId, context?.recordLabel, context?.leadId, context?.caseId, context?.clientId]);
+
+  useEffect(() => {
+    if (!open) return;
+    let cancelled = false;
+
+    Promise.all([
+      fetchLeadsFromSupabase(),
+      fetchCasesFromSupabase(),
+      fetchClientsFromSupabase(),
+    ])
+      .then(([leads, cases, clients]) => {
+        if (cancelled) return;
+        setTopicContactOptions(buildTopicContactOptions({
+          leads: Array.isArray(leads) ? leads as any[] : [],
+          cases: Array.isArray(cases) ? cases as any[] : [],
+          clients: Array.isArray(clients) ? clients as any[] : [],
+        }));
+      })
+      .catch((error) => {
+        console.warn('TASK_CREATE_DIALOG_STAGE170_RELATION_OPTIONS_FAILED', error);
+        if (!cancelled) setTopicContactOptions([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
+
+  const selectedTaskRelationOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, {
+      leadId: form.leadId || context?.leadId || null,
+      caseId: form.caseId || context?.caseId || null,
+      clientId: form.clientId || context?.clientId || null,
+    }),
+    [topicContactOptions, form.leadId, form.caseId, form.clientId, context?.leadId, context?.caseId, context?.clientId],
+  );
+
+  const handleSelectTaskRelation = (option: TopicContactOption | null) => {
+    const relation = resolveTopicContactLink(option);
+    setForm((prev) => ({
+      ...prev,
+      relationQuery: option?.label || '',
+      leadId: relation.leadId || '',
+      caseId: relation.caseId || '',
+      clientId: relation.clientId || '',
+    }));
+  };
 
   const closeDialog = () => {
     if (saving) return;
@@ -93,6 +161,8 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
 
     setSaving(true);
     try {
+      const relation = resolveTopicContactLink(selectedTaskRelationOption);
+
       await insertTaskToSupabase({
         title: form.title.trim(),
         type: form.type || 'follow_up',
@@ -103,9 +173,9 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
         status: form.status || 'todo',
         reminderAt: calculateReminderAt(form.dueAt, form.reminderMode, form.reminderOffsetMinutes),
         recurrenceRule: form.reminderMode === 'recurring' ? 'FREQ=DAILY' : undefined,
-        leadId: context?.leadId || undefined,
-        caseId: context?.caseId || undefined,
-        clientId: context?.clientId || undefined,
+        leadId: relation.leadId || form.leadId || context?.leadId || undefined,
+        caseId: relation.caseId || form.caseId || context?.caseId || undefined,
+        clientId: relation.clientId || form.clientId || context?.clientId || undefined,
         workspaceId,
       });
       toast.success('Zadanie dodane');
@@ -127,6 +197,7 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
         data-calendar-entry-form-mode="quick-task"
         data-task-create-dialog-stage45m="true"
         data-task-create-dialog-stage105="event-form-vnext"
+        data-task-create-dialog-stage170="true"
         data-event-form-stage22="true"
       >
         <DialogHeader>
@@ -143,10 +214,22 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
           data-calendar-entry-form-source={TASK_CREATE_DIALOG_STAGE105_FORM_SOURCE}
           data-calendar-entry-form-mode="quick-task"
           data-task-create-dialog-stage105="event-form-vnext"
+          data-task-create-dialog-stage170="true"
         >
           <div className="event-form-field">
             <Label>Tytuł</Label>
             <Input value={form.title} onChange={(event) => setForm((prev) => ({ ...prev, title: event.target.value }))} placeholder="Co trzeba zrobić?" />
+          </div>
+          <div data-task-create-dialog-relation-picker="true">
+            <TopicContactPicker
+              options={topicContactOptions}
+              selectedOption={selectedTaskRelationOption}
+              query={form.relationQuery}
+              onQueryChange={(value) => setForm((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '', clientId: '' }))}
+              onSelect={handleSelectTaskRelation}
+              label="Powiąż z leadem, klientem albo sprawą"
+              placeholder="Wpisz lead, klienta, sprawę, e-mail lub telefon"
+            />
           </div>
           <div className="event-form-grid event-form-grid-2">
             <div className="event-form-field">

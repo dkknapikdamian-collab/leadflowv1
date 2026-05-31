@@ -1,0 +1,252 @@
+/* CLOSEFLOW_STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE
+   Problem after Stage163:
+   - horizontal center is acceptable;
+   - modal is still vertically cut;
+   - event modal needs vertical room without pushing the header out of viewport;
+   - task modal has a black/dark surface, not matching the light app direction.
+
+   Decision:
+   - stop vertical centering for .cf-modal-surface;
+   - use deterministic top anchoring below browser/app chrome;
+   - keep the Stage163 work-area horizontal center;
+   - make modal surface light and Vercel-like for every cf-modal-surface;
+   - keep form body scroll-safe and footer non-covering.
+*/
+
+:root {
+  --closeflow-stage164-cf-modal-top-anchor-light-surface: "active";
+
+  /* Horizontal source truth inherited from Stage163 direction. */
+  --cf164-modal-visual-width: 560px;
+  --cf164-modal-visual-max-width: calc(100vw - 96px);
+  --cf164-modal-main-center-shift-x: clamp(72px, 6.5vw, 118px);
+
+  /* Vertical source truth: top-anchored, not center-anchored. */
+  --cf164-modal-top-offset: 86px;
+  --cf164-modal-bottom-safe: 54px;
+  --cf164-modal-visual-max-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
+
+  /* Event gets the tallest safe envelope, but starts from the same top line. */
+  --cf164-event-visual-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
+
+  /* Convert visual target into logical values under Stage157 app zoom. */
+  --cf164-modal-logical-width: calc(var(--cf164-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf164-modal-logical-max-width: calc(var(--cf164-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf164-modal-logical-max-height: calc(var(--cf164-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf164-event-logical-height: calc(var(--cf164-event-visual-height) * var(--cf157-page-zoom-inverse, 1.25));
+
+  --cf164-modal-logical-center-x: calc((50vw + var(--cf164-modal-main-center-shift-x)) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf164-modal-logical-top: calc(var(--cf164-modal-top-offset) * var(--cf157-page-zoom-inverse, 1.25));
+
+  --cf164-radius: 16px;
+  --cf164-section-pad-y: 10px;
+  --cf164-section-pad-x: 14px;
+  --cf164-gap: 7px;
+
+  --cf164-font-title: 16px;
+  --cf164-font-body: 11.5px;
+  --cf164-font-label: 10.5px;
+  --cf164-font-small: 9.75px;
+
+  --cf164-control-height: 27px;
+  --cf164-control-pad-x: 9px;
+  --cf164-textarea-min: 46px;
+  --cf164-textarea-max: 72px;
+  --cf164-footer-min-height: 42px;
+  --cf164-footer-safe-space: 46px;
+
+  /* Light modal source truth. */
+  --cf164-modal-bg: #ffffff;
+  --cf164-modal-fg: #111827;
+  --cf164-modal-muted: #64748b;
+  --cf164-modal-soft: #f8fafc;
+  --cf164-modal-soft-2: #f1f5f9;
+  --cf164-modal-border: #dbe4ef;
+  --cf164-modal-strong-border: #cbd5e1;
+  --cf164-modal-input-bg: #ffffff;
+  --cf164-modal-input-fg: #111827;
+  --cf164-modal-input-placeholder: #94a3b8;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body .cf-modal-surface[role="dialog"],
+  body [role="dialog"].cf-modal-surface {
+    left: var(--cf164-modal-logical-center-x) !important;
+    top: var(--cf164-modal-logical-top) !important;
+    right: auto !important;
+    bottom: auto !important;
+
+    width: min(var(--cf164-modal-logical-width), var(--cf164-modal-logical-max-width)) !important;
+    max-width: min(var(--cf164-modal-logical-width), var(--cf164-modal-logical-max-width)) !important;
+    max-height: var(--cf164-modal-logical-max-height) !important;
+
+    /* Stage164 intentionally removes vertical translate to prevent top clipping. */
+    transform: translateX(-50%) !important;
+    transform-origin: top center !important;
+
+    border-radius: var(--cf164-radius) !important;
+    background: var(--cf164-modal-bg) !important;
+    color: var(--cf164-modal-fg) !important;
+    border: 1px solid var(--cf164-modal-border) !important;
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.22) !important;
+
+    font-size: var(--cf164-font-body) !important;
+    line-height: 1.14 !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  body .cf-modal-surface[role="dialog"]:has(.event-form-vnext),
+  body [role="dialog"].cf-modal-surface:has(.event-form-vnext) {
+    height: min(var(--cf164-event-logical-height), var(--cf164-modal-logical-max-height)) !important;
+    max-height: min(var(--cf164-event-logical-height), var(--cf164-modal-logical-max-height)) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] .cf-modal-header,
+  body [role="dialog"].cf-modal-surface .cf-modal-header {
+    flex: 0 0 auto !important;
+    padding-bottom: 6px !important;
+    background: var(--cf164-modal-bg) !important;
+    color: var(--cf164-modal-fg) !important;
+    border-bottom: 1px solid var(--cf164-modal-border) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(h1,h2,h3,.cf-modal-title,.dialog-title,.modal-title,[data-radix-dialog-title]),
+  body [role="dialog"].cf-modal-surface :is(h1,h2,h3,.cf-modal-title,.dialog-title,.modal-title,[data-radix-dialog-title]) {
+    font-size: var(--cf164-font-title) !important;
+    line-height: 1.05 !important;
+    margin: 0 !important;
+    color: var(--cf164-modal-fg) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(p,small,.cf-modal-description,.description,.caption,[data-radix-dialog-description]),
+  body [role="dialog"].cf-modal-surface :is(p,small,.cf-modal-description,.description,.caption,[data-radix-dialog-description]) {
+    font-size: var(--cf164-font-small) !important;
+    line-height: 1.12 !important;
+    color: var(--cf164-modal-muted) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(form,.event-form-vnext),
+  body [role="dialog"].cf-modal-surface :is(form,.event-form-vnext) {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--cf164-gap) !important;
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable !important;
+    background: var(--cf164-modal-bg) !important;
+    color: var(--cf164-modal-fg) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] .event-form-vnext,
+  body [role="dialog"].cf-modal-surface .event-form-vnext {
+    padding-bottom: var(--cf164-footer-safe-space) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(section,article,fieldset,.rounded-2xl,.card,.panel-card,.section-card,.form-card),
+  body [role="dialog"].cf-modal-surface :is(section,article,fieldset,.rounded-2xl,.card,.panel-card,.section-card,.form-card) {
+    padding: var(--cf164-section-pad-y) var(--cf164-section-pad-x) !important;
+    gap: var(--cf164-gap) !important;
+    border-radius: calc(var(--cf164-radius) - 4px) !important;
+    box-sizing: border-box !important;
+    background: var(--cf164-modal-soft) !important;
+    color: var(--cf164-modal-fg) !important;
+    border-color: var(--cf164-modal-border) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.space-y-4,.space-y-3,.space-y-2,.grid,.event-form-field),
+  body [role="dialog"].cf-modal-surface :is(.space-y-4,.space-y-3,.space-y-2,.grid,.event-form-field) {
+    gap: var(--cf164-gap) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(label,.label,.font-medium,.font-semibold,.font-bold),
+  body [role="dialog"].cf-modal-surface :is(label,.label,.font-medium,.font-semibold,.font-bold) {
+    font-size: var(--cf164-font-label) !important;
+    line-height: 1.08 !important;
+    margin-bottom: 2px !important;
+    color: var(--cf164-modal-fg) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.text-white,.text-slate-50,.text-slate-100,.text-slate-200,.text-slate-300,.text-slate-400,.text-gray-300,.text-gray-400),
+  body [role="dialog"].cf-modal-surface :is(.text-white,.text-slate-50,.text-slate-100,.text-slate-200,.text-slate-300,.text-slate-400,.text-gray-300,.text-gray-400) {
+    color: var(--cf164-modal-muted) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(input,select,textarea),
+  body [role="dialog"].cf-modal-surface :is(input,select,textarea) {
+    background: var(--cf164-modal-input-bg) !important;
+    color: var(--cf164-modal-input-fg) !important;
+    border-color: var(--cf164-modal-strong-border) !important;
+    box-shadow: none !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(input,select,button,.btn,[role="button"]),
+  body [role="dialog"].cf-modal-surface :is(input,select,button,.btn,[role="button"]) {
+    min-height: var(--cf164-control-height) !important;
+    height: auto !important;
+    padding-left: var(--cf164-control-pad-x) !important;
+    padding-right: var(--cf164-control-pad-x) !important;
+    border-radius: 9px !important;
+    font-size: var(--cf164-font-body) !important;
+    line-height: 1.08 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(input, textarea)::placeholder,
+  body [role="dialog"].cf-modal-surface :is(input, textarea)::placeholder {
+    color: var(--cf164-modal-input-placeholder) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] textarea,
+  body [role="dialog"].cf-modal-surface textarea {
+    min-height: var(--cf164-textarea-min) !important;
+    max-height: var(--cf164-textarea-max) !important;
+    padding: 6px 8px !important;
+    border-radius: 9px !important;
+    font-size: var(--cf164-font-body) !important;
+    line-height: 1.12 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.cf-modal-footer,.event-form-footer,.dialog-footer,.modal-footer,footer),
+  body [role="dialog"].cf-modal-surface :is(.cf-modal-footer,.event-form-footer,.dialog-footer,.modal-footer,footer),
+  body .cf-modal-surface[role="dialog"] form > :is(div,section,footer):has(button[type="submit"]),
+  body [role="dialog"].cf-modal-surface form > :is(div,section,footer):has(button[type="submit"]) {
+    min-height: var(--cf164-footer-min-height) !important;
+    padding: 6px 0 0 !important;
+    margin-top: auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+    background: var(--cf164-modal-bg) !important;
+    color: var(--cf164-modal-fg) !important;
+    border-top: 1px solid var(--cf164-modal-border) !important;
+    box-sizing: border-box !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(button[aria-label="Close"],button[aria-label="Zamknij"],.dialog-close,[data-radix-dialog-close]),
+  body [role="dialog"].cf-modal-surface :is(button[aria-label="Close"],button[aria-label="Zamknij"],.dialog-close,[data-radix-dialog-close]) {
+    top: 8px !important;
+    right: 8px !important;
+    min-width: 25px !important;
+    width: 25px !important;
+    height: 25px !important;
+    min-height: 25px !important;
+    padding: 0 !important;
+    border-radius: 999px !important;
+    background: var(--cf164-modal-soft-2) !important;
+    color: var(--cf164-modal-fg) !important;
+    border: 1px solid var(--cf164-modal-border) !important;
+  }
+}
+
+/*
+  Source-truth tuning:
+  - further down: --cf164-modal-top-offset 94px / 102px
+  - less down: --cf164-modal-top-offset 72px
+  - narrower/wider: --cf164-modal-visual-width
+  - event height: --cf164-event-visual-height
+*/

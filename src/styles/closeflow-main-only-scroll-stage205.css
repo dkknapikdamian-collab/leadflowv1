@@ -1,0 +1,123 @@
+﻿/* STAGE205_MAIN_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY
+   Problem:
+   - Stage203 przeniósł scroll na body/html.
+   - W efekcie scrollował się cały ekran razem z aplikacją.
+   Cel:
+   - scroll tylko w prawym panelu treści od sidebara,
+   - sidebar i shell zostają w miejscu,
+   - skala Stage201 75% zostaje,
+   - bez cofania sidebara, bez zmian logiki.
+*/
+
+@media (min-width: 861px) {
+  html,
+  body {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #root {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    background: #f3f6fb !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    width: calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-width: calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+
+    transform: scale(var(--cf-stage201-app-scale, 0.75)) !important;
+    transform-origin: top left !important;
+
+    overflow: hidden !important;
+    align-items: stretch !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-sidebar="true"].sidebar {
+    position: relative !important;
+    top: auto !important;
+    align-self: stretch !important;
+
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+
+    overflow: hidden !important;
+    flex: 0 0 var(--cf-sidebar-width, 240px) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .nav-scroll {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"] {
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: stable !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell .view.active,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view {
+    padding-bottom: calc(160px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .main-calendar-html,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-page,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .notifications-vnext-page,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .ai-drafts-vnext-page {
+    min-height: max-content !important;
+    overflow: visible !important;
+    padding-bottom: calc(180px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+}
+
+@media (max-width: 860px) {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    transform: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+/* /STAGE205_MAIN_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY */

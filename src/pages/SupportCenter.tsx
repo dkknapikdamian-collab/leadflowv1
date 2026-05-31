@@ -1,5 +1,5 @@
 import { type FormEvent, useCallback, useEffect, useMemo, useState } from 'react';
-import { AlertTriangle, Archive, Calendar, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Wrench } from 'lucide-react';
+import { AlertTriangle, Archive, CheckCircle2, Clock3, HelpCircle, LifeBuoy, Lightbulb, Loader2, Mail, MessageSquare, Search, Send, ShieldCheck, Sparkles, Wrench } from 'lucide-react';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
@@ -16,38 +16,17 @@ import {
 import '../styles/visual-stage17-support-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
-function formatSupportStatus(status: unknown) {
-  const value = String(status || '').toLowerCase();
-  if (value === 'open' || value === 'new') return 'Nowe';
-  if (value === 'in_progress' || value === 'pending') return 'W trakcie';
-  if (value === 'answered' || value === 'resolved') return 'Odpowiedziane';
-  if (value === 'closed') return 'Zamknięte';
-  return 'Status nieznany';
-}
-
-function formatSupportTicketDate(value: unknown) {
-  if (!value) return 'Brak daty';
-  const date = new Date(String(value));
-  if (Number.isNaN(date.getTime())) return String(value);
-  return new Intl.DateTimeFormat('pl-PL', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
-}
-
-function asSupportTicketList(value: unknown): any[] {
-  return Array.isArray(value) ? value : [];
-}
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 
 type TicketKind = 'suggestion' | 'problem' | 'support';
+type TicketKindFilter = 'all' | TicketKind;
 type TicketStatus = 'new' | 'in_progress' | 'answered' | 'closed';
 type TicketReply = { id?: string; authorType?: string; authorLabel?: string; message?: string; createdAt?: any };
 type TicketRow = {
   id: string;
-  kind: TicketKind;
+  kind: TicketKind | string;
   subject: string;
   message: string;
   status?: string;
@@ -59,26 +38,59 @@ type TicketRow = {
   replies?: TicketReply[];
 };
 
+type SupportKindOption = {
+  id: TicketKind;
+  label: string;
+  shortLabel: string;
+  helper: string;
+  subjectPlaceholder: string;
+  messagePlaceholder: string;
+  Icon: any;
+};
+
+type SuggestedTicket = {
+  kind: TicketKind;
+  title: string;
+  message: string;
+  Icon: any;
+};
+
 const SUPPORT_VISUAL_REBUILD_STAGE17 = 'SUPPORT_VISUAL_REBUILD_STAGE17';
 const CLOSEFLOW_FB1_SUPPORT_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
+const SUPPORT_RIGHT_RAIL_REMOVED_STAGE180H = 'support right rail removed from visible support page';
+void SUPPORT_RIGHT_RAIL_REMOVED_STAGE180H;
+const SUPPORT_REQUESTS_OPERATIONAL_PAGE_STAGE180 = 'SUPPORT_REQUESTS_OPERATIONAL_PAGE_STAGE180';
+const SUPPORT_REQUESTS_VISIBLE_COPY_FIX_STAGE180E = 'SUPPORT_REQUESTS_VISIBLE_COPY_FIX_STAGE180E';
+const SUPPORT_REQUESTS_SIDEBAR_HEADER_COPY_FIX_STAGE180F = 'SUPPORT_REQUESTS_SIDEBAR_HEADER_COPY_FIX_STAGE180F';
+const SUPPORT_REQUESTS_POLISH_COPY_GUARD_STAGE180B = 'SUPPORT_REQUESTS_POLISH_COPY_GUARD_STAGE180B';
+void CLOSEFLOW_FB1_SUPPORT_COPY_NOISE_CLEANUP;
 
-const KIND_OPTIONS: Array<{ id: TicketKind; label: string; helper: string; Icon: any }> = [
-  {
-    id: 'suggestion',
-    label: 'Sugestia',
-    helper: 'Pomysł na ulepszenie, skrócenie ścieżki albo czytelniejszy widok.',
-    Icon: Lightbulb,
-  },
+const KIND_OPTIONS: SupportKindOption[] = [
   {
     id: 'problem',
-    label: 'Problem',
-    helper: 'Błąd działania, duplikaty, brak synchronizacji albo coś uszkodzonego.',
+    label: 'Problem z aplikacją',
+    shortLabel: 'Problem',
+    helper: 'Coś nie działa, nie zapisuje się, znika, blokuje pracę albo wygląda na błąd.',
+    subjectPlaceholder: 'Np. Nie mogę wejść w szczegóły sprawy klienta',
+    messagePlaceholder: 'Napisz, gdzie byłeś, co kliknąłeś, co powinno się stać i co stało się naprawdę.',
     Icon: AlertTriangle,
   },
   {
+    id: 'suggestion',
+    label: 'Sugestia poprawki',
+    shortLabel: 'Sugestia',
+    helper: 'Pomysł na zmianę widoku, skrót, automatyzację albo uproszczenie pracy.',
+    subjectPlaceholder: 'Np. Przydałby się szybszy skrót do spraw',
+    messagePlaceholder: 'Opisz zmianę, po co jest potrzebna i w którym miejscu aplikacji ma pomóc.',
+    Icon: Lightbulb,
+  },
+  {
     id: 'support',
-    label: 'Pytanie',
-    helper: 'Pytanie jak czegoś użyć albo prośba o pomoc w obsłudze.',
+    label: 'Pytanie / pomoc',
+    shortLabel: 'Pytanie',
+    helper: 'Pytanie jak czegoś użyć albo prośba o wyjaśnienie działania aplikacji.',
+    subjectPlaceholder: 'Np. Jak najlepiej prowadzić sprawę po leadzie?',
+    messagePlaceholder: 'Opisz, czego nie jesteś pewien i jaki efekt chcesz uzyskać.',
     Icon: LifeBuoy,
   },
 ];
@@ -91,57 +103,76 @@ const STATUS_OPTIONS: Array<{ id: 'all' | TicketStatus; label: string; Icon: any
   { id: 'closed', label: 'Zamknięte', Icon: Archive },
 ];
 
-const FAQ_ITEMS = [
+const SUGGESTED_TICKETS: SuggestedTicket[] = [
   {
-    question: 'Jak dodać leada?',
-    answer: 'Wejdź w Leady i użyj dodawania nowego kontaktu. Potem ustaw zadanie albo wydarzenie, żeby lead nie zniknął z radarów.',
+    kind: 'problem',
+    title: '',
+    message: 'Opisz nazwę widoku, przycisk, kroki przed błędem i komunikat z ekranu albo konsoli.',
+    Icon: Wrench,
   },
   {
-    question: 'Jak działają zadania?',
-    answer: 'Zadania są konkretnymi ruchami do wykonania. Powiąż je z leadem, klientem albo sprawą i pilnuj ich z widoku Dziś.',
+    kind: 'problem',
+    title: '',
+    message: 'Napisz, który widok był pusty, czy pomaga przejście do innej zakładki i czy problem wraca po F5.',
+    Icon: AlertTriangle,
   },
   {
-    question: 'Jak działa kalendarz?',
-    answer: 'Kalendarz pokazuje wydarzenia i terminy. W tym etapie nie obiecujemy synchronizacji Google Calendar, jeśli nie jest jeszcze podpięta.',
+    kind: 'suggestion',
+    title: '',
+    message: 'Opisz, co spowalnia pracę, jak powinien wyglądać docelowy ruch i jaki problem ma zniknąć.',
+    Icon: Sparkles,
   },
   {
-    question: 'Jak działa trial?',
-    answer: 'Trial pozwala sprawdzić aplikację. Po wygaśnięciu dane zostają, ale dodawanie nowych rekordów może wymagać aktywnego planu.',
-  },
-  {
-    question: 'Co zrobić, gdy coś nie działa?',
-    answer: 'Zapisz zgłoszenie z opisem miejsca, kroków i oczekiwanego efektu. Najlepiej dopisz, czy problem był na telefonie czy komputerze.',
+    kind: 'support',
+    title: '',
+    message: 'Napisz, jaki efekt chcesz uzyskać. Support odpowie instrukcją albo dopisze brak w aplikacji.',
+    Icon: HelpCircle,
   },
 ];
+
+const FAQ_ITEMS: Array<{ question: string; answer: string }> = [];
 
 function normalizeText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
 
+function safeDateFromUnknown(value: any) {
+  if (!value) return null;
+  if (value?.toDate) return value.toDate();
+  if (typeof value?.seconds === 'number') return new Date(value.seconds * 1000);
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? null : parsed;
+}
+
 function formatCreatedAt(value: any) {
-  if (!value) return 'Przed chwilą';
-  try {
-    if (value?.toDate) return value.toDate().toLocaleString('pl-PL');
-    if (typeof value?.seconds === 'number') return new Date(value.seconds * 1000).toLocaleString('pl-PL');
-    return new Date(value).toLocaleString('pl-PL');
-  } catch {
-    return 'Przed chwilą';
-  }
+  const date = safeDateFromUnknown(value);
+  return date ? date.toLocaleString('pl-PL') : 'Przed chwilą';
+}
+
+function formatSupportStatus(status: unknown) {
+  const value = String(status || '').toLowerCase();
+  if (value === 'open' || value === 'new') return 'Nowe';
+  if (value === 'in_progress' || value === 'pending') return 'W trakcie';
+  if (value === 'answered' || value === 'resolved') return 'Odpowiedziane';
+  if (value === 'closed') return 'Zamknięte';
+  return 'Status nieznany';
 }
 
 function getTicketTimestamp(ticket: TicketRow) {
-  const updated = ticket.updatedAt ? new Date(ticket.updatedAt).getTime() : 0;
-  const created = ticket.createdAt ? new Date(ticket.createdAt).getTime() : 0;
-  return Number.isFinite(updated) && updated > 0 ? updated : created;
+  const updated = safeDateFromUnknown(ticket.updatedAt)?.getTime() || 0;
+  const created = safeDateFromUnknown(ticket.createdAt)?.getTime() || 0;
+  return updated > 0 ? updated : created;
 }
 
 function statusLabel(status?: string) {
   switch ((status || 'new').toLowerCase()) {
     case 'answered':
+    case 'resolved':
       return 'Odpowiedziano';
     case 'closed':
       return 'Zamknięte';
     case 'in_progress':
+    case 'pending':
       return 'W trakcie';
     default:
       return 'Nowe';
@@ -151,18 +182,24 @@ function statusLabel(status?: string) {
 function statusToneClass(status?: string) {
   switch ((status || 'new').toLowerCase()) {
     case 'answered':
+    case 'resolved':
       return 'support-status-green';
     case 'closed':
       return 'support-status-muted';
     case 'in_progress':
+    case 'pending':
       return 'support-status-blue';
     default:
       return 'support-status-amber';
   }
 }
 
+function kindOption(kind?: string) {
+  return KIND_OPTIONS.find((entry) => entry.id === kind) || KIND_OPTIONS[2];
+}
+
 function kindLabel(kind?: string) {
-  return KIND_OPTIONS.find((entry) => entry.id === kind)?.label || 'Zgłoszenie';
+  return kindOption(kind).shortLabel;
 }
 
 function renderReplyLabel(reply: TicketReply) {
@@ -184,7 +221,8 @@ export default function SupportCenter() {
   const userId = auth.currentUser?.uid || '';
   const userEmail = auth.currentUser?.email || '';
 
-  const [kind, setKind] = useState<TicketKind>('support');
+  const [composeKind, setComposeKind] = useState<TicketKind>('problem');
+  const [kindFilter, setKindFilter] = useState<TicketKindFilter>('all');
   const [statusFilter, setStatusFilter] = useState<'all' | TicketStatus>('all');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
@@ -215,7 +253,7 @@ export default function SupportCenter() {
       setTickets(normalized.slice().sort((a, b) => getTicketTimestamp(b) - getTicketTimestamp(a)));
     } catch (error: any) {
       console.error('SUPPORT_REQUESTS_LOAD_FAILED', error);
-      toast.error('Nie udało się wczytać zgłoszeń pomocy.');
+      toast.error('Nie udało się wczytać zgłoszeń.');
     } finally {
       setLoading(false);
     }
@@ -230,9 +268,10 @@ export default function SupportCenter() {
     const byKind = new Map<string, number>();
 
     for (const ticket of tickets) {
-      const normalizedStatus = String(ticket.status || 'new');
+      const normalizedStatus = String(ticket.status || 'new').toLowerCase();
+      const normalizedKind = String(ticket.kind || 'support').toLowerCase();
       byStatus.set(normalizedStatus, (byStatus.get(normalizedStatus) || 0) + 1);
-      byKind.set(ticket.kind, (byKind.get(ticket.kind) || 0) + 1);
+      byKind.set(normalizedKind, (byKind.get(normalizedKind) || 0) + 1);
     }
 
     return { byStatus, byKind, all: tickets.length };
@@ -241,7 +280,7 @@ export default function SupportCenter() {
   const filteredTickets = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
     return tickets.filter((ticket) => {
-      if (ticket.kind !== kind) return false;
+      if (kindFilter !== 'all' && ticket.kind !== kindFilter) return false;
       if (statusFilter !== 'all' && (ticket.status || 'new') !== statusFilter) return false;
       if (!q) return true;
 
@@ -249,6 +288,7 @@ export default function SupportCenter() {
         ticket.subject,
         ticket.message,
         ticket.ownerEmail || '',
+        kindLabel(ticket.kind),
         getLastReplyLabel(ticket),
         ...(Array.isArray(ticket.replies) ? ticket.replies.map((entry) => entry.message || '') : []),
       ]
@@ -257,7 +297,7 @@ export default function SupportCenter() {
 
       return haystack.includes(q);
     });
-  }, [kind, searchQuery, statusFilter, tickets]);
+  }, [kindFilter, searchQuery, statusFilter, tickets]);
 
   useEffect(() => {
     if (!filteredTickets.length) {
@@ -275,10 +315,17 @@ export default function SupportCenter() {
     [filteredTickets, selectedTicketId],
   );
 
-  const currentKind = KIND_OPTIONS.find((item) => item.id === kind) || KIND_OPTIONS[0];
+  const currentKind = kindOption(composeKind);
+  const inProgressCount = (ticketCounts.byStatus.get('in_progress') || 0) + (ticketCounts.byStatus.get('pending') || 0);
 
   const updateReplyDraft = (ticketId: string, value: string) => {
     setReplyDrafts((prev) => ({ ...prev, [ticketId]: value }));
+  };
+
+  const applySuggestion = (suggestion: SuggestedTicket) => {
+    setComposeKind(suggestion.kind);
+    setSubject((prev) => prev || suggestion.title);
+    setMessage((prev) => prev || suggestion.message);
   };
 
   const handleSubmit = async (event: FormEvent) => {
@@ -297,17 +344,18 @@ export default function SupportCenter() {
         ownerId: userId,
         ownerEmail: userEmail || null,
         workspaceId: workspace.id,
-        kind,
+        kind: composeKind,
         subject: subject.trim(),
         message: message.trim(),
       });
-      toast.success('Zgłoszenie zapisane.');
+      toast.success('Zgłoszenie wysłane.');
       setSubject('');
       setMessage('');
+      setKindFilter('all');
       await loadTickets();
     } catch (error: any) {
       console.error('SUPPORT_REQUEST_CREATE_FAILED', error);
-      toast.error(`Nie udało się zapisać zgłoszenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się wysłać zgłoszenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSending(false);
     }
@@ -366,7 +414,7 @@ export default function SupportCenter() {
     return (
       <div className="support-thread">
         <article className="support-thread-message">
-          <p>{isAdmin ? 'Zgłoszenie klienta' : 'Twoje zgłoszenie'}</p>
+          <p>{isAdmin ? 'Zgłoszenie użytkownika' : 'Twoje zgłoszenie'}</p>
           <strong>{ticket.message}</strong>
           <small>{formatCreatedAt(ticket.createdAt)}</small>
         </article>
@@ -396,7 +444,7 @@ export default function SupportCenter() {
         <main className="support-vnext-page">
           <div className="support-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ładowanie centrum pomocy...</span>
+            <span>Ładowanie zgłoszeń...</span>
           </div>
         </main>
       </Layout>
@@ -405,175 +453,103 @@ export default function SupportCenter() {
 
   return (
     <Layout>
-      <main className="support-vnext-page" data-support-stage={SUPPORT_VISUAL_REBUILD_STAGE17}>
+      <main className="support-vnext-page" data-support-stage={SUPPORT_VISUAL_REBUILD_STAGE17} data-support-requests-stage={SUPPORT_REQUESTS_OPERATIONAL_PAGE_STAGE180} data-support-visible-copy-stage={SUPPORT_REQUESTS_VISIBLE_COPY_FIX_STAGE180E} data-support-sidebar-header-copy-stage={SUPPORT_REQUESTS_SIDEBAR_HEADER_COPY_FIX_STAGE180F} data-support-copy-stage={SUPPORT_REQUESTS_POLISH_COPY_GUARD_STAGE180B}>
         <CloseFlowPageHeaderV2
           pageKey="support"
           actions={
-            <>
-              <div className="support-header-actions">
-                          <Button type="button" variant="outline" onClick={() => void loadTickets()}>
-                            <Search className="h-4 w-4" />
-                            Odśwież zgłoszenia
-                          </Button>
-                        </div>
-            </>
+            <div className="support-header-actions">
+              <Button type="button" variant="outline" onClick={() => void loadTickets()}>
+                <Search className="h-4 w-4" />
+                Odśwież zgłoszenia
+              </Button>
+            </div>
           }
         />
 
-        <section className="support-hero-grid">
-          <article className="support-hero-card support-hero-card-blue">
-            <MessageSquare className="h-5 w-5" />
-            <span>Szybki kontakt</span>
-            <strong>Opisz problem albo pytanie</strong>
-          </article>
-          <article className="support-hero-card">
-            <ShieldCheck className="h-5 w-5" />
-            <span>Status zgłoszeń</span>
-            <strong>{ticketCounts.all}</strong>
-          </article>
-          <article className="support-hero-card">
-            <Clock3 className="h-5 w-5" />
-            <span>W trakcie</span>
-            <strong>{ticketCounts.byStatus.get('in_progress') || 0}</strong>
-          </article>
-        </section>
-
-        <div className="support-shell">
+        
+        <div className={isAdmin ? 'support-shell support-shell-admin' : 'support-shell'}>
           <section className="support-main-column">
-            {!isAdmin ? (
-              <section className="support-form-card">
-                <div className="support-section-head">
-                  <div>
-                    <h2>Zapisz zgłoszenie</h2>
-                    <p>Wypełnij temat i opis. Im konkretniej opiszesz kroki, tym szybciej da się sprawdzić temat.</p>
-                  </div>
-                </div>
-
-                <div className="support-kind-grid">
-                  {KIND_OPTIONS.map((option) => {
-                    const active = option.id === kind;
-                    return (
-                      <button
-                        key={option.id}
-                        type="button"
-                        onClick={() => setKind(option.id)}
-                        className={active ? 'support-kind-card support-kind-active' : 'support-kind-card'}
-                      >
-                        <option.Icon className="h-4 w-4" />
-                        <strong>{option.label}</strong>
-                        <span>{option.helper}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <form onSubmit={handleSubmit} className="support-form">
-                  <div className="support-form-field">
-                    <Label>Temat</Label>
-                    <Input
-                      value={subject}
-                      onChange={(event) => setSubject(event.target.value)}
-                      placeholder={
-                        kind === 'suggestion'
-                          ? 'Np. Przydałby się szybszy skrót do spraw'
-                          : kind === 'problem'
-                            ? 'Np. Na telefonie nie działa przycisk w zadaniu'
-                            : 'Np. Jak najlepiej prowadzić sprawę po leadzie?'
-                      }
-                    />
-                  </div>
-
-                  <div className="support-form-field">
-                    <Label>Opis</Label>
-                    <textarea
-                      value={message}
-                      onChange={(event) => setMessage(event.target.value)}
-                      placeholder="Opisz, co się dzieje, gdzie kliknąłeś i jaki efekt był oczekiwany."
-                      className="support-textarea"
-                    />
-                  </div>
-
-                  <div className="support-form-note">
-                    <Mail className="h-4 w-4" />
-                    <span>Kontakt zwrotny: {userEmail || 'konto bez e-maila'}</span>
-                  </div>
-
-                  <Button type="submit" disabled={sending || !workspace?.id}>
-                    {sending ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        Zapisywanie...
-                      </>
-                    ) : (
-                      <>
-                        <Send className="h-4 w-4" />
-                        Zapisz zgłoszenie
-                      </>
-                    )}
-                  </Button>
-                </form>
-
-        <section className="support-ticket-list-card" data-support-ticket-list="true">
-          <header>
-            <h2>Moje zgłoszenia</h2>
-            <p>Status, odpowiedź i ostatnia aktualizacja.</p>
-          </header>
-
-          {asSupportTicketList(tickets).length > 0 ? (
-            <div className="support-ticket-list">
-              {asSupportTicketList(tickets).map((ticket: any) => {
-                const title = ticket.title || ticket.subject || 'Zgłoszenie';
-                const message = ticket.message || ticket.description || ticket.body || '';
-                const answer = ticket.answer || ticket.response || ticket.reply || ticket.adminResponse || ticket.lastReply || '';
-                const updatedAt = ticket.updatedAt || ticket.updated_at || ticket.createdAt || ticket.created_at;
-                return (
-                  <article className="support-ticket-row" key={ticket.id || title || updatedAt}>
-                    <div className="support-ticket-main">
-                      <strong>{title}</strong>
-                      {message ? <p>{message}</p> : null}
-                    </div>
-                    <div className="support-ticket-meta">
-                      <span className="support-ticket-status">{formatSupportStatus(ticket.status)}</span>
-                      <small>{formatSupportTicketDate(updatedAt)}</small>
-                    </div>
-                    {answer ? (
-                      <div className="support-ticket-answer">
-                        <strong>Odpowiedź</strong>
-                        <p>{answer}</p>
-                      </div>
-                    ) : (
-                      <p className="support-ticket-no-answer">Brak odpowiedzi.</p>
-                    )}
-                  </article>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="support-ticket-empty">
-              <strong>Nie masz jeszcze zgłoszeń.</strong>
-              <p>Po wysłaniu formularza zgłoszenie pojawi się tutaj ze statusem.</p>
-            </div>
-          )}
-        </section>
-              </section>
-            ) : null}
-
-            <section className="support-tickets-card">
+            <section className="support-form-card" data-support-compose-card="true">
               <div className="support-section-head">
                 <div>
-                  <h2>{isAdmin ? 'Status zgłoszeń' : 'Twoje zgłoszenia'}</h2>
-                  <p>
-                    {isAdmin
-                      ? 'Lista zgłoszeń z aktualnym statusem i możliwością odpowiedzi.'
-                      : 'Tu zobaczysz swoje zgłoszenia, odpowiedzi supportu i ostatnią aktywność.'}
-                  </p>
+                  <h2>Zgłoszenie / sugestia</h2>
                 </div>
               </div>
 
-              <div className="support-filter-row">
+              <div className="support-kind-grid" aria-label="Typ zgłoszenia">
+                {KIND_OPTIONS.map((option) => {
+                  const active = option.id === composeKind;
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => setComposeKind(option.id)}
+                      className={active ? 'support-kind-card support-kind-active' : 'support-kind-card'}
+                    >
+                      <option.Icon className="h-4 w-4" />
+                      <strong>{option.label}</strong>
+                      <span>{option.helper}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              <form onSubmit={handleSubmit} className="support-form">
+                <div className="support-form-field">
+                  <Label>Temat</Label>
+                  <Input
+                    value={subject}
+                    onChange={(event) => setSubject(event.target.value)}
+                    placeholder={currentKind.subjectPlaceholder}
+                  />
+                </div>
+
+                <div className="support-form-field">
+                  <Label>Opis</Label>
+                  <textarea
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                    placeholder={currentKind.messagePlaceholder}
+                    className="support-textarea"
+                  />
+                </div>
+
+                <div className="support-form-note">
+                  <Mail className="h-4 w-4" />
+                  <span>Kontakt zwrotny: {userEmail || 'konto bez e-maila'}</span>
+                </div>
+
+                <Button type="submit" disabled={sending || !workspace?.id}>
+                  {sending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Wysyłanie...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="h-4 w-4" />
+                      Wyślij zgłoszenie
+                    </>
+                  )}
+                </Button>
+              </form>
+            </section>
+
+            <section className="support-tickets-card" data-support-ticket-list="true">
+              <div className="support-section-head">
+                <div>
+                  <h2>{isAdmin ? 'Wszystkie zgłoszenia' : 'Twoje zgłoszenia'}</h2>
+                </div>
+              </div>
+
+              <div className="support-filter-row" aria-label="Filtr typu zgłoszenia">
+                <button type="button" className={kindFilter === 'all' ? 'support-filter-active' : ''} onClick={() => setKindFilter('all')}>
+                  Wszystkie
+                  <span>{ticketCounts.all}</span>
+                </button>
                 {KIND_OPTIONS.map((option) => (
-                  <button key={option.id} type="button" className={kind === option.id ? 'support-filter-active' : ''} onClick={() => setKind(option.id)}>
-                    {option.label}
+                  <button key={option.id} type="button" className={kindFilter === option.id ? 'support-filter-active' : ''} onClick={() => setKindFilter(option.id)}>
+                    {option.shortLabel}
                     <span>{ticketCounts.byKind.get(option.id) || 0}</span>
                   </button>
                 ))}
@@ -582,7 +558,7 @@ export default function SupportCenter() {
               <div className="support-ticket-tools">
                 <div className="support-search-field">
                   <Search className="h-4 w-4" />
-                  <Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj po temacie, treści albo odpowiedzi..." />
+                  <Input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="Szukaj po temacie, treści, typie albo odpowiedzi..." />
                 </div>
                 <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as 'all' | TicketStatus)} className="support-select">
                   {STATUS_OPTIONS.map((option) => (
@@ -599,7 +575,7 @@ export default function SupportCenter() {
                   Ładowanie zgłoszeń...
                 </div>
               ) : filteredTickets.length === 0 ? (
-                <div className="support-light-empty">Brak zgłoszeń w tej sekcji.</div>
+                <div className="support-light-empty">Brak zgłoszeń dla wybranych filtrów.</div>
               ) : (
                 <div className="support-ticket-grid">
                   <div className="support-ticket-list">
@@ -628,9 +604,9 @@ export default function SupportCenter() {
                     <article className="support-ticket-detail">
                       <div className="support-ticket-detail-head">
                         <div>
-                          <span>{kindLabel(selectedTicket.kind)}</span>
+                          <span>{kindOption(selectedTicket.kind).label}</span>
                           <h3>{selectedTicket.subject}</h3>
-                          <p>{selectedTicket.ownerEmail || userEmail || 'Brak e-maila'}</p>
+                          <p>{selectedTicket.ownerEmail || userEmail || 'Brak e-maila'} · {formatSupportStatus(selectedTicket.status)}</p>
                         </div>
                         <strong className={`support-status-pill ${statusToneClass(selectedTicket.status)}`}>{statusLabel(selectedTicket.status)}</strong>
                       </div>
@@ -678,9 +654,63 @@ export default function SupportCenter() {
                 </div>
               )}
             </section>
-
-
           </section>
+
+
+          {isAdmin ? (
+            <aside className="support-admin-rail" aria-label="Panel obsługi zgłoszeń" data-support-admin-rail="true">
+              <section className="support-admin-card">
+                <div className="support-admin-title">
+                  <ShieldCheck className="h-4 w-4" />
+                  <h2>Panel obsługi</h2>
+                </div>
+                <div className="support-admin-stats">
+                  <button type="button" onClick={() => setStatusFilter('new')}>
+                    <span>Nowe</span>
+                    <strong>{ticketCounts.byStatus.get('new') || 0}</strong>
+                  </button>
+                  <button type="button" onClick={() => setStatusFilter('in_progress')}>
+                    <span>W trakcie</span>
+                    <strong>{ticketCounts.byStatus.get('in_progress') || 0}</strong>
+                  </button>
+                  <button type="button" onClick={() => setStatusFilter('answered')}>
+                    <span>Odpowiedziane</span>
+                    <strong>{ticketCounts.byStatus.get('answered') || 0}</strong>
+                  </button>
+                </div>
+              </section>
+
+              <section className="support-admin-card">
+                <div className="support-admin-title">
+                  <Clock3 className="h-4 w-4" />
+                  <h2>Ostatnia aktywność</h2>
+                </div>
+                {tickets[0] ? (
+                  <article className="support-admin-latest">
+                    <strong>{tickets[0].subject || 'Zgłoszenie'}</strong>
+                    <span>{kindLabel(tickets[0].kind)}</span>
+                    <small>{formatCreatedAt(tickets[0].updatedAt || tickets[0].createdAt)}</small>
+                  </article>
+                ) : (
+                  <p className="support-admin-empty">Brak zgłoszeń w tym workspace.</p>
+                )}
+              </section>
+
+              <section className="support-admin-card">
+                <div className="support-admin-title">
+                  <Archive className="h-4 w-4" />
+                  <h2>Szybkie filtry</h2>
+                </div>
+                <div className="support-admin-filter-list">
+                  <button type="button" onClick={() => setStatusFilter('all')}>Wszystkie</button>
+                  <button type="button" onClick={() => setStatusFilter('new')}>Nowe</button>
+                  <button type="button" onClick={() => setStatusFilter('in_progress')}>W trakcie</button>
+                  <button type="button" onClick={() => setStatusFilter('answered')}>Odpowiedziane</button>
+                  <button type="button" onClick={() => setStatusFilter('closed')}>Zamknięte</button>
+                </div>
+              </section>
+            </aside>
+          ) : null}
         </div>
       </main>
     </Layout>

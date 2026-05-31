@@ -1,0 +1,251 @@
+﻿/* STAGE184_FOREST_NAVY_DARK_SETTINGS_HARDENING_LOCAL_ONLY
+   Cel: Forest Navy ma być realnym ciemnym motywem, nie mieszanką białych kart i ciemnych paneli.
+   Zakres: shell, global bar, settings header, kafelki zakładek, panele, prawa kolumna, tekst i formularze.
+*/
+
+html[data-skin="forest-navy"] {
+  --fn-bg: #061111;
+  --fn-bg-2: #081820;
+  --fn-shell: #07151a;
+  --fn-surface: #0d2024;
+  --fn-surface-2: #10292b;
+  --fn-surface-3: #143430;
+  --fn-border: #275247;
+  --fn-border-soft: rgba(67, 111, 98, 0.62);
+  --fn-text: #f2fbf6;
+  --fn-text-strong: #ffffff;
+  --fn-muted: #a9bfb5;
+  --fn-muted-2: #819a90;
+  --fn-primary: #34d399;
+  --fn-primary-2: #10b981;
+  --fn-primary-soft: rgba(52, 211, 153, 0.13);
+  --fn-focus: rgba(52, 211, 153, 0.30);
+  --fn-shadow: rgba(0, 0, 0, 0.36);
+  color-scheme: dark;
+}
+
+/* Cały shell, nie tylko karta ustawień */
+html[data-skin="forest-navy"] body,
+html[data-skin="forest-navy"] #root,
+html[data-skin="forest-navy"] .cf-html-shell,
+html[data-skin="forest-navy"] .app,
+html[data-skin="forest-navy"] .main,
+html[data-skin="forest-navy"] [data-shell-main="true"],
+html[data-skin="forest-navy"] [data-shell-content="true"],
+html[data-skin="forest-navy"] .view.active {
+  background:
+    radial-gradient(circle at 14% 0%, rgba(52, 211, 153, 0.10), transparent 30%),
+    radial-gradient(circle at 88% 6%, rgba(37, 99, 235, 0.08), transparent 34%),
+    linear-gradient(180deg, var(--fn-bg-2) 0%, var(--fn-bg) 100%) !important;
+  color: var(--fn-text) !important;
+}
+
+/* Górny pasek, który na screenie został biały */
+html[data-skin="forest-navy"] .global-bar,
+html[data-skin="forest-navy"] [data-shell-global-bar="true"] {
+  background: rgba(7, 21, 26, 0.96) !important;
+  border-bottom: 1px solid var(--fn-border-soft) !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22) !important;
+}
+
+html[data-skin="forest-navy"] .global-title,
+html[data-skin="forest-navy"] .global-title-copy,
+html[data-skin="forest-navy"] .global-title-copy strong {
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] .global-dot {
+  background: var(--fn-primary-soft) !important;
+  border-color: rgba(52, 211, 153, 0.28) !important;
+  color: var(--fn-primary) !important;
+}
+
+/* Strona ustawień: tło ciemne od krawędzi do krawędzi */
+html[data-skin="forest-navy"] .settings-vnext-page {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(52, 211, 153, 0.10), transparent 30%),
+    linear-gradient(180deg, var(--fn-bg-2) 0%, var(--fn-bg) 100%) !important;
+  color: var(--fn-text) !important;
+}
+
+/* Header Ustawienia, który był biały */
+html[data-skin="forest-navy"] .settings-header {
+  background:
+    linear-gradient(180deg, rgba(13, 32, 36, 0.98), rgba(8, 24, 32, 0.98)) !important;
+  border: 1px solid var(--fn-border-soft) !important;
+  border-radius: 28px !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 18px 44px var(--fn-shadow) !important;
+}
+
+html[data-skin="forest-navy"] .settings-header h1 {
+  color: var(--fn-text-strong) !important;
+}
+
+html[data-skin="forest-navy"] .settings-kicker {
+  background: var(--fn-primary-soft) !important;
+  border: 1px solid rgba(52, 211, 153, 0.24) !important;
+  color: var(--fn-primary) !important;
+}
+
+/* Kafelki zakładek: jedna paleta, bez białych kart */
+html[data-skin="forest-navy"] .settings-summary-grid > * {
+  background:
+    linear-gradient(180deg, rgba(16, 41, 43, 0.98), rgba(10, 28, 32, 0.98)) !important;
+  border: 1px solid var(--fn-border-soft) !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.24) !important;
+}
+
+html[data-skin="forest-navy"] .settings-summary-grid > *:hover,
+html[data-skin="forest-navy"] .settings-summary-grid > *[aria-selected="true"],
+html[data-skin="forest-navy"] .settings-summary-grid > *[data-state="active"],
+html[data-skin="forest-navy"] .settings-summary-grid > *.active {
+  background:
+    linear-gradient(180deg, rgba(25, 59, 52, 1), rgba(13, 38, 35, 1)) !important;
+  border-color: var(--fn-primary) !important;
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.28),
+    0 16px 38px rgba(0, 0, 0, 0.30) !important;
+}
+
+html[data-skin="forest-navy"] .settings-summary-grid small,
+html[data-skin="forest-navy"] .settings-summary-grid [class*="kicker"],
+html[data-skin="forest-navy"] .settings-summary-grid span:first-child {
+  color: var(--fn-primary) !important;
+}
+
+html[data-skin="forest-navy"] .settings-summary-grid strong,
+html[data-skin="forest-navy"] .settings-summary-grid h2,
+html[data-skin="forest-navy"] .settings-summary-grid h3 {
+  color: var(--fn-text-strong) !important;
+}
+
+html[data-skin="forest-navy"] .settings-summary-grid p,
+html[data-skin="forest-navy"] .settings-summary-grid span {
+  color: var(--fn-muted) !important;
+}
+
+/* Panele treści: wszystko ciemne i czytelne */
+html[data-skin="forest-navy"] .settings-section-card,
+html[data-skin="forest-navy"] .settings-right-card,
+html[data-skin="forest-navy"] .right-card.settings-right-card,
+html[data-skin="forest-navy"] .settings-loading-card {
+  background:
+    linear-gradient(180deg, rgba(13, 32, 36, 0.98), rgba(9, 26, 29, 0.98)) !important;
+  border: 1px solid var(--fn-border-soft) !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 18px 44px var(--fn-shadow) !important;
+}
+
+html[data-skin="forest-navy"] .settings-info-grid article,
+html[data-skin="forest-navy"] .settings-toggle-row,
+html[data-skin="forest-navy"] .settings-browser-box,
+html[data-skin="forest-navy"] .settings-security-box,
+html[data-skin="forest-navy"] .settings-inline-panel,
+html[data-skin="forest-navy"] .settings-digest-panel,
+html[data-skin="forest-navy"] .settings-diagnostics-box,
+html[data-skin="forest-navy"] .settings-theme-card {
+  background: rgba(16, 41, 43, 0.96) !important;
+  border: 1px solid var(--fn-border-soft) !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.20) !important;
+}
+
+/* Tekst: biały na ciemnym, muted tylko pomocniczy */
+html[data-skin="forest-navy"] :where(
+  .settings-vnext-page h1,
+  .settings-vnext-page h2,
+  .settings-vnext-page h3,
+  .settings-vnext-page h4,
+  .settings-vnext-page strong,
+  .settings-section-head h2,
+  .settings-right-card h2,
+  .settings-info-grid strong,
+  .settings-toggle-row strong,
+  .settings-browser-box strong,
+  .settings-security-box strong,
+  .settings-theme-card strong
+) {
+  color: var(--fn-text-strong) !important;
+  opacity: 1 !important;
+}
+
+html[data-skin="forest-navy"] :where(
+  .settings-vnext-page p,
+  .settings-vnext-page small,
+  .settings-section-head p,
+  .settings-right-card small,
+  .settings-info-grid small,
+  .settings-toggle-row span,
+  .settings-browser-box span,
+  .settings-security-box span,
+  .settings-theme-card span,
+  .settings-inline-panel p
+) {
+  color: var(--fn-muted) !important;
+  opacity: 1 !important;
+}
+
+html[data-skin="forest-navy"] .settings-section-head > div > span,
+html[data-skin="forest-navy"] .settings-right-title,
+html[data-skin="forest-navy"] .settings-right-title h2 {
+  color: var(--fn-primary) !important;
+  opacity: 1 !important;
+}
+
+/* Formularze */
+html[data-skin="forest-navy"] .settings-vnext-page :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select
+) {
+  background: #091a1e !important;
+  border: 1px solid var(--fn-border) !important;
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] .settings-vnext-page :where(input, textarea)::placeholder {
+  color: var(--fn-muted-2) !important;
+}
+
+html[data-skin="forest-navy"] .settings-vnext-page :where(input, textarea, select):focus {
+  border-color: var(--fn-primary) !important;
+  box-shadow: 0 0 0 3px var(--fn-focus) !important;
+}
+
+html[data-skin="forest-navy"] .settings-vnext-page select option {
+  background: #091a1e !important;
+  color: var(--fn-text) !important;
+}
+
+/* Przyciski */
+html[data-skin="forest-navy"] .settings-vnext-page button {
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] .settings-vnext-page button:hover {
+  background: rgba(52, 211, 153, 0.10) !important;
+  border-color: var(--fn-primary) !important;
+}
+
+html[data-skin="forest-navy"] .settings-theme-active {
+  background:
+    linear-gradient(180deg, rgba(52, 211, 153, 0.17), rgba(13, 32, 36, 0.98)) !important;
+  border-color: var(--fn-primary) !important;
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.28) !important;
+}
+
+/* Prawy panel podsumowania */
+html[data-skin="forest-navy"] .settings-right-rail {
+  background: transparent !important;
+}
+
+html[data-skin="forest-navy"] .settings-soft-pill {
+  background: var(--fn-primary-soft) !important;
+  color: var(--fn-primary) !important;
+  border-color: rgba(52, 211, 153, 0.28) !important;
+}
+
+/* /STAGE184_FOREST_NAVY_DARK_SETTINGS_HARDENING_LOCAL_ONLY */

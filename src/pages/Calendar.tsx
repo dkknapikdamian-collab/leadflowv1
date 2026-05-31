@@ -1,6 +1,6 @@
-import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+﻿import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { Calendar, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
+import { Calendar as CalendarIcon, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
 import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
 import { actionButtonClass as entityActionButtonClass, modalFooterClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
@@ -93,6 +93,9 @@ import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
 import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
 import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
 import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -1069,13 +1072,141 @@ export default function Calendar() {
 
   const calendarAuthUserId = auth.currentUser?.uid || 'anonymous';
 
+
+  // CLOSEFLOW_STAGE181I_LOCAL_CALENDAR_DIRECT_SEED
+  // Local-only calendar preview data. Dev/test only. Do not commit as production data.
+  function getStage181ILocalCalendarSeed() {
+    const now = new Date();
+
+    const at = (offsetDays: number, hour: number, minute = 0) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() + offsetDays);
+      d.setHours(hour, minute, 0, 0);
+      return d.toISOString();
+    };
+
+    const dateOnly = (offsetDays: number) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() + offsetDays);
+      return d.toISOString().slice(0, 10);
+    };
+
+    return {
+      tasks: [
+        {
+          id: 'local-calendar-task-181i-1',
+          title: 'Roboczy test kalendarza - dokumenty od klienta',
+          status: 'todo',
+          priority: 'high',
+          type: 'task',
+          date: dateOnly(0),
+          time: '10:00',
+          dueAt: at(0, 10, 0),
+          due_at: at(0, 10, 0),
+          scheduledAt: at(0, 10, 0),
+          scheduled_at: at(0, 10, 0),
+          clientId: 'local-client-181i',
+          caseId: 'local-case-181i',
+        },
+        {
+          id: 'local-calendar-task-181i-2',
+          title: 'Roboczy follow-up z bardzo długą nazwą do testu ucinania tekstu w kalendarzu',
+          status: 'todo',
+          priority: 'medium',
+          type: 'follow_up',
+          date: dateOnly(0),
+          time: '15:30',
+          dueAt: at(0, 15, 30),
+          due_at: at(0, 15, 30),
+          scheduledAt: at(0, 15, 30),
+          scheduled_at: at(0, 15, 30),
+          clientId: 'local-client-181i',
+        },
+        {
+          id: 'local-calendar-task-181i-3',
+          title: 'Robocze zadanie jutro - test tygodnia',
+          status: 'todo',
+          priority: 'low',
+          type: 'task',
+          date: dateOnly(1),
+          time: '08:45',
+          dueAt: at(1, 8, 45),
+          due_at: at(1, 8, 45),
+          scheduledAt: at(1, 8, 45),
+          scheduled_at: at(1, 8, 45),
+        },
+        {
+          id: 'local-calendar-task-181i-4',
+          title: 'Robocze zaległe zadanie - test czerwonego statusu',
+          status: 'todo',
+          priority: 'high',
+          type: 'phone',
+          date: dateOnly(-2),
+          time: '11:15',
+          dueAt: at(-2, 11, 15),
+          due_at: at(-2, 11, 15),
+          scheduledAt: at(-2, 11, 15),
+          scheduled_at: at(-2, 11, 15),
+        },
+      ],
+      events: [
+        {
+          id: 'local-calendar-event-181i-1',
+          title: 'Robocze spotkanie demo - kalendarz widok tygodnia',
+          type: 'meeting',
+          status: 'scheduled',
+          startAt: at(0, 12, 0),
+          start_at: at(0, 12, 0),
+          scheduledAt: at(0, 12, 0),
+          scheduled_at: at(0, 12, 0),
+          endAt: at(0, 13, 0),
+          end_at: at(0, 13, 0),
+          clientId: 'local-client-181i',
+          caseId: 'local-case-181i',
+        },
+        {
+          id: 'local-calendar-event-181i-2',
+          title: 'Roboczy telefon kontrolny z klientem - długi tytuł do tooltipa',
+          type: 'call',
+          status: 'scheduled',
+          startAt: at(0, 17, 0),
+          start_at: at(0, 17, 0),
+          scheduledAt: at(0, 17, 0),
+          scheduled_at: at(0, 17, 0),
+          endAt: at(0, 17, 30),
+          end_at: at(0, 17, 30),
+        },
+        {
+          id: 'local-calendar-event-181i-3',
+          title: 'Roboczy przegląd pipeline na jutro',
+          type: 'meeting',
+          status: 'scheduled',
+          startAt: at(1, 12, 0),
+          start_at: at(1, 12, 0),
+          scheduledAt: at(1, 12, 0),
+          scheduled_at: at(1, 12, 0),
+          endAt: at(1, 13, 0),
+          end_at: at(1, 13, 0),
+        },
+      ],
+    };
+  }
+
+  function appendStage181ILocalCalendarSeed(rows: any[], kind: 'tasks' | 'events') {
+    if (!import.meta.env.DEV) return rows;
+    const seed = getStage181ILocalCalendarSeed()[kind];
+    const seen = new Set((rows || []).map((row: any) => String(row?.id || '')));
+    const missing = seed.filter((row: any) => !seen.has(String(row.id)));
+    return [...(rows || []), ...missing];
+  }
+
   async function refreshSupabaseBundle() {
     const [bundle, clientRows] = await Promise.all([
       fetchCalendarBundleFromSupabase(),
       fetchClientsFromSupabase().catch(() => []),
     ]);
-    setEvents((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
-    setTasks((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[]);
+    setEvents(appendStage181ILocalCalendarSeed((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'events') as any[]);
+    setTasks(appendStage181ILocalCalendarSeed((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'tasks') as any[]);
     setLeads(bundle.leads || []);
     setCases((bundle.cases || []) as any[]);
     setClients(clientRows as any[]);
@@ -1774,6 +1905,48 @@ export default function Calendar() {
       setActionPendingId(`${entry.id}:done`);
       const wasCompleted = isCompletedCalendarEntry(entry);
 
+      // CLOSEFLOW_STAGE181J_V2_LOCAL_DONE_STATE
+      // Robocze wpisy local/dev nie istnieją w backendzie, więc kliknięcie "Zrobione"
+      // ma działać lokalnie bez updateTaskInSupabase/updateEventInSupabase.
+      const localSourceId = String(entry.sourceId || entry.raw?.id || entry.id || '');
+      const isLocalCalendarSeed = import.meta.env.DEV && /^(local-calendar-|dev-task-|dev-event-)/.test(localSourceId);
+
+      if (isLocalCalendarSeed) {
+        const completedAt = new Date().toISOString();
+        const nextStatus = wasCompleted
+          ? entry.kind === 'event' ? 'scheduled' : 'todo'
+          : entry.kind === 'event' ? 'completed' : 'done';
+
+        const patchLocalRow = (row: any) => {
+          if (String(row?.id || '') !== localSourceId) return row;
+
+          const nextRow: any = {
+            ...row,
+            status: nextStatus,
+            done: !wasCompleted,
+            isDone: !wasCompleted,
+            is_done: !wasCompleted,
+            completedAt: wasCompleted ? null : completedAt,
+            completed_at: wasCompleted ? null : completedAt,
+            doneAt: wasCompleted ? null : completedAt,
+            done_at: wasCompleted ? null : completedAt,
+          };
+
+          return nextRow;
+        };
+
+        if (entry.kind === 'event') {
+          setEvents((previousEvents: any[]) => previousEvents.map(patchLocalRow));
+        }
+
+        if (entry.kind === 'task') {
+          setTasks((previousTasks: any[]) => previousTasks.map(patchLocalRow));
+        }
+
+        toast.success(wasCompleted ? 'Roboczy wpis przywrócony lokalnie' : 'Roboczy wpis oznaczony jako zrobiony lokalnie');
+        return;
+      }
+
       if (entry.kind === 'event') {
         await updateEventInSupabase({
           id: entry.sourceId,
@@ -1962,7 +2135,7 @@ export default function Calendar() {
                             <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
                                                                       <DialogHeader>
             <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
-            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event">Ustaw termin, powiązanie, przypomnienia i cykliczność wydarzenia w kalendarzu.</DialogDescription>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-stage171-hidden-copy="true">Opis formularza.</DialogDescription>
           </DialogHeader>
                               <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
                                 <div className="space-y-4">
@@ -1990,10 +2163,7 @@ export default function Calendar() {
                                 </div>
 
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                                  <div>
-                                    <p className="text-sm font-bold text-slate-900">Od do</p>
-                                    <p className="text-xs text-slate-500">Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.</p>
-                                  </div>
+                                  
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="event-form-field">
                                       <Label>Start</Label>
@@ -2009,7 +2179,6 @@ export default function Calendar() {
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
                                     <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
-                                    <p className="text-xs text-slate-500">Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div className="space-y-2 md:col-span-2">
@@ -2034,7 +2203,6 @@ export default function Calendar() {
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
                                   <div>
                                     <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
-                                    <p className="text-xs text-slate-500">Na końcu ustaw sposób przypominania i jego cykliczność.</p>
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="event-form-field">
@@ -2291,12 +2459,8 @@ export default function Calendar() {
 
         {calendarView === 'week' ? (
           <div className="calendar-week-layout">
-            <aside className="right-card calendar-week-filter">
-              <div className="panel-head">
-                <h3>Najbliższe 7 dni</h3>
-                <p>Najszybszy filtr.</p>
-              </div>
-              <div className="calendar-week-visible-days-v3 mt-3 space-y-2" data-cf-calendar-week-rail-stage93="clean">
+            <aside className="right-card calendar-week-filter" data-calendar-week-filter-no-heading="stage202">
+              <div className="calendar-week-visible-days-v3 space-y-2" data-cf-calendar-week-rail-stage93="clean">
                 {weekDays.map((day, index) => {
                   const dayEntries = getPrecomputedEntriesForDay(weekEntriesByDayKey, day);
                   const active = isSameDay(day, selectedDate);
@@ -2567,3 +2731,4 @@ export default function Calendar() {
 }
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
+

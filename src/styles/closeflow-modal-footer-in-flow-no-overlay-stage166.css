@@ -1,0 +1,92 @@
+/* CLOSEFLOW_STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY
+
+   Stage165 improved unified modal motif/size.
+   Remaining problem: submit/footer row floats over form content while scrolling.
+   Stage166 keeps Stage165 motif/size/position and only moves footer rows back
+   into normal document flow. No per-modal hacks.
+*/
+
+:root {
+  --closeflow-stage166-modal-footer-in-flow-no-overlay: "active";
+  --cf166-modal-footer-gap: 10px;
+  --cf166-modal-end-space: 10px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface > :is(form, .event-form-vnext, .dialog-body, .modal-body),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] > :is(form, .event-form-vnext, .dialog-body, .modal-body),
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(form.event-form-vnext, .event-form-vnext),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(form.event-form-vnext, .event-form-vnext) {
+    padding-bottom: var(--cf166-modal-end-space) !important;
+    scroll-padding-bottom: 56px !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-modal-footer,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-modal-footer,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.event-form-footer, .dialog-footer, .modal-footer, footer),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.event-form-footer, .dialog-footer, .modal-footer, footer),
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface form > :is(div, section, footer):has(button[type="submit"]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] form > :is(div, section, footer):has(button[type="submit"]) {
+    position: static !important;
+    bottom: auto !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    inset: auto !important;
+    transform: none !important;
+    translate: none !important;
+
+    order: 999 !important;
+    z-index: auto !important;
+
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: var(--cf166-modal-footer-gap) !important;
+
+    width: 100% !important;
+    min-height: auto !important;
+    height: auto !important;
+    max-height: none !important;
+
+    margin: var(--cf166-modal-footer-gap) 0 0 !important;
+    padding: 10px 0 0 !important;
+
+    background: transparent !important;
+    color: var(--cf165-modal-fg, #f8fafc) !important;
+    border-top: 1px solid var(--cf165-modal-border, rgba(148,163,184,.28)) !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-modal-footer > *,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-modal-footer > *,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.event-form-footer, .dialog-footer, .modal-footer, footer) > *,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.event-form-footer, .dialog-footer, .modal-footer, footer) > * {
+    flex: 0 0 auto !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.cf-modal-footer, .event-form-footer, .dialog-footer, .modal-footer, footer) button,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.cf-modal-footer, .event-form-footer, .dialog-footer, .modal-footer, footer) button,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface form > :is(div, section, footer):has(button[type="submit"]) button,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] form > :is(div, section, footer):has(button[type="submit"]) button {
+    width: auto !important;
+    min-width: 86px !important;
+    max-width: 180px !important;
+    white-space: nowrap !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.cf-modal-footer, .event-form-footer, .dialog-footer, .modal-footer, footer):empty,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.cf-modal-footer, .event-form-footer, .dialog-footer, .modal-footer, footer):empty {
+    display: none !important;
+    min-height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+  }
+}
+
+/* Stage166 is intentionally narrow:
+   keep modal motif/width/position from Stage165; only remove floating footer overlay. */

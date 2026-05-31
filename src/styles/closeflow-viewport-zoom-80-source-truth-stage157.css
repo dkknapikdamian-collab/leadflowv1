@@ -1,0 +1,101 @@
+/* CLOSEFLOW_STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH
+   Goal:
+   - make the app at browser 100% look like the current app at browser 80%;
+   - preserve left/right anchoring exactly like real browser zoom;
+   - do not scale a narrow wrapper;
+   - do not use fixed 1280px zoom canvas;
+   - use viewport-compensated page zoom.
+
+   Why this is different from rejected stages:
+   - Stage153 used global zoom but compensated width from a fixed canvas, so the panel stopped filling correctly.
+   - Stage154/155 scaled route/wrapper content and broke the natural left/right behavior.
+   - Stage157 emulates browser page zoom: logical layout width = viewport / zoom.
+*/
+
+:root {
+  --closeflow-stage157-viewport-zoom-80-source-truth: "active";
+
+  /* Source truth: app should render like browser zoom 80%.
+     Tuning:
+     0.82 = a little bigger
+     0.80 = browser 80%
+     0.78 = a little smaller
+  */
+  --cf157-page-zoom: 0.80;
+  --cf157-page-zoom-inverse: 1.25;
+
+  /* The crucial part: width is based on viewport, not fixed canvas.
+     100vw / 0.80 = 125vw logical width, rendered back to 100vw visually. */
+  --cf157-layout-width: calc(100vw * var(--cf157-page-zoom-inverse));
+  --cf157-layout-min-height: calc(100vh * var(--cf157-page-zoom-inverse));
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    overflow-x: hidden !important;
+    background: #f3f6fb !important;
+  }
+
+  #root {
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    background: #f3f6fb !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    zoom: var(--cf157-page-zoom) !important;
+
+    width: var(--cf157-layout-width) !important;
+    min-width: var(--cf157-layout-width) !important;
+    max-width: none !important;
+    min-height: var(--cf157-layout-min-height) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+    transform-origin: top left !important;
+    contain: none !important;
+    clip-path: none !important;
+    overflow: visible !important;
+
+    /* Preserve Stage149 shell idea, but on the larger logical viewport. */
+    grid-template-columns: var(--cf149-sidebar-width, 240px) minmax(0, 1fr) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"],
+  #root .global-bar,
+  #root .view.active[data-shell-content="true"] {
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  #root .view.active[data-shell-content="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Rejected Stage155 frame must never affect layout if it survived locally. */
+  #root .cf155-main-density-frame,
+  #root [data-cf155-main-density-frame="true"] {
+    zoom: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    transform: none !important;
+  }
+}

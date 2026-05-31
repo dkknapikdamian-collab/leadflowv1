@@ -6,8 +6,9 @@
 */
 
 :root {
-  --cf-operator-bg: #f3f6fb;
-  --cf-operator-bg-soft: #eef3fa;
+  --cf-canvas-bg: #f8fafc;
+  --cf-operator-bg: var(--cf-canvas-bg, #f8fafc);
+  --cf-operator-bg-soft: var(--cf-canvas-bg, #f8fafc);
   --cf-operator-topbar-bg: rgba(255, 255, 255, 0.96);
 }
 
@@ -153,3 +154,8 @@
     gap: 0.62rem !important;
   }
 }
+
+
+/* STAGE211J_OPERATOR_BG_CANVAS_TOKEN
+   Operator background variables must resolve to the runtime canvas token.
+*/

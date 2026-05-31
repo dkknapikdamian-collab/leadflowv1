@@ -1,0 +1,67 @@
+/* CLOSEFLOW_STAGE136_DESKTOP_WIDE_CONTENT_SOURCE_TRUTH
+   Poszerza główne okna aplikacji tylko na komputerze.
+   Cel: mniej pustego miejsca po bokach, szersze listy, kafelki, panele i prawe kolumny.
+   Nie rusza mobile/tablet, logiki, danych ani komponentów.
+*/
+
+:root {
+  --cf136-desktop-content-max: 1640px;
+  --cf136-desktop-content-gutter: 24px;
+  --cf136-desktop-rail-width: 332px;
+  --cf136-desktop-list-gap: 24px;
+}
+
+@media (min-width: 1280px) {
+  .cf-html-shell :where(
+    .main-clients-html,
+    .main-leads-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"]
+  ) {
+    width: min(calc(100% - (var(--cf136-desktop-content-gutter) * 2)), var(--cf136-desktop-content-max)) !important;
+    max-width: var(--cf136-desktop-content-max) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .cf-html-shell main:where(.mx-auto.flex.w-full.max-w-5xl, .mx-auto.flex.w-full.max-w-7xl) {
+    width: min(calc(100% - (var(--cf136-desktop-content-gutter) * 2)), var(--cf136-desktop-content-max)) !important;
+    max-width: var(--cf136-desktop-content-max) !important;
+  }
+
+  .cf-html-shell .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    gap: var(--cf136-desktop-list-gap) !important;
+  }
+
+  .cf-html-shell :where(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, var(--cf136-desktop-rail-width)) !important;
+  }
+
+  .cf-html-shell :where(.lead-right-rail, .clients-right-rail, .cases-right-rail, .activity-right-rail) {
+    width: 100% !important;
+    max-width: var(--cf136-desktop-rail-width) !important;
+  }
+
+  .cf-html-shell :where(.grid-4, .grid-5) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .cf-html-shell :where(.table-card, .stack, .search) {
+    max-width: none !important;
+  }
+}
+
+@media (min-width: 1600px) {
+  :root {
+    --cf136-desktop-content-max: 1680px;
+    --cf136-desktop-content-gutter: 28px;
+    --cf136-desktop-rail-width: 340px;
+  }
+}

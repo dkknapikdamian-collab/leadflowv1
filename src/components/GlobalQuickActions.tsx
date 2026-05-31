@@ -31,6 +31,7 @@ import { AddActionIcon } from './ui-system';
 
 import QuickAiCapture from './QuickAiCapture';
 import TaskCreateDialog from './TaskCreateDialog';
+import ClientCreateDialog from './ClientCreateDialog';
 import { Button } from './ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
 import '../styles/closeflow-command-actions-source-truth.css';
@@ -72,6 +73,7 @@ export function subscribeGlobalQuickAction(listener: (target: GlobalQuickActionT
 export default function GlobalQuickActions() {
   const { access } = useWorkspace();
   const [isTaskCreateOpen, setIsTaskCreateOpen] = useState(false);
+  const [isClientCreateOpen, setIsClientCreateOpen] = useState(false);
   const canUseQuickAiCaptureByPlan = Boolean(access?.features?.lightDrafts || access?.features?.lightParser || access?.features?.fullAi);
   const canUseAiDraftsByPlan = Boolean(access?.features?.lightDrafts || access?.features?.fullAi);
   return (
@@ -99,6 +101,10 @@ export default function GlobalQuickActions() {
             Lead
           </Link>
         </Button>
+        <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="client" data-cf-command-action="neutral" data-global-client-direct-modal-trigger="true" data-feature-status="Gotowe" title="Gotowe" onClick={() => setIsClientCreateOpen(true)}>
+          <AddActionIcon className="mr-2 h-4 w-4" />
+          Klient
+        </Button>
         {/* STAGE01_GLOBAL_TASK_QUICK_ACTION_BRIDGE_COMPAT_STAGE45M: rememberGlobalQuickAction('task') marker only. Direct task modal opens in place, without Link/asChild route. */}
         <Button type="button" variant="outline" className="btn cf-command-action cf-command-action--neutral" data-global-quick-action="task" data-cf-command-action="neutral" data-global-task-direct-modal-trigger="true" data-feature-status="Gotowe" title="Gotowe" onClick={() => setIsTaskCreateOpen(true)}>
           <AddActionIcon className="mr-2 h-4 w-4" />
@@ -111,6 +117,7 @@ export default function GlobalQuickActions() {
           </Link>
         </Button>
       </div>
+      <ClientCreateDialog open={isClientCreateOpen} onOpenChange={setIsClientCreateOpen} />
       <TaskCreateDialog open={isTaskCreateOpen} onOpenChange={setIsTaskCreateOpen} />
     </>
   );

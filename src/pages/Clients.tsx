@@ -1,4 +1,4 @@
-// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
+﻿// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import {
   type FormEvent,
   type MouseEvent,
@@ -62,8 +62,12 @@ import '../styles/clients-next-action-layout.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CLIENTS';
 const STAGE30_CLIENTS_TRASH_COPY_REMOVED = 'STAGE30_CLIENTS_TRASH_COPY_REMOVED';
+const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
+const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 
 type ClientRecord = {
   id: string;
@@ -642,9 +646,9 @@ export default function Clients() {
 
         <div className="layout-list w-full max-w-none" data-clients-wide-layout="true">
           <div className="stack">
-            <div className="search">
+            <div className="search cf-main-search" data-cf-main-search="true" data-clients-search="true" data-cf-main-search-source="stage173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
-              <Input placeholder={showArchived ? 'Szukaj w koszu klientów...' : 'Szukaj klienta, telefonu, maila, firmy albo sprawy...'} value={search} onChange={(event) => setSearch(event.target.value)} />
+              <Input placeholder={showArchived ? CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER : CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER} value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Szukaj w klientach" />
             </div>
 
             {loading ? (
@@ -702,6 +706,7 @@ export default function Clients() {
 
           <div className="clients-right-rail">
             <SimpleFiltersCard
+              className="client-right-card operator-simple-filters-card"
               title="Filtry proste"
               description="Bez przesady, tylko najpotrzebniejsze."
               dataTestId="clients-simple-filters-card"
@@ -735,3 +740,4 @@ export default function Clients() {
     </Layout>
   );
 }
+

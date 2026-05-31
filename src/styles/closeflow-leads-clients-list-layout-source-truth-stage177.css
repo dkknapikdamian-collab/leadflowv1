@@ -1,0 +1,190 @@
+/* CLOSEFLOW_STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH
+
+   Purpose:
+   - Leads list must visually match Clients list:
+     * same list-column width,
+     * same search width,
+     * same row/card width,
+     * same right rail width and spacing,
+     * right rail cards must be slightly tighter but still readable like Clients.
+   - This stage does not redesign content; it normalizes the frame and row skeleton.
+
+   Owner decision:
+   - /leads and /clients are one visual source truth.
+   - lead search and lead row information should end at the same right boundary as client search/rows.
+   - right rail cards "Filtry proste" and "Najcenniejsze leady" should be tightened to the same pattern as clients.
+*/
+
+:root {
+  --closeflow-stage177-leads-clients-list-layout-source-truth: "active";
+  --cf177-record-rail-width: 320px;
+  --cf177-record-rail-gap: 18px;
+  --cf177-record-row-radius: 18px;
+  --cf177-record-row-min-height: 84px;
+  --cf177-record-table-padding: 12px;
+  --cf177-record-search-height: var(--cf174-main-search-height, 42px);
+  --cf177-rail-card-padding-y: 16px;
+  --cf177-rail-card-padding-x: 16px;
+  --cf177-rail-card-gap: 14px;
+}
+
+/* The work frame for leads and clients must be the same grid. */
+@media (min-width: 1221px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(var(--cf177-record-rail-width), var(--cf177-record-rail-width)) !important;
+    column-gap: var(--cf177-record-rail-gap) !important;
+    align-items: start !important;
+    box-sizing: border-box !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) > .stack {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail, .cf-operator-right-rail) {
+    width: var(--cf177-record-rail-width) !important;
+    min-width: var(--cf177-record-rail-width) !important;
+    max-width: var(--cf177-record-rail-width) !important;
+    gap: var(--cf177-rail-card-gap) !important;
+  }
+}
+
+/* Search must fill the left stack only, not the full route and not a tiny pill. */
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list > .stack > :is(.search, .cf-main-search, [data-cf-main-search-source="stage173"]) {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: var(--cf177-record-search-height) !important;
+  box-sizing: border-box !important;
+}
+
+/* The list card is the same physical width in Leads and Clients. */
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list > .stack > .table-card {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  padding: var(--cf177-record-table-padding) !important;
+  box-sizing: border-box !important;
+}
+
+/* Lead rows now use the same row skeleton as client rows. */
+#root .cf-html-view.main-leads-html .lead-table-card .lead-row,
+#root .cf-html-view.main-leads-html .lead-table-card .cf-lead-row-inline,
+#root .cf-html-view.main-clients-html .client-row.cf-client-row-inline {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: var(--cf177-record-row-min-height) !important;
+  box-sizing: border-box !important;
+  border-radius: var(--cf177-record-row-radius) !important;
+}
+
+/*
+  Same columns as the shared record-list source, with a slightly more disciplined first column.
+  The goal is not to make Leads copy Clients text, but to make both cards occupy equal geometry.
+*/
+#root .cf-html-view.main-leads-html .lead-table-card .lead-row:not(.row-empty),
+#root .cf-html-view.main-clients-html .client-row.cf-client-row-inline:not(.row-empty) {
+  display: grid !important;
+  grid-template-columns:
+    minmax(2.15rem, 2.5rem)
+    minmax(14.75rem, 1.35fr)
+    minmax(7.75rem, 0.55fr)
+    minmax(15.5rem, 1fr)
+    minmax(5rem, auto) !important;
+  align-items: center !important;
+  gap: 0.55rem 0.8rem !important;
+  padding: 0.68rem 0.82rem !important;
+}
+
+/* Keep lead content from spilling visually into the right-rail area. */
+#root .cf-html-view.main-leads-html .lead-row :is(.lead-main-cell, .lead-value-cell, .lead-action-cell) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .lead-row .lead-main-cell .title,
+#root .cf-html-view.main-leads-html .lead-row .lead-action-cell strong,
+#root .cf-html-view.main-leads-html .lead-row .lead-action-cell .sub,
+#root .cf-html-view.main-leads-html .lead-row .cf-list-row-contact,
+#root .cf-html-view.main-leads-html .lead-row .cf-list-row-value {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Clients and Leads right rails share the same compact card density. */
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail) :is(aside.right-card, .right-card, .operator-simple-filters-card, .operator-top-value-card) {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  padding: var(--cf177-rail-card-padding-y) var(--cf177-rail-card-padding-x) !important;
+  border-radius: 22px !important;
+}
+
+/* Tighten rail typography without making it cramped. */
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail) :is(.operator-simple-filters-card, .operator-top-value-card) :is(h2, h3, .right-card-title, .rail-title) {
+  font-size: 14px !important;
+  line-height: 1.16 !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail) :is(.operator-simple-filters-card, .operator-top-value-card) :is(p, small, .description, .right-card-subtitle, .rail-subtitle) {
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  font-weight: 650 !important;
+}
+
+/* Simple filters rows should match Client rail readability. */
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.operator-simple-filters-card, [data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"]) :is(button, a, .filter-row, [role="button"]) {
+  min-height: 36px !important;
+  padding: 8px 12px !important;
+  border-radius: 12px !important;
+  font-size: 12.5px !important;
+  font-weight: 800 !important;
+  line-height: 1.15 !important;
+}
+
+/* Top value rows: same structure, no glued name/value text. */
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card :is(a, button, .quick-list-row, .right-list-row) {
+  min-height: 42px !important;
+  padding: 9px 12px !important;
+  border-radius: 14px !important;
+  gap: 8px !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html) .operator-top-value-card :is(a, button, .quick-list-row, .right-list-row) :is(strong, .right-list-title, .title) {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Defensive: lead rail class should not have a separate width island. */
+#root .cf-html-view.main-leads-html .lead-right-rail.cf-operator-right-rail {
+  flex-shrink: 0 !important;
+}
+
+/* Tablet/mobile keeps a single column, same as existing source truth. */
+@media (max-width: 1220px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .layout-list:has(:is(.lead-right-rail, .clients-right-rail)) {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) :is(.lead-right-rail, .clients-right-rail, .cf-operator-right-rail) {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+}

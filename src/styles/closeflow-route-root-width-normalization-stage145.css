@@ -1,0 +1,190 @@
+/* CLOSEFLOW_STAGE145_ROUTE_ROOT_WIDTH_NORMALIZATION
+   Lokalny fix po audycie runtime/admin feedback.
+   Zasada:
+   - jedna siatka shellu: sidebar 240px + main minmax(0, 1fr)
+   - jeden slot contentu: data-shell-content
+   - route-rooty nie mogą mieć mx-auto/max-w-* jako źródła szerokości
+   - frame z wcześniejszych Stage141-144 nie jest już właścicielem szerokości
+*/
+
+:root {
+  --cf145-sidebar-width: 240px;
+  --cf145-left-gutter: 8px;
+  --cf145-right-gutter: 16px;
+  --cf145-work-width: 1480px;
+  --cf145-work-width-wide: 1520px;
+  --cf145-right-rail-width: 360px;
+  --cf145-right-rail-width-wide: 368px;
+  --cf145-shell-gap: 24px;
+  --cf145-canvas-bg: #f3f6fb;
+  --closeflow-stage145-route-root-width-normalization: "active";
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  #root {
+    min-width: 0 !important;
+    background: var(--cf145-canvas-bg) !important;
+    background-color: var(--cf145-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* Twardy kontrakt shellu. Bez tego data-shell-content może siedzieć w wąskiej kolumnie. */
+  html body #root > .app.closeflow-visual-stage01.cf-html-shell {
+    display: grid !important;
+    grid-template-columns: var(--cf145-sidebar-width) minmax(0, 1fr) !important;
+    grid-template-rows: minmax(100vh, auto) !important;
+    align-items: stretch !important;
+    width: 100vw !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    overflow-x: hidden !important;
+    background: var(--cf145-canvas-bg) !important;
+    background-color: var(--cf145-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  html body #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+  html body #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar {
+    grid-column: 1 !important;
+    width: var(--cf145-sidebar-width) !important;
+    min-width: var(--cf145-sidebar-width) !important;
+    max-width: var(--cf145-sidebar-width) !important;
+  }
+
+  html body #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+    grid-column: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    background: var(--cf145-canvas-bg) !important;
+    background-color: var(--cf145-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* Jeden właściciel szerokości contentu wszystkich zakładek. */
+  html body #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"],
+  html body #root .view.active[data-shell-content="true"][data-cf-shell-content-stage145="true"] {
+    display: block !important;
+    width: min(calc(100vw - var(--cf145-sidebar-width) - var(--cf145-left-gutter) - var(--cf145-right-gutter)), var(--cf145-work-width)) !important;
+    max-width: var(--cf145-work-width) !important;
+    min-width: 0 !important;
+    margin-left: var(--cf145-left-gutter) !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  @media (min-width: 1880px) {
+    html body #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"],
+    html body #root .view.active[data-shell-content="true"][data-cf-shell-content-stage145="true"] {
+      width: min(calc(100vw - var(--cf145-sidebar-width) - var(--cf145-left-gutter) - var(--cf145-right-gutter)), var(--cf145-work-width-wide)) !important;
+      max-width: var(--cf145-work-width-wide) !important;
+    }
+  }
+
+  /* Route roots. To jest właściwe źródło po audycie admin feedback. */
+  html body #root .view.active[data-shell-content="true"] > :is(
+    .cf-route-work-root,
+    .cf-page-shell,
+    .cf-html-view,
+    main,
+    div,
+    section,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell
+  ),
+  html body #root .view.active[data-shell-content="true"] .cf-route-work-root {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Usuń stare wyspy tylko w route slot, nie globalnie. */
+  html body #root .view.active[data-shell-content="true"] :is(
+    .mx-auto.max-w-3xl,
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl,
+    .max-w-3xl,
+    .max-w-5xl,
+    .max-w-6xl,
+    .max-w-7xl
+  ) {
+    max-width: none !important;
+  }
+
+  html body #root .view.active[data-shell-content="true"] :is(
+    .mx-auto.max-w-3xl,
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Listowe route'y z prawą kolumną. */
+  html body #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  html body #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf145-right-rail-width)) !important;
+    gap: var(--cf145-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  html body #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf145-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  html body #root .view.active[data-shell-content="true"] .activity-vnext-shell {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf145-right-rail-width)) !important;
+    gap: var(--cf145-shell-gap) !important;
+    align-items: start !important;
+  }
+}

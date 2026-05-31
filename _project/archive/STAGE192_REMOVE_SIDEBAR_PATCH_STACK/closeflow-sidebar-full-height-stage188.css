@@ -1,0 +1,57 @@
+﻿/* STAGE188_SIDEBAR_FULL_HEIGHT_LOCAL_ONLY
+   Cel: sidebar ma dochodzić do dołu ekranu.
+   Problem: po footerze sidebaru zostawało jasne tło strony.
+*/
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: #eef2f6;
+}
+
+.cf-html-shell,
+.app.closeflow-visual-stage01 {
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: #eef2f6;
+}
+
+.cf-html-shell .sidebar,
+.app.closeflow-visual-stage01 .sidebar,
+[data-shell-sidebar="true"] {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  align-self: stretch !important;
+  background: linear-gradient(180deg, #0f172a 0%, #111827 100%) !important;
+}
+
+.cf-html-shell .main,
+.app.closeflow-visual-stage01 .main,
+[data-shell-main="true"] {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.cf-html-shell .sidebar-footer,
+[data-shell-sidebar="true"] .sidebar-footer {
+  margin-top: auto;
+}
+
+/* Jeżeli sidebar jest w układzie grid/flex, wymuszamy rozciągnięcie kolumny. */
+.cf-html-shell {
+  align-items: stretch !important;
+}
+
+/* Mobile/drawer nie powinien dostać przypadkowo desktopowej wysokości. */
+@media (max-width: 860px) {
+  .cf-html-shell .sidebar,
+  .app.closeflow-visual-stage01 .sidebar,
+  [data-shell-sidebar="true"] {
+    min-height: auto !important;
+    height: auto !important;
+  }
+}
+/* /STAGE188_SIDEBAR_FULL_HEIGHT_LOCAL_ONLY */

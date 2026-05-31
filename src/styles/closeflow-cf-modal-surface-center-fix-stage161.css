@@ -1,0 +1,159 @@
+/* CLOSEFLOW_STAGE161_CF_MODAL_SURFACE_CENTER_FIX
+   Runtime target from audit: .cf-modal-surface[role="dialog"]
+   before fix: left -104, width 780, centerX 286, viewportCenterX 684, z-index 50.
+   Goal: concrete modal class, smaller, centered, above app chrome, no generic guessing.
+*/
+:root {
+  --closeflow-stage161-cf-modal-surface-center-fix: "active";
+  --cf161-modal-z: 2147483600;
+  --cf161-overlay-z: 2147483400;
+  --cf161-modal-visual-width: 680px;
+  --cf161-modal-visual-max-width: calc(100vw - 48px);
+  --cf161-modal-visual-max-height: calc(100vh - 48px);
+  --cf161-modal-logical-width: calc(var(--cf161-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf161-modal-logical-max-width: calc(var(--cf161-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf161-modal-logical-max-height: calc(var(--cf161-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf161-modal-logical-center-x: calc(50vw * var(--cf157-page-zoom-inverse, 1.25));
+  --cf161-modal-logical-center-y: calc(50vh * var(--cf157-page-zoom-inverse, 1.25));
+  --cf161-radius: 16px;
+  --cf161-section-pad-y: 12px;
+  --cf161-section-pad-x: 16px;
+  --cf161-gap: 8px;
+  --cf161-font-title: 17px;
+  --cf161-font-body: 12px;
+  --cf161-font-label: 11px;
+  --cf161-font-small: 10px;
+  --cf161-control-height: 28px;
+  --cf161-control-pad-x: 10px;
+  --cf161-textarea-min: 54px;
+  --cf161-textarea-max: 88px;
+  --cf161-footer-min-height: 46px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body :is([data-radix-dialog-overlay],[data-radix-alert-dialog-overlay],.dialog-overlay,.modal-overlay,.overlay,.backdrop,.cf-modal-backdrop,.cf-modal-overlay) {
+    z-index: var(--cf161-overlay-z) !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    zoom: 1 !important;
+    transform: none !important;
+  }
+
+  body .cf-modal-surface[role="dialog"],
+  body [role="dialog"].cf-modal-surface {
+    z-index: var(--cf161-modal-z) !important;
+    position: fixed !important;
+    inset: auto !important;
+    left: var(--cf161-modal-logical-center-x) !important;
+    top: var(--cf161-modal-logical-center-y) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: min(var(--cf161-modal-logical-width), var(--cf161-modal-logical-max-width)) !important;
+    max-width: min(var(--cf161-modal-logical-width), var(--cf161-modal-logical-max-width)) !important;
+    max-height: var(--cf161-modal-logical-max-height) !important;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center center !important;
+    zoom: 1 !important;
+    contain: none !important;
+    clip-path: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    border-radius: var(--cf161-radius) !important;
+    font-size: var(--cf161-font-body) !important;
+    line-height: 1.16 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] .cf-modal-header,
+  body [role="dialog"].cf-modal-surface .cf-modal-header {
+    flex: 0 0 auto !important;
+    padding-bottom: 8px !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(h1,h2,h3,.cf-modal-title,.dialog-title,.modal-title,[data-radix-dialog-title]),
+  body [role="dialog"].cf-modal-surface :is(h1,h2,h3,.cf-modal-title,.dialog-title,.modal-title,[data-radix-dialog-title]) {
+    font-size: var(--cf161-font-title) !important;
+    line-height: 1.08 !important;
+    margin: 0 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(p,small,.cf-modal-description,.description,.caption,[data-radix-dialog-description]),
+  body [role="dialog"].cf-modal-surface :is(p,small,.cf-modal-description,.description,.caption,[data-radix-dialog-description]) {
+    font-size: var(--cf161-font-small) !important;
+    line-height: 1.13 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(form,.event-form-vnext),
+  body [role="dialog"].cf-modal-surface :is(form,.event-form-vnext) {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--cf161-gap) !important;
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable !important;
+    padding-bottom: 0 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(section,article,fieldset,.rounded-2xl,.card,.panel-card,.section-card,.form-card),
+  body [role="dialog"].cf-modal-surface :is(section,article,fieldset,.rounded-2xl,.card,.panel-card,.section-card,.form-card) {
+    padding: var(--cf161-section-pad-y) var(--cf161-section-pad-x) !important;
+    gap: var(--cf161-gap) !important;
+    border-radius: calc(var(--cf161-radius) - 4px) !important;
+    box-sizing: border-box !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.space-y-4,.space-y-3,.space-y-2,.grid,.event-form-field),
+  body [role="dialog"].cf-modal-surface :is(.space-y-4,.space-y-3,.space-y-2,.grid,.event-form-field) {
+    gap: var(--cf161-gap) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(label,.label),
+  body [role="dialog"].cf-modal-surface :is(label,.label) {
+    font-size: var(--cf161-font-label) !important;
+    line-height: 1.08 !important;
+    margin-bottom: 3px !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(input,select,button,.btn,[role="button"]),
+  body [role="dialog"].cf-modal-surface :is(input,select,button,.btn,[role="button"]) {
+    min-height: var(--cf161-control-height) !important;
+    height: auto !important;
+    padding-left: var(--cf161-control-pad-x) !important;
+    padding-right: var(--cf161-control-pad-x) !important;
+    border-radius: 10px !important;
+    font-size: var(--cf161-font-body) !important;
+    line-height: 1.08 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] textarea,
+  body [role="dialog"].cf-modal-surface textarea {
+    min-height: var(--cf161-textarea-min) !important;
+    max-height: var(--cf161-textarea-max) !important;
+    padding: 8px 10px !important;
+    border-radius: 10px !important;
+    font-size: var(--cf161-font-body) !important;
+    line-height: 1.14 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.cf-modal-footer,.event-form-footer,.dialog-footer,.modal-footer,footer),
+  body [role="dialog"].cf-modal-surface :is(.cf-modal-footer,.event-form-footer,.dialog-footer,.modal-footer,footer),
+  body .cf-modal-surface[role="dialog"] form > :is(div,section,footer):has(button[type="submit"]),
+  body [role="dialog"].cf-modal-surface form > :is(div,section,footer):has(button[type="submit"]) {
+    order: 999 !important;
+    flex: 0 0 auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+    min-height: var(--cf161-footer-min-height) !important;
+    padding: 7px 0 0 !important;
+    margin-top: auto !important;
+    background: inherit !important;
+    border-top: 1px solid rgba(148,163,184,.22) !important;
+    box-sizing: border-box !important;
+  }
+}

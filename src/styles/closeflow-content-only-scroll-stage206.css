@@ -1,0 +1,124 @@
+﻿/* STAGE206_CONTENT_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY
+   Scroll ma być tylko w środku aplikacji:
+   - nie body/browser,
+   - nie lewy sidebar,
+   - nie cały main z topbarem,
+   - tylko div.view.active[data-shell-content=true].
+*/
+
+@media (min-width: 861px) {
+  html,
+  body {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #root {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    background: #f3f6fb !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    width: calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-width: calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    transform: scale(var(--cf-stage201-app-scale, 0.75)) !important;
+    transform-origin: top left !important;
+    overflow: hidden !important;
+    align-items: stretch !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-sidebar="true"].sidebar {
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    overflow: hidden !important;
+    align-self: stretch !important;
+    flex: 0 0 var(--cf-sidebar-width, 240px) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .nav-scroll {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"] {
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-global-bar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-access-warning="true"] {
+    flex: 0 0 auto !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"].view.active {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: stable !important;
+    padding-bottom: calc(140px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"].view.active > * {
+    min-height: max-content !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .main-calendar-html,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-page,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .notifications-vnext-page,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .ai-drafts-vnext-page {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .main-calendar-html .calendar-week-layout,
+  .main-calendar-html .calendar-week-plan,
+  .main-calendar-html .calendar-week-plan-list {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 860px) {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell,
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"] {
+    transform: none !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+/* /STAGE206_CONTENT_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY */

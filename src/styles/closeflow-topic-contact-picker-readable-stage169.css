@@ -1,0 +1,132 @@
+/* CLOSEFLOW_STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD
+
+   Problem:
+   - In modal source/contact picker dropdown, selected/source options can become unreadable.
+   - Likely cause: modal dark motif rules + white option panels + inherited text colors fighting each other.
+   - User wants task modal to have the same source-linking option as event modal.
+
+   Decision:
+   - Give TopicContactPicker its own explicit data markers and CSS source truth.
+   - Force white dropdown/options with dark readable text.
+   - Keep the event-like modal motif from Stage165.
+   - Add guard that Tasks still uses TopicContactPicker.
+*/
+
+:root {
+  --closeflow-stage169-topic-contact-picker-readable-and-task-guard: "active";
+  --cf169-picker-bg: #ffffff;
+  --cf169-picker-fg: #0f172a;
+  --cf169-picker-muted: #64748b;
+  --cf169-picker-soft: #f8fafc;
+  --cf169-picker-border: #dbe4ef;
+  --cf169-picker-shadow: 0 18px 46px rgba(15, 23, 42, 0.18);
+  --cf169-picker-hover: #f1f5f9;
+  --cf169-picker-focus: #eaf2ff;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker="true"],
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker="true"] {
+    position: relative !important;
+    color: var(--cf165-modal-fg, #f8fafc) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-input="true"],
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-input="true"],
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-topic-contact-picker-input,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-topic-contact-picker-input {
+    background: var(--cf169-picker-bg) !important;
+    color: var(--cf169-picker-fg) !important;
+    -webkit-text-fill-color: var(--cf169-picker-fg) !important;
+    border-color: var(--cf169-picker-border) !important;
+    caret-color: #2563eb !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-input="true"]::placeholder,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-input="true"]::placeholder,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-topic-contact-picker-input::placeholder,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-topic-contact-picker-input::placeholder {
+    color: #8ea0b8 !important;
+    opacity: 1 !important;
+    -webkit-text-fill-color: #8ea0b8 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-dropdown="true"],
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-dropdown="true"],
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-topic-contact-picker-dropdown,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-topic-contact-picker-dropdown {
+    z-index: 2147483650 !important;
+    background: var(--cf169-picker-bg) !important;
+    color: var(--cf169-picker-fg) !important;
+    border: 1px solid var(--cf169-picker-border) !important;
+    box-shadow: var(--cf169-picker-shadow) !important;
+    opacity: 1 !important;
+    isolation: isolate !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-option="true"],
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-option="true"],
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-topic-contact-picker-option,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-topic-contact-picker-option {
+    background: var(--cf169-picker-bg) !important;
+    color: var(--cf169-picker-fg) !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    opacity: 1 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-option="true"]:hover,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-option="true"]:hover,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-topic-contact-picker-option:hover,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-topic-contact-picker-option:hover {
+    background: var(--cf169-picker-hover) !important;
+    color: var(--cf169-picker-fg) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-option="true"]:focus-visible,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-option="true"]:focus-visible,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-topic-contact-picker-option:focus-visible,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-topic-contact-picker-option:focus-visible {
+    background: var(--cf169-picker-focus) !important;
+    color: var(--cf169-picker-fg) !important;
+    outline: 2px solid rgba(37, 99, 235, 0.36) !important;
+    outline-offset: -2px !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.cf-topic-contact-picker-option-title, [data-topic-contact-picker-option-title="true"]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.cf-topic-contact-picker-option-title, [data-topic-contact-picker-option-title="true"]) {
+    color: var(--cf169-picker-fg) !important;
+    -webkit-text-fill-color: var(--cf169-picker-fg) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.cf-topic-contact-picker-option-subtitle, .cf-topic-contact-picker-option-resolution, .cf-topic-contact-picker-empty, .cf-topic-contact-picker-selected-note),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.cf-topic-contact-picker-option-subtitle, .cf-topic-contact-picker-option-resolution, .cf-topic-contact-picker-empty, .cf-topic-contact-picker-selected-note) {
+    color: var(--cf169-picker-muted) !important;
+    -webkit-text-fill-color: var(--cf169-picker-muted) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker="true"] svg,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker="true"] svg {
+    color: #94a3b8 !important;
+    stroke: currentColor !important;
+  }
+
+  /*
+    Native select dropdown fallback. Some browser/Windows dropdowns ignore parent colors.
+    This prevents white-on-white in "Źródło", "Typ", "Status", "Priorytet" select panels.
+  */
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface select,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface select option,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select option {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface select option:checked,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select option:checked {
+    background: #dbeafe !important;
+    color: #0f172a !important;
+  }
+}

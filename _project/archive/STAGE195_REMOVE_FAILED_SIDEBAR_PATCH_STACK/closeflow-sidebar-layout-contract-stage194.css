@@ -1,0 +1,170 @@
+﻿/* STAGE194_SIDEBAR_LAYOUT_CONTRACT_LOCAL_ONLY
+   Cel:
+   - przestać łatać tło/szerokość,
+   - ustawić prawdziwy kontrakt layoutu sidebara:
+     brand u góry, nav w środku, footer na dole,
+   - sidebar ma mieć pełną wysokość viewportu,
+   - nie zmieniamy szerokości panelu.
+*/
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+/* Zabijamy pseudo-szyny z poprzednich prób. */
+.app.closeflow-visual-stage01::before,
+.cf-html-shell::before {
+  content: none !important;
+  display: none !important;
+}
+
+.app.closeflow-visual-stage01,
+.cf-html-shell {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+
+/* Desktop only. Nie ruszamy mobile drawer/bottom nav. */
+@media (min-width: 861px) {
+  body #root aside.sidebar[data-shell-sidebar="true"],
+  body #root [data-shell-sidebar="true"].sidebar {
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+
+    display: grid !important;
+    grid-template-rows: auto minmax(0, 1fr) auto !important;
+
+    align-self: stretch !important;
+    overflow: hidden !important;
+
+    background: linear-gradient(180deg, #0f172a 0%, #111827 100%) !important;
+  }
+
+  body #root aside.sidebar[data-shell-sidebar="true"] .brand,
+  body #root [data-shell-sidebar="true"].sidebar .brand {
+    grid-row: 1 !important;
+    min-height: 0 !important;
+    padding-top: 0.7rem !important;
+    padding-bottom: 0.55rem !important;
+  }
+
+  body #root aside.sidebar[data-shell-sidebar="true"] .nav-scroll,
+  body #root [data-shell-sidebar="true"].sidebar .nav-scroll {
+    grid-row: 2 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+    background: transparent !important;
+
+    scrollbar-width: thin !important;
+    scrollbar-color: #64748b #111827 !important;
+  }
+
+  body #root aside.sidebar[data-shell-sidebar="true"] .sidebar-footer,
+  body #root [data-shell-sidebar="true"].sidebar .sidebar-footer {
+    grid-row: 3 !important;
+    min-height: 0 !important;
+    margin-top: 0 !important;
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.65rem !important;
+    background: transparent !important;
+  }
+
+  /* Kompakt tylko w pionie. Zero width. */
+  body #root [data-shell-sidebar="true"] .nav-group {
+    margin-bottom: 0.3rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-caption {
+    margin-top: 0.28rem !important;
+    margin-bottom: 0.16rem !important;
+    line-height: 1 !important;
+    font-size: 0.62rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-stack {
+    gap: 0.18rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-btn {
+    min-height: 1.92rem !important;
+    height: 1.92rem !important;
+    padding-top: 0.28rem !important;
+    padding-bottom: 0.28rem !important;
+    border-radius: 0.68rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-label {
+    line-height: 1 !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-ico {
+    transform: scale(0.88);
+  }
+
+  body #root [data-shell-sidebar="true"] .trial-card {
+    margin-bottom: 0.38rem !important;
+    padding-top: 0.44rem !important;
+    padding-bottom: 0.44rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .trial-card .top {
+    margin-bottom: 0.28rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .trial-link {
+    margin-top: 0.28rem !important;
+    line-height: 1 !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .user-card {
+    min-height: 2.58rem !important;
+    padding-top: 0.42rem !important;
+    padding-bottom: 0.42rem !important;
+    margin-bottom: 0.38rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .sidebar-logout {
+    min-height: 1.92rem !important;
+    height: 1.92rem !important;
+    padding-top: 0.28rem !important;
+    padding-bottom: 0.28rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+    width: 0.58rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar-track {
+    background: #111827 !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar-thumb {
+    background: #64748b !important;
+    border-radius: 999px !important;
+    border: 2px solid #111827 !important;
+  }
+}
+
+@media (max-width: 860px) {
+  body #root aside.sidebar[data-shell-sidebar="true"],
+  body #root [data-shell-sidebar="true"].sidebar {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    display: block !important;
+  }
+}
+/* /STAGE194_SIDEBAR_LAYOUT_CONTRACT_LOCAL_ONLY */

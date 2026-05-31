@@ -386,3 +386,40 @@
 .admin-tool-quick-editor-head {
   cursor: grab;
 }
+
+/* STAGE212M_ADMIN_DEBUG_TOOLBAR_CONTRAST */
+.admin-debug-toolbar {
+  background: rgba(15, 23, 42, 0.96) !important;
+  border-color: rgba(148, 163, 184, 0.42) !important;
+  color: #f8fafc !important;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, 0.28) !important;
+  backdrop-filter: blur(12px) !important;
+}
+.admin-debug-toolbar > button,
+.admin-debug-toolbar button {
+  background: rgba(255, 255, 255, 0.10) !important;
+  border-color: rgba(226, 232, 240, 0.34) !important;
+  color: #f8fafc !important;
+  opacity: 1 !important;
+}
+.admin-debug-toolbar button:disabled,
+.admin-debug-toolbar > button:disabled,
+.admin-debug-toolbar button[aria-disabled="true"],
+.admin-debug-toolbar > button[aria-disabled="true"] {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(248, 250, 252, 0.74) !important;
+  border-color: rgba(226, 232, 240, 0.22) !important;
+  opacity: 0.78 !important;
+}
+
+
+/* STAGE212O_ADMIN_DEBUG_DARK_SOURCE_TRUTH */
+.admin-debug-toolbar {
+  background: rgba(15, 23, 42, 0.92) !important;
+  color: #f8fafc !important;
+}
+.admin-debug-toolbar > button,
+.admin-debug-toolbar button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #f8fafc !important;
+}

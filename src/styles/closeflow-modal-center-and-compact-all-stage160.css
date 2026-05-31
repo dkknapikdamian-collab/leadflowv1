@@ -1,0 +1,386 @@
+/* CLOSEFLOW_STAGE160_MODAL_CENTER_AND_COMPACT_ALL
+   Problem:
+   - Stage159 still leaves dialogs too large / shifted left.
+   - User confirms: all subwindows must be smaller and centered.
+   - Root cause is mixed placement:
+     A) some dialogs live inside #root > .app, which is zoomed by Stage157;
+     B) some dialogs/popovers may be portaled outside #root.
+   - One centering formula cannot work for both.
+
+   Stage160:
+   - keeps Stage157 app zoom source truth;
+   - overrides Stage158/159 dialog positioning;
+   - centers dialogs differently depending on whether they are inside zoomed app or outside root;
+   - uses real compact modal tokens;
+   - keeps overlays/backdrops full-screen;
+   - avoids making dialog content huge or clipped.
+*/
+
+:root {
+  --closeflow-stage160-modal-center-and-compact-all: "active";
+
+  /* Visual target. At Stage157 zoom 0.80 this becomes 720px visual for in-app dialogs. */
+  --cf160-modal-visual-width: 720px;
+  --cf160-modal-visual-max-width: calc(100vw - 40px);
+  --cf160-modal-visual-max-height: calc(100vh - 40px);
+
+  /* Logical values for dialogs inside Stage157 zoomed app. */
+  --cf160-modal-logical-width: calc(var(--cf160-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf160-modal-logical-max-width: calc(var(--cf160-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf160-modal-logical-max-height: calc(var(--cf160-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf160-modal-logical-center-x: calc(50vw * var(--cf157-page-zoom-inverse, 1.25));
+  --cf160-modal-logical-center-y: calc(50vh * var(--cf157-page-zoom-inverse, 1.25));
+
+  --cf160-modal-radius: 18px;
+  --cf160-modal-pad-x: 18px;
+  --cf160-modal-pad-y: 14px;
+  --cf160-modal-gap: 9px;
+
+  --cf160-modal-font-title: 18px;
+  --cf160-modal-font-body: 12px;
+  --cf160-modal-font-label: 11px;
+  --cf160-modal-font-small: 10.5px;
+
+  --cf160-modal-control-height: 30px;
+  --cf160-modal-control-pad-x: 10px;
+  --cf160-modal-footer-height: 50px;
+}
+
+/* Desktop/operator overlays only. */
+@media (hover: hover) and (pointer: fine) {
+  /* Backdrops always cover the viewport and must not be scaled or centered as a dialog. */
+  body :is(
+    [data-radix-dialog-overlay],
+    [data-radix-alert-dialog-overlay],
+    .dialog-overlay,
+    .modal-overlay,
+    .overlay,
+    .backdrop
+  ) {
+    zoom: 1 !important;
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    transform: none !important;
+  }
+
+  /* Shared compact dialog styling. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) {
+    margin: 0 !important;
+    border-radius: var(--cf160-modal-radius) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    font-size: var(--cf160-modal-font-body) !important;
+    line-height: 1.18 !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  /* A) Dialogs inside the Stage157 zoomed app need inverse logical centering.
+     This is the missing piece from Stage159. */
+  #root > .app.closeflow-visual-stage01.cf-html-shell :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) {
+    zoom: 1 !important;
+    position: fixed !important;
+    inset: auto !important;
+    left: var(--cf160-modal-logical-center-x) !important;
+    top: var(--cf160-modal-logical-center-y) !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center center !important;
+
+    width: min(var(--cf160-modal-logical-width), var(--cf160-modal-logical-max-width)) !important;
+    max-width: min(var(--cf160-modal-logical-width), var(--cf160-modal-logical-max-width)) !important;
+    max-height: var(--cf160-modal-logical-max-height) !important;
+  }
+
+  /* B) Portaled dialogs outside #root are not under Stage157 zoom.
+     They use normal viewport centering and visual width. */
+  body > :not(#root) :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ),
+  body > [data-radix-portal] :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) {
+    zoom: 1 !important;
+    position: fixed !important;
+    inset: auto !important;
+    left: 50vw !important;
+    top: 50vh !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center center !important;
+
+    width: min(var(--cf160-modal-visual-width), var(--cf160-modal-visual-max-width)) !important;
+    max-width: min(var(--cf160-modal-visual-width), var(--cf160-modal-visual-max-width)) !important;
+    max-height: var(--cf160-modal-visual-max-height) !important;
+  }
+
+  /* Header/title density. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    h1,
+    h2,
+    h3,
+    .dialog-title,
+    .modal-title,
+    [data-radix-dialog-title],
+    [data-radix-alert-dialog-title]
+  ) {
+    font-size: var(--cf160-modal-font-title) !important;
+    line-height: 1.08 !important;
+    margin: 0 !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    p,
+    small,
+    .description,
+    .caption,
+    [data-radix-dialog-description],
+    [data-radix-alert-dialog-description]
+  ) {
+    font-size: var(--cf160-modal-font-small) !important;
+    line-height: 1.15 !important;
+  }
+
+  /* Compact the main modal content. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    form,
+    .dialog-body,
+    .modal-body,
+    .form-body,
+    .scroll-body,
+    .content,
+    .body
+  ) {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--cf160-modal-gap) !important;
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    section,
+    article,
+    fieldset,
+    .card,
+    .panel-card,
+    .section-card,
+    .form-card
+  ) {
+    padding: var(--cf160-modal-pad-y) var(--cf160-modal-pad-x) !important;
+    gap: var(--cf160-modal-gap) !important;
+    border-radius: calc(var(--cf160-modal-radius) - 5px) !important;
+    box-sizing: border-box !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(label, .label) {
+    font-size: var(--cf160-modal-font-label) !important;
+    line-height: 1.08 !important;
+    margin-bottom: 4px !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(input, select, button, .btn, [role="button"]) {
+    min-height: var(--cf160-modal-control-height) !important;
+    height: auto !important;
+    padding-left: var(--cf160-modal-control-pad-x) !important;
+    padding-right: var(--cf160-modal-control-pad-x) !important;
+    border-radius: 11px !important;
+    font-size: var(--cf160-modal-font-body) !important;
+    line-height: 1.1 !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) textarea {
+    min-height: 58px !important;
+    max-height: 96px !important;
+    padding: 8px 10px !important;
+    border-radius: 11px !important;
+    font-size: var(--cf160-modal-font-body) !important;
+    line-height: 1.16 !important;
+  }
+
+  /* Footer/action rows: keep visible, but do not cover content. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    footer,
+    .dialog-footer,
+    .modal-footer,
+    .DialogFooter,
+    [data-dialog-footer],
+    [data-radix-dialog-footer],
+    [class*="DialogFooter"]
+  ),
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) form > :is(div, section, footer):has(button[type="submit"]) {
+    order: 999 !important;
+    flex: 0 0 auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    min-height: var(--cf160-modal-footer-height) !important;
+    padding: 8px 0 0 !important;
+    margin-top: auto !important;
+    background: inherit !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Close button stable in corner. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    button[aria-label="Close"],
+    button[aria-label="Zamknij"],
+    .dialog-close,
+    [data-radix-dialog-close]
+  ) {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    min-width: 28px !important;
+    width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 0 !important;
+    border-radius: 999px !important;
+  }
+
+  /* Popovers/dropdowns should stay compact but not receive dialog centering. */
+  body :is(
+    [data-radix-popper-content-wrapper],
+    [data-radix-popover-content],
+    [data-radix-dropdown-menu-content],
+    [data-radix-select-content],
+    [data-radix-hover-card-content],
+    [data-radix-tooltip-content],
+    [data-radix-menubar-content],
+    [data-radix-context-menu-content],
+    .popover-content,
+    .dropdown-content,
+    .menu-content,
+    .select-content,
+    .tooltip-content
+  ) {
+    zoom: 1 !important;
+    font-size: var(--cf160-modal-font-body) !important;
+    line-height: 1.14 !important;
+  }
+}
+
+/* Tuning:
+   One source of truth:
+   --cf160-modal-visual-width
+   --cf160-modal-visual-max-height
+   --cf160-modal-pad-x/y
+   --cf160-modal-control-height
+*/

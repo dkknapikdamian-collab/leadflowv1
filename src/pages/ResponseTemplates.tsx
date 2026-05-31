@@ -24,6 +24,10 @@ import {
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/visual-stage22-event-form-vnext.css';
+import '../styles/closeflow-response-template-modal-source-truth-stage181r.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 type ResponseTemplate = {
   id: string;
   name: string;
@@ -187,7 +191,7 @@ export default function ResponseTemplates() {
 
   return (
     <Layout>
-      <div className="cf-html-view mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
+      <div className="cf-html-view cf-route-work-root flex w-full flex-col gap-6 px-4 py-4 md:px-8 md:py-8" data-a13-template-style="response-templates-v2">
         <CloseFlowPageHeaderV2 pageKey="responseTemplates" />
 
         <section className="grid-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -199,9 +203,9 @@ export default function ResponseTemplates() {
 
         <Card className="cf-readable-card border-none app-surface-strong app-shadow">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative flex-1">
+            <div className="relative flex-1 cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 app-muted" />
-              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="pl-10" placeholder="Szukaj po nazwie, kategorii, tagach, zmiennych albo treści..." />
+              <Input value={query} onChange={(event) => setQuery(event.target.value)} className="" placeholder="Szukaj po nazwie, kategorii, tagach, zmiennych albo treści..." />
             </div>
             <div className="rounded-2xl border px-3 py-2 text-xs font-semibold uppercase tracking-[0.16em] app-muted app-border app-surface">
               Szablony odpowiedzi są osobne od checklist spraw
@@ -286,35 +290,50 @@ export default function ResponseTemplates() {
         )}
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
-            <DialogHeader>
-              <DialogTitle>{editingId ? 'Edytuj szablon odpowiedzi' : 'Nowy szablon odpowiedzi'}</DialogTitle>
+          <DialogContent className="cf-response-template-modal-v2" data-response-template-modal-stage181r="true">
+            <DialogHeader className="cf-response-template-modal-v2-header">
+              <DialogTitle className="cf-response-template-modal-v2-title">{editingId ? 'Edytuj szablon odpowiedzi' : 'Nowy szablon odpowiedzi'}</DialogTitle>
             </DialogHeader>
-            <div className="grid gap-4 py-2 md:grid-cols-2">
-              <div className="grid gap-2">
-                <Label>Nazwa</Label>
-                <Input value={name} onChange={(event) => setName(event.target.value)} placeholder="Np. Przypomnienie po braku odpowiedzi" />
-              </div>
-              <div className="grid gap-2">
-                <Label>Kategoria</Label>
-                <Input value={category} onChange={(event) => setCategory(event.target.value)} placeholder="Np. Follow-up" />
-              </div>
-              <div className="grid gap-2">
-                <Label>Tagi (po przecinku)</Label>
-                <Input value={tags} onChange={(event) => setTags(event.target.value)} placeholder="np. lead, oferta, przypomnienie" />
-              </div>
-              <div className="grid gap-2">
-                <Label>Zmienne (po przecinku)</Label>
-                <Input value={variables} onChange={(event) => setVariables(event.target.value)} placeholder="np. client_name, case_title, my_name" />
-              </div>
-              <div className="grid gap-2 md:col-span-2">
-                <Label>Treść</Label>
-                <Textarea rows={10} value={body} onChange={(event) => setBody(event.target.value)} placeholder="Wpisz treść odpowiedzi. Możesz używać zmiennych typu {{client_name}}." />
-              </div>
+
+            <div className="cf-response-template-modal-v2-body">
+              <section className="cf-response-template-modal-v2-card" aria-label="Dane szablonu odpowiedzi">
+                <div className="cf-response-template-modal-v2-card-head">
+                  <h3 className="cf-response-template-modal-v2-card-title">Podstawowe dane</h3>
+                  <p className="cf-response-template-modal-v2-card-subtitle">Uzupełnij nazwę, kategorię, tagi i treść gotowej odpowiedzi.</p>
+                </div>
+
+                <div className="cf-response-template-modal-v2-grid">
+                  <div className="cf-response-template-modal-v2-field">
+                    <Label>Nazwa</Label>
+                    <Input className="cf-response-template-modal-v2-input" value={name} onChange={(event) => setName(event.target.value)} placeholder="Np. Przypomnienie po braku odpowiedzi" />
+                  </div>
+
+                  <div className="cf-response-template-modal-v2-field">
+                    <Label>Kategoria</Label>
+                    <Input className="cf-response-template-modal-v2-input" value={category} onChange={(event) => setCategory(event.target.value)} placeholder="Np. Follow-up" />
+                  </div>
+
+                  <div className="cf-response-template-modal-v2-field">
+                    <Label>Tagi (po przecinku)</Label>
+                    <Input className="cf-response-template-modal-v2-input" value={tags} onChange={(event) => setTags(event.target.value)} placeholder="np. lead, oferta, przypomnienie" />
+                  </div>
+
+                  <div className="cf-response-template-modal-v2-field">
+                    <Label>Zmienne (po przecinku)</Label>
+                    <Input className="cf-response-template-modal-v2-input" value={variables} onChange={(event) => setVariables(event.target.value)} placeholder="np. client_name, case_title, my_name" />
+                  </div>
+
+                  <div className="cf-response-template-modal-v2-field cf-response-template-modal-v2-body-field">
+                    <Label>Treść</Label>
+                    <Textarea className="cf-response-template-modal-v2-textarea" rows={10} value={body} onChange={(event) => setBody(event.target.value)} placeholder="Wpisz treść odpowiedzi. Możesz używać zmiennych typu {{client_name}}." />
+                  </div>
+                </div>
+              </section>
             </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setOpen(false)}>Anuluj</Button>
-              <Button onClick={() => void save()} disabled={saving}><Save className="h-4 w-4" /> {saving ? 'Zapisywanie...' : 'Zapisz'}</Button>
+
+            <DialogFooter className="cf-response-template-modal-v2-footer">
+              <Button variant="outline" className="cf-response-template-modal-v2-cancel" onClick={() => setOpen(false)}>Anuluj</Button>
+              <Button className="cf-response-template-modal-v2-submit" onClick={() => void save()} disabled={saving}><Save className="h-4 w-4" /> {saving ? 'Zapisywanie...' : 'Zapisz'}</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>

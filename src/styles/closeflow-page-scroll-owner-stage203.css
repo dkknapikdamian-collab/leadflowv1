@@ -1,0 +1,125 @@
+﻿/* STAGE203_PAGE_SCROLL_OWNER_AFTER_SCALE_75_LOCAL_ONLY
+   Problem:
+   - Stage201 ustawił body/#root jako overflow:hidden dla kontrolowanej skali 75%.
+   - Przy dłuższych widokach, np. kalendarz tydzień/miesiąc, treść była ucięta bez realnego scrolla.
+   Rozwiązanie:
+   - body/#root stają się właścicielem scrolla,
+   - shell zostaje skalowany 75%,
+   - sidebar jest sticky i dalej trzyma pełną wysokość widoku,
+   - main/view/content nie blokują wysokości długich zakładek.
+*/
+
+@media (min-width: 861px) {
+  html {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  body {
+    height: auto !important;
+    min-height: 100% !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    background: #f3f6fb !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    height: auto !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    overflow: visible !important;
+    align-items: start !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-sidebar="true"].sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    align-self: start !important;
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    overflow: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .nav-scroll {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"] {
+    height: auto !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+    padding-bottom: calc(180px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .main-calendar-html {
+    min-height: max-content !important;
+    overflow: visible !important;
+    padding-bottom: calc(240px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  .main-calendar-html .calendar-week-layout,
+  .main-calendar-html .calendar-week-plan,
+  .main-calendar-html .calendar-week-plan-list {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    align-items: start !important;
+  }
+
+  .main-calendar-html [data-calendar-selected-day-panel="true"] {
+    scroll-margin-top: calc(24px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    margin-bottom: calc(160px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  .main-calendar-html .cf-selected-day-v9-body {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 860px) {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell,
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+/* /STAGE203_PAGE_SCROLL_OWNER_AFTER_SCALE_75_LOCAL_ONLY */

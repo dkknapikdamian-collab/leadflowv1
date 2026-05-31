@@ -1,0 +1,117 @@
+﻿/* STAGE190B_SIDEBAR_REAL_PANEL_FULL_HEIGHT_LOCAL_ONLY
+   Cel: rozciągnąć faktyczny panel aside.sidebar, nie tło za nim.
+*/
+
+:root {
+  --cf-sidebar-real-width-stage190b: 12rem;
+  --cf-sidebar-real-bg-top-stage190b: #0f172a;
+  --cf-sidebar-real-bg-bottom-stage190b: #111827;
+  --cf-page-bg-stage190b: #eef2f6;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background: var(--cf-page-bg-stage190b) !important;
+}
+
+/* Kasujemy pseudo-szynę poprzedniego podejścia. */
+.app.closeflow-visual-stage01::before,
+.cf-html-shell::before {
+  content: none !important;
+  display: none !important;
+}
+
+/* Nie zmieniamy prawego tła aplikacji na ciemne. */
+.app.closeflow-visual-stage01,
+.cf-html-shell {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  background: var(--cf-page-bg-stage190b) !important;
+}
+
+/* Właściwy panel boczny. To jest realny aside.sidebar. */
+@media (min-width: 861px) {
+  body #root .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+  body #root .cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+  body #root [data-shell-sidebar="true"].sidebar {
+    position: sticky !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 20 !important;
+
+    width: var(--cf-sidebar-real-width-stage190b) !important;
+    min-width: var(--cf-sidebar-real-width-stage190b) !important;
+    max-width: var(--cf-sidebar-real-width-stage190b) !important;
+
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: stretch !important;
+
+    background: linear-gradient(
+      180deg,
+      var(--cf-sidebar-real-bg-top-stage190b) 0%,
+      var(--cf-sidebar-real-bg-bottom-stage190b) 100%
+    ) !important;
+
+    border-right: 1px solid rgba(148, 163, 184, 0.16) !important;
+    box-shadow: 12px 0 34px rgba(15, 23, 42, 0.10) !important;
+    overflow: hidden !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .brand {
+    flex: 0 0 auto !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    background: transparent !important;
+    scrollbar-width: thin;
+    scrollbar-color: #64748b #111827;
+  }
+
+  body #root [data-shell-sidebar="true"] .sidebar-footer {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    background: transparent !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+    width: 0.65rem;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar-track {
+    background: #111827;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar-thumb {
+    background: #64748b;
+    border-radius: 999px;
+    border: 2px solid #111827;
+  }
+}
+
+/* Mobile zostaje bez desktopowej wysokości. */
+@media (max-width: 860px) {
+  body #root [data-shell-sidebar="true"].sidebar {
+    position: static !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+}
+/* /STAGE190B_SIDEBAR_REAL_PANEL_FULL_HEIGHT_LOCAL_ONLY */

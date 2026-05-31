@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Download, ShieldCheck, Smartphone, X } from 'lucide-react';
-/* STAGE13_PWA_MOBILE_SAFE_MODE: instalacja PWA bez natywnej apki i bez obietnicy offline danych biznesowych. */
-
-
+import { Download, Smartphone, X } from 'lucide-react';
 import { Button } from './ui/button';
 
 type BeforeInstallPromptChoice = {
@@ -27,19 +24,6 @@ function isStandaloneDisplayMode() {
   );
 }
 
-function isMobileLike() {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia?.('(max-width: 768px)').matches === true || /Android|iPhone|iPad|iPod/i.test(window.navigator.userAgent);
-}
-
-function isIosSafariLike() {
-  if (typeof window === 'undefined') return false;
-  const ua = window.navigator.userAgent;
-  const isIos = /iPhone|iPad|iPod/i.test(ua);
-  const isSafari = /Safari/i.test(ua) && !/CriOS|FxiOS|EdgiOS/i.test(ua);
-  return isIos && isSafari;
-}
-
 function readDismissedFlag() {
   if (typeof window === 'undefined') return false;
 
@@ -62,7 +46,6 @@ function writeDismissedFlag() {
 
 export function PwaInstallPrompt() {
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [manualPromptReady, setManualPromptReady] = useState(false);
   const [dismissed, setDismissed] = useState(() => readDismissedFlag());
   const [installed, setInstalled] = useState(() => isStandaloneDisplayMode());
   const [isInstalling, setIsInstalling] = useState(false);
@@ -93,23 +76,18 @@ export function PwaInstallPrompt() {
     const media = window.matchMedia?.('(display-mode: standalone)');
     media?.addEventListener?.('change', handleDisplayModeChange);
 
-    const manualTimer = window.setTimeout(() => {
-      if (!isStandaloneDisplayMode() && isMobileLike()) setManualPromptReady(true);
-    }, 2500);
-
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
       window.removeEventListener('appinstalled', handleInstalled);
       media?.removeEventListener?.('change', handleDisplayModeChange);
-      window.clearTimeout(manualTimer);
     };
   }, []);
 
   const shouldShow = useMemo(() => {
     if (installed) return false;
     if (dismissed) return false;
-    return Boolean(installPrompt || manualPromptReady);
-  }, [dismissed, installPrompt, installed, manualPromptReady]);
+    return Boolean(installPrompt);
+  }, [dismissed, installPrompt, installed]);
 
   const handleDismiss = () => {
     writeDismissedFlag();
@@ -138,15 +116,11 @@ export function PwaInstallPrompt() {
 
   if (!shouldShow) return null;
 
-  const manualCopy = isIosSafariLike()
-    ? 'Na iPhone: Udostępnij → Do ekranu początkowego.'
-    : 'Jeśli przycisk instalacji nie pojawia się, użyj menu przeglądarki: Dodaj do ekranu głównego.';
-
   return (
     <div
       className="fixed inset-x-3 bottom-20 z-50 pb-[env(safe-area-inset-bottom)] md:left-auto md:right-6 md:bottom-6 md:w-[380px] md:pb-0"
-      data-pwa-install-prompt="stage13"
-      data-pwa-mobile-safe-mode="true"
+      data-pwa-install-prompt="stage132-clean-copy"
+      data-pwa-mobile-simple-copy="true"
       role="region"
       aria-label="Instalacja CloseFlow jako PWA"
     >
@@ -159,27 +133,20 @@ export function PwaInstallPrompt() {
           <div className="min-w-0 flex-1">
             <p className="text-sm font-bold text-slate-900">Dodaj CloseFlow do ekranu głównego telefonu</p>
             <p className="mt-1 text-xs leading-5 text-slate-500">
-              Otwieraj aplikację jak zwykłą apkę. Service worker cache’uje tylko shell i assety, a API, auth i dane biznesowe idą przez sieć.
+              Otwieraj aplikację jak zwykłą apkę.
             </p>
-            <p className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-bold text-slate-600">
-              <ShieldCheck className="h-3.5 w-3.5" />
-              Dane klientów nie są sejfem offline w cache przeglądarki.
-            </p>
-            {!installPrompt ? <p className="mt-2 text-xs font-medium text-slate-600">{manualCopy}</p> : null}
 
             <div className="mt-3 flex flex-wrap gap-2">
-              {installPrompt ? (
-                <Button
-                  type="button"
-                  size="sm"
-                  className="min-h-10 rounded-xl px-3 text-xs font-bold"
-                  onClick={handleInstall}
-                  disabled={isInstalling}
-                >
-                  <Download className="mr-2 h-4 w-4" />
-                  {isInstalling ? 'Dodawanie...' : 'Dodaj do ekranu'}
-                </Button>
-              ) : null}
+              <Button
+                type="button"
+                size="sm"
+                className="min-h-10 rounded-xl px-3 text-xs font-bold"
+                onClick={handleInstall}
+                disabled={isInstalling}
+              >
+                <Download className="mr-2 h-4 w-4" />
+                {isInstalling ? 'Dodawanie...' : 'Dodaj do ekranu'}
+              </Button>
               <Button
                 type="button"
                 size="sm"

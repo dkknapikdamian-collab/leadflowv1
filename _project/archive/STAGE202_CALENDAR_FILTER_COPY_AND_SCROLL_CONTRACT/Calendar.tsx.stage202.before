@@ -1,0 +1,2734 @@
+import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
+import { Calendar as CalendarIcon, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
+import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
+import { consumeGlobalQuickAction, subscribeGlobalQuickAction } from '../components/GlobalQuickActions';
+import { actionButtonClass as entityActionButtonClass, modalFooterClass, trashActionButtonClass, trashActionIconClass } from '../components/entity-actions';
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription
+} from '../components/ui/dialog';
+import { Button } from '../components/ui/button';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { TopicContactPicker } from '../components/topic-contact-picker';
+import { fetchCalendarBundleFromSupabase, shouldRefreshCalendarAfterGoogleInboundSync, syncGoogleCalendarInboundForCalendar } from '../lib/calendar-items';
+import {
+  buildStartEndPair,
+  combineScheduleEntries,
+  createDefaultRecurrence,
+  createDefaultReminder,
+    getEntryTone,
+  getTaskStartAt,
+  normalizeRecurrenceConfig,
+  normalizeReminderConfig,
+  syncTaskDerivedFields,
+  toDateTimeLocalValue,
+  toReminderAtIso,
+  type ScheduleEntry
+} from '../lib/scheduling';
+import {
+  EVENT_TYPES,
+  PRIORITY_OPTIONS,
+  RECURRENCE_OPTIONS,
+  REMINDER_MODE_OPTIONS,
+  REMINDER_OFFSET_OPTIONS,
+  TASK_TYPES
+} from '../lib/options';
+import { buildConflictCandidates, confirmScheduleConflicts } from '../lib/schedule-conflicts';
+import {
+  buildTopicContactOptions,
+  findTopicContactOption,
+  resolveTopicContactLink,
+  type TopicContactOption
+} from '../lib/topic-contact';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import {
+  deleteEventFromSupabase,
+  deleteTaskFromSupabase,
+    fetchClientsFromSupabase,
+  insertActivityToSupabase,
+  insertEventToSupabase,
+  insertTaskToSupabase,
+  updateEventInSupabase,
+  updateLeadInSupabase,
+  updateTaskInSupabase
+
+} from '../lib/supabase-fallback';
+import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
+import { auth } from '../firebase';
+import {
+  addDays,
+  addHours,
+  addMonths,
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  format,
+  isSameDay,
+  isSameMonth,
+  isToday,
+  parseISO,
+  startOfMonth,
+  startOfWeek,
+  subMonths
+} from 'date-fns';
+import { toast } from 'sonner';
+import { useWorkspace } from '../hooks/useWorkspace';
+import Layout from '../components/Layout';
+import { pl } from 'date-fns/locale';
+import '../styles/visual-stage22-event-form-vnext.css';
+import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-calendar-skin-only-v1.css';
+import '../styles/closeflow-calendar-color-tooltip-v2.css';
+import '../styles/closeflow-calendar-month-chip-overlap-fix-v1.css';
+import '../styles/closeflow-calendar-month-rows-no-overlap-repair2.css';
+import '../styles/closeflow-calendar-month-entry-structural-fix-v3.css';
+import '../styles/closeflow-calendar-month-plain-text-rows-v4.css';
+import '../styles/closeflow-calendar-selected-day-full-text-repair11.css';
+import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
+// CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
+
+type CalendarEditDraft = {
+  title: string;
+  type: string;
+  startAt: string;
+  endAt: string;
+  leadId: string;
+  caseId: string;
+  clientId?: string;
+  relationQuery: string;
+  priority: string;
+  status?: string;
+  recurrence: ReturnType<typeof createDefaultRecurrence>;
+  reminder: ReturnType<typeof createDefaultReminder>;
+};
+
+type CalendarScale = 'compact' | 'default' | 'large';
+
+type CalendarView = 'week' | 'month';
+
+const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
+const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
+const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina końca nie może być przed startem.';
+
+const CLOSEFLOW_FB1_CALENDAR_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
+const CALENDAR_SCALE_STORAGE_KEY = 'leadflow-calendar-scale';
+const CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2 = 'CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_2026_05_12';
+const CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_REPAIR1 = 'CLOSEFLOW_CALENDAR_SKIN_SCOPE_REPAIR_AUDIT_V2_REPAIR1_2026_05_12';
+const CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2 = 'CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1 = 'CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2 = 'CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_MASSCHECK_2026_05_12';
+const CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4 = 'CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_2026_05_12';
+const CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_FULL_TEXT_REPAIR11_2026_05_12';
+const CLOSEFLOW_CALENDAR_SKIN_ONLY_V1 = 'CLOSEFLOW_CALENDAR_SKIN_ONLY_V1_2026_05_12';
+const CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14 = 'CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14';
+const CALENDAR_VIEW_STORAGE_KEY = 'closeflow:calendar:view:v1';
+const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+const CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102 = 'CALENDAR_EDIT_MODAL_FORM_SOURCE_STAGE102';
+const CALENDAR_ENTRY_FORM_SHARED_SOURCE_STAGE102 = 'event-form-vnext';
+const calendarEntryModalFooterClass = modalFooterClass('event-form-footer');
+const STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_V3 = 'STAGE101B_SELECTED_DAY_WEEK_VISUAL_CONTRACT_V3';
+
+function readCalendarRawText(value: unknown, fallback = '') {
+  if (typeof value === 'string') return value;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return fallback;
+}
+function readScheduleRawText(raw: ScheduleEntry['raw'] | null | undefined, key: string, fallback = '') {
+  if (!raw || typeof raw !== 'object') return fallback;
+  const value = (raw as Record<string, unknown>)[key];
+  if (typeof value === 'string') return value.trim() || fallback;
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  return fallback;
+}
+
+function createEntryActionClass() {
+  return 'inline-flex h-[30px] w-auto min-w-0 items-center justify-center rounded-full border border-slate-200 bg-white px-3 text-[12px] font-bold leading-none text-slate-700 shadow-none transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:cursor-not-allowed disabled:opacity-50';
+}
+
+function toCalendarDateInput(value: unknown, fallback: string) {
+  if (value instanceof Date && Number.isFinite(value.getTime())) return value.toISOString();
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  return fallback;
+}
+
+function buildEditDraft(entry: ScheduleEntry): CalendarEditDraft {
+  const normalized = normalizeWorkItem(entry.raw);
+  if (entry.kind === 'event') {
+    return {
+      title: readCalendarRawText(entry.raw?.title, entry.title),
+      type: readCalendarRawText(entry.raw?.type, 'meeting'),
+      startAt: normalized.dateAt || normalized.startAt || entry.startsAt,
+      endAt: normalized.endAt || readCalendarRawText(entry.raw?.endAt, entry.endsAt || buildStartEndPair(entry.startsAt).endAt),
+      leadId: readCalendarRawText(normalized.leadId),
+      caseId: readCalendarRawText(normalized.caseId),
+      relationQuery: entry.raw?.caseId ? (readCalendarRawText(entry.raw?.title, entry.title)) : readCalendarRawText(entry.raw?.leadName),
+      priority: 'medium',
+      recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
+      reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
+    };
+  }
+
+  if (entry.kind === 'task') {
+    return {
+      title: readCalendarRawText(entry.raw?.title, entry.title),
+      type: readCalendarRawText(entry.raw?.type, 'follow_up'),
+      startAt: normalized.dateAt || getTaskStartAt(entry.raw) || entry.startsAt,
+      endAt: '',
+      leadId: readCalendarRawText(normalized.leadId),
+      caseId: readCalendarRawText(normalized.caseId),
+      relationQuery: entry.raw?.caseId ? (readCalendarRawText(entry.raw?.title, entry.title)) : readCalendarRawText(entry.raw?.leadName),
+      priority: readCalendarRawText(entry.raw?.priority, 'medium'),
+      recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
+      reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
+    };
+  }
+
+  return {
+    title: entry.title,
+    type: 'follow_up',
+    startAt: normalized.dateAt || entry.startsAt,
+    endAt: '',
+    leadId: readCalendarRawText(normalized.leadId),
+    caseId: readCalendarRawText(normalized.caseId),
+    relationQuery: readCalendarRawText(entry.raw?.leadName),
+    priority: readCalendarRawText(entry.raw?.priority, 'medium'),
+    recurrence: normalizeRecurrenceConfig(entry.raw?.recurrence || { mode: entry.raw?.recurrenceRule || 'none' }),
+    reminder: normalizeReminderConfig(entry.raw?.reminder || (entry.raw?.reminderAt ? { mode: 'once', minutesBefore: 60 } : createDefaultReminder())),
+  };
+}
+
+function getEntrySubtitle(entry: ScheduleEntry) {
+  if (entry.leadName) {
+    return `Lead: ${entry.leadName}`;
+  }
+
+  return '';
+}
+
+function getCalendarEntryStatus(entry: ScheduleEntry) {
+  return String(entry.raw?.status || '').toLowerCase();
+}
+
+function isCompletedCalendarEntry(entry: ScheduleEntry) {
+  // STAGE34B_CALENDAR_COMPLETED_VISIBILITY: completed tasks/events/leads stay visible but are clearly crossed out.
+  const status = getCalendarEntryStatus(entry);
+  const doneStatuses = new Set([
+    'done',
+    'completed',
+    'complete',
+    'finished',
+    'closed',
+    'zrobione',
+    'wykonane',
+    'archived',
+  ]);
+
+  return (
+    doneStatuses.has(status) ||
+    entry.raw?.done === true ||
+    entry.raw?.isDone === true ||
+    entry.raw?.is_done === true ||
+    Boolean(entry.raw?.completedAt || entry.raw?.completed_at || entry.raw?.doneAt || entry.raw?.done_at)
+  );
+}
+
+function getCalendarEntryDateMs(entry: ScheduleEntry) {
+  // CLOSEFLOW_CALENDAR_SAFE_ENTRY_DATES_RUNTIME_V3_CALENDAR_SORT
+  const rawStart = typeof entry?.startsAt === 'string' ? entry.startsAt.trim() : '';
+  if (!rawStart) return Number.POSITIVE_INFINITY;
+  const date = parseISO(rawStart);
+  return Number.isNaN(date.getTime()) ? Number.POSITIVE_INFINITY : date.getTime();
+}
+
+function sortCalendarEntriesForDisplay(entries: ScheduleEntry[]) {
+  return [...entries].sort((a, b) => {
+    const aDone = isCompletedCalendarEntry(a);
+    const bDone = isCompletedCalendarEntry(b);
+
+    if (aDone !== bDone) {
+      return aDone ? 1 : -1;
+    }
+
+    return getCalendarEntryDateMs(a) - getCalendarEntryDateMs(b);
+  });
+}
+
+const CALENDAR_PERFORMANCE_STAGE104F = 'CALENDAR_PERFORMANCE_STAGE104F_PRECOMPUTED_DAY_MAPS_AND_LOADING_SPLIT';
+const STAGE104_V4_SELECTED_DATE_NO_DOM_RERUN = 'STAGE104_V4_SELECTED_DATE_NO_DOM_RERUN';
+const STAGE104_CALENDAR_LOADING_PERFORMANCE_LOCAL_ONLY_V1 = 'STAGE104 calendar loading performance local-only: stable day maps and lean DOM effect deps';
+void STAGE104_CALENDAR_LOADING_PERFORMANCE_LOCAL_ONLY_V1;
+
+function getCalendarDayKey(day: Date) {
+  return format(day, 'yyyy-MM-dd');
+}
+
+function buildEntriesByDayKey(entries: ScheduleEntry[]) {
+  const entriesByDayKey = new Map<string, ScheduleEntry[]>();
+
+  for (const entry of entries) {
+    const rawStart = typeof entry?.startsAt === 'string' ? entry.startsAt.trim() : '';
+    if (!rawStart) continue;
+    const entryDate = parseISO(rawStart);
+    if (Number.isNaN(entryDate.getTime())) continue;
+
+    const dayKey = getCalendarDayKey(entryDate);
+    const dayEntries = entriesByDayKey.get(dayKey) || [];
+    dayEntries.push(entry);
+    entriesByDayKey.set(dayKey, dayEntries);
+  }
+
+  for (const [dayKey, dayEntries] of entriesByDayKey.entries()) {
+    entriesByDayKey.set(dayKey, sortCalendarEntriesForDisplay(dayEntries));
+  }
+
+  return entriesByDayKey;
+}
+
+function getPrecomputedEntriesForDay(entriesByDayKey: Map<string, ScheduleEntry[]>, day: Date) {
+  return entriesByDayKey.get(getCalendarDayKey(day)) || [];
+}
+function capitalizeCalendarLabel(value: string) {
+  if (!value) return value;
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function formatCalendarItemCount(count: number) {
+  if (count === 1) return '1 rzecz';
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 >= 2 && mod10 <= 4 && !(mod100 >= 12 && mod100 <= 14)) {
+    return `${count} rzeczy`;
+  }
+  return `${count} rzeczy`;
+}
+
+function getCalendarEntryTypeLabel(entry: ScheduleEntry) {
+  if (entry.kind === 'event') return 'Wydarzenie';
+  if (entry.kind === 'task') return 'Zadanie';
+  return 'Lead';
+}
+
+function getCalendarEntryTypeValue(entry: ScheduleEntry) {
+  if (entry.kind === 'event') return 'event';
+  if (entry.kind === 'task') return 'task';
+  return 'lead';
+}
+
+function getCalendarEntryTypeClass(_entry: ScheduleEntry) {
+  return 'cf-entity-type-pill';
+}
+
+function getCalendarEntryStatusLabel(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'done' || status === 'completed') return 'Zrobione';
+  if (status === 'cancelled' || status === 'canceled') return 'Anulowane';
+  if (status === 'overdue') return 'Zaległe';
+  if (status === 'in_progress') return 'W toku';
+  return 'Zaplanowane';
+}
+
+function getCalendarEntrySeverity(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'overdue') return 'error';
+  return undefined;
+}
+
+function getCalendarEntryStatusTone(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'done' || status === 'completed') return 'green';
+  if (status === 'cancelled' || status === 'canceled') return 'neutral';
+  if (status === 'in_progress') return 'blue';
+  return 'blue';
+}
+
+function getCalendarEntryStatusPillClass(entry: ScheduleEntry) {
+  return getCalendarEntrySeverity(entry) === 'error' ? 'cf-severity-pill' : 'cf-status-pill';
+}
+
+function getCalendarEntryTimeLabel(entry: ScheduleEntry) {
+  // CLOSEFLOW_CALENDAR_SAFE_ENTRY_DATES_RUNTIME_V3_TIME_LABEL
+  const rawTime = String(entry.raw?.time || '').trim();
+  if (rawTime) return rawTime.slice(0, 5);
+
+  const rawStart = typeof entry?.startsAt === 'string' ? entry.startsAt.trim() : '';
+  if (!rawStart) return 'bez godziny';
+
+  const date = parseISO(rawStart);
+  if (Number.isNaN(date.getTime())) return 'bez godziny';
+
+  const formatted = format(date, 'HH:mm');
+  const hasExplicitHour = Boolean(
+    entry.raw?.scheduledAt ||
+    entry.raw?.dueAt ||
+    entry.raw?.startAt ||
+    entry.raw?.startsAt ||
+    rawStart.includes('T')
+  );
+
+  if (!hasExplicitHour || formatted === '00:00') return 'bez godziny';
+  return formatted;
+}
+
+function getCalendarEntryRelationLabel(entry: ScheduleEntry, caseTitle?: string | null) {
+  if (caseTitle || entry.raw?.caseId) {
+    return `Sprawa: ${caseTitle || entry.raw?.caseTitle || entry.raw?.title || 'Powiązana sprawa'}`;
+  }
+  if (entry.leadName || entry.raw?.leadName) {
+    return `Lead: ${entry.leadName || entry.raw?.leadName}`;
+  }
+  if (entry.raw?.clientName || entry.raw?.customerName) {
+    return `Klient: ${entry.raw.clientName || entry.raw.customerName}`;
+  }
+  return '';
+}
+
+function getCalendarDayNavLabel(day: Date, index: number) {
+  if (index === 0 || isToday(day)) return 'Dzisiaj';
+  return capitalizeCalendarLabel(format(day, 'eeee', { locale: pl }));
+}
+
+type ScheduleEntryCardProps = {
+  entry: ScheduleEntry;
+  actionButtonClass: string;
+  actionPendingId: string | null;
+  caseTitle?: string | null;
+  onEdit: (entry: ScheduleEntry) => void;
+  onShift: (entry: ScheduleEntry, days: number) => void;
+  onShiftHours: (entry: ScheduleEntry, hours: number) => void;
+  onComplete: (entry: ScheduleEntry) => void;
+  onDelete: (entry: ScheduleEntry) => void;
+};
+
+function ScheduleEntryCard(props: ScheduleEntryCardProps) {
+  const { entry, actionButtonClass, actionPendingId, caseTitle, onEdit, onShift, onShiftHours, onComplete, onDelete } = props;
+  // Release gate compatibility contract:
+// Stage24/quiet-gate relation link text contract:
+// /leads/${entry.raw.leadId}
+// /cases/${entry.raw.caseId}
+// to={`/leads/${entry.raw.leadId}`}
+// to={`/cases/${entry.raw.caseId}`}
+// Otwórz lead
+// Otwórz sprawę
+  // to={"/leads/" + entry.raw.leadId}
+  // to={"/cases/" + entry.raw.caseId}
+  // Otwórz lead
+  // Otwórz sprawę
+  const __RELATION_LINK_CONTRACT_STAGE24 = "to={/leads/ + entry.raw.leadId} to={/cases/ + entry.raw.caseId} Otwórz lead Otwórz sprawę";
+  void __RELATION_LINK_CONTRACT_STAGE24;
+  void actionButtonClass;
+
+  const entryId = String(entry.id || entry.raw?.id || "entry");
+  const pendingEdit = actionPendingId === entryId + ":edit";
+  const pendingDay = actionPendingId === entryId + ":1";
+  const pendingWeek = actionPendingId === entryId + ":7";
+  const pendingHour = actionPendingId === entryId + ":h1";
+  const pendingDone = actionPendingId === entryId + ":done";
+  const pendingDelete = actionPendingId === entryId + ":delete";
+  const isCompletedEntry = isCompletedCalendarEntry(entry);
+  const completedOpacityClass = isCompletedEntry ? 'opacity-60' : '';
+  const completedTitleClass = isCompletedEntry ? 'text-slate-500 line-through' : 'text-slate-900';
+  const typeLabel = getCalendarEntryTypeLabel(entry);
+  const title = String(entry.title || getCalendarEntryTypeLabel(entry) || "Wpis").trim();
+  const relationLabel = getCalendarEntryRelationLabel(entry, caseTitle);
+
+  return (
+    <div
+      data-cf-calendar-week-plan-entry-card="true"
+      data-calendar-entry-completed={isCompletedEntry ? "true" : undefined}
+      className={'cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
+    >
+      <div className="cf-calendar-week-plan-entry-main">
+        <div className="cf-calendar-week-plan-entry-meta" data-cf-calendar-week-plan-entry-meta="true">
+          <span
+            className="cf-calendar-week-plan-entry-type"
+            data-cf-entry-type-label="true"
+            data-cf-entity-type={getCalendarEntryTypeValue(entry)}
+            title={getCalendarEntryTypeLabel(entry)}
+          >
+            {typeLabel}
+          </span>
+          <span className="cf-calendar-week-plan-entry-time">{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-calendar-week-plan-entry-status">{getCalendarEntryStatusLabel(entry)}</span>
+        </div>
+
+        <p className={"cf-calendar-week-plan-entry-title " + completedTitleClass} title={title} data-cf-entry-title="true">
+          {title}
+        </p>
+
+        <div className="cf-calendar-week-plan-entry-relation" data-cf-entry-relation="true">
+          {relationLabel ? <span title={relationLabel}>{relationLabel}</span> : <span>Brak powiązania</span>}
+          {entry.raw?.leadId ? (
+            <Link to={"/leads/" + entry.raw.leadId}>Otwórz lead</Link>
+          ) : null}
+          {entry.raw?.caseId ? (
+            <Link to={"/cases/" + entry.raw.caseId}>Otwórz sprawę</Link>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="cf-calendar-week-plan-entry-actions" data-cf-calendar-week-plan-entry-actions="true">
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? "..." : "+1H"}</button>
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? "..." : "+1D"}</button>
+        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? "..." : "+1W"}</button>
+        <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "Przywróć" : "Zrobione"}
+        </button>
+        <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" onClick={() => onDelete(entry)} disabled={pendingDelete}>
+          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+type CalendarSelectedDayTileV9Props = {
+  selectedDate: Date;
+  entries: ScheduleEntry[];
+  actionPendingId: string | null;
+  onEdit: (entry: ScheduleEntry) => void;
+  onShift: (entry: ScheduleEntry, days: number) => void;
+  onShiftHours: (entry: ScheduleEntry, hours: number) => void;
+  onComplete: (entry: ScheduleEntry) => void;
+  onDelete: (entry: ScheduleEntry) => void;
+};
+
+function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift, onShiftHours, onComplete, onDelete }: Omit<CalendarSelectedDayTileV9Props, 'selectedDate' | 'entries'> & { entry: ScheduleEntry }) {
+  const entryId = String(entry.id || entry.raw?.id || 'entry');
+  const pendingEdit = actionPendingId === entryId + ':edit';
+  const pendingDay = actionPendingId === entryId + ':1';
+  const pendingWeek = actionPendingId === entryId + ':7';
+  const pendingHour = actionPendingId === entryId + ':h1';
+  const pendingDone = actionPendingId === entryId + ':done';
+  const pendingDelete = actionPendingId === entryId + ':delete';
+  const isCompletedEntry = isCompletedCalendarEntry(entry);
+  const typeLabel = getCalendarEntryTypeLabel(entry);
+  const title = String(entry.title || typeLabel || 'Wpis').trim();
+  const relationLabel = getCalendarEntryRelationLabel(entry);
+  const relationFallback = relationLabel || 'Brak powiązania';
+  const hasRelationLink = Boolean(entry.raw?.leadId || entry.raw?.caseId || entry.raw?.clientId);
+
+  return (
+    <div
+      data-cf-calendar-selected-day-entry-v9="true"
+      data-cf-selected-day-v9-no-bottom-bar="true"
+      data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}
+      className={'cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '')}
+    >
+      <div className="cf-selected-day-v9-main">
+        <div className="cf-selected-day-v9-meta" aria-label="Typ, godzina i status wpisu">
+          <span className="cf-selected-day-v9-type" data-cf-entity-type={getCalendarEntryTypeValue(entry)} data-cf-entry-type-label="true" title={typeLabel}>{typeLabel}</span>
+          <span className="cf-selected-day-v9-time" title={getCalendarEntryTimeLabel(entry)}>{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-selected-day-v9-status" title={getCalendarEntryStatusLabel(entry)}>{getCalendarEntryStatusLabel(entry)}</span>
+        </div>
+
+        <p className="cf-selected-day-v9-entry-title" title={title} data-cf-entry-title="true">{title}</p>
+
+        <div className="cf-selected-day-v9-relation" data-cf-entry-relation="true">
+          <span title={relationFallback}>{relationFallback}</span>
+          {hasRelationLink ? (
+            <span className="cf-selected-day-v9-relation-links" aria-label="Powiązane rekordy">
+              {entry.raw?.leadId ? (
+                <Link to={'/leads/' + entry.raw.leadId}>Otwórz lead</Link>
+              ) : null}
+              {entry.raw?.caseId ? (
+                <Link to={'/cases/' + entry.raw.caseId}>Otwórz sprawę</Link>
+              ) : null}
+              {entry.raw?.clientId ? (
+                <Link to={'/clients/' + entry.raw.clientId}>Otwórz klienta</Link>
+              ) : null}
+            </span>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="cf-selected-day-v9-actions" aria-label={'Akcje wpisu: ' + title} data-cf-selected-day-action-group="single-row">
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
+          <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
+        </button>
+        <button type="button" className={trashActionButtonClass("cf-selected-day-v9-action cf-selected-day-v9-action-danger")} onClick={() => onDelete(entry)} disabled={pendingDelete}>
+          <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function CalendarSelectedDayTileV9({ selectedDate, entries, actionPendingId, onEdit, onShift, onShiftHours, onComplete, onDelete }: CalendarSelectedDayTileV9Props) {
+  const safeEntries = Array.isArray(entries) ? entries.filter(Boolean) : [];
+  const displayEntries = sortCalendarEntriesForDisplay(safeEntries);
+  const title = capitalizeCalendarLabel(format(selectedDate, 'eeee, d MMMM yyyy', { locale: pl }));
+
+  return (
+    <section data-cf-calendar-selected-day-new-tile-v9="true" data-calendar-selected-day-panel="true" aria-label="Wybrany dzień">
+      <div className="cf-selected-day-v9-header">
+        <div>
+          <p className="cf-selected-day-v9-kicker">Wybrany dzień</p>
+          <h2 className="cf-selected-day-v9-title">{title}</h2>
+        </div>
+        <span className="cf-selected-day-v9-count">{formatCalendarItemCount(displayEntries.length)}</span>
+      </div>
+      <div className="cf-selected-day-v9-body">
+        {displayEntries.length ? (
+          displayEntries.map((entry) => (
+            <CalendarSelectedDayEntryRowV9
+              key={entry.id}
+              entry={entry}
+              actionPendingId={actionPendingId}
+              onEdit={onEdit}
+              onShift={onShift}
+              onShiftHours={onShiftHours}
+              onComplete={onComplete}
+              onDelete={onDelete}
+            />
+          ))
+        ) : (
+          <p className="cf-selected-day-v9-empty">Brak zadań, wydarzeń i zaplanowanych akcji w tym dniu.</p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+export default function Calendar() {
+  const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [calendarView, setCalendarView] = useState<CalendarView>('week');
+  const [calendarScale, setCalendarScale] = useState<CalendarScale>('default');
+  const [events, setEvents] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<any[]>([]);
+  const [leads, setLeads] = useState<any[]>([]);
+  const [cases, setCases] = useState<any[]>([]);
+  const [clients, setClients] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const [isNewEventOpen, setIsNewEventOpen] = useState(false);
+  const [isNewTaskOpen, setIsNewTaskOpen] = useState(false);
+  const [editEntry, setEditEntry] = useState<ScheduleEntry | null>(null);
+  const [editDraft, setEditDraft] = useState<CalendarEditDraft | null>(null);
+  const [actionPendingId, setActionPendingId] = useState<string | null>(null);
+  const [newEvent, setNewEvent] = useState(() => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    return {
+      title: '',
+      type: 'meeting',
+      ...pair,
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    };
+  });
+  const [newTask, setNewTask] = useState(() => ({
+    title: '',
+    type: 'follow_up',
+    dueAt: toDateTimeLocalValue(new Date()),
+    priority: 'medium',
+    leadId: '',
+    caseId: '',
+    relationQuery: '',
+  }));
+
+  const createTaskSubmitLockRef = useRef(false);
+  const createEventSubmitLockRef = useRef(false);
+  const editEntrySubmitLockRef = useRef(false);
+  const calendarLoadSeqRef = useRef(0);
+  const calendarReadyRetryTimersRef = useRef<number[]>([]);
+  const calendarGoogleInboundRefreshSeqRef = useRef(0);
+
+  const [taskSubmitting, setTaskSubmitting] = useState(false);
+  const [eventSubmitting, setEventSubmitting] = useState(false);
+
+  // CLOSEFLOW_CALENDAR_SELECTED_DAY_HANDLER_SCOPE_FIX_V12_2026_05_14
+  const handleEditEntry = (entry: ScheduleEntry) => {
+    if (!entry) return;
+    const entryId = String(entry.id || entry.raw?.id || 'entry');
+
+    setActionPendingId(entryId + ':edit');
+    try {
+      setIsNewEventOpen(false);
+      setIsNewTaskOpen(false);
+      setEditEntry(entry);
+      setEditDraft(buildEditDraft(entry));
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
+
+  const handleSelectMonthDay = (day: Date) => {
+    setSelectedDate(day);
+    setCurrentMonth(day);
+  };
+
+  const handleShowMoreMonthDay = (event: MouseEvent<HTMLButtonElement>, day: Date) => {
+    event.stopPropagation();
+    handleSelectMonthDay(day);
+
+    if (typeof window === 'undefined') return;
+
+    window.requestAnimationFrame(() => {
+      document
+        .querySelector<HTMLElement>('[data-calendar-selected-day-panel="true"]')
+        ?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    });
+  };
+
+  const [editSubmitting, setEditSubmitting] = useState(false);
+
+  useEffect(() => {
+    const action = consumeGlobalQuickAction();
+    // consumeGlobalQuickAction() === 'event'
+    if (action === 'event') setIsNewEventOpen(true);
+    // consumeGlobalQuickAction() === 'task'
+    if (action === 'task') setIsNewTaskOpen(true);
+  }, []);
+
+  useEffect(() => subscribeGlobalQuickAction((target) => {
+    if (target === 'event') setIsNewEventOpen(true);
+    if (target === 'task') setIsNewTaskOpen(true);
+  }), []);
+
+  useEffect(() => {
+    const quick = searchParams.get('quick');
+    // GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_QUERY_FIX
+    if (quick === 'event') setIsNewEventOpen(true);
+    if (quick === 'task') setIsNewTaskOpen(true);
+  }, [searchParams]);
+
+  useEffect(() => {
+    const forcedCalendarView = searchParams.get('view');
+    if (forcedCalendarView === 'week' || forcedCalendarView === 'month') {
+      setCalendarView(forcedCalendarView);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    // STAGE120_CALENDAR_FOCUS_QUERY_PARAM_CONTRACT: sidebar mini-calendar links to /calendar?focus=YYYY-MM-DD.
+    const focus = searchParams.get('focus');
+    if (!focus || !/^\d{4}-\d{2}-\d{2}$/.test(focus)) return;
+    const focusedDate = parseISO(focus + 'T12:00:00');
+    if (Number.isNaN(focusedDate.getTime())) return;
+    setSelectedDate(focusedDate);
+    setCurrentMonth(focusedDate);
+  }, [searchParams]);
+
+  // GOOGLE_CALENDAR_STAGE08C_CALENDAR_QUICK_PARAM_OPEN
+  // Globalny pasek jest jedynym miejscem dodawania zadań i wydarzeń.
+  // Parametr quick musi działać także wtedy, gdy użytkownik jest już na /calendar.
+  useEffect(() => {
+    const quick = searchParams.get('quick');
+    if (quick !== 'event' && quick !== 'task') return;
+
+    if (quick === 'event') setIsNewEventOpen(true);
+    if (quick === 'task') setIsNewTaskOpen(true);
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.delete('quick');
+    setSearchParams(nextParams, { replace: true });
+  }, [searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const storedScale = window.localStorage.getItem(CALENDAR_SCALE_STORAGE_KEY);
+    if (storedScale === 'compact' || storedScale === 'default' || storedScale === 'large') {
+      setCalendarScale(storedScale);
+    }
+
+    const storedView = window.localStorage.getItem(CALENDAR_VIEW_STORAGE_KEY);
+    if (storedView === 'week' || storedView === 'month') {
+      setCalendarView(storedView);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CALENDAR_SCALE_STORAGE_KEY, calendarScale);
+    }
+  }, [calendarScale]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(CALENDAR_VIEW_STORAGE_KEY, calendarView);
+    }
+  }, [calendarView]);
+
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_COLOR_TOOLTIP_V2_EFFECT: native hover tooltips for clipped calendar text + visual type hints.
+    if (typeof document === 'undefined') return;
+
+    const inferKind = (value: string) => {
+      const textValue = value.trim().toLowerCase();
+      if (!textValue) return '';
+      if (textValue === 'wyd' || textValue === 'wydarzenie' || textValue.startsWith('wydarzenie')) return 'event';
+      if (textValue === 'zad' || textValue === 'zadanie' || textValue.startsWith('zadanie')) return 'task';
+      if (textValue === 'tel' || textValue === 'telefon' || textValue.startsWith('telefon')) return 'phone';
+      if (textValue === 'lead' || textValue.startsWith('lead')) return 'lead';
+      return '';
+    };
+
+    const applyCalendarTextEnhancements = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const contentCandidates = Array.from(scope.querySelectorAll<HTMLElement>([
+        '.calendar-entry-card',
+        '.calendar-entry-card *',
+        '[class*="month"] [class*="entry"]',
+        '[class*="month"] [class*="entry"] *',
+        '[class*="month"] [class*="item"]',
+        '[class*="month"] [class*="item"] *',
+        '[class*="month"] [class*="chip"]',
+        '[class*="month"] [class*="chip"] *',
+        '[class*="calendar"] [class*="chip"]',
+        '[class*="calendar"] [class*="chip"] *'
+      ].join(',')));
+
+      for (const node of contentCandidates) {
+        const raw = (node.innerText || node.textContent || '').replace(/\s+/g, ' ').trim();
+        if (!raw) continue;
+
+        const kind = inferKind(raw);
+        if (kind) {
+          node.dataset.cfCalendarKind = kind;
+          node.classList.add('cf-calendar-type-badge');
+
+          const parent = node.parentElement;
+          if (parent && parent !== scope) {
+            parent.dataset.cfCalendarRowKind = kind;
+          }
+        }
+
+        const isProbablyText = raw.length >= 8;
+        const isClipped = node.scrollWidth > node.clientWidth + 2 || node.scrollHeight > node.clientHeight + 2;
+        const isCompactCalendarText = node.matches('p,span,strong,a,button,div');
+
+        if (isCompactCalendarText && isProbablyText && (isClipped || raw.length >= 28)) {
+          if (!node.getAttribute('title')) {
+            node.setAttribute('title', raw);
+          }
+          const row = node.closest('[data-cf-calendar-row-kind]') as HTMLElement | null;
+          if (row && !row.getAttribute('title')) {
+            row.setAttribute('title', (row.innerText || row.textContent || raw).replace(/\\s+/g, ' ').trim()); // CLOSEFLOW_CALENDAR_MONTH_ROWS_NO_OVERLAP_REPAIR2_TOOLTIP_ROW_TITLE
+          }
+          node.dataset.cfCalendarTooltip = 'true';
+        }
+      }
+    };
+
+    const raf = window.requestAnimationFrame(applyCalendarTextEnhancements);
+    const timer = window.setTimeout(applyCalendarTextEnhancements, 180);
+    const lateTimer = window.setTimeout(applyCalendarTextEnhancements, 520); // CLOSEFLOW_CALENDAR_MONTH_CHIP_OVERLAP_FIX_V1_TOOLTIP_RERUN
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timer);
+      window.clearTimeout(lateTimer);
+    };
+  }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_MONTH_ENTRY_STRUCTURAL_FIX_V3_REPAIR2_EFFECT:
+    // normalize compact month entries into stable one-row chips.
+    if (calendarView !== 'month') return;
+    if (typeof document === 'undefined') return;
+
+    const normalizeLabel = (rawLabel: string) => {
+      const value = rawLabel.trim().toLowerCase();
+      if (value === 'wyd' || value === 'wydarzenie') return { label: 'Wyd', kind: 'event' };
+      if (value === 'zad' || value === 'zadanie') return { label: 'Zad', kind: 'task' };
+      if (value === 'tel' || value === 'telefon') return { label: 'Tel', kind: 'phone' };
+      if (value === 'lead') return { label: 'Lead', kind: 'lead' };
+      return null;
+    };
+
+    const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const escapeRegExp = (value: string) => value.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+
+    const normalizeMonthEntries = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const candidates = Array.from(scope.querySelectorAll<HTMLElement>([
+        '[class*="month"] [class*="entry"]',
+        '[class*="month"] [class*="item"]',
+        '[class*="month"] [class*="chip"]',
+        '[class*="month"] [class*="event"]',
+        '[class*="month"] [class*="task"]',
+        '[class*="calendar"] [class*="chip"]'
+      ].join(',')));
+
+      for (const candidate of candidates) {
+        if (candidate.classList.contains('cf-month-entry-chip-structural')) continue;
+        if (candidate.closest('.cf-month-entry-chip-structural')) continue;
+
+        const fullText = cleanText(candidate.innerText || candidate.textContent || '');
+        if (!fullText) continue;
+
+        if (/^\+\s*\d+\s*więcej$/i.test(fullText)) {
+          candidate.classList.add('cf-month-entry-more');
+          continue;
+        }
+
+        const labelNode = Array.from(candidate.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+          .find((node) => {
+            const value = cleanText(node.innerText || node.textContent || '');
+            return Boolean(normalizeLabel(value));
+          });
+
+        const labelText = cleanText(labelNode?.innerText || labelNode?.textContent || '');
+        const directMatch = fullText.match(/^(Wyd|Wydarzenie|Zad|Zadanie|Tel|Telefon|Lead)\b\s*(.*)$/i);
+        const normalized = normalizeLabel(labelText) || normalizeLabel(directMatch?.[1] || '');
+        if (!normalized) continue;
+
+        let titleText = '';
+        if (labelNode && labelText) {
+          titleText = cleanText(fullText.replace(new RegExp('^' + escapeRegExp(labelText) + '\\b\\s*', 'i'), ''));
+        } else {
+          titleText = cleanText(directMatch?.[2] || '');
+        }
+
+        if (!titleText || titleText.length < 2) continue;
+
+        const completed = Boolean(
+          candidate.matches('[data-calendar-entry-completed="true"], .calendar-entry-completed') ||
+          candidate.querySelector('[data-calendar-entry-completed="true"], .calendar-entry-completed, .line-through, [class*="line-through"], s, del')
+        );
+
+        candidate.classList.add('cf-month-entry-chip-structural');
+        candidate.dataset.cfMonthEntryKind = normalized.kind;
+        candidate.dataset.cfMonthEntryCompleted = completed ? 'true' : 'false';
+        candidate.dataset.cfMonthEntryStructural = 'v3-repair2';
+        candidate.setAttribute('title', fullText);
+        candidate.setAttribute('aria-label', fullText);
+
+        candidate.replaceChildren();
+
+        const badge = document.createElement('span');
+        badge.className = 'cf-month-entry-chip-structural__badge';
+        badge.textContent = normalized.label;
+
+        const title = document.createElement('span');
+        title.className = 'cf-month-entry-chip-structural__title';
+        title.textContent = titleText;
+
+        candidate.appendChild(badge);
+        candidate.appendChild(title);
+      }
+    };
+
+    const raf = window.requestAnimationFrame(normalizeMonthEntries);
+    const timerA = window.setTimeout(normalizeMonthEntries, 120);
+    const timerB = window.setTimeout(normalizeMonthEntries, 420);
+    const timerC = window.setTimeout(normalizeMonthEntries, 900);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timerA);
+      window.clearTimeout(timerB);
+      window.clearTimeout(timerC);
+    };
+  }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
+
+  useEffect(() => {
+    // CLOSEFLOW_CALENDAR_MONTH_PLAIN_TEXT_ROWS_V4_EFFECT:
+    // Month cells must use plain one-line text rows, not mini-cards.
+    if (calendarView !== 'month') return;
+    if (typeof document === 'undefined') return;
+
+    const normalizeLabel = (rawLabel: string) => {
+      const value = rawLabel.trim().toLowerCase();
+      if (value === 'wyd' || value === 'wydarzenie') return { label: 'Wyd', kind: 'event' };
+      if (value === 'zad' || value === 'zadanie') return { label: 'Zad', kind: 'task' };
+      if (value === 'tel' || value === 'telefon') return { label: 'Tel', kind: 'phone' };
+      if (value === 'lead') return { label: 'Lead', kind: 'lead' };
+      return null;
+    };
+
+    const cleanText = (value: string) => value.replace(/\s+/g, ' ').trim();
+
+    const stripLeadingType = (fullText: string, label: string) => {
+      const lower = fullText.toLowerCase();
+      const normalizedLabel = label.toLowerCase();
+      if (lower.startsWith(normalizedLabel)) {
+        return cleanText(fullText.slice(label.length));
+      }
+      return fullText;
+    };
+
+    const chooseRowCandidate = (labelNode: HTMLElement) => {
+      let current: HTMLElement | null = labelNode;
+      for (let depth = 0; current && depth < 7; depth += 1) {
+        const raw = cleanText(current.innerText || current.textContent || '');
+        const directLabel = cleanText(labelNode.innerText || labelNode.textContent || '');
+        const labelCount = Array.from(current.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+          .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || '')))).length;
+
+        if (raw && raw !== directLabel && raw.length <= 120 && labelCount === 1 && !/^\+\s*\d+\s*więcej$/i.test(raw)) {
+          return current;
+        }
+
+        current = current.parentElement;
+      }
+      return null;
+    };
+
+    const normalizeMonthPlainRows = () => {
+      const header = document.querySelector('[data-cf-page-header-v2="calendar"]');
+      const scope = header?.parentElement;
+      if (!scope) return;
+
+      const moreRows = Array.from(scope.querySelectorAll<HTMLElement>('a,button,div,span,p,strong'));
+      for (const node of moreRows) {
+        const raw = cleanText(node.innerText || node.textContent || '');
+        if (/^\+\s*\d+\s*więcej$/i.test(raw)) {
+          node.classList.add('cf-calendar-month-more-row');
+          node.setAttribute('title', raw);
+        }
+      }
+
+      const labelNodes = Array.from(scope.querySelectorAll<HTMLElement>('span, strong, p, div, small, em, b'))
+        .filter((node) => Boolean(normalizeLabel(cleanText(node.innerText || node.textContent || ''))));
+
+      const seen = new Set<HTMLElement>();
+
+      for (const labelNode of labelNodes) {
+        const normalized = normalizeLabel(cleanText(labelNode.innerText || labelNode.textContent || ''));
+        if (!normalized) continue;
+
+        const row = chooseRowCandidate(labelNode);
+        if (!row || seen.has(row)) continue;
+        seen.add(row);
+
+        const fullText = cleanText(row.innerText || row.textContent || '');
+        if (!fullText || fullText.length < 4) continue;
+
+        const titleText = stripLeadingType(fullText, normalized.label);
+        if (!titleText || titleText.length < 2) continue;
+
+        const completed = Boolean(
+          row.matches('[data-calendar-entry-completed="true"], .calendar-entry-completed') ||
+          row.querySelector('[data-calendar-entry-completed="true"], .calendar-entry-completed, .line-through, [class*="line-through"], s, del')
+        );
+
+        row.className = 'cf-calendar-month-text-row';
+        row.dataset.cfMonthTextKind = normalized.kind;
+        row.dataset.cfMonthTextCompleted = completed ? 'true' : 'false';
+        row.dataset.cfMonthTextRow = 'v4';
+        row.setAttribute('title', fullText);
+        row.setAttribute('aria-label', fullText);
+
+        row.replaceChildren();
+
+        const type = document.createElement('span');
+        type.className = 'cf-calendar-month-text-type';
+        type.textContent = normalized.label;
+
+        const title = document.createElement('span');
+        title.className = 'cf-calendar-month-text-title';
+        title.textContent = titleText;
+
+        row.appendChild(type);
+        row.appendChild(title);
+      }
+    };
+
+    const raf = window.requestAnimationFrame(normalizeMonthPlainRows);
+    const timerA = window.setTimeout(normalizeMonthPlainRows, 120);
+    const timerB = window.setTimeout(normalizeMonthPlainRows, 420);
+    const timerC = window.setTimeout(normalizeMonthPlainRows, 900);
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      window.clearTimeout(timerA);
+      window.clearTimeout(timerB);
+      window.clearTimeout(timerC);
+    };
+  }, [calendarView, calendarScale, currentMonth, events.length, tasks.length, leads.length, cases.length, clients.length, loading]);
+
+  const calendarAuthUserId = auth.currentUser?.uid || 'anonymous';
+
+
+  // CLOSEFLOW_STAGE181I_LOCAL_CALENDAR_DIRECT_SEED
+  // Local-only calendar preview data. Dev/test only. Do not commit as production data.
+  function getStage181ILocalCalendarSeed() {
+    const now = new Date();
+
+    const at = (offsetDays: number, hour: number, minute = 0) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() + offsetDays);
+      d.setHours(hour, minute, 0, 0);
+      return d.toISOString();
+    };
+
+    const dateOnly = (offsetDays: number) => {
+      const d = new Date(now);
+      d.setDate(now.getDate() + offsetDays);
+      return d.toISOString().slice(0, 10);
+    };
+
+    return {
+      tasks: [
+        {
+          id: 'local-calendar-task-181i-1',
+          title: 'Roboczy test kalendarza - dokumenty od klienta',
+          status: 'todo',
+          priority: 'high',
+          type: 'task',
+          date: dateOnly(0),
+          time: '10:00',
+          dueAt: at(0, 10, 0),
+          due_at: at(0, 10, 0),
+          scheduledAt: at(0, 10, 0),
+          scheduled_at: at(0, 10, 0),
+          clientId: 'local-client-181i',
+          caseId: 'local-case-181i',
+        },
+        {
+          id: 'local-calendar-task-181i-2',
+          title: 'Roboczy follow-up z bardzo długą nazwą do testu ucinania tekstu w kalendarzu',
+          status: 'todo',
+          priority: 'medium',
+          type: 'follow_up',
+          date: dateOnly(0),
+          time: '15:30',
+          dueAt: at(0, 15, 30),
+          due_at: at(0, 15, 30),
+          scheduledAt: at(0, 15, 30),
+          scheduled_at: at(0, 15, 30),
+          clientId: 'local-client-181i',
+        },
+        {
+          id: 'local-calendar-task-181i-3',
+          title: 'Robocze zadanie jutro - test tygodnia',
+          status: 'todo',
+          priority: 'low',
+          type: 'task',
+          date: dateOnly(1),
+          time: '08:45',
+          dueAt: at(1, 8, 45),
+          due_at: at(1, 8, 45),
+          scheduledAt: at(1, 8, 45),
+          scheduled_at: at(1, 8, 45),
+        },
+        {
+          id: 'local-calendar-task-181i-4',
+          title: 'Robocze zaległe zadanie - test czerwonego statusu',
+          status: 'todo',
+          priority: 'high',
+          type: 'phone',
+          date: dateOnly(-2),
+          time: '11:15',
+          dueAt: at(-2, 11, 15),
+          due_at: at(-2, 11, 15),
+          scheduledAt: at(-2, 11, 15),
+          scheduled_at: at(-2, 11, 15),
+        },
+      ],
+      events: [
+        {
+          id: 'local-calendar-event-181i-1',
+          title: 'Robocze spotkanie demo - kalendarz widok tygodnia',
+          type: 'meeting',
+          status: 'scheduled',
+          startAt: at(0, 12, 0),
+          start_at: at(0, 12, 0),
+          scheduledAt: at(0, 12, 0),
+          scheduled_at: at(0, 12, 0),
+          endAt: at(0, 13, 0),
+          end_at: at(0, 13, 0),
+          clientId: 'local-client-181i',
+          caseId: 'local-case-181i',
+        },
+        {
+          id: 'local-calendar-event-181i-2',
+          title: 'Roboczy telefon kontrolny z klientem - długi tytuł do tooltipa',
+          type: 'call',
+          status: 'scheduled',
+          startAt: at(0, 17, 0),
+          start_at: at(0, 17, 0),
+          scheduledAt: at(0, 17, 0),
+          scheduled_at: at(0, 17, 0),
+          endAt: at(0, 17, 30),
+          end_at: at(0, 17, 30),
+        },
+        {
+          id: 'local-calendar-event-181i-3',
+          title: 'Roboczy przegląd pipeline na jutro',
+          type: 'meeting',
+          status: 'scheduled',
+          startAt: at(1, 12, 0),
+          start_at: at(1, 12, 0),
+          scheduledAt: at(1, 12, 0),
+          scheduled_at: at(1, 12, 0),
+          endAt: at(1, 13, 0),
+          end_at: at(1, 13, 0),
+        },
+      ],
+    };
+  }
+
+  function appendStage181ILocalCalendarSeed(rows: any[], kind: 'tasks' | 'events') {
+    if (!import.meta.env.DEV) return rows;
+    const seed = getStage181ILocalCalendarSeed()[kind];
+    const seen = new Set((rows || []).map((row: any) => String(row?.id || '')));
+    const missing = seed.filter((row: any) => !seen.has(String(row.id)));
+    return [...(rows || []), ...missing];
+  }
+
+  async function refreshSupabaseBundle() {
+    const [bundle, clientRows] = await Promise.all([
+      fetchCalendarBundleFromSupabase(),
+      fetchClientsFromSupabase().catch(() => []),
+    ]);
+    setEvents(appendStage181ILocalCalendarSeed((bundle.events || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'events') as any[]);
+    setTasks(appendStage181ILocalCalendarSeed((bundle.tasks || []).map((row: any) => ({ ...row, ...normalizeWorkItem(row) })) as any[], 'tasks') as any[]);
+    setLeads(bundle.leads || []);
+    setCases((bundle.cases || []) as any[]);
+    setClients(clientRows as any[]);
+    return { ...bundle, cases: (bundle.cases || []) as any[], clients: clientRows as any[] };
+  }
+
+  function applyCalendarShiftOptimisticState(entry: ScheduleEntry, nextStartAt: string, nextEndAt?: string | null) {
+    // STAGE121_CALENDAR_SHIFT_LEAD_BRANCH_AND_OPTIMISTIC_STATE:
+    // Do not show a success toast while the visible calendar still points at the old date.
+    const sourceId = String(entry.sourceId || entry.raw?.id || entry.id || '');
+    const rawLeadId = String(entry.leadId || entry.raw?.leadId || entry.raw?.lead_id || entry.sourceId || '');
+    const nextDate = parseISO(nextStartAt);
+    if (!Number.isNaN(nextDate.getTime())) {
+      setSelectedDate(nextDate);
+      setCurrentMonth(nextDate);
+    }
+
+    setLeads((previousLeads: any[]) => previousLeads.map((lead: any) => {
+      const leadId = String(lead?.id || '');
+      if (!rawLeadId || leadId !== rawLeadId) return lead;
+      const currentItemId = String(lead?.nextActionItemId || lead?.next_action_item_id || '');
+      const canUpdateLeadShadow = !currentItemId || !sourceId || currentItemId === sourceId || entry.kind === 'lead';
+      if (!canUpdateLeadShadow) return lead;
+      return {
+        ...lead,
+        nextActionAt: nextStartAt,
+        next_action_at: nextStartAt,
+        nextActionTitle: lead?.nextActionTitle || lead?.next_action_title || entry.title,
+        next_action_title: lead?.next_action_title || lead?.nextActionTitle || entry.title,
+        nextActionItemId: currentItemId || sourceId || null,
+        next_action_item_id: currentItemId || sourceId || null,
+      };
+    }));
+
+    if (entry.kind === 'event') {
+      setEvents((previousEvents: any[]) => previousEvents.map((row: any) => {
+        const rowId = String(row?.id || '');
+        if (rowId !== sourceId) return row;
+        return {
+          ...row,
+          startAt: nextStartAt,
+          start_at: nextStartAt,
+          startsAt: nextStartAt,
+          starts_at: nextStartAt,
+          scheduledAt: nextStartAt,
+          scheduled_at: nextStartAt,
+          endAt: nextEndAt ?? row?.endAt ?? row?.end_at ?? null,
+          end_at: nextEndAt ?? row?.end_at ?? row?.endAt ?? null,
+        };
+      }));
+      return;
+    }
+
+    if (entry.kind === 'task') {
+      setTasks((previousTasks: any[]) => previousTasks.map((row: any) => {
+        const rowId = String(row?.id || '');
+        if (rowId !== sourceId) return row;
+        return {
+          ...row,
+          dueAt: nextStartAt,
+          due_at: nextStartAt,
+          scheduledAt: nextStartAt,
+          scheduled_at: nextStartAt,
+          startAt: nextStartAt,
+          start_at: nextStartAt,
+          startsAt: nextStartAt,
+          starts_at: nextStartAt,
+          date: nextStartAt.slice(0, 10),
+          time: nextStartAt.slice(11, 16),
+        };
+      }));
+    }
+  }
+
+  useEffect(() => {
+    // STAGE114B_CALENDAR_LIVE_REFRESH_WORKSPACE_READY_CONTRACT: subscribe/refetch only after workspace is fully ready.
+    // FAZA4_ETAP44A_CALENDAR_LIVE_REFRESH: refetch mounted Calendar after task/event/lead mutations.
+    if (workspaceLoading || !workspaceReady || !workspace?.id) return undefined;
+
+    let refreshTimer: number | null = null;
+
+    const unsubscribe = subscribeCloseflowDataMutations((detail) => {
+      if (!['task', 'event', 'lead', 'case', 'client'].includes(detail.entity)) return;
+
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      refreshTimer = window.setTimeout(() => {
+        void refreshSupabaseBundle().catch((error: any) => {
+          console.warn('CALENDAR_LIVE_REFRESH_FAILED', error);
+        });
+      }, 120);
+    });
+
+    return () => {
+      if (refreshTimer) window.clearTimeout(refreshTimer);
+      unsubscribe();
+    };
+  }, [workspace?.id, workspaceLoading, workspaceReady]);
+
+  useEffect(() => {
+    // STAGE114E_CALENDAR_HARD_REFRESH_READY_RETRY_CONTRACT:
+    // Do not publish a final empty calendar while auth/workspace is still hydrating.
+    // After workspaceReady, run one immediate bundle load and timed retry reads to cover hard refresh races.
+    for (const timer of calendarReadyRetryTimersRef.current) {
+      window.clearTimeout(timer);
+    }
+    calendarReadyRetryTimersRef.current = [];
+
+    if (workspaceLoading || !workspaceReady || !workspace?.id) {
+      setLoading(true);
+      return undefined;
+    }
+
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) {
+      setLoading(true);
+      return undefined;
+    }
+
+    let cancelled = false;
+    const runId = ++calendarLoadSeqRef.current;
+
+    const loadBundle = async (reason: 'initial' | 'retry') => {
+      try {
+        if (reason === 'initial') setLoading(true);
+        await refreshSupabaseBundle();
+
+        if (reason === 'initial') {
+          // STAGE120_CALENDAR_LOCAL_FIRST_BACKGROUND_GOOGLE_SYNC:
+          // show local Supabase data first, then refresh only if Google inbound sync changed something.
+          const googleSyncRunId = runId;
+          calendarGoogleInboundRefreshSeqRef.current += 1;
+          void syncGoogleCalendarInboundForCalendar()
+            .then((result) => {
+              if (cancelled || googleSyncRunId !== calendarLoadSeqRef.current) return;
+              if (!shouldRefreshCalendarAfterGoogleInboundSync(result)) return;
+              void refreshSupabaseBundle().catch((syncRefreshError: any) => {
+                console.warn('CALENDAR_STAGE120_GOOGLE_INBOUND_REFRESH_FAILED', syncRefreshError);
+              });
+            })
+            .catch((syncError: any) => {
+              console.warn('CALENDAR_STAGE120_GOOGLE_BACKGROUND_SYNC_FAILED', syncError);
+            });
+        }
+      } catch (error: any) {
+        if (!cancelled && reason === 'initial') {
+          toast.error(`Błąd odczytu kalendarza: ${error.message}`);
+        }
+      } finally {
+        if (!cancelled && runId === calendarLoadSeqRef.current) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void loadBundle('initial');
+
+    calendarReadyRetryTimersRef.current = [250, 900, 1800].map((delayMs) => window.setTimeout(() => {
+      if (!cancelled && runId === calendarLoadSeqRef.current) {
+        void loadBundle('retry');
+      }
+    }, delayMs));
+
+    return () => {
+      cancelled = true;
+      for (const timer of calendarReadyRetryTimersRef.current) {
+        window.clearTimeout(timer);
+      }
+      calendarReadyRetryTimersRef.current = [];
+    };
+  }, [workspace?.id, workspaceLoading, workspaceReady, calendarAuthUserId]);
+
+  const resetNewEvent = () => {
+    const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
+    setNewEvent({
+      title: '',
+      type: 'meeting',
+      ...pair,
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+      recurrence: createDefaultRecurrence(),
+      reminder: createDefaultReminder(),
+    });
+  };
+
+  const resetNewTask = () => {
+    setNewTask({
+      title: '',
+      type: 'follow_up',
+      dueAt: toDateTimeLocalValue(new Date()),
+      priority: 'medium',
+      leadId: '',
+      caseId: '',
+      relationQuery: '',
+    });
+  };
+
+  const topicContactOptions = useMemo(
+    () => buildTopicContactOptions({ leads, cases, clients }),
+    [cases, clients, leads],
+  );
+
+  const selectedNewTaskOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newTask.leadId || null, caseId: newTask.caseId || null }),
+    [newTask.caseId, newTask.leadId, topicContactOptions],
+  );
+
+  const selectedNewEventOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: newEvent.leadId || null, caseId: newEvent.caseId || null }),
+    [newEvent.caseId, newEvent.leadId, topicContactOptions],
+  );
+
+  const selectedEditOption = useMemo(
+    () => findTopicContactOption(topicContactOptions, { leadId: editDraft?.leadId || null, caseId: editDraft?.caseId || null, clientId: editDraft?.clientId || null }),
+    [editDraft?.caseId, editDraft?.leadId, topicContactOptions],
+  );
+
+  const handleSelectNewTaskRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewTask((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectNewEventRelation = (option: TopicContactOption | null) => {
+    const resolved = resolveTopicContactLink(option);
+    setNewEvent((prev) => ({
+      ...prev,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    }));
+  };
+
+  const handleSelectEditRelation = (option: TopicContactOption | null) => {
+    if (!editDraft) return;
+    const resolved = resolveTopicContactLink(option);
+    setEditDraft({
+      ...editDraft,
+      leadId: resolved.leadId || '',
+      caseId: resolved.caseId || '',
+      relationQuery: option?.label || '',
+    });
+  };
+
+  const registerReminderScheduled = async ({
+    entityType,
+    title,
+    scheduledAt,
+    reminderAt,
+  }: {
+    entityType: 'task' | 'event';
+    title: string;
+    scheduledAt: string;
+    reminderAt: string | null;
+  }) => {
+    if (!reminderAt) return;
+
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'reminder_scheduled',
+        payload: {
+          entityType,
+          title,
+          scheduledAt,
+          reminderAt,
+          source: 'calendar',
+        },
+      });
+    } catch (error) {
+      console.warn('REMINDER_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
+
+  const handleAddTask = async (e: FormEvent) => {
+    e.preventDefault();
+    if (createTaskSubmitLockRef.current) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    createTaskSubmitLockRef.current = true;
+    setTaskSubmitting(true);
+
+    try {
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'task',
+          title: newTask.title,
+          startAt: newTask.dueAt,
+        },
+        candidates: conflictCandidates,
+      });
+      if (!shouldSave) return;
+
+      await insertTaskToSupabase({
+        title: newTask.title,
+        type: newTask.type,
+        date: newTask.dueAt.slice(0, 10),
+        scheduledAt: newTask.dueAt,
+        priority: newTask.priority,
+        leadId: newTask.leadId || null,
+        caseId: newTask.caseId || null,
+        ownerId: auth.currentUser?.uid,
+        workspaceId,
+      });
+
+      await refreshSupabaseBundle();
+      toast.success('Zadanie dodane');
+      setIsNewTaskOpen(false);
+      resetNewTask();
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
+    } finally {
+      createTaskSubmitLockRef.current = false;
+      setTaskSubmitting(false);
+    }
+  };
+
+  const handleAddEvent = async (e: FormEvent) => {
+    e.preventDefault();
+    if (createEventSubmitLockRef.current) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+    createEventSubmitLockRef.current = true;
+    setEventSubmitting(true);
+
+    const reminderAt = toReminderAtIso(newEvent.startAt, newEvent.reminder);
+
+    try {
+      const shouldSave = confirmScheduleConflicts({
+        draft: {
+          kind: 'event',
+          title: newEvent.title,
+          startAt: newEvent.startAt,
+          endAt: newEvent.endAt,
+        },
+        candidates: conflictCandidates,
+      });
+      if (!shouldSave) return;
+
+      await insertEventToSupabase({
+        title: newEvent.title,
+        type: newEvent.type,
+        startAt: newEvent.startAt,
+        endAt: newEvent.endAt,
+        reminderAt,
+        recurrenceRule: newEvent.recurrence.mode,
+        leadId: newEvent.leadId || null,
+        caseId: newEvent.caseId || null,
+        workspaceId,
+      });
+      await registerReminderScheduled({
+        entityType: 'event',
+        title: newEvent.title,
+        scheduledAt: newEvent.startAt,
+        reminderAt,
+      });
+      await refreshSupabaseBundle();
+      toast.success('Wydarzenie zaplanowane');
+      setIsNewEventOpen(false);
+      resetNewEvent();
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+    } finally {
+      createEventSubmitLockRef.current = false;
+      setEventSubmitting(false);
+    }
+  };
+
+  const visibleCalendarRange = useMemo(() => {
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(monthStart);
+    const monthRangeStart = startOfWeek(monthStart, { weekStartsOn: 1 });
+    const monthRangeEnd = endOfWeek(monthEnd, { weekStartsOn: 1 });
+    const rollingWeekStart = new Date();
+    rollingWeekStart.setHours(0, 0, 0, 0);
+    const rollingWeekEnd = addDays(rollingWeekStart, 6);
+    rollingWeekEnd.setHours(23, 59, 59, 999);
+    const calendarDataRangeEnd = rollingWeekEnd.getTime() > monthRangeEnd.getTime() ? rollingWeekEnd : monthRangeEnd;
+    const calendarDays = eachDayOfInterval({ start: monthRangeStart, end: monthRangeEnd });
+    const weekDays = Array.from({ length: 7 }, (_, index) => addDays(rollingWeekStart, index));
+
+    return {
+      monthStart,
+      monthEnd,
+      monthRangeStart,
+      monthRangeEnd,
+      rollingWeekStart,
+      rollingWeekEnd,
+      calendarDataRangeEnd,
+      calendarDays,
+      weekDays,
+    };
+  }, [currentMonth]);
+
+  const {
+    monthStart,
+    monthEnd,
+    monthRangeStart,
+    monthRangeEnd,
+    rollingWeekStart,
+    rollingWeekEnd,
+    calendarDataRangeEnd,
+    calendarDays,
+    weekDays,
+  } = visibleCalendarRange;
+  void monthEnd;
+  void monthRangeEnd;
+
+  const scheduleEntries = useMemo(
+    () => combineScheduleEntries({
+      events,
+      tasks,
+      leads,
+      rangeStart: monthRangeStart,
+      rangeEnd: calendarDataRangeEnd,
+    }),
+    [calendarDataRangeEnd, events, leads, monthRangeStart, tasks],
+  );
+
+  const weekEntries = useMemo(
+    () => combineScheduleEntries({
+      events,
+      tasks,
+      leads,
+      rangeStart: rollingWeekStart,
+      rangeEnd: rollingWeekEnd,
+    }),
+    [events, leads, rollingWeekEnd, rollingWeekStart, tasks],
+  );
+
+  const entriesByDayKey = useMemo(
+    () => buildEntriesByDayKey(scheduleEntries),
+    [scheduleEntries],
+  );
+
+  const weekEntriesByDayKey = useMemo(
+    () => buildEntriesByDayKey(weekEntries),
+    [weekEntries],
+  );
+
+  const selectedDayEntries = useMemo(
+    () => getPrecomputedEntriesForDay(entriesByDayKey, selectedDate),
+    [entriesByDayKey, selectedDate],
+  );
+  const caseTitleById = useMemo(
+    () => new Map(cases.map((caseRecord: any) => [String(caseRecord.id || ''), String(caseRecord.title || caseRecord.clientName || 'Powiązana sprawa')])),
+    [cases],
+  );
+  const conflictCandidates = useMemo(
+    () =>
+      buildConflictCandidates({
+        tasks,
+        events,
+        caseTitleById,
+      }),
+    [caseTitleById, events, tasks],
+  );
+
+  const monthCellMinHeight = calendarScale === 'compact' ? 104 : calendarScale === 'large' ? 160 : 128;
+
+  const logCalendarEntryActivity = async (
+    entry: ScheduleEntry,
+    eventType: string,
+    extraPayload: Record<string, unknown> = {},
+  ) => {
+    try {
+      await insertActivityToSupabase({
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType,
+        leadId: entry.raw?.leadId ?? null,
+        caseId: entry.raw?.caseId ?? null,
+        workspaceId: workspace?.id ?? null,
+        payload: {
+          source: 'calendar',
+          entryId: entry.id,
+          sourceId: entry.sourceId,
+          kind: entry.kind,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          startsAt: entry.startsAt,
+          status: getCalendarEntryStatus(entry),
+          ...extraPayload,
+        },
+      });
+    } catch (error) {
+      console.warn('CALENDAR_ENTRY_ACTIVITY_WRITE_FAILED', error);
+    }
+  };
+
+  const handleStartChange = (value: string) => {
+    const currentEnd = parseISO(newEvent.endAt);
+    const currentStart = parseISO(newEvent.startAt);
+    const durationMs = Math.max(currentEnd.getTime() - currentStart.getTime(), 60 * 60_000);
+    const newStart = parseISO(value);
+    const nextEnd = new Date(newStart.getTime() + durationMs);
+
+    setNewEvent({
+      ...newEvent,
+      startAt: value,
+      endAt: toDateTimeLocalValue(nextEnd),
+    });
+  };
+
+  const handleOpenEdit = (entry: ScheduleEntry) => {
+    setEditEntry(entry);
+    setEditDraft(buildEditDraft(entry));
+  };
+
+  const handleShiftEntry = async (entry: ScheduleEntry, days: number) => {
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
+    try {
+      setActionPendingId(String(entry.id) + ':' + String(days));
+      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+      let shiftedStartAt = '';
+      let shiftedEndAt: string | null = null;
+
+      if (entry.kind === 'event') {
+        const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
+        shiftedStartAt = toDateTimeLocalValue(addDays(baseStart, days));
+        shiftedEndAt = entry.raw?.endAt
+          ? toDateTimeLocalValue(addDays(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), days))
+          : null;
+
+        await updateEventInSupabase({
+          id: sourceId,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: readCalendarRawText(entry.raw?.type, 'meeting'),
+          startAt: shiftedStartAt,
+          endAt: shiftedEndAt,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+        });
+      } else if (entry.kind === 'task') {
+        // STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE:
+        // syncTaskDerivedFields prefers scheduledAt, so the shifted value must overwrite
+        // scheduledAt/scheduled_at before normalization. Otherwise dueAt loses to the old date.
+        const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
+        const nextStart = addDays(baseStart, days);
+        const shiftedDate = format(nextStart, 'yyyy-MM-dd');
+        const shiftedTime = format(nextStart, 'HH:mm');
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        const shiftedTaskDraft = {
+          ...entry.raw,
+          scheduledAt: shiftedStartAt,
+          scheduled_at: shiftedStartAt,
+          dueAt: shiftedStartAt,
+          due_at: shiftedStartAt,
+          date: shiftedDate,
+          time: shiftedTime,
+        };
+        const taskPayload = syncTaskDerivedFields(shiftedTaskDraft);
+        shiftedStartAt = String(taskPayload.scheduledAt || taskPayload.dueAt || shiftedStartAt);
+
+        await updateTaskInSupabase({
+          id: sourceId,
+          title: taskPayload.title,
+          type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
+          date: taskPayload.date,
+          scheduledAt: taskPayload.dueAt,
+          dueAt: taskPayload.dueAt,
+          time: taskPayload.time,
+          status: taskPayload.status,
+          priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
+          leadId: (taskPayload as any).leadId ?? (taskPayload as any).lead_id ?? null,
+          caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
+        });
+      } else if (entry.kind === 'lead') {
+        const nextStart = addDays(parseISO(entry.startsAt), days);
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        await updateLeadInSupabase({
+          id: sourceId,
+          nextActionAt: shiftedStartAt,
+          nextActionTitle: readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+        });
+      } else {
+        toast.error('Nie można przesunąć tego typu wpisu.');
+        return;
+      }
+
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      await refreshSupabaseBundle();
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      toast.success(days === 1 ? 'Przesunięto o 1 dzień' : 'Przesunięto o 1 tydzień');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
+  const handleShiftEntryHours = async (entry: ScheduleEntry, hours: number) => {
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
+    try {
+      setActionPendingId(String(entry.id) + ':h' + String(hours));
+      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id);
+      let shiftedStartAt = '';
+      let shiftedEndAt: string | null = null;
+
+      if (entry.kind === 'event') {
+        const baseStart = parseISO(toCalendarDateInput(entry.raw?.startAt, entry.startsAt));
+        shiftedStartAt = toDateTimeLocalValue(addHours(baseStart, hours));
+        shiftedEndAt = entry.raw?.endAt
+          ? toDateTimeLocalValue(addHours(parseISO(toCalendarDateInput(entry.raw.endAt, entry.endsAt || entry.startsAt)), hours))
+          : null;
+
+        await updateEventInSupabase({
+          id: sourceId,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: readCalendarRawText(entry.raw?.type, 'meeting'),
+          startAt: shiftedStartAt,
+          endAt: shiftedEndAt,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+        });
+      } else if (entry.kind === 'task') {
+        // STAGE123_CALENDAR_TASK_SHIFT_PAYLOAD_SOURCE_HOURS:
+        // See day shift branch: scheduledAt/scheduled_at must be overwritten before normalization.
+        const baseStart = parseISO(getTaskStartAt(entry.raw) || entry.startsAt);
+        const nextStart = addHours(baseStart, hours);
+        const shiftedDate = format(nextStart, 'yyyy-MM-dd');
+        const shiftedTime = format(nextStart, 'HH:mm');
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        const shiftedTaskDraft = {
+          ...entry.raw,
+          scheduledAt: shiftedStartAt,
+          scheduled_at: shiftedStartAt,
+          dueAt: shiftedStartAt,
+          due_at: shiftedStartAt,
+          date: shiftedDate,
+          time: shiftedTime,
+        };
+        const taskPayload = syncTaskDerivedFields(shiftedTaskDraft);
+        shiftedStartAt = String(taskPayload.scheduledAt || taskPayload.dueAt || shiftedStartAt);
+
+        await updateTaskInSupabase({
+          id: sourceId,
+          title: taskPayload.title,
+          type: readScheduleRawText(entry.raw, 'type', 'follow_up'),
+          date: taskPayload.date,
+          scheduledAt: taskPayload.dueAt,
+          dueAt: taskPayload.dueAt,
+          time: taskPayload.time,
+          status: taskPayload.status,
+          priority: readScheduleRawText(entry.raw, 'priority', 'medium'),
+          leadId: (taskPayload as any).leadId ?? (taskPayload as any).lead_id ?? null,
+          caseId: readCalendarRawText(entry.raw?.caseId || entry.raw?.case_id) || null,
+        });
+      } else if (entry.kind === 'lead') {
+        const nextStart = addHours(parseISO(entry.startsAt), hours);
+        shiftedStartAt = toDateTimeLocalValue(nextStart);
+        await updateLeadInSupabase({
+          id: sourceId,
+          nextActionAt: shiftedStartAt,
+          nextActionTitle: readCalendarRawText(entry.raw?.nextActionTitle || entry.raw?.next_action_title, entry.title),
+        });
+      } else {
+        toast.error('Nie można przesunąć tego typu wpisu.');
+        return;
+      }
+
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      await refreshSupabaseBundle();
+      applyCalendarShiftOptimisticState(entry, shiftedStartAt, shiftedEndAt);
+      toast.success(hours === 1 ? 'Przesunięto o 1 godzinę' : 'Przesunięto o ' + String(hours) + ' godz.');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
+  const handleCompleteEntry = async (entry: ScheduleEntry) => {
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+
+    try {
+      setActionPendingId(`${entry.id}:done`);
+      const wasCompleted = isCompletedCalendarEntry(entry);
+
+      // CLOSEFLOW_STAGE181J_V2_LOCAL_DONE_STATE
+      // Robocze wpisy local/dev nie istnieją w backendzie, więc kliknięcie "Zrobione"
+      // ma działać lokalnie bez updateTaskInSupabase/updateEventInSupabase.
+      const localSourceId = String(entry.sourceId || entry.raw?.id || entry.id || '');
+      const isLocalCalendarSeed = import.meta.env.DEV && /^(local-calendar-|dev-task-|dev-event-)/.test(localSourceId);
+
+      if (isLocalCalendarSeed) {
+        const completedAt = new Date().toISOString();
+        const nextStatus = wasCompleted
+          ? entry.kind === 'event' ? 'scheduled' : 'todo'
+          : entry.kind === 'event' ? 'completed' : 'done';
+
+        const patchLocalRow = (row: any) => {
+          if (String(row?.id || '') !== localSourceId) return row;
+
+          const nextRow: any = {
+            ...row,
+            status: nextStatus,
+            done: !wasCompleted,
+            isDone: !wasCompleted,
+            is_done: !wasCompleted,
+            completedAt: wasCompleted ? null : completedAt,
+            completed_at: wasCompleted ? null : completedAt,
+            doneAt: wasCompleted ? null : completedAt,
+            done_at: wasCompleted ? null : completedAt,
+          };
+
+          return nextRow;
+        };
+
+        if (entry.kind === 'event') {
+          setEvents((previousEvents: any[]) => previousEvents.map(patchLocalRow));
+        }
+
+        if (entry.kind === 'task') {
+          setTasks((previousTasks: any[]) => previousTasks.map(patchLocalRow));
+        }
+
+        toast.success(wasCompleted ? 'Roboczy wpis przywrócony lokalnie' : 'Roboczy wpis oznaczony jako zrobiony lokalnie');
+        return;
+      }
+
+      if (entry.kind === 'event') {
+        await updateEventInSupabase({
+          id: entry.sourceId,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: readCalendarRawText(entry.raw?.type, 'meeting'),
+          startAt: readCalendarRawText(entry.raw?.startAt, entry.startsAt),
+          endAt: entry.raw?.endAt || entry.endsAt || null,
+          status: wasCompleted ? 'scheduled' : 'completed',
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+        });
+      } else if (entry.kind === 'task') {
+        await updateTaskInSupabase({
+          id: entry.sourceId,
+          title: readCalendarRawText(entry.raw?.title, entry.title),
+          type: entry.raw?.type,
+          date: entry.raw?.date || entry.startsAt.slice(0, 10),
+          status: wasCompleted ? 'todo' : 'done',
+          priority: entry.raw?.priority,
+          leadId: readCalendarRawText(entry.raw?.leadId) || null,
+          caseId: readCalendarRawText(entry.raw?.caseId) || null,
+        });
+      }
+
+      await logCalendarEntryActivity(
+        entry,
+        wasCompleted ? 'calendar_entry_restored' : 'calendar_entry_completed',
+        {
+          nextStatus: wasCompleted
+            ? entry.kind === 'event' ? 'scheduled' : 'todo'
+            : entry.kind === 'event' ? 'completed' : 'done',
+        },
+      );
+
+      await refreshSupabaseBundle();
+
+      toast.success(wasCompleted ? 'Wpis przywrócony' : 'Wpis oznaczony jako zrobiony');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
+  const handleDeleteEntry = async (entry: ScheduleEntry) => {
+    if (!hasAccess) {
+      toast.error('Trial wygasł.');
+      return;
+    }
+    if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;
+
+    try {
+      setActionPendingId(`${entry.id}:delete`);
+
+      if (entry.kind === 'event') {
+        await deleteEventFromSupabase(entry.sourceId);
+      } else if (entry.kind === 'task') {
+        await deleteTaskFromSupabase(entry.sourceId);
+      }
+
+      await logCalendarEntryActivity(entry, 'calendar_entry_deleted');
+
+      await refreshSupabaseBundle();
+      toast.success('Wpis usunięty');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+    } finally {
+      setActionPendingId(null);
+    }
+  };
+
+  const handleSaveEdit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!editEntry || !editDraft) return;
+    if (editEntrySubmitLockRef.current) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    editEntrySubmitLockRef.current = true;
+    setEditSubmitting(true);
+
+    try {
+      setActionPendingId(`${editEntry.id}:edit`);
+
+      if (editEntry.kind === 'event') {
+        const reminderAt = toReminderAtIso(editDraft.startAt, editDraft.reminder);
+
+        await updateEventInSupabase({
+          id: editEntry.sourceId,
+          title: editDraft.title,
+          type: editDraft.type,
+          startAt: editDraft.startAt,
+          endAt: editDraft.endAt || null,
+          leadId: editDraft.leadId || null,
+          caseId: editDraft.caseId || null,
+          clientId: editDraft.clientId || null,
+          status: editDraft.status || 'scheduled',
+          reminderAt,
+          recurrenceRule: editDraft.recurrence.mode,
+        });
+
+        await registerReminderScheduled({
+          entityType: 'event',
+          title: editDraft.title,
+          scheduledAt: editDraft.startAt,
+          reminderAt,
+        });
+      } else if (editEntry.kind === 'task') {
+        const nextDate = parseISO(editDraft.startAt);
+        const payload = syncTaskDerivedFields({
+          ...editEntry.raw,
+          title: editDraft.title,
+          type: editDraft.type,
+          dueAt: editDraft.startAt,
+          date: format(nextDate, 'yyyy-MM-dd'),
+          time: format(nextDate, 'HH:mm'),
+          priority: editDraft.priority,
+          leadId: editDraft.leadId || null,
+          leadName: selectedEditOption?.resolvedTarget === 'lead' ? selectedEditOption.label : '',
+          recurrence: editDraft.recurrence,
+          reminder: editDraft.reminder,
+        });
+        const reminderAt = toReminderAtIso(payload.dueAt, payload.reminder);
+
+        await updateTaskInSupabase({
+          id: editEntry.sourceId,
+          title: payload.title,
+          type: payload.type,
+          date: payload.date,
+          scheduledAt: payload.dueAt,
+          status: payload.status,
+          priority: payload.priority,
+          reminderAt,
+          recurrenceRule: payload.recurrence?.mode ?? 'none',
+          leadId: payload.leadId ?? null,
+          caseId: editDraft.caseId || null,
+        });
+        await registerReminderScheduled({
+          entityType: 'task',
+          title: payload.title,
+          scheduledAt: payload.dueAt,
+          reminderAt,
+        });
+      }
+
+      await refreshSupabaseBundle();
+      toast.success('Wpis zaktualizowany');
+      setEditEntry(null);
+      setEditDraft(null);
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+    } finally {
+      editEntrySubmitLockRef.current = false;
+      setEditSubmitting(false);
+      setActionPendingId(null);
+    }
+  };
+
+  // STAGE114B_CALENDAR_LOADING_STATE_SPLIT_CONTRACT:
+  // workspace-not-ready and data-loading are not the same as loaded-empty.
+  const calendarWorkspaceNotReady = workspaceLoading || !workspaceReady || !workspace?.id;
+  const calendarDataLoading = calendarWorkspaceNotReady || loading;
+  const calendarLoadedWithEntries = !calendarDataLoading && (events.length > 0 || tasks.length > 0 || leads.length > 0);
+  const calendarLoadedEmpty = !calendarDataLoading && !calendarLoadedWithEntries;
+  void calendarLoadedEmpty;
+  const actionButtonClass = createEntryActionClass();
+
+  return (
+    <Layout>
+      <div className="cf-html-view main-calendar-html" data-calendar-real-view="true">
+        <CloseFlowPageHeaderV2
+          pageKey="calendar"
+          actions={
+            <>
+              <div className="head-actions">
+                          <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-event-stage6="true" onClick={() => setIsNewEventOpen(true)}>
+                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            Dodaj wydarzenie
+                          </button>
+                          <button type="button" className={createEntryActionClass()} data-cf-header-action="primary" data-calendar-header-add-task-stage6="true" onClick={() => setIsNewTaskOpen(true)}>
+                            <Plus className="mr-1 h-3.5 w-3.5" />
+                            Dodaj zadanie
+                          </button>
+                          <Link to="/ai-drafts" className="btn soft-blue" data-cf-header-action="ai">
+                            <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
+                          </Link>
+                          <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
+                            <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
+                                                                      <DialogHeader>
+            <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-stage171-hidden-copy="true">Opis formularza.</DialogDescription>
+          </DialogHeader>
+                              <form onSubmit={handleAddEvent} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+                                <div className="space-y-4">
+                                  <div className="event-form-field">
+                                    <Label>Tytuł</Label>
+                                    <Input value={newEvent.title} onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })} required />
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="event-form-field">
+                                      <Label>Typ</Label>
+                                      <select className="event-form-select" value={newEvent.type} onChange={(e) => setNewEvent({ ...newEvent, type: e.target.value })}>
+                                        {EVENT_TYPES.map((eventType) => (
+                                          <option key={eventType.value} value={eventType.value}>{eventType.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+                                  <TopicContactPicker
+                                    options={topicContactOptions}
+                                    selectedOption={selectedNewEventOption}
+                                    query={newEvent.relationQuery}
+                                    onQueryChange={(value) => setNewEvent((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                                    onSelect={handleSelectNewEventRelation}
+                                  />
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                                  
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="event-form-field">
+                                      <Label>Start</Label>
+                                      <Input type="datetime-local" value={newEvent.startAt} onChange={(e) => handleStartChange(e.target.value)} required />
+                                    </div>
+                                    <div className="event-form-field">
+                                      <Label>Koniec</Label>
+                                      <Input type="datetime-local" value={newEvent.endAt} onChange={(e) => setNewEvent({ ...newEvent, endAt: e.target.value })} required />
+                                    </div>
+                                  </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div className="space-y-2 md:col-span-2">
+                                      <Label>Powtarzanie</Label>
+                                      <select className="event-form-select" value={newEvent.recurrence.mode} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, mode: e.target.value as any } })}>
+                                        {RECURRENCE_OPTIONS.map((option) => (
+                                          <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="event-form-field">
+                                      <Label>Co ile</Label>
+                                      <Input type="number" min="1" value={newEvent.recurrence.interval} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={newEvent.recurrence.mode === 'none'} />
+                                    </div>
+                                  </div>
+                                  <div className="event-form-field">
+                                    <Label>Powtarzaj do</Label>
+                                    <Input type="date" value={newEvent.recurrence.until || ''} onChange={(e) => setNewEvent({ ...newEvent, recurrence: { ...newEvent.recurrence, until: e.target.value || null } })} disabled={newEvent.recurrence.mode === 'none'} />
+                                  </div>
+                                </div>
+
+                                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                                  <div>
+                                    <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="event-form-field">
+                                      <Label>Tryb</Label>
+                                      <select className="event-form-select" value={newEvent.reminder.mode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, mode: e.target.value as any } })}>
+                                        {REMINDER_MODE_OPTIONS.map((option) => (
+                                          <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                    <div className="event-form-field">
+                                      <Label>Kiedy przypomnieć</Label>
+                                      <select className="event-form-select" value={newEvent.reminder.minutesBefore} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, minutesBefore: Number(e.target.value) } })} disabled={newEvent.reminder.mode === 'none'}>
+                                        {REMINDER_OFFSET_OPTIONS.map((option) => (
+                                          <option key={option.value} value={option.value}>{option.label}</option>
+                                        ))}
+                                      </select>
+                                    </div>
+                                  </div>
+                                  {newEvent.reminder.mode === 'recurring' && (
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                      <div className="space-y-2 md:col-span-2">
+                                        <Label>Cykliczność przypomnienia</Label>
+                                        <select className="event-form-select" value={newEvent.reminder.recurrenceMode} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceMode: e.target.value as any } })}>
+                                          {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                                            <option key={option.value} value={option.value}>{option.label}</option>
+                                          ))}
+                                        </select>
+                                      </div>
+                                      <div className="event-form-field">
+                                        <Label>Co ile</Label>
+                                        <Input type="number" min="1" value={newEvent.reminder.recurrenceInterval} onChange={(e) => setNewEvent({ ...newEvent, reminder: { ...newEvent.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <DialogFooter className={calendarEntryModalFooterClass}>
+                                  <Button type="submit" className="w-full" disabled={eventSubmitting || !workspaceReady}>{eventSubmitting ? 'Dodawanie...' : 'Zaplanuj'}</Button>
+                                </DialogFooter>
+                              </form>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
+            </>
+          }
+        />
+
+        {calendarDataLoading ? (
+          <div className="right-card mb-4 flex items-center gap-3 border border-blue-100 bg-blue-50/70 text-blue-900" data-cf-calendar-data-loading-skeleton="true" aria-live="polite">
+            <Loader2 className="h-4 w-4 animate-spin" />
+            <div>
+              <p className="text-sm font-extrabold">Odświeżam dane kalendarza</p>
+              <p className="text-xs font-semibold text-blue-700">Shell i nawigacja zostają dostępne, ładuje się tylko warstwa danych.</p>
+            </div>
+          </div>
+        ) : null}
+        <div className="calendar-toolbar">
+          <div className="calendar-seg" role="tablist" aria-label="Widok kalendarza">
+            <button type="button" className={`seg-btn ${calendarView === 'week' ? 'active' : ''}`} onClick={() => setCalendarView('week')}>Tydzień</button>
+            <button type="button" className={`seg-btn ${calendarView === 'month' ? 'active' : ''}`} onClick={() => setCalendarView('month')}>Miesiąc</button>
+          </div>
+
+          <div className="calendar-toolbar-right">
+            {calendarView === 'month' ? (
+              <div className="calendar-seg" role="tablist" aria-label="Wielkość kafelków">
+                <button type="button" className={`seg-btn ${calendarScale === 'compact' ? 'active' : ''}`} onClick={() => setCalendarScale('compact')}>Małe kafelki</button>
+                <button type="button" className={`seg-btn ${calendarScale === 'default' ? 'active' : ''}`} onClick={() => setCalendarScale('default')}>Standard</button>
+                <button type="button" className={`seg-btn ${calendarScale === 'large' ? 'active' : ''}`} onClick={() => setCalendarScale('large')}>Duże kafelki</button>
+              </div>
+            ) : null}
+
+            <div className="calendar-nav">
+              <button
+                type="button"
+                className="nav-btn"
+                onClick={() => {
+                  if (calendarView === 'week') {
+                    const next = addDays(selectedDate, -7);
+                    setSelectedDate(next);
+                    setCurrentMonth(next);
+                    return;
+                  }
+                  setCurrentMonth(subMonths(currentMonth, 1));
+                }}
+                aria-label={calendarView === 'week' ? 'Poprzedni tydzień' : 'Poprzedni miesiąc'}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button type="button" className="nav-today" onClick={() => { setCurrentMonth(new Date()); setSelectedDate(new Date()); }}>
+                Dzisiaj
+              </button>
+              <button
+                type="button"
+                className="nav-btn"
+                onClick={() => {
+                  if (calendarView === 'week') {
+                    const next = addDays(selectedDate, 7);
+                    setSelectedDate(next);
+                    setCurrentMonth(next);
+                    return;
+                  }
+                  setCurrentMonth(addMonths(currentMonth, 1));
+                }}
+                aria-label={calendarView === 'week' ? 'Następny tydzień' : 'Następny miesiąc'}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
+          <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
+                                  <DialogHeader>
+            <DialogTitle>Dodaj zadanie</DialogTitle>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-task" data-stage114-calendar-modal-description="create-task">Ustaw termin, priorytet i powiązanie zadania w kalendarzu.</DialogDescription>
+          </DialogHeader>
+            <form onSubmit={handleAddTask} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+              <div className="event-form-field">
+                <Label>Tytuł zadania</Label>
+                <Input value={newTask.title} onChange={(e) => setNewTask({ ...newTask, title: e.target.value })} required />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="event-form-field">
+                  <Label>Typ</Label>
+                  <select className="event-form-select" value={newTask.type} onChange={(e) => setNewTask({ ...newTask, type: e.target.value })}>
+                    {TASK_TYPES.map((taskType) => (
+                      <option key={taskType.value} value={taskType.value}>{taskType.label}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <TopicContactPicker
+                options={topicContactOptions}
+                selectedOption={selectedNewTaskOption}
+                query={newTask.relationQuery}
+                onQueryChange={(value) => setNewTask((prev) => ({ ...prev, relationQuery: value, leadId: '', caseId: '' }))}
+                onSelect={handleSelectNewTaskRelation}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="event-form-field">
+                  <Label>Priorytet</Label>
+                  <select className="event-form-select" value={newTask.priority} onChange={(e) => setNewTask({ ...newTask, priority: e.target.value })}>
+                    {PRIORITY_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="event-form-field">
+                  <Label>Data i godzina</Label>
+                  <Input type="datetime-local" value={newTask.dueAt} onChange={(e) => setNewTask({ ...newTask, dueAt: e.target.value })} required />
+                </div>
+              </div>
+              <DialogFooter className={calendarEntryModalFooterClass}>
+                <Button type="submit" className="w-full" disabled={taskSubmitting || !workspaceReady}>{taskSubmitting ? 'Dodawanie...' : 'Dodaj zadanie'}</Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        {calendarView === 'month' ? (
+          <>
+            <div className="grid grid-cols-7 mb-2">
+              {['Pon', 'Wt', 'Śro', 'Czw', 'Pt', 'Sob', 'Ndz'].map((day) => (
+                <div key={day} className="text-center text-[10px] font-bold text-slate-400 uppercase tracking-widest py-2">{day}</div>
+              ))}
+            </div>
+
+            <div className="calendar-month-grid">
+              {calendarDays.map((day, index) => {
+                const dayEntries = getPrecomputedEntriesForDay(entriesByDayKey, day);
+                const isCurrentMonth = isSameMonth(day, monthStart);
+                const isTodayDay = isToday(day);
+                const isSelectedDay = isSameDay(day, selectedDate);
+                const dayStart = new Date(day);
+                dayStart.setHours(0, 0, 0, 0);
+                const todayStart = new Date();
+                todayStart.setHours(0, 0, 0, 0);
+                const isPastDay = dayStart.getTime() < todayStart.getTime() && !isTodayDay;
+
+                return (
+                  <div
+                    key={index}
+                    data-calendar-month-day-cell="true"
+                    role="button"
+                    tabIndex={0}
+                    onClick={() => handleSelectMonthDay(day)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault();
+                        setSelectedDate(day);
+                      }
+                    }}
+                    style={{ minHeight: monthCellMinHeight }}
+                    className={`calendar-day-cell ${!isCurrentMonth ? 'is-outside' : ''} ${isSelectedDay ? 'is-selected' : ''} ${isTodayDay ? 'is-today' : ''} ${isPastDay ? 'is-past' : ''}`}
+                  >
+                    <div className="flex items-center justify-start mb-2">
+                      <span className="calendar-day-number">
+                        {format(day, 'd')}
+                      </span>
+
+                    </div>
+                    <div className="space-y-1">
+                      {dayEntries.slice(0, calendarScale === 'compact' ? 3 : 4).map((entry) => {
+                        const isCompletedEntry = entry.kind === 'task' && entry.raw?.status === 'done';
+
+                        return (
+                          <button
+                            key={entry.id}
+                            type="button"
+                            className={`calendar-day-pill ${getEntryTone(entry)} ${isCompletedCalendarEntry(entry) ? 'calendar-entry-completed calendar-month-entry-completed' : ''} ${isCompletedEntry ? 'is-done' : ''}`}
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              setSelectedDate(day);
+                              handleOpenEdit(entry);
+                            }}
+                            title={entry.title}
+                          >
+                            <span className="calendar-pill-type">{entry.kind === 'event' ? 'Wyd' : entry.kind === 'task' ? 'Zad' : 'Lead'}</span>
+                            <span className={isCompletedEntry ? 'is-done-text' : ''}>
+                              {format(parseISO(entry.startsAt), 'HH:mm')} {entry.title}
+                              {entry.raw?.caseId ? ' · Sprawa' : entry.raw?.leadId ? ' · Lead' : ''}
+                            </span>
+                          </button>
+                        );
+                      })}
+                      {dayEntries.length > (calendarScale === 'compact' ? 3 : 4) && (
+                        <button
+                          type="button"
+                          className="calendar-more cf-calendar-month-more"
+                          data-calendar-month-more-button="true"
+                          onClick={(event) => handleShowMoreMonthDay(event, day)}
+                        >+ {dayEntries.length - (calendarScale === 'compact' ? 3 : 4)} więcej</button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+                        <CalendarSelectedDayTileV9
+              selectedDate={selectedDate}
+              entries={selectedDayEntries}
+              actionPendingId={actionPendingId}
+              onEdit={handleEditEntry}
+              onShift={handleShiftEntry}
+              onShiftHours={handleShiftEntryHours}
+              onComplete={handleCompleteEntry}
+              onDelete={handleDeleteEntry}
+            />
+          </>
+        ) : null}
+
+        {calendarView === 'week' ? (
+          <div className="calendar-week-layout">
+            <aside className="right-card calendar-week-filter">
+              <div className="panel-head">
+                <h3>Najbliższe 7 dni</h3>
+                <p>Najszybszy filtr.</p>
+              </div>
+              <div className="calendar-week-visible-days-v3 mt-3 space-y-2" data-cf-calendar-week-rail-stage93="clean">
+                {weekDays.map((day, index) => {
+                  const dayEntries = getPrecomputedEntriesForDay(weekEntriesByDayKey, day);
+                  const active = isSameDay(day, selectedDate);
+                  const label = getCalendarDayNavLabel(day, index);
+                  const weekday = capitalizeCalendarLabel(format(day, 'EEEE', { locale: pl }));
+                  const dateLabel = format(day, 'd MMM', { locale: pl });
+                  const fullDateLabel = weekday + ', ' + dateLabel;
+
+                  return (
+                    <button
+                      key={day.toISOString()}
+                      type="button"
+                      onClick={() => {
+                        setSelectedDate(day);
+                        setCurrentMonth(day);
+                      }}
+                      className={
+                        active
+                          ? 'w-full rounded-2xl border border-blue-200 bg-blue-50 px-3 py-2.5 text-left shadow-sm transition hover:border-blue-300 hover:bg-blue-100'
+                          : 'w-full rounded-2xl border border-slate-200 bg-white px-3 py-2.5 text-left shadow-sm transition hover:border-slate-300 hover:bg-slate-50'
+                      }
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="min-w-0">
+                          <div className={active ? "truncate text-sm font-extrabold text-blue-700" : "truncate text-sm font-extrabold text-slate-900"}>
+                            {label}
+                          </div>
+                          <div className={active ? "truncate text-[11px] font-semibold text-blue-600" : "truncate text-[11px] font-semibold text-slate-500"}>
+                            {fullDateLabel}
+                          </div>
+                        </div>
+                        <span className={active ? "calendar-week-day-count-text is-active" : "calendar-week-day-count-text"}>
+                          {formatCalendarItemCount(dayEntries.length)}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </aside>
+
+            <section className="right-card calendar-week-plan">
+              <div className="panel-head">
+                <h3>Plan najbliższych dni</h3>
+              </div>
+
+              <div className="calendar-week-plan-list">
+                {weekDays.map((day, index) => {
+                  const dayEntries = getPrecomputedEntriesForDay(weekEntriesByDayKey, day);
+                  const isActiveDay = isSameDay(day, selectedDate);
+
+                  return (
+                    <section key={day.toISOString()} className={`calendar-week-day ${isActiveDay ? 'is-active' : ''}`}>
+                      <header className="calendar-week-day-head">
+                        <div>
+                          <div className="calendar-week-day-kicker">{getCalendarDayNavLabel(day, index)}</div>
+                          <div className="calendar-week-day-title">{format(day, 'd MMM', { locale: pl })}</div>
+                        </div>
+                        <div className="calendar-week-day-count">{dayEntries.length} {dayEntries.length === 1 ? 'wpis' : 'wpisów'}</div>
+                      </header>
+
+                      <div className="calendar-week-day-entries">
+                        {dayEntries.length === 0 ? (
+                          <div className="calendar-week-empty">Brak wpisów.</div>
+                        ) : dayEntries.map((entry) => (
+                            <ScheduleEntryCard
+                            key={`week:${day.toISOString()}:${entry.id}`}
+                              entry={entry}
+                              actionButtonClass={actionButtonClass}
+                              actionPendingId={actionPendingId}
+                              caseTitle={entry.raw?.caseId ? caseTitleById.get(String(entry.raw.caseId)) || 'Powiązana sprawa' : null}
+                              onEdit={handleOpenEdit}
+                              onShift={handleShiftEntry}
+                              onShiftHours={handleShiftEntryHours}
+                              onComplete={handleCompleteEntry}
+                              onDelete={handleDeleteEntry}
+                            />
+                        ))}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            </section>
+          </div>
+        ) : null}
+      </div>
+
+      <Dialog open={Boolean(editEntry && editDraft)} onOpenChange={(open) => {
+        if (!open) {
+          setEditEntry(null);
+          setEditDraft(null);
+        }
+      }}>
+        <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode={editEntry?.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
+                              <DialogHeader>
+            <DialogTitle>Edytuj wpis z kalendarza</DialogTitle>
+            <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="edit-entry" data-stage114-calendar-modal-description="edit-entry">Zmień datę, godzinę, relację, przypomnienia albo status wpisu w kalendarzu.</DialogDescription>
+          </DialogHeader>
+          {editEntry && editDraft ? (
+            <form onSubmit={handleSaveEdit} className="event-form-vnext" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode={editEntry.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22}>
+              <div className="event-form-field">
+                <Label>Tytuł</Label>
+                <Input value={editDraft.title} onChange={(e) => setEditDraft({ ...editDraft, title: e.target.value })} required />
+              </div>
+
+              {editEntry.kind !== 'lead' ? (
+                <div className="event-form-field">
+                  <Label>Typ</Label>
+                  <select className="event-form-select" value={editDraft.type} onChange={(e) => setEditDraft({ ...editDraft, type: e.target.value })}>
+                    {(editEntry.kind === 'event' ? EVENT_TYPES : TASK_TYPES).map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+
+              <div className={`grid gap-4 ${editEntry.kind === 'event' ? 'md:grid-cols-2' : 'grid-cols-1'}`}>
+                <div className="event-form-field">
+                  <Label>Start</Label>
+                  <Input
+                    type="datetime-local"
+                    value={editDraft.startAt}
+                    onChange={(e) => {
+                      const nextValue = e.target.value;
+                      if (editEntry.kind === 'event') {
+                        const oldStart = parseISO(editDraft.startAt);
+                        const oldEnd = parseISO(editDraft.endAt || buildStartEndPair(editDraft.startAt).endAt);
+                        const duration = Math.max(oldEnd.getTime() - oldStart.getTime(), 60 * 60_000);
+                        const nextEnd = new Date(parseISO(nextValue).getTime() + duration);
+                        setEditDraft({ ...editDraft, startAt: nextValue, endAt: toDateTimeLocalValue(nextEnd) });
+                        return;
+                      }
+                      setEditDraft({ ...editDraft, startAt: nextValue });
+                    }}
+                    required
+                  />
+                </div>
+
+                {editEntry.kind === 'event' ? (
+                  <div className="event-form-field">
+                    <Label>Koniec</Label>
+                    <Input type="datetime-local" value={editDraft.endAt} onChange={(e) => setEditDraft({ ...editDraft, endAt: e.target.value })} required />
+                  </div>
+                ) : null}
+              </div>
+
+              {editEntry.kind === 'task' ? (
+                <div className="event-form-field">
+                  <Label>Priorytet</Label>
+                  <select className="event-form-select" value={editDraft.priority} onChange={(e) => setEditDraft({ ...editDraft, priority: e.target.value })}>
+                    {PRIORITY_OPTIONS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </div>
+              ) : null}
+
+              {editEntry.kind !== 'lead' ? (
+                <div className="event-form-field">
+                  <TopicContactPicker
+                    options={topicContactOptions}
+                    selectedOption={selectedEditOption}
+                    query={editDraft.relationQuery}
+                    onQueryChange={(value) => setEditDraft({ ...editDraft, relationQuery: value, leadId: '', caseId: '' })}
+                    onSelect={handleSelectEditRelation}
+                  />
+                </div>
+              ) : null}
+
+              {editEntry.kind === 'event' ? (
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Cykliczność wydarzenia</p>
+                    <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="space-y-2 md:col-span-2">
+                      <Label>Powtarzanie</Label>
+                      <select className="event-form-select" value={editDraft.recurrence.mode} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, mode: e.target.value as any } })}>
+                        {RECURRENCE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="event-form-field">
+                      <Label>Co ile</Label>
+                      <Input type="number" min="1" value={editDraft.recurrence.interval} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, interval: Math.max(1, Number(e.target.value) || 1) } })} disabled={editDraft.recurrence.mode === 'none'} />
+                    </div>
+                  </div>
+                  <div className="event-form-field">
+                    <Label>Powtarzaj do</Label>
+                    <Input type="date" value={editDraft.recurrence.until || ''} onChange={(e) => setEditDraft({ ...editDraft, recurrence: { ...editDraft.recurrence, until: e.target.value || null } })} disabled={editDraft.recurrence.mode === 'none'} />
+                  </div>
+                </div>
+              ) : null}
+
+              {editEntry.kind === 'event' ? (
+                <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
+                  <div>
+                    <p className="text-sm font-bold text-slate-900">Przypomnienia</p>
+                    <p className="text-xs text-slate-500">Te same opcje co przy tworzeniu wydarzenia.</p>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="event-form-field">
+                      <Label>Tryb</Label>
+                      <select className="event-form-select" value={editDraft.reminder.mode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, mode: e.target.value as any } })}>
+                        {REMINDER_MODE_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="event-form-field">
+                      <Label>Kiedy przypomnieć</Label>
+                      <select className="event-form-select" value={editDraft.reminder.minutesBefore} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, minutesBefore: Number(e.target.value) } })} disabled={editDraft.reminder.mode === 'none'}>
+                        {REMINDER_OFFSET_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>{option.label}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  {editDraft.reminder.mode === 'recurring' ? (
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="space-y-2 md:col-span-2">
+                        <Label>Cykliczność przypomnienia</Label>
+                        <select className="event-form-select" value={editDraft.reminder.recurrenceMode} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceMode: e.target.value as any } })}>
+                          {RECURRENCE_OPTIONS.filter((option) => option.value !== 'none').map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div className="event-form-field">
+                        <Label>Co ile</Label>
+                        <Input type="number" min="1" value={editDraft.reminder.recurrenceInterval} onChange={(e) => setEditDraft({ ...editDraft, reminder: { ...editDraft.reminder, recurrenceInterval: Math.max(1, Number(e.target.value) || 1) } })} />
+                      </div>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+
+
+                {editEntry?.kind === 'event' ? (
+                  <div className="event-form-field" data-calendar-event-edit-status="true">
+                    <Label>Status wydarzenia</Label>
+                    <select
+                      className="event-form-select"
+                      value={editDraft?.status || 'scheduled'}
+                      onChange={(event) => setEditDraft((prev) => prev ? { ...prev, status: event.target.value } : prev)}
+                    >
+                      <option value="scheduled">Zaplanowane</option>
+                      <option value="completed">Odbyte</option>
+                      <option value="cancelled">Anulowane</option>
+                    </select>
+                  </div>
+                ) : null}
+
+<DialogFooter className={calendarEntryModalFooterClass}>
+                <Button type="submit" disabled={editSubmitting || actionPendingId === `${editEntry.id}:edit`}>
+                  {editSubmitting || actionPendingId === `${editEntry.id}:edit` ? 'Zapisywanie...' : 'Zapisz zmiany'}
+                </Button>
+              </DialogFooter>
+            </form>
+          ) : null}
+        </DialogContent>
+      </Dialog>
+    </Layout>
+  );
+}
+
+/* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */

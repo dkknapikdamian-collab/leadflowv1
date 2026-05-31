@@ -1,0 +1,205 @@
+/* CLOSEFLOW_STAGE139_UNIFIED_DESKTOP_CANVAS_AND_RIGHT_STRETCH
+   Poprawka po Stage138:
+   1) jeden kolor/tło całej przestrzeni roboczej między sidebarem a treścią,
+   2) content zaczyna się przy panelu bocznym,
+   3) content rozciąga się mocniej w prawo, bez starej wyspy max-width.
+
+   Zakres:
+   - tylko desktop: min-width 1280px, hover/pointer fine
+   - main shell, active view, route rooty, listy, prawe panele
+   - bez zmian mobile/tablet, danych i logiki
+*/
+
+:root {
+  --cf139-canvas-bg: #f3f6fb;
+  --cf139-sidebar-width: 240px;
+  --cf139-left-gutter: 8px;
+  --cf139-right-gutter: 10px;
+  --cf139-right-rail-width: 360px;
+  --cf139-shell-gap: 24px;
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --cf139-left-gutter: 10px;
+    --cf139-right-gutter: 12px;
+    --cf139-right-rail-width: 368px;
+    --cf139-shell-gap: 26px;
+  }
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* 1. One canvas. No pale band between sidebar and page content. */
+  html,
+  body,
+  #root,
+  #root .app.closeflow-visual-stage01.cf-html-shell,
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    background: var(--cf139-canvas-bg) !important;
+    background-color: var(--cf139-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* 2. Kill old decorative vertical haze if an older shell CSS injected it. */
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main]::before,
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main]::after,
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main]::before,
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main]::after,
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active::before,
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active::after {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* 3. Shell itself must not cap or center the active page. */
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. Left anchored and stretched right. No max-width island on desktop. */
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"],
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ),
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"],
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    width: calc(100vw - var(--cf139-sidebar-width) - var(--cf139-left-gutter) - var(--cf139-right-gutter)) !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: var(--cf139-left-gutter) !important;
+    margin-right: var(--cf139-right-gutter) !important;
+    box-sizing: border-box !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* 5. Tailwind centered route roots cannot re-center themselves internally. */
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ):is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl, .w-full),
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: none !important;
+  }
+
+  /* 6. Main list sections consume the stretched route root. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf139-right-rail-width)) !important;
+    gap: var(--cf139-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf139-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* 7. Activity uses a separate shell. Stretch it too. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+    width: calc(100vw - var(--cf139-sidebar-width) - var(--cf139-left-gutter) - var(--cf139-right-gutter)) !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: var(--cf139-left-gutter) !important;
+    margin-right: var(--cf139-right-gutter) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf139-right-rail-width)) !important;
+    gap: var(--cf139-shell-gap) !important;
+    align-items: start !important;
+    background: transparent !important;
+    background-image: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    background: transparent !important;
+    background-image: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf139-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* 8. Rows can use the new horizontal space. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) {
+    grid-template-columns:
+      minmax(2.15rem, 2.5rem)
+      minmax(22rem, 1.72fr)
+      minmax(7.75rem, 0.42fr)
+      minmax(20rem, 1fr)
+      minmax(5rem, auto) !important;
+  }
+}
+
+/* Contract marker for guards. */
+:root {
+  --closeflow-stage139-unified-desktop-canvas-and-right-stretch: "active";
+}

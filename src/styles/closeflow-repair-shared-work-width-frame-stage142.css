@@ -1,0 +1,240 @@
+/* CLOSEFLOW_STAGE142_REPAIR_SHARED_WORK_WIDTH_FRAME_MOUNT
+   Repair po Stage141:
+   - frame szerokości musi być BEZPOŚREDNIM dzieckiem .view.active[data-shell-content]
+   - poprzednia diagnostyka pokazała left: 12 / width: 262, czyli frame nie działał jako main-content frame
+   - ten CSS celuje wyłącznie w data-stage142-main-work-frame="true"
+
+   Zakres:
+   - wszystkie zakładki przez Layout.tsx
+   - desktop only
+   - mobile/tablet bez zmian
+*/
+
+:root {
+  --cf142-sidebar-width: 240px;
+  --cf142-left-gutter: 8px;
+  --cf142-right-gutter: 16px;
+  --cf142-work-width: 1440px;
+  --cf142-work-width-wide: 1480px;
+  --cf142-right-rail-width: 360px;
+  --cf142-right-rail-width-wide: 368px;
+  --cf142-shell-gap: 24px;
+  --cf142-canvas-bg: #f3f6fb;
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --cf142-shell-gap: 26px;
+  }
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  #root,
+  #root .app.closeflow-visual-stage01.cf-html-shell,
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    background: var(--cf142-canvas-bg) !important;
+    background-color: var(--cf142-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* One true frame. This selector only works when mounted in the correct Layout position. */
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-cf-work-width-frame="true"][data-stage142-main-work-frame="true"] {
+    width: min(
+      calc(100vw - var(--cf142-sidebar-width) - var(--cf142-left-gutter) - var(--cf142-right-gutter)),
+      var(--cf142-work-width)
+    ) !important;
+    max-width: var(--cf142-work-width) !important;
+    min-width: 0 !important;
+    margin-left: var(--cf142-left-gutter) !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+
+  @media (min-width: 1880px) {
+    #root .app.closeflow-visual-stage01.cf-html-shell
+    .view.active[data-shell-content="true"]
+    > .cf-work-width-frame[data-cf-work-width-frame="true"][data-stage142-main-work-frame="true"] {
+      width: min(
+        calc(100vw - var(--cf142-sidebar-width) - var(--cf142-left-gutter) - var(--cf142-right-gutter)),
+        var(--cf142-work-width-wide)
+      ) !important;
+      max-width: var(--cf142-work-width-wide) !important;
+    }
+  }
+
+  /* Every route root fills the shared frame, not its own island. */
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  > :is(
+    main,
+    div,
+    section,
+    .cf-html-view,
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"]
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Kill internal Tailwind width islands only inside the true frame. */
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl,
+    .max-w-5xl,
+    .max-w-6xl,
+    .max-w-7xl
+  ) {
+    max-width: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Today root. */
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  > main[data-p0-today-stable-rebuild="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* List routes. */
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf142-right-rail-width)) !important;
+    gap: var(--cf142-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  @media (min-width: 1880px) {
+    #root .app.closeflow-visual-stage01.cf-html-shell
+    .view.active[data-shell-content="true"]
+    > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+    .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+      grid-template-columns: minmax(0, 1fr) minmax(342px, var(--cf142-right-rail-width-wide)) !important;
+    }
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf142-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* Activity route. */
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  .activity-vnext-shell {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf142-right-rail-width)) !important;
+    gap: var(--cf142-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell
+  .view.active[data-shell-content="true"]
+  > .cf-work-width-frame[data-stage142-main-work-frame="true"]
+  .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf142-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Contract marker for guards. */
+:root {
+  --closeflow-stage142-repair-shared-work-width-frame-mount: "active";
+}

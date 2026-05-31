@@ -1,0 +1,72 @@
+/* STAGE211H_CANVAS_LAYER_SOURCE_TRUTH_NO_REGEX_2026_05_30
+   owner: CloseFlow Visual System
+   goal: one source of truth for the operator app canvas color across every route and shell layer.
+   reason: local page CSS and operator shell CSS used slightly different canvas colors (#f3f6fb, #eef3fa, gradients).
+   base_color: #f8fafc - already used by the app theme / Today canvas and requires the least visual churn.
+   rule: cards/surfaces may stay white; the app canvas behind and between cards must use one color.
+*/
+
+:root,
+html[data-skin="forteca-light"] {
+  --cf-canvas-bg: #f8fafc;
+  --cf-page-bg: var(--cf-canvas-bg);
+  --cf-operator-bg: var(--cf-canvas-bg);
+  --cf-operator-bg-soft: var(--cf-canvas-bg);
+  --cf-route-bg: var(--cf-canvas-bg);
+  --cf-shell-bg: var(--cf-canvas-bg);
+  --app-bg: var(--cf-canvas-bg);
+  --app-surface: var(--cf-canvas-bg);
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  #root,
+  #root .app,
+  #root .app.closeflow-visual-stage01,
+  #root .app.closeflow-visual-stage01.cf-html-shell,
+  #root .cf-html-shell,
+  #root .cf-html-shell > .main,
+  #root .cf-html-shell .main,
+  #root .cf-html-shell [data-shell-main="true"],
+  #root .cf-html-shell .view,
+  #root .cf-html-shell .view.active,
+  #root .cf-html-shell [data-shell-content="true"],
+  #root .cf-html-shell .cf-route-work-root,
+  #root .cf-html-shell .cf-html-view,
+  #root .cf-html-shell [class*="-vnext-page"],
+  #root .cf-html-shell [class*="main-"][class*="-html"],
+  #root .cf-html-shell .main-calendar-html,
+  #root .cf-html-shell .main-today-html,
+  #root .cf-html-shell .main-leads-html,
+  #root .cf-html-shell .main-clients-html,
+  #root .cf-html-shell .main-cases-html,
+  #root .cf-html-shell .main-templates-html,
+  #root .cf-html-shell .main-response-templates-html {
+    background: var(--cf-canvas-bg) !important;
+    background-color: var(--cf-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* Inner layout wrappers must not create a second grey/blue canvas rectangle. */
+  #root .cf-html-shell [class*="-vnext-shell"],
+  #root .cf-html-shell [class*="-main-column"],
+  #root .cf-html-shell [class*="-content-column"],
+  #root .cf-html-shell [class*="-layout"],
+  #root .cf-html-shell .calendar-week-layout,
+  #root .cf-html-shell .calendar-grid-wrap,
+  #root .cf-html-shell .calendar-content,
+  #root .cf-html-shell .calendar-page,
+  #root .cf-html-shell .calendar-shell {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Keep the actual top bar white. It is chrome, not the page canvas. */
+  #root .cf-html-shell .global-bar {
+    background: rgba(255, 255, 255, 0.96) !important;
+    background-color: rgba(255, 255, 255, 0.96) !important;
+    background-image: none !important;
+  }
+}

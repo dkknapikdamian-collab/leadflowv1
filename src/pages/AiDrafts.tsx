@@ -66,8 +66,12 @@ import {
 } from '../lib/ai-draft-confirm-records';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
+import '../styles/closeflow-ai-drafts-rail-force-colors-stage181w.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 type DraftFilter =
   | 'all'
   | 'draft'
@@ -1043,6 +1047,7 @@ function AiDraftsInner() {
                     type="button"
                     onClick={() => setActiveFilter(filter.key)}
                     className={['ai-drafts-filter-pill', activeFilter === filter.key ? 'ai-drafts-filter-pill-active' : ''].join(' ')}
+                    data-ai-draft-filter-kind={filter.key}
                   >
                     <span>{filter.label}</span>
                     <strong>{filterCounts[filter.key] || 0}</strong>
@@ -1050,7 +1055,7 @@ function AiDraftsInner() {
                 ))}
               </div>
 
-              <label className="ai-drafts-search-box">
+              <label className="ai-drafts-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={searchQuery}
@@ -1089,26 +1094,26 @@ function AiDraftsInner() {
           </section>
 
           <aside className="ai-drafts-right-rail" aria-label="Skrót szkiców AI">
-            <section className="right-card ai-drafts-right-card">
+            <section className="right-card ai-drafts-right-card" data-ai-draft-rail-card="filters">
               <div className="ai-drafts-right-card-head">
                 <EntityIcon entity="ai" className="h-4 w-4" />
                 <h2>Szybkie filtry</h2>
               </div>
-              <button type="button" onClick={() => setActiveFilter('draft')} className="ai-drafts-rail-button">
+              <button type="button" onClick={() => setActiveFilter('draft')} className="ai-drafts-rail-button" data-ai-draft-rail-button="draft">
                 <span>Do sprawdzenia</span>
                 <strong>{stats.draft}</strong>
               </button>
-              <button type="button" onClick={() => setActiveFilter('errors')} className="ai-drafts-rail-button">
+              <button type="button" onClick={() => setActiveFilter('errors')} className="ai-drafts-rail-button" data-ai-draft-rail-button="errors">
                 <span>Braki do poprawy</span>
                 <strong>{stats.errors}</strong>
               </button>
-              <button type="button" onClick={() => setActiveFilter('converted')} className="ai-drafts-rail-button">
+              <button type="button" onClick={() => setActiveFilter('converted')} className="ai-drafts-rail-button" data-ai-draft-rail-button="converted">
                 <span>Zatwierdzone</span>
                 <strong>{stats.converted}</strong>
               </button>
             </section>
 
-            <section className="right-card ai-drafts-right-card">
+            <section className="right-card ai-drafts-right-card" data-ai-draft-rail-card="errors">
               <div className="ai-drafts-right-card-head">
                 <AlertTriangle className="h-4 w-4" />
                 <h2>Braki do poprawy</h2>
@@ -1127,7 +1132,7 @@ function AiDraftsInner() {
               )}
             </section>
 
-            <section className="right-card ai-drafts-right-card">
+            <section className="right-card ai-drafts-right-card" data-ai-draft-rail-card="converted">
               <div className="ai-drafts-right-card-head">
                 <CheckCircle2 className="h-4 w-4" />
                 <h2>Ostatnie zatwierdzone</h2>
@@ -1146,7 +1151,7 @@ function AiDraftsInner() {
               )}
             </section>
 
-            <section className="right-card ai-drafts-right-card">
+            <section className="right-card ai-drafts-right-card" data-ai-draft-rail-card="help">
               <div className="ai-drafts-right-card-head">
                 <Clock className="h-4 w-4" />
                 <h2>Jak działa szkic?</h2>

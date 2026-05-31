@@ -243,3 +243,279 @@
     max-width: none !important;
   }
 }
+
+/* CLOSEFLOW_STAGE181C_MOBILE_SIMPLE_FILTERS_SHARED_SOURCE_TRUTH
+   LOCAL ONLY
+   Scope: phone viewport only.
+   Decision: Lead simple filters card is the visual source. Clients must match row height, font weight and inner colored tile rhythm.
+   Desktop remains frozen.
+*/
+:root {
+  --cf-mobile-simple-filter-row-min-height: 42px;
+  --cf-mobile-simple-filter-row-radius: 14px;
+  --cf-mobile-simple-filter-row-padding-y: 9px;
+  --cf-mobile-simple-filter-row-padding-x: 12px;
+  --cf-mobile-simple-filter-label-size: 12px;
+  --cf-mobile-simple-filter-label-weight: 900;
+  --cf-mobile-simple-filter-value-size: 13px;
+  --cf-mobile-simple-filter-value-weight: 950;
+}
+
+@media (max-width: 760px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .panel-head {
+    margin-bottom: 14px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .panel-head h3 {
+    margin: 0 !important;
+    font-size: 15px !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.03em !important;
+    font-weight: 950 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .panel-head p {
+    margin: 4px 0 0 !important;
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    font-weight: 850 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list > :is(a, button) {
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    width: 100% !important;
+    min-height: var(--cf-mobile-simple-filter-row-min-height) !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 12px !important;
+    padding: var(--cf-mobile-simple-filter-row-padding-y) var(--cf-mobile-simple-filter-row-padding-x) !important;
+    border-radius: var(--cf-mobile-simple-filter-row-radius) !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    text-align: left !important;
+    cursor: pointer !important;
+    line-height: 1.15 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list > :is(a, button) > span {
+    min-width: 0 !important;
+    display: block !important;
+    font-size: var(--cf-mobile-simple-filter-label-size) !important;
+    font-weight: var(--cf-mobile-simple-filter-label-weight) !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-simple-filters-card"], [data-testid="clients-simple-filters-card"], .operator-simple-filters-card) .quick-list > :is(a, button) > strong {
+    flex: 0 0 auto !important;
+    min-width: 1.4rem !important;
+    text-align: right !important;
+    font-size: var(--cf-mobile-simple-filter-value-size) !important;
+    font-weight: var(--cf-mobile-simple-filter-value-weight) !important;
+    line-height: 1 !important;
+  }
+}
+
+
+/* CLOSEFLOW_STAGE181D_MOBILE_TOP_VALUE_CARDS_SHARED_SOURCE_TRUTH
+   LOCAL ONLY
+   Scope: phone viewport only.
+   Decision: Lead top-value card is the visual source. Clients use the same row height, label weight, value rhythm and truncation.
+   Rule: long lead/client names are ellipsized; hover title shows the full name.
+   Desktop remains frozen.
+*/
+@media (max-width: 760px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list > a {
+    width: 100% !important;
+    min-height: 50px !important;
+    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+    border: 1px solid #e4e7ec !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    text-decoration: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: block !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    padding: 7px 12px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label {
+    display: block !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1.15 !important;
+    text-align: center !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-description {
+    display: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-money {
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+  }
+}
+
+/* CLOSEFLOW_STAGE181E_TOP_VALUE_NAME_DESCRIPTION_SPACING
+   LOCAL ONLY
+   Scope: phone viewport only.
+   Fix: lead/client top-value rows share one visual source. Name and company/description are separated and ellipsized.
+   Rule: full name is available via title hover on desktop/devtools.
+*/
+@media (max-width: 760px) {
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list {
+    display: grid !important;
+    gap: 8px !important;
+    margin: 0 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .quick-list > a {
+    width: 100% !important;
+    min-height: 50px !important;
+    box-sizing: border-box !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 9px 12px !important;
+    border-radius: 14px !important;
+    border: 1px solid #e4e7ec !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    text-decoration: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label-wrap {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: block !important;
+    overflow: hidden !important;
+    border-radius: 12px !important;
+    background: #f8fafc !important;
+    padding: 7px 12px !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-line {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    display: flex !important;
+    align-items: baseline !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    overflow: hidden !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-line-single .cf-top-value-label {
+    max-width: 100% !important;
+    text-align: center !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-line-with-description .cf-top-value-label {
+    flex: 0 1 auto !important;
+    min-width: 0 !important;
+    max-width: 48% !important;
+    text-align: right !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-label,
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-description {
+    display: block !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-description {
+    flex: 1 1 auto !important;
+    max-width: 52% !important;
+    text-align: left !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-separator {
+    flex: 0 0 auto !important;
+    color: #94a3b8 !important;
+    font-size: 12px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html)
+  :is([data-testid="leads-top-value-records-card"], [data-testid="clients-top-value-records-card"], .operator-top-value-card) .cf-top-value-money {
+    min-width: max-content !important;
+    white-space: nowrap !important;
+    color: #111827 !important;
+    font-size: 13px !important;
+    font-weight: 950 !important;
+    line-height: 1 !important;
+    text-align: right !important;
+  }
+}

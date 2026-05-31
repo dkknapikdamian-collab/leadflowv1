@@ -1,9 +1,7 @@
 .activity-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
-    linear-gradient(180deg, #f4f6f8 0%, #eef2f6 100%);
+  background: var(--cf-canvas-bg, #f8fafc);
   color: #111827;
 }
 
@@ -829,3 +827,9 @@
   color: #111827 !important;
 }
 /* STAGE8A_ACTIVITY_RIGHT_RAIL_LIGHT_HOTFIX_END */
+
+/* STAGE211A_SECONDARY_PAGES_WHITE_CANVAS: Activity uses a clean white canvas instead of the old blue/gray gradient surface. */
+.activity-vnext-page {
+  background: #ffffff !important;
+  background-image: none !important;
+}

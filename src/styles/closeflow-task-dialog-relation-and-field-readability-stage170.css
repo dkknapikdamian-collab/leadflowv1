@@ -1,0 +1,132 @@
+/* CLOSEFLOW_STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY
+
+   Problems after Stage169:
+   - In TaskCreateDialog the selected text in normal input/select fields is still too weak/invisible.
+   - The global quick "Nowe zadanie" modal has a lot of empty unused dark area.
+   - The global task modal should expose the same topic/contact relation picker pattern as events.
+
+   Scope:
+   - Keep Stage165/166/169 motif.
+   - Fix field readability for all modal event-form controls.
+   - Collapse fixed inherited height from older modal stages.
+   - Do not tune /calendar, /leads, /tasks separately.
+*/
+
+:root {
+  --closeflow-stage170-task-dialog-relation-and-field-readability: "active";
+  --cf170-control-fg: #0f172a;
+  --cf170-control-bg: #ffffff;
+  --cf170-control-placeholder: #64748b;
+  --cf170-control-disabled-fg: #475569;
+  --cf170-control-disabled-bg: #f8fafc;
+  --cf170-task-modal-width: 580px;
+  --cf170-task-modal-max-height: min(82vh, 680px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  /*
+    Critical height reset:
+    older stages used :has(.event-form-vnext) height rules.
+    Quick task uses event-form-vnext too, so it inherited a tall box.
+  */
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage45m="true"],
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage170="true"],
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"][data-task-create-dialog-stage45m="true"],
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"][data-task-create-dialog-stage170="true"] {
+    width: min(var(--cf170-task-modal-width), calc(100vw - 96px)) !important;
+    max-width: min(var(--cf170-task-modal-width), calc(100vw - 96px)) !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: var(--cf170-task-modal-max-height) !important;
+    overflow: hidden !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage45m="true"] > .event-form-vnext,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage170="true"] > .event-form-vnext,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"][data-task-create-dialog-stage45m="true"] > .event-form-vnext,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"][data-task-create-dialog-stage170="true"] > .event-form-vnext {
+    flex: 0 1 auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: calc(var(--cf170-task-modal-max-height) - 64px) !important;
+    overflow-y: auto !important;
+    padding-bottom: 10px !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface select,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface textarea,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] textarea,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .event-form-vnext input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .event-form-vnext select,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .event-form-vnext textarea,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .event-form-vnext input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .event-form-vnext select,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .event-form-vnext textarea {
+    background: var(--cf170-control-bg) !important;
+    background-color: var(--cf170-control-bg) !important;
+    color: var(--cf170-control-fg) !important;
+    -webkit-text-fill-color: var(--cf170-control-fg) !important;
+    opacity: 1 !important;
+    caret-color: #2563eb !important;
+    text-shadow: none !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface input::placeholder,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface textarea::placeholder,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] input::placeholder,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] textarea::placeholder {
+    color: var(--cf170-control-placeholder) !important;
+    -webkit-text-fill-color: var(--cf170-control-placeholder) !important;
+    opacity: 1 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface select option,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select option {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    -webkit-text-fill-color: #0f172a !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface select:disabled,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface input:disabled,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface textarea:disabled,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] select:disabled,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] input:disabled,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] textarea:disabled {
+    background: var(--cf170-control-disabled-bg) !important;
+    background-color: var(--cf170-control-disabled-bg) !important;
+    color: var(--cf170-control-disabled-fg) !important;
+    -webkit-text-fill-color: var(--cf170-control-disabled-fg) !important;
+    opacity: 1 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-task-create-dialog-relation-picker="true"] {
+    margin: 0 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-task-create-dialog-relation-picker="true"] label {
+    color: #e2e8f0 !important;
+    -webkit-text-fill-color: #e2e8f0 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage170="true"] .cf-modal-footer,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage170="true"] .event-form-footer {
+    position: static !important;
+    bottom: auto !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Mobile: task quick modal keeps natural sheet height. */
+@media (max-width: 900px) {
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-task-create-dialog-stage170="true"] {
+    width: calc(100vw - 24px) !important;
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 48px) !important;
+    height: auto !important;
+  }
+}

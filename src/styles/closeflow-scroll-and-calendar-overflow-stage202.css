@@ -1,0 +1,90 @@
+﻿/* STAGE202_CALENDAR_FILTER_COPY_AND_SCROLL_CONTRACT_LOCAL_ONLY
+   Cel:
+   - usunąć zbędny opis z lewego filtra tygodnia,
+   - zapewnić scroll w każdej zakładce, gdy content nie mieści się w panelu,
+   - dopiąć przewijanie kalendarza miesięcznego i panelu wybranego dnia.
+*/
+
+@media (min-width: 861px) {
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"] {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: stable !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"] {
+    min-height: max-content !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view {
+    min-height: max-content !important;
+    overflow: visible !important;
+    padding-bottom: clamp(4rem, 8vh, 8rem) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .main-calendar-html {
+    min-height: max-content !important;
+    overflow: visible !important;
+  }
+
+  .main-calendar-html .calendar-week-filter[data-calendar-week-filter-no-heading="stage202"] {
+    align-self: start !important;
+  }
+
+  .main-calendar-html .calendar-week-filter[data-calendar-week-filter-no-heading="stage202"] .calendar-week-visible-days-v3 {
+    margin-top: 0 !important;
+  }
+
+  .main-calendar-html .calendar-week-layout {
+    align-items: start !important;
+  }
+
+  .main-calendar-html .calendar-week-plan,
+  .main-calendar-html .calendar-week-plan-list {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .main-calendar-html [data-calendar-month-day-cell="true"],
+  .main-calendar-html .calendar-day-cell {
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .main-calendar-html .calendar-day-cell > .space-y-1 {
+    min-height: 0 !important;
+    max-height: calc(100% - 2.1rem) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding-right: 0.18rem !important;
+    scrollbar-width: thin !important;
+  }
+
+  .main-calendar-html [data-calendar-selected-day-panel="true"] {
+    scroll-margin-top: 1rem !important;
+    margin-bottom: clamp(4rem, 8vh, 8rem) !important;
+  }
+
+  .main-calendar-html .cf-selected-day-v9-body {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 860px) {
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-content="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view {
+    min-height: auto !important;
+    overflow: visible !important;
+  }
+
+  body,
+  #root {
+    overflow: auto !important;
+  }
+}
+/* /STAGE202_CALENDAR_FILTER_COPY_AND_SCROLL_CONTRACT_LOCAL_ONLY */

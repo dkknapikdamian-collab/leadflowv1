@@ -1,0 +1,5 @@
+src\pages\Cases.tsx
+src\pages\Clients.tsx
+src\pages\Leads.tsx
+src\pages\SupportCenter.tsx
+src\pages\UiPreviewVNext.tsx

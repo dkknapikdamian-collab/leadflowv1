@@ -33,7 +33,7 @@ export default function UiPreviewVNext() {
           </div>
           <div className="cfv-layout-list">
             <div className="cfv-stack">
-              <div className="cfv-search"><span>⌕</span><input placeholder="Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa..." /></div>
+              <div className="cfv-search cf-main-search" data-cf-main-search-source="stage173"><span>⌕</span><input placeholder="Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa..." /></div>
               <div className="cfv-card">
                 {[
                   ['Pytał o gnojnik', 'Inne · 791785879 · ms.ikora952@gmail.com', '1 PLN', 'Brak działań'],

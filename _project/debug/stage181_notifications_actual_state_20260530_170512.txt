@@ -1,0 +1,1598 @@
+﻿=== STAGE181 NOTIFICATIONS ACTUAL LOCAL STATE ===
+Generated: 2026-05-30T17:05:12
+
+=== git status --short ===
+ M .gitignore
+ M _project/07_NEXT_STEPS.md
+ M _project/08_CHANGELOG_AI.md
+ M _project/13_TEST_HISTORY.md
+ M package-lock.json
+ M src/App.tsx
+ M src/components/CloseFlowPageHeaderV2.tsx
+ M src/components/GlobalQuickActions.tsx
+ M src/components/Layout.tsx
+ M src/components/PwaInstallPrompt.tsx
+ M src/components/TaskCreateDialog.tsx
+ M src/components/operator-rail/TopValueRecordsCard.tsx
+ M src/components/topic-contact-picker.tsx
+ M src/components/ui-system/PageShell.tsx
+ M src/hooks/useWorkspace.ts
+ M src/index.css
+ M src/lib/appearance.ts
+ M src/lib/page-header-content.ts
+ M src/lib/supabase-fallback.ts
+ M src/pages/Activity.tsx
+ M src/pages/AdminAiSettings.tsx
+ M src/pages/AiDrafts.tsx
+ M src/pages/Billing.tsx
+ M src/pages/Calendar.tsx
+ M src/pages/Cases.tsx
+ M src/pages/Clients.tsx
+ M src/pages/Leads.tsx
+ M src/pages/NotificationsCenter.tsx
+ M src/pages/ResponseTemplates.tsx
+ M src/pages/Settings.tsx
+ M src/pages/SupportCenter.tsx
+ M src/pages/TasksStable.tsx
+ M src/pages/Templates.tsx
+ M src/pages/Today.tsx
+ M src/pages/TodayStable.tsx
+ M src/pages/UiPreviewVNext.tsx
+ M src/pages/UiPreviewVNextFull.tsx
+ M src/styles/closeflow-calendar-selected-day-new-tile-v9.css
+ M src/styles/closeflow-right-rail-source-truth.css
+ M src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css
+ M src/styles/closeflow-vnext-ui-contract.css
+ M src/styles/core/core-contracts.css
+ M src/styles/design-system/index.css
+ M src/styles/emergency/emergency-hotfixes.css
+ M src/styles/legacy/legacy-imports.css
+ M src/styles/page-adapters/page-adapters.css
+ M src/styles/temporary/temporary-overrides.css
+ M src/styles/visual-stage10-notifications-vnext.css
+ M src/styles/visual-stage16-billing-vnext.css
+ M src/styles/visual-stage17-support-vnext.css
+ M src/styles/visual-stage19-settings-vnext.css
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage132 PWA install prompt copy cleanup.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage133 Local Admin Preview.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage134 search and leads value card cleanup.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage135 right rail heading source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage136 desktop wide content.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage137 desktop content shell fix.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage138 desktop left anchor content.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage139 unified desktop canvas and right stretch.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage140 unified desktop work width.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage141 shared work width frame.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage142 repair shared work width frame mount.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage143 hard work frame width.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage144 shell content width source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage145 route root width normalization.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage146 fluid work surface.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage147 shell overflow and work surface repair.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage148 scaled desktop shell.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage149 clean desktop app shell canvas.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage150 panel typography and width source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage151 compact cards source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage152 dense cards 80 percent target.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage156 real density tokens no zoom.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage157 viewport zoom 80 source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage158 overlay portal density source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage159 overlay real density and footer fix.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage160 modal center and compact all.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage161 cf modal surface center fix.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage162 cf modal lower smaller source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage163 cf modal main center tall compact.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage164 cf modal top anchor light surface.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage165 modal unified event motif source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage166 modal footer in flow no overlay.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage167 remove quick planning placeholder.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage168 remove sales list label from cards.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage169 topic contact picker readable and task guard.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage170 task dialog relation and field readability.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage171 remove modal helper copy.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage172 global client button and picker icon cleanup.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage173 main search source truth.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage174 main search surface and text normalization.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage175 extend main search source truth secondary pages.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage176 TopValueRecordsCard duplicate import hotfix.md"
+?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-24 - CloseFlow Stage177 leads clients list layout source truth.md"
+?? OBSIDIAN_UPDATE_MANIFEST_STAGE180S_NOTIFICATIONS_CHANNELS_FINAL_GUARD_2026-05-30.md
+?? OBSIDIAN_UPDATE_MANIFEST_STAGE180V_NOTIFICATIONS_METRIC_WIDTH_LIKE_TODAY_2026-05-30.md
+?? _local_backups/
+?? _project/BACKUP_before_restore_remove_stage153_154_20260523_171407.patch
+?? _project/BACKUP_before_restore_remove_stage155_20260523_173341.patch
+?? _project/STAGE132_PWA_INSTALL_COPY_CLEANUP_REPORT.md
+?? _project/STAGE133_LOCAL_ADMIN_PREVIEW_REPORT.md
+?? _project/STAGE134_SEARCH_AND_LEADS_VALUE_CARD_CLEANUP_REPORT.md
+?? _project/STAGE135_RIGHT_RAIL_HEADING_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE136_DESKTOP_WIDE_CONTENT_REPORT.md
+?? _project/STAGE137_DESKTOP_CONTENT_SHELL_FIX_REPORT.md
+?? _project/STAGE138_DESKTOP_LEFT_ANCHOR_CONTENT_REPORT.md
+?? _project/STAGE139_UNIFIED_DESKTOP_CANVAS_AND_RIGHT_STRETCH_REPORT.md
+?? _project/STAGE140_UNIFIED_DESKTOP_WORK_WIDTH_REPORT.md
+?? _project/STAGE141_SHARED_WORK_WIDTH_FRAME_REPORT.md
+?? _project/STAGE142_REPAIR_SHARED_WORK_WIDTH_FRAME_MOUNT_REPORT.md
+?? _project/STAGE143_HARD_WORK_FRAME_WIDTH_REPORT.md
+?? _project/STAGE144_SHELL_CONTENT_WIDTH_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE145_FORENSIC_WIDTH_AUDIT_LOCAL.txt
+?? _project/STAGE145_ROUTE_ROOT_WIDTH_NORMALIZATION_REPORT.md
+?? _project/STAGE146_FLUID_WORK_SURFACE_REPORT.md
+?? _project/STAGE147_SHELL_OVERFLOW_AND_WORK_SURFACE_REPAIR_REPORT.md
+?? _project/STAGE148_PRE_AUDIT_SHELL_CLIPPING_LOCAL.txt
+?? _project/STAGE148_SCALED_DESKTOP_SHELL_REPORT.md
+?? _project/STAGE149_CLEAN_DESKTOP_APP_SHELL_CANVAS_REPORT.md
+?? _project/STAGE150_PANEL_TYPOGRAPHY_AND_WIDTH_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE151_COMPACT_CARDS_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE152_DENSE_CARDS_80_PERCENT_TARGET_REPORT.md
+?? _project/STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM_REPORT.md
+?? _project/STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX_REPORT.md
+?? _project/STAGE160_MODAL_CENTER_AND_COMPACT_ALL_REPORT.md
+?? _project/STAGE161_CF_MODAL_SURFACE_CENTER_FIX_REPORT.md
+?? _project/STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE163_CF_MODAL_MAIN_CENTER_TALL_COMPACT_REPORT.md
+?? _project/STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE_REPORT.md
+?? _project/STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY_REPORT.md
+?? _project/STAGE167_REMOVE_QUICK_PLANNING_PLACEHOLDER_REPORT.md
+?? _project/STAGE168_REMOVE_SALES_LIST_LABEL_FROM_CARDS_REPORT.md
+?? _project/STAGE168_TOUCHED_FILES.txt
+?? _project/STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD_REPORT.md
+?? _project/STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY_REPORT.md
+?? _project/STAGE171_REMOVE_MODAL_HELPER_COPY_REPORT.md
+?? _project/STAGE171_TOUCHED_FILES.txt
+?? _project/STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP_REPORT.md
+?? _project/STAGE173_MAIN_SEARCH_SOURCE_TRUTH_REPORT.md
+?? _project/STAGE173_MAIN_SEARCH_TOUCHED_FILES.txt
+?? _project/STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION_REPORT.md
+?? _project/STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES_REPORT.md
+?? _project/STAGE175_SEARCH_SOURCE_TOUCHED_FILES.txt
+?? _project/STAGE176_TOP_VALUE_RECORDS_CARD_DUPLICATE_IMPORT_HOTFIX_REPORT.md
+?? _project/STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH_REPORT.md
+?? _project/archive/
+?? _project/backups/stage180_support_requests_local_2026-05-30/
+?? _project/backups/stage180c_support_copy_polish_guard_fix_2026-05-30/
+?? _project/backups/stage180d_support_guard_scope_fix_2026-05-30/
+?? _project/backups/stage180e_support_visible_copy_fix_2026-05-30/
+?? _project/backups/stage180f_support_sidebar_header_copy_guard_fix_2026-05-30/
+?? _project/backups/stage180g_support_right_rail_cleanup_2026-05-30/
+?? _project/backups/stage180h_support_right_rail_force_cleanup_2026-05-30/
+?? _project/backups/stage180i_support_dead_copy_cleanup_2026-05-30/
+?? _project/backups/stage180j_support_list_copy_final_cleanup_2026-05-30/
+?? _project/backups/stage180k_support_admin_rail_2026-05-30/
+?? _project/backups/stage180l_support_admin_rail_anchorless_2026-05-30/
+?? _project/backups/stage180m_support_remove_top_metrics_2026-05-30/
+?? _project/backups/stage180n_billing_remove_notice_plan_border_2026-05-30/
+?? _project/backups/stage180o_billing_plan_tone_and_right_rail_icons_2026-05-30/
+?? _project/backups/stage180p_billing_plan_tone_right_rail_cleanup_2026-05-30/
+?? _project/backups/stage180q_notifications_remove_channels_card_2026-05-30/
+?? _project/backups/stage180r_notifications_remove_channels_card_anchorless_2026-05-30/
+?? _project/backups/stage180s_notifications_channels_final_guard_2026-05-30/
+?? _project/backups/stage180t_notifications_channels_dead_copy_fix_2026-05-30/
+?? _project/backups/stage180u_notifications_metrics_width_parity_2026-05-30/
+?? _project/backups/stage180v_notifications_metric_width_like_today_2026-05-30/
+?? _project/backups/stage180w_notifications_metric_renderer_today_parity_2026-05-30/
+?? _project/backups/stage180x_notifications_metric_renderer_cleanup_2026-05-30/
+?? _project/backups/stage180z_notifications_metric_renderer_final_cleanup_2026-05-30/
+?? _project/backups/stage181a_notifications_metric_dead_copy_hard_cleanup_2026-05-30/
+?? _project/backups/stage181c_notifications_renderer_cleanup_final_2026-05-30/
+?? _project/debug/
+?? _project/manifests/
+?? _project/reports/
+?? _project/restore_remove_stage155.cjs
+?? _project/runs/STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY_2026-05-29.md
+?? _project/runs/STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY_2026-05-29.md.stage179.bak
+?? _project/runs/STAGE182_GREEN_FOCUS_THEME_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE183_FOREST_NAVY_THEME_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE184_FOREST_NAVY_DARK_SETTINGS_HARDENING_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE185_FOREST_NAVY_READABLE_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE186_THEME_ROLLBACK_DISABLE_SWITCH_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE187B_HIDE_APP_PREFERENCES_SECTION_FIX_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE187_HIDE_APP_PREFERENCES_SECTION_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE188_SIDEBAR_FULL_HEIGHT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE189_SIDEBAR_LEFT_RAIL_FULL_VIEWPORT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE190B_SIDEBAR_REAL_PANEL_FULL_HEIGHT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE191_SIDEBAR_HEIGHT_ONLY_KEEP_WIDTH_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE193_SIDEBAR_SOURCE_AND_RENDER_AUDIT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE194_SIDEBAR_LAYOUT_CONTRACT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE195_SIDEBAR_INLINE_LAYOUT_CONTRACT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE196A_SIDEBAR_DEEP_AUDIT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE196_SIDEBAR_FIXED_VIEWPORT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE197B_DISABLE_OLD_SIDEBAR_FIT_CONTENT_IMPORT_FIXED_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE197_DISABLE_OLD_SIDEBAR_FIT_CONTENT_IMPORT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE198A_GLOBAL_SCALE_DENSITY_AUDIT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE198B_DISABLE_GLOBAL_DESKTOP_DENSITY_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE199A_SIDEBAR_DEEP_VISUAL_STACK_AUDIT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE199C_SIDEBAR_SCALE_AND_OLD_VISUAL_LAYERS_AUDIT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200B_REPAIR_MALFORMED_CSS_IMPORT_COMMENT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200C_REPAIR_INDEX_CSS_BROKEN_IMPORT_COMMENTS_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200D_REPAIR_ALL_CSS_MALFORMED_IMPORT_COMMENTS_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200E_HARD_REPAIR_INDEX_CSS_IMPORT_LINES_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200F_RESTORE_CSS_HUBS_AND_DISABLE_ONLY_SIDEBAR_FIT_CONTENT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200G_HOIST_LATE_EMERGENCY_IMPORTS_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200H_RESET_HUBS_AND_HOIST_LATE_IMPORTS_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200I_RESET_CSS_HUBS_DISABLE_ONLY_FIT_CONTENT_IMPORT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE200_REMOVE_LEGACY_80_ZOOM_AND_SIDEBAR_FIT_CONTENT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE201_APP_VIEWPORT_SCALE_75_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE202_CALENDAR_FILTER_COPY_AND_SCROLL_CONTRACT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE203_PAGE_SCROLL_OWNER_AFTER_SCALE_75_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE204_OPS_BADGES_AND_ICONS_STRETCH_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE205_MAIN_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE206_CONTENT_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE207_CENTER_CONTENT_SCROLL_OWNER_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE208_RUNTIME_CENTER_SCROLL_STYLE_IN_LAYOUT_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE209_CENTER_SCROLL_RUNTIME_ENFORCER_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE210B_REPAIR_DEV_PREVIEW_DETAIL_RECORDS_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE210C_FORCE_DEV_DETAIL_IDS_LOCAL_ONLY_REPORT.md
+?? _project/runs/STAGE210_DEV_PREVIEW_DETAIL_RECORDS_LOCAL_ONLY_REPORT.md
+?? docs/ui/CLOSEFLOW_STAGE145_RUNTIME_WIDTH_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE146_RUNTIME_WIDTH_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE147_RUNTIME_WIDTH_AND_CLIPPING_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE148_RUNTIME_SCALED_DESKTOP_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE149_RUNTIME_APP_SHELL_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE150_PANEL_VISUAL_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE151_COMPACT_CARDS_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE152_DENSE_CARDS_80_PERCENT_TARGET.md
+?? docs/ui/CLOSEFLOW_STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM.md
+?? docs/ui/CLOSEFLOW_STAGE156_RUNTIME_DENSITY_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE157_RUNTIME_VIEWPORT_ZOOM_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE158_RUNTIME_OVERLAY_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX.md
+?? docs/ui/CLOSEFLOW_STAGE159_RUNTIME_OVERLAY_FOOTER_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE160_MODAL_CENTER_AND_COMPACT_ALL.md
+?? docs/ui/CLOSEFLOW_STAGE160_RUNTIME_MODAL_CENTER_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE161_CF_MODAL_SURFACE_CENTER_FIX.md
+?? docs/ui/CLOSEFLOW_STAGE161_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE162_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE163_CF_MODAL_MAIN_CENTER_TALL_COMPACT.md
+?? docs/ui/CLOSEFLOW_STAGE163_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE.md
+?? docs/ui/CLOSEFLOW_STAGE164_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE165_RUNTIME_MODAL_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY.md
+?? docs/ui/CLOSEFLOW_STAGE166_RUNTIME_MODAL_FOOTER_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE167_REMOVE_QUICK_PLANNING_PLACEHOLDER.md
+?? docs/ui/CLOSEFLOW_STAGE168_REMOVE_SALES_LIST_LABEL_FROM_CARDS.md
+?? docs/ui/CLOSEFLOW_STAGE169_RUNTIME_TOPIC_CONTACT_PICKER_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD.md
+?? docs/ui/CLOSEFLOW_STAGE170_RUNTIME_TASK_DIALOG_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY.md
+?? docs/ui/CLOSEFLOW_STAGE171_REMOVE_MODAL_HELPER_COPY.md
+?? docs/ui/CLOSEFLOW_STAGE171_RUNTIME_MODAL_HELPER_COPY_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP.md
+?? docs/ui/CLOSEFLOW_STAGE172_RUNTIME_GLOBAL_CLIENT_AND_PICKER_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE173_MAIN_SEARCH_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE173_RUNTIME_MAIN_SEARCH_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION.md
+?? docs/ui/CLOSEFLOW_STAGE174_RUNTIME_MAIN_SEARCH_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES.md
+?? docs/ui/CLOSEFLOW_STAGE175_RUNTIME_SECONDARY_SEARCH_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE176_TOP_VALUE_RECORDS_CARD_DUPLICATE_IMPORT_HOTFIX.md
+?? docs/ui/CLOSEFLOW_STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH.md
+?? docs/ui/CLOSEFLOW_STAGE177_RUNTIME_LEADS_CLIENTS_LAYOUT_AUDIT.js
+?? docs/ui/CLOSEFLOW_STAGE178_RUNTIME_TASKS_LAYOUT_AUDIT.js
+?? scripts/apply-stage146-fluid-work-surface.cjs
+?? scripts/apply-stage147-shell-overflow-work-surface.cjs
+?? scripts/apply-stage148-scaled-desktop-shell.cjs
+?? scripts/apply-stage149-clean-desktop-app-shell-canvas.cjs
+?? scripts/apply-stage150-panel-typography-source-truth.cjs
+?? scripts/apply-stage151-compact-cards-source-truth.cjs
+?? scripts/apply-stage152-dense-cards-80-percent-target.cjs
+?? scripts/apply-stage156-real-density-tokens-no-zoom.cjs
+?? scripts/apply-stage157-viewport-zoom-80.cjs
+?? scripts/apply-stage158-overlay-portal-density.cjs
+?? scripts/apply-stage159-overlay-real-density-and-footer.cjs
+?? scripts/apply-stage160-modal-center-and-compact-all.cjs
+?? scripts/apply-stage161-cf-modal-surface-center-fix.cjs
+?? scripts/apply-stage162-cf-modal-surface-lower-smaller.cjs
+?? scripts/apply-stage163-cf-modal-main-center-tall-compact.cjs
+?? scripts/apply-stage164-cf-modal-top-anchor-light-surface.cjs
+?? scripts/apply-stage165-modal-unified-event-motif.cjs
+?? scripts/apply-stage166-modal-footer-in-flow-no-overlay.cjs
+?? scripts/apply-stage167-remove-quick-planning-placeholder.cjs
+?? scripts/apply-stage168-remove-sales-list-label-from-cards.cjs
+?? scripts/apply-stage169-topic-contact-picker-readable.cjs
+?? scripts/apply-stage170-task-dialog-relation-and-field-readability.cjs
+?? scripts/apply-stage171-remove-modal-helper-copy.cjs
+?? scripts/apply-stage172-global-client-button-picker-icon-cleanup.cjs
+?? scripts/apply-stage173-main-search-source-truth.cjs
+?? scripts/apply-stage174-main-search-surface-and-text-normalization.cjs
+?? scripts/apply-stage175-extend-main-search-source-truth-secondary-pages.cjs
+?? scripts/apply-stage176-top-value-records-card-duplicate-import-hotfix.cjs
+?? scripts/apply-stage177-leads-clients-list-layout-source-truth.cjs
+?? scripts/apply-stage209-center-scroll-runtime-enforcer.cjs
+?? scripts/apply-stage210b-dev-preview-detail-records.cjs
+?? scripts/apply-stage210c-force-dev-detail-ids.cjs
+?? scripts/check-stage132-pwa-install-copy-cleanup.cjs
+?? scripts/check-stage133-local-admin-preview.cjs
+?? scripts/check-stage134-search-and-value-card.cjs
+?? scripts/check-stage135-right-rail-heading-source-truth.cjs
+?? scripts/check-stage136-desktop-wide-content.cjs
+?? scripts/check-stage137-desktop-content-shell.cjs
+?? scripts/check-stage138-desktop-left-anchor-content.cjs
+?? scripts/check-stage139-unified-desktop-canvas.cjs
+?? scripts/check-stage140-unified-desktop-work-width.cjs
+?? scripts/check-stage141-shared-work-width-frame.cjs
+?? scripts/check-stage142-repair-shared-work-width-frame-mount.cjs
+?? scripts/check-stage143-hard-work-frame-width.cjs
+?? scripts/check-stage144-shell-content-width-source-truth.cjs
+?? scripts/check-stage145-route-root-width-normalization.cjs
+?? scripts/check-stage146-fluid-work-surface.cjs
+?? scripts/check-stage147-shell-overflow-work-surface.cjs
+?? scripts/check-stage148-scaled-desktop-shell.cjs
+?? scripts/check-stage149-clean-desktop-app-shell-canvas.cjs
+?? scripts/check-stage150-panel-typography-and-width-source-truth.cjs
+?? scripts/check-stage151-compact-cards-source-truth.cjs
+?? scripts/check-stage152-dense-cards-80-percent-target.cjs
+?? scripts/check-stage156-real-density-tokens-no-zoom.cjs
+?? scripts/check-stage157-viewport-zoom-80.cjs
+?? scripts/check-stage158-overlay-portal-density.cjs
+?? scripts/check-stage159-overlay-real-density-and-footer.cjs
+?? scripts/check-stage160-modal-center-and-compact-all.cjs
+?? scripts/check-stage161-cf-modal-surface-center-fix.cjs
+?? scripts/check-stage162-cf-modal-surface-lower-smaller.cjs
+?? scripts/check-stage163-cf-modal-main-center-tall-compact.cjs
+?? scripts/check-stage164-cf-modal-top-anchor-light-surface.cjs
+?? scripts/check-stage165-modal-unified-event-motif.cjs
+?? scripts/check-stage166-modal-footer-in-flow-no-overlay.cjs
+?? scripts/check-stage167-remove-quick-planning-placeholder.cjs
+?? scripts/check-stage168-remove-sales-list-label-from-cards.cjs
+?? scripts/check-stage169-topic-contact-picker-readable.cjs
+?? scripts/check-stage170-task-dialog-relation-and-field-readability.cjs
+?? scripts/check-stage171-remove-modal-helper-copy.cjs
+?? scripts/check-stage172-global-client-button-picker-icon-cleanup.cjs
+?? scripts/check-stage173-main-search-source-truth.cjs
+?? scripts/check-stage174-main-search-surface-and-text-normalization.cjs
+?? scripts/check-stage175-extend-main-search-source-truth-secondary-pages.cjs
+?? scripts/check-stage176-top-value-records-card-duplicate-import-hotfix.cjs
+?? scripts/check-stage177-leads-clients-list-layout-source-truth.cjs
+?? scripts/check-stage180-support-requests-page.cjs
+?? scripts/check-stage180b-support-copy-polish.cjs
+?? scripts/check-stage180c-apply-wrapper-ascii.cjs
+?? scripts/check-stage180e-support-visible-copy.cjs
+?? scripts/check-stage180f-support-sidebar-header-copy.cjs
+?? scripts/check-stage180h-support-right-rail-force-cleanup.cjs
+?? scripts/check-stage180i-support-dead-copy-cleanup.cjs
+?? scripts/check-stage180j-support-list-copy-final-cleanup.cjs
+?? scripts/check-stage180k-support-admin-rail.cjs
+?? scripts/check-stage180l-support-admin-rail-anchorless.cjs
+?? scripts/check-stage180m-support-remove-top-metrics.cjs
+?? scripts/check-stage180n-billing-remove-notice-plan-border.cjs
+?? scripts/check-stage180p-billing-plan-tone-right-rail-cleanup.cjs
+?? scripts/check-stage180r-notifications-remove-channels-card-anchorless.cjs
+?? scripts/check-stage180s-notifications-channels-final-guard.cjs
+?? scripts/check-stage180t-notifications-channels-dead-copy-fix.cjs
+?? scripts/check-stage180u-notifications-metrics-width-parity.cjs
+?? scripts/check-stage180v-notifications-metric-width-like-today.cjs
+?? scripts/check-stage180x-notifications-metric-renderer-cleanup.cjs
+?? scripts/check-stage181c-mobile-simple-filters-source-truth-local.cjs
+?? scripts/check-stage181e-top-value-spacing-local.cjs
+?? scripts/check-stage200-no-legacy-visual-scale.cjs
+?? scripts/local-fix-calendar-duplicate-declaration.cjs
+?? scripts/local-fix-stage181aa-admin-ai-settings-runtime-guard.cjs
+?? scripts/local-fix-stage181ab-settings-duplicate-declaration.cjs
+?? scripts/local-fix-stage181d-top-value-cards-source-truth.cjs
+?? scripts/local-fix-stage181f-tasks-urgent-title-trash-icon.cjs
+?? scripts/local-fix-stage181g-tasks-custom-urgent-tooltip.cjs
+?? scripts/local-fix-stage181j-calendar-local-done-state.cjs
+?? scripts/local-fix-stage181j-v2-calendar-local-done-state.cjs
+?? scripts/local-fix-stage181k-calendar-month-tooltip-clean.cjs
+?? scripts/local-fix-stage181l-template-modal-visual-source.cjs
+?? scripts/local-fix-stage181m-template-modal-light.cjs
+?? scripts/local-fix-stage181n-template-modal-rebuild.cjs
+?? scripts/local-fix-stage181o-template-type-other.cjs
+?? scripts/local-fix-stage181p-remove-templates-badge.cjs
+?? scripts/local-fix-stage181q-response-template-modal-spacing.cjs
+?? scripts/local-fix-stage181r-response-template-modal-lead-style.cjs
+?? scripts/local-fix-stage181s-response-template-cancel-visible.cjs
+?? scripts/local-fix-stage181t-activity-duplicate-declaration.cjs
+?? scripts/local-fix-stage181u-activity-visual-taxonomy.cjs
+?? scripts/local-fix-stage181v-activity-rail-force-colors.cjs
+?? scripts/local-fix-stage181w-ai-drafts-rail-colors.cjs
+?? scripts/local-fix-stage181x-notifications-rail-colors.cjs
+?? scripts/local-fix-stage181y-notifications-remove-help-card.cjs
+?? scripts/local-fix-stage181z-billing-visual-taxonomy.cjs
+?? scripts/local-seed-stage181h-calendar-dev-preview.cjs
+?? scripts/local-seed-stage181i-calendar-direct.cjs
+?? scripts/repair-stage200d-all-css-import-comments.cjs
+?? scripts/repair-stage200e-index-css-import-lines.cjs
+?? scripts/repair-stage200g-hoist-late-emergency-imports.cjs
+?? scripts/repair-stage200h-reset-hubs-and-hoist-late-imports.cjs
+?? scripts/repair-stage210b-dev-preview-detail-records.cjs
+?? scripts/stage180l-apply-support-admin-rail-anchorless.cjs
+?? src/App.tsx.stage185.bak
+?? src/App.tsx.stage186.before-rollback.bak
+?? src/App.tsx.stage190b.bak
+?? src/App.tsx.stage191.bak
+?? src/App.tsx.stage192.bak
+?? src/App.tsx.stage194.bak
+?? src/App.tsx.stage195.bak
+?? src/App.tsx.stage196.bak
+?? src/App.tsx.stage197.bak
+?? src/App.tsx.stage197b.bak
+?? src/App.tsx.stage198b.bak
+?? src/components/ClientCreateDialog.tsx
+?? src/components/Layout.tsx.stage184.bak
+?? src/components/Layout.tsx.stage186.before-rollback.bak
+?? src/components/Layout.tsx.stage188.bak
+?? src/components/Layout.tsx.stage189.bak
+?? src/components/Layout.tsx.stage190b.bak
+?? src/components/Layout.tsx.stage191.bak
+?? src/components/Layout.tsx.stage192.bak
+?? src/components/Layout.tsx.stage194.bak
+?? src/components/Layout.tsx.stage195.bak
+?? src/components/Layout.tsx.stage197.bak
+?? src/components/Layout.tsx.stage197b.bak
+?? src/components/Layout.tsx.stage198b.bak
+?? src/components/ShellDesktopViewportRuntime.tsx
+?? src/index.css.stage181.bak
+?? src/index.css.stage182.bak
+?? src/index.css.stage183.bak
+?? src/index.css.stage186.before-rollback.bak
+?? src/lib/appearance.ts.stage181.bak
+?? src/lib/appearance.ts.stage182.bak
+?? src/lib/appearance.ts.stage183.bak
+?? src/lib/appearance.ts.stage185.bak
+?? src/lib/appearance.ts.stage186.before-rollback.bak
+?? src/pages/Settings.tsx.stage179.bak
+?? src/pages/Settings.tsx.stage180.bak
+?? src/pages/Settings.tsx.stage180c.bak
+?? src/pages/Settings.tsx.stage180d.bak
+?? src/pages/Settings.tsx.stage180e.bak
+?? src/pages/Settings.tsx.stage180f.bak
+?? src/pages/Settings.tsx.stage184.bak
+?? src/pages/Settings.tsx.stage186.before-rollback.bak
+?? src/pages/Settings.tsx.stage187-hide-preferences-section.bak
+?? src/pages/Settings.tsx.stage187b-before-fix.bak
+?? src/styles/closeflow-activity-rail-force-colors-stage181v.css
+?? src/styles/closeflow-activity-visual-source-truth-stage181u.css
+?? src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css
+?? src/styles/closeflow-app-viewport-scale-75-stage201.css
+?? src/styles/closeflow-billing-visual-taxonomy-stage181z.css
+?? src/styles/closeflow-center-content-scroll-owner-stage207.css
+?? src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css
+?? src/styles/closeflow-cf-modal-surface-center-fix-stage161.css
+?? src/styles/closeflow-cf-modal-surface-lower-smaller-stage162.css
+?? src/styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css
+?? src/styles/closeflow-clean-desktop-app-shell-canvas-stage149.css
+?? src/styles/closeflow-compact-cards-source-truth-stage151.css
+?? src/styles/closeflow-content-only-scroll-stage206.css
+?? src/styles/closeflow-dense-cards-80-percent-target-stage152.css
+?? src/styles/closeflow-desktop-content-shell-stage137.css
+?? src/styles/closeflow-desktop-left-anchor-content-stage138.css
+?? src/styles/closeflow-desktop-wide-content-stage136.css
+?? src/styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css
+?? src/styles/closeflow-fluid-work-surface-stage146.css
+?? src/styles/closeflow-global-client-create-dialog-stage172.css
+?? src/styles/closeflow-green-focus-theme-stage182.css.stage183.replaced.bak
+?? src/styles/closeflow-hard-work-frame-width-stage143.css
+?? src/styles/closeflow-leads-clients-list-layout-source-truth-stage177.css
+?? src/styles/closeflow-main-only-scroll-stage205.css
+?? src/styles/closeflow-main-search-source-truth-stage173.css
+?? src/styles/closeflow-main-search-surface-and-text-normalization-stage174.css
+?? src/styles/closeflow-modal-center-and-compact-all-stage160.css
+?? src/styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css
+?? src/styles/closeflow-modal-unified-event-motif-source-truth-stage165.css
+?? src/styles/closeflow-notifications-conflict-card-stage181aj.css
+?? src/styles/closeflow-notifications-rail-force-colors-stage181x.css
+?? src/styles/closeflow-ops-badges-and-icons-stretch-stage204.css
+?? src/styles/closeflow-overlay-portal-density-stage158.css
+?? src/styles/closeflow-overlay-real-density-and-footer-stage159.css
+?? src/styles/closeflow-page-scroll-owner-stage203.css
+?? src/styles/closeflow-panel-typography-and-width-source-truth-stage150.css
+?? src/styles/closeflow-real-density-tokens-no-zoom-stage156.css
+?? src/styles/closeflow-remove-modal-helper-copy-stage171.css
+?? src/styles/closeflow-repair-shared-work-width-frame-stage142.css
+?? src/styles/closeflow-response-template-modal-source-truth-stage181r.css
+?? src/styles/closeflow-right-rail-heading-source-truth-stage135.css
+?? src/styles/closeflow-route-root-width-normalization-stage145.css
+?? src/styles/closeflow-scaled-desktop-shell-stage148.css
+?? src/styles/closeflow-scroll-and-calendar-overflow-stage202.css
+?? src/styles/closeflow-search-source-truth-stage134.css
+?? src/styles/closeflow-secondary-pages-full-width-stage181ad.css
+?? src/styles/closeflow-settings-form-control-readability-stage179.css
+?? src/styles/closeflow-settings-form-control-readability-stage179.css.stage179.bak
+?? src/styles/closeflow-settings-profile-readability-stage181af.css
+?? src/styles/closeflow-settings-safe-copy-cleanup-stage181ai.css
+?? src/styles/closeflow-settings-summary-right-rail-stage181ae.css
+?? src/styles/closeflow-settings-tabs-stage181ac.css
+?? src/styles/closeflow-shared-work-width-frame-stage141.css
+?? src/styles/closeflow-shell-content-width-source-truth-stage144.css
+?? src/styles/closeflow-shell-overflow-work-surface-stage147.css
+?? src/styles/closeflow-task-dialog-relation-and-field-readability-stage170.css
+?? src/styles/closeflow-template-modal-source-truth-stage181l.css
+?? src/styles/closeflow-template-modal-source-truth-stage181n.css
+?? src/styles/closeflow-theme-runtime-stage181.css.stage182.removed.bak
+?? src/styles/closeflow-topic-contact-picker-readable-stage169.css
+?? src/styles/closeflow-unified-desktop-canvas-stage139.css
+?? src/styles/closeflow-unified-desktop-work-width-stage140.css
+?? src/styles/closeflow-viewport-zoom-80-source-truth-stage157.css
+?? src/styles/visual-stage19-settings-vnext.css.stage180e.bak
+?? src/styles/visual-stage19-settings-vnext.css.stage180f.bak
+?? src/styles/visual-stage19-settings-vnext.css.stage180g.bak
+?? tests/stage179-settings-form-control-readability-contract.test.cjs
+?? tests/stage179-settings-form-control-readability-contract.test.cjs.stage179.bak
+
+=== git diff --name-only ===
+.gitignore
+_project/07_NEXT_STEPS.md
+_project/08_CHANGELOG_AI.md
+_project/13_TEST_HISTORY.md
+package-lock.json
+src/App.tsx
+src/components/CloseFlowPageHeaderV2.tsx
+src/components/GlobalQuickActions.tsx
+src/components/Layout.tsx
+src/components/PwaInstallPrompt.tsx
+src/components/TaskCreateDialog.tsx
+src/components/operator-rail/TopValueRecordsCard.tsx
+src/components/topic-contact-picker.tsx
+src/components/ui-system/PageShell.tsx
+src/hooks/useWorkspace.ts
+src/index.css
+src/lib/appearance.ts
+src/lib/page-header-content.ts
+src/lib/supabase-fallback.ts
+src/pages/Activity.tsx
+src/pages/AdminAiSettings.tsx
+src/pages/AiDrafts.tsx
+src/pages/Billing.tsx
+src/pages/Calendar.tsx
+src/pages/Cases.tsx
+src/pages/Clients.tsx
+src/pages/Leads.tsx
+src/pages/NotificationsCenter.tsx
+src/pages/ResponseTemplates.tsx
+src/pages/Settings.tsx
+src/pages/SupportCenter.tsx
+src/pages/TasksStable.tsx
+src/pages/Templates.tsx
+src/pages/Today.tsx
+src/pages/TodayStable.tsx
+src/pages/UiPreviewVNext.tsx
+src/pages/UiPreviewVNextFull.tsx
+src/styles/closeflow-calendar-selected-day-new-tile-v9.css
+src/styles/closeflow-right-rail-source-truth.css
+src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css
+src/styles/closeflow-vnext-ui-contract.css
+src/styles/core/core-contracts.css
+src/styles/design-system/index.css
+src/styles/emergency/emergency-hotfixes.css
+src/styles/legacy/legacy-imports.css
+src/styles/page-adapters/page-adapters.css
+src/styles/temporary/temporary-overrides.css
+src/styles/visual-stage10-notifications-vnext.css
+src/styles/visual-stage16-billing-vnext.css
+src/styles/visual-stage17-support-vnext.css
+src/styles/visual-stage19-settings-vnext.css
+
+=== NotificationsCenter markers ===
+
+  src\pages\NotificationsCenter.tsx:86:  { value: 'all', label: 'Wszystkie' },
+  src\pages\NotificationsCenter.tsx:87:  { value: 'action', label: 'Do reakcji' },
+  src\pages\NotificationsCenter.tsx:88:  { value: 'overdue', label: 'Zaległe' },
+  src\pages\NotificationsCenter.tsx:89:  { value: 'today', label: 'Dzisiaj' },
+> src\pages\NotificationsCenter.tsx:90:  { value: 'upcoming', label: 'Nadchodzące' },
+  src\pages\NotificationsCenter.tsx:91:  { value: 'snoozed', label: 'Odłożone' },
+  src\pages\NotificationsCenter.tsx:92:  { value: 'read', label: 'Przeczytane' },
+  src\pages\NotificationsCenter.tsx:93:  { value: 'system', label: 'Systemowe' },
+  src\pages\NotificationsCenter.tsx:94:];
+  src\pages\NotificationsCenter.tsx:463:      system: rows.filter((row) => rowMatchesFilter(row, 'system')).length,
+  src\pages\NotificationsCenter.tsx:464:    };
+  src\pages\NotificationsCenter.tsx:465:  }, [rows]);
+  src\pages\NotificationsCenter.tsx:466:
+> src\pages\NotificationsCenter.tsx:467:  const notificationMetricTiles = useMemo(() => ([
+  src\pages\NotificationsCenter.tsx:468:    { id: 'all', label: 'Wszystkie', value: metrics.all, icon: NotificationEntityIcon, tone: 'neutral' },
+  src\pages\NotificationsCenter.tsx:469:    { id: 'action', label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
+  src\pages\NotificationsCenter.tsx:470:    { id: 'overdue', label: 'Zaległe', value: metrics.overdue, icon: Clock3, tone: 'red' },
+  src\pages\NotificationsCenter.tsx:471:    { id: 'today', label: 'Dzisiaj', value: metrics.today, icon: CalendarClock, tone: 'blue' },
+> src\pages\NotificationsCenter.tsx:472:    { id: 'upcoming', label: 'Nadchodzące', value: metrics.upcoming, icon: NotificationEntityIcon, tone: 'purple' },
+  src\pages\NotificationsCenter.tsx:473:    { id: 'snoozed', label: 'Odłożone', value: metrics.snoozed, icon: RotateCcw, tone: 'amber' },
+  src\pages\NotificationsCenter.tsx:474:    { id: 'read', label: 'Przeczytane', value: metrics.read, icon: Check, tone: 'green' },
+  src\pages\NotificationsCenter.tsx:475:    { id: 'system', label: 'Systemowe', value: metrics.system, icon: ShieldAlert, tone: 'purple' },
+  src\pages\NotificationsCenter.tsx:476:  ]), [metrics]);
+  src\pages\NotificationsCenter.tsx:503:      const nextPermission = await Notification.requestPermission();
+  src\pages\NotificationsCenter.tsx:504:      setPermission(nextPermission);
+  src\pages\NotificationsCenter.tsx:505:      if (nextPermission === 'granted') {
+  src\pages\NotificationsCenter.tsx:506:        setBrowserNotificationsEnabled(true);
+> src\pages\NotificationsCenter.tsx:507:        toast.success('Powiadomienia przeglądarki są włączone.');
+  src\pages\NotificationsCenter.tsx:508:      }
+  src\pages\NotificationsCenter.tsx:509:    } catch {
+  src\pages\NotificationsCenter.tsx:510:      toast.error('Nie udało się włączyć powiadomień przeglądarki.');
+  src\pages\NotificationsCenter.tsx:511:    }
+  src\pages\NotificationsCenter.tsx:599:          data-notifications-metric-grid="true"
+  src\pages\NotificationsCenter.tsx:600:          data-cf-metric-replacement="stage180x-today-parity"
+  src\pages\NotificationsCenter.tsx:601:          data-stage180x-notifications-metric-renderer-cleanup="true"
+  src\pages\NotificationsCenter.tsx:602:        >
+> src\pages\NotificationsCenter.tsx:603:          {notificationMetricTiles.map((tile) => {
+  src\pages\NotificationsCenter.tsx:604:            const Icon = tile.icon;
+  src\pages\NotificationsCenter.tsx:605:            const active = activeFilter === tile.id;
+  src\pages\NotificationsCenter.tsx:606:            return (
+  src\pages\NotificationsCenter.tsx:607:              <button
+  src\pages\NotificationsCenter.tsx:608:                key={tile.id}
+  src\pages\NotificationsCenter.tsx:609:                type="button"
+  src\pages\NotificationsCenter.tsx:610:                className="notifications-today-parity-tile"
+  src\pages\NotificationsCenter.tsx:611:                onClick={() => setActiveFilter(tile.id)}
+> src\pages\NotificationsCenter.tsx:612:                data-notifications-metric-tile="true"
+  src\pages\NotificationsCenter.tsx:613:                data-notifications-metric-active={active ? 'true' : 'false'}
+  src\pages\NotificationsCenter.tsx:614:              >
+  src\pages\NotificationsCenter.tsx:615:                <div
+  src\pages\NotificationsCenter.tsx:616:                  className={['notifications-today-parity-card', active ? 'notifications-today-parity-card-active' : ''].join(' ')}
+  src\pages\NotificationsCenter.tsx:702:
+  src\pages\NotificationsCenter.tsx:703:          <aside className="notifications-right-rail" aria-label="Panel powiadomień"><section className="right-card notifications-right-card" data-notification-rail-card="actions">
+  src\pages\NotificationsCenter.tsx:704:              <div className="notifications-right-card-head">
+  src\pages\NotificationsCenter.tsx:705:                <Filter className="h-4 w-4" />
+> src\pages\NotificationsCenter.tsx:706:                <h2>Szybkie akcje</h2>
+  src\pages\NotificationsCenter.tsx:707:              </div>
+  src\pages\NotificationsCenter.tsx:708:              <button type="button" className="notifications-rail-button" data-notification-rail-button="action" onClick={() => setActiveFilter('action')}>
+  src\pages\NotificationsCenter.tsx:709:                <span>Do reakcji</span>
+  src\pages\NotificationsCenter.tsx:710:                <strong>{metrics.action}</strong>
+  src\pages\NotificationsCenter.tsx:731:
+  src\pages\NotificationsCenter.tsx:732:<section className="right-card notifications-right-card" data-notification-rail-card="upcoming">
+  src\pages\NotificationsCenter.tsx:733:              <div className="notifications-right-card-head">
+  src\pages\NotificationsCenter.tsx:734:                <Clock3 className="h-4 w-4" />
+> src\pages\NotificationsCenter.tsx:735:                <h2>Nadchodzące</h2>
+  src\pages\NotificationsCenter.tsx:736:              </div>
+  src\pages\NotificationsCenter.tsx:737:              {upcomingRows.length ? (
+  src\pages\NotificationsCenter.tsx:738:                <div className="notifications-rail-list">
+  src\pages\NotificationsCenter.tsx:739:                  {upcomingRows.map((row) => (
+  src\pages\NotificationsCenter.tsx:751:
+  src\pages\NotificationsCenter.tsx:752:            <section className="right-card notifications-right-card">
+  src\pages\NotificationsCenter.tsx:753:              <div className="notifications-right-card-head notifications-right-card-head-clean">
+  src\pages\NotificationsCenter.tsx:754:                <Mail className="h-4 w-4" />
+> src\pages\NotificationsCenter.tsx:755:                <h2>Jak działają powiadomienia?</h2>
+  src\pages\NotificationsCenter.tsx:756:              </div>
+  src\pages\NotificationsCenter.tsx:757:              <p className="notifications-rail-empty">
+  src\pages\NotificationsCenter.tsx:758:                Ten widok zbiera terminy z zadań, wydarzeń i leadów oraz historię alertów pokazanych w aplikacji. Finalna reakcja zawsze zostaje po stronie użytkownika.
+  src\pages\NotificationsCenter.tsx:759:              </p>
+
+
+
+=== NotificationsCenter first 90 lines ===
+   1: import {
+   2:   useEffect,
+   3:   useMemo,
+   4:   useState } from 'react';
+   5: import { Link } from 'react-router-dom';
+   6: import { ArrowUpRight,
+   7:   CalendarClock,
+   8:   Check,
+   9:   CheckCircle2,
+  10:   Clock3,
+  11:   Filter,
+  12:   Link2,
+  13:   RotateCcw,
+  14:   Search,
+  15:   Settings2,
+  16:   ShieldAlert,
+  17:   Trash2,
+  18:   Mail } from 'lucide-react';
+  19: import {
+  20:   EntityIcon,
+  21:   NotificationEntityIcon
+  22: } from '../components/ui-system';
+  23: import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
+  24: import { toast } from 'sonner';
+  25: import Layout from '../components/Layout';
+  26: import { useWorkspace } from '../hooks/useWorkspace';
+  27: import {
+  28:   buildTodayNotificationItems,
+  29:   clearNotificationLog,
+  30:   clearNotificationSnooze,
+  31:   getBrowserNotificationPermission,
+  32:   getNotificationLog,
+  33:   getNotificationSnoozedUntilByKey,
+  34:   getUnreadNotificationCount,
+  35:   markAllNotificationsRead,
+  36:   setBrowserNotificationsEnabled,
+  37:   setNotificationSnooze,
+  38:   setNotificationSnoozeCustom,
+  39:   type NotificationItem,
+  40:   type NotificationLogItem,
+  41:   type NotificationSnoozeMode
+  42: } from '../lib/notifications';
+  43: import { buildReminderCustomDate } from '../lib/reminders';
+  44: import '../styles/visual-stage10-notifications-vnext.css';
+  45: import '../styles/hotfix-right-rail-dark-wrappers.css';
+  46: import '../styles/closeflow-notifications-rail-force-colors-stage181x.css';
+  47: import '../styles/closeflow-notifications-conflict-card-stage181aj.css';
+  48: import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+  49: import '../styles/closeflow-page-header-v2.css';
+  50: const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
+  51: const STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED = 'STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED';
+  52: void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
+  53: void STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED;
+  54: 
+  55: type NotificationFilter =
+  56:   | 'all'
+  57:   | 'action'
+  58:   | 'overdue'
+  59:   | 'today'
+  60:   | 'upcoming'
+  61:   | 'snoozed'
+  62:   | 'read'
+  63:   | 'system';
+  64: 
+  65: type NotificationRowKind = 'task' | 'event' | 'lead' | 'ai_draft' | 'system';
+  66: 
+  67: type NotificationRowStatus = 'action' | 'overdue' | 'snoozed' | 'read' | 'sent' | 'error';
+  68: 
+  69: type NotificationRow = {
+  70:   key: string;
+  71:   kind: NotificationRowKind;
+  72:   title: string;
+  73:   meta: string;
+  74:   relationType: string;
+  75:   relationLabel: string;
+  76:   timeLabel: string;
+  77:   status: NotificationRowStatus;
+  78:   statusLabel: string;
+  79:   link: string;
+  80:   startsAt?: string;
+  81:   searchText: string;
+  82:   source: 'active' | 'log' | 'system';
+  83: };
+  84: 
+  85: const notificationFilters: { value: NotificationFilter; label: string }[] = [
+  86:   { value: 'all', label: 'Wszystkie' },
+  87:   { value: 'action', label: 'Do reakcji' },
+  88:   { value: 'overdue', label: 'ZalegĹ‚e' },
+  89:   { value: 'today', label: 'Dzisiaj' },
+  90:   { value: 'upcoming', label: 'NadchodzÄ…ce' },
+=== NotificationsCenter render area 560-840 ===
+ 560: 
+ 561:   const handleRestore = (key: string) => {
+ 562:     clearNotificationSnooze(key);
+ 563:     setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
+ 564:     toast.success('Powiadomienie przywrĂłcone.');
+ 565:   };
+ 566: 
+ 567:   return (
+ 568:     <Layout>
+ 569:       <main className="notifications-vnext-page">
+ 570:         <CloseFlowPageHeaderV2
+ 571:           pageKey="notifications"
+ 572:           actions={
+ 573:             <>
+ 574:               <div className="notifications-header-actions">
+ 575:                           {permission === 'default' ? (
+ 576:                             <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
+ 577:                               <EntityIcon entity="notification" className="h-4 w-4" />
+ 578:                               WĹ‚Ä…cz powiadomienia
+ 579:                             </button>
+ 580:                           ) : null}
+ 581:                           <Link to="/settings" className="notifications-header-button">
+ 582:                             <Settings2 className="h-4 w-4" />
+ 583:                             Ustawienia przypomnieĹ„
+ 584:                           </Link>
+ 585:                           {notificationLog.length ? (
+ 586:                             <button type="button" className="notifications-header-button" onClick={handleClearLog}>
+ 587:                               <Trash2 className="h-4 w-4" />
+ 588:                               WyczyĹ›Ä‡ przeczytane
+ 589:                             </button>
+ 590:                           ) : null}
+ 591:                         </div>
+ 592:             </>
+ 593:           }
+ 594:         />
+ 595: 
+ 596:         <section
+ 597:           className="notifications-stats-grid notifications-today-parity-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+ 598:           aria-label="Statystyki powiadomieĹ„"
+ 599:           data-notifications-metric-grid="true"
+ 600:           data-cf-metric-replacement="stage180x-today-parity"
+ 601:           data-stage180x-notifications-metric-renderer-cleanup="true"
+ 602:         >
+ 603:           {notificationMetricTiles.map((tile) => {
+ 604:             const Icon = tile.icon;
+ 605:             const active = activeFilter === tile.id;
+ 606:             return (
+ 607:               <button
+ 608:                 key={tile.id}
+ 609:                 type="button"
+ 610:                 className="notifications-today-parity-tile"
+ 611:                 onClick={() => setActiveFilter(tile.id)}
+ 612:                 data-notifications-metric-tile="true"
+ 613:                 data-notifications-metric-active={active ? 'true' : 'false'}
+ 614:               >
+ 615:                 <div
+ 616:                   className={['notifications-today-parity-card', active ? 'notifications-today-parity-card-active' : ''].join(' ')}
+ 617:                   data-notifications-metric-tone={tile.tone}
+ 618:                 >
+ 619:                   <div className="notifications-today-parity-copy">
+ 620:                     <p>{tile.label}</p>
+ 621:                     <strong>{tile.value}</strong>
+ 622:                   </div>
+ 623:                   <span className="notifications-today-parity-icon">
+ 624:                     <Icon className="h-4 w-4" />
+ 625:                   </span>
+ 626:                 </div>
+ 627:               </button>
+ 628:             );
+ 629:           })}
+ 630:         </section>
+ 631: 
+ 632:         <div className="notifications-vnext-shell">
+ 633:           <section className="notifications-main-column">
+ 634:             <div className="notifications-toolbar-card">
+ 635:               <div className="notifications-filter-pills" aria-label="Filtry powiadomieĹ„">
+ 636:                 {notificationFilters.map((filter) => (
+ 637:                   <button
+ 638:                     key={filter.value}
+ 639:                     type="button"
+ 640:                     className={['notifications-filter-pill', activeFilter === filter.value ? 'notifications-filter-pill-active' : ''].join(' ')}
+ 641:                     data-notification-filter-kind={filter.value}
+ 642:                     onClick={() => setActiveFilter(filter.value)}
+ 643:                   >
+ 644:                     <span>{filter.label}</span>
+ 645:                     <strong>{metrics[filter.value] || 0}</strong>
+ 646:                   </button>
+ 647:                 ))}
+ 648:               </div>
+ 649: 
+ 650:               <label className="notifications-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+ 651:                 <Search className="h-4 w-4" />
+ 652:                 <input
+ 653:                   value={searchQuery}
+ 654:                   onChange={(event) => setSearchQuery(event.target.value)}
+ 655:                   placeholder="Szukaj po leadzie, sprawie, zadaniu, terminie albo treĹ›ci powiadomienia..."
+ 656:                 />
+ 657:               </label>
+ 658:             </div>
+ 659: 
+ 660:             <section className="notifications-list-card" aria-label="Lista powiadomieĹ„">
+ 661:               <div className="notifications-list-head">
+ 662:                 <div>
+ 663:                   <p>Centrum reakcji</p>
+ 664:                   <h2>Powiadomienia i przypomnienia</h2>
+ 665:                 </div>
+ 666:                 <span>{filteredRows.length} / {rows.length}</span>
+ 667:               </div>
+ 668: 
+ 669:               {loading ? (
+ 670:                 <div className="notifications-empty-state">
+ 671:                   <EntityIcon entity="notification" className="h-8 w-8" />
+ 672:                   <h2>Ĺadowanie powiadomieĹ„...</h2>
+ 673:                   <p>Sprawdzam zadania, wydarzenia i historiÄ™ wysĹ‚anych alertĂłw.</p>
+ 674:                 </div>
+ 675:               ) : filteredRows.length === 0 ? (
+ 676:                 <div className="notifications-empty-state">
+ 677:                   <EntityIcon entity="notification" className="h-8 w-8" />
+ 678:                   <h2>Brak powiadomieĹ„</h2>
+ 679:                   <p>Gdy pojawiÄ… siÄ™ zalegĹ‚e zadania, terminy albo szkice do sprawdzenia, zobaczysz je tutaj.</p>
+ 680:                   <div className="notifications-empty-actions">
+ 681:                     <Link to="/tasks">PrzejdĹş do zadaĹ„</Link>
+ 682:                     <Link to="/calendar">PrzejdĹş do kalendarza</Link>
+ 683:                   </div>
+ 684:                 </div>
+ 685:               ) : (
+ 686:                 <div className="notifications-rows">
+ 687:                   {filteredRows.map((row) => (
+ 688:                     <div key={row.key} style={{ display: 'contents' }}>
+ 689:                       <NotificationsRow
+ 690:                         row={row}
+ 691:                         onSnooze={handleSnooze}
+ 692:                         onSnoozeCustom={handleSnoozeCustom}
+ 693:                         onRead={handleRead}
+ 694:                         onRestore={handleRestore}
+ 695:                       />
+ 696:                     </div>
+ 697:                   ))}
+ 698:                 </div>
+ 699:               )}
+ 700:             </section>
+ 701:           </section>
+ 702: 
+ 703:           <aside className="notifications-right-rail" aria-label="Panel powiadomieĹ„"><section className="right-card notifications-right-card" data-notification-rail-card="actions">
+ 704:               <div className="notifications-right-card-head">
+ 705:                 <Filter className="h-4 w-4" />
+ 706:                 <h2>Szybkie akcje</h2>
+ 707:               </div>
+ 708:               <button type="button" className="notifications-rail-button" data-notification-rail-button="action" onClick={() => setActiveFilter('action')}>
+ 709:                 <span>Do reakcji</span>
+ 710:                 <strong>{metrics.action}</strong>
+ 711:               </button>
+ 712:               <button type="button" className="notifications-rail-button" data-notification-rail-button="overdue" onClick={() => setActiveFilter('overdue')}>
+ 713:                 <span>ZalegĹ‚e</span>
+ 714:                 <strong>{metrics.overdue}</strong>
+ 715:               </button>
+ 716:               <button type="button" className="notifications-rail-button" data-notification-rail-button="read" onClick={handleMarkAllRead}>
+ 717:                 <span>Oznacz przeczytane</span>
+ 718:                 <strong>{unreadCount}</strong>
+ 719:               </button>
+ 720:             </section>
+ 721: 
+ 722:                         <section className="right-card notifications-right-card" data-notification-rail-card="conflicts" data-stage181aj-conflict-notifications="true">
+ 723:               <div className="notifications-right-card-head">
+ 724:                 <ShieldAlert className="h-4 w-4" />
+ 725:                 <h2>OstrzeĹĽenia o konfliktach terminĂłw</h2>
+ 726:               </div>
+ 727:               <p className="notifications-rail-empty">
+ 728:                 Gdy terminy bÄ™dÄ… siÄ™ nakĹ‚adaÄ‡, alert pojawi siÄ™ tutaj.
+ 729:               </p>
+ 730:             </section>
+ 731: 
+ 732: <section className="right-card notifications-right-card" data-notification-rail-card="upcoming">
+ 733:               <div className="notifications-right-card-head">
+ 734:                 <Clock3 className="h-4 w-4" />
+ 735:                 <h2>NadchodzÄ…ce</h2>
+ 736:               </div>
+ 737:               {upcomingRows.length ? (
+ 738:                 <div className="notifications-rail-list">
+ 739:                   {upcomingRows.map((row) => (
+ 740:                     <div key={'upcoming:' + row.key} className="notifications-rail-item">
+ 741:                       <span>{row.timeLabel}</span>
+ 742:                       <strong>{row.relationLabel}</strong>
+ 743:                     </div>
+ 744:                   ))}
+ 745:                 </div>
+ 746:               ) : (
+ 747:                 <p className="notifications-rail-empty">Brak nadchodzÄ…cych przypomnieĹ„ w obecnym widoku.</p>
+ 748:               )}
+ 749:             </section>
+ 750:           
+ 751: 
+ 752:             <section className="right-card notifications-right-card">
+ 753:               <div className="notifications-right-card-head notifications-right-card-head-clean">
+ 754:                 <Mail className="h-4 w-4" />
+ 755:                 <h2>Jak dziaĹ‚ajÄ… powiadomienia?</h2>
+ 756:               </div>
+ 757:               <p className="notifications-rail-empty">
+ 758:                 Ten widok zbiera terminy z zadaĹ„, wydarzeĹ„ i leadĂłw oraz historiÄ™ alertĂłw pokazanych w aplikacji. Finalna reakcja zawsze zostaje po stronie uĹĽytkownika.
+ 759:               </p>
+ 760:             </section>
+ 761: </aside>
+ 762:         </div>
+ 763:       </main>
+ 764:     </Layout>
+ 765:   );
+ 766: }
+=== CSS markers ===
+
+  src\styles\visual-stage10-notifications-vnext.css:68:  color: #1d4ed8;
+  src\styles\visual-stage10-notifications-vnext.css:69:}
+  src\styles\visual-stage10-notifications-vnext.css:70:
+> src\styles\visual-stage10-notifications-vnext.css:71:.notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:72:  max-width: 1440px;
+  src\styles\visual-stage10-notifications-vnext.css:73:  margin: 0 auto 22px;
+  src\styles\visual-stage10-notifications-vnext.css:74:  display: grid;
+  src\styles\visual-stage10-notifications-vnext.css:75:  grid-template-columns: repeat(4, minmax(0, 1fr));
+  src\styles\visual-stage10-notifications-vnext.css:76:  gap: 12px;
+  src\styles\visual-stage10-notifications-vnext.css:685:}
+  src\styles\visual-stage10-notifications-vnext.css:686:
+  src\styles\visual-stage10-notifications-vnext.css:687:@media (max-width: 1280px) {
+> src\styles\visual-stage10-notifications-vnext.css:688:  .notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:689:    grid-template-columns: repeat(4, minmax(0, 1fr));
+  src\styles\visual-stage10-notifications-vnext.css:690:  }
+  src\styles\visual-stage10-notifications-vnext.css:691:
+  src\styles\visual-stage10-notifications-vnext.css:692:  .notifications-vnext-shell {
+  src\styles\visual-stage10-notifications-vnext.css:693:    grid-template-columns: 1fr;
+  src\styles\visual-stage10-notifications-vnext.css:714:    justify-content: flex-start;
+  src\styles\visual-stage10-notifications-vnext.css:715:  }
+  src\styles\visual-stage10-notifications-vnext.css:716:
+> src\styles\visual-stage10-notifications-vnext.css:717:  .notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:718:    grid-template-columns: repeat(2, minmax(0, 1fr));
+  src\styles\visual-stage10-notifications-vnext.css:719:    gap: 10px;
+  src\styles\visual-stage10-notifications-vnext.css:720:  }
+  src\styles\visual-stage10-notifications-vnext.css:721:
+  src\styles\visual-stage10-notifications-vnext.css:722:
+  src\styles\visual-stage10-notifications-vnext.css:792:}
+  src\styles\visual-stage10-notifications-vnext.css:793:
+  src\styles\visual-stage10-notifications-vnext.css:794:@media (max-width: 560px) {
+> src\styles\visual-stage10-notifications-vnext.css:795:  .notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:796:    grid-template-columns: 1fr;
+  src\styles\visual-stage10-notifications-vnext.css:797:  }
+  src\styles\visual-stage10-notifications-vnext.css:798:
+  src\styles\visual-stage10-notifications-vnext.css:799:  .notifications-search-box {
+  src\styles\visual-stage10-notifications-vnext.css:800:    min-height: 48px;
+  src\styles\visual-stage10-notifications-vnext.css:855:}
+  src\styles\visual-stage10-notifications-vnext.css:856:/* STAGE10A_RIGHT_RAIL_LIGHT_HOTFIX_END */
+  src\styles\visual-stage10-notifications-vnext.css:857:
+> src\styles\visual-stage10-notifications-vnext.css:858:/* STAGE180U_NOTIFICATIONS_METRICS_WIDTH_PARITY
+  src\styles\visual-stage10-notifications-vnext.css:859:   /notifications top metric tiles must span the same page width as the main shell.
+  src\styles\visual-stage10-notifications-vnext.css:860:   This is page-level placement only. Tile internals remain in closeflow-metric-tiles.css.
+  src\styles\visual-stage10-notifications-vnext.css:861:*/
+> src\styles\visual-stage10-notifications-vnext.css:862:.notifications-vnext-page .notifications-stats-grid,
+  src\styles\visual-stage10-notifications-vnext.css:863:.notifications-vnext-page .notifications-vnext-shell {
+  src\styles\visual-stage10-notifications-vnext.css:864:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:865:  max-width: none !important;
+  src\styles\visual-stage10-notifications-vnext.css:866:}
+  src\styles\visual-stage10-notifications-vnext.css:867:
+> src\styles\visual-stage10-notifications-vnext.css:868:.notifications-vnext-page .notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:869:  margin: 0 0 22px !important;
+  src\styles\visual-stage10-notifications-vnext.css:870:  display: grid !important;
+  src\styles\visual-stage10-notifications-vnext.css:871:  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  src\styles\visual-stage10-notifications-vnext.css:872:  gap: 12px !important;
+  src\styles\visual-stage10-notifications-vnext.css:873:  align-items: stretch !important;
+  src\styles\visual-stage10-notifications-vnext.css:874:}
+  src\styles\visual-stage10-notifications-vnext.css:875:
+> src\styles\visual-stage10-notifications-vnext.css:876:.notifications-vnext-page .notifications-stats-grid > * {
+  src\styles\visual-stage10-notifications-vnext.css:877:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:878:  min-width: 0 !important;
+  src\styles\visual-stage10-notifications-vnext.css:879:}
+  src\styles\visual-stage10-notifications-vnext.css:880:
+> src\styles\visual-stage10-notifications-vnext.css:881:.notifications-vnext-page .notifications-stats-grid .cf-top-metric-tile,
+> src\styles\visual-stage10-notifications-vnext.css:882:.notifications-vnext-page .notifications-stats-grid .cf-top-metric-tile-content {
+  src\styles\visual-stage10-notifications-vnext.css:883:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:884:}
+  src\styles\visual-stage10-notifications-vnext.css:885:
+  src\styles\visual-stage10-notifications-vnext.css:886:@media (max-width: 1100px) {
+> src\styles\visual-stage10-notifications-vnext.css:887:  .notifications-vnext-page .notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:888:    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  src\styles\visual-stage10-notifications-vnext.css:889:  }
+  src\styles\visual-stage10-notifications-vnext.css:890:}
+  src\styles\visual-stage10-notifications-vnext.css:891:
+  src\styles\visual-stage10-notifications-vnext.css:892:@media (max-width: 640px) {
+> src\styles\visual-stage10-notifications-vnext.css:893:  .notifications-vnext-page .notifications-stats-grid {
+  src\styles\visual-stage10-notifications-vnext.css:894:    grid-template-columns: 1fr !important;
+  src\styles\visual-stage10-notifications-vnext.css:895:  }
+  src\styles\visual-stage10-notifications-vnext.css:896:}
+> src\styles\visual-stage10-notifications-vnext.css:897:/* END_STAGE180U_NOTIFICATIONS_METRICS_WIDTH_PARITY */
+  src\styles\visual-stage10-notifications-vnext.css:898:
+> src\styles\visual-stage10-notifications-vnext.css:899:/* STAGE180V_NOTIFICATIONS_METRIC_WIDTH_LIKE_TODAY
+  src\styles\visual-stage10-notifications-vnext.css:900:   Powiadomienia: top metric tiles must span the same content width as the main notification shell / Today metric row.
+  src\styles\visual-stage10-notifications-vnext.css:901:   This overrides the shared OperatorMetricTiles default max-width that compressed this grid to about 1080px.
+  src\styles\visual-stage10-notifications-vnext.css:902:*/
+> src\styles\visual-stage10-notifications-vnext.css:903:.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
+> src\styles\visual-stage10-notifications-vnext.css:904:.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
+  src\styles\visual-stage10-notifications-vnext.css:905:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:906:  max-width: 1440px !important;
+  src\styles\visual-stage10-notifications-vnext.css:907:  margin: 0 auto 22px !important;
+  src\styles\visual-stage10-notifications-vnext.css:908:  padding: 0 !important;
+  src\styles\visual-stage10-notifications-vnext.css:909:  display: grid !important;
+  src\styles\visual-stage10-notifications-vnext.css:914:  justify-items: stretch !important;
+  src\styles\visual-stage10-notifications-vnext.css:915:}
+  src\styles\visual-stage10-notifications-vnext.css:916:
+> src\styles\visual-stage10-notifications-vnext.css:917:.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid > *,
+> src\styles\visual-stage10-notifications-vnext.css:918:.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] > * {
+  src\styles\visual-stage10-notifications-vnext.css:919:  min-width: 0 !important;
+  src\styles\visual-stage10-notifications-vnext.css:920:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:921:  max-width: none !important;
+  src\styles\visual-stage10-notifications-vnext.css:922:}
+  src\styles\visual-stage10-notifications-vnext.css:923:
+> src\styles\visual-stage10-notifications-vnext.css:924:.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid .cf-top-metric-tile,
+> src\styles\visual-stage10-notifications-vnext.css:925:.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid .cf-top-metric-tile-content,
+> src\styles\visual-stage10-notifications-vnext.css:926:.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] .cf-top-metric-tile,
+> src\styles\visual-stage10-notifications-vnext.css:927:.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] .cf-top-metric-tile-content {
+  src\styles\visual-stage10-notifications-vnext.css:928:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:929:  max-width: none !important;
+  src\styles\visual-stage10-notifications-vnext.css:930:}
+  src\styles\visual-stage10-notifications-vnext.css:931:
+  src\styles\visual-stage10-notifications-vnext.css:932:@media (max-width: 1180px) {
+> src\styles\visual-stage10-notifications-vnext.css:933:  .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
+> src\styles\visual-stage10-notifications-vnext.css:934:  .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
+  src\styles\visual-stage10-notifications-vnext.css:935:    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  src\styles\visual-stage10-notifications-vnext.css:936:  }
+  src\styles\visual-stage10-notifications-vnext.css:937:}
+  src\styles\visual-stage10-notifications-vnext.css:938:
+  src\styles\visual-stage10-notifications-vnext.css:939:@media (max-width: 700px) {
+> src\styles\visual-stage10-notifications-vnext.css:940:  .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
+> src\styles\visual-stage10-notifications-vnext.css:941:  .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
+  src\styles\visual-stage10-notifications-vnext.css:942:    grid-template-columns: minmax(0, 1fr) !important;
+  src\styles\visual-stage10-notifications-vnext.css:943:  }
+  src\styles\visual-stage10-notifications-vnext.css:944:}
+  src\styles\visual-stage10-notifications-vnext.css:945:
+> src\styles\visual-stage10-notifications-vnext.css:946:/* STAGE180X_NOTIFICATIONS_METRIC_RENDERER_CLEANUP: /notifications top tiles use the Today-style renderer, not OperatorMetricTiles. */
+> src\styles\visual-stage10-notifications-vnext.css:947:.notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
+  src\styles\visual-stage10-notifications-vnext.css:948:  width: 100% !important;
+  src\styles\visual-stage10-notifications-vnext.css:949:  max-width: 1440px !important;
+  src\styles\visual-stage10-notifications-vnext.css:950:  margin: 0 auto 22px !important;
+  src\styles\visual-stage10-notifications-vnext.css:951:  display: grid !important;
+  src\styles\visual-stage10-notifications-vnext.css:952:  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  src\styles\visual-stage10-notifications-vnext.css:1043:.notifications-today-parity-card[data-notifications-metric-tone="purple"] .notifications-today-parity-icon { background: #f5f3ff; color: #7c3aed; }
+  src\styles\visual-stage10-notifications-vnext.css:1044:
+  src\styles\visual-stage10-notifications-vnext.css:1045:@media (max-width: 1024px) {
+> src\styles\visual-stage10-notifications-vnext.css:1046:  .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
+  src\styles\visual-stage10-notifications-vnext.css:1047:    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  src\styles\visual-stage10-notifications-vnext.css:1048:  }
+  src\styles\visual-stage10-notifications-vnext.css:1049:}
+  src\styles\visual-stage10-notifications-vnext.css:1050:
+  src\styles\visual-stage10-notifications-vnext.css:1051:@media (max-width: 640px) {
+> src\styles\visual-stage10-notifications-vnext.css:1052:  .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
+  src\styles\visual-stage10-notifications-vnext.css:1053:    grid-template-columns: minmax(0, 1fr) !important;
+  src\styles\visual-stage10-notifications-vnext.css:1054:  }
+  src\styles\visual-stage10-notifications-vnext.css:1055:}
+  src\styles\visual-stage10-notifications-vnext.css:1056:
+
+
+
+=== git diff NotificationsCenter ===
+diff --git a/src/pages/NotificationsCenter.tsx b/src/pages/NotificationsCenter.tsx
+index 3c70d75..7029e42 100644
+--- a/src/pages/NotificationsCenter.tsx
++++ b/src/pages/NotificationsCenter.tsx
+@@ -1,11 +1,24 @@
+-import { useEffect, useMemo, useState } from 'react';
++import {
++  useEffect,
++  useMemo,
++  useState } from 'react';
+ import { Link } from 'react-router-dom';
+-import { ArrowUpRight, CalendarClock, Check, CheckCircle2, Clock3, Filter, Link2, Mail, RotateCcw, Search, Settings2, ShieldAlert, Trash2 } from 'lucide-react';
++import { ArrowUpRight,
++  CalendarClock,
++  Check,
++  CheckCircle2,
++  Clock3,
++  Filter,
++  Link2,
++  RotateCcw,
++  Search,
++  Settings2,
++  ShieldAlert,
++  Trash2,
++  Mail } from 'lucide-react';
+ import {
+   EntityIcon,
+-  NotificationEntityIcon,
+-  OperatorMetricTiles,
+-  type OperatorMetricTileItem
++  NotificationEntityIcon
+ } from '../components/ui-system';
+ import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
+ import { toast } from 'sonner';
+@@ -16,7 +29,6 @@ import {
+   clearNotificationLog,
+   clearNotificationSnooze,
+   getBrowserNotificationPermission,
+-  getBrowserNotificationsEnabled,
+   getNotificationLog,
+   getNotificationSnoozedUntilByKey,
+   getUnreadNotificationCount,
+@@ -31,10 +43,14 @@ import {
+ import { buildReminderCustomDate } from '../lib/reminders';
+ import '../styles/visual-stage10-notifications-vnext.css';
+ import '../styles/hotfix-right-rail-dark-wrappers.css';
++import '../styles/closeflow-notifications-rail-force-colors-stage181x.css';
++import '../styles/closeflow-notifications-conflict-card-stage181aj.css';
+ import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+ import '../styles/closeflow-page-header-v2.css';
+ const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
++const STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED = 'STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED';
+ void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
++void STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED;
+ 
+ type NotificationFilter =
+   | 'all'
+@@ -290,42 +306,6 @@ function NotificationRowIcon({ kind }: { kind: NotificationRowKind }) {
+   return <ShieldAlert className="h-4 w-4" />;
+ }
+ 
+-function PermissionCopy({ permission, browserEnabled }: { permission: NotificationPermission | 'unsupported'; browserEnabled: boolean }) {
+-  if (permission === 'unsupported') {
+-    return (
+-      <>
+-        <strong>Powiadomienia w aplikacji dzia┼éaj─ů</strong>
+-        <span>Ta przegl─ůdarka mo┼╝e nie obs┼éugiwa─ç powiadomie┼ä. Przypomnienia w aplikacji nadal dzia┼éaj─ů.</span>
+-      </>
+-    );
+-  }
+-
+-  if (permission === 'granted') {
+-    return (
+-      <>
+-        <strong>Powiadomienia przegl─ůdarki s─ů w┼é─ůczone</strong>
+-        <span>Live powiadomienia: {browserEnabled ? 'w┼é─ůczone' : 'wy┼é─ůczone w ustawieniach aplikacji'}.</span>
+-      </>
+-    );
+-  }
+-
+-  if (permission === 'denied') {
+-    return (
+-      <>
+-        <strong>Powiadomienia s─ů zablokowane w przegl─ůdarce</strong>
+-        <span>Odblokuj je w ustawieniach przegl─ůdarki. W aplikacji nadal zobaczysz alerty.</span>
+-      </>
+-    );
+-  }
+-
+-  return (
+-    <>
+-      <strong>Powiadomienia przegl─ůdarki nie s─ů jeszcze w┼é─ůczone</strong>
+-      <span>Mo┼╝esz je w┼é─ůczy─ç, ┼╝eby terminy i pilne zadania nie ucieka┼éy z ekranu.</span>
+-    </>
+-  );
+-}
+-
+ function NotificationsRow({
+   row,
+   onSnooze,
+@@ -408,7 +388,6 @@ export default function NotificationsCenter() {
+   const [loading, setLoading] = useState(true);
+   const [bundle, setBundle] = useState<CalendarBundle>({ tasks: [], events: [], leads: [], cases: [] });
+   const [logTick, setLogTick] = useState(0);
+-  const [browserEnabled, setBrowserEnabledState] = useState(getBrowserNotificationsEnabled());
+   const [permission, setPermission] = useState(getBrowserNotificationPermission());
+   const [activeFilter, setActiveFilter] = useState<NotificationFilter>('all');
+   const [searchQuery, setSearchQuery] = useState('');
+@@ -430,7 +409,6 @@ export default function NotificationsCenter() {
+         const nextBundle = await fetchCalendarBundleFromSupabase();
+         if (!cancelled) {
+           setBundle(nextBundle);
+-          setBrowserEnabledState(getBrowserNotificationsEnabled());
+           setPermission(getBrowserNotificationPermission());
+           setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
+         }
+@@ -486,7 +464,7 @@ export default function NotificationsCenter() {
+     };
+   }, [rows]);
+ 
+-  const notificationMetricTiles = useMemo<OperatorMetricTileItem<NotificationFilter>[]>(() => ([
++  const notificationMetricTiles = useMemo(() => ([
+     { id: 'all', label: 'Wszystkie', value: metrics.all, icon: NotificationEntityIcon, tone: 'neutral' },
+     { id: 'action', label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
+     { id: 'overdue', label: 'Zaleg┼ée', value: metrics.overdue, icon: Clock3, tone: 'red' },
+@@ -526,7 +504,6 @@ export default function NotificationsCenter() {
+       setPermission(nextPermission);
+       if (nextPermission === 'granted') {
+         setBrowserNotificationsEnabled(true);
+-        setBrowserEnabledState(true);
+         toast.success('Powiadomienia przegl─ůdarki s─ů w┼é─ůczone.');
+       }
+     } catch {
+@@ -616,16 +593,41 @@ export default function NotificationsCenter() {
+           }
+         />
+ 
+-        <OperatorMetricTiles
+-          items={notificationMetricTiles}
+-          activeId={activeFilter}
+-          onSelect={(tile) => setActiveFilter(tile.id)}
+-          columns={4}
+-          className="notifications-stats-grid"
++        <section
++          className="notifications-stats-grid notifications-today-parity-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+           aria-label="Statystyki powiadomie┼ä"
+           data-notifications-metric-grid="true"
+-          data-cf-metric-replacement="vs5v"
+-        />
++          data-cf-metric-replacement="stage180x-today-parity"
++          data-stage180x-notifications-metric-renderer-cleanup="true"
++        >
++          {notificationMetricTiles.map((tile) => {
++            const Icon = tile.icon;
++            const active = activeFilter === tile.id;
++            return (
++              <button
++                key={tile.id}
++                type="button"
++                className="notifications-today-parity-tile"
++                onClick={() => setActiveFilter(tile.id)}
++                data-notifications-metric-tile="true"
++                data-notifications-metric-active={active ? 'true' : 'false'}
++              >
++                <div
++                  className={['notifications-today-parity-card', active ? 'notifications-today-parity-card-active' : ''].join(' ')}
++                  data-notifications-metric-tone={tile.tone}
++                >
++                  <div className="notifications-today-parity-copy">
++                    <p>{tile.label}</p>
++                    <strong>{tile.value}</strong>
++                  </div>
++                  <span className="notifications-today-parity-icon">
++                    <Icon className="h-4 w-4" />
++                  </span>
++                </div>
++              </button>
++            );
++          })}
++        </section>
+ 
+         <div className="notifications-vnext-shell">
+           <section className="notifications-main-column">
+@@ -636,6 +638,7 @@ export default function NotificationsCenter() {
+                     key={filter.value}
+                     type="button"
+                     className={['notifications-filter-pill', activeFilter === filter.value ? 'notifications-filter-pill-active' : ''].join(' ')}
++                    data-notification-filter-kind={filter.value}
+                     onClick={() => setActiveFilter(filter.value)}
+                   >
+                     <span>{filter.label}</span>
+@@ -644,7 +647,7 @@ export default function NotificationsCenter() {
+                 ))}
+               </div>
+ 
+-              <label className="notifications-search-box">
++              <label className="notifications-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
+                 <Search className="h-4 w-4" />
+                 <input
+                   value={searchQuery}
+@@ -697,45 +700,36 @@ export default function NotificationsCenter() {
+             </section>
+           </section>
+ 
+-          <aside className="notifications-right-rail" aria-label="Panel powiadomie┼ä">
+-            <section className="right-card notifications-right-card">
+-              <div className="notifications-right-card-head">
+-                <EntityIcon entity="notification" className="h-4 w-4" />
+-                <h2>Kana┼éy</h2>
+-              </div>
+-              <div className="notifications-channel-card">
+-                <PermissionCopy permission={permission} browserEnabled={browserEnabled} />
+-                {permission === 'default' ? (
+-                  <button type="button" onClick={handleEnableBrowserNotifications}>W┼é─ůcz powiadomienia</button>
+-                ) : null}
+-              </div>
+-              <div className="notifications-channel-card">
+-                <strong>Poranny digest e-mail</strong>
+-                <span>Digest dzia┼éa tylko po konfiguracji (plan + ENV + adres odbiorcy). Status sprawdzisz w Ustawieniach.</span>
+-                <em>Konfiguracja w Ustawieniach</em>
+-              </div>
+-            </section>
+-
+-            <section className="right-card notifications-right-card">
++          <aside className="notifications-right-rail" aria-label="Panel powiadomie┼ä"><section className="right-card notifications-right-card" data-notification-rail-card="actions">
+               <div className="notifications-right-card-head">
+                 <Filter className="h-4 w-4" />
+                 <h2>Szybkie akcje</h2>
+               </div>
+-              <button type="button" className="notifications-rail-button" onClick={() => setActiveFilter('action')}>
++              <button type="button" className="notifications-rail-button" data-notification-rail-button="action" onClick={() => setActiveFilter('action')}>
+                 <span>Do reakcji</span>
+                 <strong>{metrics.action}</strong>
+               </button>
+-              <button type="button" className="notifications-rail-button" onClick={() => setActiveFilter('overdue')}>
++              <button type="button" className="notifications-rail-button" data-notification-rail-button="overdue" onClick={() => setActiveFilter('overdue')}>
+                 <span>Zaleg┼ée</span>
+                 <strong>{metrics.overdue}</strong>
+               </button>
+-              <button type="button" className="notifications-rail-button" onClick={handleMarkAllRead}>
++              <button type="button" className="notifications-rail-button" data-notification-rail-button="read" onClick={handleMarkAllRead}>
+                 <span>Oznacz przeczytane</span>
+                 <strong>{unreadCount}</strong>
+               </button>
+             </section>
+ 
+-            <section className="right-card notifications-right-card">
++                        <section className="right-card notifications-right-card" data-notification-rail-card="conflicts" data-stage181aj-conflict-notifications="true">
++              <div className="notifications-right-card-head">
++                <ShieldAlert className="h-4 w-4" />
++                <h2>Ostrze┼╝enia o konfliktach termin├│w</h2>
++              </div>
++              <p className="notifications-rail-empty">
++                Gdy terminy b─Öd─ů si─Ö nak┼éada─ç, alert pojawi si─Ö tutaj.
++              </p>
++            </section>
++
++<section className="right-card notifications-right-card" data-notification-rail-card="upcoming">
+               <div className="notifications-right-card-head">
+                 <Clock3 className="h-4 w-4" />
+                 <h2>Nadchodz─ůce</h2>
+@@ -753,9 +747,10 @@ export default function NotificationsCenter() {
+                 <p className="notifications-rail-empty">Brak nadchodz─ůcych przypomnie┼ä w obecnym widoku.</p>
+               )}
+             </section>
++          
+ 
+             <section className="right-card notifications-right-card">
+-              <div className="notifications-right-card-head">
++              <div className="notifications-right-card-head notifications-right-card-head-clean">
+                 <Mail className="h-4 w-4" />
+                 <h2>Jak dzia┼éaj─ů powiadomienia?</h2>
+               </div>
+@@ -763,7 +758,7 @@ export default function NotificationsCenter() {
+                 Ten widok zbiera terminy z zada┼ä, wydarze┼ä i lead├│w oraz histori─Ö alert├│w pokazanych w aplikacji. Finalna reakcja zawsze zostaje po stronie u┼╝ytkownika.
+               </p>
+             </section>
+-          </aside>
++</aside>
+         </div>
+       </main>
+     </Layout>
+
+=== git diff notifications CSS ===
+diff --git a/src/styles/visual-stage10-notifications-vnext.css b/src/styles/visual-stage10-notifications-vnext.css
+index 83bc28e..111584f 100644
+--- a/src/styles/visual-stage10-notifications-vnext.css
++++ b/src/styles/visual-stage10-notifications-vnext.css
+@@ -854,3 +854,203 @@
+   filter: none !important;
+ }
+ /* STAGE10A_RIGHT_RAIL_LIGHT_HOTFIX_END */
++
++/* STAGE180U_NOTIFICATIONS_METRICS_WIDTH_PARITY
++   /notifications top metric tiles must span the same page width as the main shell.
++   This is page-level placement only. Tile internals remain in closeflow-metric-tiles.css.
++*/
++.notifications-vnext-page .notifications-stats-grid,
++.notifications-vnext-page .notifications-vnext-shell {
++  width: 100% !important;
++  max-width: none !important;
++}
++
++.notifications-vnext-page .notifications-stats-grid {
++  margin: 0 0 22px !important;
++  display: grid !important;
++  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
++  gap: 12px !important;
++  align-items: stretch !important;
++}
++
++.notifications-vnext-page .notifications-stats-grid > * {
++  width: 100% !important;
++  min-width: 0 !important;
++}
++
++.notifications-vnext-page .notifications-stats-grid .cf-top-metric-tile,
++.notifications-vnext-page .notifications-stats-grid .cf-top-metric-tile-content {
++  width: 100% !important;
++}
++
++@media (max-width: 1100px) {
++  .notifications-vnext-page .notifications-stats-grid {
++    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
++  }
++}
++
++@media (max-width: 640px) {
++  .notifications-vnext-page .notifications-stats-grid {
++    grid-template-columns: 1fr !important;
++  }
++}
++/* END_STAGE180U_NOTIFICATIONS_METRICS_WIDTH_PARITY */
++
++/* STAGE180V_NOTIFICATIONS_METRIC_WIDTH_LIKE_TODAY
++   Powiadomienia: top metric tiles must span the same content width as the main notification shell / Today metric row.
++   This overrides the shared OperatorMetricTiles default max-width that compressed this grid to about 1080px.
++*/
++.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
++.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
++  width: 100% !important;
++  max-width: 1440px !important;
++  margin: 0 auto 22px !important;
++  padding: 0 !important;
++  display: grid !important;
++  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
++  gap: 18px !important;
++  align-items: stretch !important;
++  justify-content: stretch !important;
++  justify-items: stretch !important;
++}
++
++.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid > *,
++.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] > * {
++  min-width: 0 !important;
++  width: 100% !important;
++  max-width: none !important;
++}
++
++.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid .cf-top-metric-tile,
++.notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid .cf-top-metric-tile-content,
++.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] .cf-top-metric-tile,
++.notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] .cf-top-metric-tile-content {
++  width: 100% !important;
++  max-width: none !important;
++}
++
++@media (max-width: 1180px) {
++  .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
++  .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
++    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
++  }
++}
++
++@media (max-width: 700px) {
++  .notifications-vnext-page > .cf-operator-metric-grid.notifications-stats-grid,
++  .notifications-vnext-page > .notifications-stats-grid[data-notifications-metric-grid="true"] {
++    grid-template-columns: minmax(0, 1fr) !important;
++  }
++}
++
++/* STAGE180X_NOTIFICATIONS_METRIC_RENDERER_CLEANUP: /notifications top tiles use the Today-style renderer, not OperatorMetricTiles. */
++.notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
++  width: 100% !important;
++  max-width: 1440px !important;
++  margin: 0 auto 22px !important;
++  display: grid !important;
++  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
++  gap: 12px !important;
++  align-items: stretch !important;
++}
++
++.notifications-today-parity-tile {
++  width: 100% !important;
++  min-width: 0 !important;
++  border: 0 !important;
++  background: transparent !important;
++  padding: 0 !important;
++  text-align: left !important;
++  cursor: pointer;
++}
++
++.notifications-today-parity-card {
++  min-height: 72px;
++  width: 100%;
++  border: 1px solid #e4e7ec;
++  border-radius: 22px;
++  background: #ffffff;
++  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
++  padding: 16px 18px;
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 16px;
++  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
++}
++
++.notifications-today-parity-card-active,
++.notifications-today-parity-tile:hover .notifications-today-parity-card,
++.notifications-today-parity-tile:focus-visible .notifications-today-parity-card {
++  border-color: rgba(59, 130, 246, 0.18);
++  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.08), 0 18px 40px rgba(15, 23, 42, 0.085);
++}
++
++.notifications-today-parity-copy {
++  min-width: 0;
++  flex: 1 1 auto;
++  display: flex;
++  align-items: center;
++  justify-content: space-between;
++  gap: 14px;
++}
++
++.notifications-today-parity-copy p {
++  min-width: 0;
++  margin: 0;
++  color: #56637a;
++  font-size: 12px;
++  line-height: 1.08;
++  font-weight: 850;
++  letter-spacing: 0.025em;
++  text-transform: uppercase;
++  white-space: nowrap;
++  overflow: hidden;
++  text-overflow: ellipsis;
++}
++
++.notifications-today-parity-copy strong {
++  color: #0b1220;
++  font-size: 26px;
++  line-height: 1;
++  font-weight: 950;
++  letter-spacing: -0.045em;
++  white-space: nowrap;
++}
++
++.notifications-today-parity-icon {
++  width: 34px;
++  height: 34px;
++  min-width: 34px;
++  border-radius: 14px;
++  background: #f1f5f9;
++  color: #475569;
++  display: inline-flex;
++  align-items: center;
++  justify-content: center;
++}
++
++.notifications-today-parity-card[data-notifications-metric-tone="blue"] .notifications-today-parity-copy strong { color: #1d4ed8; }
++.notifications-today-parity-card[data-notifications-metric-tone="red"] .notifications-today-parity-copy strong { color: #be123c; }
++.notifications-today-parity-card[data-notifications-metric-tone="green"] .notifications-today-parity-copy strong { color: #047857; }
++.notifications-today-parity-card[data-notifications-metric-tone="amber"] .notifications-today-parity-copy strong { color: #b45309; }
++.notifications-today-parity-card[data-notifications-metric-tone="purple"] .notifications-today-parity-copy strong { color: #6d28d9; }
++
++.notifications-today-parity-card[data-notifications-metric-tone="blue"] .notifications-today-parity-icon { background: #eff6ff; color: #2563eb; }
++.notifications-today-parity-card[data-notifications-metric-tone="red"] .notifications-today-parity-icon { background: #fff1f2; color: #e11d48; }
++.notifications-today-parity-card[data-notifications-metric-tone="green"] .notifications-today-parity-icon { background: #ecfdf3; color: #059669; }
++.notifications-today-parity-card[data-notifications-metric-tone="amber"] .notifications-today-parity-icon { background: #fffbeb; color: #d97706; }
++.notifications-today-parity-card[data-notifications-metric-tone="purple"] .notifications-today-parity-icon { background: #f5f3ff; color: #7c3aed; }
++
++@media (max-width: 1024px) {
++  .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
++    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
++  }
++}
++
++@media (max-width: 640px) {
++  .notifications-vnext-page .notifications-stats-grid.notifications-today-parity-grid {
++    grid-template-columns: minmax(0, 1fr) !important;
++  }
++}
++
+

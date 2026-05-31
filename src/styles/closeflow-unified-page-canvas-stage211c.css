@@ -1,0 +1,130 @@
+/* STAGE211C_UNIFIED_APP_CANVAS
+   Source of truth for the neutral app canvas.
+   Goal: every operator tab uses one consistent background behind, between and around cards.
+   This intentionally removes old page-local radial/linear canvas gradients without changing card surfaces.
+*/
+
+:root {
+  --closeflow-unified-canvas: #f8fafc;
+}
+
+html,
+body,
+#root {
+  background: var(--closeflow-unified-canvas) !important;
+  background-color: var(--closeflow-unified-canvas) !important;
+  background-image: none !important;
+}
+
+body::before,
+body::after,
+#root::before,
+#root::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+.app.closeflow-visual-stage01,
+.cf-html-shell,
+main.main,
+[data-shell-main="true"],
+[data-shell-content="true"],
+.view.active {
+  background: var(--closeflow-unified-canvas) !important;
+  background-color: var(--closeflow-unified-canvas) !important;
+  background-image: none !important;
+}
+
+[data-shell-main="true"]::before,
+[data-shell-main="true"]::after,
+[data-shell-content="true"]::before,
+[data-shell-content="true"]::after,
+.view.active::before,
+.view.active::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Route page canvases. This catches Activity, AI drafts, Notifications, Billing,
+   Support/Reports, Settings and future *-vnext pages. */
+:where(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  .tasks-vnext-page,
+  .calendar-vnext-page,
+  .templates-vnext-page,
+  .response-templates-vnext-page,
+  .admin-ai-settings-vnext-page,
+  [class$="-vnext-page"],
+  [class*="-vnext-page "]
+) {
+  background: var(--closeflow-unified-canvas) !important;
+  background-color: var(--closeflow-unified-canvas) !important;
+  background-image: none !important;
+}
+
+:where(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  [class$="-vnext-page"],
+  [class*="-vnext-page "]
+)::before,
+:where(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  [class$="-vnext-page"],
+  [class*="-vnext-page "]
+)::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Layout-only containers should not add a second canvas layer. */
+:where(
+  .activity-vnext-shell,
+  .ai-drafts-vnext-shell,
+  .notifications-vnext-shell,
+  .billing-vnext-shell,
+  .support-vnext-shell,
+  .settings-vnext-shell,
+  .activity-main-column,
+  .ai-drafts-main-column,
+  .notifications-main-column,
+  .billing-main-column,
+  .support-main-column,
+  .settings-main-column,
+  .activity-stats-grid,
+  .ai-drafts-stats-grid,
+  .notifications-stats-grid,
+  .billing-plans-grid,
+  .support-shell,
+  .settings-shell
+) {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+/* Keep cards white/glass as cards, but remove any page-sized wash from adapter wrappers. */
+:where(
+  [data-cf-main-search-source],
+  [data-cf-main-search-stage175]
+) {
+  background-image: none !important;
+}
+
+/* Marker for automated guard. */
+:root {
+  --stage211c-unified-app-canvas: 1;
+}

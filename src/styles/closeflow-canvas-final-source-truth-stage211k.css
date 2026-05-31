@@ -1,0 +1,90 @@
+/* STAGE211K_CANVAS_FINAL_SOURCE_TRUTH_2026_05_30
+   owner: CloseFlow Visual System
+   goal: one runtime canvas color for every operator page layer.
+   source_of_truth:
+   - canvas/background between cards: #f8fafc
+   - card/surface layer: #ffffff
+   - sidebar/topbar are separate shells and are not recolored here.
+*/
+
+:root,
+[data-skin="forteca-light"] {
+  --cf-canvas-bg: #f8fafc !important;
+  --cf-operator-bg: var(--cf-canvas-bg) !important;
+  --cf-operator-bg-soft: var(--cf-canvas-bg) !important;
+  --cf-canvas-surface-bg: #ffffff !important;
+}
+
+html,
+body,
+#root {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  /* L1/L2: global operator shell and the first layer touching the sidebar. */
+  #root .app.closeflow-visual-stage01.cf-html-shell,
+  #root .cf-html-shell,
+  #root .cf-html-shell > main.main,
+  #root .cf-html-shell .main,
+  #root .cf-html-shell [data-shell-main="true"],
+  #root .cf-html-shell .view.active,
+  #root .cf-html-shell [data-shell-content="true"] {
+    background: var(--cf-canvas-bg) !important;
+    background-color: var(--cf-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* L3: route roots. */
+  #root .cf-html-shell .cf-route-work-root,
+  #root .cf-html-shell .cf-html-view,
+  #root .cf-html-shell .main-today-html,
+  #root .cf-html-shell .main-leads-html,
+  #root .cf-html-shell .main-clients-html,
+  #root .cf-html-shell .main-cases-html,
+  #root .cf-html-shell .main-calendar-html,
+  #root .cf-html-shell .activity-vnext-page,
+  #root .cf-html-shell .ai-drafts-vnext-page,
+  #root .cf-html-shell .notifications-vnext-page,
+  #root .cf-html-shell .billing-vnext-page,
+  #root .cf-html-shell .support-vnext-page,
+  #root .cf-html-shell .settings-vnext-page,
+  #root .cf-html-shell [class*="-vnext-page"] {
+    background: var(--cf-canvas-bg) !important;
+    background-color: var(--cf-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* L4: inner layout wrappers. They are canvas containers, not cards. */
+  #root .cf-html-shell .calendar-week-layout,
+  #root .cf-html-shell .activity-vnext-shell,
+  #root .cf-html-shell .ai-drafts-vnext-shell,
+  #root .cf-html-shell .notifications-vnext-shell,
+  #root .cf-html-shell .billing-layout,
+  #root .cf-html-shell .support-layout,
+  #root .cf-html-shell .settings-layout,
+  #root .cf-html-shell [class*="-vnext-shell"],
+  #root .cf-html-shell [class*="-main-column"] {
+    background: var(--cf-canvas-bg) !important;
+    background-color: var(--cf-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* Today specific leak found by runtime audit: grid created a pale violet gradient between cards. */
+  #root .cf-html-shell .cf-route-work-root section[data-stage16ai-today-tiles-match-lists="true"] {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+  }
+
+  /* Stable surface layer: cards should not inherit canvas tint through rgba white. */
+  #root .cf-html-shell .bg-card,
+  #root .cf-html-shell .card,
+  #root .cf-html-shell .rounded-xl.border.bg-card,
+  #root .cf-html-shell .rounded-2xl.border.bg-white,
+  #root .cf-html-shell :is(.activity-toolbar-card, .activity-list-card, .notifications-toolbar-card, .notifications-list-card, .ai-drafts-toolbar-card, .ai-drafts-list-card) {
+    background-color: var(--cf-canvas-surface-bg) !important;
+  }
+}

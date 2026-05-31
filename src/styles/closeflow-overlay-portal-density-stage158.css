@@ -1,0 +1,222 @@
+/* CLOSEFLOW_STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH
+   Problem:
+   - Stage157 makes the main app at 100% look like browser zoom 80%.
+   - Dialogs/modals/popovers are often rendered in portals under <body>.
+   - Portaled overlays do not inherit #root > .app zoom, so they stay visually too large.
+
+   Goal:
+   - apply the same visual density scale to all subwindows/overlays:
+     dialogs, modals, sheets, popovers, dropdowns, menus, command panels, tooltips, toasts.
+   - keep overlays anchored and centered naturally.
+   - do not touch Stage149 width source truth.
+   - do not scale the entire body/html/root.
+
+   Source truth:
+   - Stage157 = page/app viewport zoom source truth
+   - Stage158 = overlay/portal density source truth
+*/
+
+:root {
+  --closeflow-stage158-overlay-portal-density-source-truth: "active";
+
+  /* Inherit Stage157 zoom when available. */
+  --cf158-overlay-scale: var(--cf157-page-zoom, 0.80);
+  --cf158-overlay-inverse-scale: var(--cf157-page-zoom-inverse, 1.25);
+
+  --cf158-overlay-radius: 18px;
+  --cf158-overlay-padding: 20px;
+  --cf158-overlay-gap: 12px;
+
+  --cf158-overlay-max-width: calc(100vw * var(--cf158-overlay-inverse-scale) - 48px);
+  --cf158-overlay-max-height: calc(100vh * var(--cf158-overlay-inverse-scale) - 48px);
+
+  --cf158-overlay-font-body: 13px;
+  --cf158-overlay-font-title: 20px;
+  --cf158-overlay-font-label: 12px;
+  --cf158-overlay-control-height: 36px;
+}
+
+/* Desktop/operator overlays. */
+@media (hover: hover) and (pointer: fine) {
+  /* Radix Dialog/AlertDialog and custom app modals.
+     Important: we scale the content, not the overlay backdrop. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet,
+    .sheet-content,
+    .drawer,
+    .drawer-content
+  ) {
+    zoom: var(--cf158-overlay-scale) !important;
+    max-width: min(1120px, var(--cf158-overlay-max-width)) !important;
+    max-height: var(--cf158-overlay-max-height) !important;
+    border-radius: var(--cf158-overlay-radius) !important;
+    box-sizing: border-box !important;
+    transform-origin: center center !important;
+    font-size: var(--cf158-overlay-font-body) !important;
+    line-height: 1.25 !important;
+  }
+
+  /* Modal inner rhythm. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) :is(
+    form,
+    section,
+    article,
+    .card,
+    .panel-card,
+    .section-card,
+    .form-card
+  ) {
+    gap: var(--cf158-overlay-gap) !important;
+    border-radius: calc(var(--cf158-overlay-radius) - 4px) !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) :is(
+    h1,
+    h2,
+    h3,
+    .dialog-title,
+    .modal-title,
+    [data-radix-dialog-title],
+    [data-radix-alert-dialog-title]
+  ) {
+    font-size: var(--cf158-overlay-font-title) !important;
+    line-height: 1.1 !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) :is(
+    label,
+    small,
+    .label,
+    .caption,
+    .description,
+    [data-radix-dialog-description],
+    [data-radix-alert-dialog-description]
+  ) {
+    font-size: var(--cf158-overlay-font-label) !important;
+    line-height: 1.2 !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content,
+    .sheet-content,
+    .drawer-content
+  ) :is(
+    input,
+    textarea,
+    select,
+    button,
+    .btn,
+    [role="button"]
+  ) {
+    min-height: var(--cf158-overlay-control-height) !important;
+    font-size: var(--cf158-overlay-font-body) !important;
+    line-height: 1.15 !important;
+    border-radius: 12px !important;
+  }
+
+  /* Popovers/dropdowns/menus are usually portaled too. */
+  body :is(
+    [data-radix-popper-content-wrapper],
+    [data-radix-popover-content],
+    [data-radix-dropdown-menu-content],
+    [data-radix-select-content],
+    [data-radix-hover-card-content],
+    [data-radix-tooltip-content],
+    [data-radix-menubar-content],
+    [data-radix-context-menu-content],
+    .popover-content,
+    .dropdown-content,
+    .menu-content,
+    .select-content,
+    .tooltip-content
+  ) {
+    zoom: var(--cf158-overlay-scale) !important;
+    transform-origin: top left !important;
+    font-size: var(--cf158-overlay-font-body) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Toasts, PWA prompts, bug recorder, command palette style overlays. */
+  body :is(
+    [data-sonner-toaster],
+    [data-sonner-toast],
+    .toaster,
+    .toast,
+    .pwa-install-prompt,
+    .bug-note-recorder,
+    [data-bug-note-recorder],
+    .command-palette,
+    .cmdk-root,
+    [cmdk-root],
+    [cmdk-dialog]
+  ) {
+    zoom: var(--cf158-overlay-scale) !important;
+    transform-origin: bottom right !important;
+    font-size: var(--cf158-overlay-font-body) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Keep full-screen backdrops full-screen and unscaled. */
+  body :is(
+    [data-radix-dialog-overlay],
+    [data-radix-alert-dialog-overlay],
+    .dialog-overlay,
+    .modal-overlay,
+    .overlay,
+    .backdrop
+  ) {
+    zoom: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* Tuning:
+   Overlays use Stage157 by default.
+   If dialogs are still too large/small, change Stage157 scale first.
+   If only overlays need tuning:
+   --cf158-overlay-scale: 0.82;
+   --cf158-overlay-inverse-scale: 1.2195121951;
+*/

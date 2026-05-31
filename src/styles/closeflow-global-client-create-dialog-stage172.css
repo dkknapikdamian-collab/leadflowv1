@@ -1,0 +1,53 @@
+/* CLOSEFLOW_STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP
+
+   Scope:
+   - Remove/fix the topic-contact picker magnifying-glass collision by removing the icon from the input.
+   - Add global + Klient quick action and ClientCreateDialog.
+   - ClientCreateDialog intentionally reuses lead-form-vnext classes as visual source truth.
+*/
+
+:root {
+  --closeflow-stage172-global-client-button-picker-icon-cleanup: "active";
+}
+
+/* TopicContactPicker after icon removal: restore normal left padding. */
+body [data-closeflow-modal-visual-system="true"].cf-modal-surface [data-topic-contact-picker-input="true"],
+body .cf-modal-surface[data-closeflow-modal-visual-system="true"] [data-topic-contact-picker-input="true"],
+body [data-topic-contact-picker-input="true"].cf-topic-contact-picker-input,
+body .cf-topic-contact-picker-input {
+  padding-left: 12px !important;
+}
+
+/* New client dialog: same lead-form motif, but compact and no copy-heavy sections. */
+body [data-closeflow-modal-visual-system="true"].cf-modal-surface[data-client-create-dialog-stage172="true"],
+body .cf-modal-surface[data-closeflow-modal-visual-system="true"][data-client-create-dialog-stage172="true"] {
+  width: min(600px, calc(100vw - 96px)) !important;
+  max-width: min(600px, calc(100vw - 96px)) !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: min(82vh, 720px) !important;
+  overflow: hidden !important;
+}
+
+body [data-client-create-dialog-stage172="true"] .cf-stage172-client-create-form {
+  gap: 10px !important;
+  padding-bottom: 10px !important;
+}
+
+body [data-client-create-dialog-stage172="true"] .cf-stage172-case-option {
+  gap: 10px !important;
+}
+
+body [data-client-create-dialog-stage172="true"] .cf-stage172-create-case-checkbox {
+  margin: 0 !important;
+}
+
+body [data-client-create-dialog-stage172="true"] .cf-stage172-case-fields {
+  margin-top: 8px !important;
+}
+
+body [data-client-create-dialog-stage172="true"] .cf-stage172-client-create-footer {
+  position: static !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

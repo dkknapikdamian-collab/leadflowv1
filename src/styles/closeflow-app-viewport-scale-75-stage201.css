@@ -1,0 +1,82 @@
+﻿/* STAGE201_APP_VIEWPORT_SCALE_75_LOCAL_ONLY
+   Cel:
+   - uzyskać efekt jak browser zoom 75%,
+   - nie przywracać starego legacy 80% density/zoom,
+   - uniknąć starego błędu: sidebar 75/80% wysokości viewportu,
+   - skala działa tylko na desktopie.
+*/
+
+@media (min-width: 861px) {
+  :root {
+    --cf-stage201-app-scale: 0.75;
+    --cf-stage201-app-scale-inverse: 1.3333333333;
+  }
+
+  html,
+  body,
+  #root {
+    width: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  body {
+    overflow: hidden !important;
+  }
+
+  #root {
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    background: #f3f6fb !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    width: calc(100vw * var(--cf-stage201-app-scale-inverse)) !important;
+    min-width: calc(100vw * var(--cf-stage201-app-scale-inverse)) !important;
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+
+    transform: scale(var(--cf-stage201-app-scale)) !important;
+    transform-origin: top left !important;
+
+    overflow: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-sidebar="true"].sidebar {
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-main="true"] {
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse)) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .nav-scroll {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+}
+
+@media (max-width: 860px) {
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    transform: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+  }
+
+  body,
+  #root {
+    overflow: auto !important;
+  }
+}
+/* /STAGE201_APP_VIEWPORT_SCALE_75_LOCAL_ONLY */

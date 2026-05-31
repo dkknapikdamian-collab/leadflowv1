@@ -1,0 +1,231 @@
+﻿/* STAGE182_GREEN_FOCUS_THEME_LOCAL_ONLY
+   Zasada:
+   - klasyczny jasny motyw zostaje nietknięty,
+   - Green Focus dostaje pełny zestaw semantycznych tokenów,
+   - kolory nie są losowe: background, surface, text, muted, border, action i focus mają jedną paletę.
+*/
+
+html[data-skin="green-focus"] {
+  --color-primary: #15803d;
+  --color-primary-foreground: #ffffff;
+
+  --app-bg: #eef6f0;
+  --app-surface: #f5faf6;
+  --app-surface-strong: #ffffff;
+  --app-surface-muted: #e8f3eb;
+  --app-border: #cfe2d4;
+  --app-text: #102017;
+  --app-muted: #556b5c;
+  --app-muted-soft: #7d9284;
+  --app-primary-chip-bg: rgba(21, 128, 61, 0.12);
+  --app-primary-chip-text: #166534;
+  --app-shadow-color: rgba(16, 32, 23, 0.08);
+
+  --cf-green-bg: #eef6f0;
+  --cf-green-page: #f5faf6;
+  --cf-green-surface: rgba(255, 255, 255, 0.94);
+  --cf-green-surface-solid: #ffffff;
+  --cf-green-surface-muted: #e8f3eb;
+  --cf-green-border: #cfe2d4;
+  --cf-green-border-strong: #a8c9b2;
+  --cf-green-text: #102017;
+  --cf-green-muted: #556b5c;
+  --cf-green-muted-strong: #33483a;
+  --cf-green-primary: #15803d;
+  --cf-green-primary-hover: #166534;
+  --cf-green-primary-soft: rgba(21, 128, 61, 0.12);
+  --cf-green-accent: #0f766e;
+  --cf-green-accent-soft: rgba(15, 118, 110, 0.11);
+  --cf-green-danger: #dc2626;
+  --cf-green-warning: #b45309;
+  --cf-green-shadow: rgba(16, 32, 23, 0.08);
+
+  color-scheme: light;
+}
+
+html[data-skin="green-focus"] body,
+html[data-skin="green-focus"] #root {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(21, 128, 61, 0.11), transparent 28%),
+    linear-gradient(180deg, #f5faf6 0%, #eef6f0 100%) !important;
+  color: var(--cf-green-text) !important;
+}
+
+/* Globalne tła i powierzchnie */
+html[data-skin="green-focus"] :where(
+  .settings-vnext-page,
+  main,
+  .app-bg,
+  .min-h-screen,
+  .bg-slate-50,
+  .bg-slate-50\/30,
+  .bg-slate-50\/40,
+  .bg-slate-50\/50
+) {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(21, 128, 61, 0.09), transparent 28%),
+    linear-gradient(180deg, #f5faf6 0%, #eef6f0 100%) !important;
+  color: var(--cf-green-text) !important;
+}
+
+html[data-skin="green-focus"] :where(
+  .bg-white,
+  .bg-white\/80,
+  .bg-white\/90,
+  .bg-white\/95,
+  .app-surface-strong
+) {
+  background-color: var(--cf-green-surface-solid) !important;
+}
+
+/* Karty, panele, zakładki, boxy */
+html[data-skin="green-focus"] :where(
+  .settings-summary-card,
+  .settings-section-card,
+  .settings-right-card,
+  .settings-loading-card,
+  .settings-theme-card,
+  .settings-info-grid article,
+  .settings-toggle-row,
+  .settings-browser-box,
+  .settings-security-box,
+  .settings-inline-panel,
+  .settings-digest-panel,
+  .settings-diagnostics-box,
+  .right-card,
+  .card,
+  .rounded-2xl,
+  .rounded-3xl
+) {
+  background: var(--cf-green-surface) !important;
+  border-color: var(--cf-green-border) !important;
+  color: var(--cf-green-text) !important;
+  box-shadow: 0 12px 28px var(--cf-green-shadow) !important;
+}
+
+/* Tekst */
+html[data-skin="green-focus"] :where(
+  h1, h2, h3, h4,
+  strong,
+  .text-slate-950,
+  .text-slate-900,
+  .text-slate-800,
+  .text-slate-700,
+  .settings-header h1,
+  .settings-section-head h2,
+  .settings-right-card h2,
+  .settings-summary-card strong,
+  .settings-info-grid strong,
+  .settings-toggle-row strong,
+  .settings-browser-box strong,
+  .settings-security-box strong,
+  .settings-theme-card strong
+) {
+  color: var(--cf-green-text) !important;
+}
+
+html[data-skin="green-focus"] :where(
+  p, small, span,
+  .text-slate-600,
+  .text-slate-500,
+  .settings-header p,
+  .settings-section-head p,
+  .settings-right-card small,
+  .settings-theme-card span,
+  .settings-toggle-row span,
+  .settings-browser-box span,
+  .settings-security-box span,
+  .settings-inline-panel p
+) {
+  color: var(--cf-green-muted) !important;
+}
+
+/* Akcenty */
+html[data-skin="green-focus"] :where(
+  .settings-kicker,
+  .settings-section-head > div > span,
+  .settings-right-title,
+  .settings-right-title h2,
+  .text-blue-600,
+  .text-blue-700
+) {
+  color: var(--cf-green-primary) !important;
+}
+
+html[data-skin="green-focus"] :where(
+  .settings-soft-pill,
+  .app-primary-chip,
+  .bg-blue-50,
+  .bg-emerald-50
+) {
+  background: var(--cf-green-primary-soft) !important;
+  color: var(--cf-green-primary) !important;
+  border-color: color-mix(in srgb, var(--cf-green-primary) 34%, transparent) !important;
+}
+
+/* Formularze */
+html[data-skin="green-focus"] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select
+) {
+  background: var(--cf-green-surface-solid) !important;
+  border-color: var(--cf-green-border) !important;
+  color: var(--cf-green-text) !important;
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--cf-green-text) 5%, transparent) !important;
+}
+
+html[data-skin="green-focus"] :where(input, textarea)::placeholder {
+  color: var(--cf-green-muted) !important;
+}
+
+html[data-skin="green-focus"] :where(input, textarea, select):focus {
+  border-color: var(--cf-green-primary) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--cf-green-primary) 20%, transparent) !important;
+}
+
+html[data-skin="green-focus"] select option {
+  background: var(--cf-green-surface-solid) !important;
+  color: var(--cf-green-text) !important;
+}
+
+/* Przyciski i aktywne wybory */
+html[data-skin="green-focus"] :where(.settings-theme-active) {
+  background: var(--cf-green-primary-soft) !important;
+  border-color: var(--cf-green-primary) !important;
+}
+
+html[data-skin="green-focus"] :where(.settings-theme-card:hover) {
+  background: var(--cf-green-primary-soft) !important;
+  border-color: var(--cf-green-primary) !important;
+}
+
+html[data-skin="green-focus"] :where(button.bg-primary, .bg-primary) {
+  background-color: var(--cf-green-primary) !important;
+  color: #ffffff !important;
+}
+
+html[data-skin="green-focus"] :where(button.bg-primary:hover, .bg-primary:hover) {
+  background-color: var(--cf-green-primary-hover) !important;
+}
+
+/* Bordery */
+html[data-skin="green-focus"] :where(
+  .border-slate-100,
+  .border-slate-200,
+  .border-slate-300,
+  .app-border
+) {
+  border-color: var(--cf-green-border) !important;
+}
+
+/* Delikatne hover, bez losowego barwienia całego UI */
+html[data-skin="green-focus"] :where(
+  .hover\:bg-slate-50:hover,
+  .hover\:bg-slate-100:hover,
+  .hover\:bg-white:hover
+) {
+  background-color: var(--cf-green-surface-muted) !important;
+}
+
+/* /STAGE182_GREEN_FOCUS_THEME_LOCAL_ONLY */

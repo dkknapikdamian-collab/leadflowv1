@@ -1,0 +1,242 @@
+/* CLOSEFLOW_STAGE152_DENSE_CARDS_80_PERCENT_TARGET
+   Scope:
+   - stronger compactness pass after Stage151;
+   - target: the card density Damian liked at roughly 70-80% browser zoom;
+   - do NOT literally scale the app;
+   - do NOT change Stage149 width source truth;
+   - every correction has its own guard.
+
+   Source truth split:
+   - Stage149 = width/app shell source truth
+   - Stage150 = typography source truth
+   - Stage151 = initial card compactness source truth
+   - Stage152 = denser card/tile/panel source truth, loaded after Stage151
+*/
+
+:root {
+  --closeflow-stage152-dense-cards-80-percent-target: "active";
+  --cf152-density-target: "80-percent-visual-density-without-browser-zoom";
+
+  /* Stronger but still controlled reduction. */
+  --cf152-card-radius: 16px;
+  --cf152-card-radius-small: 14px;
+
+  --cf152-card-pad-y: 8px;
+  --cf152-card-pad-x: 14px;
+  --cf152-card-pad-y-compact: 7px;
+  --cf152-card-pad-x-compact: 12px;
+
+  --cf152-card-gap: 10px;
+  --cf152-card-gap-tight: 8px;
+
+  --cf152-kpi-min-height: 46px;
+  --cf152-panel-min-height: 44px;
+  --cf152-list-row-min-height: 52px;
+  --cf152-side-card-min-height: 40px;
+
+  --cf152-icon-size: 28px;
+  --cf152-icon-size-small: 24px;
+
+  --cf152-control-height: 34px;
+  --cf152-control-height-small: 30px;
+}
+
+/* Desktop/operator panel density. Width remains Stage149. */
+@media (hover: hover) and (pointer: fine) {
+  /* Route-level vertical rhythm. */
+  #root .view.active[data-shell-content="true"] :is(
+    .cf-route-work-root,
+    .cf-html-view,
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-shell,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"]
+  ) {
+    gap: var(--cf152-card-gap) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .activity-vnext-shell
+  ) {
+    gap: var(--cf152-card-gap) !important;
+  }
+
+  /* KPI/stat cards: visibly smaller. */
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi,
+    .stat,
+    .metric,
+    .summary-card,
+    .cf-summary-card,
+    .dashboard-stat,
+    .today-stat,
+    .lead-stat,
+    .client-stat,
+    .case-stat
+  ) {
+    min-height: var(--cf152-kpi-min-height) !important;
+    padding: var(--cf152-card-pad-y) var(--cf152-card-pad-x) !important;
+    border-radius: var(--cf152-card-radius) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* General card/panel tiles. */
+  #root .view.active[data-shell-content="true"] :is(
+    .panel-card,
+    .section-card,
+    .list-card,
+    .table-card,
+    .lead-card,
+    .client-card,
+    .case-card,
+    .task-card,
+    .calendar-card,
+    .template-card,
+    .activity-card,
+    .draft-card,
+    .filter-card
+  ) {
+    min-height: var(--cf152-panel-min-height) !important;
+    padding: var(--cf152-card-pad-y) var(--cf152-card-pad-x) !important;
+    border-radius: var(--cf152-card-radius) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Controls inside panels should not keep cards tall. */
+  #root .view.active[data-shell-content="true"] :is(
+    input,
+    select,
+    button,
+    .btn,
+    [role="button"]
+  ) {
+    min-height: var(--cf152-control-height-small) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .global-bar button,
+    .global-bar .btn,
+    .global-bar [role="button"]
+  ) {
+    min-height: var(--cf152-control-height) !important;
+  }
+
+  /* HTML list pages: Leads / Clients / Cases. */
+  #root .view.active[data-shell-content="true"] .cf-html-view:is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html
+  ) :is(
+    .table-card,
+    .lead-row,
+    .client-row,
+    .case-row,
+    .row,
+    .item-row
+  ) {
+    min-height: var(--cf152-list-row-min-height) !important;
+    padding-top: var(--cf152-card-pad-y) !important;
+    padding-bottom: var(--cf152-card-pad-y) !important;
+    border-radius: var(--cf152-card-radius) !important;
+  }
+
+  /* Today / Tasks Tailwind-like card islands, scoped to route roots. */
+  #root .view.active[data-shell-content="true"] :is(
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(
+    article,
+    section,
+    button,
+    [role="button"],
+    [class*="rounded-2xl"],
+    [class*="rounded-3xl"]
+  ) {
+    border-radius: var(--cf152-card-radius) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(
+    article,
+    section,
+    [role="button"]
+  ) {
+    min-height: var(--cf152-panel-min-height) !important;
+  }
+
+  /* Right rail cards. */
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail,
+    .activity-right-rail
+  ) :is(
+    .filter-card,
+    .summary-card,
+    .list-card,
+    .table-card,
+    .panel-card,
+    .section-card,
+    article,
+    section,
+    [role="button"]
+  ) {
+    min-height: var(--cf152-side-card-min-height) !important;
+    padding: var(--cf152-card-pad-y-compact) var(--cf152-card-pad-x-compact) !important;
+    border-radius: var(--cf152-card-radius-small) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Icons must not preserve the oversized tile height. */
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi,
+    .stat,
+    .metric,
+    .summary-card,
+    .panel-card,
+    .section-card,
+    .list-card,
+    .table-card,
+    .lead-card,
+    .client-card,
+    .case-card
+  ) :is(
+    .icon,
+    .icon-box,
+    .avatar,
+    .badge-icon
+  ) {
+    width: var(--cf152-icon-size) !important;
+    height: var(--cf152-icon-size) !important;
+    min-width: var(--cf152-icon-size) !important;
+    min-height: var(--cf152-icon-size) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail,
+    .activity-right-rail
+  ) :is(
+    .icon,
+    .icon-box,
+    .avatar,
+    .badge-icon
+  ) {
+    width: var(--cf152-icon-size-small) !important;
+    height: var(--cf152-icon-size-small) !important;
+    min-width: var(--cf152-icon-size-small) !important;
+    min-height: var(--cf152-icon-size-small) !important;
+  }
+}

@@ -1,0 +1,221 @@
+/* CLOSEFLOW_STAGE151_COMPACT_CARDS_SOURCE_TRUTH
+   Scope:
+   - every visual correction gets its own guard;
+   - compact all cards/tiles/panels slightly across the whole operator app;
+   - do not change Stage149 width source truth;
+   - do not create per-tab card sizing hacks.
+
+   Width source truth:
+   - Stage149: closeflow-clean-desktop-app-shell-canvas-stage149.css
+
+   Typography source truth:
+   - Stage150: closeflow-panel-typography-and-width-source-truth-stage150.css
+
+   Card source truth:
+   - Stage151: this file.
+*/
+
+:root {
+  --closeflow-stage151-compact-cards-source-truth: "active";
+  --cf151-card-source-truth: "global-panel-cards";
+
+  /* Gentle size reduction, not a redesign. */
+  --cf151-card-radius: 20px;
+  --cf151-card-radius-small: 16px;
+
+  --cf151-card-pad-y: 12px;
+  --cf151-card-pad-x: 18px;
+  --cf151-card-pad-y-compact: 10px;
+  --cf151-card-pad-x-compact: 14px;
+
+  --cf151-card-gap: 16px;
+  --cf151-card-gap-tight: 12px;
+
+  --cf151-kpi-min-height: 58px;
+  --cf151-panel-min-height: 54px;
+  --cf151-list-row-min-height: 64px;
+  --cf151-side-card-min-height: 48px;
+
+  --cf151-icon-size: 36px;
+  --cf151-icon-size-small: 30px;
+}
+
+/* Desktop/operator panel cards. Width remains Stage149. */
+@media (hover: hover) and (pointer: fine) {
+  /* Global route spacing. */
+  #root .view.active[data-shell-content="true"] :is(
+    .cf-route-work-root,
+    .cf-html-view,
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-shell,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"]
+  ) {
+    gap: var(--cf151-card-gap) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .activity-vnext-shell
+  ) {
+    gap: var(--cf151-card-gap) !important;
+  }
+
+  /* KPI / stat cards. */
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi,
+    .stat,
+    .metric,
+    .summary-card,
+    .cf-summary-card,
+    .dashboard-stat,
+    .today-stat,
+    .lead-stat,
+    .client-stat,
+    .case-stat
+  ) {
+    min-height: var(--cf151-kpi-min-height) !important;
+    padding: var(--cf151-card-pad-y) var(--cf151-card-pad-x) !important;
+    border-radius: var(--cf151-card-radius) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Main panels / section cards / accordion rows. */
+  #root .view.active[data-shell-content="true"] :is(
+    .panel-card,
+    .section-card,
+    .list-card,
+    .table-card,
+    .lead-card,
+    .client-card,
+    .case-card,
+    .task-card,
+    .calendar-card,
+    .template-card,
+    .activity-card,
+    .draft-card
+  ) {
+    min-height: var(--cf151-panel-min-height) !important;
+    padding: var(--cf151-card-pad-y) var(--cf151-card-pad-x) !important;
+    border-radius: var(--cf151-card-radius) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* HTML-list rows used by Leads / Clients / Cases. */
+  #root .view.active[data-shell-content="true"] .cf-html-view:is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html
+  ) :is(
+    .table-card,
+    .lead-row,
+    .client-row,
+    .case-row,
+    .row,
+    .item-row
+  ) {
+    min-height: var(--cf151-list-row-min-height) !important;
+    padding-top: var(--cf151-card-pad-y) !important;
+    padding-bottom: var(--cf151-card-pad-y) !important;
+    border-radius: var(--cf151-card-radius) !important;
+  }
+
+  /* Today / Tasks Tailwind-like card islands, limited to route roots. */
+  #root .view.active[data-shell-content="true"] :is(
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(
+    article,
+    section,
+    button,
+    [role="button"],
+    [class*="rounded-2xl"],
+    [class*="rounded-3xl"]
+  ) {
+    border-radius: var(--cf151-card-radius) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(
+    article,
+    section,
+    [role="button"]
+  ) {
+    min-height: var(--cf151-panel-min-height) !important;
+  }
+
+  /* Right rail cards. */
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail,
+    .activity-right-rail
+  ) :is(
+    .filter-card,
+    .summary-card,
+    .list-card,
+    .table-card,
+    .panel-card,
+    .section-card,
+    article,
+    section,
+    [role="button"]
+  ) {
+    min-height: var(--cf151-side-card-min-height) !important;
+    padding: var(--cf151-card-pad-y-compact) var(--cf151-card-pad-x-compact) !important;
+    border-radius: var(--cf151-card-radius-small) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Icons inside card chips/tiles should not force oversized cards. */
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi,
+    .stat,
+    .metric,
+    .summary-card,
+    .panel-card,
+    .section-card,
+    .list-card,
+    .table-card,
+    .lead-card,
+    .client-card,
+    .case-card
+  ) :is(
+    .icon,
+    .icon-box,
+    .avatar,
+    .badge-icon
+  ) {
+    width: var(--cf151-icon-size) !important;
+    height: var(--cf151-icon-size) !important;
+    min-width: var(--cf151-icon-size) !important;
+    min-height: var(--cf151-icon-size) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail,
+    .activity-right-rail
+  ) :is(
+    .icon,
+    .icon-box,
+    .avatar,
+    .badge-icon
+  ) {
+    width: var(--cf151-icon-size-small) !important;
+    height: var(--cf151-icon-size-small) !important;
+    min-width: var(--cf151-icon-size-small) !important;
+    min-height: var(--cf151-icon-size-small) !important;
+  }
+}

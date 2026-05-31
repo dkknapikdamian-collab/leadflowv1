@@ -672,3 +672,19 @@ NASTĘPNY KROK: verify production /api/version and runtime marker, then retest c
 - Added calendar bundle options forwarding.
 - Added guard/test for range param contract.
 - No UI or visual calendar changes.
+
+## 2026-05-29 - STAGE179 Settings form control readability - local only
+
+- Tryb: lokalnie, bez commita i bez pusha.
+- Poprawiono czytelnoĹ›Ä‡ pĂłl formularza w /settings, szczegĂłlnie Google Calendar reminders.
+- Dodano src/styles/closeflow-settings-form-control-readability-stage179.css.
+- Dodano 	ests/stage179-settings-form-control-readability-contract.test.cjs.
+- Nie ruszano logiki Google Calendar, API, Supabase ani routingu.
+
+## 2026-05-29 - STAGE179 Settings form control readability - local only
+
+- Tryb: lokalnie, bez commita i bez pusha.
+- Poprawiono czytelnoĹ›Ä‡ pĂłl formularza w /settings, szczegĂłlnie Google Calendar reminders.
+- Dodano src/styles/closeflow-settings-form-control-readability-stage179.css.
+- Dodano 	ests/stage179-settings-form-control-readability-contract.test.cjs.
+- Nie ruszano logiki Google Calendar, API, Supabase ani routingu.

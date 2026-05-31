@@ -1,0 +1,173 @@
+/* CLOSEFLOW_STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH
+   Built on Stage161 runtime fix.
+
+   User visual decision:
+   - Stage161 is better, but still wrong.
+   - Every modal/subwindow must be slightly smaller and lower.
+   - Apply this to all cf-modal-surface windows as one source truth.
+
+   Runtime direction:
+   - keep concrete target: .cf-modal-surface[role="dialog"]
+   - override Stage161 dimensions/center after Stage161 import
+   - do not use generic zoom on dialogs
+   - keep content scroll inside modal, not by clipping the viewport
+*/
+
+:root {
+  --closeflow-stage162-cf-modal-surface-lower-smaller-source-truth: "active";
+
+  /* One source of truth for all cf-modal-surface subwindows. */
+  --cf162-modal-visual-width: 620px;
+  --cf162-modal-visual-max-width: calc(100vw - 72px);
+  --cf162-modal-visual-max-height: 76vh;
+
+  /* Lower than strict center. 56vh is intentional, not accidental drift. */
+  --cf162-modal-center-y-vh: 56vh;
+
+  /* Convert visual target into logical coordinates under Stage157 app zoom. */
+  --cf162-modal-logical-width: calc(var(--cf162-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf162-modal-logical-max-width: calc(var(--cf162-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf162-modal-logical-max-height: calc(var(--cf162-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+  --cf162-modal-logical-center-x: calc(50vw * var(--cf157-page-zoom-inverse, 1.25));
+  --cf162-modal-logical-center-y: calc(var(--cf162-modal-center-y-vh) * var(--cf157-page-zoom-inverse, 1.25));
+
+  --cf162-modal-radius: 15px;
+  --cf162-section-pad-y: 10px;
+  --cf162-section-pad-x: 14px;
+  --cf162-gap: 7px;
+
+  --cf162-font-title: 16px;
+  --cf162-font-body: 11.5px;
+  --cf162-font-label: 10.5px;
+  --cf162-font-small: 9.75px;
+
+  --cf162-control-height: 26px;
+  --cf162-control-pad-x: 9px;
+  --cf162-textarea-min: 48px;
+  --cf162-textarea-max: 76px;
+  --cf162-footer-min-height: 42px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body .cf-modal-surface[role="dialog"],
+  body [role="dialog"].cf-modal-surface {
+    left: var(--cf162-modal-logical-center-x) !important;
+    top: var(--cf162-modal-logical-center-y) !important;
+
+    width: min(var(--cf162-modal-logical-width), var(--cf162-modal-logical-max-width)) !important;
+    max-width: min(var(--cf162-modal-logical-width), var(--cf162-modal-logical-max-width)) !important;
+    max-height: var(--cf162-modal-logical-max-height) !important;
+
+    transform: translate(-50%, -50%) !important;
+    border-radius: var(--cf162-modal-radius) !important;
+
+    font-size: var(--cf162-font-body) !important;
+    line-height: 1.14 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] .cf-modal-header,
+  body [role="dialog"].cf-modal-surface .cf-modal-header {
+    padding-bottom: 6px !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(h1,h2,h3,.cf-modal-title,.dialog-title,.modal-title,[data-radix-dialog-title]),
+  body [role="dialog"].cf-modal-surface :is(h1,h2,h3,.cf-modal-title,.dialog-title,.modal-title,[data-radix-dialog-title]) {
+    font-size: var(--cf162-font-title) !important;
+    line-height: 1.05 !important;
+    margin: 0 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(p,small,.cf-modal-description,.description,.caption,[data-radix-dialog-description]),
+  body [role="dialog"].cf-modal-surface :is(p,small,.cf-modal-description,.description,.caption,[data-radix-dialog-description]) {
+    font-size: var(--cf162-font-small) !important;
+    line-height: 1.12 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(form,.event-form-vnext),
+  body [role="dialog"].cf-modal-surface :is(form,.event-form-vnext) {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--cf162-gap) !important;
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable !important;
+    padding-bottom: 0 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(section,article,fieldset,.rounded-2xl,.card,.panel-card,.section-card,.form-card),
+  body [role="dialog"].cf-modal-surface :is(section,article,fieldset,.rounded-2xl,.card,.panel-card,.section-card,.form-card) {
+    padding: var(--cf162-section-pad-y) var(--cf162-section-pad-x) !important;
+    gap: var(--cf162-gap) !important;
+    border-radius: calc(var(--cf162-modal-radius) - 4px) !important;
+    box-sizing: border-box !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.space-y-4,.space-y-3,.space-y-2,.grid,.event-form-field),
+  body [role="dialog"].cf-modal-surface :is(.space-y-4,.space-y-3,.space-y-2,.grid,.event-form-field) {
+    gap: var(--cf162-gap) !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(label,.label),
+  body [role="dialog"].cf-modal-surface :is(label,.label) {
+    font-size: var(--cf162-font-label) !important;
+    line-height: 1.06 !important;
+    margin-bottom: 2px !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(input,select,button,.btn,[role="button"]),
+  body [role="dialog"].cf-modal-surface :is(input,select,button,.btn,[role="button"]) {
+    min-height: var(--cf162-control-height) !important;
+    height: auto !important;
+    padding-left: var(--cf162-control-pad-x) !important;
+    padding-right: var(--cf162-control-pad-x) !important;
+    border-radius: 9px !important;
+    font-size: var(--cf162-font-body) !important;
+    line-height: 1.06 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] textarea,
+  body [role="dialog"].cf-modal-surface textarea {
+    min-height: var(--cf162-textarea-min) !important;
+    max-height: var(--cf162-textarea-max) !important;
+    padding: 7px 9px !important;
+    border-radius: 9px !important;
+    font-size: var(--cf162-font-body) !important;
+    line-height: 1.12 !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(.cf-modal-footer,.event-form-footer,.dialog-footer,.modal-footer,footer),
+  body [role="dialog"].cf-modal-surface :is(.cf-modal-footer,.event-form-footer,.dialog-footer,.modal-footer,footer),
+  body .cf-modal-surface[role="dialog"] form > :is(div,section,footer):has(button[type="submit"]),
+  body [role="dialog"].cf-modal-surface form > :is(div,section,footer):has(button[type="submit"]) {
+    min-height: var(--cf162-footer-min-height) !important;
+    padding: 6px 0 0 !important;
+    margin-top: auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 30 !important;
+    background: inherit !important;
+    border-top: 1px solid rgba(148,163,184,.22) !important;
+    box-sizing: border-box !important;
+  }
+
+  body .cf-modal-surface[role="dialog"] :is(button[aria-label="Close"],button[aria-label="Zamknij"],.dialog-close,[data-radix-dialog-close]),
+  body [role="dialog"].cf-modal-surface :is(button[aria-label="Close"],button[aria-label="Zamknij"],.dialog-close,[data-radix-dialog-close]) {
+    top: 8px !important;
+    right: 8px !important;
+    min-width: 25px !important;
+    width: 25px !important;
+    height: 25px !important;
+    min-height: 25px !important;
+    padding: 0 !important;
+    border-radius: 999px !important;
+  }
+}
+
+/*
+  Tuning source truth:
+  - Lower/higher: --cf162-modal-center-y-vh: 55vh / 56vh / 57vh
+  - Smaller/wider: --cf162-modal-visual-width: 600px / 620px / 640px
+  - Less/more vertical: --cf162-modal-visual-max-height: 72vh / 76vh / 80vh
+*/

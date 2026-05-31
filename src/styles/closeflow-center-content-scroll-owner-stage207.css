@@ -1,0 +1,152 @@
+﻿/* STAGE207_CENTER_CONTENT_SCROLL_OWNER_LOCAL_ONLY
+   Cel:
+   - nie scrolluje body/browser,
+   - nie scrolluje lewy sidebar,
+   - nie scrolluje cały shell,
+   - scrolluje tylko środkowy panel treści pod global-barem.
+*/
+
+@media (min-width: 861px) {
+  html,
+  body,
+  #root {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  #root {
+    background: #f3f6fb !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    width: calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-width: calc(100vw * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    transform: scale(var(--cf-stage201-app-scale, 0.75)) !important;
+    transform-origin: top left !important;
+    overflow: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell [data-shell-sidebar="true"].sidebar {
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    overflow: hidden !important;
+    align-self: stretch !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .nav-scroll {
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] {
+    height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    min-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    max-height: calc(100dvh * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+    overflow: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-width: 0 !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > [data-shell-global-bar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > [data-shell-access-warning="true"] {
+    flex: 0 0 auto !important;
+    position: relative !important;
+    z-index: 5 !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > div.view.active[data-shell-content="true"] {
+    flex: 1 1 0 !important;
+    min-height: 0 !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow-y: scroll !important;
+    overflow-x: hidden !important;
+    overscroll-behavior: contain !important;
+    scrollbar-gutter: stable both-edges !important;
+    padding-bottom: calc(220px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > div.view.active[data-shell-content="true"]::-webkit-scrollbar {
+    width: 14px !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > div.view.active[data-shell-content="true"]::-webkit-scrollbar-track {
+    background: rgba(226, 232, 240, 0.8) !important;
+    border-radius: 999px !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > div.view.active[data-shell-content="true"]::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.58) !important;
+    border-radius: 999px !important;
+    border: 3px solid rgba(226, 232, 240, 0.8) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"] > div.view.active[data-shell-content="true"] > * {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .cf-html-view,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .main-calendar-html,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-page,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .notifications-vnext-page,
+  #root > .app.closeflow-visual-stage01.cf-html-shell .ai-drafts-vnext-page {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell .main-calendar-html {
+    padding-bottom: calc(260px * var(--cf-stage201-app-scale-inverse, 1.3333333333)) !important;
+  }
+
+  .main-calendar-html .calendar-week-layout,
+  .main-calendar-html .calendar-week-plan,
+  .main-calendar-html .calendar-week-plan-list {
+    height: auto !important;
+    min-height: max-content !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 860px) {
+  html,
+  body,
+  #root {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    transform: none !important;
+    width: 100% !important;
+    min-width: 100% !important;
+    height: auto !important;
+    min-height: 100dvh !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell main[data-shell-main="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell div.view.active[data-shell-content="true"] {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+/* /STAGE207_CENTER_CONTENT_SCROLL_OWNER_LOCAL_ONLY */

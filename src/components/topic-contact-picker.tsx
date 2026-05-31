@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Check } from 'lucide-react';
-import { CancelActionIcon, SearchActionIcon } from './ui-system';
+import { CancelActionIcon } from './ui-system';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -38,10 +38,9 @@ export function TopicContactPicker({
   const filteredOptions = useMemo(() => filterTopicContactOptions(options, query), [options, query]);
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-topic-contact-picker="true">
       <Label>{label}</Label>
       <div className="relative">
-        <SearchActionIcon className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
         <Input
           value={query}
           onChange={(event) => {
@@ -51,7 +50,8 @@ export function TopicContactPicker({
           onFocus={() => setIsOpen(true)}
           onBlur={() => window.setTimeout(() => setIsOpen(false), 150)}
           placeholder={placeholder}
-          className="pl-10 pr-10"
+          className="cf-topic-contact-picker-input pl-3 pr-10"
+          data-topic-contact-picker-input="true"
         />
         {selectedOption ? (
           <Button
@@ -70,7 +70,8 @@ export function TopicContactPicker({
         ) : null}
 
         {isOpen ? (
-          <div className="absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border bg-white p-1 shadow-xl">
+          <div className="cf-topic-contact-picker-dropdown absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-xl border bg-white p-1 text-slate-900 shadow-xl"
+            data-topic-contact-picker-dropdown="true">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option) => {
                 const isSelected = selectedOption?.id === option.id;
@@ -79,7 +80,8 @@ export function TopicContactPicker({
                   <button
                     key={option.id}
                     type="button"
-                    className={`flex w-full items-start justify-between gap-3 rounded-lg px-3 py-2 text-left transition-colors ${
+                    data-topic-contact-picker-option="true"
+                    className={`cf-topic-contact-picker-option flex w-full items-start justify-between gap-3 rounded-lg bg-white px-3 py-2 text-left text-slate-900 transition-colors ${
                       isDisabled ? 'cursor-not-allowed opacity-70' : 'hover:bg-slate-50'
                     }`}
                     onMouseDown={(event) => event.preventDefault()}
@@ -93,26 +95,26 @@ export function TopicContactPicker({
                   >
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="truncate text-sm font-semibold text-slate-900">{option.label}</span>
+                        <span className="cf-topic-contact-picker-option-title truncate text-sm font-semibold text-slate-900" data-topic-contact-picker-option-title="true">{option.label}</span>
                         <span className={`inline-flex h-5 items-center rounded-full border px-2 text-[10px] font-semibold uppercase ${getBadgeClass(option.type)}`}>
                           {option.metaLabel}
                         </span>
                       </div>
-                      <div className="mt-1 truncate text-xs text-slate-500">{option.subLabel}</div>
-                      <div className="mt-1 text-[11px] text-slate-400">{option.resolutionLabel}</div>
+                      <div className="cf-topic-contact-picker-option-subtitle mt-1 truncate text-xs text-slate-500">{option.subLabel}</div>
+                      <div className="cf-topic-contact-picker-option-resolution mt-1 text-[11px] text-slate-400">{option.resolutionLabel}</div>
                     </div>
                     {isSelected ? <Check className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" /> : null}
                   </button>
                 );
               })
             ) : (
-              <div className="px-3 py-2 text-sm text-slate-500">{emptyLabel}</div>
+              <div className="cf-topic-contact-picker-empty px-3 py-2 text-sm text-slate-500">{emptyLabel}</div>
             )}
           </div>
         ) : null}
       </div>
       {selectedOption ? (
-        <p className="text-xs text-slate-500">{selectedOption.resolutionLabel}</p>
+        <p className="cf-topic-contact-picker-selected-note text-xs text-slate-500">{selectedOption.resolutionLabel}</p>
       ) : null}
     </div>
   );

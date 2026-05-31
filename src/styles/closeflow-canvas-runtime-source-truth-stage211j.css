@@ -1,0 +1,92 @@
+/* STAGE211J_CANVAS_RUNTIME_SOURCE_TRUTH_BACKUP_SAFE_2026_05_30
+   owner: CloseFlow Visual System
+   reason: runtime map showed html/body and route root on #f8fafc, while #root/app/main/view were still #f3f6fb.
+   rule: one canvas token for every non-card page/background layer. Cards and panels remain surfaces.
+*/
+
+:root,
+html,
+body,
+#root,
+#root .cf-html-shell {
+  --cf-canvas-bg: #f8fafc !important;
+  --cf-operator-bg: var(--cf-canvas-bg) !important;
+  --cf-operator-bg-soft: var(--cf-canvas-bg) !important;
+  --app-bg: var(--cf-canvas-bg) !important;
+  --app-surface: var(--cf-canvas-bg) !important;
+}
+
+html,
+body,
+#root,
+#root .app,
+#root .cf-html-shell,
+#root .cf-html-shell.app,
+#root .cf-html-shell .main,
+#root .cf-html-shell [data-shell-main="true"],
+#root .cf-html-shell .view.active,
+#root .cf-html-shell [data-shell-content="true"],
+#root .cf-html-shell .cf-route-work-root,
+#root .cf-html-shell .cf-html-view,
+#root .cf-html-shell .main-calendar-html,
+#root .cf-html-shell .calendar-week-layout,
+#root .cf-html-shell .activity-vnext-page,
+#root .cf-html-shell .ai-drafts-vnext-page,
+#root .cf-html-shell .notifications-vnext-page,
+#root .cf-html-shell .billing-vnext-page,
+#root .cf-html-shell .support-vnext-page,
+#root .cf-html-shell .settings-vnext-page,
+#root .cf-html-shell [class*="vnext-page"],
+#root .cf-html-shell [class*="vnext-shell"],
+#root .cf-html-shell [class^="main-"][class$="-html"],
+#root .cf-html-shell [class*="-layout"] {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Runtime map: Today tile section had a pastel linear-gradient between cards. That is canvas, not a card surface. */
+#root .cf-html-shell section.grid[data-stage16ai-today-tiles-match-lists="true"],
+#root .cf-html-shell [data-stage16ai-today-tiles-match-lists="true"] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Local page canvases sometimes use pseudo layers; keep them from tinting the background. */
+#root .cf-html-shell :is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  .main-calendar-html,
+  .cf-route-work-root,
+  .cf-html-view
+)::before,
+#root .cf-html-shell :is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page,
+  .main-calendar-html,
+  .cf-route-work-root,
+  .cf-html-view
+)::after {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Explicit shell-edge repair: the strip touching the left sidebar must not keep the older operator blue-gray. */
+#root,
+#root .cf-html-shell,
+#root .cf-html-shell .main,
+#root .cf-html-shell .view.active {
+  background-color: #f8fafc !important;
+}
+
+/* STAGE211J_CANVAS_RUNTIME_SOURCE_TRUTH_GUARD */

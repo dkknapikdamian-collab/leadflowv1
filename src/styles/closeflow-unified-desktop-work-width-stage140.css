@@ -1,0 +1,222 @@
+/* CLOSEFLOW_STAGE140_UNIFIED_DESKTOP_WORK_WIDTH
+   Jedno źródło prawdy szerokości roboczej dla każdej głównej zakładki.
+   Wzorzec: zakładka Dziś, której prawa krawędź na desktopie ma dochodzić mniej więcej
+   pod akcję topbara "+ Zadanie", a nie skakać między route'ami.
+
+   To nadpisuje Stage139 w kwestii szerokości:
+   - nie full stretch do prawej krawędzi,
+   - nie stara wąska wyspa,
+   - tylko stały lewo-zakotwiczony content width source truth.
+
+   Zakres:
+   - desktop only: min-width 1280px + hover/pointer fine
+   - Dziś, Leady, Klienci, Sprawy, Zadania, Kalendarz, Szablony, Odpowiedzi, Aktywność
+   - bez zmian mobile/tablet, danych i logiki
+*/
+
+:root {
+  --cf140-sidebar-width: 240px;
+  --cf140-left-gutter: 8px;
+  --cf140-right-safe-gutter: 16px;
+  --cf140-unified-work-width: 1440px;
+  --cf140-wide-work-width: 1480px;
+  --cf140-right-rail-width: 360px;
+  --cf140-shell-gap: 24px;
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --cf140-left-gutter: 8px;
+    --cf140-right-safe-gutter: 18px;
+    --cf140-right-rail-width: 366px;
+    --cf140-shell-gap: 26px;
+  }
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* 1. Shell can be full, but route content gets one stable work width. */
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. Unified route width source truth.
+     This is the important rule: every main tab starts from the same left gutter
+     and ends at the same width line. */
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+    [data-p0-today-stable-rebuild="true"],
+    main[data-p0-today-stable-rebuild="true"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"],
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ),
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+    [data-p0-today-stable-rebuild="true"],
+    main[data-p0-today-stable-rebuild="true"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"],
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    width: min(
+      calc(100vw - var(--cf140-sidebar-width) - var(--cf140-left-gutter) - var(--cf140-right-safe-gutter)),
+      var(--cf140-unified-work-width)
+    ) !important;
+    max-width: var(--cf140-unified-work-width) !important;
+    min-width: 0 !important;
+    margin-left: var(--cf140-left-gutter) !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. Wider monitors may breathe slightly, but every route still shares the same width token. */
+  @media (min-width: 1880px) {
+    #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+      [data-p0-today-stable-rebuild="true"],
+      main[data-p0-today-stable-rebuild="true"],
+      .main-leads-html,
+      .main-clients-html,
+      .main-cases-html,
+      .main-calendar-html,
+      .main-templates-html,
+      .activity-vnext-page,
+      .activity-vnext-shell,
+      [data-a13-template-style="response-templates-v2"],
+      [data-p0-tasks-stable-rebuild="true"],
+      main[data-p0-tasks-stable-rebuild="true"],
+      .mx-auto.max-w-5xl,
+      .mx-auto.max-w-6xl,
+      .mx-auto.max-w-7xl,
+      .mx-auto.flex.w-full.max-w-5xl,
+      .mx-auto.flex.w-full.max-w-7xl
+    ),
+    #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+      [data-p0-today-stable-rebuild="true"],
+      main[data-p0-today-stable-rebuild="true"],
+      .main-leads-html,
+      .main-clients-html,
+      .main-cases-html,
+      .main-calendar-html,
+      .main-templates-html,
+      .activity-vnext-page,
+      .activity-vnext-shell,
+      [data-a13-template-style="response-templates-v2"],
+      [data-p0-tasks-stable-rebuild="true"],
+      main[data-p0-tasks-stable-rebuild="true"],
+      .mx-auto.max-w-5xl,
+      .mx-auto.max-w-6xl,
+      .mx-auto.max-w-7xl,
+      .mx-auto.flex.w-full.max-w-5xl,
+      .mx-auto.flex.w-full.max-w-7xl
+    ) {
+      width: min(
+        calc(100vw - var(--cf140-sidebar-width) - var(--cf140-left-gutter) - var(--cf140-right-safe-gutter)),
+        var(--cf140-wide-work-width)
+      ) !important;
+      max-width: var(--cf140-wide-work-width) !important;
+    }
+  }
+
+  /* 4. Remove old utility caps inside route roots without changing mobile. */
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    [data-p0-today-stable-rebuild="true"],
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ):is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl, .w-full),
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    [data-p0-today-stable-rebuild="true"],
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl) {
+    max-width: none !important;
+  }
+
+  /* 5. Main list and stat sections fill the shared work width. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ),
+  #root [data-p0-today-stable-rebuild="true"] > :is(section, .grid, .flex) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* 6. One source for route list + right rail width. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf140-right-rail-width)) !important;
+    gap: var(--cf140-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf140-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* 7. Activity route follows the same width line. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf140-right-rail-width)) !important;
+    gap: var(--cf140-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf140-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Contract marker for guards. */
+:root {
+  --closeflow-stage140-unified-desktop-work-width: "active";
+}

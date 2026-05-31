@@ -1,0 +1,50 @@
+/* STAGE211F_CANVAS_EDGE_COLOR_SOURCE_TRUTH
+   owner: CloseFlow Visual System
+   goal: one canvas color for the operator app, including the first layer touching the left sidebar.
+   source_of_truth: --cf-canvas-bg
+   pattern: Today route canvas
+*/
+
+:root,
+html,
+body,
+#root {
+  --cf-canvas-bg: #f8fafc;
+  --cf-operator-bg: var(--cf-canvas-bg);
+  --cf-operator-bg-soft: var(--cf-canvas-bg);
+  --app-bg: var(--cf-canvas-bg);
+  --app-surface: var(--cf-canvas-bg);
+}
+
+@media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+  html,
+  body,
+  #root,
+  #root .app.closeflow-visual-stage01,
+  #root .cf-html-shell,
+  #root .cf-html-shell .main,
+  #root .cf-html-shell [data-shell-main="true"],
+  #root .cf-html-shell .view.active,
+  #root .cf-html-shell [data-shell-content="true"],
+  #root .cf-html-shell .cf-route-work-root,
+  #root .cf-html-shell .cf-html-view,
+  #root .cf-html-shell .main-calendar-html,
+  #root .cf-html-shell .calendar-week-layout,
+  #root .cf-html-shell .activity-vnext-page,
+  #root .cf-html-shell .ai-drafts-vnext-page,
+  #root .cf-html-shell .notifications-vnext-page,
+  #root .cf-html-shell .billing-vnext-page,
+  #root .cf-html-shell .support-vnext-page,
+  #root .cf-html-shell .settings-vnext-page {
+    background: var(--cf-canvas-bg) !important;
+    background-color: var(--cf-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  /* The top bar and content cards stay as surfaces. Only the canvas/gutter is normalized. */
+  #root .cf-html-shell .global-bar {
+    background: rgba(255, 255, 255, 0.96) !important;
+    background-color: rgba(255, 255, 255, 0.96) !important;
+    background-image: none !important;
+  }
+}

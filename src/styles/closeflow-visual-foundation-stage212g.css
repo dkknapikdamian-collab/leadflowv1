@@ -1,0 +1,16 @@
+/* STAGE212J_VISUAL_FOUNDATION_SOURCE_TRUTH */
+:root {
+  --cf-canvas: #f1f5f9;
+  --cf-surface: #ffffff;
+  --cf-surface-soft: #f8fafc;
+  --cf-border: #e2e8f0;
+  --cf-operator-bg: var(--cf-canvas);
+  --cf-operator-bg-soft: var(--cf-canvas);
+  --cf-vs-bg: var(--cf-canvas);
+  --cf-vs-bg-2: var(--cf-canvas);
+  --app-bg: var(--cf-canvas);
+  --app-surface: var(--cf-surface-soft);
+  --app-surface-strong: var(--cf-surface);
+  --app-surface-muted: var(--cf-surface-soft);
+  --app-border: var(--cf-border);
+}

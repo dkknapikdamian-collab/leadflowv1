@@ -86,6 +86,8 @@ import '../styles/visual-stage20-lead-form-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
 const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
 const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
@@ -94,6 +96,8 @@ const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszu
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
+const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
+const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
@@ -716,11 +720,8 @@ export default function Leads() {
                             <DialogContent className="lead-form-vnext-content" data-lead-form-stage20="true" aria-describedby="lead-form-stage20-description">
                               <DialogHeader className="lead-form-vnext-header">
                                 <div>
-                                  <span className="lead-form-vnext-kicker">LISTA SPRZEDAŻOWA</span>
+
                                   <DialogTitle>Nowy lead</DialogTitle>
-                                  <p id="lead-form-stage20-description">
-                                    Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
-                                  </p>
                                 </div>
                               </DialogHeader>
 
@@ -728,7 +729,6 @@ export default function Leads() {
                                 <section className="lead-form-section lead-form-primary-section">
                                   <div className="lead-form-section-head">
                                     <h3>Podstawowe dane</h3>
-                                    <p>Najważniejsze pola do szybkiego zapisania kontaktu.</p>
                                   </div>
 
                                   <div className="lead-form-grid">
@@ -843,13 +843,6 @@ export default function Leads() {
                                   </div>
                                 </details>
 
-                                <section className="lead-form-section lead-form-planning-note">
-                                  <Clock3 className="h-4 w-4" />
-                                  <div>
-                                    <h3>Szybkie planowanie</h3>
-                                    <p>Dodanie zadania albo wydarzenia bezpośrednio z formularza wymaga osobnego flow. Ten etap nie udaje tej funkcji.</p>
-                                  </div>
-                                </section>
 
                                 <DialogFooter className={modalFooterClass('lead-form-footer')}>
                                   <Button type="button" variant="outline" onClick={() => setIsNewLeadOpen(false)}>
@@ -926,21 +919,23 @@ export default function Leads() {
 // STAGE32_STAGE96_COMPAT_WIDTH_MARKER: xl:grid-cols-[minmax(0,1fr)_300px] is a legacy guard marker only; real rail width is delegated to Stage96 source truth CSS.
 STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
         <div
-          className="layout-list"
+          className="layout-list w-full max-w-none"
           data-stage117-leads-right-rail-layout="true"
+          data-stage177-leads-clients-layout-source="true"
           data-cf-right-rail-layout-source="shared"
           data-stage25-leads-layout-list="true"
           data-stage32-leads-value-layout="true"
           data-stage96-leads-right-rail-source-truth="true"
         >
           <div className="stack">
-            <div className="search" data-leads-search="true" data-stage117-leads-search-anchor="true">
-              <span aria-hidden="true">?</span>
-              <input
-                placeholder={showTrash ? 'Szukaj w koszu leadów...' : 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...'}
+            <div className="search cf-main-search cf-main-search-stage177" data-cf-main-search="true" data-leads-search="true" data-stage117-leads-search-anchor="true" data-cf-main-search-source="stage173">
+              <span aria-hidden="true"><Search className="w-4 h-4" /></span>
+              <Input
+                placeholder={showTrash ? CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER : CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 list="lead-search-suggestions-stage25"
+                aria-label="Szukaj w leadach"
               />
               <datalist id="lead-search-suggestions-stage25">
                 {leadSearchSuggestions.map((suggestion) => (
@@ -951,7 +946,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
 
             {searchQuery.trim() ? (
               leadSearchSuggestions.length ? (
-                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true">
+                <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
                   {leadSearchSuggestions.map((suggestion, index) => (
                     <Link key={suggestion.id} to={`/leads/${suggestion.id}`}>
                       <span>{index + 1}. {suggestion.name}</span>
@@ -961,13 +956,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
                   ))}
                 </div>
               ) : (
-                <div className="suggestions lead-search-suggestions-stage31" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true">
+                <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
                   <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
 
-            <div className="table-card lead-table-card" data-stage25-lead-table-card="true" data-stage117-leads-list="true">
+            <div className="table-card lead-table-card w-full max-w-none" data-stage25-lead-table-card="true" data-stage117-leads-list="true">
               {loading || workspaceLoading ? (
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
@@ -998,9 +993,9 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
                   const pending = archivePendingId === leadId;
 
                   return (
-                    <div key={leadId || leadIndex} className="relative group/lead-row">
+                    <div key={leadId || leadIndex} className="relative group/lead-row w-full" data-lead-card-wide-layout="true">
                       <Link to={`/leads/${leadId}`} className="block">
-                        <div className="row lead-row lead-card-value-block" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true">
+                        <div className="row lead-row lead-card-value-block cf-lead-row-inline" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true">
                         <span className="index">{leadIndex + 1}</span>
 
                         <span className="lead-main-cell">
@@ -1060,7 +1055,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
             </div>
           </div>
 
-          <div className="lead-right-rail cf-operator-right-rail" data-stage117-leads-right-rail="true" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
+          <div className="lead-right-rail cf-operator-right-rail" data-stage117-leads-right-rail="true" data-stage177-leads-rail-source="clients-aligned" data-stage25-leads-right-rail="true" data-stage32-leads-value-rail="true" data-stage96-leads-right-rail-source-truth="true" data-cf-right-rail-source="shared">
             {/* STAGE32_OPERATOR_RAIL_GUARD_COMPAT: data-stage32-valuable-relation-row="true" to={entry.href || '/leads'} formatRelationValue(entry.value) */}
             {/* STAGE117_RAIL_ORDER_SIMPLE_FILTERS_FIRST */}
             <SimpleFiltersCard
@@ -1115,11 +1110,11 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
             {/* STAGE117_RAIL_ORDER_TOP_VALUE_BELOW_FILTERS */}
             <TopValueRecordsCard
               title="Najcenniejsze leady"
-              className="lead-right-card operator-top-value-card"
+              description="5 leadów z największą wartością."
+              className="operator-top-value-card"
               dataTestId="leads-top-value-records-card"
               dataAttrs={{ 'data-relation-value-board': true }}
-              headerAside={<span className="pill dark">Lejek razem: {formatRelationValue(relationFunnelValue)}</span>}
-              items={mostValuableRelations.map((entry) => ({
+items={mostValuableRelations.map((entry) => ({
                 key: entry.key,
                 href: entry.href || '/leads',
                 label: entry.label,

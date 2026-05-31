@@ -1,0 +1,230 @@
+/* CLOSEFLOW_STAGE148_SCALED_DESKTOP_SHELL
+   Proper fix for the current app-shell bug class.
+
+   The audit showed:
+   - outerWidth around 1536
+   - innerWidth around 326
+   - hoverFine true
+   - Stage145/146/147 active
+   - shell route slot clipped/limited despite being logically extended.
+
+   This is not a card bug. It is a viewport/app-shell mismatch.
+   Stage148 creates a fixed desktop design canvas and scales the whole app
+   into the reported CSS viewport when the browser behaves like a tiny CSS
+   viewport on a laptop window.
+*/
+
+:root {
+  --cf148-sidebar-width: 240px;
+  --cf148-main-gutter-left: 12px;
+  --cf148-main-gutter-right: 18px;
+  --cf148-topbar-height: 56px;
+  --cf148-canvas-bg: #f3f6fb;
+  --cf148-design-width: 1280px;
+  --cf148-scale: 1;
+  --cf148-inverse-scale: 1;
+  --closeflow-stage148-scaled-desktop-shell: "active";
+}
+
+/* Keep normal desktop sane too: one shell grid, route roots fill their lane. */
+@media (min-width: 901px), (hover: hover) and (pointer: fine) {
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    min-width: 0 !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    background: var(--cf148-canvas-bg) !important;
+    background-color: var(--cf148-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"] {
+    box-sizing: border-box !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+    box-sizing: border-box !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+    background: var(--cf148-canvas-bg) !important;
+    background-color: var(--cf148-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"] {
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow: visible !important;
+    clip-path: none !important;
+    contain: none !important;
+    box-sizing: border-box !important;
+  }
+
+  [data-shell-content="true"] > :is(
+    .cf-route-work-root,
+    .cf-page-shell,
+    .cf-html-view,
+    main,
+    div,
+    section,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell
+  ),
+  [data-shell-content="true"] .cf-route-work-root {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+}
+
+/* Scaled desktop shell mode.
+   This is the critical fix. Do not gate it by min-width. The runtime already
+   checks wide outer window + hover/fine pointer + tiny CSS viewport. */
+html[data-cf148-scaled-desktop-shell="true"],
+html[data-cf148-scaled-desktop-shell="true"] body {
+  width: var(--cf148-viewport-width) !important;
+  max-width: var(--cf148-viewport-width) !important;
+  min-width: var(--cf148-viewport-width) !important;
+  margin: 0 !important;
+  overflow-x: hidden !important;
+  background: var(--cf148-canvas-bg) !important;
+  background-color: var(--cf148-canvas-bg) !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root {
+  width: var(--cf148-design-width) !important;
+  min-width: var(--cf148-design-width) !important;
+  max-width: var(--cf148-design-width) !important;
+  transform: scale(var(--cf148-scale)) !important;
+  transform-origin: top left !important;
+  overflow: visible !important;
+  background: var(--cf148-canvas-bg) !important;
+  background-color: var(--cf148-canvas-bg) !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root > .app.closeflow-visual-stage01.cf-html-shell {
+  display: grid !important;
+  grid-template-columns: var(--cf148-sidebar-width) minmax(0, 1fr) !important;
+  grid-template-rows: minmax(calc(100vh * var(--cf148-inverse-scale)), auto) !important;
+  align-items: stretch !important;
+  width: var(--cf148-design-width) !important;
+  min-width: var(--cf148-design-width) !important;
+  max-width: var(--cf148-design-width) !important;
+  min-height: calc(100vh * var(--cf148-inverse-scale)) !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  background: var(--cf148-canvas-bg) !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"] {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: var(--cf148-sidebar-width) !important;
+  min-width: var(--cf148-sidebar-width) !important;
+  max-width: var(--cf148-sidebar-width) !important;
+  height: calc(100vh * var(--cf148-inverse-scale)) !important;
+  min-height: calc(100vh * var(--cf148-inverse-scale)) !important;
+  position: sticky !important;
+  top: 0 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width)) !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+  background: var(--cf148-canvas-bg) !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root .global-bar[data-shell-global-bar="true"] {
+  width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width)) !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root .view.active[data-shell-content="true"],
+html[data-cf148-scaled-desktop-shell="true"] #root [data-shell-content="true"][data-cf-shell-content-stage145="true"],
+html[data-cf148-scaled-desktop-shell="true"] #root [data-shell-content="true"] {
+  width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width) - var(--cf148-main-gutter-left) - var(--cf148-main-gutter-right)) !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-left: var(--cf148-main-gutter-left) !important;
+  margin-right: var(--cf148-main-gutter-right) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  clip-path: none !important;
+  contain: none !important;
+}
+
+/* Route-specific layouts in scaled desktop mode. */
+html[data-cf148-scaled-desktop-shell="true"] #root [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 372px) !important;
+  gap: 24px !important;
+  align-items: start !important;
+  overflow: visible !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+  .grid-4,
+  .grid-5,
+  .stack,
+  .search,
+  .table-card
+) {
+  width: 100% !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root [data-shell-content="true"] .activity-vnext-shell {
+  width: 100% !important;
+  max-width: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 372px) !important;
+  gap: 24px !important;
+  overflow: visible !important;
+}
+
+html[data-cf148-scaled-desktop-shell="true"] #root [data-shell-content="true"] :is(
+  .mx-auto.max-w-3xl,
+  .mx-auto.max-w-5xl,
+  .mx-auto.max-w-6xl,
+  .mx-auto.max-w-7xl,
+  .mx-auto.flex.w-full.max-w-5xl,
+  .mx-auto.flex.w-full.max-w-6xl,
+  .mx-auto.flex.w-full.max-w-7xl,
+  .max-w-3xl,
+  .max-w-5xl,
+  .max-w-6xl,
+  .max-w-7xl
+) {
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}

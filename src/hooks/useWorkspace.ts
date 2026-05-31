@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { getAccessSummary } from '../lib/access';
 import {
   fetchMeFromSupabase,
@@ -102,6 +102,23 @@ function buildLocalProfile(activeUserId: string, fullName: string, email: string
   };
 }
 
+// CLOSEFLOW_STAGE133_LOCAL_ADMIN_PREVIEW
+// Local UI work without Supabase should expose admin-only UI so the operator can review
+// the real shell, Admin AI route and top-bar debug tools. This is not used for real
+// Supabase workspaces and does not grant backend permissions.
+function buildLocalAdminPreviewProfile(activeUserId: string, fullName: string, email: string) {
+  return {
+    ...buildLocalProfile(activeUserId, fullName || 'Damian · Local Admin Preview', email || 'dev@localhost'),
+    fullName: fullName || 'Damian · Local Admin Preview',
+    email: email || 'dev@localhost',
+    companyName: 'CloseFlow Local UI Preview',
+    role: 'admin',
+    isAdmin: true,
+    isAppOwner: true,
+    appRole: 'creator',
+  };
+}
+
 export function useWorkspace() {
   const authSnapshot = useClientAuthSnapshot();
   const [workspace, setWorkspace] = useState<any>(null);
@@ -130,7 +147,7 @@ export function useWorkspace() {
     if (!isSupabaseConfigured()) {
       const storedWorkspaceId = getStoredWorkspaceId();
       setWorkspace(buildLocalWorkspace(storedWorkspaceId, snapshotEmail));
-      setProfile(buildLocalProfile(activeUserId, snapshotFullName, snapshotEmail));
+      setProfile(import.meta.env.DEV ? buildLocalAdminPreviewProfile(activeUserId, snapshotFullName, snapshotEmail) : buildLocalProfile(activeUserId, snapshotFullName, snapshotEmail));
       setAccessOverride(null);
       setWorkspaceError(null);
       setLoading(false);
@@ -158,7 +175,7 @@ export function useWorkspace() {
         if (cancelled) return;
         persistWorkspaceId(null);
         setWorkspace(null);
-        setProfile(buildLocalProfile(activeUserId, snapshotFullName, snapshotEmail));
+        setProfile(import.meta.env.DEV ? buildLocalAdminPreviewProfile(activeUserId, snapshotFullName, snapshotEmail) : buildLocalProfile(activeUserId, snapshotFullName, snapshotEmail));
         setAccessOverride(null);
         setWorkspaceError('WORKSPACE_BOOTSTRAP_FAILED');
       } finally {
@@ -235,3 +252,4 @@ export function useWorkspace() {
     refresh,
   };
 }
+

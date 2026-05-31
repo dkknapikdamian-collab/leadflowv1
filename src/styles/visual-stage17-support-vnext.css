@@ -3,9 +3,7 @@
 .support-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
-    linear-gradient(180deg, #f4f6f8 0%, #eef2f6 100%);
+  background: var(--cf-canvas-bg, #f8fafc);
   color: #111827;
 }
 
@@ -52,6 +50,10 @@
 .support-shell {
   max-width: 1480px;
   margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  align-items: start;
 }
 
 .support-hero-grid {
@@ -695,4 +697,214 @@
   .support-section-head {
     flex-direction: column;
   }
+}
+
+/* SUPPORT_REQUESTS_OPERATIONAL_PAGE_STAGE180 */
+.support-hero-card-button {
+  appearance: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.support-hero-card-button:hover,
+.support-kind-card:hover,
+.support-filter-row button:hover {
+  border-color: #bfdbfe !important;
+  background: #eff6ff !important;
+}
+
+.support-right-list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.support-right-list button svg {
+  color: #2563eb;
+  flex: 0 0 auto;
+}
+
+.support-faq-grid-single {
+  grid-template-columns: 1fr;
+}
+
+.support-ticket-detail-head p {
+  margin: 5px 0 0;
+}
+
+@media (max-width: 1240px) {
+  .support-right-card .support-faq-grid-single {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* STAGE180H_SUPPORT_RIGHT_RAIL_REMOVED */
+.support-shell {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.support-main-column {
+  width: 100% !important;
+  max-width: none !important;
+}
+/* END_STAGE180H_SUPPORT_RIGHT_RAIL_REMOVED */
+
+
+/* STAGE180I_SUPPORT_SINGLE_COLUMN_AFTER_RIGHT_RAIL_REMOVAL */
+.support-shell {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+.support-main-column {
+  width: 100% !important;
+}
+
+
+/* STAGE180J_SUPPORT_SINGLE_COLUMN */
+.support-shell {
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+.support-right-rail,
+.support-right-card {
+  display: none !important;
+}
+
+.support-main-column {
+  width: 100% !important;
+}
+
+
+/* STAGE180L_SUPPORT_ADMIN_RAIL_ANCHORLESS */
+.support-shell-admin {
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+
+.support-admin-rail {
+  display: grid;
+  gap: 18px;
+  align-self: start;
+  min-width: 0;
+}
+
+.support-admin-card {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #e4e7ec;
+  border-radius: 28px;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  color: #111827;
+  padding: 18px;
+  display: grid;
+  gap: 14px;
+}
+
+.support-admin-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #2563eb;
+}
+
+.support-admin-title h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+}
+
+.support-admin-stats {
+  display: grid;
+  gap: 8px;
+}
+
+.support-admin-stats button,
+.support-admin-filter-list button {
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+  color: #475467;
+  min-height: 40px;
+  padding: 9px 11px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.support-admin-stats button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.support-admin-stats button strong {
+  min-width: 26px;
+  min-height: 26px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+}
+
+.support-admin-filter-list {
+  display: grid;
+  gap: 8px;
+}
+
+.support-admin-stats button:hover,
+.support-admin-filter-list button:hover {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+.support-admin-latest {
+  border: 1px solid #e4e7ec;
+  border-radius: 18px;
+  background: #f9fafb;
+  padding: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.support-admin-latest strong {
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.support-admin-latest span,
+.support-admin-latest small,
+.support-admin-empty {
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.support-admin-empty {
+  margin: 0;
+}
+
+@media (max-width: 1240px) {
+  .support-shell-admin {
+    grid-template-columns: 1fr;
+  }
+
+  .support-admin-rail {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .support-admin-rail {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* STAGE211A_SECONDARY_PAGES_WHITE_CANVAS: Support uses a clean white canvas instead of the old blue/gray gradient surface. */
+.support-vnext-page {
+  background: #ffffff !important;
+  background-image: none !important;
 }

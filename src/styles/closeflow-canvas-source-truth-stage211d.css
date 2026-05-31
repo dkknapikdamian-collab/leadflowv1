@@ -1,0 +1,125 @@
+/* STAGE211D_UNIFIED_CANVAS_SOURCE_TRUTH
+   owner: CloseFlow Visual System
+   purpose: one background/canvas source of truth for every operator route.
+   pattern: Today route canvas, not older blue/grey gradient pages.
+   scope: canvas and route background only; cards, rails, forms and lists keep their own surfaces.
+*/
+
+:root,
+[data-skin="forteca-light"] {
+  --cf-canvas-bg: var(--app-bg, #f8fafc);
+  --cf-canvas-bg-rgb: 248 250 252;
+  --cf-canvas-surface: var(--app-surface-strong, #ffffff);
+}
+
+body,
+#root,
+.app.closeflow-visual-stage01,
+.app.cf-html-shell,
+.cf-html-shell,
+main.main,
+.main,
+.view.active,
+[data-shell-main="true"],
+[data-shell-content="true"] {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Route-level canvases. These are the broad page wrappers visible between and behind cards. */
+.cf-route-work-root,
+.cf-html-view,
+[class*="-vnext-page"],
+.main-today,
+.main-leads,
+.main-clients,
+.main-cases,
+.main-calendar,
+.main-tasks,
+.main-templates,
+.main-response-templates,
+.main-activity,
+.main-billing,
+.main-settings,
+.main-notifications,
+.main-ai-drafts,
+.main-support,
+.main-help,
+.main-admin-ai {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Known route wrappers and generated HTML adapters. Keep the canvas identical across tabs. */
+.activity-vnext-page,
+.ai-drafts-vnext-page,
+.notifications-vnext-page,
+.billing-vnext-page,
+.support-vnext-page,
+.settings-vnext-page,
+.main-calendar-html,
+.main-leads-html,
+.main-clients-html,
+.main-cases-html,
+.main-templates-html,
+.main-response-templates-html,
+.main-ai-drafts-html,
+.main-activity-html,
+.main-billing-html,
+.main-calendar-html,
+.main-settings-html {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Inner layout gaps must not reveal a second tint. */
+.activity-vnext-shell,
+.ai-drafts-vnext-shell,
+.notifications-vnext-shell,
+.billing-vnext-shell,
+.support-vnext-shell,
+.settings-vnext-shell,
+.calendar-week-layout,
+.calendar-grid-shell,
+.calendar-layout,
+.calendar-main-column,
+.calendar-right-rail,
+[data-closeflow-page-shell],
+[data-page-shell],
+[data-page-canvas] {
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Emergency guard against old decorative pseudo-backgrounds on route canvases. */
+.cf-route-work-root::before,
+.cf-route-work-root::after,
+.cf-html-view::before,
+.cf-html-view::after,
+[class*="-vnext-page"]::before,
+[class*="-vnext-page"]::after,
+[data-shell-content="true"]::before,
+[data-shell-content="true"]::after {
+  background-image: none !important;
+}
+
+/* Keep actual cards white/near-white. This is not the canvas; it is the object layer. */
+.right-card,
+.activity-list-card,
+.activity-toolbar-card,
+.ai-drafts-list-card,
+.ai-drafts-toolbar-card,
+.notifications-list-card,
+.notifications-toolbar-card,
+.billing-card,
+.billing-status-card,
+.support-panel,
+.support-card,
+.settings-panel,
+.settings-card {
+  background-color: var(--cf-canvas-surface) !important;
+}

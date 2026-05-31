@@ -1,0 +1,208 @@
+/* CLOSEFLOW_STAGE144_SHELL_CONTENT_WIDTH_SOURCE_TRUTH
+   Finalny kierunek: jedna szerokość na rodzicu wszystkich zakładek:
+   .view.active[data-shell-content="true"]
+
+   Dlaczego:
+   - diagnostyka pokazała, że frame child ma parentDataShellContent=true, ale width=262
+   - więc źródło prawdy musi być na rodzicu data-shell-content, a frame ma tylko wypełniać rodzica
+   - dotyczy KAŻDEJ zakładki, bo każda przechodzi przez Layout.tsx i data-shell-content
+*/
+
+:root {
+  --cf144-sidebar-width: 240px;
+  --cf144-left-gutter: 8px;
+  --cf144-right-gutter: 16px;
+  --cf144-work-width: 1480px;
+  --cf144-work-width-wide: 1520px;
+  --cf144-right-rail-width: 360px;
+  --cf144-right-rail-width-wide: 368px;
+  --cf144-shell-gap: 24px;
+  --cf144-canvas-bg: #f3f6fb;
+  --closeflow-stage144-shell-content-width-source-truth: "active";
+}
+
+@media (min-width: 1280px) {
+  html,
+  body,
+  #root,
+  [data-shell-main="true"],
+  [data-shell-content="true"] {
+    background: var(--cf144-canvas-bg) !important;
+    background-color: var(--cf144-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  [data-shell-main="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  /* ONE SOURCE OF TRUTH: parent route slot, not child frame. */
+  .view.active[data-shell-content="true"],
+  [data-shell-content="true"] {
+    display: block !important;
+    width: min(
+      calc(100vw - var(--cf144-sidebar-width) - var(--cf144-left-gutter) - var(--cf144-right-gutter)),
+      var(--cf144-work-width)
+    ) !important;
+    max-width: var(--cf144-work-width) !important;
+    min-width: 0 !important;
+    margin-left: var(--cf144-left-gutter) !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  @media (min-width: 1880px) {
+    .view.active[data-shell-content="true"],
+    [data-shell-content="true"] {
+      width: min(
+        calc(100vw - var(--cf144-sidebar-width) - var(--cf144-left-gutter) - var(--cf144-right-gutter)),
+        var(--cf144-work-width-wide)
+      ) !important;
+      max-width: var(--cf144-work-width-wide) !important;
+    }
+  }
+
+  /* Frame is no longer the width owner. It fills the parent. */
+  [data-shell-content="true"] > [data-cf-work-width-frame="true"],
+  [data-shell-content="true"] > [data-stage142-main-work-frame="true"],
+  [data-shell-content="true"] > [data-stage143-work-width-frame="true"] {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+
+  /* Any direct route root fills shell content. */
+  [data-shell-content="true"] > :is(
+    main,
+    div,
+    section,
+    .cf-html-view,
+    .cf-work-width-frame,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell
+  ),
+  [data-shell-content="true"] > [data-cf-work-width-frame="true"] > :is(
+    main,
+    div,
+    section,
+    .cf-html-view,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Kill nested Tailwind islands inside shell. */
+  [data-shell-content="true"] :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl,
+    .max-w-5xl,
+    .max-w-6xl,
+    .max-w-7xl
+  ) {
+    max-width: none !important;
+  }
+
+  [data-shell-content="true"] :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Leads / Clients / Cases. */
+  [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf144-right-rail-width)) !important;
+    gap: var(--cf144-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf144-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* Activity. */
+  [data-shell-content="true"] .activity-vnext-shell {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf144-right-rail-width)) !important;
+    gap: var(--cf144-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  [data-shell-content="true"] .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  [data-shell-content="true"] .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf144-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+}

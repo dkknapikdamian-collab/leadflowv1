@@ -107,6 +107,7 @@ import { pl } from 'date-fns/locale';
 import { isActiveSalesLead } from '../lib/lead-health';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import '../styles/visual-stage21-task-form-vnext.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
 
 
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';

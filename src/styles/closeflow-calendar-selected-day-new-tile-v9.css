@@ -1533,7 +1533,7 @@
 
 #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-time::before,
 #root [data-cf-calendar-selected-day-entry-v9="true"] .cf-selected-day-v9-status::before {
-  content: "Â·" !important;
+  content: "·" !important;
   margin-right: 4px !important;
   color: #94a3b8 !important;
 }
@@ -1591,3 +1591,69 @@
    V9 selected-day entry slots must not be chained into legacy hidden selected-day panels.
 */
 
+
+
+/* CLOSEFLOW_STAGE181J_V2_CALENDAR_DONE_STATE_VISUAL_SOURCE_TRUTH
+   LOCAL ONLY
+   Rule:
+   - "Zrobione" button is neutral before completion.
+   - It becomes green only after completion.
+   - Completed entries are crossed out in week, month and selected-day list.
+*/
+#root .main-calendar-html .cf-calendar-week-plan-action-done,
+#root .main-calendar-html .cf-selected-day-v9-action-done {
+  border-color: #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  box-shadow: none !important;
+}
+
+#root .main-calendar-html .cf-calendar-week-plan-action-done svg,
+#root .main-calendar-html .cf-selected-day-v9-action-done svg {
+  color: #64748b !important;
+  stroke: #64748b !important;
+}
+
+#root .main-calendar-html [data-calendar-entry-completed="true"] .cf-calendar-week-plan-action-done,
+#root .main-calendar-html [data-calendar-entry-completed="true"] .cf-selected-day-v9-action-done,
+#root .main-calendar-html .calendar-entry-completed .cf-calendar-week-plan-action-done,
+#root .main-calendar-html .calendar-entry-completed .cf-selected-day-v9-action-done {
+  border-color: rgba(22, 163, 74, 0.28) !important;
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+}
+
+#root .main-calendar-html [data-calendar-entry-completed="true"] .cf-calendar-week-plan-action-done svg,
+#root .main-calendar-html [data-calendar-entry-completed="true"] .cf-selected-day-v9-action-done svg,
+#root .main-calendar-html .calendar-entry-completed .cf-calendar-week-plan-action-done svg,
+#root .main-calendar-html .calendar-entry-completed .cf-selected-day-v9-action-done svg {
+  color: #047857 !important;
+  stroke: #047857 !important;
+}
+
+#root .main-calendar-html [data-calendar-entry-completed="true"] [data-cf-entry-title="true"],
+#root .main-calendar-html .calendar-entry-completed [data-cf-entry-title="true"],
+#root .main-calendar-html [data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title,
+#root .main-calendar-html .calendar-entry-completed .cf-selected-day-v9-entry-title {
+  text-decoration: line-through !important;
+  color: #64748b !important;
+  opacity: 0.72 !important;
+}
+
+#root .main-calendar-html .calendar-day-pill.calendar-entry-completed,
+#root .main-calendar-html .calendar-day-pill.calendar-month-entry-completed,
+#root .main-calendar-html .calendar-day-pill.is-done {
+  border-color: rgba(148, 163, 184, 0.35) !important;
+  background: #f1f5f9 !important;
+  color: #64748b !important;
+  opacity: 0.78 !important;
+}
+
+#root .main-calendar-html .calendar-day-pill.calendar-entry-completed span:last-child,
+#root .main-calendar-html .calendar-day-pill.calendar-month-entry-completed span:last-child,
+#root .main-calendar-html .calendar-day-pill .is-done-text,
+#root .main-calendar-html .cf-calendar-month-text-row[data-cf-month-text-completed="true"] .cf-calendar-month-text-title,
+#root .main-calendar-html .cf-month-entry-chip-structural[data-cf-month-entry-completed="true"] .cf-month-entry-chip-structural__title {
+  text-decoration: line-through !important;
+  color: #64748b !important;
+}

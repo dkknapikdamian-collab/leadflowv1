@@ -1,0 +1,165 @@
+/* CLOSEFLOW_STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES
+
+   Purpose:
+   Extend the same main search source truth from Stage173/174 to:
+   - Zadania / TasksStable
+   - Szablony / Templates
+   - Odpowiedzi / ResponseTemplates
+   - Aktywność / Activity
+   - Inbox szkiców / AiDrafts
+   - Powiadomienia / NotificationsCenter
+   - Pomoc / SupportCenter
+
+   Contract:
+   - every main search wrapper gets .cf-main-search and data-cf-main-search-source="stage173"
+   - Stage175 adds data-cf-main-search-stage175="true" for guard/runtime audit
+   - wrapper is layout only, input is the only visual surface
+   - decorative Search icons are hidden
+   - text/placeholder are normalized to Stage174 values
+*/
+
+:root {
+  --closeflow-stage175-extend-main-search-source-truth-secondary-pages: "active";
+  --cf175-main-search-height: var(--cf174-main-search-height, 42px);
+  --cf175-main-search-radius: var(--cf174-main-search-radius, 14px);
+  --cf175-main-search-font-size: var(--cf174-main-search-font-size, 13px);
+  --cf175-main-search-font-weight: var(--cf174-main-search-font-weight, 600);
+  --cf175-main-search-padding-x: var(--cf174-main-search-padding-x, 16px);
+  --cf175-main-search-bg: var(--cf174-main-search-bg, rgba(255, 255, 255, 0.96));
+  --cf175-main-search-border: var(--cf174-main-search-border, rgba(148, 163, 184, 0.22));
+  --cf175-main-search-fg: var(--cf174-main-search-fg, #0f172a);
+  --cf175-main-search-placeholder: var(--cf174-main-search-placeholder, #64748b);
+  --cf175-main-search-shadow: var(--cf174-main-search-shadow, 0 10px 24px rgba(15, 23, 42, 0.045));
+}
+
+/* All secondary-page main search wrappers become a pure layout shell. */
+#root .cf-main-search[data-cf-main-search-stage175="true"],
+#root .activity-search-box.cf-main-search,
+#root .ai-drafts-search-box.cf-main-search,
+#root .notifications-search-box.cf-main-search,
+#root .support-search-field.cf-main-search {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  height: var(--cf175-main-search-height) !important;
+  min-height: var(--cf175-main-search-height) !important;
+  max-height: var(--cf175-main-search-height) !important;
+  display: flex !important;
+  align-items: stretch !important;
+  justify-content: stretch !important;
+  box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  gap: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+  border-radius: var(--cf175-main-search-radius) !important;
+  overflow: visible !important;
+}
+
+/* Search icons are decorative and must not collide with text. */
+#root .cf-main-search[data-cf-main-search-stage175="true"] > svg,
+#root .cf-main-search[data-cf-main-search-stage175="true"] > span[aria-hidden="true"],
+#root .activity-search-box.cf-main-search > svg,
+#root .ai-drafts-search-box.cf-main-search > svg,
+#root .notifications-search-box.cf-main-search > svg,
+#root .support-search-field.cf-main-search > svg {
+  display: none !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Native inputs and shadcn inputs share the same surface. */
+#root .cf-main-search[data-cf-main-search-stage175="true"] :is(input, [role="combobox"]),
+#root .activity-search-box.cf-main-search input,
+#root .ai-drafts-search-box.cf-main-search input,
+#root .notifications-search-box.cf-main-search input,
+#root .support-search-field.cf-main-search :is(input, [role="combobox"]) {
+  flex: 1 1 auto !important;
+  display: block !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: var(--cf175-main-search-height) !important;
+  min-height: var(--cf175-main-search-height) !important;
+  max-height: var(--cf175-main-search-height) !important;
+  box-sizing: border-box !important;
+  padding: 0 var(--cf175-main-search-padding-x) !important;
+  margin: 0 !important;
+  border-radius: var(--cf175-main-search-radius) !important;
+  border: 1px solid var(--cf175-main-search-border) !important;
+  background: var(--cf175-main-search-bg) !important;
+  background-color: var(--cf175-main-search-bg) !important;
+  color: var(--cf175-main-search-fg) !important;
+  -webkit-text-fill-color: var(--cf175-main-search-fg) !important;
+  font-size: var(--cf175-main-search-font-size) !important;
+  font-weight: var(--cf175-main-search-font-weight) !important;
+  letter-spacing: 0 !important;
+  line-height: 1.2 !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  box-shadow: var(--cf175-main-search-shadow) !important;
+  outline: none !important;
+}
+
+/* Normalize placeholders. */
+#root .cf-main-search[data-cf-main-search-stage175="true"] :is(input, [role="combobox"])::placeholder,
+#root .activity-search-box.cf-main-search input::placeholder,
+#root .ai-drafts-search-box.cf-main-search input::placeholder,
+#root .notifications-search-box.cf-main-search input::placeholder,
+#root .support-search-field.cf-main-search input::placeholder {
+  color: var(--cf175-main-search-placeholder) !important;
+  -webkit-text-fill-color: var(--cf175-main-search-placeholder) !important;
+  font-size: var(--cf175-main-search-font-size) !important;
+  font-weight: var(--cf175-main-search-font-weight) !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+}
+
+/*
+  Toolbar cards in secondary pages sometimes pin search to a small max width.
+  Stage175 makes search fill the available working column, but leaves adjacent counters/selects usable.
+*/
+#root .activity-toolbar-card .cf-main-search,
+#root .ai-drafts-toolbar-card .cf-main-search,
+#root .notifications-toolbar-card .cf-main-search,
+#root .support-ticket-tools .cf-main-search,
+#root .cf-readable-card .cf-main-search,
+#root [data-p0-tasks-stable-rebuild="true"] .cf-main-search {
+  width: 100% !important;
+  max-width: 100% !important;
+  flex: 1 1 auto !important;
+}
+
+/* Tasks search lived in a small sm:max-w-md utility. Override it only after Stage175 marker. */
+#root [data-p0-tasks-stable-rebuild="true"] .cf-main-search[data-cf-main-search-stage175="true"] {
+  max-width: 100% !important;
+}
+
+/* Keep status/select side controls from crushing the search. */
+#root .support-ticket-tools {
+  align-items: stretch !important;
+}
+
+#root .support-ticket-tools .support-select {
+  min-height: var(--cf175-main-search-height) !important;
+}
+
+/* On narrow screens every search is full width and stacked naturally. */
+@media (max-width: 900px) {
+  :root {
+    --cf175-main-search-height: 40px;
+    --cf175-main-search-radius: 12px;
+    --cf175-main-search-font-size: 12px;
+    --cf175-main-search-padding-x: 14px;
+  }
+
+  #root .support-ticket-tools {
+    flex-direction: column !important;
+  }
+}

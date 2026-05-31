@@ -1,4 +1,4 @@
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_CORE_CONTRACTS
+﻿/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_CORE_CONTRACTS
    owner: CloseFlow Visual System
    reason: keep stable shell, token and component-contract CSS before page adapters.
    scope: core shell/theme primitives, form actions, action/entity tokens and shared metric contracts.

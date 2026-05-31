@@ -1,0 +1,371 @@
+/* CLOSEFLOW_STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX
+   Problem after Stage158:
+   - Stage157 page zoom works for main app.
+   - Stage158 used zoom on portaled dialog content.
+   - That makes some subwindows drift horizontally and can clip/cover form text.
+   - Event dialog footer/action bar can sit over content instead of behaving as a real bottom action row.
+   - Lead/task dialogs should fit without unnecessary scrolling where possible.
+
+   Stage159 decision:
+   - keep Stage157 as app scale source truth;
+   - do NOT zoom dialog content;
+   - use real overlay density tokens: width, max-height, padding, gaps, control height, font sizes;
+   - force dialog content to be viewport-centered;
+   - force dialog body to be scroll-safe;
+   - force action rows/footers to live at the bottom and not cover text.
+
+   This stage intentionally overrides Stage158 dialog zoom.
+*/
+
+:root {
+  --closeflow-stage159-overlay-real-density-and-footer-fix: "active";
+
+  /* Overlay density follows the same visual direction as Stage157, but without CSS zoom. */
+  --cf159-dialog-width: min(860px, calc(100vw - 48px));
+  --cf159-dialog-max-height: calc(100vh - 44px);
+
+  --cf159-dialog-radius: 18px;
+  --cf159-dialog-pad-x: 24px;
+  --cf159-dialog-pad-y: 18px;
+  --cf159-dialog-gap: 12px;
+
+  --cf159-form-gap: 10px;
+  --cf159-field-gap: 6px;
+  --cf159-control-height: 34px;
+  --cf159-control-pad-x: 12px;
+
+  --cf159-font-title: 20px;
+  --cf159-font-body: 13px;
+  --cf159-font-label: 12px;
+  --cf159-font-small: 11px;
+
+  --cf159-footer-height: 58px;
+  --cf159-footer-pad-y: 10px;
+}
+
+/* Desktop/operator overlays. */
+@media (hover: hover) and (pointer: fine) {
+  /* Backdrops stay full-screen. Never scale them. */
+  body :is(
+    [data-radix-dialog-overlay],
+    [data-radix-alert-dialog-overlay],
+    .dialog-overlay,
+    .modal-overlay,
+    .overlay,
+    .backdrop
+  ) {
+    zoom: 1 !important;
+    transform: none !important;
+  }
+
+  /* Dialog/modals: no zoom. Real size reduction only. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal,
+    .modal-content
+  ) {
+    zoom: 1 !important;
+
+    position: fixed !important;
+    inset: auto !important;
+    left: 50% !important;
+    top: 50% !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center center !important;
+
+    width: var(--cf159-dialog-width) !important;
+    max-width: var(--cf159-dialog-width) !important;
+    max-height: var(--cf159-dialog-max-height) !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+
+    border-radius: var(--cf159-dialog-radius) !important;
+    font-size: var(--cf159-font-body) !important;
+    line-height: 1.22 !important;
+  }
+
+  /* Dialog header: compact and non-scrollable. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    header,
+    .dialog-header,
+    .modal-header,
+    [data-radix-dialog-title],
+    [data-radix-alert-dialog-title]
+  ) {
+    flex: 0 0 auto !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    h1,
+    h2,
+    h3,
+    .dialog-title,
+    .modal-title,
+    [data-radix-dialog-title],
+    [data-radix-alert-dialog-title]
+  ) {
+    font-size: var(--cf159-font-title) !important;
+    line-height: 1.08 !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    p,
+    small,
+    .description,
+    .caption,
+    [data-radix-dialog-description],
+    [data-radix-alert-dialog-description]
+  ) {
+    font-size: var(--cf159-font-small) !important;
+    line-height: 1.18 !important;
+  }
+
+  /* Scroll-safe main body. This is what prevents footer/action bars from covering text. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    form,
+    .dialog-body,
+    .modal-body,
+    .form-body,
+    .scroll-body,
+    .content,
+    .body
+  ) {
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--cf159-form-gap) !important;
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable !important;
+    padding-bottom: 0 !important;
+  }
+
+  /* If the dialog's direct inner wrapper is the scroll body, make it behave too. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) > :is(div, section, form):not(:has([data-radix-dialog-title])) {
+    min-height: 0 !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Form cards/sections compacted. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    section,
+    article,
+    fieldset,
+    .card,
+    .panel-card,
+    .section-card,
+    .form-card
+  ) {
+    padding: var(--cf159-dialog-pad-y) var(--cf159-dialog-pad-x) !important;
+    gap: var(--cf159-form-gap) !important;
+    border-radius: calc(var(--cf159-dialog-radius) - 4px) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Labels/fields compacted enough to reduce lead/task scrolling. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(label, .label) {
+    font-size: var(--cf159-font-label) !important;
+    line-height: 1.12 !important;
+    margin-bottom: var(--cf159-field-gap) !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(input, select, button, .btn, [role="button"]) {
+    min-height: var(--cf159-control-height) !important;
+    height: auto !important;
+    padding-left: var(--cf159-control-pad-x) !important;
+    padding-right: var(--cf159-control-pad-x) !important;
+    border-radius: 12px !important;
+    font-size: var(--cf159-font-body) !important;
+    line-height: 1.12 !important;
+  }
+
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) textarea {
+    min-height: 74px !important;
+    max-height: 120px !important;
+    padding: 10px 12px !important;
+    border-radius: 12px !important;
+    font-size: var(--cf159-font-body) !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Footer/action bars. Move them to the bottom of a flex form and prevent covering text. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    footer,
+    .dialog-footer,
+    .modal-footer,
+    .DialogFooter,
+    [data-dialog-footer],
+    [data-radix-dialog-footer],
+    [class*="DialogFooter"]
+  ) {
+    order: 999 !important;
+    flex: 0 0 auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    min-height: var(--cf159-footer-height) !important;
+    padding: var(--cf159-footer-pad-y) 0 0 !important;
+    margin-top: auto !important;
+    background: inherit !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Generic action row detection for custom footer divs with submit button. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) form > :is(div, section, footer):has(button[type="submit"]) {
+    order: 999 !important;
+    flex: 0 0 auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 20 !important;
+    min-height: var(--cf159-footer-height) !important;
+    padding: var(--cf159-footer-pad-y) 0 0 !important;
+    margin-top: auto !important;
+    background: inherit !important;
+    border-top: 1px solid rgba(148, 163, 184, 0.22) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Close button should stay in the corner, not inherit form footer logic. */
+  body :is(
+    [role="dialog"],
+    [data-radix-dialog-content],
+    [data-radix-alert-dialog-content],
+    .DialogContent,
+    .dialog-content,
+    .modal-content
+  ) :is(
+    button[aria-label="Close"],
+    button[aria-label="Zamknij"],
+    .dialog-close,
+    [data-radix-dialog-close]
+  ) {
+    position: absolute !important;
+    top: 12px !important;
+    right: 12px !important;
+    min-width: 30px !important;
+    width: 30px !important;
+    height: 30px !important;
+    min-height: 30px !important;
+    padding: 0 !important;
+    border-radius: 999px !important;
+  }
+
+  /* Popovers/dropdowns: keep them smaller, but do not force dialog centering. */
+  body :is(
+    [data-radix-popper-content-wrapper],
+    [data-radix-popover-content],
+    [data-radix-dropdown-menu-content],
+    [data-radix-select-content],
+    [data-radix-hover-card-content],
+    [data-radix-tooltip-content],
+    [data-radix-menubar-content],
+    [data-radix-context-menu-content],
+    .popover-content,
+    .dropdown-content,
+    .menu-content,
+    .select-content,
+    .tooltip-content
+  ) {
+    zoom: 1 !important;
+    font-size: var(--cf159-font-body) !important;
+    line-height: 1.18 !important;
+  }
+}
+
+/* If a single dialog remains too large:
+   reduce only these:
+   --cf159-dialog-width
+   --cf159-dialog-pad-x
+   --cf159-dialog-pad-y
+   --cf159-control-height
+*/

@@ -1,0 +1,385 @@
+/* CLOSEFLOW_STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM
+   Scope:
+   - implement the correct direction after rejected Stage153/154/155 attempts;
+   - no zoom, no transform scale, no inverse-width wrapper;
+   - reduce the real UI density through CSS variables and broad component selectors;
+   - keep Stage149 as the only width/app-shell source truth;
+   - every visual correction has its own guard.
+
+   Source truth split:
+   - Stage149 = width/app-shell source truth
+   - Stage150 = typography source truth
+   - Stage151/152 = previous compact-card attempts
+   - Stage156 = real density tokens, no zoom/scale
+
+   Rejected:
+   - Stage153: global app zoom, broke width
+   - Stage154: route-level zoom, still unstable
+   - Stage155: inner wrapper scale, wrong alignment behavior
+
+   Expected visual behavior:
+   - cards remain anchored to left/right panel boundaries;
+   - the app width remains as after Stage149;
+   - cards, gaps, controls, chips, icons and route paddings become visibly smaller.
+*/
+
+:root {
+  --closeflow-stage156-real-density-tokens-no-zoom: "active";
+  --cf156-density-source-truth: "real-css-density-tokens-no-zoom";
+
+  /* App route spacing */
+  --cf156-route-pad-y: 18px;
+  --cf156-route-pad-x: 20px;
+  --cf156-section-gap: 12px;
+  --cf156-grid-gap: 12px;
+  --cf156-card-gap: 10px;
+
+  /* Cards/panels */
+  --cf156-card-radius-xl: 18px;
+  --cf156-card-radius-lg: 16px;
+  --cf156-card-radius-md: 14px;
+
+  --cf156-card-pad-y: 9px;
+  --cf156-card-pad-x: 14px;
+  --cf156-card-pad-y-tight: 7px;
+  --cf156-card-pad-x-tight: 12px;
+
+  --cf156-kpi-height: 52px;
+  --cf156-panel-height: 48px;
+  --cf156-row-height: 58px;
+  --cf156-rail-row-height: 42px;
+
+  /* Controls */
+  --cf156-control-height: 32px;
+  --cf156-control-height-sm: 28px;
+  --cf156-control-pad-x: 12px;
+  --cf156-control-radius: 12px;
+
+  /* Icons/badges */
+  --cf156-icon-box: 30px;
+  --cf156-icon-box-sm: 26px;
+  --cf156-chip-height: 20px;
+  --cf156-chip-pad-x: 8px;
+
+  /* Typography nudge beyond Stage150 */
+  --cf156-font-body: 12px;
+  --cf156-font-meta: 10.5px;
+  --cf156-font-title: 12.5px;
+  --cf156-font-kpi: 20px;
+  --cf156-font-button: 11.5px;
+}
+
+/* Desktop/operator panel only. Stage149 remains width owner. */
+@media (hover: hover) and (pointer: fine) {
+  /* Hard guard against the rejected paths. */
+  html,
+  body,
+  #root,
+  #root > .app.closeflow-visual-stage01.cf-html-shell,
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+  #root .global-bar,
+  #root .view.active[data-shell-content="true"] {
+    zoom: 1 !important;
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  /* Route slot stays full width. We only reduce inner density. */
+  #root .view.active[data-shell-content="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    padding: var(--cf156-route-pad-y) var(--cf156-route-pad-x) !important;
+    overflow: visible !important;
+    box-sizing: border-box !important;
+    font-size: var(--cf156-font-body) !important;
+    line-height: 1.22 !important;
+  }
+
+  /* Route root rhythm: all primary tabs share the same density contract. */
+  #root .view.active[data-shell-content="true"] :is(
+    .cf-route-work-root,
+    .cf-page-shell,
+    .cf-html-view,
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-shell,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"]
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+    gap: var(--cf156-section-gap) !important;
+    font-size: var(--cf156-font-body) !important;
+    line-height: 1.22 !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .activity-vnext-shell,
+    .space-y-6,
+    .space-y-5,
+    .gap-6,
+    .gap-5
+  ) {
+    gap: var(--cf156-grid-gap) !important;
+  }
+
+  /* Top KPI / stat / summary tiles. */
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi,
+    .stat,
+    .metric,
+    .summary-card,
+    .cf-summary-card,
+    .dashboard-stat,
+    .today-stat,
+    .lead-stat,
+    .client-stat,
+    .case-stat
+  ) {
+    min-height: var(--cf156-kpi-height) !important;
+    padding: var(--cf156-card-pad-y) var(--cf156-card-pad-x) !important;
+    border-radius: var(--cf156-card-radius-xl) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Generic app cards/panels. */
+  #root .view.active[data-shell-content="true"] :is(
+    .panel-card,
+    .section-card,
+    .list-card,
+    .table-card,
+    .lead-card,
+    .client-card,
+    .case-card,
+    .task-card,
+    .calendar-card,
+    .template-card,
+    .activity-card,
+    .draft-card,
+    .filter-card,
+    .card,
+    article
+  ) {
+    min-height: var(--cf156-panel-height) !important;
+    padding: var(--cf156-card-pad-y) var(--cf156-card-pad-x) !important;
+    border-radius: var(--cf156-card-radius-lg) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* HTML-list rows used by Leads / Clients / Cases. */
+  #root .view.active[data-shell-content="true"] .cf-html-view:is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html
+  ) :is(
+    .table-card,
+    .lead-row,
+    .client-row,
+    .case-row,
+    .row,
+    .item-row
+  ) {
+    min-height: var(--cf156-row-height) !important;
+    padding-top: var(--cf156-card-pad-y) !important;
+    padding-bottom: var(--cf156-card-pad-y) !important;
+    border-radius: var(--cf156-card-radius-lg) !important;
+  }
+
+  /* Right rail panels. */
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail,
+    .activity-right-rail
+  ) :is(
+    .filter-card,
+    .summary-card,
+    .list-card,
+    .table-card,
+    .panel-card,
+    .section-card,
+    article,
+    section,
+    [role="button"]
+  ) {
+    min-height: var(--cf156-rail-row-height) !important;
+    padding: var(--cf156-card-pad-y-tight) var(--cf156-card-pad-x-tight) !important;
+    border-radius: var(--cf156-card-radius-md) !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Today/Tasks Tailwind-heavy screens: density without scaling. */
+  #root .view.active[data-shell-content="true"] :is(
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(
+    article,
+    section,
+    [role="button"],
+    [class*="rounded-2xl"],
+    [class*="rounded-3xl"]
+  ) {
+    min-height: var(--cf156-panel-height) !important;
+    padding-top: var(--cf156-card-pad-y) !important;
+    padding-bottom: var(--cf156-card-pad-y) !important;
+    border-radius: var(--cf156-card-radius-lg) !important;
+  }
+
+  /* Tailwind padding/gap patterns scoped to the app content only. */
+  #root .view.active[data-shell-content="true"] :is(
+    .p-6,
+    .sm\:p-6,
+    .lg\:p-6
+  ) {
+    padding: var(--cf156-card-pad-y) var(--cf156-card-pad-x) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .p-5,
+    .sm\:p-5,
+    .lg\:p-5
+  ) {
+    padding: var(--cf156-card-pad-y) var(--cf156-card-pad-x) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .px-6,
+    .sm\:px-6,
+    .lg\:px-6
+  ) {
+    padding-left: var(--cf156-card-pad-x) !important;
+    padding-right: var(--cf156-card-pad-x) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .py-6,
+    .sm\:py-6,
+    .lg\:py-6
+  ) {
+    padding-top: var(--cf156-card-pad-y) !important;
+    padding-bottom: var(--cf156-card-pad-y) !important;
+  }
+
+  /* Controls inside cards and route toolbar/search. */
+  #root .view.active[data-shell-content="true"] :is(
+    input,
+    select,
+    button,
+    .btn,
+    [role="button"]
+  ) {
+    min-height: var(--cf156-control-height-sm) !important;
+    padding-left: var(--cf156-control-pad-x) !important;
+    padding-right: var(--cf156-control-pad-x) !important;
+    border-radius: var(--cf156-control-radius) !important;
+    font-size: var(--cf156-font-button) !important;
+    line-height: 1.12 !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .search,
+    .search input,
+    input[type="search"]
+  ) {
+    min-height: var(--cf156-control-height) !important;
+  }
+
+  /* Text hierarchy inside panel. */
+  #root .view.active[data-shell-content="true"] :is(
+    h1,
+    h2,
+    h3,
+    .card-title,
+    .section-title,
+    .panel-title,
+    .lead-title,
+    .client-title,
+    .case-title,
+    strong
+  ) {
+    font-size: var(--cf156-font-title) !important;
+    line-height: 1.16 !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    small,
+    .meta,
+    .subtitle,
+    .caption,
+    .eyebrow,
+    .label
+  ) {
+    font-size: var(--cf156-font-meta) !important;
+    line-height: 1.12 !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi strong,
+    .stat strong,
+    .metric strong,
+    .summary-card strong,
+    .value,
+    .amount
+  ) {
+    font-size: var(--cf156-font-kpi) !important;
+    line-height: 1.08 !important;
+  }
+
+  /* Chips/badges. */
+  #root .view.active[data-shell-content="true"] :is(
+    .badge,
+    .chip,
+    .tag,
+    .pill,
+    .status
+  ) {
+    min-height: var(--cf156-chip-height) !important;
+    padding-left: var(--cf156-chip-pad-x) !important;
+    padding-right: var(--cf156-chip-pad-x) !important;
+    font-size: var(--cf156-font-meta) !important;
+    line-height: 1.05 !important;
+  }
+
+  /* Icons should not keep the old card height alive. */
+  #root .view.active[data-shell-content="true"] :is(
+    .icon,
+    .icon-box,
+    .avatar,
+    .badge-icon,
+    .nav-ico
+  ) {
+    width: var(--cf156-icon-box) !important;
+    height: var(--cf156-icon-box) !important;
+    min-width: var(--cf156-icon-box) !important;
+    min-height: var(--cf156-icon-box) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    svg.h-5,
+    svg.h-6,
+    .h-5.w-5,
+    .h-6.w-6
+  ) {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
+/* Tuning:
+   If still too large, change only variables above:
+   - route/card padding
+   - gaps
+   - min-heights
+   - font sizes
+   Never add zoom/scale/transform here.
+*/

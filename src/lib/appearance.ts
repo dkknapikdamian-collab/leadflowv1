@@ -1,4 +1,4 @@
-export type SkinId = 'forteca-light' | 'forteca-dark' | 'midnight' | 'sandstone';
+﻿export type SkinId = 'forteca-light';
 
 export interface SkinOption {
   id: SkinId;
@@ -10,26 +10,8 @@ export interface SkinOption {
 export const SKIN_OPTIONS: SkinOption[] = [
   {
     id: 'forteca-light',
-    label: 'CloseDock Light',
-    description: 'Jasna, czysta skórka do pracy dziennej.',
-    toastTheme: 'light',
-  },
-  {
-    id: 'forteca-dark',
-    label: 'CloseDock Dark',
-    description: 'Ciemna wersja głównej skórki, dobra wieczorem i na telefonie.',
-    toastTheme: 'dark',
-  },
-  {
-    id: 'midnight',
-    label: 'Midnight Graphite',
-    description: 'Nowoczesna grafitowa wersja z mocniejszym kontrastem.',
-    toastTheme: 'dark',
-  },
-  {
-    id: 'sandstone',
-    label: 'Sandstone',
-    description: 'Jaśniejsza, cieplejsza skórka z miękkimi powierzchniami.',
+    label: 'Klasyczny jasny',
+    description: 'Główny motyw CloseFlow.',
     toastTheme: 'light',
   },
 ];
@@ -37,9 +19,9 @@ export const SKIN_OPTIONS: SkinOption[] = [
 export const DEFAULT_SKIN: SkinId = 'forteca-light';
 
 export function isSkinId(value: string | null | undefined): value is SkinId {
-  return SKIN_OPTIONS.some((skin) => skin.id === value);
+  return value === DEFAULT_SKIN;
 }
 
-export function getSkinOption(skin: SkinId): SkinOption {
-  return SKIN_OPTIONS.find((item) => item.id === skin) ?? SKIN_OPTIONS[0];
+export function getSkinOption(_skin: SkinId): SkinOption {
+  return SKIN_OPTIONS[0];
 }

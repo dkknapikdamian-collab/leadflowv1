@@ -43,12 +43,18 @@ import {
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
-type TemplateItemType = 'file' | 'text' | 'decision' | 'access';
+import '../styles/visual-stage22-event-form-vnext.css';
+import '../styles/closeflow-template-modal-source-truth-stage181l.css';
+import '../styles/closeflow-template-modal-source-truth-stage181n.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+type TemplateItemType = 'file' | 'text' | 'decision' | 'access' | 'meeting' | 'payment' | 'materials' | 'other';
 
 type TemplateItemDraft = {
   title: string;
   description: string;
   type: TemplateItemType;
+  customTypeName?: string;
   isRequired: boolean;
 };
 
@@ -63,6 +69,10 @@ const ITEM_TYPE_OPTIONS: { value: TemplateItemType; label: string; badgeClassNam
   { value: 'text', label: 'Tekst / brief', badgeClassName: 'border-indigo-200 bg-indigo-50 text-indigo-700' },
   { value: 'decision', label: 'Decyzja / akceptacja', badgeClassName: 'border-amber-200 bg-amber-50 text-amber-700' },
   { value: 'access', label: 'Dostęp / login', badgeClassName: 'border-emerald-200 bg-emerald-50 text-emerald-700' },
+  { value: 'meeting', label: 'Spotkanie / telefon', badgeClassName: 'border-blue-200 bg-blue-50 text-blue-700' },
+  { value: 'payment', label: 'Płatność / faktura', badgeClassName: 'border-rose-200 bg-rose-50 text-rose-700' },
+  { value: 'materials', label: 'Materiały / zdjęcia', badgeClassName: 'border-violet-200 bg-violet-50 text-violet-700' },
+  { value: 'other', label: 'Inne', badgeClassName: 'border-slate-200 bg-slate-50 text-slate-700' },
 ];
 
 const EMPTY_ITEM: TemplateItemDraft = {
@@ -95,6 +105,13 @@ function normalizeTemplateItems(items?: TemplateItemDraft[]) {
 
 function itemTypeMeta(type?: TemplateItemType) {
   return ITEM_TYPE_OPTIONS.find((entry) => entry.value === type) || ITEM_TYPE_OPTIONS[0];
+}
+
+function getTemplateItemTypeLabel(item: TemplateItemDraft) {
+  if (item.type === 'other') {
+    return item.customTypeName?.trim() || 'Inne';
+  }
+  return itemTypeMeta(item.type).label;
 }
 
 function getTemplateItemCount(template: TemplateRecord) {
@@ -317,7 +334,7 @@ export default function Templates() {
 
   return (
     <Layout>
-      <div className="cf-html-view main-templates-html mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-cf-templates-page-source="record-list-source-truth">
+      <div className="cf-html-view main-templates-html cf-route-work-root flex w-full flex-col gap-6 px-4 py-4 text-slate-900 md:px-8 md:py-8" data-cf-templates-page-source="record-list-source-truth">
         <CloseFlowPageHeaderV2
           pageKey="templates"
           actions={
@@ -340,17 +357,14 @@ export default function Templates() {
 
         <Card className="cf-readable-card border border-slate-200 bg-white shadow-sm">
           <CardContent className="flex flex-col gap-4 p-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="relative flex-1">
+            <div className="relative flex-1 cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
               <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
               <Input
                 placeholder="Szukaj po nazwie szablonu albo pozycjach checklisty..."
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
-                className="h-11 border-slate-200 bg-white pl-10 text-slate-900 placeholder:text-slate-400 focus-visible:ring-emerald-500/20"
+                className="h-11 border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-emerald-500/20"
               />
-            </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold uppercase tracking-[0.16em] text-slate-600">
-              Gotowce do spraw, nie szablony odpowiedzi
             </div>
           </CardContent>
         </Card>
@@ -438,7 +452,7 @@ export default function Templates() {
                         return (
                           <div key={`${template.id}-${index}`} className="cf-readable-panel rounded-2xl border border-slate-200 bg-slate-50 p-4">
                             <div className="mb-3 flex flex-wrap items-center gap-2">
-                              <Badge variant="outline" className={meta.badgeClassName}>{meta.label}</Badge>
+                              <Badge variant="outline" className={meta.badgeClassName}>{getTemplateItemTypeLabel(item)}</Badge>
                               {item.isRequired ? <Badge className="cf-status-pill" data-cf-status-tone="red">Obowiązkowe</Badge> : <Badge variant="outline" className="border-slate-200 bg-white text-slate-700">Opcjonalne</Badge>}
                             </div>
                             <p className="font-bold text-slate-950">{item.title}</p>
@@ -458,77 +472,104 @@ export default function Templates() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-h-[90vh] overflow-hidden border-slate-200 bg-white text-slate-900 shadow-2xl sm:max-w-4xl">
-          <DialogHeader>
-            <DialogTitle className="text-slate-950">{editingTemplateId ? 'Edytuj szablon sprawy' : 'Nowy szablon sprawy'}</DialogTitle>
-            <DialogDescription>Uzupełnij dane szablonu i zapisz zmiany w bibliotece szablonów.</DialogDescription>
+        <DialogContent className="cf-template-modal-v2" data-template-modal-stage181n="true">
+          <DialogHeader className="cf-template-modal-v2-header">
+            <DialogTitle className="cf-template-modal-v2-title">{editingTemplateId ? 'Edytuj szablon sprawy' : 'Nowy szablon sprawy'}</DialogTitle>
+            <DialogDescription className="cf-template-modal-v2-description">Uzupełnij dane szablonu i zapisz zmiany w bibliotece szablonów.</DialogDescription>
           </DialogHeader>
-          <div className="grid gap-6 overflow-y-auto py-2 pr-1 md:grid-cols-[280px_minmax(0,1fr)]">
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="template-name" className="text-slate-700">Nazwa szablonu</Label>
-                <Input
-                  id="template-name"
-                  value={draft.name}
-                  onChange={(event) => setDraft((prev) => ({ ...prev, name: event.target.value }))}
-                  placeholder="Np. Strona internetowa + formularz"
-                  className="border-slate-200 bg-white text-slate-900"
-                />
-              </div>
-              <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm">
-                <p className="font-bold text-slate-950">Jak tego używać</p>
-                <p className="mt-2 leading-6 text-slate-500">
-                  Ten szablon pojawi się przy akcji "Rozpocznij obsługę". Wszystkie pozycje zostaną automatycznie skopiowane do checklisty nowej sprawy.
-                </p>
-              </div>
-            </div>
 
-            <div className="space-y-4">
+          <div className="cf-template-modal-v2-body">
+            <section className="cf-template-modal-v2-name-card">
+              <Label htmlFor="template-name" className="cf-template-modal-v2-label">Nazwa szablonu</Label>
+              <Input
+                id="template-name"
+                value={draft.name}
+                onChange={(event) => setDraft((prev) => ({ ...prev, name: event.target.value }))}
+                placeholder="Np. Strona internetowa + formularz"
+                className="cf-template-modal-v2-input"
+              />
+            </section>
+
+            <section className="cf-template-modal-v2-items" aria-label="Pozycje szablonu">
               {draft.items.map((item, index) => (
-                <div key={`draft-item-${index}`} className="cf-readable-card rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <div className="mb-4 flex items-center justify-between gap-3">
+                <div key={`draft-item-${index}`} className="cf-template-modal-v2-item-card">
+                  <div className="cf-template-modal-v2-item-head">
                     <div>
-                      <p className="text-sm font-bold text-slate-950">Pozycja {index + 1}</p>
-                      <p className="text-xs text-slate-500">To dokładnie zobaczy operator i klient w dalszym flow.</p>
+                      <p className="cf-template-modal-v2-item-title">Pozycja {index + 1}</p>
+                      <p className="cf-template-modal-v2-item-subtitle">To zobaczy operator i klient w dalszym flow.</p>
                     </div>
-                    <EntityActionButton type="button" variant="ghost" size="icon" tone="danger" iconOnly className="rounded-2xl" onClick={() => removeDraftItem(index)}>
+                    <EntityActionButton
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      tone="danger"
+                      iconOnly
+                      className="cf-template-modal-v2-delete"
+                      onClick={() => removeDraftItem(index)}
+                      aria-label="Usuń pozycję"
+                      title="Usuń pozycję"
+                    >
                       <Trash2 className="h-4 w-4" />
                     </EntityActionButton>
                   </div>
 
-                  <div className="grid gap-4">
-                    <div className="space-y-2">
-                      <Label className="text-slate-700">Tytuł pozycji</Label>
-                      <Input value={item.title} onChange={(event) => updateDraftItem(index, { title: event.target.value })} placeholder="Np. Dostęp do hostingu" className="border-slate-200 bg-white text-slate-900" />
+                  <div className="cf-template-modal-v2-fields">
+                    <div className="cf-template-modal-v2-field">
+                      <Label className="cf-template-modal-v2-label cf-template-modal-v2-label-on-dark">Tytuł pozycji</Label>
+                      <Input
+                        value={item.title}
+                        onChange={(event) => updateDraftItem(index, { title: event.target.value })}
+                        placeholder="Np. Dostęp do hostingu"
+                        className="cf-template-modal-v2-input"
+                      />
                     </div>
-                    <div className="space-y-2">
-                      <Label className="text-slate-700">Opis / instrukcja</Label>
+
+                    <div className="cf-template-modal-v2-field">
+                      <Label className="cf-template-modal-v2-label cf-template-modal-v2-label-on-dark">Opis / instrukcja</Label>
                       <Textarea
                         value={item.description}
                         onChange={(event) => updateDraftItem(index, { description: event.target.value })}
                         placeholder="Dopisz, co dokładnie klient ma przygotować albo zatwierdzić."
                         rows={3}
-                        className="border-slate-200 bg-white text-slate-900"
+                        className="cf-template-modal-v2-textarea"
                       />
                     </div>
-                    <div className="grid gap-4 md:grid-cols-[220px_minmax(0,1fr)] md:items-end">
-                      <div className="space-y-2">
-                        <Label className="text-slate-700">Typ pozycji</Label>
-                        <Select value={item.type} onValueChange={(value) => updateDraftItem(index, { type: value as TemplateItemType })}>
-                          <SelectTrigger className="border-slate-200 bg-white text-slate-900">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
+
+                    <div className="cf-template-modal-v2-bottom-row">
+                      <div className="cf-template-modal-v2-field">
+                        <Label className="cf-template-modal-v2-label cf-template-modal-v2-label-on-dark">Typ pozycji</Label>
+                        <div className="cf-template-modal-v2-type-grid">
+                          <select
+                            className="cf-template-modal-v2-select-native"
+                            value={item.type}
+                            onChange={(event) => {
+                              const nextType = event.target.value as TemplateItemType;
+                              updateDraftItem(index, {
+                                type: nextType,
+                                customTypeName: nextType === 'other' ? item.customTypeName || '' : '',
+                              });
+                            }}
+                          >
                             {ITEM_TYPE_OPTIONS.map((option) => (
-                              <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                              <option key={option.value} value={option.value}>{option.label}</option>
                             ))}
-                          </SelectContent>
-                        </Select>
+                          </select>
+
+                          {item.type === 'other' ? (
+                            <Input
+                              value={item.customTypeName || ''}
+                              onChange={(event) => updateDraftItem(index, { customTypeName: event.target.value })}
+                              placeholder="Wpisz własną nazwę typu, np. Audyt, Umowa, Zdjęcia..."
+                              className="cf-template-modal-v2-input cf-template-modal-v2-custom-type-input"
+                            />
+                          ) : null}
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
+
+                      <div className="cf-template-modal-v2-required">
                         <div>
-                          <p className="text-sm font-bold text-slate-950">Obowiązkowe</p>
-                          <p className="text-xs text-slate-500">Brak tej pozycji będzie blokował sprawę.</p>
+                          <p className="cf-template-modal-v2-required-title">Obowiązkowe</p>
+                          <p className="cf-template-modal-v2-required-text">Brak tej pozycji będzie blokował sprawę.</p>
                         </div>
                         <Checkbox checked={item.isRequired} onCheckedChange={(checked) => updateDraftItem(index, { isRequired: checked === true })} />
                       </div>
@@ -537,14 +578,15 @@ export default function Templates() {
                 </div>
               ))}
 
-              <Button variant="outline" className="w-full rounded-2xl border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={addDraftItem}>
+              <Button type="button" variant="outline" className="cf-template-modal-v2-add" onClick={addDraftItem}>
                 <Plus className="h-4 w-4" /> Dodaj następną pozycję
               </Button>
-            </div>
+            </section>
           </div>
-          <DialogFooter>
-            <Button variant="outline" className="border-slate-200 bg-white text-slate-800 hover:bg-slate-50" onClick={() => setDialogOpen(false)}>Anuluj</Button>
-            <Button className="bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => void handleSaveTemplate()} disabled={saving}>
+
+          <DialogFooter className="cf-template-modal-v2-footer">
+            <Button type="button" variant="outline" className="cf-template-modal-v2-cancel" onClick={() => setDialogOpen(false)}>Anuluj</Button>
+            <Button type="button" className="cf-template-modal-v2-submit" onClick={() => void handleSaveTemplate()} disabled={saving}>
               {saving ? 'Zapisywanie...' : editingTemplateId ? 'Zapisz zmiany' : 'Utwórz szablon'}
             </Button>
           </DialogFooter>

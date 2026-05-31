@@ -1,0 +1,185 @@
+/* CLOSEFLOW_STAGE138_DESKTOP_LEFT_ANCHOR_CONTENT
+   Poprawka po Stage137: szeroki desktop content ma zaczynać się przy panelu bocznym,
+   a nie być centrowany jako wyspa w obszarze roboczym.
+
+   Zakres:
+   - tylko desktop: min-width 1280px, hover/pointer fine
+   - route rooty głównych widoków
+   - layout-list / activity shell / right rail
+   - nie rusza mobile/tablet, danych, logiki, auth ani komponentów
+*/
+
+:root {
+  --cf138-sidebar-width: 240px;
+  --cf138-left-gutter: 16px;
+  --cf138-right-gutter: 22px;
+  --cf138-right-rail-width: 348px;
+  --cf138-shell-gap: 24px;
+  --cf138-content-max: 1680px;
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --cf138-left-gutter: 18px;
+    --cf138-right-gutter: 24px;
+    --cf138-right-rail-width: 356px;
+    --cf138-shell-gap: 26px;
+    --cf138-content-max: 1760px;
+  }
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* Main and active view: no internal centering island. */
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Left anchored route roots.
+     The calc uses viewport minus desktop sidebar so the content begins near the sidebar. */
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"],
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ),
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"],
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    width: min(
+      calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+      var(--cf138-content-max)
+    ) !important;
+    max-width: min(
+      calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+      var(--cf138-content-max)
+    ) !important;
+    min-width: 0 !important;
+    margin-left: var(--cf138-left-gutter) !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Some route roots keep Tailwind centering classes internally. Kill only desktop caps. */
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ):is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl, .w-full),
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"]
+  ) :is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    max-width: none !important;
+  }
+
+  /* Lists and top stats should fill the newly left-anchored parent. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(326px, var(--cf138-right-rail-width)) !important;
+    gap: var(--cf138-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf138-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* Activity has independent columns, so it must be left-anchored too. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+    width: min(
+      calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+      var(--cf138-content-max)
+    ) !important;
+    max-width: min(
+      calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+      var(--cf138-content-max)
+    ) !important;
+    margin-left: var(--cf138-left-gutter) !important;
+    margin-right: auto !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(326px, var(--cf138-right-rail-width)) !important;
+    gap: var(--cf138-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf138-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* Wider clients/leads rows can use the space without exploding the right action buttons. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) {
+    grid-template-columns:
+      minmax(2.15rem, 2.5rem)
+      minmax(20rem, 1.65fr)
+      minmax(7.75rem, 0.45fr)
+      minmax(19rem, 1fr)
+      minmax(5rem, auto) !important;
+  }
+}
+
+/* Contract marker for guards. */
+:root {
+  --closeflow-stage138-desktop-left-anchor-content: "active";
+}

@@ -1,0 +1,17 @@
+/* CLOSEFLOW_STAGE181AI_SETTINGS_SAFE_COPY_CLEANUP
+   LOCAL ONLY
+   Recovery after broken JSX cleanup.
+   We hide the technical Google Calendar Sync V1 card without slicing JSX.
+*/
+
+.settings-vnext-page [data-google-calendar-sync-v1-stage03="true"] {
+  display: none !important;
+}
+
+.settings-vnext-page .settings-muted-note:empty {
+  display: none !important;
+}
+
+.settings-vnext-page .settings-action-row .settings-muted-note {
+  display: none !important;
+}

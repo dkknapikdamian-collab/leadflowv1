@@ -1,0 +1,241 @@
+/* CLOSEFLOW_STAGE149_CLEAN_DESKTOP_APP_SHELL_CANVAS
+   Final reset after Stage136-148 width experiments.
+
+   Problem found by audit:
+   - html/body/#root/app are rendered in a tiny CSS viewport while the browser window is physically wide.
+   - later stages tried to stretch children, scale root, or overrun containers.
+   - this made the blue bug-selection frame and cards look clipped.
+
+   Best practice for operator/CRM desktop shell:
+   - keep a stable desktop canvas with a minimum usable width;
+   - sidebar is a fixed rail;
+   - main work area is minmax(0, 1fr);
+   - route roots fill main;
+   - no transforms, no scale runtime, no 100%+overrun hacks.
+*/
+
+:root {
+  --cf149-sidebar-width: 240px;
+  --cf149-min-canvas-width: 1280px;
+  --cf149-desktop-gutter-x: 24px;
+  --cf149-desktop-gutter-y: 24px;
+  --cf149-right-rail-width: 372px;
+  --cf149-shell-gap: 24px;
+  --cf149-canvas-bg: #f3f6fb;
+  --closeflow-stage149-clean-desktop-app-shell-canvas: "active";
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    width: 100% !important;
+    min-width: var(--cf149-min-canvas-width) !important;
+    max-width: none !important;
+    min-height: 100% !important;
+    margin: 0 !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    background: var(--cf149-canvas-bg) !important;
+  }
+
+  #root {
+    width: 100% !important;
+    min-width: var(--cf149-min-canvas-width) !important;
+    max-width: none !important;
+    min-height: 100vh !important;
+    overflow: visible !important;
+    background: var(--cf149-canvas-bg) !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    display: grid !important;
+    grid-template-columns: var(--cf149-sidebar-width) minmax(0, 1fr) !important;
+    grid-template-rows: minmax(100vh, auto) !important;
+    width: 100% !important;
+    min-width: var(--cf149-min-canvas-width) !important;
+    max-width: none !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: var(--cf149-canvas-bg) !important;
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+  #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: var(--cf149-sidebar-width) !important;
+    min-width: var(--cf149-sidebar-width) !important;
+    max-width: var(--cf149-sidebar-width) !important;
+    height: 100vh !important;
+    min-height: 100vh !important;
+    position: sticky !important;
+    top: 0 !important;
+    align-self: start !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+    transform: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: 100vh !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    background: var(--cf149-canvas-bg) !important;
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .global-bar,
+  #root .global-bar[data-shell-global-bar="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"],
+  #root .view.active[data-shell-content="true"],
+  #root [data-shell-content="true"] {
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: var(--cf149-desktop-gutter-y) var(--cf149-desktop-gutter-x) !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+    background: var(--cf149-canvas-bg) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] > :is(
+    .cf-route-work-root,
+    .cf-page-shell,
+    .cf-html-view,
+    main,
+    div,
+    section,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell
+  ),
+  #root .view.active[data-shell-content="true"] .cf-route-work-root {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+    transform: none !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  /* Eliminate old route islands in the actual app work slot. */
+  #root .view.active[data-shell-content="true"] :is(
+    .mx-auto.max-w-3xl,
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl,
+    .max-w-3xl,
+    .max-w-5xl,
+    .max-w-6xl,
+    .max-w-7xl
+  ) {
+    max-width: none !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .mx-auto.max-w-3xl,
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Leads/Clients/Cases use one real app-shell layout: main list + right rail. */
+  #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf149-right-rail-width)) !important;
+    gap: var(--cf149-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .view.active[data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf149-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  #root .view.active[data-shell-content="true"] .activity-vnext-shell {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf149-right-rail-width)) !important;
+    gap: var(--cf149-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .view.active[data-shell-content="true"] .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #root .view.active[data-shell-content="true"] .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf149-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+}

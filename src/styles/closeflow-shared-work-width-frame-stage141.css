@@ -1,0 +1,211 @@
+/* CLOSEFLOW_STAGE141_SHARED_WORK_WIDTH_FRAME
+   Jeden realny wrapper szerokości dla KAŻDEJ zakładki renderowanej przez Layout.tsx.
+
+   Dlaczego Stage140 nie wystarczył:
+   - route'y mają różne rooty: main[data-p0-today-stable-rebuild], .cf-html-view,
+     .activity-vnext-shell, task shell, template shell itd.
+   - część rootów ma własne mx-auto / max-w-7xl / max-w-5xl.
+   - CSS po route'ach jest kruchy i powoduje skakanie szerokości.
+
+   Stage141 rozwiązuje to na poziomie Layout:
+   <div className="cf-work-width-frame" data-cf-work-width-frame="true">
+     {children}
+   </div>
+
+   Zakres:
+   - wszystkie główne zakładki i podstrony używające Layout.tsx
+   - desktop only: min-width 1280px, hover/pointer fine
+   - mobile/tablet bez zmian
+*/
+
+:root {
+  /* Jeden token szerokości. Jeżeli ma być szerzej/węziej, zmieniamy tylko to. */
+  --cf141-work-width: 1440px;
+  --cf141-work-width-wide: 1480px;
+
+  /* Gutter od sidebara i bezpieczny prawy oddech. */
+  --cf141-left-gutter: 8px;
+  --cf141-right-gutter: 16px;
+
+  /* Wspólny rytm layoutu list z prawą kolumną. */
+  --cf141-right-rail-width: 360px;
+  --cf141-right-rail-width-wide: 368px;
+  --cf141-shell-gap: 24px;
+}
+
+@media (min-width: 1680px) {
+  :root {
+    --cf141-shell-gap: 26px;
+  }
+}
+
+@media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+  /* 1. Shell i active view nie trzymają już własnej szerokości. */
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. JEDNO ŹRÓDŁO PRAWDY: wszystkie dzieci Layoutu siedzą w tym samym frame. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] {
+    width: min(calc(100% - var(--cf141-left-gutter) - var(--cf141-right-gutter)), var(--cf141-work-width)) !important;
+    max-width: var(--cf141-work-width) !important;
+    min-width: 0 !important;
+    margin-left: var(--cf141-left-gutter) !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+    display: block !important;
+  }
+
+  @media (min-width: 1880px) {
+    #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] {
+      width: min(calc(100% - var(--cf141-left-gutter) - var(--cf141-right-gutter)), var(--cf141-work-width-wide)) !important;
+      max-width: var(--cf141-work-width-wide) !important;
+    }
+  }
+
+  /* 3. Każdy route-root w środku frame ma wypełnić frame, a nie narzucać swoją wyspę. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] > :is(
+    main,
+    div,
+    section,
+    .cf-html-view,
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"]
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. Zabijamy wewnętrzne Tailwindowe max-widthy tylko w frame, tylko desktop. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl,
+    .max-w-5xl,
+    .max-w-6xl,
+    .max-w-7xl
+  ) {
+    max-width: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* 5. Dziś: root ma w kodzie max-w-7xl. W frame nie może już ograniczać szerokości. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] > main[data-p0-today-stable-rebuild="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] > main[data-p0-today-stable-rebuild="true"] > :is(section, .grid, .flex) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* 6. Leady/Klienci/Sprawy: lista + prawa kolumna mają korzystać z frame. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .layout-list,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf141-right-rail-width)) !important;
+    gap: var(--cf141-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  @media (min-width: 1880px) {
+    #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+      grid-template-columns: minmax(0, 1fr) minmax(342px, var(--cf141-right-rail-width-wide)) !important;
+    }
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf141-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  @media (min-width: 1880px) {
+    #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+      .lead-right-rail,
+      .clients-right-rail,
+      .cases-right-rail
+    ) {
+      max-width: var(--cf141-right-rail-width-wide) !important;
+    }
+  }
+
+  /* 7. Aktywność ma osobny shell, ale nadal musi wejść w frame. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .activity-vnext-shell {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf141-right-rail-width)) !important;
+    gap: var(--cf141-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf141-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+}
+
+/* Contract marker for guards. */
+:root {
+  --closeflow-stage141-shared-work-width-frame: "active";
+}

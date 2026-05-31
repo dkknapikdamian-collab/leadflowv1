@@ -1,0 +1,164 @@
+﻿/* STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY
+   Cel:
+   - nie zmieniać szerokości sidebara,
+   - nie robić sztucznego tła za sidebarem,
+   - rozciągnąć realny panel do pełnej wysokości,
+   - zagęścić pionowo menu, żeby nie trzeba było przewijać na desktopie.
+*/
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+/* Kasujemy pseudo-tło poprzednich prób. */
+.app.closeflow-visual-stage01::before,
+.cf-html-shell::before {
+  content: none !important;
+  display: none !important;
+}
+
+.app.closeflow-visual-stage01,
+.cf-html-shell {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+}
+
+/* Desktop: realny panel boczny, bez ustawiania szerokości. */
+@media (min-width: 861px) {
+  body #root aside.sidebar[data-shell-sidebar="true"],
+  body #root [data-shell-sidebar="true"].sidebar {
+    height: 100vh !important;
+    height: 100dvh !important;
+    min-height: 100vh !important;
+    min-height: 100dvh !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-self: stretch !important;
+
+    background: linear-gradient(180deg, #0f172a 0%, #111827 100%) !important;
+    overflow: hidden !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .brand {
+    flex: 0 0 auto !important;
+    min-height: 3.15rem !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.55rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: hidden !important;
+    overflow-x: hidden !important;
+    background: transparent !important;
+    padding-top: 0.15rem !important;
+    padding-bottom: 0.15rem !important;
+    scrollbar-width: none !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-group {
+    margin-bottom: 0.34rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-caption {
+    margin-top: 0.32rem !important;
+    margin-bottom: 0.18rem !important;
+    line-height: 1 !important;
+    font-size: 0.62rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-stack {
+    gap: 0.22rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-btn {
+    min-height: 2.04rem !important;
+    height: 2.04rem !important;
+    padding-top: 0.34rem !important;
+    padding-bottom: 0.34rem !important;
+    border-radius: 0.72rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-label {
+    line-height: 1.05 !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-ico {
+    transform: scale(0.92);
+  }
+
+  body #root [data-shell-sidebar="true"] .sidebar-footer {
+    flex: 0 0 auto !important;
+    margin-top: 0 !important;
+    padding-top: 0.45rem !important;
+    padding-bottom: 0.65rem !important;
+    background: transparent !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .trial-card {
+    margin-bottom: 0.42rem !important;
+    padding-top: 0.48rem !important;
+    padding-bottom: 0.48rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .trial-card .top {
+    margin-bottom: 0.34rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .trial-link {
+    margin-top: 0.34rem !important;
+    line-height: 1.05 !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .user-card {
+    min-height: 2.78rem !important;
+    padding-top: 0.48rem !important;
+    padding-bottom: 0.48rem !important;
+    margin-bottom: 0.42rem !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .sidebar-logout {
+    min-height: 2.04rem !important;
+    height: 2.04rem !important;
+    padding-top: 0.34rem !important;
+    padding-bottom: 0.34rem !important;
+  }
+}
+
+/* Na niższych ekranach fizycznie może zabraknąć miejsca, wtedy dopuszczamy ciemny scroll zamiast białej belki. */
+@media (min-width: 861px) and (max-height: 760px) {
+  body #root [data-shell-sidebar="true"] .nav-scroll {
+    overflow-y: auto !important;
+    scrollbar-width: thin !important;
+    scrollbar-color: #64748b #111827 !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+    display: block !important;
+  }
+}
+
+/* Mobile bez desktopowego zagęszczania. */
+@media (max-width: 860px) {
+  body #root aside.sidebar[data-shell-sidebar="true"],
+  body #root [data-shell-sidebar="true"].sidebar {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+  }
+
+  body #root [data-shell-sidebar="true"] .nav-scroll {
+    overflow-y: auto !important;
+  }
+}
+/* /STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY */

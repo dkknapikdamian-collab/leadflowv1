@@ -1,0 +1,158 @@
+/* CLOSEFLOW_STAGE146_FLUID_WORK_SURFACE */
+:root {
+  --cf146-work-left-gutter: 8px;
+  --cf146-work-right-gutter: 14px;
+  --cf146-work-extension: clamp(72px, 22vw, 420px);
+  --cf146-right-rail-width: 368px;
+  --cf146-right-rail-width-wide: 380px;
+  --cf146-shell-gap: 24px;
+  --cf146-canvas-bg: #f3f6fb;
+  --closeflow-stage146-fluid-work-surface: "active";
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html, body, #root,
+  #root > .app.closeflow-visual-stage01.cf-html-shell,
+  [data-shell-main="true"],
+  [data-shell-content="true"] {
+    background: var(--cf146-canvas-bg) !important;
+    background-color: var(--cf146-canvas-bg) !important;
+    background-image: none !important;
+  }
+
+  #root > .app.closeflow-visual-stage01.cf-html-shell,
+  [data-shell-main="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  .view.active[data-shell-content="true"],
+  [data-shell-content="true"][data-cf-shell-content-stage145="true"],
+  [data-shell-content="true"] {
+    display: block !important;
+    width: min(
+      calc(100vw - var(--cf146-work-left-gutter) - var(--cf146-work-right-gutter)),
+      calc(100% + var(--cf146-work-extension))
+    ) !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: var(--cf146-work-left-gutter) !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    box-sizing: border-box !important;
+    overflow: visible !important;
+  }
+
+  [data-shell-content="true"] > :is(
+    .cf-route-work-root,
+    .cf-page-shell,
+    .cf-html-view,
+    main,
+    div,
+    section,
+    [data-p0-today-stable-rebuild="true"],
+    [data-p0-tasks-stable-rebuild="true"],
+    [data-a13-template-style="response-templates-v2"],
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell
+  ),
+  [data-shell-content="true"] .cf-route-work-root {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  [data-shell-content="true"] :is(
+    .mx-auto.max-w-3xl,
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl,
+    .max-w-3xl,
+    .max-w-5xl,
+    .max-w-6xl,
+    .max-w-7xl
+  ) {
+    max-width: none !important;
+  }
+
+  [data-shell-content="true"] :is(
+    .mx-auto.max-w-3xl,
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-6xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4, .grid-5, .layout-list, .stack, .search, .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf146-right-rail-width)) !important;
+    gap: var(--cf146-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  [data-shell-content="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail, .clients-right-rail, .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf146-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  [data-shell-content="true"] .activity-vnext-shell {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf146-right-rail-width)) !important;
+    gap: var(--cf146-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  [data-shell-content="true"] .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  [data-shell-content="true"] .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf146-right-rail-width) !important;
+    min-width: 0 !important;
+  }
+}
+
+@media (min-width: 1880px) and (hover: hover) and (pointer: fine) {
+  :root {
+    --cf146-work-extension: clamp(120px, 24vw, 520px);
+    --cf146-right-rail-width: var(--cf146-right-rail-width-wide);
+    --cf146-shell-gap: 26px;
+  }
+}

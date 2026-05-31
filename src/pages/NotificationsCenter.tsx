@@ -1,11 +1,24 @@
-import { useEffect, useMemo, useState } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, CalendarClock, Check, CheckCircle2, Clock3, Filter, Link2, Mail, RotateCcw, Search, Settings2, ShieldAlert, Trash2 } from 'lucide-react';
+import { ArrowUpRight,
+  CalendarClock,
+  Check,
+  CheckCircle2,
+  Clock3,
+  Filter,
+  Link2,
+  RotateCcw,
+  Search,
+  Settings2,
+  ShieldAlert,
+  Trash2,
+  Mail } from 'lucide-react';
 import {
   EntityIcon,
-  NotificationEntityIcon,
-  OperatorMetricTiles,
-  type OperatorMetricTileItem
+  NotificationEntityIcon
 } from '../components/ui-system';
 import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import { toast } from 'sonner';
@@ -16,7 +29,6 @@ import {
   clearNotificationLog,
   clearNotificationSnooze,
   getBrowserNotificationPermission,
-  getBrowserNotificationsEnabled,
   getNotificationLog,
   getNotificationSnoozedUntilByKey,
   getUnreadNotificationCount,
@@ -31,10 +43,17 @@ import {
 import { buildReminderCustomDate } from '../lib/reminders';
 import '../styles/visual-stage10-notifications-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
+import '../styles/closeflow-notifications-rail-force-colors-stage181x.css';
+import '../styles/closeflow-notifications-conflict-card-stage181aj.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
+const STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED = 'STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED';
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
+void STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED;
 
 type NotificationFilter =
   | 'all'
@@ -290,42 +309,6 @@ function NotificationRowIcon({ kind }: { kind: NotificationRowKind }) {
   return <ShieldAlert className="h-4 w-4" />;
 }
 
-function PermissionCopy({ permission, browserEnabled }: { permission: NotificationPermission | 'unsupported'; browserEnabled: boolean }) {
-  if (permission === 'unsupported') {
-    return (
-      <>
-        <strong>Powiadomienia w aplikacji działają</strong>
-        <span>Ta przeglądarka może nie obsługiwać powiadomień. Przypomnienia w aplikacji nadal działają.</span>
-      </>
-    );
-  }
-
-  if (permission === 'granted') {
-    return (
-      <>
-        <strong>Powiadomienia przeglądarki są włączone</strong>
-        <span>Live powiadomienia: {browserEnabled ? 'włączone' : 'wyłączone w ustawieniach aplikacji'}.</span>
-      </>
-    );
-  }
-
-  if (permission === 'denied') {
-    return (
-      <>
-        <strong>Powiadomienia są zablokowane w przeglądarce</strong>
-        <span>Odblokuj je w ustawieniach przeglądarki. W aplikacji nadal zobaczysz alerty.</span>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <strong>Powiadomienia przeglądarki nie są jeszcze włączone</strong>
-      <span>Możesz je włączyć, żeby terminy i pilne zadania nie uciekały z ekranu.</span>
-    </>
-  );
-}
-
 function NotificationsRow({
   row,
   onSnooze,
@@ -408,7 +391,6 @@ export default function NotificationsCenter() {
   const [loading, setLoading] = useState(true);
   const [bundle, setBundle] = useState<CalendarBundle>({ tasks: [], events: [], leads: [], cases: [] });
   const [logTick, setLogTick] = useState(0);
-  const [browserEnabled, setBrowserEnabledState] = useState(getBrowserNotificationsEnabled());
   const [permission, setPermission] = useState(getBrowserNotificationPermission());
   const [activeFilter, setActiveFilter] = useState<NotificationFilter>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -430,7 +412,6 @@ export default function NotificationsCenter() {
         const nextBundle = await fetchCalendarBundleFromSupabase();
         if (!cancelled) {
           setBundle(nextBundle);
-          setBrowserEnabledState(getBrowserNotificationsEnabled());
           setPermission(getBrowserNotificationPermission());
           setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
         }
@@ -486,7 +467,7 @@ export default function NotificationsCenter() {
     };
   }, [rows]);
 
-  const notificationMetricTiles = useMemo<OperatorMetricTileItem<NotificationFilter>[]>(() => ([
+  const notificationMetricTiles = useMemo(() => ([
     { id: 'all', label: 'Wszystkie', value: metrics.all, icon: NotificationEntityIcon, tone: 'neutral' },
     { id: 'action', label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
     { id: 'overdue', label: 'Zaległe', value: metrics.overdue, icon: Clock3, tone: 'red' },
@@ -526,7 +507,6 @@ export default function NotificationsCenter() {
       setPermission(nextPermission);
       if (nextPermission === 'granted') {
         setBrowserNotificationsEnabled(true);
-        setBrowserEnabledState(true);
         toast.success('Powiadomienia przeglądarki są włączone.');
       }
     } catch {
@@ -616,16 +596,41 @@ export default function NotificationsCenter() {
           }
         />
 
-        <OperatorMetricTiles
-          items={notificationMetricTiles}
-          activeId={activeFilter}
-          onSelect={(tile) => setActiveFilter(tile.id)}
-          columns={4}
-          className="notifications-stats-grid"
+        <section
+          className="notifications-stats-grid notifications-today-parity-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
           aria-label="Statystyki powiadomień"
           data-notifications-metric-grid="true"
-          data-cf-metric-replacement="vs5v"
-        />
+          data-cf-metric-replacement="stage181d-today-parity"
+          data-stage181d-notifications-metric-renderer-final="true"
+        >
+          {notificationMetricTiles.map((tile) => {
+            const Icon = tile.icon;
+            const active = activeFilter === tile.id;
+            return (
+              <button
+                key={tile.id}
+                type="button"
+                className="notifications-today-parity-tile"
+                onClick={() => setActiveFilter(tile.id)}
+                data-notifications-metric-tile="true"
+                data-notifications-metric-active={active ? 'true' : 'false'}
+              >
+                <div
+                  className={['notifications-today-parity-card', active ? 'notifications-today-parity-card-active' : ''].join(' ')}
+                  data-notifications-metric-tone={tile.tone}
+                >
+                  <div className="notifications-today-parity-copy">
+                    <p>{tile.label}</p>
+                    <strong>{tile.value}</strong>
+                  </div>
+                  <span className="notifications-today-parity-icon">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                </div>
+              </button>
+            );
+          })}
+        </section>
 
         <div className="notifications-vnext-shell">
           <section className="notifications-main-column">
@@ -636,6 +641,7 @@ export default function NotificationsCenter() {
                     key={filter.value}
                     type="button"
                     className={['notifications-filter-pill', activeFilter === filter.value ? 'notifications-filter-pill-active' : ''].join(' ')}
+                    data-notification-filter-kind={filter.value}
                     onClick={() => setActiveFilter(filter.value)}
                   >
                     <span>{filter.label}</span>
@@ -644,7 +650,7 @@ export default function NotificationsCenter() {
                 ))}
               </div>
 
-              <label className="notifications-search-box">
+              <label className="notifications-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={searchQuery}
@@ -697,45 +703,36 @@ export default function NotificationsCenter() {
             </section>
           </section>
 
-          <aside className="notifications-right-rail" aria-label="Panel powiadomień">
-            <section className="right-card notifications-right-card">
-              <div className="notifications-right-card-head">
-                <EntityIcon entity="notification" className="h-4 w-4" />
-                <h2>Kanały</h2>
-              </div>
-              <div className="notifications-channel-card">
-                <PermissionCopy permission={permission} browserEnabled={browserEnabled} />
-                {permission === 'default' ? (
-                  <button type="button" onClick={handleEnableBrowserNotifications}>Włącz powiadomienia</button>
-                ) : null}
-              </div>
-              <div className="notifications-channel-card">
-                <strong>Poranny digest e-mail</strong>
-                <span>Digest działa tylko po konfiguracji (plan + ENV + adres odbiorcy). Status sprawdzisz w Ustawieniach.</span>
-                <em>Konfiguracja w Ustawieniach</em>
-              </div>
-            </section>
-
-            <section className="right-card notifications-right-card">
+          <aside className="notifications-right-rail" aria-label="Panel powiadomień"><section className="right-card notifications-right-card" data-notification-rail-card="actions">
               <div className="notifications-right-card-head">
                 <Filter className="h-4 w-4" />
                 <h2>Szybkie akcje</h2>
               </div>
-              <button type="button" className="notifications-rail-button" onClick={() => setActiveFilter('action')}>
+              <button type="button" className="notifications-rail-button" data-notification-rail-button="action" onClick={() => setActiveFilter('action')}>
                 <span>Do reakcji</span>
                 <strong>{metrics.action}</strong>
               </button>
-              <button type="button" className="notifications-rail-button" onClick={() => setActiveFilter('overdue')}>
+              <button type="button" className="notifications-rail-button" data-notification-rail-button="overdue" onClick={() => setActiveFilter('overdue')}>
                 <span>Zaległe</span>
                 <strong>{metrics.overdue}</strong>
               </button>
-              <button type="button" className="notifications-rail-button" onClick={handleMarkAllRead}>
+              <button type="button" className="notifications-rail-button" data-notification-rail-button="read" onClick={handleMarkAllRead}>
                 <span>Oznacz przeczytane</span>
                 <strong>{unreadCount}</strong>
               </button>
             </section>
 
-            <section className="right-card notifications-right-card">
+                        <section className="right-card notifications-right-card" data-notification-rail-card="conflicts" data-stage181aj-conflict-notifications="true">
+              <div className="notifications-right-card-head">
+                <ShieldAlert className="h-4 w-4" />
+                <h2>Ostrzeżenia o konfliktach terminów</h2>
+              </div>
+              <p className="notifications-rail-empty">
+                Gdy terminy będą się nakładać, alert pojawi się tutaj.
+              </p>
+            </section>
+
+<section className="right-card notifications-right-card" data-notification-rail-card="upcoming">
               <div className="notifications-right-card-head">
                 <Clock3 className="h-4 w-4" />
                 <h2>Nadchodzące</h2>
@@ -753,9 +750,10 @@ export default function NotificationsCenter() {
                 <p className="notifications-rail-empty">Brak nadchodzących przypomnień w obecnym widoku.</p>
               )}
             </section>
+          
 
             <section className="right-card notifications-right-card">
-              <div className="notifications-right-card-head">
+              <div className="notifications-right-card-head notifications-right-card-head-clean">
                 <Mail className="h-4 w-4" />
                 <h2>Jak działają powiadomienia?</h2>
               </div>
@@ -763,7 +761,7 @@ export default function NotificationsCenter() {
                 Ten widok zbiera terminy z zadań, wydarzeń i leadów oraz historię alertów pokazanych w aplikacji. Finalna reakcja zawsze zostaje po stronie użytkownika.
               </p>
             </section>
-          </aside>
+</aside>
         </div>
       </main>
     </Layout>

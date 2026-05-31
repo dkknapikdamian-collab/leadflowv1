@@ -1,0 +1,1272 @@
+﻿# STAGE198A_GLOBAL_SCALE_DENSITY_AUDIT_LOCAL_ONLY_REPORT
+
+## ROUTING
+- canonical_name: CloseFlow / LeadFlow
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- mode: local-only, audit-only, no git add, no commit, no push
+
+## DOWÓD Z ADMIN DEBUG
+- viewport: 1920 x 912
+- aside.sidebar: width=192, height=729.59375
+- 912 * 0.8 = 729.6
+- 240 * 0.8 = 192
+- Wniosek: prawdopodobne globalne skalowanie/density 80%, a nie zwykły brak height sidebara.
+
+## IMPORTY CSS W App.tsx
+- L15: import './styles/closeflow-action-tokens.css';
+- L16: import './styles/closeflow-action-clusters.css';
+- L17: import './styles/closeflow-form-actions.css';
+- L18: import './styles/closeflow-card-readability.css';
+- L19: import './styles/closeflow-surface-tokens.css';
+- L20: import './styles/closeflow-modal-visual-system.css';
+- L21: import './styles/closeflow-metric-tiles.css';
+- L22: import './styles/closeflow-page-header.css';
+- L23: import './styles/closeflow-list-row-tokens.css';
+- L24: import './styles/closeflow-alert-severity.css';
+- L25: import './styles/closeflow-right-rail-source-truth.css';
+- L26: import './styles/closeflow-command-actions-source-truth.css';
+- L27: import './styles/closeflow-page-header-copy-source-truth.css';
+- L28: import './styles/closeflow-page-header-action-semantics-packet1.css';
+- L29: import './styles/closeflow-search-source-truth-stage134.css';
+- L30: import './styles/closeflow-right-rail-heading-source-truth-stage135.css';
+- L31: import './styles/closeflow-clean-desktop-app-shell-canvas-stage149.css';
+- L32: import './styles/closeflow-panel-typography-and-width-source-truth-stage150.css';
+- L33: import './styles/closeflow-compact-cards-source-truth-stage151.css';
+- L34: import './styles/closeflow-dense-cards-80-percent-target-stage152.css';
+- L35: import './styles/closeflow-real-density-tokens-no-zoom-stage156.css';
+- L36: import './styles/closeflow-viewport-zoom-80-source-truth-stage157.css';
+- L37: import './styles/closeflow-overlay-portal-density-stage158.css';
+- L38: import './styles/closeflow-overlay-real-density-and-footer-stage159.css';
+- L39: import './styles/closeflow-modal-center-and-compact-all-stage160.css';
+- L40: import './styles/closeflow-cf-modal-surface-center-fix-stage161.css';
+- L41: import './styles/closeflow-cf-modal-surface-lower-smaller-stage162.css';
+- L42: import './styles/closeflow-cf-modal-main-center-tall-compact-stage163.css';
+- L43: import './styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css';
+- L44: import './styles/closeflow-modal-unified-event-motif-source-truth-stage165.css';
+- L45: import './styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css';
+- L46: import './styles/closeflow-topic-contact-picker-readable-stage169.css';
+- L47: import './styles/closeflow-task-dialog-relation-and-field-readability-stage170.css';
+- L48: import './styles/closeflow-remove-modal-helper-copy-stage171.css';
+- L49: import './styles/closeflow-global-client-create-dialog-stage172.css';
+- L50: import './styles/closeflow-main-search-source-truth-stage173.css';
+- L51: import './styles/closeflow-main-search-surface-and-text-normalization-stage174.css';
+- L52: import './styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css';
+- L53: import './styles/closeflow-leads-clients-list-layout-source-truth-stage177.css';
+- L54: import './styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css';
+- L55: import './styles/closeflow-secondary-pages-full-width-stage181ad.css';
+
+## IMPORTY CSS W Layout.tsx
+- L36: import '../styles/closeflow-compact-top-shell-source-truth.css';
+- L37: import '../styles/closeflow-operator-top-trim-source-truth.css';
+- L40: import '../styles/closeflow-desktop-density-source-truth.css';
+
+## TRAFIENIA: SCALE / ZOOM / DENSITY / 80% / HEIGHT
+- 35: import './styles/closeflow-real-density-tokens-no-zoom-stage156.css';
+- 37: import './styles/closeflow-overlay-portal-density-stage158.css';
+- 38: import './styles/closeflow-overlay-real-density-and-footer-stage159.css';
+- 40: import '../styles/closeflow-desktop-density-source-truth.css';
+- 264: height: '100dvh',
+- 265: minHeight: '100dvh',
+- 266: maxHeight: '100dvh',
+- 12: background: rgba(15, 23, 42, 0.88);
+- 38: background: rgba(37, 99, 235, 0.88);
+- 49: top: calc(100% + 8px);
+- 121: max-height: calc(100vh - 112px);
+- 215: max-height: calc(100vh - 96px);
+- 225: max-height: calc(100vh - 64px);
+- 235: max-width: min(420px, calc(100vw - 48px));
+- 250: max-width: min(420px, calc(100vw - 48px));
+- 265: width: min(480px, calc(100vw - 48px));
+- 266: max-height: min(720px, calc(100vh - 48px));
+- 337: width: calc(100vw - 24px);
+- 338: max-width: calc(100vw - 24px);
+- 48: text-transform: uppercase;
+- 70: gap: 0.85rem;
+- 117: text-transform: uppercase;
+- 131: font-size: 0.86rem;
+- 31: align-self: start;
+- 43: padding: 0.72rem 0.85rem;
+- 53: text-transform: none;
+- 265: padding: 0.875rem;
+- 299: gap: 0.875rem;
+- 330: minmax(240px, 1fr)
+- 70: [data-cf-action-cluster-density="compact"] {
+- 141: background: rgba(255,255,255,0.82) !important;
+- 211: background: rgba(255,255,255,0.80) !important;
+- 133: transform: translateY(-1px) !important;
+- 109: background: rgba(255,255,255,0.82) !important;
+- 116: transform: translateY(-1px) !important;
+- 273: background: rgba(255,255,255,0.82) !important;
+- 130: border-radius: 0.875rem;
+- 42: width: fit-content !important;
+- 88: transform: none !important;
+- 61: transform: none !important;
+- 76: transform: none !important;
+- 81: min-height: 0 !important;
+- 63: transform: none !important;
+- 73: transform: none !important;
+- 78: min-height: 0 !important;
+- 214: opacity: 0.82 !important;
+- 111: transform: none !important;
+- 142: transform: none !important;
+- 153: min-height: 0 !important;
+- 29: grid-template-columns: auto minmax(240px, 1fr) 78px 120px auto !important;
+- 95: width: fit-content !important;
+- 24: grid-template-columns: auto minmax(240px, 1fr) 76px 118px auto !important;
+- 101: width: fit-content !important;
+- 100: width: fit-content !important;
+- 100: width: fit-content !important;
+- 30: text-transform: uppercase !important;
+- 299: text-transform: uppercase !important;
+- 1521: min-height: 0 !important;
+- 85: [class*="density"]
+- 423: min-height: 0 !important;
+- 24: min-height: 100vh;
+- 34: border-bottom: 1px solid rgba(226, 232, 240, 0.88);
+- 35: background: rgba(255, 255, 255, 0.86);
+- 134: grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.9fr) minmax(260px, 0.85fr);
+- 174: text-transform: uppercase;
+- 29: min-height: 2.85rem !important;
+- 56: width: fit-content !important;
+- 76: font-size: 0.82rem !important;
+- 100: min-height: 2.85rem !important;
+- 131: width: fit-content !important;
+- 147: font-size: 0.82rem !important;
+- 227: min-height: 2.85rem !important;
+- 263: width: fit-content !important;
+- 284: font-size: 0.82rem !important;
+- 409: width: fit-content !important;
+- 431: font-size: 0.82rem !important;
+- 579: width: fit-content !important;
+- 601: font-size: 0.82rem !important;
+- 720: width: fit-content !important;
+- 742: font-size: 0.82rem !important;
+- 24: --cf163-modal-visual-max-width: calc(100vw - 96px);
+- 74: transform: translate(-50%, -50%) !important;
+- 114: min-height: 0 !important;
+- 11: --cf161-modal-visual-max-width: calc(100vw - 48px);
+- 12: --cf161-modal-visual-max-height: calc(100vh - 48px);
+- 39: height: 100vh !important;
+- 40: zoom: 1 !important;
+- 41: transform: none !important;
+- 56: transform: translate(-50%, -50%) !important;
+- 57: transform-origin: center center !important;
+- 58: zoom: 1 !important;
+- 91: min-height: 0 !important;
+- 21: --cf162-modal-visual-max-width: calc(100vw - 72px);
+- 61: transform: translate(-50%, -50%) !important;
+- 88: min-height: 0 !important;
+- 21: --cf164-modal-visual-max-width: calc(100vw - 96px);
+- 27: --cf164-modal-visual-max-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
+- 30: --cf164-event-visual-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
+- 84: transform: translateX(-50%) !important;
+- 85: transform-origin: top center !important;
+- 134: min-height: 0 !important;
+- 18: --cf149-sidebar-width: 240px;
+- 19: --cf149-min-canvas-width: 1280px;
+- 20: --cf149-desktop-gutter-x: 24px;
+- 21: --cf149-desktop-gutter-y: 24px;
+- 22: --cf149-right-rail-width: 372px;
+- 23: --cf149-shell-gap: 24px;
+- 24: --cf149-canvas-bg: #f3f6fb;
+- 32: min-width: var(--cf149-min-canvas-width) !important;
+- 38: background: var(--cf149-canvas-bg) !important;
+- 43: min-width: var(--cf149-min-canvas-width) !important;
+- 45: min-height: 100vh !important;
+- 47: background: var(--cf149-canvas-bg) !important;
+- 52: grid-template-columns: var(--cf149-sidebar-width) minmax(0, 1fr) !important;
+- 53: grid-template-rows: minmax(100vh, auto) !important;
+- 55: min-width: var(--cf149-min-canvas-width) !important;
+- 57: min-height: 100vh !important;
+- 61: background: var(--cf149-canvas-bg) !important;
+- 62: transform: none !important;
+- 71: width: var(--cf149-sidebar-width) !important;
+- 72: min-width: var(--cf149-sidebar-width) !important;
+- 73: max-width: var(--cf149-sidebar-width) !important;
+- 74: height: 100vh !important;
+- 75: min-height: 100vh !important;
+- 78: align-self: start !important;
+- 81: transform: none !important;
+- 90: min-height: 100vh !important;
+- 95: background: var(--cf149-canvas-bg) !important;
+- 96: transform: none !important;
+- 119: padding: var(--cf149-desktop-gutter-y) var(--cf149-desktop-gutter-x) !important;
+- 122: transform: none !important;
+- 125: background: var(--cf149-canvas-bg) !important;
+- 154: transform: none !important;
+- 206: grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf149-right-rail-width)) !important;
+- 207: gap: var(--cf149-shell-gap) !important;
+- 217: max-width: var(--cf149-right-rail-width) !important;
+- 225: grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf149-right-rail-width)) !important;
+- 226: gap: var(--cf149-shell-gap) !important;
+- 238: max-width: var(--cf149-right-rail-width) !important;
+- 9: width: min(780px, calc(100vw - 24px)) !important;
+- 42: min-height: 0 !important;
+- 121: width: calc(100vw - 16px) !important;
+- 54: padding-top: 0.85rem !important;
+- 67: min-height: 0 !important;
+- 106: min-height: 0 !important;
+- 118: border-radius: 0.82rem !important;
+- 4: - target: the card density Damian liked at roughly 70-80% browser zoom;
+- 18: --cf152-density-target: "80-percent-visual-density-without-browser-zoom";
+- 44: /* Desktop/operator panel density. Width remains Stage149. */
+- 83: width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+- 106: width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+- 144: width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+- 1: /* CLOSEFLOW_DESKTOP_DENSITY_SOURCE_TRUTH_2026_05_12
+- 4: goal: reproduce the calmer 80%-zoom feeling with real responsive density, not browser zoom/transform hacks
+- 5: rule: desktop density is a visual contract; mobile remains untouched and will be handled separately
+- 10: /* Browser zoom 80% felt readable, but full 0.80 would be too aggressive for real UI.
+- 11: 14px gives a controlled desktop-density mode while preserving accessibility and hit targets. */
+- 16: --cf-desktop-density-page-max: 96rem;
+- 17: --cf-desktop-density-page-gap: clamp(1rem, 1.15vw, 1.65rem);
+- 18: --cf-desktop-density-card-radius: 1.35rem;
+- 32: padding: var(--cf-desktop-density-page-gap) !important;
+- 37: max-width: var(--cf-desktop-density-page-max) !important;
+- 42: gap: 0.85rem !important;
+- 46: border-radius: var(--cf-desktop-density-card-radius) !important;
+- 87: font-size: 0.88rem !important;
+- 13: --cf138-sidebar-width: 240px;
+- 80: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 84: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 144: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 148: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 25: width: min(calc(100% - (var(--cf136-desktop-content-gutter) * 2)), var(--cf136-desktop-content-max)) !important;
+- 32: width: min(calc(100% - (var(--cf136-desktop-content-gutter) * 2)), var(--cf136-desktop-content-max)) !important;
+- 37: calc(100vw - var(--cf146-work-left-gutter) - var(--cf146-work-right-gutter)),
+- 38: calc(100% + var(--cf146-work-extension))
+- 24: width: min(600px, calc(100vw - 96px)) !important;
+- 25: max-width: min(600px, calc(100vw - 96px)) !important;
+- 27: min-height: 0 !important;
+- 3: --cf143-sidebar-width:240px;
+- 31: width:min(calc(100vw - var(--cf143-sidebar-width) - var(--cf143-left-gutter) - var(--cf143-right-gutter)),var(--cf143-work-width))!important;
+- 37: transform:none!important;
+- 43: width:min(calc(100vw - var(--cf143-sidebar-width) - var(--cf143-left-gutter) - var(--cf143-right-gutter)),var(--cf143-work-width-wide))!important;
+- 103: gap: 0.55rem 0.8rem !important;
+- 104: padding: 0.68rem 0.82rem !important;
+- 124: /* Clients and Leads right rails share the same compact card density. */
+- 20: align-self: start !important;
+- 29: transform: none !important;
+- 38: transform: none !important;
+- 52: transform: none !important;
+- 91: column-gap: clamp(14px, 1.8vw, 22px) !important;
+- 103: align-self: start !important;
+- 125: align-self: start !important;
+- 136: transform: none !important;
+- 147: transform: none !important;
+- 157: transform: none !important;
+- 192: transform: none !important;
+- 79: transform: translateY(-1px);
+- 104: text-transform: uppercase !important;
+- 120: text-transform: none !important;
+- 243: min-height: 0 !important;
+- 314: text-transform: uppercase !important;
+- 406: min-height: 0 !important;
+- 440: min-height: 0 !important;
+- 504: min-height: 0 !important;
+- 541: text-transform: uppercase !important;
+- 11: --cf-metric-source-bg: rgba(255, 255, 255, 0.86);
+- 69: min-height: 0 !important;
+- 108: transform: none !important;
+- 123: transform: translateY(-1px) !important;
+- 157: text-transform: uppercase !important;
+- 22: /* Visual target. At Stage157 zoom 0.80 this becomes 720px visual for in-app dialogs. */
+- 24: --cf160-modal-visual-max-width: calc(100vw - 40px);
+- 25: --cf160-modal-visual-max-height: calc(100vh - 40px);
+- 60: zoom: 1 !important;
+- 64: height: 100vh !important;
+- 65: transform: none !important;
+- 105: zoom: 1 !important;
+- 112: transform: translate(-50%, -50%) !important;
+- 113: transform-origin: center center !important;
+- 144: zoom: 1 !important;
+- 151: transform: translate(-50%, -50%) !important;
+- 152: transform-origin: center center !important;
+- 159: /* Header/title density. */
+- 217: min-height: 0 !important;
+- 374: zoom: 1 !important;
+- 36: transform: none !important;
+- 84: min-height: 0 !important;
+- 29: --cf165-modal-visual-max-width: calc(100vw - 96px);
+- 32: --cf165-modal-max-height: calc(100vh - var(--cf165-modal-top-offset) - var(--cf165-modal-bottom-safe));
+- 54: /* Density source truth */
+- 80: height: 100vh !important;
+- 84: transform: none !important;
+- 85: zoom: 1 !important;
+- 98: transform: translateX(-50%) !important;
+- 99: transform-origin: top center !important;
+- 101: zoom: 1 !important;
+- 166: min-height: 0 !important;
+- 300: width: calc(100vw - 24px) !important;
+- 301: max-width: calc(100vw - 24px) !important;
+- 302: max-height: calc(100vh - 48px) !important;
+- 47: --cf-modal-radius-sm: 0.85rem;
+- 160: border-radius: 0.8rem !important;
+- 200: opacity: 0.85 !important;
+- 341: width: calc(100vw - 1rem) !important;
+- 342: max-width: calc(100vw - 1rem) !important;
+- 343: max-height: calc(100dvh - 1rem) !important;
+- 101: background: rgba(255,255,255,0.82) !important;
+- 108: transform: translateY(-1px) !important;
+- 283: background: rgba(255,255,255,0.82) !important;
+- 18: --cf-operator-metric-bg: rgba(255, 255, 255, 0.86);
+- 88: transform: none !important;
+- 96: transform: translateY(-1px) !important;
+- 117: text-transform: uppercase !important;
+- 127: html body #root .cf-operator-metric-helper { display: block !important; margin-top: 4px !important; color: #667085 !important; font-size: 11px !important; line-height: 1.25 !important; font-weight: 700 !important; text-transform: none !important; letter-spacing: 0 !important; }
+- 48: font-size: 0.86rem !important;
+- 69: min-height: 0 !important;
+- 1: /* CLOSEFLOW_STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH
+- 3: - Stage157 makes the main app at 100% look like browser zoom 80%.
+- 8: - apply the same visual density scale to all subwindows/overlays:
+- 16: - Stage158 = overlay/portal density source truth
+- 20: --closeflow-stage158-overlay-portal-density-source-truth: "active";
+- 23: --cf158-overlay-scale: var(--cf157-page-zoom, 0.80);
+- 30: --cf158-overlay-max-width: calc(100vw * var(--cf158-overlay-inverse-scale) - 48px);
+- 31: --cf158-overlay-max-height: calc(100vh * var(--cf158-overlay-inverse-scale) - 48px);
+- 56: zoom: var(--cf158-overlay-scale) !important;
+- 61: transform-origin: center center !important;
+- 176: zoom: var(--cf158-overlay-scale) !important;
+- 177: transform-origin: top left !important;
+- 196: zoom: var(--cf158-overlay-scale) !important;
+- 197: transform-origin: bottom right !important;
+- 211: zoom: 1 !important;
+- 212: transform: none !important;
+- 220: --cf158-overlay-scale: 0.82;
+- 1: /* CLOSEFLOW_STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX
+- 12: - use real overlay density tokens: width, max-height, padding, gaps, control height, font sizes;
+- 21: --closeflow-stage159-overlay-real-density-and-footer-fix: "active";
+- 23: /* Overlay density follows the same visual direction as Stage157, but without CSS zoom. */
+- 24: --cf159-dialog-width: min(860px, calc(100vw - 48px));
+- 25: --cf159-dialog-max-height: calc(100vh - 44px);
+- 57: zoom: 1 !important;
+- 58: transform: none !important;
+- 71: zoom: 1 !important;
+- 79: transform: translate(-50%, -50%) !important;
+- 80: transform-origin: center center !important;
+- 170: min-height: 0 !important;
+- 191: min-height: 0 !important;
+- 359: zoom: 1 !important;
+- 18: --cf-page-hero-title-size: clamp(26px, 2.8vw, 34px);
+- 90: width: fit-content !important;
+- 100: text-transform: uppercase !important;
+- 257: width: fit-content !important;
+- 269: text-transform: uppercase !important;
+- 12: --cf-page-header-border: rgba(203, 213, 225, 0.86);
+- 170: width: fit-content !important;
+- 184: text-transform: uppercase !important;
+- 360: width: fit-content !important;
+- 370: text-transform: uppercase !important;
+- 485: transform: translateY(var(--cf-page-header-copy-top-offset)) !important;
+- 54: align-self: start !important;
+- 88: transform: none !important;
+- 123: align-self: start !important;
+- 151: width: fit-content !important;
+- 170: text-transform: uppercase !important;
+- 31: transform: translateY(var(--cf-page-header-copy-top-offset)) !important;
+- 14: --cf-ph-card-border: rgba(203, 213, 225, 0.88);
+- 169: align-self: start !important;
+- 194: width: fit-content !important;
+- 209: text-transform: uppercase !important;
+- 124: width: fit-content !important;
+- 139: text-transform: uppercase !important;
+- 71: transform: none !important;
+- 87: align-self: start !important;
+- 120: width: fit-content !important;
+- 136: text-transform: uppercase !important;
+- 8: --cf-ph-v2-card-border: rgba(203, 213, 225, 0.88);
+- 94: transform: none !important;
+- 107: width: fit-content !important;
+- 124: text-transform: uppercase !important;
+- 168: align-self: start !important;
+- 2: min-height: 100vh;
+- 14: width: min(1180px, calc(100% - 32px));
+- 22: background: rgba(245, 247, 251, 0.82);
+- 80: width: min(1180px, calc(100% - 32px));
+- 86: min-height: calc(100vh - 76px);
+- 88: grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+- 104: text-transform: uppercase;
+- 114: background: rgba(239, 246, 255, 0.86);
+- 258: text-transform: uppercase;
+- 505: grid-template-columns: minmax(0, 0.88fr) minmax(320px, 0.62fr);
+- 677: width: min(1180px, calc(100% - 32px));
+- 1: /* CLOSEFLOW_STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM
+- 5: - reduce the real UI density through CSS variables and broad component selectors;
+- 13: - Stage156 = real density tokens, no zoom/scale
+- 27: --closeflow-stage156-real-density-tokens-no-zoom: "active";
+- 28: --cf156-density-source-truth: "real-css-density-tokens-no-zoom";
+- 83: zoom: 1 !important;
+- 84: transform: none !important;
+- 89: /* Route slot stays full width. We only reduce inner density. */
+- 100: /* Route root rhythm: all primary tabs share the same density contract. */
+- 221: /* Today/Tasks Tailwind-heavy screens: density without scaling. */
+- 44: min-height: 0 !important;
+- 55: gap: 0.55rem 0.8rem !important;
+- 56: padding: 0.68rem 0.82rem !important;
+- 182: text-transform: uppercase !important;
+- 191: font-size: 0.82rem !important;
+- 199: text-transform: uppercase !important;
+- 214: font-size: 0.82rem !important;
+- 14: --cf142-sidebar-width: 240px;
+- 60: calc(100vw - var(--cf142-sidebar-width) - var(--cf142-left-gutter) - var(--cf142-right-gutter)),
+- 76: calc(100vw - var(--cf142-sidebar-width) - var(--cf142-left-gutter) - var(--cf142-right-gutter)),
+- 8: width: min(820px, calc(100vw - 20px)) !important;
+- 194: width: calc(100vw - 14px) !important;
+- 48: text-transform: none !important;
+- 65: text-transform: none !important;
+- 18: align-self: start !important;
+- 111: font-size: 0.86rem !important;
+- 219: align-self: start !important;
+- 4: - jedna siatka shellu: sidebar 240px + main minmax(0, 1fr)
+- 11: --cf145-sidebar-width: 240px;
+- 36: grid-template-columns: var(--cf145-sidebar-width) minmax(0, 1fr) !important;
+- 37: grid-template-rows: minmax(100vh, auto) !important;
+- 51: width: var(--cf145-sidebar-width) !important;
+- 52: min-width: var(--cf145-sidebar-width) !important;
+- 53: max-width: var(--cf145-sidebar-width) !important;
+- 73: width: min(calc(100vw - var(--cf145-sidebar-width) - var(--cf145-left-gutter) - var(--cf145-right-gutter)), var(--cf145-work-width)) !important;
+- 87: width: min(calc(100vw - var(--cf145-sidebar-width) - var(--cf145-left-gutter) - var(--cf145-right-gutter)), var(--cf145-work-width-wide)) !important;
+- 18: --cf148-sidebar-width: 240px;
+- 110: transform: scale(var(--cf148-scale)) !important;
+- 111: transform-origin: top left !important;
+- 119: grid-template-columns: var(--cf148-sidebar-width) minmax(0, 1fr) !important;
+- 120: grid-template-rows: minmax(calc(100vh * var(--cf148-inverse-scale)), auto) !important;
+- 125: min-height: calc(100vh * var(--cf148-inverse-scale)) !important;
+- 134: width: var(--cf148-sidebar-width) !important;
+- 135: min-width: var(--cf148-sidebar-width) !important;
+- 136: max-width: var(--cf148-sidebar-width) !important;
+- 137: height: calc(100vh * var(--cf148-inverse-scale)) !important;
+- 138: min-height: calc(100vh * var(--cf148-inverse-scale)) !important;
+- 148: width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width)) !important;
+- 158: width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width)) !important;
+- 169: width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width) - var(--cf148-main-gutter-left) - var(--cf148-main-gutter-right)) !important;
+- 139: grid-template-columns: minmax(0, 1fr) minmax(240px, 320px) !important;
+- 12: align-self: start !important;
+- 90: background: rgba(255, 255, 255, 0.88) !important;
+- 100: text-transform: uppercase !important;
+- 31: transform: translateY(-1px) !important;
+- 40: text-transform: uppercase !important;
+- 60: transform: translateY(-1px) !important;
+- 117: from { opacity: 0; transform: translateY(4px); }
+- 118: to { opacity: 1; transform: translateY(0); }
+- 56: width: min(calc(100% - var(--cf141-left-gutter) - var(--cf141-right-gutter)), var(--cf141-work-width)) !important;
+- 67: width: min(calc(100% - var(--cf141-left-gutter) - var(--cf141-right-gutter)), var(--cf141-work-width-wide)) !important;
+- 12: --cf144-sidebar-width: 240px;
+- 48: calc(100vw - var(--cf144-sidebar-width) - var(--cf144-left-gutter) - var(--cf144-right-gutter)),
+- 65: calc(100vw - var(--cf144-sidebar-width) - var(--cf144-left-gutter) - var(--cf144-right-gutter)),
+- 83: transform: none !important;
+- 69: width: calc(100% + var(--cf147-work-overrun)) !important;
+- 200: width: calc(100% + var(--cf147-work-overrun)) !important;
+- 52: transform: none !important;
+- 75: text-transform: uppercase !important;
+- 36: width: min(var(--cf170-task-modal-width), calc(100vw - 96px)) !important;
+- 37: max-width: min(var(--cf170-task-modal-width), calc(100vw - 96px)) !important;
+- 39: min-height: 0 !important;
+- 50: min-height: 0 !important;
+- 127: width: calc(100vw - 24px) !important;
+- 128: max-width: calc(100vw - 24px) !important;
+- 129: max-height: calc(100vh - 48px) !important;
+- 83: background: rgba(255, 255, 255, 0.82) !important;
+- 253: background: rgba(239, 246, 255, 0.86) !important;
+- 284: background: rgba(255, 255, 255, 0.86) !important;
+- 285: border: 1px solid rgba(226, 232, 240, 0.88) !important;
+- 331: background: rgba(248, 250, 252, 0.82) !important;
+- 390: bottom: calc(100% + 8px) !important;
+- 412: bottom: calc(100% + 3px) !important;
+- 417: transform: rotate(45deg) !important;
+- 9: width: min(860px, calc(100vw - 20px)) !important;
+- 211: width: calc(100vw - 14px) !important;
+- 13: width: min(860px, calc(100vw - 20px)) !important;
+- 192: grid-template-columns: minmax(0, 240px) minmax(0, 1fr) !important;
+- 206: background: rgba(15, 23, 42, 0.86) !important;
+- 274: width: calc(100vw - 14px) !important;
+- 15: --cf139-sidebar-width: 240px;
+- 103: width: calc(100vw - var(--cf139-sidebar-width) - var(--cf139-left-gutter) - var(--cf139-right-gutter)) !important;
+- 164: width: calc(100vw - var(--cf139-sidebar-width) - var(--cf139-left-gutter) - var(--cf139-right-gutter)) !important;
+- 18: --cf140-sidebar-width: 240px;
+- 90: calc(100vw - var(--cf140-sidebar-width) - var(--cf140-left-gutter) - var(--cf140-right-safe-gutter)),
+- 141: calc(100vw - var(--cf140-sidebar-width) - var(--cf140-left-gutter) - var(--cf140-right-safe-gutter)),
+- 3: - make the app at browser 100% look like the current app at browser 80%;
+- 12: - Stage157 emulates browser page zoom: logical layout width = viewport / zoom.
+- 18: /* Source truth: app should render like browser zoom 80%.
+- 20: 0.82 = a little bigger
+- 21: 0.80 = browser 80%
+- 24: --cf157-page-zoom: 0.80;
+- 28: 100vw / 0.80 = 125vw logical width, rendered back to 100vw visually. */
+- 29: --cf157-layout-width: calc(100vw * var(--cf157-page-zoom-inverse));
+- 30: --cf157-layout-min-height: calc(100vh * var(--cf157-page-zoom-inverse));
+- 46: min-height: 100vh !important;
+- 52: zoom: var(--cf157-page-zoom) !important;
+- 60: transform: none !important;
+- 61: transform-origin: top left !important;
+- 67: grid-template-columns: var(--cf149-sidebar-width, 240px) minmax(0, 1fr) !important;
+- 74: transform: none !important;
+- 94: #root .cf155-main-density-frame,
+- 95: #root [data-cf155-main-density-frame="true"] {
+- 96: zoom: 1 !important;
+- 99: transform: none !important;
+- 7: .cfv-app-shell{min-height:100vh;background:radial-gradient(circle at 10% 0%,rgba(45,213,138,.17),transparent 32%),radial-gradient(circle at 95% 7%,rgba(255,255,255,.06),transparent 31%),linear-gradient(180deg,#0b0f0d 0%,var(--cfv-bg) 42%,var(--cfv-bg-2) 100%);color:var(--cfv-text)}
+- 8: .cfv-layout{min-height:100vh;display:grid;grid-template-columns:286px minmax(0,1fr)}.cfv-sidebar{position:sticky;top:0;height:100vh;padding:18px;background:linear-gradient(180deg,var(--cfv-sidebar) 0%,#000 100%);border-right:1px solid var(--cfv-line);box-shadow:18px 0 55px rgba(0,0,0,.5)}.cfv-main{min-width:0;padding:24px 28px 48px}.cfv-global-bar{position:sticky;top:0;z-index:8;margin:-24px -28px 22px;padding:13px 28px;background:rgba(5,6,7,.88);border-bottom:1px solid var(--cfv-line);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;gap:14px}.cfv-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;margin-bottom:20px}.cfv-kicker{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:999px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.cfv-title{margin:8px 0 0;font-size:clamp(28px,3vw,42px);line-height:1;letter-spacing:-.06em;color:var(--cfv-text)}.cfv-lead{margin:8px 0 0;color:var(--cfv-muted);max-width:780px;line-height:1.45;font-size:13px}.cfv-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}.cfv-btn{min-height:40px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-text);border-radius:13px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:900;cursor:pointer;box-shadow:var(--cfv-shadow-soft);white-space:nowrap}.cfv-btn-primary{background:var(--cfv-accent);border-color:var(--cfv-accent);color:#02100a;box-shadow:0 16px 34px rgba(45,213,138,.22)}.cfv-btn-soft{background:var(--cfv-accent-soft);border-color:var(--cfv-accent-2);color:#d8fff1;box-shadow:none}.cfv-grid-5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.cfv-layout-list{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:17px;align-items:start;margin-top:17px}.cfv-layout-detail{display:grid;grid-template-columns:300px minmax(0,1fr) 315px;gap:17px;align-items:start;margin-top:17px}.cfv-stack{display:grid;gap:14px}.cfv-card{background:rgba(16,20,18,.9);border:1px solid var(--cfv-line);border-radius:var(--cfv-radius-xl);box-shadow:var(--cfv-shadow-soft);overflow:hidden;color:var(--cfv-text)}.cfv-card-pad{padding:18px}.cfv-metric{min-height:106px;border-radius:22px;padding:16px;background:rgba(16,20,18,.9);border:1px solid var(--cfv-line);box-shadow:var(--cfv-shadow-soft);display:grid;align-content:space-between}.cfv-metric-active{background:var(--cfv-accent-soft);border-color:var(--cfv-accent-2)}.cfv-metric label{color:var(--cfv-muted);font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}.cfv-metric strong{display:block;margin-top:7px;font-size:25px;letter-spacing:-.06em;line-height:1;color:var(--cfv-text)}.cfv-metric .hint{margin-top:5px;color:var(--cfv-muted);font-size:11px;line-height:1.3}.cfv-search{position:relative}.cfv-search input{width:100%;height:50px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-text);border-radius:18px;outline:none;padding:0 16px 0 42px}.cfv-search span{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--cfv-muted-2)}.cfv-row{display:grid;grid-template-columns:34px minmax(0,1.35fr) minmax(130px,.45fr) minmax(180px,.7fr) 40px;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--cfv-line);background:rgba(16,20,18,.56)}.cfv-row:first-child{border-top:0}.cfv-index{width:28px;height:28px;border-radius:11px;display:grid;place-items:center;background:var(--cfv-card-soft);color:var(--cfv-muted);font-size:11px;font-weight:950}.cfv-name{color:var(--cfv-text);font-weight:950;letter-spacing:-.025em;line-height:1.2}.cfv-sub{color:var(--cfv-muted);font-size:12px;margin-top:4px;line-height:1.35}.cfv-pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:900;background:var(--cfv-card-soft);color:var(--cfv-muted);white-space:nowrap;border:1px solid var(--cfv-line)}.cfv-pill-blue{background:var(--cfv-accent-soft);color:#d8fff1;border-color:var(--cfv-accent-2)}.cfv-statusline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.cfv-person-card{padding:18px;display:grid;gap:15px}.cfv-avatar-line{display:flex;align-items:center;gap:12px}.cfv-avatar{width:54px;height:54px;border-radius:20px;background:linear-gradient(135deg,var(--cfv-sidebar),var(--cfv-accent));color:var(--cfv-text);display:grid;place-items:center;font-weight:950;letter-spacing:-.05em}.cfv-kv{display:grid;gap:8px}.cfv-kv-row{padding:11px 12px;border-radius:15px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);display:grid;gap:4px}.cfv-kv-row label{color:var(--cfv-muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:950}.cfv-kv-row strong{color:var(--cfv-text);font-size:13px;word-break:break-word}.cfv-hero-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr);gap:14px}.cfv-hero{min-height:156px;border-radius:var(--cfv-radius-xl);padding:18px;background:linear-gradient(135deg,var(--cfv-sidebar),var(--cfv-accent-soft));border:1px solid var(--cfv-line);color:var(--cfv-text);display:grid;align-content:space-between;box-shadow:var(--cfv-shadow)}.cfv-hero-light{background:rgba(16,20,18,.9);box-shadow:var(--cfv-shadow-soft)}.cfv-hero label{color:var(--cfv-muted-2);font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.cfv-hero h2{margin:8px 0 6px;font-size:27px;line-height:1.05;letter-spacing:-.06em;color:var(--cfv-text)}.cfv-hero p{margin:0;color:var(--cfv-muted);font-size:13px;line-height:1.45}.cfv-right-card{padding:16px;border-radius:var(--cfv-radius-xl);background:rgba(16,20,18,.9);border:1px solid var(--cfv-line);box-shadow:var(--cfv-shadow-soft)}.cfv-quick-list{display:grid;gap:8px}.cfv-quick-list button{min-height:40px;border-radius:14px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-text);display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;font-size:12px;font-weight:900}
+- 11: padding: 0.5rem 0.85rem;
+- 12: font-size: 0.86rem;
+- 25: transform: translateY(1px);
+- 57: width: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 58: height: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 75: width: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 76: height: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 48: font-size: 1.875rem;
+- 68: --cf-icon-size-xs: 0.875rem;
+- 23: min-height: 0 !important;
+- 4: This is a fast product test layer. If sticky/modals feel wrong, replace with a real density system.
+- 9: --eliteflow-desktop-scale: 0.84;
+- 25: min-height: 100vh;
+- 30: width: calc(100vw / var(--eliteflow-desktop-scale)) !important;
+- 31: min-height: calc(100vh / var(--eliteflow-desktop-scale)) !important;
+- 32: transform: scale(var(--eliteflow-desktop-scale)) !important;
+- 33: transform-origin: top left !important;
+- 46: min-height: 100vh !important;
+- 47: transform: none !important;
+- 45: min-height: 0 !important;
+- 57: transform: none !important;
+- 82: transform: none !important;
+- 89: transform: translateY(-1px) !important;
+- 125: text-transform: uppercase !important;
+- 139: text-transform: none !important;
+- 201: transform: none !important;
+- 229: transform: none !important;
+- 245: text-transform: uppercase !important;
+- 39: text-transform: uppercase !important;
+- 18: min-height: 0 !important;
+- 44: background: linear-gradient(180deg, rgba(11, 18, 32, 0.00), rgba(11, 18, 32, 0.86)) !important;
+- 25: min-height: 0 !important;
+- 46: transform: none !important;
+- 78: transform: none !important;
+- 151: transform: none !important;
+- 33: font-size: var(--cf-font-size-xs, 0.84rem);
+- 95: text-transform: uppercase;
+- 147: font-size: var(--cf-font-size-xs, 0.82rem);
+- 191: max-width: min(680px, calc(100vw - 24px));
+- 204: font-size: var(--cf-font-size-xs, 0.84rem);
+- 222: font-size: var(--cf-font-size-sm, 0.88rem);
+- 347: border-radius: var(--cf-radius-lg, 0.875rem);
+- 353: font-size: var(--cf-text-sm, 0.875rem);
+- 426: color: rgba(71, 85, 105, 0.86);
+- 443: background: rgba(248, 250, 252, 0.82);
+- 453: color: rgba(71, 85, 105, 0.82);
+- 476: color: rgba(71, 85, 105, 0.82);
+- 485: background: rgba(255, 255, 255, 0.86);
+- 3: width: min(760px, calc(100vw - 32px));
+- 28: text-transform: uppercase;
+- 97: width: calc(100vw - 20px);
+- 586: max-width: calc(100vw - 24px) !important;
+- 587: max-height: calc(100dvh - 24px) !important;
+- 871: width: calc(100vw - 16px) !important;
+- 872: max-width: calc(100vw - 16px) !important;
+- 873: max-height: calc(100dvh - 16px) !important;
+- 62: filter: grayscale(0.12);
+- 136: opacity: 0.85 !important;
+- 190: max-height: calc(100dvh - 20px) !important;
+- 54: filter: grayscale(0.15);
+- 230: max-height: calc(100dvh - 24px) !important;
+- 43: text-transform: uppercase;
+- 37: transform: none !important;
+- 17: transform: translateZ(0) !important;
+- 28: transform: none !important;
+- 55: align-self: start !important;
+- 74: min-height: 0 !important;
+- 76: transform: none !important;
+- 78: padding: 0.85rem 1rem !important;
+- 93: padding-inline: 0.8rem !important;
+- 10: align-self: start !important;
+- 11: height: fit-content !important;
+- 12: min-height: 0 !important;
+- 18: min-height: 0 !important;
+- 26: min-height: 0 !important;
+- 20: min-height: 100vh !important;
+- 28: height: 100vh !important;
+- 51: .cf-html-shell .nav-caption { color: rgba(255,255,255,.38) !important; font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: .08em !important; }
+- 60: .cf-html-shell .global-bar { position: sticky !important; top: 0 !important; z-index: 8 !important; margin: -24px -28px 22px !important; padding: 13px 28px !important; background: rgba(247,249,252,.86) !important; backdrop-filter: blur(16px) !important; border-bottom: 1px solid rgba(228,231,236,.78) !important; box-shadow: none !important; }
+- 69: .cf-html-shell a[role="button"]:hover { transform: translateY(-1px); }
+- 77: .cf-html-shell .main-cases .app-primary-chip { display: inline-flex !important; align-items: center !important; gap: 7px !important; padding: 5px 9px !important; border-radius: 999px !important; border: 1px solid var(--cf-line) !important; background: rgba(255,255,255,.72) !important; color: var(--cf-muted) !important; font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: .08em !important; }
+- 81: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type > * { min-height: 106px !important; border-radius: 22px !important; padding: 16px !important; background: rgba(255,255,255,.82) !important; border: 1px solid var(--cf-line) !important; box-shadow: var(--cf-shadow-soft) !important; display: grid !important; align-content: space-between !important; }
+- 83: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type > *:hover { transform: translateY(-2px) !important; box-shadow: var(--cf-shadow) !important; }
+- 85: .cf-html-shell .main-cases [class*="app-surface"] { background: rgba(255,255,255,.86) !important; border: 1px solid var(--cf-line) !important; border-radius: var(--cf-radius-xl) !important; box-shadow: var(--cf-shadow-soft) !important; }
+- 89: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:last-of-type::after { content: "Operacyjne skroty\A Dodaj brak    +\A Portal klienta    ->\A Sprawy bez ruchu    0\A Do akceptacji    1"; white-space: pre-line; display: block; min-height: 220px; padding: 18px; border-radius: var(--cf-radius-xl); background: rgba(255,255,255,.86); border: 1px solid var(--cf-line); box-shadow: var(--cf-shadow-soft); color: var(--cf-text); font-weight: 850; line-height: 2.1; }
+- 33: min-height: 100vh;
+- 46: height: 100vh;
+- 125: text-transform: uppercase;
+- 220: text-transform: uppercase;
+- 244: color: rgba(255, 255, 255, .86);
+- 318: background: rgba(247, 249, 252, .86);
+- 386: transform: translateY(-1px);
+- 518: border-bottom: 1px solid rgba(228, 231, 236, .85);
+- 39: background: rgba(255, 255, 255, .86) !important;
+- 26: text-transform: uppercase;
+- 41: text-transform: uppercase;
+- 40: text-transform: uppercase;
+- 115: background: rgba(255, 255, 255, .82);
+- 128: .cf-html-view.main-clients-html .metric label { color: #667085; font-size: 10px; font-weight: 950; text-transform: uppercase; letter-spacing: .08em; }
+- 147: .cf-html-view.main-clients-html .search span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #98a2b3; }
+- 152: background: rgba(255, 255, 255, .86);
+- 159: background: rgba(255, 255, 255, .84);
+- 12: min-height: calc(100vh - 116px);
+- 28: background: rgba(255, 255, 255, 0.86);
+- 214: text-transform: uppercase;
+- 358: text-transform: uppercase;
+- 468: transform: translateY(-1px);
+- 81: background: rgba(255, 255, 255, 0.86);
+- 96: background: rgba(255, 255, 255, 0.86) !important;
+- 483: text-transform: uppercase;
+- 565: text-transform: uppercase;
+- 1397: width: fit-content !important;
+- 1420: grid-template-columns: minmax(150px, 1.15fr) minmax(84px, 0.44fr) minmax(130px, 0.86fr) minmax(72px, 0.34fr) auto !important;
+- 1576: grid-template-columns: minmax(0, 1.1fr) minmax(74px, .36fr) minmax(0, .8fr) auto !important;
+- 1675: text-transform: uppercase;
+- 1756: text-transform: uppercase;
+- 1892: text-transform: uppercase;
+- 2046: text-transform: uppercase;
+- 2197: align-self: start !important;
+- 2278: min-height: 0 !important;
+- 2712: width: fit-content !important;
+- 2720: text-transform: uppercase !important;
+- 2757: text-transform: uppercase !important;
+- 3159: font-size: 0.82rem;
+- 3261: width: fit-content !important;
+- 3281: min-height: 0 !important;
+- 81: background: rgba(255, 255, 255, 0.88);
+- 753: text-transform: uppercase !important;
+- 944: background: rgba(255, 255, 255, 0.82);
+- 1034: text-transform: uppercase;
+- 1296: background: rgba(255, 255, 255, 0.86);
+- 1302: font-size: 0.86rem;
+- 1308: transform: translateY(-1px);
+- 1326: font-size: 0.82rem;
+- 1348: background: rgba(255, 255, 255, 0.82);
+- 1558: background: rgba(254, 242, 242, 0.88);
+- 84: background: rgba(255, 255, 255, 0.86);
+- 678: background: linear-gradient(135deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.86));
+- 697: text-transform: uppercase;
+- 763: text-transform: uppercase;
+- 827: max-height: calc(100vh - 132px);
+- 998: min-height: 0 !important;
+- 1022: width: fit-content !important;
+- 1056: width: fit-content !important;
+- 126: grid-template-columns: minmax(0, 1fr) 240px;
+- 172: text-transform: uppercase;
+- 45: min-height: 100vh !important;
+- 60: min-height: 100vh !important;
+- 267: text-transform: uppercase;
+- 59: grid-template-columns: 1.25fr 0.85fr 0.85fr;
+- 98: text-transform: uppercase;
+- 308: transform: translateY(-50%);
+- 399: height: fit-content;
+- 477: text-transform: uppercase;
+- 627: @media (max-width: 1240px) {
+- 46: min-height: 100vh;
+- 68: min-height: 100vh;
+- 118: text-transform: uppercase;
+- 189: background: rgba(247, 249, 252, .86) !important;
+- 260: background: rgba(255,255,255,.86) !important;
+- 296: text-transform: uppercase;
+- 326: background: rgba(255,255,255,.82) !important;
+- 337: transform: translateY(-2px);
+- 366: grid-template-columns: minmax(0, 1.35fr) minmax(240px, .65fr) !important;
+- 384: background: rgba(255,255,255,.86) !important;
+- 413: background: rgba(255,255,255,.84) !important;
+- 484: background: rgba(255,255,255,.86) !important;
+- 53: min-height: calc(100vh - 72px);
+- 115: text-transform: uppercase !important;
+- 197: background: rgba(255, 255, 255, .88) !important;
+- 220: text-transform: uppercase !important;
+- 328: transform: translateY(-1px);
+- 383: text-transform: uppercase !important;
+- 437: align-self: start !important;
+- 50: text-transform: uppercase;
+- 114: align-self: start;
+- 146: transform: translateY(-2px);
+- 137: text-transform: uppercase;
+- 365: text-transform: uppercase;
+- 392: @media (max-width: 1240px) {
+- 471: @media (max-width: 1240px) {
+- 502: @media (max-width: 1240px) {
+- 528: @media (max-width: 1240px) {
+- 4: width: min(760px, calc(100vw - 24px)) !important;
+- 254: width: calc(100vw - 16px) !important;
+- 305: max-width: fit-content !important;
+- 70: text-transform: uppercase;
+- 126: background: rgba(255, 255, 255, 0.84) !important;
+- 135: transform: translateY(-2px);
+- 4: width: min(760px, calc(100vw - 24px)) !important;
+- 239: width: calc(100vw - 16px) !important;
+- 78: width: fit-content !important;
+- 86: text-transform: uppercase !important;
+- 174: background: rgba(255, 255, 255, 0.82) !important;
+- 189: transform: translateY(-2px) !important;
+- 203: text-transform: uppercase !important;
+- 252: grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr) !important;
+- 274: background: rgba(255, 255, 255, 0.86) !important;
+- 286: text-transform: uppercase !important;
+- 329: background: rgba(255, 255, 255, 0.86) !important;
+- 506: background: rgba(255, 255, 255, 0.86) !important;
+- 4: width: min(780px, calc(100vw - 24px)) !important;
+- 161: width: calc(100vw - 16px) !important;
+- 650: transform: translateX(-50%) !important;
+- 651: max-height: calc(100vh - 64px) !important;
+- 652: max-height: calc(100dvh - 64px) !important;
+- 667: max-height: calc(100vh - 164px) !important;
+- 668: max-height: calc(100dvh - 164px) !important;
+- 684: width: calc(100vw - 16px) !important;
+- 685: max-height: calc(100dvh - 32px) !important;
+- 690: max-height: calc(100dvh - 140px) !important;
+- 700: transform: translateX(-50%) !important;
+- 701: max-height: calc(100vh - 64px) !important;
+- 702: max-height: calc(100dvh - 64px) !important;
+- 721: max-height: calc(100vh - 178px) !important;
+- 722: max-height: calc(100dvh - 178px) !important;
+- 737: width: calc(100vw - 16px) !important;
+- 738: max-height: calc(100vh - 24px) !important;
+- 739: max-height: calc(100dvh - 24px) !important;
+- 743: max-height: calc(100vh - 148px) !important;
+- 744: max-height: calc(100dvh - 148px) !important;
+- 754: transform: translateX(-50%) !important;
+- 755: max-height: calc(100vh - 64px) !important;
+- 759: @supports (height: 100dvh) {
+- 761: max-height: calc(100dvh - 64px) !important;
+- 780: max-height: calc(100vh - 180px) !important;
+- 785: @supports (height: 100dvh) {
+- 788: max-height: calc(100dvh - 180px) !important;
+- 803: width: calc(100vw - 16px) !important;
+- 804: max-height: calc(100vh - 32px) !important;
+- 807: @supports (height: 100dvh) {
+- 809: max-height: calc(100dvh - 32px) !important;
+- 815: max-height: calc(100vh - 146px) !important;
+- 824: transform: translateX(-50%) !important;
+- 825: max-height: calc(100vh - 64px) !important;
+- 826: max-height: calc(100dvh - 64px) !important;
+- 839: max-height: calc(100vh - 176px) !important;
+- 840: max-height: calc(100dvh - 176px) !important;
+- 856: width: calc(100vw - 16px) !important;
+- 857: max-height: calc(100dvh - 32px) !important;
+- 862: max-height: calc(100dvh - 148px) !important;
+- 874: width: min(780px, calc(100vw - 28px)) !important;
+- 876: max-height: calc(100vh - 64px) !important;
+- 894: max-height: calc(100vh - 190px) !important;
+- 911: width: calc(100vw - 16px) !important;
+- 912: max-height: calc(100vh - 32px) !important;
+- 917: max-height: calc(100vh - 160px) !important;
+- 92: text-transform: uppercase;
+- 211: transform: translateY(-2px);
+- 222: background: rgba(255,255,255,.82) !important;
+- 242: text-transform: uppercase !important;
+- 293: background: rgba(255,255,255,.86) !important;
+- 310: background: rgba(255,255,255,.86) !important;
+- 347: align-self: start !important;
+- 359: background: rgba(255,255,255,.86) !important;
+- 392: transform: translateY(-1px);
+- 404: background: rgba(255,255,255,.88) !important;
+- 415: transform: translateY(-1px);
+- 4: width: min(780px, calc(100vw - 24px)) !important;
+- 278: width: calc(100vw - 16px) !important;
+- 75: width: fit-content !important;
+- 84: text-transform: uppercase !important;
+- 146: transform: none !important;
+- 156: background: rgba(255,255,255,.82) !important;
+- 174: text-transform: uppercase !important;
+- 190: text-transform: none !important;
+- 207: align-self: start !important;
+- 219: background: rgba(255,255,255,.86) !important;
+- 241: background: rgba(255,255,255,.86) !important;
+- 252: background: rgba(255,255,255,.86) !important;
+- 274: background: rgba(255,255,255,.84) !important;
+- 78: width: fit-content !important;
+- 90: text-transform: uppercase !important;
+- 137: transform: none !important;
+- 177: transform: none !important;
+- 187: background: rgba(255,255,255,.82) !important;
+- 210: text-transform: uppercase !important;
+- 230: text-transform: none !important;
+- 259: background: rgba(255,255,255,.84) !important;
+- 269: background: rgba(255,255,255,.86) !important;
+- 287: height: fit-content !important;
+- 311: background: rgba(255,255,255,.86) !important;
+- 333: transform: none !important;
+- 339: width: calc(100% - 332px) !important;
+- 340: max-width: calc(100% - 332px) !important;
+- 346: background: rgba(255,255,255,.84) !important;
+- 31: text-transform: uppercase;
+- 79: transform: translateY(-1px);
+- 115: background: rgba(255, 255, 255, .82);
+- 129: transform: translateY(-2px);
+- 142: text-transform: uppercase;
+- 216: background: rgba(255, 255, 255, .86);
+- 228: transform: translateY(-50%);
+- 264: background: rgba(255, 255, 255, .84);
+- 409: background: rgba(255, 255, 255, .86);
+- 66: background: rgba(255, 255, 255, .82) !important;
+- 94: background: rgba(255, 255, 255, .86) !important;
+- 102: background: rgba(255, 255, 255, .84) !important;
+- 176: background: rgba(255, 255, 255, .86) !important;
+- 246: width: fit-content !important;
+- 340: background: rgba(255, 255, 255, .86) !important;
+- 356: text-transform: uppercase !important;
+- 33: text-transform: uppercase;
+- 108: background: rgba(255, 255, 255, .82);
+- 121: .cf-html-view.main-cases-html .metric label { color: #475467; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+- 151: .cf-html-view.main-cases-html .search span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #98a2b3; }
+- 156: background: rgba(255, 255, 255, .86);
+- 28: text-transform: uppercase;
+- 78: .cf-html-view.main-tasks-html .search-card { background: rgba(255,255,255,.86) !important; border: 1px solid #e4e7ec !important; border-radius: 20px !important; }
+- 29: text-transform: uppercase;
+- 151: background: rgba(255, 255, 255, .88);
+- 162: transform: translateY(-1px);
+- 216: background: rgba(255, 255, 255, .82);
+- 315: text-transform: uppercase;
+- 333: background: rgba(255,255,255,.86);
+- 33: text-transform: uppercase;
+- 70: text-transform: uppercase;
+- 35: text-transform: uppercase;
+- 40: font-size: clamp(1.85rem, 4vw, 2.9rem);
+- 48: font-size: 0.85rem;
+- 58: font-size: 0.82rem;
+- 83: text-transform: uppercase;
+- 97: margin-top: 0.85rem;
+- 122: font-size: 0.84rem;
+- 137: font-size: 0.84rem;
+- 147: box-shadow: 0 10px 28px color-mix(in srgb, var(--app-shadow-color) 80%, transparent);
+- 70: transform: translateY(-1px);
+- 92: text-transform: uppercase;
+- 262: text-transform: uppercase;
+- 398: text-transform: uppercase;
+- 455: transform: translateY(-1px);
+- 91: transform: translateY(-1px);
+- 113: text-transform: uppercase;
+- 262: text-transform: uppercase;
+- 447: transform: translateY(-1px);
+- 569: text-transform: uppercase;
+- 599: text-transform: uppercase;
+- 748: text-transform: uppercase;
+
+## GIT STATUS
+-  M .gitignore
+-  M _project/07_NEXT_STEPS.md
+-  M _project/08_CHANGELOG_AI.md
+-  M _project/13_TEST_HISTORY.md
+-  M package-lock.json
+-  M src/App.tsx
+-  M src/components/CloseFlowPageHeaderV2.tsx
+-  M src/components/GlobalQuickActions.tsx
+-  M src/components/Layout.tsx
+-  M src/components/PwaInstallPrompt.tsx
+-  M src/components/TaskCreateDialog.tsx
+-  M src/components/operator-rail/TopValueRecordsCard.tsx
+-  M src/components/topic-contact-picker.tsx
+-  M src/components/ui-system/PageShell.tsx
+-  M src/hooks/useWorkspace.ts
+-  M src/lib/appearance.ts
+-  M src/lib/page-header-content.ts
+-  M src/pages/Activity.tsx
+-  M src/pages/AdminAiSettings.tsx
+-  M src/pages/AiDrafts.tsx
+-  M src/pages/Billing.tsx
+-  M src/pages/Calendar.tsx
+-  M src/pages/Cases.tsx
+-  M src/pages/Clients.tsx
+-  M src/pages/Leads.tsx
+-  M src/pages/NotificationsCenter.tsx
+-  M src/pages/ResponseTemplates.tsx
+-  M src/pages/Settings.tsx
+-  M src/pages/SupportCenter.tsx
+-  M src/pages/TasksStable.tsx
+-  M src/pages/Templates.tsx
+-  M src/pages/Today.tsx
+-  M src/pages/TodayStable.tsx
+-  M src/pages/UiPreviewVNext.tsx
+-  M src/pages/UiPreviewVNextFull.tsx
+-  M src/styles/closeflow-calendar-selected-day-new-tile-v9.css
+-  M src/styles/closeflow-right-rail-source-truth.css
+-  M src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css
+-  M src/styles/temporary/temporary-overrides.css
+-  M src/styles/visual-stage19-settings-vnext.css
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage132 PWA install prompt copy cleanup.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage133 Local Admin Preview.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage134 search and leads value card cleanup.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage135 right rail heading source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage136 desktop wide content.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage137 desktop content shell fix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage138 desktop left anchor content.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage139 unified desktop canvas and right stretch.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage140 unified desktop work width.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage141 shared work width frame.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage142 repair shared work width frame mount.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage143 hard work frame width.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage144 shell content width source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage145 route root width normalization.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage146 fluid work surface.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage147 shell overflow and work surface repair.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage148 scaled desktop shell.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage149 clean desktop app shell canvas.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage150 panel typography and width source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage151 compact cards source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage152 dense cards 80 percent target.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage156 real density tokens no zoom.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage157 viewport zoom 80 source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage158 overlay portal density source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage159 overlay real density and footer fix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage160 modal center and compact all.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage161 cf modal surface center fix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage162 cf modal lower smaller source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage163 cf modal main center tall compact.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage164 cf modal top anchor light surface.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage165 modal unified event motif source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage166 modal footer in flow no overlay.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage167 remove quick planning placeholder.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage168 remove sales list label from cards.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage169 topic contact picker readable and task guard.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage170 task dialog relation and field readability.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage171 remove modal helper copy.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage172 global client button and picker icon cleanup.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage173 main search source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage174 main search surface and text normalization.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage175 extend main search source truth secondary pages.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage176 TopValueRecordsCard duplicate import hotfix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-24 - CloseFlow Stage177 leads clients list layout source truth.md"
+- ?? _local_backups/
+- ?? _project/BACKUP_before_restore_remove_stage153_154_20260523_171407.patch
+- ?? _project/BACKUP_before_restore_remove_stage155_20260523_173341.patch
+- ?? _project/STAGE132_PWA_INSTALL_COPY_CLEANUP_REPORT.md
+- ?? _project/STAGE133_LOCAL_ADMIN_PREVIEW_REPORT.md
+- ?? _project/STAGE134_SEARCH_AND_LEADS_VALUE_CARD_CLEANUP_REPORT.md
+- ?? _project/STAGE135_RIGHT_RAIL_HEADING_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE136_DESKTOP_WIDE_CONTENT_REPORT.md
+- ?? _project/STAGE137_DESKTOP_CONTENT_SHELL_FIX_REPORT.md
+- ?? _project/STAGE138_DESKTOP_LEFT_ANCHOR_CONTENT_REPORT.md
+- ?? _project/STAGE139_UNIFIED_DESKTOP_CANVAS_AND_RIGHT_STRETCH_REPORT.md
+- ?? _project/STAGE140_UNIFIED_DESKTOP_WORK_WIDTH_REPORT.md
+- ?? _project/STAGE141_SHARED_WORK_WIDTH_FRAME_REPORT.md
+- ?? _project/STAGE142_REPAIR_SHARED_WORK_WIDTH_FRAME_MOUNT_REPORT.md
+- ?? _project/STAGE143_HARD_WORK_FRAME_WIDTH_REPORT.md
+- ?? _project/STAGE144_SHELL_CONTENT_WIDTH_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE145_FORENSIC_WIDTH_AUDIT_LOCAL.txt
+- ?? _project/STAGE145_ROUTE_ROOT_WIDTH_NORMALIZATION_REPORT.md
+- ?? _project/STAGE146_FLUID_WORK_SURFACE_REPORT.md
+- ?? _project/STAGE147_SHELL_OVERFLOW_AND_WORK_SURFACE_REPAIR_REPORT.md
+- ?? _project/STAGE148_PRE_AUDIT_SHELL_CLIPPING_LOCAL.txt
+- ?? _project/STAGE148_SCALED_DESKTOP_SHELL_REPORT.md
+- ?? _project/STAGE149_CLEAN_DESKTOP_APP_SHELL_CANVAS_REPORT.md
+- ?? _project/STAGE150_PANEL_TYPOGRAPHY_AND_WIDTH_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE151_COMPACT_CARDS_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE152_DENSE_CARDS_80_PERCENT_TARGET_REPORT.md
+- ?? _project/STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM_REPORT.md
+- ?? _project/STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX_REPORT.md
+- ?? _project/STAGE160_MODAL_CENTER_AND_COMPACT_ALL_REPORT.md
+- ?? _project/STAGE161_CF_MODAL_SURFACE_CENTER_FIX_REPORT.md
+- ?? _project/STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE163_CF_MODAL_MAIN_CENTER_TALL_COMPACT_REPORT.md
+- ?? _project/STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE_REPORT.md
+- ?? _project/STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY_REPORT.md
+- ?? _project/STAGE167_REMOVE_QUICK_PLANNING_PLACEHOLDER_REPORT.md
+- ?? _project/STAGE168_REMOVE_SALES_LIST_LABEL_FROM_CARDS_REPORT.md
+- ?? _project/STAGE168_TOUCHED_FILES.txt
+- ?? _project/STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD_REPORT.md
+- ?? _project/STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY_REPORT.md
+- ?? _project/STAGE171_REMOVE_MODAL_HELPER_COPY_REPORT.md
+- ?? _project/STAGE171_TOUCHED_FILES.txt
+- ?? _project/STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP_REPORT.md
+- ?? _project/STAGE173_MAIN_SEARCH_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE173_MAIN_SEARCH_TOUCHED_FILES.txt
+- ?? _project/STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION_REPORT.md
+- ?? _project/STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES_REPORT.md
+- ?? _project/STAGE175_SEARCH_SOURCE_TOUCHED_FILES.txt
+- ?? _project/STAGE176_TOP_VALUE_RECORDS_CARD_DUPLICATE_IMPORT_HOTFIX_REPORT.md
+- ?? _project/STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH_REPORT.md
+- ?? _project/archive/
+- ?? _project/restore_remove_stage155.cjs
+- ?? _project/runs/STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY_2026-05-29.md
+- ?? _project/runs/STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY_2026-05-29.md.stage179.bak
+- ?? _project/runs/STAGE182_GREEN_FOCUS_THEME_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE183_FOREST_NAVY_THEME_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE184_FOREST_NAVY_DARK_SETTINGS_HARDENING_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE185_FOREST_NAVY_READABLE_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE186_THEME_ROLLBACK_DISABLE_SWITCH_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE187B_HIDE_APP_PREFERENCES_SECTION_FIX_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE187_HIDE_APP_PREFERENCES_SECTION_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE188_SIDEBAR_FULL_HEIGHT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE189_SIDEBAR_LEFT_RAIL_FULL_VIEWPORT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE190B_SIDEBAR_REAL_PANEL_FULL_HEIGHT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE191_SIDEBAR_HEIGHT_ONLY_KEEP_WIDTH_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE193_SIDEBAR_SOURCE_AND_RENDER_AUDIT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE194_SIDEBAR_LAYOUT_CONTRACT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE195_SIDEBAR_INLINE_LAYOUT_CONTRACT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE196A_SIDEBAR_DEEP_AUDIT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE196_SIDEBAR_FIXED_VIEWPORT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE197B_DISABLE_OLD_SIDEBAR_FIT_CONTENT_IMPORT_FIXED_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE197_DISABLE_OLD_SIDEBAR_FIT_CONTENT_IMPORT_LOCAL_ONLY_REPORT.md
+- ?? docs/ui/CLOSEFLOW_STAGE145_RUNTIME_WIDTH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE146_RUNTIME_WIDTH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE147_RUNTIME_WIDTH_AND_CLIPPING_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE148_RUNTIME_SCALED_DESKTOP_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE149_RUNTIME_APP_SHELL_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE150_PANEL_VISUAL_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE151_COMPACT_CARDS_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE152_DENSE_CARDS_80_PERCENT_TARGET.md
+- ?? docs/ui/CLOSEFLOW_STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM.md
+- ?? docs/ui/CLOSEFLOW_STAGE156_RUNTIME_DENSITY_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE157_RUNTIME_VIEWPORT_ZOOM_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE158_RUNTIME_OVERLAY_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX.md
+- ?? docs/ui/CLOSEFLOW_STAGE159_RUNTIME_OVERLAY_FOOTER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE160_MODAL_CENTER_AND_COMPACT_ALL.md
+- ?? docs/ui/CLOSEFLOW_STAGE160_RUNTIME_MODAL_CENTER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE161_CF_MODAL_SURFACE_CENTER_FIX.md
+- ?? docs/ui/CLOSEFLOW_STAGE161_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE162_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE163_CF_MODAL_MAIN_CENTER_TALL_COMPACT.md
+- ?? docs/ui/CLOSEFLOW_STAGE163_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE.md
+- ?? docs/ui/CLOSEFLOW_STAGE164_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE165_RUNTIME_MODAL_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY.md
+- ?? docs/ui/CLOSEFLOW_STAGE166_RUNTIME_MODAL_FOOTER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE167_REMOVE_QUICK_PLANNING_PLACEHOLDER.md
+- ?? docs/ui/CLOSEFLOW_STAGE168_REMOVE_SALES_LIST_LABEL_FROM_CARDS.md
+- ?? docs/ui/CLOSEFLOW_STAGE169_RUNTIME_TOPIC_CONTACT_PICKER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD.md
+- ?? docs/ui/CLOSEFLOW_STAGE170_RUNTIME_TASK_DIALOG_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY.md
+- ?? docs/ui/CLOSEFLOW_STAGE171_REMOVE_MODAL_HELPER_COPY.md
+- ?? docs/ui/CLOSEFLOW_STAGE171_RUNTIME_MODAL_HELPER_COPY_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP.md
+- ?? docs/ui/CLOSEFLOW_STAGE172_RUNTIME_GLOBAL_CLIENT_AND_PICKER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE173_MAIN_SEARCH_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE173_RUNTIME_MAIN_SEARCH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION.md
+- ?? docs/ui/CLOSEFLOW_STAGE174_RUNTIME_MAIN_SEARCH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES.md
+- ?? docs/ui/CLOSEFLOW_STAGE175_RUNTIME_SECONDARY_SEARCH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE176_TOP_VALUE_RECORDS_CARD_DUPLICATE_IMPORT_HOTFIX.md
+- ?? docs/ui/CLOSEFLOW_STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE177_RUNTIME_LEADS_CLIENTS_LAYOUT_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE178_RUNTIME_TASKS_LAYOUT_AUDIT.js
+- ?? scripts/apply-stage146-fluid-work-surface.cjs
+- ?? scripts/apply-stage147-shell-overflow-work-surface.cjs
+- ?? scripts/apply-stage148-scaled-desktop-shell.cjs
+- ?? scripts/apply-stage149-clean-desktop-app-shell-canvas.cjs
+- ?? scripts/apply-stage150-panel-typography-source-truth.cjs
+- ?? scripts/apply-stage151-compact-cards-source-truth.cjs
+- ?? scripts/apply-stage152-dense-cards-80-percent-target.cjs
+- ?? scripts/apply-stage156-real-density-tokens-no-zoom.cjs
+- ?? scripts/apply-stage157-viewport-zoom-80.cjs
+- ?? scripts/apply-stage158-overlay-portal-density.cjs
+- ?? scripts/apply-stage159-overlay-real-density-and-footer.cjs
+- ?? scripts/apply-stage160-modal-center-and-compact-all.cjs
+- ?? scripts/apply-stage161-cf-modal-surface-center-fix.cjs
+- ?? scripts/apply-stage162-cf-modal-surface-lower-smaller.cjs
+- ?? scripts/apply-stage163-cf-modal-main-center-tall-compact.cjs
+- ?? scripts/apply-stage164-cf-modal-top-anchor-light-surface.cjs
+- ?? scripts/apply-stage165-modal-unified-event-motif.cjs
+- ?? scripts/apply-stage166-modal-footer-in-flow-no-overlay.cjs
+- ?? scripts/apply-stage167-remove-quick-planning-placeholder.cjs
+- ?? scripts/apply-stage168-remove-sales-list-label-from-cards.cjs
+- ?? scripts/apply-stage169-topic-contact-picker-readable.cjs
+- ?? scripts/apply-stage170-task-dialog-relation-and-field-readability.cjs
+- ?? scripts/apply-stage171-remove-modal-helper-copy.cjs
+- ?? scripts/apply-stage172-global-client-button-picker-icon-cleanup.cjs
+- ?? scripts/apply-stage173-main-search-source-truth.cjs
+- ?? scripts/apply-stage174-main-search-surface-and-text-normalization.cjs
+- ?? scripts/apply-stage175-extend-main-search-source-truth-secondary-pages.cjs
+- ?? scripts/apply-stage176-top-value-records-card-duplicate-import-hotfix.cjs
+- ?? scripts/apply-stage177-leads-clients-list-layout-source-truth.cjs
+- ?? scripts/check-stage132-pwa-install-copy-cleanup.cjs
+- ?? scripts/check-stage133-local-admin-preview.cjs
+- ?? scripts/check-stage134-search-and-value-card.cjs
+- ?? scripts/check-stage135-right-rail-heading-source-truth.cjs
+- ?? scripts/check-stage136-desktop-wide-content.cjs
+- ?? scripts/check-stage137-desktop-content-shell.cjs
+- ?? scripts/check-stage138-desktop-left-anchor-content.cjs
+- ?? scripts/check-stage139-unified-desktop-canvas.cjs
+- ?? scripts/check-stage140-unified-desktop-work-width.cjs
+- ?? scripts/check-stage141-shared-work-width-frame.cjs
+- ?? scripts/check-stage142-repair-shared-work-width-frame-mount.cjs
+- ?? scripts/check-stage143-hard-work-frame-width.cjs
+- ?? scripts/check-stage144-shell-content-width-source-truth.cjs
+- ?? scripts/check-stage145-route-root-width-normalization.cjs
+- ?? scripts/check-stage146-fluid-work-surface.cjs
+- ?? scripts/check-stage147-shell-overflow-work-surface.cjs
+- ?? scripts/check-stage148-scaled-desktop-shell.cjs
+- ?? scripts/check-stage149-clean-desktop-app-shell-canvas.cjs
+- ?? scripts/check-stage150-panel-typography-and-width-source-truth.cjs
+- ?? scripts/check-stage151-compact-cards-source-truth.cjs
+- ?? scripts/check-stage152-dense-cards-80-percent-target.cjs
+- ?? scripts/check-stage156-real-density-tokens-no-zoom.cjs
+- ?? scripts/check-stage157-viewport-zoom-80.cjs
+- ?? scripts/check-stage158-overlay-portal-density.cjs
+- ?? scripts/check-stage159-overlay-real-density-and-footer.cjs
+- ?? scripts/check-stage160-modal-center-and-compact-all.cjs
+- ?? scripts/check-stage161-cf-modal-surface-center-fix.cjs
+- ?? scripts/check-stage162-cf-modal-surface-lower-smaller.cjs
+- ?? scripts/check-stage163-cf-modal-main-center-tall-compact.cjs
+- ?? scripts/check-stage164-cf-modal-top-anchor-light-surface.cjs
+- ?? scripts/check-stage165-modal-unified-event-motif.cjs
+- ?? scripts/check-stage166-modal-footer-in-flow-no-overlay.cjs
+- ?? scripts/check-stage167-remove-quick-planning-placeholder.cjs
+- ?? scripts/check-stage168-remove-sales-list-label-from-cards.cjs
+- ?? scripts/check-stage169-topic-contact-picker-readable.cjs
+- ?? scripts/check-stage170-task-dialog-relation-and-field-readability.cjs
+- ?? scripts/check-stage171-remove-modal-helper-copy.cjs
+- ?? scripts/check-stage172-global-client-button-picker-icon-cleanup.cjs
+- ?? scripts/check-stage173-main-search-source-truth.cjs
+- ?? scripts/check-stage174-main-search-surface-and-text-normalization.cjs
+- ?? scripts/check-stage175-extend-main-search-source-truth-secondary-pages.cjs
+- ?? scripts/check-stage176-top-value-records-card-duplicate-import-hotfix.cjs
+- ?? scripts/check-stage177-leads-clients-list-layout-source-truth.cjs
+- ?? scripts/check-stage181c-mobile-simple-filters-source-truth-local.cjs
+- ?? scripts/check-stage181e-top-value-spacing-local.cjs
+- ?? scripts/local-fix-calendar-duplicate-declaration.cjs
+- ?? scripts/local-fix-stage181aa-admin-ai-settings-runtime-guard.cjs
+- ?? scripts/local-fix-stage181ab-settings-duplicate-declaration.cjs
+- ?? scripts/local-fix-stage181d-top-value-cards-source-truth.cjs
+- ?? scripts/local-fix-stage181f-tasks-urgent-title-trash-icon.cjs
+- ?? scripts/local-fix-stage181g-tasks-custom-urgent-tooltip.cjs
+- ?? scripts/local-fix-stage181j-calendar-local-done-state.cjs
+- ?? scripts/local-fix-stage181j-v2-calendar-local-done-state.cjs
+- ?? scripts/local-fix-stage181k-calendar-month-tooltip-clean.cjs
+- ?? scripts/local-fix-stage181l-template-modal-visual-source.cjs
+- ?? scripts/local-fix-stage181m-template-modal-light.cjs
+- ?? scripts/local-fix-stage181n-template-modal-rebuild.cjs
+- ?? scripts/local-fix-stage181o-template-type-other.cjs
+- ?? scripts/local-fix-stage181p-remove-templates-badge.cjs
+- ?? scripts/local-fix-stage181q-response-template-modal-spacing.cjs
+- ?? scripts/local-fix-stage181r-response-template-modal-lead-style.cjs
+- ?? scripts/local-fix-stage181s-response-template-cancel-visible.cjs
+- ?? scripts/local-fix-stage181t-activity-duplicate-declaration.cjs
+- ?? scripts/local-fix-stage181u-activity-visual-taxonomy.cjs
+- ?? scripts/local-fix-stage181v-activity-rail-force-colors.cjs
+- ?? scripts/local-fix-stage181w-ai-drafts-rail-colors.cjs
+- ?? scripts/local-fix-stage181x-notifications-rail-colors.cjs
+- ?? scripts/local-fix-stage181y-notifications-remove-help-card.cjs
+- ?? scripts/local-fix-stage181z-billing-visual-taxonomy.cjs
+- ?? scripts/local-seed-stage181h-calendar-dev-preview.cjs
+- ?? scripts/local-seed-stage181i-calendar-direct.cjs
+- ?? src/App.tsx.stage185.bak
+- ?? src/App.tsx.stage186.before-rollback.bak
+- ?? src/App.tsx.stage190b.bak
+- ?? src/App.tsx.stage191.bak
+- ?? src/App.tsx.stage192.bak
+- ?? src/App.tsx.stage194.bak
+- ?? src/App.tsx.stage195.bak
+- ?? src/App.tsx.stage196.bak
+- ?? src/App.tsx.stage197.bak
+- ?? src/App.tsx.stage197b.bak
+- ?? src/components/ClientCreateDialog.tsx
+- ?? src/components/Layout.tsx.stage184.bak
+- ?? src/components/Layout.tsx.stage186.before-rollback.bak
+- ?? src/components/Layout.tsx.stage188.bak
+- ?? src/components/Layout.tsx.stage189.bak
+- ?? src/components/Layout.tsx.stage190b.bak
+- ?? src/components/Layout.tsx.stage191.bak
+- ?? src/components/Layout.tsx.stage192.bak
+- ?? src/components/Layout.tsx.stage194.bak
+- ?? src/components/Layout.tsx.stage195.bak
+- ?? src/components/Layout.tsx.stage197.bak
+- ?? src/components/Layout.tsx.stage197b.bak
+- ?? src/components/ShellDesktopViewportRuntime.tsx
+- ?? src/index.css.stage181.bak
+- ?? src/index.css.stage182.bak
+- ?? src/index.css.stage183.bak
+- ?? src/index.css.stage186.before-rollback.bak
+- ?? src/lib/appearance.ts.stage181.bak
+- ?? src/lib/appearance.ts.stage182.bak
+- ?? src/lib/appearance.ts.stage183.bak
+- ?? src/lib/appearance.ts.stage185.bak
+- ?? src/lib/appearance.ts.stage186.before-rollback.bak
+- ?? src/pages/Settings.tsx.stage179.bak
+- ?? src/pages/Settings.tsx.stage180.bak
+- ?? src/pages/Settings.tsx.stage180c.bak
+- ?? src/pages/Settings.tsx.stage180d.bak
+- ?? src/pages/Settings.tsx.stage180e.bak
+- ?? src/pages/Settings.tsx.stage180f.bak
+- ?? src/pages/Settings.tsx.stage184.bak
+- ?? src/pages/Settings.tsx.stage186.before-rollback.bak
+- ?? src/pages/Settings.tsx.stage187-hide-preferences-section.bak
+- ?? src/pages/Settings.tsx.stage187b-before-fix.bak
+- ?? src/styles/closeflow-activity-rail-force-colors-stage181v.css
+- ?? src/styles/closeflow-activity-visual-source-truth-stage181u.css
+- ?? src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css
+- ?? src/styles/closeflow-billing-visual-taxonomy-stage181z.css
+- ?? src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css
+- ?? src/styles/closeflow-cf-modal-surface-center-fix-stage161.css
+- ?? src/styles/closeflow-cf-modal-surface-lower-smaller-stage162.css
+- ?? src/styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css
+- ?? src/styles/closeflow-clean-desktop-app-shell-canvas-stage149.css
+- ?? src/styles/closeflow-compact-cards-source-truth-stage151.css
+- ?? src/styles/closeflow-dense-cards-80-percent-target-stage152.css
+- ?? src/styles/closeflow-desktop-content-shell-stage137.css
+- ?? src/styles/closeflow-desktop-left-anchor-content-stage138.css
+- ?? src/styles/closeflow-desktop-wide-content-stage136.css
+- ?? src/styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css
+- ?? src/styles/closeflow-fluid-work-surface-stage146.css
+- ?? src/styles/closeflow-global-client-create-dialog-stage172.css
+- ?? src/styles/closeflow-green-focus-theme-stage182.css.stage183.replaced.bak
+- ?? src/styles/closeflow-hard-work-frame-width-stage143.css
+- ?? src/styles/closeflow-leads-clients-list-layout-source-truth-stage177.css
+- ?? src/styles/closeflow-main-search-source-truth-stage173.css
+- ?? src/styles/closeflow-main-search-surface-and-text-normalization-stage174.css
+- ?? src/styles/closeflow-modal-center-and-compact-all-stage160.css
+- ?? src/styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css
+- ?? src/styles/closeflow-modal-unified-event-motif-source-truth-stage165.css
+- ?? src/styles/closeflow-notifications-conflict-card-stage181aj.css
+- ?? src/styles/closeflow-notifications-rail-force-colors-stage181x.css
+- ?? src/styles/closeflow-overlay-portal-density-stage158.css
+- ?? src/styles/closeflow-overlay-real-density-and-footer-stage159.css
+- ?? src/styles/closeflow-panel-typography-and-width-source-truth-stage150.css
+- ?? src/styles/closeflow-real-density-tokens-no-zoom-stage156.css
+- ?? src/styles/closeflow-remove-modal-helper-copy-stage171.css
+- ?? src/styles/closeflow-repair-shared-work-width-frame-stage142.css
+- ?? src/styles/closeflow-response-template-modal-source-truth-stage181r.css
+- ?? src/styles/closeflow-right-rail-heading-source-truth-stage135.css
+- ?? src/styles/closeflow-route-root-width-normalization-stage145.css
+- ?? src/styles/closeflow-scaled-desktop-shell-stage148.css
+- ?? src/styles/closeflow-search-source-truth-stage134.css
+- ?? src/styles/closeflow-secondary-pages-full-width-stage181ad.css
+- ?? src/styles/closeflow-settings-form-control-readability-stage179.css
+- ?? src/styles/closeflow-settings-form-control-readability-stage179.css.stage179.bak
+- ?? src/styles/closeflow-settings-profile-readability-stage181af.css
+- ?? src/styles/closeflow-settings-safe-copy-cleanup-stage181ai.css
+- ?? src/styles/closeflow-settings-summary-right-rail-stage181ae.css
+- ?? src/styles/closeflow-settings-tabs-stage181ac.css
+- ?? src/styles/closeflow-shared-work-width-frame-stage141.css
+- ?? src/styles/closeflow-shell-content-width-source-truth-stage144.css
+- ?? src/styles/closeflow-shell-overflow-work-surface-stage147.css
+- ?? src/styles/closeflow-task-dialog-relation-and-field-readability-stage170.css
+- ?? src/styles/closeflow-template-modal-source-truth-stage181l.css
+- ?? src/styles/closeflow-template-modal-source-truth-stage181n.css
+- ?? src/styles/closeflow-theme-runtime-stage181.css.stage182.removed.bak
+- ?? src/styles/closeflow-topic-contact-picker-readable-stage169.css
+- ?? src/styles/closeflow-unified-desktop-canvas-stage139.css
+- ?? src/styles/closeflow-unified-desktop-work-width-stage140.css
+- ?? src/styles/closeflow-viewport-zoom-80-source-truth-stage157.css
+- ?? src/styles/visual-stage19-settings-vnext.css.stage180e.bak
+- ?? src/styles/visual-stage19-settings-vnext.css.stage180f.bak
+- ?? src/styles/visual-stage19-settings-vnext.css.stage180g.bak
+- ?? tests/stage179-settings-form-control-readability-contract.test.cjs
+- ?? tests/stage179-settings-form-control-readability-contract.test.cjs.stage179.bak
+
+## HIPOTEZY
+- H1: globalny shell jest skalowany przez transform: scale(0.8) albo zoom: .8.
+- H2: sidebar ma logiczne 100vh, ale wizualnie staje się 80vh przez skalowanie rodzica.
+- H3: wcześniejsze poprawki sidebara nie mogły działać, bo walczyły z efektem po transformacji.
+- H4: finalna naprawa powinna usunąć globalne skalowanie layoutu albo przenieść density do paddingów/fontów, nie transform.
+
+## NASTĘPNY KROK
+- Wkleić raport do czatu.
+- Dopiero potem zrobić Stage198B: wyłączenie global scale/zoom albo przeniesienie density bez transform.

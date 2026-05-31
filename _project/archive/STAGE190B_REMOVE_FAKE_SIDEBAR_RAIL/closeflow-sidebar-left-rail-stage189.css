@@ -1,0 +1,157 @@
+﻿/* STAGE189_SIDEBAR_LEFT_RAIL_FULL_VIEWPORT_LOCAL_ONLY
+   Cel:
+   - nie tylko rozciągnąć menu,
+   - ale też wypełnić całą lewą szynę ciemnym tłem do samego dołu viewportu.
+   Powód:
+   - po Stage188 nadal była widoczna jasna fosa pod/obok sidebara.
+*/
+
+:root {
+  --cf-stage189-sidebar-width: 12rem;
+  --cf-stage189-sidebar-bg-top: #0f172a;
+  --cf-stage189-sidebar-bg-bottom: #111827;
+  --cf-stage189-page-bg: #eef2f6;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  background:
+    linear-gradient(
+      90deg,
+      var(--cf-stage189-sidebar-bg-top) 0,
+      var(--cf-stage189-sidebar-bg-top) var(--cf-stage189-sidebar-width),
+      var(--cf-stage189-page-bg) var(--cf-stage189-sidebar-width),
+      var(--cf-stage189-page-bg) 100%
+    ) !important;
+}
+
+#root {
+  background:
+    linear-gradient(
+      90deg,
+      var(--cf-stage189-sidebar-bg-top) 0,
+      var(--cf-stage189-sidebar-bg-top) var(--cf-stage189-sidebar-width),
+      var(--cf-stage189-page-bg) var(--cf-stage189-sidebar-width),
+      var(--cf-stage189-page-bg) 100%
+    ) !important;
+}
+
+.cf-html-shell,
+.app.closeflow-visual-stage01 {
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  background:
+    linear-gradient(
+      90deg,
+      var(--cf-stage189-sidebar-bg-top) 0,
+      var(--cf-stage189-sidebar-bg-top) var(--cf-stage189-sidebar-width),
+      var(--cf-stage189-page-bg) var(--cf-stage189-sidebar-width),
+      var(--cf-stage189-page-bg) 100%
+    ) !important;
+}
+
+/* Stała ciemna szyna pod sidebarem. Nawet jeśli menu ma własny scroll, pod spodem nie może być jasnego tła. */
+.cf-html-shell::before,
+.app.closeflow-visual-stage01::before {
+  content: "";
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--cf-stage189-sidebar-width);
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: linear-gradient(180deg, var(--cf-stage189-sidebar-bg-top) 0%, var(--cf-stage189-sidebar-bg-bottom) 100%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.cf-html-shell,
+.app.closeflow-visual-stage01 {
+  position: relative;
+}
+
+.cf-html-shell .sidebar,
+.app.closeflow-visual-stage01 .sidebar,
+[data-shell-sidebar="true"] {
+  position: relative !important;
+  z-index: 2 !important;
+  width: var(--cf-stage189-sidebar-width) !important;
+  min-width: var(--cf-stage189-sidebar-width) !important;
+  max-width: var(--cf-stage189-sidebar-width) !important;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  background: linear-gradient(180deg, var(--cf-stage189-sidebar-bg-top) 0%, var(--cf-stage189-sidebar-bg-bottom) 100%) !important;
+  align-self: stretch !important;
+}
+
+.cf-html-shell .main,
+.app.closeflow-visual-stage01 .main,
+[data-shell-main="true"] {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh !important;
+  min-height: 100dvh !important;
+  background: var(--cf-stage189-page-bg) !important;
+}
+
+.cf-html-shell .sidebar-footer,
+[data-shell-sidebar="true"] .sidebar-footer {
+  margin-top: auto !important;
+}
+
+/* Scrollbar w menu nie może być białym prostokątem. */
+.cf-html-shell .nav-scroll,
+[data-shell-sidebar="true"] .nav-scroll {
+  scrollbar-color: #6b7280 #111827;
+}
+
+.cf-html-shell .nav-scroll::-webkit-scrollbar,
+[data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+  width: 0.7rem;
+}
+
+.cf-html-shell .nav-scroll::-webkit-scrollbar-track,
+[data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar-track {
+  background: #111827;
+}
+
+.cf-html-shell .nav-scroll::-webkit-scrollbar-thumb,
+[data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar-thumb {
+  background: #6b7280;
+  border-radius: 999px;
+  border: 2px solid #111827;
+}
+
+/* Mobile/drawer bez desktopowej szyny. */
+@media (max-width: 860px) {
+  body,
+  #root,
+  .cf-html-shell,
+  .app.closeflow-visual-stage01 {
+    background: var(--cf-stage189-page-bg) !important;
+  }
+
+  .cf-html-shell::before,
+  .app.closeflow-visual-stage01::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  .cf-html-shell .sidebar,
+  .app.closeflow-visual-stage01 .sidebar,
+  [data-shell-sidebar="true"] {
+    position: static !important;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+}
+/* /STAGE189_SIDEBAR_LEFT_RAIL_FULL_VIEWPORT_LOCAL_ONLY */

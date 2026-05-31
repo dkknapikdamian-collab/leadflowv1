@@ -442,3 +442,21 @@ Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta m
 ## Stage124F visible calendar range wiring
 
 After Stage124E, wire the visible Calendar page/sidebar month/week/day range into `fetchCalendarBundleFromSupabase(options)` so task/event reads are bounded by actual UI range.
+
+## 2026-05-29 - Next after STAGE179 Settings readability
+
+- UruchomiÄ‡: 
+ode --test tests/stage179-settings-form-control-readability-contract.test.cjs.
+- UruchomiÄ‡: 
+pm run build.
+- Test rÄ™czny: /settings, sekcja â€žPrzypomnienia Google Calendarâ€ť, pola â€žTyp przypomnienia Googleâ€ť i â€žIle minut wczeĹ›niejâ€ť.
+- Nie pushowaÄ‡ osobno, dopiÄ…Ä‡ do wiÄ™kszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
+
+## 2026-05-29 - Next after STAGE179 Settings readability
+
+- UruchomiÄ‡: 
+ode --test tests/stage179-settings-form-control-readability-contract.test.cjs.
+- UruchomiÄ‡: 
+pm run build.
+- Test rÄ™czny: /settings, sekcja â€žPrzypomnienia Google Calendarâ€ť, pola â€žTyp przypomnienia Googleâ€ť i â€žIle minut wczeĹ›niejâ€ť.
+- Nie pushowaÄ‡ osobno, dopiÄ…Ä‡ do wiÄ™kszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.

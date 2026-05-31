@@ -1,11 +1,9 @@
-/* SETTINGS_VISUAL_REBUILD_STAGE19 */
+﻿/* SETTINGS_VISUAL_REBUILD_STAGE19 */
 
 .settings-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
-    linear-gradient(180deg, #f4f6f8 0%, #eef2f6 100%);
+  background: var(--cf-canvas-bg, #f8fafc);
   color: #111827;
 }
 
@@ -455,4 +453,91 @@
   .settings-section-card {
     padding: 16px;
   }
+}
+
+
+/* STAGE180E_SETTINGS_HIDE_DATA_NAV_TILE_LOCAL_ONLY */
+[data-settings-data-tab-hidden-stage180e="true"] {
+  display: none !important;
+}
+
+.settings-vnext-page :where(div, nav, section):has(> [data-settings-data-tab-hidden-stage180e="true"]) {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 1240px) {
+  .settings-vnext-page :where(div, nav, section):has(> [data-settings-data-tab-hidden-stage180e="true"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-vnext-page :where(div, nav, section):has(> [data-settings-data-tab-hidden-stage180e="true"]) {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* /STAGE180E_SETTINGS_HIDE_DATA_NAV_TILE_LOCAL_ONLY */
+
+
+/* STAGE180F_SETTINGS_HIDE_DATA_NAV_TILE_REAL_TRIGGER_LOCAL_ONLY */
+[data-settings-data-tab-hidden-stage180f="true"] {
+  display: none !important;
+}
+
+.settings-vnext-page :where(div, nav, section):has(> [data-settings-data-tab-hidden-stage180f="true"]) {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+/* Awaryjnie: jeśli komponent ma jawny tab trigger data */
+.settings-vnext-page [data-settings-tab-trigger="data"],
+.settings-vnext-page [data-settings-tab="data"],
+.settings-vnext-page [data-tab="data"] {
+  display: none !important;
+}
+
+@media (max-width: 1240px) {
+  .settings-vnext-page :where(div, nav, section):has(> [data-settings-data-tab-hidden-stage180f="true"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-vnext-page :where(div, nav, section):has(> [data-settings-data-tab-hidden-stage180f="true"]) {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* /STAGE180F_SETTINGS_HIDE_DATA_NAV_TILE_REAL_TRIGGER_LOCAL_ONLY */
+
+
+/* STAGE180G_SETTINGS_HIDE_SIXTH_DATA_TILE_LOCAL_ONLY
+   Cel: tymczasowo ukryć kafelek IMPORT / EKSPORT bez kasowania logiki danych.
+   Powód: sekcja danych jest ukryta, ale trigger kafelka jest generowany z osobnej mapy.
+*/
+.settings-vnext-page :is(nav, div, section):has(> :nth-child(6):last-child) {
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+}
+
+.settings-vnext-page :is(nav, div, section):has(> :nth-child(6):last-child) > :nth-child(6) {
+  display: none !important;
+}
+
+@media (max-width: 1240px) {
+  .settings-vnext-page :is(nav, div, section):has(> :nth-child(6):last-child) {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .settings-vnext-page :is(nav, div, section):has(> :nth-child(6):last-child) {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* /STAGE180G_SETTINGS_HIDE_SIXTH_DATA_TILE_LOCAL_ONLY */
+
+/* STAGE211A_SECONDARY_PAGES_WHITE_CANVAS: Settings uses a clean white canvas instead of the old blue/gray gradient surface. */
+.settings-vnext-page {
+  background: #ffffff !important;
+  background-image: none !important;
 }

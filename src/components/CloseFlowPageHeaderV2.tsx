@@ -14,7 +14,6 @@ const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
     description: 'Szybki przegląd tego, co wymaga reakcji teraz i co warto zaplanować dalej.',
   },
   leads: {
-    kicker: 'LISTA SPRZEDAŻOWA',
     title: 'Leady',
     description: 'Lista aktywnych tematów sprzedażowych. Tu zapisujesz kontakty, pilnujesz wartości i szybko widzisz, które leady wymagają ruchu.',
   },
@@ -68,10 +67,10 @@ const CLOSEFLOW_PAGE_HEADER_COPY: Record<CloseFlowPageHeaderKey, CloseFlowPageHe
     title: 'Rozliczenia',
     description: 'Status dostępu i planu. Sprawdzasz trial, limity i funkcje dostępne w obecnym pakiecie.',
   },
-  support: {
-    kicker: 'POMOC',
-    title: 'Pomoc',
-    description: 'Zgłoszenia i status. Tu sprawdzasz problemy, notatki z testów i rzeczy wymagające naprawy.',
+    support: {
+    kicker: 'ZGŁOSZENIA',
+    title: 'Zgłoszenia',
+    description: 'Problemy z aplikacją, sugestie poprawek i pytania do supportu. Jedno miejsce dla wysłania zgłoszenia, statusu i odpowiedzi.',
   },
   settings: {
     kicker: 'USTAWIENIA',

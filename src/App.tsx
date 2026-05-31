@@ -33,7 +33,7 @@ import './styles/closeflow-panel-typography-and-width-source-truth-stage150.css'
 import './styles/closeflow-compact-cards-source-truth-stage151.css';
 import './styles/closeflow-dense-cards-80-percent-target-stage152.css';
 import './styles/closeflow-real-density-tokens-no-zoom-stage156.css';
-import './styles/closeflow-viewport-zoom-80-source-truth-stage157.css';
+// STAGE200 disabled legacy visual/sidebar layer: import './styles/closeflow-viewport-zoom-80-source-truth-stage157.css';
 import './styles/closeflow-overlay-portal-density-stage158.css';
 import './styles/closeflow-overlay-real-density-and-footer-stage159.css';
 import './styles/closeflow-modal-center-and-compact-all-stage160.css';
@@ -52,6 +52,9 @@ import './styles/closeflow-main-search-surface-and-text-normalization-stage174.c
 import './styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css';
 import './styles/closeflow-leads-clients-list-layout-source-truth-stage177.css';
 import './styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css';
+import './styles/closeflow-secondary-pages-full-width-stage181ad.css';
+import './styles/closeflow-app-viewport-scale-75-stage201.css';
+import './styles/closeflow-ops-badges-and-icons-stretch-stage204.css';
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 const CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13 = 'App bootstrap sync is one-shot; no focus/visibility/interval profile refresh on protected pages';
 
@@ -104,7 +107,7 @@ function AppRouteFallback() {
     <div className="flex items-center justify-center h-screen bg-slate-50">
       <div className="flex flex-col items-center gap-4">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-        <p className="text-slate-500 font-medium animate-pulse">Ĺadowanie widoku...</p>
+        <p className="text-slate-500 font-medium animate-pulse">Ładowanie widoku...</p>
       </div>
     </div>
   );
@@ -206,7 +209,7 @@ export default function App() {
     if (typeof window === 'undefined') return;
     if (window.sessionStorage.getItem(FORCE_LOGOUT_NOTICE_SESSION_KEY) !== '1') return;
     window.sessionStorage.removeItem(FORCE_LOGOUT_NOTICE_SESSION_KEY);
-    toast.success('Wylogowano tÄ™ sesjÄ™ po globalnym wylogowaniu.');
+    toast.success('Wylogowano tę sesję po globalnym wylogowaniu.');
   }, []);
 
   if (loading || profileLoading) {
@@ -214,7 +217,7 @@ export default function App() {
       <div className="flex items-center justify-center h-screen bg-slate-50">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-          <p className="text-slate-500 font-medium animate-pulse">Ĺadowanie aplikacji...</p>
+          <p className="text-slate-500 font-medium animate-pulse">Ładowanie aplikacji...</p>
         </div>
       </div>
     );
@@ -285,6 +288,33 @@ export default function App() {
 /* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: /today and /support route aliases are release-candidate smoke routes. */
 
 /* CLOSEFLOW_PUBLIC_LANDING_ROUTE: / shows PublicLanding for logged-out users and Today for logged-in users. */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_EMERGENCY_HOTFIXES
+﻿/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_EMERGENCY_HOTFIXES
    owner: CloseFlow Visual System
    reason: isolate emergency runtime CSS and hotfixes away from src/index.css.
    scope: scoped fixes only. New entries must include owner, reason, scope, remove_after_stage.
@@ -244,3 +244,135 @@
    Final narrow lock: copy left, kicker above title. Must stay last.
 */
 @import '../closeflow-page-header-copy-left-only.css';
+
+/* STAGE211B_SECONDARY_PAGES_UNIFIED_WHITE_SHELL
+   Source-truth cleanup for secondary operator pages.
+   Stage211A removed page-level gradients, but the global Layout shell can still show
+   the older blue/gray canvas around cards. This stage forces the page canvas, shell
+   content and main work surface to pure white only when one of the affected pages is active.
+   Scope: Activity, AI Drafts, Notifications, Billing, Support/Requests, Settings.
+*/
+
+:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+) {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)::before,
+:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)),
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) #root,
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) .app.closeflow-visual-stage01,
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) [data-shell-main='true'],
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) [data-shell-content='true'],
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) .view.active {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
+}
+
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) [data-shell-content='true']::before,
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) [data-shell-content='true']::after,
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) [data-shell-main='true']::before,
+body:has(:is(
+  .activity-vnext-page,
+  .ai-drafts-vnext-page,
+  .notifications-vnext-page,
+  .billing-vnext-page,
+  .support-vnext-page,
+  .settings-vnext-page
+)) [data-shell-main='true']::after {
+  background: transparent !important;
+  background-image: none !important;
+}
+/* END_STAGE211B_SECONDARY_PAGES_UNIFIED_WHITE_SHELL */
+

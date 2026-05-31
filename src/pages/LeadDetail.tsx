@@ -79,6 +79,7 @@ import {
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage14-lead-detail-vnext.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {

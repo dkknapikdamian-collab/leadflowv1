@@ -1,0 +1,200 @@
+/* CLOSEFLOW_STAGE150_PANEL_TYPOGRAPHY_AND_WIDTH_SOURCE_TRUTH
+   Scope:
+   - typography source truth for the app panel after Stage149;
+   - width source truth stays in Stage149 clean desktop app shell canvas.
+
+   Important:
+   - do not create per-tab width hacks;
+   - Dzis / Leady / Klienci / Sprawy / Zadania / Kalendarz / Szablony / Odpowiedzi / Aktywnosc
+     must use the same app-shell width contract from Stage149.
+*/
+
+:root {
+  --closeflow-stage150-panel-typography-and-width-source-truth: "active";
+
+  /* Width owner, documented only. The actual width implementation remains Stage149. */
+  --cf150-width-source-truth: "stage149-clean-desktop-app-shell-canvas";
+
+  /* Typography source truth. Small reduction, not a redesign. */
+  --cf150-font-scale-note: "slight-minus";
+  --cf150-font-ui: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  --cf150-text-page-title: 14px;
+  --cf150-text-nav: 13px;
+  --cf150-text-card-title: 13px;
+  --cf150-text-body: 12.5px;
+  --cf150-text-meta: 11px;
+  --cf150-text-chip: 10.5px;
+  --cf150-text-control: 12px;
+  --cf150-text-kpi-value: 22px;
+  --cf150-text-kpi-value-small: 18px;
+
+  --cf150-line-tight: 1.15;
+  --cf150-line-normal: 1.28;
+}
+
+/* Desktop/operator panel typography. Width is still Stage149. */
+@media (hover: hover) and (pointer: fine) {
+  #root > .app.closeflow-visual-stage01.cf-html-shell {
+    font-family: var(--cf150-font-ui) !important;
+    text-rendering: geometricPrecision;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #root .global-bar,
+  #root .sidebar,
+  #root .view.active[data-shell-content="true"] {
+    font-family: var(--cf150-font-ui) !important;
+  }
+
+  /* Topbar / page identity */
+  #root .global-bar {
+    font-size: var(--cf150-text-control) !important;
+    line-height: var(--cf150-line-normal) !important;
+  }
+
+  #root .global-bar :is(button, a, .btn, [role="button"]) {
+    font-size: var(--cf150-text-control) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  #root .global-bar :is(h1, h2, strong, b) {
+    font-size: var(--cf150-text-page-title) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  /* Sidebar */
+  #root .sidebar {
+    font-size: var(--cf150-text-nav) !important;
+    line-height: var(--cf150-line-normal) !important;
+  }
+
+  #root .sidebar :is(button, a, .nav-item, [role="button"]) {
+    font-size: var(--cf150-text-nav) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  #root .sidebar :is(.section-title, .sidebar-section-title, small) {
+    font-size: var(--cf150-text-meta) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  /* Shared route text */
+  #root .view.active[data-shell-content="true"] {
+    font-size: var(--cf150-text-body) !important;
+    line-height: var(--cf150-line-normal) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    input,
+    textarea,
+    select,
+    button,
+    .btn,
+    [role="button"]
+  ) {
+    font-size: var(--cf150-text-control) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .badge,
+    .chip,
+    .tag,
+    .pill,
+    .status,
+    .meta,
+    small
+  ) {
+    font-size: var(--cf150-text-chip) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    h1,
+    .page-title,
+    .view-title
+  ) {
+    font-size: var(--cf150-text-page-title) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    h2,
+    h3,
+    .card-title,
+    .section-title,
+    .panel-title,
+    .lead-title,
+    .client-title,
+    .case-title
+  ) {
+    font-size: var(--cf150-text-card-title) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  /* HTML-style pages used by Leads/Clients/Cases and activity panels */
+  #root .view.active[data-shell-content="true"] :is(
+    .cf-html-view,
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-shell,
+    .cf-route-work-root
+  ) {
+    font-size: var(--cf150-text-body) !important;
+    line-height: var(--cf150-line-normal) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi,
+    .stat,
+    .metric,
+    .summary-card,
+    .filter-card,
+    .table-card,
+    .list-card,
+    .lead-card,
+    .client-card,
+    .case-card,
+    .layout-list,
+    .stack
+  ) {
+    font-size: var(--cf150-text-body) !important;
+    line-height: var(--cf150-line-normal) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .kpi strong,
+    .stat strong,
+    .metric strong,
+    .summary-card strong,
+    .value,
+    .amount
+  ) {
+    font-size: var(--cf150-text-kpi-value) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail,
+    .activity-right-rail
+  ) {
+    font-size: var(--cf150-text-body) !important;
+    line-height: var(--cf150-line-normal) !important;
+  }
+
+  #root .view.active[data-shell-content="true"] :is(
+    .lead-right-rail strong,
+    .clients-right-rail strong,
+    .cases-right-rail strong,
+    .activity-right-rail strong
+  ) {
+    font-size: var(--cf150-text-card-title) !important;
+    line-height: var(--cf150-line-tight) !important;
+  }
+}

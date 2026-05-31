@@ -1,0 +1,108 @@
+/* STAGE211E_CANVAS_SOURCE_TRUTH_HARD_MOUNT
+   Owner: CloseFlow Visual System
+   Purpose: one app canvas color for every operator route.
+   Reference route: / (Today) admin feedback: canvas is the model.
+   This file is intentionally imported globally and by route pages so it wins against old lazy CSS chunks.
+*/
+
+:root,
+html[data-skin="forteca-light"] {
+  --cf-canvas-bg: #f8fafc;
+  --cf-canvas-bg-rgb: 248 250 252;
+  --cf-canvas-surface: #ffffff;
+  --cf-canvas-border: #e4e7ec;
+}
+
+html,
+body,
+#root {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+body::before,
+body::after,
+#root::before,
+#root::after {
+  background-image: none !important;
+}
+
+.app.closeflow-visual-stage01,
+.app.closeflow-visual-stage01.cf-html-shell,
+.cf-html-shell,
+.cf-html-shell .main,
+.cf-html-shell main.main,
+.cf-html-shell [data-shell-main="true"],
+.cf-html-shell .view,
+.cf-html-shell .view.active,
+.cf-html-shell [data-shell-content="true"] {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Route roots: Today model + every legacy/html/vnext page root. */
+.cf-html-shell .cf-route-work-root,
+.cf-html-shell .cf-html-view,
+.cf-html-shell [class~="cf-html-view"],
+.cf-html-shell [class*="-vnext-page"],
+.cf-html-shell .main-calendar-html,
+.cf-html-shell .main-leads-html,
+.cf-html-shell .main-clients-html,
+.cf-html-shell .main-cases-html,
+.cf-html-shell .main-templates-html,
+.cf-html-shell .main-response-templates-html,
+.cf-html-shell .main-ai-drafts-html,
+.cf-html-shell .main-activity-html,
+.cf-html-shell .main-billing-html,
+.cf-html-shell .activity-vnext-page,
+.cf-html-shell .ai-drafts-vnext-page,
+.cf-html-shell .notifications-vnext-page,
+.cf-html-shell .billing-vnext-page,
+.cf-html-shell .support-vnext-page,
+.cf-html-shell .settings-vnext-page {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Known inner route wrappers where the old canvas leaked between cards. */
+.cf-html-shell .calendar-week-layout,
+.cf-html-shell .calendar-dashboard,
+.cf-html-shell .calendar-main,
+.cf-html-shell .calendar-page,
+.cf-html-shell .activity-vnext-shell,
+.cf-html-shell .ai-drafts-vnext-shell,
+.cf-html-shell .notifications-vnext-shell,
+.cf-html-shell .billing-shell,
+.cf-html-shell .support-shell,
+.cf-html-shell .settings-shell,
+.cf-html-shell .settings-vnext-shell {
+  background: var(--cf-canvas-bg) !important;
+  background-color: var(--cf-canvas-bg) !important;
+  background-image: none !important;
+}
+
+/* Prevent old page-level gradient layers from painting on pseudo elements. */
+.cf-html-shell [class*="-vnext-page"]::before,
+.cf-html-shell [class*="-vnext-page"]::after,
+.cf-html-shell .cf-html-view::before,
+.cf-html-shell .cf-html-view::after,
+.cf-html-shell .cf-route-work-root::before,
+.cf-html-shell .cf-route-work-root::after,
+.cf-html-shell [data-shell-content="true"]::before,
+.cf-html-shell [data-shell-content="true"]::after {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* Keep actual cards/surfaces white; only the canvas underneath is unified. */
+.cf-html-shell .right-card,
+.cf-html-shell [class*="-card"],
+.cf-html-shell .card,
+.cf-html-shell [data-card="true"] {
+  background-image: none;
+}

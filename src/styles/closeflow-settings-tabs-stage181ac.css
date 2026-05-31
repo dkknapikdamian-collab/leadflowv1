@@ -1,0 +1,139 @@
+/* CLOSEFLOW_STAGE181AC_SETTINGS_TABS_SOURCE_TRUTH
+   LOCAL ONLY
+   Scope: /settings.
+   Decision: settings are grouped into tabs:
+   Konto, Powiadomienia, Integracje, Aplikacja, Bezpieczeństwo, Dane.
+*/
+
+.settings-vnext-page .settings-tabs-stage181ac {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 12px !important;
+  margin: 14px 0 18px !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac {
+  min-height: 88px !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 5px !important;
+  text-align: left !important;
+  padding: 13px 14px !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 20px !important;
+  background: #ffffff !important;
+  color: #334155 !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05) !important;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease, background 120ms ease !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08) !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac span {
+  font-size: 10px !important;
+  line-height: 1.1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+  text-transform: uppercase !important;
+  color: currentColor !important;
+  opacity: 0.72 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac strong {
+  font-size: 14px !important;
+  line-height: 1.15 !important;
+  font-weight: 950 !important;
+  color: #111827 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac small {
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+  font-weight: 650 !important;
+  color: #64748b !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac-active {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 16px 34px rgba(37, 99, 235, 0.11) !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac[data-settings-tab-kind="account"] {
+  border-color: #bfdbfe !important;
+  background: radial-gradient(circle at top right, rgba(37, 99, 235, 0.10), transparent 38%), #ffffff !important;
+  color: #1d4ed8 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac[data-settings-tab-kind="notifications"] {
+  border-color: #ddd6fe !important;
+  background: radial-gradient(circle at top right, rgba(109, 40, 217, 0.10), transparent 38%), #ffffff !important;
+  color: #6d28d9 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac[data-settings-tab-kind="integrations"] {
+  border-color: #bbf7d0 !important;
+  background: radial-gradient(circle at top right, rgba(4, 120, 87, 0.11), transparent 38%), #ffffff !important;
+  color: #047857 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac[data-settings-tab-kind="app"] {
+  border-color: #bae6fd !important;
+  background: radial-gradient(circle at top right, rgba(3, 105, 161, 0.10), transparent 38%), #ffffff !important;
+  color: #0369a1 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac[data-settings-tab-kind="security"] {
+  border-color: #fecaca !important;
+  background: radial-gradient(circle at top right, rgba(220, 38, 38, 0.09), transparent 38%), #ffffff !important;
+  color: #dc2626 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac[data-settings-tab-kind="data"] {
+  border-color: #e2e8f0 !important;
+  background: radial-gradient(circle at top right, rgba(71, 85, 105, 0.08), transparent 38%), #ffffff !important;
+  color: #475569 !important;
+}
+
+.settings-vnext-page .settings-tab-stage181ac-active[data-settings-tab-kind="account"] { border-color: #60a5fa !important; }
+.settings-vnext-page .settings-tab-stage181ac-active[data-settings-tab-kind="notifications"] { border-color: #a78bfa !important; }
+.settings-vnext-page .settings-tab-stage181ac-active[data-settings-tab-kind="integrations"] { border-color: #34d399 !important; }
+.settings-vnext-page .settings-tab-stage181ac-active[data-settings-tab-kind="app"] { border-color: #38bdf8 !important; }
+.settings-vnext-page .settings-tab-stage181ac-active[data-settings-tab-kind="security"] { border-color: #f87171 !important; }
+.settings-vnext-page .settings-tab-stage181ac-active[data-settings-tab-kind="data"] { border-color: #94a3b8 !important; }
+
+.settings-vnext-page .settings-section-card[data-settings-tab-panel] {
+  animation: cf-settings-tab-in-stage181ac 140ms ease-out !important;
+}
+
+.settings-vnext-page .settings-tab-empty-stage181ac {
+  border-color: #bbf7d0 !important;
+  background: radial-gradient(circle at top right, rgba(4, 120, 87, 0.10), transparent 38%), #ffffff !important;
+}
+
+@keyframes cf-settings-tab-in-stage181ac {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 1180px) {
+  .settings-vnext-page .settings-tabs-stage181ac {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .settings-vnext-page .settings-tabs-stage181ac {
+    display: flex !important;
+    overflow-x: auto !important;
+    padding-bottom: 4px !important;
+    scroll-snap-type: x mandatory !important;
+  }
+
+  .settings-vnext-page .settings-tab-stage181ac {
+    min-width: 210px !important;
+    scroll-snap-align: start !important;
+  }
+}

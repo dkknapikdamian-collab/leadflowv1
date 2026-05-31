@@ -32,6 +32,8 @@ import {
 } from '../lib/supabase-fallback';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 const CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES = 'CLIENT_CASE_FORMS_VISUAL_REBUILD_STAGE23_CASES';
 const CLIENT_CASE_FORMS_STAGE23_HUMAN_COPY = 'Podaj nazwę klienta. Podaj tytuł sprawy. Wybierz klienta albo utwórz nowego. Nie udało się zapisać. Spróbuj ponownie. Rozpocznij obsługę.';
 const CASES_LIFECYCLE_NEEDS_NEXT_STEP_GUARD = 'Bez kroku';
@@ -682,10 +684,10 @@ export default function Cases() {
 
         <div className="layout-list">
           <div className="stack">
-            <div className="search">
+            <div className="search cf-main-search" data-cf-main-search-source="stage173">
               <span aria-hidden="true"><Search className="h-4 w-4" /></span>
               <Input
-                placeholder="Szukaj sprawy, klienta, telefonu, maila albo statusu..."
+                placeholder="Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie..."
                 value={searchQuery}
                 onChange={(event) => setSearchQuery(event.target.value)}
               />

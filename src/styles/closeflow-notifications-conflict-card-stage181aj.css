@@ -1,0 +1,46 @@
+/* CLOSEFLOW_STAGE181AJ_NOTIFICATIONS_CONFLICT_CARD
+   LOCAL ONLY
+   Conflict warnings belong in Notifications, not Settings.
+*/
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] {
+  position: relative !important;
+  overflow: hidden !important;
+  border-color: #fecaca !important;
+  background:
+    radial-gradient(circle at top right, rgba(220, 38, 38, 0.11), transparent 34%),
+    #ffffff !important;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"]::before {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 14px !important;
+  bottom: 14px !important;
+  width: 5px !important;
+  border-radius: 999px !important;
+  background: #dc2626 !important;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] .notifications-right-card-head {
+  color: #dc2626 !important;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] .notifications-right-card-head > svg {
+  width: 26px !important;
+  height: 26px !important;
+  padding: 6px !important;
+  border-radius: 10px !important;
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  box-shadow: 0 8px 18px rgba(220, 38, 38, 0.14) !important;
+}
+
+.notifications-vnext-page .notifications-right-card[data-notification-rail-card="conflicts"] .notifications-rail-empty {
+  border: 1px dashed rgba(220, 38, 38, 0.28) !important;
+  background: #fef2f2 !important;
+  color: #991b1b !important;
+  font-weight: 750 !important;
+}

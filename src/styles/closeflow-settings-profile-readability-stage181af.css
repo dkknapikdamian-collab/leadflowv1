@@ -1,0 +1,76 @@
+/* CLOSEFLOW_STAGE181AF_SETTINGS_PROFILE_READABILITY_REMOVE_WORKSPACE
+   LOCAL ONLY
+   Scope: /settings.
+   Decision:
+   - Profile operator card stays and gets stronger typography/readability.
+   - Main Workspace card is removed because workspace info is now in the right summary rail.
+*/
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] {
+  border: 1px solid rgba(37, 99, 235, 0.18) !important;
+  background:
+    radial-gradient(circle at top right, rgba(37, 99, 235, 0.065), transparent 36%),
+    #ffffff !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.075) !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] .settings-section-head span {
+  color: #1d4ed8 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.16em !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] .settings-section-head h2,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] h2 {
+  color: #0f172a !important;
+  font-weight: 950 !important;
+  letter-spacing: -0.025em !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] .settings-section-head p,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] p {
+  color: #334155 !important;
+  font-weight: 700 !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] label,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] .settings-field label {
+  color: #1f2937 !important;
+  font-size: 12px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.01em !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] input,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] textarea,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] select {
+  min-height: 42px !important;
+  border: 1px solid #cbd5e1 !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  font-weight: 800 !important;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.055) !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] input::placeholder,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] textarea::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] input:disabled,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] textarea:disabled,
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] select:disabled {
+  border-color: #d1d5db !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569 !important;
+  opacity: 1 !important;
+}
+
+.settings-vnext-page [data-settings-profile-readability-stage181af="true"] button {
+  font-weight: 950 !important;
+}
+
+/* Safety: if HMR leaves the old Workspace card in DOM for one refresh, hide it by title pattern fallback is avoided.
+   Proper deletion happens in TSX. */

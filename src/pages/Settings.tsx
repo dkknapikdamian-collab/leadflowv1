@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Building2, Calendar, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
+﻿import { useEffect, useMemo, useState } from 'react';
+import { Building2, Calendar, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings as SettingsIcon, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
 import {
   EntityIcon,
   NotificationEntityIcon
@@ -18,9 +18,6 @@ import {
   toast
 } from 'sonner';
 import Layout from '../components/Layout';
-import {
-  useAppearance
-} from '../components/appearance-provider';
 import {
   Button
 } from '../components/ui/button';
@@ -70,6 +67,14 @@ import {
 import '../styles/visual-stage19-settings-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-settings-form-control-readability-stage179.css';
+import '../styles/closeflow-settings-tabs-stage181ac.css';
+import '../styles/closeflow-settings-summary-right-rail-stage181ae.css';
+import '../styles/closeflow-settings-profile-readability-stage181af.css';
+import '../styles/closeflow-settings-safe-copy-cleanup-stage181ai.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 const SETTINGS_VISUAL_REBUILD_STAGE19 = 'SETTINGS_VISUAL_REBUILD_STAGE19';
 const DAILY_DIGEST_EMAIL_UI_VISIBLE = false;
 const DAILY_DIGEST_EMAIL_TEST_COPY_GUARD = 'Wyślij test teraz';
@@ -80,6 +85,23 @@ const DAILY_DIGEST_EMAIL_NEEDS_CONFIG_COPY_GUARD = 'Digest wymaga konfiguracji';
 const DAILY_DIGEST_EMAIL_ENV_COPY_GUARD = 'RESEND_API_KEY: DIGEST_FROM_EMAIL:';
 const GOOGLE_CALENDAR_CONFIG_REQUIRED_IS_NOT_USER_ERROR_STAGE86 = 'Google Calendar wymaga konfiguracji w Vercel';
 const CLOSEFLOW_FB1_SETTINGS_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
+const SETTINGS_DATA_SECTION_VISIBLE = false;
+
+type SettingsTab = 'account' | 'notifications' | 'integrations' | 'app' | 'security' | 'data';
+
+const SETTINGS_TAB_ITEMS: Array<{
+  id: SettingsTab;
+  label: string;
+  eyebrow: string;
+  description: string;
+}> = [
+  { id: 'account', label: 'Konto', eyebrow: 'Profil i workspace', description: 'Operator, firma, plan i przestrzeń pracy.' },
+  { id: 'notifications', label: 'Powiadomienia', eyebrow: 'Alerty i digest', description: 'Live, in-app, browser, przypomnienia i digest.' },
+  { id: 'integrations', label: 'Integracje', eyebrow: 'Google Calendar', description: 'Połączenie, synchronizacja i przypomnienia Google.' },
+  { id: 'app', label: 'Aplikacja', eyebrow: 'Widok i telefon', description: 'Motyw, PWA i preferencje działania aplikacji.' },
+  { id: 'security', label: 'Bezpieczeństwo', eyebrow: 'Dostęp', description: 'E-mail, hasło i sesje użytkownika.' },
+  { id: 'data', label: 'Dane', eyebrow: 'Import / eksport', description: 'Eksport, reset demo i przyszłe operacje na danych.' },
+];
 
 type ProfileFormState = {
   fullName: string;
@@ -173,8 +195,8 @@ function asText(value: unknown, fallback = 'Nie ustawiono') {
 
 export default function Settings() {
   const { workspace, profile: workspaceProfile, loading: workspaceLoading, refresh, access, isAdmin, isAppOwner } = useWorkspace();
-  const { skin, setSkin, skinOptions } = useAppearance();
-  const authSnapshot = useClientAuthSnapshot();
+const authSnapshot = useClientAuthSnapshot();
+  const [activeSettingsTab, setActiveSettingsTab] = useState<SettingsTab>('account');
 
   const [profile, setProfile] = useState<ProfileFormState>({ fullName: '', companyName: '' });
   const [savingProfile, setSavingProfile] = useState(false);
@@ -714,12 +736,12 @@ useEffect(() => {
         browserNotificationsEnabled: nextValue,
         workspaceId: workspace?.id || null,
       });
-      toast.success(nextValue ? 'Live powiadomienia są aktywne.' : 'Live powiadomienia zostały wyłączone.');
+      toast.success(nextValue ? 'Powiadomienia przeglądarki są aktywne.' : 'Powiadomienia przeglądarki zostały wyłączone.');
       refresh();
     } catch (error: any) {
       setBrowserNotificationsEnabled(!nextValue);
       setBrowserNotificationsEnabledState(!nextValue);
-      toast.error(`Błąd zapisu live powiadomień: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd zapisu powiadomień przeglądarki: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -789,7 +811,7 @@ useEffect(() => {
           </div>
         </header>
 
-        <section className="settings-summary-grid" aria-label="Podsumowanie ustawień">
+        <section hidden className="settings-summary-grid settings-summary-grid-top-stage181ae-hidden" aria-label="Podsumowanie ustawień" data-settings-summary-top-stage181ae="hidden">
           {settingsSummary.map((item) => (
             <article key={item.label} className="settings-summary-card">
               <small>{item.label}</small>
@@ -798,24 +820,51 @@ useEffect(() => {
           ))}
         </section>
 
+        <nav className="settings-tabs-stage181ac" data-settings-tabs-stage181ac="true" aria-label="Kategorie ustawień">
+          {SETTINGS_TAB_ITEMS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              className={activeSettingsTab === tab.id ? 'settings-tab-stage181ac settings-tab-stage181ac-active' : 'settings-tab-stage181ac'}
+              data-settings-tab-kind={tab.id}
+              onClick={() => setActiveSettingsTab(tab.id)}
+              aria-pressed={activeSettingsTab === tab.id}
+            >
+              <span>{tab.eyebrow}</span>
+              <strong>{tab.label}</strong>
+              <small>{tab.description}</small>
+            </button>
+          ))}
+        </nav>
+
         <div className="settings-shell">
           <section className="settings-main-column">
-              <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill">
+                            <section hidden={activeSettingsTab !== 'integrations' || canUseGoogleCalendarByPlan} className="settings-section-card settings-tab-empty-stage181ac" data-settings-tab-panel="integrations" data-settings-integrations-empty-stage181ac="true">
+                <div className="settings-section-head">
+                  <div>
+                    <span><CalendarDays className="h-4 w-4" /> Integracje</span>
+                    <h2>Integracje niedostępne w tym planie</h2>
+                    <p>Google Calendar i zaawansowane integracje są pokazane po aktywacji odpowiedniego planu albo w trybie admina.</p>
+                  </div>
+                </div>
+              </section>
+
+<section hidden={activeSettingsTab !== 'integrations' || !canUseGoogleCalendarByPlan} data-settings-tab-panel="integrations" className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-stage12="outbound-backfill">
                 <div className="settings-section-head">
                   <div>
                     <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
                     <h2>Synchronizacja z Google</h2>
-                    <p>Zsynchronizuj istniejące zadania i wydarzenia z CloseFlow z Google Calendar. To pomaga po świeżym połączeniu konta albo po błędzie synchronizacji.</p>
+                    <p>Połącz konto Google i zsynchronizuj zadania oraz wydarzenia z kalendarzem.</p>
                   </div>
                 </div>
 
                 <div className="settings-action-row">
                   <Button type="button" onClick={() => void handleSyncGoogleCalendarOutbound()} disabled={syncingGoogleCalendarOutbound || checkingGoogleCalendar || !canUseGoogleCalendarByPlan || !googleCalendarConfigured || !googleCalendarConnected}>
                     <RefreshCw className="h-4 w-4" />
-                    {syncingGoogleCalendarOutbound ? 'Synchronizuję...' : 'Synchronizuj teraz z Google Calendar'}
+                    {syncingGoogleCalendarOutbound ? 'Synchronizuję...' : 'Synchronizuj teraz'}
                   </Button>
                   <span className="settings-muted-note">
-                    CloseFlow pozostaje źródłem prawdy. Google Calendar jest zewnętrznym widokiem i kanałem powiadomień.
+                    
                   </span>
                 </div>
 
@@ -826,12 +875,12 @@ useEffect(() => {
                 ) : null}
               </section>
 
-                        <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06">
+                        <section hidden={activeSettingsTab !== 'integrations' || !canUseGoogleCalendarByPlan} data-settings-tab-panel="integrations" className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06">
               <div className="settings-section-head">
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
                   <h2>Przypomnienia Google Calendar</h2>
-                  <p>Ustaw domyślny typ przypomnienia wysyłany do Google przy nowych i edytowanych wydarzeniach.</p>
+                  <p>Ustaw domyślne przypomnienie dla nowych i edytowanych wydarzeń.</p>
                 </div>
               </div>
 
@@ -867,12 +916,12 @@ useEffect(() => {
                   Zapisz przypomnienia Google
                 </Button>
                 <span className="settings-muted-note">
-                  Przy opcji domyślnej Google użyje ustawień z Twojego kalendarza. Przy popup/e-mail CloseFlow wysyła override do Google Calendar.
+                  
                 </span>
               </div>
             </section>
 
-<section className="settings-section-card">
+<section data-settings-profile-readability-stage181af="true" hidden={activeSettingsTab !== 'account'} data-settings-tab-panel="account" className="settings-section-card">
               <div className="settings-section-head">
                 <div>
                   <span><User className="h-4 w-4" /> Konto</span>
@@ -908,45 +957,22 @@ useEffect(() => {
               </div>
             </section>
 
-            <section className="settings-section-card">
-              <div className="settings-section-head">
-                <div>
-                  <span><Building2 className="h-4 w-4" /> Workspace</span>
-                  <h2>Workspace</h2>
-                  <p>Podstawowe informacje o przestrzeni pracy. Nie budujemy tutaj team managementu od zera.</p>
-                </div>
-              </div>
+            
 
-              <div className="settings-info-grid">
-                <article><small>Nazwa</small><strong>{workspaceName}</strong></article>
-                <article><small>Plan</small><strong>{planLabel}</strong></article>
-                <article><small>Status dostępu</small><strong>{accessLabel}</strong></article>
-                <article><small>Użytkownicy</small><strong>{isAdmin ? 'Admin + operatorzy' : 'Nie ustawiono'}</strong></article>
-              </div>
-            </section>
-
-            <section className="settings-section-card">
+            <section hidden={activeSettingsTab !== 'notifications'} data-settings-tab-panel="notifications" className="settings-section-card">
               <div className="settings-section-head">
                 <div>
                   <span><EntityIcon entity="notification" className="h-4 w-4" /> Powiadomienia</span>
                   <h2>Powiadomienia</h2>
-                  <p>Ustawienia in-app, browser i digest, jeśli backend je obsługuje.</p>
+                  <p></p>
                 </div>
               </div>
 
-              <div className="settings-toggle-list">
-                <label className="settings-toggle-row">
+              <div className="settings-toggle-list" data-settings-notifications-source-truth-stage181ao2="true">
+                <label className="settings-toggle-row" data-settings-app-notifications-checkbox-stage181ao2="true">
                   <div>
-                    <strong>Live powiadomienia w aplikacji</strong>
-                    <span>Włączone powiadomienia wewnątrz aplikacji i zapis preferencji profilu.</span>
-                  </div>
-                  <input type="checkbox" checked={browserNotificationsEnabled} onChange={() => void toggleBrowserNotifications()} />
-                </label>
-
-                <label className="settings-toggle-row">
-                  <div>
-                    <strong>Powiadomienia in-app</strong>
-                    <span>Włącz wyświetlanie przypomnień w runtime aplikacji.</span>
+                    <strong>Powiadomienia w aplikacji</strong>
+                    <span>Włącz przypomnienia i alerty widoczne wewnątrz CloseFlow.</span>
                   </div>
                   <input
                     type="checkbox"
@@ -959,69 +985,74 @@ useEffect(() => {
                   />
                 </label>
 
-                <div className="settings-browser-box">
+                <label className="settings-toggle-row" data-settings-browser-checkbox-stage181ao2="true">
                   <div>
                     <strong>Powiadomienia przeglądarki</strong>
                     <span>{permissionCopy(browserPermission)}</span>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => void requestBrowserPermission()}
-                    disabled={browserPermission === 'granted' || browserPermission === 'unsupported' || browserPermission === 'denied'}
-                  >
-                    {browserPermission === 'granted'
-                      ? 'Włączone'
-                      : browserPermission === 'denied'
-                        ? 'Zablokowane'
-                        : browserPermission === 'unsupported'
-                          ? 'Niedostępne'
-                          : 'Włącz'}
-                  </Button>
-                </div>
+                  <input
+                    type="checkbox"
+                    checked={browserNotificationsEnabled}
+                    disabled={browserPermission === 'unsupported'}
+                    onChange={async (event) => {
+                      const wantsEnabled = event.target.checked;
 
-                <div className="settings-browser-box">
+                      if (wantsEnabled && browserPermission !== 'granted') {
+                        if (!supportsBrowserNotifications()) {
+                          setBrowserPermission('unsupported');
+                          toast.error('Ta przeglądarka nie wspiera powiadomień systemowych.');
+                          return;
+                        }
+
+                        if (browserPermission === 'default') {
+                          const permission = await Notification.requestPermission();
+                          setBrowserPermission(permission);
+
+                          if (permission !== 'granted') {
+                            toast.error('Preferencja włączona w CloseFlow, ale przeglądarka może blokować wyświetlanie powiadomień.');
+                          }
+                        }
+
+                        if (browserPermission === 'denied') {
+                          toast.error('Preferencja włączona w CloseFlow, ale przeglądarka blokuje powiadomienia dla tej strony.');
+                        }
+                      }
+
+                      if (wantsEnabled !== browserNotificationsEnabled) {
+                        await toggleBrowserNotifications();
+                      }
+                    }}
+                  />
+                </label>
+
+                <label className="settings-toggle-row" data-settings-conflict-warnings-checkbox-stage181ao2="true">
+                  <div>
+                    <strong>Ostrzeżenia o konfliktach terminów</strong>
+                    <span>Pokazuj alert, gdy zadania lub wydarzenia nachodzą na siebie.</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={conflictWarningsEnabled}
+                    onChange={(event) => void handleConflictWarningsToggle(event.target.checked)}
+                  />
+                </label>
+
+                <label className="settings-toggle-row" data-settings-digest-checkbox-stage181ao2="true">
                   <div>
                     <strong>Digest e-mail</strong>
                     <span>
                       {canUseDigestByPlan
-                        ? 'Ustawienia digestu są dostępne poniżej.'
-                        : 'Digest jest dostępny od planu Basic. Na Free zobaczysz konfigurację, ale wysyłka będzie zablokowana.'}
+                        ? 'Wysyłaj codzienne podsumowanie e-mail, jeśli plan i konfiguracja na to pozwalają.'
+                        : 'Dostępne od planu Basic.'}
                     </span>
                   </div>
-                  <span className="settings-soft-pill">{dailyDigestEnabled ? 'Włączony w workspace' : 'Wyłączony w workspace'}</span>
-                </div>
-
-                <div className="settings-form-grid">
-                  <div className="settings-field">
-                    <Label>Domyślne przypomnienie (min)</Label>
-                    <Input
-                      type="number"
-                      min={0}
-                      max={1440}
-                      value={defaultReminderMinutes}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setDefaultReminderMinutes(value);
-                        setReminderSettings({ defaultReminderMinutes: Number(value || '30') });
-                      }}
-                    />
-                  </div>
-                  <div className="settings-field">
-                    <Label>Domyślne odłożenie (min)</Label>
-                    <Input
-                      type="number"
-                      min={5}
-                      max={10080}
-                      value={defaultSnoozeMinutes}
-                      onChange={(event) => {
-                        const value = event.target.value;
-                        setDefaultSnoozeMinutes(value);
-                        setReminderSettings({ defaultSnoozeMinutes: Number(value || '15') });
-                      }}
-                    />
-                  </div>
-                </div>
+                  <input
+                    type="checkbox"
+                    checked={dailyDigestEnabled}
+                    disabled={!canUseDigestByPlan}
+                    onChange={(event) => setDailyDigestEnabled(event.target.checked)}
+                  />
+                </label>
               </div>
 
               {digestUiVisibleByPlan ? (
@@ -1085,12 +1116,12 @@ useEffect(() => {
             </section>
 
 
-            <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true">
+            <section hidden={activeSettingsTab !== 'integrations' || !canUseGoogleCalendarByPlan} data-settings-tab-panel="integrations" className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true">
               <div className="settings-section-head">
                 <div>
                   <span><CalendarDays className="h-4 w-4" /> Google Calendar</span>
                   <h2>Google Calendar Sync V1</h2>
-                  <p>Jednokierunkowy sync CloseFlow → Google Calendar. Wymaga OAuth, ENV i aktywnego połączenia użytkownika.</p>
+                  <p></p>
                 </div>
               </div>
 
@@ -1152,17 +1183,17 @@ useEffect(() => {
               </div>
 
               <div className="settings-diagnostics-box">
-                <div>Zakres V1: CloseFlow jest źródłem prawdy, Google Calendar jest kopią wydarzeń.</div>
-                <div>Przypomnienia Google są zapisywane razem z wydarzeniem jako domyślne albo popup/email według danych eventu.</div>
+                <div></div>
+                <div></div>
               </div>
             </section>
 
-<section className="settings-section-card" data-settings-pwa-help="true">
+<section hidden={activeSettingsTab !== 'app'} data-settings-tab-panel="app" className="settings-section-card" data-settings-pwa-help="true">
               <div className="settings-section-head">
                 <div>
                   <span><Smartphone className="h-4 w-4" /> PWA / telefon</span>
                   <h2>Dodaj CloseFlow do ekranu głównego telefonu</h2>
-                  <p>To nadal aplikacja webowa. Nie instalujemy natywnej apki z App Store ani Google Play.</p>
+                  <p></p>
                 </div>
               </div>
 
@@ -1186,52 +1217,8 @@ useEffect(() => {
               </div>
             </section>
 
-            <section className="settings-section-card">
-              <div className="settings-section-head">
-                <div>
-                  <span><MonitorCog className="h-4 w-4" /> Preferencje aplikacji</span>
-                  <h2>Preferencje aplikacji</h2>
-                  <p>Motyw, planowanie i ustawienia widoku. Nie dokładamy języków ani gęstości UI, jeśli nie ma ich w kodzie.</p>
-                </div>
-              </div>
 
-              <div className="settings-theme-grid">
-                {skinOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    onClick={() => {
-                      void setSkin(option.id)
-                        .then(() => {
-                          toast.success(`Aktywowano motyw: ${option.label}`);
-                          refresh();
-                        })
-                        .catch((error: any) => toast.error(`Błąd zapisu motywu: ${error?.message || 'REQUEST_FAILED'}`));
-                    }}
-                    className={skin === option.id ? 'settings-theme-card settings-theme-active' : 'settings-theme-card'}
-                  >
-                    <strong>{option.label}</strong>
-                    <span>{option.description}</span>
-                  </button>
-                ))}
-              </div>
-
-              <label className="settings-toggle-row settings-toggle-row-spaced">
-                <div>
-                  <strong>Ostrzeżenia o konfliktach terminów</strong>
-                  <span>Przy dodawaniu lub edycji zadania albo wydarzenia aplikacja ostrzeże o konflikcie.</span>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={conflictWarningsEnabled}
-                  onChange={(event) => {
-                    void handleConflictWarningsToggle(event.target.checked);
-                  }}
-                />
-              </label>
-            </section>
-
-            <section className="settings-section-card">
+            <section hidden={activeSettingsTab !== 'security'} data-settings-tab-panel="security" className="settings-section-card">
               <div className="settings-section-head">
                 <div>
                   <span><Shield className="h-4 w-4" /> Dostęp i bezpieczeństwo</span>
@@ -1321,7 +1308,7 @@ useEffect(() => {
               </div>
             </section>
 
-            <section className="settings-section-card">
+            <section hidden={!SETTINGS_DATA_SECTION_VISIBLE || activeSettingsTab !== 'data'} data-settings-data-section-hidden-stage180="true" data-settings-tab-panel="data" className="settings-section-card">
               <div className="settings-section-head">
                 <div>
                   <span><Database className="h-4 w-4" /> Dane</span>
@@ -1337,43 +1324,26 @@ useEffect(() => {
             </section>
           </section>
 
-          <aside className="settings-right-rail" aria-label="Panel ustawień">
-            <section className="right-card settings-right-card">
-              <div className="settings-right-title">
-                <User className="h-4 w-4" />
-                <h2>Konto</h2>
+          <aside className="settings-right-rail settings-summary-right-rail-stage181ae" aria-label="Podsumowanie ustawień" data-settings-summary-right-rail-stage181ae="true">
+            <section className="right-card settings-summary-rail-card-stage181ae">
+              <div className="settings-summary-rail-head-stage181ae">
+                <span className="settings-summary-rail-icon-stage181ae" aria-hidden="true">
+                  <User className="h-4 w-4" />
+                </span>
+                <div>
+                  <h2>Podsumowanie</h2>
+                  <p>Konto, workspace, plan i dostęp w jednym miejscu.</p>
+                </div>
               </div>
-              <p>{asText(profile.fullName || accountEmail, 'Operator')}</p>
-              <small>{accountEmail || 'Brak e-maila'}</small>
-            </section>
 
-            <section className="right-card settings-right-card">
-              <div className="settings-right-title">
-                <Users className="h-4 w-4" />
-                <h2>Workspace</h2>
+              <div className="settings-summary-rail-grid-stage181ae">
+                {settingsSummary.map((item) => (
+                  <article key={item.label} className="settings-summary-rail-item-stage181ae" data-settings-summary-item-stage181ae={String(item.label).toLowerCase()}>
+                    <small>{item.label}</small>
+                    <strong>{item.value}</strong>
+                  </article>
+                ))}
               </div>
-              <p>{workspaceName}</p>
-              <small>Plan: {planLabel}</small>
-            </section>
-
-
-
-            <section className="right-card settings-right-card">
-              <div className="settings-right-title">
-                <SlidersHorizontal className="h-4 w-4" />
-                <h2>Integracje</h2>
-              </div>
-              <p>Bez nowych integracji</p>
-              <small>Google Calendar, import/export i zaawansowane integracje wymagają osobnych etapów.</small>
-            </section>
-
-            <section className="right-card settings-right-card">
-              <div className="settings-right-title">
-                <LockKeyhole className="h-4 w-4" />
-                <h2>Bezpieczeństwo</h2>
-              </div>
-              <p>{passwordAuthAvailable ? 'Hasło aktywne' : 'Hasło nieustawione'}</p>
-              <small>2FA nie jest budowane w tym etapie.</small>
             </section>
           </aside>
         </div>
@@ -1389,3 +1359,6 @@ useEffect(() => { if (!canUseGoogleCalendarByPlan) return; loadGoogleCalendarSta
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
 */}
+
+
+

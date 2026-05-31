@@ -1,0 +1,9610 @@
+﻿# STAGE193_SIDEBAR_SOURCE_AND_RENDER_AUDIT_LOCAL_ONLY_REPORT
+
+## ROUTING
+- canonical_name: CloseFlow / LeadFlow
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- mode: local-only, audit-only, no git add, no commit, no push
+
+## CEL
+Audyt lewego panelu bocznego: dlaczego realny sidebar nie jest rozciągnięty do dołu i dlaczego poprzednie patche zmieniały tło albo szerokość zamiast panelu.
+
+## GIT STATUS
+-  M .gitignore
+-  M _project/07_NEXT_STEPS.md
+-  M _project/08_CHANGELOG_AI.md
+-  M _project/13_TEST_HISTORY.md
+-  M package-lock.json
+-  M src/App.tsx
+-  M src/components/CloseFlowPageHeaderV2.tsx
+-  M src/components/GlobalQuickActions.tsx
+-  M src/components/Layout.tsx
+-  M src/components/PwaInstallPrompt.tsx
+-  M src/components/TaskCreateDialog.tsx
+-  M src/components/operator-rail/TopValueRecordsCard.tsx
+-  M src/components/topic-contact-picker.tsx
+-  M src/components/ui-system/PageShell.tsx
+-  M src/hooks/useWorkspace.ts
+-  M src/lib/appearance.ts
+-  M src/lib/page-header-content.ts
+-  M src/pages/Activity.tsx
+-  M src/pages/AdminAiSettings.tsx
+-  M src/pages/AiDrafts.tsx
+-  M src/pages/Billing.tsx
+-  M src/pages/Calendar.tsx
+-  M src/pages/Cases.tsx
+-  M src/pages/Clients.tsx
+-  M src/pages/Leads.tsx
+-  M src/pages/NotificationsCenter.tsx
+-  M src/pages/ResponseTemplates.tsx
+-  M src/pages/Settings.tsx
+-  M src/pages/SupportCenter.tsx
+-  M src/pages/TasksStable.tsx
+-  M src/pages/Templates.tsx
+-  M src/pages/Today.tsx
+-  M src/pages/TodayStable.tsx
+-  M src/pages/UiPreviewVNext.tsx
+-  M src/pages/UiPreviewVNextFull.tsx
+-  M src/styles/closeflow-calendar-selected-day-new-tile-v9.css
+-  M src/styles/closeflow-right-rail-source-truth.css
+-  M src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css
+-  M src/styles/visual-stage19-settings-vnext.css
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage132 PWA install prompt copy cleanup.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage133 Local Admin Preview.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage134 search and leads value card cleanup.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage135 right rail heading source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage136 desktop wide content.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage137 desktop content shell fix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage138 desktop left anchor content.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage139 unified desktop canvas and right stretch.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage140 unified desktop work width.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage141 shared work width frame.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage142 repair shared work width frame mount.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage143 hard work frame width.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-22 - CloseFlow Stage144 shell content width source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage145 route root width normalization.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage146 fluid work surface.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage147 shell overflow and work surface repair.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage148 scaled desktop shell.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage149 clean desktop app shell canvas.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage150 panel typography and width source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage151 compact cards source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage152 dense cards 80 percent target.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage156 real density tokens no zoom.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage157 viewport zoom 80 source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage158 overlay portal density source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage159 overlay real density and footer fix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage160 modal center and compact all.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage161 cf modal surface center fix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage162 cf modal lower smaller source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage163 cf modal main center tall compact.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage164 cf modal top anchor light surface.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage165 modal unified event motif source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage166 modal footer in flow no overlay.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage167 remove quick planning placeholder.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage168 remove sales list label from cards.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage169 topic contact picker readable and task guard.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage170 task dialog relation and field readability.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage171 remove modal helper copy.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage172 global client button and picker icon cleanup.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage173 main search source truth.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage174 main search surface and text normalization.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage175 extend main search source truth secondary pages.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-23 - CloseFlow Stage176 TopValueRecordsCard duplicate import hotfix.md"
+- ?? "OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-05-24 - CloseFlow Stage177 leads clients list layout source truth.md"
+- ?? _local_backups/
+- ?? _project/BACKUP_before_restore_remove_stage153_154_20260523_171407.patch
+- ?? _project/BACKUP_before_restore_remove_stage155_20260523_173341.patch
+- ?? _project/STAGE132_PWA_INSTALL_COPY_CLEANUP_REPORT.md
+- ?? _project/STAGE133_LOCAL_ADMIN_PREVIEW_REPORT.md
+- ?? _project/STAGE134_SEARCH_AND_LEADS_VALUE_CARD_CLEANUP_REPORT.md
+- ?? _project/STAGE135_RIGHT_RAIL_HEADING_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE136_DESKTOP_WIDE_CONTENT_REPORT.md
+- ?? _project/STAGE137_DESKTOP_CONTENT_SHELL_FIX_REPORT.md
+- ?? _project/STAGE138_DESKTOP_LEFT_ANCHOR_CONTENT_REPORT.md
+- ?? _project/STAGE139_UNIFIED_DESKTOP_CANVAS_AND_RIGHT_STRETCH_REPORT.md
+- ?? _project/STAGE140_UNIFIED_DESKTOP_WORK_WIDTH_REPORT.md
+- ?? _project/STAGE141_SHARED_WORK_WIDTH_FRAME_REPORT.md
+- ?? _project/STAGE142_REPAIR_SHARED_WORK_WIDTH_FRAME_MOUNT_REPORT.md
+- ?? _project/STAGE143_HARD_WORK_FRAME_WIDTH_REPORT.md
+- ?? _project/STAGE144_SHELL_CONTENT_WIDTH_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE145_FORENSIC_WIDTH_AUDIT_LOCAL.txt
+- ?? _project/STAGE145_ROUTE_ROOT_WIDTH_NORMALIZATION_REPORT.md
+- ?? _project/STAGE146_FLUID_WORK_SURFACE_REPORT.md
+- ?? _project/STAGE147_SHELL_OVERFLOW_AND_WORK_SURFACE_REPAIR_REPORT.md
+- ?? _project/STAGE148_PRE_AUDIT_SHELL_CLIPPING_LOCAL.txt
+- ?? _project/STAGE148_SCALED_DESKTOP_SHELL_REPORT.md
+- ?? _project/STAGE149_CLEAN_DESKTOP_APP_SHELL_CANVAS_REPORT.md
+- ?? _project/STAGE150_PANEL_TYPOGRAPHY_AND_WIDTH_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE151_COMPACT_CARDS_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE152_DENSE_CARDS_80_PERCENT_TARGET_REPORT.md
+- ?? _project/STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM_REPORT.md
+- ?? _project/STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX_REPORT.md
+- ?? _project/STAGE160_MODAL_CENTER_AND_COMPACT_ALL_REPORT.md
+- ?? _project/STAGE161_CF_MODAL_SURFACE_CENTER_FIX_REPORT.md
+- ?? _project/STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE163_CF_MODAL_MAIN_CENTER_TALL_COMPACT_REPORT.md
+- ?? _project/STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE_REPORT.md
+- ?? _project/STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY_REPORT.md
+- ?? _project/STAGE167_REMOVE_QUICK_PLANNING_PLACEHOLDER_REPORT.md
+- ?? _project/STAGE168_REMOVE_SALES_LIST_LABEL_FROM_CARDS_REPORT.md
+- ?? _project/STAGE168_TOUCHED_FILES.txt
+- ?? _project/STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD_REPORT.md
+- ?? _project/STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY_REPORT.md
+- ?? _project/STAGE171_REMOVE_MODAL_HELPER_COPY_REPORT.md
+- ?? _project/STAGE171_TOUCHED_FILES.txt
+- ?? _project/STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP_REPORT.md
+- ?? _project/STAGE173_MAIN_SEARCH_SOURCE_TRUTH_REPORT.md
+- ?? _project/STAGE173_MAIN_SEARCH_TOUCHED_FILES.txt
+- ?? _project/STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION_REPORT.md
+- ?? _project/STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES_REPORT.md
+- ?? _project/STAGE175_SEARCH_SOURCE_TOUCHED_FILES.txt
+- ?? _project/STAGE176_TOP_VALUE_RECORDS_CARD_DUPLICATE_IMPORT_HOTFIX_REPORT.md
+- ?? _project/STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH_REPORT.md
+- ?? _project/archive/
+- ?? _project/restore_remove_stage155.cjs
+- ?? _project/runs/STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY_2026-05-29.md
+- ?? _project/runs/STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY_2026-05-29.md.stage179.bak
+- ?? _project/runs/STAGE182_GREEN_FOCUS_THEME_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE183_FOREST_NAVY_THEME_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE184_FOREST_NAVY_DARK_SETTINGS_HARDENING_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE185_FOREST_NAVY_READABLE_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE186_THEME_ROLLBACK_DISABLE_SWITCH_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE187B_HIDE_APP_PREFERENCES_SECTION_FIX_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE187_HIDE_APP_PREFERENCES_SECTION_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE188_SIDEBAR_FULL_HEIGHT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE189_SIDEBAR_LEFT_RAIL_FULL_VIEWPORT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE190B_SIDEBAR_REAL_PANEL_FULL_HEIGHT_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE191_SIDEBAR_HEIGHT_ONLY_KEEP_WIDTH_LOCAL_ONLY_REPORT.md
+- ?? _project/runs/STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY_REPORT.md
+- ?? docs/ui/CLOSEFLOW_STAGE145_RUNTIME_WIDTH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE146_RUNTIME_WIDTH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE147_RUNTIME_WIDTH_AND_CLIPPING_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE148_RUNTIME_SCALED_DESKTOP_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE149_RUNTIME_APP_SHELL_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE150_PANEL_VISUAL_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE151_COMPACT_CARDS_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE152_DENSE_CARDS_80_PERCENT_TARGET.md
+- ?? docs/ui/CLOSEFLOW_STAGE156_REAL_DENSITY_TOKENS_NO_ZOOM.md
+- ?? docs/ui/CLOSEFLOW_STAGE156_RUNTIME_DENSITY_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE157_RUNTIME_VIEWPORT_ZOOM_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE157_VIEWPORT_ZOOM_80_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE158_OVERLAY_PORTAL_DENSITY_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE158_RUNTIME_OVERLAY_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE159_OVERLAY_REAL_DENSITY_AND_FOOTER_FIX.md
+- ?? docs/ui/CLOSEFLOW_STAGE159_RUNTIME_OVERLAY_FOOTER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE160_MODAL_CENTER_AND_COMPACT_ALL.md
+- ?? docs/ui/CLOSEFLOW_STAGE160_RUNTIME_MODAL_CENTER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE161_CF_MODAL_SURFACE_CENTER_FIX.md
+- ?? docs/ui/CLOSEFLOW_STAGE161_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE162_CF_MODAL_SURFACE_LOWER_SMALLER_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE162_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE163_CF_MODAL_MAIN_CENTER_TALL_COMPACT.md
+- ?? docs/ui/CLOSEFLOW_STAGE163_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE164_CF_MODAL_TOP_ANCHOR_LIGHT_SURFACE.md
+- ?? docs/ui/CLOSEFLOW_STAGE164_RUNTIME_CF_MODAL_SURFACE_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE165_RUNTIME_MODAL_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE166_MODAL_FOOTER_IN_FLOW_NO_OVERLAY.md
+- ?? docs/ui/CLOSEFLOW_STAGE166_RUNTIME_MODAL_FOOTER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE167_REMOVE_QUICK_PLANNING_PLACEHOLDER.md
+- ?? docs/ui/CLOSEFLOW_STAGE168_REMOVE_SALES_LIST_LABEL_FROM_CARDS.md
+- ?? docs/ui/CLOSEFLOW_STAGE169_RUNTIME_TOPIC_CONTACT_PICKER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE169_TOPIC_CONTACT_PICKER_READABLE_AND_TASK_GUARD.md
+- ?? docs/ui/CLOSEFLOW_STAGE170_RUNTIME_TASK_DIALOG_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE170_TASK_DIALOG_RELATION_AND_FIELD_READABILITY.md
+- ?? docs/ui/CLOSEFLOW_STAGE171_REMOVE_MODAL_HELPER_COPY.md
+- ?? docs/ui/CLOSEFLOW_STAGE171_RUNTIME_MODAL_HELPER_COPY_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE172_GLOBAL_CLIENT_BUTTON_PICKER_ICON_CLEANUP.md
+- ?? docs/ui/CLOSEFLOW_STAGE172_RUNTIME_GLOBAL_CLIENT_AND_PICKER_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE173_MAIN_SEARCH_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE173_RUNTIME_MAIN_SEARCH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE174_MAIN_SEARCH_SURFACE_AND_TEXT_NORMALIZATION.md
+- ?? docs/ui/CLOSEFLOW_STAGE174_RUNTIME_MAIN_SEARCH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE175_EXTEND_MAIN_SEARCH_SOURCE_TRUTH_SECONDARY_PAGES.md
+- ?? docs/ui/CLOSEFLOW_STAGE175_RUNTIME_SECONDARY_SEARCH_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE176_TOP_VALUE_RECORDS_CARD_DUPLICATE_IMPORT_HOTFIX.md
+- ?? docs/ui/CLOSEFLOW_STAGE177_LEADS_CLIENTS_LIST_LAYOUT_SOURCE_TRUTH.md
+- ?? docs/ui/CLOSEFLOW_STAGE177_RUNTIME_LEADS_CLIENTS_LAYOUT_AUDIT.js
+- ?? docs/ui/CLOSEFLOW_STAGE178_RUNTIME_TASKS_LAYOUT_AUDIT.js
+- ?? scripts/apply-stage146-fluid-work-surface.cjs
+- ?? scripts/apply-stage147-shell-overflow-work-surface.cjs
+- ?? scripts/apply-stage148-scaled-desktop-shell.cjs
+- ?? scripts/apply-stage149-clean-desktop-app-shell-canvas.cjs
+- ?? scripts/apply-stage150-panel-typography-source-truth.cjs
+- ?? scripts/apply-stage151-compact-cards-source-truth.cjs
+- ?? scripts/apply-stage152-dense-cards-80-percent-target.cjs
+- ?? scripts/apply-stage156-real-density-tokens-no-zoom.cjs
+- ?? scripts/apply-stage157-viewport-zoom-80.cjs
+- ?? scripts/apply-stage158-overlay-portal-density.cjs
+- ?? scripts/apply-stage159-overlay-real-density-and-footer.cjs
+- ?? scripts/apply-stage160-modal-center-and-compact-all.cjs
+- ?? scripts/apply-stage161-cf-modal-surface-center-fix.cjs
+- ?? scripts/apply-stage162-cf-modal-surface-lower-smaller.cjs
+- ?? scripts/apply-stage163-cf-modal-main-center-tall-compact.cjs
+- ?? scripts/apply-stage164-cf-modal-top-anchor-light-surface.cjs
+- ?? scripts/apply-stage165-modal-unified-event-motif.cjs
+- ?? scripts/apply-stage166-modal-footer-in-flow-no-overlay.cjs
+- ?? scripts/apply-stage167-remove-quick-planning-placeholder.cjs
+- ?? scripts/apply-stage168-remove-sales-list-label-from-cards.cjs
+- ?? scripts/apply-stage169-topic-contact-picker-readable.cjs
+- ?? scripts/apply-stage170-task-dialog-relation-and-field-readability.cjs
+- ?? scripts/apply-stage171-remove-modal-helper-copy.cjs
+- ?? scripts/apply-stage172-global-client-button-picker-icon-cleanup.cjs
+- ?? scripts/apply-stage173-main-search-source-truth.cjs
+- ?? scripts/apply-stage174-main-search-surface-and-text-normalization.cjs
+- ?? scripts/apply-stage175-extend-main-search-source-truth-secondary-pages.cjs
+- ?? scripts/apply-stage176-top-value-records-card-duplicate-import-hotfix.cjs
+- ?? scripts/apply-stage177-leads-clients-list-layout-source-truth.cjs
+- ?? scripts/check-stage132-pwa-install-copy-cleanup.cjs
+- ?? scripts/check-stage133-local-admin-preview.cjs
+- ?? scripts/check-stage134-search-and-value-card.cjs
+- ?? scripts/check-stage135-right-rail-heading-source-truth.cjs
+- ?? scripts/check-stage136-desktop-wide-content.cjs
+- ?? scripts/check-stage137-desktop-content-shell.cjs
+- ?? scripts/check-stage138-desktop-left-anchor-content.cjs
+- ?? scripts/check-stage139-unified-desktop-canvas.cjs
+- ?? scripts/check-stage140-unified-desktop-work-width.cjs
+- ?? scripts/check-stage141-shared-work-width-frame.cjs
+- ?? scripts/check-stage142-repair-shared-work-width-frame-mount.cjs
+- ?? scripts/check-stage143-hard-work-frame-width.cjs
+- ?? scripts/check-stage144-shell-content-width-source-truth.cjs
+- ?? scripts/check-stage145-route-root-width-normalization.cjs
+- ?? scripts/check-stage146-fluid-work-surface.cjs
+- ?? scripts/check-stage147-shell-overflow-work-surface.cjs
+- ?? scripts/check-stage148-scaled-desktop-shell.cjs
+- ?? scripts/check-stage149-clean-desktop-app-shell-canvas.cjs
+- ?? scripts/check-stage150-panel-typography-and-width-source-truth.cjs
+- ?? scripts/check-stage151-compact-cards-source-truth.cjs
+- ?? scripts/check-stage152-dense-cards-80-percent-target.cjs
+- ?? scripts/check-stage156-real-density-tokens-no-zoom.cjs
+- ?? scripts/check-stage157-viewport-zoom-80.cjs
+- ?? scripts/check-stage158-overlay-portal-density.cjs
+- ?? scripts/check-stage159-overlay-real-density-and-footer.cjs
+- ?? scripts/check-stage160-modal-center-and-compact-all.cjs
+- ?? scripts/check-stage161-cf-modal-surface-center-fix.cjs
+- ?? scripts/check-stage162-cf-modal-surface-lower-smaller.cjs
+- ?? scripts/check-stage163-cf-modal-main-center-tall-compact.cjs
+- ?? scripts/check-stage164-cf-modal-top-anchor-light-surface.cjs
+- ?? scripts/check-stage165-modal-unified-event-motif.cjs
+- ?? scripts/check-stage166-modal-footer-in-flow-no-overlay.cjs
+- ?? scripts/check-stage167-remove-quick-planning-placeholder.cjs
+- ?? scripts/check-stage168-remove-sales-list-label-from-cards.cjs
+- ?? scripts/check-stage169-topic-contact-picker-readable.cjs
+- ?? scripts/check-stage170-task-dialog-relation-and-field-readability.cjs
+- ?? scripts/check-stage171-remove-modal-helper-copy.cjs
+- ?? scripts/check-stage172-global-client-button-picker-icon-cleanup.cjs
+- ?? scripts/check-stage173-main-search-source-truth.cjs
+- ?? scripts/check-stage174-main-search-surface-and-text-normalization.cjs
+- ?? scripts/check-stage175-extend-main-search-source-truth-secondary-pages.cjs
+- ?? scripts/check-stage176-top-value-records-card-duplicate-import-hotfix.cjs
+- ?? scripts/check-stage177-leads-clients-list-layout-source-truth.cjs
+- ?? scripts/check-stage181c-mobile-simple-filters-source-truth-local.cjs
+- ?? scripts/check-stage181e-top-value-spacing-local.cjs
+- ?? scripts/local-fix-calendar-duplicate-declaration.cjs
+- ?? scripts/local-fix-stage181aa-admin-ai-settings-runtime-guard.cjs
+- ?? scripts/local-fix-stage181ab-settings-duplicate-declaration.cjs
+- ?? scripts/local-fix-stage181d-top-value-cards-source-truth.cjs
+- ?? scripts/local-fix-stage181f-tasks-urgent-title-trash-icon.cjs
+- ?? scripts/local-fix-stage181g-tasks-custom-urgent-tooltip.cjs
+- ?? scripts/local-fix-stage181j-calendar-local-done-state.cjs
+- ?? scripts/local-fix-stage181j-v2-calendar-local-done-state.cjs
+- ?? scripts/local-fix-stage181k-calendar-month-tooltip-clean.cjs
+- ?? scripts/local-fix-stage181l-template-modal-visual-source.cjs
+- ?? scripts/local-fix-stage181m-template-modal-light.cjs
+- ?? scripts/local-fix-stage181n-template-modal-rebuild.cjs
+- ?? scripts/local-fix-stage181o-template-type-other.cjs
+- ?? scripts/local-fix-stage181p-remove-templates-badge.cjs
+- ?? scripts/local-fix-stage181q-response-template-modal-spacing.cjs
+- ?? scripts/local-fix-stage181r-response-template-modal-lead-style.cjs
+- ?? scripts/local-fix-stage181s-response-template-cancel-visible.cjs
+- ?? scripts/local-fix-stage181t-activity-duplicate-declaration.cjs
+- ?? scripts/local-fix-stage181u-activity-visual-taxonomy.cjs
+- ?? scripts/local-fix-stage181v-activity-rail-force-colors.cjs
+- ?? scripts/local-fix-stage181w-ai-drafts-rail-colors.cjs
+- ?? scripts/local-fix-stage181x-notifications-rail-colors.cjs
+- ?? scripts/local-fix-stage181y-notifications-remove-help-card.cjs
+- ?? scripts/local-fix-stage181z-billing-visual-taxonomy.cjs
+- ?? scripts/local-seed-stage181h-calendar-dev-preview.cjs
+- ?? scripts/local-seed-stage181i-calendar-direct.cjs
+- ?? src/App.tsx.stage185.bak
+- ?? src/App.tsx.stage186.before-rollback.bak
+- ?? src/App.tsx.stage190b.bak
+- ?? src/App.tsx.stage191.bak
+- ?? src/App.tsx.stage192.bak
+- ?? src/components/ClientCreateDialog.tsx
+- ?? src/components/Layout.tsx.stage184.bak
+- ?? src/components/Layout.tsx.stage186.before-rollback.bak
+- ?? src/components/Layout.tsx.stage188.bak
+- ?? src/components/Layout.tsx.stage189.bak
+- ?? src/components/Layout.tsx.stage190b.bak
+- ?? src/components/Layout.tsx.stage191.bak
+- ?? src/components/Layout.tsx.stage192.bak
+- ?? src/components/ShellDesktopViewportRuntime.tsx
+- ?? src/index.css.stage181.bak
+- ?? src/index.css.stage182.bak
+- ?? src/index.css.stage183.bak
+- ?? src/index.css.stage186.before-rollback.bak
+- ?? src/lib/appearance.ts.stage181.bak
+- ?? src/lib/appearance.ts.stage182.bak
+- ?? src/lib/appearance.ts.stage183.bak
+- ?? src/lib/appearance.ts.stage185.bak
+- ?? src/lib/appearance.ts.stage186.before-rollback.bak
+- ?? src/pages/Settings.tsx.stage179.bak
+- ?? src/pages/Settings.tsx.stage180.bak
+- ?? src/pages/Settings.tsx.stage180c.bak
+- ?? src/pages/Settings.tsx.stage180d.bak
+- ?? src/pages/Settings.tsx.stage180e.bak
+- ?? src/pages/Settings.tsx.stage180f.bak
+- ?? src/pages/Settings.tsx.stage184.bak
+- ?? src/pages/Settings.tsx.stage186.before-rollback.bak
+- ?? src/pages/Settings.tsx.stage187-hide-preferences-section.bak
+- ?? src/pages/Settings.tsx.stage187b-before-fix.bak
+- ?? src/styles/closeflow-activity-rail-force-colors-stage181v.css
+- ?? src/styles/closeflow-activity-visual-source-truth-stage181u.css
+- ?? src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css
+- ?? src/styles/closeflow-billing-visual-taxonomy-stage181z.css
+- ?? src/styles/closeflow-cf-modal-main-center-tall-compact-stage163.css
+- ?? src/styles/closeflow-cf-modal-surface-center-fix-stage161.css
+- ?? src/styles/closeflow-cf-modal-surface-lower-smaller-stage162.css
+- ?? src/styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css
+- ?? src/styles/closeflow-clean-desktop-app-shell-canvas-stage149.css
+- ?? src/styles/closeflow-compact-cards-source-truth-stage151.css
+- ?? src/styles/closeflow-dense-cards-80-percent-target-stage152.css
+- ?? src/styles/closeflow-desktop-content-shell-stage137.css
+- ?? src/styles/closeflow-desktop-left-anchor-content-stage138.css
+- ?? src/styles/closeflow-desktop-wide-content-stage136.css
+- ?? src/styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css
+- ?? src/styles/closeflow-fluid-work-surface-stage146.css
+- ?? src/styles/closeflow-global-client-create-dialog-stage172.css
+- ?? src/styles/closeflow-green-focus-theme-stage182.css.stage183.replaced.bak
+- ?? src/styles/closeflow-hard-work-frame-width-stage143.css
+- ?? src/styles/closeflow-leads-clients-list-layout-source-truth-stage177.css
+- ?? src/styles/closeflow-main-search-source-truth-stage173.css
+- ?? src/styles/closeflow-main-search-surface-and-text-normalization-stage174.css
+- ?? src/styles/closeflow-modal-center-and-compact-all-stage160.css
+- ?? src/styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css
+- ?? src/styles/closeflow-modal-unified-event-motif-source-truth-stage165.css
+- ?? src/styles/closeflow-notifications-conflict-card-stage181aj.css
+- ?? src/styles/closeflow-notifications-rail-force-colors-stage181x.css
+- ?? src/styles/closeflow-overlay-portal-density-stage158.css
+- ?? src/styles/closeflow-overlay-real-density-and-footer-stage159.css
+- ?? src/styles/closeflow-panel-typography-and-width-source-truth-stage150.css
+- ?? src/styles/closeflow-real-density-tokens-no-zoom-stage156.css
+- ?? src/styles/closeflow-remove-modal-helper-copy-stage171.css
+- ?? src/styles/closeflow-repair-shared-work-width-frame-stage142.css
+- ?? src/styles/closeflow-response-template-modal-source-truth-stage181r.css
+- ?? src/styles/closeflow-right-rail-heading-source-truth-stage135.css
+- ?? src/styles/closeflow-route-root-width-normalization-stage145.css
+- ?? src/styles/closeflow-scaled-desktop-shell-stage148.css
+- ?? src/styles/closeflow-search-source-truth-stage134.css
+- ?? src/styles/closeflow-secondary-pages-full-width-stage181ad.css
+- ?? src/styles/closeflow-settings-form-control-readability-stage179.css
+- ?? src/styles/closeflow-settings-form-control-readability-stage179.css.stage179.bak
+- ?? src/styles/closeflow-settings-profile-readability-stage181af.css
+- ?? src/styles/closeflow-settings-safe-copy-cleanup-stage181ai.css
+- ?? src/styles/closeflow-settings-summary-right-rail-stage181ae.css
+- ?? src/styles/closeflow-settings-tabs-stage181ac.css
+- ?? src/styles/closeflow-shared-work-width-frame-stage141.css
+- ?? src/styles/closeflow-shell-content-width-source-truth-stage144.css
+- ?? src/styles/closeflow-shell-overflow-work-surface-stage147.css
+- ?? src/styles/closeflow-sidebar-fit-height-stage192.css
+- ?? src/styles/closeflow-task-dialog-relation-and-field-readability-stage170.css
+- ?? src/styles/closeflow-template-modal-source-truth-stage181l.css
+- ?? src/styles/closeflow-template-modal-source-truth-stage181n.css
+- ?? src/styles/closeflow-theme-runtime-stage181.css.stage182.removed.bak
+- ?? src/styles/closeflow-topic-contact-picker-readable-stage169.css
+- ?? src/styles/closeflow-unified-desktop-canvas-stage139.css
+- ?? src/styles/closeflow-unified-desktop-work-width-stage140.css
+- ?? src/styles/closeflow-viewport-zoom-80-source-truth-stage157.css
+- ?? src/styles/visual-stage19-settings-vnext.css.stage180e.bak
+- ?? src/styles/visual-stage19-settings-vnext.css.stage180f.bak
+- ?? src/styles/visual-stage19-settings-vnext.css.stage180g.bak
+- ?? tests/stage179-settings-form-control-readability-contract.test.cjs
+- ?? tests/stage179-settings-form-control-readability-contract.test.cjs.stage179.bak
+
+## AKTYWNE PLIKI SIDEBAR CSS
+- src\styles\closeflow-sidebar-fit-height-stage192.css
+- src\styles\eliteflow-sidebar-footer-contrast-repair.css
+- src\styles\eliteflow-sidebar-user-footer-below-nav.css
+- src\styles\stageA19v2-sidebar-nav-contrast-fix.css
+- src\styles\stageA20c-sidebar-today-hitbox-fix.css
+- src\styles\stageA20d-sidebar-unified-nav-tone.css
+- src\styles\stageA20e-sidebar-today-tone-lock.css
+- src\styles\stageA20-sidebar-today-click-fix.css
+
+## IMPORTY CSS W App.tsx
+- L15: import './styles/closeflow-action-tokens.css';
+- L16: import './styles/closeflow-action-clusters.css';
+- L17: import './styles/closeflow-form-actions.css';
+- L18: import './styles/closeflow-card-readability.css';
+- L19: import './styles/closeflow-surface-tokens.css';
+- L20: import './styles/closeflow-modal-visual-system.css';
+- L21: import './styles/closeflow-metric-tiles.css';
+- L22: import './styles/closeflow-page-header.css';
+- L23: import './styles/closeflow-list-row-tokens.css';
+- L24: import './styles/closeflow-alert-severity.css';
+- L25: import './styles/closeflow-right-rail-source-truth.css';
+- L26: import './styles/closeflow-command-actions-source-truth.css';
+- L27: import './styles/closeflow-page-header-copy-source-truth.css';
+- L28: import './styles/closeflow-page-header-action-semantics-packet1.css';
+- L29: import './styles/closeflow-search-source-truth-stage134.css';
+- L30: import './styles/closeflow-right-rail-heading-source-truth-stage135.css';
+- L31: import './styles/closeflow-clean-desktop-app-shell-canvas-stage149.css';
+- L32: import './styles/closeflow-panel-typography-and-width-source-truth-stage150.css';
+- L33: import './styles/closeflow-compact-cards-source-truth-stage151.css';
+- L34: import './styles/closeflow-dense-cards-80-percent-target-stage152.css';
+- L35: import './styles/closeflow-real-density-tokens-no-zoom-stage156.css';
+- L36: import './styles/closeflow-viewport-zoom-80-source-truth-stage157.css';
+- L37: import './styles/closeflow-overlay-portal-density-stage158.css';
+- L38: import './styles/closeflow-overlay-real-density-and-footer-stage159.css';
+- L39: import './styles/closeflow-modal-center-and-compact-all-stage160.css';
+- L40: import './styles/closeflow-cf-modal-surface-center-fix-stage161.css';
+- L41: import './styles/closeflow-cf-modal-surface-lower-smaller-stage162.css';
+- L42: import './styles/closeflow-cf-modal-main-center-tall-compact-stage163.css';
+- L43: import './styles/closeflow-cf-modal-top-anchor-light-surface-stage164.css';
+- L44: import './styles/closeflow-modal-unified-event-motif-source-truth-stage165.css';
+- L45: import './styles/closeflow-modal-footer-in-flow-no-overlay-stage166.css';
+- L46: import './styles/closeflow-topic-contact-picker-readable-stage169.css';
+- L47: import './styles/closeflow-task-dialog-relation-and-field-readability-stage170.css';
+- L48: import './styles/closeflow-remove-modal-helper-copy-stage171.css';
+- L49: import './styles/closeflow-global-client-create-dialog-stage172.css';
+- L50: import './styles/closeflow-main-search-source-truth-stage173.css';
+- L51: import './styles/closeflow-main-search-surface-and-text-normalization-stage174.css';
+- L52: import './styles/closeflow-extend-main-search-source-truth-secondary-pages-stage175.css';
+- L53: import './styles/closeflow-leads-clients-list-layout-source-truth-stage177.css';
+- L54: import './styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css';
+- L55: import './styles/closeflow-secondary-pages-full-width-stage181ad.css';
+- L56: import './styles/closeflow-sidebar-fit-height-stage192.css';
+
+## IMPORTY CSS W Layout.tsx
+- L36: import '../styles/closeflow-compact-top-shell-source-truth.css';
+- L37: import '../styles/closeflow-operator-top-trim-source-truth.css';
+- L40: import '../styles/closeflow-desktop-density-source-truth.css';
+
+## ŚLADY LOKALNYCH PATCHY SIDEBARA
+- brak aktywnych śladów stage188-stage192 / closeflow-sidebar
+
+## TRAFIENIA CSS / JSX DLA SIDEBARA
+- 56: import './styles/closeflow-sidebar-fit-height-stage192.css';
+- 11: /* VISUAL_HTML_THEME_V15_STAGE01_GUARD_COMPAT keeps legacy guard text: className="app closeflow-visual-stage01" */
+- 14: VISUAL_STAGE_01_SHELL_SIDEBAR
+- 23: Zakres: ciemny sidebar, grupy menu, global-bar, mobile-top, mobile-nav i footer konta/trialu.
+- 108: <span style={{ width: `${width}%` }} />
+- 204: const handleSidebarPointerRouter = (event: any) => {
+- 212: '[data-shell-sidebar="true"] [data-nav-path], [data-shell-mobile-menu="true"] [data-nav-path], [data-shell-mobile-nav="true"] [data-nav-path]',
+- 252: className="app closeflow-visual-stage01 cf-html-shell"
+- 253: data-visual-stage="01-shell-sidebar"
+- 254: data-sidebar-pointer-router="true"
+- 255: onPointerDownCapture={handleSidebarPointerRouter}
+- 259: <aside className="sidebar" data-shell-sidebar="true">
+- 269: <nav className="nav-scroll" aria-label="Główne menu CloseFlow">
+- 273: <div className="sidebar-footer">
+- 276: <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
+- 320: <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
+- 334: <div className="global-bar" data-shell-global-bar="true">
+- 104: min-height: 100%;
+- 2: position: relative;
+- 5: display: inline-flex;
+- 47: position: absolute;
+- 51: width: 320px;
+- 52: display: grid;
+- 63: width: min(720px, 92vw);
+- 68: display: flex;
+- 78: display: grid;
+- 80: max-height: 360px;
+- 81: overflow: auto;
+- 85: display: grid;
+- 86: grid-template-columns: minmax(0, 1fr) 130px;
+- 98: display: block;
+- 103: position: fixed;
+- 106: display: flex;
+- 111: overflow: auto;
+- 118: position: relative;
+- 120: width: min(520px, 96vw);
+- 121: max-height: calc(100vh - 112px);
+- 122: overflow: auto;
+- 124: display: grid;
+- 134: width: min(760px, 96vw);
+- 138: display: grid;
+- 148: width: 100%;
+- 157: min-height: 72px;
+- 161: display: grid;
+- 170: display: flex;
+- 175: @media (max-width: 900px) {
+- 177: max-width: 100%;
+- 178: overflow-x: auto;
+- 209: @media (max-height: 720px) {
+- 215: max-height: calc(100vh - 96px);
+- 219: @media (max-height: 560px) {
+- 225: max-height: calc(100vh - 64px);
+- 231: position: fixed;
+- 235: max-width: min(420px, calc(100vw - 48px));
+- 246: position: fixed;
+- 250: max-width: min(420px, calc(100vw - 48px));
+- 261: position: fixed;
+- 265: width: min(480px, calc(100vw - 48px));
+- 266: max-height: min(720px, calc(100vh - 48px));
+- 267: overflow: auto;
+- 268: display: grid;
+- 284: display: grid;
+- 293: width: 100%;
+- 302: min-height: 64px;
+- 331: @media (max-width: 760px) {
+- 337: width: calc(100vw - 24px);
+- 338: max-width: calc(100vw - 24px);
+- 372: @media (max-width: 760px) {
+- 107: min-height: 2.75rem;
+- 111: @media (max-width: 768px) {
+- 123: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 127: grid-template-columns: 1fr;
+- 35: display: flex;
+- 55: line-height: 1.05;
+- 61: max-width: 48rem;
+- 64: line-height: 1.45;
+- 68: display: grid;
+- 69: grid-template-columns: 1.12fr 1fr 0.9fr;
+- 74: min-height: 10.5rem;
+- 79: display: flex;
+- 82: overflow: hidden;
+- 106: display: flex;
+- 124: line-height: 1.1;
+- 132: line-height: 1.45;
+- 137: display: flex;
+- 143: display: flex;
+- 156: height: 0.55rem;
+- 157: overflow: hidden;
+- 162: display: grid;
+- 163: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 176: display: block;
+- 179: line-height: 1;
+- 184: display: block;
+- 188: line-height: 1.15;
+- 193: display: flex;
+- 202: display: flex;
+- 223: @media (max-width: 1120px) {
+- 225: grid-template-columns: 1fr;
+- 229: min-height: auto;
+- 233: @media (max-width: 768px) {
+- 246: display: grid;
+- 247: width: 100%;
+- 248: grid-template-columns: 1fr;
+- 253: width: 100%;
+- 257: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 9: display: grid !important;
+- 10: grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(7.5rem, auto);
+- 25: min-width: 0;
+- 37: width: 100%;
+- 38: min-width: 0;
+- 39: display: flex !important;
+- 59: max-width: 100%;
+- 61: overflow-wrap: anywhere;
+- 63: line-height: 1.28;
+- 73: width: 100%;
+- 74: min-width: 0;
+- 75: display: flex !important;
+- 91: min-width: max-content;
+- 94: @media (max-width: 1024px) {
+- 96: grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr);
+- 114: @media (max-width: 520px) {
+- 116: grid-template-columns: 1fr;
+- 146: width: 100% !important;
+- 147: max-width: none !important;
+- 148: min-width: 0;
+- 149: display: block;
+- 153: width: 100% !important;
+- 154: max-width: none !important;
+- 155: min-width: 0;
+- 159: width: 100% !important;
+- 160: max-width: none !important;
+- 161: min-width: 0;
+- 168: width: 100% !important;
+- 169: max-width: none !important;
+- 170: min-width: 0;
+- 177: display: block;
+- 178: width: 100%;
+- 179: max-width: none;
+- 180: min-width: 0;
+- 184: width: 100% !important;
+- 185: max-width: none !important;
+- 186: min-width: 0;
+- 193: min-width: 0;
+- 198: max-width: 100%;
+- 199: min-width: 0;
+- 200: display: flex;
+- 207: min-width: 0;
+- 214: overflow-wrap: anywhere;
+- 218: display: grid;
+- 219: grid-template-columns: minmax(0, 1fr) minmax(260px, 360px);
+- 224: @media (min-width: 901px) {
+- 226: grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) minmax(260px, 360px) !important;
+- 230: min-width: 260px;
+- 234: @media (max-width: 900px) {
+- 236: grid-template-columns: 1fr;
+- 240: grid-template-columns: minmax(2.25rem, auto) minmax(0, 1fr) !important;
+- 244: @media (max-width: 520px) {
+- 249: width: 100% !important;
+- 250: max-width: 100% !important;
+- 282: @media (max-width: 520px) {
+- 291: display: grid;
+- 292: grid-template-columns:
+- 303: min-width: 0;
+- 307: min-width: 0;
+- 311: min-width: 0;
+- 313: display: flex;
+- 319: display: inline-flex;
+- 326: @media (max-width: 75rem) {
+- 328: grid-template-columns:
+- 340: @media (max-width: 47.5rem) {
+- 342: grid-template-columns: auto minmax(0, 1fr);
+- 10: display: flex;
+- 34: display: inline-flex;
+- 39: @media (max-width: 640px) {
+- 44: width: 100%;
+- 52: min-width: 0;
+- 81: @media (max-width: 640px) {
+- 61: display: inline-flex;
+- 120: display: flex;
+- 124: min-width: max-content;
+- 136: display: flex;
+- 144: width: fit-content;
+- 147: @media (max-width: 640px) {
+- 151: width: 100%;
+- 152: min-width: 0;
+- 162: width: 100%;
+- 194: width: 1rem;
+- 195: height: 1rem;
+- 202: display: inline-flex;
+- 205: min-width: 0;
+- 206: max-width: 100%;
+- 210: display: flex;
+- 216: width: fit-content;
+- 219: @media (max-width: 640px) {
+- 221: width: 100%;
+- 230: width: 100%;
+- 19: position: relative !important;
+- 20: overflow: hidden !important;
+- 22: border-width: 1px !important;
+- 31: position: absolute !important;
+- 35: width: 5px !important;
+- 101: width: 26px !important;
+- 102: height: 26px !important;
+- 118: min-height: 46px !important;
+- 138: min-width: 30px !important;
+- 139: height: 26px !important;
+- 138: position: relative !important;
+- 139: overflow: hidden !important;
+- 140: border-width: 1px !important;
+- 146: position: absolute !important;
+- 148: width: 5px !important;
+- 257: @media (max-width: 860px) {
+- 259: width: 4px !important;
+- 126: position: relative !important;
+- 127: overflow: hidden !important;
+- 129: border-width: 1px !important;
+- 138: position: absolute !important;
+- 142: width: 5px !important;
+- 226: width: 26px !important;
+- 227: height: 26px !important;
+- 243: min-height: 46px !important;
+- 270: min-width: 30px !important;
+- 271: height: 26px !important;
+- 88: width: fit-content;
+- 94: display: inline-flex;
+- 99: line-height: 1;
+- 128: width: 2.75rem;
+- 129: height: 2.75rem;
+- 131: display: inline-flex;
+- 40: position: relative !important;
+- 41: overflow: hidden !important;
+- 48: position: absolute !important;
+- 52: width: 5px !important;
+- 122: position: relative !important;
+- 123: overflow: hidden !important;
+- 124: border-width: 1px !important;
+- 131: position: absolute !important;
+- 135: width: 5px !important;
+- 243: position: relative !important;
+- 244: overflow: hidden !important;
+- 246: border-width: 1px !important;
+- 254: position: absolute !important;
+- 258: width: 5px !important;
+- 333: width: 26px !important;
+- 334: height: 26px !important;
+- 381: @media (max-width: 860px) {
+- 385: width: 4px !important;
+- 6: - keep global left sidebar untouched
+- 31: /* Strict scope: Calendar content only, never the global left app sidebar */
+- 39: display: inline-flex !important;
+- 42: width: fit-content !important;
+- 43: max-width: 100% !important;
+- 49: line-height: 1 !important;
+- 144: /* Visible overflow link */
+- 147: [class*="overflow"],
+- 24: /* Calendar-only. Do not touch global sidebar. */
+- 38: display: grid !important;
+- 42: overflow: hidden !important;
+- 54: position: relative !important;
+- 56: display: grid !important;
+- 57: grid-template-columns: auto minmax(0, 1fr) !important;
+- 62: min-height: var(--cf-cal-month-chip-height-v1) !important;
+- 63: height: var(--cf-cal-month-chip-height-v1) !important;
+- 64: max-height: var(--cf-cal-month-chip-height-v1) !important;
+- 70: line-height: 1 !important;
+- 72: overflow: hidden !important;
+- 73: text-overflow: clip !important;
+- 86: position: static !important;
+- 90: min-width: 0 !important;
+- 91: max-width: 100% !important;
+- 92: height: auto !important;
+- 93: max-height: 18px !important;
+- 97: line-height: 18px !important;
+- 99: overflow: hidden !important;
+- 100: text-overflow: ellipsis !important;
+- 114: max-width: 46px !important;
+- 125: min-width: 32px !important;
+- 126: max-width: 56px !important;
+- 127: height: 18px !important;
+- 128: min-height: 18px !important;
+- 131: line-height: 18px !important;
+- 135: overflow: hidden !important;
+- 136: text-overflow: clip !important;
+- 149: min-width: 0 !important;
+- 150: line-height: 18px !important;
+- 152: overflow: hidden !important;
+- 153: text-overflow: ellipsis !important;
+- 37: display: flex !important;
+- 43: width: 100% !important;
+- 44: min-width: 0 !important;
+- 45: max-width: 100% !important;
+- 46: height: var(--cf-month-entry-height-v3) !important;
+- 47: min-height: var(--cf-month-entry-height-v3) !important;
+- 48: max-height: var(--cf-month-entry-height-v3) !important;
+- 55: line-height: 1 !important;
+- 57: overflow: hidden !important;
+- 58: text-overflow: clip !important;
+- 59: position: relative !important;
+- 74: position: static !important;
+- 81: min-height: 0 !important;
+- 82: max-height: 20px !important;
+- 88: width: 34px !important;
+- 89: min-width: 34px !important;
+- 90: max-width: 34px !important;
+- 91: height: 18px !important;
+- 92: min-height: 18px !important;
+- 93: max-height: 18px !important;
+- 94: display: inline-flex !important;
+- 102: line-height: 18px !important;
+- 105: overflow: hidden !important;
+- 106: text-overflow: clip !important;
+- 111: min-width: 0 !important;
+- 112: width: auto !important;
+- 113: max-width: 100% !important;
+- 114: display: block !important;
+- 115: height: 18px !important;
+- 116: max-height: 18px !important;
+- 119: line-height: 18px !important;
+- 123: overflow: hidden !important;
+- 124: text-overflow: ellipsis !important;
+- 183: #root [data-cf-page-header-v2="calendar"] ~ * :is([class*="more"], [class*="remaining"], [class*="overflow"]) {
+- 184: display: block !important;
+- 190: line-height: 18px !important;
+- 10: Calendar page content only. No sidebar changes.
+- 26: display: flex !important;
+- 33: width: 100% !important;
+- 34: min-width: 0 !important;
+- 35: max-width: 100% !important;
+- 37: height: var(--cf-cal-month-line-height-v4) !important;
+- 38: min-height: var(--cf-cal-month-line-height-v4) !important;
+- 39: max-height: var(--cf-cal-month-line-height-v4) !important;
+- 55: line-height: var(--cf-cal-month-line-height-v4) !important;
+- 59: overflow: hidden !important;
+- 60: text-overflow: clip !important;
+- 62: position: relative !important;
+- 72: position: static !important;
+- 76: min-width: 0 !important;
+- 77: max-width: 100% !important;
+- 78: min-height: 0 !important;
+- 79: max-height: var(--cf-cal-month-line-height-v4) !important;
+- 83: line-height: var(--cf-cal-month-line-height-v4) !important;
+- 85: overflow: hidden !important;
+- 86: text-overflow: ellipsis !important;
+- 91: width: auto !important;
+- 92: min-width: 22px !important;
+- 93: max-width: 28px !important;
+- 94: height: 14px !important;
+- 95: min-height: 14px !important;
+- 96: max-height: 14px !important;
+- 97: display: inline-flex !important;
+- 104: line-height: 14px !important;
+- 108: overflow: hidden !important;
+- 109: text-overflow: clip !important;
+- 114: min-width: 0 !important;
+- 115: width: auto !important;
+- 116: max-width: 100% !important;
+- 117: display: block !important;
+- 118: height: var(--cf-cal-month-line-height-v4) !important;
+- 119: max-height: var(--cf-cal-month-line-height-v4) !important;
+- 123: overflow: hidden !important;
+- 124: text-overflow: ellipsis !important;
+- 154: #root [data-cf-page-header-v2="calendar"] ~ * :is([class*="more"], [class*="remaining"], [class*="overflow"]) {
+- 155: display: block !important;
+- 156: width: 100% !important;
+- 164: line-height: 17px !important;
+- 166: overflow: hidden !important;
+- 167: text-overflow: ellipsis !important;
+- 220: display: block !important;
+- 221: width: 100% !important;
+- 234: line-height: 17px !important;
+- 237: overflow: hidden !important;
+- 238: text-overflow: ellipsis !important;
+- 17: Calendar content only, no global sidebar.
+- 62: display: block !important;
+- 63: position: relative !important;
+- 64: min-width: 0 !important;
+- 65: max-width: 100% !important;
+- 66: overflow: hidden !important;
+- 71: Use display:flex and block flow, not grid, because current DOM has nested utility styles. */
+- 81: position: relative !important;
+- 83: display: flex !important;
+- 90: width: 100% !important;
+- 91: min-width: 0 !important;
+- 92: max-width: 100% !important;
+- 94: min-height: var(--cf-cal-month-row-height-r2) !important;
+- 95: height: var(--cf-cal-month-row-height-r2) !important;
+- 96: max-height: var(--cf-cal-month-row-height-r2) !important;
+- 106: line-height: 1 !important;
+- 108: overflow: hidden !important;
+- 109: text-overflow: clip !important;
+- 140: position: static !important;
+- 147: display: inline-flex !important;
+- 151: min-width: 0 !important;
+- 152: max-width: 100% !important;
+- 153: min-height: 0 !important;
+- 154: height: auto !important;
+- 155: max-height: 20px !important;
+- 161: line-height: 18px !important;
+- 163: overflow: hidden !important;
+- 164: text-overflow: ellipsis !important;
+- 175: width: var(--cf-cal-month-badge-width-r2) !important;
+- 176: min-width: var(--cf-cal-month-badge-width-r2) !important;
+- 177: max-width: var(--cf-cal-month-badge-width-r2) !important;
+- 178: height: var(--cf-cal-month-badge-height-r2) !important;
+- 179: min-height: var(--cf-cal-month-badge-height-r2) !important;
+- 180: max-height: var(--cf-cal-month-badge-height-r2) !important;
+- 184: line-height: var(--cf-cal-month-badge-height-r2) !important;
+- 190: overflow: hidden !important;
+- 191: text-overflow: clip !important;
+- 204: min-width: 0 !important;
+- 205: width: auto !important;
+- 206: max-width: 100% !important;
+- 208: display: inline-block !important;
+- 209: line-height: 18px !important;
+- 210: height: 18px !important;
+- 211: max-height: 18px !important;
+- 214: overflow: hidden !important;
+- 215: text-overflow: ellipsis !important;
+- 233: max-width: 42px !important;
+- 247: display: inline-block !important;
+- 248: max-width: 100% !important;
+- 251: overflow: hidden !important;
+- 252: text-overflow: ellipsis !important;
+- 17: display: block !important;
+- 18: width: 100% !important;
+- 19: min-height: 58px !important;
+- 20: overflow: visible !important;
+- 28: display: grid !important;
+- 29: grid-template-columns: auto minmax(240px, 1fr) 78px 120px auto !important;
+- 32: min-width: 0 !important;
+- 37: display: inline-flex !important;
+- 38: width: auto !important;
+- 39: min-width: 94px !important;
+- 40: max-width: none !important;
+- 41: height: 26px !important;
+- 43: overflow: visible !important;
+- 46: text-overflow: clip !important;
+- 59: display: none !important;
+- 63: display: block !important;
+- 64: min-width: 0 !important;
+- 65: max-width: 100% !important;
+- 66: overflow: visible !important;
+- 68: text-overflow: clip !important;
+- 72: line-height: 1.35 !important;
+- 77: overflow: visible !important;
+- 78: text-overflow: clip !important;
+- 83: position: relative !important;
+- 87: @media (max-width: 1100px) {
+- 89: grid-template-columns: 1fr !important;
+- 95: width: fit-content !important;
+- 96: min-width: 94px !important;
+- 12: display: block !important;
+- 13: width: 100% !important;
+- 14: min-height: 58px !important;
+- 15: overflow: visible !important;
+- 23: display: grid !important;
+- 24: grid-template-columns: auto minmax(240px, 1fr) 76px 118px auto !important;
+- 27: min-width: 0 !important;
+- 32: display: inline-flex !important;
+- 35: width: auto !important;
+- 36: min-width: 94px !important;
+- 37: max-width: none !important;
+- 38: height: 26px !important;
+- 40: overflow: visible !important;
+- 41: text-overflow: clip !important;
+- 45: line-height: 1 !important;
+- 59: display: none !important;
+- 63: display: block !important;
+- 64: min-width: 0 !important;
+- 65: max-width: 100% !important;
+- 66: overflow: visible !important;
+- 68: text-overflow: clip !important;
+- 72: line-height: 1.35 !important;
+- 77: overflow: visible !important;
+- 78: text-overflow: clip !important;
+- 86: max-width: 100% !important;
+- 93: @media (max-width: 1020px) {
+- 95: grid-template-columns: 1fr !important;
+- 101: width: fit-content !important;
+- 102: min-width: 94px !important;
+- 6: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card,
+- 8: display: block !important;
+- 9: width: 100% !important;
+- 10: min-height: 52px !important;
+- 11: overflow: visible !important;
+- 18: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card > div,
+- 20: display: grid !important;
+- 21: grid-template-columns: auto minmax(0, 1fr) auto auto auto !important;
+- 24: min-width: 0 !important;
+- 27: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+- 29: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill,
+- 31: display: inline-flex !important;
+- 34: width: auto !important;
+- 35: min-width: 94px !important;
+- 36: max-width: none !important;
+- 37: height: 26px !important;
+- 39: overflow: visible !important;
+- 40: text-overflow: clip !important;
+- 44: line-height: 1 !important;
+- 52: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::before,
+- 53: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::after,
+- 56: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::before,
+- 57: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::after,
+- 61: display: none !important;
+- 64: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-title="true"],
+- 66: display: block !important;
+- 67: min-width: 0 !important;
+- 68: max-width: 100% !important;
+- 69: overflow: visible !important;
+- 71: text-overflow: clip !important;
+- 74: line-height: 1.35 !important;
+- 78: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card a,
+- 79: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card p,
+- 82: max-width: 100% !important;
+- 85: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .truncate,
+- 87: overflow: visible !important;
+- 88: text-overflow: clip !important;
+- 91: @media (max-width: 900px) {
+- 92: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card > div,
+- 94: grid-template-columns: 1fr !important;
+- 98: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+- 100: width: fit-content !important;
+- 101: min-width: 94px !important;
+- 6: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card,
+- 8: display: block !important;
+- 9: width: 100% !important;
+- 10: min-height: 52px !important;
+- 11: overflow: visible !important;
+- 18: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card > div,
+- 20: display: grid !important;
+- 21: grid-template-columns: auto minmax(0, 1fr) auto auto auto !important;
+- 24: min-width: 0 !important;
+- 27: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+- 29: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill,
+- 31: display: inline-flex !important;
+- 34: width: auto !important;
+- 35: min-width: 94px !important;
+- 36: max-width: none !important;
+- 37: height: 26px !important;
+- 39: overflow: visible !important;
+- 40: text-overflow: clip !important;
+- 44: line-height: 1 !important;
+- 52: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::before,
+- 53: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"]::after,
+- 56: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::before,
+- 57: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .cf-entity-type-pill::after,
+- 61: display: none !important;
+- 64: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-title="true"],
+- 66: display: block !important;
+- 67: min-width: 0 !important;
+- 68: max-width: 100% !important;
+- 69: overflow: visible !important;
+- 71: text-overflow: clip !important;
+- 74: line-height: 1.35 !important;
+- 78: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card a,
+- 79: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card p,
+- 82: max-width: 100% !important;
+- 85: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card .truncate,
+- 87: overflow: visible !important;
+- 88: text-overflow: clip !important;
+- 91: @media (max-width: 900px) {
+- 92: #root .cf-html-shell [data-cf-calendar-selected-day="true"] .calendar-entry-card > div,
+- 94: grid-template-columns: 1fr !important;
+- 98: #root .cf-html-shell [data-cf-calendar-selected-day="true"] [data-cf-entry-type-label="true"],
+- 100: width: fit-content !important;
+- 101: min-width: 94px !important;
+- 13: overflow: hidden !important;
+- 17: display: flex !important;
+- 38: line-height: 1.18 !important;
+- 43: display: inline-flex !important;
+- 46: min-height: 28px !important;
+- 58: display: grid !important;
+- 75: display: grid !important;
+- 76: grid-template-columns: minmax(0, 1fr) minmax(224px, 324px) !important;
+- 87: display: grid !important;
+- 89: min-width: 0 !important;
+- 93: display: flex !important;
+- 97: min-width: 0 !important;
+- 103: display: inline-flex !important;
+- 106: min-height: 22px !important;
+- 111: line-height: 1 !important;
+- 134: display: block !important;
+- 139: line-height: 1.35 !important;
+- 140: overflow: visible !important;
+- 142: text-overflow: clip !important;
+- 144: overflow-wrap: anywhere !important;
+- 148: display: flex !important;
+- 152: min-width: 0 !important;
+- 170: display: inline-flex !important;
+- 177: display: grid !important;
+- 178: grid-template-columns: 1fr !important;
+- 182: min-width: 0 !important;
+- 183: width: 100% !important;
+- 190: display: grid !important;
+- 191: grid-template-columns: repeat(4, minmax(48px, 1fr)) !important;
+- 193: width: 100% !important;
+- 194: min-width: 0 !important;
+- 201: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 205: display: inline-flex !important;
+- 208: width: 100% !important;
+- 209: min-height: 30px !important;
+- 210: min-width: 0 !important;
+- 218: line-height: 1 !important;
+- 263: display: none !important;
+- 270: display: grid !important;
+- 275: display: grid !important;
+- 289: display: flex !important;
+- 306: line-height: 1.2 !important;
+- 312: display: inline-flex !important;
+- 315: min-height: 24px !important;
+- 327: display: grid !important;
+- 329: min-width: 0 !important;
+- 333: display: block !important;
+- 348: display: grid !important;
+- 349: grid-template-columns: minmax(0, 1fr) auto !important;
+- 352: width: 100% !important;
+- 353: max-width: none !important;
+- 354: min-width: 0 !important;
+- 355: min-height: 50px !important;
+- 357: overflow: visible !important;
+- 368: display: flex !important;
+- 371: min-width: 0 !important;
+- 372: overflow: hidden !important;
+- 377: display: flex !important;
+- 382: min-width: 0 !important;
+- 389: display: inline-flex !important;
+- 392: min-height: 20px !important;
+- 397: line-height: 1 !important;
+- 420: display: block !important;
+- 422: min-width: 96px !important;
+- 423: max-width: clamp(140px, 28vw, 360px) !important;
+- 428: line-height: 1.2 !important;
+- 430: overflow: hidden !important;
+- 431: text-overflow: ellipsis !important;
+- 433: overflow-wrap: normal !important;
+- 437: display: inline-flex !important;
+- 442: min-width: 70px !important;
+- 443: max-width: 260px !important;
+- 444: overflow: hidden !important;
+- 446: text-overflow: ellipsis !important;
+- 454: min-width: 0 !important;
+- 455: overflow: hidden !important;
+- 457: text-overflow: ellipsis !important;
+- 471: display: flex !important;
+- 477: min-width: 0 !important;
+- 482: display: inline-flex !important;
+- 485: min-height: 26px !important;
+- 493: line-height: 1 !important;
+- 523: @media (max-width: 900px) {
+- 527: grid-template-columns: minmax(0, 1fr) !important;
+- 533: max-width: none !important;
+- 537: @media (max-width: 520px) {
+- 540: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 544: display: grid !important;
+- 545: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 546: width: 100% !important;
+- 550: width: 100% !important;
+- 564: display: grid !important;
+- 565: grid-template-columns: minmax(0, 1fr) auto !important;
+- 568: width: 100% !important;
+- 569: max-width: none !important;
+- 570: min-width: 0 !important;
+- 571: min-height: 50px !important;
+- 573: overflow: visible !important;
+- 584: display: none !important;
+- 589: display: flex !important;
+- 592: min-width: 0 !important;
+- 593: overflow: hidden !important;
+- 598: display: flex !important;
+- 603: min-width: 0 !important;
+- 610: display: inline-flex !important;
+- 613: min-height: 20px !important;
+- 618: line-height: 1 !important;
+- 641: display: block !important;
+- 643: min-width: 96px !important;
+- 644: max-width: clamp(140px, 28vw, 360px) !important;
+- 649: line-height: 1.2 !important;
+- 651: overflow: hidden !important;
+- 652: text-overflow: ellipsis !important;
+- 654: overflow-wrap: normal !important;
+- 658: display: inline-flex !important;
+- 663: min-width: 70px !important;
+- 664: max-width: 260px !important;
+- 665: overflow: hidden !important;
+- 667: text-overflow: ellipsis !important;
+- 675: min-width: 0 !important;
+- 676: overflow: hidden !important;
+- 678: text-overflow: ellipsis !important;
+- 692: display: flex !important;
+- 698: min-width: 0 !important;
+- 699: width: auto !important;
+- 707: display: inline-flex !important;
+- 710: min-height: 26px !important;
+- 711: width: auto !important;
+- 712: min-width: 0 !important;
+- 720: line-height: 1 !important;
+- 770: @media (max-width: 900px) {
+- 772: grid-template-columns: minmax(0, 1fr) !important;
+- 777: display: grid !important;
+- 779: overflow: visible !important;
+- 783: display: grid !important;
+- 784: grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+- 785: width: 100% !important;
+- 790: width: 100% !important;
+- 798: display: grid !important;
+- 799: grid-template-columns: minmax(0, 1fr) auto !important;
+- 802: width: 100% !important;
+- 803: max-width: none !important;
+- 804: min-width: 0 !important;
+- 805: min-height: 50px !important;
+- 807: overflow: visible !important;
+- 818: display: flex !important;
+- 821: min-width: 0 !important;
+- 822: overflow: hidden !important;
+- 827: display: flex !important;
+- 832: min-width: 0 !important;
+- 837: display: block !important;
+- 839: min-width: 96px !important;
+- 840: max-width: clamp(140px, 28vw, 360px) !important;
+- 845: line-height: 1.2 !important;
+- 847: overflow: hidden !important;
+- 848: text-overflow: ellipsis !important;
+- 850: overflow-wrap: normal !important;
+- 854: display: inline-flex !important;
+- 859: min-width: 70px !important;
+- 860: max-width: 260px !important;
+- 861: overflow: hidden !important;
+- 863: text-overflow: ellipsis !important;
+- 871: min-width: 0 !important;
+- 872: overflow: hidden !important;
+- 874: text-overflow: ellipsis !important;
+- 878: display: flex !important;
+- 884: min-width: 0 !important;
+- 885: width: auto !important;
+- 893: display: inline-flex !important;
+- 896: width: auto !important;
+- 897: min-height: 26px !important;
+- 905: line-height: 1 !important;
+- 950: @media (max-width: 900px) {
+- 952: grid-template-columns: minmax(0, 1fr) !important;
+- 957: display: grid !important;
+- 960: overflow: visible !important;
+- 965: max-width: none !important;
+- 967: overflow: visible !important;
+- 968: text-overflow: clip !important;
+- 974: width: 100% !important;
+- 988: display: grid !important;
+- 989: grid-template-columns: minmax(0, 1fr) auto !important;
+- 992: width: 100% !important;
+- 993: max-width: none !important;
+- 994: min-width: 0 !important;
+- 995: min-height: 50px !important;
+- 997: overflow: visible !important;
+- 1007: display: flex !important;
+- 1010: min-width: 0 !important;
+- 1011: overflow: hidden !important;
+- 1016: display: flex !important;
+- 1021: min-width: 0 !important;
+- 1027: min-width: 96px !important;
+- 1028: max-width: clamp(140px, 28vw, 360px) !important;
+- 1030: overflow: hidden !important;
+- 1031: text-overflow: ellipsis !important;
+- 1035: display: inline-flex !important;
+- 1040: min-width: 70px !important;
+- 1041: max-width: 260px !important;
+- 1042: overflow: hidden !important;
+- 1044: text-overflow: ellipsis !important;
+- 1048: display: flex !important;
+- 1054: min-width: 0 !important;
+- 1055: width: auto !important;
+- 1063: width: auto !important;
+- 1064: min-height: 26px !important;
+- 1080: @media (max-width: 900px) {
+- 1083: grid-template-columns: minmax(0, 1fr) !important;
+- 1088: display: grid !important;
+- 1093: display: grid !important;
+- 1094: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 1095: width: 100% !important;
+- 1105: display: grid !important;
+- 1106: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1112: display: flex !important;
+- 1132: @media (max-width: 900px) {
+- 1134: grid-template-columns: minmax(0, 1fr) !important;
+- 1145: display: grid !important;
+- 1146: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1149: width: 100% !important;
+- 1150: max-width: none !important;
+- 1151: min-width: 0 !important;
+- 1152: min-height: 50px !important;
+- 1154: overflow: visible !important;
+- 1165: display: flex !important;
+- 1168: min-width: 0 !important;
+- 1169: overflow: hidden !important;
+- 1174: display: flex !important;
+- 1183: display: block !important;
+- 1185: min-width: 96px !important;
+- 1186: max-width: clamp(140px, 28vw, 360px) !important;
+- 1191: line-height: 1.2 !important;
+- 1193: overflow: hidden !important;
+- 1194: text-overflow: ellipsis !important;
+- 1198: display: inline-flex !important;
+- 1202: min-width: 70px !important;
+- 1203: max-width: 260px !important;
+- 1204: overflow: hidden !important;
+- 1206: text-overflow: ellipsis !important;
+- 1213: display: flex !important;
+- 1219: min-width: 0 !important;
+- 1224: display: inline-flex !important;
+- 1227: min-height: 26px !important;
+- 1235: line-height: 1 !important;
+- 1260: @media (max-width: 900px) {
+- 1262: grid-template-columns: minmax(0, 1fr) !important;
+- 1276: display: grid !important;
+- 1277: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1280: width: 100% !important;
+- 1281: max-width: none !important;
+- 1282: min-height: 50px !important;
+- 1283: overflow: visible !important;
+- 1296: min-width: 0 !important;
+- 1297: display: flex !important;
+- 1301: overflow: hidden !important;
+- 1305: min-width: 0 !important;
+- 1306: overflow: hidden !important;
+- 1307: text-overflow: ellipsis !important;
+- 1318: display: flex !important;
+- 1323: min-width: max-content !important;
+- 1343: @media (max-width: 900px) {
+- 1345: grid-template-columns: 1fr !important;
+- 1351: min-width: 0 !important;
+- 1358: display: grid !important;
+- 1359: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1362: width: 100% !important;
+- 1363: max-width: none !important;
+- 1364: min-height: 50px !important;
+- 1365: overflow: visible !important;
+- 1378: min-width: 0 !important;
+- 1379: display: flex !important;
+- 1383: overflow: hidden !important;
+- 1387: min-width: 0 !important;
+- 1388: overflow: hidden !important;
+- 1389: text-overflow: ellipsis !important;
+- 1400: display: flex !important;
+- 1405: min-width: max-content !important;
+- 1425: @media (max-width: 900px) {
+- 1427: grid-template-columns: 1fr !important;
+- 1433: min-width: 0 !important;
+- 1440: display: grid !important;
+- 1441: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1459: display: flex !important;
+- 1467: min-height: 30px !important;
+- 1470: @media (max-width: 900px) {
+- 1472: grid-template-columns: 1fr !important;
+- 1487: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1492: display: grid !important;
+- 1493: grid-template-columns: max-content minmax(260px, 1fr) minmax(90px, 0.45fr) !important;
+- 1497: min-width: 0 !important;
+- 1498: width: 100% !important;
+- 1499: overflow: hidden !important;
+- 1504: display: inline-flex !important;
+- 1508: min-width: max-content !important;
+- 1510: overflow: visible !important;
+- 1520: display: inline !important;
+- 1521: min-height: 0 !important;
+- 1529: line-height: 1.2 !important;
+- 1542: min-width: 0 !important;
+- 1543: max-width: none !important;
+- 1546: overflow: hidden !important;
+- 1548: text-overflow: ellipsis !important;
+- 1552: min-width: 0 !important;
+- 1553: max-width: none !important;
+- 1554: overflow: hidden !important;
+- 1556: text-overflow: ellipsis !important;
+- 1560: min-width: 0 !important;
+- 1561: overflow: hidden !important;
+- 1563: text-overflow: ellipsis !important;
+- 1566: @media (max-width: 1100px) {
+- 1568: grid-template-columns: max-content minmax(180px, 1fr) minmax(80px, 0.35fr) !important;
+- 1572: @media (max-width: 900px) {
+- 1574: grid-template-columns: minmax(0, 1fr) !important;
+- 1576: overflow: visible !important;
+- 1583: overflow: visible !important;
+- 1584: text-overflow: clip !important;
+- 5: - that selector included the whole app shell, so it leaked into the left navigation/sidebar
+- 9: - do not touch the global sidebar
+- 56: --cf-cal-button-height: 38px;
+- 59: --cf-cal-event-chip-height: 28px;
+- 62: /* The only broad selector allowed: page background. This does not style sidebar buttons/cards. */
+- 71: This avoids the bug where the left app sidebar became white. */
+- 95: No aside/sidebar/side/rail selectors here. */
+- 175: min-height: 54px !important;
+- 221: min-height: var(--cf-cal-event-chip-height) !important;
+- 222: max-width: 100% !important;
+- 224: overflow: hidden !important;
+- 225: text-overflow: ellipsis !important;
+- 228: /* Overflow hint, if the current DOM renders any “more”/overflow marker */
+- 231: [class*="overflow"],
+- 284: min-height: 32px !important;
+- 339: min-height: 52px !important;
+- 344: display: flex !important;
+- 354: min-width: 0;
+- 355: overflow: hidden;
+- 361: min-width: 0;
+- 362: max-width: 100%;
+- 363: overflow: hidden;
+- 367: display: block !important;
+- 369: width: 100%;
+- 370: min-width: 0;
+- 371: max-width: 100%;
+- 372: overflow: hidden;
+- 373: text-overflow: ellipsis;
+- 378: min-width: 0;
+- 379: max-width: 100%;
+- 380: overflow: hidden;
+- 381: text-overflow: ellipsis;
+- 390: display: inline-flex !important;
+- 393: min-width: max-content !important;
+- 403: line-height: 1.25 !important;
+- 413: display: none !important;
+- 421: display: inline !important;
+- 422: min-width: 0 !important;
+- 423: min-height: 0 !important;
+- 431: line-height: 1.25 !important;
+- 24: min-height: 100vh;
+- 31: position: sticky;
+- 40: max-width: 1440px;
+- 41: min-height: 82px;
+- 44: display: flex;
+- 51: min-width: 0;
+- 52: display: flex;
+- 58: width: 40px;
+- 59: height: 40px;
+- 64: display: inline-flex;
+- 78: min-width: 0;
+- 82: display: flex;
+- 99: line-height: 1.05;
+- 102: max-width: 820px;
+- 103: overflow: hidden;
+- 104: text-overflow: ellipsis;
+- 110: display: flex;
+- 119: display: flex;
+- 127: max-width: 1440px;
+- 133: display: grid;
+- 134: grid-template-columns: minmax(0, 1.15fr) minmax(260px, 0.9fr) minmax(260px, 0.85fr);
+- 147: overflow: hidden;
+- 158: height: 100%;
+- 159: min-height: 174px;
+- 161: display: flex;
+- 168: display: flex;
+- 186: line-height: 1.08;
+- 199: line-height: 1.5;
+- 207: display: flex;
+- 214: display: flex;
+- 227: height: 10px !important;
+- 234: display: flex;
+- 250: display: grid;
+- 251: grid-template-columns: minmax(0, 1fr) 344px;
+- 258: display: grid;
+- 260: min-width: 0;
+- 267: display: flex !important;
+- 278: line-height: 1.45;
+- 294: display: grid;
+- 299: width: fit-content;
+- 300: height: auto !important;
+- 324: display: grid;
+- 325: grid-template-columns: minmax(0, 1.25fr) minmax(280px, 0.75fr);
+- 340: display: grid;
+- 345: display: grid;
+- 346: grid-template-columns: 40px minmax(0, 1fr);
+- 356: width: 40px;
+- 357: height: 40px;
+- 359: display: inline-flex;
+- 366: min-width: 0;
+- 370: display: block;
+- 375: overflow: hidden;
+- 377: text-overflow: ellipsis;
+- 382: display: block;
+- 385: line-height: 1.4;
+- 386: overflow: hidden;
+- 388: text-overflow: ellipsis;
+- 394: display: flex;
+- 408: display: grid;
+- 414: display: flex;
+- 453: display: block;
+- 464: display: flex;
+- 485: display: grid;
+- 486: grid-template-columns: 40px minmax(0, 1fr) auto;
+- 496: min-width: 0;
+- 500: min-width: 0;
+- 501: display: flex;
+- 519: line-height: 1.45;
+- 527: display: grid;
+- 536: display: flex;
+- 548: display: flex;
+- 582: width: 100%;
+- 583: min-height: 56px !important;
+- 590: display: grid;
+- 596: display: block;
+- 597: line-height: 1.15;
+- 612: line-height: 1.5;
+- 616: height: 460px;
+- 621: position: relative;
+- 622: display: grid;
+- 629: position: absolute;
+- 633: width: 2px;
+- 639: position: relative;
+- 640: display: grid;
+- 645: position: absolute;
+- 648: width: 12px;
+- 649: height: 12px;
+- 666: line-height: 1.45;
+- 676: min-height: 160px;
+- 681: display: grid;
+- 691: min-height: 250px;
+- 704: max-width: 360px;
+- 706: line-height: 1.45;
+- 746: width: 100%;
+- 747: height: 40px;
+- 757: display: flex;
+- 764: width: 16px;
+- 765: height: 16px;
+- 769: @media (max-width: 1180px) {
+- 773: grid-template-columns: 1fr;
+- 777: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 785: @media (max-width: 760px) {
+- 816: width: 100%;
+- 821: width: 100%;
+- 825: min-height: 150px;
+- 829: grid-template-columns: 1fr;
+- 833: width: 100%;
+- 834: display: grid !important;
+- 835: grid-template-columns: repeat(3, 1fr);
+- 839: grid-template-columns: 36px minmax(0, 1fr);
+- 862: position: relative;
+- 863: display: grid;
+- 870: position: absolute;
+- 874: width: 3px;
+- 881: position: relative;
+- 882: display: grid;
+- 883: grid-template-columns: 160px 56px minmax(0, 1fr);
+- 890: display: grid;
+- 899: line-height: 1.2;
+- 909: position: relative;
+- 911: width: 42px;
+- 912: height: 42px;
+- 914: display: inline-flex;
+- 926: min-width: 0;
+- 935: display: flex;
+- 942: min-width: 0;
+- 946: line-height: 1.25;
+- 953: line-height: 1.45;
+- 980: @media (max-width: 760px) {
+- 986: grid-template-columns: 42px minmax(0, 1fr);
+- 1000: width: 40px;
+- 1001: height: 40px;
+- 1018: display: flex;
+- 1026: min-height: 30px;
+- 1027: height: 30px;
+- 1047: @media (max-width: 760px) {
+- 1051: width: 100%;
+- 19: display: grid !important;
+- 29: min-height: 2.85rem !important;
+- 30: display: grid !important;
+- 31: grid-template-columns: minmax(0, 1fr) !important;
+- 42: display: none !important;
+- 46: min-width: 0 !important;
+- 47: display: grid !important;
+- 48: grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+- 56: width: fit-content !important;
+- 57: min-height: 1.42rem !important;
+- 66: line-height: 1 !important;
+- 73: min-width: 0 !important;
+- 78: line-height: 1.22 !important;
+- 79: overflow: hidden !important;
+- 80: text-overflow: ellipsis !important;
+- 88: min-width: 0 !important;
+- 92: line-height: 1.25 !important;
+- 93: overflow: hidden !important;
+- 94: text-overflow: ellipsis !important;
+- 100: min-height: 2.85rem !important;
+- 101: display: grid !important;
+- 102: grid-template-columns: minmax(0, 1fr) 8.5rem !important;
+- 117: display: none !important;
+- 121: min-width: 0 !important;
+- 122: display: grid !important;
+- 123: grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+- 131: width: fit-content !important;
+- 132: min-height: 1.42rem !important;
+- 137: line-height: 1 !important;
+- 144: min-width: 0 !important;
+- 149: line-height: 1.22 !important;
+- 150: overflow: hidden !important;
+- 151: text-overflow: ellipsis !important;
+- 156: display: none !important;
+- 161: min-width: 0 !important;
+- 166: display: none !important;
+- 170: display: block !important;
+- 176: line-height: 1.15 !important;
+- 183: max-width: 44rem !important;
+- 186: @media (max-width: 760px) {
+- 189: grid-template-columns: 1fr !important;
+- 194: grid-template-columns: 1fr !important;
+- 216: max-width: 44rem !important;
+- 221: display: grid !important;
+- 227: min-height: 2.85rem !important;
+- 228: display: grid !important;
+- 229: grid-template-columns: minmax(0, 1fr) 8.25rem !important;
+- 247: display: none !important;
+- 252: min-width: 0 !important;
+- 253: display: grid !important;
+- 254: grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+- 263: width: fit-content !important;
+- 264: min-height: 1.42rem !important;
+- 273: line-height: 1 !important;
+- 281: min-width: 0 !important;
+- 286: line-height: 1.22 !important;
+- 287: overflow: hidden !important;
+- 288: text-overflow: ellipsis !important;
+- 296: display: none !important;
+- 302: min-width: 0 !important;
+- 308: display: block !important;
+- 314: line-height: 1.15 !important;
+- 318: @media (max-width: 760px) {
+- 321: grid-template-columns: 1fr !important;
+- 327: grid-template-columns: 1fr !important;
+- 360: display: grid !important;
+- 373: min-height: 2.9rem !important;
+- 374: display: grid !important;
+- 375: grid-template-columns: minmax(0, 1fr) 8.5rem !important;
+- 392: display: none !important;
+- 398: min-width: 0 !important;
+- 399: display: grid !important;
+- 400: grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+- 409: width: fit-content !important;
+- 410: min-height: 1.42rem !important;
+- 419: line-height: 1 !important;
+- 428: min-width: 0 !important;
+- 433: line-height: 1.22 !important;
+- 434: overflow: hidden !important;
+- 435: text-overflow: ellipsis !important;
+- 443: min-width: 0 !important;
+- 447: line-height: 1.25 !important;
+- 448: overflow: hidden !important;
+- 449: text-overflow: ellipsis !important;
+- 455: display: none !important;
+- 460: min-width: 0 !important;
+- 465: display: block !important;
+- 471: line-height: 1.15 !important;
+- 478: display: none !important;
+- 486: @media (max-width: 760px) {
+- 491: grid-template-columns: 1fr !important;
+- 498: grid-template-columns: 1fr !important;
+- 530: display: grid !important;
+- 543: min-height: 2.9rem !important;
+- 544: display: grid !important;
+- 545: grid-template-columns: minmax(0, 1fr) 8.5rem !important;
+- 562: display: none !important;
+- 568: min-width: 0 !important;
+- 569: display: grid !important;
+- 570: grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+- 579: width: fit-content !important;
+- 580: min-height: 1.42rem !important;
+- 589: line-height: 1 !important;
+- 598: min-width: 0 !important;
+- 603: line-height: 1.22 !important;
+- 604: overflow: hidden !important;
+- 605: text-overflow: ellipsis !important;
+- 613: min-width: 0 !important;
+- 617: line-height: 1.25 !important;
+- 618: overflow: hidden !important;
+- 619: text-overflow: ellipsis !important;
+- 625: display: none !important;
+- 630: min-width: 0 !important;
+- 635: display: block !important;
+- 641: line-height: 1.15 !important;
+- 648: display: none !important;
+- 671: display: grid !important;
+- 684: min-height: 2.9rem !important;
+- 685: display: grid !important;
+- 686: grid-template-columns: minmax(0, 1fr) 8.5rem !important;
+- 703: display: none !important;
+- 709: min-width: 0 !important;
+- 710: display: grid !important;
+- 711: grid-template-columns: 7.75rem minmax(0, 1fr) !important;
+- 720: width: fit-content !important;
+- 721: min-height: 1.42rem !important;
+- 730: line-height: 1 !important;
+- 739: min-width: 0 !important;
+- 744: line-height: 1.22 !important;
+- 745: overflow: hidden !important;
+- 746: text-overflow: ellipsis !important;
+- 754: min-width: 0 !important;
+- 758: line-height: 1.25 !important;
+- 759: overflow: hidden !important;
+- 760: text-overflow: ellipsis !important;
+- 766: display: none !important;
+- 771: min-width: 0 !important;
+- 776: display: block !important;
+- 782: line-height: 1.15 !important;
+- 789: display: none !important;
+- 13: * center in main work area by adding a visual X shift from the sidebar side;
+- 23: --cf163-modal-visual-width: 560px;
+- 24: --cf163-modal-visual-max-width: calc(100vw - 96px);
+- 26: /* Work-area center shift: full viewport center + half-ish sidebar/chrome offset.
+- 34: --cf163-modal-visual-max-height: 88vh;
+- 35: --cf163-event-visual-height: 84vh;
+- 38: --cf163-modal-logical-width: calc(var(--cf163-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 39: --cf163-modal-logical-max-width: calc(var(--cf163-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 40: --cf163-modal-logical-max-height: calc(var(--cf163-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 41: --cf163-event-logical-height: calc(var(--cf163-event-visual-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 56: --cf163-control-height: 25px;
+- 60: --cf163-footer-min-height: 40px;
+- 70: width: min(var(--cf163-modal-logical-width), var(--cf163-modal-logical-max-width)) !important;
+- 71: max-width: min(var(--cf163-modal-logical-width), var(--cf163-modal-logical-max-width)) !important;
+- 72: max-height: var(--cf163-modal-logical-max-height) !important;
+- 78: line-height: 1.12 !important;
+- 80: display: flex !important;
+- 82: overflow: hidden !important;
+- 89: height: min(var(--cf163-event-logical-height), var(--cf163-modal-logical-max-height)) !important;
+- 90: max-height: min(var(--cf163-event-logical-height), var(--cf163-modal-logical-max-height)) !important;
+- 102: line-height: 1.05 !important;
+- 109: line-height: 1.1 !important;
+- 114: min-height: 0 !important;
+- 115: overflow-y: auto !important;
+- 116: overflow-x: hidden !important;
+- 117: display: flex !important;
+- 146: line-height: 1.05 !important;
+- 152: min-height: var(--cf163-control-height) !important;
+- 153: height: auto !important;
+- 158: line-height: 1.05 !important;
+- 163: min-height: var(--cf163-textarea-min) !important;
+- 164: max-height: var(--cf163-textarea-max) !important;
+- 168: line-height: 1.1 !important;
+- 175: min-height: var(--cf163-footer-min-height) !important;
+- 178: position: sticky !important;
+- 190: min-width: 24px !important;
+- 191: width: 24px !important;
+- 192: height: 24px !important;
+- 193: min-height: 24px !important;
+- 10: --cf161-modal-visual-width: 680px;
+- 11: --cf161-modal-visual-max-width: calc(100vw - 48px);
+- 12: --cf161-modal-visual-max-height: calc(100vh - 48px);
+- 13: --cf161-modal-logical-width: calc(var(--cf161-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 14: --cf161-modal-logical-max-width: calc(var(--cf161-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 15: --cf161-modal-logical-max-height: calc(var(--cf161-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 26: --cf161-control-height: 28px;
+- 30: --cf161-footer-min-height: 46px;
+- 36: position: fixed !important;
+- 38: width: 100vw !important;
+- 39: height: 100vh !important;
+- 47: position: fixed !important;
+- 53: width: min(var(--cf161-modal-logical-width), var(--cf161-modal-logical-max-width)) !important;
+- 54: max-width: min(var(--cf161-modal-logical-width), var(--cf161-modal-logical-max-width)) !important;
+- 55: max-height: var(--cf161-modal-logical-max-height) !important;
+- 61: display: flex !important;
+- 63: overflow: hidden !important;
+- 67: line-height: 1.16 !important;
+- 79: line-height: 1.08 !important;
+- 86: line-height: 1.13 !important;
+- 91: min-height: 0 !important;
+- 92: overflow-y: auto !important;
+- 93: overflow-x: hidden !important;
+- 94: display: flex !important;
+- 118: line-height: 1.08 !important;
+- 124: min-height: var(--cf161-control-height) !important;
+- 125: height: auto !important;
+- 130: line-height: 1.08 !important;
+- 135: min-height: var(--cf161-textarea-min) !important;
+- 136: max-height: var(--cf161-textarea-max) !important;
+- 140: line-height: 1.14 !important;
+- 149: position: sticky !important;
+- 152: min-height: var(--cf161-footer-min-height) !important;
+- 20: --cf162-modal-visual-width: 620px;
+- 21: --cf162-modal-visual-max-width: calc(100vw - 72px);
+- 22: --cf162-modal-visual-max-height: 76vh;
+- 28: --cf162-modal-logical-width: calc(var(--cf162-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 29: --cf162-modal-logical-max-width: calc(var(--cf162-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 30: --cf162-modal-logical-max-height: calc(var(--cf162-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 44: --cf162-control-height: 26px;
+- 48: --cf162-footer-min-height: 42px;
+- 57: width: min(var(--cf162-modal-logical-width), var(--cf162-modal-logical-max-width)) !important;
+- 58: max-width: min(var(--cf162-modal-logical-width), var(--cf162-modal-logical-max-width)) !important;
+- 59: max-height: var(--cf162-modal-logical-max-height) !important;
+- 65: line-height: 1.14 !important;
+- 76: line-height: 1.05 !important;
+- 83: line-height: 1.12 !important;
+- 88: min-height: 0 !important;
+- 89: overflow-y: auto !important;
+- 90: overflow-x: hidden !important;
+- 91: display: flex !important;
+- 115: line-height: 1.06 !important;
+- 121: min-height: var(--cf162-control-height) !important;
+- 122: height: auto !important;
+- 127: line-height: 1.06 !important;
+- 132: min-height: var(--cf162-textarea-min) !important;
+- 133: max-height: var(--cf162-textarea-max) !important;
+- 137: line-height: 1.12 !important;
+- 144: min-height: var(--cf162-footer-min-height) !important;
+- 147: position: sticky !important;
+- 159: min-width: 25px !important;
+- 160: width: 25px !important;
+- 161: height: 25px !important;
+- 162: min-height: 25px !important;
+- 171: - Smaller/wider: --cf162-modal-visual-width: 600px / 620px / 640px
+- 172: - Less/more vertical: --cf162-modal-visual-max-height: 72vh / 76vh / 80vh
+- 20: --cf164-modal-visual-width: 560px;
+- 21: --cf164-modal-visual-max-width: calc(100vw - 96px);
+- 27: --cf164-modal-visual-max-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
+- 30: --cf164-event-visual-height: calc(100vh - var(--cf164-modal-top-offset) - var(--cf164-modal-bottom-safe));
+- 33: --cf164-modal-logical-width: calc(var(--cf164-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 34: --cf164-modal-logical-max-width: calc(var(--cf164-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 35: --cf164-modal-logical-max-height: calc(var(--cf164-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 36: --cf164-event-logical-height: calc(var(--cf164-event-visual-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 51: --cf164-control-height: 27px;
+- 55: --cf164-footer-min-height: 42px;
+- 79: width: min(var(--cf164-modal-logical-width), var(--cf164-modal-logical-max-width)) !important;
+- 80: max-width: min(var(--cf164-modal-logical-width), var(--cf164-modal-logical-max-width)) !important;
+- 81: max-height: var(--cf164-modal-logical-max-height) !important;
+- 94: line-height: 1.14 !important;
+- 96: display: flex !important;
+- 98: overflow: hidden !important;
+- 104: height: min(var(--cf164-event-logical-height), var(--cf164-modal-logical-max-height)) !important;
+- 105: max-height: min(var(--cf164-event-logical-height), var(--cf164-modal-logical-max-height)) !important;
+- 120: line-height: 1.05 !important;
+- 128: line-height: 1.12 !important;
+- 134: min-height: 0 !important;
+- 135: overflow-y: auto !important;
+- 136: overflow-x: hidden !important;
+- 137: display: flex !important;
+- 170: line-height: 1.08 !important;
+- 190: min-height: var(--cf164-control-height) !important;
+- 191: height: auto !important;
+- 196: line-height: 1.08 !important;
+- 206: min-height: var(--cf164-textarea-min) !important;
+- 207: max-height: var(--cf164-textarea-max) !important;
+- 211: line-height: 1.12 !important;
+- 218: min-height: var(--cf164-footer-min-height) !important;
+- 221: position: sticky !important;
+- 234: min-width: 25px !important;
+- 235: width: 25px !important;
+- 236: height: 25px !important;
+- 237: min-height: 25px !important;
+- 251: - event height: --cf164-event-visual-height
+- 11: - sidebar is a fixed rail;
+- 18: --cf149-sidebar-width: 240px;
+- 19: --cf149-min-canvas-width: 1280px;
+- 22: --cf149-right-rail-width: 372px;
+- 31: width: 100% !important;
+- 32: min-width: var(--cf149-min-canvas-width) !important;
+- 33: max-width: none !important;
+- 34: min-height: 100% !important;
+- 36: overflow-x: auto !important;
+- 37: overflow-y: auto !important;
+- 42: width: 100% !important;
+- 43: min-width: var(--cf149-min-canvas-width) !important;
+- 44: max-width: none !important;
+- 45: min-height: 100vh !important;
+- 46: overflow: visible !important;
+- 50: #root > .app.closeflow-visual-stage01.cf-html-shell {
+- 51: display: grid !important;
+- 52: grid-template-columns: var(--cf149-sidebar-width) minmax(0, 1fr) !important;
+- 54: width: 100% !important;
+- 55: min-width: var(--cf149-min-canvas-width) !important;
+- 56: max-width: none !important;
+- 57: min-height: 100vh !important;
+- 60: overflow: visible !important;
+- 67: #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+- 68: #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar {
+- 71: width: var(--cf149-sidebar-width) !important;
+- 72: min-width: var(--cf149-sidebar-width) !important;
+- 73: max-width: var(--cf149-sidebar-width) !important;
+- 74: height: 100vh !important;
+- 75: min-height: 100vh !important;
+- 76: position: sticky !important;
+- 79: overflow: hidden !important;
+- 84: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+- 87: width: 100% !important;
+- 88: min-width: 0 !important;
+- 89: max-width: none !important;
+- 90: min-height: 100vh !important;
+- 94: overflow: visible !important;
+- 101: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .global-bar,
+- 102: #root .global-bar[data-shell-global-bar="true"] {
+- 103: width: 100% !important;
+- 104: max-width: none !important;
+- 105: min-width: 0 !important;
+- 108: overflow: visible !important;
+- 111: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"],
+- 114: display: block !important;
+- 115: width: 100% !important;
+- 116: min-width: 0 !important;
+- 117: max-width: none !important;
+- 121: overflow: visible !important;
+- 147: width: 100% !important;
+- 148: max-width: none !important;
+- 149: min-width: 0 !important;
+- 153: overflow: visible !important;
+- 173: max-width: none !important;
+- 198: width: 100% !important;
+- 199: max-width: none !important;
+- 203: width: 100% !important;
+- 204: max-width: none !important;
+- 205: display: grid !important;
+- 206: grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf149-right-rail-width)) !important;
+- 216: width: 100% !important;
+- 217: max-width: var(--cf149-right-rail-width) !important;
+- 218: min-width: 0 !important;
+- 222: width: 100% !important;
+- 223: max-width: none !important;
+- 224: display: grid !important;
+- 225: grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf149-right-rail-width)) !important;
+- 231: width: 100% !important;
+- 232: max-width: none !important;
+- 233: min-width: 0 !important;
+- 237: width: 100% !important;
+- 238: max-width: var(--cf149-right-rail-width) !important;
+- 239: min-width: 0 !important;
+- 9: width: min(780px, calc(100vw - 24px)) !important;
+- 10: max-width: 780px !important;
+- 11: max-height: min(92vh, 860px) !important;
+- 12: display: flex !important;
+- 14: overflow: hidden !important;
+- 26: display: none !important;
+- 42: min-height: 0 !important;
+- 43: overflow-y: auto !important;
+- 47: display: grid !important;
+- 69: min-height: 42px !important;
+- 92: position: sticky !important;
+- 95: display: flex !important;
+- 107: min-height: 42px !important;
+- 119: @media (max-width: 640px) {
+- 121: width: calc(100vw - 16px) !important;
+- 122: max-height: 94vh !important;
+- 131: display: grid !important;
+- 132: grid-template-columns: 1fr !important;
+- 138: width: 100% !important;
+- 24: --cf-command-action-height: 38px;
+- 38: #root .cf-html-shell [data-global-quick-actions="true"].global-actions,
+- 41: display: flex !important;
+- 46: overflow-x: auto !important;
+- 54: #root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn),
+- 57: min-height: var(--cf-command-action-height) !important;
+- 58: height: var(--cf-command-action-height) !important;
+- 59: display: inline-flex !important;
+- 78: line-height: 1 !important;
+- 86: #root .cf-html-shell [data-global-quick-actions="true"] button.rounded-xl,
+- 96: #root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn):hover,
+- 107: #root .cf-html-shell [data-global-quick-actions="true"] :is(button, a, .btn) svg,
+- 110: width: 1rem !important;
+- 111: height: 1rem !important;
+- 121: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header {
+- 122: display: grid !important;
+- 123: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 128: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 129: display: grid !important;
+- 130: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 133: width: 100% !important;
+- 136: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+- 137: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+- 138: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+- 140: min-width: 0 !important;
+- 144: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 145: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 146: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,
+- 147: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 148: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 149: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 150: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 151: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 152: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 153: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+- 154: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+- 160: display: flex !important;
+- 166: min-width: max-content !important;
+- 170: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > *,
+- 171: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,
+- 172: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,
+- 173: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"] > * {
+- 177: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.head-actions, .cf-page-hero-actions, .ai-drafts-header-actions, .notifications-header-actions, .cf-section-head-action-stack) {
+- 178: display: flex !important;
+- 187: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action),
+- 188: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).primary,
+- 189: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).soft-blue,
+- 190: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-blue-600,
+- 191: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-green-600,
+- 192: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action).bg-emerald-600 {
+- 193: min-height: var(--cf-command-action-height) !important;
+- 194: height: var(--cf-command-action-height) !important;
+- 195: display: inline-flex !important;
+- 214: line-height: 1 !important;
+- 219: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action):hover {
+- 228: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .btn, .cf-header-action) svg {
+- 229: width: 1rem !important;
+- 230: height: 1rem !important;
+- 245: display: flex !important;
+- 251: min-width: max-content !important;
+- 258: display: flex !important;
+- 270: width: auto !important;
+- 278: min-height: var(--cf-command-action-height) !important;
+- 279: height: var(--cf-command-action-height) !important;
+- 290: @media (max-width: 900px) {
+- 291: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+- 292: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 293: display: flex !important;
+- 298: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 299: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 300: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside,
+- 301: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 302: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+- 309: min-width: 0 !important;
+- 318: min-width: 0 !important;
+- 34: --cf151-kpi-min-height: 58px;
+- 35: --cf151-panel-min-height: 54px;
+- 36: --cf151-list-row-min-height: 64px;
+- 37: --cf151-side-card-min-height: 48px;
+- 85: min-height: var(--cf151-kpi-min-height) !important;
+- 106: min-height: var(--cf151-panel-min-height) !important;
+- 125: min-height: var(--cf151-list-row-min-height) !important;
+- 154: min-height: var(--cf151-panel-min-height) !important;
+- 174: min-height: var(--cf151-side-card-min-height) !important;
+- 199: width: var(--cf151-icon-size) !important;
+- 200: height: var(--cf151-icon-size) !important;
+- 201: min-width: var(--cf151-icon-size) !important;
+- 202: min-height: var(--cf151-icon-size) !important;
+- 216: width: var(--cf151-icon-size-small) !important;
+- 217: height: var(--cf151-icon-size-small) !important;
+- 218: min-width: var(--cf151-icon-size-small) !important;
+- 219: min-height: var(--cf151-icon-size-small) !important;
+- 8: @media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+- 9: #root .cf-html-shell .global-bar {
+- 10: min-height: 56px !important;
+- 11: height: 56px !important;
+- 19: #root .cf-html-shell .global-title {
+- 24: #root .cf-html-shell .global-dot {
+- 25: width: 1.72rem !important;
+- 26: height: 1.72rem !important;
+- 27: min-width: 1.72rem !important;
+- 28: min-height: 1.72rem !important;
+- 31: #root .cf-html-shell .global-title-copy {
+- 32: display: inline-flex !important;
+- 38: line-height: 1 !important;
+- 43: #root .cf-html-shell .global-title-copy strong {
+- 47: line-height: 1 !important;
+- 52: #root .cf-html-shell [data-shell-content="true"],
+- 53: #root .cf-html-shell .view.active {
+- 57: #root .cf-html-shell [data-shell-content="true"] > .cf-html-view,
+- 58: #root .cf-html-shell .cf-html-view {
+- 64: #root .cf-html-shell .cf-page-header-v2 {
+- 65: width: 100% !important;
+- 66: min-width: 0 !important;
+- 67: min-height: 0 !important;
+- 68: height: auto !important;
+- 71: display: flex !important;
+- 81: overflow: visible !important;
+- 85: #root .cf-html-shell .cf-page-header-v2__copy {
+- 86: display: none !important;
+- 89: #root .cf-html-shell .cf-page-header-v2__actions {
+- 90: width: 100% !important;
+- 91: min-width: 0 !important;
+- 92: max-width: 100% !important;
+- 93: min-height: 2.25rem !important;
+- 96: display: flex !important;
+- 104: #root .cf-html-shell .cf-page-header-v2__actions:empty {
+- 105: display: none !important;
+- 106: min-height: 0 !important;
+- 109: #root .cf-html-shell .cf-page-header-v2:has(.cf-page-header-v2__actions:empty) {
+- 110: display: none !important;
+- 114: #root .cf-html-shell .cf-page-header-v2 :is(button, a.btn, a[role="button"], .btn, .cf-header-action) {
+- 115: min-height: 2.2rem !important;
+- 116: height: 2.2rem !important;
+- 124: #root .cf-html-shell .cf-page-header-v2 + .grid-4,
+- 125: #root .cf-html-shell .cf-page-header-v2 + .stats,
+- 126: #root .cf-html-shell .cf-page-header-v2 + [class*="grid-"],
+- 127: #root .cf-html-shell .cf-page-header-v2 + .layout-list,
+- 128: #root .cf-html-shell .cf-page-header-v2 + .stack {
+- 133: @media (min-width: 1440px) and (hover: hover) and (pointer: fine) {
+- 134: #root .cf-html-shell .global-bar {
+- 135: min-height: 54px !important;
+- 136: height: 54px !important;
+- 139: #root .cf-html-shell [data-shell-content="true"],
+- 140: #root .cf-html-shell .view.active {
+- 32: --cf152-kpi-min-height: 46px;
+- 33: --cf152-panel-min-height: 44px;
+- 34: --cf152-list-row-min-height: 52px;
+- 35: --cf152-side-card-min-height: 40px;
+- 40: --cf152-control-height: 34px;
+- 86: min-height: var(--cf152-kpi-min-height) !important;
+- 108: min-height: var(--cf152-panel-min-height) !important;
+- 122: min-height: var(--cf152-control-height-small) !important;
+- 126: .global-bar button,
+- 127: .global-bar .btn,
+- 128: .global-bar [role="button"]
+- 130: min-height: var(--cf152-control-height) !important;
+- 146: min-height: var(--cf152-list-row-min-height) !important;
+- 175: min-height: var(--cf152-panel-min-height) !important;
+- 195: min-height: var(--cf152-side-card-min-height) !important;
+- 220: width: var(--cf152-icon-size) !important;
+- 221: height: var(--cf152-icon-size) !important;
+- 222: min-width: var(--cf152-icon-size) !important;
+- 223: min-height: var(--cf152-icon-size) !important;
+- 237: width: var(--cf152-icon-size-small) !important;
+- 238: height: var(--cf152-icon-size-small) !important;
+- 239: min-width: var(--cf152-icon-size-small) !important;
+- 240: min-height: var(--cf152-icon-size-small) !important;
+- 24: --cf137-rail-width: 340px;
+- 29: @media (min-width: 1680px) {
+- 33: --cf137-rail-width: 348px;
+- 38: @media (min-width: 1280px) {
+- 40: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 41: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main] {
+- 42: width: 100% !important;
+- 43: max-width: none !important;
+- 44: min-width: 0 !important;
+- 49: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 50: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 51: width: 100% !important;
+- 52: max-width: none !important;
+- 53: min-width: 0 !important;
+- 54: display: block !important;
+- 59: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+- 71: #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+- 83: width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+- 84: max-width: var(--cf137-content-max) !important;
+- 85: min-width: 0 !important;
+- 92: #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+- 99: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+- 106: width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+- 107: max-width: var(--cf137-content-max) !important;
+- 118: width: 100% !important;
+- 119: max-width: none !important;
+- 124: width: 100% !important;
+- 125: max-width: none !important;
+- 126: display: grid !important;
+- 127: grid-template-columns: minmax(0, 1fr) minmax(320px, var(--cf137-rail-width)) !important;
+- 137: width: 100% !important;
+- 138: max-width: var(--cf137-rail-width) !important;
+- 139: min-width: 0 !important;
+- 143: #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+- 144: width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+- 145: max-width: var(--cf137-content-max) !important;
+- 146: display: grid !important;
+- 147: grid-template-columns: minmax(0, 1fr) minmax(320px, var(--cf137-rail-width)) !important;
+- 152: #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+- 153: width: 100% !important;
+- 154: max-width: none !important;
+- 155: min-width: 0 !important;
+- 158: #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+- 159: width: 100% !important;
+- 160: max-width: var(--cf137-rail-width) !important;
+- 161: min-width: 0 !important;
+- 165: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 170: max-width: none !important;
+- 175: grid-template-columns:
+- 8: @media (min-width: 1280px) and (pointer: fine) {
+- 15: #root .cf-html-shell {
+- 21: #root .cf-html-shell .global-bar {
+- 22: min-height: 3.25rem !important;
+- 27: #root .cf-html-shell .view.active,
+- 28: #root .cf-html-shell [data-shell-content="true"] {
+- 29: width: 100% !important;
+- 30: max-width: none !important;
+- 31: min-width: 0 !important;
+- 36: width: 100% !important;
+- 37: max-width: var(--cf-desktop-density-page-max) !important;
+- 62: min-height: 3rem !important;
+- 80: width: 1.75rem !important;
+- 81: height: 1.75rem !important;
+- 82: min-width: 1.75rem !important;
+- 83: min-height: 1.75rem !important;
+- 91: min-height: 1.24rem !important;
+- 97: width: 1.9rem !important;
+- 98: min-width: 1.9rem !important;
+- 99: height: 1.9rem !important;
+- 100: min-height: 1.9rem !important;
+- 104: @media (max-width: 1279px) {
+- 13: --cf138-sidebar-width: 240px;
+- 16: --cf138-right-rail-width: 348px;
+- 21: @media (min-width: 1680px) {
+- 25: --cf138-right-rail-width: 356px;
+- 31: @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+- 33: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 34: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 35: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 36: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 37: width: 100% !important;
+- 38: max-width: none !important;
+- 39: min-width: 0 !important;
+- 44: The calc uses viewport minus desktop sidebar so the content begins near the sidebar. */
+- 45: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+- 62: #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+- 79: width: min(
+- 80: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 83: max-width: min(
+- 84: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 87: min-width: 0 !important;
+- 94: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 100: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 108: max-width: none !important;
+- 120: width: 100% !important;
+- 121: max-width: none !important;
+- 125: display: grid !important;
+- 126: grid-template-columns: minmax(0, 1fr) minmax(326px, var(--cf138-right-rail-width)) !important;
+- 136: width: 100% !important;
+- 137: max-width: var(--cf138-right-rail-width) !important;
+- 138: min-width: 0 !important;
+- 142: #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+- 143: width: min(
+- 144: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 147: max-width: min(
+- 148: calc(100vw - var(--cf138-sidebar-width) - var(--cf138-left-gutter) - var(--cf138-right-gutter)),
+- 153: display: grid !important;
+- 154: grid-template-columns: minmax(0, 1fr) minmax(326px, var(--cf138-right-rail-width)) !important;
+- 159: #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+- 160: width: 100% !important;
+- 161: max-width: none !important;
+- 162: min-width: 0 !important;
+- 165: #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+- 166: width: 100% !important;
+- 167: max-width: var(--cf138-right-rail-width) !important;
+- 168: min-width: 0 !important;
+- 173: grid-template-columns:
+- 10: --cf136-desktop-rail-width: 332px;
+- 14: @media (min-width: 1280px) {
+- 15: .cf-html-shell :where(
+- 25: width: min(calc(100% - (var(--cf136-desktop-content-gutter) * 2)), var(--cf136-desktop-content-max)) !important;
+- 26: max-width: var(--cf136-desktop-content-max) !important;
+- 31: .cf-html-shell main:where(.mx-auto.flex.w-full.max-w-5xl, .mx-auto.flex.w-full.max-w-7xl) {
+- 32: width: min(calc(100% - (var(--cf136-desktop-content-gutter) * 2)), var(--cf136-desktop-content-max)) !important;
+- 33: max-width: var(--cf136-desktop-content-max) !important;
+- 36: .cf-html-shell .layout-list {
+- 37: width: 100% !important;
+- 38: max-width: none !important;
+- 42: .cf-html-shell :where(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+- 43: grid-template-columns: minmax(0, 1fr) minmax(300px, var(--cf136-desktop-rail-width)) !important;
+- 46: .cf-html-shell :where(.lead-right-rail, .clients-right-rail, .cases-right-rail, .activity-right-rail) {
+- 47: width: 100% !important;
+- 48: max-width: var(--cf136-desktop-rail-width) !important;
+- 51: .cf-html-shell :where(.grid-4, .grid-5) {
+- 52: width: 100% !important;
+- 53: max-width: none !important;
+- 56: .cf-html-shell :where(.table-card, .stack, .search) {
+- 57: max-width: none !important;
+- 61: @media (min-width: 1600px) {
+- 65: --cf136-desktop-rail-width: 340px;
+- 23: --cf175-main-search-height: var(--cf174-main-search-height, 42px);
+- 41: width: 100% !important;
+- 42: max-width: 100% !important;
+- 43: min-width: 0 !important;
+- 44: height: var(--cf175-main-search-height) !important;
+- 45: min-height: var(--cf175-main-search-height) !important;
+- 46: max-height: var(--cf175-main-search-height) !important;
+- 47: display: flex !important;
+- 60: overflow: visible !important;
+- 70: display: none !important;
+- 71: width: 0 !important;
+- 72: min-width: 0 !important;
+- 73: max-width: 0 !important;
+- 85: display: block !important;
+- 86: width: 100% !important;
+- 87: min-width: 0 !important;
+- 88: height: var(--cf175-main-search-height) !important;
+- 89: min-height: var(--cf175-main-search-height) !important;
+- 90: max-height: var(--cf175-main-search-height) !important;
+- 103: line-height: 1.2 !important;
+- 134: width: 100% !important;
+- 135: max-width: 100% !important;
+- 141: max-width: 100% !important;
+- 150: min-height: var(--cf175-main-search-height) !important;
+- 154: @media (max-width: 900px) {
+- 156: --cf175-main-search-height: 40px;
+- 6: --cf146-right-rail-width: 368px;
+- 15: #root > .app.closeflow-visual-stage01.cf-html-shell,
+- 23: #root > .app.closeflow-visual-stage01.cf-html-shell,
+- 25: width: 100% !important;
+- 26: max-width: none !important;
+- 27: min-width: 0 !important;
+- 29: overflow: visible !important;
+- 35: display: block !important;
+- 36: width: min(
+- 40: max-width: none !important;
+- 41: min-width: 0 !important;
+- 47: overflow: visible !important;
+- 69: width: 100% !important;
+- 70: max-width: none !important;
+- 71: min-width: 0 !important;
+- 90: max-width: none !important;
+- 109: width: 100% !important;
+- 110: max-width: none !important;
+- 114: width: 100% !important;
+- 115: max-width: none !important;
+- 116: display: grid !important;
+- 117: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf146-right-rail-width)) !important;
+- 125: width: 100% !important;
+- 126: max-width: var(--cf146-right-rail-width) !important;
+- 127: min-width: 0 !important;
+- 131: width: 100% !important;
+- 132: max-width: none !important;
+- 133: display: grid !important;
+- 134: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf146-right-rail-width)) !important;
+- 140: width: 100% !important;
+- 141: max-width: none !important;
+- 142: min-width: 0 !important;
+- 146: width: 100% !important;
+- 147: max-width: var(--cf146-right-rail-width) !important;
+- 148: min-width: 0 !important;
+- 152: @media (min-width: 1880px) and (hover: hover) and (pointer: fine) {
+- 155: --cf146-right-rail-width: var(--cf146-right-rail-width-wide);
+- 16: display: flex;
+- 17: width: 100%;
+- 35: display: flex;
+- 67: @media (max-width: 640px) {
+- 81: width: 100%;
+- 95: width: 100%;
+- 96: min-height: 2.75rem;
+- 24: width: min(600px, calc(100vw - 96px)) !important;
+- 25: max-width: min(600px, calc(100vw - 96px)) !important;
+- 26: height: auto !important;
+- 27: min-height: 0 !important;
+- 28: max-height: min(82vh, 720px) !important;
+- 29: overflow: hidden !important;
+- 50: position: static !important;
+- 3: --cf143-sidebar-width:240px;
+- 6: --cf143-work-width:1480px;
+- 8: --cf143-right-rail-width:360px;
+- 12: --closeflow-stage143-hard-work-frame-width:"active";
+- 14: @media (min-width:1280px){
+- 21: width:100%!important;
+- 22: max-width:none!important;
+- 23: min-width:0!important;
+- 25: overflow:visible!important;
+- 30: display:block!important;
+- 31: width:min(calc(100vw - var(--cf143-sidebar-width) - var(--cf143-left-gutter) - var(--cf143-right-gutter)),var(--cf143-work-width))!important;
+- 32: max-width:var(--cf143-work-width)!important;
+- 33: min-width:0!important;
+- 39: @media (min-width:1880px){
+- 43: width:min(calc(100vw - var(--cf143-sidebar-width) - var(--cf143-left-gutter) - var(--cf143-right-gutter)),var(--cf143-work-width-wide))!important;
+- 44: max-width:var(--cf143-work-width-wide)!important;
+- 49: width:100%!important;
+- 50: max-width:none!important;
+- 51: min-width:0!important;
+- 58: max-width:none!important;
+- 67: width:100%!important;
+- 68: max-width:none!important;
+- 72: width:100%!important;
+- 73: max-width:none!important;
+- 74: display:grid!important;
+- 75: grid-template-columns:minmax(0,1fr) minmax(336px,var(--cf143-right-rail-width))!important;
+- 81: width:100%!important;
+- 82: max-width:var(--cf143-right-rail-width)!important;
+- 83: min-width:0!important;
+- 87: width:100%!important;
+- 88: max-width:none!important;
+- 89: display:grid!important;
+- 90: grid-template-columns:minmax(0,1fr) minmax(336px,var(--cf143-right-rail-width))!important;
+- 96: width:100%!important;
+- 97: max-width:none!important;
+- 98: min-width:0!important;
+- 102: width:100%!important;
+- 103: max-width:var(--cf143-right-rail-width)!important;
+- 104: min-width:0!important;
+- 20: --cf177-record-rail-width: 320px;
+- 23: --cf177-record-row-min-height: 84px;
+- 25: --cf177-record-search-height: var(--cf174-main-search-height, 42px);
+- 32: @media (min-width: 1221px) {
+- 34: width: 100% !important;
+- 35: max-width: none !important;
+- 36: min-width: 0 !important;
+- 37: display: grid !important;
+- 38: grid-template-columns: minmax(0, 1fr) minmax(var(--cf177-record-rail-width), var(--cf177-record-rail-width)) !important;
+- 45: width: 100% !important;
+- 46: max-width: none !important;
+- 47: min-width: 0 !important;
+- 52: width: var(--cf177-record-rail-width) !important;
+- 53: min-width: var(--cf177-record-rail-width) !important;
+- 54: max-width: var(--cf177-record-rail-width) !important;
+- 61: width: 100% !important;
+- 62: max-width: 100% !important;
+- 63: min-width: 0 !important;
+- 64: height: var(--cf177-record-search-height) !important;
+- 70: width: 100% !important;
+- 71: max-width: none !important;
+- 72: min-width: 0 !important;
+- 81: width: 100% !important;
+- 82: max-width: none !important;
+- 83: min-width: 0 !important;
+- 84: min-height: var(--cf177-record-row-min-height) !important;
+- 95: display: grid !important;
+- 96: grid-template-columns:
+- 109: min-width: 0 !important;
+- 110: max-width: 100% !important;
+- 111: overflow: hidden !important;
+- 119: max-width: 100% !important;
+- 120: overflow: hidden !important;
+- 121: text-overflow: ellipsis !important;
+- 126: width: 100% !important;
+- 127: max-width: 100% !important;
+- 136: line-height: 1.16 !important;
+- 142: line-height: 1.25 !important;
+- 148: min-height: 36px !important;
+- 153: line-height: 1.15 !important;
+- 158: min-height: 42px !important;
+- 166: min-width: 0 !important;
+- 167: overflow: hidden !important;
+- 168: text-overflow: ellipsis !important;
+- 178: @media (max-width: 1220px) {
+- 180: display: flex !important;
+- 186: width: 100% !important;
+- 187: min-width: 0 !important;
+- 188: max-width: none !important;
+- 8: @media (min-width: 1221px) {
+- 11: display: grid !important;
+- 12: grid-template-columns: minmax(0, 1fr) minmax(var(--cf-right-rail-width-min, 300px), var(--cf-right-rail-width-max, 340px)) !important;
+- 23: display: flex !important;
+- 42: @media (max-width: 1220px) {
+- 47: min-width: 0 !important;
+- 48: width: 100% !important;
+- 61: @media (min-width: 1221px) {
+- 63: min-width: var(--cf-right-rail-width-min, 300px) !important;
+- 64: max-width: var(--cf-right-rail-width-max, 340px) !important;
+- 81: @media (min-width: 1080px) {
+- 83: display: grid !important;
+- 84: grid-template-columns: minmax(0, 1fr) minmax(280px, min(32vw, var(--cf-right-rail-width-max, 340px))) !important;
+- 93: overflow: visible !important;
+- 97: display: contents !important;
+- 102: min-width: 0 !important;
+- 110: min-width: 0 !important;
+- 117: min-width: 0 !important;
+- 126: width: 100% !important;
+- 127: min-width: 280px !important;
+- 128: max-width: var(--cf-right-rail-width-max, 340px) !important;
+- 129: display: flex !important;
+- 134: position: relative !important;
+- 138: overflow: visible !important;
+- 145: position: relative !important;
+- 155: position: relative !important;
+- 162: @media (max-width: 1079px) {
+- 164: display: grid !important;
+- 165: grid-template-columns: minmax(0, 1fr) !important;
+- 172: overflow: visible !important;
+- 176: display: contents !important;
+- 183: width: 100% !important;
+- 184: min-width: 0 !important;
+- 185: max-width: none !important;
+- 186: display: flex !important;
+- 194: #root .cf-html-view.main-leads-html [data-stage117-leads-list='true'] { grid-area: list !important; min-width: 0 !important; }
+- 34: display: flex;
+- 46: display: inline-flex;
+- 49: min-height: 24px;
+- 55: line-height: 1;
+- 113: width: 100%;
+- 114: min-width: 76px;
+- 115: height: 7px;
+- 117: overflow: hidden;
+- 123: display: block;
+- 124: height: 100%;
+- 152: min-width: 0;
+- 161: max-width: 100%;
+- 162: overflow: hidden;
+- 171: overflow-wrap: normal;
+- 180: display: -webkit-box;
+- 181: overflow: hidden;
+- 182: text-overflow: ellipsis;
+- 16: --cf173-main-search-max-width: 1060px;
+- 17: --cf173-main-search-height: 42px;
+- 28: width: min(100%, var(--cf173-main-search-max-width)) !important;
+- 29: max-width: min(100%, var(--cf173-main-search-max-width)) !important;
+- 30: min-width: 0 !important;
+- 33: position: relative !important;
+- 35: display: flex !important;
+- 46: display: none !important;
+- 52: width: 100% !important;
+- 53: min-width: 0 !important;
+- 54: height: var(--cf173-main-search-height) !important;
+- 55: min-height: var(--cf173-main-search-height) !important;
+- 56: max-height: var(--cf173-main-search-height) !important;
+- 82: width: min(100%, var(--cf173-main-search-max-width)) !important;
+- 83: max-width: min(100%, var(--cf173-main-search-max-width)) !important;
+- 87: @media (min-width: 1280px) {
+- 90: width: min(72vw, var(--cf173-main-search-max-width)) !important;
+- 91: max-width: min(72vw, var(--cf173-main-search-max-width)) !important;
+- 95: @media (max-width: 1100px) {
+- 100: width: 100% !important;
+- 101: max-width: 100% !important;
+- 105: @media (max-width: 640px) {
+- 107: --cf173-main-search-height: 40px;
+- 18: --cf174-main-search-height: 42px;
+- 37: width: 100% !important;
+- 38: max-width: 100% !important;
+- 39: min-width: 0 !important;
+- 40: height: var(--cf174-main-search-height) !important;
+- 41: min-height: var(--cf174-main-search-height) !important;
+- 42: max-height: var(--cf174-main-search-height) !important;
+- 43: display: flex !important;
+- 55: overflow: visible !important;
+- 68: display: none !important;
+- 69: width: 0 !important;
+- 70: min-width: 0 !important;
+- 71: max-width: 0 !important;
+- 79: display: block !important;
+- 80: width: 100% !important;
+- 81: min-width: 0 !important;
+- 82: height: var(--cf174-main-search-height) !important;
+- 83: min-height: var(--cf174-main-search-height) !important;
+- 84: max-height: var(--cf174-main-search-height) !important;
+- 97: line-height: 1.2 !important;
+- 122: width: 100% !important;
+- 123: max-width: 100% !important;
+- 131: width: 100% !important;
+- 132: max-width: 100% !important;
+- 137: @media (min-width: 1280px) {
+- 140: width: min(100%, 1120px) !important;
+- 141: max-width: min(100%, 1120px) !important;
+- 145: @media (max-width: 900px) {
+- 147: --cf174-main-search-height: 40px;
+- 18: --cf-metric-tile-min-height: 72px;
+- 23: --cf-metric-tile-label-line-height: 1.08;
+- 50: display: block;
+- 51: width: 100%;
+- 61: min-height: var(--cf-metric-tile-min-height) !important;
+- 62: width: 100%;
+- 63: display: flex !important;
+- 91: min-width: 0 !important;
+- 96: display: block;
+- 97: max-width: 100% !important;
+- 101: line-height: var(--cf-metric-tile-label-line-height) !important;
+- 106: overflow-wrap: normal !important;
+- 109: overflow: hidden !important;
+- 110: text-overflow: ellipsis !important;
+- 114: display: block;
+- 118: line-height: 1.25 !important;
+- 125: display: flex !important;
+- 130: min-width: 0 !important;
+- 134: display: block;
+- 135: min-width: 0 !important;
+- 139: line-height: 1 !important;
+- 146: width: var(--cf-metric-tile-icon-size) !important;
+- 147: height: var(--cf-metric-tile-icon-size) !important;
+- 148: min-width: var(--cf-metric-tile-icon-size) !important;
+- 149: display: inline-flex !important;
+- 160: width: var(--cf-metric-tile-icon-svg-size) !important;
+- 161: height: var(--cf-metric-tile-icon-svg-size) !important;
+- 162: stroke-width: 2.35 !important;
+- 236: display: grid !important;
+- 237: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 243: min-height: 0 !important;
+- 244: display: block !important;
+- 255: display: flex !important;
+- 259: min-width: 0 !important;
+- 277: min-height: var(--cf-metric-tile-min-height) !important;
+- 278: display: flex !important;
+- 293: min-height: var(--cf-metric-tile-min-height) !important;
+- 294: display: flex !important;
+- 311: line-height: var(--cf-metric-tile-label-line-height) !important;
+- 316: overflow-wrap: normal !important;
+- 319: overflow: hidden !important;
+- 320: text-overflow: ellipsis !important;
+- 326: line-height: 1 !important;
+- 332: width: var(--cf-metric-tile-icon-size) !important;
+- 333: height: var(--cf-metric-tile-icon-size) !important;
+- 334: min-width: var(--cf-metric-tile-icon-size) !important;
+- 341: @media (max-width: 1180px) {
+- 355: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 359: @media (max-width: 640px) {
+- 361: --cf-metric-tile-min-height: 70px;
+- 382: grid-template-columns: 1fr !important;
+- 398: display: grid !important;
+- 399: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 406: min-height: 0 !important;
+- 407: width: 100% !important;
+- 412: min-height: var(--cf-metric-tile-min-height) !important;
+- 416: @media (max-width: 1180px) {
+- 417: :where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+- 420: @media (max-width: 640px) {
+- 421: :where(.cf-metric-grid, .main-leads-html > .grid-4, .main-clients-html > .grid-4, .main-cases-html > .grid-4, main[data-p0-tasks-stable-rebuild="true"] section[data-eliteflow-task-stat-grid="true"]) { grid-template-columns: 1fr !important; }
+- 432: display: grid !important;
+- 433: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 440: min-height: 0 !important;
+- 441: display: block !important;
+- 453: min-height: var(--cf-metric-tile-min-height) !important;
+- 461: overflow: hidden !important;
+- 462: text-overflow: ellipsis !important;
+- 468: line-height: 1 !important;
+- 472: @media (max-width: 1180px) {
+- 475: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 479: @media (max-width: 640px) {
+- 482: grid-template-columns: 1fr !important;
+- 496: display: grid !important;
+- 497: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 504: min-height: 0 !important;
+- 505: height: auto !important;
+- 506: display: block !important;
+- 511: overflow: visible !important;
+- 516: min-height: var(--cf-metric-tile-min-height) !important;
+- 517: width: 100% !important;
+- 518: display: flex !important;
+- 528: overflow: hidden !important;
+- 532: display: block !important;
+- 534: max-width: 100% !important;
+- 538: line-height: var(--cf-metric-tile-label-line-height) !important;
+- 543: overflow-wrap: normal !important;
+- 546: overflow: hidden !important;
+- 547: text-overflow: ellipsis !important;
+- 551: min-width: 0 !important;
+- 553: display: flex !important;
+- 560: display: block !important;
+- 562: min-width: 0 !important;
+- 565: line-height: 1 !important;
+- 572: width: var(--cf-metric-tile-icon-size) !important;
+- 573: height: var(--cf-metric-tile-icon-size) !important;
+- 574: min-width: var(--cf-metric-tile-icon-size) !important;
+- 579: @media (max-width: 1180px) {
+- 583: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 587: @media (max-width: 640px) {
+- 591: grid-template-columns: 1fr !important;
+- 18: --cf-metric-source-min-height: 54px;
+- 48: .cf-html-shell .main-today .grid-4,
+- 49: .cf-html-shell .main-today [data-visual-metrics],
+- 50: .cf-html-shell .main-today .today-metrics,
+- 51: .cf-html-shell .main-today .today-shortcuts,
+- 52: .cf-html-shell .main-today .stat-shortcut-grid,
+- 53: .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+- 54: .cf-html-shell .main-today .grid:has(.today-top-tile)
+- 56: display: grid !important;
+- 57: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 67: display: block !important;
+- 68: width: 100% !important;
+- 69: min-height: 0 !important;
+- 78: overflow: visible !important;
+- 83: .cf-html-shell .main-today .metric,
+- 84: .cf-html-shell .main-today [data-stat-shortcut-card],
+- 85: .cf-html-shell .main-today .stat-shortcut-card,
+- 86: .cf-html-shell .main-today .today-top-tile,
+- 87: .cf-html-shell .main-today .today-metric,
+- 88: .cf-html-shell .main-today .today-shortcuts > button,
+- 89: .cf-html-shell .main-today .today-shortcuts > a
+- 91: min-height: var(--cf-metric-source-min-height) !important;
+- 92: height: 100% !important;
+- 93: width: 100% !important;
+- 94: display: flex !important;
+- 107: overflow: hidden !important;
+- 114: .cf-html-shell .main-today .metric:hover,
+- 115: .cf-html-shell .main-today [data-stat-shortcut-card]:hover,
+- 116: .cf-html-shell .main-today .stat-shortcut-card:hover,
+- 117: .cf-html-shell .main-today .today-top-tile:hover,
+- 118: .cf-html-shell .main-today .today-shortcuts > button:hover,
+- 119: .cf-html-shell .main-today .today-shortcuts > a:hover
+- 133: min-width: 0 !important;
+- 135: display: block !important;
+- 140: .cf-html-shell .main-today .metric label,
+- 141: .cf-html-shell .main-today .metric .label,
+- 142: .cf-html-shell .main-today [data-stat-shortcut-card] label,
+- 143: .cf-html-shell .main-today .stat-shortcut-card label,
+- 144: .cf-html-shell .main-today .today-top-tile label,
+- 145: .cf-html-shell .main-today .today-metric label,
+- 146: .cf-html-shell .main-today .today-shortcuts label
+- 148: display: block !important;
+- 149: max-width: 100% !important;
+- 154: line-height: 1.12 !important;
+- 159: overflow-wrap: anywhere !important;
+- 166: min-width: 0 !important;
+- 168: display: flex !important;
+- 176: .cf-html-shell .main-today .metric strong,
+- 177: .cf-html-shell .main-today [data-stat-shortcut-card] strong,
+- 178: .cf-html-shell .main-today .stat-shortcut-card strong,
+- 179: .cf-html-shell .main-today .today-top-tile strong,
+- 180: .cf-html-shell .main-today .today-metric strong,
+- 181: .cf-html-shell .main-today .today-shortcuts strong
+- 183: display: block !important;
+- 184: min-width: 0 !important;
+- 185: max-width: 10rem !important;
+- 189: line-height: 1 !important;
+- 196: html body #root :is(.cf-top-metric-tile-icon, .cf-html-shell .main-today .metric-icon, .cf-html-shell .main-today .stat-icon) {
+- 197: width: var(--cf-metric-source-icon-size) !important;
+- 198: height: var(--cf-metric-source-icon-size) !important;
+- 199: min-width: var(--cf-metric-source-icon-size) !important;
+- 200: display: inline-flex !important;
+- 210: html body #root :is(.cf-top-metric-tile-icon svg, .cf-html-shell .main-today .metric-icon svg, .cf-html-shell .main-today .stat-icon svg) {
+- 211: width: var(--cf-metric-source-icon-svg) !important;
+- 212: height: var(--cf-metric-source-icon-svg) !important;
+- 213: stroke-width: 2.35 !important;
+- 227: @media (max-width: 1180px) {
+- 228: html body #root :is(.cf-metric-grid, .notifications-stats-grid, main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"], .cf-html-shell .main-today .grid-4, .cf-html-shell .main-today [data-visual-metrics], .cf-html-shell .main-today .today-metrics, .cf-html-shell .main-today .today-shortcuts, .cf-html-shell .main-today .stat-shortcut-grid, .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]), .cf-html-shell .main-today .grid:has(.today-top-tile)) {
+- 229: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 233: @media (max-width: 640px) {
+- 235: --cf-metric-source-min-height: 58px;
+- 239: html body #root :is(.cf-metric-grid, .notifications-stats-grid, main[data-p0-tasks-stable-rebuild="true"] [data-cf-metric-grid-contract="final-vs5"], .cf-html-shell .main-today .grid-4, .cf-html-shell .main-today [data-visual-metrics], .cf-html-shell .main-today .today-metrics, .cf-html-shell .main-today .today-shortcuts, .cf-html-shell .main-today .stat-shortcut-grid, .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]), .cf-html-shell .main-today .grid:has(.today-top-tile)) {
+- 240: grid-template-columns: 1fr !important;
+- 8: @media (max-width: 767px) {
+- 10: display: none !important;
+- 23: --cf160-modal-visual-width: 720px;
+- 24: --cf160-modal-visual-max-width: calc(100vw - 40px);
+- 25: --cf160-modal-visual-max-height: calc(100vh - 40px);
+- 28: --cf160-modal-logical-width: calc(var(--cf160-modal-visual-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 29: --cf160-modal-logical-max-width: calc(var(--cf160-modal-visual-max-width) * var(--cf157-page-zoom-inverse, 1.25));
+- 30: --cf160-modal-logical-max-height: calc(var(--cf160-modal-visual-max-height) * var(--cf157-page-zoom-inverse, 1.25));
+- 44: --cf160-modal-control-height: 30px;
+- 46: --cf160-modal-footer-height: 50px;
+- 61: position: fixed !important;
+- 63: width: 100vw !important;
+- 64: height: 100vh !important;
+- 83: display: flex !important;
+- 85: overflow: hidden !important;
+- 87: line-height: 1.18 !important;
+- 94: #root > .app.closeflow-visual-stage01.cf-html-shell :is(
+- 106: position: fixed !important;
+- 115: width: min(var(--cf160-modal-logical-width), var(--cf160-modal-logical-max-width)) !important;
+- 116: max-width: min(var(--cf160-modal-logical-width), var(--cf160-modal-logical-max-width)) !important;
+- 117: max-height: var(--cf160-modal-logical-max-height) !important;
+- 145: position: fixed !important;
+- 154: width: min(var(--cf160-modal-visual-width), var(--cf160-modal-visual-max-width)) !important;
+- 155: max-width: min(var(--cf160-modal-visual-width), var(--cf160-modal-visual-max-width)) !important;
+- 156: max-height: var(--cf160-modal-visual-max-height) !important;
+- 177: line-height: 1.08 !important;
+- 197: line-height: 1.15 !important;
+- 217: min-height: 0 !important;
+- 218: overflow-y: auto !important;
+- 219: overflow-x: hidden !important;
+- 220: display: flex !important;
+- 258: line-height: 1.08 !important;
+- 270: min-height: var(--cf160-modal-control-height) !important;
+- 271: height: auto !important;
+- 276: line-height: 1.1 !important;
+- 287: min-height: 58px !important;
+- 288: max-height: 96px !important;
+- 292: line-height: 1.16 !important;
+- 322: position: sticky !important;
+- 325: min-height: var(--cf160-modal-footer-height) !important;
+- 347: position: absolute !important;
+- 350: min-width: 28px !important;
+- 351: width: 28px !important;
+- 352: height: 28px !important;
+- 353: min-height: 28px !important;
+- 376: line-height: 1.14 !important;
+- 30: position: static !important;
+- 43: display: flex !important;
+- 49: width: 100% !important;
+- 50: min-height: auto !important;
+- 51: height: auto !important;
+- 52: max-height: none !important;
+- 75: width: auto !important;
+- 76: min-width: 86px !important;
+- 77: max-width: 180px !important;
+- 83: display: none !important;
+- 84: min-height: 0 !important;
+- 28: --cf165-modal-visual-width: 600px;
+- 29: --cf165-modal-visual-max-width: calc(100vw - 96px);
+- 32: --cf165-modal-max-height: calc(100vh - var(--cf165-modal-top-offset) - var(--cf165-modal-bottom-safe));
+- 34: /* Work-area center: viewport center plus sidebar/work-area correction. */
+- 68: --cf165-control-height: 28px;
+- 77: position: fixed !important;
+- 79: width: 100vw !important;
+- 80: height: 100vh !important;
+- 92: position: fixed !important;
+- 103: width: min(var(--cf165-modal-visual-width), var(--cf165-modal-visual-max-width)) !important;
+- 104: min-width: 0 !important;
+- 105: max-width: min(var(--cf165-modal-visual-width), var(--cf165-modal-visual-max-width)) !important;
+- 106: max-height: var(--cf165-modal-max-height) !important;
+- 110: display: flex !important;
+- 111: grid-template-columns: none !important;
+- 114: overflow: hidden !important;
+- 125: line-height: 1.16 !important;
+- 133: display: flex !important;
+- 147: line-height: 1.1 !important;
+- 156: line-height: 1.16 !important;
+- 166: min-height: 0 !important;
+- 167: overflow-y: auto !important;
+- 168: overflow-x: hidden !important;
+- 169: display: flex !important;
+- 200: line-height: 1.08 !important;
+- 221: min-height: var(--cf165-control-height) !important;
+- 222: height: auto !important;
+- 227: line-height: 1.08 !important;
+- 237: min-height: var(--cf165-textarea-min) !important;
+- 238: max-height: var(--cf165-textarea-max) !important;
+- 251: position: sticky !important;
+- 254: min-height: 44px !important;
+- 280: position: absolute !important;
+- 283: width: 28px !important;
+- 284: min-width: 28px !important;
+- 285: height: 28px !important;
+- 286: min-height: 28px !important;
+- 295: @media (max-width: 900px) {
+- 300: width: calc(100vw - 24px) !important;
+- 301: max-width: calc(100vw - 24px) !important;
+- 302: max-height: calc(100vh - 48px) !important;
+- 309: - width: --cf165-modal-visual-width
+- 310: - position: --cf165-modal-work-center-shift-x, --cf165-modal-top-offset
+- 311: - height: --cf165-modal-bottom-safe
+- 61: overflow-y: auto;
+- 62: max-height: min(92vh, 920px);
+- 68: position: absolute;
+- 70: height: 0.22rem;
+- 109: display: inline-flex;
+- 110: width: fit-content;
+- 338: @media (max-width: 640px) {
+- 341: width: calc(100vw - 1rem) !important;
+- 342: max-width: calc(100vw - 1rem) !important;
+- 343: max-height: calc(100dvh - 1rem) !important;
+- 356: position: sticky;
+- 383: display: none !important;
+- 7: position: relative !important;
+- 8: overflow: hidden !important;
+- 17: position: absolute !important;
+- 21: width: 5px !important;
+- 31: width: 26px !important;
+- 32: height: 26px !important;
+- 118: position: relative !important;
+- 119: overflow: hidden !important;
+- 121: border-width: 1px !important;
+- 130: position: absolute !important;
+- 134: width: 5px !important;
+- 218: width: 26px !important;
+- 219: height: 26px !important;
+- 253: min-height: 46px !important;
+- 280: min-width: 30px !important;
+- 281: height: 26px !important;
+- 23: --cf-operator-metric-min-height: 58px;
+- 47: display: grid !important;
+- 48: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 51: width: 100% !important;
+- 54: html body #root .cf-operator-metric-grid.cf-operator-metric-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+- 55: html body #root .cf-operator-metric-grid.cf-operator-metric-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+- 58: display: block !important;
+- 59: min-width: 0 !important;
+- 60: width: 100% !important;
+- 73: min-height: var(--cf-operator-metric-min-height) !important;
+- 74: width: 100% !important;
+- 75: height: 100% !important;
+- 76: display: flex !important;
+- 87: overflow: hidden !important;
+- 105: html body #root .cf-operator-metric-text { min-width: 0 !important; flex: 1 1 auto !important; display: block !important; }
+- 108: display: block !important;
+- 109: max-width: 100% !important;
+- 114: line-height: 1.12 !important;
+- 119: overflow-wrap: normal !important;
+- 122: overflow: hidden !important;
+- 123: text-overflow: ellipsis !important;
+- 127: html body #root .cf-operator-metric-helper { display: block !important; margin-top: 4px !important; color: #667085 !important; font-size: 11px !important; line-height: 1.25 !important; font-weight: 700 !important; text-transform: none !important; letter-spacing: 0 !important; }
+- 128: html body #root .cf-operator-metric-value-row { min-width: 0 !important; flex: 0 0 auto !important; display: inline-flex !important; align-items: center !important; justify-content: flex-end !important; gap: 10px !important; }
+- 131: display: block !important;
+- 132: min-width: 0 !important;
+- 133: max-width: 10rem !important;
+- 138: line-height: 1 !important;
+- 146: width: var(--cf-operator-metric-icon-size) !important;
+- 147: height: var(--cf-operator-metric-icon-size) !important;
+- 148: min-width: var(--cf-operator-metric-icon-size) !important;
+- 149: display: inline-flex !important;
+- 160: html body #root .cf-operator-metric-icon svg * { width: 14px !important; height: 14px !important; stroke: currentColor !important; stroke-width: 2.35 !important; }
+- 175: html body #root .notifications-vnext-page .notifications-stats-grid.cf-operator-metric-grid { max-width: 1440px !important; margin: 0 auto 22px !important; }
+- 177: @media (max-width: 1180px) {
+- 180: html body #root .cf-operator-metric-grid.cf-operator-metric-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+- 183: @media (max-width: 640px) {
+- 184: :root { --cf-operator-metric-min-height: 58px; --cf-operator-metric-gap: 12px; --cf-operator-metric-value-size: 20px; }
+- 188: html body #root .cf-operator-metric-grid.cf-operator-metric-grid-4 { grid-template-columns: 1fr !important; }
+- 14: @media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+- 18: #root .cf-html-shell,
+- 19: #root .cf-html-shell .main,
+- 20: #root .cf-html-shell [data-shell-main="true"],
+- 21: #root .cf-html-shell .view.active,
+- 22: #root .cf-html-shell [data-shell-content="true"] {
+- 28: #root .cf-html-shell .cf-html-view {
+- 34: #root .cf-html-shell .global-bar {
+- 35: min-height: 54px !important;
+- 36: height: 54px !important;
+- 47: #root .cf-html-shell .global-title-copy {
+- 54: #root .cf-html-shell .global-title-copy strong {
+- 62: #root .cf-html-shell .cf-page-header-v2,
+- 63: #root .cf-html-shell .cf-page-header-v2[data-cf-operator-top-trimmed="true"] {
+- 64: display: none !important;
+- 66: width: 0 !important;
+- 67: height: 0 !important;
+- 68: min-width: 0 !important;
+- 69: min-height: 0 !important;
+- 70: max-width: 0 !important;
+- 71: max-height: 0 !important;
+- 80: overflow: hidden !important;
+- 84: #root .cf-html-shell .cf-page-header-v2__copy,
+- 85: #root .cf-html-shell .cf-page-header-v2__kicker,
+- 86: #root .cf-html-shell .cf-page-header-v2__title,
+- 87: #root .cf-html-shell .cf-page-header-v2__description,
+- 88: #root .cf-html-shell .cf-page-header-v2__actions,
+- 89: #root .cf-html-shell .cf-page-header-v2__actions [data-cf-topbar-hidden-action="true"],
+- 90: #root .cf-html-shell .cf-page-header-v2__actions [data-cf-topbar-original-view-action="true"] {
+- 91: display: none !important;
+- 95: #root .cf-html-shell .cf-global-promoted-page-actions {
+- 96: display: inline-flex !important;
+- 101: min-width: max-content !important;
+- 105: #root .cf-html-shell .cf-global-promoted-view-action,
+- 106: #root .cf-html-shell [data-cf-global-view-proxy="true"] {
+- 107: min-height: 2.25rem !important;
+- 108: height: 2.25rem !important;
+- 110: display: inline-flex !important;
+- 123: line-height: 1 !important;
+- 128: #root .cf-html-shell .cf-global-promoted-view-action:hover,
+- 129: #root .cf-html-shell [data-cf-global-view-proxy="true"]:hover {
+- 136: #root .cf-html-shell [data-shell-content="true"] > .cf-html-view > :is(.cf-page-header, [data-cf-page-header="true"], .page-hero, .header-card):first-child,
+- 137: #root .cf-html-shell [data-shell-content="true"] > .cf-html-view > :is(.kicker, .activity-kicker, .notifications-kicker, .ai-drafts-kicker):first-child {
+- 138: display: none !important;
+- 141: #root .cf-html-shell [data-shell-content="true"],
+- 142: #root .cf-html-shell .view.active {
+- 146: #root .cf-html-shell [data-shell-content="true"] > .cf-html-view,
+- 147: #root .cf-html-shell .cf-html-view {
+- 30: --cf158-overlay-max-width: calc(100vw * var(--cf158-overlay-inverse-scale) - 48px);
+- 31: --cf158-overlay-max-height: calc(100vh * var(--cf158-overlay-inverse-scale) - 48px);
+- 36: --cf158-overlay-control-height: 36px;
+- 57: max-width: min(1120px, var(--cf158-overlay-max-width)) !important;
+- 58: max-height: var(--cf158-overlay-max-height) !important;
+- 63: line-height: 1.25 !important;
+- 110: line-height: 1.1 !important;
+- 133: line-height: 1.2 !important;
+- 154: min-height: var(--cf158-overlay-control-height) !important;
+- 156: line-height: 1.15 !important;
+- 179: line-height: 1.2 !important;
+- 199: line-height: 1.2 !important;
+- 24: --cf159-dialog-width: min(860px, calc(100vw - 48px));
+- 25: --cf159-dialog-max-height: calc(100vh - 44px);
+- 34: --cf159-control-height: 34px;
+- 42: --cf159-footer-height: 58px;
+- 73: position: fixed !important;
+- 82: width: var(--cf159-dialog-width) !important;
+- 83: max-width: var(--cf159-dialog-width) !important;
+- 84: max-height: var(--cf159-dialog-max-height) !important;
+- 86: display: flex !important;
+- 88: overflow: hidden !important;
+- 93: line-height: 1.22 !important;
+- 131: line-height: 1.08 !important;
+- 150: line-height: 1.18 !important;
+- 170: min-height: 0 !important;
+- 171: max-height: none !important;
+- 172: overflow-y: auto !important;
+- 173: overflow-x: hidden !important;
+- 174: display: flex !important;
+- 191: min-height: 0 !important;
+- 192: overflow-x: hidden !important;
+- 229: line-height: 1.12 !important;
+- 241: min-height: var(--cf159-control-height) !important;
+- 242: height: auto !important;
+- 247: line-height: 1.12 !important;
+- 258: min-height: 74px !important;
+- 259: max-height: 120px !important;
+- 263: line-height: 1.2 !important;
+- 285: position: sticky !important;
+- 288: min-height: var(--cf159-footer-height) !important;
+- 307: position: sticky !important;
+- 310: min-height: var(--cf159-footer-height) !important;
+- 332: position: absolute !important;
+- 335: min-width: 30px !important;
+- 336: width: 30px !important;
+- 337: height: 30px !important;
+- 338: min-height: 30px !important;
+- 361: line-height: 1.18 !important;
+- 29: display: flex;
+- 33: min-width: 0;
+- 46: display: flex;
+- 51: @media (min-width: 1024px) {
+- 68: line-height: 1.05 !important;
+- 89: display: inline-flex !important;
+- 90: width: fit-content !important;
+- 99: line-height: 1 !important;
+- 113: display: flex;
+- 124: line-height: 1.15;
+- 129: @media (max-width: 720px) {
+- 151: width: 100%;
+- 223: line-height: 1.05 !important;
+- 237: max-width: 760px;
+- 242: line-height: 1.52 !important;
+- 256: display: inline-flex !important;
+- 257: width: fit-content !important;
+- 268: line-height: 1 !important;
+- 281: display: flex;
+- 311: min-height: 40px;
+- 428: @media (max-width: 720px) {
+- 449: width: 100% !important;
+- 34: --cf-page-header-action-height: 38px;
+- 41: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 42: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 43: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 44: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 45: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 46: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 47: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 48: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 49: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+- 50: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,
+- 55: display: flex !important;
+- 64: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action),
+- 68: min-height: var(--cf-page-header-action-height) !important;
+- 69: height: var(--cf-page-header-action-height) !important;
+- 70: display: inline-flex !important;
+- 83: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action):hover,
+- 92: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button,a.btn,a[role="button"],.btn,.cf-header-action) svg,
+- 101: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],
+- 102: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,
+- 103: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"],
+- 113: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"]:hover,
+- 114: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue:hover,
+- 115: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"]:hover,
+- 125: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"],
+- 126: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,
+- 127: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,
+- 136: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"]:hover,
+- 137: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger:hover,
+- 138: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button:hover,
+- 146: @media (max-width: 900px) {
+- 147: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 148: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 149: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 150: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child,
+- 17: --cf-page-header-min-height: 92px;
+- 38: --cf-page-header-button-height: 38px;
+- 64: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] ...
+- 67: .cf-html-shell main.main .view.active [data-cf-page-header="true"].cf-page-header,
+- 68: .cf-html-shell main.main [data-cf-page-header="true"].cf-page-header,
+- 69: .cf-html-shell main[data-current-section] [data-cf-page-header="true"].cf-page-header,
+- 70: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header {
+- 71: display: flex !important;
+- 75: width: 100% !important;
+- 76: min-width: 0 !important;
+- 77: min-height: var(--cf-page-header-min-height) !important;
+- 89: overflow: visible !important;
+- 95: .cf-html-shell main.main .view.active [data-cf-page-header="true"].cf-page-header::before,
+- 96: .cf-html-shell main.main .view.active [data-cf-page-header="true"].cf-page-header::after,
+- 97: .cf-html-shell main.main [data-cf-page-header="true"].cf-page-header::before,
+- 98: .cf-html-shell main.main [data-cf-page-header="true"].cf-page-header::after,
+- 99: .cf-html-shell main[data-current-section] [data-cf-page-header="true"].cf-page-header::before,
+- 100: .cf-html-shell main[data-current-section] [data-cf-page-header="true"].cf-page-header::after,
+- 101: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header::before,
+- 102: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header::after {
+- 104: display: none !important;
+- 111: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 112: display: flex !important;
+- 117: width: 100% !important;
+- 118: min-width: 0 !important;
+- 122: .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+- 123: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+- 124: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-copy="true"] {
+- 125: min-width: 0 !important;
+- 126: max-width: 820px !important;
+- 130: .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+- 131: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title,
+- 132: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1 {
+- 137: line-height: 1.05 !important;
+- 145: .cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+- 146: .cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+- 147: .cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+- 148: .cf-html-shell [data-cf-page-header="true"].cf-page-header .hint,
+- 149: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header p {
+- 154: line-height: 1.45 !important;
+- 156: max-width: 760px !important;
+- 161: .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+- 162: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+- 163: .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-kicker,
+- 164: .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-kicker,
+- 165: .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-kicker,
+- 166: .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"],
+- 167: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-slot="badge"],
+- 168: .cf-html-shell [data-cf-page-header="true"].cf-page-header .badge {
+- 169: display: inline-flex !important;
+- 170: width: fit-content !important;
+- 183: line-height: 1 !important;
+- 191: .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 192: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 193: .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 194: .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 195: .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 196: .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 197: .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 198: .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+- 199: .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+- 200: display: flex !important;
+- 205: min-width: max-content !important;
+- 209: .cf-html-shell [data-cf-page-header="true"].cf-page-header button,
+- 210: .cf-html-shell [data-cf-page-header="true"].cf-page-header a.btn,
+- 211: .cf-html-shell [data-cf-page-header="true"].cf-page-header a[role="button"] {
+- 212: min-height: var(--cf-page-header-button-height) !important;
+- 223: line-height: 1 !important;
+- 228: .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.primary,
+- 229: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-header-action--primary,
+- 230: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="primary"],
+- 231: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-tasks-new-task-header-action="true"],
+- 232: .cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-blue-600,
+- 233: .cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-indigo-600,
+- 234: .cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-emerald-600,
+- 235: .cf-html-shell [data-cf-page-header="true"].cf-page-header .bg-green-600 {
+- 245: .cf-html-shell [data-cf-page-header="true"].cf-page-header .btn.soft-blue,
+- 246: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="ai"],
+- 247: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-stage26-leads-head-ai="true"],
+- 248: .cf-html-shell [data-cf-page-header="true"].cf-page-header a[href="/ai-drafts"] {
+- 258: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-entity-action-danger,
+- 259: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-trash-action-button,
+- 260: .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-header-action="danger"] {
+- 269: .cf-html-shell [data-cf-page-header="true"].cf-page-header button svg,
+- 270: .cf-html-shell [data-cf-page-header="true"].cf-page-header a.btn svg {
+- 271: width: 1rem !important;
+- 272: height: 1rem !important;
+- 278: @media (max-width: 720px) {
+- 279: .cf-html-shell [data-cf-page-header="true"].cf-page-header {
+- 285: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 290: .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 291: .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 292: .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 293: .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 294: .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 295: .cf-html-shell [data-cf-page-header="true"].cf-page-header > :last-child {
+- 297: min-width: 0 !important;
+- 311: --cf-page-header-copy-max-width: 820px;
+- 317: --cf-page-header-kicker-line-height: 1;
+- 324: --cf-page-header-title-line-height: 1.05;
+- 331: --cf-page-header-description-line-height: 1.45;
+- 333: --cf-page-header-description-max-width: 760px;
+- 337: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+- 338: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+- 339: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child {
+- 340: display: flex !important;
+- 344: min-width: 0 !important;
+- 345: max-width: var(--cf-page-header-copy-max-width) !important;
+- 350: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+- 351: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+- 352: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+- 353: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-kicker,
+- 354: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-kicker,
+- 355: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-kicker,
+- 356: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"],
+- 357: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-slot="badge"],
+- 358: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .badge {
+- 359: display: inline-flex !important;
+- 360: width: fit-content !important;
+- 361: max-width: 100% !important;
+- 368: line-height: var(--cf-page-header-kicker-line-height) !important;
+- 378: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+- 379: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+- 380: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+- 381: display: block !important;
+- 387: line-height: var(--cf-page-header-title-line-height) !important;
+- 395: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+- 396: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+- 397: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+- 398: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+- 399: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .hint {
+- 400: display: block !important;
+- 401: max-width: var(--cf-page-header-description-max-width) !important;
+- 407: line-height: var(--cf-page-header-description-line-height) !important;
+- 414: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 415: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 416: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 417: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 418: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 419: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 420: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 421: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 422: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions {
+- 424: display: flex !important;
+- 429: min-width: max-content !important;
+- 433: @media (max-width: 720px) {
+- 434: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+- 435: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+- 436: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child {
+- 437: max-width: none !important;
+- 440: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 441: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 442: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 443: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 444: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 445: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 446: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 447: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 448: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions {
+- 451: min-width: 0 !important;
+- 468: --cf-page-header-title-line-height: 1;
+- 475: --cf-page-header-description-line-height: 1.45;
+- 477: --cf-page-header-description-max-width: 780px;
+- 482: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+- 483: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child,
+- 484: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child {
+- 489: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+- 490: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+- 491: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+- 492: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"] {
+- 496: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+- 497: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+- 498: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+- 504: line-height: var(--cf-page-header-title-line-height) !important;
+- 511: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+- 512: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description {
+- 513: display: block !important;
+- 514: max-width: var(--cf-page-header-description-max-width) !important;
+- 520: line-height: var(--cf-page-header-description-line-height) !important;
+- 526: @media (max-width: 720px) {
+- 550: --cf-page-header-action-height: 38px;
+- 562: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+- 563: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 567: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 568: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 569: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 570: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 571: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 572: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 573: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 574: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 575: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions,
+- 576: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside {
+- 579: display: flex !important;
+- 585: min-width: max-content !important;
+- 588: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"] > *,
+- 589: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions > *,
+- 590: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions > *,
+- 591: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside > * {
+- 595: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .cf-page-hero-actions,
+- 596: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .head-actions,
+- 597: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .notifications-header-actions,
+- 598: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside .ai-drafts-header-actions {
+- 599: display: flex !important;
+- 606: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside :is(.text-xs, .text-\[12px\], small, .cf-page-header-meta),
+- 607: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-meta="true"] {
+- 612: line-height: 1.35 !important;
+- 616: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .cf-header-action) {
+- 617: min-height: var(--cf-page-header-action-height) !important;
+- 628: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .cf-header-action):hover {
+- 636: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header :is(button, a.btn, a[role="button"], .cf-header-action) svg {
+- 641: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+- 642: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description {
+- 643: max-width: 780px !important;
+- 646: @media (max-width: 900px) {
+- 647: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+- 648: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 652: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 653: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 654: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 655: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-aside {
+- 659: min-width: 0 !important;
+- 30: #root .cf-html-shell main .cf-page-header[data-cf-page-header="true"],
+- 33: display: grid !important;
+- 34: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 45: #root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] > .cf-page-header-row,
+- 48: #root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] > .cf-page-hero-layout,
+- 55: width: 100% !important;
+- 56: max-width: none !important;
+- 57: min-width: 0 !important;
+- 61: display: grid !important;
+- 62: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 72: #root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="copy"],
+- 81: width: 100% !important;
+- 82: max-width: var(--cf-ph-copy-left-max) !important;
+- 83: min-width: 0 !important;
+- 90: display: flex !important;
+- 109: #root .cf-html-shell main .cf-page-header[data-cf-page-header="true"] [data-cf-page-header-part="actions"],
+- 128: display: flex !important;
+- 134: min-width: max-content !important;
+- 150: display: inline-flex !important;
+- 151: width: fit-content !important;
+- 152: max-width: 100% !important;
+- 168: line-height: 1 !important;
+- 183: display: block !important;
+- 184: max-width: var(--cf-ph-copy-left-max) !important;
+- 191: line-height: var(--cf-ph-title-left-line) !important;
+- 204: display: block !important;
+- 205: max-width: var(--cf-ph-copy-left-max) !important;
+- 212: line-height: var(--cf-ph-desc-left-line) !important;
+- 221: display: none !important;
+- 224: @media (max-width: 900px) {
+- 228: display: flex !important;
+- 239: min-width: 0 !important;
+- 8: --cf-page-header-copy-max-width: 760px;
+- 16: --cf-page-header-title-max-width: 760px;
+- 18: --cf-page-header-description-max-width: 760px;
+- 21: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+- 22: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+- 23: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+- 24: display: flex !important;
+- 28: min-width: 0 !important;
+- 29: max-width: var(--cf-page-header-copy-max-width) !important;
+- 34: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="kicker"],
+- 35: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .kicker,
+- 36: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-kicker,
+- 37: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [class*="kicker"] {
+- 42: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="title"],
+- 43: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header h1,
+- 44: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-title {
+- 46: max-width: var(--cf-page-header-title-max-width) !important;
+- 51: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="description"],
+- 52: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-header-description,
+- 53: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header p,
+- 54: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .lead-copy,
+- 55: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .subtitle,
+- 56: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .hint {
+- 58: max-width: var(--cf-page-header-description-max-width) !important;
+- 66: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > p + p,
+- 67: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"] > .cf-page-header-description + .cf-page-header-description,
+- 68: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child > p + p,
+- 69: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child > p + p {
+- 70: display: none !important;
+- 74: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header * {
+- 78: @media (max-width: 900px) {
+- 80: --cf-page-header-copy-max-width: 100%;
+- 19: --cf-ph-card-min-height: 92px;
+- 70: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+- 72: position: relative !important;
+- 73: display: grid !important;
+- 74: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 79: width: 100% !important;
+- 80: min-width: 0 !important;
+- 81: min-height: var(--cf-ph-card-min-height) !important;
+- 89: overflow: visible !important;
+- 96: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header::before,
+- 97: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header::after {
+- 99: display: none !important;
+- 104: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout {
+- 105: display: grid !important;
+- 106: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 109: width: 100% !important;
+- 110: min-width: 0 !important;
+- 119: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child:last-child {
+- 124: max-width: 780px !important;
+- 132: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="copy"],
+- 133: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-layout > :first-child,
+- 134: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header > :first-child {
+- 138: display: flex !important;
+- 142: min-width: 0 !important;
+- 143: max-width: 780px !important;
+- 158: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header [data-cf-page-header-part="actions"],
+- 159: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .cf-page-hero-actions,
+- 160: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .head-actions,
+- 161: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .ai-drafts-header-actions,
+- 162: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .activity-header-actions,
+- 163: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .notifications-header-actions,
+- 164: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .settings-header-actions,
+- 165: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .billing-header-actions,
+- 166: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header .support-header-actions {
+- 171: display: flex !important;
+- 177: min-width: max-content !important;
+- 193: display: inline-flex !important;
+- 194: width: fit-content !important;
+- 207: line-height: 1 !important;
+- 219: display: block !important;
+- 221: max-width: 780px !important;
+- 226: line-height: var(--cf-ph-title-line) !important;
+- 236: display: block !important;
+- 238: max-width: 780px !important;
+- 243: line-height: var(--cf-ph-desc-line) !important;
+- 254: display: none !important;
+- 264: min-height: var(--cf-ph-action-h) !important;
+- 265: height: var(--cf-ph-action-h) !important;
+- 266: display: inline-flex !important;
+- 281: line-height: 1 !important;
+- 347: display: flex !important;
+- 353: min-width: max-content !important;
+- 358: width: auto !important;
+- 365: @media (max-width: 900px) {
+- 367: #root .cf-html-shell [data-cf-page-header="true"].cf-page-header,
+- 369: display: flex !important;
+- 385: min-width: 0 !important;
+- 16: --cf-header-stage6-min-height: 96px;
+- 52: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) {
+- 53: display: grid !important;
+- 54: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 58: width: 100% !important;
+- 59: min-width: 0 !important;
+- 60: min-height: var(--cf-header-stage6-min-height) !important;
+- 69: overflow: visible !important;
+- 76: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header)::before,
+- 77: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header)::after {
+- 79: display: none !important;
+- 85: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(.cf-page-hero-layout, .header-inner, .billing-header-inner, .support-header-inner) {
+- 86: display: contents !important;
+- 90: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="copy"], .head-copy, .billing-header-copy, .support-header-copy, .settings-header-copy, .activity-header-copy, .ai-drafts-header-copy, .notifications-header-copy),
+- 91: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) > :first-child {
+- 95: display: flex !important;
+- 99: min-width: 0 !important;
+- 100: max-width: 780px !important;
+- 105: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .billing-header-actions, .support-header-actions, .settings-header-actions, .activity-header-actions, .ai-drafts-header-actions, .notifications-header-actions),
+- 106: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) > :last-child {
+- 110: display: flex !important;
+- 116: min-width: max-content !important;
+- 117: width: auto !important;
+- 122: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="kicker"], .kicker, .cf-page-hero-kicker, .activity-kicker, .ai-drafts-kicker, .notifications-kicker, [class*="kicker"], [data-slot="badge"]) {
+- 123: display: inline-flex !important;
+- 124: width: fit-content !important;
+- 125: max-width: 100% !important;
+- 137: line-height: 1 !important;
+- 147: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="title"], h1, .cf-page-hero-title) {
+- 148: display: block !important;
+- 154: line-height: 1 !important;
+- 162: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="description"], .cf-page-header-description, .lead-copy, .subtitle, .hint) {
+- 163: display: block !important;
+- 164: max-width: 780px !important;
+- 170: line-height: 1.45 !important;
+- 177: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="description"], .cf-page-header-description):nth-of-type(n+2) {
+- 178: display: none !important;
+- 185: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(button, a.btn, a[role="button"]) {
+- 186: min-height: var(--cf-header-stage6-button-h) !important;
+- 187: height: var(--cf-header-stage6-button-h) !important;
+- 197: line-height: 1 !important;
+- 202: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(button, a.btn, a[role="button"]):hover {
+- 210: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .btn.soft-blue, a[href="/ai-drafts"]) {
+- 218: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="ai"], [data-cf-command-action="ai"], .cf-command-action--ai, .btn.soft-blue, a[href="/ai-drafts"]):hover {
+- 226: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="danger"], [data-cf-trash-action="true"], .cf-trash-action-button, .cf-entity-action-danger, button:has(svg.lucide-trash-2), button:has(svg[class*="Trash"])) {
+- 234: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-header-action="danger"], [data-cf-trash-action="true"], .cf-trash-action-button, .cf-entity-action-danger, button:has(svg.lucide-trash-2), button:has(svg[class*="Trash"])):hover {
+- 241: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is(button, a.btn, a[role="button"]) svg,
+- 242: #root .cf-html-shell .global-actions :is(button, a.btn, a[role="button"]) svg {
+- 253: #root .cf-html-shell .global-actions :is(button, a.btn, a[role="button"]) {
+- 254: min-height: 36px !important;
+- 265: #root .cf-html-shell .global-actions :is([data-cf-command-action="ai"], .cf-command-action--ai),
+- 266: #root .cf-html-shell .global-actions span[data-feature-status="Beta"] :is(button, a.btn, a[role="button"]) {
+- 274: #root .cf-html-shell .global-actions :is([data-cf-command-action="ai"], .cf-command-action--ai):hover,
+- 275: #root .cf-html-shell .global-actions span[data-feature-status="Beta"] :is(button, a.btn, a[role="button"]):hover {
+- 286: @media (max-width: 820px) {
+- 287: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) {
+- 288: grid-template-columns: minmax(0, 1fr) !important;
+- 292: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="actions"], .head-actions, .cf-page-hero-actions, .billing-header-actions, .support-header-actions, .settings-header-actions, .activity-header-actions, .ai-drafts-header-actions, .notifications-header-actions),
+- 293: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) > :last-child {
+- 298: min-width: 0 !important;
+- 299: width: 100% !important;
+- 302: #root .cf-html-shell .view.active :is([data-cf-page-header="true"], .cf-page-header, .page-head, header.billing-header, header.support-header, header.settings-header, .activity-page-header, .ai-drafts-page-header, .notifications-page-header) :is([data-cf-page-header-part="title"], h1, .cf-page-hero-title) {
+- 34: display: grid !important;
+- 35: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 45: display: grid !important;
+- 46: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 51: width: 100% !important;
+- 52: min-width: 0 !important;
+- 63: min-width: 0 !important;
+- 64: max-width: var(--cf-page-header-copy-left-max) !important;
+- 65: display: flex !important;
+- 89: min-width: max-content !important;
+- 90: display: flex !important;
+- 119: display: inline-flex !important;
+- 120: width: fit-content !important;
+- 121: max-width: 100% !important;
+- 134: line-height: 1 !important;
+- 148: display: block !important;
+- 150: max-width: var(--cf-page-header-copy-left-max) !important;
+- 155: line-height: var(--cf-page-header-title-line-final) !important;
+- 167: display: block !important;
+- 169: max-width: var(--cf-page-header-copy-left-max) !important;
+- 174: line-height: var(--cf-page-header-description-line-final) !important;
+- 183: display: none !important;
+- 186: @media (max-width: 900px) {
+- 190: display: flex !important;
+- 200: min-width: 0 !important;
+- 13: --cf-ph-v2-card-min-height: 92px;
+- 32: --cf-ph-v2-action-height: 38px;
+- 63: position: relative !important;
+- 64: display: grid !important;
+- 65: grid-template-columns: minmax(0, 1fr) max-content !important;
+- 69: width: 100% !important;
+- 70: min-width: 0 !important;
+- 71: min-height: var(--cf-ph-v2-card-min-height) !important;
+- 78: overflow: visible !important;
+- 89: width: 100% !important;
+- 90: max-width: var(--cf-ph-v2-copy-max) !important;
+- 91: min-width: 0 !important;
+- 95: display: flex !important;
+- 106: display: inline-flex !important;
+- 107: width: fit-content !important;
+- 108: max-width: 100% !important;
+- 122: line-height: 1 !important;
+- 134: display: block !important;
+- 135: max-width: var(--cf-ph-v2-copy-max) !important;
+- 141: line-height: var(--cf-ph-v2-title-line) !important;
+- 151: display: block !important;
+- 152: max-width: var(--cf-ph-v2-copy-max) !important;
+- 158: line-height: var(--cf-ph-v2-description-line) !important;
+- 171: min-width: max-content !important;
+- 172: display: flex !important;
+- 184: display: contents !important;
+- 190: min-height: var(--cf-ph-v2-action-height) !important;
+- 191: height: var(--cf-ph-v2-action-height) !important;
+- 192: display: inline-flex !important;
+- 206: line-height: 1 !important;
+- 245: @media (max-width: 900px) {
+- 248: display: flex !important;
+- 255: max-width: 100% !important;
+- 262: min-width: 0 !important;
+- 38: #root > .app.closeflow-visual-stage01.cf-html-shell {
+- 44: #root .global-bar,
+- 45: #root .sidebar,
+- 51: #root .global-bar {
+- 53: line-height: var(--cf150-line-normal) !important;
+- 56: #root .global-bar :is(button, a, .btn, [role="button"]) {
+- 58: line-height: var(--cf150-line-tight) !important;
+- 61: #root .global-bar :is(h1, h2, strong, b) {
+- 63: line-height: var(--cf150-line-tight) !important;
+- 66: /* Sidebar */
+- 67: #root .sidebar {
+- 69: line-height: var(--cf150-line-normal) !important;
+- 72: #root .sidebar :is(button, a, .nav-item, [role="button"]) {
+- 74: line-height: var(--cf150-line-tight) !important;
+- 77: #root .sidebar :is(.section-title, .sidebar-section-title, small) {
+- 79: line-height: var(--cf150-line-tight) !important;
+- 85: line-height: var(--cf150-line-normal) !important;
+- 97: line-height: var(--cf150-line-tight) !important;
+- 110: line-height: var(--cf150-line-tight) !important;
+- 119: line-height: var(--cf150-line-tight) !important;
+- 133: line-height: var(--cf150-line-tight) !important;
+- 148: line-height: var(--cf150-line-normal) !important;
+- 166: line-height: var(--cf150-line-normal) !important;
+- 178: line-height: var(--cf150-line-tight) !important;
+- 188: line-height: var(--cf150-line-normal) !important;
+- 198: line-height: var(--cf150-line-tight) !important;
+- 2: min-height: 100vh;
+- 11: position: sticky;
+- 14: width: min(1180px, calc(100% - 32px));
+- 15: min-height: 76px;
+- 17: display: flex;
+- 27: display: inline-flex;
+- 35: width: 40px;
+- 36: height: 40px;
+- 38: display: grid;
+- 53: display: flex;
+- 80: width: min(1180px, calc(100% - 32px));
+- 86: min-height: calc(100vh - 76px);
+- 87: display: grid;
+- 88: grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+- 95: min-width: 0;
+- 108: width: fit-content;
+- 109: display: inline-flex;
+- 120: max-width: 760px;
+- 123: line-height: 0.92;
+- 128: max-width: 680px;
+- 132: line-height: 1.5;
+- 137: display: flex;
+- 150: min-height: 48px;
+- 153: display: inline-flex;
+- 197: position: relative;
+- 198: overflow: hidden;
+- 211: position: absolute;
+- 218: position: relative;
+- 223: min-height: 50px;
+- 228: display: flex;
+- 264: line-height: 1.05;
+- 269: display: grid;
+- 270: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 283: min-height: 96px;
+- 294: display: block;
+- 302: display: grid;
+- 308: min-height: 78px;
+- 310: display: grid;
+- 311: grid-template-columns: 12px minmax(0, 1fr);
+- 317: width: 10px;
+- 318: height: 10px;
+- 333: display: block;
+- 356: display: grid;
+- 357: grid-template-columns: minmax(0, 0.75fr) minmax(0, 1fr);
+- 370: line-height: 1;
+- 377: display: grid;
+- 382: grid-template-columns: 1fr;
+- 424: line-height: 1.62;
+- 429: max-width: 780px;
+- 434: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 438: width: 46px;
+- 439: height: 46px;
+- 441: display: grid;
+- 452: overflow: hidden;
+- 471: display: grid;
+- 472: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 484: display: inline-flex;
+- 504: display: grid;
+- 505: grid-template-columns: minmax(0, 0.88fr) minmax(320px, 0.62fr);
+- 512: display: flex;
+- 530: display: grid;
+- 531: grid-template-columns: minmax(0, 1fr) 320px;
+- 545: display: block;
+- 551: display: block;
+- 554: line-height: 1;
+- 565: width: 100%;
+- 569: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 589: max-width: 640px;
+- 599: @media (max-width: 1040px) {
+- 604: grid-template-columns: 1fr;
+- 609: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 617: @media (max-width: 720px) {
+- 619: width: min(100% - 24px, 1180px);
+- 620: min-height: 68px;
+- 624: display: none;
+- 635: width: min(100% - 24px, 1180px);
+- 639: min-height: 0;
+- 651: grid-template-columns: 1fr;
+- 662: width: 100%;
+- 677: width: min(1180px, calc(100% - 32px));
+- 683: display: flex;
+- 692: min-width: 0;
+- 693: display: flex;
+- 712: display: flex;
+- 732: @media (max-width: 720px) {
+- 734: width: min(100% - 24px, 1180px);
+- 47: --cf156-kpi-height: 52px;
+- 48: --cf156-panel-height: 48px;
+- 49: --cf156-row-height: 58px;
+- 50: --cf156-rail-row-height: 42px;
+- 53: --cf156-control-height: 32px;
+- 61: --cf156-chip-height: 20px;
+- 78: #root > .app.closeflow-visual-stage01.cf-html-shell,
+- 79: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"],
+- 80: #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+- 81: #root .global-bar,
+- 91: width: 100% !important;
+- 92: max-width: none !important;
+- 94: overflow: visible !important;
+- 97: line-height: 1.22 !important;
+- 115: width: 100% !important;
+- 116: max-width: none !important;
+- 119: line-height: 1.22 !important;
+- 149: min-height: var(--cf156-kpi-height) !important;
+- 173: min-height: var(--cf156-panel-height) !important;
+- 192: min-height: var(--cf156-row-height) !important;
+- 215: min-height: var(--cf156-rail-row-height) !important;
+- 232: min-height: var(--cf156-panel-height) !important;
+- 281: min-height: var(--cf156-control-height-sm) !important;
+- 286: line-height: 1.12 !important;
+- 294: min-height: var(--cf156-control-height) !important;
+- 311: line-height: 1.16 !important;
+- 323: line-height: 1.12 !important;
+- 335: line-height: 1.08 !important;
+- 346: min-height: var(--cf156-chip-height) !important;
+- 350: line-height: 1.05 !important;
+- 361: width: var(--cf156-icon-box) !important;
+- 362: height: var(--cf156-icon-box) !important;
+- 363: min-width: var(--cf156-icon-box) !important;
+- 364: min-height: var(--cf156-icon-box) !important;
+- 373: width: 16px !important;
+- 374: height: 16px !important;
+- 9: width: 100% !important;
+- 10: max-width: none !important;
+- 11: min-width: 0 !important;
+- 12: display: flex !important;
+- 24: width: 100% !important;
+- 25: max-width: none !important;
+- 26: min-width: 0 !important;
+- 33: display: block !important;
+- 34: width: 100% !important;
+- 35: max-width: none !important;
+- 36: min-width: 0 !important;
+- 41: width: 100% !important;
+- 42: max-width: none !important;
+- 43: min-width: 0 !important;
+- 44: min-height: 0 !important;
+- 46: display: grid !important;
+- 47: grid-template-columns:
+- 65: width: 2rem !important;
+- 66: height: 2rem !important;
+- 67: min-width: 2rem !important;
+- 68: min-height: 2rem !important;
+- 69: display: inline-flex !important;
+- 73: line-height: 1 !important;
+- 81: min-width: 0 !important;
+- 88: min-width: 0 !important;
+- 96: min-width: 0 !important;
+- 97: width: 100% !important;
+- 99: display: flex !important;
+- 115: width: auto !important;
+- 116: min-width: max-content !important;
+- 117: display: inline-flex !important;
+- 126: display: block !important;
+- 127: max-width: 100% !important;
+- 129: overflow: hidden !important;
+- 130: text-overflow: ellipsis !important;
+- 131: line-height: 1.15 !important;
+- 137: line-height: 1.1 !important;
+- 141: max-width: 100% !important;
+- 142: min-width: 0 !important;
+- 143: display: flex !important;
+- 148: line-height: 1 !important;
+- 152: min-width: 0 !important;
+- 153: max-width: 100% !important;
+- 157: min-height: 1.35rem !important;
+- 158: height: auto !important;
+- 159: max-width: 100% !important;
+- 160: display: inline-flex !important;
+- 165: line-height: 1 !important;
+- 173: overflow: hidden !important;
+- 174: text-overflow: ellipsis !important;
+- 178: display: block !important;
+- 183: line-height: 1 !important;
+- 188: overflow: hidden !important;
+- 189: text-overflow: ellipsis !important;
+- 190: line-height: 1.08 !important;
+- 195: display: block !important;
+- 200: line-height: 1 !important;
+- 206: max-width: 100% !important;
+- 207: display: -webkit-box !important;
+- 210: overflow: hidden !important;
+- 211: overflow-wrap: anywhere !important;
+- 213: line-height: 1.12 !important;
+- 220: width: 2.05rem !important;
+- 221: min-width: 2.05rem !important;
+- 222: height: 2.05rem !important;
+- 223: min-height: 2.05rem !important;
+- 225: display: inline-flex !important;
+- 231: @media (max-width: 72rem) {
+- 234: grid-template-columns:
+- 259: @media (max-width: 46rem) {
+- 262: grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+- 280: width: 100% !important;
+- 281: max-width: 100% !important;
+- 300: display: none !important;
+- 304: display: none !important;
+- 316: display: none !important;
+- 362: width: 100% !important;
+- 363: max-width: none !important;
+- 372: min-width: 0 !important;
+- 376: display: flex !important;
+- 381: min-width: min(100%, 19rem) !important;
+- 385: min-height: 2.15rem !important;
+- 389: line-height: 1 !important;
+- 403: min-width: 0 !important;
+- 409: @media (max-width: 46rem) {
+- 416: width: 100% !important;
+- 428: width: 100% !important;
+- 429: max-width: none !important;
+- 437: display: flex !important;
+- 442: min-width: min(100%, 19rem) !important;
+- 446: min-height: 2.15rem !important;
+- 450: line-height: 1 !important;
+- 466: min-width: 0 !important;
+- 472: @media (max-width: 46rem) {
+- 479: width: 100% !important;
+- 23: position: absolute !important;
+- 24: width: 1px !important;
+- 25: height: 1px !important;
+- 28: overflow: hidden !important;
+- 4: - poprzednia diagnostyka pokazała left: 12 / width: 262, czyli frame nie działał jako main-content frame
+- 14: --cf142-sidebar-width: 240px;
+- 17: --cf142-work-width: 1440px;
+- 19: --cf142-right-rail-width: 360px;
+- 25: @media (min-width: 1680px) {
+- 31: @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+- 35: #root .app.closeflow-visual-stage01.cf-html-shell,
+- 36: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 37: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 38: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 39: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 45: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 46: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 47: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 48: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 49: width: 100% !important;
+- 50: max-width: none !important;
+- 51: min-width: 0 !important;
+- 56: #root .app.closeflow-visual-stage01.cf-html-shell
+- 59: width: min(
+- 60: calc(100vw - var(--cf142-sidebar-width) - var(--cf142-left-gutter) - var(--cf142-right-gutter)),
+- 63: max-width: var(--cf142-work-width) !important;
+- 64: min-width: 0 !important;
+- 68: display: block !important;
+- 71: @media (min-width: 1880px) {
+- 72: #root .app.closeflow-visual-stage01.cf-html-shell
+- 75: width: min(
+- 76: calc(100vw - var(--cf142-sidebar-width) - var(--cf142-left-gutter) - var(--cf142-right-gutter)),
+- 79: max-width: var(--cf142-work-width-wide) !important;
+- 84: #root .app.closeflow-visual-stage01.cf-html-shell
+- 103: width: 100% !important;
+- 104: max-width: none !important;
+- 105: min-width: 0 !important;
+- 112: #root .app.closeflow-visual-stage01.cf-html-shell
+- 126: max-width: none !important;
+- 129: #root .app.closeflow-visual-stage01.cf-html-shell
+- 145: #root .app.closeflow-visual-stage01.cf-html-shell
+- 149: width: 100% !important;
+- 150: max-width: none !important;
+- 156: #root .app.closeflow-visual-stage01.cf-html-shell
+- 167: width: 100% !important;
+- 168: max-width: none !important;
+- 171: #root .app.closeflow-visual-stage01.cf-html-shell
+- 175: width: 100% !important;
+- 176: max-width: none !important;
+- 177: display: grid !important;
+- 178: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf142-right-rail-width)) !important;
+- 183: @media (min-width: 1880px) {
+- 184: #root .app.closeflow-visual-stage01.cf-html-shell
+- 188: grid-template-columns: minmax(0, 1fr) minmax(342px, var(--cf142-right-rail-width-wide)) !important;
+- 192: #root .app.closeflow-visual-stage01.cf-html-shell
+- 200: width: 100% !important;
+- 201: max-width: var(--cf142-right-rail-width) !important;
+- 202: min-width: 0 !important;
+- 206: #root .app.closeflow-visual-stage01.cf-html-shell
+- 210: width: 100% !important;
+- 211: max-width: none !important;
+- 212: display: grid !important;
+- 213: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf142-right-rail-width)) !important;
+- 218: #root .app.closeflow-visual-stage01.cf-html-shell
+- 222: width: 100% !important;
+- 223: max-width: none !important;
+- 224: min-width: 0 !important;
+- 227: #root .app.closeflow-visual-stage01.cf-html-shell
+- 231: width: 100% !important;
+- 232: max-width: var(--cf142-right-rail-width) !important;
+- 233: min-width: 0 !important;
+- 8: width: min(820px, calc(100vw - 20px)) !important;
+- 9: max-width: 820px !important;
+- 10: max-height: min(92vh, 900px) !important;
+- 11: overflow: hidden !important;
+- 27: width: 38px !important;
+- 28: height: 38px !important;
+- 48: line-height: 1.15 !important;
+- 53: max-height: calc(92vh - 150px) !important;
+- 54: overflow-y: auto !important;
+- 58: scrollbar-width: thin !important;
+- 63: width: 100% !important;
+- 82: line-height: 1.12 !important;
+- 91: line-height: 1.45 !important;
+- 95: display: grid !important;
+- 96: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 101: display: grid !important;
+- 103: min-width: 0 !important;
+- 110: line-height: 1.2 !important;
+- 119: width: 100% !important;
+- 130: min-height: 46px !important;
+- 133: line-height: 1.2 !important;
+- 137: min-height: 150px !important;
+- 140: line-height: 1.5 !important;
+- 166: min-height: 44px !important;
+- 192: @media (max-width: 760px) {
+- 194: width: calc(100vw - 14px) !important;
+- 195: max-height: 94vh !important;
+- 204: max-height: calc(94vh - 146px) !important;
+- 213: grid-template-columns: 1fr !important;
+- 218: display: grid !important;
+- 219: grid-template-columns: 1fr !important;
+- 224: width: 100% !important;
+- 13: --cf135-rail-heading-line-height: 18px;
+- 16: --cf135-rail-description-line-height: 16px;
+- 19: --cf135-rail-heading-min-height: 38px;
+- 23: .cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) {
+- 24: display: grid !important;
+- 25: grid-template-columns: minmax(0, 1fr);
+- 29: min-height: var(--cf135-rail-heading-min-height);
+- 35: .cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) :where(h2,h3) {
+- 36: display: block;
+- 37: width: 100%;
+- 38: min-width: 0;
+- 39: min-height: var(--cf135-rail-heading-line-height);
+- 45: line-height: var(--cf135-rail-heading-line-height) !important;
+- 50: overflow-wrap: anywhere;
+- 53: .cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) :where(p,small) {
+- 54: display: block;
+- 55: width: 100%;
+- 56: min-width: 0;
+- 62: line-height: var(--cf135-rail-description-line-height) !important;
+- 67: overflow-wrap: anywhere;
+- 70: .cf-html-shell :where(.lead-right-rail,.clients-right-rail,.cases-right-rail,.activity-right-rail) :where(.panel-head,.activity-right-card-head) {
+- 74: line-height: var(--cf135-rail-heading-line-height);
+- 78: .cf-html-shell :where([data-testid="leads-simple-filters-card"],[data-testid="leads-top-value-records-card"],[data-testid="clients-simple-filters-card"],[data-testid="clients-top-value-records-card"],.cases-shortcuts-rail-card,.cases-risk-rail-card,.activity-right-card) {
+- 82: .cf-html-shell .lead-right-rail .panel-head,
+- 83: .cf-html-shell .clients-right-rail .panel-head,
+- 84: .cf-html-shell .cases-right-rail .panel-head,
+- 85: .cf-html-shell .activity-right-rail .activity-right-card-head {
+- 86: min-height: var(--cf135-rail-heading-min-height) !important;
+- 19: min-width: 0 !important;
+- 72: display: flex !important;
+- 79: width: 100% !important;
+- 80: min-width: 0 !important;
+- 82: display: flex !important;
+- 101: min-width: 0 !important;
+- 102: display: flex !important;
+- 108: display: block !important;
+- 109: min-width: 0 !important;
+- 110: max-width: 100% !important;
+- 113: line-height: 1.18 !important;
+- 116: overflow-wrap: anywhere !important;
+- 121: display: block !important;
+- 122: min-width: 0 !important;
+- 123: max-width: 100% !important;
+- 126: line-height: 1.3 !important;
+- 129: overflow-wrap: anywhere !important;
+- 134: display: flex !important;
+- 141: min-height: 1.35rem !important;
+- 142: display: inline-flex !important;
+- 149: line-height: 1 !important;
+- 177: line-height: 1.35 !important;
+- 183: display: grid !important;
+- 205: @media (min-width: 1221px) {
+- 207: display: grid !important;
+- 208: grid-template-columns: minmax(0, 1fr) minmax(var(--cf-right-rail-width-min), var(--cf-right-rail-width-max)) !important;
+- 214: width: 100% !important;
+- 215: min-width: var(--cf-right-rail-width-min) !important;
+- 216: max-width: var(--cf-right-rail-width-max) !important;
+- 217: display: flex !important;
+- 229: width: 100% !important;
+- 235: width: 100% !important;
+- 239: @media (max-width: 1220px) {
+- 241: width: 100% !important;
+- 242: min-width: 0 !important;
+- 243: max-width: none !important;
+- 254: --cf-mobile-simple-filter-row-min-height: 42px;
+- 264: @media (max-width: 760px) {
+- 274: line-height: 1.15 !important;
+- 283: line-height: 1.4 !important;
+- 289: display: grid !important;
+- 298: width: 100% !important;
+- 299: min-height: var(--cf-mobile-simple-filter-row-min-height) !important;
+- 301: display: flex !important;
+- 307: border-width: 1px !important;
+- 311: line-height: 1.15 !important;
+- 316: min-width: 0 !important;
+- 317: display: block !important;
+- 320: line-height: 1.15 !important;
+- 327: min-width: 1.4rem !important;
+- 331: line-height: 1 !important;
+- 343: @media (max-width: 760px) {
+- 346: display: grid !important;
+- 353: width: 100% !important;
+- 354: min-height: 50px !important;
+- 356: display: grid !important;
+- 357: grid-template-columns: minmax(0, 1fr) auto !important;
+- 370: min-width: 0 !important;
+- 371: max-width: 100% !important;
+- 372: display: block !important;
+- 373: overflow: hidden !important;
+- 381: display: block !important;
+- 382: min-width: 0 !important;
+- 383: max-width: 100% !important;
+- 384: overflow: hidden !important;
+- 385: text-overflow: ellipsis !important;
+- 390: line-height: 1.15 !important;
+- 397: display: none !important;
+- 402: min-width: max-content !important;
+- 407: line-height: 1 !important;
+- 418: @media (max-width: 760px) {
+- 421: display: grid !important;
+- 428: width: 100% !important;
+- 429: min-height: 50px !important;
+- 431: display: grid !important;
+- 432: grid-template-columns: minmax(0, 1fr) auto !important;
+- 445: min-width: 0 !important;
+- 446: max-width: 100% !important;
+- 447: display: block !important;
+- 448: overflow: hidden !important;
+- 456: min-width: 0 !important;
+- 457: max-width: 100% !important;
+- 458: display: flex !important;
+- 462: overflow: hidden !important;
+- 467: max-width: 100% !important;
+- 474: min-width: 0 !important;
+- 475: max-width: 48% !important;
+- 483: display: block !important;
+- 484: min-width: 0 !important;
+- 485: overflow: hidden !important;
+- 486: text-overflow: ellipsis !important;
+- 491: line-height: 1.15 !important;
+- 498: max-width: 52% !important;
+- 508: line-height: 1 !important;
+- 513: min-width: max-content !important;
+- 518: line-height: 1 !important;
+- 4: - jedna siatka shellu: sidebar 240px + main minmax(0, 1fr)
+- 11: --cf145-sidebar-width: 240px;
+- 14: --cf145-work-width: 1480px;
+- 16: --cf145-right-rail-width: 360px;
+- 23: @media (min-width: 901px) and (hover: hover) and (pointer: fine) {
+- 27: min-width: 0 !important;
+- 34: html body #root > .app.closeflow-visual-stage01.cf-html-shell {
+- 35: display: grid !important;
+- 36: grid-template-columns: var(--cf145-sidebar-width) minmax(0, 1fr) !important;
+- 39: width: 100vw !important;
+- 40: max-width: none !important;
+- 41: min-width: 0 !important;
+- 42: overflow-x: hidden !important;
+- 48: html body #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+- 49: html body #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar {
+- 51: width: var(--cf145-sidebar-width) !important;
+- 52: min-width: var(--cf145-sidebar-width) !important;
+- 53: max-width: var(--cf145-sidebar-width) !important;
+- 56: html body #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+- 58: width: 100% !important;
+- 59: max-width: none !important;
+- 60: min-width: 0 !important;
+- 63: overflow: visible !important;
+- 70: html body #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"],
+- 72: display: block !important;
+- 73: width: min(calc(100vw - var(--cf145-sidebar-width) - var(--cf145-left-gutter) - var(--cf145-right-gutter)), var(--cf145-work-width)) !important;
+- 74: max-width: var(--cf145-work-width) !important;
+- 75: min-width: 0 !important;
+- 81: overflow: visible !important;
+- 84: @media (min-width: 1880px) {
+- 85: html body #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"],
+- 87: width: min(calc(100vw - var(--cf145-sidebar-width) - var(--cf145-left-gutter) - var(--cf145-right-gutter)), var(--cf145-work-width-wide)) !important;
+- 88: max-width: var(--cf145-work-width-wide) !important;
+- 112: width: 100% !important;
+- 113: max-width: none !important;
+- 114: min-width: 0 !important;
+- 134: max-width: none !important;
+- 159: width: 100% !important;
+- 160: max-width: none !important;
+- 164: width: 100% !important;
+- 165: max-width: none !important;
+- 166: display: grid !important;
+- 167: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf145-right-rail-width)) !important;
+- 177: width: 100% !important;
+- 178: max-width: var(--cf145-right-rail-width) !important;
+- 179: min-width: 0 !important;
+- 183: width: 100% !important;
+- 184: max-width: none !important;
+- 185: display: grid !important;
+- 186: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf145-right-rail-width)) !important;
+- 18: --cf148-sidebar-width: 240px;
+- 21: --cf148-topbar-height: 56px;
+- 23: --cf148-design-width: 1280px;
+- 30: @media (min-width: 901px), (hover: hover) and (pointer: fine) {
+- 31: #root > .app.closeflow-visual-stage01.cf-html-shell {
+- 32: min-width: 0 !important;
+- 33: max-width: none !important;
+- 40: #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"] {
+- 44: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+- 46: min-width: 0 !important;
+- 47: max-width: none !important;
+- 48: overflow: visible !important;
+- 54: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] > .view.active[data-shell-content="true"] {
+- 55: min-width: 0 !important;
+- 56: max-width: none !important;
+- 57: overflow: visible !important;
+- 82: width: 100% !important;
+- 83: max-width: none !important;
+- 84: min-width: 0 !important;
+- 88: overflow: visible !important;
+- 97: width: var(--cf148-viewport-width) !important;
+- 98: max-width: var(--cf148-viewport-width) !important;
+- 99: min-width: var(--cf148-viewport-width) !important;
+- 101: overflow-x: hidden !important;
+- 107: width: var(--cf148-design-width) !important;
+- 108: min-width: var(--cf148-design-width) !important;
+- 109: max-width: var(--cf148-design-width) !important;
+- 112: overflow: visible !important;
+- 117: html[data-cf148-scaled-desktop-shell="true"] #root > .app.closeflow-visual-stage01.cf-html-shell {
+- 118: display: grid !important;
+- 119: grid-template-columns: var(--cf148-sidebar-width) minmax(0, 1fr) !important;
+- 122: width: var(--cf148-design-width) !important;
+- 123: min-width: var(--cf148-design-width) !important;
+- 124: max-width: var(--cf148-design-width) !important;
+- 125: min-height: calc(100vh * var(--cf148-inverse-scale)) !important;
+- 127: overflow: visible !important;
+- 131: html[data-cf148-scaled-desktop-shell="true"] #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"] {
+- 134: width: var(--cf148-sidebar-width) !important;
+- 135: min-width: var(--cf148-sidebar-width) !important;
+- 136: max-width: var(--cf148-sidebar-width) !important;
+- 137: height: calc(100vh * var(--cf148-inverse-scale)) !important;
+- 138: min-height: calc(100vh * var(--cf148-inverse-scale)) !important;
+- 139: position: sticky !important;
+- 141: overflow: hidden !important;
+- 145: html[data-cf148-scaled-desktop-shell="true"] #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+- 148: width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width)) !important;
+- 149: min-width: 0 !important;
+- 150: max-width: none !important;
+- 153: overflow: visible !important;
+- 157: html[data-cf148-scaled-desktop-shell="true"] #root .global-bar[data-shell-global-bar="true"] {
+- 158: width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width)) !important;
+- 159: max-width: none !important;
+- 160: min-width: 0 !important;
+- 163: overflow: visible !important;
+- 169: width: calc(var(--cf148-design-width) - var(--cf148-sidebar-width) - var(--cf148-main-gutter-left) - var(--cf148-main-gutter-right)) !important;
+- 170: max-width: none !important;
+- 171: min-width: 0 !important;
+- 177: overflow: visible !important;
+- 184: width: 100% !important;
+- 185: max-width: none !important;
+- 186: display: grid !important;
+- 187: grid-template-columns: minmax(0, 1fr) minmax(340px, 372px) !important;
+- 190: overflow: visible !important;
+- 200: width: 100% !important;
+- 201: max-width: none !important;
+- 202: overflow: visible !important;
+- 206: width: 100% !important;
+- 207: max-width: none !important;
+- 208: display: grid !important;
+- 209: grid-template-columns: minmax(0, 1fr) minmax(340px, 372px) !important;
+- 211: overflow: visible !important;
+- 227: max-width: none !important;
+- 19: min-height: 42px;
+- 20: display: flex;
+- 23: width: 100%;
+- 36: display: inline-flex;
+- 39: width: 18px;
+- 40: min-width: 18px;
+- 48: width: 100%;
+- 49: min-width: 0;
+- 50: min-height: 40px;
+- 87: display: none;
+- 9: @media (min-width: 1024px) {
+- 10: .cf-html-shell .main[data-shell-main="true"] {
+- 11: width: 100% !important;
+- 12: max-width: none !important;
+- 15: .cf-html-shell .main[data-shell-main="true"] > .view.active[data-shell-content="true"] {
+- 16: width: 100% !important;
+- 17: max-width: none !important;
+- 23: .cf-html-shell .main[data-current-section="aktywność"] > .view.active[data-shell-content="true"],
+- 24: .cf-html-shell .main[data-current-section="inbox szkiców"] > .view.active[data-shell-content="true"],
+- 25: .cf-html-shell .main[data-current-section="powiadomienia"] > .view.active[data-shell-content="true"],
+- 26: .cf-html-shell .main[data-current-section="rozliczenia"] > .view.active[data-shell-content="true"],
+- 27: .cf-html-shell .main[data-current-section="pomoc"] > .view.active[data-shell-content="true"],
+- 28: .cf-html-shell .main[data-current-section="ustawienia"] > .view.active[data-shell-content="true"],
+- 29: .cf-html-shell .main[data-current-section="admin ai"] > .view.active[data-shell-content="true"] {
+- 34: .cf-html-shell .activity-vnext-page,
+- 35: .cf-html-shell .ai-drafts-vnext-page,
+- 36: .cf-html-shell .notifications-vnext-page,
+- 37: .cf-html-shell .billing-vnext-page,
+- 38: .cf-html-shell .support-vnext-page,
+- 39: .cf-html-shell .settings-vnext-page,
+- 40: .cf-html-shell .admin-ai-settings-page,
+- 41: .cf-html-shell .admin-ai-settings-vnext-page,
+- 42: .cf-html-shell [data-admin-ai-settings-page="true"] {
+- 43: width: 100% !important;
+- 44: max-width: none !important;
+- 50: .cf-html-shell .activity-vnext-page > *,
+- 51: .cf-html-shell .ai-drafts-vnext-page > *,
+- 52: .cf-html-shell .notifications-vnext-page > *,
+- 53: .cf-html-shell .billing-vnext-page > *,
+- 54: .cf-html-shell .support-vnext-page > *,
+- 55: .cf-html-shell .settings-vnext-page > *,
+- 56: .cf-html-shell .admin-ai-settings-page > *,
+- 57: .cf-html-shell .admin-ai-settings-vnext-page > *,
+- 58: .cf-html-shell [data-admin-ai-settings-page="true"] > * {
+- 59: max-width: none !important;
+- 63: .cf-html-shell .activity-shell,
+- 64: .cf-html-shell .ai-drafts-shell,
+- 65: .cf-html-shell .notifications-shell,
+- 66: .cf-html-shell .billing-shell,
+- 67: .cf-html-shell .support-shell,
+- 68: .cf-html-shell .settings-shell,
+- 69: .cf-html-shell .admin-ai-settings-shell {
+- 70: width: 100% !important;
+- 71: max-width: none !important;
+- 78: .cf-html-shell .activity-vnext-page .closeflow-page-header-v2,
+- 79: .cf-html-shell .ai-drafts-vnext-page .closeflow-page-header-v2,
+- 80: .cf-html-shell .notifications-vnext-page .closeflow-page-header-v2,
+- 81: .cf-html-shell .billing-vnext-page .closeflow-page-header-v2,
+- 82: .cf-html-shell .support-vnext-page .closeflow-page-header-v2,
+- 83: .cf-html-shell .settings-vnext-page .closeflow-page-header-v2,
+- 84: .cf-html-shell .activity-summary-grid,
+- 85: .cf-html-shell .activity-filter-card,
+- 86: .cf-html-shell .ai-drafts-summary-grid,
+- 87: .cf-html-shell .ai-drafts-filter-card,
+- 88: .cf-html-shell .notifications-summary-grid,
+- 89: .cf-html-shell .notifications-filter-card,
+- 90: .cf-html-shell .billing-status-card,
+- 91: .cf-html-shell .billing-period-card,
+- 92: .cf-html-shell .support-hero-grid,
+- 93: .cf-html-shell .settings-summary-grid,
+- 94: .cf-html-shell .settings-tabs-stage181ac {
+- 95: width: 100% !important;
+- 96: max-width: none !important;
+- 100: .cf-html-shell .activity-shell,
+- 101: .cf-html-shell .ai-drafts-shell,
+- 102: .cf-html-shell .notifications-shell,
+- 103: .cf-html-shell .billing-shell,
+- 104: .cf-html-shell .support-shell,
+- 105: .cf-html-shell .settings-shell {
+- 106: grid-template-columns: minmax(0, 1fr) minmax(260px, 360px) !important;
+- 109: .cf-html-shell .activity-main-column,
+- 110: .cf-html-shell .ai-drafts-main-column,
+- 111: .cf-html-shell .notifications-main-column,
+- 112: .cf-html-shell .billing-main-column,
+- 113: .cf-html-shell .support-main-column,
+- 114: .cf-html-shell .settings-main-column {
+- 115: min-width: 0 !important;
+- 116: width: 100% !important;
+- 117: max-width: none !important;
+- 120: .cf-html-shell .activity-right-rail,
+- 121: .cf-html-shell .ai-drafts-right-rail,
+- 122: .cf-html-shell .notifications-right-rail,
+- 123: .cf-html-shell .billing-right-rail,
+- 124: .cf-html-shell .support-right-rail,
+- 125: .cf-html-shell .settings-right-rail {
+- 126: width: 100% !important;
+- 127: max-width: 360px !important;
+- 132: @media (min-width: 1024px) and (max-width: 1380px) {
+- 133: .cf-html-shell .activity-shell,
+- 134: .cf-html-shell .ai-drafts-shell,
+- 135: .cf-html-shell .notifications-shell,
+- 136: .cf-html-shell .billing-shell,
+- 137: .cf-html-shell .support-shell,
+- 138: .cf-html-shell .settings-shell {
+- 139: grid-template-columns: minmax(0, 1fr) minmax(240px, 320px) !important;
+- 142: .cf-html-shell .activity-right-rail,
+- 143: .cf-html-shell .ai-drafts-right-rail,
+- 144: .cf-html-shell .notifications-right-rail,
+- 145: .cf-html-shell .billing-right-rail,
+- 146: .cf-html-shell .support-right-rail,
+- 147: .cf-html-shell .settings-right-rail {
+- 148: max-width: 320px !important;
+- 153: @media (max-width: 1023px) {
+- 154: .cf-html-shell .activity-vnext-page,
+- 155: .cf-html-shell .ai-drafts-vnext-page,
+- 156: .cf-html-shell .notifications-vnext-page,
+- 157: .cf-html-shell .billing-vnext-page,
+- 158: .cf-html-shell .support-vnext-page,
+- 159: .cf-html-shell .settings-vnext-page {
+- 160: width: 100% !important;
+- 161: max-width: none !important;
+- 16: min-height: 42px !important;
+- 17: width: 100%;
+- 47: min-height: 42px !important;
+- 8: display: none !important;
+- 12: display: none !important;
+- 16: display: none !important;
+- 8: display: none !important;
+- 16: position: sticky !important;
+- 18: overflow: hidden !important;
+- 30: position: absolute !important;
+- 34: width: 5px !important;
+- 40: display: grid !important;
+- 41: grid-template-columns: auto minmax(0, 1fr) !important;
+- 49: display: inline-flex !important;
+- 50: width: 34px !important;
+- 51: height: 34px !important;
+- 65: line-height: 1.15 !important;
+- 74: line-height: 1.35 !important;
+- 79: display: grid !important;
+- 84: position: relative !important;
+- 85: display: grid !important;
+- 97: line-height: 1.1 !important;
+- 104: min-width: 0 !important;
+- 105: overflow: hidden !important;
+- 106: text-overflow: ellipsis !important;
+- 110: line-height: 1.2 !important;
+- 157: display: none !important;
+- 160: @media (max-width: 1023px) {
+- 162: position: relative !important;
+- 9: display: grid !important;
+- 10: grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+- 16: min-height: 88px !important;
+- 17: display: grid !important;
+- 37: line-height: 1.1 !important;
+- 47: line-height: 1.15 !important;
+- 54: line-height: 1.35 !important;
+- 121: @media (max-width: 1180px) {
+- 123: grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+- 127: @media (max-width: 760px) {
+- 129: display: flex !important;
+- 130: overflow-x: auto !important;
+- 136: min-width: 210px !important;
+- 23: --cf141-work-width: 1440px;
+- 26: /* Gutter od sidebara i bezpieczny prawy oddech. */
+- 31: --cf141-right-rail-width: 360px;
+- 36: @media (min-width: 1680px) {
+- 42: @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+- 44: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 45: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 46: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 47: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 48: width: 100% !important;
+- 49: max-width: none !important;
+- 50: min-width: 0 !important;
+- 55: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] {
+- 56: width: min(calc(100% - var(--cf141-left-gutter) - var(--cf141-right-gutter)), var(--cf141-work-width)) !important;
+- 57: max-width: var(--cf141-work-width) !important;
+- 58: min-width: 0 !important;
+- 62: display: block !important;
+- 65: @media (min-width: 1880px) {
+- 66: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] {
+- 67: width: min(calc(100% - var(--cf141-left-gutter) - var(--cf141-right-gutter)), var(--cf141-work-width-wide)) !important;
+- 68: max-width: var(--cf141-work-width-wide) !important;
+- 73: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] > :is(
+- 89: width: 100% !important;
+- 90: max-width: none !important;
+- 91: min-width: 0 !important;
+- 98: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] :is(
+- 109: max-width: none !important;
+- 112: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] :is(
+- 125: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] > main[data-p0-today-stable-rebuild="true"] {
+- 126: width: 100% !important;
+- 127: max-width: none !important;
+- 132: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] > main[data-p0-today-stable-rebuild="true"] > :is(section, .grid, .flex) {
+- 133: width: 100% !important;
+- 134: max-width: none !important;
+- 138: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+- 146: width: 100% !important;
+- 147: max-width: none !important;
+- 150: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+- 151: width: 100% !important;
+- 152: max-width: none !important;
+- 153: display: grid !important;
+- 154: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf141-right-rail-width)) !important;
+- 159: @media (min-width: 1880px) {
+- 160: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+- 161: grid-template-columns: minmax(0, 1fr) minmax(342px, var(--cf141-right-rail-width-wide)) !important;
+- 165: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+- 170: width: 100% !important;
+- 171: max-width: var(--cf141-right-rail-width) !important;
+- 172: min-width: 0 !important;
+- 175: @media (min-width: 1880px) {
+- 176: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+- 181: max-width: var(--cf141-right-rail-width-wide) !important;
+- 186: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .activity-vnext-shell {
+- 187: width: 100% !important;
+- 188: max-width: none !important;
+- 189: display: grid !important;
+- 190: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf141-right-rail-width)) !important;
+- 195: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .activity-main-column {
+- 196: width: 100% !important;
+- 197: max-width: none !important;
+- 198: min-width: 0 !important;
+- 201: #root .app.closeflow-visual-stage01.cf-html-shell .cf-work-width-frame[data-cf-work-width-frame="true"] .activity-right-rail {
+- 202: width: 100% !important;
+- 203: max-width: var(--cf141-right-rail-width) !important;
+- 204: min-width: 0 !important;
+- 12: --cf144-sidebar-width: 240px;
+- 15: --cf144-work-width: 1480px;
+- 17: --cf144-right-rail-width: 360px;
+- 24: @media (min-width: 1280px) {
+- 36: width: 100% !important;
+- 37: max-width: none !important;
+- 38: min-width: 0 !important;
+- 40: overflow: visible !important;
+- 46: display: block !important;
+- 47: width: min(
+- 48: calc(100vw - var(--cf144-sidebar-width) - var(--cf144-left-gutter) - var(--cf144-right-gutter)),
+- 51: max-width: var(--cf144-work-width) !important;
+- 52: min-width: 0 !important;
+- 58: overflow: visible !important;
+- 61: @media (min-width: 1880px) {
+- 64: width: min(
+- 65: calc(100vw - var(--cf144-sidebar-width) - var(--cf144-left-gutter) - var(--cf144-right-gutter)),
+- 68: max-width: var(--cf144-work-width-wide) !important;
+- 76: display: block !important;
+- 77: width: 100% !important;
+- 78: max-width: none !important;
+- 79: min-width: 0 !important;
+- 120: width: 100% !important;
+- 121: max-width: none !important;
+- 122: min-width: 0 !important;
+- 140: max-width: none !important;
+- 164: width: 100% !important;
+- 165: max-width: none !important;
+- 169: width: 100% !important;
+- 170: max-width: none !important;
+- 171: display: grid !important;
+- 172: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf144-right-rail-width)) !important;
+- 182: width: 100% !important;
+- 183: max-width: var(--cf144-right-rail-width) !important;
+- 184: min-width: 0 !important;
+- 189: width: 100% !important;
+- 190: max-width: none !important;
+- 191: display: grid !important;
+- 192: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf144-right-rail-width)) !important;
+- 198: width: 100% !important;
+- 199: max-width: none !important;
+- 200: min-width: 0 !important;
+- 204: width: 100% !important;
+- 205: max-width: var(--cf144-right-rail-width) !important;
+- 206: min-width: 0 !important;
+- 1: /* CLOSEFLOW_STAGE147_SHELL_OVERFLOW_AND_WORK_SURFACE_REPAIR
+- 5: - to wskazuje na clipping / overflow / zbyt wąski containing block wyżej niż kafelki.
+- 8: - sidebar jest stałym railem,
+- 10: - route slot nie może być przycinany przez stare overflow-x:hidden,
+- 18: --cf147-right-rail-width: 372px;
+- 21: --closeflow-stage147-shell-overflow-and-work-surface-repair: "active";
+- 28: #root > .app.closeflow-visual-stage01.cf-html-shell,
+- 40: #root > .app.closeflow-visual-stage01.cf-html-shell,
+- 49: overflow-x: visible !important;
+- 54: #root > .app.closeflow-visual-stage01.cf-html-shell,
+- 56: width: 100% !important;
+- 57: max-width: none !important;
+- 58: min-width: 0 !important;
+- 68: display: block !important;
+- 69: width: calc(100% + var(--cf147-work-overrun)) !important;
+- 70: max-width: none !important;
+- 71: min-width: 0 !important;
+- 77: overflow-x: visible !important;
+- 102: width: 100% !important;
+- 103: max-width: none !important;
+- 104: min-width: 0 !important;
+- 108: overflow-x: visible !important;
+- 127: max-width: none !important;
+- 152: width: 100% !important;
+- 153: max-width: none !important;
+- 154: overflow-x: visible !important;
+- 160: width: 100% !important;
+- 161: max-width: none !important;
+- 162: display: grid !important;
+- 163: grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf147-right-rail-width)) !important;
+- 173: width: 100% !important;
+- 174: max-width: var(--cf147-right-rail-width) !important;
+- 175: min-width: 0 !important;
+- 176: overflow-x: visible !important;
+- 180: width: 100% !important;
+- 181: max-width: none !important;
+- 182: display: grid !important;
+- 183: grid-template-columns: minmax(0, 1fr) minmax(344px, var(--cf147-right-rail-width)) !important;
+- 186: overflow-x: visible !important;
+- 191: @media (max-width: 700px) and (hover: hover) and (pointer: fine) {
+- 194: --cf147-right-rail-width: 392px;
+- 200: width: calc(100% + var(--cf147-work-overrun)) !important;
+- 1: /* STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY
+- 3: - nie zmieniać szerokości sidebara,
+- 4: - nie robić sztucznego tła za sidebarem,
+- 12: min-height: 100%;
+- 16: .app.closeflow-visual-stage01::before,
+- 17: .cf-html-shell::before {
+- 19: display: none !important;
+- 22: .app.closeflow-visual-stage01,
+- 23: .cf-html-shell {
+- 24: min-height: 100vh !important;
+- 25: min-height: 100dvh !important;
+- 29: @media (min-width: 861px) {
+- 30: body #root aside.sidebar[data-shell-sidebar="true"],
+- 31: body #root [data-shell-sidebar="true"].sidebar {
+- 32: height: 100vh !important;
+- 33: height: 100dvh !important;
+- 34: min-height: 100vh !important;
+- 35: min-height: 100dvh !important;
+- 36: max-height: 100vh !important;
+- 37: max-height: 100dvh !important;
+- 39: display: flex !important;
+- 44: overflow: hidden !important;
+- 47: body #root [data-shell-sidebar="true"] .brand {
+- 49: min-height: 3.15rem !important;
+- 54: body #root [data-shell-sidebar="true"] .nav-scroll {
+- 56: min-height: 0 !important;
+- 57: overflow-y: hidden !important;
+- 58: overflow-x: hidden !important;
+- 62: scrollbar-width: none !important;
+- 65: body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+- 66: display: none !important;
+- 69: body #root [data-shell-sidebar="true"] .nav-group {
+- 73: body #root [data-shell-sidebar="true"] .nav-caption {
+- 76: line-height: 1 !important;
+- 80: body #root [data-shell-sidebar="true"] .nav-stack {
+- 84: body #root [data-shell-sidebar="true"] .nav-btn {
+- 85: min-height: 2.04rem !important;
+- 86: height: 2.04rem !important;
+- 92: body #root [data-shell-sidebar="true"] .nav-label {
+- 93: line-height: 1.05 !important;
+- 96: body #root [data-shell-sidebar="true"] .nav-ico {
+- 100: body #root [data-shell-sidebar="true"] .sidebar-footer {
+- 108: body #root [data-shell-sidebar="true"] .trial-card {
+- 114: body #root [data-shell-sidebar="true"] .trial-card .top {
+- 118: body #root [data-shell-sidebar="true"] .trial-link {
+- 120: line-height: 1.05 !important;
+- 123: body #root [data-shell-sidebar="true"] .user-card {
+- 124: min-height: 2.78rem !important;
+- 130: body #root [data-shell-sidebar="true"] .sidebar-logout {
+- 131: min-height: 2.04rem !important;
+- 132: height: 2.04rem !important;
+- 139: @media (min-width: 861px) and (max-height: 760px) {
+- 140: body #root [data-shell-sidebar="true"] .nav-scroll {
+- 141: overflow-y: auto !important;
+- 142: scrollbar-width: thin !important;
+- 146: body #root [data-shell-sidebar="true"] .nav-scroll::-webkit-scrollbar {
+- 147: display: block !important;
+- 152: @media (max-width: 860px) {
+- 153: body #root aside.sidebar[data-shell-sidebar="true"],
+- 154: body #root [data-shell-sidebar="true"].sidebar {
+- 155: height: auto !important;
+- 156: min-height: auto !important;
+- 157: max-height: none !important;
+- 160: body #root [data-shell-sidebar="true"] .nav-scroll {
+- 161: overflow-y: auto !important;
+- 164: /* /STAGE192_SIDEBAR_FIT_HEIGHT_NO_SCROLL_LOCAL_ONLY */
+- 8: --cf-stage16c-page-max-width: 72rem;
+- 16: width: 100%;
+- 17: max-width: var(--cf-stage16c-page-max-width) !important;
+- 19: display: flex !important;
+- 23: overflow-x: clip;
+- 26: @media (min-width: 640px) {
+- 35: width: 100%;
+- 36: min-width: 0;
+- 37: min-height: 126px;
+- 38: display: flex !important;
+- 46: width: 100%;
+- 51: min-width: 0;
+- 56: max-width: 100%;
+- 57: overflow-wrap: normal;
+- 64: display: flex !important;
+- 69: min-width: 0;
+- 74: width: 100%;
+- 75: display: grid !important;
+- 76: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 83: min-width: 0 !important;
+- 84: width: 100% !important;
+- 89: min-height: var(--cf-metric-tile-min-height) !important;
+- 95: overflow-wrap: normal !important;
+- 98: overflow: hidden !important;
+- 99: text-overflow: ellipsis !important;
+- 106: min-width: 0;
+- 107: max-width: 100%;
+- 114: min-width: 0;
+- 115: overflow-wrap: anywhere;
+- 120: min-height: 2.75rem;
+- 129: @media (max-width: 1180px) {
+- 132: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 136: @media (max-width: 720px) {
+- 140: min-height: 0;
+- 148: width: 100% !important;
+- 155: min-width: 0;
+- 159: @media (max-width: 640px) {
+- 162: grid-template-columns: 1fr !important;
+- 167: min-width: 0;
+- 173: width: 100%;
+- 9: --cf-stage16d-task-metric-min-height: 56px;
+- 22: display: grid !important;
+- 23: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 26: width: 100% !important;
+- 30: min-width: 0 !important;
+- 31: width: 100% !important;
+- 32: display: block !important;
+- 41: min-height: var(--cf-stage16d-task-metric-min-height) !important;
+- 42: height: auto !important;
+- 43: display: flex !important;
+- 62: min-width: 0 !important;
+- 64: overflow: hidden !important;
+- 68: display: block !important;
+- 69: max-width: 100% !important;
+- 72: line-height: 1 !important;
+- 77: overflow-wrap: normal !important;
+- 80: overflow: hidden !important;
+- 81: text-overflow: ellipsis !important;
+- 85: min-width: max-content !important;
+- 87: display: inline-flex !important;
+- 96: line-height: 1 !important;
+- 103: width: var(--cf-stage16d-task-metric-icon-size) !important;
+- 104: height: var(--cf-stage16d-task-metric-icon-size) !important;
+- 105: min-width: var(--cf-stage16d-task-metric-icon-size) !important;
+- 106: max-width: var(--cf-stage16d-task-metric-icon-size) !important;
+- 109: display: inline-flex !important;
+- 115: width: var(--cf-stage16d-task-metric-icon-svg-size) !important;
+- 116: height: var(--cf-stage16d-task-metric-icon-svg-size) !important;
+- 117: stroke-width: 2.5 !important;
+- 120: @media (max-width: 1180px) {
+- 122: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 126: @media (max-width: 640px) {
+- 128: grid-template-columns: 1fr !important;
+- 133: min-height: 54px !important;
+- 22: --cf170-task-modal-width: 580px;
+- 23: --cf170-task-modal-max-height: min(82vh, 680px);
+- 36: width: min(var(--cf170-task-modal-width), calc(100vw - 96px)) !important;
+- 37: max-width: min(var(--cf170-task-modal-width), calc(100vw - 96px)) !important;
+- 38: height: auto !important;
+- 39: min-height: 0 !important;
+- 40: max-height: var(--cf170-task-modal-max-height) !important;
+- 41: overflow: hidden !important;
+- 49: height: auto !important;
+- 50: min-height: 0 !important;
+- 51: max-height: calc(var(--cf170-task-modal-max-height) - 64px) !important;
+- 52: overflow-y: auto !important;
+- 117: position: static !important;
+- 125: @media (max-width: 900px) {
+- 127: width: calc(100vw - 24px) !important;
+- 128: max-width: calc(100vw - 24px) !important;
+- 129: max-height: calc(100vh - 48px) !important;
+- 130: height: auto !important;
+- 18: --cf178-tasks-rail-width: 320px;
+- 39: max-width: none !important;
+- 40: width: 100% !important;
+- 45: width: 100% !important;
+- 46: max-width: none !important;
+- 51: width: 100% !important;
+- 52: max-width: none !important;
+- 53: display: grid !important;
+- 54: grid-template-columns: minmax(0, 1fr) minmax(var(--cf178-tasks-rail-width), var(--cf178-tasks-rail-width)) !important;
+- 61: min-width: 0 !important;
+- 62: width: 100% !important;
+- 63: max-width: none !important;
+- 64: display: flex !important;
+- 70: width: var(--cf178-tasks-rail-width) !important;
+- 71: min-width: var(--cf178-tasks-rail-width) !important;
+- 72: max-width: var(--cf178-tasks-rail-width) !important;
+- 73: display: flex !important;
+- 88: display: grid !important;
+- 89: grid-template-columns: minmax(0, 1fr) auto !important;
+- 95: width: 100% !important;
+- 96: max-width: 100% !important;
+- 101: display: flex !important;
+- 104: width: 100% !important;
+- 105: max-width: none !important;
+- 109: width: 100% !important;
+- 110: max-width: none !important;
+- 111: display: flex !important;
+- 117: display: flex !important;
+- 124: display: flex !important;
+- 127: min-width: 0 !important;
+- 134: line-height: 1.1 !important;
+- 144: min-width: 26px !important;
+- 145: height: 24px !important;
+- 146: display: inline-flex !important;
+- 159: width: 100% !important;
+- 160: max-width: none !important;
+- 161: min-width: 0 !important;
+- 170: line-height: 1.15 !important;
+- 180: min-height: 32px !important;
+- 189: width: 100% !important;
+- 199: display: flex !important;
+- 209: line-height: 1.16 !important;
+- 217: line-height: 1.25 !important;
+- 224: display: flex !important;
+- 232: width: 100% !important;
+- 233: display: grid !important;
+- 234: grid-template-columns: minmax(0, 1fr) auto !important;
+- 237: min-height: 36px !important;
+- 266: min-width: 0 !important;
+- 267: overflow: hidden !important;
+- 268: text-overflow: ellipsis !important;
+- 272: line-height: 1.12 !important;
+- 278: min-width: 26px !important;
+- 279: height: 22px !important;
+- 280: display: inline-flex !important;
+- 336: line-height: 1.35 !important;
+- 341: @media (max-width: 1220px) {
+- 343: display: flex !important;
+- 348: width: 100% !important;
+- 349: min-width: 0 !important;
+- 350: max-width: none !important;
+- 354: @media (max-width: 720px) {
+- 356: grid-template-columns: minmax(0, 1fr) !important;
+- 367: overflow: visible !important;
+- 371: overflow: visible !important;
+- 375: position: relative !important;
+- 376: overflow: visible !important;
+- 387: position: absolute !important;
+- 391: display: none !important;
+- 392: width: max-content !important;
+- 393: max-width: min(360px, 92vw) !important;
+- 402: line-height: 1.35 !important;
+- 410: position: absolute !important;
+- 413: display: none !important;
+- 414: width: 10px !important;
+- 415: height: 10px !important;
+- 425: display: block !important;
+- 9: width: min(860px, calc(100vw - 20px)) !important;
+- 10: max-width: 860px !important;
+- 11: max-height: min(92vh, 900px) !important;
+- 12: overflow: hidden !important;
+- 30: width: 38px !important;
+- 31: height: 38px !important;
+- 60: line-height: 1.12 !important;
+- 69: line-height: 1.5 !important;
+- 75: max-height: calc(92vh - 150px) !important;
+- 76: overflow-y: auto !important;
+- 81: scrollbar-width: thin !important;
+- 114: line-height: 1.2 !important;
+- 146: width: 100% !important;
+- 147: min-height: 42px !important;
+- 177: min-height: 86px !important;
+- 179: line-height: 1.45 !important;
+- 184: position: sticky !important;
+- 195: min-height: 42px !important;
+- 208: @media (max-width: 760px) {
+- 211: width: calc(100vw - 14px) !important;
+- 212: max-height: 94vh !important;
+- 225: max-height: calc(94vh - 142px) !important;
+- 226: grid-template-columns: 1fr !important;
+- 233: display: grid !important;
+- 234: grid-template-columns: 1fr !important;
+- 240: width: 100% !important;
+- 13: width: min(860px, calc(100vw - 20px)) !important;
+- 14: max-width: 860px !important;
+- 15: max-height: min(92vh, 900px) !important;
+- 16: overflow: hidden !important;
+- 32: width: 38px !important;
+- 33: height: 38px !important;
+- 53: line-height: 1.1 !important;
+- 62: line-height: 1.5 !important;
+- 66: max-height: calc(92vh - 154px) !important;
+- 67: overflow-y: auto !important;
+- 69: display: grid !important;
+- 73: scrollbar-width: thin !important;
+- 78: width: 100% !important;
+- 88: width: 100% !important;
+- 89: display: grid !important;
+- 94: width: 100% !important;
+- 105: display: flex !important;
+- 116: line-height: 1.15 !important;
+- 125: line-height: 1.35 !important;
+- 137: display: grid !important;
+- 142: display: grid !important;
+- 150: line-height: 1.2 !important;
+- 160: width: 100% !important;
+- 161: min-height: 44px !important;
+- 185: min-height: 92px !important;
+- 186: line-height: 1.45 !important;
+- 191: display: grid !important;
+- 192: grid-template-columns: minmax(0, 240px) minmax(0, 1fr) !important;
+- 198: min-height: 56px !important;
+- 199: display: flex !important;
+- 215: line-height: 1.15 !important;
+- 223: line-height: 1.35 !important;
+- 227: width: 100% !important;
+- 228: min-height: 46px !important;
+- 246: min-height: 44px !important;
+- 272: @media (max-width: 760px) {
+- 274: width: calc(100vw - 14px) !important;
+- 275: max-height: 94vh !important;
+- 284: max-height: calc(94vh - 152px) !important;
+- 294: grid-template-columns: 1fr !important;
+- 298: display: grid !important;
+- 299: grid-template-columns: 1fr !important;
+- 304: width: 100% !important;
+- 314: display: grid !important;
+- 319: width: 100% !important;
+- 320: min-height: 44px !important;
+- 328: line-height: 1.2 !important;
+- 30: position: relative !important;
+- 3: 1) jeden kolor/tło całej przestrzeni roboczej między sidebarem a treścią,
+- 15: --cf139-sidebar-width: 240px;
+- 18: --cf139-right-rail-width: 360px;
+- 22: @media (min-width: 1680px) {
+- 26: --cf139-right-rail-width: 368px;
+- 31: @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+- 32: /* 1. One canvas. No pale band between sidebar and page content. */
+- 36: #root .app.closeflow-visual-stage01.cf-html-shell,
+- 37: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 38: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 39: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 40: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 47: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main]::before,
+- 48: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main]::after,
+- 49: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main]::before,
+- 50: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main]::after,
+- 51: #root .app.closeflow-visual-stage01.cf-html-shell .view.active::before,
+- 52: #root .app.closeflow-visual-stage01.cf-html-shell .view.active::after {
+- 54: display: none !important;
+- 58: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 59: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 60: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 61: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 62: width: 100% !important;
+- 63: max-width: none !important;
+- 64: min-width: 0 !important;
+- 69: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+- 86: #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+- 103: width: calc(100vw - var(--cf139-sidebar-width) - var(--cf139-left-gutter) - var(--cf139-right-gutter)) !important;
+- 104: max-width: none !important;
+- 105: min-width: 0 !important;
+- 115: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 121: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 129: max-width: none !important;
+- 141: width: 100% !important;
+- 142: max-width: none !important;
+- 146: display: grid !important;
+- 147: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf139-right-rail-width)) !important;
+- 157: width: 100% !important;
+- 158: max-width: var(--cf139-right-rail-width) !important;
+- 159: min-width: 0 !important;
+- 163: #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+- 164: width: calc(100vw - var(--cf139-sidebar-width) - var(--cf139-left-gutter) - var(--cf139-right-gutter)) !important;
+- 165: max-width: none !important;
+- 166: min-width: 0 !important;
+- 169: display: grid !important;
+- 170: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf139-right-rail-width)) !important;
+- 177: #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+- 178: width: 100% !important;
+- 179: max-width: none !important;
+- 180: min-width: 0 !important;
+- 185: #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+- 186: width: 100% !important;
+- 187: max-width: var(--cf139-right-rail-width) !important;
+- 188: min-width: 0 !important;
+- 193: grid-template-columns:
+- 18: --cf140-sidebar-width: 240px;
+- 21: --cf140-unified-work-width: 1440px;
+- 22: --cf140-wide-work-width: 1480px;
+- 23: --cf140-right-rail-width: 360px;
+- 27: @media (min-width: 1680px) {
+- 31: --cf140-right-rail-width: 366px;
+- 36: @media (min-width: 1280px) and (hover: hover) and (pointer: fine) {
+- 38: #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+- 39: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main],
+- 40: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+- 41: #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+- 42: width: 100% !important;
+- 43: max-width: none !important;
+- 44: min-width: 0 !important;
+- 51: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+- 70: #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+- 89: width: min(
+- 90: calc(100vw - var(--cf140-sidebar-width) - var(--cf140-left-gutter) - var(--cf140-right-safe-gutter)),
+- 93: max-width: var(--cf140-unified-work-width) !important;
+- 94: min-width: 0 !important;
+- 101: @media (min-width: 1880px) {
+- 102: #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+- 121: #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+- 140: width: min(
+- 141: calc(100vw - var(--cf140-sidebar-width) - var(--cf140-left-gutter) - var(--cf140-right-safe-gutter)),
+- 144: max-width: var(--cf140-wide-work-width) !important;
+- 149: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 156: #root .app.closeflow-visual-stage01.cf-html-shell :is(
+- 163: max-width: none !important;
+- 176: width: 100% !important;
+- 177: max-width: none !important;
+- 182: display: grid !important;
+- 183: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf140-right-rail-width)) !important;
+- 193: width: 100% !important;
+- 194: max-width: var(--cf140-right-rail-width) !important;
+- 195: min-width: 0 !important;
+- 199: #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+- 200: display: grid !important;
+- 201: grid-template-columns: minmax(0, 1fr) minmax(336px, var(--cf140-right-rail-width)) !important;
+- 206: #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+- 207: width: 100% !important;
+- 208: max-width: none !important;
+- 209: min-width: 0 !important;
+- 212: #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+- 213: width: 100% !important;
+- 214: max-width: var(--cf140-right-rail-width) !important;
+- 215: min-width: 0 !important;
+- 221: --closeflow-stage140-unified-desktop-work-width: "active";
+- 29: --cf157-layout-width: calc(100vw * var(--cf157-page-zoom-inverse));
+- 30: --cf157-layout-min-height: calc(100vh * var(--cf157-page-zoom-inverse));
+- 36: width: 100vw !important;
+- 37: min-width: 100vw !important;
+- 38: overflow-x: hidden !important;
+- 43: width: 100vw !important;
+- 44: min-width: 100vw !important;
+- 45: max-width: 100vw !important;
+- 46: min-height: 100vh !important;
+- 47: overflow-x: hidden !important;
+- 51: #root > .app.closeflow-visual-stage01.cf-html-shell {
+- 54: width: var(--cf157-layout-width) !important;
+- 55: min-width: var(--cf157-layout-width) !important;
+- 56: max-width: none !important;
+- 57: min-height: var(--cf157-layout-min-height) !important;
+- 64: overflow: visible !important;
+- 67: grid-template-columns: var(--cf149-sidebar-width, 240px) minmax(0, 1fr) !important;
+- 70: #root > .app.closeflow-visual-stage01.cf-html-shell > aside.sidebar[data-shell-sidebar="true"],
+- 71: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"],
+- 72: #root .global-bar,
+- 79: #root > .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main="true"] {
+- 80: width: 100% !important;
+- 81: max-width: none !important;
+- 82: min-width: 0 !important;
+- 83: overflow: visible !important;
+- 87: width: 100% !important;
+- 88: max-width: none !important;
+- 89: min-width: 0 !important;
+- 90: overflow: visible !important;
+- 97: width: 100% !important;
+- 98: max-width: none !important;
+- 6: :root{--cfv-bg:#050607;--cfv-bg-2:#090d0b;--cfv-sidebar:#020303;--cfv-card:#101412;--cfv-card-soft:#171d1a;--cfv-text:#f4fff9;--cfv-muted:#9fb4aa;--cfv-muted-2:#71857b;--cfv-line:#25302c;--cfv-accent:#2dd58a;--cfv-accent-2:#1fb978;--cfv-accent-soft:#0f2a20;--cfv-green:#36d399;--cfv-red:#f87171;--cfv-amber:#fbbf24;--cfv-shadow:0 18px 55px rgba(0,0,0,.45);--cfv-shadow-soft:0 8px 26px rgba(0,0,0,.30);--cfv-radius-xl:28px;--cfv-radius-lg:20px;--cfv-radius-md:14px}
+- 7: .cfv-app-shell{min-height:100vh;background:radial-gradient(circle at 10% 0%,rgba(45,213,138,.17),transparent 32%),radial-gradient(circle at 95% 7%,rgba(255,255,255,.06),transparent 31%),linear-gradient(180deg,#0b0f0d 0%,var(--cfv-bg) 42%,var(--cfv-bg-2) 100%);color:var(--cfv-text)}
+- 8: .cfv-layout{min-height:100vh;display:grid;grid-template-columns:286px minmax(0,1fr)}.cfv-sidebar{position:sticky;top:0;height:100vh;padding:18px;background:linear-gradient(180deg,var(--cfv-sidebar) 0%,#000 100%);border-right:1px solid var(--cfv-line);box-shadow:18px 0 55px rgba(0,0,0,.5)}.cfv-main{min-width:0;padding:24px 28px 48px}.cfv-global-bar{position:sticky;top:0;z-index:8;margin:-24px -28px 22px;padding:13px 28px;background:rgba(5,6,7,.88);border-bottom:1px solid var(--cfv-line);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;gap:14px}.cfv-page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:22px;margin-bottom:20px}.cfv-kicker{display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:999px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-muted);font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.08em}.cfv-title{margin:8px 0 0;font-size:clamp(28px,3vw,42px);line-height:1;letter-spacing:-.06em;color:var(--cfv-text)}.cfv-lead{margin:8px 0 0;color:var(--cfv-muted);max-width:780px;line-height:1.45;font-size:13px}.cfv-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px}.cfv-btn{min-height:40px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-text);border-radius:13px;padding:0 14px;display:inline-flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:900;cursor:pointer;box-shadow:var(--cfv-shadow-soft);white-space:nowrap}.cfv-btn-primary{background:var(--cfv-accent);border-color:var(--cfv-accent);color:#02100a;box-shadow:0 16px 34px rgba(45,213,138,.22)}.cfv-btn-soft{background:var(--cfv-accent-soft);border-color:var(--cfv-accent-2);color:#d8fff1;box-shadow:none}.cfv-grid-5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}.cfv-layout-list{display:grid;grid-template-columns:minmax(0,1fr) 315px;gap:17px;align-items:start;margin-top:17px}.cfv-layout-detail{display:grid;grid-template-columns:300px minmax(0,1fr) 315px;gap:17px;align-items:start;margin-top:17px}.cfv-stack{display:grid;gap:14px}.cfv-card{background:rgba(16,20,18,.9);border:1px solid var(--cfv-line);border-radius:var(--cfv-radius-xl);box-shadow:var(--cfv-shadow-soft);overflow:hidden;color:var(--cfv-text)}.cfv-card-pad{padding:18px}.cfv-metric{min-height:106px;border-radius:22px;padding:16px;background:rgba(16,20,18,.9);border:1px solid var(--cfv-line);box-shadow:var(--cfv-shadow-soft);display:grid;align-content:space-between}.cfv-metric-active{background:var(--cfv-accent-soft);border-color:var(--cfv-accent-2)}.cfv-metric label{color:var(--cfv-muted);font-size:10px;font-weight:950;text-transform:uppercase;letter-spacing:.08em}.cfv-metric strong{display:block;margin-top:7px;font-size:25px;letter-spacing:-.06em;line-height:1;color:var(--cfv-text)}.cfv-metric .hint{margin-top:5px;color:var(--cfv-muted);font-size:11px;line-height:1.3}.cfv-search{position:relative}.cfv-search input{width:100%;height:50px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-text);border-radius:18px;outline:none;padding:0 16px 0 42px}.cfv-search span{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--cfv-muted-2)}.cfv-row{display:grid;grid-template-columns:34px minmax(0,1.35fr) minmax(130px,.45fr) minmax(180px,.7fr) 40px;gap:12px;align-items:center;padding:13px 14px;border-top:1px solid var(--cfv-line);background:rgba(16,20,18,.56)}.cfv-row:first-child{border-top:0}.cfv-index{width:28px;height:28px;border-radius:11px;display:grid;place-items:center;background:var(--cfv-card-soft);color:var(--cfv-muted);font-size:11px;font-weight:950}.cfv-name{color:var(--cfv-text);font-weight:950;letter-spacing:-.025em;line-height:1.2}.cfv-sub{color:var(--cfv-muted);font-size:12px;margin-top:4px;line-height:1.35}.cfv-pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:900;background:var(--cfv-card-soft);color:var(--cfv-muted);white-space:nowrap;border:1px solid var(--cfv-line)}.cfv-pill-blue{background:var(--cfv-accent-soft);color:#d8fff1;border-color:var(--cfv-accent-2)}.cfv-statusline{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.cfv-person-card{padding:18px;display:grid;gap:15px}.cfv-avatar-line{display:flex;align-items:center;gap:12px}.cfv-avatar{width:54px;height:54px;border-radius:20px;background:linear-gradient(135deg,var(--cfv-sidebar),var(--cfv-accent));color:var(--cfv-text);display:grid;place-items:center;font-weight:950;letter-spacing:-.05em}.cfv-kv{display:grid;gap:8px}.cfv-kv-row{padding:11px 12px;border-radius:15px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);display:grid;gap:4px}.cfv-kv-row label{color:var(--cfv-muted);font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:950}.cfv-kv-row strong{color:var(--cfv-text);font-size:13px;word-break:break-word}.cfv-hero-grid{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(240px,.65fr);gap:14px}.cfv-hero{min-height:156px;border-radius:var(--cfv-radius-xl);padding:18px;background:linear-gradient(135deg,var(--cfv-sidebar),var(--cfv-accent-soft));border:1px solid var(--cfv-line);color:var(--cfv-text);display:grid;align-content:space-between;box-shadow:var(--cfv-shadow)}.cfv-hero-light{background:rgba(16,20,18,.9);box-shadow:var(--cfv-shadow-soft)}.cfv-hero label{color:var(--cfv-muted-2);font-size:10px;font-weight:950;letter-spacing:.08em;text-transform:uppercase}.cfv-hero h2{margin:8px 0 6px;font-size:27px;line-height:1.05;letter-spacing:-.06em;color:var(--cfv-text)}.cfv-hero p{margin:0;color:var(--cfv-muted);font-size:13px;line-height:1.45}.cfv-right-card{padding:16px;border-radius:var(--cfv-radius-xl);background:rgba(16,20,18,.9);border:1px solid var(--cfv-line);box-shadow:var(--cfv-shadow-soft)}.cfv-quick-list{display:grid;gap:8px}.cfv-quick-list button{min-height:40px;border-radius:14px;border:1px solid var(--cfv-line);background:var(--cfv-card-soft);color:var(--cfv-text);display:flex;align-items:center;justify-content:space-between;padding:0 12px;cursor:pointer;font-size:12px;font-weight:900}
+- 9: @media(max-width:1220px){.cfv-layout{grid-template-columns:86px minmax(0,1fr)}.cfv-layout-detail,.cfv-layout-list{grid-template-columns:1fr}.cfv-grid-5{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:760px){.cfv-layout{grid-template-columns:1fr}.cfv-sidebar{display:none}.cfv-main{padding:0 14px 94px}.cfv-global-bar{top:0;margin:0 -14px 16px;padding:10px 14px;overflow-x:auto}.cfv-page-head{flex-direction:column;gap:12px}.cfv-actions{justify-content:flex-start;width:100%;overflow-x:auto}.cfv-title{font-size:29px}.cfv-grid-5,.cfv-hero-grid{grid-template-columns:1fr}.cfv-row{grid-template-columns:30px minmax(0,1fr)}.cfv-row>:nth-child(n+4){display:none}}
+- 2: display: inline-flex;
+- 6: min-height: 2.25rem;
+- 14: line-height: 1;
+- 54: display: inline-flex;
+- 58: min-height: 2rem;
+- 90: min-height: 1.75rem !important;
+- 110: min-height: 1.75rem !important;
+- 135: min-height: 2rem !important;
+- 28: display: inline-flex;
+- 29: width: calc(var(--cf-icon-size-lg) + var(--cf-space-3));
+- 30: height: calc(var(--cf-icon-size-lg) + var(--cf-space-3));
+- 39: min-height: var(--cf-form-height);
+- 79: display: inline-flex;
+- 23: display: inline-flex;
+- 28: line-height: 1;
+- 32: width: 100%;
+- 33: height: 100%;
+- 38: width: var(--cf-entity-icon-size-sm);
+- 39: height: var(--cf-entity-icon-size-sm);
+- 43: width: var(--cf-entity-icon-size-md);
+- 44: height: var(--cf-entity-icon-size-md);
+- 48: width: var(--cf-entity-icon-size-lg);
+- 49: height: var(--cf-entity-icon-size-lg);
+- 57: width: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 58: height: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 65: width: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+- 66: height: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+- 70: width: calc(var(--cf-entity-icon-size-lg) + 1rem);
+- 71: height: calc(var(--cf-entity-icon-size-lg) + 1rem);
+- 75: width: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 76: height: calc(var(--cf-entity-icon-size-md) + 0.875rem);
+- 86: width: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+- 87: height: calc(var(--cf-entity-icon-size-sm) + 0.75rem);
+- 91: width: calc(var(--cf-entity-icon-size-lg) + 1rem);
+- 92: height: calc(var(--cf-entity-icon-size-lg) + 1rem);
+- 5: width: min(100%, 1440px);
+- 11: display: grid;
+- 16: display: grid;
+- 21: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 25: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 29: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 33: display: flex;
+- 49: line-height: 1.15;
+- 58: @media (max-width: 900px) {
+- 66: grid-template-columns: 1fr;
+- 83: --cf-form-height: 2.5rem;
+- 4: - sidebar user footer must live below nav, not over nav items,
+- 11: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+- 12: display: grid !important;
+- 15: overflow: hidden !important;
+- 22: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {
+- 23: min-height: 0 !important;
+- 24: height: auto !important;
+- 25: overflow-y: auto !important;
+- 26: overflow-x: hidden !important;
+- 32: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+- 33: position: static !important;
+- 35: display: grid !important;
+- 45: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before,
+- 46: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::after {
+- 47: display: none !important;
+- 51: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] {
+- 52: display: grid !important;
+- 53: grid-template-columns: 38px minmax(0, 1fr) !important;
+- 56: min-height: 58px !important;
+- 57: width: 100% !important;
+- 66: overflow: hidden !important;
+- 69: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] > .min-w-0 {
+- 70: min-width: 0 !important;
+- 71: width: 100% !important;
+- 72: overflow: hidden !important;
+- 75: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,
+- 76: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+- 77: display: block !important;
+- 78: min-width: 0 !important;
+- 79: max-width: 100% !important;
+- 80: overflow: hidden !important;
+- 81: text-overflow: ellipsis !important;
+- 91: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {
+- 95: line-height: 1.15 !important;
+- 99: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+- 104: line-height: 1.15 !important;
+- 108: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {
+- 109: width: 100% !important;
+- 110: min-height: 40px !important;
+- 121: display: none !important;
+- 129: @media (min-width: 1280px) {
+- 131: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 136: min-height: 64px !important;
+- 184: display: none !important;
+- 187: @media (max-width: 1220px) {
+- 188: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+- 189: display: none !important;
+- 193: @media (max-width: 760px) {
+- 194: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+- 195: display: none !important;
+- 7: @media (min-width: 1024px) and (min-height: 640px) {
+- 15: min-height: 100%;
+- 19: overflow-x: hidden !important;
+- 24: width: 100vw;
+- 25: min-height: 100vh;
+- 26: overflow-x: hidden;
+- 29: .closeflow-visual-stage01.app {
+- 30: width: calc(100vw / var(--eliteflow-desktop-scale)) !important;
+- 31: min-height: calc(100vh / var(--eliteflow-desktop-scale)) !important;
+- 37: .closeflow-visual-stage01 .global-bar {
+- 43: @media (max-width: 1023px), (max-height: 639px) {
+- 44: .closeflow-visual-stage01.app {
+- 45: width: auto !important;
+- 46: min-height: 100vh !important;
+- 16: --eliteflow-metric-min-height: 72px;
+- 33: display: grid !important;
+- 34: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 45: min-height: 0 !important;
+- 46: height: auto !important;
+- 47: display: block !important;
+- 58: overflow: visible !important;
+- 65: min-height: var(--eliteflow-metric-min-height) !important;
+- 66: height: 100% !important;
+- 67: width: 100% !important;
+- 68: display: flex !important;
+- 83: overflow: hidden !important;
+- 100: min-width: 0 !important;
+- 102: display: block !important;
+- 106: min-width: 0 !important;
+- 108: display: flex !important;
+- 116: display: block !important;
+- 118: max-width: 100% !important;
+- 122: line-height: 1.18 !important;
+- 127: overflow-wrap: anywhere !important;
+- 137: line-height: 1.25 !important;
+- 146: display: block !important;
+- 148: min-width: 0 !important;
+- 149: max-width: 12rem !important;
+- 152: line-height: 1 !important;
+- 162: width: 38px !important;
+- 163: height: 38px !important;
+- 164: min-width: 38px !important;
+- 165: display: inline-flex !important;
+- 178: width: 16px !important;
+- 179: height: 16px !important;
+- 180: stroke-width: 2.35 !important;
+- 186: min-height: var(--eliteflow-metric-min-height) !important;
+- 187: height: auto !important;
+- 188: display: flex !important;
+- 202: overflow: hidden !important;
+- 207: display: grid !important;
+- 208: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 214: min-height: var(--eliteflow-metric-min-height) !important;
+- 215: height: auto !important;
+- 216: display: grid !important;
+- 217: grid-template-columns: minmax(0, 1fr) auto auto !important;
+- 233: display: contents !important;
+- 242: line-height: 1.18 !important;
+- 253: line-height: 1 !important;
+- 261: width: 38px !important;
+- 262: height: 38px !important;
+- 263: min-width: 38px !important;
+- 270: @media (max-width: 1180px) {
+- 284: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 288: @media (max-width: 640px) {
+- 290: --eliteflow-metric-min-height: 70px;
+- 307: grid-template-columns: minmax(0, 1fr) !important;
+- 18: min-height: 72px !important;
+- 19: overflow: visible !important;
+- 24: overflow: visible !important;
+- 29: overflow: visible !important;
+- 30: text-overflow: clip !important;
+- 32: line-height: 1.22 !important;
+- 39: overflow: visible !important;
+- 40: text-overflow: clip !important;
+- 42: line-height: 1.28 !important;
+- 47: overflow: visible !important;
+- 48: text-overflow: clip !important;
+- 50: max-width: none !important;
+- 51: line-height: 1.16 !important;
+- 58: display: grid !important;
+- 59: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 65: min-width: 0 !important;
+- 69: min-height: 72px !important;
+- 72: @media (max-width: 1180px) {
+- 74: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 78: @media (max-width: 640px) {
+- 80: grid-template-columns: minmax(0, 1fr) !important;
+- 36: line-height: 1.18 !important;
+- 49: border-width: 1px !important;
+- 1: /* ELITEFLOW_SIDEBAR_FOOTER_CONTRAST_REPAIR_2026_05_07
+- 2: Fix bottom sidebar footer after desktop compact/scaled views:
+- 9: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+- 14: overflow: hidden !important;
+- 17: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {
+- 18: min-height: 0 !important;
+- 22: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+- 23: position: relative !important;
+- 36: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before {
+- 38: position: absolute !important;
+- 42: height: 42px !important;
+- 48: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"],
+- 49: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer .user-card[data-shell-user-card="true"] {
+- 50: min-height: 58px !important;
+- 66: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] .user-avatar {
+- 67: width: 38px !important;
+- 68: height: 38px !important;
+- 77: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,
+- 78: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+- 87: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {
+- 93: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+- 99: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {
+- 100: min-height: 42px !important;
+- 110: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout:hover {
+- 117: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout svg {
+- 122: @media (max-width: 1220px) {
+- 123: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+- 124: display: none !important;
+- 128: @media (max-width: 760px) {
+- 129: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+- 130: display: none !important;
+- 1: /* ELITEFLOW_SIDEBAR_USER_FOOTER_BELOW_NAV_2026_05_07
+- 2: Final sidebar footer placement repair.
+- 6: @media (min-width: 1221px) {
+- 7: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] {
+- 8: display: flex !important;
+- 11: overflow-x: hidden !important;
+- 12: overflow-y: auto !important;
+- 19: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .brand {
+- 23: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .nav-scroll {
+- 25: min-height: 0 !important;
+- 26: overflow-y: auto !important;
+- 27: overflow-x: hidden !important;
+- 33: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+- 34: position: static !important;
+- 37: display: grid !important;
+- 47: overflow: visible !important;
+- 50: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::before,
+- 51: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer::after {
+- 53: display: none !important;
+- 56: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"],
+- 57: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-footer .user-card[data-shell-user-card="true"] {
+- 58: position: static !important;
+- 60: width: 100% !important;
+- 61: min-width: 0 !important;
+- 62: min-height: 58px !important;
+- 63: height: auto !important;
+- 64: display: grid !important;
+- 65: grid-template-columns: 38px minmax(0, 1fr) !important;
+- 79: overflow: hidden !important;
+- 82: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] .user-avatar {
+- 84: width: 38px !important;
+- 85: height: 38px !important;
+- 86: min-width: 38px !important;
+- 88: display: grid !important;
+- 95: line-height: 1 !important;
+- 99: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] > .min-w-0 {
+- 101: min-width: 0 !important;
+- 102: width: 100% !important;
+- 103: overflow: hidden !important;
+- 106: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong,
+- 107: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+- 108: display: block !important;
+- 109: min-width: 0 !important;
+- 110: max-width: 100% !important;
+- 111: overflow: hidden !important;
+- 112: text-overflow: ellipsis !important;
+- 122: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] strong {
+- 126: line-height: 1.15 !important;
+- 131: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .user-card[data-shell-user-card="true"] span {
+- 135: line-height: 1.15 !important;
+- 140: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout {
+- 141: position: static !important;
+- 143: width: 100% !important;
+- 144: min-height: 42px !important;
+- 154: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout svg,
+- 155: html body #root .closeflow-visual-stage01 .sidebar[data-shell-sidebar="true"] .sidebar-logout span {
+- 63: display: none !important;
+- 92: display: none !important;
+- 13: overflow: hidden;
+- 18: display: flex;
+- 25: width: 56px;
+- 26: height: 56px;
+- 30: display: grid;
+- 41: line-height: 1.15;
+- 54: display: grid;
+- 60: display: grid;
+- 61: grid-template-columns: 34px minmax(0, 1fr) auto;
+- 72: width: 34px;
+- 73: height: 34px;
+- 77: display: grid;
+- 83: display: block;
+- 90: display: block;
+- 93: line-height: 1.3;
+- 94: overflow-wrap: anywhere;
+- 103: min-width: 32px;
+- 104: min-height: 32px;
+- 106: display: inline-flex;
+- 131: line-height: 1.5;
+- 133: overflow-wrap: anywhere;
+- 6: display: grid;
+- 12: display: grid;
+- 24: display: flex;
+- 41: line-height: 1.15;
+- 51: display: grid;
+- 57: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 61: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 77: min-width: 0;
+- 108: display: inline-flex;
+- 114: display: flex;
+- 137: line-height: 1.2;
+- 161: display: grid;
+- 172: display: flex;
+- 191: max-width: min(680px, calc(100vw - 24px));
+- 195: display: grid;
+- 196: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 201: display: grid;
+- 216: width: 100%;
+- 226: min-height: 36px;
+- 230: min-height: 88px;
+- 240: overflow: hidden;
+- 244: width: 100%;
+- 248: display: flex;
+- 258: display: block;
+- 275: display: grid;
+- 276: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 286: display: flex;
+- 298: @media (max-width: 960px) {
+- 300: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 304: @media (max-width: 720px) {
+- 310: grid-template-columns: 1fr;
+- 328: width: 100%;
+- 337: width: 100%;
+- 343: display: grid;
+- 364: display: flex;
+- 376: display: grid;
+- 378: min-width: 0;
+- 384: line-height: 1.2;
+- 391: line-height: 1.45;
+- 398: @media (max-width: 720px) {
+- 405: width: 100%;
+- 411: display: flex;
+- 420: min-height: 34px;
+- 424: display: block;
+- 428: line-height: 1.35;
+- 431: display: grid;
+- 432: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 436: display: grid;
+- 437: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 447: display: flex;
+- 465: display: grid;
+- 480: display: grid;
+- 489: display: flex;
+- 505: display: grid;
+- 506: grid-template-columns: repeat(5, minmax(0, 1fr));
+- 510: @media (max-width: 900px) {
+- 514: grid-template-columns: 1fr;
+- 518: width: 100%;
+- 524: display: flex;
+- 2: Scope: only Szkice AI right rail. Do not touch sidebar or global shell. */
+- 21: display: flex !important;
+- 24: min-width: 300px;
+- 25: overflow: visible !important;
+- 35: display: none !important;
+- 55: overflow: hidden !important;
+- 65: display: none !important;
+- 112: @media (max-width: 1180px) {
+- 115: min-width: 0;
+- 116: display: grid !important;
+- 117: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 121: @media (max-width: 760px) {
+- 124: display: flex !important;
+- 2: Fixes dark wrapper bleed in /ai-drafts right column without touching sidebar/navigation.
+- 7: .cf-html-view .ai-drafts-sidebar,
+- 19: display: flex;
+- 22: min-width: 300px;
+- 23: overflow: visible !important;
+- 30: .cf-html-view .ai-drafts-sidebar::before,
+- 31: .cf-html-view .ai-drafts-sidebar::after,
+- 41: display: none !important;
+- 50: .cf-html-view .ai-drafts-sidebar > *,
+- 62: overflow: hidden;
+- 74: display: none !important;
+- 19: Sidebar stays untouched because every selector is route scoped.
+- 35: display: flex !important;
+- 38: min-width: 0 !important;
+- 39: overflow: visible !important;
+- 59: display: none !important;
+- 96: overflow: hidden !important;
+- 123: display: none !important;
+- 200: @media (max-width: 1260px) {
+- 203: display: grid !important;
+- 204: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 208: @media (max-width: 980px) {
+- 211: display: flex !important;
+- 215: @media (max-width: 760px) {
+- 218: min-width: 0 !important;
+- 23: display: flex !important;
+- 26: min-width: 300px !important;
+- 27: overflow: visible !important;
+- 37: display: none !important;
+- 57: overflow: hidden !important;
+- 73: display: none !important;
+- 33: overflow: hidden !important;
+- 33: @import '../stage40-page-header-action-overflow-hardening.css';
+- 3: width: min(760px, calc(100vw - 32px));
+- 4: max-width: 760px;
+- 17: display: inline-flex;
+- 18: width: fit-content;
+- 35: line-height: 1.55;
+- 39: display: grid;
+- 46: width: 100%;
+- 56: min-height: 170px;
+- 60: line-height: 1.55;
+- 64: height: 40px;
+- 76: display: grid;
+- 77: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 83: display: grid;
+- 95: @media (max-width: 720px) {
+- 97: width: calc(100vw - 20px);
+- 102: grid-template-columns: 1fr;
+- 110: width: 100%;
+- 28: .closeflow-visual-stage01 .global-bar,
+- 29: .cf-html-shell .global-bar {
+- 35: .closeflow-visual-stage01 .global-actions,
+- 36: .cf-html-shell .global-actions,
+- 37: .closeflow-visual-stage01 [data-global-quick-actions="true"],
+- 38: .cf-html-shell [data-global-quick-actions="true"] {
+- 42: .closeflow-visual-stage01 [data-global-quick-actions="true"] button,
+- 43: .closeflow-visual-stage01 [data-global-quick-actions="true"] a,
+- 44: .closeflow-visual-stage01 [data-global-quick-actions="true"] .btn,
+- 45: .cf-html-shell [data-global-quick-actions="true"] button,
+- 46: .cf-html-shell [data-global-quick-actions="true"] a,
+- 47: .cf-html-shell [data-global-quick-actions="true"] .btn {
+- 48: min-height: 40px !important;
+- 59: .closeflow-visual-stage01 [data-global-quick-actions="true"] button svg,
+- 60: .closeflow-visual-stage01 [data-global-quick-actions="true"] a svg,
+- 61: .closeflow-visual-stage01 [data-global-quick-actions="true"] .btn svg,
+- 62: .cf-html-shell [data-global-quick-actions="true"] button svg,
+- 63: .cf-html-shell [data-global-quick-actions="true"] a svg,
+- 64: .cf-html-shell [data-global-quick-actions="true"] .btn svg {
+- 69: .closeflow-visual-stage01 [data-global-quick-actions="true"] button:hover,
+- 70: .closeflow-visual-stage01 [data-global-quick-actions="true"] a:hover,
+- 71: .closeflow-visual-stage01 [data-global-quick-actions="true"] .btn:hover,
+- 72: .cf-html-shell [data-global-quick-actions="true"] button:hover,
+- 73: .cf-html-shell [data-global-quick-actions="true"] a:hover,
+- 74: .cf-html-shell [data-global-quick-actions="true"] .btn:hover {
+- 82: @media (max-width: 760px) {
+- 83: .closeflow-visual-stage01 .mobile-top,
+- 84: .cf-html-shell .mobile-top,
+- 85: .closeflow-visual-stage01 .mobile-nav,
+- 86: .cf-html-shell .mobile-nav {
+- 92: .closeflow-visual-stage01 .mobile-brand,
+- 93: .cf-html-shell .mobile-brand,
+- 94: .closeflow-visual-stage01 .mobile-brand span,
+- 95: .cf-html-shell .mobile-brand span {
+- 101: .closeflow-visual-stage01 .mobile-menu-btn,
+- 102: .cf-html-shell .mobile-menu-btn {
+- 109: .closeflow-visual-stage01 .mobile-menu-btn svg,
+- 110: .cf-html-shell .mobile-menu-btn svg {
+- 115: .closeflow-visual-stage01 .global-bar,
+- 116: .cf-html-shell .global-bar {
+- 117: position: sticky !important;
+- 124: .closeflow-visual-stage01 [data-global-quick-actions="true"],
+- 125: .cf-html-shell [data-global-quick-actions="true"] {
+- 126: display: flex !important;
+- 129: overflow-x: auto !important;
+- 131: scrollbar-width: none;
+- 134: .closeflow-visual-stage01 [data-global-quick-actions="true"]::-webkit-scrollbar,
+- 135: .cf-html-shell [data-global-quick-actions="true"]::-webkit-scrollbar {
+- 136: display: none;
+- 139: .closeflow-visual-stage01 [data-global-quick-actions="true"] button,
+- 140: .closeflow-visual-stage01 [data-global-quick-actions="true"] a,
+- 141: .closeflow-visual-stage01 [data-global-quick-actions="true"] .btn,
+- 142: .cf-html-shell [data-global-quick-actions="true"] button,
+- 143: .cf-html-shell [data-global-quick-actions="true"] a,
+- 144: .cf-html-shell [data-global-quick-actions="true"] .btn {
+- 145: min-width: max-content !important;
+- 146: min-height: 42px !important;
+- 154: .closeflow-visual-stage01 .mobile-nav-btn,
+- 155: .cf-html-shell .mobile-nav-btn {
+- 161: .closeflow-visual-stage01 .mobile-nav-btn svg,
+- 162: .cf-html-shell .mobile-nav-btn svg {
+- 167: .closeflow-visual-stage01 .mobile-nav-btn.active,
+- 168: .cf-html-shell .mobile-nav-btn.active {
+- 175: .closeflow-visual-stage01 .mobile-drawer-panel,
+- 176: .cf-html-shell .mobile-drawer-panel {
+- 183: .closeflow-visual-stage01 .mobile-drawer-head,
+- 184: .closeflow-visual-stage01 .mobile-user-wrap,
+- 185: .closeflow-visual-stage01 .mobile-drawer-footer,
+- 186: .cf-html-shell .mobile-drawer-head,
+- 187: .cf-html-shell .mobile-user-wrap,
+- 188: .cf-html-shell .mobile-drawer-footer {
+- 194: .closeflow-visual-stage01 .mobile-drawer-panel .brand,
+- 195: .cf-html-shell .mobile-drawer-panel .brand {
+- 200: .closeflow-visual-stage01 .mobile-drawer-panel .brand-logo,
+- 201: .cf-html-shell .mobile-drawer-panel .brand-logo {
+- 208: .closeflow-visual-stage01 .mobile-drawer-panel .brand-title strong,
+- 209: .closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,
+- 210: .cf-html-shell .mobile-drawer-panel .brand-title strong,
+- 211: .cf-html-shell .mobile-drawer-panel .brand-title span {
+- 217: .closeflow-visual-stage01 .mobile-drawer-panel .brand-title span,
+- 218: .cf-html-shell .mobile-drawer-panel .brand-title span {
+- 223: .closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn,
+- 224: .cf-html-shell .mobile-drawer-head .mobile-menu-btn {
+- 230: .closeflow-visual-stage01 .mobile-drawer-panel .nav-caption,
+- 231: .cf-html-shell .mobile-drawer-panel .nav-caption {
+- 237: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,
+- 238: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn span,
+- 239: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn .nav-label,
+- 240: .cf-html-shell .mobile-drawer-panel .nav-btn,
+- 241: .cf-html-shell .mobile-drawer-panel .nav-btn span,
+- 242: .cf-html-shell .mobile-drawer-panel .nav-btn .nav-label {
+- 248: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn,
+- 249: .cf-html-shell .mobile-drawer-panel .nav-btn {
+- 254: .closeflow-visual-stage01 .mobile-drawer-panel .nav-ico,
+- 255: .cf-html-shell .mobile-drawer-panel .nav-ico {
+- 260: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover,
+- 261: .cf-html-shell .mobile-drawer-panel .nav-btn:hover,
+- 262: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active,
+- 263: .cf-html-shell .mobile-drawer-panel .nav-btn.active,
+- 264: .closeflow-visual-stage01 .mobile-drawer-panel a[aria-current="page"],
+- 265: .cf-html-shell .mobile-drawer-panel a[aria-current="page"] {
+- 273: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn:hover span,
+- 274: .closeflow-visual-stage01 .mobile-drawer-panel .nav-btn.active span,
+- 275: .cf-html-shell .mobile-drawer-panel .nav-btn:hover span,
+- 276: .cf-html-shell .mobile-drawer-panel .nav-btn.active span {
+- 281: .closeflow-visual-stage01 .mobile-drawer-panel .user-card,
+- 282: .cf-html-shell .mobile-drawer-panel .user-card,
+- 283: .closeflow-visual-stage01 .mobile-drawer-panel .trial-card,
+- 284: .cf-html-shell .mobile-drawer-panel .trial-card {
+- 290: .closeflow-visual-stage01 .mobile-drawer-panel .user-avatar,
+- 291: .cf-html-shell .mobile-drawer-panel .user-avatar {
+- 297: .closeflow-visual-stage01 .mobile-drawer-panel .user-card strong,
+- 298: .closeflow-visual-stage01 .mobile-drawer-panel .user-card span,
+- 299: .closeflow-visual-stage01 .mobile-drawer-panel .trial-card,
+- 300: .closeflow-visual-stage01 .mobile-drawer-panel .trial-card *,
+- 301: .cf-html-shell .mobile-drawer-panel .user-card strong,
+- 302: .cf-html-shell .mobile-drawer-panel .user-card span,
+- 303: .cf-html-shell .mobile-drawer-panel .trial-card,
+- 304: .cf-html-shell .mobile-drawer-panel .trial-card * {
+- 310: .closeflow-visual-stage01 .mobile-drawer-panel .sidebar-logout,
+- 311: .cf-html-shell .mobile-drawer-panel .sidebar-logout {
+- 410: @media (max-width: 760px) {
+- 411: .closeflow-visual-stage01 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+- 412: .closeflow-visual-stage01 textarea,
+- 413: .closeflow-visual-stage01 select,
+- 414: .cf-html-shell input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+- 415: .cf-html-shell textarea,
+- 416: .cf-html-shell select {
+- 423: .closeflow-visual-stage01 input::placeholder,
+- 424: .closeflow-visual-stage01 textarea::placeholder,
+- 425: .cf-html-shell input::placeholder,
+- 426: .cf-html-shell textarea::placeholder {
+- 8: @media (max-width: 900px) {
+- 12: width: 100%;
+- 13: max-width: 100%;
+- 14: overflow-x: hidden;
+- 18: min-width: 0;
+- 31: max-width: 100%;
+- 38: max-width: 100%;
+- 41: .closeflow-visual-stage01.app,
+- 42: .cf-html-shell,
+- 43: .closeflow-visual-stage01 .main,
+- 44: .closeflow-visual-stage01 main,
+- 45: .closeflow-visual-stage01 .view,
+- 46: .closeflow-visual-stage01 [data-shell-content="true"],
+- 54: width: 100%;
+- 55: max-width: 100%;
+- 56: min-width: 0;
+- 57: overflow-x: hidden;
+- 60: .closeflow-visual-stage01 .main,
+- 61: .closeflow-visual-stage01 main {
+- 66: .closeflow-visual-stage01 .view,
+- 67: .closeflow-visual-stage01 [data-shell-content="true"] {
+- 101: width: 100% !important;
+- 102: max-width: 100% !important;
+- 103: min-width: 0 !important;
+- 104: grid-template-columns: 1fr !important;
+- 105: overflow-x: hidden !important;
+- 112: .today-sidebar,
+- 130: width: 100% !important;
+- 131: max-width: 100% !important;
+- 132: min-width: 0 !important;
+- 140: overflow: hidden !important;
+- 181: .sidebar .bg-slate-950,
+- 182: .sidebar .bg-slate-900 {
+- 214: max-width: 100% !important;
+- 215: min-width: 0 !important;
+- 216: overflow: hidden !important;
+- 225: min-width: 0;
+- 243: grid-template-columns: 1fr !important;
+- 261: min-width: 0;
+- 277: display: grid !important;
+- 278: grid-template-columns: 1fr !important;
+- 280: width: 100% !important;
+- 281: max-width: 100% !important;
+- 282: min-width: 0 !important;
+- 295: max-width: 100%;
+- 296: overflow-wrap: anywhere;
+- 297: line-height: 1.05;
+- 311: max-width: 100%;
+- 312: overflow-wrap: anywhere;
+- 337: max-width: 100% !important;
+- 338: min-width: 0 !important;
+- 339: display: flex !important;
+- 363: min-width: 0 !important;
+- 366: .closeflow-visual-stage01 button,
+- 367: .closeflow-visual-stage01 .btn,
+- 368: .closeflow-visual-stage01 a.btn,
+- 369: .closeflow-visual-stage01 [role="button"],
+- 370: .closeflow-visual-stage01 [type="button"],
+- 371: .closeflow-visual-stage01 [type="submit"] {
+- 372: min-height: 38px;
+- 375: .closeflow-visual-stage01 .btn,
+- 376: .closeflow-visual-stage01 a.btn,
+- 388: line-height: 1.15 !important;
+- 395: max-width: 100%;
+- 397: overflow-wrap: anywhere;
+- 400: /* Top global actions: readable horizontal chips, no page overflow. */
+- 401: .closeflow-visual-stage01 .global-bar {
+- 402: max-width: 100% !important;
+- 403: overflow: hidden !important;
+- 406: .closeflow-visual-stage01 .global-actions {
+- 407: width: 100% !important;
+- 408: max-width: 100% !important;
+- 409: min-width: 0 !important;
+- 410: display: flex !important;
+- 414: overflow-x: auto !important;
+- 415: overflow-y: hidden !important;
+- 418: scrollbar-width: none;
+- 421: .closeflow-visual-stage01 .global-actions::-webkit-scrollbar {
+- 422: display: none;
+- 425: .closeflow-visual-stage01 .global-actions > *,
+- 426: .closeflow-visual-stage01 .global-actions button,
+- 427: .closeflow-visual-stage01 .global-actions a {
+- 429: min-height: 40px !important;
+- 430: max-width: 82vw !important;
+- 449: width: 100% !important;
+- 450: max-width: 100% !important;
+- 451: min-width: 0 !important;
+- 452: display: flex !important;
+- 454: overflow-x: auto !important;
+- 455: overflow-y: hidden !important;
+- 459: scrollbar-width: none;
+- 476: display: none;
+- 498: width: 100% !important;
+- 499: max-width: 100% !important;
+- 505: .overflow-table,
+- 515: width: 100% !important;
+- 516: max-width: 100% !important;
+- 517: min-width: 0 !important;
+- 518: overflow-x: auto !important;
+- 519: overflow-y: hidden;
+- 520: -webkit-overflow-scrolling: touch;
+- 526: .overflow-table table,
+- 529: min-width: min(640px, 100%);
+- 543: display: grid !important;
+- 544: grid-template-columns: 1fr !important;
+- 560: max-width: 100% !important;
+- 561: min-width: 0 !important;
+- 574: overflow-wrap: anywhere;
+- 585: width: min(100vw - 24px, 720px) !important;
+- 586: max-width: calc(100vw - 24px) !important;
+- 587: max-height: calc(100dvh - 24px) !important;
+- 588: overflow-y: auto !important;
+- 589: overflow-x: hidden !important;
+- 592: -webkit-overflow-scrolling: touch;
+- 600: max-width: 100%;
+- 601: min-width: 0;
+- 609: position: sticky;
+- 622: position: sticky;
+- 636: grid-template-columns: 1fr !important;
+- 648: width: 100% !important;
+- 649: min-width: 0 !important;
+- 665: width: 100% !important;
+- 666: max-width: 100% !important;
+- 667: min-width: 0 !important;
+- 668: overflow-x: hidden !important;
+- 681: min-width: 0 !important;
+- 701: max-width: 100% !important;
+- 715: display: grid !important;
+- 716: grid-template-columns: 1fr !important;
+- 718: width: 100% !important;
+- 719: max-width: 100% !important;
+- 731: width: 100% !important;
+- 732: max-width: 100% !important;
+- 733: min-width: 0 !important;
+- 736: /* Text never creates hidden overflow. */
+- 737: .closeflow-visual-stage01 h1,
+- 738: .closeflow-visual-stage01 h2,
+- 739: .closeflow-visual-stage01 h3,
+- 740: .closeflow-visual-stage01 p,
+- 741: .closeflow-visual-stage01 span,
+- 742: .closeflow-visual-stage01 strong,
+- 743: .closeflow-visual-stage01 small,
+- 744: .closeflow-visual-stage01 a,
+- 745: .closeflow-visual-stage01 td,
+- 746: .closeflow-visual-stage01 th,
+- 747: .closeflow-visual-stage01 label {
+- 748: min-width: 0;
+- 749: overflow-wrap: anywhere;
+- 753: @media (max-width: 768px) {
+- 754: .closeflow-visual-stage01.app {
+- 758: .closeflow-visual-stage01 .main {
+- 762: .closeflow-visual-stage01 .mobile-top {
+- 763: width: 100% !important;
+- 764: max-width: 100% !important;
+- 767: .closeflow-visual-stage01 .mobile-drawer-panel {
+- 768: width: min(92vw, 420px) !important;
+- 769: max-width: 92vw !important;
+- 770: overflow-x: hidden !important;
+- 773: .closeflow-visual-stage01 .mobile-drawer-nav,
+- 774: .closeflow-visual-stage01 .mobile-drawer-footer,
+- 775: .closeflow-visual-stage01 .mobile-user-wrap {
+- 776: max-width: 100% !important;
+- 777: overflow-x: hidden !important;
+- 780: .closeflow-visual-stage01 .mobile-nav {
+- 781: width: 100% !important;
+- 782: max-width: 100% !important;
+- 783: overflow: hidden !important;
+- 786: .closeflow-visual-stage01 .mobile-nav-btn {
+- 787: min-width: 0 !important;
+- 788: max-width: 100% !important;
+- 789: overflow: hidden !important;
+- 792: .closeflow-visual-stage01 .mobile-nav-btn span {
+- 793: max-width: 100%;
+- 794: overflow: hidden;
+- 795: text-overflow: ellipsis;
+- 814: @media (max-width: 430px) {
+- 815: .closeflow-visual-stage01 .main,
+- 816: .closeflow-visual-stage01 main {
+- 821: .closeflow-visual-stage01 .global-bar {
+- 855: .closeflow-visual-stage01 .global-actions > *,
+- 856: .closeflow-visual-stage01 .global-actions button,
+- 857: .closeflow-visual-stage01 .global-actions a {
+- 858: min-height: 38px !important;
+- 871: width: calc(100vw - 16px) !important;
+- 872: max-width: calc(100vw - 16px) !important;
+- 873: max-height: calc(100dvh - 16px) !important;
+- 877: .closeflow-visual-stage01 .mobile-drawer-panel {
+- 878: width: min(94vw, 390px) !important;
+- 879: max-width: 94vw !important;
+- 883: @media (max-width: 390px) {
+- 884: .closeflow-visual-stage01 .mobile-nav {
+- 890: .closeflow-visual-stage01 .mobile-nav-btn {
+- 891: min-height: 50px !important;
+- 896: .closeflow-visual-stage01 .global-actions > *,
+- 897: .closeflow-visual-stage01 .global-actions button,
+- 898: .closeflow-visual-stage01 .global-actions a {
+- 899: max-width: 78vw !important;
+- 62: line-height: 1.55 !important;
+- 63: overflow-wrap: anywhere !important;
+- 114: @media (max-width: 860px) {
+- 116: max-height: 220px;
+- 12: overflow-x: clip;
+- 17: max-width: 100%;
+- 21: min-width: 0;
+- 22: overflow: hidden;
+- 28: max-width: 100%;
+- 29: min-width: 0;
+- 30: height: auto !important;
+- 31: min-height: 28px;
+- 33: overflow: hidden !important;
+- 34: text-overflow: clip !important;
+- 36: line-height: 1.22 !important;
+- 42: min-width: 0;
+- 44: overflow-wrap: anywhere;
+- 46: text-overflow: clip !important;
+- 51: min-width: 0 !important;
+- 53: overflow: visible !important;
+- 54: text-overflow: clip !important;
+- 173: @media (max-width: 768px) {
+- 181: min-height: 31px !important;
+- 189: width: min(100vw - 18px, 760px) !important;
+- 190: max-height: calc(100dvh - 20px) !important;
+- 191: overflow-y: auto !important;
+- 197: min-width: 0 !important;
+- 206: min-height: 44px !important;
+- 9: overflow-x: clip;
+- 15: overflow: visible !important;
+- 16: text-overflow: clip !important;
+- 18: min-width: 0 !important;
+- 23: min-width: 0;
+- 28: max-width: 100%;
+- 34: min-width: 0;
+- 35: overflow-wrap: anywhere;
+- 40: min-width: 0;
+- 46: max-width: 100%;
+- 47: overflow-x: clip;
+- 77: max-width: 100%;
+- 78: overflow-x: clip;
+- 83: min-width: 0;
+- 200: @media (max-width: 768px) {
+- 202: overflow-x: clip;
+- 210: min-width: 0;
+- 215: max-width: 100%;
+- 219: height: auto !important;
+- 220: min-height: 30px !important;
+- 224: line-height: 1.2 !important;
+- 229: width: min(100vw - 20px, 760px) !important;
+- 230: max-height: calc(100dvh - 24px) !important;
+- 231: overflow-y: auto !important;
+- 237: min-width: 0;
+- 246: min-height: 44px !important;
+- 251: @media (max-width: 430px) {
+- 55: min-height: 40px;
+- 65: overflow-wrap: anywhere;
+- 69: display: none !important;
+- 73: display: none !important;
+- 107: width: 38px;
+- 108: height: 38px;
+- 109: min-height: 38px;
+- 110: min-width: 38px;
+- 195: @media (max-width: 768px) {
+- 197: position: static !important;
+- 216: min-height: 52px;
+- 264: @media (max-width: 768px) {
+- 272: line-height: 1.2;
+- 277: min-height: 46px;
+- 281: width: 100%;
+- 26: line-height: 0.95 !important;
+- 133: min-height: 260px;
+- 261: @media (max-width: 860px) {
+- 11: min-height: 92px;
+- 16: display: flex;
+- 21: height: auto !important;
+- 22: min-width: 0 !important;
+- 27: display: flex;
+- 30: min-width: 0;
+- 37: min-width: 0;
+- 40: line-height: 1.2 !important;
+- 44: overflow-wrap: anywhere;
+- 52: line-height: 1 !important;
+- 59: display: none !important;
+- 64: width: 36px !important;
+- 65: height: 36px !important;
+- 66: min-width: 36px;
+- 2: width: 100%;
+- 3: min-width: 0;
+- 7: width: 100%;
+- 8: min-width: 0;
+- 12: width: 100%;
+- 13: max-width: 100%;
+- 14: min-width: 0;
+- 18: width: 100%;
+- 19: max-width: 100%;
+- 20: min-width: 0;
+- 24: display: block;
+- 25: min-width: 0;
+- 27: overflow: hidden;
+- 31: display: block;
+- 32: min-width: 0;
+- 34: overflow: hidden;
+- 38: display: block;
+- 39: min-width: 0;
+- 40: overflow: hidden;
+- 41: text-overflow: ellipsis;
+- 46: display: block;
+- 47: min-width: 0;
+- 48: overflow: hidden;
+- 49: text-overflow: ellipsis;
+- 65: .closeflow-visual-stage01 .sidebar .user-card,
+- 66: .cf-html-shell .sidebar .user-card {
+- 72: .closeflow-visual-stage01 .sidebar .user-card strong,
+- 73: .closeflow-visual-stage01 .sidebar .user-card span,
+- 74: .cf-html-shell .sidebar .user-card strong,
+- 75: .cf-html-shell .sidebar .user-card span {
+- 80: .closeflow-visual-stage01 .sidebar .user-card strong,
+- 81: .cf-html-shell .sidebar .user-card strong {
+- 86: .closeflow-visual-stage01 .sidebar .user-card span,
+- 87: .cf-html-shell .sidebar .user-card span {
+- 93: display: none !important;
+- 98: min-height: 92px;
+- 106: min-height: 92px;
+- 111: display: flex;
+- 118: line-height: 1.2 !important;
+- 127: line-height: 1 !important;
+- 134: width: 36px !important;
+- 135: height: 36px !important;
+- 136: min-width: 36px !important;
+- 168: display: block;
+- 169: min-width: 0;
+- 171: overflow: hidden;
+- 172: text-overflow: ellipsis;
+- 173: max-width: 180px;
+- 9: display: flex;
+- 24: min-width: 0;
+- 25: max-width: 760px;
+- 32: line-height: 1.04 !important;
+- 41: max-width: 680px;
+- 44: line-height: 1.45 !important;
+- 49: display: flex;
+- 54: min-width: 0;
+- 59: min-height: 38px;
+- 71: @media (max-width: 920px) {
+- 82: @media (max-width: 640px) {
+- 93: width: 100%;
+- 1: /* CLOSEFLOW_STAGE40_PAGE_HEADER_ACTION_OVERFLOW_HARDENING
+- 9: position: relative;
+- 10: overflow: hidden;
+- 16: position: absolute;
+- 18: height: 1px;
+- 30: max-width: min(620px, 100%);
+- 35: max-width: 100%;
+- 36: min-width: 0;
+- 42: min-width: 0;
+- 43: overflow: hidden;
+- 44: text-overflow: ellipsis;
+- 54: @media (max-width: 760px) {
+- 60: display: grid;
+- 61: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 62: width: 100%;
+- 67: width: 100%;
+- 68: min-height: 40px;
+- 73: @media (max-width: 460px) {
+- 75: grid-template-columns: 1fr;
+- 5: overflow: visible !important;
+- 9: display: flex !important;
+- 14: min-width: max-content;
+- 15: overflow: visible !important;
+- 19: display: inline-flex !important;
+- 25: position: relative !important;
+- 29: @media (min-width: 640px) {
+- 32: width: auto !important;
+- 36: min-width: max-content !important;
+- 1: /* STAGE_A19V2_SIDEBAR_NAV_CONTRAST_FIX
+- 6: .cf-html-shell .sidebar .nav-btn,
+- 7: .cf-html-shell .mobile-drawer .nav-btn {
+- 16: .cf-html-shell .sidebar .nav-btn .nav-ico,
+- 17: .cf-html-shell .mobile-drawer .nav-btn .nav-ico {
+- 23: .cf-html-shell .sidebar .nav-btn .nav-label,
+- 24: .cf-html-shell .mobile-drawer .nav-btn .nav-label {
+- 28: .cf-html-shell .sidebar .nav-btn:hover,
+- 29: .cf-html-shell .mobile-drawer .nav-btn:hover {
+- 35: .cf-html-shell .sidebar .nav-btn:hover .nav-ico,
+- 36: .cf-html-shell .mobile-drawer .nav-btn:hover .nav-ico {
+- 41: .cf-html-shell .sidebar .nav-btn.active,
+- 42: .cf-html-shell .mobile-drawer .nav-btn.active,
+- 43: .cf-html-shell .sidebar .nav-btn[aria-current="page"],
+- 44: .cf-html-shell .mobile-drawer .nav-btn[aria-current="page"] {
+- 51: .cf-html-shell .sidebar .nav-btn.active .nav-ico,
+- 52: .cf-html-shell .mobile-drawer .nav-btn.active .nav-ico,
+- 53: .cf-html-shell .sidebar .nav-btn[aria-current="page"] .nav-ico,
+- 54: .cf-html-shell .mobile-drawer .nav-btn[aria-current="page"] .nav-ico {
+- 60: .cf-html-shell .sidebar .nav-btn.active .nav-label,
+- 61: .cf-html-shell .mobile-drawer .nav-btn.active .nav-label,
+- 62: .cf-html-shell .sidebar .nav-btn[aria-current="page"] .nav-label,
+- 63: .cf-html-shell .mobile-drawer .nav-btn[aria-current="page"] .nav-label {
+- 67: .cf-html-shell .sidebar .nav-btn:disabled,
+- 68: .cf-html-shell .sidebar .nav-btn[aria-disabled="true"],
+- 69: .cf-html-shell .mobile-drawer .nav-btn:disabled,
+- 70: .cf-html-shell .mobile-drawer .nav-btn[aria-disabled="true"] {
+- 1: /* STAGE_A20C_SIDEBAR_TODAY_HITBOX_FIX
+- 2: Critical fix for desktop sidebar clicks when the Today route is open.
+- 6: @media (min-width: 761px) {
+- 7: .cf-html-shell {
+- 11: .cf-html-shell .sidebar[data-shell-sidebar="true"] {
+- 12: position: sticky !important;
+- 20: .cf-html-shell .sidebar[data-shell-sidebar="true"] .brand,
+- 21: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-scroll,
+- 22: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-group,
+- 23: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-stack,
+- 24: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn,
+- 25: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-ico,
+- 26: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-label,
+- 27: .cf-html-shell .sidebar[data-shell-sidebar="true"] .sidebar-footer {
+- 28: position: relative !important;
+- 33: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn,
+- 34: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link,
+- 35: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited {
+- 41: .cf-html-shell .main-today[data-shell-main="true"] {
+- 42: position: relative !important;
+- 47: .cf-html-shell .main-today[data-shell-main="true"] > .global-bar,
+- 48: .cf-html-shell .main-today[data-shell-main="true"] > .access-warning,
+- 49: .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"],
+- 50: .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"] * {
+- 54: .cf-html-shell .main-today[data-shell-main="true"]::before,
+- 55: .cf-html-shell .main-today[data-shell-main="true"]::after,
+- 56: .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"]::before,
+- 57: .cf-html-shell .main-today[data-shell-main="true"] > [data-shell-content="true"]::after {
+- 61: .cf-html-shell .main-today[data-shell-main="true"] .global-bar {
+- 65: .cf-html-shell .main-today[data-shell-main="true"] [data-shell-content="true"] {
+- 66: position: relative !important;
+- 1: /* STAGE_A20D_SIDEBAR_UNIFIED_NAV_TONE
+- 3: Zakres: tylko shell/sidebar, bez API, Supabase i logiki domenowej.
+- 6: @media (min-width: 761px) {
+- 7: .cf-html-shell .sidebar[data-shell-sidebar="true"] {
+- 9: overflow: visible !important;
+- 12: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-scroll,
+- 13: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-group,
+- 14: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-stack {
+- 15: overflow: visible !important;
+- 19: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn,
+- 20: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link,
+- 21: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited {
+- 31: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn .nav-ico,
+- 32: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link .nav-ico,
+- 33: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited .nav-ico {
+- 39: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn .nav-label,
+- 40: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:link .nav-label,
+- 41: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:visited .nav-label {
+- 45: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:hover,
+- 46: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn:focus-visible {
+- 53: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn.active,
+- 54: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn[aria-current="page"] {
+- 61: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn.active .nav-ico,
+- 62: .cf-html-shell .sidebar[data-shell-sidebar="true"] .nav-btn[aria-current="page"] .nav-ico {
+- 1: /* STAGE_A20E_SIDEBAR_TODAY_TONE_LOCK
+- 2: Fix only sidebar tone when Today is active. No routing, API, Supabase or data changes.
+- 5: @media (min-width: 761px) {
+- 6: .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]),
+- 7: .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]):link,
+- 8: .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]):visited {
+- 16: .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]) .nav-ico,
+- 17: .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]) .nav-label {
+- 23: .cf-html-shell[data-sidebar-pointer-router="true"] .sidebar[data-shell-sidebar="true"] .nav-btn:not(.active):not([aria-current="page"]) .nav-ico {
+- 1: /* STAGE_A20_SIDEBAR_TODAY_CLICK_FIX
+- 2: Critical fix: first sidebar group must stay dark and clickable on Today route.
+- 3: Scope only shell/sidebar nav. No routing, auth, Supabase or domain logic changes here.
+- 6: .cf-html-shell .sidebar {
+- 7: position: sticky !important;
+- 12: .cf-html-shell .sidebar .nav-scroll,
+- 13: .cf-html-shell .sidebar .nav-group,
+- 14: .cf-html-shell .sidebar .nav-stack {
+- 15: position: relative !important;
+- 23: .cf-html-shell .sidebar .nav-group:first-child {
+- 31: .cf-html-shell .sidebar .nav-group:first-child::before,
+- 32: .cf-html-shell .sidebar .nav-group:first-child::after,
+- 33: .cf-html-shell .sidebar .nav-group:first-child .nav-stack::before,
+- 34: .cf-html-shell .sidebar .nav-group:first-child .nav-stack::after,
+- 35: .cf-html-shell .sidebar .nav-group:first-child .nav-btn::before,
+- 36: .cf-html-shell .sidebar .nav-group:first-child .nav-btn::after {
+- 38: display: none !important;
+- 44: .cf-html-shell .sidebar .nav-btn {
+- 45: position: relative !important;
+- 52: .cf-html-shell .sidebar .nav-group:first-child .nav-btn,
+- 53: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:link,
+- 54: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:visited {
+- 64: .cf-html-shell .sidebar .nav-group:first-child .nav-btn .nav-ico,
+- 65: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:link .nav-ico,
+- 66: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:visited .nav-ico {
+- 72: .cf-html-shell .sidebar .nav-group:first-child .nav-btn .nav-label,
+- 73: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:link .nav-label,
+- 74: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:visited .nav-label {
+- 78: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:hover,
+- 79: .cf-html-shell .sidebar .nav-group:first-child .nav-btn:focus-visible {
+- 86: .cf-html-shell .sidebar .nav-group:first-child .nav-btn.active,
+- 87: .cf-html-shell .sidebar .nav-group:first-child .nav-btn[aria-current="page"] {
+- 94: .cf-html-shell .sidebar .nav-group:first-child .nav-btn.active .nav-ico,
+- 95: .cf-html-shell .sidebar .nav-group:first-child .nav-btn[aria-current="page"] .nav-ico {
+- 101: .cf-html-shell .main-today {
+- 102: position: relative !important;
+- 7: .main-today .today-sidebar a[href^="/leads/"],
+- 10: min-height: 44px !important;
+- 11: height: auto !important;
+- 13: overflow: visible !important;
+- 15: line-height: 1.12 !important;
+- 20: .main-today .today-sidebar a[href^="/leads/"] > :first-child,
+- 23: min-width: 0 !important;
+- 24: display: flex !important;
+- 29: overflow: visible !important;
+- 41: max-width: 100% !important;
+- 42: overflow: visible !important;
+- 43: text-overflow: clip !important;
+- 56: display: block !important;
+- 58: line-height: 1 !important;
+- 64: .main-today .today-sidebar a[href^="/leads/"] > :last-child,
+- 7: .main-today .today-sidebar a[href^="/leads/"],
+- 10: min-height: 56px !important;
+- 11: height: auto !important;
+- 12: display: grid !important;
+- 13: grid-template-columns: minmax(0, 1fr) auto !important;
+- 18: overflow: visible !important;
+- 24: .main-today .today-sidebar a[href^="/leads/"] > *,
+- 27: position: static !important;
+- 30: overflow: visible !important;
+- 35: .main-today .today-sidebar a[href^="/leads/"] > :first-child,
+- 39: min-width: 0 !important;
+- 40: display: flex !important;
+- 45: line-height: 1.12 !important;
+- 50: .main-today .today-sidebar a[href^="/leads/"] > :last-child,
+- 70: position: static !important;
+- 71: display: inline-flex !important;
+- 72: width: auto !important;
+- 73: max-width: 100% !important;
+- 74: min-height: 0 !important;
+- 78: overflow: visible !important;
+- 79: text-overflow: clip !important;
+- 81: line-height: 1.12 !important;
+- 94: display: inline-flex !important;
+- 96: min-height: 18px !important;
+- 103: line-height: 1 !important;
+- 4: display: grid;
+- 14: display: grid;
+- 21: line-height: 1.15;
+- 29: display: grid;
+- 35: display: grid;
+- 44: display: grid;
+- 60: line-height: 1.45;
+- 64: display: flex;
+- 72: display: inline-flex;
+- 74: width: fit-content;
+- 86: display: grid;
+- 63: max-width: 64rem !important;
+- 67: max-width: 52rem !important;
+- 92: min-height: 2.25rem !important;
+- 4: scope: temporary visual polish, mobile locks, sidebar alignment and staged page fixes.
+- 22: reason: preserve sidebar footer and nav tone repairs until sidebar contract replaces local fixes.
+- 23: scope: sidebar footer, sidebar user area and Today nav tone.
+- 24: remove_after_stage: after sidebar component contract finalization.
+- 26: @import '../eliteflow-sidebar-footer-contrast-repair.css';
+- 27: @import '../eliteflow-sidebar-user-footer-below-nav.css';
+- 28: @import '../stageA19v2-sidebar-nav-contrast-fix.css';
+- 29: @import '../stageA20-sidebar-today-click-fix.css';
+- 30: @import '../stageA20c-sidebar-today-hitbox-fix.css';
+- 31: @import '../stageA20d-sidebar-unified-nav-tone.css';
+- 32: @import '../stageA20e-sidebar-today-tone-lock.css';
+- 11: height: fit-content !important;
+- 12: min-height: 0 !important;
+- 18: min-height: 0 !important;
+- 26: min-height: 0 !important;
+- 29: @media (min-width: 768px) {
+- 4: --cf-sidebar: #101828;
+- 18: .app.cf-html-shell,
+- 19: .app.closeflow-visual-stage01.cf-html-shell {
+- 20: min-height: 100vh !important;
+- 21: display: grid !important;
+- 22: grid-template-columns: 286px minmax(0, 1fr) !important;
+- 25: .cf-html-shell .sidebar {
+- 26: position: sticky !important;
+- 28: height: 100vh !important;
+- 30: background: radial-gradient(circle at 0% 0%, rgba(37, 99, 235, .26), transparent 35%), linear-gradient(180deg, var(--cf-sidebar) 0%, #0b1220 100%) !important;
+- 35: .cf-html-shell .brand {
+- 40: .cf-html-shell .brand-logo {
+- 41: width: 44px !important;
+- 42: height: 44px !important;
+- 49: .cf-html-shell .brand-title strong { color: #fff !important; font-size: 16px !important; letter-spacing: -.04em !important; }
+- 50: .cf-html-shell .brand-title span { color: rgba(255,255,255,.54) !important; font-size: 11px !important; font-weight: 700 !important; }
+- 51: .cf-html-shell .nav-caption { color: rgba(255,255,255,.38) !important; font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: .08em !important; }
+- 52: .cf-html-shell .nav-btn { min-height: 43px !important; border-radius: 14px !important; color: rgba(255,255,255,.68) !important; font-size: 13px !important; font-weight: 800 !important; }
+- 53: .cf-html-shell .nav-btn:hover { color: #fff !important; background: rgba(255,255,255,.08) !important; }
+- 54: .cf-html-shell .nav-btn.active { color: #fff !important; background: rgba(255,255,255,.12) !important; box-shadow: inset 0 0 0 1px rgba(255,255,255,.10), 0 14px 26px rgba(0,0,0,.16) !important; }
+- 55: .cf-html-shell .nav-ico { width: 28px !important; height: 28px !important; border-radius: 10px !important; background: rgba(255,255,255,.07) !important; }
+- 56: .cf-html-shell .nav-btn.active .nav-ico { background: #fff !important; color: #0f172a !important; }
+- 57: .cf-html-shell .trial-card,
+- 58: .cf-html-shell .user-card { border-radius: 18px !important; background: rgba(255,255,255,.06) !important; border: 1px solid rgba(255,255,255,.10) !important; color: #fff !important; }
+- 59: .cf-html-shell .main { min-width: 0 !important; padding: 24px 28px 48px !important; background: transparent !important; }
+- 60: .cf-html-shell .global-bar { position: sticky !important; top: 0 !important; z-index: 8 !important; margin: -24px -28px 22px !important; padding: 13px 28px !important; background: rgba(247,249,252,.86) !important; backdrop-filter: blur(16px) !important; border-bottom: 1px solid rgba(228,231,236,.78) !important; box-shadow: none !important; }
+- 61: .cf-html-shell .global-title { color: var(--cf-muted) !important; font-size: 12px !important; font-weight: 800 !important; }
+- 62: .cf-html-shell .global-title strong { color: var(--cf-text) !important; }
+- 63: .cf-html-shell .view.active,
+- 64: .cf-html-shell [data-shell-content="true"] { max-width: 1500px !important; margin: 0 auto !important; display: block !important; }
+- 65: .cf-html-shell input,
+- 66: .cf-html-shell textarea,
+- 67: .cf-html-shell select { border-radius: 14px !important; border-color: var(--cf-line) !important; background: #fff !important; color: var(--cf-text) !important; }
+- 68: .cf-html-shell button:hover,
+- 69: .cf-html-shell a[role="button"]:hover { transform: translateY(-1px); }
+- 70: .cf-html-shell [data-visual-stage-cases="07-cases"] > div,
+- 71: .cf-html-shell .main-cases [data-shell-content="true"] > div { max-width: 1500px !important; margin: 0 auto !important; padding: 0 !important; gap: 18px !important; }
+- 72: .cf-html-shell [data-visual-stage-cases="07-cases"] header,
+- 73: .cf-html-shell .main-cases header { display: flex !important; align-items: flex-start !important; justify-content: space-between !important; gap: 22px !important; margin-bottom: 20px !important; padding: 0 !important; }
+- 74: .cf-html-shell [data-visual-stage-cases="07-cases"] header h1,
+- 75: .cf-html-shell .main-cases header h1 { margin: 8px 0 0 !important; font-size: clamp(32px, 3vw, 42px) !important; line-height: 1 !important; letter-spacing: -.06em !important; color: var(--cf-text) !important; }
+- 76: .cf-html-shell [data-visual-stage-cases="07-cases"] .app-primary-chip,
+- 77: .cf-html-shell .main-cases .app-primary-chip { display: inline-flex !important; align-items: center !important; gap: 7px !important; padding: 5px 9px !important; border-radius: 999px !important; border: 1px solid var(--cf-line) !important; background: rgba(255,255,255,.72) !important; color: var(--cf-muted) !important; font-size: 10px !important; font-weight: 900 !important; text-transform: uppercase !important; letter-spacing: .08em !important; }
+- 78: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:first-of-type,
+- 79: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type { display: grid !important; grid-template-columns: repeat(4, minmax(0, 1fr)) !important; gap: 13px !important; margin-bottom: 18px !important; }
+- 80: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:first-of-type > *,
+- 81: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type > * { min-height: 106px !important; border-radius: 22px !important; padding: 16px !important; background: rgba(255,255,255,.82) !important; border: 1px solid var(--cf-line) !important; box-shadow: var(--cf-shadow-soft) !important; display: grid !important; align-content: space-between !important; }
+- 82: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:first-of-type > *:hover,
+- 83: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type > *:hover { transform: translateY(-2px) !important; box-shadow: var(--cf-shadow) !important; }
+- 84: .cf-html-shell [data-visual-stage-cases="07-cases"] [class*="app-surface"],
+- 85: .cf-html-shell .main-cases [class*="app-surface"] { background: rgba(255,255,255,.86) !important; border: 1px solid var(--cf-line) !important; border-radius: var(--cf-radius-xl) !important; box-shadow: var(--cf-shadow-soft) !important; }
+- 86: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:last-of-type,
+- 87: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:last-of-type { display: grid !important; grid-template-columns: minmax(0, 1fr) 342px !important; gap: 18px !important; align-items: start !important; }
+- 88: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:last-of-type::after,
+- 89: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:last-of-type::after { content: "Operacyjne skroty\A Dodaj brak    +\A Portal klienta    ->\A Sprawy bez ruchu    0\A Do akceptacji    1"; white-space: pre-line; display: block; min-height: 220px; padding: 18px; border-radius: var(--cf-radius-xl); background: rgba(255,255,255,.86); border: 1px solid var(--cf-line); box-shadow: var(--cf-shadow-soft); color: var(--cf-text); font-weight: 850; line-height: 2.1; }
+- 90: .cf-html-shell [data-visual-stage-cases="07-cases"] .app-muted,
+- 91: .cf-html-shell .main-cases .app-muted { color: var(--cf-muted) !important; }
+- 92: .cf-html-shell [data-visual-stage-cases="07-cases"] .app-text,
+- 93: .cf-html-shell .main-cases .app-text { color: var(--cf-text) !important; }
+- 94: @media (max-width: 1100px) {
+- 95: .app.cf-html-shell, .app.closeflow-visual-stage01.cf-html-shell { display: block !important; padding-bottom: 72px !important; }
+- 96: .cf-html-shell .sidebar { display: none !important; }
+- 97: .cf-html-shell .mobile-top { display: flex !important; }
+- 98: .cf-html-shell .main { padding: 18px 14px 92px !important; }
+- 99: .cf-html-shell .global-bar { margin: 0 0 16px !important; padding: 12px !important; border-radius: 18px !important; }
+- 100: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:first-of-type,
+- 101: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+- 102: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:last-of-type,
+- 103: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:last-of-type { grid-template-columns: 1fr !important; }
+- 105: @media (max-width: 640px) {
+- 106: .cf-html-shell [data-visual-stage-cases="07-cases"] > div > section:first-of-type,
+- 107: .cf-html-shell .main-cases [data-shell-content="true"] > div > section:first-of-type { grid-template-columns: 1fr !important; }
+- 108: .cf-html-shell [data-visual-stage-cases="07-cases"] header,
+- 109: .cf-html-shell .main-cases header { display: grid !important; }
+- 4: Zakres CSS jest zawężony do .closeflow-visual-stage01, żeby nie przebudować ekranów wewnętrznych przed ich etapami.
+- 9: --cf-vs-sidebar: #101828;
+- 10: --cf-vs-sidebar-2: #172033;
+- 32: .closeflow-visual-stage01.app {
+- 33: min-height: 100vh;
+- 34: display: grid;
+- 35: grid-template-columns: 286px minmax(0, 1fr);
+- 43: .closeflow-visual-stage01 .sidebar {
+- 44: position: sticky;
+- 46: height: 100vh;
+- 50: linear-gradient(180deg, var(--cf-vs-sidebar) 0%, #0b1220 100%);
+- 52: display: flex;
+- 59: .closeflow-visual-stage01 .brand {
+- 60: display: flex;
+- 69: .closeflow-visual-stage01 .brand-logo {
+- 70: width: 44px;
+- 71: height: 44px;
+- 72: display: grid;
+- 83: .closeflow-visual-stage01 .brand-title {
+- 84: min-width: 0;
+- 87: .closeflow-visual-stage01 .brand-title strong {
+- 88: display: block;
+- 93: .closeflow-visual-stage01 .brand-title span {
+- 94: display: block;
+- 101: .closeflow-visual-stage01 .nav-scroll {
+- 102: overflow: auto;
+- 107: .closeflow-visual-stage01 .nav-group {
+- 111: .closeflow-visual-stage01 .nav-group:first-child {
+- 115: .closeflow-visual-stage01 .nav-stack {
+- 116: display: grid;
+- 120: .closeflow-visual-stage01 .nav-caption {
+- 129: .closeflow-visual-stage01 .nav-btn {
+- 130: width: 100%;
+- 131: min-height: 43px;
+- 136: display: flex;
+- 148: .closeflow-visual-stage01 .nav-btn:hover {
+- 153: .closeflow-visual-stage01 .nav-btn.active {
+- 161: .closeflow-visual-stage01 .nav-ico {
+- 162: width: 28px;
+- 163: height: 28px;
+- 165: display: grid;
+- 172: .closeflow-visual-stage01 .nav-btn.active .nav-ico {
+- 177: .closeflow-visual-stage01 .nav-label {
+- 178: min-width: 0;
+- 179: overflow: hidden;
+- 180: text-overflow: ellipsis;
+- 184: .closeflow-visual-stage01 .nav-badge {
+- 186: min-width: 22px;
+- 187: height: 20px;
+- 192: display: grid;
+- 198: .closeflow-visual-stage01 .sidebar-footer {
+- 199: display: grid;
+- 205: .closeflow-visual-stage01 .trial-card {
+- 212: .closeflow-visual-stage01 .trial-card .top {
+- 213: display: flex;
+- 224: .closeflow-visual-stage01 .bar {
+- 225: height: 7px;
+- 229: overflow: hidden;
+- 232: .closeflow-visual-stage01 .bar span {
+- 233: display: block;
+- 234: height: 100%;
+- 239: .closeflow-visual-stage01 .trial-link {
+- 241: display: inline-flex;
+- 250: .closeflow-visual-stage01 .user-card {
+- 251: display: flex;
+- 257: min-width: 0;
+- 260: .closeflow-visual-stage01 .user-avatar {
+- 261: width: 38px;
+- 262: height: 38px;
+- 265: display: grid;
+- 272: .closeflow-visual-stage01 .user-card strong {
+- 273: display: block;
+- 278: .closeflow-visual-stage01 .user-card span {
+- 279: display: block;
+- 285: .closeflow-visual-stage01 .sidebar-logout {
+- 286: min-height: 40px;
+- 291: display: flex;
+- 301: .closeflow-visual-stage01 .sidebar-logout:hover {
+- 307: .closeflow-visual-stage01 .main {
+- 308: min-width: 0;
+- 312: .closeflow-visual-stage01 .global-bar {
+- 313: position: sticky;
+- 321: display: flex;
+- 327: .closeflow-visual-stage01 .global-title {
+- 328: display: flex;
+- 331: min-width: 0;
+- 337: .closeflow-visual-stage01 .global-dot {
+- 338: width: 28px;
+- 339: height: 28px;
+- 340: display: grid;
+- 348: .closeflow-visual-stage01 .global-title strong {
+- 353: .closeflow-visual-stage01 .global-actions {
+- 354: display: flex;
+- 358: overflow-x: auto;
+- 360: max-width: 100%;
+- 363: .closeflow-visual-stage01 .btn,
+- 364: .closeflow-visual-stage01 .global-actions > button {
+- 365: min-height: 40px;
+- 371: display: inline-flex;
+- 384: .closeflow-visual-stage01 .btn:hover,
+- 385: .closeflow-visual-stage01 .global-actions > button:hover {
+- 390: .closeflow-visual-stage01 .btn.primary {
+- 397: .closeflow-visual-stage01 .btn.soft-blue {
+- 404: .closeflow-visual-stage01 .view {
+- 405: max-width: 1500px;
+- 409: .closeflow-visual-stage01 .view.active {
+- 410: display: block;
+- 413: .closeflow-visual-stage01 .access-warning {
+- 415: max-width: 1500px;
+- 416: display: flex;
+- 430: .closeflow-visual-stage01 .access-warning p {
+- 434: .closeflow-visual-stage01 .access-warning-action {
+- 435: min-height: 30px;
+- 439: display: inline-flex;
+- 447: .closeflow-visual-stage01 .mobile-top,
+- 448: .closeflow-visual-stage01 .mobile-nav {
+- 449: display: none;
+- 452: .closeflow-visual-stage01 .mobile-drawer {
+- 453: display: none;
+- 456: @media (max-width: 1220px) {
+- 457: .closeflow-visual-stage01.app {
+- 458: grid-template-columns: 86px minmax(0, 1fr);
+- 461: .closeflow-visual-stage01 .sidebar {
+- 465: .closeflow-visual-stage01 .brand-title,
+- 466: .closeflow-visual-stage01 .nav-caption,
+- 467: .closeflow-visual-stage01 .nav-label,
+- 468: .closeflow-visual-stage01 .nav-badge,
+- 469: .closeflow-visual-stage01 .sidebar-footer {
+- 470: display: none;
+- 473: .closeflow-visual-stage01 .brand {
+- 478: .closeflow-visual-stage01 .nav-btn {
+- 483: .closeflow-visual-stage01 .nav-ico {
+- 484: width: 38px;
+- 485: height: 38px;
+- 489: @media (max-width: 760px) {
+- 490: .closeflow-visual-stage01.app {
+- 491: display: block;
+- 496: .closeflow-visual-stage01 .sidebar {
+- 497: display: none;
+- 500: .closeflow-visual-stage01 .main {
+- 504: .closeflow-visual-stage01 .mobile-top {
+- 505: position: fixed;
+- 510: min-height: 64px;
+- 511: display: flex;
+- 521: .closeflow-visual-stage01 .mobile-brand {
+- 522: min-width: 0;
+- 523: display: flex;
+- 533: .closeflow-visual-stage01 .mobile-brand .brand-logo {
+- 534: width: 38px;
+- 535: height: 38px;
+- 537: background: var(--cf-vs-sidebar);
+- 542: .closeflow-visual-stage01 .mobile-menu-btn {
+- 543: width: 42px;
+- 544: height: 42px;
+- 549: display: grid;
+- 556: .closeflow-visual-stage01 .global-bar {
+- 557: position: sticky;
+- 561: display: grid;
+- 565: .closeflow-visual-stage01 .global-title {
+- 566: display: none;
+- 569: .closeflow-visual-stage01 .global-actions {
+- 573: .closeflow-visual-stage01 .global-actions::-webkit-scrollbar {
+- 574: display: none;
+- 577: .closeflow-visual-stage01 .view {
+- 578: max-width: none;
+- 581: .closeflow-visual-stage01 .access-warning {
+- 589: .closeflow-visual-stage01 .mobile-nav {
+- 590: position: fixed;
+- 595: display: grid;
+- 596: grid-template-columns: repeat(5, minmax(0, 1fr));
+- 605: .closeflow-visual-stage01 .mobile-nav-btn {
+- 606: min-width: 0;
+- 607: min-height: 54px;
+- 610: display: flex;
+- 618: line-height: 1;
+- 621: .closeflow-visual-stage01 .mobile-nav-btn.active {
+- 626: .closeflow-visual-stage01 .mobile-drawer {
+- 627: position: fixed;
+- 630: display: block;
+- 633: .closeflow-visual-stage01 .mobile-drawer-backdrop {
+- 634: position: absolute;
+- 640: .closeflow-visual-stage01 .mobile-drawer-panel {
+- 641: position: absolute;
+- 644: width: min(420px, 88vw);
+- 645: height: 100%;
+- 646: display: grid;
+- 651: linear-gradient(180deg, var(--cf-vs-sidebar) 0%, #0b1220 100%);
+- 656: .closeflow-visual-stage01 .mobile-drawer-head {
+- 657: min-height: 70px;
+- 658: display: flex;
+- 666: .closeflow-visual-stage01 .mobile-drawer-brand {
+- 671: .closeflow-visual-stage01 .mobile-drawer-head .mobile-menu-btn {
+- 678: .closeflow-visual-stage01 .mobile-user-wrap {
+- 683: .closeflow-visual-stage01 .mobile-drawer-nav {
+- 684: overflow: auto;
+- 688: .closeflow-visual-stage01 .mobile-drawer-footer {
+- 689: display: grid;
+- 695: .closeflow-visual-stage01 .nav-btn-compact {
+- 696: min-height: 42px;
+- 7: .closeflow-visual-stage01 .main-today [data-shell-content] {
+- 8: max-width: 1500px;
+- 12: .closeflow-visual-stage01 .main-today [data-shell-content] > * {
+- 13: max-width: 1500px !important;
+- 18: .closeflow-visual-stage01 .main-today h1,
+- 19: .closeflow-visual-stage01 .main-today [data-shell-content] h1 {
+- 22: line-height: 1;
+- 26: .closeflow-visual-stage01 .main-today h1 + p,
+- 27: .closeflow-visual-stage01 .main-today [data-shell-content] h1 + p {
+- 29: max-width: 780px;
+- 30: line-height: 1.45;
+- 33: .closeflow-visual-stage01 .main-today [data-today-tile-card="true"],
+- 34: .closeflow-visual-stage01 .main-today .shadow-sm.border-slate-100,
+- 35: .closeflow-visual-stage01 .main-today .rounded-2xl.border,
+- 36: .closeflow-visual-stage01 .main-today .rounded-3xl.border {
+- 43: .closeflow-visual-stage01 .main-today [data-today-tile-card="true"]:hover,
+- 44: .closeflow-visual-stage01 .main-today .rounded-2xl.border:hover,
+- 45: .closeflow-visual-stage01 .main-today .rounded-3xl.border:hover {
+- 49: .closeflow-visual-stage01 .main-today [data-today-tile-header="true"] {
+- 50: min-height: 64px;
+- 55: .closeflow-visual-stage01 .main-today [data-today-tile-header="true"] p:first-child,
+- 56: .closeflow-visual-stage01 .main-today [data-today-tile-card="true"] .font-semibold {
+- 62: .closeflow-visual-stage01 .main-today [data-today-tile-header="true"] p + p,
+- 63: .closeflow-visual-stage01 .main-today [data-today-tile-card="true"] .text-xs,
+- 64: .closeflow-visual-stage01 .main-today [data-today-tile-card="true"] .text-sm.text-slate-500 {
+- 68: .closeflow-visual-stage01 .main-today [data-today-shortcut-section="urgent"] {
+- 72: .closeflow-visual-stage01 .main-today [data-today-shortcut-section="without_action"] {
+- 76: .closeflow-visual-stage01 .main-today [data-today-shortcut-section="without_movement"] {
+- 80: .closeflow-visual-stage01 .main-today [data-today-shortcut-section="calendar"] {
+- 84: .closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] {
+- 91: .closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] button,
+- 92: .closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] [role="button"] {
+- 93: min-height: 34px;
+- 98: .closeflow-visual-stage01 .main-today a[href^="/leads/"],
+- 99: .closeflow-visual-stage01 .main-today a[href^="/cases/"] {
+- 103: .closeflow-visual-stage01 .main-today .text-slate-900,
+- 104: .closeflow-visual-stage01 .main-today .text-slate-800,
+- 105: .closeflow-visual-stage01 .main-today .text-slate-700 {
+- 109: .closeflow-visual-stage01 .main-today .text-slate-600,
+- 110: .closeflow-visual-stage01 .main-today .text-slate-500,
+- 111: .closeflow-visual-stage01 .main-today .text-slate-400 {
+- 115: .closeflow-visual-stage01 .main-today .bg-white,
+- 116: .closeflow-visual-stage01 .main-today .bg-white\/80,
+- 117: .closeflow-visual-stage01 .main-today .bg-white\/95 {
+- 121: .closeflow-visual-stage01 .main-today .bg-slate-50,
+- 122: .closeflow-visual-stage01 .main-today .bg-slate-100,
+- 123: .closeflow-visual-stage01 .main-today .bg-slate-50\/50 {
+- 127: .closeflow-visual-stage01 .main-today .border-slate-100,
+- 128: .closeflow-visual-stage01 .main-today .border-slate-200,
+- 129: .closeflow-visual-stage01 .main-today .border-slate-300 {
+- 133: .closeflow-visual-stage01 .main-today .rounded-xl {
+- 137: .closeflow-visual-stage01 .main-today .rounded-2xl {
+- 141: .closeflow-visual-stage01 .main-today .rounded-3xl {
+- 145: .closeflow-visual-stage01 .main-today button,
+- 146: .closeflow-visual-stage01 .main-today a {
+- 150: @media (max-width: 760px) {
+- 151: .closeflow-visual-stage01 .main-today [data-shell-content] > * {
+- 156: .closeflow-visual-stage01 .main-today h1,
+- 157: .closeflow-visual-stage01 .main-today [data-shell-content] h1 {
+- 161: .closeflow-visual-stage01 .main-today [data-today-tile-card="true"] {
+- 165: .closeflow-visual-stage01 .main-today [data-today-tile-header="true"] {
+- 169: .closeflow-visual-stage01 .main-today [data-today-quick-snooze-bar="true"] {
+- 10: .main-leads .max-w-7xl { max-width: 1440px; }
+- 20: display: block;
+- 30: display: block;
+- 32: max-width: 720px;
+- 39: display: grid;
+- 40: grid-template-columns: repeat(5,minmax(0,1fr));
+- 44: display: grid;
+- 45: grid-template-columns: minmax(0,1fr) 320px;
+- 58: min-height: 48px;
+- 65: .main-leads aside[data-stage32-leads-value-rail='true'] { position: sticky; top: 104px; }
+- 66: @media (max-width:1180px){ .main-leads [data-stage32-leads-value-layout='true']{ grid-template-columns:1fr; } .main-leads aside[data-stage32-leads-value-rail='true']{ position:static; } }
+- 67: @media (max-width:760px){ .main-leads .p-4.md\:p-8,.main-leads .max-w-7xl{ padding:14px !important; } .main-leads header{ border-radius:22px; padding:18px; } .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,.main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5.gap-4{ grid-template-columns:1fr 1fr; } }
+- 19: max-width: 1440px;
+- 35: display: block;
+- 47: display: block;
+- 49: max-width: 760px;
+- 103: display: grid;
+- 118: @media (max-width: 1180px) {
+- 121: grid-template-columns: 1fr !important;
+- 125: @media (max-width: 760px) {
+- 8: .cf-html-shell .main-clients {
+- 16: width: min(1500px, 100%);
+- 22: display: flex;
+- 30: display: inline-flex;
+- 48: line-height: 1;
+- 56: max-width: 780px;
+- 57: line-height: 1.45;
+- 62: display: flex;
+- 69: min-height: 40px;
+- 75: display: inline-flex;
+- 100: width: 40px;
+- 101: min-width: 40px;
+- 106: display: grid;
+- 107: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 112: min-height: 106px;
+- 118: display: grid;
+- 129: .cf-html-view.main-clients-html .metric strong { margin-top: 7px; color: #111827; font-size: 34px; line-height: 1; font-weight: 900; }
+- 133: display: grid;
+- 134: grid-template-columns: minmax(0, 1fr) 315px;
+- 142: display: grid;
+- 146: .cf-html-view.main-clients-html .search { position: relative; }
+- 147: .cf-html-view.main-clients-html .search span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #98a2b3; }
+- 149: width: 100%;
+- 150: height: 50px;
+- 163: overflow: hidden;
+- 167: display: grid;
+- 168: grid-template-columns: 34px minmax(0, 1.35fr) minmax(130px, .45fr) minmax(180px, .7fr) 88px;
+- 176: .cf-html-view.main-clients-html .row-empty { grid-template-columns: 34px minmax(0,1fr); min-height: 84px; }
+- 179: width: 28px;
+- 180: height: 28px;
+- 182: display: grid;
+- 192: .cf-html-view.main-clients-html .lead-action-cell { min-width: 0; }
+- 194: .cf-html-view.main-clients-html .title { color: #111827; font-weight: 950; line-height: 1.2; }
+- 195: .cf-html-view.main-clients-html .sub { color: #667085; font-size: 12px; margin-top: 4px; line-height: 1.35; overflow-wrap: anywhere; }
+- 199: display: inline-flex;
+- 202: min-height: 24px;
+- 216: .cf-html-view.main-clients-html .statusline { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+- 217: .cf-html-view.main-clients-html .lead-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+- 228: display: flex;
+- 236: .cf-html-view.main-clients-html .panel-head p { margin: 4px 0 0; color: #667085; font-size: 12px; line-height: 1.4; }
+- 238: .cf-html-view.main-clients-html .quick-list { display: grid; gap: 8px; }
+- 242: min-height: 42px;
+- 247: display: flex;
+- 259: @media (max-width: 1220px) {
+- 260: .cf-html-view.main-clients-html .layout-list { grid-template-columns: 1fr; }
+- 261: .cf-html-view.main-clients-html .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+- 264: @media (max-width: 760px) {
+- 265: .cf-html-view.main-clients-html { width: 100%; padding: 0 14px 94px; }
+- 267: .cf-html-view.main-clients-html .head-actions { justify-content: flex-start; width: 100%; overflow-x: auto; }
+- 269: .cf-html-view.main-clients-html .grid-4 { grid-template-columns: 1fr; }
+- 270: .cf-html-view.main-clients-html .row { grid-template-columns: 30px minmax(0, 1fr); }
+- 292: line-height: 1.45 !important;
+- 19: max-width: 1440px !important;
+- 63: display: flex;
+- 78: display: grid;
+- 79: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 100: display: grid;
+- 101: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 129: display: grid;
+- 145: @media (max-width: 760px) {
+- 164: line-height: 1.1 !important;
+- 171: grid-template-columns: 1fr;
+- 176: min-height: 40px;
+- 24: max-width: 1440px !important;
+- 106: display: grid;
+- 112: overflow: hidden;
+- 123: min-height: 38px;
+- 126: @media (max-width: 980px) {
+- 134: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 138: @media (max-width: 760px) {
+- 155: grid-template-columns: 1fr !important;
+- 12: min-height: calc(100vh - 116px);
+- 19: max-width: 1500px;
+- 160: @media (max-width: 760px) {
+- 176: grid-template-columns: 1fr !important;
+- 189: overflow-x: auto;
+- 221: min-height: 24px !important;
+- 231: line-height: 1.45 !important;
+- 2: min-height: 100%;
+- 11: max-width: 1440px;
+- 13: display: flex;
+- 23: line-height: 0.95;
+- 42: display: flex;
+- 49: min-height: 40px;
+- 55: display: inline-flex;
+- 72: max-width: 1440px;
+- 74: display: grid;
+- 75: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 85: max-width: 1440px;
+- 87: display: grid;
+- 88: grid-template-columns: minmax(0, 1fr) 320px;
+- 94: min-width: 0;
+- 95: display: flex;
+- 110: display: flex;
+- 116: display: flex;
+- 122: height: 40px;
+- 128: display: inline-flex;
+- 141: min-width: 24px;
+- 142: height: 22px;
+- 147: display: inline-flex;
+- 167: min-height: 48px;
+- 173: display: flex;
+- 180: width: 100%;
+- 181: min-width: 0;
+- 194: overflow: hidden;
+- 198: min-height: 78px;
+- 202: display: flex;
+- 237: display: flex;
+- 242: min-height: 78px;
+- 243: display: grid;
+- 244: grid-template-columns: 36px minmax(340px, 1fr) minmax(180px, 260px) 140px 130px auto;
+- 262: width: 36px;
+- 263: height: 36px;
+- 265: display: inline-flex;
+- 301: min-width: 0;
+- 305: display: flex;
+- 314: display: inline-flex;
+- 318: line-height: 1;
+- 333: line-height: 1.25;
+- 340: line-height: 1.35;
+- 341: overflow: hidden;
+- 342: text-overflow: ellipsis;
+- 347: min-width: 0;
+- 348: display: flex;
+- 363: max-width: 100%;
+- 364: min-width: 0;
+- 365: display: inline-flex;
+- 371: line-height: 1.25;
+- 392: width: fit-content;
+- 427: display: flex;
+- 434: min-height: 30px;
+- 440: display: inline-flex;
+- 472: min-height: 280px;
+- 474: display: flex;
+- 495: max-width: 560px;
+- 499: line-height: 1.5;
+- 504: display: flex;
+- 511: min-height: 38px;
+- 517: display: inline-flex;
+- 529: display: flex;
+- 532: min-width: 300px;
+- 539: display: none;
+- 554: display: flex;
+- 581: display: block;
+- 585: line-height: 1.25;
+- 590: display: block;
+- 595: line-height: 1.45;
+- 605: width: 100%;
+- 606: min-height: 42px;
+- 612: display: flex;
+- 640: min-width: 28px;
+- 641: height: 24px;
+- 645: display: inline-flex;
+- 652: display: flex;
+- 665: display: block;
+- 672: display: block;
+- 677: line-height: 1.25;
+- 684: line-height: 1.45;
+- 687: @media (max-width: 1280px) {
+- 689: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 693: grid-template-columns: 1fr;
+- 697: min-width: 0;
+- 698: display: grid;
+- 699: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 703: @media (max-width: 920px) {
+- 718: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 732: overflow-x: auto;
+- 734: scrollbar-width: none;
+- 738: display: none;
+- 746: min-height: 0;
+- 747: grid-template-columns: 38px minmax(0, 1fr);
+- 790: display: flex;
+- 794: @media (max-width: 560px) {
+- 796: grid-template-columns: 1fr;
+- 800: min-height: 48px;
+- 835: display: none !important;
+- 844: position: relative;
+- 852: overflow: hidden;
+- 4: min-height: 100%;
+- 13: max-width: 1480px;
+- 15: display: flex;
+- 22: min-width: 0;
+- 26: min-height: 38px;
+- 32: display: inline-flex;
+- 59: line-height: 1;
+- 67: line-height: 1.55;
+- 68: max-width: 820px;
+- 72: display: flex;
+- 78: min-height: 30px;
+- 89: display: flex;
+- 107: max-width: 1480px;
+- 109: display: grid;
+- 110: grid-template-columns: 300px minmax(0, 1fr) 310px;
+- 122: display: flex;
+- 125: min-width: 0;
+- 139: display: none !important;
+- 169: overflow: hidden;
+- 177: display: flex;
+- 183: width: 56px;
+- 184: height: 56px;
+- 188: display: grid;
+- 198: line-height: 1.15;
+- 210: display: grid;
+- 226: display: grid;
+- 227: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 232: min-height: 64px;
+- 240: display: block;
+- 243: line-height: 1;
+- 247: display: block;
+- 256: display: grid;
+- 261: display: grid;
+- 262: grid-template-columns: 34px minmax(0, 1fr) auto;
+- 272: width: 34px;
+- 273: height: 34px;
+- 277: display: grid;
+- 284: display: block;
+- 291: display: block;
+- 294: line-height: 1.3;
+- 295: overflow-wrap: anywhere;
+- 304: min-width: 32px;
+- 305: min-height: 32px;
+- 307: display: inline-flex;
+- 319: width: 100%;
+- 325: display: grid;
+- 330: display: grid;
+- 336: display: flex;
+- 348: display: grid;
+- 353: display: grid;
+- 354: grid-template-columns: minmax(0, 1fr) auto;
+- 363: display: flex;
+- 380: display: grid;
+- 412: min-width: 0;
+- 413: display: flex;
+- 420: display: flex;
+- 426: min-height: 40px;
+- 444: display: grid;
+- 449: display: grid;
+- 450: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 455: display: grid;
+- 456: grid-template-columns: minmax(0, 2.1fr) minmax(260px, 1fr);
+- 462: display: grid;
+- 468: min-height: 190px;
+- 474: display: grid;
+- 491: line-height: 1;
+- 497: line-height: 1.5;
+- 498: max-width: 680px;
+- 503: width: 100%;
+- 512: min-height: 190px;
+- 517: display: block;
+- 522: line-height: 1;
+- 527: display: flex;
+- 540: min-height: 170px;
+- 545: display: block;
+- 548: line-height: 1.15;
+- 553: min-height: 190px;
+- 557: display: grid;
+- 562: display: block;
+- 577: line-height: 1.5;
+- 586: min-height: 34px;
+- 588: display: inline-flex;
+- 622: height: 8px;
+- 625: overflow: hidden;
+- 629: display: block;
+- 630: height: 100%;
+- 640: display: flex;
+- 659: line-height: 1.5;
+- 663: display: grid;
+- 668: display: grid;
+- 673: display: grid;
+- 674: grid-template-columns: minmax(0, 1fr) auto auto;
+- 694: line-height: 1.45;
+- 698: display: flex;
+- 716: display: grid;
+- 721: display: grid;
+- 723: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 737: line-height: 1.5;
+- 741: display: grid;
+- 747: width: 100%;
+- 748: min-height: 44px;
+- 754: display: flex;
+- 772: line-height: 1.5;
+- 776: display: grid;
+- 777: grid-template-columns: minmax(210px, 1fr) 132px minmax(210px, 1fr) auto;
+- 787: grid-template-columns: minmax(210px, 1fr) 132px minmax(200px, 1fr) 120px auto;
+- 803: line-height: 1.45;
+- 812: width: fit-content;
+- 813: min-height: 28px;
+- 853: display: grid;
+- 854: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 866: display: block;
+- 870: line-height: 1.35;
+- 874: display: grid;
+- 879: display: grid;
+- 880: grid-template-columns: 38px minmax(0, 1fr);
+- 890: width: 38px;
+- 891: height: 38px;
+- 895: display: grid;
+- 901: display: grid;
+- 910: line-height: 1.35;
+- 914: line-height: 1.5;
+- 918: display: grid;
+- 929: line-height: 1.4;
+- 943: line-height: 1.55;
+- 948: max-width: 620px;
+- 951: display: grid;
+- 969: @media (max-width: 1260px) {
+- 971: grid-template-columns: 300px minmax(0, 1fr);
+- 976: display: grid;
+- 977: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 981: grid-template-columns: 1fr;
+- 985: grid-template-columns: 1fr;
+- 989: @media (max-width: 980px) {
+- 1000: grid-template-columns: 1fr;
+- 1013: display: flex;
+- 1018: grid-template-columns: 1fr;
+- 1023: grid-template-columns: 1fr;
+- 1027: grid-template-columns: 1fr;
+- 1031: @media (max-width: 640px) {
+- 1041: display: grid;
+- 1042: grid-template-columns: 1fr;
+- 1046: overflow-x: auto;
+- 1048: -webkit-overflow-scrolling: touch;
+- 1060: grid-template-columns: 1fr;
+- 1071: grid-template-columns: minmax(0, 1fr) !important;
+- 1141: min-height: 42px;
+- 1188: display: none !important;
+- 1192: display: flex !important;
+- 1196: max-width: 100% !important;
+- 1197: overflow-x: auto !important;
+- 1199: -webkit-overflow-scrolling: touch;
+- 1200: scrollbar-width: thin;
+- 1205: min-height: 24px !important;
+- 1209: line-height: 1.1 !important;
+- 1334: line-height: 1.45 !important;
+- 1340: line-height: 1.35 !important;
+- 1344: min-height: 24px !important;
+- 1355: display: grid !important;
+- 1360: display: grid !important;
+- 1361: grid-template-columns: minmax(0, 1fr) auto !important;
+- 1373: display: block !important;
+- 1376: line-height: 1.35 !important;
+- 1381: display: block !important;
+- 1385: line-height: 1.35 !important;
+- 1396: display: inline-flex !important;
+- 1397: width: fit-content !important;
+- 1400: min-height: 32px !important;
+- 1412: Compact case cards inside ClientDetail so sprawy do not overflow their cards.
+- 1420: grid-template-columns: minmax(150px, 1.15fr) minmax(84px, 0.44fr) minmax(130px, 0.86fr) minmax(72px, 0.34fr) auto !important;
+- 1425: min-width: 0 !important;
+- 1430: min-width: 0 !important;
+- 1436: line-height: 1.18 !important;
+- 1438: overflow: hidden !important;
+- 1439: display: -webkit-box !important;
+- 1447: line-height: 1.28 !important;
+- 1449: overflow: hidden !important;
+- 1450: display: -webkit-box !important;
+- 1458: line-height: 1.22 !important;
+- 1459: overflow-wrap: anywhere !important;
+- 1464: min-height: 22px !important;
+- 1467: line-height: 1.1 !important;
+- 1468: max-width: 100% !important;
+- 1469: overflow: hidden !important;
+- 1470: text-overflow: ellipsis !important;
+- 1477: min-height: 30px !important;
+- 1483: @media (max-width: 1180px) {
+- 1486: grid-template-columns: minmax(0, 1fr) !important;
+- 1495: display: none !important;
+- 1504: grid-template-columns: minmax(0, 1.15fr) minmax(82px, .42fr) minmax(0, .92fr) minmax(70px, .34fr) auto !important;
+- 1509: overflow: hidden !important;
+- 1514: min-width: 0 !important;
+- 1520: line-height: 1.22 !important;
+- 1522: display: -webkit-box !important;
+- 1525: overflow: hidden !important;
+- 1532: line-height: 1.28 !important;
+- 1533: display: -webkit-box !important;
+- 1536: overflow: hidden !important;
+- 1542: line-height: 1.2 !important;
+- 1543: display: block !important;
+- 1544: max-width: 100% !important;
+- 1545: overflow: hidden !important;
+- 1546: text-overflow: ellipsis !important;
+- 1552: min-height: 21px !important;
+- 1555: line-height: 1 !important;
+- 1556: max-width: 100% !important;
+- 1557: overflow: hidden !important;
+- 1558: text-overflow: ellipsis !important;
+- 1565: min-height: 28px !important;
+- 1569: line-height: 1.1 !important;
+- 1573: @media (max-width: 1320px) {
+- 1576: grid-template-columns: minmax(0, 1.1fr) minmax(74px, .36fr) minmax(0, .8fr) auto !important;
+- 1580: @media (max-width: 980px) {
+- 1583: grid-template-columns: 1fr !important;
+- 1590: width: 100%;
+- 1601: width: 100%;
+- 1611: width: 100%;
+- 1622: display: inline-flex !important;
+- 1625: width: 100% !important;
+- 1626: min-height: 46px !important;
+- 1661: display: grid;
+- 1666: min-height: auto !important;
+- 1671: display: block;
+- 1680: display: block;
+- 1684: line-height: 1.15;
+- 1692: line-height: 1.5;
+- 1696: width: 100%;
+- 1702: display: grid;
+- 1714: line-height: 1.4;
+- 1720: display: grid;
+- 1725: display: grid;
+- 1726: grid-template-columns: 38px minmax(0, 1fr);
+- 1738: width: 38px;
+- 1739: height: 38px;
+- 1743: display: grid;
+- 1748: min-width: 0;
+- 1752: display: block;
+- 1761: display: block;
+- 1765: line-height: 1.28;
+- 1768: overflow-wrap: anywhere;
+- 1775: line-height: 1.45;
+- 1780: width: 100%;
+- 1781: min-height: 34px !important;
+- 1793: display: grid;
+- 1799: display: block;
+- 1806: line-height: 1.35;
+- 1847: display: grid;
+- 1848: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 1854: min-height: 168px;
+- 1861: display: flex;
+- 1866: overflow: hidden;
+- 1870: display: flex;
+- 1873: min-width: 0;
+- 1877: width: 34px;
+- 1878: height: 34px;
+- 1882: display: grid;
+- 1896: display: block;
+- 1899: line-height: 1.12;
+- 1908: line-height: 1.5;
+- 1918: min-height: 34px;
+- 1924: display: inline-flex;
+- 1963: display: none;
+- 1966: @media (max-width: 1260px) {
+- 1968: grid-template-columns: 1fr;
+- 1972: @media (max-width: 640px) {
+- 1974: min-height: 150px;
+- 1984: max-width: 1480px;
+- 1988: @media (max-width: 640px) {
+- 1999: max-width: 1480px;
+- 2001: display: grid;
+- 2002: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 2008: min-height: 142px;
+- 2015: display: flex;
+- 2020: overflow: hidden;
+- 2024: display: flex;
+- 2027: min-width: 0;
+- 2031: width: 28px;
+- 2032: height: 28px;
+- 2036: display: grid;
+- 2050: display: block;
+- 2053: line-height: 1.15;
+- 2062: line-height: 1.45;
+- 2068: min-height: 30px;
+- 2074: display: inline-flex;
+- 2094: width: 100%;
+- 2095: display: grid;
+- 2101: display: flex;
+- 2105: min-width: 0;
+- 2115: line-height: 1.3;
+- 2129: display: none !important;
+- 2133: grid-template-columns: 1fr !important;
+- 2137: grid-template-columns: 1fr !important;
+- 2142: min-height: 150px !important;
+- 2145: @media (max-width: 1260px) {
+- 2148: grid-template-columns: 1fr;
+- 2152: @media (max-width: 640px) {
+- 2154: min-height: 132px;
+- 2179: display: none !important;
+- 2187: display: none !important;
+- 2195: display: flex !important;
+- 2218: display: none !important;
+- 2221: .client-detail-vnext-page .client-detail-shell:has(.client-detail-right-rail[style*="display: none"]),
+- 2223: grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) !important;
+- 2226: @media (max-width: 920px) {
+- 2235: width: 100% !important;
+- 2247: display: none !important;
+- 2251: display: flex;
+- 2272: display: none !important;
+- 2278: min-height: 0 !important;
+- 2282: min-height: 118px !important;
+- 2288: display: flex !important;
+- 2292: min-height: 24px !important;
+- 2296: width: 26px !important;
+- 2297: height: 26px !important;
+- 2299: display: inline-flex !important;
+- 2306: line-height: 1.15 !important;
+- 2312: line-height: 1.3 !important;
+- 2322: display: none !important;
+- 2336: display: none !important;
+- 2340: max-height: 360px !important;
+- 2341: overflow: auto !important;
+- 2353: display: inline-flex !important;
+- 2356: min-height: 34px !important;
+- 2366: @media (max-width: 760px) {
+- 2367: aside.sidebar[data-shell-sidebar="true"],
+- 2368: aside.sidebar {
+- 2369: width: 176px !important;
+- 2370: min-width: 176px !important;
+- 2373: aside.sidebar[data-shell-sidebar="true"] a,
+- 2374: aside.sidebar[data-shell-sidebar="true"] button,
+- 2375: aside.sidebar a,
+- 2376: aside.sidebar button {
+- 2381: line-height: 1.15 !important;
+- 2384: aside.sidebar[data-shell-sidebar="true"] svg,
+- 2385: aside.sidebar svg {
+- 2386: width: 15px !important;
+- 2387: height: 15px !important;
+- 2391: aside.sidebar[data-shell-sidebar="true"] span,
+- 2392: aside.sidebar[data-shell-sidebar="true"] small,
+- 2393: aside.sidebar[data-shell-sidebar="true"] strong,
+- 2394: aside.sidebar span,
+- 2395: aside.sidebar small,
+- 2396: aside.sidebar strong {
+- 2397: display: inline !important;
+- 2400: max-width: 116px !important;
+- 2402: overflow: hidden !important;
+- 2403: text-overflow: ellipsis !important;
+- 2407: min-height: 104px !important;
+- 2420: width: 34px !important;
+- 2421: min-width: 34px !important;
+- 2422: height: 32px !important;
+- 2423: min-height: 32px !important;
+- 2424: display: inline-flex !important;
+- 2439: width: 16px !important;
+- 2440: height: 16px !important;
+- 2457: width: 100% !important;
+- 2484: display: block !important;
+- 2490: display: block !important;
+- 2510: min-height: 32px !important;
+- 2532: display: none !important;
+- 2536: display: block !important;
+- 2550: display: grid !important;
+- 2551: grid-template-columns: 1fr !important;
+- 2557: min-height: 34px !important;
+- 2595: display: none !important;
+- 2614: display: flex !important;
+- 2620: max-height: 302px !important;
+- 2621: overflow: hidden !important;
+- 2625: position: relative !important;
+- 2626: display: flex !important;
+- 2629: max-height: 232px !important;
+- 2630: overflow: auto !important;
+- 2637: position: absolute !important;
+- 2641: width: 2px !important;
+- 2648: position: relative !important;
+- 2659: position: absolute !important;
+- 2662: width: 9px !important;
+- 2663: height: 9px !important;
+- 2678: display: none !important;
+- 2684: display: none !important;
+- 2688: display: grid !important;
+- 2694: display: grid !important;
+- 2695: grid-template-columns: minmax(0, 1.4fr) minmax(120px, 0.7fr) auto !important;
+- 2706: display: grid !important;
+- 2708: min-width: 0 !important;
+- 2712: width: fit-content !important;
+- 2726: line-height: 1.2 !important;
+- 2730: display: flex !important;
+- 2745: display: grid !important;
+- 2767: display: flex !important;
+- 2774: min-height: 32px !important;
+- 2815: display: flex !important;
+- 2838: max-height: 340px !important;
+- 2842: max-height: 270px !important;
+- 2845: @media (max-width: 900px) {
+- 2847: grid-template-columns: 1fr !important;
+- 2861: grid-template-columns: minmax(0, 1.12fr) minmax(130px, 0.75fr) auto !important;
+- 2866: display: flex !important;
+- 2881: display: none !important;
+- 2886: width: 34px !important;
+- 2887: min-width: 34px !important;
+- 2888: height: 34px !important;
+- 2889: min-height: 34px !important;
+- 2900: width: 16px !important;
+- 2901: height: 16px !important;
+- 2915: display: none !important;
+- 2919: display: none !important;
+- 2922: @media (max-width: 900px) {
+- 2924: grid-template-columns: 1fr !important;
+- 2932: display: grid !important;
+- 2937: display: flex !important;
+- 2951: min-width: 24px !important;
+- 2952: height: 24px !important;
+- 2954: display: inline-flex !important;
+- 2964: display: grid !important;
+- 2966: max-height: 280px !important;
+- 2967: overflow: auto !important;
+- 2982: line-height: 1.45 !important;
+- 2991: line-height: 1.35 !important;
+- 3005: display: grid !important;
+- 3010: display: flex !important;
+- 3024: min-width: 24px !important;
+- 3025: height: 24px !important;
+- 3027: display: inline-flex !important;
+- 3037: display: grid !important;
+- 3039: max-height: 280px !important;
+- 3040: overflow: auto !important;
+- 3055: line-height: 1.45 !important;
+- 3064: line-height: 1.35 !important;
+- 3081: display: flex !important;
+- 3088: width: 25px !important;
+- 3089: height: 25px !important;
+- 3090: min-width: 25px !important;
+- 3096: display: inline-flex !important;
+- 3120: min-width: 0;
+- 3121: overflow: hidden;
+- 3122: text-overflow: ellipsis;
+- 3129: min-width: 0;
+- 3133: display: grid;
+- 3135: min-width: 0;
+- 3143: min-width: 0;
+- 3149: min-width: 0;
+- 3150: overflow: hidden;
+- 3151: text-overflow: ellipsis;
+- 3160: line-height: 1.35;
+- 3161: overflow: hidden;
+- 3162: text-overflow: ellipsis;
+- 3180: min-height: 156px !important;
+- 3181: height: auto !important;
+- 3183: display: flex !important;
+- 3188: overflow: visible !important;
+- 3195: width: 100% !important;
+- 3196: min-width: 0 !important;
+- 3198: display: flex !important;
+- 3211: min-width: 0 !important;
+- 3214: line-height: 1.18 !important;
+- 3224: display: block !important;
+- 3225: max-width: 100% !important;
+- 3229: line-height: 1.16 !important;
+- 3234: overflow: visible !important;
+- 3235: overflow-wrap: anywhere !important;
+- 3245: max-width: 100% !important;
+- 3249: line-height: 1.35 !important;
+- 3252: overflow: visible !important;
+- 3253: overflow-wrap: anywhere !important;
+- 3261: width: fit-content !important;
+- 3262: min-height: 27px !important;
+- 3267: line-height: 1.1 !important;
+- 3272: @media (max-width: 1260px) {
+- 3278: @media (max-width: 640px) {
+- 3281: min-height: 0 !important;
+- 4: min-height: 100%;
+- 15: max-width: 1480px;
+- 22: display: flex;
+- 29: min-width: 0;
+- 33: min-height: 38px;
+- 39: display: inline-flex;
+- 56: display: flex;
+- 66: line-height: 1;
+- 72: display: flex;
+- 78: min-height: 30px;
+- 89: display: flex;
+- 96: display: grid;
+- 97: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 130: overflow: hidden;
+- 134: min-height: 170px;
+- 139: display: flex;
+- 155: display: block;
+- 158: line-height: 1.15;
+- 166: line-height: 1.5;
+- 190: height: 8px;
+- 193: overflow: hidden;
+- 197: display: block;
+- 198: height: 100%;
+- 204: display: grid;
+- 205: grid-template-columns: minmax(0, 1fr) 320px;
+- 216: display: flex;
+- 219: min-width: 0;
+- 229: display: none !important;
+- 236: min-width: 0;
+- 237: display: flex;
+- 244: display: flex;
+- 250: min-height: 40px;
+- 272: display: flex;
+- 291: line-height: 1.5;
+- 297: display: grid;
+- 302: display: grid;
+- 303: grid-template-columns: 42px minmax(260px, 1fr) 150px 132px auto;
+- 312: width: 38px;
+- 313: height: 38px;
+- 317: display: grid;
+- 336: line-height: 1.45;
+- 340: display: inline-flex;
+- 341: width: fit-content;
+- 352: display: block;
+- 359: display: block;
+- 363: line-height: 1.35;
+- 367: width: fit-content;
+- 368: min-height: 28px;
+- 409: display: flex;
+- 420: min-height: 30px;
+- 440: display: grid;
+- 441: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 451: display: block;
+- 454: line-height: 1;
+- 458: display: block;
+- 469: line-height: 1.45;
+- 488: display: grid;
+- 489: grid-template-columns: minmax(260px, 1fr) 150px auto;
+- 497: display: grid;
+- 498: grid-template-columns: 42px minmax(0, 1fr);
+- 507: display: grid;
+- 516: line-height: 1.35;
+- 523: line-height: 1.5;
+- 527: display: grid;
+- 538: line-height: 1.4;
+- 561: line-height: 1.55;
+- 566: max-width: 620px;
+- 569: display: grid;
+- 588: display: grid;
+- 593: display: grid;
+- 601: min-height: 38px;
+- 611: display: flex !important;
+- 612: grid-template-columns: auto 1fr;
+- 617: @media (max-width: 1220px) {
+- 619: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 623: grid-template-columns: 1fr;
+- 627: display: grid;
+- 628: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 632: @media (max-width: 860px) {
+- 645: grid-template-columns: 1fr;
+- 650: grid-template-columns: 1fr;
+- 655: @media (max-width: 640px) {
+- 665: display: grid;
+- 666: grid-template-columns: 1fr;
+- 671: overflow-x: auto;
+- 672: -webkit-overflow-scrolling: touch;
+- 763: display: grid !important;
+- 764: grid-template-columns: 1fr !important;
+- 770: width: 100% !important;
+- 771: min-height: 38px !important;
+- 796: @media (min-width: 1221px) {
+- 808: display: inline-flex !important;
+- 816: display: grid;
+- 821: display: grid;
+- 822: grid-template-columns: auto minmax(0, 1fr);
+- 833: width: 10px;
+- 834: height: 10px;
+- 867: display: flex;
+- 888: line-height: 1.35;
+- 893: display: block;
+- 898: line-height: 1.35;
+- 901: @media (max-width: 720px) {
+- 921: display: flex;
+- 930: line-height: 1.25;
+- 949: line-height: 1.45;
+- 950: max-height: 74px;
+- 951: overflow: auto;
+- 956: display: flex;
+- 971: min-width: 220px;
+- 977: @media (max-width: 720px) {
+- 987: width: 100%;
+- 992: /* STAGE60_CASE_ACTION_COPY_NOTE_DEDUPE: no extra CSS needed; duplicate main note action removed, sidebar note action remains the source of truth. */
+- 1022: display: flex;
+- 1042: line-height: 1.1;
+- 1046: display: grid;
+- 1047: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 1059: display: block;
+- 1069: line-height: 1.1;
+- 1091: height: 8px;
+- 1095: overflow: hidden;
+- 1099: display: block;
+- 1100: height: 100%;
+- 1106: display: grid;
+- 1113: display: flex;
+- 1125: min-width: 24px;
+- 1126: height: 24px;
+- 1128: display: inline-flex;
+- 1145: display: grid;
+- 1159: line-height: 1.35;
+- 1163: width: 100%;
+- 1164: min-height: 38px;
+- 1173: display: grid;
+- 1177: @media (max-width: 760px) {
+- 1185: grid-template-columns: 1fr;
+- 1201: display: grid;
+- 1227: display: none !important;
+- 1265: display: grid;
+- 1269: display: flex;
+- 1275: display: grid;
+- 1285: line-height: 1.35;
+- 1288: display: grid;
+- 1289: grid-template-columns: 1fr;
+- 1293: width: 100%;
+- 1298: display: flex;
+- 1318: display: grid;
+- 1322: display: grid;
+- 1334: min-height: min(72vh, 760px);
+- 1335: display: flex;
+- 1342: width: min(520px, 100%);
+- 1343: display: flex;
+- 1361: display: block;
+- 1364: line-height: 1.45;
+- 1376: overflow: hidden !important;
+- 1429: display: grid;
+- 1434: min-width: 0;
+- 1435: display: grid;
+- 1436: grid-template-columns: 150px minmax(0, 1fr) auto;
+- 1446: min-width: 0;
+- 1450: overflow: hidden;
+- 1451: text-overflow: ellipsis;
+- 1456: min-width: 0;
+- 1460: line-height: 1.35;
+- 1461: overflow: hidden;
+- 1462: text-overflow: ellipsis;
+- 1473: @media (max-width: 720px) {
+- 1475: grid-template-columns: 1fr;
+- 1483: display: grid;
+- 1484: grid-template-columns: 1fr;
+- 1491: width: 100%;
+- 1496: max-width: 680px;
+- 1500: display: grid;
+- 1501: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 1507: display: grid;
+- 1519: min-height: 38px;
+- 1520: width: 100%;
+- 1529: display: grid;
+- 1538: display: flex;
+- 1543: @media (max-width: 680px) {
+- 1545: grid-template-columns: 1fr;
+- 1551: display: inline-flex;
+- 1554: width: 2.25rem;
+- 1555: height: 2.25rem;
+- 1560: line-height: 1;
+- 1567: display: inline-flex;
+- 4: min-height: 100%;
+- 15: max-width: 1480px;
+- 22: display: flex;
+- 29: min-height: 38px;
+- 35: display: inline-flex;
+- 60: display: flex;
+- 70: line-height: 1;
+- 75: display: flex;
+- 81: min-height: 30px;
+- 92: display: flex;
+- 118: display: grid;
+- 119: grid-template-columns: minmax(0, 1fr) minmax(280px, 480px) auto;
+- 145: line-height: 1.5;
+- 149: display: grid;
+- 150: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 161: line-height: 1.35;
+- 165: display: block;
+- 171: display: grid;
+- 172: grid-template-columns: 300px minmax(0, 1fr) 310px;
+- 178: min-width: 0;
+- 179: display: grid;
+- 190: display: flex;
+- 193: min-width: 0;
+- 205: display: none !important;
+- 212: display: grid;
+- 213: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 221: overflow: hidden;
+- 225: display: block;
+- 228: line-height: 1.15;
+- 252: display: flex;
+- 265: display: flex;
+- 275: display: flex;
+- 282: display: grid;
+- 283: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 288: display: grid;
+- 289: grid-template-columns: 38px minmax(0, 1fr);
+- 301: width: 38px;
+- 302: height: 38px;
+- 306: display: grid;
+- 315: display: block;
+- 322: display: block;
+- 325: overflow-wrap: anywhere;
+- 343: overflow-wrap: anywhere;
+- 348: display: grid;
+- 353: display: grid;
+- 354: grid-template-columns: 38px minmax(260px, 1fr) auto minmax(280px, auto);
+- 376: line-height: 1.45;
+- 380: width: fit-content;
+- 381: min-height: 28px;
+- 421: min-height: 30px;
+- 445: display: grid;
+- 467: line-height: 1.45;
+- 471: width: fit-content;
+- 475: display: grid;
+- 476: grid-template-columns: 38px minmax(0, 1fr) auto;
+- 486: display: grid;
+- 494: line-height: 1.5;
+- 498: display: grid;
+- 509: line-height: 1.4;
+- 513: display: block;
+- 515: overflow-wrap: anywhere;
+- 519: display: grid;
+- 535: height: auto !important;
+- 543: min-height: 38px;
+- 564: line-height: 1.55;
+- 569: max-width: 620px;
+- 572: display: grid;
+- 591: display: grid;
+- 596: width: 100%;
+- 597: height: 40px;
+- 607: @media (max-width: 1120px) {
+- 609: grid-template-columns: 1fr;
+- 613: display: grid;
+- 614: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 618: grid-template-columns: 1fr;
+- 622: grid-template-columns: 38px minmax(0, 1fr);
+- 631: @media (max-width: 760px) {
+- 643: display: grid;
+- 644: grid-template-columns: 1fr;
+- 655: grid-template-columns: 1fr;
+- 660: grid-template-columns: 1fr;
+- 683: display: flex;
+- 691: display: inline-flex;
+- 714: display: inline-flex;
+- 717: min-width: max-content;
+- 743: display: grid;
+- 744: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 758: display: block;
+- 768: display: block;
+- 771: line-height: 1.35;
+- 782: line-height: 1.45;
+- 786: display: flex;
+- 793: min-height: 38px;
+- 805: @media (max-width: 780px) {
+- 817: width: fit-content;
+- 821: grid-template-columns: 1fr;
+- 827: max-height: calc(100vh - 132px);
+- 828: overflow-y: auto;
+- 829: overflow-x: hidden;
+- 836: overflow: visible !important;
+- 852: overflow-wrap: anywhere;
+- 868: min-width: 0;
+- 877: @media (max-width: 1120px) {
+- 879: max-height: none;
+- 880: overflow: visible;
+- 887: grid-template-columns: minmax(0, 1fr) minmax(400px, 440px);
+- 891: min-width: 380px;
+- 897: overflow: visible !important;
+- 907: line-height: 1.18;
+- 908: overflow-wrap: normal !important;
+- 913: max-width: 270px;
+- 914: overflow-wrap: normal !important;
+- 919: grid-template-columns: repeat(3, minmax(96px, 1fr));
+- 925: min-width: 0;
+- 931: overflow-wrap: normal !important;
+- 935: line-height: 1.25 !important;
+- 940: overflow-wrap: break-word !important;
+- 943: line-height: 1.35 !important;
+- 950: @media (max-width: 1280px) {
+- 952: grid-template-columns: minmax(0, 1fr) minmax(360px, 390px);
+- 956: min-width: 340px;
+- 960: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 968: @media (max-width: 1120px) {
+- 970: grid-template-columns: 1fr;
+- 974: min-width: 0;
+- 978: grid-template-columns: repeat(3, minmax(96px, 1fr));
+- 982: @media (max-width: 760px) {
+- 984: grid-template-columns: 1fr;
+- 990: max-height: none !important;
+- 991: overflow: visible !important;
+- 997: height: auto !important;
+- 998: min-height: 0 !important;
+- 999: overflow: visible !important;
+- 1007: min-width: 0 !important;
+- 1009: overflow-wrap: anywhere !important;
+- 1014: overflow: hidden !important;
+- 1015: text-overflow: ellipsis !important;
+- 1021: display: inline-flex !important;
+- 1022: width: fit-content !important;
+- 1023: min-width: 0 !important;
+- 1036: display: inline-flex !important;
+- 1037: width: 100% !important;
+- 1038: min-height: 38px !important;
+- 1055: display: inline-flex !important;
+- 1056: width: fit-content !important;
+- 1057: min-width: 0 !important;
+- 1063: overflow-wrap: anywhere !important;
+- 1069: width: 100%;
+- 1072: @media (max-width: 1120px) {
+- 1074: width: 100%;
+- 1085: display: grid;
+- 1094: display: grid;
+- 1099: display: block;
+- 1107: display: block;
+- 1117: line-height: 1.55;
+- 1146: display: grid;
+- 1155: display: flex;
+- 4: min-height: 100%;
+- 13: max-width: 1480px;
+- 15: display: flex;
+- 33: line-height: 1;
+- 45: display: flex;
+- 52: max-width: 1480px;
+- 54: display: flex;
+- 67: min-height: 38px;
+- 89: max-width: 1480px;
+- 91: display: grid;
+- 92: grid-template-columns: minmax(0, 1fr) 320px;
+- 98: display: grid;
+- 100: min-width: 0;
+- 125: display: grid;
+- 126: grid-template-columns: minmax(0, 1fr) 240px;
+- 132: display: grid;
+- 133: grid-template-columns: 50px minmax(0, 1fr);
+- 139: width: 50px;
+- 140: height: 50px;
+- 142: display: grid;
+- 186: line-height: 1.55;
+- 194: display: grid;
+- 199: width: fit-content;
+- 218: line-height: 1.4;
+- 222: display: grid;
+- 223: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 229: min-height: 126px;
+- 233: display: block;
+- 240: display: block;
+- 244: line-height: 1.15;
+- 249: display: block;
+- 253: line-height: 1.45;
+- 258: display: grid;
+- 259: grid-template-columns: 38px minmax(0, 1fr);
+- 280: line-height: 1.55;
+- 285: display: flex;
+- 306: line-height: 1.5;
+- 315: display: flex;
+- 320: display: grid;
+- 321: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 327: display: flex;
+- 338: display: flex;
+- 346: width: fit-content;
+- 374: line-height: 1.5;
+- 378: display: block;
+- 386: display: block;
+- 396: display: grid;
+- 401: display: grid;
+- 402: grid-template-columns: 18px minmax(0, 1fr);
+- 406: line-height: 1.4;
+- 422: width: 100%;
+- 431: display: flex;
+- 439: display: grid;
+- 449: display: flex;
+- 496: display: flex;
+- 499: min-width: 0;
+- 509: display: none !important;
+- 517: display: grid;
+- 522: display: flex;
+- 539: line-height: 1.5;
+- 543: display: grid;
+- 563: width: fit-content;
+- 568: min-height: 34px;
+- 570: display: inline-flex;
+- 578: display: flex;
+- 585: min-height: 140px;
+- 586: display: flex;
+- 594: display: grid;
+- 618: min-height: 180px;
+- 619: display: grid;
+- 627: max-width: 520px;
+- 631: @media (max-width: 1280px) {
+- 633: grid-template-columns: 1fr;
+- 637: display: grid;
+- 638: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 642: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 646: @media (max-width: 860px) {
+- 659: grid-template-columns: 1fr;
+- 664: grid-template-columns: 1fr;
+- 668: @media (max-width: 640px) {
+- 679: display: grid;
+- 680: grid-template-columns: 1fr;
+- 684: grid-template-columns: 1fr;
+- 695: overflow-x: auto;
+- 697: -webkit-overflow-scrolling: touch;
+- 10: --cf16-sidebar: #101828;
+- 11: --cf16-sidebar-2: #172033;
+- 40: min-height: 100%;
+- 45: min-height: 100vh !important;
+- 57: .app.closeflow-visual-stage01,
+- 58: .app.cf-html-shell,
+- 59: .cf-html-shell {
+- 60: min-height: 100vh !important;
+- 65: @media (min-width: 1024px) {
+- 68: .app.closeflow-visual-stage01,
+- 69: .app.cf-html-shell,
+- 70: .cf-html-shell {
+- 71: display: grid !important;
+- 72: grid-template-columns: 286px minmax(0, 1fr) !important;
+- 76: /* Sidebar: direct visual replacement based on the HTML concept. */
+- 80: #root .sidebar,
+- 81: #root .app-sidebar,
+- 82: #root [class*="sidebar"] {
+- 85: linear-gradient(180deg, var(--cf16-sidebar) 0%, #0b1220 100%) !important;
+- 93: #root .sidebar a,
+- 94: #root .sidebar button,
+- 95: #root [class*="sidebar"] a,
+- 96: #root [class*="sidebar"] button {
+- 106: #root .sidebar a[aria-current="page"],
+- 107: #root .sidebar button[aria-current="page"],
+- 108: #root .sidebar .active,
+- 109: #root [class*="sidebar"] a[aria-current="page"],
+- 110: #root [class*="sidebar"] button[aria-current="page"],
+- 111: #root [class*="sidebar"] .active {
+- 126: @media (min-width: 1024px) {
+- 187: display: grid !important;
+- 196: line-height: .96 !important;
+- 206: max-width: 760px !important;
+- 209: line-height: 1.6 !important;
+- 235: min-height: 124px !important;
+- 254: display: flex;
+- 271: max-width: 720px;
+- 274: line-height: 1.6;
+- 278: display: grid;
+- 279: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 284: min-height: 124px;
+- 299: display: grid;
+- 300: grid-template-columns: minmax(0, 1fr) 320px;
+- 315: display: inline-flex;
+- 318: min-height: 28px;
+- 328: @media (max-width: 1100px) {
+- 331: grid-template-columns: 1fr !important;
+- 335: @media (max-width: 720px) {
+- 342: display: block;
+- 4: min-height: 100%;
+- 13: max-width: 1480px;
+- 15: display: flex;
+- 33: line-height: 1;
+- 45: display: flex;
+- 53: max-width: 1480px;
+- 58: display: grid;
+- 59: grid-template-columns: 1.25fr 0.85fr 0.85fr;
+- 83: min-height: 132px;
+- 85: display: grid;
+- 105: line-height: 1.1;
+- 113: line-height: 1.5;
+- 122: display: grid;
+- 123: grid-template-columns: minmax(0, 1fr) 320px;
+- 129: display: grid;
+- 131: min-width: 0;
+- 141: display: flex;
+- 161: line-height: 1.5;
+- 165: display: grid;
+- 166: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 177: display: grid;
+- 194: line-height: 1.45;
+- 208: display: grid;
+- 213: display: grid;
+- 218: width: 100%;
+- 219: min-height: 150px;
+- 226: line-height: 1.5;
+- 238: min-height: 110px;
+- 242: width: fit-content;
+- 248: display: inline-flex;
+- 256: display: flex;
+- 263: min-height: 38px;
+- 269: display: inline-flex;
+- 277: min-width: 22px;
+- 278: min-height: 22px;
+- 282: display: grid;
+- 294: display: grid;
+- 295: grid-template-columns: minmax(0, 1fr) 210px;
+- 301: position: relative;
+- 305: position: absolute;
+- 318: height: 40px;
+- 329: display: grid;
+- 330: grid-template-columns: minmax(260px, 0.95fr) minmax(0, 1.05fr);
+- 335: display: grid;
+- 340: width: 100%;
+- 346: display: grid;
+- 347: grid-template-columns: minmax(0, 1fr) auto;
+- 358: display: inline-flex;
+- 359: width: fit-content;
+- 376: line-height: 1.3;
+- 383: line-height: 1.4;
+- 384: display: -webkit-box;
+- 387: overflow: hidden;
+- 398: width: fit-content;
+- 399: height: fit-content;
+- 434: display: grid;
+- 439: display: flex;
+- 451: display: grid;
+- 481: display: block;
+- 484: line-height: 1.5;
+- 485: overflow-wrap: anywhere;
+- 489: display: block;
+- 496: display: flex;
+- 502: display: grid;
+- 503: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 522: line-height: 1.5;
+- 532: display: flex;
+- 540: max-width: 520px;
+- 541: min-height: 180px;
+- 552: display: flex;
+- 555: min-width: 0;
+- 565: display: none !important;
+- 573: display: grid;
+- 578: display: flex;
+- 589: line-height: 1.4;
+- 596: line-height: 1.5;
+- 600: display: grid;
+- 609: min-height: 38px;
+- 627: @media (max-width: 1240px) {
+- 629: grid-template-columns: 1fr;
+- 633: display: grid;
+- 634: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 638: grid-template-columns: 1fr 1fr;
+- 646: @media (max-width: 860px) {
+- 662: grid-template-columns: 1fr;
+- 666: grid-template-columns: 1fr;
+- 670: @media (max-width: 640px) {
+- 680: display: grid;
+- 681: grid-template-columns: 1fr;
+- 685: overflow-x: auto;
+- 687: -webkit-overflow-scrolling: touch;
+- 9: --cf17-sidebar: #101828;
+- 10: --cf17-sidebar-2: #172033;
+- 39: min-height: 100%;
+- 42: body:has(.cf-html-shell),
+- 43: body:has(.closeflow-visual-stage01),
+- 46: min-height: 100vh;
+- 55: .cf-html-shell,
+- 56: .closeflow-visual-stage01 {
+- 64: .cf-html-shell .app,
+- 65: .cf-html-shell.app,
+- 66: .closeflow-visual-stage01,
+- 67: .closeflow-visual-stage01.app {
+- 68: min-height: 100vh;
+- 71: /* Shell 1:1: ciemny sidebar, białe karty, global bar */
+- 72: .cf-html-shell .sidebar,
+- 73: .closeflow-visual-stage01 .sidebar,
+- 74: .cf-html-shell aside.sidebar,
+- 75: .closeflow-visual-stage01 aside.sidebar,
+- 76: .cf-html-shell [data-sidebar],
+- 77: .closeflow-visual-stage01 [data-sidebar] {
+- 80: linear-gradient(180deg, var(--cf17-sidebar) 0%, #0b1220 100%) !important;
+- 86: .cf-html-shell .brand,
+- 87: .closeflow-visual-stage01 .brand {
+- 91: .cf-html-shell .brand-logo,
+- 92: .closeflow-visual-stage01 .brand-logo {
+- 93: width: 44px;
+- 94: height: 44px;
+- 101: .cf-html-shell .brand-title strong,
+- 102: .closeflow-visual-stage01 .brand-title strong {
+- 107: .cf-html-shell .brand-title span,
+- 108: .closeflow-visual-stage01 .brand-title span {
+- 113: .cf-html-shell .nav-caption,
+- 114: .closeflow-visual-stage01 .nav-caption {
+- 122: .cf-html-shell .nav-btn,
+- 123: .closeflow-visual-stage01 .nav-btn,
+- 124: .cf-html-shell .sidebar a,
+- 125: .closeflow-visual-stage01 .sidebar a {
+- 132: .cf-html-shell .nav-btn:hover,
+- 133: .closeflow-visual-stage01 .nav-btn:hover,
+- 134: .cf-html-shell .sidebar a:hover,
+- 135: .closeflow-visual-stage01 .sidebar a:hover {
+- 140: .cf-html-shell .nav-btn.active,
+- 141: .closeflow-visual-stage01 .nav-btn.active,
+- 142: .cf-html-shell .sidebar a[aria-current="page"],
+- 143: .closeflow-visual-stage01 .sidebar a[aria-current="page"] {
+- 149: .cf-html-shell .nav-ico,
+- 150: .closeflow-visual-stage01 .nav-ico {
+- 155: .cf-html-shell .nav-btn.active .nav-ico,
+- 156: .closeflow-visual-stage01 .nav-btn.active .nav-ico {
+- 161: .cf-html-shell .nav-badge,
+- 162: .closeflow-visual-stage01 .nav-badge {
+- 167: .cf-html-shell .trial-card,
+- 168: .closeflow-visual-stage01 .trial-card,
+- 169: .cf-html-shell .user-card,
+- 170: .closeflow-visual-stage01 .user-card {
+- 176: .cf-html-shell .main,
+- 177: .closeflow-visual-stage01 .main,
+- 178: .cf-html-shell main,
+- 179: .closeflow-visual-stage01 main {
+- 180: min-width: 0;
+- 184: .cf-html-shell .global-bar,
+- 185: .closeflow-visual-stage01 .global-bar {
+- 186: position: sticky;
+- 195: .cf-html-shell .global-title,
+- 196: .closeflow-visual-stage01 .global-title {
+- 202: .cf-html-shell .global-actions,
+- 203: .closeflow-visual-stage01 .global-actions {
+- 204: display: flex;
+- 208: overflow-x: auto;
+- 213: .cf-html-shell .btn,
+- 214: .closeflow-visual-stage01 .btn,
+- 217: .cf-html-shell button[data-variant="outline"],
+- 218: .closeflow-visual-stage01 button[data-variant="outline"] {
+- 219: min-height: 40px;
+- 226: .cf-html-shell .btn.primary,
+- 227: .closeflow-visual-stage01 .btn.primary,
+- 228: .cf-html-shell .global-actions .btn.primary,
+- 229: .closeflow-visual-stage01 .global-actions .btn.primary,
+- 238: .cf-html-shell .btn.soft-blue,
+- 239: .closeflow-visual-stage01 .btn.soft-blue,
+- 241: .cf-html-shell .ai-open,
+- 242: .closeflow-visual-stage01 .ai-open {
+- 249: .cf-html-shell .card,
+- 250: .closeflow-visual-stage01 .card,
+- 278: line-height: 1 !important;
+- 286: display: inline-flex;
+- 312: display: grid !important;
+- 313: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 323: min-height: 106px !important;
+- 347: line-height: 1 !important;
+- 356: display: grid !important;
+- 357: grid-template-columns: minmax(0, 1fr) 315px !important;
+- 365: display: grid !important;
+- 366: grid-template-columns: minmax(0, 1.35fr) minmax(240px, .65fr) !important;
+- 373: min-height: 156px;
+- 393: display: flex !important;
+- 417: overflow: hidden !important;
+- 433: .cf-html-shell .pill,
+- 434: .closeflow-visual-stage01 .pill,
+- 436: display: inline-flex;
+- 439: min-height: 24px;
+- 481: .main-today .today-sidebar {
+- 492: display: grid !important;
+- 500: min-height: 40px !important;
+- 505: display: flex;
+- 533: .cf-html-shell input,
+- 534: .cf-html-shell textarea,
+- 535: .cf-html-shell select {
+- 542: @media (max-width: 1220px) {
+- 549: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 558: grid-template-columns: 1fr !important;
+- 562: @media (max-width: 760px) {
+- 563: .cf-html-shell .sidebar,
+- 564: .closeflow-visual-stage01 .sidebar,
+- 565: .cf-html-shell aside.sidebar,
+- 566: .closeflow-visual-stage01 aside.sidebar {
+- 567: display: none !important;
+- 570: .cf-html-shell .mobile-top,
+- 571: .closeflow-visual-stage01 .mobile-top {
+- 572: display: flex !important;
+- 573: position: sticky;
+- 584: .cf-html-shell .main,
+- 585: .closeflow-visual-stage01 .main,
+- 586: .cf-html-shell main,
+- 587: .closeflow-visual-stage01 main {
+- 593: .cf-html-shell .global-bar,
+- 594: .closeflow-visual-stage01 .global-bar {
+- 598: overflow-x: auto !important;
+- 601: .cf-html-shell .global-title,
+- 602: .closeflow-visual-stage01 .global-title {
+- 603: display: none !important;
+- 614: grid-template-columns: 1fr !important;
+- 628: .cf-html-shell .mobile-nav,
+- 629: .closeflow-visual-stage01 .mobile-nav {
+- 630: position: fixed;
+- 634: display: grid !important;
+- 635: grid-template-columns: repeat(5, 1fr);
+- 9: --cf18-sidebar: #101828;
+- 36: .cf-html-shell:has(.main-leads),
+- 37: .closeflow-visual-stage01:has(.main-leads) {
+- 52: width: 100%;
+- 53: min-height: calc(100vh - 72px);
+- 61: max-width: 1440px !important;
+- 75: display: flex !important;
+- 91: min-width: 0 !important;
+- 100: line-height: .98 !important;
+- 108: display: block;
+- 112: line-height: 1 !important;
+- 121: max-width: 760px !important;
+- 125: line-height: 1.55 !important;
+- 137: display: flex !important;
+- 148: min-height: 40px !important;
+- 183: display: grid !important;
+- 184: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 193: min-height: 112px !important;
+- 199: display: flex !important;
+- 202: overflow: hidden !important;
+- 232: line-height: 1 !important;
+- 250: display: grid !important;
+- 251: grid-template-columns: minmax(0, 1fr) 340px !important;
+- 259: display: grid !important;
+- 275: min-height: 50px !important;
+- 276: width: 100% !important;
+- 302: overflow: hidden !important;
+- 334: display: grid !important;
+- 335: grid-template-columns: 36px minmax(0, 1.4fr) minmax(120px, .42fr) minmax(160px, .55fr) auto !important;
+- 352: width: 32px !important;
+- 353: height: 32px !important;
+- 355: display: grid !important;
+- 392: min-height: 24px !important;
+- 433: position: sticky !important;
+- 435: display: grid !important;
+- 454: display: flex !important;
+- 480: line-height: 1.4 !important;
+- 487: display: grid !important;
+- 498: width: 100% !important;
+- 499: min-height: 42px !important;
+- 500: display: flex !important;
+- 523: @media (max-width: 1180px) {
+- 527: grid-template-columns: 1fr !important;
+- 534: position: static !important;
+- 538: @media (max-width: 760px) {
+- 551: display: grid !important;
+- 568: grid-template-columns: 1fr 1fr !important;
+- 574: grid-template-columns: 32px minmax(0, 1fr) !important;
+- 6: .cf-html-shell .main-clients {
+- 20: .cf-html-shell .main-clients > .mx-auto,
+- 21: .cf-html-shell .main-clients > .max-w-6xl {
+- 22: max-width: 1280px !important;
+- 26: .cf-html-shell .main-clients header {
+- 27: position: relative;
+- 28: overflow: hidden;
+- 38: .cf-html-shell .main-clients header::before {
+- 40: display: inline-flex;
+- 41: width: fit-content;
+- 53: .cf-html-shell .main-clients header h1 {
+- 57: line-height: 0.95;
+- 60: .cf-html-shell .main-clients header h1::after {
+- 62: display: block;
+- 63: max-width: 740px;
+- 69: line-height: 1.55;
+- 72: .cf-html-shell .main-clients header .rounded-xl,
+- 73: .cf-html-shell .main-clients header button {
+- 74: min-height: 42px;
+- 80: .cf-html-shell .main-clients header button:last-child,
+- 81: .cf-html-shell .main-clients header [role="button"] + button,
+- 82: .cf-html-shell .main-clients header button[class*="bg-primary"] {
+- 87: .cf-html-shell .main-clients .relative:has(input) {
+- 95: .cf-html-shell .main-clients .relative:has(input) input {
+- 96: min-height: 48px;
+- 103: .cf-html-shell .main-clients .grid-cols-1.md\:grid-cols-2,
+- 104: .cf-html-shell .main-clients .grid.grid-cols-1.md\:grid-cols-2 {
+- 105: display: grid;
+- 106: grid-template-columns: minmax(0, 1fr) minmax(300px, 0.42fr);
+- 110: .cf-html-shell .main-clients .grid-cols-1.md\:grid-cols-2::after,
+- 111: .cf-html-shell .main-clients .grid.grid-cols-1.md\:grid-cols-2::after {
+- 122: line-height: 1.75;
+- 125: .cf-html-shell .main-clients a[href^="/clients/"] {
+- 126: height: 100%;
+- 131: .cf-html-shell .main-clients a[href^="/clients/"] > div,
+- 132: .cf-html-shell .main-clients a[href^="/clients/"] [class*="rounded"] {
+- 136: .cf-html-shell .main-clients a[href^="/clients/"] [class*="shadow"],
+- 137: .cf-html-shell .main-clients a[href^="/clients/"] .hover\:shadow-md {
+- 144: .cf-html-shell .main-clients a[href^="/clients/"]:hover [class*="shadow"],
+- 145: .cf-html-shell .main-clients a[href^="/clients/"]:hover .hover\:shadow-md {
+- 151: .cf-html-shell .main-clients a[href^="/clients/"] p.font-semibold {
+- 157: .cf-html-shell .main-clients a[href^="/clients/"] .text-sm {
+- 161: .cf-html-shell .main-clients [class*="Badge"],
+- 162: .cf-html-shell .main-clients .inline-flex.items-center.rounded-full,
+- 163: .cf-html-shell .main-clients [data-slot="badge"] {
+- 171: .cf-html-shell .main-clients .group\/client-card > button,
+- 172: .cf-html-shell .main-clients button[aria-label*="klienta"] {
+- 177: .cf-html-shell .main-clients .layout-list {
+- 178: display: grid;
+- 179: grid-template-columns: minmax(0, 1fr) 330px;
+- 183: .cf-html-shell .main-clients .grid-5 {
+- 184: display: grid;
+- 185: grid-template-columns: repeat(5, minmax(0, 1fr));
+- 189: @media (max-width: 760px) {
+- 190: .cf-html-shell .main-clients > .mx-auto,
+- 191: .cf-html-shell .main-clients > .max-w-6xl {
+- 195: .cf-html-shell .main-clients header {
+- 200: .cf-html-shell .main-clients .grid-cols-1.md\:grid-cols-2,
+- 201: .cf-html-shell .main-clients .grid.grid-cols-1.md\:grid-cols-2,
+- 202: .cf-html-shell .main-clients .layout-list,
+- 203: .cf-html-shell .main-clients .grid-5 {
+- 204: grid-template-columns: 1fr !important;
+- 207: .cf-html-shell .main-clients .grid-cols-1.md\:grid-cols-2::after,
+- 208: .cf-html-shell .main-clients .grid.grid-cols-1.md\:grid-cols-2::after {
+- 4: min-height: 100%;
+- 13: max-width: 1480px;
+- 15: display: flex;
+- 33: line-height: 1;
+- 45: display: flex;
+- 53: max-width: 1480px;
+- 58: display: grid;
+- 59: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 80: min-height: 112px;
+- 86: display: block;
+- 94: display: block;
+- 98: line-height: 1.2;
+- 100: overflow-wrap: anywhere;
+- 104: display: grid;
+- 105: grid-template-columns: minmax(0, 1fr) 320px;
+- 111: display: grid;
+- 113: min-width: 0;
+- 121: display: flex;
+- 130: display: inline-flex;
+- 153: line-height: 1.5;
+- 157: display: grid;
+- 158: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 163: display: grid;
+- 173: display: flex;
+- 179: display: grid;
+- 180: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 192: display: grid;
+- 203: display: flex;
+- 216: display: block;
+- 225: display: block;
+- 229: line-height: 1.45;
+- 233: width: 22px;
+- 234: height: 22px;
+- 240: width: fit-content;
+- 258: display: grid;
+- 267: line-height: 1.45;
+- 278: display: grid;
+- 279: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 284: min-height: 106px;
+- 294: display: block;
+- 301: display: block;
+- 305: line-height: 1.45;
+- 315: display: grid;
+- 325: display: flex;
+- 336: display: flex;
+- 339: min-width: 0;
+- 349: display: none !important;
+- 357: display: grid;
+- 373: line-height: 1.35;
+- 379: line-height: 1.5;
+- 383: max-width: 520px;
+- 384: min-height: 180px;
+- 387: display: grid;
+- 392: @media (max-width: 1240px) {
+- 394: grid-template-columns: 1fr;
+- 398: display: grid;
+- 399: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 404: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 408: @media (max-width: 860px) {
+- 421: grid-template-columns: 1fr;
+- 436: @media (max-width: 640px) {
+- 448: grid-template-columns: 1fr;
+- 452: display: grid;
+- 463: display: none !important;
+- 467: display: grid !important;
+- 468: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 471: @media (max-width: 1240px) {
+- 473: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 477: @media (max-width: 720px) {
+- 479: grid-template-columns: 1fr !important;
+- 487: display: none !important;
+- 491: display: grid !important;
+- 492: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 499: display: none !important;
+- 502: @media (max-width: 1240px) {
+- 504: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 508: @media (max-width: 720px) {
+- 510: grid-template-columns: 1fr !important;
+- 521: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 525: display: none !important;
+- 528: @media (max-width: 1240px) {
+- 530: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 534: @media (max-width: 720px) {
+- 536: grid-template-columns: 1fr !important;
+- 4: width: min(760px, calc(100vw - 24px)) !important;
+- 5: max-width: 760px !important;
+- 6: max-height: min(92vh, 900px);
+- 7: overflow: hidden;
+- 23: display: none !important;
+- 38: display: block;
+- 49: line-height: 1.1;
+- 57: line-height: 1.5;
+- 61: max-height: calc(92vh - 110px);
+- 62: overflow-y: auto;
+- 64: display: grid;
+- 96: line-height: 1.5;
+- 100: display: grid;
+- 101: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 106: display: grid;
+- 123: width: 100%;
+- 124: min-height: 42px;
+- 143: min-height: 86px;
+- 145: line-height: 1.5;
+- 150: overflow: hidden;
+- 163: display: none;
+- 188: display: grid;
+- 189: grid-template-columns: 22px minmax(0, 1fr);
+- 195: width: 18px;
+- 196: min-height: 18px;
+- 197: height: 18px;
+- 204: display: block;
+- 211: display: block;
+- 215: line-height: 1.4;
+- 219: display: grid;
+- 220: grid-template-columns: 34px minmax(0, 1fr);
+- 228: width: 34px;
+- 229: height: 34px;
+- 237: position: sticky;
+- 246: width: auto !important;
+- 247: min-height: 42px;
+- 252: @media (max-width: 640px) {
+- 254: width: calc(100vw - 16px) !important;
+- 255: max-height: 94vh;
+- 264: max-height: calc(94vh - 98px);
+- 270: grid-template-columns: 1fr;
+- 279: display: grid !important;
+- 280: grid-template-columns: 1fr;
+- 284: width: 100% !important;
+- 291: display: flex !important;
+- 296: min-width: 0 !important;
+- 301: display: inline-flex !important;
+- 304: width: max-content !important;
+- 305: max-width: fit-content !important;
+- 7: .cf-html-shell main[data-current-section="zadania"] {
+- 32: .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .p-4,
+- 33: .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .md\:p-8,
+- 34: .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .max-w-5xl {
+- 35: max-width: 1360px !important;
+- 39: .cf-html-shell main[data-current-section="zadania"] header {
+- 40: position: relative;
+- 41: overflow: hidden;
+- 42: display: flex;
+- 55: .cf-html-shell main[data-current-section="zadania"] header::before {
+- 57: display: inline-flex;
+- 58: width: fit-content;
+- 59: position: absolute;
+- 73: .cf-html-shell main[data-current-section="zadania"] header > div:first-child {
+- 77: .cf-html-shell main[data-current-section="zadania"] header h1 {
+- 81: line-height: 1;
+- 85: .cf-html-shell main[data-current-section="zadania"] header h1 + p,
+- 86: .cf-html-shell main[data-current-section="zadania"] header p {
+- 87: max-width: 760px;
+- 91: line-height: 1.55;
+- 94: .cf-html-shell main[data-current-section="zadania"] header button,
+- 95: .cf-html-shell main[data-current-section="zadania"] header a {
+- 96: min-height: 42px;
+- 102: .cf-html-shell main[data-current-section="zadania"] header button[class*="bg-primary"],
+- 103: .cf-html-shell main[data-current-section="zadania"] header button:last-child {
+- 110: .cf-html-shell main[data-current-section="zadania"] header + .grid,
+- 111: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5,
+- 112: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.md\:grid-cols-5,
+- 113: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.lg\:grid-cols-5 {
+- 114: display: grid;
+- 115: grid-template-columns: repeat(5, minmax(0, 1fr));
+- 119: .cf-html-shell main[data-current-section="zadania"] header + .grid > button,
+- 120: .cf-html-shell main[data-current-section="zadania"] header + .grid > div,
+- 121: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > button,
+- 122: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > div {
+- 123: min-height: 106px;
+- 131: .cf-html-shell main[data-current-section="zadania"] header + .grid > button:hover,
+- 132: .cf-html-shell main[data-current-section="zadania"] header + .grid > div:hover,
+- 133: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > button:hover,
+- 134: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 > div:hover {
+- 140: .cf-html-shell main[data-current-section="zadania"] header + .grid [class*="text-2xl"],
+- 141: .cf-html-shell main[data-current-section="zadania"] header + .grid [class*="text-3xl"],
+- 142: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 [class*="text-2xl"],
+- 143: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5 [class*="text-3xl"] {
+- 149: .cf-html-shell main[data-current-section="zadania"] .relative:has(input) {
+- 157: .cf-html-shell main[data-current-section="zadania"] .relative:has(input) input {
+- 158: min-height: 50px;
+- 167: .cf-html-shell main[data-current-section="zadania"] .relative:has(input) svg {
+- 171: .cf-html-shell main[data-current-section="zadania"] .space-y-8 > section,
+- 172: .cf-html-shell main[data-current-section="zadania"] section[id="completed-tasks-section"],
+- 173: .cf-html-shell main[data-current-section="zadania"] .space-y-6 > section {
+- 181: .cf-html-shell main[data-current-section="zadania"] section h2,
+- 182: .cf-html-shell main[data-current-section="zadania"] section h3 {
+- 188: .cf-html-shell main[data-current-section="zadania"] section p,
+- 189: .cf-html-shell main[data-current-section="zadania"] section .text-slate-500,
+- 190: .cf-html-shell main[data-current-section="zadania"] section .text-slate-600 {
+- 194: .cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"],
+- 195: .cf-html-shell main[data-current-section="zadania"] [data-slot="card"] {
+- 202: .cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"]:hover,
+- 203: .cf-html-shell main[data-current-section="zadania"] [data-slot="card"]:hover {
+- 208: .cf-html-shell main[data-current-section="zadania"] [data-slot="card"] [class*="p-4"],
+- 209: .cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"] [class*="p-4"] {
+- 213: .cf-html-shell main[data-current-section="zadania"] [data-slot="badge"],
+- 214: .cf-html-shell main[data-current-section="zadania"] .inline-flex.items-center.rounded-full,
+- 215: .cf-html-shell main[data-current-section="zadania"] [class*="Badge"] {
+- 216: height: 24px;
+- 225: .cf-html-shell main[data-current-section="zadania"] [data-slot="badge"][class*="destructive"],
+- 226: .cf-html-shell main[data-current-section="zadania"] .bg-rose-50,
+- 227: .cf-html-shell main[data-current-section="zadania"] .bg-red-50 {
+- 233: .cf-html-shell main[data-current-section="zadania"] .bg-emerald-100,
+- 234: .cf-html-shell main[data-current-section="zadania"] .bg-green-50 {
+- 240: .cf-html-shell main[data-current-section="zadania"] .bg-amber-50,
+- 241: .cf-html-shell main[data-current-section="zadania"] .bg-yellow-50 {
+- 247: .cf-html-shell main[data-current-section="zadania"] button.rounded-xl,
+- 248: .cf-html-shell main[data-current-section="zadania"] [role="button"].rounded-xl,
+- 249: .cf-html-shell main[data-current-section="zadania"] .rounded-xl {
+- 253: .cf-html-shell main[data-current-section="zadania"] [role="dialog"] input,
+- 254: .cf-html-shell main[data-current-section="zadania"] [role="dialog"] select,
+- 255: .cf-html-shell main[data-current-section="zadania"] [role="dialog"] textarea {
+- 259: @media (max-width: 1220px) {
+- 260: .cf-html-shell main[data-current-section="zadania"] header + .grid,
+- 261: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5,
+- 262: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.md\:grid-cols-5,
+- 263: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.lg\:grid-cols-5 {
+- 264: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 268: @media (max-width: 760px) {
+- 269: .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .p-4,
+- 270: .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .md\:p-8,
+- 271: .cf-html-shell main[data-current-section="zadania"] > [data-shell-content="true"] > .max-w-5xl {
+- 275: .cf-html-shell main[data-current-section="zadania"] header {
+- 281: .cf-html-shell main[data-current-section="zadania"] header::before {
+- 282: position: static;
+- 286: .cf-html-shell main[data-current-section="zadania"] header > div:first-child {
+- 290: .cf-html-shell main[data-current-section="zadania"] header h1 {
+- 294: .cf-html-shell main[data-current-section="zadania"] header + .grid,
+- 295: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.sm\:grid-cols-2.lg\:grid-cols-5,
+- 296: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.md\:grid-cols-5,
+- 297: .cf-html-shell main[data-current-section="zadania"] .grid.grid-cols-1.lg\:grid-cols-5 {
+- 298: grid-template-columns: 1fr !important;
+- 301: .cf-html-shell main[data-current-section="zadania"] [data-slot="card"] [class*="flex"],
+- 302: .cf-html-shell main[data-current-section="zadania"] [class*="shadow-sm"] [class*="flex"] {
+- 4: width: min(760px, calc(100vw - 24px)) !important;
+- 5: max-width: 760px !important;
+- 6: max-height: min(92vh, 900px);
+- 7: overflow: hidden;
+- 23: display: none !important;
+- 44: display: grid;
+- 58: line-height: 1.1;
+- 67: line-height: 1.5;
+- 71: max-height: calc(92vh - 110px);
+- 72: overflow-y: auto;
+- 74: display: grid;
+- 106: line-height: 1.5;
+- 110: display: grid;
+- 115: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 119: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 123: display: grid !important;
+- 142: width: 100%;
+- 143: min-height: 42px;
+- 164: overflow: hidden;
+- 177: display: none;
+- 197: position: sticky;
+- 206: width: auto !important;
+- 207: min-height: 42px;
+- 220: display: flex;
+- 231: min-height: 32px;
+- 237: @media (max-width: 640px) {
+- 239: width: calc(100vw - 16px) !important;
+- 240: max-height: 94vh;
+- 250: max-height: calc(94vh - 98px);
+- 256: grid-template-columns: 1fr;
+- 264: display: grid !important;
+- 265: grid-template-columns: 1fr;
+- 269: width: 100% !important;
+- 277: line-height: 1.5;
+- 294: display: flex;
+- 316: stroke-width: 2.25 !important;
+- 7: .cf-html-shell .main-today {
+- 39: .cf-html-shell .main-today > [data-shell-content="true"] {
+- 40: max-width: 1500px !important;
+- 45: .cf-html-shell .main-today > [data-shell-content="true"] > div,
+- 46: .cf-html-shell .main-today > [data-shell-content="true"] > section,
+- 47: .cf-html-shell .main-today .today-page,
+- 48: .cf-html-shell .main-today .today-stage,
+- 49: .cf-html-shell .main-today .today-html-page {
+- 50: max-width: 1500px !important;
+- 55: .cf-html-shell .main-today .page-head,
+- 56: .cf-html-shell .main-today [data-visual-page-head],
+- 57: .cf-html-shell .main-today header:first-child,
+- 58: .cf-html-shell .main-today .today-header,
+- 59: .cf-html-shell .main-today .today-page-head {
+- 60: display: flex !important;
+- 71: .cf-html-shell .main-today .kicker,
+- 72: .cf-html-shell .main-today [data-kicker],
+- 73: .cf-html-shell .main-today .today-kicker,
+- 74: .cf-html-shell .main-today header:first-child [class*="uppercase"]:first-child {
+- 75: display: inline-flex !important;
+- 78: width: fit-content !important;
+- 90: .cf-html-shell .main-today h1,
+- 91: .cf-html-shell .main-today .page-head h1,
+- 92: .cf-html-shell .main-today header:first-child h1 {
+- 96: line-height: 1 !important;
+- 100: .cf-html-shell .main-today .lead-copy,
+- 101: .cf-html-shell .main-today .page-head p,
+- 102: .cf-html-shell .main-today header:first-child p,
+- 103: .cf-html-shell .main-today .today-lead-copy {
+- 104: max-width: 780px !important;
+- 108: line-height: 1.45 !important;
+- 111: .cf-html-shell .main-today .head-actions,
+- 112: .cf-html-shell .main-today [data-visual-head-actions],
+- 113: .cf-html-shell .main-today header:first-child > div:last-child {
+- 114: display: flex !important;
+- 120: .cf-html-shell .main-today .head-actions button,
+- 121: .cf-html-shell .main-today .head-actions a,
+- 122: .cf-html-shell .main-today header:first-child button,
+- 123: .cf-html-shell .main-today header:first-child a,
+- 124: .cf-html-shell .main-today .today-header button,
+- 125: .cf-html-shell .main-today .today-header a {
+- 126: min-height: 40px !important;
+- 137: .cf-html-shell .main-today .head-actions button[class*="primary"],
+- 138: .cf-html-shell .main-today .head-actions button[class*="bg-primary"],
+- 139: .cf-html-shell .main-today header:first-child button[class*="primary"],
+- 140: .cf-html-shell .main-today header:first-child button[class*="bg-primary"],
+- 141: .cf-html-shell .main-today header:first-child button:last-child {
+- 148: .cf-html-shell .main-today .grid-4,
+- 149: .cf-html-shell .main-today [data-visual-metrics],
+- 150: .cf-html-shell .main-today .today-metrics,
+- 151: .cf-html-shell .main-today .today-shortcuts,
+- 152: .cf-html-shell .main-today .stat-shortcut-grid,
+- 153: .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+- 154: .cf-html-shell .main-today .grid:has(.stat-shortcut-card),
+- 155: .cf-html-shell .main-today .grid:has(.today-top-tile) {
+- 156: display: grid !important;
+- 157: grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+- 162: .cf-html-shell .main-today .metric,
+- 163: .cf-html-shell .main-today [data-stat-shortcut-card],
+- 164: .cf-html-shell .main-today .stat-shortcut-card,
+- 165: .cf-html-shell .main-today .today-top-tile,
+- 166: .cf-html-shell .main-today .today-metric,
+- 167: .cf-html-shell .main-today .today-shortcuts > button,
+- 168: .cf-html-shell .main-today .today-shortcuts > a,
+- 169: .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]) > *,
+- 170: .cf-html-shell .main-today .grid:has(.stat-shortcut-card) > * {
+- 171: min-height: 106px !important;
+- 181: .cf-html-shell .main-today .metric:hover,
+- 182: .cf-html-shell .main-today [data-stat-shortcut-card]:hover,
+- 183: .cf-html-shell .main-today .stat-shortcut-card:hover,
+- 184: .cf-html-shell .main-today .today-top-tile:hover,
+- 185: .cf-html-shell .main-today .today-shortcuts > button:hover,
+- 186: .cf-html-shell .main-today .today-shortcuts > a:hover,
+- 187: .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]) > *:hover,
+- 188: .cf-html-shell .main-today .grid:has(.stat-shortcut-card) > *:hover {
+- 194: .cf-html-shell .main-today .metric label,
+- 195: .cf-html-shell .main-today .metric .label,
+- 196: .cf-html-shell .main-today [data-stat-shortcut-card] label,
+- 197: .cf-html-shell .main-today .stat-shortcut-card label,
+- 198: .cf-html-shell .main-today .today-top-tile label,
+- 199: .cf-html-shell .main-today .today-metric label {
+- 207: .cf-html-shell .main-today .metric strong,
+- 208: .cf-html-shell .main-today [data-stat-shortcut-card] strong,
+- 209: .cf-html-shell .main-today .stat-shortcut-card strong,
+- 210: .cf-html-shell .main-today .today-top-tile strong,
+- 211: .cf-html-shell .main-today .today-metric strong,
+- 212: .cf-html-shell .main-today .today-shortcuts strong {
+- 213: display: block !important;
+- 218: line-height: 1 !important;
+- 221: .cf-html-shell .main-today .metric .hint,
+- 222: .cf-html-shell .main-today [data-stat-shortcut-card] .hint,
+- 223: .cf-html-shell .main-today .stat-shortcut-card .hint,
+- 224: .cf-html-shell .main-today .today-top-tile .hint,
+- 225: .cf-html-shell .main-today .today-metric .hint {
+- 229: line-height: 1.3 !important;
+- 232: .cf-html-shell .main-today .layout-list,
+- 233: .cf-html-shell .main-today [data-visual-layout-list],
+- 234: .cf-html-shell .main-today .today-layout,
+- 235: .cf-html-shell .main-today .today-main-grid,
+- 236: .cf-html-shell .main-today .grid:has(.right-card),
+- 237: .cf-html-shell .main-today .grid:has([data-visual-right-rail]),
+- 238: .cf-html-shell .main-today .grid:has(.today-right-rail),
+- 239: .cf-html-shell .main-today .grid:has(.today-sidebar) {
+- 240: display: grid !important;
+- 241: grid-template-columns: minmax(0, 1fr) 315px !important;
+- 247: .cf-html-shell .main-today .hero-grid,
+- 248: .cf-html-shell .main-today [data-visual-hero-grid],
+- 249: .cf-html-shell .main-today .today-hero-grid,
+- 250: .cf-html-shell .main-today .grid:has(.hero) {
+- 251: display: grid !important;
+- 252: grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr) !important;
+- 256: .cf-html-shell .main-today .hero,
+- 257: .cf-html-shell .main-today [data-visual-hero],
+- 258: .cf-html-shell .main-today .today-priority-hero,
+- 259: .cf-html-shell .main-today .today-main-hero {
+- 260: min-height: 156px !important;
+- 269: .cf-html-shell .main-today .hero.light,
+- 270: .cf-html-shell .main-today [data-visual-hero="light"],
+- 271: .cf-html-shell .main-today .today-week-hero,
+- 272: .cf-html-shell .main-today .today-secondary-hero {
+- 279: .cf-html-shell .main-today .hero label,
+- 280: .cf-html-shell .main-today .hero .label,
+- 281: .cf-html-shell .main-today .today-priority-hero label {
+- 289: .cf-html-shell .main-today .hero.light label,
+- 290: .cf-html-shell .main-today .today-week-hero label,
+- 291: .cf-html-shell .main-today .today-secondary-hero label {
+- 295: .cf-html-shell .main-today .hero h2,
+- 296: .cf-html-shell .main-today .today-priority-hero h2,
+- 297: .cf-html-shell .main-today .today-main-hero h2 {
+- 301: line-height: 1.05 !important;
+- 305: .cf-html-shell .main-today .hero p,
+- 306: .cf-html-shell .main-today .today-priority-hero p,
+- 307: .cf-html-shell .main-today .today-main-hero p {
+- 310: line-height: 1.45 !important;
+- 313: .cf-html-shell .main-today .hero.light p,
+- 314: .cf-html-shell .main-today .today-week-hero p,
+- 315: .cf-html-shell .main-today .today-secondary-hero p {
+- 319: .cf-html-shell .main-today .card,
+- 320: .cf-html-shell .main-today [data-slot="card"],
+- 321: .cf-html-shell .main-today .today-card,
+- 322: .cf-html-shell .main-today .today-section,
+- 323: .cf-html-shell .main-today .today-tile-card,
+- 324: .cf-html-shell .main-today .today-list-card,
+- 325: .cf-html-shell .main-today .table-card {
+- 326: overflow: hidden !important;
+- 333: .cf-html-shell .main-today .card.pad,
+- 334: .cf-html-shell .main-today .today-card.pad,
+- 335: .cf-html-shell .main-today .today-section,
+- 336: .cf-html-shell .main-today .today-tile-card {
+- 340: .cf-html-shell .main-today .panel-head,
+- 341: .cf-html-shell .main-today [data-visual-panel-head],
+- 342: .cf-html-shell .main-today .today-panel-head,
+- 343: .cf-html-shell .main-today .today-tile-header,
+- 344: .cf-html-shell .main-today .card-header {
+- 345: display: flex !important;
+- 352: .cf-html-shell .main-today .panel-head h2,
+- 353: .cf-html-shell .main-today .panel-head h3,
+- 354: .cf-html-shell .main-today .today-panel-head h2,
+- 355: .cf-html-shell .main-today .today-panel-head h3,
+- 356: .cf-html-shell .main-today .today-tile-header h2,
+- 357: .cf-html-shell .main-today .today-tile-header h3,
+- 358: .cf-html-shell .main-today .card-header h2,
+- 359: .cf-html-shell .main-today .card-header h3 {
+- 366: .cf-html-shell .main-today .panel-head p,
+- 367: .cf-html-shell .main-today .today-panel-head p,
+- 368: .cf-html-shell .main-today .today-tile-header p,
+- 369: .cf-html-shell .main-today .card-header p {
+- 373: line-height: 1.4 !important;
+- 376: .cf-html-shell .main-today .row,
+- 377: .cf-html-shell .main-today [data-visual-row],
+- 378: .cf-html-shell .main-today .today-row,
+- 379: .cf-html-shell .main-today .today-item,
+- 380: .cf-html-shell .main-today .work-card,
+- 381: .cf-html-shell .main-today [data-work-card],
+- 382: .cf-html-shell .main-today .today-action-card,
+- 383: .cf-html-shell .main-today .today-list-card > div {
+- 390: .cf-html-shell .main-today .work-card,
+- 391: .cf-html-shell .main-today [data-work-card],
+- 392: .cf-html-shell .main-today .today-action-card,
+- 393: .cf-html-shell .main-today .today-row,
+- 394: .cf-html-shell .main-today .today-item {
+- 395: display: grid !important;
+- 400: .cf-html-shell .main-today .work-head,
+- 401: .cf-html-shell .main-today .today-row-head,
+- 402: .cf-html-shell .main-today .today-item-head {
+- 403: display: flex !important;
+- 409: .cf-html-shell .main-today .title,
+- 410: .cf-html-shell .main-today .today-row-title,
+- 411: .cf-html-shell .main-today .today-item-title,
+- 412: .cf-html-shell .main-today .work-card strong {
+- 416: line-height: 1.2 !important;
+- 419: .cf-html-shell .main-today .sub,
+- 420: .cf-html-shell .main-today .mini,
+- 421: .cf-html-shell .main-today .today-row-sub,
+- 422: .cf-html-shell .main-today .today-item-sub,
+- 423: .cf-html-shell .main-today .work-card p {
+- 426: line-height: 1.45 !important;
+- 429: .cf-html-shell .main-today .pill,
+- 430: .cf-html-shell .main-today .badge,
+- 431: .cf-html-shell .main-today [data-slot="badge"],
+- 432: .cf-html-shell .main-today .inline-flex.items-center.rounded-full {
+- 433: display: inline-flex !important;
+- 436: min-height: 24px !important;
+- 447: .cf-html-shell .main-today .pill.blue,
+- 448: .cf-html-shell .main-today .badge.blue,
+- 449: .cf-html-shell .main-today [data-tone="blue"],
+- 450: .cf-html-shell .main-today .bg-blue-50,
+- 451: .cf-html-shell .main-today .bg-sky-50 {
+- 457: .cf-html-shell .main-today .pill.green,
+- 458: .cf-html-shell .main-today .badge.green,
+- 459: .cf-html-shell .main-today [data-tone="green"],
+- 460: .cf-html-shell .main-today .bg-emerald-50,
+- 461: .cf-html-shell .main-today .bg-green-50 {
+- 467: .cf-html-shell .main-today .pill.red,
+- 468: .cf-html-shell .main-today .badge.red,
+- 469: .cf-html-shell .main-today [data-tone="red"],
+- 470: .cf-html-shell .main-today .bg-red-50,
+- 471: .cf-html-shell .main-today .bg-rose-50,
+- 472: .cf-html-shell .main-today [class*="destructive"] {
+- 478: .cf-html-shell .main-today .pill.amber,
+- 479: .cf-html-shell .main-today .badge.amber,
+- 480: .cf-html-shell .main-today [data-tone="amber"],
+- 481: .cf-html-shell .main-today .bg-amber-50,
+- 482: .cf-html-shell .main-today .bg-yellow-50 {
+- 488: .cf-html-shell .main-today .pill.violet,
+- 489: .cf-html-shell .main-today .badge.violet,
+- 490: .cf-html-shell .main-today [data-tone="violet"],
+- 491: .cf-html-shell .main-today .bg-violet-50,
+- 492: .cf-html-shell .main-today .bg-purple-50 {
+- 498: .cf-html-shell .main-today .right-card,
+- 499: .cf-html-shell .main-today [data-visual-right-rail],
+- 500: .cf-html-shell .main-today .today-right-rail,
+- 501: .cf-html-shell .main-today .today-sidebar,
+- 502: .cf-html-shell .main-today aside:not(.sidebar) {
+- 510: .cf-html-shell .main-today .quick-list,
+- 511: .cf-html-shell .main-today [data-visual-quick-list],
+- 512: .cf-html-shell .main-today .today-shortcut-list,
+- 513: .cf-html-shell .main-today .today-right-rail nav,
+- 514: .cf-html-shell .main-today aside:not(.sidebar) nav {
+- 515: display: grid !important;
+- 519: .cf-html-shell .main-today .quick-list button,
+- 520: .cf-html-shell .main-today .quick-list a,
+- 521: .cf-html-shell .main-today .today-shortcut-list button,
+- 522: .cf-html-shell .main-today .today-shortcut-list a,
+- 523: .cf-html-shell .main-today .today-right-rail nav button,
+- 524: .cf-html-shell .main-today .today-right-rail nav a,
+- 525: .cf-html-shell .main-today aside:not(.sidebar) nav button,
+- 526: .cf-html-shell .main-today aside:not(.sidebar) nav a {
+- 527: min-height: 40px !important;
+- 533: display: flex !important;
+- 541: .cf-html-shell .main-today .quick-list button:hover,
+- 542: .cf-html-shell .main-today .quick-list a:hover,
+- 543: .cf-html-shell .main-today .today-shortcut-list button:hover,
+- 544: .cf-html-shell .main-today .today-shortcut-list a:hover,
+- 545: .cf-html-shell .main-today .today-right-rail nav button:hover,
+- 546: .cf-html-shell .main-today .today-right-rail nav a:hover,
+- 547: .cf-html-shell .main-today aside:not(.sidebar) nav button:hover,
+- 548: .cf-html-shell .main-today aside:not(.sidebar) nav a:hover {
+- 554: .cf-html-shell .main-today .note,
+- 555: .cf-html-shell .main-today .today-note,
+- 556: .cf-html-shell .main-today [data-visual-note] {
+- 563: line-height: 1.45 !important;
+- 566: .cf-html-shell .main-today input,
+- 567: .cf-html-shell .main-today textarea,
+- 568: .cf-html-shell .main-today select {
+- 569: min-height: 40px;
+- 576: .cf-html-shell .main-today [role="dialog"] {
+- 580: .cf-html-shell .main-today [role="dialog"] input,
+- 581: .cf-html-shell .main-today [role="dialog"] textarea,
+- 582: .cf-html-shell .main-today [role="dialog"] select {
+- 586: @media (max-width: 1220px) {
+- 587: .cf-html-shell .main-today .grid-4,
+- 588: .cf-html-shell .main-today [data-visual-metrics],
+- 589: .cf-html-shell .main-today .today-metrics,
+- 590: .cf-html-shell .main-today .today-shortcuts,
+- 591: .cf-html-shell .main-today .stat-shortcut-grid,
+- 592: .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+- 593: .cf-html-shell .main-today .grid:has(.stat-shortcut-card),
+- 594: .cf-html-shell .main-today .grid:has(.today-top-tile) {
+- 595: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 598: .cf-html-shell .main-today .layout-list,
+- 599: .cf-html-shell .main-today [data-visual-layout-list],
+- 600: .cf-html-shell .main-today .today-layout,
+- 601: .cf-html-shell .main-today .today-main-grid,
+- 602: .cf-html-shell .main-today .grid:has(.right-card),
+- 603: .cf-html-shell .main-today .grid:has([data-visual-right-rail]),
+- 604: .cf-html-shell .main-today .grid:has(.today-right-rail),
+- 605: .cf-html-shell .main-today .grid:has(.today-sidebar) {
+- 606: grid-template-columns: 1fr !important;
+- 610: @media (max-width: 760px) {
+- 611: .cf-html-shell .main-today > [data-shell-content="true"] {
+- 615: .cf-html-shell .main-today .page-head,
+- 616: .cf-html-shell .main-today [data-visual-page-head],
+- 617: .cf-html-shell .main-today header:first-child,
+- 618: .cf-html-shell .main-today .today-header,
+- 619: .cf-html-shell .main-today .today-page-head {
+- 624: .cf-html-shell .main-today .head-actions,
+- 625: .cf-html-shell .main-today [data-visual-head-actions],
+- 626: .cf-html-shell .main-today header:first-child > div:last-child {
+- 627: width: 100% !important;
+- 629: overflow-x: auto !important;
+- 632: .cf-html-shell .main-today h1,
+- 633: .cf-html-shell .main-today .page-head h1,
+- 634: .cf-html-shell .main-today header:first-child h1 {
+- 638: .cf-html-shell .main-today .grid-4,
+- 639: .cf-html-shell .main-today [data-visual-metrics],
+- 640: .cf-html-shell .main-today .today-metrics,
+- 641: .cf-html-shell .main-today .today-shortcuts,
+- 642: .cf-html-shell .main-today .stat-shortcut-grid,
+- 643: .cf-html-shell .main-today .grid:has([data-stat-shortcut-card]),
+- 644: .cf-html-shell .main-today .grid:has(.stat-shortcut-card),
+- 645: .cf-html-shell .main-today .grid:has(.today-top-tile),
+- 646: .cf-html-shell .main-today .hero-grid,
+- 647: .cf-html-shell .main-today [data-visual-hero-grid],
+- 648: .cf-html-shell .main-today .today-hero-grid,
+- 649: .cf-html-shell .main-today .grid:has(.hero) {
+- 650: grid-template-columns: 1fr !important;
+- 653: .cf-html-shell .main-today .metric,
+- 654: .cf-html-shell .main-today [data-stat-shortcut-card],
+- 655: .cf-html-shell .main-today .stat-shortcut-card,
+- 656: .cf-html-shell .main-today .today-top-tile,
+- 657: .cf-html-shell .main-today .today-metric,
+- 658: .cf-html-shell .main-today .today-shortcuts > button,
+- 659: .cf-html-shell .main-today .today-shortcuts > a {
+- 660: min-height: 92px !important;
+- 663: .cf-html-shell .main-today .card,
+- 664: .cf-html-shell .main-today [data-slot="card"],
+- 665: .cf-html-shell .main-today .today-card,
+- 666: .cf-html-shell .main-today .today-section,
+- 667: .cf-html-shell .main-today .today-tile-card,
+- 668: .cf-html-shell .main-today .today-list-card,
+- 669: .cf-html-shell .main-today .table-card,
+- 670: .cf-html-shell .main-today .right-card,
+- 671: .cf-html-shell .main-today [data-visual-right-rail],
+- 672: .cf-html-shell .main-today .today-right-rail,
+- 673: .cf-html-shell .main-today .today-sidebar,
+- 674: .cf-html-shell .main-today aside:not(.sidebar) {
+- 4: width: min(780px, calc(100vw - 24px)) !important;
+- 5: max-width: 780px !important;
+- 6: max-height: min(92vh, 900px);
+- 7: overflow: hidden;
+- 23: display: none !important;
+- 41: line-height: 1.1;
+- 49: line-height: 1.5;
+- 54: max-height: calc(92vh - 110px);
+- 55: overflow-y: auto;
+- 57: display: grid;
+- 75: display: grid;
+- 80: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 84: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 88: display: grid !important;
+- 107: width: 100%;
+- 108: min-height: 42px;
+- 132: position: sticky;
+- 141: width: auto !important;
+- 142: min-height: 42px;
+- 153: min-height: 32px;
+- 159: @media (max-width: 640px) {
+- 161: width: calc(100vw - 16px) !important;
+- 162: max-height: 94vh;
+- 173: max-height: calc(94vh - 98px);
+- 179: grid-template-columns: 1fr;
+- 183: display: grid !important;
+- 184: grid-template-columns: 1fr;
+- 188: width: 100% !important;
+- 199: scrollbar-width: thin;
+- 204: width: 10px;
+- 238: @media (max-width: 640px) {
+- 388: display: inline-flex !important;
+- 392: min-height: 1.72rem !important;
+- 393: width: auto !important;
+- 394: min-width: 0 !important;
+- 403: line-height: 1 !important;
+- 651: max-height: calc(100vh - 64px) !important;
+- 652: max-height: calc(100dvh - 64px) !important;
+- 653: overflow: hidden !important;
+- 667: max-height: calc(100vh - 164px) !important;
+- 668: max-height: calc(100dvh - 164px) !important;
+- 669: overflow-y: auto !important;
+- 675: position: sticky !important;
+- 681: @media (max-width: 640px) {
+- 684: width: calc(100vw - 16px) !important;
+- 685: max-height: calc(100dvh - 32px) !important;
+- 690: max-height: calc(100dvh - 140px) !important;
+- 701: max-height: calc(100vh - 64px) !important;
+- 702: max-height: calc(100dvh - 64px) !important;
+- 703: overflow: hidden !important;
+- 716: line-height: 1.2 !important;
+- 717: overflow: visible !important;
+- 721: max-height: calc(100vh - 178px) !important;
+- 722: max-height: calc(100dvh - 178px) !important;
+- 723: overflow-y: auto !important;
+- 728: position: sticky !important;
+- 734: @media (max-width: 640px) {
+- 737: width: calc(100vw - 16px) !important;
+- 738: max-height: calc(100vh - 24px) !important;
+- 739: max-height: calc(100dvh - 24px) !important;
+- 743: max-height: calc(100vh - 148px) !important;
+- 744: max-height: calc(100dvh - 148px) !important;
+- 755: max-height: calc(100vh - 64px) !important;
+- 756: overflow: hidden !important;
+- 759: @supports (height: 100dvh) {
+- 761: max-height: calc(100dvh - 64px) !important;
+- 774: line-height: 1.18 !important;
+- 780: max-height: calc(100vh - 180px) !important;
+- 781: overflow-y: auto !important;
+- 785: @supports (height: 100dvh) {
+- 788: max-height: calc(100dvh - 180px) !important;
+- 793: position: sticky !important;
+- 800: @media (max-width: 640px) {
+- 803: width: calc(100vw - 16px) !important;
+- 804: max-height: calc(100vh - 32px) !important;
+- 807: @supports (height: 100dvh) {
+- 809: max-height: calc(100dvh - 32px) !important;
+- 815: max-height: calc(100vh - 146px) !important;
+- 825: max-height: calc(100vh - 64px) !important;
+- 826: max-height: calc(100dvh - 64px) !important;
+- 827: overflow: hidden !important;
+- 839: max-height: calc(100vh - 176px) !important;
+- 840: max-height: calc(100dvh - 176px) !important;
+- 841: overflow-y: auto !important;
+- 846: position: sticky !important;
+- 853: @media (max-width: 640px) {
+- 856: width: calc(100vw - 16px) !important;
+- 857: max-height: calc(100dvh - 32px) !important;
+- 862: max-height: calc(100dvh - 148px) !important;
+- 874: width: min(780px, calc(100vw - 28px)) !important;
+- 875: max-width: 780px !important;
+- 876: max-height: calc(100vh - 64px) !important;
+- 877: overflow: hidden !important;
+- 889: line-height: 1.18 !important;
+- 894: max-height: calc(100vh - 190px) !important;
+- 895: overflow-y: auto !important;
+- 902: position: sticky !important;
+- 909: @media (max-width: 640px) {
+- 911: width: calc(100vw - 16px) !important;
+- 912: max-height: calc(100vh - 32px) !important;
+- 917: max-height: calc(100vh - 160px) !important;
+- 7: .cf-html-shell .main-leads,
+- 8: .closeflow-visual-stage01 .main-leads,
+- 12: --cf22-sidebar: #101828;
+- 13: --cf22-sidebar-2: #172033;
+- 44: .cf-html-shell .main-leads > [data-shell-content="true"] > .p-4,
+- 45: .cf-html-shell .main-leads > [data-shell-content="true"] > .md\:p-8,
+- 46: .cf-html-shell .main-leads > [data-shell-content="true"] > .max-w-7xl,
+- 47: .closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .p-4,
+- 48: .closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .md\:p-8,
+- 50: max-width: 1500px !important;
+- 55: .cf-html-shell .main-leads header,
+- 56: .closeflow-visual-stage01 .main-leads header,
+- 58: position: relative;
+- 59: overflow: hidden;
+- 60: display: flex !important;
+- 74: .cf-html-shell .main-leads header::before,
+- 75: .closeflow-visual-stage01 .main-leads header::before,
+- 78: display: inline-flex;
+- 79: width: fit-content;
+- 80: position: absolute;
+- 96: .cf-html-shell .main-leads header > div:first-child,
+- 97: .closeflow-visual-stage01 .main-leads header > div:first-child,
+- 99: min-width: 0 !important;
+- 103: .cf-html-shell .main-leads header h1,
+- 104: .closeflow-visual-stage01 .main-leads header h1,
+- 109: line-height: 1 !important;
+- 114: .cf-html-shell .main-leads header h1::after,
+- 115: .closeflow-visual-stage01 .main-leads header h1::after,
+- 118: display: block;
+- 119: max-width: 780px;
+- 123: line-height: 1.45;
+- 128: .cf-html-shell .main-leads header > div:last-child,
+- 129: .closeflow-visual-stage01 .main-leads header > div:last-child,
+- 131: display: flex !important;
+- 139: .cf-html-shell .main-leads button,
+- 140: .closeflow-visual-stage01 .main-leads button,
+- 147: .cf-html-shell .main-leads header button,
+- 148: .closeflow-visual-stage01 .main-leads header button,
+- 150: min-height: 40px !important;
+- 157: .cf-html-shell .main-leads header button:first-child,
+- 158: .closeflow-visual-stage01 .main-leads header button:first-child,
+- 166: .cf-html-shell .main-leads header button:last-child,
+- 167: .closeflow-visual-stage01 .main-leads header button:last-child,
+- 176: .cf-html-shell .main-leads svg,
+- 177: .closeflow-visual-stage01 .main-leads svg,
+- 180: stroke-width: 2.25;
+- 183: .cf-html-shell .main-leads header button svg,
+- 184: .closeflow-visual-stage01 .main-leads header button svg,
+- 186: width: 16px !important;
+- 187: height: 16px !important;
+- 191: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 192: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 194: display: grid !important;
+- 195: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 200: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+- 201: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+- 208: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button:hover,
+- 209: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button:hover,
+- 214: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card"],
+- 215: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full,
+- 216: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card"],
+- 217: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full,
+- 219: height: 100%;
+- 224: overflow: hidden !important;
+- 227: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [class*="min-h"],
+- 228: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [class*="min-h"],
+- 230: min-height: 106px !important;
+- 235: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p,
+- 236: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p,
+- 246: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3,
+- 247: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3,
+- 251: line-height: 1 !important;
+- 256: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl,
+- 257: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl,
+- 259: width: 44px !important;
+- 260: height: 44px !important;
+- 261: display: grid !important;
+- 267: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl svg,
+- 268: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .rounded-2xl svg,
+- 270: width: 21px !important;
+- 271: height: 21px !important;
+- 275: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"],
+- 276: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"],
+- 278: display: grid !important;
+- 279: grid-template-columns: minmax(0, 1fr) 315px !important;
+- 286: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > [data-slot="card"],
+- 287: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > .border-none,
+- 288: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"] > [data-slot="card"],
+- 289: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"] > .border-none,
+- 295: overflow: hidden !important;
+- 298: .cf-html-shell .main-leads .relative:has(input[list="lead-search-suggestions-stage31"]),
+- 299: .closeflow-visual-stage01 .main-leads .relative:has(input[list="lead-search-suggestions-stage31"]),
+- 301: position: relative;
+- 304: .cf-html-shell .main-leads input[list="lead-search-suggestions-stage31"],
+- 305: .closeflow-visual-stage01 .main-leads input[list="lead-search-suggestions-stage31"],
+- 307: height: 50px !important;
+- 317: .cf-html-shell .main-leads input[list="lead-search-suggestions-stage31"]::placeholder,
+- 318: .closeflow-visual-stage01 .main-leads input[list="lead-search-suggestions-stage31"]::placeholder,
+- 323: .cf-html-shell .main-leads [data-stage31-lead-search-suggestions="true"],
+- 324: .closeflow-visual-stage01 .main-leads [data-stage31-lead-search-suggestions="true"],
+- 326: display: grid !important;
+- 330: .cf-html-shell .main-leads [data-stage31-lead-search-suggestions="true"] a,
+- 331: .closeflow-visual-stage01 .main-leads [data-stage31-lead-search-suggestions="true"] a,
+- 333: min-height: 40px !important;
+- 342: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"],
+- 343: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"],
+- 345: position: sticky !important;
+- 348: display: grid !important;
+- 352: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] > [data-slot="card"],
+- 353: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] > .border-none,
+- 354: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] > [data-slot="card"],
+- 355: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] > .border-none,
+- 361: overflow: hidden !important;
+- 364: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] [data-slot="card-content"],
+- 365: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] [data-slot="card-content"],
+- 370: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] a,
+- 371: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] a,
+- 373: min-height: 40px !important;
+- 378: display: flex !important;
+- 386: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] a:hover,
+- 387: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"] a:hover,
+- 396: .cf-html-shell .main-leads .space-y-3 > a[href^="/leads/"],
+- 397: .closeflow-visual-stage01 .main-leads .space-y-3 > a[href^="/leads/"],
+- 399: .cf-html-shell .main-leads .space-y-3 > div:has(a[href^="/leads/"]),
+- 400: .closeflow-visual-stage01 .main-leads .space-y-3 > div:has(a[href^="/leads/"]),
+- 409: .cf-html-shell .main-leads .space-y-3 > a[href^="/leads/"]:hover,
+- 410: .closeflow-visual-stage01 .main-leads .space-y-3 > a[href^="/leads/"]:hover,
+- 412: .cf-html-shell .main-leads .space-y-3 > div:has(a[href^="/leads/"]):hover,
+- 413: .closeflow-visual-stage01 .main-leads .space-y-3 > div:has(a[href^="/leads/"]):hover,
+- 421: .cf-html-shell .main-leads [data-slot="badge"],
+- 422: .cf-html-shell .main-leads .inline-flex.items-center.rounded-full,
+- 423: .closeflow-visual-stage01 .main-leads [data-slot="badge"],
+- 424: .closeflow-visual-stage01 .main-leads .inline-flex.items-center.rounded-full,
+- 427: min-height: 24px !important;
+- 437: .cf-html-shell .main-leads .bg-blue-100,
+- 438: .cf-html-shell .main-leads .bg-blue-50,
+- 439: .closeflow-visual-stage01 .main-leads .bg-blue-100,
+- 440: .closeflow-visual-stage01 .main-leads .bg-blue-50,
+- 448: .cf-html-shell .main-leads .bg-emerald-50,
+- 449: .cf-html-shell .main-leads .bg-green-50,
+- 450: .closeflow-visual-stage01 .main-leads .bg-emerald-50,
+- 451: .closeflow-visual-stage01 .main-leads .bg-green-50,
+- 459: .cf-html-shell .main-leads .bg-rose-50,
+- 460: .cf-html-shell .main-leads .bg-red-50,
+- 461: .closeflow-visual-stage01 .main-leads .bg-rose-50,
+- 462: .closeflow-visual-stage01 .main-leads .bg-red-50,
+- 470: .cf-html-shell .main-leads .bg-amber-50,
+- 471: .cf-html-shell .main-leads .bg-amber-100,
+- 472: .closeflow-visual-stage01 .main-leads .bg-amber-50,
+- 473: .closeflow-visual-stage01 .main-leads .bg-amber-100,
+- 481: .cf-html-shell .main-leads .bg-violet-100,
+- 482: .cf-html-shell .main-leads .bg-purple-100,
+- 483: .closeflow-visual-stage01 .main-leads .bg-violet-100,
+- 484: .closeflow-visual-stage01 .main-leads .bg-purple-100,
+- 493: .cf-html-shell .main-leads [role="dialog"],
+- 494: .closeflow-visual-stage01 .main-leads [role="dialog"],
+- 499: .cf-html-shell .main-leads [role="dialog"] input,
+- 500: .cf-html-shell .main-leads [role="dialog"] select,
+- 501: .closeflow-visual-stage01 .main-leads [role="dialog"] input,
+- 502: .closeflow-visual-stage01 .main-leads [role="dialog"] select,
+- 508: @media (max-width: 1180px) {
+- 509: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"],
+- 510: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"],
+- 512: grid-template-columns: 1fr !important;
+- 515: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"],
+- 516: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-rail="true"],
+- 518: position: static !important;
+- 522: @media (max-width: 920px) {
+- 523: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 524: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 526: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 530: @media (max-width: 760px) {
+- 531: .cf-html-shell .main-leads > [data-shell-content="true"] > .p-4,
+- 532: .cf-html-shell .main-leads > [data-shell-content="true"] > .md\:p-8,
+- 533: .cf-html-shell .main-leads > [data-shell-content="true"] > .max-w-7xl,
+- 534: .closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .p-4,
+- 535: .closeflow-visual-stage01 .main-leads > [data-shell-content="true"] > .md\:p-8,
+- 540: .cf-html-shell .main-leads header,
+- 541: .closeflow-visual-stage01 .main-leads header,
+- 543: display: grid !important;
+- 548: .cf-html-shell .main-leads header::before,
+- 549: .closeflow-visual-stage01 .main-leads header::before,
+- 551: position: static !important;
+- 555: .cf-html-shell .main-leads header > div:first-child,
+- 556: .closeflow-visual-stage01 .main-leads header > div:first-child,
+- 561: .cf-html-shell .main-leads header > div:last-child,
+- 562: .closeflow-visual-stage01 .main-leads header > div:last-child,
+- 567: .cf-html-shell .main-leads header button,
+- 568: .closeflow-visual-stage01 .main-leads header button,
+- 573: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 574: .closeflow-visual-stage01 .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 576: grid-template-columns: 1fr !important;
+- 579: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"],
+- 580: .closeflow-visual-stage01 .main-leads [data-stage32-leads-value-layout="true"],
+- 4: width: min(780px, calc(100vw - 24px)) !important;
+- 5: max-width: 780px !important;
+- 6: max-height: min(92vh, 900px);
+- 7: overflow: hidden;
+- 23: display: none !important;
+- 38: display: block;
+- 49: line-height: 1.1;
+- 57: line-height: 1.5;
+- 61: max-height: calc(92vh - 110px);
+- 62: overflow-y: auto;
+- 64: display: grid;
+- 95: line-height: 1.5;
+- 99: display: grid;
+- 100: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 105: display: grid;
+- 123: width: 100%;
+- 124: min-height: 42px;
+- 144: min-height: 92px;
+- 146: line-height: 1.5;
+- 150: display: grid;
+- 151: grid-template-columns: minmax(0, 1fr) 42px;
+- 160: display: grid;
+- 165: width: 100%;
+- 171: display: flex;
+- 179: display: block;
+- 187: display: block;
+- 191: line-height: 1.4;
+- 206: width: fit-content;
+- 211: min-height: 32px;
+- 233: line-height: 1.5;
+- 237: position: sticky;
+- 246: width: auto !important;
+- 247: min-height: 42px;
+- 276: @media (max-width: 640px) {
+- 278: width: calc(100vw - 16px) !important;
+- 279: max-height: 94vh;
+- 288: max-height: calc(94vh - 98px);
+- 294: grid-template-columns: 1fr;
+- 302: display: grid !important;
+- 303: grid-template-columns: 1fr;
+- 307: width: 100% !important;
+- 6: #root .cf-html-shell .main-leads {
+- 9: --cf23-sidebar: #101828;
+- 36: #root .cf-html-shell .main-leads [data-shell-content='true'] > div {
+- 37: width: min(100%, 1500px) !important;
+- 38: max-width: 1500px !important;
+- 41: display: grid !important;
+- 42: grid-template-columns: minmax(0, 1fr) 315px !important;
+- 47: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header {
+- 49: display: flex !important;
+- 53: width: 100% !important;
+- 62: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1 {
+- 66: line-height: 1 !important;
+- 71: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1::before {
+- 73: display: inline-flex !important;
+- 75: width: fit-content !important;
+- 88: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1::after {
+- 90: display: block !important;
+- 91: max-width: 780px !important;
+- 97: line-height: 1.45 !important;
+- 100: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header > div:last-child {
+- 101: display: flex !important;
+- 109: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button {
+- 110: min-height: 40px !important;
+- 111: height: 40px !important;
+- 118: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button:first-child {
+- 124: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button:last-child {
+- 131: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 132: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5.gap-4 {
+- 134: display: grid !important;
+- 135: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 140: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button {
+- 141: min-height: 106px !important;
+- 142: height: auto !important;
+- 143: display: block !important;
+- 145: overflow: visible !important;
+- 149: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button > div,
+- 150: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot='card'],
+- 151: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full {
+- 152: min-height: 106px !important;
+- 153: height: 100% !important;
+- 158: overflow: hidden !important;
+- 161: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot='card-content'] {
+- 162: min-height: 106px !important;
+- 164: display: grid !important;
+- 165: grid-template-columns: minmax(0, 1fr) auto !important;
+- 170: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p:first-child {
+- 178: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3 {
+- 181: line-height: 1 !important;
+- 186: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p:not(:first-child) {
+- 189: line-height: 1.3 !important;
+- 194: #root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] {
+- 195: display: contents !important;
+- 198: #root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] > div:first-child {
+- 200: width: 100% !important;
+- 201: min-width: 0 !important;
+- 204: #root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] {
+- 208: position: sticky !important;
+- 210: width: 100% !important;
+- 211: min-width: 0 !important;
+- 214: #root .cf-html-shell .main-leads [data-relation-value-board='true'],
+- 215: #root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] [data-slot='card'] {
+- 216: width: 100% !important;
+- 221: overflow: hidden !important;
+- 224: #root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] [data-slot='card-content'] {
+- 228: #root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'] a {
+- 229: min-height: 40px !important;
+- 237: #root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] > div:first-child [data-slot='card'],
+- 238: #root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'] > div:first-child .border-none.shadow-sm {
+- 243: overflow: visible !important;
+- 246: #root .cf-html-shell .main-leads input[list='lead-search-suggestions-stage31'],
+- 247: #root .cf-html-shell .main-leads input[placeholder*='Szukaj'] {
+- 248: height: 50px !important;
+- 249: min-height: 50px !important;
+- 259: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 {
+- 261: display: grid !important;
+- 263: width: 100% !important;
+- 264: min-width: 0 !important;
+- 268: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 > a,
+- 269: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 > div:not([role='status']) {
+- 270: width: 100% !important;
+- 271: min-height: 108px !important;
+- 276: overflow: hidden !important;
+- 279: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 [data-slot='card'],
+- 280: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .rounded-xl,
+- 281: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .rounded-2xl {
+- 285: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 [data-slot='card-content'] {
+- 289: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .truncate,
+- 290: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .line-clamp-1,
+- 291: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .line-clamp-2 {
+- 292: overflow: visible !important;
+- 293: text-overflow: clip !important;
+- 295: display: block !important;
+- 299: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 h2,
+- 300: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 h3,
+- 301: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .font-bold,
+- 302: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 .font-semibold {
+- 306: line-height: 1.2 !important;
+- 309: #root .cf-html-shell .main-leads [data-slot='badge'],
+- 310: #root .cf-html-shell .main-leads .inline-flex.items-center.rounded-full {
+- 311: min-height: 24px !important;
+- 318: #root .cf-html-shell .main-leads svg {
+- 322: #root .cf-html-shell .main-leads button svg + span,
+- 323: #root .cf-html-shell .main-leads a svg + span {
+- 327: @media (max-width: 1220px) {
+- 328: #root .cf-html-shell .main-leads [data-shell-content='true'] > div {
+- 329: grid-template-columns: 1fr !important;
+- 333: #root .cf-html-shell .main-leads [data-stage32-leads-value-layout='true'],
+- 334: #root .cf-html-shell .main-leads [data-stage32-leads-value-rail='true'],
+- 335: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .space-y-3 {
+- 338: position: static !important;
+- 342: @media (max-width: 760px) {
+- 343: #root .cf-html-shell .main-leads [data-shell-content='true'] > div {
+- 344: display: grid !important;
+- 345: grid-template-columns: 1fr !important;
+- 350: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header {
+- 351: display: grid !important;
+- 355: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header h1 {
+- 359: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header > div:last-child {
+- 363: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > header button {
+- 367: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 368: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5.gap-4 {
+- 369: grid-template-columns: 1fr !important;
+- 372: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+- 373: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button > div,
+- 374: #root .cf-html-shell .main-leads [data-shell-content='true'] > div > .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot='card'] {
+- 375: min-height: 96px !important;
+- 6: .cf-html-shell .main-leads {
+- 34: .cf-html-shell .main-leads .view.active,
+- 35: .cf-html-shell .main-leads [data-shell-content="true"] {
+- 36: width: 100% !important;
+- 37: max-width: 1500px !important;
+- 41: .cf-html-shell .main-leads [data-shell-content="true"] > .p-4,
+- 42: .cf-html-shell .main-leads [data-shell-content="true"] > .md\:p-8,
+- 43: .cf-html-shell .main-leads [data-shell-content="true"] > .max-w-7xl,
+- 44: .cf-html-shell .main-leads [data-shell-content="true"] > .mx-auto,
+- 45: .cf-html-shell .main-leads .max-w-7xl.mx-auto {
+- 46: width: 100% !important;
+- 47: max-width: 1500px !important;
+- 53: .cf-html-shell .main-leads header,
+- 54: .cf-html-shell .main-leads .page-head {
+- 55: display: flex !important;
+- 65: overflow: visible !important;
+- 68: .cf-html-shell .main-leads header::before,
+- 69: .cf-html-shell .main-leads .page-head::before {
+- 73: .cf-html-shell .main-leads header > div:first-child::before {
+- 75: display: inline-flex !important;
+- 78: width: fit-content !important;
+- 79: height: auto !important;
+- 88: line-height: 1 !important;
+- 94: .cf-html-shell .main-leads header h1,
+- 95: .cf-html-shell .main-leads .page-head h1 {
+- 99: line-height: 1 !important;
+- 104: .cf-html-shell .main-leads header h1::before {
+- 108: .cf-html-shell .main-leads header h1::after {
+- 110: display: block !important;
+- 111: max-width: 780px !important;
+- 115: line-height: 1.45 !important;
+- 120: .cf-html-shell .main-leads header > div:last-child {
+- 121: display: flex !important;
+- 130: .cf-html-shell .main-leads header button {
+- 131: min-height: 40px !important;
+- 140: .cf-html-shell .main-leads header button:first-of-type {
+- 146: .cf-html-shell .main-leads header button:last-of-type {
+- 154: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5,
+- 155: .cf-html-shell .main-leads [data-leads-html-metrics],
+- 156: .cf-html-shell .main-leads .grid-5 {
+- 157: display: grid !important;
+- 158: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 160: width: 100% !important;
+- 164: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > button,
+- 165: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > a,
+- 166: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 > div {
+- 167: display: block !important;
+- 168: min-width: 0 !important;
+- 169: width: 100% !important;
+- 170: min-height: 106px !important;
+- 171: height: auto !important;
+- 178: overflow: visible !important;
+- 181: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card"],
+- 182: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .h-full {
+- 183: min-height: 106px !important;
+- 184: height: 100% !important;
+- 189: overflow: hidden !important;
+- 192: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [data-slot="card-content"],
+- 193: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 [class*="CardContent"],
+- 194: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .p-5 {
+- 195: min-height: 106px !important;
+- 197: display: flex !important;
+- 204: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 p {
+- 209: line-height: 1.2 !important;
+- 214: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3 {
+- 218: line-height: 1 !important;
+- 224: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 h3 + p {
+- 229: line-height: 1.3 !important;
+- 234: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 .shrink-0 {
+- 235: width: 38px !important;
+- 236: height: 38px !important;
+- 237: min-width: 38px !important;
+- 239: display: grid !important;
+- 245: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] {
+- 246: display: grid !important;
+- 247: grid-template-columns: minmax(0, 1fr) 315px !important;
+- 254: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > [data-slot="card"],
+- 255: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > .border-none,
+- 256: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] > div:first-child {
+- 261: overflow: visible !important;
+- 264: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] input {
+- 265: height: 50px !important;
+- 266: min-height: 50px !important;
+- 275: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] input::placeholder {
+- 280: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"],
+- 281: .cf-html-shell .main-leads aside[data-stage32-leads-value-rail="true"] {
+- 282: position: sticky !important;
+- 284: width: 315px !important;
+- 285: min-width: 315px !important;
+- 286: max-width: 315px !important;
+- 287: height: fit-content !important;
+- 288: display: block !important;
+- 293: overflow: visible !important;
+- 296: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"]::before,
+- 297: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"]::after,
+- 298: .cf-html-shell .main-leads aside::before,
+- 299: .cf-html-shell .main-leads aside::after {
+- 301: display: none !important;
+- 304: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] [data-slot="card"],
+- 305: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] .border-none,
+- 306: .cf-html-shell .main-leads [data-relation-value-board="true"] {
+- 307: width: 100% !important;
+- 313: overflow: hidden !important;
+- 316: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] [data-slot="card-content"],
+- 317: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] .p-4 {
+- 321: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] [data-stage32-valuable-relation-row="true"] {
+- 322: min-height: 40px !important;
+- 323: display: flex !important;
+- 337: .cf-html-shell .main-leads .max-w-7xl > .space-y-3,
+- 338: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 {
+- 339: width: calc(100% - 332px) !important;
+- 340: max-width: calc(100% - 332px) !important;
+- 341: display: grid !important;
+- 348: overflow: hidden !important;
+- 352: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 > div:not([data-slot="card"]),
+- 353: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 > div:not([data-slot="card"]) {
+- 358: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 [data-slot="card"],
+- 359: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 [data-slot="card"],
+- 360: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 .border-none.shadow-sm,
+- 361: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 .border-none.shadow-sm {
+- 367: overflow: visible !important;
+- 370: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 [data-slot="card"]:last-child,
+- 371: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 [data-slot="card"]:last-child {
+- 375: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 [data-slot="card-content"],
+- 376: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 [data-slot="card-content"],
+- 377: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 .p-4,
+- 378: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 .p-4 {
+- 379: min-height: 82px !important;
+- 385: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 .truncate,
+- 386: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 .truncate,
+- 387: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 [class*="line-clamp"],
+- 388: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 [class*="line-clamp"] {
+- 389: overflow: visible !important;
+- 390: text-overflow: unset !important;
+- 392: display: block !important;
+- 397: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 p,
+- 398: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 p,
+- 399: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 span,
+- 400: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 span {
+- 401: max-width: none !important;
+- 403: overflow-wrap: anywhere !important;
+- 404: line-height: 1.35 !important;
+- 407: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 .font-bold,
+- 408: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 .font-bold,
+- 409: .cf-html-shell .main-leads .max-w-7xl > .space-y-3 .font-semibold,
+- 410: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 .font-semibold {
+- 417: .cf-html-shell .main-leads [data-slot="badge"],
+- 418: .cf-html-shell .main-leads .inline-flex.items-center.rounded-full {
+- 419: min-height: 24px !important;
+- 428: .cf-html-shell .main-leads .rounded-\[999px\],
+- 429: .cf-html-shell .main-leads .rounded-full:not([data-slot="badge"]):not(.inline-flex) {
+- 433: @media (max-width: 1220px) {
+- 434: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 {
+- 435: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 438: .cf-html-shell .main-leads [data-stage32-leads-value-layout="true"] {
+- 439: grid-template-columns: 1fr !important;
+- 442: .cf-html-shell .main-leads [data-stage32-leads-value-rail="true"] {
+- 443: position: static !important;
+- 444: width: 100% !important;
+- 445: min-width: 0 !important;
+- 446: max-width: none !important;
+- 449: .cf-html-shell .main-leads .max-w-7xl > .space-y-3,
+- 450: .cf-html-shell .main-leads .max-w-7xl.mx-auto > .space-y-3 {
+- 451: width: 100% !important;
+- 452: max-width: none !important;
+- 456: @media (max-width: 760px) {
+- 457: .cf-html-shell .main-leads [data-shell-content="true"] > .p-4,
+- 458: .cf-html-shell .main-leads [data-shell-content="true"] > .md\:p-8,
+- 459: .cf-html-shell .main-leads [data-shell-content="true"] > .max-w-7xl,
+- 460: .cf-html-shell .main-leads .max-w-7xl.mx-auto {
+- 464: .cf-html-shell .main-leads header {
+- 465: display: grid !important;
+- 469: .cf-html-shell .main-leads header > div:last-child {
+- 473: .cf-html-shell .main-leads header button {
+- 477: .cf-html-shell .main-leads .grid.grid-cols-1.sm\:grid-cols-2.xl\:grid-cols-5 {
+- 478: grid-template-columns: 1fr !important;
+- 7: width: min(1500px, 100%);
+- 13: display: flex;
+- 21: display: inline-flex;
+- 39: line-height: 1;
+- 47: max-width: 780px;
+- 48: line-height: 1.45;
+- 53: display: flex;
+- 60: min-height: 40px;
+- 66: display: inline-flex;
+- 91: width: 40px;
+- 92: min-width: 40px;
+- 106: display: grid;
+- 107: grid-template-columns: repeat(5, minmax(0, 1fr));
+- 112: min-height: 106px;
+- 118: display: grid;
+- 119: grid-template-columns: minmax(0, 1fr) auto;
+- 147: display: block;
+- 152: line-height: 1;
+- 160: line-height: 1.3;
+- 164: width: 32px;
+- 165: height: 32px;
+- 196: display: grid;
+- 197: grid-template-columns: minmax(0, 1fr) 315px;
+- 204: display: grid;
+- 209: position: relative;
+- 213: width: 100%;
+- 214: height: 50px;
+- 225: position: absolute;
+- 234: display: grid;
+- 239: min-height: 42px;
+- 245: display: grid;
+- 246: grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto;
+- 254: min-width: 0;
+- 255: overflow: hidden;
+- 256: text-overflow: ellipsis;
+- 268: overflow: hidden;
+- 272: display: grid;
+- 273: grid-template-columns: 34px minmax(0, 1.35fr) minmax(130px, .45fr) minmax(180px, .7fr) 88px;
+- 290: grid-template-columns: 34px minmax(0, 1fr);
+- 291: min-height: 84px;
+- 295: width: 28px;
+- 296: height: 28px;
+- 298: display: grid;
+- 309: min-width: 0;
+- 310: display: grid;
+- 315: min-width: 0;
+- 319: line-height: 1.2;
+- 320: overflow-wrap: anywhere;
+- 328: min-width: 0;
+- 332: line-height: 1.35;
+- 333: overflow-wrap: anywhere;
+- 339: line-height: 1.45;
+- 347: line-height: 1.2;
+- 348: overflow-wrap: anywhere;
+- 356: display: inline-flex;
+- 359: min-height: 24px;
+- 368: line-height: 1;
+- 389: display: flex;
+- 396: display: flex;
+- 415: display: flex;
+- 444: line-height: 1.4;
+- 448: display: grid;
+- 453: min-height: 42px;
+- 458: display: flex;
+- 479: min-width: 0;
+- 483: overflow: hidden;
+- 484: text-overflow: ellipsis;
+- 489: overflow: hidden;
+- 490: text-overflow: ellipsis;
+- 495: min-width: 108px;
+- 498: line-height: 1.25;
+- 508: min-width: 0;
+- 509: display: grid;
+- 513: min-width: 0;
+- 516: line-height: 1.2;
+- 526: line-height: 1.45;
+- 529: @media (max-width: 1220px) {
+- 531: grid-template-columns: 1fr;
+- 535: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 539: @media (max-width: 760px) {
+- 551: width: 100%;
+- 552: overflow-x: auto;
+- 560: grid-template-columns: 1fr;
+- 564: grid-template-columns: 30px minmax(0, 1fr);
+- 578: grid-template-columns: minmax(0, 1fr) auto;
+- 582: display: none;
+- 6: .cf-html-shell main[data-current-section="leady"] {
+- 14: .cf-html-shell main[data-current-section="leady"] [data-shell-content="true"],
+- 15: .cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > div,
+- 16: .cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > .p-4,
+- 17: .cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > .md\:p-8,
+- 18: .cf-html-shell main[data-current-section="leady"] [data-shell-content="true"] > .max-w-5xl {
+- 19: width: 100% !important;
+- 20: max-width: none !important;
+- 26: width: min(1500px, 100%) !important;
+- 27: max-width: 1500px !important;
+- 57: grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+- 63: min-height: 112px !important;
+- 77: grid-template-columns: minmax(0, 1fr) 315px !important;
+- 84: min-width: 0 !important;
+- 92: height: 50px !important;
+- 101: overflow: hidden !important;
+- 108: grid-template-columns: 34px minmax(0, 1.35fr) minmax(130px, .45fr) minmax(180px, .7fr) 88px !important;
+- 109: min-height: 96px !important;
+- 122: min-width: 0 !important;
+- 130: line-height: 1.2 !important;
+- 133: overflow-wrap: anywhere !important;
+- 139: line-height: 1.35 !important;
+- 141: overflow-wrap: anywhere !important;
+- 145: display: flex !important;
+- 152: width: 40px !important;
+- 153: min-width: 40px !important;
+- 154: height: 40px !important;
+- 171: position: relative !important;
+- 172: overflow: hidden !important;
+- 194: display: none !important;
+- 200: line-height: 1.1 !important;
+- 216: display: grid !important;
+- 221: min-height: 42px !important;
+- 226: display: flex !important;
+- 246: width: fit-content !important;
+- 252: @media (max-width: 1220px) {
+- 254: width: 100% !important;
+- 259: grid-template-columns: 1fr !important;
+- 263: grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+- 267: @media (max-width: 760px) {
+- 269: width: 100% !important;
+- 274: grid-template-columns: 1fr !important;
+- 278: grid-template-columns: 30px minmax(0, 1fr) !important;
+- 293: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] {
+- 297: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .head-actions .btn.primary {
+- 304: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .head-actions .btn.soft-blue {
+- 311: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .head-actions .btn:not(.primary):not(.soft-blue) {
+- 318: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail,
+- 319: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] aside.lead-right-rail {
+- 327: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::before,
+- 328: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::after {
+- 330: display: none !important;
+- 333: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail > * {
+- 339: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail .right-card {
+- 345: overflow: hidden !important;
+- 348: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail .quick-list a {
+- 354: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric label {
+- 360: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric strong {
+- 364: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .metric .hint {
+- 369: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail {
+- 370: display: flex !important;
+- 373: min-width: 315px !important;
+- 379: overflow: visible !important;
+- 382: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::before,
+- 383: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail::after,
+- 384: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::before,
+- 385: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card::after {
+- 387: display: none !important;
+- 390: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-card {
+- 396: overflow: hidden !important;
+- 400: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .operator-top-value-card .quick-list a {
+- 407: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-ai-card .btn.soft-blue {
+- 413: @media (max-width: 1220px) {
+- 414: .cf-html-shell main[data-current-section="leady"] [data-leads-real-view="true"] .lead-right-rail {
+- 415: min-width: 0 !important;
+- 2: .cf-html-shell .main-cases {
+- 10: width: min(1500px, 100%);
+- 16: display: flex;
+- 24: display: inline-flex;
+- 41: line-height: 1;
+- 49: max-width: 780px;
+- 50: line-height: 1.5;
+- 55: display: flex;
+- 62: min-height: 40px;
+- 68: display: inline-flex;
+- 93: width: 40px;
+- 94: min-width: 40px;
+- 99: display: grid;
+- 100: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 105: min-height: 106px;
+- 111: display: grid;
+- 122: .cf-html-view.main-cases-html .metric strong { margin-top: 7px; color: #111827; font-size: 20px; line-height: 1.2; font-weight: 800; letter-spacing: -.02em; }
+- 123: .cf-html-view.main-cases-html .metric .hint { margin-top: 6px; color: #667085; font-size: 14px; line-height: 1.35; }
+- 126: display: grid;
+- 127: grid-template-columns: minmax(0, 1fr) 315px;
+- 135: display: grid;
+- 140: display: flex;
+- 143: min-width: 315px;
+- 150: .cf-html-view.main-cases-html .search { position: relative; }
+- 151: .cf-html-view.main-cases-html .search span { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #98a2b3; }
+- 153: width: 100%;
+- 154: height: 50px;
+- 171: overflow: hidden;
+- 175: display: grid;
+- 176: grid-template-columns: 36px minmax(320px, 1fr) 120px minmax(180px, 220px) 52px;
+- 179: min-height: 96px;
+- 186: .cf-html-view.main-cases-html .row-empty { grid-template-columns: 34px minmax(0,1fr); min-height: 84px; }
+- 189: width: 28px;
+- 190: height: 28px;
+- 192: display: grid;
+- 202: .cf-html-view.main-cases-html .lead-action-cell { min-width: 0; }
+- 204: .cf-html-view.main-cases-html .title { display: block; color: #111827; font-weight: 700; line-height: 1.25; text-decoration: none; font-size: 16px; letter-spacing: -.01em; margin: 0; }
+- 205: .cf-html-view.main-cases-html .sub { color: #667085; font-size: 14px; margin-top: 6px; line-height: 1.4; overflow-wrap: anywhere; }
+- 209: display: inline-flex;
+- 212: min-height: 24px;
+- 227: .cf-html-view.main-cases-html .statusline { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+- 228: .cf-html-view.main-cases-html .lead-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; }
+- 230: .cf-html-view.main-cases-html .lead-action-cell strong { display: block; font-size: 16px; letter-spacing: -.01em; line-height: 1.25; color: #111827; font-weight: 700; margin-top: 4px; }
+- 231: .cf-html-view.main-cases-html .lead-value-cell strong { display: block; font-size: 16px; letter-spacing: -.01em; line-height: 1.25; color: #111827; font-weight: 700; margin-top: 4px; }
+- 232: .cf-html-view.main-cases-html .next-action-text { font-size: 16px !important; line-height: 1.25 !important; font-weight: 700 !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+- 241: overflow: hidden;
+- 245: display: flex;
+- 253: .cf-html-view.main-cases-html .panel-head p { margin: 4px 0 0; color: #667085; font-size: 12px; line-height: 1.4; }
+- 255: .cf-html-view.main-cases-html .quick-list { display: grid; gap: 8px; }
+- 259: min-height: 42px;
+- 264: display: flex;
+- 277: @media (max-width: 1220px) {
+- 278: .cf-html-view.main-cases-html .layout-list { grid-template-columns: 1fr; }
+- 279: .cf-html-view.main-cases-html .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+- 283: @media (max-width: 760px) {
+- 284: .cf-html-view.main-cases-html { width: 100%; padding: 0 14px 94px; }
+- 286: .cf-html-view.main-cases-html .head-actions { justify-content: flex-start; width: 100%; overflow-x: auto; }
+- 288: .cf-html-view.main-cases-html .grid-4 { grid-template-columns: 1fr; }
+- 289: .cf-html-view.main-cases-html .row { grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 18px 16px; min-height: 0; }
+- 295: .cf-html-view.main-cases-html .next-action-text { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+- 3: width: min(1500px, 100%);
+- 6: display: grid;
+- 11: display: flex;
+- 19: display: inline-flex;
+- 36: line-height: 1;
+- 44: max-width: 780px;
+- 45: line-height: 1.45;
+- 49: .cf-html-view.main-tasks-html .head-actions { display: flex; gap: 8px; align-items: center; }
+- 54: display: grid;
+- 55: grid-template-columns: minmax(0, 1fr) 315px;
+- 61: .cf-html-view.main-tasks-html .tasks-right-rail { display: grid; gap: 14px; }
+- 64: display: flex;
+- 67: min-width: 300px;
+- 76: .cf-html-view.main-tasks-html .tasks-right-card::after { content: none !important; display: none !important; }
+- 85: overflow: hidden;
+- 89: display: grid;
+- 90: grid-template-columns: 36px minmax(260px, 1.4fr) minmax(150px, .7fr) minmax(140px, .6fr) 110px;
+- 94: min-height: 78px;
+- 101: width: 28px;
+- 102: height: 28px;
+- 104: display: grid;
+- 112: .cf-html-view.main-tasks-html .task-title { margin: 0; color: #111827; font-size: 16px; line-height: 1.25; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+- 113: .cf-html-view.main-tasks-html .task-meta { margin: 4px 0 0; color: #667085; font-size: 12px; line-height: 1.35; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+- 114: .cf-html-view.main-tasks-html .task-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+- 116: .cf-html-view.main-tasks-html .task-done-btn { width: 26px; height: 26px; }
+- 118: .cf-html-view.main-tasks-html .task-type-col { display: grid; gap: 2px; min-width: 0; }
+- 121: .cf-html-view.main-tasks-html .task-type-col strong { font-size: 14px; color: #111827; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+- 122: .cf-html-view.main-tasks-html .task-priority-chip { width: fit-content; margin-top: 2px; border-radius: 999px; padding: 1px 8px; font-size: 10px; font-weight: 800; background: #fff1f3; color: #b42318; border: 1px solid #fecdd3; }
+- 123: .cf-html-view.main-tasks-html .task-action-col { display: flex; justify-content: flex-end; align-items: center; gap: 6px; }
+- 124: .cf-html-view.main-tasks-html .task-action-col .rounded-xl { min-height: 34px; }
+- 132: overflow: hidden;
+- 138: .cf-html-view.main-tasks-html .quick-list { display: grid; gap: 8px; }
+- 141: min-height: 42px;
+- 146: display: flex;
+- 154: @media (max-width: 1220px) {
+- 155: .cf-html-view.main-tasks-html .layout-list { grid-template-columns: 1fr; }
+- 158: @media (max-width: 760px) {
+- 159: .cf-html-view.main-tasks-html { width: 100%; padding: 0 14px 94px; }
+- 162: grid-template-columns: 30px minmax(0, 1fr);
+- 165: min-height: 0;
+- 170: display: grid;
+- 171: grid-template-columns: 1fr;
+- 4: width: min(1500px, 100%);
+- 7: display: grid;
+- 12: display: flex;
+- 20: display: inline-flex;
+- 37: line-height: 1;
+- 45: max-width: 780px;
+- 46: line-height: 1.45;
+- 51: display: flex;
+- 57: display: flex;
+- 66: display: flex;
+- 74: display: inline-flex;
+- 85: height: 36px;
+- 104: display: inline-flex;
+- 115: width: 36px;
+- 116: height: 36px;
+- 122: display: grid;
+- 132: height: 36px;
+- 144: display: grid;
+- 145: grid-template-columns: repeat(7, minmax(0, 1fr));
+- 178: width: 28px;
+- 179: height: 28px;
+- 181: display: grid;
+- 201: line-height: 1.25;
+- 203: display: -webkit-box;
+- 206: overflow: hidden;
+- 210: display: inline-flex;
+- 212: height: 16px;
+- 244: overflow: hidden;
+- 252: display: grid;
+- 253: grid-template-columns: 280px minmax(0, 1fr);
+- 261: display: grid;
+- 266: min-height: 42px;
+- 271: display: flex;
+- 288: display: grid;
+- 305: display: flex;
+- 329: height: 28px;
+- 337: display: inline-flex;
+- 343: display: grid;
+- 348: display: inline-flex;
+- 350: height: 24px;
+- 388: @media (max-width: 1220px) {
+- 389: .cf-html-view.main-calendar-html .calendar-week-layout { grid-template-columns: 1fr; }
+- 392: @media (max-width: 760px) {
+- 393: .cf-html-view.main-calendar-html { width: 100%; padding: 0 14px 94px; }
+- 3: grid-template-columns: minmax(88px, 0.34fr) minmax(260px, 1.35fr) minmax(126px, 0.52fr) minmax(112px, 0.42fr) minmax(330px, 0.95fr);
+- 6: min-height: 58px;
+- 12: display: flex;
+- 16: min-width: 0;
+- 20: width: fit-content;
+- 21: max-width: 100%;
+- 22: min-height: 24px;
+- 23: display: inline-flex;
+- 31: line-height: 1;
+- 36: overflow: hidden;
+- 37: text-overflow: ellipsis;
+- 59: width: fit-content;
+- 60: display: inline-flex;
+- 68: line-height: 1;
+- 100: display: flex;
+- 108: width: auto !important;
+- 109: min-width: 0 !important;
+- 110: max-width: max-content !important;
+- 112: min-height: 28px !important;
+- 113: height: 28px !important;
+- 116: line-height: 1 !important;
+- 130: @media (max-width: 1180px) {
+- 132: grid-template-columns: minmax(82px, .4fr) minmax(220px, 1fr) minmax(118px, .55fr) minmax(100px, .45fr);
+- 141: @media (max-width: 760px) {
+- 143: grid-template-columns: minmax(0, 1fr);
+- 162: width: auto !important;
+- 163: max-width: max-content !important;
+- 164: height: 30px !important;
+- 165: min-height: 30px !important;
+- 7: position: relative;
+- 8: overflow: hidden;
+- 20: position: absolute;
+- 22: height: 0.28rem;
+- 41: line-height: 1;
+- 49: line-height: 1.4;
+- 59: line-height: 1.35;
+- 63: display: grid;
+- 64: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 73: min-height: 4.7rem;
+- 77: display: block;
+- 82: line-height: 1.25;
+- 87: display: block;
+- 91: line-height: 1;
+- 98: display: grid;
+- 103: display: grid;
+- 104: grid-template-columns: minmax(0, 1fr) auto;
+- 124: overflow: hidden;
+- 125: text-overflow: ellipsis;
+- 154: @media (max-width: 920px) {
+- 156: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 160: @media (max-width: 560px) {
+- 162: grid-template-columns: 1fr;
+- 166: grid-template-columns: 1fr;
+- 2: min-height: 100%;
+- 11: display: flex;
+- 16: max-width: 1440px;
+- 22: line-height: 0.95;
+- 42: max-width: 1440px;
+- 44: display: grid;
+- 45: grid-template-columns: repeat(6, minmax(0, 1fr));
+- 50: min-height: 96px;
+- 57: display: flex;
+- 82: display: flex;
+- 100: line-height: 1;
+- 104: width: 40px;
+- 105: height: 40px;
+- 107: display: inline-flex;
+- 115: max-width: 1440px;
+- 117: display: grid;
+- 118: grid-template-columns: minmax(0, 1fr) 320px;
+- 124: min-width: 0;
+- 125: display: flex;
+- 136: display: flex;
+- 142: display: flex;
+- 148: height: 40px;
+- 156: display: inline-flex;
+- 167: min-width: 24px;
+- 168: height: 22px;
+- 171: display: inline-flex;
+- 193: height: 48px;
+- 198: display: flex;
+- 206: width: 100%;
+- 207: min-width: 0;
+- 223: overflow: hidden;
+- 228: min-height: 78px;
+- 230: display: flex;
+- 266: display: flex;
+- 271: min-height: 76px;
+- 272: display: grid;
+- 273: grid-template-columns: 36px minmax(320px, 1fr) minmax(180px, 260px) 140px 52px;
+- 291: width: 36px;
+- 292: height: 36px;
+- 294: display: inline-flex;
+- 335: min-width: 0;
+- 339: display: flex;
+- 348: display: inline-flex;
+- 354: line-height: 1;
+- 373: line-height: 1.25;
+- 380: line-height: 1.35;
+- 381: overflow: hidden;
+- 382: text-overflow: ellipsis;
+- 387: min-width: 0;
+- 388: display: flex;
+- 403: display: inline-flex;
+- 406: max-width: 100%;
+- 407: min-width: 0;
+- 411: line-height: 1.25;
+- 432: display: flex;
+- 437: width: 40px;
+- 438: height: 40px;
+- 443: display: inline-flex;
+- 469: min-height: 260px;
+- 471: display: flex;
+- 495: max-width: 520px;
+- 498: line-height: 1.5;
+- 506: display: flex;
+- 509: min-width: 300px;
+- 523: display: flex;
+- 539: width: 100%;
+- 540: min-height: 44px;
+- 546: display: flex;
+- 566: min-width: 28px;
+- 567: height: 24px;
+- 568: display: inline-flex;
+- 578: display: flex;
+- 591: display: block;
+- 598: display: block;
+- 603: line-height: 1.25;
+- 610: line-height: 1.45;
+- 613: @media (max-width: 1180px) {
+- 615: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 619: grid-template-columns: 1fr;
+- 623: min-width: 0;
+- 624: display: grid;
+- 625: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 629: @media (max-width: 860px) {
+- 640: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 646: min-height: 84px;
+- 659: overflow-x: auto;
+- 661: scrollbar-width: none;
+- 665: display: none;
+- 680: min-height: 0;
+- 681: grid-template-columns: 38px minmax(0, 1fr) 42px;
+- 717: display: flex;
+- 721: @media (max-width: 520px) {
+- 723: grid-template-columns: 1fr;
+- 727: height: auto;
+- 728: min-height: 48px;
+- 740: line-height: 1.35;
+- 750: position: relative;
+- 768: display: none !important;
+- 770: width: 0 !important;
+- 771: height: 0 !important;
+- 783: position: relative;
+- 784: overflow: hidden;
+- 798: position: relative;
+- 2: min-height: 100%;
+- 11: max-width: 1440px;
+- 13: display: flex;
+- 31: line-height: 0.95;
+- 42: display: flex;
+- 49: min-height: 42px;
+- 67: max-width: 1440px;
+- 69: display: grid;
+- 70: grid-template-columns: repeat(6, minmax(0, 1fr));
+- 75: min-height: 96px;
+- 82: display: flex;
+- 103: display: flex;
+- 121: line-height: 1;
+- 125: width: 40px;
+- 126: height: 40px;
+- 130: display: inline-flex;
+- 136: max-width: 1440px;
+- 138: display: grid;
+- 139: grid-template-columns: minmax(0, 1fr) 320px;
+- 145: min-width: 0;
+- 146: display: flex;
+- 161: display: flex;
+- 167: display: flex;
+- 173: height: 40px;
+- 181: display: inline-flex;
+- 189: min-width: 24px;
+- 190: height: 22px;
+- 197: display: inline-flex;
+- 215: min-height: 48px;
+- 220: display: flex;
+- 228: width: 100%;
+- 229: min-width: 0;
+- 242: overflow: hidden;
+- 246: min-height: 78px;
+- 248: display: flex;
+- 284: display: flex;
+- 298: min-height: 78px;
+- 299: display: grid;
+- 300: grid-template-columns: 36px minmax(340px, 1fr) 150px 130px 140px auto;
+- 312: width: 36px;
+- 313: height: 36px;
+- 315: display: inline-flex;
+- 341: min-width: 0;
+- 345: display: flex;
+- 355: display: inline-flex;
+- 361: line-height: 1;
+- 380: line-height: 1.25;
+- 387: line-height: 1.35;
+- 388: display: -webkit-box;
+- 391: overflow: hidden;
+- 426: display: flex;
+- 434: min-height: 32px;
+- 472: width: 28px;
+- 473: height: 28px;
+- 479: display: inline-flex;
+- 496: min-height: 112px;
+- 497: width: 100%;
+- 508: display: flex;
+- 514: display: flex;
+- 546: display: grid;
+- 547: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 573: display: block;
+- 586: display: grid;
+- 587: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 592: min-width: 0;
+- 610: display: flex;
+- 630: line-height: 1.5;
+- 634: max-height: 160px;
+- 635: overflow: auto;
+- 640: display: grid;
+- 641: grid-template-columns: repeat(4, minmax(0, 1fr));
+- 656: display: block;
+- 663: display: block;
+- 667: line-height: 1.25;
+- 676: display: grid;
+- 677: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 682: display: flex;
+- 689: display: flex;
+- 702: width: 100%;
+- 703: height: 42px;
+- 730: display: grid;
+- 731: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 736: display: flex;
+- 765: max-height: 176px;
+- 766: overflow-y: auto;
+- 768: display: flex;
+- 787: display: block;
+- 795: display: block;
+- 803: display: flex;
+- 810: min-height: 260px;
+- 812: display: flex;
+- 836: max-width: 520px;
+- 839: line-height: 1.5;
+- 847: display: flex;
+- 850: min-width: 300px;
+- 867: display: none !important;
+- 881: display: flex;
+- 897: width: 100%;
+- 898: min-height: 44px;
+- 904: display: flex;
+- 924: min-width: 28px;
+- 925: height: 24px;
+- 930: display: inline-flex;
+- 936: display: flex;
+- 942: width: 100%;
+- 951: display: block;
+- 958: display: block;
+- 963: line-height: 1.25;
+- 970: line-height: 1.45;
+- 973: @media (max-width: 1180px) {
+- 975: grid-template-columns: repeat(3, minmax(0, 1fr));
+- 979: grid-template-columns: 1fr;
+- 983: min-width: 0;
+- 984: display: grid;
+- 985: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 989: grid-template-columns: 36px minmax(260px, 1fr) 130px 120px auto;
+- 993: display: none;
+- 997: @media (max-width: 860px) {
+- 1013: grid-template-columns: repeat(2, minmax(0, 1fr));
+- 1019: min-height: 84px;
+- 1032: overflow-x: auto;
+- 1034: scrollbar-width: none;
+- 1038: display: none;
+- 1052: grid-template-columns: 38px minmax(0, 1fr);
+- 1095: grid-template-columns: 1fr;
+- 1099: display: flex;
+- 1103: @media (max-width: 520px) {
+- 1105: grid-template-columns: 1fr;
+- 1120: line-height: 1.35;
+- 1143: display: none !important;
+- 1152: position: relative;
+- 1160: overflow: hidden;
+- 3: display: grid;
+- 4: grid-template-columns: 38px minmax(0, 1fr) auto;
+- 15: grid-template-columns: 34px minmax(0, 1fr) auto;
+- 20: display: grid;
+- 21: width: 38px;
+- 22: height: 38px;
+- 30: min-width: 0;
+- 34: display: flex;
+- 43: display: inline-flex;
+- 49: line-height: 1.2;
+- 65: display: inline-block;
+- 66: max-width: 100%;
+- 70: line-height: 1.35;
+- 72: overflow-wrap: anywhere;
+- 92: line-height: 1.45;
+- 96: display: flex;
+- 108: display: inline-flex;
+- 109: width: 30px;
+- 110: height: 30px;
+- 150: @media (max-width: 720px) {
+- 152: grid-template-columns: 34px minmax(0, 1fr);
+
+## HIPOTEZY DO WERYFIKACJI
+- H1: realny aside.sidebar ma height auto albo jest ograniczony przez rodzica.
+- H2: nav-scroll ma własny scroll i zjada przestrzeń zamiast układać footer na dole.
+- H3: późniejszy CSS z App.tsx lub CSS importowany przez Layout nadpisuje wysokość/flex sidebara.
+- H4: poprzednie lokalne patche zostały częściowo aktywne i wprowadzają konflikt.
+- H5: naprawa powinna być w jednym źródłowym pliku shell CSS, nie w kolejnych stage patchach.
+
+## WNIOSEK ROBOCZY
+Nie wdrażać kolejnej poprawki CSS przed sprawdzeniem computed styles z przeglądarki.
+
+## NASTĘPNY KROK
+Wkleić w konsoli przeglądarki snippet DOM/computed style i wkleić wynik do czatu.

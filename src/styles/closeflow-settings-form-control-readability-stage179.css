@@ -1,0 +1,76 @@
+/* STAGE179_SETTINGS_FORM_CONTROL_READABILITY_LOCAL_ONLY
+   Scope: Settings page form controls on light cards.
+   Goal: prevent dark theme/global input styles from making Google reminder controls unreadable.
+*/
+
+.settings-vnext-page .settings-field label,
+.settings-vnext-page .settings-field > label {
+  color: #334155 !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.01em;
+}
+
+.settings-vnext-page .settings-field input,
+.settings-vnext-page .settings-field select,
+.settings-vnext-page .settings-field textarea {
+  min-height: 42px !important;
+  width: 100%;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  caret-color: #0f172a !important;
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.06),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.92) !important;
+  opacity: 1 !important;
+}
+
+.settings-vnext-page .settings-field select {
+  appearance: auto !important;
+  cursor: pointer;
+}
+
+.settings-vnext-page .settings-field select option {
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.settings-vnext-page .settings-field input::placeholder,
+.settings-vnext-page .settings-field textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.settings-vnext-page .settings-field input:focus,
+.settings-vnext-page .settings-field select:focus,
+.settings-vnext-page .settings-field textarea:focus,
+.settings-vnext-page .settings-field input:focus-visible,
+.settings-vnext-page .settings-field select:focus-visible,
+.settings-vnext-page .settings-field textarea:focus-visible {
+  border-color: #2563eb !important;
+  outline: none !important;
+  box-shadow:
+    0 0 0 3px rgba(37, 99, 235, 0.16),
+    0 1px 2px rgba(15, 23, 42, 0.06) !important;
+}
+
+.settings-vnext-page .settings-field input:disabled,
+.settings-vnext-page .settings-field select:disabled,
+.settings-vnext-page .settings-field textarea:disabled {
+  border-color: #d7dde7 !important;
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+  opacity: 1 !important;
+  cursor: not-allowed !important;
+}
+
+.settings-vnext-page .settings-section-card[data-google-calendar-reminder-ui="stage06"] .settings-form-grid {
+  align-items: end;
+}

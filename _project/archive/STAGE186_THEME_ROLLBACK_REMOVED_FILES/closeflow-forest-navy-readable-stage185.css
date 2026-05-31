@@ -1,0 +1,332 @@
+﻿/* STAGE185_FOREST_NAVY_READABLE_LOCAL_ONLY
+   Cel: czytelny ciemny motyw, bez białych kart i bez ciemnego tekstu na ciemnym tle.
+   Zasada: cały shell ciemny, karty ciemne, tekst jasny, akcent emerald.
+*/
+
+html[data-skin="forest-navy"] {
+  --fn-bg: #050d10;
+  --fn-bg-2: #07161b;
+  --fn-shell: #081820;
+  --fn-surface: #0d2228;
+  --fn-surface-2: #102b2f;
+  --fn-surface-3: #153a35;
+  --fn-border: #285448;
+  --fn-border-2: #3a6f5f;
+  --fn-text: #f4fbf7;
+  --fn-text-soft: #dcece4;
+  --fn-muted: #a8beb4;
+  --fn-muted-2: #829b91;
+  --fn-primary: #34d399;
+  --fn-primary-2: #10b981;
+  --fn-primary-dark: #047857;
+  --fn-primary-soft: rgba(52, 211, 153, 0.14);
+  --fn-blue-soft: rgba(96, 165, 250, 0.10);
+  --fn-shadow: rgba(0, 0, 0, 0.42);
+
+  --color-primary: var(--fn-primary);
+  --color-primary-foreground: #05100d;
+  --app-bg: var(--fn-bg);
+  --app-surface: var(--fn-bg-2);
+  --app-surface-strong: var(--fn-surface);
+  --app-surface-muted: var(--fn-surface-2);
+  --app-border: var(--fn-border);
+  --app-text: var(--fn-text);
+  --app-muted: var(--fn-muted);
+  --app-muted-soft: var(--fn-muted-2);
+  --app-primary-chip-bg: var(--fn-primary-soft);
+  --app-primary-chip-text: var(--fn-primary);
+  --app-shadow-color: var(--fn-shadow);
+
+  color-scheme: dark;
+}
+
+/* Hard reset tylko dla Forest Navy */
+html[data-skin="forest-navy"],
+html[data-skin="forest-navy"] body,
+html[data-skin="forest-navy"] #root,
+html[data-skin="forest-navy"] .app,
+html[data-skin="forest-navy"] .cf-html-shell,
+html[data-skin="forest-navy"] .main,
+html[data-skin="forest-navy"] [data-shell-main="true"],
+html[data-skin="forest-navy"] [data-shell-content="true"],
+html[data-skin="forest-navy"] .view.active,
+html[data-skin="forest-navy"] main {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(52, 211, 153, 0.10), transparent 30%),
+    radial-gradient(circle at 88% 6%, rgba(37, 99, 235, 0.08), transparent 34%),
+    linear-gradient(180deg, var(--fn-bg-2) 0%, var(--fn-bg) 100%) !important;
+  color: var(--fn-text) !important;
+}
+
+/* Zabij białe tła w motywie */
+html[data-skin="forest-navy"] :where(
+  .bg-white,
+  .bg-white\/80,
+  .bg-white\/90,
+  .bg-white\/95,
+  .bg-slate-50,
+  .bg-slate-50\/30,
+  .bg-slate-50\/40,
+  .bg-slate-50\/50,
+  .bg-slate-100,
+  .bg-slate-200,
+  [class*="bg-white"],
+  [class*="bg-slate-50"],
+  [class*="bg-slate-100"],
+  [class*="from-white"],
+  [class*="to-white"]
+) {
+  background: var(--fn-surface) !important;
+  background-color: var(--fn-surface) !important;
+  color: var(--fn-text) !important;
+}
+
+/* Global bar/topbar */
+html[data-skin="forest-navy"] :where(
+  .global-bar,
+  [data-shell-global-bar="true"],
+  .mobile-top
+) {
+  background: rgba(8, 24, 32, 0.98) !important;
+  border-color: var(--fn-border) !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 12px 30px var(--fn-shadow) !important;
+}
+
+/* Karty, kafelki, boxy, rzędy, panele */
+html[data-skin="forest-navy"] :where(
+  article,
+  section,
+  aside.right-card,
+  .right-card,
+  .card,
+  [class*="Card"],
+  [class*="card"],
+  [class*="Tile"],
+  [class*="tile"],
+  [class*="Panel"],
+  [class*="panel"],
+  [class*="Row"],
+  [class*="row"],
+  .rounded-xl,
+  .rounded-2xl,
+  .rounded-3xl,
+  .settings-header,
+  .settings-summary-card,
+  .settings-section-card,
+  .settings-right-card,
+  .settings-info-grid article,
+  .settings-toggle-row,
+  .settings-browser-box,
+  .settings-security-box,
+  .settings-theme-card,
+  .settings-inline-panel,
+  .settings-digest-panel,
+  .settings-diagnostics-box
+) {
+  background:
+    linear-gradient(180deg, rgba(16, 43, 47, 0.98), rgba(9, 25, 31, 0.98)) !important;
+  border-color: var(--fn-border) !important;
+  color: var(--fn-text) !important;
+  box-shadow: 0 12px 32px var(--fn-shadow) !important;
+}
+
+/* Rzędy i kafle w widokach operacyjnych */
+html[data-skin="forest-navy"] [data-shell-content="true"] :where(
+  li,
+  button,
+  a,
+  div[class*="rounded"],
+  div[class*="border"],
+  div[class*="shadow"]
+) {
+  color: var(--fn-text) !important;
+  border-color: var(--fn-border) !important;
+}
+
+/* Nie rób z każdego małego diva karty, ale jeśli ma jasne tło, przyciemnij */
+html[data-skin="forest-navy"] [data-shell-content="true"] :where(
+  div[class*="bg-white"],
+  div[class*="bg-slate-50"],
+  div[class*="bg-slate-100"]
+) {
+  background: var(--fn-surface) !important;
+  color: var(--fn-text) !important;
+}
+
+/* Tekst główny */
+html[data-skin="forest-navy"] :where(
+  h1, h2, h3, h4, h5,
+  strong,
+  label,
+  .font-semibold,
+  .font-bold,
+  .font-medium,
+  .text-slate-950,
+  .text-slate-900,
+  .text-slate-800,
+  .text-slate-700,
+  .text-gray-950,
+  .text-gray-900,
+  .text-gray-800,
+  .text-gray-700,
+  [class*="text-slate-9"],
+  [class*="text-slate-8"],
+  [class*="text-gray-9"],
+  [class*="text-gray-8"]
+) {
+  color: var(--fn-text) !important;
+  opacity: 1 !important;
+}
+
+/* Tekst pomocniczy */
+html[data-skin="forest-navy"] :where(
+  p, small, span,
+  .text-slate-600,
+  .text-slate-500,
+  .text-slate-400,
+  .text-gray-600,
+  .text-gray-500,
+  .text-gray-400,
+  [class*="text-slate-6"],
+  [class*="text-slate-5"],
+  [class*="text-slate-4"],
+  [class*="text-gray-6"],
+  [class*="text-gray-5"],
+  [class*="text-gray-4"]
+) {
+  color: var(--fn-muted) !important;
+  opacity: 1 !important;
+}
+
+/* Akcenty */
+html[data-skin="forest-navy"] :where(
+  .settings-kicker,
+  .settings-section-head > div > span,
+  .settings-right-title,
+  .settings-right-title h2,
+  .text-blue-600,
+  .text-blue-700,
+  .text-purple-600,
+  .text-purple-700
+) {
+  color: var(--fn-primary) !important;
+}
+
+/* Przyciski */
+html[data-skin="forest-navy"] :where(button, a[role="button"]) {
+  border-color: var(--fn-border) !important;
+}
+
+html[data-skin="forest-navy"] :where(button:not(.bg-primary), a[role="button"]:not(.bg-primary)) {
+  background: rgba(13, 34, 40, 0.92) !important;
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] :where(button:hover, a[role="button"]:hover) {
+  background: rgba(52, 211, 153, 0.12) !important;
+  border-color: var(--fn-primary) !important;
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] :where(.bg-primary, button.bg-primary) {
+  background: linear-gradient(180deg, var(--fn-primary), var(--fn-primary-2)) !important;
+  color: #04110d !important;
+  border-color: var(--fn-primary-2) !important;
+}
+
+/* Formularze */
+html[data-skin="forest-navy"] :where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select
+) {
+  background: #07181d !important;
+  border-color: var(--fn-border) !important;
+  color: var(--fn-text) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04) !important;
+}
+
+html[data-skin="forest-navy"] :where(input, textarea)::placeholder {
+  color: var(--fn-muted-2) !important;
+}
+
+html[data-skin="forest-navy"] :where(input, textarea, select):focus {
+  border-color: var(--fn-primary) !important;
+  box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.26) !important;
+}
+
+html[data-skin="forest-navy"] select option {
+  background: #07181d !important;
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] input[type="checkbox"] {
+  accent-color: var(--fn-primary);
+}
+
+/* Sidebar spójny z motywem */
+html[data-skin="forest-navy"] .sidebar {
+  background: linear-gradient(180deg, #07131b 0%, #050d10 100%) !important;
+  border-color: var(--fn-border) !important;
+}
+
+html[data-skin="forest-navy"] .nav-btn {
+  color: var(--fn-muted) !important;
+  border-color: rgba(40, 84, 72, 0.70) !important;
+}
+
+html[data-skin="forest-navy"] .nav-btn.active,
+html[data-skin="forest-navy"] .nav-btn:hover {
+  background: rgba(52, 211, 153, 0.15) !important;
+  border-color: var(--fn-primary) !important;
+  color: var(--fn-text) !important;
+}
+
+html[data-skin="forest-navy"] .nav-ico {
+  color: var(--fn-primary) !important;
+}
+
+/* Aktywne karty/wybory */
+html[data-skin="forest-navy"] :where(
+  .active,
+  [data-state="active"],
+  [aria-selected="true"],
+  .settings-theme-active
+) {
+  border-color: var(--fn-primary) !important;
+}
+
+html[data-skin="forest-navy"] .settings-theme-active {
+  background: linear-gradient(180deg, rgba(52, 211, 153, 0.18), rgba(13, 34, 40, 0.98)) !important;
+  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.30) !important;
+}
+
+/* Pigułki/liczniki */
+html[data-skin="forest-navy"] :where(
+  .settings-soft-pill,
+  .app-primary-chip,
+  .nav-badge,
+  [class*="badge"],
+  [class*="Badge"]
+) {
+  background: var(--fn-primary-soft) !important;
+  color: var(--fn-primary) !important;
+  border-color: rgba(52, 211, 153, 0.30) !important;
+}
+
+/* Semantyka kolorów, ale czytelna na ciemnym */
+html[data-skin="forest-navy"] :where(.text-red-600, .text-red-700) {
+  color: #fb7185 !important;
+}
+
+html[data-skin="forest-navy"] :where(.text-amber-600, .text-yellow-600) {
+  color: #fbbf24 !important;
+}
+
+html[data-skin="forest-navy"] :where(.text-emerald-600, .text-green-600) {
+  color: #34d399 !important;
+}
+
+/* Koniec stage */
+/* /STAGE185_FOREST_NAVY_READABLE_LOCAL_ONLY */

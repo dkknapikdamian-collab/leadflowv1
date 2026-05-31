@@ -1,4 +1,4 @@
-// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
+﻿// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
 import { getSupabaseAccessToken } from './supabase-auth';
@@ -122,6 +122,21 @@ function getDevPreviewData() {
   return { leads, clients, cases, tasks, events, payments };
 }
 
+
+function isDevPreviewDetailId(id: string) {
+  return import.meta.env.DEV && /^dev-(client|lead|case)-/.test(String(id || ''));
+}
+
+
+
+function getDevPreviewRowById(entity: 'clients' | 'leads' | 'cases', id: string) {
+  const forceDevPreviewDetail = isDevPreviewDetailId(id);
+  if (!forceDevPreviewDetail && !isDevPreviewDataEnabled()) return null;
+
+  const data = getDevPreviewData() as Record<string, Record<string, unknown>[]>;
+  const rows = Array.isArray(data[entity]) ? data[entity] : [];
+  return rows.find((row) => String((row as any)?.id || '') === String(id)) ?? null;
+}
 export type CloseflowDataMutationDetail = {
   path: string;
   method: string;
@@ -344,7 +359,16 @@ export async function fetchClientsFromSupabase(params?: { includeArchived?: bool
   const query = params?.includeArchived ? '?includeArchived=1' : '';
   return callApi<Record<string, unknown>[]>(`/api/clients${query}`).then(normalizeClientListContract);
 }
-export async function fetchClientByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row)); }
+
+
+
+
+export async function fetchClientByIdFromSupabase(id: string) {
+  const devRow = getDevPreviewRowById('clients', id);
+  if (devRow) return normalizeClientContract(devRow);
+  if (isDevPreviewDetailId(id)) throw new Error(`DEV_PREVIEW_CLIENT_NOT_FOUND:${id}`);
+  return callApi<Record<string, unknown>>(`/api/clients?id=${encodeURIComponent(id)}`).then((row) => normalizeClientContract(row));
+}
 export async function createClientInSupabase(input: ClientUpsertInput) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'POST', body: JSON.stringify(normalizeDuplicateWriteOverride(input as unknown as Record<string, unknown>)) }); }
 export async function updateClientInSupabase(input: ClientUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/clients', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateClientPrimaryCaseInSupabase(input: { id: string; primaryCaseId: string | null }) { return updateClientInSupabase(input); }
@@ -457,7 +481,16 @@ export async function fetchLeadsFromSupabase(params?: { clientId?: string; linke
   if (params?.visibility) query.set('visibility', params.visibility);
   return callApi<Record<string, unknown>[]>(`/api/leads${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeLeadListContract);
 }
-export async function fetchLeadByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`).then((row) => normalizeLeadContract(row)); }
+
+
+
+
+export async function fetchLeadByIdFromSupabase(id: string) {
+  const devRow = getDevPreviewRowById('leads', id);
+  if (devRow) return normalizeLeadContract(devRow);
+  if (isDevPreviewDetailId(id)) throw new Error(`DEV_PREVIEW_LEAD_NOT_FOUND:${id}`);
+  return callApi<Record<string, unknown>>(`/api/leads?id=${encodeURIComponent(id)}`).then((row) => normalizeLeadContract(row));
+}
 // STAGE124E_CALENDAR_RANGE_QUERY_PARAMS
 export type TaskEventRangeParamsStage124E = {
   from?: string;
@@ -517,7 +550,16 @@ export async function fetchCasesFromSupabase(params?: { clientId?: string; leadI
   if (params?.includeArchived) query.set('includeArchived', '1');
   return callApi<Record<string, unknown>[]>(`/api/cases${query.toString() ? `?${query.toString()}` : ''}`).then(normalizeCaseListContract);
 }
-export async function fetchCaseByIdFromSupabase(id: string) { return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`).then((row) => normalizeCaseContract(row)); }
+
+
+
+
+export async function fetchCaseByIdFromSupabase(id: string) {
+  const devRow = getDevPreviewRowById('cases', id);
+  if (devRow) return normalizeCaseContract(devRow);
+  if (isDevPreviewDetailId(id)) throw new Error(`DEV_PREVIEW_CASE_NOT_FOUND:${id}`);
+  return callApi<Record<string, unknown>>(`/api/cases?id=${encodeURIComponent(id)}`).then((row) => normalizeCaseContract(row));
+}
 export async function createCaseInSupabase(input: CaseUpsertInput) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteCaseFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
@@ -684,3 +726,4 @@ export async function syncGoogleCalendarInboundInSupabase(input?: { daysBack?: n
     body: JSON.stringify(input || {}),
   });
 }
+

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Activity, ArrowUpRight, CalendarClock, CheckCircle2, Clock, Filter, Link2, ListChecks, Loader2, Search } from 'lucide-react';
+import { Activity as ActivityIcon, ArrowUpRight, CalendarClock, CheckCircle2, Clock, Filter, Link2, ListChecks, Loader2, Search } from 'lucide-react';
 import {
   CaseEntityIcon,
   ClientEntityIcon,
@@ -12,7 +12,9 @@ import {
 
 import Layout from '../components/Layout';
 import '../styles/visual-stage8-activity-vnext.css';
+import '../styles/closeflow-activity-visual-source-truth-stage181u.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
+import '../styles/closeflow-activity-rail-force-colors-stage181v.css';
 import {
   StatShortcutCard
 } from '../components/StatShortcutCard';
@@ -30,7 +32,10 @@ import {
 } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 const sourceOptions = [
   { value: 'all', label: 'Wszystko' },
   { value: 'today', label: 'Dziś' },
@@ -713,11 +718,11 @@ export default function Activity() {
         <CloseFlowPageHeaderV2 pageKey="activity" />
 
         <section className="activity-stats-grid" aria-label="Statystyki aktywności">
-          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={TemplateEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="bg-slate-100 text-slate-500" />
-          <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="bg-blue-50 text-blue-500" valueClassName="text-blue-600" />
-          <StatShortcutCard label="Leady" value={metrics.leads} icon={LeadEntityIcon} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="bg-indigo-50 text-indigo-500" />
-          <StatShortcutCard label="Sprawy" value={metrics.cases} icon={CaseEntityIcon} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="bg-slate-100 text-slate-500" />
-          <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="bg-emerald-50 text-emerald-500" valueClassName="text-emerald-600" />
+          <StatShortcutCard label="Wszystkie" value={metrics.all} icon={TemplateEntityIcon} active={activeFilter === 'all'} onClick={() => setActiveFilter('all')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-all" />
+          <StatShortcutCard label="Dzisiaj" value={metrics.today} icon={Clock} active={activeFilter === 'today'} onClick={() => setActiveFilter('today')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-today" valueClassName="cf-activity-metric-value-today" />
+          <StatShortcutCard label="Leady" value={metrics.leads} icon={LeadEntityIcon} active={activeFilter === 'lead'} onClick={() => setActiveFilter('lead')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-lead" valueClassName="cf-activity-metric-value-lead" />
+          <StatShortcutCard label="Sprawy" value={metrics.cases} icon={CaseEntityIcon} active={activeFilter === 'case'} onClick={() => setActiveFilter('case')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-case" valueClassName="cf-activity-metric-value-case" />
+          <StatShortcutCard label="Zadania" value={metrics.tasks} icon={ListChecks} active={activeFilter === 'task'} onClick={() => setActiveFilter('task')} iconClassName="cf-activity-metric-icon cf-activity-metric-icon-task" valueClassName="cf-activity-metric-value-task" />
           <StatShortcutCard label="Wymaga uwagi" value={metrics.attention} icon={NotificationEntityIcon} active={activeFilter === 'attention'} onClick={() => setActiveFilter('attention')} tone="red" />
         </section>
 
@@ -731,6 +736,7 @@ export default function Activity() {
                     type="button"
                     onClick={() => setActiveFilter(filter.value)}
                     className={['activity-filter-pill', activeFilter === filter.value ? 'activity-filter-pill-active' : ''].join(' ')}
+                    data-activity-filter-kind={filter.value}
                   >
                     <span>{filter.label}</span>
                     <strong>{filterCounts[filter.value] || 0}</strong>
@@ -771,7 +777,7 @@ export default function Activity() {
                 </label>
               </div>
 
-              <label className="activity-search-box">
+              <label className="activity-search-box cf-main-search cf-main-search-stage175" data-cf-main-search-source="stage173" data-cf-main-search-stage175="true">
                 <Search className="h-4 w-4" />
                 <input
                   value={query}
@@ -827,22 +833,22 @@ export default function Activity() {
           </section>
 
           <aside className="activity-right-rail" aria-label="Skrót aktywności">
-            <section className="right-card activity-right-card">
+            <section className="right-card activity-right-card" data-activity-rail-card="filters">
               <div className="activity-right-card-head">
                 <Filter className="h-4 w-4" />
                 <h2>Szybkie filtry</h2>
               </div>
-              <button type="button" onClick={() => setActiveFilter('today')} className="activity-rail-button">
+              <button type="button" onClick={() => setActiveFilter('today')} className="activity-rail-button" data-activity-rail-button="today">
                 <span>Dzisiaj</span>
                 <strong>{metrics.today}</strong>
               </button>
-              <button type="button" onClick={() => setActiveFilter('attention')} className="activity-rail-button">
+              <button type="button" onClick={() => setActiveFilter('attention')} className="activity-rail-button" data-activity-rail-button="attention">
                 <span>Wymaga uwagi</span>
                 <strong>{metrics.attention}</strong>
               </button>
             </section>
 
-            <section className="right-card activity-right-card">
+            <section className="right-card activity-right-card" data-activity-rail-card="cases">
               <div className="activity-right-card-head">
                 <EntityIcon entity="case" className="h-4 w-4" />
                 <h2>Ostatnie zmiany w sprawach</h2>
@@ -864,7 +870,7 @@ export default function Activity() {
               )}
             </section>
 
-            <section className="right-card activity-right-card">
+            <section className="right-card activity-right-card" data-activity-rail-card="leads">
               <div className="activity-right-card-head">
                 <EntityIcon entity="lead" className="h-4 w-4" />
                 <h2>Ostatnie zmiany w leadach</h2>

@@ -1,0 +1,20 @@
+/* STAGE212A_VISUAL_FOUNDATION_SOURCE_TRUTH
+   owner: CloseFlow Visual System
+   decision: canvas is #f1f5f9, cards are #ffffff, soft surfaces are #f8fafc.
+   runtime: VisualFoundationRuntime mounts the final cascade tag after lazy route CSS.
+*/
+:root,
+html,
+body,
+#root,
+[data-skin="forteca-light"] {
+  --cf-canvas: #f1f5f9;
+  --cf-surface: #ffffff;
+  --cf-surface-soft: #f8fafc;
+  --cf-border: #e2e8f0;
+  --app-bg: var(--cf-canvas);
+  --app-surface: var(--cf-canvas);
+  --app-surface-strong: var(--cf-surface);
+  --cf-operator-bg: var(--cf-canvas);
+  --cf-operator-bg-soft: var(--cf-canvas);
+}

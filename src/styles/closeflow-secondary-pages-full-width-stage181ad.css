@@ -1,0 +1,163 @@
+/* CLOSEFLOW_STAGE181AD_SECONDARY_PAGES_FULL_WIDTH_SHELL
+   LOCAL ONLY
+   Problem: secondary pages were visually compressed by page-level max-width shells.
+   Source of truth: use the same full-width working canvas as Dziś.
+   Affected: Activity, AI drafts, Notifications, Billing, Support, Settings, Admin AI.
+   This does not change data, API, side navigation or mobile behavior.
+*/
+
+@media (min-width: 1024px) {
+  .cf-html-shell .main[data-shell-main="true"] {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .cf-html-shell .main[data-shell-main="true"] > .view.active[data-shell-content="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .cf-html-shell .main[data-current-section="aktywność"] > .view.active[data-shell-content="true"],
+  .cf-html-shell .main[data-current-section="inbox szkiców"] > .view.active[data-shell-content="true"],
+  .cf-html-shell .main[data-current-section="powiadomienia"] > .view.active[data-shell-content="true"],
+  .cf-html-shell .main[data-current-section="rozliczenia"] > .view.active[data-shell-content="true"],
+  .cf-html-shell .main[data-current-section="pomoc"] > .view.active[data-shell-content="true"],
+  .cf-html-shell .main[data-current-section="ustawienia"] > .view.active[data-shell-content="true"],
+  .cf-html-shell .main[data-current-section="admin ai"] > .view.active[data-shell-content="true"] {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+
+  .cf-html-shell .activity-vnext-page,
+  .cf-html-shell .ai-drafts-vnext-page,
+  .cf-html-shell .notifications-vnext-page,
+  .cf-html-shell .billing-vnext-page,
+  .cf-html-shell .support-vnext-page,
+  .cf-html-shell .settings-vnext-page,
+  .cf-html-shell .admin-ai-settings-page,
+  .cf-html-shell .admin-ai-settings-vnext-page,
+  .cf-html-shell [data-admin-ai-settings-page="true"] {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  .cf-html-shell .activity-vnext-page > *,
+  .cf-html-shell .ai-drafts-vnext-page > *,
+  .cf-html-shell .notifications-vnext-page > *,
+  .cf-html-shell .billing-vnext-page > *,
+  .cf-html-shell .support-vnext-page > *,
+  .cf-html-shell .settings-vnext-page > *,
+  .cf-html-shell .admin-ai-settings-page > *,
+  .cf-html-shell .admin-ai-settings-vnext-page > *,
+  .cf-html-shell [data-admin-ai-settings-page="true"] > * {
+    max-width: none !important;
+  }
+
+  /* Page-specific shells that were visually narrowing the working area */
+  .cf-html-shell .activity-shell,
+  .cf-html-shell .ai-drafts-shell,
+  .cf-html-shell .notifications-shell,
+  .cf-html-shell .billing-shell,
+  .cf-html-shell .support-shell,
+  .cf-html-shell .settings-shell,
+  .cf-html-shell .admin-ai-settings-shell {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Header/metric/filter groups should stretch like Dziś */
+  .cf-html-shell .activity-vnext-page .closeflow-page-header-v2,
+  .cf-html-shell .ai-drafts-vnext-page .closeflow-page-header-v2,
+  .cf-html-shell .notifications-vnext-page .closeflow-page-header-v2,
+  .cf-html-shell .billing-vnext-page .closeflow-page-header-v2,
+  .cf-html-shell .support-vnext-page .closeflow-page-header-v2,
+  .cf-html-shell .settings-vnext-page .closeflow-page-header-v2,
+  .cf-html-shell .activity-summary-grid,
+  .cf-html-shell .activity-filter-card,
+  .cf-html-shell .ai-drafts-summary-grid,
+  .cf-html-shell .ai-drafts-filter-card,
+  .cf-html-shell .notifications-summary-grid,
+  .cf-html-shell .notifications-filter-card,
+  .cf-html-shell .billing-status-card,
+  .cf-html-shell .billing-period-card,
+  .cf-html-shell .support-hero-grid,
+  .cf-html-shell .settings-summary-grid,
+  .cf-html-shell .settings-tabs-stage181ac {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Main + right rail grids should consume the available canvas */
+  .cf-html-shell .activity-shell,
+  .cf-html-shell .ai-drafts-shell,
+  .cf-html-shell .notifications-shell,
+  .cf-html-shell .billing-shell,
+  .cf-html-shell .support-shell,
+  .cf-html-shell .settings-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 360px) !important;
+  }
+
+  .cf-html-shell .activity-main-column,
+  .cf-html-shell .ai-drafts-main-column,
+  .cf-html-shell .notifications-main-column,
+  .cf-html-shell .billing-main-column,
+  .cf-html-shell .support-main-column,
+  .cf-html-shell .settings-main-column {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .cf-html-shell .activity-right-rail,
+  .cf-html-shell .ai-drafts-right-rail,
+  .cf-html-shell .notifications-right-rail,
+  .cf-html-shell .billing-right-rail,
+  .cf-html-shell .support-right-rail,
+  .cf-html-shell .settings-right-rail {
+    width: 100% !important;
+    max-width: 360px !important;
+  }
+}
+
+/* Middle widths: avoid crushing right rail into content */
+@media (min-width: 1024px) and (max-width: 1380px) {
+  .cf-html-shell .activity-shell,
+  .cf-html-shell .ai-drafts-shell,
+  .cf-html-shell .notifications-shell,
+  .cf-html-shell .billing-shell,
+  .cf-html-shell .support-shell,
+  .cf-html-shell .settings-shell {
+    grid-template-columns: minmax(0, 1fr) minmax(240px, 320px) !important;
+  }
+
+  .cf-html-shell .activity-right-rail,
+  .cf-html-shell .ai-drafts-right-rail,
+  .cf-html-shell .notifications-right-rail,
+  .cf-html-shell .billing-right-rail,
+  .cf-html-shell .support-right-rail,
+  .cf-html-shell .settings-right-rail {
+    max-width: 320px !important;
+  }
+}
+
+/* Mobile/tablet: keep existing stacked behavior */
+@media (max-width: 1023px) {
+  .cf-html-shell .activity-vnext-page,
+  .cf-html-shell .ai-drafts-vnext-page,
+  .cf-html-shell .notifications-vnext-page,
+  .cf-html-shell .billing-vnext-page,
+  .cf-html-shell .support-vnext-page,
+  .cf-html-shell .settings-vnext-page {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}

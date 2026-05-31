@@ -1,0 +1,313 @@
+/* CLOSEFLOW_STAGE165_MODAL_UNIFIED_EVENT_MOTIF_SOURCE_TRUTH
+
+   Root finding:
+   - The real shared modal component is src/components/ui/dialog.tsx.
+   - It marks every operator dialog with:
+     data-closeflow-modal-visual-system="true"
+     and class "cf-modal-surface".
+   - Previous stages used broad generic selectors and then per-symptom overrides.
+   - That produced visual drift: Lead, Task and Event modals started to look different.
+
+   Stage165 decision:
+   - Stop treating Lead/Task/Event as separate visual systems.
+   - Make one final loaded source truth for:
+     [data-closeflow-modal-visual-system="true"].cf-modal-surface
+   - Use the event dialog motif: dark navy shell + white controls.
+   - Keep the current horizontal work-area position.
+   - Reduce the modal size.
+   - Use top anchoring so tall forms do not cut the header.
+   - Make the body scroll inside the modal and footer stay below/visible.
+
+   This file intentionally overrides Stage158-164 modal rules.
+*/
+
+:root {
+  --closeflow-stage165-modal-unified-event-motif-source-truth: "active";
+
+  /* Position and size source truth */
+  --cf165-modal-visual-width: 600px;
+  --cf165-modal-visual-max-width: calc(100vw - 96px);
+  --cf165-modal-top-offset: 88px;
+  --cf165-modal-bottom-safe: 72px;
+  --cf165-modal-max-height: calc(100vh - var(--cf165-modal-top-offset) - var(--cf165-modal-bottom-safe));
+
+  /* Work-area center: viewport center plus sidebar/work-area correction. */
+  --cf165-modal-work-center-shift-x: clamp(72px, 6.25vw, 112px);
+
+  /* Unified event-motif colors */
+  --cf165-modal-bg: #0b1220;
+  --cf165-modal-bg-2: #0f172a;
+  --cf165-modal-panel: #111827;
+  --cf165-modal-panel-soft: #0f1b2d;
+  --cf165-modal-border: rgba(148, 163, 184, 0.28);
+  --cf165-modal-border-strong: rgba(203, 213, 225, 0.38);
+  --cf165-modal-fg: #f8fafc;
+  --cf165-modal-muted: #a8b3c7;
+  --cf165-modal-muted-2: #7f8da3;
+  --cf165-modal-input-bg: #ffffff;
+  --cf165-modal-input-fg: #0f172a;
+  --cf165-modal-input-border: #d9e2ef;
+  --cf165-modal-input-placeholder: #8ea0b8;
+  --cf165-modal-primary: #16a34a;
+  --cf165-modal-primary-hover: #15803d;
+
+  /* Density source truth */
+  --cf165-modal-radius: 16px;
+  --cf165-modal-header-pad-y: 12px;
+  --cf165-modal-header-pad-x: 16px;
+  --cf165-modal-body-pad-y: 12px;
+  --cf165-modal-body-pad-x: 16px;
+  --cf165-modal-footer-pad-y: 10px;
+  --cf165-modal-gap: 8px;
+
+  --cf165-modal-title-size: 16px;
+  --cf165-modal-body-size: 11.5px;
+  --cf165-modal-label-size: 10.5px;
+  --cf165-modal-small-size: 9.75px;
+
+  --cf165-control-height: 28px;
+  --cf165-control-pad-x: 10px;
+  --cf165-textarea-min: 52px;
+  --cf165-textarea-max: 84px;
+  --cf165-footer-safe-space: 52px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  body :is([data-radix-dialog-overlay], .cf-modal-overlay, .cf-modal-backdrop, .dialog-overlay, .modal-overlay, .overlay, .backdrop) {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 2147483400 !important;
+    background: rgba(2, 6, 23, 0.72) !important;
+    backdrop-filter: blur(1px) !important;
+    transform: none !important;
+    zoom: 1 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"],
+  body [role="dialog"][data-closeflow-modal-visual-system="true"].cf-modal-surface {
+    /* Reset old positioning from Stage158-164 and Tailwind translate utilities. */
+    position: fixed !important;
+    inset: auto !important;
+    left: calc(50vw + var(--cf165-modal-work-center-shift-x)) !important;
+    top: var(--cf165-modal-top-offset) !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: translateX(-50%) !important;
+    transform-origin: top center !important;
+    translate: none !important;
+    zoom: 1 !important;
+
+    width: min(var(--cf165-modal-visual-width), var(--cf165-modal-visual-max-width)) !important;
+    min-width: 0 !important;
+    max-width: min(var(--cf165-modal-visual-width), var(--cf165-modal-visual-max-width)) !important;
+    max-height: var(--cf165-modal-max-height) !important;
+
+    z-index: 2147483600 !important;
+
+    display: flex !important;
+    grid-template-columns: none !important;
+    flex-direction: column !important;
+    gap: 0 !important;
+    overflow: hidden !important;
+    box-sizing: border-box !important;
+
+    padding: 0 !important;
+    border-radius: var(--cf165-modal-radius) !important;
+    border: 1px solid var(--cf165-modal-border-strong) !important;
+    background: var(--cf165-modal-bg) !important;
+    color: var(--cf165-modal-fg) !important;
+    box-shadow: 0 28px 90px rgba(2, 6, 23, 0.46) !important;
+
+    font-size: var(--cf165-modal-body-size) !important;
+    line-height: 1.16 !important;
+    contain: none !important;
+    clip-path: none !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-modal-header,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-modal-header {
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    padding: var(--cf165-modal-header-pad-y) var(--cf165-modal-header-pad-x) !important;
+    margin: 0 !important;
+    border-bottom: 1px solid var(--cf165-modal-border) !important;
+    background: var(--cf165-modal-bg) !important;
+    color: var(--cf165-modal-fg) !important;
+    text-align: left !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.cf-modal-title, h1, h2, h3, [data-radix-dialog-title]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.cf-modal-title, h1, h2, h3, [data-radix-dialog-title]) {
+    font-size: var(--cf165-modal-title-size) !important;
+    line-height: 1.1 !important;
+    margin: 0 !important;
+    color: var(--cf165-modal-fg) !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is([data-radix-dialog-description], .cf-modal-description, .description, p, small),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is([data-radix-dialog-description], .cf-modal-description, .description, p, small) {
+    font-size: var(--cf165-modal-small-size) !important;
+    line-height: 1.16 !important;
+    color: var(--cf165-modal-muted) !important;
+  }
+
+  /* Main body: scroll inside the modal, never behind the footer. */
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface > :is(form, .event-form-vnext, .dialog-body, .modal-body),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] > :is(form, .event-form-vnext, .dialog-body, .modal-body),
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(form.event-form-vnext, .event-form-vnext),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(form.event-form-vnext, .event-form-vnext) {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--cf165-modal-gap) !important;
+    box-sizing: border-box !important;
+    scrollbar-gutter: stable !important;
+    padding: var(--cf165-modal-body-pad-y) var(--cf165-modal-body-pad-x) var(--cf165-footer-safe-space) !important;
+    margin: 0 !important;
+    background: var(--cf165-modal-bg) !important;
+    color: var(--cf165-modal-fg) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(section, article, fieldset, .rounded-2xl, .card, .panel-card, .section-card, .form-card, .bg-slate-900, .bg-slate-950, .bg-gray-900, .bg-neutral-900),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(section, article, fieldset, .rounded-2xl, .card, .panel-card, .section-card, .form-card, .bg-slate-900, .bg-slate-950, .bg-gray-900, .bg-neutral-900) {
+    padding: 10px 12px !important;
+    margin: 0 !important;
+    gap: var(--cf165-modal-gap) !important;
+    border-radius: 13px !important;
+    border: 1px solid var(--cf165-modal-border) !important;
+    background: var(--cf165-modal-bg-2) !important;
+    color: var(--cf165-modal-fg) !important;
+    box-sizing: border-box !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.space-y-6, .space-y-5, .space-y-4, .space-y-3, .space-y-2, .grid, .event-form-field),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.space-y-6, .space-y-5, .space-y-4, .space-y-3, .space-y-2, .grid, .event-form-field) {
+    gap: var(--cf165-modal-gap) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(label, .label, .font-medium, .font-semibold, .font-bold),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(label, .label, .font-medium, .font-semibold, .font-bold) {
+    font-size: var(--cf165-modal-label-size) !important;
+    line-height: 1.08 !important;
+    margin-bottom: 2px !important;
+    color: var(--cf165-modal-fg) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.text-slate-500, .text-slate-600, .text-slate-700, .text-slate-300, .text-slate-400, .text-gray-300, .text-gray-400, .text-muted-foreground),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.text-slate-500, .text-slate-600, .text-slate-700, .text-slate-300, .text-slate-400, .text-gray-300, .text-gray-400, .text-muted-foreground) {
+    color: var(--cf165-modal-muted) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(input, select, textarea),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(input, select, textarea) {
+    background: var(--cf165-modal-input-bg) !important;
+    color: var(--cf165-modal-input-fg) !important;
+    border: 1px solid var(--cf165-modal-input-border) !important;
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(input, select, button, .btn, [role="button"]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(input, select, button, .btn, [role="button"]) {
+    min-height: var(--cf165-control-height) !important;
+    height: auto !important;
+    padding-left: var(--cf165-control-pad-x) !important;
+    padding-right: var(--cf165-control-pad-x) !important;
+    border-radius: 10px !important;
+    font-size: var(--cf165-modal-body-size) !important;
+    line-height: 1.08 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(input, textarea)::placeholder,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(input, textarea)::placeholder {
+    color: var(--cf165-modal-input-placeholder) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface textarea,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] textarea {
+    min-height: var(--cf165-textarea-min) !important;
+    max-height: var(--cf165-textarea-max) !important;
+    padding: 7px 9px !important;
+    resize: vertical !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-modal-footer,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-modal-footer,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(.event-form-footer, .dialog-footer, .modal-footer, footer),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(.event-form-footer, .dialog-footer, .modal-footer, footer),
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface form > :is(div, section, footer):has(button[type="submit"]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] form > :is(div, section, footer):has(button[type="submit"]) {
+    order: 999 !important;
+    flex: 0 0 auto !important;
+    position: sticky !important;
+    bottom: 0 !important;
+    z-index: 40 !important;
+    min-height: 44px !important;
+    padding: var(--cf165-modal-footer-pad-y) var(--cf165-modal-body-pad-x) !important;
+    margin: 0 !important;
+    background: var(--cf165-modal-bg) !important;
+    color: var(--cf165-modal-fg) !important;
+    border-top: 1px solid var(--cf165-modal-border) !important;
+    box-sizing: border-box !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(button[type="submit"], .bg-green-600, .bg-emerald-600),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(button[type="submit"], .bg-green-600, .bg-emerald-600) {
+    background: var(--cf165-modal-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--cf165-modal-primary) !important;
+    font-weight: 700 !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(button[type="submit"], .bg-green-600, .bg-emerald-600):hover,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(button[type="submit"], .bg-green-600, .bg-emerald-600):hover {
+    background: var(--cf165-modal-primary-hover) !important;
+  }
+
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface .cf-modal-close,
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] .cf-modal-close,
+  body [data-closeflow-modal-visual-system="true"].cf-modal-surface :is(button[aria-label="Close"], button[aria-label="Zamknij"], [data-radix-dialog-close]),
+  body .cf-modal-surface[data-closeflow-modal-visual-system="true"] :is(button[aria-label="Close"], button[aria-label="Zamknij"], [data-radix-dialog-close]) {
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    width: 28px !important;
+    min-width: 28px !important;
+    height: 28px !important;
+    min-height: 28px !important;
+    padding: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(255,255,255,0.92) !important;
+    color: #334155 !important;
+    border: 1px solid var(--cf165-modal-border) !important;
+  }
+
+  /* Mobile: keep normal sheet behavior and avoid desktop work-area offset. */
+  @media (max-width: 900px) {
+    body [data-closeflow-modal-visual-system="true"].cf-modal-surface,
+    body .cf-modal-surface[data-closeflow-modal-visual-system="true"] {
+      left: 50vw !important;
+      top: 24px !important;
+      width: calc(100vw - 24px) !important;
+      max-width: calc(100vw - 24px) !important;
+      max-height: calc(100vh - 48px) !important;
+    }
+  }
+}
+
+/*
+  Tuning only here:
+  - width: --cf165-modal-visual-width
+  - position: --cf165-modal-work-center-shift-x, --cf165-modal-top-offset
+  - height: --cf165-modal-bottom-safe
+  Do not tune Lead/Task/Event separately.
+*/

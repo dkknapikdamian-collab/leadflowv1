@@ -1,0 +1,7 @@
+src/pages/TasksStable.tsx
+src/pages/Templates.tsx
+src/pages/ResponseTemplates.tsx
+src/pages/Activity.tsx
+src/pages/AiDrafts.tsx
+src/pages/NotificationsCenter.tsx
+src/pages/SupportCenter.tsx

@@ -3,9 +3,7 @@
 .billing-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
-  background:
-    radial-gradient(circle at top left, rgba(37, 99, 235, 0.08), transparent 30%),
-    linear-gradient(180deg, #f4f6f8 0%, #eef2f6 100%);
+  background: var(--cf-canvas-bg, #f8fafc);
   color: #111827;
 }
 
@@ -118,6 +116,44 @@
   color: #111827 !important;
   backdrop-filter: none !important;
   filter: none !important;
+}
+
+
+/* STAGE180N_BILLING_STATUS_PLAN_BORDER_SOURCE_TRUTH */
+.billing-status-card.billing-status-plan-free {
+  border-color: #94a3b8 !important;
+  box-shadow: 0 10px 28px rgba(100, 116, 139, 0.12) !important;
+}
+
+.billing-status-card.billing-status-plan-basic {
+  border-color: #2563eb !important;
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.12) !important;
+}
+
+.billing-status-card.billing-status-plan-pro {
+  border-color: #059669 !important;
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.14) !important;
+}
+
+.billing-status-card.billing-status-plan-ai {
+  border-color: #7c3aed !important;
+  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.14) !important;
+}
+
+.billing-status-card.billing-status-plan-free .billing-status-facts {
+  border-color: #cbd5e1 !important;
+}
+
+.billing-status-card.billing-status-plan-basic .billing-status-facts {
+  border-color: #bfdbfe !important;
+}
+
+.billing-status-card.billing-status-plan-pro .billing-status-facts {
+  border-color: #a7f3d0 !important;
+}
+
+.billing-status-card.billing-status-plan-ai .billing-status-facts {
+  border-color: #ddd6fe !important;
 }
 
 .billing-status-card {
@@ -701,4 +737,87 @@
   .billing-filter-row button {
     flex: 0 0 auto;
   }
+}
+
+/* STAGE180P_BILLING_PLAN_TONE_RIGHT_RAIL_CLEANUP_2026_05_30
+   The top access card border/icon follows the displayed plan tone, not trial/payment status.
+   Right rail heading icons are hidden because they read as random dots in the compact layout. */
+.billing-status-card.billing-status-plan-free,
+.billing-status-card.billing-status-plan-basic,
+.billing-status-card.billing-status-plan-pro,
+.billing-status-card.billing-status-plan-ai {
+  border-width: 1px 1px 1px 4px !important;
+}
+
+.billing-status-card.billing-status-plan-free {
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 28px rgba(71, 85, 105, 0.08) !important;
+}
+
+.billing-status-card.billing-status-plan-basic {
+  border-color: #2563eb !important;
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.11) !important;
+}
+
+.billing-status-card.billing-status-plan-pro {
+  border-color: #059669 !important;
+  box-shadow: 0 10px 28px rgba(5, 150, 105, 0.12) !important;
+}
+
+.billing-status-card.billing-status-plan-ai {
+  border-color: #7c3aed !important;
+  box-shadow: 0 10px 28px rgba(124, 58, 237, 0.13) !important;
+}
+
+.billing-status-card.billing-status-plan-free .billing-status-icon {
+  background: #f8fafc !important;
+  color: #475569 !important;
+}
+
+.billing-status-card.billing-status-plan-basic .billing-status-icon {
+  background: #eff6ff !important;
+  color: #2563eb !important;
+}
+
+.billing-status-card.billing-status-plan-pro .billing-status-icon {
+  background: #ecfdf3 !important;
+  color: #047857 !important;
+}
+
+.billing-status-card.billing-status-plan-ai .billing-status-icon {
+  background: #f5f3ff !important;
+  color: #7c3aed !important;
+}
+
+.billing-status-card.billing-status-plan-free .billing-status-label {
+  color: #475569 !important;
+}
+
+.billing-status-card.billing-status-plan-basic .billing-status-label {
+  color: #2563eb !important;
+}
+
+.billing-status-card.billing-status-plan-pro .billing-status-label {
+  color: #047857 !important;
+}
+
+.billing-status-card.billing-status-plan-ai .billing-status-label {
+  color: #7c3aed !important;
+}
+
+.billing-right-title svg,
+.billing-right-title .entity-icon,
+.billing-right-title > span:first-child {
+  display: none !important;
+}
+
+.billing-right-title {
+  gap: 0 !important;
+  color: #111827 !important;
+}
+
+/* STAGE211A_SECONDARY_PAGES_WHITE_CANVAS: Billing uses a clean white canvas instead of the old blue/gray gradient surface. */
+.billing-vnext-page {
+  background: #ffffff !important;
+  background-image: none !important;
 }

@@ -1,0 +1,187 @@
+/* CLOSEFLOW_STAGE137_DESKTOP_CONTENT_SHELL_FIX
+   Poprawka po Stage136: szerokość musi być wymuszona na shellu strony,
+   a nie tylko na wybranych dzieciach.
+
+   Zakres:
+   - tylko desktop: min-width 1280px
+   - main.main / [data-shell-main]
+   - .view.active / [data-shell-content]
+   - route rooty: leads, clients, cases, tasks, calendar, templates, response templates, activity
+   - główne listy i prawy rail
+
+   Nie rusza:
+   - mobile/tablet
+   - danych
+   - routingu
+   - Supabase/Auth/Google
+   - przycisków
+   - logiki list
+*/
+
+:root {
+  --cf137-content-max: 1560px;
+  --cf137-content-gutter: 24px;
+  --cf137-rail-width: 340px;
+  --cf137-shell-gap: 24px;
+}
+
+/* Wide desktop gets a little more room, but still not full-bleed chaos. */
+@media (min-width: 1680px) {
+  :root {
+    --cf137-content-max: 1620px;
+    --cf137-content-gutter: 28px;
+    --cf137-rail-width: 348px;
+    --cf137-shell-gap: 26px;
+  }
+}
+
+@media (min-width: 1280px) {
+  /* 1. Main shell must use the available desktop work area. */
+  #root .app.closeflow-visual-stage01.cf-html-shell > main.main[data-shell-main],
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-main] {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 2. Inner active view cannot stay a narrow centered island. */
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content],
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    display: block !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 3. Route roots: one desktop source of truth. */
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"]
+  ),
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+    .main-leads-html,
+    .main-clients-html,
+    .main-cases-html,
+    .main-calendar-html,
+    .main-templates-html,
+    .activity-vnext-page,
+    .activity-vnext-shell,
+    [data-a13-template-style="response-templates-v2"],
+    [data-p0-tasks-stable-rebuild="true"],
+    main[data-p0-tasks-stable-rebuild="true"]
+  ) {
+    width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+    max-width: var(--cf137-content-max) !important;
+    min-width: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 4. Tailwind utility roots with mx-auto/max-w-* must not cap desktop pages. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .view.active > :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ),
+  #root .app.closeflow-visual-stage01.cf-html-shell [data-shell-content] > :is(
+    .mx-auto.max-w-5xl,
+    .mx-auto.max-w-6xl,
+    .mx-auto.max-w-7xl,
+    .mx-auto.flex.w-full.max-w-5xl,
+    .mx-auto.flex.w-full.max-w-7xl
+  ) {
+    width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+    max-width: var(--cf137-content-max) !important;
+  }
+
+  /* 5. Main dashboard/list cards should consume the widened parent. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .grid-4,
+    .grid-5,
+    .stack,
+    .search,
+    .table-card
+  ) {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* 6. Two-column list + right rail gets a fixed readable rail and wider work column. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) .layout-list {
+    width: 100% !important;
+    max-width: none !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, var(--cf137-rail-width)) !important;
+    gap: var(--cf137-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(
+    .lead-right-rail,
+    .clients-right-rail,
+    .cases-right-rail
+  ) {
+    width: 100% !important;
+    max-width: var(--cf137-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* 7. Activity has its own shell, so it needs explicit grid treatment. */
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-vnext-shell {
+    width: min(calc(100vw - 240px - (var(--cf137-content-gutter) * 2)), var(--cf137-content-max)) !important;
+    max-width: var(--cf137-content-max) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) minmax(320px, var(--cf137-rail-width)) !important;
+    gap: var(--cf137-shell-gap) !important;
+    align-items: start !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-main-column {
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  #root .app.closeflow-visual-stage01.cf-html-shell .activity-right-rail {
+    width: 100% !important;
+    max-width: var(--cf137-rail-width) !important;
+    min-width: 0 !important;
+  }
+
+  /* 8. Calendar and template pages often carry route-specific max-widths. */
+  #root .app.closeflow-visual-stage01.cf-html-shell :is(
+    .main-calendar-html,
+    .main-templates-html,
+    [data-a13-template-style="response-templates-v2"]
+  ) :is(.mx-auto, .max-w-5xl, .max-w-6xl, .max-w-7xl, .w-full) {
+    max-width: none !important;
+  }
+
+  /* 9. Keep rows readable: widen the card, not every inner text indefinitely. */
+  #root .cf-html-view:is(.main-leads-html, .main-clients-html) .row:not(.row-empty) {
+    grid-template-columns:
+      minmax(2.15rem, 2.5rem)
+      minmax(18rem, 1.55fr)
+      minmax(7.75rem, 0.5fr)
+      minmax(18rem, 1.05fr)
+      minmax(5rem, auto) !important;
+  }
+}
+
+/* Contract marker for guards. */
+:root {
+  --closeflow-stage137-desktop-content-shell-fix: "active";
+}

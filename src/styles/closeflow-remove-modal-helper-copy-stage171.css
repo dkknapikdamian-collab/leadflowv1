@@ -1,0 +1,32 @@
+/* CLOSEFLOW_STAGE171_REMOVE_MODAL_HELPER_COPY
+
+   Purpose:
+   - Remove visible helper copy from modal panels without breaking Radix accessibility.
+   - DialogDescription elements that used removed visible copy are preserved as screen-reader-only.
+   - The visible UI should keep labels and inputs, but lose explanatory paragraphs/headings listed by the owner.
+
+   Removed visible phrases:
+   - Ustaw termin, powiązanie, przypomnienia i cykliczność wydarzenia w kalendarzu.
+   - Od do
+   - Najpierw ustaw start i koniec. Koniec pilnuje się automatycznie przy zmianie startu.
+   - Możesz zostawić brak albo ustawić powtarzanie, np. co miesiąc.
+   - Na końcu ustaw sposób przypominania i jego cykliczność.
+   - Wpisz minimum danych i zapisz kontakt. Szczegóły możesz uzupełnić później.
+   - Najważniejsze pola do szybkiego zapisania kontaktu.
+*/
+
+:root {
+  --closeflow-stage171-remove-modal-helper-copy: "active";
+}
+
+[data-stage171-hidden-copy="true"] {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
