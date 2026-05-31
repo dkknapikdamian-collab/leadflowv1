@@ -18,6 +18,20 @@ check('NotificationsCenter exists', fs.existsSync(path.join(root, pagePath)));
 check('Stage213C-A report exists', fs.existsSync(path.join(root, reportPath)));
 check('Stage213C-A Obsidian update exists', fs.existsSync(path.join(root, obsidianPath)));
 
+function extractSetIntervalBlocks(src) {
+  const blocks = [];
+  let index = 0;
+  while (index < src.length) {
+    const start = src.indexOf('setInterval(', index);
+    if (start === -1) break;
+    const end = src.indexOf(');', start);
+    if (end === -1) break;
+    blocks.push(src.slice(start, end + 2));
+    index = end + 2;
+  }
+  return blocks;
+}
+
 if (fs.existsSync(path.join(root, pagePath))) {
   const src = read(pagePath);
 
@@ -34,21 +48,25 @@ if (fs.existsSync(path.join(root, pagePath))) {
   check('stage marker rendered on main element', src.includes('data-stage213c-a-notifications-query-budget="ttl-visible-refresh"'));
   check('shows last loaded label', src.includes('data-stage213c-a-notifications-last-refresh="true"'));
 
-  const fullBundleInterval60s =
-    /setInterval\([\s\S]{0,500}fetchCalendarBundleFromSupabase[\s\S]{0,500}60_000/.test(src) ||
-    /setInterval\([\s\S]{0,500}refreshNotificationBundle[\s\S]{0,500}60_000/.test(src);
+  check('legacy load() helper removed', !src.includes('const load = async () =>'));
+  check('legacy 60s bundle polling removed', !src.includes('void load();') && !src.includes('window.clearInterval(interval);\n    };\n  }, [workspace?.id, workspaceLoading]);'));
 
-  check('no full Supabase bundle polling every 60 seconds', !fullBundleInterval60s);
+  const intervalBlocks = extractSetIntervalBlocks(src);
+  const directBundlePolling60s = intervalBlocks.some((block) => {
+    const is60s = block.includes('60_000');
+    const doesBundleWork = block.includes('fetchCalendarBundleFromSupabase') || block.includes('refreshNotificationBundle({ reason: \'interval\' })');
+    return is60s && doesBundleWork;
+  });
+  check('no full Supabase bundle polling every 60 seconds', !directBundlePolling60s);
 
-  const visibleInterval =
-    /setInterval\([\s\S]{0,600}refreshIfVisible\('interval'\)[\s\S]{0,300}NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS/.test(src);
+  const backgroundInterval = intervalBlocks.some((block) => {
+    return block.includes("refreshIfVisible('interval')") && block.includes('NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS');
+  });
+  check('background interval is visibility-gated and uses 5 minute constant', backgroundInterval);
 
-  check('background interval is visibility-gated and uses 5 minute constant', visibleInterval);
-
-  const localTick60s =
-    /setInterval\([\s\S]{0,300}setLogTick[\s\S]{0,300}60_000/.test(src) &&
-    !/setInterval\([\s\S]{0,300}setLogTick[\s\S]{0,300}fetchCalendarBundleFromSupabase/.test(src);
-
+  const localTick60s = intervalBlocks.some((block) => {
+    return block.includes('60_000') && block.includes('setLogTick') && !block.includes('fetchCalendarBundleFromSupabase') && !block.includes('refreshNotificationBundle');
+  });
   check('60 second interval is local-only tick', localTick60s);
 }
 
@@ -57,6 +75,7 @@ for (const p of [reportPath, obsidianPath]) {
     const text = read(p);
     check(`${p} mentions no SQL/RLS/GRANT`, /SQL/.test(text) && /RLS/.test(text) && /GRANT/.test(text));
     check(`${p} mentions NotificationsCenter`, text.includes('NotificationsCenter'));
+    check(`${p} mentions REPAIR4`, text.includes('REPAIR4'));
   }
 }
 

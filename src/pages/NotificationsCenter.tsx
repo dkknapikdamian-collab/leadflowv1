@@ -1,24 +1,30 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
-  useState } from 'react';
+  useRef,
+  useState,
+} from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight,
+import {
+  ArrowUpRight,
   CalendarClock,
   Check,
   CheckCircle2,
   Clock3,
   Filter,
   Link2,
+  Loader2,
+  Mail,
   RotateCcw,
   Search,
   Settings2,
   ShieldAlert,
   Trash2,
-  Mail } from 'lucide-react';
+} from 'lucide-react';
 import {
   EntityIcon,
-  NotificationEntityIcon
+  NotificationEntityIcon,
 } from '../components/ui-system';
 import { fetchCalendarBundleFromSupabase, type CalendarBundle } from '../lib/calendar-items';
 import { toast } from 'sonner';
@@ -38,7 +44,7 @@ import {
   setNotificationSnoozeCustom,
   type NotificationItem,
   type NotificationLogItem,
-  type NotificationSnoozeMode
+  type NotificationSnoozeMode,
 } from '../lib/notifications';
 import { buildReminderCustomDate } from '../lib/reminders';
 import '../styles/visual-stage10-notifications-vnext.css';
@@ -50,10 +56,15 @@ import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 const STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED = 'STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED';
+const STAGE213C_A_NOTIFICATIONS_QUERY_BUDGET_FIX = 'Stage213C-A: NotificationsCenter no longer polls full Supabase calendar bundle every 60 seconds';
+const NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+const NOTIFICATIONS_BACKGROUND_REFRESH_TTL_MS = 4 * 60 * 1000;
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
 void STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED;
+void STAGE213C_A_NOTIFICATIONS_QUERY_BUDGET_FIX;
 
 type NotificationFilter =
   | 'all'
@@ -211,6 +222,11 @@ function getSnoozeUntilLabel(value?: string) {
   return 'Odłożone do ' + formatShortDate(parsed.toISOString());
 }
 
+function isDocumentVisible() {
+  if (typeof document === 'undefined') return true;
+  return document.visibilityState === 'visible';
+}
+
 function buildActiveRow(
   item: NotificationItem,
   readKeys: string[],
@@ -285,15 +301,6 @@ function rowMatchesFilter(row: NotificationRow, filter: NotificationFilter) {
   return true;
 }
 
-function rowIconClass(status: NotificationRowStatus, kind: NotificationRowKind) {
-  if (status === 'overdue' || status === 'error') return 'notifications-row-icon-red';
-  if (status === 'snoozed') return 'notifications-row-icon-amber';
-  if (status === 'read') return 'notifications-row-icon-neutral';
-  if (kind === 'event') return 'notifications-row-icon-sky';
-  if (kind === 'lead') return 'notifications-row-icon-blue';
-  return 'notifications-row-icon-green';
-}
-
 function notificationRowSeverity(status: NotificationRowStatus): 'error' | 'warning' | 'info' | 'success' {
   if (status === 'overdue' || status === 'error') return 'error';
   if (status === 'snoozed') return 'warning';
@@ -324,7 +331,7 @@ function NotificationsRow({
 }) {
   return (
     <article className="notifications-row" data-testid="notification-row">
-            <div className="notifications-row-icon cf-severity-dot" data-cf-severity={notificationRowSeverity(row.status)}>
+      <div className="notifications-row-icon cf-severity-dot" data-cf-severity={notificationRowSeverity(row.status)}>
         <NotificationRowIcon kind={row.kind} />
       </div>
 
@@ -389,6 +396,7 @@ function NotificationsRow({
 export default function NotificationsCenter() {
   const { workspace, loading: workspaceLoading } = useWorkspace();
   const [loading, setLoading] = useState(true);
+  const [backgroundRefreshing, setBackgroundRefreshing] = useState(false);
   const [bundle, setBundle] = useState<CalendarBundle>({ tasks: [], events: [], leads: [], cases: [] });
   const [logTick, setLogTick] = useState(0);
   const [permission, setPermission] = useState(getBrowserNotificationPermission());
@@ -396,49 +404,102 @@ export default function NotificationsCenter() {
   const [searchQuery, setSearchQuery] = useState('');
   const [readKeys, setReadKeys] = useState<string[]>([]);
   const [snoozedUntilByKey, setSnoozedUntilByKey] = useState<Record<string, string>>(() => getNotificationSnoozedUntilByKey());
+  const [lastBundleRefreshAt, setLastBundleRefreshAt] = useState<number>(0);
+  const lastBundleRefreshAtRef = useRef(0);
+  const bundleRefreshInFlightRef = useRef<Promise<boolean> | null>(null);
+
+  const refreshNotificationBundle = useCallback(async (options?: { force?: boolean; showLoading?: boolean; reason?: 'initial' | 'manual' | 'visibility' | 'focus' | 'interval' }) => {
+    if (!workspace?.id) return false;
+
+    const now = Date.now();
+    const force = Boolean(options?.force);
+    const stale = now - lastBundleRefreshAtRef.current >= NOTIFICATIONS_BACKGROUND_REFRESH_TTL_MS;
+    const shouldLoad = force || stale || lastBundleRefreshAtRef.current === 0;
+
+    if (!shouldLoad) return false;
+    if (bundleRefreshInFlightRef.current) return bundleRefreshInFlightRef.current;
+
+    const showMainLoader = Boolean(options?.showLoading || options?.reason === 'initial');
+    if (showMainLoader) setLoading(true);
+    else setBackgroundRefreshing(true);
+
+    const request = fetchCalendarBundleFromSupabase()
+      .then((nextBundle) => {
+        setBundle(nextBundle);
+        setPermission(getBrowserNotificationPermission());
+        setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
+        const loadedAt = Date.now();
+        lastBundleRefreshAtRef.current = loadedAt;
+        setLastBundleRefreshAt(loadedAt);
+        return true;
+      })
+      .catch((error: any) => {
+        toast.error('Błąd odczytu powiadomień: ' + (error?.message || 'nie udało się pobrać danych'));
+        return false;
+      })
+      .finally(() => {
+        if (showMainLoader) setLoading(false);
+        else setBackgroundRefreshing(false);
+        bundleRefreshInFlightRef.current = null;
+      });
+
+    bundleRefreshInFlightRef.current = request;
+    return request;
+  }, [workspace?.id]);
 
   useEffect(() => {
     if (workspaceLoading || !workspace?.id) {
       setBundle({ tasks: [], events: [], leads: [], cases: [] });
-      setLoading(false);
+      setLoading(workspaceLoading);
+      lastBundleRefreshAtRef.current = 0;
+      setLastBundleRefreshAt(0);
       return;
     }
 
-    let cancelled = false;
+    void refreshNotificationBundle({ force: true, showLoading: true, reason: 'initial' });
+  }, [refreshNotificationBundle, workspace?.id, workspaceLoading]);
 
-    const load = async () => {
-      try {
-        setLoading(true);
-        const nextBundle = await fetchCalendarBundleFromSupabase();
-        if (!cancelled) {
-          setBundle(nextBundle);
-          setPermission(getBrowserNotificationPermission());
-          setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
-        }
-      } catch (error: any) {
-        if (!cancelled) {
-          toast.error('Błąd odczytu powiadomień: ' + (error?.message || 'nie udało się pobrać danych'));
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
+  useEffect(() => {
+    if (workspaceLoading || !workspace?.id) return undefined;
+
+    const refreshIfVisible = (reason: 'visibility' | 'focus' | 'interval') => {
+      if (!isDocumentVisible()) return;
+      void refreshNotificationBundle({ reason });
     };
 
-    void load();
+    const handleVisibilityChange = () => refreshIfVisible('visibility');
+    const handleFocus = () => refreshIfVisible('focus');
+
+    window.addEventListener('focus', handleFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     const interval = window.setInterval(() => {
-      void load();
-      setLogTick((value) => value + 1);
-    }, 60_000);
+      refreshIfVisible('interval');
+    }, NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS);
 
     return () => {
-      cancelled = true;
+      window.removeEventListener('focus', handleFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       window.clearInterval(interval);
     };
-  }, [workspace?.id, workspaceLoading]);
+  }, [refreshNotificationBundle, workspace?.id, workspaceLoading]);
 
-  const todayItems = useMemo(() => buildTodayNotificationItems(bundle, new Date()), [bundle]);
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setLogTick((value) => value + 1);
+      setSnoozedUntilByKey(getNotificationSnoozedUntilByKey());
+      setPermission(getBrowserNotificationPermission());
+    }, 60_000);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  const todayItems = useMemo(() => buildTodayNotificationItems(bundle, new Date()), [bundle, logTick]);
   const notificationLog = useMemo(() => getNotificationLog(), [logTick]);
   const unreadCount = useMemo(() => getUnreadNotificationCount(), [logTick]);
+  const lastLoadedLabel = lastBundleRefreshAt
+    ? new Date(lastBundleRefreshAt).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })
+    : 'brak';
 
   const rows = useMemo(() => {
     const activeRows = todayItems.map((item) => buildActiveRow(item, readKeys, snoozedUntilByKey));
@@ -468,14 +529,14 @@ export default function NotificationsCenter() {
   }, [rows]);
 
   const notificationMetricTiles = useMemo(() => ([
-    { id: 'all', label: 'Wszystkie', value: metrics.all, icon: NotificationEntityIcon, tone: 'neutral' },
-    { id: 'action', label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
-    { id: 'overdue', label: 'Zaległe', value: metrics.overdue, icon: Clock3, tone: 'red' },
-    { id: 'today', label: 'Dzisiaj', value: metrics.today, icon: CalendarClock, tone: 'blue' },
-    { id: 'upcoming', label: 'Nadchodzące', value: metrics.upcoming, icon: NotificationEntityIcon, tone: 'purple' },
-    { id: 'snoozed', label: 'Odłożone', value: metrics.snoozed, icon: RotateCcw, tone: 'amber' },
-    { id: 'read', label: 'Przeczytane', value: metrics.read, icon: Check, tone: 'green' },
-    { id: 'system', label: 'Systemowe', value: metrics.system, icon: ShieldAlert, tone: 'purple' },
+    { id: 'all' as const, label: 'Wszystkie', value: metrics.all, icon: NotificationEntityIcon, tone: 'neutral' },
+    { id: 'action' as const, label: 'Do reakcji', value: metrics.action, icon: ShieldAlert, tone: 'blue' },
+    { id: 'overdue' as const, label: 'Zaległe', value: metrics.overdue, icon: Clock3, tone: 'red' },
+    { id: 'today' as const, label: 'Dzisiaj', value: metrics.today, icon: CalendarClock, tone: 'blue' },
+    { id: 'upcoming' as const, label: 'Nadchodzące', value: metrics.upcoming, icon: NotificationEntityIcon, tone: 'purple' },
+    { id: 'snoozed' as const, label: 'Odłożone', value: metrics.snoozed, icon: RotateCcw, tone: 'amber' },
+    { id: 'read' as const, label: 'Przeczytane', value: metrics.read, icon: Check, tone: 'green' },
+    { id: 'system' as const, label: 'Systemowe', value: metrics.system, icon: ShieldAlert, tone: 'purple' },
   ]), [metrics]);
 
   const filteredRows = useMemo(() => {
@@ -488,6 +549,11 @@ export default function NotificationsCenter() {
   }, [rows, activeFilter, searchQuery]);
 
   const upcomingRows = useMemo(() => rows.filter((row) => rowMatchesFilter(row, 'upcoming')).slice(0, 4), [rows]);
+
+  const handleManualRefresh = () => {
+    void refreshNotificationBundle({ force: true, showLoading: true, reason: 'manual' });
+    setLogTick((value) => value + 1);
+  };
 
   const handleEnableBrowserNotifications = async () => {
     if (typeof window === 'undefined' || !('Notification' in window)) {
@@ -569,29 +635,39 @@ export default function NotificationsCenter() {
 
   return (
     <Layout>
-      <main className="notifications-vnext-page">
+      <main className="notifications-vnext-page" data-stage213c-a-notifications-query-budget="ttl-visible-refresh">
         <CloseFlowPageHeaderV2
           pageKey="notifications"
           actions={
             <>
               <div className="notifications-header-actions">
-                          {permission === 'default' ? (
-                            <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
-                              <EntityIcon entity="notification" className="h-4 w-4" />
-                              Włącz powiadomienia
-                            </button>
-                          ) : null}
-                          <Link to="/settings" className="notifications-header-button">
-                            <Settings2 className="h-4 w-4" />
-                            Ustawienia przypomnień
-                          </Link>
-                          {notificationLog.length ? (
-                            <button type="button" className="notifications-header-button" onClick={handleClearLog}>
-                              <Trash2 className="h-4 w-4" />
-                              Wyczyść przeczytane
-                            </button>
-                          ) : null}
-                        </div>
+                {permission === 'default' ? (
+                  <button type="button" className="notifications-header-button notifications-header-button-primary" onClick={handleEnableBrowserNotifications}>
+                    <EntityIcon entity="notification" className="h-4 w-4" />
+                    Włącz powiadomienia
+                  </button>
+                ) : null}
+                <button
+                  type="button"
+                  className="notifications-header-button"
+                  onClick={handleManualRefresh}
+                  disabled={loading || backgroundRefreshing}
+                  data-stage213c-a-notifications-manual-refresh="true"
+                >
+                  {loading || backgroundRefreshing ? <Loader2 className="h-4 w-4 animate-spin" /> : <RotateCcw className="h-4 w-4" />}
+                  Odśwież
+                </button>
+                <Link to="/settings" className="notifications-header-button">
+                  <Settings2 className="h-4 w-4" />
+                  Ustawienia przypomnień
+                </Link>
+                {notificationLog.length ? (
+                  <button type="button" className="notifications-header-button" onClick={handleClearLog}>
+                    <Trash2 className="h-4 w-4" />
+                    Wyczyść przeczytane
+                  </button>
+                ) : null}
+              </div>
             </>
           }
         />
@@ -665,6 +741,7 @@ export default function NotificationsCenter() {
                 <div>
                   <p>Centrum reakcji</p>
                   <h2>Powiadomienia i przypomnienia</h2>
+                  <span data-stage213c-a-notifications-last-refresh="true">Ostatni odczyt danych: {lastLoadedLabel}</span>
                 </div>
                 <span>{filteredRows.length} / {rows.length}</span>
               </div>
@@ -703,7 +780,8 @@ export default function NotificationsCenter() {
             </section>
           </section>
 
-          <aside className="notifications-right-rail" aria-label="Panel powiadomień"><section className="right-card notifications-right-card" data-notification-rail-card="actions">
+          <aside className="notifications-right-rail" aria-label="Panel powiadomień">
+            <section className="right-card notifications-right-card" data-notification-rail-card="actions">
               <div className="notifications-right-card-head">
                 <Filter className="h-4 w-4" />
                 <h2>Szybkie akcje</h2>
@@ -722,7 +800,7 @@ export default function NotificationsCenter() {
               </button>
             </section>
 
-                        <section className="right-card notifications-right-card" data-notification-rail-card="conflicts" data-stage181aj-conflict-notifications="true">
+            <section className="right-card notifications-right-card" data-notification-rail-card="conflicts" data-stage181aj-conflict-notifications="true">
               <div className="notifications-right-card-head">
                 <ShieldAlert className="h-4 w-4" />
                 <h2>Ostrzeżenia o konfliktach terminów</h2>
@@ -732,7 +810,7 @@ export default function NotificationsCenter() {
               </p>
             </section>
 
-<section className="right-card notifications-right-card" data-notification-rail-card="upcoming">
+            <section className="right-card notifications-right-card" data-notification-rail-card="upcoming">
               <div className="notifications-right-card-head">
                 <Clock3 className="h-4 w-4" />
                 <h2>Nadchodzące</h2>
@@ -750,7 +828,6 @@ export default function NotificationsCenter() {
                 <p className="notifications-rail-empty">Brak nadchodzących przypomnień w obecnym widoku.</p>
               )}
             </section>
-          
 
             <section className="right-card notifications-right-card">
               <div className="notifications-right-card-head notifications-right-card-head-clean">
@@ -758,10 +835,10 @@ export default function NotificationsCenter() {
                 <h2>Jak działają powiadomienia?</h2>
               </div>
               <p className="notifications-rail-empty">
-                Ten widok zbiera terminy z zadań, wydarzeń i leadów oraz historię alertów pokazanych w aplikacji. Finalna reakcja zawsze zostaje po stronie użytkownika.
+                Ten widok zbiera terminy z zadań, wydarzeń i leadów oraz historię alertów pokazanych w aplikacji. Automatyczny odczyt danych działa teraz oszczędniej: pełny bundle nie jest pobierany co minutę w tle.
               </p>
             </section>
-</aside>
+          </aside>
         </div>
       </main>
     </Layout>

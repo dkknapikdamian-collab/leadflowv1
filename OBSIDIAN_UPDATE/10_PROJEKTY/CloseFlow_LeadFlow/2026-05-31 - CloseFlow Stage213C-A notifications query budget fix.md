@@ -53,3 +53,12 @@ npm run build
 ## NASTĘPNY KROK
 
 Po PASS i push Stage213C-A: Stage213C-B, ograniczenie retry w kalendarzu bez psucia hard refresh.
+
+## REPAIR4 - korekta po pustym commicie kodu
+
+FAKT: wcześniejszy commit `9d0a7c9a` dodał guard, raport i update Obsidiana, ale nie zawierał zmiany `src/pages/NotificationsCenter.tsx`, bo plik został cofnięty poleceniem `git checkout -- src/pages/NotificationsCenter.tsx` przed commitem.
+
+DECYZJA: REPAIR4 nadpisuje pełny plik `NotificationsCenter.tsx` docelową wersją Stage213C-A i poprawia guard, żeby nie mylił lokalnego 60-sekundowego ticka logów z pollingiem pełnego Supabase bundle.
+
+TESTY: wymagane `node scripts/check-stage213c-a-notifications-query-budget.cjs` oraz `npm run build`.
+
