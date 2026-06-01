@@ -1,4 +1,4 @@
-﻿/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_PAGE_ADAPTERS
+/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_PAGE_ADAPTERS
    owner: CloseFlow Visual System
    reason: quarantine legacy page adapter imports outside src/index.css without deleting them.
    scope: page-level visual-stage and staged adapter CSS for Today, Leads, Clients, Cases, Tasks and Calendar.
@@ -31,3 +31,4 @@
 @import '../stage38-metrics-and-relations-polish.css';
 @import '../stage39-page-headers-copy-visual-system.css';
 @import '../stage40-page-header-action-overflow-hardening.css';
+@import '../stage216l-client-detail-lead-layout-cumulative.css';

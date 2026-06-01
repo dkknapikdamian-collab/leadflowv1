@@ -19,6 +19,8 @@ import {
 import { toast } from 'sonner';
 const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
 void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
+const STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_SOURCE = 'ClientDetail follows LeadDetail visual source: main tiles lowered, notes centered, avatar removed, right rail simplified';
+void STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_SOURCE;
 const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
 void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 
@@ -1621,6 +1623,8 @@ return (
     );
   }
 
+  const clientVisibleNotesForRenderStage216L = getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds);
+
   return (
     <Layout>
       <main className="client-detail-vnext-page" data-client-detail-simplified-card-view="true">
@@ -1641,6 +1645,29 @@ return (
           </div>
           <div className="client-detail-header-actions">
 
+            <Button
+
+              type="button"
+
+              variant="outline"
+
+              className="client-detail-header-edit-action"
+
+              data-stage216l-header-edit-action="true"
+
+              onClick={handleClientPanelEditToggle}
+
+              disabled={saving}
+
+            >
+
+              {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+
+              {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
+
+            </Button>
+
+
             <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
                 <EntityIcon entity="ai" className="h-4 w-4" />
@@ -1657,17 +1684,8 @@ return (
             </Button>
           </div>
         </header>
-        <ClientTopTiles
-          clientId={String(clientId || '')}
-          leads={leads}
-          cases={cases}
-          payments={payments}
-          tasks={clientTasks}
-          events={clientEvents}
-          financeSummary={clientFinanceSummary}
-          onOpenCases={() => setActiveTab('cases')}
-        />
-        <div className="client-detail-shell">
+        <div hidden data-stage216l-client-top-tiles-moved-from-global-top="true" />
+<div className="client-detail-shell">
           <aside className="client-detail-left-rail">
 
                       <section className="client-detail-today-info-tiles" data-client-left-management-tiles="true" data-client-today-style-info-tiles="true" aria-label="Informacje o kliencie">
@@ -1729,15 +1747,13 @@ return (
             </section>
 
 <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
-              <div className="client-detail-avatar-row">
-                <div className="client-detail-avatar">{getInitials(client)}</div>
+              <div className="client-detail-section-head client-detail-data-panel-head" data-stage216l-client-avatar-removed="true">
                 <div>
-                  <h2>{getClientName(client)}</h2>
-                  <p>{mainCase ? 'Klient · główna sprawa aktywna' : 'Klient · brak aktywnej sprawy'}</p>
+                  <h2>Dane klienta</h2>
+                  <p>Kontakt, firma i ostatni ruch w jednym miejscu.</p>
                 </div>
               </div>
-
-                            <Button
+<Button
                 type="button"
                 variant="default"
                 className="client-detail-visible-edit-action client-detail-edit-main-button"
@@ -1837,6 +1853,65 @@ return (
           </aside>
 
           <section className="client-detail-main-column">
+            <div className="client-detail-main-top-tiles" data-stage216l-client-top-tiles-in-main-column="true">
+              <ClientTopTiles
+                clientId={String(clientId || '')}
+                leads={leads}
+                cases={cases}
+                payments={payments}
+                tasks={clientTasks}
+                events={clientEvents}
+                financeSummary={clientFinanceSummary}
+                onOpenCases={() => setActiveTab('cases')}
+              />
+            </div>
+
+            <section className="client-detail-section-card client-detail-notes-center-section" data-stage216l-client-notes-center="true" data-client-notes-center-list="true">
+              <div className="client-detail-section-head">
+                <div>
+                  <h2>Notatki</h2>
+                  <p>Robocze notatki klienta są w centrum pracy. Prawa szyna zostaje dla akcji, spraw i finansów.</p>
+                </div>
+                <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
+                  {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                </Button>
+              </div>
+
+              <div className="client-detail-notes-center-list">
+                {clientVisibleNotesForRenderStage216L.length ? (
+                  clientVisibleNotesForRenderStage216L.map((note) => (
+                    <article
+                      key={note.id}
+                      className="client-detail-note-item client-detail-note-center-item"
+                      data-client-note-item="true"
+                      data-stage216l-client-note-center-item="true"
+                      data-client-note-pinned={clientPinnedNoteIds.includes(note.id) ? 'true' : 'false'}
+                    >
+                      <p>{note.content}</p>
+                      <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
+                      <div className="client-detail-note-item-toolbar" data-client-note-actions="true">
+                        <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() => handleToggleClientNotePin(note)}>
+                          <Pin className="h-3.5 w-3.5" />
+                        </button>
+                        <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() => handlePreviewClientNote(note)}>
+                          <Eye className="h-3.5 w-3.5" />
+                        </button>
+                        <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() => handleEditClientNote(note)}>
+                          <Pencil className="h-3.5 w-3.5" />
+                        </button>
+                        <EntityActionButton type="button" tone="danger" iconOnly className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </EntityActionButton>
+                      </div>
+                    </article>
+                  ))
+                ) : (
+                  <div className="client-detail-light-empty">Brak zapisanych notatek dla klienta.</div>
+                )}
+              </div>
+            </section>
+
             <nav className="client-detail-tabs" aria-label="Zakładki klienta">
               {[
                 { key: 'cases', label: 'Sprawy' },
@@ -2194,77 +2269,8 @@ return (
                   </Button>
                 </div>
               </section>
-
-{/* clientdetail-p1-repair3 right rail notes repair component marker */}
-<section className="right-card client-detail-right-card client-detail-note-card clientdetail-p1-repair3-right-rail-notes-marker client-detail-notes-right-rail-repair3"
-    data-clientdetail-p1-repair3="notes-right-rail"
-    data-client-notes-list="true"
-    data-client-detail-note-card="true"
-    data-clientdetail-notes-right-only="true"
-   data-client-detail-notes-list="true" data-client-notes-right-rail="true" data-client-detail-notes-right-only="true" data-clientdetail-p1-repair3-right-rail-notes="true" data-clientdetail-p1-repair3-note-card="true" data-clientdetail-p1-repair3-notes-right-only="true">
-              <div className="client-detail-card-title-row">
-                <EntityIcon entity="template" className="h-4 w-4" />
-                <h2>Krótka notatka</h2>
-              </div>
-              <p className="client-detail-note-text">
-                {client.notes ? String(client.notes) : ''}
-              </p>
-              <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
-                {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                Dyktuj
-              </Button>
-
-              <div className="client-detail-notes-list" data-client-notes-list="true">
-                <div className="client-detail-notes-list-head">
-                  <strong>Notatki</strong>
-                  <span>{(getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds) || []).length}</span>
-                </div>
-                {(getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds) || []).length ? (
-                  <div className="client-detail-notes-items">
-                    {(getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds) || []).map((note) => (
-                      <article
-                        key={note.id}
-                        className="client-detail-note-item"
-                        data-client-note-item="true"
-                        data-client-note-pinned={clientPinnedNoteIds.includes(note.id) ? 'true' : 'false'}
-                      >
-                        <div className="client-detail-note-item-toolbar" data-client-note-actions="true">
-                          <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() => handleToggleClientNotePin(note)}>
-                            <Pin className="h-3.5 w-3.5" />
-                          </button>
-                          <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() => handlePreviewClientNote(note)}>
-                            <Eye className="h-3.5 w-3.5" />
-                          </button>
-                          <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() => handleEditClientNote(note)}>
-                            <Pencil className="h-3.5 w-3.5" />
-                          </button>
-                          <EntityActionButton type="button" tone="danger" iconOnly className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </EntityActionButton>
-                        </div>
-                        <p>{note.content}</p>
-                        <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="client-detail-note-list" data-client-notes-list="true">
-                    {(Array.isArray(clientNotesStage14A) ? clientNotesStage14A : []).length > 0 ? (
-                      (Array.isArray(clientNotesStage14A) ? clientNotesStage14A : []).slice(0, 5).map((note: any) => (
-                        <article className="client-detail-note-row" key={String(note.id || note.createdAt || note.created_at || getClientActivityBodyStage14A(note))}>
-                          <strong>{formatClientActivityTitleStage14A(note)}</strong>
-                          <p title={getClientActivityBodyStage14A(note)}>{getClientActivityBodyStage14A(note)}</p>
-                        </article>
-                      ))
-                    ) : (
-                      <p>Brak zapisanych notatek dla klienta.</p>
-                    )}
-                  </div>
-                )}
-              </div>
-</section>
-
-            <section className="right-card client-detail-right-card" data-client-finance-summary="true">
+            <div hidden data-stage216l-client-right-notes-moved-to-center="true" />
+<section className="right-card client-detail-right-card" data-client-finance-summary="true">
               <div className="client-detail-card-title-row">
                 <EntityIcon entity="client" className="h-4 w-4" />
                 <h2>Podsumowanie finansów</h2>

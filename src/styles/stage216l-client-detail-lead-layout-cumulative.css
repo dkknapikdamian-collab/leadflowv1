@@ -1,0 +1,213 @@
+/* STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_CUMULATIVE
+   Cel: ClientDetail ma iść wizualnie za LeadDetail Stage216J bez ruszania Supabase, API i logiki spraw.
+   Decyzje Damiana: notatki klienta do środka, ClientTopTiles schodzą do centrum, awatar/inicjały usunięte.
+*/
+
+.client-detail-vnext-page {
+  --stage216l-blue: #2563eb;
+  --stage216l-blue-soft: #eff6ff;
+  --stage216l-green-soft: #ecfdf3;
+  --stage216l-amber-soft: #fffbeb;
+  --stage216l-violet-soft: #f5f3ff;
+  --stage216l-card: #ffffff;
+  --stage216l-soft: #f8fafc;
+  --stage216l-line: #e4e7ec;
+  --stage216l-text: #111827;
+  --stage216l-muted: #667085;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding: 18px;
+  color: var(--stage216l-text);
+}
+
+.client-detail-vnext-page .client-detail-header {
+  border-radius: 28px;
+  border: 1px solid rgba(228, 231, 236, .95);
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 68%, #eff6ff 100%);
+  box-shadow: 0 18px 45px rgba(16, 24, 40, .08);
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.client-detail-vnext-page .client-detail-kicker,
+.client-detail-vnext-page .client-detail-hero-kicker,
+.client-detail-vnext-page .client-detail-case-smart-kicker {
+  color: var(--stage216l-blue);
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.client-detail-vnext-page .client-detail-header h1,
+.client-detail-vnext-page .client-detail-section-card h2,
+.client-detail-vnext-page .client-detail-right-card h2,
+.client-detail-vnext-page .client-detail-profile-card h2 {
+  letter-spacing: -0.04em;
+  color: var(--stage216l-text);
+}
+
+.client-detail-vnext-page .client-detail-shell {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 320px;
+  gap: 20px;
+  align-items: start;
+}
+
+.client-detail-vnext-page .client-detail-left-rail,
+.client-detail-vnext-page .client-detail-main-column,
+.client-detail-vnext-page .client-detail-right-rail {
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.client-detail-vnext-page .client-detail-profile-card,
+.client-detail-vnext-page .client-detail-section-card,
+.client-detail-vnext-page .client-detail-right-card,
+.client-detail-vnext-page .client-detail-case-smart-card,
+.client-detail-vnext-page .client-detail-today-info-tile,
+.client-detail-vnext-page .client-detail-completeness-card,
+.client-detail-vnext-page .client-detail-summary-card,
+.client-detail-vnext-page .client-detail-hero-card {
+  border: 1px solid var(--stage216l-line) !important;
+  border-radius: 24px !important;
+  background: var(--stage216l-card) !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.client-detail-vnext-page .client-detail-profile-card,
+.client-detail-vnext-page .client-detail-section-card,
+.client-detail-vnext-page .client-detail-right-card {
+  padding: 16px;
+}
+
+.client-detail-vnext-page .client-detail-main-top-tiles {
+  display: block;
+}
+
+.client-detail-vnext-page .client-detail-main-top-tiles > * {
+  margin: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-top-cards,
+.client-detail-vnext-page .client-detail-today-info-tiles {
+  gap: 14px;
+}
+
+.client-detail-vnext-page .client-detail-tabs {
+  border: 1px solid var(--stage216l-line);
+  border-radius: 18px;
+  background: var(--stage216l-soft);
+  padding: 4px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.55);
+}
+
+.client-detail-vnext-page .client-detail-tabs button {
+  border-radius: 14px;
+}
+
+.client-detail-vnext-page .client-detail-header-edit-action,
+.client-detail-vnext-page .client-detail-visible-edit-action,
+.client-detail-vnext-page .client-detail-edit-main-button,
+.client-detail-vnext-page .client-detail-side-quick-actions-grid button,
+.client-detail-vnext-page .client-detail-side-quick-actions-grid a,
+.client-detail-vnext-page .client-detail-case-smart-actions button {
+  border-radius: 14px;
+}
+
+.client-detail-vnext-page .client-detail-data-panel-head {
+  margin-bottom: 12px;
+}
+
+.client-detail-vnext-page .client-detail-avatar-row,
+.client-detail-vnext-page .client-detail-avatar {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-center-section {
+  display: grid;
+  gap: 12px;
+}
+
+.client-detail-vnext-page .client-detail-notes-center-list {
+  display: grid;
+  gap: 10px;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item {
+  position: relative;
+  border: 1px solid var(--stage216l-line);
+  border-radius: 18px;
+  background: #fff;
+  padding: 13px 14px;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item p {
+  margin: 0 0 8px;
+  color: var(--stage216l-text);
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item small {
+  color: var(--stage216l-muted);
+  font-size: 12px;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item .client-detail-note-item-toolbar {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item .client-detail-note-item-toolbar button {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 1px solid var(--stage216l-line);
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.client-detail-vnext-page .client-detail-side-quick-actions-card,
+.client-detail-vnext-page [data-client-finance-summary="true"] {
+  align-self: start;
+}
+
+.client-detail-vnext-page .client-detail-right-rail .client-detail-operational-center {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%) !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-card {
+  padding: 12px;
+}
+
+.client-detail-vnext-page input,
+.client-detail-vnext-page textarea,
+.client-detail-vnext-page select {
+  border-radius: 14px !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .client-detail-vnext-page {
+    padding: 12px;
+  }
+
+  .client-detail-vnext-page .client-detail-header,
+  .client-detail-vnext-page .client-detail-profile-card,
+  .client-detail-vnext-page .client-detail-section-card,
+  .client-detail-vnext-page .client-detail-right-card {
+    border-radius: 20px !important;
+    padding: 14px;
+  }
+}
