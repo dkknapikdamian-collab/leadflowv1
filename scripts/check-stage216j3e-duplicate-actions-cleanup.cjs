@@ -24,6 +24,7 @@ check("follow-up CTA still exists", lead.includes("Dodaj follow-up"));
 check("event CTA still exists", lead.includes("Dodaj wydarzenie"));
 check("case card still exists", lead.includes("Powiązana sprawa"));
 check("finance card still exists", lead.includes("Finanse leada"));
+check("no literal PowerShell newline escape in JSX", !lead.includes("? (`r`n") && !lead.includes("`r`n              <section"));
 check("no SQL/RLS/GRANT added", !/\b(create\s+policy|alter\s+table|grant\s+|revoke\s+|drop\s+policy|enable\s+row\s+level\s+security)\b/i.test(lead + "\n" + css));
 
 for (const item of checks) console.log(`${item.pass ? "PASS" : "FAIL"} - ${item.name}`);

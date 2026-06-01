@@ -1679,7 +1679,8 @@ useEffect(() => {
               </section>
             ) : null}
 
-            {!leadInService && timeline.length > 5 ? (`r`n              <section className="lead-detail-section-card lead-detail-work-summary-section lead-detail-overflow-work-summary" data-stage216j3c-work-summary="true" data-stage216j3e-overflow-work-summary="true">
+            {!leadInService && timeline.length > 5 ? (
+              <section className="lead-detail-section-card lead-detail-work-summary-section lead-detail-overflow-work-summary" data-stage216j3c-work-summary="true" data-stage216j3e-overflow-work-summary="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Pozostałe działania</h2>
