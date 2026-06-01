@@ -1949,3 +1949,45 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* STAGE216J3F_NOTES_UX_CLEANUP
+   Notes cleanup after visual review:
+   - no misleading inline textarea in the center column
+   - add note and dictate note are explicit actions
+   - source context is optional and source-only, not a duplicate of latest history note
+*/
+
+.lead-detail-note-actions-panel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+
+.lead-detail-note-actions-panel > button {
+  min-height: 42px;
+}
+
+.lead-detail-source-context-section {
+  opacity: 0.94;
+}
+
+.lead-detail-source-context-section .lead-detail-section-head h2 {
+  font-size: 15px;
+}
+
+.lead-detail-source-context-section .lead-detail-section-head p {
+  font-size: 12px;
+}
+
+.lead-detail-add-note-dialog-form {
+  display: grid;
+  gap: 12px;
+}
+
+.lead-detail-add-note-dialog-form textarea,
+.lead-detail-add-note-dialog-form .lead-detail-note-input {
+  min-height: 160px !important;
+  resize: vertical;
+  line-height: 1.5;
+}

@@ -39,6 +39,8 @@ const STAGE216J3D_UPCOMING_ACTIONS_RAIL = 'LeadDetail right rail starts with up 
 void STAGE216J3D_UPCOMING_ACTIONS_RAIL;
 const STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP = 'LeadDetail middle actions section becomes overflow-only and quick actions are merged into upcoming actions rail';
 void STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP;
+const STAGE216J3F_NOTES_UX_CLEANUP = 'LeadDetail notes use modal actions; source context no longer duplicates latest history note';
+void STAGE216J3F_NOTES_UX_CLEANUP;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -479,6 +481,7 @@ export default function LeadDetail() {
   const [linkedTasks, setLinkedTasks] = useState<any[]>([]);
   const [linkedEvents, setLinkedEvents] = useState<any[]>([]);
   const [note, setNote] = useState('');
+  const [isAddNoteOpen, setIsAddNoteOpen] = useState(false);
   const [addingNote, setAddingNote] = useState(false);
   const [noteListening, setNoteListening] = useState(false);
   const [noteInterimText, setNoteInterimText] = useState('');
@@ -1091,6 +1094,7 @@ useEffect(() => {
       setAddingNote(true);
       await addActivity('note_added', { content });
       setNote('');
+      setIsAddNoteOpen(false);
       noteVoiceDirtyRef.current = false;
       if (!options?.silent) toast.success('Notatka dodana');
     } finally {
@@ -1612,44 +1616,32 @@ useEffect(() => {
             </section>
           </aside>
 
-          <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">
-            <section
-              className="lead-detail-section-card lead-detail-notes-section"
-              data-stage115-lead-notes-section="true"
-              data-lead-primary-note-text={leadPrimaryNoteText ? 'true' : 'false'}
-              aria-label="Notatki leada"
-            >
-              <div className="lead-detail-section-head">
-                <div>
-                  <h2>Kontekst leada</h2>
-                  <p>Notatka źródłowa i ostatnia zapisana notatka. Główna praca z notatkami jest w historii kontaktu.</p>
+          <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">            {leadSourceNoteText ? (
+              <section
+                className="lead-detail-section-card lead-detail-notes-section lead-detail-source-context-section"
+                data-stage115-lead-notes-section="true"
+                data-stage216j3f-source-context-card="true"
+                data-lead-primary-note-text={leadPrimaryNoteText ? 'true' : 'false'}
+                aria-label="Źródło leada"
+              >
+                <div className="lead-detail-section-head">
+                  <div>
+                    <h2>Źródło / pierwsza notatka</h2>
+                    <p>Krótki kontekst z utworzenia leada. Bieżące notatki są wyżej w historii kontaktu.</p>
+                  </div>
                 </div>
-              </div>
-              {hasLeadNotesStage115B ? (
                 <div className="lead-detail-notes-stack" data-lead-notes-stack="true">
-                  {leadSourceNoteText ? (
-                    <article className="lead-detail-note-source-card" data-lead-source-note="true">
-                      <small>Notatka źródłowa z leada</small>
-                      <strong>{formatDateTime(lead?.noteUpdatedAt || lead?.updatedAt || lead?.createdAt, 'Brak daty')}</strong>
-                      <p className="lead-detail-note-text" lang="pl-PL">{leadSourceNoteText}</p>
-                    </article>
-                  ) : null}
-                  {leadNoteActivityItems[0] ? (
-                    <article className="lead-detail-note-source-card" data-lead-activity-note="true">
-                      <small>Ostatnia notatka z historii</small>
-                      <strong>{leadNoteActivityItems[0].dateLabel}</strong>
-                      <p className="lead-detail-note-text" lang="pl-PL">{leadNoteActivityItems[0].content}</p>
-                    </article>
-                  ) : null}
+                  <article className="lead-detail-note-source-card" data-lead-source-note="true">
+                    <small>Notatka źródłowa z leada</small>
+                    <strong>{formatDateTime(lead?.noteUpdatedAt || lead?.updatedAt || lead?.createdAt, 'Brak daty')}</strong>
+                    <p className="lead-detail-note-text" lang="pl-PL">{leadSourceNoteText}</p>
+                  </article>
                 </div>
-              ) : (
-                <div className="lead-detail-light-empty" data-lead-notes-empty="true">
-                  Brak notatek zapisanych przy tym leadzie.
-                </div>
-              )}
-            </section>
-
-          {!leadInService ? (
+              </section>
+            ) : (
+              <div hidden data-stage216j3f-source-context-card-hidden="true" />
+            )}
+{!leadInService ? (
               <section className="lead-detail-top-grid">
                 <article className="lead-detail-top-card lead-detail-callout-blue">
                   <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa zaplanowana akcja</h2></div>
@@ -1732,25 +1724,25 @@ useEffect(() => {
                   <h2>Notatki i historia kontaktu</h2>
                   <p>Dodawaj notatki po rozmowach i czytaj ostatnie wpisy bez ściskania tekstu.</p>
                 </div>
-              </div>
-              {!leadInService ? (
-                <form className="lead-detail-note-form lead-detail-note-form-wide" data-stage115c-inline-note-form="true" data-stage216j3c-note-form-wide="true" onSubmit={handleAddNote}>
-                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z leadem..." className="lead-detail-note-input" lang="pl-PL" />
-                  {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
-                  <div className="flex flex-wrap gap-2">
-                    <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
-                      {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                      {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
-                    </Button>
-                    <Button
-                      type="submit"
-                      data-stage115c-inline-note-submit="true"
-                      disabled={!note.trim() || !hasAccess || addingNote}
-                    >
-                      {addingNote ? 'Zapisywanie...' : 'Dodaj notatkę'}
-                    </Button>
-                  </div>
-                </form>
+              </div>              {!leadInService ? (
+                <div className="lead-detail-note-actions-panel" data-stage216j3f-note-actions-only="true">
+                  <Button type="button" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>
+                    <Plus className="h-4 w-4" />
+                    Dodaj notatkę
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setIsAddNoteOpen(true);
+                      window.setTimeout(() => handleToggleNoteSpeech(), 0);
+                    }}
+                    disabled={!hasAccess}
+                  >
+                    {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                  </Button>
+                </div>
               ) : null}
               <div className="lead-detail-history-list">
                 {activities.length === 0 ? (
@@ -1963,6 +1955,35 @@ useEffect(() => {
           </DialogContent>
         </Dialog>
 
+                <Dialog open={isAddNoteOpen} onOpenChange={(open) => { setIsAddNoteOpen(open); if (!open) { stopNoteSpeech(); setNoteInterimText(''); } }}>
+          <DialogContent data-stage216j3f-add-note-dialog="true">
+            <DialogHeader>
+              <DialogTitle>Dodaj notatkę</DialogTitle>
+              <DialogDescription>Zapisz notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z leadem.</DialogDescription>
+            </DialogHeader>
+            <form className="lead-detail-add-note-dialog-form" onSubmit={handleAddNote}>
+              <Textarea
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+                placeholder="Wpisz notatkę..."
+                className="lead-detail-note-input"
+                lang="pl-PL"
+                autoFocus
+              />
+              {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
+              <DialogFooter className={modalFooterClass()}>
+                <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
+                  {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                  {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setIsAddNoteOpen(false)} disabled={addingNote}>Anuluj</Button>
+                <Button type="submit" disabled={!note.trim() || !hasAccess || addingNote}>
+                  {addingNote ? 'Zapisywanie...' : 'Zapisz notatkę'}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
         <Dialog open={Boolean(editingNote)} onOpenChange={(open) => !open && setEditingNote(null)}>
           <DialogContent>
             <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle>
