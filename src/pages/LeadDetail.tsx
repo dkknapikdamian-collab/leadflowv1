@@ -1549,14 +1549,8 @@ useEffect(() => {
               <span>Kontakt: {lead.phone || lead.email || 'Brak kontaktu'}</span>
             </div>
           </div>
-          <div className="lead-detail-header-actions">
-            <Button
-              type="button"
-              variant="outline"
-              className="lead-detail-header-ai-action"
-              data-stage216m-r3-r1-lead-ai-header-action="true"
-              onClick={() => navigate('/ai-drafts')}
-            >
+          <div className="lead-detail-header-actions" data-stage216m-r3-r2-lead-header-actions="true">
+            <Button type="button" variant="outline" onClick={() => navigate('/ai-drafts')}>
               <EntityIcon entity="ai" className="h-4 w-4" />
               Zapytaj AI
             </Button>

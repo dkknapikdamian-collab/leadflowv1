@@ -1638,8 +1638,8 @@ return (
             <p className="client-detail-kicker">KARTOTEKA KLIENTA</p>
             <h1>{getClientName(client)}</h1>
 </div>
-          <div className="client-detail-header-actions">
-            <Button type="button" variant="default" className="client-detail-header-action-soft client-detail-header-ai-action" asChild data-stage216m-r3-r1-client-ai-header-action="true">
+          <div className="client-detail-header-actions" data-stage216m-r3-r2-client-header-actions="true">
+            <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
               <Link to="/ai-drafts">
                 <EntityIcon entity="ai" className="h-4 w-4" />
                 Zapytaj AI
