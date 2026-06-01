@@ -1661,7 +1661,7 @@ return (
 
   return (
     <Layout>
-      <main className="client-detail-vnext-page" data-client-detail-simplified-card-view="true">
+      <main className="client-detail-vnext-page" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true">
         <header className="client-detail-header">
           <div className="client-detail-header-copy">
             <button type="button" className="client-detail-back-button" onClick={() => navigate('/clients')}>
@@ -1751,7 +1751,6 @@ return (
               <div className="client-detail-section-head client-detail-data-panel-head" data-stage216l-client-avatar-removed="true">
                 <div>
                   <h2>Dane klienta</h2>
-                  <p>Status, źródło, kontakt, wartość i ostatni kontakt w jednym miejscu.</p>
                 </div>
                 <Button
                   type="button"

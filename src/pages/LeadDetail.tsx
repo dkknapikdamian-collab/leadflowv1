@@ -1596,7 +1596,6 @@ useEffect(() => {
               <div className="lead-detail-section-head">
                 <div>
                   <h2>Dane leada</h2>
-                  <p>Status, źródło, kontakt, wartość i ostatnia aktywność w jednym miejscu.</p>
                 </div>
                 <Button type="button" size="sm" variant="outline" onClick={handleStartLeadEditing}>
                   <Edit2 className="h-4 w-4" />
