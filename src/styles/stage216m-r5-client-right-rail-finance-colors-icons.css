@@ -1,0 +1,166 @@
+/* STAGE216M_R5_CLIENT_RIGHT_RAIL_FINANCE_COLORS_ICONS
+   Cel: dopiąć prawą szynę ClientDetail do wzoru LeadDetail: widoczne finanse, spójne kolory przycisków i czytelne ikony.
+   Zakres: CSS-only. Bez Supabase, API, logiki spraw, płatności i danych.
+*/
+
+.client-detail-vnext-page .client-detail-right-rail[data-stage216m-r4-client-right-rail="true"] {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+  align-items: stretch !important;
+}
+
+.client-detail-vnext-page .client-detail-right-rail[data-stage216m-r4-client-right-rail="true"] > section {
+  width: 100% !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-upcoming-actions-card="true"] {
+  order: 1 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-main-case-card="true"] {
+  order: 2 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] {
+  order: 3 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-right-card,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .right-card.client-detail-right-card {
+  background: rgba(255, 255, 255, 0.92) !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  padding: 20px !important;
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-card-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin-bottom: 14px !important;
+  color: #2563eb !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-card-title-row > svg,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-card-title-row [data-entity-icon],
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-card-title-row .lucide {
+  color: #2563eb !important;
+  stroke: #2563eb !important;
+  flex: 0 0 auto !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-card-title-row h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] p,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] small,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-right-card-intro,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-light-empty span {
+  color: #667085 !important;
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-action-empty {
+  background: #f9fafb !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  padding: 14px !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-action-empty strong {
+  display: block !important;
+  margin-bottom: 4px !important;
+  color: #b42318 !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-upcoming-actions-cta,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-right-actions {
+  display: grid !important;
+  gap: 8px !important;
+  margin-top: 14px !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-upcoming-actions-cta {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] [data-stage216m-r4-client-main-case-card="true"] .client-detail-right-actions,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] [data-stage216m-r4-client-finance-card="true"] .client-detail-right-actions {
+  grid-template-columns: 1fr !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-upcoming-actions-cta button,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-right-actions button,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] [data-stage216m-r4-client-main-case-card="true"] > button,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] [data-stage216m-r4-client-finance-card="true"] button {
+  min-height: 36px !important;
+  border-radius: 14px !important;
+  border: 1px solid #e4e7ec !important;
+  background: #fff !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] [data-stage216m-r4-client-main-case-card="true"] > button:hover,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] [data-stage216m-r4-client-finance-card="true"] button:hover,
+.client-detail-vnext-page [data-stage216m-r4-client-right-rail="true"] .client-detail-upcoming-actions-cta button:hover {
+  background: #f8fafc !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] small {
+  display: block !important;
+  margin: 0 0 8px !important;
+  color: #475467 !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  line-height: 1.45 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] small:nth-of-type(1),
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] small:nth-of-type(2),
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] small:nth-of-type(3),
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] small:nth-of-type(4) {
+  border-radius: 12px !important;
+  background: #f8fafc !important;
+  padding: 7px 9px !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-finance-card="true"] small:nth-of-type(3) {
+  background: #ecfdf3 !important;
+  border: 1px solid #abefc6 !important;
+  color: #047857 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-main-case-card="true"] p {
+  margin: 0 0 8px !important;
+  color: #667085 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-main-case-card="true"] small {
+  display: block !important;
+  margin: 0 0 12px !important;
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r5-right-rail-polish-marker="true"] {
+  --stage216m-r5-client-right-rail-finance-visible: 1;
+}
