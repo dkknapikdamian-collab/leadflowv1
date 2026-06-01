@@ -1814,3 +1814,32 @@
 .lead-detail-notes-section .lead-detail-section-head p {
   font-size: 12px;
 }
+
+/* STAGE216J3C2_NOTES_ORDER_FIX
+   Visual hotfix after J3C:
+   - make center column a real grid
+   - ensure notes/history renders before tasks/events
+   - keep context card below operational work
+*/
+
+.lead-detail-main-column {
+  display: grid !important;
+  gap: 16px !important;
+  align-content: start !important;
+}
+
+.lead-detail-top-grid {
+  order: 1 !important;
+}
+
+.lead-detail-history-center {
+  order: 2 !important;
+}
+
+.lead-detail-work-summary-section {
+  order: 3 !important;
+}
+
+.lead-detail-notes-section {
+  order: 4 !important;
+}
