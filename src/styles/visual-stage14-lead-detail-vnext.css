@@ -1991,3 +1991,75 @@
   resize: vertical;
   line-height: 1.5;
 }
+
+
+/* STAGE216J3G_SPLIT_NOTES_FROM_HISTORY
+   Notes and history are separate concepts:
+   - notes show only operator note entries
+   - activity history is secondary and collapsible
+   - no mixed "notes and history" timeline
+*/
+
+.lead-detail-notes-only-section {
+  order: 2 !important;
+}
+
+.lead-detail-notes-only-section .lead-detail-section-head h2 {
+  font-size: 18px;
+  font-weight: 950;
+}
+
+.lead-detail-notes-list {
+  display: grid;
+  gap: 10px;
+}
+
+.lead-detail-note-row {
+  align-items: start;
+}
+
+.lead-detail-note-row .lead-detail-note-text {
+  margin: 0 0 5px;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-activity-history-section {
+  order: 5 !important;
+  opacity: 0.92;
+}
+
+.lead-detail-activity-history-section .lead-detail-section-head h2 {
+  font-size: 15px;
+}
+
+.lead-detail-activity-history-section .lead-detail-section-head p {
+  font-size: 12px;
+}
+
+.lead-detail-activity-history-details {
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px 12px;
+}
+
+.lead-detail-activity-history-details summary {
+  cursor: pointer;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.lead-detail-activity-history-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.lead-detail-activity-row {
+  background: #f8fafc;
+}

@@ -41,6 +41,8 @@ const STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP = 'LeadDetail middle actions section
 void STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP;
 const STAGE216J3F_NOTES_UX_CLEANUP = 'LeadDetail notes use modal actions; source context no longer duplicates latest history note';
 void STAGE216J3F_NOTES_UX_CLEANUP;
+const STAGE216J3G_SPLIT_NOTES_FROM_HISTORY = 'LeadDetail separates operator notes from activity/system history';
+void STAGE216J3G_SPLIT_NOTES_FROM_HISTORY;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -387,6 +389,10 @@ function getActivityTitle(activity: any) {
 function getActivityDescription(activity: any) {
   return getActivityTimelineDescription(activity, { statusLabel, formatDateTime, formatMoney });
 }
+function isLeadNoteActivity(activity: any) {
+  const type = String(activity?.eventType || activity?.event_type || activity?.type || activity?.activityType || '').toLowerCase();
+  return type === 'note_added' || type === 'lead_note_added' || type === 'operator_note' || type.includes('note');
+}
 function addDuration(value: unknown, amountMs: number) {
   const base = asDate(value) || new Date();
   return new Date(base.getTime() + amountMs).toISOString();
@@ -632,10 +638,7 @@ export default function LeadDetail() {
 
   const leadNoteActivityItems = useMemo(() => {
     return [...activities]
-      .filter((activity) => {
-        const type = String(activity?.eventType || activity?.event_type || activity?.type || activity?.activityType || '').toLowerCase();
-        return type === 'note_added' || type === 'lead_note_added' || type === 'operator_note' || type.includes('note');
-      })
+      .filter((activity) => isLeadNoteActivity(activity))
       .map((activity, index) => {
         const payload = activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
         const content =
@@ -648,12 +651,31 @@ export default function LeadDetail() {
         const dateValue = activity?.happenedAt || activity?.createdAt || activity?.updatedAt || payload?.createdAt || payload?.happenedAt;
         return {
           id: String(activity?.id || activity?.eventType || activity?.createdAt || index),
+          raw: activity,
           content,
           dateValue,
           dateLabel: formatDateTime(dateValue, 'Brak daty'),
         };
       })
       .filter((entry) => Boolean(entry.content))
+      .sort((left, right) => (asDate(right.dateValue)?.getTime() || 0) - (asDate(left.dateValue)?.getTime() || 0));
+  }, [activities]);
+
+  const leadActivityHistoryItems = useMemo(() => {
+    return [...activities]
+      .filter((activity) => !isLeadNoteActivity(activity))
+      .map((activity, index) => {
+        const dateValue = activity?.happenedAt || activity?.createdAt || activity?.updatedAt || activity?.payload?.createdAt || activity?.payload?.happenedAt;
+        return {
+          id: String(activity?.id || activity?.eventType || activity?.createdAt || index),
+          raw: activity,
+          title: getActivityTitle(activity),
+          description: getActivityDescription(activity),
+          dateValue,
+          dateLabel: formatDateTime(dateValue, 'Brak daty'),
+        };
+      })
+      .filter((entry) => Boolean(entry.title || entry.description))
       .sort((left, right) => (asDate(right.dateValue)?.getTime() || 0) - (asDate(left.dateValue)?.getTime() || 0));
   }, [activities]);
 
@@ -1718,11 +1740,11 @@ useEffect(() => {
               </section>
             ) : null}
 
-            <section className="lead-detail-section-card lead-detail-history-center" id="lead-history" data-stage216j3c-notes-history-center="true">
+            <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-history" data-stage216j3c-notes-history-center="true" data-stage216j3g-notes-only-section="true">
               <div className="lead-detail-section-head">
                 <div>
-                  <h2>Notatki i historia kontaktu</h2>
-                  <p>Dodawaj notatki po rozmowach i czytaj ostatnie wpisy bez ściskania tekstu.</p>
+                  <h2>Notatki</h2>
+                  <p>Robocze notatki operatora. Historia statusów, płatności i systemu jest oddzielona niżej.</p>
                 </div>
               </div>              {!leadInService ? (
                 <div className="lead-detail-note-actions-panel" data-stage216j3f-note-actions-only="true">
@@ -1744,28 +1766,53 @@ useEffect(() => {
                   </Button>
                 </div>
               ) : null}
-              <div className="lead-detail-history-list">
-                {activities.length === 0 ? (
-                  <div className="lead-detail-light-empty">Brak historii kontaktu.</div>
+              <div className="lead-detail-history-list lead-detail-notes-list" data-stage216j3g-notes-list="true">
+                {leadNoteActivityItems.length === 0 ? (
+                  <div className="lead-detail-light-empty">Brak notatek przy tym leadzie.</div>
                 ) : (
-                  activities.slice(0, 5).map((activity) => (
-                    <article key={String(activity.id || activity.eventType || activity.createdAt)} className="lead-detail-history-row">
+                  leadNoteActivityItems.slice(0, 5).map((noteItem) => (
+                    <article key={String(noteItem.id)} className="lead-detail-history-row lead-detail-note-row" data-stage216j3g-note-row="true">
                       <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
                       <div>
-                        <h3>{getActivityTitle(activity)}</h3>
-                        <p>{getActivityDescription(activity)}</p>
-                        <small>{formatDateTime(activity.createdAt, 'Brak daty')}</small>
+                        <p className="lead-detail-note-text" lang="pl-PL">{noteItem.content}</p>
+                        <small>{noteItem.dateLabel}</small>
                       </div>
-                      {activity.eventType === 'note_added' ? (
-                        <div className="lead-detail-history-actions">
-                          <LeadActionButton onClick={() => openEditNote(activity)}>Edytuj</LeadActionButton>
-                          <LeadActionButton onClick={() => handleDeleteNote(String(activity.id))}>Usuń</LeadActionButton>
-                        </div>
-                      ) : null}
+                      <div className="lead-detail-history-actions">
+                        <LeadActionButton onClick={() => openEditNote(noteItem.raw)}>Edytuj</LeadActionButton>
+                        <LeadActionButton onClick={() => handleDeleteNote(String(noteItem.raw?.id || noteItem.id))}>Usuń</LeadActionButton>
+                      </div>
                     </article>
                   ))
                 )}
               </div>
+            </section>
+
+            <section className="lead-detail-section-card lead-detail-activity-history-section" data-stage216j3g-activity-history-section="true">
+              <div className="lead-detail-section-head">
+                <div>
+                  <h2>Historia aktywności</h2>
+                  <p>Statusy, płatności, zadania i zdarzenia systemowe. Nie mieszamy tego z notatkami.</p>
+                </div>
+              </div>
+              <details className="lead-detail-activity-history-details">
+                <summary>Ostatnie zdarzenia systemowe</summary>
+                <div className="lead-detail-activity-history-list">
+                  {leadActivityHistoryItems.length === 0 ? (
+                    <div className="lead-detail-light-empty">Brak dodatkowej historii aktywności.</div>
+                  ) : (
+                    leadActivityHistoryItems.slice(0, 5).map((entry) => (
+                      <article key={String(entry.id)} className="lead-detail-history-row lead-detail-activity-row" data-stage216j3g-activity-row="true">
+                        <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
+                        <div>
+                          <h3>{entry.title}</h3>
+                          <p>{entry.description}</p>
+                          <small>{entry.dateLabel}</small>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+              </details>
             </section>
           </section>
 

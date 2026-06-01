@@ -16,7 +16,7 @@ check("inline wide note form removed", !lead.includes("data-stage216j3c-note-for
 check("note actions panel exists", lead.includes('data-stage216j3f-note-actions-only="true"'));
 check("add note dialog exists", lead.includes('data-stage216j3f-add-note-dialog="true"'));
 check("add note dialog submits through handleAddNote", lead.includes('className="lead-detail-add-note-dialog-form"') && lead.includes("onSubmit={handleAddNote}"));
-check("history still shows recent activities", lead.includes("activities.slice(0, 5).map"));
+check("notes section shows note-only entries", lead.includes("leadNoteActivityItems.slice(0, 5).map"));
 check("source context is source-only", lead.includes('data-stage216j3f-source-context-card="true"') && lead.includes("Źródło / pierwsza notatka"));
 check("latest history duplicate removed from context card", !lead.includes("Ostatnia notatka z historii"));
 check("context card can be hidden when there is no source note", lead.includes('data-stage216j3f-source-context-card-hidden="true"'));
