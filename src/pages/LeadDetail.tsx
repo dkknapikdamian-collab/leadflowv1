@@ -37,6 +37,8 @@ const STAGE216J3C_NOTES_HISTORY_CENTER = 'LeadDetail center column prioritizes n
 void STAGE216J3C_NOTES_HISTORY_CENTER;
 const STAGE216J3D_UPCOMING_ACTIONS_RAIL = 'LeadDetail right rail starts with up to five dated actions from lead timeline';
 void STAGE216J3D_UPCOMING_ACTIONS_RAIL;
+const STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP = 'LeadDetail middle actions section becomes overflow-only and quick actions are merged into upcoming actions rail';
+void STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1677,11 +1679,10 @@ useEffect(() => {
               </section>
             ) : null}
 
-            {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-work-summary-section" data-stage216j3c-work-summary="true">
+            {!leadInService && timeline.length > 5 ? (`r`n              <section className="lead-detail-section-card lead-detail-work-summary-section lead-detail-overflow-work-summary" data-stage216j3c-work-summary="true" data-stage216j3e-overflow-work-summary="true">
                 <div className="lead-detail-section-head">
                   <div>
-                    <h2>Zadania i wydarzenia</h2>
+                    <h2>Pozostałe działania</h2>
 </div>
                   <div hidden data-lead-detail-stage35-removed-local-create-actions="true" />
                 </div>
@@ -1696,7 +1697,7 @@ useEffect(() => {
                       </div>
                     </div>
                   ) : (
-                    timeline.map((entry) => (
+                    timeline.slice(5).map((entry) => (
                       <article
                         key={entry.id}
                         className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`}
@@ -1834,15 +1835,8 @@ useEffect(() => {
                 </div>
               ) : null}
             </section>
+            <div hidden data-stage216j3e-quick-actions-merged-into-upcoming="true" />
 
-            {!leadInService ? (
-              <section className="right-card lead-detail-right-card">
-                <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
-                <div className="lead-detail-right-actions">
-                  <button type="button" onClick={() => setIsCreateCaseOpen(true)}>Rozpocznij obsługę</button>
-                </div>
-              </section>
-            ) : null}
             <div hidden data-stage216j3d-single-next-action-replaced="true" />
 {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (LeadAiNextAction) */}
 

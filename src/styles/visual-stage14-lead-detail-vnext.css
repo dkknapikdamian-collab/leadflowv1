@@ -1917,3 +1917,35 @@
 .lead-detail-upcoming-actions-cta {
   margin-top: 10px;
 }
+
+/* STAGE216J3E_DUPLICATE_ACTIONS_CLEANUP
+   Visual cleanup after J3D:
+   - right rail owns the first five dated actions
+   - middle work section is overflow-only for items after the first five
+   - duplicated Szybkie akcje card is removed from right rail
+*/
+
+.lead-detail-overflow-work-summary {
+  border-color: #e4e7ec !important;
+  background: #ffffff !important;
+}
+
+.lead-detail-overflow-work-summary .lead-detail-section-head h2 {
+  font-size: 16px;
+}
+
+.lead-detail-overflow-work-summary .lead-detail-light-empty {
+  display: none !important;
+}
+
+.lead-detail-upcoming-actions-card .lead-detail-right-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 820px) {
+  .lead-detail-upcoming-actions-card .lead-detail-right-actions {
+    grid-template-columns: 1fr;
+  }
+}
