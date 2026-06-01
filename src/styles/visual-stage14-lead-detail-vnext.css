@@ -1843,3 +1843,77 @@
 .lead-detail-notes-section {
   order: 4 !important;
 }
+
+/* STAGE216J3D_UPCOMING_ACTIONS_RAIL
+   Right rail becomes operational:
+   - first card shows up to five dated actions from timeline
+   - old single next-action card is removed from rail
+   - case/finance/quick actions stay below
+*/
+
+.lead-detail-upcoming-actions-card {
+  border-color: #bfdbfe !important;
+  background: #f8fbff !important;
+}
+
+.lead-detail-upcoming-actions-card .lead-detail-card-title-row {
+  margin-bottom: 7px;
+}
+
+.lead-detail-right-card-intro {
+  margin: 0 0 10px;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.lead-detail-upcoming-actions-list {
+  display: grid;
+  gap: 8px;
+}
+
+.lead-detail-upcoming-action-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+  padding: 10px;
+}
+
+.lead-detail-upcoming-action-row .lead-detail-work-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 13px;
+}
+
+.lead-detail-upcoming-action-row small {
+  display: block;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 850;
+  margin-bottom: 3px;
+}
+
+.lead-detail-upcoming-action-row strong {
+  display: block;
+  color: #111827;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-upcoming-action-row p {
+  margin: 4px 0 0;
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.lead-detail-upcoming-actions-cta {
+  margin-top: 10px;
+}

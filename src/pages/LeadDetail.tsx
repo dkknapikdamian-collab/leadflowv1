@@ -35,6 +35,8 @@ const STAGE216J3B_LEAD_DATA_PANEL = 'LeadDetail left rail is one source-of-truth
 void STAGE216J3B_LEAD_DATA_PANEL;
 const STAGE216J3C_NOTES_HISTORY_CENTER = 'LeadDetail center column prioritizes notes and recent contact history; history is capped to five entries';
 void STAGE216J3C_NOTES_HISTORY_CENTER;
+const STAGE216J3D_UPCOMING_ACTIONS_RAIL = 'LeadDetail right rail starts with up to five dated actions from lead timeline';
+void STAGE216J3D_UPCOMING_ACTIONS_RAIL;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1778,6 +1780,36 @@ useEffect(() => {
 {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
 
 
+            <section className="right-card lead-detail-right-card lead-detail-upcoming-actions-card" data-stage216j3d-upcoming-actions-card="true">
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższe działania</h2></div>
+              <p className="lead-detail-right-card-intro">5 najbliższych zadań i wydarzeń z datą powiązanych z tym leadem.</p>
+
+              <div className="lead-detail-upcoming-actions-list">
+                {timeline.length === 0 ? (
+                  <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
+                    <strong>Brak zaplanowanych działań.</strong>
+                    <span>Dodaj follow-up albo wydarzenie, żeby lead nie został bez ruchu.</span>
+                  </div>
+                ) : (
+                  timeline.slice(0, 5).map((entry) => (
+                    <article key={`rail-${entry.id}`} className={`lead-detail-upcoming-action-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`} data-stage216j3d-upcoming-action-row="true">
+                      <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                      <div>
+                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
+                        <strong>{entry.title}</strong>
+                        <p>{entry.dateLabel}</p>
+                      </div>
+                    </article>
+                  ))
+                )}
+              </div>
+
+              <div className="lead-detail-right-actions lead-detail-upcoming-actions-cta">
+                <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</button>
+                <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</button>
+              </div>
+            </section>
+
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
               <p>{serviceCaseId ? serviceCaseTitle : 'Lead nie został jeszcze przejęty do obsługi.'}</p>
@@ -1811,17 +1843,8 @@ useEffect(() => {
                 </div>
               </section>
             ) : null}
-
-            {nextTimelineEntry ? (
-              <section className="right-card lead-detail-right-card" data-lead-next-action-card="true">
-                <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
-                <p>{nextTimelineEntry.title}</p>
-                <small>{nextTimelineEntry.dateLabel}</small>
-              </section>
-            ) : null}
-
-
-          {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (LeadAiNextAction) */}
+            <div hidden data-stage216j3d-single-next-action-replaced="true" />
+{/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (LeadAiNextAction) */}
 
           </aside>
           ) : null}
