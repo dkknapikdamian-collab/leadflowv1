@@ -8,14 +8,18 @@ const css = fs.readFileSync(cssPath, "utf8");
 const checks = [];
 function check(name, pass) { checks.push({ name, pass: Boolean(pass) }); }
 
+const historyMovedOutOfCenter =
+  lead.includes('data-stage216j3h-activity-history-rail="true"') ||
+  lead.includes('data-stage216j3i-activity-history-left-rail="true"');
+
 check("J3G marker exists", lead.includes("STAGE216J3G_SPLIT_NOTES_FROM_HISTORY"));
 check("J3H marker exists in LeadDetail", lead.includes("STAGE216J3H_ACTIVITY_HISTORY_RAIL"));
 check("J3H marker exists in CSS", css.includes("STAGE216J3H_ACTIVITY_HISTORY_RAIL"));
 check("center notes section still exists", lead.includes('data-stage216j3g-notes-only-section="true"'));
 check("center activity history moved marker exists", lead.includes('data-stage216j3h-activity-history-moved-to-rail="true"'));
 check("center activity history section removed", !lead.includes('className="lead-detail-section-card lead-detail-activity-history-section"'));
-check("right rail activity history exists", lead.includes('data-stage216j3h-activity-history-rail="true"'));
-check("right rail shows first five entries", lead.includes("leadActivityHistoryItems.slice(0, 5).map"));
+check("activity history exists outside center", historyMovedOutOfCenter);
+check("history shows first five entries", lead.includes("leadActivityHistoryItems.slice(0, 5).map"));
 check("older entries are expandable", lead.includes('data-stage216j3h-activity-history-more="true"') && lead.includes("leadActivityHistoryItems.slice(5).map"));
 check("history includes all activities, not only non-note activities", !lead.includes(".filter((activity) => !isLeadNoteActivity(activity))"));
 check("note events are redacted in activity history", lead.includes("Treść notatki jest widoczna w sekcji Notatki."));

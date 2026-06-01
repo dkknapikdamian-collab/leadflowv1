@@ -2136,3 +2136,48 @@
   font-size: 12px;
   font-weight: 900;
 }
+
+/* STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL
+   Correction after J3H visual direction:
+   - activity history moves from right rail to left rail under lead data
+   - center stays for notes
+   - right rail stays focused on next actions, case and finance
+*/
+
+.lead-detail-left-activity-history-card {
+  padding: 16px !important;
+}
+
+.lead-detail-left-activity-history-card .lead-detail-card-title-row {
+  margin-bottom: 6px;
+}
+
+.lead-detail-left-card-intro {
+  margin: 0 0 10px;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.lead-detail-left-activity-history-card .lead-detail-activity-history-rail-list {
+  gap: 7px;
+}
+
+.lead-detail-left-activity-history-card .lead-detail-activity-history-rail-row {
+  grid-template-columns: 28px minmax(0, 1fr);
+  padding: 8px;
+  border-radius: 13px;
+}
+
+.lead-detail-left-activity-history-card .lead-detail-activity-history-rail-row strong {
+  font-size: 12px;
+}
+
+.lead-detail-left-activity-history-card .lead-detail-activity-history-rail-row p {
+  font-size: 11px;
+}
+
+.lead-detail-left-activity-history-card .lead-detail-activity-history-rail-more {
+  margin-top: 8px;
+}

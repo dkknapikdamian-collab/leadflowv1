@@ -45,6 +45,8 @@ const STAGE216J3G_SPLIT_NOTES_FROM_HISTORY = 'LeadDetail separates operator note
 void STAGE216J3G_SPLIT_NOTES_FROM_HISTORY;
 const STAGE216J3H_ACTIVITY_HISTORY_RAIL = 'LeadDetail moves full activity history preview to the right rail; notes stay in center';
 void STAGE216J3H_ACTIVITY_HISTORY_RAIL;
+const STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL = 'LeadDetail activity history belongs under lead data in the left rail';
+void STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1639,6 +1641,50 @@ useEffect(() => {
                 </div>
               </div>
             </section>
+
+
+            <section className="lead-detail-section-card lead-detail-left-activity-history-card" data-stage216j3i-activity-history-left-rail="true">
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywności</h2></div>
+              <p className="lead-detail-left-card-intro">Ostatnie 5 zdarzeń powiązanych z tym leadem.</p>
+
+              <div className="lead-detail-activity-history-rail-list">
+                {leadActivityHistoryItems.length === 0 ? (
+                  <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
+                    <strong>Brak historii aktywności.</strong>
+                    <span>Historia pojawi się po dodaniu notatek, zadań, wydarzeń, płatności albo zmian statusu.</span>
+                  </div>
+                ) : (
+                  leadActivityHistoryItems.slice(0, 5).map((entry) => (
+                    <article key={`activity-rail-${entry.id}`} className="lead-detail-activity-history-rail-row" data-stage216j3h-activity-history-row="true">
+                      <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
+                      <div>
+                        <strong>{entry.title}</strong>
+                        <p>{entry.description}</p>
+                        <small>{entry.dateLabel}</small>
+                      </div>
+                    </article>
+                  ))
+                )}
+              </div>
+
+              {leadActivityHistoryItems.length > 5 ? (
+                <details className="lead-detail-activity-history-rail-more" data-stage216j3h-activity-history-more="true">
+                  <summary>Pokaż starsze wpisy</summary>
+                  <div className="lead-detail-activity-history-rail-list">
+                    {leadActivityHistoryItems.slice(5).map((entry) => (
+                      <article key={`activity-rail-more-${entry.id}`} className="lead-detail-activity-history-rail-row">
+                        <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
+                        <div>
+                          <strong>{entry.title}</strong>
+                          <p>{entry.description}</p>
+                          <small>{entry.dateLabel}</small>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
+            </section>
           </aside>
 
           <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">            {leadSourceNoteText ? (
@@ -1826,50 +1872,8 @@ useEffect(() => {
                 <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</button>
               </div>
             </section>
-            <section className="right-card lead-detail-right-card lead-detail-activity-history-rail-card" data-stage216j3h-activity-history-rail="true">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywności</h2></div>
-              <p className="lead-detail-right-card-intro">Ostatnie 5 zdarzeń powiązanych z tym leadem.</p>
-
-              <div className="lead-detail-activity-history-rail-list">
-                {leadActivityHistoryItems.length === 0 ? (
-                  <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
-                    <strong>Brak historii aktywności.</strong>
-                    <span>Historia pojawi się po dodaniu notatek, zadań, wydarzeń, płatności albo zmian statusu.</span>
-                  </div>
-                ) : (
-                  leadActivityHistoryItems.slice(0, 5).map((entry) => (
-                    <article key={`activity-rail-${entry.id}`} className="lead-detail-activity-history-rail-row" data-stage216j3h-activity-history-row="true">
-                      <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
-                      <div>
-                        <strong>{entry.title}</strong>
-                        <p>{entry.description}</p>
-                        <small>{entry.dateLabel}</small>
-                      </div>
-                    </article>
-                  ))
-                )}
-              </div>
-
-              {leadActivityHistoryItems.length > 5 ? (
-                <details className="lead-detail-activity-history-rail-more" data-stage216j3h-activity-history-more="true">
-                  <summary>Pokaż starsze wpisy</summary>
-                  <div className="lead-detail-activity-history-rail-list">
-                    {leadActivityHistoryItems.slice(5).map((entry) => (
-                      <article key={`activity-rail-more-${entry.id}`} className="lead-detail-activity-history-rail-row">
-                        <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
-                        <div>
-                          <strong>{entry.title}</strong>
-                          <p>{entry.description}</p>
-                          <small>{entry.dateLabel}</small>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </details>
-              ) : null}
-            </section>
-
-            <section className="right-card lead-detail-right-card">
+            <div hidden data-stage216j3i-activity-history-moved-from-right-rail="true" />
+<section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
               <p>{serviceCaseId ? serviceCaseTitle : 'Lead nie został jeszcze przejęty do obsługi.'}</p>
               <small>{serviceCaseId ? serviceCaseStatusLabel : 'Utwórz klienta i sprawę, gdy temat jest gotowy do realizacji.'}</small>
