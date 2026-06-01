@@ -1630,3 +1630,39 @@
     white-space: normal;
   }
 }
+
+/* STAGE216J3B_LEAD_DATA_PANEL
+   Small safe step after J3A:
+   - left rail becomes one data source panel
+   - no EntityContactCard hacks needed for LeadDetail data
+   - notes/tasks/right rail stay ata-panel-row-copy {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.lead-detail-data-panel-row-copy small,
+.lead-detail-data-panel-row-copy strong {
+  grid-column: 1;
+}
+
+.lead-detail-data-panel-row-copy button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #fff;
+  color: #475467;
+  padding: 7px 9px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+@media (max-width: 920px) {
+  .lead-detail-data-panel-card .lead-detail-section-head {
+    display: grid;
+  }
+
+  .lead-detail-data-panel-card .lead-detail-section-head p {
+    max-width: none;
+  }
+}

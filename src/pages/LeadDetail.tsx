@@ -31,6 +31,8 @@ const STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION = 'LeadDetail contact card i
 void STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION;
 const STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION = 'LeadDetail header is one-line identity plus primary actions; meta moves out of header later';
 void STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION;
+const STAGE216J3B_LEAD_DATA_PANEL = 'LeadDetail left rail is one source-of-truth data panel with edit action';
+void STAGE216J3B_LEAD_DATA_PANEL;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1549,23 +1551,59 @@ useEffect(() => {
 
         <div className="lead-detail-shell">
           <aside
-            className="lead-detail-left-rail"
-            aria-label="Dane kontaktowe leada"
-            data-stage115-lead-contact-client-parity="true"
+            className="lead-detail-left-rail lead-detail-data-rail"
+            aria-label="Dane leada"
+            data-stage216j3b-lead-data-panel="true"
           >
-            <EntityContactCard
-              entity="lead"
-              name={String(lead.name || lead.company || 'Lead bez nazwy')}
-              subtitle={leadInService ? 'Lead · historia pozyskania' : 'Lead · aktywny kontakt sprzedażowy'}
-              initialsSource={String(lead.name || lead.company || 'Lead')}
-              phone={String(lead.phone || '')}
-              email={String(lead.email || '')}
-              company={String(lead.company || 'Brak firmy')}
-              lastContact={formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}
-              onCopy={copyValue}
-              className="lead-detail-client-parity-contact-card"
-              dataStage="stage115-lead-contact-client-parity"
-            />
+            <section className="lead-detail-section-card lead-detail-data-panel-card">
+              <div className="lead-detail-section-head">
+                <div>
+                  <h2>Dane leada</h2>
+                  <p>Status, źródło, kontakt, wartość i ostatnia aktywność w jednym miejscu.</p>
+                </div>
+                <Button type="button" size="sm" variant="outline" onClick={handleStartLeadEditing}>
+                  <Edit2 className="h-4 w-4" />
+                  Edytuj dane
+                </Button>
+              </div>
+
+              <div className="lead-detail-data-panel-list">
+                <div className="lead-detail-data-panel-row">
+                  <small>Status</small>
+                  <strong>{statusLabel(lead.status)}</strong>
+                </div>
+                <div className="lead-detail-data-panel-row">
+                  <small>Źródło</small>
+                  <strong>{sourceLabel(lead.source)}</strong>
+                </div>
+                <div className="lead-detail-data-panel-row lead-detail-data-panel-row-copy">
+                  <small>Telefon</small>
+                  <strong>{lead.phone || 'Brak telefonu'}</strong>
+                  {lead.phone ? (
+                    <button type="button" onClick={() => copyValue('Telefon', String(lead.phone || ''))}>Kopiuj</button>
+                  ) : null}
+                </div>
+                <div className="lead-detail-data-panel-row lead-detail-data-panel-row-copy">
+                  <small>E-mail</small>
+                  <strong>{lead.email || 'Brak e-maila'}</strong>
+                  {lead.email ? (
+                    <button type="button" onClick={() => copyValue('E-mail', String(lead.email || ''))}>Kopiuj</button>
+                  ) : null}
+                </div>
+                <div className="lead-detail-data-panel-row">
+                  <small>Firma</small>
+                  <strong>{lead.company || 'Brak firmy'}</strong>
+                </div>
+                <div className="lead-detail-data-panel-row">
+                  <small>Wartość</small>
+                  <strong>{leadFinance.formatted}</strong>
+                </div>
+                <div className="lead-detail-data-panel-row">
+                  <small>Ostatnia aktywność</small>
+                  <strong>{formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}</strong>
+                </div>
+              </div>
+            </section>
           </aside>
 
           <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">
