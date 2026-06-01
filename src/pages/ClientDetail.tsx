@@ -1637,46 +1637,13 @@ return (
             <p className="client-detail-breadcrumb">Klienci / {getClientName(client)}</p>
             <p className="client-detail-kicker">KARTOTEKA KLIENTA</p>
             <h1>{getClientName(client)}</h1>
-            <div className="client-detail-header-meta">
-              <span>Ostatni kontakt: {formatDate(lastActivityDate)}</span>
-              <span>Główna sprawa: {mainCase ? getCaseTitle(mainCase) : 'Brak głównej sprawy'}</span>
-              <span>Status relacji: {activeCases.length > 0 ? 'Aktywna obsługa' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</span>
-            </div>
-          </div>
+</div>
           <div className="client-detail-header-actions">
-
-            <Button
-
-              type="button"
-
-              variant="outline"
-
-              className="client-detail-header-edit-action"
-
-              data-stage216l-header-edit-action="true"
-
-              onClick={handleClientPanelEditToggle}
-
-              disabled={saving}
-
-            >
-
-              {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-
-              {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
-
-            </Button>
-
-
-            <Button type="button" variant="default" className="client-detail-header-action-soft" asChild>
+            <Button type="button" variant="default" className="client-detail-header-action-soft client-detail-header-ai-action" asChild data-stage216m-r3-r1-client-ai-header-action="true">
               <Link to="/ai-drafts">
                 <EntityIcon entity="ai" className="h-4 w-4" />
                 Zapytaj AI
               </Link>
-            </Button>
-            <Button type="button" variant="default" onClick={openNewCase} disabled={!hasAccess}>
-              <Plus className="h-4 w-4" />
-              Nowa sprawa dla klienta
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
               <EntityIcon entity="case" className="h-4 w-4" />

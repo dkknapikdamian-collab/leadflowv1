@@ -1550,6 +1550,16 @@ useEffect(() => {
             </div>
           </div>
           <div className="lead-detail-header-actions">
+            <Button
+              type="button"
+              variant="outline"
+              className="lead-detail-header-ai-action"
+              data-stage216m-r3-r1-lead-ai-header-action="true"
+              onClick={() => navigate('/ai-drafts')}
+            >
+              <EntityIcon entity="ai" className="h-4 w-4" />
+              Zapytaj AI
+            </Button>
             {leadInService ? (
               <Button type="button" onClick={openCase} disabled={!serviceCaseId}>
                 <EntityIcon entity="case" className="h-4 w-4" />
@@ -1561,10 +1571,6 @@ useEffect(() => {
                 Rozpocznij obsługę
               </Button>
             )}
-            <Button type="button" variant="outline" onClick={handleStartLeadEditing}>
-              <Edit2 className="h-4 w-4" />
-              Edytuj
-            </Button>
           </div>
         </header>
 

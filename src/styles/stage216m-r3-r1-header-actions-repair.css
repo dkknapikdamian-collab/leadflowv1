@@ -1,0 +1,47 @@
+/* STAGE216M_R3_R1_HEADER_ACTIONS_REPAIR
+   Cel: naprawić uszkodzony R3 i ujednolicić header LeadDetail/ClientDetail.
+   Decyzja Damiana: Edytuj znika z headerów, w obu ma być Zapytaj AI, w kliencie zostaje Otwórz główną sprawę.
+   Dane klienta nie są w headerze, bo są niżej w karcie danych tak jak w leadzie.
+*/
+
+.lead-detail-vnext-page .lead-detail-header-actions,
+.client-detail-vnext-page .client-detail-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.lead-detail-vnext-page .lead-detail-header-ai-action,
+.client-detail-vnext-page .client-detail-header-ai-action {
+  min-height: 38px !important;
+  border-radius: 14px !important;
+  border: 1px solid #bfdbfe !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  color: #1d4ed8 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.04) !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-header {
+  min-height: 96px !important;
+}
+
+.client-detail-vnext-page .client-detail-header-copy {
+  align-self: center !important;
+}
+
+.client-detail-vnext-page .client-detail-header h1 {
+  margin-bottom: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-action-primary {
+  min-height: 38px !important;
+  border-radius: 14px !important;
+  font-weight: 850 !important;
+}
