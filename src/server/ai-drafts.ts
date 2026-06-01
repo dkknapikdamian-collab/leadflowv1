@@ -1,4 +1,5 @@
 import { deleteById, insertWithVariants, isUuid, selectFirstAvailable, updateById } from './_supabase.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
 import { asText, requireRequestIdentity, requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { assertWorkspaceAiAllowed, assertWorkspaceEntityLimit, assertWorkspaceWriteAccess } from './_access-gate.js';
 
@@ -345,6 +346,10 @@ export default async function handler(req: any, res: any) {
 
     res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
   } catch (error: any) {
+    if (error?.code || error?.status) {
+      writeAuthErrorResponse(res, error);
+      return;
+    }
     const errorCode = error?.code || error?.message || '';
     if (errorCode === 'WORKSPACE_AI_ACCESS_REQUIRED' || errorCode === 'WORKSPACE_FEATURE_ACCESS_REQUIRED') {
       res.status(402).json({ error: errorCode });
