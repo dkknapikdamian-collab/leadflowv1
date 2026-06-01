@@ -1625,6 +1625,40 @@ return (
 
   const clientVisibleNotesForRenderStage216L = getClientNotesForRender(getClientVisibleNotes(activities, client), clientPinnedNoteIds);
 
+  const clientRightRailActionsStage216M4 = [
+    ...clientTasks.map((task: any) => {
+      const date = getTaskDate(task);
+      const parsed = asDate(date);
+      return {
+        id: String(task?.id || task?.taskId || task?.title || date || Math.random()),
+        kind: 'task' as const,
+        title: String(task?.title || task?.name || 'Zadanie klienta'),
+        dateLabel: date ? formatDateTime(date) : 'Brak terminu',
+        dateTime: parsed?.getTime() ?? Number.MAX_SAFE_INTEGER,
+        status: task?.status,
+        statusLabel: isDoneStatus(task?.status) ? 'Zrobione' : 'Zaplanowane',
+        isOverdue: Boolean(parsed && parsed.getTime() < Date.now() && !isDoneStatus(task?.status)),
+      };
+    }),
+    ...clientEvents.map((event: any) => {
+      const date = getEventDate(event);
+      const parsed = asDate(date);
+      return {
+        id: String(event?.id || event?.eventId || event?.title || date || Math.random()),
+        kind: 'event' as const,
+        title: String(event?.title || event?.name || 'Wydarzenie klienta'),
+        dateLabel: date ? formatDateTime(date) : 'Brak terminu',
+        dateTime: parsed?.getTime() ?? Number.MAX_SAFE_INTEGER,
+        status: event?.status,
+        statusLabel: isDoneStatus(event?.status) ? 'Zrobione' : 'Zaplanowane',
+        isOverdue: Boolean(parsed && parsed.getTime() < Date.now() && !isDoneStatus(event?.status)),
+      };
+    }),
+  ]
+    .filter((entry) => !isDoneStatus(entry.status))
+    .sort((left, right) => left.dateTime - right.dateTime)
+    .slice(0, 5);
+
   return (
     <Layout>
       <main className="client-detail-vnext-page" data-client-detail-simplified-card-view="true">
@@ -2152,111 +2186,103 @@ return (
               </div>
             ) : null}
           </section>
+          <aside className="client-detail-right-rail" aria-label="Panel klienta" data-stage216m-r4-client-right-rail="true">
+            <section className="right-card client-detail-right-card client-detail-upcoming-actions-card" data-stage216m-r4-client-upcoming-actions-card="true">
+              <div className="client-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższe działania</h2></div>
+              <p className="client-detail-right-card-intro">5 najbliższych zadań i wydarzeń z datą powiązanych z tym klientem.</p>
 
-          <aside className="client-detail-right-rail" aria-label="Panel klienta">
-
-<section className="right-card client-detail-right-card client-detail-operational-center" aria-label="Centrum operacyjne klienta">
-              <div className="client-detail-card-title-row">
-                <Clock className="h-4 w-4" />
-                <h2>Najbliższa zaplanowana akcja</h2>
+              <div className="client-detail-upcoming-actions-list">
+                {clientRightRailActionsStage216M4.length === 0 ? (
+                  <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
+                    <strong>Brak zaplanowanych działań.</strong>
+                    <span>Dodaj zadanie albo wydarzenie, żeby klient nie został bez ruchu.</span>
+                  </div>
+                ) : (
+                  clientRightRailActionsStage216M4.map((entry) => (
+                    <article key={`client-right-rail-action-${entry.kind}-${entry.id}`} className={`client-detail-upcoming-action-row ${entry.isOverdue ? 'client-detail-work-row-overdue' : ''}`} data-stage216m-r4-client-upcoming-action-row="true">
+                      <span className="client-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                      <div>
+                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
+                        <strong>{entry.title}</strong>
+                        <p>{entry.dateLabel}</p>
+                      </div>
+                    </article>
+                  ))
+                )}
               </div>
-              <div className="client-detail-quick-actions-list">
-                <div>
-                  <span>Zadania klienta</span>
-                  <strong>{activeTaskCount}</strong>
-                </div>
-                <div>
-                  <span>Wydarzenia klienta</span>
-                  <strong>{activeEventCount}</strong>
-                </div>
-                <div>
-                  <span>Aktywność klienta</span>
-                  <strong>{lastActivityDate ? formatDateTime(lastActivityDate) : 'Brak'}</strong>
-                </div>
+
+              <div className="client-detail-right-actions client-detail-upcoming-actions-cta">
+                <ContextActionButton
+                  kind="task"
+                  recordType="client"
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    openContextQuickAction({
+                      kind: 'task',
+                      recordType: 'client',
+                      recordId: String(client.id),
+                      clientId: String(client.id),
+                      leadId: firstSourceLead?.id ? String(firstSourceLead.id) : null,
+                      caseId: mainCase?.id ? String(mainCase.id) : null,
+                      recordLabel: getClientName(client),
+                    })
+                  }
+                  disabled={!hasAccess}
+                >
+                  Dodaj zadanie
+                </ContextActionButton>
+                <ContextActionButton
+                  kind="event"
+                  recordType="client"
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    openContextQuickAction({
+                      kind: 'event',
+                      recordType: 'client',
+                      recordId: String(client.id),
+                      clientId: String(client.id),
+                      leadId: firstSourceLead?.id ? String(firstSourceLead.id) : null,
+                      caseId: mainCase?.id ? String(mainCase.id) : null,
+                      recordLabel: getClientName(client),
+                    })
+                  }
+                  disabled={!hasAccess}
+                >
+                  Dodaj wydarzenie
+                </ContextActionButton>
               </div>
             </section>
 
-            <div hidden data-client-detail-stage35-removed-quick-actions="true" />
-            <div hidden data-client-detail-stage117b-no-lead-shortcut="true" />
+            <section className="right-card client-detail-right-card" data-stage216m-r4-client-main-case-card="true">
+              <div className="client-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Główna sprawa</h2></div>
+              <p>{mainCase ? getCaseTitle(mainCase) : 'Klient nie ma jeszcze aktywnej sprawy.'}</p>
+              <small>{mainCase ? caseStatusLabel(String(mainCase.status || 'in_progress')) : 'Utwórz sprawę, gdy temat jest gotowy do realizacji.'}</small>
+              {mainCase?.id ? (
+                <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(mainCase.id)}`)}>Otwórz główną sprawę</Button>
+              ) : (
+                <Button type="button" size="sm" onClick={openNewCase} disabled={!hasAccess}>Utwórz sprawę</Button>
+              )}
+            </section>
 
-            {/* STAGE35_CLIENT_DETAIL_HIDE_DODATKOWO */}
-
-
-              <section className="right-card client-detail-right-card client-detail-side-quick-actions-card" data-client-side-quick-actions="true">
-                <div className="client-detail-card-title-row">
-                  <EntityIcon entity="ai" className="h-4 w-4" />
-                  <h2>Szybkie akcje</h2>
-                </div>
-                <div className="client-detail-side-quick-actions-grid">
-                  <ContextActionButton kind="task" recordType="client"
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      openContextQuickAction({
-                        kind: 'task',
-                        recordType: 'client',
-                        recordId: String(client.id),
-                        clientId: String(client.id),
-                        leadId: firstSourceLead?.id ? String(firstSourceLead.id) : null,
-                        caseId: mainCase?.id ? String(mainCase.id) : null,
-                        recordLabel: getClientName(client),
-                      })
-                    }
-                    disabled={!hasAccess}
-                  >
-                    Dodaj zadanie
-                  </ContextActionButton>
-                  <ContextActionButton kind="event" recordType="client"
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() =>
-                      openContextQuickAction({
-                        kind: 'event',
-                        recordType: 'client',
-                        recordId: String(client.id),
-                        clientId: String(client.id),
-                        leadId: firstSourceLead?.id ? String(firstSourceLead.id) : null,
-                        caseId: mainCase?.id ? String(mainCase.id) : null,
-                        recordLabel: getClientName(client),
-                      })
-                    }
-                    disabled={!hasAccess}
-                  >
-                    Dodaj wydarzenie
-                  </ContextActionButton>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
-                  >
-                    Finanse w sprawie
-                  </Button>
-                </div>
-              </section>
-            <div hidden data-stage216l-client-right-notes-moved-to-center="true" />
-<section className="right-card client-detail-right-card" data-client-finance-summary="true">
-              <div className="client-detail-card-title-row">
-                <EntityIcon entity="client" className="h-4 w-4" />
-                <h2>Podsumowanie finansów</h2>
-              </div>
+            <section className="right-card client-detail-right-card" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true">
+              <div className="client-detail-card-title-row"><EntityIcon entity="client" className="h-4 w-4" /><h2>Finanse klienta</h2></div>
               <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
               <small>Suma wpłat: {formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</small>
-              <small>Do domknięcia do zapłaty: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>
+              <small>Do domknięcia: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>
               <small>Sprawy aktywne / rozliczone: {clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</small>
-              <div className="client-detail-quick-actions-list">
-                {clientFinanceSummary.recentPayments.length === 0 ? (
-                  <div><span>Ostatnie wpłaty</span><strong>Brak</strong></div>
-                ) : (
-                  clientFinanceSummary.recentPayments.map((entry) => (
-                    <div key={String(entry.id || `${entry.amount}-${entry.paidAt || entry.createdAt}`)}>
-                      <span>{formatDate(entry.paidAt || entry.createdAt)}</span>
-                      <strong>{formatMoneyWithCurrency(entry.amount, entry.currency || clientFinance.currency)}</strong>
-                    </div>
-                  ))
-                )}
+              <div className="client-detail-right-actions">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
+                >
+                  Finanse w sprawie
+                </Button>
               </div>
             </section>
           </aside>
