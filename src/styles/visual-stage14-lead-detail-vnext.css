@@ -1554,3 +1554,230 @@
     min-height: auto;
   }
 }
+
+/* STAGE216J2_LEAD_DETAIL_WORKBENCH_LAYOUT
+   Final LeadDetail direction after G/H/I:
+   - header = identity and primary actions
+   - left = data source of truth
+   - center = notes and contact history
+   - right = next 5 dated actions and quick actions
+*/
+
+@media (min-width: 1181px) {
+  .lead-detail-workbench-shell {
+    display: grid !important;
+    grid-template-columns: minmax(260px, 320px) minmax(520px, 1fr) minmax(300px, 360px) !important;
+    grid-template-areas: "data notes actions" !important;
+    gap: 18px !important;
+    align-items: start !important;
+  }
+
+  .lead-detail-data-rail {
+    grid-area: data !important;
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  .lead-detail-workbench-main {
+    grid-area: notes !important;
+    display: grid;
+    gap: 16px;
+    min-width: 0;
+  }
+
+  .lead-detail-actions-rail {
+    grid-area: actions !important;
+    position: sticky;
+    top: 18px;
+    display: grid;
+    gap: 14px;
+    min-width: 0;
+  }
+}
+
+.lead-detail-workbench-shell .lead-detail-section-card {
+  border-radius: 24px !important;
+}
+
+.lead-detail-data-card .lead-detail-section-head {
+  margin-bottom: 12px;
+}
+
+.lead-detail-data-list {
+  display: grid;
+  gap: 8px;
+}
+
+.lead-detail-data-row {
+  display: grid;
+  gap: 3px;
+  padding: 10px 11px;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.lead-detail-data-row small {
+  color: #667085;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.lead-detail-data-row strong {
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-data-row-copy {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.lead-detail-data-row-copy small,
+.lead-detail-data-row-copy strong {
+  grid-column: 1;
+}
+
+.lead-detail-data-row-copy button {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #fff;
+  color: #475467;
+  padding: 7px 9px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.lead-detail-service-card p,
+.lead-detail-compact-finance-card p {
+  margin: 0;
+  color: #475467;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.lead-detail-service-card small,
+.lead-detail-compact-finance-card small {
+  display: block;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.lead-detail-next-step-card {
+  background: #f8fbff !important;
+  border-color: #bfdbfe !important;
+}
+
+.lead-detail-next-step-summary {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #dbeafe;
+  border-radius: 18px;
+  background: #fff;
+  padding: 13px;
+}
+
+.lead-detail-next-step-summary strong,
+.lead-detail-upcoming-row strong {
+  display: block;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.3;
+}
+
+.lead-detail-next-step-summary small,
+.lead-detail-upcoming-row small {
+  display: block;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 850;
+  margin-bottom: 3px;
+}
+
+.lead-detail-next-step-summary p,
+.lead-detail-upcoming-row p {
+  margin: 4px 0 0;
+  color: #667085;
+  font-size: 12px;
+}
+
+.lead-detail-history-center .lead-detail-section-head {
+  margin-bottom: 12px;
+}
+
+.lead-detail-note-form-wide .lead-detail-note-input,
+.lead-detail-note-form-wide textarea {
+  min-height: 118px !important;
+}
+
+.lead-detail-history-list-limited {
+  margin-top: 12px;
+}
+
+.lead-detail-history-more {
+  margin-top: 10px;
+  color: #667085;
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.lead-detail-upcoming-card {
+  background: #ffffff !important;
+}
+
+.lead-detail-upcoming-list {
+  display: grid;
+  gap: 9px;
+}
+
+.lead-detail-upcoming-row {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+  padding: 11px;
+}
+
+.lead-detail-upcoming-row .lead-detail-work-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 13px;
+}
+
+.lead-detail-quick-actions-card .lead-detail-right-actions,
+.lead-detail-upcoming-card .lead-detail-right-actions,
+.lead-detail-compact-finance-card .lead-detail-right-actions {
+  margin-top: 10px;
+}
+
+@media (max-width: 1180px) {
+  .lead-detail-workbench-shell {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    grid-template-areas:
+      "data"
+      "notes"
+      "actions" !important;
+  }
+
+  .lead-detail-data-rail,
+  .lead-detail-workbench-main,
+  .lead-detail-actions-rail {
+    position: static !important;
+    display: grid;
+    gap: 14px;
+  }
+}

@@ -1545,172 +1545,133 @@ useEffect(() => {
           </section>
         ) : null}
 
-        <div className="lead-detail-shell">
-          <aside
-            className="lead-detail-left-rail"
-            aria-label="Dane kontaktowe leada"
-            data-stage115-lead-contact-client-parity="true"
-          >
-            <EntityContactCard
-              entity="lead"
-              name={String(lead.name || lead.company || 'Lead bez nazwy')}
-              subtitle={leadInService ? 'Lead · historia pozyskania' : 'Lead · aktywny kontakt sprzedażowy'}
-              initialsSource={String(lead.name || lead.company || 'Lead')}
-              phone={String(lead.phone || '')}
-              email={String(lead.email || '')}
-              company={String(lead.company || 'Brak firmy')}
-              lastContact={formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}
-              onCopy={copyValue}
-              className="lead-detail-client-parity-contact-card"
-              dataStage="stage115-lead-contact-client-parity"
-            />
-          </aside>
-
-          <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">
-            <section
-              className="lead-detail-section-card lead-detail-notes-section"
-              data-stage115-lead-notes-section="true"
-              data-lead-primary-note-text={leadPrimaryNoteText ? 'true' : 'false'}
-              aria-label="Notatki leada"
-            >
+        <div className="lead-detail-shell lead-detail-workbench-shell" data-stage216j2-lead-detail-workbench="true">
+          <aside className="lead-detail-data-rail" aria-label="Dane leada">
+            <section className="lead-detail-section-card lead-detail-data-card" data-lead-data-source-of-truth="true">
               <div className="lead-detail-section-head">
                 <div>
-                  <h2>Notatki leada</h2>
-                  <p>Notatka z tworzenia leada i ostatnia notatka z historii kontaktu.</p>
+                  <h2>Dane leada</h2>
+                  <p>Jedno miejsce na status, kontakt, źródło i wartość.</p>
                 </div>
+                <Button type="button" size="sm" variant="outline" onClick={handleStartLeadEditing}>
+                  <Edit2 className="h-4 w-4" />
+                  Edytuj dane
+                </Button>
               </div>
-              {hasLeadNotesStage115B ? (
-                <div className="lead-detail-notes-stack" data-lead-notes-stack="true">
-                  {leadSourceNoteText ? (
-                    <article className="lead-detail-note-source-card" data-lead-source-note="true">
-                      <small>Notatka źródłowa z leada</small>
-                      <strong>{formatDateTime(lead?.noteUpdatedAt || lead?.updatedAt || lead?.createdAt, 'Brak daty')}</strong>
-                      <p className="lead-detail-note-text" lang="pl-PL">{leadSourceNoteText}</p>
-                    </article>
-                  ) : null}
-                  {leadNoteActivityItems[0] ? (
-                    <article className="lead-detail-note-source-card" data-lead-activity-note="true">
-                      <small>Ostatnia notatka z historii</small>
-                      <strong>{leadNoteActivityItems[0].dateLabel}</strong>
-                      <p className="lead-detail-note-text" lang="pl-PL">{leadNoteActivityItems[0].content}</p>
-                    </article>
+
+              <div className="lead-detail-data-list">
+                <div className="lead-detail-data-row">
+                  <small>Status</small>
+                  <strong>{statusLabel(lead.status)}</strong>
+                </div>
+                <div className="lead-detail-data-row">
+                  <small>Źródło</small>
+                  <strong>{sourceLabel(lead.source)}</strong>
+                </div>
+                <div className="lead-detail-data-row lead-detail-data-row-copy">
+                  <small>Telefon</small>
+                  <strong>{lead.phone || '-'}</strong>
+                  {lead.phone ? (
+                    <button type="button" onClick={() => copyValue('Telefon', String(lead.phone || ''))}>Kopiuj</button>
                   ) : null}
                 </div>
-              ) : (
-                <div className="lead-detail-light-empty" data-lead-notes-empty="true">
-                  Brak notatek zapisanych przy tym leadzie.
+                <div className="lead-detail-data-row lead-detail-data-row-copy">
+                  <small>E-mail</small>
+                  <strong>{lead.email || '-'}</strong>
+                  {lead.email ? (
+                    <button type="button" onClick={() => copyValue('E-mail', String(lead.email || ''))}>Kopiuj</button>
+                  ) : null}
                 </div>
+                <div className="lead-detail-data-row">
+                  <small>Firma</small>
+                  <strong>{lead.company || 'Brak firmy'}</strong>
+                </div>
+                <div className="lead-detail-data-row">
+                  <small>Wartość</small>
+                  <strong>{leadFinance.formatted}</strong>
+                </div>
+                <div className="lead-detail-data-row">
+                  <small>Ostatnia aktywność</smaeOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę</Button>
               )}
             </section>
 
-          {!leadInService ? (
-              <section className="lead-detail-top-grid">
-                <article className="lead-detail-top-card lead-detail-callout-blue">
-                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa zaplanowana akcja</h2></div>
-                  {nextTimelineEntry ? (
-                    <>
-                      <strong>{nextTimelineEntry.title}</strong>
-                      <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {nextTimelineEntry.statusLabel} • {nextTimelineEntry.dateLabel}</p>
-                      <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status, nextTimelineEntry.dateValue)}`}>{nextTimelineEntry.statusLabel}</span>
-                    </>
-                  ) : (
-                    <div className="lead-detail-action-empty lead-detail-action-empty-compact">
-                      <strong>Brak zaplanowanej akcji</strong>
-                      <span>Ten lead może wypaść z procesu. Dodaj follow-up albo wydarzenie.</span>
-                    </div>
-                  )}
-                </article>
-                <article className="lead-detail-top-card lead-detail-callout-green">
-                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Wartość</h2></div>
-                  <strong>{leadFinance.formatted}</strong>
-                  <p>{sourceLabel(lead.source)} • {statusLabel(lead.status)}</p>
-                </article>
-                <article className="lead-detail-top-card lead-detail-callout-amber">
-                  <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Aktywny lead</h2></div>
-                  <strong>{sortedLinkedTasks.length + sortedLinkedEvents.length}</strong>
-                  <p>powiązane zadania i wydarzenia sprzedażowe.</p>
-                </article>
+            {(Number(leadFinancePanel.potential || 0) > 0 || Number(leadFinancePanel.paid || 0) > 0) ? (
+              <section className="lead-detail-section-card lead-detail-compact-finance-card" data-lead-finance-panel="compact">
+                <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse</h2></div>
+                <div className="lead-detail-data-list">
+                  <div className="lead-detail-data-row"><small>Potencjał</small><strong>{Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></div>
+                  <div className="lead-detail-data-row"><small>Wpłacono</small><strong>{Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></div>
+                  <div className="lead-detail-data-row"><small>Do zapłaty</small><strong>{Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></div>
+                </div>
+                <div className="lead-detail-right-actions">
+                  <button type="button" data-stage115e-open-deposit-payment="true" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
+                  <button type="button" data-stage115e-open-partial-payment="true" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
+                </div>
               </section>
             ) : null}
+          </aside>
 
+          <section className="lead-detail-workbench-main" aria-label="Notatki i historia kontaktu">
             {!leadInService ? (
-              <section className="lead-detail-section-card">
+              <section className="lead-detail-section-card lead-detail-next-step-card" data-lead-next-step-card="true">
                 <div className="lead-detail-section-head">
                   <div>
-                    <h2>Zadania i wydarzenia</h2>
-</div>
-                  <div hidden data-lead-detail-stage35-removed-local-create-actions="true" />
+                    <h2>Co dalej z leadem?</h2>
+                    <p>{nextTimelineEntry ? 'Najbliższy ruch jest zaplanowany.' : 'Brak zaplanowanej akcji. Ten lead może wypaść z procesu.'}</p>
+                  </div>
                 </div>
-                <div className="lead-detail-work-list">
-                  {timeline.length === 0 ? (
-                    <div className="lead-detail-light-empty lead-detail-action-empty">
-                      <strong>Brak zaplanowanych działań.</strong>
-                      <span>Ten lead nie ma zadania ani wydarzenia. Zaplanuj następny kontakt, żeby nie zniknął z procesu.</span>
-                      <div className="lead-detail-empty-actions">
-                        <Button type="button" size="sm" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</Button>
-                        <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
-                      </div>
+                {nextTimelineEntry ? (
+                  <article className="lead-detail-next-step-summary">
+                    <span className="lead-detail-work-icon">{nextTimelineEntry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                    <div>
+                      <small>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {nextTimelineEntry.statusLabel}</small>
+                      <strong>{nextTimelineEntry.title}</strong>
+                      <p>{nextTimelineEntry.dateLabel}</p>
                     </div>
-                  ) : (
-                    timeline.map((entry) => (
-                      <article
-                        key={entry.id}
-                        className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`}
-                        data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
-                      >
-                        <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
-                        <div>
-                          <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}</small>
-                          <h3>{entry.title}</h3>
-                          <p>{entry.dateLabel}</p>
-                        </div>
-                        <span className={`lead-detail-pill ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
-                        <div className="lead-detail-row-actions">
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 60 * 60 * 1000, '+1H') : handleRescheduleLinkedEvent(entry.raw, 60 * 60 * 1000, '+1H'))} disabled={linkedEntryActionId !== null}>+1H</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, '+1D') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, '+1D'))} disabled={linkedEntryActionId !== null}>+1D</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W') : handleRescheduleLinkedEvent(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W'))} disabled={linkedEntryActionId !== null}>+1W</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
-                        </div>
-                      </article>
-                    ))
-                  )}
-                </div>
+                    <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status, nextTimelineEntry.dateValue)}`}>{nextTimelineEntry.statusLabel}</span>
+                  </article>
+                ) : (
+                  <div className="lead-detail-action-empty">
+                    <strong>Brak zaplanowanej akcji.</strong>
+                    <span>Zaplanuj następny kontakt, żeby lead nie zniknął z procesu.</span>
+                    <div className="lead-detail-empty-actions">
+                      <Button type="button" size="sm" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</Button>
+                      <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
+                    </div>
+                  </div>
+                )}
               </section>
             ) : null}
 
-            <section className="lead-detail-section-card" id="lead-history">
+            <section className="lead-detail-section-card lead-detail-history-center" id="lead-history" data-lead-notes-history-center="true">
               <div className="lead-detail-section-head">
                 <div>
-                  <h2>Historia kontaktu</h2>
-
+                  <h2>Notatki i historia kontaktu</h2>
+                  <p>Notatki są w środku ekranu, bo mogą być długie i powinny być czytelne.</p>
                 </div>
               </div>
+
               {!leadInService ? (
-                <form className="lead-detail-note-form" data-stage115c-inline-note-form="true" onSubmit={handleAddNote}>
-                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krótką notatkę po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
+                <form className="lead-detail-note-form lead-detail-note-form-wide" data-stage115c-inline-note-form="true" onSubmit={handleAddNote}>
+                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj notatkę po kontakcie, rozmowie albo ustaleniach..." className="lead-detail-note-input" lang="pl-PL" />
                   {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
                       {noteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                       {noteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
                     </Button>
-                    <Button
-                      type="submit"
-                      data-stage115c-inline-note-submit="true"
-                      disabled={!note.trim() || !hasAccess || addingNote}
-                    >
+                    <Button type="submit" data-stage115c-inline-note-submit="true" disabled={!note.trim() || !hasAccess || addingNote}>
                       {addingNote ? 'Zapisywanie...' : 'Dodaj notatkę'}
                     </Button>
                   </div>
                 </form>
               ) : null}
-              <div className="lead-detail-history-list">
+
+              <div className="lead-detail-history-list lead-detail-history-list-limited">
                 {activities.length === 0 ? (
                   <div className="lead-detail-light-empty">Brak historii kontaktu.</div>
                 ) : (
-                  activities.map((activity) => (
+                  activities.slice(0, 5).map((activity) => (
                     <article key={String(activity.id || activity.eventType || activity.createdAt)} className="lead-detail-history-row">
                       <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
                       <div>
@@ -1728,63 +1689,60 @@ useEffect(() => {
                   ))
                 )}
               </div>
+
+              {activities.length > 5 ? (
+                <div className="lead-detail-history-more">Pokazano 5 ostatnich wpisów z {activities.length}. Pełną historię rozwiniemy w kolejnym kroku.</div>
+              ) : null}
             </section>
           </section>
 
           {!leadInService ? (
-          <aside className="lead-detail-right-rail" aria-label="Panel leada">
-{/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
-
-
-            <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
-              <p>{serviceCaseId ? serviceCaseTitle : 'Lead nie został jeszcze przejęty do obsługi.'}</p>
-              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Utwórz klienta i sprawę, gdy temat jest gotowy do realizacji.'}</small>
-              {serviceCaseId ? (
-                <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button>
-              ) : (
-                <Button type="button" size="sm" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę</Button>
-              )}
-            </section>
-
-            <section className="right-card lead-detail-right-card" data-lead-finance-panel="true" data-stage115e-lead-finance-actions="true">
-              <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse leada</h2></div>
-              <small>Potencjał: {Number(leadFinancePanel.potential || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Wpłacono: {Number(leadFinancePanel.paid || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Do zapłaty: {Number(leadFinancePanel.remaining || 0).toLocaleString('pl-PL')} {leadFinance.currency}</small>
-              <small>Status płatności: {billingStatusLabel(String(leadFinancePanel.billingStatus || lead?.billingStatus || 'not_started'))}</small>
-              {!leadInService ? (
-                <div className="lead-detail-right-actions">
-                  <button type="button" data-stage115e-open-deposit-payment="true" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
-                  <button type="button" data-stage115e-open-partial-payment="true" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
+            <aside className="lead-detail-actions-rail" aria-label="Najbliższe działania leada">
+              <section className="lead-detail-section-card lead-detail-upcoming-card" data-lead-upcoming-actions-card="true">
+                <div className="lead-detail-section-head">
+                  <div>
+                    <h2>Najbliższe działania</h2>
+                    <p>5 najbliższych zadań i wydarzeń z datą.</p>
+                  </div>
                 </div>
-              ) : null}
-            </section>
 
-            {!leadInService ? (
-              <section className="right-card lead-detail-right-card">
+                <div className="lead-detail-upcoming-list">
+                  {timeline.length === 0 ? (
+                    <div className="lead-detail-light-empty lead-detail-action-empty">
+                      <strong>Brak zaplanowanych działań.</strong>
+                      <span>Dodaj follow-up albo wydarzenie, żeby lead nie został bez ruchu.</span>
+                    </div>
+                  ) : (
+                    timeline.slice(0, 5).map((entry) => (
+                      <article key={entry.id} className={`lead-detail-upcoming-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`}>
+                        <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                        <div>
+                          <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
+                          <strong>{entry.title}</strong>
+                          <p>{entry.dateLabel}</p>
+                        </div>
+                      </article>
+                    ))
+                  )}
+                </div>
+
+                <div className="lead-detail-right-actions">
+                  <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</button>
+                  <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</button>
+                </div>
+              </section>
+
+              <section className="lead-detail-section-card lead-detail-quick-actions-card">
                 <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
                 <div className="lead-detail-right-actions">
-                  <button type="button" onClick={() => setIsCreateCaseOpen(true)}>Rozpocznij obsługę</button>
+                  <button type="button" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę</button>
+                  <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</button>
+                  <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</button>
                 </div>
               </section>
-            ) : null}
-
-            {nextTimelineEntry ? (
-              <section className="right-card lead-detail-right-card" data-lead-next-action-card="true">
-                <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
-                <p>{nextTimelineEntry.title}</p>
-                <small>{nextTimelineEntry.dateLabel}</small>
-              </section>
-            ) : null}
-
-
-          {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (LeadAiNextAction) */}
-
-          </aside>
+            </aside>
           ) : null}
         </div>
-
 
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
