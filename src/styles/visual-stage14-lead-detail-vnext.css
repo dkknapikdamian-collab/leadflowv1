@@ -1631,11 +1631,70 @@
   }
 }
 
+
 /* STAGE216J3B_LEAD_DATA_PANEL
-   Small safe step after J3A:
-   - left rail becomes one data source panel
+   Build repair after malformed CSS append:
+   - left rail stays one data source panel
    - no EntityContactCard hacks needed for LeadDetail data
-   - notes/tasks/right rail stay ata-panel-row-copy {
+   - notes/tasks/right rail stay unchanged
+*/
+
+.lead-detail-data-rail {
+  min-width: 0;
+}
+
+.lead-detail-data-panel-card {
+  padding: 18px !important;
+}
+
+.lead-detail-data-panel-card .lead-detail-section-head {
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.lead-detail-data-panel-card .lead-detail-section-head h2 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 950;
+  letter-spacing: -0.025em;
+}
+
+.lead-detail-data-panel-card .lead-detail-section-head p {
+  margin: 4px 0 0;
+  max-width: 260px;
+  color: #667085;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.lead-detail-data-panel-list {
+  display: grid;
+  gap: 8px;
+}
+
+.lead-detail-data-panel-row {
+  display: grid;
+  gap: 3px;
+  padding: 10px 11px;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.lead-detail-data-panel-row small {
+  color: #667085;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.lead-detail-data-panel-row strong {
+  color: #111827;
+  font-size: 13px;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-data-panel-row-copy {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
 }
