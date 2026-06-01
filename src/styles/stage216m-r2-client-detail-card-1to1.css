@@ -1,0 +1,303 @@
+/* STAGE216M_R2_CLIENT_DETAIL_CARD_1TO1
+   Cel: zacząć od kart ClientDetail i dopasować ich styl 1:1 do LeadDetail.
+   Zakres: CSS-only. Bez Supabase, API, spraw, płatności i danych.
+   Decyzja Damiana: najpierw karta i kafelek po kafelku, potem nazwy/ikony/kolory.
+*/
+
+.client-detail-vnext-page {
+  --stage216m-page-max: 1480px !important;
+  --stage216m-left: 300px !important;
+  --stage216m-right: 310px !important;
+  --stage216m-gap: 22px !important;
+  --stage216m-card-radius: 28px !important;
+  --stage216m-card-padding: 20px !important;
+  max-width: 1480px !important;
+  padding: 28px clamp(16px, 3vw, 36px) 40px !important;
+}
+
+.client-detail-vnext-page .client-detail-header,
+.client-detail-vnext-page .client-detail-shell {
+  max-width: 1480px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Header card: ma zachowywać się jak karta leada, a nie osobny mini-dashboard. */
+.client-detail-vnext-page .client-detail-header {
+  min-height: 82px !important;
+  margin-bottom: 22px !important;
+  padding: 18px 20px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 20px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, .92) !important;
+  background-image: none !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-copy {
+  min-width: 0 !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  grid-template-areas:
+    "back kicker"
+    "back title"
+    "back meta" !important;
+  column-gap: 14px !important;
+  row-gap: 5px !important;
+  align-items: center !important;
+}
+
+.client-detail-vnext-page .client-detail-back-button {
+  grid-area: back !important;
+  width: auto !important;
+  min-width: 70px !important;
+  max-width: none !important;
+  min-height: 38px !important;
+  align-self: center !important;
+  justify-self: start !important;
+  margin: 0 !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  color: #475467 !important;
+  padding: 8px 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .04) !important;
+}
+
+.client-detail-vnext-page .client-detail-breadcrumb {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-kicker {
+  grid-area: kicker !important;
+  margin: 0 !important;
+  color: #2563eb !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  letter-spacing: .16em !important;
+  line-height: 1 !important;
+}
+
+.client-detail-vnext-page .client-detail-header h1 {
+  grid-area: title !important;
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 13px !important;
+  line-height: 1.1 !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta {
+  grid-area: meta !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span {
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 999px !important;
+  background: rgba(255, 255, 255, .86) !important;
+  color: #475467 !important;
+  padding: 5px 9px !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+  margin-left: auto !important;
+}
+
+.client-detail-vnext-page .client-detail-header-actions button,
+.client-detail-vnext-page .client-detail-header-actions a {
+  min-height: 38px !important;
+  border-radius: 14px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+}
+
+/* Siatka pozostaje 1:1 z LeadDetail. */
+.client-detail-vnext-page .client-detail-shell {
+  display: grid !important;
+  grid-template-columns: 300px minmax(0, 1fr) 310px !important;
+  gap: 22px !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail,
+.client-detail-vnext-page .client-detail-main-column,
+.client-detail-vnext-page .client-detail-right-rail {
+  min-width: 0 !important;
+  width: auto !important;
+  max-width: none !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail,
+.client-detail-vnext-page .client-detail-right-rail {
+  background: transparent !important;
+  background-image: none !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 18px !important;
+}
+
+.client-detail-vnext-page .client-detail-main-column {
+  display: grid !important;
+  gap: 18px !important;
+}
+
+/* Dane klienta: karta ma wyglądać jak Dane leada, nie jak profil z avatarami. */
+.client-detail-vnext-page .client-detail-profile-card {
+  position: relative !important;
+  padding: 20px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, .92) !important;
+  background-image: none !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+}
+
+.client-detail-vnext-page .client-detail-profile-card .client-detail-section-head {
+  margin: 0 0 12px !important;
+  padding-right: 106px !important;
+  display: block !important;
+}
+
+.client-detail-vnext-page .client-detail-profile-card .client-detail-section-head h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.client-detail-vnext-page .client-detail-profile-card .client-detail-section-head p {
+  margin: 4px 0 0 !important;
+  color: #667085 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+}
+
+.client-detail-vnext-page .client-detail-avatar-row,
+.client-detail-vnext-page .client-detail-avatar {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-edit-main-button {
+  position: absolute !important;
+  top: 18px !important;
+  right: 18px !important;
+  width: auto !important;
+  min-width: 94px !important;
+  min-height: 36px !important;
+  margin: 0 !important;
+  padding: 7px 11px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 14px !important;
+  background: #fff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .04) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.client-detail-vnext-page .client-detail-contact-list,
+.client-detail-vnext-page [data-client-inline-contact-edit="true"] .client-detail-contact-list {
+  margin-top: 0 !important;
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-info-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 52px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  padding: 10px 12px !important;
+}
+
+.client-detail-vnext-page .client-detail-info-icon {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-info-row small {
+  display: block !important;
+  margin: 0 0 3px !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+}
+
+.client-detail-vnext-page .client-detail-info-row strong {
+  display: block !important;
+  color: #111827 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.client-detail-vnext-page .client-detail-icon-button,
+.client-detail-vnext-page .client-detail-mini-button,
+.client-detail-vnext-page .client-detail-info-row button {
+  min-width: 32px !important;
+  min-height: 32px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+  color: #475467 !important;
+  padding: 6px 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-detail-vnext-page .client-detail-header {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+}
