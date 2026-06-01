@@ -25,6 +25,8 @@ const STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL = 'LeadDetail header renders lead s
 void STAGE77_LEAD_DETAIL_SINGLE_STATUS_PILL;
 const CLOSEFLOW_BUILD_BLOCKERS_MASSCHECK_LEADDETAIL_FIX_2026_05_12 = 'LeadDetail service case small fallback quote fixed';
 const CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13 = 'Right rail noisy AI/status cards removed and contact history uses shared activity timeline formatter';
+const STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY = 'LeadDetail local-only cockpit layout: compact header, left work stack, sticky decision rail, actionable empty states';
+void STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1610,7 +1612,10 @@ useEffect(() => {
                       <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status, nextTimelineEntry.dateValue)}`}>{nextTimelineEntry.statusLabel}</span>
                     </>
                   ) : (
-                    <p>-</p>
+                    <div className="lead-detail-action-empty lead-detail-action-empty-compact">
+                      <strong>Brak zaplanowanej akcji</strong>
+                      <span>Ten lead może wypaść z procesu. Dodaj follow-up albo wydarzenie.</span>
+                    </div>
                   )}
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-green">
@@ -1636,7 +1641,14 @@ useEffect(() => {
                 </div>
                 <div className="lead-detail-work-list">
                   {timeline.length === 0 ? (
-                    <div className="lead-detail-light-empty">-</div>
+                    <div className="lead-detail-light-empty lead-detail-action-empty">
+                      <strong>Brak zaplanowanych działań.</strong>
+                      <span>Ten lead nie ma zadania ani wydarzenia. Zaplanuj następny kontakt, żeby nie zniknął z procesu.</span>
+                      <div className="lead-detail-empty-actions">
+                        <Button type="button" size="sm" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</Button>
+                        <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
+                      </div>
+                    </div>
                   ) : (
                     timeline.map((entry) => (
                       <article
@@ -1724,9 +1736,13 @@ useEffect(() => {
 
             <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
-              <p>{serviceCaseId ? serviceCaseTitle : 'Brak powiązanej sprawy'}</p>
-              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Brak powiązanej sprawy'}</small>
-              {serviceCaseId ? <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button> : null}
+              <p>{serviceCaseId ? serviceCaseTitle : 'Lead nie został jeszcze przejęty do obsługi.'}</p>
+              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Utwórz klienta i sprawę, gdy temat jest gotowy do realizacji.'}</small>
+              {serviceCaseId ? (
+                <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button>
+              ) : (
+                <Button type="button" size="sm" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę</Button>
+              )}
             </section>
 
             <section className="right-card lead-detail-right-card" data-lead-finance-panel="true" data-stage115e-lead-finance-actions="true">

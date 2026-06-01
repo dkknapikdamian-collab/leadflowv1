@@ -1201,3 +1201,194 @@
   margin-bottom: 10px !important;
 }
 /* STAGE117_LEAD_DETAIL_VERTICAL_RHYTHM_END */
+
+/* STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY
+   Local-only cockpit layout for LeadDetail:
+   - compact header
+   - left work stack
+   - sticky decision rail
+   - actionable empty states
+*/
+
+.lead-detail-vnext-page {
+  padding-top: 18px;
+}
+
+.lead-detail-header {
+  max-width: 1480px;
+  margin-bottom: 18px;
+  padding: 18px 22px;
+  border: 1px solid #e4e7ec;
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 10px 26px rgba(16, 24, 40, 0.055);
+  align-items: center;
+}
+
+.lead-detail-title-row h1 {
+  margin: 4px 0 6px;
+  font-size: clamp(24px, 2.2vw, 34px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+}
+
+.lead-detail-kicker {
+  margin-top: 8px;
+}
+
+.lead-detail-breadcrumb {
+  margin-top: 8px;
+}
+
+.lead-detail-header-meta {
+  gap: 7px;
+}
+
+.lead-detail-header-meta span {
+  min-height: 28px;
+  padding: 6px 10px;
+  background: #ffffff;
+}
+
+.lead-detail-header-actions {
+  align-items: center;
+}
+
+.lead-detail-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  grid-template-areas:
+    "contact rail"
+    "main rail";
+  gap: 18px;
+  align-items: start;
+}
+
+.lead-detail-left-rail {
+  grid-area: contact;
+}
+
+.lead-detail-main-column {
+  grid-area: main;
+  gap: 16px;
+}
+
+.lead-detail-right-rail {
+  grid-area: rail;
+  position: sticky;
+  top: 18px;
+  gap: 14px;
+}
+
+.lead-detail-client-parity-contact-card {
+  max-width: none;
+}
+
+.lead-detail-top-grid {
+  order: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.lead-detail-main-column > .lead-detail-section-card:not(.lead-detail-notes-section):not(#lead-history) {
+  order: 2;
+}
+
+#lead-history {
+  order: 3;
+}
+
+.lead-detail-notes-section {
+  order: 4;
+}
+
+.lead-detail-section-card,
+.lead-detail-top-card,
+.lead-detail-right-card {
+  border-radius: 24px !important;
+}
+
+.lead-detail-top-card {
+  min-height: 150px;
+}
+
+.lead-detail-right-card:first-of-type {
+  background: #f8fbff !important;
+  border-color: #bfdbfe !important;
+}
+
+.lead-detail-right-card[data-lead-finance-panel="true"] {
+  background: #f7fef9 !important;
+  border-color: #abefc6 !important;
+}
+
+.lead-detail-light-empty {
+  background: #ffffff;
+}
+
+.lead-detail-action-empty {
+  display: grid;
+  gap: 8px;
+  border-color: #bfdbfe;
+  background: #f8fbff;
+  color: #475467;
+}
+
+.lead-detail-action-empty strong {
+  color: #111827;
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.lead-detail-action-empty span {
+  color: #667085;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.lead-detail-action-empty-compact {
+  margin-top: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.lead-detail-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.lead-detail-work-row {
+  grid-template-columns: 38px minmax(220px, 1fr) auto minmax(220px, auto);
+}
+
+.lead-detail-history-row {
+  background: #fff;
+}
+
+@media (max-width: 1180px) {
+  .lead-detail-shell {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "contact"
+      "rail"
+      "main";
+  }
+
+  .lead-detail-right-rail {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .lead-detail-header {
+    padding: 16px;
+  }
+
+  .lead-detail-right-rail,
+  .lead-detail-top-grid {
+    grid-template-columns: 1fr;
+  }
+}
