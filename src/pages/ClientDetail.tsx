@@ -1747,27 +1747,29 @@ return (
               })()}
             </section>
 
-<section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true">
+<section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true" data-stage216m-r6-client-data-card="true">
               <div className="client-detail-section-head client-detail-data-panel-head" data-stage216l-client-avatar-removed="true">
                 <div>
                   <h2>Dane klienta</h2>
-                  <p>Kontakt, firma i ostatni ruch w jednym miejscu.</p>
+                  <p>Status, źródło, kontakt, wartość i ostatni kontakt w jednym miejscu.</p>
                 </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  className="client-detail-visible-edit-action client-detail-edit-main-button"
+                  data-client-detail-visible-edit-action="true"
+                  data-client-edit-under-data="true"
+                  data-client-edit-main-visible="true"
+                  data-stage216m-r6-client-data-edit-action="true"
+                  onClick={handleClientPanelEditToggle}
+                  disabled={saving}
+                >
+                  {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
+                  {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
+                </Button>
               </div>
-<Button
-                type="button"
-                variant="default"
-                className="client-detail-visible-edit-action client-detail-edit-main-button"
-                data-client-detail-visible-edit-action="true"
-                data-client-edit-under-data="true"
-                data-client-edit-main-visible="true"
-                onClick={handleClientPanelEditToggle}
-                disabled={saving}
-              >
-                {contactEditing ? <Save className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
-                {contactEditing ? 'Zapisz dane' : 'Edytuj dane'}
-              </Button>
-{contactEditing ? (
+              {contactEditing ? (
                 <div className="client-detail-edit-form">
                   <div className="client-detail-edit-field">
                     <Label>Nazwa klienta</Label>
@@ -1814,13 +1816,42 @@ return (
                   </div>
                 </div>
               ) : (
-                <EntityContactInfoList
-                  phone={client.phone}
-                  email={client.email}
-                  company={client.company || 'Brak firmy'}
-                  lastContact={formatDate(lastActivityDate)}
-                  onCopy={copyValue}
-                />
+                <div className="client-detail-data-panel-list" data-stage216m-r6-client-data-panel-list="true">
+                  <div className="client-detail-data-panel-row">
+                    <small>Status relacji</small>
+                    <strong>{activeCases.length > 0 ? 'Aktywna obsługa' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</strong>
+                  </div>
+                  <div className="client-detail-data-panel-row">
+                    <small>Źródło</small>
+                    <strong>{firstSourceLead?.source || 'Brak źródła'}</strong>
+                  </div>
+                  <div className="client-detail-data-panel-row client-detail-data-panel-row-copy">
+                    <small>Telefon</small>
+                    <strong>{client.phone || 'Brak telefonu'}</strong>
+                    {client.phone ? (
+                      <button type="button" onClick={() => copyValue('Telefon', String(client.phone || ''))}>Kopiuj</button>
+                    ) : null}
+                  </div>
+                  <div className="client-detail-data-panel-row client-detail-data-panel-row-copy">
+                    <small>E-mail</small>
+                    <strong>{client.email || 'Brak e-maila'}</strong>
+                    {client.email ? (
+                      <button type="button" onClick={() => copyValue('E-mail', String(client.email || ''))}>Kopiuj</button>
+                    ) : null}
+                  </div>
+                  <div className="client-detail-data-panel-row">
+                    <small>Firma</small>
+                    <strong>{client.company || 'Brak firmy'}</strong>
+                  </div>
+                  <div className="client-detail-data-panel-row">
+                    <small>Wartość</small>
+                    <strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong>
+                  </div>
+                  <div className="client-detail-data-panel-row">
+                    <small>Ostatni kontakt</small>
+                    <strong>{formatDate(lastActivityDate) || 'Brak kontaktu'}</strong>
+                  </div>
+                </div>
               )}
 
             </section>
