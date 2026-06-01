@@ -2063,3 +2063,76 @@
 .lead-detail-activity-row {
   background: #f8fafc;
 }
+
+/* STAGE216J3H_ACTIVITY_HISTORY_RAIL
+   Visual review after J3G:
+   - notes stay in the center column
+   - activity history moves to the right rail under upcoming actions
+   - right rail shows 5 latest lead-related entries and older entries in a details block
+*/
+
+.lead-detail-activity-history-rail-card {
+  border-color: #e4e7ec !important;
+  background: #ffffff !important;
+}
+
+.lead-detail-activity-history-rail-card .lead-detail-card-title-row {
+  margin-bottom: 6px;
+}
+
+.lead-detail-activity-history-rail-list {
+  display: grid;
+  gap: 8px;
+}
+
+.lead-detail-activity-history-rail-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 9px;
+  align-items: start;
+  border: 1px solid #e4e7ec;
+  border-radius: 14px;
+  background: #f8fafc;
+  padding: 9px;
+}
+
+.lead-detail-activity-history-rail-row strong {
+  display: block;
+  color: #111827;
+  font-size: 12px;
+  font-weight: 950;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-activity-history-rail-row p {
+  margin: 3px 0 0;
+  color: #667085;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-activity-history-rail-row small {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 10px;
+  font-weight: 850;
+}
+
+.lead-detail-activity-history-rail-more {
+  margin-top: 9px;
+  border: 1px solid #e4e7ec;
+  border-radius: 14px;
+  background: #fff;
+  padding: 8px;
+}
+
+.lead-detail-activity-history-rail-more summary {
+  cursor: pointer;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 900;
+}

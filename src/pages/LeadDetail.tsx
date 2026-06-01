@@ -43,6 +43,8 @@ const STAGE216J3F_NOTES_UX_CLEANUP = 'LeadDetail notes use modal actions; source
 void STAGE216J3F_NOTES_UX_CLEANUP;
 const STAGE216J3G_SPLIT_NOTES_FROM_HISTORY = 'LeadDetail separates operator notes from activity/system history';
 void STAGE216J3G_SPLIT_NOTES_FROM_HISTORY;
+const STAGE216J3H_ACTIVITY_HISTORY_RAIL = 'LeadDetail moves full activity history preview to the right rail; notes stay in center';
+void STAGE216J3H_ACTIVITY_HISTORY_RAIL;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -663,14 +665,15 @@ export default function LeadDetail() {
 
   const leadActivityHistoryItems = useMemo(() => {
     return [...activities]
-      .filter((activity) => !isLeadNoteActivity(activity))
+      .filter((activity) => Boolean(activity))
       .map((activity, index) => {
         const dateValue = activity?.happenedAt || activity?.createdAt || activity?.updatedAt || activity?.payload?.createdAt || activity?.payload?.happenedAt;
+        const isNoteEvent = isLeadNoteActivity(activity);
         return {
           id: String(activity?.id || activity?.eventType || activity?.createdAt || index),
           raw: activity,
-          title: getActivityTitle(activity),
-          description: getActivityDescription(activity),
+          title: isNoteEvent ? 'Dodano notatkę' : getActivityTitle(activity),
+          description: isNoteEvent ? 'Treść notatki jest widoczna w sekcji Notatki.' : getActivityDescription(activity),
           dateValue,
           dateLabel: formatDateTime(dateValue, 'Brak daty'),
         };
@@ -1786,35 +1789,8 @@ useEffect(() => {
                 )}
               </div>
             </section>
-
-            <section className="lead-detail-section-card lead-detail-activity-history-section" data-stage216j3g-activity-history-section="true">
-              <div className="lead-detail-section-head">
-                <div>
-                  <h2>Historia aktywności</h2>
-                  <p>Statusy, płatności, zadania i zdarzenia systemowe. Nie mieszamy tego z notatkami.</p>
-                </div>
-              </div>
-              <details className="lead-detail-activity-history-details">
-                <summary>Ostatnie zdarzenia systemowe</summary>
-                <div className="lead-detail-activity-history-list">
-                  {leadActivityHistoryItems.length === 0 ? (
-                    <div className="lead-detail-light-empty">Brak dodatkowej historii aktywności.</div>
-                  ) : (
-                    leadActivityHistoryItems.slice(0, 5).map((entry) => (
-                      <article key={String(entry.id)} className="lead-detail-history-row lead-detail-activity-row" data-stage216j3g-activity-row="true">
-                        <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
-                        <div>
-                          <h3>{entry.title}</h3>
-                          <p>{entry.description}</p>
-                          <small>{entry.dateLabel}</small>
-                        </div>
-                      </article>
-                    ))
-                  )}
-                </div>
-              </details>
-            </section>
-          </section>
+            <div hidden data-stage216j3h-activity-history-moved-to-rail="true" />
+</section>
 
           {!leadInService ? (
           <aside className="lead-detail-right-rail" aria-label="Panel leada">
@@ -1849,6 +1825,48 @@ useEffect(() => {
                 <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</button>
                 <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</button>
               </div>
+            </section>
+            <section className="right-card lead-detail-right-card lead-detail-activity-history-rail-card" data-stage216j3h-activity-history-rail="true">
+              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywności</h2></div>
+              <p className="lead-detail-right-card-intro">Ostatnie 5 zdarzeń powiązanych z tym leadem.</p>
+
+              <div className="lead-detail-activity-history-rail-list">
+                {leadActivityHistoryItems.length === 0 ? (
+                  <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
+                    <strong>Brak historii aktywności.</strong>
+                    <span>Historia pojawi się po dodaniu notatek, zadań, wydarzeń, płatności albo zmian statusu.</span>
+                  </div>
+                ) : (
+                  leadActivityHistoryItems.slice(0, 5).map((entry) => (
+                    <article key={`activity-rail-${entry.id}`} className="lead-detail-activity-history-rail-row" data-stage216j3h-activity-history-row="true">
+                      <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
+                      <div>
+                        <strong>{entry.title}</strong>
+                        <p>{entry.description}</p>
+                        <small>{entry.dateLabel}</small>
+                      </div>
+                    </article>
+                  ))
+                )}
+              </div>
+
+              {leadActivityHistoryItems.length > 5 ? (
+                <details className="lead-detail-activity-history-rail-more" data-stage216j3h-activity-history-more="true">
+                  <summary>Pokaż starsze wpisy</summary>
+                  <div className="lead-detail-activity-history-rail-list">
+                    {leadActivityHistoryItems.slice(5).map((entry) => (
+                      <article key={`activity-rail-more-${entry.id}`} className="lead-detail-activity-history-rail-row">
+                        <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
+                        <div>
+                          <strong>{entry.title}</strong>
+                          <p>{entry.description}</p>
+                          <small>{entry.dateLabel}</small>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </details>
+              ) : null}
             </section>
 
             <section className="right-card lead-detail-right-card">
