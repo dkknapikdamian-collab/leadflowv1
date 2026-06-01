@@ -29,6 +29,8 @@ const STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY = 'LeadDetail local-only c
 void STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY;
 const STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION = 'LeadDetail contact card is compact: no duplicated identity, no last-contact duplicate, no empty next-action rail card';
 void STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION;
+const STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION = 'LeadDetail header is one-line identity plus primary actions; meta moves out of header later';
+void STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;

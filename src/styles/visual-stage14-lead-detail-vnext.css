@@ -1554,3 +1554,79 @@
     min-height: auto;
   }
 }
+
+/* STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION
+   Small safe step after J2 rollback:
+   - one-line header
+   - identity + status + primary actions only
+   - hide source/last activity/contact pills from header for later data panel
+*/
+
+.lead-detail-header {
+  min-height: 86px;
+  padding: 16px 20px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 16px !important;
+}
+
+.lead-detail-header-copy {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.lead-detail-header .lead-detail-back-button {
+  flex: 0 0 auto;
+  min-height: 36px;
+}
+
+.lead-detail-header .lead-detail-title-row {
+  min-width: 0;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lead-detail-header .lead-detail-title-row h1 {
+  margin: 0 !important;
+  font-size: clamp(22px, 2.1vw, 30px) !important;
+  line-height: 1.08 !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lead-detail-header .lead-detail-header-meta {
+  display: none !important;
+}
+
+.lead-detail-header-actions {
+  flex: 0 0 auto;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: nowrap !important;
+}
+
+@media (max-width: 900px) {
+  .lead-detail-header {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+
+  .lead-detail-header-copy {
+    flex-wrap: wrap;
+  }
+
+  .lead-detail-header-actions {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  .lead-detail-header .lead-detail-title-row h1 {
+    white-space: normal;
+  }
+}
