@@ -27,6 +27,8 @@ const CLOSEFLOW_BUILD_BLOCKERS_MASSCHECK_LEADDETAIL_FIX_2026_05_12 = 'LeadDetail
 const CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13 = 'Right rail noisy AI/status cards removed and contact history uses shared activity timeline formatter';
 const STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY = 'LeadDetail local-only cockpit layout: compact header, left work stack, sticky decision rail, actionable empty states';
 void STAGE216G_LEAD_DETAIL_LAYOUT_CLEANUP_LOCAL_ONLY;
+const STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION = 'LeadDetail contact card is compact: no duplicated identity, no last-contact duplicate, no empty next-action rail card';
+void STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1768,15 +1770,13 @@ useEffect(() => {
               </section>
             ) : null}
 
-            <section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
-              {nextTimelineEntry ? (
+            {nextTimelineEntry ? (
+              <section className="right-card lead-detail-right-card" data-lead-next-action-card="true">
+                <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa akcja</h2></div>
                 <p>{nextTimelineEntry.title}</p>
-              ) : (
-                <p className="lead-detail-empty-value" data-lead-next-action-empty="-">-</p>
-              )}
-              <small>{nextTimelineEntry ? nextTimelineEntry.dateLabel : ''}</small>
-            </section>
+                <small>{nextTimelineEntry.dateLabel}</small>
+              </section>
+            ) : null}
 
 
           {/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (LeadAiNextAction) */}

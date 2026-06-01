@@ -1392,3 +1392,78 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* STAGE216H_LEAD_DETAIL_CONTACT_CARD_COMPACTION
+   Contact card is no longer a second identity header.
+   Header owns: name, status, source, last activity and primary contact.
+   Contact card owns: phone, email, company.
+*/
+
+.lead-detail-client-parity-contact-card.cf-entity-contact-card.client-detail-profile-card {
+  padding: 18px 20px !important;
+  border-radius: 24px !important;
+}
+
+.lead-detail-client-parity-contact-card .cf-entity-contact-avatar-row,
+.lead-detail-client-parity-contact-card .client-detail-avatar-row {
+  display: none !important;
+}
+
+.lead-detail-client-parity-contact-card::before {
+  content: "Dane kontaktowe";
+  display: block;
+  margin-bottom: 12px;
+  color: #111827;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.lead-detail-client-parity-contact-card .cf-entity-contact-list,
+.lead-detail-client-parity-contact-card .client-detail-contact-list {
+  margin-top: 0 !important;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lead-detail-client-parity-contact-card .cf-entity-contact-info-row,
+.lead-detail-client-parity-contact-card .client-detail-info-row {
+  min-height: 74px;
+  padding: 12px !important;
+  border-radius: 18px !important;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
+}
+
+.lead-detail-client-parity-contact-card .cf-entity-contact-info-row:nth-child(4),
+.lead-detail-client-parity-contact-card .client-detail-info-row:nth-child(4) {
+  display: none !important;
+}
+
+.lead-detail-client-parity-contact-card .cf-entity-contact-info-row small,
+.lead-detail-client-parity-contact-card .client-detail-info-row small {
+  margin-bottom: 3px;
+}
+
+.lead-detail-client-parity-contact-card .cf-entity-contact-info-row strong,
+.lead-detail-client-parity-contact-card .client-detail-info-row strong {
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.lead-detail-right-rail .lead-detail-right-card[data-lead-next-action-card="true"] {
+  background: #f8fbff !important;
+  border-color: #bfdbfe !important;
+}
+
+@media (max-width: 920px) {
+  .lead-detail-client-parity-contact-card .cf-entity-contact-list,
+  .lead-detail-client-parity-contact-card .client-detail-contact-list {
+    grid-template-columns: 1fr;
+  }
+
+  .lead-detail-client-parity-contact-card .cf-entity-contact-info-row,
+  .lead-detail-client-parity-contact-card .client-detail-info-row {
+    min-height: auto;
+  }
+}
