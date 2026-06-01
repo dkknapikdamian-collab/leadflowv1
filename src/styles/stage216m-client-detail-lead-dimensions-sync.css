@@ -1,0 +1,302 @@
+/* STAGE216M_CLIENT_DETAIL_LEAD_DIMENSIONS_SYNC
+   Cel: ClientDetail ma mieć ten sam rytm wymiarów, ułożenia i kart co LeadDetail Stage216J.
+   Zakres: CSS-only polish. Bez Supabase, API, logiki spraw, płatności i danych.
+   Decyzja Damiana: wielkość, ułożenie, styl mają iść za kartą leada; nazewnictwo/ikony/kolory będą osobnym etapem.
+*/
+
+.client-detail-vnext-page {
+  --stage216m-page-max: 1108px;
+  --stage216m-left: 290px;
+  --stage216m-center: 504px;
+  --stage216m-right: 290px;
+  --stage216m-gap: 12px;
+  --stage216m-card-radius: 20px;
+  --stage216m-card-padding: 14px;
+  max-width: var(--stage216m-page-max) !important;
+  margin-inline: auto !important;
+  padding: 16px 0 44px !important;
+}
+
+.client-detail-vnext-page .client-detail-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  min-height: 96px !important;
+  padding: 18px !important;
+  margin-bottom: 14px !important;
+  border-radius: 24px !important;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+}
+
+.client-detail-vnext-page .client-detail-header-copy {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 5px !important;
+}
+
+.client-detail-vnext-page .client-detail-breadcrumb {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-kicker {
+  margin: 0 !important;
+  line-height: 1 !important;
+}
+
+.client-detail-vnext-page .client-detail-header h1 {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.15 !important;
+  font-weight: 750 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 2px !important;
+}
+
+.client-detail-vnext-page .client-detail-header-meta span {
+  min-height: 20px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  padding: 3px 8px !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+}
+
+.client-detail-vnext-page .client-detail-header-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  flex-wrap: wrap !important;
+  margin-left: auto !important;
+}
+
+.client-detail-vnext-page .client-detail-header-actions button,
+.client-detail-vnext-page .client-detail-header-actions a {
+  min-height: 32px !important;
+  padding: 0 13px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  line-height: 1 !important;
+}
+
+.client-detail-vnext-page .client-detail-shell {
+  display: grid !important;
+  grid-template-columns: var(--stage216m-left) minmax(0, var(--stage216m-center)) var(--stage216m-right) !important;
+  gap: var(--stage216m-gap) !important;
+  align-items: start !important;
+  width: 100% !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail,
+.client-detail-vnext-page .client-detail-main-column,
+.client-detail-vnext-page .client-detail-right-rail {
+  min-width: 0 !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 12px !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail,
+.client-detail-vnext-page .client-detail-right-rail {
+  width: var(--stage216m-left) !important;
+}
+
+.client-detail-vnext-page .client-detail-right-rail {
+  width: var(--stage216m-right) !important;
+}
+
+.client-detail-vnext-page .client-detail-main-column {
+  width: var(--stage216m-center) !important;
+  max-width: var(--stage216m-center) !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail > .client-detail-today-info-tiles {
+  display: none !important;
+}
+
+.client-detail-vnext-page .client-detail-profile-card,
+.client-detail-vnext-page .client-detail-section-card,
+.client-detail-vnext-page .client-detail-right-card,
+.client-detail-vnext-page .client-detail-today-info-tile,
+.client-detail-vnext-page .client-detail-case-smart-card,
+.client-detail-vnext-page .client-detail-completeness-card,
+.client-detail-vnext-page .client-detail-summary-card,
+.client-detail-vnext-page .client-detail-hero-card {
+  border-radius: var(--stage216m-card-radius) !important;
+  padding: var(--stage216m-card-padding) !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, .05) !important;
+}
+
+.client-detail-vnext-page .client-detail-section-head {
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin-bottom: 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-section-head h2,
+.client-detail-vnext-page .client-detail-card-title-row h2 {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.client-detail-vnext-page .client-detail-section-head p,
+.client-detail-vnext-page .client-detail-light-empty,
+.client-detail-vnext-page .client-detail-card-title-row + p {
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  color: #667085 !important;
+}
+
+.client-detail-vnext-page .client-detail-main-top-tiles {
+  width: 100% !important;
+}
+
+.client-detail-vnext-page .client-detail-main-top-tiles > *,
+.client-detail-vnext-page .client-detail-top-cards,
+.client-detail-vnext-page .client-detail-today-info-tiles {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  width: 100% !important;
+  margin: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-main-top-tiles article,
+.client-detail-vnext-page .client-detail-today-info-tile,
+.client-detail-vnext-page .client-detail-hero-card,
+.client-detail-vnext-page .client-detail-completeness-card,
+.client-detail-vnext-page .client-detail-summary-card {
+  min-height: 78px !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-center-section {
+  min-height: 116px !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-center-list {
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-note-center-item {
+  border-radius: 16px !important;
+  padding: 12px 13px !important;
+}
+
+.client-detail-vnext-page .client-detail-tabs {
+  height: 32px !important;
+  min-height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  width: 100% !important;
+  border-radius: 16px !important;
+  padding: 3px !important;
+}
+
+.client-detail-vnext-page .client-detail-tabs button {
+  min-height: 24px !important;
+  padding: 0 12px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel,
+.client-detail-vnext-page .client-detail-case-smart-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-card {
+  min-height: 76px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 150px auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-main strong,
+.client-detail-vnext-page .client-detail-case-smart-value b {
+  font-size: 13px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-actions button,
+.client-detail-vnext-page .client-detail-side-quick-actions-grid button,
+.client-detail-vnext-page .client-detail-side-quick-actions-grid a,
+.client-detail-vnext-page .client-detail-right-actions button {
+  min-height: 30px !important;
+  border-radius: 12px !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+}
+
+.client-detail-vnext-page .client-detail-side-quick-actions-grid,
+.client-detail-vnext-page .client-detail-quick-actions-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-right-card {
+  width: 100% !important;
+}
+
+.client-detail-vnext-page .client-detail-right-rail .client-detail-operational-center,
+.client-detail-vnext-page .client-detail-side-quick-actions-card,
+.client-detail-vnext-page [data-client-finance-summary="true"] {
+  min-height: 112px !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-vnext-page {
+    max-width: min(100%, 1108px) !important;
+    padding-inline: 12px !important;
+  }
+
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-detail-vnext-page .client-detail-left-rail,
+  .client-detail-vnext-page .client-detail-main-column,
+  .client-detail-vnext-page .client-detail-right-rail {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .client-detail-vnext-page .client-detail-header {
+    align-items: stretch !important;
+    flex-direction: column !important;
+  }
+
+  .client-detail-vnext-page .client-detail-main-top-tiles > *,
+  .client-detail-vnext-page .client-detail-top-cards,
+  .client-detail-vnext-page .client-detail-today-info-tiles {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-detail-vnext-page .client-detail-case-smart-card {
+    grid-template-columns: 1fr !important;
+  }
+}
