@@ -1467,3 +1467,90 @@
     min-height: auto;
   }
 }
+
+/* STAGE216I_LEAD_DETAIL_CONTACT_GEOMETRY_FIX
+   Geometry fix after Stage216-H:
+   - contact card becomes a compact left panel
+   - main work cards sit next to contact data
+   - right decision rail stays stable
+*/
+
+@media (min-width: 1181px) {
+  .lead-detail-shell {
+    grid-template-columns: minmax(320px, 390px) minmax(0, 1fr) minmax(320px, 380px);
+    grid-template-areas: "contact main rail";
+    gap: 18px;
+    align-items: start;
+  }
+
+  .lead-detail-left-rail {
+    grid-area: contact;
+    align-self: start;
+    min-width: 0;
+  }
+
+  .lead-detail-main-column {
+    grid-area: main;
+    min-width: 0;
+  }
+
+  .lead-detail-right-rail {
+    grid-area: rail;
+  }
+
+  .lead-detail-client-parity-contact-card.cf-entity-contact-card.client-detail-profile-card {
+    padding: 17px !important;
+  }
+
+  .lead-detail-client-parity-contact-card::before {
+    margin-bottom: 10px;
+  }
+
+  .lead-detail-client-parity-contact-card .cf-entity-contact-list,
+  .lead-detail-client-parity-contact-card .client-detail-contact-list {
+    grid-template-columns: 1fr !important;
+    gap: 8px;
+  }
+
+  .lead-detail-client-parity-contact-card .cf-entity-contact-info-row,
+  .lead-detail-client-parity-contact-card .client-detail-info-row {
+    min-height: 62px;
+    padding: 10px !important;
+    border-radius: 16px !important;
+  }
+
+  .lead-detail-client-parity-contact-card .cf-entity-contact-info-icon,
+  .lead-detail-client-parity-contact-card .client-detail-info-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 12px;
+  }
+
+  .lead-detail-top-grid {
+    gap: 10px;
+  }
+
+  .lead-detail-top-card {
+    min-height: 124px;
+    padding: 16px;
+  }
+
+  .lead-detail-card-title-row {
+    margin-bottom: 10px;
+  }
+}
+
+@media (min-width: 1181px) and (max-width: 1440px) {
+  .lead-detail-shell {
+    grid-template-columns: minmax(300px, 340px) minmax(0, 1fr) minmax(300px, 340px);
+    gap: 14px;
+  }
+
+  .lead-detail-top-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lead-detail-top-card {
+    min-height: auto;
+  }
+}
