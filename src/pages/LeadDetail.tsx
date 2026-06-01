@@ -33,6 +33,8 @@ const STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION = 'LeadDetail header is one-
 void STAGE216J3A_LEAD_DETAIL_HEADER_SIMPLIFICATION;
 const STAGE216J3B_LEAD_DATA_PANEL = 'LeadDetail left rail is one source-of-truth data panel with edit action';
 void STAGE216J3B_LEAD_DATA_PANEL;
+const STAGE216J3C_NOTES_HISTORY_CENTER = 'LeadDetail center column prioritizes notes and recent contact history; history is capped to five entries';
+void STAGE216J3C_NOTES_HISTORY_CENTER;
 
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
@@ -1615,8 +1617,8 @@ useEffect(() => {
             >
               <div className="lead-detail-section-head">
                 <div>
-                  <h2>Notatki leada</h2>
-                  <p>Notatka z tworzenia leada i ostatnia notatka z historii kontaktu.</p>
+                  <h2>Kontekst leada</h2>
+                  <p>Notatka źródłowa i ostatnia zapisana notatka. Główna praca z notatkami jest w historii kontaktu.</p>
                 </div>
               </div>
               {hasLeadNotesStage115B ? (
@@ -1674,7 +1676,7 @@ useEffect(() => {
             ) : null}
 
             {!leadInService ? (
-              <section className="lead-detail-section-card">
+              <section className="lead-detail-section-card lead-detail-work-summary-section" data-stage216j3c-work-summary="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Zadania i wydarzenia</h2>
@@ -1720,16 +1722,16 @@ useEffect(() => {
               </section>
             ) : null}
 
-            <section className="lead-detail-section-card" id="lead-history">
+            <section className="lead-detail-section-card lead-detail-history-center" id="lead-history" data-stage216j3c-notes-history-center="true">
               <div className="lead-detail-section-head">
                 <div>
-                  <h2>Historia kontaktu</h2>
-
+                  <h2>Notatki i historia kontaktu</h2>
+                  <p>Dodawaj notatki po rozmowach i czytaj ostatnie wpisy bez ściskania tekstu.</p>
                 </div>
               </div>
               {!leadInService ? (
-                <form className="lead-detail-note-form" data-stage115c-inline-note-form="true" onSubmit={handleAddNote}>
-                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj krótką notatkę po kontakcie..." className="lead-detail-note-input" lang="pl-PL" />
+                <form className="lead-detail-note-form lead-detail-note-form-wide" data-stage115c-inline-note-form="true" data-stage216j3c-note-form-wide="true" onSubmit={handleAddNote}>
+                  <Textarea id="lead-detail-note-box" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Dodaj notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z leadem..." className="lead-detail-note-input" lang="pl-PL" />
                   {noteInterimText ? <p className="lead-detail-note-transcript" lang="pl-PL">Dyktowanie: {noteInterimText}</p> : null}
                   <div className="flex flex-wrap gap-2">
                     <Button type="button" variant="outline" onClick={handleToggleNoteSpeech} disabled={!hasAccess}>
@@ -1750,7 +1752,7 @@ useEffect(() => {
                 {activities.length === 0 ? (
                   <div className="lead-detail-light-empty">Brak historii kontaktu.</div>
                 ) : (
-                  activities.map((activity) => (
+                  activities.slice(0, 5).map((activity) => (
                     <article key={String(activity.id || activity.eventType || activity.createdAt)} className="lead-detail-history-row">
                       <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
                       <div>
