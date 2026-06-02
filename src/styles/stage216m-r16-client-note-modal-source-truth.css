@@ -1,0 +1,37 @@
+/* STAGE216M_R16_CLIENT_NOTE_MODAL_SOURCE_TRUTH
+   Client notes follow LeadDetail modal UX: buttons open one note dialog; no inline editor in data card.
+*/
+
+.client-detail-note-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.client-detail-note-modal textarea,
+.client-detail-note-modal [data-radix-scroll-area-viewport] textarea {
+  min-height: 118px;
+}
+
+.client-detail-note-modal-footer {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 8px 0 0;
+  border: 1px dashed rgba(124, 58, 237, 0.28);
+  border-radius: 14px;
+  background: rgba(124, 58, 237, 0.06);
+  padding: 10px 12px;
+  color: #4c1d95;
+  font-weight: 700;
+}
+
+.client-detail-notes-center-section .client-detail-notes-center-list {
+  margin-top: 14px;
+}

@@ -1,0 +1,43 @@
+/* STAGE216M_R15_R2_CLIENT_NOTES_SOURCE_TRUTH_ACTUAL_REPAIR
+   Client notes: single center composer source of truth.
+*/
+
+.client-detail-vnext-page [data-stage216m-r15-r2-client-notes-source="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-vnext-page [data-stage216m-r15-r2-client-note-composer="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.client-detail-vnext-page [data-stage216m-r15-r2-client-note-composer="true"] textarea {
+  min-height: 84px;
+  resize: vertical;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.client-detail-note-composer-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+  background: rgba(248, 250, 252, 0.9);
+  border: 1px dashed rgba(148, 163, 184, 0.45);
+  border-radius: 12px;
+  padding: 8px 10px;
+}

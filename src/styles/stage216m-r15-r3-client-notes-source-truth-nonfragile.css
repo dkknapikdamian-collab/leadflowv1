@@ -1,0 +1,38 @@
+/* STAGE216M_R15_R3_CLIENT_NOTES_SOURCE_TRUTH_NONFRAGILE
+   Client notes have one source of truth: center composer owns text and voice notes.
+*/
+
+.client-detail-notes-center-section[data-stage216m-r15-r3-client-notes-source="true"] .client-detail-section-head {
+  align-items: center;
+  gap: 12px;
+}
+
+.client-detail-notes-composer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.client-detail-note-composer {
+  margin-top: 10px;
+  margin-bottom: 12px;
+}
+
+.client-detail-note-composer textarea {
+  min-height: 72px;
+  resize: vertical;
+  border-radius: 16px;
+  background: #fff;
+}
+
+.client-detail-note-dictation-preview {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.client-detail-notes-center-section[data-stage216m-r15-r3-client-notes-source="true"] .client-detail-light-empty {
+  margin-top: 0;
+}

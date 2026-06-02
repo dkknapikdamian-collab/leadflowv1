@@ -1,0 +1,44 @@
+/* STAGE216M_R15_R4_CLIENT_NOTES_SOURCE_TRUTH_HARD_REPAIR
+   One source of truth for ClientDetail notes:
+   - text composer lives in center work area
+   - voice dictation fills composer
+   - client data card no longer owns operational notes
+*/
+
+.client-detail-notes-center-section[data-stage216m-r15-r4-client-notes-source="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-note-composer {
+  display: grid;
+  gap: 10px;
+}
+
+.client-detail-note-composer-input {
+  min-height: 72px;
+  resize: vertical;
+}
+
+.client-detail-note-composer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 0;
+  font-size: 12px;
+  color: rgb(100 116 139);
+}
+
+.client-detail-notes-center-section .client-detail-notes-center-list {
+  display: grid;
+  gap: 10px;
+}
+
+.client-detail-notes-center-section .client-detail-light-empty {
+  margin-top: 0;
+}

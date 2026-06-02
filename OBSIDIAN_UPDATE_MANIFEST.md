@@ -1,23 +1,13 @@
-# OBSIDIAN_UPDATE_MANIFEST - CloseFlow Stage216-C2
+# OBSIDIAN_UPDATE_MANIFEST - STAGE216L-R1
 
-## Cel
+## Docelowe miejsce w Obsidianie
 
-Wprowadzić do Obsidiana notatkę Stage216-C2 dla CloseFlow / LeadFlow: hotfix mapowania błędu auth w AI Drafts.
+`10_PROJEKTY/CloseFlow_LeadFlow/STAGE216L_R1_CLIENT_DETAIL_LEAD_LAYOUT_REPAIR_20260601.md`
 
-## Pliki do przeniesienia do vaulta
+## Plik w paczce
 
-Źródło w repo po apply:
+`OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/STAGE216L_R1_CLIENT_DETAIL_LEAD_LAYOUT_REPAIR_20260601.md`
 
-```text
-OBSIDIAN_UPDATE/10_PROJEKTY/CloseFlow_LeadFlow/2026-06-01 - CloseFlow Stage216-C2 AI drafts auth JSON hotfix.md
-```
+## Status
 
-Docelowo w vault:
-
-```text
-C:\Users\malim\Desktop\biznesy_ai\00_OBSIDIAN_VAULT\10_PROJEKTY\CloseFlow_LeadFlow\2026-06-01 - CloseFlow Stage216-C2 AI drafts auth JSON hotfix.md
-```
-
-## Uwaga
-
-Vault ma niezależne zmiany Node_RED_Kabelki. Przy CloseFlow nie commitować całego vaulta, tylko konkretną notatkę Stage216-C2, jeżeli vault jest repo Git.
+Przygotowano ZIP. Brak bezpośredniego zapisu do Obsidiana z czatu.

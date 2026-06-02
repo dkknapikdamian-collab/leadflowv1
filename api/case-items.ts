@@ -197,7 +197,11 @@ export default async function handler(req: any, res: any) {
       return;
     }
     const message = String(error?.message || 'CASE_ITEMS_API_FAILED');
-    const status = message.includes('PORTAL_TOKEN') ? 403 : message === 'CASE_NOT_FOUND' ? 404 : 500;
+    const status = message.includes('PORTAL_SESSION') || message.includes('PORTAL_TOKEN')
+      ? 403
+      : message === 'CASE_NOT_FOUND'
+        ? 404
+        : 500;
     res.status(status).json({ error: message });
   }
 }

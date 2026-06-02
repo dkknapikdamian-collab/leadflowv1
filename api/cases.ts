@@ -540,7 +540,11 @@ export default async function handler(req: any, res: any) {
       writeAuthErrorResponse(res, error);
       return;
     }
-    const message = error?.message || 'CASE_API_FAILED';
+    const message = String(error?.message || 'CASE_API_FAILED');
+    if (message.includes('PORTAL_SESSION') || message.includes('PORTAL_TOKEN')) {
+      res.status(403).json({ error: message });
+      return;
+    }
     res.status(message === 'CASE_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
 }

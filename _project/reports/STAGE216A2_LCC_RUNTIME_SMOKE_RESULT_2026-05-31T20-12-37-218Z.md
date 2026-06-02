@@ -1,0 +1,19 @@
+# STAGE216-A2 LCC runtime GET-only smoke result
+
+- generated_at: 2026-05-31T20:12:37.217Z
+- app_url: http://localhost:3000
+- workspace_header_present: no
+- mode: GET-only, no writes, no SQL/RLS/GRANT changes
+- summary: PASS 0, AUTH_REQUIRED 0, NOT_FOUND_OK 0, FAIL 3
+
+| status | http | endpoint | duration | detail |
+|---|---:|---|---:|---|
+| FAIL | 200 | /api/leads | 80ms | NON_JSON_RESPONSE:Unexpected token 'i', "import { i"... is not valid JSON |
+| FAIL | 200 | /api/clients | 18ms | NON_JSON_RESPONSE:Unexpected token 'i', "import { i"... is not valid JSON |
+| FAIL | 200 | /api/cases | 13ms | NON_JSON_RESPONSE:Unexpected token 'i', "import { i"... is not valid JSON |
+
+## Interpretacja
+
+- `PASS`: endpoint zwrócił JSON o oczekiwanym kształcie.
+- `AUTH_REQUIRED`: endpoint działa jako JSON, ale wymaga prawidłowego auth/workspace context. To jest oczekiwane w wielu lokalnych runach bez sesji.
+- `FAIL`: wymaga Stage216-A3 albo ręcznej diagnostyki. Szczególnie ważne są HTML/non-JSON, bo frontend może pokazać `INVALID_API_RESPONSE`.

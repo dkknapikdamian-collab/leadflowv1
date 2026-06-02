@@ -1,4 +1,4 @@
-﻿// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
 import { getSupabaseAccessToken } from './supabase-auth';
@@ -65,6 +65,7 @@ const STAGE124_SUPABASE_EGRESS_CACHE_CONTRACT = 'GET cache dedupes API reads and
 const API_GET_CACHE_TTL_MS = 30_000;
 export const CLOSEFLOW_DATA_MUTATED_EVENT = 'closeflow:data-mutated';
 const DEV_PREVIEW_DATA_FLAG = 'closeflow:dev-preview-data';
+const FORCE_DEV_PREVIEW_DATA_FLAG = 'closeflow:force-dev-preview-data';
 
 function shouldUseDevNoAuthMocks() {
   // Only for local dev UI preview when Supabase is not configured.

@@ -45,6 +45,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
 import '../styles/closeflow-case-history-visual-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-case-detail-stage217-operation-workspace.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
 
@@ -80,6 +81,10 @@ const STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining
 const STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD = 'case finance history visible separate section';
 const FIN11_CASE_RIGHT_FINANCE_PANEL = 'FIN-11_CASE_RIGHT_FINANCE_PANEL_VISIBLE_EDIT_VALUE_COMMISSION';
 const FIN11_CASE_PORTAL_ACTION_GUARD_COMPAT = 'Portal klienta';
+const STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX = 'case detail operation workspace separates notes from activity history';
+void STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX;
+const STAGE217_CASE_NOTE_HISTORY_SUMMARY = "Notatka zapisana przy sprawie. Pełna treść jest w panelu Notatki.";
+void STAGE217_CASE_NOTE_HISTORY_SUMMARY;
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -638,7 +643,13 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
     return body ? { id: 'activity-' + id, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
   }
   if (lowerType.includes('note') || lowerType === 'operator_note') {
-    return body ? { id: 'activity-' + id, kind: 'note', title: 'Notatka', body, occurredAt } : null;
+    return body ? {
+      id: 'activity-' + id,
+      kind: 'note',
+      title: 'Notatka',
+      body: STAGE217_CASE_NOTE_HISTORY_SUMMARY,
+      occurredAt,
+    } : null;
   }
   return body ? { id: 'activity-' + id, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
 }
@@ -648,6 +659,30 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
    but the helper was missing from the built chunk on some deployments. Keep the sorter named,
    pure and hoisted so both buildCaseHistoryItemsStage14D and any older JSX/useMemo reference can call it.
 */
+function getCaseNoteHistoryItemStage217(activity: CaseActivity): CaseHistoryItem | null {
+  const payload = activity?.payload || {};
+  const eventType = String(activity.eventType || payload.eventType || payload.type || '').trim().toLowerCase();
+  if (!eventType.includes('note') && eventType !== 'operator_note') return null;
+  const body = pickCaseHistoryBodyStage14D(
+    payload.note,
+    payload.content,
+    payload.body,
+    payload.message,
+    payload.description,
+    payload.summary,
+    getActivityText(activity),
+  );
+  const occurredAt = getCaseHistoryDateStage14D(
+    (activity as any).happenedAt,
+    (activity as any).updatedAt,
+    activity.createdAt,
+    payload.happenedAt,
+    payload.updatedAt,
+    payload.createdAt,
+  );
+  const id = String(activity.id || occurredAt || body);
+  return body ? { id: 'note-' + id, kind: 'note', title: 'Notatka', body, occurredAt } : null;
+}
 function sortCaseHistoryItemsStage14D(items: CaseHistoryItem[]) {
   return [...(Array.isArray(items) ? items : [])].sort((left, right) => {
     const rightTime = sortTime(right?.occurredAt, 0);
@@ -1811,6 +1846,13 @@ export default function CaseDetail() {
     }
     return sortCaseHistoryItemsStage14D(Array.from(unique.values())).slice(0, 25);
   }, [activities, tasks, events, visibleCasePayments, items, caseFinanceSummary.currency]);
+  const caseNoteItems = useMemo<CaseHistoryItem[]>(() => {
+    return sortCaseHistoryItemsStage14D(
+      activities
+        .map((activity) => getCaseNoteHistoryItemStage217(activity))
+        .filter((item): item is CaseHistoryItem => Boolean(item)),
+    ).slice(0, 20);
+  }, [activities]);
   if (loading) {
     return (
       <Layout>
@@ -1923,7 +1965,82 @@ export default function CaseDetail() {
 
         <div className="case-detail-shell">
           <section className="case-detail-main-column">
+            <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true">
+              <div className="case-detail-section-head stage217-case-operation-head">
+                <div>
+                  <p className="case-detail-eyebrow">ObsĹ‚uga sprawy</p>
+                  <h2>Co robimy teraz?</h2>
+                  <p>NajbliĹĽszy ruch, blokady, aktywne dziaĹ‚ania i rozliczenie w jednym miejscu.</p>
+                </div>
+                <div className="stage217-case-service-actions">
+                  <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
+                    <StickyNote className="h-4 w-4" />
+                    Dodaj notatkÄ™
+                  </Button>
+                  <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
+                    <ListChecks className="h-4 w-4" />
+                    Dodaj zadanie
+                  </Button>
+                  <Button type="button" variant="outline" onClick={openCaseEventDialog}>
+                    <CalendarClock className="h-4 w-4" />
+                    Dodaj wydarzenie
+                  </Button>
+                </div>
+              </div>
 
+              <div className="stage217-case-service-grid">
+                <article className="stage217-case-service-card stage217-case-service-card--next">
+                  <span className="stage217-case-service-card__label">NastÄ™pna akcja</span>
+                  <h3>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</h3>
+                  <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, ĹĽeby sprawa nie wisiaĹ‚a bez terminu.'}</p>
+                </article>
+                <article className="stage217-case-service-card stage217-case-service-card--blockers">
+                  <span className="stage217-case-service-card__label">Blokady</span>
+                  <span className="stage217-case-service-card__metric">{blockers.length}</span>
+                  <p>{blockers[0] ? `${blockers[0].title || 'Brak'} Â· ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerĂłw po stronie sprawy.'}</p>
+                </article>
+                <article className="stage217-case-service-card stage217-case-service-card--workload">
+                  <span className="stage217-case-service-card__label">DziaĹ‚ania</span>
+                  <span className="stage217-case-service-card__metric">{openTasks.length + plannedEvents.length}</span>
+                  <p>{openTasks.length} zadaĹ„ i {plannedEvents.length} wydarzeĹ„ przypiÄ™tych do tej sprawy.</p>
+                </article>
+                <article className="stage217-case-service-card stage217-case-service-card--finance">
+                  <span className="stage217-case-service-card__label">Rozliczenie</span>
+                  <h3>{caseFinance.expected > 0 ? formatMoney(caseFinance.remaining, caseFinance.currency) : 'WartoĹ›Ä‡ nieustawiona'}</h3>
+                  <p>{caseFinance.expected > 0 ? `PozostaĹ‚o do rozliczenia. WpĹ‚acono: ${formatMoney(caseFinance.paid, caseFinance.currency)}.` : 'Ustaw wartoĹ›Ä‡ sprawy, jeĹ›li rozliczenie ma byÄ‡ pilnowane operacyjnie.'}</p>
+                </article>
+              </div>
+            </section>
+
+
+            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true">
+              <div className="case-detail-section-head">
+                <div>
+                  <p className="case-detail-eyebrow">Notatki sprawy</p>
+                  <h2>Notatki operatora</h2>
+                  <p>PeĹ‚ne treĹ›ci notatek sÄ… tutaj. Historia pokazuje tylko Ĺ›lad aktywnoĹ›ci.</p>
+                </div>
+                <Button type="button" onClick={openCaseNoteDialog}>
+                  <StickyNote className="h-4 w-4" />
+                  Dodaj notatkÄ™
+                </Button>
+              </div>
+              {caseNoteItems.length === 0 ? (
+                <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszÄ… notatkÄ™ z szybkich akcji.</div>
+              ) : (
+                <div className="stage217-case-notes-list">
+                  {caseNoteItems.map((note) => (
+                    <article className="stage217-case-note-row" key={note.id}>
+                      <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
+                      <div>
+                        <time>{formatDateTime(note.occurredAt, 'Brak daty')}</time>
+                        <p>{note.body}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </section>
       {pendingNoteFollowUp ? (
         <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
           <div className="case-detail-note-follow-up-head">
@@ -2034,7 +2151,7 @@ export default function CaseDetail() {
         {caseHistoryItems.slice(0, 10).map((item) => (
           <article className="case-history-row" key={item.id}>
             <span className="case-history-kind">{item.title}</span>
-            <p title={item.body}>{item.body}</p>
+            <p title={item.kind === 'note' ? item.body : undefined}>{item.kind === 'note' ? STAGE217_CASE_NOTE_HISTORY_SUMMARY : item.body}</p>
             <time>{formatDate(item.occurredAt, 'Brak daty')}</time>
           </article>
         ))}
@@ -2186,20 +2303,6 @@ export default function CaseDetail() {
             </section>
                                                 </aside>
         </div>
-
-        <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>{casePaymentDraft.type === 'deposit' ? 'Dodaj zaliczkę' : 'Dodaj płatność częściową'}</DialogTitle>
-<DialogDescription>Uzupełnij dane i zapisz zmiany w sprawie.</DialogDescription></DialogHeader>
-            <div className="case-detail-dialog-grid">
-              <label>Kwota<Input type="number" min="0" step="0.01" value={casePaymentDraft.amount} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, amount: event.target.value }))} /></label>
-              <label>Status<select value={casePaymentDraft.status} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, status: event.target.value }))}><option value="awaiting_payment">Czeka na płatność</option><option value="deposit_paid">Zaliczka wpłacona</option><option value="partially_paid">Częściowo opłacone</option><option value="paid">Opłacone</option></select></label>
-              <label>Termin płatności<Input type="date" value={casePaymentDraft.dueAt} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, dueAt: event.target.value }))} /></label>
-              <label>Notatka<Textarea value={casePaymentDraft.note} onChange={(event) => setCasePaymentDraft((current) => ({ ...current, note: event.target.value }))} /></label>
-            </div>
-            <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>Anuluj</Button><Button type="button" onClick={handleSaveCasePayment} disabled={casePaymentSubmitting}>{casePaymentSubmitting ? 'Zapisywanie...' : 'Zapisz płatność'}</Button></DialogFooter>
-          </DialogContent>
-        </Dialog>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
       </main>
 
