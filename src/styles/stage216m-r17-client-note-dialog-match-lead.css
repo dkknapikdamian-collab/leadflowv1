@@ -1,0 +1,25 @@
+/* STAGE216M_R17_CLIENT_NOTE_DIALOG_MATCH_LEAD
+   Client note dialog uses the same visual primitives/classes as LeadDetail note dialog. */
+
+.client-detail-note-dialog[data-stage216m-r17-client-note-dialog-source="lead-detail"] {
+  width: min(680px, calc(100vw - 32px));
+}
+
+.client-detail-add-note-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-note-input {
+  min-height: 112px;
+  resize: vertical;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 0;
+}
+
+.client-detail-note-actions-row [data-stage216m-r17-client-note-dictate-lead-pattern="true"] {
+  white-space: nowrap;
+}

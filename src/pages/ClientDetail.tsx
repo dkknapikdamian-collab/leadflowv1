@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { createPortal } from 'react-dom';
 import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save, Trash2 } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
 import { ClientFinanceRelationSummary } from '../components/finance/FinanceMiniSummary';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
@@ -74,7 +74,7 @@ const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
 import Layout from '../components/Layout';
-import { EntityActionButton, formActionsClass } from '../components/entity-actions';
+import { EntityActionButton, formActionsClass, modalFooterClass } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import {
@@ -1962,9 +1962,13 @@ return (
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={handleToggleClientNoteSpeech}
+                    onClick={() => {
+                      openClientNoteModalStage216M_R16_R3();
+                      window.setTimeout(() => handleToggleClientNoteSpeech(), 0);
+                    }}
                     disabled={!hasAccess || clientNoteSaving}
                     data-stage216m-r16-r2-client-note-dictate="true"
+                    data-stage216m-r17-client-note-dictate-lead-pattern="true"
                   >
                     {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                     {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
@@ -2006,38 +2010,44 @@ return (
               </div>
             </section>
 
-            {(clientNoteModalOpen || clientNoteListening) && typeof document !== 'undefined' ? createPortal(
-              <div className="client-note-modal-backdrop client-note-modal-backdrop-portal" data-stage216m-r16-r2-client-note-modal="true" data-stage216m-r16-r3-client-note-modal-portal="true" role="presentation">
-                <section className="client-note-modal-card" role="dialog" aria-modal="true" aria-labelledby="client-note-modal-title">
-                  <button
-                    type="button"
-                    className="client-note-modal-close"
-                    aria-label="Zamknij okno notatki"
-                    onClick={() => {
-                      if (clientNoteListening) stopClientNoteSpeech();
-                      setClientNoteModalOpen(false);
-                    }}
-                    disabled={clientNoteSaving}
-                  >
-                    ×
-                  </button>
-                  <div className="client-note-modal-header">
-                    <h2 id="client-note-modal-title">Dodaj notatkę</h2>
-                    <p>Zapisz roboczą notatkę przy kliencie.</p>
-                  </div>
+            <Dialog
+              open={Boolean(clientNoteModalOpen || clientNoteListening)}
+              onOpenChange={(open) => {
+                if (!open) {
+                  if (clientNoteListening) stopClientNoteSpeech();
+                  setClientNoteModalOpen(false);
+                  setClientNoteInterimText('');
+                  return;
+                }
+                openClientNoteModalStage216M_R16_R3();
+              }}
+            >
+              <DialogContent className="client-detail-note-dialog" data-stage216m-r17-client-note-dialog-source="lead-detail" data-stage216m-r16-r2-client-note-modal="true" data-stage216m-r16-r3-client-note-modal-portal="true">
+                <DialogHeader>
+                  <DialogTitle>Dodaj notatkę</DialogTitle>
+                  <DialogDescription>Zapisz notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z klientem.</DialogDescription>
+                </DialogHeader>
+                <form
+                  className="lead-detail-add-note-dialog-form client-detail-add-note-dialog-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void handleAddClientNote();
+                  }}
+                >
                   <Textarea
-                    className="client-note-modal-textarea"
                     value={clientNoteDraft}
                     onChange={(event) => setClientNoteDraft(event.target.value)}
                     placeholder="Wpisz notatkę..."
+                    className="lead-detail-note-input client-detail-note-input"
+                    lang="pl-PL"
                     disabled={!hasAccess || clientNoteSaving}
                     autoFocus
                   />
-                  {clientNoteInterimText ? <p className="client-detail-note-dictation-preview">Dyktowanie: {clientNoteInterimText}</p> : null}
-                  <div className="client-note-modal-footer">
+                  {clientNoteInterimText ? <p className="lead-detail-note-transcript client-detail-note-dictation-preview" lang="pl-PL">Dyktowanie: {clientNoteInterimText}</p> : null}
+                  <DialogFooter className={modalFooterClass()}>
                     <Button type="button" variant="outline" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteSaving}>
                       {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                      {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                      {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj'}
                     </Button>
                     <Button
                       type="button"
@@ -2045,19 +2055,19 @@ return (
                       onClick={() => {
                         if (clientNoteListening) stopClientNoteSpeech();
                         setClientNoteModalOpen(false);
+                        setClientNoteInterimText('');
                       }}
                       disabled={clientNoteSaving}
                     >
                       Anuluj
                     </Button>
-                    <Button type="button" onClick={handleAddClientNote} disabled={!hasAccess || clientNoteSaving || !clientNoteDraft.trim()}>
-                      {clientNoteSaving ? 'Zapisuję...' : 'Zapisz notatkę'}
+                    <Button type="submit" disabled={!clientNoteDraft.trim() || !hasAccess || clientNoteSaving}>
+                      {clientNoteSaving ? 'Zapisywanie...' : 'Zapisz notatkę'}
                     </Button>
-                  </div>
-                </section>
-              </div>,
-              document.body,
-            ) : null}
+                  </DialogFooter>
+                </form>
+              </DialogContent>
+            </Dialog>
 
             <nav className="client-detail-tabs" aria-label="Zakładki klienta">
               {[
