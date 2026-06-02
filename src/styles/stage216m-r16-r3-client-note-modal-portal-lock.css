@@ -1,0 +1,66 @@
+/* STAGE216M_R16_R3_CLIENT_NOTE_MODAL_PORTAL_LOCK
+   Hard lock: client note modal renders through React portal, not inside the legacy client detail layout. */
+
+.client-detail-note-actions-row {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  flex-wrap: wrap !important;
+}
+
+.client-detail-note-actions-row > button,
+.client-detail-note-actions-row [data-stage216m-r16-r2-client-note-add="true"],
+.client-detail-note-actions-row [data-stage216m-r16-r2-client-note-dictate="true"] {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 32px !important;
+  white-space: nowrap !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.client-note-modal-backdrop.client-note-modal-backdrop-portal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2147483000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 24px !important;
+  background: rgba(15, 23, 42, 0.66) !important;
+  backdrop-filter: blur(4px) !important;
+  pointer-events: auto !important;
+}
+
+.client-note-modal-backdrop-portal .client-note-modal-card {
+  position: relative !important;
+  width: min(680px, calc(100vw - 32px)) !important;
+  max-height: calc(100vh - 48px) !important;
+  overflow: auto !important;
+  border-radius: 22px !important;
+  border: 1px solid rgba(148, 163, 184, 0.26) !important;
+  background: #0f172a !important;
+  color: #e5e7eb !important;
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.42) !important;
+  padding: 22px 24px 20px !important;
+}
+
+.client-note-modal-backdrop-portal .client-note-modal-textarea {
+  min-height: 112px !important;
+  width: 100% !important;
+  resize: vertical !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border-radius: 12px !important;
+  border: 1px solid #93c5fd !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16) !important;
+}
+
+/* Legacy safety: client data card must not show the old profile-note field anymore. */
+.client-detail-edit-form .client-detail-edit-field:has(textarea),
+.client-detail-edit-form textarea[placeholder*="notatk" i],
+.client-detail-edit-form textarea[placeholder*="notat" i] {
+  display: none !important;
+}

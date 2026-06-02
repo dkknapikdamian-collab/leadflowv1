@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { createPortal } from 'react-dom';
 import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save, Trash2 } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
 import { actionButtonClass } from '../components/entity-actions';
@@ -1158,7 +1159,7 @@ export default function ClientDetail() {
 
   const [activeTab, setActiveTab] = useState<ClientTab>('cases');
   const [contactEditing, setContactEditing] = useState(false);
-  const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
+  const [form, setForm] = useState({ name: '', company: '', email: '', phone: '' });
   const [clientNoteListening, setClientNoteListening] = useState(false);
   const [clientNoteInterimText, setClientNoteInterimText] = useState('');
   const [clientNoteDraft, setClientNoteDraft] = useState('');
@@ -1198,7 +1199,7 @@ export default function ClientDetail() {
         company: String((clientRow as any)?.company || ''),
         email: String((clientRow as any)?.email || ''),
         phone: String((clientRow as any)?.phone || ''),
-        notes: String((clientRow as any)?.notes || ''),
+
       });
     } catch (error: any) {
       toast.error(`Błąd odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
@@ -1387,7 +1388,7 @@ export default function ClientDetail() {
       company: String(client?.company || ''),
       email: String(client?.email || ''),
       phone: String(client?.phone || ''),
-      notes: String(client?.notes || ''),
+
     });
   };
 
@@ -1450,7 +1451,7 @@ export default function ClientDetail() {
       company: String(client?.company || ''),
       email: String(client?.email || ''),
       phone: String(client?.phone || ''),
-      notes: String(client?.notes || ''),
+
     });
     setContactEditing(false);
   };
@@ -1486,6 +1487,11 @@ export default function ClientDetail() {
       }
     }
   };
+
+  const openClientNoteModalStage216M_R16_R3 = useCallback(() => {
+    setContactEditing(false);
+    setClientNoteModalOpen(true);
+  }, []);
 
   const handleAddClientNote = useCallback(async () => {
     if (!hasAccess) {
@@ -1556,8 +1562,9 @@ export default function ClientDetail() {
       stopClientNoteSpeech();
       return;
     }
+    setContactEditing(false);
     setClientNoteModalOpen(true);
-    void 'data-stage216m-r16-r2-speech-opens-modal';
+    void 'data-stage216m-r16-r3-speech-opens-modal';
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
       toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
@@ -1944,7 +1951,7 @@ return (
                   <Button
                     type="button"
                     size="sm"
-                    onClick={() => setClientNoteModalOpen(true)}
+                    onClick={openClientNoteModalStage216M_R16_R3}
                     disabled={!hasAccess || clientNoteSaving}
                     data-stage216m-r16-r2-client-note-add="true"
                   >
@@ -1999,8 +2006,8 @@ return (
               </div>
             </section>
 
-            {clientNoteModalOpen ? (
-              <div className="client-note-modal-backdrop" data-stage216m-r16-r2-client-note-modal="true" role="presentation">
+            {(clientNoteModalOpen || clientNoteListening) && typeof document !== 'undefined' ? createPortal(
+              <div className="client-note-modal-backdrop client-note-modal-backdrop-portal" data-stage216m-r16-r2-client-note-modal="true" data-stage216m-r16-r3-client-note-modal-portal="true" role="presentation">
                 <section className="client-note-modal-card" role="dialog" aria-modal="true" aria-labelledby="client-note-modal-title">
                   <button
                     type="button"
@@ -2048,7 +2055,8 @@ return (
                     </Button>
                   </div>
                 </section>
-              </div>
+              </div>,
+              document.body,
             ) : null}
 
             <nav className="client-detail-tabs" aria-label="Zakładki klienta">
