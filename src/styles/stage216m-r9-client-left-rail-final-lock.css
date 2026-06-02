@@ -1,0 +1,120 @@
+/* STAGE216M_R9_CLIENT_LEFT_RAIL_FINAL_LOCK
+   Cel: finalnie dociagnac lewa szyne ClientDetail do rytmu LeadDetail.
+   Zakres: tylko CSS lewej szyny, karty danych i karty historii aktywnosci. Bez API, Supabase, platnosci, prawej szyny i danych.
+*/
+
+:root {
+  --cf-entity-left-rail-client-final-nudge-y: -36px;
+  --cf-entity-left-rail-source-width: var(--cf-entity-data-card-width, 300px);
+  --cf-entity-left-rail-source-gap: 18px;
+  --cf-entity-history-source-purple: #7c3aed;
+  --cf-entity-history-source-purple-soft: #f5f3ff;
+  --cf-entity-history-source-purple-border: #ddd6fe;
+}
+
+/* 1) ClientDetail: lewa szyna o jeden takt wyzej po R8. */
+.client-detail-vnext-page .client-detail-shell {
+  align-items: start !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail {
+  margin-top: var(--cf-entity-left-rail-client-final-nudge-y) !important;
+  width: var(--cf-entity-left-rail-source-width) !important;
+  min-width: var(--cf-entity-left-rail-source-width) !important;
+  max-width: var(--cf-entity-left-rail-source-width) !important;
+  gap: var(--cf-entity-left-rail-source-gap) !important;
+  align-self: start !important;
+}
+
+/* 2) Karta danych i historia nie moga plywac wzgledem siebie. */
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"],
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"],
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] {
+  width: var(--cf-entity-left-rail-source-width) !important;
+  min-width: var(--cf-entity-left-rail-source-width) !important;
+  max-width: var(--cf-entity-left-rail-source-width) !important;
+  box-sizing: border-box !important;
+}
+
+/* 3) Historia klienta ma trzymac ten sam fioletowy rytm co historia leada, ale z danymi klienta. */
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"],
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] {
+  padding: 20px !important;
+  border: 1px solid var(--cf-entity-history-source-purple-border) !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  background-image: none !important;
+  box-shadow: 0 8px 22px rgba(124, 58, 237, 0.08) !important;
+  overflow: hidden !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin: 0 0 8px !important;
+  color: var(--cf-entity-history-source-purple) !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row .lucide,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row svg,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row .lucide,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row svg {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--cf-entity-history-source-purple) !important;
+  stroke: var(--cf-entity-history-source-purple) !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row h2,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-left-card-intro,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-left-card-intro {
+  margin: 0 0 14px !important;
+  color: #667085 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+}
+
+/* 4) Pusty stan historii ma nie robic przypadkowej wysokosci ani innego tonu. */
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-light-empty,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-action-empty,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-light-empty {
+  border: 1px dashed #d0d5dd !important;
+  border-radius: 20px !important;
+  background: #f9fafb !important;
+  color: #667085 !important;
+  padding: 18px !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+/* 5) Responsive: na waskim ekranie bez ujemnego przesuniecia. */
+@media (max-width: 1120px) {
+  .client-detail-vnext-page .client-detail-left-rail {
+    margin-top: 0 !important;
+  }
+
+  .client-detail-vnext-page [data-stage216m-r6-client-data-card="true"],
+  .client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"],
+  .client-detail-vnext-page [data-client-recent-moves-panel="true"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r9-client-left-rail-final-lock-marker="true"] {
+  --stage216m-r9-client-left-rail-final-lock: 1;
+}
