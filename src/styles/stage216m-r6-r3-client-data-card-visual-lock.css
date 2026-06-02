@@ -1,0 +1,165 @@
+/* STAGE216M_R6_R3_CLIENT_DATA_CARD_VISUAL_LOCK
+   Cel: domknac karte Dane klienta do wzoru Dane leada:
+   - niebieski przycisk Edytuj dane w obu kartach,
+   - stabilne polozenie przycisku w prawym gornym rogu,
+   - szerokosc i rytm karty klienta zgodny z lewym railem LeadDetail.
+   Zakres: tylko CSS dla kart danych LeadDetail/ClientDetail. Bez API, Supabase, platnosci, danych i prawej szyny.
+*/
+
+/* 1) Lewy rail klienta ma nie plywac wzgledem wzoru LeadDetail. */
+.client-detail-vnext-page .client-detail-shell {
+  grid-template-columns: 300px minmax(0, 1fr) 310px !important;
+}
+
+.client-detail-vnext-page .client-detail-left-rail {
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+  align-self: start !important;
+}
+
+/* 2) Karta Dane klienta ma miec rozmiar i zachowanie karty Dane leada. */
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] {
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+  box-sizing: border-box !important;
+  padding: 20px !important;
+  border-radius: 28px !important;
+  border: 1px solid #e4e7ec !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  background-image: none !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  overflow: hidden !important;
+}
+
+/* 3) Naglowek karty: tytul lewo, przycisk prawo, bez nachodzenia na pola. */
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  gap: 14px !important;
+  min-height: 36px !important;
+  margin: 0 0 16px !important;
+  padding: 0 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head > div,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > div {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 36px !important;
+  padding: 0 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head h2,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+}
+
+/* 4) Opisowe wstawki w kartach danych zostaja schowane. */
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head p,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head p {
+  display: none !important;
+}
+
+/* 5) Przycisk Edytuj dane w obu kartach ma byc niebieski i maly, nie pelen pas. */
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] button.client-detail-visible-edit-action.client-detail-edit-main-button[data-stage216m-r6-client-data-edit-action="true"],
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-visible-edit-action[data-stage216m-r6-client-data-edit-action="true"],
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"],
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  width: auto !important;
+  min-width: max-content !important;
+  max-width: max-content !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 13px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  border: 1px solid #2563eb !important;
+  border-radius: 14px !important;
+  background: #2563eb !important;
+  background-color: #2563eb !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] button.client-detail-visible-edit-action.client-detail-edit-main-button[data-stage216m-r6-client-data-edit-action="true"]:hover,
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"]:hover,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button:hover {
+  border-color: #1d4ed8 !important;
+  background: #1d4ed8 !important;
+  background-color: #1d4ed8 !important;
+  color: #ffffff !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"] svg,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  flex: 0 0 auto !important;
+}
+
+/* 6) Wiersze danych klienta maja miec rytm zblizony do leada, ale bez puchniecia. */
+.client-detail-vnext-page [data-stage216m-r6-client-data-panel-list="true"] {
+  display: grid !important;
+  gap: 8px !important;
+  margin: 0 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-row {
+  min-height: 50px !important;
+  border-radius: 18px !important;
+  padding: 10px 12px !important;
+  box-sizing: border-box !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-row-copy button {
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  align-self: center !important;
+}
+
+/* 7) Responsive: nie blokuj strony na telefonie. */
+@media (max-width: 1120px) {
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-detail-vnext-page .client-detail-left-rail,
+  .client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r6-r3-client-data-card-visual-lock-marker="true"] {
+  --stage216m-r6-r3-client-data-card-visual-lock: 1;
+}
