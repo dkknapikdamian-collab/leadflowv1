@@ -1496,7 +1496,7 @@ useEffect(() => {
   if (loading) {
     return (
       <Layout>
-        <main className="lead-detail-vnext-page">
+        <main className="lead-detail-vnext-page" data-stage216m-r14-clean-copy-finance-mojibake-marker="true">
           <section className="lead-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Ładowanie leada...</span>
@@ -1649,7 +1649,6 @@ useEffect(() => {
                 {leadActivityHistoryItems.length === 0 ? (
                   <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
                     <strong>Brak historii aktywności.</strong>
-                    <span>Historia pojawi się po dodaniu notatek, zadań, wydarzeń, płatności albo zmian statusu.</span>
                   </div>
                 ) : (
                   leadActivityHistoryItems.slice(0, 5).map((entry) => (
@@ -1723,7 +1722,6 @@ useEffect(() => {
                   ) : (
                     <div className="lead-detail-action-empty lead-detail-action-empty-compact">
                       <strong>Brak zaplanowanej akcji</strong>
-                      <span>Ten lead może wypaść z procesu. Dodaj follow-up albo wydarzenie.</span>
                     </div>
                   )}
                 </article>
@@ -1735,7 +1733,6 @@ useEffect(() => {
                 <article className="lead-detail-top-card lead-detail-callout-amber">
                   <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Aktywny lead</h2></div>
                   <strong>{sortedLinkedTasks.length + sortedLinkedEvents.length}</strong>
-                  <p>powiązane zadania i wydarzenia sprzedażowe.</p>
                 </article>
               </section>
             ) : null}
@@ -1752,7 +1749,6 @@ useEffect(() => {
                   {timeline.length === 0 ? (
                     <div className="lead-detail-light-empty lead-detail-action-empty">
                       <strong>Brak zaplanowanych działań.</strong>
-                      <span>Ten lead nie ma zadania ani wydarzenia. Zaplanuj następny kontakt, żeby nie zniknął z procesu.</span>
                       <div className="lead-detail-empty-actions">
                         <Button type="button" size="sm" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</Button>
                         <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
@@ -1791,7 +1787,6 @@ useEffect(() => {
               <div className="lead-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
-                  <p>Robocze notatki operatora. Historia statusów, płatności i systemu jest oddzielona niżej.</p>
                 </div>
               </div>              {!leadInService ? (
                 <div className="lead-detail-note-actions-panel" data-stage216j3f-note-actions-only="true">
@@ -1843,13 +1838,11 @@ useEffect(() => {
 
             <section className="right-card lead-detail-right-card lead-detail-upcoming-actions-card" data-stage216j3d-upcoming-actions-card="true">
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższe działania</h2></div>
-              <p className="lead-detail-right-card-intro">5 najbliższych zadań i wydarzeń z datą powiązanych z tym leadem.</p>
 
               <div className="lead-detail-upcoming-actions-list">
                 {timeline.length === 0 ? (
                   <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
                     <strong>Brak zaplanowanych działań.</strong>
-                    <span>Dodaj follow-up albo wydarzenie, żeby lead nie został bez ruchu.</span>
                   </div>
                 ) : (
                   timeline.slice(0, 5).map((entry) => (
@@ -1873,7 +1866,7 @@ useEffect(() => {
             <div hidden data-stage216j3i-activity-history-moved-from-right-rail="true" />
 <section className="right-card lead-detail-right-card">
               <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
-              <p>{serviceCaseId ? serviceCaseTitle : 'Lead nie został jeszcze przejęty do obsługi.'}</p>
+              {serviceCaseId ? <p>{serviceCaseTitle}</p> : null}
               <small>{serviceCaseId ? serviceCaseStatusLabel : 'Utwórz klienta i sprawę, gdy temat jest gotowy do realizacji.'}</small>
               {serviceCaseId ? (
                 <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button>

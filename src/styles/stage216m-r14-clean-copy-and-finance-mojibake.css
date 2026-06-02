@@ -1,0 +1,40 @@
+/* STAGE216M_R14_CLEAN_COPY_AND_FINANCE_MOJIBAKE
+   Cel:
+   - ClientDetail: poprawic mojibake w inline finansach klienta po R13.
+   - LeadDetail/ClientDetail: usunac opisowe mikro-copy, ktore zasmieca karty.
+   - Zakres: TSX copy cleanup + defensywny CSS. Bez API, Supabase, platnosci runtime i danych.
+*/
+
+/* Defensywnie ukrywamy stare opisy, jezeli przegladarka ma jeszcze stary bundle/cache. */
+.lead-detail-vnext-page .lead-detail-right-card-intro,
+.client-detail-vnext-page .client-detail-right-card-intro,
+.lead-detail-vnext-page .lead-detail-notes-only-section .lead-detail-section-head p,
+.client-detail-vnext-page .client-detail-notes-center-section .client-detail-section-head p {
+  display: none !important;
+}
+
+/* Puste stany maja byc zwarte: sam komunikat, bez dlugich instrukcji. */
+.lead-detail-vnext-page .lead-detail-action-empty-compact span,
+.client-detail-vnext-page .client-detail-action-empty-compact span {
+  display: none !important;
+}
+
+/* R13 inline finance: trzymamy czytelnosc po poprawie polskich znakow. */
+.client-detail-vnext-page .client-detail-right-finance-inline-card[data-stage216m-r13-client-finance-inline-card='true'] {
+  margin-top: 14px !important;
+}
+
+.client-detail-vnext-page .client-detail-right-finance-inline-card[data-stage216m-r13-client-finance-inline-card='true'] .client-detail-finance-inline-metrics small {
+  min-height: 30px !important;
+  align-items: center !important;
+}
+
+.client-detail-vnext-page .client-detail-right-finance-inline-card[data-stage216m-r13-client-finance-inline-card='true'] .client-detail-finance-inline-metrics span {
+  overflow-wrap: anywhere !important;
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r14-clean-copy-finance-mojibake-marker='true'],
+.lead-detail-vnext-page[data-stage216m-r14-clean-copy-finance-mojibake-marker='true'] {
+  --stage216m-r14-clean-copy-and-finance-mojibake: 1;
+}

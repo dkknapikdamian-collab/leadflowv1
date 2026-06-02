@@ -1583,7 +1583,7 @@ useMemo(() => [], [activities, client?.id, clientId, id]);
 
 return (
       <Layout>
-<main className="client-detail-vnext-page">
+<main className="client-detail-vnext-page" data-stage216m-r14-clean-copy-finance-mojibake-marker="true">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Ładowanie klienta...</span>
@@ -1874,7 +1874,7 @@ return (
                         ))}
                       </div>
                     ) : (
-                      <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact"><strong>Brak historii aktywności.</strong><span>Historia pojawi się po dodaniu notatek, zadań, wydarzeń, płatności albo zmian statusu.</span></div>
+                      <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact"><strong>Brak historii aktywności.</strong></div>
                     )}
                     <Link to="/activity" className="client-detail-recent-moves-link">
                       Zobacz całą Aktywność
@@ -2297,9 +2297,9 @@ return (
               <div className="client-detail-right-finance-inline-card" data-stage216m-r13-client-finance-inline-card="true">
                 <div className="client-detail-finance-inline-title"><EntityIcon entity="client" className="h-4 w-4" /><h3>Finanse klienta</h3></div>
                 <div className="client-detail-finance-inline-metrics">
-                  <small><span>Suma wartoĹ›ci spraw</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Suma wpĹ‚at</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Do domkniÄ™cia</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Suma wartości spraw</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Suma wpłat</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Do domknięcia</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</strong></small>
                   <small><span>Sprawy aktywne / rozliczone</span><strong>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</strong></small>
                 </div>
                 <div className="client-detail-right-actions">
@@ -2307,7 +2307,7 @@ return (
                     type="button"
                     size="sm"
                     variant="outline"
-                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwĂłrz sprawÄ™ klienta.'))}
+                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
                   >
                     Finanse w sprawie
                   </Button>
