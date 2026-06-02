@@ -1,0 +1,63 @@
+/* STAGE216M_R10_R4_CLIENT_CENTER_TABS_AND_INTRO_LOCK
+   Cel:
+   - ClientDetail: pasek zakladek Sprawy / Podsumowanie / Historia ma byc bezposrednio po kafelkach.
+   - ClientDetail: aktywne sprawy i notatki maja zostac wspolnym obszarem pracy.
+   - ClientDetail: Historia ma byc osobnym trybem, bez stalego doklejania notatek pod historia.
+   - LeadDetail: usunac opis pod karta Historia aktywnosci przez TSX repair, a CSS dodatkowo go ukrywa defensywnie.
+   Zakres: CSS center order + TSX copy cleanup LeadDetail. Bez prawej szyny, API, Supabase, platnosci i danych.
+*/
+
+:root {
+  --stage216m-r10-r4-client-tabs-order: 20;
+  --stage216m-r10-r4-client-cases-order: 30;
+  --stage216m-r10-r4-client-notes-order: 40;
+}
+
+/* ClientDetail main column: jeden jawny rytm srodka. */
+.client-detail-vnext-page .client-detail-main-column {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.client-detail-vnext-page .client-detail-main-top-tiles {
+  order: 10 !important;
+}
+
+/* Pasek zakladek wraca pod kafelki, nie pod notatki. */
+.client-detail-vnext-page .client-detail-tabs {
+  order: var(--stage216m-r10-r4-client-tabs-order) !important;
+  margin-top: 14px !important;
+  margin-bottom: 14px !important;
+}
+
+/* Aktywny panel zakladki idzie pod paskiem. */
+.client-detail-vnext-page .client-detail-tab-panel {
+  order: var(--stage216m-r10-r4-client-cases-order) !important;
+}
+
+/* Notatki zostaja razem ze sprawami jako obszar roboczy, ale pod aktywnymi sprawami. */
+.client-detail-vnext-page .client-detail-notes-center-section {
+  order: var(--stage216m-r10-r4-client-notes-order) !important;
+  margin-top: 0 !important;
+}
+
+/* Historia ma byc osobno: po kliknieciu Historia nie doklejamy sekcji notatek pod spodem. */
+.client-detail-vnext-page .client-detail-main-column:has(.client-detail-tabs button[data-client-tab-history].client-detail-tab-active) .client-detail-notes-center-section {
+  display: none !important;
+}
+
+/* Podsumowanie tez nie powinno dublowac roboczych notatek pod osobnym panelem podsumowania. */
+.client-detail-vnext-page .client-detail-main-column:has(.client-detail-tabs button[data-client-tab-summary].client-detail-tab-active) .client-detail-notes-center-section {
+  display: none !important;
+}
+
+/* LeadDetail: defensywne ukrycie starego opisu, nawet jesli TSX repair nie zdazy sie zdeployowac. */
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-left-card-intro {
+  display: none !important;
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r10-r4-client-center-tabs-and-intro-lock-marker="true"],
+.lead-detail-vnext-page[data-stage216m-r10-r4-client-center-tabs-and-intro-lock-marker="true"] {
+  --stage216m-r10-r4-client-center-tabs-and-intro-lock: 1;
+}

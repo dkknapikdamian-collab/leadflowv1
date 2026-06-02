@@ -1644,7 +1644,6 @@ useEffect(() => {
 
             <section className="lead-detail-section-card lead-detail-left-activity-history-card" data-stage216j3i-activity-history-left-rail="true">
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywności</h2></div>
-              <p className="lead-detail-left-card-intro">Ostatnie 5 zdarzeń powiązanych z tym leadem.</p>
 
               <div className="lead-detail-activity-history-rail-list">
                 {leadActivityHistoryItems.length === 0 ? (
