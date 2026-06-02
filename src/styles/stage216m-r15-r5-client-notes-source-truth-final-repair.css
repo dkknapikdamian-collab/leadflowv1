@@ -1,0 +1,43 @@
+/* STAGE216M_R15_R5_CLIENT_NOTES_SOURCE_TRUTH_FINAL_REPAIR
+   One center source of truth for ClientDetail notes.
+   Voice dictation writes into composer, not client data edit mode.
+*/
+
+.client-detail-notes-center-section[data-stage216m-r15-r5-client-notes-source="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-note-composer[data-stage216m-r15-r5-client-note-composer="true"] {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.client-detail-note-composer[data-stage216m-r15-r5-client-note-composer="true"] textarea {
+  min-height: 92px;
+  resize: vertical;
+  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(2, 6, 23, 0.56);
+  color: #e5e7eb;
+}
+
+.client-detail-note-composer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.client-detail-note-dictation-preview {
+  margin: 0;
+  font-size: 12px;
+  color: rgba(191, 219, 254, 0.88);
+}
+
+.client-detail-notes-center-section[data-stage216m-r15-r5-client-notes-source="true"] .client-detail-notes-center-list {
+  margin-top: 0;
+}

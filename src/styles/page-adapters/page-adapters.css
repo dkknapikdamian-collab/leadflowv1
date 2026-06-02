@@ -1,4 +1,4 @@
-/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_PAGE_ADAPTERS
+﻿/* CLOSEFLOW_CSS_IMPORT_ORDER_VS3_PAGE_ADAPTERS
    owner: CloseFlow Visual System
    reason: quarantine legacy page adapter imports outside src/index.css without deleting them.
    scope: page-level visual-stage and staged adapter CSS for Today, Leads, Clients, Cases, Tasks and Calendar.
@@ -53,3 +53,5 @@
 @import '../stage216m-r12-client-right-rail-finance-hard-render.css';
 @import '../stage216m-r13-client-right-rail-finance-inline-refactor.css';
 @import '../stage216m-r14-clean-copy-and-finance-mojibake.css';
+@import '../stage216m-r15-r2-client-notes-source-truth-actual-repair.css';
+@import '../stage216m-r15-r5-client-notes-source-truth-final-repair.css';

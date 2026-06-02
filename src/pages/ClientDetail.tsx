@@ -79,6 +79,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import {
   deleteActivityFromSupabase,
   fetchActivitiesFromSupabase,
+  insertActivityToSupabase,
   fetchClientByIdFromSupabase,
   fetchPaymentsFromSupabase,
   updateActivityInSupabase
@@ -1160,6 +1161,8 @@ export default function ClientDetail() {
   const [form, setForm] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
   const [clientNoteListening, setClientNoteListening] = useState(false);
   const [clientNoteInterimText, setClientNoteInterimText] = useState('');
+  const [clientNoteDraft, setClientNoteDraft] = useState('');
+  const [clientNoteSaving, setClientNoteSaving] = useState(false);
   const [clientNoteAutosaving, setClientNoteAutosaving] = useState(false);
   const clientNoteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const clientNoteVoiceDirtyRef = useRef(false);
@@ -1483,6 +1486,68 @@ export default function ClientDetail() {
     }
   };
 
+  const handleAddClientNote = useCallback(async () => {
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+    if (!clientId) return;
+    const content = clientNoteDraft.trim();
+    if (!content) {
+      toast.error('Wpisz treść notatki.');
+      return;
+    }
+    const createdAt = new Date().toISOString();
+    const optimisticNote = {
+      id: 'client-note-local-' + Date.now(),
+      eventType: 'client_note_added',
+      clientId,
+      createdAt,
+      updatedAt: createdAt,
+      payload: {
+        recordType: 'client',
+        clientId,
+        title: 'Notatka',
+        content,
+        note: content,
+        createdAt,
+      },
+    };
+    try {
+      setClientNoteSaving(true);
+      const saved = await insertActivityToSupabase({
+        clientId,
+        eventType: 'client_note_added',
+        payload: {
+          recordType: 'client',
+          clientId,
+          title: 'Notatka',
+          content,
+          note: content,
+          createdAt,
+        },
+      } as any);
+      const savedActivity = {
+        ...optimisticNote,
+        ...(saved || {}),
+        payload: {
+          ...optimisticNote.payload,
+          ...(((saved as any) || {}).payload || {}),
+        },
+      };
+      setActivities((previous) => normalizeClientActivitiesForA1([savedActivity, ...previous]));
+      setClientNoteDraft('');
+      setClientNoteInterimText('');
+      clientNoteVoiceDirtyRef.current = false;
+      toast.success('Notatka dodana');
+    } catch (error: any) {
+      console.error(error);
+      toast.error('Nie udało się dodać notatki.');
+    } finally {
+      setClientNoteSaving(false);
+    }
+  }, [clientId, clientNoteDraft, hasAccess]);
+
   const handleToggleClientNoteSpeech = () => {
     if (!hasAccess) return toast.error('Twój trial wygasł.');
     if (clientNoteListening) {
@@ -1511,7 +1576,7 @@ export default function ClientDetail() {
         }
         if (finalTranscript) {
           clientNoteVoiceDirtyRef.current = true;
-          setForm((current) => ({ ...current, notes: joinTranscript(current.notes, finalTranscript) }));
+          setClientNoteDraft((current) => joinTranscript(current, finalTranscript));
         }
         setClientNoteInterimText(interimTranscript);
       };
@@ -1527,7 +1592,6 @@ export default function ClientDetail() {
       clientNoteRecognitionRef.current = recognition;
       recognition.start();
       setClientNoteListening(true);
-      setContactEditing(true);
       toast.success('Dyktowanie notatki włączone');
     } catch {
       toast.error('Nie udało się uruchomić dyktowania.');
@@ -1535,28 +1599,9 @@ export default function ClientDetail() {
     }
   };
 
-  useEffect(() => {
-    if (!clientNoteVoiceDirtyRef.current) return;
-    if (!clientId || !hasAccess || !form.notes.trim() || clientNoteAutosaving) return;
-    const timer = window.setTimeout(async () => {
-      try {
-        setClientNoteAutosaving(true);
-        await updateClientInSupabase({ id: clientId, notes: form.notes.trim() });
-        setClient((current: any) => (current ? { ...current, notes: form.notes.trim() } : current));
-        clientNoteVoiceDirtyRef.current = false;
-        toast.success('Notatka klienta zapisana');
-      } catch (error: any) {
-        toast.error(`Błąd zapisu notatki: ${error?.message || 'REQUEST_FAILED'}`);
-      } finally {
-        setClientNoteAutosaving(false);
-      }
-    }, 2000);
-    return () => window.clearTimeout(timer);
-  }, [clientId, form.notes, hasAccess, clientNoteAutosaving]);
-
   useEffect(() => () => stopClientNoteSpeech(), []);
 
-  // STAGE117B: no new/open lead shortcut from ClientDetail.
+  // STAGE117B: no new/open lead shortcut from ClientDetail.  // STAGE117B: no new/open lead shortcut from ClientDetail.
   const openMainCase = () => {
     if (!mainCase?.id) return;
     navigate(`/cases/${String(mainCase.id)}`);
@@ -1792,18 +1837,7 @@ return (
                     onChange={(value) => setForm((current) => ({ ...current, email: value }))}
                     placeholder="email klienta"
                   />
-                  <div className="client-detail-edit-field">
-                    <Label>Notatka</Label>
-                    <Textarea value={form.notes} onChange={(event) => setForm((current) => ({ ...current, notes: event.target.value }))} />
-                    {clientNoteInterimText ? <p className="text-xs text-slate-500">Dyktowanie: {clientNoteInterimText}</p> : null}
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteAutosaving}>
-                        {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                        {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
-                      </Button>
-                      {clientNoteAutosaving ? <span className="text-xs text-slate-500">Zapisywanie za 2s…</span> : null}
-                    </div>
-                  </div>
+
                   <div className={formActionsClass('client-detail-edit-actions')}>
                     <Button type="button" onClick={handleSave} disabled={saving}>
                       <Save className="h-4 w-4" />
@@ -1897,15 +1931,31 @@ return (
               />
             </div>
 
-            <section className="client-detail-section-card client-detail-notes-center-section" data-stage216l-client-notes-center="true" data-client-notes-center-list="true">
+            <section className="client-detail-section-card client-detail-notes-center-section" data-stage216m-r15-r5-client-notes-source="true" data-client-notes-center-list="true">
               <div className="client-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
                 </div>
-                <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
+                <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteSaving}>
                   {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
                   {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
                 </Button>
+              </div>
+
+              <div className="client-detail-note-composer" data-stage216m-r15-r5-client-note-composer="true">
+                <Textarea
+                  value={clientNoteDraft}
+                  onChange={(event) => setClientNoteDraft(event.target.value)}
+                  placeholder="Wpisz roboczą notatkę klienta..."
+                  disabled={!hasAccess || clientNoteSaving}
+                />
+                {clientNoteInterimText ? <p className="client-detail-note-dictation-preview">Dyktowanie: {clientNoteInterimText}</p> : null}
+                <div className="client-detail-note-composer-actions">
+                  <Button type="button" onClick={handleAddClientNote} disabled={!hasAccess || clientNoteSaving || !clientNoteDraft.trim()}>
+                    <Plus className="h-4 w-4" />
+                    {clientNoteSaving ? 'Dodaję...' : 'Dodaj notatkę'}
+                  </Button>
+                </div>
               </div>
 
               <div className="client-detail-notes-center-list">
