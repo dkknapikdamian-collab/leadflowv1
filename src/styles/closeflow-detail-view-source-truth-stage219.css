@@ -115,3 +115,161 @@
   .stage217-case-notes-panel,
   .case-detail-right-rail [data-case-finance-panel='true'] { grid-column: 1 !important; grid-row: auto !important; }
 }
+
+/* STAGE219_R2_CASE_DETAIL_ONE_SCREEN_COMPACT
+   Cel: mniej scrolla, mniej przepchania prawej kolumny, wszystko widoczne blizej jednego ekranu. */
+.case-detail-vnext-page.case-detail-vnext-page {
+  max-width: 1420px !important;
+  padding-top: 22px !important;
+}
+
+.case-detail-vnext-page.case-detail-vnext-page .case-detail-header {
+  border-radius: 20px !important;
+  margin-bottom: 14px !important;
+  padding: 14px 20px !important;
+}
+
+.case-detail-vnext-page.case-detail-vnext-page .case-detail-title-row h1 {
+  font-size: clamp(20px, 1.75vw, 25px) !important;
+}
+
+.case-detail-vnext-page .case-detail-shell.case-detail-shell {
+  gap: 18px !important;
+  grid-template-columns: minmax(0, 1fr) 280px !important;
+}
+
+.case-detail-vnext-page .stage217-case-operation-workspace.stage217-case-operation-workspace {
+  padding: 16px !important;
+}
+
+.case-detail-vnext-page .stage217-case-operation-head h2 {
+  font-size: 18px !important;
+  margin-bottom: 10px !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-grid.stage217-case-service-grid {
+  gap: 8px !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card.stage217-case-service-card {
+  border-radius: 15px !important;
+  gap: 6px 10px !important;
+  grid-template-columns: 30px minmax(0, 1fr) !important;
+  min-height: 74px !important;
+  padding: 11px 12px !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card.stage217-case-service-card::before {
+  font-size: 12px !important;
+  height: 24px !important;
+  width: 24px !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card .stage217-case-service-card__label::after {
+  font-size: 10px !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card h3,
+.case-detail-vnext-page .stage217-case-service-card__metric {
+  font-size: 15px !important;
+  line-height: 1.1 !important;
+  margin: 0 !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card p {
+  color: transparent !important;
+  font-size: 0 !important;
+  height: 16px !important;
+  line-height: 1.25 !important;
+  overflow: hidden !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card p::after {
+  color: var(--cf-detail-muted) !important;
+  display: inline !important;
+  font-size: 11px !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card--next p::after {
+  content: 'Dodaj zadanie albo wydarzenie.' !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card--blockers p::after {
+  content: 'Brak aktywnych blokad.' !important;
+}
+
+.case-detail-vnext-page .stage217-case-service-card--workload p::after {
+  content: 'Zadania i wydarzenia tej sprawy.' !important;
+}
+
+.case-detail-vnext-page .case-quick-actions,
+.case-detail-vnext-page .stage217-case-notes-panel,
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] {
+  border-radius: 18px !important;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06) !important;
+}
+
+.case-detail-vnext-page .case-quick-actions__grid {
+  gap: 6px !important;
+}
+
+.case-detail-vnext-page .case-quick-actions__button {
+  min-height: 34px !important;
+  padding-block: 7px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel.stage217-case-notes-panel {
+  padding: 12px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head {
+  margin-bottom: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head h2 {
+  font-size: 13px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head button::after {
+  content: 'Dodaj' !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-light-empty {
+  padding: 12px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-light-empty::after {
+  content: 'Brak notatek. Dodaj pierwsza z szybkich akcji.' !important;
+  font-size: 11px !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] {
+  padding: 12px !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] .case-detail-card-title-row {
+  margin-bottom: 8px !important;
+  padding-bottom: 8px !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] .case-finance-panel-actions {
+  gap: 6px !important;
+  margin-top: 8px !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] small {
+  font-size: 10px !important;
+  line-height: 1.35 !important;
+}
+
+.case-detail-vnext-page .case-detail-shell [role='tablist'],
+.case-detail-vnext-page .case-detail-shell [role='tabpanel'] {
+  display: none !important;
+}
+
+@media (max-width: 1120px) {
+  .case-detail-vnext-page .case-detail-shell.case-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+}
