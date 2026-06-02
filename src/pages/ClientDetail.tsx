@@ -1901,7 +1901,6 @@ return (
               <div className="client-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
-                  <p>Robocze notatki klienta są w centrum pracy. Prawa szyna zostaje dla akcji, spraw i finansów.</p>
                 </div>
                 <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess}>
                   {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
@@ -2219,7 +2218,6 @@ return (
           <aside className="client-detail-right-rail" aria-label="Panel klienta" data-stage216m-r4-client-right-rail="true">
             <section className="right-card client-detail-right-card client-detail-upcoming-actions-card" data-stage216m-r4-client-upcoming-actions-card="true">
               <div className="client-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższe działania</h2></div>
-              <p className="client-detail-right-card-intro">5 najbliższych zadań i wydarzeń z datą powiązanych z tym klientem.</p>
 
               <div className="client-detail-upcoming-actions-list">
                 {clientRightRailActionsStage216M4.length === 0 ? (
@@ -2298,7 +2296,7 @@ return (
               )}
             </section>
 
-            <section className="right-card client-detail-right-card" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true">
+            <section className="right-card client-detail-right-card client-detail-right-finance-card-hard-render" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true" data-stage216m-r12-client-finance-hard-render="true">
               <div className="client-detail-card-title-row"><EntityIcon entity="client" className="h-4 w-4" /><h2>Finanse klienta</h2></div>
               <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
               <small>Suma wpłat: {formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</small>
