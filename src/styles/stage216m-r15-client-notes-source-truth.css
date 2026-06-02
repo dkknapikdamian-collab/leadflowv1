@@ -1,0 +1,51 @@
+/* STAGE216M_R15_CLIENT_NOTES_SOURCE_TRUTH
+   Client notes live only in the center work panel. The client data card edits client data only.
+*/
+.client-detail-notes-center-section[data-stage216m-r15-client-notes-source="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.client-detail-note-compose[data-stage216m-r15-client-note-compose="true"] {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  border-radius: 18px;
+  background: rgba(248, 250, 252, 0.72);
+}
+
+.client-detail-note-compose[data-stage216m-r15-client-note-compose="true"] textarea {
+  width: 100%;
+  min-height: 86px;
+  resize: vertical;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
+.client-detail-note-compose-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.client-detail-note-compose-actions > button:first-child {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: rgba(37, 99, 235, 0.86);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.16);
+}
+
+.client-detail-note-compose-interim {
+  margin: 0;
+  font-size: 12px;
+  color: #64748b;
+}
+
+.client-detail-edit-field:has(textarea) .client-detail-note-compose,
+.client-detail-edit-field:has(textarea) [data-stage216m-r15-client-note-compose] {
+  display: none !important;
+}
