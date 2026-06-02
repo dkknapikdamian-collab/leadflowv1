@@ -1,0 +1,216 @@
+/* STAGE216M_R10_CLIENT_CENTER_WORK_ORDER
+   Cel: ClientDetail ma mieć centrum pracy w kolejności: kafelki -> aktywne sprawy -> notatki -> zakładki.
+   Zakres: tylko układ środkowej kolumny ClientDetail. Bez API, Supabase, płatności, danych i prawej szyny.
+*/
+
+.client-detail-vnext-page {
+  --cf-client-center-gap: 18px;
+  --cf-client-center-card-radius: 28px;
+  --cf-client-center-card-border: #e4e7ec;
+  --cf-client-center-card-bg: rgba(255, 255, 255, 0.92);
+  --cf-client-center-card-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+}
+
+/* 1) Środkowa kolumna ma być świadomie sterowana kolejnością sekcji. */
+.client-detail-vnext-page .client-detail-main-column {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--cf-client-center-gap) !important;
+  min-width: 0 !important;
+}
+
+/* 2) Kolejność pracy klienta: najpierw sygnały, potem sprawy, potem notatki. */
+.client-detail-vnext-page .client-detail-main-top-tiles {
+  order: 10 !important;
+}
+
+.client-detail-vnext-page [data-client-cases-list-panel="true"] {
+  order: 20 !important;
+}
+
+.client-detail-vnext-page .client-detail-notes-center-section,
+.client-detail-vnext-page [data-stage216l-client-notes-center="true"] {
+  order: 30 !important;
+}
+
+.client-detail-vnext-page .client-detail-tabs {
+  order: 40 !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel:not([data-client-cases-list-panel="true"]) {
+  order: 50 !important;
+}
+
+/* 3) Aktywne sprawy stają się pierwszym dużym blokiem pracy klienta. */
+.client-detail-vnext-page [data-client-cases-list-panel="true"] > .client-detail-section-card {
+  box-sizing: border-box !important;
+  border-radius: var(--cf-client-center-card-radius) !important;
+  border: 1px solid var(--cf-client-center-card-border) !important;
+  background: var(--cf-client-center-card-bg) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-client-center-card-shadow) !important;
+  padding: 20px !important;
+  overflow: hidden !important;
+}
+
+.client-detail-vnext-page [data-client-cases-list-panel="true"] .client-detail-section-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 14px !important;
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+}
+
+.client-detail-vnext-page [data-client-cases-list-panel="true"] .client-detail-section-head h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+/* 4) Lista spraw ma mieć rytm panelu roboczego, nie ciasnego dopisku pod zakładkami. */
+.client-detail-vnext-page [data-client-case-smart-list="true"] {
+  display: grid !important;
+  gap: 10px !important;
+  margin: 0 !important;
+}
+
+.client-detail-vnext-page [data-client-case-smart-card="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 0.42fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 70px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  padding: 12px 14px !important;
+  box-shadow: none !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-kicker {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-height: 24px !important;
+  align-items: center !important;
+  border-radius: 999px !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-main strong {
+  display: block !important;
+  margin-top: 6px !important;
+  color: #111827 !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 6px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-meta span {
+  border-radius: 999px !important;
+  background: #f2f4f7 !important;
+  color: #344054 !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value {
+  border: 1px solid #bbf7d0 !important;
+  border-radius: 18px !important;
+  background: #ecfdf3 !important;
+  padding: 10px 12px !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value small {
+  display: block !important;
+  color: #047857 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value b {
+  display: block !important;
+  margin-top: 3px !important;
+  color: #065f46 !important;
+  font-size: 16px !important;
+  line-height: 1.15 !important;
+  font-weight: 900 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+  min-width: max-content !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-actions button:first-child {
+  background: #111827 !important;
+  border-color: #111827 !important;
+  color: #ffffff !important;
+  border-radius: 14px !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-actions button:not(:first-child) {
+  height: 34px !important;
+  min-height: 34px !important;
+  border-radius: 14px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+/* 5) Notatki zostają w centrum, ale jako kontekst pod sprawami. */
+.client-detail-vnext-page .client-detail-notes-center-section {
+  border-radius: var(--cf-client-center-card-radius) !important;
+  border: 1px solid var(--cf-client-center-card-border) !important;
+  background: var(--cf-client-center-card-bg) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-client-center-card-shadow) !important;
+  padding: 20px !important;
+}
+
+/* 6) Zakładki nie mogą rozcinać pracy między kafelkami i sprawami. */
+.client-detail-vnext-page .client-detail-tabs {
+  margin: -4px 0 0 !important;
+}
+
+@media (max-width: 1120px) {
+  .client-detail-vnext-page [data-client-case-smart-card="true"] {
+    grid-template-columns: 1fr !important;
+    align-items: stretch !important;
+  }
+
+  .client-detail-vnext-page .client-detail-case-smart-actions {
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r10-client-center-work-order-marker="true"] {
+  --stage216m-r10-client-center-work-order: 1;
+}
