@@ -1,0 +1,250 @@
+/* STAGE216M_R7_ENTITY_DATA_CARD_SOURCE_TRUTH
+   Cel: jedno wizualne zrodlo prawdy dla kart Dane leada i Dane klienta.
+   Zakres: tylko karty danych w lewym railu. Bez API, Supabase, platnosci, danych i prawej szyny.
+*/
+
+:root {
+  --cf-entity-data-card-width: 300px;
+  --cf-entity-data-card-padding: 20px;
+  --cf-entity-data-card-radius: 28px;
+  --cf-entity-data-card-border: #e4e7ec;
+  --cf-entity-data-card-bg: rgba(255, 255, 255, 0.92);
+  --cf-entity-data-card-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --cf-entity-data-card-title-height: 34px;
+  --cf-entity-data-card-title-gap: 14px;
+  --cf-entity-data-card-list-gap: 8px;
+  --cf-entity-data-card-row-height: 52px;
+  --cf-entity-data-card-total-min-height: 480px;
+  --cf-entity-data-action-blue: #2563eb;
+  --cf-entity-data-action-blue-hover: #1d4ed8;
+}
+
+/* 1) Jeden rail width contract dla LeadDetail i ClientDetail. */
+.lead-detail-vnext-page .lead-detail-left-rail,
+.client-detail-vnext-page .client-detail-left-rail {
+  width: var(--cf-entity-data-card-width) !important;
+  min-width: var(--cf-entity-data-card-width) !important;
+  max-width: var(--cf-entity-data-card-width) !important;
+  align-self: start !important;
+}
+
+.client-detail-vnext-page .client-detail-shell,
+.lead-detail-vnext-page .lead-detail-shell {
+  grid-template-columns: var(--cf-entity-data-card-width) minmax(0, 1fr) 310px !important;
+}
+
+/* 2) Jeden card contract dla danych. */
+.lead-detail-vnext-page .lead-detail-data-panel-card,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] {
+  box-sizing: border-box !important;
+  width: var(--cf-entity-data-card-width) !important;
+  min-width: var(--cf-entity-data-card-width) !important;
+  max-width: var(--cf-entity-data-card-width) !important;
+  min-height: var(--cf-entity-data-card-total-min-height) !important;
+  padding: var(--cf-entity-data-card-padding) !important;
+  border: 1px solid var(--cf-entity-data-card-border) !important;
+  border-radius: var(--cf-entity-data-card-radius) !important;
+  background: var(--cf-entity-data-card-bg) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-entity-data-card-shadow) !important;
+  color: #111827 !important;
+  overflow: visible !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+/* 3) Jeden header contract: tytul lewo, akcja prawo. */
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  column-gap: var(--cf-entity-data-card-title-gap) !important;
+  row-gap: 0 !important;
+  min-height: var(--cf-entity-data-card-title-height) !important;
+  height: var(--cf-entity-data-card-title-height) !important;
+  margin: 0 0 14px !important;
+  padding: 0 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > div,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head > div {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  min-height: var(--cf-entity-data-card-title-height) !important;
+  height: var(--cf-entity-data-card-title-height) !important;
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head h2,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head h2 {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head p,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-section-head p {
+  display: none !important;
+}
+
+/* 4) Jeden button contract. To jest swiadomie targetowane po atrybutach i po klasach shadcn, bo legacy style przebijaly poprzednie etapy. */
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button,
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button[class],
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] button[data-stage216m-r6-client-data-edit-action="true"],
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"].client-detail-visible-edit-action.client-detail-edit-main-button,
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"][class] {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 7px !important;
+  width: auto !important;
+  min-width: max-content !important;
+  max-width: max-content !important;
+  height: 34px !important;
+  min-height: 34px !important;
+  max-height: 34px !important;
+  margin: 0 !important;
+  padding: 0 13px !important;
+  border: 1px solid var(--cf-entity-data-action-blue) !important;
+  border-radius: 14px !important;
+  background: var(--cf-entity-data-action-blue) !important;
+  background-color: var(--cf-entity-data-action-blue) !important;
+  background-image: none !important;
+  color: #ffffff !important;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.18) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+  text-decoration: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button:hover,
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"]:hover {
+  border-color: var(--cf-entity-data-action-blue-hover) !important;
+  background: var(--cf-entity-data-action-blue-hover) !important;
+  background-color: var(--cf-entity-data-action-blue-hover) !important;
+  color: #ffffff !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-card .lead-detail-section-head > button svg,
+.client-detail-vnext-page [data-stage216m-r6-client-data-edit-action="true"] svg {
+  width: 15px !important;
+  height: 15px !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  flex: 0 0 auto !important;
+}
+
+/* 5) Jeden list/row contract: oba panele koncza sie na tej samej wysokosci. */
+.lead-detail-vnext-page .lead-detail-data-panel-list,
+.client-detail-vnext-page [data-stage216m-r6-client-data-panel-list="true"],
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-list {
+  display: grid !important;
+  grid-template-rows: repeat(7, var(--cf-entity-data-card-row-height)) !important;
+  gap: var(--cf-entity-data-card-list-gap) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-row,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-row {
+  box-sizing: border-box !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  height: var(--cf-entity-data-card-row-height) !important;
+  min-height: var(--cf-entity-data-card-row-height) !important;
+  max-height: var(--cf-entity-data-card-row-height) !important;
+  padding: 9px 12px !important;
+  border: 1px solid var(--cf-entity-data-card-border) !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-row small,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-row small {
+  display: block !important;
+  grid-column: 1 / -1 !important;
+  margin: 0 0 2px !important;
+  padding: 0 !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+  font-weight: 800 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-row strong,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-row strong {
+  display: block !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #111827 !important;
+  font-size: 13px !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.lead-detail-vnext-page .lead-detail-data-panel-row-copy button,
+.client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] .client-detail-data-panel-row-copy button {
+  align-self: center !important;
+  height: 30px !important;
+  min-height: 30px !important;
+  max-height: 30px !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--cf-entity-data-card-border) !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.04) !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+/* 6) Responsive nie blokuje ukladu na waskim ekranie. */
+@media (max-width: 1120px) {
+  .lead-detail-vnext-page .lead-detail-shell,
+  .client-detail-vnext-page .client-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .lead-detail-vnext-page .lead-detail-left-rail,
+  .client-detail-vnext-page .client-detail-left-rail,
+  .lead-detail-vnext-page .lead-detail-data-panel-card,
+  .client-detail-vnext-page [data-stage216m-r6-client-data-card="true"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Marker for automated guard. */
+.lead-detail-vnext-page[data-stage216m-r7-entity-data-card-source-truth-marker="true"],
+.client-detail-vnext-page[data-stage216m-r7-entity-data-card-source-truth-marker="true"] {
+  --stage216m-r7-entity-data-card-source-truth: 1;
+}
