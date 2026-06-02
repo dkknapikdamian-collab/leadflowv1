@@ -1855,11 +1855,11 @@ return (
 
             </section>
 
-          <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true" data-client-notes-list="true" data-client-notes-right-panel="true" data-client-detail-notes-list="true" data-client-detail-note-card="true" data-client-notes-right-rail="true" data-client-detail-notes-right-rail="true" data-clientdetail-notes-right-rail="true" data-clientdetail-notes-right-only="true" data-clientdetail-p1-repair3-right-rail-notes="true" data-clientdetail-p1-repair3-right-notes="true" data-clientdetail-p1-repair3-marker="right-rail-notes" data-right-rail-notes-repair="true" data-right-rail-notes-repair-component="true" data-client-notes-repair-component="right-rail" data-clientdetail-right-rail-notes-repair-component="true">
+          <section className="client-detail-right-card client-detail-recent-moves-card" data-client-recent-moves-panel="true" data-client-notes-list="true" data-client-notes-right-panel="true" data-client-detail-notes-list="true" data-client-detail-note-card="true" data-client-notes-right-rail="true" data-client-detail-notes-right-rail="true" data-clientdetail-notes-right-rail="true" data-clientdetail-notes-right-only="true" data-clientdetail-p1-repair3-right-rail-notes="true" data-clientdetail-p1-repair3-right-notes="true" data-clientdetail-p1-repair3-marker="right-rail-notes" data-right-rail-notes-repair="true" data-right-rail-notes-repair-component="true" data-client-notes-repair-component="right-rail" data-clientdetail-right-rail-notes-repair-component="true" data-stage216m-r8-client-activity-history-source="true">
         {/* client detail right rail notes repair component marker */}
                     <div className="client-detail-card-title-row">
                       <EntityIcon entity="activity" className="h-4 w-4" />
-                      <h2>Ostatnie ruchy</h2>
+                      <h2>Historia aktywności</h2>
                     </div>
                     {recentClientMovements.length ? (
                       <div className="client-detail-recent-moves-list">
@@ -1874,7 +1874,7 @@ return (
                         ))}
                       </div>
                     ) : (
-                      <p className="client-detail-light-empty">Brak ostatnich ruchów dla tego klienta.</p>
+                      <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact"><strong>Brak historii aktywności.</strong><span>Historia pojawi się po dodaniu notatek, zadań, wydarzeń, płatności albo zmian statusu.</span></div>
                     )}
                     <Link to="/activity" className="client-detail-recent-moves-link">
                       Zobacz całą Aktywność

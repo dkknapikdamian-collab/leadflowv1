@@ -1,0 +1,218 @@
+/* STAGE216M_R8_CLIENT_LEFT_RAIL_HISTORY_SOURCE_TRUTH
+   Cel: domknac lewa szyne ClientDetail wzgledem LeadDetail:
+   - Dane klienta o jeden takt wyzej,
+   - Historia aktywnosci klienta 1:1 do historii aktywnosci leada,
+   - jeden wizualny kontrakt dla dolnego kafelka historii.
+   Zakres: tylko CSS lewej szyny i TSX copy/ikonka historii klienta. Bez API, Supabase, platnosci, prawej szyny i danych.
+*/
+
+:root {
+  --cf-entity-left-rail-width: var(--cf-entity-data-card-width, 300px);
+  --cf-entity-left-rail-gap: 18px;
+  --cf-entity-left-rail-client-nudge-y: -18px;
+  --cf-entity-history-purple: #7c3aed;
+  --cf-entity-history-purple-soft: #f5f3ff;
+  --cf-entity-history-purple-border: #ddd6fe;
+  --cf-entity-history-card-shadow: 0 8px 22px rgba(124, 58, 237, 0.08);
+}
+
+/* 1) ClientDetail: lewa szyna ma zaczynac sie o jeden takt wyzej wzgledem panelu bocznego/LeadDetail. */
+.client-detail-vnext-page .client-detail-left-rail {
+  margin-top: var(--cf-entity-left-rail-client-nudge-y) !important;
+  width: var(--cf-entity-left-rail-width) !important;
+  min-width: var(--cf-entity-left-rail-width) !important;
+  max-width: var(--cf-entity-left-rail-width) !important;
+  gap: var(--cf-entity-left-rail-gap) !important;
+}
+
+/* 2) Wspolny kontrakt dolnej karty historii w lewym railu. */
+.lead-detail-vnext-page .lead-detail-left-activity-history-card,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"],
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] {
+  box-sizing: border-box !important;
+  width: var(--cf-entity-left-rail-width) !important;
+  min-width: var(--cf-entity-left-rail-width) !important;
+  max-width: var(--cf-entity-left-rail-width) !important;
+  padding: 20px !important;
+  border: 1px solid var(--cf-entity-history-purple-border) !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  background-image: none !important;
+  box-shadow: var(--cf-entity-history-card-shadow) !important;
+  color: #111827 !important;
+  overflow: hidden !important;
+  backdrop-filter: none !important;
+  filter: none !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+  margin: 0 0 8px !important;
+  color: var(--cf-entity-history-purple) !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row > svg,
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row .lucide,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row > svg,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row .lucide,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row > svg,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row .lucide {
+  width: 16px !important;
+  height: 16px !important;
+  color: var(--cf-entity-history-purple) !important;
+  stroke: var(--cf-entity-history-purple) !important;
+  flex: 0 0 auto !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-card-title-row h2,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-card-title-row h2,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-card-title-row h2 {
+  margin: 0 !important;
+  color: #111827 !important;
+  font-size: 16px !important;
+  line-height: 1.2 !important;
+  font-weight: 850 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.lead-detail-vnext-page .lead-detail-left-activity-history-card .lead-detail-left-card-intro,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-left-card-intro,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-left-card-intro {
+  margin: 0 0 14px !important;
+  color: #667085 !important;
+  font-size: 13px !important;
+  line-height: 1.45 !important;
+  font-weight: 500 !important;
+}
+
+/* 3) Wspolny rytm listy historii. */
+.lead-detail-vnext-page .lead-detail-activity-history-rail-list,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-moves-list,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-moves-list {
+  display: grid !important;
+  gap: 10px !important;
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-row,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row {
+  display: grid !important;
+  grid-template-columns: 38px minmax(0, 1fr) !important;
+  gap: 12px !important;
+  align-items: start !important;
+  min-height: 58px !important;
+  border: 1px solid #e4e7ec !important;
+  border-radius: 18px !important;
+  background: #ffffff !important;
+  padding: 13px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row::before,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row::before {
+  content: '' !important;
+  display: block !important;
+  width: 38px !important;
+  height: 38px !important;
+  border-radius: 15px !important;
+  background: var(--cf-entity-history-purple-soft) !important;
+  border: 1px solid var(--cf-entity-history-purple-border) !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row > span,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row > span {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-row strong,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row strong,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row strong {
+  display: block !important;
+  margin: 0 !important;
+  color: #7c3aed !important;
+  font-size: 14px !important;
+  line-height: 1.25 !important;
+  font-weight: 850 !important;
+  overflow-wrap: anywhere !important;
+}
+
+.lead-detail-vnext-page .lead-detail-activity-history-rail-row p,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row small,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row small {
+  display: block !important;
+  margin: 4px 0 0 !important;
+  color: #667085 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+  font-weight: 600 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-move-row em,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-move-row em {
+  grid-column: 2 !important;
+  margin-top: 2px !important;
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-style: normal !important;
+  font-weight: 800 !important;
+}
+
+.lead-detail-vnext-page .lead-detail-light-empty,
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-light-empty,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-light-empty,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-action-empty {
+  border: 1px dashed #d0d5dd !important;
+  border-radius: 20px !important;
+  background: #f9fafb !important;
+  color: #667085 !important;
+  padding: 18px !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+}
+
+.client-detail-vnext-page [data-client-recent-moves-panel="true"] .client-detail-recent-moves-link,
+.client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] .client-detail-recent-moves-link,
+.lead-detail-vnext-page .lead-detail-activity-history-rail-more summary {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-height: 30px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin-top: 12px !important;
+  border: 1px solid #bfdbfe !important;
+  border-radius: 999px !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  text-decoration: none !important;
+}
+
+@media (max-width: 1120px) {
+  .client-detail-vnext-page .client-detail-left-rail {
+    margin-top: 0 !important;
+  }
+
+  .lead-detail-vnext-page .lead-detail-left-activity-history-card,
+  .client-detail-vnext-page [data-client-recent-moves-panel="true"],
+  .client-detail-vnext-page [data-stage216m-r8-client-activity-history-source="true"] {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Marker for automated guard. */
+.lead-detail-vnext-page[data-stage216m-r8-left-rail-history-source-truth-marker="true"],
+.client-detail-vnext-page[data-stage216m-r8-left-rail-history-source-truth-marker="true"] {
+  --stage216m-r8-left-rail-history-source-truth: 1;
+}
