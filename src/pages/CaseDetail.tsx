@@ -85,6 +85,8 @@ const STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX = 'case detail operation works
 void STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX;
 const STAGE217_CASE_NOTE_HISTORY_SUMMARY = "Notatka zapisana przy sprawie. Pełna treść jest w panelu Notatki.";
 void STAGE217_CASE_NOTE_HISTORY_SUMMARY;
+const STAGE219_R4_CONTEXT_NOTE_REFRESH = 'case detail refreshes after shared note saved';
+void STAGE219_R4_CONTEXT_NOTE_REFRESH;
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -1303,6 +1305,19 @@ export default function CaseDetail() {
     };
   }, [refreshCaseData]);
 
+  useEffect(() => {
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail || {};
+      if (detail?.caseId && String(detail.caseId) !== String(caseId || '')) return;
+      if (detail?.payload?.recordType && detail.payload.recordType !== 'case') return;
+      void refreshCaseData();
+    };
+    window.addEventListener('closeflow:context-note-saved', listener as EventListener);
+    return () => window.removeEventListener('closeflow:context-note-saved', listener as EventListener);
+  }, [caseId, refreshCaseData]);
+  const STAGE219_R4_CASE_NOTE_SAVED_REFRESH_MARKER = 'data-stage219-case-note-saved-refresh';
+  void STAGE219_R4_CASE_NOTE_SAVED_REFRESH_MARKER;
+
   const completionPercent = useMemo(() => {
     if (items.length > 0) return calculateCompletion(items);
     if (typeof caseData?.completenessPercent === 'number') return Math.round(caseData.completenessPercent);
@@ -2014,16 +2029,43 @@ export default function CaseDetail() {
 
 
             <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true">
-              <div className="case-detail-section-head">
+              <div className="case-detail-section-head stage219-case-notes-head" data-stage219-case-notes-head="true">
                 <div>
                   <p className="case-detail-eyebrow">Notatki sprawy</p>
-                  <h2>Notatki operatora</h2>
-                  <p>PeĹ‚ne treĹ›ci notatek sÄ… tutaj. Historia pokazuje tylko Ĺ›lad aktywnoĹ›ci.</p>
+                  <h2>Notatki sprawy</h2>
+                  <p>Ostatnie notatki są tutaj. Pełna historia zostaje w historii aktywności.</p>
                 </div>
-                <Button type="button" onClick={openCaseNoteDialog}>
-                  <StickyNote className="h-4 w-4" />
-                  Dodaj notatkÄ™
-                </Button>
+                <div className="stage219-case-notes-actions" data-stage219-case-notes-actions="true">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={openCaseNoteDialog}
+                    data-context-action-kind="note"
+                    data-context-record-type="case"
+                    data-context-record-id={caseData.id}
+                    data-context-client-id={caseData.clientId || ''}
+                    data-context-lead-id={caseData.leadId || ''}
+                    data-context-record-label={getCaseTitle(caseData)}
+                    data-stage219-dictate-note="true"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    Dyktuj notatkę
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={openCaseNoteDialog}
+                    data-context-action-kind="note"
+                    data-context-record-type="case"
+                    data-context-record-id={caseData.id}
+                    data-context-client-id={caseData.clientId || ''}
+                    data-context-lead-id={caseData.leadId || ''}
+                    data-context-record-label={getCaseTitle(caseData)}
+                    data-stage219-add-note="true"
+                  >
+                    <StickyNote className="h-4 w-4" />
+                    Dodaj notatkę
+                  </Button>
+                </div>
               </div>
               {caseNoteItems.length === 0 ? (
                 <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszÄ… notatkÄ™ z szybkich akcji.</div>

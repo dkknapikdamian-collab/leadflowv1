@@ -19,6 +19,9 @@ const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-
 export const CONTEXT_ACTION_KIND_ATTR = 'data-context-action-kind';
 export const CONTEXT_ACTION_RECORD_TYPE_ATTR = 'data-context-record-type';
 export const CONTEXT_ACTION_RECORD_ID_ATTR = 'data-context-record-id';
+export const CONTEXT_ACTION_CLIENT_ID_ATTR = 'data-context-client-id';
+export const CONTEXT_ACTION_LEAD_ID_ATTR = 'data-context-lead-id';
+export const CONTEXT_ACTION_CASE_ID_ATTR = 'data-context-case-id';
 
 function normalizeText(value: string) {
   return String(value || '')
@@ -61,13 +64,16 @@ function buildContextFromExplicitClick(target: Element | null): TaskCreateDialog
   const recordId = String(explicitElement.getAttribute(CONTEXT_ACTION_RECORD_ID_ATTR) || '').trim();
   if (!recordType || !recordId) return null;
   const recordLabel = explicitElement.getAttribute('data-context-record-label')?.trim() || readVisibleTitle(recordType === 'lead' ? 'Lead' : recordType === 'client' ? 'Klient' : 'Sprawa');
+  const explicitLeadId = explicitElement.getAttribute(CONTEXT_ACTION_LEAD_ID_ATTR)?.trim() || null;
+  const explicitClientId = explicitElement.getAttribute(CONTEXT_ACTION_CLIENT_ID_ATTR)?.trim() || null;
+  const explicitCaseId = explicitElement.getAttribute(CONTEXT_ACTION_CASE_ID_ATTR)?.trim() || null;
   return {
     recordType,
     recordId,
     recordLabel,
-    leadId: recordType === 'lead' ? recordId : null,
-    clientId: recordType === 'client' ? recordId : null,
-    caseId: recordType === 'case' ? recordId : null,
+    leadId: explicitLeadId || (recordType === 'lead' ? recordId : null),
+    clientId: explicitClientId || (recordType === 'client' ? recordId : null),
+    caseId: explicitCaseId || (recordType === 'case' ? recordId : null),
   };
 }
 

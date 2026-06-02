@@ -20,7 +20,10 @@
   padding: 18px 22px !important;
 }
 
-.case-detail-vnext-page .case-detail-header-copy::after { content: none !important; display: none !important; }
+.case-detail-vnext-page .case-detail-header-copy::after {
+  content: none !important;
+  display: none !important;
+}
 
 .case-detail-vnext-page .case-detail-title-row h1 {
   color: var(--cf-detail-text) !important;
@@ -41,10 +44,33 @@
 .case-detail-main-column,
 .case-detail-right-rail { display: contents !important; }
 
-.stage217-case-operation-workspace { grid-column: 1 !important; grid-row: 1 / span 4 !important; margin: 0 !important; padding: 20px !important; }
-.case-detail-right-rail [data-case-quick-actions-anchor='case-detail'] { grid-column: 2 !important; grid-row: 1 !important; }
-.stage217-case-notes-panel { grid-column: 2 !important; grid-row: 2 !important; margin: 0 !important; max-height: none !important; overflow: hidden !important; padding: 16px !important; }
-.case-detail-right-rail [data-case-finance-panel='true'] { grid-column: 2 !important; grid-row: 3 !important; margin: 0 !important; padding: 16px !important; }
+.stage217-case-operation-workspace {
+  grid-column: 1 !important;
+  grid-row: 1 / span 4 !important;
+  margin: 0 !important;
+  padding: 20px !important;
+}
+
+.case-detail-right-rail [data-case-quick-actions-anchor='case-detail'] {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+.stage217-case-notes-panel {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+  margin: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+  padding: 16px !important;
+}
+
+.case-detail-right-rail [data-case-finance-panel='true'] {
+  grid-column: 2 !important;
+  grid-row: 3 !important;
+  margin: 0 !important;
+  padding: 16px !important;
+}
 
 .stage217-case-operation-workspace,
 .stage217-case-notes-panel,
@@ -55,20 +81,31 @@
   box-shadow: var(--cf-detail-card-shadow) !important;
 }
 
-.stage217-case-operation-head h2 { color: var(--cf-detail-text) !important; font-size: 21px !important; margin-bottom: 14px !important; }
+.stage217-case-operation-head h2 {
+  color: var(--cf-detail-text) !important;
+  font-size: 21px !important;
+  margin-bottom: 14px !important;
+}
+
 .stage217-case-service-card p { font-size: 0 !important; }
 .stage217-case-service-card p::after { display: inline !important; font-size: 12px !important; }
-.stage217-case-service-card--next p::after { content: 'Dodaj zadanie albo wydarzenie, żeby sprawa nie wisiała bez terminu.'; }
+.stage217-case-service-card--next p::after { content: 'Dodaj zadanie albo wydarzenie, zeby sprawa nie wisiala bez terminu.'; }
 .stage217-case-service-card--blockers p::after { content: 'Brak aktywnych blokad po stronie sprawy.'; }
-.stage217-case-service-card--workload p::after { content: 'Zadania i wydarzenia przypięte do tej sprawy.'; }
+.stage217-case-service-card--workload p::after { content: 'Zadania i wydarzenia przypiete do tej sprawy.'; }
 .stage217-case-service-card--finance { display: none !important; }
 
-.stage217-case-notes-panel .case-detail-section-head { border-bottom: 1px solid rgba(148, 163, 184, 0.16) !important; margin-bottom: 12px !important; padding-bottom: 12px !important; }
+.stage217-case-notes-panel .case-detail-section-head {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16) !important;
+  margin-bottom: 12px !important;
+  padding-bottom: 12px !important;
+}
+
 .stage217-case-notes-panel .case-detail-section-head button { font-size: 0 !important; }
-.stage217-case-notes-panel .case-detail-section-head button::after { content: 'Dodaj notatkę'; font-size: 12px !important; font-weight: 800 !important; }
+.stage217-case-notes-panel .case-detail-section-head button::after { content: 'Dodaj notatke'; font-size: 12px !important; font-weight: 800 !important; }
 .stage217-case-notes-panel .case-detail-light-empty { color: transparent !important; font-size: 0 !important; }
-.stage217-case-notes-panel .case-detail-light-empty::after { color: var(--cf-detail-muted) !important; content: 'Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.'; font-size: 12px !important; }
+.stage217-case-notes-panel .case-detail-light-empty::after { color: var(--cf-detail-muted) !important; content: 'Brak notatek przy tej sprawie. Dodaj pierwsza notatke z szybkich akcji.'; font-size: 12px !important; }
 .stage217-case-note-row:nth-of-type(n + 4) { display: none !important; }
+
 .case-detail-right-rail [data-case-finance-panel='true'] .case-detail-right-actions { display: none !important; }
 
 @media (max-width: 1120px) {
@@ -79,141 +116,99 @@
   .case-detail-right-rail [data-case-finance-panel='true'] { grid-column: 1 !important; grid-row: auto !important; }
 }
 
-/* STAGE219_R2_CASE_DETAIL_ONE_SCREEN_COMPACT */
-.case-detail-vnext-page.case-detail-vnext-page { max-width: 1420px !important; padding-top: 22px !important; }
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-header { border-radius: 20px !important; margin-bottom: 14px !important; padding: 14px 20px !important; }
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-title-row h1 { font-size: clamp(20px, 1.75vw, 25px) !important; }
-.case-detail-vnext-page .case-detail-shell.case-detail-shell { gap: 18px !important; grid-template-columns: minmax(0, 1fr) 280px !important; }
-.case-detail-vnext-page .stage217-case-operation-workspace.stage217-case-operation-workspace { padding: 16px !important; }
-.case-detail-vnext-page .stage217-case-operation-head h2 { font-size: 18px !important; margin-bottom: 10px !important; }
-.case-detail-vnext-page .stage217-case-service-grid.stage217-case-service-grid { gap: 8px !important; }
-.case-detail-vnext-page .stage217-case-service-card.stage217-case-service-card { border-radius: 15px !important; gap: 6px 10px !important; grid-template-columns: 30px minmax(0, 1fr) !important; min-height: 74px !important; padding: 11px 12px !important; }
-.case-detail-vnext-page .stage217-case-service-card.stage217-case-service-card::before { font-size: 12px !important; height: 24px !important; width: 24px !important; }
-.case-detail-vnext-page .stage217-case-service-card .stage217-case-service-card__label::after { font-size: 10px !important; }
-.case-detail-vnext-page .stage217-case-service-card h3,
-.case-detail-vnext-page .stage217-case-service-card__metric { font-size: 15px !important; line-height: 1.1 !important; margin: 0 !important; }
-.case-detail-vnext-page .stage217-case-service-card p { color: transparent !important; font-size: 0 !important; height: 16px !important; line-height: 1.25 !important; overflow: hidden !important; }
-.case-detail-vnext-page .stage217-case-service-card p::after { color: var(--cf-detail-muted) !important; display: inline !important; font-size: 11px !important; }
-.case-detail-vnext-page .stage217-case-service-card--next p::after { content: 'Dodaj zadanie albo wydarzenie.' !important; }
-.case-detail-vnext-page .stage217-case-service-card--blockers p::after { content: 'Brak aktywnych blokad.' !important; }
-.case-detail-vnext-page .stage217-case-service-card--workload p::after { content: 'Zadania i wydarzenia tej sprawy.' !important; }
-.case-detail-vnext-page .case-quick-actions,
+
+/* STAGE219_R4_CASE_DETAIL_SPLIT_COLUMNS_NOTES_FINANCE
+   Finance goes up in the right rail, notes become a readable wide left panel.
+   This overrides earlier display: contents experiments. */
+.case-detail-vnext-page .case-detail-shell.case-detail-shell {
+  align-items: start !important;
+  display: grid !important;
+  gap: 18px !important;
+  grid-template-columns: minmax(0, 1fr) 292px !important;
+}
+
+.case-detail-vnext-page .case-detail-main-column {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .stage217-case-operation-workspace,
 .case-detail-vnext-page .stage217-case-notes-panel,
-.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] { border-radius: 18px !important; box-shadow: 0 12px 32px rgba(15, 23, 42, 0.06) !important; }
-.case-detail-vnext-page .case-quick-actions__grid { gap: 6px !important; }
-.case-detail-vnext-page .case-quick-actions__button { min-height: 34px !important; padding-block: 7px !important; }
-.case-detail-vnext-page .stage217-case-notes-panel.stage217-case-notes-panel { padding: 12px !important; }
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head { margin-bottom: 8px !important; padding-bottom: 8px !important; }
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head h2 { font-size: 13px !important; }
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head button::after { content: 'Dodaj' !important; }
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-light-empty { padding: 12px !important; }
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-light-empty::after { content: 'Brak notatek. Dodaj pierwszą z szybkich akcji.' !important; font-size: 11px !important; }
-.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] { padding: 12px !important; }
-.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] .case-detail-card-title-row { margin-bottom: 8px !important; padding-bottom: 8px !important; }
-.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] .case-finance-panel-actions { gap: 6px !important; margin-top: 8px !important; }
-.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] small { font-size: 10px !important; line-height: 1.35 !important; }
-.case-detail-vnext-page .case-detail-shell [role='tablist'],
-.case-detail-vnext-page .case-detail-shell [role='tabpanel'] { display: none !important; }
-@media (max-width: 1120px) { .case-detail-vnext-page .case-detail-shell.case-detail-shell { grid-template-columns: 1fr !important; } }
-
-/* STAGE219_R3_CASE_HEADER_AND_NOTES_BALANCE
-   Decyzja: nazwa klienta/sprawy idzie do gornej belki obok powrotu.
-   Notatki wychodza z prawego komina do szerokiej lewej kolumny, zeby byly czytelne. */
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-header {
-  align-items: center !important;
-  display: flex !important;
-  min-height: 78px !important;
-  padding: 14px 22px !important;
-}
-
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-header-copy {
-  align-items: center !important;
-  display: flex !important;
-  flex-direction: row !important;
-  flex-wrap: wrap !important;
-  gap: 12px !important;
-  width: 100% !important;
-}
-
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-back-button {
-  flex: 0 0 auto !important;
-  margin: 0 !important;
-}
-
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-title-row {
-  align-items: center !important;
-  display: flex !important;
-  flex: 1 1 auto !important;
-  min-width: 260px !important;
-  width: auto !important;
-}
-
-.case-detail-vnext-page.case-detail-vnext-page .case-detail-title-row h1 {
-  font-size: clamp(18px, 1.55vw, 23px) !important;
-  line-height: 1.15 !important;
-  margin: 0 !important;
-}
-
-.case-detail-vnext-page .stage217-case-operation-workspace.stage217-case-operation-workspace {
-  grid-column: 1 !important;
-  grid-row: 1 !important;
-}
-
-.case-detail-vnext-page .case-detail-right-rail [data-case-quick-actions-anchor='case-detail'] {
-  grid-column: 2 !important;
-  grid-row: 1 !important;
-}
-
-.case-detail-vnext-page .stage217-case-notes-panel.stage217-case-notes-panel {
-  grid-column: 1 !important;
-  grid-row: 2 !important;
-  max-height: 220px !important;
+.case-detail-vnext-page .case-detail-right-rail [data-case-quick-actions-anchor='case-detail'],
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] {
+  grid-column: auto !important;
+  grid-row: auto !important;
 }
 
 .case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] {
-  grid-column: 2 !important;
-  grid-row: 2 !important;
+  order: 2 !important;
+  padding: 14px !important;
 }
 
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head h2 {
-  color: transparent !important;
-  font-size: 0 !important;
+.case-detail-vnext-page .case-detail-right-rail [data-case-quick-actions-anchor='case-detail'] {
+  order: 1 !important;
 }
 
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head h2::after {
-  color: var(--cf-detail-text) !important;
-  content: 'Notatki sprawy';
-  font-size: 14px !important;
-  font-weight: 850 !important;
+.case-detail-vnext-page .stage217-case-notes-panel.stage217-case-notes-panel {
+  max-height: 238px !important;
+  padding: 14px !important;
 }
 
+.case-detail-vnext-page .stage219-case-notes-head {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 12px !important;
+}
+
+.case-detail-vnext-page .stage219-case-notes-actions {
+  align-items: center !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  justify-content: flex-end !important;
+}
+
+.case-detail-vnext-page .stage219-case-notes-actions button {
+  font-size: 12px !important;
+  min-height: 34px !important;
+  padding-inline: 12px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head button {
+  font-size: 12px !important;
+}
+
+.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head button::after,
 .case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head > div::after {
-  background: rgba(37, 99, 235, 0.06);
-  border: 1px solid rgba(37, 99, 235, 0.14);
-  border-radius: 999px;
-  color: #2563eb;
-  content: 'Dyktuj notatkę';
-  display: inline-flex;
-  font-size: 11px;
-  font-weight: 800;
-  margin-top: 6px;
-  padding: 5px 9px;
-}
-
-.case-detail-vnext-page .stage217-case-notes-panel .case-detail-section-head button::after {
-  content: 'Dodaj notatkę' !important;
+  content: none !important;
+  display: none !important;
 }
 
 .case-detail-vnext-page .stage217-case-notes-list {
-  max-height: 118px !important;
+  max-height: 132px !important;
+  overflow: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] .case-finance-panel-actions {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] .case-detail-card-title-row h2 {
+  font-size: 14px !important;
 }
 
 @media (max-width: 1120px) {
-  .case-detail-vnext-page .stage217-case-operation-workspace.stage217-case-operation-workspace,
-  .case-detail-vnext-page .case-detail-right-rail [data-case-quick-actions-anchor='case-detail'],
-  .case-detail-vnext-page .stage217-case-notes-panel.stage217-case-notes-panel,
-  .case-detail-vnext-page .case-detail-right-rail [data-case-finance-panel='true'] {
-    grid-column: 1 !important;
-    grid-row: auto !important;
+  .case-detail-vnext-page .case-detail-shell.case-detail-shell {
+    grid-template-columns: 1fr !important;
   }
 }

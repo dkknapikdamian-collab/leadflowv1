@@ -52,15 +52,15 @@ export default function CaseQuickActions({
       </header>
 
       <div className="case-quick-actions__grid">
-        <button type="button" className={actionButtonClassName('note')} onClick={() => openSharedAction('note')} data-context-action-kind="note" data-context-record-type="case" data-context-record-id={caseId} data-context-record-label={recordLabel}>
+        <button type="button" className={actionButtonClassName('note')} onClick={() => openSharedAction('note')} data-context-action-kind="note" data-context-record-type="case" data-context-record-id={caseId} data-context-client-id={clientId || ''} data-context-lead-id={leadId || ''} data-context-record-label={recordLabel}>
           <StickyNote className="h-4 w-4" />
           <span>Dodaj notatkę</span>
         </button>
-        <button type="button" className={actionButtonClassName('task')} onClick={() => openSharedAction('task')} data-context-action-kind="task" data-context-record-type="case" data-context-record-id={caseId} data-context-record-label={recordLabel}>
+        <button type="button" className={actionButtonClassName('task')} onClick={() => openSharedAction('task')} data-context-action-kind="task" data-context-record-type="case" data-context-record-id={caseId} data-context-client-id={clientId || ''} data-context-lead-id={leadId || ''} data-context-record-label={recordLabel}>
           <ListChecks className="h-4 w-4" />
           <span>Dodaj zadanie</span>
         </button>
-        <button type="button" className={actionButtonClassName('event')} onClick={() => openSharedAction('event')} data-context-action-kind="event" data-context-record-type="case" data-context-record-id={caseId} data-context-record-label={recordLabel}>
+        <button type="button" className={actionButtonClassName('event')} onClick={() => openSharedAction('event')} data-context-action-kind="event" data-context-record-type="case" data-context-record-id={caseId} data-context-client-id={clientId || ''} data-context-lead-id={leadId || ''} data-context-record-label={recordLabel}>
           <CalendarClock className="h-4 w-4" />
           <span>Dodaj wydarzenie</span>
         </button>
