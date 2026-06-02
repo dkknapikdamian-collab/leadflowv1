@@ -1,0 +1,88 @@
+/* STAGE216M_R16_R2_CLIENT_NOTE_MODAL_SOURCE_TRUTH
+   Client notes follow LeadDetail modal behavior: button opens modal, dictation writes to the same modal draft. */
+
+.client-detail-note-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.client-note-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.62);
+  backdrop-filter: blur(4px);
+}
+
+.client-note-modal-card {
+  position: relative;
+  width: min(680px, calc(100vw - 32px));
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  background: #0f172a;
+  color: #e5e7eb;
+  box-shadow: 0 28px 90px rgba(15, 23, 42, 0.42);
+  padding: 22px 24px 20px;
+}
+
+.client-note-modal-header h2 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #f8fafc;
+}
+
+.client-note-modal-header p {
+  margin: 6px 0 18px;
+  font-size: 13px;
+  color: #cbd5e1;
+}
+
+.client-note-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(255, 255, 255, 0.88);
+  color: #0f172a;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.client-note-modal-textarea {
+  min-height: 112px;
+  width: 100%;
+  resize: vertical;
+  background: #ffffff;
+  color: #0f172a;
+  border-radius: 12px;
+  border: 1px solid #93c5fd;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.16);
+}
+
+.client-note-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(148, 163, 184, 0.24);
+}
+
+.client-detail-note-dictation-preview {
+  margin-top: 10px;
+  color: #bfdbfe;
+  font-size: 12px;
+}

@@ -1163,6 +1163,7 @@ export default function ClientDetail() {
   const [clientNoteInterimText, setClientNoteInterimText] = useState('');
   const [clientNoteDraft, setClientNoteDraft] = useState('');
   const [clientNoteSaving, setClientNoteSaving] = useState(false);
+  const [clientNoteModalOpen, setClientNoteModalOpen] = useState(false);
   const [clientNoteAutosaving, setClientNoteAutosaving] = useState(false);
   const clientNoteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const clientNoteVoiceDirtyRef = useRef(false);
@@ -1538,6 +1539,7 @@ export default function ClientDetail() {
       setActivities((previous) => normalizeClientActivitiesForA1([savedActivity, ...previous]));
       setClientNoteDraft('');
       setClientNoteInterimText('');
+      setClientNoteModalOpen(false);
       clientNoteVoiceDirtyRef.current = false;
       toast.success('Notatka dodana');
     } catch (error: any) {
@@ -1554,6 +1556,8 @@ export default function ClientDetail() {
       stopClientNoteSpeech();
       return;
     }
+    setClientNoteModalOpen(true);
+    void 'data-stage216m-r16-r2-speech-opens-modal';
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
       toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
@@ -1931,29 +1935,32 @@ return (
               />
             </div>
 
-            <section className="client-detail-section-card client-detail-notes-center-section" data-stage216m-r15-r5-client-notes-source="true" data-client-notes-center-list="true">
+                        <section className="client-detail-section-card client-detail-notes-center-section" data-stage216m-r15-r5-client-notes-source="true" data-stage216m-r16-r2-client-note-modal-source="true" data-client-notes-center-list="true">
               <div className="client-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
                 </div>
-                <Button type="button" variant="outline" size="sm" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteSaving}>
-                  {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                  {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
-                </Button>
-              </div>
-
-              <div className="client-detail-note-composer" data-stage216m-r15-r5-client-note-composer="true">
-                <Textarea
-                  value={clientNoteDraft}
-                  onChange={(event) => setClientNoteDraft(event.target.value)}
-                  placeholder="Wpisz roboczą notatkę klienta..."
-                  disabled={!hasAccess || clientNoteSaving}
-                />
-                {clientNoteInterimText ? <p className="client-detail-note-dictation-preview">Dyktowanie: {clientNoteInterimText}</p> : null}
-                <div className="client-detail-note-composer-actions">
-                  <Button type="button" onClick={handleAddClientNote} disabled={!hasAccess || clientNoteSaving || !clientNoteDraft.trim()}>
+                <div className="client-detail-note-actions-row" data-stage216m-r16-r2-client-note-actions="true">
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={() => setClientNoteModalOpen(true)}
+                    disabled={!hasAccess || clientNoteSaving}
+                    data-stage216m-r16-r2-client-note-add="true"
+                  >
                     <Plus className="h-4 w-4" />
-                    {clientNoteSaving ? 'Dodaję...' : 'Dodaj notatkę'}
+                    Dodaj notatkę
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleToggleClientNoteSpeech}
+                    disabled={!hasAccess || clientNoteSaving}
+                    data-stage216m-r16-r2-client-note-dictate="true"
+                  >
+                    {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                    {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
                   </Button>
                 </div>
               </div>
@@ -1991,6 +1998,58 @@ return (
                 )}
               </div>
             </section>
+
+            {clientNoteModalOpen ? (
+              <div className="client-note-modal-backdrop" data-stage216m-r16-r2-client-note-modal="true" role="presentation">
+                <section className="client-note-modal-card" role="dialog" aria-modal="true" aria-labelledby="client-note-modal-title">
+                  <button
+                    type="button"
+                    className="client-note-modal-close"
+                    aria-label="Zamknij okno notatki"
+                    onClick={() => {
+                      if (clientNoteListening) stopClientNoteSpeech();
+                      setClientNoteModalOpen(false);
+                    }}
+                    disabled={clientNoteSaving}
+                  >
+                    ×
+                  </button>
+                  <div className="client-note-modal-header">
+                    <h2 id="client-note-modal-title">Dodaj notatkę</h2>
+                    <p>Zapisz roboczą notatkę przy kliencie.</p>
+                  </div>
+                  <Textarea
+                    className="client-note-modal-textarea"
+                    value={clientNoteDraft}
+                    onChange={(event) => setClientNoteDraft(event.target.value)}
+                    placeholder="Wpisz notatkę..."
+                    disabled={!hasAccess || clientNoteSaving}
+                    autoFocus
+                  />
+                  {clientNoteInterimText ? <p className="client-detail-note-dictation-preview">Dyktowanie: {clientNoteInterimText}</p> : null}
+                  <div className="client-note-modal-footer">
+                    <Button type="button" variant="outline" onClick={handleToggleClientNoteSpeech} disabled={!hasAccess || clientNoteSaving}>
+                      {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                      {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        if (clientNoteListening) stopClientNoteSpeech();
+                        setClientNoteModalOpen(false);
+                      }}
+                      disabled={clientNoteSaving}
+                    >
+                      Anuluj
+                    </Button>
+                    <Button type="button" onClick={handleAddClientNote} disabled={!hasAccess || clientNoteSaving || !clientNoteDraft.trim()}>
+                      {clientNoteSaving ? 'Zapisuję...' : 'Zapisz notatkę'}
+                    </Button>
+                  </div>
+                </section>
+              </div>
+            ) : null}
 
             <nav className="client-detail-tabs" aria-label="Zakładki klienta">
               {[
