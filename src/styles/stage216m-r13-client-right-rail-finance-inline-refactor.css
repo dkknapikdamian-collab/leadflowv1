@@ -1,0 +1,145 @@
+/* STAGE216M_R13_CLIENT_RIGHT_RAIL_FINANCE_INLINE_REFACTOR
+   Cel:
+   - ClientDetail: finanse klienta musza byc widoczne po prawej stronie nawet jesli trzecia karta raila jest zjadana przez stary layout.
+   - Rozwiazanie: finansowy mini-kafelek renderowany wewnatrz widocznej karty Glownej sprawy, plus ukrycie starego duplikatu.
+   - ClientDetail: usunac robocze copy pod Notatkami i Najblizszymi dzialaniami, jesli cache/stare style jeszcze je pokazuja.
+   - Podsumowanie: trzy rowne kafle, bez dominujacego hero.
+   Zakres: TSX structural safety + CSS visual lock. Bez API, Supabase, platnosci runtime i danych.
+*/
+
+:root {
+  --stage216m-r13-finance-inline-radius: 18px;
+  --stage216m-r13-finance-inline-bg: #f9fafb;
+  --stage216m-r13-finance-inline-border: #e4e7ec;
+}
+
+.client-detail-vnext-page .client-detail-right-rail {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+  overflow: visible !important;
+  max-height: none !important;
+}
+
+/* Stary osobny kafel finansow bywa zjadany przez legacy layout. Zostaje w TSX jako bezpieczny fallback, ale UI pokazuje wersje inline. */
+.client-detail-vnext-page .client-detail-right-rail [data-stage216m-r12-client-finance-hard-render='true'] {
+  display: none !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r13-client-finance-inline-card='true'] {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  margin-top: 14px !important;
+  padding: 14px !important;
+  border-radius: var(--stage216m-r13-finance-inline-radius) !important;
+  border: 1px solid var(--stage216m-r13-finance-inline-border) !important;
+  background: var(--stage216m-r13-finance-inline-bg) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7) !important;
+}
+
+.client-detail-vnext-page .client-detail-finance-inline-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 0 10px !important;
+  color: #111827 !important;
+}
+
+.client-detail-vnext-page .client-detail-finance-inline-title h3 {
+  margin: 0 !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  font-weight: 900 !important;
+}
+
+.client-detail-vnext-page .client-detail-finance-inline-metrics {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.client-detail-vnext-page .client-detail-finance-inline-metrics small {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 7px 9px !important;
+  border-radius: 12px !important;
+  background: #ffffff !important;
+  color: #475467 !important;
+  font-size: 11.5px !important;
+  line-height: 1.25 !important;
+  font-weight: 750 !important;
+}
+
+.client-detail-vnext-page .client-detail-finance-inline-metrics small strong {
+  color: #111827 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r13-client-finance-inline-card='true'] .client-detail-right-actions {
+  margin-top: 10px !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r13-client-finance-inline-card='true'] .client-detail-right-actions button {
+  width: 100% !important;
+  min-height: 34px !important;
+  border-radius: 12px !important;
+  justify-content: center !important;
+}
+
+/* Copy cleanup defensywnie, bo runtime widzial stare opisy mimo patchy. */
+.client-detail-vnext-page .client-detail-notes-center-section .client-detail-section-head p,
+.client-detail-vnext-page .client-detail-upcoming-actions-card .client-detail-right-card-intro,
+.client-detail-vnext-page .client-detail-upcoming-actions-card > p {
+  display: none !important;
+}
+
+/* Podsumowanie: trzy rowne kafle. */
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-top-cards {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-top-cards-side {
+  display: contents !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-card,
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-completeness-card,
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-summary-card.client-detail-finance-card {
+  grid-column: auto !important;
+  grid-row: auto !important;
+  min-height: 138px !important;
+  height: auto !important;
+  padding: 18px !important;
+  border-radius: 24px !important;
+  border: 1px solid #e4e7ec !important;
+  background: rgba(255,255,255,.96) !important;
+  background-image: none !important;
+  color: #111827 !important;
+  box-shadow: 0 8px 22px rgba(16,24,40,.05) !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-date {
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  color: #7c3aed !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-vnext-page .client-detail-tab-panel .client-detail-top-cards {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+.client-detail-vnext-page[data-stage216m-r13-client-right-rail-finance-inline-refactor-marker='true'] {
+  --stage216m-r13-client-right-rail-finance-inline-refactor: 1;
+}

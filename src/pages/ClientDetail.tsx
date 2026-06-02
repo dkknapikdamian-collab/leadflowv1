@@ -2294,6 +2294,25 @@ return (
               ) : (
                 <Button type="button" size="sm" onClick={openNewCase} disabled={!hasAccess}>Utwórz sprawę</Button>
               )}
+              <div className="client-detail-right-finance-inline-card" data-stage216m-r13-client-finance-inline-card="true">
+                <div className="client-detail-finance-inline-title"><EntityIcon entity="client" className="h-4 w-4" /><h3>Finanse klienta</h3></div>
+                <div className="client-detail-finance-inline-metrics">
+                  <small><span>Suma wartoĹ›ci spraw</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Suma wpĹ‚at</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Do domkniÄ™cia</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Sprawy aktywne / rozliczone</span><strong>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</strong></small>
+                </div>
+                <div className="client-detail-right-actions">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwĂłrz sprawÄ™ klienta.'))}
+                  >
+                    Finanse w sprawie
+                  </Button>
+                </div>
+              </div>
             </section>
 
             <section className="right-card client-detail-right-card client-detail-right-finance-card-hard-render" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true" data-stage216m-r12-client-finance-hard-render="true">
