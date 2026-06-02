@@ -1,0 +1,219 @@
+/* STAGE216M_R11_CLIENT_FINANCE_SUMMARY_RIGHT_RAIL_LOCK
+   Cel:
+   - ClientDetail: prawa szyna ma jawnie pokazac 3 karty: Najblizsze dzialania -> Glowna sprawa -> Finanse klienta.
+   - ClientDetail: Podsumowanie nie moze pokazywac jednego wielkiego kafla; ma miec 3 rowne kafle: akcja -> kompletność -> finanse.
+   - Zakres: CSS visual/source-truth lock. Bez API, Supabase, platnosci runtime i danych.
+*/
+
+:root {
+  --stage216m-r11-summary-card-min-height: 142px;
+  --stage216m-r11-summary-card-radius: 24px;
+  --stage216m-r11-summary-card-border: #e4e7ec;
+  --stage216m-r11-summary-card-bg: rgba(255, 255, 255, 0.96);
+  --stage216m-r11-summary-card-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  --stage216m-r11-right-rail-gap: 14px;
+}
+
+/* 1) Prawa szyna: jawny porzadek i kompakt, zeby finanse nie spadaly pod fold. */
+.client-detail-vnext-page .client-detail-right-rail {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--stage216m-r11-right-rail-gap) !important;
+  align-items: stretch !important;
+}
+
+.client-detail-vnext-page .client-detail-right-rail .right-card.client-detail-right-card,
+.client-detail-vnext-page .client-detail-right-rail .client-detail-right-card {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  padding: 17px !important;
+  border-radius: 24px !important;
+  border: 1px solid #e4e7ec !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05) !important;
+  overflow: visible !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-upcoming-actions-card='true'] {
+  order: 10 !important;
+}
+
+.client-detail-vnext-page [data-stage216m-r4-client-main-case-card='true'] {
+  order: 20 !important;
+}
+
+.client-detail-vnext-page [data-client-finance-summary='true'][data-stage216m-r4-client-finance-card='true'] {
+  order: 30 !important;
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+  max-height: none !important;
+  height: auto !important;
+  margin: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-right-rail .client-detail-card-title-row {
+  margin: 0 0 10px !important;
+}
+
+.client-detail-vnext-page .client-detail-right-card-intro {
+  margin: 0 0 10px !important;
+  color: #475467 !important;
+  font-size: 13px !important;
+  line-height: 1.38 !important;
+}
+
+.client-detail-vnext-page .client-detail-upcoming-actions-list {
+  display: grid !important;
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-action-empty-compact {
+  min-height: 0 !important;
+  padding: 13px 14px !important;
+  border-radius: 16px !important;
+}
+
+.client-detail-vnext-page .client-detail-right-actions,
+.client-detail-vnext-page .client-detail-upcoming-actions-cta {
+  margin-top: 10px !important;
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.client-detail-vnext-page .client-detail-right-actions button,
+.client-detail-vnext-page .client-detail-upcoming-actions-cta button {
+  width: 100% !important;
+  min-height: 34px !important;
+  border-radius: 12px !important;
+  justify-content: center !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.client-detail-vnext-page [data-client-finance-summary='true'][data-stage216m-r4-client-finance-card='true'] small {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin: 0 0 7px !important;
+  padding: 7px 9px !important;
+  border-radius: 12px !important;
+  background: #f9fafb !important;
+  color: #475467 !important;
+  font-size: 12px !important;
+  line-height: 1.25 !important;
+  font-weight: 750 !important;
+}
+
+.client-detail-vnext-page [data-client-finance-summary='true'][data-stage216m-r4-client-finance-card='true'] .client-detail-right-actions {
+  grid-template-columns: 1fr !important;
+}
+
+/* 2) Podsumowanie klienta: 3 rowne kafle, nie jeden wielki hero. */
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-top-cards {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  align-items: stretch !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-top-cards-side {
+  display: contents !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-card,
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-completeness-card,
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-summary-card.client-detail-finance-card {
+  box-sizing: border-box !important;
+  min-height: var(--stage216m-r11-summary-card-min-height) !important;
+  height: auto !important;
+  padding: 18px !important;
+  border-radius: var(--stage216m-r11-summary-card-radius) !important;
+  border: 1px solid var(--stage216m-r11-summary-card-border) !important;
+  background: var(--stage216m-r11-summary-card-bg) !important;
+  background-image: none !important;
+  color: #111827 !important;
+  box-shadow: var(--stage216m-r11-summary-card-shadow) !important;
+  align-content: start !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-kicker {
+  color: #667085 !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-date {
+  color: #7c3aed !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.02em !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-sub,
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-completeness-card p,
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-summary-card p {
+  color: #475467 !important;
+  font-size: 12px !important;
+  line-height: 1.45 !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-hero-cta {
+  width: fit-content !important;
+  min-height: 34px !important;
+  margin-top: 10px !important;
+  border-radius: 12px !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  padding: 8px 12px !important;
+  font-size: 12px !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-completeness-card strong {
+  font-size: 22px !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-finance-metrics {
+  display: grid !important;
+  gap: 7px !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-finance-metrics > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  padding: 7px 9px !important;
+  border-radius: 12px !important;
+  background: #f9fafb !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-finance-metrics small {
+  color: #667085 !important;
+  font-size: 11px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.client-detail-vnext-page .client-detail-tab-panel .client-detail-finance-metrics strong {
+  color: #111827 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-vnext-page .client-detail-tab-panel .client-detail-top-cards {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Marker for automated guard. */
+.client-detail-vnext-page[data-stage216m-r11-client-finance-summary-right-rail-lock-marker='true'] {
+  --stage216m-r11-client-finance-summary-right-rail-lock: 1;
+}
