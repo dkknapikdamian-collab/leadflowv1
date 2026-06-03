@@ -1,4 +1,4 @@
-﻿import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AlertCircle, ArrowLeft, ArrowRight, CalendarClock, Check, CheckCircle2, Clock, Copy, ExternalLink, History, ListChecks, Loader2, MessageSquare, Paperclip, Plus, Send, StickyNote, Trash2, X } from 'lucide-react';
 import {
@@ -90,7 +90,7 @@ const STAGE219_R4_CONTEXT_NOTE_REFRESH = 'case detail refreshes after shared not
 void STAGE219_R4_CONTEXT_NOTE_REFRESH;
 
 type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
-type CaseActionAccordionGroup = 'next' | 'blockers' | 'active';
+type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
 type CaseNoteFollowUpChoice = 'today' | 'tomorrow' | 'two_days' | 'week' | 'custom';
 
@@ -2144,7 +2144,7 @@ export default function CaseDetail() {
                   const isOpen = caseActionOpenGroup === group.key;
                   return (
                     <article className={`stage220a8-case-actions-group ${isOpen ? 'stage220a8-case-actions-group--open' : ''}`} key={group.key} data-stage220a8-case-actions-group={group.key}>
-                      <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() => setCaseActionOpenGroup(group.key)} aria-expanded={isOpen}>
+                      <button type="button" className="stage220a8-case-actions-group-trigger" onClick={() => setCaseActionOpenGroup((current) => current === group.key ? null : group.key)} aria-expanded={isOpen}>
                         <span>{group.label}</span>
                         <strong>{group.count}</strong>
                       </button>

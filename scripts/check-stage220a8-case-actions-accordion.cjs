@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const repo = process.cwd();
@@ -8,9 +8,9 @@ const css = fs.readFileSync(path.join(repo, 'src/styles/closeflow-detail-view-so
 const errors = [];
 const must = (ok, msg) => { if (!ok) errors.push(msg); };
 
-must(caseText.includes("type CaseActionAccordionGroup = 'next' | 'blockers' | 'active';"), 'accordion group type missing');
+must(caseText.includes("type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;"), 'accordion group type must support null closed state');
 must(caseText.includes('caseActionOpenGroup'), 'accordion open state missing');
-must(caseText.includes('setCaseActionOpenGroup(group.key)'), 'accordion trigger does not set single open group');
+must(caseText.includes('setCaseActionOpenGroup((current) => current === group.key ? null : group.key)'), 'accordion trigger must toggle open group closed on second click');
 must(caseText.includes('data-stage220a8-case-actions-accordion="true"'), 'accordion marker missing');
 must(caseText.includes('data-stage220a8-case-actions-group={group.key}'), 'group data marker missing');
 must(caseText.includes('workItems.slice(0, 5)'), 'active preview must be limited to 5 items');
