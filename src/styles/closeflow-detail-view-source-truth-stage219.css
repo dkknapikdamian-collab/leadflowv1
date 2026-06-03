@@ -791,3 +791,16 @@
   overflow: auto !important;
   padding-right: 4px !important;
 }
+
+/* STAGE220A8_4_SINGLE_ACTIONS_CARD */
+.case-detail-vnext-page .stage217-case-operation-workspace .stage220a8-case-actions-preview {
+  margin-top: 0 !important;
+}
+
+.case-detail-vnext-page .stage217-case-operation-workspace .stage217-case-service-grid {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-top-grid {
+  display: none !important;
+}

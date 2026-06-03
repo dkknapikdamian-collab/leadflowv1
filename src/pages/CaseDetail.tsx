@@ -84,7 +84,7 @@ const FIN11_CASE_RIGHT_FINANCE_PANEL = 'FIN-11_CASE_RIGHT_FINANCE_PANEL_VISIBLE_
 const FIN11_CASE_PORTAL_ACTION_GUARD_COMPAT = 'Portal klienta';
 const STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX = 'case detail operation workspace separates notes from activity history';
 void STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX;
-const STAGE217_CASE_NOTE_HISTORY_SUMMARY = "Notatka zapisana przy sprawie. PeĹ‚na treĹ›Ä‡ jest w panelu Notatki.";
+const STAGE217_CASE_NOTE_HISTORY_SUMMARY = "Notatka zapisana przy sprawie. Pełna treść jest w panelu Notatki.";
 void STAGE217_CASE_NOTE_HISTORY_SUMMARY;
 const STAGE219_R4_CONTEXT_NOTE_REFRESH = 'case detail refreshes after shared note saved';
 void STAGE219_R4_CONTEXT_NOTE_REFRESH;
@@ -226,14 +226,14 @@ const CASE_STATUS_LABELS: Record<string, string> = {
 };
 
 const CASE_STATUS_HINTS: Record<string, string> = {
-  new: 'Dodaj pierwszy brak albo zaplanuj pierwszÄ… akcjÄ™.',
+  new: 'Dodaj pierwszy brak albo zaplanuj pierwszą akcję.',
   waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
-  in_progress: 'Sprawa jest w pracy. Pilnuj najbliĹĽszej akcji i terminĂłw.',
-  to_approve: 'Klient coĹ› przesĹ‚aĹ‚. SprawdĹş i zaakceptuj albo odrzuÄ‡.',
-  blocked: 'Sprawa stoi. UsuĹ„ blokery zanim przejdziesz dalej.',
+  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
+  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
+  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
   ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
-  completed: 'Sprawa zrobiona. Historia zostaje jako Ĺ›lad pracy.',
-  canceled: 'Sprawa zostaĹ‚a anulowana.',
+  completed: 'Sprawa zrobiona. Historia zostaje jako ślad pracy.',
+  canceled: 'Sprawa została anulowana.',
 };
 
 const ITEM_STATUS_LABELS: Record<string, string> = {
@@ -241,7 +241,7 @@ const ITEM_STATUS_LABELS: Record<string, string> = {
   uploaded: 'Do akceptacji',
   accepted: 'Zaakceptowane',
   rejected: 'Odrzucone',
-  sent: 'WysĹ‚ane',
+  sent: 'Wysłane',
 };
 
 const ITEM_TYPE_LABELS: Record<string, string> = {
@@ -310,16 +310,16 @@ function isPaidPaymentStatus(status: unknown) {
 function billingStatusLabel(status?: string) {
   switch (String(status || '').toLowerCase()) {
     case 'deposit_paid':
-      return 'Zaliczka wpĹ‚acona';
+      return 'Zaliczka wpłacona';
     case 'partially_paid':
-      return 'CzÄ™Ĺ›ciowo opĹ‚acone';
+      return 'Częściowo opłacone';
     case 'fully_paid':
     case 'paid':
-      return 'OpĹ‚acone';
+      return 'Opłacone';
     case 'awaiting_payment':
-      return 'Czeka na pĹ‚atnoĹ›Ä‡';
+      return 'Czeka na płatność';
     case 'not_started':
-      return 'Brak wpĹ‚aty';
+      return 'Brak wpłaty';
     default:
       return status || 'Brak statusu';
   }
@@ -354,12 +354,12 @@ function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymen
   const progress = source.contractValue > 0 ? Math.min(100, Math.round((source.clientPaidAmount / source.contractValue) * 100)) : 0;
   const status =
     source.contractValue <= 0
-      ? 'Ustal wartoĹ›Ä‡'
+      ? 'Ustal wartość'
       : source.clientPaidAmount <= 0
-        ? 'Brak wpĹ‚aty'
+        ? 'Brak wpłaty'
         : source.remainingAmount <= 0
-          ? 'OpĹ‚acone'
-          : 'CzÄ™Ĺ›ciowo opĹ‚acone';
+          ? 'Opłacone'
+          : 'Częściowo opłacone';
   return {
     expected: source.contractValue,
     paid: source.clientPaidAmount,
@@ -513,11 +513,11 @@ function buildCaseNoteFollowUpIso(choice: CaseNoteFollowUpChoice, customValue?: 
   return buildQuickRescheduleIso(7, null, 9);
 }
 function getCaseNoteFollowUpChoiceLabel(choice: CaseNoteFollowUpChoice) {
-  if (choice === 'today') return 'DziĹ›';
+  if (choice === 'today') return 'Dziś';
   if (choice === 'tomorrow') return 'Jutro';
   if (choice === 'two_days') return 'Za 2 dni';
-  if (choice === 'week') return 'Za tydzieĹ„';
-  return 'WĹ‚asny termin';
+  if (choice === 'week') return 'Za tydzień';
+  return 'Własny termin';
 }
 function getEventDurationMs(event: EventRecord) {
   const start = toDate(event.startAt);
@@ -539,7 +539,7 @@ function normalizeCaseHeaderLabelStage220A3(value: unknown) {
 function normalizeCaseHeaderCompareStage220A3(value: unknown) {
   return normalizeCaseHeaderLabelStage220A3(value)
     .toLowerCase()
-    .replace(/[â€“â€”-]+/g, '-')
+    .replace(/[–—-]+/g, '-')
     .replace(/\s*-\s*/g, '-');
 }
 
@@ -569,7 +569,7 @@ function getCaseHeaderCaseLabel(caseData?: CaseRecord | null) {
   if (normalizedClient && normalizedTitle === normalizedClient) return 'Sprawa';
 
   if (normalizedClient && normalizedTitle.startsWith(normalizedClient + '-')) {
-    const clientPrefix = new RegExp('^' + escapeCaseHeaderRegExpStage220A3(client) + '\\s*[-â€“â€”:]\\s*', 'i');
+    const clientPrefix = new RegExp('^' + escapeCaseHeaderRegExpStage220A3(client) + '\\s*[-–—:]\\s*', 'i');
     const withoutClient = fallbackTitle.replace(clientPrefix, '').trim();
     return withoutClient || 'Sprawa';
   }
@@ -581,8 +581,8 @@ function getCaseStatusLabel(status?: string) {
   return CASE_STATUS_LABELS[status] || status;
 }
 function getCaseStatusHint(status?: string) {
-  if (!status) return 'Ustal status sprawy i najbliĹĽszy ruch.';
-  return CASE_STATUS_HINTS[status] || 'SprawdĹş najbliĹĽsze dziaĹ‚ania i blokery.';
+  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
+  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
 }
 function getItemStatusLabel(status?: string) {
   if (!status) return 'Brak';
@@ -625,19 +625,19 @@ function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
   if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
-  if (activity.eventType === 'status_changed') return `Zmieniono status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
-  if (activity.eventType === 'decision_made') return `Dodano decyzjÄ™: ${title}`;
-  if (activity.eventType === 'operator_note') return 'Dodano notatkÄ™';
+  if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
+  if (activity.eventType === 'operator_note') return 'Dodano notatkę';
   if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;
   if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;
-  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania â€ž${title}â€ť na: ${getTaskStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia â€ž${title}â€ť na: ${getEventStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'task_rescheduled') return `PrzeĹ‚oĹĽono zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
-  if (activity.eventType === 'event_rescheduled') return `PrzeĹ‚oĹĽono wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
-  if (activity.eventType === 'case_lifecycle_started') return 'RozpoczÄ™to realizacjÄ™ sprawy';
-  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawÄ™ jako zrobionÄ…';
-  if (activity.eventType === 'case_lifecycle_reopened') return 'PrzywrĂłcono sprawÄ™ do pracy';
+  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+  if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;
+  if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
+  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
+  if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
   return 'Dodano ruch w sprawie';
 }
 function getCaseHistoryPayloadStage14D(activity: CaseActivity) {
@@ -648,7 +648,7 @@ function asCaseHistoryTextStage14D(value: unknown) {
 }
 function isGenericCaseHistoryTextStage14D(value: string) {
   const normalized = String(value || '').trim().toLowerCase();
-  const blocked = ['notatka', 'historia sprawy', 'dodano ruch w sprawie', 'dodano notatkÄ™'];
+  const blocked = ['notatka', 'historia sprawy', 'dodano ruch w sprawie', 'dodano notatkę'];
   const blockedOperational = 'zapis operacyjny ' + 'sprawy';
   return !normalized || blocked.includes(normalized) || normalized === blockedOperational;
 }
@@ -692,7 +692,7 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
     return body ? { id: 'activity-' + id, kind: 'event', title: 'Wydarzenie', body, occurredAt } : null;
   }
   if (lowerType.includes('payment') || lowerType.includes('billing')) {
-    return body ? { id: 'activity-' + id, kind: 'payment', title: 'WpĹ‚ata', body, occurredAt } : null;
+    return body ? { id: 'activity-' + id, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
   }
   if (lowerType.includes('note') || lowerType === 'operator_note') {
     return body ? {
@@ -756,7 +756,7 @@ function buildCaseHistoryItemsStage14D(input: {
     pushCaseHistoryItemStage14D(history, getCaseActivityHistoryItemStage14D(activity));
   }
   for (const task of input.tasks || []) {
-    const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytuĹ‚u');
+    const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytułu');
     const status = String(task.status || '').toLowerCase();
     const title = status === 'done' || status === 'completed' ? 'Zadanie wykonane' : 'Zadanie';
     pushCaseHistoryItemStage14D(history, {
@@ -768,7 +768,7 @@ function buildCaseHistoryItemsStage14D(input: {
     });
   }
   for (const event of input.events || []) {
-    const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytuĹ‚u');
+    const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytułu');
     pushCaseHistoryItemStage14D(history, {
       id: 'event-' + String(event.id || body),
       kind: 'event',
@@ -781,11 +781,11 @@ function buildCaseHistoryItemsStage14D(input: {
     const currency = typeof payment.currency === 'string' && payment.currency.trim() ? payment.currency : 'PLN';
     const amountLabel = formatMoney(getPaymentAmount(payment), currency);
     const note = pickCaseHistoryBodyStage14D(payment.note, billingStatusLabel(payment.status));
-    const body = note ? amountLabel + ' Â· ' + note : amountLabel;
+    const body = note ? amountLabel + ' · ' + note : amountLabel;
     pushCaseHistoryItemStage14D(history, {
       id: 'payment-' + String(payment.id || payment.paidAt || payment.createdAt || body),
       kind: 'payment',
-      title: 'WpĹ‚ata',
+      title: 'Wpłata',
       body,
       occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt),
     });
@@ -825,7 +825,7 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
   if (eventType.includes('event')) return { label: 'Wydarzenie', className: 'case-detail-recent-move-dot-event' };
-  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'KompletnoĹ›Ä‡', className: 'case-detail-recent-move-dot-item' };
+  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'Kompletność', className: 'case-detail-recent-move-dot-item' };
   if (eventType.includes('status') || eventType.includes('lifecycle')) return { label: 'Status', className: 'case-detail-recent-move-dot-status' };
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
   return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
@@ -972,8 +972,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
   const taskItems: WorkItem[] = tasks.map((task) => ({
     id: `task-${task.id}`,
     kind: 'task',
-    title: task.title || 'Zadanie bez tytuĹ‚u',
-    subtitle: task.type ? `Zadanie Â· ${task.type}` : 'Zadanie powiÄ…zane ze sprawÄ…',
+    title: task.title || 'Zadanie bez tytułu',
+    subtitle: task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą',
     status: getTaskStatusLabel(task.status),
     statusClass: getStatusClass(task.status),
     dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
@@ -984,8 +984,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
   const eventItems: WorkItem[] = events.map((event) => ({
     id: `event-${event.id}`,
     kind: 'event',
-    title: event.title || 'Wydarzenie bez tytuĹ‚u',
-    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiÄ…zane ze sprawÄ…',
+    title: event.title || 'Wydarzenie bez tytułu',
+    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiązane ze sprawą',
     status: getEventStatusLabel(event.status),
     statusClass: getStatusClass(event.status),
     dateLabel: formatDateTime(getEventMainDate(event) || event.reminderAt, 'Bez terminu'),
@@ -1032,8 +1032,8 @@ function CaseDetailLoadingState() {
         <section className="case-detail-transition-loader" role="status" aria-live="polite">
           <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
           <div>
-            <p>Ĺadowanie sprawy...</p>
-            <span>Przygotowujemy dane sprawy. Panele i akcje pojawiÄ… siÄ™ po zaĹ‚adowaniu rekordu.</span>
+            <p>Ładowanie sprawy...</p>
+            <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
           </div>
         </section>
       </main>
@@ -1043,9 +1043,9 @@ function CaseDetailLoadingState() {
         onOpenChange={(open) => {
           if (!open && !deleteCasePending) setDeleteCaseOpen(false);
         }}
-        title="UsunÄ…Ä‡ sprawÄ™?"
-        description={`Czy na pewno chcesz usunÄ…Ä‡ sprawÄ™ "${caseData?.title || caseData?.clientName || 'bez tytuĹ‚u'}"? Tej operacji nie moĹĽna cofnÄ…Ä‡.`}
-        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuĹ„'}
+        title="Usunąć sprawę?"
+        description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
+        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
         cancelLabel="Nie"
         confirmTone="destructive"
         pending={deleteCasePending}
@@ -1135,9 +1135,9 @@ export default function CaseDetail() {
       setCaseData(nextCase);
       await reloadCaseFinanceData(nextCase);
       setIsFinanceEditOpen(false);
-      toast.success('Zapisano wartoĹ›Ä‡ i prowizjÄ™ sprawy');
+      toast.success('Zapisano wartość i prowizję sprawy');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ zapisaÄ‡ wartoĹ›ci i prowizji sprawy');
+      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać wartości i prowizji sprawy');
     } finally {
       setIsFinanceSaving(false);
     }
@@ -1147,7 +1147,7 @@ export default function CaseDetail() {
     if (!caseData?.id || isFinanceSaving) return;
     const amount = fin11Amount(financePaymentForm.amount);
     if (amount <= 0) {
-      toast.error('Podaj kwotÄ™ pĹ‚atnoĹ›ci');
+      toast.error('Podaj kwotę płatności');
       return;
     }
     setIsFinanceSaving(true);
@@ -1166,9 +1166,9 @@ export default function CaseDetail() {
       });
       await reloadCaseFinanceData(caseData);
       setIsFinancePaymentOpen(false);
-      toast.success(financePaymentForm.type === 'commission' ? 'Dodano pĹ‚atnoĹ›Ä‡ prowizji' : 'Dodano wpĹ‚atÄ™');
+      toast.success(financePaymentForm.type === 'commission' ? 'Dodano płatność prowizji' : 'Dodano wpłatę');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ dodaÄ‡ pĹ‚atnoĹ›ci');
+      toast.error(error instanceof Error ? error.message : 'Nie udało się dodać płatności');
     } finally {
       setIsFinanceSaving(false);
     }
@@ -1226,12 +1226,12 @@ export default function CaseDetail() {
   const handleCreateCasePayment = async () => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('Brak dostÄ™pu do zapisu pĹ‚atnoĹ›ci.');
+      toast.error('Brak dostępu do zapisu płatności.');
       return;
     }
     const amount = Number(casePaymentDraft.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawnÄ… kwotÄ™ wpĹ‚aty.');
+      toast.error('Podaj poprawną kwotę wpłaty.');
       return;
     }
     try {
@@ -1256,14 +1256,14 @@ export default function CaseDetail() {
         leadId: caseData.leadId || null,
         actorType: 'operator',
         eventType: 'payment_added',
-        payload: { title: 'Dodano wpĹ‚atÄ™', amount, status: input.status, note: input.note },
+        payload: { title: 'Dodano wpłatę', amount, status: input.status, note: input.note },
       } as any).catch(() => null);
       setCasePaymentDraft({ type: 'payment', amount: '', status: 'partially_paid', dueAt: '', note: '' });
       setIsCasePaymentOpen(false);
-      toast.success('WpĹ‚ata dodana');
+      toast.success('Wpłata dodana');
     } catch (error) {
       console.error(error);
-      toast.error('Nie udaĹ‚o siÄ™ dodaÄ‡ wpĹ‚aty.');
+      toast.error('Nie udało się dodać wpłaty.');
     } finally {
       setCasePaymentSubmitting(false);
     }
@@ -1277,7 +1277,7 @@ export default function CaseDetail() {
     }
 
     if (!isSupabaseConfigured()) {
-      setLoadError('Brak konfiguracji Supabase. SprawdĹş zmienne Ĺ›rodowiskowe aplikacji.');
+      setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.');
       setLoading(false);
       return;
     }
@@ -1341,7 +1341,7 @@ export default function CaseDetail() {
       setTasks([]);
       setEvents([]);
       setPayments([]);
-      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ĺadowanie sprawy trwa za dĹ‚ugo. SprĂłbuj ponownie.' : `Nie moĹĽna wczytaÄ‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ładowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
       setLoading(false);
@@ -1470,29 +1470,29 @@ export default function CaseDetail() {
     return workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null;
   }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
-  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'ĹąrĂłdĹ‚owy lead') : caseData?.leadId ? 'ĹąrĂłdĹ‚owy lead podpiÄ™ty' : 'Brak ĹşrĂłdĹ‚owego leada';
+  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
   const caseDetailWriteAccessDenied = !hasAccess;
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const guardCaseDetailWriteAccess = (actionLabel: string) => {
     if (!caseDetailWriteAccessDenied) return true;
-    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasĹ‚.' : 'Brak aktywnego dostÄ™pu.';
+    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostępu.';
     toast.error(reason + ' Nie mozna teraz ' + actionLabel + '.');
     return false;
   };
 
 
   const handleAddTask = async () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ zadania')) return;
+    if (!guardCaseDetailWriteAccess('dodać zadania')) return;
     openCaseContextAction('task');
   };
 
   const handleAddEvent = async () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ wydarzenia')) return;
+    if (!guardCaseDetailWriteAccess('dodać wydarzenia')) return;
     openCaseContextAction('event');
   };
 
   const handleAddNote = async () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ notatki')) return;
+    if (!guardCaseDetailWriteAccess('dodać notatki')) return;
     openCaseContextAction('note');
   };
 
@@ -1509,7 +1509,7 @@ export default function CaseDetail() {
   };
 
   const openCasePaymentDialog = (type: 'deposit' | 'partial') => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ pĹ‚atnoĹ›ci')) return;
+    if (!guardCaseDetailWriteAccess('dodać płatności')) return;
     setCasePaymentDraft({
       type,
       amount: '',
@@ -1521,10 +1521,10 @@ export default function CaseDetail() {
   };
 
   const markCaseFullyPaid = async () => {
-    if (!caseId || !guardCaseDetailWriteAccess('oznaczyÄ‡ sprawy jako opĹ‚aconej')) return;
+    if (!caseId || !guardCaseDetailWriteAccess('oznaczyć sprawy jako opłaconej')) return;
     const remaining = Number(caseFinance.remaining || 0);
     if (remaining <= 0) {
-      toast.message('Ta sprawa jest juĹĽ rozliczona.');
+      toast.message('Ta sprawa jest już rozliczona.');
       return;
     }
     try {
@@ -1537,21 +1537,21 @@ export default function CaseDetail() {
         amount: remaining,
         currency: caseFinance.currency,
         paidAt: new Date().toISOString(),
-        note: 'Rozliczenie koĹ„cowe sprawy',
+        note: 'Rozliczenie końcowe sprawy',
       });
       await updateCaseInSupabase({ id: caseId, paidAmount: caseFinance.paid + remaining, remainingAmount: 0 }).catch(() => null);
       await refreshCaseData();
-      toast.success('Sprawa oznaczona jako opĹ‚acona.');
+      toast.success('Sprawa oznaczona jako opłacona.');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ domknÄ…Ä‡ pĹ‚atnoĹ›ci: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się domknąć płatności: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleSaveCasePayment = async () => {
-    if (!caseId || !guardCaseDetailWriteAccess('zapisaÄ‡ pĹ‚atnoĹ›ci')) return;
+    if (!caseId || !guardCaseDetailWriteAccess('zapisać płatności')) return;
     const amount = Number(casePaymentDraft.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawnÄ… kwotÄ™ pĹ‚atnoĹ›ci.');
+      toast.error('Podaj poprawną kwotę płatności.');
       return;
     }
     try {
@@ -1570,9 +1570,9 @@ export default function CaseDetail() {
       });
       await refreshCaseData();
       setIsCasePaymentOpen(false);
-      toast.success('PĹ‚atnoĹ›Ä‡ sprawy zapisana.');
+      toast.success('Płatność sprawy zapisana.');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zapisaÄ‡ pĹ‚atnoĹ›ci: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zapisać płatności: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCasePaymentSubmitting(false);
     }
@@ -1590,7 +1590,7 @@ export default function CaseDetail() {
   };
 
   const handleCreateCaseNoteFollowUp = async (choice: CaseNoteFollowUpChoice) => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ follow-upu po notatce')) return;
+    if (!guardCaseDetailWriteAccess('dodać follow-upu po notatce')) return;
     if (!caseId || !pendingNoteFollowUp) return;
     const scheduledAt = buildCaseNoteFollowUpIso(choice, customNoteFollowUpAt);
     if (!scheduledAt) {
@@ -1625,7 +1625,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Follow-up dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ dodaÄ‡ follow-upu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się dodać follow-upu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setIsCreatingNoteFollowUp(false);
     }
@@ -1638,7 +1638,7 @@ export default function CaseDetail() {
   };
 
   const handleCopyPortal = async () => {
-    if (!guardCaseDetailWriteAccess('wygenerowaÄ‡ linku do portalu')) return;
+    if (!guardCaseDetailWriteAccess('wygenerować linku do portalu')) return;
     if (!caseId) return;
     try {
       const payload = await createClientPortalTokenInSupabase(caseId);
@@ -1646,14 +1646,14 @@ export default function CaseDetail() {
       await navigator.clipboard.writeText(url);
       toast.success('Link do portalu skopiowany');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ skopiowaÄ‡ portalu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się skopiować portalu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleAddItem = async () => {
-    if (!guardCaseDetailWriteAccess('dodaÄ‡ braku')) return;
+    if (!guardCaseDetailWriteAccess('dodać braku')) return;
     if (!caseId || !newItem.title.trim()) {
-      toast.error('Podaj nazwÄ™ braku');
+      toast.error('Podaj nazwę braku');
       return;
     }
     try {
@@ -1673,12 +1673,12 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Brak dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ dodaÄ‡ braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się dodać braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleItemStatusChange = async (item: CaseItem, status: CaseItemStatus) => {
-    if (!guardCaseDetailWriteAccess('zmieniÄ‡ statusu braku')) return;
+    if (!guardCaseDetailWriteAccess('zmienić statusu braku')) return;
     if (!caseId) return;
     try {
       await updateCaseItemInSupabase({ id: item.id, caseId, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
@@ -1687,20 +1687,20 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Status braku zmieniony');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zmienić statusu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleDeleteItem = async (item: CaseItem) => {
-    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ braku')) return;
-    if (!window.confirm('UsunÄ…Ä‡ ten brak ze sprawy?')) return;
+    if (!guardCaseDetailWriteAccess('usunąć braku')) return;
+    if (!window.confirm('Usunąć ten brak ze sprawy?')) return;
     try {
       await deleteCaseItemFromSupabase(item.id);
       await recordActivity('item_deleted', { itemId: item.id, title: item.title });
       await refreshCaseData();
-      toast.success('Brak usuniÄ™ty');
+      toast.success('Brak usunięty');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ usunÄ…Ä‡ braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się usunąć braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1713,7 +1713,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Zrobione');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zamknąć zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1723,9 +1723,9 @@ export default function CaseDetail() {
       await updateTaskInSupabase({ id: task.id, scheduledAt: nextDate, dueAt: nextDate, date: buildDateOnlyFromIso(nextDate) });
       await recordActivity('task_rescheduled', { title: task.title, taskId: task.id, scheduledAt: nextDate });
       await refreshCaseData();
-      toast.success('Zadanie przeĹ‚oĹĽone na jutro');
+      toast.success('Zadanie przełożone na jutro');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się przełożyć zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1738,7 +1738,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Wydarzenie oznaczone jako zrobione');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zamknąć wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1749,9 +1749,9 @@ export default function CaseDetail() {
       await updateEventInSupabase({ id: event.id, startAt: nextStart, endAt: nextEnd });
       await recordActivity('event_rescheduled', { title: event.title, eventId: event.id, startAt: nextStart });
       await refreshCaseData();
-      toast.success('Wydarzenie przeĹ‚oĹĽone na jutro');
+      toast.success('Wydarzenie przełożone na jutro');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się przełożyć wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1768,7 +1768,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Status sprawy zaktualizowany');
     } catch (error: any) {
-      toast.error(`Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udało się zmienić statusu sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -1788,13 +1788,13 @@ export default function CaseDetail() {
   const handleAddCaseSettlementPayment = async (value: CaseSettlementPaymentInput) => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('TwĂłj trial wygasĹ‚.');
+      toast.error('Twój trial wygasł.');
       return;
     }
 
     const amount = Number(value.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawnÄ… kwotÄ™ pĹ‚atnoĹ›ci.');
+      toast.error('Podaj poprawną kwotę płatności.');
       return;
     }
 
@@ -1813,9 +1813,9 @@ export default function CaseDetail() {
         note: value.note || '',
       });
       await refreshCaseSettlementPayments();
-      toast.success(value.type === 'commission' ? 'PĹ‚atnoĹ›Ä‡ prowizji dodana' : 'WpĹ‚ata klienta dodana');
+      toast.success(value.type === 'commission' ? 'Płatność prowizji dodana' : 'Wpłata klienta dodana');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ pĹ‚atnoĹ›ci: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udało się zapisać płatności: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setCaseSettlementSaving(false);
     }
@@ -1824,13 +1824,13 @@ export default function CaseDetail() {
   const handleEditCaseSettlementCommission = async (value: CaseSettlementCommissionInput) => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('TwĂłj trial wygasĹ‚.');
+      toast.error('Twój trial wygasł.');
       return;
     }
 
     const nextContractValue = Number(value.contractValue || 0);
     if (!Number.isFinite(nextContractValue) || nextContractValue < 0) {
-      toast.error('Podaj poprawnÄ… wartoĹ›Ä‡ transakcji.');
+      toast.error('Podaj poprawną wartość transakcji.');
       return;
     }
 
@@ -1861,7 +1861,7 @@ export default function CaseDetail() {
       } : current);
       toast.success('Prowizja sprawy zapisana');
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ prowizji: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udało się zapisać prowizji: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setCaseSettlementSaving(false);
     }
@@ -1869,7 +1869,7 @@ export default function CaseDetail() {
 
   async function handleConfirmDeleteCaseRecord() {
     if (!caseData?.id || deleteCasePending) return;
-    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ sprawy')) {
+    if (!guardCaseDetailWriteAccess('usunąć sprawy')) {
       setDeleteCaseOpen(false);
       return;
     }
@@ -1877,11 +1877,11 @@ export default function CaseDetail() {
     try {
       setDeleteCasePending(true);
       await deleteCaseWithRelations(caseData.id);
-      toast.success('Sprawa usuniÄ™ta');
+      toast.success('Sprawa usunięta');
       setDeleteCaseOpen(false);
       navigate('/cases');
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d: ${error?.message || 'Nie udaĹ‚o siÄ™ usunÄ…Ä‡ sprawy.'}`);
+      toast.error(`Błąd: ${error?.message || 'Nie udało się usunąć sprawy.'}`);
     } finally {
       setDeleteCasePending(false);
     }
@@ -1898,7 +1898,7 @@ export default function CaseDetail() {
     for (const task of tasks) {
       const normalizedStatus = String(task.status || '').toLowerCase();
       const title = ['done', 'completed'].includes(normalizedStatus) ? 'Zadanie wykonane' : 'Zadanie';
-      const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytuĹ‚u');
+      const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytułu');
       if (body) {
         history.push({
           id: `task-${task.id || body}`,
@@ -1911,7 +1911,7 @@ export default function CaseDetail() {
     }
 
     for (const event of events) {
-      const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytuĹ‚u');
+      const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytułu');
       if (body) {
         history.push({ id: `event-${event.id || body}`, kind: 'event', title: 'Wydarzenie', body, occurredAt: getCaseHistoryDateStage14D((event as any).updatedAt, getEventMainDate(event), event.reminderAt, event.startAt, event.endAt) });
       }
@@ -1920,14 +1920,14 @@ export default function CaseDetail() {
     for (const payment of visibleCasePayments) {
       const amountLabel = formatMoney(getPaymentAmount(payment), payment.currency || caseFinanceSummary.currency);
       const note = pickCaseHistoryBodyStage14D(payment.note);
-      const body = note ? `${amountLabel} Â· ${note}` : amountLabel;
-      history.push({ id: `payment-${payment.id || body}`, kind: 'payment', title: 'WpĹ‚ata', body, occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt) });
+      const body = note ? `${amountLabel} · ${note}` : amountLabel;
+      history.push({ id: `payment-${payment.id || body}`, kind: 'payment', title: 'Wpłata', body, occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt) });
     }
 
     for (const item of items) {
       const body = pickCaseHistoryBodyStage14D(item.title, item.description);
       if (body) {
-        const title = item.status === 'accepted' ? 'Element zaakceptowany' : item.status === 'uploaded' ? 'Element przesĹ‚any' : 'Element sprawy';
+        const title = item.status === 'accepted' ? 'Element zaakceptowany' : item.status === 'uploaded' ? 'Element przesłany' : 'Element sprawy';
         history.push({ id: `item-${item.id || body}`, kind: 'case', title, body, occurredAt: getCaseHistoryDateStage14D(item.approvedAt, item.createdAt, item.dueDate) });
       }
     }
@@ -1964,7 +1964,7 @@ export default function CaseDetail() {
               </div>
 
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ĺadowanie sprawy...</span>
+            <span>Ładowanie sprawy...</span>
           </section>
         </main>
       </Layout>
@@ -1977,11 +1977,11 @@ export default function CaseDetail() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-empty-card">
             <AlertCircle className="h-8 w-8" />
-            <h1>Nie moĹĽna otworzyÄ‡ sprawy</h1>
+            <h1>Nie można otworzyć sprawy</h1>
             <p>{loadError || 'Nie znaleziono tej sprawy w aktualnym workspace.'}</p>
             <Button type="button" variant="outline" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />
-              WrĂłÄ‡ do spraw
+              Wróć do spraw
             </Button>
           </section>
         </main>
@@ -1997,8 +1997,8 @@ export default function CaseDetail() {
           <EntityTrashButton
             className="cf-case-detail-delete-action"
             data-case-detail-delete-action="true"
-            title="UsuĹ„ sprawÄ™"
-            aria-label="UsuĹ„ sprawÄ™"
+            title="Usuń sprawę"
+            aria-label="Usuń sprawę"
             onClick={() => setDeleteCaseOpen(true)}
           />
 
@@ -2011,62 +2011,24 @@ export default function CaseDetail() {
 
             <h1 className="case-detail-header-composed-title" data-stage220a3-header-title="true">
               <span className="case-detail-header-client-name">{getCaseHeaderClientLabel(caseData)}</span>
-              <span className="case-detail-header-separator" aria-hidden="true">â€”</span>
+              <span className="case-detail-header-separator" aria-hidden="true">—</span>
               <span className="case-detail-header-case-name">{getCaseHeaderCaseLabel(caseData)}</span>
             </h1>
           </div>
         </header>
-
-        <section className="case-detail-top-grid">
-          <article className="case-detail-top-card case-detail-top-card-blue">
-            <div className="case-detail-card-title-row">
-              <Clock className="h-4 w-4" />
-              <h2>NajbliĹĽsza akcja operacyjna</h2>
-            </div>
-            <strong>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</strong>
-            <span className="stage220a8-next-action-date" data-stage220a8-next-action-date="top">{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Brak terminu'}</span>
-            <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, ĹĽeby sprawa miaĹ‚a najbliĹĽszy termin w sprawie.'}</p>
-          </article>
-          <article className="case-detail-top-card case-detail-top-card-green">
-            <div className="case-detail-card-title-row">
-              <CheckCircle2 className="h-4 w-4" />
-              <h2>PostÄ™p sprawy</h2>
-            </div>
-            <strong>{completionPercent}%</strong>
-            <p>{items.length > 0 ? `${items.filter((item) => item.status === 'accepted').length} z ${items.length} elementĂłw zaakceptowanych` : 'Brak checklisty do przeliczenia.'}</p>
-            <div className="case-detail-progress"><span style={{ width: `${completionPercent}%` }} /></div>
-          </article>
-          <article className="case-detail-top-card case-detail-top-card-amber">
-            <div className="case-detail-card-title-row">
-              <AlertCircle className="h-4 w-4" />
-              <h2>Blokady / braki</h2>
-            </div>
-            <strong>{blockers.length}</strong>
-            <p>{blockers[0] ? `${blockers[0].title || 'Brak'} Â· ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerĂłw po stronie sprawy.'}</p>
-          </article>
-          <article className="case-detail-top-card case-detail-top-card-muted">
-            <div className="case-detail-card-title-row">
-              <ShieldStatusIcon status={effectiveStatus} />
-              <h2>Status operacyjny</h2>
-            </div>
-            <strong>{getCaseStatusLabel(effectiveStatus)}</strong>
-            <p>{getCaseStatusHint(effectiveStatus)}</p>
-          </article>
-        </section>
-
-        <div className="case-detail-shell">
+<div className="case-detail-shell">
           <section className="case-detail-main-column">
             <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true">
               <div className="case-detail-section-head stage217-case-operation-head">
                 <div>
-                  <p className="case-detail-eyebrow">ObsÄąâ€šuga sprawy</p>
+                  <p className="case-detail-eyebrow">Obsługa sprawy</p>
                   <h2>Co robimy teraz?</h2>
-                  <p>NajbliÄąÄ˝szy ruch, blokady, aktywne dziaÄąâ€šania i rozliczenie w jednym miejscu.</p>
+                  <p>Najbliższy ruch, blokady, aktywne działania i rozliczenie w jednym miejscu.</p>
                 </div>
                 <div className="stage217-case-service-actions">
                   <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
                     <StickyNote className="h-4 w-4" />
-                    Dodaj notatkĂ„â„˘
+                    Dodaj notatkę
                   </Button>
                   <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
                     <ListChecks className="h-4 w-4" />
@@ -2079,41 +2041,16 @@ export default function CaseDetail() {
                 </div>
               </div>
 
-              <div className="stage217-case-service-grid">
-                <article className="stage217-case-service-card stage217-case-service-card--next">
-                  <span className="stage217-case-service-card__label">NastĂ„â„˘pna akcja</span>
-                  <h3>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</h3>
-                  <span className="stage220a8-next-action-date" data-stage220a8-next-action-date="service">{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Brak terminu'}</span>
-                  <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Ă‚Â· ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, ÄąÄ˝eby sprawa nie wisiaÄąâ€ša bez terminu.'}</p>
-                </article>
-                <article className="stage217-case-service-card stage217-case-service-card--blockers">
-                  <span className="stage217-case-service-card__label">Blokady</span>
-                  <span className="stage217-case-service-card__metric">{blockers.length}</span>
-                  <p>{blockers[0] ? `${blockers[0].title || 'Brak'} Ă‚Â· ${getItemStatusLabel(blockers[0].status)}` : 'Brak aktywnych blokerÄ‚Ĺ‚w po stronie sprawy.'}</p>
-                </article>
-                <article className="stage217-case-service-card stage217-case-service-card--workload">
-                  <span className="stage217-case-service-card__label">DziaÄąâ€šania</span>
-                  <span className="stage217-case-service-card__metric">{openTasks.length + plannedEvents.length}</span>
-                  <p>{openTasks.length} zadaÄąâ€ž i {plannedEvents.length} wydarzeÄąâ€ž przypiĂ„â„˘tych do tej sprawy.</p>
-                </article>
-                <article className="stage217-case-service-card stage217-case-service-card--finance">
-                  <span className="stage217-case-service-card__label">Rozliczenie</span>
-                  <h3>{caseFinance.expected > 0 ? formatMoney(caseFinance.remaining, caseFinance.currency) : 'WartoÄąâ€şĂ„â€ˇ nieustawiona'}</h3>
-                  <p>{caseFinance.expected > 0 ? `PozostaÄąâ€šo do rozliczenia. WpÄąâ€šacono: ${formatMoney(caseFinance.paid, caseFinance.currency)}.` : 'Ustaw wartoÄąâ€şĂ„â€ˇ sprawy, jeÄąâ€şli rozliczenie ma byĂ„â€ˇ pilnowane operacyjnie.'}</p>
-                </article>
-              </div>
-
-
-              <section className="stage220a8-case-actions-preview stage220a8-case-actions-accordion" data-stage220a8-case-actions-preview="true" data-stage220a8-case-actions-accordion="true">
+              <section className="stage220a8-case-actions-preview stage220a8-case-actions-accordion" data-stage220a8-single-actions-card="STAGE220A8_4_SINGLE_ACTIONS_CARD" data-stage220a8-case-actions-preview="true" data-stage220a8-case-actions-accordion="true">
                 <div className="stage220a8-case-actions-preview-head">
                   <div>
-                    <span className="stage220a8-case-actions-preview-label">DziaĹ‚ania sprawy</span>
-                    <h3>Zadania, wydarzenia i braki przypiÄ™te do tej sprawy</h3>
+                    <span className="stage220a8-case-actions-preview-label">Działania sprawy</span>
+                    <h3>Zadania, wydarzenia i braki przypięte do tej sprawy</h3>
                   </div>
                   <div className="stage220a8-case-actions-head-actions">
                     <span className="stage220a8-case-actions-preview-count">{workItems.length}</span>
                     <button type="button" className="stage220a8-show-all-button" onClick={() => setIsCaseActionsAllOpen(true)} data-stage220a8-show-all-actions="true">
-                      PokaĹĽ wszystkie
+                      Pokaż wszystkie
                     </button>
                   </div>
                 </div>
@@ -2121,23 +2058,23 @@ export default function CaseDetail() {
                 {[
                   {
                     key: 'next' as CaseActionAccordionGroup,
-                    label: 'NajbliĹĽsze dziaĹ‚ania',
+                    label: 'Najbliższe działania',
                     count: workItems.filter((entry) => entry.kind === 'task' || entry.kind === 'event').length,
-                    empty: 'Brak zaplanowanych zadaĹ„ i wydarzeĹ„ w tej sprawie.',
+                    empty: 'Brak zaplanowanych zadań i wydarzeń w tej sprawie.',
                     items: workItems.filter((entry) => entry.kind === 'task' || entry.kind === 'event').slice(0, 5),
                   },
                   {
                     key: 'blockers' as CaseActionAccordionGroup,
                     label: 'Braki i blokady',
                     count: workItems.filter((entry) => entry.kind === 'missing').length,
-                    empty: 'Brak brakĂłw i blokad w tej sprawie.',
+                    empty: 'Brak braków i blokad w tej sprawie.',
                     items: workItems.filter((entry) => entry.kind === 'missing').slice(0, 5),
                   },
                   {
                     key: 'active' as CaseActionAccordionGroup,
                     label: 'Wszystkie aktywne',
                     count: workItems.length,
-                    empty: 'Brak dziaĹ‚aĹ„ przypiÄ™tych bezpoĹ›rednio do tej sprawy.',
+                    empty: 'Brak działań przypiętych bezpośrednio do tej sprawy.',
                     items: workItems.slice(0, 5),
                   },
                 ].map((group) => {
@@ -2183,7 +2120,7 @@ export default function CaseDetail() {
                 <div>
                   <p className="case-detail-eyebrow">Notatki sprawy</p>
                   <h2>Notatki sprawy</h2>
-                  <p>Ostatnie notatki sÄ… tutaj. PeĹ‚na historia zostaje w historii aktywnoĹ›ci.</p>
+                  <p>Ostatnie notatki są tutaj. Pełna historia zostaje w historii aktywności.</p>
                 </div>
                 <div className="stage219-case-notes-actions" data-stage219-case-notes-actions="true">
                   <Button
@@ -2199,7 +2136,7 @@ export default function CaseDetail() {
                     data-stage219-dictate-note="true"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    Dyktuj notatkÄ™
+                    Dyktuj notatkę
                   </Button>
                   <Button
                     type="button"
@@ -2213,12 +2150,12 @@ export default function CaseDetail() {
                     data-stage219-add-note="true"
                   >
                     <StickyNote className="h-4 w-4" />
-                    Dodaj notatkÄ™
+                    Dodaj notatkę
                   </Button>
                 </div>
               </div>
               {caseNoteItems.length === 0 ? (
-                <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszĂ„â€¦ notatkĂ„â„˘ z szybkich akcji.</div>
+                <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.</div>
               ) : (
                 <div className="stage217-case-notes-list">
                   {caseNoteItems.map((note) => (
@@ -2237,9 +2174,9 @@ export default function CaseDetail() {
         <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
           <div className="case-detail-note-follow-up-head">
             <div>
-              <p className="case-detail-eyebrow">NastÄ™pny ruch</p>
-              <h3>UstawiÄ‡ follow-up do tej notatki?</h3>
-              <p>Notatka jest zapisana. Teraz moĹĽesz od razu przypiÄ…Ä‡ kolejny ruch do tej sprawy.</p>
+              <p className="case-detail-eyebrow">Następny ruch</p>
+              <h3>Ustawić follow-up do tej notatki?</h3>
+              <p>Notatka jest zapisana. Teraz możesz od razu przypiąć kolejny ruch do tej sprawy.</p>
             </div>
             <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
               Nie teraz
@@ -2247,15 +2184,15 @@ export default function CaseDetail() {
           </div>
           <div className="case-detail-note-follow-up-preview">{pendingNoteFollowUp.note}</div>
           <div className="case-detail-note-follow-up-actions">
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">DziĹ›</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">Dziś</Button>
             <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('tomorrow')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="tomorrow">Jutro</Button>
             <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('two_days')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="two_days">Za 2 dni</Button>
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzieĹ„</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzień</Button>
           </div>
           <div className="case-detail-note-follow-up-custom">
-            <Label htmlFor="case-note-follow-up-at">WĹ‚asny termin</Label>
+            <Label htmlFor="case-note-follow-up-at">Własny termin</Label>
             <Input id="case-note-follow-up-at" type="datetime-local" value={customNoteFollowUpAt} onChange={(event) => setCustomNoteFollowUpAt(event.target.value)} data-case-note-follow-up-custom-input="true" />
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw wĹ‚asny</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw własny</Button>
           </div>
         </section>
       ) : null}
@@ -2264,7 +2201,7 @@ export default function CaseDetail() {
 
         <div className="case-detail-finance-payments-head">
 
-          <strong>Historia wpĹ‚at</strong>
+          <strong>Historia wpłat</strong>
 
           <span>{visibleCasePayments.length}</span>
 
@@ -2296,7 +2233,7 @@ export default function CaseDetail() {
 
         ) : (
 
-          <p className="case-detail-finance-empty">Brak wpĹ‚at. Dodaj pierwszÄ… zaliczkÄ™ albo pĹ‚atnoĹ›Ä‡ czÄ™Ĺ›ciowÄ….</p>
+          <p className="case-detail-finance-empty">Brak wpłat. Dodaj pierwszą zaliczkę albo płatność częściową.</p>
 
         )}
 
@@ -2304,11 +2241,11 @@ export default function CaseDetail() {
 
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
-              <nav aria-label="ZakĹ‚adki sprawy">
+              <nav aria-label="Zakładki sprawy">
                 <TabsList className="case-detail-tabs">
                   {[
-                    { key: 'service', label: 'ObsĹ‚uga' },
-                    { key: 'path', label: 'ĹšcieĹĽka' },
+                    { key: 'service', label: 'Obsługa' },
+                    { key: 'path', label: 'Ścieżka' },
                     { key: 'checklists', label: 'Checklisty' },
                     { key: 'history', label: 'Historia' },
                   ].map((tab) => (
@@ -2327,7 +2264,7 @@ export default function CaseDetail() {
   <div className="case-detail-section-head">
     <div>
       <h2>Historia sprawy</h2>
-      <p>Realne notatki, zadania, wydarzenia, wpĹ‚aty i zmiany zapisane przy tej sprawie.</p>
+      <p>Realne notatki, zadania, wydarzenia, wpłaty i zmiany zapisane przy tej sprawie.</p>
     </div>
   </div>
   {(() => {
@@ -2355,7 +2292,7 @@ export default function CaseDetail() {
 </section>                </div>
                 <div className="case-detail-work-list">
                   {workItems.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak dziaĹ‚aĹ„ do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
+                    <div className="case-detail-light-empty">Brak działań do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
                   ) : (
                     workItems.map((entry) => (
                       <div key={entry.id} style={{ display: 'contents' }}>
@@ -2380,14 +2317,14 @@ export default function CaseDetail() {
               <section className="case-detail-section-card">
                 <div className="case-detail-section-head">
                   <div>
-                    <h2>ĹšcieĹĽka sprawy</h2>
-                    <p>Operacyjny skrĂłt tego, co blokuje start albo realizacjÄ™.</p>
+                    <h2>Ścieżka sprawy</h2>
+                    <p>Operacyjny skrót tego, co blokuje start albo realizację.</p>
                   </div>
                 </div>
                 <div className="case-detail-path-grid">
-                  <PathCard label="Braki" value={missingItems.length} helper="Elementy, ktĂłre trzeba jeszcze dostaÄ‡." tone="amber" />
-                  <PathCard label="Do akceptacji" value={uploadedItems.length} helper="Elementy przesĹ‚ane i czekajÄ…ce na decyzjÄ™." tone="blue" />
-                  <PathCard label="Zadania" value={openTasks.length} helper="Otwarte zadania powiÄ…zane ze sprawÄ…." tone="green" />
+                  <PathCard label="Braki" value={missingItems.length} helper="Elementy, które trzeba jeszcze dostać." tone="amber" />
+                  <PathCard label="Do akceptacji" value={uploadedItems.length} helper="Elementy przesłane i czekające na decyzję." tone="blue" />
+                  <PathCard label="Zadania" value={openTasks.length} helper="Otwarte zadania powiązane ze sprawą." tone="green" />
                   <PathCard label="Wydarzenia" value={plannedEvents.length} helper="Zaplanowane spotkania i terminy." tone="neutral" />
                 </div>
               </section>
@@ -2414,13 +2351,13 @@ export default function CaseDetail() {
                         <div>
                           <span className="case-detail-kind-pill">{getItemTypeLabel(item.type)}</span>
                           <h3>{item.title || 'Element sprawy'}</h3>
-                          <p>{item.description || 'Bez opisu'} Â· Termin: {formatDate(item.dueDate)}</p>
+                          <p>{item.description || 'Bez opisu'} · Termin: {formatDate(item.dueDate)}</p>
                         </div>
                         <span className={`case-detail-pill ${getStatusClass(item.status)}`}>{getItemStatusLabel(item.status)}</span>
                         <div className="case-detail-row-actions">
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>WysĹ‚ane</button>
+                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>Wysłane</button>
                           <button type="button" onClick={() => handleItemStatusChange(item, 'accepted')}>Akceptuj</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>OdrzuÄ‡</button>
+                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>Odrzuć</button>
                         </div>
                       </article>
                     ))
@@ -2434,7 +2371,7 @@ export default function CaseDetail() {
                 <div className="case-detail-section-head">
                   <div>
                     <h2>Historia</h2>
-                    <p>KrĂłtka oĹ› dziaĹ‚aĹ„ bez technicznych danych i bez JSON-a.</p>
+                    <p>Krótka oś działań bez technicznych danych i bez JSON-a.</p>
                   </div>
                 </div>
                 <div className="case-detail-history-list">
@@ -2446,7 +2383,7 @@ export default function CaseDetail() {
                         <span><History className="h-4 w-4" /></span>
                         <div>
                           <h3>{getActivityText(activity)}</h3>
-                          <p>{formatDateTime(activity.createdAt)} Â· {activity.actorType === 'operator' ? 'Operator' : 'Klient'}</p>
+                          <p>{formatDateTime(activity.createdAt)} · {activity.actorType === 'operator' ? 'Operator' : 'Klient'}</p>
                         </div>
                       </article>
                     ))
@@ -2472,25 +2409,25 @@ export default function CaseDetail() {
                 <h2>Rozliczenie sprawy</h2>
               <div className="case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
                 <Button type="button" size="sm" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
-                  Edytuj wartoĹ›Ä‡/prowizjÄ™
+                  Edytuj wartość/prowizję
                 </Button>
                 <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('partial')} disabled={isFinanceSaving}>
-                  Dodaj wpĹ‚atÄ™
+                  Dodaj wpłatę
                 </Button>
                 <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('commission')} disabled={isFinanceSaving}>
-                  Dodaj pĹ‚atnoĹ›Ä‡ prowizji
+                  Dodaj płatność prowizji
                 </Button>
               </div>
               <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
               </div>
-              <small>WartoĹ›Ä‡: {formatMoney(caseFinance.expected, caseFinance.currency)}</small>
-              <small>WpĹ‚acono: {formatMoney(caseFinance.paid, caseFinance.currency)}</small>
-              <small>PozostaĹ‚o: {formatMoney(caseFinance.remaining, caseFinance.currency)}</small>
-              <small>Status pĹ‚atnoĹ›ci: {billingStatusLabel(caseFinance.billingStatus)}</small>
+              <small>Wartość: {formatMoney(caseFinance.expected, caseFinance.currency)}</small>
+              <small>Wpłacono: {formatMoney(caseFinance.paid, caseFinance.currency)}</small>
+              <small>Pozostało: {formatMoney(caseFinance.remaining, caseFinance.currency)}</small>
+              <small>Status płatności: {billingStatusLabel(caseFinance.billingStatus)}</small>
               <div className="case-detail-right-actions">
-                <button type="button" onClick={() => openCasePaymentDialog('deposit')}>Dodaj zaliczkÄ™</button>
-                <button type="button" onClick={() => openCasePaymentDialog('partial')}>PĹ‚atnoĹ›Ä‡ czÄ™Ĺ›ciowa</button>
-                <button type="button" onClick={markCaseFullyPaid}>Oznacz opĹ‚acone</button>
+                <button type="button" onClick={() => openCasePaymentDialog('deposit')}>Dodaj zaliczkę</button>
+                <button type="button" onClick={() => openCasePaymentDialog('partial')}>Płatność częściowa</button>
+                <button type="button" onClick={markCaseFullyPaid}>Oznacz opłacone</button>
               </div>
             </section>
                                                 </aside>
@@ -2502,12 +2439,12 @@ export default function CaseDetail() {
       <Dialog open={isCaseActionsAllOpen} onOpenChange={setIsCaseActionsAllOpen}>
         <DialogContent className="stage220a8-case-actions-all-modal sm:max-w-4xl" data-stage220a8-case-actions-all-modal="true">
           <DialogHeader>
-            <DialogTitle>Wszystkie dziaĹ‚ania sprawy</DialogTitle>
-            <DialogDescription>Zadania, wydarzenia i braki przypiÄ™te bezpoĹ›rednio do tej sprawy.</DialogDescription>
+            <DialogTitle>Wszystkie działania sprawy</DialogTitle>
+            <DialogDescription>Zadania, wydarzenia i braki przypięte bezpośrednio do tej sprawy.</DialogDescription>
           </DialogHeader>
 
           {workItems.length === 0 ? (
-            <div className="case-detail-light-empty">Brak dziaĹ‚aĹ„ przypiÄ™tych bezpoĹ›rednio do tej sprawy.</div>
+            <div className="case-detail-light-empty">Brak działań przypiętych bezpośrednio do tej sprawy.</div>
           ) : (
             <div className="case-detail-work-list stage220a8-case-actions-all-list">
               {workItems.map((entry) => (
@@ -2533,9 +2470,9 @@ export default function CaseDetail() {
       <ConfirmDialog
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}
-        title="UsunÄ…Ä‡ sprawÄ™?"
-        description={`Sprawa â€ž${getCaseHeaderClientLabel(caseData)} â€” ${getCaseHeaderCaseLabel(caseData)}â€ť zostanie usuniÄ™ta. Tej akcji nie moĹĽna cofnÄ…Ä‡.`}
-        confirmLabel="UsuĹ„ sprawÄ™"
+        title="Usunąć sprawę?"
+        description={`Sprawa „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” zostanie usunięta. Tej akcji nie można cofnąć.`}
+        confirmLabel="Usuń sprawę"
         cancelLabel="Anuluj"
         confirmTone="destructive"
         pending={deleteCasePending}
@@ -2547,12 +2484,12 @@ export default function CaseDetail() {
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
         <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
           <DialogHeader>
-            <DialogTitle>Dodaj wpĹ‚atÄ™ do sprawy</DialogTitle>
-            <DialogDescription>UzupeĹ‚nij dane rozliczenia i zapisz, aby zaktualizowaÄ‡ finanse sprawy.</DialogDescription>
+            <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
+            <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
           </DialogHeader>
           <div className="case-detail-payment-form">
             <div>
-              <Label htmlFor="case-payment-amount">Kwota wpĹ‚aty</Label>
+              <Label htmlFor="case-payment-amount">Kwota wpłaty</Label>
               <Input
                 id="case-payment-amount"
                 type="number"
@@ -2570,10 +2507,10 @@ export default function CaseDetail() {
                 value={casePaymentDraft.status}
                 onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, status: event.target.value }))}
               >
-                <option value="deposit_paid">Zaliczka wpĹ‚acona</option>
-                <option value="partially_paid">CzÄ™Ĺ›ciowo opĹ‚acone</option>
-                <option value="fully_paid">OpĹ‚acone</option>
-                <option value="awaiting_payment">Czeka na pĹ‚atnoĹ›Ä‡</option>
+                <option value="deposit_paid">Zaliczka wpłacona</option>
+                <option value="partially_paid">Częściowo opłacone</option>
+                <option value="fully_paid">Opłacone</option>
+                <option value="awaiting_payment">Czeka na płatność</option>
               </select>
             </div>
             <div>
@@ -2584,9 +2521,9 @@ export default function CaseDetail() {
                 onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, type: event.target.value }))}
               >
                 <option value="deposit">Zaliczka</option>
-                <option value="partial">WpĹ‚ata czÄ™Ĺ›ciowa</option>
-                <option value="final">DopĹ‚ata koĹ„cowa</option>
-                <option value="other">Inna wpĹ‚ata</option>
+                <option value="partial">Wpłata częściowa</option>
+                <option value="final">Dopłata końcowa</option>
+                <option value="other">Inna wpłata</option>
               </select>
             </div>
             <div>
@@ -2605,7 +2542,7 @@ export default function CaseDetail() {
             </Button>
             <Button type="button" onClick={handleCreateCasePayment} disabled={casePaymentSubmitting || !hasAccess}>
               {casePaymentSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              Zapisz wpĹ‚atÄ™
+              Zapisz wpłatę
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -2616,12 +2553,12 @@ export default function CaseDetail() {
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
         <DialogContent className="case-finance-edit-modal">
           <DialogHeader>
-            <DialogTitle>WartoĹ›Ä‡ sprawy i prowizja</DialogTitle>
-            <DialogDescription>UzupeĹ‚nij dane rozliczenia i zapisz, aby zaktualizowaÄ‡ finanse sprawy.</DialogDescription>
+            <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
+            <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form">
             <label className="case-finance-edit-field">
-              <span>WartoĹ›Ä‡ sprawy / transakcji</span>
+              <span>Wartość sprawy / transakcji</span>
               <Input inputMode="decimal" value={financeEditForm.contractValue} placeholder="Nie ustawiono" onChange={(event) => setFinanceEditForm((current) => ({ ...current, contractValue: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
@@ -2632,8 +2569,8 @@ export default function CaseDetail() {
               <span>Model prowizji</span>
               <select className="case-finance-edit-select" value={financeEditForm.commissionMode} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionMode: event.target.value as 'none' | 'percent' | 'fixed' }))}>
                 <option value="none">Brak</option>
-                <option value="percent">Procent od wartoĹ›ci</option>
-                <option value="fixed">Kwota staĹ‚a</option>
+                <option value="percent">Procent od wartości</option>
+                <option value="fixed">Kwota stała</option>
               </select>
             </label>
             <label className="case-finance-edit-field">
@@ -2649,16 +2586,16 @@ export default function CaseDetail() {
               <select className="case-finance-edit-select" value={financeEditForm.commissionStatus} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionStatus: event.target.value }))}>
                 <option value="not_set">nieustawiona</option>
                 <option value="expected">oczekiwana</option>
-                <option value="due">naleĹĽna</option>
-                <option value="partially_paid">czÄ™Ĺ›ciowo zapĹ‚acona</option>
-                <option value="paid">zapĹ‚acona</option>
-                <option value="overdue">zalegĹ‚a</option>
+                <option value="due">należna</option>
+                <option value="partially_paid">częściowo zapłacona</option>
+                <option value="paid">zapłacona</option>
+                <option value="overdue">zaległa</option>
               </select>
             </label>
             <div className="case-finance-edit-preview" data-fin11-case-finance-preview="true">
-              <div><span>Prowizja naleĹĽna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
-              <div><span>Po wpĹ‚atach klienta pozostaje:</span><strong>{formatMoney(financeEditPreview.remainingAmount, financeEditPreview.currency)}</strong></div>
-              <div><span>Do zapĹ‚aty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>Prowizja należna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatMoney(financeEditPreview.remainingAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>
           <DialogFooter>
@@ -2671,8 +2608,8 @@ export default function CaseDetail() {
       <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
         <DialogContent className="case-finance-edit-modal">
           <DialogHeader>
-            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj pĹ‚atnoĹ›Ä‡ prowizji' : 'Dodaj wpĹ‚atÄ™'}</DialogTitle>
-            <DialogDescription>UzupeĹ‚nij dane i zapisz zmiany w sprawie.</DialogDescription>
+            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
+            <DialogDescription>Uzupełnij dane i zapisz zmiany w sprawie.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form">
             <label className="case-finance-edit-field">
@@ -2686,16 +2623,16 @@ export default function CaseDetail() {
             <label className="case-finance-edit-field">
               <span>Status</span>
               <select className="case-finance-edit-select" value={financePaymentForm.status} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, status: event.target.value }))}>
-                <option value="paid">opĹ‚acona</option>
-                <option value="partially_paid">czÄ™Ĺ›ciowo opĹ‚acona</option>
-                <option value="fully_paid">w peĹ‚ni opĹ‚acona</option>
-                <option value="deposit_paid">zaliczka wpĹ‚acona</option>
-                <option value="due">naleĹĽna</option>
+                <option value="paid">opłacona</option>
+                <option value="partially_paid">częściowo opłacona</option>
+                <option value="fully_paid">w pełni opłacona</option>
+                <option value="deposit_paid">zaliczka wpłacona</option>
+                <option value="due">należna</option>
                 <option value="planned">zaplanowana</option>
               </select>
             </label>
             <label className="case-finance-edit-field">
-              <span>Data zapĹ‚aty</span>
+              <span>Data zapłaty</span>
               <Input type="datetime-local" value={financePaymentForm.paidAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, paidAt: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
@@ -2704,12 +2641,12 @@ export default function CaseDetail() {
             </label>
             <label className="case-finance-edit-field case-finance-edit-field--wide">
               <span>Notatka</span>
-              <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotĂłwka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
+              <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotówka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
             </label>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={() => setIsFinancePaymentOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
-            <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz pĹ‚atnoĹ›Ä‡</Button>
+            <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz płatność</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -2746,7 +2683,7 @@ function CaseDetailV1CommandCenter({
           Zrobione
         </button>
         <button type="button" onClick={() => onSetStatus('in_progress')} disabled={!isCompleted}>
-          PrzywrĂłÄ‡
+          Przywróć
         </button>
       </div>
     </section>
@@ -2818,8 +2755,8 @@ function WorkItemRow({
         {entry.kind === 'missing' ? (
           <>
             <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
-            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>OdrzuÄ‡</button>
-            <EntityActionButton type="button" tone="danger" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>UsuĹ„</EntityActionButton>
+            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
+            <EntityActionButton type="button" tone="danger" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>Usuń</EntityActionButton>
           </>
         ) : null}
       </div>
@@ -2843,10 +2780,10 @@ return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader><DialogTitle>Dodaj brak</DialogTitle>
-<DialogDescription>UzupeĹ‚nij brakujÄ…cy element i zapisz go w checklistach sprawy.</DialogDescription></DialogHeader>
+<DialogDescription>Uzupełnij brakujący element i zapisz go w checklistach sprawy.</DialogDescription></DialogHeader>
         <div className="case-detail-dialog-grid">
-          <label>TytuĹ‚<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
-          <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="KrĂłtko opisz, czego brakuje." /></label>
+          <label>Tytuł<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
+          <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="Krótko opisz, czego brakuje." /></label>
           <label>Typ<select value={value.type} onChange={(event) => onChange({ ...value, type: event.target.value })}><option value="file">Plik</option><option value="decision">Decyzja</option><option value="text">Tekst</option></select></label>
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>
