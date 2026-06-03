@@ -187,3 +187,14 @@ Podpięte semantyki:
 - meta: `cf-vst-text-muted`,
 - sukces: `cf-vst-color-success`,
 - ostrzeżenie/delete: `cf-vst-color-delete`.
+## STAGE220A22 - spójny numer wiersza i chevron w Klientach/Sprawach
+
+Decyzja:
+- numer wiersza w `Klienci` i `Sprawy` ma mieć ten sam kolor, tło, border i font,
+- `Klienci` używa chevrona `>` jako wskaźnika otwarcia rekordu, tak jak `Sprawy`,
+- ikonka klienta przy koszu w liście klientów nie jest używana jako akcja otwarcia, bo miesza język ikon.
+
+Podpięcie:
+- `Clients.tsx`: `data-stage220a22-client-chevron="true"`,
+- `Cases.tsx`: importuje `closeflow-record-list-source-truth.css`,
+- `closeflow-record-list-source-truth.css`: wspólne tokeny dla index pill i client chevron.

@@ -10,12 +10,12 @@ import {
 import { Link } from 'react-router-dom';
 import {
   CaseEntityIcon,
-  EntityIcon,
   LeadEntityIcon,
   PaymentEntityIcon,
 } from '../components/ui-system';
 import {
   AlertTriangle,
+  ChevronRight,
   Loader2,
   Plus,
   RotateCcw,
@@ -103,6 +103,8 @@ function formatClientMoney(value: number) {
 }
 
 const CLOSEFLOW_CLIENT_CARD_NEXT_ACTION_LAYOUT_ETAP10 = 'nearest action is full-width before client card buttons';
+const STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY = 'client and case row index pills share color and client row uses chevron open indicator';
+void STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 
@@ -683,7 +685,7 @@ export default function Clients() {
                          <span className="lead-value-cell cf-client-cases-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
                          <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
                          <span className="lead-actions client-card-action-buttons cf-client-row-actions cf-client-row-inline">
-                           <span className="btn ghost cf-icon-action-button" aria-hidden="true"><EntityIcon entity="client" className="h-4 w-4" /></span>
+                           <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="Otwórz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
                            <button
                              type="button"
                              aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}

@@ -578,3 +578,48 @@
   border-color: var(--cf-vst-color-delete) !important;
   background: var(--cf-vst-color-delete-soft) !important;
 }
+
+/* STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY
+   Clients and Cases list index pills share one VST color.
+   Client row open indicator uses the same chevron language as case rows.
+*/
+
+#root .cf-html-view:is(.main-clients-html, .main-cases-html) .row:not(.row-empty) > .index {
+  background: var(--cf-vst-color-primary-soft) !important;
+  border: 1px solid var(--cf-vst-color-primary-border) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-cases-html .table-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+#root .cf-html-view.main-cases-html .row:not(.row-empty) {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view.main-clients-html .cf-client-row-open-indicator {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+#root .cf-html-view.main-clients-html .cf-client-row-open-indicator svg {
+  color: var(--cf-vst-color-primary-strong) !important;
+}
+
+#root .cf-html-view.main-clients-html .cf-client-row-open-indicator:hover {
+  background: var(--cf-vst-color-primary-soft) !important;
+  border-color: var(--cf-vst-color-primary-border) !important;
+}
