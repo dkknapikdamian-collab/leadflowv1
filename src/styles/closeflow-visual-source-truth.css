@@ -629,3 +629,85 @@
   letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
   line-height: var(--cf-vst-line-height-tight) !important;
 }
+
+/* STAGE220A20_CALENDAR_STATUS_VST
+   Calendar entries, event/task chips, deadline/status pills and calendar actions use Visual Source of Truth.
+*/
+
+.cf-vst-kind-success,
+[data-cf-vst-kind="success"] {
+  --cf-vst-kind-color: var(--cf-vst-color-success);
+  --cf-vst-kind-bg: var(--cf-vst-color-success-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-task-border);
+}
+
+.cf-vst-kind-warning,
+[data-cf-vst-kind="warning"] {
+  --cf-vst-kind-color: var(--cf-vst-color-warning);
+  --cf-vst-kind-bg: var(--cf-vst-color-warning-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-event-border);
+}
+
+.cf-vst-kind-danger,
+[data-cf-vst-kind="danger"] {
+  --cf-vst-kind-color: var(--cf-vst-color-danger);
+  --cf-vst-kind-bg: var(--cf-vst-color-danger-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-delete-border);
+}
+
+.cf-vst-calendar-entry-card {
+  border-left: 3px solid var(--cf-vst-kind-color, var(--cf-vst-color-event)) !important;
+}
+
+.cf-vst-calendar-entry-card[data-cf-vst-calendar-status="success"] {
+  opacity: 0.72;
+}
+
+.cf-vst-calendar-entry-card[data-cf-vst-calendar-status="danger"] {
+  border-left-color: var(--cf-vst-color-danger) !important;
+}
+
+.cf-vst-calendar-entry-card .cf-calendar-week-plan-entry-title,
+.cf-vst-calendar-entry-card .cf-selected-day-v9-entry-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+}
+
+.cf-vst-calendar-entry-card[data-calendar-entry-completed="true"] .cf-calendar-week-plan-entry-title,
+.cf-vst-calendar-entry-card[data-calendar-entry-completed="true"] .cf-selected-day-v9-entry-title {
+  color: var(--cf-vst-text-muted) !important;
+  text-decoration: line-through !important;
+}
+
+.cf-calendar-week-plan-entry-type,
+.cf-calendar-week-plan-entry-time,
+.cf-calendar-week-plan-entry-status,
+.cf-selected-day-v9-type,
+.cf-selected-day-v9-time,
+.cf-selected-day-v9-status {
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border)) !important;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
+}
+
+.cf-calendar-week-plan-action,
+.cf-selected-day-v9-action {
+  min-height: var(--cf-vst-button-height-sm) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+}
+
+.cf-calendar-week-plan-action-done,
+.cf-selected-day-v9-action-done {
+  border-color: var(--cf-vst-color-task-border) !important;
+  background: var(--cf-vst-color-task-soft) !important;
+  color: var(--cf-vst-color-success) !important;
+}
+
+.cf-calendar-week-plan-action-danger,
+.cf-selected-day-v9-action-danger {
+  border-color: var(--cf-vst-color-delete-border) !important;
+  background: var(--cf-vst-color-delete-soft) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}

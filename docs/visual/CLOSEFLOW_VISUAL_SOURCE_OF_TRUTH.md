@@ -147,3 +147,23 @@ Podpięte wspólne komponenty:
 Zasada:
 - Kafelki, liczby, badge, chipy i małe liczniki nie mają mieć własnych losowych kolorów ani rozmiarów.
 - Nowe widoki mają brać klasy z `cf-vst-*`.
+## STAGE220A20 - kalendarz, wydarzenia i statusy terminów
+
+Podpięte miejsca:
+- wpis tygodniowy kalendarza używa `cf-vst-card` i `cf-vst-calendar-entry-card`,
+- wpis wybranego dnia używa `cf-vst-card` i `cf-vst-calendar-entry-card`,
+- typ wpisu: event/task/lead używa `data-cf-vst-kind`,
+- status wpisu używa `data-cf-vst-kind`,
+- godzina/termin używa semantyki terminu,
+- akcja `Zrobione` używa semantyki sukcesu,
+- akcja `Usuń` używa semantyki delete.
+
+Mapa:
+- wydarzenie/kalendarz: event,
+- zadanie: task,
+- lead/inny rekord: case-item,
+- wykonane: success,
+- zaległe: danger,
+- anulowane/systemowe: status,
+- w toku: primary,
+- usuń: delete.

@@ -119,6 +119,8 @@ type CalendarView = 'week' | 'month';
 
 const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
 const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
+const STAGE220A20_CALENDAR_STATUS_VST = 'calendar event/task/status/deadline rows use CloseFlow Visual Source of Truth';
+void STAGE220A20_CALENDAR_STATUS_VST;
 const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina końca nie może być przed startem.';
 
 const CLOSEFLOW_FB1_CALENDAR_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
@@ -334,6 +336,29 @@ function getCalendarEntryTypeClass(_entry: ScheduleEntry) {
   return 'cf-entity-type-pill';
 }
 
+function getCalendarEntryVstKindStage220A20(entry: ScheduleEntry) {
+  if (entry.kind === 'event') return 'event';
+  if (entry.kind === 'task') return 'task';
+  return 'case-item';
+}
+
+function getCalendarEntryStatusVstKindStage220A20(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'done' || status === 'completed' || status === 'complete' || status === 'finished' || status === 'zrobione' || status === 'wykonane') return 'success';
+  if (status === 'overdue') return 'danger';
+  if (status === 'cancelled' || status === 'canceled') return 'status';
+  if (status === 'in_progress') return 'primary';
+  return 'event';
+}
+
+function getCalendarEntryDueVstKindStage220A20(entry: ScheduleEntry) {
+  const status = getCalendarEntryStatus(entry);
+  if (status === 'overdue') return 'danger';
+  if (isCompletedCalendarEntry(entry)) return 'success';
+  return 'event';
+}
+
+
 function getCalendarEntryStatusLabel(entry: ScheduleEntry) {
   const status = getCalendarEntryStatus(entry);
   if (status === 'done' || status === 'completed') return 'Zrobione';
@@ -451,20 +476,23 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
     <div
       data-cf-calendar-week-plan-entry-card="true"
       data-calendar-entry-completed={isCompletedEntry ? "true" : undefined}
-      className={'cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
+      data-cf-vst-kind={getCalendarEntryVstKindStage220A20(entry)}
+      data-cf-vst-calendar-status={getCalendarEntryStatusVstKindStage220A20(entry)}
+      className={'cf-vst-card cf-vst-calendar-entry-card cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
     >
       <div className="cf-calendar-week-plan-entry-main">
         <div className="cf-calendar-week-plan-entry-meta" data-cf-calendar-week-plan-entry-meta="true">
           <span
-            className="cf-calendar-week-plan-entry-type"
+            className="cf-vst-badge cf-vst-pill cf-calendar-week-plan-entry-type"
+            data-cf-vst-kind={getCalendarEntryVstKindStage220A20(entry)}
             data-cf-entry-type-label="true"
             data-cf-entity-type={getCalendarEntryTypeValue(entry)}
             title={getCalendarEntryTypeLabel(entry)}
           >
             {typeLabel}
           </span>
-          <span className="cf-calendar-week-plan-entry-time">{getCalendarEntryTimeLabel(entry)}</span>
-          <span className="cf-calendar-week-plan-entry-status">{getCalendarEntryStatusLabel(entry)}</span>
+          <span className="cf-vst-badge cf-vst-pill cf-calendar-week-plan-entry-time" data-cf-vst-kind={getCalendarEntryDueVstKindStage220A20(entry)}>{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-vst-badge cf-vst-pill cf-calendar-week-plan-entry-status" data-cf-vst-kind={getCalendarEntryStatusVstKindStage220A20(entry)}>{getCalendarEntryStatusLabel(entry)}</span>
         </div>
 
         <p className={"cf-calendar-week-plan-entry-title " + completedTitleClass} title={title} data-cf-entry-title="true">
@@ -483,14 +511,14 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
       </div>
 
       <div className="cf-calendar-week-plan-entry-actions" data-cf-calendar-week-plan-entry-actions="true">
-        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? "..." : "+1H"}</button>
-        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? "..." : "+1D"}</button>
-        <button type="button" className="cf-calendar-week-plan-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? "..." : "+1W"}</button>
+        <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? "..." : "+1H"}</button>
+        <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? "..." : "+1D"}</button>
+        <button type="button" className="cf-vst-button cf-calendar-week-plan-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? "..." : "+1W"}</button>
         <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "Przywróć" : "Zrobione"}
         </button>
-        <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" onClick={() => onDelete(entry)} disabled={pendingDelete}>
+        <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" onClick={() => onDelete(entry)} disabled={pendingDelete}>
           <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
         </button>
       </div>
@@ -529,13 +557,15 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
       data-cf-calendar-selected-day-entry-v9="true"
       data-cf-selected-day-v9-no-bottom-bar="true"
       data-calendar-entry-completed={isCompletedEntry ? 'true' : undefined}
-      className={'cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '')}
+      data-cf-vst-kind={getCalendarEntryVstKindStage220A20(entry)}
+      data-cf-vst-calendar-status={getCalendarEntryStatusVstKindStage220A20(entry)}
+      className={'cf-vst-card cf-vst-calendar-entry-card cf-selected-day-v9-entry-shell cf-selected-day-v9-week-visual-contract ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '')}
     >
       <div className="cf-selected-day-v9-main">
         <div className="cf-selected-day-v9-meta" aria-label="Typ, godzina i status wpisu">
-          <span className="cf-selected-day-v9-type" data-cf-entity-type={getCalendarEntryTypeValue(entry)} data-cf-entry-type-label="true" title={typeLabel}>{typeLabel}</span>
-          <span className="cf-selected-day-v9-time" title={getCalendarEntryTimeLabel(entry)}>{getCalendarEntryTimeLabel(entry)}</span>
-          <span className="cf-selected-day-v9-status" title={getCalendarEntryStatusLabel(entry)}>{getCalendarEntryStatusLabel(entry)}</span>
+          <span className="cf-vst-badge cf-vst-pill cf-selected-day-v9-type" data-cf-vst-kind={getCalendarEntryVstKindStage220A20(entry)} data-cf-entity-type={getCalendarEntryTypeValue(entry)} data-cf-entry-type-label="true" title={typeLabel}>{typeLabel}</span>
+          <span className="cf-vst-badge cf-vst-pill cf-selected-day-v9-time" data-cf-vst-kind={getCalendarEntryDueVstKindStage220A20(entry)} title={getCalendarEntryTimeLabel(entry)}>{getCalendarEntryTimeLabel(entry)}</span>
+          <span className="cf-vst-badge cf-vst-pill cf-selected-day-v9-status" data-cf-vst-kind={getCalendarEntryStatusVstKindStage220A20(entry)} title={getCalendarEntryStatusLabel(entry)}>{getCalendarEntryStatusLabel(entry)}</span>
         </div>
 
         <p className="cf-selected-day-v9-entry-title" title={title} data-cf-entry-title="true">{title}</p>
@@ -559,14 +589,14 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
       </div>
 
       <div className="cf-selected-day-v9-actions" aria-label={'Akcje wpisu: ' + title} data-cf-selected-day-action-group="single-row">
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
-        <button type="button" className="cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
+        <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() => onEdit(entry)} disabled={pendingEdit}>Edytuj</button>
+        <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() => onShiftHours(entry, 1)} disabled={pendingHour}>{pendingHour ? '...' : '+1H'}</button>
+        <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() => onShift(entry, 1)} disabled={pendingDay}>{pendingDay ? '...' : '+1D'}</button>
+        <button type="button" className="cf-vst-button cf-selected-day-v9-action" onClick={() => onShift(entry, 7)} disabled={pendingWeek}>{pendingWeek ? '...' : '+1W'}</button>
         <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
         </button>
-        <button type="button" className={trashActionButtonClass("cf-selected-day-v9-action cf-selected-day-v9-action-danger")} onClick={() => onDelete(entry)} disabled={pendingDelete}>
+        <button type="button" className={trashActionButtonClass("cf-vst-button cf-vst-button-delete cf-selected-day-v9-action cf-selected-day-v9-action-danger")} data-cf-vst-kind="delete" onClick={() => onDelete(entry)} disabled={pendingDelete}>
           <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
