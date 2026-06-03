@@ -526,6 +526,54 @@ function getEventDurationMs(event: EventRecord) {
 function getCaseTitle(caseData?: CaseRecord | null) {
   return String(caseData?.title || caseData?.clientName || 'Sprawa bez nazwy');
 }
+
+const STAGE220A3_CASE_HEADER_SOURCE_CARD = 'STAGE220A3_CASE_HEADER_SOURCE_CARD';
+void STAGE220A3_CASE_HEADER_SOURCE_CARD;
+
+function normalizeCaseHeaderLabelStage220A3(value: unknown) {
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeCaseHeaderCompareStage220A3(value: unknown) {
+  return normalizeCaseHeaderLabelStage220A3(value)
+    .toLowerCase()
+    .replace(/[–—-]+/g, '-')
+    .replace(/\s*-\s*/g, '-');
+}
+
+function escapeCaseHeaderRegExpStage220A3(value: string) {
+  return value
+    .split('')
+    .map((char) => /[\\^$.*+?()[\]{}|]/.test(char) ? '\\' + char : char)
+    .join('');
+}
+
+function getCaseHeaderClientLabel(caseData?: CaseRecord | null) {
+  const directClient = normalizeCaseHeaderLabelStage220A3(
+    caseData?.clientName ||
+    (caseData as any)?.client_name ||
+    (caseData as any)?.client?.name
+  );
+  return directClient || 'Klient bez nazwy';
+}
+
+function getCaseHeaderCaseLabel(caseData?: CaseRecord | null) {
+  const title = normalizeCaseHeaderLabelStage220A3(caseData?.title || '');
+  const client = getCaseHeaderClientLabel(caseData);
+  const fallbackTitle = title || 'Sprawa bez nazwy';
+  const normalizedTitle = normalizeCaseHeaderCompareStage220A3(fallbackTitle);
+  const normalizedClient = normalizeCaseHeaderCompareStage220A3(client);
+
+  if (normalizedClient && normalizedTitle === normalizedClient) return 'Sprawa';
+
+  if (normalizedClient && normalizedTitle.startsWith(normalizedClient + '-')) {
+    const clientPrefix = new RegExp('^' + escapeCaseHeaderRegExpStage220A3(client) + '\\s*[-–—:]\\s*', 'i');
+    const withoutClient = fallbackTitle.replace(clientPrefix, '').trim();
+    return withoutClient || 'Sprawa';
+  }
+
+  return fallbackTitle;
+}
 function getCaseStatusLabel(status?: string) {
   if (!status) return 'Bez statusu';
   return CASE_STATUS_LABELS[status] || status;
@@ -1915,32 +1963,27 @@ export default function CaseDetail() {
     <Layout>
 
       <main className="case-detail-vnext-page">
-        <header className="case-detail-header">
-        <EntityTrashButton
-          className="cf-case-detail-delete-action"
-          data-case-detail-delete-action="true"
-          title="Usuń sprawę"
-          aria-label="Usuń sprawę"
-          onClick={() => setDeleteCaseOpen(true)}
-        />
+        <header className="case-detail-header" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD">
+          <EntityTrashButton
+            className="cf-case-detail-delete-action"
+            data-case-detail-delete-action="true"
+            title="Usuń sprawę"
+            aria-label="Usuń sprawę"
+            onClick={() => setDeleteCaseOpen(true)}
+          />
 
           <div className="case-detail-header-copy">
             <button type="button" className="case-detail-back-button" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />
               Sprawy
             </button>
-            <p className="case-detail-breadcrumb">Sprawy</p>
-            <div className="case-detail-title-row">
-              <h1>{getCaseTitle(caseData)}</h1>
-              <span className={`case-detail-pill ${getStatusClass(effectiveStatus)}`}>{getCaseStatusLabel(effectiveStatus)}</span>
-            </div>
-            <div className="case-detail-header-meta">
-              <span>Klient: {caseData.clientName || 'Brak klienta'}</span>
-              <span>Ostatnia zmiana: {formatDateTime(lastActivityAt)}</span>
-              <span>Źródło: {caseData.leadId ? 'Lead' : caseData.createdFromLead ? 'Lead' : 'Sprawa ręczna'}</span>
-            </div>
+            <h1 className="case-detail-header-composed-title" data-stage220a3-header-title="true">
+              <span className="case-detail-header-client-name">{getCaseHeaderClientLabel(caseData)}</span>
+              <span className="case-detail-header-separator" aria-hidden="true">—</span>
+              <span className="case-detail-header-case-name">{getCaseHeaderCaseLabel(caseData)}</span>
+            </h1>
           </div>
-                  </header>
+        </header>
 
         <section className="case-detail-top-grid">
           <article className="case-detail-top-card case-detail-top-card-blue">

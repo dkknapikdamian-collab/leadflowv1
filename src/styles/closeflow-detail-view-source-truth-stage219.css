@@ -212,3 +212,95 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* STAGE220A3_CASE_HEADER_SOURCE_CARD */
+.case-detail-vnext-page .case-detail-header {
+  align-items: center !important;
+  display: grid !important;
+  gap: 14px !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  min-height: 64px !important;
+  padding: 12px 18px !important;
+}
+
+.case-detail-vnext-page .case-detail-header-copy {
+  align-items: center !important;
+  display: flex !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-header .cf-case-detail-delete-action {
+  justify-self: end !important;
+}
+
+.case-detail-vnext-page .case-detail-header .case-detail-back-button {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-composed-title {
+  align-items: baseline !important;
+  color: var(--cf-detail-text) !important;
+  display: flex !important;
+  flex: 1 1 auto !important;
+  font-size: clamp(18px, 1.65vw, 23px) !important;
+  font-weight: 850 !important;
+  gap: 8px !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.18 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-client-name,
+.case-detail-vnext-page .case-detail-header-case-name {
+  display: inline-block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-client-name {
+  flex: 0 1 auto !important;
+  max-width: 44% !important;
+}
+
+.case-detail-vnext-page .case-detail-header-case-name {
+  color: #334155 !important;
+  flex: 1 1 auto !important;
+}
+
+.case-detail-vnext-page .case-detail-header-separator {
+  color: #94a3b8 !important;
+  flex: 0 0 auto !important;
+  font-weight: 700 !important;
+}
+
+.case-detail-vnext-page .case-detail-header .case-detail-breadcrumb,
+.case-detail-vnext-page .case-detail-header .case-detail-header-meta,
+.case-detail-vnext-page .case-detail-header .case-detail-title-row > .case-detail-pill {
+  display: none !important;
+}
+
+@media (max-width: 720px) {
+  .case-detail-vnext-page .case-detail-header {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-copy {
+    align-items: flex-start !important;
+    flex-direction: column !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-composed-title {
+    width: 100% !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-client-name {
+    max-width: 48% !important;
+  }
+}
