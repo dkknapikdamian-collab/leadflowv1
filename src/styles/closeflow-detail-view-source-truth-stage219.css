@@ -629,3 +629,9 @@
     max-width: 34vw !important;
   }
 }
+
+/* STAGE220A7_HIDE_CASE_SERVICE_HELPER_COPY */
+.case-detail-vnext-page .case-detail-top-card p,
+.case-detail-vnext-page .stage217-case-service-card p {
+  display: none !important;
+}

@@ -13,6 +13,9 @@ export type ContextActionRequest = TaskCreateDialogContext & {
 };
 
 const CONTEXT_ACTION_EVENT = 'closeflow:context-action-dialog';
+const CONTEXT_ACTION_SAVED_EVENT = 'closeflow:context-action-saved';
+const STAGE220A7_CONTEXT_ACTION_SAVED_EVENT = 'Task/event/note save emits refresh event for detail pages';
+void STAGE220A7_CONTEXT_ACTION_SAVED_EVENT;
 const STAGE85_CONTEXT_ACTION_DIALOG_UNIFICATION = 'Context detail actions use one shared task, event and note dialog host';
 const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY = STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1;
 const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event and note through the same shared dialog host';
@@ -150,15 +153,28 @@ export default function ContextActionDialogsHost() {
 
   const context = useMemo(() => request ? { ...request } : null, [request]);
   const close = () => setRequest(null);
+  const handleSaved = async () => {
+    const savedRequest = request ? { ...request } : null;
+    close();
+    if (typeof window !== 'undefined' && savedRequest) {
+      window.dispatchEvent(new CustomEvent(CONTEXT_ACTION_SAVED_EVENT, {
+        detail: {
+          ...savedRequest,
+          source: 'ContextActionDialogsHost',
+          savedAt: new Date().toISOString(),
+        },
+      }));
+    }
+  };
   const openTask = request?.kind === 'task';
   const openEvent = request?.kind === 'event';
   const openNote = request?.kind === 'note';
 
   return (
     <div data-context-action-dialog-host="true" data-stage="stage85-context-action-dialog-unification" data-stage15="STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT" data-stage17={STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY} data-context-action-contract-kinds={Object.keys(CONTEXT_ACTION_CONTRACT).join(',')} style={{ display: 'contents' }}>
-      <TaskCreateDialog open={openTask} onOpenChange={(open) => (open ? null : close())} onSaved={close} context={context || undefined} />
-      <EventCreateDialog open={openEvent} onOpenChange={(open) => (open ? null : close())} onSaved={close} context={context || undefined} />
-      <ContextNoteDialog open={openNote} onOpenChange={(open) => (open ? null : close())} onSaved={close} context={context || undefined} />
+      <TaskCreateDialog open={openTask} onOpenChange={(open) => (open ? null : close())} onSaved={handleSaved} context={context || undefined} />
+      <EventCreateDialog open={openEvent} onOpenChange={(open) => (open ? null : close())} onSaved={handleSaved} context={context || undefined} />
+      <ContextNoteDialog open={openNote} onOpenChange={(open) => (open ? null : close())} onSaved={handleSaved} context={context || undefined} />
     </div>
   );
 }

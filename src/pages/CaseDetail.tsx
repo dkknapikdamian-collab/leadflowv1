@@ -1366,6 +1366,25 @@ export default function CaseDetail() {
   }, [caseId, refreshCaseData]);
   const STAGE219_R4_CASE_NOTE_SAVED_REFRESH_MARKER = 'data-stage219-case-note-saved-refresh';
   void STAGE219_R4_CASE_NOTE_SAVED_REFRESH_MARKER;
+  const STAGE220A7_CASE_CONTEXT_ACTION_REFRESH = 'CaseDetail refreshes after task/event/note save';
+  void STAGE220A7_CASE_CONTEXT_ACTION_REFRESH;
+
+  useEffect(() => {
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail || {};
+      const recordType = String(detail?.recordType || detail?.payload?.recordType || '').trim();
+      const detailCaseId = String(detail?.caseId || detail?.payload?.caseId || (recordType === 'case' ? detail?.recordId : '') || '').trim();
+
+      if (detailCaseId && String(detailCaseId) !== String(caseId || '')) return;
+      if (recordType && recordType !== 'case') return;
+
+      void refreshCaseData();
+    };
+
+    window.addEventListener('closeflow:context-action-saved', listener as EventListener);
+    return () => window.removeEventListener('closeflow:context-action-saved', listener as EventListener);
+  }, [caseId, refreshCaseData]);
+
 
   const completionPercent = useMemo(() => {
     if (items.length > 0) return calculateCompletion(items);
@@ -1843,7 +1862,11 @@ export default function CaseDetail() {
   };
 
   async function handleConfirmDeleteCaseRecord() {
-    if (!caseData?.id) return;
+    if (!caseData?.id || deleteCasePending) return;
+    if (!guardCaseDetailWriteAccess('usunąć sprawy')) {
+      setDeleteCaseOpen(false);
+      return;
+    }
 
     try {
       setDeleteCasePending(true);
@@ -2393,6 +2416,21 @@ export default function CaseDetail() {
         </div>
         <CaseItemDialog open={isAddItemOpen} onOpenChange={setIsAddItemOpen} value={newItem} onChange={setNewItem} onSubmit={handleAddItem} />
       </main>
+
+      <span hidden data-stage220a7-delete-case-confirm="true" />
+      <ConfirmDialog
+        open={deleteCaseOpen}
+        onOpenChange={setDeleteCaseOpen}
+        title="Usunąć sprawę?"
+        description={`Sprawa „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” zostanie usunięta. Tej akcji nie można cofnąć.`}
+        confirmLabel="Usuń sprawę"
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={deleteCasePending}
+        onConfirm={handleConfirmDeleteCaseRecord}
+      />
+
+
 
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
         <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
