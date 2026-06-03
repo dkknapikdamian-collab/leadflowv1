@@ -2,8 +2,11 @@ import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 
+const STAGE220A19_CARDS_BADGES_METRICS_VST = "shared Badge primitive uses CloseFlow Visual Source of Truth";
+void STAGE220A19_CARDS_BADGES_METRICS_VST;
+
 const badgeVariants = cva(
-  "inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "cf-vst-badge cf-vst-pill inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
@@ -27,8 +30,20 @@ export interface BadgeProps
     VariantProps<typeof badgeVariants> {}
 
 const Badge: React.FC<BadgeProps> = ({ className, variant, ...props }) => {
+  const vstVariantClass =
+    variant === "destructive"
+      ? "cf-vst-kind-delete"
+      : variant === "secondary" || variant === "outline"
+        ? "cf-vst-kind-status"
+        : "cf-vst-kind-primary"
+
   return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+    <div
+      data-cf-vst-badge="true"
+      data-cf-vst-badge-kind={variant || "default"}
+      className={cn(badgeVariants({ variant }), vstVariantClass, className)}
+      {...props}
+    />
   )
 }
 

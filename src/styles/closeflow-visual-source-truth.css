@@ -550,3 +550,82 @@
   border-color: var(--cf-vst-color-delete) !important;
   color: var(--cf-vst-color-delete-strong) !important;
 }
+
+/* STAGE220A19_CARDS_BADGES_METRICS_VST
+   Shared cards, badges, chips and metric numbers wired to Visual Source of Truth.
+*/
+
+.cf-vst-kind-primary,
+[data-cf-vst-kind="primary"] {
+  --cf-vst-kind-color: var(--cf-vst-color-primary);
+  --cf-vst-kind-bg: var(--cf-vst-color-primary-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-primary-border);
+}
+
+.cf-vst-card {
+  background: var(--cf-vst-surface-card) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-card-header {
+  padding: var(--cf-vst-card-padding) var(--cf-vst-card-padding) var(--cf-vst-space-sm) !important;
+}
+
+.cf-vst-card-content {
+  padding-left: var(--cf-vst-card-padding) !important;
+  padding-right: var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-card-footer {
+  padding: var(--cf-vst-space-sm) var(--cf-vst-card-padding) var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-card-title {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-card-description {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-badge,
+.cf-vst-chip {
+  min-height: var(--cf-vst-badge-height) !important;
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-surface-border)) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main)) !important;
+  gap: var(--cf-vst-space-xs) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+  padding-left: var(--cf-vst-badge-padding-x) !important;
+  padding-right: var(--cf-vst-badge-padding-x) !important;
+}
+
+.cf-vst-metric-card {
+  background: var(--cf-vst-metric-card-bg) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  padding: var(--cf-vst-card-padding) !important;
+}
+
+.cf-vst-metric-label {
+  color: var(--cf-vst-metric-label-color) !important;
+  font-size: var(--cf-vst-metric-label-size) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-metric-number {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-family: var(--cf-vst-font-family-number) !important;
+  font-size: var(--cf-vst-metric-value-size) !important;
+  font-weight: var(--cf-vst-metric-value-weight) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  line-height: var(--cf-vst-line-height-tight) !important;
+}

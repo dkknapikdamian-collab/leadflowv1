@@ -131,3 +131,19 @@ Decyzja:
 - Domyślne CTA idzie w niebieski.
 - Zielony zostaje dla sukcesu/wykonania, nie dla każdego głównego przycisku.
 - Usuwanie zostaje czerwone i destrukcyjne.
+## STAGE220A19 - kafelki, liczby i pigułki statusów
+
+Podpięte wspólne komponenty:
+- `Card` używa `cf-vst-card`.
+- `CardHeader`, `CardContent`, `CardFooter` używają tokenów spacingu.
+- `CardTitle` używa `cf-vst-text-card-title`.
+- `CardDescription` używa `cf-vst-text-meta`.
+- `Badge` używa `cf-vst-badge cf-vst-pill`.
+- `Badge destructive` używa czerwonego źródła prawdy.
+- `Badge secondary/outline` używa semantyki statusu.
+- Domyślny `Badge` używa semantyki primary.
+- Liczby i metryki mają korzystać z `cf-vst-metric-number`, `cf-vst-metric-label`, `cf-vst-metric-card`.
+
+Zasada:
+- Kafelki, liczby, badge, chipy i małe liczniki nie mają mieć własnych losowych kolorów ani rozmiarów.
+- Nowe widoki mają brać klasy z `cf-vst-*`.
