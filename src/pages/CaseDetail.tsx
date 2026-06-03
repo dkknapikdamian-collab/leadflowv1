@@ -2021,6 +2021,7 @@ export default function CaseDetail() {
               <h2>Najbliższa akcja operacyjna</h2>
             </div>
             <strong>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</strong>
+            <span className="stage220a8-next-action-date" data-stage220a8-next-action-date="top">{nextAction ? `${getWorkKindLabel(nextAction.kind)} · ${nextAction.dateLabel}` : 'Brak terminu'}</span>
             <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} · ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, żeby sprawa miała najbliższy termin w sprawie.'}</p>
           </article>
           <article className="case-detail-top-card case-detail-top-card-green">
@@ -2079,6 +2080,7 @@ export default function CaseDetail() {
                 <article className="stage217-case-service-card stage217-case-service-card--next">
                   <span className="stage217-case-service-card__label">NastÄ™pna akcja</span>
                   <h3>{nextAction ? nextAction.title : 'Brak zaplanowanego ruchu'}</h3>
+                  <span className="stage220a8-next-action-date" data-stage220a8-next-action-date="service">{nextAction ? `${getWorkKindLabel(nextAction.kind)} · ${nextAction.dateLabel}` : 'Brak terminu'}</span>
                   <p>{nextAction ? `${getWorkKindLabel(nextAction.kind)} Â· ${nextAction.dateLabel}` : 'Dodaj zadanie albo wydarzenie, ĹĽeby sprawa nie wisiaĹ‚a bez terminu.'}</p>
                 </article>
                 <article className="stage217-case-service-card stage217-case-service-card--blockers">
@@ -2097,6 +2099,37 @@ export default function CaseDetail() {
                   <p>{caseFinance.expected > 0 ? `PozostaĹ‚o do rozliczenia. WpĹ‚acono: ${formatMoney(caseFinance.paid, caseFinance.currency)}.` : 'Ustaw wartoĹ›Ä‡ sprawy, jeĹ›li rozliczenie ma byÄ‡ pilnowane operacyjnie.'}</p>
                 </article>
               </div>
+
+              <section className="stage220a8-case-actions-preview" data-stage220a8-case-actions-preview="true">
+                <div className="stage220a8-case-actions-preview-head">
+                  <div>
+                    <span className="stage220a8-case-actions-preview-label">Działania sprawy</span>
+                    <h3>Zadania, wydarzenia i braki przypięte do tej sprawy</h3>
+                  </div>
+                  <span className="stage220a8-case-actions-preview-count">{workItems.length}</span>
+                </div>
+
+                {workItems.length === 0 ? (
+                  <div className="case-detail-light-empty">Brak działań przypiętych bezpośrednio do tej sprawy.</div>
+                ) : (
+                  <div className="case-detail-work-list stage220a8-case-actions-preview-list">
+                    {workItems.slice(0, 8).map((entry) => (
+                      <div key={'stage220a8-' + entry.id} style={{ display: 'contents' }}>
+                        <WorkItemRow
+                          entry={entry}
+                          onTaskDone={handleTaskDone}
+                          onTaskTomorrow={handleTaskTomorrow}
+                          onEventDone={handleEventDone}
+                          onEventTomorrow={handleEventTomorrow}
+                          onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
+                          onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
+                          onItemDelete={handleDeleteItem}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
             </section>
 
 

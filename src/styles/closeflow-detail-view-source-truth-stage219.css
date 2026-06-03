@@ -635,3 +635,64 @@
 .case-detail-vnext-page .stage217-case-service-card p {
   display: none !important;
 }
+
+/* STAGE220A8_VISIBLE_CASE_ACTIONS */
+.case-detail-vnext-page .stage220a8-next-action-date {
+  display: block !important;
+  margin-top: 6px !important;
+  color: #475569 !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+  line-height: 1.25 !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview {
+  margin-top: 14px !important;
+  border: 1px solid rgba(148, 163, 184, 0.28) !important;
+  border-radius: 22px !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  padding: 14px !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 16px !important;
+  margin-bottom: 12px !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-label {
+  display: block !important;
+  color: #2563eb !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-head h3 {
+  margin: 4px 0 0 !important;
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-count {
+  min-width: 36px !important;
+  height: 36px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  font-size: 15px !important;
+  font-weight: 900 !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-list {
+  display: grid !important;
+  gap: 8px !important;
+}
