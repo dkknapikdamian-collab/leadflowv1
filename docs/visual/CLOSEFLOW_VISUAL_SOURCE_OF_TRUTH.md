@@ -198,3 +198,13 @@ Podpięcie:
 - `Clients.tsx`: `data-stage220a22-client-chevron="true"`,
 - `Cases.tsx`: importuje `closeflow-record-list-source-truth.css`,
 - `closeflow-record-list-source-truth.css`: wspólne tokeny dla index pill i client chevron.
+## STAGE220A23 - produkcyjne komunikaty zadań
+
+Decyzja:
+- nie używamy natywnego `window.confirm` ani `window.prompt` w aktywnych flow zadań,
+- usuwanie zadania używa `ConfirmDialog`,
+- kolejny krok po oznaczeniu zadania jako zrobione używa modala `cf-vst-dialog`,
+- modal kolejnego kroku używa `cf-vst-input`, `cf-vst-dialog-footer` i tokenów VST.
+
+Powód:
+- natywne alerty pokazują techniczny nagłówek domeny, np. Vercel, i nie dają się ostylować produkcyjnie.

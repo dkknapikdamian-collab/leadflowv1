@@ -23,6 +23,7 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import { TopicContactPicker } from '../components/topic-contact-picker';
 import {
   createDefaultRecurrence,
@@ -113,8 +114,10 @@ import '../styles/closeflow-unified-page-canvas-stage211c.css';
 const TASK_FORM_VISUAL_REBUILD_STAGE21 = 'TASK_FORM_VISUAL_REBUILD_STAGE21';
 const TASK_FORM_STAGE21_HUMAN_COPY = 'Podaj tytuł zadania. Wybierz poprawny termin. Termin ma nieprawidłowy format. Nie udało się zapisać zadania. Spróbuj ponownie.';
 const TASK_REMINDERS_STAGE45A_GUARD = 'Zadania mają opcje przypomnienia, a mutacje nie gubią reminderAt ani recurrenceRule.';
+const STAGE220A23_TASK_DIALOGS_VST = 'task delete and next-step dialogs use production VST modals, not native browser alerts';
+void STAGE220A23_TASK_DIALOGS_VST;
 
-const modalSelectClass = 'w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
+const modalSelectClass = 'cf-vst-input w-full h-10 rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20';
 
 type TaskScope = 'active' | 'today' | 'week' | 'overdue' | 'without-lead' | 'done';
 
@@ -325,6 +328,10 @@ export default function Tasks() {
   const editTaskSubmitLockRef = useRef(false);
   const [taskSubmitting, setTaskSubmitting] = useState(false);
   const [taskEditSubmitting, setTaskEditSubmitting] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<any | null>(null);
+  const [taskDeletePending, setTaskDeletePending] = useState(false);
+  const [softNextStepDialog, setSoftNextStepDialog] = useState<any | null>(null);
+  const [softNextStepSubmitting, setSoftNextStepSubmitting] = useState(false);
 
   useEffect(() => subscribeGlobalQuickAction((target) => {
     if (target === 'task') setIsNewTaskOpen(true);
@@ -541,60 +548,79 @@ export default function Tasks() {
       const targetName = String(lead.name || leadName || 'lead').trim();
       const completedTaskTitle = String(fallbackTitle || 'zadanie').trim();
       const scheduledAt = getSoftNextStepDefaultDueAt();
-      const promptText = [
-        `Zamknąłeś zadanie przy aktywnym leadzie: ${targetName}.`,
-        'Ten lead nie ma kolejnego kroku.',
-        '',
-        'Co zrobić?',
-        '1 - ustaw follow-up na jutro rano',
-        '2 - ustaw przypomnienie na jutro rano',
-        '3 - zostaw świadomie bez kolejnego kroku',
-      ].join('\n');
-      const choice = window.prompt(promptText, '1')?.trim();
-      if (!choice) return;
 
-      if (choice === '3') {
-        await insertActivityToSupabase({
-          leadId,
-          ownerId: auth.currentUser?.uid ?? null,
-          actorId: auth.currentUser?.uid ?? null,
-          actorType: 'operator',
-          eventType: 'lead_next_step_skipped',
-          workspaceId,
-          payload: {
-            source: 'task_done',
-            completedTaskTitle,
-            leadName: targetName,
-          },
-        });
-        toast.success('Lead zostawiony bez kolejnego kroku');
-        return;
-      }
+      setSoftNextStepDialog({
+        leadId,
+        leadName: targetName,
+        completedTaskTitle,
+        title: 'Kolejny krok: ' + targetName,
+        scheduledAt,
+        priority: 'medium',
+      });
+    } catch (error) {
+      console.warn('SOFT_NEXT_STEP_AFTER_TASK_COMPLETION_DIALOG_FAILED', error);
+      toast.error('Zadanie zamknięte, ale nie udało się przygotować kolejnego kroku.');
+    }
+  };
 
-      if (choice !== '1' && choice !== '2') return;
+  const skipSoftNextStepDialog = async () => {
+    if (!softNextStepDialog) return;
+    try {
+      setSoftNextStepSubmitting(true);
+      const workspaceId = requireWorkspaceId(workspace);
+      await insertActivityToSupabase({
+        leadId: softNextStepDialog.leadId,
+        ownerId: auth.currentUser?.uid ?? null,
+        actorId: auth.currentUser?.uid ?? null,
+        actorType: 'operator',
+        eventType: 'lead_next_step_skipped',
+        workspaceId,
+        payload: {
+          source: 'task_done',
+          completedTaskTitle: softNextStepDialog.completedTaskTitle,
+          leadName: softNextStepDialog.leadName,
+        },
+      });
+      toast.success('Zadanie zamknięte. Lead zostawiony bez kolejnego kroku.');
+      setSoftNextStepDialog(null);
+    } catch (error) {
+      console.warn('SOFT_NEXT_STEP_SKIP_FAILED', error);
+      toast.error('Nie udało się zapisać decyzji o pominięciu kolejnego kroku.');
+    } finally {
+      setSoftNextStepSubmitting(false);
+    }
+  };
 
-      const title = choice === '2'
-        ? `Przypomnij: ${targetName}`
-        : `Follow-up: ${targetName}`;
+  const confirmSoftNextStepDialog = async () => {
+    if (!softNextStepDialog) return;
+    try {
+      setSoftNextStepSubmitting(true);
+      const workspaceId = requireWorkspaceId(workspace);
+      const lead = leads.find((entry: any) => String(entry.id || '') === String(softNextStepDialog.leadId));
+      const title = String(softNextStepDialog.title || '').trim() || ('Kolejny krok: ' + softNextStepDialog.leadName);
+      const scheduledAt = String(softNextStepDialog.scheduledAt || getSoftNextStepDefaultDueAt());
+
       await insertTaskToSupabase({
         title,
         type: 'follow_up',
         date: scheduledAt.slice(0, 10),
         scheduledAt,
-        priority: 'medium',
-        leadId,
-        clientId: lead.clientId ?? null,
-        caseId: lead.linkedCaseId ?? lead.caseId ?? null,
+        priority: softNextStepDialog.priority || 'medium',
+        leadId: softNextStepDialog.leadId,
+        clientId: lead?.clientId ?? null,
+        caseId: lead?.linkedCaseId ?? lead?.caseId ?? null,
         ownerId: auth.currentUser?.uid ?? undefined,
         workspaceId,
       });
+
       await updateLeadInSupabase({
-        id: String(leadId),
+        id: String(softNextStepDialog.leadId),
         nextActionAt: scheduledAt,
         workspaceId,
       });
+
       await insertActivityToSupabase({
-        leadId,
+        leadId: softNextStepDialog.leadId,
         ownerId: auth.currentUser?.uid ?? null,
         actorId: auth.currentUser?.uid ?? null,
         actorType: 'operator',
@@ -604,16 +630,20 @@ export default function Tasks() {
           source: 'task_done',
           title,
           scheduledAt,
-          completedTaskTitle,
-          leadName: targetName,
-          mode: choice === '2' ? 'reminder' : 'follow_up',
+          completedTaskTitle: softNextStepDialog.completedTaskTitle,
+          leadName: softNextStepDialog.leadName,
+          mode: 'follow_up',
         },
       });
+
       await refreshSupabaseData();
       toast.success('Ustawiono kolejny krok dla leada');
+      setSoftNextStepDialog(null);
     } catch (error) {
-      console.warn('SOFT_NEXT_STEP_AFTER_TASK_COMPLETION_FAILED', error);
-      toast.error('Zadanie zamknięte, ale nie udało się ustawić kolejnego kroku.');
+      console.warn('SOFT_NEXT_STEP_CREATE_FAILED', error);
+      toast.error('Nie udało się ustawić kolejnego kroku.');
+    } finally {
+      setSoftNextStepSubmitting(false);
     }
   };
 
@@ -784,14 +814,22 @@ await updateTaskInSupabase({
     }
   };
 
-  const deleteTask = async (taskId: string) => {
-    if (!window.confirm('Usunąć zadanie?')) return;
+  const requestDeleteTask = (task: any) => {
+    setTaskToDelete(task);
+  };
+
+  const confirmDeleteTask = async () => {
+    if (!taskToDelete?.id) return;
     try {
-      await deleteTaskFromSupabase(taskId);
+      setTaskDeletePending(true);
+      await deleteTaskFromSupabase(taskToDelete.id);
       await refreshSupabaseData();
       toast.success('Zadanie usunięte');
+      setTaskToDelete(null);
     } catch (error: any) {
-      toast.error('Nie udało się zapisać zadania. Spróbuj ponownie.');
+      toast.error('Nie udało się usunąć zadania. Spróbuj ponownie.');
+    } finally {
+      setTaskDeletePending(false);
     }
   };
 
@@ -1057,7 +1095,7 @@ await updateTaskInSupabase({
           <Button variant={done ? 'outline' : 'default'} size="sm" className={actionButtonClass('neutral', 'task-action-btn rounded-xl')} onClick={() => toggleTask(task.id, task.status)}>
             {done ? 'Przywróć' : 'Zrobione'}
           </Button>
-          <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() => deleteTask(task.id)}>
+          <Button variant="outline" size="sm" className={actionButtonClass('danger', 'task-action-btn task-action-danger rounded-xl')} onClick={() => requestDeleteTask(task)}>
             Usuń
           </Button>
         </div>
@@ -1067,6 +1105,84 @@ await updateTaskInSupabase({
 
   return (
     <Layout>
+      <ConfirmDialog
+        open={Boolean(taskToDelete)}
+        onOpenChange={(open) => {
+          if (!open && !taskDeletePending) setTaskToDelete(null);
+        }}
+        title="Usunąć zadanie?"
+        description={`Zadanie „${String(taskToDelete?.title || 'Zadanie')}” zostanie usunięte. Tej akcji nie można cofnąć.`}
+        confirmLabel={taskDeletePending ? 'Usuwanie...' : 'Usuń zadanie'}
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={taskDeletePending}
+        onConfirm={confirmDeleteTask}
+      />
+      <Dialog
+        open={Boolean(softNextStepDialog)}
+        onOpenChange={(open) => {
+          if (!open && !softNextStepSubmitting) setSoftNextStepDialog(null);
+        }}
+      >
+        <DialogContent
+          className="cf-vst-dialog task-next-step-dialog-stage220a23 sm:max-w-xl"
+          data-stage220a23-task-next-step-dialog="true"
+          data-cf-vst-dialog="true"
+        >
+          <DialogHeader>
+            <DialogTitle>Ustaw kolejny krok</DialogTitle>
+            <p className="task-next-step-dialog-stage220a23-description">
+              Zadanie jest zrobione. Ustaw następny follow-up, żeby lead albo sprawa nie wypadły z procesu.
+            </p>
+          </DialogHeader>
+
+          <div className="task-next-step-dialog-stage220a23-body">
+            <div className="space-y-2">
+              <Label>Tytuł kolejnego kroku</Label>
+              <Input
+                data-stage220a23-next-step-title="true"
+                value={softNextStepDialog?.title || ''}
+                onChange={(event) => setSoftNextStepDialog((prev: any) => prev ? { ...prev, title: event.target.value } : prev)}
+                placeholder="Kolejny krok"
+              />
+            </div>
+
+            <div className="task-next-step-dialog-stage220a23-grid">
+              <div className="space-y-2">
+                <Label>Termin</Label>
+                <Input
+                  type="datetime-local"
+                  data-stage220a23-next-step-date="true"
+                  value={softNextStepDialog?.scheduledAt || ''}
+                  onChange={(event) => setSoftNextStepDialog((prev: any) => prev ? { ...prev, scheduledAt: event.target.value } : prev)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Priorytet</Label>
+                <select
+                  className={modalSelectClass}
+                  data-stage220a23-next-step-priority="true"
+                  value={softNextStepDialog?.priority || 'medium'}
+                  onChange={(event) => setSoftNextStepDialog((prev: any) => prev ? { ...prev, priority: event.target.value } : prev)}
+                >
+                  {PRIORITY_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="cf-vst-dialog-footer task-next-step-dialog-stage220a23-footer">
+            <Button type="button" variant="outline" onClick={skipSoftNextStepDialog} disabled={softNextStepSubmitting}>
+              Pomiń
+            </Button>
+            <Button type="button" onClick={confirmSoftNextStepDialog} disabled={softNextStepSubmitting || !softNextStepDialog?.title || !softNextStepDialog?.scheduledAt}>
+              {softNextStepSubmitting ? 'Zapisywanie...' : 'Ustaw kolejny krok'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <div className="cf-html-view main-tasks-html">
         <header className="page-head flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>

@@ -780,3 +780,45 @@
   font-weight: var(--cf-vst-font-weight-medium) !important;
   line-height: var(--cf-vst-line-height-body) !important;
 }
+
+/* STAGE220A23_TASK_DIALOGS_VST
+   Production dialogs for task delete and task-completion next step. No native browser confirm/prompt.
+*/
+
+.task-next-step-dialog-stage220a23 {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.task-next-step-dialog-stage220a23-description {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+  margin-top: var(--cf-vst-space-sm) !important;
+}
+
+.task-next-step-dialog-stage220a23-body {
+  display: grid !important;
+  gap: var(--cf-vst-space-lg) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+.task-next-step-dialog-stage220a23-grid {
+  display: grid !important;
+  gap: var(--cf-vst-space-md) !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+}
+
+.task-next-step-dialog-stage220a23-footer {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+@media (max-width: 640px) {
+  .task-next-step-dialog-stage220a23-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
