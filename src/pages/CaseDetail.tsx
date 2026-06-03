@@ -34,7 +34,9 @@ import {
   updateCaseInSupabase,
   updateCaseItemInSupabase,
   updateEventInSupabase,
+  deleteEventFromSupabase,
   updateTaskInSupabase,
+  deleteTaskFromSupabase,
   fetchLeadByIdFromSupabase,
 } from '../lib/supabase-fallback';
 import { deleteCaseWithRelations } from '../lib/cases';
@@ -1187,6 +1189,8 @@ export default function CaseDetail() {
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
   const [isCaseActionsAllOpen, setIsCaseActionsAllOpen] = useState(false);
+  const [deleteWorkItemTarget, setDeleteWorkItemTarget] = useState<WorkItem | null>(null);
+  const [deleteWorkItemPending, setDeleteWorkItemPending] = useState(false);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [newItem, setNewItem] = useState({ title: '', description: '', type: 'file', isRequired: true, dueDate: '' });
   const [pendingNoteFollowUp, setPendingNoteFollowUp] = useState<{ note: string; createdAt: string } | null>(null);
@@ -1705,6 +1709,51 @@ export default function CaseDetail() {
   };
 
 
+
+  const STAGE220A8_5_WORK_ITEM_DELETE_HANDLER = 'CaseDetail work rows can delete tasks, events and missing items with confirmation';
+  void STAGE220A8_5_WORK_ITEM_DELETE_HANDLER;
+
+  const openDeleteWorkItemConfirm = (entry: WorkItem) => {
+    setDeleteWorkItemTarget(entry);
+  };
+
+  const handleConfirmDeleteWorkItem = async () => {
+    const target = deleteWorkItemTarget;
+    if (!target || deleteWorkItemPending) return;
+    if (!guardCaseDetailWriteAccess('usunąć działania sprawy')) {
+      setDeleteWorkItemTarget(null);
+      return;
+    }
+
+    try {
+      setDeleteWorkItemPending(true);
+
+      if (target.kind === 'task') {
+        const task = target.source as TaskRecord;
+        await deleteTaskFromSupabase(task.id);
+        await recordActivity('task_deleted', { title: task.title, taskId: task.id });
+        toast.success('Zadanie usunięte');
+      } else if (target.kind === 'event') {
+        const event = target.source as EventRecord;
+        await deleteEventFromSupabase(event.id);
+        await recordActivity('event_deleted', { title: event.title, eventId: event.id });
+        toast.success('Wydarzenie usunięte');
+      } else if (target.kind === 'missing') {
+        const item = target.source as CaseItem;
+        await deleteCaseItemFromSupabase(item.id);
+        await recordActivity('item_deleted', { itemId: item.id, title: item.title });
+        toast.success('Brak usunięty');
+      }
+
+      setDeleteWorkItemTarget(null);
+      await refreshCaseData();
+    } catch (error: any) {
+      toast.error(`Nie udało się usunąć: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setDeleteWorkItemPending(false);
+    }
+  };
+
   const handleTaskDone = async (task: TaskRecord) => {
     if (!guardCaseDetailWriteAccess('oznaczyc zadania jako zrobione')) return;
     try {
@@ -2102,6 +2151,7 @@ export default function CaseDetail() {
                                   onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
                                   onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
                                   onItemDelete={handleDeleteItem}
+                                  onDelete={openDeleteWorkItemConfirm}
                                 />
                               </div>
                             ))}
@@ -2305,7 +2355,8 @@ export default function CaseDetail() {
                           onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
                           onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
                           onItemDelete={handleDeleteItem}
-                        />
+                                  onDelete={openDeleteWorkItemConfirm}
+                                />
                       </div>
                     ))
                   )}
@@ -2436,6 +2487,22 @@ export default function CaseDetail() {
       </main>
 
 
+
+      <ConfirmDialog
+        open={Boolean(deleteWorkItemTarget)}
+        onOpenChange={(open) => {
+          if (!open && !deleteWorkItemPending) setDeleteWorkItemTarget(null);
+        }}
+        title="Usunąć działanie?"
+        description={deleteWorkItemTarget ? `${getWorkKindLabel(deleteWorkItemTarget.kind)} „${deleteWorkItemTarget.title}” zostanie usunięte z tej sprawy. Tej akcji nie można cofnąć.` : 'Usunąć wybrane działanie?'}
+        confirmLabel="Usuń"
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={deleteWorkItemPending}
+        onConfirm={handleConfirmDeleteWorkItem}
+        data-stage220a8-delete-work-item-confirm="true"
+      />
+
       <Dialog open={isCaseActionsAllOpen} onOpenChange={setIsCaseActionsAllOpen}>
         <DialogContent className="stage220a8-case-actions-all-modal sm:max-w-4xl" data-stage220a8-case-actions-all-modal="true">
           <DialogHeader>
@@ -2458,7 +2525,8 @@ export default function CaseDetail() {
                     onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
                     onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
                     onItemDelete={handleDeleteItem}
-                  />
+                                  onDelete={openDeleteWorkItemConfirm}
+                                />
                 </div>
               ))}
             </div>
@@ -2712,6 +2780,7 @@ function WorkItemRow({
   onItemAccept,
   onItemReject,
   onItemDelete,
+  onDelete,
 }: {
   entry: WorkItem;
   onTaskDone: (task: TaskRecord) => void;
@@ -2721,13 +2790,14 @@ function WorkItemRow({
   onItemAccept: (item: CaseItem) => void;
   onItemReject: (item: CaseItem) => void;
   onItemDelete: (item: CaseItem) => void;
+  onDelete: (entry: WorkItem) => void;
 }) {
   if (isCaseActivitySourceForWorkRow(entry.source)) {
     return null;
   }
 
   return (
-    <article className="case-detail-work-row">
+    <article className={`case-detail-work-row stage220a8-work-row-contrast stage220a8-work-row-${entry.kind}`} data-stage220a8-work-row="true" data-work-kind={entry.kind}>
       <span className="case-detail-work-icon"><WorkKindIcon kind={entry.kind} /></span>
       <div className="case-detail-work-main">
         <span className="case-detail-kind-pill">{getWorkKindLabel(entry.kind)}</span>
@@ -2756,9 +2826,19 @@ function WorkItemRow({
           <>
             <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
             <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
-            <EntityActionButton type="button" tone="danger" className="case-detail-row-action-danger" onClick={() => onItemDelete(entry.source as CaseItem)}>Usuń</EntityActionButton>
           </>
         ) : null}
+        <EntityActionButton
+          type="button"
+          tone="danger"
+          className="case-detail-row-action-trash"
+          title={`Usuń ${getWorkKindLabel(entry.kind).toLowerCase()}`}
+          aria-label={`Usuń ${getWorkKindLabel(entry.kind).toLowerCase()}`}
+          onClick={() => onDelete(entry)}
+          data-stage220a8-delete-work-item="true"
+        >
+          <Trash2 className="h-4 w-4" />
+        </EntityActionButton>
       </div>
     </article>
   );
