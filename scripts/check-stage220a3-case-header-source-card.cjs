@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 const repo = process.cwd();
@@ -18,8 +18,9 @@ function mustInclude(text, needle, message) {
 }
 
 function getHeaderBlock(text) {
-  const start = text.indexOf('<header className="case-detail-header"');
-  if (start === -1) return '';
+  const headerMatch = text.match(/<header\s+className="[^"]*\bcase-detail-header\b[^"]*"[^>]*>/);
+  if (!headerMatch || typeof headerMatch.index !== 'number') return '';
+  const start = headerMatch.index;
   const end = text.indexOf('</header>', start);
   if (end === -1) return '';
   return text.slice(start, end);
@@ -53,3 +54,4 @@ if (errors.length) {
 }
 
 console.log('OK Stage220A3 case header source card guard passed');
+
