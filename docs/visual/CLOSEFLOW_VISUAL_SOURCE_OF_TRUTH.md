@@ -208,3 +208,16 @@ Decyzja:
 
 Powód:
 - natywne alerty pokazują techniczny nagłówek domeny, np. Vercel, i nie dają się ostylować produkcyjnie.
+## STAGE220A23B - aktywny ekran zadań TasksStable
+
+Poprawka do A23:
+- aktywny ekran zadań działa przez `TasksStable.tsx`,
+- `TasksStable.tsx` nie może używać natywnego `window.confirm`,
+- usuwanie zadania używa `ConfirmDialog`,
+- modal `Edytuj zadanie` używa `cf-vst-dialog`,
+- modal `Ustaw kolejny krok` używa `cf-vst-dialog`,
+- zielone CTA w tych modalach zastąpione jest primary z VST,
+- selecty w tych modalach używają `cf-vst-input`.
+
+Powód:
+A23 poprawił starszy `Tasks.tsx`, ale widoczny produkcyjnie ekran zadań korzysta z `TasksStable.tsx`.

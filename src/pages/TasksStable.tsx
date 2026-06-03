@@ -32,6 +32,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { toDateTimeLocalValue } from '../lib/scheduling';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
@@ -42,6 +43,8 @@ const TASKS_VISIBLE_ACTIONS_STAGE47 = 'TASKS_VISIBLE_ACTIONS_STAGE47';
 void TASKS_VISIBLE_ACTIONS_STAGE47;
 const STAGE83_TASK_DONE_NEXT_STEP_PROMPT = 'STAGE83_TASK_DONE_NEXT_STEP_PROMPT';
 void STAGE83_TASK_DONE_NEXT_STEP_PROMPT;
+const STAGE220A23B_TASKS_STABLE_DIALOGS_VST = 'active TasksStable delete and next-step dialogs use production VST modals';
+void STAGE220A23B_TASKS_STABLE_DIALOGS_VST;
 const CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR = 'tasks cases visual mobile repair scoped to /tasks';
 void CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR;
 const CLOSEFLOW_STAGE16D_TASKS_METRIC_TILE_FINAL_LOCK = 'tasks metric tile compact parity final lock';
@@ -245,6 +248,7 @@ function buildNextStepPromptState(task: any): NextStepPromptState {
 }
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_TASKS_STABLE = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
+const tasksStableModalSelectClassStage220A23B = 'cf-vst-input h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm text-slate-900 outline-none';
 
 
 const TASKS_ACTION_COLOR_TAXONOMY_V1 = 'tasks action visual taxonomy V1';
@@ -272,6 +276,8 @@ export default function TasksStable() {
   const [form, setForm] = useState<TaskFormState>(() => defaultTaskForm());
   const [nextStepPrompt, setNextStepPrompt] = useState<NextStepPromptState | null>(null);
   const [nextStepSaving, setNextStepSaving] = useState(false);
+  const [taskToDelete, setTaskToDelete] = useState<any | null>(null);
+  const [taskDeletePending, setTaskDeletePending] = useState(false);
 
   const refreshData = useCallback(async () => {
     setLoading(true);
@@ -497,14 +503,22 @@ export default function TasksStable() {
     }
   };
 
-  const deleteTask = async (task: any) => {
-    if (!window.confirm('Usunąć zadanie?')) return;
+  const requestDeleteTask = (task: any) => {
+    setTaskToDelete(task);
+  };
+
+  const confirmDeleteTask = async () => {
+    if (!taskToDelete?.id) return;
     try {
-      await deleteTaskFromSupabase(String(task.id));
+      setTaskDeletePending(true);
+      await deleteTaskFromSupabase(String(taskToDelete.id));
       toast.success('Zadanie usunięte');
+      setTaskToDelete(null);
       await refreshData();
     } catch {
       toast.error('Nie udało się usunąć zadania.');
+    } finally {
+      setTaskDeletePending(false);
     }
   };
 
@@ -541,6 +555,20 @@ export default function TasksStable() {
 
   return (
     <Layout>
+      {/* STAGE220A23B_TASK_DELETE_CONFIRM */}
+      <ConfirmDialog
+        open={Boolean(taskToDelete)}
+        onOpenChange={(open) => {
+          if (!open && !taskDeletePending) setTaskToDelete(null);
+        }}
+        title="Usunąć zadanie?"
+        description={`Zadanie „${String(taskToDelete?.title || 'Zadanie')}” zostanie usunięte. Tej akcji nie można cofnąć.`}
+        confirmLabel={taskDeletePending ? 'Usuwanie...' : 'Usuń zadanie'}
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={taskDeletePending}
+        onConfirm={confirmDeleteTask}
+      />
       <main className="cf-route-work-root flex w-full flex-col gap-5 p-4 sm:p-6" data-p0-tasks-stable-rebuild="true" data-tasks-compact-stage48="true" data-stage83-task-done-next-step-prompt="true" data-stage16c-tasks-cases-repair="tasks" data-stage178-tasks-operational-panel="true">
         <CloseFlowPageHeaderV2
           pageKey="tasks"
@@ -625,7 +653,7 @@ export default function TasksStable() {
                               <Button type="button" variant="outline" className={actionButtonClass('neutral', 'tasks-stage47-action-button tasks-stage48-task-action-button')} data-task-action-visible-stage48="edit" onClick={() => openEditTask(task)}>
                                 Edytuj
                               </Button>
-                              <EntityTrashButton type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => void deleteTask(task)}>
+                              <EntityTrashButton type="button" variant="outline" className="tasks-stage47-action-button tasks-stage48-task-action-button tasks-stage48-danger-action" data-task-action-visible-stage48="delete" onClick={() => requestDeleteTask(task)}>
                                 <Trash2 className={trashActionIconClass("mr-2 h-4 w-4")} /> Usuń
                               </EntityTrashButton>
                             </div>
@@ -686,7 +714,7 @@ export default function TasksStable() {
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={(open) => (open ? setIsDialogOpen(true) : closeDialog())}>
-          <DialogContent className="max-w-xl">
+          <DialogContent className="cf-vst-dialog tasks-stable-dialog-stage220a23b max-w-xl" data-stage220a23b-task-form-dialog="true" data-cf-vst-dialog="true">
             <DialogHeader>
               <DialogTitle>{form.id ? 'Edytuj zadanie' : 'Nowe zadanie'}</DialogTitle>
             </DialogHeader>
@@ -702,7 +730,7 @@ export default function TasksStable() {
                 </div>
                 <div className="space-y-2">
                   <Label>Priorytet</Label>
-                  <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.priority} onChange={(event) => setForm((prev) => ({ ...prev, priority: event.target.value }))}>
+                  <select className={tasksStableModalSelectClassStage220A23B} value={form.priority} onChange={(event) => setForm((prev) => ({ ...prev, priority: event.target.value }))}>
                     <option value="low">Niski</option>
                     <option value="medium">Średni</option>
                     <option value="normal">Normalny</option>
@@ -713,7 +741,7 @@ export default function TasksStable() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Typ</Label>
-                  <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.type} onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value }))}>
+                  <select className={tasksStableModalSelectClassStage220A23B} value={form.type} onChange={(event) => setForm((prev) => ({ ...prev, type: event.target.value }))}>
                     <option value="follow_up">Follow-up</option>
                     <option value="todo">Do zrobienia</option>
                     <option value="phone">Telefon</option>
@@ -723,22 +751,22 @@ export default function TasksStable() {
                 </div>
                 <div className="space-y-2">
                   <Label>Status</Label>
-                  <select className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm" value={form.status || 'todo'} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value }))}>
+                  <select className={tasksStableModalSelectClassStage220A23B} value={form.status || 'todo'} onChange={(event) => setForm((prev) => ({ ...prev, status: event.target.value }))}>
                     <option value="todo">Do zrobienia</option>
                     <option value="done">Zrobione</option>
                   </select>
                 </div>
               </div>
-              <DialogFooter className={modalFooterClass()}>
+              <DialogFooter className={modalFooterClass("tasks-stable-dialog-stage220a23b-footer cf-vst-dialog-footer")}>
                 <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
-                <Button type="submit" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
+                <Button type="submit" className="tasks-stable-dialog-stage220a23b-primary" disabled={saving}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz zadanie</Button>
               </DialogFooter>
             </form>
           </DialogContent>
         </Dialog>
 
         <Dialog open={Boolean(nextStepPrompt)} onOpenChange={(open) => (!open ? closeNextStepPrompt() : undefined)}>
-          <DialogContent className="max-w-lg" data-stage83-task-done-next-step-prompt="dialog">
+          <DialogContent className="cf-vst-dialog task-next-step-dialog-stage220a23b max-w-lg" data-stage83-task-done-next-step-prompt="dialog" data-stage220a23b-task-next-step-dialog="true" data-cf-vst-dialog="true">
             <DialogHeader>
               <DialogTitle>Ustaw kolejny krok</DialogTitle>
             </DialogHeader>
@@ -766,7 +794,7 @@ export default function TasksStable() {
                 <div className="space-y-2">
                   <Label>Priorytet</Label>
                   <select
-                    className="h-10 w-full rounded-md border border-slate-200 bg-white px-3 text-sm"
+                    className={tasksStableModalSelectClassStage220A23B}
                     value={nextStepPrompt?.priority || 'medium'}
                     onChange={(event) => setNextStepPrompt((current) => (current ? { ...current, priority: event.target.value } : current))}
                   >
@@ -779,7 +807,7 @@ export default function TasksStable() {
               </div>
               <DialogFooter className={modalFooterClass()}>
                 <Button type="button" variant="outline" onClick={closeNextStepPrompt} disabled={nextStepSaving}>Pomiń</Button>
-                <Button type="submit" disabled={nextStepSaving}>
+                <Button type="submit" className="tasks-stable-dialog-stage220a23b-primary" disabled={nextStepSaving}>
                   {nextStepSaving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Ustaw kolejny krok
                 </Button>

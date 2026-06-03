@@ -822,3 +822,73 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* STAGE220A23B_TASKS_STABLE_DIALOGS_VST
+   Active TasksStable task edit and next-step dialogs use the same production VST surface.
+*/
+
+.tasks-stable-dialog-stage220a23b,
+.task-next-step-dialog-stage220a23b {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.tasks-stable-dialog-stage220a23b :is(label, p, span, h2, h3),
+.task-next-step-dialog-stage220a23b :is(label, p, span, h2, h3) {
+  color: var(--cf-vst-text-main) !important;
+}
+
+.tasks-stable-dialog-stage220a23b [data-radix-dialog-title],
+.task-next-step-dialog-stage220a23b [data-radix-dialog-title],
+.tasks-stable-dialog-stage220a23b h2,
+.task-next-step-dialog-stage220a23b h2 {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+}
+
+.tasks-stable-dialog-stage220a23b input,
+.tasks-stable-dialog-stage220a23b select,
+.task-next-step-dialog-stage220a23b input,
+.task-next-step-dialog-stage220a23b select {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  min-height: var(--cf-vst-input-height) !important;
+}
+
+.tasks-stable-dialog-stage220a23b input:focus,
+.tasks-stable-dialog-stage220a23b select:focus,
+.task-next-step-dialog-stage220a23b input:focus,
+.task-next-step-dialog-stage220a23b select:focus {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+.tasks-stable-dialog-stage220a23b-footer {
+  border-top: 1px solid var(--cf-vst-surface-border) !important;
+  padding-top: var(--cf-vst-space-lg) !important;
+}
+
+.tasks-stable-dialog-stage220a23b-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.tasks-stable-dialog-stage220a23b-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+  border-color: var(--cf-vst-color-primary-strong) !important;
+}
+
+.tasks-stable-dialog-stage220a23b button[variant="outline"],
+.task-next-step-dialog-stage220a23b button[variant="outline"] {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
