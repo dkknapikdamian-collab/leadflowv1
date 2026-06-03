@@ -711,3 +711,72 @@
   background: var(--cf-vst-color-delete-soft) !important;
   color: var(--cf-vst-color-delete-strong) !important;
 }
+
+/* STAGE220A21_RECORD_LISTS_RAILS_VST
+   Record lists and right rails use Visual Source of Truth tokens.
+*/
+
+.cf-vst-record-list-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+}
+
+.cf-vst-record-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-record-index {
+  background: var(--cf-vst-color-primary-soft) !important;
+  border: 1px solid var(--cf-vst-color-primary-border) !important;
+  color: var(--cf-vst-color-primary-strong) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+}
+
+.cf-vst-record-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-record-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-right-rail-card {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-right-rail-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-right-rail-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-right-rail-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-medium) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}

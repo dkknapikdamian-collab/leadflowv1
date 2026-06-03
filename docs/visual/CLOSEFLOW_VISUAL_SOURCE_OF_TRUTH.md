@@ -167,3 +167,23 @@ Mapa:
 - anulowane/systemowe: status,
 - w toku: primary,
 - usuń: delete.
+## STAGE220A21 - listy rekordów i panele boczne
+
+Podpięte stare źródła prawdy pod nowe tokeny:
+- `closeflow-record-list-source-truth.css`
+- `closeflow-right-rail-source-truth.css`
+
+Zasada:
+- listy rekordów dalej mają własny plik układu,
+- panele boczne dalej mają własny plik układu,
+- ale kolory, tła, obramowania, radiusy, shadow, tekst, meta, pigułki i destructive actions idą przez `cf-vst-*`.
+
+Podpięte semantyki:
+- rekord/list row: `cf-vst-record-row`,
+- karta listy: `cf-vst-record-list-card`,
+- panel boczny: `cf-vst-right-rail-card`,
+- wiersz panelu bocznego: `cf-vst-right-rail-row`,
+- tytuł: `cf-vst-text-strong`,
+- meta: `cf-vst-text-muted`,
+- sukces: `cf-vst-color-success`,
+- ostrzeżenie/delete: `cf-vst-color-delete`.

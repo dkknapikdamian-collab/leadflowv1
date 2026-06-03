@@ -519,3 +519,104 @@
     text-align: right !important;
   }
 }
+
+/* STAGE220A21_RIGHT_RAILS_VST_WIRING
+   Existing right-rail source truth is bridged to CloseFlow Visual Source of Truth.
+*/
+
+:root {
+  --cf-right-rail-card-bg: var(--cf-vst-surface-card-solid);
+  --cf-right-rail-card-bg-muted: var(--cf-vst-surface-soft);
+  --cf-right-rail-card-border: var(--cf-vst-surface-border);
+  --cf-right-rail-card-text: var(--cf-vst-text-strong);
+  --cf-right-rail-card-muted: var(--cf-vst-text-muted);
+  --cf-right-rail-card-shadow: var(--cf-vst-shadow-card);
+  --cf-right-rail-width-min: var(--cf-vst-layout-right-rail);
+  --cf-right-rail-width-preferred: var(--cf-vst-layout-right-rail);
+  --cf-right-rail-width-max: calc(var(--cf-vst-layout-right-rail) + 20px);
+  --cf-right-rail-gap: var(--cf-vst-layout-gap);
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card),
+#root .cf-html-view.main-leads-html aside.right-card.lead-right-card,
+#root .cf-html-view.main-leads-html aside.right-card.operator-top-value-card,
+#root .cf-html-view.main-clients-html aside.right-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-shortcuts-rail-card,
+#root .cf-html-view.main-cases-html aside.right-card.cases-risk-rail-card {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(h1, h2, h3, h4, p, li, small, strong),
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.title, .right-card-title, .rail-title) {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view:is(.main-leads-html, .main-clients-html, .main-cases-html) :is(aside.right-card, .right-card) :is(.sub, .mini, .description, .helper, .muted, .right-card-subtitle, .rail-subtitle) {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.035) !important;
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-row:hover {
+  border-color: var(--cf-vst-color-primary-border) !important;
+  background: var(--cf-vst-surface-soft) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-title {
+  color: var(--cf-vst-text-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-meta {
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-medium) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill {
+  min-height: var(--cf-vst-badge-height) !important;
+  border-radius: var(--cf-vst-radius-pill) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-ok {
+  border: 1px solid var(--cf-vst-color-task-border) !important;
+  background: var(--cf-vst-color-success-soft) !important;
+  color: var(--cf-vst-color-success) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-success) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-pill-warn {
+  border: 1px solid var(--cf-vst-color-delete-border) !important;
+  background: var(--cf-vst-color-delete-soft) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+  -webkit-text-fill-color: var(--cf-vst-color-delete-strong) !important;
+}
+
+#root .cf-html-view :is(.clients-right-rail, .lead-right-rail, .cases-right-rail) .right-list-empty {
+  background: var(--cf-vst-surface-soft) !important;
+  border-color: var(--cf-vst-surface-border) !important;
+  color: var(--cf-vst-text-muted) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+}
