@@ -92,7 +92,7 @@ void STAGE217_CASE_NOTE_HISTORY_SUMMARY;
 const STAGE219_R4_CONTEXT_NOTE_REFRESH = 'case detail refreshes after shared note saved';
 void STAGE219_R4_CONTEXT_NOTE_REFRESH;
 
-type CaseDetailTab = 'service' | 'path' | 'checklists' | 'history';
+type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
 type CaseNoteFollowUpChoice = 'today' | 'tomorrow' | 'two_days' | 'week' | 'custom';
@@ -2095,9 +2095,30 @@ export default function CaseDetail() {
             </h1>
           </div>
         </header>
+
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
+          <nav className="case-detail-tabs-shell" aria-label="ZakĹ‚adki sprawy" data-stage220a9-case-tabs-top="true">
+            <TabsList className="case-detail-tabs case-detail-tabs-production">
+              {[
+                { key: 'service' as CaseDetailTab, label: 'ObsĹ‚uga', count: workItems.length },
+                { key: 'checklists' as CaseDetailTab, label: 'Checklisty', count: items.length },
+                { key: 'history' as CaseDetailTab, label: 'Historia', count: caseHistoryItems.length },
+              ].map((tab) => (
+                <TabsTrigger key={tab.key} value={tab.key} className={activeTab === tab.key ? 'case-detail-tab-active' : ''} data-stage220a9-case-tab-trigger={tab.key}>
+                  {tab.key === 'service' ? <CheckCircle2 className="h-4 w-4" /> : tab.key === 'checklists' ? <ListChecks className="h-4 w-4" /> : <History className="h-4 w-4" />}
+                  <span className="case-detail-tab-label">{tab.label}</span>
+                  <span className="case-detail-tab-count">{tab.count}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </nav>
+        </Tabs>
+
 <div className="case-detail-shell">
           <section className="case-detail-main-column">
-            <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true">
+            {activeTab === 'service' ? (
+              <>
+            <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-stage220a9-tab-content="service">
               <div className="case-detail-section-head stage217-case-operation-head">
                 <div>
                   <p className="case-detail-eyebrow">Obsługa sprawy</p>
@@ -2276,6 +2297,8 @@ export default function CaseDetail() {
           </div>
         </section>
       ) : null}
+              </>
+            ) : null}
 
       <section className="case-detail-finance-history-panel" data-case-finance-history-panel="true">
 
@@ -2320,99 +2343,8 @@ export default function CaseDetail() {
       </section>
 
 
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
-              <nav aria-label="Zakładki sprawy">
-                <TabsList className="case-detail-tabs">
-                  {[
-                    { key: 'service', label: 'Obsługa' },
-                    { key: 'path', label: 'Ścieżka' },
-                    { key: 'checklists', label: 'Checklisty' },
-                    { key: 'history', label: 'Historia' },
-                  ].map((tab) => (
-                    <TabsTrigger key={tab.key} value={tab.key} className={activeTab === tab.key ? 'case-detail-tab-active' : ''}>
-                      {tab.label}
-                    </TabsTrigger>
-                  ))}
-                </TabsList>
-              </nav>
-            </Tabs>
-
-            {activeTab === 'service' ? (
-              <section className="case-detail-section-card">
-                <div className="case-detail-section-head">
-                                  <section className="case-detail-section-card case-detail-history-unified-panel" data-case-history-list="true">
-  <div className="case-detail-section-head">
-    <div>
-      <h2>Historia sprawy</h2>
-      <p>Realne notatki, zadania, wydarzenia, wpłaty i zmiany zapisane przy tej sprawie.</p>
-    </div>
-  </div>
-  {(() => {
-    const caseHistoryItems = buildCaseHistoryItemsStage14D({
-      activities: activities,
-      tasks: tasks,
-      events: events,
-      payments: casePayments,
-      caseItems: items,
-    });
-    return caseHistoryItems.length > 0 ? (
-      <div className="case-history-list">
-        {caseHistoryItems.slice(0, 10).map((item) => (
-          <article className="case-history-row" key={item.id}>
-            <span className="case-history-kind">{item.title}</span>
-            <p title={item.kind === 'note' ? item.body : undefined}>{item.kind === 'note' ? STAGE217_CASE_NOTE_HISTORY_SUMMARY : item.body}</p>
-            <time>{formatDate(item.occurredAt, 'Brak daty')}</time>
-          </article>
-        ))}
-      </div>
-    ) : (
-      <p className="case-detail-light-empty">Brak historii sprawy.</p>
-    );
-  })()}
-</section>                </div>
-                <div className="case-detail-work-list">
-                  {workItems.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak działań do pokazania. Dodaj brak, zadanie albo wydarzenie.</div>
-                  ) : (
-                    workItems.map((entry) => (
-                      <div key={entry.id} style={{ display: 'contents' }}>
-                        <WorkItemRow
-                          entry={entry}
-                          onTaskDone={handleTaskDone}
-                          onTaskTomorrow={handleTaskTomorrow}
-                          onEventDone={handleEventDone}
-                          onEventTomorrow={handleEventTomorrow}
-                          onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
-                          onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
-                          onItemDelete={handleDeleteItem}
-                                  onDelete={openDeleteWorkItemConfirm}
-                                />
-                      </div>
-                    ))
-                  )}
-                </div>
-              </section>
-            ) : null}
-
-            {activeTab === 'path' ? (
-              <section className="case-detail-section-card">
-                <div className="case-detail-section-head">
-                  <div>
-                    <h2>Ścieżka sprawy</h2>
-                    <p>Operacyjny skrót tego, co blokuje start albo realizację.</p>
-                  </div>
-                </div>
-                <div className="case-detail-path-grid">
-                  <PathCard label="Braki" value={missingItems.length} helper="Elementy, które trzeba jeszcze dostać." tone="amber" />
-                  <PathCard label="Do akceptacji" value={uploadedItems.length} helper="Elementy przesłane i czekające na decyzję." tone="blue" />
-                  <PathCard label="Zadania" value={openTasks.length} helper="Otwarte zadania powiązane ze sprawą." tone="green" />
-                  <PathCard label="Wydarzenia" value={plannedEvents.length} helper="Zaplanowane spotkania i terminy." tone="neutral" />
-                </div>
-              </section>
-            ) : null}
-
             {activeTab === 'checklists' ? (
-              <section className="case-detail-section-card">
+              <section className="case-detail-section-card" data-stage220a9-tab-content="checklists">
                 <div className="case-detail-section-head">
                   <div>
                     <h2>Checklisty i braki</h2>
@@ -2448,31 +2380,28 @@ export default function CaseDetail() {
             ) : null}
 
             {activeTab === 'history' ? (
-              <section className="case-detail-section-card">
+              <section className="case-detail-section-card case-detail-history-unified-panel" data-case-history-list="true" data-stage220a9-tab-content="history" data-stage220a9-unified-history-tab="true">
                 <div className="case-detail-section-head">
                   <div>
-                    <h2>Historia</h2>
-                    <p>Krótka oś działań bez technicznych danych i bez JSON-a.</p>
+                    <h2>Historia sprawy</h2>
+                    <p>Realne notatki, zadania, wydarzenia, wpĹ‚aty i zmiany zapisane przy tej sprawie.</p>
                   </div>
                 </div>
-                <div className="case-detail-history-list">
-                  {activities.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak historii do pokazania.</div>
-                  ) : (
-                    activities.map((activity) => (
-                      <article key={activity.id} className="case-detail-history-row">
-                        <span><History className="h-4 w-4" /></span>
-                        <div>
-                          <h3>{getActivityText(activity)}</h3>
-                          <p>{formatDateTime(activity.createdAt)} · {activity.actorType === 'operator' ? 'Operator' : 'Klient'}</p>
-                        </div>
+                {caseHistoryItems.length === 0 ? (
+                  <div className="case-detail-light-empty">Brak historii sprawy.</div>
+                ) : (
+                  <div className="case-history-list">
+                    {caseHistoryItems.map((item) => (
+                      <article className="case-history-row" key={item.id}>
+                        <span className="case-history-kind">{item.title}</span>
+                        <p title={item.kind === 'note' ? item.body : undefined}>{item.kind === 'note' ? STAGE217_CASE_NOTE_HISTORY_SUMMARY : item.body}</p>
+                        <time>{formatDateTime(item.occurredAt, 'Brak daty')}</time>
                       </article>
-                    ))
-                  )}
-                </div>
+                    ))}
+                  </div>
+                )}
               </section>
-            ) : null}
-          </section>
+            ) : null}          </section>
 
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
             <div data-case-quick-actions-anchor="case-detail">

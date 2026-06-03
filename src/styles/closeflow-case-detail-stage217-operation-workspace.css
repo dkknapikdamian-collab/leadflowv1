@@ -478,3 +478,94 @@
     font-size: 12px;
   }
 }
+/* STAGE220A9_CASE_DETAIL_PRODUCTION_TABS
+   Cel: zakladki sprawy sa produkcyjna nawigacja u gory, a nie martwe pastylki pod ekranem.
+   Zakladki: Obsluga / Checklisty / Historia. Sciezka wraca dopiero, gdy bedzie prawdziwy lifecycle etapow.
+*/
+.case-detail-tabs-shell {
+  max-width: 1480px;
+  margin: 0 auto 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.case-detail-tabs-production {
+  align-items: center !important;
+  display: flex !important;
+  gap: 8px !important;
+  justify-content: flex-start !important;
+  padding: 8px !important;
+  width: 100% !important;
+}
+
+.case-detail-tabs-production [data-stage220a9-case-tab-trigger] {
+  align-items: center !important;
+  display: inline-flex !important;
+  gap: 8px !important;
+  min-height: 38px !important;
+}
+
+.case-detail-tab-label {
+  line-height: 1;
+}
+
+.case-detail-tab-count {
+  align-items: center;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 999px;
+  color: #475569;
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 900;
+  justify-content: center;
+  line-height: 1;
+  min-width: 24px;
+  padding: 5px 7px;
+}
+
+.case-detail-tabs-production .case-detail-tab-active .case-detail-tab-count {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+  color: #1d4ed8;
+}
+
+.case-detail-main-column > .case-detail-section-card[data-stage220a9-tab-content],
+.case-detail-main-column > .case-detail-section-card[data-stage220a9-unified-history-tab] {
+  display: block !important;
+}
+
+.case-detail-main-column > .case-detail-section-card[data-stage220a9-tab-content="service"] {
+  display: block !important;
+}
+
+.case-detail-main-column > .case-detail-section-card[data-stage220a9-tab-content="checklists"],
+.case-detail-main-column > .case-detail-section-card[data-stage220a9-tab-content="history"] {
+  animation: stage220a9CaseTabIn 120ms ease-out;
+}
+
+@keyframes stage220a9CaseTabIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 760px) {
+  .case-detail-tabs-shell {
+    margin-bottom: 12px;
+  }
+
+  .case-detail-tabs-production {
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+  }
+
+  .case-detail-tabs-production [data-stage220a9-case-tab-trigger] {
+    flex: 0 0 auto;
+  }
+}
