@@ -49,6 +49,8 @@ const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu D
 const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const FIN13_CLIENT_DETAIL_CASE_FINANCES_VISIBLE = 'FIN13_CLIENT_DETAIL_CASE_FINANCES_VISIBLE';
+const STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH = 'client finance sums all client cases while case finance stays single-case scoped';
+void STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH;
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
 const CLIENT_DETAIL_CLIENT_NEXT_ACTION_V10_GUARD = 'clientNextAction defined before client detail render';
@@ -1293,7 +1295,7 @@ export default function ClientDetail() {
   );
 
   const clientFinanceSummary = useMemo(() => {
-    const financeSummary = getClientCasesFinanceSummary({ client, cases: cases ?? [], payments: payments ?? [] });
+    const financeSummary = getClientCasesFinanceSummary({ client, cases: cases ?? [], payments: payments ?? [], mode: 'all_cases' });
 
     const caseValueTotal = financeSummary.totalValue;
     const paymentsTotal = financeSummary.paidValue;
@@ -1767,40 +1769,24 @@ return (
                   </Button>
                 ) : null}
               </article>
-              {(() => {
-                const currency = payments.find((payment) => typeof payment?.currency === 'string' && payment.currency.trim())?.currency || 'PLN';
-                const amountOfPayment = (payment: any) =>
-                  Number(
-                    payment?.amount ??
-                      payment?.grossAmount ??
-                      payment?.totalAmount ??
-                      payment?.value ??
-                      payment?.price ??
-                      0,
-                  ) || 0;
-                const total = payments.reduce((sum, payment) => sum + amountOfPayment(payment), 0);
-                const paid = payments
-                  .filter((payment) => isPaidPaymentStatus(payment?.status))
-                  .reduce((sum, payment) => sum + amountOfPayment(payment), 0);
-                const remaining = Math.max(0, total - paid);
-                const paymentsLabel = payments.length === 1 ? 'pozycja' : payments.length < 5 ? 'pozycje' : 'pozycji';
-                return (
-                  <article className="client-detail-today-info-tile client-detail-today-info-tile-finance" data-client-left-finance-tile="true">
-                    <div className="client-detail-today-info-tile-icon">
-                      <EntityIcon entity="case" className="h-4 w-4" />
-                    </div>
-                    <div className="client-detail-today-info-tile-body">
-                      <small>Podsumowanie finansów</small>
-                      <strong>{formatMoneyWithCurrency(paid, currency)}</strong>
-                      <p>Opłacone · {payments.length} {paymentsLabel}</p>
-                    </div>
-                    <div className="client-detail-today-info-tile-meta">
-                      <span>Łącznie: {formatMoneyWithCurrency(total, currency)}</span>
-                      <span>Do rozliczenia: {formatMoneyWithCurrency(remaining, currency)}</span>
-                    </div>
-                  </article>
-                );
-              })()}
+              {/* STAGE220A13: client finance is all client cases, not one case. */}
+              <article className="client-detail-today-info-tile client-detail-today-info-tile-finance cf-finance-scope-card cf-finance-scope-card--client" data-client-left-finance-tile="true" data-stage220a13-client-finance-scope-card="true" aria-label="Finanse klienta">
+                <div className="cf-finance-scope-card__head">
+                  <span className="cf-finance-scope-card__icon">
+                    <EntityIcon entity="case" className="h-4 w-4" />
+                  </span>
+                  <strong>Finanse klienta</strong>
+                </div>
+                <dl className="cf-finance-scope-card__metrics">
+                  <div><dt>Suma wartości spraw</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Suma wpłat</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Do domknięcia</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Sprawy aktywne / rozliczone</dt><dd>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</dd></div>
+                </dl>
+                <button type="button" className="cf-finance-scope-card__main-action" onClick={() => setActiveTab('cases')}>
+                  Finanse w sprawach
+                </button>
+              </article>
             </section>
 
 <section className="client-detail-profile-card client-detail-side-card" data-client-inline-contact-edit="true" data-stage216m-r6-client-data-card="true">

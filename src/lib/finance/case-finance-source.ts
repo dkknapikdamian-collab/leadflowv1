@@ -77,7 +77,7 @@ type ClientCasesFinanceInput = {
   client: unknown;
   cases: unknown[];
   payments: unknown[];
-  mode?: 'primary_case_first' | 'all_active_cases';
+  mode?: 'primary_case_first' | 'all_active_cases' | 'all_cases';
 };
 
 const CASE_VALUE_KEYS = [
@@ -231,6 +231,7 @@ function paymentMatchesCase(payment: unknown, caseIds: Set<string>, clientId: st
 function selectClientCases(input: ClientCasesFinanceInput): { cases: unknown[]; source: ClientCasesFinanceSummary['source'] } {
   const mode = input.mode || 'primary_case_first';
   const allCases = Array.isArray(input.cases) ? input.cases.filter(Boolean) : [];
+  if (mode === 'all_cases') return { cases: allCases, source: 'all_cases' };
   const primaryCaseId = getPrimaryCaseId(input.client);
 
   if (mode === 'primary_case_first' && primaryCaseId) {

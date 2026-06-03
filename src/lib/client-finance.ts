@@ -11,7 +11,7 @@ export type ClientFinanceSummary = {
   commissionRemainingAmount?: number;
 };
 
-export type ClientFinanceSummaryMode = 'primary_case_first' | 'all_active_cases';
+export type ClientFinanceSummaryMode = 'primary_case_first' | 'all_active_cases' | 'all_cases';
 
 export const CLOSEFLOW_FIN10_CLIENT_FINANCE_USES_CASE_SOURCE = 'CLOSEFLOW_FIN10_CLIENT_FINANCE_USES_CASE_SOURCE_V1' as const;
 

@@ -85,6 +85,8 @@ void CASE_DETAIL_V1_PORTAL_CLIENT_ACTION_GUARD;
 const STAGE28A_CASE_FINANCE_CORE_GUARD = 'case finance core value paid remaining partial payments';
 const STAGE28A3_CASE_FINANCE_HISTORY_VISIBLE_REPAIR_GUARD = 'case finance history visible separate section';
 const FIN11_CASE_RIGHT_FINANCE_PANEL = 'FIN-11_CASE_RIGHT_FINANCE_PANEL_VISIBLE_EDIT_VALUE_COMMISSION';
+const STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH = 'case finance panel uses shared finance scope visual card and single-case source summary';
+void STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH;
 const FIN11_CASE_PORTAL_ACTION_GUARD_COMPAT = 'Portal klienta';
 const STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX = 'case detail operation workspace separates notes from activity history';
 void STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX;
@@ -1457,23 +1459,19 @@ export default function CaseDetail() {
   );
   const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items)), [items, openTasks, plannedEvents]);
   const caseFinance = useMemo(() => {
-    const expected = Number(caseData?.expectedRevenue || 0);
-    const paidFromPayments = payments
-      .filter((entry) => isPaidPaymentStatus(entry?.status))
-      .reduce((sum, entry) => sum + (Number(entry?.amount) || 0), 0);
-    const paid = paidFromPayments > 0 ? paidFromPayments : Number(caseData?.paidAmount || 0);
-    const remainingFromCase = Number(caseData?.remainingAmount);
-    const remaining = Number.isFinite(remainingFromCase) ? Math.max(0, remainingFromCase) : Math.max(0, expected - paid);
-    const currency = typeof caseData?.currency === 'string' && caseData.currency.trim() ? caseData.currency.trim().toUpperCase() : 'PLN';
+    const expected = Number(caseFinanceSummary.contractValue || 0);
+    const paid = Number(caseFinanceSummary.clientPaidAmount || 0);
+    const remaining = Number(caseFinanceSummary.remainingAmount || 0);
+    const currency = caseFinanceSummary.currency || 'PLN';
     const billingStatus = paid <= 0 ? 'not_started' : paid >= expected && expected > 0 ? 'fully_paid' : 'partially_paid';
     return {
       expected: Number.isFinite(expected) ? Math.max(0, expected) : 0,
       paid: Number.isFinite(paid) ? Math.max(0, paid) : 0,
-      remaining,
+      remaining: Number.isFinite(remaining) ? Math.max(0, remaining) : 0,
       currency,
       billingStatus,
     };
-  }, [caseData?.currency, caseData?.expectedRevenue, caseData?.paidAmount, caseData?.remainingAmount, payments]);
+  }, [caseFinanceSummary]);
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nearestOperationalAction = useMemo(() => getNearestPlannedAction({
     recordType: 'case',
@@ -2463,12 +2461,21 @@ export default function CaseDetail() {
                 onAddPayment={() => setIsCasePaymentOpen(true)}
               />
             </div>
-<section className="right-card case-detail-right-card" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true">
-              <div className="case-detail-card-title-row">
-                <Paperclip className="h-4 w-4" />
-                <h2>Rozliczenie sprawy</h2>
-              <div className="case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
-                <Button type="button" size="sm" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
+<section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Finanse sprawy">
+              <div className="cf-finance-scope-card__head">
+                <span className="cf-finance-scope-card__icon">
+                  <Paperclip className="h-4 w-4" />
+                </span>
+                <strong>Finanse sprawy</strong>
+              </div>
+              <dl className="cf-finance-scope-card__metrics">
+                <div><dt>Wartość sprawy</dt><dd>{formatMoney(caseFinanceSummary.contractValue, caseFinanceSummary.currency)}</dd></div>
+                <div><dt>Wpłaty w sprawie</dt><dd>{formatMoney(caseFinanceSummary.clientPaidAmount, caseFinanceSummary.currency)}</dd></div>
+                <div><dt>Do domknięcia</dt><dd>{formatMoney(caseFinanceSummary.remainingAmount, caseFinanceSummary.currency)}</dd></div>
+                <div><dt>Prowizja pozostała</dt><dd>{formatMoney(caseFinanceSummary.commissionRemainingAmount, caseFinanceSummary.currency)}</dd></div>
+              </dl>
+              <div className="cf-finance-scope-card__actions case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
+                <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
                   Edytuj wartość/prowizję
                 </Button>
                 <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('partial')} disabled={isFinanceSaving}>
@@ -2479,16 +2486,6 @@ export default function CaseDetail() {
                 </Button>
               </div>
               <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
-              </div>
-              <small>Wartość: {formatMoney(caseFinance.expected, caseFinance.currency)}</small>
-              <small>Wpłacono: {formatMoney(caseFinance.paid, caseFinance.currency)}</small>
-              <small>Pozostało: {formatMoney(caseFinance.remaining, caseFinance.currency)}</small>
-              <small>Status płatności: {billingStatusLabel(caseFinance.billingStatus)}</small>
-              <div className="case-detail-right-actions">
-                <button type="button" onClick={() => openCasePaymentDialog('deposit')}>Dodaj zaliczkę</button>
-                <button type="button" onClick={() => openCasePaymentDialog('partial')}>Płatność częściowa</button>
-                <button type="button" onClick={markCaseFullyPaid}>Oznacz opłacone</button>
-              </div>
             </section>
                                                 </aside>
         </div>

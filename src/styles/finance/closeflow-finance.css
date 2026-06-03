@@ -533,3 +533,122 @@
   color: rgba(71, 85, 105, 0.92);
   font-size: 13px;
 }
+
+/* STAGE220A13_FINANCE_SCOPE_CARD_VISUAL_SOURCE
+   One visual source for client finance and case finance.
+   Client finance sums all client cases. Case finance stays scoped to one case.
+*/
+
+.cf-finance-scope-card {
+  width: 100%;
+  border: 1px solid rgba(139, 92, 246, 0.14) !important;
+  border-radius: 20px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.06) !important;
+  color: #0f172a !important;
+  display: grid !important;
+  gap: 12px !important;
+  padding: 14px !important;
+}
+
+.cf-finance-scope-card__head {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cf-finance-scope-card__head strong {
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.cf-finance-scope-card__icon {
+  align-items: center;
+  background: rgba(124, 58, 237, 0.08);
+  border-radius: 999px;
+  color: #7c3aed;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.cf-finance-scope-card__metrics {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.cf-finance-scope-card__metrics div {
+  align-items: center;
+  background: rgba(248, 250, 252, 0.92);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 999px;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  min-height: 30px;
+  padding: 7px 10px;
+}
+
+.cf-finance-scope-card__metrics dt,
+.cf-finance-scope-card__metrics dd {
+  margin: 0;
+}
+
+.cf-finance-scope-card__metrics dt {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.cf-finance-scope-card__metrics dd {
+  color: #7c3aed;
+  font-size: 13px;
+  font-weight: 950;
+  line-height: 1.2;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cf-finance-scope-card__actions {
+  display: grid !important;
+  gap: 8px !important;
+  grid-template-columns: 1fr !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.cf-finance-scope-card__actions button,
+.cf-finance-scope-card__main-action {
+  min-height: 34px !important;
+  border-radius: 999px !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+}
+
+.cf-finance-scope-card__main-action {
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: #fff;
+  color: #0f172a;
+  cursor: pointer;
+  padding: 8px 12px;
+}
+
+.case-detail-right-rail .cf-finance-scope-card {
+  margin: 0 !important;
+}
+
+.client-detail-today-info-tile.cf-finance-scope-card {
+  min-height: 0 !important;
+}
+
+.client-detail-today-info-tile.cf-finance-scope-card .cf-finance-scope-card__metrics {
+  width: 100%;
+}
