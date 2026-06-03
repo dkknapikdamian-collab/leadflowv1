@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import EmailVerificationGate from './components/EmailVerificationGate';
+import './styles/closeflow-visual-source-truth.css';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-action-clusters.css';
 import './styles/closeflow-form-actions.css';

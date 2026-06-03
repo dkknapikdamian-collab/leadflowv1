@@ -1,0 +1,395 @@
+/* STAGE220A16_CLOSEFLOW_VISUAL_SOURCE_TRUTH
+   Single visual source of truth for repeated CloseFlow semantics:
+   actions, history, calendar, delete/danger, modals, cards, metric numbers.
+*/
+
+:root {
+  /* Brand / primary */
+  --cf-vst-color-primary: #2563eb;
+  --cf-vst-color-primary-strong: #1d4ed8;
+  --cf-vst-color-primary-soft: #eff6ff;
+  --cf-vst-color-primary-border: #bfdbfe;
+
+  /* Repeated action kinds */
+  --cf-vst-color-note: #2563eb;
+  --cf-vst-color-note-soft: #eff6ff;
+  --cf-vst-color-note-border: #bfdbfe;
+
+  --cf-vst-color-task: #16a34a;
+  --cf-vst-color-task-soft: #ecfdf3;
+  --cf-vst-color-task-border: #bbf7d0;
+
+  --cf-vst-color-event: #d97706;
+  --cf-vst-color-event-soft: #fffbeb;
+  --cf-vst-color-event-border: #fed7aa;
+
+  --cf-vst-color-payment: #7c3aed;
+  --cf-vst-color-payment-soft: #f5f3ff;
+  --cf-vst-color-payment-border: #ddd6fe;
+
+  --cf-vst-color-status: #475569;
+  --cf-vst-color-status-soft: #f1f5f9;
+  --cf-vst-color-status-border: #cbd5e1;
+
+  --cf-vst-color-case-item: #0f766e;
+  --cf-vst-color-case-item-soft: #f0fdfa;
+  --cf-vst-color-case-item-border: #99f6e4;
+
+  /* Delete / destructive */
+  --cf-vst-color-delete: #dc2626;
+  --cf-vst-color-delete-strong: #991b1b;
+  --cf-vst-color-delete-soft: #fef2f2;
+  --cf-vst-color-delete-border: #fecaca;
+
+  /* States */
+  --cf-vst-color-success: #16a34a;
+  --cf-vst-color-success-soft: #ecfdf3;
+  --cf-vst-color-warning: #d97706;
+  --cf-vst-color-warning-soft: #fffbeb;
+  --cf-vst-color-danger: var(--cf-vst-color-delete);
+  --cf-vst-color-danger-soft: var(--cf-vst-color-delete-soft);
+
+  /* Surfaces */
+  --cf-vst-surface-page: #f8fafc;
+  --cf-vst-surface-card: rgba(255, 255, 255, 0.94);
+  --cf-vst-surface-card-solid: #ffffff;
+  --cf-vst-surface-soft: #f8fafc;
+  --cf-vst-surface-border: #e2e8f0;
+  --cf-vst-surface-border-strong: #cbd5e1;
+  --cf-vst-shadow-card: 0 14px 34px rgba(15, 23, 42, 0.06);
+  --cf-vst-shadow-modal: 0 24px 70px rgba(15, 23, 42, 0.14);
+
+  /* Text */
+  --cf-vst-text-strong: #0f172a;
+  --cf-vst-text-main: #334155;
+  --cf-vst-text-muted: #64748b;
+  --cf-vst-text-faint: #94a3b8;
+
+  /* Shape */
+  --cf-vst-radius-card: 20px;
+  --cf-vst-radius-panel: 24px;
+  --cf-vst-radius-pill: 999px;
+  --cf-vst-radius-button: 14px;
+
+  /* Metrics */
+  --cf-vst-metric-number-color: var(--cf-vst-color-primary);
+  --cf-vst-metric-number-weight: 950;
+}
+
+/* Semantic action color utilities */
+.cf-vst-kind-note,
+[data-cf-vst-kind="note"] {
+  --cf-vst-kind-color: var(--cf-vst-color-note);
+  --cf-vst-kind-bg: var(--cf-vst-color-note-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-note-border);
+}
+
+.cf-vst-kind-task,
+[data-cf-vst-kind="task"] {
+  --cf-vst-kind-color: var(--cf-vst-color-task);
+  --cf-vst-kind-bg: var(--cf-vst-color-task-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-task-border);
+}
+
+.cf-vst-kind-event,
+[data-cf-vst-kind="event"],
+[data-cf-vst-kind="calendar"] {
+  --cf-vst-kind-color: var(--cf-vst-color-event);
+  --cf-vst-kind-bg: var(--cf-vst-color-event-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-event-border);
+}
+
+.cf-vst-kind-payment,
+[data-cf-vst-kind="payment"],
+[data-cf-vst-kind="finance"] {
+  --cf-vst-kind-color: var(--cf-vst-color-payment);
+  --cf-vst-kind-bg: var(--cf-vst-color-payment-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-payment-border);
+}
+
+.cf-vst-kind-status,
+[data-cf-vst-kind="status"],
+[data-cf-vst-kind="system"] {
+  --cf-vst-kind-color: var(--cf-vst-color-status);
+  --cf-vst-kind-bg: var(--cf-vst-color-status-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-status-border);
+}
+
+.cf-vst-kind-case-item,
+[data-cf-vst-kind="case-item"],
+[data-cf-vst-kind="missing"],
+[data-cf-vst-kind="document"] {
+  --cf-vst-kind-color: var(--cf-vst-color-case-item);
+  --cf-vst-kind-bg: var(--cf-vst-color-case-item-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-case-item-border);
+}
+
+.cf-vst-kind-delete,
+[data-cf-vst-kind="delete"],
+[data-cf-vst-kind="destructive"] {
+  --cf-vst-kind-color: var(--cf-vst-color-delete);
+  --cf-vst-kind-bg: var(--cf-vst-color-delete-soft);
+  --cf-vst-kind-border: var(--cf-vst-color-delete-border);
+}
+
+/* Shared primitives for later wiring */
+.cf-vst-card {
+  background: var(--cf-vst-surface-card) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-card) !important;
+  box-shadow: var(--cf-vst-shadow-card) !important;
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-pill {
+  align-items: center;
+  border: 1px solid var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  display: inline-flex;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.cf-vst-icon {
+  align-items: center;
+  background: var(--cf-vst-kind-bg, var(--cf-vst-surface-soft));
+  border: 1px solid var(--cf-vst-kind-border, var(--cf-vst-surface-border));
+  border-radius: var(--cf-vst-radius-pill);
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-main));
+  display: inline-flex;
+  justify-content: center;
+}
+
+.cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.cf-vst-button-delete {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border: 1px solid var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-vst-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-vst-dialog--delete {
+  border-color: var(--cf-vst-color-delete-border) !important;
+}
+
+.cf-vst-metric-number {
+  color: var(--cf-vst-metric-number-color) !important;
+  font-weight: var(--cf-vst-metric-number-weight) !important;
+}
+
+/* STAGE220A16B_CLOSEFLOW_VISUAL_FOUNDATIONS
+   Extended design-system tokens: typography, spacing, density, panels, cards, buttons, forms, modals, icons, metrics and layout.
+*/
+
+:root {
+  /* Typography families */
+  --cf-vst-font-family-app: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --cf-vst-font-family-number: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+  /* Typography scale */
+  --cf-vst-font-size-micro: 10px;
+  --cf-vst-font-size-meta: 11px;
+  --cf-vst-font-size-label: 12px;
+  --cf-vst-font-size-body-sm: 13px;
+  --cf-vst-font-size-body: 14px;
+  --cf-vst-font-size-card-title: 15px;
+  --cf-vst-font-size-section-title: 18px;
+  --cf-vst-font-size-page-title: 28px;
+  --cf-vst-font-size-page-title-lg: 34px;
+  --cf-vst-font-size-metric: 22px;
+  --cf-vst-font-size-metric-lg: 28px;
+
+  /* Typography weight */
+  --cf-vst-font-weight-regular: 500;
+  --cf-vst-font-weight-medium: 650;
+  --cf-vst-font-weight-semibold: 750;
+  --cf-vst-font-weight-bold: 850;
+  --cf-vst-font-weight-heavy: 950;
+
+  /* Typography rhythm */
+  --cf-vst-line-height-tight: 1.12;
+  --cf-vst-line-height-title: 1.18;
+  --cf-vst-line-height-body: 1.45;
+  --cf-vst-line-height-button: 1.2;
+  --cf-vst-letter-spacing-tight: -0.03em;
+  --cf-vst-letter-spacing-label: -0.01em;
+
+  /* Spacing scale */
+  --cf-vst-space-2xs: 4px;
+  --cf-vst-space-xs: 6px;
+  --cf-vst-space-sm: 8px;
+  --cf-vst-space-md: 12px;
+  --cf-vst-space-lg: 16px;
+  --cf-vst-space-xl: 20px;
+  --cf-vst-space-2xl: 28px;
+  --cf-vst-space-3xl: 36px;
+
+  /* Layout widths */
+  --cf-vst-layout-page-max: 1480px;
+  --cf-vst-layout-content-max: 1120px;
+  --cf-vst-layout-right-rail: 320px;
+  --cf-vst-layout-sidebar: 280px;
+  --cf-vst-layout-gap: 18px;
+  --cf-vst-layout-gap-lg: 24px;
+
+  /* Cards and panels */
+  --cf-vst-card-padding: 16px;
+  --cf-vst-card-padding-compact: 12px;
+  --cf-vst-panel-padding: 18px;
+  --cf-vst-panel-padding-lg: 22px;
+  --cf-vst-row-padding-y: 10px;
+  --cf-vst-row-padding-x: 12px;
+  --cf-vst-row-min-height: 44px;
+
+  /* Buttons */
+  --cf-vst-button-height-sm: 32px;
+  --cf-vst-button-height-md: 38px;
+  --cf-vst-button-height-lg: 44px;
+  --cf-vst-button-padding-x-sm: 10px;
+  --cf-vst-button-padding-x-md: 12px;
+  --cf-vst-button-padding-x-lg: 16px;
+  --cf-vst-button-gap: 8px;
+
+  /* Inputs and forms */
+  --cf-vst-input-height: 40px;
+  --cf-vst-input-radius: 14px;
+  --cf-vst-input-border: var(--cf-vst-surface-border);
+  --cf-vst-input-focus-border: var(--cf-vst-color-primary-border);
+  --cf-vst-input-focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  --cf-vst-label-color: var(--cf-vst-text-main);
+  --cf-vst-placeholder-color: var(--cf-vst-text-faint);
+
+  /* Modals and overlays */
+  --cf-vst-modal-width-sm: 420px;
+  --cf-vst-modal-width-md: 560px;
+  --cf-vst-modal-width-lg: 760px;
+  --cf-vst-modal-padding: 22px;
+  --cf-vst-modal-header-gap: 8px;
+  --cf-vst-modal-footer-gap: 10px;
+  --cf-vst-overlay-backdrop: rgba(15, 23, 42, 0.34);
+  --cf-vst-z-overlay: 50;
+  --cf-vst-z-modal: 60;
+  --cf-vst-z-toast: 80;
+
+  /* Icons */
+  --cf-vst-icon-size-xs: 14px;
+  --cf-vst-icon-size-sm: 16px;
+  --cf-vst-icon-size-md: 18px;
+  --cf-vst-icon-size-lg: 22px;
+  --cf-vst-icon-box-sm: 28px;
+  --cf-vst-icon-box-md: 32px;
+  --cf-vst-icon-box-lg: 38px;
+
+  /* Tabs, badges, chips */
+  --cf-vst-tab-height: 38px;
+  --cf-vst-tab-padding-x: 12px;
+  --cf-vst-badge-height: 24px;
+  --cf-vst-badge-padding-x: 8px;
+  --cf-vst-chip-height: 28px;
+  --cf-vst-chip-padding-x: 10px;
+
+  /* Metrics */
+  --cf-vst-metric-label-size: var(--cf-vst-font-size-meta);
+  --cf-vst-metric-label-color: var(--cf-vst-text-muted);
+  --cf-vst-metric-value-size: var(--cf-vst-font-size-metric);
+  --cf-vst-metric-value-weight: var(--cf-vst-font-weight-heavy);
+  --cf-vst-metric-card-bg: var(--cf-vst-surface-card);
+
+  /* States */
+  --cf-vst-disabled-opacity: 0.52;
+  --cf-vst-hover-lift: translateY(-1px);
+  --cf-vst-transition-fast: 120ms ease-out;
+  --cf-vst-transition-normal: 180ms ease-out;
+}
+
+/* Global foundation utilities */
+.cf-vst-text-page-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-page-title) !important;
+  font-weight: var(--cf-vst-font-weight-heavy) !important;
+  letter-spacing: var(--cf-vst-letter-spacing-tight) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-text-section-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-section-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-text-card-title {
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-card-title) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-title) !important;
+}
+
+.cf-vst-text-body {
+  color: var(--cf-vst-text-main) !important;
+  font-size: var(--cf-vst-font-size-body) !important;
+  font-weight: var(--cf-vst-font-weight-regular) !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.cf-vst-text-meta {
+  color: var(--cf-vst-text-muted) !important;
+  font-size: var(--cf-vst-font-size-meta) !important;
+  font-weight: var(--cf-vst-font-weight-semibold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-shell {
+  max-width: var(--cf-vst-layout-page-max);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cf-vst-right-rail {
+  width: min(100%, var(--cf-vst-layout-right-rail));
+}
+
+.cf-vst-row {
+  min-height: var(--cf-vst-row-min-height);
+  padding: var(--cf-vst-row-padding-y) var(--cf-vst-row-padding-x);
+}
+
+.cf-vst-button {
+  align-items: center;
+  border-radius: var(--cf-vst-radius-button);
+  display: inline-flex;
+  gap: var(--cf-vst-button-gap);
+  font-size: var(--cf-vst-font-size-label);
+  font-weight: var(--cf-vst-font-weight-bold);
+  justify-content: center;
+  line-height: var(--cf-vst-line-height-button);
+  min-height: var(--cf-vst-button-height-md);
+  padding-left: var(--cf-vst-button-padding-x-md);
+  padding-right: var(--cf-vst-button-padding-x-md);
+}
+
+.cf-vst-input {
+  border: 1px solid var(--cf-vst-input-border);
+  border-radius: var(--cf-vst-input-radius);
+  min-height: var(--cf-vst-input-height);
+}
+
+.cf-vst-input:focus,
+.cf-vst-input:focus-visible {
+  border-color: var(--cf-vst-input-focus-border);
+  box-shadow: var(--cf-vst-input-focus-ring);
+  outline: none;
+}
