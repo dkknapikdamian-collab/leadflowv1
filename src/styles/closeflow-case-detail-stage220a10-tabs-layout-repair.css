@@ -1,0 +1,20 @@
+﻿/* STAGE220A10_CASE_DETAIL_TABS_LAYOUT_REPAIR
+   Compatibility stylesheet kept because CaseDetail imports it.
+   Stage220A11 production tab styling lives in closeflow-case-detail-stage217-operation-workspace.css.
+*/
+
+.case-detail-tabs-shell {
+  width: 100%;
+}
+
+.case-detail-tabs-production [data-stage220a11-case-tab-trigger],
+.case-detail-tabs-production [data-stage220a9-case-tab-trigger] {
+  min-height: 44px;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.case-detail-tab-label,
+.case-detail-tab-count {
+  line-height: 1.25;
+}
