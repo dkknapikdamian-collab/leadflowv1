@@ -38,6 +38,7 @@ import {
   updateTaskInSupabase,
   deleteTaskFromSupabase,
   fetchLeadByIdFromSupabase,
+  updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 import { deleteCaseWithRelations } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
@@ -1730,11 +1731,13 @@ export default function CaseDetail() {
 
       if (target.kind === 'task') {
         const task = target.source as TaskRecord;
+        await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);
         await deleteTaskFromSupabase(task.id);
         await recordActivity('task_deleted', { title: task.title, taskId: task.id });
         toast.success('Zadanie usunięte');
       } else if (target.kind === 'event') {
         const event = target.source as EventRecord;
+        await ensureCaseLeadNextActionTitleSafe(event.leadId || caseData?.leadId || null, event.title, getEventMainDate(event) || event.reminderAt || event.startAt);
         await deleteEventFromSupabase(event.id);
         await recordActivity('event_deleted', { title: event.title, eventId: event.id });
         toast.success('Wydarzenie usunięte');
@@ -1754,9 +1757,33 @@ export default function CaseDetail() {
     }
   };
 
+
+  const STAGE220A8_7_LEAD_NEXT_ACTION_NOT_NULL_HEAL = 'Before task/event mutations from CaseDetail, heal source lead next_action_title to satisfy legacy NOT NULL constraint';
+  void STAGE220A8_7_LEAD_NEXT_ACTION_NOT_NULL_HEAL;
+
+  const ensureCaseLeadNextActionTitleSafe = async (leadIdInput?: string | null, titleInput?: unknown, nextAtInput?: unknown) => {
+    const leadId = String(leadIdInput || caseData?.leadId || '').trim();
+    if (!leadId) return;
+
+    const safeTitle =
+      String(titleInput || getCaseTitle(caseData) || 'Działanie sprawy').trim() ||
+      'Działanie sprawy';
+
+    const payload: Record<string, unknown> = {
+      id: leadId,
+      nextStep: safeTitle,
+    };
+
+    const nextAt = typeof nextAtInput === 'string' && nextAtInput.trim() ? toDate(nextAtInput) : null;
+    if (nextAt) payload.nextActionAt = nextAt.toISOString();
+
+    await updateLeadInSupabase(payload as any);
+  };
+
   const handleTaskDone = async (task: TaskRecord) => {
     if (!guardCaseDetailWriteAccess('oznaczyc zadania jako zrobione')) return;
     try {
+      await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);
       await updateTaskInSupabase({ id: task.id, status: 'done' });
       await recordActivity('task_status_changed', { title: task.title, taskId: task.id, status: 'done' });
       await refreshCaseData();
@@ -1769,6 +1796,7 @@ export default function CaseDetail() {
   const handleTaskTomorrow = async (task: TaskRecord) => {
     const nextDate = buildQuickRescheduleIso(1, getTaskMainDate(task) || task.reminderAt, 9);
     try {
+      await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, nextDate);
       await updateTaskInSupabase({ id: task.id, scheduledAt: nextDate, dueAt: nextDate, date: buildDateOnlyFromIso(nextDate) });
       await recordActivity('task_rescheduled', { title: task.title, taskId: task.id, scheduledAt: nextDate });
       await refreshCaseData();
@@ -1782,6 +1810,7 @@ export default function CaseDetail() {
   const handleEventDone = async (event: EventRecord) => {
     if (!guardCaseDetailWriteAccess('oznaczyc wydarzenia jako odbyte')) return;
     try {
+      await ensureCaseLeadNextActionTitleSafe(event.leadId || caseData?.leadId || null, event.title, getEventMainDate(event) || event.reminderAt || event.startAt);
       await updateEventInSupabase({ id: event.id, status: 'done' });
       await recordActivity('event_status_changed', { title: event.title, eventId: event.id, status: 'done' });
       await refreshCaseData();
@@ -1795,6 +1824,7 @@ export default function CaseDetail() {
     const nextStart = buildQuickRescheduleIso(1, getEventMainDate(event) || event.reminderAt, 9);
     const nextEnd = addDurationToIso(nextStart, getEventDurationMs(event));
     try {
+      await ensureCaseLeadNextActionTitleSafe(event.leadId || caseData?.leadId || null, event.title, nextStart);
       await updateEventInSupabase({ id: event.id, startAt: nextStart, endAt: nextEnd });
       await recordActivity('event_rescheduled', { title: event.title, eventId: event.id, startAt: nextStart });
       await refreshCaseData();
