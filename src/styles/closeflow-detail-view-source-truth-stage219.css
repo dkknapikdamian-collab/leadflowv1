@@ -826,7 +826,7 @@
 }
 
 .case-detail-vnext-page .stage220a8-case-actions-group--open .stage220a8-case-actions-group-trigger::after {
-  content: "–" !important;
+  content: "â€“" !important;
 }
 
 .case-detail-vnext-page .stage220a8-work-row-contrast {
@@ -889,4 +889,155 @@
   background: #fef2f2 !important;
   border-color: #fecaca !important;
   color: #dc2626 !important;
+}
+/* STAGE220A8_6_ACTION_COUNTS_AND_COLORS */
+.case-detail-vnext-page .stage220a8-case-actions-preview {
+  background:
+    radial-gradient(circle at top left, rgba(37, 99, 235, 0.045), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: rgba(148, 163, 184, 0.34) !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-head {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18) !important;
+  padding-bottom: 12px !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-head-actions {
+  margin-left: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 10px !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-preview-count {
+  background: #eef2ff !important;
+  border: 1px solid rgba(99, 102, 241, 0.16) !important;
+  color: #4f46e5 !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-group {
+  background: #ffffff !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-group-trigger {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  justify-content: stretch !important;
+  column-gap: 10px !important;
+  width: 100% !important;
+  min-height: 54px !important;
+  padding: 13px 14px !important;
+  text-align: left !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-group-trigger > span {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-group-trigger > strong {
+  justify-self: end !important;
+  min-width: 32px !important;
+  height: 28px !important;
+  padding: 0 10px !important;
+  border-radius: 999px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-size: 13px !important;
+  font-weight: 950 !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-group-trigger::after {
+  justify-self: end !important;
+  margin-left: 0 !important;
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="next"] {
+  border-color: rgba(59, 130, 246, 0.22) !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="next"] .stage220a8-case-actions-group-trigger {
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%) !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="next"] .stage220a8-case-actions-group-trigger > strong,
+.case-detail-vnext-page [data-stage220a8-case-actions-group="next"] .stage220a8-case-actions-group-trigger::after {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="blockers"] {
+  border-color: rgba(245, 158, 11, 0.24) !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="blockers"] .stage220a8-case-actions-group-trigger {
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%) !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="blockers"] .stage220a8-case-actions-group-trigger > strong,
+.case-detail-vnext-page [data-stage220a8-case-actions-group="blockers"] .stage220a8-case-actions-group-trigger::after {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="active"] {
+  border-color: rgba(16, 185, 129, 0.22) !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="active"] .stage220a8-case-actions-group-trigger {
+  background: linear-gradient(180deg, #ecfdf5 0%, #ffffff 100%) !important;
+}
+
+.case-detail-vnext-page [data-stage220a8-case-actions-group="active"] .stage220a8-case-actions-group-trigger > strong,
+.case-detail-vnext-page [data-stage220a8-case-actions-group="active"] .stage220a8-case-actions-group-trigger::after {
+  background: #d1fae5 !important;
+  color: #047857 !important;
+}
+
+.case-detail-vnext-page .stage220a8-case-actions-group--open {
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.065) !important;
+}
+
+.case-detail-vnext-page .stage220a8-work-row-contrast {
+  position: relative !important;
+  isolation: isolate !important;
+}
+
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-work-main,
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-work-date,
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-pill,
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-row-actions {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-row-actions,
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-row-actions button,
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-row-actions .case-detail-row-action-trash {
+  pointer-events: auto !important;
+}
+
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-row-actions button {
+  background: #ffffff !important;
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+}
+
+.case-detail-vnext-page .stage220a8-work-row-contrast .case-detail-row-actions button:hover {
+  background: #f8fafc !important;
+  border-color: rgba(37, 99, 235, 0.24) !important;
+}
+/* STAGE220A8_6_FIX_MINUS_INDICATOR_COMPAT */
+.case-detail-vnext-page .stage220a8-case-actions-group--open .stage220a8-case-actions-group-trigger::after {
+  content: "–" !important;
 }
