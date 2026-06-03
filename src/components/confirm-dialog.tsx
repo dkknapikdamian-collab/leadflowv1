@@ -27,7 +27,7 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={`cf-vst-dialog cf-confirm-dialog ${confirmTone === 'destructive' ? 'cf-vst-dialog--delete cf-confirm-dialog--destructive' : 'cf-confirm-dialog--default'} sm:max-w-md`} data-closeflow-confirm-dialog="true" data-cf-vst-dialog="true">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

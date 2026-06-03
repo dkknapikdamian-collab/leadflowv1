@@ -393,3 +393,50 @@
   box-shadow: var(--cf-vst-input-focus-ring);
   outline: none;
 }
+
+/* STAGE220A17_CASE_DETAIL_VST_WIRING
+   First real wiring of CaseDetail surfaces to CloseFlow Visual Source of Truth.
+*/
+
+.cf-case-detail-delete-action {
+  border-color: var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-case-detail-delete-action:hover {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-confirm-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-confirm-dialog--destructive {
+  border-color: var(--cf-vst-color-delete-border) !important;
+}
+
+.case-detail-stage220a17-history-row {
+  border-left: 3px solid var(--cf-vst-kind-color, var(--cf-vst-color-status)) !important;
+}
+
+.case-detail-stage220a17-history-row .case-detail-stage220a10-history-icon {
+  background: var(--cf-vst-kind-bg, var(--cf-vst-color-status-soft)) !important;
+  border-color: var(--cf-vst-kind-border, var(--cf-vst-color-status-border)) !important;
+  color: var(--cf-vst-kind-color, var(--cf-vst-color-status)) !important;
+  min-height: var(--cf-vst-icon-box-sm) !important;
+  min-width: var(--cf-vst-icon-box-sm) !important;
+}
+
+.case-detail-stage220a17-history-row .case-detail-stage220a10-history-icon svg {
+  height: var(--cf-vst-icon-size-sm) !important;
+  width: var(--cf-vst-icon-size-sm) !important;
+}
+
+.case-detail-stage220a17-history-row .case-detail-stage220a10-history-title-row strong {
+  color: var(--cf-vst-kind-color, var(--cf-vst-text-strong)) !important;
+}

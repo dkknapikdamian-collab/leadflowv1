@@ -6,7 +6,7 @@ import {
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
-import { EntityActionButton, EntityTrashButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';
+import { EntityActionButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
@@ -99,6 +99,8 @@ void STAGE220A11_CASE_DETAIL_TABS_PRODUCTION;
 
 const STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH = 'case detail tab icons spacing and history heading-only polish';
 void STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH;
+const STAGE220A17_CASE_DETAIL_VST_WIRING = 'case detail delete action and history rows use CloseFlow visual source of truth';
+void STAGE220A17_CASE_DETAIL_VST_WIRING;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -690,21 +692,23 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
   const body = pickCaseHistoryBodyStage14D(payload.note, payload.content, payload.body, payload.message, payload.description, payload.summary, payload.itemTitle, payload.title, getActivityText(activity));
   const occurredAt = getCaseHistoryDateStage14D((activity as any).happenedAt, (activity as any).updatedAt, activity.createdAt, payload.happenedAt, payload.updatedAt, payload.createdAt);
   const id = String(activity.id || eventType || occurredAt || Math.random());
-  if (lowerType.includes('status') || lowerType.includes('lifecycle')) {
-    const statusBody = pickCaseHistoryBodyStage14D(payload.statusLabel, payload.status, payload.nextStatus, payload.toStatus, body);
-    return statusBody ? { id: 'activity-' + id, kind: 'status', title: 'Zmiana statusu', body: statusBody, occurredAt } : null;
-  }
+
   if (lowerType.includes('task')) {
-    const status = String(payload.status || '').toLowerCase();
-    const title = lowerType.includes('done') || lowerType.includes('completed') || status.includes('done') || status.includes('completed') ? 'Zadanie wykonane' : 'Zadanie';
-    return body ? { id: 'activity-' + id, kind: 'task', title, body, occurredAt } : null;
+    const status = String(payload.status || payload.nextStatus || payload.toStatus || '').toLowerCase();
+    const actionName = pickCaseHistoryActionNameStage220A17(payload, body);
+    const isDone = lowerType.includes('done') || lowerType.includes('completed') || status.includes('done') || status.includes('completed');
+    const safeBody = actionName || (isDone ? 'Nazwa zadania niedostępna' : body);
+    return safeBody ? { id: 'activity-' + id, kind: 'task', title: isDone ? 'Zadanie wykonane' : 'Zadanie', body: safeBody, occurredAt } : null;
   }
+
   if (lowerType.includes('event') || lowerType.includes('meeting')) {
     return body ? { id: 'activity-' + id, kind: 'event', title: 'Wydarzenie', body, occurredAt } : null;
   }
+
   if (lowerType.includes('payment') || lowerType.includes('billing')) {
     return body ? { id: 'activity-' + id, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
   }
+
   if (lowerType.includes('note') || lowerType === 'operator_note') {
     return body ? {
       id: 'activity-' + id,
@@ -714,6 +718,12 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
       occurredAt,
     } : null;
   }
+
+  if (lowerType.includes('status') || lowerType.includes('lifecycle')) {
+    const statusBody = pickCaseHistoryBodyStage14D(payload.statusLabel, payload.nextStatusLabel, payload.toStatusLabel, body);
+    return statusBody ? { id: 'activity-' + id, kind: 'status', title: 'Zmiana statusu', body: statusBody, occurredAt } : null;
+  }
+
   return body ? { id: 'activity-' + id, kind: 'case', title: 'Ruch w sprawie', body, occurredAt } : null;
 }
 
@@ -818,10 +828,13 @@ function buildCaseHistoryItemsStage14D(input: {
 function formatCaseHistoryBodyStage220A11(item: CaseHistoryItem) {
   if (item.kind === 'note') return STAGE217_CASE_NOTE_HISTORY_SUMMARY;
   const raw = String(item.body || '').trim();
-  if (!raw) return 'Bez szczegółów';
+  if (!raw) return item.kind === 'task' && item.title === 'Zadanie wykonane' ? 'Nazwa zadania niedostępna' : 'Bez szczegółów';
   const compact = raw.replace(/\s+/g, ' ');
   const looksLikeJson = (compact.startsWith('{') && compact.endsWith('}')) || (compact.includes('\":') && compact.includes('{'));
   if (looksLikeJson) return 'Zapis aktywności bez technicznych szczegółów.';
+  if (item.kind === 'task' && item.title === 'Zadanie wykonane' && isCaseHistoryBareStatusStage220A17(compact)) {
+    return 'Nazwa zadania niedostępna';
+  }
   return compact.length > 220 ? compact.slice(0, 217).trimEnd() + '...' : compact;
 }
 
@@ -1041,6 +1054,64 @@ function getWorkKindLabel(kind: WorkItem['kind']) {
   if (kind === 'event') return 'Wydarzenie';
   if (kind === 'missing') return 'Brak';
   return 'Notatka';
+}
+
+
+const CASE_HISTORY_VISUAL_TAXONOMY_STAGE220A17 = {
+  note: { label: 'Notatka', vstKind: 'note' },
+  task: { label: 'Zadanie', vstKind: 'task' },
+  event: { label: 'Wydarzenie', vstKind: 'event' },
+  payment: { label: 'Wpłata', vstKind: 'payment' },
+  status: { label: 'Status', vstKind: 'status' },
+  case: { label: 'Element sprawy', vstKind: 'case-item' },
+} as const;
+
+function isCaseHistoryBareStatusStage220A17(value: unknown) {
+  const normalized = String(value || '').trim().toLowerCase();
+  return ['done', 'completed', 'zrobione', 'open', 'todo', 'in_progress', 'planned', 'scheduled'].includes(normalized);
+}
+
+function pickCaseHistoryActionNameStage220A17(payload: Record<string, any>, fallback?: unknown) {
+  const candidates = [
+    payload.taskTitle,
+    payload.task_title,
+    payload.eventTitle,
+    payload.event_title,
+    payload.itemTitle,
+    payload.item_title,
+    payload.title,
+    payload.name,
+    payload.label,
+    payload.subject,
+    payload.content,
+    payload.note,
+  ];
+
+  for (const candidate of candidates) {
+    const text = String(candidate || '').trim();
+    if (text && !isCaseHistoryBareStatusStage220A17(text)) return text;
+  }
+
+  const fallbackText = String(fallback || '').trim();
+  if (fallbackText && !isCaseHistoryBareStatusStage220A17(fallbackText)) return fallbackText;
+  return '';
+}
+
+function getCaseHistoryVstKindStage220A17(kind: CaseHistoryItem['kind']) {
+  return CASE_HISTORY_VISUAL_TAXONOMY_STAGE220A17[kind]?.vstKind || 'status';
+}
+
+function getCaseHistoryKindLabelStage220A17(kind: CaseHistoryItem['kind']) {
+  return CASE_HISTORY_VISUAL_TAXONOMY_STAGE220A17[kind]?.label || 'Ruch';
+}
+
+function CaseHistoryKindIconStage220A17({ kind }: { kind: CaseHistoryItem['kind'] }) {
+  if (kind === 'note') return <StickyNote className="h-4 w-4" />;
+  if (kind === 'task') return <ListChecks className="h-4 w-4" />;
+  if (kind === 'event') return <CalendarClock className="h-4 w-4" />;
+  if (kind === 'payment') return <Paperclip className="h-4 w-4" />;
+  if (kind === 'status') return <CheckCircle2 className="h-4 w-4" />;
+  return <History className="h-4 w-4" />;
 }
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CASE_DETAIL = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
@@ -2053,13 +2124,20 @@ export default function CaseDetail() {
 
       <main className="case-detail-vnext-page">
         <header className="case-detail-header client-detail-header" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
-          <EntityTrashButton
-            className="cf-case-detail-delete-action"
+          <Button
+            type="button"
+            variant="outline"
+            className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action"
             data-case-detail-delete-action="true"
-            title="Usuń sprawę"
+            data-stage220a17-delete-case-button="true"
+            data-cf-vst-kind="delete"
             aria-label="Usuń sprawę"
+            title="Usuń sprawę"
             onClick={() => setDeleteCaseOpen(true)}
-          />
+          >
+            <Trash2 className="h-4 w-4" />
+            Usuń sprawę
+          </Button>
 
           <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
             <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
@@ -2434,8 +2512,8 @@ export default function CaseDetail() {
                     <div className="case-detail-light-empty">Brak historii sprawy.</div>
                   ) : (
                     caseHistoryItems.slice(0, 40).map((item) => (
-                      <article className="case-detail-stage220a10-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind}>
-                        <span className="case-detail-stage220a10-history-icon"><History className="h-4 w-4" /></span>
+                      <article className="case-detail-stage220a10-history-row case-detail-stage220a17-history-row" key={'stage220a10-history-' + item.id} data-history-kind={item.kind} data-cf-vst-kind={getCaseHistoryVstKindStage220A17(item.kind)} data-stage220a17-history-kind-row={item.kind}>
+                        <span className="case-detail-stage220a10-history-icon cf-vst-icon" aria-label={getCaseHistoryKindLabelStage220A17(item.kind)}><CaseHistoryKindIconStage220A17 kind={item.kind} /></span>
                         <div className="case-detail-stage220a10-history-main">
                           <div className="case-detail-stage220a10-history-title-row">
                             <strong>{item.title}</strong>

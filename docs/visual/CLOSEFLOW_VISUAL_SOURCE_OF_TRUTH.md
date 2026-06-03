@@ -108,3 +108,10 @@ Oprócz kolorów mapujemy też parametry, które muszą być spójne w całej ap
 4. Statusy, badge i pigułki.
 5. Kalendarz i wydarzenia.
 6. Listy rekordów i panele boczne.
+## STAGE220A17 - pierwsze realne przepięcie na source of truth
+
+Podpięte miejsca:
+- `CaseDetail` / przycisk `Usuń sprawę` używa `cf-vst-button`, `cf-vst-button-delete` i `data-cf-vst-kind="delete"`.
+- `ConfirmDialog` używa `cf-vst-dialog`.
+- `Historia sprawy` używa `data-cf-vst-kind` dla typów: note, task, event, payment, status, case-item.
+- Wpis `Zadanie wykonane` nie może pokazywać technicznego statusu `done` jako treści.
