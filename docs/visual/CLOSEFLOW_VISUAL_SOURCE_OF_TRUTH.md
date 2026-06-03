@@ -276,3 +276,19 @@ A14 finance guard został zaktualizowany, bo A26 przenosi widok finansów sprawy
 Nie cofamy A26. Guard A14 akceptuje teraz:
 - stary kontrakt legacy,
 - nowy kontrakt A26: `getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25)` i zależność `[caseFinanceSourceStage220A26]`.
+
+## STAGE220A26B - finance regression contract guard
+
+Dodano guard po A25/A26.
+
+Pilnowane kontrakty:
+- wartość wpisana przy kliencie i sprawie startowej musi trafić do sprawy,
+- sprawa pokazuje własną wartość i własne wpłaty,
+- klient sumuje sprawy i wpłaty klienta,
+- `CaseDetail` używa `effectiveCasePaymentsStage220A25`,
+- `CaseDetail` używa `caseFinanceSourceStage220A26`,
+- modale finansów sprawy zostają w VST,
+- A13/A14 nie mogą cofać widoku do legacy `caseFinanceSummary.*`.
+
+Następny etap biznesowy:
+- A27: korekty finansowe/storno zamiast cichego kasowania pomyłek.
