@@ -248,3 +248,31 @@ Zakres:
 - bez zmian SQL,
 - bez zmian RLS,
 - bez zmian schema danych.
+## STAGE220A26 - finanse sprawy: źródło wyświetlania i modale
+
+Audyt po A25:
+- A25 poprawił zapis i effective payments, ale widok sprawy nadal czytał pola z niewłaściwego adaptera.
+- Dla kafelków i prawego panelu używany jest `caseFinanceSourceStage220A26`.
+- Źródło: `getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25)`.
+- Usunięto runtime-risk użycia `getCaseFinanceSummary(...)` w `CaseDetail`, bo w tym pliku helper jest importowany jako alias `getCaseFinanceSourceSummary`.
+- Modale finansów sprawy są spięte z `cf-vst-dialog`.
+- Selecty finansów sprawy używają `cf-vst-input`.
+
+Reguła:
+- finanse sprawy pokazują jedną sprawę,
+- finanse klienta sumują sprawy klienta,
+- wpłaty aktualizują źródło płatności, a widok liczy z jednego efektywnego źródła.
+
+## STAGE220A26 R4 - guard A13
+
+A13 finance guard został zaktualizowany, bo A26 przenosi widok finansów sprawy z legacy `caseFinanceSummary.*` na `caseFinanceSourceStage220A26.*`.
+Nie cofamy A26. Guard A13 akceptuje teraz:
+- stary kontrakt legacy,
+- nowy kontrakt A26: `getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25)`.
+
+## STAGE220A26 R5 - guard A14
+
+A14 finance guard został zaktualizowany, bo A26 przenosi widok finansów sprawy z legacy `caseFinanceSummary.*` na `caseFinanceSourceStage220A26.*`.
+Nie cofamy A26. Guard A14 akceptuje teraz:
+- stary kontrakt legacy,
+- nowy kontrakt A26: `getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25)` i zależność `[caseFinanceSourceStage220A26]`.

@@ -46,10 +46,23 @@ requireText(caseDetail, 'Finanse sprawy', 'CaseDetail finance card title');
 requireText(caseDetail, 'Wartość sprawy', 'CaseDetail case value label');
 requireText(caseDetail, 'Wpłaty w sprawie', 'CaseDetail case payments label');
 requireText(caseDetail, 'Prowizja pozostała', 'CaseDetail remaining commission label');
-requireText(caseDetail, 'caseFinanceSummary.contractValue', 'CaseDetail contract value source');
-requireText(caseDetail, 'caseFinanceSummary.clientPaidAmount', 'CaseDetail paid amount source');
-requireText(caseDetail, 'caseFinanceSummary.remainingAmount', 'CaseDetail remaining amount source');
-requireText(caseDetail, '}, [caseFinanceSummary]);', 'CaseDetail caseFinance depends on summary source');
+const caseFinanceUsesLegacySummary =
+  caseDetail.includes('caseFinanceSummary.contractValue') &&
+  caseDetail.includes('caseFinanceSummary.clientPaidAmount') &&
+  caseDetail.includes('caseFinanceSummary.remainingAmount') &&
+  caseDetail.includes('}, [caseFinanceSummary]);');
+
+const caseFinanceUsesA26Source =
+  caseDetail.includes('caseFinanceSourceStage220A26.contractValue') &&
+  caseDetail.includes('caseFinanceSourceStage220A26.clientPaidAmount') &&
+  caseDetail.includes('caseFinanceSourceStage220A26.remainingAmount') &&
+  caseDetail.includes('caseFinanceSourceStage220A26.commissionRemainingAmount') &&
+  caseDetail.includes('getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25)') &&
+  caseDetail.includes('}, [caseFinanceSourceStage220A26]);');
+
+if (!caseFinanceUsesLegacySummary && !caseFinanceUsesA26Source) {
+  fail('CaseDetail finance card does not read from a guarded case finance source.');
+}
 
 /* Guard against old case finance card returning. */
 forbidText(caseDetail, '<h2>Rozliczenie sprawy</h2>', 'old case right rail finance title');

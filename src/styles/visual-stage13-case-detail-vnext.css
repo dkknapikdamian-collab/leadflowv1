@@ -1567,3 +1567,69 @@ aside.case-detail-right-rail::after {
   gap: 0.5rem;
   margin-left: auto;
 }
+
+/* STAGE220A26_CASE_FINANCE_MODAL_VST
+   Case finance edit/payment modals use the production VST surface and readable fields.
+*/
+
+.case-finance-modal-stage220a26,
+.case-detail-payment-dialog.case-finance-modal-stage220a26 {
+  background: var(--cf-vst-surface-card-solid, #fff) !important;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef) !important;
+  border-radius: var(--cf-vst-radius-panel, 22px) !important;
+  box-shadow: var(--cf-vst-shadow-modal, 0 24px 70px rgba(15, 23, 42, 0.18)) !important;
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-finance-modal-stage220a26 :is(h1, h2, h3, label, span, strong),
+.case-detail-payment-dialog.case-finance-modal-stage220a26 :is(h1, h2, h3, label, span, strong) {
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-finance-modal-stage220a26 :is(p, small),
+.case-detail-payment-dialog.case-finance-modal-stage220a26 :is(p, small) {
+  color: var(--cf-vst-text-muted, #64748b) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted, #64748b) !important;
+}
+
+.case-finance-modal-stage220a26 :is(input, textarea, select),
+.case-detail-payment-dialog.case-finance-modal-stage220a26 :is(input, textarea, select) {
+  min-height: var(--cf-vst-input-height, 42px) !important;
+  background: var(--cf-vst-surface-card-solid, #fff) !important;
+  border: 1px solid var(--cf-vst-input-border, #dbe3ef) !important;
+  border-radius: var(--cf-vst-input-radius, 14px) !important;
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong, #0f172a) !important;
+  box-shadow: none !important;
+}
+
+.case-finance-modal-stage220a26 :is(input, textarea, select):focus,
+.case-detail-payment-dialog.case-finance-modal-stage220a26 :is(input, textarea, select):focus {
+  border-color: var(--cf-vst-input-focus-border, #2563eb) !important;
+  box-shadow: var(--cf-vst-input-focus-ring, 0 0 0 3px rgba(37, 99, 235, 0.18)) !important;
+  outline: none !important;
+}
+
+.case-finance-edit-form {
+  gap: var(--cf-vst-space-md, 14px) !important;
+}
+
+.case-finance-modal-stage220a26-footer {
+  border-top: 1px solid var(--cf-vst-surface-border, #dbe3ef) !important;
+  padding-top: var(--cf-vst-space-lg, 18px) !important;
+}
+
+.case-finance-modal-stage220a26-footer button:not([disabled]):not(.cf-vst-button-delete):last-child,
+.case-finance-modal-stage220a26 button:not([disabled]):not(.cf-vst-button-delete):last-child {
+  background: var(--cf-vst-color-primary, #2563eb) !important;
+  border-color: var(--cf-vst-color-primary, #2563eb) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
+.case-finance-modal-stage220a26-footer button[disabled],
+.case-finance-modal-stage220a26 button[disabled] {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+}

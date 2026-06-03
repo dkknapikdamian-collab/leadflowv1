@@ -103,6 +103,8 @@ const STAGE220A17_CASE_DETAIL_VST_WIRING = 'case detail delete action and histor
 void STAGE220A17_CASE_DETAIL_VST_WIRING;
 const STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS = 'case finance cards use one effective payments source and payment writes sync case/client finance';
 void STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS;
+const STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE = 'case finance display uses getCaseFinanceSourceSummary and VST finance modals';
+void STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -1327,10 +1329,11 @@ export default function CaseDetail() {
   };
 
 
-  const caseFinanceSummary = useMemo(
-    () => getCaseFinanceSummary(caseData, effectiveCasePaymentsStage220A25),
+  const caseFinanceSourceStage220A26 = useMemo(
+    () => getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25),
     [caseData, effectiveCasePaymentsStage220A25],
   );
+  const caseFinanceSummary = caseFinanceSourceStage220A26;
   const visibleCasePayments = useMemo(() => sortCasePayments(effectiveCasePaymentsStage220A25).slice(0, 8), [effectiveCasePaymentsStage220A25]);
 
   const handleCreateCasePayment = async () => {
@@ -1547,10 +1550,10 @@ export default function CaseDetail() {
   );
   const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items)), [items, openTasks, plannedEvents]);
   const caseFinance = useMemo(() => {
-    const expected = Number(caseFinanceSummary.contractValue || 0);
-    const paid = Number(caseFinanceSummary.clientPaidAmount || 0);
-    const remaining = Number(caseFinanceSummary.remainingAmount || 0);
-    const currency = caseFinanceSummary.currency || 'PLN';
+    const expected = Number(caseFinanceSourceStage220A26.contractValue || 0);
+    const paid = Number(caseFinanceSourceStage220A26.clientPaidAmount || 0);
+    const remaining = Number(caseFinanceSourceStage220A26.remainingAmount || 0);
+    const currency = caseFinanceSourceStage220A26.currency || 'PLN';
     const billingStatus = paid <= 0 ? 'not_started' : paid >= expected && expected > 0 ? 'fully_paid' : 'partially_paid';
     return {
       expected: Number.isFinite(expected) ? Math.max(0, expected) : 0,
@@ -1559,7 +1562,7 @@ export default function CaseDetail() {
       currency,
       billingStatus,
     };
-  }, [caseFinanceSummary]);
+  }, [caseFinanceSourceStage220A26]);
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nearestOperationalAction = useMemo(() => getNearestPlannedAction({
     recordType: 'case',
@@ -2564,10 +2567,10 @@ export default function CaseDetail() {
                 <strong>Finanse sprawy</strong>
               </div>
               <dl className="cf-finance-scope-card__metrics">
-                <div><dt>Wartość sprawy</dt><dd>{formatMoney(caseFinanceSummary.contractValue, caseFinanceSummary.currency)}</dd></div>
-                <div><dt>Wpłaty w sprawie</dt><dd>{formatMoney(caseFinanceSummary.clientPaidAmount, caseFinanceSummary.currency)}</dd></div>
-                <div><dt>Do domknięcia</dt><dd>{formatMoney(caseFinanceSummary.remainingAmount, caseFinanceSummary.currency)}</dd></div>
-                <div><dt>Prowizja pozostała</dt><dd>{formatMoney(caseFinanceSummary.commissionRemainingAmount, caseFinanceSummary.currency)}</dd></div>
+                <div><dt>Wartość sprawy</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div><dt>Wpłaty w sprawie</dt><dd>{formatMoney(caseFinanceSourceStage220A26.clientPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div><dt>Do domknięcia</dt><dd>{formatMoney(caseFinanceSourceStage220A26.remainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div><dt>Prowizja pozostała</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
               </dl>
               <div className="cf-finance-scope-card__actions case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
                 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
@@ -2651,7 +2654,7 @@ export default function CaseDetail() {
 
 
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
-        <DialogContent data-case-payment-dialog="true" className="case-detail-payment-dialog">
+        <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="cf-vst-dialog case-detail-payment-dialog case-finance-modal-stage220a26">
           <DialogHeader>
             <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
             <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
@@ -2720,7 +2723,7 @@ export default function CaseDetail() {
 
       {/* FIN-11_CASE_RIGHT_FINANCE_MODALS */}
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
-        <DialogContent className="case-finance-edit-modal">
+        <DialogContent className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
           <DialogHeader>
             <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
             <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
@@ -2736,7 +2739,7 @@ export default function CaseDetail() {
             </label>
             <label className="case-finance-edit-field">
               <span>Model prowizji</span>
-              <select className="case-finance-edit-select" value={financeEditForm.commissionMode} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionMode: event.target.value as 'none' | 'percent' | 'fixed' }))}>
+              <select className="cf-vst-input case-finance-edit-select" value={financeEditForm.commissionMode} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionMode: event.target.value as 'none' | 'percent' | 'fixed' }))}>
                 <option value="none">Brak</option>
                 <option value="percent">Procent od wartości</option>
                 <option value="fixed">Kwota stała</option>
@@ -2752,7 +2755,7 @@ export default function CaseDetail() {
             </label>
             <label className="case-finance-edit-field">
               <span>Status prowizji</span>
-              <select className="case-finance-edit-select" value={financeEditForm.commissionStatus} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionStatus: event.target.value }))}>
+              <select className="cf-vst-input case-finance-edit-select" value={financeEditForm.commissionStatus} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionStatus: event.target.value }))}>
                 <option value="not_set">nieustawiona</option>
                 <option value="expected">oczekiwana</option>
                 <option value="due">należna</option>
@@ -2767,7 +2770,7 @@ export default function CaseDetail() {
               <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
             <Button type="button" variant="outline" onClick={() => setIsFinanceEditOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
             <Button type="button" onClick={handleSaveCaseFinanceEdit} disabled={isFinanceSaving || financeEditPreview.contractValue <= 0}>Zapisz</Button>
           </DialogFooter>
@@ -2775,7 +2778,7 @@ export default function CaseDetail() {
       </Dialog>
 
       <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
-        <DialogContent className="case-finance-edit-modal">
+        <DialogContent className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
           <DialogHeader>
             <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
             <DialogDescription>Uzupełnij dane i zapisz zmiany w sprawie.</DialogDescription>
@@ -2791,7 +2794,7 @@ export default function CaseDetail() {
             </label>
             <label className="case-finance-edit-field">
               <span>Status</span>
-              <select className="case-finance-edit-select" value={financePaymentForm.status} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, status: event.target.value }))}>
+              <select className="cf-vst-input case-finance-edit-select" value={financePaymentForm.status} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, status: event.target.value }))}>
                 <option value="paid">opłacona</option>
                 <option value="partially_paid">częściowo opłacona</option>
                 <option value="fully_paid">w pełni opłacona</option>
@@ -2813,7 +2816,7 @@ export default function CaseDetail() {
               <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotówka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
             </label>
           </div>
-          <DialogFooter>
+          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
             <Button type="button" variant="outline" onClick={() => setIsFinancePaymentOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
             <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz płatność</Button>
           </DialogFooter>

@@ -44,7 +44,7 @@ requireText(casesApi, 'payload.expected_revenue = nextValue', 'patch expected_re
 
 requireText(caseDetail, 'STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS', 'CaseDetail marker');
 requireText(caseDetail, 'effectiveCasePaymentsStage220A25', 'effective payments source');
-requireText(caseDetail, 'getCaseFinanceSummary(caseData, effectiveCasePaymentsStage220A25)', 'finance summary uses effective payments');
+requireText(caseDetail, 'getCaseFinanceSourceSummary(caseData, effectiveCasePaymentsStage220A25)', 'finance summary uses effective payments');
 requireText(caseDetail, 'sortCasePayments(effectiveCasePaymentsStage220A25)', 'visible payments use effective payments');
 requireText(caseDetail, 'setCasePayments(normalizedFreshPayments)', 'reload syncs casePayments');
 requireText(caseDetail, 'setPayments(normalizedFreshPayments as any[])', 'reload syncs payments');
