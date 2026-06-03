@@ -26,6 +26,7 @@ import { toast } from 'sonner';
 
 import Layout from '../components/Layout';
 import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import { actionIconClass, modalFooterClass } from '../components/entity-actions';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { OperatorSideCard, SimpleFiltersCard, TopValueRecordsCard } from '../components/operator-rail';
@@ -105,6 +106,8 @@ function formatClientMoney(value: number) {
 const CLOSEFLOW_CLIENT_CARD_NEXT_ACTION_LAYOUT_ETAP10 = 'nearest action is full-width before client card buttons';
 const STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY = 'client and case row index pills share color and client row uses chevron open indicator';
 void STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY;
+const STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST = 'client trash/restore uses production ConfirmDialog and no native browser confirm';
+void STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 
@@ -177,6 +180,12 @@ export default function Clients() {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
+  const [clientArchiveConfirm, setClientArchiveConfirm] = useState<{
+    mode: 'archive' | 'restore';
+    client: ClientRecord;
+    title: string;
+    description: string;
+  } | null>(null);
   const [clientConflictOpen, setClientConflictOpen] = useState(false);
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
@@ -450,21 +459,15 @@ export default function Clients() {
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Rekord zniknie z aktywnej listy, ale dane nie zostaną trwale skasowane.'
-      : '\n\nRekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
+      ? 'Ten klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostaną trwale skasowane.'
+      : 'Rekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
-    if (!window.confirm('Przenieść klienta do kosza: ' + (client.name || 'Klient') + '?' + relationText)) return;
-
-    try {
-      setArchivePendingId(client.id);
-      await updateClientInSupabase({ id: client.id, archivedAt: new Date().toISOString() });
-      toast.success('Klient przeniesiony do kosza');
-      await reload();
-    } catch (error: any) {
-      toast.error('Błąd przenoszenia klienta do kosza: ' + (error?.message || 'REQUEST_FAILED'));
-    } finally {
-      setArchivePendingId(null);
-    }
+    setClientArchiveConfirm({
+      mode: 'archive',
+      client,
+      title: 'Przenieść klienta do kosza?',
+      description: (client.name || 'Klient') + ' zostanie ukryty z aktywnej listy. ' + relationText,
+    });
   };
 
   const handleRestoreClient = async (event: MouseEvent<HTMLButtonElement>, client: ClientRecord) => {
@@ -476,15 +479,33 @@ export default function Clients() {
       return;
     }
 
-    if (!window.confirm('Przywrócić klienta do aktywnej listy: ' + (client.name || 'Klient') + '?')) return;
+    setClientArchiveConfirm({
+      mode: 'restore',
+      client,
+      title: 'Przywrócić klienta?',
+      description: (client.name || 'Klient') + ' wróci do aktywnej listy klientów.',
+    });
+  };
+  const confirmClientArchiveAction = async () => {
+    if (!clientArchiveConfirm?.client?.id) return;
+    const targetClient = clientArchiveConfirm.client;
+    const mode = clientArchiveConfirm.mode;
 
     try {
-      setArchivePendingId(client.id);
-      await updateClientInSupabase({ id: client.id, archivedAt: null });
-      toast.success('Klient przywrócony');
+      setArchivePendingId(targetClient.id);
+      await updateClientInSupabase({
+        id: targetClient.id,
+        archivedAt: mode === 'archive' ? new Date().toISOString() : null,
+      });
+
+      toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrócony');
+      setClientArchiveConfirm(null);
       await reload();
     } catch (error: any) {
-      toast.error('Błąd przywracania klienta: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error(mode === 'archive'
+        ? 'Nie udało się przenieść klienta do kosza.'
+        : 'Nie udało się przywrócić klienta.'
+      );
     } finally {
       setArchivePendingId(null);
     }
@@ -493,6 +514,20 @@ export default function Clients() {
   return (
     <Layout>
       <div className="cf-html-view main-clients-html" data-clients-real-view="true">
+        <ConfirmDialog
+          open={Boolean(clientArchiveConfirm)}
+          onOpenChange={(open) => {
+            if (!open && !archivePendingId) setClientArchiveConfirm(null);
+          }}
+          title={clientArchiveConfirm?.title || 'Potwierdź zmianę'}
+          description={clientArchiveConfirm?.description || 'Potwierdź operację na kliencie.'}
+          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'Przywróć klienta' : 'Przenieś do kosza'}
+          cancelLabel="Anuluj"
+          confirmTone={clientArchiveConfirm?.mode === 'restore' ? 'default' : 'destructive'}
+          pending={Boolean(archivePendingId)}
+          onConfirm={confirmClientArchiveAction}
+        />
+        <span hidden data-stage220a24-client-archive-confirm="true" />
         <EntityConflictDialog
           open={clientConflictOpen}
           onOpenChange={setClientConflictOpen}

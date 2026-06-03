@@ -221,3 +221,16 @@ Poprawka do A23:
 
 Powód:
 A23 poprawił starszy `Tasks.tsx`, ale widoczny produkcyjnie ekran zadań korzysta z `TasksStable.tsx`.
+## STAGE220A24 - klient, stare modale i układ panelu danych
+
+Poprawki:
+- lista klientów nie używa natywnego `window.confirm` przy przenoszeniu do kosza ani przywracaniu,
+- klient kosz/przywrócenie używa `ConfirmDialog`,
+- globalne dialogi Radix/app mają wymuszony jasny VST surface,
+- textarea/input/select w dialogach mają czytelny tekst i zaznaczenie,
+- zielone CTA w starych modalach jest nadpisane przez primary VST,
+- `ClientDetail` ukrywa stare lewostronne kafle informacyjne, żeby panel `Dane klienta` startował jak w `LeadDetail`.
+
+Decyzja:
+- w aktywnym UI nie wolno zostawiać natywnych komunikatów przeglądarki z domeną aplikacji,
+- klient i lead mają mieć ten sam język panelu danych.

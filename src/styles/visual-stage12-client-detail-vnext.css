@@ -3287,3 +3287,61 @@ button.client-detail-top-tile-link {
 .client-detail-page .cf-fin13-client-case-finances {
   margin-top: 14px;
 }
+
+/* STAGE220A24_CLIENT_DETAIL_LEFT_RAIL_PARITY
+   Client data panel must start like LeadDetail data rail.
+   Duplicate left summary tiles are hidden from the left rail because top summary cards already exist in the main content.
+*/
+
+.client-detail-left-rail > .client-detail-today-info-tiles {
+  display: none !important;
+}
+
+.client-detail-shell {
+  align-items: start !important;
+}
+
+.client-detail-left-rail {
+  align-self: start !important;
+  position: relative !important;
+  z-index: 1 !important;
+  gap: 18px !important;
+}
+
+.client-detail-left-rail > .client-detail-profile-card {
+  margin-top: 0 !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.client-detail-profile-card.client-detail-side-card {
+  background: var(--cf-vst-surface-card-solid, #fff) !important;
+  border-color: var(--cf-vst-surface-border, #e2e8f0) !important;
+  box-shadow: var(--cf-vst-shadow-card, 0 14px 34px rgba(15, 23, 42, 0.06)) !important;
+  overflow: visible !important;
+}
+
+.client-detail-data-panel-list {
+  overflow: visible !important;
+}
+
+.client-detail-data-panel-row,
+.client-detail-data-panel-row-copy {
+  background: var(--cf-vst-surface-card-solid, #fff) !important;
+  border-color: var(--cf-vst-surface-border, #e2e8f0) !important;
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.client-detail-data-panel-row small {
+  color: var(--cf-vst-text-muted, #64748b) !important;
+}
+
+.client-detail-data-panel-row strong {
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-left-rail > .client-detail-today-info-tiles {
+    display: none !important;
+  }
+}
