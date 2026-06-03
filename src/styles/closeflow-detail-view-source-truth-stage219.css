@@ -1,4 +1,4 @@
-/* STAGE219_CLOSEFLOW_DETAIL_VIEW_SOURCE_TRUTH */
+﻿/* STAGE219_CLOSEFLOW_DETAIL_VIEW_SOURCE_TRUTH */
 :root {
   --cf-detail-page-max: 1480px;
   --cf-detail-shell-gap: 24px;
@@ -304,3 +304,67 @@
     max-width: 48% !important;
   }
 }
+/* STAGE220A4_CASE_HEADER_INLINE_TITLE */
+.case-detail-vnext-page .case-detail-header {
+  min-height: 52px !important;
+  padding: 10px 18px !important;
+}
+
+.case-detail-vnext-page .case-detail-header-copy {
+  align-items: center !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  column-gap: 22px !important;
+  row-gap: 0 !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-header-composed-title {
+  align-items: center !important;
+  align-self: center !important;
+  display: flex !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  gap: 10px !important;
+  line-height: 1 !important;
+  max-width: 100% !important;
+  padding-top: 1px !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-client-name {
+  flex: 0 0 auto !important;
+  max-width: 280px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-separator {
+  flex: 0 0 auto !important;
+  margin: 0 2px !important;
+}
+
+.case-detail-vnext-page .case-detail-header-case-name {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 720px) {
+  .case-detail-vnext-page .case-detail-header-copy {
+    grid-template-columns: auto minmax(0, 1fr) !important;
+    column-gap: 12px !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-composed-title {
+    font-size: 13px !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-client-name {
+    max-width: 46vw !important;
+  }
+}
+
