@@ -43,6 +43,7 @@ import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import '../styles/visual-stage13-case-detail-vnext.css';
+import '../styles/visual-stage12-client-detail-vnext.css'; // STAGE220A6_CASE_HEADER_CLIENT_SOURCE
 import '../styles/closeflow-case-history-visual-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-case-detail-stage217-operation-workspace.css';
@@ -1963,7 +1964,7 @@ export default function CaseDetail() {
     <Layout>
 
       <main className="case-detail-vnext-page">
-        <header className="case-detail-header" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD">
+        <header className="case-detail-header client-detail-header" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
           <EntityTrashButton
             className="cf-case-detail-delete-action"
             data-case-detail-delete-action="true"
@@ -1972,11 +1973,13 @@ export default function CaseDetail() {
             onClick={() => setDeleteCaseOpen(true)}
           />
 
-          <div className="case-detail-header-copy">
-            <button type="button" className="case-detail-back-button" onClick={() => navigate('/cases')}>
+          <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
+            <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />
               Sprawy
             </button>
+            <p className="case-detail-kicker client-detail-kicker">KARTOTEKA SPRAWY</p>
+
             <h1 className="case-detail-header-composed-title" data-stage220a3-header-title="true">
               <span className="case-detail-header-client-name">{getCaseHeaderClientLabel(caseData)}</span>
               <span className="case-detail-header-separator" aria-hidden="true">—</span>
