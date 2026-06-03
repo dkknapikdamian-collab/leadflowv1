@@ -850,17 +850,20 @@ function buildPortalUrl(caseId: string, tokenPayload: Record<string, unknown>) {
   const token = typeof tokenPayload.token === 'string' ? tokenPayload.token : typeof tokenPayload.portalToken === 'string' ? tokenPayload.portalToken : '';
   return token ? `${window.location.origin}/portal/${caseId}/${token}` : `${window.location.origin}/portal/${caseId}`;
 }
+const STAGE220A8_STRICT_CASE_SCOPE = 'CaseDetail may show only records directly linked to the current caseId, never loose client/lead records';
+void STAGE220A8_STRICT_CASE_SCOPE;
+
 function belongsToCase(
   entry: { caseId?: string | null; leadId?: string | null; clientId?: string | null },
   caseId?: string,
-  caseRecord?: CaseRecord | null,
+  _caseRecord?: CaseRecord | null,
 ) {
   const normalized = normalizeWorkItem(entry);
-  if (String(normalized.caseId || '') && String(normalized.caseId || '') === String(caseId || '')) return true;
-  if (String(normalized.leadId || '') && String(normalized.leadId || '') === String(caseRecord?.leadId || '')) return true;
-  if (String(normalized.clientId || '') && String(normalized.clientId || '') === String(caseRecord?.clientId || '')) return true;
-  return false;
+  const entryCaseId = normalizeCaseRelationId(normalized.caseId);
+  const currentCaseId = normalizeCaseRelationId(caseId);
+  return Boolean(entryCaseId && currentCaseId && entryCaseId === currentCaseId);
 }
+
 function normalizeCaseRelationId(value: unknown) {
   return String(value || '').trim();
 }

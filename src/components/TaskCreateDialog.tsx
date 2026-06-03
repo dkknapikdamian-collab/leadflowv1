@@ -67,7 +67,7 @@ type TaskCreateDialogProps = {
 
 function defaultTaskCreateForm(context?: TaskCreateDialogContext): TaskCreateFormState {
   return {
-    title: context?.recordLabel ? 'Follow-up: ' + context.recordLabel : '',
+    title: '',
     type: 'follow_up',
     dueAt: toDateTimeLocalValue(new Date()),
     priority: 'medium',

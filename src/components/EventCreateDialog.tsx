@@ -67,7 +67,7 @@ type EventCreateDialogProps = {
 function defaultEventCreateForm(context?: TaskCreateDialogContext): EventCreateFormState {
   const pair = buildStartEndPair(toDateTimeLocalValue(new Date()));
   return {
-    title: context?.recordLabel ? 'Spotkanie: ' + context.recordLabel : '',
+    title: '',
     type: 'meeting',
     startAt: pair.startAt,
     endAt: pair.endAt,
