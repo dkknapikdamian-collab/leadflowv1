@@ -367,4 +367,112 @@
     max-width: 46vw !important;
   }
 }
+/* STAGE220A5_CASE_HEADER_CLIENT_LIKE */
+.case-detail-vnext-page .case-detail-header {
+  align-items: center !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  min-height: 78px !important;
+  padding: 16px 22px !important;
+}
+
+.case-detail-vnext-page .case-detail-header-copy {
+  align-items: center !important;
+  display: grid !important;
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  column-gap: 16px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-header .cf-case-detail-delete-action {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  justify-self: end !important;
+  align-self: center !important;
+}
+
+.case-detail-vnext-page .case-detail-header .case-detail-back-button {
+  align-self: center !important;
+  height: 38px !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-composed-title {
+  align-self: center !important;
+  display: block !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-composed-title::before {
+  content: "KARTOTEKA SPRAWY";
+  display: block !important;
+  color: #2563eb !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.14em !important;
+  line-height: 1 !important;
+  margin: 0 0 5px 0 !important;
+  text-transform: uppercase !important;
+}
+
+.case-detail-vnext-page .case-detail-header-client-name,
+.case-detail-vnext-page .case-detail-header-case-name {
+  display: inline-block !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  vertical-align: middle !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header-client-name {
+  color: #0f172a !important;
+  font-size: 14px !important;
+  font-weight: 850 !important;
+  max-width: 360px !important;
+}
+
+.case-detail-vnext-page .case-detail-header-separator {
+  color: #64748b !important;
+  display: inline-block !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  margin: 0 8px !important;
+  vertical-align: middle !important;
+}
+
+.case-detail-vnext-page .case-detail-header-case-name {
+  color: #334155 !important;
+  font-size: 14px !important;
+  font-weight: 800 !important;
+  max-width: 420px !important;
+}
+
+@media (max-width: 720px) {
+  .case-detail-vnext-page .case-detail-header {
+    min-height: 74px !important;
+    padding: 14px 16px !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-copy {
+    column-gap: 12px !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-client-name {
+    max-width: 38vw !important;
+  }
+
+  .case-detail-vnext-page .case-detail-header-case-name {
+    max-width: 34vw !important;
+  }
+}
 
