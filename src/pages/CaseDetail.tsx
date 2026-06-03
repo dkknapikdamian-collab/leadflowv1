@@ -101,6 +101,8 @@ const STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH = 'case detail tab icons spacing
 void STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH;
 const STAGE220A17_CASE_DETAIL_VST_WIRING = 'case detail delete action and history rows use CloseFlow visual source of truth';
 void STAGE220A17_CASE_DETAIL_VST_WIRING;
+const STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS = 'case finance cards use one effective payments source and payment writes sync case/client finance';
+void STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -1197,7 +1199,9 @@ export default function CaseDetail() {
     ]);
     const normalizedCase = normalizeRecord<CaseRecord>(freshCase) || nextCaseFallback;
     if (normalizedCase) setCaseData(normalizedCase);
-    setCasePayments((Array.isArray(freshPayments) ? freshPayments : []) as CasePaymentRecord[]);
+    const normalizedFreshPayments = (Array.isArray(freshPayments) ? freshPayments : []) as CasePaymentRecord[];
+    setCasePayments(normalizedFreshPayments);
+    setPayments(normalizedFreshPayments as any[]);
   }
 
   async function handleSaveCaseFinanceEdit() {
@@ -1296,6 +1300,18 @@ export default function CaseDetail() {
     note: '',
   });
 
+  const effectiveCasePaymentsStage220A25 = useMemo(() => {
+    const byId = new Map<string, CasePaymentRecord>();
+    for (const payment of [...(payments as CasePaymentRecord[]), ...(casePayments as CasePaymentRecord[])]) {
+      const key = String(payment?.id || payment?.paidAt || payment?.createdAt || payment?.amount || Math.random());
+      if (!byId.has(key)) byId.set(key, payment);
+    }
+    return Array.from(byId.values()).filter((payment) => {
+      const paymentCaseId = String(payment?.caseId || '').trim();
+      return !paymentCaseId || paymentCaseId === String(caseId || '');
+    });
+  }, [caseId, casePayments, payments]);
+
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Case detail uses shared context action dialogs instead of local simplified task, event and note forms';
   const openCaseContextAction = (kind: ContextActionKind) => {
     if (!caseId) return;
@@ -1312,10 +1328,10 @@ export default function CaseDetail() {
 
 
   const caseFinanceSummary = useMemo(
-    () => getCaseFinanceSummary(caseData, payments as CasePaymentRecord[]),
-    [caseData, payments],
+    () => getCaseFinanceSummary(caseData, effectiveCasePaymentsStage220A25),
+    [caseData, effectiveCasePaymentsStage220A25],
   );
-  const visibleCasePayments = useMemo(() => sortCasePayments(payments as CasePaymentRecord[]).slice(0, 8), [payments]);
+  const visibleCasePayments = useMemo(() => sortCasePayments(effectiveCasePaymentsStage220A25).slice(0, 8), [effectiveCasePaymentsStage220A25]);
 
   const handleCreateCasePayment = async () => {
     if (!caseId || !caseData) return;
@@ -1344,6 +1360,7 @@ export default function CaseDetail() {
       };
       const created = await createPaymentInSupabase(input as any);
       setPayments((previous) => [created || input, ...previous]);
+      setCasePayments((previous) => [created || input, ...previous] as CasePaymentRecord[]);
       await insertActivityToSupabase({
         caseId,
         clientId: caseData.clientId || null,

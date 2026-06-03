@@ -234,3 +234,17 @@ Poprawki:
 Decyzja:
 - w aktywnym UI nie wolno zostawiać natywnych komunikatów przeglądarki z domeną aplikacji,
 - klient i lead mają mieć ten sam język panelu danych.
+## STAGE220A25 - finanse sprawy, klienta i wpłat
+
+Decyzje:
+- formularz nowego klienta może utworzyć sprawę startową,
+- wartość wpisana przy sprawie startowej zapisuje się do sprawy jako `contractValue` i `expectedRevenue`,
+- klient nie jest źródłem wartości sprawy; klient sumuje wartości spraw,
+- sprawa ma własne finanse jednej sprawy,
+- wpłaty są źródłem prawdy dla opłacono/do domknięcia,
+- `CaseDetail` używa jednego efektywnego źródła płatności dla kafelków i prawego panelu.
+
+Zakres:
+- bez zmian SQL,
+- bez zmian RLS,
+- bez zmian schema danych.

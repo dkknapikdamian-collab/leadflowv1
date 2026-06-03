@@ -45,6 +45,7 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   createClientInSupabase,
+  createCaseInSupabase,
   findEntityConflictsInSupabase,
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
@@ -102,12 +103,19 @@ function getStage35RelationClientId(row: Record<string, unknown>) {
 function formatClientMoney(value: number) {
   return `${Math.round(Number(value || 0)).toLocaleString('pl-PL')} PLN`;
 }
+function parseClientCreateMoneyStage220A25(value: unknown) {
+  const normalized = String(value ?? '').trim().replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, '');
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? Math.max(0, Math.round(parsed * 100) / 100) : 0;
+}
 
 const CLOSEFLOW_CLIENT_CARD_NEXT_ACTION_LAYOUT_ETAP10 = 'nearest action is full-width before client card buttons';
 const STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY = 'client and case row index pills share color and client row uses chevron open indicator';
 void STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY;
 const STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST = 'client trash/restore uses production ConfirmDialog and no native browser confirm';
 void STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST;
+const STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE = 'new client form can create primary case and writes case contractValue expectedRevenue';
+void STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 
@@ -189,7 +197,7 @@ export default function Clients() {
   const [clientConflictOpen, setClientConflictOpen] = useState(false);
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', notes: '' });
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' });
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -396,12 +404,51 @@ export default function Clients() {
       .slice(0, 5);
   }, [clients, clientValueByClientId]);
 
-  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '' }); };
+  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' }); };
 
   const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
     // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
-    await createClientInSupabase({ ...preparedClient, allowDuplicate: Boolean(options?.forceDuplicate), workspaceId: requireWorkspaceId(workspace) });
-    toast.success('Klient dodany');
+    const caseValue = parseClientCreateMoneyStage220A25(preparedClient.caseValue);
+    const shouldCreateCase = Boolean(preparedClient.createCase || caseValue > 0 || String(preparedClient.caseTitle || '').trim());
+    const clientPayload = {
+      name: preparedClient.name,
+      company: preparedClient.company,
+      email: preparedClient.email,
+      phone: preparedClient.phone,
+      notes: preparedClient.notes,
+      allowDuplicate: Boolean(options?.forceDuplicate),
+      workspaceId: requireWorkspaceId(workspace),
+    };
+
+    const createdClient = await createClientInSupabase(clientPayload);
+    const createdClientId = String((createdClient as any)?.id || '').trim();
+
+    if (shouldCreateCase && createdClientId) {
+      const caseTitle = String(preparedClient.caseTitle || '').trim() || 'Sprawa: ' + String(preparedClient.name || 'Klient').trim();
+      const currency = /^[A-Z]{3}$/.test(String(preparedClient.caseCurrency || '').trim().toUpperCase())
+        ? String(preparedClient.caseCurrency || '').trim().toUpperCase()
+        : 'PLN';
+
+      await createCaseInSupabase({
+        title: caseTitle,
+        clientId: createdClientId,
+        clientName: preparedClient.name,
+        clientEmail: preparedClient.email,
+        clientPhone: preparedClient.phone,
+        status: 'in_progress',
+        contractValue: caseValue,
+        expectedRevenue: caseValue,
+        caseValue,
+        currency,
+        paidAmount: 0,
+        remainingAmount: caseValue,
+        primaryForClient: true,
+        replacePrimaryCase: true,
+        workspaceId: requireWorkspaceId(workspace),
+      } as any);
+    }
+
+    toast.success(shouldCreateCase ? 'Klient i sprawa dodane' : 'Klient dodany');
     setIsCreateOpen(false);
     resetNewClientForm();
     await reload();
@@ -426,7 +473,7 @@ export default function Clients() {
     if (!workspace?.id) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim() };
+    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseValue: newClient.caseValue.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
     try {
       setCreatePending(true);
       const conflicts = await findEntityConflictsInSupabase({ targetType: 'client', name: preparedClient.name, email: preparedClient.email, phone: preparedClient.phone, company: preparedClient.company, workspaceId }).catch(() => ({ candidates: [] }));
@@ -616,6 +663,52 @@ export default function Clients() {
                                         value={newClient.notes}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
                                         placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
+                                      />
+                                    </div>
+                                  </div>
+                                </section>
+
+                                <section className="client-case-form-section" data-stage220a25-client-case-fields="true">
+                                  <div className="client-case-form-section-head">
+                                    <h3>Sprawa startowa</h3>
+                                    <p>Wartość wpisana tutaj zapisuje się w sprawie jako wartość sprawy i zasila finanse klienta.</p>
+                                  </div>
+
+                                  <label className="client-case-form-check-row">
+                                    <input
+                                      type="checkbox"
+                                      checked={Boolean(newClient.createCase)}
+                                      onChange={(event) => setNewClient((prev) => ({ ...prev, createCase: event.target.checked }))}
+                                    />
+                                    <span>Utwórz sprawę od razu</span>
+                                  </label>
+
+                                  <div className="client-case-form-grid">
+                                    <div className="client-case-form-field client-case-form-field-wide">
+                                      <Label>Nazwa sprawy</Label>
+                                      <Input
+                                        value={newClient.caseTitle}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseTitle: event.target.value }))}
+                                        placeholder="Np. Sprzedaż działki, obsługa klienta, zlecenie"
+                                      />
+                                    </div>
+
+                                    <div className="client-case-form-field">
+                                      <Label>Wartość sprawy</Label>
+                                      <Input
+                                        value={newClient.caseValue}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseValue: event.target.value }))}
+                                        placeholder="np. 1280"
+                                        inputMode="decimal"
+                                      />
+                                    </div>
+
+                                    <div className="client-case-form-field">
+                                      <Label>Waluta</Label>
+                                      <Input
+                                        value={newClient.caseCurrency}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseCurrency: event.target.value.toUpperCase().slice(0, 3) }))}
+                                        placeholder="PLN"
                                       />
                                     </div>
                                   </div>

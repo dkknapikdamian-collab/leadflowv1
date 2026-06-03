@@ -14,6 +14,7 @@ const BILLING_STATUSES = new Set(['not_applicable', 'not_started', 'awaiting_pay
 const BILLING_MODELS = new Set(['upfront_full', 'deposit_then_rest', 'after_completion', 'success_fee', 'recurring', 'manual']);
 const CLOSEFLOW_CLIENT_PRIMARY_CASE_ETAP7_API_GUARD = 'primaryForClient replacePrimaryCase clients.primary_case_id';
 const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'case/client archive keeps calendar links and hides by parent archive';
+const STAGE220A25_CASE_VALUE_ALIAS_CONTRACT = 'case create/update accepts contractValue expectedRevenue caseValue dealValue value totalValue and stores contract_value expected_revenue';
 
 const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
 const CASE_LIST_SELECT_STAGE124 = [
@@ -351,7 +352,7 @@ export default async function handler(req: any, res: any) {
         return;
       }
 
-      const contractValue = asNumber(body.contractValue ?? body.contract_value ?? body.expectedRevenue ?? body.dealValue ?? linkedLead?.contract_value ?? linkedLead?.expected_revenue ?? linkedLead?.value ?? linkedLead?.deal_value);
+      const contractValue = asNumber(body.contractValue ?? body.contract_value ?? body.expectedRevenue ?? body.expected_revenue ?? body.caseValue ?? body.case_value ?? body.dealValue ?? body.deal_value ?? body.value ?? body.totalValue ?? body.total_value ?? linkedLead?.contract_value ?? linkedLead?.expected_revenue ?? linkedLead?.value ?? linkedLead?.deal_value);
       const paidAmount = asNumber(body.paidAmount ?? body.paid_amount);
       const remainingAmount = body.remainingAmount !== undefined || body.remaining_amount !== undefined
         ? asNumber(body.remainingAmount ?? body.remaining_amount)
@@ -474,7 +475,11 @@ export default async function handler(req: any, res: any) {
       if (body.commissionRate !== undefined || body.commission_rate !== undefined) payload.commission_rate = asNumber(body.commissionRate ?? body.commission_rate);
       if (body.commissionAmount !== undefined || body.commission_amount !== undefined) payload.commission_amount = asNumber(body.commissionAmount ?? body.commission_amount);
       if (body.commissionStatus !== undefined || body.commission_status !== undefined) payload.commission_status = normalizeCommissionStatus(body.commissionStatus ?? body.commission_status);
-      if (body.expectedRevenue !== undefined || body.dealValue !== undefined) payload.expected_revenue = asNumber(body.expectedRevenue ?? body.dealValue);
+      if (body.expectedRevenue !== undefined || body.expected_revenue !== undefined || body.caseValue !== undefined || body.case_value !== undefined || body.dealValue !== undefined || body.deal_value !== undefined || body.value !== undefined || body.totalValue !== undefined || body.total_value !== undefined) {
+        const nextValue = asNumber(body.expectedRevenue ?? body.expected_revenue ?? body.caseValue ?? body.case_value ?? body.dealValue ?? body.deal_value ?? body.value ?? body.totalValue ?? body.total_value);
+        payload.expected_revenue = nextValue;
+        if (payload.contract_value === undefined) payload.contract_value = nextValue;
+      }
       if (body.paidAmount !== undefined) payload.paid_amount = asNumber(body.paidAmount);
       if (body.remainingAmount !== undefined) payload.remaining_amount = asNumber(body.remainingAmount);
       if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
