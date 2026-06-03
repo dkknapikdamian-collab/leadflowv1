@@ -440,3 +440,113 @@
 .case-detail-stage220a17-history-row .case-detail-stage220a10-history-title-row strong {
   color: var(--cf-vst-kind-color, var(--cf-vst-text-strong)) !important;
 }
+
+/* STAGE220A18_SHARED_MODAL_FORM_VST
+   Shared UI primitives wired to CloseFlow Visual Source of Truth:
+   Dialog, Button, Input, Textarea, Select.
+*/
+
+.cf-vst-overlay {
+  background: var(--cf-vst-overlay-backdrop) !important;
+}
+
+.cf-vst-dialog {
+  background: var(--cf-vst-surface-card-solid) !important;
+  border: 1px solid var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-panel) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+  color: var(--cf-vst-text-strong) !important;
+  padding: var(--cf-vst-modal-padding) !important;
+}
+
+.cf-vst-dialog-header {
+  gap: var(--cf-vst-modal-header-gap) !important;
+}
+
+.cf-vst-dialog-footer {
+  gap: var(--cf-vst-modal-footer-gap) !important;
+}
+
+.cf-vst-dialog-title {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-dialog-description {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-dialog-close {
+  color: var(--cf-vst-text-muted) !important;
+}
+
+.cf-vst-dialog-close:hover {
+  color: var(--cf-vst-text-strong) !important;
+}
+
+.cf-vst-input {
+  min-height: var(--cf-vst-input-height) !important;
+  border-color: var(--cf-vst-input-border) !important;
+  border-radius: var(--cf-vst-input-radius) !important;
+  color: var(--cf-vst-text-strong) !important;
+  font-size: var(--cf-vst-font-size-body-sm) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-input::placeholder {
+  color: var(--cf-vst-placeholder-color) !important;
+}
+
+.cf-vst-input:focus,
+.cf-vst-input:focus-visible,
+.cf-vst-select-trigger:focus,
+.cf-vst-select-trigger:focus-visible {
+  border-color: var(--cf-vst-input-focus-border) !important;
+  box-shadow: var(--cf-vst-input-focus-ring) !important;
+  outline: none !important;
+}
+
+.cf-vst-textarea {
+  min-height: 96px !important;
+  line-height: var(--cf-vst-line-height-body) !important;
+}
+
+.cf-vst-select-trigger {
+  min-height: var(--cf-vst-input-height) !important;
+}
+
+.cf-vst-select-content {
+  border-color: var(--cf-vst-surface-border) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  box-shadow: var(--cf-vst-shadow-modal) !important;
+}
+
+.cf-vst-button {
+  min-height: var(--cf-vst-button-height-md) !important;
+  border-radius: var(--cf-vst-radius-button) !important;
+  gap: var(--cf-vst-button-gap) !important;
+  font-size: var(--cf-vst-font-size-label) !important;
+  font-weight: var(--cf-vst-font-weight-bold) !important;
+  line-height: var(--cf-vst-line-height-button) !important;
+}
+
+.cf-vst-button-primary {
+  background: var(--cf-vst-color-primary) !important;
+  border-color: var(--cf-vst-color-primary) !important;
+  color: #fff !important;
+}
+
+.cf-vst-button-primary:hover {
+  background: var(--cf-vst-color-primary-strong) !important;
+}
+
+.cf-vst-button-delete {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete-border) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}
+
+.cf-vst-button-delete:hover {
+  background: var(--cf-vst-color-delete-soft) !important;
+  border-color: var(--cf-vst-color-delete) !important;
+  color: var(--cf-vst-color-delete-strong) !important;
+}

@@ -115,3 +115,19 @@ Podpięte miejsca:
 - `ConfirmDialog` używa `cf-vst-dialog`.
 - `Historia sprawy` używa `data-cf-vst-kind` dla typów: note, task, event, payment, status, case-item.
 - Wpis `Zadanie wykonane` nie może pokazywać technicznego statusu `done` jako treści.
+## STAGE220A18 - wspólne modale i formularze
+
+Podpięte wspólne komponenty UI:
+- `DialogContent` używa `cf-vst-dialog`.
+- `DialogOverlay` używa `cf-vst-overlay`.
+- `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription` mają klasy `cf-vst-*`.
+- `Input` używa `cf-vst-input`.
+- `Textarea` używa `cf-vst-input cf-vst-textarea`.
+- `SelectTrigger` używa `cf-vst-input cf-vst-select-trigger`.
+- `SelectContent` używa `cf-vst-select-content cf-vst-card`.
+- `Button` używa `cf-vst-button`; wariant domyślny dostaje `cf-vst-button-primary`, a destructive `cf-vst-button-delete`.
+
+Decyzja:
+- Domyślne CTA idzie w niebieski.
+- Zielony zostaje dla sukcesu/wykonania, nie dla każdego głównego przycisku.
+- Usuwanie zostaje czerwone i destrukcyjne.

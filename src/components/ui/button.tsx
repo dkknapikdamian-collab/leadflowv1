@@ -3,6 +3,9 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
 
+const STAGE220A18_SHARED_MODAL_FORM_VST = "shared button primitive uses CloseFlow Visual Source of Truth";
+void STAGE220A18_SHARED_MODAL_FORM_VST;
+
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
@@ -42,9 +45,17 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const vstVariantClass =
+      variant === "destructive"
+        ? "cf-vst-button-delete"
+        : !variant || variant === "default"
+          ? "cf-vst-button-primary"
+          : ""
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        data-cf-vst-button="true"
+        data-cf-vst-button-kind={variant || "default"}
+        className={cn("cf-vst-button", vstVariantClass, buttonVariants({ variant, size }), className)}
         ref={ref}
         {...props}
       />
