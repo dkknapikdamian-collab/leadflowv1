@@ -961,7 +961,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
       <article className="client-detail-top-tile entity-overview-tile entity-overview-tile-finance" data-client-top-tile="finance-summary">
         <div className="entity-overview-tile-head">
           <span className="entity-overview-tile-icon"><EntityIcon entity="template" className="h-4 w-4" /></span>
-          <small>Podsumowanie finansów</small>
+          <small>Finanse klienta</small>
         </div>
         <strong>{formatMoneyWithCurrency(paidTotal)}</strong>
         <div className="entity-overview-metrics">
