@@ -95,6 +95,9 @@ void STAGE219_R4_CONTEXT_NOTE_REFRESH;
 const STAGE220A11_CASE_DETAIL_TABS_PRODUCTION = 'case detail production tabs: service checklists history only';
 void STAGE220A11_CASE_DETAIL_TABS_PRODUCTION;
 
+const STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH = 'case detail tab icons spacing and history heading-only polish';
+void STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH;
+
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -2423,11 +2426,9 @@ export default function CaseDetail() {
 
             {activeTab === 'history' ? (
               <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-history-panel" data-stage220a10-tab-panel="history" data-stage220a11-tab-content="history" data-stage220a11-unified-history-tab="true">
-                <div className="case-detail-section-head case-detail-stage220a10-panel-head">
+                <div className="case-detail-section-head case-detail-stage220a10-panel-head case-detail-stage220a12-history-head" data-stage220a12-history-heading-only="true">
                   <div>
-                    <p className="case-detail-eyebrow">Historia sprawy</p>
                     <h2>Historia sprawy</h2>
-                    <p>Jedna oś: notatki, zadania, wydarzenia, wpłaty i zmiany zapisane przy tej sprawie.</p>
                   </div>
                 </div>
                 <div className="case-detail-stage220a10-history-list" data-stage220a10-history-list="true">

@@ -18,3 +18,54 @@
 .case-detail-tab-count {
   line-height: 1.25;
 }
+
+/* STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH
+   Minimal polish requested by Damian: icons a bit larger, tiny gap before label,
+   and history tab header reduced to the bold "Historia sprawy" heading only.
+*/
+
+.case-detail-stage220a10-tabs [data-stage220a11-case-tab-trigger] {
+  gap: 6px !important;
+  line-height: 1.25 !important;
+}
+
+.case-detail-stage220a10-tab-icon {
+  align-items: center !important;
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  line-height: 1 !important;
+  margin-right: 2px !important;
+}
+
+.case-detail-stage220a10-tab-icon svg {
+  height: 17px !important;
+  min-height: 17px !important;
+  min-width: 17px !important;
+  width: 17px !important;
+}
+
+.case-detail-stage220a10-tab-label {
+  line-height: 1.25 !important;
+  margin-left: 2px !important;
+}
+
+.case-detail-stage220a10-tab-count {
+  line-height: 1.25 !important;
+}
+
+.case-detail-stage220a12-history-head {
+  margin-bottom: 10px !important;
+}
+
+.case-detail-stage220a12-history-head h2 {
+  font-size: 16px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+  margin: 0 !important;
+}
+
+.case-detail-stage220a12-history-head .case-detail-eyebrow,
+.case-detail-stage220a12-history-head p {
+  display: none !important;
+}
