@@ -1,0 +1,80 @@
+/*
+ * STAGE220A33_CLOSEFLOW_TOAST_SOURCE_TRUTH
+ * Globalny styl komunikatow aplikacji. Celem jest usuniecie wrazenia systemowych/native toastow.
+ * Runtime wiring: src/components/ui/sonner.tsx
+ */
+
+.closeflow-toast-source-truth-stage220a33 {
+  --closeflow-toast-bg: rgba(255, 255, 255, 0.98);
+  --closeflow-toast-border: rgba(148, 163, 184, 0.36);
+  --closeflow-toast-shadow: 0 18px 45px rgba(15, 23, 42, 0.16);
+  --closeflow-toast-text: #0f172a;
+  --closeflow-toast-muted: #475569;
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-sonner-toast],
+[data-sonner-toast].closeflow-toast-source-truth-stage220a33,
+.cn-toast.closeflow-toast-source-truth-stage220a33 {
+  border: 1px solid var(--closeflow-toast-border) !important;
+  border-radius: 18px !important;
+  background: var(--closeflow-toast-bg) !important;
+  box-shadow: var(--closeflow-toast-shadow) !important;
+  color: var(--closeflow-toast-text) !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.01em;
+  padding: 12px 14px !important;
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-title],
+[data-sonner-toast].closeflow-toast-source-truth-stage220a33 [data-title] {
+  color: var(--closeflow-toast-text) !important;
+  font-weight: 750 !important;
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-description],
+[data-sonner-toast].closeflow-toast-source-truth-stage220a33 [data-description] {
+  color: var(--closeflow-toast-muted) !important;
+  font-size: 12px !important;
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-icon],
+[data-sonner-toast].closeflow-toast-source-truth-stage220a33 [data-icon] {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-type='success'] [data-icon],
+[data-sonner-toast][data-type='success'].closeflow-toast-source-truth-stage220a33 [data-icon] {
+  color: #047857 !important;
+  background: rgba(16, 185, 129, 0.12);
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-type='error'] [data-icon],
+[data-sonner-toast][data-type='error'].closeflow-toast-source-truth-stage220a33 [data-icon] {
+  color: #b91c1c !important;
+  background: rgba(239, 68, 68, 0.11);
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-type='warning'] [data-icon],
+[data-sonner-toast][data-type='warning'].closeflow-toast-source-truth-stage220a33 [data-icon] {
+  color: #b45309 !important;
+  background: rgba(245, 158, 11, 0.13);
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-type='info'] [data-icon],
+[data-sonner-toast][data-type='info'].closeflow-toast-source-truth-stage220a33 [data-icon] {
+  color: #2563eb !important;
+  background: rgba(59, 130, 246, 0.12);
+}
+
+.closeflow-toast-source-truth-stage220a33 [data-close-button],
+[data-sonner-toast].closeflow-toast-source-truth-stage220a33 [data-close-button] {
+  border: 1px solid rgba(148, 163, 184, 0.32) !important;
+  background: rgba(248, 250, 252, 0.94) !important;
+  color: #334155 !important;
+}
