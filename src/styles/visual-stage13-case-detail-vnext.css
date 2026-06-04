@@ -1633,3 +1633,93 @@ aside.case-detail-right-rail::after {
   opacity: 0.55 !important;
   cursor: not-allowed !important;
 }
+
+/* STAGE220A27A_PAYMENT_CORRECTION_HISTORY
+   Payment corrections are visible refund rows in payment history.
+*/
+
+.case-finance-payment-history-stage220a27 {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--cf-vst-surface-border, #dbe3ef);
+}
+
+.case-finance-payment-history-stage220a27__head,
+.case-finance-payment-history-stage220a27__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.case-finance-payment-history-stage220a27__head span {
+  min-width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--cf-vst-radius-pill, 999px);
+  background: var(--cf-vst-color-primary-soft, #eaf2ff);
+  border: 1px solid var(--cf-vst-color-primary-border, #bfdbfe);
+  color: var(--cf-vst-color-primary-strong, #1d4ed8);
+  font-weight: var(--cf-vst-font-weight-bold, 800);
+}
+
+.case-finance-payment-history-stage220a27__list {
+  display: grid;
+  gap: 8px;
+}
+
+.case-finance-payment-history-stage220a27__row {
+  padding: 9px 10px;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef);
+  border-radius: var(--cf-vst-radius-button, 14px);
+  background: var(--cf-vst-surface-card-solid, #fff);
+}
+
+.case-finance-payment-history-stage220a27__row small,
+.case-finance-payment-history-stage220a27__row p,
+.case-finance-payment-history-stage220a27__empty {
+  color: var(--cf-vst-text-muted, #64748b);
+  font-size: var(--cf-vst-font-size-meta, 12px);
+  line-height: var(--cf-vst-line-height-body, 1.45);
+}
+
+.case-finance-payment-history-stage220a27__row--correction {
+  border-color: var(--cf-vst-color-delete-border, #fecaca);
+  background: var(--cf-vst-color-delete-soft, #fff1f2);
+}
+
+.case-finance-payment-history-stage220a27__row--correction .case-finance-payment-history-stage220a27__amount strong {
+  color: var(--cf-vst-color-delete-strong, #b91c1c);
+}
+
+.case-finance-payment-history-stage220a27__amount {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.case-payment-correction-modal-stage220a27__summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--cf-vst-space-md, 14px);
+  margin: var(--cf-vst-space-md, 14px) 0;
+}
+
+.case-payment-correction-modal-stage220a27__summary > div {
+  padding: 10px 12px;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef);
+  border-radius: var(--cf-vst-radius-button, 14px);
+  background: var(--cf-vst-surface-soft, #f8fafc);
+}
+
+.case-payment-correction-modal-stage220a27__summary span {
+  display: block;
+  color: var(--cf-vst-text-muted, #64748b);
+  font-size: var(--cf-vst-font-size-meta, 12px);
+  margin-bottom: 4px;
+}

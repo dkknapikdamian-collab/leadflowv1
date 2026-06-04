@@ -105,6 +105,8 @@ const STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS = 'case finance cards use one e
 void STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS;
 const STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE = 'case finance display uses getCaseFinanceSourceSummary and VST finance modals';
 void STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE;
+const STAGE220A27A_PAYMENT_CORRECTION_HISTORY = 'case payment corrections are refund payment records with date value reason and visible payment history';
+void STAGE220A27A_PAYMENT_CORRECTION_HISTORY;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -345,6 +347,29 @@ function getPaymentAmount(payment: CasePaymentRecord) {
   const raw = payment.amount ?? payment.value ?? payment.paidAmount ?? 0;
   const amount = Number(raw || 0);
   return Number.isFinite(amount) ? amount : 0;
+}
+
+function getCasePaymentTypeStage220A27(payment: CasePaymentRecord) {
+  return String(payment.type || '').trim().toLowerCase();
+}
+function getCasePaymentLabelStage220A27(payment: CasePaymentRecord) {
+  const type = getCasePaymentTypeStage220A27(payment);
+  if (type === 'refund') return 'Korekta wpłaty';
+  if (type === 'commission') return 'Płatność prowizji';
+  if (type === 'deposit') return 'Zaliczka';
+  if (type === 'final') return 'Dopłata końcowa';
+  return 'Wpłata';
+}
+function getCasePaymentDateStage220A27(payment: CasePaymentRecord) {
+  return payment.paidAt || payment.createdAt || payment.dueAt || null;
+}
+function getCasePaymentSignedAmountStage220A27(payment: CasePaymentRecord) {
+  const amount = getPaymentAmount(payment);
+  return getCasePaymentTypeStage220A27(payment) === 'refund' ? -amount : amount;
+}
+function canCorrectCasePaymentStage220A27(payment: CasePaymentRecord) {
+  const type = getCasePaymentTypeStage220A27(payment);
+  return type !== 'refund' && type !== 'commission' && getPaymentAmount(payment) > 0;
 }
 function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
   // CLOSEFLOW_CASE_SETTLEMENT_EXPECTED_VALUE_V29
@@ -1178,6 +1203,9 @@ export default function CaseDetail() {
   const [isFinanceSaving, setIsFinanceSaving] = useState(false);
   const [isFinancePaymentOpen, setIsFinancePaymentOpen] = useState(false);
   const [financePaymentForm, setFinancePaymentForm] = useState<CaseFinancePaymentFormState>(() => buildFin11PaymentState('partial', 'PLN'));
+  const [paymentCorrectionTargetStage220A27, setPaymentCorrectionTargetStage220A27] = useState<CasePaymentRecord | null>(null);
+  const [paymentCorrectionFormStage220A27, setPaymentCorrectionFormStage220A27] = useState({ amount: '', paidAt: '', reason: '' });
+  const [paymentCorrectionSubmittingStage220A27, setPaymentCorrectionSubmittingStage220A27] = useState(false);
 
   const financeEditPreview = useMemo(() => getFin11FinancePreview(financeEditForm, casePayments), [casePayments, financeEditForm]);
 
@@ -1271,6 +1299,96 @@ export default function CaseDetail() {
       setIsFinanceSaving(false);
     }
   }
+  function openPaymentCorrectionModalStage220A27(payment: CasePaymentRecord) {
+    if (!guardCaseDetailWriteAccess('skorygować wpłaty')) return;
+    const amount = getPaymentAmount(payment);
+    setPaymentCorrectionTargetStage220A27(payment);
+    setPaymentCorrectionFormStage220A27({
+      amount: fin11MoneyInput(amount),
+      paidAt: fin11DateTimeLocal(new Date().toISOString()),
+      reason: '',
+    });
+  }
+
+  async function handleSavePaymentCorrectionStage220A27() {
+    if (!caseData?.id || !paymentCorrectionTargetStage220A27 || paymentCorrectionSubmittingStage220A27) return;
+
+    const amount = fin11Amount(paymentCorrectionFormStage220A27.amount);
+    const originalAmount = getPaymentAmount(paymentCorrectionTargetStage220A27);
+    const reason = paymentCorrectionFormStage220A27.reason.trim();
+
+    if (amount <= 0) {
+      toast.error('Podaj kwotę korekty.');
+      return;
+    }
+
+    if (amount > originalAmount) {
+      toast.error('Korekta nie może być większa niż korygowana wpłata.');
+      return;
+    }
+
+    if (!paymentCorrectionFormStage220A27.paidAt) {
+      toast.error('Podaj datę korekty.');
+      return;
+    }
+
+    if (!reason) {
+      toast.error('Podaj powód korekty.');
+      return;
+    }
+
+    const correctionPaidAt = fin11IsoFromLocal(paymentCorrectionFormStage220A27.paidAt) || new Date().toISOString();
+    const currency = fin11Currency(paymentCorrectionTargetStage220A27.currency || caseFinanceSourceStage220A26.currency || 'PLN');
+    const originalLabel = formatMoney(originalAmount, currency);
+    const correctionLabel = formatMoney(amount, currency);
+    const originalId = String(paymentCorrectionTargetStage220A27.id || 'brak-id');
+
+    try {
+      setPaymentCorrectionSubmittingStage220A27(true);
+
+      await createPaymentInSupabase({
+        caseId: caseData.id,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        type: 'refund',
+        status: 'paid',
+        amount,
+        currency,
+        paidAt: correctionPaidAt,
+        dueAt: null,
+        note: '[KOREKTA WPŁATY] Korekta: -' + correctionLabel + '. Oryginalna wpłata: ' + originalLabel + '. ID oryginału: ' + originalId + '. Powód: ' + reason,
+      } as any);
+
+      await insertActivityToSupabase({
+        caseId: caseData.id,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        actorType: 'operator',
+        eventType: 'payment_correction_added',
+        payload: {
+          title: 'Korekta wpłaty',
+          amount: -amount,
+          correctionAmount: amount,
+          currency,
+          paidAt: correctionPaidAt,
+          originalPaymentId: originalId,
+          originalAmount,
+          reason,
+        },
+      } as any).catch(() => null);
+
+      await reloadCaseFinanceData(caseData);
+      setPaymentCorrectionTargetStage220A27(null);
+      setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
+      toast.success('Korekta wpłaty zapisana');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać korekty wpłaty.');
+    } finally {
+      setPaymentCorrectionSubmittingStage220A27(false);
+    }
+  }
+
+
   const [caseSettlementSaving, setCaseSettlementSaving] = useState(false);
   const [items, setItems] = useState<CaseItem[]>([]);
   const [activities, setActivities] = useState<CaseActivity[]>([]);
@@ -2583,6 +2701,51 @@ export default function CaseDetail() {
                   Dodaj płatność prowizji
                 </Button>
               </div>
+              <div className="case-finance-payment-history-stage220a27" data-stage220a27-payment-history="true">
+                <div className="case-finance-payment-history-stage220a27__head">
+                  <strong>Historia wpłat</strong>
+                  <span>{visibleCasePayments.length}</span>
+                </div>
+                {visibleCasePayments.length === 0 ? (
+                  <p className="case-finance-payment-history-stage220a27__empty">Brak wpłat i korekt przy tej sprawie.</p>
+                ) : (
+                  <div className="case-finance-payment-history-stage220a27__list">
+                    {visibleCasePayments.map((payment) => {
+                      const type = getCasePaymentTypeStage220A27(payment);
+                      const signedAmount = getCasePaymentSignedAmountStage220A27(payment);
+                      const isCorrection = type === 'refund';
+                      return (
+                        <article
+                          key={'case-payment-history-stage220a27-' + String(payment.id || payment.paidAt || payment.createdAt || payment.amount)}
+                          className={'case-finance-payment-history-stage220a27__row ' + (isCorrection ? 'case-finance-payment-history-stage220a27__row--correction' : '')}
+                          data-stage220a27-payment-history-row={type || 'payment'}
+                        >
+                          <div>
+                            <strong>{getCasePaymentLabelStage220A27(payment)}</strong>
+                            <small>{formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</small>
+                            {payment.note ? <p>{payment.note}</p> : null}
+                          </div>
+                          <div className="case-finance-payment-history-stage220a27__amount">
+                            <strong>{formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</strong>
+                            {canCorrectCasePaymentStage220A27(payment) ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => openPaymentCorrectionModalStage220A27(payment)}
+                                disabled={paymentCorrectionSubmittingStage220A27}
+                                data-stage220a27-open-payment-correction="true"
+                              >
+                                Koryguj
+                              </Button>
+                            ) : null}
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
               <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
             </section>
                                                 </aside>
@@ -2720,6 +2883,93 @@ export default function CaseDetail() {
         </DialogContent>
       </Dialog>
 
+
+      <Dialog
+        open={Boolean(paymentCorrectionTargetStage220A27)}
+        onOpenChange={(open) => {
+          if (!open && !paymentCorrectionSubmittingStage220A27) {
+            setPaymentCorrectionTargetStage220A27(null);
+            setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
+          }
+        }}
+      >
+        <DialogContent
+          className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26 case-payment-correction-modal-stage220a27"
+          data-stage220a27-payment-correction-modal="true"
+          data-cf-vst-dialog="true"
+        >
+          <DialogHeader>
+            <DialogTitle>Korekta wpłaty</DialogTitle>
+            <DialogDescription>
+              Oryginalna wpłata zostaje w historii. Korekta zapisze osobny wpis ujemny w historii wpłat.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="case-payment-correction-modal-stage220a27__summary" data-stage220a27-payment-correction-summary="true">
+            <div>
+              <span>Oryginalna wpłata</span>
+              <strong>{formatMoney(getPaymentAmount((paymentCorrectionTargetStage220A27 || {}) as CasePaymentRecord), paymentCorrectionTargetStage220A27?.currency || caseFinanceSourceStage220A26.currency)}</strong>
+            </div>
+            <div>
+              <span>Data oryginału</span>
+              <strong>{formatDateTime(getCasePaymentDateStage220A27((paymentCorrectionTargetStage220A27 || {}) as CasePaymentRecord), 'Bez daty')}</strong>
+            </div>
+          </div>
+
+          <div className="case-finance-edit-form">
+            <label className="case-finance-edit-field">
+              <span>Wartość korekty</span>
+              <Input
+                inputMode="decimal"
+                value={paymentCorrectionFormStage220A27.amount}
+                onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, amount: event.target.value }))}
+                placeholder="np. 500"
+                data-stage220a27-payment-correction-amount="true"
+              />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Data korekty</span>
+              <Input
+                type="datetime-local"
+                value={paymentCorrectionFormStage220A27.paidAt}
+                onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, paidAt: event.target.value }))}
+                data-stage220a27-payment-correction-date="true"
+              />
+            </label>
+            <label className="case-finance-edit-field case-finance-edit-field--wide">
+              <span>Powód korekty</span>
+              <Textarea
+                value={paymentCorrectionFormStage220A27.reason}
+                onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, reason: event.target.value }))}
+                placeholder="Np. pomyłka w kwocie, błędnie dodana wpłata, zwrot klientowi"
+                data-stage220a27-payment-correction-reason="true"
+              />
+            </label>
+          </div>
+
+          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setPaymentCorrectionTargetStage220A27(null);
+                setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
+              }}
+              disabled={paymentCorrectionSubmittingStage220A27}
+            >
+              Anuluj
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSavePaymentCorrectionStage220A27}
+              disabled={paymentCorrectionSubmittingStage220A27 || fin11Amount(paymentCorrectionFormStage220A27.amount) <= 0 || !paymentCorrectionFormStage220A27.paidAt || !paymentCorrectionFormStage220A27.reason.trim()}
+              data-stage220a27-save-payment-correction="true"
+            >
+              {paymentCorrectionSubmittingStage220A27 ? 'Zapisywanie...' : 'Zapisz korektę'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* FIN-11_CASE_RIGHT_FINANCE_MODALS */}
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>

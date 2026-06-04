@@ -292,3 +292,18 @@ Pilnowane kontrakty:
 
 Następny etap biznesowy:
 - A27: korekty finansowe/storno zamiast cichego kasowania pomyłek.
+
+## STAGE220A27A - korekta wpłaty i historia wpłat
+
+Decyzja:
+- pomyłek we wpłatach nie cofamy przez ciche usuwanie rekordu,
+- korekta wpłaty tworzy nową płatność typu `refund`,
+- korekta ma datę, wartość i powód,
+- historia wpłat pokazuje oryginał i korektę,
+- finanse sprawy i klienta liczą korektę jako odjęcie od wpłat,
+- historia aktywności dostaje `payment_correction_added`.
+
+Uzasadnienie:
+- pieniądze wymagają śladu operacyjnego,
+- użytkownik musi widzieć, co było wpisane i co zostało skorygowane,
+- obecny finance source już odejmuje `refund` od wpłat.
