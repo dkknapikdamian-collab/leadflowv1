@@ -318,3 +318,14 @@ Decyzja UX:
 
 Następny etap:
 - A27C dla klienta: historia wpłat klienta z nazwą sprawy, z której pochodzi wpłata.
+
+## STAGE220A27B R2 - jasny modal historii wpłat
+
+Poprawka UX po A27B:
+- modal `Historia wpłat i korekt` nie może dziedziczyć starego ciemnego stylu,
+- tekst w modalu musi być widoczny na jasnym tle,
+- opis modala jest krótki i oddzielony separatorami,
+- wpisy wpłat pokazują `Data / Wartość / Status` jako chipy w jednym wierszu,
+- `Koryguj` w modalu używa primary VST.
+
+Nie zmieniano logiki refund ani liczenia finansów.

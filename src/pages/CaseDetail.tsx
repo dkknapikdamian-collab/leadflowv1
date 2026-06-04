@@ -109,6 +109,8 @@ const STAGE220A27A_PAYMENT_CORRECTION_HISTORY = 'case payment corrections are re
 void STAGE220A27A_PAYMENT_CORRECTION_HISTORY;
 const STAGE220A27B_PAYMENT_HISTORY_MODAL = 'case payment correction action opens a payment history modal instead of inline row buttons';
 void STAGE220A27B_PAYMENT_HISTORY_MODAL;
+const STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT = 'case payment history modal uses light VST surface and one-line meta chips';
+void STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -2899,7 +2901,7 @@ export default function CaseDetail() {
           <DialogHeader>
             <DialogTitle>Historia wpłat i korekt</DialogTitle>
             <DialogDescription>
-              Wybierz wpłatę do korekty. Korekta nie usuwa oryginału, tylko tworzy osobny wpis w historii.
+              Wybierz wpłatę do korekty · oryginał zostaje · korekta tworzy osobny wpis w historii.
             </DialogDescription>
           </DialogHeader>
 
@@ -2924,9 +2926,11 @@ export default function CaseDetail() {
                   >
                     <div className="case-payment-history-modal-stage220a27b__main">
                       <strong>{getCasePaymentLabelStage220A27(payment)}</strong>
-                      <span>Data: {formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</span>
-                      <span>Wartość: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
-                      {payment.status ? <span>Status: {billingStatusLabel(payment.status)}</span> : null}
+                      <div className="case-payment-history-modal-stage220a27b__meta" data-stage220a27b-r2-payment-meta="true">
+                        <span>Data: {formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</span>
+                        <span>Wartość: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
+                        {payment.status ? <span>Status: {billingStatusLabel(payment.status)}</span> : null}
+                      </div>
                       {payment.note ? <p>{payment.note}</p> : null}
                     </div>
 

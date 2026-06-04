@@ -1811,3 +1811,127 @@ aside.case-detail-right-rail::after {
     justify-content: flex-start;
   }
 }
+
+/* STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT
+   Forces payment history modal to the light VST surface and makes row metadata readable.
+*/
+
+[data-stage220a27b-payment-history-modal="true"].case-payment-history-modal-stage220a27b,
+.case-payment-history-modal-stage220a27b {
+  background: var(--cf-vst-surface-card-solid, #ffffff) !important;
+  background-image: none !important;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef) !important;
+  border-radius: var(--cf-vst-radius-panel, 22px) !important;
+  box-shadow: var(--cf-vst-shadow-modal, 0 24px 70px rgba(15, 23, 42, 0.18)) !important;
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-payment-history-modal-stage220a27b :is(h1, h2, h3, [data-radix-dialog-title]) {
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-payment-history-modal-stage220a27b :is([data-radix-dialog-description], p, span, small) {
+  color: var(--cf-vst-text-muted, #64748b) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted, #64748b) !important;
+}
+
+.case-payment-history-modal-stage220a27b [data-radix-dialog-description] {
+  display: block !important;
+  max-width: 100% !important;
+  white-space: normal !important;
+  line-height: 1.35 !important;
+  margin-top: 4px !important;
+}
+
+.case-payment-history-modal-stage220a27b__context {
+  background: var(--cf-vst-surface-soft, #f8fafc) !important;
+  border-color: var(--cf-vst-surface-border, #dbe3ef) !important;
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-payment-history-modal-stage220a27b__context strong,
+.case-payment-history-modal-stage220a27b__main strong {
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-payment-history-modal-stage220a27b__row {
+  display: flex !important;
+  align-items: center !important;
+  background: var(--cf-vst-surface-card-solid, #ffffff) !important;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05) !important;
+  color: var(--cf-vst-text-strong, #0f172a) !important;
+}
+
+.case-payment-history-modal-stage220a27b__row--correction {
+  background: var(--cf-vst-color-delete-soft, #fff1f2) !important;
+  border-color: var(--cf-vst-color-delete-border, #fecaca) !important;
+}
+
+.case-payment-history-modal-stage220a27b__main {
+  gap: 7px !important;
+}
+
+.case-payment-history-modal-stage220a27b__meta {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+}
+
+.case-payment-history-modal-stage220a27b__meta span {
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef) !important;
+  border-radius: var(--cf-vst-radius-pill, 999px) !important;
+  background: var(--cf-vst-surface-soft, #f8fafc) !important;
+  padding: 3px 8px !important;
+  color: var(--cf-vst-text-main, #334155) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-main, #334155) !important;
+  font-size: var(--cf-vst-font-size-meta, 12px) !important;
+  font-weight: var(--cf-vst-font-weight-bold, 800) !important;
+  line-height: 1.25 !important;
+}
+
+.case-payment-history-modal-stage220a27b__main p {
+  color: var(--cf-vst-text-muted, #64748b) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted, #64748b) !important;
+  line-height: 1.45 !important;
+}
+
+.case-payment-history-modal-stage220a27b__actions span {
+  color: var(--cf-vst-text-muted, #64748b) !important;
+  -webkit-text-fill-color: var(--cf-vst-text-muted, #64748b) !important;
+}
+
+.case-payment-history-modal-stage220a27b button {
+  color: inherit;
+}
+
+.case-payment-history-modal-stage220a27b button[data-stage220a27b-select-payment-correction="true"] {
+  background: var(--cf-vst-color-primary, #2563eb) !important;
+  border-color: var(--cf-vst-color-primary, #2563eb) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18) !important;
+}
+
+.case-payment-history-modal-stage220a27b .case-finance-modal-stage220a26-footer,
+.case-payment-history-modal-stage220a27b .cf-vst-dialog-footer {
+  border-top: 1px solid var(--cf-vst-surface-border, #dbe3ef) !important;
+}
+
+@media (min-width: 721px) {
+  .case-payment-history-modal-stage220a27b__main {
+    grid-template-columns: minmax(110px, auto) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .case-payment-history-modal-stage220a27b__main > p {
+    grid-column: 1 / -1;
+  }
+}
