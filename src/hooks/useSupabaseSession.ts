@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   getSupabaseSession,
   isSupabaseAuthConfigured,
@@ -25,9 +25,35 @@ function syncClientAuthSnapshotFromSessionUser(user: SupabaseSessionUser | null)
   clearClientAuthSnapshot();
 }
 
+const STAGE220A34_SUPABASE_AUTH_NO_TAB_RETURN_REMOUNT = 'Supabase auth token refresh must not remount CloseFlow routes or close open modals after tab return';
+void STAGE220A34_SUPABASE_AUTH_NO_TAB_RETURN_REMOUNT;
+
+function buildStableSessionUserKey(user: SupabaseSessionUser | null) {
+  if (!user) return 'none';
+  return [
+    user.uid || '',
+    user.email || '',
+    user.displayName || '',
+    user.lastSignInAt || '',
+    user.emailConfirmedAt || '',
+    user.emailVerified ? '1' : '0',
+    user.authProvider || '',
+    (user.authProviders || []).join('|'),
+  ].join('::');
+}
+
 export function useSupabaseSession() {
   const [user, setUser] = useState<SupabaseSessionUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const stableSessionUserKeyRef = useRef('__initial__');
+
+  const applySessionUser = (nextUser: SupabaseSessionUser | null) => {
+    const nextKey = buildStableSessionUserKey(nextUser);
+    syncClientAuthSnapshotFromSessionUser(nextUser);
+    if (stableSessionUserKeyRef.current === nextKey) return;
+    stableSessionUserKeyRef.current = nextKey;
+    setUser(nextUser);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -50,14 +76,12 @@ export function useSupabaseSession() {
           raw: {} as any,
         };
 
-        syncClientAuthSnapshotFromSessionUser(devUser);
-        setUser(devUser);
+        applySessionUser(devUser);
         setLoading(false);
         return () => undefined;
       }
 
-      clearClientAuthSnapshot();
-      setUser(null);
+      applySessionUser(null);
       setLoading(false);
       return () => undefined;
     }
@@ -68,8 +92,7 @@ export function useSupabaseSession() {
         const session = await getSupabaseSession();
         const nextUser = mapSupabaseUser(session?.user || null);
         if (!cancelled) {
-          syncClientAuthSnapshotFromSessionUser(nextUser);
-          setUser(nextUser);
+          applySessionUser(nextUser);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -80,8 +103,7 @@ export function useSupabaseSession() {
 
     const unsubscribe = onSupabaseSessionChange((session) => {
       const nextUser = mapSupabaseUser(session?.user || null);
-      syncClientAuthSnapshotFromSessionUser(nextUser);
-      setUser(nextUser);
+      applySessionUser(nextUser);
       setLoading(false);
     });
 

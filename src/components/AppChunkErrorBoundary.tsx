@@ -1,6 +1,9 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { reloadOnceForChunkAssetFailure } from '../pwa/chunk-asset-reload-guard';
 
 const CHUNK_RELOAD_SESSION_KEY = 'closeflow:chunk-reload-once';
+const STAGE220A34_APP_CHUNK_BOUNDARY_NO_TAB_RETURN_FALLBACK = 'App chunk boundary must preserve active CloseFlow UI state after tab return instead of unmounting the route';
+void STAGE220A34_APP_CHUNK_BOUNDARY_NO_TAB_RETURN_FALLBACK;
 
 type AppChunkErrorBoundaryProps = {
   children: ReactNode;
@@ -23,6 +26,25 @@ function isChunkLoadError(error: unknown) {
   const message = getErrorMessage(error);
 
   return /Failed to fetch dynamically imported module|Importing a module script failed|Loading chunk|ChunkLoadError|dynamically imported module|Missing lazy page export/i.test(message);
+}
+
+function hasProtectedCloseFlowUiState() {
+  if (typeof document === 'undefined') return false;
+  const documentHidden = document.visibilityState !== 'visible';
+  const openDialog = Boolean(document.querySelector('[data-closeflow-modal-visual-system="true"][data-state="open"], [data-cf-vst-dialog="true"][data-state="open"], [role="dialog"][data-state="open"]'));
+  const active = document.activeElement;
+  const activeInput = active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement || active instanceof HTMLSelectElement;
+  const filledField = Array.from(document.querySelectorAll('textarea, input:not([type="hidden"]), select')).some((field) => {
+    if (field instanceof HTMLTextAreaElement) return field.value.trim().length > 0;
+    if (field instanceof HTMLSelectElement) return Boolean(field.value && field.value !== 'none');
+    if (field instanceof HTMLInputElement) {
+      const type = String(field.type || '').toLowerCase();
+      if (['button', 'submit', 'reset', 'checkbox', 'radio', 'file', 'hidden'].includes(type)) return false;
+      return String(field.value || '').trim().length > 0;
+    }
+    return false;
+  });
+  return documentHidden || openDialog || activeInput || filledField;
 }
 
 async function clearBrowserRuntimeCaches() {
@@ -57,12 +79,21 @@ export class AppChunkErrorBoundary extends Component<AppChunkErrorBoundaryProps,
   state: AppChunkErrorBoundaryState = { error: null };
 
   static getDerivedStateFromError(error: Error) {
+    if (isChunkLoadError(error) && hasProtectedCloseFlowUiState()) {
+      return null;
+    }
     return { error };
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
     if (isChunkLoadError(error)) {
-      console.warn('APP_CHUNK_LOAD_STALE_DEPLOY_RELOAD', error, info);
+      const protectedUiState = hasProtectedCloseFlowUiState();
+      console.warn(protectedUiState ? 'APP_CHUNK_LOAD_DEFERRED_TO_PRESERVE_UI_STATE' : 'APP_CHUNK_LOAD_STALE_DEPLOY_RELOAD', error, info);
+      reloadOnceForChunkAssetFailure(error, protectedUiState ? 'app-chunk-error-boundary-protected-ui' : 'app-chunk-error-boundary');
+      if (protectedUiState) {
+        this.setState({ error: null });
+        return;
+      }
       reloadOnceForNewDeployment();
       return;
     }
