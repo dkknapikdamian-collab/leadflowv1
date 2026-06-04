@@ -119,6 +119,8 @@ const STAGE220A28_PAYMENT_HISTORY_MODAL_VST = 'payment history and correction mo
 void STAGE220A28_PAYMENT_HISTORY_MODAL_VST;
 const STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH = 'case finance payment history payment correction add payment and value modals use shared readable event modal visual source truth';
 void STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH;
+const STAGE220A30B_FINANCE_MODAL_A26_GUARD_COMPAT = 'case finance modal readable VST keeps stage220a26 footer compatibility class for prebuild guard';
+void STAGE220A30B_FINANCE_MODAL_A26_GUARD_COMPAT;
 const STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL = 'case payment history modal allows deleting a selected payment or correction with confirm guard';
 void STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL;
 
@@ -2962,7 +2964,7 @@ export default function CaseDetail() {
               />
             </div>
           </div>
-          <DialogFooter className={modalFooterClass('event-form-footer case-finance-source-footer-stage220a30')}>
+          <DialogFooter className={modalFooterClass('event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30')}>
             <Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>
               Anuluj
             </Button>
@@ -3048,7 +3050,7 @@ export default function CaseDetail() {
             </div>
           )}
 
-          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
+          <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsPaymentHistoryOpenStage220A27B(false)}>
               Zamknij
             </Button>
@@ -3117,7 +3119,7 @@ export default function CaseDetail() {
             </label>
           </div>
 
-          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
+          <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
             <Button
               type="button"
               variant="outline"
@@ -3190,7 +3192,7 @@ export default function CaseDetail() {
               <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>
-          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
+          <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsFinanceEditOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
             <Button type="button" onClick={handleSaveCaseFinanceEdit} disabled={isFinanceSaving || financeEditPreview.contractValue <= 0}>Zapisz</Button>
           </DialogFooter>
@@ -3236,7 +3238,7 @@ export default function CaseDetail() {
               <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotówka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
             </label>
           </div>
-          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
+          <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsFinancePaymentOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
             <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz płatność</Button>
           </DialogFooter>
@@ -3392,7 +3394,7 @@ return (
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>
         </div>
-        <DialogFooter className={modalFooterClass('event-form-footer case-finance-source-footer-stage220a30')}><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
+        <DialogFooter className={modalFooterClass('event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30')}><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
