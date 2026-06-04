@@ -125,6 +125,8 @@ const STAGE220A30B_FINANCE_MODAL_A26_GUARD_COMPAT = 'case finance modal readable
 void STAGE220A30B_FINANCE_MODAL_A26_GUARD_COMPAT;
 const STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL = 'case payment history modal allows deleting a selected payment or correction with confirm guard';
 void STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL;
+const STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS = 'case delete action uses destructive icon style and finance modal labels controls are readable and state-aware';
+void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
@@ -2350,9 +2352,10 @@ export default function CaseDetail() {
           <Button
             type="button"
             variant="outline"
-            className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action"
+            className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32"
             data-case-detail-delete-action="true"
             data-stage220a17-delete-case-button="true"
+            data-stage220a32-delete-case-button="true"
             data-cf-vst-kind="delete"
             aria-label="Usuń sprawę"
             title="Usuń sprawę"
@@ -3167,7 +3170,20 @@ export default function CaseDetail() {
             </label>
             <label className="case-finance-edit-field">
               <span>Model prowizji</span>
-              <select className="cf-vst-input case-finance-edit-select" value={financeEditForm.commissionMode} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionMode: event.target.value as 'none' | 'percent' | 'fixed' }))}>
+              <select
+                className="cf-vst-input case-finance-edit-select"
+                value={financeEditForm.commissionMode}
+                onChange={(event) => {
+                  const nextMode = event.target.value as 'none' | 'percent' | 'fixed';
+                  setFinanceEditForm((current) => ({
+                    ...current,
+                    commissionMode: nextMode,
+                    commissionRate: nextMode === 'percent' ? current.commissionRate : '',
+                    commissionAmount: nextMode === 'fixed' ? current.commissionAmount : '',
+                  }));
+                }}
+                data-stage220a32-commission-mode-control="true"
+              >
                 <option value="none">Brak</option>
                 <option value="percent">Procent od wartości transakcji</option>
                 <option value="fixed">Kwota stała</option>
@@ -3175,11 +3191,27 @@ export default function CaseDetail() {
             </label>
             <label className="case-finance-edit-field">
               <span>Stawka prowizji (%)</span>
-              <Input inputMode="decimal" value={financeEditForm.commissionRate} disabled={financeEditForm.commissionMode !== 'percent'} placeholder="np. 3" onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionRate: event.target.value }))} />
+              <Input
+                  inputMode="decimal"
+                  value={financeEditForm.commissionRate}
+                  disabled={financeEditForm.commissionMode !== 'percent'}
+                  aria-disabled={financeEditForm.commissionMode !== 'percent'}
+                  data-stage220a32-commission-rate-input="percent-only"
+                  placeholder="np. 3"
+                  onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionRate: event.target.value }))}
+                />
             </label>
             <label className="case-finance-edit-field">
               <span>Kwota prowizji</span>
-              <Input inputMode="decimal" value={financeEditForm.commissionAmount} disabled={financeEditForm.commissionMode !== 'fixed'} placeholder="np. 3000" onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionAmount: event.target.value }))} />
+              <Input
+                  inputMode="decimal"
+                  value={financeEditForm.commissionAmount}
+                  disabled={financeEditForm.commissionMode !== 'fixed'}
+                  aria-disabled={financeEditForm.commissionMode !== 'fixed'}
+                  data-stage220a32-commission-amount-input="fixed-only"
+                  placeholder="np. 3000"
+                  onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionAmount: event.target.value }))}
+                />
             </label>
             <label className="case-finance-edit-field">
               <span>Status prowizji</span>

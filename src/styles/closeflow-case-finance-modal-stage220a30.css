@@ -305,3 +305,39 @@
   --cf-finance-modal-safe-inset: clamp(1rem, 2.4vw, 1.35rem);
   padding: var(--cf-finance-modal-safe-inset) !important;
 }
+
+/* STAGE220A32B_FINANCE_MODAL_LABEL_READABILITY_AND_DISABLED_CONTROLS
+   Wymóg: labelki w małych modalach finansowych muszą być czytelne na ciemnym tle.
+   Wymóg: zablokowane pola prowizji mają wyglądać na zablokowane, nie jak aktywne pola.
+*/
+.case-finance-source-modal-stage220a30 .case-finance-edit-field > span,
+.case-finance-source-modal-stage220a30 .case-finance-edit-field label,
+.case-finance-source-modal-stage220a30 .case-finance-source-form-stage220a30 > div > label,
+.case-finance-source-modal-stage220a30 .case-detail-payment-form > div > label,
+.case-finance-source-modal-stage220a30 [data-slot="label"] {
+  color: #e2e8f0 !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+  opacity: 1 !important;
+  font-size: 0.9rem !important;
+  font-weight: 950 !important;
+  line-height: 1.15 !important;
+}
+
+.case-finance-source-modal-stage220a30 input:disabled,
+.case-finance-source-modal-stage220a30 textarea:disabled,
+.case-finance-source-modal-stage220a30 select:disabled,
+.case-finance-source-modal-stage220a30 .cf-vst-input:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.62 !important;
+  background: #e5e7eb !important;
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-field:has(input:disabled) > span,
+.case-finance-source-modal-stage220a30 .case-finance-edit-field:has(select:disabled) > span {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+}

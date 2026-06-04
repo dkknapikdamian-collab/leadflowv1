@@ -2165,3 +2165,46 @@ aside.case-detail-right-rail::after {
     flex-wrap: wrap !important;
   }
 }
+
+/* STAGE220A32B_CASE_DELETE_DANGER_ICON_ACTION
+   Delete case action uses the same destructive visual language as other delete icons.
+   It must not render decorative dot/pseudo-elements.
+*/
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32 {
+  border: 1px solid #fecdd3 !important;
+  background: #fff1f2 !important;
+  color: #be123c !important;
+  -webkit-text-fill-color: #be123c !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32::before,
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32::after,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32::before,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32::after {
+  content: none !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32 svg {
+  color: #be123c !important;
+  stroke: #be123c !important;
+  opacity: 1 !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32:hover {
+  border-color: #fda4af !important;
+  background: #ffe4e6 !important;
+  color: #9f1239 !important;
+  -webkit-text-fill-color: #9f1239 !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32:hover svg {
+  color: #9f1239 !important;
+  stroke: #9f1239 !important;
+}
