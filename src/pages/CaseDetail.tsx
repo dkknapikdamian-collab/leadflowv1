@@ -111,6 +111,8 @@ const STAGE220A27B_PAYMENT_HISTORY_MODAL = 'case payment correction action opens
 void STAGE220A27B_PAYMENT_HISTORY_MODAL;
 const STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT = 'case payment history modal uses light VST surface and one-line meta chips';
 void STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT;
+const STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE = 'case payment history modal rows show payment date and value in one line without redundant paid status';
+void STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -2894,7 +2896,7 @@ export default function CaseDetail() {
 
       <Dialog open={isPaymentHistoryOpenStage220A27B} onOpenChange={setIsPaymentHistoryOpenStage220A27B}>
         <DialogContent
-          className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26 case-payment-history-modal-stage220a27b"
+          className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26 case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light"
           data-stage220a27b-payment-history-modal="true"
           data-cf-vst-dialog="true"
         >
@@ -2929,7 +2931,6 @@ export default function CaseDetail() {
                       <div className="case-payment-history-modal-stage220a27b__meta" data-stage220a27b-r2-payment-meta="true">
                         <span>Data: {formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</span>
                         <span>Wartość: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
-                        {payment.status ? <span>Status: {billingStatusLabel(payment.status)}</span> : null}
                       </div>
                       {payment.note ? <p>{payment.note}</p> : null}
                     </div>

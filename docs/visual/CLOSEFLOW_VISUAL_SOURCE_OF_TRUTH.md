@@ -329,3 +329,13 @@ Poprawka UX po A27B:
 - `Koryguj` w modalu używa primary VST.
 
 Nie zmieniano logiki refund ani liczenia finansów.
+
+## STAGE220A27B R3 - wpis historii wpłat w jednym wierszu
+
+Poprawka UX:
+- wpis w modalu `Historia wpłat i korekt` ma być jednym wierszem,
+- widoczne są: typ wpisu, data, wartość i akcja `Koryguj`,
+- usunięto chip `Status: Opłacone`, bo lista sama dotyczy wpłat,
+- wymuszono literalnie jasne tło dla modala, żeby nie dziedziczył starego dark style.
+
+Nie zmieniano logiki refund ani liczenia finansów.

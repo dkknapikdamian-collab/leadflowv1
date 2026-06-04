@@ -1935,3 +1935,103 @@ aside.case-detail-right-rail::after {
     grid-column: 1 / -1;
   }
 }
+
+/* STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE
+   Payment history modal row must be one-line: label, date, value, action.
+   No redundant paid status chip.
+*/
+
+.case-payment-history-modal-stage220a27b-r3-light,
+[data-stage220a27b-payment-history-modal="true"].case-payment-history-modal-stage220a27b-r3-light {
+  background: #ffffff !important;
+  background-image: none !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  background: #ffffff !important;
+  border: 1px solid #dbe3ef !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__main {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__main > strong {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__meta {
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: nowrap !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__meta span {
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  border: 1px solid #dbe3ef !important;
+  border-radius: 999px !important;
+  background: #f8fafc !important;
+  padding: 3px 8px !important;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__main p {
+  display: none !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-width: 88px !important;
+}
+
+.case-payment-history-modal-stage220a27b-r3-light button[data-stage220a27b-select-payment-correction="true"] {
+  min-height: 34px !important;
+  border-radius: 12px !important;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+@media (max-width: 720px) {
+  .case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__row {
+    grid-template-columns: 1fr !important;
+    align-items: start !important;
+  }
+
+  .case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__main,
+  .case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__meta {
+    flex-wrap: wrap !important;
+  }
+
+  .case-payment-history-modal-stage220a27b-r3-light .case-payment-history-modal-stage220a27b__actions {
+    justify-content: flex-start !important;
+  }
+}
