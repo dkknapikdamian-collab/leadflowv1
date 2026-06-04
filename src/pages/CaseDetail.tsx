@@ -107,6 +107,8 @@ const STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE = 'case finance display uses getCa
 void STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE;
 const STAGE220A27A_PAYMENT_CORRECTION_HISTORY = 'case payment corrections are refund payment records with date value reason and visible payment history';
 void STAGE220A27A_PAYMENT_CORRECTION_HISTORY;
+const STAGE220A27B_PAYMENT_HISTORY_MODAL = 'case payment correction action opens a payment history modal instead of inline row buttons';
+void STAGE220A27B_PAYMENT_HISTORY_MODAL;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -1206,6 +1208,7 @@ export default function CaseDetail() {
   const [paymentCorrectionTargetStage220A27, setPaymentCorrectionTargetStage220A27] = useState<CasePaymentRecord | null>(null);
   const [paymentCorrectionFormStage220A27, setPaymentCorrectionFormStage220A27] = useState({ amount: '', paidAt: '', reason: '' });
   const [paymentCorrectionSubmittingStage220A27, setPaymentCorrectionSubmittingStage220A27] = useState(false);
+  const [isPaymentHistoryOpenStage220A27B, setIsPaymentHistoryOpenStage220A27B] = useState(false);
 
   const financeEditPreview = useMemo(() => getFin11FinancePreview(financeEditForm, casePayments), [casePayments, financeEditForm]);
 
@@ -1308,6 +1311,11 @@ export default function CaseDetail() {
       paidAt: fin11DateTimeLocal(new Date().toISOString()),
       reason: '',
     });
+  }
+
+  function openPaymentCorrectionFromHistoryStage220A27B(payment: CasePaymentRecord) {
+    setIsPaymentHistoryOpenStage220A27B(false);
+    openPaymentCorrectionModalStage220A27(payment);
   }
 
   async function handleSavePaymentCorrectionStage220A27() {
@@ -2700,6 +2708,16 @@ export default function CaseDetail() {
                 <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('commission')} disabled={isFinanceSaving}>
                   Dodaj płatność prowizji
                 </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setIsPaymentHistoryOpenStage220A27B(true)}
+                  disabled={visibleCasePayments.length === 0}
+                  data-stage220a27b-open-payment-history-modal="true"
+                >
+                  Koryguj wpłatę
+                </Button>
               </div>
               <div className="case-finance-payment-history-stage220a27" data-stage220a27-payment-history="true">
                 <div className="case-finance-payment-history-stage220a27__head">
@@ -2727,18 +2745,6 @@ export default function CaseDetail() {
                           </div>
                           <div className="case-finance-payment-history-stage220a27__amount">
                             <strong>{formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</strong>
-                            {canCorrectCasePaymentStage220A27(payment) ? (
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="outline"
-                                onClick={() => openPaymentCorrectionModalStage220A27(payment)}
-                                disabled={paymentCorrectionSubmittingStage220A27}
-                                data-stage220a27-open-payment-correction="true"
-                              >
-                                Koryguj
-                              </Button>
-                            ) : null}
                           </div>
                         </article>
                       );
@@ -2883,6 +2889,76 @@ export default function CaseDetail() {
         </DialogContent>
       </Dialog>
 
+
+      <Dialog open={isPaymentHistoryOpenStage220A27B} onOpenChange={setIsPaymentHistoryOpenStage220A27B}>
+        <DialogContent
+          className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26 case-payment-history-modal-stage220a27b"
+          data-stage220a27b-payment-history-modal="true"
+          data-cf-vst-dialog="true"
+        >
+          <DialogHeader>
+            <DialogTitle>Historia wpłat i korekt</DialogTitle>
+            <DialogDescription>
+              Wybierz wpłatę do korekty. Korekta nie usuwa oryginału, tylko tworzy osobny wpis w historii.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="case-payment-history-modal-stage220a27b__context" data-stage220a27b-payment-history-context="case">
+            <span>Sprawa</span>
+            <strong>{getCaseHeaderCaseLabel(caseData)}</strong>
+          </div>
+
+          {visibleCasePayments.length === 0 ? (
+            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpłat i korekt przy tej sprawie.</p>
+          ) : (
+            <div className="case-payment-history-modal-stage220a27b__list">
+              {visibleCasePayments.map((payment) => {
+                const type = getCasePaymentTypeStage220A27(payment);
+                const signedAmount = getCasePaymentSignedAmountStage220A27(payment);
+                const isCorrection = type === 'refund';
+                return (
+                  <article
+                    key={'case-payment-history-modal-stage220a27b-' + String(payment.id || payment.paidAt || payment.createdAt || payment.amount)}
+                    className={'case-payment-history-modal-stage220a27b__row ' + (isCorrection ? 'case-payment-history-modal-stage220a27b__row--correction' : '')}
+                    data-stage220a27b-payment-history-row={type || 'payment'}
+                  >
+                    <div className="case-payment-history-modal-stage220a27b__main">
+                      <strong>{getCasePaymentLabelStage220A27(payment)}</strong>
+                      <span>Data: {formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</span>
+                      <span>Wartość: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
+                      {payment.status ? <span>Status: {billingStatusLabel(payment.status)}</span> : null}
+                      {payment.note ? <p>{payment.note}</p> : null}
+                    </div>
+
+                    <div className="case-payment-history-modal-stage220a27b__actions">
+                      {canCorrectCasePaymentStage220A27(payment) ? (
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openPaymentCorrectionFromHistoryStage220A27B(payment)}
+                          disabled={paymentCorrectionSubmittingStage220A27}
+                          data-stage220a27b-select-payment-correction="true"
+                        >
+                          Koryguj
+                        </Button>
+                      ) : (
+                        <span>Korekta / prowizja</span>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
+            <Button type="button" variant="outline" onClick={() => setIsPaymentHistoryOpenStage220A27B(false)}>
+              Zamknij
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog
         open={Boolean(paymentCorrectionTargetStage220A27)}

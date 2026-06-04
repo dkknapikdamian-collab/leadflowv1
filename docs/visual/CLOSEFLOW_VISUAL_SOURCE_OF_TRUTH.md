@@ -307,3 +307,14 @@ Uzasadnienie:
 - pieniądze wymagają śladu operacyjnego,
 - użytkownik musi widzieć, co było wpisane i co zostało skorygowane,
 - obecny finance source już odejmuje `refund` od wpłat.
+
+## STAGE220A27B - historia wpłat w modalu
+
+Decyzja UX:
+- przycisk `Koryguj` nie powinien być widoczny przy każdej mini-pozycji w prawym panelu,
+- w panelu `Finanse sprawy` jest osobna akcja `Koryguj wpłatę`,
+- klik otwiera modal `Historia wpłat i korekt`,
+- modal pokazuje datę, wartość, status/notatkę i pozwala wybrać konkretną wpłatę do korekty.
+
+Następny etap:
+- A27C dla klienta: historia wpłat klienta z nazwą sprawy, z której pochodzi wpłata.

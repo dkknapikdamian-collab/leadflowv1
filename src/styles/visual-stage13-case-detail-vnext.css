@@ -1723,3 +1723,91 @@ aside.case-detail-right-rail::after {
   font-size: var(--cf-vst-font-size-meta, 12px);
   margin-bottom: 4px;
 }
+
+/* STAGE220A27B_PAYMENT_HISTORY_MODAL
+   Correction action moved out of compact finance card into a focused payment history modal.
+*/
+
+.case-payment-history-modal-stage220a27b__context {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef);
+  border-radius: var(--cf-vst-radius-button, 14px);
+  background: var(--cf-vst-surface-soft, #f8fafc);
+}
+
+.case-payment-history-modal-stage220a27b__context span,
+.case-payment-history-modal-stage220a27b__empty {
+  color: var(--cf-vst-text-muted, #64748b);
+  font-size: var(--cf-vst-font-size-meta, 12px);
+}
+
+.case-payment-history-modal-stage220a27b__context strong {
+  color: var(--cf-vst-text-strong, #0f172a);
+  font-weight: var(--cf-vst-font-weight-heavy, 900);
+}
+
+.case-payment-history-modal-stage220a27b__list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+  max-height: min(54vh, 520px);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.case-payment-history-modal-stage220a27b__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px;
+  border: 1px solid var(--cf-vst-surface-border, #dbe3ef);
+  border-radius: var(--cf-vst-radius-button, 14px);
+  background: var(--cf-vst-surface-card-solid, #fff);
+}
+
+.case-payment-history-modal-stage220a27b__row--correction {
+  border-color: var(--cf-vst-color-delete-border, #fecaca);
+  background: var(--cf-vst-color-delete-soft, #fff1f2);
+}
+
+.case-payment-history-modal-stage220a27b__main {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.case-payment-history-modal-stage220a27b__main strong {
+  color: var(--cf-vst-text-strong, #0f172a);
+}
+
+.case-payment-history-modal-stage220a27b__main span,
+.case-payment-history-modal-stage220a27b__main p,
+.case-payment-history-modal-stage220a27b__actions span {
+  color: var(--cf-vst-text-muted, #64748b);
+  font-size: var(--cf-vst-font-size-meta, 12px);
+  line-height: var(--cf-vst-line-height-body, 1.45);
+}
+
+.case-payment-history-modal-stage220a27b__main p {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+}
+
+.case-payment-history-modal-stage220a27b__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 96px;
+}
+
+@media (max-width: 720px) {
+  .case-payment-history-modal-stage220a27b__row {
+    flex-direction: column;
+  }
+
+  .case-payment-history-modal-stage220a27b__actions {
+    justify-content: flex-start;
+  }
+}
