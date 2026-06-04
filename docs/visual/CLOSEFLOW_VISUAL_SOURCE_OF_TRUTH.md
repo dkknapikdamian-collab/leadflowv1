@@ -350,3 +350,14 @@ Decyzje:
 - lista spraw ma ikonę kosza po prawej obok chevrona, jak klient/lead.
 
 Nie zmieniano SQL, RLS, API ani logiki refund.
+
+## STAGE220A29 - lead confirm and no runtime service worker reload
+
+Decyzje:
+- kosz leada nie może używać natywnego `window.confirm`,
+- komunikat z domeną przeglądarki jest zakazany dla akcji użytkownika,
+- kosz leada używa `ConfirmDialog`,
+- runtime nie rejestruje ani nie aktualizuje service workera,
+- istniejące workery są tylko wyrejestrowane, a cache `closeflow-*` czyszczony.
+
+Nie zmieniano SQL, RLS, API ani logiki finansów.

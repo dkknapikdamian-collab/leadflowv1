@@ -44,6 +44,7 @@ import { Badge } from '../components/ui/badge';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
 import { EntityConflictDialog, type EntityConflictCandidate } from '../components/EntityConflictDialog';
+import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
 import { SimpleFiltersCard, TopValueRecordsCard } from '../components/operator-rail';
 import { requireWorkspaceId } from '../lib/workspace-context';
@@ -267,6 +268,8 @@ function getRestoreStatusForLead(lead: any, linkedCase?: CaseRecord) {
 }
 
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_LEADS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
+const STAGE220A29_LEAD_TRASH_VST_CONFIRM = 'lead trash confirmations use CloseFlow ConfirmDialog instead of native browser confirm';
+void STAGE220A29_LEAD_TRASH_VST_CONFIRM;
 
 export default function Leads() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
@@ -301,6 +304,8 @@ export default function Leads() {
   const createLeadSubmitLockRef = useRef(false);
   const [leadSubmitting, setLeadSubmitting] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
+  const [leadArchiveConfirmStage220A29, setLeadArchiveConfirmStage220A29] = useState<{ lead: any; linkedCase?: CaseRecord | null } | null>(null);
+  const [conflictArchiveConfirmStage220A29, setConflictArchiveConfirmStage220A29] = useState<EntityConflictCandidate | null>(null);
   const [leadConflictOpen, setLeadConflictOpen] = useState(false);
   const [leadConflictCandidates, setLeadConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [leadConflictPendingInput, setLeadConflictPendingInput] = useState<any | null>(null);
@@ -486,13 +491,7 @@ export default function Leads() {
     window.location.href = candidate.entityType === 'client' ? '/clients/' + safeId : '/leads/' + safeId;
   };
 
-  const handleArchiveConflictCandidate = async (candidate: EntityConflictCandidate) => {
-    const label = candidate.label || (candidate.entityType === 'client' ? 'klienta' : 'leada');
-    const confirmed = window.confirm(
-      'Przenieść rekord z konfliktu do kosza: ' + label + '? Rekord nie zostanie trwale skasowany i będzie możliwy do przywrócenia.',
-    );
-    if (!confirmed) return;
-
+  const executeArchiveConflictCandidateStage220A29 = async (candidate: EntityConflictCandidate) => {
     try {
       setLeadSubmitting(true);
       if (candidate.entityType === 'client') {
@@ -507,6 +506,7 @@ export default function Leads() {
         });
       }
       setLeadConflictCandidates((current) => current.filter((item) => !(item.id === candidate.id && item.entityType === candidate.entityType)));
+      setConflictArchiveConfirmStage220A29(null);
       toast.success('Rekord przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
@@ -516,7 +516,34 @@ export default function Leads() {
     }
   };
 
-  const handleArchiveLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
+  const handleArchiveConflictCandidate = (candidate: EntityConflictCandidate) => {
+    setConflictArchiveConfirmStage220A29(candidate);
+  };
+
+  const executeArchiveLeadStage220A29 = async (leadToArchive: any) => {
+    const leadId = String(leadToArchive?.id || '');
+    if (!leadId) return;
+
+    try {
+      setArchivePendingId(leadId);
+      await updateLeadInSupabase({
+        id: leadId,
+        status: 'archived',
+        leadVisibility: 'trash',
+        salesOutcome: 'archived',
+        closedAt: new Date().toISOString(),
+      });
+      setLeadArchiveConfirmStage220A29(null);
+      toast.success('Lead przeniesiony do kosza');
+      await loadLeads();
+    } catch (error: any) {
+      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setArchivePendingId(null);
+    }
+  };
+
+  const handleArchiveLead = (event: MouseEvent<HTMLButtonElement>, lead: any) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -528,29 +555,10 @@ export default function Leads() {
     const leadId = String(lead.id || '');
     if (!leadId) return;
 
-    const linkedCase = resolveLinkedCaseForLead(lead);
-    const relationText = linkedCase
-      ? '\\n\\nTen lead ma powiązaną sprawę: ' + (linkedCase.title || linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
-      : '\\n\\nLead zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
-
-    if (!window.confirm('Przenieść leada do kosza: ' + (lead.name || 'Lead') + '?' + relationText)) return;
-
-    try {
-      setArchivePendingId(leadId);
-      await updateLeadInSupabase({
-        id: leadId,
-        status: 'archived',
-        leadVisibility: 'trash',
-        salesOutcome: 'archived',
-        closedAt: new Date().toISOString(),
-      });
-      toast.success('Lead przeniesiony do kosza');
-      await loadLeads();
-    } catch (error: any) {
-      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
-    } finally {
-      setArchivePendingId(null);
-    }
+    setLeadArchiveConfirmStage220A29({
+      lead,
+      linkedCase: resolveLinkedCaseForLead(lead) || null,
+    });
   };
 
   const handleRestoreLead = async (event: MouseEvent<HTMLButtonElement>, lead: any) => {
@@ -1132,6 +1140,43 @@ items={mostValuableRelations.map((entry) => ({
           </div>
         </div>
       </div>
+
+
+        <ConfirmDialog
+          open={Boolean(leadArchiveConfirmStage220A29)}
+          onOpenChange={(open) => {
+            if (!open && !archivePendingId) setLeadArchiveConfirmStage220A29(null);
+          }}
+          title="Przenieść leada do kosza?"
+          description={
+            leadArchiveConfirmStage220A29?.linkedCase
+              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiązaną sprawę: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.'
+          }
+          confirmLabel="Przenieś do kosza"
+          cancelLabel="Anuluj"
+          confirmTone="destructive"
+          pending={Boolean(archivePendingId)}
+          onConfirm={() => leadArchiveConfirmStage220A29 ? executeArchiveLeadStage220A29(leadArchiveConfirmStage220A29.lead) : undefined}
+        />
+
+        <span hidden data-stage220a29-lead-trash-confirm="true" />
+
+        <ConfirmDialog
+          open={Boolean(conflictArchiveConfirmStage220A29)}
+          onOpenChange={(open) => {
+            if (!open && !leadSubmitting) setConflictArchiveConfirmStage220A29(null);
+          }}
+          title="Przenieść rekord do kosza?"
+          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.'}
+          confirmLabel="Przenieś do kosza"
+          cancelLabel="Anuluj"
+          confirmTone="destructive"
+          pending={leadSubmitting}
+          onConfirm={() => conflictArchiveConfirmStage220A29 ? executeArchiveConflictCandidateStage220A29(conflictArchiveConfirmStage220A29) : undefined}
+        />
+
+        <span hidden data-stage220a29-conflict-trash-confirm="true" />
 
         <EntityConflictDialog
           open={leadConflictOpen}
