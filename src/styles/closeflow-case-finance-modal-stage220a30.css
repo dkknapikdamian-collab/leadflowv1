@@ -1,0 +1,271 @@
+/* STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH
+   Cel: okna finansów sprawy mają używać czytelnego rytmu jak wspólne okna dodawania wydarzenia/notatki.
+   Zakres: CaseDetail payment history, correction, add payment, value/commission, finance payment modal.
+   Bez zmian schematu i bez zmian kalkulacji finansów.
+*/
+
+.case-finance-source-modal-stage220a30 {
+  width: min(44rem, calc(100vw - 2rem)) !important;
+  max-width: 44rem !important;
+  max-height: min(88vh, 760px) !important;
+  overflow: auto !important;
+  border: 1px solid #dbe5f3 !important;
+  border-radius: 1.35rem !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.22) !important;
+}
+
+.case-finance-source-modal-stage220a30,
+.case-finance-source-modal-stage220a30 * {
+  box-sizing: border-box !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-source-header-stage220a30,
+.case-finance-source-modal-stage220a30 .event-form-vnext-header {
+  padding-bottom: 0.35rem !important;
+  border-bottom: 0 !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-slot="dialog-title"],
+.case-finance-source-modal-stage220a30 h2,
+.case-finance-source-modal-stage220a30 h3,
+.case-finance-source-modal-stage220a30 strong {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-slot="dialog-description"],
+.case-finance-source-modal-stage220a30 p,
+.case-finance-source-modal-stage220a30 small,
+.case-finance-source-modal-stage220a30 span,
+.case-finance-source-modal-stage220a30 label,
+.case-finance-source-modal-stage220a30 .text-muted-foreground {
+  color: #475569 !important;
+  -webkit-text-fill-color: #475569 !important;
+}
+
+.case-finance-source-form-stage220a30,
+.case-finance-source-modal-stage220a30 .case-finance-edit-form,
+.case-finance-source-modal-stage220a30 .case-detail-payment-form {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1rem !important;
+  padding-top: 0.75rem !important;
+}
+
+.case-finance-source-form-stage220a30--legacy-payment {
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+}
+
+.case-finance-source-form-stage220a30 > div,
+.case-finance-source-form-stage220a30 > label,
+.case-finance-source-modal-stage220a30 .case-finance-edit-field {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 0.42rem !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-field--wide,
+.case-finance-source-modal-stage220a30 .case-detail-payment-form > div:has(textarea),
+.case-finance-source-modal-stage220a30 .case-finance-edit-preview {
+  grid-column: 1 / -1 !important;
+}
+
+.case-finance-source-modal-stage220a30 label,
+.case-finance-source-modal-stage220a30 label span,
+.case-finance-source-modal-stage220a30 [data-slot="label"] {
+  color: #1e293b !important;
+  -webkit-text-fill-color: #1e293b !important;
+  font-size: 0.82rem !important;
+  font-weight: 850 !important;
+  line-height: 1.15 !important;
+}
+
+.case-finance-source-modal-stage220a30 input,
+.case-finance-source-modal-stage220a30 textarea,
+.case-finance-source-modal-stage220a30 select,
+.case-finance-source-modal-stage220a30 .cf-vst-input {
+  min-height: 2.65rem !important;
+  width: 100% !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.95rem !important;
+  background: #ffffff !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04) !important;
+}
+
+.case-finance-source-modal-stage220a30 input::placeholder,
+.case-finance-source-modal-stage220a30 textarea::placeholder {
+  color: #64748b !important;
+  -webkit-text-fill-color: #64748b !important;
+  opacity: 1 !important;
+}
+
+.case-finance-source-modal-stage220a30 textarea {
+  min-height: 4.75rem !important;
+  resize: vertical !important;
+}
+
+.case-finance-source-modal-stage220a30 input:focus,
+.case-finance-source-modal-stage220a30 textarea:focus,
+.case-finance-source-modal-stage220a30 select:focus,
+.case-finance-source-modal-stage220a30 .cf-vst-input:focus {
+  border-color: #2563eb !important;
+  outline: 2px solid rgba(37, 99, 235, 0.18) !important;
+  outline-offset: 1px !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-preview {
+  display: grid !important;
+  gap: 0.65rem !important;
+  padding: 0.9rem 1rem !important;
+  border: 1px solid #dbeafe !important;
+  border-radius: 1.1rem !important;
+  background: #eff6ff !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-preview > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 1rem !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-preview span {
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-preview strong {
+  font-weight: 950 !important;
+}
+
+.case-finance-source-footer-stage220a30,
+.case-finance-source-modal-stage220a30 .event-form-footer {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.7rem !important;
+  flex-wrap: wrap !important;
+  margin-top: 1rem !important;
+  padding-top: 0.95rem !important;
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.case-finance-source-modal-stage220a30 button:not([aria-label="Close"]),
+.case-payment-history-modal-stage220a30__actions button {
+  min-height: 2.35rem !important;
+  border-radius: 0.85rem !important;
+  font-weight: 900 !important;
+}
+
+.case-finance-source-modal-stage220a30 button[aria-label="Close"] {
+  top: 1rem !important;
+  right: 1rem !important;
+  border-radius: 999px !important;
+  background: #2563eb !important;
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+.case-finance-source-modal-stage220a30 button[aria-label="Close"] svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__context,
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__row,
+.case-finance-source-modal-stage220a30--correction .case-payment-correction-modal-stage220a27__summary {
+  border: 1px solid #dbe5f3 !important;
+  border-radius: 1rem !important;
+  background: #f8fafc !important;
+  color: #0f172a !important;
+}
+
+.case-payment-history-modal-stage220a27b__list {
+  display: grid !important;
+  gap: 0.75rem !important;
+}
+
+.case-payment-history-modal-stage220a27b__row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 0.85rem !important;
+  padding: 0.9rem 1rem !important;
+}
+
+.case-payment-history-modal-stage220a27b__main {
+  min-width: 0 !important;
+}
+
+.case-payment-history-modal-stage220a27b__meta {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  margin-top: 0.3rem !important;
+}
+
+.case-payment-history-modal-stage220a27b__meta span {
+  display: inline-flex !important;
+  min-height: 1.65rem !important;
+  align-items: center !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 999px !important;
+  background: #eef2f7 !important;
+  padding: 0.18rem 0.62rem !important;
+  color: #334155 !important;
+  -webkit-text-fill-color: #334155 !important;
+  font-size: 0.78rem !important;
+  font-weight: 850 !important;
+  white-space: nowrap !important;
+}
+
+.case-payment-history-modal-stage220a30__actions {
+  min-width: max-content !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.45rem !important;
+  flex-wrap: nowrap !important;
+}
+
+.case-payment-history-modal-stage220a30__actions > button {
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+}
+
+.case-payment-history-modal-stage220a30__delete svg {
+  flex: 0 0 auto !important;
+  margin-right: 0.3rem !important;
+  opacity: 1 !important;
+}
+
+@media (max-width: 720px) {
+  .case-finance-source-form-stage220a30,
+  .case-finance-source-modal-stage220a30 .case-finance-edit-form,
+  .case-finance-source-modal-stage220a30 .case-detail-payment-form,
+  .case-payment-history-modal-stage220a27b__row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .case-payment-history-modal-stage220a30__actions {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  .case-finance-source-footer-stage220a30,
+  .case-finance-source-modal-stage220a30 .event-form-footer {
+    justify-content: stretch !important;
+  }
+
+  .case-finance-source-footer-stage220a30 > button,
+  .case-finance-source-modal-stage220a30 .event-form-footer > button {
+    flex: 1 1 100% !important;
+  }
+}

@@ -52,6 +52,7 @@ import '../styles/closeflow-case-history-visual-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-case-detail-stage217-operation-workspace.css';
 import '../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css';
+import '../styles/closeflow-case-finance-modal-stage220a30.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
 
@@ -116,6 +117,8 @@ const STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE = 'case payment history modal row
 void STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE;
 const STAGE220A28_PAYMENT_HISTORY_MODAL_VST = 'payment history and correction modals use CloseFlow modal visual source truth without helper copy or redundant status';
 void STAGE220A28_PAYMENT_HISTORY_MODAL_VST;
+const STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH = 'case finance payment history payment correction add payment and value modals use shared readable event modal visual source truth';
+void STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH;
 const STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL = 'case payment history modal allows deleting a selected payment or correction with confirm guard';
 void STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL;
 
@@ -2905,14 +2908,14 @@ export default function CaseDetail() {
 
 
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
-        <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="cf-vst-dialog case-detail-payment-dialog case-finance-modal-stage220a26">
-          <DialogHeader>
-            <DialogTitle>Dodaj wpłatę do sprawy</DialogTitle>
-            <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
+        <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--payment">
+          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
+            <DialogTitle>Dodaj wpłatę</DialogTitle>
+            <DialogDescription>Wpisz kwotę, datę i krótki opis. Po zapisie wpłata trafi do rozliczenia sprawy.</DialogDescription>
           </DialogHeader>
-          <div className="case-detail-payment-form">
+          <div className="case-detail-payment-form case-finance-source-form-stage220a30 case-finance-source-form-stage220a30--legacy-payment">
             <div>
-              <Label htmlFor="case-payment-amount">Kwota wpłaty</Label>
+              <Label htmlFor="case-payment-amount">Kwota</Label>
               <Input
                 id="case-payment-amount"
                 type="number"
@@ -2924,7 +2927,7 @@ export default function CaseDetail() {
               />
             </div>
             <div>
-              <Label htmlFor="case-payment-status">Status</Label>
+              <Label htmlFor="case-payment-status">Status wpłaty</Label>
               <select
                 id="case-payment-status"
                 value={casePaymentDraft.status}
@@ -2937,7 +2940,7 @@ export default function CaseDetail() {
               </select>
             </div>
             <div>
-              <Label htmlFor="case-payment-type">Typ</Label>
+              <Label htmlFor="case-payment-type">Typ wpłaty</Label>
               <select
                 id="case-payment-type"
                 value={casePaymentDraft.type}
@@ -2950,7 +2953,7 @@ export default function CaseDetail() {
               </select>
             </div>
             <div>
-              <Label htmlFor="case-payment-note">Notatka</Label>
+              <Label htmlFor="case-payment-note">Notatka do wpłaty</Label>
               <Textarea
                 id="case-payment-note"
                 value={casePaymentDraft.note}
@@ -2959,7 +2962,7 @@ export default function CaseDetail() {
               />
             </div>
           </div>
-          <DialogFooter className={modalFooterClass()}>
+          <DialogFooter className={modalFooterClass('event-form-footer case-finance-source-footer-stage220a30')}>
             <Button type="button" variant="outline" onClick={() => setIsCasePaymentOpen(false)}>
               Anuluj
             </Button>
@@ -2974,12 +2977,12 @@ export default function CaseDetail() {
 
       <Dialog open={isPaymentHistoryOpenStage220A27B} onOpenChange={setIsPaymentHistoryOpenStage220A27B}>
         <DialogContent
-          className="client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst"
+          className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--history case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a28-vst"
           data-stage220a27b-payment-history-modal="true"
           data-stage220a28-payment-history-modal-vst="true"
           data-cf-vst-dialog="true"
         >
-          <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header">
+          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Historia wpłat i korekt</DialogTitle>
           </DialogHeader>
 
@@ -3011,7 +3014,7 @@ export default function CaseDetail() {
                       {payment.note ? <p>{payment.note}</p> : null}
                     </div>
 
-                    <div className="case-payment-history-modal-stage220a27b__actions">
+                    <div className="case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions">
                       {canCorrectCasePaymentStage220A27(payment) ? (
                         <Button
                           type="button"
@@ -3030,7 +3033,7 @@ export default function CaseDetail() {
                         type="button"
                         size="sm"
                         variant="outline"
-                        className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete"
+                        className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete"
                         onClick={() => openPaymentDeleteConfirmStage220A29(payment)}
                         disabled={paymentDeleteSubmittingStage220A29 || paymentCorrectionSubmittingStage220A27 || !String(payment.id || '').trim()}
                         data-stage220a29-delete-payment-from-history="true"
@@ -3045,7 +3048,7 @@ export default function CaseDetail() {
             </div>
           )}
 
-          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
+          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsPaymentHistoryOpenStage220A27B(false)}>
               Zamknij
             </Button>
@@ -3063,12 +3066,12 @@ export default function CaseDetail() {
         }}
       >
         <DialogContent
-          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst"
+          className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--correction case-payment-correction-modal-stage220a27"
           data-stage220a27-payment-correction-modal="true"
           data-stage220a28-payment-correction-modal-vst="true"
           data-cf-vst-dialog="true"
         >
-          <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header">
+          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Korekta wpłaty</DialogTitle>
           </DialogHeader>
 
@@ -3083,7 +3086,7 @@ export default function CaseDetail() {
             </div>
           </div>
 
-          <div className="case-finance-edit-form">
+          <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
               <span>Wartość korekty</span>
               <Input
@@ -3114,7 +3117,7 @@ export default function CaseDetail() {
             </label>
           </div>
 
-          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
+          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
             <Button
               type="button"
               variant="outline"
@@ -3140,14 +3143,14 @@ export default function CaseDetail() {
 
       {/* FIN-11_CASE_RIGHT_FINANCE_MODALS */}
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
-        <DialogContent className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
-          <DialogHeader>
+        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
+          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
-            <DialogDescription>Uzupełnij dane rozliczenia i zapisz, aby zaktualizować finanse sprawy.</DialogDescription>
+            <DialogDescription>Ustaw wartość transakcji i prowizję. Wpłaty dalej są liczone z historii płatności.</DialogDescription>
           </DialogHeader>
-          <div className="case-finance-edit-form">
+          <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
-              <span>Wartość sprawy / transakcji</span>
+              <span>Wartość sprawy</span>
               <Input inputMode="decimal" value={financeEditForm.contractValue} placeholder="Nie ustawiono" onChange={(event) => setFinanceEditForm((current) => ({ ...current, contractValue: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
@@ -3187,7 +3190,7 @@ export default function CaseDetail() {
               <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>
-          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
+          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsFinanceEditOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
             <Button type="button" onClick={handleSaveCaseFinanceEdit} disabled={isFinanceSaving || financeEditPreview.contractValue <= 0}>Zapisz</Button>
           </DialogFooter>
@@ -3195,12 +3198,12 @@ export default function CaseDetail() {
       </Dialog>
 
       <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
-        <DialogContent className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
-          <DialogHeader>
+        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
+          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
-            <DialogDescription>Uzupełnij dane i zapisz zmiany w sprawie.</DialogDescription>
+            <DialogDescription>{financePaymentForm.type === 'commission' ? 'Wpisz kwotę prowizji, datę zapłaty i notatkę dla sprawy.' : 'Wpisz kwotę wpłaty, datę zapłaty i notatkę. Po zapisie kwota trafi do rozliczenia sprawy.'}</DialogDescription>
           </DialogHeader>
-          <div className="case-finance-edit-form">
+          <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
               <span>Kwota</span>
               <Input inputMode="decimal" value={financePaymentForm.amount} placeholder="np. 20000" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, amount: event.target.value }))} />
@@ -3225,7 +3228,7 @@ export default function CaseDetail() {
               <Input type="datetime-local" value={financePaymentForm.paidAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, paidAt: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
-              <span>Termin</span>
+              <span>Termin płatności (opcjonalnie)</span>
               <Input type="datetime-local" value={financePaymentForm.dueAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, dueAt: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field case-finance-edit-field--wide">
@@ -3233,7 +3236,7 @@ export default function CaseDetail() {
               <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotówka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
             </label>
           </div>
-          <DialogFooter className="cf-vst-dialog-footer case-finance-modal-stage220a26-footer">
+          <DialogFooter className="event-form-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsFinancePaymentOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
             <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz płatność</Button>
           </DialogFooter>
@@ -3389,7 +3392,7 @@ return (
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>
         </div>
-        <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
+        <DialogFooter className={modalFooterClass('event-form-footer case-finance-source-footer-stage220a30')}><Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Anuluj</Button><Button type="button" className="cf-btn-tone-gap" onClick={onSubmit}>Dodaj brak</Button></DialogFooter>
       </DialogContent>
     </Dialog>
   );
