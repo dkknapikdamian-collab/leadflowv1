@@ -126,6 +126,9 @@ void STAGE220A30B_FINANCE_MODAL_A26_GUARD_COMPAT;
 const STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL = 'case payment history modal allows deleting a selected payment or correction with confirm guard';
 void STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL;
 
+const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
+void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
+
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -2766,11 +2769,12 @@ export default function CaseDetail() {
                 </span>
                 <strong>Finanse sprawy</strong>
               </div>
-              <dl className="cf-finance-scope-card__metrics">
-                <div><dt>Wartość sprawy</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div><dt>Wpłaty w sprawie</dt><dd>{formatMoney(caseFinanceSourceStage220A26.clientPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div><dt>Do domknięcia</dt><dd>{formatMoney(caseFinanceSourceStage220A26.remainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div><dt>Prowizja pozostała</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+              <dl className="cf-finance-scope-card__metrics" data-stage220a31-finance-billing-summary="true">
+                <div data-stage220a31-finance-transaction-value="true"><dt>Wartość transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage220a31-finance-commission-due="true"><dt>Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage220a31-finance-commission-paid="true"><dt>Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage220a31-finance-commission-left="true"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div hidden data-stage220a31-legacy-finance-guard-compat="true">{formatMoney(caseFinanceSourceStage220A26.clientPaidAmount, caseFinanceSourceStage220A26.currency)} {formatMoney(caseFinanceSourceStage220A26.remainingAmount, caseFinanceSourceStage220A26.currency)}</div>
               </dl>
               <div className="cf-finance-scope-card__actions case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
                 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
@@ -3150,11 +3154,11 @@ export default function CaseDetail() {
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
-            <DialogDescription>Ustaw wartość transakcji i prowizję. Wpłaty dalej są liczone z historii płatności.</DialogDescription>
+            <DialogDescription>Ustaw wartość transakcji i sposób liczenia prowizji. Przykład: 100 000 × 3% = 3 000 PLN prowizji.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
-              <span>Wartość sprawy</span>
+              <span>Wartość transakcji / sprawy</span>
               <Input inputMode="decimal" value={financeEditForm.contractValue} placeholder="Nie ustawiono" onChange={(event) => setFinanceEditForm((current) => ({ ...current, contractValue: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
@@ -3165,12 +3169,12 @@ export default function CaseDetail() {
               <span>Model prowizji</span>
               <select className="cf-vst-input case-finance-edit-select" value={financeEditForm.commissionMode} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionMode: event.target.value as 'none' | 'percent' | 'fixed' }))}>
                 <option value="none">Brak</option>
-                <option value="percent">Procent od wartości</option>
+                <option value="percent">Procent od wartości transakcji</option>
                 <option value="fixed">Kwota stała</option>
               </select>
             </label>
             <label className="case-finance-edit-field">
-              <span>Procent prowizji</span>
+              <span>Stawka prowizji (%)</span>
               <Input inputMode="decimal" value={financeEditForm.commissionRate} disabled={financeEditForm.commissionMode !== 'percent'} placeholder="np. 3" onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionRate: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
@@ -3188,9 +3192,10 @@ export default function CaseDetail() {
                 <option value="overdue">zaległa</option>
               </select>
             </label>
-            <div className="case-finance-edit-preview" data-fin11-case-finance-preview="true">
+            <div className="case-finance-edit-preview" data-fin11-case-finance-preview="true" data-stage220a31-finance-preview="true">
+              <div><span>Liczone od wartości transakcji:</span><strong>{formatMoney(financeEditPreview.contractValue, financeEditPreview.currency)}</strong></div>
               <div><span>Prowizja należna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
-              <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatMoney(financeEditPreview.remainingAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>Wpłacono prowizji:</span><strong>{formatMoney(financeEditPreview.commissionPaidAmount, financeEditPreview.currency)}</strong></div>
               <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>

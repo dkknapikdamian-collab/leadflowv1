@@ -269,3 +269,39 @@
     flex: 1 1 100% !important;
   }
 }
+
+/* STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS
+   Wymóg wizualny: pola formularza w modalach finansowych nie mogą dotykać krawędzi okna.
+   Wymóg produktowy: wartość transakcji nie jest kwotą prowizji do zapłaty.
+*/
+.case-finance-source-modal-stage220a30 {
+  padding: clamp(1rem, 2.4vw, 1.35rem) !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-source-header-stage220a30,
+.case-finance-source-modal-stage220a30 .case-finance-source-form-stage220a30,
+.case-finance-source-modal-stage220a30 .case-detail-payment-form,
+.case-finance-source-modal-stage220a30 .case-finance-edit-form,
+.case-finance-source-modal-stage220a30 .case-finance-source-footer-stage220a30,
+.case-finance-source-modal-stage220a30 .event-form-footer {
+  margin-left: 0.15rem !important;
+  margin-right: 0.15rem !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-source-form-stage220a30,
+.case-finance-source-modal-stage220a30 .case-detail-payment-form,
+.case-finance-source-modal-stage220a30 .case-finance-edit-form {
+  padding-left: 0.15rem !important;
+  padding-right: 0.15rem !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-preview[data-stage220a31-finance-preview="true"] {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+/* STAGE220A31_SAFE_INSET_TOKEN_COMPAT */
+.case-finance-source-modal-stage220a30 {
+  --cf-finance-modal-safe-inset: clamp(1rem, 2.4vw, 1.35rem);
+  padding: var(--cf-finance-modal-safe-inset) !important;
+}

@@ -31,7 +31,7 @@ assertIncludes(caseDetail, 'case-payment-history-modal-stage220a30__actions', 'p
 assertIncludes(caseDetail, 'case-payment-history-modal-stage220a30__delete', 'delete action uses stage220a30 no-overlap class');
 assertIncludes(caseDetail, 'Wpisz kwotę, datę i krótki opis', 'add payment description is specific and readable');
 assertIncludes(caseDetail, 'Termin płatności (opcjonalnie)', 'due date label is explicit');
-assertIncludes(caseDetail, '<span>Wartość sprawy</span>', 'case value label is shortened');
+assertIncludes(caseDetail, '<span>Wartość transakcji / sprawy</span>', 'case value label clarifies transaction basis');
 assertNotIncludes(caseDetail, 'className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26"', 'old finance modal class removed from finance dialogs');
 assertNotIncludes(caseDetail, 'className="cf-vst-dialog case-detail-payment-dialog case-finance-modal-stage220a26"', 'old add-payment modal class removed');
 
