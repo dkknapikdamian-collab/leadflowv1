@@ -688,3 +688,26 @@ NASTĘPNY KROK: verify production /api/version and runtime marker, then retest c
 - Dodano src/styles/closeflow-settings-form-control-readability-stage179.css.
 - Dodano 	ests/stage179-settings-form-control-readability-contract.test.cjs.
 - Nie ruszano logiki Google Calendar, API, Supabase ani routingu.
+
+<!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_CHANGELOG_START -->
+## 2026-06-04 — Stage221 owner-control roadmap po deep research CRM
+
+Typ: dokumentacja roadmapy / pamięć projektu / Obsidian update.
+
+Dodano:
+- szczegółowy blok Stage221 do `_project/07_NEXT_STEPS.md`,
+- decyzję owner-control do `_project/04_DECISIONS.md`,
+- guard pamięci roadmapy,
+- roadmap file w `_project/roadmaps/`,
+- run report,
+- manifest aktualizacji Obsidiana,
+- plik aktualizacji Obsidiana.
+
+Nie zmieniono:
+- runtime UI,
+- routingu,
+- API,
+- Supabase,
+- stylów,
+- logiki produktu.
+<!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_CHANGELOG_END -->

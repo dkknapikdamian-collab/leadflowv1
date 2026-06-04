@@ -601,3 +601,24 @@ TESTS:
 - Files: `src/lib/supabase-fallback.ts`, `src/lib/calendar-items.ts`, `scripts/check-stage124e-calendar-range-params.cjs`, `tests/stage124e-calendar-range-params.test.cjs`.
 - Purpose: prepare frontend for ranged task/event API calls after Stage124D restored lightweight routes.
 - Commit mode: manual selective git add only.
+
+<!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_LEDGER_START -->
+## 2026-06-04 — Stage221 owner-control roadmap after CRM research
+
+Status: prepared as local-only ZIP.
+
+Files touched by apply script:
+- `_project/07_NEXT_STEPS.md`
+- `_project/04_DECISIONS.md`
+- `_project/06_GUARDS_AND_TESTS.md`
+- `_project/08_CHANGELOG_AI.md`
+- `_project/12_IMPLEMENTATION_LEDGER.md`
+- `_project/13_TEST_HISTORY.md`
+- `_project/roadmaps/2026-06-04 - CloseFlow owner control roadmap po researchu CRM.md`
+- `_project/runs/STAGE221_OWNER_CONTROL_ROADMAP_2026_06_04.md`
+- `_project/obsidian_updates/2026-06-04 - CloseFlow - owner control roadmap po researchu CRM.md`
+- `scripts/check-stage221-owner-control-roadmap-memory.cjs`
+- `OBSIDIAN_UPDATE_MANIFEST_STAGE221_CLOSEFLOW_OWNER_CONTROL_ROADMAP.md`
+
+No runtime files changed.
+<!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_LEDGER_END -->

@@ -316,7 +316,7 @@ Test:
 
 
 ## STAGE113_LOGO_SOURCE_CONTRACT
-- 
+-
 ode --test tests/stage113-closeflow-logo-source-contract.test.cjs pilnuje assetów i mapowania logo w Layout/Login.
 
 
@@ -486,11 +486,11 @@ Fakty:
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
-- 
+-
 ode --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
-- 
+-
 ode --test tests/stage119-calendar-release-gate-trust.test.cjs
-- 
+-
 pm run verify:closeflow:quiet
 
 Test reczny:
@@ -557,3 +557,20 @@ Purpose:
 - Test: `node --test tests/stage124e-calendar-range-params.test.cjs`
 - Contract: task/event frontend fetchers can pass optional `from`, `to`, `limit` params to lightweight /api/tasks and /api/events routes.
 - Marker: STAGE124E_CALENDAR_RANGE_QUERY_PARAMS
+
+<!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_GUARD_START -->
+## 2026-06-04 — Stage221 owner-control roadmap memory guard
+
+Guard:
+- `node scripts/check-stage221-owner-control-roadmap-memory.cjs`
+
+Zakres:
+- sprawdza, czy `_project/07_NEXT_STEPS.md` zawiera pełny blok Stage221,
+- sprawdza obecność etapów: A35, A35B, A41, A46, A42, A45, A44, A36, A47,
+- sprawdza, czy decyzja owner-control została dopisana do `_project/04_DECISIONS.md`,
+- sprawdza, czy istnieje roadmap file `_project/roadmaps/2026-06-04 - CloseFlow owner control roadmap po researchu CRM.md`,
+- nie dotyka runtime UI.
+
+Test ręczny:
+- Przeczytać nowy blok w `_project/07_NEXT_STEPS.md` i potwierdzić, że kolejność etapów nie skacze po plikach i da się z niej wdrażać kolejno.
+<!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_GUARD_END -->
