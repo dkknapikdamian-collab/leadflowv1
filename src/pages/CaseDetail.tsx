@@ -117,6 +117,8 @@ const STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE = 'case payment history modal row
 void STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE;
 const STAGE220A28_PAYMENT_HISTORY_MODAL_VST = 'payment history and correction modals use CloseFlow modal visual source truth without helper copy or redundant status';
 void STAGE220A28_PAYMENT_HISTORY_MODAL_VST;
+const STAGE220A30C_HISTORY_MODAL_LEGACY_GUARD_TOKENS_HOTFIX = 'readable finance history modal keeps A27B R3 and A28 guard source classes while using A30 source truth styling';
+void STAGE220A30C_HISTORY_MODAL_LEGACY_GUARD_TOKENS_HOTFIX;
 const STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH = 'case finance payment history payment correction add payment and value modals use shared readable event modal visual source truth';
 void STAGE220A30_CASE_FINANCE_MODAL_VISUAL_SOURCE_TRUTH;
 const STAGE220A30B_FINANCE_MODAL_A26_GUARD_COMPAT = 'case finance modal readable VST keeps stage220a26 footer compatibility class for prebuild guard';
@@ -2979,12 +2981,12 @@ export default function CaseDetail() {
 
       <Dialog open={isPaymentHistoryOpenStage220A27B} onOpenChange={setIsPaymentHistoryOpenStage220A27B}>
         <DialogContent
-          className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--history case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a28-vst"
+          className="client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--history"
           data-stage220a27b-payment-history-modal="true"
           data-stage220a28-payment-history-modal-vst="true"
           data-cf-vst-dialog="true"
         >
-          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
+          <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Historia wpłat i korekt</DialogTitle>
           </DialogHeader>
 
@@ -3068,12 +3070,12 @@ export default function CaseDetail() {
         }}
       >
         <DialogContent
-          className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--correction case-payment-correction-modal-stage220a27"
+          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--correction"
           data-stage220a27-payment-correction-modal="true"
           data-stage220a28-payment-correction-modal-vst="true"
           data-cf-vst-dialog="true"
         >
-          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
+          <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Korekta wpłaty</DialogTitle>
           </DialogHeader>
 
