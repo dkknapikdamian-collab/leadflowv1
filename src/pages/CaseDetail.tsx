@@ -27,6 +27,7 @@ import {
   fetchPaymentsFromSupabase,
   fetchTasksFromSupabase,
   createPaymentInSupabase,
+  deletePaymentFromSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
   insertTaskToSupabase,
@@ -115,6 +116,8 @@ const STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE = 'case payment history modal row
 void STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE;
 const STAGE220A28_PAYMENT_HISTORY_MODAL_VST = 'payment history and correction modals use CloseFlow modal visual source truth without helper copy or redundant status';
 void STAGE220A28_PAYMENT_HISTORY_MODAL_VST;
+const STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL = 'case payment history modal allows deleting a selected payment or correction with confirm guard';
+void STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -1215,6 +1218,8 @@ export default function CaseDetail() {
   const [paymentCorrectionFormStage220A27, setPaymentCorrectionFormStage220A27] = useState({ amount: '', paidAt: '', reason: '' });
   const [paymentCorrectionSubmittingStage220A27, setPaymentCorrectionSubmittingStage220A27] = useState(false);
   const [isPaymentHistoryOpenStage220A27B, setIsPaymentHistoryOpenStage220A27B] = useState(false);
+  const [paymentDeleteTargetStage220A29, setPaymentDeleteTargetStage220A29] = useState<CasePaymentRecord | null>(null);
+  const [paymentDeleteSubmittingStage220A29, setPaymentDeleteSubmittingStage220A29] = useState(false);
 
   const financeEditPreview = useMemo(() => getFin11FinancePreview(financeEditForm, casePayments), [casePayments, financeEditForm]);
 
@@ -1322,6 +1327,62 @@ export default function CaseDetail() {
   function openPaymentCorrectionFromHistoryStage220A27B(payment: CasePaymentRecord) {
     setIsPaymentHistoryOpenStage220A27B(false);
     openPaymentCorrectionModalStage220A27(payment);
+  }
+
+  function openPaymentDeleteConfirmStage220A29(payment: CasePaymentRecord) {
+    if (!guardCaseDetailWriteAccess('usunąć wpłaty')) return;
+    const paymentId = String(payment.id || '').trim();
+    if (!paymentId) {
+      toast.error('Nie można usunąć wpłaty bez identyfikatora.');
+      return;
+    }
+    setPaymentDeleteTargetStage220A29(payment);
+  }
+
+  async function handleConfirmDeletePaymentStage220A29() {
+    const target = paymentDeleteTargetStage220A29;
+    const paymentId = String(target?.id || '').trim();
+    if (!paymentId || paymentDeleteSubmittingStage220A29) return;
+    if (!guardCaseDetailWriteAccess('usunąć wpłaty')) return;
+
+    const paymentType = getCasePaymentTypeStage220A27(target as CasePaymentRecord);
+    const signedAmount = getCasePaymentSignedAmountStage220A27(target as CasePaymentRecord);
+    const currency = fin11Currency(target?.currency || caseFinanceSourceStage220A26.currency || 'PLN');
+    const paidAt = getCasePaymentDateStage220A27(target as CasePaymentRecord);
+
+    try {
+      setPaymentDeleteSubmittingStage220A29(true);
+      await deletePaymentFromSupabase(paymentId);
+      await insertActivityToSupabase({
+        caseId: caseData?.id || target?.caseId || null,
+        clientId: caseData?.clientId || target?.clientId || null,
+        leadId: caseData?.leadId || target?.leadId || null,
+        actorType: 'operator',
+        eventType: 'payment_deleted',
+        payload: {
+          title: paymentType === 'refund' ? 'Usunięto korektę wpłaty' : 'Usunięto wpłatę',
+          paymentId,
+          paymentType: paymentType || 'payment',
+          amount: signedAmount,
+          currency,
+          paidAt,
+          note: target?.note || null,
+        },
+      } as any).catch(() => null);
+
+      if (paymentCorrectionTargetStage220A27?.id && String(paymentCorrectionTargetStage220A27.id) === paymentId) {
+        setPaymentCorrectionTargetStage220A27(null);
+        setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
+      }
+
+      await reloadCaseFinanceData(caseData);
+      setPaymentDeleteTargetStage220A29(null);
+      toast.success(paymentType === 'refund' ? 'Korekta wpłaty usunięta' : 'Wpłata usunięta');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się usunąć wpłaty.');
+    } finally {
+      setPaymentDeleteSubmittingStage220A29(false);
+    }
   }
 
   async function handleSavePaymentCorrectionStage220A27() {
@@ -2826,6 +2887,21 @@ export default function CaseDetail() {
         onConfirm={handleConfirmDeleteCaseRecord}
       />
 
+      <ConfirmDialog
+        open={Boolean(paymentDeleteTargetStage220A29)}
+        onOpenChange={(open) => {
+          if (!open && !paymentDeleteSubmittingStage220A29) setPaymentDeleteTargetStage220A29(null);
+        }}
+        title="Usunąć wpłatę?"
+        description={paymentDeleteTargetStage220A29 ? `${getCasePaymentLabelStage220A27(paymentDeleteTargetStage220A29)} ${formatMoney(getCasePaymentSignedAmountStage220A27(paymentDeleteTargetStage220A29), paymentDeleteTargetStage220A29.currency || caseFinanceSourceStage220A26.currency)} zostanie usunięta z historii i rozliczenia sprawy. Tej akcji nie można cofnąć.` : 'Usunąć wybraną wpłatę?'}
+        confirmLabel="Usuń wpłatę"
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={paymentDeleteSubmittingStage220A29}
+        onConfirm={handleConfirmDeletePaymentStage220A29}
+        data-stage220a29-delete-payment-confirm="true"
+      />
+
 
 
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
@@ -2942,7 +3018,7 @@ export default function CaseDetail() {
                           size="sm"
                           variant="outline"
                           onClick={() => openPaymentCorrectionFromHistoryStage220A27B(payment)}
-                          disabled={paymentCorrectionSubmittingStage220A27}
+                          disabled={paymentCorrectionSubmittingStage220A27 || paymentDeleteSubmittingStage220A29}
                           data-stage220a27b-select-payment-correction="true"
                         >
                           Koryguj
@@ -2950,6 +3026,18 @@ export default function CaseDetail() {
                       ) : (
                         <span>Korekta / prowizja</span>
                       )}
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete"
+                        onClick={() => openPaymentDeleteConfirmStage220A29(payment)}
+                        disabled={paymentDeleteSubmittingStage220A29 || paymentCorrectionSubmittingStage220A27 || !String(payment.id || '').trim()}
+                        data-stage220a29-delete-payment-from-history="true"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Usuń
+                      </Button>
                     </div>
                   </article>
                 );
