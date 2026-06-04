@@ -9,10 +9,8 @@ const read = (relativePath) => fs.readFileSync(path.join(root, relativePath), 'u
 const appToaster = read('src/components/ui/sonner.tsx');
 const toastCss = read('src/styles/closeflow-toast-source-truth-stage220a33.css');
 const caseDetail = read('src/pages/CaseDetail.tsx');
-const projectStatus = read('_project/00_PROJECT_STATUS.md');
-const currentStage = read('_project/03_CURRENT_STAGE.md');
-const nextSteps = read('_project/07_NEXT_STEPS.md');
-const ledger = read('_project/12_IMPLEMENTATION_LEDGER.md');
+const runReport = read('_project/runs/2026-06-04_stage220a33_case_detail_toast_refresh_memory_closeout.md');
+const obsidianManifest = read('_project/obsidian_updates/2026-06-04 - CloseFlow - Stage220A33 case detail toast refresh memory closeout.md');
 
 test('STAGE220A33 wires global CloseFlow toast visual source truth through the shared Toaster', () => {
   assert.match(appToaster, /closeflow-toast-source-truth-stage220a33\.css/, 'shared Toaster must import STAGE220A33 CSS');
@@ -33,11 +31,10 @@ test('STAGE220A33 keeps CaseDetail free from focus or visibility reload listener
 
 test('STAGE220A33 updates project memory and does not leave the stage only in chat', () => {
   for (const [name, content] of [
-    ['_project/00_PROJECT_STATUS.md', projectStatus],
-    ['_project/03_CURRENT_STAGE.md', currentStage],
-    ['_project/07_NEXT_STEPS.md', nextSteps],
-    ['_project/12_IMPLEMENTATION_LEDGER.md', ledger],
+    ['run report', runReport],
+    ['obsidian manifest', obsidianManifest],
   ]) {
     assert.match(content, /STAGE220A33/, `${name} must mention STAGE220A33`);
+    assert.match(content, /FAKTY|DECYZJE|TESTY|NASTĘPNY KROK|NASTEPNY KROK/, `${name} must keep memory sections`);
   }
 });
