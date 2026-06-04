@@ -73,6 +73,9 @@ Zakres docelowy:
 10. Aliasowanie nazw kolumn.
 11. Staging importu przed zapisaniem do głównych danych.
 12. Raport po imporcie: co zaimportowano, co wymaga ręcznej decyzji, co odrzucono.
+13. Parser danych pionowych, poziomych i wpisanych jednym ciągiem.
+14. Tryb „jedna osoba” vs „wiele osób / wiele leadów”.
+15. Poziom pewności rozpoznania pól i obowiązkowa korekta przy niskiej pewności.
 
 ---
 
@@ -89,6 +92,9 @@ nazwa = name / klient / osoba / kontakt / imię i nazwisko
 status = etap / pipeline / stan / faza / typ kontaktu
 źródło = source / skąd / kampania / reklama / kanał
 notatka = note / opis / uwagi / komentarz
+termin = data / deadline / kiedy / spotkanie / follow-up
+adres = address / lokalizacja / miasto / miejsce / inwestycja
+budżet = kwota / cena / budzet / wartość / wycena
 ```
 
 Ale AI/automat nie może zapisać tego od razu bez kontroli.
@@ -102,12 +108,216 @@ MVP:
 
 ---
 
+## 4A. Dane wpisane pionowo, poziomo albo jednym ciągiem
+
+Problem:
+
+Użytkownik może wkleić dane bardzo różnie.
+
+Przykłady:
+
+### Dane pionowo
+
+```text
+Jan Kowalski
+tel. 501 222 333
+jan@email.pl
+chce wycenę remontu kuchni
+oddzwonić jutro
+```
+
+### Dane poziomo
+
+```text
+Jan Kowalski, 501 222 333, jan@email.pl, remont kuchni, oddzwonić jutro
+```
+
+### Dane w jednym ciągu
+
+```text
+Jan Kowalski 501222333 jan@email.pl remont kuchni oddzwonić jutro po 16
+```
+
+### Kilka leadów bez tabeli
+
+```text
+Jan 501222333 remont kuchni
+Anna 601333444 mieszkanie sprzedaż
+Marek 721888999 wycena pompy ciepła
+```
+
+### Dane z etykietami użytkownika
+
+```text
+Klient: Anna Nowak
+Kontakt: 601 333 444
+Temat: mieszkanie do sprzedaży
+Kolejny krok: wysłać ofertę
+```
+
+Finalna decyzja:
+
+> CloseFlow musi mieć parser luźnego tekstu, który rozpoznaje dane pionowe, poziome i wpisane jednym ciągiem, ale zawsze pokazuje podgląd przed zapisem.
+
+---
+
+## 4B. Jak ogarniamy chaos formatu
+
+Parser intake powinien działać warstwowo:
+
+### 1. Rozpoznanie typu wejścia
+
+System próbuje wykryć, czy użytkownik wkleił:
+
+- tabelę CSV/TSV,
+- dane z nagłówkami,
+- jeden kontakt pionowo,
+- jeden kontakt poziomo,
+- wiele kontaktów w wielu liniach,
+- luźną notatkę,
+- mail / treść formularza,
+- eksport z innej aplikacji.
+
+### 2. Rozpoznanie separatorów
+
+System wykrywa separatory:
+
+- enter,
+- przecinek,
+- średnik,
+- tabulator,
+- myślnik,
+- pionowa kreska,
+- spacje między fragmentami,
+- puste linie jako granice rekordów.
+
+### 3. Rozpoznanie wzorców twardych
+
+Najpierw rozpoznawać rzeczy najłatwiejsze:
+
+- numer telefonu,
+- email,
+- URL,
+- data,
+- godzina,
+- kwota,
+- nazwa firmy,
+- imię i nazwisko,
+- słowa typu: oddzwonić, wysłać, spotkanie, oferta, wycena, follow-up.
+
+### 4. Segmentacja rekordów
+
+Jeśli danych jest więcej, system musi ustalić, czy to:
+
+- jeden lead z wieloma liniami,
+- wiele leadów po jednym wierszu,
+- wiele leadów oddzielonych pustą linią,
+- lista telefonów bez nazw,
+- notatka do ręcznego przypisania.
+
+Jeżeli system nie jest pewny, ma zapytać użytkownika:
+
+```text
+Czy to jest jeden lead czy kilka leadów?
+[ Jeden lead ] [ Kilka leadów ] [ Pokaż podgląd ]
+```
+
+### 5. Poziom pewności
+
+Każde rozpoznane pole powinno mieć poziom pewności:
+
+```text
+high
+medium
+low
+```
+
+Reguła:
+
+- `high` może być zaproponowane jako gotowe,
+- `medium` wymaga podświetlenia w podglądzie,
+- `low` wymaga korekty albo ręcznej decyzji.
+
+### 6. Podgląd jako karty, nie tylko tabela
+
+Dla luźnego tekstu lepszy jest podgląd kart:
+
+```text
+Lead 1
+Nazwa: Jan Kowalski
+Telefon: 501 222 333
+Email: jan@email.pl
+Temat: remont kuchni
+Następny krok: oddzwonić jutro
+Status: nowy lead
+[ Popraw ] [ Zapisz ]
+```
+
+Dla dużego importu lepsza jest tabela z kolumnami i błędami.
+
+### 7. Zapis dopiero po zatwierdzeniu
+
+Nie wolno zapisywać automatycznie do głównych danych po samym wklejeniu.
+
+Użytkownik musi kliknąć:
+
+```text
+Zapisz jako lead
+```
+
+albo:
+
+```text
+Zaimportuj X leadów
+```
+
+---
+
+## 4C. Reguła minimalnej użyteczności intake
+
+Dla skalowania do tysięcy klientów intake musi obsłużyć minimum:
+
+```text
+imię/nazwa + telefon
+imię/nazwa + email
+telefon + notatka
+email + notatka
+luźna notatka z kontaktem
+kilka kontaktów w kilku liniach
+```
+
+Jeżeli nie ma telefonu ani emaila, system może utworzyć draft leada, ale powinien pokazać ostrzeżenie:
+
+```text
+Brakuje telefonu lub emaila. Ten lead może być trudny do obsługi.
+```
+
+---
+
+## 4D. Guardy parsera luźnego tekstu
+
+- Nie zapisywać danych bez podglądu.
+- Nie zgadywać nazwiska, jeśli nie ma pewności.
+- Nie traktować każdej linii jako osobnego leada bez sprawdzenia.
+- Nie mieszać danych dwóch osób w jednym leadzie.
+- Jeśli wykryto kilka telefonów albo emaili, pokazać wybór.
+- Jeśli wykryto kilka potencjalnych nazw, pokazać wybór.
+- Zachować surowy tekst importu jako `raw_input`, żeby dało się sprawdzić, skąd wzięły się dane.
+- Przy niskiej pewności zapisać jako draft / wymaga sprawdzenia, nie jako pełny lead.
+- Duplikaty pokazać przed zapisem.
+- AI może proponować, ale użytkownik zatwierdza.
+
+---
+
 ## 5. Staging importu — obowiązkowy guard
 
 Import powinien mieć warstwę pośrednią:
 
 ```text
 raw_import_rows
+raw_input_text
+input_type_detected
+parsed_entities
 mapped_import_rows
 import_preview
 import_decision
@@ -120,7 +330,9 @@ Guard:
 - duplikaty oznaczać przed importem,
 - błędne telefony / emaile pokazać jako wymagające uwagi,
 - puste rekordy odrzucić,
-- użytkownik musi wiedzieć, ile rekordów zostanie dodanych.
+- użytkownik musi wiedzieć, ile rekordów zostanie dodanych,
+- dla luźnego tekstu zachować oryginalną wklejkę jako dowód/parsing source,
+- przy niskiej pewności zapisywać jako draft albo wymagać korekty.
 
 ---
 
@@ -277,6 +489,8 @@ Minimum przed większym marketingiem:
 - widok Dziś jako centrum pracy,
 - pakiet szybkiego startu,
 - import/wklejka danych z mapowaniem,
+- parser danych pionowych, poziomych i wpisanych jednym ciągiem,
+- staging importu i podgląd przed zapisem,
 - Google Calendar / auto-przeniesienie jako rozwijany kierunek,
 - wykrywanie braku ruchu,
 - owner view / raport tygodnia jako kierunek Pro/Owner,
@@ -292,6 +506,8 @@ Nie robić:
 
 - magicznego importu bez podglądu,
 - automatycznego tworzenia danych DEMO bez zgody,
+- automatycznego zapisu luźnej wklejki bez ekranu podglądu,
+- traktowania każdej linii jako osobnego leada bez potwierdzenia,
 - osobnej aplikacji dla każdej branży,
 - 20 presetów na start,
 - ukrywania problemów integracji,
@@ -305,7 +521,7 @@ Nie robić:
 
 Rozpisać przyszłe etapy:
 
-1. `CF-INTAKE-001 — wklejka leadów + mapowanie pól + staging importu`.
+1. `CF-INTAKE-001 — wklejka leadów + parser pion/poziom/ciąg + mapowanie pól + staging importu`.
 2. `CF-GCAL-001 — Google Calendar auto-przeniesienie i powiązanie z klientem/sprawą`.
 3. `CF-PRESETS-001 — presety branżowe jako nakładka na wspólny core`.
 4. `CF-OWNER-001 — owner view i raport tygodnia`.
