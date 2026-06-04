@@ -43,9 +43,17 @@ forbidText(clientDetail, '<small>Podsumowanie finansów</small>', 'old client fi
 /* Case finance data scope: one case only. */
 requireText(caseDetail, 'data-stage220a13-case-finance-scope-card="true"', 'CaseDetail finance scope card marker');
 requireText(caseDetail, 'Finanse sprawy', 'CaseDetail finance card title');
-requireText(caseDetail, 'Wartość sprawy', 'CaseDetail case value label');
-requireText(caseDetail, 'Wpłaty w sprawie', 'CaseDetail case payments label');
-requireText(caseDetail, 'Prowizja pozostała', 'CaseDetail remaining commission label');
+const caseFinanceUsesA31CommissionBasis = caseDetail.includes('data-stage220a31-finance-billing-summary="true"');
+if (caseFinanceUsesA31CommissionBasis) {
+  requireText(caseDetail, 'Wartość transakcji', 'CaseDetail A31 transaction value label');
+  requireText(caseDetail, 'Prowizja należna', 'CaseDetail A31 commission due label');
+  requireText(caseDetail, 'Wpłacono prowizji', 'CaseDetail A31 commission paid label');
+  requireText(caseDetail, 'Do zapłaty prowizji', 'CaseDetail A31 commission left label');
+} else {
+  requireText(caseDetail, 'Wartość sprawy', 'CaseDetail case value label');
+  requireText(caseDetail, 'Wpłaty w sprawie', 'CaseDetail case payments label');
+  requireText(caseDetail, 'Prowizja pozostała', 'CaseDetail remaining commission label');
+}
 const caseFinanceUsesLegacySummary =
   caseDetail.includes('caseFinanceSummary.contractValue') &&
   caseDetail.includes('caseFinanceSummary.clientPaidAmount') &&
