@@ -2208,3 +2208,55 @@ aside.case-detail-right-rail::after {
   color: #9f1239 !important;
   stroke: #9f1239 !important;
 }
+
+/* STAGE220A33_DELETE_ACTION_NO_RED_BLOB
+   Delete action keeps destructive red icon/text, but no red background blob behind the label.
+*/
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32 {
+  width: auto !important;
+  height: auto !important;
+  min-width: 0 !important;
+  min-height: 2.25rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 0.42rem !important;
+  padding: 0.38rem 0.5rem !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #be123c !important;
+  -webkit-text-fill-color: #be123c !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32:hover,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32:hover {
+  border-color: transparent !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  color: #9f1239 !important;
+  -webkit-text-fill-color: #9f1239 !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32::before,
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32::after,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32::before,
+.case-detail-vnext-page button.cf-case-detail-delete-action-stage220a32::after {
+  content: none !important;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  opacity: 0 !important;
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+.case-detail-vnext-page .cf-case-detail-delete-action-stage220a32 svg {
+  color: #be123c !important;
+  stroke: #be123c !important;
+  opacity: 1 !important;
+}

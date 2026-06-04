@@ -2,37 +2,72 @@ const CLOSEFLOW_ASSET_CACHE_STALE_CHUNK_HOTFIX_2026_05_11 = 'CLOSEFLOW_ASSET_CAC
 void CLOSEFLOW_ASSET_CACHE_STALE_CHUNK_HOTFIX_2026_05_11;
 const STAGE220A28_NO_TAB_RETURN_MODAL_RELOAD = 'do not hard reload after tab return or while a CloseFlow modal is open';
 void STAGE220A28_NO_TAB_RETURN_MODAL_RELOAD;
+const STAGE220A33_NO_TAB_SWITCH_HARD_RELOAD = 'do not hard reload the app after browser tab switching, hidden-tab asset errors, open dialogs or active form input';
+void STAGE220A33_NO_TAB_SWITCH_HARD_RELOAD;
 
 const CHUNK_RELOAD_MARKER = 'closeflow:asset-cache-stale-chunk-reloaded:v1';
 const CHUNK_RELOAD_REASON = 'closeflow:asset-cache-stale-chunk-reason:v1';
 const CHUNK_RELOAD_DEFERRED_REASON = 'closeflow:asset-cache-stale-chunk-deferred-reason:v1';
 let closeFlowLastHiddenAt = 0;
 let closeFlowLastVisibleAt = 0;
+let closeFlowWasHiddenInSession = false;
+const CLOSEFLOW_TAB_RETURN_RELOAD_SUPPRESSION_MS = 5 * 60 * 1000;
 
 function hasOpenCloseFlowDialog() {
   if (typeof document === 'undefined') return false;
   return Boolean(document.querySelector('[data-closeflow-modal-visual-system="true"][data-state="open"], [data-cf-vst-dialog="true"][data-state="open"], [role="dialog"][data-state="open"]'));
 }
 
+function hasActiveCloseFlowUserInput() {
+  if (typeof document === 'undefined') return false;
+  const active = document.activeElement;
+  if (active instanceof HTMLInputElement || active instanceof HTMLTextAreaElement || active instanceof HTMLSelectElement) return true;
+
+  const fields = Array.from(document.querySelectorAll('textarea, input:not([type="hidden"]), select'));
+  return fields.some((field) => {
+    if (field instanceof HTMLTextAreaElement) return field.value.trim().length > 0;
+    if (field instanceof HTMLSelectElement) return Boolean(field.value && field.value !== 'none');
+    if (field instanceof HTMLInputElement) {
+      const type = String(field.type || '').toLowerCase();
+      if (['button', 'submit', 'reset', 'checkbox', 'radio', 'file', 'hidden'].includes(type)) return false;
+      return String(field.value || '').trim().length > 0;
+    }
+    return false;
+  });
+}
+
 function shouldDeferReloadForOpenCloseFlowModal(source = 'unknown') {
   if (typeof window === 'undefined' || typeof document === 'undefined') return false;
   const now = Date.now();
-  const recentlyReturnedToTab = closeFlowLastVisibleAt > 0 && now - closeFlowLastVisibleAt < 12000;
-  const recentlyHidden = closeFlowLastHiddenAt > 0 && now - closeFlowLastHiddenAt < 12000;
-  if (!hasOpenCloseFlowDialog() && !recentlyReturnedToTab && !recentlyHidden) return false;
+  const documentHidden = document.visibilityState !== 'visible';
+  const recentlyReturnedToTab = closeFlowLastVisibleAt > 0 && now - closeFlowLastVisibleAt < CLOSEFLOW_TAB_RETURN_RELOAD_SUPPRESSION_MS;
+  const recentlyHidden = closeFlowLastHiddenAt > 0 && now - closeFlowLastHiddenAt < CLOSEFLOW_TAB_RETURN_RELOAD_SUPPRESSION_MS;
+  const hasUserStateToProtect = hasOpenCloseFlowDialog() || hasActiveCloseFlowUserInput();
+  const tabSwitchSession = closeFlowWasHiddenInSession || documentHidden || recentlyReturnedToTab || recentlyHidden;
+  if (!hasUserStateToProtect && !tabSwitchSession) return false;
   try {
     window.sessionStorage.setItem(CHUNK_RELOAD_DEFERRED_REASON, source);
   } catch {
     // Ignore storage failures. The guard still prevents a destructive hard reload.
   }
-  console.warn('CloseFlow chunk reload deferred to preserve open modal / tab-return state.', { source });
+  console.warn('CloseFlow chunk reload deferred to preserve tab/form/dialog state.', {
+    source,
+    documentHidden,
+    recentlyReturnedToTab,
+    recentlyHidden,
+    hasUserStateToProtect,
+    tabSwitchSession,
+  });
   return true;
 }
 
 if (typeof document !== 'undefined') {
   document.addEventListener('visibilitychange', () => {
     const now = Date.now();
-    if (document.visibilityState === 'hidden') closeFlowLastHiddenAt = now;
+    if (document.visibilityState === 'hidden') {
+      closeFlowWasHiddenInSession = true;
+      closeFlowLastHiddenAt = now;
+    }
     if (document.visibilityState === 'visible') closeFlowLastVisibleAt = now;
   });
 }
