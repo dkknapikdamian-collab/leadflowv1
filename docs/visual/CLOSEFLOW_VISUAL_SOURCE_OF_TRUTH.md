@@ -339,3 +339,14 @@ Poprawka UX:
 - wymuszono literalnie jasne tło dla modala, żeby nie dziedziczył starego dark style.
 
 Nie zmieniano logiki refund ani liczenia finansów.
+
+## STAGE220A28 - modal VST, no tab-return reload, case trash action
+
+Decyzje:
+- modal `Historia wpłat i korekt` oraz modal `Korekta wpłaty` mają używać tego samego modal visual source truth co produkcyjne formularze klienta/sprawy,
+- nie pokazujemy tekstu-helpera `Wybierz wpłatę do korekty...`,
+- nie pokazujemy `Status: Opłacone` przy wpisie wpłaty,
+- hard reload po powrocie do zakładki przeglądarki nie może zamykać otwartego modala,
+- lista spraw ma ikonę kosza po prawej obok chevrona, jak klient/lead.
+
+Nie zmieniano SQL, RLS, API ani logiki refund.

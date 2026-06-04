@@ -41,6 +41,8 @@ const CASES_LIFECYCLE_NEEDS_NEXT_STEP_GUARD = 'Bez kroku';
 const CLOSEFLOW_STAGE16C_TASKS_CASES_VISUAL_MOBILE_REPAIR = 'tasks cases visual mobile repair scoped to /cases';
 const STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY = 'cases list index pill follows record-list VST color used by clients';
 void STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY;
+const STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH = 'cases list open and trash actions use right-side icon cluster like clients and leads';
+void STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH;
 
 type CaseRecord = {
   id: string;
@@ -739,22 +741,6 @@ export default function Cases() {
                       <span className="lead-main-cell min-w-0">
                         <span className="case-row-title-line">
                           <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
-                          <EntityTrashButton
-                            type="button"
-                            className="cf-case-row-delete-text-action" data-cf-destructive-source="trash-action-source"
-                            data-case-row-delete-action="true"
-                            aria-label="Usuń sprawę"
-                            title="Usuń sprawę"
-                            disabled={deletePending && caseToDelete?.id === record.id}
-                            onClick={(event) => {
-                              event.preventDefault();
-                              event.stopPropagation();
-                              setCaseToDelete(record);
-                            }}
-                          >
-                            <Trash2 className={trashActionIconClass("h-4 w-4")} />
-                            Usuń
-                          </EntityTrashButton>
                         </span>
                         <span className="cf-list-row-meta">
                           <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>
@@ -776,14 +762,26 @@ export default function Cases() {
                         <strong className="next-action-text" title={nextActionLabel}>{nextActionLabel}</strong>
                         {updatedAt ? <span className="sub next-action-date">{format(updatedAt, 'd MMM yyyy', { locale: pl })}</span> : null}
                       </span>
-                      <span className="lead-actions">
-                        <Button variant="outline" className="btn ghost" asChild>
+                      <span className="lead-actions cf-case-row-actions-stage220a28">
+                        <Button variant="outline" className="btn ghost cf-icon-action-button cf-case-row-open-indicator" asChild data-stage220a28-case-row-open-icon="true">
                           <Link to={`/case/${record.id}`} aria-label={`Otwórz sprawę ${record.title || ''}`}><ChevronRight className="h-4 w-4" /></Link>
                         </Button>
-                        <span className="sr-only">
-                          {record.leadId ? <Link to={`/leads/${record.leadId}`}><ExternalLink className="h-4 w-4" /></Link> : null}
-                          <EntityTrashButton type="button" iconOnly onClick={() => setCaseToDelete(record)}><Trash2 className={trashActionIconClass("h-4 w-4")} /></EntityTrashButton>
-                        </span>
+                        <EntityTrashButton
+                          type="button"
+                          iconOnly
+                          className="btn ghost cf-icon-action-button cf-case-row-delete-icon-action"
+                          data-stage220a28-case-row-delete-icon="true"
+                          aria-label="Usuń sprawę"
+                          title="Usuń sprawę"
+                          disabled={deletePending && caseToDelete?.id === record.id}
+                          onClick={(event) => {
+                            event.preventDefault();
+                            event.stopPropagation();
+                            setCaseToDelete(record);
+                          }}
+                        >
+                          {deletePending && caseToDelete?.id === record.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className={trashActionIconClass("h-4 w-4")} />}
+                        </EntityTrashButton>
                       </span>
                     </div>
                   );

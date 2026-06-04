@@ -2035,3 +2035,133 @@ aside.case-detail-right-rail::after {
     justify-content: flex-start !important;
   }
 }
+
+/* STAGE220A28_PAYMENT_HISTORY_MODAL_VST
+   Payment history/correction modals use CloseFlow modal visual source truth.
+   No helper copy, no redundant status, readable dark modal sections.
+*/
+
+.case-payment-history-modal-stage220a28-vst,
+.case-payment-correction-modal-stage220a28-vst {
+  width: min(680px, calc(100vw - 96px)) !important;
+  max-width: min(680px, calc(100vw - 96px)) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(34, 197, 94, 0.16), transparent 34%),
+    linear-gradient(180deg, var(--cf-modal-shell-2, #101827) 0%, var(--cf-modal-shell, #0b1220) 58%, #07101e 100%) !important;
+  background-image:
+    radial-gradient(circle at 12% 0%, rgba(34, 197, 94, 0.16), transparent 34%),
+    linear-gradient(180deg, var(--cf-modal-shell-2, #101827) 0%, var(--cf-modal-shell, #0b1220) 58%, #07101e 100%) !important;
+  border: 1px solid var(--cf-modal-border-strong, rgba(209, 250, 229, 0.34)) !important;
+  border-radius: var(--cf-modal-radius, 1.35rem) !important;
+  box-shadow: var(--cf-modal-shadow, 0 34px 96px rgba(0, 0, 0, 0.58)) !important;
+  color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a28-header,
+.case-payment-correction-modal-stage220a28-vst .case-payment-correction-modal-stage220a28-header {
+  margin: -1.5rem -1.5rem 0 !important;
+  padding: 1.15rem 1.5rem 1.05rem !important;
+  background: linear-gradient(180deg, rgba(17, 28, 47, 0.98) 0%, rgba(11, 18, 32, 0.98) 100%) !important;
+  border-bottom: 1px solid var(--cf-modal-border, rgba(148, 163, 184, 0.30)) !important;
+  color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+}
+
+.case-payment-history-modal-stage220a28-vst :is(h1, h2, h3, [data-radix-dialog-title]),
+.case-payment-correction-modal-stage220a28-vst :is(h1, h2, h3, [data-radix-dialog-title]) {
+  color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+}
+
+.case-payment-history-modal-stage220a28-vst :is(.case-payment-history-modal-stage220a28-context, .case-payment-history-modal-stage220a28-row),
+.case-payment-correction-modal-stage220a28-vst .case-payment-correction-modal-stage220a27__summary > div {
+  background: rgba(15, 23, 42, 0.62) !important;
+  border: 1px solid rgba(148, 163, 184, 0.26) !important;
+  color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__context strong,
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__main > strong,
+.case-payment-correction-modal-stage220a28-vst strong {
+  color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+  -webkit-text-fill-color: var(--cf-modal-ink-on-dark, #f8fafc) !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 12px !important;
+  min-height: 56px !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  flex-wrap: nowrap !important;
+  min-width: 0 !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__meta {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  flex-wrap: nowrap !important;
+  min-width: 0 !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__meta span {
+  min-height: 24px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  white-space: nowrap !important;
+  border: 1px solid rgba(148, 163, 184, 0.30) !important;
+  border-radius: 999px !important;
+  background: rgba(248, 250, 252, 0.10) !important;
+  padding: 3px 8px !important;
+  color: var(--cf-modal-soft-on-dark, #d6deeb) !important;
+  -webkit-text-fill-color: var(--cf-modal-soft-on-dark, #d6deeb) !important;
+  font-size: 12px !important;
+  font-weight: 800 !important;
+  line-height: 1.25 !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__main p {
+  display: none !important;
+}
+
+.case-payment-history-modal-stage220a28-vst button[data-stage220a27b-select-payment-correction="true"] {
+  min-height: 34px !important;
+  border-radius: 12px !important;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+.case-payment-history-modal-stage220a28-vst .case-finance-modal-stage220a26-footer,
+.case-payment-correction-modal-stage220a28-vst .case-finance-modal-stage220a26-footer {
+  margin: 0 -1.5rem -1.5rem !important;
+  padding: 0.9rem 1.5rem !important;
+  background: rgba(7, 16, 30, 0.96) !important;
+  border-top: 1px solid var(--cf-modal-border, rgba(148, 163, 184, 0.30)) !important;
+}
+
+@media (max-width: 720px) {
+  .case-payment-history-modal-stage220a28-vst,
+  .case-payment-correction-modal-stage220a28-vst {
+    width: min(96vw, 680px) !important;
+    max-width: min(96vw, 680px) !important;
+  }
+
+  .case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__main,
+  .case-payment-history-modal-stage220a28-vst .case-payment-history-modal-stage220a27b__meta {
+    flex-wrap: wrap !important;
+  }
+}

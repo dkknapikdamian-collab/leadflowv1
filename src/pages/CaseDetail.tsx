@@ -113,6 +113,8 @@ const STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT = 'case payment history modal 
 void STAGE220A27B_R2_PAYMENT_HISTORY_MODAL_LIGHT;
 const STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE = 'case payment history modal rows show payment date and value in one line without redundant paid status';
 void STAGE220A27B_R3_PAYMENT_HISTORY_ONE_LINE;
+const STAGE220A28_PAYMENT_HISTORY_MODAL_VST = 'payment history and correction modals use CloseFlow modal visual source truth without helper copy or redundant status';
+void STAGE220A28_PAYMENT_HISTORY_MODAL_VST;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -2896,18 +2898,16 @@ export default function CaseDetail() {
 
       <Dialog open={isPaymentHistoryOpenStage220A27B} onOpenChange={setIsPaymentHistoryOpenStage220A27B}>
         <DialogContent
-          className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26 case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light"
+          className="client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst"
           data-stage220a27b-payment-history-modal="true"
+          data-stage220a28-payment-history-modal-vst="true"
           data-cf-vst-dialog="true"
         >
-          <DialogHeader>
+          <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header">
             <DialogTitle>Historia wpłat i korekt</DialogTitle>
-            <DialogDescription>
-              Wybierz wpłatę do korekty · oryginał zostaje · korekta tworzy osobny wpis w historii.
-            </DialogDescription>
           </DialogHeader>
 
-          <div className="case-payment-history-modal-stage220a27b__context" data-stage220a27b-payment-history-context="case">
+          <div className="client-case-form-section case-payment-history-modal-stage220a27b__context case-payment-history-modal-stage220a28-context" data-stage220a27b-payment-history-context="case">
             <span>Sprawa</span>
             <strong>{getCaseHeaderCaseLabel(caseData)}</strong>
           </div>
@@ -2923,7 +2923,7 @@ export default function CaseDetail() {
                 return (
                   <article
                     key={'case-payment-history-modal-stage220a27b-' + String(payment.id || payment.paidAt || payment.createdAt || payment.amount)}
-                    className={'case-payment-history-modal-stage220a27b__row ' + (isCorrection ? 'case-payment-history-modal-stage220a27b__row--correction' : '')}
+                    className={'client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row ' + (isCorrection ? 'case-payment-history-modal-stage220a27b__row--correction' : '')}
                     data-stage220a27b-payment-history-row={type || 'payment'}
                   >
                     <div className="case-payment-history-modal-stage220a27b__main">
@@ -2975,15 +2975,13 @@ export default function CaseDetail() {
         }}
       >
         <DialogContent
-          className="cf-vst-dialog case-finance-edit-modal case-finance-modal-stage220a26 case-payment-correction-modal-stage220a27"
+          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst"
           data-stage220a27-payment-correction-modal="true"
+          data-stage220a28-payment-correction-modal-vst="true"
           data-cf-vst-dialog="true"
         >
-          <DialogHeader>
+          <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header">
             <DialogTitle>Korekta wpłaty</DialogTitle>
-            <DialogDescription>
-              Oryginalna wpłata zostaje w historii. Korekta zapisze osobny wpis ujemny w historii wpłat.
-            </DialogDescription>
           </DialogHeader>
 
           <div className="case-payment-correction-modal-stage220a27__summary" data-stage220a27-payment-correction-summary="true">

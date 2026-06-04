@@ -623,3 +623,37 @@
   background: var(--cf-vst-color-primary-soft) !important;
   border-color: var(--cf-vst-color-primary-border) !important;
 }
+
+/* STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH
+   Cases list uses right-side icon actions like Clients/Leads: open chevron + trash.
+*/
+
+.cf-case-row-actions-stage220a28 {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+.cf-case-row-actions-stage220a28 .cf-icon-action-button,
+.cf-case-row-delete-icon-action {
+  width: 38px !important;
+  height: 38px !important;
+  min-width: 38px !important;
+  padding: 0 !important;
+  border-radius: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.cf-case-row-delete-icon-action {
+  border-color: rgba(244, 63, 94, 0.18) !important;
+  color: #e11d48 !important;
+  background: #fff !important;
+}
+
+.cf-case-row-delete-icon-action:hover {
+  border-color: rgba(244, 63, 94, 0.32) !important;
+  background: #fff1f2 !important;
+}
