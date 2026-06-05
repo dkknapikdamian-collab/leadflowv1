@@ -15,6 +15,7 @@ import '../../styles/finance/closeflow-finance.css';
 export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
 // FIN-13 parser guard literal: replace(/\./g, '').replace(',', '\.')
 export const CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
+export const STAGE220A35_TRANSACTION_VALUE_COMMISSION_COPY = 'transaction value is the commission basis only for percent model; fixed commission is entered directly' as const;
 
 export type CaseFinancePatch = CaseFinancePatchInput & Record<string, unknown>;
 
@@ -177,14 +178,14 @@ export function CaseFinanceEditorDialog({
         <form className="cf-finance-editor-form" onSubmit={handleSubmit}>
           <div className="cf-finance-editor-grid">
             <label className="cf-finance-field">
-              <span>Wartość sprawy / transakcji</span>
+              <span>Wartość transakcji / sprawy</span>
               <Input
                 value={form.contractValue}
                 inputMode="decimal"
                 placeholder="Nie ustawiono"
                 onChange={(event) => setForm((current) => ({ ...current, contractValue: event.target.value }))}
               />
-              <small>Wartość sprawy jest kwotą. Puste pole zapisuje 0, a w UI pokazujemy „Nie ustawiono”.</small>
+              <small>To jest wartość transakcji, np. cena sprzedaży działki. Przy modelu procentowym prowizja liczy się od tej kwoty.</small>
             </label>
             <label className="cf-finance-field">
               <span>Waluta</span>
@@ -216,6 +217,7 @@ export function CaseFinanceEditorDialog({
                 placeholder="np. 3"
                 onChange={(event) => setForm((current) => ({ ...current, commissionRate: event.target.value }))}
               />
+              <small>Aktywne tylko dla modelu procentowego. Procent liczy się od wartości transakcji / sprawy.</small>
             </label>
             <label className="cf-finance-field">
               <span>Kwota prowizji</span>
@@ -226,6 +228,7 @@ export function CaseFinanceEditorDialog({
                 placeholder="np. 3000"
                 onChange={(event) => setForm((current) => ({ ...current, commissionAmount: event.target.value }))}
               />
+              <small>Aktywne tylko dla modelu kwoty stałej. Tu wpisujesz gotową prowizję, nie wartość transakcji.</small>
             </label>
             <label className="cf-finance-field">
               <span>Status prowizji</span>

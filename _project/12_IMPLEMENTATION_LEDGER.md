@@ -1725,3 +1725,27 @@ Data: 2026-06-05 20:32 Europe/Warsaw
 - create lead flow wymaga ręcznego testu po patchu.
 - Rescue UI może wymagać późniejszego uproszczenia wizualnego.
 - Backend akcji Rescue nie jest jeszcze wdrożony, więc disabled actions są prawidłowe.
+
+## STAGE220A35 — Client Commission Finance Source Truth
+
+Data: 2026-06-05 21:05 Europe/Warsaw
+
+### FAKTY
+- Naprawiono rozjazd: wartość transakcji/sprawy nie jest prowizją właściciela.
+- ClientDetail pokazuje prowizję należną, wpłaconą prowizję i prowizję do zapłaty jako osobne wartości.
+- Karta sprawy w kliencie używa getCaseFinanceSummary, więc prowizja procentowa 69 000 PLN × 2% daje 1 380 PLN zamiast 0 PLN.
+- Wartość transakcji nadal jest widoczna jako osobna informacja.
+
+### TESTY
+- node scripts/check-stage220a35-client-commission-finance.cjs
+- node --test tests/stage220a35-client-commission-finance.test.cjs
+- node scripts/check-stage220a31-finance-modal-margin-commission-basis.cjs
+- node scripts/check-stage220a26b-finance-regression-contract.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Bez tej poprawki Stage227 / Sales Funnel mógłby dziedziczyć błędne wartości finansowe.
+- Nie ruszano Supabase, RLS ani backendu płatności.
+- Model prowizji stałej nadal używa gotowej kwoty prowizji.
