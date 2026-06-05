@@ -3,13 +3,14 @@ const path = require('node:path');
 
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
+const exists = (file) => fs.existsSync(path.join(root, file));
 const fail = (message) => {
   console.error('STAGE225_CONTACT_CADENCE_GRID_GUARD_FAIL:', message);
   process.exit(1);
 };
 
 const helperPath = 'src/lib/owner-control/contact-cadence-grid.ts';
-if (!fs.existsSync(path.join(root, helperPath))) fail('missing contact-cadence-grid.ts');
+if (!exists(helperPath)) fail('missing contact-cadence-grid.ts');
 
 const files = [
   helperPath,
@@ -21,18 +22,18 @@ const files = [
 
 const bannedCodePoints = [0x00c4, 0x0139, 0x0102, 0x00c2, 0xfffd, 0x0081];
 for (const file of files) {
+  if (!exists(file)) fail('missing required file: ' + file);
   const content = read(file);
-  const bad = bannedCodePoints
-    .map((codePoint) => String.fromCharCode(codePoint))
-    .filter((token) => content.includes(token));
-  if (bad.length) fail('mojibake codepoints in ' + file + ': ' + bannedCodePoints.filter((codePoint) => content.includes(String.fromCharCode(codePoint))).map((codePoint) => 'U+' + codePoint.toString(16).toUpperCase().padStart(4, '0')).join(', '));
+  const bad = bannedCodePoints.filter((codePoint) => content.includes(String.fromCharCode(codePoint)));
+  if (bad.length) {
+    fail('mojibake codepoints in ' + file + ': ' + bad.map((codePoint) => 'U+' + codePoint.toString(16).toUpperCase().padStart(4, '0')).join(', '));
+  }
 }
 
 const helper = read(helperPath);
 const leads = read('src/pages/Leads.tsx');
 const clients = read('src/pages/Clients.tsx');
-const todayPath = fs.existsSync(path.join(root, 'src/pages/TodayStable.tsx')) ? 'src/pages/TodayStable.tsx' : null;
-const today = todayPath ? read(todayPath) : '';
+const today = exists('src/pages/TodayStable.tsx') ? read('src/pages/TodayStable.tsx') : '';
 
 [
   'buildActivityTruth',
@@ -45,6 +46,7 @@ const today = todayPath ? read(todayPath) : '';
   'silent_14_plus',
   '14+ dni ciszy',
   'Kontakt dziś',
+  'Dziś',
   '1 dzień ciszy',
   'Minął 1 dzień',
   'Minęły 2 dni',
@@ -69,10 +71,10 @@ const today = todayPath ? read(todayPath) : '';
 });
 
 if (helper.includes('replace(/s+/g')) {
-  fail('helper has broken whitespace regex replace(/s+/g instead of replace(/\s+/g');
+  fail('helper has broken whitespace regex replace(/s+/g instead of replace(/\\s+/g');
 }
-if (!helper.includes('replace(/\s+/g')) {
-  fail('helper missing whitespace normalization replace(/\s+/g');
+if (!helper.includes('replace(/\\s+/g')) {
+  fail('helper missing whitespace normalization replace(/\\s+/g');
 }
 if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
   fail('helper redefines SALES_SILENCE_THRESHOLDS_DAYS instead of importing owner-risk-rules source of truth');
@@ -99,11 +101,11 @@ if (relatedIndex < 0 || cadenceIndex < 0 || filteredIndex < 0) {
 if (!(relatedIndex < cadenceIndex && cadenceIndex < filteredIndex)) {
   fail('Leads.tsx has TDZ risk: relatedRecordsByLeadId and contactCadenceGrid must be declared before filteredLeads');
 }
-if (leads.includes('relatedRecordsById,') || leads.includes('relatedRecordsById
-')) {
+const buildCadenceCall = leads.slice(cadenceIndex, filteredIndex);
+if (/^\s*relatedRecordsById,\s*$/m.test(buildCadenceCall)) {
   fail('Leads.tsx passes undefined/shorthand relatedRecordsById instead of relatedRecordsByLeadId');
 }
-if (!leads.includes('relatedRecordsById: relatedRecordsByLeadId')) {
+if (!buildCadenceCall.includes('relatedRecordsById: relatedRecordsByLeadId')) {
   fail('Leads.tsx missing explicit relatedRecordsById: relatedRecordsByLeadId mapping');
 }
 
@@ -137,7 +139,7 @@ if (packageJson.scripts['test:stage225-contact-cadence-grid'] !== 'node --test t
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'STAGE225R8_CONTACT_CADENCE_RUNTIME_HOTFIX',
+  stage: 'STAGE225R10_GUARD_SYNTAX_FINAL',
   checkedFiles: files.length,
   guard: 'check:stage225-contact-cadence-grid',
 }, null, 2));
