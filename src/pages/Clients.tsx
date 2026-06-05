@@ -59,6 +59,11 @@ import {
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
 import {
+  buildContactCadenceGrid,
+  CONTACT_CADENCE_BUCKETS,
+  type ContactCadenceBucketKey,
+} from '../lib/owner-control/contact-cadence-grid';
+import {
   dateInputToNoonIso,
   getDefaultLastContactDateInput,
   getLastContactDateInputError,
@@ -124,8 +129,10 @@ const STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST = 'client trash/restore uses product
 void STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST;
 const STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE = 'new client form can create primary case and writes case contractValue expectedRevenue';
 const STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS = 'client creation captures explicit lastContactAt for activity truth';
+const STAGE225_CONTACT_CADENCE_GRID_CLIENTS = 'clients list uses Contact Cadence Grid filter from activity-truth';
 void STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE;
 void STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS;
+void STAGE225_CONTACT_CADENCE_GRID_CLIENTS;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 
@@ -195,6 +202,7 @@ export default function Clients() {
   const [events, setEvents] = useState<any[]>([]);
   const [search, setSearch] = useState('');
   const [showArchived, setShowArchived] = useState(false);
+  const [cadenceFilter, setCadenceFilter] = useState<ContactCadenceBucketKey | 'all'>('all');
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createPending, setCreatePending] = useState(false);
   const [archivePendingId, setArchivePendingId] = useState<string | null>(null);
@@ -231,7 +239,7 @@ export default function Clients() {
       setTasks(taskRows as any[]);
       setEvents(eventRows as any[]);
     } catch (error: any) {
-      toast.error(`Błąd odczytu klientów: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d odczytu klientĂłw: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLoading(false);
     }
@@ -248,16 +256,28 @@ export default function Clients() {
   const activeCount = useMemo(() => clients.filter((client) => !client.archivedAt).length, [clients]);
   const archivedCount = useMemo(() => clients.filter((client) => Boolean(client.archivedAt)).length, [clients]);
 
+  const contactCadenceGrid = useMemo(
+    () => buildContactCadenceGrid({
+      entityType: 'client',
+      records: clients.filter((client) => !client.archivedAt),
+    }),
+    [clients],
+  );
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
+    const activeCadenceIds = cadenceFilter === 'all'
+      ? null
+      : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
     return clients
       .filter((client) => (showArchived ? Boolean(client.archivedAt) : !client.archivedAt))
       .filter((client) => {
+        const matchesCadence = showArchived || !activeCadenceIds || activeCadenceIds.has(String(client.id || ''));
+        if (!matchesCadence) return false;
         if (!query) return true;
         return [client.name, client.company, client.email, client.phone].some((entry) => String(entry || '').toLowerCase().includes(query));
       })
       .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), 'pl'));
-  }, [clients, search, showArchived]);
+  }, [cadenceFilter, clients, contactCadenceGrid, search, showArchived]);
 
   const countersByClientId = useMemo(() => {
     const map = new Map<string, { leads: number; cases: number; payments: number }>();
@@ -374,7 +394,7 @@ export default function Clients() {
       const dateLabel = Number.isNaN(parsed.getTime())
         ? nearest.when
         : parsed.toLocaleString('pl-PL', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-      map.set(clientId, `${nearest.title} · ${dateLabel}`);
+      map.set(clientId, `${nearest.title} Â· ${dateLabel}`);
     }
     return map;
   }, [cases, clients, events, leads, tasks]);
@@ -488,21 +508,21 @@ export default function Clients() {
   };
 
   const restoreClientConflictCandidate = async (candidate: EntityConflictCandidate) => {
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historiÄ™. Najpierw go otwĂłrz i zdecyduj, co zrobiÄ‡.'); return; }
     try {
       setCreatePending(true);
-      if (candidate.entityType === 'client') { await updateClientInSupabase({ id: candidate.id, archivedAt: null }); toast.success('Klient przywrócony'); }
-      else { await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null }); toast.success('Lead przywrócony'); }
+      if (candidate.entityType === 'client') { await updateClientInSupabase({ id: candidate.id, archivedAt: null }); toast.success('Klient przywrĂłcony'); }
+      else { await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null }); toast.success('Lead przywrĂłcony'); }
       setClientConflictOpen(false);
       await reload();
-    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setCreatePending(false); }
   };
 
   const handleCreateClient = async (event: FormEvent) => {
     event.preventDefault();
-    if (!hasAccess) { toast.error('Twój trial wygasł.'); return; }
-    if (!newClient.name.trim()) { toast.error('Podaj nazwę klienta.'); return; }
+    if (!hasAccess) { toast.error('TwĂłj trial wygasĹ‚.'); return; }
+    if (!newClient.name.trim()) { toast.error('Podaj nazwÄ™ klienta.'); return; }
     if (!workspace?.id) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
     const lastContactError = getLastContactDateInputError(newClient.lastContactAt);
     if (lastContactError) { toast.error(lastContactError); return; }
@@ -515,14 +535,14 @@ export default function Clients() {
       const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
       if (candidates.length) { setClientConflictCandidates(candidates); setClientConflictPendingInput(preparedClient); setIsCreateOpen(false); setClientConflictOpen(true); return; }
       await createClientFromPreparedInput(preparedClient);
-    } catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
+    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡. SprĂłbuj ponownie.'); }
     finally { setCreatePending(false); }
   };
 
   const handleCreateClientAnyway = async () => {
     if (!clientConflictPendingInput || createPending) return;
     try { setCreatePending(true); await createClientFromPreparedInput(clientConflictPendingInput, { forceDuplicate: true }); setClientConflictOpen(false); setClientConflictPendingInput(null); setClientConflictCandidates([]); }
-    catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
+    catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡. SprĂłbuj ponownie.'); }
     finally { setCreatePending(false); }
   };
 
@@ -535,19 +555,19 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostaną trwale skasowane.'
-      : 'Rekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
+      ? '\n\nTen klient ma powiÄ…zania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostanÄ… trwale skasowane.'
+      : 'Rekord zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.';
 
     setClientArchiveConfirm({
       mode: 'archive',
       client,
-      title: 'Przenieść klienta do kosza?',
+      title: 'PrzenieĹ›Ä‡ klienta do kosza?',
       description: (client.name || 'Klient') + ' zostanie ukryty z aktywnej listy. ' + relationText,
     });
   };
@@ -557,15 +577,15 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     setClientArchiveConfirm({
       mode: 'restore',
       client,
-      title: 'Przywrócić klienta?',
-      description: (client.name || 'Klient') + ' wróci do aktywnej listy klientów.',
+      title: 'PrzywrĂłciÄ‡ klienta?',
+      description: (client.name || 'Klient') + ' wrĂłci do aktywnej listy klientĂłw.',
     });
   };
   const confirmClientArchiveAction = async () => {
@@ -587,13 +607,13 @@ export default function Clients() {
         });
       }
 
-      toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrócony');
+      toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrĂłcony');
       setClientArchiveConfirm(null);
       await reload();
     } catch (error: any) {
       toast.error(mode === 'archive'
-        ? 'Nie udało się przenieść klienta do kosza.'
-        : 'Nie udało się przywrócić klienta.'
+        ? 'Nie udaĹ‚o siÄ™ przenieĹ›Ä‡ klienta do kosza.'
+        : 'Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ klienta.'
       );
     } finally {
       setArchivePendingId(null);
@@ -608,9 +628,9 @@ export default function Clients() {
           onOpenChange={(open) => {
             if (!open && !archivePendingId) setClientArchiveConfirm(null);
           }}
-          title={clientArchiveConfirm?.title || 'Potwierdź zmianę'}
-          description={clientArchiveConfirm?.description || 'Potwierdź operację na kliencie.'}
-          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'Przywróć klienta' : 'Przenieś do kosza'}
+          title={clientArchiveConfirm?.title || 'PotwierdĹş zmianÄ™'}
+          description={clientArchiveConfirm?.description || 'PotwierdĹş operacjÄ™ na kliencie.'}
+          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› do kosza'}
           cancelLabel="Anuluj"
           confirmTone={clientArchiveConfirm?.mode === 'restore' ? 'default' : 'destructive'}
           pending={Boolean(archivePendingId)}
@@ -621,8 +641,8 @@ export default function Clients() {
           open={clientConflictOpen}
           onOpenChange={setClientConflictOpen}
           candidates={clientConflictCandidates}
-          title="Możliwy duplikat"
-          description="Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to."
+          title="MoĹĽliwy duplikat"
+          description="Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. SprawdĹş go przed zapisem albo Ĺ›wiadomie dodaj mimo to."
           createAnywayLabel="Dodaj mimo to"
           busy={createPending}
           onShow={(candidate) => window.location.assign(candidate.url || (candidate.entityType === 'lead' ? '/leads/' + candidate.id : '/clients/' + candidate.id))}
@@ -638,7 +658,7 @@ export default function Clients() {
                           <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
                           <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
                             {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
-                            {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
+                            {showArchived ? 'PokaĹĽ aktywnych' : 'Kosz'}
                             <span className="pill">{showArchived ? activeCount : archivedCount}</span>
                           </Button>
                           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
@@ -649,19 +669,19 @@ export default function Clients() {
                               <DialogHeader className="client-case-form-header">
                                 <span className="client-case-form-kicker">KLIENT</span>
                                 <DialogTitle>Nowy klient</DialogTitle>
-                                <p>Dodaj tylko najważniejsze dane kontaktowe. Resztę można uzupełnić później.</p>
+                                <p>Dodaj tylko najwaĹĽniejsze dane kontaktowe. ResztÄ™ moĹĽna uzupeĹ‚niÄ‡ pĂłĹşniej.</p>
                               </DialogHeader>
 
                               <form onSubmit={handleCreateClient} className="client-case-form" data-client-form-fields="contact">
                                 <section className="client-case-form-section">
                                   <div className="client-case-form-section-head">
                                     <h3>Dane podstawowe</h3>
-                                    <p>Minimum potrzebne do zapisania klienta i rozpoczęcia sprawy.</p>
+                                    <p>Minimum potrzebne do zapisania klienta i rozpoczÄ™cia sprawy.</p>
                                   </div>
 
                                   <div className="client-case-form-grid">
                                     <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>Imię / nazwa</Label>
+                                      <Label>ImiÄ™ / nazwa</Label>
                                       <Input
                                         value={newClient.name}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
@@ -697,7 +717,7 @@ export default function Clients() {
                                         max={getTodayDateInputValue()}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, lastContactAt: event.target.value }))}
                                       />
-                                      <small className="sub">Jeśli klient wraca po czasie, wpisz dzień ostatniego kontaktu. To wpływa na oznaczenia ciszy 7/14 dni.</small>
+                                      <small className="sub">JeĹ›li klient wraca po czasie, wpisz dzieĹ„ ostatniego kontaktu. To wpĹ‚ywa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="client-case-form-field client-case-form-field-wide">
@@ -715,7 +735,7 @@ export default function Clients() {
                                         className="client-case-form-textarea"
                                         value={newClient.notes}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
-                                        placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
+                                        placeholder="KrĂłtki kontekst relacji, ĹşrĂłdĹ‚o albo waĹĽna informacja."
                                       />
                                     </div>
                                   </div>
@@ -724,7 +744,7 @@ export default function Clients() {
                                 <section className="client-case-form-section" data-stage220a25-client-case-fields="true">
                                   <div className="client-case-form-section-head">
                                     <h3>Sprawa startowa</h3>
-                                    <p>Wartość wpisana tutaj zapisuje się w sprawie jako wartość sprawy i zasila finanse klienta.</p>
+                                    <p>WartoĹ›Ä‡ wpisana tutaj zapisuje siÄ™ w sprawie jako wartoĹ›Ä‡ sprawy i zasila finanse klienta.</p>
                                   </div>
 
                                   <label className="client-case-form-check-row">
@@ -733,7 +753,7 @@ export default function Clients() {
                                       checked={Boolean(newClient.createCase)}
                                       onChange={(event) => setNewClient((prev) => ({ ...prev, createCase: event.target.checked }))}
                                     />
-                                    <span>Utwórz sprawę od razu</span>
+                                    <span>UtwĂłrz sprawÄ™ od razu</span>
                                   </label>
 
                                   <div className="client-case-form-grid">
@@ -742,12 +762,12 @@ export default function Clients() {
                                       <Input
                                         value={newClient.caseTitle}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, caseTitle: event.target.value }))}
-                                        placeholder="Np. Sprzedaż działki, obsługa klienta, zlecenie"
+                                        placeholder="Np. SprzedaĹĽ dziaĹ‚ki, obsĹ‚uga klienta, zlecenie"
                                       />
                                     </div>
 
                                     <div className="client-case-form-field">
-                                      <Label>Wartość sprawy</Label>
+                                      <Label>WartoĹ›Ä‡ sprawy</Label>
                                       <Input
                                         value={newClient.caseValue}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, caseValue: event.target.value }))}
@@ -790,28 +810,28 @@ export default function Clients() {
             icon={LeadEntityIcon}
             active={!showArchived}
             onClick={() => setShowArchived(false)}
-            title="Pokaż aktywnych klientów"
-            ariaLabel="Pokaż aktywnych klientów"
+            title="PokaĹĽ aktywnych klientĂłw"
+            ariaLabel="PokaĹĽ aktywnych klientĂłw"
             tone="blue"
-            helper="z otwartą sprawą"
+            helper="z otwartÄ… sprawÄ…"
           />
           <StatShortcutCard
             label="Bez sprawy"
             value={clientsWithoutCases}
             icon={CaseEntityIcon}
             onClick={() => setShowArchived(false)}
-            title="Pokaż klientów bez sprawy"
-            ariaLabel="Pokaż klientów bez sprawy"
+            title="PokaĹĽ klientĂłw bez sprawy"
+            ariaLabel="PokaĹĽ klientĂłw bez sprawy"
             tone="neutral"
             helper="tylko kontakt"
           />
           <StatShortcutCard
-            label="Wartość"
+            label="WartoĹ›Ä‡"
             value={formatClientMoney(relationValue)}
             icon={PaymentEntityIcon}
             onClick={() => setShowArchived(false)}
-            title="Pokaż wartość relacji"
-            ariaLabel="Pokaż wartość relacji"
+            title="PokaĹĽ wartoĹ›Ä‡ relacji"
+            ariaLabel="PokaĹĽ wartoĹ›Ä‡ relacji"
             tone="green"
             helper="w relacjach"
           />
@@ -820,8 +840,8 @@ export default function Clients() {
             value={staleClients}
             icon={AlertTriangle}
             onClick={() => setShowArchived(false)}
-            title="Pokaż klientów bez ruchu"
-            ariaLabel="Pokaż klientów bez ruchu"
+            title="PokaĹĽ klientĂłw bez ruchu"
+            ariaLabel="PokaĹĽ klientĂłw bez ruchu"
             tone="red"
             helper="do sprawdzenia"
           />
@@ -834,10 +854,44 @@ export default function Clients() {
               <Input placeholder={showArchived ? CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER : CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER} value={search} onChange={(event) => setSearch(event.target.value)} aria-label="Szukaj w klientach" />
             </div>
 
+
+            {!showArchived ? (
+              <div className="table-card w-full max-w-none" data-stage225-contact-cadence-grid="clients">
+                <div className="row row-empty">
+                  <span className="index"><AlertTriangle className="h-4 w-4" /></span>
+                  <span>
+                    <span className="title">Siatka kontaktu</span>
+                    <span className="sub">Filtruje klientĂłw po prawdziwej dacie ostatniego kontaktu. Rekord bez daty wpada do Brak daty kontaktu.</span>
+                  </span>
+                </div>
+                <div className="flex flex-wrap gap-2 p-3 pt-0">
+                  <button
+                    type="button"
+                    className={cadenceFilter === 'all' ? 'cf-status-pill' : 'pill'}
+                    data-cf-status-tone={cadenceFilter === 'all' ? 'blue' : undefined}
+                    onClick={() => setCadenceFilter('all')}
+                  >
+                    Wszystkie ({activeCount})
+                  </button>
+                  {CONTACT_CADENCE_BUCKETS.map((bucket) => (
+                    <button
+                      key={bucket.key}
+                      type="button"
+                      className={cadenceFilter === bucket.key ? 'cf-status-pill' : 'pill'}
+                      data-cf-status-tone={cadenceFilter === bucket.key ? (bucket.severity === 'high' ? 'red' : bucket.severity === 'medium' ? 'amber' : 'blue') : undefined}
+                      onClick={() => setCadenceFilter(bucket.key)}
+                      title={bucket.description}
+                    >
+                      {bucket.label} ({contactCadenceGrid.counts[bucket.key] || 0})
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
             {loading ? (
-              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">Ładowanie klientów</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
+              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">Ĺadowanie klientĂłw</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
             ) : filtered.length === 0 ? (
-              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyświetlenia.'}</span></span></div></div>
+              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientĂłw jest pusty.' : 'Brak klientĂłw do wyĹ›wietlenia.'}</span></span></div></div>
             ) : (
               <div className="table-card w-full max-w-none">
                 {filtered.map((client, index) => {
@@ -860,13 +914,13 @@ export default function Clients() {
                            <span className="title">{client.name || 'Klient'}</span>
                            <span className="cf-list-row-meta">
                              <span className="sub">{client.company || 'Bez firmy'}</span>
-                             <span className="cf-list-row-contact">{[client.email, client.phone].filter(Boolean).join(' · ') || 'brak kontaktu'}</span>
+                             <span className="cf-list-row-contact">{[client.email, client.phone].filter(Boolean).join(' Â· ') || 'brak kontaktu'}</span>
                              <span className="cf-list-row-value">{formatClientMoney(clientValue)}</span>
                            </span>
                            <span className="statusline">
                              {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">W koszu</span> : counters.cases > 0 ? <span className="cf-status-pill cf-chip-case-active" data-cf-status-tone="green">Aktywna sprawa</span> : <span className="cf-status-pill cf-chip-no-case">Bez sprawy</span>}
                              <span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>
-                             <span className="cf-list-row-value cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
+                             <span className="cf-list-row-value cf-chip-client-value">WartoĹ›Ä‡: {formatClientMoney(clientValue)}</span>
                               {operationalBadges.map((badge) => (
                                 <span
                                   key={badge.id}
@@ -881,13 +935,13 @@ export default function Clients() {
                            </span>
                          </span>
                          <span className="lead-value-cell cf-client-cases-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionLabel}</strong></span>
+                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">NajbliĹĽsza akcja</span><strong>{nearestActionLabel}</strong></span>
                          <span className="lead-actions client-card-action-buttons cf-client-row-actions cf-client-row-inline">
-                           <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="Otwórz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
+                           <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="OtwĂłrz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
                            <button
                              type="button"
-                             aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
-                             title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                             aria-label={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
+                             title={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
                              disabled={archivePendingId === client.id}
                              onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
                               className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
@@ -919,7 +973,7 @@ export default function Clients() {
             />
             <TopValueRecordsCard
               title="Najcenniejsi klienci"
-              description="5 klientów z największą wartością."
+              description="5 klientĂłw z najwiÄ™kszÄ… wartoĹ›ciÄ…."
               className="operator-top-value-card"
               dataTestId="clients-top-value-records-card"
               dataAttrs={{ 'data-clients-top-value-board': true }}
@@ -932,7 +986,7 @@ export default function Clients() {
                 title: entry.label + ' - ' + formatClientMoney(entry.value),
                 dataAttrs: { 'data-clients-top-value-row': true },
               }))}
-              emptyLabel="Brak klientów z wyliczoną wartością."
+              emptyLabel="Brak klientĂłw z wyliczonÄ… wartoĹ›ciÄ…."
             />
           </div>
         </div>
