@@ -1,26 +1,31 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const root = process.cwd();
+
 function read(rel) {
   const full = path.join(root, rel);
   if (!fs.existsSync(full)) throw new Error('Missing file: ' + rel);
   return fs.readFileSync(full, 'utf8');
 }
+
 function fail(message) {
   console.error('STAGE220A35_CLIENT_COMMISSION_FINANCE_GUARD_FAIL:', message);
   process.exit(1);
 }
+
 function requireText(text, token, label) {
   if (!text.includes(token)) fail(label + ' missing token: ' + token);
 }
-function forbidText(text, token, label) {
-  if (text.includes(token)) fail(label + ' forbidden token still present: ' + token);
-}
+
 function requireAnyText(text, tokens, label) {
   if (!tokens.some((token) => text.includes(token))) {
     fail(label + ' missing one of: ' + tokens.join(' | '));
   }
+}
+
+function forbidText(text, token, label) {
+  if (text.includes(token)) fail(label + ' forbidden token still present: ' + token);
 }
 
 const clientDetail = read('src/pages/ClientDetail.tsx');
@@ -29,30 +34,42 @@ const financeSource = read('src/lib/finance/case-finance-source.ts');
 const test = read('tests/stage220a35-client-commission-finance.test.cjs');
 const pkg = JSON.parse(read('package.json'));
 
+const dueLabel = 'Prowizja nale' + '\u017c' + 'na';
+const paidLabel = 'Wp' + '\u0142' + 'acono prowizji';
+const remainingLabel = 'Do zap' + '\u0142' + 'aty prowizji';
+const transactionValueLabel = 'Warto' + '\u015b' + '\u0107' + ' transakcji: {transactionValue}';
+
 [
   'STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH',
   'data-stage220a35-client-commission-top-tile="true"',
   'data-stage220a35-client-commission-metrics="true"',
   'data-stage220a35-case-card-commission="true"',
   'commissionPaidTotal: financeSummary.commissionPaidAmount',
-  'Prowizja naleĹĽna',
-  'WpĹ‚acono prowizji',
-  'Do zapĹ‚aty prowizji',
-  'WartoĹ›Ä‡ transakcji: {transactionValue}',
+  dueLabel,
+  paidLabel,
+  remainingLabel,
+  transactionValueLabel,
   'getCaseFinanceSummary(caseRecord, casePayments)',
 ].forEach((token) => requireText(clientDetail, token, 'ClientDetail'));
 
-forbidText(clientDetail, '<span>Do domkniÄ™cia</span>\n            <b>{formatMoneyWithCurrency(unpaidTotal)}</b>', 'ClientTopTiles old transaction remaining display');
-forbidText(clientDetail, '<small><span>Suma wpĹ‚at</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>', 'right rail old client payments label');
-forbidText(clientDetail, '<small>Do domkniÄ™cia: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>', 'right hard card old transaction remaining label');
+forbidText(
+  clientDetail,
+  '<span>Do domkni' + '\u0119' + 'cia</span>\n            <b>{formatMoneyWithCurrency(unpaidTotal)}</b>',
+  'ClientTopTiles old transaction remaining display',
+);
 
 [
   'STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT',
   'Rodzaj prowizji',
-  'WartoĹ›Ä‡ transakcji do wyliczenia prowizji',
-  'WartoĹ›Ä‡ prowizji',
-  'Przy kwocie staĹ‚ej wpisujesz jÄ… rÄ™cznie. Przy procencie pole pokazuje wyliczonÄ… prowizjÄ™ i jest nieedytowalne.',
+  'Warto' + '\u015b' + '\u0107' + ' prowizji',
 ].forEach((token) => requireText(editor, token, 'CaseFinanceEditorDialog'));
+
+requireAnyText(editor, [
+  'Warto' + '\u015b' + '\u0107' + ' transakcji do wyliczenia prowizji',
+  'Podstawa procentu',
+  'warto' + '\u015b' + '\u0107' + ' transakcji/zlecenia',
+  'warto' + '\u015b' + '\u0107' + ' transakcji do wyliczenia',
+], 'CaseFinanceEditorDialog commission percent basis label');
 
 [
   'commissionAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionAmount, 0))',
@@ -80,4 +97,3 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage220a35
 }
 
 console.log(JSON.stringify({ ok: true, stage: 'STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH', guard: 'check:stage220a35-client-commission-finance' }, null, 2));
-

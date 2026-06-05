@@ -180,7 +180,6 @@ export default async function handler(req: any, res: any) {
         response: sanitizeAccessResponse(itemType, body.response),
         file_url: null,
         file_name: null,
-        approved_at: body.approvedAt || null,
         created_at: now,
         updated_at: now,
       };

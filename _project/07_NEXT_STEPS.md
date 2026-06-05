@@ -1948,3 +1948,28 @@ Data: 2026-06-05 22:00 Europe/Warsaw
 - Nie zmieniano bazy ani modelu płatności.
 - Ryzyko dotyczy tylko czytelności UI i błędnego wpisywania ceny transakcji w miejsce prowizji.
 - Stage227 nadal musi korzystać z prowizji jako wartości operacyjnej.
+
+## STAGE220A36-R4 — Build Guard and Case Item Schema Fix
+
+Data: 2026-06-05 22:15 Europe/Warsaw
+
+### FAKTY
+- Naprawiono guardy A35/A36 po R2: usunieto BOM/mojibake i zbyt sztywne tokeny copy.
+- Usunieto wysylanie approved_at przy tworzeniu case_items, bo produkcyjna tabela nie ma tej kolumny.
+- Nie dodawano SQL ani kolumny w Supabase.
+
+### TESTY
+- node scripts/check-stage220a35-client-commission-finance.cjs
+- node scripts/check-stage220a36-commission-input-model-split.cjs
+- node scripts/check-stage220a36r2-commission-modal-field-order.cjs
+- node scripts/check-stage220a36r4-build-guard-and-case-item-schema-fix.cjs
+- node --test tests/stage220a36r2-commission-modal-field-order.test.cjs
+- node --test tests/stage220a36r4-build-guard-and-case-item-schema-fix.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Commit 00b8a95 byl wypchniety mimo czerwonych guardow, wiec R4 domyka build przed Stage227.
+- Runtime bledy schema cache PGRST204 trzeba lapac guardami payloadu, nie obiecywac SQL bez potrzeby.
+- Nie ruszano Supabase, RLS ani modelu platnosci.
