@@ -58,6 +58,12 @@ import {
 } from '../lib/supabase-fallback';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
+import {
+  dateInputToNoonIso,
+  getDefaultLastContactDateInput,
+  getLastContactDateInputError,
+  getTodayDateInputValue,
+} from '../lib/owner-control/last-contact-intake';
 import { buildTopClientValueEntries } from '../lib/client-value';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
@@ -78,6 +84,7 @@ type ClientRecord = {
   company?: string;
   email?: string;
   phone?: string;
+  lastContactAt?: string | null;
   archivedAt?: string | null;
 };
 const STAGE35_REAL_CLIENT_VALUE = 'STAGE35_REAL_CLIENT_VALUE';
@@ -116,7 +123,9 @@ void STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY;
 const STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST = 'client trash/restore uses production ConfirmDialog and no native browser confirm';
 void STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST;
 const STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE = 'new client form can create primary case and writes case contractValue expectedRevenue';
+const STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS = 'client creation captures explicit lastContactAt for activity truth';
 void STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE;
+void STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 
@@ -198,7 +207,7 @@ export default function Clients() {
   const [clientConflictOpen, setClientConflictOpen] = useState(false);
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' });
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' });
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -427,7 +436,7 @@ export default function Clients() {
       .slice(0, 5);
   }, [clients, clientValueByClientId]);
 
-  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' }); };
+  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' }); };
 
   const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
     // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
@@ -438,6 +447,7 @@ export default function Clients() {
       company: preparedClient.company,
       email: preparedClient.email,
       phone: preparedClient.phone,
+      lastContactAt: dateInputToNoonIso(preparedClient.lastContactAt),
       notes: preparedClient.notes,
       allowDuplicate: Boolean(options?.forceDuplicate),
       workspaceId: requireWorkspaceId(workspace),
@@ -494,9 +504,11 @@ export default function Clients() {
     if (!hasAccess) { toast.error('Twój trial wygasł.'); return; }
     if (!newClient.name.trim()) { toast.error('Podaj nazwę klienta.'); return; }
     if (!workspace?.id) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
+    const lastContactError = getLastContactDateInputError(newClient.lastContactAt);
+    if (lastContactError) { toast.error(lastContactError); return; }
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseValue: newClient.caseValue.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
+    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseValue: newClient.caseValue.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
     try {
       setCreatePending(true);
       const conflicts = await findEntityConflictsInSupabase({ targetType: 'client', name: preparedClient.name, email: preparedClient.email, phone: preparedClient.phone, company: preparedClient.company, workspaceId }).catch(() => ({ candidates: [] }));
@@ -675,6 +687,17 @@ export default function Clients() {
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, email: event.target.value }))}
                                         placeholder="kontakt@email.pl"
                                       />
+                                    </div>
+
+                                    <div className="client-case-form-field" data-stage223r3-client-last-contact-input="true">
+                                      <Label>Ostatni kontakt</Label>
+                                      <Input
+                                        type="date"
+                                        value={newClient.lastContactAt}
+                                        max={getTodayDateInputValue()}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, lastContactAt: event.target.value }))}
+                                      />
+                                      <small className="sub">Jeśli klient wraca po czasie, wpisz dzień ostatniego kontaktu. To wpływa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="client-case-form-field client-case-form-field-wide">

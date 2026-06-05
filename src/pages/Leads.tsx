@@ -78,6 +78,12 @@ import { useWorkspace } from '../hooks/useWorkspace';
 
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
+import {
+  dateInputToNoonIso,
+  getDefaultLastContactDateInput,
+  getLastContactDateInputError,
+  getTodayDateInputValue,
+} from '../lib/owner-control/last-contact-intake';
 
 import { getNearestPlannedAction } from '../lib/nearest-action';
 
@@ -99,10 +105,12 @@ const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, 
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
 const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing contact, missing next action and 7/14 day silence badges';
+const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit lastContactAt for activity truth';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
 void STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES;
+void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -301,6 +309,7 @@ export default function Leads() {
     notes: '',
     status: 'new',
     isAtRisk: false,
+    lastContactAt: getDefaultLastContactDateInput(),
   });
 
   const CLOSEFLOW_A2_LEAD_DUPLICATE_WARNING_BEFORE_WRITE = 'lead duplicate warning before write';
@@ -418,7 +427,7 @@ export default function Leads() {
   }, [events, leads, resolveLinkedCaseForLead, tasks]);
 
   const resetNewLeadForm = () => {
-    setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false });
+    setNewLead({ name: '', email: '', phone: '', source: 'other', dealValue: '', company: '', summary: '', notes: '', status: 'new', isAtRisk: false, lastContactAt: getDefaultLastContactDateInput() });
   };
 
   const createLeadFromPreparedInput = async (preparedLead: any, options?: { forceDuplicate?: boolean }) => {
@@ -469,9 +478,11 @@ export default function Leads() {
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
     if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
+    const lastContactError = getLastContactDateInputError(newLead.lastContactAt);
+    if (lastContactError) return toast.error(lastContactError);
     createLeadSubmitLockRef.current = true;
     setLeadSubmitting(true);
-    const preparedLead = { ...newLead, name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy', email: newLead.email.trim(), phone: newLead.phone.trim(), company: newLead.company.trim(), dealValue: Number(newLead.dealValue) || 0 };
+    const preparedLead = { ...newLead, name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy', email: newLead.email.trim(), phone: newLead.phone.trim(), company: newLead.company.trim(), dealValue: Number(newLead.dealValue) || 0, lastContactAt: dateInputToNoonIso(newLead.lastContactAt) };
     try {
       const conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId }).catch(() => ({ candidates: [] }));
       const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
@@ -769,6 +780,17 @@ export default function Leads() {
                                         onChange={(event) => setNewLead({ ...newLead, email: event.target.value })}
                                         placeholder="kontakt@email.pl"
                                       />
+                                    </div>
+
+                                    <div className="lead-form-field" data-stage223r3-lead-last-contact-input="true">
+                                      <Label>Ostatni kontakt</Label>
+                                      <Input
+                                        type="date"
+                                        value={newLead.lastContactAt}
+                                        max={getTodayDateInputValue()}
+                                        onChange={(event) => setNewLead({ ...newLead, lastContactAt: event.target.value })}
+                                      />
+                                      <small className="sub">Jeśli dodajesz starszy kontakt, wpisz dzień ostatniej rozmowy. To wpływa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="lead-form-field">

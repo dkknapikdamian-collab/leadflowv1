@@ -46,6 +46,7 @@ const OPTIONAL_LEAD_COLUMNS = new Set([
   'next_action_title',
   'next_action_at',
   'next_action_item_id',
+  'last_contact_at',
   'linked_case_id',
   'client_id',
   'service_profile_id',
@@ -92,6 +93,8 @@ const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activiti
 };
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
+const STAGE223R3_LAST_CONTACT_API = 'lead API accepts optional lastContactAt and last_contact_at for intake silence truth';
+void STAGE223R3_LAST_CONTACT_API;
 
 const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
 const LEAD_LIST_SELECT_STAGE124 = [
@@ -119,6 +122,7 @@ const LEAD_LIST_SELECT_STAGE124 = [
   'sales_outcome',
 ].join(',');
 const LEAD_DETAIL_SELECT_STAGE124 = '*';
+const LEAD_LIST_SELECT_STAGE223R3_LAST_CONTACT = [LEAD_LIST_SELECT_STAGE124, 'last_contact_at'].join(',');
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -846,6 +850,7 @@ function buildHiddenLeadRestorePayloadForCreate(payload: Record<string, unknown>
     summary: asText(payload.summary) || null,
     notes: asText(payload.notes) || null,
     is_at_risk: Boolean(payload.is_at_risk),
+    last_contact_at: toIsoDateTime(payload.last_contact_at || payload.lastContactAt),
     partial_payments: Array.isArray(payload.partial_payments) ? payload.partial_payments : [],
     lead_visibility: 'active',
     sales_outcome: 'open',
@@ -925,9 +930,10 @@ export default async function handler(req: any, res: any) {
         requestedStatus ? `status=eq.${encodeURIComponent(normalizeStatus(requestedStatus))}&` : '',
       ].filter(Boolean).join('');
       const leadLimit = requestedId ? 1 : 300;
-      const leadSelect = requestedId ? LEAD_DETAIL_SELECT_STAGE124 : LEAD_LIST_SELECT_STAGE124;
+      const leadSelect = requestedId ? LEAD_DETAIL_SELECT_STAGE124 : LEAD_LIST_SELECT_STAGE223R3_LAST_CONTACT;
+      const fallbackLeadSelect = requestedId ? LEAD_DETAIL_SELECT_STAGE124 : LEAD_LIST_SELECT_STAGE124;
       const base = withWorkspaceFilter(`leads?select=${leadSelect}&${leadFilters}order=updated_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
-      const fallback = withWorkspaceFilter(`leads?select=${leadSelect}&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
+      const fallback = withWorkspaceFilter(`leads?select=${fallbackLeadSelect}&${leadFilters}order=created_at.desc.nullslast&limit=${leadLimit}`, workspaceId);
       const result = await selectFirstAvailable([base, fallback]);
       const normalized = (result.data || []).map((row: Record<string, unknown>) => normalizeLead(row));
       const defaultActiveList = !requestedId && !requestedVisibility && !requestedStatus && !requestedClientId && !requestedLinkedCaseId;
@@ -1002,6 +1008,7 @@ export default async function handler(req: any, res: any) {
       if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (nextStatus !== undefined) payload.status = nextStatus;
       if (body.nextActionAt !== undefined) payload.next_action_at = toIsoDateTime(body.nextActionAt);
+      if (body.lastContactAt !== undefined || body.last_contact_at !== undefined) payload.last_contact_at = toIsoDateTime(body.lastContactAt ?? body.last_contact_at);
       if (body.nextActionTitle !== undefined) payload.next_action_title = normalizeNextActionTitle(body.nextActionTitle);
       if (body.isAtRisk !== undefined) {
         payload.is_at_risk = Boolean(body.isAtRisk);
@@ -1115,6 +1122,7 @@ export default async function handler(req: any, res: any) {
       next_action_title: normalizeNextActionTitle(body.nextActionTitle),
       next_action_at: nextActionAt,
       next_action_item_id: null,
+      last_contact_at: toIsoDateTime(body.lastContactAt ?? body.last_contact_at),
       billing_status: billingStatus,
       billing_model_snapshot: normalizeEnum(body.billingModelSnapshot, BILLING_MODELS, 'manual'),
       start_rule_snapshot: startRuleSnapshot,

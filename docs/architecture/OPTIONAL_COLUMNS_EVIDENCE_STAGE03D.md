@@ -56,6 +56,8 @@ Do not remove a column from fallback or promote it to required until one of thes
 3. a release evidence file referencing the migration and deployment state.
 
 ## Evidence matrix
+| clients | `last_contact_at` | fallback_allowed_pending_migration_evidence | Stage223R3-A stores explicit last customer contact for client silence/risk context. Migration file `supabase/sql/001_stage223r3_add_last_contact_at.sql` adds the column, but fallback remains allowed until production schema evidence is locked. |
+| leads | `last_contact_at` | fallback_allowed_pending_migration_evidence | Stage223R3-A stores explicit last customer contact for silence badges. Migration file `supabase/sql/001_stage223r3_add_last_contact_at.sql` adds the column, but fallback remains allowed until production schema evidence is locked. |
 
 | table | column | status | reason |
 |---|---|---|---|

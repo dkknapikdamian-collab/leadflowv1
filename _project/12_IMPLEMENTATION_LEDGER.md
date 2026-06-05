@@ -1633,3 +1633,73 @@ AUDYT RYZYK:
 NASTĘPNY KROK:
 - Uruchomić R2AG.
 - Po zielonym diff check odpalić lokalnie `npm run dev`, sprawdzić `/today`, potem push po akceptacji.
+
+<!-- STAGE223R3_A_LAST_CONTACT_INTAKE -->
+## 2026-06-05 - STAGE223R3-A Last Contact Intake
+
+FAKTY:
+- Zweryfikowano, że formularz tworzenia leada i klienta nie miał pola `lastContactAt`.
+- Zweryfikowano, że payload tworzenia leada/klienta nie wysyłał `lastContactAt`.
+- `activity-truth.ts` i `next-move-contract.ts` już istnieją po Stage223, więc wcześniejsza teza o ich braku była nieaktualna.
+- R3A dodaje pole `Ostatni kontakt` do tworzenia leadów i klientów.
+- R3A dodaje helper `src/lib/owner-control/last-contact-intake.ts`.
+- R3A dodaje API support dla `lastContactAt` / `last_contact_at` w `api/leads.ts` i `api/clients.ts`.
+- R3A dodaje SQL `supabase/sql/001_stage223r3_add_last_contact_at.sql`.
+
+DECYZJE:
+- Domyślnie pole pokazuje dzisiejszą datę.
+- Jeżeli kontakt był starszy, operator ma wpisać prawdziwą datę.
+- Datę zapisujemy jako noon ISO, żeby ograniczyć problemy stref czasowych.
+- Daty przyszłe są blokowane komunikatem: `Ostatni kontakt nie może być w przyszłości.`
+- Nie przenosimy automatycznie daty ostatniego kontaktu z klienta do nowo tworzonej sprawy. To zostaje DO POTWIERDZENIA.
+
+TESTY:
+- node scripts/check-stage223r3-last-contact-intake.cjs
+- node --test tests/stage223r3-last-contact-intake.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- Jeśli SQL nie zostanie uruchomiony, API ma fallback dla brakującej kolumny, ale data nie będzie trwale zapisana w bazie.
+- Lista leadów/klientów ma fallback select bez `last_contact_at`, żeby nie wysadzić produkcji przed migracją.
+- Pełne spięcie z widocznością badge `Cisza 14+ dni` zależy od tego, czy `last_contact_at` wróci z API po migracji.
+- Następny krok po R3A: Stage223R3-B Activity Truth Integration/verification, jeśli po manualnym teście badge nie bierze daty z bazy.
+
+NASTĘPNY KROK:
+- Uruchomić SQL w Supabase.
+- Uruchomić R3A lokalnie.
+- Przetestować tworzenie leada/klienta z datą 20 dni temu.
+
+<!-- STAGE223R3A_V3_STAGE03D_LAST_CONTACT_EVIDENCE -->
+## 2026-06-05 - STAGE223R3A-V3 Stage03D last_contact_at evidence hotfix
+
+FAKTY:
+- Stage223R3A-V2 przeszedł guard i runtime test dla Last Contact Intake.
+- Build przeszedł.
+- `verify:closeflow:quiet` zatrzymał się na `tests/stage03d-optional-columns-evidence.test.cjs`.
+- Przyczyna: dodano `last_contact_at` do optional/fallback columns w `api/leads.ts`, ale Stage03D evidence matrix nie miała wiersza `leads.last_contact_at`.
+- V3 dopisuje wymagane wiersze evidence:
+  - `leads.last_contact_at`,
+  - `clients.last_contact_at`.
+
+DECYZJE:
+- Nie zmieniamy runtime Last Contact Intake.
+- Nie cofamy SQL.
+- Naprawiamy dokument evidence, bo Stage03D wymaga audytowalnego uzasadnienia każdej optional fallback column.
+- Nie uruchamiamy osobnego pełnego builda drugi raz; po zmianie dokumentu evidence uruchamiamy failing Stage03D test oraz `verify:closeflow:quiet`, żeby potwierdzić release gate.
+
+TESTY:
+- node --test tests/stage03d-optional-columns-evidence.test.cjs
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- To jest dokumentacyjno-release-gate hotfix.
+- Runtime ryzyko minimalne, bo kod produkcyjny nie jest zmieniany w V3.
+- Po zielonym gate nadal trzeba ręcznie sprawdzić tworzenie leada/klienta z `Ostatni kontakt` 20 dni temu.
+
+NASTĘPNY KROK:
+- Uruchomić V3.
+- Jeśli gate jest zielony, lokalny smoke `/leads` i `/clients`.
+- Push po akceptacji.

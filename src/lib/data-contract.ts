@@ -29,6 +29,7 @@ export const DATA_CONTRACT_FIELD_MAP = {
     priority: ['priority'],
     createdAt: ['createdAt', 'created_at'],
     updatedAt: ['updatedAt', 'updated_at'],
+    lastContactAt: ['lastContactAt', 'last_contact_at', 'contactedAt', 'contacted_at'],
     movedToServiceAt: ['movedToServiceAt', 'moved_to_service_at', 'caseStartedAt', 'case_started_at'],
     nextActionAt: ['nextActionAt', 'next_action_at', 'nextStepDueAt', 'next_step_due_at'],
     nextActionItemId: ['nextActionItemId', 'next_action_item_id'],
@@ -48,6 +49,7 @@ export const DATA_CONTRACT_FIELD_MAP = {
     createdAt: ['createdAt', 'created_at'],
     updatedAt: ['updatedAt', 'updated_at'],
     lastActivityAt: ['lastActivityAt', 'last_activity_at'],
+    lastContactAt: ['lastContactAt', 'last_contact_at', 'contactedAt', 'contacted_at'],
     archivedAt: ['archivedAt', 'archived_at'],
     primaryCaseId: ['primaryCaseId', 'primary_case_id'],
   },
@@ -172,6 +174,7 @@ export type LeadDto = DataRecord & {
   priority: string;
   createdAt: string | null;
   updatedAt: string | null;
+  lastContactAt: string | null;
   movedToServiceAt: string | null;
   nextActionAt: string | null;
   nextActionItemId?: string;
@@ -193,6 +196,7 @@ export type ClientDto = DataRecord & {
   createdAt: string | null;
   updatedAt: string | null;
   lastActivityAt: string | null;
+  lastContactAt: string | null;
   archivedAt: string | null;
   primaryCaseId: string | null;
 };
@@ -557,6 +561,7 @@ export function normalizeLeadContract(row: DataRecord): LeadDto {
     priority: normalizePriority(row.priority),
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
     updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
+    lastContactAt: toIsoDateTime(row.lastContactAt) || toIsoDateTime(row.last_contact_at) || toIsoDateTime(row.contactedAt) || toIsoDateTime(row.contacted_at),
     movedToServiceAt,
     nextActionAt: toIsoDateTime(row.nextActionAt) || toIsoDateTime(row.next_action_at) || toIsoDateTime(row.nextStepDueAt) || toIsoDateTime(row.next_step_due_at),
     nextActionItemId: pickOptionalText(row, ['nextActionItemId', 'next_action_item_id']),
@@ -581,6 +586,7 @@ export function normalizeClientContract(row: DataRecord): ClientDto {
     createdAt: toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at),
     updatedAt: toIsoDateTime(row.updatedAt) || toIsoDateTime(row.updated_at),
     lastActivityAt: toIsoDateTime(row.lastActivityAt) || toIsoDateTime(row.last_activity_at),
+    lastContactAt: toIsoDateTime(row.lastContactAt) || toIsoDateTime(row.last_contact_at) || toIsoDateTime(row.contactedAt) || toIsoDateTime(row.contacted_at),
     archivedAt: toIsoDateTime(row.archivedAt) || toIsoDateTime(row.archived_at),
     primaryCaseId: pickOptionalText(row, ['primaryCaseId', 'primary_case_id']) || null,
   };

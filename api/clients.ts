@@ -6,9 +6,11 @@ import { normalizeClientContract } from '../src/lib/data-contract.js';
 import { assertWorkspaceWriteAccess } from '../src/server/_access-gate.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
-const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'archived_at', 'primary_case_id']);
+const OPTIONAL_CLIENT_COLUMNS = new Set(['notes', 'tags', 'source_primary', 'last_activity_at', 'last_contact_at', 'archived_at', 'primary_case_id']);
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
+const STAGE223R3_LAST_CONTACT_API = 'client API accepts optional lastContactAt and last_contact_at for intake silence truth';
+void STAGE223R3_LAST_CONTACT_API;
 const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'client delete archives client; active cases/tasks/events hide by archived parent';
 
 const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
@@ -27,6 +29,7 @@ const CLIENT_LIST_SELECT_STAGE124 = [
   'primary_case_id',
 ].join(',');
 const CLIENT_DETAIL_SELECT_STAGE124 = '*';
+const CLIENT_LIST_SELECT_STAGE223R3_LAST_CONTACT = [CLIENT_LIST_SELECT_STAGE124, 'last_contact_at'].join(',');
 
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -118,9 +121,10 @@ export default async function handler(req: any, res: any) {
       const requestedId = asText(req.query?.id);
       const includeArchivedClientsForCascade = ['1', 'true', 'yes'].includes(asText(req.query?.includeArchived).toLowerCase());
       const activeClientArchiveFilterForCascade = !requestedId && !includeArchivedClientsForCascade ? 'archived_at=is.null&' : '';
-      const clientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE124;
+      const clientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE223R3_LAST_CONTACT;
+      const fallbackClientSelect = requestedId ? CLIENT_DETAIL_SELECT_STAGE124 : CLIENT_LIST_SELECT_STAGE124;
       const base = withWorkspaceFilter(`clients?select=${clientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=updated_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
-      const fallback = withWorkspaceFilter(`clients?select=${clientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
+      const fallback = withWorkspaceFilter(`clients?select=${fallbackClientSelect}&${requestedId ? `id=eq.${encodeURIComponent(requestedId)}&` : ''}${activeClientArchiveFilterForCascade}order=created_at.desc.nullslast&limit=${requestedId ? 1 : 300}`, workspaceId);
       let normalized: ReturnType<typeof normalizeClient>[] = [];
       try {
         const result = await selectFirstAvailable([base, fallback]);
@@ -169,6 +173,7 @@ export default async function handler(req: any, res: any) {
         created_at: nowIso,
         updated_at: nowIso,
         last_activity_at: toIso(body.lastActivityAt),
+        last_contact_at: toIso(body.lastContactAt ?? body.last_contact_at),
         archived_at: toIso(body.archivedAt),
         primary_case_id: asPrimaryCaseId(body.primaryCaseId ?? body.primary_case_id),
       };
@@ -194,6 +199,7 @@ export default async function handler(req: any, res: any) {
       if (body.tags !== undefined) payload.tags = asStringArray(body.tags);
       if (body.sourcePrimary !== undefined) payload.source_primary = asText(body.sourcePrimary) || 'other';
       if (body.lastActivityAt !== undefined) payload.last_activity_at = toIso(body.lastActivityAt);
+      if (body.lastContactAt !== undefined || body.last_contact_at !== undefined) payload.last_contact_at = toIso(body.lastContactAt ?? body.last_contact_at);
       if (body.archivedAt !== undefined) payload.archived_at = toIso(body.archivedAt);
       if (body.primaryCaseId !== undefined || body.primary_case_id !== undefined) payload.primary_case_id = asPrimaryCaseId(body.primaryCaseId ?? body.primary_case_id);
 
