@@ -19,10 +19,18 @@ const files = [
   'tests/stage225-contact-cadence-grid.test.cjs',
 ];
 
+const mojibakeCodePoints = [0x00c4, 0x0139, 0x0102, 0x00c2, 0xfffd, 0x0081];
+
+function findMojibakeTokens(content) {
+  return mojibakeCodePoints
+    .map((codePoint) => String.fromCodePoint(codePoint))
+    .filter((token) => content.includes(token));
+}
+
 for (const file of files) {
   const content = read(file);
-  const bad = ['Ä', 'Ĺ', 'Ă', 'Â', '�', '\u0081'].filter((token) => content.includes(token));
-  if (bad.length) fail('mojibake tokens in ' + file + ': ' + bad.join(', '));
+  const bad = findMojibakeTokens(content);
+  if (bad.length) fail('mojibake tokens in ' + file + ': codepoints ' + bad.map((token) => 'U+' + token.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')).join(', '));
 }
 
 const helper = read(helperPath);
@@ -45,7 +53,7 @@ const today = todayPath ? read(todayPath) : '';
   if (!helper.includes(token)) fail('helper missing ' + token);
 });
 
-if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYSs*=s*[/g) || []).length) {
+if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
   fail('helper redefines SALES_SILENCE_THRESHOLDS_DAYS instead of importing owner-risk-rules source of truth');
 }
 
@@ -91,7 +99,7 @@ if (packageJson.scripts['test:stage225-contact-cadence-grid'] !== 'node --test t
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'STAGE225R5_MOJIBAKE_HOTFIX',
+  stage: 'STAGE225R6_GUARD_MOJIBAKE_SELF_FIX',
   checkedFiles: files.length,
   guard: 'check:stage225-contact-cadence-grid',
 }, null, 2));
