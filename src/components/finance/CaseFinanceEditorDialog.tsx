@@ -176,34 +176,14 @@ export function CaseFinanceEditorDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="cf-finance-dialog cf-finance-editor-dialog" data-fin12-shared-case-finance-editor="true" data-fin13-client-case-finance-editor="true" data-stage220a36-commission-input-model-split="true">
+      <DialogContent className="cf-finance-dialog cf-finance-editor-dialog" data-fin12-shared-case-finance-editor="true" data-fin13-client-case-finance-editor="true" data-stage220a36-commission-input-model-split="true" data-stage220a36r2-commission-field-order="true">
         <DialogHeader>
           <DialogTitle>Prowizja sprawy</DialogTitle>
           <p className="cf-finance-editor-dialog__subtitle">Najpierw wybierz rodzaj prowizji. Kwota stała to gotowa prowizja, a procent wymaga wartości transakcji do wyliczenia.</p>
         </DialogHeader>
         <form className="cf-finance-editor-form" onSubmit={handleSubmit}>
-          <div className="cf-finance-editor-grid">
-            <label className="cf-finance-field">
-              <span>Wartość transakcji do wyliczenia prowizji</span>
-              <Input
-                value={isPercentCommission ? form.contractValue : ''}
-                inputMode="decimal"
-                disabled={!isPercentCommission}
-                placeholder="np. 100000"
-                onChange={(event) => setForm((current) => ({ ...current, contractValue: event.target.value }))}
-              />
-              <small>Aktywne tylko przy prowizji procentowej. Tu wpisujesz podstawę, np. cenę sprzedaży działki.</small>
-            </label>
-            <label className="cf-finance-field">
-              <span>Waluta</span>
-              <Input
-                value={form.currency}
-                maxLength={3}
-                placeholder="PLN"
-                onChange={(event) => setForm((current) => ({ ...current, currency: event.target.value.toUpperCase() }))}
-              />
-            </label>
-            <label className="cf-finance-field">
+          <div className="cf-finance-editor-grid cf-finance-editor-grid--commission-order" data-stage220a36r2-commission-grid="true">
+            <label className="cf-finance-field cf-finance-field--commission-mode">
               <span>Rodzaj prowizji</span>
               <select
                 className="cf-finance-input"
@@ -214,19 +194,20 @@ export function CaseFinanceEditorDialog({
                 <option value="percent">Procent od wartości transakcji</option>
                 <option value="fixed">Kwota stała</option>
               </select>
+              <small>Najpierw wybierz, czy prowizja jest gotową kwotą, czy ma się wyliczyć procentowo.</small>
             </label>
-            <label className="cf-finance-field">
+            <label className="cf-finance-field cf-finance-field--commission-rate">
               <span>Stawka prowizji (%)</span>
               <Input
                 value={form.commissionRate}
                 inputMode="decimal"
-                disabled={form.commissionMode !== 'percent'}
-                placeholder="np. 3"
+                disabled={!isPercentCommission}
+                placeholder="np. 2"
                 onChange={(event) => setForm((current) => ({ ...current, commissionRate: event.target.value }))}
               />
-              <small>Aktywne tylko przy prowizji procentowej. System liczy prowizję od pola „Wartość transakcji do wyliczenia prowizji”.</small>
+              <small>Aktywne tylko przy prowizji procentowej.</small>
             </label>
-            <label className="cf-finance-field">
+            <label className="cf-finance-field cf-finance-field--commission-amount">
               <span>Wartość prowizji</span>
               <Input
                 value={calculatedCommissionInputValue}
@@ -236,9 +217,29 @@ export function CaseFinanceEditorDialog({
                 placeholder={isPercentCommission ? 'wyliczana automatycznie' : 'np. 3000'}
                 onChange={(event) => setForm((current) => ({ ...current, commissionAmount: event.target.value }))}
               />
-              <small>Przy kwocie stałej wpisujesz ją ręcznie. Przy procencie pole pokazuje wyliczoną prowizję i jest nieedytowalne.</small>
+              <small>Przy stałej kwocie wpisujesz ręcznie. Przy procencie system wylicza i blokuje edycję.</small>
             </label>
-            <label className="cf-finance-field">
+            <label className="cf-finance-field cf-finance-field--basis cf-finance-field--wide">
+              <span>Podstawa procentu (wartość transakcji/zlecenia)</span>
+              <Input
+                value={isPercentCommission ? form.contractValue : ''}
+                inputMode="decimal"
+                disabled={!isPercentCommission}
+                placeholder="np. 100000"
+                onChange={(event) => setForm((current) => ({ ...current, contractValue: event.target.value }))}
+              />
+              <small>To nie jest prowizja. To kwota, od której liczysz procent, np. cena sprzedaży działki albo wartość zlecenia.</small>
+            </label>
+            <label className="cf-finance-field cf-finance-field--currency">
+              <span>Waluta</span>
+              <Input
+                value={form.currency}
+                maxLength={3}
+                placeholder="PLN"
+                onChange={(event) => setForm((current) => ({ ...current, currency: event.target.value.toUpperCase() }))}
+              />
+            </label>
+            <label className="cf-finance-field cf-finance-field--status">
               <span>Status prowizji</span>
               <select
                 className="cf-finance-input"

@@ -27,6 +27,8 @@ const pkg = JSON.parse(read('package.json'));
   'contractValue: transactionBasis',
   'expectedRevenue: transactionBasis',
   'Podstawa procentu:',
+  'data-stage220a36r2-commission-field-order="true"',
+  'Podstawa procentu (wartość transakcji/zlecenia)',
 ].forEach((token) => requireText(editor, token, 'CaseFinanceEditorDialog'));
 
 forbidText(editor, '<span>Wartość transakcji / sprawy</span>', 'old confusing transaction label');

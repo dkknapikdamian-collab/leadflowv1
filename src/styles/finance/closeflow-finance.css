@@ -652,3 +652,34 @@
 .client-detail-today-info-tile.cf-finance-scope-card .cf-finance-scope-card__metrics {
   width: 100%;
 }
+
+/* STAGE220A36-R2_COMMISSION_MODAL_FIELD_ORDER */
+.cf-finance-dialog[data-stage220a36r2-commission-field-order="true"] {
+  max-width: min(920px, calc(100vw - 24px));
+}
+
+.cf-finance-editor-grid[data-stage220a36r2-commission-grid="true"] {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--cf-space-3, 14px);
+}
+
+.cf-finance-editor-grid[data-stage220a36r2-commission-grid="true"] .cf-finance-field--wide {
+  grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+  .cf-finance-editor-grid[data-stage220a36r2-commission-grid="true"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .cf-finance-editor-grid[data-stage220a36r2-commission-grid="true"] {
+    grid-template-columns: 1fr;
+  }
+
+  .cf-finance-editor-grid[data-stage220a36r2-commission-grid="true"] .cf-finance-field--wide {
+    grid-column: auto;
+  }
+}

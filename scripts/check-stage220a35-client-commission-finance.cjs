@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+﻿const fs = require('node:fs');
 const path = require('node:path');
 
 const root = process.cwd();
@@ -17,6 +17,11 @@ function requireText(text, token, label) {
 function forbidText(text, token, label) {
   if (text.includes(token)) fail(label + ' forbidden token still present: ' + token);
 }
+function requireAnyText(text, tokens, label) {
+  if (!tokens.some((token) => text.includes(token))) {
+    fail(label + ' missing one of: ' + tokens.join(' | '));
+  }
+}
 
 const clientDetail = read('src/pages/ClientDetail.tsx');
 const editor = read('src/components/finance/CaseFinanceEditorDialog.tsx');
@@ -30,23 +35,23 @@ const pkg = JSON.parse(read('package.json'));
   'data-stage220a35-client-commission-metrics="true"',
   'data-stage220a35-case-card-commission="true"',
   'commissionPaidTotal: financeSummary.commissionPaidAmount',
-  'Prowizja należna',
-  'Wpłacono prowizji',
-  'Do zapłaty prowizji',
-  'Wartość transakcji: {transactionValue}',
+  'Prowizja naleĹĽna',
+  'WpĹ‚acono prowizji',
+  'Do zapĹ‚aty prowizji',
+  'WartoĹ›Ä‡ transakcji: {transactionValue}',
   'getCaseFinanceSummary(caseRecord, casePayments)',
 ].forEach((token) => requireText(clientDetail, token, 'ClientDetail'));
 
-forbidText(clientDetail, '<span>Do domknięcia</span>\n            <b>{formatMoneyWithCurrency(unpaidTotal)}</b>', 'ClientTopTiles old transaction remaining display');
-forbidText(clientDetail, '<small><span>Suma wpłat</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>', 'right rail old client payments label');
-forbidText(clientDetail, '<small>Do domknięcia: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>', 'right hard card old transaction remaining label');
+forbidText(clientDetail, '<span>Do domkniÄ™cia</span>\n            <b>{formatMoneyWithCurrency(unpaidTotal)}</b>', 'ClientTopTiles old transaction remaining display');
+forbidText(clientDetail, '<small><span>Suma wpĹ‚at</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>', 'right rail old client payments label');
+forbidText(clientDetail, '<small>Do domkniÄ™cia: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>', 'right hard card old transaction remaining label');
 
 [
   'STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT',
   'Rodzaj prowizji',
-  'Wartość transakcji do wyliczenia prowizji',
-  'Wartość prowizji',
-  'Przy kwocie stałej wpisujesz ją ręcznie. Przy procencie pole pokazuje wyliczoną prowizję i jest nieedytowalne.',
+  'WartoĹ›Ä‡ transakcji do wyliczenia prowizji',
+  'WartoĹ›Ä‡ prowizji',
+  'Przy kwocie staĹ‚ej wpisujesz jÄ… rÄ™cznie. Przy procencie pole pokazuje wyliczonÄ… prowizjÄ™ i jest nieedytowalne.',
 ].forEach((token) => requireText(editor, token, 'CaseFinanceEditorDialog'));
 
 [
@@ -75,3 +80,4 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage220a35
 }
 
 console.log(JSON.stringify({ ok: true, stage: 'STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH', guard: 'check:stage220a35-client-commission-finance' }, null, 2));
+

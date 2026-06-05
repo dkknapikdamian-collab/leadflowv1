@@ -1219,3 +1219,27 @@ Data: 2026-06-05 21:45 Europe/Warsaw
 - Nie ruszano Supabase, RLS ani backendu płatności.
 - Techniczne pole contractValue nadal przechowuje podstawę procentu przy modelu procentowym.
 - Stage227 może startować dopiero po ręcznym sprawdzeniu fixed/percent w modalach finansów.
+
+## STAGE220A36-R2 — Commission Modal Field Order
+
+Data: 2026-06-05 22:00 Europe/Warsaw
+
+### FAKTY
+- Doprecyzowano układ modala prowizji: najpierw rodzaj prowizji, potem stawka procentowa i wartość prowizji.
+- Pole "Wartość prowizji" jest edytowalne tylko przy kwocie stałej.
+- Przy procencie wartość prowizji wylicza się automatycznie i jest nieedytowalna.
+- Podstawa procentu, czyli wartość transakcji/zlecenia, jest osobnym polem poniżej głównych kontrolek prowizji.
+
+### TESTY
+- node scripts/check-stage220a36-commission-input-model-split.cjs
+- node scripts/check-stage220a36r2-commission-modal-field-order.cjs
+- node --test tests/stage220a36-commission-input-model-split.test.cjs
+- node --test tests/stage220a36r2-commission-modal-field-order.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Nie zmieniano bazy ani modelu płatności.
+- Ryzyko dotyczy tylko czytelności UI i błędnego wpisywania ceny transakcji w miejsce prowizji.
+- Stage227 nadal musi korzystać z prowizji jako wartości operacyjnej.
