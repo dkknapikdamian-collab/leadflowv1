@@ -101,13 +101,13 @@ import '../styles/closeflow-page-header-v2.css';
 import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
-const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadĂłw jest pusty';
-const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'PrzywrĂłÄ‡ leada';
-const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiÄ…zanÄ… sprawÄ™';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, ĹşrĂłdĹ‚o albo sprawa...';
-const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.';
+const STAGE_PANEL_DELETE_LEADS_TRASH_EMPTY_GUARD = 'Kosz leadów jest pusty';
+const STAGE_PANEL_DELETE_LEADS_RESTORE_GUARD = 'Przywróć leada';
+const STAGE_PANEL_DELETE_LEADS_CONFIRM_GUARD = '\\\\n\\\\nTen lead ma powiązaną sprawę';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
+const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
 const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing contact, missing next action and 7/14 day silence badges';
 const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit lastContactAt for activity truth';
@@ -118,16 +118,16 @@ void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
 void STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES;
 void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
 void STAGE225_CONTACT_CADENCE_GRID_LEADS;
-// Guard marker: \n\nTen lead ma powiÄ…zanÄ… sprawÄ™
+// Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
   { value: 'new', label: 'Nowy', tone: 'blue' },
   { value: 'contacted', label: 'Skontaktowany', tone: 'blue' },
   { value: 'qualification', label: 'Kwalifikacja', tone: 'blue' },
-  { value: 'proposal_sent', label: 'Oferta wysĹ‚ana', tone: 'amber' },
-  { value: 'waiting_response', label: 'Czeka na odpowiedĹş', tone: 'amber' },
+  { value: 'proposal_sent', label: 'Oferta wysłana', tone: 'amber' },
+  { value: 'waiting_response', label: 'Czeka na odpowiedź', tone: 'amber' },
   { value: 'accepted', label: 'Zaakceptowany', tone: 'green' },
-  { value: 'moved_to_service', label: 'Przeniesiony do obsĹ‚ugi', tone: 'blue' },
+  { value: 'moved_to_service', label: 'Przeniesiony do obsługi', tone: 'blue' },
   { value: 'negotiation', label: 'Negocjacje', tone: 'amber' },
   { value: 'lost', label: 'Przegrany', tone: 'neutral' },
   { value: 'archived', label: 'W koszu', tone: 'amber' },
@@ -221,7 +221,7 @@ function buildLeadCompactMeta(lead: any, linkedCase: CaseRecord | undefined, sou
     sourceLabel,
     company,
     caseLabel,
-  ].filter(Boolean).join(' Â· ');
+  ].filter(Boolean).join(' · ');
 }
 
 function sanitizeNewLeadCreatePayloadA1(input: any) {
@@ -253,7 +253,7 @@ function getNextActionKindLabel(action: { kind?: string } | null | undefined) {
 function buildNextActionMeta(action: { title: string | null; at: string | null; kind?: string | null; status?: string } | null | undefined) {
   if (!action?.at || !action?.title) {
     return {
-      title: 'Brak zaplanowanych dziaĹ‚aĹ„',
+      title: 'Brak zaplanowanych działań',
       subtitle: '',
       overdue: false,
     };
@@ -265,7 +265,7 @@ function buildNextActionMeta(action: { title: string | null; at: string | null; 
 
   return {
     title: action.title,
-    subtitle: `${getNextActionKindLabel(action)} Â· ${dateLabel} Â· ${String(action.status || 'todo')}`,
+    subtitle: `${getNextActionKindLabel(action)} · ${dateLabel} · ${String(action.status || 'todo')}`,
     overdue,
   };
 }
@@ -370,9 +370,9 @@ export default function Leads() {
       setEvents(eventRows as any[]);
       setClients(clientRows as any[]);
     } catch (error: any) {
-      const message = error?.message || 'Nie udaĹ‚o siÄ™ pobraÄ‡ leadĂłw';
+      const message = error?.message || 'Nie udało się pobrać leadów';
       setLoadError(message);
-      toast.error(`BĹ‚Ä…d odczytu leadĂłw: ${message}`);
+      toast.error(`Błąd odczytu leadów: ${message}`);
     } finally {
       setLoading(false);
     }
@@ -460,31 +460,31 @@ export default function Leads() {
   };
 
   const restoreConflictCandidate = async (candidate: EntityConflictCandidate) => {
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historiÄ™. Najpierw go otwĂłrz i zdecyduj, co zrobiÄ‡.'); return; }
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
     try {
       setLeadSubmitting(true);
       if (candidate.entityType === 'lead') {
         await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
-        toast.success('Lead przywrĂłcony');
+        toast.success('Lead przywrócony');
       } else {
         await updateClientInSupabase({ id: candidate.id, archivedAt: null });
-        toast.success('Klient przywrĂłcony');
+        toast.success('Klient przywrócony');
       }
       setLeadConflictOpen(false);
       await loadLeads();
-    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
     if (createLeadSubmitLockRef.current) return;
-    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
+    if (!hasAccess) return toast.error('Twój trial wygasł.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
     const hasLeadIdentity = Boolean(newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || newLead.company.trim());
     const hasContactOrNeed = Boolean(newLead.phone.trim() || newLead.email.trim() || newLead.summary.trim() || newLead.notes.trim());
-    if (!hasLeadIdentity) return toast.error('Podaj nazwÄ™ albo kontakt.');
+    if (!hasLeadIdentity) return toast.error('Podaj nazwę albo kontakt.');
     if (!hasContactOrNeed) return toast.error('Podaj telefon, e-mail albo opis potrzeby.');
     const lastContactError = getLastContactDateInputError(newLead.lastContactAt);
     if (lastContactError) return toast.error(lastContactError);
@@ -496,14 +496,14 @@ export default function Leads() {
       const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
       if (candidates.length) { setLeadConflictCandidates(candidates); setLeadConflictPendingInput(preparedLead); setIsNewLeadOpen(false); setLeadConflictOpen(true); return; }
       await createLeadFromPreparedInput(preparedLead);
-    } catch (error: any) { toast.error(`BĹ‚Ä…d zapisu leada: ${error.message}`); }
+    } catch (error: any) { toast.error(`Błąd zapisu leada: ${error.message}`); }
     finally { createLeadSubmitLockRef.current = false; setLeadSubmitting(false); }
   };
 
   const handleCreateLeadAnyway = async () => {
     if (!leadConflictPendingInput || leadSubmitting) return;
     try { setLeadSubmitting(true); await createLeadFromPreparedInput(leadConflictPendingInput, { forceDuplicate: true }); setLeadConflictOpen(false); setLeadConflictPendingInput(null); setLeadConflictCandidates([]); }
-    catch (error: any) { toast.error('BĹ‚Ä…d zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
+    catch (error: any) { toast.error('Błąd zapisu leada: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
 
@@ -532,7 +532,7 @@ export default function Leads() {
       toast.success('Rekord przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('Nie udaĹ‚o siÄ™ przenieĹ›Ä‡ rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udało się przenieść rekordu do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setLeadSubmitting(false);
     }
@@ -559,7 +559,7 @@ export default function Leads() {
       toast.success('Lead przeniesiony do kosza');
       await loadLeads();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Błąd przenoszenia leada do kosza: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -570,7 +570,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwĂłj trial wygasĹ‚.');
+      toast.error('Twój trial wygasł.');
       return;
     }
 
@@ -588,7 +588,7 @@ export default function Leads() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwĂłj trial wygasĹ‚.');
+      toast.error('Twój trial wygasł.');
       return;
     }
 
@@ -600,7 +600,7 @@ export default function Leads() {
     const nextVisibility = nextStatus === 'moved_to_service' ? 'archived' : 'active';
     const nextOutcome = nextStatus === 'moved_to_service' ? 'moved_to_service' : 'open';
 
-    if (!window.confirm('PrzywrĂłciÄ‡ leada do listy: ' + (lead.name || 'Lead') + '?')) return;
+    if (!window.confirm('Przywrócić leada do listy: ' + (lead.name || 'Lead') + '?')) return;
 
     try {
       setArchivePendingId(leadId);
@@ -611,10 +611,10 @@ export default function Leads() {
         salesOutcome: nextOutcome,
         closedAt: null,
       });
-      toast.success('Lead przywrĂłcony');
+      toast.success('Lead przywrócony');
       await loadLeads();
     } catch (error: any) {
-      toast.error('BĹ‚Ä…d przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Błąd przywracania leada: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setArchivePendingId(null);
     }
@@ -642,7 +642,7 @@ export default function Leads() {
     [activeLeads, clients, cases],
   );
 
-  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientĂłw i spraw.
+  // CLOSEFLOW_FB2_RIGHT_RAIL_LEADS_ONLY: right rail pokazuje tylko aktywne leady, bez klientów i spraw.
   const mostValuableRelations = useMemo(
     () => buildRelationValueEntries({ leads: activeLeads, clients: [], cases: [] }).slice(0, 5),
     [activeLeads],
@@ -674,7 +674,7 @@ export default function Leads() {
         || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
         || (quickFilter === 'history' && movedToService);
 
-      const matchesCadence = !activeCadenceIds || activeCadenceIds.has(String(lead.id || ''));
+      const matchesCadence = showTrash || !activeCadenceIds || activeCadenceIds.has(String(lead.id || ''));
 
       return matchesSearch && matchesQuickFilter && matchesCadence;
     });
@@ -705,10 +705,11 @@ export default function Leads() {
     () => buildContactCadenceGrid({
       entityType: 'lead',
       records: activeLeads,
-      relatedRecordsById: relatedRecordsByLeadId,
+      relatedRecordsById,
     }),
     [activeLeads, relatedRecordsByLeadId],
   );
+
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
     if (!normalizedQuery) return [];
@@ -770,7 +771,7 @@ export default function Leads() {
                             onClick={toggleTrashView}
                           >
                             {showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                            {showTrash ? 'PokaĹĽ aktywne' : 'Kosz'}
+                            {showTrash ? 'Pokaż aktywne' : 'Kosz'}
                             <span className="pill">{showTrash ? stats.total : stats.trash}</span>
                           </button>
 
@@ -826,11 +827,11 @@ export default function Leads() {
                                         max={getTodayDateInputValue()}
                                         onChange={(event) => setNewLead({ ...newLead, lastContactAt: event.target.value })}
                                       />
-                                      <small className="sub">JeĹ›li dodajesz starszy kontakt, wpisz dzieĹ„ ostatniej rozmowy. To wpĹ‚ywa na oznaczenia ciszy 7/14 dni.</small>
+                                      <small className="sub">Jeśli dodajesz starszy kontakt, wpisz dzień ostatniej rozmowy. To wpływa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="lead-form-field">
-                                      <Label>ĹąrĂłdĹ‚o</Label>
+                                      <Label>Źródło</Label>
                                       <select
                                         className="lead-form-select"
                                         value={newLead.source}
@@ -843,7 +844,7 @@ export default function Leads() {
                                     </div>
 
                                     <div className="lead-form-field">
-                                      <Label>WartoĹ›Ä‡</Label>
+                                      <Label>Wartość</Label>
                                       <Input
                                         type="number"
                                         value={newLead.dealValue}
@@ -857,7 +858,7 @@ export default function Leads() {
                                       <Input
                                         value={newLead.summary}
                                         onChange={(event) => setNewLead({ ...newLead, summary: event.target.value })}
-                                        placeholder="Np. strona www, kampania, nieruchomoĹ›Ä‡, dokumenty..."
+                                        placeholder="Np. strona www, kampania, nieruchomość, dokumenty..."
                                       />
                                     </div>
 
@@ -867,7 +868,7 @@ export default function Leads() {
                                         className="lead-form-textarea"
                                         value={newLead.notes}
                                         onChange={(event) => setNewLead({ ...newLead, notes: event.target.value })}
-                                        placeholder="KrĂłtki kontekst rozmowy. Bez dĹ‚ugiej odprawy."
+                                        placeholder="Krótki kontekst rozmowy. Bez długiej odprawy."
                                       />
                                     </div>
                                   </div>
@@ -906,7 +907,7 @@ export default function Leads() {
                                       />
                                       <span>
                                         <strong>Wysoki priorytet</strong>
-                                        <small>Oznacz, jeĹ›li lead wymaga szybkiej reakcji.</small>
+                                        <small>Oznacz, jeśli lead wymaga szybkiej reakcji.</small>
                                       </span>
                                     </label>
                                   </div>
@@ -935,8 +936,8 @@ export default function Leads() {
             icon={LeadEntityIcon}
             active={quickFilter === 'all' && !valueSortEnabled && !showTrash}
             onClick={() => { setShowTrash(false); setQuickFilter('all'); setValueSortEnabled(false); }}
-            title="PokaĹĽ wszystkie leady"
-            ariaLabel="PokaĹĽ wszystkie leady"
+            title="Pokaż wszystkie leady"
+            ariaLabel="Pokaż wszystkie leady"
           />
 
           <StatShortcutCard
@@ -945,31 +946,31 @@ export default function Leads() {
             icon={TrendingUp}
             active={quickFilter === 'active' && !showTrash}
             onClick={() => toggleQuickFilter('active')}
-            title="PokaĹĽ aktywne leady"
-            ariaLabel="PokaĹĽ aktywne leady"
+            title="Pokaż aktywne leady"
+            ariaLabel="Pokaż aktywne leady"
             valueClassName="text-slate-900"
             iconClassName="bg-blue-50 text-blue-500"
           />
 
           <StatShortcutCard
-            label="WartoĹ›Ä‡"
+            label="Wartość"
             value={`${stats.value.toLocaleString('pl-PL')} PLN`}
             icon={TrendingUp}
             active={valueSortEnabled && !showTrash}
             onClick={toggleValueSorting}
-            title="Sortuj leady po wartoĹ›ci"
-            ariaLabel="Sortuj leady po wartoĹ›ci"
-            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortowaÄ‡!'}
+            title="Sortuj leady po wartości"
+            ariaLabel="Sortuj leady po wartości"
+            helper={valueSortEnabled ? 'sortowanie aktywne' : 'kliknij, aby sortować!'}
           />
 
           <StatShortcutCard
-            label="ZagroĹĽone"
+            label="Zagrożone"
             value={stats.atRisk}
             icon={AlertTriangle}
             active={quickFilter === 'at-risk' && !showTrash}
             onClick={() => toggleQuickFilter('at-risk')}
-            title="PokaĹĽ zagroĹĽone leady"
-            ariaLabel="PokaĹĽ zagroĹĽone leady"
+            title="Pokaż zagrożone leady"
+            ariaLabel="Pokaż zagrożone leady"
             tone="risk"
           />
 
@@ -979,8 +980,8 @@ export default function Leads() {
             icon={CaseEntityIcon}
             active={quickFilter === 'history' && !showTrash}
             onClick={() => toggleQuickFilter('history')}
-            title="PokaĹĽ leady przeniesione do obsĹ‚ugi"
-            ariaLabel="PokaĹĽ leady przeniesione do obsĹ‚ugi"
+            title="Pokaż leady przeniesione do obsługi"
+            ariaLabel="Pokaż leady przeniesione do obsługi"
           />
         </div>
 
@@ -1027,19 +1028,21 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </div>
               ) : (
                 <div className="suggestions lead-search-suggestions-stage31 cf-main-search" data-stage31-lead-search-suggestions="true" data-stage117-leads-search-suggestions="true" data-cf-main-search-source="stage173">
-                  <span className="sub">Podpowiedzi pojawiajÄ… siÄ™ pod wyszukiwarkÄ…. UsuĹ„ czÄ™Ĺ›Ä‡ tekstu albo wybierz inny filtr.</span>
+                  <span className="sub">Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.</span>
                 </div>
               )
             ) : null}
 
 
+
             {!showTrash ? (
               <div className="table-card lead-table-card w-full max-w-none" data-stage225-contact-cadence-grid="leads">
+                <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />
                 <div className="row row-empty">
                   <span className="index"><Clock3 className="h-4 w-4" /></span>
                   <span>
                     <span className="title">Siatka kontaktu</span>
-                    <span className="sub">Filtruje leady po prawdziwej dacie ostatniego kontaktu. Nie liczy ciszy z updatedAt.</span>
+                    <span className="sub">Filtruje leady po dacie ostatniego kontaktu. Nie liczy ciszy z updatedAt.</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 p-3 pt-0">
@@ -1066,12 +1069,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 </div>
               </div>
             ) : null}
+
             <div className="table-card lead-table-card w-full max-w-none" data-stage25-lead-table-card="true" data-stage117-leads-list="true">
               {loading || workspaceLoading ? (
                 <div className="row row-empty">
                   <span className="index"><Loader2 className="h-4 w-4 animate-spin" /></span>
                   <span>
-                    <span className="title">Ĺadowanie leadĂłw</span>
+                    <span className="title">Ładowanie leadów</span>
                     <span className="sub">Pobieram dane z aplikacji.</span>
                   </span>
                 </div>
@@ -1079,7 +1083,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">!</span>
                   <span>
-                    <span className="title">Nie udaĹ‚o siÄ™ pobraÄ‡ leadĂłw</span>
+                    <span className="title">Nie udało się pobrać leadów</span>
                     <span className="sub">{loadError}</span>
                   </span>
                 </div>
@@ -1135,12 +1139,12 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
 
                         <span className="lead-value-cell">
-                          <span className="mini">WartoĹ›Ä‡</span>
+                          <span className="mini">Wartość</span>
                           <strong className="cf-list-row-value lead-card-value-pill" data-lead-value-pill="true">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
-                          <span className="mini">NajbliĹĽsza zaplanowana akcja</span>
+                          <span className="mini">Najbliższa zaplanowana akcja</span>
                           <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
@@ -1154,8 +1158,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                             className={actionIconClass('danger', 'btn ghost lead-icon-btn')}
                             disabled={pending}
                             onClick={(event) => (showTrash ? handleRestoreLead(event, lead) : handleArchiveLead(event, lead))}
-                            aria-label={showTrash ? 'PrzywrĂłÄ‡ leada' : 'PrzenieĹ› leada do kosza'}
-                            title={showTrash ? 'PrzywrĂłÄ‡ leada' : 'PrzenieĹ› leada do kosza'}
+                            aria-label={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
+                            title={showTrash ? 'Przywróć leada' : 'Przenieś leada do kosza'}
                           >
                             {pending ? <Loader2 className="h-4 w-4 animate-spin" /> : showTrash ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
                           </button>
@@ -1169,8 +1173,8 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 <div className="row row-empty">
                   <span className="index">0</span>
                   <span>
-                    <span className="title">{showTrash ? 'Kosz leadĂłw jest pusty.' : 'Brak leadĂłw w tym widoku'}</span>
-                    <span className="sub">{showTrash ? 'Nie ma rekordĂłw do przywrĂłcenia.' : 'ZmieĹ„ filtr albo dodaj pierwszego leada.'}</span>
+                    <span className="title">{showTrash ? 'Kosz leadów jest pusty.' : 'Brak leadów w tym widoku'}</span>
+                    <span className="sub">{showTrash ? 'Nie ma rekordów do przywrócenia.' : 'Zmień filtr albo dodaj pierwszego leada.'}</span>
                   </span>
                 </div>
               )}
@@ -1198,7 +1202,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                 },
                 {
                   key: 'at-risk',
-                  label: 'ZagroĹĽone',
+                  label: 'Zagrożone',
                   value: stats.atRisk,
                   onClick: () => {
                     setShowTrash(false);
@@ -1232,7 +1236,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
             {/* STAGE117_RAIL_ORDER_TOP_VALUE_BELOW_FILTERS */}
             <TopValueRecordsCard
               title="Najcenniejsze leady"
-              description="5 leadĂłw z najwiÄ™kszÄ… wartoĹ›ciÄ…."
+              description="5 leadów z największą wartością."
               className="operator-top-value-card"
               dataTestId="leads-top-value-records-card"
               dataAttrs={{ 'data-relation-value-board': true }}
@@ -1247,7 +1251,7 @@ items={mostValuableRelations.map((entry) => ({
                   'data-stage32-valuable-relation-row': true,
                 },
               }))}
-              emptyLabel="Brak relacji z wyliczonÄ… wartoĹ›ciÄ…."
+              emptyLabel="Brak relacji z wyliczoną wartością."
             />
 
             <div hidden data-leads-stage35-removed-ai-side-card="true" />
@@ -1261,13 +1265,13 @@ items={mostValuableRelations.map((entry) => ({
           onOpenChange={(open) => {
             if (!open && !archivePendingId) setLeadArchiveConfirmStage220A29(null);
           }}
-          title="PrzenieĹ›Ä‡ leada do kosza?"
+          title="Przenieść leada do kosza?"
           description={
             leadArchiveConfirmStage220A29?.linkedCase
-              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiÄ…zanÄ… sprawÄ™: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
-              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.'
+              ? 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' ma powiązaną sprawę: ' + (leadArchiveConfirmStage220A29.linkedCase.title || leadArchiveConfirmStage220A29.linkedCase.id) + '. Rekord zniknie z aktywnej listy, ale nie zostanie trwale skasowany.'
+              : 'Lead ' + (leadArchiveConfirmStage220A29?.lead?.name || 'Lead') + ' zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.'
           }
-          confirmLabel="PrzenieĹ› do kosza"
+          confirmLabel="Przenieś do kosza"
           cancelLabel="Anuluj"
           confirmTone="destructive"
           pending={Boolean(archivePendingId)}
@@ -1281,9 +1285,9 @@ items={mostValuableRelations.map((entry) => ({
           onOpenChange={(open) => {
             if (!open && !leadSubmitting) setConflictArchiveConfirmStage220A29(null);
           }}
-          title="PrzenieĹ›Ä‡ rekord do kosza?"
-          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.'}
-          confirmLabel="PrzenieĹ› do kosza"
+          title="Przenieść rekord do kosza?"
+          description={'Rekord ' + (conflictArchiveConfirmStage220A29?.label || 'bez nazwy') + ' zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.'}
+          confirmLabel="Przenieś do kosza"
           cancelLabel="Anuluj"
           confirmTone="destructive"
           pending={leadSubmitting}

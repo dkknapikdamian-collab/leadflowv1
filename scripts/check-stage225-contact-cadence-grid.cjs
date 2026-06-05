@@ -11,6 +11,20 @@ const fail = (message) => {
 const helperPath = 'src/lib/owner-control/contact-cadence-grid.ts';
 if (!fs.existsSync(path.join(root, helperPath))) fail('missing contact-cadence-grid.ts');
 
+const files = [
+  helperPath,
+  'src/pages/Leads.tsx',
+  'src/pages/Clients.tsx',
+  'scripts/check-stage225-contact-cadence-grid.cjs',
+  'tests/stage225-contact-cadence-grid.test.cjs',
+];
+
+for (const file of files) {
+  const content = read(file);
+  const bad = ['Ä', 'Ĺ', 'Ă', 'Â', '�', '\u0081'].filter((token) => content.includes(token));
+  if (bad.length) fail('mojibake tokens in ' + file + ': ' + bad.join(', '));
+}
+
 const helper = read(helperPath);
 const leads = read('src/pages/Leads.tsx');
 const clients = read('src/pages/Clients.tsx');
@@ -26,11 +40,12 @@ const today = todayPath ? read(todayPath) : '';
   'rescueReason',
   'unknown',
   'silent_14_plus',
+  '14+ dni ciszy',
 ].forEach((token) => {
-  if (!helper.includes(token)) fail(`helper missing ${token}`);
+  if (!helper.includes(token)) fail('helper missing ' + token);
 });
 
-if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
+if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYSs*=s*[/g) || []).length) {
   fail('helper redefines SALES_SILENCE_THRESHOLDS_DAYS instead of importing owner-risk-rules source of truth');
 }
 
@@ -43,7 +58,7 @@ if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
   'setCadenceFilter',
   '14+ dni ciszy',
 ].forEach((token) => {
-  if (!leads.includes(token)) fail(`Leads.tsx missing ${token}`);
+  if (!leads.includes(token)) fail('Leads.tsx missing ' + token);
 });
 
 [
@@ -55,7 +70,7 @@ if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
   'setCadenceFilter',
   '14+ dni ciszy',
 ].forEach((token) => {
-  if (!clients.includes(token)) fail(`Clients.tsx missing ${token}`);
+  if (!clients.includes(token)) fail('Clients.tsx missing ' + token);
 });
 
 if (leads.includes('new Date(lead.updatedAt') || clients.includes('new Date(client.updatedAt')) {
@@ -76,7 +91,7 @@ if (packageJson.scripts['test:stage225-contact-cadence-grid'] !== 'node --test t
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'STAGE225_CONTACT_CADENCE_GRID',
-  checkedFiles: 5,
+  stage: 'STAGE225R5_MOJIBAKE_HOTFIX',
+  checkedFiles: files.length,
   guard: 'check:stage225-contact-cadence-grid',
 }, null, 2));

@@ -21,7 +21,7 @@ async function loadHelper() {
 }
 
 function daysAgoIso(now, days) {
-  const date = new Date(now.getTime() - days * 86_400_000);
+  const date = new Date(now.getTime() - days * 86400000);
   return date.toISOString();
 }
 

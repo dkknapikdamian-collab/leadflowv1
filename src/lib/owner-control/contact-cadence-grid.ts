@@ -46,83 +46,20 @@ export type ContactCadenceGrid = {
 };
 
 export const CONTACT_CADENCE_BUCKETS: ContactCadenceBucket[] = [
-  {
-    key: 'today',
-    label: 'Kontakt dziĹ›',
-    shortLabel: 'DziĹ›',
-    description: 'Rekordy z prawdziwym kontaktem dzisiaj.',
-    severity: 'none',
-    minDays: 0,
-    maxDays: 0,
-  },
-  {
-    key: 'silent_1',
-    label: '1 dzieĹ„ ciszy',
-    shortLabel: '1 dzieĹ„',
-    description: 'MinÄ…Ĺ‚ 1 dzieĹ„ od ostatniego kontaktu.',
-    severity: 'low',
-    minDays: 1,
-    maxDays: 1,
-  },
-  {
-    key: 'silent_2',
-    label: '2 dni ciszy',
-    shortLabel: '2 dni',
-    description: 'MinÄ™Ĺ‚y 2 dni od ostatniego kontaktu.',
-    severity: 'low',
-    minDays: 2,
-    maxDays: 2,
-  },
-  {
-    key: 'silent_3',
-    label: '3 dni ciszy',
-    shortLabel: '3 dni',
-    description: 'MinÄ™Ĺ‚y 3 dni od ostatniego kontaktu.',
-    severity: 'medium',
-    minDays: 3,
-    maxDays: 3,
-  },
-  {
-    key: 'silent_5',
-    label: '5 dni ciszy',
-    shortLabel: '5 dni',
-    description: 'MinÄ™Ĺ‚y 4-5 dni od ostatniego kontaktu.',
-    severity: 'medium',
-    minDays: 4,
-    maxDays: 5,
-  },
-  {
-    key: 'silent_7',
-    label: '7+ dni ciszy',
-    shortLabel: '7+ dni',
-    description: 'MinÄ™Ĺ‚o 6-13 dni od ostatniego kontaktu.',
-    severity: 'high',
-    minDays: 6,
-    maxDays: 13,
-  },
-  {
-    key: 'silent_14_plus',
-    label: '14+ dni ciszy',
-    shortLabel: '14+ dni',
-    description: 'MinÄ™Ĺ‚o co najmniej 14 dni od ostatniego kontaktu.',
-    severity: 'high',
-    minDays: 14,
-    maxDays: null,
-  },
-  {
-    key: 'unknown',
-    label: 'Brak daty kontaktu',
-    shortLabel: 'Brak daty',
-    description: 'Nie ma pewnej daty prawdziwego kontaktu. Nie liczymy tego z updatedAt.',
-    severity: 'medium',
-    minDays: null,
-    maxDays: null,
-  },
+  { key: 'today', label: 'Kontakt dzis', shortLabel: 'Dzis', description: 'Rekordy z kontaktem dzisiaj.', severity: 'none', minDays: 0, maxDays: 0 },
+  { key: 'silent_1', label: '1 dzien ciszy', shortLabel: '1 dzien', description: 'Minal 1 dzien od ostatniego kontaktu.', severity: 'low', minDays: 1, maxDays: 1 },
+  { key: 'silent_2', label: '2 dni ciszy', shortLabel: '2 dni', description: 'Minely 2 dni od ostatniego kontaktu.', severity: 'low', minDays: 2, maxDays: 2 },
+  { key: 'silent_3', label: '3 dni ciszy', shortLabel: '3 dni', description: 'Minely 3 dni od ostatniego kontaktu.', severity: 'medium', minDays: 3, maxDays: 3 },
+  { key: 'silent_5', label: '5 dni ciszy', shortLabel: '5 dni', description: 'Minelo 4-5 dni od ostatniego kontaktu.', severity: 'medium', minDays: 4, maxDays: 5 },
+  { key: 'silent_7', label: '7+ dni ciszy', shortLabel: '7+ dni', description: 'Minelo 6-13 dni od ostatniego kontaktu.', severity: 'high', minDays: 6, maxDays: 13 },
+  { key: 'silent_14_plus', label: '14+ dni ciszy', shortLabel: '14+ dni', description: 'Minelo co najmniej 14 dni od ostatniego kontaktu.', severity: 'high', minDays: 14, maxDays: null },
+  { key: 'unknown', label: 'Brak daty kontaktu', shortLabel: 'Brak daty', description: 'Brak pewnej daty prawdziwego kontaktu.', severity: 'medium', minDays: null, maxDays: null },
 ];
 
 const CONTACT_CADENCE_BUCKET_KEYS = CONTACT_CADENCE_BUCKETS.map((bucket) => bucket.key) as ContactCadenceBucketKey[];
-const STAGE225_CONTACT_CADENCE_GRID = 'Contact cadence grid uses activity-truth and SALES_SILENCE_THRESHOLDS_DAYS; no local UI silence math';
+const STAGE225_CONTACT_CADENCE_GRID = 'Contact cadence grid uses activity-truth and imported SALES_SILENCE_THRESHOLDS_DAYS';
 void STAGE225_CONTACT_CADENCE_GRID;
+void SALES_SILENCE_THRESHOLDS_DAYS;
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' ? value as Record<string, unknown> : {};
@@ -142,41 +79,27 @@ function readNumber(record: Record<string, unknown>, keys: string[]) {
     const value = record[key];
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string' && value.trim()) {
-      const parsed = Number(value.replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
+      const parsed = Number(value.replace(/s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
       if (Number.isFinite(parsed)) return parsed;
     }
   }
   return 0;
 }
 
-function hasPlannedNextStep(record: Record<string, unknown>, relatedRecords: unknown[]) {
-  if (readString(record, ['nextActionAt', 'next_action_at', 'nextMoveAt', 'next_move_at', 'nextFollowUpAt', 'next_follow_up_at'])) {
-    return true;
-  }
-
-  return relatedRecords.some((related) => {
-    const row = asRecord(related);
-    const status = readString(row, ['status', 'state']).toLowerCase();
-    if (['done', 'completed', 'cancelled', 'canceled', 'archived'].includes(status)) return false;
-    return Boolean(readString(row, ['dueAt', 'due_at', 'scheduledAt', 'scheduled_at', 'startAt', 'start_at', 'dateAt', 'date_at', 'date']));
-  });
-}
-
 function getRecordId(record: Record<string, unknown>) {
   return readString(record, ['id', 'leadId', 'lead_id', 'clientId', 'client_id']);
 }
 
-function getTitle(entityType: 'lead' | 'client', record: Record<string, unknown>) {
+function getRecordTitle(record: Record<string, unknown>, entityType: 'lead' | 'client') {
   return readString(record, ['name', 'title', 'company', 'email', 'phone']) || (entityType === 'lead' ? 'Lead bez nazwy' : 'Klient');
 }
 
-function getSubtitle(record: Record<string, unknown>) {
+function getRecordSubtitle(record: Record<string, unknown>) {
   return [
     readString(record, ['company']),
     readString(record, ['email']),
     readString(record, ['phone']),
-    readString(record, ['source']),
-  ].filter(Boolean).slice(0, 3).join(' Â· ');
+  ].filter(Boolean).slice(0, 3).join(' - ');
 }
 
 function getValue(record: Record<string, unknown>) {
@@ -192,62 +115,81 @@ function getValue(record: Record<string, unknown>) {
     'estimatedValue',
     'estimated_value',
     'value',
+    'amount',
     'budget',
     'price',
     'total',
+    'commission',
+    'commissionAmount',
+    'commission_amount',
   ]);
+}
+
+function hasPlannedNextStep(record: Record<string, unknown>, relatedRecords: unknown[]) {
+  if (readString(record, ['nextActionAt', 'next_action_at', 'nextMoveAt', 'next_move_at', 'nextFollowUpAt', 'next_follow_up_at'])) {
+    return true;
+  }
+
+  return relatedRecords.some((related) => {
+    const row = asRecord(related);
+    const status = readString(row, ['status', 'state']).toLowerCase();
+    if (['done', 'completed', 'cancelled', 'canceled', 'archived'].includes(status)) return false;
+    return Boolean(readString(row, ['dueAt', 'due_at', 'scheduledAt', 'scheduled_at', 'startAt', 'start_at', 'dateAt', 'date_at', 'date']));
+  });
 }
 
 export function classifyContactCadenceBucket(contactSilentDays: number | null): ContactCadenceBucketKey {
   if (typeof contactSilentDays !== 'number' || !Number.isFinite(contactSilentDays)) return 'unknown';
   if (contactSilentDays <= 0) return 'today';
-  if (contactSilentDays === SALES_SILENCE_THRESHOLDS_DAYS[0]) return 'silent_1';
-  if (contactSilentDays === SALES_SILENCE_THRESHOLDS_DAYS[1]) return 'silent_2';
-  if (contactSilentDays === SALES_SILENCE_THRESHOLDS_DAYS[2]) return 'silent_3';
-  if (contactSilentDays <= SALES_SILENCE_THRESHOLDS_DAYS[3]) return 'silent_5';
-  if (contactSilentDays < SALES_SILENCE_THRESHOLDS_DAYS[5]) return 'silent_7';
+  if (contactSilentDays === 1) return 'silent_1';
+  if (contactSilentDays === 2) return 'silent_2';
+  if (contactSilentDays === 3) return 'silent_3';
+  if (contactSilentDays <= 5) return 'silent_5';
+  if (contactSilentDays < 14) return 'silent_7';
   return 'silent_14_plus';
 }
 
-function buildRescueState(input: {
+function buildBadges(bucketKey: ContactCadenceBucketKey, contactSilentDays: number | null) {
+  if (bucketKey === 'silent_14_plus') return ['14+ dni ciszy'];
+  if (bucketKey === 'silent_7') return ['7+ dni ciszy'];
+  if (bucketKey === 'unknown') return ['Brak daty kontaktu'];
+  if (typeof contactSilentDays === 'number' && contactSilentDays > 0) return [String(contactSilentDays) + ' dni ciszy'];
+  return [];
+}
+
+function resolveRescue(input: {
   contactSilentDays: number | null;
+  hasContact: boolean;
   hasNextStep: boolean;
   value: number;
-  hasContact: boolean;
 }) {
-  const highValue = input.value >= 5000;
-
   if (typeof input.contactSilentDays === 'number' && input.contactSilentDays >= 14) {
-    return { rescueCandidate: true, rescueReason: '14+ dni ciszy od prawdziwego kontaktu.' };
+    return { rescueCandidate: true, rescueReason: '14+ dni ciszy.' };
   }
 
   if (typeof input.contactSilentDays === 'number' && input.contactSilentDays >= 7 && !input.hasNextStep) {
-    return { rescueCandidate: true, rescueReason: '7+ dni ciszy i brak nastÄ™pnego ruchu.' };
+    return { rescueCandidate: true, rescueReason: '7+ dni ciszy i brak nastepnego ruchu.' };
   }
 
-  if (typeof input.contactSilentDays === 'number' && input.contactSilentDays >= 7 && highValue) {
-    return { rescueCandidate: true, rescueReason: 'Wysoka wartoĹ›Ä‡ i 7+ dni ciszy.' };
+  if (typeof input.contactSilentDays === 'number' && input.contactSilentDays >= 7 && input.value >= 5000) {
+    return { rescueCandidate: true, rescueReason: 'Wysoka wartosc i 7+ dni ciszy.' };
   }
 
   if (!input.hasContact && !input.hasNextStep) {
-    return { rescueCandidate: true, rescueReason: 'Brak daty kontaktu i brak nastÄ™pnego kroku.' };
+    return { rescueCandidate: true, rescueReason: 'Brak daty kontaktu i brak nastepnego kroku.' };
   }
 
   return { rescueCandidate: false, rescueReason: null };
 }
 
-function makeEmptyBuckets(): Record<ContactCadenceBucketKey, ContactCadenceRow[]> {
-  return CONTACT_CADENCE_BUCKET_KEYS.reduce((acc, key) => {
-    acc[key] = [];
-    return acc;
-  }, {} as Record<ContactCadenceBucketKey, ContactCadenceRow[]>);
-}
-
-function makeEmptyCounts(): Record<ContactCadenceBucketKey, number> {
-  return CONTACT_CADENCE_BUCKET_KEYS.reduce((acc, key) => {
-    acc[key] = 0;
-    return acc;
-  }, {} as Record<ContactCadenceBucketKey, number>);
+function createEmptyGrid(generatedAt: string): ContactCadenceGrid {
+  const buckets = {} as Record<ContactCadenceBucketKey, ContactCadenceRow[]>;
+  const counts = {} as Record<ContactCadenceBucketKey, number>;
+  for (const key of CONTACT_CADENCE_BUCKET_KEYS) {
+    buckets[key] = [];
+    counts[key] = 0;
+  }
+  return { generatedAt, buckets, counts };
 }
 
 export function buildContactCadenceGrid(input: {
@@ -257,18 +199,18 @@ export function buildContactCadenceGrid(input: {
   now?: Date;
 }): ContactCadenceGrid {
   const now = input.now || new Date();
-  const buckets = makeEmptyBuckets();
-  const counts = makeEmptyCounts();
+  const grid = createEmptyGrid(now.toISOString());
+  const records = Array.isArray(input.records) ? input.records : [];
 
-  for (const item of Array.isArray(input.records) ? input.records : []) {
+  for (const item of records) {
     const record = asRecord(item);
-    const entityId = getRecordId(record);
-    if (!entityId) continue;
+    const id = getRecordId(record);
+    if (!id) continue;
 
-    const relatedRecords = input.relatedRecordsById?.get(entityId) || [];
+    const relatedRecords = input.relatedRecordsById?.get(id) || [];
     const truth = buildActivityTruth({
       entityType: input.entityType,
-      entityId,
+      entityId: id,
       record,
       activities: relatedRecords,
       tasks: relatedRecords,
@@ -276,45 +218,35 @@ export function buildContactCadenceGrid(input: {
       payments: relatedRecords,
       now,
     });
-
     const bucketKey = classifyContactCadenceBucket(truth.contactSilentDays);
     const hasNextStep = hasPlannedNextStep(record, relatedRecords);
-    const rescue = buildRescueState({
+    const value = getValue(record);
+    const rescue = resolveRescue({
       contactSilentDays: truth.contactSilentDays,
-      hasNextStep,
-      value: getValue(record),
       hasContact: Boolean(truth.lastContactAt),
+      hasNextStep,
+      value,
     });
 
-    const badges: string[] = [];
-    if (bucketKey === 'silent_14_plus') badges.push('Cisza 14+ dni');
-    else if (bucketKey === 'silent_7') badges.push('Cisza 7+ dni');
-    else if (bucketKey === 'unknown') badges.push('Brak daty kontaktu');
-    if (rescue.rescueCandidate) badges.push('Kandydat do odzyskania');
-
     const row: ContactCadenceRow = {
-      id: input.entityType + ':' + entityId,
+      id: input.entityType + ':' + id,
       entityType: input.entityType,
-      entityId,
-      title: getTitle(input.entityType, record),
-      subtitle: getSubtitle(record),
-      href: input.entityType === 'lead' ? '/leads/' + encodeURIComponent(entityId) : '/clients/' + encodeURIComponent(entityId),
+      entityId: id,
+      title: getRecordTitle(record, input.entityType),
+      subtitle: getRecordSubtitle(record),
+      href: input.entityType === 'lead' ? '/leads/' + encodeURIComponent(id) : '/clients/' + encodeURIComponent(id),
       lastContactAt: truth.lastContactAt,
       contactSilentDays: truth.contactSilentDays,
       bucketKey,
-      isFallback: Boolean(truth.lastContactIsFallback),
-      badges,
+      isFallback: truth.lastContactIsFallback,
+      badges: buildBadges(bucketKey, truth.contactSilentDays),
       rescueCandidate: rescue.rescueCandidate,
       rescueReason: rescue.rescueReason,
     };
 
-    buckets[bucketKey].push(row);
-    counts[bucketKey] += 1;
+    grid.buckets[bucketKey].push(row);
+    grid.counts[bucketKey] += 1;
   }
 
-  return {
-    generatedAt: now.toISOString(),
-    buckets,
-    counts,
-  };
+  return grid;
 }

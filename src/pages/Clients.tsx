@@ -239,7 +239,7 @@ export default function Clients() {
       setTasks(taskRows as any[]);
       setEvents(eventRows as any[]);
     } catch (error: any) {
-      toast.error(`BĹ‚Ä…d odczytu klientĂłw: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Błąd odczytu klientów: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLoading(false);
     }
@@ -263,6 +263,7 @@ export default function Clients() {
     }),
     [clients],
   );
+
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     const activeCadenceIds = cadenceFilter === 'all'
@@ -394,7 +395,7 @@ export default function Clients() {
       const dateLabel = Number.isNaN(parsed.getTime())
         ? nearest.when
         : parsed.toLocaleString('pl-PL', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
-      map.set(clientId, `${nearest.title} Â· ${dateLabel}`);
+      map.set(clientId, `${nearest.title} · ${dateLabel}`);
     }
     return map;
   }, [cases, clients, events, leads, tasks]);
@@ -508,21 +509,21 @@ export default function Clients() {
   };
 
   const restoreClientConflictCandidate = async (candidate: EntityConflictCandidate) => {
-    if (!candidate.canRestore) { toast.info('Ten rekord ma historiÄ™. Najpierw go otwĂłrz i zdecyduj, co zrobiÄ‡.'); return; }
+    if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
     try {
       setCreatePending(true);
-      if (candidate.entityType === 'client') { await updateClientInSupabase({ id: candidate.id, archivedAt: null }); toast.success('Klient przywrĂłcony'); }
-      else { await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null }); toast.success('Lead przywrĂłcony'); }
+      if (candidate.entityType === 'client') { await updateClientInSupabase({ id: candidate.id, archivedAt: null }); toast.success('Klient przywrócony'); }
+      else { await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null }); toast.success('Lead przywrócony'); }
       setClientConflictOpen(false);
       await reload();
-    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
+    } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setCreatePending(false); }
   };
 
   const handleCreateClient = async (event: FormEvent) => {
     event.preventDefault();
-    if (!hasAccess) { toast.error('TwĂłj trial wygasĹ‚.'); return; }
-    if (!newClient.name.trim()) { toast.error('Podaj nazwÄ™ klienta.'); return; }
+    if (!hasAccess) { toast.error('Twój trial wygasł.'); return; }
+    if (!newClient.name.trim()) { toast.error('Podaj nazwę klienta.'); return; }
     if (!workspace?.id) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
     const lastContactError = getLastContactDateInputError(newClient.lastContactAt);
     if (lastContactError) { toast.error(lastContactError); return; }
@@ -535,14 +536,14 @@ export default function Clients() {
       const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
       if (candidates.length) { setClientConflictCandidates(candidates); setClientConflictPendingInput(preparedClient); setIsCreateOpen(false); setClientConflictOpen(true); return; }
       await createClientFromPreparedInput(preparedClient);
-    } catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡. SprĂłbuj ponownie.'); }
+    } catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
     finally { setCreatePending(false); }
   };
 
   const handleCreateClientAnyway = async () => {
     if (!clientConflictPendingInput || createPending) return;
     try { setCreatePending(true); await createClientFromPreparedInput(clientConflictPendingInput, { forceDuplicate: true }); setClientConflictOpen(false); setClientConflictPendingInput(null); setClientConflictCandidates([]); }
-    catch (error: any) { toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡. SprĂłbuj ponownie.'); }
+    catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
     finally { setCreatePending(false); }
   };
 
@@ -555,19 +556,19 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwĂłj trial wygasĹ‚.');
+      toast.error('Twój trial wygasł.');
       return;
     }
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? '\n\nTen klient ma powiÄ…zania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostanÄ… trwale skasowane.'
-      : 'Rekord zniknie z aktywnej listy, ale bÄ™dzie moĹĽna go przywrĂłciÄ‡ z kosza.';
+      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostaną trwale skasowane.'
+      : 'Rekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
     setClientArchiveConfirm({
       mode: 'archive',
       client,
-      title: 'PrzenieĹ›Ä‡ klienta do kosza?',
+      title: 'Przenieść klienta do kosza?',
       description: (client.name || 'Klient') + ' zostanie ukryty z aktywnej listy. ' + relationText,
     });
   };
@@ -577,15 +578,15 @@ export default function Clients() {
     event.stopPropagation();
 
     if (!hasAccess) {
-      toast.error('TwĂłj trial wygasĹ‚.');
+      toast.error('Twój trial wygasł.');
       return;
     }
 
     setClientArchiveConfirm({
       mode: 'restore',
       client,
-      title: 'PrzywrĂłciÄ‡ klienta?',
-      description: (client.name || 'Klient') + ' wrĂłci do aktywnej listy klientĂłw.',
+      title: 'Przywrócić klienta?',
+      description: (client.name || 'Klient') + ' wróci do aktywnej listy klientów.',
     });
   };
   const confirmClientArchiveAction = async () => {
@@ -607,13 +608,13 @@ export default function Clients() {
         });
       }
 
-      toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrĂłcony');
+      toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrócony');
       setClientArchiveConfirm(null);
       await reload();
     } catch (error: any) {
       toast.error(mode === 'archive'
-        ? 'Nie udaĹ‚o siÄ™ przenieĹ›Ä‡ klienta do kosza.'
-        : 'Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ klienta.'
+        ? 'Nie udało się przenieść klienta do kosza.'
+        : 'Nie udało się przywrócić klienta.'
       );
     } finally {
       setArchivePendingId(null);
@@ -628,9 +629,9 @@ export default function Clients() {
           onOpenChange={(open) => {
             if (!open && !archivePendingId) setClientArchiveConfirm(null);
           }}
-          title={clientArchiveConfirm?.title || 'PotwierdĹş zmianÄ™'}
-          description={clientArchiveConfirm?.description || 'PotwierdĹş operacjÄ™ na kliencie.'}
-          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› do kosza'}
+          title={clientArchiveConfirm?.title || 'Potwierdź zmianę'}
+          description={clientArchiveConfirm?.description || 'Potwierdź operację na kliencie.'}
+          confirmLabel={archivePendingId ? 'Zapisywanie...' : clientArchiveConfirm?.mode === 'restore' ? 'Przywróć klienta' : 'Przenieś do kosza'}
           cancelLabel="Anuluj"
           confirmTone={clientArchiveConfirm?.mode === 'restore' ? 'default' : 'destructive'}
           pending={Boolean(archivePendingId)}
@@ -641,8 +642,8 @@ export default function Clients() {
           open={clientConflictOpen}
           onOpenChange={setClientConflictOpen}
           candidates={clientConflictCandidates}
-          title="MoĹĽliwy duplikat"
-          description="Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. SprawdĹş go przed zapisem albo Ĺ›wiadomie dodaj mimo to."
+          title="Możliwy duplikat"
+          description="Znaleziono podobny rekord po e-mailu, telefonie, nazwie albo firmie. Sprawdź go przed zapisem albo świadomie dodaj mimo to."
           createAnywayLabel="Dodaj mimo to"
           busy={createPending}
           onShow={(candidate) => window.location.assign(candidate.url || (candidate.entityType === 'lead' ? '/leads/' + candidate.id : '/clients/' + candidate.id))}
@@ -658,7 +659,7 @@ export default function Clients() {
                           <Button type="button" variant="outline" className="btn soft-blue" data-cf-header-action="ai">? Zapytaj AI</Button>
                           <Button type="button" variant="outline" className="btn" onClick={() => setShowArchived((current) => !current)}>
                             {showArchived ? <RotateCcw className="w-4 h-4" /> : <Trash2 className="w-4 h-4" />}
-                            {showArchived ? 'PokaĹĽ aktywnych' : 'Kosz'}
+                            {showArchived ? 'Pokaż aktywnych' : 'Kosz'}
                             <span className="pill">{showArchived ? activeCount : archivedCount}</span>
                           </Button>
                           <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
@@ -669,19 +670,19 @@ export default function Clients() {
                               <DialogHeader className="client-case-form-header">
                                 <span className="client-case-form-kicker">KLIENT</span>
                                 <DialogTitle>Nowy klient</DialogTitle>
-                                <p>Dodaj tylko najwaĹĽniejsze dane kontaktowe. ResztÄ™ moĹĽna uzupeĹ‚niÄ‡ pĂłĹşniej.</p>
+                                <p>Dodaj tylko najważniejsze dane kontaktowe. Resztę można uzupełnić później.</p>
                               </DialogHeader>
 
                               <form onSubmit={handleCreateClient} className="client-case-form" data-client-form-fields="contact">
                                 <section className="client-case-form-section">
                                   <div className="client-case-form-section-head">
                                     <h3>Dane podstawowe</h3>
-                                    <p>Minimum potrzebne do zapisania klienta i rozpoczÄ™cia sprawy.</p>
+                                    <p>Minimum potrzebne do zapisania klienta i rozpoczęcia sprawy.</p>
                                   </div>
 
                                   <div className="client-case-form-grid">
                                     <div className="client-case-form-field client-case-form-field-wide">
-                                      <Label>ImiÄ™ / nazwa</Label>
+                                      <Label>Imię / nazwa</Label>
                                       <Input
                                         value={newClient.name}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, name: event.target.value }))}
@@ -717,7 +718,7 @@ export default function Clients() {
                                         max={getTodayDateInputValue()}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, lastContactAt: event.target.value }))}
                                       />
-                                      <small className="sub">JeĹ›li klient wraca po czasie, wpisz dzieĹ„ ostatniego kontaktu. To wpĹ‚ywa na oznaczenia ciszy 7/14 dni.</small>
+                                      <small className="sub">Jeśli klient wraca po czasie, wpisz dzień ostatniego kontaktu. To wpływa na oznaczenia ciszy 7/14 dni.</small>
                                     </div>
 
                                     <div className="client-case-form-field client-case-form-field-wide">
@@ -735,7 +736,7 @@ export default function Clients() {
                                         className="client-case-form-textarea"
                                         value={newClient.notes}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, notes: event.target.value }))}
-                                        placeholder="KrĂłtki kontekst relacji, ĹşrĂłdĹ‚o albo waĹĽna informacja."
+                                        placeholder="Krótki kontekst relacji, źródło albo ważna informacja."
                                       />
                                     </div>
                                   </div>
@@ -744,7 +745,7 @@ export default function Clients() {
                                 <section className="client-case-form-section" data-stage220a25-client-case-fields="true">
                                   <div className="client-case-form-section-head">
                                     <h3>Sprawa startowa</h3>
-                                    <p>WartoĹ›Ä‡ wpisana tutaj zapisuje siÄ™ w sprawie jako wartoĹ›Ä‡ sprawy i zasila finanse klienta.</p>
+                                    <p>Wartość wpisana tutaj zapisuje się w sprawie jako wartość sprawy i zasila finanse klienta.</p>
                                   </div>
 
                                   <label className="client-case-form-check-row">
@@ -753,7 +754,7 @@ export default function Clients() {
                                       checked={Boolean(newClient.createCase)}
                                       onChange={(event) => setNewClient((prev) => ({ ...prev, createCase: event.target.checked }))}
                                     />
-                                    <span>UtwĂłrz sprawÄ™ od razu</span>
+                                    <span>Utwórz sprawę od razu</span>
                                   </label>
 
                                   <div className="client-case-form-grid">
@@ -762,12 +763,12 @@ export default function Clients() {
                                       <Input
                                         value={newClient.caseTitle}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, caseTitle: event.target.value }))}
-                                        placeholder="Np. SprzedaĹĽ dziaĹ‚ki, obsĹ‚uga klienta, zlecenie"
+                                        placeholder="Np. Sprzedaż działki, obsługa klienta, zlecenie"
                                       />
                                     </div>
 
                                     <div className="client-case-form-field">
-                                      <Label>WartoĹ›Ä‡ sprawy</Label>
+                                      <Label>Wartość sprawy</Label>
                                       <Input
                                         value={newClient.caseValue}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, caseValue: event.target.value }))}
@@ -810,28 +811,28 @@ export default function Clients() {
             icon={LeadEntityIcon}
             active={!showArchived}
             onClick={() => setShowArchived(false)}
-            title="PokaĹĽ aktywnych klientĂłw"
-            ariaLabel="PokaĹĽ aktywnych klientĂłw"
+            title="Pokaż aktywnych klientów"
+            ariaLabel="Pokaż aktywnych klientów"
             tone="blue"
-            helper="z otwartÄ… sprawÄ…"
+            helper="z otwartą sprawą"
           />
           <StatShortcutCard
             label="Bez sprawy"
             value={clientsWithoutCases}
             icon={CaseEntityIcon}
             onClick={() => setShowArchived(false)}
-            title="PokaĹĽ klientĂłw bez sprawy"
-            ariaLabel="PokaĹĽ klientĂłw bez sprawy"
+            title="Pokaż klientów bez sprawy"
+            ariaLabel="Pokaż klientów bez sprawy"
             tone="neutral"
             helper="tylko kontakt"
           />
           <StatShortcutCard
-            label="WartoĹ›Ä‡"
+            label="Wartość"
             value={formatClientMoney(relationValue)}
             icon={PaymentEntityIcon}
             onClick={() => setShowArchived(false)}
-            title="PokaĹĽ wartoĹ›Ä‡ relacji"
-            ariaLabel="PokaĹĽ wartoĹ›Ä‡ relacji"
+            title="Pokaż wartość relacji"
+            ariaLabel="Pokaż wartość relacji"
             tone="green"
             helper="w relacjach"
           />
@@ -840,8 +841,8 @@ export default function Clients() {
             value={staleClients}
             icon={AlertTriangle}
             onClick={() => setShowArchived(false)}
-            title="PokaĹĽ klientĂłw bez ruchu"
-            ariaLabel="PokaĹĽ klientĂłw bez ruchu"
+            title="Pokaż klientów bez ruchu"
+            ariaLabel="Pokaż klientów bez ruchu"
             tone="red"
             helper="do sprawdzenia"
           />
@@ -855,13 +856,15 @@ export default function Clients() {
             </div>
 
 
+
             {!showArchived ? (
               <div className="table-card w-full max-w-none" data-stage225-contact-cadence-grid="clients">
+                <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />
                 <div className="row row-empty">
                   <span className="index"><AlertTriangle className="h-4 w-4" /></span>
                   <span>
                     <span className="title">Siatka kontaktu</span>
-                    <span className="sub">Filtruje klientĂłw po prawdziwej dacie ostatniego kontaktu. Rekord bez daty wpada do Brak daty kontaktu.</span>
+                    <span className="sub">Filtruje klientow po dacie ostatniego kontaktu. Rekord bez daty wpada do Brak daty kontaktu.</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 p-3 pt-0">
@@ -888,10 +891,11 @@ export default function Clients() {
                 </div>
               </div>
             ) : null}
+
             {loading ? (
-              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">Ĺadowanie klientĂłw</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
+              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index"><Loader2 className="w-4 h-4 animate-spin" /></span><span><span className="title">Ładowanie klientów</span><span className="sub">Pobieram dane z aplikacji.</span></span></div></div>
             ) : filtered.length === 0 ? (
-              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientĂłw jest pusty.' : 'Brak klientĂłw do wyĹ›wietlenia.'}</span></span></div></div>
+              <div className="table-card w-full max-w-none"><div className="row row-empty"><span className="index">0</span><span><span className="title">{showArchived ? 'Kosz klientów jest pusty.' : 'Brak klientów do wyświetlenia.'}</span></span></div></div>
             ) : (
               <div className="table-card w-full max-w-none">
                 {filtered.map((client, index) => {
@@ -914,13 +918,13 @@ export default function Clients() {
                            <span className="title">{client.name || 'Klient'}</span>
                            <span className="cf-list-row-meta">
                              <span className="sub">{client.company || 'Bez firmy'}</span>
-                             <span className="cf-list-row-contact">{[client.email, client.phone].filter(Boolean).join(' Â· ') || 'brak kontaktu'}</span>
+                             <span className="cf-list-row-contact">{[client.email, client.phone].filter(Boolean).join(' · ') || 'brak kontaktu'}</span>
                              <span className="cf-list-row-value">{formatClientMoney(clientValue)}</span>
                            </span>
                            <span className="statusline">
                              {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">W koszu</span> : counters.cases > 0 ? <span className="cf-status-pill cf-chip-case-active" data-cf-status-tone="green">Aktywna sprawa</span> : <span className="cf-status-pill cf-chip-no-case">Bez sprawy</span>}
                              <span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>
-                             <span className="cf-list-row-value cf-chip-client-value">WartoĹ›Ä‡: {formatClientMoney(clientValue)}</span>
+                             <span className="cf-list-row-value cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
                               {operationalBadges.map((badge) => (
                                 <span
                                   key={badge.id}
@@ -935,13 +939,13 @@ export default function Clients() {
                            </span>
                          </span>
                          <span className="lead-value-cell cf-client-cases-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">NajbliĹĽsza akcja</span><strong>{nearestActionLabel}</strong></span>
+                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionLabel}</strong></span>
                          <span className="lead-actions client-card-action-buttons cf-client-row-actions cf-client-row-inline">
-                           <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="OtwĂłrz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
+                           <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="Otwórz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
                            <button
                              type="button"
-                             aria-label={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
-                             title={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
+                             aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                             title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
                              disabled={archivePendingId === client.id}
                              onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
                               className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
@@ -973,7 +977,7 @@ export default function Clients() {
             />
             <TopValueRecordsCard
               title="Najcenniejsi klienci"
-              description="5 klientĂłw z najwiÄ™kszÄ… wartoĹ›ciÄ…."
+              description="5 klientów z największą wartością."
               className="operator-top-value-card"
               dataTestId="clients-top-value-records-card"
               dataAttrs={{ 'data-clients-top-value-board': true }}
@@ -986,7 +990,7 @@ export default function Clients() {
                 title: entry.label + ' - ' + formatClientMoney(entry.value),
                 dataAttrs: { 'data-clients-top-value-row': true },
               }))}
-              emptyLabel="Brak klientĂłw z wyliczonÄ… wartoĹ›ciÄ…."
+              emptyLabel="Brak klientów z wyliczoną wartością."
             />
           </div>
         </div>
