@@ -23,39 +23,39 @@ function replaceAllText(text, replacements) {
 }
 
 const commonMojibakeFixes = [
-  ['ZalegÅ‚e', 'Zaległe'],
-  ['ZalegĹ‚e', 'Zaległe'],
-  ['DziÅ›', 'Dziś'],
-  ['DziĹ›', 'Dziś'],
-  ['Filtry zadaÅ„', 'Filtry zadań'],
-  ['Filtry zadaĹ„', 'Filtry zadań'],
-  ['Bez powiÄ…zania', 'Bez powiązania'],
-  ['Bez powiÄ…zania', 'Bez powiązania'],
-  ['NadchodzÄ…ce', 'Nadchodzące'],
-  ['do uporzÄ…dkowania', 'do uporządkowania'],
-  ['zamkniÄ™te dziaÅ‚ania', 'zamknięte działania'],
-  ['zamkniÄ™te dziaĹ‚ania', 'zamknięte działania'],
-  ['najbliÅ¼sze terminy', 'najbliższe terminy'],
-  ['najbliĹĽsze terminy', 'najbliższe terminy'],
-  ['Bez klikania po zakÅ‚adkach', 'Bez klikania po zakładkach'],
-  ['Bez klikania po zakĹ‚adkach', 'Bez klikania po zakładkach'],
-  ['5 zadaÅ„', '5 zadań'],
-  ['5 zadaĹ„', '5 zadań'],
-  ['zadaÅ„', 'zadań'],
-  ['zadaĹ„', 'zadań'],
-  ['zadaÅ', 'zadań'],
-  ['zadaĹ', 'zadań'],
-  ['ktÃ³re', 'które'],
-  ['ktĂłre', 'które'],
-  ['najÅ‚atwiej', 'najłatwiej'],
-  ['najĹ‚atwiej', 'najłatwiej'],
-  ['zgubiÄ‡', 'zgubić'],
-  ['wÅ‚aÅ›ciciela', 'właściciela'],
-  ['wĹ‚aĹ›ciciela', 'właściciela'],
-  ['KrÃ³tki', 'Krótki'],
-  ['KrĂłtki', 'Krótki'],
-  ['Brak aktywnych pilnych zadaÅ„', 'Brak aktywnych pilnych zadań'],
-  ['Brak aktywnych pilnych zadaĹ„', 'Brak aktywnych pilnych zadań'],
+  ['Zaległe', 'Zaległe'],
+  ['Zaległe', 'Zaległe'],
+  ['Dziś', 'Dziś'],
+  ['Dziś', 'Dziś'],
+  ['Filtry zadań', 'Filtry zadań'],
+  ['Filtry zadań', 'Filtry zadań'],
+  ['Bez powiązania', 'Bez powiązania'],
+  ['Bez powiązania', 'Bez powiązania'],
+  ['Nadchodzące', 'Nadchodzące'],
+  ['do uporządkowania', 'do uporządkowania'],
+  ['zamknięte działania', 'zamknięte działania'],
+  ['zamknięte działania', 'zamknięte działania'],
+  ['najbliższe terminy', 'najbliższe terminy'],
+  ['najbliższe terminy', 'najbliższe terminy'],
+  ['Bez klikania po zakładkach', 'Bez klikania po zakładkach'],
+  ['Bez klikania po zakładkach', 'Bez klikania po zakładkach'],
+  ['5 zadań', '5 zadań'],
+  ['5 zadań', '5 zadań'],
+  ['zadań', 'zadań'],
+  ['zadań', 'zadań'],
+  ['zadań', 'zadań'],
+  ['zadań', 'zadań'],
+  ['które', 'które'],
+  ['które', 'które'],
+  ['najłatwiej', 'najłatwiej'],
+  ['najłatwiej', 'najłatwiej'],
+  ['zgubić', 'zgubić'],
+  ['właściciela', 'właściciela'],
+  ['właściciela', 'właściciela'],
+  ['Krótki', 'Krótki'],
+  ['Krótki', 'Krótki'],
+  ['Brak aktywnych pilnych zadań', 'Brak aktywnych pilnych zadań'],
+  ['Brak aktywnych pilnych zadań', 'Brak aktywnych pilnych zadań'],
 ];
 
 function patchTasksStable() {
@@ -69,11 +69,11 @@ function patchTasksStable() {
 
   // Extra broad cleanup for partial mojibake tokens that survived previous replacements.
   source = source
-    .replace(/zada[ÅĹ][^'"`<>\s,.)]*/g, 'zadań')
-    .replace(/Zaleg[ÅĹ][^'"`<>\s,.)]*/g, 'Zaległe')
-    .replace(/Dzi[ÅĹ][^'"`<>\s,.)]*/g, 'Dziś')
-    .replace(/powi[ÄĂ][^'"`<>\s,.)]*/g, 'powiązania')
-    .replace(/zak[ÅĹ][^'"`<>\s,.)]*/g, 'zakładkach');
+    .replace(/zada[Å\u0139][^'"`<>\s,.)]*/g, 'zadań')
+    .replace(/Zaleg[Å\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+    .replace(/Dzi[Å\u0139][^'"`<>\s,.)]*/g, 'Dziś')
+    .replace(/powi[\u00C4\u0102][^'"`<>\s,.)]*/g, 'powiązania')
+    .replace(/zak[Å\u0139][^'"`<>\s,.)]*/g, 'zakładkach');
 
   // Normalize group labels and hints to unicode-escaped strings so source survives PowerShell encoding issues.
   source = source.replace(
@@ -101,7 +101,7 @@ function patchTasksStable() {
 
   // Normalize visible rail headings/descriptions. Literal headings are preserved for older Stage178 guards.
   source = source.replace(/<h2>\{?'?Filtry zada(?:ń|\\u0144)'?\}?<\/h2>/g, `<h2>Filtry zadań</h2>`);
-  source = source.replace(/<h2>Filtry zada[ÅĹ][^<]*<\/h2>/g, `<h2>Filtry zadań</h2>`);
+  source = source.replace(/<h2>Filtry zada[Å\u0139][^<]*<\/h2>/g, `<h2>Filtry zadań</h2>`);
   source = source.replace(/<h3>\{?'?Najpilniejsze zadania'?\}?<\/h3>/g, `<h3>Najpilniejsze zadania</h3>`);
 
   source = source.replace(/\{?'?Bez klikania po zak(?:ł|\\u0142)adkach\. Najpierw to, co wymaga ruchu\.'?\}?/g, `Bez klikania po zakładkach. Najpierw to, co wymaga ruchu.`);
@@ -117,9 +117,9 @@ function patchTasksStable() {
 
   // Final cleanup pass.
   source = replaceAllText(source, commonMojibakeFixes)
-    .replace(/zada[ÅĹ][^'"`<>\s,.)]*/g, 'zadań')
-    .replace(/Zaleg[ÅĹ][^'"`<>\s,.)]*/g, 'Zaległe')
-    .replace(/Dzi[ÅĹ][^'"`<>\s,.)]*/g, 'Dziś');
+    .replace(/zada[Å\u0139][^'"`<>\s,.)]*/g, 'zadań')
+    .replace(/Zaleg[Å\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+    .replace(/Dzi[Å\u0139][^'"`<>\s,.)]*/g, 'Dziś');
 
   if (source !== original) {
     write(rel, source);

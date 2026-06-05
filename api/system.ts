@@ -24,6 +24,7 @@ import weeklyReportHandler from '../src/server/weekly-report-handler.js';
 import googleCalendarHandler from '../src/server/google-calendar-handler.js';
 import taskRouteStage124FHandler from '../src/server/task-route-stage124f.js';
 import eventRouteStage124FHandler from '../src/server/event-route-stage124f.js';
+import activitiesHandler from '../src/server/activities-handler.js';
 
 function parseBody(body: unknown) {
   if (!body) return {};
@@ -810,6 +811,12 @@ export default async function handler(req: any, res: any) {
   const identity = getRequestIdentity(req, body);
   void identity.fullName;
   const kind = routeKind(req, body);
+
+  // STAGE223_R2U_ACTIVITIES_SYSTEM_ROUTE_CONSOLIDATION: keep /api/activities behind api/system for Vercel Hobby function budget.
+  if (kind === 'activities') {
+    await activitiesHandler(req, res);
+    return;
+  }
 
   if (kind === 'version') {
     return handleStage122Version(req, res);

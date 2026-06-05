@@ -22,7 +22,7 @@ if (!tsx.includes('data-cf-metric-replacement="stage181d-today-parity"')) fail('
 // Old Channels card must not return.
 if (tsx.includes('function PermissionCopy')) fail('dead PermissionCopy helper remains');
 if (tsx.includes('<PermissionCopy')) fail('dead <PermissionCopy /> usage remains');
-for (const text of ['Poranny digest e-mail', 'Konfiguracja w Ustawieniach', '<h2>Kanały</h2>', '<h2>KanaĹ‚y</h2>', '<h2>Kana┼éy</h2>']) {
+for (const text of ['Poranny digest e-mail', 'Konfiguracja w Ustawieniach', '<h2>Kanały</h2>', '<h2>Kanały</h2>', '<h2>Kanały</h2>']) {
   if (tsx.includes(text)) fail(`dead channels card marker remains: ${text}`);
 }
 

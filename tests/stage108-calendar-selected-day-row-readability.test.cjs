@@ -1,4 +1,4 @@
-﻿const test = require('node:test');
+const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 test('Stage108 V2 selected-day rows keep title close to meta and remove orphan CSS warnings', () => {

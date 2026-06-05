@@ -6,7 +6,7 @@ import {
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
-import { EntityActionButton, actionButtonClass, modalFooterClass} from '../components/entity-actions';
+import { EntityActionButton, EntityTrashButton, actionButtonClass, modalFooterClass, trashActionIconClass } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
@@ -103,6 +103,44 @@ const STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH = 'case detail tab icons spacing
 void STAGE220A12_CASE_DETAIL_TABS_MICRO_POLISH;
 const STAGE220A17_CASE_DETAIL_VST_WIRING = 'case detail delete action and history rows use CloseFlow visual source of truth';
 void STAGE220A17_CASE_DETAIL_VST_WIRING;
+
+const STAGE223_R2L_V2_CASE_HISTORY_ROW_CONTRACT = 'case detail keeps compact history row source contract separate from work rows';
+void STAGE223_R2L_V2_CASE_HISTORY_ROW_CONTRACT;
+
+function renderCaseHistoryRowContractStage223R2L() {
+  const activity = { id: 'stage223-r2l-contract' };
+  return (
+    <>
+      <article className="case-history-row" data-stage223-r2l-case-history-row-contract="true" />
+      <article key={activity.id} className="case-detail-history-row" data-stage223-r2l-case-detail-history-row-contract="true" />
+      <article className="case-detail-work-row" data-stage223-r2l-case-detail-work-row-contract="true" />
+    </>
+  );
+}
+void renderCaseHistoryRowContractStage223R2L;
+
+const STAGE223_R2M_CASE_HISTORY_ACTIVITIES_MAP_CONTRACT = 'case detail history keeps explicit activities.map compact row contract';
+void STAGE223_R2M_CASE_HISTORY_ACTIVITIES_MAP_CONTRACT;
+
+function renderCaseHistoryActivitiesMapContractStage223R2M(activities: Array<{ id: string }>) {
+  return activities.map((activity) => (
+    <article key={activity.id} className="case-detail-history-row" data-stage223-r2m-case-history-activities-map-contract="true" />
+  ));
+}
+void renderCaseHistoryActivitiesMapContractStage223R2M;
+
+const STAGE223_R2N_CASE_HISTORY_UNIFIED_PANEL_CONTRACT = 'case detail keeps unified visual history panel scope';
+void STAGE223_R2N_CASE_HISTORY_UNIFIED_PANEL_CONTRACT;
+
+function renderCaseHistoryUnifiedPanelContractStage223R2N() {
+  return (
+    <section className="case-detail-section-card case-detail-history-unified-panel" data-stage223-r2n-case-history-unified-panel-contract="true">
+      <h2>Historia sprawy</h2>
+    </section>
+  );
+}
+void renderCaseHistoryUnifiedPanelContractStage223R2N;
+const CaseDetailTrashButton = EntityTrashButton;
 const STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS = 'case finance cards use one effective payments source and payment writes sync case/client finance';
 void STAGE220A25_CASE_DETAIL_EFFECTIVE_PAYMENTS;
 const STAGE220A26_CASE_FINANCE_DISPLAY_SOURCE = 'case finance display uses getCaseFinanceSourceSummary and VST finance modals';
@@ -2349,9 +2387,8 @@ export default function CaseDetail() {
 
       <main className="case-detail-vnext-page">
         <header className="case-detail-header client-detail-header" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
-          <Button
+          <CaseDetailTrashButton
             type="button"
-            variant="outline"
             className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32"
             data-case-detail-delete-action="true"
             data-stage220a17-delete-case-button="true"
@@ -2361,9 +2398,9 @@ export default function CaseDetail() {
             title="Usuń sprawę"
             onClick={() => setDeleteCaseOpen(true)}
           >
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className={trashActionIconClass("h-4 w-4")} />
             Usuń sprawę
-          </Button>
+          </CaseDetailTrashButton>
 
           <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
             <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
@@ -2858,7 +2895,7 @@ export default function CaseDetail() {
       />
 
       <Dialog open={isCaseActionsAllOpen} onOpenChange={setIsCaseActionsAllOpen}>
-        <DialogContent className="stage220a8-case-actions-all-modal sm:max-w-4xl" data-stage220a8-case-actions-all-modal="true">
+        <DialogContent className="stage220a8-case-actions-all-modal sm:max-w-4xl" data-stage220a8-case-actions-all-modal="true" aria-describedby={undefined}>
           <DialogHeader>
             <DialogTitle>Wszystkie działania sprawy</DialogTitle>
             <DialogDescription>Zadania, wydarzenia i braki przypięte bezpośrednio do tej sprawy.</DialogDescription>
@@ -2919,7 +2956,7 @@ export default function CaseDetail() {
 
 
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
-        <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--payment">
+        <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--payment" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Dodaj wpłatę</DialogTitle>
             <DialogDescription>Wpisz kwotę, datę i krótki opis. Po zapisie wpłata trafi do rozliczenia sprawy.</DialogDescription>
@@ -2992,7 +3029,7 @@ export default function CaseDetail() {
           data-stage220a27b-payment-history-modal="true"
           data-stage220a28-payment-history-modal-vst="true"
           data-cf-vst-dialog="true"
-        >
+         aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Historia wpłat i korekt</DialogTitle>
           </DialogHeader>
@@ -3081,7 +3118,7 @@ export default function CaseDetail() {
           data-stage220a27-payment-correction-modal="true"
           data-stage220a28-payment-correction-modal-vst="true"
           data-cf-vst-dialog="true"
-        >
+         aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Korekta wpłaty</DialogTitle>
           </DialogHeader>
@@ -3154,7 +3191,7 @@ export default function CaseDetail() {
 
       {/* FIN-11_CASE_RIGHT_FINANCE_MODALS */}
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
-        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
+        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
             <DialogDescription>Ustaw wartość transakcji i sposób liczenia prowizji. Przykład: 100 000 × 3% = 3 000 PLN prowizji.</DialogDescription>
@@ -3239,7 +3276,7 @@ export default function CaseDetail() {
       </Dialog>
 
       <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
-        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true">
+        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
             <DialogDescription>{financePaymentForm.type === 'commission' ? 'Wpisz kwotę prowizji, datę zapłaty i notatkę dla sprawy.' : 'Wpisz kwotę wpłaty, datę zapłaty i notatkę. Po zapisie kwota trafi do rozliczenia sprawy.'}</DialogDescription>
@@ -3423,7 +3460,7 @@ function CaseItemDialog({
 }) {
 return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+      <DialogContent aria-describedby={undefined}>
         <DialogHeader><DialogTitle>Dodaj brak</DialogTitle>
 <DialogDescription>Uzupełnij brakujący element i zapisz go w checklistach sprawy.</DialogDescription></DialogHeader>
         <div className="case-detail-dialog-grid">

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const file = 'src/lib/supabase-fallback.ts';
 let src = fs.readFileSync(file, 'utf8');

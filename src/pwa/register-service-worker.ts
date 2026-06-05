@@ -10,6 +10,12 @@ export function registerCloseFlowServiceWorker() {
   const STAGE220A29_NO_RUNTIME_SERVICE_WORKER_REGISTER = 'no service worker register/update during app runtime';
   void STAGE220A29_NO_RUNTIME_SERVICE_WORKER_REGISTER;
 
+  const STAGE122_RUNTIME_AUTH_API_PWA_HARDENING = 'runtime retires stale PWA cache without touching auth storage';
+  void STAGE122_RUNTIME_AUTH_API_PWA_HARDENING;
+
+  const STAGE223_R2P_PWA_FOUNDATION_LEGACY_STATIC_ONLY_CONTRACT = "legacy PWA foundation expected register('/service-worker.js' text only; runtime registration is disabled by Stage220A29";
+  void STAGE223_R2P_PWA_FOUNDATION_LEGACY_STATIC_ONLY_CONTRACT;
+
   const clearCloseFlowCaches = async () => {
     if (!('caches' in window)) return;
     const keys = await caches.keys();

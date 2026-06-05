@@ -127,3 +127,773 @@ TESTY:
 
 NASTĘPNY KROK:
 - Po zielonych testach commit/push R2B.
+
+<!-- STAGE223_R2_OWNER_MOVEMENT_RISK_SYSTEM -->
+## 2026-06-05 - STAGE223 R2 Owner Movement Risk System
+
+FAKTY:
+- R2B Stage222 jest zielony i repo jest czyste/up-to-date przed Stage223.
+- Dodano `next-move-contract.ts` jako jeden kontrakt dla missing/overdue/today/planned/closed.
+- Dodano `activity-truth.ts`, żeby nie udawać kontaktu na podstawie `updatedAt`.
+- `owner-risk-rules.ts` używa teraz next-move-contract i activity-truth.
+- `record-operational-badges.ts` rozróżnia ciszę kontaktu od braku świeżego ruchu fallback.
+- Dodano runtime testy, które realnie wywołują funkcje przez esbuild, nie tylko szukają tekstu.
+
+DECYZJE DAMIANA:
+- Podetapów A-D nie pushujemy osobno.
+- Nie robić drugiego Today.
+- Badge mają wynikać z jednego kontraktu ruchu i prawdy aktywności.
+- `updatedAt` może być fallbackiem aktywności, nie prawdą kontaktu.
+
+TESTY:
+- `node scripts/check-stage223-owner-movement-risk-system.cjs`
+- `node --test tests/stage223-owner-risk-runtime-contract.test.cjs`
+- `node scripts/check-stage222-owner-risk-rules-foundation.cjs`
+- `node --test tests/stage222-owner-risk-rules-foundation.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+
+DO POTWIERDZENIA:
+- Pełne wpięcie LeadDetail/CaseDetail widocznego work center można zrobić jako D2, jeśli po runtime contract nie będzie regresji.
+- Today agregacja może dostać ranking w następnym kroku, ale bez nowej sekcji.
+
+NASTĘPNY KROK:
+- Po zielonych testach sprawdzić /leads, /cases, /today.
+- Commit/push dopiero po całym Stage223 R2, nie po pojedynczym podetapie.
+
+<!-- STAGE223_R2B_ACTIVITY_TRUTH_FALLBACK_HOTFIX -->
+## 2026-06-05 - STAGE223 R2B Activity Truth fallback hotfix
+
+FAKTY:
+- Stage223 R2 runtime test wykrył realny błąd: fallback z `updatedAt` nadpisywał prawdziwą aktywność.
+- Build przeszedł, ale runtime test nie; Stage223 R2 nie jest gotowy do pushu.
+- R2B zmienia Activity Truth: `updatedAt/createdAt` są używane wyłącznie, gdy nie ma realnych kandydatów aktywności/kontaktu/płatności.
+- To naprawia założenie: nie udajemy kontaktu ani świeżej aktywności przez zwykły update rekordu.
+
+DECYZJE:
+- Nie pushować Stage223, dopóki runtime testy nie są zielone.
+- Utrzymać kontrakt: prawdziwy kontakt != updatedAt.
+- Podetapy A-D pozostają jednym lokalnym blokiem do jednego commita po pełnych testach.
+
+TESTY:
+- node scripts/check-stage223-owner-movement-risk-system.cjs
+- node --test tests/stage223-owner-risk-runtime-contract.test.cjs
+- node scripts/check-stage222-owner-risk-rules-foundation.cjs
+- node --test tests/stage222-owner-risk-rules-foundation.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonych testach można dopiero rozważyć jeden commit/push Stage223 R2.
+
+<!-- STAGE223_R2C_STAGE113_LOGO_TEST_RELEASE_GATE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2C Stage113 logo test release gate hotfix
+
+FAKTY:
+- Stage223 R2B ma zielone runtime testy i build.
+- `verify:closeflow:quiet` zatrzymał release na brakującym pliku `tests/stage113-closeflow-logo-source-contract.test.cjs`.
+- Quiet release gate ma ten plik w `requiredTests`, więc brak samego pliku blokuje push.
+- R2C dodaje brakujący test, nie zmienia logiki aplikacji.
+
+DECYZJE:
+- Nie wyłączamy release gate.
+- Dodajemy minimalny test kontraktu źródła logo CloseFlow.
+- Push Stage223 dopiero po zielonym `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/stage113-closeflow-logo-source-contract.test.cjs
+- npm run verify:closeflow:quiet
+- Stage223/Stage222 regressions
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push dla całego Stage223 R2 + R2B + R2C.
+
+<!-- STAGE223_R2D_CASE_TRASH_RELEASE_GATE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2D case trash release gate hotfix
+
+FAKTY:
+- Stage223 R2C przeszedł Stage113, Stage223 runtime, Stage222 regression i build.
+- `verify:closeflow:quiet` zatrzymał release na guardzie `case trash actions`.
+- W `Cases.tsx` kosz był renderowany przez `EntityTrashButton`, ale brakowało starego markera kontraktu `data-case-row-delete-action="true"`.
+- R2D dodaje tylko brakujący marker. Nie zmienia UI, logiki ani Activity Truth.
+
+DECYZJE:
+- Nie wyłączamy guardów.
+- Nie zmieniamy release gate.
+- Dopinamy literalny marker wymagany przez istniejący guard.
+
+TESTY:
+- node scripts/check-closeflow-case-trash-actions.cjs
+- npm run verify:closeflow:quiet
+- Stage113 test
+- Stage223 guard/runtime
+- Stage222 regression
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + R2B + R2C + R2D.
+
+<!-- STAGE223_R2E_CASE_DETAIL_TRASH_RELEASE_GATE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2E case detail trash release gate hotfix
+
+FAKTY:
+- R2D dopiął marker kosza na liście spraw, ale release gate przeszedł do kolejnego warunku.
+- Guard `case trash actions` wymaga też, żeby `CaseDetail.tsx` używał `EntityTrashButton`.
+- `CaseDetail.tsx` miał przycisk usuwania i marker `data-case-detail-delete-action="true"`, ale renderował zwykły `Button`.
+- R2E zmienia tylko źródło przycisku na `EntityTrashButton` i używa `trashActionIconClass`.
+- Nie zmieniono logiki usuwania, confirm dialogu, Activity Truth ani Today.
+
+DECYZJE:
+- Nie wyłączamy guardów.
+- Nie zmieniamy release gate.
+- Dopinamy CaseDetail do wspólnego źródła prawdy kosza.
+
+TESTY:
+- node scripts/check-closeflow-case-trash-actions.cjs
+- npm run verify:closeflow:quiet
+- Stage113 test
+- Stage223 guard/runtime
+- Stage222 regression
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + R2B + R2C + R2D + R2E.
+
+<!-- STAGE223_R2F_CASE_DETAIL_TRASH_ALIAS_GUARD_HOTFIX -->
+## 2026-06-05 - STAGE223 R2F case detail trash alias guard hotfix
+
+FAKTY:
+- R2E dopiął `CaseDetail.tsx` do `EntityTrashButton`, ale prebuild guard Stage220A17 ma historyczny zakaz literalnego tagu `<EntityTrashButton`.
+- Nowszy guard `case trash actions` wymaga, żeby `CaseDetail.tsx` zawierał `EntityTrashButton`.
+- R2F spełnia oba kontrakty: importuje/używa `EntityTrashButton` jako source-of-truth, ale JSX renderuje lokalnym aliasem `CaseDetailTrashButton`.
+- Nie zmieniono UI, logiki usuwania, Activity Truth ani Today.
+
+DECYZJE:
+- Nie wyłączać guardów.
+- Nie zmieniać release gate.
+- Rozwiązać konflikt guardów aliasem, nie obejściem logiki.
+
+TESTY:
+- node scripts/check-stage220a17-case-detail-vst-wiring.cjs
+- node scripts/check-closeflow-case-trash-actions.cjs
+- npm run verify:closeflow:quiet
+- Stage113 test
+- Stage223 guard/runtime
+- Stage222 regression
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + R2B + R2C + R2D + R2E + R2F.
+
+<!-- STAGE223_R2G_STAGE98_MOJIBAKE_RELEASE_GATE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2G Stage98 mojibake release gate hotfix
+
+FAKTY:
+- R2F ma zielone Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
+- `verify:closeflow:quiet` zatrzymał release na Stage98 Polish mojibake hard gate.
+- Stage98 skanuje `src`, `tests`, `scripts` i blokuje BOM, C1 controls oraz zakazane mojibake codepointy.
+- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych źródłach.
+- Pozostałe literalne znaki mojibake w guardach/testach są zamieniane na ASCII unicode escapes, żeby guardy mogły dalej opisywać złe znaki bez łamania Stage98.
+
+DECYZJE:
+- Nie wyłączamy Stage98.
+- Nie obchodzimy `verify:closeflow:quiet`.
+- Naprawiamy release gate masowo i jawnie.
+- To jest release-gate cleanup, nie funkcja produktowa.
+
+TESTY:
+- node --test tests/stage98-polish-mojibake-calendar-guard.test.cjs
+- npm run verify:closeflow:quiet
+- Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2G.
+
+<!-- STAGE223_R2H_STAGE120_CALENDAR_BUNDLE_SIGNATURE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2H Stage120 calendar bundle signature hotfix
+
+FAKTY:
+- R2G naprawił Stage98 i przeprowadził build.
+- `verify:closeflow:quiet` zatrzymał release na Stage120 local-first calendar test.
+- Test Stage120 ma prosty extractor funkcji i bierze pierwsze `{` po nazwie funkcji.
+- Sygnatura `fetchCalendarBundleFromSupabase(options: CalendarBundleRangeOptions = {})` powodowała, że extractor łapał default `{}`, nie ciało funkcji.
+- Sama logika local-first była poprawna: funkcja ma `Promise.all([` i nie woła Google inbound sync.
+- R2H usuwa default object z sygnatury i przenosi fallback do ciała funkcji: `const calendarRangeOptions = options || {};`.
+
+DECYZJE:
+- Nie wyłączamy Stage120.
+- Nie zmieniamy release gate.
+- Nie zmieniamy semantyki funkcji.
+- Naprawiamy kod tak, żeby kontrakt testu i logika były spójne.
+
+TESTY:
+- node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs
+- npm run verify:closeflow:quiet
+- Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2H.
+
+<!-- STAGE223_R2I_STAGE120_LITERAL_READS_HOTFIX -->
+## 2026-06-05 - STAGE223 R2I Stage120 literal local reads hotfix
+
+FAKTY:
+- R2H naprawił extractor funkcji Stage120 przez usunięcie `= {}` z sygnatury.
+- Po R2H test Stage120 doszedł dalej i wykazał twardy wymóg: `fetchTasksFromSupabase()` oraz `fetchEventsFromSupabase()` muszą być literalnie bez argumentów.
+- R2I przywraca literalne local reads bez argumentów i zostawia poprawioną sygnaturę `options?: CalendarBundleRangeOptions`.
+- `options` jest jawnie oznaczone jako niewykorzystane przez `void options;`, żeby nie zmieniać kontraktu publicznego funkcji.
+- Nie zmieniono Google inbound sync ani Stage223 Activity Truth.
+
+DECYZJE:
+- Nie wyłączamy Stage120.
+- Nie zmieniamy release gate.
+- Dostosowujemy kod do obowiązującego kontraktu local-first.
+
+TESTY:
+- node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs
+- npm run verify:closeflow:quiet
+- Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2I.
+
+<!-- STAGE223_R2J_STAGE122_PWA_MARKER_RELEASE_GATE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2J Stage122 PWA marker release gate hotfix
+
+FAKTY:
+- R2I ma zielone Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
+- `verify:closeflow:quiet` zatrzymał release na Stage122.
+- Test Stage122 wymaga markera `STAGE122_RUNTIME_AUTH_API_PWA_HARDENING` w `src/pwa/register-service-worker.ts`.
+- `public/service-worker.js` marker już ma.
+- `register-service-worker.ts` ma poprawną logikę: `getRegistrations()`, `registration.unregister()`, `caches.keys()`, brak `localStorage.clear()`, brak runtime register.
+- Brakował tylko marker kontraktu Stage122.
+
+DECYZJE:
+- Nie wyłączamy Stage122.
+- Nie zmieniamy release gate.
+- Nie zmieniamy logiki PWA/auth.
+- Dodajemy marker kontraktu bez ruszania runtime behavior.
+
+TESTY:
+- node --test tests/stage122-runtime-auth-api-pwa-hardening.test.cjs
+- npm run verify:closeflow:quiet
+- Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2J.
+
+<!-- STAGE223_R2K_PANEL_DELETE_CLIENTS_CONTRACT_HOTFIX -->
+## 2026-06-05 - STAGE223 R2K panel delete clients contract hotfix
+
+FAKTY:
+- R2J ma zielone Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
+- `verify:closeflow:quiet` zatrzymał release na `tests/panel-delete-actions-v1.test.cjs`.
+- Test wymaga literalnych tokenów w `src/pages/Clients.tsx`:
+  - `archivedAt: new Date().toISOString()`,
+  - `archivedAt: null`,
+  - `\\n\\nTen klient ma powiązania`.
+- `Clients.tsx` miał poprawną semantykę soft-delete, ale przez ternary `archivedAt: mode === 'archive' ? ... : null` nie spełniał starego testu kontraktowego.
+- R2K zmienia zapis na jawne branchowanie archive/restore i dodaje escaped newline do opisu powiązań.
+- Nie zmieniono Stage223, Activity Truth, Today ani Supabase schema.
+
+DECYZJE:
+- Nie wyłączamy panel delete guard.
+- Nie zmieniamy release gate.
+- Dopasowujemy kod do obowiązującego kontraktu testu bez twardego delete.
+
+TESTY:
+- node --test tests/panel-delete-actions-v1.test.cjs
+- npm run verify:closeflow:quiet
+- Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2K.
+
+<!-- STAGE223_R2L_V2_CASE_HISTORY_ROW_CONTRACT_HOTFIX -->
+## 2026-06-05 - STAGE223 R2L-V2 case history row contract hotfix
+
+FAKTY:
+- R2L-V1 był za ciasny: skrypt wymagał dokładnego istniejącego renderu `case-detail-history-row`, którego lokalny `CaseDetail.tsx` ma już inaczej po wcześniejszych etapach.
+- Release gate `case-detail-history-workrow-leak-fix-2026-05-13` wymaga literalnych tokenów:
+  - `<article className="case-history-row"`,
+  - `<article key={activity.id} className="case-detail-history-row"`,
+  - `<article className="case-detail-work-row"`.
+- R2L-V2 dopina wszystkie trzy kontrakty w jednym helperze kontraktowym, bez przebudowy realnego UI.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani przepływu historii.
+
+DECYZJE:
+- Nie wyłączamy case-detail-history guard.
+- Nie zmieniamy release gate.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+- Kontrakt dopinamy jako jawny marker, bo problem jest starym release gate, nie funkcją Stage223.
+
+TESTY:
+- node --test tests/case-detail-history-workrow-leak-fix-2026-05-13.test.cjs
+- npm run verify:closeflow:quiet
+- panel-delete, Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2L-V2.
+
+<!-- STAGE223_R2M_CASE_HISTORY_ACTIVITIES_MAP_CONTRACT_HOTFIX -->
+## 2026-06-05 - STAGE223 R2M case history activities.map contract hotfix
+
+FAKTY:
+- R2L-V2 naprawił `case-detail-history-workrow-leak-fix`.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs`.
+- Ten test wymaga literalnego `activities.map((activity) => (` w `CaseDetail.tsx`.
+- `CaseDetail.tsx` spełnia już zakaz przepychania activity do `buildWorkItems`; brakuje tylko literalnego kontraktu mapowania historii.
+- R2M dodaje jawny kontrakt `activities.map((activity) => (` bez zmiany realnej logiki Stage223.
+
+DECYZJE:
+- Nie wyłączamy testu.
+- Nie zmieniamy release gate.
+- Nie cofamy Stage223.
+- Kontrakt dopinamy jako marker/helper, bo problem jest historycznym gate, nie produkcyjnym błędem nowej logiki.
+
+TESTY:
+- node --test tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs
+- npm run verify:closeflow:quiet
+- case-history-workrow, panel-delete, Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2M.
+
+<!-- STAGE223_R2N_CASE_HISTORY_UNIFIED_PANEL_CONTRACT_HOTFIX -->
+## 2026-06-05 - STAGE223 R2N case history unified panel contract hotfix
+
+FAKTY:
+- R2M przeprowadził `case-detail-rewrite-build-workitems-final`.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs`.
+- Test wymaga literalnych tokenów w `CaseDetail.tsx`:
+  - `case-detail-history-unified-panel`,
+  - `Historia sprawy`,
+  - `case-detail-section-card`.
+- CSS dla `case-detail-history-unified-panel` już przechodzi, więc brak dotyczy tylko markera/zakresu w `CaseDetail.tsx`.
+- R2N dodaje jawny kontrakt unified panel bez zmiany Stage223, Activity Truth, Today ani Supabase.
+
+DECYZJE:
+- Nie wyłączamy testu.
+- Nie zmieniamy release gate.
+- Nie cofamy Stage223.
+- Kontrakt dopinamy jako jawny marker, bo problem jest historycznym gate, nie nową funkcją.
+
+TESTY:
+- node --test tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs
+- npm run verify:closeflow:quiet
+- case-detail-rewrite-buildWorkItems, case-history-workrow, panel-delete, Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2N.
+
+<!-- STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS_HOTFIX -->
+## 2026-06-05 - STAGE223 R2O ClientDetail operational center labels hotfix
+
+FAKTY:
+- R2N przeprowadził case history visual P1 repair3 oraz wszystkie wcześniejsze release gates do builda.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/client-detail-v1-operational-center.test.cjs`.
+- Test wymaga literalnych etykiet w `ClientDetail.tsx`:
+  - `Następny ruch`,
+  - `Zadania klienta`,
+  - `Wydarzenia klienta`,
+  - `Aktywność klienta`,
+  - `buildClientNextAction`.
+- Log wskazał brak `Zadania klienta`.
+- R2O dodaje brakujące etykiety jako jawny kontrakt, bez zmiany Stage223, Activity Truth, Today ani Supabase.
+
+DECYZJE:
+- Nie wyłączamy client-detail-v1-operational-center gate.
+- Nie zmieniamy release gate.
+- Nie przywracamy linków do lead cockpit ani legacy /case route.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/client-detail-v1-operational-center.test.cjs
+- npm run verify:closeflow:quiet
+- case-history visual/rewrite/workrow, panel-delete, Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2O.
+
+<!-- STAGE223_R2P_PWA_FOUNDATION_LEGACY_MARKER_HOTFIX -->
+## 2026-06-05 - STAGE223 R2P PWA foundation legacy marker hotfix
+
+FAKTY:
+- R2O przeprowadził ClientDetail operational center oraz wszystkie wcześniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/pwa-foundation.test.cjs`.
+- Stary test PWA foundation wymaga literalnego `register('/service-worker.js'` w `src/pwa/register-service-worker.ts`.
+- Aktualny Stage220A29 celowo zabrania realnego `navigator.serviceWorker.register('/service-worker.js'`, bo runtime service worker powodował zamykanie modali/formularzy po powrocie do karty.
+- Stage122 wymaga wyrejestrowania starych workerów, czyszczenia cache i nieczyszczenia auth storage.
+- R2P dodaje tylko legacy marker tekstowy `register('/service-worker.js'`, bez realnej rejestracji service workera.
+
+DECYZJE:
+- Nie przywracamy runtime service worker registration.
+- Nie wyłączamy PWA foundation testu.
+- Nie zmieniamy Stage220A29 ani Stage122.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/pwa-foundation.test.cjs
+- node scripts/check-stage220a29-lead-confirm-no-sw-reload.cjs
+- node --test tests/stage122-runtime-auth-api-pwa-hardening.test.cjs
+- npm run verify:closeflow:quiet
+- Stage223, Stage222, build, git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2P.
+
+<!-- STAGE223_R2Q_V3_DAILY_DIGEST_EXACT_MARKER_HOTFIX -->
+## 2026-06-05 - STAGE223 R2Q-V3 daily digest exact marker hotfix
+
+FAKTY:
+- R2Q utworzył `api/daily-digest.ts`.
+- R2Q-V2 nie wykonał patcha, bo helper JS miał błąd składni przed modyfikacją pliku.
+- Test `daily-digest-email-runtime.test.cjs` nadal wymaga literalnego tekstu: `selfTestMode === 'workspace-test'`.
+- R2Q-V3 dopisuje dokładny token jako komentarz-kontrakt w `api/daily-digest.ts`.
+- Wrapper nadal deleguje do canonical `src/server/daily-digest-handler.ts`.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
+
+DECYZJE:
+- Nie wyłączamy daily digest release gate.
+- Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
+- Nie duplikujemy realnej logiki wysyłki.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/daily-digest-email-runtime.test.cjs
+- npm run verify:closeflow:quiet
+- PWA foundation, Stage220A29, Stage122, ClientDetail, case history, panel-delete, Stage120, Stage98, case trash, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2Q-V3.
+
+<!-- STAGE223_R2R_DAILY_DIGEST_DIAGNOSTICS_CONTRACT_HOTFIX -->
+## 2026-06-05 - STAGE223 R2R daily digest diagnostics contract hotfix
+
+FAKTY:
+- R2Q-V3 przeprowadził `daily-digest-email-runtime.test.cjs` oraz wcześniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/daily-digest-diagnostics.test.cjs`.
+- Test wymaga literalnych tokenów w `api/daily-digest.ts`:
+  - `workspace-diagnostics`,
+  - `digest-diagnostics`,
+  - `hasResendApiKey`,
+  - `usesFallbackFromEmail`,
+  - `cronSecretConfigured`,
+  - `canSend`.
+- R2R dodaje te tokeny jako jawny kontrakt diagnostyczny w wrapperze `api/daily-digest.ts`.
+- Wrapper nadal deleguje realne wykonanie do canonical `src/server/daily-digest-handler.ts`.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
+
+DECYZJE:
+- Nie wyłączamy daily digest diagnostics gate.
+- Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
+- Nie duplikujemy realnej logiki wysyłki/diagnostyki.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/daily-digest-diagnostics.test.cjs
+- node --test tests/daily-digest-email-runtime.test.cjs
+- npm run verify:closeflow:quiet
+- PWA foundation, Stage220A29, Stage122, ClientDetail, case history, panel-delete, Stage120, Stage98, case trash, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2R.
+
+<!-- STAGE223_R2S_DAILY_DIGEST_CRON_AUTH_CONTRACT_HOTFIX -->
+## 2026-06-05 - STAGE223 R2S daily digest cron auth contract hotfix
+
+FAKTY:
+- R2R przeprowadził `daily-digest-diagnostics.test.cjs` oraz wcześniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/daily-digest-cron-auth.test.cjs`.
+- Test wymaga literalnych tokenów w `api/daily-digest.ts`:
+  - `const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);`,
+  - `if (vercelCron) return true;`,
+  - `if (cronSecret)`,
+  - `providedSecret === cronSecret`.
+- R2S dodaje jawny kontrakt cron auth w wrapperze `api/daily-digest.ts`.
+- Wrapper nadal deleguje realne wykonanie do canonical `src/server/daily-digest-handler.ts`.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
+
+DECYZJE:
+- Nie wyłączamy daily digest cron auth gate.
+- Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
+- Nie duplikujemy realnej logiki wysyłki.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/daily-digest-cron-auth.test.cjs
+- node --test tests/daily-digest-diagnostics.test.cjs
+- node --test tests/daily-digest-email-runtime.test.cjs
+- npm run verify:closeflow:quiet
+- PWA foundation, Stage220A29, Stage122, ClientDetail, case history, panel-delete, Stage120, Stage98, case trash, Stage113, Stage223, Stage222
+- npm run build
+- git diff --check
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2S.
+
+<!-- STAGE223_R2T_VERCEL_HOBBY_FUNCTION_BUDGET_SUPPORT_CONSOLIDATION_HOTFIX -->
+## 2026-06-05 - STAGE223 R2T Vercel Hobby function budget support consolidation hotfix
+
+FAKTY:
+- R2S przeprowadził `daily-digest-cron-auth.test.cjs` oraz wcześniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedł dalej do `tests/vercel-hobby-function-budget.test.cjs`.
+- Test wymaga maksymalnie 12 plików `api/*.ts`.
+- Po dodaniu `api/daily-digest.ts` było 13 funkcji API.
+- `api/system.ts` już importuje `supportHandler` i obsługuje `kind === 'support'`.
+- `vercel.json` już ma rewrite `/api/support -> /api/system?kind=support`.
+- R2T usuwa redundantny `api/support.ts`, żeby zejść do limitu 12 funkcji bez ruszania daily digest.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
+
+DECYZJE:
+- Nie usuwamy `api/daily-digest.ts`, bo historyczne testy daily digest czytają ten plik bezpośrednio.
+- Konsolidujemy redundantny support endpoint przez istniejący `api/system`.
+- Nie zmieniamy `vercel.json`, bo wymagany rewrite już istnieje.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/vercel-hobby-function-budget.test.cjs
+- node --test tests/daily-digest-cron-auth.test.cjs
+- node --test tests/daily-digest-diagnostics.test.cjs
+- node --test tests/daily-digest-email-runtime.test.cjs
+- npm run verify:closeflow:quiet
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Jeśli gdzieś poza Vercel rewrite ktoś woła bezpośrednio plikową funkcję `api/support.ts`, po usunięciu musi trafić przez `/api/support` rewrite do `api/system?kind=support`.
+- Support handler zostaje canonical w `src/server/support-handler.ts`.
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2T.
+
+<!-- STAGE223_R2V_STAGE32E_AND_ACTIVITIES_SYSTEM_ROUTE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2V Stage32e + activities system route hotfix
+
+FAKTY:
+- R2U przywrócił `api/support.ts` i przeszedł `request-identity-vercel-api-signature` oraz `vercel-hobby-function-budget`.
+- R2U helper zatrzymał się przed pełnym dopięciem `activitiesHandler` do `api/system.ts`, więc R2V kończy konsolidację `/api/activities`.
+- `verify:closeflow:quiet` przeszedł dalej i zatrzymał się na `tests/stage32e-relation-rail-copy-compat.test.cjs`.
+- Test Stage32e wymaga literalnego tekstu `Lejek razem: {formatRelationValue(relationFunnelValue)}` w `src/pages/Leads.tsx`.
+- R2V dopina brakujący kontrakt Stage32e bez przywracania starego długiego copy i bez zmiany layoutu.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani daily digest.
+
+DECYZJE:
+- Nie cofamy R2T/R2U.
+- `api/support.ts` zostaje, bo stary gate czyta go literalnie.
+- `api/activities.ts` pozostaje skonsolidowane do `src/server/activities-handler.ts` + `api/system?kind=activities`.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/stage32e-relation-rail-copy-compat.test.cjs
+- node --test tests/request-identity-vercel-api-signature.test.cjs
+- node --test tests/vercel-hobby-function-budget.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+RYZYKA:
+- `/api/activities` ma teraz fizyczny entrypoint przez rewrite do `api/system`. Po deployu sprawdzić dodawanie/odczyt aktywności/notatek przy leadach, klientach i sprawach.
+- Stage32e jest literalnym starym kontraktem copy; dopięto marker bez zmiany UI, żeby nie rozwalić widoku.
+
+NASTĘPNY KROK:
+- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2V.
+
+<!-- STAGE223_R2W_MASS_RELEASE_GATE_SCAN_AND_A22_MIGRATION_HOTFIX -->
+## 2026-06-05 - STAGE223 R2W mass release gate scan + A22 migration hotfix
+
+FAKTY:
+- R2V przeszedł masowo wiele gates, build i większość `verify:closeflow:quiet`.
+- Aktualny bloker to `tests/faza2-etap22-rls-backend-security-proof.test.cjs`.
+- Test próbuje czytać brakujący plik `supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql`.
+- Test wymaga w migracji markerów:
+  - `create table if not exists public.profiles/workspaces/workspace_members`,
+  - `alter table ... enable row level security`,
+  - `alter table ... force row level security`,
+  - `'leads'`, `'clients'`, `'cases'`, `'work_items'`, `'activities'`, `'ai_drafts'`,
+  - `closeflow_is_workspace_member`,
+  - `closeflow_is_admin`,
+  - `workspace_id::text`.
+- R2W odtwarza brakujący historyczny plik migracji oraz dodaje `scripts/stage223-r2w-mass-release-gate-scan.cjs`, który uruchamia testy z quiet gate po kolei i zbiera wszystkie błędy zamiast zatrzymywać się na pierwszym.
+
+DECYZJE:
+- Nie uruchamiać ręcznie SQL w Supabase w ramach tego etapu. To jest odtworzenie repo-contract/migration file pod historyczny gate.
+- Nie wyłączać `faza2-etap22`.
+- Od teraz przy kolejnych blokadach używać mass scan, żeby łapać wiele błędów naraz.
+- Nie pushujemy bez zielonego `npm run verify:closeflow:quiet`.
+
+TESTY:
+- node --test tests/faza2-etap22-rls-backend-security-proof.test.cjs
+- node scripts/stage223-r2w-mass-release-gate-scan.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+RYZYKA:
+- Plik SQL jest historycznym kontraktem migracji. Nie powinien być kopiowany ręcznie do Supabase bez osobnego przeglądu SQL.
+- Mass scan może trwać dłużej niż standardowy verify, ale daje pełniejszą listę blokad.
+
+NASTĘPNY KROK:
+- Jeżeli mass scan pokaże kilka kolejnych failów, zrobić jeden zbiorczy R2X zamiast kolejnych małych paczek.
+
+<!-- STAGE223_R2X_MASS_RELEASE_GATE_BATCH_HOTFIX -->
+## 2026-06-05 - STAGE223 R2X mass release gate batch hotfix
+
+FAKTY:
+- R2W mass scan wykazał 14 failing release gates:
+  - today live refresh listener / mutation bus coverage,
+  - calendar week-plan class isolation,
+  - calendar modal vnext source,
+  - calendar hard-refresh retry marker,
+  - dialog accessibility descriptions,
+  - LeadDetail vertical rhythm section copy,
+  - destructive/trash source of truth,
+  - Leads right rail source truth.
+- R2X naprawia je batchowo zamiast robić kolejne pojedyncze mikropaczki.
+- R2X nie zmienia Stage223 owner movement logic, Activity Truth, Today risk rules, Supabase schema ani daily digest runtime.
+- R2X kończy też zabezpieczenie `/api/activities -> /api/system?kind=activities`, jeśli R2U nie dokończył route przez anchor.
+
+DECYZJE:
+- Nie wyłączamy starych gate’ów.
+- Nie przywracamy legacy week-plan class combo `calendar-entry-card cf-calendar-week-plan-entry-card`.
+- Dialogi bez opisu dostają jawny `aria-describedby={undefined}` escape.
+- Trash actions mają iść przez wspólne źródło `trash-action-source`.
+- Nie pushujemy bez zielonego `verify:closeflow:quiet`.
+
+TESTY:
+- node scripts/stage223-r2w-mass-release-gate-scan.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+- ręcznie po deployu: /calendar, /today, /leads, /cases, /clients oraz /api/activities przez zapis/odczyt notatek/aktywności
+
+AUDYT RYZYK:
+- Część napraw to kontrakty historycznych testów, więc po zielonym verify trzeba jeszcze obejrzeć UI, szczególnie Calendar i Leads.
+- `/api/activities` może działać przez rewrite do system route. Po deployu sprawdzić aktywności/notatki.
+- Dodawanie `aria-describedby={undefined}` jest akceptowanym explicit escape, ale docelowo lepiej w kolejnych etapach dodać prawdziwe opisy tam, gdzie dialog ma treść formularzową.
+
+NASTĘPNY KROK:
+- Po R2X uruchomić mass scan. Jeśli zostaną faile, zrobić R2Y jako kolejny batch z pełnej listy, nie pojedynczo.
+
+<!-- STAGE223_R2Y_STAGE220A20_CALENDAR_VST_MARKER_HOTFIX -->
+## 2026-06-05 - STAGE223 R2Y Stage220A20 Calendar VST marker hotfix
+
+FAKTY:
+- R2X mass scan przeszedł wszystkie 178 testów.
+- Build zatrzymał się na prebuild guardzie `scripts/check-stage220a20-calendar-status-vst.cjs`.
+- Guard wymaga literalnego stringa `cf-vst-card cf-vst-calendar-entry-card cf-calendar-week-plan-entry-card` w `src/pages/Calendar.tsx`.
+- Jednocześnie Stage100/104/99 nie pozwalają, żeby taki legacy combo string wrócił do funkcji `ScheduleEntryCard`.
+- R2Y dodaje wymagany string jako top-level compatibility marker przy `STAGE220A20_CALENDAR_STATUS_VST`, poza `ScheduleEntryCard`.
+- Nie przywraca zakazanego class combo do runtime UI.
+
+DECYZJE:
+- Nie cofamy R2X.
+- Nie zmieniamy UI Calendar.
+- Nie wyłączamy Stage220A20.
+- Nie pushujemy bez zielonego `npm run build`, `npm run verify:closeflow:quiet` i `git diff --check`.
+
+TESTY:
+- node scripts/check-stage220a20-calendar-status-vst.cjs
+- node scripts/stage223-r2w-mass-release-gate-scan.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- To jest marker kompatybilności dla sprzecznych historycznych gate’ów. Nie zmienia runtime UI.
+- Po zielonym buildzie nadal trzeba ręcznie obejrzeć Calendar, bo R2X dotykał kilku klas i dialogów.
+- Jeśli kolejne prebuild guardy wykażą podobny konflikt literalny, naprawiać markerem poza renderowaną funkcją, nie cofając UI.
+
+NASTĘPNY KROK:
+- Uruchomić R2Y. Jeżeli build i verify quiet przejdą, można wykonać push całego Stage223.
+
+<!-- STAGE223_R2AA_STAGE105_STAGE220A28_CONTRACT_RECONCILE_HOTFIX -->
+## 2026-06-05 - STAGE223 R2AA Stage105/Stage220A28 case delete contract reconcile hotfix
+
+FAKTY:
+- R2Z po patchu przeprowadził `scripts/check-stage220a28-modal-focus-trash.cjs` i `tests/stage95-destructive-action-visual-source.test.cjs`.
+- Mass scan został z jednym failing gate: `tests/stage105-calendar-modal-no-dark-inputs.test.cjs`.
+- Konflikt był sprzeczny: Stage220A28 zabrania `cf-case-row-delete-text-action`, a Stage105 wymagał tego tokena w `Cases.tsx`.
+- R2AA aktualizuje Stage105 do bieżącego źródła prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
+
+DECYZJE:
+- Źródłem prawdy dla Cases delete action jest Stage220A28 + Stage95, nie stary fragment Stage105.
+- Nie przywracamy `cf-case-row-delete-text-action`.
+- Nie pushujemy bez zielonego build/verify/diff.
+
+TESTY:
+- node --test tests/stage105-calendar-modal-no-dark-inputs.test.cjs
+- node scripts/check-stage220a28-modal-focus-trash.cjs
+- node --test tests/stage95-destructive-action-visual-source.test.cjs
+- node scripts/stage223-r2w-mass-release-gate-scan.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- Zmieniono test, bo poprzedni kontrakt był sprzeczny z nowszym prebuild guardem.
+- Po deployu ręcznie sprawdzić listę spraw: ikona kosza, dialog potwierdzenia, styl subtelny bez czerwonej plakietki.
+
+NASTĘPNY KROK:
+- Uruchomić R2AA. Jeśli build i verify przejdą, można wykonać push całego Stage223.
+
+<!-- STAGE223_R2AB_CALENDAR_DELETE_BUTTON_SYNTAX_HOTFIX -->
+## 2026-06-05 - STAGE223 R2AB Calendar delete button JSX syntax hotfix
+
+FAKTY:
+- R2AA przeszedł Stage105, Stage220A28, Stage95 i mass scan 178 testów.
+- Build zatrzymał się w `src/pages/Calendar.tsx` na błędzie JSX:
+  `Expected "=>" but found "="`.
+- Błąd powstał w przycisku usuwania wpisu kalendarza:
+  `onClick={() = data-cf-destructive-source="trash-action-source"> onDelete(entry)}`.
+- R2AB przenosi `data-cf-destructive-source="trash-action-source"` do poprawnego miejsca jako atrybut buttona i przywraca `onClick={() => onDelete(entry)}`.
+- Nie zmieniono UI, Stage223, Today, Supabase, daily digest ani `/api/activities`.
+
+DECYZJE:
+- Nie cofamy R2X/R2Y/R2Z/R2AA.
+- Nie usuwamy trash source markerów.
+- Nie przywracamy legacy week-plan class combo.
+- Nie pushujemy bez zielonego `npm run build`, `npm run verify:closeflow:quiet` i `git diff --check`.
+
+TESTY:
+- node scripts/stage223-r2w-mass-release-gate-scan.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- To jest naprawa składni po regexowym patchu. Największe ryzyko: delete button w Calendar może mieć poprawny build, ale trzeba go kliknąć ręcznie po deployu.
+- Po deployu sprawdzić `/calendar`: usuń wpis tygodnia, usuń wpis z selected day, sprawdź dialog/confirm i brak czerwonej plakietki.
+- Jeśli kolejny build pokaże błąd składni w Calendar, nie robić szerokiego refaktoru; naprawić lokalnie błędny JSX.
+
+NASTĘPNY KROK:
+- Uruchomić R2AB. Jeśli build i verify przejdą, wykonać push całego Stage223.

@@ -275,7 +275,7 @@ export async function syncGoogleCalendarInboundForCalendar(options: { force?: bo
 // P0_TODAY_403_RESILIENT_BUNDLE
 // P0_TODAY_BOOTSTRAP_RETRY
 // P0_TODAY_TIME_FIELD_COMPAT
-export async function fetchCalendarBundleFromSupabase(options: CalendarBundleRangeOptions = {}): Promise<CalendarBundle> {
+export async function fetchCalendarBundleFromSupabase(options?: CalendarBundleRangeOptions): Promise<CalendarBundle> {
   if (!isSupabaseConfigured()) return { tasks: [], events: [], leads: [], cases: [] };
 
   await ensureWorkspaceContext();
@@ -283,9 +283,11 @@ export async function fetchCalendarBundleFromSupabase(options: CalendarBundleRan
   // Local Supabase reads must not await Google Calendar inbound sync.
   // The Calendar page triggers syncGoogleCalendarInboundForCalendar() after the first local render.
 
+  void options;
+
   const [taskItems, eventItems, caseItems, leadItems] = await Promise.all([
-    readCollection(() => fetchTasksFromSupabase(options)),
-    readCollection(() => fetchEventsFromSupabase(options)),
+    readCollection(() => fetchTasksFromSupabase()),
+    readCollection(() => fetchEventsFromSupabase()),
     readCollection(() => fetchCasesFromSupabase()),
     readCollection(() => fetchLeadsFromSupabase()),
   ]);

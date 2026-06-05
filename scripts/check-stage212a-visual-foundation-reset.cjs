@@ -15,7 +15,7 @@ if (!layout.includes('<VisualFoundationRuntime />')) fail('Layout missing Visual
 for (const good of ['Dziś', 'Aktywność', 'Zgłoszenia', 'Rozliczenia', 'Powiadomienia', 'Inbox szkiców']) {
   if (!layout.includes(good)) fail('Layout missing Polish label: ' + good);
 }
-for (const token of ['DziÅ', 'AktywnoÅ', 'ZgÅ', 'Å›', 'Ä‡', 'Å‚', 'Ã³', 'Â', '�']) {
+for (const token of ['Dziś', 'AktywnoÅ', 'ZgÅ', 'ś', 'ć', 'ł', 'ó', '\u00C2', '\uFFFD']) {
   if (layout.includes(token)) fail('Layout still contains mojibake token: ' + token);
 }
 if (!exists('src/styles/closeflow-visual-foundation-source-truth-stage212a.css')) fail('missing static visual foundation css');

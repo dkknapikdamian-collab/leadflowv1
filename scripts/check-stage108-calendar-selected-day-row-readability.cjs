@@ -1,4 +1,4 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 const assert = require('node:assert/strict');
 const css = fs.readFileSync('src/styles/closeflow-calendar-selected-day-new-tile-v9.css', 'utf8');
 const calendar = fs.readFileSync('src/pages/Calendar.tsx', 'utf8');

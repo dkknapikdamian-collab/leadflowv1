@@ -1,4 +1,4 @@
-﻿/* CLOSEFLOW_CALENDAR_SELECTED_DAY_NEW_TILE_V9_STAGE104C_CARD_UNCLAMP_2026_05_17
+/* CLOSEFLOW_CALENDAR_SELECTED_DAY_NEW_TILE_V9_STAGE104C_CARD_UNCLAMP_2026_05_17
    One active selected-day V9 tile and one active week-plan entry model. Stage104C forbids legacy calendar-entry-card on week-plan cards.
    Do not append Stage92/94/100 repair layers below this file again.
 */
@@ -1652,7 +1652,7 @@
 #root .main-calendar-html .calendar-day-pill.calendar-entry-completed span:last-child,
 #root .main-calendar-html .calendar-day-pill.calendar-month-entry-completed span:last-child,
 #root .main-calendar-html .calendar-day-pill .is-done-text,
-#root .main-calendar-html .cf-calendar-month-text-row[data-cf-month-text-completed="true"] .cf-calendar-month-text-title,
+#root .main-calendar-html .cf-calendar-month-grid-text-row[data-cf-month-text-completed="true"] .cf-calendar-month-text-title,
 #root .main-calendar-html .cf-month-entry-chip-structural[data-cf-month-entry-completed="true"] .cf-month-entry-chip-structural__title {
   text-decoration: line-through !important;
   color: #64748b !important;

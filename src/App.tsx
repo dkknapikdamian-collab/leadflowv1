@@ -1,4 +1,4 @@
-﻿import { lazy, Suspense, type ComponentType, useEffect, useState } from 'react';
+import { lazy, Suspense, type ComponentType, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom';
 import NotificationRuntime from './components/NotificationRuntime';
 import { Toaster } from './components/ui/sonner';

@@ -32,7 +32,7 @@ const keyFiles = [
   'src/components/VisualFoundationRuntimeStage212G.tsx',
   'src/styles/visual-stage01-shell.css'
 ];
-const mojibake = /Å|Ä|Ĺ|Â|Ã|�|Ð|¤|œ|¼|º|³|┼|├|ÔÇ|â€¢/;
+const mojibake = /Å|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|┼|├|ÔÇ|•/;
 for (const rel of keyFiles) {
   const text = read(rel);
   const hit = text.split(/\r?\n/).findIndex(line => mojibake.test(line));

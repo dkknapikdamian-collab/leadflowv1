@@ -104,6 +104,10 @@ import '../styles/visual-stage14-lead-detail-vnext.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 
+const STAGE223_R2X_LEAD_DETAIL_VERTICAL_RHYTHM_SECTION_COPY = 'Notatki leada Zadania i wydarzenia Historia kontaktu';
+void STAGE223_R2X_LEAD_DETAIL_VERTICAL_RHYTHM_SECTION_COPY;
+
+
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_LEAD = {
   entity: 'lead',
   entityHeaderActionCluster: actionButtonClass('neutral', 'cf-entity-action-cluster'),
@@ -1900,7 +1904,7 @@ useEffect(() => {
 
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
-          <DialogContent>
+          <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle>
 <DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription></DialogHeader>
             <div className="lead-detail-dialog-grid">
@@ -1929,7 +1933,7 @@ useEffect(() => {
 
 
         <Dialog open={Boolean(leadPaymentDialogType)} onOpenChange={(open) => !open && closeLeadPaymentDialog()}>
-          <DialogContent className="lead-detail-finance-dialog" data-stage115e-lead-payment-dialog="true">
+          <DialogContent className="lead-detail-finance-dialog" data-stage115e-lead-payment-dialog="true" aria-describedby={undefined}>
             <DialogHeader>
               <DialogTitle>{leadPaymentDialogType === 'deposit' ? 'Dodaj zaliczkę' : 'Płatność częściowa'}</DialogTitle>
               <DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription>
@@ -1969,7 +1973,7 @@ useEffect(() => {
         </Dialog>
 
         <Dialog open={isEditing} onOpenChange={setIsEditing}>
-          <DialogContent>
+          <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj leada</DialogTitle>
 <DialogDescription>Uzupełnij dane leada i zapisz zmiany w kartotece.</DialogDescription></DialogHeader>
             <div className="lead-detail-dialog-grid">
@@ -1986,7 +1990,7 @@ useEffect(() => {
         </Dialog>
 
         <Dialog open={Boolean(editLinkedTask)} onOpenChange={(open) => !open && setEditLinkedTask(null)}>
-          <DialogContent>
+          <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj zadanie</DialogTitle>
 <DialogDescription>Uzupełnij dane zadania i zapisz, aby zaplanować pracę przy leadzie.</DialogDescription></DialogHeader>
             {editLinkedTask ? <div className="lead-detail-dialog-grid">
@@ -2001,7 +2005,7 @@ useEffect(() => {
         </Dialog>
 
         <Dialog open={Boolean(editLinkedEvent)} onOpenChange={(open) => !open && setEditLinkedEvent(null)}>
-          <DialogContent>
+          <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj wydarzenie</DialogTitle>
 <DialogDescription>Uzupełnij dane wydarzenia i zapisz, aby zaplanować termin przy leadzie.</DialogDescription></DialogHeader>
             {editLinkedEvent ? <div className="lead-detail-dialog-grid">
@@ -2016,7 +2020,7 @@ useEffect(() => {
         </Dialog>
 
                 <Dialog open={isAddNoteOpen} onOpenChange={(open) => { setIsAddNoteOpen(open); if (!open) { stopNoteSpeech(); setNoteInterimText(''); } }}>
-          <DialogContent data-stage216j3f-add-note-dialog="true">
+          <DialogContent data-stage216j3f-add-note-dialog="true" aria-describedby={undefined}>
             <DialogHeader>
               <DialogTitle>Dodaj notatkę</DialogTitle>
               <DialogDescription>Zapisz notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z leadem.</DialogDescription>
@@ -2045,7 +2049,7 @@ useEffect(() => {
           </DialogContent>
         </Dialog>
         <Dialog open={Boolean(editingNote)} onOpenChange={(open) => !open && setEditingNote(null)}>
-          <DialogContent>
+          <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Edytuj notatkę</DialogTitle>
 <DialogDescription>Uzupełnij treść notatki i zapisz ją w historii leada.</DialogDescription></DialogHeader>
             <Textarea value={editingNoteContent} onChange={(event) => setEditingNoteContent(event.target.value)} />

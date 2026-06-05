@@ -115,6 +115,10 @@
       "destination": "/api/system?kind=weekly-report"
     },
     {
+      "source": "/api/activities",
+      "destination": "/api/system?kind=activities"
+    },
+    {
       "source": "/api/support",
       "destination": "/api/system?kind=support"
     },

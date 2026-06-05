@@ -35,7 +35,7 @@ if (!runtime.includes('data-stage212i-visual-foundation-runtime')) fail('runtime
 const sidebar = read('src/styles/visual-stage01-shell.css');
 if (/.nav-btn.actives+.nav-icos*{[sS]{0,160}?background:s*#fff/.test(sidebar)) fail('sidebar active nav icon still uses #fff background');
 
-const mojibake = /Å|Ä|Ĺ|Â|Ã|�|Ð|¤|œ|¼|º|³|┼|Ô|Ç|├|â€¢|â€“|â€”|â€¦/;
+const mojibake = /Å|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|┼|Ô|Ç|├|•|–|—|…/;
 const scanRoots = ['src/components/Layout.tsx', 'src/pages/Today.tsx', 'src/pages/TasksStable.tsx'];
 for (const rel of scanRoots) {
   const text = read(rel);

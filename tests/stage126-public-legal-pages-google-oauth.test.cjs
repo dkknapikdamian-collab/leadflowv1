@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -18,8 +18,8 @@ const checks = [
   ['App exposes /privacy public route', app.includes('<Route path="/privacy" element={<LegalPrivacy />} />')],
   ['App exposes /terms public route', app.includes('<Route path="/terms" element={<LegalTerms />} />')],
   ['Privacy mentions Google Calendar data usage', privacy.includes('Dane Google Calendar') && privacy.includes('Google Calendar')],
-  ['Privacy states Google data is not sold', privacy.includes('nie sÄ… sprzedawane') || privacy.includes('nie jest sprzedawane')],
-  ['Terms mentions Google Calendar integration', terms.includes('Integracja Google Calendar') && terms.includes('odĹ‚Ä…czyÄ‡ integracjÄ™')],
+  ['Privacy states Google data is not sold', privacy.includes('nie są sprzedawane') || privacy.includes('nie jest sprzedawane')],
+  ['Terms mentions Google Calendar integration', terms.includes('Integracja Google Calendar') && terms.includes('odłączyć integrację')],
   ['Pages import shared legal css', privacy.includes("import './legal-public-pages.css';") && terms.includes("import './legal-public-pages.css';")],
 ];
 

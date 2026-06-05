@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 function read(path) {
   if (!fs.existsSync(path)) throw new Error(`Missing file: ${path}`);

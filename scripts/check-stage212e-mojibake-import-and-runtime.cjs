@@ -23,7 +23,7 @@ if (firstImport !== '@import "tailwindcss";') fail('tailwind import is not first
 if (!index.includes("@import './styles/closeflow-visual-foundation-stage212b.css';")) fail('missing visual foundation import');
 
 const layout = read('src/components/Layout.tsx');
-const forbidden = ['DziÅ', 'DziĹ', 'AktywnoÅ', 'AktywnoĹ', 'ZgÅ', 'ZgĹ', 'Ã³', 'Å‚', 'Å›', 'Ä‡', 'Ä™', 'Ä…', 'Â', '�'];
+const forbidden = ['Dziś', 'Dziś', 'AktywnoÅ', 'Aktywno\u0139', 'ZgÅ', 'Zg\u0139', 'ó', 'ł', 'ś', 'ć', 'ę', 'ą', '\u00C2', '\uFFFD'];
 for (const marker of forbidden) {
   if (layout.includes(marker)) fail(`mojibake marker remains in Layout.tsx: ${marker}`);
 }

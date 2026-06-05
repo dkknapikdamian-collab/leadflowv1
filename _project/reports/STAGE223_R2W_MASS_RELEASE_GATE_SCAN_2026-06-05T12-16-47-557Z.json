@@ -1,0 +1,17 @@
+{
+  "stage": "STAGE223_R2W_MASS_RELEASE_GATE_SCAN",
+  "startedAt": "2026-06-05T12:16:47.557Z",
+  "finishedAt": "2026-06-05T12:17:17.883Z",
+  "total": 178,
+  "pass": 177,
+  "fail": 1,
+  "failed": [
+    {
+      "testPath": "tests/stage105-calendar-modal-no-dark-inputs.test.cjs",
+      "status": 1,
+      "summary": "AssertionError [ERR_ASSERTION]: Visible case delete action must keep a dedicated subtle class.",
+      "stdoutTail": "node:internal/assert/utils:77\n    throw err;\n    ^\n\nAssertionError [ERR_ASSERTION]: Visible case delete action must keep a dedicated subtle class.\n    at Object.<anonymous> (C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow\\tests\\stage105-calendar-modal-no-dark-inputs.test.cjs:57:8)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47 {\n  generatedMessage: false,\n  code: 'ERR_ASSERTION',\n  actual: false,\n  expected: true,\n  operator: '==',\n  diff: 'simple'\n}\n\nNode.js v24.14.0\n✖ tests\\stage105-calendar-modal-no-dark-inputs.test.cjs (95.8733ms)\nℹ tests 1\nℹ suites 0\nℹ pass 0\nℹ fail 1\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 108.7913\n\n✖ failing tests:\n\ntest at tests\\stage105-calendar-modal-no-dark-inputs.test.cjs:1:1\n✖ tests\\stage105-calendar-modal-no-dark-inputs.test.cjs (95.8733ms)\n  'test failed'\n",
+      "stderrTail": ""
+    }
+  ]
+}

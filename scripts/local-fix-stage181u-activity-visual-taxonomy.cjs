@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const tsxPath = 'src/pages/Activity.tsx';
 const cssPath = 'src/styles/closeflow-activity-visual-source-truth-stage181u.css';

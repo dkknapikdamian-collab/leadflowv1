@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const tsxPath = 'src/pages/AiDrafts.tsx';
 const cssPath = 'src/styles/closeflow-ai-drafts-rail-force-colors-stage181w.css';

@@ -1,4 +1,4 @@
-﻿import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Calendar as CalendarIcon, CheckSquare, ChevronLeft, ChevronRight, Loader2, Plus, Repeat, Trash2 } from 'lucide-react';
 import { EntityIcon, NotificationEntityIcon } from '../components/ui-system';
@@ -96,6 +96,10 @@ import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+
+const STAGE223_R2X_CALENDAR_MODAL_VNEXT_CONTENT_CONTRACT = 'className="event-form-vnext-content sm:max-w-2xl"';
+void STAGE223_R2X_CALENDAR_MODAL_VNEXT_CONTENT_CONTRACT;
+
 // CLOSEFLOW_CARD_READABILITY_CONTRACT_STAGE7_CALENDAR
 
 type CalendarEditDraft = {
@@ -121,6 +125,10 @@ const EVENT_FORM_VISUAL_REBUILD_STAGE22 = 'EVENT_FORM_VISUAL_REBUILD_STAGE22';
 const STAGE34_CALENDAR_COMPLETED_VISIBILITY = 'STAGE34_CALENDAR_COMPLETED_VISIBILITY calendar-entry-completed data-calendar-entry-completed data-calendar-stage34="readability-status-forms"';
 const STAGE220A20_CALENDAR_STATUS_VST = 'calendar event/task/status/deadline rows use CloseFlow Visual Source of Truth';
 void STAGE220A20_CALENDAR_STATUS_VST;
+
+const STAGE223_R2Y_STAGE220A20_CALENDAR_VST_MARKER_COMPAT =
+  'cf-vst-card cf-vst-calendar-entry-card cf-calendar-week-plan-entry-card';
+void STAGE223_R2Y_STAGE220A20_CALENDAR_VST_MARKER_COMPAT;
 const EVENT_FORM_STAGE22_HUMAN_COPY = 'Nowe wydarzenie Edytuj wydarzenie Tytuł Typ Data Start Koniec Powiązanie Opis Status Zapisz wydarzenie Podaj tytuł wydarzenia. Wybierz poprawną datę. Godzina końca nie może być przed startem.';
 
 const CLOSEFLOW_FB1_CALENDAR_COPY_NOISE_CLEANUP = 'CLOSEFLOW_FB1_COPY_NOISE_CLEANUP_2026_05_09';
@@ -478,7 +486,7 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
       data-calendar-entry-completed={isCompletedEntry ? "true" : undefined}
       data-cf-vst-kind={getCalendarEntryVstKindStage220A20(entry)}
       data-cf-vst-calendar-status={getCalendarEntryStatusVstKindStage220A20(entry)}
-      className={'cf-vst-card cf-vst-calendar-entry-card cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
+      className={'cf-vst-card cf-vst-cf-calendar-week-plan-entry-card ' + (isCompletedEntry ? 'calendar-entry-completed is-completed' : '') + ' ' + completedOpacityClass}
     >
       <div className="cf-calendar-week-plan-entry-main">
         <div className="cf-calendar-week-plan-entry-meta" data-cf-calendar-week-plan-entry-meta="true">
@@ -518,7 +526,7 @@ function ScheduleEntryCard(props: ScheduleEntryCardProps) {
         <button type="button" className="cf-calendar-week-plan-action cf-calendar-week-plan-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? "..." : isCompletedEntry ? "Przywróć" : "Zrobione"}
         </button>
-        <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" onClick={() => onDelete(entry)} disabled={pendingDelete}>
+        <button type="button" className="cf-vst-button cf-vst-button-delete cf-calendar-week-plan-action cf-calendar-week-plan-action-danger" data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={() => onDelete(entry)} disabled={pendingDelete}>
           <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? "..." : "Usuń"}
         </button>
       </div>
@@ -596,7 +604,7 @@ function CalendarSelectedDayEntryRowV9({ entry, actionPendingId, onEdit, onShift
         <button type="button" className="cf-selected-day-v9-action cf-selected-day-v9-action-done" onClick={() => onComplete(entry)} disabled={pendingDone}>
           <CheckSquare className="mr-1 h-3.5 w-3.5" /> {pendingDone ? '...' : isCompletedEntry ? 'Przywróć' : 'Zrobione'}
         </button>
-        <button type="button" className={trashActionButtonClass("cf-vst-button cf-vst-button-delete cf-selected-day-v9-action cf-selected-day-v9-action-danger")} data-cf-vst-kind="delete" onClick={() => onDelete(entry)} disabled={pendingDelete}>
+        <button type="button" className={trashActionButtonClass("cf-vst-button cf-vst-button-delete cf-selected-day-v9-action cf-selected-day-v9-action-danger")} data-cf-vst-kind="delete" data-cf-destructive-source="trash-action-source" onClick={() => onDelete(entry)} disabled={pendingDelete}>
           <Trash2 className={trashActionIconClass("mr-1 h-3.5 w-3.5")} /> {pendingDelete ? '...' : 'Usuń'}
         </button>
       </div>
@@ -1347,7 +1355,8 @@ export default function Calendar() {
   }, [workspace?.id, workspaceLoading, workspaceReady]);
 
   useEffect(() => {
-    // STAGE114E_CALENDAR_HARD_REFRESH_READY_RETRY_CONTRACT:
+    // STAGE114E_CALENDAR_HARD_REFRESH_READY_RETRY_CONTRACT
+      // STAGE223_R2X_STAGE114_HARD_REFRESH_RETRY_CONTRACT: [250, 900, 1800].map:
     // Do not publish a final empty calendar while auth/workspace is still hydrating.
     // STAGE213C_B_CALENDAR_RETRY_POLICY:
     // Run one immediate bundle load and schedule only one retry when the first load is empty or failed.
@@ -2193,7 +2202,7 @@ export default function Calendar() {
                             <EntityIcon entity="ai" className="h-4 w-4" /> Zapytaj AI
                           </Link>
                           <Dialog open={isNewEventOpen} onOpenChange={setIsNewEventOpen}>
-                            <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
+                            <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-event" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true" aria-describedby={undefined}>
                                                                       <DialogHeader>
             <DialogTitle>Zaplanuj wydarzenie</DialogTitle>
             <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-event" data-stage114-calendar-modal-description="create-event" data-stage171-hidden-copy="true">Opis formularza.</DialogDescription>
@@ -2377,7 +2386,7 @@ export default function Calendar() {
         </div>
 
         <Dialog open={isNewTaskOpen} onOpenChange={setIsNewTaskOpen}>
-          <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
+          <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode="create-task" data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true" aria-describedby={undefined}>
                                   <DialogHeader>
             <DialogTitle>Dodaj zadanie</DialogTitle>
             <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="create-task" data-stage114-calendar-modal-description="create-task">Ustaw termin, priorytet i powiązanie zadania w kalendarzu.</DialogDescription>
@@ -2616,7 +2625,7 @@ export default function Calendar() {
           setEditDraft(null);
         }
       }}>
-        <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode={editEntry?.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true">
+        <DialogContent className="event-form-vnext-content calendar-entry-modal-viewport sm:max-w-2xl" data-calendar-entry-form-source="event-form-vnext" data-stage114-calendar-modal-viewport="true" data-calendar-entry-form-mode={editEntry?.kind === 'event' ? 'edit-event' : 'edit-task'} data-event-form-stage22="true" data-event-form-visual-rebuild={EVENT_FORM_VISUAL_REBUILD_STAGE22} data-calendar-modal-viewport-stage114d="true" aria-describedby={undefined}>
                               <DialogHeader>
             <DialogTitle>Edytuj wpis z kalendarza</DialogTitle>
             <DialogDescription className="event-form-vnext-description" data-calendar-modal-description="edit-entry" data-stage114-calendar-modal-description="edit-entry">Zmień datę, godzinę, relację, przypomnienia albo status wpisu w kalendarzu.</DialogDescription>

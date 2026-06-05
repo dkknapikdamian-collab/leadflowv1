@@ -54,7 +54,10 @@ for (const forbidden of ['bg-slate-900', 'bg-black', 'background: #0f172a', 'bac
 
 assert.equal(cases.includes('className="btn ghost cf-case-row-delete-text-action"'), false, 'Visible case delete action must not combine trash source with btn ghost red plaque style.');
 assert.equal(cases.includes('data-cf-header-action="danger"'), false, 'Visible case delete action must not use header danger plaque token.');
-assert.ok(cases.includes('className="cf-case-row-delete-text-action"'), 'Visible case delete action must keep a dedicated subtle class.');
+assert.equal(cases.includes('cf-case-row-delete-text-action'), false, 'Visible case delete action must not use Stage220A28-forbidden legacy text class.');
+assert.ok(cases.includes('data-case-row-delete-action="true"'), 'Visible case delete action must keep a dedicated action marker.');
+assert.ok(cases.includes('data-cf-destructive-source="trash-action-source"'), 'Visible case delete action must use shared trash source.');
+assert.ok(cases.includes('trashActionIconClass("h-4 w-4")'), 'Visible case delete action must keep shared subtle icon class.');
 assert.ok(stage105TrashCss.includes('background: var(--cf-trash-bg) !important;'), 'Stage105 case delete block must keep white trash background.');
 assert.ok(stage105TrashCss.includes('border: 1px solid var(--cf-trash-border-color) !important;'), 'Stage105 case delete block must keep subtle red border.');
 assert.equal(stage105TrashCss.includes('background: #dc2626'), false, 'Stage105 case delete block must not use solid red background.');

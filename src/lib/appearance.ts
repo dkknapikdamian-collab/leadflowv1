@@ -1,4 +1,4 @@
-﻿export type SkinId = 'forteca-light';
+export type SkinId = 'forteca-light';
 
 export interface SkinOption {
   id: SkinId;

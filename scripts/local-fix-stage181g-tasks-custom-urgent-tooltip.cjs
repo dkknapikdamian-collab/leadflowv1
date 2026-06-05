@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const tasksPath = 'src/pages/TasksStable.tsx';
 const cssPath = 'src/styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.css';

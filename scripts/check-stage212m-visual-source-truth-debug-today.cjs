@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 function fail(message) {
   console.error(`STAGE212N_GUARD_FAIL: ${message}`);
@@ -70,7 +70,7 @@ if (layout.includes('STAGE16M_LAYOUT_AI_DRAFTS_COMPAT')) {
   fail('Layout.tsx still contains unfinished STAGE16M_LAYOUT_AI_DRAFTS_COMPAT tail marker');
 }
 
-const mojibakePattern = /Å|Ä|Ĺ|Â|Ã|�|Ð|¤|œ|¼|º|³|ÔÇ|┼|├/;
+const mojibakePattern = /Å|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|ÔÇ|┼|├/;
 const mojibakeFiles = [
   'src/components/Layout.tsx',
   'src/pages/Today.tsx',

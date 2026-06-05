@@ -31,7 +31,7 @@ for (const bad of ['stage211', 'stage212a', 'stage212b', 'stage212c', 'stage212d
   if (index.toLowerCase().includes(bad)) fail('legacy visual import/comment marker remains in src/index.css: ' + bad);
 }
 
-const mojibakeMarkers = ['Å', 'Ä', 'Ĺ', 'Â', 'Ã', '�', 'Ð', '¤', 'œ', '¼', 'º', '³', '┼', '├', 'ÔÇ'];
+const mojibakeMarkers = ['Å', '\u00C4', '\u0139', '\u00C2', 'Ã', '\uFFFD', 'Ð', '¤', 'œ', '¼', 'º', '³', '┼', '├', 'ÔÇ'];
 for (const rel of ['src/components/Layout.tsx', 'src/pages/Today.tsx', 'src/pages/TasksStable.tsx']) {
   if (!exists(rel)) continue;
   const text = read(rel);

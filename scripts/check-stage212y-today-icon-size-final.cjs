@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 function fail(message) {
   console.error('STAGE212Y_GUARD_FAIL: ' + message);

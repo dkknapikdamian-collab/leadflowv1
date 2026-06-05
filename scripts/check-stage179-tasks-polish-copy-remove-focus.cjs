@@ -1,4 +1,4 @@
-﻿const fs = require("fs");
+const fs = require("fs");
 const path = require("path");
 
 const root = process.cwd();
@@ -41,22 +41,22 @@ const tasks = "src/pages/TasksStable.tsx";
   "nextTaskMoment",
   "Bez klikania po zakładkach. Najpierw to, co wymaga ruchu.",
   "5 zadań, które najłatwiej zgubić w pracy operacyjnej.",
-  "ZalegÅ",
-  "ZalegĹ",
-  "DziÅ",
-  "DziĹ",
-  "zadaÅ",
-  "zadaĹ",
-  "powiÄ",
-  "zakÅ",
-  "zakĹ",
-  "Å‚",
-  "Ĺ‚",
-  "Å›",
-  "Ĺ›",
-  "Ä…",
-  "Ä™",
-  "Ă",
+  "Zaległe",
+  "Zaległe",
+  "Dziś",
+  "Dziś",
+  "zadań",
+  "zadań",
+  "powiązania",
+  "zakładkach",
+  "zakładkach",
+  "ł",
+  "ł",
+  "ś",
+  "ś",
+  "ą",
+  "ę",
+  "\u0102",
   "Ã"
 ].forEach((marker) => mustNotInclude(tasks, marker));
 

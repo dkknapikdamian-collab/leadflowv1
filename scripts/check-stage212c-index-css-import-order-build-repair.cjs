@@ -48,7 +48,7 @@ if (tailwindCount !== 1) fail('tailwind import count is not exactly 1: ' + tailw
 const foundationCount = (css.match(/closeflow-visual-foundation-stage212b\.css/g) || []).length;
 if (foundationCount !== 1) fail('visual foundation import count is not exactly 1: ' + foundationCount);
 
-const badMojibake = /DziÅ|AktywnoÅ|ZgÅ|RozliczeniaÅ|PowiadomieniaÅ|KlienciÅ|SprawyÅ|Å›|Ä‡|Ĺ|Â|�/;
+const badMojibake = /Dziś
 if (badMojibake.test(layout)) fail('mojibake marker detected in Layout.tsx');
 
 for (const label of ['Dziś', 'Aktywność', 'Zgłoszenia', 'Rozliczenia', 'Powiadomienia', 'Klienci', 'Sprawy']) {

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const cssPath = 'src/styles/closeflow-response-template-modal-source-truth-stage181r.css';
 let css = fs.readFileSync(cssPath, 'utf8');

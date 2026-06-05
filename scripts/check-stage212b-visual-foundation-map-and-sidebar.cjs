@@ -48,7 +48,7 @@ if (!layout.includes("import VisualFoundationRuntimeStage212B from './VisualFoun
 if (!layout.includes('<VisualFoundationRuntimeStage212B />')) fail('Layout missing runtime component');
 if (!index.includes("closeflow-visual-foundation-stage212b.css")) fail('index.css missing foundation import');
 
-const mojibakePatterns = ['DziÅ›', 'AktywnoÅ›Ä‡', 'ZgÅ‚oszenia', 'Inbox szkicÃ³w'];
+const mojibakePatterns = ['Dziś', 'Aktywność', 'Zgłoszenia', 'Inbox szkiców'];
 for (const bad of mojibakePatterns) {
   if (layout.includes(bad)) fail('Layout still contains mojibake: ' + bad);
 }

@@ -26,7 +26,7 @@ must(caseText.includes('Pokaż wszystkie'), 'Polish button Pokaż wszystkie miss
 must(caseText.includes('Najbliższe działania'), 'Polish group Najbliższe działania missing');
 must(caseText.includes('przypięte do tej sprawy'), 'Polish text przypięte do tej sprawy missing');
 
-const mojibake = ['Ä', 'Ĺ', 'Â', 'Ă', 'â€', 'â€”', 'â€“', 'Äą', 'Ă„', 'ĹĽ'];
+const mojibake = ['\u00C4', '\u0139', '\u00C2', '\u0102', 'â€', '—', '–', '\u00C4ą', '\u0102„', 'ż'];
 for (const bad of mojibake) {
   mustNot(caseText.includes(bad), 'CaseDetail still contains mojibake marker: ' + bad);
 }

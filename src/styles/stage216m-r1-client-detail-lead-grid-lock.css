@@ -1,7 +1,7 @@
 /* STAGE216M_R1_CLIENT_DETAIL_LEAD_GRID_LOCK
-   Cel: zablokowaÄ‡ ClientDetail na realnym ukĹ‚adzie LeadDetail kafelek po kafelku.
-   PowĂłd: Stage216M skurczyĹ‚ shell klienta wzglÄ™dem Ĺ›rodka przez fixed page max/kolumny.
-   Zakres: CSS-only. Bez Supabase, API, CRUD, pĹ‚atnoĹ›ci i danych.
+   Cel: zablokować ClientDetail na realnym układzie LeadDetail kafelek po kafelku.
+   Powód: Stage216M skurczył shell klienta względem środka przez fixed page max/kolumny.
+   Zakres: CSS-only. Bez Supabase, API, CRUD, płatności i danych.
 */
 
 .client-detail-vnext-page {

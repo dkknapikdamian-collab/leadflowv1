@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const component = fs.readFileSync('src/components/operator-rail/TopValueRecordsCard.tsx', 'utf8');
 const css = fs.readFileSync('src/styles/closeflow-right-rail-source-truth.css', 'utf8');

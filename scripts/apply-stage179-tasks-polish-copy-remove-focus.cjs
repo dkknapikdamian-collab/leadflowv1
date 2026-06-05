@@ -19,43 +19,43 @@ function replaceAllText(text, replacements) {
 }
 
 const mojibakeFixes = [
-  ['ZalegÅ‚e', 'Zaległe'],
-  ['ZalegĹ‚e', 'Zaległe'],
-  ['DziÅ›', 'Dziś'],
-  ['DziĹ›', 'Dziś'],
+  ['Zaległe', 'Zaległe'],
+  ['Zaległe', 'Zaległe'],
+  ['Dziś', 'Dziś'],
+  ['Dziś', 'Dziś'],
   ['Najpilniejsze zadania', 'Najpilniejsze zadania'],
-  ['Filtry zadaÅ„', 'Filtry zadań'],
-  ['Filtry zadaĹ„', 'Filtry zadań'],
-  ['Bez powiÄ…zania', 'Bez powiązania'],
-  ['Bez powiÄ…zania', 'Bez powiązania'],
+  ['Filtry zadań', 'Filtry zadań'],
+  ['Filtry zadań', 'Filtry zadań'],
+  ['Bez powiązania', 'Bez powiązania'],
+  ['Bez powiązania', 'Bez powiązania'],
   ['Wysoki priorytet', 'Wysoki priorytet'],
   ['Zrobione', 'Zrobione'],
-  ['NadchodzÄ…ce', 'Nadchodzące'],
-  ['NadchodzÄ…ce', 'Nadchodzące'],
+  ['Nadchodzące', 'Nadchodzące'],
+  ['Nadchodzące', 'Nadchodzące'],
   ['Bez terminu', 'Bez terminu'],
-  ['do uporzÄ…dkowania', 'do uporządkowania'],
-  ['do uporzÄ…dkowania', 'do uporządkowania'],
-  ['zamkniÄ™te dziaĹ‚ania', 'zamknięte działania'],
-  ['zamkniÄ™te dziaÅ‚ania', 'zamknięte działania'],
+  ['do uporządkowania', 'do uporządkowania'],
+  ['do uporządkowania', 'do uporządkowania'],
+  ['zamknięte działania', 'zamknięte działania'],
+  ['zamknięte działania', 'zamknięte działania'],
   ['zadania na teraz', 'zadania na teraz'],
-  ['najbliÅ¼sze terminy', 'najbliższe terminy'],
-  ['najbliĹĽsze terminy', 'najbliższe terminy'],
+  ['najbliższe terminy', 'najbliższe terminy'],
+  ['najbliższe terminy', 'najbliższe terminy'],
   ['najpierw odblokuj ryzyko', 'najpierw odblokuj ryzyko'],
-  ['Bez klikania po zakĹ‚adkach', 'Bez klikania po zakładkach'],
-  ['Bez klikania po zakÅ‚adkach', 'Bez klikania po zakładkach'],
+  ['Bez klikania po zakładkach', 'Bez klikania po zakładkach'],
+  ['Bez klikania po zakładkach', 'Bez klikania po zakładkach'],
   ['Najpierw to, co wymaga ruchu.', 'Najpierw to, co wymaga ruchu.'],
-  ['5 zadaĹ„', '5 zadań'],
-  ['5 zadaÅ„', '5 zadań'],
-  ['ktÃ³re', 'które'],
-  ['ktĂłre', 'które'],
-  ['zgubiÄ‡', 'zgubić'],
-  ['zgubiÄ‡', 'zgubić'],
+  ['5 zadań', '5 zadań'],
+  ['5 zadań', '5 zadań'],
+  ['które', 'które'],
+  ['które', 'które'],
+  ['zgubić', 'zgubić'],
+  ['zgubić', 'zgubić'],
   ['aktywne', 'aktywne'],
-  ['Brak aktywnych pilnych zadaĹ„', 'Brak aktywnych pilnych zadań'],
-  ['Brak aktywnych pilnych zadaÅ„', 'Brak aktywnych pilnych zadań'],
+  ['Brak aktywnych pilnych zadań', 'Brak aktywnych pilnych zadań'],
+  ['Brak aktywnych pilnych zadań', 'Brak aktywnych pilnych zadań'],
   ['Szybki fokus', 'Szybki fokus'],
-  ['KrÃ³tki radar wÅ‚aÅ›ciciela.', 'Krótki radar właściciela.'],
-  ['KrĂłtki radar wĹ‚aĹ›ciciela.', 'Krótki radar właściciela.'],
+  ['Krótki radar właściciela.', 'Krótki radar właściciela.'],
+  ['Krótki radar właściciela.', 'Krótki radar właściciela.'],
 ];
 
 // 1) Patch TasksStable.tsx.
@@ -91,7 +91,7 @@ const mojibakeFixes = [
   );
 
   // Replace text nodes with expression strings using unicode escapes.
-  source = source.replace(/<h2>Filtry zadań<\/h2>|<h2>Filtry zadaÅ„<\/h2>|<h2>Filtry zadaĹ„<\/h2>/g, `<h2>{'Filtry zada\\u0144'}</h2>`);
+  source = source.replace(/<h2>Filtry zadań<\/h2>|<h2>Filtry zadań<\/h2>|<h2>Filtry zadań<\/h2>/g, `<h2>{'Filtry zada\\u0144'}</h2>`);
   source = source.replace(/<h3>Najpilniejsze zadania<\/h3>/g, `<h3>{'Najpilniejsze zadania'}</h3>`);
   source = source.replace(/Bez klikania po zakładkach\. Najpierw to, co wymaga ruchu\./g, `{'Bez klikania po zak\\u0142adkach. Najpierw to, co wymaga ruchu.'}`);
   source = source.replace(/5 zadań, które najłatwiej zgubić w pracy operacyjnej\./g, `{'5 zada\\u0144, kt\\u00f3re naj\\u0142atwiej zgubi\\u0107 w pracy operacyjnej.'}`);

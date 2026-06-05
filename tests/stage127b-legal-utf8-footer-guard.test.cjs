@@ -12,7 +12,7 @@ function read(file) {
   return fs.readFileSync(file, 'utf8');
 }
 
-const mojibakePattern = /(?:�|Ä|Ĺ|Ă|Å|Ã|Â|â€|â€™|â€œ|â€ť|â€“|â€”|prywatnoĹ|zarzÄ|uĹ|moĹ|dostÄ|dziaĹ|bĹ|Ĺ›|ĹĽ|Ä…|Ä™|Ăł)/;
+const mojibakePattern = /(?:\uFFFD|\u00C4|\u0139|\u0102|Å|Ã|\u00C2|â€|’|“|”|–|—|prywatno\u0139|zarz\u00C4|użyć)/;
 
 for (const file of files) {
   const text = read(file);

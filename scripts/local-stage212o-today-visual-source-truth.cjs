@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 function read(path) {
   return fs.existsSync(path) ? fs.readFileSync(path, 'utf8') : '';

@@ -1,4 +1,4 @@
-﻿/* STAGE205_MAIN_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY
+/* STAGE205_MAIN_ONLY_SCROLL_AFTER_SCALE_75_LOCAL_ONLY
    Problem:
    - Stage203 przeniósł scroll na body/html.
    - W efekcie scrollował się cały ekran razem z aplikacją.

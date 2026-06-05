@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 function fail(message) {
@@ -17,7 +17,7 @@ const filesToScanForMojibake = [
   'src/pages/Today.tsx'
 ];
 
-const mojibakePattern = /Å|Ä|Ĺ|Â|Ã|�|Ð|¤|œ|¼|º|³|ÔÇ|┼|├|Ă/;
+const mojibakePattern = /Å|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|ÔÇ|┼|├|\u0102/;
 
 for (const file of filesToScanForMojibake) {
   const lines = read(file).replaceAll('\r', '').split('\n');
@@ -52,7 +52,7 @@ for (const text of ['Odśwież', 'żeby', 'Dziś', 'Zaległe']) {
   }
 }
 
-for (const forbidden of ['OdświeĹĽ', 'ĹĽeby', 'DziĹ›', 'ZalegĹ‚e']) {
+for (const forbidden of ['Odśwież', 'żeby', 'Dziś', 'Zaległe']) {
   if (tasks.includes(forbidden)) {
     fail(`TasksStable.tsx still contains broken text: ${forbidden}`);
   }

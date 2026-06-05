@@ -3,6 +3,8 @@ import {
   ownerRiskTone,
   type OwnerRiskBadge,
 } from './owner-control/owner-risk-rules';
+import { buildActivityTruth } from './owner-control/activity-truth';
+import { buildNextMoveContract } from './owner-control/next-move-contract';
 import { readOwnerRiskSettings } from './owner-control/owner-risk-settings';
 
 export type RecordOperationalBadgeTone = 'red' | 'amber' | 'blue' | 'green' | 'neutral';
@@ -22,11 +24,12 @@ export type BuildRecordOperationalBadgesInput = {
   now?: Date;
 };
 
-const DAY_MS = 86_400_000;
 const STAGE222_R4_RECORD_OPERATIONAL_BADGES = 'lead/client rows show operational silence and missing contact as record-level badges';
 const STAGE222_R2_RECORD_OPERATIONAL_BADGES_OWNER_RULES = 'record operational badges reuse owner-risk-rules source of truth';
+const STAGE223_RECORD_OPERATIONAL_BADGES_ACTIVITY_TRUTH = 'lead badges distinguish real contact silence from generic activity fallback';
 void STAGE222_R4_RECORD_OPERATIONAL_BADGES;
 void STAGE222_R2_RECORD_OPERATIONAL_BADGES_OWNER_RULES;
+void STAGE223_RECORD_OPERATIONAL_BADGES_ACTIVITY_TRUTH;
 
 function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' ? value as Record<string, unknown> : {};
@@ -39,70 +42,6 @@ function readString(record: Record<string, unknown>, keys: string[]) {
     if (typeof value === 'number' && Number.isFinite(value)) return String(value);
   }
   return '';
-}
-
-function readMoment(record: Record<string, unknown>, keys: string[]) {
-  for (const key of keys) {
-    const value = record[key];
-    if (typeof value === 'string' && value.trim()) return value.trim();
-    if (value instanceof Date) return value.toISOString();
-  }
-  return '';
-}
-
-function parseDate(value: string) {
-  if (!value) return null;
-  const parsed = new Date(value);
-  return Number.isFinite(parsed.getTime()) ? parsed : null;
-}
-
-function getBestActivityMoment(record: Record<string, unknown>) {
-  return readMoment(record, [
-    'lastContactAt',
-    'last_contact_at',
-    'lastActivityAt',
-    'last_activity_at',
-    'updatedAt',
-    'updated_at',
-    'modifiedAt',
-    'modified_at',
-    'createdAt',
-    'created_at',
-    'scheduledAt',
-    'scheduled_at',
-    'dueAt',
-    'due_at',
-    'dateAt',
-    'date_at',
-    'startAt',
-    'start_at',
-    'date',
-  ]);
-}
-
-function getLatestActivityAt(records: unknown[]) {
-  let latest = 0;
-  let latestIso = '';
-
-  for (const input of records) {
-    const record = asRecord(input);
-    const raw = getBestActivityMoment(record);
-    const parsed = parseDate(raw);
-    if (!parsed) continue;
-    const time = parsed.getTime();
-    if (time > latest) {
-      latest = time;
-      latestIso = parsed.toISOString();
-    }
-  }
-
-  return latestIso;
-}
-
-function daysSince(iso: string, now: Date) {
-  const parsed = parseDate(iso);
-  if (!parsed) return null;
-  return Math.max(0, Math.floor((now.getTime() - parsed.getTime()) / DAY_MS));
 }
 
 function hasContactData(record: Record<string, unknown>) {
@@ -132,8 +71,7 @@ export function buildRecordOperationalBadges(input: BuildRecordOperationalBadges
   const now = input.now || new Date();
   const record = asRecord(input.record);
   const relatedRecords = Array.isArray(input.relatedRecords) ? input.relatedRecords : [];
-  const latestActivityAt = getLatestActivityAt([record, ...relatedRecords]);
-  const silentDays = daysSince(latestActivityAt, now);
+  const recordId = readString(record, ['id']);
   const badges: RecordOperationalBadge[] = [];
 
   if (!hasContactData(record)) {
@@ -148,10 +86,30 @@ export function buildRecordOperationalBadges(input: BuildRecordOperationalBadges
   }
 
   if (input.entityType === 'lead') {
+    const nextMove = buildNextMoveContract({
+      entityType: 'lead',
+      entityId: recordId,
+      status: readString(record, ['status']),
+      nearestAction: input.hasNextStep === false ? null : undefined,
+      now,
+    });
+    const activityTruth = buildActivityTruth({
+      entityType: 'lead',
+      entityId: recordId,
+      record,
+      activities: relatedRecords,
+      tasks: relatedRecords,
+      events: relatedRecords,
+      payments: relatedRecords,
+      now,
+    });
+
     badges.push(...getLeadOwnerRiskBadges(record, {
       settings: readOwnerRiskSettings(),
       relatedRecords,
       hasNextStep: input.hasNextStep,
+      nextMove,
+      activityTruth,
       now,
     }).map(fromOwnerRiskBadge));
   } else {
@@ -162,24 +120,6 @@ export function buildRecordOperationalBadges(input: BuildRecordOperationalBadges
         tone: 'amber',
         title: 'Brak najbliższej zaplanowanej akcji.',
       });
-    }
-
-    if (typeof silentDays === 'number') {
-      if (silentDays >= 14) {
-        badges.push({
-          id: 'silent-14',
-          label: '14+ dni bez ruchu',
-          tone: 'red',
-          title: 'Rekord nie ma świeżego ruchu od co najmniej 14 dni.',
-        });
-      } else if (silentDays >= 7) {
-        badges.push({
-          id: 'silent-7',
-          label: '7+ dni bez ruchu',
-          tone: 'amber',
-          title: 'Rekord nie ma świeżego ruchu od co najmniej 7 dni.',
-        });
-      }
     }
   }
 

@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Building2, Calendar, CalendarDays, Database, KeyRound, LockKeyhole, LogOut, Mail, Menu, MonitorCog, RefreshCw, Save, Settings as SettingsIcon, Shield, SlidersHorizontal, Smartphone, User, Users, WalletCards } from 'lucide-react';
 import {
   EntityIcon,

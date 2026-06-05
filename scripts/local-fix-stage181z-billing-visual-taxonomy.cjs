@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const tsxPath = 'src/pages/Billing.tsx';
 const cssPath = 'src/styles/closeflow-billing-visual-taxonomy-stage181z.css';

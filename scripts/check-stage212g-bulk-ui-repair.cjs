@@ -52,7 +52,7 @@ const activeIconBlock = shell.match(/\.closeflow-visual-stage01\s+\.nav-btn\.act
 if (!activeIconBlock) fail('visual-stage01-shell.css missing active nav icon block');
 if (/background:\s*#fff\s*;/.test(activeIconBlock[0])) fail('active nav icon still uses white square background');
 
-const mojibakePattern = /Å|Ä|Ĺ|Â|Ã|�|Ð|¤|œ|¼|º|³|┼|ÔÇ|├/;
+const mojibakePattern = /Å|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|┼|ÔÇ|├/;
 for (const rel of ['src/components/Layout.tsx', 'src/pages/Today.tsx', 'src/pages/TasksStable.tsx']) {
   const text = read(rel);
   if (mojibakePattern.test(text)) fail('mojibake marker remains in ' + rel);

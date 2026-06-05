@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const clients = fs.readFileSync('src/pages/Clients.tsx', 'utf8');
 const leads = fs.readFileSync('src/pages/Leads.tsx', 'utf8');

@@ -1,3 +1,6 @@
+import { buildActivityTruth, type ActivityTruth } from './activity-truth';
+import { buildNextMoveContract, type NextMoveContract } from './next-move-contract';
+
 export const DEFAULT_HIGH_VALUE_THRESHOLD_PLN = 5000;
 
 export const SALES_SILENCE_THRESHOLDS_DAYS = [1, 2, 3, 5, 7, 14] as const;
@@ -20,11 +23,14 @@ export type OwnerRiskContext = {
   now?: Date;
   relatedRecords?: unknown[];
   hasNextStep?: boolean;
+  nextMove?: NextMoveContract | null;
+  activityTruth?: ActivityTruth | null;
 };
 
-const DAY_MS = 86_400_000;
 const STAGE222_OWNER_RISK_RULES_FOUNDATION = 'one source of truth for owner risk rules, badges and high value threshold';
+const STAGE223_OWNER_MOVEMENT_RISK_SYSTEM = 'owner risk rules use next-move-contract and activity-truth';
 void STAGE222_OWNER_RISK_RULES_FOUNDATION;
+void STAGE223_OWNER_MOVEMENT_RISK_SYSTEM;
 
 export function normalizeOwnerRiskSettings(input: unknown): OwnerRiskSettings {
   const raw = input && typeof input === 'object' ? input as Record<string, unknown> : {};
@@ -44,15 +50,6 @@ function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === 'object' ? value as Record<string, unknown> : {};
 }
 
-function readString(record: Record<string, unknown>, keys: string[]) {
-  for (const key of keys) {
-    const value = record[key];
-    if (typeof value === 'string' && value.trim()) return value.trim();
-    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
-  }
-  return '';
-}
-
 function readNumber(record: Record<string, unknown>, keys: string[]) {
   for (const key of keys) {
     const value = record[key];
@@ -65,68 +62,13 @@ function readNumber(record: Record<string, unknown>, keys: string[]) {
   return 0;
 }
 
-function readMoment(record: Record<string, unknown>, keys: string[]) {
+function readString(record: Record<string, unknown>, keys: string[]) {
   for (const key of keys) {
     const value = record[key];
     if (typeof value === 'string' && value.trim()) return value.trim();
-    if (value instanceof Date) return value.toISOString();
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
   }
   return '';
-}
-
-function parseDate(value: string) {
-  if (!value) return null;
-  const parsed = new Date(value);
-  return Number.isFinite(parsed.getTime()) ? parsed : null;
-}
-
-function getBestActivityMoment(record: Record<string, unknown>) {
-  return readMoment(record, [
-    'lastContactAt',
-    'last_contact_at',
-    'lastActivityAt',
-    'last_activity_at',
-    'updatedAt',
-    'updated_at',
-    'modifiedAt',
-    'modified_at',
-    'createdAt',
-    'created_at',
-    'scheduledAt',
-    'scheduled_at',
-    'dueAt',
-    'due_at',
-    'dateAt',
-    'date_at',
-    'startAt',
-    'start_at',
-    'date',
-  ]);
-}
-
-function getLatestActivityAt(records: unknown[]) {
-  let latest = 0;
-  let latestIso = '';
-
-  for (const input of records) {
-    const record = asRecord(input);
-    const raw = getBestActivityMoment(record);
-    const parsed = parseDate(raw);
-    if (!parsed) continue;
-    const time = parsed.getTime();
-    if (time > latest) {
-      latest = time;
-      latestIso = parsed.toISOString();
-    }
-  }
-
-  return latestIso;
-}
-
-function daysSince(iso: string, now: Date) {
-  const parsed = parseDate(iso);
-  if (!parsed) return null;
-  return Math.max(0, Math.floor((now.getTime() - parsed.getTime()) / DAY_MS));
 }
 
 function getValue(record: Record<string, unknown>) {
@@ -165,36 +107,80 @@ function dedupeBadges(badges: OwnerRiskBadge[]) {
   });
 }
 
-function buildSilenceBadge(prefix: 'Cisza' | 'Sprawa bez ruchu', silentDays: number): OwnerRiskBadge | null {
-  if (silentDays >= 14) {
-    return {
-      key: prefix === 'Cisza' ? 'lead-silence-14' : 'case-silence-14',
-      label: prefix === 'Cisza' ? 'Cisza 14+ dni' : 'Sprawa bez ruchu 14+ dni',
-      severity: 'high',
-      reason: 'Brak świeżego ruchu od co najmniej 14 dni.',
-    };
+function resolveNextMove(entityType: 'lead' | 'case' | 'client', record: Record<string, unknown>, context: OwnerRiskContext) {
+  if (context.nextMove) return context.nextMove;
+  return buildNextMoveContract({
+    entityType,
+    entityId: readString(record, ['id']),
+    status: readString(record, ['status']),
+    nearestAction: context.hasNextStep === false ? null : undefined,
+    now: context.now,
+  });
+}
+
+function resolveActivityTruth(entityType: 'lead' | 'case' | 'client', record: Record<string, unknown>, context: OwnerRiskContext) {
+  if (context.activityTruth) return context.activityTruth;
+  return buildActivityTruth({
+    entityType,
+    entityId: readString(record, ['id']),
+    record,
+    activities: [],
+    tasks: context.relatedRecords || [],
+    events: context.relatedRecords || [],
+    payments: context.relatedRecords || [],
+    now: context.now,
+  });
+}
+
+function buildSilenceBadge(entityType: 'lead' | 'case', truth: ActivityTruth): OwnerRiskBadge | null {
+  if (typeof truth.contactSilentDays === 'number') {
+    if (truth.contactSilentDays >= 14) {
+      return {
+        key: entityType + '-contact-silence-14',
+        label: entityType === 'lead' ? 'Cisza 14+ dni' : 'Sprawa bez kontaktu 14+ dni',
+        severity: 'high',
+        reason: 'Brak prawdziwego kontaktu od co najmniej 14 dni.',
+      };
+    }
+    if (truth.contactSilentDays >= 7) {
+      return {
+        key: entityType + '-contact-silence-7',
+        label: entityType === 'lead' ? 'Cisza 7+ dni' : 'Sprawa bez kontaktu 7+ dni',
+        severity: 'medium',
+        reason: 'Brak prawdziwego kontaktu od co najmniej 7 dni.',
+      };
+    }
+    return null;
   }
 
-  if (silentDays >= 7) {
-    return {
-      key: prefix === 'Cisza' ? 'lead-silence-7' : 'case-silence-7',
-      label: prefix === 'Cisza' ? 'Cisza 7+ dni' : 'Sprawa bez ruchu 7+ dni',
-      severity: 'medium',
-      reason: 'Brak świeżego ruchu od co najmniej 7 dni.',
-    };
+  if (typeof truth.activitySilentDays === 'number') {
+    if (truth.activitySilentDays >= 14) {
+      return {
+        key: entityType + '-activity-silence-14',
+        label: entityType === 'lead' ? 'Brak świeżego ruchu 14+ dni' : 'Sprawa bez ruchu 14+ dni',
+        severity: 'high',
+        reason: 'Nie znaleziono kontaktu; fallback pokazuje brak świeżej aktywności od co najmniej 14 dni.',
+      };
+    }
+    if (truth.activitySilentDays >= 7) {
+      return {
+        key: entityType + '-activity-silence-7',
+        label: entityType === 'lead' ? 'Brak świeżego ruchu 7+ dni' : 'Sprawa bez ruchu 7+ dni',
+        severity: 'medium',
+        reason: 'Nie znaleziono kontaktu; fallback pokazuje brak świeżej aktywności od co najmniej 7 dni.',
+      };
+    }
   }
 
   return null;
 }
 
 export function getLeadOwnerRiskBadges(lead: unknown, context: OwnerRiskContext = {}): OwnerRiskBadge[] {
-  const now = context.now || new Date();
   const record = asRecord(lead);
-  const relatedRecords = Array.isArray(context.relatedRecords) ? context.relatedRecords : [];
-  const latestActivityAt = getLatestActivityAt([record, ...relatedRecords]);
-  const silentDays = daysSince(latestActivityAt, now);
   const settings = getContextSettings(context);
   const value = getValue(record);
+  const nextMove = resolveNextMove('lead', record, context);
+  const activityTruth = resolveActivityTruth('lead', record, context);
 
   const badges: OwnerRiskBadge[] = [];
 
@@ -207,31 +193,36 @@ export function getLeadOwnerRiskBadges(lead: unknown, context: OwnerRiskContext 
     });
   }
 
-  if (context.hasNextStep === false) {
+  if (nextMove.isMissing) {
     badges.push({
       key: 'lead-missing-next-action',
       label: 'Brak następnej akcji',
       severity: value >= settings.highValueThresholdPln ? 'high' : 'medium',
-      reason: 'Lead nie ma najbliższej zaplanowanej akcji.',
+      reason: nextMove.reason,
     });
   }
 
-  if (typeof silentDays === 'number') {
-    const silence = buildSilenceBadge('Cisza', silentDays);
-    if (silence) badges.push(silence);
+  if (nextMove.isOverdue) {
+    badges.push({
+      key: 'lead-overdue-next-action',
+      label: 'Następna akcja zaległa',
+      severity: 'high',
+      reason: nextMove.reason,
+    });
   }
+
+  const silence = buildSilenceBadge('lead', activityTruth);
+  if (silence) badges.push(silence);
 
   return dedupeBadges(badges);
 }
 
 export function getCaseOwnerRiskBadges(caseRecord: unknown, context: OwnerRiskContext = {}): OwnerRiskBadge[] {
-  const now = context.now || new Date();
   const record = asRecord(caseRecord);
-  const relatedRecords = Array.isArray(context.relatedRecords) ? context.relatedRecords : [];
-  const latestActivityAt = getLatestActivityAt([record, ...relatedRecords]);
-  const silentDays = daysSince(latestActivityAt, now);
   const settings = getContextSettings(context);
   const value = getValue(record);
+  const nextMove = resolveNextMove('case', record, context);
+  const activityTruth = resolveActivityTruth('case', record, context);
 
   const badges: OwnerRiskBadge[] = [];
 
@@ -244,21 +235,28 @@ export function getCaseOwnerRiskBadges(caseRecord: unknown, context: OwnerRiskCo
     });
   }
 
-  if (context.hasNextStep === false) {
+  if (nextMove.isMissing) {
     badges.push({
       key: 'case-missing-next-move',
       label: 'Brak następnego ruchu',
       severity: value >= settings.highValueThresholdPln ? 'high' : 'medium',
-      reason: 'Sprawa nie ma najbliższego zaplanowanego ruchu.',
+      reason: nextMove.reason,
     });
   }
 
-  if (typeof silentDays === 'number') {
-    const silence = buildSilenceBadge('Sprawa bez ruchu', silentDays);
-    if (silence) badges.push(silence);
+  if (nextMove.isOverdue) {
+    badges.push({
+      key: 'case-overdue-next-move',
+      label: 'Następny ruch zaległy',
+      severity: 'high',
+      reason: nextMove.reason,
+    });
   }
 
-  if (value >= settings.highValueThresholdPln && context.hasNextStep === false) {
+  const silence = buildSilenceBadge('case', activityTruth);
+  if (silence) badges.push(silence);
+
+  if (value >= settings.highValueThresholdPln && (nextMove.isMissing || nextMove.isOverdue)) {
     badges.push({
       key: 'money-without-motion',
       label: 'Pieniądze bez ruchu',
@@ -274,9 +272,10 @@ export function getMoneyOwnerRiskBadges(recordInput: unknown, context: OwnerRisk
   const record = asRecord(recordInput);
   const settings = getContextSettings(context);
   const value = getValue(record);
+  const nextMove = resolveNextMove('case', record, context);
   const badges: OwnerRiskBadge[] = [];
 
-  if (value >= settings.highValueThresholdPln && context.hasNextStep === false) {
+  if (value >= settings.highValueThresholdPln && (nextMove.isMissing || nextMove.isOverdue)) {
     badges.push({
       key: 'money-without-motion',
       label: 'Pieniądze bez ruchu',

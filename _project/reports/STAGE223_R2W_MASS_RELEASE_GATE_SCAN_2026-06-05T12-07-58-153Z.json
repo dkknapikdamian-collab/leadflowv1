@@ -1,0 +1,9 @@
+{
+  "stage": "STAGE223_R2W_MASS_RELEASE_GATE_SCAN",
+  "startedAt": "2026-06-05T12:07:58.153Z",
+  "finishedAt": "2026-06-05T12:08:29.940Z",
+  "total": 178,
+  "pass": 178,
+  "fail": 0,
+  "failed": []
+}

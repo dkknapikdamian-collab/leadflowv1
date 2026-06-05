@@ -1,9 +1,11 @@
+// STAGE223_R2U_ACTIVITIES_SYSTEM_ROUTE_CONSOLIDATION
+// Moved from api/activities.ts to keep Vercel Hobby api/*.ts budget under 12.
 /* STAGE16_SCOPED_MUTATION_ENDPOINT: workspace-owned mutations must scope service-role writes by workspace_id. */
-import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from '../src/server/_supabase.js';
-import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionContext } from '../src/server/_portal-token.js';
-import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
-import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
-import { normalizeActivityContract } from '../src/lib/data-contract.js';
+import { deleteById, insertWithVariants, selectFirstAvailable, updateById, updateByIdScoped, deleteByIdScoped, updateByWorkspaceAndId, deleteByWorkspaceAndId } from './_supabase.js';
+import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionContext } from './_portal-token.js';
+import { requireScopedRow, resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
+import { writeAuthErrorResponse } from './_supabase-auth.js';
+import { normalizeActivityContract } from '../lib/data-contract.js';
 
 const A26_ACTIVITY_DELETE_NOTE_LOCK = 'activities endpoint supports PATCH and DELETE for voice note cleanup';
 

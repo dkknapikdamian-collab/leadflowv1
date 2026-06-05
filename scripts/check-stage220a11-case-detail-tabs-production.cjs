@@ -41,7 +41,7 @@ if (!historyBlock[0].includes('buildCaseHistoryItemsStage14D')) fail('History mu
 if (!historyBlock[0].includes('formatCaseHistoryBodyStage220A11')) fail('History must sanitize/format visible body');
 
 if (!caseText.includes("handleItemStatusChange(item, 'missing')")) fail('Checklist tab must expose Brak action');
-if (caseText.includes('ObsĹ') || caseText.includes('ZakĹ') || caseText.includes('wpĹ')) fail('Mojibake found in CaseDetail');
+if (caseText.includes('Obs\u0139') || caseText.includes('Zak\u0139') || caseText.includes('wpłat')) fail('Mojibake found in CaseDetail');
 
 const forbiddenCss = /\.case-detail-main-column\s*>\s*\.case-detail-section-card:not\(\.stage217-case-operation-workspace\):not\(\.stage217-case-notes-panel\)\s*\{\s*display:\s*none\s*!important;\s*\}/;
 if (forbiddenCss.test(cssText)) fail('Legacy CSS hide selector still hides active tab panels');

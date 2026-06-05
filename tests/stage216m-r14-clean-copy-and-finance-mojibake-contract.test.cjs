@@ -21,7 +21,7 @@ const forbidden = [
   'Dodaj follow-up albo wydarzenie, żeby lead nie został bez ruchu.',
 ];
 
-const mojibakeForbidden = ['Ĺ', 'Ä', 'Ăł', 'wpĹ', 'wartoĹ', 'domkniÄ'];
+const mojibakeForbidden = ['\u0139', '\u00C4', 'ó', 'wpłat', 'wartości', 'domknięcia'];
 const requiredClient = ['Suma wartości spraw', 'Suma wpłat', 'Do domknięcia', 'Najpierw utwórz sprawę klienta.'];
 
 const errors = [];

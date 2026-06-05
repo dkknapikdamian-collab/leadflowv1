@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const calendarPath = 'src/pages/Calendar.tsx';
 const cssPath = 'src/styles/closeflow-calendar-selected-day-new-tile-v9.css';

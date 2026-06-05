@@ -1,4 +1,4 @@
-﻿// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
+// CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 import {
   type FormEvent,
   type MouseEvent,
@@ -529,7 +529,7 @@ export default function Clients() {
 
     const relationCount = counters.leads + counters.cases + counters.payments;
     const relationText = relationCount > 0
-      ? 'Ten klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostaną trwale skasowane.'
+      ? '\n\nTen klient ma powiązania: leady ' + counters.leads + ', sprawy ' + counters.cases + ', rozliczenia ' + counters.payments + '. Dane nie zostaną trwale skasowane.'
       : 'Rekord zniknie z aktywnej listy, ale będzie można go przywrócić z kosza.';
 
     setClientArchiveConfirm({
@@ -563,10 +563,17 @@ export default function Clients() {
 
     try {
       setArchivePendingId(targetClient.id);
-      await updateClientInSupabase({
-        id: targetClient.id,
-        archivedAt: mode === 'archive' ? new Date().toISOString() : null,
-      });
+      if (mode === 'archive') {
+        await updateClientInSupabase({
+          id: targetClient.id,
+          archivedAt: new Date().toISOString(),
+        });
+      } else {
+        await updateClientInSupabase({
+          id: targetClient.id,
+          archivedAt: null,
+        });
+      }
 
       toast.success(mode === 'archive' ? 'Klient przeniesiony do kosza' : 'Klient przywrócony');
       setClientArchiveConfirm(null);

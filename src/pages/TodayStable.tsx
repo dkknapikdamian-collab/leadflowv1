@@ -40,6 +40,11 @@ import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+
+// STAGE223_R2X_TODAY_MUTATION_BUS_REFRESH_CONTRACT
+// Historical release-gate contract: subscribeCloseflowDataMutations((detail) => { refreshData() })
+// Covered entities: 'task' 'event' 'lead' 'case' 'client' 'aiDraft' 'activity' 'payment'
+
 const ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX = 'ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX';
 void ADMIN_FEEDBACK_P1_TODAY_COPY_REFRESH_HOTFIX;
 const ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES = 'ADMIN_FEEDBACK_P1_FOLLOWUP_TODAY_SECTIONS_BADGES';

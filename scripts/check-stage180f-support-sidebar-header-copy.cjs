@@ -50,7 +50,7 @@ const forbiddenSupport = [
 for (const value of forbiddenSupport) not(support, value, `forbidden_support_text:${value}`);
 
 const supportVisibleSlice = [support, header].join('\n');
-const mojibakeMarkers = ['Ä', 'Å', 'Ĺ', 'Â', 'â', '�'];
+const mojibakeMarkers = ['\u00C4', 'Å', '\u0139', '\u00C2', 'â', '\uFFFD'];
 for (const marker of mojibakeMarkers) not(supportVisibleSlice, marker, `support_visible_mojibake:${marker}`);
 
 console.log('STAGE180F_SUPPORT_SIDEBAR_HEADER_COPY_GUARD_PASS');

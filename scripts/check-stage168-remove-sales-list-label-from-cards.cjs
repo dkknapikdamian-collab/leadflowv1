@@ -11,9 +11,9 @@ const phrases = [
   'LISTA SPRZEDAZOWA',
   'Lista sprzedazowa',
   'lista sprzedazowa',
-  'LISTA SPRZEDAÅ»OWA',
-  'Lista sprzedaÅ¼owa',
-  'lista sprzedaÅ¼owa',
+  'LISTA SPRZEDAŻOWA',
+  'Lista sprzedażowa',
+  'lista sprzedażowa',
 ];
 
 const exts = new Set(['.tsx', '.jsx', '.ts', '.js']);

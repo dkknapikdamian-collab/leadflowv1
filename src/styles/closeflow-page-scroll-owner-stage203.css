@@ -1,4 +1,4 @@
-﻿/* STAGE203_PAGE_SCROLL_OWNER_AFTER_SCALE_75_LOCAL_ONLY
+/* STAGE203_PAGE_SCROLL_OWNER_AFTER_SCALE_75_LOCAL_ONLY
    Problem:
    - Stage201 ustawił body/#root jako overflow:hidden dla kontrolowanej skali 75%.
    - Przy dłuższych widokach, np. kalendarz tydzień/miesiąc, treść była ucięta bez realnego scrolla.

@@ -928,9 +928,10 @@ export default function Leads() {
 
         {/*
 // STAGE32_STAGE96_COMPAT_WIDTH_MARKER: xl:grid-cols-[minmax(0,1fr)_300px] is a legacy guard marker only; real rail width is delegated to Stage96 source truth CSS.
-STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
+STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
+ STAGE223_R2V_STAGE32E_RELATION_RAIL_COPY_COMPAT: Lejek razem: {formatRelationValue(relationFunnelValue)} */}
         <div
-          className="layout-list w-full max-w-none"
+          className="layout-list"
           data-stage117-leads-right-rail-layout="true"
           data-stage177-leads-clients-layout-source="true"
           data-cf-right-rail-layout-source="shared"

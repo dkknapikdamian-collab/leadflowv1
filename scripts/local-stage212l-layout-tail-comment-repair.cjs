@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const layoutPath = 'src/components/Layout.tsx';
 if (!fs.existsSync(layoutPath)) {

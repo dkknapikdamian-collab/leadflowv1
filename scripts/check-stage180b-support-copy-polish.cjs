@@ -25,24 +25,24 @@ function assertNotIncludes(source, needle, label) {
 }
 
 function assertNoMojibakeInVisibleCopy(source, label) {
-  const suspicious = ['Ă„', 'Ă…', 'Äą', 'Ă‚', 'Ă˘', 'ďż˝'];
+  const suspicious = ['\u0102„', '\u0102…', '\u00C4ą', '\u0102‚', '\u0102˘', '\uFFFD'];
   const lines = source.split(/\r?\n/);
 
   lines.forEach((line, index) => {
     const isRelevantVisibleSupportLine =
       line.includes('support') ||
-      line.includes('ZgĹ‚oszenia') ||
-      line.includes('ZgĹ‚oszenie') ||
-      line.includes('zgĹ‚oszeĹ„') ||
-      line.includes('zgĹ‚oszenie') ||
-      line.includes('zgĹ‚aszaÄ‡') ||
-      line.includes('odĹ›wieĹĽeniu') ||
-      line.includes('uĹĽyÄ‡') ||
-      line.includes('bĹ‚Ä…d') ||
-      line.includes('rÄ™kÄ…') ||
+      line.includes('Zgłoszenia') ||
+      line.includes('Zgłoszenie') ||
+      line.includes('zgłoszeń') ||
+      line.includes('zgłoszenie') ||
+      line.includes('zgłaszać') ||
+      line.includes('odświeżeniu') ||
+      line.includes('użyć') ||
+      line.includes('błąd') ||
+      line.includes('ręką') ||
       line.includes('Nie wiem') ||
       line.includes('Brakuje danych') ||
-      line.includes('SugerujÄ™');
+      line.includes('Sugeruję');
 
     if (!isRelevantVisibleSupportLine) return;
     if (suspicious.some((token) => line.includes(token))) {
@@ -57,26 +57,26 @@ const layout = read('src/components/Layout.tsx');
 
 assertNotIncludes(
   support,
-  'Wybierz typ sprawy i opisz temat. Formularz zapisuje zgĹ‚oszenie w jednym miejscu, zamiast rozrzucaÄ‡ bĹ‚Ä™dy po czacie.',
+  'Wybierz typ sprawy i opisz temat. Formularz zapisuje zgłoszenie w jednym miejscu, zamiast rozrzucać błędy po czacie.',
   'SupportCenter.tsx',
 );
 
 for (const [needle, label] of [
-  ['ZgĹ‚oszenie / sugestia', 'combined support title'],
-  ['Nie dziaĹ‚a przycisk albo zapis', 'suggested problem shortcut'],
-  ['Brakuje danych po odĹ›wieĹĽeniu', 'refresh missing data shortcut'],
-  ['SugerujÄ™ zmianÄ™ w aplikacji', 'suggestion shortcut'],
-  ['Nie wiem, jak uĹĽyÄ‡ funkcji', 'punctuated usage shortcut'],
-  ['Co zgĹ‚aszaÄ‡ jako problem?', 'operational help problem title'],
-  ['Jak pisaÄ‡ dobry bĹ‚Ä…d?', 'operational help bug title'],
-  ['jeĹ›li masz go pod rÄ™kÄ…', 'screenshot hint'],
+  ['Zgłoszenie / sugestia', 'combined support title'],
+  ['Nie działa przycisk albo zapis', 'suggested problem shortcut'],
+  ['Brakuje danych po odświeżeniu', 'refresh missing data shortcut'],
+  ['Sugeruję zmianę w aplikacji', 'suggestion shortcut'],
+  ['Nie wiem, jak użyć funkcji', 'punctuated usage shortcut'],
+  ['Co zgłaszać jako problem?', 'operational help problem title'],
+  ['Jak pisać dobry błąd?', 'operational help bug title'],
+  ['jeśli masz go pod ręką', 'screenshot hint'],
 ]) {
   assertIncludes(support, needle, `SupportCenter.tsx/${label}`);
 }
 
-assertIncludes(header, "kicker: 'ZGĹOSZENIA'", 'CloseFlowPageHeaderV2.tsx');
-assertIncludes(header, "title: 'ZgĹ‚oszenia'", 'CloseFlowPageHeaderV2.tsx');
-assertIncludes(layout, "label: 'ZgĹ‚oszenia'", 'Layout.tsx');
+assertIncludes(header, "kicker: 'ZG\u0139\u0081OSZENIA'", 'CloseFlowPageHeaderV2.tsx');
+assertIncludes(header, "title: 'Zgłoszenia'", 'CloseFlowPageHeaderV2.tsx');
+assertIncludes(layout, "label: 'Zgłoszenia'", 'Layout.tsx');
 
 assertNoMojibakeInVisibleCopy(support, 'SupportCenter.tsx');
 assertNoMojibakeInVisibleCopy(header, 'CloseFlowPageHeaderV2.tsx');

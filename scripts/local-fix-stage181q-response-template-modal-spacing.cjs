@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const tsxPath = 'src/pages/ResponseTemplates.tsx';
 const cssPath = 'src/styles/closeflow-response-template-modal-source-truth-stage181q.css';

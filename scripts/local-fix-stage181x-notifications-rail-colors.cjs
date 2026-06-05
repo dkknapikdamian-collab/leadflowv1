@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const tsxPath = 'src/pages/NotificationsCenter.tsx';
 const cssPath = 'src/styles/closeflow-notifications-rail-force-colors-stage181x.css';

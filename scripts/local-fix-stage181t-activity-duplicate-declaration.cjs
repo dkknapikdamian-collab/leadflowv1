@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const file = 'src/pages/Activity.tsx';
 let src = fs.readFileSync(file, 'utf8');

@@ -41,7 +41,7 @@ if (!css.includes("@import './styles/closeflow-visual-foundation-stage212b.css';
   process.exit(1);
 }
 
-const mojibake = /[ÅÄĹÂ�]/;
+const mojibake = /[Å\u00C4\u0139\u00C2\uFFFD]/;
 const layoutPath = path.join(process.cwd(), 'src', 'components', 'Layout.tsx');
 if (fs.existsSync(layoutPath)) {
   const layout = fs.readFileSync(layoutPath, 'utf8');

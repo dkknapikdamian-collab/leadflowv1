@@ -18,51 +18,51 @@ function write(rel, text) {
 }
 
 const mojibakePairs = [
-  ['Ä…', 'ą'], ['Ä„', 'Ą'],
-  ['Ä‡', 'ć'], ['Ä†', 'Ć'],
-  ['Ä™', 'ę'], ['ÄĘ', 'Ę'],
-  ['Ĺ‚', 'ł'], ['Å‚', 'ł'], ['Ĺ�', 'Ł'], ['Å�', 'Ł'],
-  ['Ĺ„', 'ń'], ['Å„', 'ń'], ['ĹŃ', 'Ń'], ['ÅŃ', 'Ń'],
-  ['Ĺ›', 'ś'], ['Å›', 'ś'], ['Ĺš', 'Ś'], ['Åš', 'Ś'],
-  ['Ĺş', 'ź'], ['Åş', 'ź'], ['ĹŹ', 'Ź'], ['ÅŹ', 'Ź'],
-  ['Ĺ¼', 'ż'], ['Å¼', 'ż'], ['Ĺ»', 'Ż'], ['Å»', 'Ż'],
-  ['Ã³', 'ó'], ['Ăł', 'ó'], ['Ã“', 'Ó'], ['Ă“', 'Ó'],
-  ['â€“', '–'], ['â€”', '—'], ['â€ž', '„'], ['â€ť', '”'],
+  ['ą', 'ą'], ['Ą', 'Ą'],
+  ['ć', 'ć'], ['Ć', 'Ć'],
+  ['ę', 'ę'], ['Ę', 'Ę'],
+  ['ł', 'ł'], ['ł', 'ł'], ['Ł', 'Ł'], ['Ł', 'Ł'],
+  ['ń', 'ń'], ['ń', 'ń'], ['Ń', 'Ń'], ['Ń', 'Ń'],
+  ['ś', 'ś'], ['ś', 'ś'], ['Ś', 'Ś'], ['Ś', 'Ś'],
+  ['ź', 'ź'], ['ź', 'ź'], ['Ź', 'Ź'], ['Ź', 'Ź'],
+  ['\u0139¼', 'ż'], ['ż', 'ż'], ['Ż', 'Ż'], ['Ż', 'Ż'],
+  ['ó', 'ó'], ['ó', 'ó'], ['Ó', 'Ó'], ['Ó', 'Ó'],
+  ['–', '–'], ['—', '—'], ['„', '„'], ['”', '”'],
 ];
 
 const targetedPairs = [
-  ['Filtry zadaÅ„', 'Filtry zadań'],
-  ['Filtry zadaĹ„', 'Filtry zadań'],
-  ['Najpilniejsze zadaÅ„', 'Najpilniejsze zadań'],
-  ['Najpilniejsze zadaĹ„', 'Najpilniejsze zadań'],
-  ['ZalegÅ‚e', 'Zaległe'],
-  ['ZalegĹ‚e', 'Zaległe'],
-  ['DziÅ›', 'Dziś'],
-  ['DziĹ›', 'Dziś'],
-  ['Bez powiÄ…zania', 'Bez powiązania'],
-  ['NadchodzÄ…ce', 'Nadchodzące'],
-  ['do uporzÄ…dkowania', 'do uporządkowania'],
-  ['zamkniÄ™te dziaĹ‚ania', 'zamknięte działania'],
-  ['zamkniÄ™te dziaÅ‚ania', 'zamknięte działania'],
-  ['najbliÅ¼sze terminy', 'najbliższe terminy'],
-  ['najbliĹĽsze terminy', 'najbliższe terminy'],
-  ['Bez klikania po zakÅ‚adkach', 'Bez klikania po zakładkach'],
-  ['Bez klikania po zakĹ‚adkach', 'Bez klikania po zakładkach'],
-  ['5 zadaÅ„', '5 zadań'],
-  ['5 zadaĹ„', '5 zadań'],
-  ['zadaÅ„', 'zadań'],
-  ['zadaĹ„', 'zadań'],
-  ['ktÃ³re', 'które'],
-  ['ktĂłre', 'które'],
-  ['najÅ‚atwiej', 'najłatwiej'],
-  ['najĹ‚atwiej', 'najłatwiej'],
-  ['zgubiÄ‡', 'zgubić'],
-  ['wÅ‚aÅ›ciciela', 'właściciela'],
-  ['wĹ‚aĹ›ciciela', 'właściciela'],
-  ['KrÃ³tki', 'Krótki'],
-  ['KrĂłtki', 'Krótki'],
-  ['Brak aktywnych pilnych zadaÅ„', 'Brak aktywnych pilnych zadań'],
-  ['Brak aktywnych pilnych zadaĹ„', 'Brak aktywnych pilnych zadań'],
+  ['Filtry zadań', 'Filtry zadań'],
+  ['Filtry zadań', 'Filtry zadań'],
+  ['Najpilniejsze zadań', 'Najpilniejsze zadań'],
+  ['Najpilniejsze zadań', 'Najpilniejsze zadań'],
+  ['Zaległe', 'Zaległe'],
+  ['Zaległe', 'Zaległe'],
+  ['Dziś', 'Dziś'],
+  ['Dziś', 'Dziś'],
+  ['Bez powiązania', 'Bez powiązania'],
+  ['Nadchodzące', 'Nadchodzące'],
+  ['do uporządkowania', 'do uporządkowania'],
+  ['zamknięte działania', 'zamknięte działania'],
+  ['zamknięte działania', 'zamknięte działania'],
+  ['najbliższe terminy', 'najbliższe terminy'],
+  ['najbliższe terminy', 'najbliższe terminy'],
+  ['Bez klikania po zakładkach', 'Bez klikania po zakładkach'],
+  ['Bez klikania po zakładkach', 'Bez klikania po zakładkach'],
+  ['5 zadań', '5 zadań'],
+  ['5 zadań', '5 zadań'],
+  ['zadań', 'zadań'],
+  ['zadań', 'zadań'],
+  ['które', 'które'],
+  ['które', 'które'],
+  ['najłatwiej', 'najłatwiej'],
+  ['najłatwiej', 'najłatwiej'],
+  ['zgubić', 'zgubić'],
+  ['właściciela', 'właściciela'],
+  ['właściciela', 'właściciela'],
+  ['Krótki', 'Krótki'],
+  ['Krótki', 'Krótki'],
+  ['Brak aktywnych pilnych zadań', 'Brak aktywnych pilnych zadań'],
+  ['Brak aktywnych pilnych zadań', 'Brak aktywnych pilnych zadań'],
 ];
 
 function replacePairs(text) {
@@ -84,11 +84,11 @@ function patchTasksStable() {
 
   // Normalize fragments that may be partially cut by previous encodings.
   source = source
-    .replace(/zada[ÅĹ][^'"`<>\s,.)]*/g, 'zadań')
-    .replace(/Zaleg[ÅĹ][^'"`<>\s,.)]*/g, 'Zaległe')
-    .replace(/Dzi[ÅĹ][^'"`<>\s,.)]*/g, 'Dziś')
-    .replace(/powi[ÄĂ][^'"`<>\s,.)]*/g, 'powiązania')
-    .replace(/zak[ÅĹ][^'"`<>\s,.)]*/g, 'zakładkach');
+    .replace(/zada[Å\u0139][^'"`<>\s,.)]*/g, 'zadań')
+    .replace(/Zaleg[Å\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+    .replace(/Dzi[Å\u0139][^'"`<>\s,.)]*/g, 'Dziś')
+    .replace(/powi[\u00C4\u0102][^'"`<>\s,.)]*/g, 'powiązania')
+    .replace(/zak[Å\u0139][^'"`<>\s,.)]*/g, 'zakładkach');
 
   // Use unicode escapes for array labels and hints, which protects source from local encoding quirks.
   source = source.replace(
@@ -116,7 +116,7 @@ function patchTasksStable() {
 
   // Keep literal headings for Stage178/178B guards.
   source = source.replace(/<h2>\{?'?Filtry zada(?:ń|\\u0144)'?\}?<\/h2>/g, '<h2>Filtry zadań</h2>');
-  source = source.replace(/<h2>Filtry zada[ÅĹ][^<]*<\/h2>/g, '<h2>Filtry zadań</h2>');
+  source = source.replace(/<h2>Filtry zada[Å\u0139][^<]*<\/h2>/g, '<h2>Filtry zadań</h2>');
   source = source.replace(/<h3>\{?'?Najpilniejsze zadania'?\}?<\/h3>/g, '<h3>Najpilniejsze zadania</h3>');
 
   // Literal Polish UI copy, not escaped JSX expressions.
@@ -132,9 +132,9 @@ function patchTasksStable() {
   source = source.replace(/\n\s*const nextTaskMoment = urgentTasks\[0\] \? formatTaskMoment\(urgentTasks\[0\]\) : 'Brak';\n/g, '\n');
 
   source = replacePairs(source)
-    .replace(/zada[ÅĹ][^'"`<>\s,.)]*/g, 'zadań')
-    .replace(/Zaleg[ÅĹ][^'"`<>\s,.)]*/g, 'Zaległe')
-    .replace(/Dzi[ÅĹ][^'"`<>\s,.)]*/g, 'Dziś');
+    .replace(/zada[Å\u0139][^'"`<>\s,.)]*/g, 'zadań')
+    .replace(/Zaleg[Å\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+    .replace(/Dzi[Å\u0139][^'"`<>\s,.)]*/g, 'Dziś');
 
   if (source !== original) {
     write(rel, source);
@@ -187,22 +187,22 @@ const tasks = 'src/pages/TasksStable.tsx';
   'data-stage178-tasks-focus-card="true"',
   'tasks-stage178-focus-row',
   'nextTaskMoment',
-  'ZalegÅ',
-  'ZalegĹ',
-  'DziÅ',
-  'DziĹ',
-  'zadaÅ',
-  'zadaĹ',
-  'powiÄ',
-  'zakÅ',
-  'zakĹ',
-  'Å‚',
-  'Ĺ‚',
-  'Å›',
-  'Ĺ›',
-  'Ä…',
-  'Ä™',
-  'Ă',
+  'Zaległe',
+  'Zaległe',
+  'Dziś',
+  'Dziś',
+  'zadań',
+  'zadań',
+  'powiązania',
+  'zakładkach',
+  'zakładkach',
+  'ł',
+  'ł',
+  'ś',
+  'ś',
+  'ą',
+  'ę',
+  '\u0102',
   'Ã',
 ].forEach((marker) => mustNotInclude(tasks, marker));
 

@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 const componentPath = 'src/components/operator-rail/TopValueRecordsCard.tsx';
 const cssPath = 'src/styles/closeflow-right-rail-source-truth.css';

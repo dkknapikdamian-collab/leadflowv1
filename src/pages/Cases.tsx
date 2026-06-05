@@ -790,8 +790,8 @@ export default function Cases() {
                         <EntityTrashButton
                           type="button"
                           iconOnly
-                          className="btn ghost cf-icon-action-button cf-case-row-delete-icon-action"
                           data-stage220a28-case-row-delete-icon="true"
+                          data-case-row-delete-action="true" data-cf-destructive-source="trash-action-source"
                           aria-label="Usuń sprawę"
                           title="Usuń sprawę"
                           disabled={deletePending && caseToDelete?.id === record.id}

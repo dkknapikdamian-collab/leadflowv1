@@ -15,7 +15,7 @@ const runtimeErrorMarkers = [
   'Missing lazy page export',
   'Cannot access',
 ];
-const mojibakeMarkers = ['Ä', 'Å', 'Ã', 'Â', 'â€™', 'â€œ', 'â€', '�'];
+const mojibakeMarkers = ['\u00C4', 'Å', 'Ã', '\u00C2', '’', '“', 'â€', '\uFFFD'];
 
 function assertContainsAll(text, values, label) {
   for (const value of values) {

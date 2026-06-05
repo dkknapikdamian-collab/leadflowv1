@@ -472,7 +472,7 @@ export default function Templates() {
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="cf-template-modal-v2" data-template-modal-stage181n="true">
+        <DialogContent className="cf-template-modal-v2" data-template-modal-stage181n="true" aria-describedby={undefined}>
           <DialogHeader className="cf-template-modal-v2-header">
             <DialogTitle className="cf-template-modal-v2-title">{editingTemplateId ? 'Edytuj szablon sprawy' : 'Nowy szablon sprawy'}</DialogTitle>
             <DialogDescription className="cf-template-modal-v2-description">Uzupełnij dane szablonu i zapisz zmiany w bibliotece szablonów.</DialogDescription>
