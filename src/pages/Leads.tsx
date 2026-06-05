@@ -653,6 +653,30 @@ export default function Leads() {
     [activeLeads, clients],
   );
 
+  const relatedRecordsByLeadId = useMemo(() => {
+    const map = new Map<string, unknown[]>();
+    const touch = (leadId: string) => {
+      if (!map.has(leadId)) map.set(leadId, []);
+      return map.get(leadId)!;
+    };
+    const addRelated = (row: Record<string, unknown>) => {
+      const leadId = String(row.leadId || row.lead_id || '').trim();
+      if (leadId) touch(leadId).push(row);
+    };
+    for (const row of tasks as Record<string, unknown>[]) addRelated(row);
+    for (const row of events as Record<string, unknown>[]) addRelated(row);
+    return map;
+  }, [events, tasks]);
+
+  const contactCadenceGrid = useMemo(
+    () => buildContactCadenceGrid({
+      entityType: 'lead',
+      records: activeLeads,
+      relatedRecordsById: relatedRecordsByLeadId,
+    }),
+    [activeLeads, relatedRecordsByLeadId],
+  );
+
   const filteredLeads = useMemo(() => {
     // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dziala po nazwie, telefonie, mailu, firmie, zrodle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -685,30 +709,6 @@ export default function Leads() {
 
     return results;
   }, [activeLeads, cadenceFilter, contactCadenceGrid, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
-
-  const relatedRecordsByLeadId = useMemo(() => {
-    const map = new Map<string, unknown[]>();
-    const touch = (leadId: string) => {
-      if (!map.has(leadId)) map.set(leadId, []);
-      return map.get(leadId)!;
-    };
-    const addRelated = (row: Record<string, unknown>) => {
-      const leadId = String(row.leadId || row.lead_id || '').trim();
-      if (leadId) touch(leadId).push(row);
-    };
-    for (const row of tasks as Record<string, unknown>[]) addRelated(row);
-    for (const row of events as Record<string, unknown>[]) addRelated(row);
-    return map;
-  }, [events, tasks]);
-
-  const contactCadenceGrid = useMemo(
-    () => buildContactCadenceGrid({
-      entityType: 'lead',
-      records: activeLeads,
-      relatedRecordsById,
-    }),
-    [activeLeads, relatedRecordsByLeadId],
-  );
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);

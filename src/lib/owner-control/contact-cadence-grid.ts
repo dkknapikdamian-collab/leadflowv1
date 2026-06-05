@@ -46,13 +46,13 @@ export type ContactCadenceGrid = {
 };
 
 export const CONTACT_CADENCE_BUCKETS: ContactCadenceBucket[] = [
-  { key: 'today', label: 'Kontakt dzis', shortLabel: 'Dzis', description: 'Rekordy z kontaktem dzisiaj.', severity: 'none', minDays: 0, maxDays: 0 },
-  { key: 'silent_1', label: '1 dzien ciszy', shortLabel: '1 dzien', description: 'Minal 1 dzien od ostatniego kontaktu.', severity: 'low', minDays: 1, maxDays: 1 },
-  { key: 'silent_2', label: '2 dni ciszy', shortLabel: '2 dni', description: 'Minely 2 dni od ostatniego kontaktu.', severity: 'low', minDays: 2, maxDays: 2 },
-  { key: 'silent_3', label: '3 dni ciszy', shortLabel: '3 dni', description: 'Minely 3 dni od ostatniego kontaktu.', severity: 'medium', minDays: 3, maxDays: 3 },
-  { key: 'silent_5', label: '5 dni ciszy', shortLabel: '5 dni', description: 'Minelo 4-5 dni od ostatniego kontaktu.', severity: 'medium', minDays: 4, maxDays: 5 },
-  { key: 'silent_7', label: '7+ dni ciszy', shortLabel: '7+ dni', description: 'Minelo 6-13 dni od ostatniego kontaktu.', severity: 'high', minDays: 6, maxDays: 13 },
-  { key: 'silent_14_plus', label: '14+ dni ciszy', shortLabel: '14+ dni', description: 'Minelo co najmniej 14 dni od ostatniego kontaktu.', severity: 'high', minDays: 14, maxDays: null },
+  { key: 'today', label: 'Kontakt dziś', shortLabel: 'Dziś', description: 'Rekordy z kontaktem dzisiaj.', severity: 'none', minDays: 0, maxDays: 0 },
+  { key: 'silent_1', label: '1 dzień ciszy', shortLabel: '1 dzień', description: 'Minął 1 dzień od ostatniego kontaktu.', severity: 'low', minDays: 1, maxDays: 1 },
+  { key: 'silent_2', label: '2 dni ciszy', shortLabel: '2 dni', description: 'Minęły 2 dni od ostatniego kontaktu.', severity: 'low', minDays: 2, maxDays: 2 },
+  { key: 'silent_3', label: '3 dni ciszy', shortLabel: '3 dni', description: 'Minęły 3 dni od ostatniego kontaktu.', severity: 'medium', minDays: 3, maxDays: 3 },
+  { key: 'silent_5', label: '5 dni ciszy', shortLabel: '5 dni', description: 'Minęło 4-5 dni od ostatniego kontaktu.', severity: 'medium', minDays: 4, maxDays: 5 },
+  { key: 'silent_7', label: '7+ dni ciszy', shortLabel: '7+ dni', description: 'Minęło 6-13 dni od ostatniego kontaktu.', severity: 'high', minDays: 6, maxDays: 13 },
+  { key: 'silent_14_plus', label: '14+ dni ciszy', shortLabel: '14+ dni', description: 'Minęło co najmniej 14 dni od ostatniego kontaktu.', severity: 'high', minDays: 14, maxDays: null },
   { key: 'unknown', label: 'Brak daty kontaktu', shortLabel: 'Brak daty', description: 'Brak pewnej daty prawdziwego kontaktu.', severity: 'medium', minDays: null, maxDays: null },
 ];
 
@@ -79,7 +79,7 @@ function readNumber(record: Record<string, unknown>, keys: string[]) {
     const value = record[key];
     if (typeof value === 'number' && Number.isFinite(value)) return value;
     if (typeof value === 'string' && value.trim()) {
-      const parsed = Number(value.replace(/s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
+      const parsed = Number(value.replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
       if (Number.isFinite(parsed)) return parsed;
     }
   }
@@ -168,15 +168,15 @@ function resolveRescue(input: {
   }
 
   if (typeof input.contactSilentDays === 'number' && input.contactSilentDays >= 7 && !input.hasNextStep) {
-    return { rescueCandidate: true, rescueReason: '7+ dni ciszy i brak nastepnego ruchu.' };
+    return { rescueCandidate: true, rescueReason: '7+ dni ciszy i brak następnego ruchu.' };
   }
 
   if (typeof input.contactSilentDays === 'number' && input.contactSilentDays >= 7 && input.value >= 5000) {
-    return { rescueCandidate: true, rescueReason: 'Wysoka wartosc i 7+ dni ciszy.' };
+    return { rescueCandidate: true, rescueReason: 'Wysoka wartość i 7+ dni ciszy.' };
   }
 
   if (!input.hasContact && !input.hasNextStep) {
-    return { rescueCandidate: true, rescueReason: 'Brak daty kontaktu i brak nastepnego kroku.' };
+    return { rescueCandidate: true, rescueReason: 'Brak daty kontaktu i brak następnego kroku.' };
   }
 
   return { rescueCandidate: false, rescueReason: null };

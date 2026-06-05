@@ -19,18 +19,13 @@ const files = [
   'tests/stage225-contact-cadence-grid.test.cjs',
 ];
 
-const mojibakeCodePoints = [0x00c4, 0x0139, 0x0102, 0x00c2, 0xfffd, 0x0081];
-
-function findMojibakeTokens(content) {
-  return mojibakeCodePoints
-    .map((codePoint) => String.fromCodePoint(codePoint))
-    .filter((token) => content.includes(token));
-}
-
+const bannedCodePoints = [0x00c4, 0x0139, 0x0102, 0x00c2, 0xfffd, 0x0081];
 for (const file of files) {
   const content = read(file);
-  const bad = findMojibakeTokens(content);
-  if (bad.length) fail('mojibake tokens in ' + file + ': codepoints ' + bad.map((token) => 'U+' + token.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')).join(', '));
+  const bad = bannedCodePoints
+    .map((codePoint) => String.fromCharCode(codePoint))
+    .filter((token) => content.includes(token));
+  if (bad.length) fail('mojibake codepoints in ' + file + ': ' + bannedCodePoints.filter((codePoint) => content.includes(String.fromCharCode(codePoint))).map((codePoint) => 'U+' + codePoint.toString(16).toUpperCase().padStart(4, '0')).join(', '));
 }
 
 const helper = read(helperPath);
@@ -49,10 +44,36 @@ const today = todayPath ? read(todayPath) : '';
   'unknown',
   'silent_14_plus',
   '14+ dni ciszy',
+  'Kontakt dziś',
+  '1 dzień ciszy',
+  'Minął 1 dzień',
+  'Minęły 2 dni',
+  'Minęło co najmniej 14 dni',
+  'następnego ruchu',
+  'Wysoka wartość',
 ].forEach((token) => {
   if (!helper.includes(token)) fail('helper missing ' + token);
 });
 
+[
+  'Kontakt dzis',
+  'Dzis',
+  '1 dzien',
+  'Minal',
+  'Minely',
+  'Minelo',
+  'nastepnego',
+  'wartosc',
+].forEach((token) => {
+  if (helper.includes(token)) fail('helper still has ASCII placeholder token: ' + token);
+});
+
+if (helper.includes('replace(/s+/g')) {
+  fail('helper has broken whitespace regex replace(/s+/g instead of replace(/\s+/g');
+}
+if (!helper.includes('replace(/\s+/g')) {
+  fail('helper missing whitespace normalization replace(/\s+/g');
+}
 if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
   fail('helper redefines SALES_SILENCE_THRESHOLDS_DAYS instead of importing owner-risk-rules source of truth');
 }
@@ -68,6 +89,23 @@ if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
 ].forEach((token) => {
   if (!leads.includes(token)) fail('Leads.tsx missing ' + token);
 });
+
+const relatedIndex = leads.indexOf('const relatedRecordsByLeadId = useMemo');
+const cadenceIndex = leads.indexOf('const contactCadenceGrid = useMemo');
+const filteredIndex = leads.indexOf('const filteredLeads = useMemo');
+if (relatedIndex < 0 || cadenceIndex < 0 || filteredIndex < 0) {
+  fail('Leads.tsx missing Stage225 memo declarations');
+}
+if (!(relatedIndex < cadenceIndex && cadenceIndex < filteredIndex)) {
+  fail('Leads.tsx has TDZ risk: relatedRecordsByLeadId and contactCadenceGrid must be declared before filteredLeads');
+}
+if (leads.includes('relatedRecordsById,') || leads.includes('relatedRecordsById
+')) {
+  fail('Leads.tsx passes undefined/shorthand relatedRecordsById instead of relatedRecordsByLeadId');
+}
+if (!leads.includes('relatedRecordsById: relatedRecordsByLeadId')) {
+  fail('Leads.tsx missing explicit relatedRecordsById: relatedRecordsByLeadId mapping');
+}
 
 [
   'buildContactCadenceGrid',
@@ -99,7 +137,7 @@ if (packageJson.scripts['test:stage225-contact-cadence-grid'] !== 'node --test t
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'STAGE225R6_GUARD_MOJIBAKE_SELF_FIX',
+  stage: 'STAGE225R8_CONTACT_CADENCE_RUNTIME_HOTFIX',
   checkedFiles: files.length,
   guard: 'check:stage225-contact-cadence-grid',
 }, null, 2));
