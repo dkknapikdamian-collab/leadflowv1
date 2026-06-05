@@ -800,7 +800,9 @@
     "check:stage223r3-last-contact-intake": "node scripts/check-stage223r3-last-contact-intake.cjs",
     "test:stage223r3-last-contact-intake": "node --test tests/stage223r3-last-contact-intake.test.cjs",
     "check:stage225-contact-cadence-grid": "node scripts/check-stage225-contact-cadence-grid.cjs",
-    "test:stage225-contact-cadence-grid": "node --test tests/stage225-contact-cadence-grid.test.cjs"
+    "test:stage225-contact-cadence-grid": "node --test tests/stage225-contact-cadence-grid.test.cjs",
+    "check:stage226-lost-lead-rescue": "node scripts/check-stage226-lost-lead-rescue.cjs",
+    "test:stage226-lost-lead-rescue": "node --test tests/stage226-lost-lead-rescue.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

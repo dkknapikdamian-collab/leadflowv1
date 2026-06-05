@@ -864,7 +864,7 @@ export default function Clients() {
                   <span className="index"><AlertTriangle className="h-4 w-4" /></span>
                   <span>
                     <span className="title">Siatka kontaktu</span>
-                    <span className="sub">Filtruje klientow po dacie ostatniego kontaktu. Rekord bez daty wpada do Brak daty kontaktu.</span>
+                    <span className="sub">Filtruje klientów po dacie ostatniego kontaktu. Rekord bez daty wpada do Brak daty kontaktu.</span>
                   </span>
                 </div>
                 <div className="flex flex-wrap gap-2 p-3 pt-0">
