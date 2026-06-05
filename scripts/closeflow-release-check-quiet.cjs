@@ -237,6 +237,7 @@ runQuiet('case detail loading reference', process.execPath, ['scripts/check-clos
 
 runQuiet('today header actions stack', process.execPath, ['scripts/check-closeflow-today-header-actions-stack.cjs']);
 runQuiet('today mobile tile focus', process.execPath, ['scripts/check-closeflow-today-mobile-tile-focus.cjs']);
+runQuiet('today tile no-scroll trap', process.execPath, ['scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs']);
 
 runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-trash-actions.cjs']);
 

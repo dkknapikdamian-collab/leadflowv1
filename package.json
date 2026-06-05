@@ -793,7 +793,10 @@
     "test:stage222-owner-risk-rules-foundation": "node --test tests/stage222-owner-risk-rules-foundation.test.cjs",
     "check:stage223-owner-movement-risk-system": "node scripts/check-stage223-owner-movement-risk-system.cjs",
     "test:stage223-owner-risk-runtime-contract": "node --test tests/stage223-owner-risk-runtime-contract.test.cjs",
-    "test:stage223-owner-movement-risk-system": "node --test tests/stage223-owner-movement-risk-system.test.cjs"
+    "test:stage223-owner-movement-risk-system": "node --test tests/stage223-owner-movement-risk-system.test.cjs",
+    "check:stage223-r2ad-today-tile-no-scroll-trap": "node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs",
+    "check:stage223-r2ae-quiet-gate-contract-repair": "node scripts/check-stage223-r2ae-quiet-gate-contract-repair.cjs",
+    "check:stage223-r2af-today-mobile-focus-contract-repair": "node scripts/check-stage223-r2af-today-mobile-focus-contract-repair.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

@@ -1427,3 +1427,161 @@ AUDYT RYZYK:
 NASTĘPNY KROK:
 - Uruchomić R2AC lokalnie.
 - Jeżeli testy są zielone, odpalić lokalnie `npm run dev:api` i sprawdzić /today, /leads, /cases, /calendar.
+
+<!-- STAGE223_R2AD_V4_TODAY_TILE_NO_SCROLL_TRAP_HOTFIX -->
+## 2026-06-05 - STAGE223 R2AD V4 Today tile no-scroll trap hotfix
+
+FAKTY:
+- R2AD V1, V2 i V3 nie zaaplikowały się przez zbyt kruche anchory patchera.
+- V4 wykonuje lokalny audyt `TodayStable.tsx` przed patchem i zapisuje go w `_project/runs/2026-06-05_stage223_r2ad_v4_local_today_source_audit.md`.
+- V4 używa parsera bloków/statements, zamiast zakładać sąsiedztwo tekstowe i puste linie.
+- Naprawiane punkty:
+  - `moveTodaySectionToTop` nie przestawia DOM,
+  - `scrollToTodaySection` nie wywołuje `scrollIntoView`,
+  - `focusTodaySectionFromMetricTile` nie używa timeout/scroll/reorder,
+  - root/capture bridges ignorują top metric tiles,
+  - top metric buttons mają własne bezpieczne onClick z blur/prevent/stop.
+- Guard R2AD zostaje dopięty do `verify:closeflow:quiet`.
+
+DECYZJE:
+- Nie zaczynamy Stage224.
+- Nie scrollujemy automatycznie do sekcji.
+- Nie przenosimy sekcji w DOM po kliknięciu kafelka.
+- Nie pushujemy bez zielonego guard/build/verify i ręcznego testu `/today`.
+
+TESTY:
+- node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs
+- node scripts/check-stage223-owner-movement-risk-system.cjs
+- node --test tests/stage223-owner-movement-risk-system.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- Zmieniamy UX kafelków: nie przenoszą list na górę.
+- Ryzyko lokalne: expand/collapse na `/today`; ręczny smoke obowiązkowy.
+- Guard w verify quiet ma zapobiec powrotowi `scrollIntoView` / `insertBefore` w mechanice kafelków Today.
+
+NASTĘPNY KROK:
+- Uruchomić R2AD V4, potem `npm run dev`, ręczny test `/today`, push po akceptacji.
+
+<!-- STAGE223_R2AE_QUIET_GATE_CONTRACT_REPAIR -->
+## 2026-06-05 - STAGE223 R2AE quiet gate contract repair after R2AD
+
+FAKTY:
+- R2AD V4 zaaplikował się lokalnie i przeszedł:
+  - lokalny audyt `TodayStable.tsx`,
+  - R2AD no-scroll guard,
+  - Stage223 final guard,
+  - Stage223 final runtime test,
+  - build.
+- `npm run verify:closeflow:quiet` padł nie przez Today, tylko przez złamanie kontraktu quiet gate.
+- Błąd:
+  - `FAILED: case detail no partial loading`,
+  - `verify:closeflow:quiet musi zachować kontrakt quiet gate`.
+- Przyczyna:
+  - R2AD V4 dopisał do `package.json` komendę `&& node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs`,
+  - a `tests/closeflow-release-gate-quiet.test.cjs` wymaga dokładnie:
+    `verify:closeflow:quiet = node scripts/closeflow-release-check-quiet.cjs`.
+- R2AE przywraca `package.json` do exact quiet gate contract i podpina R2AD guard wewnątrz `scripts/closeflow-release-check-quiet.cjs`.
+
+DECYZJE:
+- Nie zmieniamy fixu Today z R2AD V4.
+- Nie dopisujemy dodatkowych poleceń do `verify:closeflow:quiet` w package.json.
+- Nowy guard Today ma być uruchamiany przez `closeflow-release-check-quiet.cjs`.
+- Nie pushujemy bez zielonego verify quiet.
+
+TESTY:
+- node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs
+- node scripts/check-stage223-r2ae-quiet-gate-contract-repair.cjs
+- node --test tests/closeflow-release-gate-quiet.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- To jest naprawa kontraktu testowego, nie nowy runtime feature.
+- Ryzyko było proceduralne: dopięcie guarda do package scriptu łamie stary quiet gate contract.
+- Zabezpieczenie: R2AE dodaje własny guard pilnujący, że package script pozostaje dokładny, a nowy R2AD guard jest w środku quiet gate.
+
+NASTĘPNY KROK:
+- Uruchomić R2AE. Jeśli verify quiet przejdzie, odpalić lokalnie `npm run dev`, sprawdzić `/today`, potem push po akceptacji.
+
+<!-- STAGE223_R2AF_TODAY_MOBILE_FOCUS_CONTRACT_REPAIR -->
+## 2026-06-05 - STAGE223 R2AF Today mobile focus contract repair after no-scroll fix
+
+FAKTY:
+- R2AE przywrócił exact `verify:closeflow:quiet` contract i build przechodził.
+- Verify quiet zatrzymał się na starym guardzie `today mobile tile focus`.
+- Guard `scripts/check-closeflow-today-mobile-tile-focus.cjs` nadal wymagał:
+  - `setCollapsedSections((prev) => prev.filter((entry) => entry !== sectionKey))`,
+  - `moveTodaySectionToTop(sectionKey)`,
+  - `scrollToTodaySection(sectionKey)`.
+- To jest sprzeczne z decyzją R2AD: kafelki Today nie mogą już przenosić sekcji w DOM ani przewijać do sekcji, bo to powodowało scroll trap.
+- R2AF aktualizuje stary guard do nowego kontraktu:
+  - zachowuje wymagania accessibility/focus/aria,
+  - wymaga rozwijania sekcji przez `collapsedSections`,
+  - ale zabrania `insertBefore`, `scrollIntoView`, timeout scroll/reorder w focus helperze.
+- R2AF nie zmienia runtime Today poza tym, co zrobił R2AD V4.
+
+DECYZJE:
+- Nie cofamy R2AD V4.
+- Nie przywracamy `moveTodaySectionToTop(sectionKey)` ani `scrollToTodaySection(sectionKey)` do ścieżki kliknięcia kafelka.
+- Stary guard mobile focus zostaje dostosowany do nowej decyzji UX.
+- Nie pushujemy bez zielonego verify quiet i ręcznego testu `/today`.
+
+TESTY:
+- node scripts/check-closeflow-today-mobile-tile-focus.cjs
+- node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs
+- node scripts/check-stage223-r2af-today-mobile-focus-contract-repair.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- To zmiana guard/test contract, nie nowa funkcja.
+- Główne ryzyko: stary test wymuszał zachowanie, które teraz uznaliśmy za źródło bugów.
+- Nowy kontrakt utrzymuje dostępność i focus, ale blokuje scroll trap.
+
+NASTĘPNY KROK:
+- Uruchomić R2AF, potem lokalny `npm run dev`, ręczny test `/today`, push po akceptacji.
+
+<!-- STAGE223_R2AG_TODAYSTABLE_TRAILING_WHITESPACE_CLEANUP -->
+## 2026-06-05 - STAGE223 R2AG TodayStable trailing whitespace cleanup
+
+FAKTY:
+- R2AF zaaplikował się i przeszedł:
+  - Today mobile tile focus guard,
+  - Today tile no-scroll trap guard,
+  - R2AF contract guard,
+  - build,
+  - verify:closeflow:quiet.
+- Jedyny bloker został na `git diff --check`.
+- `git diff --check` wskazał trailing whitespace w `src/pages/TodayStable.tsx`:
+  - linia 977,
+  - linia 986,
+  - linia 1109.
+- R2AG usuwa wyłącznie trailing whitespace w `TodayStable.tsx`.
+- Nie zmienia logiki Today, guardów, package scripts, quiet gate ani UI.
+
+DECYZJE:
+- Nie dotykamy zachowania R2AD/R2AF.
+- Nie ignorujemy `git diff --check`.
+- Nie pushujemy bez zielonego diff check.
+
+TESTY:
+- node scripts/check-closeflow-today-mobile-tile-focus.cjs
+- node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs
+- node scripts/check-stage223-r2af-today-mobile-focus-contract-repair.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+AUDYT RYZYK:
+- To czyszczenie whitespace, więc ryzyko runtime jest minimalne.
+- Ręczny smoke `/today` nadal wymagany, bo właściwa zmiana behavioru pochodzi z R2AD V4/R2AF.
+- Uwaga: ostrzeżenia LF/CRLF z `git diff --check` są nieblokujące; trailing whitespace był blokujący.
+
+NASTĘPNY KROK:
+- Uruchomić R2AG.
+- Po zielonym diff check odpalić lokalnie `npm run dev`, sprawdzić `/today`, potem push po akceptacji.

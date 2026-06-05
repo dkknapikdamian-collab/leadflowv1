@@ -41,6 +41,10 @@ import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 
+const STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP = 'Today metric tiles expand sections in place and must not scroll or reorder the page';
+void STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP;
+
+
 // STAGE223_R2X_TODAY_MUTATION_BUS_REFRESH_CONTRACT
 // Historical release-gate contract: subscribeCloseflowDataMutations((detail) => { refreshData() })
 // Covered entities: 'task' 'event' 'lead' 'case' 'client' 'aiDraft' 'activity' 'payment'
@@ -599,20 +603,14 @@ function getTodaySectionCardElement(key: TodaySectionKey) {
 }
 
 function moveTodaySectionToTop(key: TodaySectionKey) {
-  const target = getTodaySectionCardElement(key);
-  if (!target || !target.parentElement) return;
-  const parent = target.parentElement;
-  const first = TODAY_SECTION_KEYS
-    .map((sectionKey) => getTodaySectionCardElement(sectionKey))
-    .find((element): element is HTMLElement => Boolean(element && element.parentElement === parent));
-
-  if (first && first !== target) parent.insertBefore(target, first);
+  // STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP: metric tiles do not reorder DOM cards.
+  void key;
 }
 
 function scrollToTodaySection(key: TodaySectionKey) {
-  if (!shouldFb4ScrollTodaySection()) return;
-  const target = getTodaySectionCardElement(key);
-  target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP: metric tiles do not force page scroll.
+  void key;
+  return;
 }
 
 function RowLink({
@@ -938,14 +936,20 @@ function TodayStable() {
   const todayLastSuccessfulRefreshAtRef = useRef(0);
 
   const focusTodaySectionFromMetricTile = useCallback((sectionKey: TodaySectionKey) => {
-    setActiveTodaySection(sectionKey);
-    setExpandedSection(sectionKey);
-    setCollapsedSections((prev) => prev.filter((entry) => entry !== sectionKey));
 
-    window.setTimeout(() => {
-      moveTodaySectionToTop(sectionKey);
-      scrollToTodaySection(sectionKey);
-    }, 80);
+
+    // STAGE223_R2AD_TODAY_TILE_NO_SCROLL_TRAP: expand in place only.
+
+
+    setActiveTodaySection(sectionKey);
+
+
+    setExpandedSection(sectionKey);
+
+
+    setCollapsedSections(TODAY_SECTION_KEYS.filter((entry) => entry !== sectionKey));
+
+
   }, []);
 
   useEffect(() => {
@@ -956,17 +960,38 @@ function TodayStable() {
     if (!root) return undefined;
 
     const handleMetricTileClick = (event: MouseEvent) => {
+
+
       const target = event.target instanceof HTMLElement ? event.target : null;
+
+
       const tile = target?.closest('button[data-cf-semantic-label]');
+
+
       if (!(tile instanceof HTMLElement)) return;
 
+
+      if (tile.closest('[data-cf-today-no-scroll-trap="true"]')) return;
+
+
+
+
+
       const sectionKey = getTodaySectionKeyFromMetricTile(tile);
+
+
       if (!sectionKey) return;
 
-      window.setTimeout(() => {
-        focusTodaySectionFromMetricTile(sectionKey);
-        syncTodayMetricTileFocusA11y(sectionKey, collapsedSections.filter((entry) => entry !== sectionKey));
-      }, 0);
+
+
+
+
+      focusTodaySectionFromMetricTile(sectionKey);
+
+
+      syncTodayMetricTileFocusA11y(sectionKey, TODAY_SECTION_KEYS.filter((entry) => entry !== sectionKey));
+
+
     };
 
     root.addEventListener('click', handleMetricTileClick);
@@ -1061,19 +1086,38 @@ function TodayStable() {
     if (typeof window === 'undefined') return;
 
     const handleTileClick = (event: Event) => {
+
+
       const target = event.target as HTMLElement | null;
+
+
       const clickable = target?.closest('button, a, [role="button"]') as HTMLElement | null;
+
+
+      if (clickable?.hasAttribute('aria-expanded') && clickable.querySelector('h2')) return;
+
+
+      if (clickable?.closest('[data-cf-today-no-scroll-trap="true"]')) return;
+
+
       const section = getTodaySectionFromTileText(clickable?.textContent || '');
+
+
       if (!section) return;
 
+
+
+
+
       setExpandedSection(section);
+
+
       setActiveTodaySection(section);
+
+
       setCollapsedSections(TODAY_SECTION_KEYS.filter((key) => key !== section));
 
-      window.setTimeout(() => {
-        moveTodaySectionToTop(section);
-        scrollToTodaySection(section);
-      }, 0);
+
     };
 
     const handleTaskDone = async (event: Event) => {
@@ -1539,7 +1583,28 @@ function TodayStable() {
           {visibleTodayTiles.map((tile) => {
             const active = expandedSection === tile.key;
             return (
-              <button key={tile.key} type="button" onClick={() => setExpandedSection(active ? 'all' : tile.key)} className="text-left">
+              <button
+                key={tile.key}
+                type="button"
+                data-cf-today-no-scroll-trap="true"
+                data-cf-semantic-label={tile.title}
+                data-cf-today-metric-tile-target={tile.key}
+                aria-controls={getTodaySectionDomId(tile.key)}
+                aria-expanded={active && !collapsedSections.includes(tile.key)}
+                onClick={(event) => {
+                  event.preventDefault();
+                  event.stopPropagation();
+                  event.currentTarget.blur();
+                  setExpandedSection(active ? 'all' : tile.key);
+                  setActiveTodaySection(active ? null : tile.key);
+                  setCollapsedSections((current) => (
+                    active
+                      ? Array.from(new Set([...current, tile.key]))
+                      : TODAY_SECTION_KEYS.filter((entry) => entry !== tile.key)
+                  ));
+                }}
+                className="text-left"
+              >
                 <Card className={
                   'border-slate-100 transition hover:shadow-md ' +
                   tile.activeTone +
