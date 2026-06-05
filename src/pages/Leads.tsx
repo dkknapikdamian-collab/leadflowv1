@@ -456,7 +456,7 @@ export default function Leads() {
     setQuickFilter('all');
     setShowTrash(false);
     setValueSortEnabled(false);
-    if (filter === 'rescue') setCadenceFilter('all');
+    setCadenceFilter('all');
     await loadLeads();
     toast.success('Lead dodany');
     setIsNewLeadOpen(false);
@@ -755,6 +755,7 @@ export default function Leads() {
   const toggleQuickFilter = (filter: LeadsQuickFilter) => {
     setShowTrash(false);
     setValueSortEnabled(false);
+    setCadenceFilter('all');
     setQuickFilter((prev) => (prev === filter ? 'all' : filter));
   };
 
@@ -1107,8 +1108,14 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   <span className="index"><AlertTriangle className="h-4 w-4" /></span>
                   <span>
                     <span className="title">Do odzyskania</span>
-                    <span className="sub">Leady z ciszą kontaktu, brakiem następnego ruchu albo wysoką wartością bez kontroli.</span>
+                    <span className="sub">Lista priorytetowa dla właściciela: najpierw leady krytyczne, potem wysokie i średnie ryzyko.</span>
                   </span>
+                </div>
+                <div className="flex flex-wrap gap-2 p-3 pt-0" data-stage226r7-rescue-summary="true">
+                  <span className="cf-status-pill" data-cf-status-tone="red">Krytyczne: {lostLeadRescueSummary.critical}</span>
+                  <span className="cf-status-pill" data-cf-status-tone="amber">Wysokie: {lostLeadRescueSummary.high}</span>
+                  <span className="cf-status-pill" data-cf-status-tone="blue">Średnie: {lostLeadRescueSummary.medium}</span>
+                  {lostLeadRescueSummary.total > 8 ? <span className="pill">Pokazano 8 z {lostLeadRescueSummary.total}</span> : null}
                 </div>
                 {lostLeadRescueSummary.rows.length ? (
                   lostLeadRescueSummary.rows.slice(0, 8).map((row, rowIndex) => (
@@ -1142,7 +1149,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     <span className="index">0</span>
                     <span>
                       <span className="title">Brak leadów do odzyskania</span>
-                      <span className="sub">Nie ma teraz leadów spełniających kryteria Lost Lead Rescue.</span>
+                      <span className="sub">Brak leadów wymagających odzyskania według aktualnych reguł.</span>
                     </span>
                   </div>
                 )}

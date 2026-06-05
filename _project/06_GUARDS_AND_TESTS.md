@@ -1680,3 +1680,25 @@ NASTĘPNY KROK:
 - Uruchomić V3.
 - Jeśli gate jest zielony, lokalny smoke `/leads` i `/clients`.
 - Push po akceptacji.
+
+## STAGE226R7 — Rescue Build Hotfix + Rescue UI Polish
+
+Data: 2026-06-05 20:32 Europe/Warsaw
+
+## FAKTY
+- Stage226R7 usuwa runtime blocker w src/pages/Leads.tsx: wolne odwołanie do filter po dodaniu leada.
+- Dodaje guard i runtime test Stage226R7.
+- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/Średnie, tekst Pokazano 8 z X, pusty stan operacyjny.
+- Nie aktywuje przycisków Ustaw zadanie / Odłóż / Oznacz jako martwy.
+
+## TESTY
+- node scripts/check-stage226-lost-lead-rescue.cjs
+- node --test tests/stage226-lost-lead-rescue.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+## AUDYT RYZYK
+- create lead flow wymaga ręcznego testu po patchu.
+- Rescue UI może wymagać późniejszego uproszczenia wizualnego.
+- Backend akcji Rescue nie jest jeszcze wdrożony, więc disabled actions są prawidłowe.

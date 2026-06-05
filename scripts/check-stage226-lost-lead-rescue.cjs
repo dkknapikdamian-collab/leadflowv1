@@ -68,19 +68,31 @@ if (!helper.includes('records: leads') || !helper.includes('entityType: \'lead\'
 }
 
 [
+  "import { buildLostLeadRescue } from '../lib/owner-control/lost-lead-rescue';",
+  'STAGE226_LOST_LEAD_RESCUE_LEADS',
   'buildLostLeadRescue',
   "'rescue'",
   'lostLeadRescueSummary',
   'data-stage226-lost-lead-rescue-filter="true"',
   'data-stage226-lost-lead-rescue-list="true"',
+  'data-stage226r7-rescue-summary="true"',
   'Do odzyskania',
+  'Krytyczne: {lostLeadRescueSummary.critical}',
+  'Wysokie: {lostLeadRescueSummary.high}',
+  'Średnie: {lostLeadRescueSummary.medium}',
+  'Pokazano 8 z {lostLeadRescueSummary.total}',
+  'Brak leadów wymagających odzyskania według aktualnych reguł.',
   'Ustaw zadanie',
   'Odłóż',
   'Oznacz jako martwy',
-  'setCadenceFilter(\'all\')',
+  "setCadenceFilter('all')",
 ].forEach((token) => {
   if (!leads.includes(token)) fail('Leads.tsx missing token: ' + token);
 });
+
+if (!/type\s+LeadsQuickFilter\s*=\s*[^;]*'rescue'/.test(leads)) {
+  fail('LeadsQuickFilter does not include rescue');
+}
 
 const relatedIndex = leads.indexOf('const relatedRecordsByLeadId = useMemo');
 const rescueIndex = leads.indexOf('const lostLeadRescueSummary = useMemo');
@@ -101,6 +113,31 @@ if (!leads.includes('new Set(lostLeadRescueSummary.rows.map((row) => row.leadId)
 if (!leads.includes("quickFilter === 'rescue' || !activeCadenceIds")) {
   fail('Rescue view must not fight cadence filter');
 }
+if (/if\s*\(\s*filter\s*===\s*['"]rescue['"]\s*\)/.test(leads)) {
+  fail('Leads.tsx still contains bad free filter check: if (filter === rescue)');
+}
+
+const toggleStart = leads.indexOf('const toggleQuickFilter = (filter: LeadsQuickFilter) => {');
+const toggleEnd = leads.indexOf('const toggleValueSorting', toggleStart);
+if (toggleStart < 0 || toggleEnd < 0) fail('toggleQuickFilter block not found');
+const outsideToggle = leads.slice(0, toggleStart) + leads.slice(toggleEnd);
+if (/\bfilter\s*===\s*['"]rescue['"]/.test(outsideToggle) || /\bfilter\s*\)/.test(outsideToggle)) {
+  fail('Leads.tsx appears to contain a free filter reference outside toggleQuickFilter');
+}
+
+if (!/<Link\s+to=\{row\.href\}\s+className="btn ghost">Otwórz<\/Link>/.test(leads)) {
+  fail('Rescue row must keep active Otwórz link');
+}
+[
+  'Ustaw zadanie',
+  'Odłóż',
+  'Oznacz jako martwy',
+].forEach((label) => {
+  const labelIndex = leads.indexOf(label);
+  if (labelIndex < 0) fail('missing rescue disabled action label: ' + label);
+  const nearby = leads.slice(Math.max(0, labelIndex - 180), Math.min(leads.length, labelIndex + 220));
+  if (!/disabled/.test(nearby)) fail('rescue action is not disabled: ' + label);
+});
 
 if (clients.includes('klientow')) {
   fail('Clients.tsx still contains klientow without Polish character');
@@ -122,7 +159,7 @@ if (packageJson.scripts['test:stage226-lost-lead-rescue'] !== 'node --test tests
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'STAGE226_LOST_LEAD_RESCUE',
+  stage: 'STAGE226R7_RESCUE_BUILD_HOTFIX_AND_UI_POLISH',
   checkedFiles: requiredFiles.length,
   guard: 'check:stage226-lost-lead-rescue',
 }, null, 2));
