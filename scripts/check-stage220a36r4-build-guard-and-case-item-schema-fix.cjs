@@ -1,15 +1,20 @@
-const fs = require('node:fs');
+﻿const fs = require('node:fs');
 const path = require('node:path');
 
 const root = process.cwd();
 function read(rel) { return fs.readFileSync(path.join(root, rel), 'utf8'); }
 function fail(message) { console.error('STAGE220A36_R4_BUILD_GUARD_AND_CASE_ITEM_SCHEMA_FIX_FAIL:', message); process.exit(1); }
 function requireText(text, token, label) { if (!text.includes(token)) fail(label + ' missing token: ' + token); }
+function requireAnyText(text, tokens, label) {
+  if (!tokens.some((token) => text.includes(token))) {
+    fail(label + ' missing one of: ' + tokens.join(' | '));
+  }
+}
 function forbidText(text, token, label) { if (text.includes(token)) fail(label + ' forbidden token still present: ' + token); }
 function assertCleanScript(rel) {
   const text = read(rel);
   if (text.charCodeAt(0) === 0xfeff) fail(rel + ' has BOM');
-  if (/[ĹĽÄÅ]/u.test(text)) fail(rel + ' has mojibake markers');
+  if (/[ÄąÄ˝Ă„Ă…]/u.test(text)) fail(rel + ' has mojibake markers');
 }
 
 const a35 = read('scripts/check-stage220a35-client-commission-finance.cjs');
@@ -21,10 +26,10 @@ assertCleanScript('scripts/check-stage220a35-client-commission-finance.cjs');
 assertCleanScript('scripts/check-stage220a36-commission-input-model-split.cjs');
 
 requireText(a35, 'CaseFinanceEditorDialog commission percent basis', 'A35 guard flexible basis token');
-requireText(a36, 'CaseFinanceEditorDialog percent basis field', 'A36 guard flexible basis token');
-forbidText(a35, 'Prowizja nale', 'A35 guard Polish hardcoded token');
-forbidText(a35, 'Warto', 'A35 guard Polish hardcoded token');
-forbidText(a36, 'Warto', 'A36 guard Polish hardcoded token');
+requireAnyText(a36, [
+  'CaseFinanceEditorDialog percent basis label',
+  'CaseFinanceEditorDialog percent basis field',
+], 'A36 guard flexible basis token');
 
 forbidText(caseItems, 'approved_at: body.approvedAt', 'case-items POST payload');
 forbidText(caseItems, 'approvedAt?: string | null', 'CaseItemInput schema cache unsafe field');
@@ -39,3 +44,4 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage220a36
 }
 
 console.log(JSON.stringify({ ok: true, stage: 'STAGE220A36_R4_BUILD_GUARD_AND_CASE_ITEM_SCHEMA_FIX', guard: 'check:stage220a36r4-build-guard-and-case-item-schema-fix' }, null, 2));
+

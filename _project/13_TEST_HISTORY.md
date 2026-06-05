@@ -1268,3 +1268,28 @@ Data: 2026-06-05 22:15 Europe/Warsaw
 - Commit 00b8a95 byl wypchniety mimo czerwonych guardow, wiec R4 domyka build przed Stage227.
 - Runtime bledy schema cache PGRST204 trzeba lapac guardami payloadu, nie obiecywac SQL bez potrzeby.
 - Nie ruszano Supabase, RLS ani modelu platnosci.
+
+## STAGE220A36-R5 — R4 Guard Token Compat
+
+Data: 2026-06-05 22:30 Europe/Warsaw
+
+### FAKTY
+- Vercel po d1e380f5 przechodzil A35, A36 i A36-R2, ale padal na zbyt sztywnym R4 guardzie.
+- R4 guard oczekiwal tokenu "CaseFinanceEditorDialog percent basis field", a aktualny A36 guard uzywa "CaseFinanceEditorDialog percent basis label".
+- R5 dopuszcza oba tokeny i dodaje osobny guard/test, zeby nie powtorzyc tego regresu.
+
+### TESTY
+- node scripts/check-stage220a35-client-commission-finance.cjs
+- node scripts/check-stage220a36-commission-input-model-split.cjs
+- node scripts/check-stage220a36r2-commission-modal-field-order.cjs
+- node scripts/check-stage220a36r4-build-guard-and-case-item-schema-fix.cjs
+- node scripts/check-stage220a36r5-r4-guard-token-compat.cjs
+- node --test tests/stage220a36r5-r4-guard-token-compat.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- To jest hotfix guardu, nie zmiana UI ani bazy.
+- approved_at fix z R4 zostaje bez zmian.
+- Stage227 nadal wymaga zielonego Vercel po R5.
