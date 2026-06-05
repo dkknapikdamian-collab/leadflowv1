@@ -1182,3 +1182,26 @@ Data: 2026-06-05 21:05 Europe/Warsaw
 - Bez tej poprawki Stage227 / Sales Funnel mógłby dziedziczyć błędne wartości finansowe.
 - Nie ruszano Supabase, RLS ani backendu płatności.
 - Model prowizji stałej nadal używa gotowej kwoty prowizji.
+
+## STAGE220A36 — Commission Input Model Split
+
+Data: 2026-06-05 21:45 Europe/Warsaw
+
+### FAKTY
+- Rozdzielono prowizję stałą od podstawy procentowej.
+- Przy kwocie stałej użytkownik wpisuje wartość prowizji.
+- Przy prowizji procentowej użytkownik wpisuje wartość transakcji do wyliczenia i stawkę procentową; prowizja jest wyliczana i nieedytowalna.
+- Lista klientów pokazuje prowizję operacyjną, nie cenę transakcji.
+
+### TESTY
+- node scripts/check-stage220a35-client-commission-finance.cjs
+- node scripts/check-stage220a36-commission-input-model-split.cjs
+- node --test tests/stage220a36-commission-input-model-split.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Nie ruszano Supabase, RLS ani backendu płatności.
+- Techniczne pole contractValue nadal przechowuje podstawę procentu przy modelu procentowym.
+- Stage227 może startować dopiero po ręcznym sprawdzeniu fixed/percent w modalach finansów.

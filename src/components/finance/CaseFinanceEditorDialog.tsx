@@ -16,6 +16,7 @@ export const CLOSEFLOW_FIN12_SHARED_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN1
 // FIN-13 parser guard literal: replace(/\./g, '').replace(',', '\.')
 export const CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG = 'CLOSEFLOW_FIN13_CLIENT_USES_CASE_FINANCE_EDITOR_DIALOG_V1' as const;
 export const STAGE220A35_TRANSACTION_VALUE_COMMISSION_COPY = 'transaction value is the commission basis only for percent model; fixed commission is entered directly' as const;
+export const STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT = 'commission input separates fixed commission value from percent transaction basis' as const;
 
 export type CaseFinancePatch = CaseFinancePatchInput & Record<string, unknown>;
 
@@ -122,10 +123,11 @@ export function CaseFinanceEditorDialog({
       : form.commissionMode === 'percent'
         ? Math.round(((contractValue * commissionRate) / 100) * 100) / 100
         : 0;
+    const transactionBasis = form.commissionMode === 'percent' ? contractValue : 0;
     const summary = getCaseFinanceSummary({
       ...(caseRecord || {}),
-      contractValue,
-      expectedRevenue: contractValue,
+      contractValue: transactionBasis,
+      expectedRevenue: transactionBasis,
       currency: form.currency,
       commissionMode: form.commissionMode,
       commissionBase: 'contract_value',
@@ -136,22 +138,26 @@ export function CaseFinanceEditorDialog({
     return summary;
   }, [caseRecord, form, payments]);
 
+  const isPercentCommission = form.commissionMode === 'percent';
+  const isFixedCommission = form.commissionMode === 'fixed';
+  const calculatedCommissionInputValue = isPercentCommission ? formatCaseFinanceNumber(preview.commissionAmount) : form.commissionAmount;
+
   const canSave = Boolean(caseRecord && String(asRecord(caseRecord).id || '').trim()) && !isSaving && !localSaving;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!canSave) return;
-    const contractValue = parseCaseFinanceNumber(form.contractValue);
     const commissionMode = normalizeCommissionMode(form.commissionMode);
+    const transactionBasis = commissionMode === 'percent' ? parseCaseFinanceNumber(form.contractValue) : 0;
     const commissionRate = commissionMode === 'percent' ? Math.min(100, parseCaseFinanceNumber(form.commissionRate)) : 0;
     const commissionAmount = commissionMode === 'fixed'
       ? parseCaseFinanceNumber(form.commissionAmount)
       : commissionMode === 'percent'
-        ? Math.round(((contractValue * commissionRate) / 100) * 100) / 100
+        ? Math.round(((transactionBasis * commissionRate) / 100) * 100) / 100
         : 0;
     const patch = buildCaseFinancePatch({
-      contractValue,
-      expectedRevenue: contractValue,
+      contractValue: transactionBasis,
+      expectedRevenue: transactionBasis,
       currency: normalizeCurrency(form.currency, 'PLN'),
       commissionMode,
       commissionBase: 'contract_value',
@@ -170,22 +176,23 @@ export function CaseFinanceEditorDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="cf-finance-dialog cf-finance-editor-dialog" data-fin12-shared-case-finance-editor="true" data-fin13-client-case-finance-editor="true">
+      <DialogContent className="cf-finance-dialog cf-finance-editor-dialog" data-fin12-shared-case-finance-editor="true" data-fin13-client-case-finance-editor="true" data-stage220a36-commission-input-model-split="true">
         <DialogHeader>
-          <DialogTitle>Wartość sprawy i prowizja</DialogTitle>
-          <p className="cf-finance-editor-dialog__subtitle">Edytujesz finanse konkretnej sprawy: {getCaseName(caseRecord)}.</p>
+          <DialogTitle>Prowizja sprawy</DialogTitle>
+          <p className="cf-finance-editor-dialog__subtitle">Najpierw wybierz rodzaj prowizji. Kwota stała to gotowa prowizja, a procent wymaga wartości transakcji do wyliczenia.</p>
         </DialogHeader>
         <form className="cf-finance-editor-form" onSubmit={handleSubmit}>
           <div className="cf-finance-editor-grid">
             <label className="cf-finance-field">
-              <span>Wartość transakcji / sprawy</span>
+              <span>Wartość transakcji do wyliczenia prowizji</span>
               <Input
-                value={form.contractValue}
+                value={isPercentCommission ? form.contractValue : ''}
                 inputMode="decimal"
-                placeholder="Nie ustawiono"
+                disabled={!isPercentCommission}
+                placeholder="np. 100000"
                 onChange={(event) => setForm((current) => ({ ...current, contractValue: event.target.value }))}
               />
-              <small>To jest wartość transakcji, np. cena sprzedaży działki. Przy modelu procentowym prowizja liczy się od tej kwoty.</small>
+              <small>Aktywne tylko przy prowizji procentowej. Tu wpisujesz podstawę, np. cenę sprzedaży działki.</small>
             </label>
             <label className="cf-finance-field">
               <span>Waluta</span>
@@ -197,19 +204,19 @@ export function CaseFinanceEditorDialog({
               />
             </label>
             <label className="cf-finance-field">
-              <span>Model prowizji</span>
+              <span>Rodzaj prowizji</span>
               <select
                 className="cf-finance-input"
                 value={form.commissionMode}
                 onChange={(event) => setForm((current) => ({ ...current, commissionMode: normalizeCommissionMode(event.target.value) }))}
               >
                 <option value="none">Brak</option>
-                <option value="percent">Procent od wartości</option>
+                <option value="percent">Procent od wartości transakcji</option>
                 <option value="fixed">Kwota stała</option>
               </select>
             </label>
             <label className="cf-finance-field">
-              <span>Procent prowizji</span>
+              <span>Stawka prowizji (%)</span>
               <Input
                 value={form.commissionRate}
                 inputMode="decimal"
@@ -217,18 +224,19 @@ export function CaseFinanceEditorDialog({
                 placeholder="np. 3"
                 onChange={(event) => setForm((current) => ({ ...current, commissionRate: event.target.value }))}
               />
-              <small>Aktywne tylko dla modelu procentowego. Procent liczy się od wartości transakcji / sprawy.</small>
+              <small>Aktywne tylko przy prowizji procentowej. System liczy prowizję od pola „Wartość transakcji do wyliczenia prowizji”.</small>
             </label>
             <label className="cf-finance-field">
-              <span>Kwota prowizji</span>
+              <span>Wartość prowizji</span>
               <Input
-                value={form.commissionAmount}
+                value={calculatedCommissionInputValue}
                 inputMode="decimal"
-                disabled={form.commissionMode !== 'fixed'}
-                placeholder="np. 3000"
+                disabled={!isFixedCommission}
+                readOnly={isPercentCommission}
+                placeholder={isPercentCommission ? 'wyliczana automatycznie' : 'np. 3000'}
                 onChange={(event) => setForm((current) => ({ ...current, commissionAmount: event.target.value }))}
               />
-              <small>Aktywne tylko dla modelu kwoty stałej. Tu wpisujesz gotową prowizję, nie wartość transakcji.</small>
+              <small>Przy kwocie stałej wpisujesz ją ręcznie. Przy procencie pole pokazuje wyliczoną prowizję i jest nieedytowalne.</small>
             </label>
             <label className="cf-finance-field">
               <span>Status prowizji</span>
@@ -247,7 +255,7 @@ export function CaseFinanceEditorDialog({
             </label>
           </div>
           <div className="cf-finance-editor-preview" aria-label="Podgląd finansów sprawy">
-            <div><span>Wartość:</span><strong>{preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie ustawiono'}</strong></div>
+            <div><span>Podstawa procentu:</span><strong>{isPercentCommission && preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie dotyczy'}</strong></div>
             <div><span>Prowizja należna:</span><strong>{formatCaseFinanceMoney(preview.commissionAmount, preview.currency)}</strong></div>
             <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatCaseFinanceMoney(preview.remainingAmount, preview.currency)}</strong></div>
             <div><span>Do zapłaty prowizji:</span><strong>{formatCaseFinanceMoney(preview.commissionRemainingAmount, preview.currency)}</strong></div>

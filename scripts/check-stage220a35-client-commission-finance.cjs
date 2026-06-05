@@ -42,11 +42,11 @@ forbidText(clientDetail, '<small><span>Suma wpłat</span><strong>{formatMoneyWit
 forbidText(clientDetail, '<small>Do domknięcia: {formatMoneyWithCurrency(clientFinanceSummary.remainingTotal, clientFinance.currency)}</small>', 'right hard card old transaction remaining label');
 
 [
-  'STAGE220A35_TRANSACTION_VALUE_COMMISSION_COPY',
-  'Wartość transakcji / sprawy',
-  'To jest wartość transakcji, np. cena sprzedaży działki. Przy modelu procentowym prowizja liczy się od tej kwoty.',
-  'Aktywne tylko dla modelu procentowego. Procent liczy się od wartości transakcji / sprawy.',
-  'Aktywne tylko dla modelu kwoty stałej. Tu wpisujesz gotową prowizję, nie wartość transakcji.',
+  'STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT',
+  'Rodzaj prowizji',
+  'Wartość transakcji do wyliczenia prowizji',
+  'Wartość prowizji',
+  'Przy kwocie stałej wpisujesz ją ręcznie. Przy procencie pole pokazuje wyliczoną prowizję i jest nieedytowalne.',
 ].forEach((token) => requireText(editor, token, 'CaseFinanceEditorDialog'));
 
 [

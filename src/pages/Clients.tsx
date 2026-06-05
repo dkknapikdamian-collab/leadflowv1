@@ -70,6 +70,7 @@ import {
   getTodayDateInputValue,
 } from '../lib/owner-control/last-contact-intake';
 import { buildTopClientValueEntries } from '../lib/client-value';
+import { getCaseFinanceSummary } from '../lib/finance/case-finance-source';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
 
@@ -135,6 +136,11 @@ void STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS;
 void STAGE225_CONTACT_CADENCE_GRID_CLIENTS;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
+const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
+
+function getStage220A36CaseCommissionValue(caseRow: Record<string, unknown>) {
+  return getCaseFinanceSummary(caseRow, []).commissionAmount;
+}
 
 const STAGE29_EXPECTED_VALUE_KEYS = [
   'expectedRevenue',
@@ -320,7 +326,7 @@ export default function Clients() {
     for (const caseRow of cases as Record<string, unknown>[]) {
       const clientId = getStage35RelationClientId(caseRow);
       if (!clientId) continue;
-      const value = getStage29ExpectedCaseValue(caseRow);
+      const value = getStage220A36CaseCommissionValue(caseRow);
       map.set(clientId, (map.get(clientId) || 0) + value);
     }
     return map;
@@ -827,14 +833,14 @@ export default function Clients() {
             helper="tylko kontakt"
           />
           <StatShortcutCard
-            label="Wartość"
+            label="Prowizja"
             value={formatClientMoney(relationValue)}
             icon={PaymentEntityIcon}
             onClick={() => setShowArchived(false)}
-            title="Pokaż wartość relacji"
-            ariaLabel="Pokaż wartość relacji"
+            title="Pokaż prowizję relacji"
+            ariaLabel="Pokaż prowizję relacji"
             tone="green"
-            helper="w relacjach"
+            helper="do zarobienia"
           />
           <StatShortcutCard
             label="Bez ruchu"
@@ -924,7 +930,7 @@ export default function Clients() {
                            <span className="statusline">
                              {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">W koszu</span> : counters.cases > 0 ? <span className="cf-status-pill cf-chip-case-active" data-cf-status-tone="green">Aktywna sprawa</span> : <span className="cf-status-pill cf-chip-no-case">Bez sprawy</span>}
                              <span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>
-                             <span className="cf-list-row-value cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
+                             <span className="cf-list-row-value cf-chip-client-value" data-stage220a36-client-commission-value="true">Prowizja: {formatClientMoney(clientValue)}</span>
                               {operationalBadges.map((badge) => (
                                 <span
                                   key={badge.id}
@@ -976,8 +982,8 @@ export default function Clients() {
               ]}
             />
             <TopValueRecordsCard
-              title="Najcenniejsi klienci"
-              description="5 klientów z największą wartością."
+              title="Najwyższa prowizja"
+              description="5 klientów z największą prowizją należną."
               className="operator-top-value-card"
               dataTestId="clients-top-value-records-card"
               dataAttrs={{ 'data-clients-top-value-board': true }}
