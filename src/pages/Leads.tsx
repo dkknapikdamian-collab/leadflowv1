@@ -83,6 +83,7 @@ import {
   CONTACT_CADENCE_BUCKETS,
   type ContactCadenceBucketKey,
 } from '../lib/owner-control/contact-cadence-grid';
+import { buildLostLeadRescue } from '../lib/owner-control/lost-lead-rescue';
 import {
   dateInputToNoonIso,
   getDefaultLastContactDateInput,
@@ -112,12 +113,14 @@ const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at se
 const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing contact, missing next action and 7/14 day silence badges';
 const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit lastContactAt for activity truth';
 const STAGE225_CONTACT_CADENCE_GRID_LEADS = 'leads list uses Contact Cadence Grid filter from activity-truth';
+const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue view from buildLostLeadRescue';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
 void STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES;
 void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
 void STAGE225_CONTACT_CADENCE_GRID_LEADS;
+void STAGE226_LOST_LEAD_RESCUE_LEADS;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -165,7 +168,7 @@ type CaseRecord = {
   clientId?: string | null;
 };
 
-type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history';
+type LeadsQuickFilter = 'all' | 'active' | 'at-risk' | 'history' | 'rescue';
 
 function formatLeadSourceLabel(value: unknown) {
   const normalized = String(value || 'other');
@@ -453,6 +456,7 @@ export default function Leads() {
     setQuickFilter('all');
     setShowTrash(false);
     setValueSortEnabled(false);
+    if (filter === 'rescue') setCadenceFilter('all');
     await loadLeads();
     toast.success('Lead dodany');
     setIsNewLeadOpen(false);
@@ -677,6 +681,14 @@ export default function Leads() {
     [activeLeads, relatedRecordsByLeadId],
   );
 
+  const lostLeadRescueSummary = useMemo(
+    () => buildLostLeadRescue({
+      leads: activeLeads,
+      relatedRecordsById: relatedRecordsByLeadId,
+    }),
+    [activeLeads, relatedRecordsByLeadId],
+  );
+
   const filteredLeads = useMemo(() => {
     // STAGE31_LEADS_THIN_NUMBERED_LIST: wyszukiwarka dziala po nazwie, telefonie, mailu, firmie, zrodle i sprawie.
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -684,6 +696,9 @@ export default function Leads() {
     const activeCadenceIds = cadenceFilter === 'all'
       ? null
       : new Set((contactCadenceGrid.buckets[cadenceFilter] || []).map((row) => row.entityId));
+    const rescueLeadIds = quickFilter === 'rescue'
+      ? new Set(lostLeadRescueSummary.rows.map((row) => row.leadId))
+      : null;
 
     const results = sourceLeads.filter((lead) => {
       const linkedCase = resolveLinkedCaseForLead(lead);
@@ -696,9 +711,10 @@ export default function Leads() {
         || quickFilter === 'all'
         || (quickFilter === 'active' && activeLead)
         || (quickFilter === 'at-risk' && Boolean(lead.isAtRisk))
+        || (quickFilter === 'rescue' && Boolean(rescueLeadIds?.has(String(lead.id || ''))))
         || (quickFilter === 'history' && movedToService);
 
-      const matchesCadence = showTrash || !activeCadenceIds || activeCadenceIds.has(String(lead.id || ''));
+      const matchesCadence = showTrash || quickFilter === 'rescue' || !activeCadenceIds || activeCadenceIds.has(String(lead.id || ''));
 
       return matchesSearch && matchesQuickFilter && matchesCadence;
     });
@@ -708,7 +724,7 @@ export default function Leads() {
     }
 
     return results;
-  }, [activeLeads, cadenceFilter, contactCadenceGrid, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
+  }, [activeLeads, cadenceFilter, contactCadenceGrid, lostLeadRescueSummary, quickFilter, resolveLinkedCaseForLead, searchQuery, showTrash, trashLeads, valueSortEnabled]);
 
   const leadSearchSuggestions = useMemo(() => {
     const normalizedQuery = normalizeLeadSearchValue(searchQuery);
@@ -731,6 +747,7 @@ export default function Leads() {
     active: activeLeads.filter((lead) => isActiveSalesLead({ ...lead, linkedCaseId: lead.linkedCaseId || resolveLinkedCaseForLead(lead)?.id })).length,
     value: relationFunnelValue,
     atRisk: activeLeads.filter((lead) => Boolean(lead.isAtRisk)).length,
+    rescue: lostLeadRescueSummary.total,
     linkedToCase: serviceHistoryLeads.length,
     trash: trashLeads.length,
   };
@@ -975,6 +992,18 @@ export default function Leads() {
           />
 
           <StatShortcutCard
+            label="Do odzyskania"
+            value={stats.rescue}
+            icon={AlertTriangle}
+            active={quickFilter === 'rescue' && !showTrash}
+            onClick={() => toggleQuickFilter('rescue')}
+            title="Pokaż leady do odzyskania"
+            ariaLabel="Pokaż leady do odzyskania"
+            tone="risk"
+            helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdź ciszę'}
+          />
+
+          <StatShortcutCard
             label="Historia"
             value={stats.linkedToCase}
             icon={CaseEntityIcon}
@@ -1067,6 +1096,56 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     </button>
                   ))}
                 </div>
+              </div>
+            ) : null}
+
+
+            {!showTrash && quickFilter === 'rescue' ? (
+              <div className="table-card lead-table-card w-full max-w-none" data-stage226-lost-lead-rescue-list="true">
+                <span hidden data-stage226-lost-lead-rescue-filter="true" />
+                <div className="row row-empty">
+                  <span className="index"><AlertTriangle className="h-4 w-4" /></span>
+                  <span>
+                    <span className="title">Do odzyskania</span>
+                    <span className="sub">Leady z ciszą kontaktu, brakiem następnego ruchu albo wysoką wartością bez kontroli.</span>
+                  </span>
+                </div>
+                {lostLeadRescueSummary.rows.length ? (
+                  lostLeadRescueSummary.rows.slice(0, 8).map((row, rowIndex) => (
+                    <div key={row.id} className="row lead-row cf-lead-row-inline" data-stage226-lost-lead-rescue-row="true">
+                      <span className="index">{rowIndex + 1}</span>
+                      <span className="lead-main-cell">
+                        <span className="title">{row.title}</span>
+                        <span className="cf-list-row-meta">
+                          {row.subtitle ? <span className="sub">{row.subtitle}</span> : null}
+                          <span className="cf-status-pill" data-cf-status-tone={row.severity === 'critical' ? 'red' : row.severity === 'high' ? 'amber' : 'blue'}>{row.reasonLabel}</span>
+                          {row.contactSilentDays !== null ? <span className="pill">{row.contactSilentDays} dni ciszy</span> : <span className="pill">Brak daty kontaktu</span>}
+                          {row.valueAmount ? <span className="cf-list-row-value">{row.valueAmount.toLocaleString('pl-PL')} {row.valueCurrency || 'PLN'}</span> : null}
+                        </span>
+                        <span className="sub">{row.reasonDetail}</span>
+                      </span>
+                      <span className="lead-action-cell">
+                        <span className="mini">Następny ruch</span>
+                        <strong>{row.nextMoveTitle || 'Brak zaplanowanej akcji'}</strong>
+                        <span className="sub">{row.nextMoveAt || 'Ustaw zadanie ręcznie po otwarciu leada.'}</span>
+                      </span>
+                      <span className="lead-actions">
+                        <Link to={row.href} className="btn ghost">Otwórz</Link>
+                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: bezpieczne tworzenie zadania z rescue">Ustaw zadanie</button>
+                        <button type="button" className="btn ghost" disabled title="Do potwierdzenia: trwały snooze rescue">Odłóż</button>
+                        <button type="button" className="btn ghost danger" disabled title="Do potwierdzenia: bezpieczne oznaczanie jako martwy">Oznacz jako martwy</button>
+                      </span>
+                    </div>
+                  ))
+                ) : (
+                  <div className="row row-empty">
+                    <span className="index">0</span>
+                    <span>
+                      <span className="title">Brak leadów do odzyskania</span>
+                      <span className="sub">Nie ma teraz leadów spełniających kryteria Lost Lead Rescue.</span>
+                    </span>
+                  </div>
+                )}
               </div>
             ) : null}
 
