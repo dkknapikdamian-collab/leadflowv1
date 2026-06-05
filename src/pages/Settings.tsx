@@ -64,6 +64,8 @@ import {
   getGoogleCalendarReminderPreference,
   setGoogleCalendarReminderPreference
 } from '../lib/google-calendar-reminder-preferences';
+import { DEFAULT_HIGH_VALUE_THRESHOLD_PLN } from '../lib/owner-control/owner-risk-rules';
+import { readOwnerRiskSettings, writeOwnerRiskSettings, getOwnerRiskSettingsStorageNote } from '../lib/owner-control/owner-risk-settings';
 import '../styles/visual-stage19-settings-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import '../styles/closeflow-page-header-v2.css';
@@ -233,6 +235,7 @@ const authSnapshot = useClientAuthSnapshot();
   const [googleCalendarOutboundResult, setGoogleCalendarOutboundResult] = useState<GoogleCalendarOutboundResultState | null>(null);
   const [googleCalendarReminderMethod, setGoogleCalendarReminderMethod] = useState(() => getGoogleCalendarReminderPreference().method);
   const [googleCalendarReminderMinutes, setGoogleCalendarReminderMinutes] = useState(() => String(getGoogleCalendarReminderPreference().minutesBefore));
+  const [ownerRiskHighValueThreshold, setOwnerRiskHighValueThreshold] = useState(() => String(readOwnerRiskSettings().highValueThresholdPln));
 
 useEffect(() => {
     setProfile({
@@ -476,6 +479,14 @@ useEffect(() => {
       minutesBefore: Number(googleCalendarReminderMinutes || '30'),
     });
     toast.success('Ustawienia przypomnień Google Calendar zapisane.');
+  };
+
+  const handleSaveOwnerRiskSettings = () => {
+    const normalized = writeOwnerRiskSettings({
+      highValueThresholdPln: ownerRiskHighValueThreshold.trim() ? Number(ownerRiskHighValueThreshold) : DEFAULT_HIGH_VALUE_THRESHOLD_PLN,
+    });
+    setOwnerRiskHighValueThreshold(String(normalized.highValueThresholdPln));
+    toast.success('Progi ryzyka sprzedaży zapisane.');
   };
 
   const handleUpdateProfile = async () => {
@@ -1185,6 +1196,44 @@ useEffect(() => {
               <div className="settings-diagnostics-box">
                 <div></div>
                 <div></div>
+              </div>
+            </section>
+
+<section hidden={activeSettingsTab !== 'app'} data-settings-tab-panel="app" className="settings-section-card" data-stage222-owner-risk-settings="true">
+              <div className="settings-section-head">
+                <div>
+                  <span><SlidersHorizontal className="h-4 w-4" /> Progi ryzyka sprzedaży</span>
+                  <h2>Progi ryzyka sprzedaży</h2>
+                  <p>Ustaw próg, od którego leady, sprawy i pieniądze są traktowane jako wysoka wartość.</p>
+                </div>
+              </div>
+
+              <div className="settings-form-grid">
+                <div className="settings-field">
+                  <Label>Wysoka wartość od</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    inputMode="decimal"
+                    value={ownerRiskHighValueThreshold}
+                    onChange={(event) => setOwnerRiskHighValueThreshold(event.target.value)}
+                    placeholder="5000"
+                  />
+                </div>
+                <div className="settings-field">
+                  <Label>Waluta</Label>
+                  <Input value="PLN" disabled readOnly />
+                </div>
+              </div>
+
+              <div className="settings-action-row">
+                <Button type="button" onClick={handleSaveOwnerRiskSettings}>
+                  <Save className="h-4 w-4" />
+                  Zapisz próg ryzyka
+                </Button>
+                <span className="settings-muted-note">
+                  {getOwnerRiskSettingsStorageNote()}
+                </span>
               </div>
             </section>
 

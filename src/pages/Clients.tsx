@@ -57,6 +57,7 @@ import {
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
 import { buildTopClientValueEntries } from '../lib/client-value';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
@@ -368,6 +369,28 @@ export default function Clients() {
     }
     return map;
   }, [cases, clients, events, leads, tasks]);
+
+  const operationalRecordsByClientId = useMemo(() => {
+    const map = new Map<string, unknown[]>();
+    const touch = (clientId: string) => {
+      if (!map.has(clientId)) map.set(clientId, []);
+      return map.get(clientId)!;
+    };
+    for (const client of clients) {
+      const clientId = String(client.id || '').trim();
+      if (clientId) touch(clientId).push(client);
+    }
+    const addRelated = (row: Record<string, unknown>) => {
+      const clientId = getStage35RelationClientId(row);
+      if (clientId) touch(clientId).push(row);
+    };
+    for (const row of leads as Record<string, unknown>[]) addRelated(row);
+    for (const row of cases as Record<string, unknown>[]) addRelated(row);
+    for (const row of payments as Record<string, unknown>[]) addRelated(row);
+    for (const row of tasks as Record<string, unknown>[]) addRelated(row);
+    for (const row of events as Record<string, unknown>[]) addRelated(row);
+    return map;
+  }, [cases, clients, events, leads, payments, tasks]);
 
   const clientsWithCases = useMemo(
     () => clients.filter((client) => !client.archivedAt && (countersByClientId.get(client.id)?.cases || 0) > 0).length,
@@ -791,6 +814,13 @@ export default function Clients() {
                    const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
                    const isArchived = Boolean(client.archivedAt);
                    const clientValue = clientValueByClientId.get(client.id) || 0;
+                   const nearestActionLabel = nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji';
+                   const operationalBadges = buildRecordOperationalBadges({
+                     entityType: 'client',
+                     record: client,
+                     relatedRecords: operationalRecordsByClientId.get(client.id) || [],
+                     hasNextStep: nearestActionLabel !== 'Brak zaplanowanej akcji',
+                   });
                    return (
                      <div key={client.id} className="relative group/client-card w-full" data-client-card-wide-layout="true">
                        <Link to={`/clients/${client.id}`} className="block">
@@ -807,11 +837,21 @@ export default function Clients() {
                              {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">W koszu</span> : counters.cases > 0 ? <span className="cf-status-pill cf-chip-case-active" data-cf-status-tone="green">Aktywna sprawa</span> : <span className="cf-status-pill cf-chip-no-case">Bez sprawy</span>}
                              <span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>
                              <span className="cf-list-row-value cf-chip-client-value">Wartość: {formatClientMoney(clientValue)}</span>
-                             <span className="pill cf-chip-last-contact">Ostatni kontakt: {counters.payments > 0 ? 'jest' : 'brak'}</span>
+                              {operationalBadges.map((badge) => (
+                                <span
+                                  key={badge.id}
+                                  className="cf-status-pill"
+                                  data-cf-status-tone={badge.tone}
+                                  data-stage222-r4-client-operational-badge="true"
+                                  title={badge.title}
+                                >
+                                  {badge.label}
+                                </span>
+                              ))}
                            </span>
                          </span>
                          <span className="lead-value-cell cf-client-cases-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</strong></span>
+                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionLabel}</strong></span>
                          <span className="lead-actions client-card-action-buttons cf-client-row-actions cf-client-row-inline">
                            <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="Otwórz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
                            <button

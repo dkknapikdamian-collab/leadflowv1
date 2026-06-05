@@ -77,6 +77,7 @@ import Layout from '../components/Layout';
 import { useWorkspace } from '../hooks/useWorkspace';
 
 import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
+import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
 
 import { getNearestPlannedAction } from '../lib/nearest-action';
 
@@ -97,9 +98,11 @@ const STAGE31_LEADS_SEARCH_COPY_GUARD_2 = 'Podpowiedzi pojawiają się pod wyszu
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_1 = 'Szukaj: nazwa, telefon, e-mail, firma, źródło albo sprawa...';
 const STAGE31_LEADS_SEARCH_COPY_GUARD_UTF8_2 = 'Podpowiedzi pojawiają się pod wyszukiwarką. Usuń część tekstu albo wybierz inny filtr.';
 const STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT = 'Leads right rail starts at search height, simple filters first, top value below, no overlap';
+const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing contact, missing next action and 7/14 day silence badges';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
+void STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -997,8 +1000,15 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
                   const leadValueLabel = (Number(lead.dealValue) || 0).toLocaleString() + ' PLN';
                   const contactLabel = getLeadPrimaryContact(lead);
                   const meta = buildLeadCompactMeta(lead, linkedCase, sourceLabel, leadValueLabel);
-                  const nextActionMeta = buildNextActionMeta(nextActionByLeadId.get(leadId));
+                  const nextAction = nextActionByLeadId.get(leadId);
+                  const nextActionMeta = buildNextActionMeta(nextAction);
                   const pending = archivePendingId === leadId;
+                  const operationalBadges = buildRecordOperationalBadges({
+                    entityType: 'lead',
+                    record: lead,
+                    relatedRecords: linkedCase ? [linkedCase] : [],
+                    hasNextStep: Boolean(nextAction),
+                  });
 
                   return (
                     <div key={leadId || leadIndex} className="relative group/lead-row w-full" data-lead-card-wide-layout="true">
@@ -1017,6 +1027,17 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL */}
                             <span className="cf-status-pill" data-cf-status-tone="blue">{statusLabel}</span>
                             <span className="pill">{sourceLabel}</span>
                             {linkedCase ? <span className="cf-status-pill" data-cf-status-tone="green">Sprawa</span> : null}
+                            {operationalBadges.map((badge) => (
+                              <span
+                                key={badge.id}
+                                className="cf-status-pill"
+                                data-cf-status-tone={badge.tone}
+                                data-stage222-r4-lead-operational-badge="true"
+                                title={badge.title}
+                              >
+                                {badge.label}
+                              </span>
+                            ))}
                           </span>
                         </span>
 

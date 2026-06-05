@@ -19,6 +19,8 @@ import { useWorkspace } from '../hooks/useWorkspace';
 import { deleteCaseWithRelations } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
+import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
+import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import {
@@ -43,6 +45,8 @@ const STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY = 'cases list index pill
 void STAGE220A22_CLIENT_CASE_INDEX_CHEVRON_CONSISTENCY;
 const STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH = 'cases list open and trash actions use right-side icon cluster like clients and leads';
 void STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH;
+const STAGE222_OWNER_RISK_CASE_BADGES = 'case rows show owner risk badges from owner-risk-rules source of truth';
+void STAGE222_OWNER_RISK_CASE_BADGES;
 
 type CaseRecord = {
   id: string;
@@ -317,6 +321,7 @@ export default function Cases() {
 
   const caseTasksByCaseId = useMemo(() => buildCaseActionMap(caseTasks), [caseTasks]);
   const caseEventsByCaseId = useMemo(() => buildCaseActionMap(caseEvents), [caseEvents]);
+  const ownerRiskSettings = useMemo(() => readOwnerRiskSettings(), []);
 
   const stats = useMemo(() => {
     const lifecycleRows = cases.map((record) => resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId));
@@ -729,6 +734,11 @@ export default function Cases() {
                     items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                   });
                   const nextActionLabel = nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
+                  const ownerRiskBadges = getCaseOwnerRiskBadges(record, {
+                    settings: ownerRiskSettings,
+                    relatedRecords: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
+                    hasNextStep: Boolean(nearestCaseAction),
+                  }).slice(0, 4);
                   const metaParts = [
                     lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
                     lifecycle.waitingApprovalCount > 0 ? `akceptacje ${lifecycle.waitingApprovalCount}` : null,
@@ -750,6 +760,17 @@ export default function Cases() {
                           <span className="cf-status-pill" data-cf-status-tone={statusTone}>{statusLabel}</span>
                           {compactLifecyclePill ? <span className="cf-status-pill" data-cf-status-tone={lifecycleCompactVariant(record, lifecycle)}>{compactLifecyclePill}</span> : null}
                           {attention && !compactLifecyclePill ? <span className="cf-status-pill" data-cf-status-tone="amber">Wymaga uwagi</span> : null}
+                          {ownerRiskBadges.map((badge) => (
+                            <span
+                              key={badge.key}
+                              className="cf-status-pill"
+                              data-cf-status-tone={ownerRiskTone(badge.severity)}
+                              data-stage222-owner-risk-case-badge="true"
+                              title={badge.reason}
+                            >
+                              {badge.label}
+                            </span>
+                          ))}
                         </span>
                       </span>
                       <span className="lead-value-cell">
