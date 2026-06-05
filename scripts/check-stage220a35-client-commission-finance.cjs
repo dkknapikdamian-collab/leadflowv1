@@ -53,7 +53,7 @@ forbidText(clientDetail, '<small>Do domknięcia: {formatMoneyWithCurrency(client
   'commissionAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionAmount, 0))',
   'commissionPaidAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionPaidAmount, 0))',
   'commissionRemainingAmount: roundMoney(caseSummaries.reduce((sum, summary) => sum + summary.commissionRemainingAmount, 0))',
-  'commissionMode === 'percent'',
+  "commissionMode === 'percent'",
 ].forEach((token) => requireText(financeSource, token, 'case-finance-source'));
 
 [
