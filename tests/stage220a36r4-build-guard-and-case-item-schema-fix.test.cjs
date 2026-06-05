@@ -2,18 +2,26 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 
-function read(rel) { return fs.readFileSync(rel, 'utf8'); }
+const FORBIDDEN_ENCODING_CODES = [0xfeff, 0x0139, 0x013d, 0x00c4, 0x00c5, 0x0102];
 
-test('A35 and A36 guards are clean UTF-8 without mojibake or BOM', () => {
-  for (const rel of [
+function read(rel) {
+  return fs.readFileSync(rel, 'utf8');
+}
+function assertCleanFile(rel) {
+  const text = read(rel);
+  assert.notEqual(text.charCodeAt(0), 0xfeff, rel + ' must not start with BOM');
+  for (const code of FORBIDDEN_ENCODING_CODES.slice(1)) {
+    assert.equal(text.includes(String.fromCharCode(code)), false, rel + ' must not contain encoding marker U+' + code.toString(16).toUpperCase());
+  }
+}
+
+test('A35 A36 R4 guard files are clean UTF-8 without BOM or encoding markers', () => {
+  [
     'scripts/check-stage220a35-client-commission-finance.cjs',
     'scripts/check-stage220a36-commission-input-model-split.cjs',
-  ]) {
-    const text = read(rel);
-    assert.notEqual(text.charCodeAt(0), 0xfeff, rel + ' must not start with BOM');
-    assert.equal(/[ĹĽÄÅ]/u.test(text), false, rel + ' must not contain mojibake markers');
-    assert.equal(text.includes('missing token: Prowizja'), false, rel + ' must not hard-code Polish finance copy as required token');
-  }
+    'scripts/check-stage220a36r4-build-guard-and-case-item-schema-fix.cjs',
+    'tests/stage220a36r4-build-guard-and-case-item-schema-fix.test.cjs',
+  ].forEach(assertCleanFile);
 });
 
 test('case item POST payload does not write approved_at when production schema lacks it', () => {

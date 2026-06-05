@@ -1279,3 +1279,16 @@ Data: 2026-06-05 22:30 Europe/Warsaw
 - To jest hotfix guardu, nie zmiana UI ani bazy.
 - approved_at fix z R4 zostaje bez zmian.
 - Stage227 nadal wymaga zielonego Vercel po R5.
+
+## STAGE220A36-R6 — Deploy Unblock Mojibake Cleanup
+
+Data: 2026-06-05 22:35 Europe/Warsaw
+
+### FAKTY
+- Cleaned R4 guard/test files from BOM and literal encoding marker characters.
+- Added R6 guard to protect the commission modal order and deployment path.
+- Did not change Supabase, RLS, payments, or commission math.
+
+### AUDYT RYZYK
+- The UI screenshot can remain old until Vercel deploys a green build.
+- Stage227 remains blocked until Vercel is green and modal is manually verified.
