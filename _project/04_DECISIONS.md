@@ -840,3 +840,46 @@ AUDYT RYZYK:
 
 NASTĘPNY KROK:
 - Uruchomić R2AB. Jeśli build i verify przejdą, wykonać push całego Stage223.
+
+<!-- STAGE223_R2AC_FINAL_GUARD_TESTS_CLOSURE -->
+## 2026-06-05 - STAGE223 R2AC final guard/tests closure
+
+FAKTY:
+- Stage223 R2 został już wypchnięty jako commit `66b13479`.
+- Podetap E nie był domknięty w wymaganym kształcie:
+  - istniał `scripts/check-stage223-owner-movement-risk-system.cjs`,
+  - istniał runtime test `tests/stage223-owner-risk-runtime-contract.test.cjs`,
+  - brakowało docelowego `tests/stage223-owner-movement-risk-system.test.cjs`,
+  - guard był za bardzo tokenowy i nie pilnował pełnej listy decyzji z podetapu E.
+- R2AC dodaje finalny runtime test i zaostrza guard.
+
+DECYZJE:
+- Nie wdrażamy nowej funkcji.
+- Nie ruszamy Stage224.
+- Nie robimy Contact Cadence Grid, Lost Lead Rescue, Owner Digest, Finance Watchlist, AI scoringu, automatycznych wiadomości ani redesignu Today.
+- Celem R2AC jest domknięcie jakości/guardów po Stage223 R2.
+- Nie pushujemy bez zielonych testów końcowych.
+
+TESTY AUTOMATYCZNE:
+- node scripts/check-stage223-owner-movement-risk-system.cjs
+- node --test tests/stage223-owner-movement-risk-system.test.cjs
+- node --test tests/stage222-owner-risk-rules-foundation.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+TESTY RĘCZNE:
+- Leads: badge braku akcji, ciszy 7/14 i wysokiej wartości zależnej od progu.
+- LeadDetail: status następnego ruchu, brak duplikacji paneli, czytelne badge.
+- Cases: badge braku ruchu, braku następnego ruchu i pieniędzy bez ruchu.
+- CaseDetail: czytelny ruch/ryzyko bez mieszania z historią i notatkami.
+- Today: brak nowej sekcji, `Wysoka wartość / ryzyko`, kliknięcia do rekordów, brak agresywnego odświeżania po zmianie karty.
+
+AUDYT RYZYK:
+- R2AC zmienia testy i guardy, nie runtime funkcji.
+- Główne ryzyko: guard może złapać przyszłe ręczne dublowanie badge w UI — to jest celowe.
+- Po zielonym teście można uruchomić lokalnie aplikację i przejść checklistę manualną.
+
+NASTĘPNY KROK:
+- Uruchomić R2AC lokalnie.
+- Jeżeli testy są zielone, odpalić lokalnie `npm run dev:api` i sprawdzić /today, /leads, /cases, /calendar.

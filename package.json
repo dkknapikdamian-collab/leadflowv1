@@ -792,7 +792,8 @@
     "check:stage222-owner-risk-rules-foundation": "node scripts/check-stage222-owner-risk-rules-foundation.cjs",
     "test:stage222-owner-risk-rules-foundation": "node --test tests/stage222-owner-risk-rules-foundation.test.cjs",
     "check:stage223-owner-movement-risk-system": "node scripts/check-stage223-owner-movement-risk-system.cjs",
-    "test:stage223-owner-risk-runtime-contract": "node --test tests/stage223-owner-risk-runtime-contract.test.cjs"
+    "test:stage223-owner-risk-runtime-contract": "node --test tests/stage223-owner-risk-runtime-contract.test.cjs",
+    "test:stage223-owner-movement-risk-system": "node --test tests/stage223-owner-movement-risk-system.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
