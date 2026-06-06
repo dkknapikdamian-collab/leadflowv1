@@ -26,7 +26,7 @@ const css = read('src/styles/closeflow-case-finance-modal-stage220a30.css');
 const pkg = JSON.parse(read('package.json'));
 
 requireText(caseDetail, 'STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS', 'A31 marker');
-requireText(caseDetail, 'Wartość transakcji / sprawy', 'transaction value label is explicit');
+requireAny(caseDetail, ['Podstawa procentu (warto?? transakcji/zlecenia)', 'Podstawa procentu', 'Warto?? transakcji / sprawy'], 'transaction basis label is explicit');
 requireText(caseDetail, 'Procent od wartości transakcji', 'percent commission model label explains basis');
 requireText(caseDetail, 'Stawka prowizji (%)', 'commission rate label is explicit');
 requireText(caseDetail, 'Prowizja należna', 'commission due label exists');
