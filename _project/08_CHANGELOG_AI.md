@@ -1973,3 +1973,24 @@ Data: 2026-06-05 22:35 Europe/Warsaw
 ### AUDYT RYZYK
 - The UI screenshot can remain old until Vercel deploys a green build.
 - Stage227 remains blocked until Vercel is green and modal is manually verified.
+
+## STAGE220A36-R7 — CaseDetail Legacy Finance Modal Wiring Fix
+
+Data: 2026-06-06 07:55 Europe/Warsaw
+
+### FAKTY
+- Produkcyjny bundle CaseDetail zawieral jednoczesnie nowy i stary modal.
+- Widoczny modal w karcie sprawy byl inline FIN-11 w CaseDetail.tsx, a nie wspolny CaseFinanceEditorDialog.
+- R7 przepina legacy modal CaseDetail na kolejnosc: Rodzaj prowizji -> Stawka -> Wartosc prowizji -> Podstawa procentu -> Waluta -> Status.
+
+### TESTY
+- node scripts/check-stage220a36r7-case-detail-legacy-finance-modal.cjs
+- node --test tests/stage220a36r7-case-detail-legacy-finance-modal.test.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Guardy A36 wczesniej pilnowaly wspolnego komponentu, ale nie pilnowaly inline modala CaseDetail, dlatego UI produkcyjne moglo pozostac stare.
+- Po R7 trzeba sprawdzic bundle w przegladarce: hasOldTitle powinno byc false, a hasNewTitle true.
+- Blad /api/case-items 500 jest osobnym watkiem; wymaga Response z Network, jesli po deployu R7 nadal wystapi.
