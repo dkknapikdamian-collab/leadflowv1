@@ -2563,3 +2563,57 @@
     justify-content: flex-start !important;
   }
 }
+
+
+/* STAGE228E_LEAD_DETAIL_GUARD_AND_COLOR_HOTFIX
+   Hotfix after pushed Stage228D: keep the lead accordion visually colored,
+   remove inner white card surfaces, and make the Stage228D guard semantic
+   instead of brittle exact-string matching. */
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--next,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--next .lead-detail-action-accordion-trigger,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--next .lead-detail-action-accordion-content {
+  background: #eff6ff !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-action-accordion-trigger,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-action-accordion-content {
+  background: #fffaeb !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--active,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--active .lead-detail-action-accordion-trigger,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--active .lead-detail-action-accordion-content {
+  background: #ecfdf3 !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-content .lead-detail-light-empty,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-content .lead-detail-action-empty,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-content .lead-detail-work-row,
+.lead-detail-stage228d-action-center .lead-detail-work-row,
+.lead-detail-stage228d-action-center .lead-detail-work-row-overdue {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: rgba(15, 23, 42, 0.12) !important;
+  box-shadow: none !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-content .lead-detail-light-empty,
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-content .lead-detail-action-empty {
+  border-style: dashed !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--next .lead-detail-work-icon {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-work-icon {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--active .lead-detail-work-icon {
+  background: #bbf7d0 !important;
+  color: #047857 !important;
+}

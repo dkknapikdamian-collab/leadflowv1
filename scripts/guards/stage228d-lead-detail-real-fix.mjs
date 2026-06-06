@@ -28,7 +28,10 @@ assert(css.includes('STAGE228D_LEAD_DETAIL_REAL_FIX'), 'missing CSS stage marker
 assert(css.includes('.lead-detail-action-accordion-group--next'), 'missing blue full-tone group CSS');
 assert(css.includes('.lead-detail-action-accordion-group--blockers'), 'missing amber full-tone group CSS');
 assert(css.includes('.lead-detail-action-accordion-group--active'), 'missing green full-tone group CSS');
-assert(css.includes('background: transparent !important;\n  border-color: rgba(15, 23, 42, 0.12) !important;'), 'inner accordion content must not force white card background');
+const hasTransparentInnerAccordion = /\.lead-detail-stage228d-action-center\s+\.lead-detail-action-accordion-content[\s\S]*?background:\s*transparent\s*!important/i.test(css) || /\.lead-detail-action-accordion-content[\s\S]*?background:\s*transparent\s*!important/i.test(css);
+const hasTransparentWorkRows = /\.lead-detail-stage228d-action-center\s+\.lead-detail-work-row[\s\S]*?background:\s*transparent\s*!important/i.test(css);
+const hasForcedWhiteInnerRows = /\.lead-detail-stage228d-action-center\s+\.lead-detail-action-accordion-content[\s\S]{0,900}background:\s*(#fff|#ffffff|rgba\(255,\s*255,\s*255)/i.test(css);
+assert(hasTransparentInnerAccordion && hasTransparentWorkRows && !hasForcedWhiteInnerRows, 'inner accordion content must not force white card background');
 assert(css.includes('.lead-detail-right-quick-actions-card'), 'missing right quick actions CSS');
 assert(css.includes('.lead-detail-data-panel-row-copy'), 'missing phone/email row clipping fix');
 
