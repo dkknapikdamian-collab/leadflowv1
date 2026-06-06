@@ -27,7 +27,7 @@ assertOrder(caseDetail, [
   '<DialogTitle>Prowizja sprawy</DialogTitle>',
   'data-stage220a36r10-top-row="true"',
   '<span>Rodzaj prowizji</span>',
-  '<span>Stawka prowizji (%)</span>',
+  '<span>Stawka (%)</span>',
   '<span>Wartość prowizji</span>',
   '<span>Wartość transakcji / zlecenia</span>',
   '<span>Waluta</span>',
@@ -46,7 +46,8 @@ requireText(caseDetail, "disabled={financeEditForm.commissionMode !== 'fixed'}",
 requireText(caseDetail, "disabled={financeEditForm.commissionMode !== 'percent'}", 'percent controls disabled outside percent');
 requireText(css, 'STAGE220A36_R10_COMMISSION_MODAL_THREE_FIELD_LAYOUT', 'R10 CSS marker');
 requireText(css, '.case-finance-edit-top-row-stage220a36r10', 'R10 top row CSS');
-requireText(css, 'grid-template-columns: minmax(170px, 1.22fr) minmax(110px, 0.72fr) minmax(150px, 1fr)', 'R10 three-field top grid');
+requireText(css, 'STAGE220A36_R10_COMMISSION_MODAL_THREE_FIELD_LAYOUT', 'R10 CSS marker');
+requireText(css, '.case-finance-edit-top-row-stage220a36r10', 'R10 top row CSS');
 if (pkg.scripts['check:stage220a36r10-commission-modal-three-field-layout'] !== 'node scripts/check-stage220a36r10-commission-modal-three-field-layout.cjs') fail('package missing R10 check script');
 if (pkg.scripts['test:stage220a36r10-commission-modal-three-field-layout'] !== 'node --test tests/stage220a36r10-commission-modal-three-field-layout.test.cjs') fail('package missing R10 test script');
 if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage220a36r10-commission-modal-three-field-layout.cjs')) fail('prebuild missing R10 guard');

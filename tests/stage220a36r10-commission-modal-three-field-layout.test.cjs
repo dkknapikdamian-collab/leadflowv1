@@ -8,7 +8,7 @@ test('R10 puts three commission controls in the top row and transaction value be
   const tokens = [
     'data-stage220a36r10-top-row="true"',
     '<span>Rodzaj prowizji</span>',
-    '<span>Stawka prowizji (%)</span>',
+    '<span>Stawka (%)</span>',
     '<span>Wartość prowizji</span>',
     '<span>Wartość transakcji / zlecenia</span>',
     'data-stage220a36r10-bottom-row="true"',
@@ -32,6 +32,12 @@ test('R10 keeps fixed vs percent editing rules clear', () => {
   assert.equal(source.includes('<span>Wartość transakcji / sprawy</span>'), false);
   assert.equal(source.includes('<span>Model prowizji</span>'), false);
   assert.equal(source.includes('<span>Kwota prowizji</span>'), false);
+});
+
+test('R10 removes heavy under-field descriptions from the modal', () => {
+  assert.equal(source.includes('<small>Aktywne tylko przy procencie.</small>'), false);
+  assert.equal(source.includes('<small>Stała: wpisujesz. Procent: system wylicza.</small>'), false);
+  assert.equal(source.includes('<small>To jest podstawa procentu'), false);
 });
 
 test('R10 CSS defines a readable three-field top row', () => {

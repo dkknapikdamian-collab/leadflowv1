@@ -7,7 +7,7 @@ test('CaseDetail legacy finance modal uses requested commission-first order', ()
   const tokens = [
     '<DialogTitle>Prowizja sprawy</DialogTitle>',
     '<span>Rodzaj prowizji</span>',
-    '<span>Stawka prowizji (%)</span>',
+    '<span>Stawka (%)</span>',
     '<span>Wartość prowizji</span>',
     '<span>Wartość transakcji / zlecenia</span>',
     '<span>Waluta</span>',

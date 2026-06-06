@@ -387,3 +387,103 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+
+/* STAGE220A36_R11_COMMISSION_MODAL_COMPACT_TOOLTIPS
+   Cel: modal prowizji ma być mniej przytłaczający. Długie opisy pod polami przeniesione do tooltipów, pola są niższe, a środkowa stawka wyrównana.
+ */
+.case-finance-edit-form--commission-r11 {
+  gap: 0.82rem !important;
+}
+
+.case-finance-edit-form--commission-r11 .case-finance-edit-top-row-stage220a36r10 {
+  grid-template-columns: minmax(150px, 1.08fr) minmax(104px, 0.62fr) minmax(142px, 0.9fr) !important;
+  gap: 0.62rem !important;
+  align-items: start !important;
+}
+
+.case-finance-edit-form--commission-r11 .case-finance-edit-bottom-row-stage220a36r10 {
+  grid-template-columns: minmax(104px, 0.42fr) minmax(190px, 0.72fr) !important;
+  gap: 0.62rem !important;
+  max-width: 30rem !important;
+}
+
+.case-finance-edit-form--commission-r11 .case-finance-edit-field {
+  gap: 0.32rem !important;
+}
+
+.case-finance-edit-form--commission-r11 .case-finance-edit-field small {
+  display: none !important;
+}
+
+.case-finance-edit-form--commission-r11 input,
+.case-finance-edit-form--commission-r11 select,
+.case-finance-edit-form--commission-r11 .cf-vst-input {
+  min-height: 2.24rem !important;
+  height: 2.24rem !important;
+  border-radius: 0.78rem !important;
+  padding: 0 0.76rem !important;
+  font-size: 0.9rem !important;
+  line-height: 1.1 !important;
+}
+
+.case-finance-edit-form--commission-r11 [data-stage220a36r10-top-field="commission-rate"] {
+  align-self: start !important;
+}
+
+.case-finance-edit-form--commission-r11 [data-stage220a36r10-top-field="commission-rate"] input {
+  text-align: left !important;
+}
+
+.case-finance-field-label-with-help-stage220a36r11 {
+  min-height: 1.2rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.32rem !important;
+  white-space: nowrap !important;
+}
+
+.case-finance-field-label-with-help-stage220a36r11 > span:first-child {
+  color: #e2e8f0 !important;
+  -webkit-text-fill-color: #e2e8f0 !important;
+}
+
+.case-finance-help-dot-stage220a36r11 {
+  width: 1rem !important;
+  height: 1rem !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid rgba(148, 163, 184, 0.72) !important;
+  border-radius: 999px !important;
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+  font-size: 0.68rem !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  cursor: help !important;
+  opacity: 0.9 !important;
+}
+
+.case-finance-help-dot-stage220a36r11:focus-visible {
+  outline: 2px solid rgba(147, 197, 253, 0.75) !important;
+  outline-offset: 2px !important;
+}
+
+.case-finance-edit-form--commission-r11 .case-finance-edit-transaction-basis-stage220a36r10 input {
+  max-width: 31rem !important;
+}
+
+.case-finance-edit-form--commission-r11 .case-finance-edit-preview {
+  margin-top: 0.1rem !important;
+  padding: 0.78rem 0.95rem !important;
+}
+
+@media (max-width: 860px) {
+  .case-finance-edit-form--commission-r11 .case-finance-edit-top-row-stage220a36r10,
+  .case-finance-edit-form--commission-r11 .case-finance-edit-bottom-row-stage220a36r10 {
+    grid-template-columns: 1fr !important;
+    max-width: none !important;
+  }
+}

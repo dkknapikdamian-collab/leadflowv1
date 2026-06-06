@@ -1350,3 +1350,27 @@ Data: 2026-06-06 08:55 Europe/Warsaw
 - Zmieniany jest tylko uklad i copy modala, nie model danych ani zapis prowizji.
 - Stare guardy A31/A32/R7 zostaja dostosowane do nowego labela wartosci transakcji/zlecenia, zeby nie blokowaly poprawnego UX.
 - /api/case-items 500 pozostaje osobnym watkiem, jesli nadal wystepuje po deployu.
+
+
+## STAGE220A36-R11 — Commission Modal Compact Tooltips + Alignment
+
+Data: 2026-06-06 09:10 Europe/Warsaw
+
+### FAKTY
+- R10 logicznie ułożył pola, ale modal nadal był zbyt przytłaczający przez opisy pod polami i zbyt wysokie inputy.
+- R11 przenosi opisy do tooltipów „?”, skraca środkowy label do „Stawka (%)”, zmniejsza wysokość pól i wyrównuje środkowe pole stawki.
+
+### TESTY
+- node scripts/check-stage220a36r11-commission-modal-compact-tooltips.cjs
+- node --test tests/stage220a36r11-commission-modal-compact-tooltips.test.cjs
+- node scripts/check-stage220a36r10-commission-modal-three-field-layout.cjs
+- node scripts/check-stage220a36r7-case-detail-legacy-finance-modal.cjs
+- node scripts/check-stage220a31-finance-modal-margin-commission-basis.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Zmieniany jest tylko UX/copy/CSS modala, nie zapis prowizji ani backend.
+- Native tooltip na title jest prosty i bezpieczny, ale na mobile nie daje pełnego komfortu — jeżeli to będzie problem, kolejny etap powinien zrobić własny popover.
+- Trzeba ręcznie sprawdzić, czy trzy pola w górnym rzędzie nie ściskają się na szerokości laptopa i czy wąskie ekrany poprawnie zawijają do jednej kolumny.

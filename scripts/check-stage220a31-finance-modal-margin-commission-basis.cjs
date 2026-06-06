@@ -38,7 +38,7 @@ const commissionLeft = 'Do zap' + '\u0142' + 'aty prowizji';
 requireText(caseDetail, 'STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS', 'A31 marker');
 requireAny(caseDetail, [transactionTask, basisLong, basisOld, transactionOld], 'transaction basis label is explicit');
 requireText(caseDetail, percentModel, 'percent commission model label explains basis');
-requireText(caseDetail, 'Stawka prowizji (%)', 'commission rate label is explicit');
+requireAny(caseDetail, ['Stawka prowizji (%)', 'Stawka (%)'], 'commission rate label is explicit');
 requireText(caseDetail, commissionDue, 'commission due label exists');
 requireText(caseDetail, commissionPaid, 'commission paid label exists');
 requireText(caseDetail, commissionLeft, 'commission remaining label exists');

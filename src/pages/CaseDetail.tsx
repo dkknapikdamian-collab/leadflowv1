@@ -3194,12 +3194,12 @@ export default function CaseDetail() {
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-stage220a36r7-case-detail-legacy-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Prowizja sprawy</DialogTitle>
-            <DialogDescription>U góry ustaw sposób liczenia i wynik prowizji. Niżej wpisz wartość transakcji lub zlecenia tylko wtedy, gdy liczysz prowizję procentowo.</DialogDescription>
+            <DialogDescription>Ustaw sposób liczenia prowizji. Szczegóły są pod ikonami „?”.</DialogDescription>
           </DialogHeader>
-          <div className="case-finance-edit-form case-finance-source-form-stage220a30 case-finance-edit-form--commission-r10" data-stage220a36r7-case-detail-finance-order="true" data-stage220a36r10-commission-layout="true">
+          <div className="case-finance-edit-form case-finance-source-form-stage220a30 case-finance-edit-form--commission-r10 case-finance-edit-form--commission-r11" data-stage220a36r7-case-detail-finance-order="true" data-stage220a36r10-commission-layout="true" data-stage220a36r11-compact-tooltips="true">
             <div className="case-finance-edit-top-row-stage220a36r10" data-stage220a36r10-top-row="true">
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-mode">
-                <span>Rodzaj prowizji</span>
+                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Rodzaj prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Kwota stała: wpisujesz prowizję ręcznie. Procent: prowizja liczy się ze stawki i wartości transakcji/zlecenia." aria-label="Wyjaśnienie rodzaju prowizji" tabIndex={0}>?</span></span>
                 <select
                   className="cf-vst-input case-finance-edit-select"
                   value={financeEditForm.commissionMode}
@@ -3219,10 +3219,9 @@ export default function CaseDetail() {
                   <option value="percent">Procent od wartości transakcji</option>
                   <option value="fixed">Kwota stała</option>
                 </select>
-                <small>Wybierz, czy wpisujesz gotową prowizję, czy liczysz ją procentowo.</small>
               </label>
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-rate">
-                <span>Stawka prowizji (%)</span>
+                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Stawka (%)</span><span className="case-finance-help-dot-stage220a36r11" title="Aktywne tylko przy prowizji procentowej, np. 2 oznacza 2%." aria-label="Wyjaśnienie stawki procentowej" tabIndex={0}>?</span></span>
                 <Input
                   inputMode="decimal"
                   value={financeEditForm.commissionRate}
@@ -3233,10 +3232,9 @@ export default function CaseDetail() {
                   placeholder="np. 2"
                   onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionRate: event.target.value }))}
                 />
-                <small>Aktywne tylko przy procencie.</small>
               </label>
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-amount">
-                <span>Wartość prowizji</span>
+                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Wartość prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Przy kwocie stałej wpisujesz ją ręcznie. Przy procencie system wylicza ją automatycznie." aria-label="Wyjaśnienie wartości prowizji" tabIndex={0}>?</span></span>
                 <Input
                   inputMode="decimal"
                   value={financeEditForm.commissionMode === 'percent' ? fin11MoneyInput(financeEditPreview.commissionAmount) : financeEditForm.commissionAmount}
@@ -3249,11 +3247,10 @@ export default function CaseDetail() {
                   placeholder={financeEditForm.commissionMode === 'percent' ? 'wyliczana' : 'np. 3000'}
                   onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionAmount: event.target.value }))}
                 />
-                <small>Stała: wpisujesz. Procent: system wylicza.</small>
               </label>
             </div>
             <label className="case-finance-edit-field case-finance-edit-field--wide case-finance-edit-transaction-basis-stage220a36r10" data-stage220a36r10-transaction-basis-field="true">
-              <span>Wartość transakcji / zlecenia</span>
+              <span className="case-finance-field-label-with-help-stage220a36r11"><span>Wartość transakcji / zlecenia</span><span className="case-finance-help-dot-stage220a36r11" title="To nie jest prowizja. To kwota sprzedaży, transakcji albo zlecenia, od której liczysz procent." aria-label="Wyjaśnienie wartości transakcji lub zlecenia" tabIndex={0}>?</span></span>
               <Input
                 inputMode="decimal"
                 value={financeEditForm.commissionMode === 'percent' ? financeEditForm.contractValue : ''}
@@ -3264,7 +3261,6 @@ export default function CaseDetail() {
                 placeholder="np. 69000"
                 onChange={(event) => setFinanceEditForm((current) => ({ ...current, contractValue: event.target.value }))}
               />
-              <small>To jest podstawa procentu — kwota sprzedaży, transakcji albo zlecenia, od której liczysz prowizję.</small>
             </label>
             <div className="case-finance-edit-bottom-row-stage220a36r10" data-stage220a36r10-bottom-row="true">
               <label className="case-finance-edit-field">
