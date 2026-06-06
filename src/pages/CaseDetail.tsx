@@ -3196,7 +3196,7 @@ export default function CaseDetail() {
             <DialogTitle>Prowizja sprawy</DialogTitle>
             <DialogDescription>Ustaw sposób liczenia prowizji. Szczegóły są pod ikonami „?”.</DialogDescription>
           </DialogHeader>
-          <div className="case-finance-edit-form case-finance-source-form-stage220a30 case-finance-edit-form--commission-r10 case-finance-edit-form--commission-r11" data-stage220a36r7-case-detail-finance-order="true" data-stage220a36r10-commission-layout="true" data-stage220a36r11-compact-tooltips="true">
+          <div className="case-finance-edit-form case-finance-source-form-stage220a30 case-finance-edit-form--commission-r10 case-finance-edit-form--commission-r11" data-stage220a36r7-case-detail-finance-order="true" data-stage220a36r10-commission-layout="true" data-stage220a36r12-compact-width-polish="true" data-stage220a36r11-compact-tooltips="true">
             <div className="case-finance-edit-top-row-stage220a36r10" data-stage220a36r10-top-row="true">
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-mode">
                 <span className="case-finance-field-label-with-help-stage220a36r11"><span>Rodzaj prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Kwota stała: wpisujesz prowizję ręcznie. Procent: prowizja liczy się ze stawki i wartości transakcji/zlecenia." aria-label="Wyjaśnienie rodzaju prowizji" tabIndex={0}>?</span></span>

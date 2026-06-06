@@ -94,7 +94,9 @@ const LEAD_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<'leads' | 'cases' | 'activiti
 
 const CLOSEFLOW_A2_ALLOW_DUPLICATE_API_OVERRIDE = 'allowDuplicate is the API duplicate override flag';
 const STAGE223R3_LAST_CONTACT_API = 'lead API accepts optional lastContactAt and last_contact_at for intake silence truth';
+const STAGE226R10_LEAD_CREATE_POST_LEAD_ONLY_API = 'ordinary POST /api/leads inserts a lead only; client creation is allowed only in start_service conversion';
 void STAGE223R3_LAST_CONTACT_API;
+void STAGE226R10_LEAD_CREATE_POST_LEAD_ONLY_API;
 
 const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
 const LEAD_LIST_SELECT_STAGE124 = [
@@ -1089,22 +1091,15 @@ export default async function handler(req: any, res: any) {
     const status = normalizeStatus(body.status || 'new');
     const startRuleSnapshot = normalizeEnum(body.startRuleSnapshot, START_RULES, 'on_acceptance');
     const billingStatus = normalizeEnum(body.billingStatus, BILLING_STATUSES, 'not_started');
-    const ensuredClient = await ensureClientForLead(finalWorkspaceId, {
-      client_id: body.clientId,
-      name: asText(body.name),
-      company: asText(body.company),
-      email: asText(body.email),
-      phone: asText(body.phone),
-      source: normalizeSource(body.source),
-    });
-    const ensuredClientId = asNullableUuid(ensuredClient?.id || body.clientId);
+    // STAGE226R10_LEAD_CREATE_POST_LEAD_ONLY_API: ordinary lead creation must not create, reuse or attach a client.
+    // Client creation belongs to explicit start_service conversion only.
     const nextActionAt = status === 'moved_to_service' ? null : toIsoDateTime(body.nextActionAt);
 
     const payload: Record<string, unknown> = {
       workspace_id: finalWorkspaceId,
       created_by_user_id: body.ownerId && isUuid(body.ownerId) ? body.ownerId : null,
-      client_id: ensuredClientId,
-      linked_case_id: asNullableUuid(body.linkedCaseId),
+      client_id: null,
+      linked_case_id: null,
       service_profile_id: asNullableUuid(body.serviceProfileId),
       name: asText(body.name),
       company: asText(body.company),

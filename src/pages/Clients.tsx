@@ -137,6 +137,8 @@ void STAGE225_CONTACT_CADENCE_GRID_CLIENTS;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
+const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
+void STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH;
 
 function getStage220A36CaseCommissionValue(caseRow: Record<string, unknown>) {
   return getCaseFinanceSummary(caseRow, []).commissionAmount;
@@ -270,6 +272,7 @@ export default function Clients() {
     [clients],
   );
 
+  // STAGE226R10_FILTERED_CLIENT_ROWS_ONLY: main /clients list starts from clients and never maps leads into client rows.
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
     const activeCadenceIds = cadenceFilter === 'all'
@@ -1004,4 +1007,3 @@ export default function Clients() {
     </Layout>
   );
 }
-

@@ -487,3 +487,63 @@
     max-width: none !important;
   }
 }
+
+
+/* STAGE220A36_R12_COMMISSION_MODAL_WIDTH_POLISH
+   Cel: po R11 modal nie ma byc przytlaczajacy: opis jest w tooltipach, select rodzaju prowizji ma miec miejsce na tekst, a pole wartosci transakcji/zlecenia nie ma zajmowac calej szerokosci.
+*/
+.case-finance-source-modal-stage220a30 .case-finance-edit-top-row-stage220a36r10 {
+  grid-template-columns: minmax(270px, 1.75fr) minmax(112px, 0.62fr) minmax(155px, 0.88fr) !important;
+  gap: 0.65rem !important;
+  align-items: end !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-mode"] {
+  min-width: 270px !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-rate"] {
+  max-width: 128px !important;
+  justify-self: stretch !important;
+  align-self: end !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-amount"] {
+  max-width: 170px !important;
+  justify-self: stretch !important;
+  align-self: end !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-mode"] select,
+.case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-mode"] .cf-vst-input {
+  min-width: 0 !important;
+  width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-transaction-basis-stage220a36r10 {
+  width: min(100%, 30rem) !important;
+  max-width: 30rem !important;
+  justify-self: start !important;
+}
+
+.case-finance-source-modal-stage220a30 .case-finance-edit-transaction-basis-stage220a36r10 input {
+  max-width: 30rem !important;
+}
+
+@media (max-width: 860px) {
+  .case-finance-source-modal-stage220a30 .case-finance-edit-top-row-stage220a36r10,
+  .case-finance-source-modal-stage220a30 .case-finance-edit-bottom-row-stage220a36r10 {
+    grid-template-columns: 1fr !important;
+  }
+  .case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-mode"],
+  .case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-rate"],
+  .case-finance-source-modal-stage220a30 [data-stage220a36r10-top-field="commission-amount"],
+  .case-finance-source-modal-stage220a30 .case-finance-edit-transaction-basis-stage220a36r10 {
+    min-width: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+  }
+}
+/* END_STAGE220A36_R12_COMMISSION_MODAL_WIDTH_POLISH */

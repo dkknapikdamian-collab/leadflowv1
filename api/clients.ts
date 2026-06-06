@@ -14,6 +14,8 @@ void STAGE223R3_LAST_CONTACT_API;
 const CLOSEFLOW_CLIENT_ARCHIVE_CALENDAR_CASCADE_V1 = 'client delete archives client; active cases/tasks/events hide by archived parent';
 
 const STAGE124_SUPABASE_EGRESS_P0_CONTRACT = 'Stage124A: API lists use explicit ListDTO select columns; detail routes may use full detail payload';
+const STAGE226R10_CLIENTS_API_SOURCE_TRUTH = 'GET /api/clients reads clients table only; no leads fallback or lead-to-client mapping';
+void STAGE226R10_CLIENTS_API_SOURCE_TRUTH;
 const CLIENT_LIST_SELECT_STAGE124 = [
   'id',
   'workspace_id',

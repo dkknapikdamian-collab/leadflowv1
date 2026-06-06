@@ -1360,3 +1360,41 @@ Data: 2026-06-06 09:10 Europe/Warsaw
 - Zmieniany jest tylko UX/copy/CSS modala, nie zapis prowizji ani backend.
 - Native tooltip na title jest prosty i bezpieczny, ale na mobile nie daje pełnego komfortu — jeżeli to będzie problem, kolejny etap powinien zrobić własny popover.
 - Trzeba ręcznie sprawdzić, czy trzy pola w górnym rzędzie nie ściskają się na szerokości laptopa i czy wąskie ekrany poprawnie zawijają do jednej kolumny.
+
+## STAGE220A36-R12 — Commission Modal Width Polish
+
+Data: 2026-06-06 09:35 Europe/Warsaw
+
+### FAKTY
+- Po R11 modal byl czytelniejszy, ale select rodzaju prowizji nadal ucinal tekst, a pole wartosci transakcji/zlecenia zajmowalo zbyt duzo szerokosci.
+- R12 poszerza pole rodzaju prowizji, utrzymuje kompaktowa stawke i kwote prowizji oraz ogranicza szerokosc pola wartosci transakcji/zlecenia.
+
+### TESTY
+- node scripts/check-stage220a36r12-commission-modal-width-polish.cjs
+- node --test tests/stage220a36r12-commission-modal-width-polish.test.cjs
+
+### AUDYT RYZYK
+- Zmieniany jest tylko CSS i marker ukladu modala; logika zapisu prowizji zostaje bez zmian.
+- Na waskich ekranach pola nadal skladaja sie do jednej kolumny.
+
+## STAGE226R10 — Lead/Client Separation Runtime Fix
+
+Data: 2026-06-06 09:35 Europe/Warsaw
+
+### FAKTY
+- Lead i klient sa osobnymi bytami. Dodanie leada nie moze tworzyc ani wyswietlac klienta.
+- W api/leads.ts zwykly POST tworzacy leada nie moze wywolywac ensureClientForLead ani wypelniac client_id/linked_case_id.
+- Konwersja do klienta zostaje tylko w jawnym przeplywie start_service.
+
+### TESTY
+- node scripts/check-stage226r10-lead-client-separation-runtime.cjs
+- node --test tests/stage226r10-lead-client-separation-runtime.test.cjs
+- opcjonalnie Stage226 lost-lead-rescue guard/test jesli pliki istnieja
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Najwieksze ryzyko bylo w zwyklym POST /api/leads, ktory mogl zapewniac klienta przed utworzeniem leada.
+- Nie ruszano Supabase schema, RLS, Stage227 ani finansow A36 poza malym R12 CSS.
+- Trzeba recznie potwierdzic: dodanie leada nie zwieksza liczby klientow na /clients.

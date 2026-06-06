@@ -114,6 +114,7 @@ const STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES = 'lead rows show missing con
 const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit lastContactAt for activity truth';
 const STAGE225_CONTACT_CADENCE_GRID_LEADS = 'leads list uses Contact Cadence Grid filter from activity-truth';
 const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue view from buildLostLeadRescue';
+const STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME = 'lead create stays lead-only and never creates or displays a client row';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
@@ -121,6 +122,7 @@ void STAGE222_R4_LEADS_CLIENTS_OPERATIONAL_BADGES;
 void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
 void STAGE225_CONTACT_CADENCE_GRID_LEADS;
 void STAGE226_LOST_LEAD_RESCUE_LEADS;
+void STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
