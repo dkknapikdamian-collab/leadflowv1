@@ -1412,3 +1412,10 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Najwieksze ryzyko bylo w zwyklym POST /api/leads, ktory mogl zapewniac klienta przed utworzeniem leada.
 - Nie ruszano Supabase schema, RLS, Stage227 ani finansow A36 poza malym R12 CSS.
 - Trzeba recznie potwierdzic: dodanie leada nie zwieksza liczby klientow na /clients.
+
+## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG — test history
+
+- data i godzina: 2026-06-06 13:31 Europe/Warsaw
+- zaplanowane: npm run check:stage226r10b-lead-client-conflict-single-dialog; npm run test:stage226r10b-lead-client-conflict-single-dialog; npm run check:stage226r10-lead-client-separation-runtime; npm run test:stage226r10-lead-client-separation-runtime; npm run build; npm run verify:closeflow:quiet; git diff --check.
+- manual smoke: policzyć klientów, dodać unikalnego leada, sprawdzić że /clients nie rośnie; dodać leada podobnego do istniejącego klienta, sprawdzić że klient nie jest przywracany/tworzony z flow leada.
+- status: do wykonania lokalnie po apply.

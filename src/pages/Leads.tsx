@@ -123,6 +123,8 @@ void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
 void STAGE225_CONTACT_CADENCE_GRID_LEADS;
 void STAGE226_LOST_LEAD_RESCUE_LEADS;
 void STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME;
+const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate conflict dialog renders once and client matches cannot be restored from lead create';
+void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -1384,36 +1386,10 @@ items={mostValuableRelations.map((entry) => ({
 
         <span hidden data-stage220a29-conflict-trash-confirm="true" />
 
-        <EntityConflictDialog
-          open={leadConflictOpen}
-          candidates={leadConflictCandidates}
-          createAnywayLabel="Dodaj mimo to"
-          onOpenChange={(open) => {
-            setLeadConflictOpen(open);
-            if (!open) {
-              setLeadConflictCandidates([]);
-              setLeadConflictPendingInput(null);
-            }
-          }}
-          onShow={(candidate) => {
-            const targetUrl = candidate.url || (candidate.entityType === 'client' ? '/clients/' + candidate.id : '/leads/' + candidate.id);
-            window.location.href = targetUrl;
-          }}
-          onRestore={restoreConflictCandidate}
-          onCreateAnyway={handleCreateLeadAnyway}
-          onCancel={() => {
-            setLeadConflictOpen(false);
-            setLeadConflictCandidates([]);
-            setLeadConflictPendingInput(null);
-            setIsNewLeadOpen(true);
-          }}
-          busy={leadSubmitting}
-        />
-
         <div data-closeflow-lead-conflict-dialog-v25="true">
           <EntityConflictDialog
             open={leadConflictOpen}
-            candidates={leadConflictCandidates}
+            candidates={leadConflictCandidates.map((candidate) => candidate.entityType === 'client' ? { ...candidate, canRestore: false } : candidate)}
             onOpenChange={(open) => {
               setLeadConflictOpen(open);
               if (!open) {

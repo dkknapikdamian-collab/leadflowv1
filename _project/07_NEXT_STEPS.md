@@ -2117,3 +2117,9 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Najwieksze ryzyko bylo w zwyklym POST /api/leads, ktory mogl zapewniac klienta przed utworzeniem leada.
 - Nie ruszano Supabase schema, RLS, Stage227 ani finansow A36 poza malym R12 CSS.
 - Trzeba recznie potwierdzic: dodanie leada nie zwieksza liczby klientow na /clients.
+
+## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG — next step
+
+- data i godzina: 2026-06-06 13:31 Europe/Warsaw
+- po PASS: wykonać manual smoke /clients -> /leads -> /clients i dopiero potem wrócić do Stage226R11 albo Stage227.
+- nie ruszać: Stage227, Google Calendar, finanse A36, RLS, schema.

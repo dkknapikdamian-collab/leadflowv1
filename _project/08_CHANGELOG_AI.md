@@ -2079,3 +2079,13 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Najwieksze ryzyko bylo w zwyklym POST /api/leads, ktory mogl zapewniac klienta przed utworzeniem leada.
 - Nie ruszano Supabase schema, RLS, Stage227 ani finansow A36 poza malym R12 CSS.
 - Trzeba recznie potwierdzic: dodanie leada nie zwieksza liczby klientow na /clients.
+
+## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG — lead/client conflict hardening
+
+- data i godzina: 2026-06-06 13:31 Europe/Warsaw
+- typ wpisu: etap naprawczy / runtime hardening po Stage226R10
+- decyzja: tworzenie leada zostaje lead-only; konflikt z klientem ma być ostrzeżeniem i linkiem do klienta, nie ścieżką przywrócenia klienta z formularza leada.
+- zmiana: w Leads.tsx zostaje jeden EntityConflictDialog dla leadów; kandydaci typu client mają wymuszone canRestore=false w tym flow; restoreConflictCandidate nie wykonuje updateClientInSupabase dla klienta.
+- testy/guardy: scripts/check-stage226r10b-lead-client-conflict-single-dialog.cjs, tests/stage226r10b-lead-client-conflict-single-dialog.test.cjs, plus regresja Stage226R10.
+- ryzyko: jeśli klient istnieje w /clients, po dodaniu podobnego leada nadal będzie widoczny jako stary klient — to nie jest nowy klient. Manual smoke musi liczyć klientów przed i po dodaniu leada.
+- status: local ZIP patch; do uruchomienia i pushu po PASS.
