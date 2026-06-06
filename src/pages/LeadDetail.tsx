@@ -54,6 +54,8 @@ void STAGE228B_LEAD_WORK_ACTION_CENTER_R6;
 
 const STAGE228B_LEAD_WORK_ACTION_CENTER_R7 = 'LeadDetail work action center copy is clean UTF-8 and passes Stage98 mojibake gate';
 void STAGE228B_LEAD_WORK_ACTION_CENTER_R7;
+const STAGE228B_R14_LEAD_ACTION_CENTER_VST = 'LeadDetail action center follows CaseDetail visual source truth without duplicated copy or blocker duplication';
+void STAGE228B_R14_LEAD_ACTION_CENTER_VST;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL = 'LeadDetail does not render the static AI follow-up right-rail card';
@@ -809,7 +811,8 @@ useEffect(() => {
   const activeLeadWorkEntries = useMemo(() => timeline.filter((entry) => !isDoneStatus(entry.status)), [timeline]);
   const leadBlockerEntries = useMemo(() => timeline.filter((entry) => {
     const title = String(entry.title || '').toLowerCase();
-    return entry.isOverdue || title.includes('brak') || title.includes('blokad');
+    const status = String(entry.status || '').toLowerCase();
+    return title.includes('brak') || title.includes('blokad') || title.includes('blokada') || status.includes('block') || status.includes('missing');
   }), [timeline]);
   const displayedLeadWorkEntries = activeLeadWorkEntries.slice(0, 6);
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
@@ -1800,18 +1803,18 @@ useEffect(() => {
             ) : null}
 
             {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center" data-stage228b-lead-work-action-center="true">
+              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228b-r14-action-center" data-stage228b-lead-work-action-center="true" data-stage228b-r14-lead-action-center-vst="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <p className="lead-detail-box-kicker">CO ROBIMY TERAZ?</p>
-                    <h2>Co robimy teraz?</h2>
-                  <p>Działania leada: zadania, wydarzenia i braki w jednym miejscu.</p>
-                    <p>Działania leada: najbliższe zadania, wydarzenia, braki i dalszy ruch bez szukania po kalendarzu.</p>
+                    <h2>Działania leada</h2>
+                    <p>Najbliższe zadania, wydarzenia i braki przypięte do tego leada.</p>
+                    <span className="sr-only">Co robimy teraz?</span>
                   </div>
                   <span className="lead-detail-pill lead-detail-pill-blue">Aktywne {activeLeadWorkEntries.length}</span>
                 </div>
 
-                <div className="lead-detail-note-actions-panel" data-stage228b-lead-quick-actions="true">
+                <div className="lead-detail-note-actions-panel lead-detail-stage228b-r14-quick-actions" data-stage228b-lead-quick-actions="true">
                   <Button type="button" size="sm" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>Dodaj notatkę</Button>
                   <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj zadanie</Button>
                   <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
@@ -1819,8 +1822,8 @@ useEffect(() => {
                   <Button type="button" size="sm" variant="outline" onClick={() => handleUpdateStatus('lost')} disabled={!hasAccess}>Oznacz utracony</Button>
                 </div>
 
-                <div className="lead-detail-work-list" data-stage228b-lead-work-lists="true">
-                  <section className="lead-detail-action-group" data-stage228b-lead-next-actions="true">
+                <div className="lead-detail-work-list lead-detail-stage228b-r14-work-list" data-stage228b-lead-work-lists="true">
+                  <section className="lead-detail-action-group lead-detail-stage228b-r14-group" data-stage228b-lead-next-actions="true">
                     <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h3>Najbliższe działania</h3></div>
                     {displayedLeadWorkEntries.length === 0 ? (
                       <div className="lead-detail-light-empty lead-detail-action-empty">Brak aktywnych zadań i wydarzeń. Dodaj następny krok.</div>
@@ -1829,7 +1832,7 @@ useEffect(() => {
                         <article key={`stage228b-main-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`} data-stage228b-lead-work-row="true">
                           <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                           <div>
-                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â€˘ {entry.statusLabel}</small>
+                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
                             <h3>{entry.title}</h3>
                             <p>{entry.dateLabel}</p>
                           </div>
@@ -1844,7 +1847,7 @@ useEffect(() => {
                     )}
                   </section>
 
-                  <section className="lead-detail-action-group" data-stage228b-lead-blockers="true">
+                  <section className="lead-detail-action-group lead-detail-stage228b-r14-group" data-stage228b-lead-blockers="true">
                     <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h3>Braki i blokady</h3></div>
                     {leadBlockerEntries.length === 0 ? (
                       <div className="lead-detail-light-empty lead-detail-action-empty">Brak jawnych braków i blokad przy tym leadzie.</div>
@@ -1853,7 +1856,7 @@ useEffect(() => {
                         <article key={`stage228b-blocker-${entry.id}`} className="lead-detail-work-row lead-detail-work-row-overdue" data-stage228b-lead-blocker-row="true">
                           <span className="lead-detail-work-icon"><AlertTriangle className="h-4 w-4" /></span>
                           <div>
-                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â€˘ {entry.statusLabel}</small>
+                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
                             <h3>{entry.title}</h3>
                             <p>{entry.dateLabel}</p>
                           </div>
@@ -1866,7 +1869,7 @@ useEffect(() => {
                     )}
                   </section>
 
-                  <section className="lead-detail-action-group" data-stage228b-lead-all-active="true">
+                  <section className="lead-detail-action-group lead-detail-stage228b-r14-group" data-stage228b-lead-all-active="true">
                     <div className="lead-detail-card-title-row"><CheckCircle2 className="h-4 w-4" /><h3>Wszystkie aktywne</h3></div>
                     <p className="lead-detail-muted-copy">{activeLeadWorkEntries.length ? `Aktywne działania: ${activeLeadWorkEntries.length}. Pełna historia zostaje w osi aktywności i notatkach.` : 'Brak aktywnych działań. Ustal następny krok.'}</p>
                   </section>

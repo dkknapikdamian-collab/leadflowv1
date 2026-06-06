@@ -270,3 +270,6 @@ runQuiet('stage228b lead work action center guard', process.execPath, ['scripts/
 runQuiet('stage228b lead work action center test', process.execPath, ['--test', 'tests/stage228b-lead-work-action-center.test.cjs']);
 runQuiet('stage228b lead detail import source guard', process.execPath, ['scripts/check-stage228b-lead-detail-import-source.cjs']);
 runQuiet('stage228b alerttriangle import guard', process.execPath, ['scripts/check-stage228b-alerttriangle-import.cjs']);
+
+runQuiet('stage228b-r14 lead action center vst guard', process.execPath, ['scripts/check-stage228b-r14-lead-action-center-vst.cjs']);
+runQuiet('stage228b-r14 lead action center vst test', process.execPath, ['--test', 'tests/stage228b-r14-lead-action-center-vst.test.cjs']);

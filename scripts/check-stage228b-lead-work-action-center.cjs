@@ -14,6 +14,7 @@ const source = fs.readFileSync(leadPath, 'utf8');
 const requiredTokens = [
   'data-stage228b-lead-work-action-center="true"',
   'Co robimy teraz?',
+  'data-stage228b-r14-lead-action-center-vst="true"',
   'Działania leada',
   'Najbliższe działania',
   'Braki i blokady',
@@ -43,6 +44,15 @@ const requiredTokens = [
 ];
 
 const failures = requiredTokens.filter((token) => !source.includes(token));
+if (source.includes('Działania leada: zadania, wydarzenia i braki w jednym miejscu.')) {
+  failures.push('old duplicate lead action copy must be removed');
+}
+if (source.includes('return entry.isOverdue || title.includes')) {
+  failures.push('overdue events must not be duplicated as blockers by default');
+}
+if (source.includes('â€˘') || source.includes('â€¢')) {
+  failures.push('mojibake bullet must not be present in LeadDetail action rows');
+}
 
 const leadActionCenterIndex = source.indexOf('data-stage228b-lead-work-action-center="true"');
 const notesIndex = source.indexOf('lead-detail-history-center lead-detail-notes-only-section');

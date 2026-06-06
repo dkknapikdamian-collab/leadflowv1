@@ -2183,3 +2183,11 @@ Poprawiono `/funnel`: domyĹ›lnie pokazuje wszystkie rekordy, kafle wĹ‚aĹ�
 - Scope: deterministic rewrite of LeadDetail imports for react, react-router-dom and lucide-react.
 - Guard: parser-based checks for AlertTriangle and hook import sources.
 - Risk note: R8/R9/R10/R12 failures were caused by brittle regex/import handling; R13 uses declaration-level parsing.
+
+## 2026-06-06 19:45 Europe/Warsaw — STAGE228B_R14_LEAD_ACTION_CENTER_VST
+
+- FAKT: Po Stage228B LeadDetail działa, ale centrum działań leada było mniej czytelne niż analogiczna karta sprawy.
+- DECYZJA: Nie tworzyć osobnego systemu wizualnego dla leada. Lead action center ma iść w kierunku tego samego źródła wizualnego co CaseDetail: jeden nagłówek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
+- ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
+- TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
+- RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
