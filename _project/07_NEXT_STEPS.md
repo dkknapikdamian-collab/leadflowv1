@@ -2135,3 +2135,15 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 14:23 Europe/Warsaw
 - po PASS: ręcznie przetestować konflikt/duplikat dla klienta i leada; dopiero potem wrócić do Stage226R11 timezone Google Calendar albo kolejnego etapu.
 - nie ruszać: Stage227 przed domknięciem lead/client + conflict gate smoke.
+
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — next step
+
+- data i godzina: 2026-06-06 14:58 Europe/Warsaw
+- po PASS: ręczny smoke produkcyjny CloseFlow -> Google Calendar -> inbound sync.
+- dopiero po potwierdzeniu timezone/reminders wrócić do Stage227 — Sales Funnel Movement View.
+
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — next step
+
+- data i godzina: 2026-06-06 15:05 Europe/Warsaw
+- po PASS R11B wykonać push R11/R11B, potem ręczny smoke Google Calendar: godzina + przypomnienie.
+- nie przechodzić do Stage227 bez smoke Google Calendar.

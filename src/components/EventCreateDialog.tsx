@@ -33,6 +33,9 @@ import {
   toDateTimeLocalValue
 } from '../lib/scheduling';
 import {
+  localDateTimeInputToReminderUtcIso,
+} from '../lib/calendar-timezone-contract';
+import {
   insertEventToSupabase
 } from '../lib/supabase-fallback';
 import {
@@ -87,9 +90,7 @@ function buildRecurrenceRule(mode: string) {
 
 function calculateReminderAt(startAt: string, reminderMode: string, reminderOffsetMinutes: number) {
   if (reminderMode === 'none') return undefined;
-  const startTime = new Date(startAt).getTime();
-  if (!Number.isFinite(startTime)) return undefined;
-  return new Date(startTime - Number(reminderOffsetMinutes || 0) * 60_000).toISOString();
+  return localDateTimeInputToReminderUtcIso(startAt, reminderOffsetMinutes) || undefined;
 }
 
 export default function EventCreateDialog({ open, onOpenChange, onSaved, context }: EventCreateDialogProps) {

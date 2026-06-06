@@ -482,7 +482,7 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikuje equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
@@ -1969,3 +1969,16 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - guard: scripts/check-stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.cjs
 - test: tests/stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.test.cjs
 - kontrakt: brak .catch(() => ({ candidates: [] })) przy conflict preflight; błąd checkerów zatrzymuje zapis; konflikt pokazuje komunikat i wymaga „Dodaj mimo to”.
+
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — guardy i testy
+
+- data i godzina: 2026-06-06 14:58 Europe/Warsaw
+- guard: `npm run check:stage226r11-gcal-timezone-reminder-truth`.
+- test: `npm run test:stage226r11-gcal-timezone-reminder-truth`.
+- regresje: R10D2, R10C2, R10B, R10, build, verify:closeflow:quiet, git diff --check.
+
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — guardy/testy
+
+- data i godzina: 2026-06-06 15:05 Europe/Warsaw
+- test: npm run test:stage226r11-gcal-timezone-reminder-truth
+- powód: assert z node:assert/strict porównywał obiekt z VM realm do zwykłego obiektu i raportował false negative mimo identycznej struktury.

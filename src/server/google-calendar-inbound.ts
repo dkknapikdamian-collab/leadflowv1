@@ -1,5 +1,6 @@
 import { Calendar } from 'lucide-react';
 import crypto from 'crypto';
+import { googleDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { deleteById, supabaseRequest } from './_supabase.js';
 import {
   getGoogleCalendarConnection,
@@ -37,12 +38,12 @@ function toIso(value: unknown) {
 }
 function googleEventStart(event: GoogleEvent) {
   // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_INBOUND_START
+  // STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH: inbound timed events preserve Google wall-clock time and timeZone.
   if (googleEventIsAllDay(event)) {
     const dateOnly = googleEventStartDate(event);
     return dateOnly ? dateOnly + 'T00:00:00.000Z' : null;
   }
-  const value = event?.start?.dateTime || '';
-  return toIso(value);
+  return googleDateTimeToUtcIso({ dateTime: event?.start?.dateTime || '', timeZone: event?.start?.timeZone || '' });
 }
 function googleEventEnd(event: GoogleEvent, startAt: string | null) {
   // GOOGLE_CALENDAR_STAGE11C_ALL_DAY_INBOUND_END
@@ -50,8 +51,7 @@ function googleEventEnd(event: GoogleEvent, startAt: string | null) {
     const dateOnly = googleEventEndDate(event);
     return dateOnly ? dateOnly + 'T00:00:00.000Z' : startAt;
   }
-  const value = event?.end?.dateTime || '';
-  const parsed = toIso(value);
+  const parsed = googleDateTimeToUtcIso({ dateTime: event?.end?.dateTime || '', timeZone: event?.end?.timeZone || event?.start?.timeZone || '' });
   if (parsed) return parsed;
   if (!startAt) return null;
   return new Date(new Date(startAt).getTime() + 60 * 60_000).toISOString();

@@ -1,5 +1,6 @@
 import { Calendar } from 'lucide-react';
 import crypto from 'crypto';
+import { CLOSEFLOW_DEFAULT_TIMEZONE, utcIsoToGoogleDateTimeInDefaultZone } from '../lib/calendar-timezone-contract.js';
 import { supabaseRequest } from './_supabase.js';
 
 type GoogleCalendarConfigStatus = {
@@ -518,7 +519,14 @@ function addOneGoogleDateOnly(value: string) {
   return parsed.toISOString().slice(0, 10);
 }
 
+function addMinutesToUtcIso(value: string, minutes: number) {
+  const parsed = new Date(value);
+  if (!Number.isFinite(parsed.getTime())) return null;
+  return new Date(parsed.getTime() + minutes * 60000).toISOString();
+}
+
 function buildGoogleTimeFields(event: CloseFlowCalendarEvent) {
+  // STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH: timed Google events receive wall-clock dateTime plus timeZone instead of bare toISOString().
   if (event.googleAllDay) {
     const startDate = normalizeGoogleDateOnly(event.googleStartDate || event.startAt);
     const endDate = normalizeGoogleDateOnly(event.googleEndDate || event.endAt) || (startDate ? addOneGoogleDateOnly(startDate) : '');
@@ -526,9 +534,16 @@ function buildGoogleTimeFields(event: CloseFlowCalendarEvent) {
       return { start: { date: startDate }, end: { date: endDate } };
     }
   }
-  const start = new Date(event.startAt);
-  const end = event.endAt ? new Date(event.endAt) : new Date(start.getTime() + 60 * 60 * 1000);
-  return { start: { dateTime: start.toISOString() }, end: { dateTime: end.toISOString() } };
+  const startIso = event.startAt || new Date().toISOString();
+  const endIso = event.endAt || addMinutesToUtcIso(startIso, 60) || new Date(new Date(startIso).getTime() + 60 * 60 * 1000).toISOString();
+  const start = utcIsoToGoogleDateTimeInDefaultZone(startIso, CLOSEFLOW_DEFAULT_TIMEZONE);
+  const end = utcIsoToGoogleDateTimeInDefaultZone(endIso, CLOSEFLOW_DEFAULT_TIMEZONE);
+  if (!start || !end) {
+    const fallbackStart = new Date(startIso);
+    const fallbackEnd = new Date(endIso);
+    return { start: { dateTime: fallbackStart.toISOString(), timeZone: CLOSEFLOW_DEFAULT_TIMEZONE }, end: { dateTime: fallbackEnd.toISOString(), timeZone: CLOSEFLOW_DEFAULT_TIMEZONE } };
+  }
+  return { start, end };
 }
 
 function buildGoogleEventBody(event: CloseFlowCalendarEvent) {

@@ -3,6 +3,7 @@
 import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeEventListContract } from '../lib/data-contract.js';
+import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 
 const EVENT_LIST_SELECT_STAGE124D = [
   'id',
@@ -61,12 +62,7 @@ function queryValue(req: any, name: string) {
 }
 
 function asIsoDate(value: unknown) {
-  const text = asText(value);
-  if (!text) return null;
-  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(text) ? text + 'T00:00:00.000Z' : text;
-  const parsed = new Date(normalized);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString();
+  return normalizeCloseFlowDateTimeToUtcIso(value);
 }
 
 function capLimit(value: unknown) {
@@ -114,7 +110,7 @@ async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { 
   if (!normalizedLeadId) return;
   await updateByIdScoped('leads', normalizedLeadId, workspaceId, {
     next_action_title: String(item.title || ''),
-    next_action_at: item.startAt ? new Date(String(item.startAt)).toISOString() : null,
+    next_action_at: item.startAt ? normalizeCloseFlowDateTimeToUtcIso(item.startAt) : null,
     next_action_item_id: item.id ? String(item.id) : null,
     updated_at: new Date().toISOString(),
   });
@@ -169,11 +165,11 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       if (body.type !== undefined) payload.type = body.type;
       if (body.status !== undefined) payload.status = body.status;
       if (body.startAt !== undefined) {
-        const iso = body.startAt ? new Date(body.startAt).toISOString() : null;
+        const iso = body.startAt ? normalizeCloseFlowDateTimeToUtcIso(body.startAt) : null;
         payload.start_at = iso;
         payload.scheduled_at = iso;
       }
-      if (body.endAt !== undefined) payload.end_at = body.endAt ? new Date(body.endAt).toISOString() : null;
+      if (body.endAt !== undefined) payload.end_at = body.endAt ? normalizeCloseFlowDateTimeToUtcIso(body.endAt) : null;
       if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
       if (body.caseId !== undefined) payload.case_id = body.caseId || null;
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
@@ -210,7 +206,7 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
     }
 
     const nowIso = new Date().toISOString();
-    const startAt = body.startAt ? new Date(body.startAt).toISOString() : nowIso;
+    const startAt = body.startAt ? normalizeCloseFlowDateTimeToUtcIso(body.startAt) || nowIso : nowIso;
     const payload = {
       workspace_id: workspaceId,
       created_by_user_id: null,
@@ -225,7 +221,7 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       priority: 'medium',
       scheduled_at: startAt,
       start_at: startAt,
-      end_at: body.endAt ? new Date(body.endAt).toISOString() : null,
+      end_at: body.endAt ? normalizeCloseFlowDateTimeToUtcIso(body.endAt) : null,
       recurrence: body.recurrenceRule || 'none',
       reminder: body.reminderAt || 'none',
       show_in_tasks: false,

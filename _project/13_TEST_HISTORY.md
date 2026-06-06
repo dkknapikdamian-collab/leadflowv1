@@ -13,9 +13,9 @@ Skrypt uproszczony do kopii payload i uruchomienia guardow. Po uruchomieniu dopi
 
 Do wykonania po apply:
 
-- 
+-
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs
-- 
+-
 pm run build
 - RÄ™cznie /settings: czytelnoĹ›Ä‡ select/input/disabled/dropdown/focus w sekcji Google Calendar reminders.
 
@@ -23,9 +23,9 @@ pm run build
 
 Do wykonania po apply:
 
-- 
+-
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs
-- 
+-
 pm run build
 - RÄ™cznie /settings: czytelnoĹ›Ä‡ select/input/disabled/dropdown/focus w sekcji Google Calendar reminders.
 
@@ -1431,3 +1431,15 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 14:23 Europe/Warsaw
 - planowane: npm run check:stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix; npm run test:stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix; regresje R10C2/R10B/R10; npm run build; npm run verify:closeflow:quiet; git diff --check.
 - manual smoke: dodaj klienta z istniejącym telefonem/e-mailem — musi być komunikat/dialog; Anuluj nie zapisuje; Dodaj mimo to zapisuje. Powtórzyć dla leada. Sprawdzić, że lead nadal nie tworzy klienta.
+
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — test history
+
+- data i godzina: 2026-06-06 14:58 Europe/Warsaw
+- zaplanowane: check/test R11, regresje R10D2/R10C2/R10B/R10, build, verify:closeflow:quiet, git diff --check.
+- manual smoke: event 12:00 Europe/Warsaw ma być 12:00 w Google; przypomnienie 30 min przed ma być widoczne; inbound nie przesuwa godziny.
+
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — historia testów
+
+- data i godzina: 2026-06-06 15:05 Europe/Warsaw
+- poprzedni FAIL: Google outbound returns wall-clock dateTime plus timeZone, not shifted Z time — false negative przez cross-realm object prototype.
+- oczekiwane po R11B: R11 guard/test PASS, regresje R10D2/R10C2/R10B/R10 PASS, build PASS, verify PASS, diff check clean.

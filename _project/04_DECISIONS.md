@@ -1428,3 +1428,16 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - testy/guardy: check/test stage226r10d2 plus regresje R10C2/R10B/R10, build, verify:closeflow:quiet, git diff --check.
 - audyt ryzyk: fail-closed może chwilowo blokować zapis przy awarii API konfliktów, ale to jest bezpieczniejsze niż ciche mnożenie duplikatów klientów/leadów.
 - status: local ZIP patch; push po PASS i ręcznym smoke.
+
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — decyzja czasu Google Calendar
+
+- data i godzina: 2026-06-06 14:58 Europe/Warsaw
+- decyzja: CloseFlow zapisuje czas z inputów `datetime-local` jako intencję użytkownika w Europe/Warsaw, a do Google Calendar wysyła timed events jako `dateTime` + `timeZone`, nie jako gołe `toISOString()` bez strefy.
+- decyzja: brak przesunięcia 1-2h jest ważniejszy niż Stage227, bo lejek i najbliższe akcje opierają się na prawdziwych godzinach.
+- decyzja: przypomnienie Google musi wynikać z `reminderAt`/offsetu i trafiać do `reminders.overrides` albo do zapisanego exact Google reminders, nie ginąć po syncu.
+
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — decyzja
+
+- data i godzina: 2026-06-06 15:05 Europe/Warsaw
+- decyzja: R11 code path is kept; only the Node test assertion was fixed because vm.runInNewContext returns objects from a different realm/prototype.
+- status: fix testu wdrożeniowego po czerwonym teście o identycznej strukturze obiektu.

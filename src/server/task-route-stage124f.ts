@@ -3,6 +3,7 @@
 import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeTaskListContract } from '../lib/data-contract.js';
+import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 
 const TASK_LIST_SELECT_STAGE124D = [
   'id',
@@ -67,12 +68,7 @@ function queryValue(req: any, name: string) {
 }
 
 function asIsoDate(value: unknown) {
-  const text = asText(value);
-  if (!text) return null;
-  const normalized = /^\d{4}-\d{2}-\d{2}$/.test(text) ? text + 'T00:00:00.000Z' : text;
-  const parsed = new Date(normalized);
-  if (Number.isNaN(parsed.getTime())) return null;
-  return parsed.toISOString();
+  return normalizeCloseFlowDateTimeToUtcIso(value);
 }
 
 function capLimit(value: unknown) {
@@ -120,7 +116,7 @@ async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { 
   if (!normalizedLeadId) return;
   await updateByIdScoped('leads', normalizedLeadId, workspaceId, {
     next_action_title: String(item.title || ''),
-    next_action_at: item.scheduledAt ? new Date(String(item.scheduledAt)).toISOString() : null,
+    next_action_at: item.scheduledAt ? normalizeCloseFlowDateTimeToUtcIso(item.scheduledAt) : null,
     next_action_item_id: item.id ? String(item.id) : null,
     updated_at: new Date().toISOString(),
   });
@@ -175,8 +171,8 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       if (body.type !== undefined) payload.type = body.type;
       if (body.status !== undefined) payload.status = body.status;
       if (body.priority !== undefined) payload.priority = body.priority;
-      if (body.date !== undefined) payload.scheduled_at = body.date ? new Date(String(body.date) + 'T09:00:00').toISOString() : null;
-      if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? new Date(body.scheduledAt).toISOString() : null;
+      if (body.date !== undefined) payload.scheduled_at = body.date ? normalizeCloseFlowDateTimeToUtcIso(String(body.date) + 'T09:00') : null;
+      if (body.scheduledAt !== undefined) payload.scheduled_at = body.scheduledAt ? normalizeCloseFlowDateTimeToUtcIso(body.scheduledAt) : null;
       if (body.leadId !== undefined) payload.lead_id = body.leadId || null;
       if (body.caseId !== undefined) payload.case_id = body.caseId || null;
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
@@ -214,9 +210,9 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
 
     const nowIso = new Date().toISOString();
     const scheduledAt = body.scheduledAt
-      ? new Date(body.scheduledAt).toISOString()
+      ? normalizeCloseFlowDateTimeToUtcIso(body.scheduledAt)
       : body.date
-        ? new Date(String(body.date) + 'T09:00:00').toISOString()
+        ? normalizeCloseFlowDateTimeToUtcIso(String(body.date) + 'T09:00')
         : null;
 
     const payload = {

@@ -1995,3 +1995,16 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - testy/guardy: check/test stage226r10d2 plus regresje R10C2/R10B/R10, build, verify:closeflow:quiet, git diff --check.
 - audyt ryzyk: fail-closed może chwilowo blokować zapis przy awarii API konfliktów, ale to jest bezpieczniejsze niż ciche mnożenie duplikatów klientów/leadów.
 - status: local ZIP patch; push po PASS i ręcznym smoke.
+
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — ledger
+
+- data i godzina: 2026-06-06 14:58 Europe/Warsaw
+- status: przygotowano paczkę ZIP local-only.
+- repo: dkknapikdamian-collab/leadflowv1; branch: dev-rollout-freeze; local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow.
+- zakres: timezone/reminders only; bez Stage227, finansów, RLS i schema.
+
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — ledger
+
+- data i godzina: 2026-06-06 15:05 Europe/Warsaw
+- typ: test-fix po apply R11.
+- zakres: tests/stage226r11-gcal-timezone-reminder-truth.test.cjs + project memory/report/run/obsidian update.

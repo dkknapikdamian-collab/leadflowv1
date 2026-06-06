@@ -22,6 +22,7 @@ import {
   insertTaskToSupabase,
 } from '../lib/supabase-fallback';
 import { toDateTimeLocalValue } from '../lib/scheduling';
+import { localDateTimeInputToReminderUtcIso } from '../lib/calendar-timezone-contract';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import {
   buildTopicContactOptions,
@@ -83,9 +84,7 @@ function defaultTaskCreateForm(context?: TaskCreateDialogContext): TaskCreateFor
 
 function calculateReminderAt(dueAt: string, reminderMode: string, reminderOffsetMinutes: number) {
   if (reminderMode === 'none') return null;
-  const dueTime = new Date(dueAt).getTime();
-  if (!Number.isFinite(dueTime)) return null;
-  return new Date(dueTime - Number(reminderOffsetMinutes || 0) * 60_000).toISOString();
+  return localDateTimeInputToReminderUtcIso(dueAt, reminderOffsetMinutes);
 }
 
 export default function TaskCreateDialog({ open, onOpenChange, onSaved, context }: TaskCreateDialogProps) {
