@@ -353,7 +353,8 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikuje
+equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
@@ -2147,3 +2148,18 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - po PASS R11B wykonać push R11/R11B, potem ręczny smoke Google Calendar: godzina + przypomnienie.
 - nie przechodzić do Stage227 bez smoke Google Calendar.
+
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_NEXT_START -->
+## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A next step
+
+1. UruchomiÄ‡ lokalny apply i testy.
+2. OtworzyÄ‡ `/funnel` lokalnie.
+3. SprawdziÄ‡ leady, sprawy, next step, ciszÄ™, ryzyko i wartoĹ›Ä‡/prowizjÄ™.
+4. Po akceptacji Damiana zrobiÄ‡ selektywny commit/push bez `git add .`.
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_NEXT_END -->
+
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_NEXT_START -->
+## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” next step
+
+Po lokalnym PASS trzeba rÄ™cznie sprawdziÄ‡ `http://localhost:3000/funnel`. JeĹĽeli widok jest czytelny, moĹĽna zrobiÄ‡ selektywny commit/push. JeĹĽeli nie, kolejny etap powinien dopracowaÄ‡ tylko kompozycjÄ™ UI, bez ruszania helperĂłw danych.
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_NEXT_END -->

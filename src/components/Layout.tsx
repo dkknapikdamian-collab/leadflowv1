@@ -332,6 +332,7 @@ export default function Layout({ children }: LayoutProps) {
         { icon: Users, label: 'Leady', path: '/leads' },
         { icon: Users, label: 'Klienci', path: '/clients' },
         { icon: Briefcase, label: 'Sprawy', path: '/cases' },
+        { icon: FolderKanban, label: 'Lejek', path: '/funnel' },
       ],
     },
     {
@@ -447,7 +448,7 @@ export default function Layout({ children }: LayoutProps) {
 
       <OperatorTopBarRuntime />
       <VisualFoundationRuntimeStage212M />
-      
+
 <aside
         className="sidebar"
         data-shell-sidebar="true"

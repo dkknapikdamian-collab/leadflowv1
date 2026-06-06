@@ -82,6 +82,7 @@ const LegalPrivacy = lazyPage(() => import('./pages/LegalPrivacy'), 'LegalPrivac
 const LegalTerms = lazyPage(() => import('./pages/LegalTerms'), 'LegalTerms');
 const Today = lazyPage(() => import('./pages/TodayStable'), 'TodayStable');
 const Leads = lazyPage(() => import('./pages/Leads'), 'Leads');
+const SalesFunnel = lazyPage(() => import('./pages/SalesFunnel'), 'SalesFunnel');
 const LeadDetail = lazyPage(() => import('./pages/LeadDetail'), 'LeadDetail');
 const Cases = lazyPage(() => import('./pages/Cases'), 'Cases');
 const CaseDetail = lazyPage(() => import('./pages/CaseDetail'), 'CaseDetail');
@@ -249,6 +250,8 @@ export default function App() {
               <Route path="/" element={isLoggedIn ? <Today /> : <PublicLanding />} />
               <Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
               <Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />
+              <Route path="/dev/funnel" element={import.meta.env.DEV ? <SalesFunnel /> : <Navigate to="/login" />} />
+              <Route path="/funnel" element={isLoggedIn ? <SalesFunnel /> : <Navigate to="/login" />} />
               <Route path="/leads/:leadId" element={isLoggedIn ? <LeadDetail /> : <Navigate to="/login" />} />
               <Route path="/tasks" element={isLoggedIn ? <Tasks /> : <Navigate to="/login" />} />
               <Route path="/calendar" element={isLoggedIn ? <Calendar /> : <Navigate to="/login" />} />

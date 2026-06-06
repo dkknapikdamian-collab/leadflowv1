@@ -485,7 +485,8 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikuje
+equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
@@ -2008,3 +2009,15 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - typ: test-fix po apply R11.
 - zakres: tests/stage226r11-gcal-timezone-reminder-truth.test.cjs + project memory/report/run/obsidian update.
+
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_LEDGER_START -->
+## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A implementation ledger
+
+Nowe pliki: `src/pages/SalesFunnel.tsx`, `src/lib/owner-control/sales-funnel-movement.ts`, `scripts/check-stage227a-sales-funnel-movement-view.cjs`, `tests/stage227a-sales-funnel-movement-view.test.cjs`, raporty `_project`. Zmienione: `App.tsx`, `Layout.tsx`, `package.json`, `closeflow-release-check-quiet.cjs`, centralne pliki `_project`.
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_LEDGER_END -->
+
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_LEDGER_START -->
+## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” implementation ledger
+
+Zakres: `src/pages/SalesFunnel.tsx`, guard/test Stage227B, rejestracja w package.json i quiet release gate, aktualizacje `_project` i Obsidian update manifest.
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_LEDGER_END -->

@@ -1443,3 +1443,15 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - poprzedni FAIL: Google outbound returns wall-clock dateTime plus timeZone, not shifted Z time — false negative przez cross-realm object prototype.
 - oczekiwane po R11B: R11 guard/test PASS, regresje R10D2/R10C2/R10B/R10 PASS, build PASS, verify PASS, diff check clean.
+
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_TEST_HISTORY_START -->
+## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A test history
+
+Status przed lokalnym uruchomieniem: PENDING_LOCAL_RUN. Skrypt `APPLY_STAGE227A_LOCAL_ONLY.ps1` uruchamia guard, runtime test, build, verify quiet, regresje R10/R11 jeĹ›li istniejÄ… oraz `git diff --check`.
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_TEST_HISTORY_END -->
+
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_START -->
+## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” test history
+
+Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify quiet, git diff --check. Manual: `/funnel` ma byÄ‡ czytelny i ma otworzyÄ‡ siÄ™ bez biaĹ‚ego ekranu.
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_END -->

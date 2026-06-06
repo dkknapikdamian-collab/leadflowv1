@@ -570,7 +570,8 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikuje
+equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
@@ -2123,3 +2124,15 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - poprawiono test R11: wynik z VM jest serializowany do plain object przed deepStrictEqual.
 - logika aplikacji R11 nie została zmieniona w R11B.
+
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_CHANGELOG_START -->
+## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A â€” Sales Funnel Movement View
+
+Dodano lokalny read-only widok `/funnel`, helper `sales-funnel-movement`, guard, runtime test, route i menu Lejek. Zakres: owner-control funnel bez drag/drop, bez mutacji, bez AI scoringu i bez zmian DB/RLS.
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_CHANGELOG_END -->
+
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_CHANGELOG_START -->
+## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” sales funnel decision list
+
+Przebudowano `/funnel` z przeĹ‚adowanego kanbana na czytelny widok decyzyjny: kafle filtrĂłw, pasek etapĂłw, jedna szeroka lista i panel priorytetu.
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_CHANGELOG_END -->

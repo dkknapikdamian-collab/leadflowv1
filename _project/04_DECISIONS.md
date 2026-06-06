@@ -1441,3 +1441,15 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - decyzja: R11 code path is kept; only the Node test assertion was fixed because vm.runInNewContext returns objects from a different realm/prototype.
 - status: fix testu wdrożeniowego po czerwonym teście o identycznej strukturze obiektu.
+
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_DECISION_START -->
+## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A â€” Lejek ruchu sprzedaĹĽowego read-only
+
+Stage227A jest lokalnym, read-only wdroĹĽeniem widoku Lejek. Lejek nie jest klasycznym kanbanem CRM. Nie ma drag/drop ani mutacji statusu. Widok zbiera istniejÄ…ce sygnaĹ‚y: ciszÄ™, brak nastÄ™pnego kroku, ryzyko i wartoĹ›Ä‡/prowizjÄ™. Push dopiero po akceptacji Damiana.
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_DECISION_END -->
+
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_DECISION_START -->
+## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” lejek jako panel decyzyjny, nie kanban
+
+DECYZJA: Stage227A dziaĹ‚aĹ‚ technicznie, ale rÄ™czny UX test pokazaĹ‚, ĹĽe szeroki kanban jest za gÄ™sty. `/funnel` zostaje osobnÄ… zakĹ‚adkÄ…, ale zostaje przebudowany na czytelny panel decyzyjny: filtry wĹ‚aĹ›ciciela, pasek etapĂłw, jedna lista rekordĂłw i panel priorytetu.
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_DECISION_END -->

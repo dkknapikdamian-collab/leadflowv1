@@ -482,7 +482,8 @@ Status: WDROZONE PRZEZ ZIP / TESTY W TOKU.
 
 Fakty:
 - Stage98 calendar mojibake guard jest pojedynczym pre-build hard gate w erify:closeflow:quiet.
-- Stage119 V4 deduplikujeequiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
+- Stage119 V4 deduplikuje
+equiredTests, zeby ponowione paczki V2/V3 nie zostawialy zdublowanego wpisu Stage119.
 - Guard Stage119 parsuje tablice testow i nie liczy surowych wystapien tekstu.
 
 Testy:
@@ -1982,3 +1983,27 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - test: npm run test:stage226r11-gcal-timezone-reminder-truth
 - powód: assert z node:assert/strict porównywał obiekt z VM realm do zwykłego obiektu i raportował false negative mimo identycznej struktury.
+
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_GUARDS_START -->
+## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A guardy i testy
+
+- `node scripts/check-stage227a-sales-funnel-movement-view.cjs`
+- `node --test tests/stage227a-sales-funnel-movement-view.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- Regresja R10 lead/client separation, jeĹ›li pliki istniejÄ….
+- Regresja R11 Google Calendar timezone reminder truth, jeĹ›li pliki istniejÄ….
+- Manual smoke `/funnel`.
+<!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_GUARDS_END -->
+
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_GUARDS_START -->
+## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” guardy/testy
+
+- `npm run check:stage227b-sales-funnel-decision-list`
+- `npm run test:stage227b-sales-funnel-decision-list`
+- Regresja: `npm run check:stage227a-sales-funnel-movement-view`
+- Regresja: `npm run test:stage227a-sales-funnel-movement-view`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+<!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_GUARDS_END -->
