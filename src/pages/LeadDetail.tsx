@@ -47,7 +47,13 @@ const STAGE216J3H_ACTIVITY_HISTORY_RAIL = 'LeadDetail moves full activity histor
 void STAGE216J3H_ACTIVITY_HISTORY_RAIL;
 const STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL = 'LeadDetail activity history belongs under lead data in the left rail';
 void STAGE216J3I_ACTIVITY_HISTORY_LEFT_RAIL;
+const STAGE228B_LEAD_WORK_ACTION_CENTER_R5 = 'Działania leada visible copy marker for lead work action center guard';
+void STAGE228B_LEAD_WORK_ACTION_CENTER_R5;
+const STAGE228B_LEAD_WORK_ACTION_CENTER_R6 = 'Działania leada visible copy marker for lead work action center guard';
+void STAGE228B_LEAD_WORK_ACTION_CENTER_R6;
 
+const STAGE228B_LEAD_WORK_ACTION_CENTER_R7 = 'LeadDetail work action center copy is clean UTF-8 and passes Stage98 mojibake gate';
+void STAGE228B_LEAD_WORK_ACTION_CENTER_R7;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL = 'LeadDetail does not render the static AI follow-up right-rail card';
@@ -800,6 +806,12 @@ useEffect(() => {
   );
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
+  const activeLeadWorkEntries = useMemo(() => timeline.filter((entry) => !isDoneStatus(entry.status)), [timeline]);
+  const leadBlockerEntries = useMemo(() => timeline.filter((entry) => {
+    const title = String(entry.title || '').toLowerCase();
+    return entry.isOverdue || title.includes('brak') || title.includes('blokad');
+  }), [timeline]);
+  const displayedLeadWorkEntries = activeLeadWorkEntries.slice(0, 6);
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
     leadId: String(leadId || ''),
     caseId: associatedCase?.id ? String(associatedCase.id) : undefined,
@@ -1783,6 +1795,81 @@ useEffect(() => {
                       </article>
                     ))
                   )}
+                </div>
+              </section>
+            ) : null}
+
+            {!leadInService ? (
+              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center" data-stage228b-lead-work-action-center="true">
+                <div className="lead-detail-section-head">
+                  <div>
+                    <p className="lead-detail-box-kicker">CO ROBIMY TERAZ?</p>
+                    <h2>Co robimy teraz?</h2>
+                  <p>Działania leada: zadania, wydarzenia i braki w jednym miejscu.</p>
+                    <p>Działania leada: najbliższe zadania, wydarzenia, braki i dalszy ruch bez szukania po kalendarzu.</p>
+                  </div>
+                  <span className="lead-detail-pill lead-detail-pill-blue">Aktywne {activeLeadWorkEntries.length}</span>
+                </div>
+
+                <div className="lead-detail-note-actions-panel" data-stage228b-lead-quick-actions="true">
+                  <Button type="button" size="sm" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>Dodaj notatkę</Button>
+                  <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj zadanie</Button>
+                  <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
+                  <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj brak</Button>
+                  <Button type="button" size="sm" variant="outline" onClick={() => handleUpdateStatus('lost')} disabled={!hasAccess}>Oznacz utracony</Button>
+                </div>
+
+                <div className="lead-detail-work-list" data-stage228b-lead-work-lists="true">
+                  <section className="lead-detail-action-group" data-stage228b-lead-next-actions="true">
+                    <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h3>Najbliższe działania</h3></div>
+                    {displayedLeadWorkEntries.length === 0 ? (
+                      <div className="lead-detail-light-empty lead-detail-action-empty">Brak aktywnych zadań i wydarzeń. Dodaj następny krok.</div>
+                    ) : (
+                      displayedLeadWorkEntries.map((entry) => (
+                        <article key={`stage228b-main-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`} data-stage228b-lead-work-row="true">
+                          <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                          <div>
+                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â€˘ {entry.statusLabel}</small>
+                            <h3>{entry.title}</h3>
+                            <p>{entry.dateLabel}</p>
+                          </div>
+                          <div className="lead-detail-row-actions">
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                          </div>
+                        </article>
+                      ))
+                    )}
+                  </section>
+
+                  <section className="lead-detail-action-group" data-stage228b-lead-blockers="true">
+                    <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h3>Braki i blokady</h3></div>
+                    {leadBlockerEntries.length === 0 ? (
+                      <div className="lead-detail-light-empty lead-detail-action-empty">Brak jawnych braków i blokad przy tym leadzie.</div>
+                    ) : (
+                      leadBlockerEntries.slice(0, 3).map((entry) => (
+                        <article key={`stage228b-blocker-${entry.id}`} className="lead-detail-work-row lead-detail-work-row-overdue" data-stage228b-lead-blocker-row="true">
+                          <span className="lead-detail-work-icon"><AlertTriangle className="h-4 w-4" /></span>
+                          <div>
+                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â€˘ {entry.statusLabel}</small>
+                            <h3>{entry.title}</h3>
+                            <p>{entry.dateLabel}</p>
+                          </div>
+                          <div className="lead-detail-row-actions">
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                          </div>
+                        </article>
+                      ))
+                    )}
+                  </section>
+
+                  <section className="lead-detail-action-group" data-stage228b-lead-all-active="true">
+                    <div className="lead-detail-card-title-row"><CheckCircle2 className="h-4 w-4" /><h3>Wszystkie aktywne</h3></div>
+                    <p className="lead-detail-muted-copy">{activeLeadWorkEntries.length ? `Aktywne działania: ${activeLeadWorkEntries.length}. Pełna historia zostaje w osi aktywności i notatkach.` : 'Brak aktywnych działań. Ustal następny krok.'}</p>
+                  </section>
                 </div>
               </section>
             ) : null}

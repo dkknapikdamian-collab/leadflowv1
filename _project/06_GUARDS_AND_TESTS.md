@@ -2018,3 +2018,11 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - `npm run verify:closeflow:quiet`
 - `git diff --check`
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_GUARDS_END -->
+
+## 2026-06-06 18:00 Europe/Warsaw â€” STAGE228B Lead Work Action Center
+
+- typ: etap wdroĹĽeniowy local-only
+- decyzja: Lead nie dostaje peĹ‚nego lejka; dostaje centrum pracy â€žCo robimy teraz?â€ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
+- testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
+- ryzyko: nie tworzyÄ‡ drugiego systemu dziaĹ‚aĹ„; uĹĽywaÄ‡ istniejÄ…cych handlerĂłw LeadDetail.

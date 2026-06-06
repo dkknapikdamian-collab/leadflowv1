@@ -1461,3 +1461,17 @@ Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify
 
 Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` â†’ `PieniÄ…dze` â†’ widoczny rekord ĹşrĂłdĹ‚owy kwoty.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_END -->
+
+## 2026-06-06 18:00 Europe/Warsaw â€” STAGE228B Lead Work Action Center
+
+- typ: etap wdroĹĽeniowy local-only
+- decyzja: Lead nie dostaje peĹ‚nego lejka; dostaje centrum pracy â€žCo robimy teraz?â€ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
+- testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
+- ryzyko: nie tworzyÄ‡ drugiego systemu dziaĹ‚aĹ„; uĹĽywaÄ‡ istniejÄ…cych handlerĂłw LeadDetail.
+
+
+## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
+- Planned/required: Stage98 hard gate must PASS before any push.
+- Planned/required: Stage228B guard/test must PASS after UTF-8 cleanup.
+- Planned/required: build, verify:closeflow:quiet and git diff --check must PASS.

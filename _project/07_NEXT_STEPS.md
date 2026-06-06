@@ -2169,3 +2169,11 @@ Po lokalnym PASS trzeba rÄ™cznie sprawdziÄ‡ `http://localhost:3000/funnel`
 
 Po wdroĹĽeniu sprawdziÄ‡ `/funnel`: domyĹ›lnie powinny byÄ‡ widoczne wszystkie rekordy, klikniÄ™cie `PieniÄ…dze` ma pokazaÄ‡ rekord z kwotÄ… 1380 PLN, a klikniÄ™cie rekordu ma prowadziÄ‡ do sprawy. NastÄ™pny etap: Stage228B Lead Work Action Center.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_END -->
+
+## 2026-06-06 18:00 Europe/Warsaw â€” STAGE228B Lead Work Action Center
+
+- typ: etap wdroĹĽeniowy local-only
+- decyzja: Lead nie dostaje peĹ‚nego lejka; dostaje centrum pracy â€žCo robimy teraz?â€ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
+- testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
+- ryzyko: nie tworzyÄ‡ drugiego systemu dziaĹ‚aĹ„; uĹĽywaÄ‡ istniejÄ…cych handlerĂłw LeadDetail.

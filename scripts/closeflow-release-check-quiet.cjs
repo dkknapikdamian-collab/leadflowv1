@@ -266,3 +266,5 @@ runQuiet('stage227b sales funnel decision list test', process.execPath, ['tests/
 runQuiet('stage227b dev funnel preview route guard', process.execPath, ['scripts/check-stage227b-dev-funnel-preview-route.cjs']);
 runQuiet('stage228a sales funnel truth clickability guard', process.execPath, ['scripts/check-stage228a-sales-funnel-truth-clickability.cjs']);
 runQuiet('stage228a sales funnel truth clickability test', process.execPath, ['--test', 'tests/stage228a-sales-funnel-truth-clickability.test.cjs']);
+runQuiet('stage228b lead work action center guard', process.execPath, ['scripts/check-stage228b-lead-work-action-center.cjs']);
+runQuiet('stage228b lead work action center test', process.execPath, ['--test', 'tests/stage228b-lead-work-action-center.test.cjs']);

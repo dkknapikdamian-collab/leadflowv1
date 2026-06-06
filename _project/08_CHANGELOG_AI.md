@@ -2142,3 +2142,17 @@ Przebudowano `/funnel` z przeĹ‚adowanego kanbana na czytelny widok decyzyjny:
 
 Poprawiono `/funnel`: domyĹ›lnie pokazuje wszystkie rekordy, kafle wĹ‚aĹ›cicielskie i etapy nie nakĹ‚adajÄ… siÄ™ na siebie w sposĂłb ukrywajÄ…cy ĹşrĂłdĹ‚a kwot, a karty pokazujÄ… ĹşrĂłdĹ‚o wartoĹ›ci/prowizji.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_END -->
+
+## 2026-06-06 18:00 Europe/Warsaw â€” STAGE228B Lead Work Action Center
+
+- typ: etap wdroĹĽeniowy local-only
+- decyzja: Lead nie dostaje peĹ‚nego lejka; dostaje centrum pracy â€žCo robimy teraz?â€ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
+- testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
+- ryzyko: nie tworzyÄ‡ drugiego systemu dziaĹ‚aĹ„; uĹĽywaÄ‡ istniejÄ…cych handlerĂłw LeadDetail.
+
+
+## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
+- Scope: cleanup after Stage228B local patcher introduced Polish mojibake in LeadDetail.
+- Decision: do not weaken Stage98. Repair source text to clean UTF-8 and rerun Stage98 + Stage228B + Stage228A/227B regressions.
+- Status: local-only until tests pass and Damian approves push.

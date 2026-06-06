@@ -2027,3 +2027,17 @@ Zakres: `src/pages/SalesFunnel.tsx`, guard/test Stage227B, rejestracja w package
 
 Zakres: `src/pages/SalesFunnel.tsx`, `src/lib/owner-control/sales-funnel-movement.ts`, `scripts/check-stage228a-sales-funnel-truth-clickability.cjs`, `tests/stage228a-sales-funnel-truth-clickability.test.cjs`, `package.json`, `scripts/closeflow-release-check-quiet.cjs`, `_project` i Obsidian update manifest.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_LEDGER_END -->
+
+## 2026-06-06 18:00 Europe/Warsaw â€” STAGE228B Lead Work Action Center
+
+- typ: etap wdroĹĽeniowy local-only
+- decyzja: Lead nie dostaje peĹ‚nego lejka; dostaje centrum pracy â€žCo robimy teraz?â€ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
+- testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
+- ryzyko: nie tworzyÄ‡ drugiego systemu dziaĹ‚aĹ„; uĹĽywaÄ‡ istniejÄ…cych handlerĂłw LeadDetail.
+
+
+## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
+- Repo checkpoint before Stage228B: 21eab806298d329e43bbff7cc69866a668e44ba3.
+- Action: clean mojibake in src/pages/LeadDetail.tsx without bypassing guards.
+- Required checks: Stage98 mojibake hard gate, Stage228B guard/test, Stage228A and Stage227B regressions, build, verify:closeflow:quiet, git diff --check.
