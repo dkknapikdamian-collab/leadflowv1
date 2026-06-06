@@ -198,6 +198,8 @@ const STAGE35_MONEY_KEYS = [
 const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CLIENTS = 'form/modal actions use shared cf-form-actions and cf-modal-footer contract';
 const CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FULL = 'lead and client duplicate warning modal before write';
 const CLOSEFLOW_A2_CLIENT_DUPLICATE_WARNING_BEFORE_WRITE = 'client duplicate warning before write';
+const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_CLIENTS = 'client duplicate conflict preflight fails closed and requires explicit add anyway';
+void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_CLIENTS;
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
@@ -541,9 +543,22 @@ export default function Clients() {
     const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseValue: newClient.caseValue.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
     try {
       setCreatePending(true);
-      const conflicts = await findEntityConflictsInSupabase({ targetType: 'client', name: preparedClient.name, email: preparedClient.email, phone: preparedClient.phone, company: preparedClient.company, workspaceId }).catch(() => ({ candidates: [] }));
+      let conflicts: any;
+      try {
+        conflicts = await findEntityConflictsInSupabase({ targetType: 'client', name: preparedClient.name, email: preparedClient.email, phone: preparedClient.phone, company: preparedClient.company, workspaceId });
+      } catch (error: any) {
+        toast.error('Nie udało się sprawdzić duplikatów. Zapis klienta zatrzymany, żeby nie dodać konfliktu po cichu.');
+        return;
+      }
       const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
-      if (candidates.length) { setClientConflictCandidates(candidates); setClientConflictPendingInput(preparedClient); setIsCreateOpen(false); setClientConflictOpen(true); return; }
+      if (candidates.length) {
+        toast.info('Znaleziono podobny rekord. Zapis klienta wymaga potwierdzenia albo kliknięcia „Dodaj mimo to”.');
+        setClientConflictCandidates(candidates);
+        setClientConflictPendingInput(preparedClient);
+        setIsCreateOpen(false);
+        setClientConflictOpen(true);
+        return;
+      }
       await createClientFromPreparedInput(preparedClient);
     } catch (error: any) { toast.error('Nie udało się zapisać. Spróbuj ponownie.'); }
     finally { setCreatePending(false); }

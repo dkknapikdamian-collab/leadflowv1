@@ -125,6 +125,8 @@ void STAGE226_LOST_LEAD_RESCUE_LEADS;
 void STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME;
 const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate conflict dialog renders once and client matches cannot be restored from lead create';
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
+const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
+void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE;
 // Guard marker: \n\nTen lead ma powiązaną sprawę
 
 const STATUS_OPTIONS = [
@@ -500,11 +502,24 @@ export default function Leads() {
     setLeadSubmitting(true);
     const preparedLead = { ...newLead, name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy', email: newLead.email.trim(), phone: newLead.phone.trim(), company: newLead.company.trim(), dealValue: Number(newLead.dealValue) || 0, lastContactAt: dateInputToNoonIso(newLead.lastContactAt) };
     try {
-      const conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId }).catch(() => ({ candidates: [] }));
+      let conflicts: any;
+      try {
+        conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId });
+      } catch (error: any) {
+        toast.error('Nie udało się sprawdzić duplikatów. Zapis leada zatrzymany, żeby nie dodać konfliktu po cichu.');
+        return;
+      }
       const candidates = Array.isArray(conflicts.candidates)
         ? (conflicts.candidates as EntityConflictCandidate[]).map((candidate) => candidate.entityType === 'client' ? { ...candidate, canRestore: false } : candidate)
         : [];
-      if (candidates.length) { setLeadConflictCandidates(candidates); setLeadConflictPendingInput(preparedLead); setIsNewLeadOpen(false); setLeadConflictOpen(true); return; }
+      if (candidates.length) {
+        toast.info('Znaleziono podobny rekord. Zapis leada wymaga potwierdzenia albo kliknięcia „Dodaj mimo to”.');
+        setLeadConflictCandidates(candidates);
+        setLeadConflictPendingInput(preparedLead);
+        setIsNewLeadOpen(false);
+        setLeadConflictOpen(true);
+        return;
+      }
       await createLeadFromPreparedInput(preparedLead);
     } catch (error: any) { toast.error(`Błąd zapisu leada: ${error.message}`); }
     finally { createLeadSubmitLockRef.current = false; setLeadSubmitting(false); }

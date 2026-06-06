@@ -2129,3 +2129,9 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 13:55 Europe/Warsaw
 - po PASS: wykonać manual smoke /clients -> /leads -> /clients. Dopiero potem Stage226R11 timezone albo Stage227.
 - nie ruszać: Stage227, Google Calendar, finanse, RLS, schema.
+
+## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX — next step
+
+- data i godzina: 2026-06-06 14:23 Europe/Warsaw
+- po PASS: ręcznie przetestować konflikt/duplikat dla klienta i leada; dopiero potem wrócić do Stage226R11 timezone Google Calendar albo kolejnego etapu.
+- nie ruszać: Stage227 przed domknięciem lead/client + conflict gate smoke.

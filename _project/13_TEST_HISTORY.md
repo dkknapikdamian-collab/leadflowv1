@@ -1425,3 +1425,9 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 13:55 Europe/Warsaw
 - wymagane: npm run check:stage226r10c2-lead-client-conflict-restore-block-patcher-fix; npm run test:stage226r10c2-lead-client-conflict-restore-block-patcher-fix; npm run check:stage226r10b-lead-client-conflict-single-dialog; npm run test:stage226r10b-lead-client-conflict-single-dialog; npm run check:stage226r10-lead-client-separation-runtime; npm run test:stage226r10-lead-client-separation-runtime; npm run build; npm run verify:closeflow:quiet; git diff --check.
 - manual smoke: liczba klientów przed/po dodaniu leada nie może wzrosnąć; lead podobny do klienta nie przywraca klienta z formularza leada.
+
+## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX — test history
+
+- data i godzina: 2026-06-06 14:23 Europe/Warsaw
+- planowane: npm run check:stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix; npm run test:stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix; regresje R10C2/R10B/R10; npm run build; npm run verify:closeflow:quiet; git diff --check.
+- manual smoke: dodaj klienta z istniejącym telefonem/e-mailem — musi być komunikat/dialog; Anuluj nie zapisuje; Dodaj mimo to zapisuje. Powtórzyć dla leada. Sprawdzić, że lead nadal nie tworzy klienta.

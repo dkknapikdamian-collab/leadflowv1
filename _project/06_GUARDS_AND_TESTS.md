@@ -1962,3 +1962,10 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - naprawa procesu: R10C2 usuwa nieudane, niezatwierdzone pliki R10C po przerwanym apply i dodaje odporny patcher regexowy.
 - testy: R10C2 guard/test, R10B guard/test, R10 guard/test, build, verify:closeflow:quiet, git diff --check.
 - ryzyko: istniejący klient z tymi samymi danymi dalej będzie widoczny w /clients, ale nie jest tworzony ani przywracany przez dodanie leada.
+
+## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX — guards
+
+- data i godzina: 2026-06-06 14:23 Europe/Warsaw
+- guard: scripts/check-stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.cjs
+- test: tests/stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.test.cjs
+- kontrakt: brak .catch(() => ({ candidates: [] })) przy conflict preflight; błąd checkerów zatrzymuje zapis; konflikt pokazuje komunikat i wymaga „Dodaj mimo to”.
