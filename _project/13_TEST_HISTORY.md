@@ -1419,3 +1419,9 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - zaplanowane: npm run check:stage226r10b-lead-client-conflict-single-dialog; npm run test:stage226r10b-lead-client-conflict-single-dialog; npm run check:stage226r10-lead-client-separation-runtime; npm run test:stage226r10-lead-client-separation-runtime; npm run build; npm run verify:closeflow:quiet; git diff --check.
 - manual smoke: policzyć klientów, dodać unikalnego leada, sprawdzić że /clients nie rośnie; dodać leada podobnego do istniejącego klienta, sprawdzić że klient nie jest przywracany/tworzony z flow leada.
 - status: do wykonania lokalnie po apply.
+
+## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX — test history
+
+- data i godzina: 2026-06-06 13:55 Europe/Warsaw
+- wymagane: npm run check:stage226r10c2-lead-client-conflict-restore-block-patcher-fix; npm run test:stage226r10c2-lead-client-conflict-restore-block-patcher-fix; npm run check:stage226r10b-lead-client-conflict-single-dialog; npm run test:stage226r10b-lead-client-conflict-single-dialog; npm run check:stage226r10-lead-client-separation-runtime; npm run test:stage226r10-lead-client-separation-runtime; npm run build; npm run verify:closeflow:quiet; git diff --check.
+- manual smoke: liczba klientów przed/po dodaniu leada nie może wzrosnąć; lead podobny do klienta nie przywraca klienta z formularza leada.

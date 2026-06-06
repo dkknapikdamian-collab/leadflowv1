@@ -1952,3 +1952,13 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - testy/guardy: scripts/check-stage226r10b-lead-client-conflict-single-dialog.cjs, tests/stage226r10b-lead-client-conflict-single-dialog.test.cjs, plus regresja Stage226R10.
 - ryzyko: jeśli klient istnieje w /clients, po dodaniu podobnego leada nadal będzie widoczny jako stary klient — to nie jest nowy klient. Manual smoke musi liczyć klientów przed i po dodaniu leada.
 - status: local ZIP patch; do uruchomienia i pushu po PASS.
+
+## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX — fix po czerwonym R10C
+
+- data i godzina: 2026-06-06 13:55 Europe/Warsaw
+- typ wpisu: hotfix patchera i kontraktu lead/client separation po R10B/R10C
+- decyzja: klient z konfliktu przy tworzeniu leada nie może być przywracany z flow leada; tylko Pokaż klienta albo Dodaj mimo to jako osobnego leada.
+- zmiana: restoreConflictCandidate blokuje candidate.entityType === 'client' bez updateClientInSupabase; kandydaci typu client dostają canRestore=false przed zapisaniem do state.
+- naprawa procesu: R10C2 usuwa nieudane, niezatwierdzone pliki R10C po przerwanym apply i dodaje odporny patcher regexowy.
+- testy: R10C2 guard/test, R10B guard/test, R10 guard/test, build, verify:closeflow:quiet, git diff --check.
+- ryzyko: istniejący klient z tymi samymi danymi dalej będzie widoczny w /clients, ale nie jest tworzony ani przywracany przez dodanie leada.

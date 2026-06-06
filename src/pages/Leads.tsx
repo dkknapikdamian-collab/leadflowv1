@@ -468,21 +468,21 @@ export default function Leads() {
   };
 
   const restoreConflictCandidate = async (candidate: EntityConflictCandidate) => {
+    if (candidate.entityType === 'client') {
+      toast.info('Znaleziono podobnego klienta. To nie jest ten sam rekord. Otwórz klienta albo utwórz osobnego leada.');
+      return;
+    }
     if (!candidate.canRestore) { toast.info('Ten rekord ma historię. Najpierw go otwórz i zdecyduj, co zrobić.'); return; }
     try {
       setLeadSubmitting(true);
-      if (candidate.entityType === 'lead') {
-        await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
-        toast.success('Lead przywrócony');
-      } else {
-        await updateClientInSupabase({ id: candidate.id, archivedAt: null });
-        toast.success('Klient przywrócony');
-      }
+      await updateLeadInSupabase({ id: candidate.id, status: 'new', leadVisibility: 'active', salesOutcome: 'open', closedAt: null });
+      toast.success('Lead przywrócony');
       setLeadConflictOpen(false);
       await loadLeads();
     } catch (error: any) { toast.error('Nie udało się przywrócić rekordu: ' + (error?.message || 'REQUEST_FAILED')); }
     finally { setLeadSubmitting(false); }
   };
+
 
   const handleCreateLead = async (e: FormEvent) => {
     e.preventDefault();
@@ -501,7 +501,9 @@ export default function Leads() {
     const preparedLead = { ...newLead, name: newLead.name.trim() || newLead.phone.trim() || newLead.email.trim() || 'Lead bez nazwy', email: newLead.email.trim(), phone: newLead.phone.trim(), company: newLead.company.trim(), dealValue: Number(newLead.dealValue) || 0, lastContactAt: dateInputToNoonIso(newLead.lastContactAt) };
     try {
       const conflicts = await findEntityConflictsInSupabase({ targetType: 'lead', name: preparedLead.name, email: preparedLead.email, phone: preparedLead.phone, company: preparedLead.company, workspaceId }).catch(() => ({ candidates: [] }));
-      const candidates = Array.isArray(conflicts.candidates) ? conflicts.candidates as EntityConflictCandidate[] : [];
+      const candidates = Array.isArray(conflicts.candidates)
+        ? (conflicts.candidates as EntityConflictCandidate[]).map((candidate) => candidate.entityType === 'client' ? { ...candidate, canRestore: false } : candidate)
+        : [];
       if (candidates.length) { setLeadConflictCandidates(candidates); setLeadConflictPendingInput(preparedLead); setIsNewLeadOpen(false); setLeadConflictOpen(true); return; }
       await createLeadFromPreparedInput(preparedLead);
     } catch (error: any) { toast.error(`Błąd zapisu leada: ${error.message}`); }

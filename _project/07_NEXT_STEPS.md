@@ -2123,3 +2123,9 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - data i godzina: 2026-06-06 13:31 Europe/Warsaw
 - po PASS: wykonać manual smoke /clients -> /leads -> /clients i dopiero potem wrócić do Stage226R11 albo Stage227.
 - nie ruszać: Stage227, Google Calendar, finanse A36, RLS, schema.
+
+## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX — next step
+
+- data i godzina: 2026-06-06 13:55 Europe/Warsaw
+- po PASS: wykonać manual smoke /clients -> /leads -> /clients. Dopiero potem Stage226R11 timezone albo Stage227.
+- nie ruszać: Stage227, Google Calendar, finanse, RLS, schema.
