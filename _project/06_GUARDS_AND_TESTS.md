@@ -2007,3 +2007,14 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - `npm run verify:closeflow:quiet`
 - `git diff --check`
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_GUARDS_END -->
+
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_GUARDS_START -->
+## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A guardy i testy
+
+- `node scripts/check-stage228a-sales-funnel-truth-clickability.cjs`
+- `node --test tests/stage228a-sales-funnel-truth-clickability.test.cjs`
+- regresje Stage227A/Stage227B
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_GUARDS_END -->

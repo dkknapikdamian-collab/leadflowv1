@@ -836,7 +836,9 @@
     "check:stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix": "node scripts/check-stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.cjs",
     "test:stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix": "node --test tests/stage226r10d2-duplicate-conflict-confirmation-gate-patcher-fix.test.cjs",
     "check:stage226r11-gcal-timezone-reminder-truth": "node scripts/check-stage226r11-gcal-timezone-reminder-truth.cjs",
-    "test:stage226r11-gcal-timezone-reminder-truth": "node --test tests/stage226r11-gcal-timezone-reminder-truth.test.cjs"
+    "test:stage226r11-gcal-timezone-reminder-truth": "node --test tests/stage226r11-gcal-timezone-reminder-truth.test.cjs",
+    "check:stage228a-sales-funnel-truth-clickability": "node scripts/check-stage228a-sales-funnel-truth-clickability.cjs",
+    "test:stage228a-sales-funnel-truth-clickability": "node --test tests/stage228a-sales-funnel-truth-clickability.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

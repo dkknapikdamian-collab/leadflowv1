@@ -2163,3 +2163,9 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 
 Po lokalnym PASS trzeba rÄ™cznie sprawdziÄ‡ `http://localhost:3000/funnel`. JeĹĽeli widok jest czytelny, moĹĽna zrobiÄ‡ selektywny commit/push. JeĹĽeli nie, kolejny etap powinien dopracowaÄ‡ tylko kompozycjÄ™ UI, bez ruszania helperĂłw danych.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_NEXT_END -->
+
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_START -->
+## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A next step
+
+Po wdroĹĽeniu sprawdziÄ‡ `/funnel`: domyĹ›lnie powinny byÄ‡ widoczne wszystkie rekordy, klikniÄ™cie `PieniÄ…dze` ma pokazaÄ‡ rekord z kwotÄ… 1380 PLN, a klikniÄ™cie rekordu ma prowadziÄ‡ do sprawy. NastÄ™pny etap: Stage228B Lead Work Action Center.
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_END -->

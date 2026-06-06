@@ -264,3 +264,5 @@ runQuiet('stage227a sales funnel movement runtime', process.execPath, ['--test',
 runQuiet('stage227b sales funnel decision list guard', process.execPath, ['scripts/check-stage227b-sales-funnel-decision-list.cjs']);
 runQuiet('stage227b sales funnel decision list test', process.execPath, ['tests/stage227b-sales-funnel-decision-list.test.cjs']);
 runQuiet('stage227b dev funnel preview route guard', process.execPath, ['scripts/check-stage227b-dev-funnel-preview-route.cjs']);
+runQuiet('stage228a sales funnel truth clickability guard', process.execPath, ['scripts/check-stage228a-sales-funnel-truth-clickability.cjs']);
+runQuiet('stage228a sales funnel truth clickability test', process.execPath, ['--test', 'tests/stage228a-sales-funnel-truth-clickability.test.cjs']);

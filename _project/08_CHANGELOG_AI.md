@@ -2136,3 +2136,9 @@ Dodano lokalny read-only widok `/funnel`, helper `sales-funnel-movement`, guard,
 
 Przebudowano `/funnel` z przeĹ‚adowanego kanbana na czytelny widok decyzyjny: kafle filtrĂłw, pasek etapĂłw, jedna szeroka lista i panel priorytetu.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_CHANGELOG_END -->
+
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_START -->
+## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A â€” funnel truth + clickability
+
+Poprawiono `/funnel`: domyĹ›lnie pokazuje wszystkie rekordy, kafle wĹ‚aĹ›cicielskie i etapy nie nakĹ‚adajÄ… siÄ™ na siebie w sposĂłb ukrywajÄ…cy ĹşrĂłdĹ‚a kwot, a karty pokazujÄ… ĹşrĂłdĹ‚o wartoĹ›ci/prowizji.
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_END -->

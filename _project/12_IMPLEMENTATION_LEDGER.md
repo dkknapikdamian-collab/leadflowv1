@@ -2021,3 +2021,9 @@ Nowe pliki: `src/pages/SalesFunnel.tsx`, `src/lib/owner-control/sales-funnel-mov
 
 Zakres: `src/pages/SalesFunnel.tsx`, guard/test Stage227B, rejestracja w package.json i quiet release gate, aktualizacje `_project` i Obsidian update manifest.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_LEDGER_END -->
+
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_LEDGER_START -->
+## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A implementation ledger
+
+Zakres: `src/pages/SalesFunnel.tsx`, `src/lib/owner-control/sales-funnel-movement.ts`, `scripts/check-stage228a-sales-funnel-truth-clickability.cjs`, `tests/stage228a-sales-funnel-truth-clickability.test.cjs`, `package.json`, `scripts/closeflow-release-check-quiet.cjs`, `_project` i Obsidian update manifest.
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_LEDGER_END -->

@@ -28,6 +28,7 @@ export type SalesFunnelMovementCard = {
 
   valueAmount: number;
   valueCurrency: string;
+  valueSourceLabel: string;
 
   riskLevel: SalesFunnelMovementRiskLevel;
   riskReasons: string[];
@@ -58,7 +59,9 @@ type NextMove = {
 };
 
 const STAGE227A_SALES_FUNNEL_MOVEMENT_SOURCE = 'Stage227A funnel reuses activity truth, cadence grid, lost lead rescue, work-items and case finance source helpers';
+const STAGE228A_FUNNEL_VALUE_SOURCE_TRUTH = 'Stage228A funnel money tile must be traceable to visible lead/case cards and source labels';
 void STAGE227A_SALES_FUNNEL_MOVEMENT_SOURCE;
+void STAGE228A_FUNNEL_VALUE_SOURCE_TRUTH;
 
 const DAY_MS = 86_400_000;
 
@@ -447,6 +450,7 @@ export function buildSalesFunnelMovementView(input: {
       hasNextMove,
       valueAmount,
       valueCurrency: getCurrency(record),
+      valueSourceLabel: valueAmount > 0 ? 'Wartość leada' : 'Wartość/prowizja',
       riskLevel: risk.riskLevel,
       riskReasons: risk.riskReasons,
     });
@@ -507,6 +511,7 @@ export function buildSalesFunnelMovementView(input: {
       hasNextMove,
       valueAmount,
       valueCurrency: finance.currency || 'PLN',
+      valueSourceLabel: valueAmount > 0 ? 'Prowizja sprawy' : 'Prowizja sprawy',
       riskLevel: risk.riskLevel,
       riskReasons: risk.riskReasons,
     });

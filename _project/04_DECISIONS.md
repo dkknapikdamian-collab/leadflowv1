@@ -1453,3 +1453,9 @@ Stage227A jest lokalnym, read-only wdroĹĽeniem widoku Lejek. Lejek nie jest kl
 
 DECYZJA: Stage227A dziaĹ‚aĹ‚ technicznie, ale rÄ™czny UX test pokazaĹ‚, ĹĽe szeroki kanban jest za gÄ™sty. `/funnel` zostaje osobnÄ… zakĹ‚adkÄ…, ale zostaje przebudowany na czytelny panel decyzyjny: filtry wĹ‚aĹ›ciciela, pasek etapĂłw, jedna lista rekordĂłw i panel priorytetu.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_DECISION_END -->
+
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_DECISION_START -->
+## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A â€” Funnel truth + clickability
+
+DECYZJA: `/funnel` musi byÄ‡ wiarygodny. Kafel `PieniÄ…dze` nie moĹĽe pokazywaÄ‡ kwoty, ktĂłrej nie da siÄ™ znaleĹşÄ‡ na liĹ›cie. KlikniÄ™cie kafla wĹ‚aĹ›cicielskiego czyĹ›ci filtr etapu, a klikniÄ™cie etapu czyĹ›ci filtr wĹ‚aĹ›cicielski. PeĹ‚ny lejek nie trafia do klienta/leada; klient dostanie pĂłĹşniej `Ruch klienta`, a lead `Co robimy z tym leadem?`.
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_DECISION_END -->

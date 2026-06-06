@@ -1455,3 +1455,9 @@ Status przed lokalnym uruchomieniem: PENDING_LOCAL_RUN. Skrypt `APPLY_STAGE227A_
 
 Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify quiet, git diff --check. Manual: `/funnel` ma byÄ‡ czytelny i ma otworzyÄ‡ siÄ™ bez biaĹ‚ego ekranu.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_END -->
+
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_START -->
+## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A test history
+
+Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` â†’ `PieniÄ…dze` â†’ widoczny rekord ĹşrĂłdĹ‚owy kwoty.
+<!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_END -->
