@@ -341,3 +341,49 @@
   color: #94a3b8 !important;
   -webkit-text-fill-color: #94a3b8 !important;
 }
+
+
+/* STAGE220A36_R10_COMMISSION_MODAL_THREE_FIELD_LAYOUT */
+.case-finance-edit-form--commission-r10 {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1.05rem !important;
+}
+
+.case-finance-edit-top-row-stage220a36r10 {
+  display: grid !important;
+  grid-template-columns: minmax(170px, 1.22fr) minmax(110px, 0.72fr) minmax(150px, 1fr) !important;
+  gap: 1rem !important;
+  align-items: start !important;
+}
+
+.case-finance-edit-bottom-row-stage220a36r10 {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 1rem !important;
+  align-items: start !important;
+}
+
+.case-finance-edit-transaction-basis-stage220a36r10 {
+  width: 100% !important;
+}
+
+.case-finance-edit-top-row-stage220a36r10 .case-finance-edit-field,
+.case-finance-edit-bottom-row-stage220a36r10 .case-finance-edit-field {
+  min-width: 0 !important;
+}
+
+.case-finance-edit-form--commission-r10 .case-finance-edit-field small {
+  display: block !important;
+  margin-top: 0.45rem !important;
+  color: #94a3b8 !important;
+  font-size: 0.78rem !important;
+  line-height: 1.25 !important;
+}
+
+@media (max-width: 860px) {
+  .case-finance-edit-top-row-stage220a36r10,
+  .case-finance-edit-bottom-row-stage220a36r10 {
+    grid-template-columns: 1fr !important;
+  }
+}

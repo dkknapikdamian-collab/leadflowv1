@@ -27,7 +27,7 @@ assertOrder(caseDetail, [
   '<span>Rodzaj prowizji</span>',
   '<span>Stawka prowizji (%)</span>',
   '<span>Wartość prowizji</span>',
-  '<span>Podstawa procentu (wartość transakcji/zlecenia)</span>',
+  '<span>Wartość transakcji / zlecenia</span>',
   '<span>Waluta</span>',
   '<span>Status prowizji</span>',
 ], 'CaseDetail legacy finance modal field order');

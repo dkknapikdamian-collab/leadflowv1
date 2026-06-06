@@ -1313,3 +1313,26 @@ Data: 2026-06-06 07:55 Europe/Warsaw
 - Guardy A36 wczesniej pilnowaly wspolnego komponentu, ale nie pilnowaly inline modala CaseDetail, dlatego UI produkcyjne moglo pozostac stare.
 - Po R7 trzeba sprawdzic bundle w przegladarce: hasOldTitle powinno byc false, a hasNewTitle true.
 - Blad /api/case-items 500 jest osobnym watkiem; wymaga Response z Network, jesli po deployu R7 nadal wystapi.
+
+## STAGE220A36-R10 — Commission Modal Three-Field Top Row Polish
+
+Data: 2026-06-06 08:55 Europe/Warsaw
+
+### FAKTY
+- Po R7 produkcyjny bundle byl aktualny, ale UX nadal nie odpowiadal oczekiwaniu: u gory mialy byc trzy pola decyzyjne, a wartosc transakcji/zlecenia osobno nizej.
+- R10 uklada modal jako: Rodzaj prowizji -> Stawka (%) -> Wartosc prowizji w pierwszym rzedzie, a Wartosc transakcji/zlecenia jako osobne pole pod spodem.
+
+### TESTY
+- node scripts/check-stage220a36r10-commission-modal-three-field-layout.cjs
+- node --test tests/stage220a36r10-commission-modal-three-field-layout.test.cjs
+- node scripts/check-stage220a36r7-case-detail-legacy-finance-modal.cjs
+- node scripts/check-stage220a31-finance-modal-margin-commission-basis.cjs
+- node scripts/check-stage220a32-finance-controls-delete-labels.cjs
+- npm run build
+- npm run verify:closeflow:quiet
+- git diff --check
+
+### AUDYT RYZYK
+- Zmieniany jest tylko uklad i copy modala, nie model danych ani zapis prowizji.
+- Stare guardy A31/A32/R7 zostaja dostosowane do nowego labela wartosci transakcji/zlecenia, zeby nie blokowaly poprawnego UX.
+- /api/case-items 500 pozostaje osobnym watkiem, jesli nadal wystepuje po deployu.

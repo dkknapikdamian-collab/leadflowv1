@@ -25,13 +25,23 @@ const caseDetail = read('src/pages/CaseDetail.tsx');
 const css = read('src/styles/closeflow-case-finance-modal-stage220a30.css');
 const pkg = JSON.parse(read('package.json'));
 
+const valueWord = 'Warto' + '\u015b' + '\u0107';
+const transactionOld = valueWord + ' transakcji / sprawy';
+const transactionTask = valueWord + ' transakcji / zlecenia';
+const basisOld = 'Podstawa procentu';
+const basisLong = basisOld + ' (' + valueWord.toLowerCase() + ' transakcji/zlecenia)';
+const percentModel = 'Procent od warto' + '\u015b' + 'ci transakcji';
+const commissionDue = 'Prowizja nale' + '\u017c' + 'na';
+const commissionPaid = 'Wp' + '\u0142' + 'acono prowizji';
+const commissionLeft = 'Do zap' + '\u0142' + 'aty prowizji';
+
 requireText(caseDetail, 'STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS', 'A31 marker');
-requireAny(caseDetail, ['Podstawa procentu (warto?? transakcji/zlecenia)', 'Podstawa procentu', 'Warto?? transakcji / sprawy'], 'transaction basis label is explicit');
-requireText(caseDetail, 'Procent od wartości transakcji', 'percent commission model label explains basis');
+requireAny(caseDetail, [transactionTask, basisLong, basisOld, transactionOld], 'transaction basis label is explicit');
+requireText(caseDetail, percentModel, 'percent commission model label explains basis');
 requireText(caseDetail, 'Stawka prowizji (%)', 'commission rate label is explicit');
-requireText(caseDetail, 'Prowizja należna', 'commission due label exists');
-requireText(caseDetail, 'Wpłacono prowizji', 'commission paid label exists');
-requireText(caseDetail, 'Do zapłaty prowizji', 'commission remaining label exists');
+requireText(caseDetail, commissionDue, 'commission due label exists');
+requireText(caseDetail, commissionPaid, 'commission paid label exists');
+requireText(caseDetail, commissionLeft, 'commission remaining label exists');
 requireText(caseDetail, 'data-stage220a31-finance-preview="true"', 'A31 finance preview marker exists');
 requireText(caseDetail, 'data-stage220a31-finance-billing-summary="true"', 'A31 right rail billing summary marker exists');
 requireText(caseDetail, 'formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)', 'right rail shows commission amount as due revenue');

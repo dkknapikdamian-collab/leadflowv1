@@ -9,7 +9,7 @@ test('CaseDetail legacy finance modal uses requested commission-first order', ()
     '<span>Rodzaj prowizji</span>',
     '<span>Stawka prowizji (%)</span>',
     '<span>Wartość prowizji</span>',
-    '<span>Podstawa procentu (wartość transakcji/zlecenia)</span>',
+    '<span>Wartość transakcji / zlecenia</span>',
     '<span>Waluta</span>',
     '<span>Status prowizji</span>',
   ];
