@@ -18,7 +18,7 @@ requireText(caseDetail, 'data-stage220a32-commission-mode-control="true"', 'comm
 requireText(caseDetail, "commissionRate: nextMode === 'percent' ? current.commissionRate : ''", 'percent mode clears incompatible rate');
 requireText(caseDetail, "commissionAmount: nextMode === 'fixed' ? current.commissionAmount : ''", 'fixed mode clears incompatible amount');
 requireText(caseDetail, 'data-stage220a32-commission-rate-input="percent-only"', 'percent input marker');
-requireText(caseDetail, 'data-stage220a32-commission-amount-input="fixed-only"', 'fixed input marker');
+if (!caseDetail.includes('data-stage220a32-commission-amount-input="fixed-only"') && !caseDetail.includes('data-stage220a36r7-commission-amount-input="fixed-or-calculated"')) fail('fixed input marker missing: data-stage220a32-commission-amount-input="fixed-only" or data-stage220a36r7-commission-amount-input="fixed-or-calculated"');
 requireText(caseDetail, "disabled={financeEditForm.commissionMode !== 'percent'}", 'percent input disabled outside percent');
 requireText(caseDetail, "disabled={financeEditForm.commissionMode !== 'fixed'}", 'fixed input disabled outside fixed');
 
