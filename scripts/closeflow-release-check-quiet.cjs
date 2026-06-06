@@ -268,3 +268,5 @@ runQuiet('stage228a sales funnel truth clickability guard', process.execPath, ['
 runQuiet('stage228a sales funnel truth clickability test', process.execPath, ['--test', 'tests/stage228a-sales-funnel-truth-clickability.test.cjs']);
 runQuiet('stage228b lead work action center guard', process.execPath, ['scripts/check-stage228b-lead-work-action-center.cjs']);
 runQuiet('stage228b lead work action center test', process.execPath, ['--test', 'tests/stage228b-lead-work-action-center.test.cjs']);
+runQuiet('stage228b lead detail import source guard', process.execPath, ['scripts/check-stage228b-lead-detail-import-source.cjs']);
+runQuiet('stage228b alerttriangle import guard', process.execPath, ['scripts/check-stage228b-alerttriangle-import.cjs']);

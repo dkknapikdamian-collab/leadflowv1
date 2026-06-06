@@ -840,7 +840,11 @@
     "check:stage228a-sales-funnel-truth-clickability": "node scripts/check-stage228a-sales-funnel-truth-clickability.cjs",
     "test:stage228a-sales-funnel-truth-clickability": "node --test tests/stage228a-sales-funnel-truth-clickability.test.cjs",
     "check:stage228b-lead-work-action-center": "node scripts/check-stage228b-lead-work-action-center.cjs",
-    "test:stage228b-lead-work-action-center": "node --test tests/stage228b-lead-work-action-center.test.cjs"
+    "test:stage228b-lead-work-action-center": "node --test tests/stage228b-lead-work-action-center.test.cjs",
+    "check:stage228b-alerttriangle-import": "node scripts/check-stage228b-alerttriangle-import.cjs",
+    "check:stage228b-r9-lead-detail-import-source": "node scripts/check-stage228b-lead-detail-import-source.cjs",
+    "check:stage228b-r10-lead-detail-import-source": "node scripts/check-stage228b-lead-detail-import-source.cjs",
+    "check:stage228b-lead-detail-import-source": "node scripts/check-stage228b-lead-detail-import-source.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

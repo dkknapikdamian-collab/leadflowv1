@@ -2156,3 +2156,30 @@ Poprawiono `/funnel`: domyĹ›lnie pokazuje wszystkie rekordy, kafle wĹ‚aĹ�
 - Scope: cleanup after Stage228B local patcher introduced Polish mojibake in LeadDetail.
 - Decision: do not weaken Stage98. Repair source text to clean UTF-8 and rerun Stage98 + Stage228B + Stage228A/227B regressions.
 - Status: local-only until tests pass and Damian approves push.
+
+## 2026-06-06 18:36 Europe/Warsaw - STAGE228B_R8_ALERTTRIANGLE_IMPORT_HOTFIX
+
+- Fixed LeadDetail production crash: AlertTriangle was used in Stage228B UI but was not imported from lucide-react.
+- Added guard: scripts/check-stage228b-alerttriangle-import.cjs.
+- Added guard to quiet release gate.
+
+## 2026-06-06 18:42 Europe/Warsaw — STAGE228B R9 import source repair
+
+- FAKT: Stage228B R8 naprawil brak AlertTriangle, ale uszkodzil zrodla importow w LeadDetail: useNavigate trafil do lucide-react, a ArrowLeft do react.
+- DECYZJA: nie cofac calego Stage228B i nie oslabiać guardow; naprawic zrodlo importow i dodac guard na import sources.
+- TESTY: Stage228B R9 ma odpalic R9 guard, R8 guard, Stage98, Stage228B, Stage228A, Stage227B, build, verify quiet i diff-check.
+- RYZYKO: kazdy kolejny patcher importow w LeadDetail musi traktowac trzy importy na gorze pliku jako kontrakt: react, react-router-dom, lucide-react.
+
+## 2026-06-06 18:50 Europe/Warsaw — STAGE228B R10 import guard false-positive fix
+
+- FAKT: Stage228B R9 naprawil top importy w LeadDetail, ale guard mial regex przechodzacy przez wiele importow i falszywie wykrywal useNavigate w lucide-react.
+- DECYZJA: nie omijac builda ani guardow; naprawic guard tak, aby parsowal pojedyncze deklaracje importow i nadal pilnowal zrodel: react, react-router-dom, lucide-react.
+- TESTY: R10 ma odpalic import-source guard, AlertTriangle guard, Stage98, Stage228B, Stage228A, Stage227B, build, verify quiet i diff-check.
+- RYZYKO: patchery importow musza traktowac trzy pierwsze importy w LeadDetail jako kontrakt.
+
+## 2026-06-06 19:05 Europe/Warsaw — STAGE228B R13 Canonical LeadDetail imports repair
+
+- Status: local hotfix package for broken pushed Stage228B commit 14f00a3d.
+- Scope: deterministic rewrite of LeadDetail imports for react, react-router-dom and lucide-react.
+- Guard: parser-based checks for AlertTriangle and hook import sources.
+- Risk note: R8/R9/R10/R12 failures were caused by brittle regex/import handling; R13 uses declaration-level parsing.
