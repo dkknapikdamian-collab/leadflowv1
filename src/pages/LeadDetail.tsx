@@ -56,6 +56,8 @@ const STAGE228B_LEAD_WORK_ACTION_CENTER_R7 = 'LeadDetail work action center copy
 void STAGE228B_LEAD_WORK_ACTION_CENTER_R7;
 const STAGE228B_R14_LEAD_ACTION_CENTER_VST = 'LeadDetail action center follows CaseDetail visual source truth without duplicated copy or blocker duplication';
 void STAGE228B_R14_LEAD_ACTION_CENTER_VST;
+const STAGE228D_LEAD_DETAIL_REAL_FIX = 'LeadDetail action center uses CaseDetail accordion behavior, full-tone colored groups, right quick actions and no related-case side card';
+void STAGE228D_LEAD_DETAIL_REAL_FIX;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD = 'Static AI follow-up card removed from LeadDetail right rail; AI draft engine remains available outside the rail.';
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_CARD;
 const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL = 'LeadDetail does not render the static AI follow-up right-rail card';
@@ -195,6 +197,8 @@ type TimelineEntry = {
   dateLabel: string;
   raw: any;
 };
+
+type LeadActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
 
 type SpeechRecognitionLike = {
   lang: string;
@@ -529,6 +533,7 @@ export default function LeadDetail() {
   const [leadPaymentAmount, setLeadPaymentAmount] = useState('');
   const [leadPaymentNote, setLeadPaymentNote] = useState('');
   const [leadPaymentSaving, setLeadPaymentSaving] = useState(false);
+  const [leadActionOpenGroup, setLeadActionOpenGroup] = useState<LeadActionAccordionGroup>('next');
   const [editLinkedTask, setEditLinkedTask] = useState<any | null>(null);
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
@@ -814,7 +819,9 @@ useEffect(() => {
     const status = String(entry.status || '').toLowerCase();
     return title.includes('brak') || title.includes('blokad') || title.includes('blokada') || status.includes('block') || status.includes('missing');
   }), [timeline]);
-  const displayedLeadWorkEntries = activeLeadWorkEntries.slice(0, 6);
+  const leadNextActionEntries = useMemo(() => activeLeadWorkEntries.filter((entry) => entry.kind === 'task' || entry.kind === 'event'), [activeLeadWorkEntries]);
+  const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
+  const leadActiveWorkPreviewEntries = activeLeadWorkEntries.slice(0, 5);
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
     leadId: String(leadId || ''),
     caseId: associatedCase?.id ? String(associatedCase.id) : undefined,
@@ -1803,79 +1810,99 @@ useEffect(() => {
             ) : null}
 
             {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228b-r14-action-center" data-stage228b-lead-work-action-center="true" data-stage228b-r14-lead-action-center-vst="true">
+              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <p className="lead-detail-box-kicker">CO ROBIMY TERAZ?</p>
                     <h2>Działania leada</h2>
                     <p>Najbliższe zadania, wydarzenia i braki przypięte do tego leada.</p>
-                    <span className="sr-only">Co robimy teraz?</span>
                   </div>
                   <span className="lead-detail-pill lead-detail-pill-blue">Aktywne {activeLeadWorkEntries.length}</span>
                 </div>
 
-                <div className="lead-detail-note-actions-panel lead-detail-stage228b-r14-quick-actions" data-stage228b-lead-quick-actions="true">
-                  <Button type="button" size="sm" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>Dodaj notatkę</Button>
-                  <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj zadanie</Button>
-                  <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</Button>
-                  <Button type="button" size="sm" variant="outline" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj brak</Button>
-                  <Button type="button" size="sm" variant="outline" onClick={() => handleUpdateStatus('lost')} disabled={!hasAccess}>Oznacz utracony</Button>
-                </div>
+                <div className="lead-detail-stage228d-accordion" data-stage228d-lead-accordion-source="case-detail-stage220a8">
+                  {[
+                    {
+                      key: 'next' as LeadActionAccordionGroup,
+                      tone: 'next',
+                      label: 'Najbliższe działania',
+                      count: leadNextActionEntries.length,
+                      empty: 'Brak aktywnych zadań i wydarzeń. Dodaj następny krok.',
+                      items: displayedLeadWorkEntries,
+                      icon: <Clock className="h-4 w-4" />,
+                    },
+                    {
+                      key: 'blockers' as LeadActionAccordionGroup,
+                      tone: 'blockers',
+                      label: 'Braki i blokady',
+                      count: leadBlockerEntries.length,
+                      empty: 'Brak jawnych braków i blokad przy tym leadzie.',
+                      items: leadBlockerEntries.slice(0, 5),
+                      icon: <AlertTriangle className="h-4 w-4" />,
+                    },
+                    {
+                      key: 'active' as LeadActionAccordionGroup,
+                      tone: 'active',
+                      label: 'Wszystkie aktywne',
+                      count: activeLeadWorkEntries.length,
+                      empty: 'Brak aktywnych działań. Ustal następny krok.',
+                      items: leadActiveWorkPreviewEntries,
+                      icon: <CheckCircle2 className="h-4 w-4" />,
+                    },
+                  ].map((group) => {
+                    const isOpen = leadActionOpenGroup === group.key;
+                    return (
+                      <article
+                        key={String(group.key)}
+                        className={`lead-detail-action-accordion-group lead-detail-action-accordion-group--${group.tone} ${isOpen ? 'lead-detail-action-accordion-group--open' : ''}`}
+                        data-stage228d-lead-action-accordion-group={String(group.key)}
+                      >
+                        <button
+                          type="button"
+                          className="lead-detail-action-accordion-trigger"
+                          onClick={() => setLeadActionOpenGroup((current) => current === group.key ? null : group.key)}
+                          aria-expanded={isOpen}
+                        >
+                          <span className="lead-detail-action-accordion-title"><span aria-hidden="true">{group.icon}</span>{group.label}</span>
+                          <strong>{group.count}</strong>
+                          <span className="lead-detail-action-accordion-toggle" aria-hidden="true">{isOpen ? '−' : '+'}</span>
+                        </button>
 
-                <div className="lead-detail-work-list lead-detail-stage228b-r14-work-list" data-stage228b-lead-work-lists="true">
-                  <section className="lead-detail-action-group lead-detail-stage228b-r14-group" data-stage228b-lead-next-actions="true">
-                    <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h3>Najbliższe działania</h3></div>
-                    {displayedLeadWorkEntries.length === 0 ? (
-                      <div className="lead-detail-light-empty lead-detail-action-empty">Brak aktywnych zadań i wydarzeń. Dodaj następny krok.</div>
-                    ) : (
-                      displayedLeadWorkEntries.map((entry) => (
-                        <article key={`stage228b-main-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`} data-stage228b-lead-work-row="true">
-                          <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
-                          <div>
-                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
-                            <h3>{entry.title}</h3>
-                            <p>{entry.dateLabel}</p>
+                        {isOpen ? (
+                          <div className="lead-detail-action-accordion-content" data-stage228d-lead-action-accordion-content="true">
+                            {group.items.length === 0 ? (
+                              <div className="lead-detail-light-empty lead-detail-action-empty">{group.empty}</div>
+                            ) : (
+                              <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
+                                {group.items.map((entry) => (
+                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true">
+                                    <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                                    <div>
+                                      <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
+                                      <h3>{entry.title}</h3>
+                                      <p>{entry.dateLabel}</p>
+                                    </div>
+                                    <span className={`lead-detail-pill ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
+                                    <div className="lead-detail-row-actions">
+                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
+                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
+                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                                    </div>
+                                  </article>
+                                ))}
+                              </div>
+                            )}
                           </div>
-                          <div className="lead-detail-row-actions">
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
-                          </div>
-                        </article>
-                      ))
-                    )}
-                  </section>
-
-                  <section className="lead-detail-action-group lead-detail-stage228b-r14-group" data-stage228b-lead-blockers="true">
-                    <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h3>Braki i blokady</h3></div>
-                    {leadBlockerEntries.length === 0 ? (
-                      <div className="lead-detail-light-empty lead-detail-action-empty">Brak jawnych braków i blokad przy tym leadzie.</div>
-                    ) : (
-                      leadBlockerEntries.slice(0, 3).map((entry) => (
-                        <article key={`stage228b-blocker-${entry.id}`} className="lead-detail-work-row lead-detail-work-row-overdue" data-stage228b-lead-blocker-row="true">
-                          <span className="lead-detail-work-icon"><AlertTriangle className="h-4 w-4" /></span>
-                          <div>
-                            <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
-                            <h3>{entry.title}</h3>
-                            <p>{entry.dateLabel}</p>
-                          </div>
-                          <div className="lead-detail-row-actions">
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
-                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
-                          </div>
-                        </article>
-                      ))
-                    )}
-                  </section>
-
-                  <section className="lead-detail-action-group lead-detail-stage228b-r14-group" data-stage228b-lead-all-active="true">
-                    <div className="lead-detail-card-title-row"><CheckCircle2 className="h-4 w-4" /><h3>Wszystkie aktywne</h3></div>
-                    <p className="lead-detail-muted-copy">{activeLeadWorkEntries.length ? `Aktywne działania: ${activeLeadWorkEntries.length}. Pełna historia zostaje w osi aktywności i notatkach.` : 'Brak aktywnych działań. Ustal następny krok.'}</p>
-                  </section>
+                        ) : null}
+                      </article>
+                    );
+                  })}
                 </div>
               </section>
             ) : null}
+
+            <section className="lead-detail-section-card lead-detail-history-center
 
             <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-history" data-stage216j3c-notes-history-center="true" data-stage216j3g-notes-only-section="true">
               <div className="lead-detail-section-head">
@@ -1958,16 +1985,18 @@ useEffect(() => {
               </div>
             </section>
             <div hidden data-stage216j3i-activity-history-moved-from-right-rail="true" />
-<section className="right-card lead-detail-right-card">
-              <div className="lead-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Powiązana sprawa</h2></div>
-              {serviceCaseId ? <p>{serviceCaseTitle}</p> : null}
-              <small>{serviceCaseId ? serviceCaseStatusLabel : 'Utwórz klienta i sprawę, gdy temat jest gotowy do realizacji.'}</small>
-              {serviceCaseId ? (
-                <Button type="button" size="sm" variant="outline" onClick={openCase}>Otwórz sprawę</Button>
-              ) : (
-                <Button type="button" size="sm" onClick={() => setIsCreateCaseOpen(true)} disabled={!hasAccess}>Rozpocznij obsługę</Button>
-              )}
+            <section className="right-card lead-detail-right-card lead-detail-right-quick-actions-card" data-stage228d-lead-right-quick-actions="true">
+              <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
+              <div className="lead-detail-right-actions lead-detail-quick-actions-list">
+                <button type="button" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}><EntityIcon entity="template" className="h-4 w-4" />Dodaj notatkę</button>
+                <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}><CheckCircle2 className="h-4 w-4" />Dodaj zadanie</button>
+                <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}><EntityIcon entity="event" className="h-4 w-4" />Dodaj wydarzenie</button>
+                <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}><AlertTriangle className="h-4 w-4" />Dodaj brak</button>
+                <button type="button" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}><DollarSign className="h-4 w-4" />Dodaj wpłatę</button>
+              </div>
             </section>
+
+            <section className="right-card lead-detail-right-card" data-lead-finance-panel="true"
 
             <section className="right-card lead-detail-right-card" data-lead-finance-panel="true" data-stage115e-lead-finance-actions="true">
               <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse leada</h2></div>

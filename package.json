@@ -846,7 +846,8 @@
     "check:stage228b-r10-lead-detail-import-source": "node scripts/check-stage228b-lead-detail-import-source.cjs",
     "check:stage228b-lead-detail-import-source": "node scripts/check-stage228b-lead-detail-import-source.cjs",
     "check:stage228b-r14-lead-action-center-vst": "node scripts/check-stage228b-r14-lead-action-center-vst.cjs",
-    "test:stage228b-r14-lead-action-center-vst": "node --test tests/stage228b-r14-lead-action-center-vst.test.cjs"
+    "test:stage228b-r14-lead-action-center-vst": "node --test tests/stage228b-r14-lead-action-center-vst.test.cjs",
+    "verify:stage228d-lead-detail-real-fix": "node scripts/guards/stage228d-lead-detail-real-fix.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
