@@ -2806,3 +2806,49 @@
   box-shadow: 0 6px 16px rgba(16, 24, 40, 0.035) !important;
 }
 /* STAGE227F1_VISUAL_HIERARCHY_POLISH_END */
+
+/* STAGE227F2_LEAD_HEADER_COPY_BUTTON_POLISH_START */
+/* Fix clipped "Kopiuj" chip in LeadDetail header meta rows. */
+.lead-detail-header-contact-grid [data-stage227e1-header-phone="true"],
+.lead-detail-header-contact-grid [data-stage227e1-header-email="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  column-gap: 10px !important;
+  row-gap: 2px !important;
+  min-width: min(100%, 260px) !important;
+  min-height: 48px !important;
+  padding: 8px 10px 8px 12px !important;
+  overflow: visible !important;
+}
+
+.lead-detail-header-contact-grid [data-stage227e1-header-phone="true"] small,
+.lead-detail-header-contact-grid [data-stage227e1-header-phone="true"] strong,
+.lead-detail-header-contact-grid [data-stage227e1-header-email="true"] small,
+.lead-detail-header-contact-grid [data-stage227e1-header-email="true"] strong {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  line-height: 1.15 !important;
+}
+
+.lead-detail-header-contact-grid [data-stage227e1-header-phone="true"] strong,
+.lead-detail-header-contact-grid [data-stage227e1-header-email="true"] strong {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.lead-detail-header-contact-grid [data-stage227e1-header-phone="true"] button,
+.lead-detail-header-contact-grid [data-stage227e1-header-email="true"] button {
+  grid-column: 2 !important;
+  grid-row: 1 / span 2 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  min-width: 58px !important;
+  min-height: 28px !important;
+  padding: 5px 10px !important;
+  line-height: 1 !important;
+  white-space: nowrap !important;
+}
+/* STAGE227F2_LEAD_HEADER_COPY_BUTTON_POLISH_END */

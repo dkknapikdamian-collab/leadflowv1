@@ -876,7 +876,9 @@
     "check:stage227e6-notes-history-separation": "node scripts/check-stage227e6-notes-history-separation.cjs",
     "test:stage227e6-notes-history-separation": "node --test tests/stage227e6-notes-history-separation.test.cjs",
     "check:stage227f1-lead-detail-visual-hierarchy-polish": "node scripts/check-stage227f1-lead-detail-visual-hierarchy-polish.cjs",
-    "test:stage227f1-lead-detail-visual-hierarchy-polish": "node --test tests/stage227f1-lead-detail-visual-hierarchy-polish.test.cjs"
+    "test:stage227f1-lead-detail-visual-hierarchy-polish": "node --test tests/stage227f1-lead-detail-visual-hierarchy-polish.test.cjs",
+    "check:stage227f2-shared-detail-shell-and-lead-copy-polish": "node scripts/check-stage227f2-shared-detail-shell-and-lead-copy-polish.cjs",
+    "test:stage227f2-shared-detail-shell-and-lead-copy-polish": "node --test tests/stage227f2-shared-detail-shell-and-lead-copy-polish.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

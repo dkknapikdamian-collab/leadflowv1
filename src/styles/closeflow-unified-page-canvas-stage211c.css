@@ -171,3 +171,92 @@ main.main,
     --cf-detail-shell-gutter-x: 16px;
   }
 }
+
+/* STAGE227F2_SHARED_DETAIL_SHELL_AND_CLIENT_CASE_WIDTH_POLISH_START */
+/* Shared detail layout polish for ClientDetail and CaseDetail.
+   Scope: width/gutter/card readability only. LeadDetail layout logic is not changed. */
+:root {
+  --stage227f2-shared-detail-shell-and-lead-copy-polish: 1;
+  --cf-detail-shell-gutter-x: clamp(12px, 1.1vw, 18px);
+  --cf-detail-shell-gutter-y: 20px;
+  --cf-detail-shell-gap: 18px;
+  --cf-detail-left-rail-width: minmax(240px, 280px);
+  --cf-detail-right-rail-width: minmax(260px, 300px);
+  --cf-case-right-rail-width: minmax(270px, 300px);
+}
+
+:where(.client-detail-vnext-page, .case-detail-vnext-page) {
+  padding-left: var(--cf-detail-shell-gutter-x) !important;
+  padding-right: var(--cf-detail-shell-gutter-x) !important;
+}
+
+:where(
+  .client-detail-header,
+  .client-detail-shell,
+  .case-detail-header,
+  .case-detail-top-grid,
+  .case-detail-shell
+) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (min-width: 1280px) {
+  .client-detail-shell {
+    grid-template-columns: var(--cf-detail-left-rail-width) minmax(0, 1fr) var(--cf-detail-right-rail-width) !important;
+    gap: var(--cf-detail-shell-gap) !important;
+  }
+
+  .case-detail-shell {
+    grid-template-columns: minmax(0, 1fr) var(--cf-case-right-rail-width) !important;
+    gap: var(--cf-detail-shell-gap) !important;
+  }
+
+  .case-detail-top-grid {
+    gap: 12px !important;
+  }
+}
+
+:where(.client-detail-left-rail, .client-detail-right-rail, .case-detail-right-rail) {
+  min-width: 0 !important;
+}
+
+:where(
+  .client-detail-side-card,
+  .client-detail-profile-card,
+  .client-detail-right-card,
+  .client-detail-section-card,
+  .client-detail-summary-card,
+  .case-detail-right-card,
+  .case-detail-section-card,
+  .case-detail-top-card,
+  .case-detail-tabs
+) {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1180px) {
+  .client-detail-shell,
+  .case-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .client-detail-left-rail,
+  .client-detail-right-rail,
+  .case-detail-right-rail {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .client-detail-left-rail,
+  .client-detail-right-rail,
+  .case-detail-right-rail {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* STAGE227F2_SHARED_DETAIL_SHELL_AND_CLIENT_CASE_WIDTH_POLISH_END */
