@@ -587,6 +587,8 @@ const STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY = 'LeadDetail header exposes phone
 void STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY;
 const STAGE227F1_LEAD_DETAIL_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy keeps four decision cards in one desktop row and removes the redundant Co robimy teraz super-heading';
 void STAGE227F1_LEAD_DETAIL_VISUAL_HIERARCHY_POLISH;
+const STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW = 'LeadDetail top strip is a full-width CaseDetail-style row with no scroll anchors or scrollIntoView side effects';
+void STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW;
 
 type LeadSalesSignalStatusStage227E4 = 'ok' | 'missing' | 'warning';
 type LeadSalesSignalItemStage227E4 = {
@@ -778,6 +780,17 @@ export default function LeadDetail() {
     }
     void loadLead();
   }, [leadId, workspaceReady]);
+
+  useEffect(() => {
+    const STAGE227F5_CLEAR_LEGACY_HASH = true;
+    void STAGE227F5_CLEAR_LEGACY_HASH;
+    if (typeof window === 'undefined') return;
+    const legacyLeadHashes = new Set(['#lead-actions', '#lead-activity-history', '#lead-notes']);
+    if (legacyLeadHashes.has(window.location.hash)) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [leadId]);
 
   const leadMovedToService = isLeadMovedToService(lead);
   const serviceCaseId = String(startServiceSuccess?.caseId || associatedCase?.id || lead?.linkedCaseId || lead?.caseId || '');
@@ -1827,6 +1840,50 @@ useEffect(() => {
 
 
 
+        {/* STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW_START */}
+        {!leadInService ? (
+          <nav
+            className="lead-detail-stage227f5-top-strip case-detail-stage220a10-tabs-wrap"
+            aria-label="Skróty leada"
+            data-stage227f3-lead-top-strip="true"
+            data-stage227f4-case-vst-tabs-source="case-detail-stage220a10-tabs"
+            data-stage227f5-no-scroll-row="true"
+          >
+            <div className="case-detail-tabs case-detail-stage220a10-tabs lead-detail-stage227f5-tabs">
+              <button
+                type="button"
+                className="lead-detail-stage227f5-top-pill case-detail-tab-active"
+                data-stage227f3-lead-top-card="actions"
+                data-stage227f5-button-action="open-actions"
+                onClick={() => setLeadActionOpenGroup('next')}
+              >
+                <span className="case-detail-stage220a10-tab-label">Działania</span>
+                <span className="case-detail-stage220a10-tab-count">{activeLeadWorkEntries.length}</span>
+              </button>
+              <button
+                type="button"
+                className="lead-detail-stage227f5-top-pill case-detail-tab-active"
+                data-stage227f3-lead-top-card="blockers"
+                data-stage227f5-button-action="open-blockers"
+                onClick={() => setLeadActionOpenGroup('blockers')}
+              >
+                <span className="case-detail-stage220a10-tab-label">Braki</span>
+                <span className="case-detail-stage220a10-tab-count">{leadBlockerEntries.length}</span>
+              </button>
+              <button
+                type="button"
+                className="lead-detail-stage227f5-top-pill case-detail-tab-active"
+                data-stage227f3-lead-top-card="history"
+                data-stage227f5-history-static="true"
+              >
+                <span className="case-detail-stage220a10-tab-label">Historia</span>
+                <span className="case-detail-stage220a10-tab-count">{leadActivityHistoryItems.length}</span>
+              </button>
+            </div>
+          </nav>
+        ) : null}
+        {/* STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW_END */}
+
         <div className="lead-detail-shell">
           <aside
             className="lead-detail-left-rail lead-detail-data-rail"
@@ -2042,50 +2099,6 @@ useEffect(() => {
                 </div>
               </section>
             ) : null}
-            {/* STAGE227F3_LEAD_TOP_STRIP_START */}
-            {!leadInService ? (
-              <nav
-                className="lead-detail-stage227f3-top-strip case-detail-stage220a10-tabs-wrap"
-                aria-label="Skróty leada"
-                data-stage227f3-lead-top-strip="true"
-                data-stage227f4-case-vst-tabs-source="case-detail-stage220a10-tabs"
-                data-stage227f4-no-hash-scroll="true"
-              >
-                <div className="case-detail-tabs case-detail-stage220a10-tabs lead-detail-stage227f4-tabs">
-                  <button
-                    type="button"
-                    className="lead-detail-stage227f3-top-card case-detail-tab-active"
-                    data-stage227f3-lead-top-card="actions"
-                    data-stage227f4-button-scroll-target="lead-actions"
-                    onClick={() => document.getElementById('lead-actions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  >
-                    <span className="case-detail-stage220a10-tab-label">Działania</span>
-                    <span className="case-detail-stage220a10-tab-count">{activeLeadWorkEntries.length}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="lead-detail-stage227f3-top-card case-detail-tab-active"
-                    data-stage227f3-lead-top-card="blockers"
-                    data-stage227f4-button-scroll-target="lead-actions"
-                    onClick={() => document.getElementById('lead-actions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  >
-                    <span className="case-detail-stage220a10-tab-label">Braki</span>
-                    <span className="case-detail-stage220a10-tab-count">{leadBlockerEntries.length}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="lead-detail-stage227f3-top-card case-detail-tab-active"
-                    data-stage227f3-lead-top-card="history"
-                    data-stage227f4-button-scroll-target="lead-activity-history"
-                    onClick={() => document.getElementById('lead-activity-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                  >
-                    <span className="case-detail-stage220a10-tab-label">Historia</span>
-                    <span className="case-detail-stage220a10-tab-count">{leadActivityHistoryItems.length}</span>
-                  </button>
-                </div>
-              </nav>
-            ) : null}
-            {/* STAGE227F3_LEAD_TOP_STRIP_END */}
 
 {!leadInService ? (
               <section data-stage227f3-lead-actions-anchor="true" id="lead-actions" className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true" data-stage227f3-lead-actions-source="true">
