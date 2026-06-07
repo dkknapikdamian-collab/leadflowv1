@@ -1,5 +1,7 @@
 const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes history in the top strip and removes the duplicate center history section; CaseDetail header stretches to the shared shell width';
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
+const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
+void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
 const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
 void STAGE227F1_VISUAL_HIERARCHY_POLISH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
@@ -2040,32 +2042,52 @@ useEffect(() => {
                 </div>
               </section>
             ) : null}
-
-
-
             {/* STAGE227F3_LEAD_TOP_STRIP_START */}
             {!leadInService ? (
-              <nav className="lead-detail-stage227f3-top-strip" data-stage227f3-lead-top-strip="true" aria-label="Skróty pracy z leadem">
-                <a href="#lead-actions" className="lead-detail-stage227f3-top-card" data-stage227f3-lead-top-card="actions">
-                  <small>Działania</small>
-                  <strong>{activeLeadWorkEntries.length}</strong>
-                  <span>Aktywne kroki</span>
-                </a>
-                <a href="#lead-actions" className="lead-detail-stage227f3-top-card" data-stage227f3-lead-top-card="blockers">
-                  <small>Braki</small>
-                  <strong>{leadBlockerEntries.length}</strong>
-                  <span>Blokady ruchu</span>
-                </a>
-                <a href="#lead-activity-history" className="lead-detail-stage227f3-top-card" data-stage227f3-lead-top-card="history">
-                  <small>Historia</small>
-                  <strong>{leadActivityHistoryItems.length}</strong>
-                  <span>Log aktywności</span>
-                </a>
+              <nav
+                className="lead-detail-stage227f3-top-strip case-detail-stage220a10-tabs-wrap"
+                aria-label="Skróty leada"
+                data-stage227f3-lead-top-strip="true"
+                data-stage227f4-case-vst-tabs-source="case-detail-stage220a10-tabs"
+                data-stage227f4-no-hash-scroll="true"
+              >
+                <div className="case-detail-tabs case-detail-stage220a10-tabs lead-detail-stage227f4-tabs">
+                  <button
+                    type="button"
+                    className="lead-detail-stage227f3-top-card case-detail-tab-active"
+                    data-stage227f3-lead-top-card="actions"
+                    data-stage227f4-button-scroll-target="lead-actions"
+                    onClick={() => document.getElementById('lead-actions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  >
+                    <span className="case-detail-stage220a10-tab-label">Działania</span>
+                    <span className="case-detail-stage220a10-tab-count">{activeLeadWorkEntries.length}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="lead-detail-stage227f3-top-card case-detail-tab-active"
+                    data-stage227f3-lead-top-card="blockers"
+                    data-stage227f4-button-scroll-target="lead-actions"
+                    onClick={() => document.getElementById('lead-actions')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  >
+                    <span className="case-detail-stage220a10-tab-label">Braki</span>
+                    <span className="case-detail-stage220a10-tab-count">{leadBlockerEntries.length}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="lead-detail-stage227f3-top-card case-detail-tab-active"
+                    data-stage227f3-lead-top-card="history"
+                    data-stage227f4-button-scroll-target="lead-activity-history"
+                    onClick={() => document.getElementById('lead-activity-history')?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                  >
+                    <span className="case-detail-stage220a10-tab-label">Historia</span>
+                    <span className="case-detail-stage220a10-tab-count">{leadActivityHistoryItems.length}</span>
+                  </button>
+                </div>
               </nav>
             ) : null}
             {/* STAGE227F3_LEAD_TOP_STRIP_END */}
 
-            {!leadInService ? (
+{!leadInService ? (
               <section data-stage227f3-lead-actions-anchor="true" id="lead-actions" className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true" data-stage227f3-lead-actions-source="true">
                 <div className="lead-detail-section-head">
                   <div>
