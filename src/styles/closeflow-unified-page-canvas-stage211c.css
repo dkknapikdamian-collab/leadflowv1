@@ -260,3 +260,24 @@ main.main,
   }
 }
 /* STAGE227F2_SHARED_DETAIL_SHELL_AND_CLIENT_CASE_WIDTH_POLISH_END */
+
+/* STAGE227F2R1_SHARED_DETAIL_HEADER_STRETCH_START */
+:root {
+  --stage227f2r1-shared-detail-header-stretch: 1;
+}
+
+:where(.client-detail-header, .case-detail-header) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+:where(.client-detail-shell, .case-detail-shell) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+/* STAGE227F2R1_SHARED_DETAIL_HEADER_STRETCH_END */

@@ -2260,3 +2260,40 @@ aside.case-detail-right-rail::after {
   stroke: #be123c !important;
   opacity: 1 !important;
 }
+
+/* STAGE227F2R1_CASE_HEADER_STRETCH_START */
+:root {
+  --stage227f2r1-case-header-stretch: 1;
+}
+
+.case-detail-vnext-page {
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: var(--cf-detail-shell-gutter-x, clamp(16px, 1.6vw, 24px)) !important;
+  padding-right: var(--cf-detail-shell-gutter-x, clamp(16px, 1.6vw, 24px)) !important;
+}
+
+.case-detail-header,
+.case-detail-top-grid,
+.case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.case-detail-header {
+  align-self: stretch !important;
+}
+
+.case-detail-shell {
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 320px) !important;
+}
+
+@media (max-width: 1180px) {
+  .case-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+}
+/* STAGE227F2R1_CASE_HEADER_STRETCH_END */
