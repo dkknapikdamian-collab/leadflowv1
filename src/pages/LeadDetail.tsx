@@ -2,6 +2,8 @@ const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes 
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
+const STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH = 'LeadDetail removes top shortcut strip; contact cadence strips are compact; sales funnel uses shared full width canvas';
+void STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH;
 const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
 void STAGE227F1_VISUAL_HIERARCHY_POLISH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
@@ -1840,49 +1842,7 @@ useEffect(() => {
 
 
 
-        {/* STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW_START */}
-        {!leadInService ? (
-          <nav
-            className="lead-detail-stage227f5-top-strip case-detail-stage220a10-tabs-wrap"
-            aria-label="Skróty leada"
-            data-stage227f3-lead-top-strip="true"
-            data-stage227f4-case-vst-tabs-source="case-detail-stage220a10-tabs"
-            data-stage227f5-no-scroll-row="true"
-          >
-            <div className="case-detail-tabs case-detail-stage220a10-tabs lead-detail-stage227f5-tabs">
-              <button
-                type="button"
-                className="lead-detail-stage227f5-top-pill case-detail-tab-active"
-                data-stage227f3-lead-top-card="actions"
-                data-stage227f5-button-action="open-actions"
-                onClick={() => setLeadActionOpenGroup('next')}
-              >
-                <span className="case-detail-stage220a10-tab-label">Działania</span>
-                <span className="case-detail-stage220a10-tab-count">{activeLeadWorkEntries.length}</span>
-              </button>
-              <button
-                type="button"
-                className="lead-detail-stage227f5-top-pill case-detail-tab-active"
-                data-stage227f3-lead-top-card="blockers"
-                data-stage227f5-button-action="open-blockers"
-                onClick={() => setLeadActionOpenGroup('blockers')}
-              >
-                <span className="case-detail-stage220a10-tab-label">Braki</span>
-                <span className="case-detail-stage220a10-tab-count">{leadBlockerEntries.length}</span>
-              </button>
-              <button
-                type="button"
-                className="lead-detail-stage227f5-top-pill case-detail-tab-active"
-                data-stage227f3-lead-top-card="history"
-                data-stage227f5-history-static="true"
-              >
-                <span className="case-detail-stage220a10-tab-label">Historia</span>
-                <span className="case-detail-stage220a10-tab-count">{leadActivityHistoryItems.length}</span>
-              </button>
-            </div>
-          </nav>
-        ) : null}
-        {/* STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW_END */}
+        <span hidden data-stage227f6-lead-top-strip-removed="true" />
 
         <div className="lead-detail-shell">
           <aside

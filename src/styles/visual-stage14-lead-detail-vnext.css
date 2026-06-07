@@ -3419,3 +3419,9 @@
   }
 }
 /* STAGE227F5_LEAD_TOP_STRIP_NO_SCROLL_CASE_ROW_END */
+
+/* STAGE227F6_LEAD_TOP_STRIP_REMOVED_START */
+.lead-detail-stage227f5-top-strip {
+  display: none !important;
+}
+/* STAGE227F6_LEAD_TOP_STRIP_REMOVED_END */

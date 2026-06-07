@@ -115,6 +115,7 @@ const STAGE223R3_LAST_CONTACT_INTAKE_LEADS = 'lead creation captures explicit la
 const STAGE225_CONTACT_CADENCE_GRID_LEADS = 'leads list uses Contact Cadence Grid filter from activity-truth';
 const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue view from buildLostLeadRescue';
 const STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME = 'lead create stays lead-only and never creates or displays a client row';
+const STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT = 'Leads Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
@@ -123,6 +124,7 @@ void STAGE223R3_LAST_CONTACT_INTAKE_LEADS;
 void STAGE225_CONTACT_CADENCE_GRID_LEADS;
 void STAGE226_LOST_LEAD_RESCUE_LEADS;
 void STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME;
+void STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT;
 const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate conflict dialog renders once and client matches cannot be restored from lead create';
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
@@ -1087,16 +1089,9 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
 
 
             {!showTrash ? (
-              <div className="table-card lead-table-card w-full max-w-none" data-stage225-contact-cadence-grid="leads">
+              <div className="cf-contact-cadence-strip w-full max-w-none" data-stage225-contact-cadence-grid="leads" data-stage227f6-contact-cadence-compact="leads">
                 <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />
-                <div className="row row-empty">
-                  <span className="index"><Clock3 className="h-4 w-4" /></span>
-                  <span>
-                    <span className="title">Siatka kontaktu</span>
-                    <span className="sub">Filtruje leady po dacie ostatniego kontaktu. Nie liczy ciszy z updatedAt.</span>
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 p-3 pt-0">
+                <div className="cf-contact-cadence-pills">
                   <button
                     type="button"
                     className={cadenceFilter === 'all' ? 'cf-status-pill' : 'pill'}

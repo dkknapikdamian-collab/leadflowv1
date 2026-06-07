@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
+import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import {
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
@@ -22,11 +23,13 @@ import {
 const STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW = 'read-only owner sales funnel movement view: next-step silence risk value';
 const STAGE227B_SALES_FUNNEL_DECISION_LIST = 'sales funnel is a readable owner decision list, not a crowded CRM kanban';
 const STAGE228A_FUNNEL_TRUTH_CLICKABILITY = 'funnel money tile is traceable to visible cards and owner/stage filters do not hide source records';
+const STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS = 'Sales funnel uses shared full width canvas and stable gutters, not centered narrow max-width';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
 void STAGE227B_SALES_FUNNEL_DECISION_LIST;
 void STAGE228A_FUNNEL_TRUTH_CLICKABILITY;
+void STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS;
 
 type LoadState = {
   leads: any[];
@@ -376,8 +379,8 @@ export function SalesFunnel() {
 
   return (
     <Layout>
-      <div className="min-h-full bg-slate-50 px-4 py-5 sm:px-6 lg:px-8" data-stage227a-sales-funnel-movement-view="true" data-stage227b-decision-list-view="true" data-stage228a-funnel-truth-clickability="true">
-        <div className="mx-auto max-w-[1260px] space-y-5">
+      <div className="min-h-full bg-slate-50 px-4 py-5 sm:px-6 lg:px-8 sales-funnel-stage227f6-page" data-stage227a-sales-funnel-movement-view="true" data-stage227b-decision-list-view="true" data-stage228a-funnel-truth-clickability="true" data-stage227f6-sales-funnel-wide-shell="true">
+        <div className="sales-funnel-stage227f6-canvas space-y-5">
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
               <div>

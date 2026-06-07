@@ -371,3 +371,53 @@ main.main,
   margin-right: 0 !important;
 }
 /* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_END */
+
+/* STAGE227F6_CONTACT_CADENCE_AND_FUNNEL_WIDTH_START */
+.cf-contact-cadence-strip {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cf-contact-cadence-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.cf-contact-cadence-pills .pill,
+.cf-contact-cadence-pills .cf-status-pill {
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.sales-funnel-stage227f6-page {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: var(--cf-detail-shell-gutter-x, 18px) !important;
+  padding-right: var(--cf-detail-shell-gutter-x, 18px) !important;
+  overflow-x: clip;
+}
+
+.sales-funnel-stage227f6-canvas {
+  width: 100%;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+@media (max-width: 1100px) {
+  .sales-funnel-stage227f6-page {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
+/* STAGE227F6_CONTACT_CADENCE_AND_FUNNEL_WIDTH_END */

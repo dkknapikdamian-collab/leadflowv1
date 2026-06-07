@@ -131,9 +131,11 @@ void STAGE220A24_CLIENT_DIALOGS_LAYOUT_VST;
 const STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE = 'new client form can create primary case and writes case contractValue expectedRevenue';
 const STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS = 'client creation captures explicit lastContactAt for activity truth';
 const STAGE225_CONTACT_CADENCE_GRID_CLIENTS = 'clients list uses Contact Cadence Grid filter from activity-truth';
+const STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT = 'Clients Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
 void STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE;
 void STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS;
 void STAGE225_CONTACT_CADENCE_GRID_CLIENTS;
+void STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
@@ -882,16 +884,9 @@ export default function Clients() {
 
 
             {!showArchived ? (
-              <div className="table-card w-full max-w-none" data-stage225-contact-cadence-grid="clients">
+              <div className="cf-contact-cadence-strip w-full max-w-none" data-stage225-contact-cadence-grid="clients" data-stage227f6-contact-cadence-compact="clients">
                 <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />
-                <div className="row row-empty">
-                  <span className="index"><AlertTriangle className="h-4 w-4" /></span>
-                  <span>
-                    <span className="title">Siatka kontaktu</span>
-                    <span className="sub">Filtruje klientów po dacie ostatniego kontaktu. Rekord bez daty wpada do Brak daty kontaktu.</span>
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2 p-3 pt-0">
+                <div className="cf-contact-cadence-pills">
                   <button
                     type="button"
                     className={cadenceFilter === 'all' ? 'cf-status-pill' : 'pill'}
