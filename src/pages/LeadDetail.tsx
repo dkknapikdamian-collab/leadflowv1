@@ -1,3 +1,5 @@
+const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
+void STAGE227F1_VISUAL_HIERARCHY_POLISH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
@@ -579,6 +581,8 @@ const STAGE227E2_REMOVE_SALES_CONTEXT_BLOCK = 'LeadDetail removes runtime sales 
 void STAGE227E2_REMOVE_SALES_CONTEXT_BLOCK;
 const STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY = 'LeadDetail header exposes phone, email, company, source and last contact immediately with copy action';
 void STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY;
+const STAGE227F1_LEAD_DETAIL_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy keeps four decision cards in one desktop row and removes the redundant Co robimy teraz super-heading';
+void STAGE227F1_LEAD_DETAIL_VISUAL_HIERARCHY_POLISH;
 
 type LeadSalesSignalStatusStage227E4 = 'ok' | 'missing' | 'warning';
 type LeadSalesSignalItemStage227E4 = {
@@ -1941,7 +1945,7 @@ useEffect(() => {
               <div hidden data-stage216j3f-source-context-card-hidden="true" />
             )}
 {!leadInService ? (
-                            <section className="lead-detail-top-grid" data-stage227e2-top-cards="true" data-stage227e3-decision-cards="true">
+                            <section className="lead-detail-top-grid" data-stage227e2-top-cards="true" data-stage227e3-decision-cards="true" data-stage227f1-decision-dashboard="true">
                 <article className="lead-detail-top-card lead-detail-callout-blue" data-stage227e2-next-step-card="true" data-stage227e3-next-step-card="true">
                   <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Następny krok</h2></div>
                   {nextTimelineEntry ? (
@@ -2034,10 +2038,9 @@ useEffect(() => {
             ) : null}
 
             {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true">
+              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true">
                 <div className="lead-detail-section-head">
                   <div>
-                    <p className="lead-detail-box-kicker">CO ROBIMY TERAZ?</p>
                     <h2>Działania leada</h2>
                   </div>
                   <span className="lead-detail-pill lead-detail-pill-blue">Aktywne {activeLeadWorkEntries.length}</span>

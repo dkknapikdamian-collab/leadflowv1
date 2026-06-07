@@ -2710,3 +2710,99 @@
 .lead-detail-activity-log-row p {
   margin: 0.15rem 0 0;
 }
+
+
+/* STAGE227F1_LEAD_DETAIL_VISUAL_HIERARCHY_POLISH
+   Visual hierarchy polish: four-card decision dashboard, no redundant work-center super-heading,
+   and calmer non-decision sections. */
+@media (min-width: 1280px) {
+  .lead-detail-shell {
+    grid-template-columns: minmax(240px, 280px) minmax(0, 1fr) minmax(250px, 290px);
+  }
+
+  .lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    align-items: stretch;
+  }
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] {
+  grid-auto-flow: column;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card {
+  min-width: 0;
+  min-height: 172px;
+}
+
+.lead-detail-stage228b-work-action-center[data-stage227f1-work-center-no-super-heading="true"] .lead-detail-box-kicker {
+  display: none !important;
+}
+
+.lead-detail-stage228b-work-action-center[data-stage227f1-work-center-no-super-heading="true"] .lead-detail-section-head {
+  margin-bottom: 14px;
+}
+
+.lead-detail-stage228b-work-action-center[data-stage227f1-work-center-no-super-heading="true"] .lead-detail-section-head h2 {
+  font-size: 18px;
+}
+
+.lead-detail-main-column > .lead-detail-section-card:not(.lead-detail-stage228b-work-action-center) {
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.035) !important;
+}
+
+.lead-detail-callout-red {
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+}
+/* STAGE227F1_VISUAL_HIERARCHY_POLISH_START */
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 12px;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-top-card {
+  min-height: 176px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-card-title-row {
+  margin-bottom: 10px;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-blue {
+  background: #eff6ff !important;
+  border-color: #bfdbfe !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-green {
+  background: #ecfdf3 !important;
+  border-color: #abefc6 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-amber {
+  background: #fffaeb !important;
+  border-color: #fedf89 !important;
+}
+
+.lead-detail-top-grid[data-stage227f1-decision-dashboard="true"] .lead-detail-callout-red {
+  background: #fff1f2 !important;
+  border-color: #fecdd3 !important;
+}
+
+.lead-detail-stage228b-work-action-center[data-stage227f1-work-center="true"] .lead-detail-section-head {
+  margin-bottom: 14px;
+}
+
+.lead-detail-stage228b-work-action-center[data-stage227f1-work-center="true"] .lead-detail-section-head > div {
+  display: grid;
+  gap: 0;
+}
+
+.lead-detail-main-column > .lead-detail-section-card:not(.lead-detail-stage228b-work-action-center) {
+  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.035) !important;
+}
+/* STAGE227F1_VISUAL_HIERARCHY_POLISH_END */
