@@ -281,3 +281,93 @@ main.main,
   margin-right: 0 !important;
 }
 /* STAGE227F2R1_SHARED_DETAIL_HEADER_STRETCH_END */
+
+
+/* STAGE227F3_CASE_HEADER_FULL_WIDTH_START */
+:root {
+  --stage227f3-lead-history-top-strip-case-header-width: 1;
+}
+
+.case-detail-vnext-page > .case-detail-header.client-detail-header,
+.case-detail-vnext-page > .case-detail-stage220a10-tabs-wrap,
+.case-detail-vnext-page > .case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.case-detail-vnext-page > .case-detail-header.client-detail-header {
+  align-self: stretch !important;
+}
+
+.case-detail-stage220a10-tabs-wrap,
+.case-detail-stage220a10-tabs {
+  width: 100% !important;
+  max-width: none !important;
+}
+/* STAGE227F3_CASE_HEADER_FULL_WIDTH_END */
+
+/* STAGE227F3_CASE_HEADER_WIDTH_CONTRACT_START */
+:root {
+  --stage227f3-lead-history-top-strip-case-header-width: 1;
+}
+
+.case-detail-vnext-page {
+  overflow-x: hidden !important;
+}
+
+:where(
+  .case-detail-header.client-detail-header,
+  .case-detail-stage220a10-tabs-wrap,
+  .case-detail-tabs,
+  .case-detail-shell,
+  .case-detail-stage220a10-service-panel,
+  .stage217-case-operation-workspace
+) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+/* STAGE227F3_CASE_HEADER_WIDTH_CONTRACT_END */
+
+/* STAGE227F3_CASE_HEADER_WIDTH_REPAIR_START */
+:root { --stage227f3-case-header-width-repair: 1; }
+:where(.case-detail-header, .case-detail-stage220a10-tabs-wrap, .case-detail-tabs, .case-detail-top-grid, .case-detail-shell) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  box-sizing: border-box !important;
+}
+.case-detail-vnext-page {
+  overflow-x: clip;
+}
+/* STAGE227F3_CASE_HEADER_WIDTH_REPAIR_END */
+
+
+/* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_R8 */
+[data-closeflow-route="case-detail"] .case-detail-header,
+[data-closeflow-route="case-detail"] .case-detail-stage220a10-tabs-wrap,
+[data-closeflow-route="case-detail"] .case-detail-top-grid,
+[data-closeflow-route="case-detail"] .case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+
+/* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_START */
+[data-closeflow-route="case-detail"] .case-detail-header,
+[data-closeflow-route="case-detail"] .case-detail-top-grid,
+[data-closeflow-route="case-detail"] .case-detail-stage220a10-tabs-wrap,
+[data-closeflow-route="case-detail"] .case-detail-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+/* STAGE227F3_CASE_DETAIL_HEADER_WIDTH_END */

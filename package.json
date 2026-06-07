@@ -884,7 +884,11 @@
     "check:stage227c1-missing-item-quick-action-contract": "node scripts/check-stage227c1-missing-item-quick-action-contract.cjs",
     "test:stage227c1-missing-item-quick-action-contract": "node --test tests/stage227c1-missing-item-quick-action-contract.test.cjs",
     "check:stage227c2-missing-item-quick-action-modal": "node scripts/check-stage227c2-missing-item-quick-action-modal.cjs",
-    "test:stage227c2-missing-item-quick-action-modal": "node --test tests/stage227c2-missing-item-quick-action-modal.test.cjs"
+    "test:stage227c2-missing-item-quick-action-modal": "node --test tests/stage227c2-missing-item-quick-action-modal.test.cjs",
+    "check:stage227f3-lead-history-top-strip-case-header-width": "node scripts/check-stage227f3-lead-history-top-strip-case-header-width.cjs",
+    "test:stage227f3-lead-history-top-strip-case-header-width": "node --test tests/stage227f3-lead-history-top-strip-case-header-width.test.cjs",
+    "check:stage227f3r2-lead-history-case-header-anchor-repair": "node scripts/check-stage227f3r2-lead-history-case-header-anchor-repair.cjs",
+    "test:stage227f3r2-lead-history-case-header-anchor-repair": "node --test tests/stage227f3r2-lead-history-case-header-anchor-repair.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

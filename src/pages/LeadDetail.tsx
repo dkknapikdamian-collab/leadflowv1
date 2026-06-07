@@ -1,3 +1,5 @@
+const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes history in the top strip and removes the duplicate center history section; CaseDetail header stretches to the shared shell width';
+void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
 void STAGE227F1_VISUAL_HIERARCHY_POLISH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
@@ -66,7 +68,8 @@ const STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL = 'LeadDetail does not rend
 void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL;
 
 
-
+const STAGE227F3R7_TOP_STRIP_CARD_MARKER_REPAIR = 'LeadDetail F3 top strip has explicit actions/blockers/history card markers for guards and tests';
+void STAGE227F3R7_TOP_STRIP_CARD_MARKER_REPAIR;
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import EntityContactCard from '../components/entity-contact-card';
@@ -564,7 +567,6 @@ function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: 
     toneClass,
   };
 }
-
 
 
 const STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION = 'LeadDetail exposes compact sales context fields: need urgency budget decision blocker';
@@ -1241,7 +1243,6 @@ useEffect(() => {
   };
 
 
-
   const handleDeleteLead = async () => {
     if (!leadId) return;
     if (!window.confirm('Czy na pewno chcesz usunąć tego leada?')) return;
@@ -1822,6 +1823,8 @@ useEffect(() => {
           </section>
         ) : null}
 
+
+
         <div className="lead-detail-shell">
           <aside
             className="lead-detail-left-rail lead-detail-data-rail"
@@ -1878,7 +1881,7 @@ useEffect(() => {
             </section>
 
 
-            <section className="lead-detail-section-card lead-detail-left-activity-history-card" data-stage216j3i-activity-history-left-rail="true">
+            <section id="lead-activity-history" className="lead-detail-section-card lead-detail-left-activity-history-card" data-stage216j3i-activity-history-left-rail="true" data-stage227f3-left-history-source="true">
               <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Historia aktywności</h2></div>
 
               <div className="lead-detail-activity-history-rail-list">
@@ -1920,7 +1923,8 @@ useEffect(() => {
             </section>
           </aside>
 
-          <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">            {leadSourceNoteText ? (
+          <section className="lead-detail-main-column" data-stage117-lead-detail-vertical-rhythm="true">
+            {leadSourceNoteText ? (
               <section
                 className="lead-detail-section-card lead-detail-notes-section lead-detail-source-context-section"
                 data-stage115-lead-notes-section="true"
@@ -2037,8 +2041,32 @@ useEffect(() => {
               </section>
             ) : null}
 
+
+
+            {/* STAGE227F3_LEAD_TOP_STRIP_START */}
             {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true">
+              <nav className="lead-detail-stage227f3-top-strip" data-stage227f3-lead-top-strip="true" aria-label="Skróty pracy z leadem">
+                <a href="#lead-actions" className="lead-detail-stage227f3-top-card" data-stage227f3-lead-top-card="actions">
+                  <small>Działania</small>
+                  <strong>{activeLeadWorkEntries.length}</strong>
+                  <span>Aktywne kroki</span>
+                </a>
+                <a href="#lead-actions" className="lead-detail-stage227f3-top-card" data-stage227f3-lead-top-card="blockers">
+                  <small>Braki</small>
+                  <strong>{leadBlockerEntries.length}</strong>
+                  <span>Blokady ruchu</span>
+                </a>
+                <a href="#lead-activity-history" className="lead-detail-stage227f3-top-card" data-stage227f3-lead-top-card="history">
+                  <small>Historia</small>
+                  <strong>{leadActivityHistoryItems.length}</strong>
+                  <span>Log aktywności</span>
+                </a>
+              </nav>
+            ) : null}
+            {/* STAGE227F3_LEAD_TOP_STRIP_END */}
+
+            {!leadInService ? (
+              <section data-stage227f3-lead-actions-anchor="true" id="lead-actions" className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true" data-stage227f3-lead-actions-source="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Działania leada</h2>
@@ -2127,12 +2155,13 @@ useEffect(() => {
                 </div>
               </section>
             ) : null}
-            <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-history" data-stage216j3c-notes-history-center="true" data-stage216j3g-notes-only-section="true" data-stage227e6-notes-section="true">
+            <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-notes" data-stage216j3c-notes-history-center="true" data-stage227f3-notes-own-anchor="true" data-stage216j3g-notes-only-section="true" data-stage227e6-notes-section="true">
               <div className="lead-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
                 </div>
-              </div>              {!leadInService ? (
+              </div>
+              {!leadInService ? (
                 <div className="lead-detail-note-actions-panel" data-stage216j3f-note-actions-only="true">
                   <Button type="button" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}>
                     <Plus className="h-4 w-4" />
@@ -2173,30 +2202,7 @@ useEffect(() => {
               </div>
             </section>
 
-            <section className="lead-detail-section-card lead-detail-activity-history-section" data-stage227e6-notes-history-separation="true" aria-label="Historia aktywności leada">
-              <div className="lead-detail-section-head">
-                <div>
-                  <h2>Historia aktywności</h2>
-                </div>
-                <span className="lead-detail-pill lead-detail-pill-slate">Log</span>
-              </div>
-              <div className="lead-detail-history-list lead-detail-activity-log-list" data-stage227e6-activity-history-list="true">
-                {leadActivityHistoryItems.length === 0 ? (
-                  <div className="lead-detail-light-empty">Brak historii aktywności przy tym leadzie.</div>
-                ) : (
-                  leadActivityHistoryItems.slice(0, 8).map((historyItem) => (
-                    <article key={String(historyItem.id)} className="lead-detail-history-row lead-detail-activity-log-row" data-stage227e6-activity-history-row="true">
-                      <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
-                      <div>
-                        <strong>{historyItem.title}</strong>
-                        <p>{historyItem.description}</p>
-                        <small>{historyItem.dateLabel}</small>
-                      </div>
-                    </article>
-                  ))
-                )}
-              </div>
-            </section>
+            <div hidden data-stage227f3-center-history-removed="true" />
 </section>
 
           {!leadInService ? (
@@ -2289,7 +2295,6 @@ useEffect(() => {
           </aside>
           ) : null}
         </div>
-
 
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
