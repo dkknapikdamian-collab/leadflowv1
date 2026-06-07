@@ -73,6 +73,8 @@ const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS = 'ClientDetail V1 operational center labels contract';
 void STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS;
+const STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING = 'ClientDetail Brak quick action uses shared missing item modal and lightweight task/activity persistence';
+void STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING;
 const CLIENT_DETAIL_OPERATIONAL_TASKS_LABEL = 'Zadania klienta';
 const CLIENT_DETAIL_OPERATIONAL_EVENTS_LABEL = 'Wydarzenia klienta';
 const CLIENT_DETAIL_OPERATIONAL_ACTIVITY_LABEL = 'Aktywność klienta';
@@ -95,6 +97,7 @@ import {
   deleteActivityFromSupabase,
   fetchActivitiesFromSupabase,
   insertActivityToSupabase,
+  insertTaskToSupabase,
   fetchClientByIdFromSupabase,
   fetchPaymentsFromSupabase,
   updateActivityInSupabase
@@ -107,6 +110,8 @@ import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlo
 import { getClientCasesFinanceSummary, getCaseFinanceSummary } from '../lib/finance/case-finance-source';
 import ContextActionButton from '../components/ContextActionButton';
 import { EntityContactInfoList } from '../components/entity-contact-card';
+import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
+import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
@@ -1190,6 +1195,11 @@ export default function ClientDetail() {
   const [clientNoteInterimText, setClientNoteInterimText] = useState('');
   const [clientNoteDraft, setClientNoteDraft] = useState('');
   const [clientNoteSaving, setClientNoteSaving] = useState(false);
+  const [clientMissingModalOpen, setClientMissingModalOpen] = useState(false);
+  const [clientMissingTitle, setClientMissingTitle] = useState('');
+  const [clientMissingNote, setClientMissingNote] = useState('');
+  const [clientMissingError, setClientMissingError] = useState('');
+  const [clientMissingSaving, setClientMissingSaving] = useState(false);
   const [clientNoteModalOpen, setClientNoteModalOpen] = useState(false);
   const [clientNoteAutosaving, setClientNoteAutosaving] = useState(false);
   const clientNoteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
@@ -1374,6 +1384,18 @@ export default function ClientDetail() {
   const mainCase = activeCases[0] || cases[0] || null;
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
+
+  const clientMissingItemsStage227C3B = useMemo(() => {
+    return clientTasks
+      .filter((task: any) => {
+        const payload = task?.payload && typeof task.payload === 'object' ? task.payload : {};
+        const type = String(task?.type || task?.taskType || task?.kind || (payload as any)?.type || (payload as any)?.kind || '').trim().toLowerCase();
+        const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
+        return type === 'missing_item' || type === 'blocker' || status === 'missing_item' || status === 'missing' || status === 'blocked' || Boolean((payload as any)?.missingItem === true);
+      })
+      .sort((left: any, right: any) => (asDate(getTaskDate(right))?.getTime() ?? 0) - (asDate(getTaskDate(left))?.getTime() ?? 0));
+  }, [clientTasks]);
+
   const activeEventCount = useMemo(() => clientEvents.filter((event) => !isDoneStatus(event.status)).length, [clientEvents]);
   const nextAction = useMemo(() => buildClientNextAction(leads, cases, clientTasks, clientEvents, String(clientId || '')), [cases, clientEvents, clientId, clientTasks, leads]);
   const lastActivityDate = clientActivities[0]?.createdAt || clientActivities[0]?.updatedAt || client?.updatedAt || client?.createdAt;
@@ -1520,7 +1542,131 @@ export default function ClientDetail() {
     setClientNoteModalOpen(true);
   }, []);
 
+  const openClientMissingItemModalStage227C3B = useCallback(() => {
+    setContactEditing(false);
+    setClientMissingError('');
+    setClientMissingModalOpen(true);
+  }, []);
+
   const handleAddClientNote = useCallback(async () => {
+
+  const handleSaveClientMissingItemStage227C3B = useCallback(async () => {
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+    const safeClientId = String(clientId || client?.id || '').trim();
+    if (!safeClientId) {
+      setClientMissingError('Brak ID klienta. Nie można dodać braku.');
+      return;
+    }
+
+    let draft;
+    try {
+      draft = buildMissingItemModalDraft(
+        {
+          entityType: 'client',
+          entityId: safeClientId,
+          entityLabel: getClientName(client),
+        },
+        {
+          title: clientMissingTitle,
+          note: clientMissingNote,
+        },
+      );
+    } catch (error: any) {
+      setClientMissingError(error?.message || 'Wpisz, czego brakuje.');
+      return;
+    }
+
+    const createdAt = new Date().toISOString();
+    setClientMissingSaving(true);
+    try {
+      const savedTask = await insertTaskToSupabase({
+        title: draft.title,
+        type: 'missing_item',
+        status: 'missing_item',
+        priority: 'high',
+        date: createdAt.slice(0, 10),
+        scheduledAt: createdAt,
+        dueAt: createdAt,
+        clientId: safeClientId,
+        workspaceId: workspace?.id,
+      } as any);
+
+      await insertActivityToSupabase({
+        clientId: safeClientId,
+        eventType: 'missing_item_created',
+        payload: {
+          recordType: 'client',
+          entityType: 'client',
+          entityId: safeClientId,
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'missing_item',
+          title: draft.title,
+          note: draft.note,
+          content: draft.note,
+          createdAt,
+          source: 'stage227c3b_client_missing_item_quick_action',
+        },
+        workspaceId: workspace?.id,
+      } as any);
+
+      const optimisticTask = {
+        id: String((savedTask as any)?.id || 'client-missing-local-' + Date.now()),
+        title: draft.title,
+        type: 'missing_item',
+        status: 'missing_item',
+        priority: 'high',
+        date: createdAt.slice(0, 10),
+        scheduledAt: createdAt,
+        dueAt: createdAt,
+        clientId: safeClientId,
+        payload: {
+          kind: 'missing_item',
+          type: 'missing_item',
+          note: draft.note,
+          source: 'stage227c3b_client_missing_item_quick_action',
+        },
+      };
+
+      setTasks((previous) => [optimisticTask, ...previous]);
+      setActivities((previous) =>
+        normalizeClientActivitiesForA1([
+          {
+            id: 'client-missing-activity-local-' + Date.now(),
+            eventType: 'missing_item_created',
+            clientId: safeClientId,
+            createdAt,
+            updatedAt: createdAt,
+            payload: {
+              recordType: 'client',
+              kind: 'missing_item',
+              type: 'missing_item',
+              title: draft.title,
+              note: draft.note,
+              content: draft.note,
+              createdAt,
+            },
+          },
+          ...previous,
+        ]),
+      );
+      setClientMissingTitle('');
+      setClientMissingNote('');
+      setClientMissingError('');
+      setClientMissingModalOpen(false);
+      toast.success('Dodano brak do klienta.');
+      void reload();
+    } catch (error: any) {
+      setClientMissingError(error?.message || 'Nie udało się dodać braku.');
+      toast.error('Nie udało się dodać braku: ' + (error?.message || 'błąd zapisu'));
+    } finally {
+      setClientMissingSaving(false);
+    }
+  }, [client, clientId, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
+
     if (!hasAccess) {
       toast.error('Twój trial wygasł.');
       return;
@@ -1955,6 +2101,48 @@ return (
               />
             </div>
 
+
+            <section className="client-detail-section-card client-detail-missing-items-section" data-stage227c3b-client-missing-items-list="true">
+              <div className="client-detail-section-head">
+                <div>
+                  <h2>Braki i blokady</h2>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={openClientMissingItemModalStage227C3B}
+                  disabled={!hasAccess || clientMissingSaving}
+                  data-stage227c3b-client-missing-action="true"
+                >
+                  <AlertTriangle className="h-4 w-4" />
+                  Brak
+                </Button>
+              </div>
+
+              <div className="client-detail-missing-items-list">
+                {clientMissingItemsStage227C3B.length ? (
+                  clientMissingItemsStage227C3B.map((item: any) => {
+                    const payload = item?.payload && typeof item.payload === 'object' ? item.payload : {};
+                    const note = String((payload as any)?.note || (payload as any)?.content || item?.description || '').trim();
+                    return (
+                      <article key={String(item?.id || item?.title)} className="client-detail-missing-item-row" data-stage227c3b-client-missing-item-row="true">
+                        <span>
+                          <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
+                          {note ? <small>{note}</small> : null}
+                        </span>
+                        <em>{isDoneStatus(item?.status) ? 'Rozwiązany' : 'Otwarty'}</em>
+                      </article>
+                    );
+                  })
+                ) : (
+                  <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
+                    <strong>Brak otwartych braków.</strong>
+                  </div>
+                )}
+              </div>
+            </section>
+
                         <section className="client-detail-section-card client-detail-notes-center-section" data-stage216m-r15-r5-client-notes-source="true" data-stage216m-r16-r2-client-note-modal-source="true" data-client-notes-center-list="true">
               <div className="client-detail-section-head">
                 <div>
@@ -2022,6 +2210,35 @@ return (
                 )}
               </div>
             </section>
+
+
+            <div data-stage227c3b-client-missing-modal="true">
+              <MissingItemQuickActionModal
+                open={clientMissingModalOpen}
+                context={{
+                  entityType: 'client',
+                  entityId: String(clientId || client?.id || ''),
+                  entityLabel: getClientName(client),
+                }}
+                titleValue={clientMissingTitle}
+                noteValue={clientMissingNote}
+                error={clientMissingError}
+                isSaving={clientMissingSaving}
+                onTitleChange={(value) => {
+                  setClientMissingTitle(value);
+                  if (clientMissingError) setClientMissingError('');
+                }}
+                onNoteChange={setClientMissingNote}
+                onCancel={() => {
+                  if (clientMissingSaving) return;
+                  setClientMissingModalOpen(false);
+                  setClientMissingTitle('');
+                  setClientMissingNote('');
+                  setClientMissingError('');
+                }}
+                onSubmit={handleSaveClientMissingItemStage227C3B}
+              />
+            </div>
 
             <Dialog
               open={Boolean(clientNoteModalOpen || clientNoteListening)}

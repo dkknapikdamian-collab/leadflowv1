@@ -3381,3 +3381,124 @@ button.client-detail-top-tile-link {
   }
 }
 /* STAGE227F2R1_CLIENT_HEADER_STRETCH_END */
+
+
+/* STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING_START */
+.client-detail-missing-items-section {
+  border: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.client-detail-missing-items-list {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.client-detail-missing-item-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.8rem;
+  border-radius: 14px;
+  border: 1px solid rgba(248, 113, 113, 0.18);
+  background: rgba(127, 29, 29, 0.16);
+}
+
+.client-detail-missing-item-row span {
+  min-width: 0;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.client-detail-missing-item-row strong {
+  color: rgba(254, 226, 226, 0.96);
+}
+
+.client-detail-missing-item-row small,
+.client-detail-missing-item-row em {
+  color: rgba(254, 202, 202, 0.76);
+  font-style: normal;
+}
+
+.missing-item-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.missing-item-modal-card {
+  width: min(520px, 100%);
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+  border-radius: 22px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(15, 23, 42, 0.98);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.38);
+}
+
+.missing-item-modal-header {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.missing-item-modal-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: rgba(248, 250, 252, 0.96);
+}
+
+.missing-item-modal-header p,
+.missing-item-modal-kicker {
+  margin: 0;
+  color: rgba(203, 213, 225, 0.76);
+}
+
+.missing-item-modal-field {
+  display: grid;
+  gap: 0.4rem;
+  color: rgba(226, 232, 240, 0.9);
+  font-size: 0.82rem;
+}
+
+.missing-item-modal-field input,
+.missing-item-modal-field textarea {
+  width: 100%;
+  border-radius: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.94);
+  color: rgba(248, 250, 252, 0.96);
+  padding: 0.7rem 0.78rem;
+}
+
+.missing-item-modal-error {
+  margin: 0;
+  color: rgba(254, 202, 202, 0.95);
+  font-size: 0.82rem;
+}
+
+.missing-item-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.55rem;
+}
+
+.missing-item-modal-actions button {
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(15, 23, 42, 0.82);
+  color: rgba(226, 232, 240, 0.92);
+  padding: 0.58rem 0.85rem;
+}
+
+.missing-item-modal-actions button:last-child {
+  border-color: rgba(248, 113, 113, 0.28);
+  background: rgba(127, 29, 29, 0.36);
+  color: rgba(254, 226, 226, 0.96);
+}
+/* STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING_END */
