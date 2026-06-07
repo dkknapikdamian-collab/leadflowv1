@@ -2,6 +2,8 @@ const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes 
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
+const STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING = 'LeadDetail Brak quick action opens the shared missing item modal and persists missing_item task/activity without a new table';
+void STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING;
 const STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH = 'LeadDetail removes top shortcut strip; contact cadence strips are compact; sales funnel uses shared full width canvas';
 void STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH;
 const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
@@ -78,6 +80,7 @@ import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import EntityContactCard from '../components/entity-contact-card';
 import QuickActionsBar from '../components/detail/QuickActionsBar';
+import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
@@ -96,6 +99,7 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/nearest-action';
 import { getActivityTimelineDescription, getActivityTimelineTitle } from '../lib/activity-timeline';
 import { requireWorkspaceId } from '../lib/workspace-context';
+import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
   deleteEventFromSupabase,
@@ -692,6 +696,11 @@ export default function LeadDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
+  const [missingItemDialogOpen, setMissingItemDialogOpen] = useState(false);
+  const [missingItemTitle, setMissingItemTitle] = useState('');
+  const [missingItemNote, setMissingItemNote] = useState('');
+  const [missingItemError, setMissingItemError] = useState('');
+  const [missingItemSaving, setMissingItemSaving] = useState(false);
   const [editLead, setEditLead] = useState<any>(null);
   const [linkCaseId, setLinkCaseId] = useState('');
   const [linkingCase, setLinkingCase] = useState(false);
@@ -915,6 +924,83 @@ export default function LeadDetail() {
     if (leadOperationalArchive) return toast.error('Dodawaj dalsze wydarzenia w sprawie.');
     openLeadContextAction('event');
   };
+
+  const openLeadMissingItemDialog = () => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (leadOperationalArchive) return toast.error('Braki dla obsługiwanego tematu dodawaj w sprawie.');
+    setMissingItemTitle('');
+    setMissingItemNote('');
+    setMissingItemError('');
+    setMissingItemDialogOpen(true);
+  };
+
+  const closeLeadMissingItemDialog = () => {
+    if (missingItemSaving) return;
+    setMissingItemDialogOpen(false);
+    setMissingItemTitle('');
+    setMissingItemNote('');
+    setMissingItemError('');
+  };
+
+  const handleSaveLeadMissingItem = async () => {
+    if (!leadId) return;
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
+
+    let draft;
+    try {
+      draft = buildMissingItemModalDraft(
+        { entityType: 'lead', entityId: leadId, entityLabel: getLeadName(lead) },
+        { title: missingItemTitle, note: missingItemNote },
+      );
+    } catch (error: any) {
+      const message = error?.message || 'Wpisz, czego brakuje.';
+      setMissingItemError(message);
+      return;
+    }
+
+    const now = new Date().toISOString();
+    try {
+      setMissingItemSaving(true);
+      setMissingItemError('');
+      await insertTaskToSupabase({
+        title: draft.title,
+        type: 'missing_item',
+        status: 'missing_item',
+        priority: 'high',
+        leadId,
+        caseId: serviceCaseId || null,
+        clientId: lead?.clientId ? String(lead.clientId) : null,
+        scheduledAt: now,
+        dueAt: now,
+        workspaceId,
+      });
+      await insertActivityToSupabase({
+        leadId,
+        caseId: serviceCaseId || null,
+        clientId: lead?.clientId ? String(lead.clientId) : null,
+        eventType: 'missing_item_created',
+        payload: {
+          type: 'missing_item',
+          marker: 'stage227c3a_lead_missing_item',
+          title: draft.title,
+          note: draft.note,
+          entityType: draft.entityType,
+          entityId: draft.entityId,
+          persistenceTarget: draft.persistenceTarget,
+        },
+        workspaceId,
+      });
+      toast.success('Brak dodany');
+      closeLeadMissingItemDialog();
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Nie udało się zapisać braku: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setMissingItemSaving(false);
+    }
+  };
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
     if (!hasAccess) return toast.error('Trial wygasł.');
     setLeadPaymentDialogType(type);
@@ -1002,9 +1088,26 @@ useEffect(() => {
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
   const activeLeadWorkEntries = useMemo(() => timeline.filter((entry) => !isDoneStatus(entry.status)), [timeline]);
   const leadBlockerEntries = useMemo(() => timeline.filter((entry) => {
+    const raw = entry.raw || {};
+    const payload = raw.payload && typeof raw.payload === 'object' ? raw.payload : {};
     const title = String(entry.title || '').toLowerCase();
-    const status = String(entry.status || '').toLowerCase();
-    return title.includes('brak') || title.includes('blokad') || title.includes('blokada') || status.includes('block') || status.includes('missing');
+    const status = String(entry.status || raw.status || '').toLowerCase();
+    const type = String(entry.type || raw.type || '').toLowerCase();
+    const payloadType = String((payload as any).type || (payload as any).marker || '').toLowerCase();
+    return (
+      type === 'missing_item' ||
+      type === 'blocker' ||
+      status === 'missing_item' ||
+      status === 'blocked' ||
+      status === 'blocker' ||
+      payloadType.includes('missing_item') ||
+      payloadType.includes('blocker') ||
+      title.includes('brak') ||
+      title.includes('blokad') ||
+      title.includes('blokada') ||
+      status.includes('block') ||
+      status.includes('missing')
+    );
   }), [timeline]);
   const leadNextActionEntries = useMemo(() => activeLeadWorkEntries.filter((entry) => entry.kind === 'task' || entry.kind === 'event'), [activeLeadWorkEntries]);
   const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
@@ -2244,9 +2347,9 @@ useEffect(() => {
                   label: 'Brak',
                   tone: 'missing',
                   icon: <AlertTriangle className="h-4 w-4" />,
-                  onClick: handleCreateQuickTask,
+                  onClick: openLeadMissingItemDialog,
                   disabled: !hasAccess,
-                  data: { 'data-stage227e3-lead-action': 'missing' },
+                  data: { 'data-stage227e3-lead-action': 'missing', 'data-stage227c3a-lead-missing-action': 'true' },
                 },
                 {
                   key: 'lost',
@@ -2291,6 +2394,21 @@ useEffect(() => {
           ) : null}
         </div>
 
+
+        <div data-stage227c3a-lead-missing-modal-instance="true">
+          <MissingItemQuickActionModal
+            open={missingItemDialogOpen}
+            context={{ entityType: 'lead', entityId: leadId || '', entityLabel: getLeadName(lead) }}
+            titleValue={missingItemTitle}
+            noteValue={missingItemNote}
+            error={missingItemError}
+            isSaving={missingItemSaving}
+            onTitleChange={(value) => { setMissingItemTitle(value); if (missingItemError) setMissingItemError(''); }}
+            onNoteChange={setMissingItemNote}
+            onCancel={closeLeadMissingItemDialog}
+            onSubmit={handleSaveLeadMissingItem}
+          />
+        </div>
 
         <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent aria-describedby={undefined}>
