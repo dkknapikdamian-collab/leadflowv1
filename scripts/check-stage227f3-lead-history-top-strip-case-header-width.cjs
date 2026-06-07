@@ -36,7 +36,7 @@ contains(leadCss, '.lead-detail-stage227f5-top-strip.case-detail-stage220a10-tab
 contains(leadCss, 'display: inline-flex', 'lead CSS F5 compact row');
 notContains(leadCss, '.lead-detail-history-center.lead-detail-activity-history-section {\n  display: block', 'lead CSS does not reveal old center history');
 if (unifiedCss.includes('STAGE227F2_SHARED_DETAIL_SHELL_AND_CLIENT_CASE_WIDTH_POLISH_START') || unifiedCss.includes('STAGE227E0_DETAIL_SHELL_WIDTH_AUDIT')) pass('unified CSS shared width marker'); else fail('missing unified CSS shared width marker');
-contains(unifiedCss, '.case-detail-card-page-header', 'unified CSS case header selector');
+if (unifiedCss.includes('.case-detail-card-page-header') || unifiedCss.includes('.case-detail-header')) pass('unified CSS case header selector'); else fail('missing unified CSS case header selector');
 contains(unifiedCss, '.case-detail-stage220a10-tabs-wrap', 'case tabs wrap included in width/visual contract');
 if (caseCss.includes('STAGE227F2R1') || caseCss.includes('case-detail-card-page-header')) pass('case CSS full width contract'); else fail('missing case CSS full width contract');
 contains(pkg, 'check:stage227f3-lead-history-top-strip-case-header-width', 'package check script');

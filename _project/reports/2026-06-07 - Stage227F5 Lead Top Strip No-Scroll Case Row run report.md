@@ -14,3 +14,9 @@ Risk audit:
 - Manual deploy check still required for browser scroll state.
 - Check old URLs with #lead-actions are cleaned on entry.
 - Check CaseDetail remains unchanged visually.
+## F5R7 — build/guard hotfix
+- data i godzina: 2026-06-07 16:45 Europe/Warsaw
+- naprawiono: BOM w package.json blokujący build
+- naprawiono: F3 guard oczekiwał starego selektora .case-detail-card-page-header zamiast aktualnego .case-detail-header
+- zakres: guard/build hotfix, bez zmian SQL/Supabase/runtime danych
+- wymagane testy: F5/F4/F3/C2/build/diff-check
