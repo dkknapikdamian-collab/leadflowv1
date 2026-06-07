@@ -880,7 +880,9 @@
     "check:stage227f2-shared-detail-shell-and-lead-copy-polish": "node scripts/check-stage227f2-shared-detail-shell-and-lead-copy-polish.cjs",
     "test:stage227f2-shared-detail-shell-and-lead-copy-polish": "node --test tests/stage227f2-shared-detail-shell-and-lead-copy-polish.test.cjs",
     "check:stage227f2r1-client-case-header-stretch-lead-copy-fix": "node scripts/check-stage227f2r1-client-case-header-stretch-lead-copy-fix.cjs",
-    "test:stage227f2r1-client-case-header-stretch-lead-copy-fix": "node --test tests/stage227f2r1-client-case-header-stretch-lead-copy-fix.test.cjs"
+    "test:stage227f2r1-client-case-header-stretch-lead-copy-fix": "node --test tests/stage227f2r1-client-case-header-stretch-lead-copy-fix.test.cjs",
+    "check:stage227c1-missing-item-quick-action-contract": "node scripts/check-stage227c1-missing-item-quick-action-contract.cjs",
+    "test:stage227c1-missing-item-quick-action-contract": "node --test tests/stage227c1-missing-item-quick-action-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
