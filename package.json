@@ -898,7 +898,13 @@
     "check:stage227c3a-lead-missing-item-runtime-wiring": "node scripts/check-stage227c3a-lead-missing-item-runtime-wiring.cjs",
     "test:stage227c3a-lead-missing-item-runtime-wiring": "node --test tests/stage227c3a-lead-missing-item-runtime-wiring.test.cjs",
     "check:stage227c3b-client-case-missing-item-runtime-wiring": "node scripts/check-stage227c3b-client-case-missing-item-runtime-wiring.cjs",
-    "test:stage227c3b-client-case-missing-item-runtime-wiring": "node --test tests/stage227c3b-client-case-missing-item-runtime-wiring.test.cjs"
+    "test:stage227c3b-client-case-missing-item-runtime-wiring": "node --test tests/stage227c3b-client-case-missing-item-runtime-wiring.test.cjs",
+    "check:stage227g1-today-reschedule-actions": "node scripts/check-stage227g1-today-reschedule-actions.cjs",
+    "test:stage227g1-today-reschedule-actions": "node --test tests/stage227g1-today-reschedule-actions.test.cjs",
+    "check:stage227g1r1-today-reason-and-shift-visibility-repair": "node scripts/check-stage227g1r1-today-reason-and-shift-visibility-repair.cjs",
+    "test:stage227g1r1-today-reason-and-shift-visibility-repair": "node --test tests/stage227g1r1-today-reason-and-shift-visibility-repair.test.cjs",
+    "check:stage227g2-today-movement-leads-copy-history-cleanup": "node scripts/check-stage227g2-today-movement-leads-copy-history-cleanup.cjs",
+    "test:stage227g2-today-movement-leads-copy-history-cleanup": "node --test tests/stage227g2-today-movement-leads-copy-history-cleanup.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

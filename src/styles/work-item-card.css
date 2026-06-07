@@ -99,6 +99,51 @@
   gap: 8px;
 }
 
+
+/* STAGE227G1_TODAY_RESCHEDULE_SOURCE_OF_TRUTH_START */
+.cf-work-item-card-shift {
+  min-width: 42px;
+  height: 30px;
+  border-radius: 999px;
+  padding-inline: 10px;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.cf-work-item-card[data-work-item-kind='task'] .cf-work-item-card-icon,
+.cf-work-item-card[data-work-item-kind='task'] .cf-work-item-card-kind {
+  border-color: #dbeafe;
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.cf-work-item-card[data-work-item-kind='event'] .cf-work-item-card-icon,
+.cf-work-item-card[data-work-item-kind='event'] .cf-work-item-card-kind {
+  border-color: #ddd6fe;
+  background: #f5f3ff;
+  color: #7c3aed;
+}
+/* STAGE227G1_TODAY_RESCHEDULE_SOURCE_OF_TRUTH_END */
+
+
+/* STAGE227G1R1_TODAY_SHIFT_VISIBILITY_REPAIR_START */
+.cf-work-item-card-actions {
+  align-items: center;
+}
+
+.cf-work-item-card-shift {
+  display: inline-flex;
+  min-width: 42px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  padding-inline: 10px;
+  font-size: 12px;
+  font-weight: 850;
+}
+/* STAGE227G1R1_TODAY_SHIFT_VISIBILITY_REPAIR_END */
+
 .cf-work-item-card-done {
   gap: 6px;
   font-weight: 800;
@@ -157,3 +202,25 @@
     justify-content: flex-start;
   }
 }
+
+/* STAGE227G2_TODAY_MOVEMENT_HELPER_VISUAL_START */
+.cf-work-item-card-helper {
+  display: inline-flex;
+  max-width: 100%;
+  width: fit-content;
+  align-items: center;
+  border: 1px solid #e4e7ec;
+  border-radius: 12px;
+  background: #f9fafb;
+  padding: 6px 10px;
+  color: #475467;
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.35;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.cf-work-item-card-helper:empty {
+  display: none;
+}
+/* STAGE227G2_TODAY_MOVEMENT_HELPER_VISUAL_END */

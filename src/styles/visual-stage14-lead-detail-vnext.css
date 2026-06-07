@@ -3540,3 +3540,14 @@
   cursor: not-allowed;
 }
 /* STAGE227C3A_MISSING_ITEM_MODAL_RUNTIME_END */
+
+/* STAGE227G2_LEAD_HISTORY_TILE_SUPPRESSION_START */
+.lead-detail-stage227f3-top-card-history,
+.lead-detail-stage227f5-top-card-history,
+.lead-detail-stage227f3-top-card[data-stage227f3-top-card="history"],
+.lead-detail-stage227f5-top-card[data-stage227f5-top-card="history"],
+[data-stage227f3-top-card="history"],
+[data-stage227f5-top-card="history"] {
+  display: none !important;
+}
+/* STAGE227G2_LEAD_HISTORY_TILE_SUPPRESSION_END */

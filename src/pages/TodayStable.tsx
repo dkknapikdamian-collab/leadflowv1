@@ -63,6 +63,8 @@ const STAGE81_TODAY_RISK_REASON_NEXT_ACTION = 'STAGE81_TODAY_RISK_REASON_NEXT_AC
 const STAGE82_TODAY_NEXT_7_DAYS = 'STAGE82_TODAY_NEXT_7_DAYS';
 const STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH = 'Today work item cards use one visual source of truth for tasks and events';
 const STAGE116_STAGE76_EVENT_DONE_GUARD_COMPAT = 'doneLabel="Zrobione" | data-stage76-event-done-action="true"';
+const STAGE227G1_TODAY_RESCHEDULE_ACTION_SOURCE = 'TodayStable uses the Calendar action source for +1D/+3D/+1W task/event reschedule actions';
+const STAGE227G1R1_TODAY_REASON_COPY_FINAL_REMOVAL = 'Today removes all Powod/Powód helper copy and keeps +1D/+3D/+1W visible on task/event cards';
 const STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE = 'STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE';
 const STAGE16AI_TODAY_TILES_MATCH_LISTS = 'STAGE16AI_TODAY_TILES_MATCH_LISTS';
 const STAGE16AN_TODAY_VIEW_CUSTOMIZER = 'STAGE16AN_TODAY_VIEW_CUSTOMIZER';
@@ -79,6 +81,8 @@ void STAGE81_TODAY_RISK_REASON_NEXT_ACTION;
 void STAGE82_TODAY_NEXT_7_DAYS;
 void STAGE116_TODAY_WORK_ITEM_CARD_SOURCE_TRUTH;
 void STAGE116_STAGE76_EVENT_DONE_GUARD_COMPAT;
+void STAGE227G1_TODAY_RESCHEDULE_ACTION_SOURCE;
+void STAGE227G1R1_TODAY_REASON_COPY_FINAL_REMOVAL;
 void STAGE16AI_TODAY_REFRESH_BUTTON_MANUAL_STATE;
 void STAGE16AI_TODAY_TILES_MATCH_LISTS;
 void STAGE16AN_TODAY_VIEW_CUSTOMIZER;
@@ -119,6 +123,7 @@ type UpcomingRow = {
   badge: string;
   status?: string;
   rawId?: string;
+  raw?: any;
 };
 
 type TodaySectionKey = 'no_action' | 'risk' | 'waiting' | 'leads' | 'tasks' | 'events' | 'drafts' | 'upcoming';
@@ -270,6 +275,49 @@ function formatDateTime(raw: string) {
   if (!dateKey) return 'Brak terminu';
   return time ? dateKey + ', ' + time : dateKey;
 }
+
+const TODAY_RESCHEDULE_OPTIONS_STAGE227G1 = [
+  { days: 1, label: '+1D' },
+  { days: 3, label: '+3D' },
+  { days: 7, label: '+1W' },
+] as const;
+
+function toTodayLocalDateTimeStage227G1(date: Date) {
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return [
+    date.getFullYear(),
+    pad(date.getMonth() + 1),
+    pad(date.getDate()),
+  ].join('-') + 'T' + [pad(date.getHours()), pad(date.getMinutes())].join(':');
+}
+
+function parseTodayMomentStage227G1(raw: string) {
+  const safeRaw = String(raw || '').trim();
+  const parsed = new Date(safeRaw ? (safeRaw.includes('T') ? safeRaw : safeRaw + 'T09:00') : new Date());
+  if (Number.isFinite(parsed.getTime())) return parsed;
+  return new Date();
+}
+
+function shiftTodayMomentStage227G1(raw: string, days: number) {
+  const date = parseTodayMomentStage227G1(raw);
+  date.setDate(date.getDate() + days);
+  return toTodayLocalDateTimeStage227G1(date);
+}
+
+function shiftTodayEndMomentStage227G1(startRaw: string, endRaw: string, nextStartAt: string) {
+  const start = parseTodayMomentStage227G1(startRaw);
+  const end = parseTodayMomentStage227G1(endRaw);
+  const nextStart = parseTodayMomentStage227G1(nextStartAt);
+  const durationMs = Number.isFinite(end.getTime() - start.getTime()) && end.getTime() > start.getTime()
+    ? end.getTime() - start.getTime()
+    : 60 * 60_000;
+  return toTodayLocalDateTimeStage227G1(new Date(nextStart.getTime() + durationMs));
+}
+
+function getTodayShiftPendingKeyStage227G1(kind: 'task' | 'event', id: string, days: number) {
+  return kind + '-shift:' + id + ':' + String(days);
+}
+
 
 
 function formatUpcomingDayName(date: Date, index: number) {
@@ -1239,13 +1287,14 @@ function TodayStable() {
         id: 'task:' + String(entry.task?.id || getTaskTitle(entry.task)),
         kind: 'task' as const,
         title: getTaskTitle(entry.task),
-        helper: 'Powód: zaplanowane zadanie w najbliższych dniach',
+        helper: '',
         meta: 'Ruch: przygotuj materiały albo obsłuż w terminie · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: '/tasks',
         badge: 'Zadanie',
         status: String(entry.task?.status || 'todo'),
         rawId: String(entry.task?.id || ''),
+        raw: entry.task,
       }));
 
     const eventRows = data.events
@@ -1259,13 +1308,14 @@ function TodayStable() {
         id: 'event:' + String(entry.event.id || entry.event.title),
         kind: 'event' as const,
         title: readText(entry.event, ['title'], 'Wydarzenie'),
-        helper: 'Powód: wydarzenie w najbliższych 7 dniach',
+        helper: '',
         meta: 'Ruch: sprawdź przygotowanie i kontekst · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: '/calendar',
         badge: 'Wydarzenie',
         status: String(entry.event?.status || 'scheduled'),
         rawId: String(entry.event?.id || ''),
+        raw: entry.event,
       }));
 
     const leadRows = activeLeadsWithPlannedAction
@@ -1282,11 +1332,12 @@ function TodayStable() {
         id: 'lead:' + String(entry.lead.id || getLeadTitle(entry.lead)),
         kind: 'lead' as const,
         title: getLeadTitle(entry.lead),
-        helper: 'Powód: ' + entry.risk.reason,
+        helper: '',
         meta: 'Ruch: ' + entry.risk.suggestedAction + ' · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: entry.lead.id ? '/leads/' + String(entry.lead.id) : '/leads',
         badge: 'Lead',
+        raw: entry.lead,
       }));
 
     return [...taskRows, ...eventRows, ...leadRows].sort(sortByMoment).slice(0, 10);
@@ -1483,6 +1534,109 @@ function TodayStable() {
     }
   }, [setData]);
 
+  const handleShiftTodayWorkItemStage227G1 = useCallback(async (kind: 'task' | 'event', record: any, days: number) => {
+    const sourceId = String(record?.id || '').trim();
+    if (!sourceId) return;
+    setActionPendingId(getTodayShiftPendingKeyStage227G1(kind, sourceId, days));
+
+    try {
+      if (kind === 'task') {
+        const nextStartAt = shiftTodayMomentStage227G1(getTaskMomentRaw(record), days);
+        const nextDate = nextStartAt.slice(0, 10);
+        const nextTime = nextStartAt.slice(11, 16);
+
+        await updateTaskInSupabase({
+          id: sourceId,
+          title: getTaskTitle(record),
+          type: readText(record, ['type', 'taskType', 'task_type'], 'follow_up'),
+          date: nextDate,
+          scheduledAt: nextStartAt,
+          dueAt: nextStartAt,
+          time: nextTime,
+          status: readText(record, ['status'], 'todo'),
+          priority: readText(record, ['priority'], 'medium'),
+          leadId: readText(record, ['leadId', 'lead_id'], '') || null,
+          caseId: readText(record, ['caseId', 'case_id'], '') || null,
+          clientId: readText(record, ['clientId', 'client_id'], '') || null,
+        } as any);
+
+        setData((current) => ({
+          ...current,
+          tasks: Array.isArray(current.tasks)
+            ? current.tasks.map((task) => String(task?.id || '') === sourceId ? {
+              ...task,
+              date: nextDate,
+              time: nextTime,
+              scheduledAt: nextStartAt,
+              scheduled_at: nextStartAt,
+              dueAt: nextStartAt,
+              due_at: nextStartAt,
+            } : task)
+            : [],
+        }));
+      }
+
+      if (kind === 'event') {
+        const currentStartAt = getEventMomentRaw(record);
+        const nextStartAt = shiftTodayMomentStage227G1(currentStartAt, days);
+        const currentEndAt = readMomentRaw(record, ['endAt', 'end_at', 'endsAt', 'ends_at']);
+        const nextEndAt = currentEndAt ? shiftTodayEndMomentStage227G1(currentStartAt, currentEndAt, nextStartAt) : null;
+
+        await updateEventInSupabase({
+          id: sourceId,
+          title: readText(record, ['title'], 'Wydarzenie'),
+          type: readText(record, ['type'], 'meeting'),
+          startAt: nextStartAt,
+          endAt: nextEndAt,
+          status: readText(record, ['status'], 'scheduled'),
+          leadId: readText(record, ['leadId', 'lead_id'], '') || null,
+          caseId: readText(record, ['caseId', 'case_id'], '') || null,
+          clientId: readText(record, ['clientId', 'client_id'], '') || null,
+        } as any);
+
+        setData((current) => ({
+          ...current,
+          events: Array.isArray(current.events)
+            ? current.events.map((event) => String(event?.id || '') === sourceId ? {
+              ...event,
+              startAt: nextStartAt,
+              start_at: nextStartAt,
+              startsAt: nextStartAt,
+              starts_at: nextStartAt,
+              endAt: nextEndAt,
+              end_at: nextEndAt,
+              endsAt: nextEndAt,
+              ends_at: nextEndAt,
+            } : event)
+            : [],
+        }));
+      }
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('closeflow:data-mutated', {
+          detail: { entity: kind, id: sourceId, action: 'reschedule', days, source: 'today' },
+        }));
+      }
+
+      await refreshData({ force: true, reason: 'operation' });
+    } catch (error) {
+      console.error('Nie udało się przesunąć terminu z Dziś.', error);
+    } finally {
+      setActionPendingId('');
+    }
+  }, [refreshData]);
+
+  const buildTodayRescheduleActionsStage227G1 = useCallback((kind: 'task' | 'event', record: any) => {
+    const sourceId = String(record?.id || '').trim();
+    if (!sourceId) return [];
+    return TODAY_RESCHEDULE_OPTIONS_STAGE227G1.map((option) => ({
+      label: option.label,
+      busy: actionPendingId === getTodayShiftPendingKeyStage227G1(kind, sourceId, option.days),
+      onClick: () => void handleShiftTodayWorkItemStage227G1(kind, record, option.days),
+    }));
+  }, [actionPendingId, handleShiftTodayWorkItemStage227G1]);
+
+
   return (
     <Layout>
       <main className="cf-route-work-root flex w-full flex-col gap-6 p-4 sm:p-6" data-p0-today-stable-rebuild="true" data-stage70-today-decision-engine-starter="true" data-stage81-today-risk-reason-next-action="true" data-stage82-today-next-7-days="true">
@@ -1632,7 +1786,7 @@ function TodayStable() {
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
-                helper={'Powód: ' + risk.reason}
+                helper=""
                 meta={'Ruch: ' + risk.suggestedAction}
                 badge={readText(lead, ['status'], 'open')}
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
@@ -1651,7 +1805,7 @@ function TodayStable() {
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
-                helper={'Powód: ' + risk.reason}
+                helper=""
                 meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={String(getLeadValue(lead)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
@@ -1670,7 +1824,7 @@ function TodayStable() {
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
-                helper={'Powód: ' + risk.reason}
+                helper=""
                 meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={readText(lead, ['status'], 'waiting')}
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
@@ -1691,7 +1845,7 @@ function TodayStable() {
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
-                helper={'Powód: ' + risk.reason}
+                helper=""
                 meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
                 badge={readText(lead, ['status'], 'open')}
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
@@ -1723,6 +1877,7 @@ function TodayStable() {
                   onEdit={() => navigate('/tasks')}
                   onDelete={() => void handleDeleteTask(task)}
                   deleteBusy={actionPendingId === `task:${String(task.id || '')}`}
+                  shiftActions={buildTodayRescheduleActionsStage227G1('task', task)}
                 />
               );
             }) : <EmptyState text="Brak zadań zaległych lub na dziś." />}
@@ -1748,6 +1903,7 @@ function TodayStable() {
                 onEdit={() => navigate('/calendar')}
                 onDelete={() => void handleDeleteEvent(event)}
                 deleteBusy={actionPendingId === `event:${String(event.id || '')}`}
+                shiftActions={buildTodayRescheduleActionsStage227G1('event', event)}
               />
             )) : <EmptyState text="Brak wydarzeń na dziś." />}
             </div>
@@ -1804,6 +1960,7 @@ function TodayStable() {
                                 compact
                                 onDone={() => row.kind === 'task' ? void handleMarkTaskDone(row.rawId || '') : void handleMarkEventDone(row.rawId || '')}
                                 doneBusy={actionPendingId === `${row.kind}-done:${row.rawId || ''}`}
+                                shiftActions={row.kind === 'task' || row.kind === 'event' ? buildTodayRescheduleActionsStage227G1(row.kind, row.raw) : []}
                               />
                             ) : (
                               <Link key={row.id} to={row.to} className="block rounded-xl border border-slate-100 bg-slate-50/70 p-3 text-sm transition hover:border-blue-200 hover:bg-blue-50">

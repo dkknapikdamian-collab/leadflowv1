@@ -1,3 +1,5 @@
+const STAGE227G2_LEADS_RUNTIME_COPY_CLEANUP = 'Leads runtime removes helper marketing copy and highest-value helper copy';
+void STAGE227G2_LEADS_RUNTIME_COPY_CLEANUP;
 // CLOSEFLOW_A2_DUPLICATE_WARNING_UX_FINALIZER
 // CLOSEFLOW_FB2_LEADS_LIST_RIGHT_RAIL_CLEANUP
 // STAGE14E_LEADS_VALUE_DEDUP_BADGE_REPAIR1
@@ -1289,7 +1291,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
             <SimpleFiltersCard
               className="lead-right-card operator-simple-filters-card"
               title="Filtry proste"
-              description="Bez przesady, tylko najpotrzebniejsze."
+              description=""
               dataTestId="leads-simple-filters-card"
               items={[
                 {
@@ -1338,7 +1340,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
             {/* STAGE117_RAIL_ORDER_TOP_VALUE_BELOW_FILTERS */}
             <TopValueRecordsCard
               title="Najcenniejsze leady"
-              description="5 leadów z największą wartością."
+              description=""
               className="operator-top-value-card"
               dataTestId="leads-top-value-records-card"
               dataAttrs={{ 'data-relation-value-board': true }}
