@@ -9,7 +9,7 @@ const source = fs.readFileSync(leadPath, 'utf8').replace(/^\uFEFF/, '');
 const css = fs.readFileSync(cssPath, 'utf8').replace(/^\uFEFF/, '');
 const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8').replace(/^\uFEFF/, ''));
 function pass(msg) { console.log('PASS ' + msg); }
-function fail(msg) { console.error('FAIL STAGE227E4_SALES_CONTEXT_SECTION: ' + msg); process.exit(1); }
+function fail(msg) { console.error('FAIL STAGE227E4R2_DECISION_VIEW_SIMPLIFICATION: ' + msg); process.exit(1); }
 function requireContains(haystack, needle, label) {
   if (!haystack.includes(needle)) fail('missing: ' + label);
   pass('contains: ' + label);
@@ -45,4 +45,4 @@ if (!pkg.scripts['check:stage227e4-sales-signal-section']) fail('missing legacy 
 if (!pkg.scripts['test:stage227e4-sales-signal-section']) fail('missing legacy E4 test script');
 if (!pkg.scripts['check:stage227e4r2-lead-detail-decision-view-simplification']) fail('missing E4R2 check script');
 if (!pkg.scripts['test:stage227e4r2-lead-detail-decision-view-simplification']) fail('missing E4R2 test script');
-pass('STAGE227E4_SALES_CONTEXT_SECTION');
+pass('STAGE227E4R2_DECISION_VIEW_SIMPLIFICATION');

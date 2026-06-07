@@ -559,8 +559,11 @@ function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: 
 }
 
 
-const STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION = 'LeadDetail exposes sales signal fields: problem reason urgency budget decision blocker';
+
+const STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION = 'LeadDetail exposes compact sales context fields: need urgency budget decision blocker';
 void STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION;
+const STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION = 'LeadDetail uses compact Kontekst sprzedażowy and does not duplicate source/status as decision fields';
+void STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION;
 
 type LeadSalesSignalStatusStage227E4 = 'ok' | 'missing' | 'warning';
 type LeadSalesSignalItemStage227E4 = {
@@ -573,7 +576,6 @@ type LeadSalesSignalItemStage227E4 = {
 
 type LeadSalesSignalInputStage227E4 = {
   lead: Record<string, any> | null;
-  sourceLabel: string;
   primaryNote: string;
   financePotential: number;
   financeLabel: string;
@@ -597,18 +599,13 @@ function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): 
   const problem =
     pickLeadSignalTextStage227E4(lead, ['problem', 'need', 'needDescription', 'painPoint', 'customerProblem', 'customerNeed']) ||
     input.primaryNote;
-  const reason =
-    pickLeadSignalTextStage227E4(lead, ['contactReason', 'reason', 'leadReason', 'inquiryReason', 'sourceReason']) ||
-    input.sourceLabel;
   const urgency =
     pickLeadSignalTextStage227E4(lead, ['urgency', 'deadline', 'timeline', 'desiredDate', 'moveInDate', 'decisionDate']) ||
     input.nextActionLabel;
   const budget =
     pickLeadSignalTextStage227E4(lead, ['budget', 'budgetRange', 'declaredBudget']) ||
     (Number(input.financePotential || 0) > 0 ? input.financeLabel : '');
-  const decision =
-    pickLeadSignalTextStage227E4(lead, ['decision', 'decisionMaker', 'decisionStatus', 'nextDecision', 'salesDecision']) ||
-    String(lead.status || '').replaceAll('_', ' ');
+  const decision = pickLeadSignalTextStage227E4(lead, ['decision', 'decisionMaker', 'decisionStatus', 'nextDecision', 'salesDecision']);
   const blocker =
     pickLeadSignalTextStage227E4(lead, ['blocker', 'blockade', 'objection', 'missingInfo', 'riskReason', 'riskNote', 'atRiskReason']) ||
     input.riskReason;
@@ -616,24 +613,17 @@ function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): 
   return [
     {
       key: 'problem',
-      label: 'Problem / potrzeba',
+      label: 'Potrzeba / problem',
       value: problem,
       status: problem ? 'ok' : 'missing',
-      hint: problem ? 'Rozpoznane z pól leada albo notatek.' : 'Brakuje jasnego problemu klienta.',
-    },
-    {
-      key: 'reason',
-      label: 'Powód kontaktu',
-      value: reason,
-      status: reason ? 'ok' : 'missing',
-      hint: reason ? 'Jest powód albo źródło kontaktu.' : 'Dopisz, dlaczego klient się odezwał.',
+      hint: problem ? 'Jest jasny powód pracy z leadem.' : 'Brakuje krótkiego opisu potrzeby klienta.',
     },
     {
       key: 'urgency',
       label: 'Termin / pilność',
       value: urgency,
       status: urgency ? 'ok' : 'missing',
-      hint: urgency ? 'Jest termin, pilność albo następny krok.' : 'Brakuje terminu albo pilności.',
+      hint: urgency ? 'Jest termin, pilność albo konkretny następny ruch.' : 'Brakuje terminu albo pilności.',
     },
     {
       key: 'budget',
@@ -647,17 +637,18 @@ function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): 
       label: 'Decyzja',
       value: decision,
       status: decision ? 'ok' : 'missing',
-      hint: decision ? 'Jest status albo ślad decyzji.' : 'Brakuje decydenta lub decyzji.',
+      hint: decision ? 'Jest informacja o decyzji lub decydencie.' : 'Brakuje decydenta lub śladu decyzji.',
     },
     {
       key: 'blocker',
       label: 'Blokada',
       value: blocker,
       status: blocker && input.riskLabel !== 'Ogarnięty' ? 'warning' : blocker ? 'ok' : 'missing',
-      hint: blocker ? 'Widać ryzyko, blokadę albo brak.' : 'Brakuje jawnej blokady albo informacji, że jej nie ma.',
+      hint: blocker ? 'Widać ryzyko, brak albo blokadę.' : 'Brakuje jawnej blokady albo informacji, że jej nie ma.',
     },
   ];
 }
+
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
@@ -1061,7 +1052,6 @@ useEffect(() => {
   const leadSalesSignalItemsStage227E4 = useMemo(
     () => buildLeadSalesSignalStage227E4({
       lead,
-      sourceLabel: sourceLabel(lead?.source),
       primaryNote: leadPrimaryNoteText,
       financePotential: leadFinancePanel.potential,
       financeLabel: leadFinance.formatted,
@@ -1998,18 +1988,18 @@ useEffect(() => {
 
 
             {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-sales-signal-section" data-stage227e4-sales-signal-section="true" aria-label="Sygnał sprzedażowy leada">
-                <div className="lead-detail-section-head lead-detail-sales-signal-head">
+              <section className="lead-detail-section-card lead-detail-sales-signal-section lead-detail-sales-context-section" data-stage227e4-sales-signal-section="true" data-stage227e4r2-sales-context-section="true" aria-label="Kontekst sprzedażowy leada">
+                <div className="lead-detail-section-head lead-detail-sales-signal-head lead-detail-sales-context-head">
                   <div>
-                    <p className="lead-detail-box-kicker">SYGNAŁ SPRZEDAŻOWY</p>
-                    <h2>Sygnał sprzedażowy</h2>
-                    <p>Problem, powód kontaktu, pilność, budżet, decyzja i blokada w jednym miejscu.</p>
+                    <p className="lead-detail-box-kicker">KONTEKST SPRZEDAŻOWY</p>
+                    <h2>Kontekst sprzedażowy</h2>
+                    <p>Krótko: co pomaga wykonać następny ruch, bez powtarzania statusu i źródła leada.</p>
                   </div>
-                  <span className="lead-detail-pill lead-detail-pill-blue">Do domknięcia</span>
+                  <span className="lead-detail-pill lead-detail-pill-blue">Lekki kontekst</span>
                 </div>
-                <div className="lead-detail-sales-signal-grid">
+                <div className="lead-detail-sales-signal-grid lead-detail-sales-context-grid" data-stage227e4r2-compact-context-grid="true">
                   {leadSalesSignalItemsStage227E4.map((item) => (
-                    <article key={item.key} className={'lead-detail-sales-signal-card lead-detail-sales-signal-card--' + item.status} data-stage227e4-sales-signal-item={item.key}>
+                    <article key={item.key} className={'lead-detail-sales-signal-card lead-detail-sales-context-card lead-detail-sales-signal-card--' + item.status} data-stage227e4-sales-signal-item={item.key} data-stage227e4r2-sales-context-item={item.key}>
                       <small>{item.label}</small>
                       <strong>{item.value || 'Brak danych'}</strong>
                       <p>{item.hint}</p>
