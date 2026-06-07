@@ -32,6 +32,8 @@ export type QuickActionsBarProps = {
 
 const STAGE227E3_SHARED_QUICK_ACTIONS_BAR = 'LeadDetail and CaseDetail share one QuickActionsBar visual source of truth';
 void STAGE227E3_SHARED_QUICK_ACTIONS_BAR;
+const STAGE227E4_QUICK_ACTIONS_SOURCE_OF_TRUTH = 'QuickActionsBar is the shared visual source of truth for LeadDetail and CaseDetail action bars';
+void STAGE227E4_QUICK_ACTIONS_SOURCE_OF_TRUTH;
 
 export default function QuickActionsBar({
   title = 'Szybkie akcje',
@@ -45,6 +47,7 @@ export default function QuickActionsBar({
     <section
       className={`cf-shared-quick-actions-bar cf-shared-quick-actions-bar--${variant} cf-shared-quick-actions-bar--${recordType}`}
       data-stage227e3-shared-quick-actions-bar="true"
+      data-stage227e4-quick-actions-source-of-truth="true"
       data-stage={dataStage}
       data-record-type={recordType}
       aria-label={ariaLabel}

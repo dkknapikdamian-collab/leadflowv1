@@ -208,7 +208,7 @@
 
 .lead-detail-top-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 14px;
 }
 
@@ -2616,4 +2616,97 @@
 .lead-detail-stage228d-action-center .lead-detail-action-accordion-group--active .lead-detail-work-icon {
   background: #bbf7d0 !important;
   color: #047857 !important;
+}
+
+/* STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY
+   LeadDetail header keeps phone/email/company/source/last contact visible immediately.
+   Phone has a first-line copy action and "Brak telefonu" is explicit.
+*/
+.lead-detail-header-contact-grid {
+  align-items: stretch;
+}
+
+.lead-detail-header-contact-grid .lead-detail-header-meta-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+  padding: 7px 11px;
+}
+
+.lead-detail-header-contact-grid .lead-detail-header-meta-item small {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.lead-detail-header-contact-grid .lead-detail-header-meta-item strong {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.lead-detail-header-contact-grid .lead-detail-header-meta-item button {
+  min-height: 24px;
+  border: 1px solid #bfdbfe;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.lead-detail-header-contact-grid .lead-detail-header-phone-item {
+  border-color: #93c5fd !important;
+  background: #eff6ff !important;
+}
+
+
+/* STAGE227E3_DECISION_CARDS_CLEANUP_CSS
+   Four-card decision grid: Następny krok, Potencjał, Cisza / ryzyko, Blokada.
+*/
+
+.lead-detail-callout-red {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+.lead-detail-callout-red .lead-detail-card-title-row {
+  color: #b42318;
+}
+
+@media (max-width: 1320px) {
+  .lead-detail-top-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .lead-detail-top-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* STAGE227E6_NOTES_HISTORY_SEPARATION_CSS
+   Notes stay as note content. History is a compact event log and does not repeat note body.
+*/
+.lead-detail-activity-history-section {
+  min-height: 0;
+}
+
+.lead-detail-activity-log-list {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.lead-detail-activity-log-row strong {
+  color: var(--cf-text, #e5e7eb);
+}
+
+.lead-detail-activity-log-row p {
+  margin: 0.15rem 0 0;
 }

@@ -860,7 +860,21 @@
     "check:stage227e4r2-lead-detail-decision-view-simplification": "node scripts/check-stage227e4r2-lead-detail-decision-view-simplification.cjs",
     "test:stage227e4r2-lead-detail-decision-view-simplification": "node --test tests/stage227e4r2-lead-detail-decision-view-simplification.test.cjs",
     "check:stage227e4r3-lead-detail-runtime-copy-cleanup": "node scripts/check-stage227e4r3-lead-detail-runtime-copy-cleanup.cjs",
-    "test:stage227e4r3-lead-detail-runtime-copy-cleanup": "node --test tests/stage227e4r3-lead-detail-runtime-copy-cleanup.test.cjs"
+    "test:stage227e4r3-lead-detail-runtime-copy-cleanup": "node --test tests/stage227e4r3-lead-detail-runtime-copy-cleanup.test.cjs",
+    "check:stage227e0-detail-shell-width-audit": "node scripts/check-stage227e0-detail-shell-width-audit.cjs",
+    "test:stage227e0-detail-shell-width-audit": "node --test tests/stage227e0-detail-shell-width-audit.test.cjs",
+    "check:stage227e1-lead-header-phone-visibility": "node scripts/check-stage227e1-lead-header-phone-visibility.cjs",
+    "test:stage227e1-lead-header-phone-visibility": "node --test tests/stage227e1-lead-header-phone-visibility.test.cjs",
+    "check:stage227e2-remove-sales-context-block": "node scripts/check-stage227e2-remove-sales-context-block.cjs",
+    "test:stage227e2-remove-sales-context-block": "node --test tests/stage227e2-remove-sales-context-block.test.cjs",
+    "check:stage227e3-decision-cards-cleanup": "node scripts/check-stage227e3-decision-cards-cleanup.cjs",
+    "test:stage227e3-decision-cards-cleanup": "node --test tests/stage227e3-decision-cards-cleanup.test.cjs",
+    "check:stage227e4-quick-actions-source-of-truth": "node scripts/check-stage227e4-quick-actions-source-of-truth.cjs",
+    "test:stage227e4-quick-actions-source-of-truth": "node --test tests/stage227e4-quick-actions-source-of-truth.test.cjs",
+    "check:stage227e5-work-center-blockers-source-of-truth": "node scripts/check-stage227e5-work-center-blockers-source-of-truth.cjs",
+    "test:stage227e5-work-center-blockers-source-of-truth": "node --test tests/stage227e5-work-center-blockers-source-of-truth.test.cjs",
+    "check:stage227e6-notes-history-separation": "node scripts/check-stage227e6-notes-history-separation.cjs",
+    "test:stage227e6-notes-history-separation": "node --test tests/stage227e6-notes-history-separation.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

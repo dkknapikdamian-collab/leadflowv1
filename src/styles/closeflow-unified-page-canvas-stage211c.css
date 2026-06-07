@@ -128,3 +128,46 @@ main.main,
 :root {
   --stage211c-unified-app-canvas: 1;
 }
+/* STAGE227E0_DETAIL_SHELL_WIDTH_AUDIT
+   One shared shell-width contract for detail pages.
+   Goal: remove growing side moats caused by nested max-width + mx-auto wrappers.
+   Scope: LeadDetail, ClientDetail, CaseDetail. No data/model/runtime logic changes.
+*/
+:root {
+  --stage227e0-detail-shell-width-audit: 1;
+  --cf-detail-shell-gutter-x: clamp(16px, 1.6vw, 24px);
+  --cf-detail-shell-gutter-y: 24px;
+}
+
+:where(.lead-detail-vnext-page, .client-detail-vnext-page, .case-detail-vnext-page) {
+  width: 100% !important;
+  max-width: none !important;
+  padding-left: var(--cf-detail-shell-gutter-x) !important;
+  padding-right: var(--cf-detail-shell-gutter-x) !important;
+}
+
+:where(
+  .lead-detail-header,
+  .lead-detail-service-box,
+  .lead-detail-shell,
+  .client-detail-header,
+  .client-detail-shell,
+  .case-detail-header,
+  .case-detail-top-grid,
+  .case-detail-shell
+) {
+  width: 100% !important;
+  max-width: none !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+:where(.lead-detail-shell, .client-detail-shell, .case-detail-shell) {
+  box-sizing: border-box;
+}
+
+@media (max-width: 1100px) {
+  :where(.lead-detail-vnext-page, .client-detail-vnext-page, .case-detail-vnext-page) {
+    --cf-detail-shell-gutter-x: 16px;
+  }
+}

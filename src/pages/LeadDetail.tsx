@@ -1,4 +1,4 @@
-﻿import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
@@ -503,6 +503,11 @@ function leadDetailActionKindClass(kind: unknown) {
 }
 const STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH = 'LeadDetail top cards show Następny krok, Potencjał and Cisza / ryzyko without updatedAt silence';
 void STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH;
+const STAGE227E3_DECISION_CARDS_CLEANUP = 'LeadDetail top decision cards use Następny krok, Potencjał, Cisza / ryzyko and Blokada without source/status duplication';
+void STAGE227E3_DECISION_CARDS_CLEANUP;
+
+const STAGE227E5_WORK_CENTER_BLOCKERS_SOURCE_OF_TRUTH = 'LeadDetail keeps one central work center and removes duplicated upcoming work from right rail';
+void STAGE227E5_WORK_CENTER_BLOCKERS_SOURCE_OF_TRUTH;
 function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: any[], nextTimelineEntry: TimelineEntry | null, leadInService: boolean) {
   const contactDates = [
     lead?.lastContactAt,
@@ -566,8 +571,14 @@ const STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION = 'LeadDetail uses c
 void STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION;
 const STAGE227E4R3_RUNTIME_COPY_CLEANUP = 'LeadDetail runtime copy keeps only labels and values without helper explanation sentences';
 void STAGE227E4R3_RUNTIME_COPY_CLEANUP;
+const STAGE227E6_NOTES_HISTORY_SEPARATION = 'LeadDetail keeps notes as note content and activity history as an event log without repeating note body';
+void STAGE227E6_NOTES_HISTORY_SEPARATION;
 const STAGE227E4R3_LEAD_DETAIL_RUNTIME_COPY_CLEANUP = 'LeadDetail runtime hides helper explanation sentences and keeps decision screen compact';
 void STAGE227E4R3_LEAD_DETAIL_RUNTIME_COPY_CLEANUP;
+const STAGE227E2_REMOVE_SALES_CONTEXT_BLOCK = 'LeadDetail removes runtime sales context block and keeps work center as the decision area';
+void STAGE227E2_REMOVE_SALES_CONTEXT_BLOCK;
+const STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY = 'LeadDetail header exposes phone, email, company, source and last contact immediately with copy action';
+void STAGE227E1_LEAD_HEADER_PHONE_VISIBILITY;
 
 type LeadSalesSignalStatusStage227E4 = 'ok' | 'missing' | 'warning';
 type LeadSalesSignalItemStage227E4 = {
@@ -1741,10 +1752,33 @@ useEffect(() => {
                 {statusLabel(lead?.status)}
               </span>
             </div>
-            <div className="lead-detail-header-meta">
-              <span>Zrodlo: {sourceLabel(lead.source)}</span>
-              <span>Ostatnia aktywnosc: {formatDate(lead.updatedAt || activities[0]?.createdAt || lead.createdAt)}</span>
-              <span>Kontakt: {lead.phone || lead.email || 'Brak kontaktu'}</span>
+            <div className="lead-detail-header-meta lead-detail-header-contact-grid" data-stage227e1-header-phone-visibility="true">
+              <span className="lead-detail-header-meta-item" data-stage227e1-header-source="true">
+                <small>Źródło</small>
+                <strong>{sourceLabel(lead.source)}</strong>
+              </span>
+              <span className="lead-detail-header-meta-item lead-detail-header-phone-item" data-stage227e1-header-phone="true">
+                <small>Telefon</small>
+                <strong>{lead.phone || 'Brak telefonu'}</strong>
+                {lead.phone ? (
+                  <button type="button" onClick={() => copyValue('Telefon', String(lead.phone || ''))}>Kopiuj</button>
+                ) : null}
+              </span>
+              <span className="lead-detail-header-meta-item" data-stage227e1-header-email="true">
+                <small>E-mail</small>
+                <strong>{lead.email || 'Brak e-maila'}</strong>
+                {lead.email ? (
+                  <button type="button" onClick={() => copyValue('E-mail', String(lead.email || ''))}>Kopiuj</button>
+                ) : null}
+              </span>
+              <span className="lead-detail-header-meta-item" data-stage227e1-header-company="true">
+                <small>Firma</small>
+                <strong>{lead.company || 'Brak firmy'}</strong>
+              </span>
+              <span className="lead-detail-header-meta-item" data-stage227e1-header-last-contact="true">
+                <small>Ostatni kontakt</small>
+                <strong>{formatDate(lead.lastContactAt || lead.last_contact_at || activities[0]?.createdAt || lead.createdAt)}</strong>
+              </span>
             </div>
           </div>
           <div className="lead-detail-header-actions" data-stage216m-r3-r2-lead-header-actions="true">
@@ -1907,8 +1941,8 @@ useEffect(() => {
               <div hidden data-stage216j3f-source-context-card-hidden="true" />
             )}
 {!leadInService ? (
-              <section className="lead-detail-top-grid" data-stage227e2-top-cards="true">
-                <article className="lead-detail-top-card lead-detail-callout-blue" data-stage227e2-next-step-card="true">
+                            <section className="lead-detail-top-grid" data-stage227e2-top-cards="true" data-stage227e3-decision-cards="true">
+                <article className="lead-detail-top-card lead-detail-callout-blue" data-stage227e2-next-step-card="true" data-stage227e3-next-step-card="true">
                   <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Następny krok</h2></div>
                   {nextTimelineEntry ? (
                     <>
@@ -1923,16 +1957,32 @@ useEffect(() => {
                     </div>
                   )}
                 </article>
-                <article className="lead-detail-top-card lead-detail-callout-green" data-stage227e2-potential-card="true">
+                <article className="lead-detail-top-card lead-detail-callout-green" data-stage227e2-potential-card="true" data-stage227e3-potential-card="true">
                   <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Potencjał</h2></div>
                   <strong>{leadFinance.formatted}</strong>
-                  <p>{sourceLabel(lead.source)} • {statusLabel(lead.status)}</p>
+                  <p>{Number(lead?.dealValue || 0) > 0 ? 'Zapisana wartość leada' : 'Brak wpisanej wartości'}</p>
                 </article>
-                <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true">
+                <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true" data-stage227e3-silence-risk-card="true">
                   <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Cisza / ryzyko</h2></div>
                   <strong>{leadSilenceRisk.headline}</strong>
                   <p>{leadSilenceRisk.details}</p>
                   <span className={`lead-detail-pill ${leadSilenceRisk.toneClass}`}>{leadSilenceRisk.label}</span>
+                </article>
+                <article className="lead-detail-top-card lead-detail-callout-red" data-stage227e3-blocker-card="true">
+                  <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Blokada</h2></div>
+                  {leadBlockerEntries.length > 0 ? (
+                    <>
+                      <strong>{leadBlockerEntries[0]?.title || 'Blokada do sprawdzenia'}</strong>
+                      <p>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : `${leadBlockerEntries.length} aktywne blokady`}</p>
+                      <span className="lead-detail-pill lead-detail-work-risk-danger">Wymaga ruchu</span>
+                    </>
+                  ) : (
+                    <>
+                      <strong>Brak blokad</strong>
+                      <p>Nie ma jawnych braków blokujących kolejny ruch.</p>
+                      <span className="lead-detail-pill lead-detail-work-risk-good">Czysto</span>
+                    </>
+                  )}
                 </article>
               </section>
             ) : null}
@@ -1983,29 +2033,8 @@ useEffect(() => {
               </section>
             ) : null}
 
-
             {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-sales-signal-section lead-detail-sales-context-section" data-stage227e4-sales-signal-section="true" data-stage227e4r2-sales-context-section="true" aria-label="Kontekst sprzedażowy leada">
-                <div className="lead-detail-section-head lead-detail-sales-signal-head lead-detail-sales-context-head">
-                  <div>
-                    <p className="lead-detail-box-kicker">KONTEKST SPRZEDAŻOWY</p>
-                    <h2>Kontekst sprzedażowy</h2>
-                  </div>
-                  <span className="lead-detail-pill lead-detail-pill-blue">Do decyzji</span>
-                </div>
-                <div className="lead-detail-sales-signal-grid lead-detail-sales-context-grid" data-stage227e4r2-compact-context-grid="true">
-                  {leadSalesSignalItemsStage227E4.map((item) => (
-                    <article key={item.key} className={'lead-detail-sales-signal-card lead-detail-sales-context-card lead-detail-sales-signal-card--' + item.status} data-stage227e4-sales-signal-item={item.key} data-stage227e4r2-sales-context-item={item.key}>
-                      <small>{item.label}</small>
-                      <strong>{item.value || 'Brak danych'}</strong>
-                    </article>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-
-            {!leadInService ? (
-              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true">
+              <section className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <p className="lead-detail-box-kicker">CO ROBIMY TERAZ?</p>
@@ -2095,7 +2124,7 @@ useEffect(() => {
                 </div>
               </section>
             ) : null}
-            <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-history" data-stage216j3c-notes-history-center="true" data-stage216j3g-notes-only-section="true">
+            <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-history" data-stage216j3c-notes-history-center="true" data-stage216j3g-notes-only-section="true" data-stage227e6-notes-section="true">
               <div className="lead-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
@@ -2120,7 +2149,7 @@ useEffect(() => {
                   </Button>
                 </div>
               ) : null}
-              <div className="lead-detail-history-list lead-detail-notes-list" data-stage216j3g-notes-list="true">
+              <div className="lead-detail-history-list lead-detail-notes-list" data-stage216j3g-notes-list="true" data-stage227e6-notes-list="true">
                 {leadNoteActivityItems.length === 0 ? (
                   <div className="lead-detail-light-empty">Brak notatek przy tym leadzie.</div>
                 ) : (
@@ -2140,41 +2169,37 @@ useEffect(() => {
                 )}
               </div>
             </section>
-            <div hidden data-stage216j3h-activity-history-moved-to-rail="true" />
-</section>
 
-          {!leadInService ? (
-          <aside className="lead-detail-right-rail" aria-label="Panel leada">
-{/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
-
-
-            <section className="right-card lead-detail-right-card lead-detail-upcoming-actions-card" data-stage216j3d-upcoming-actions-card="true">
-              <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższe działania</h2></div>
-
-              <div className="lead-detail-upcoming-actions-list">
-                {timeline.length === 0 ? (
-                  <div className="lead-detail-light-empty lead-detail-action-empty lead-detail-action-empty-compact">
-                    <strong>Brak zaplanowanych działań.</strong>
-                  </div>
+            <section className="lead-detail-section-card lead-detail-activity-history-section" data-stage227e6-notes-history-separation="true" aria-label="Historia aktywności leada">
+              <div className="lead-detail-section-head">
+                <div>
+                  <h2>Historia aktywności</h2>
+                </div>
+                <span className="lead-detail-pill lead-detail-pill-slate">Log</span>
+              </div>
+              <div className="lead-detail-history-list lead-detail-activity-log-list" data-stage227e6-activity-history-list="true">
+                {leadActivityHistoryItems.length === 0 ? (
+                  <div className="lead-detail-light-empty">Brak historii aktywności przy tym leadzie.</div>
                 ) : (
-                  timeline.slice(0, 5).map((entry) => (
-                    <article key={`rail-${entry.id}`} className={`lead-detail-upcoming-action-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`} data-stage216j3d-upcoming-action-row="true">
-                      <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                  leadActivityHistoryItems.slice(0, 8).map((historyItem) => (
+                    <article key={String(historyItem.id)} className="lead-detail-history-row lead-detail-activity-log-row" data-stage227e6-activity-history-row="true">
+                      <span className="lead-detail-history-dot"><Clock className="h-4 w-4" /></span>
                       <div>
-                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
-                        <strong>{entry.title}</strong>
-                        <p>{entry.dateLabel}</p>
+                        <strong>{historyItem.title}</strong>
+                        <p>{historyItem.description}</p>
+                        <small>{historyItem.dateLabel}</small>
                       </div>
                     </article>
                   ))
                 )}
               </div>
-
-              <div className="lead-detail-right-actions lead-detail-upcoming-actions-cta">
-                <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj follow-up</button>
-                <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}>Dodaj wydarzenie</button>
-              </div>
             </section>
+</section>
+
+          {!leadInService ? (
+          <aside className="lead-detail-right-rail" aria-label="Panel leada">
+{/* CLOSEFLOW_LEAD_DETAIL_ADMIN_FEEDBACK_P1_2026_05_13: removed noisy right-rail card (Lead aktywny.) */}
+            <div hidden data-stage227e5-right-rail-upcoming-actions-removed="true" />
             <div hidden data-stage216j3i-activity-history-moved-from-right-rail="true" />
             <QuickActionsBar
               title="Szybkie akcje"
