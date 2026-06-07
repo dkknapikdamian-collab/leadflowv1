@@ -848,7 +848,15 @@
     "check:stage228b-r14-lead-action-center-vst": "node scripts/check-stage228b-r14-lead-action-center-vst.cjs",
     "test:stage228b-r14-lead-action-center-vst": "node --test tests/stage228b-r14-lead-action-center-vst.test.cjs",
     "verify:stage228d-lead-detail-real-fix": "node scripts/guards/stage228d-lead-detail-real-fix.mjs",
-    "verify:stage228e-lead-detail-guard-and-color-hotfix": "node scripts/guards/stage228e-lead-detail-guard-and-color-hotfix.mjs"
+    "verify:stage228e-lead-detail-guard-and-color-hotfix": "node scripts/guards/stage228e-lead-detail-guard-and-color-hotfix.mjs",
+    "check:stage227e1-lead-detail-ia-contract": "node scripts/check-stage227e1-lead-detail-ia-contract.cjs",
+    "test:stage227e1-lead-detail-ia-contract": "node --test tests/stage227e1-lead-detail-ia-contract.test.cjs",
+    "check:stage227e2-lead-detail-top-cards-polish": "node scripts/check-stage227e2-lead-detail-top-cards-polish.cjs",
+    "test:stage227e2-lead-detail-top-cards-polish": "node --test tests/stage227e2-lead-detail-top-cards-polish.test.cjs",
+    "check:stage227e3-shared-quick-actions-bar": "node scripts/check-stage227e3-shared-quick-actions-bar.cjs",
+    "test:stage227e3-shared-quick-actions-bar": "node --test tests/stage227e3-shared-quick-actions-bar.test.cjs",
+    "check:stage227e4-sales-signal-section": "node scripts/check-stage227e4-sales-signal-section.cjs",
+    "test:stage227e4-sales-signal-section": "node --test tests/stage227e4-sales-signal-section.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

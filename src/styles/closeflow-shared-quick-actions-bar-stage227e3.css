@@ -1,0 +1,75 @@
+/* STAGE227E3_SHARED_QUICK_ACTIONS_BAR
+   One visual source of truth for LeadDetail and CaseDetail quick actions. */
+.cf-shared-quick-actions-bar {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid #e4e7ec;
+  border-radius: 22px;
+  box-shadow: 0 8px 22px rgba(16, 24, 40, 0.05);
+  color: #111827;
+  padding: 16px;
+}
+
+.cf-shared-quick-actions-bar__header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cf-shared-quick-actions-bar__header strong {
+  color: #111827;
+  font-size: 15px;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+}
+
+.cf-shared-quick-actions-bar__grid {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+}
+
+.cf-shared-quick-actions-bar__button {
+  align-items: center;
+  border: 1px solid #e4e7ec;
+  border-radius: 16px;
+  background: #ffffff;
+  color: #344054;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 9px;
+  justify-content: flex-start;
+  min-height: 42px;
+  padding: 10px 12px;
+  text-align: left;
+  transition: border-color 120ms ease, background 120ms ease, transform 120ms ease;
+  width: 100%;
+}
+
+.cf-shared-quick-actions-bar__button:hover:not(:disabled) {
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.cf-shared-quick-actions-bar__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.cf-shared-quick-actions-bar__icon {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+
+.cf-shared-quick-actions-bar__button--note .cf-shared-quick-actions-bar__icon { color: #4f46e5; background: #eef2ff; }
+.cf-shared-quick-actions-bar__button--task .cf-shared-quick-actions-bar__icon { color: #2563eb; background: #eff6ff; }
+.cf-shared-quick-actions-bar__button--event .cf-shared-quick-actions-bar__icon { color: #0f766e; background: #ecfdf5; }
+.cf-shared-quick-actions-bar__button--missing .cf-shared-quick-actions-bar__icon { color: #b45309; background: #fffbeb; }
+.cf-shared-quick-actions-bar__button--lost .cf-shared-quick-actions-bar__icon { color: #b91c1c; background: #fef2f2; }
+.cf-shared-quick-actions-bar__button--service .cf-shared-quick-actions-bar__icon { color: #7c3aed; background: #f5f3ff; }
+.cf-shared-quick-actions-bar__button--payment .cf-shared-quick-actions-bar__icon { color: #16a34a; background: #ecfdf3; }

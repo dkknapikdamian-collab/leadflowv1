@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { CalendarClock, CircleDollarSign, FileWarning, ListChecks, StickyNote } from 'lucide-react';
 import { openContextQuickAction } from './ContextActionDialogs';
 import AddCaseMissingItemDialog from './AddCaseMissingItemDialog';
+import QuickActionsBar from './detail/QuickActionsBar';
 
 export type CaseQuickActionsProps = {
   caseId: string;
@@ -12,12 +13,8 @@ export type CaseQuickActionsProps = {
   onAfterMutation?: () => void;
 };
 
-function actionButtonClassName(tone: string) {
-  return ['case-quick-actions__button', 'case-quick-actions__button--' + tone].join(' ');
-}
-
-const CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13 = 'Quick actions header has title only, no helper subtitle';
-void CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13;
+const STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR = 'CaseQuickActions renders shared QuickActionsBar instead of local action grid';
+void STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR;
 
 export default function CaseQuickActions({
   caseId,
@@ -44,35 +41,77 @@ export default function CaseQuickActions({
   }
 
   return (
-    <section className="right-card case-quick-actions" data-case-quick-actions-panel="true" aria-label="Szybkie akcje sprawy">
-      <header className="case-quick-actions__header">
-        <span>
-          <strong>Szybkie akcje</strong>
-        </span>
-      </header>
-
-      <div className="case-quick-actions__grid">
-        <button type="button" className={actionButtonClassName('note')} onClick={() => openSharedAction('note')} data-context-action-kind="note" data-context-record-type="case" data-context-record-id={caseId} data-context-client-id={clientId || ''} data-context-lead-id={leadId || ''} data-context-record-label={recordLabel}>
-          <StickyNote className="h-4 w-4" />
-          <span>Dodaj notatkę</span>
-        </button>
-        <button type="button" className={actionButtonClassName('task')} onClick={() => openSharedAction('task')} data-context-action-kind="task" data-context-record-type="case" data-context-record-id={caseId} data-context-client-id={clientId || ''} data-context-lead-id={leadId || ''} data-context-record-label={recordLabel}>
-          <ListChecks className="h-4 w-4" />
-          <span>Dodaj zadanie</span>
-        </button>
-        <button type="button" className={actionButtonClassName('event')} onClick={() => openSharedAction('event')} data-context-action-kind="event" data-context-record-type="case" data-context-record-id={caseId} data-context-client-id={clientId || ''} data-context-lead-id={leadId || ''} data-context-record-label={recordLabel}>
-          <CalendarClock className="h-4 w-4" />
-          <span>Dodaj wydarzenie</span>
-        </button>
-        <button type="button" className={actionButtonClassName('missing')} onClick={() => setMissingDialogOpen(true)}>
-          <FileWarning className="h-4 w-4" />
-          <span>Dodaj brak</span>
-        </button>
-        <button type="button" className={actionButtonClassName('payment')} onClick={onAddPayment}>
-          <CircleDollarSign className="h-4 w-4" />
-          <span>Dodaj wpłatę</span>
-        </button>
-      </div>
+    <>
+      <QuickActionsBar
+        title="Szybkie akcje"
+        ariaLabel="Szybkie akcje sprawy"
+        recordType="case"
+        variant="rail"
+        dataStage="stage227e3-case-quick-actions-bar"
+        actions={[
+          {
+            key: 'note',
+            label: 'Notatka',
+            tone: 'note',
+            icon: <StickyNote className="h-4 w-4" />,
+            onClick: () => openSharedAction('note'),
+            data: {
+              'data-context-action-kind': 'note',
+              'data-context-record-type': 'case',
+              'data-context-record-id': caseId,
+              'data-context-client-id': clientId || '',
+              'data-context-lead-id': leadId || '',
+              'data-context-record-label': recordLabel,
+            },
+          },
+          {
+            key: 'task',
+            label: 'Zadanie',
+            tone: 'task',
+            icon: <ListChecks className="h-4 w-4" />,
+            onClick: () => openSharedAction('task'),
+            data: {
+              'data-context-action-kind': 'task',
+              'data-context-record-type': 'case',
+              'data-context-record-id': caseId,
+              'data-context-client-id': clientId || '',
+              'data-context-lead-id': leadId || '',
+              'data-context-record-label': recordLabel,
+            },
+          },
+          {
+            key: 'event',
+            label: 'Wydarzenie',
+            tone: 'event',
+            icon: <CalendarClock className="h-4 w-4" />,
+            onClick: () => openSharedAction('event'),
+            data: {
+              'data-context-action-kind': 'event',
+              'data-context-record-type': 'case',
+              'data-context-record-id': caseId,
+              'data-context-client-id': clientId || '',
+              'data-context-lead-id': leadId || '',
+              'data-context-record-label': recordLabel,
+            },
+          },
+          {
+            key: 'missing',
+            label: 'Brak',
+            tone: 'missing',
+            icon: <FileWarning className="h-4 w-4" />,
+            onClick: () => setMissingDialogOpen(true),
+            data: { 'data-stage227e3-case-missing-action': 'true' },
+          },
+          {
+            key: 'payment',
+            label: 'Wpłata',
+            tone: 'payment',
+            icon: <CircleDollarSign className="h-4 w-4" />,
+            onClick: onAddPayment,
+            data: { 'data-stage227e3-case-payment-action': 'true' },
+          },
+        ]}
+      />
 
       <AddCaseMissingItemDialog
         open={missingDialogOpen}
@@ -83,6 +122,6 @@ export default function CaseQuickActions({
         leadId={leadId || null}
         onSaved={onAfterMutation}
       />
-    </section>
+    </>
   );
 }

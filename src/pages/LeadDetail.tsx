@@ -68,6 +68,7 @@ void STAGE78_LEAD_DETAIL_NO_STATIC_AI_FOLLOWUP_RAIL;
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import EntityContactCard from '../components/entity-contact-card';
+import QuickActionsBar from '../components/detail/QuickActionsBar';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
@@ -112,7 +113,13 @@ import {
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage14-lead-detail-vnext.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
+import '../styles/closeflow-lead-detail-sales-signal-stage227e4.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
+const STAGE227E3_SHARED_QUICK_ACTIONS_BAR_LEAD = 'LeadDetail uses shared QuickActionsBar visual source with CaseDetail';
+void STAGE227E3_SHARED_QUICK_ACTIONS_BAR_LEAD;
+const STAGE227E3_LEAD_DETAIL_SHARED_QUICK_ACTIONS_BAR = 'LeadDetail uses shared QuickActionsBar visual source with CaseDetail';
+void STAGE227E3_LEAD_DETAIL_SHARED_QUICK_ACTIONS_BAR;
 
 const STAGE223_R2X_LEAD_DETAIL_VERTICAL_RHYTHM_SECTION_COPY = 'Notatki leada Zadania i wydarzenia Historia kontaktu';
 void STAGE223_R2X_LEAD_DETAIL_VERTICAL_RHYTHM_SECTION_COPY;
@@ -494,6 +501,163 @@ function leadDetailActionDataKind(row: Record<string, unknown> | null | undefine
 function leadDetailActionKindClass(kind: unknown) {
   return getCloseFlowActionKindClass(kind);
 }
+const STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH = 'LeadDetail top cards show Następny krok, Potencjał and Cisza / ryzyko without updatedAt silence';
+void STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH;
+function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: any[], nextTimelineEntry: TimelineEntry | null, leadInService: boolean) {
+  const contactDates = [
+    lead?.lastContactAt,
+    lead?.last_contact_at,
+    lead?.lastTouchAt,
+    lead?.last_touch_at,
+    lead?.lastActivityAt,
+    lead?.last_activity_at,
+    ...activities.map((activity) => activity?.happenedAt || activity?.createdAt || activity?.payload?.happenedAt || activity?.payload?.createdAt),
+    ...tasks.map((task) => task?.completedAt || task?.scheduledAt || task?.dueAt || task?.date || task?.createdAt),
+    ...events.map((event) => event?.completedAt || event?.startAt || event?.scheduledAt || event?.createdAt),
+  ]
+    .map((value) => asDate(value))
+    .filter(Boolean) as Date[];
+
+  const lastContact = contactDates.sort((left, right) => right.getTime() - left.getTime())[0] || null;
+  const daysSilent = lastContact ? Math.max(0, Math.floor((Date.now() - lastContact.getTime()) / 86400000)) : null;
+  const hasNextAction = Boolean(nextTimelineEntry);
+  const isLost = String(lead?.status || '').toLowerCase() === 'lost';
+
+  let label = 'Pod kontrolą';
+  let headline = hasNextAction ? 'Jest następny ruch' : 'Brak następnego ruchu';
+  let details = lastContact ? `Ostatni kontakt/ruch: ${formatDateTime(lastContact)}.` : 'Brak zapisanego kontaktu/ruchu.';
+  let toneClass = 'lead-detail-pill-green';
+
+  if (leadInService) {
+    label = 'W obsłudze';
+    headline = 'Praca jest w sprawie';
+    details = 'Lead jest historią pozyskania. Dalsze działania prowadź w sprawie.';
+    toneClass = 'lead-detail-pill-purple';
+  } else if (isLost) {
+    label = 'Utracony';
+    headline = 'Lead zamknięty jako utracony';
+    details = 'Nie prowadź dalszej sprzedaży bez ponownego otwarcia tematu.';
+    toneClass = 'lead-detail-pill-muted';
+  } else if (!hasNextAction) {
+    label = 'Brak akcji';
+    toneClass = 'lead-detail-pill-danger';
+    details = daysSilent === null ? 'Nie ma ani kontaktu/ruchu, ani zaplanowanej akcji.' : `Cisza: ${daysSilent} dni. Brakuje następnego kroku.`;
+  } else if (typeof daysSilent === 'number' && daysSilent >= 7) {
+    label = 'Cisza';
+    headline = `${daysSilent} dni bez ruchu`;
+    details = 'Sprawdź, czy zaplanowana akcja jest nadal aktualna.';
+    toneClass = 'lead-detail-pill-amber';
+  }
+
+  return {
+    daysSilent,
+    label,
+    headline,
+    details,
+    toneClass,
+  };
+}
+
+
+const STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION = 'LeadDetail exposes sales signal fields: problem reason urgency budget decision blocker';
+void STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION;
+
+type LeadSalesSignalStatusStage227E4 = 'ok' | 'missing' | 'warning';
+type LeadSalesSignalItemStage227E4 = {
+  key: string;
+  label: string;
+  value: string;
+  status: LeadSalesSignalStatusStage227E4;
+  hint: string;
+};
+
+type LeadSalesSignalInputStage227E4 = {
+  lead: Record<string, any> | null;
+  sourceLabel: string;
+  primaryNote: string;
+  financePotential: number;
+  financeLabel: string;
+  nextActionLabel: string;
+  riskLabel: string;
+  riskReason: string;
+};
+
+function pickLeadSignalTextStage227E4(source: Record<string, any> | null, keys: string[]) {
+  if (!source) return '';
+  for (const key of keys) {
+    const value = source[key];
+    if (typeof value === 'string' && value.trim()) return value.trim();
+    if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  }
+  return '';
+}
+
+function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): LeadSalesSignalItemStage227E4[] {
+  const lead = input.lead || {};
+  const problem =
+    pickLeadSignalTextStage227E4(lead, ['problem', 'need', 'needDescription', 'painPoint', 'customerProblem', 'customerNeed']) ||
+    input.primaryNote;
+  const reason =
+    pickLeadSignalTextStage227E4(lead, ['contactReason', 'reason', 'leadReason', 'inquiryReason', 'sourceReason']) ||
+    input.sourceLabel;
+  const urgency =
+    pickLeadSignalTextStage227E4(lead, ['urgency', 'deadline', 'timeline', 'desiredDate', 'moveInDate', 'decisionDate']) ||
+    input.nextActionLabel;
+  const budget =
+    pickLeadSignalTextStage227E4(lead, ['budget', 'budgetRange', 'declaredBudget']) ||
+    (Number(input.financePotential || 0) > 0 ? input.financeLabel : '');
+  const decision =
+    pickLeadSignalTextStage227E4(lead, ['decision', 'decisionMaker', 'decisionStatus', 'nextDecision', 'salesDecision']) ||
+    String(lead.status || '').replaceAll('_', ' ');
+  const blocker =
+    pickLeadSignalTextStage227E4(lead, ['blocker', 'blockade', 'objection', 'missingInfo', 'riskReason', 'riskNote', 'atRiskReason']) ||
+    input.riskReason;
+
+  return [
+    {
+      key: 'problem',
+      label: 'Problem / potrzeba',
+      value: problem,
+      status: problem ? 'ok' : 'missing',
+      hint: problem ? 'Rozpoznane z pól leada albo notatek.' : 'Brakuje jasnego problemu klienta.',
+    },
+    {
+      key: 'reason',
+      label: 'Powód kontaktu',
+      value: reason,
+      status: reason ? 'ok' : 'missing',
+      hint: reason ? 'Jest powód albo źródło kontaktu.' : 'Dopisz, dlaczego klient się odezwał.',
+    },
+    {
+      key: 'urgency',
+      label: 'Termin / pilność',
+      value: urgency,
+      status: urgency ? 'ok' : 'missing',
+      hint: urgency ? 'Jest termin, pilność albo następny krok.' : 'Brakuje terminu albo pilności.',
+    },
+    {
+      key: 'budget',
+      label: 'Budżet / potencjał',
+      value: budget,
+      status: budget ? 'ok' : 'missing',
+      hint: budget ? 'Jest budżet albo potencjał sprzedaży.' : 'Brakuje budżetu lub potencjału.',
+    },
+    {
+      key: 'decision',
+      label: 'Decyzja',
+      value: decision,
+      status: decision ? 'ok' : 'missing',
+      hint: decision ? 'Jest status albo ślad decyzji.' : 'Brakuje decydenta lub decyzji.',
+    },
+    {
+      key: 'blocker',
+      label: 'Blokada',
+      value: blocker,
+      status: blocker && input.riskLabel !== 'Ogarnięty' ? 'warning' : blocker ? 'ok' : 'missing',
+      hint: blocker ? 'Widać ryzyko, blokadę albo brak.' : 'Brakuje jawnej blokady albo informacji, że jej nie ma.',
+    },
+  ];
+}
 export default function LeadDetail() {
   const { leadId } = useParams();
   const navigate = useNavigate();
@@ -835,11 +999,11 @@ useEffect(() => {
   const leadWorkCenter = useMemo(() => {
     const nowMs = Date.now();
     const activityDates = activities
-      .map((activity) => asDate(activity?.happenedAt || activity?.createdAt || activity?.updatedAt || activity?.payload?.createdAt))
+      .map((activity) => asDate(activity?.happenedAt || activity?.createdAt || activity?.payload?.happenedAt || activity?.payload?.createdAt))
       .filter(Boolean) as Date[];
     const taskDates = sortedLinkedTasks.map((task) => asDate(getTaskDate(task))).filter(Boolean) as Date[];
     const eventDates = sortedLinkedEvents.map((event) => asDate(getEventDate(event))).filter(Boolean) as Date[];
-    const leadDates = [lead?.lastContactAt, lead?.lastActivityAt, lead?.updatedAt, lead?.createdAt]
+    const leadDates = [lead?.lastContactAt, (lead as any)?.last_contact_at, lead?.lastActivityAt, (lead as any)?.last_activity_at, lead?.createdAt]
       .map((value) => asDate(value))
       .filter(Boolean) as Date[];
     const dates = [...activityDates, ...taskDates, ...eventDates, ...leadDates].sort((left, right) => right.getTime() - left.getTime());
@@ -887,6 +1051,26 @@ useEffect(() => {
       riskReason,
     };
   }, [activities, lead, leadInService, nextTimelineEntry, sortedLinkedEvents, sortedLinkedTasks]);
+
+  const leadSilenceRisk = useMemo(
+    () => getLeadSilenceRisk(lead, activities, sortedLinkedTasks, sortedLinkedEvents, nextTimelineEntry, leadInService),
+    [activities, lead, leadInService, nextTimelineEntry, sortedLinkedEvents, sortedLinkedTasks],
+  );
+
+
+  const leadSalesSignalItemsStage227E4 = useMemo(
+    () => buildLeadSalesSignalStage227E4({
+      lead,
+      sourceLabel: sourceLabel(lead?.source),
+      primaryNote: leadPrimaryNoteText,
+      financePotential: leadFinancePanel.potential,
+      financeLabel: leadFinance.formatted,
+      nextActionLabel: nextTimelineEntry ? nextTimelineEntry.title + ' • ' + nextTimelineEntry.dateLabel : '',
+      riskLabel: leadSilenceRisk.riskLabel || leadWorkCenter.riskLabel,
+      riskReason: leadRiskReasonStage14F || leadSilenceRisk.riskReason || leadWorkCenter.riskReason,
+    }),
+    [lead, leadFinance.formatted, leadFinancePanel.potential, leadPrimaryNoteText, leadRiskReasonStage14F, leadSilenceRisk, leadWorkCenter.riskLabel, leadWorkCenter.riskReason, nextTimelineEntry],
+  );
 
   const workCenterPanel = (
     <section className="lead-detail-work-center" data-stage="stage84-lead-detail-work-center">
@@ -1736,9 +1920,9 @@ useEffect(() => {
               <div hidden data-stage216j3f-source-context-card-hidden="true" />
             )}
 {!leadInService ? (
-              <section className="lead-detail-top-grid">
-                <article className="lead-detail-top-card lead-detail-callout-blue">
-                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższa zaplanowana akcja</h2></div>
+              <section className="lead-detail-top-grid" data-stage227e2-top-cards="true">
+                <article className="lead-detail-top-card lead-detail-callout-blue" data-stage227e2-next-step-card="true">
+                  <div className="lead-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Następny krok</h2></div>
                   {nextTimelineEntry ? (
                     <>
                       <strong>{nextTimelineEntry.title}</strong>
@@ -1748,17 +1932,20 @@ useEffect(() => {
                   ) : (
                     <div className="lead-detail-action-empty lead-detail-action-empty-compact">
                       <strong>Brak zaplanowanej akcji</strong>
+                      <p>Ustal zadanie albo wydarzenie, żeby lead nie wisiał bez decyzji.</p>
                     </div>
                   )}
                 </article>
-                <article className="lead-detail-top-card lead-detail-callout-green">
-                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Wartość</h2></div>
+                <article className="lead-detail-top-card lead-detail-callout-green" data-stage227e2-potential-card="true">
+                  <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Potencjał</h2></div>
                   <strong>{leadFinance.formatted}</strong>
                   <p>{sourceLabel(lead.source)} • {statusLabel(lead.status)}</p>
                 </article>
-                <article className="lead-detail-top-card lead-detail-callout-amber">
-                  <div className="lead-detail-card-title-row"><EntityIcon entity="lead" className="h-4 w-4" /><h2>Aktywny lead</h2></div>
-                  <strong>{sortedLinkedTasks.length + sortedLinkedEvents.length}</strong>
+                <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true">
+                  <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Cisza / ryzyko</h2></div>
+                  <strong>{leadSilenceRisk.headline}</strong>
+                  <p>{leadSilenceRisk.details}</p>
+                  <span className={`lead-detail-pill ${leadSilenceRisk.toneClass}`}>{leadSilenceRisk.label}</span>
                 </article>
               </section>
             ) : null}
@@ -1805,6 +1992,29 @@ useEffect(() => {
                       </article>
                     ))
                   )}
+                </div>
+              </section>
+            ) : null}
+
+
+            {!leadInService ? (
+              <section className="lead-detail-section-card lead-detail-sales-signal-section" data-stage227e4-sales-signal-section="true" aria-label="Sygnał sprzedażowy leada">
+                <div className="lead-detail-section-head lead-detail-sales-signal-head">
+                  <div>
+                    <p className="lead-detail-box-kicker">SYGNAŁ SPRZEDAŻOWY</p>
+                    <h2>Sygnał sprzedażowy</h2>
+                    <p>Problem, powód kontaktu, pilność, budżet, decyzja i blokada w jednym miejscu.</p>
+                  </div>
+                  <span className="lead-detail-pill lead-detail-pill-blue">Do domknięcia</span>
+                </div>
+                <div className="lead-detail-sales-signal-grid">
+                  {leadSalesSignalItemsStage227E4.map((item) => (
+                    <article key={item.key} className={'lead-detail-sales-signal-card lead-detail-sales-signal-card--' + item.status} data-stage227e4-sales-signal-item={item.key}>
+                      <small>{item.label}</small>
+                      <strong>{item.value || 'Brak danych'}</strong>
+                      <p>{item.hint}</p>
+                    </article>
+                  ))}
                 </div>
               </section>
             ) : null}
@@ -1901,9 +2111,6 @@ useEffect(() => {
                 </div>
               </section>
             ) : null}
-
-            <section className="lead-detail-section-card lead-detail-history-center
-
             <section className="lead-detail-section-card lead-detail-history-center lead-detail-notes-only-section" id="lead-history" data-stage216j3c-notes-history-center="true" data-stage216j3g-notes-only-section="true">
               <div className="lead-detail-section-head">
                 <div>
@@ -1985,18 +2192,69 @@ useEffect(() => {
               </div>
             </section>
             <div hidden data-stage216j3i-activity-history-moved-from-right-rail="true" />
-            <section className="right-card lead-detail-right-card lead-detail-right-quick-actions-card" data-stage228d-lead-right-quick-actions="true">
-              <div className="lead-detail-card-title-row"><Plus className="h-4 w-4" /><h2>Szybkie akcje</h2></div>
-              <div className="lead-detail-right-actions lead-detail-quick-actions-list">
-                <button type="button" onClick={() => setIsAddNoteOpen(true)} disabled={!hasAccess}><EntityIcon entity="template" className="h-4 w-4" />Dodaj notatkę</button>
-                <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}><CheckCircle2 className="h-4 w-4" />Dodaj zadanie</button>
-                <button type="button" onClick={handleCreateQuickEvent} disabled={!hasAccess}><EntityIcon entity="event" className="h-4 w-4" />Dodaj wydarzenie</button>
-                <button type="button" onClick={handleCreateQuickTask} disabled={!hasAccess}><AlertTriangle className="h-4 w-4" />Dodaj brak</button>
-                <button type="button" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}><DollarSign className="h-4 w-4" />Dodaj wpłatę</button>
-              </div>
-            </section>
-
-            <section className="right-card lead-detail-right-card" data-lead-finance-panel="true"
+            <QuickActionsBar
+              title="Szybkie akcje"
+              ariaLabel="Szybkie akcje leada"
+              recordType="lead"
+              variant="rail"
+              dataStage="stage227e3-lead-quick-actions-bar"
+              actions={[
+                {
+                  key: 'note',
+                  label: 'Notatka',
+                  tone: 'note',
+                  icon: <EntityIcon entity="template" className="h-4 w-4" />,
+                  onClick: () => setIsAddNoteOpen(true),
+                  disabled: !hasAccess,
+                  data: { 'data-stage227e3-lead-action': 'note' },
+                },
+                {
+                  key: 'task',
+                  label: 'Zadanie',
+                  tone: 'task',
+                  icon: <CheckCircle2 className="h-4 w-4" />,
+                  onClick: handleCreateQuickTask,
+                  disabled: !hasAccess,
+                  data: { 'data-context-action-kind': 'task', 'data-stage227e3-lead-action': 'task' },
+                },
+                {
+                  key: 'event',
+                  label: 'Wydarzenie',
+                  tone: 'event',
+                  icon: <EntityIcon entity="event" className="h-4 w-4" />,
+                  onClick: handleCreateQuickEvent,
+                  disabled: !hasAccess,
+                  data: { 'data-context-action-kind': 'event', 'data-stage227e3-lead-action': 'event' },
+                },
+                {
+                  key: 'missing',
+                  label: 'Brak',
+                  tone: 'missing',
+                  icon: <AlertTriangle className="h-4 w-4" />,
+                  onClick: handleCreateQuickTask,
+                  disabled: !hasAccess,
+                  data: { 'data-stage227e3-lead-action': 'missing' },
+                },
+                {
+                  key: 'lost',
+                  label: 'Oznacz utracony',
+                  tone: 'lost',
+                  icon: <Trash2 className="h-4 w-4" />,
+                  onClick: () => handleUpdateStatus('lost'),
+                  disabled: !hasAccess,
+                  data: { 'data-stage227e3-lead-action': 'lost' },
+                },
+                {
+                  key: 'service',
+                  label: 'Rozpocznij obsługę',
+                  tone: 'service',
+                  icon: <EntityIcon entity="case" className="h-4 w-4" />,
+                  onClick: () => setIsCreateCaseOpen(true),
+                  disabled: !hasAccess,
+                  data: { 'data-stage227e3-lead-action': 'start-service' },
+                },
+              ]}
+            />
 
             <section className="right-card lead-detail-right-card" data-lead-finance-panel="true" data-stage115e-lead-finance-actions="true">
               <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Finanse leada</h2></div>
