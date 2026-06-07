@@ -1,4 +1,4 @@
-import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+﻿import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AlertTriangle, ArrowLeft, ArrowRight, CheckCircle2, Clock, DollarSign, Edit2, Loader2, Mail, Mic, MicOff, MoreVertical, Phone, Plus, Trash2 } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
@@ -564,6 +564,10 @@ const STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION = 'LeadDetail exposes compact 
 void STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION;
 const STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION = 'LeadDetail uses compact Kontekst sprzedażowy and does not duplicate source/status as decision fields';
 void STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION;
+const STAGE227E4R3_RUNTIME_COPY_CLEANUP = 'LeadDetail runtime copy keeps only labels and values without helper explanation sentences';
+void STAGE227E4R3_RUNTIME_COPY_CLEANUP;
+const STAGE227E4R3_LEAD_DETAIL_RUNTIME_COPY_CLEANUP = 'LeadDetail runtime hides helper explanation sentences and keeps decision screen compact';
+void STAGE227E4R3_LEAD_DETAIL_RUNTIME_COPY_CLEANUP;
 
 type LeadSalesSignalStatusStage227E4 = 'ok' | 'missing' | 'warning';
 type LeadSalesSignalItemStage227E4 = {
@@ -571,7 +575,6 @@ type LeadSalesSignalItemStage227E4 = {
   label: string;
   value: string;
   status: LeadSalesSignalStatusStage227E4;
-  hint: string;
 };
 
 type LeadSalesSignalInputStage227E4 = {
@@ -616,35 +619,30 @@ function buildLeadSalesSignalStage227E4(input: LeadSalesSignalInputStage227E4): 
       label: 'Potrzeba / problem',
       value: problem,
       status: problem ? 'ok' : 'missing',
-      hint: problem ? 'Jest jasny powód pracy z leadem.' : 'Brakuje krótkiego opisu potrzeby klienta.',
     },
     {
       key: 'urgency',
       label: 'Termin / pilność',
       value: urgency,
       status: urgency ? 'ok' : 'missing',
-      hint: urgency ? 'Jest termin, pilność albo konkretny następny ruch.' : 'Brakuje terminu albo pilności.',
     },
     {
       key: 'budget',
       label: 'Budżet / potencjał',
       value: budget,
       status: budget ? 'ok' : 'missing',
-      hint: budget ? 'Jest budżet albo potencjał sprzedaży.' : 'Brakuje budżetu lub potencjału.',
     },
     {
       key: 'decision',
       label: 'Decyzja',
       value: decision,
       status: decision ? 'ok' : 'missing',
-      hint: decision ? 'Jest informacja o decyzji lub decydencie.' : 'Brakuje decydenta lub śladu decyzji.',
     },
     {
       key: 'blocker',
       label: 'Blokada',
       value: blocker,
       status: blocker && input.riskLabel !== 'Ogarnięty' ? 'warning' : blocker ? 'ok' : 'missing',
-      hint: blocker ? 'Widać ryzyko, brak albo blokadę.' : 'Brakuje jawnej blokady albo informacji, że jej nie ma.',
     },
   ];
 }
@@ -1895,7 +1893,6 @@ useEffect(() => {
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Źródło / pierwsza notatka</h2>
-                    <p>Krótki kontekst z utworzenia leada. Bieżące notatki są wyżej w historii kontaktu.</p>
                   </div>
                 </div>
                 <div className="lead-detail-notes-stack" data-lead-notes-stack="true">
@@ -1993,16 +1990,14 @@ useEffect(() => {
                   <div>
                     <p className="lead-detail-box-kicker">KONTEKST SPRZEDAŻOWY</p>
                     <h2>Kontekst sprzedażowy</h2>
-                    <p>Krótko: co pomaga wykonać następny ruch, bez powtarzania statusu i źródła leada.</p>
                   </div>
-                  <span className="lead-detail-pill lead-detail-pill-blue">Lekki kontekst</span>
+                  <span className="lead-detail-pill lead-detail-pill-blue">Do decyzji</span>
                 </div>
                 <div className="lead-detail-sales-signal-grid lead-detail-sales-context-grid" data-stage227e4r2-compact-context-grid="true">
                   {leadSalesSignalItemsStage227E4.map((item) => (
                     <article key={item.key} className={'lead-detail-sales-signal-card lead-detail-sales-context-card lead-detail-sales-signal-card--' + item.status} data-stage227e4-sales-signal-item={item.key} data-stage227e4r2-sales-context-item={item.key}>
                       <small>{item.label}</small>
                       <strong>{item.value || 'Brak danych'}</strong>
-                      <p>{item.hint}</p>
                     </article>
                   ))}
                 </div>
@@ -2015,7 +2010,6 @@ useEffect(() => {
                   <div>
                     <p className="lead-detail-box-kicker">CO ROBIMY TERAZ?</p>
                     <h2>Działania leada</h2>
-                    <p>Najbliższe zadania, wydarzenia i braki przypięte do tego leada.</p>
                   </div>
                   <span className="lead-detail-pill lead-detail-pill-blue">Aktywne {activeLeadWorkEntries.length}</span>
                 </div>
@@ -2427,3 +2421,5 @@ useEffect(() => {
     </Layout>
   );
 }
+
+

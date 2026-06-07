@@ -1,3 +1,6 @@
+﻿/* STAGE227E4_SALES_CONTEXT_SECTION_CSS */
+/* STAGE227E4R2_DECISION_VIEW_SIMPLIFICATION_CSS */
+/* STAGE227E4R3_RUNTIME_COPY_CLEANUP_CSS */
 /* STAGE227E4_LEAD_DETAIL_SALES_SIGNAL_SECTION */
 /* STAGE227E4R2_LEAD_DETAIL_DECISION_VIEW_SIMPLIFICATION */
 .lead-detail-sales-signal-section {
@@ -18,7 +21,7 @@
 
 .lead-detail-sales-signal-card,
 .lead-detail-sales-context-card {
-  min-height: 92px;
+  min-height: 72px;
   border: 1px solid #e4e7ec;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.94);
@@ -76,3 +79,6 @@
     grid-template-columns: 1fr;
   }
 }
+
+
+
