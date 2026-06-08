@@ -1,0 +1,17 @@
+{
+  "stage": "STAGE228R10C_CASE_RAIL_FUNNEL_SPACING",
+  "date": "2026-06-08 18:45 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "baseline": "Stage228R10B technical PASS, visual rail too high",
+  "issue": "Right rail was pulled too high by R10B; spacing should match funnel card rhythm.",
+  "fix": "CSS-only final override: margin-top -24px, top 12px, appended after R10B.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "No DOM movement.",
+    "R10C override must remain after R10B block.",
+    "Guard blocks broken R9R3/R9R4 display: contents grid pattern."
+  ]
+}

@@ -194,3 +194,18 @@
     overflow-x: auto !important;
   }
 }
+
+/* STAGE228R10C_CASE_RAIL_FUNNEL_SPACING
+   R10B pulled the right rail too high. Damian requested spacing closer to the funnel card rhythm.
+   This final override keeps the centered tabs from R10B but lowers the right rail a bit. */
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: -24px !important;
+  top: 12px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+}

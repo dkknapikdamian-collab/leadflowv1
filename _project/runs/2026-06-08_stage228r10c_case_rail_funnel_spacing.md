@@ -1,0 +1,36 @@
+# Stage228R10C - Case right rail lower to funnel spacing
+
+- date: 2026-06-08 18:45 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- baseline:
+  - Stage228R10B technically passed and pushed, but visual review failed.
+- user feedback:
+  - Right rail is too high.
+  - It should be lower, with spacing like the card in the funnel view.
+- audit:
+  - R10B used margin-top: -42px and top: 4px for the right rail.
+  - This overcorrected the previous gap.
+  - The tabs/card centering fix from R10B should stay.
+  - Do not modify CaseDetail.tsx or reintroduce page-level grid.
+- fix:
+  - CSS-only final override after R10B.
+  - Right rail margin-top changed effectively to -24px.
+  - Sticky top changed to 12px.
+  - Added guard scripts/check-stage228r10c-case-rail-funnel-spacing.cjs.
+- tests:
+  - node scripts/check-stage228r10c-case-rail-funnel-spacing.cjs
+  - node scripts/check-stage228r10b-case-tabs-true-center-rail-pullup.cjs
+  - node scripts/check-stage228r10a-case-tabs-card-rail-nudge.cjs
+  - node scripts/check-stage228r9-case-detail-shell-rail-lift.cjs
+  - npm run build
+- manual test:
+  - Open CaseDetail.
+  - Right rail should be lower than R10B.
+  - Gap should visually match the funnel card rhythm.
+  - Tabs card should remain centered.
+- risk audit:
+  - CSS-only.
+  - No SQL/data/finance logic.
+  - R10B guard still passes because R10B block remains; R10C final override controls actual final position.
+  - R10C guard enforces final override order after R10B.
