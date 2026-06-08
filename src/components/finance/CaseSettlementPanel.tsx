@@ -40,6 +40,7 @@ export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN5 = 'FIN-5_CLOSEFLOW_CASE_SETTLE
 export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN10 = 'FIN-10_CASE_FINANCE_SOURCE_TRUTH_PANEL_V1' as const;
 export const FIN13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR = 'FIN-13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR' as const;
 export const FIN14_CASE_SETTLEMENT_PAYMENT_TYPES = 'FIN-14_CASE_SETTLEMENT_PAYMENT_TYPES_DEPOSIT_PARTIAL_COMMISSION' as const;
+export const STAGE228R7_CASE_SETTLEMENT_COMMISSION_BALANCE_TRUTH = 'case settlement panel hides client-total remaining from main commission view' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
 void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
@@ -255,16 +256,13 @@ export function CaseSettlementPanel({
         <div>
           <p className="cf-finance-kicker">FIN-5</p>
           <h2>Rozliczenie sprawy</h2>
-          <span>Ustaw wartość transakcji, wpłaty klienta i prowizję. Prowizja procentowa liczy się od wartości sprawy.</span>
+          <span>Ustaw wartość transakcji i prowizję. Prowizja procentowa liczy się od wartości transakcji.</span>
         </div>
         {!readonly ? (
           <CaseFinanceActionButtons
               className="cf-finance-settlement-actions"
               onEdit={() => setCommissionOpen(true)}
-              onAddDepositPayment={() => setPaymentDialogType('deposit')}
-              onAddPayment={() => setPaymentDialogType('partial')}
               onAddCommissionPayment={() => setPaymentDialogType('commission')}
-              showDepositPayment
               showCommissionPayment
               disabled={isSaving}
             />
@@ -275,7 +273,7 @@ export function CaseSettlementPanel({
         <div className="cf-finance-settlement-empty-value" data-cf-case-settlement-value-cta="true">
           <div>
             <strong>Ustaw wartość sprawy</strong>
-            <span>Bez wartości transakcji panel pokazuje zera. Ustaw ją tutaj, a system policzy pozostało do zapłaty i prowizję.</span>
+            <span>Bez wartości transakcji panel pokazuje zera. Ustaw ją tutaj, a system policzy prowizję i saldo prowizji.</span>
           </div>
           {!readonly ? (
             <Button type="button" onClick={() => setCommissionOpen(true)} disabled={isSaving}>
@@ -289,21 +287,19 @@ export function CaseSettlementPanel({
         <Metric label="Wartość transakcji" value={formatMoney(contractValue, currency)} />
         <Metric label="Prowizja" value={getCommissionLine(summary.commissionMode, summary.commissionRate, commissionAmount, currency)} />
         <Metric label="Prowizja należna" value={formatMoney(commissionAmount, currency)} />
-        <Metric label="Wpłacono od klienta" value={formatMoney(summary.clientPaidAmount, currency)} />
-        <Metric label="Pozostało" value={formatMoney(summary.remainingAmount, currency)} />
-        <Metric label="Prowizja opłacona" value={formatMoney(commissionPaid, currency)} />
-        <Metric label="Prowizja do zapłaty" value={formatMoney(commissionRemaining, currency)} />
+        <Metric label="Wpłacono prowizji" value={formatMoney(commissionPaid, currency)} />
+        <Metric label="Do zapłaty prowizji" value={formatMoney(commissionRemaining, currency)} />
         <Metric label="Status prowizji" value={COMMISSION_STATUS_LABELS[commissionStatus] || commissionStatus} />
       </dl>
 
       <div className="cf-finance-settlement-footnote">
         <span>Status prowizji: {COMMISSION_STATUS_LABELS[commissionStatus] || commissionStatus}</span>
-        <span>Wpłaty klienta i płatności prowizji są liczone osobno.</span>
+        <span>Wpłaty prowizji zmniejszają saldo prowizji do zapłaty.</span>
       </div>
 
       <PaymentList
-        title="Lista płatności"
-        emptyText="Brak zapisanych płatności dla tej sprawy."
+        title="Lista wpłat prowizji"
+        emptyText="Brak zapisanych wpłat prowizji dla tej sprawy."
         payments={normalizedPayments}
       />
 

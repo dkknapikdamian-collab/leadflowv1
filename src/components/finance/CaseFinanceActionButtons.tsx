@@ -4,6 +4,7 @@ import '../../styles/finance/closeflow-finance.css';
 export const CLOSEFLOW_FIN12_CASE_FINANCE_ACTION_BUTTONS = 'CLOSEFLOW_FIN12_CASE_FINANCE_ACTION_BUTTONS_V1' as const;
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCE_ACTION_BUTTONS = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCE_ACTION_BUTTONS_V1' as const;
 export const CLOSEFLOW_FIN14_PAYMENT_TYPE_ACTION_BUTTONS = 'CLOSEFLOW_FIN14_PAYMENT_TYPE_ACTION_BUTTONS_V1' as const;
+export const STAGE228R7_COMMISSION_BALANCE_ACTION_LABELS = 'commission payment action is labeled as wpłata prowizji' as const;
 
 type CaseFinanceActionButtonsProps = {
   onEdit: () => void;
@@ -41,8 +42,8 @@ export function CaseFinanceActionButtons({
     >
       <Button type="button" variant="outline" onClick={onEdit} disabled={disabled}>Edytuj wartość/prowizję</Button>
       {showDepositPayment && onAddDepositPayment ? <Button type="button" variant="outline" onClick={onAddDepositPayment} disabled={disabled}>Dodaj zaliczkę</Button> : null}
-      {onAddPayment ? <Button type="button" variant="outline" onClick={onAddPayment} disabled={disabled}>Dodaj wpłatę</Button> : null}
-      {showCommissionPayment && onAddCommissionPayment ? <Button type="button" variant="outline" onClick={onAddCommissionPayment} disabled={disabled}>Dodaj płatność prowizji</Button> : null}
+      {onAddPayment ? <Button type="button" variant="outline" onClick={onAddPayment} disabled={disabled}>Dodaj wpłatę klienta</Button> : null}
+      {showCommissionPayment && onAddCommissionPayment ? <Button type="button" variant="outline" onClick={onAddCommissionPayment} disabled={disabled} data-stage228r7-add-commission-payment-button="true">Dodaj wpłatę prowizji</Button> : null}
       {showOpenCase && onOpenCase ? <Button type="button" onClick={onOpenCase} disabled={disabled}>Otwórz sprawę</Button> : null}
     </div>
   );

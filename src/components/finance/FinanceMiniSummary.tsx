@@ -18,6 +18,7 @@ import { CaseFinancePaymentDialog, type CaseFinancePaymentInput } from './CaseFi
 import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES_V1' as const;
+export const STAGE228R7_CLIENT_FINANCE_COMMISSION_BALANCE_TRUTH = 'client finance summary shows commission paid and remaining as main balance' as const;
 
 type FinanceMiniSummaryProps = {
   summary: FinanceSummary | CaseFinanceSummary;
@@ -154,10 +155,10 @@ export function FinanceMiniSummary({
         <strong className="cf-finance-mini-summary__value">{formatMoney(summary.contractValue, summary.currency)}</strong>
       </div>
       <dl className="cf-finance-mini-summary__grid">
-        <div className="cf-finance-metric"><dt>Wartość</dt><dd>{formatMoney(summary.contractValue, summary.currency)}</dd></div>
-        <div className="cf-finance-metric"><dt>Prowizja</dt><dd>{buildCommissionLabel(summary, commissionMode, commissionRate)}</dd></div>
-        <div className="cf-finance-metric"><dt>Wpłacono</dt><dd>{formatMoney(summary.paidAmount, summary.currency)}</dd></div>
-        <div className="cf-finance-metric"><dt>Pozostało</dt><dd>{formatMoney(summary.remainingAmount, summary.currency)}</dd></div>
+        <div className="cf-finance-metric"><dt>Wartość transakcji</dt><dd>{formatMoney(summary.contractValue, summary.currency)}</dd></div>
+        <div className="cf-finance-metric"><dt>Prowizja należna</dt><dd>{buildCommissionLabel(summary, commissionMode, commissionRate)}</dd></div>
+        <div className="cf-finance-metric"><dt>Wpłacono prowizji</dt><dd>{formatMoney(summary.commissionPaidAmount, summary.currency)}</dd></div>
+        <div className="cf-finance-metric"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(summary.commissionRemainingAmount, summary.currency)}</dd></div>
         <div className="cf-finance-metric cf-finance-metric--wide">
           <dt>Status prowizji</dt>
           <dd>
@@ -256,11 +257,10 @@ export function ClientFinanceRelationSummary({
       </div>
 
       <dl className="cf-finance-mini-summary__grid cf-fin13-client-finance-totals">
-        <div className="cf-finance-metric"><dt>Suma wartości spraw</dt><dd>{formatMoney(totals.totalValue)}</dd></div>
-        <div className="cf-finance-metric"><dt>Suma wpłat klienta</dt><dd>{formatMoney(totals.paidValue)}</dd></div>
-        <div className="cf-finance-metric"><dt>Suma pozostała</dt><dd>{formatMoney(totals.remainingValue)}</dd></div>
-        <div className="cf-finance-metric"><dt>Suma prowizji należnej</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
-        <div className="cf-finance-metric"><dt>Suma prowizji zapłaconej</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
+        <div className="cf-finance-metric"><dt>Suma wartości transakcji</dt><dd>{formatMoney(totals.totalValue)}</dd></div>
+        <div className="cf-finance-metric"><dt>Prowizja należna</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
+        <div className="cf-finance-metric"><dt>Wpłacono prowizji</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
+        <div className="cf-finance-metric"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(totals.commissionRemainingAmount)}</dd></div>
       </dl>
 
       <div className="cf-fin13-client-case-finance-list" aria-label="Lista spraw z finansami">
@@ -279,10 +279,10 @@ export function ClientFinanceRelationSummary({
               </StatusPill>
             </div>
             <dl className="cf-fin13-client-case-finance-row__metrics">
-              <div><dt>Wartość</dt><dd>{row.summary.contractValue > 0 ? formatMoney(row.summary.contractValue, row.summary.currency) : 'Nie ustawiono'}</dd></div>
-              <div><dt>Wpłacono</dt><dd>{formatMoney(row.summary.clientPaidAmount, row.summary.currency)}</dd></div>
-              <div><dt>Pozostało</dt><dd>{formatMoney(row.summary.remainingAmount, row.summary.currency)}</dd></div>
-              <div><dt>Prowizja</dt><dd>{formatMoney(row.summary.commissionAmount, row.summary.currency)}</dd></div>
+              <div><dt>Wartość transakcji</dt><dd>{row.summary.contractValue > 0 ? formatMoney(row.summary.contractValue, row.summary.currency) : 'Nie ustawiono'}</dd></div>
+              <div><dt>Prowizja należna</dt><dd>{formatMoney(row.summary.commissionAmount, row.summary.currency)}</dd></div>
+              <div><dt>Wpłacono prowizji</dt><dd>{formatMoney(row.summary.commissionPaidAmount, row.summary.currency)}</dd></div>
+              <div><dt>Do zapłaty prowizji</dt><dd>{formatMoney(row.summary.commissionRemainingAmount, row.summary.currency)}</dd></div>
               <div><dt>Status prowizji</dt><dd>{COMMISSION_STATUS_LABELS[row.summary.commissionStatus] || row.summary.commissionStatus}</dd></div>
             </dl>
             <CaseFinanceActionButtons

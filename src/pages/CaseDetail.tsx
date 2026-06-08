@@ -168,6 +168,8 @@ void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
+const STAGE228R7_COMMISSION_BALANCE_TRUTH = 'case finance surfaces show transaction value, commission due, commission paid and commission remaining';
+void STAGE228R7_COMMISSION_BALANCE_TRUTH;
 void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 
@@ -418,7 +420,7 @@ function getCasePaymentTypeStage220A27(payment: CasePaymentRecord) {
 function getCasePaymentLabelStage220A27(payment: CasePaymentRecord) {
   const type = getCasePaymentTypeStage220A27(payment);
   if (type === 'refund') return 'Korekta wpłaty';
-  if (type === 'commission') return 'Płatność prowizji';
+  if (type === 'commission') return 'Wpłata prowizji';
   if (type === 'deposit') return 'Zaliczka';
   if (type === 'final') return 'Dopłata końcowa';
   return 'Wpłata';
@@ -2257,7 +2259,7 @@ export default function CaseDetail() {
         note: value.note || '',
       });
       await refreshCaseSettlementPayments();
-      toast.success(value.type === 'commission' ? 'Płatność prowizji dodana' : 'Wpłata klienta dodana');
+      toast.success(value.type === 'commission' ? 'Wpłata prowizji dodana' : 'Wpłata klienta dodana');
     } catch (error: any) {
       toast.error('Nie udało się zapisać płatności: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
@@ -2837,11 +2839,8 @@ export default function CaseDetail() {
                 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
                   Edytuj wartość/prowizję
                 </Button>
-                <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('partial')} disabled={isFinanceSaving}>
-                  Dodaj wpłatę
-                </Button>
-                <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('commission')} disabled={isFinanceSaving}>
-                  Dodaj płatność prowizji
+                <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('commission')} disabled={isFinanceSaving} data-stage228r7-add-commission-payment="true">
+                  Dodaj wpłatę prowizji
                 </Button>
                 <Button
                   type="button"
@@ -2851,16 +2850,16 @@ export default function CaseDetail() {
                   disabled={visibleCasePayments.length === 0}
                   data-stage220a27b-open-payment-history-modal="true"
                 >
-                  Koryguj wpłatę
+                  Koryguj wpłatę prowizji prowizji
                 </Button>
               </div>
               <div className="case-finance-payment-history-stage220a27" data-stage220a27-payment-history="true">
                 <div className="case-finance-payment-history-stage220a27__head">
-                  <strong>Historia wpłat</strong>
+                  <strong>Historia wpłat prowizji prowizji</strong>
                   <span>{visibleCasePayments.length}</span>
                 </div>
                 {visibleCasePayments.length === 0 ? (
-                  <p className="case-finance-payment-history-stage220a27__empty">Brak wpłat i korekt przy tej sprawie.</p>
+                  <p className="case-finance-payment-history-stage220a27__empty">Brak wpłat prowizji i korekt przy tej sprawie.</p>
                 ) : (
                   <div className="case-finance-payment-history-stage220a27__list">
                     {visibleCasePayments.map((payment) => {
@@ -3057,7 +3056,7 @@ export default function CaseDetail() {
           </div>
 
           {visibleCasePayments.length === 0 ? (
-            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpłat i korekt przy tej sprawie.</p>
+            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpłat prowizji i korekt przy tej sprawie.</p>
           ) : (
             <div className="case-payment-history-modal-stage220a27b__list">
               {visibleCasePayments.map((payment) => {

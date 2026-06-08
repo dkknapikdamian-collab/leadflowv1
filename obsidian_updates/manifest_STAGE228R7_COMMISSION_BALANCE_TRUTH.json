@@ -1,0 +1,14 @@
+{
+  "stage": "STAGE228R7_COMMISSION_BALANCE_TRUTH",
+  "date": "2026-06-08 12:30 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "obsidian_target": "10_PROJEKTY/CloseFlow_Lead_App",
+  "decision": "Finance UI should use commission as the operational balance: transaction value, commission due, commission paid, commission remaining.",
+  "risk_audit": [
+    "Historical non-commission payments stay visible but do not reduce commission remaining.",
+    "No database migration in this stage.",
+    "Multiple contact methods deferred to Stage228R8+."
+  ]
+}

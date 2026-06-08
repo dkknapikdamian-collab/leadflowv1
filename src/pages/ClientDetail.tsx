@@ -53,7 +53,8 @@ const STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH = 'client finance sums all client c
 void STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH;
 const STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH = 'client finance shows commission due paid remaining separately from transaction value';
 void STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH;
-const STAGE220A35_R2_BUILD_GUARD_COMPATIBILITY_FIX = 'client finance keeps Suma wpłat klienta token for A14 guard while commission remains source truth';
+const STAGE228R7_CLIENT_DETAIL_COMMISSION_BALANCE_TRUTH = 'client detail finance hides client-paid remaining from main commission balance';
+void STAGE228R7_CLIENT_DETAIL_COMMISSION_BALANCE_TRUTH;
 void STAGE220A35_R2_BUILD_GUARD_COMPATIBILITY_FIX;
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
@@ -1948,8 +1949,7 @@ return (
                   <strong>Finanse klienta</strong>
                 </div>
                 <dl className="cf-finance-scope-card__metrics">
-                  <div><dt>Suma wartości spraw</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Suma wpłat klienta</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Suma wartości transakcji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
                   <div><dt>Prowizja należna</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</dd></div>
                   <div><dt>Wpłacono prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</dd></div>
                   <div><dt>Do zapłaty prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</dd></div>
@@ -2488,7 +2488,9 @@ return (
                       });
                       const caseFinance = getCaseFinanceSummary(caseRecord, casePayments);
                       const value = formatMoneyWithCurrency(caseFinance.commissionAmount, caseFinance.currency);
-                      const transactionValue = formatMoneyWithCurrency(caseFinance.contractValue, caseFinance.currency);
+                       const commissionPaid = formatMoneyWithCurrency(caseFinance.commissionPaidAmount, caseFinance.currency);
+                       const commissionRemaining = formatMoneyWithCurrency(caseFinance.commissionRemainingAmount, caseFinance.currency);
+                       const transactionValue = formatMoneyWithCurrency(caseFinance.contractValue, caseFinance.currency);
                       const completeness = getCaseCompleteness(caseRecord);
                       return (
                         <article key={caseId || title} className="client-detail-case-smart-card" data-client-case-smart-card="true">
@@ -2500,11 +2502,13 @@ return (
                               <span>Kompletność {completeness}%</span>
                             </div>
                           </div>
-                          <div className="client-detail-case-smart-value" data-stage220a35-case-card-commission="true">
-                            <small>Prowizja należna</small>
-                            <b>{value}</b>
-                            <span className="sub">Wartość transakcji: {transactionValue}</span>
-                          </div>
+                          <div className="client-detail-case-smart-value" data-stage220a35-case-card-commission="true" data-stage228r7-case-card-commission-balance="true">
+                             <small>Prowizja należna</small>
+                             <b>{value}</b>
+                             <span className="sub">Wpłacono prowizji: {commissionPaid}</span>
+                             <span className="sub">Do zapłaty prowizji: {commissionRemaining}</span>
+                             <span className="sub">Wartość transakcji: {transactionValue}</span>
+                           </div>
                           <div className="client-detail-case-smart-actions">
                             <Button type="button" size="sm" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
                               Wejdź w sprawę
@@ -2660,8 +2664,7 @@ return (
               <div className="client-detail-right-finance-inline-card" data-stage216m-r13-client-finance-inline-card="true">
                 <div className="client-detail-finance-inline-title"><EntityIcon entity="client" className="h-4 w-4" /><h3>Finanse klienta</h3></div>
                 <div className="client-detail-finance-inline-metrics">
-                  <small><span>Suma wartości spraw</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Suma wpłat klienta</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Suma wartości transakcji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
                   <small><span>Prowizja należna</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</strong></small>
                   <small><span>Wpłacono prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong></small>
                   <small><span>Do zapłaty prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong></small>
@@ -2682,8 +2685,7 @@ return (
 
             <section className="right-card client-detail-right-card client-detail-right-finance-card-hard-render" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true" data-stage216m-r12-client-finance-hard-render="true">
               <div className="client-detail-card-title-row"><EntityIcon entity="client" className="h-4 w-4" /><h2>Finanse klienta</h2></div>
-              <small>Suma wartości spraw: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
-              <small>Suma wpłat klienta: {formatMoneyWithCurrency(clientFinanceSummary.paymentsTotal, clientFinance.currency)}</small>
+              <small>Suma wartości transakcji: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
               <small>Prowizja należna: {formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</small>
               <small>Wpłacono prowizji: {formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</small>
               <small>Do zapłaty prowizji: {formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</small>
