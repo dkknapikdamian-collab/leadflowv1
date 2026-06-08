@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
-import './debug/cf-style-map-debugger-stage228q';
 import './styles/stage80-today-task-done-desktop-visibility.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppearanceProvider } from './components/appearance-provider';
