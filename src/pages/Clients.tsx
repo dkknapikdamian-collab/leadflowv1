@@ -140,8 +140,10 @@ void STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT;
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'new client starter case opens CaseDetail finance modal instead of collecting finance in client form';
+const STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK = 'client create modal only asks for case name then redirects to CaseDetail finance editor';
 const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
+void STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK;
 void STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH;
 
 function getStage220A36CaseCommissionValue(caseRow: Record<string, unknown>) {
@@ -520,7 +522,8 @@ export default function Clients() {
         commissionStatus: 'not_set',
         primaryForClient: true,
         replacePrimaryCase: true,
-        workspaceId: requireWorkspaceId(workspace),      } as any);
+        workspaceId: requireWorkspaceId(workspace),
+      } as any);
       createdCaseId = String((createdCase as any)?.id || (createdCase as any)?.caseId || (createdCase as any)?.case_id || '').trim();
     }
 
