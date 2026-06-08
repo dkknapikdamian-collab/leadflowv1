@@ -147,16 +147,19 @@ export type CloseflowDataMutationDetail = {
   occurredAt: string;
 };
 
+const STAGE228R22_API_ROUTE_MUTATION_CACHE_INVALIDATION = 'apiRoute tasks/events are recognized as mutations so stale GET cache cannot resurrect deleted rows';
+void STAGE228R22_API_ROUTE_MUTATION_CACHE_INVALIDATION;
+
 function resolveCloseflowMutationEntity(path: string) {
   const normalized = String(path || '').toLowerCase();
-  if (normalized.includes('/api/tasks') || normalized.includes('kind=tasks')) return 'task';
-  if (normalized.includes('/api/events') || normalized.includes('kind=events')) return 'event';
-  if (normalized.includes('/api/leads')) return 'lead';
-  if (normalized.includes('/api/cases')) return 'case';
-  if (normalized.includes('/api/clients')) return 'client';
+  if (normalized.includes('/api/tasks') || normalized.includes('kind=tasks') || normalized.includes('apiroute=tasks')) return 'task';
+  if (normalized.includes('/api/events') || normalized.includes('kind=events') || normalized.includes('apiroute=events')) return 'event';
+  if (normalized.includes('/api/leads') || normalized.includes('apiroute=leads')) return 'lead';
+  if (normalized.includes('/api/cases') || normalized.includes('apiroute=cases')) return 'case';
+  if (normalized.includes('/api/clients') || normalized.includes('apiroute=clients')) return 'client';
   if (normalized.includes('/api/system?kind=ai-drafts')) return 'aiDraft';
-  if (normalized.includes('/api/activities')) return 'activity';
-  if (normalized.includes('/api/payments')) return 'payment';
+  if (normalized.includes('/api/activities') || normalized.includes('apiroute=activities')) return 'activity';
+  if (normalized.includes('/api/payments') || normalized.includes('apiroute=payments')) return 'payment';
   return 'unknown';
 }
 

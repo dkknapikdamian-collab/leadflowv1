@@ -190,13 +190,57 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
     }
 
     if (req.method === 'DELETE') {
+      const STAGE228R22_VERIFIED_SQL_EVENT_DELETE = 'Event DELETE reads SQL before and after delete; false success is blocked';
+      void STAGE228R22_VERIFIED_SQL_EVENT_DELETE;
+
       const id = queryValue(req, 'id');
       if (!id) {
         res.status(400).json({ error: 'EVENT_ID_REQUIRED' });
         return;
       }
+
+      const selectPathStage228R22 = 'work_items?select=id,workspace_id,lead_id,client_id,case_id,record_type,type,status,title&id=eq.' + encodeURIComponent(id) + '&limit=1';
+      const scopedBeforeStage228R22 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R22, workspaceId)]).catch(() => ({ data: [] }));
+      let beforeRowsStage228R22 = Array.isArray((scopedBeforeStage228R22 as any)?.data) ? (scopedBeforeStage228R22 as any).data as Record<string, unknown>[] : [];
+
+      if (!beforeRowsStage228R22.length) {
+        const unscopedBeforeStage228R22 = await selectFirstAvailable([selectPathStage228R22]).catch(() => ({ data: [] }));
+        beforeRowsStage228R22 = Array.isArray((unscopedBeforeStage228R22 as any)?.data) ? (unscopedBeforeStage228R22 as any).data as Record<string, unknown>[] : [];
+      }
+
+      if (!beforeRowsStage228R22.length) {
+        res.status(200).json({ ok: true, id, alreadyMissing: true, verified: true });
+        return;
+      }
+
+      const rowStage228R22 = beforeRowsStage228R22[0] || {};
+      const rowWorkspaceIdStage228R22 = asText((rowStage228R22 as any).workspace_id);
+      if (rowWorkspaceIdStage228R22 && rowWorkspaceIdStage228R22 !== workspaceId) {
+        res.status(409).json({
+          error: 'EVENT_DELETE_WORKSPACE_MISMATCH',
+          id,
+          workspaceId,
+          rowWorkspaceId: rowWorkspaceIdStage228R22,
+        });
+        return;
+      }
+
       await deleteByIdScoped('work_items', id, workspaceId);
-      res.status(200).json({ ok: true, id });
+
+      const scopedAfterStage228R22 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R22, workspaceId)]).catch(() => ({ data: [] }));
+      let afterRowsStage228R22 = Array.isArray((scopedAfterStage228R22 as any)?.data) ? (scopedAfterStage228R22 as any).data as Record<string, unknown>[] : [];
+
+      if (!afterRowsStage228R22.length) {
+        const unscopedAfterStage228R22 = await selectFirstAvailable([selectPathStage228R22]).catch(() => ({ data: [] }));
+        afterRowsStage228R22 = Array.isArray((unscopedAfterStage228R22 as any)?.data) ? (unscopedAfterStage228R22 as any).data as Record<string, unknown>[] : [];
+      }
+
+      if (afterRowsStage228R22.length) {
+        res.status(500).json({ error: 'EVENT_DELETE_VERIFY_FAILED', id, remaining: afterRowsStage228R22.length });
+        return;
+      }
+
+      res.status(200).json({ ok: true, id, deleted: true, verified: true });
       return;
     }
 
