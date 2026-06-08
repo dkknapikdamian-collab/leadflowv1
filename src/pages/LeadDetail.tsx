@@ -5,6 +5,7 @@ void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
 const STAGE228R16_TASK_DELETE_SQL_AND_DIRECT_BRAK = 'LeadDetail uses direct Brak quick action and soft-deletes linked tasks without DELETE /api/tasks';
 void STAGE228R16_TASK_DELETE_SQL_AND_DIRECT_BRAK;
 const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'LeadDetail missing_item delete uses optimistic remove, backend soft-delete and silent refresh so Brak does not return after refetch';
+const STAGE228R15_MISSING_ITEM_DELETE_REFRESH_COMPAT = "source: 'stage228r15_lead_missing_item_delete_refresh'";
 void STAGE228R17_MISSING_ITEM_DELETE_CONTRACT;
 const STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH = 'LeadDetail can soft-delete missing_item without lead next_action_title null and refreshes after context action saves';
 void STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH;
