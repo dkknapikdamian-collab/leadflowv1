@@ -43,7 +43,7 @@ const pkg = JSON.parse(read('package.json'));
   'expectedRevenue: caseValue',
   'remainingAmount: caseValue',
   'commissionAmount: caseCommission',
-  '<Label>Wartość sprawy</Label>',
+  '<Label>Warto\u015b\u0107 sprawy</Label>',
   '<Label>Prowizja do zarobienia</Label>',
   '<Label>Waluta</Label>',
 ].forEach((token) => forbidText(clients, token, 'Clients old client-form finance intake'));

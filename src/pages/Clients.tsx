@@ -234,7 +234,7 @@ export default function Clients() {
   const [clientConflictOpen, setClientConflictOpen] = useState(false);
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCurrency: 'PLN' });
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '' });
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -477,7 +477,7 @@ export default function Clients() {
       .slice(0, 5);
   }, [clients, clientValueByClientId]);
 
-  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCurrency: 'PLN' }); };
+  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '' }); };
 
   const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
     // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
@@ -499,10 +499,7 @@ export default function Clients() {
 
     if (shouldCreateCase && createdClientId) {
       const caseTitle = String(preparedClient.caseTitle || '').trim() || 'Sprawa: ' + String(preparedClient.name || 'Klient').trim();
-      const currency = /^[A-Z]{3}$/.test(String(preparedClient.caseCurrency || '').trim().toUpperCase())
-        ? String(preparedClient.caseCurrency || '').trim().toUpperCase()
-        : 'PLN';
-      const transactionValue = 0;
+      const currency = 'PLN';
 
       const createdCase = await createCaseInSupabase({
         title: caseTitle,
@@ -560,7 +557,7 @@ export default function Clients() {
     if (lastContactError) { toast.error(lastContactError); return; }
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
+    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim() };
     try {
       setCreatePending(true);
       let conflicts: any;

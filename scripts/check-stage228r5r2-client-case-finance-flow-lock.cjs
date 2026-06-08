@@ -31,7 +31,7 @@ const pkg = JSON.parse(read('package.json'));
   'const createdCase = await createCaseInSupabase({',
   'createdCaseId = String((createdCase as any)?.id',
   "navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create')",
-  'Utwórz sprawę od razu',
+  'Utw\u00f3rz spraw\u0119 od razu',
   'Nazwa sprawy',
   'contractValue: 0',
   'expectedRevenue: 0',
@@ -42,11 +42,11 @@ const pkg = JSON.parse(read('package.json'));
 ].forEach((token) => requireText(clients, token, 'Clients.tsx'));
 
 [
-  'Dodaj sprawę od razu',
-  '<Label>Wartość sprawy</Label>',
+  'Dodaj spraw\u0119 od razu',
+  '<Label>Warto\u015b\u0107 sprawy</Label>',
   '<Label>Prowizja do zarobienia</Label>',
   '<Label>Waluta</Label>',
-  'Zapisz klienta i sprawę',
+  'Zapisz klienta i spraw\u0119',
   'caseValue: newClient.caseValue',
   'value={newClient.caseValue}',
   'onChange={(event) => setNewClient((prev) => ({ ...prev, caseValue: event.target.value }))}',
