@@ -29,6 +29,7 @@ const pkg = JSON.parse(read('package.json'));
 
 [
   'STAGE228R7_COMMISSION_BALANCE_TRUTH',
+  'STAGE228R7_R3_VERCEL_GUARD_COMPAT_HOTFIX',
   'Dodaj wpłatę prowizji',
   "onClick={() => openCaseFinancePaymentModal('commission')}",
   'data-stage228r7-add-commission-payment="true"',
@@ -44,7 +45,9 @@ const pkg = JSON.parse(read('package.json'));
 
 [
   "onClick={() => openCaseFinancePaymentModal('partial')}",
-  'Dodaj płatność prowizji',
+  '>Dodaj płatność prowizji<',
+  'Koryguj wpłatę prowizji prowizji',
+  'Historia wpłat prowizji prowizji',
 ].forEach((token) => forbidText(caseDetail, token, 'CaseDetail right rail commission action'));
 
 [

@@ -169,6 +169,8 @@ void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
 const STAGE228R7_COMMISSION_BALANCE_TRUTH = 'case finance surfaces show transaction value, commission due, commission paid and commission remaining';
+const STAGE228R7_R3_VERCEL_GUARD_COMPAT_HOTFIX = 'R7 Vercel build compat fixes legacy guard labels and duplicate commission wording';
+void STAGE228R7_R3_VERCEL_GUARD_COMPAT_HOTFIX;
 void STAGE228R7_COMMISSION_BALANCE_TRUTH;
 void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
@@ -2850,12 +2852,12 @@ export default function CaseDetail() {
                   disabled={visibleCasePayments.length === 0}
                   data-stage220a27b-open-payment-history-modal="true"
                 >
-                  Koryguj wpłatę prowizji prowizji
+                  Koryguj wpłatę prowizji
                 </Button>
               </div>
               <div className="case-finance-payment-history-stage220a27" data-stage220a27-payment-history="true">
                 <div className="case-finance-payment-history-stage220a27__head">
-                  <strong>Historia wpłat prowizji prowizji</strong>
+                  <strong>Historia wpłat prowizji</strong>
                   <span>{visibleCasePayments.length}</span>
                 </div>
                 {visibleCasePayments.length === 0 ? (
@@ -3318,7 +3320,7 @@ export default function CaseDetail() {
       <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj płatność prowizji' : 'Dodaj wpłatę'}</DialogTitle>
+            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj wpłatę prowizji' : 'Dodaj wpłatę'}</DialogTitle>
             <DialogDescription>{financePaymentForm.type === 'commission' ? 'Wpisz kwotę prowizji, datę zapłaty i notatkę dla sprawy.' : 'Wpisz kwotę wpłaty, datę zapłaty i notatkę. Po zapisie kwota trafi do rozliczenia sprawy.'}</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form case-finance-source-form-stage220a30">

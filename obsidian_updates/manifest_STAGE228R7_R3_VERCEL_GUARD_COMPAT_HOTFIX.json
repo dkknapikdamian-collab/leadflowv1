@@ -1,0 +1,14 @@
+{
+  "stage": "STAGE228R7_R3_VERCEL_GUARD_COMPAT_HOTFIX",
+  "date": "2026-06-08 13:35 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "Vercel failed because legacy Stage220A14 guard still required old ClientDetail labels: Suma wartości spraw / Suma wpłat.",
+  "fix": "Allow Stage228R7 commission-balance labels in Stage220A14 guard and fix duplicated commission wording in CaseDetail.",
+  "risk_audit": [
+    "No data migration.",
+    "No finance calculation change.",
+    "Only guard compatibility and copy cleanup."
+  ]
+}

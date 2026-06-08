@@ -32,8 +32,19 @@ requireText(clientFinance, "export type ClientFinanceSummaryMode = 'primary_case
 requireText(clientDetail, "mode: 'all_cases'", 'ClientDetail all cases finance mode');
 requireText(clientDetail, 'data-stage220a13-client-finance-scope-card="true"', 'ClientDetail finance scope card marker');
 requireText(clientDetail, 'Finanse klienta', 'ClientDetail finance card title');
-requireText(clientDetail, 'Suma wartości spraw', 'ClientDetail total cases value label');
-requireText(clientDetail, 'Suma wpłat', 'ClientDetail payments sum label');
+const clientDetailUsesStage228R7CommissionTruth =
+  clientDetail.includes('STAGE228R7_CLIENT_DETAIL_COMMISSION_BALANCE_TRUTH') ||
+  clientDetail.includes('Suma wartości transakcji');
+
+if (clientDetailUsesStage228R7CommissionTruth) {
+  requireText(clientDetail, 'Suma wartości transakcji', 'ClientDetail R7 transaction value label');
+  requireText(clientDetail, 'Prowizja należna', 'ClientDetail R7 commission due label');
+  requireText(clientDetail, 'Wpłacono prowizji', 'ClientDetail R7 commission paid label');
+  requireText(clientDetail, 'Do zapłaty prowizji', 'ClientDetail R7 commission remaining label');
+} else {
+  requireText(clientDetail, 'Suma wartości spraw', 'ClientDetail total cases value label');
+  requireText(clientDetail, 'Suma wpłat', 'ClientDetail payments sum label');
+}
 requireText(clientDetail, 'Sprawy aktywne / rozliczone', 'ClientDetail active settled cases label');
 
 /* Guard against old client finance tile returning. */
