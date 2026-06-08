@@ -1,3 +1,5 @@
+const STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT = 'LeadDetail hard-deletes missing_item work_items and keeps active Braki from returning after hard refresh';
+void STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT;
 const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes history in the top strip and removes the duplicate center history section; CaseDetail header stretches to the shared shell width';
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
@@ -115,6 +117,7 @@ import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
+  hardDeleteTaskFromSupabase,
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
@@ -1090,31 +1093,9 @@ export default function LeadDetail() {
 
     try {
       setLinkedEntryActionId(`missing:${taskId}:delete`);
-      setLinkedTasks((previous) => {
-        optimisticSnapshot = previous;
-        return previous.filter((item: any) => String(item?.id || '') !== taskId);
-      });
+      setLinkedTasks((previous) => previous.filter((item: any) => String(item?.id || '') !== taskId));
 
-      await softDeleteTaskInSupabase({
-        id: taskId,
-        title: taskTitle,
-        type: String(task?.type || 'missing_item'),
-        date: scheduledAt.slice(0, 10),
-        scheduledAt,
-        dueAt: scheduledAt,
-        priority: String(task?.priority || 'high'),
-        leadId: String(task?.leadId || leadId || '') || null,
-        clientId: task?.clientId ? String(task.clientId) : lead?.clientId ? String(lead.clientId) : null,
-        caseId: task?.caseId ? String(task.caseId) : serviceCaseId || null,
-        payload: {
-          ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
-          kind: 'missing_item',
-          type: 'missing_item',
-          status: 'deleted',
-          deletedAt,
-        },
-        source: 'stage228r17_missing_item_delete_contract',
-      });
+      await hardDeleteTaskFromSupabase(taskId);
 
       await addActivity('missing_item_deleted', {
         taskId,

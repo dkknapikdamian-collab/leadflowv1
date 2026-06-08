@@ -749,3 +749,8 @@ export async function syncGoogleCalendarInboundInSupabase(input?: { daysBack?: n
   });
 }
 
+export async function hardDeleteTaskFromSupabase(taskId: string) {
+  const id = String(taskId || '').trim();
+  if (!id) throw new Error('Task id is required for hardDeleteTaskFromSupabase');
+  return callApi('/api/system?apiRoute=tasks&id=' + encodeURIComponent(id), 'DELETE');
+}
