@@ -1,20 +1,20 @@
 /* STAGE228R1_RAIL_TASKS_PATTERN_SOURCE_TRUTH
-   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelków /leads, /clients, /cases.
-   Wzorcem są /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
-   Zakaz runtime mapperów: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
+   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelkÄ‚Ĺ‚w /leads, /clients, /cases.
+   Wzorcem sĂ„â€¦ /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
+   Zakaz runtime mapperÄ‚Ĺ‚w: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
 */
 :root {
   --cf-rail-r1-title-size: 13px;
   --cf-rail-r1-title-weight: 700;
   --cf-rail-r1-title-color: #0f172a;
-  --cf-rail-r1-row-size: 12px;
-  --cf-rail-r1-row-weight: 650;
+  --cf-rail-r1-row-size: 12.5px;
+  --cf-rail-r1-row-weight: 850;
   --cf-rail-r1-row-color: #334155;
   --cf-rail-r1-meta-size: 11px;
-  --cf-rail-r1-meta-weight: 600;
+  --cf-rail-r1-meta-weight: 750;
   --cf-rail-r1-meta-color: #475569;
-  --cf-rail-r1-radius: 10px;
-  --cf-rail-r1-height: 30px;
+  --cf-rail-r1-radius: 13px;
+  --cf-rail-r1-height: 36px;
   --cf-rail-r1-gap: 8px;
   --cf-rail-r1-blue-bg: #eff6ff;
   --cf-rail-r1-blue-border: #bfdbfe;
@@ -260,4 +260,158 @@
 .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="red"] {
   background: var(--cf-rail-r1-red-bg) !important;
   border-color: var(--cf-rail-r1-red-border) !important;
+}
+
+/* STAGE228R3_TOP_VALUE_AND_RISK_TONE_SOURCE_TRUTH
+   Cel:
+   - cf-rail-top-row i cf-rail-risk-row majÄ… uĹĽywaÄ‡ tych samych tonĂłw co cf-rail-filter-row.
+   - ĹąrĂłdĹ‚em rytmu sÄ… /tasks: tasks-stage178-filter-button i tasks-stage178-urgent-button.
+   - Nie tworzymy kafelka w kafelku: wewnÄ™trzne label/money wrappery sÄ… transparentne.
+*/
+
+/* Jeden rytm: filtry, top-value i risk rows majÄ… siatkÄ™ jak /tasks. */
+#root .lead-right-rail .cf-rail-filter-row,
+#root .clients-right-rail .cf-rail-filter-row,
+#root .cases-right-rail .cf-rail-filter-row,
+#root .lead-right-rail .cf-rail-top-row,
+#root .clients-right-rail .cf-rail-top-row,
+#root .cases-right-rail .cf-rail-risk-row {
+  min-height: var(--cf-rail-r1-height) !important;
+  height: var(--cf-rail-r1-height) !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  padding: 8px 12px !important;
+  border-radius: var(--cf-rail-r1-radius) !important;
+  text-decoration: none !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+/* Top-value / risk teĹĽ dostajÄ… tone background/border. WczeĹ›niej tone dziaĹ‚aĹ‚ tylko na filtrach. */
+#root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="blue"],
+#root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="blue"],
+#root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="blue"] {
+  background: var(--cf-rail-r1-blue-bg) !important;
+  border-color: var(--cf-rail-r1-blue-border) !important;
+}
+
+#root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="red"],
+#root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="red"],
+#root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="red"] {
+  background: var(--cf-rail-r1-red-bg) !important;
+  border-color: var(--cf-rail-r1-red-border) !important;
+}
+
+#root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="amber"],
+#root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="amber"],
+#root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="amber"] {
+  background: var(--cf-rail-r1-amber-bg) !important;
+  border-color: var(--cf-rail-r1-amber-border) !important;
+}
+
+#root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="green"],
+#root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="green"],
+#root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="green"] {
+  background: var(--cf-rail-r1-green-bg) !important;
+  border-color: var(--cf-rail-r1-green-border) !important;
+}
+
+#root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="purple"],
+#root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="purple"],
+#root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="purple"] {
+  background: var(--cf-rail-r1-purple-bg) !important;
+  border-color: var(--cf-rail-r1-purple-border) !important;
+}
+
+#root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="slate"],
+#root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="slate"],
+#root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="slate"] {
+  background: var(--cf-rail-r1-slate-bg) !important;
+  border-color: var(--cf-rail-r1-slate-border) !important;
+}
+
+/* Brak tonu = bezpieczny neutral, ale top-value normalnie ma data tone blue. */
+#root .lead-right-rail .cf-rail-top-row:not([data-cf-operator-rail-tone]),
+#root .clients-right-rail .cf-rail-top-row:not([data-cf-operator-rail-tone]),
+#root .cases-right-rail .cf-rail-risk-row:not([data-cf-operator-rail-tone]) {
+  background: var(--cf-rail-r1-slate-bg) !important;
+  border-color: var(--cf-rail-r1-slate-border) !important;
+}
+
+/* Zabijamy "kafelek w kafelku": stare lead-relation wrappery nie mogÄ… mieÄ‡ wĹ‚asnego tĹ‚a/paddingu/radiusu. */
+#root .lead-right-rail .cf-rail-top-row :is(.lead-relation-label-wrap, .cf-top-value-label-wrap, .lead-relation-label, .cf-top-value-label, .lead-relation-description, .cf-top-value-description, .lead-relation-money, .cf-top-value-money),
+#root .clients-right-rail .cf-rail-top-row :is(.lead-relation-label-wrap, .cf-top-value-label-wrap, .lead-relation-label, .cf-top-value-label, .lead-relation-description, .cf-top-value-description, .lead-relation-money, .cf-top-value-money),
+#root .cases-right-rail .cf-rail-risk-row :is(.cf-rail-risk-copy, .cf-rail-risk-title, .cf-rail-risk-meta) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+}
+
+/* Lewa czÄ™Ĺ›Ä‡ tekstu: ellipsis, jeden styl, bez osobnego chipu. */
+#root .lead-right-rail .cf-rail-top-name,
+#root .clients-right-rail .cf-rail-top-name,
+#root .cases-right-rail .cf-rail-risk-copy {
+  min-width: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .lead-right-rail .cf-top-value-line,
+#root .clients-right-rail .cf-top-value-line {
+  min-width: 0 !important;
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Nazwa rekordu = jak tasks-stage178-urgent-title/filter-label. */
+#root .lead-right-rail .cf-top-value-label,
+#root .clients-right-rail .cf-top-value-label,
+#root .cases-right-rail .cf-rail-risk-title {
+  color: #0f172a !important;
+  font-size: var(--cf-rail-r1-row-size) !important;
+  font-weight: var(--cf-rail-r1-row-weight) !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.01em !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Kwota/licznik = jak prawa wartoĹ›Ä‡ z /tasks. */
+#root .lead-right-rail .cf-rail-top-value,
+#root .clients-right-rail .cf-rail-top-value {
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+  color: #334155 !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+}
+
+/* Meta risk = mniejsze, ale z tego samego source truth. */
+#root .cases-right-rail .cf-rail-risk-meta {
+  color: var(--cf-rail-r1-meta-color) !important;
+  font-size: var(--cf-rail-r1-meta-size) !important;
+  font-weight: var(--cf-rail-r1-meta-weight) !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+}
+
+/* SVG w risk row nie moĹĽe pompowaÄ‡ wysokoĹ›ci ani koloru. */
+#root .cases-right-rail .cf-rail-risk-row svg {
+  width: 16px !important;
+  height: 16px !important;
+  flex: 0 0 auto !important;
+  color: #334155 !important;
 }
