@@ -189,7 +189,13 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
     if (req.method === 'GET') {
       const workspaceId = await resolveRequestWorkspaceId(req);
       const rows = await readTasks(req, workspaceId);
-      res.status(200).json(rows.map(normalizeTask));
+      const STAGE228R23R3_TASK_GET_FILTER_DELETED_WORK_ITEMS = 'Task GET hides soft-deleted work_items after R23';
+      void STAGE228R23R3_TASK_GET_FILTER_DELETED_WORK_ITEMS;
+      const activeRowsStage228R23R3 = rows.filter((row) => {
+        const status = asText((row as any).status).toLowerCase();
+        return !['deleted', 'archived', 'removed'].includes(status) && (row as any).show_in_tasks !== false;
+      });
+      res.status(200).json(activeRowsStage228R23R3.map(normalizeTask));
       return;
     }
 
