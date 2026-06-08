@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+﻿const fs = require('node:fs');
 const path = require('node:path');
 
 const root = process.cwd();
@@ -63,8 +63,12 @@ forbidText(editor, '<span>Kwota prowizji</span>', 'old amount label');
   'Prowizja: {formatClientMoney(clientValue)}',
   'data-stage220a36-client-commission-value="true"',
   'Najwy' + '\u017c' + 'sza prowizja',
-  '5 klient' + '\u00f3' + 'w z najwi' + '\u0119' + 'ksz' + '\u0105' + ' prowizj' + '\u0105' + ' nale' + '\u017c' + 'n' + '\u0105' + '.',
 ].forEach((token) => requireText(clients, token, 'Clients'));
+[
+  'Bez przesady, tylko najpotrzebniejsze.',
+  '5 klientów z największą prowizją należną.',
+].forEach((token) => forbidText(clients, token, 'Clients visible rail helper copy'));
+
 
 forbidText(clients, '<span className="cf-list-row-value cf-chip-client-value">Warto' + '\u015b' + '\u0107' + ': {formatClientMoney(clientValue)}</span>', 'old client row value label');
 
@@ -85,3 +89,4 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage220a36
 }
 
 console.log(JSON.stringify({ ok: true, stage: 'STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT', guard: 'check:stage220a36-commission-input-model-split' }, null, 2));
+
