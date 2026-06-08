@@ -1,0 +1,23 @@
+# Stage228R7 R6R2 - lazy guard static compat
+
+- date: 2026-06-08 15:00 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- issue:
+  - R6 correctly changed ClientDetail route to static import.
+  - Existing R5 guard still required the old lazyPage ClientDetail route.
+  - npm run build failed before R6 guard could validate the new static route.
+- fix:
+  - R5 guard now accepts either:
+    - old lazyPage ClientDetail route, or
+    - R6 static ClientDetail route.
+  - It still requires ClientDetail named/default exports.
+- tests:
+  - node scripts/check-stage228r7r5-clientdetail-lazy-export.cjs
+  - node scripts/check-stage228r7r6-clientdetail-static-import.cjs
+  - npm run build
+- risk audit:
+  - No app runtime logic change.
+  - No finance calculation change.
+  - No SQL/migration.
+  - This is build guard compatibility after R6.

@@ -24,10 +24,20 @@ const app = read('src/App.tsx');
 const clientDetail = read('src/pages/ClientDetail.tsx');
 const pkg = JSON.parse(read('package.json'));
 
-[
-  "const ClientDetail = lazyPage(() => import('./pages/ClientDetail'), 'ClientDetail');",
-  "throw new Error('Missing lazy page export: ' + exportName);",
-].forEach((token) => requireText(app, token, 'App lazyPage contract'));
+const lazyClientDetailRoute = app.includes("const ClientDetail = lazyPage(() => import('./pages/ClientDetail'), 'ClientDetail');");
+const staticClientDetailRoute =
+  app.includes("import ClientDetailStatic from './pages/ClientDetail';") &&
+  app.includes('const ClientDetail = ClientDetailStatic;');
+
+if (!lazyClientDetailRoute && !staticClientDetailRoute) {
+  fail('App must load ClientDetail either through lazyPage or through the R6 static import unblock');
+}
+
+requireText(app, "throw new Error('Missing lazy page export: ' + exportName);", 'App lazyPage contract');
+
+if (staticClientDetailRoute) {
+  requireText(app, 'STAGE228R7_R6_CLIENTDETAIL_STATIC_IMPORT_UNBLOCK', 'App R6 static import marker');
+}
 
 [
   'STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX',
@@ -51,5 +61,7 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage228r7r
 console.log(JSON.stringify({
   ok: true,
   stage: 'STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX',
-  contract: 'ClientDetail page exposes named and default exports for App.lazyPage'
+  contract: staticClientDetailRoute
+    ? 'ClientDetail page uses R6 static import and still exposes named/default exports'
+    : 'ClientDetail page exposes named/default exports for App.lazyPage'
 }, null, 2));

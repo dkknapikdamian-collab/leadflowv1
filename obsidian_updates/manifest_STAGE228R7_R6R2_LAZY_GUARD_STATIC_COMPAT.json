@@ -1,0 +1,15 @@
+{
+  "stage": "STAGE228R7_R6R2_LAZY_GUARD_STATIC_COMPAT",
+  "date": "2026-06-08 15:00 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "R6 changed ClientDetail to static import, but R5 guard still required old lazyPage route and broke build.",
+  "fix": "R5 guard accepts both lazy route and R6 static import route.",
+  "risk_audit": [
+    "No runtime logic change.",
+    "No finance calculation change.",
+    "No database change.",
+    "Only guard compatibility."
+  ]
+}
