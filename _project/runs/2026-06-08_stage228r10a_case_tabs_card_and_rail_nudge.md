@@ -1,0 +1,29 @@
+# Stage228R10A - Case tabs card and right rail nudge
+
+- date: 2026-06-08 18:00 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- baseline:
+  - Stage228R9R6 rollback restored the R9R2 baseline after the broken R9R3/R9R4 grid attempt.
+- input:
+  - Damian requested Obsługa / Checklisty / Historia to be back inside a card.
+  - The card should span the left content column until the right rail.
+  - The three pills should be centered inside the card.
+  - Right rail should be nudged slightly upward to reduce the gap.
+- fix:
+  - CSS-only adjustment in src/styles/case-detail-stage228r9-shell-rail-lift.css.
+  - No page-level grid rewrite.
+  - No CaseDetail DOM move.
+  - Guard added: scripts/check-stage228r10a-case-tabs-card-rail-nudge.cjs.
+- tests:
+  - node scripts/check-stage228r10a-case-tabs-card-rail-nudge.cjs
+  - node scripts/check-stage228r9-case-detail-shell-rail-lift.cjs
+  - npm run build
+- manual test:
+  - Open CaseDetail.
+  - Obsługa / Checklisty / Historia should sit centered in a white card spanning the left column.
+  - Right rail should be slightly closer to the top card with less gap.
+- risk audit:
+  - No SQL/data/finance change.
+  - CSS-only change after rollback.
+  - Explicit guard blocks R9R3/R9R4 display: contents grid attempt from reappearing.

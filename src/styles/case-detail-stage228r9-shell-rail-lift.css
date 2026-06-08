@@ -105,3 +105,38 @@
     width: 100% !important;
   }
 }
+
+/* STAGE228R10A_CASE_TABS_CARD_AND_RAIL_NUDGE
+   Damian requested the Obsługa / Checklisty / Historia group back inside a card.
+   The card spans the left content column until the right rail, centers the tabs,
+   and the right rail is nudged slightly upward without changing the page grid. */
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact {
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.96) !important;
+  border: 1px solid rgba(226, 232, 240, 0.98) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.055) !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 0 14px !important;
+  min-height: 46px !important;
+  padding: 8px 14px !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: -12px !important;
+  top: 10px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "stage": "STAGE228R10A_CASE_TABS_CARD_AND_RAIL_NUDGE",
+  "date": "2026-06-08 18:00 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "baseline": "Stage228R9R6 rollback to R9R2",
+  "issue": "Tabs row was loose; Damian wants Obsługa/Checklisty/Historia inside a card spanning the left column and centered, with right rail nudged upward.",
+  "fix": "CSS-only tabs card and small right rail nudge.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "No DOM movement.",
+    "Guard blocks broken R9R3/R9R4 display: contents grid pattern."
+  ]
+}
