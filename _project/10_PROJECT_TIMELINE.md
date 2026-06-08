@@ -1215,3 +1215,9 @@ Stage228R14 / C5 prepared locally:
 - no-SQL decision for Brak,
 - guard and documentation,
 - final manual gate before batch push.
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_TIMELINE
+
+Hotfix po deploy C5:
+- delete Brak bez next_action_title null,
+- modal save refresh bez manualnego odswiezania aplikacji.

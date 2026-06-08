@@ -2147,3 +2147,14 @@ FILES:
 - _project/10_PROJECT_TIMELINE.md
 - _project/13_TEST_HISTORY.md
 - obsidian_updates/manifest_STAGE228R14_C5_MISSING_ITEMS_NO_SQL_DECISION.json
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_LEDGER
+
+STAGE: Stage228R15
+FILES:
+- src/pages/LeadDetail.tsx
+- src/pages/ClientDetail.tsx
+- scripts/check-stage228r15-missing-item-delete-refresh.cjs
+- package.json
+- _project/runs/2026-06-08_stage228r15_missing_item_delete_refresh_hotfix.md
+- obsidian_updates/manifest_STAGE228R15_MISSING_ITEM_DELETE_REFRESH.json

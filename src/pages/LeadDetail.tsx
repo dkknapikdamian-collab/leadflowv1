@@ -2,6 +2,8 @@ const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes 
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
+const STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH = 'LeadDetail can soft-delete missing_item without lead next_action_title null and refreshes after context action saves';
+void STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH;
 const STAGE228R13_LEAD_MISSING_ITEM_STATUS_RESOLVE = 'LeadDetail Braki i blokady list shows only open missing items and can mark them resolved';
 void STAGE228R13_LEAD_MISSING_ITEM_STATUS_RESOLVE;
 const STAGE228R12_LEAD_MISSING_USES_CONTEXT_ACTION_HOST = 'LeadDetail Brak quick action routes through ContextActionDialogs blocker host';
@@ -403,7 +405,7 @@ function getEventDate(event: any) {
   return String(normalized.startAt || normalized.scheduledAt || normalized.reminderAt || event?.updatedAt || event?.createdAt || '');
 }
 function isDoneStatus(status: unknown) {
-  return ['done', 'completed', 'cancelled', 'canceled', 'archived'].includes(String(status || '').toLowerCase());
+  return ['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'].includes(String(status || '').toLowerCase());
 }
 function isWorkItemOverdue(dateValue: unknown, status: unknown) {
   const parsed = asDate(dateValue);
@@ -796,6 +798,28 @@ export default function LeadDetail() {
     void loadLead();
   }, [leadId, workspaceReady]);
 
+  const STAGE228R15_LEAD_CONTEXT_ACTION_REFRESH_LISTENER = 'LeadDetail listens to closeflow:context-action-saved and reloads without manual refresh';
+  void STAGE228R15_LEAD_CONTEXT_ACTION_REFRESH_LISTENER;
+
+  useEffect(() => {
+    if (!leadId || !workspaceReady) return;
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail || {};
+      const recordType = String(detail?.recordType || detail?.payload?.recordType || '').trim();
+      const detailLeadId = String(detail?.leadId || detail?.payload?.leadId || (recordType === 'lead' ? detail?.recordId : '') || '').trim();
+
+      if (detailLeadId && detailLeadId !== String(leadId || '')) return;
+      if (recordType && recordType !== 'lead' && !detailLeadId) return;
+
+      window.setTimeout(() => {
+        void loadLead();
+      }, 0);
+    };
+
+    window.addEventListener('closeflow:context-action-saved', listener as EventListener);
+    return () => window.removeEventListener('closeflow:context-action-saved', listener as EventListener);
+  }, [leadId, workspaceReady]);
+
   useEffect(() => {
     const STAGE227F5_CLEAR_LEGACY_HASH = true;
     void STAGE227F5_CLEAR_LEGACY_HASH;
@@ -1040,6 +1064,76 @@ export default function LeadDetail() {
       await loadLead();
     } catch (error: any) {
       toast.error(`Nie udało się rozwiązać braku: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
+
+  const handleDeleteLeadMissingItemStage228R15 = async (entry: any) => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const task = entry?.raw || entry || {};
+    const taskId = String(task?.id || '').trim();
+    if (!taskId) return toast.error('Brak ID braku. Nie można usunąć.');
+    if (!window.confirm('Usunąć ten brak?')) return;
+
+    const deletedAt = new Date().toISOString();
+    const taskTitle = String(task?.title || entry?.title || 'Brak');
+    const scheduledAt = String(task?.scheduledAt || task?.dueAt || task?.date || deletedAt);
+
+    try {
+      setLinkedEntryActionId(`missing:${taskId}:delete`);
+      await updateTaskInSupabase({
+        id: taskId,
+        title: taskTitle,
+        type: String(task?.type || 'missing_item'),
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        dueAt: scheduledAt,
+        priority: String(task?.priority || 'high'),
+        status: 'deleted',
+        leadId: String(task?.leadId || leadId || '') || null,
+        clientId: task?.clientId ? String(task.clientId) : lead?.clientId ? String(lead.clientId) : null,
+        caseId: task?.caseId ? String(task.caseId) : serviceCaseId || null,
+        payload: {
+          ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'deleted',
+          deletedAt,
+          source: 'stage228r15_lead_missing_item_delete_refresh',
+        },
+      } as any);
+
+      await addActivity('missing_item_deleted', {
+        taskId,
+        title: taskTitle,
+        status: 'deleted',
+        deletedAt,
+        source: 'stage228r15_lead_missing_item_delete_refresh',
+      });
+
+      setLinkedTasks((previous) =>
+        previous.map((item: any) =>
+          String(item?.id || '') === taskId
+            ? {
+                ...item,
+                status: 'deleted',
+                deletedAt,
+                payload: {
+                  ...(item?.payload && typeof item.payload === 'object' ? item.payload : {}),
+                  status: 'deleted',
+                  deletedAt,
+                },
+              }
+            : item,
+        ),
+      );
+
+      toast.success('Brak usunięty');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Błąd usuwania braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -2289,8 +2383,16 @@ useEffect(() => {
                                     <div className="lead-detail-row-actions">
                                       <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                                       <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
-                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
-                                      <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                                      {group.key === 'blockers' && entry.kind === 'task' ? (
+                                        <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
+                                      ) : (
+                                        <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                                      )}
+                                      {group.key === 'blockers' && entry.kind === 'task' ? (
+                                        <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
+                                      ) : (
+                                        <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                                      )}
                                     </div>
                                   </article>
                                 ))}

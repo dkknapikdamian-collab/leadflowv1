@@ -80,6 +80,8 @@ const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS = 'ClientDetail V1 operational center labels contract';
 void STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS;
+const STAGE228R15_CLIENT_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH = 'ClientDetail can soft-delete missing_item and refreshes after context action saves';
+void STAGE228R15_CLIENT_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH;
 const STAGE228R13_CLIENT_MISSING_ITEM_STATUS_RESOLVE = 'ClientDetail Braki i blokady list shows open missing items and can mark them resolved';
 void STAGE228R13_CLIENT_MISSING_ITEM_STATUS_RESOLVE;
 const STAGE228R12_CLIENT_MISSING_USES_CONTEXT_ACTION_HOST = 'ClientDetail Brak action routes through ContextActionDialogs blocker host';
@@ -278,7 +280,7 @@ function getEventDate(event: any) {
   return String(normalizeWorkItem(event).dateAt || event?.createdAt || '');
 }
 function isDoneStatus(status: unknown) {
-  return ['done', 'completed', 'archived', 'cancelled', 'canceled'].includes(String(status || '').toLowerCase());
+  return ['done', 'completed', 'archived', 'cancelled', 'canceled', 'deleted'].includes(String(status || '').toLowerCase());
 }
 function getActivityTime(activity: any) {
   return String(activity?.createdAt || activity?.updatedAt || activity?.happenedAt || '');
@@ -1264,6 +1266,28 @@ function ClientDetail() {
     void reload();
   }, [reload, workspace?.id, workspaceLoading]);
 
+  const STAGE228R15_CLIENT_CONTEXT_ACTION_REFRESH_LISTENER = 'ClientDetail listens to closeflow:context-action-saved and reloads without manual refresh';
+  void STAGE228R15_CLIENT_CONTEXT_ACTION_REFRESH_LISTENER;
+
+  useEffect(() => {
+    if (!clientId || !workspace?.id) return;
+    const listener = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail || {};
+      const recordType = String(detail?.recordType || detail?.payload?.recordType || '').trim();
+      const detailClientId = String(detail?.clientId || detail?.payload?.clientId || (recordType === 'client' ? detail?.recordId : '') || '').trim();
+
+      if (detailClientId && detailClientId !== String(clientId || '')) return;
+      if (recordType && recordType !== 'client' && !detailClientId) return;
+
+      window.setTimeout(() => {
+        void reload();
+      }, 0);
+    };
+
+    window.addEventListener('closeflow:context-action-saved', listener as EventListener);
+    return () => window.removeEventListener('closeflow:context-action-saved', listener as EventListener);
+  }, [clientId, reload, workspace?.id]);
+
   const relationIds = useMemo(() => {
     const leadIds = new Set(leads.map((lead) => String(lead.id || '')).filter(Boolean));
     const caseIds = new Set(cases.map((caseRecord) => String(caseRecord.id || '')).filter(Boolean));
@@ -1748,6 +1772,89 @@ function ClientDetail() {
     }
   }, [client, clientId, hasAccess, reload, workspace?.id]);
 
+
+  const handleDeleteClientMissingItemStage228R15 = useCallback(async (item: any) => {
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const safeClientId = String(clientId || client?.id || '').trim();
+    const taskId = String(item?.id || '').trim();
+    if (!safeClientId || !taskId) {
+      toast.error('Brak ID klienta albo braku. Nie można usunąć.');
+      return;
+    }
+
+    if (typeof window !== 'undefined' && !window.confirm('Usunąć ten brak?')) return;
+
+    const deletedAt = new Date().toISOString();
+    const taskTitle = String(item?.title || 'Brak');
+    const scheduledAt = String(item?.scheduledAt || item?.dueAt || item?.date || deletedAt);
+
+    try {
+      await updateTaskInSupabase({
+        id: taskId,
+        title: taskTitle,
+        type: String(item?.type || 'missing_item'),
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        dueAt: scheduledAt,
+        priority: String(item?.priority || 'high'),
+        status: 'deleted',
+        clientId: safeClientId,
+        leadId: item?.leadId ? String(item.leadId) : null,
+        caseId: item?.caseId ? String(item.caseId) : null,
+        payload: {
+          ...(item?.payload && typeof item.payload === 'object' ? item.payload : {}),
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'deleted',
+          deletedAt,
+          source: 'stage228r15_client_missing_item_delete_refresh',
+        },
+      } as any);
+
+      await insertActivityToSupabase({
+        clientId: safeClientId,
+        eventType: 'missing_item_deleted',
+        payload: {
+          recordType: 'client',
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'deleted',
+          taskId,
+          title: taskTitle,
+          deletedAt,
+          source: 'stage228r15_client_missing_item_delete_refresh',
+        },
+        workspaceId: workspace?.id,
+      } as any);
+
+      setTasks((previous) =>
+        previous.map((task: any) =>
+          String(task?.id || '') === taskId
+            ? {
+                ...task,
+                status: 'deleted',
+                deletedAt,
+                payload: {
+                  ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
+                  status: 'deleted',
+                  deletedAt,
+                },
+              }
+            : task,
+        ),
+      );
+
+      toast.success('Brak usunięty');
+      void reload();
+    } catch (error: any) {
+      toast.error('Nie udało się usunąć braku: ' + (error?.message || 'błąd zapisu'));
+    }
+  }, [client, clientId, hasAccess, reload, workspace?.id]);
+
   const handleAddClientNote = useCallback(async () => {
     if (!hasAccess) {
       toast.error('Twój trial wygasł.');
@@ -2228,6 +2335,16 @@ return (
                             data-stage228r13-client-missing-resolve-action="true"
                           >
                             {isDoneStatus(item?.status) ? 'Rozwiązany' : 'Rozwiąż'}
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteClientMissingItemStage228R15(item)}
+                            disabled={!hasAccess || isDoneStatus(item?.status)}
+                            data-stage228r15-client-missing-delete-action="true"
+                          >
+                            Usuń
                           </Button>
                         </div>
                       </article>

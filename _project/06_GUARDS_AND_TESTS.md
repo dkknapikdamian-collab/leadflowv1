@@ -2165,3 +2165,25 @@ Naprawa:
   - ClientDetail -> Brak -> save -> refresh -> visible -> Rozwiąż -> refresh -> hidden
   - CaseDetail -> Brak -> save -> refresh -> visible -> accepted/resolved -> refresh -> hidden
 - Brak zmian runtime.
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_MISSING_ITEM_DELETE_REFRESH_GUARD
+
+Dodany guard:
+- scripts/check-stage228r15-missing-item-delete-refresh.cjs
+- package.json script: check:stage228r15-missing-item-delete-refresh
+- package.json prebuild includes R15 guard.
+
+Chroni:
+- lead/client soft-delete missing_item przez status=deleted zamiast DELETE /api/tasks,
+- LeadDetail i ClientDetail refresh po closeflow:context-action-saved,
+- CaseDetail istniejacy refresh po closeflow:context-action-saved,
+- brak SQL.
+
+## 2026-06-08 21:55 Europe/Warsaw - STAGE228R15R2_GUARD_SYNTAX_REPAIR
+
+Naprawiono skladnie guardu:
+- scripts/check-stage228r15-missing-item-delete-refresh.cjs
+
+Powod: R15 runtime patch byl zastosowany, ale guard mial bledne cudzyslowy przy tokenie ContextActionDialogsHost.
+
+Zakres: tylko guard + raport/manifest. Bez SQL.

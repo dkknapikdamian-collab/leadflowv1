@@ -1138,3 +1138,14 @@ STATUS: DO_WYKONANIA_PRZED_PUSHEM.
 3. CaseDetail -> Brak -> save -> refresh -> visible -> accepted/resolved -> refresh -> hidden from active blockers.
 4. Regression: Notatka / Zadanie / Wydarzenie / Brak still open through ContextActionDialogs.
 5. Regression: CaseQuickActions quick action card still has Brak and uses ContextActionDialogs.
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_MISSING_ITEM_DELETE_REFRESH_MANUAL_TESTS
+
+STATUS: DO_WYKONANIA_PO_DEPLOYU.
+
+1. Lead -> Brak -> zapisz -> wpis pojawia sie bez odswiezania calej aplikacji.
+2. Lead -> Usuń brak -> brak znika i nie ma bledu leads.next_action_title.
+3. Client -> Brak -> zapisz -> wpis pojawia sie bez odswiezania calej aplikacji.
+4. Client -> Usuń -> brak znika.
+5. Case -> Brak -> zapisz -> wpis pojawia sie po evencie context-action-saved.
+6. Regresja: Notatka / Zadanie / Wydarzenie / Brak dalej otwieraja poprawne modale.

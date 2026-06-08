@@ -2239,3 +2239,11 @@ Następny krok po apply Stage228R14:
    - node scripts/check-stage228r14-c5-missing-items-no-sql-decision.cjs,
    - npm run build,
    - git diff --check.
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_NEXT_STEPS_AFTER_DEPLOY
+
+Po pushu Stage228R15 sprawdzic na deployu:
+1. Lead Brak add/delete bez refresh i bez bledu next_action_title.
+2. Client Brak add/delete bez refresh.
+3. Case Brak add/resolve.
+4. Jesli blad next_action_title nadal wystapi, nastepny etap musi wejsc w API/trigger sync lead next action, nie w UI.

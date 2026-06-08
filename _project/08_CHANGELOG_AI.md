@@ -2241,3 +2241,16 @@ Dodano statyczny CSS source truth dla tekstu i rytmu rail /leads, /clients, /cas
   - case: case_items.
 - Added final C5 manual test plan.
 - No SQL/RLS/finance/layout changes.
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_CHANGELOG
+
+- Fixed missing item deletion by using soft-delete status=deleted for lead/client missing_item tasks.
+- Added LeadDetail and ClientDetail refresh listeners for closeflow:context-action-saved.
+- Added R15 regression guard.
+- No SQL/RLS/schema changes.
+
+## 2026-06-08 21:55 Europe/Warsaw - STAGE228R15R2_CHANGELOG
+
+- Repaired Stage228R15 guard syntax.
+- No runtime logic change beyond already-applied R15.
+- No SQL.

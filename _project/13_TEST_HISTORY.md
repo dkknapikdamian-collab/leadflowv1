@@ -1591,3 +1591,19 @@ Planowane po apply:
 - npm run build
 - git diff --check
 - manual C5 test before final push
+
+## 2026-06-08 21:45 Europe/Warsaw - STAGE228R15_TEST_HISTORY
+
+Plan:
+- R11/R12/R13/R14/R15 guards.
+- npm run build.
+- git diff --check.
+- Manual deploy test: lead/client/case add/delete/refresh.
+
+## 2026-06-08 21:55 Europe/Warsaw - STAGE228R15R2_TEST_HISTORY
+
+R15R2 must pass:
+- node scripts/check-stage228r15-missing-item-delete-refresh.cjs
+- R11/R12/R13/R14 guards
+- npm run build
+- git diff --check

@@ -1,0 +1,22 @@
+{
+  "stage": "STAGE228R15_MISSING_ITEM_DELETE_REFRESH",
+  "date": "2026-06-08 21:45 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "bug": [
+    "Lead missing-item delete hits Supabase 400/23502 because leads.next_action_title becomes null.",
+    "ContextActionDialogs saves do not refresh LeadDetail/ClientDetail immediately."
+  ],
+  "fix": [
+    "Lead/client missing item delete is soft-delete via updateTaskInSupabase status=deleted.",
+    "LeadDetail and ClientDetail listen for closeflow:context-action-saved and reload.",
+    "CaseDetail listener already exists and is guarded."
+  ],
+  "sqlRequired": false,
+  "riskAudit": [
+    "No SQL/RLS change.",
+    "Soft-deleted task remains in DB but is hidden by deleted done-status filter.",
+    "If next_action_title error persists, next stage must inspect backend lead next-action sync/trigger."
+  ]
+}
