@@ -1,4 +1,4 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 const path = require('node:path');
 
 const root = process.cwd();
@@ -89,4 +89,3 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage220a36
 }
 
 console.log(JSON.stringify({ ok: true, stage: 'STAGE220A36_COMMISSION_INPUT_MODEL_SPLIT', guard: 'check:stage220a36-commission-input-model-split' }, null, 2));
-
