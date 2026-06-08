@@ -18,6 +18,8 @@ import {
   updateLeadInSupabase
 } from '../lib/supabase-fallback';
 import { toast } from 'sonner';
+const STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX = 'ClientDetail has both named and default exports for lazyPage runtime';
+void STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX;
 const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param source is clientId; legacy id alias is local only';
 void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
 const STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_SOURCE = 'ClientDetail follows LeadDetail visual source: main tiles lowered, notes centered, avatar removed, right rail simplified';
@@ -1046,7 +1048,7 @@ function clientDetailActionDataKind(row: Record<string, unknown> | null | undefi
 function clientDetailActionKindClass(kind: unknown) {
   return getCloseFlowActionKindClass(kind);
 }
-export default function ClientDetail() {
+function ClientDetail() {
   const { clientId } = useParams();
   const id = clientId; // CLIENT_DETAIL_CLIENT_ID_ROUTE_ALIAS_HOTFIX: legacy local references must resolve to route clientId
   const navigate = useNavigate();
@@ -2752,3 +2754,5 @@ function getClientNotesForRender(notes: any[], pinnedIds: string[] = []) {
 
 const CLOSEFLOW_FIN9_CLIENT_DETAIL_DUPLICATE_SAFETY_MARKER = 'CLOSEFLOW_FIN9_CLIENT_DETAIL_DUPLICATE_SAFETY_MARKER' as const;
 void CLOSEFLOW_FIN9_CLIENT_DETAIL_DUPLICATE_SAFETY_MARKER;
+export { ClientDetail };
+export default ClientDetail;

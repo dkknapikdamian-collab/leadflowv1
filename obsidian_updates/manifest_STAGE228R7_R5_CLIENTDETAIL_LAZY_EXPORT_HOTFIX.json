@@ -1,0 +1,14 @@
+{
+  "stage": "STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX",
+  "date": "2026-06-08 14:15 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "Runtime error: Missing lazy page export: ClientDetail",
+  "fix": "ClientDetail now exposes both named and default exports for App.lazyPage.",
+  "risk_audit": [
+    "No data migration.",
+    "No finance calculation change.",
+    "Only module export compatibility."
+  ]
+}
