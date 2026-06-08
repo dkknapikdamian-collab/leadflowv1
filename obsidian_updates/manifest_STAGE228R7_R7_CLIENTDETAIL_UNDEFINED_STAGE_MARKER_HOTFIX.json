@@ -1,0 +1,15 @@
+{
+  "stage": "STAGE228R7_R7_CLIENTDETAIL_UNDEFINED_STAGE_MARKER_HOTFIX",
+  "date": "2026-06-08 15:15 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "Runtime ReferenceError: STAGE220A35_R2_BUILD_GUARD_COMPATIBILITY_FIX is not defined.",
+  "fix": "Define the missing marker and add guard for void markers without previous const declaration.",
+  "risk_audit": [
+    "No data migration.",
+    "No finance calculation change.",
+    "No UI behavior change.",
+    "Prebuild now blocks this class of marker ReferenceError in ClientDetail."
+  ]
+}

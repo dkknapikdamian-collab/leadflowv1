@@ -57,7 +57,10 @@ const STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH = 'client finance shows
 void STAGE220A35_CLIENT_COMMISSION_FINANCE_SOURCE_TRUTH;
 const STAGE228R7_CLIENT_DETAIL_COMMISSION_BALANCE_TRUTH = 'client detail finance hides client-paid remaining from main commission balance';
 void STAGE228R7_CLIENT_DETAIL_COMMISSION_BALANCE_TRUTH;
+const STAGE220A35_R2_BUILD_GUARD_COMPATIBILITY_FIX = 'Stage220A35 R2 compatibility marker must be defined before void to avoid runtime ReferenceError';
 void STAGE220A35_R2_BUILD_GUARD_COMPATIBILITY_FIX;
+const STAGE228R7_R7_CLIENTDETAIL_UNDEFINED_STAGE_MARKER_HOTFIX = 'ClientDetail stage markers are declared before void usage';
+void STAGE228R7_R7_CLIENTDETAIL_UNDEFINED_STAGE_MARKER_HOTFIX;
 const A16_V2_CONTACT_WRITE_STORM_GUARD = "contact-onchange-local-only-save-button-persists";
 const CLIENT_DETAIL_LEFT_MANAGEMENT_TILES_V9_GUARD = 'client detail management tiles v9';
 const CLIENT_DETAIL_CLIENT_NEXT_ACTION_V10_GUARD = 'clientNextAction defined before client detail render';
