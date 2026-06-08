@@ -169,6 +169,8 @@ void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
+const STAGE228R10D_CASE_TABS_EXPLICIT_CENTER_CARD = 'Case tabs are wrapped in an explicit centered card so spacing cannot depend on old wrapper styles';
+void STAGE228R10D_CASE_TABS_EXPLICIT_CENTER_CARD;
 const STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT = 'CaseDetail header spans workspace, tabs live in main column and right rail starts under header';
 void STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT;
 const STAGE228R7_R8_CASE_QUICK_ACTIONS_OPEN_COMMISSION_PAYMENT = 'case quick action payment opens commission payment modal, not legacy client-payment modal';
@@ -2445,6 +2447,12 @@ export default function CaseDetail() {
 
 <div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true">
           <section className="case-detail-main-column" data-stage228r9-main-column="true">
+            <div
+              className="case-detail-stage228r10d-tabs-card"
+              data-stage228r10d-tabs-card="true"
+              data-stage228r10d-card-spacing-lock="true"
+              aria-label="Obsługa, checklisty i historia sprawy"
+            >
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
           <span hidden data-stage220a11-marker="STAGE220A11_CASE_DETAIL_TABS_PRODUCTION" />
           <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="Zakładki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
@@ -2463,6 +2471,7 @@ export default function CaseDetail() {
             </TabsList>
           </nav>
         </Tabs>
+            </div>
 
             {activeTab === 'service' ? (
               <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-service-panel" data-stage220a10-tab-panel="service">

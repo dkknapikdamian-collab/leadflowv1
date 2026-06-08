@@ -1,0 +1,38 @@
+# Stage228R10D - Case tabs explicit center card guard
+
+- date: 2026-06-08 19:00 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- baseline:
+  - Stage228R10C visually accepted the right rail spacing.
+- user input:
+  - Obsługa / Checklisty / Historia should be in a real card, centered.
+  - The card must sit between existing cards with the same spacing rhythm.
+  - Existing cards must get guards so they do not move accidentally.
+- audit:
+  - CSS-only attempts were not enough for the tabs/card area because older wrapper styles could still make the visible pills appear left-biased.
+  - Right rail should not be touched after R10C.
+  - A small explicit wrapper around the Tabs block is safer than another page-grid rewrite.
+- fix:
+  - Wrap CaseDetail Tabs in case-detail-stage228r10d-tabs-card with data-stage228r10d-tabs-card.
+  - Add CSS card contract: width 100%, centered inner tabs, shared card gap variable.
+  - Add guard scripts/check-stage228r10d-case-tabs-explicit-center-card.cjs.
+  - Guard locks existing order: tabs card -> Co robimy teraz -> Notatki sprawy.
+  - Guard keeps R10C rail offset and forbids R10D from moving the rail.
+- tests:
+  - node scripts/check-stage228r10d-case-tabs-explicit-center-card.cjs
+  - node scripts/check-stage228r10c-case-rail-funnel-spacing.cjs
+  - node scripts/check-stage228r10b-case-tabs-true-center-rail-pullup.cjs
+  - node scripts/check-stage228r10a-case-tabs-card-rail-nudge.cjs
+  - node scripts/check-stage228r9-case-detail-shell-rail-lift.cjs
+  - npm run build
+- manual test:
+  - Open CaseDetail.
+  - Obsługa / Checklisty / Historia should be centered inside a white card spanning the left content column.
+  - Gap above and below should match the other card rhythm.
+  - Right rail should remain at the R10C accepted height.
+- risk audit:
+  - Small DOM wrapper added only around Tabs.
+  - No SQL/data/finance change.
+  - No page-grid rewrite.
+  - Guard blocks broken R9R3/R9R4 display: contents grid pattern.

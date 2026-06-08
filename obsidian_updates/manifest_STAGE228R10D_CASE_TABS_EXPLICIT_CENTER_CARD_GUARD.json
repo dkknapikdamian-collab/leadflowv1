@@ -1,0 +1,17 @@
+{
+  "stage": "STAGE228R10D_CASE_TABS_EXPLICIT_CENTER_CARD_GUARD",
+  "date": "2026-06-08 19:00 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "baseline": "Stage228R10C accepted right rail spacing",
+  "issue": "Tabs card needed explicit wrapper/guard; existing card order and R10C rail position must be locked.",
+  "fix": "Wrap tabs in explicit centered card; add CSS/guard for centered tabs, card spacing and rail lock.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "No page-grid rewrite.",
+    "Small DOM wrapper around Tabs only.",
+    "Guard locks card order and R10C rail offset."
+  ]
+}
