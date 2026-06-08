@@ -1,0 +1,14 @@
+{
+  "stage": "STAGE228R7_R6_CLIENTDETAIL_STATIC_IMPORT_UNBLOCK",
+  "date": "2026-06-08 14:45 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "ClientDetail still failed at runtime through App.lazyPage with Missing lazy page export.",
+  "fix": "Statically import ClientDetail in App.tsx and add guard.",
+  "risk_audit": [
+    "Initial bundle may grow slightly.",
+    "No database or finance logic change.",
+    "This is route loading unblocking only."
+  ]
+}

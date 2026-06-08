@@ -12,6 +12,7 @@ import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
 import EmailVerificationGate from './components/EmailVerificationGate';
+import ClientDetailStatic from './pages/ClientDetail';
 import './styles/closeflow-visual-source-truth.css';
 import './styles/closeflow-action-tokens.css';
 import './styles/closeflow-action-clusters.css';
@@ -57,6 +58,8 @@ import './styles/closeflow-secondary-pages-full-width-stage181ad.css';
 import './styles/closeflow-app-viewport-scale-75-stage201.css';
 import './styles/closeflow-ops-badges-and-icons-stretch-stage204.css';
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
+const STAGE228R7_R6_CLIENTDETAIL_STATIC_IMPORT_UNBLOCK = 'ClientDetail is statically imported to bypass lazy export runtime failure';
+void STAGE228R7_R6_CLIENTDETAIL_STATIC_IMPORT_UNBLOCK;
 const CLOSEFLOW_P1A_NO_GLOBAL_FOCUS_REFRESH_2026_05_13 = 'App bootstrap sync is one-shot; no focus/visibility/interval profile refresh on protected pages';
 
 type LazyPageModule = { default?: ComponentType<any>; [key: string]: any };
@@ -87,7 +90,7 @@ const LeadDetail = lazyPage(() => import('./pages/LeadDetail'), 'LeadDetail');
 const Cases = lazyPage(() => import('./pages/Cases'), 'Cases');
 const CaseDetail = lazyPage(() => import('./pages/CaseDetail'), 'CaseDetail');
 const Clients = lazyPage(() => import('./pages/Clients'), 'Clients');
-const ClientDetail = lazyPage(() => import('./pages/ClientDetail'), 'ClientDetail');
+const ClientDetail = ClientDetailStatic; // STAGE228R7_R6_CLIENTDETAIL_STATIC_IMPORT_UNBLOCK
 const ClientPortal = lazyPage(() => import('./pages/ClientPortal'), 'ClientPortal');
 const Activity = lazyPage(() => import('./pages/Activity'), 'Activity');
 const AiDrafts = lazyPage(() => import('./pages/AiDrafts'), 'AiDrafts');
