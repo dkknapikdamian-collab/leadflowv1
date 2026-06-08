@@ -2158,3 +2158,15 @@ FILES:
 - package.json
 - _project/runs/2026-06-08_stage228r15_missing_item_delete_refresh_hotfix.md
 - obsidian_updates/manifest_STAGE228R15_MISSING_ITEM_DELETE_REFRESH.json
+
+## 2026-06-08 22:30 Europe/Warsaw - STAGE228R16R2_LEDGER
+
+FILES:
+- sql/001_stage228r16_leads_next_action_title_nullable.sql
+- src/lib/supabase-fallback.ts
+- src/pages/LeadDetail.tsx
+- src/pages/ClientDetail.tsx
+- scripts/check-stage228r16r2-task-delete-sql-brak-button.cjs
+- package.json
+- _project/runs/2026-06-08_stage228r16r2_task_delete_sql_brak_button_script_fix.md
+- obsidian_updates/manifest_STAGE228R16R2_TASK_DELETE_SQL_BRAK_BUTTON.json

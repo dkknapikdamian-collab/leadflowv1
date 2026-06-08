@@ -1,0 +1,21 @@
+{
+  "stage": "STAGE228R16R2_TASK_DELETE_SQL_BRAK_BUTTON",
+  "date": "2026-06-08 22:30 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "sqlRequired": true,
+  "sqlStatus": "confirmed by Damian screenshot: next_action_title is_nullable YES",
+  "sqlFile": "sql/001_stage228r16_leads_next_action_title_nullable.sql",
+  "fix": [
+    "Repair broken R16 apply script packaging.",
+    "Prevent deleteTaskFromSupabase from using DELETE /api/tasks.",
+    "LeadDetail task delete soft-deletes with status=deleted.",
+    "Lead/Client Brak buttons open directly."
+  ],
+  "riskAudit": [
+    "No RLS/GRANT change.",
+    "Deleted tasks remain as status=deleted.",
+    "If ContextActionDialogs still does not open, inspect host mounting."
+  ]
+}

@@ -80,6 +80,8 @@ const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS = 'ClientDetail V1 operational center labels contract';
 void STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS;
+const STAGE228R16_CLIENT_DIRECT_BRAK_POINTERDOWN = 'ClientDetail Brak button opens on pointerdown and click through ContextActionDialogs';
+void STAGE228R16_CLIENT_DIRECT_BRAK_POINTERDOWN;
 const STAGE228R15_CLIENT_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH = 'ClientDetail can soft-delete missing_item and refreshes after context action saves';
 void STAGE228R15_CLIENT_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH;
 const STAGE228R13_CLIENT_MISSING_ITEM_STATUS_RESOLVE = 'ClientDetail Braki i blokady list shows open missing items and can mark them resolved';
@@ -2299,8 +2301,13 @@ return (
                   type="button"
                   size="sm"
                   variant="outline"
+                  onPointerDown={(event) => {
+                    event.stopPropagation();
+                    if (hasAccess && !clientMissingSaving) openClientContextAction('blocker');
+                  }}
                   onClick={() => openClientContextAction('blocker')}
                   disabled={!hasAccess || clientMissingSaving}
+                  data-stage228r16-client-direct-brak-pointerdown="true"
                   data-stage227c3b-client-missing-action="true"
                   data-stage228r12-client-context-blocker="true"
                   data-context-action-kind="blocker"

@@ -1149,3 +1149,16 @@ STATUS: DO_WYKONANIA_PO_DEPLOYU.
 4. Client -> Usuń -> brak znika.
 5. Case -> Brak -> zapisz -> wpis pojawia sie po evencie context-action-saved.
 6. Regresja: Notatka / Zadanie / Wydarzenie / Brak dalej otwieraja poprawne modale.
+
+## 2026-06-08 22:30 Europe/Warsaw - STAGE228R16R2_TASK_DELETE_SQL_BRAK_BUTTON_MANUAL_TESTS
+
+STATUS: DO_WYKONANIA_PO_DEPLOYU.
+
+1. SQL verification: public.leads.next_action_title is_nullable = YES.
+2. Lead -> Brak button opens modal.
+3. Lead -> add Brak -> appears without full refresh.
+4. Lead -> Usuń / Usuń brak -> no DELETE /api/tasks, no 23502 next_action_title error.
+5. Client -> Brak button opens modal.
+6. Client -> add Brak -> appears without full refresh.
+7. Client -> Usuń -> no 23502.
+8. Case -> Brak add/resolve still works.

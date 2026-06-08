@@ -1607,3 +1607,12 @@ R15R2 must pass:
 - R11/R12/R13/R14 guards
 - npm run build
 - git diff --check
+
+## 2026-06-08 22:30 Europe/Warsaw - STAGE228R16R2_TEST_HISTORY
+
+Plan:
+- SQL verification returns next_action_title is_nullable YES.
+- R11/R12/R13/R14/R15/R16R2 guards.
+- npm run build.
+- git diff --check.
+- Deploy UI test for Brak add/delete.

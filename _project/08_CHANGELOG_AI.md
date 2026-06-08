@@ -2254,3 +2254,11 @@ Dodano statyczny CSS source truth dla tekstu i rytmu rail /leads, /clients, /cas
 - Repaired Stage228R15 guard syntax.
 - No runtime logic change beyond already-applied R15.
 - No SQL.
+
+## 2026-06-08 22:30 Europe/Warsaw - STAGE228R16R2_CHANGELOG
+
+- Fixed broken Stage228R16 apply packaging.
+- Added SQL trace for leads.next_action_title nullable.
+- Replaced global task hard-delete path with soft-delete.
+- Added explicit Lead Brak quick action.
+- Hardened Client Brak button pointerdown/click opening.

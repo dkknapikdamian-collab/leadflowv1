@@ -2247,3 +2247,11 @@ Po pushu Stage228R15 sprawdzic na deployu:
 2. Client Brak add/delete bez refresh.
 3. Case Brak add/resolve.
 4. Jesli blad next_action_title nadal wystapi, nastepny etap musi wejsc w API/trigger sync lead next action, nie w UI.
+
+## 2026-06-08 22:30 Europe/Warsaw - STAGE228R16R2_NEXT_STEPS_AFTER_DEPLOY
+
+Next:
+1. Apply R16R2.
+2. Push R16R2.
+3. Test deployed Lead/Client/Case Brak.
+4. If button still does not open, inspect ContextActionDialogsHost mounting in App/Layout.

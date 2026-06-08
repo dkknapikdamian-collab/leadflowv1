@@ -2187,3 +2187,14 @@ Naprawiono skladnie guardu:
 Powod: R15 runtime patch byl zastosowany, ale guard mial bledne cudzyslowy przy tokenie ContextActionDialogsHost.
 
 Zakres: tylko guard + raport/manifest. Bez SQL.
+
+## 2026-06-08 22:30 Europe/Warsaw - STAGE228R16R2_TASK_DELETE_SQL_BRAK_BUTTON_GUARD
+
+Guard:
+- scripts/check-stage228r16r2-task-delete-sql-brak-button.cjs
+
+Checks:
+- SQL file drops NOT NULL for leads.next_action_title.
+- deleteTaskFromSupabase no longer uses DELETE.
+- LeadDetail generic task delete uses soft-delete.
+- Lead/Client Brak buttons have explicit open handlers.

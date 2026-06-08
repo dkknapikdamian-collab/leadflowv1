@@ -557,6 +557,9 @@ export async function fetchCasesFromSupabase(params?: { clientId?: string; leadI
 
 
 
+
+const STAGE228R16_GLOBAL_TASK_SOFT_DELETE_NO_DELETE = 'deleteTaskFromSupabase soft-deletes tasks and never calls DELETE /api/tasks';
+void STAGE228R16_GLOBAL_TASK_SOFT_DELETE_NO_DELETE;
 export async function fetchCaseByIdFromSupabase(id: string) {
   const devRow = getDevPreviewRowById('cases', id);
   if (devRow) return normalizeCaseContract(devRow);
@@ -607,7 +610,23 @@ export async function insertPortalActivityToSupabase(input: { caseId: string; po
 export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(input) }); }
-export async function deleteTaskFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/tasks?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function softDeleteTaskInSupabase(input: { id: string; title?: string; type?: string; date?: string; scheduledAt?: string; dueAt?: string; priority?: string; status?: string; leadId?: string | null; caseId?: string | null; clientId?: string | null; payload?: Record<string, unknown>; source?: string }) {
+  const deletedAt = new Date().toISOString();
+  const payload = {
+    ...(input || {}),
+    id: String(input?.id || ''),
+    status: 'deleted',
+    payload: {
+      ...(input?.payload && typeof input.payload === 'object' ? input.payload : {}),
+      status: 'deleted',
+      deletedAt,
+      source: input?.source || 'stage228r16_global_task_soft_delete',
+    },
+  };
+  delete (payload as Record<string, unknown>).source;
+  return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(payload) });
+}
+export async function deleteTaskFromSupabase(id: string) { return softDeleteTaskInSupabase({ id, source: 'stage228r16_delete_task_from_supabase_soft_delete' }); }
 export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/events', { method: 'PATCH', body: JSON.stringify(applyGoogleCalendarReminderPreferenceToEventPayload(input)) }); }
 export async function deleteEventFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function fetchMeFromSupabase(input?: { uid?: string; email?: string; fullName?: string }) {

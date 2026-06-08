@@ -2,6 +2,8 @@ const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes 
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
+const STAGE228R16_TASK_DELETE_SQL_AND_DIRECT_BRAK = 'LeadDetail uses direct Brak quick action and soft-deletes linked tasks without DELETE /api/tasks';
+void STAGE228R16_TASK_DELETE_SQL_AND_DIRECT_BRAK;
 const STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH = 'LeadDetail can soft-delete missing_item without lead next_action_title null and refreshes after context action saves';
 void STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH;
 const STAGE228R13_LEAD_MISSING_ITEM_STATUS_RESOLVE = 'LeadDetail Braki i blokady list shows only open missing items and can mark them resolved';
@@ -110,7 +112,6 @@ import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
   deleteEventFromSupabase,
   deleteLeadFromSupabase,
-  deleteTaskFromSupabase,
   fetchActivitiesFromSupabase,
   fetchCasesFromSupabase,
   fetchEventsFromSupabase,
@@ -1394,8 +1395,29 @@ useEffect(() => {
           <LeadActionButton onClick={() => handleUpdateStatus('waiting_response')} disabled={!hasAccess}>
             <Clock className="h-4 w-4" /> Oznacz waiting
           </LeadActionButton>
-          <LeadActionButton onClick={() => openLeadContextAction('note')} disabled={!hasAccess}>
+          <LeadActionButton
+            onClick={() => openContextQuickAction({ kind: 'note', recordType: 'lead', recordId: leadId || '', leadId: leadId || '', recordLabel: getLeadName(lead) })}
+            disabled={!hasAccess}
+          >
             <EntityIcon entity="template" className="h-4 w-4" /> Otwórz szybki formularz notatki
+          </LeadActionButton>
+          <LeadActionButton
+            onPointerDown={(event) => {
+              event.stopPropagation();
+              if (hasAccess) openContextQuickAction({ kind: 'blocker', recordType: 'lead', recordId: leadId || '', leadId: leadId || '', clientId: lead?.clientId ? String(lead.clientId) : undefined, caseId: serviceCaseId || undefined, recordLabel: getLeadName(lead) });
+            }}
+            onClick={() => openContextQuickAction({ kind: 'blocker', recordType: 'lead', recordId: leadId || '', leadId: leadId || '', clientId: lead?.clientId ? String(lead.clientId) : undefined, caseId: serviceCaseId || undefined, recordLabel: getLeadName(lead) })}
+            disabled={!hasAccess}
+            data-stage228r16-lead-direct-brak-button="true"
+            data-context-action-kind="blocker"
+            data-context-record-type="lead"
+            data-context-record-id={leadId || ''}
+            data-context-lead-id={leadId || ''}
+            data-context-client-id={lead?.clientId ? String(lead.clientId) : ''}
+            data-context-case-id={serviceCaseId || ''}
+            data-context-record-label={getLeadName(lead)}
+          >
+            <AlertTriangle className="h-4 w-4" /> Brak
           </LeadActionButton>
           {serviceCaseId ? (
             <LeadActionButton onClick={() => navigate(`/cases/${serviceCaseId}`)}>
@@ -1745,14 +1767,54 @@ useEffect(() => {
 
   const handleDeleteLinkedTask = async (task: any) => {
     if (!window.confirm('Usunąć to zadanie?')) return;
+    const taskId = String(task?.id || '').trim();
+    if (!taskId) return toast.error('Brak ID zadania. Nie można usunąć.');
+    const deletedAt = new Date().toISOString();
+    const scheduledAt = String(getTaskDate(task) || task?.scheduledAt || task?.dueAt || task?.date || deletedAt);
     try {
-      setLinkedEntryActionId(`task:${task.id}:delete`);
-      await deleteTaskFromSupabase(String(task.id));
-      await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId: task.id });
+      setLinkedEntryActionId(`task:${taskId}:delete`);
+      setLinkedTasks((previous) =>
+        previous.map((item: any) =>
+          String(item?.id || '') === taskId
+            ? {
+                ...item,
+                status: 'deleted',
+                deletedAt,
+                payload: {
+                  ...(item?.payload && typeof item.payload === 'object' ? item.payload : {}),
+                  status: 'deleted',
+                  deletedAt,
+                  source: 'stage228r16_lead_linked_task_soft_delete',
+                },
+              }
+            : item,
+        ),
+      );
+      await updateTaskInSupabase({
+        id: taskId,
+        title: String(task?.title || 'Zadanie'),
+        type: String(task?.type || 'follow_up'),
+        date: scheduledAt.slice(0, 10),
+        scheduledAt,
+        dueAt: scheduledAt,
+        priority: String(task?.priority || 'medium'),
+        status: 'deleted',
+        leadId: task?.leadId ? String(task.leadId) : leadId || null,
+        clientId: task?.clientId ? String(task.clientId) : lead?.clientId ? String(lead.clientId) : null,
+        caseId: task?.caseId ? String(task.caseId) : serviceCaseId || null,
+        payload: {
+          ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
+          status: 'deleted',
+          deletedAt,
+          source: 'stage228r16_lead_linked_task_soft_delete',
+        },
+      } as any);
+      await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId, status: 'deleted', deletedAt, source: 'stage228r16_lead_linked_task_soft_delete' });
       toast.success('Zadanie usunięte');
       await loadLead();
     } catch (error: any) {
       toast.error(`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      await loadLead().catch(() => null);
     } finally {
       setLinkedEntryActionId(null);
     }
