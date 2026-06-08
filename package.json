@@ -938,7 +938,9 @@
     "check:stage228r13-missing-item-status-resolve": "node scripts/check-stage228r13-missing-item-status-resolve.cjs",
     "check:stage228r14-c5-missing-items-no-sql-decision": "node scripts/check-stage228r14-c5-missing-items-no-sql-decision.cjs",
     "check:stage228r15-missing-item-delete-refresh": "node scripts/check-stage228r15-missing-item-delete-refresh.cjs",
-    "check:stage228r16r2-task-delete-sql-brak-button": "node scripts/check-stage228r16r2-task-delete-sql-brak-button.cjs"
+    "check:stage228r16r2-task-delete-sql-brak-button": "node scripts/check-stage228r16r2-task-delete-sql-brak-button.cjs",
+    "check:stage228r17-missing-item-delete-contract": "node scripts/check-stage228r17-missing-item-delete-contract.cjs",
+    "test:stage228r17-missing-item-delete-contract": "node --test tests/stage228r17-missing-item-delete-contract.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

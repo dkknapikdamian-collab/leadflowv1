@@ -4,6 +4,8 @@ const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
 const STAGE228R16_TASK_DELETE_SQL_AND_DIRECT_BRAK = 'LeadDetail uses direct Brak quick action and soft-deletes linked tasks without DELETE /api/tasks';
 void STAGE228R16_TASK_DELETE_SQL_AND_DIRECT_BRAK;
+const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'LeadDetail missing_item delete uses optimistic remove, backend soft-delete and silent refresh so Brak does not return after refetch';
+void STAGE228R17_MISSING_ITEM_DELETE_CONTRACT;
 const STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH = 'LeadDetail can soft-delete missing_item without lead next_action_title null and refreshes after context action saves';
 void STAGE228R15_MISSING_ITEM_DELETE_AND_CONTEXT_REFRESH;
 const STAGE228R13_LEAD_MISSING_ITEM_STATUS_RESOLVE = 'LeadDetail Braki i blokady list shows only open missing items and can mark them resolved';
@@ -129,6 +131,7 @@ import {
   updateEventInSupabase,
   updateLeadInSupabase,
   updateTaskInSupabase,
+  softDeleteTaskInSupabase,
   updateCaseInSupabase,
 } from '../lib/supabase-fallback';
 import '../styles/visual-stage14-lead-detail-vnext.css';
@@ -733,9 +736,10 @@ export default function LeadDetail() {
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const noteVoiceDirtyRef = useRef(false);
 
-  const loadLead = async () => {
+  const loadLead = async (options?: { silent?: boolean }) => {
     if (!leadId) return;
-    setLoading(true);
+    const silent = Boolean(options?.silent);
+    if (!silent) setLoading(true);
     setLoadError(null);
     try {
       const [leadRow, caseRows, taskRows, eventRows, activityRows, paymentRows] = await Promise.all([
@@ -785,7 +789,7 @@ export default function LeadDetail() {
       setLoadError(message);
       toast.error(`Błąd odczytu leada: ${message}`);
     } finally {
-      setLoading(false);
+      if (!silent) setLoading(false);
     }
   };
 
@@ -813,7 +817,7 @@ export default function LeadDetail() {
       if (recordType && recordType !== 'lead' && !detailLeadId) return;
 
       window.setTimeout(() => {
-        void loadLead();
+        void loadLead({ silent: true });
       }, 0);
     };
 
@@ -1081,10 +1085,16 @@ export default function LeadDetail() {
     const deletedAt = new Date().toISOString();
     const taskTitle = String(task?.title || entry?.title || 'Brak');
     const scheduledAt = String(task?.scheduledAt || task?.dueAt || task?.date || deletedAt);
+    let optimisticSnapshot: any[] | null = null;
 
     try {
       setLinkedEntryActionId(`missing:${taskId}:delete`);
-      await updateTaskInSupabase({
+      setLinkedTasks((previous) => {
+        optimisticSnapshot = previous;
+        return previous.filter((item: any) => String(item?.id || '') !== taskId);
+      });
+
+      await softDeleteTaskInSupabase({
         id: taskId,
         title: taskTitle,
         type: String(task?.type || 'missing_item'),
@@ -1092,7 +1102,6 @@ export default function LeadDetail() {
         scheduledAt,
         dueAt: scheduledAt,
         priority: String(task?.priority || 'high'),
-        status: 'deleted',
         leadId: String(task?.leadId || leadId || '') || null,
         clientId: task?.clientId ? String(task.clientId) : lead?.clientId ? String(lead.clientId) : null,
         caseId: task?.caseId ? String(task.caseId) : serviceCaseId || null,
@@ -1102,38 +1111,22 @@ export default function LeadDetail() {
           type: 'missing_item',
           status: 'deleted',
           deletedAt,
-          source: 'stage228r15_lead_missing_item_delete_refresh',
         },
-      } as any);
+        source: 'stage228r17_missing_item_delete_contract',
+      });
 
       await addActivity('missing_item_deleted', {
         taskId,
         title: taskTitle,
         status: 'deleted',
         deletedAt,
-        source: 'stage228r15_lead_missing_item_delete_refresh',
+        source: 'stage228r17_missing_item_delete_contract',
       });
 
-      setLinkedTasks((previous) =>
-        previous.map((item: any) =>
-          String(item?.id || '') === taskId
-            ? {
-                ...item,
-                status: 'deleted',
-                deletedAt,
-                payload: {
-                  ...(item?.payload && typeof item.payload === 'object' ? item.payload : {}),
-                  status: 'deleted',
-                  deletedAt,
-                },
-              }
-            : item,
-        ),
-      );
-
       toast.success('Brak usunięty');
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
+      if (optimisticSnapshot) setLinkedTasks(optimisticSnapshot);
       toast.error(`Błąd usuwania braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);

@@ -5,6 +5,9 @@ import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope
 import { normalizeTaskListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 
+const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'Task route does not promote deleted/done/missing_item records to lead next action and clears matching deleted next_action_item_id';
+void STAGE228R17_MISSING_ITEM_DELETE_CONTRACT;
+
 const TASK_LIST_SELECT_STAGE124D = [
   'id',
   'workspace_id',
@@ -111,6 +114,39 @@ function normalizeTask(row: Record<string, unknown>) {
   };
 }
 
+
+const CLOSED_TASK_STATUSES_FOR_LEAD_NEXT_ACTION_STAGE228R17 = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted']);
+
+function isClosedTaskStatusForLeadNextActionStage228R17(value: unknown) {
+  return CLOSED_TASK_STATUSES_FOR_LEAD_NEXT_ACTION_STAGE228R17.has(asText(value).toLowerCase());
+}
+
+function isMissingItemTypeForLeadNextActionStage228R17(value: unknown) {
+  return asText(value).toLowerCase() === 'missing_item';
+}
+
+async function clearLeadNextActionIfMatchingTaskStage228R17(workspaceId: string, leadId: unknown, taskId: unknown) {
+  const normalizedLeadId = asText(leadId);
+  const normalizedTaskId = asText(taskId);
+  if (!normalizedLeadId || !normalizedTaskId) return;
+
+  const current = await selectFirstAvailable([
+    withWorkspaceFilter(
+      'leads?select=id,next_action_item_id&id=eq.' + encodeURIComponent(normalizedLeadId) + '&next_action_item_id=eq.' + encodeURIComponent(normalizedTaskId) + '&limit=1',
+      workspaceId,
+    ),
+  ]).catch(() => null);
+  const row = Array.isArray(current?.data) ? current.data[0] as Record<string, unknown> | undefined : undefined;
+  if (!row) return;
+
+  await updateByIdScoped('leads', normalizedLeadId, workspaceId, {
+    next_action_title: '',
+    next_action_at: null,
+    next_action_item_id: null,
+    updated_at: new Date().toISOString(),
+  });
+}
+
 async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { id?: unknown; title?: unknown; scheduledAt?: unknown }) {
   const normalizedLeadId = asText(leadId);
   if (!normalizedLeadId) return;
@@ -182,11 +218,17 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       const data = await updateByIdScoped('work_items', String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };
       if (body.leadId) {
-        await syncLeadNextAction(workspaceId, body.leadId, {
-          id: body.id,
-          title: body.title ?? payload.title,
-          scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date,
-        });
+        const nextStatusForLeadAction = body.status ?? payload.status;
+        const nextTypeForLeadAction = body.type ?? payload.type;
+        if (isClosedTaskStatusForLeadNextActionStage228R17(nextStatusForLeadAction)) {
+          await clearLeadNextActionIfMatchingTaskStage228R17(workspaceId, body.leadId, body.id);
+        } else if (!isMissingItemTypeForLeadNextActionStage228R17(nextTypeForLeadAction)) {
+          await syncLeadNextAction(workspaceId, body.leadId, {
+            id: body.id,
+            title: body.title ?? payload.title,
+            scheduledAt: body.scheduledAt ?? payload.scheduled_at ?? body.date,
+          });
+        }
       }
       res.status(200).json(normalizeTask(updated as Record<string, unknown>));
       return;
@@ -240,7 +282,7 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
 
     const result = await insertWithVariants(['work_items'], [payload]);
     const inserted = Array.isArray(result.data) && result.data[0] ? result.data[0] : payload;
-    if (body.leadId) {
+    if (body.leadId && !isMissingItemTypeForLeadNextActionStage228R17(body.type || payload.type)) {
       await syncLeadNextAction(workspaceId, body.leadId, {
         id: (inserted as Record<string, unknown>).id,
         title: body.title,

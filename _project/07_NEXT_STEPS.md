@@ -2255,3 +2255,33 @@ Next:
 2. Push R16R2.
 3. Test deployed Lead/Client/Case Brak.
 4. If button still does not open, inspect ContextActionDialogsHost mounting in App/Layout.
+
+<!-- STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
+## 2026-06-08 20:45 Europe/Warsaw - Stage228R17 missing_item delete contract
+
+STATUS: LOCAL_ONLY_APPLIED_BY_ZIP, test reczny DO WYKONANIA.
+
+FAKTY:
+- Objaw: klikniecie Usuń przy Braku usuwa wpis optymistycznie, ale po refetchu/odswiezeniu wpis wraca.
+- Przyczyna naprawiana: niespojny kontrakt soft-delete missing_item/task oraz ryzyko ustawiania usuwanego taska jako lead.next_action_item_id.
+- LeadDetail usuwa Brak natychmiast z lokalnego stanu, wykonuje backendowy soft-delete i robi silent refresh bez pelnego loadera.
+- Task route nie promuje missing_item ani zamknietych/usunietych taskow do lead next action; deleted/done task czysci matching next_action_item_id.
+
+TESTY/GUARDY:
+- node scripts/check-stage228r17-missing-item-delete-contract.cjs
+- node --test tests/stage228r17-missing-item-delete-contract.test.cjs
+- npm run build
+- git diff --check
+
+TEST RECZNY:
+- Lead -> dodaj Brak -> odswiez -> Brak widoczny -> Usuń -> znika od razu -> odczekaj -> hard refresh -> Brak nie wraca.
+- Sprawdzic, ze Następny krok nie pokazuje usunietego Braku.
+
+RYZYKA:
+- Jesli baza ma stare rekordy missing_item juz podpiete jako next_action, delete czysci tylko matching next_action_item_id.
+- Nie wykonano twardego DELETE, zgodnie z obecnym kierunkiem soft-delete.
+- Nie ruszano ukladu UI ani styli kafelkow.
+
+NASTEPNY KROK:
+- Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
+<!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
