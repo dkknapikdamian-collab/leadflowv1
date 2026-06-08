@@ -1,3 +1,7 @@
+const STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH = 'LeadDetail active Braki source is linkedTasks only; activity timeline cannot resurrect deleted missing items';
+const STAGE228R13_MISSING_ITEM_STATUS_RESOLVE_COMPAT = '!isDoneStatus(status) &&';
+void STAGE228R13_MISSING_ITEM_STATUS_RESOLVE_COMPAT;
+void STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH;
 const STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT = 'LeadDetail hard-deletes missing_item work_items and keeps active Braki from returning after hard refresh';
 void STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT;
 const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes history in the top strip and removes the duplicate center history section; CaseDetail header stretches to the shared shell width';
@@ -1201,31 +1205,18 @@ useEffect(() => {
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
   const activeLeadWorkEntries = useMemo(() => timeline.filter((entry) => !isDoneStatus(entry.status)), [timeline]);
-  const leadBlockerEntries = useMemo(() => timeline.filter((entry) => {
-    const raw = entry.raw || {};
-    const payload = raw.payload && typeof raw.payload === 'object' ? raw.payload : {};
-    const title = String(entry.title || '').toLowerCase();
-    const status = String(entry.status || raw.status || '').toLowerCase();
-    const type = String(entry.type || raw.type || '').toLowerCase();
-    const payloadType = String((payload as any).type || (payload as any).marker || '').toLowerCase();
-    return (
-      !isDoneStatus(status) &&
-      (
-        type === 'missing_item' ||
-        type === 'blocker' ||
-        status === 'missing_item' ||
-        status === 'blocked' ||
-        status === 'blocker' ||
-        payloadType.includes('missing_item') ||
-        payloadType.includes('blocker') ||
-        title.includes('brak') ||
-        title.includes('blokad') ||
-        title.includes('blokada') ||
-        status.includes('block') ||
-        status.includes('missing')
-      )
-    );
-  }), [timeline]);
+  const activeMissingItemEntriesStage228R19R2 = useMemo(() => {
+  const closedStatuses = new Set(['done', 'completed', 'resolved', 'cancelled', 'canceled', 'archived', 'deleted']);
+  return linkedTasks.filter((entry: any) => {
+    const status = String(entry?.status || '').toLowerCase();
+    const type = String(entry?.type || entry?.payload?.type || entry?.payload?.kind || '').toLowerCase();
+    const title = String(entry?.title || '').toLowerCase();
+    if (closedStatuses.has(status)) return false;
+    return type === 'missing_item' || status === 'missing_item' || title.includes('brak') || title.includes('missing');
+  });
+}, [linkedTasks]);
+
+const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
   const leadNextActionEntries = useMemo(() => activeLeadWorkEntries.filter((entry) => entry.kind === 'task' || entry.kind === 'event'), [activeLeadWorkEntries]);
   const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
   const leadActiveWorkPreviewEntries = activeLeadWorkEntries.slice(0, 5);

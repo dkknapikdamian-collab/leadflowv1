@@ -2265,3 +2265,15 @@ NASTEPNY KROK:
 - The deletion activity stays in history, but it must not recreate active blocker state.
 - Similar delete behavior in ClientDetail should be checked after LeadDetail is confirmed.
 
+
+
+## 2026-06-08 22:20 Europe/Warsaw - STAGE228R19R2 missing item active source truth
+
+- status: LOCAL_APPLIED_PENDING_MANUAL_TEST
+- problem: deleted Brak/missing_item returned after hard refresh because active UI could be rebuilt from non-task/timeline source.
+- decision: active Braki on LeadDetail must be sourced only from linkedTasks/work_items, not activity history.
+- guard: scripts/check-stage228r19r2-missing-item-active-source-truth.cjs
+- test: tests/stage228r19r2-missing-item-active-source-truth.test.cjs
+- manual test: add Brak -> hard refresh -> delete -> hard refresh -> Brak does not return.
+- risk sweep: ClientDetail may require an analogous source-truth sweep if the same symptom appears there.
+- marker: STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH
