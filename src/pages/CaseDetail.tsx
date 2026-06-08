@@ -169,8 +169,6 @@ void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
-const STAGE228R9_R3_CASE_DETAIL_LEFT_HEADER_RAIL_TOP_GRID = 'CaseDetail header is left-column only and right rail starts at header row';
-void STAGE228R9_R3_CASE_DETAIL_LEFT_HEADER_RAIL_TOP_GRID;
 const STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT = 'CaseDetail header spans workspace, tabs live in main column and right rail starts under header';
 void STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT;
 const STAGE228R7_R8_CASE_QUICK_ACTIONS_OPEN_COMMISSION_PAYMENT = 'case quick action payment opens commission payment modal, not legacy client-payment modal';
@@ -2414,7 +2412,7 @@ export default function CaseDetail() {
     <Layout>
 
       <main className="case-detail-vnext-page">
-        <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage228r9r3-left-header-rail-top="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
+        <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
           <CaseDetailTrashButton
             type="button"
             className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32"
@@ -2820,7 +2818,7 @@ export default function CaseDetail() {
             ) : null}
           </section>
 
-          <aside className="case-detail-right-rail" data-stage228r9r3-right-rail-top="true" aria-label="Panel sprawy">
+          <aside className="case-detail-right-rail" aria-label="Panel sprawy">
             <div data-case-quick-actions-anchor="case-detail">
               <CaseQuickActions
                 caseId={caseData.id}

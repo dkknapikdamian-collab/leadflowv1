@@ -1,0 +1,17 @@
+{
+  "stage": "STAGE228R9_R6_FINISH_REVERT_CASE_DETAIL_TO_R9R2",
+  "date": "2026-06-08 17:45 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "rollback_target": "473ae740",
+  "reverted_commit": "4a1343a4",
+  "reason": "R9R3/R9R4 broke CaseDetail visual layout; rollback to last accepted R9R2 baseline. R9R6 finishes failed R9R5 path handling.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "Visual rollback only.",
+    "Absolute repo paths used for report writes.",
+    "Next attempt must be split into smaller CSS stages."
+  ]
+}
