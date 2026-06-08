@@ -18,6 +18,7 @@ function forbidText(text, token, label) {
 }
 
 const clients = read('src/pages/Clients.tsx');
+const clientCreateDialog = read('src/components/ClientCreateDialog.tsx');
 const caseDetail = read('src/pages/CaseDetail.tsx');
 const apiCases = read('api/cases.ts');
 const pkg = JSON.parse(read('package.json'));
@@ -42,6 +43,27 @@ const pkg = JSON.parse(read('package.json'));
 ].forEach((token) => requireText(clients, token, 'Clients.tsx'));
 
 [
+  'STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT',
+  "import { useNavigate } from 'react-router-dom';",
+  'const navigate = useNavigate();',
+  'readCreatedCaseId',
+  'let createdCaseId =',
+  'const createdCase = await createCaseInSupabase({',
+  'createdCaseId = readCreatedCaseId(createdCase)',
+  "navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create')",
+  'Utw\u00f3rz spraw\u0119 od razu',
+  'Po zapisie otworzymy spraw\u0119 i okno',
+  'Nazwa sprawy',
+  'contractValue: 0',
+  'expectedRevenue: 0',
+  'caseValue: 0',
+  'remainingAmount: 0',
+  "commissionMode: 'not_set'",
+  'commissionAmount: 0',
+  "commissionStatus: 'not_set'",
+].forEach((token) => requireText(clientCreateDialog, token, 'ClientCreateDialog.tsx'));
+
+[
   'Dodaj spraw\u0119 od razu',
   '<Label>Warto\u015b\u0107 sprawy</Label>',
   '<Label>Prowizja do zarobienia</Label>',
@@ -56,6 +78,21 @@ const pkg = JSON.parse(read('package.json'));
   'expectedRevenue: caseValue',
   'remainingAmount: caseValue',
 ].forEach((token) => forbidText(clients, token, 'Clients.tsx'));
+
+[
+  'Dodaj spraw\u0119 od razu',
+  '<Label>Warto\u015b\u0107 sprawy</Label>',
+  '<Label>Prowizja do zarobienia</Label>',
+  '<Label>Waluta</Label>',
+  'Zapisz klienta i spraw\u0119',
+  'caseValue: string',
+  'caseValue: form.caseValue',
+  'caseValue: form.caseValue.trim()',
+  'prepared.caseValue',
+  'value={form.caseValue}',
+  'onChange={(event) => updateForm({ caseValue: event.target.value })}',
+  'contractValue: Number.isFinite',
+].forEach((token) => forbidText(clientCreateDialog, token, 'ClientCreateDialog.tsx'));
 
 [
   'STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL',
@@ -85,5 +122,6 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage228r5r
 console.log(JSON.stringify({
   ok: true,
   stage: 'STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK',
-  contract: 'client modal only asks for case name; save redirects to case finance modal'
+  contract: 'active client modal only asks for case name; save redirects to case finance modal',
+  activeDialog: 'ClientCreateDialog'
 }, null, 2));

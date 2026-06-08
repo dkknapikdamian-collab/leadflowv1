@@ -1,4 +1,5 @@
 import { type FormEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
 import { createCaseInSupabase, createClientInSupabase, fetchClientsFromSupabase } from '../lib/supabase-fallback';
@@ -19,6 +20,9 @@ import { modalFooterClass } from './entity-actions';
 import '../styles/visual-stage20-lead-form-vnext.css';
 import '../styles/closeflow-global-client-create-dialog-stage172.css';
 
+const STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT = 'active ClientCreateDialog creates empty starter case and opens CaseDetail finance modal';
+void STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT;
+
 type ClientCreateDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -32,7 +36,6 @@ type ClientCreateFormState = {
   notes: string;
   createCase: boolean;
   caseTitle: string;
-  caseValue: string;
 };
 
 const defaultClientCreateForm: ClientCreateFormState = {
@@ -43,7 +46,6 @@ const defaultClientCreateForm: ClientCreateFormState = {
   notes: '',
   createCase: false,
   caseTitle: '',
-  caseValue: '',
 };
 
 function trimForm(form: ClientCreateFormState) {
@@ -55,7 +57,6 @@ function trimForm(form: ClientCreateFormState) {
     notes: form.notes.trim(),
     createCase: form.createCase,
     caseTitle: form.caseTitle.trim(),
-    caseValue: form.caseValue.trim(),
   };
 }
 
@@ -68,6 +69,20 @@ function readCreatedClientId(result: unknown) {
     || row.client?.id
     || row.data?.id
     || row.data?.client?.id
+    || row.row?.id
+    || ''
+  ).trim();
+}
+
+function readCreatedCaseId(result: unknown) {
+  const row = (result || {}) as Record<string, any>;
+  return String(
+    row.id
+    || row.caseId
+    || row.case_id
+    || row.case?.id
+    || row.data?.id
+    || row.data?.case?.id
     || row.row?.id
     || ''
   ).trim();
@@ -104,6 +119,7 @@ async function resolveCreatedClientIdFromList(input: {
 }
 
 export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateDialogProps) {
+  const navigate = useNavigate();
   const { workspace, hasAccess } = useWorkspace();
   const [form, setForm] = useState<ClientCreateFormState>(defaultClientCreateForm);
   const [saving, setSaving] = useState(false);
@@ -164,26 +180,42 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
           return;
         }
 
-        const numericCaseValue = Number(String(prepared.caseValue || '0').replace(',', '.'));
         const caseTitle = prepared.caseTitle || `Sprawa: ${prepared.name}`;
+        let createdCaseId = '';
 
-        await createCaseInSupabase({
+        const createdCase = await createCaseInSupabase({
           title: caseTitle,
           clientId,
           clientName: prepared.name,
           clientEmail: prepared.email,
           clientPhone: prepared.phone,
           status: 'new',
-          contractValue: Number.isFinite(numericCaseValue) && numericCaseValue > 0 ? numericCaseValue : undefined,
+          contractValue: 0,
+          expectedRevenue: 0,
+          caseValue: 0,
+          remainingAmount: 0,
+          commissionMode: 'not_set',
+          commissionAmount: 0,
+          commissionStatus: 'not_set',
           primaryForClient: true,
           workspaceId,
         });
 
-        toast.success('Klient i sprawa dodane');
-      } else {
-        toast.success('Klient dodany');
+        createdCaseId = readCreatedCaseId(createdCase);
+
+        if (!createdCaseId) {
+          toast.error('Klient i sprawa zapisane, ale nie udało się otworzyć edycji finansów.');
+          closeAndReset();
+          return;
+        }
+
+        toast.success('Klient i sprawa dodane. Uzupełnij prowizję sprawy.');
+        closeAndReset();
+        navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create');
+        return;
       }
 
+      toast.success('Klient dodany');
       closeAndReset();
     } catch (error: any) {
       toast.error('Nie udało się zapisać klienta. Spróbuj ponownie.');
@@ -200,6 +232,7 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
       <DialogContent
         className="lead-form-vnext-content cf-stage172-client-create-dialog"
         data-client-create-dialog-stage172="true"
+        data-stage228r5r6-active-client-create-dialog-finance-redirect="true"
         aria-describedby="client-create-stage172-description"
       >
         <DialogHeader className="lead-form-vnext-header">
@@ -272,8 +305,8 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
                 onChange={(event) => updateForm({ createCase: event.target.checked })}
               />
               <span>
-                <strong>Dodaj sprawę od razu</strong>
-                <small>Opcjonalnie utwórz pierwszą sprawę dla tego klienta.</small>
+                <strong>Utwórz sprawę od razu</strong>
+                <small>Po zapisie otworzymy sprawę i okno „Prowizja sprawy”.</small>
               </span>
             </label>
 
@@ -287,16 +320,6 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
                     placeholder="Np. Obsługa klienta / projekt / temat"
                   />
                 </div>
-
-                <div className="lead-form-field">
-                  <Label>Wartość sprawy</Label>
-                  <Input
-                    type="number"
-                    value={form.caseValue}
-                    onChange={(event) => updateForm({ caseValue: event.target.value })}
-                    placeholder="0"
-                  />
-                </div>
               </div>
             ) : null}
           </section>
@@ -306,7 +329,7 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
               Anuluj
             </Button>
             <Button type="submit" disabled={saving || !workspace?.id}>
-              {saving ? 'Zapisywanie...' : form.createCase ? 'Zapisz klienta i sprawę' : 'Zapisz klienta'}
+              {saving ? 'Zapisywanie...' : 'Zapisz klienta'}
             </Button>
           </DialogFooter>
         </form>

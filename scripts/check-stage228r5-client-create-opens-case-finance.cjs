@@ -21,6 +21,7 @@ function forbidText(text, token, label) {
 }
 
 const clients = read('src/pages/Clients.tsx');
+const clientCreateDialog = read('src/components/ClientCreateDialog.tsx');
 const caseDetail = read('src/pages/CaseDetail.tsx');
 const pkg = JSON.parse(read('package.json'));
 
@@ -38,6 +39,24 @@ const pkg = JSON.parse(read('package.json'));
 ].forEach((token) => requireText(clients, token, 'Clients'));
 
 [
+  'STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT',
+  'const navigate = useNavigate();',
+  'readCreatedCaseId',
+  'let createdCaseId =',
+  'const createdCase = await createCaseInSupabase({',
+  "navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create')",
+  'contractValue: 0',
+  'expectedRevenue: 0',
+  'caseValue: 0',
+  'remainingAmount: 0',
+  "commissionMode: 'not_set'",
+  'commissionAmount: 0',
+  "commissionStatus: 'not_set'",
+  'Utw\u00f3rz spraw\u0119 od razu',
+  'Nazwa sprawy',
+].forEach((token) => requireText(clientCreateDialog, token, 'ClientCreateDialog'));
+
+[
   'caseCommission',
   'contractValue: caseValue',
   'expectedRevenue: caseValue',
@@ -47,6 +66,19 @@ const pkg = JSON.parse(read('package.json'));
   '<Label>Prowizja do zarobienia</Label>',
   '<Label>Waluta</Label>',
 ].forEach((token) => forbidText(clients, token, 'Clients old client-form finance intake'));
+
+[
+  'Dodaj spraw\u0119 od razu',
+  '<Label>Warto\u015b\u0107 sprawy</Label>',
+  'Zapisz klienta i spraw\u0119',
+  'caseValue: string',
+  'caseValue: form.caseValue',
+  'caseValue: form.caseValue.trim()',
+  'prepared.caseValue',
+  'value={form.caseValue}',
+  'onChange={(event) => updateForm({ caseValue: event.target.value })}',
+  'contractValue: Number.isFinite',
+].forEach((token) => forbidText(clientCreateDialog, token, 'ClientCreateDialog old active modal flow'));
 
 [
   'STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL',
@@ -70,5 +102,6 @@ if (!String(pkg.scripts.prebuild || '').includes('node scripts/check-stage228r5-
 console.log(JSON.stringify({
   ok: true,
   stage: 'STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE',
-  guard: 'check:stage228r5-client-create-opens-case-finance'
+  guard: 'check:stage228r5-client-create-opens-case-finance',
+  activeDialog: 'ClientCreateDialog'
 }, null, 2));
