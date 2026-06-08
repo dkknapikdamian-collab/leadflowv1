@@ -58,17 +58,19 @@ const pkg = JSON.parse(read('package.json'));
 
 [
   'STAGE228R7_CASE_SETTLEMENT_COMMISSION_BALANCE_TRUTH',
+  'STAGE228R7_R4_GUARD_SCOPE_PAID_AMOUNT_HOTFIX',
   'Ustaw wartość transakcji i prowizję',
   'Prowizja należna',
   'Wpłacono prowizji',
   'Do zapłaty prowizji',
   'Wpłaty prowizji zmniejszają saldo prowizji do zapłaty.',
+  'Wpłaty klienta jako podstawa',
   "onAddCommissionPayment={() => setPaymentDialogType('commission')}",
 ].forEach((token) => requireText(settlementPanel, token, 'CaseSettlementPanel'));
 
 [
-  'Wpłacono od klienta',
-  'Pozostało',
+  '<Metric label="Wpłacono od klienta"',
+  '<Metric label="Pozostało"',
   "onAddPayment={() => setPaymentDialogType('partial')}",
   "onAddDepositPayment={() => setPaymentDialogType('deposit')}",
 ].forEach((token) => forbidText(settlementPanel, token, 'CaseSettlementPanel main commission view'));

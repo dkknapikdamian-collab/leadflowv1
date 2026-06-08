@@ -41,6 +41,7 @@ export const CLOSEFLOW_CASE_SETTLEMENT_PANEL_FIN10 = 'FIN-10_CASE_FINANCE_SOURCE
 export const FIN13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR = 'FIN-13_CASE_SETTLEMENT_PANEL_USES_SHARED_CASE_FINANCE_EDITOR' as const;
 export const FIN14_CASE_SETTLEMENT_PAYMENT_TYPES = 'FIN-14_CASE_SETTLEMENT_PAYMENT_TYPES_DEPOSIT_PARTIAL_COMMISSION' as const;
 export const STAGE228R7_CASE_SETTLEMENT_COMMISSION_BALANCE_TRUTH = 'case settlement panel hides client-total remaining from main commission view' as const;
+export const STAGE228R7_R4_GUARD_SCOPE_PAID_AMOUNT_HOTFIX = 'paid_amount commission base label is allowed outside main commission balance view' as const;
 const CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1 = 'case settlement exposes explicit value and commission edit action';
 void CLOSEFLOW_CASE_SETTLEMENT_EDIT_VALUES_V1;
 const CLOSEFLOW_CASE_SETTLEMENT_PAYMENT_TYPE_GUARD = 'type="partial" type="commission"';
@@ -104,7 +105,7 @@ const COMMISSION_MODE_OPTIONS: Array<{ value: CommissionMode; label: string }> =
 
 const COMMISSION_BASE_OPTIONS: Array<{ value: CommissionBase; label: string }> = [
   { value: 'contract_value', label: 'Wartość transakcji' },
-  { value: 'paid_amount', label: 'Wpłacono od klienta' },
+  { value: 'paid_amount', label: 'Wpłaty klienta jako podstawa' },
   { value: 'custom', label: 'Własna podstawa' },
 ];
 

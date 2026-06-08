@@ -1,0 +1,14 @@
+{
+  "stage": "STAGE228R7_R4_GUARD_SCOPE_PAID_AMOUNT_HOTFIX",
+  "date": "2026-06-08 14:00 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "Stage228R7 guard globally forbade Wpłacono od klienta, but the remaining occurrence was an advanced commission base option, not a main finance metric.",
+  "fix": "Rename advanced option and narrow guard to Metric labels.",
+  "risk_audit": [
+    "No data migration.",
+    "No calculation change.",
+    "Guard now checks the intended main view scope."
+  ]
+}
