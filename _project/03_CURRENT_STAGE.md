@@ -1166,3 +1166,98 @@ NASTĘPNY KROK:
 - Uruchomić V3.
 - Jeśli gate jest zielony, lokalny smoke `/leads` i `/clients`.
 - Push po akceptacji.
+
+<!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
+## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 runtime copy cleanup
+
+FAKTY:
+- R1 ZIP nie uruchomil sie przez blad parsera PowerShell w regexie z polskimi znakami.
+- R2 przenosi patchowanie do Node.js i zostawia PowerShell jako prosty runner.
+- /clients: usunieto helper copy z prawego raila: "Bez przesady, tylko najpotrzebniejsze." oraz "5 klientow z najwieksza prowizja nalezna."
+- /leads: usunieto tylko gorny kafelek Historia; prawy filtr Historia zostaje.
+
+TESTY/GUARDY:
+- node scripts/check-stage228f-runtime-copy-cleanup.cjs
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Zmiana nie rusza backendu, SQL, CSS ani liczenia wartosci/prowizji.
+- Test reczny nadal wymagany: /clients i /leads na desktopie.
+
+NASTEPNY KROK:
+- Po lokalnym OK wykonac selektywny commit/push bez git add .
+
+<!-- STAGE228G_CASES_COPY_AND_OPERATOR_RAIL_SOURCE_TRUTH -->
+## 2026-06-07 19:05 Europe/Warsaw - STAGE228G cases copy cleanup + operator rail source truth
+
+FAKTY:
+- /cases row list no longer renders the lifecycle helper sentence plus action-count suffix under the client line.
+- /cases top metric grid has an explicit one-row source marker for desktop.
+- Cases operational shortcuts now use shared SimpleFiltersCard instead of raw local right-card markup.
+- SimpleFiltersCard and TopValueRecordsCard expose shared operator rail item/tone hooks.
+- Shared tone resolver: src/lib/operator-rail-tone.ts.
+- Shared visual source: src/styles/operator-rail-source-truth-stage228g.css.
+
+TESTY / GUARDY:
+- node scripts/check-stage228g-cases-copy-and-operator-rail-source-truth.cjs
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Color tone mapping is label/key based. If future labels become ambiguous, add explicit tone on the item instead of adding local CSS.
+- Right rail remains vertically stacked because rail width is narrow; this stage locks the top cases metrics to one row on desktop and unifies right-rail item color intensity.
+
+NEXT:
+- Manual check /cases: no helper sentence in case rows, four top metric cards in one desktop row, Operacyjne skróty visually matches Filtry proste intensity.
+
+<!-- STAGE228H_R3_SALES_FUNNEL_SOURCE_TRUTH -->
+## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 Sales Funnel metric source truth local fix
+
+FAKTY:
+- R2 nie zastosował patcha przez błąd składni w patcherze Node.
+- R3 usuwa z /funnel panel właściciela i przepina kafelki decyzyjne na OperatorMetricTile.
+- R3 przenosi Odśwież do paska etapów i zostawia podgląd dev pod /dev/funnel.
+- R3 naprawia stary guard Stage220A36, który wymuszał opis usunięty decyzją UI cleanup.
+
+TESTY:
+- node scripts/check-stage228h-r3-sales-funnel-source-truth.cjs
+- npm run build, jeśli nie użyto -SkipBuild
+- git diff --check
+
+STATUS: LOCAL ONLY, bez commita i bez pusha.
+<!-- /STAGE228H_R3_SALES_FUNNEL_SOURCE_TRUTH -->
+
+<!-- STAGE228R1_RAIL_TASKS_PATTERN_SOURCE_TRUTH -->
+## 2026-06-08 - Stage228R1 rail tasks-pattern source truth
+
+STATUS: LOCAL ONLY, DO TESTU RĘCZNEGO.
+
+FAKTY:
+- Wzorem tekstu/rytmu są kafelki z /tasks: Filtry zadań i Najpilniejsze zadania.
+- Zakres: /leads, /clients, /cases.
+- Bez runtime mapperów i bez setInterval/MutationObserver.
+
+TESTY:
+- npm run check:stage228r1-rail-tasks-pattern
+- git diff --check
+- ręcznie /tasks, /leads, /clients, /cases
+<!-- /STAGE228R1_RAIL_TASKS_PATTERN_SOURCE_TRUTH -->
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 admin feedback rail cleanup
+
+STATUS: LOCAL ONLY, BUILD PASS, MANUAL VISUAL CHECK DO WYKONANIA.
+
+FAKT:
+- Usunieto wskazane informacyjne kafelki: Billing `AI jako dodatek Beta`, Notifications `Jak dzialaja powiadomienia?`, AI Drafts `Jak dziala szkic?`.
+- Usunieto opis trial/free z prawego statusu Billing, bez zmiany glownego statusu dostepu.
+- Dodano statyczny CSS `admin-feedback-rail-cleanup-stage228r2.css` dla naglowkow i malych rail buttonow, bez runtime mappera.
+- `/funnel` uzywa ASCII-safe `\u00b7` dla separatora zamiast popsutego mojibake.
+
+DECYZJA:
+- Wpisy z feedback JSON z samym `.` potraktowano jako tropy wizualne, nie jako polecenia kasowania.
+
+DO POTWIERDZENIA:
+- Manualnie sprawdzic `/billing`, `/notifications`, `/ai-drafts`, `/funnel`, bo lokalny dev browser zatrzymal sie na `Ladowanie widoku...`.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP -->

@@ -1516,3 +1516,56 @@ Planned tests:
 - ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+
+<!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
+## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 test history
+
+Do uruchomienia przez apply:
+- node scripts/check-stage228f-runtime-copy-cleanup.cjs
+- npm run build
+- git diff --check
+
+Test reczny:
+- /clients: brak dopiskow pod "Filtry proste" i "Najwyzsza prowizja".
+- /leads: brak gornego kafelka Historia; prawy filtr Historia nadal jest.
+
+<!-- STAGE228G_TEST_HISTORY -->
+## 2026-06-07 19:05 Europe/Warsaw - STAGE228G tests
+
+DO URUCHOMIENIA przez apply script:
+- node scripts/check-stage228g-cases-copy-and-operator-rail-source-truth.cjs
+- npm run build
+- git diff --check
+
+Manual:
+- /cases: case row helper sentence removed.
+- /cases: top metric cards in one row on desktop.
+- /cases: Operacyjne skróty tone intensity matches /clients and /leads Filtry proste.
+
+<!-- STAGE228H_R3_TEST_HISTORY -->
+## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 tests
+- Planned/runner: node scripts/check-stage228h-r3-sales-funnel-source-truth.cjs
+- Planned/runner: npm run build unless skipped
+- Planned/manual: open http://localhost:3000/dev/funnel after npm run dev.
+<!-- /STAGE228H_R3_TEST_HISTORY -->
+
+<!-- STAGE228R1_TEST_HISTORY -->
+## Stage228R1 tests
+Planowane: npm run check:stage228r1-rail-tasks-pattern, git diff --check, manual /tasks /leads /clients /cases.
+<!-- /STAGE228R1_TEST_HISTORY -->
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_TEST_HISTORY -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 tests
+
+PASS:
+- `npm run audit:closeflow-ui-map`
+- `npm run audit:closeflow-style-map`
+- `npm run check:closeflow-ui-skill-pack`
+- `npm run check:closeflow-ui-premap-contract`
+- `npm run check:stage228r2-admin-feedback-rail-cleanup`
+- `npm run check:stage228r1-rail-tasks-pattern`
+- `npm run build`
+
+PARTIAL / SKIP:
+- Browser DOM smoke opened local routes, but app stayed at `Ladowanie widoku...`; no full visual PASS recorded.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_TEST_HISTORY -->

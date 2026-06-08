@@ -8,6 +8,7 @@ import { EntityIcon } from '../components/ui-system/EntityIcon';
 import { toast } from 'sonner';
 import { ConfirmDialog } from '../components/confirm-dialog';
 import { StatShortcutCard } from '../components/StatShortcutCard';
+import { SimpleFiltersCard } from '../components/operator-rail';
 import Layout from '../components/Layout';
 import { EntityTrashButton, modalFooterClass, trashActionIconClass } from '../components/entity-actions';
 import { Input } from '../components/ui/input';
@@ -47,6 +48,10 @@ const STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH = 'cases list open and trash act
 void STAGE220A28_CASE_ROW_ACTIONS_SOURCE_TRUTH;
 const STAGE222_OWNER_RISK_CASE_BADGES = 'case rows show owner risk badges from owner-risk-rules source of truth';
 void STAGE222_OWNER_RISK_CASE_BADGES;
+const STAGE228G_CASE_ROW_RUNTIME_COPY_CLEANUP = 'case list rows hide lifecycle helper sentence and action count runtime copy';
+const STAGE228G_OPERATOR_RAIL_SOURCE_TRUTH = 'cases operational shortcuts use SimpleFiltersCard and shared operator rail tone source';
+void STAGE228G_CASE_ROW_RUNTIME_COPY_CLEANUP;
+void STAGE228G_OPERATOR_RAIL_SOURCE_TRUTH;
 
 type CaseRecord = {
   id: string;
@@ -657,7 +662,7 @@ export default function Cases() {
           }
         />
 
-        <div className="grid-4" data-stage16c-cases-stat-grid="true">
+        <div className="grid-4" data-stage16c-cases-stat-grid="true" data-stage228g-cases-one-row-stat-grid="true">
           <StatShortcutCard
             label="W realizacji"
             value={stats.total}
@@ -752,9 +757,8 @@ export default function Cases() {
                         <span className="case-row-title-line">
                           <Link to={`/case/${record.id}`} className="title">{cleanCaseListTitle(record.title || record.clientName || 'Sprawa bez nazwy')}</Link>
                         </span>
-                        <span className="cf-list-row-meta">
+                        <span className="cf-list-row-meta" data-stage228g-case-row-copy-clean="true">
                           <span className="cf-list-row-client">Klient: {record.clientName || 'Brak nazwy klienta'}</span>
-                          <span className="sub">{lifecycle.headline} · {metaSuffix}</span>
                         </span>
                         <span className="statusline">
                           <span className="cf-status-pill" data-cf-status-tone={statusTone}>{statusLabel}</span>
@@ -812,25 +816,36 @@ export default function Cases() {
           </div>
 
           <div className="cases-right-rail">
-            <aside className="right-card cases-shortcuts-rail-card">
-              <div className="panel-head"><div><h3>Operacyjne skróty</h3></div></div>
-              <div className="quick-list">
-                <button type="button" onClick={() => toggleCaseView('needs_next_step')}><span>Bez zaplanowanej akcji</span><strong>{stats.needsNextStep}</strong></button>
-                <button type="button" onClick={() => toggleCaseView('linked')}><span>Portal klienta</span><strong>{stats.linked}</strong></button>
-                <button type="button" onClick={() => toggleCaseView('waiting')}><span>Sprawy bez ruchu</span><strong>{stats.waiting}</strong></button>
-                <button type="button" onClick={() => toggleCaseView('approval')}><span>Akceptacje</span><strong>{stats.approval}</strong></button>
-              </div>
-            </aside>
+            <SimpleFiltersCard
+              className="cases-shortcuts-rail-card operator-simple-filters-card"
+              title="Operacyjne skróty"
+              description=""
+              dataTestId="cases-operational-shortcuts-card"
+              dataAttrs={{ 'data-stage228g-cases-shortcuts-source-truth': true }}
+              items={[
+                { key: 'needs_next_step', label: 'Bez zaplanowanej akcji', value: stats.needsNextStep, onClick: () => toggleCaseView('needs_next_step') },
+                { key: 'linked', label: 'Portal klienta', value: stats.linked, onClick: () => toggleCaseView('linked') },
+                { key: 'waiting', label: 'Sprawy bez ruchu', value: stats.waiting, onClick: () => toggleCaseView('waiting') },
+                { key: 'approval', label: 'Akceptacje', value: stats.approval, onClick: () => toggleCaseView('approval') },
+              ]}
+            />
 
             <aside className="right-card cases-risk-rail-card">
-              <div className="panel-head"><div><h3>Blokery i ryzyko</h3></div></div>
+              <div className="panel-head"><div><h3 className="cf-rail-card-title">Blokery i ryzyko</h3></div></div>
               <div className="quick-list">
                 {filteredCases.slice(0, 4).map((record) => {
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
                   const riskTitle = `${record.title || 'Sprawa'} — ${lifecycleRiskLabel(lifecycle.riskLevel)} · Braki ${lifecycle.missingRequiredCount}`;
                   return (
-                    <Link key={record.id} to={`/case/${record.id}`} title={riskTitle}>
-                      <span><strong title={record.title || 'Sprawa'}>{record.title || 'Sprawa'}</strong><small>{lifecycleRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
+                    <Link
+                      key={record.id}
+                      to={`/case/${record.id}`}
+                      title={riskTitle}
+                      data-cf-operator-rail-item="true"
+                      data-cf-operator-rail-tone={lifecycle.riskLevel === 'high' ? 'red' : lifecycle.riskLevel === 'medium' ? 'amber' : 'blue'}
+                    className="cf-rail-risk-row"
+                    >
+                      <span className="cf-rail-risk-copy"><strong className="cf-rail-risk-title" title={record.title || 'Sprawa'}>{record.title || 'Sprawa'}</strong><small className="cf-rail-risk-meta">{lifecycleRiskLabel(lifecycle.riskLevel)} · Braki {lifecycle.missingRequiredCount}</small></span>
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                   );

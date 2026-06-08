@@ -985,7 +985,7 @@ export default function Clients() {
             <SimpleFiltersCard
               className="client-right-card operator-simple-filters-card"
               title="Filtry proste"
-              description="Bez przesady, tylko najpotrzebniejsze."
+              description=""
               dataTestId="clients-simple-filters-card"
               items={[
                 { key: 'active', label: 'Aktywni', value: activeCount, onClick: () => setShowArchived(false) },
@@ -996,7 +996,7 @@ export default function Clients() {
             />
             <TopValueRecordsCard
               title="Najwyższa prowizja"
-              description="5 klientów z największą prowizją należną."
+              description=""
               className="operator-top-value-card"
               dataTestId="clients-top-value-records-card"
               dataAttrs={{ 'data-clients-top-value-board': true }}

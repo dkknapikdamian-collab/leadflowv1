@@ -2078,3 +2078,53 @@ Broken Stage228B pushed commit: 14f00a3d.
 - ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+
+<!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
+## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 implementation ledger
+
+Zakres plikow:
+- src/pages/Clients.tsx
+- src/pages/Leads.tsx
+- scripts/check-stage228f-runtime-copy-cleanup.cjs
+- _project/* memory files
+- obsidian_updates/*
+
+Bez zmian: CSS, backend, SQL, Supabase, routing, liczenie prowizji/wartosci.
+
+<!-- STAGE228G_LEDGER -->
+## 2026-06-07 19:05 Europe/Warsaw - STAGE228G implementation ledger
+
+- Files changed: Cases.tsx, OperatorSideCard.tsx, SimpleFiltersCard.tsx, TopValueRecordsCard.tsx.
+- Files added: src/lib/operator-rail-tone.ts, src/styles/operator-rail-source-truth-stage228g.css, scripts/check-stage228g-cases-copy-and-operator-rail-source-truth.cjs.
+- No SQL. No backend. No data model change.
+
+<!-- STAGE228H_R3_LEDGER -->
+## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 implementation ledger
+- Files: src/pages/SalesFunnel.tsx, src/styles/sales-funnel-source-truth-stage228h.css, scripts/check-stage228h-r3-sales-funnel-source-truth.cjs, scripts/check-stage220a36-commission-input-model-split.cjs, _project notes, obsidian_updates.
+- Mode: local-only. No commit. No push.
+<!-- /STAGE228H_R3_LEDGER -->
+
+<!-- STAGE228R1_LEDGER -->
+## Stage228R1
+Zakres: src/main.tsx, src/styles/operator-rail-tasks-pattern-stage228r1.css, operator rail component class guards, _project run report, Obsidian update.
+<!-- /STAGE228R1_LEDGER -->
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_LEDGER -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 implementation ledger
+
+Touched by this stage:
+- `src/pages/Billing.tsx`
+- `src/pages/NotificationsCenter.tsx`
+- `src/pages/AiDrafts.tsx`
+- `src/pages/SalesFunnel.tsx`
+- `src/main.tsx`
+- `src/styles/admin-feedback-rail-cleanup-stage228r2.css`
+- `scripts/check-stage228r2-admin-feedback-rail-cleanup.cjs`
+- `package.json`
+- `_project/*` memory files
+- `obsidian_updates/*`
+
+No changes:
+- No backend/API/Supabase/RLS/schema/auth/payment logic change.
+- No route architecture change.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_LEDGER -->

@@ -1,0 +1,263 @@
+/* STAGE228R1_RAIL_TASKS_PATTERN_SOURCE_TRUTH
+   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelków /leads, /clients, /cases.
+   Wzorcem są /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
+   Zakaz runtime mapperów: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
+*/
+:root {
+  --cf-rail-r1-title-size: 13px;
+  --cf-rail-r1-title-weight: 700;
+  --cf-rail-r1-title-color: #0f172a;
+  --cf-rail-r1-row-size: 12px;
+  --cf-rail-r1-row-weight: 650;
+  --cf-rail-r1-row-color: #334155;
+  --cf-rail-r1-meta-size: 11px;
+  --cf-rail-r1-meta-weight: 600;
+  --cf-rail-r1-meta-color: #475569;
+  --cf-rail-r1-radius: 10px;
+  --cf-rail-r1-height: 30px;
+  --cf-rail-r1-gap: 8px;
+  --cf-rail-r1-blue-bg: #eff6ff;
+  --cf-rail-r1-blue-border: #bfdbfe;
+  --cf-rail-r1-red-bg: #fff1f2;
+  --cf-rail-r1-red-border: #fecdd3;
+  --cf-rail-r1-amber-bg: #fffbeb;
+  --cf-rail-r1-amber-border: #fde68a;
+  --cf-rail-r1-green-bg: #ecfdf5;
+  --cf-rail-r1-green-border: #bbf7d0;
+  --cf-rail-r1-purple-bg: #f5f3ff;
+  --cf-rail-r1-purple-border: #ddd6fe;
+  --cf-rail-r1-slate-bg: #f8fafc;
+  --cf-rail-r1-slate-border: #e2e8f0;
+  --cf-rail-r1-list-bg: #ffffff;
+  --cf-rail-r1-list-border: #dbeafe;
+}
+
+.lead-right-rail .right-card .panel-head,
+.clients-right-rail .right-card .panel-head,
+.cases-right-rail .right-card .panel-head,
+.cf-operator-right-rail .right-card .panel-head {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 12px !important;
+  min-height: 0 !important;
+}
+
+.lead-right-rail .right-card .panel-head h3,
+.clients-right-rail .right-card .panel-head h3,
+.cases-right-rail .right-card .panel-head h3,
+.cf-operator-right-rail .right-card .panel-head h3,
+.cf-rail-card-title {
+  display: block !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--cf-rail-r1-title-color) !important;
+  font-size: var(--cf-rail-r1-title-size) !important;
+  font-weight: var(--cf-rail-r1-title-weight) !important;
+  line-height: 1.15 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.lead-right-rail .right-card .quick-list,
+.clients-right-rail .right-card .quick-list,
+.cases-right-rail .right-card .quick-list,
+.cf-operator-right-rail .right-card .quick-list {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--cf-rail-r1-gap) !important;
+  margin: 0 !important;
+}
+
+/* Filter rows: /leads, /clients, /cases operational shortcuts. */
+.lead-right-rail .cf-rail-filter-row,
+.clients-right-rail .cf-rail-filter-row,
+.cases-right-rail .cf-rail-filter-row,
+.cf-operator-right-rail .cf-rail-filter-row,
+.lead-right-rail [data-cf-simple-filters-card="true"] .quick-list > button,
+.clients-right-rail [data-cf-simple-filters-card="true"] .quick-list > button,
+.cases-right-rail [data-testid="cases-operational-shortcuts-card"] .quick-list > button {
+  width: 100% !important;
+  min-height: var(--cf-rail-r1-height) !important;
+  height: var(--cf-rail-r1-height) !important;
+  padding: 0 12px !important;
+  border-width: 1px !important;
+  border-style: solid !important;
+  border-radius: var(--cf-rail-r1-radius) !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  color: var(--cf-rail-r1-row-color) !important;
+  font-size: var(--cf-rail-r1-row-size) !important;
+  font-weight: var(--cf-rail-r1-row-weight) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+}
+
+.lead-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="blue"],
+.clients-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="blue"],
+.cases-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="blue"],
+.cf-operator-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="blue"] {
+  background: var(--cf-rail-r1-blue-bg) !important;
+  border-color: var(--cf-rail-r1-blue-border) !important;
+}
+.lead-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="red"],
+.clients-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="red"],
+.cases-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="red"],
+.cf-operator-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="red"] {
+  background: var(--cf-rail-r1-red-bg) !important;
+  border-color: var(--cf-rail-r1-red-border) !important;
+}
+.lead-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="amber"],
+.clients-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="amber"],
+.cases-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="amber"],
+.cf-operator-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="amber"] {
+  background: var(--cf-rail-r1-amber-bg) !important;
+  border-color: var(--cf-rail-r1-amber-border) !important;
+}
+.lead-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="green"],
+.clients-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="green"],
+.cases-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="green"],
+.cf-operator-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="green"] {
+  background: var(--cf-rail-r1-green-bg) !important;
+  border-color: var(--cf-rail-r1-green-border) !important;
+}
+.lead-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="purple"],
+.clients-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="purple"],
+.cases-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="purple"],
+.cf-operator-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="purple"] {
+  background: var(--cf-rail-r1-purple-bg) !important;
+  border-color: var(--cf-rail-r1-purple-border) !important;
+}
+.lead-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="slate"],
+.clients-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="slate"],
+.cases-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="slate"],
+.cf-operator-right-rail .cf-rail-filter-row[data-cf-operator-rail-tone="slate"] {
+  background: var(--cf-rail-r1-slate-bg) !important;
+  border-color: var(--cf-rail-r1-slate-border) !important;
+}
+
+.cf-rail-filter-label,
+.cf-rail-filter-count,
+.lead-right-rail .cf-rail-filter-row > span,
+.lead-right-rail .cf-rail-filter-row > strong,
+.clients-right-rail .cf-rail-filter-row > span,
+.clients-right-rail .cf-rail-filter-row > strong,
+.cases-right-rail .cf-rail-filter-row > span,
+.cases-right-rail .cf-rail-filter-row > strong {
+  color: var(--cf-rail-r1-row-color) !important;
+  font-size: var(--cf-rail-r1-row-size) !important;
+  font-weight: var(--cf-rail-r1-row-weight) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* List rows: /tasks urgent pattern for top value and case risk rows. */
+.lead-right-rail .operator-top-value-card .quick-list,
+.clients-right-rail .operator-top-value-card .quick-list {
+  padding: 10px 14px 14px !important;
+  border: 1px solid var(--cf-rail-r1-slate-border) !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+}
+
+.lead-right-rail .cf-rail-top-row,
+.clients-right-rail .cf-rail-top-row,
+.cases-right-rail .cf-rail-risk-row,
+.cf-operator-right-rail .cf-rail-top-row,
+.cf-operator-right-rail .cf-rail-risk-row {
+  width: 100% !important;
+  min-height: var(--cf-rail-r1-height) !important;
+  height: var(--cf-rail-r1-height) !important;
+  padding: 0 12px !important;
+  border: 1px solid var(--cf-rail-r1-list-border) !important;
+  border-radius: var(--cf-rail-r1-radius) !important;
+  background: var(--cf-rail-r1-list-bg) !important;
+  box-shadow: none !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  overflow: hidden !important;
+  text-decoration: none !important;
+  color: var(--cf-rail-r1-row-color) !important;
+  font-size: var(--cf-rail-r1-row-size) !important;
+  font-weight: var(--cf-rail-r1-row-weight) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
+  white-space: nowrap !important;
+}
+
+.lead-right-rail .cf-rail-top-row *,
+.clients-right-rail .cf-rail-top-row *,
+.cases-right-rail .cf-rail-risk-row * {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  color: var(--cf-rail-r1-row-color) !important;
+  font-size: var(--cf-rail-r1-row-size) !important;
+  font-weight: var(--cf-rail-r1-row-weight) !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.01em !important;
+  min-width: 0 !important;
+}
+
+.cf-rail-top-name,
+.cf-top-value-label,
+.cf-rail-risk-title {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: var(--cf-rail-r1-row-color) !important;
+  font-weight: var(--cf-rail-r1-row-weight) !important;
+}
+
+.cf-rail-top-value,
+.cf-top-value-money,
+.cf-rail-risk-meta,
+.cf-rail-risk-copy small,
+.cf-rail-risk-row small {
+  flex: 0 0 auto !important;
+  color: var(--cf-rail-r1-meta-color) !important;
+  font-size: var(--cf-rail-r1-meta-size) !important;
+  font-weight: var(--cf-rail-r1-meta-weight) !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+}
+
+.cases-right-rail .cases-risk-rail-card .panel-head,
+.cases-right-rail aside.cases-risk-rail-card .panel-head {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  margin: 0 0 12px !important;
+}
+
+.cases-right-rail .cases-risk-rail-card .quick-list {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="blue"] {
+  background: var(--cf-rail-r1-blue-bg) !important;
+  border-color: var(--cf-rail-r1-blue-border) !important;
+}
+.cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="red"] {
+  background: var(--cf-rail-r1-red-bg) !important;
+  border-color: var(--cf-rail-r1-red-border) !important;
+}

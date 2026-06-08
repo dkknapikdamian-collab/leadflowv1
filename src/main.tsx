@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import './index.css';
+import './debug/cf-style-map-debugger-stage228q';
 import './styles/stage80-today-task-done-desktop-visibility.css';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { AppearanceProvider } from './components/appearance-provider';
@@ -9,14 +10,13 @@ import { registerCloseFlowServiceWorker } from './pwa/register-service-worker';
 import { registerChunkAssetReloadGuard } from './pwa/chunk-asset-reload-guard';
 import './styles/action-color-taxonomy-v1.css';
 import './styles/closeflow-right-rail-source-truth.css';
+import './styles/operator-rail-tasks-pattern-stage228r1.css';
+import './styles/admin-feedback-rail-cleanup-stage228r2.css';
 import './styles/closeflow-leads-right-rail-layout-lock.css';
 import './styles/closeflow-detail-view-source-truth-stage219.css';
-
 registerChunkAssetReloadGuard();
 registerCloseFlowServiceWorker();
-
 console.info('CLOSEFLOW_STAGE122_RUNTIME_MARKER', 'runtime-auth-api-pwa-hardening-2026-05-18');
-
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ErrorBoundary>

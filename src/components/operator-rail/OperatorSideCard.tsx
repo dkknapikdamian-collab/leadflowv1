@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+import '../../styles/operator-rail-source-truth-stage228g.css';
+
 export type OperatorRailDataAttrs = Record<`data-${string}`, string | number | boolean | undefined>;
 
 export type OperatorSideCardProps = {
@@ -39,7 +41,7 @@ export function OperatorSideCard({
     <aside className={rootClassName} data-testid={dataTestId} {...attrs}>
       <div className="panel-head">
         <div>
-          <h3>{title}</h3>
+          <h3 className="cf-rail-card-title">{title}</h3>
           {description ? <p>{description}</p> : null}
         </div>
         {headerAside ? <>{headerAside}</> : null}

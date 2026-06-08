@@ -628,7 +628,6 @@ export default function Billing() {
                   <h2>Status konta</h2>
                 </div>
                 <p>{accessCopy.label}</p>
-                <small>{accessCopy.description}</small>
                 <div className="mt-3 flex gap-2">
                   <Button
                     type="button"
@@ -681,14 +680,6 @@ export default function Billing() {
                   <span>Pełne powiązania z klientem</span>
                   <span>Workflow operacyjny po leadzie</span>
                 </div>
-              </section>
-
-              <section className="right-card billing-right-card" data-billing-rail-card="ai">
-                <div className="billing-right-title">
-                  <EntityIcon entity="ai" className="h-4 w-4" />
-                  <h2>AI jako dodatek Beta</h2>
-                </div>
-                <small>Warstwy AI: lokalne/regułowe (bez modelu), asystent aplikacji (czyta dane i zapisuje szkice), zewnętrzny model dopiero po konfiguracji providera i env w Vercel.</small>
               </section>
             </aside>
           </div>

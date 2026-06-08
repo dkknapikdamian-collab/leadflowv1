@@ -2060,3 +2060,46 @@ Purpose: if LeadDetail uses AlertTriangle, it must import AlertTriangle from luc
 - ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+
+<!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
+## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 guard
+
+Guard: `node scripts/check-stage228f-runtime-copy-cleanup.cjs`
+
+Zakres:
+- blokuje powrot dwoch dopiskow w prawym railu klientow,
+- blokuje powrot gornego kafelka Historia w leadach,
+- pilnuje, ze filtr Historia w prawym railu leadow zostaje.
+
+<!-- STAGE228G_GUARD -->
+## 2026-06-07 19:05 Europe/Warsaw - STAGE228G guard
+
+- Guard: node scripts/check-stage228g-cases-copy-and-operator-rail-source-truth.cjs
+- Scope: /cases helper copy removal, cases shortcuts via SimpleFiltersCard, shared operator rail tone hooks and CSS.
+
+<!-- STAGE228H_R3_GUARD -->
+## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 guard
+- Guard: node scripts/check-stage228h-r3-sales-funnel-source-truth.cjs
+- Zakres: /funnel bez panelu właściciela, kafelki przez OperatorMetricTile, jeden rząd na desktopie, refresh w stage actions.
+<!-- /STAGE228H_R3_GUARD -->
+
+<!-- STAGE228R1_RAIL_TASKS_PATTERN_GUARD -->
+## Stage228R1 guard
+- npm run check:stage228r1-rail-tasks-pattern
+- Chroni klasę błędu: rozjazd tekstu/rytmu right rail względem wzorca /tasks.
+<!-- /STAGE228R1_RAIL_TASKS_PATTERN_GUARD -->
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP_GUARD -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 guard
+
+Guard:
+- `npm run check:stage228r2-admin-feedback-rail-cleanup`
+
+Chroni:
+- brak powrotu Billing `AI jako dodatek Beta`,
+- brak opisu `accessCopy.description` w prawym statusie Billing,
+- brak powrotu Notifications `Jak dzialaja powiadomienia?`,
+- brak powrotu AI Drafts `Jak dziala szkic?`,
+- brak mojibake separatora w `SalesFunnel.tsx`,
+- import statycznego CSS `admin-feedback-rail-cleanup-stage228r2.css`.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP_GUARD -->

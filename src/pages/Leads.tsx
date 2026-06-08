@@ -1029,15 +1029,6 @@ export default function Leads() {
             helper={lostLeadRescueSummary.critical ? `${lostLeadRescueSummary.critical} krytyczne` : 'sprawdź ciszę'}
           />
 
-          <StatShortcutCard
-            label="Historia"
-            value={stats.linkedToCase}
-            icon={CaseEntityIcon}
-            active={quickFilter === 'history' && !showTrash}
-            onClick={() => toggleQuickFilter('history')}
-            title="Pokaż leady przeniesione do obsługi"
-            ariaLabel="Pokaż leady przeniesione do obsługi"
-          />
         </div>
 
         {/*

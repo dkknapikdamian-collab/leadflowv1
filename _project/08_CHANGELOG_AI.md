@@ -2191,3 +2191,44 @@ Poprawiono `/funnel`: domyĹ›lnie pokazuje wszystkie rekordy, kafle wĹ‚aĹ�
 - ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+
+<!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
+## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 runtime copy cleanup
+
+- Naprawiono paczke R1: blad PowerShell parsera zastapiono prostym runnerem i patcherem Node.js.
+- Usunieto dwa dopiski z prawego raila klientow.
+- Usunieto gorny kafelek Historia z leadow, bez usuwania filtra Historia po prawej.
+- Dodano guard `scripts/check-stage228f-runtime-copy-cleanup.cjs`.
+
+<!-- STAGE228G_CHANGELOG -->
+## 2026-06-07 19:05 Europe/Warsaw - STAGE228G cases copy cleanup + operator rail source truth
+
+- Removed noisy case-row helper copy under the client line.
+- Added desktop one-row marker/CSS for /cases top metric cards.
+- Replaced local cases operational shortcuts markup with shared SimpleFiltersCard.
+- Added shared operator rail tone resolver and CSS so SimpleFiltersCard, TopValueRecordsCard and cases risk links use the same visual intensity model.
+
+<!-- STAGE228H_R3_CHANGELOG -->
+## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 Sales Funnel visual source truth
+- Usunięto panel właściciela z /funnel.
+- Kafelki decyzyjne lejka przepięto na OperatorMetricTile jako wspólne źródło wizualne.
+- Dodano CSS source truth dla układu /funnel.
+- Poprawiono stale guard Stage220A36 po usunięciu opisu „5 klientów...”.
+<!-- /STAGE228H_R3_CHANGELOG -->
+
+<!-- STAGE228R1_CHANGELOG -->
+## 2026-06-08 - Stage228R1
+Dodano statyczny CSS source truth dla tekstu i rytmu rail /leads, /clients, /cases na bazie wzorca /tasks.
+<!-- /STAGE228R1_CHANGELOG -->
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP_CHANGELOG -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 admin feedback rail cleanup
+
+- Removed Billing right-rail `AI jako dodatek Beta` card.
+- Removed Billing right-rail trial/free description under `Status konta`.
+- Removed Notifications right-rail explainer card `Jak dzialaja powiadomienia?`.
+- Removed AI Drafts right-rail explainer card `Jak dziala szkic?`.
+- Added static CSS source `src/styles/admin-feedback-rail-cleanup-stage228r2.css` for plain rail headings and compact rail rows.
+- Added guard `scripts/check-stage228r2-admin-feedback-rail-cleanup.cjs` and package script.
+- Fixed Sales Funnel separator source to ASCII-safe `\u00b7`.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP_CHANGELOG -->

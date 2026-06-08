@@ -1168,3 +1168,43 @@ NASTĘPNY KROK:
 - Uruchomić V3.
 - Jeśli gate jest zielony, lokalny smoke `/leads` i `/clients`.
 - Push po akceptacji.
+
+<!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
+## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2
+
+Runtime UI copy cleanup po bledzie paczki R1. Zakres: /clients prawy rail copy oraz /leads gorny kafelek Historia.
+
+<!-- STAGE228G_CASES_COPY_AND_OPERATOR_RAIL_SOURCE_TRUTH -->
+## 2026-06-07 19:05 Europe/Warsaw - STAGE228G cases copy cleanup + operator rail source truth
+
+FAKTY:
+- /cases row list no longer renders the lifecycle helper sentence plus action-count suffix under the client line.
+- /cases top metric grid has an explicit one-row source marker for desktop.
+- Cases operational shortcuts now use shared SimpleFiltersCard instead of raw local right-card markup.
+- SimpleFiltersCard and TopValueRecordsCard expose shared operator rail item/tone hooks.
+- Shared tone resolver: src/lib/operator-rail-tone.ts.
+- Shared visual source: src/styles/operator-rail-source-truth-stage228g.css.
+
+TESTY / GUARDY:
+- node scripts/check-stage228g-cases-copy-and-operator-rail-source-truth.cjs
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Color tone mapping is label/key based. If future labels become ambiguous, add explicit tone on the item instead of adding local CSS.
+- Right rail remains vertically stacked because rail width is narrow; this stage locks the top cases metrics to one row on desktop and unifies right-rail item color intensity.
+
+NEXT:
+- Manual check /cases: no helper sentence in case rows, four top metric cards in one desktop row, Operacyjne skróty visually matches Filtry proste intensity.
+
+<!-- STAGE228H_R3_TIMELINE -->
+- 2026-06-07 19:45 Europe/Warsaw: STAGE228H R3 local-only - naprawa niedziałającego R2, Sales Funnel metric source truth, bez push.
+<!-- /STAGE228H_R3_TIMELINE -->
+
+<!-- STAGE228R1_TIMELINE -->
+- 2026-06-08: Stage228R1 local-only package prepared for right-rail tasks-pattern visual source truth.
+<!-- /STAGE228R1_TIMELINE -->
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_TIMELINE -->
+- 2026-06-08 08:58 Europe/Warsaw: Stage228R2 local-only - cleanup po admin feedback JSON dla prawych raili i separatora `/funnel`; build PASS; manual visual smoke SKIP przez `Ladowanie widoku...`.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_TIMELINE -->

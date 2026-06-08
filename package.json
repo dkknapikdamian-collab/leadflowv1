@@ -904,7 +904,22 @@
     "check:stage227g1r1-today-reason-and-shift-visibility-repair": "node scripts/check-stage227g1r1-today-reason-and-shift-visibility-repair.cjs",
     "test:stage227g1r1-today-reason-and-shift-visibility-repair": "node --test tests/stage227g1r1-today-reason-and-shift-visibility-repair.test.cjs",
     "check:stage227g2-today-movement-leads-copy-history-cleanup": "node scripts/check-stage227g2-today-movement-leads-copy-history-cleanup.cjs",
-    "test:stage227g2-today-movement-leads-copy-history-cleanup": "node --test tests/stage227g2-today-movement-leads-copy-history-cleanup.test.cjs"
+    "test:stage227g2-today-movement-leads-copy-history-cleanup": "node --test tests/stage227g2-today-movement-leads-copy-history-cleanup.test.cjs",
+    "check:stage228i-global-soft-tone-source-truth": "node scripts/check-stage228i-global-soft-tone-source-truth.cjs",
+    "check:stage228i-final-soft-tone-source-truth": "node scripts/check-stage228i-final-soft-tone-source-truth.cjs",
+    "check:stage228j-soft-tone-target-map": "node scripts/check-stage228j-soft-tone-target-map.cjs",
+    "check:stage228k-soft-tone-exact-dom-map": "node scripts/check-stage228k-soft-tone-exact-dom-map.cjs",
+    "check:stage228l-text-leaf-soft-tone-source-truth": "node scripts/check-stage228l-text-leaf-soft-tone-source-truth.cjs",
+    "check:stage228m-row-soft-tone-source-truth": "node scripts/check-stage228m-row-soft-tone-source-truth.cjs",
+    "check:stage228n-font-soft-tone-source-truth": "node scripts/check-stage228n-font-soft-tone-source-truth.cjs",
+    "check:stage228o1-rail-tile-tone-source-truth": "node scripts/check-stage228o1-rail-tile-tone-source-truth.cjs",
+    "check:stage228o1r2-cases-risk-rail-alignment": "node scripts/check-stage228o1r2-cases-risk-rail-alignment.cjs",
+    "check:stage228o1r3-cases-risk-no-blink-font-fix": "node scripts/check-stage228o1r3-cases-risk-no-blink-font-fix.cjs",
+    "check:stage228o1r7-cases-risk-static-css-no-runtime": "node scripts/check-stage228o1r7-cases-risk-static-css-no-runtime.cjs",
+    "check:stage228p-rail-text-source-truth": "node scripts/check-stage228p-rail-text-source-truth.cjs",
+    "check:stage228q-debug-style-map": "node scripts/check-stage228q-debug-style-map.cjs",
+    "check:stage228r1-rail-tasks-pattern": "node scripts/check-stage228r1-rail-tasks-pattern.cjs",
+    "check:stage228r2-admin-feedback-rail-cleanup": "node scripts/check-stage228r2-admin-feedback-rail-cleanup.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

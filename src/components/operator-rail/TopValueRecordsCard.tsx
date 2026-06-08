@@ -58,9 +58,12 @@ export function TopValueRecordsCard({
                 to={item.href || '#'}
                 title={fullTitle}
                 {...(item.dataAttrs || {})}
+                data-cf-operator-rail-item="true"
+                data-cf-operator-rail-tone="blue"
+              className="cf-rail-top-row"
               >
                 <span
-                  className="lead-relation-label-wrap cf-top-value-label-wrap"
+                  className="lead-relation-label-wrap cf-top-value-label-wrap cf-rail-top-name"
                   title={item.description ? item.label + ' - ' + item.description : item.label}
                 >
                   <span className={hasDescription ? 'cf-top-value-line cf-top-value-line-with-description' : 'cf-top-value-line cf-top-value-line-single'}>
@@ -73,7 +76,7 @@ export function TopValueRecordsCard({
                     ) : null}
                   </span>
                 </span>
-                <strong className="lead-relation-money cf-top-value-money">{item.valueLabel}</strong>
+                <strong className="lead-relation-money cf-top-value-money cf-rail-top-value">{item.valueLabel}</strong>
               </Link>
             );
           })}
