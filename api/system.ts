@@ -44,8 +44,11 @@ function asNullableString(value: unknown) {
   return trimmed ? trimmed : null;
 }
 
+const STAGE228R20R5_API_ROUTE_KIND_COMPAT = 'api/system accepts apiRoute as legacy route key for tasks';
+void STAGE228R20R5_API_ROUTE_KIND_COMPAT;
+
 function routeKind(req: any, body: Record<string, unknown>) {
-  const raw = req?.query?.kind ?? body.kind ?? '';
+  const raw = req?.query?.kind ?? req?.query?.apiRoute ?? body.kind ?? (body as any).apiRoute ?? '';
   return typeof raw === 'string' ? raw.trim().toLowerCase() : '';
 }
 

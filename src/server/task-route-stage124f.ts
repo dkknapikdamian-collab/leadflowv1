@@ -235,13 +235,58 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
     }
 
     if (req.method === 'DELETE') {
-      const id = queryValue(req, 'id');
+      const STAGE228R20R5_VERIFIED_SQL_TASK_DELETE = 'Task DELETE reads SQL before and after delete; false success is blocked';
+      void STAGE228R20R5_VERIFIED_SQL_TASK_DELETE;
+
+      const id = queryValue(req, 'id') || asText((body as any).id);
       if (!id) {
         res.status(400).json({ error: 'TASK_ID_REQUIRED' });
         return;
       }
+
+      const selectPathStage228R20R5 = 'work_items?select=id,workspace_id,lead_id,client_id,case_id,type,status,title&id=eq.' + encodeURIComponent(id) + '&limit=1';
+      const scopedBeforeStage228R20R5 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R20R5, workspaceId)]).catch(() => ({ data: [] }));
+      let beforeRowsStage228R20R5 = Array.isArray((scopedBeforeStage228R20R5 as any)?.data) ? (scopedBeforeStage228R20R5 as any).data as Record<string, unknown>[] : [];
+
+      if (!beforeRowsStage228R20R5.length) {
+        const unscopedBeforeStage228R20R5 = await selectFirstAvailable([selectPathStage228R20R5]).catch(() => ({ data: [] }));
+        beforeRowsStage228R20R5 = Array.isArray((unscopedBeforeStage228R20R5 as any)?.data) ? (unscopedBeforeStage228R20R5 as any).data as Record<string, unknown>[] : [];
+      }
+
+      if (!beforeRowsStage228R20R5.length) {
+        res.status(200).json({ ok: true, id, alreadyMissing: true, verified: true });
+        return;
+      }
+
+      const rowStage228R20R5 = beforeRowsStage228R20R5[0] || {};
+      const rowWorkspaceIdStage228R20R5 = asText((rowStage228R20R5 as any).workspace_id);
+      if (rowWorkspaceIdStage228R20R5 && rowWorkspaceIdStage228R20R5 !== workspaceId) {
+        res.status(409).json({
+          error: 'TASK_DELETE_WORKSPACE_MISMATCH',
+          id,
+          workspaceId,
+          rowWorkspaceId: rowWorkspaceIdStage228R20R5,
+        });
+        return;
+      }
+
       await deleteByIdScoped('work_items', id, workspaceId);
-      res.status(200).json({ ok: true, id });
+
+      const scopedAfterStage228R20R5 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R20R5, workspaceId)]).catch(() => ({ data: [] }));
+      let afterRowsStage228R20R5 = Array.isArray((scopedAfterStage228R20R5 as any)?.data) ? (scopedAfterStage228R20R5 as any).data as Record<string, unknown>[] : [];
+
+      if (!afterRowsStage228R20R5.length) {
+        const unscopedAfterStage228R20R5 = await selectFirstAvailable([selectPathStage228R20R5]).catch(() => ({ data: [] }));
+        afterRowsStage228R20R5 = Array.isArray((unscopedAfterStage228R20R5 as any)?.data) ? (unscopedAfterStage228R20R5 as any).data as Record<string, unknown>[] : [];
+      }
+
+      if (afterRowsStage228R20R5.length) {
+        res.status(500).json({ error: 'TASK_DELETE_VERIFY_FAILED', id, remaining: afterRowsStage228R20R5.length });
+        return;
+      }
+
+      await clearLeadNextActionIfMatchingTaskStage228R17(workspaceId, (rowStage228R20R5 as any).lead_id, id);
+      res.status(200).json({ ok: true, id, deleted: true, verified: true });
       return;
     }
 

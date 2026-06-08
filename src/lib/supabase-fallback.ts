@@ -610,6 +610,13 @@ export async function insertPortalActivityToSupabase(input: { caseId: string; po
 export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function hardDeleteTaskFromSupabase(id: string): Promise<void> {
+  const taskId = String(id || '').trim();
+  if (!taskId) {
+    throw new Error('Missing task id for hard delete');
+  }
+  await callApi('/api/system?apiRoute=tasks&id=' + encodeURIComponent(id), 'DELETE');
+}
 export async function softDeleteTaskInSupabase(input: { id: string; title?: string; type?: string; date?: string; scheduledAt?: string; dueAt?: string; priority?: string; status?: string; leadId?: string | null; caseId?: string | null; clientId?: string | null; payload?: Record<string, unknown>; source?: string }) {
   const deletedAt = new Date().toISOString();
   const payload = {
@@ -749,8 +756,3 @@ export async function syncGoogleCalendarInboundInSupabase(input?: { daysBack?: n
   });
 }
 
-export async function hardDeleteTaskFromSupabase(taskId: string) {
-  const id = String(taskId || '').trim();
-  if (!id) throw new Error('Task id is required for hardDeleteTaskFromSupabase');
-  return callApi('/api/system?apiRoute=tasks&id=' + encodeURIComponent(id), 'DELETE');
-}
