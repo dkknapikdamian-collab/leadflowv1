@@ -1,0 +1,16 @@
+{
+  "stage": "STAGE228R9_R3_CASE_DETAIL_LEFT_HEADER_RAIL_TOP_GRID",
+  "date": "2026-06-08 17:00 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "R9R2 kept the CaseDetail header as a full row above the right rail; Damian wanted the header in the left column and right rail at the top.",
+  "fix": "Page two-column grid; shell display contents; header column 1 row 1; main column row 2; right rail column 2 row 1 span 2; tabs centered.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "CSS layout-only change.",
+    "display: contents may affect layout only; DOM remains unchanged.",
+    "Responsive fallback below 1220px."
+  ]
+}

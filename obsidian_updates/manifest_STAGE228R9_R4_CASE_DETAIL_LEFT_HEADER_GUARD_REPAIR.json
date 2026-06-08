@@ -1,0 +1,15 @@
+{
+  "stage": "STAGE228R9_R4_CASE_DETAIL_LEFT_HEADER_GUARD_REPAIR",
+  "date": "2026-06-08 17:15 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "R9R3 layout patch applied but guard failed by forbidding older R9 compatibility CSS.",
+  "fix": "Correct guard to validate R9R3 override without forbidding compatible older selector.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "No runtime logic change beyond already-applied R9R3 CSS/markers.",
+    "Build must pass before push."
+  ]
+}
