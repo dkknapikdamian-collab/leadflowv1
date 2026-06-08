@@ -28,14 +28,29 @@ const a25Guard = read('scripts/check-stage220a25-case-finance-sync.cjs');
 const a26Guard = read('scripts/check-stage220a26-case-finance-display-modal.cjs');
 const pkg = JSON.parse(read('package.json'));
 
-/* A25: klient tworzony z wartością musi utworzyć sprawę z wartością. */
+/* A25/R4: klient tworzony z kwotą startową zapisuje prowizję, nie wartość transakcji. */
 requireText(clients, 'STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE', 'Clients A25 marker');
+requireText(clients, 'STAGE228R4_CLIENT_CREATE_CASE_COMMISSION_INPUT', 'Clients R4 commission input marker');
 requireText(clients, 'createCaseInSupabase', 'client create case API');
 requireText(clients, 'data-stage220a25-client-case-fields="true"', 'client start-case fields');
-requireText(clients, 'contractValue: caseValue', 'case contract value write');
-requireText(clients, 'expectedRevenue: caseValue', 'case expected revenue write');
-requireText(clients, 'remainingAmount: caseValue', 'case remaining amount write');
+requireText(clients, 'const caseCommission = parseClientCreateMoneyStage220A25(preparedClient.caseCommission)', 'case commission parser');
+requireText(clients, 'contractValue: transactionValue', 'case contract value stays transaction value');
+requireText(clients, 'expectedRevenue: transactionValue', 'case expected revenue stays transaction value');
+requireText(clients, 'caseValue: transactionValue', 'case value stays transaction value');
+requireText(clients, 'remainingAmount: transactionValue', 'case remaining amount stays transaction value');
+requireText(clients, "commissionMode: caseCommission > 0 ? 'fixed' : 'not_set'", 'fixed commission mode write');
+requireText(clients, "commissionBase: 'contract_value'", 'commission base write');
+requireText(clients, 'commissionRate: 0', 'commission rate write');
+requireText(clients, 'commissionAmount: caseCommission', 'commission amount write');
+requireText(clients, "commissionStatus: caseCommission > 0 ? 'expected' : 'not_set'", 'commission expected status write');
 requireText(clients, 'primaryForClient: true', 'primary case write');
+
+[
+  'contractValue: caseValue',
+  'expectedRevenue: caseValue',
+  'remainingAmount: caseValue',
+  '<Label>Wartość sprawy</Label>',
+].forEach((token) => forbidText(clients, token, 'old starter case transaction mapping'));
 
 /* API: sprawa ma akceptować aliasy wartości, żeby front nie tracił kwoty. */
 requireText(casesApi, 'STAGE220A25_CASE_VALUE_ALIAS_CONTRACT', 'cases API value alias marker');
