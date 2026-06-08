@@ -2128,3 +2128,22 @@ No changes:
 - No backend/API/Supabase/RLS/schema/auth/payment logic change.
 - No route architecture change.
 <!-- /STAGE228R2_ADMIN_FEEDBACK_LEDGER -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_LEDGER
+
+STAGE: Stage228R14 / C5
+MODE: local-only
+FILES:
+- scripts/check-stage228r14-c5-missing-items-no-sql-decision.cjs
+- package.json
+- _project/runs/2026-06-08_stage228r14_c5_missing_items_no_sql_decision.md
+- _project/00_PROJECT_STATUS.md
+- _project/03_CURRENT_STAGE.md
+- _project/04_DECISIONS.md
+- _project/05_MANUAL_TESTS.md
+- _project/06_GUARDS_AND_TESTS.md
+- _project/07_NEXT_STEPS.md
+- _project/08_CHANGELOG_AI.md
+- _project/10_PROJECT_TIMELINE.md
+- _project/13_TEST_HISTORY.md
+- obsidian_updates/manifest_STAGE228R14_C5_MISSING_ITEMS_NO_SQL_DECISION.json

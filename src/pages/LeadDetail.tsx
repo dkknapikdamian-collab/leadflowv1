@@ -2,6 +2,8 @@ const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes 
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
+const STAGE228R13_LEAD_MISSING_ITEM_STATUS_RESOLVE = 'LeadDetail Braki i blokady list shows only open missing items and can mark them resolved';
+void STAGE228R13_LEAD_MISSING_ITEM_STATUS_RESOLVE;
 const STAGE228R12_LEAD_MISSING_USES_CONTEXT_ACTION_HOST = 'LeadDetail Brak quick action routes through ContextActionDialogs blocker host';
 void STAGE228R12_LEAD_MISSING_USES_CONTEXT_ACTION_HOST;
 const STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING = 'LeadDetail Brak quick action opens the shared missing item modal and persists missing_item task/activity without a new table';
@@ -1003,6 +1005,46 @@ export default function LeadDetail() {
       setMissingItemSaving(false);
     }
   };
+
+  const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    const task = entry?.raw || entry || {};
+    const taskId = String(task?.id || '').trim();
+    if (!taskId) return toast.error('Brak ID braku. Nie można oznaczyć jako rozwiązany.');
+    const resolvedAt = new Date().toISOString();
+
+    try {
+      setLinkedEntryActionId(`missing:${taskId}:resolve`);
+      await updateTaskInSupabase({
+        id: taskId,
+        status: 'done',
+        completedAt: resolvedAt,
+        resolvedAt,
+        payload: {
+          ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'resolved',
+          resolvedAt,
+          source: 'stage228r13_lead_missing_item_status_resolve',
+        },
+      } as any);
+      await addActivity('missing_item_resolved', {
+        taskId,
+        title: String(task?.title || entry?.title || 'Brak'),
+        status: 'resolved',
+        resolvedAt,
+        source: 'stage228r13_lead_missing_item_status_resolve',
+      });
+      toast.success('Brak oznaczony jako rozwiązany');
+      await loadLead();
+    } catch (error: any) {
+      toast.error(`Nie udało się rozwiązać braku: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setLinkedEntryActionId(null);
+    }
+  };
+
   const openLeadPaymentDialog = (type: 'deposit' | 'partial') => {
     if (!hasAccess) return toast.error('Trial wygasł.');
     setLeadPaymentDialogType(type);
@@ -1097,18 +1139,21 @@ useEffect(() => {
     const type = String(entry.type || raw.type || '').toLowerCase();
     const payloadType = String((payload as any).type || (payload as any).marker || '').toLowerCase();
     return (
-      type === 'missing_item' ||
-      type === 'blocker' ||
-      status === 'missing_item' ||
-      status === 'blocked' ||
-      status === 'blocker' ||
-      payloadType.includes('missing_item') ||
-      payloadType.includes('blocker') ||
-      title.includes('brak') ||
-      title.includes('blokad') ||
-      title.includes('blokada') ||
-      status.includes('block') ||
-      status.includes('missing')
+      !isDoneStatus(status) &&
+      (
+        type === 'missing_item' ||
+        type === 'blocker' ||
+        status === 'missing_item' ||
+        status === 'blocked' ||
+        status === 'blocker' ||
+        payloadType.includes('missing_item') ||
+        payloadType.includes('blocker') ||
+        title.includes('brak') ||
+        title.includes('blokad') ||
+        title.includes('blokada') ||
+        status.includes('block') ||
+        status.includes('missing')
+      )
     );
   }), [timeline]);
   const leadNextActionEntries = useMemo(() => activeLeadWorkEntries.filter((entry) => entry.kind === 'task' || entry.kind === 'event'), [activeLeadWorkEntries]);
@@ -2155,7 +2200,11 @@ useEffect(() => {
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 60 * 60 * 1000, '+1H') : handleRescheduleLinkedEvent(entry.raw, 60 * 60 * 1000, '+1H'))} disabled={linkedEntryActionId !== null}>+1H</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, '+1D') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, '+1D'))} disabled={linkedEntryActionId !== null}>+1D</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W') : handleRescheduleLinkedEvent(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W'))} disabled={linkedEntryActionId !== null}>+1W</LeadActionButton>
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                          {group.key === 'blockers' && entry.kind === 'task' ? (
+                                        <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
+                                      ) : (
+                                        <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
+                                      )}
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
                         </div>
                       </article>

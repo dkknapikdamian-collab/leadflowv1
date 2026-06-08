@@ -2232,3 +2232,12 @@ Dodano statyczny CSS source truth dla tekstu i rytmu rail /leads, /clients, /cas
 - Added guard `scripts/check-stage228r2-admin-feedback-rail-cleanup.cjs` and package script.
 - Fixed Sales Funnel separator source to ASCII-safe `\u00b7`.
 <!-- /STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP_CHANGELOG -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_CHANGELOG
+
+- Added C5 no-SQL decision guard for Brak.
+- Confirmed Brak remains:
+  - lead/client: task/activity missing_item,
+  - case: case_items.
+- Added final C5 manual test plan.
+- No SQL/RLS/finance/layout changes.

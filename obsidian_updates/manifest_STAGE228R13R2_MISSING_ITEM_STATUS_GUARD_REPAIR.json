@@ -1,0 +1,16 @@
+{
+  "stage": "STAGE228R13R2_MISSING_ITEM_STATUS_GUARD_REPAIR",
+  "date": "2026-06-08 20:55 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "mode": "LOCAL_ONLY_UNTIL_C5",
+  "issue": "R13 runtime applied but guard failed because LeadDetail uses addActivity('missing_item_resolved', ...) instead of literal eventType field.",
+  "fix": "Guard-only repair; no runtime/SQL/layout change.",
+  "riskAudit": [
+    "No database change.",
+    "No finance change.",
+    "No layout change.",
+    "Do not push until C5 batch."
+  ]
+}

@@ -15,7 +15,8 @@ import {
   fetchLeadsFromSupabase,
   fetchTasksFromSupabase,
   updateClientInSupabase,
-  updateLeadInSupabase
+  updateLeadInSupabase,
+  updateTaskInSupabase
 } from '../lib/supabase-fallback';
 import { toast } from 'sonner';
 const STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX = 'ClientDetail has both named and default exports for lazyPage runtime';
@@ -79,6 +80,8 @@ const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS = 'ClientDetail V1 operational center labels contract';
 void STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS;
+const STAGE228R13_CLIENT_MISSING_ITEM_STATUS_RESOLVE = 'ClientDetail Braki i blokady list shows open missing items and can mark them resolved';
+void STAGE228R13_CLIENT_MISSING_ITEM_STATUS_RESOLVE;
 const STAGE228R12_CLIENT_MISSING_USES_CONTEXT_ACTION_HOST = 'ClientDetail Brak action routes through ContextActionDialogs blocker host';
 void STAGE228R12_CLIENT_MISSING_USES_CONTEXT_ACTION_HOST;
 const STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING = 'ClientDetail Brak quick action uses shared missing item modal and lightweight task/activity persistence';
@@ -1399,7 +1402,7 @@ function ClientDetail() {
         const payload = task?.payload && typeof task.payload === 'object' ? task.payload : {};
         const type = String(task?.type || task?.taskType || task?.kind || (payload as any)?.type || (payload as any)?.kind || '').trim().toLowerCase();
         const status = String(task?.status || (payload as any)?.status || '').trim().toLowerCase();
-        return type === 'missing_item' || type === 'blocker' || status === 'missing_item' || status === 'missing' || status === 'blocked' || Boolean((payload as any)?.missingItem === true);
+        return !isDoneStatus(status) && (type === 'missing_item' || type === 'blocker' || status === 'missing_item' || status === 'missing' || status === 'blocked' || Boolean((payload as any)?.missingItem === true));
       })
       .sort((left: any, right: any) => (asDate(getTaskDate(right))?.getTime() ?? 0) - (asDate(getTaskDate(left))?.getTime() ?? 0));
   }, [clientTasks]);
@@ -1672,6 +1675,78 @@ function ClientDetail() {
       setClientMissingSaving(false);
     }
   }, [client, clientId, clientMissingNote, clientMissingTitle, hasAccess, reload, workspace?.id]);
+
+
+  const handleResolveClientMissingItemStage228R13 = useCallback(async (item: any) => {
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const safeClientId = String(clientId || client?.id || '').trim();
+    const taskId = String(item?.id || '').trim();
+    if (!safeClientId || !taskId) {
+      toast.error('Brak ID klienta albo braku. Nie można oznaczyć jako rozwiązany.');
+      return;
+    }
+
+    const resolvedAt = new Date().toISOString();
+
+    try {
+      await updateTaskInSupabase({
+        id: taskId,
+        status: 'done',
+        completedAt: resolvedAt,
+        resolvedAt,
+        payload: {
+          ...(item?.payload && typeof item.payload === 'object' ? item.payload : {}),
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'resolved',
+          resolvedAt,
+          source: 'stage228r13_client_missing_item_status_resolve',
+        },
+      } as any);
+
+      await insertActivityToSupabase({
+        clientId: safeClientId,
+        eventType: 'missing_item_resolved',
+        payload: {
+          recordType: 'client',
+          kind: 'missing_item',
+          type: 'missing_item',
+          status: 'resolved',
+          taskId,
+          title: String(item?.title || 'Brak'),
+          resolvedAt,
+          source: 'stage228r13_client_missing_item_status_resolve',
+        },
+        workspaceId: workspace?.id,
+      } as any);
+
+      setTasks((previous) =>
+        previous.map((task: any) =>
+          String(task?.id || '') === taskId
+            ? {
+                ...task,
+                status: 'done',
+                completedAt: resolvedAt,
+                resolvedAt,
+                payload: {
+                  ...(task?.payload && typeof task.payload === 'object' ? task.payload : {}),
+                  status: 'resolved',
+                  resolvedAt,
+                },
+              }
+            : task,
+        ),
+      );
+      toast.success('Brak oznaczony jako rozwiązany');
+      void reload();
+    } catch (error: any) {
+      toast.error('Nie udało się rozwiązać braku: ' + (error?.message || 'błąd zapisu'));
+    }
+  }, [client, clientId, hasAccess, reload, workspace?.id]);
 
   const handleAddClientNote = useCallback(async () => {
     if (!hasAccess) {
@@ -2142,7 +2217,19 @@ return (
                           <strong>{String(item?.title || 'Brak bez nazwy')}</strong>
                           {note ? <small>{note}</small> : null}
                         </span>
-                        <em>{isDoneStatus(item?.status) ? 'Rozwiązany' : 'Otwarty'}</em>
+                        <div className="client-detail-missing-item-actions" data-stage228r13-client-missing-status-actions="true">
+                          <em>{isDoneStatus(item?.status) ? 'Rozwiązany' : 'Otwarty'}</em>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleResolveClientMissingItemStage228R13(item)}
+                            disabled={!hasAccess || isDoneStatus(item?.status)}
+                            data-stage228r13-client-missing-resolve-action="true"
+                          >
+                            {isDoneStatus(item?.status) ? 'Rozwiązany' : 'Rozwiąż'}
+                          </Button>
+                        </div>
                       </article>
                     );
                   })

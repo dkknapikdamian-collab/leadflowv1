@@ -1,0 +1,16 @@
+{
+  "stage": "STAGE228R14R2_C5_GUARD_MANUAL_TEXT_REPAIR",
+  "date": "2026-06-08 21:15 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "mode": "LOCAL_ONLY_UNTIL_MANUAL_C5_PASS",
+  "issue": "R14 guard expected shortened manual-test token while documentation contains detailed save/refresh/visible/resolve/refresh/hidden wording.",
+  "fix": "Guard-only repair accepting the detailed manual C5 test wording.",
+  "riskAudit": [
+    "No runtime change.",
+    "No SQL/RLS change.",
+    "No finance/layout change.",
+    "Do not push before manual C5 PASS."
+  ]
+}

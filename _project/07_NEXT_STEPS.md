@@ -2213,3 +2213,29 @@ Po wdroĹĽeniu sprawdziÄ‡ `/funnel`: domyĹ›lnie powinny byÄ‡ widoczne 
 - ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_NEXT_STEPS -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 next steps
+
+1. Manualnie sprawdzic `/billing`, `/notifications`, `/ai-drafts`, `/funnel`.
+2. Jesli lokalny dev dalej zatrzymuje sie na `Ladowanie widoku...`, sprawdzic stan auth/dev bootstrap osobnym etapem.
+3. Po akceptacji wizualnej mozna selektywnie commitowac Stage228R2 bez `git add .`.
+4. Nie kasowac pozostalych kafelkow z feedback JSON, ktore mialy tylko `.`, bez osobnego potwierdzenia.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_NEXT_STEPS -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_NEXT_STEP_BATCH_PUSH_AFTER_MANUAL_PASS
+
+Nie pushować przed ręcznym PASS C5.
+
+Następny krok po apply Stage228R14:
+1. Uruchomic manual C5 test.
+2. Jesli PASS: poprosic o finalny batch push script.
+3. Finalny push ma byc selektywny i obejmowac tylko pliki zwiazane z batch C5 oraz jawnie zaakceptowane lokalne etapy.
+4. Przed pushem:
+   - git status --short,
+   - node scripts/check-stage228r11-shared-missing-item-flow.cjs,
+   - node scripts/check-stage228r12-context-action-blocker-host.cjs,
+   - node scripts/check-stage228r13-missing-item-status-resolve.cjs,
+   - node scripts/check-stage228r14-c5-missing-items-no-sql-decision.cjs,
+   - npm run build,
+   - git diff --check.

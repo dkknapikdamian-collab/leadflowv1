@@ -1500,3 +1500,30 @@ Decision: keep Stage228B Lead Work Action Center, but fix the production runtime
 - ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_DECISION -->
+## 2026-06-08 - Stage228R2 admin feedback rail cleanup decision
+
+DECYZJA:
+- Feedback JSON z opisem `kasujemy kafelek` jest nowsza decyzja UI dla kart informacyjnych w prawym railu Billing/Notifications/AI Drafts.
+- Feedback JSON z samym `.` nie jest samodzielna decyzja produktowa; wymaga potwierdzenia w kodzie albo osobnego polecenia.
+- Ujednolicanie tekstu kafelkow ma isc statycznym CSS/source-of-truth, bez MutationObserver/setInterval/runtime mapperow.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_DECISION -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_MISSING_ITEMS_NO_SQL_DECISION
+
+DECYZJA: Brak zostaje bez SQL po C5.
+
+Uzasadnienie:
+- Lead/client moga zapisywac brak jako task/activity missing_item.
+- Case ma juz case_items.
+- Brak realnej potrzeby nowej tabeli przed testem uzycia.
+
+Nie robimy teraz:
+- table missing_items,
+- table blockers,
+- nowych RLS/GRANT/migracji,
+- workspace-level raportow brakow.
+
+Do rozważenia później:
+- SQL missing_items dopiero, jesli beda potrzebne globalne raporty, filtrowanie, SLA, typy brakow albo zbiorcza lista brakow przez workspace.

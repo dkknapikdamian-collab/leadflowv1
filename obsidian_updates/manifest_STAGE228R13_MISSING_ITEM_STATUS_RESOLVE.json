@@ -1,0 +1,31 @@
+{
+  "stage": "STAGE228R13_MISSING_ITEM_STATUS_RESOLVE",
+  "date": "2026-06-08 20:45 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "mode": "LOCAL_ONLY_UNTIL_C5",
+  "decision": "Missing item status/resolve is implemented without SQL. Lead/client close by task status done; case closes by case_items accepted.",
+  "files": [
+    "src/pages/LeadDetail.tsx",
+    "src/pages/ClientDetail.tsx",
+    "scripts/check-stage228r13-missing-item-status-resolve.cjs",
+    "package.json",
+    "_project/runs/2026-06-08_stage228r13_missing_item_status_resolve.md",
+    "_project/05_MANUAL_TESTS.md",
+    "_project/06_GUARDS_AND_TESTS.md"
+  ],
+  "manualTests": [
+    "LeadDetail Brak save resolve refresh",
+    "ClientDetail Brak save resolve refresh",
+    "CaseDetail Brak accept/resolve refresh",
+    "ContextActionDialogs regression note task event blocker"
+  ],
+  "riskAudit": [
+    "No database change.",
+    "No finance change.",
+    "No layout change.",
+    "Two persistence styles remain: task/activity for lead/client and case_items for case.",
+    "Do not push until C5 batch."
+  ]
+}

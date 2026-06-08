@@ -1569,3 +1569,25 @@ PASS:
 PARTIAL / SKIP:
 - Browser DOM smoke opened local routes, but app stayed at `Ladowanie widoku...`; no full visual PASS recorded.
 <!-- /STAGE228R2_ADMIN_FEEDBACK_TEST_HISTORY -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_TEST_HISTORY
+
+Planowane po apply:
+- R11 guard
+- R12 guard
+- R13 guard
+- R14 guard
+- npm run build
+- git diff --check
+- manual C5 test before final push
+
+## 2026-06-08 21:15 Europe/Warsaw - STAGE228R14R2_C5_TEST_HISTORY
+
+Planowane po apply:
+- R11 guard
+- R12 guard
+- R13 guard
+- R14 guard after manual wording repair
+- npm run build
+- git diff --check
+- manual C5 test before final push

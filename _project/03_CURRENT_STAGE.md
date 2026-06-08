@@ -1261,3 +1261,13 @@ DECYZJA:
 DO POTWIERDZENIA:
 - Manualnie sprawdzic `/billing`, `/notifications`, `/ai-drafts`, `/funnel`, bo lokalny dev browser zatrzymal sie na `Ladowanie widoku...`.
 <!-- /STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_CURRENT_STAGE
+
+Aktualny etap:
+- Stage228R14 / C5 - decyzja no-SQL dla Brak + finalny lokalny gate.
+
+Nie pushowac:
+- przed testem recznym C5,
+- przed zbiorczym finalnym gate,
+- przed selektywnym commitem obejmujacym tylko pliki batcha.

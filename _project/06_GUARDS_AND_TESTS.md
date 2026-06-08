@@ -2120,3 +2120,48 @@ Guard pilnuje:
 - CaseQuickActions: Brak jako szybka akcja sprawy,
 - AddCaseMissingItemDialog: zapis do case_items status missing,
 - CaseDetail: fetch/insert/update/delete case_items.
+
+## 2026-06-08 20:45 Europe/Warsaw - STAGE228R13_MISSING_ITEM_STATUS_RESOLVE_GUARD
+
+Dodany guard:
+- scripts/check-stage228r13-missing-item-status-resolve.cjs
+- package.json script: check:stage228r13-missing-item-status-resolve
+- package.json prebuild: node scripts/check-stage228r13-missing-item-status-resolve.cjs
+
+Chroni:
+- LeadDetail: open-only Braki i blokady + Rozwiąż brak.
+- ClientDetail: open-only Braki i blokady + Rozwiąż.
+- CaseDetail: istniejący case_items status accepted/rejected i filtr accepted poza aktywnymi brakami.
+
+## 2026-06-08 20:55 Europe/Warsaw - STAGE228R13R2_MISSING_ITEM_STATUS_GUARD_REPAIR
+
+STATUS: LOCAL_ONLY.
+
+Naprawa:
+- Guard R13 akceptuje LeadDetail pattern `addActivity('missing_item_resolved', ...)`.
+- Guard nadal wymaga updateTaskInSupabase, status done/resolved i akcji Rozwiąż/Rozwiąż brak.
+- CaseDetail guard sprawdza realny filtr accepted poza aktywnymi brakami.
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_GUARD
+
+Dodany guard:
+- scripts/check-stage228r14-c5-missing-items-no-sql-decision.cjs
+
+Sprawdza:
+- R11/R12/R13 kontrakty Brak,
+- decyzje no-SQL,
+- brak zaleznosci od missing_items/blockers,
+- brak migracji create table missing_items/blockers,
+- finalny manual test plan,
+- next step batch push dopiero po manual PASS.
+
+## 2026-06-08 21:15 Europe/Warsaw - STAGE228R14R2_C5_GUARD_MANUAL_TEXT_REPAIR
+
+STATUS: LOCAL_ONLY.
+
+Naprawa:
+- R14 guard akceptuje szczegolowy wording testu:
+  - LeadDetail -> Brak -> save -> refresh -> visible -> Rozwiąż brak -> refresh -> hidden
+  - ClientDetail -> Brak -> save -> refresh -> visible -> Rozwiąż -> refresh -> hidden
+  - CaseDetail -> Brak -> save -> refresh -> visible -> accepted/resolved -> refresh -> hidden
+- Brak zmian runtime.

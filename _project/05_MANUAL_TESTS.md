@@ -1118,3 +1118,23 @@ Zakres testu recznego:
 4. Potwierdzic, ze nie dodano nowej tabeli SQL i nie ma regresji w Notatka/Zadanie/Wydarzenie.
 
 Status: DO_WYKONANIA_PRZEZ_DAMIANA po lokalnym apply.
+
+## 2026-06-08 20:45 Europe/Warsaw - STAGE228R13_MISSING_ITEM_STATUS_RESOLVE_MANUAL_TESTS
+
+STATUS: DO_WYKONANIA_LOKALNIE.
+
+Zakres:
+1. LeadDetail -> Brak -> zapisz -> Rozwiąż brak -> odśwież -> brak znika z otwartych.
+2. ClientDetail -> Brak -> zapisz -> Rozwiąż -> odśwież -> brak znika z otwartych.
+3. CaseDetail -> Brak -> zaakceptuj/rozwiąż istniejącą kontrolką -> odśwież -> brak znika z aktywnych.
+4. Regresja: Notatka / Zadanie / Wydarzenie / Brak przez ContextActionDialogs.
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_FINAL_LOCAL_TESTS_BEFORE_PUSH
+
+STATUS: DO_WYKONANIA_PRZED_PUSHEM.
+
+1. LeadDetail -> Brak -> save -> refresh -> visible -> Rozwiąż brak -> refresh -> hidden from open blockers.
+2. ClientDetail -> Brak -> save -> refresh -> visible -> Rozwiąż -> refresh -> hidden from open blockers.
+3. CaseDetail -> Brak -> save -> refresh -> visible -> accepted/resolved -> refresh -> hidden from active blockers.
+4. Regression: Notatka / Zadanie / Wydarzenie / Brak still open through ContextActionDialogs.
+5. Regression: CaseQuickActions quick action card still has Brak and uses ContextActionDialogs.

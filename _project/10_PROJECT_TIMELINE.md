@@ -1208,3 +1208,10 @@ NEXT:
 <!-- STAGE228R2_ADMIN_FEEDBACK_TIMELINE -->
 - 2026-06-08 08:58 Europe/Warsaw: Stage228R2 local-only - cleanup po admin feedback JSON dla prawych raili i separatora `/funnel`; build PASS; manual visual smoke SKIP przez `Ladowanie widoku...`.
 <!-- /STAGE228R2_ADMIN_FEEDBACK_TIMELINE -->
+
+## 2026-06-08 21:05 Europe/Warsaw - STAGE228R14_C5_TIMELINE
+
+Stage228R14 / C5 prepared locally:
+- no-SQL decision for Brak,
+- guard and documentation,
+- final manual gate before batch push.
