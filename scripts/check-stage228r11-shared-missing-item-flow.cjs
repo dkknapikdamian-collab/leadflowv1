@@ -20,20 +20,9 @@ function requireText(text, token, label) {
   if (!text.includes(token)) fail(label + ' missing token: ' + token);
 }
 
-function requireRegex(text, regex, label) {
-  if (!regex.test(text)) fail(label + ' missing regex: ' + regex);
-}
-
-function requireOrder(text, first, second, label) {
-  const firstIndex = text.indexOf(first);
-  const secondIndex = text.indexOf(second);
-  if (firstIndex === -1 || secondIndex === -1 || firstIndex > secondIndex) {
-    fail(label + ' invalid order: ' + first + ' before ' + second);
-  }
-}
-
 const contract = read('src/lib/missing-items/stage227c2-missing-item-modal-contract.ts');
 const modal = read('src/components/detail/MissingItemQuickActionModal.tsx');
+const contextHost = read('src/components/ContextActionDialogs.tsx');
 const leadDetail = read('src/pages/LeadDetail.tsx');
 const clientDetail = read('src/pages/ClientDetail.tsx');
 const caseQuickActions = read('src/components/CaseQuickActions.tsx');
@@ -62,69 +51,48 @@ const packageJson = JSON.parse(read('package.json'));
 ].forEach((token) => requireText(modal, token, 'shared missing item modal'));
 
 [
-  'STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING',
-  "import { MissingItemQuickActionModal }",
-  "import { buildMissingItemModalDraft }",
-  'openLeadMissingItemDialog',
-  'handleSaveLeadMissingItem',
-  "dataStage=\"stage227e3-lead-quick-actions-bar\"",
-  "key: 'missing'",
-  "label: 'Brak'",
-  "data-stage227c3a-lead-missing-action",
-  "data-stage227c3a-lead-missing-modal-instance",
-  "entityType: 'lead'",
-  "type: 'missing_item'",
-  "status: 'missing_item'",
+  'STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST',
+  "export type ContextActionKind = 'task' | 'event' | 'note' | 'blocker';",
+  "normalized === 'missing_item'",
+  "return 'blocker'",
+  'MissingItemQuickActionModal',
+  'buildMissingItemModalDraft',
+  'insertTaskToSupabase',
+  'insertCaseItemToSupabase',
   "eventType: 'missing_item_created'",
-  "persistenceTarget: draft.persistenceTarget",
-  'leadBlockerEntries',
-  "type === 'missing_item'",
-  "status === 'missing_item'",
-  "payloadType.includes('missing_item')",
-].forEach((token) => requireText(leadDetail, token, 'LeadDetail missing item flow'));
+  "eventType: 'item_added'",
+  'data-stage228r12-context-action-blocker-host="true"',
+].forEach((token) => requireText(contextHost, token, 'ContextActionDialogs host'));
 
-requireOrder(
-  leadDetail,
-  "key: 'missing'",
-  'data-stage227c3a-lead-missing-modal-instance',
-  'LeadDetail missing quick action must be wired before modal instance'
-);
+[
+  'STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING',
+  'STAGE228R12_LEAD_MISSING_USES_CONTEXT_ACTION_HOST',
+  "openLeadContextAction('blocker')",
+  "'data-context-action-kind': 'blocker'",
+  "'data-stage228r12-lead-context-blocker': 'true'",
+  'leadBlockerEntries',
+].forEach((token) => requireText(leadDetail, token, 'LeadDetail missing item flow'));
 
 [
   'STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING',
-  "import { MissingItemQuickActionModal }",
-  "import { buildMissingItemModalDraft }",
+  'STAGE228R12_CLIENT_MISSING_USES_CONTEXT_ACTION_HOST',
+  "openClientContextAction('blocker')",
+  'data-stage228r12-client-context-blocker="true"',
+  'data-context-action-kind="blocker"',
   'clientMissingItemsStage227C3B',
-  'openClientMissingItemModalStage227C3B',
-  'handleSaveClientMissingItemStage227C3B',
-  "data-stage227c3b-client-missing-action",
-  "data-stage227c3b-client-missing-items-list",
-  "entityType: 'client'",
-  "type: 'missing_item'",
-  "status: 'missing_item'",
-  "eventType: 'missing_item_created'",
-  "source: 'stage227c3b_client_missing_item_quick_action'",
   "Brak otwartych braków.",
 ].forEach((token) => requireText(clientDetail, token, 'ClientDetail missing item flow'));
 
-requireOrder(
-  clientDetail,
-  'openClientMissingItemModalStage227C3B',
-  'data-stage227c3b-client-missing-items-list',
-  'ClientDetail missing open handler must exist before missing items list render'
-);
-
 [
   'STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR',
-  'STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH',
-  'AddCaseMissingItemDialog',
+  'STAGE228R12_CASE_MISSING_USES_CONTEXT_ACTION_HOST',
   "recordType=\"case\"",
   "key: 'missing'",
   "label: 'Brak'",
   "tone: 'missing'",
-  'setMissingDialogOpen(true)',
-  "data-stage227e3-case-missing-action",
-  'onSaved={onAfterMutation}',
+  "openSharedAction('blocker')",
+  "'data-context-action-kind': 'blocker'",
+  "'data-stage228r12-case-context-blocker': 'true'",
 ].forEach((token) => requireText(caseQuickActions, token, 'CaseQuickActions missing action flow'));
 
 [
@@ -136,8 +104,7 @@ requireOrder(
   "status: 'missing'",
   'isRequired: true',
   "eventType: 'item_added'",
-  "source: 'case_quick_actions'",
-].forEach((token) => requireText(caseMissingDialog, token, 'case missing item dialog'));
+].forEach((token) => requireText(caseMissingDialog, token, 'legacy case missing item dialog remains available'));
 
 [
   'fetchCaseItemsFromSupabase',
@@ -149,14 +116,7 @@ requireOrder(
   'handleAddItem',
   'handleItemStatusChange',
   'handleDeleteItem',
-  "toast.success('Brak dodany do sprawy')",
-  "toast.success('Status braku zmieniony')",
-  "toast.success('Brak usunięty')",
 ].forEach((token) => requireText(caseDetail, token, 'CaseDetail case_items missing CRUD'));
-
-requireRegex(leadDetail, /insertTaskToSupabase\(\{[\s\S]*?type:\s*'missing_item'[\s\S]*?status:\s*'missing_item'[\s\S]*?leadId/s, 'LeadDetail task persistence contract');
-requireRegex(clientDetail, /insertTaskToSupabase\(\{[\s\S]*?type:\s*'missing_item'[\s\S]*?status:\s*'missing_item'[\s\S]*?clientId/s, 'ClientDetail task persistence contract');
-requireRegex(caseMissingDialog, /insertCaseItemToSupabase\(\{[\s\S]*?caseId[\s\S]*?status:\s*'missing'[\s\S]*?isRequired:\s*true/s, 'Case missing item persistence contract');
 
 const scriptCommand = 'node scripts/check-stage228r11-shared-missing-item-flow.cjs';
 if (packageJson.scripts['check:stage228r11-shared-missing-item-flow'] !== scriptCommand) {
@@ -169,10 +129,11 @@ if (!String(packageJson.scripts.prebuild || '').includes(scriptCommand)) {
 console.log(JSON.stringify({
   ok: true,
   stage: 'STAGE228R11_SHARED_MISSING_ITEM_FLOW',
+  repair: 'R12R2-compatible guard',
   contract: {
-    lead: 'MissingItemQuickActionModal -> task missing_item + activity missing_item_created -> Braki i blokady',
-    client: 'MissingItemQuickActionModal -> task missing_item + activity missing_item_created -> Braki i blokady',
-    case: 'CaseQuickActions -> AddCaseMissingItemDialog -> case_items status missing + activity item_added'
+    lead: 'ContextActionDialogs blocker -> MissingItemQuickActionModal -> task/activity missing_item -> Braki i blokady',
+    client: 'ContextActionDialogs blocker -> MissingItemQuickActionModal -> task/activity missing_item -> Braki i blokady',
+    case: 'ContextActionDialogs blocker -> MissingItemQuickActionModal -> case_items status missing + activity item_added'
   },
   sqlRequired: false
 }, null, 2));

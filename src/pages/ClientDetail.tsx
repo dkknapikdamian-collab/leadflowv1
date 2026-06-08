@@ -79,6 +79,8 @@ const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
 const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
 const STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS = 'ClientDetail V1 operational center labels contract';
 void STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS;
+const STAGE228R12_CLIENT_MISSING_USES_CONTEXT_ACTION_HOST = 'ClientDetail Brak action routes through ContextActionDialogs blocker host';
+void STAGE228R12_CLIENT_MISSING_USES_CONTEXT_ACTION_HOST;
 const STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING = 'ClientDetail Brak quick action uses shared missing item modal and lightweight task/activity persistence';
 void STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING;
 const CLIENT_DETAIL_OPERATIONAL_TASKS_LABEL = 'Zadania klienta';
@@ -2115,9 +2117,14 @@ return (
                   type="button"
                   size="sm"
                   variant="outline"
-                  onClick={openClientMissingItemModalStage227C3B}
+                  onClick={() => openClientContextAction('blocker')}
                   disabled={!hasAccess || clientMissingSaving}
                   data-stage227c3b-client-missing-action="true"
+                  data-stage228r12-client-context-blocker="true"
+                  data-context-action-kind="blocker"
+                  data-context-record-type="client"
+                  data-context-record-id={clientId || ""}
+                  data-context-record-label={getClientName(client)}
                 >
                   <AlertTriangle className="h-4 w-4" />
                   Brak

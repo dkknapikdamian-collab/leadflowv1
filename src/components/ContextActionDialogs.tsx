@@ -1,11 +1,17 @@
 import { type MouseEvent, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { toast } from 'sonner';
 import { CONTEXT_ACTION_CONTRACT, STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1 } from '../lib/context-action-contract';
+import { requireWorkspaceId } from '../lib/workspace-context';
+import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
+import { insertActivityToSupabase, insertCaseItemToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
+import { useWorkspace } from '../hooks/useWorkspace';
 import TaskCreateDialog, { type TaskCreateDialogContext } from './TaskCreateDialog';
 import EventCreateDialog from './EventCreateDialog';
 import ContextNoteDialog from './ContextNoteDialog';
+import { MissingItemQuickActionModal } from './detail/MissingItemQuickActionModal';
 
-export type ContextActionKind = 'task' | 'event' | 'note';
+export type ContextActionKind = 'task' | 'event' | 'note' | 'blocker';
 export type ContextRecordType = 'lead' | 'client' | 'case';
 
 export type ContextActionRequest = TaskCreateDialogContext & {
@@ -14,11 +20,13 @@ export type ContextActionRequest = TaskCreateDialogContext & {
 
 const CONTEXT_ACTION_EVENT = 'closeflow:context-action-dialog';
 const CONTEXT_ACTION_SAVED_EVENT = 'closeflow:context-action-saved';
-const STAGE220A7_CONTEXT_ACTION_SAVED_EVENT = 'Task/event/note save emits refresh event for detail pages';
+const STAGE220A7_CONTEXT_ACTION_SAVED_EVENT = 'Task/event/note/blocker save emits refresh event for detail pages';
 void STAGE220A7_CONTEXT_ACTION_SAVED_EVENT;
-const STAGE85_CONTEXT_ACTION_DIALOG_UNIFICATION = 'Context detail actions use one shared task, event and note dialog host';
+const STAGE85_CONTEXT_ACTION_DIALOG_UNIFICATION = 'Context detail actions use one shared task, event, note and blocker dialog host';
+const STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST = 'ContextActionDialogs owns Brak/blocker action and persists missing_item without SQL for lead, client and case';
+void STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST;
 const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY = STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1;
-const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event and note through the same shared dialog host';
+const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event, note and blocker through the same shared dialog host';
 export const CONTEXT_ACTION_KIND_ATTR = 'data-context-action-kind';
 export const CONTEXT_ACTION_RECORD_TYPE_ATTR = 'data-context-record-type';
 export const CONTEXT_ACTION_RECORD_ID_ATTR = 'data-context-record-id';
@@ -35,7 +43,8 @@ function normalizeText(value: string) {
 
 function normalizeContextActionKind(value: unknown): ContextActionKind | null {
   const normalized = String(value || '').trim().toLowerCase();
-  if (normalized === 'task' || normalized === 'event' || normalized === 'note') return normalized;
+  if (normalized === 'task' || normalized === 'event' || normalized === 'note' || normalized === 'blocker') return normalized;
+  if (normalized === 'missing' || normalized === 'missing_item' || normalized === 'brak') return 'blocker';
   return null;
 }
 
@@ -109,6 +118,7 @@ function resolveActionKindFromClick(target: Element | null): ContextActionKind |
   if (merged.includes('dodaj zadanie') || merged.includes('zaplanuj telefon') || merged.includes('follow-up')) return 'task';
   if (merged.includes('dodaj wydarzenie') || merged.includes('zaplanuj spotkanie')) return 'event';
   if (merged.includes('dodaj notat') || merged.includes('dopisz notat') || merged.includes('podyktuj notat')) return 'note';
+  if (text === 'brak' || label === 'brak' || merged.includes('dodaj brak') || merged.includes('czego brakuje')) return 'blocker';
   return null;
 }
 
@@ -119,12 +129,24 @@ export function openContextQuickAction(request: ContextActionRequest) {
 
 export default function ContextActionDialogsHost() {
   const location = useLocation();
+  const { workspace } = useWorkspace();
   const [request, setRequest] = useState<ContextActionRequest | null>(null);
+  const [missingTitle, setMissingTitle] = useState('');
+  const [missingNote, setMissingNote] = useState('');
+  const [missingError, setMissingError] = useState('');
+  const [missingSaving, setMissingSaving] = useState(false);
+
+  const resetMissingState = () => {
+    setMissingTitle('');
+    setMissingNote('');
+    setMissingError('');
+  };
 
   useEffect(() => {
     const listener = (event: Event) => {
       const detail = (event as CustomEvent<ContextActionRequest>).detail;
       if (!detail?.kind || !detail?.recordType || !detail?.recordId) return;
+      resetMissingState();
       setRequest(detail);
     };
     window.addEventListener(CONTEXT_ACTION_EVENT, listener as EventListener);
@@ -144,6 +166,7 @@ export default function ContextActionDialogsHost() {
       event.preventDefault();
       event.stopPropagation();
       event.stopImmediatePropagation?.();
+      resetMissingState();
       setRequest({ ...context, kind });
     };
 
@@ -152,7 +175,11 @@ export default function ContextActionDialogsHost() {
   }, [location.pathname]);
 
   const context = useMemo(() => request ? { ...request } : null, [request]);
-  const close = () => setRequest(null);
+  const close = () => {
+    setRequest(null);
+    resetMissingState();
+  };
+
   const handleSaved = async () => {
     const savedRequest = request ? { ...request } : null;
     close();
@@ -166,15 +193,154 @@ export default function ContextActionDialogsHost() {
       }));
     }
   };
+
+  const handleSaveBlocker = async () => {
+    if (!request || request.kind !== 'blocker') return;
+    const workspaceId = requireWorkspaceId(workspace);
+    if (!workspaceId) {
+      setMissingError('Kontekst workspace nie jest jeszcze gotowy.');
+      return;
+    }
+
+    let draft;
+    try {
+      draft = buildMissingItemModalDraft(
+        {
+          entityType: request.recordType,
+          entityId: request.recordId,
+          entityLabel: request.recordLabel || (request.recordType === 'lead' ? 'Lead' : request.recordType === 'client' ? 'Klient' : 'Sprawa'),
+        },
+        { title: missingTitle, note: missingNote },
+      );
+    } catch (error: any) {
+      setMissingError(error?.message || 'Wpisz, czego brakuje.');
+      return;
+    }
+
+    const now = new Date().toISOString();
+    const leadId = request.leadId || (request.recordType === 'lead' ? request.recordId : null);
+    const clientId = request.clientId || (request.recordType === 'client' ? request.recordId : null);
+    const caseId = request.caseId || (request.recordType === 'case' ? request.recordId : null);
+
+    try {
+      setMissingSaving(true);
+      setMissingError('');
+
+      if (request.recordType === 'case') {
+        if (!caseId) {
+          throw new Error('Brak ID sprawy. Nie można dodać braku.');
+        }
+
+        await insertCaseItemToSupabase({
+          caseId,
+          title: draft.title,
+          description: draft.note || '',
+          type: 'text',
+          status: 'missing',
+          isRequired: true,
+          dueDate: null,
+        });
+
+        await insertActivityToSupabase({
+          caseId,
+          clientId: clientId || null,
+          leadId: leadId || null,
+          actorType: 'operator',
+          eventType: 'item_added',
+          payload: {
+            source: 'context_action_dialogs_blocker',
+            marker: 'stage228r12_context_action_blocker_case',
+            type: 'missing_item',
+            kind: 'missing_item',
+            title: draft.title,
+            itemTitle: draft.title,
+            description: draft.note || null,
+            note: draft.note || null,
+            dueDate: null,
+            caseTitle: request.recordLabel || null,
+            entityType: draft.entityType,
+            entityId: draft.entityId,
+            persistenceTarget: draft.persistenceTarget,
+          },
+          workspaceId,
+        } as any);
+      } else {
+        await insertTaskToSupabase({
+          title: draft.title,
+          type: 'missing_item',
+          status: 'missing_item',
+          priority: 'high',
+          leadId: leadId || null,
+          clientId: clientId || null,
+          caseId: caseId || null,
+          scheduledAt: now,
+          dueAt: now,
+          workspaceId,
+        } as any);
+
+        await insertActivityToSupabase({
+          leadId: leadId || null,
+          clientId: clientId || null,
+          caseId: caseId || null,
+          actorType: 'operator',
+          eventType: 'missing_item_created',
+          payload: {
+            source: 'context_action_dialogs_blocker',
+            marker: request.recordType === 'lead' ? 'stage228r12_context_action_blocker_lead' : 'stage228r12_context_action_blocker_client',
+            recordType: request.recordType,
+            kind: 'missing_item',
+            type: 'missing_item',
+            status: 'missing_item',
+            title: draft.title,
+            note: draft.note,
+            content: draft.note,
+            createdAt: now,
+            entityType: draft.entityType,
+            entityId: draft.entityId,
+            persistenceTarget: draft.persistenceTarget,
+          },
+          workspaceId,
+        } as any);
+      }
+
+      toast.success('Brak dodany');
+      await handleSaved();
+    } catch (error: any) {
+      const message = error?.message || 'REQUEST_FAILED';
+      setMissingError('Nie udało się zapisać braku: ' + message);
+      toast.error('Nie udało się zapisać braku: ' + message);
+    } finally {
+      setMissingSaving(false);
+    }
+  };
+
   const openTask = request?.kind === 'task';
   const openEvent = request?.kind === 'event';
   const openNote = request?.kind === 'note';
+  const openBlocker = request?.kind === 'blocker';
+  const missingContext = context ? {
+    entityType: context.recordType,
+    entityId: context.recordId,
+    entityLabel: context.recordLabel || (context.recordType === 'lead' ? 'Lead' : context.recordType === 'client' ? 'Klient' : 'Sprawa'),
+  } : { entityType: 'lead' as const, entityId: '', entityLabel: 'Brak' };
 
   return (
-    <div data-context-action-dialog-host="true" data-stage="stage85-context-action-dialog-unification" data-stage15="STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT" data-stage17={STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY} data-context-action-contract-kinds={Object.keys(CONTEXT_ACTION_CONTRACT).join(',')} style={{ display: 'contents' }}>
+    <div data-context-action-dialog-host="true" data-stage="stage85-context-action-dialog-unification" data-stage15="STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT" data-stage17={STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY} data-stage228r12-context-action-blocker-host="true" data-context-action-contract-kinds={Object.keys(CONTEXT_ACTION_CONTRACT).join(',')} style={{ display: 'contents' }}>
       <TaskCreateDialog open={openTask} onOpenChange={(open) => (open ? null : close())} onSaved={handleSaved} context={context || undefined} />
       <EventCreateDialog open={openEvent} onOpenChange={(open) => (open ? null : close())} onSaved={handleSaved} context={context || undefined} />
       <ContextNoteDialog open={openNote} onOpenChange={(open) => (open ? null : close())} onSaved={handleSaved} context={context || undefined} />
+      <MissingItemQuickActionModal
+        open={openBlocker}
+        context={missingContext}
+        titleValue={missingTitle}
+        noteValue={missingNote}
+        error={missingError}
+        isSaving={missingSaving}
+        onTitleChange={(value) => { setMissingTitle(value); if (missingError) setMissingError(''); }}
+        onNoteChange={setMissingNote}
+        onCancel={close}
+        onSubmit={handleSaveBlocker}
+      />
     </div>
   );
 }

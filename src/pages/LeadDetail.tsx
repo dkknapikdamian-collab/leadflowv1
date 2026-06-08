@@ -2,6 +2,8 @@ const STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH = 'LeadDetail exposes 
 void STAGE227F3_LEAD_HISTORY_TOP_STRIP_CASE_HEADER_WIDTH;
 const STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX = 'LeadDetail top strip uses CaseDetail visual tabs and button scroll without URL hash anchor lock';
 void STAGE227F4_LEAD_TOP_STRIP_CASE_VST_SCROLL_FIX;
+const STAGE228R12_LEAD_MISSING_USES_CONTEXT_ACTION_HOST = 'LeadDetail Brak quick action routes through ContextActionDialogs blocker host';
+void STAGE228R12_LEAD_MISSING_USES_CONTEXT_ACTION_HOST;
 const STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING = 'LeadDetail Brak quick action opens the shared missing item modal and persists missing_item task/activity without a new table';
 void STAGE227C3A_LEAD_MISSING_ITEM_RUNTIME_WIRING;
 const STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH = 'LeadDetail removes top shortcut strip; contact cadence strips are compact; sales funnel uses shared full width canvas';
@@ -2347,9 +2349,9 @@ useEffect(() => {
                   label: 'Brak',
                   tone: 'missing',
                   icon: <AlertTriangle className="h-4 w-4" />,
-                  onClick: openLeadMissingItemDialog,
+                  onClick: () => openLeadContextAction('blocker'),
                   disabled: !hasAccess,
-                  data: { 'data-stage227e3-lead-action': 'missing', 'data-stage227c3a-lead-missing-action': 'true' },
+                  data: { 'data-context-action-kind': 'blocker', 'data-context-record-type': 'lead', 'data-context-record-id': leadId || '', 'data-context-record-label': getLeadName(lead), 'data-stage227e3-lead-action': 'missing', 'data-stage227c3a-lead-missing-action': 'true', 'data-stage228r12-lead-context-blocker': 'true' },
                 },
                 {
                   key: 'lost',

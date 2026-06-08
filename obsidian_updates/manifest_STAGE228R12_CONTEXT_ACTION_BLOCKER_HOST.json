@@ -1,0 +1,31 @@
+{
+  "stage": "STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST",
+  "date": "2026-06-08 20:10 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "decision": "Brak is now a first-class ContextActionDialogs blocker action without SQL.",
+  "files": [
+    "src/lib/context-action-contract.ts",
+    "src/components/ContextActionDialogs.tsx",
+    "src/pages/LeadDetail.tsx",
+    "src/pages/ClientDetail.tsx",
+    "src/components/CaseQuickActions.tsx",
+    "scripts/check-stage228r11-shared-missing-item-flow.cjs",
+    "scripts/check-stage228r12-context-action-blocker-host.cjs",
+    "package.json",
+    "_project/runs/2026-06-08_stage228r12_context_action_blocker_host.md"
+  ],
+  "manualTests": [
+    "LeadDetail Brak save and reload",
+    "ClientDetail Brak save and reload",
+    "CaseDetail Brak save and reload",
+    "Regression: Notatka/Zadanie/Wydarzenie still open"
+  ],
+  "riskAudit": [
+    "No database change.",
+    "No finance change.",
+    "Case still uses case_items; lead/client use task/activity.",
+    "Future missing_items table requires a separate SQL stage if needed."
+  ]
+}

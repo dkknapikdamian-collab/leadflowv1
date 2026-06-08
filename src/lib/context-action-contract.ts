@@ -1,6 +1,6 @@
 export const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1 = 'STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1';
 
-export const CONTEXT_ACTION_KIND_VALUES = ['task', 'event', 'note'] as const;
+export const CONTEXT_ACTION_KIND_VALUES = ['task', 'event', 'note', 'blocker'] as const;
 export const CONTEXT_RECORD_TYPE_VALUES = ['lead', 'client', 'case'] as const;
 
 export type ContextActionContractKind = (typeof CONTEXT_ACTION_KIND_VALUES)[number];
@@ -9,8 +9,8 @@ export type ContextActionContractRecordType = (typeof CONTEXT_RECORD_TYPE_VALUES
 export type ContextActionContractEntry = {
   kind: ContextActionContractKind;
   label: string;
-  dialogComponent: 'TaskCreateDialog' | 'EventCreateDialog' | 'ContextNoteDialog';
-  persistenceTarget: 'tasks' | 'events' | 'activities';
+  dialogComponent: 'TaskCreateDialog' | 'EventCreateDialog' | 'ContextNoteDialog' | 'MissingItemQuickActionModal';
+  persistenceTarget: 'tasks' | 'events' | 'activities' | 'task_activity_missing_item' | 'case_items';
   relationKeys: readonly ['leadId', 'caseId', 'clientId', 'workspaceId'];
   allowedRecordTypes: readonly ContextActionContractRecordType[];
 };
@@ -40,6 +40,14 @@ export const CONTEXT_ACTION_CONTRACT: Record<ContextActionContractKind, ContextA
     relationKeys: ['leadId', 'caseId', 'clientId', 'workspaceId'],
     allowedRecordTypes: CONTEXT_RECORD_TYPE_VALUES,
   },
+  blocker: {
+    kind: 'blocker',
+    label: 'Brak',
+    dialogComponent: 'MissingItemQuickActionModal',
+    persistenceTarget: 'task_activity_missing_item',
+    relationKeys: ['leadId', 'caseId', 'clientId', 'workspaceId'],
+    allowedRecordTypes: CONTEXT_RECORD_TYPE_VALUES,
+  },
 } as const;
 
 export function isContextActionContractKind(value: unknown): value is ContextActionContractKind {
@@ -48,6 +56,7 @@ export function isContextActionContractKind(value: unknown): value is ContextAct
 
 export function normalizeContextActionContractKind(value: unknown): ContextActionContractKind | null {
   const normalized = String(value || '').trim().toLowerCase();
+  if (normalized === 'missing' || normalized === 'missing_item' || normalized === 'brak') return 'blocker';
   return isContextActionContractKind(normalized) ? normalized : null;
 }
 

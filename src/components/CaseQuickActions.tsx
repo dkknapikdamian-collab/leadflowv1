@@ -1,7 +1,5 @@
-import { useState } from 'react';
 import { CalendarClock, CircleDollarSign, FileWarning, ListChecks, StickyNote } from 'lucide-react';
 import { openContextQuickAction } from './ContextActionDialogs';
-import AddCaseMissingItemDialog from './AddCaseMissingItemDialog';
 import QuickActionsBar from './detail/QuickActionsBar';
 
 export type CaseQuickActionsProps = {
@@ -13,6 +11,8 @@ export type CaseQuickActionsProps = {
   onAfterMutation?: () => void;
 };
 
+const STAGE228R12_CASE_MISSING_USES_CONTEXT_ACTION_HOST = 'CaseQuickActions Brak routes through ContextActionDialogs blocker host instead of a local dialog';
+void STAGE228R12_CASE_MISSING_USES_CONTEXT_ACTION_HOST;
 const STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR = 'CaseQuickActions renders shared QuickActionsBar instead of local action grid';
 void STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR;
 const STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH = 'Case quick actions use the shared card-list quick action visual source of truth';
@@ -27,10 +27,10 @@ export default function CaseQuickActions({
   onAddPayment,
   onAfterMutation,
 }: CaseQuickActionsProps) {
-  const [missingDialogOpen, setMissingDialogOpen] = useState(false);
+  void onAfterMutation;
   const recordLabel = caseTitle || 'Sprawa';
 
-  function openSharedAction(kind: 'note' | 'task' | 'event') {
+  function openSharedAction(kind: 'note' | 'task' | 'event' | 'blocker') {
     if (!caseId) return;
     openContextQuickAction({
       kind,
@@ -102,8 +102,17 @@ export default function CaseQuickActions({
             label: 'Brak',
             tone: 'missing',
             icon: <FileWarning className="h-4 w-4" />,
-            onClick: () => setMissingDialogOpen(true),
-            data: { 'data-stage227e3-case-missing-action': 'true' },
+            onClick: () => openSharedAction('blocker'),
+            data: {
+              'data-context-action-kind': 'blocker',
+              'data-context-record-type': 'case',
+              'data-context-record-id': caseId,
+              'data-context-client-id': clientId || '',
+              'data-context-lead-id': leadId || '',
+              'data-context-record-label': recordLabel,
+              'data-stage227e3-case-missing-action': 'true',
+              'data-stage228r12-case-context-blocker': 'true',
+            },
           },
           {
             key: 'payment',
@@ -114,16 +123,6 @@ export default function CaseQuickActions({
             data: { 'data-stage227e3-case-payment-action': 'true', 'data-stage228r7r8-case-commission-payment-action': 'true' },
           },
         ]}
-      />
-
-      <AddCaseMissingItemDialog
-        open={missingDialogOpen}
-        onOpenChange={setMissingDialogOpen}
-        caseId={caseId}
-        caseTitle={caseTitle}
-        clientId={clientId || null}
-        leadId={leadId || null}
-        onSaved={onAfterMutation}
       />
     </>
   );
