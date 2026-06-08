@@ -10,7 +10,6 @@ import { registerChunkAssetReloadGuard } from './pwa/chunk-asset-reload-guard';
 import './styles/action-color-taxonomy-v1.css';
 import './styles/closeflow-right-rail-source-truth.css';
 import './styles/operator-rail-tasks-pattern-stage228r1.css';
-import './styles/admin-feedback-rail-cleanup-stage228r2.css';
 import './styles/closeflow-leads-right-rail-layout-lock.css';
 import './styles/closeflow-detail-view-source-truth-stage219.css';
 registerChunkAssetReloadGuard();
