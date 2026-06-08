@@ -140,3 +140,57 @@
     top: auto !important;
   }
 }
+
+/* STAGE228R10B_CASE_TABS_TRUE_CENTER_AND_RAIL_PULLUP
+   R10A created the card but did not truly center the inner tabs and did not lift the right rail enough.
+   This is still CSS-only: no DOM move, no page-grid rewrite. */
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact,
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact {
+  align-items: center !important;
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 1px solid rgba(226, 232, 240, 0.98) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.06) !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 0 14px !important;
+  max-width: none !important;
+  min-height: 48px !important;
+  padding: 8px 16px !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs,
+.case-detail-vnext-page .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  justify-content: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  max-width: max-content !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact [data-stage220a11-case-tab-trigger] {
+  flex: 0 0 auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: -42px !important;
+  top: 4px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage228r9-tabs-compact,
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-main-column[data-stage228r9-main-column="true"] > .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact {
+    justify-content: center !important;
+    overflow-x: auto !important;
+  }
+}

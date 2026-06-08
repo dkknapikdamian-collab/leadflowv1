@@ -1,0 +1,17 @@
+{
+  "stage": "STAGE228R10B_CASE_TABS_TRUE_CENTER_AND_RAIL_PULLUP",
+  "date": "2026-06-08 18:30 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "baseline": "Stage228R10A technical PASS, visual fail",
+  "issue": "Tabs were still not visually centered and right rail still had too much top gap.",
+  "fix": "Stronger CSS selectors for wrapper and inner tabs; right rail pulled up by -42px on desktop.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "No DOM movement.",
+    "Rail pull-up reset on <=1220px.",
+    "Guard blocks broken R9R3/R9R4 display: contents grid pattern."
+  ]
+}

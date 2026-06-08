@@ -1,0 +1,33 @@
+# Stage228R10B - Case tabs true center and rail pull-up
+
+- date: 2026-06-08 18:30 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- baseline:
+  - Stage228R10A passed technically but visual review failed.
+- audit:
+  - R10A used a CSS-only card but the visible pills remained visually left-aligned.
+  - Likely cause: the inner tabs container keeps its own auto/inline width rules and the wrapper selector was not strong enough across existing stage220a10/stage228r9 styles.
+  - R10A also nudged the right rail by only -12px, which was too small; the gap remained visible.
+  - A full page grid rewrite is explicitly avoided after R9R3/R9R4 broke the layout.
+- fix:
+  - Stronger CSS selectors for both possible wrapper shapes:
+    - .case-detail-stage228r9-tabs-compact
+    - .case-detail-stage220a10-tabs-wrap.case-detail-stage228r9-tabs-compact
+  - Force wrapper width: 100%, display:flex and justify-content:center.
+  - Force inner .case-detail-stage220a10-tabs to inline-flex, width:auto, margin auto, max-content.
+  - Pull right rail upward by -42px on desktop only.
+  - Add guard scripts/check-stage228r10b-case-tabs-true-center-rail-pullup.cjs.
+- tests:
+  - node scripts/check-stage228r10b-case-tabs-true-center-rail-pullup.cjs
+  - node scripts/check-stage228r10a-case-tabs-card-rail-nudge.cjs
+  - node scripts/check-stage228r9-case-detail-shell-rail-lift.cjs
+  - npm run build
+- manual test:
+  - Open CaseDetail after Vercel deploy.
+  - Obsługa / Checklisty / Historia should be centered inside a white card spanning the left content column.
+  - Right rail should sit much closer to the top header card.
+- risk audit:
+  - CSS-only; no SQL/data/finance logic.
+  - Desktop rail pull-up could be too high on some viewport heights; media query resets it below 1220px.
+  - Guard blocks the broken R9R3/R9R4 display: contents grid pattern.
