@@ -1,7 +1,4 @@
 import type { ReactNode } from 'react';
-
-import '../../styles/operator-rail-source-truth-stage228g.css';
-
 export type OperatorRailDataAttrs = Record<`data-${string}`, string | number | boolean | undefined>;
 
 export type OperatorSideCardProps = {
