@@ -141,9 +141,11 @@ const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'new client starter case opens CaseDetail finance modal instead of collecting finance in client form';
 const STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK = 'client create modal only asks for case name then redirects to CaseDetail finance editor';
+const STAGE228R5R3_CLIENT_CASE_NAME_ONLY_MODAL = 'client create modal shows only case title; all case value and commission fields live in CaseDetail finance modal';
 const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 void STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK;
+void STAGE228R5R3_CLIENT_CASE_NAME_ONLY_MODAL;
 void STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH;
 
 function getStage220A36CaseCommissionValue(caseRow: Record<string, unknown>) {
@@ -787,7 +789,7 @@ export default function Clients() {
                                 <section className="client-case-form-section" data-stage220a25-client-case-fields="true">
                                   <div className="client-case-form-section-head">
                                     <h3>Sprawa startowa</h3>
-                                    <p>Po zapisie otworzymy nową sprawę i okno finansów, gdzie uzupełnisz wartość transakcji, rodzaj prowizji i prowizję.</p>
+                                    <p>W tym miejscu wpisujesz tylko nazwę sprawy. Po zapisie przejdziesz do sprawy i automatycznie otworzymy okno „Prowizja sprawy”.</p>
                                   </div>
 
                                   <label className="client-case-form-check-row">
@@ -806,15 +808,6 @@ export default function Clients() {
                                         value={newClient.caseTitle}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, caseTitle: event.target.value }))}
                                         placeholder="Np. Sprzedaż działki, obsługa klienta, zlecenie"
-                                      />
-                                    </div>
-
-                                    <div className="client-case-form-field">
-                                      <Label>Waluta</Label>
-                                      <Input
-                                        value={newClient.caseCurrency}
-                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseCurrency: event.target.value.toUpperCase().slice(0, 3) }))}
-                                        placeholder="PLN"
                                       />
                                     </div>
                                   </div>
