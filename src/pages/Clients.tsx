@@ -7,7 +7,7 @@ import {
   useMemo,
   useState,
 } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   CaseEntityIcon,
   LeadEntityIcon,
@@ -139,9 +139,9 @@ void STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
-const STAGE228R4_CLIENT_CREATE_CASE_COMMISSION_INPUT = 'new client starter case writes fixed expected commission, not transaction value';
+const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'new client starter case opens CaseDetail finance modal instead of collecting finance in client form';
 const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
-void STAGE228R4_CLIENT_CREATE_CASE_COMMISSION_INPUT;
+void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 void STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH;
 
 function getStage220A36CaseCommissionValue(caseRow: Record<string, unknown>) {
@@ -207,6 +207,7 @@ void STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_CLIENTS;
 
 export default function Clients() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [clients, setClients] = useState<ClientRecord[]>([]);
   const [leads, setLeads] = useState<any[]>([]);
@@ -229,7 +230,7 @@ export default function Clients() {
   const [clientConflictOpen, setClientConflictOpen] = useState(false);
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCommission: '', caseCurrency: 'PLN' });
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCurrency: 'PLN' });
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -472,12 +473,11 @@ export default function Clients() {
       .slice(0, 5);
   }, [clients, clientValueByClientId]);
 
-  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCommission: '', caseCurrency: 'PLN' }); };
+  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCurrency: 'PLN' }); };
 
   const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
     // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
-    const caseCommission = parseClientCreateMoneyStage220A25(preparedClient.caseCommission);
-    const shouldCreateCase = Boolean(preparedClient.createCase || caseCommission > 0 || String(preparedClient.caseTitle || '').trim());
+    const shouldCreateCase = Boolean(preparedClient.createCase || String(preparedClient.caseTitle || '').trim());
     const clientPayload = {
       name: preparedClient.name,
       company: preparedClient.company,
@@ -491,6 +491,7 @@ export default function Clients() {
 
     const createdClient = await createClientInSupabase(clientPayload);
     const createdClientId = String((createdClient as any)?.id || '').trim();
+    let createdCaseId = '';
 
     if (shouldCreateCase && createdClientId) {
       const caseTitle = String(preparedClient.caseTitle || '').trim() || 'Sprawa: ' + String(preparedClient.name || 'Klient').trim();
@@ -499,33 +500,37 @@ export default function Clients() {
         : 'PLN';
       const transactionValue = 0;
 
-      await createCaseInSupabase({
+      const createdCase = await createCaseInSupabase({
         title: caseTitle,
         clientId: createdClientId,
         clientName: preparedClient.name,
         clientEmail: preparedClient.email,
         clientPhone: preparedClient.phone,
         status: 'in_progress',
-        contractValue: transactionValue,
-        expectedRevenue: transactionValue,
-        caseValue: transactionValue,
+        contractValue: 0,
+        expectedRevenue: 0,
+        caseValue: 0,
         currency,
         paidAmount: 0,
-        remainingAmount: transactionValue,
-        commissionMode: caseCommission > 0 ? 'fixed' : 'not_set',
+        remainingAmount: 0,
+        commissionMode: 'not_set',
         commissionBase: 'contract_value',
         commissionRate: 0,
-        commissionAmount: caseCommission,
-        commissionStatus: caseCommission > 0 ? 'expected' : 'not_set',
+        commissionAmount: 0,
+        commissionStatus: 'not_set',
         primaryForClient: true,
         replacePrimaryCase: true,
-        workspaceId: requireWorkspaceId(workspace),
-      } as any);
+        workspaceId: requireWorkspaceId(workspace),      } as any);
+      createdCaseId = String((createdCase as any)?.id || (createdCase as any)?.caseId || (createdCase as any)?.case_id || '').trim();
     }
 
-    toast.success(shouldCreateCase ? 'Klient i sprawa dodane' : 'Klient dodany');
+    toast.success(shouldCreateCase ? 'Klient i sprawa dodane. Uzupełnij finanse sprawy.' : 'Klient dodany');
     setIsCreateOpen(false);
     resetNewClientForm();
+    if (createdCaseId) {
+      navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create');
+      return;
+    }
     await reload();
   };
 
@@ -550,7 +555,7 @@ export default function Clients() {
     if (lastContactError) { toast.error(lastContactError); return; }
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseCommission: newClient.caseCommission.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
+    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
     try {
       setCreatePending(true);
       let conflicts: any;
@@ -779,7 +784,7 @@ export default function Clients() {
                                 <section className="client-case-form-section" data-stage220a25-client-case-fields="true">
                                   <div className="client-case-form-section-head">
                                     <h3>Sprawa startowa</h3>
-                                    <p>Wpisana kwota zapisuje się jako przewidywana prowizja do zarobienia, nie jako wartość transakcji.</p>
+                                    <p>Po zapisie otworzymy nową sprawę i okno finansów, gdzie uzupełnisz wartość transakcji, rodzaj prowizji i prowizję.</p>
                                   </div>
 
                                   <label className="client-case-form-check-row">
@@ -798,16 +803,6 @@ export default function Clients() {
                                         value={newClient.caseTitle}
                                         onChange={(event) => setNewClient((prev) => ({ ...prev, caseTitle: event.target.value }))}
                                         placeholder="Np. Sprzedaż działki, obsługa klienta, zlecenie"
-                                      />
-                                    </div>
-
-                                    <div className="client-case-form-field">
-                                      <Label>Prowizja do zarobienia</Label>
-                                      <Input
-                                        value={newClient.caseCommission}
-                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseCommission: event.target.value }))}
-                                        placeholder="np. 100000"
-                                        inputMode="decimal"
                                       />
                                     </div>
 

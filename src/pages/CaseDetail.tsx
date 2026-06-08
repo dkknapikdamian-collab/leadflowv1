@@ -167,7 +167,9 @@ const STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS = 'case delete action uses
 void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
+const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
 void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
+void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
@@ -1270,6 +1272,7 @@ export default function CaseDetail() {
   const [isPaymentHistoryOpenStage220A27B, setIsPaymentHistoryOpenStage220A27B] = useState(false);
   const [paymentDeleteTargetStage220A29, setPaymentDeleteTargetStage220A29] = useState<CasePaymentRecord | null>(null);
   const [paymentDeleteSubmittingStage220A29, setPaymentDeleteSubmittingStage220A29] = useState(false);
+  const [didAutoOpenCaseFinanceFromClientCreateStage228R5, setDidAutoOpenCaseFinanceFromClientCreateStage228R5] = useState(false);
 
   const financeEditPreview = useMemo(() => getFin11FinancePreview(financeEditForm, casePayments), [casePayments, financeEditForm]);
 
@@ -1277,6 +1280,20 @@ export default function CaseDetail() {
     setFinanceEditForm(buildFin11FinanceEditState(caseData, casePayments));
     setIsFinanceEditOpen(true);
   }
+
+  useEffect(() => {
+    if (didAutoOpenCaseFinanceFromClientCreateStage228R5 || !caseData?.id) return;
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    const shouldOpenFinance = params.get('finance') === '1' && params.get('source') === 'client-create';
+    if (!shouldOpenFinance) return;
+
+    setFinanceEditForm(buildFin11FinanceEditState(caseData, casePayments));
+    setIsFinanceEditOpen(true);
+    setDidAutoOpenCaseFinanceFromClientCreateStage228R5(true);
+    window.history.replaceState(null, '', window.location.pathname);
+    toast.info('Uzupełnij finanse nowej sprawy.');
+  }, [caseData, casePayments, didAutoOpenCaseFinanceFromClientCreateStage228R5]);
 
   function openCaseFinancePaymentModal(type: 'partial' | 'commission') {
     const summary = getCaseFinanceSourceSummary(caseData, casePayments);
