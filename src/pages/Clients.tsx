@@ -139,7 +139,9 @@ void STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
+const STAGE228R4_CLIENT_CREATE_CASE_COMMISSION_INPUT = 'new client starter case writes fixed expected commission, not transaction value';
 const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
+void STAGE228R4_CLIENT_CREATE_CASE_COMMISSION_INPUT;
 void STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH;
 
 function getStage220A36CaseCommissionValue(caseRow: Record<string, unknown>) {
@@ -227,7 +229,7 @@ export default function Clients() {
   const [clientConflictOpen, setClientConflictOpen] = useState(false);
   const [clientConflictCandidates, setClientConflictCandidates] = useState<EntityConflictCandidate[]>([]);
   const [clientConflictPendingInput, setClientConflictPendingInput] = useState<any | null>(null);
-  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' });
+  const [newClient, setNewClient] = useState({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCommission: '', caseCurrency: 'PLN' });
 
   const reload = useCallback(async () => {
     if (!workspace?.id) {
@@ -470,12 +472,12 @@ export default function Clients() {
       .slice(0, 5);
   }, [clients, clientValueByClientId]);
 
-  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseValue: '', caseCurrency: 'PLN' }); };
+  const resetNewClientForm = () => { setNewClient({ name: '', company: '', email: '', phone: '', lastContactAt: getDefaultLastContactDateInput(), notes: '', createCase: true, caseTitle: '', caseCommission: '', caseCurrency: 'PLN' }); };
 
   const createClientFromPreparedInput = async (preparedClient: any, options?: { forceDuplicate?: boolean }) => {
     // CLOSEFLOW_A2_CLIENT_FORCE_DUPLICATE_TO_ALLOW_DUPLICATE_API_MAP
-    const caseValue = parseClientCreateMoneyStage220A25(preparedClient.caseValue);
-    const shouldCreateCase = Boolean(preparedClient.createCase || caseValue > 0 || String(preparedClient.caseTitle || '').trim());
+    const caseCommission = parseClientCreateMoneyStage220A25(preparedClient.caseCommission);
+    const shouldCreateCase = Boolean(preparedClient.createCase || caseCommission > 0 || String(preparedClient.caseTitle || '').trim());
     const clientPayload = {
       name: preparedClient.name,
       company: preparedClient.company,
@@ -495,6 +497,7 @@ export default function Clients() {
       const currency = /^[A-Z]{3}$/.test(String(preparedClient.caseCurrency || '').trim().toUpperCase())
         ? String(preparedClient.caseCurrency || '').trim().toUpperCase()
         : 'PLN';
+      const transactionValue = 0;
 
       await createCaseInSupabase({
         title: caseTitle,
@@ -503,12 +506,17 @@ export default function Clients() {
         clientEmail: preparedClient.email,
         clientPhone: preparedClient.phone,
         status: 'in_progress',
-        contractValue: caseValue,
-        expectedRevenue: caseValue,
-        caseValue,
+        contractValue: transactionValue,
+        expectedRevenue: transactionValue,
+        caseValue: transactionValue,
         currency,
         paidAmount: 0,
-        remainingAmount: caseValue,
+        remainingAmount: transactionValue,
+        commissionMode: caseCommission > 0 ? 'fixed' : 'not_set',
+        commissionBase: 'contract_value',
+        commissionRate: 0,
+        commissionAmount: caseCommission,
+        commissionStatus: caseCommission > 0 ? 'expected' : 'not_set',
         primaryForClient: true,
         replacePrimaryCase: true,
         workspaceId: requireWorkspaceId(workspace),
@@ -542,7 +550,7 @@ export default function Clients() {
     if (lastContactError) { toast.error(lastContactError); return; }
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) { toast.error('Kontekst workspace nie jest jeszcze gotowy.'); return; }
-    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseValue: newClient.caseValue.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
+    const preparedClient = { ...newClient, name: newClient.name.trim(), company: newClient.company.trim(), email: newClient.email.trim(), phone: newClient.phone.trim(), lastContactAt: newClient.lastContactAt, notes: newClient.notes.trim(), caseTitle: newClient.caseTitle.trim(), caseCommission: newClient.caseCommission.trim(), caseCurrency: newClient.caseCurrency.trim().toUpperCase() || 'PLN' };
     try {
       setCreatePending(true);
       let conflicts: any;
@@ -771,7 +779,7 @@ export default function Clients() {
                                 <section className="client-case-form-section" data-stage220a25-client-case-fields="true">
                                   <div className="client-case-form-section-head">
                                     <h3>Sprawa startowa</h3>
-                                    <p>Wartość wpisana tutaj zapisuje się w sprawie jako wartość sprawy i zasila finanse klienta.</p>
+                                    <p>Wpisana kwota zapisuje się jako przewidywana prowizja do zarobienia, nie jako wartość transakcji.</p>
                                   </div>
 
                                   <label className="client-case-form-check-row">
@@ -794,11 +802,11 @@ export default function Clients() {
                                     </div>
 
                                     <div className="client-case-form-field">
-                                      <Label>Wartość sprawy</Label>
+                                      <Label>Prowizja do zarobienia</Label>
                                       <Input
-                                        value={newClient.caseValue}
-                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseValue: event.target.value }))}
-                                        placeholder="np. 1280"
+                                        value={newClient.caseCommission}
+                                        onChange={(event) => setNewClient((prev) => ({ ...prev, caseCommission: event.target.value }))}
+                                        placeholder="np. 100000"
                                         inputMode="decimal"
                                       />
                                     </div>

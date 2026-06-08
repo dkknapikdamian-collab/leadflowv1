@@ -31,10 +31,19 @@ requireText(clients, 'STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE', 'Client
 requireText(clients, 'createCaseInSupabase', 'Clients createCase import/use');
 requireText(clients, 'parseClientCreateMoneyStage220A25', 'money parser');
 requireText(clients, 'data-stage220a25-client-case-fields="true"', 'client case form fields');
-requireText(clients, 'contractValue: caseValue', 'contract value write');
-requireText(clients, 'expectedRevenue: caseValue', 'expected revenue write');
+requireText(clients, 'STAGE228R4_CLIENT_CREATE_CASE_COMMISSION_INPUT', 'Clients commission input marker');
+requireText(clients, 'const caseCommission = parseClientCreateMoneyStage220A25(preparedClient.caseCommission)', 'Clients commission parser');
+requireText(clients, 'contractValue: transactionValue', 'contract value stays transaction value');
+requireText(clients, 'expectedRevenue: transactionValue', 'expected revenue stays transaction value');
+requireText(clients, 'caseValue: transactionValue', 'case value stays transaction value');
+requireText(clients, 'remainingAmount: transactionValue', 'remaining amount stays transaction value');
+requireText(clients, "commissionMode: caseCommission > 0 ? 'fixed' : 'not_set'", 'fixed commission mode write');
+requireText(clients, 'commissionAmount: caseCommission', 'commission amount write');
+requireText(clients, "commissionStatus: caseCommission > 0 ? 'expected' : 'not_set'", 'commission expected status write');
 requireText(clients, 'primaryForClient: true', 'primary case set');
-requireText(clients, 'remainingAmount: caseValue', 'remaining amount write');
+['contractValue: caseValue', 'expectedRevenue: caseValue', 'remainingAmount: caseValue', '<Label>Wartość sprawy</Label>'].forEach((token) => {
+  if (clients.includes(token)) fail('Clients still contains old starter case transaction mapping: ' + token);
+});
 
 requireText(casesApi, 'STAGE220A25_CASE_VALUE_ALIAS_CONTRACT', 'cases API marker');
 requireText(casesApi, 'body.caseValue', 'caseValue alias');
