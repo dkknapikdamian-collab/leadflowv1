@@ -44,6 +44,8 @@ const pkg = JSON.parse(read('package.json'));
 [
   'Dodaj sprawę od razu',
   '<Label>Wartość sprawy</Label>',
+  '<Label>Prowizja do zarobienia</Label>',
+  '<Label>Waluta</Label>',
   'Zapisz klienta i sprawę',
   'caseValue: newClient.caseValue',
   'value={newClient.caseValue}',
