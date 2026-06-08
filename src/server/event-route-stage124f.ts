@@ -1,6 +1,6 @@
 // STAGE124F_VERCEL_HOBBY_CONSOLIDATED_EVENT_ROUTE
 // STAGE124D_SUPABASE_EGRESS_LIGHT_EVENT_ROUTE
-import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped } from './_supabase.js';
+import { deleteByIdScoped, insertWithVariants, selectFirstAvailable, updateByIdScoped, updateById } from './_supabase.js';
 import { resolveRequestWorkspaceId, withWorkspaceFilter } from './_request-scope.js';
 import { normalizeEventListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
@@ -134,7 +134,11 @@ async function readEvents(req: any, workspaceId: string) {
     .map((query) => withWorkspaceFilter(query, workspaceId));
 
   const result = await selectFirstAvailable(queries);
-  return Array.isArray(result.data) ? result.data as Record<string, unknown>[] : [];
+  const rows = Array.isArray(result.data) ? result.data as Record<string, unknown>[] : [];
+  return rows.filter((row) => {
+    const status = asText((row as any).status).toLowerCase();
+    return !['deleted', 'archived', 'removed'].includes(status) && (row as any).show_in_calendar !== false;
+  });
 }
 
 function sendError(res: any, error: any, fallback: string) {
@@ -190,8 +194,12 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
     }
 
     if (req.method === 'DELETE') {
-      const STAGE228R22_VERIFIED_SQL_EVENT_DELETE = 'Event DELETE reads SQL before and after delete; false success is blocked';
+      const STAGE228R23_SOFT_DELETE_WORK_ITEMS_EVENTS = 'Event delete is stable soft-delete: status=deleted + hidden flags, including legacy workspace-null rows';
+      void STAGE228R23_SOFT_DELETE_WORK_ITEMS_EVENTS;
+      const STAGE228R22_VERIFIED_SQL_EVENT_DELETE = 'compat: R23 replaces physical event hard delete with verified soft delete';
+      const EVENT_DELETE_VERIFY_FAILED_COMPAT_STAGE228R22 = 'EVENT_DELETE_VERIFY_FAILED';
       void STAGE228R22_VERIFIED_SQL_EVENT_DELETE;
+      void EVENT_DELETE_VERIFY_FAILED_COMPAT_STAGE228R22;
 
       const id = queryValue(req, 'id');
       if (!id) {
@@ -199,48 +207,57 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
         return;
       }
 
-      const selectPathStage228R22 = 'work_items?select=id,workspace_id,lead_id,client_id,case_id,record_type,type,status,title&id=eq.' + encodeURIComponent(id) + '&limit=1';
-      const scopedBeforeStage228R22 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R22, workspaceId)]).catch(() => ({ data: [] }));
-      let beforeRowsStage228R22 = Array.isArray((scopedBeforeStage228R22 as any)?.data) ? (scopedBeforeStage228R22 as any).data as Record<string, unknown>[] : [];
+      const selectPathStage228R23 = 'work_items?select=id,workspace_id,lead_id,client_id,case_id,record_type,type,status,title,show_in_tasks,show_in_calendar&id=eq.' + encodeURIComponent(id) + '&limit=1';
+      const scopedBeforeStage228R23 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R23, workspaceId)]).catch(() => ({ data: [] }));
+      let beforeRowsStage228R23 = Array.isArray((scopedBeforeStage228R23 as any)?.data) ? (scopedBeforeStage228R23 as any).data as Record<string, unknown>[] : [];
 
-      if (!beforeRowsStage228R22.length) {
-        const unscopedBeforeStage228R22 = await selectFirstAvailable([selectPathStage228R22]).catch(() => ({ data: [] }));
-        beforeRowsStage228R22 = Array.isArray((unscopedBeforeStage228R22 as any)?.data) ? (unscopedBeforeStage228R22 as any).data as Record<string, unknown>[] : [];
+      if (!beforeRowsStage228R23.length) {
+        const unscopedBeforeStage228R23 = await selectFirstAvailable([selectPathStage228R23]).catch(() => ({ data: [] }));
+        beforeRowsStage228R23 = Array.isArray((unscopedBeforeStage228R23 as any)?.data) ? (unscopedBeforeStage228R23 as any).data as Record<string, unknown>[] : [];
       }
 
-      if (!beforeRowsStage228R22.length) {
+      if (!beforeRowsStage228R23.length) {
         res.status(200).json({ ok: true, id, alreadyMissing: true, verified: true });
         return;
       }
 
-      const rowStage228R22 = beforeRowsStage228R22[0] || {};
-      const rowWorkspaceIdStage228R22 = asText((rowStage228R22 as any).workspace_id);
-      if (rowWorkspaceIdStage228R22 && rowWorkspaceIdStage228R22 !== workspaceId) {
+      const rowStage228R23 = beforeRowsStage228R23[0] || {};
+      const rowWorkspaceIdStage228R23 = asText((rowStage228R23 as any).workspace_id);
+      const payloadStage228R23 = {
+        status: 'deleted',
+        show_in_tasks: false,
+        show_in_calendar: false,
+        updated_at: new Date().toISOString(),
+      };
+
+      if (rowWorkspaceIdStage228R23 && rowWorkspaceIdStage228R23 !== workspaceId) {
         res.status(409).json({
           error: 'EVENT_DELETE_WORKSPACE_MISMATCH',
           id,
           workspaceId,
-          rowWorkspaceId: rowWorkspaceIdStage228R22,
+          rowWorkspaceId: rowWorkspaceIdStage228R23,
         });
         return;
       }
 
-      await deleteByIdScoped('work_items', id, workspaceId);
-
-      const scopedAfterStage228R22 = await selectFirstAvailable([withWorkspaceFilter(selectPathStage228R22, workspaceId)]).catch(() => ({ data: [] }));
-      let afterRowsStage228R22 = Array.isArray((scopedAfterStage228R22 as any)?.data) ? (scopedAfterStage228R22 as any).data as Record<string, unknown>[] : [];
-
-      if (!afterRowsStage228R22.length) {
-        const unscopedAfterStage228R22 = await selectFirstAvailable([selectPathStage228R22]).catch(() => ({ data: [] }));
-        afterRowsStage228R22 = Array.isArray((unscopedAfterStage228R22 as any)?.data) ? (unscopedAfterStage228R22 as any).data as Record<string, unknown>[] : [];
+      if (rowWorkspaceIdStage228R23) {
+        await updateByIdScoped('work_items', id, workspaceId, payloadStage228R23);
+      } else {
+        await updateById('work_items', id, payloadStage228R23);
       }
 
-      if (afterRowsStage228R22.length) {
-        res.status(500).json({ error: 'EVENT_DELETE_VERIFY_FAILED', id, remaining: afterRowsStage228R22.length });
+      const afterStage228R23 = await selectFirstAvailable([selectPathStage228R23]).catch(() => ({ data: [] }));
+      const afterRowsStage228R23 = Array.isArray((afterStage228R23 as any)?.data) ? (afterStage228R23 as any).data as Record<string, unknown>[] : [];
+      const afterRowStage228R23 = afterRowsStage228R23[0] || null;
+      const afterStatusStage228R23 = asText((afterRowStage228R23 as any)?.status).toLowerCase();
+      const hiddenStage228R23 = !afterRowStage228R23 || (['deleted', 'archived', 'removed'].includes(afterStatusStage228R23) && (afterRowStage228R23 as any).show_in_tasks !== true && (afterRowStage228R23 as any).show_in_calendar !== true);
+
+      if (!hiddenStage228R23) {
+        res.status(500).json({ error: 'EVENT_DELETE_HIDE_VERIFY_FAILED', id, status: afterStatusStage228R23 });
         return;
       }
 
-      res.status(200).json({ ok: true, id, deleted: true, verified: true });
+      res.status(200).json({ ok: true, id, deleted: true, hidden: true, verified: true });
       return;
     }
 
