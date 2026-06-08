@@ -52,6 +52,7 @@ import '../styles/closeflow-case-history-visual-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-case-detail-stage217-operation-workspace.css';
 import '../styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css';
+import '../styles/case-detail-stage228r9-shell-rail-lift.css';
 import '../styles/closeflow-case-finance-modal-stage220a30.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
@@ -168,6 +169,8 @@ void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
+const STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT = 'CaseDetail header spans workspace, tabs live in main column and right rail starts under header';
+void STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT;
 const STAGE228R7_R8_CASE_QUICK_ACTIONS_OPEN_COMMISSION_PAYMENT = 'case quick action payment opens commission payment modal, not legacy client-payment modal';
 void STAGE228R7_R8_CASE_QUICK_ACTIONS_OPEN_COMMISSION_PAYMENT;
 const STAGE228R7_COMMISSION_BALANCE_TRUTH = 'case finance surfaces show transaction value, commission due, commission paid and commission remaining';
@@ -2409,7 +2412,7 @@ export default function CaseDetail() {
     <Layout>
 
       <main className="case-detail-vnext-page">
-        <header className="case-detail-header client-detail-header" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
+        <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
           <CaseDetailTrashButton
             type="button"
             className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32"
@@ -2440,9 +2443,11 @@ export default function CaseDetail() {
           </div>
         </header>
 
-                <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
+<div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true">
+          <section className="case-detail-main-column" data-stage228r9-main-column="true">
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
           <span hidden data-stage220a11-marker="STAGE220A11_CASE_DETAIL_TABS_PRODUCTION" />
-          <nav className="case-detail-stage220a10-tabs-wrap" aria-label="Zakładki sprawy" data-stage220a10-tabs-top="true">
+          <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="Zakładki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
             <TabsList className="case-detail-tabs case-detail-stage220a10-tabs">
               {[
                 { key: 'service' as CaseDetailTab, label: 'Obsługa', count: workItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
@@ -2459,8 +2464,6 @@ export default function CaseDetail() {
           </nav>
         </Tabs>
 
-<div className="case-detail-shell">
-          <section className="case-detail-main-column">
             {activeTab === 'service' ? (
               <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-service-panel" data-stage220a10-tab-panel="service">
                 <div className="case-detail-section-head case-detail-stage220a10-panel-head">

@@ -1,0 +1,107 @@
+/* STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT
+   Header spans the full workspace, tabs become a compact in-column control,
+   and the right rail starts directly under the header instead of below a full-width tabs bar. */
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+  margin-bottom: 14px !important;
+  padding: 18px 24px !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] .case-detail-header-copy::after {
+  display: none !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] .case-detail-header-copy {
+  gap: 6px !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] .case-detail-back-button {
+  min-height: 34px !important;
+  padding: 7px 11px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell {
+  align-items: start !important;
+  display: grid !important;
+  gap: 22px !important;
+  grid-template-columns: minmax(0, 1fr) 320px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: none !important;
+  width: 100% !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+  margin-top: 0 !important;
+  position: sticky !important;
+  top: 18px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact {
+  align-items: center !important;
+  display: inline-flex !important;
+  justify-content: flex-start !important;
+  margin: 0 0 12px !important;
+  max-width: 100% !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tabs {
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(148, 163, 184, 0.22) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04) !important;
+  display: inline-flex !important;
+  gap: 4px !important;
+  min-height: 34px !important;
+  padding: 4px !important;
+  width: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact [data-stage220a11-case-tab-trigger] {
+  border-radius: 999px !important;
+  font-size: 12px !important;
+  gap: 5px !important;
+  min-height: 28px !important;
+  padding: 5px 9px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tab-icon svg {
+  height: 14px !important;
+  min-height: 14px !important;
+  min-width: 14px !important;
+  width: 14px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-tabs-compact .case-detail-stage220a10-tab-count {
+  font-size: 10px !important;
+  min-height: 18px !important;
+  min-width: 18px !important;
+  padding: 2px 5px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell {
+    grid-template-columns: 1fr !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell .case-detail-right-rail {
+    position: static !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .case-detail-vnext-page .case-detail-header[data-stage228r9-wide-header="true"] {
+    padding: 16px !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-tabs-compact {
+    display: flex !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+  }
+}

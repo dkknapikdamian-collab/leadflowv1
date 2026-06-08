@@ -1,0 +1,17 @@
+{
+  "stage": "STAGE228R9_CASE_DETAIL_SHELL_WIDTH_RAIL_LIFT",
+  "repair": "R9R2 regex anchor fix",
+  "date": "2026-06-08 16:35 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "CaseDetail wasted vertical space because tabs were a full-width bar above the shell and right rail started too low.",
+  "fix": "Header spans workspace; tabs moved into main column as compact control; right rail starts under header.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "CSS scope targets CaseDetail stage markers.",
+    "Sticky rail disabled below 1220px.",
+    "R9R2 uses regex anchors to avoid CRLF/whitespace failure."
+  ]
+}

@@ -1,0 +1,33 @@
+# Stage228R9 - CaseDetail shell width + right rail lift
+
+- date: 2026-06-08 16:35 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- repair: R9R2 regex anchor fix after R9 failed on exact shell/main whitespace match.
+- input:
+  - Damian requested the CaseDetail top header to span the workspace from the sidebar edge to the right edge.
+  - The three-tab control should no longer be a full-width empty card.
+  - The right rail with Szybkie akcje and Finanse sprawy should move up.
+- scan:
+  - CaseDetail had header before a full-width Tabs block, then shell with main column and right rail.
+  - visual-stage13-case-detail-vnext.css defined shell max-width and 1fr/320px columns.
+  - stage217 CSS kept production tab styling as a wide bar.
+- fix:
+  - Move Tabs into the main column inside the shell with regex-tolerant patching.
+  - Add full-width header marker and CSS.
+  - Add compact tabs styling.
+  - Keep right rail at top of shell and sticky on desktop.
+  - Add guard scripts/check-stage228r9-case-detail-shell-rail-lift.cjs.
+- tests:
+  - node scripts/check-stage228r9-case-detail-shell-rail-lift.cjs
+  - npm run build
+- manual test:
+  - Open CaseDetail.
+  - Header should span full workspace width.
+  - Tabs should be compact and not a full-width empty bar.
+  - Szybkie akcje / Finanse sprawy should start higher, directly under header.
+- risk audit:
+  - No data or SQL change.
+  - Layout only.
+  - Sticky right rail disabled on tablet/mobile.
+  - Possible visual interaction with older stage217 tab CSS is guarded by more specific Stage228R9 selectors.
