@@ -73,3 +73,62 @@
 .cf-shared-quick-actions-bar__button--lost .cf-shared-quick-actions-bar__icon { color: #b91c1c; background: #fef2f2; }
 .cf-shared-quick-actions-bar__button--service .cf-shared-quick-actions-bar__icon { color: #7c3aed; background: #f5f3ff; }
 .cf-shared-quick-actions-bar__button--payment .cf-shared-quick-actions-bar__icon { color: #16a34a; background: #ecfdf3; }
+/* STAGE228R7_R8_QUICK_ACTIONS_CARD_SOURCE_TRUTH
+   Rail quick actions must look like the other right-rail action cards:
+   vertical white tiles, icon on the left, label on the right, full width. */
+.cf-shared-quick-actions-bar--rail {
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  border-radius: 24px;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.06);
+  padding: 16px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__header {
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__button {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.96);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.035);
+  color: #334155;
+  display: flex;
+  font-size: 13px;
+  font-weight: 760;
+  gap: 10px;
+  justify-content: flex-start;
+  min-height: 44px;
+  padding: 10px 12px;
+  text-align: left;
+  width: 100%;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__button:hover:not(:disabled) {
+  background: #f8fbff;
+  border-color: rgba(147, 197, 253, 0.9);
+  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.08);
+  transform: translateY(-1px);
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__icon {
+  flex: 0 0 auto;
+  height: 28px;
+  width: 28px;
+}
+
+.cf-shared-quick-actions-bar--rail .cf-shared-quick-actions-bar__button > span:last-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

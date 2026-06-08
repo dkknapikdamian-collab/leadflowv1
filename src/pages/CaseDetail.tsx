@@ -168,6 +168,8 @@ void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
+const STAGE228R7_R8_CASE_QUICK_ACTIONS_OPEN_COMMISSION_PAYMENT = 'case quick action payment opens commission payment modal, not legacy client-payment modal';
+void STAGE228R7_R8_CASE_QUICK_ACTIONS_OPEN_COMMISSION_PAYMENT;
 const STAGE228R7_COMMISSION_BALANCE_TRUTH = 'case finance surfaces show transaction value, commission due, commission paid and commission remaining';
 const STAGE228R7_R3_VERCEL_GUARD_COMPAT_HOTFIX = 'R7 Vercel build compat fixes legacy guard labels and duplicate commission wording';
 void STAGE228R7_R3_VERCEL_GUARD_COMPAT_HOTFIX;
@@ -2820,7 +2822,7 @@ export default function CaseDetail() {
                 caseTitle={getCaseTitle(caseData)}
                 clientId={caseData.clientId || null}
                 leadId={caseData.leadId || null}
-                onAddPayment={() => setIsCasePaymentOpen(true)}
+                onAddPayment={() => openCaseFinancePaymentModal('commission')}
               />
             </div>
 <section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Finanse sprawy">

@@ -1,0 +1,28 @@
+# Stage228R7 R8 - Case quick actions card VST
+
+- date: 2026-06-08 16:00 Europe/Warsaw
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- repair: R8R3 guard escape fix after R8R2 crashed while generating guard.
+- issue:
+  - CaseDetail right rail quick actions rendered as loose icons/text.
+  - QuickActionsBar visual CSS was not self-owned by the component.
+  - Case quick payment action still used generic "Wpłata" copy and legacy opener.
+- fix:
+  - QuickActionsBar imports its shared CSS directly.
+  - Rail quick actions get full-width white card style.
+  - Case quick payment label becomes "Wpłata prowizji".
+  - Case quick payment action opens commission payment modal.
+  - Guard fixed so template literal token no longer references runtime variable "variant".
+- tests:
+  - node scripts/check-stage228r7r8-case-quick-actions-card-vst.cjs
+  - npm run build
+- manual test:
+  - Open CaseDetail right rail.
+  - Szybkie akcje should render as vertical cards matching the lower action card style.
+  - Click Wpłata prowizji and confirm it opens the commission payment flow.
+- risk audit:
+  - Shared QuickActionsBar CSS now loads anywhere the component is used.
+  - Inline variant should remain unaffected because the new stronger rules target only --rail.
+  - No SQL/migration.
+  - No finance calculation change.

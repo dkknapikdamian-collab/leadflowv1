@@ -1,0 +1,16 @@
+{
+  "stage": "STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_VST",
+  "repair": "R8R3 guard escape fix",
+  "date": "2026-06-08 16:00 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "issue": "CaseDetail quick actions rendered as loose icons/text instead of rail action cards.",
+  "fix": "QuickActionsBar imports shared CSS directly; rail variant forced to card-list VST; case payment quick action opens commission payment modal.",
+  "risk_audit": [
+    "No database change.",
+    "No finance calculation change.",
+    "CSS scope targets rail variant only.",
+    "Guard locks shared quick-actions visual source."
+  ]
+}

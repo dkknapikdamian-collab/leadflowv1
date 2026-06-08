@@ -15,6 +15,9 @@ export type CaseQuickActionsProps = {
 
 const STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR = 'CaseQuickActions renders shared QuickActionsBar instead of local action grid';
 void STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR;
+const STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH = 'Case quick actions use the shared card-list quick action visual source of truth';
+void STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH;
+
 
 export default function CaseQuickActions({
   caseId,
@@ -104,11 +107,11 @@ export default function CaseQuickActions({
           },
           {
             key: 'payment',
-            label: 'Wpłata',
+            label: 'Wpłata prowizji',
             tone: 'payment',
             icon: <CircleDollarSign className="h-4 w-4" />,
             onClick: onAddPayment,
-            data: { 'data-stage227e3-case-payment-action': 'true' },
+            data: { 'data-stage227e3-case-payment-action': 'true', 'data-stage228r7r8-case-commission-payment-action': 'true' },
           },
         ]}
       />

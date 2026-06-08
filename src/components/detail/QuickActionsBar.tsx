@@ -1,4 +1,5 @@
 import { type ReactNode } from 'react';
+import '../../styles/closeflow-shared-quick-actions-bar-stage227e3.css';
 
 export type QuickActionItem = {
   key: string;
@@ -34,6 +35,9 @@ const STAGE227E3_SHARED_QUICK_ACTIONS_BAR = 'LeadDetail and CaseDetail share one
 void STAGE227E3_SHARED_QUICK_ACTIONS_BAR;
 const STAGE227E4_QUICK_ACTIONS_SOURCE_OF_TRUTH = 'QuickActionsBar is the shared visual source of truth for LeadDetail and CaseDetail action bars';
 void STAGE227E4_QUICK_ACTIONS_SOURCE_OF_TRUTH;
+const STAGE228R7_R8_QUICK_ACTIONS_CARD_SOURCE_TRUTH = 'QuickActionsBar imports its own card-list CSS so CaseDetail and LeadDetail rail actions stay visually aligned';
+void STAGE228R7_R8_QUICK_ACTIONS_CARD_SOURCE_TRUTH;
+
 
 export default function QuickActionsBar({
   title = 'Szybkie akcje',
@@ -48,6 +52,7 @@ export default function QuickActionsBar({
       className={`cf-shared-quick-actions-bar cf-shared-quick-actions-bar--${variant} cf-shared-quick-actions-bar--${recordType}`}
       data-stage227e3-shared-quick-actions-bar="true"
       data-stage227e4-quick-actions-source-of-truth="true"
+      data-stage228r7r8-quick-actions-card-vst="true"
       data-stage={dataStage}
       data-record-type={recordType}
       aria-label={ariaLabel}
