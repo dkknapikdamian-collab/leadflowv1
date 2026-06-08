@@ -1091,3 +1091,30 @@ NASTĘPNY KROK:
 - Uruchomić V3.
 - Jeśli gate jest zielony, lokalny smoke `/leads` i `/clients`.
 - Push po akceptacji.
+
+<!-- STAGE228R2_ADMIN_FEEDBACK_MANUAL_TESTS -->
+## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 manual tests
+
+STATUS: DO WYKONANIA.
+
+Sprawdzic recznie:
+- `/billing`: brak kafelka `AI jako dodatek Beta`; w prawym `Status konta` nie ma dlugiego opisu trial/free; pozostaja status, summary, popular i Pro.
+- `/notifications`: brak kafelka `Jak dzialaja powiadomienia?`; `Szybkie akcje`, konflikty i nadchodzace nadal sa czytelne.
+- `/ai-drafts`: brak kafelka `Jak dziala szkic?`; filtry, braki i ostatnie zatwierdzone nadal sa czytelne.
+- `/funnel`: tekst `Lead - Oferta wyslana` i `Nastepny krok ... - data` renderuja separator jako srodkowa kropke, bez mojibake.
+- `/help`, `/settings`, `/tasks`, `/leads`, `/clients`, `/cases`: szybki smoke, czy naglowki raila nie maja bialego/kolorowego tla za samym tekstem.
+
+SKIP:
+- Lokalny browser smoke w tej sesji zatrzymal sie na `Ladowanie widoku...`, wiec nie potwierdzono pelnego visual PASS.
+<!-- /STAGE228R2_ADMIN_FEEDBACK_MANUAL_TESTS -->
+
+## 2026-06-08 19:40 Europe/Warsaw - STAGE228R11_SHARED_MISSING_ITEM_FLOW_MANUAL_TESTS
+
+Zakres testu recznego:
+
+1. LeadDetail -> Szybkie akcje -> Brak -> zapisz -> brak widoczny w Braki i blokady po odswiezeniu.
+2. ClientDetail -> Braki i blokady -> Brak -> zapisz -> brak widoczny w Braki i blokady po odswiezeniu.
+3. CaseDetail -> Szybkie akcje -> Brak -> zapisz -> brak widoczny jako brak/dzialanie sprawy po odswiezeniu.
+4. Potwierdzic, ze nie dodano nowej tabeli SQL i nie ma regresji w Notatka/Zadanie/Wydarzenie.
+
+Status: DO_WYKONANIA_PRZEZ_DAMIANA po lokalnym apply.

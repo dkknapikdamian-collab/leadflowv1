@@ -2103,3 +2103,20 @@ Chroni:
 - brak mojibake separatora w `SalesFunnel.tsx`,
 - import statycznego CSS `admin-feedback-rail-cleanup-stage228r2.css`.
 <!-- /STAGE228R2_ADMIN_FEEDBACK_RAIL_CLEANUP_GUARD -->
+
+## 2026-06-08 19:40 Europe/Warsaw - STAGE228R11_SHARED_MISSING_ITEM_FLOW_GUARD
+
+Dodany guard:
+
+- scripts/check-stage228r11-shared-missing-item-flow.cjs
+- package.json script: check:stage228r11-shared-missing-item-flow
+- package.json prebuild: node scripts/check-stage228r11-shared-missing-item-flow.cjs
+
+Guard pilnuje:
+
+- shared missing item contract lead/client/case,
+- LeadDetail: Brak quick action, shared modal, task missing_item, activity missing_item_created, lista Braki i blokady,
+- ClientDetail: shared modal, task missing_item, activity missing_item_created, lista Braki i blokady,
+- CaseQuickActions: Brak jako szybka akcja sprawy,
+- AddCaseMissingItemDialog: zapis do case_items status missing,
+- CaseDetail: fetch/insert/update/delete case_items.

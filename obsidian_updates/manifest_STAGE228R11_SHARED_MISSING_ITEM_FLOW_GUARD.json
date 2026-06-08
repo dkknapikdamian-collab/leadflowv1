@@ -1,0 +1,26 @@
+{
+  "stage": "STAGE228R11_SHARED_MISSING_ITEM_FLOW_GUARD",
+  "date": "2026-06-08 19:40 Europe/Warsaw",
+  "project": "CloseFlow / LeadFlow",
+  "repo": "dkknapikdamian-collab/leadflowv1",
+  "branch": "dev-rollout-freeze",
+  "localPath": "C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow",
+  "decision": "Current Brak workflow remains lightweight without SQL: lead/client use task+activity, case uses case_items+activity.",
+  "files": [
+    "scripts/check-stage228r11-shared-missing-item-flow.cjs",
+    "package.json",
+    "_project/runs/2026-06-08_stage228r11_shared_missing_item_flow_guard.md",
+    "_project/05_MANUAL_TESTS.md",
+    "_project/06_GUARDS_AND_TESTS.md"
+  ],
+  "manualTests": [
+    "LeadDetail Brak save and reload",
+    "ClientDetail Brak save and reload",
+    "CaseDetail Brak save and reload"
+  ],
+  "riskAudit": [
+    "Two persistence targets remain by design: task/activity for lead/client and case_items for case.",
+    "Future one-table missing_items model requires separate SQL migration stage.",
+    "No UI layout, finance, SQL, RLS or routing changes in this stage."
+  ]
+}
