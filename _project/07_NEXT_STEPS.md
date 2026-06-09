@@ -340,6 +340,97 @@ STATUS: BACKLOG_DO_WDROŻENIA / DO_PRIORYTETYZACJI_PRZED_PRODUKCJĄ
    - Wymóg: start ma pokazywać co robić teraz, nie być ozdobnym dashboardem.
    - Ryzyko: przeładowanie ekranu i powrót do CRM-owego chaosu.
 
+## 2026-06-09 16:00 Europe/Warsaw — LeadFlow AI Opportunity Finder
+
+Status: KIERUNEK_ROZWOJU_DO_AKCEPTACJI
+Priorytet: WYSOKI
+Typ: przyszły moduł produkcyjny / high-value feature
+Nie blokuje aktualnych etapów produkcyjnych.
+
+### Teza
+
+LeadFlow nie powinien być tylko CRM-em do obsługi leadów po ich otrzymaniu. Docelowo powinien pomagać znajdować okazje sprzedażowe przed kontaktem z klientem.
+
+Nie budujemy zwykłej bazy firm. Budujemy moduł, który wykrywa firmy z konkretnym problemem, sygnałem lub powodem do kontaktu.
+
+Główna zasada:
+
+```txt
+Nie: znajdź firmy.
+Tak: znajdź firmy z problemem.
+```
+
+### Kierunek produktu
+
+AI Opportunity Finder ma być modułem LeadFlow / CloseFlow, nie osobną aplikacją.
+
+Docelowy efekt:
+- użytkownik określa branżę, miasto i problem/sygnał,
+- system znajduje firmy pasujące do sygnału,
+- system tworzy konkretny powód kontaktu,
+- system zapisuje leady do LeadFlow,
+- system ustawia follow-up,
+- system pozwala właścicielowi lub handlowcowi pracować z listą okazji w tym samym CRM.
+
+### Przykładowe sygnały sprzedażowe
+
+- firmy bez formularza kontaktowego,
+- firmy ze starą stroną,
+- firmy bez SSL,
+- sklepy z widocznym ryzykiem regulaminu/EAA,
+- restauracje z małą liczbą opinii Google,
+- firmy bez strony,
+- agencje lub lokalne firmy z małą liczbą aktualnych ofert,
+- lokalne biznesy z nieaktualnymi danymi kontaktowymi,
+- firmy z widocznym problemem konwersji albo zaufania.
+
+### Dlaczego to ma sens
+
+CRM zaczyna się za późno, jeśli użytkownik nie ma sensownych leadów. Dla wielu małych firm ból nie brzmi „jak obsłużyć 1000 leadów”, tylko „skąd wziąć pierwsze 20 sensownych leadów z powodem kontaktu”.
+
+LeadFlow powinien docelowo obsługiwać cały ruch:
+1. wykrycie okazji,
+2. zapis leada,
+3. follow-up,
+4. zadania,
+5. notatki,
+6. historia,
+7. status,
+8. raport właściciela.
+
+### Granice
+
+Nie budujemy:
+- generycznej bazy firm,
+- kopii Apollo/Clay/Lusha,
+- scrapera bez powodu kontaktu,
+- osobnej aplikacji DealGram.
+
+Budujemy:
+- moduł okazji sprzedażowych,
+- scoring problemu,
+- powód kontaktu,
+- szybkie utworzenie leada,
+- follow-up w LeadFlow.
+
+### Status wdrożeniowy
+
+Ten kierunek jest ważny, ale nie blokuje aktualnych etapów:
+- Stage230B Quick Capture Inbox,
+- Stage230C mobile dictation duplicate audit,
+- Stage230D AI parser proposal endpoint,
+- pre-production backlog: dokumenty do leadów, koszty, edycja zadań/wydarzeń, ekran startowy.
+
+Do wdrożenia dopiero po ustabilizowaniu podstawowego CRM i szkiców.
+
+### Proponowane późniejsze etapy
+
+1. `STAGE240A_SMART_SEARCH_INPUT_AND_MANUAL_IMPORT`
+2. `STAGE240B_OPPORTUNITY_REASON_SCHEMA`
+3. `STAGE240C_AI_SCORING_AND_PRIORITY`
+4. `STAGE240D_CREATE_LEADS_WITH_REASON_AND_FOLLOWUP`
+5. `STAGE240E_MONTHLY_OPPORTUNITY_MONITORING`
+
 #### Growth backlog — moduł pozyskiwania leadów, nie osobna aplikacja
 
 `STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER`
