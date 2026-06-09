@@ -104,3 +104,10 @@ Ryzyka:
 - Settings nadal ma akcje bezpieczeństwa na Firebase Auth i wymaga migracji do Supabase Auth w STAGE231B.
 - Maile auth i redirect URL wymagają osobnej QA w STAGE231C.
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_RISK_END -->
+
+## STAGE231D_RISK_AUDIT
+
+- Google OAuth may still create raw Supabase auth.users when public signups are enabled. Stage231D blocks application bootstrap for login intent without an existing profile.
+- Email/password requires Supabase e-mail confirmation when configured; this is expected.
+- Invite-only should be a later optional mode, not default public SaaS behavior.
+- Supabase auth trigger functions are no-op after STAGE231C; api/me is the source of truth for app profile/workspace bootstrap.

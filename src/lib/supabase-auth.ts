@@ -1,4 +1,5 @@
 import { createClient, type Session, type SupabaseClient, type User } from '@supabase/supabase-js';
+import { setCloseFlowAuthIntent, type CloseFlowAuthIntent } from './auth-intent';
 
 export type SupabaseSessionUser = {
   uid: string;
@@ -147,7 +148,8 @@ export async function refreshSupabaseSession() {
   return data.session || null;
 }
 
-export async function signInWithGoogle() {
+export async function signInWithGoogle(intent: CloseFlowAuthIntent = 'login') {
+  setCloseFlowAuthIntent(intent);
   const supabase = requireClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',

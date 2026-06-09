@@ -2,6 +2,7 @@
 // AI_DRAFT_CONFIRM_RECORDS_STAGE25_SUPABASE
 import { getClientAuthSnapshot } from './client-auth';
 import { getSupabaseAccessToken } from './supabase-auth';
+import { getCloseFlowAuthIntent } from './auth-intent';
 import { applyGoogleCalendarReminderPreferenceToEventPayload } from './google-calendar-reminder-preferences';
 import { emitCloseflowWorkItemNoFlickerMutation } from './work-items/no-flicker-mutation';
 import { normalizeActivityListContract, normalizeAiDraftListContract, normalizeCaseContract, normalizeCaseItemListContract, normalizeCaseListContract, normalizeClientContract, normalizeClientListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizePaymentListContract, normalizeTaskListContract } from './data-contract';
@@ -252,6 +253,8 @@ async function getAuthHeaders() {
     headers['x-workspace-id'] = workspaceId;
     headers['x-closeflow-workspace-id'] = workspaceId;
   }
+  const authIntent = getCloseFlowAuthIntent();
+  if (authIntent) headers['x-closeflow-auth-intent'] = authIntent;
 
   return headers;
 }

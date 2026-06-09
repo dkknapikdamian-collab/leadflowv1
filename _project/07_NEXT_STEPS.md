@@ -2861,3 +2861,13 @@ Uwaga:
 - Obecnie /api/me może bootstrapować nowy workspace trial po OAuth.
 - Settings używa jeszcze Firebase Auth do części akcji bezpieczeństwa i wymaga migracji.
 <!-- STAGE231_AUTH_URGENT_BACKLOG_END -->
+
+## Future auth stages after STAGE231D
+
+### STAGE231E_EMAIL_COPY_REPAIR
+
+Poprawić treści e-maili Supabase/Auth: rejestracja, potwierdzenie e-maila, reset hasła, komunikaty po kliknięciu linków, copy w aplikacji po wysłaniu maila.
+
+### STAGE231F_INVITE_ONLY_TEST_MODE
+
+Dodać opcjonalny tryb invite-only/test-mode: tylko e-maile na allowliście/zaproszeniach mogą tworzyć konto. Nie wdrażać jako default dla publicznego SaaS.

@@ -67,6 +67,12 @@ function getSafeLoginUrl() {
   return window.location.href;
 }
 
+function getDefaultAuthTab() {
+  if (typeof window === 'undefined') return 'login';
+  const params = new URLSearchParams(window.location.search || '');
+  return params.get('tab') === 'register' ? 'register' : 'login';
+}
+
 function isEmbeddedGoogleAuthBlockedUserAgent() {
   if (typeof window === 'undefined') return false;
   const ua = window.navigator.userAgent || '';
@@ -86,7 +92,7 @@ export default function Login() {
   const [googleWebViewBlocked, setGoogleWebViewBlocked] = useState(false);
   const authConfig = getSupabaseAuthConfig();
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = async (intent: 'login' | 'register') => {
     if (!authConfig.configured) {
       toast.error('Supabase Auth nie jest skonfigurowany. Uzupełnij VITE_SUPABASE_URL i VITE_SUPABASE_ANON_KEY.');
       return;
@@ -99,7 +105,7 @@ export default function Login() {
     setGoogleWebViewBlocked(false);
     setLoading(true);
     try {
-      await signInWithGoogle();
+      await signInWithGoogle(intent);
     } catch (error: any) {
       toast.error('Błąd logowania Google: ' + (error?.message || 'UNKNOWN_ERROR'));
       setLoading(false);
@@ -206,7 +212,7 @@ export default function Login() {
         </div>
       ) : null}
 
-      <Tabs defaultValue="login" className="space-y-6">
+      <Tabs defaultValue={getDefaultAuthTab()} className="space-y-6">
         <TabsList className="grid w-full grid-cols-2 rounded-2xl bg-slate-100 p-1">
           <TabsTrigger value="login" className="rounded-xl">Logowanie</TabsTrigger>
           <TabsTrigger value="register" className="rounded-xl">Rejestracja</TabsTrigger>
@@ -250,7 +256,7 @@ export default function Login() {
             </div>
           ) : null}
 
-          <Button variant="outline" onClick={handleGoogleLogin} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
+          <Button variant="outline" onClick={() => handleGoogleLogin('login')} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
             Kontynuuj przez Google
           </Button>
@@ -288,7 +294,7 @@ export default function Login() {
               <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400">Albo zarejestruj przez</span></div>
             </div>
 
-            <Button type="button" variant="outline" onClick={handleGoogleLogin} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
+            <Button type="button" variant="outline" onClick={() => handleGoogleLogin('register')} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
               {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
               Zarejestruj przez Google
             </Button>

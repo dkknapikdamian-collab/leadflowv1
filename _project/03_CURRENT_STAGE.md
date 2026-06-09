@@ -1549,3 +1549,16 @@ TESTY:
 - npm run build
 - git diff --check
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CURRENT_STAGE_END -->
+
+## STAGE231D_GOOGLE_AUTH_INTENT_GATE — LOCAL_ONLY_PACKAGE_PREPARED
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+Zakres:
+- Google Login zapisuje intent=login.
+- Google Register zapisuje intent=register.
+- Klient wysyła x-closeflow-auth-intent do API.
+- api/me blokuje intent=login bez istniejącego profilu aplikacji przez REGISTER_FIRST_REQUIRED.
+- App wylogowuje taki przypadek i pokazuje komunikat, żeby najpierw utworzyć konto.
+- / i /start pokazują Login/Rejestrację dla niezalogowanego użytkownika.
+- STAGE231C SQL no-op repair udokumentowany w docs/sql/STAGE231C_AUTH_TRIGGER_NOOP_REPAIR.md.

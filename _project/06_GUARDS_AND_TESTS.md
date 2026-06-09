@@ -2442,3 +2442,14 @@ Kontrakt:
 - /api/me ma marker obecnego public trial bootstrap przez OAuth.
 - Next steps zawiera kolejkę STAGE231B/C/D/E.
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_GUARD_END -->
+
+## STAGE231D_GOOGLE_AUTH_INTENT_GATE — guards/tests
+
+- node scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --test tests/stage231a-google-auth-entry-consistency.test.cjs
+- node scripts/check-stage231d-google-auth-intent-gate.cjs
+- node --test tests/stage231d-google-auth-intent-gate.test.cjs
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- npm run build
+- git diff --check

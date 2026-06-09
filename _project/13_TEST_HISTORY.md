@@ -1903,3 +1903,20 @@ Manual QA:
 - e-mail/hasło rejestracji nadal widoczne
 - reset hasła nadal widoczny
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_TEST_HISTORY_END -->
+
+## STAGE231D_GOOGLE_AUTH_INTENT_GATE — planned verification
+
+Automated:
+- Stage231A guard/test
+- Stage231D guard/test
+- Stage230B guard/test
+- npm run build
+- git diff --check
+
+Manual:
+- / shows Login/Register.
+- /login?tab=register opens Registration.
+- Google Login existing CloseFlow account works.
+- Google Login unknown account returns to Register with notice.
+- Google Register unknown account creates profile/workspace via api/me.
+- Email/password signup still uses Supabase email confirmation.

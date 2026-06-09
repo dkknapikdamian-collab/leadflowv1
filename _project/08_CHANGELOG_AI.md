@@ -2517,3 +2517,13 @@ Not changed:
 - No invite-only gate yet.
 - No Firebase Settings migration yet.
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CHANGELOG_END -->
+
+## 2026-06-09 — STAGE231D_GOOGLE_AUTH_INTENT_GATE
+
+- Added Google login/register intent gate.
+- Added auth intent session helper.
+- Added x-closeflow-auth-intent API header.
+- Added REGISTER_FIRST_REQUIRED API gate for Google login path without existing profile.
+- Changed logged-out / and /start to one auth entry.
+- Documented STAGE231C Supabase auth trigger no-op repair.
+- Added future backlog: STAGE231E email copy repair and STAGE231F invite-only test mode.

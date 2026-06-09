@@ -8,6 +8,7 @@ import { fetchMeFromSupabase, isSupabaseConfigured } from './lib/supabase-fallba
 import { clearClientAuthSnapshot, setClientAuthSnapshot } from './lib/client-auth';
 import { useSupabaseSession } from './hooks/useSupabaseSession';
 import { isSupabaseEmailVerificationRequiredForUser, signOutFromSupabase } from './lib/supabase-auth';
+import { clearCloseFlowAuthIntent, consumeCloseFlowAuthNotice, setCloseFlowAuthNotice } from './lib/auth-intent';
 import { toast } from 'sonner';
 import { AppChunkErrorBoundary } from './components/AppChunkErrorBoundary';
 import { PwaInstallPrompt } from './components/PwaInstallPrompt';
@@ -173,6 +174,7 @@ export default function App() {
       if (showLoading) setProfileLoading(true);
       try {
         const me = await fetchMeFromSupabase();
+        clearCloseFlowAuthIntent();
         if (cancelled) return;
 
         const nextProfile = me.profile || null;
@@ -195,6 +197,16 @@ export default function App() {
         setProfile(nextProfile);
       } catch (error) {
         if (cancelled) return;
+        const message = error instanceof Error ? error.message : String(error || '');
+        if (message.includes('REGISTER_FIRST_REQUIRED')) {
+          setCloseFlowAuthNotice('register_first_required');
+          clearCloseFlowAuthIntent();
+          clearClientAuthSnapshot();
+          setProfile(null);
+          if (showLoading) setProfileLoading(false);
+          await signOutFromSupabase().catch((signOutError) => console.error('REGISTER_FIRST_SIGNOUT_FAILED', signOutError));
+          return;
+        }
         console.error('PROFILE_API_BOOTSTRAP_FAILED', error);
         setProfile(buildLocalProfile(user));
       } finally {
@@ -218,6 +230,13 @@ export default function App() {
     if (window.sessionStorage.getItem(FORCE_LOGOUT_NOTICE_SESSION_KEY) !== '1') return;
     window.sessionStorage.removeItem(FORCE_LOGOUT_NOTICE_SESSION_KEY);
     toast.success('Wylogowano tę sesję po globalnym wylogowaniu.');
+  }, []);
+
+  useEffect(() => {
+    const notice = consumeCloseFlowAuthNotice();
+    if (notice === 'register_first_required') {
+      toast.error('Nie znaleźliśmy konta CloseFlow dla tego Google. Najpierw utwórz konto w zakładce Rejestracja.');
+    }
   }, []);
 
   if (loading || profileLoading) {
@@ -249,11 +268,11 @@ export default function App() {
           <Suspense fallback={<AppRouteFallback />}>
             <Routes>
               <Route path="/login" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
-              <Route path="/start" element={!isLoggedIn ? <PublicLanding /> : <Navigate to="/" />} />
+              <Route path="/start" element={!isLoggedIn ? <Login /> : <Navigate to="/" />} />
               <Route path="/privacy" element={<LegalPrivacy />} />
               <Route path="/terms" element={<LegalTerms />} />
               <Route path="/portal/:caseId/:token" element={<ClientPortal />} />
-              <Route path="/" element={isLoggedIn ? <Today /> : <PublicLanding />} />
+              <Route path="/" element={isLoggedIn ? <Today /> : <Login />} />
               <Route path="/today" element={isLoggedIn ? <Today /> : <Navigate to="/login" />} />
               <Route path="/leads" element={isLoggedIn ? <Leads /> : <Navigate to="/login" />} />
               <Route path="/dev/funnel" element={import.meta.env.DEV ? <SalesFunnel /> : <Navigate to="/login" />} />
@@ -297,7 +316,7 @@ export default function App() {
 
 /* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: /today and /support route aliases are release-candidate smoke routes. */
 
-/* CLOSEFLOW_PUBLIC_LANDING_ROUTE: / shows PublicLanding for logged-out users and Today for logged-in users. */
+/* STAGE231D_GOOGLE_AUTH_INTENT_GATE: / and /start show Login/Register for logged-out users; PublicLanding no longer creates a second auth entry. */
 
 
 

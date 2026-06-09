@@ -190,6 +190,16 @@ function asNullableString(value: unknown): NullableString {
   return trimmed ? trimmed : null;
 }
 
+function getCloseFlowAuthIntentFromRequest(req: any) {
+  const raw = asString(
+    req.headers?.['x-closeflow-auth-intent']
+      || req.headers?.['X-Closeflow-Auth-Intent']
+      || req.query?.authIntent
+      || '',
+  ).trim().toLowerCase();
+  return raw === 'login' || raw === 'register' ? raw : '';
+}
+
 function uniqueStrings(values: unknown[]) {
   const seen = new Set<string>();
   const result: string[] = [];
@@ -1039,6 +1049,7 @@ export default async function handler(req: any, res: any) {
   const uid = authContext.userId;
   const email = authContext.email;
   const fullName = authContext.fullName;
+  const authIntent = getCloseFlowAuthIntentFromRequest(req);
   const headerWorkspaceId = null;
 
   try {
@@ -1048,6 +1059,12 @@ export default async function handler(req: any, res: any) {
     }
 
     let profileRow = await fetchProfile(uid, email);
+
+    if (authIntent === 'login' && !profileRow) {
+      res.status(403).json({ error: 'REGISTER_FIRST_REQUIRED' });
+      return;
+    }
+
     profileRow = await ensureProfile(profileRow, uid, email, fullName, null);
 
     const workspaceOwnerUserId = resolveWorkspaceOwnerUserId(profileRow, uid);
