@@ -1,0 +1,13 @@
+const fs=require('fs');const path=require('path');const root=process.cwd();const r=p=>fs.readFileSync(path.join(root,p),'utf8');const must=(l,c)=>{if(!c)throw new Error(l)};
+const task=r('src/server/task-route-stage124f.ts'), event=r('src/server/event-route-stage124f.ts'), fallback=r('src/lib/supabase-fallback.ts'), sql=r('supabase/sql/2026-06-09_stage229a_calendar_closed_items_hide_backfill.sql');
+must('task route has Stage229A helper',task.includes('CALENDAR_HIDDEN_TASK_STATUSES_STAGE229A'));
+must('task route accepts show calendar flags',task.includes('body.showInCalendar')&&task.includes('body.show_in_calendar'));
+must('task route hides closed statuses from calendar',task.includes('shouldHideTaskFromCalendarStage229A')&&task.includes('payload.show_in_calendar = false'));
+must('task route hides deleted/archived/removed from tasks',task.includes('shouldHideTaskFromTasksStage229A')&&task.includes('payload.show_in_tasks = false'));
+must('event route has Stage229A helper',event.includes('CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A'));
+must('event route accepts show calendar flags',event.includes('body.showInCalendar')&&event.includes('body.show_in_calendar'));
+must('event route hides closed statuses from calendar',event.includes('shouldHideEventFromCalendarStage229A')&&event.includes('payload.show_in_calendar = false'));
+must('softDeleteTask sends hidden flags',fallback.includes('show_in_tasks: false')&&fallback.includes('show_in_calendar: false')&&fallback.includes('showInCalendar: false'));
+must('SQL backfill hides calendar',sql.includes('show_in_calendar = false'));
+must('SQL backfill marks pending_delete',sql.includes('pending_delete'));
+console.log('STAGE229A_CALENDAR_CLOSED_ITEMS_HIDE_AND_SYNC_BACKFILL PASS');

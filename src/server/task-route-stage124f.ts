@@ -121,6 +121,11 @@ function isClosedTaskStatusForLeadNextActionStage228R17(value: unknown) {
   return CLOSED_TASK_STATUSES_FOR_LEAD_NEXT_ACTION_STAGE228R17.has(asText(value).toLowerCase());
 }
 
+
+const CALENDAR_HIDDEN_TASK_STATUSES_STAGE229A = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
+function shouldHideTaskFromCalendarStage229A(value: unknown) { return CALENDAR_HIDDEN_TASK_STATUSES_STAGE229A.has(asText(value).toLowerCase()); }
+function shouldHideTaskFromTasksStage229A(value: unknown) { return ['deleted', 'archived', 'removed'].includes(asText(value).toLowerCase()); }
+
 function isMissingItemTypeForLeadNextActionStage228R17(value: unknown) {
   return asText(value).toLowerCase() === 'missing_item';
 }
@@ -220,6 +225,14 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
       if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
+
+      if (body.showInTasks !== undefined) payload.show_in_tasks = Boolean(body.showInTasks);
+      if (body.show_in_tasks !== undefined) payload.show_in_tasks = Boolean(body.show_in_tasks);
+      if (body.showInCalendar !== undefined) payload.show_in_calendar = Boolean(body.showInCalendar);
+      if (body.show_in_calendar !== undefined) payload.show_in_calendar = Boolean(body.show_in_calendar);
+      const nextStatusForCalendarStage229A = body.status ?? payload.status;
+      if (shouldHideTaskFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
+      if (shouldHideTaskFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
 
       const data = await updateByIdScoped('work_items', String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };

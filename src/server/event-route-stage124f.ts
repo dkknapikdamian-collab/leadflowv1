@@ -116,6 +116,11 @@ async function syncLeadNextAction(workspaceId: string, leadId: unknown, item: { 
   });
 }
 
+
+const CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
+function shouldHideEventFromCalendarStage229A(value: unknown) { return CALENDAR_HIDDEN_EVENT_STATUSES_STAGE229A.has(asText(value).toLowerCase()); }
+function shouldHideEventFromTasksStage229A(value: unknown) { return ['deleted', 'archived', 'removed'].includes(asText(value).toLowerCase()); }
+
 async function readEvents(req: any, workspaceId: string) {
   const limit = capLimit(queryValue(req, 'limit'));
   const from = asIsoDate(queryValue(req, 'from') || queryValue(req, 'start') || queryValue(req, 'dateFrom'));
@@ -179,6 +184,14 @@ export default async function eventRouteStage124FHandler(req: any, res: any) {
       if (body.clientId !== undefined) payload.client_id = body.clientId || null;
       if (body.reminderAt !== undefined) payload.reminder = body.reminderAt || 'none';
       if (body.recurrenceRule !== undefined) payload.recurrence = body.recurrenceRule || 'none';
+
+      if (body.showInTasks !== undefined) payload.show_in_tasks = Boolean(body.showInTasks);
+      if (body.show_in_tasks !== undefined) payload.show_in_tasks = Boolean(body.show_in_tasks);
+      if (body.showInCalendar !== undefined) payload.show_in_calendar = Boolean(body.showInCalendar);
+      if (body.show_in_calendar !== undefined) payload.show_in_calendar = Boolean(body.show_in_calendar);
+      const nextStatusForCalendarStage229A = body.status ?? payload.status;
+      if (shouldHideEventFromCalendarStage229A(nextStatusForCalendarStage229A)) payload.show_in_calendar = false;
+      if (shouldHideEventFromTasksStage229A(nextStatusForCalendarStage229A)) payload.show_in_tasks = false;
 
       const data = await updateByIdScoped('work_items', String(body.id), workspaceId, payload);
       const updated = Array.isArray(data) && data[0] ? data[0] : { id: body.id, ...payload };

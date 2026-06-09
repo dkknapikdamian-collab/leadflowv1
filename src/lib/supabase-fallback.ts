@@ -725,6 +725,10 @@ export async function softDeleteTaskInSupabase(input: { id: string; title?: stri
     ...input,
     id: taskId,
     status: 'deleted',
+    show_in_tasks: false,
+    show_in_calendar: false,
+    showInTasks: false,
+    showInCalendar: false,
     deletedAt,
     source: input.source || 'stage228r59_task_soft_delete',
   };
