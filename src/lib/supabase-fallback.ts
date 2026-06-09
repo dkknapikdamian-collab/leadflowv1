@@ -256,6 +256,77 @@ async function getAuthHeaders() {
 }
 function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}:${getStoredWorkspaceId() || 'no-workspace'}`; }
 
+
+const STAGE228R25_DELETE_FLOW_FIX_AND_PUSH = 'delete flow uses verified mutation requests, source-id fallback and debug-gated response diagnostics';
+void STAGE228R25_DELETE_FLOW_FIX_AND_PUSH;
+
+type CloseflowDeleteDebugDetail = {
+  entityType: string;
+  uiId?: string;
+  sourceId?: string;
+  endpoint: string;
+  method: string;
+  responseStatus?: number;
+  responseBody?: unknown;
+  mutationCacheCategory?: string;
+  refreshSource?: string;
+  error?: string;
+};
+
+function isCloseflowDeleteDebugEnabled() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.localStorage.getItem('CLOSEFLOW_DELETE_DEBUG') === '1' || import.meta.env.VITE_CLOSEFLOW_DEBUG_DELETE === '1';
+  } catch {
+    return import.meta.env.VITE_CLOSEFLOW_DEBUG_DELETE === '1';
+  }
+}
+
+export function emitCloseflowDeleteDebug(detail: CloseflowDeleteDebugDetail) {
+  if (!isCloseflowDeleteDebugEnabled()) return;
+  try {
+    console.info('[CLOSEFLOW_DELETE_DEBUG]', detail);
+  } catch {
+    // debug logging must never break delete flow
+  }
+}
+
+async function callDeleteApiWithDiagnostics<T>(path: string, detail: Omit<CloseflowDeleteDebugDetail, 'endpoint' | 'method'>): Promise<T> {
+  const method = 'DELETE';
+  try {
+    const response = await fetch(path, {
+      method,
+      headers: { ...(await getAuthHeaders()), 'Content-Type': 'application/json' },
+    });
+    const text = await response.text();
+    let data: unknown = null;
+    if (text) {
+      try { data = JSON.parse(text); } catch { data = { raw: text }; }
+    }
+    emitCloseflowDeleteDebug({ ...detail, endpoint: path, method, responseStatus: response.status, responseBody: data });
+    if (!response.ok) {
+      const message = typeof data === 'object' && data && 'error' in (data as Record<string, unknown>)
+        ? String((data as Record<string, unknown>).error)
+        : response.status + ':REQUEST_FAILED:' + text.slice(0, 180);
+      throw new Error(message);
+    }
+    if (data && typeof data === 'object' && 'raw' in (data as Record<string, unknown>)) {
+      throw new Error('INVALID_API_RESPONSE:' + String((data as Record<string, unknown>).raw).slice(0, 180));
+    }
+    clearApiGetCache();
+    emitCloseflowDataMutation(path, method);
+    return data as T;
+  } catch (error) {
+    emitCloseflowDeleteDebug({
+      ...detail,
+      endpoint: path,
+      method,
+      error: error instanceof Error ? error.message : String(error || 'UNKNOWN_DELETE_ERROR'),
+    });
+    throw error;
+  }
+}
+
 async function callApi<T>(path: string, init?: RequestInit): Promise<T> {
   const method = (init?.method || 'GET').toUpperCase();
   const useCache = method === 'GET';
@@ -613,12 +684,18 @@ export async function insertPortalActivityToSupabase(input: { caseId: string; po
 export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(input) }); }
-export async function hardDeleteTaskFromSupabase(id: string): Promise<void> {
+export async function hardDeleteTaskFromSupabase(id: string): Promise<SupabaseInsertResult> {
   const taskId = String(id || '').trim();
   if (!taskId) {
     throw new Error('Missing task id for hard delete');
   }
-  await callApi('/api/system?apiRoute=tasks&id=' + encodeURIComponent(id), 'DELETE');
+  const endpoint = '/api/system?apiRoute=tasks&id=' + encodeURIComponent(taskId);
+  return callDeleteApiWithDiagnostics<SupabaseInsertResult>(endpoint, {
+    entityType: 'task',
+    sourceId: taskId,
+    mutationCacheCategory: 'task',
+    refreshSource: 'fetchCalendarBundleFromSupabase',
+  });
 }
 export async function softDeleteTaskInSupabase(input: { id: string; title?: string; type?: string; date?: string; scheduledAt?: string; dueAt?: string; priority?: string; status?: string; leadId?: string | null; caseId?: string | null; clientId?: string | null; payload?: Record<string, unknown>; source?: string }) {
   const deletedAt = new Date().toISOString();
@@ -638,7 +715,17 @@ export async function softDeleteTaskInSupabase(input: { id: string; title?: stri
 }
 export async function deleteTaskFromSupabase(id: string) { return softDeleteTaskInSupabase({ id, source: 'stage228r16_delete_task_from_supabase_soft_delete' }); }
 export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/events', { method: 'PATCH', body: JSON.stringify(applyGoogleCalendarReminderPreferenceToEventPayload(input)) }); }
-export async function deleteEventFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function deleteEventFromSupabase(id: string) {
+  const eventId = String(id || '').trim();
+  if (!eventId) throw new Error('EVENT_ID_REQUIRED');
+  const endpoint = `/api/events?id=${encodeURIComponent(eventId)}`;
+  return callDeleteApiWithDiagnostics<SupabaseInsertResult>(endpoint, {
+    entityType: 'event',
+    sourceId: eventId,
+    mutationCacheCategory: 'event',
+    refreshSource: 'fetchCalendarBundleFromSupabase',
+  });
+}
 export async function fetchMeFromSupabase(input?: { uid?: string; email?: string; fullName?: string }) {
   const headers: Record<string, string> = {};
   if (input?.uid) {

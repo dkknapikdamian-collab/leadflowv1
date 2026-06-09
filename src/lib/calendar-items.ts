@@ -152,6 +152,28 @@ function getRecurrenceMeta(row: Record<string, unknown>) {
   return { recurrenceEndType, recurrenceEndAt, recurrenceCount };
 }
 
+
+const STAGE228R25_CALENDAR_BUNDLE_ACTIVE_DELETE_FILTER = 'calendar bundle hides deleted/archived/removed rows and hidden work_items flags after delete';
+void STAGE228R25_CALENDAR_BUNDLE_ACTIVE_DELETE_FILTER;
+
+function isHiddenByDeleteStatusOrCalendarFlags(row: Record<string, unknown>, kind: 'task' | 'event') {
+  const status = String((row as any).status || '').trim().toLowerCase();
+  if (['deleted', 'archived', 'removed'].includes(status)) return true;
+  const showInCalendar = (row as any).showInCalendar ?? (row as any).show_in_calendar;
+  const showInTasks = (row as any).showInTasks ?? (row as any).show_in_tasks;
+  if (showInCalendar === false) return true;
+  if (kind === 'task' && showInTasks === false) return true;
+  return false;
+}
+
+function filterActiveCalendarTaskRows(rows: Record<string, unknown>[]) {
+  return rows.filter((row) => !isHiddenByDeleteStatusOrCalendarFlags(row, 'task'));
+}
+
+function filterActiveCalendarEventRows(rows: Record<string, unknown>[]) {
+  return rows.filter((row) => !isHiddenByDeleteStatusOrCalendarFlags(row, 'event'));
+}
+
 export function normalizeCalendarTask(row: Record<string, unknown>): CalendarTaskItem | null {
   const task = normalizeTaskV1(row);
   const scheduledAt = task.scheduledAt;
@@ -293,8 +315,8 @@ export async function fetchCalendarBundleFromSupabase(options?: CalendarBundleRa
   ]);
 
   return {
-    tasks: (taskItems as Record<string, unknown>[]).map(normalizeCalendarTask).filter((item): item is CalendarTaskItem => Boolean(item)),
-    events: (eventItems as Record<string, unknown>[]).map(normalizeCalendarEvent).filter((item): item is CalendarEventItem => Boolean(item)),
+    tasks: filterActiveCalendarTaskRows(taskItems as Record<string, unknown>[]).map(normalizeCalendarTask).filter((item): item is CalendarTaskItem => Boolean(item)),
+    events: filterActiveCalendarEventRows(eventItems as Record<string, unknown>[]).map(normalizeCalendarEvent).filter((item): item is CalendarEventItem => Boolean(item)),
     leads: leadItems as Record<string, unknown>[],
     cases: caseItems as Record<string, unknown>[],
   };

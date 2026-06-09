@@ -1350,3 +1350,22 @@ NASTEPNY KROK:
 - manual test: add Brak -> hard refresh -> delete -> hard refresh -> Brak does not return.
 - risk sweep: ClientDetail may require an analogous source-truth sweep if the same symptom appears there.
 - marker: STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH
+
+---
+
+## 2026-06-09 02:50 Europe/Warsaw â€” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+
+FAKTY:
+- R41 finalizuje delete flow po nieudanym lokalnym Ĺ‚aĹ„cuchu R26-R40.
+- Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
+- Walidacja nie opiera siÄ™ juĹĽ na dokĹ‚adnym polskim tekĹ›cie toastu, tylko na strukturze przepĹ‚ywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+
+TESTY:
+- mass node --check stage228 scripts/tests
+- R18/R25/R41 guards
+- R25/R41 node tests
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.

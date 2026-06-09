@@ -56,7 +56,8 @@ import {
   insertTaskToSupabase,
   updateEventInSupabase,
   updateLeadInSupabase,
-  updateTaskInSupabase
+  updateTaskInSupabase,
+  emitCloseflowDeleteDebug
 
 } from '../lib/supabase-fallback';
 import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
@@ -96,6 +97,12 @@ import '../styles/closeflow-calendar-selected-day-new-tile-v9.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-canvas-source-truth-stage211e.css';
 import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
+
+const STAGE228R25_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS = 'Calendar must not show false delete success for unsupported entry kinds';
+void STAGE228R25_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS;
+const STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS = 'Calendar unsupported delete kind shows an error and returns before success toast';
+void STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS;
+
 
 const STAGE223_R2X_CALENDAR_MODAL_VNEXT_CONTENT_CONTRACT = 'className="event-form-vnext-content sm:max-w-2xl"';
 void STAGE223_R2X_CALENDAR_MODAL_VNEXT_CONTENT_CONTRACT;
@@ -2061,7 +2068,31 @@ export default function Calendar() {
     }
   };
 
+  const removeDeletedCalendarEntryFromLocalStateStage228R25 = (entry: ScheduleEntry) => {
+    const deletedSourceId = String((entry as any)?.sourceId || '');
+    const deletedEntryId = String((entry as any)?.id || '');
+    if (!deletedSourceId && !deletedEntryId) return;
+
+    setEvents((currentEvents) =>
+      currentEvents.filter((eventItem) => {
+        const eventId = String((eventItem as any)?.id || '');
+        return eventId !== deletedSourceId && eventId !== deletedEntryId;
+      })
+    );
+
+    setTasks((currentTasks) =>
+      currentTasks.filter((taskItem) => {
+        const taskId = String((taskItem as any)?.id || '');
+        return taskId !== deletedSourceId && taskId !== deletedEntryId;
+      })
+    );
+  };
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
+    // STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS
+    if (entry.kind !== 'event' && entry.kind !== 'task') {
+      toast.error('Nie moĹĽna usunÄ…Ä‡ tego typu wpisu z kalendarza.');
+      return;
+    }
     if (!hasAccess) {
       toast.error('Trial wygasł.');
       return;
@@ -2069,20 +2100,55 @@ export default function Calendar() {
     if (!window.confirm('Usunąć ten wpis z kalendarza?')) return;
 
     try {
+      const sourceId = String(entry.sourceId || entry.raw?.id || entry.id || '').trim();
+      if (!sourceId) throw new Error('CALENDAR_DELETE_SOURCE_ID_REQUIRED');
       setActionPendingId(`${entry.id}:delete`);
 
-      if (entry.kind === 'event') {
-        await deleteEventFromSupabase(entry.sourceId);
-      } else if (entry.kind === 'task') {
-        await deleteTaskFromSupabase(entry.sourceId);
-      }
+      const deleteDebugBase = {
+        entityType: entry.kind,
+        uiId: String(entry.id || ''),
+        sourceId,
+        mutationCacheCategory: entry.kind,
+        refreshSource: 'fetchCalendarBundleFromSupabase',
+      };
+      emitCloseflowDeleteDebug({
+        ...deleteDebugBase,
+        endpoint: entry.kind === 'event' ? `/api/events?id=${sourceId}` : '/api/tasks',
+        method: entry.kind === 'event' ? 'DELETE' : 'PATCH',
+      });
 
+      let deleteResult: unknown = null;
+      if (entry.kind === 'event') {
+        deleteResult = await deleteEventFromSupabase(sourceId);
+        setEvents((previousEvents: any[]) => previousEvents.filter((row) => String(row?.id || '') !== sourceId));
+      } else if (entry.kind === 'task') {
+        deleteResult = await deleteTaskFromSupabase(sourceId);
+        setTasks((previousTasks: any[]) => previousTasks.filter((row) => String(row?.id || '') !== sourceId));
+      }
+      emitCloseflowDeleteDebug({
+        ...deleteDebugBase,
+        endpoint: entry.kind === 'event' ? `/api/events?id=${sourceId}` : '/api/tasks',
+        method: entry.kind === 'event' ? 'DELETE' : 'PATCH',
+        responseBody: deleteResult,
+      });
+
+      removeDeletedCalendarEntryFromLocalStateStage228R25(entry);
       await logCalendarEntryActivity(entry, 'calendar_entry_deleted');
+      removeDeletedCalendarEntryFromLocalStateStage228R25(entry);
 
       await refreshSupabaseBundle();
       toast.success('Wpis usunięty');
     } catch (error: any) {
-      toast.error('Nie udało się zapisać wydarzenia. Spróbuj ponownie.');
+      emitCloseflowDeleteDebug({
+        entityType: entry.kind,
+        uiId: String(entry.id || ''),
+        sourceId: String(entry.sourceId || entry.raw?.id || entry.id || ''),
+        endpoint: 'calendar-delete-handler',
+        method: 'DELETE/PATCH',
+        refreshSource: 'fetchCalendarBundleFromSupabase',
+        error: error instanceof Error ? error.message : String(error || 'UNKNOWN_CALENDAR_DELETE_ERROR'),
+      });
+      toast.error('Nie udało się usunąć wpisu. Sprawdź konsolę/Network i spróbuj ponownie.');
     } finally {
       setActionPendingId(null);
     }
