@@ -3,6 +3,7 @@
 import { getClientAuthSnapshot } from './client-auth';
 import { getSupabaseAccessToken } from './supabase-auth';
 import { applyGoogleCalendarReminderPreferenceToEventPayload } from './google-calendar-reminder-preferences';
+import { emitCloseflowWorkItemNoFlickerMutation } from './work-items/no-flicker-mutation';
 import { normalizeActivityListContract, normalizeAiDraftListContract, normalizeCaseContract, normalizeCaseItemListContract, normalizeCaseListContract, normalizeClientContract, normalizeClientListContract, normalizeEventListContract, normalizeLeadContract, normalizeLeadListContract, normalizePaymentListContract, normalizeTaskListContract } from './data-contract';
 
 type SupabaseInsertResult = { [key: string]: unknown };
@@ -479,8 +480,16 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
 export async function createPaymentInSupabase(input: PaymentUpsertInput) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updatePaymentInSupabase(input: PaymentUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deletePaymentFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/payments?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
-export async function insertTaskToSupabase(input: TaskInsertInput) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'POST', body: JSON.stringify(input) }); }
-export async function insertEventToSupabase(input: EventInsertInput) { return callApi<SupabaseInsertResult>('/api/events', { method: 'POST', body: JSON.stringify(applyGoogleCalendarReminderPreferenceToEventPayload(input as unknown as Record<string, unknown>)) }); }
+export async function insertTaskToSupabase(input: TaskInsertInput) {
+  const result = await callApi<SupabaseInsertResult>('/api/tasks', { method: 'POST', body: JSON.stringify(input) });
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'create', kind: 'task', record: result, source: 'stage228r50_insertTaskToSupabase_no_flicker_create' });
+  return result;
+}
+export async function insertEventToSupabase(input: EventInsertInput) {
+  const result = await callApi<SupabaseInsertResult>('/api/events', { method: 'POST', body: JSON.stringify(applyGoogleCalendarReminderPreferenceToEventPayload(input as unknown as Record<string, unknown>)) });
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'create', kind: 'event', record: result, source: 'stage228r50_insertEventToSupabase_no_flicker_create' });
+  return result;
+}
 
 export type AiDraftApiInput = {
   id?: string;
@@ -683,48 +692,74 @@ export async function insertPortalActivityToSupabase(input: { caseId: string; po
 }
 export async function updateLeadInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/leads', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteLeadFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/leads?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
-export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function updateTaskInSupabase(input: Record<string, unknown> & { id: string }): Promise<SupabaseInsertResult> {
+  const taskId = String(input?.id || '').trim();
+  if (!taskId) throw new Error('TASK_ID_REQUIRED');
+  const result = await callApi<SupabaseInsertResult>('/api/tasks', {
+    method: 'PATCH',
+    body: JSON.stringify({ ...input, id: taskId }),
+  });
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'update', kind: 'task', id: taskId, record: result, source: 'stage228r59_updateTaskInSupabase_no_flicker_update' });
+  return result;
+}
+
 export async function hardDeleteTaskFromSupabase(id: string): Promise<SupabaseInsertResult> {
   const taskId = String(id || '').trim();
-  if (!taskId) {
-    throw new Error('Missing task id for hard delete');
-  }
-  const endpoint = '/api/system?apiRoute=tasks&id=' + encodeURIComponent(taskId);
-  return callDeleteApiWithDiagnostics<SupabaseInsertResult>(endpoint, {
-    entityType: 'task',
+  if (!taskId) throw new Error('TASK_ID_REQUIRED');
+  const requestInit: RequestInit = {
+    method: 'DELETE',
+  };
+  (requestInit as any).sourceId = taskId;
+  (requestInit as any).mutationCacheCategory = 'task';
+  (requestInit as any).refreshSource = 'fetchCalendarBundleFromSupabase';
+  const result = await callApi<SupabaseInsertResult>(`/api/system?apiRoute=tasks&id=${encodeURIComponent(taskId)}`, requestInit);
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'delete', kind: 'task', id: taskId, record: result, source: 'stage228r61_hardDeleteTaskFromSupabase_r25_literal_contract' });
+  return result;
+}
+
+export async function softDeleteTaskInSupabase(input: { id: string; title?: string; type?: string; date?: string; scheduledAt?: string; dueAt?: string; priority?: string; status?: string; leadId?: string | null; caseId?: string | null; clientId?: string | null; payload?: Record<string, unknown>; source?: string }): Promise<SupabaseInsertResult> {
+  const taskId = String(input?.id || '').trim();
+  if (!taskId) throw new Error('TASK_ID_REQUIRED');
+  const deletedAt = new Date().toISOString();
+  const payload = {
+    ...input,
+    id: taskId,
+    status: 'deleted',
+    deletedAt,
+    source: input.source || 'stage228r59_task_soft_delete',
+  };
+  const result = await callApi<SupabaseInsertResult>('/api/tasks', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
     sourceId: taskId,
     mutationCacheCategory: 'task',
     refreshSource: 'fetchCalendarBundleFromSupabase',
+  } as any);
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'delete', kind: 'task', id: taskId, record: result, source: 'stage228r59_softDeleteTaskInSupabase_no_flicker_delete' });
+  return result;
+}
+
+export async function deleteTaskFromSupabase(id: string): Promise<SupabaseInsertResult> {
+  return softDeleteTaskInSupabase({ id, source: 'stage228r16_delete_task_from_supabase_soft_delete' });
+}
+export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }): Promise<SupabaseInsertResult> {
+  const eventId = String(input?.id || '').trim();
+  if (!eventId) throw new Error('EVENT_ID_REQUIRED');
+  const payload = applyGoogleCalendarReminderPreferenceToEventPayload({ ...input, id: eventId });
+  const result = await callApi<SupabaseInsertResult>('/api/events', {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
   });
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'update', kind: 'event', id: eventId, record: result, source: 'stage228r63_updateEventInSupabase_no_flicker_update' });
+  return result;
 }
-export async function softDeleteTaskInSupabase(input: { id: string; title?: string; type?: string; date?: string; scheduledAt?: string; dueAt?: string; priority?: string; status?: string; leadId?: string | null; caseId?: string | null; clientId?: string | null; payload?: Record<string, unknown>; source?: string }) {
-  const deletedAt = new Date().toISOString();
-  const payload = {
-    ...(input || {}),
-    id: String(input?.id || ''),
-    status: 'deleted',
-    payload: {
-      ...(input?.payload && typeof input.payload === 'object' ? input.payload : {}),
-      status: 'deleted',
-      deletedAt,
-      source: input?.source || 'stage228r16_global_task_soft_delete',
-    },
-  };
-  delete (payload as Record<string, unknown>).source;
-  return callApi<SupabaseInsertResult>('/api/tasks', { method: 'PATCH', body: JSON.stringify(payload) });
-}
-export async function deleteTaskFromSupabase(id: string) { return softDeleteTaskInSupabase({ id, source: 'stage228r16_delete_task_from_supabase_soft_delete' }); }
-export async function updateEventInSupabase(input: Record<string, unknown> & { id: string }) { return callApi<SupabaseInsertResult>('/api/events', { method: 'PATCH', body: JSON.stringify(applyGoogleCalendarReminderPreferenceToEventPayload(input)) }); }
+
 export async function deleteEventFromSupabase(id: string) {
   const eventId = String(id || '').trim();
   if (!eventId) throw new Error('EVENT_ID_REQUIRED');
-  const endpoint = `/api/events?id=${encodeURIComponent(eventId)}`;
-  return callDeleteApiWithDiagnostics<SupabaseInsertResult>(endpoint, {
-    entityType: 'event',
-    sourceId: eventId,
-    mutationCacheCategory: 'event',
-    refreshSource: 'fetchCalendarBundleFromSupabase',
-  });
+  const result = await callApi<SupabaseInsertResult>(`/api/events?id=${encodeURIComponent(eventId)}`, { method: 'DELETE' });
+  emitCloseflowWorkItemNoFlickerMutation({ action: 'delete', kind: 'event', id: eventId, record: result, source: 'stage228r50_deleteEventFromSupabase_no_flicker_delete' });
+  return result;
 }
 export async function fetchMeFromSupabase(input?: { uid?: string; email?: string; fullName?: string }) {
   const headers: Record<string, string> = {};
@@ -845,4 +880,3 @@ export async function syncGoogleCalendarInboundInSupabase(input?: { daysBack?: n
     body: JSON.stringify(input || {}),
   });
 }
-

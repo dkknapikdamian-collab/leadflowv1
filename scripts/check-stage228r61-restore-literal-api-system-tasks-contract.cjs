@@ -1,0 +1,20 @@
+const fs = require('fs');
+const path = require('path');
+const { spawnSync } = require('node:child_process');
+const root = process.cwd();
+function must(label, condition) { if (!condition) throw new Error(label); }
+const content = fs.readFileSync(path.join(root, 'src/lib/supabase-fallback.ts'), 'utf8');
+const start = content.indexOf('export async function hardDeleteTaskFromSupabase');
+const end = content.indexOf('export async function softDeleteTaskInSupabase', start);
+must('hardDeleteTaskFromSupabase block exists', start >= 0 && end > start);
+const block = content.slice(start, end);
+must('R25 literal /api/system apiRoute tasks id contract exists', block.includes('/api/system?apiRoute=tasks&id='));
+must('hard delete uses RequestInit', block.includes('const requestInit: RequestInit'));
+must('hard delete uses DELETE method', block.includes("method: 'DELETE'"));
+must('hard delete uses sourceId taskId metadata', block.includes('sourceId = taskId') || block.includes('sourceId: taskId'));
+must('hard delete emits no-flicker task delete', block.includes("action: 'delete'") && block.includes("kind: 'task'"));
+must('hard delete does not use apiRoute helper instead of R25 literal', !block.includes("apiRoute('tasks')"));
+must('hard delete does not contain malformed tail', !/\}\)\s*\{/.test(block));
+const check = spawnSync(process.execPath, ['--check', 'src/lib/supabase-fallback.ts'], { cwd: root, encoding: 'utf8' });
+must('node --check supabase-fallback passes: ' + (check.stderr || check.stdout), check.status === 0);
+console.log('STAGE228R61_RESTORE_LITERAL_API_SYSTEM_TASKS_CONTRACT PASS');

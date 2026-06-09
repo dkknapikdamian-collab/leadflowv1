@@ -1,4 +1,8 @@
+const STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS = 'LeadDetail uses linkedTasks/linkedEvents real anchors for no-flicker work item add/delete and silent refresh';
+void STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS;
 const STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH = 'LeadDetail active Braki source is linkedTasks only; activity timeline cannot resurrect deleted missing items';
+const STAGE228R53_LEAD_DETAIL_CONTEXT_SAVED_RECORD_NO_FLICKER = 'LeadDetail consumes savedRecord from context-action-saved and locally appends linkedTasks/linkedEvents before silent refresh';
+void STAGE228R53_LEAD_DETAIL_CONTEXT_SAVED_RECORD_NO_FLICKER;
 const STAGE228R13_MISSING_ITEM_STATUS_RESOLVE_COMPAT = '!isDoneStatus(status) &&';
 void STAGE228R13_MISSING_ITEM_STATUS_RESOLVE_COMPAT;
 void STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH;
@@ -817,18 +821,29 @@ export default function LeadDetail() {
   useEffect(() => {
     if (!leadId || !workspaceReady) return;
     const listener = (event: Event) => {
-      const detail = (event as CustomEvent<any>).detail || {};
-      const recordType = String(detail?.recordType || detail?.payload?.recordType || '').trim();
-      const detailLeadId = String(detail?.leadId || detail?.payload?.leadId || (recordType === 'lead' ? detail?.recordId : '') || '').trim();
+      const detail = ((event as CustomEvent<any>).detail || {}) as any;
+      if (!detail?.recordType || !detail?.recordId) return;
+      if (detail.recordType === 'lead' && String(detail.recordId) !== String(leadId)) return;
+      if (detail.leadId && String(detail.leadId) !== String(leadId)) return;
 
-      if (detailLeadId && detailLeadId !== String(leadId || '')) return;
-      if (recordType && recordType !== 'lead' && !detailLeadId) return;
+      const savedRecord = detail.savedRecord && typeof detail.savedRecord === 'object' ? detail.savedRecord as any : null;
+      if (savedRecord) {
+        const savedId = String(savedRecord.id || '').trim();
+        const savedKind = String(detail.kind || savedRecord.kind || savedRecord.entityKind || '').toLowerCase();
+        const savedType = String(savedRecord.type || '').toLowerCase();
+        const belongsToLead = !savedRecord.leadId || String(savedRecord.leadId) === String(leadId);
 
-      window.setTimeout(() => {
-        void loadLead({ silent: true });
-      }, 0);
+        if (savedId && belongsToLead && (savedKind === 'task' || savedKind === 'blocker' || savedType === 'missing_item' || savedRecord.scheduledAt || savedRecord.dueAt || savedRecord.dateAt)) {
+          setLinkedTasks((currentTasks: any[]) => dedupeById([savedRecord, ...currentTasks]));
+        }
+
+        if (savedId && belongsToLead && (savedKind === 'event' || savedRecord.startAt || savedRecord.endAt)) {
+          setLinkedEvents((currentEvents: any[]) => dedupeById([savedRecord, ...currentEvents]));
+        }
+      }
+
+      void loadLead({ silent: true });
     };
-
     window.addEventListener('closeflow:context-action-saved', listener as EventListener);
     return () => window.removeEventListener('closeflow:context-action-saved', listener as EventListener);
   }, [leadId, workspaceReady]);
@@ -1035,7 +1050,7 @@ export default function LeadDetail() {
       });
       toast.success('Brak dodany');
       closeLeadMissingItemDialog();
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Nie udało się zapisać braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1074,7 +1089,7 @@ export default function LeadDetail() {
         source: 'stage228r13_lead_missing_item_status_resolve',
       });
       toast.success('Brak oznaczony jako rozwiązany');
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Nie udało się rozwiązać braku: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1697,7 +1712,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       });
       await addActivity('task_status_toggled', { title: String(task.title || 'Zadanie'), status: nextStatus, taskId: task.id });
       toast.success(nextStatus === 'done' ? 'Zadanie oznaczone jako zrobione' : 'Zadanie przywrócone');
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd zmiany statusu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1723,7 +1738,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       });
       await addActivity('task_updated', { title: String(task.title || 'Zadanie'), scheduledAt, label });
       toast.success(`Zadanie przesunięte: ${label}`);
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1777,10 +1792,10 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       } as any);
       await addActivity('task_deleted', { title: String(task.title || 'Zadanie'), taskId, status: 'deleted', deletedAt, source: 'stage228r16_lead_linked_task_soft_delete' });
       toast.success('Zadanie usunięte');
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd usuwania zadania: ${error?.message || 'REQUEST_FAILED'}`);
-      await loadLead().catch(() => null);
+      await loadLead({ silent: true }).catch(() => null);
     } finally {
       setLinkedEntryActionId(null);
     }
@@ -1802,7 +1817,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       });
       await addActivity('event_status_toggled', { title: String(event.title || 'Wydarzenie'), status: nextStatus, eventId: event.id });
       toast.success(nextStatus === 'completed' ? 'Wydarzenie oznaczone jako zrobione' : 'Wydarzenie przywrócone');
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd zmiany statusu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1830,7 +1845,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       });
       await addActivity('event_updated', { title: String(event.title || 'Wydarzenie'), startAt, label });
       toast.success(`Wydarzenie przesunięte: ${label}`);
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd zmiany terminu: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1842,11 +1857,17 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
     if (!window.confirm('Usunąć to wydarzenie?')) return;
     try {
       setLinkedEntryActionId(`event:${event.id}:delete`);
-      await deleteEventFromSupabase(String(event.id));
+    const eventId = String(event?.id || '');
+    const optimisticEventSnapshot = linkedEvents;
+    setLinkedEvents((previous) => previous.filter((item: any) => String(item?.id || '') !== eventId));
+    const stage228r50EventDeleteOptimisticSnapshot = 'stage228r50_lead_detail_event_delete_optimistic_snapshot';
+    void stage228r50EventDeleteOptimisticSnapshot;
+    await deleteEventFromSupabase(eventId);
       await addActivity('event_deleted', { title: String(event.title || 'Wydarzenie'), eventId: event.id });
       toast.success('Wydarzenie usunięte');
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
+      setLinkedEvents(optimisticEventSnapshot);
       toast.error(`Błąd usuwania wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setLinkedEntryActionId(null);
@@ -1876,7 +1897,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       await addActivity('task_updated', { title: editLinkedTask.title.trim(), taskId: editLinkedTask.id });
       toast.success('Zadanie zaktualizowane');
       setEditLinkedTask(null);
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd zapisu zadania: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -1905,7 +1926,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       await addActivity('event_updated', { title: editLinkedEvent.title.trim(), eventId: editLinkedEvent.id });
       toast.success('Wydarzenie zaktualizowane');
       setEditLinkedEvent(null);
-      await loadLead();
+      await loadLead({ silent: true });
     } catch (error: any) {
       toast.error(`Błąd zapisu wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
@@ -2748,5 +2769,3 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
     </Layout>
   );
 }
-
-

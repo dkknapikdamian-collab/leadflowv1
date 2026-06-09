@@ -21,6 +21,8 @@ import {
   DialogTitle} from '../components/ui/dialog';
 
 import { toast } from 'sonner';
+const STAGE228R52_TASKS_STABLE_NO_FLICKER_DELETE = 'TasksStable delete removes the row locally, rolls back on failure and does not call refreshData after delete';
+void STAGE228R52_TASKS_STABLE_NO_FLICKER_DELETE;
 import {
   deleteTaskFromSupabase,
   fetchCasesFromSupabase,
@@ -264,6 +266,9 @@ function tasksActionDataKind(row: Record<string, unknown> | null | undefined) {
 function tasksActionKindClass(kind: unknown) {
   return getCloseFlowActionKindClass(kind);
 }
+const STAGE228R50_TASKS_STABLE_NO_FLICKER_REAL_ANCHORS = 'TasksStable uses tasks/setTasks real anchors for no-flicker work item add/delete and silent refresh';
+void STAGE228R50_TASKS_STABLE_NO_FLICKER_REAL_ANCHORS;
+
 export default function TasksStable() {
   const { workspace, hasAccess, loading: workspaceLoading } = useWorkspace();
   const [tasks, setTasks] = useState<any[]>([]);
@@ -279,8 +284,8 @@ export default function TasksStable() {
   const [taskToDelete, setTaskToDelete] = useState<any | null>(null);
   const [taskDeletePending, setTaskDeletePending] = useState(false);
 
-  const refreshData = useCallback(async () => {
-    setLoading(true);
+  const refreshData = useCallback(async (options?: { silent?: boolean }) => {
+    if (!options?.silent) setLoading(true);
     try {
       const [taskRows, caseRows] = await Promise.all([
         fetchTasksFromSupabase().catch(() => []),
@@ -291,7 +296,7 @@ export default function TasksStable() {
     } catch (error: any) {
       toast.error('Nie udało się pobrać zadań.');
     } finally {
-      setLoading(false);
+      if (!options?.silent) setLoading(false);
     }
   }, []);
 
@@ -424,7 +429,7 @@ export default function TasksStable() {
 
       setIsDialogOpen(false);
       setForm(defaultTaskForm());
-      await refreshData();
+      await refreshData({ silent: true });
     } catch (error: any) {
       toast.error('Nie udało się zapisać zadania.');
     } finally {
@@ -495,7 +500,7 @@ export default function TasksStable() {
       });
       toast.success('Kolejny krok dodany');
       setNextStepPrompt(null);
-      await refreshData();
+      await refreshData({ silent: true });
     } catch {
       toast.error('Nie udało się dodać kolejnego kroku.');
     } finally {
@@ -509,14 +514,19 @@ export default function TasksStable() {
 
   const confirmDeleteTask = async () => {
     if (!taskToDelete?.id) return;
+    const deleteId = String(taskToDelete.id);
+    const optimisticSnapshot = tasks;
+
+    setTaskDeletePending(true);
+    setTasks((currentTasks: any[]) => currentTasks.filter((task: any) => String(task?.id || '') !== deleteId));
+
     try {
-      setTaskDeletePending(true);
-      await deleteTaskFromSupabase(String(taskToDelete.id));
-      toast.success('Zadanie usunięte');
+      await deleteTaskFromSupabase(deleteId);
+      toast.success('Zadanie usuniÄ™te.');
       setTaskToDelete(null);
-      await refreshData();
-    } catch {
-      toast.error('Nie udało się usunąć zadania.');
+    } catch (error: any) {
+      setTasks(optimisticSnapshot);
+      toast.error('Nie udaĹ‚o siÄ™ usunÄ…Ä‡ zadania: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setTaskDeletePending(false);
     }
@@ -825,8 +835,3 @@ void FIN14_REPAIR4_TASKS_HEADER_CLICK_GUARD;
 
 const FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD = 'FIN-14_REPAIR5_TASKS_HEADER_PLUS_GUARD_no_plus_icon_in_new_task_button';
 void FIN14_REPAIR5_TASKS_HEADER_PLUS_GUARD;
-
-
-
-
-

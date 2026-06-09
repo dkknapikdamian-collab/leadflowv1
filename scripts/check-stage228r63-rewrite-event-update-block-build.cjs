@@ -1,0 +1,20 @@
+const fs = require('fs');
+const path = require('path');
+const { spawnSync } = require('node:child_process');
+const root = process.cwd();
+function must(label, condition) { if (!condition) throw new Error(label); }
+const content = fs.readFileSync(path.join(root, 'src/lib/supabase-fallback.ts'), 'utf8');
+const start = content.indexOf('export async function updateEventInSupabase');
+const end = content.indexOf('export async function deleteEventFromSupabase', start);
+must('updateEventInSupabase block exists', start >= 0 && end > start);
+const block = content.slice(start, end);
+must('event update block does not contain broken tail', !/\}\)\s*\{/.test(block));
+must('event update block does not contain stale one-line callApi tail after return', !/return\s+result;\s*\}\)/.test(block));
+must('event update uses PATCH', block.includes("method: 'PATCH'"));
+must('event update calls /api/events', block.includes("callApi<SupabaseInsertResult>('/api/events'"));
+must('event update preserves reminder preference payload helper', block.includes('applyGoogleCalendarReminderPreferenceToEventPayload'));
+must('event update emits no-flicker update', block.includes('emitCloseflowWorkItemNoFlickerMutation') && block.includes("action: 'update'") && block.includes("kind: 'event'"));
+must('event update uses normalized eventId', block.includes('const eventId = String') && block.includes('id: eventId'));
+const check = spawnSync(process.execPath, ['--check', 'src/lib/supabase-fallback.ts'], { cwd: root, encoding: 'utf8' });
+must('node --check supabase-fallback passes: ' + (check.stderr || check.stdout), check.status === 0);
+console.log('STAGE228R63_REWRITE_EVENT_UPDATE_BLOCK_BUILD PASS');

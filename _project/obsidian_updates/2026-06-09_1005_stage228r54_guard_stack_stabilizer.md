@@ -1,0 +1,24 @@
+# Obsidian update — Stage228R54 guard stack stabilizer
+
+- data i godzina: 2026-06-09 10:05 Europe/Warsaw
+- nazwa / alias wejściowy: CloseFlow no-flicker work item UX — guard stack stabilizer
+- entity_id: DO_POTWIERDZENIA
+- workspace_id: ec595234-a284-4d4d-937d-286573b9d12b
+- project_id: CloseFlow / LeadFlow
+- idea_id: nie dotyczy
+- report_id: Stage228R54
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: 10_PROJEKTY/CloseFlow_Lead_App
+- mapa główna / pulpit: DO_POTWIERDZENIA
+- mapa zależności: work_items, LeadDetail, TasksStable, ContextActionDialogs, supabase-fallback, SQL constraint
+- ściąga plików: LeadDetail.tsx, TasksStable.tsx, ContextActionDialogs.tsx, supabase-fallback.ts, no-flicker-mutation.ts, SQL deleted constraint, R50-R54 guards/tests
+- typ wpisu: etap wdrożeniowy + guard repair + audyt ryzyk
+- docelowa ścieżka: _project/obsidian_updates/2026-06-09_1005_stage228r54_guard_stack_stabilizer.md
+- status zapisu: przygotowane w repo ZIP/push
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: R47/R50/R51/R52/R53/R54 guards, node tests, npm run build, diff-check
+- audyt ryzyk po etapie: rollback optimistic UI, stale cache, silent refresh, Calendar baseline, SQL constraint
+- czego nie ruszano: AGENTS.md, _LOCAL_CHECKS, _project/GLOBAL_STAGE_PROBLEM_AUDIT_RULE.md, Calendar runtime baseline
+- następny krok: po deployu wykonać CF_DEL_TEST_4 add/delete/refresh

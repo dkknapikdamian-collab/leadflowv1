@@ -1,0 +1,24 @@
+# Obsidian update â€” Stage228R58 mass guard syntax/build stabilizer
+
+- data i godzina: 2026-06-09 11:15 Europe/Warsaw
+- nazwa / alias wejĹ›ciowy: Stage228R58 / masowe wyĹ‚apywanie bĹ‚Ä™dĂłw guardĂłw i buildu
+- entity_id: DO_POTWIERDZENIA
+- workspace_id: DO_POTWIERDZENIA
+- project_id: CloseFlow / LeadFlow
+- idea_id: nie dotyczy
+- report_id: stage228r58
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: DO_POTWIERDZENIA
+- mapa gĹ‚Ăłwna / pulpit: DO_POTWIERDZENIA
+- mapa zaleĹĽnoĹ›ci: DO_POTWIERDZENIA
+- Ĺ›ciÄ…ga plikĂłw: DO_POTWIERDZENIA
+- typ wpisu: guard repair / mass preflight / run report
+- docelowa Ĺ›cieĹĽka: 09_TESTY_DO_WYKONANIA_I_WYNIKI + 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY + 08_HISTORIA_ZMIAN
+- status zapisu: przygotowane w repo przez ZIP, bez bezpoĹ›redniego dostÄ™pu do lokalnego Obsidiana
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: R47-R58 guardy/testy + build + diff-check
+- audyt ryzyk po etapie: poprzednie guardy byĹ‚y za kruche i same mogĹ‚y blokowaÄ‡ poprawny runtime
+- czego nie ruszano: AGENTS.md, _LOCAL_CHECKS, _project/GLOBAL_STAGE_PROBLEM_AUDIT_RULE.md
+- nastÄ™pny krok: po push/deploy test CF_DEL_TEST_4

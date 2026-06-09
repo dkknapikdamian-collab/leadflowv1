@@ -10,6 +10,7 @@ import TaskCreateDialog, { type TaskCreateDialogContext } from './TaskCreateDial
 import EventCreateDialog from './EventCreateDialog';
 import ContextNoteDialog from './ContextNoteDialog';
 import { MissingItemQuickActionModal } from './detail/MissingItemQuickActionModal';
+import { emitCloseflowWorkItemNoFlickerMutation } from '../lib/work-items/no-flicker-mutation';
 
 export type ContextActionKind = 'task' | 'event' | 'note' | 'blocker';
 export type ContextRecordType = 'lead' | 'client' | 'case';
@@ -20,6 +21,10 @@ export type ContextActionRequest = TaskCreateDialogContext & {
 
 const CONTEXT_ACTION_EVENT = 'closeflow:context-action-dialog';
 const CONTEXT_ACTION_SAVED_EVENT = 'closeflow:context-action-saved';
+const STAGE228R50_CONTEXT_ACTION_SAVED_RECORD_DETAIL = 'ContextActionDialogs includes savedRecord in closeflow:context-action-saved for local no-flicker detail page insert';
+void STAGE228R50_CONTEXT_ACTION_SAVED_RECORD_DETAIL;
+const STAGE228R48_CONTEXT_ACTION_NO_FLICKER_SAVED_RECORD = 'ContextActionDialogs emits savedRecord for no-flicker local work-item insert instead of full detail reload';
+void STAGE228R48_CONTEXT_ACTION_NO_FLICKER_SAVED_RECORD;
 const STAGE220A7_CONTEXT_ACTION_SAVED_EVENT = 'Task/event/note/blocker save emits refresh event for detail pages';
 void STAGE220A7_CONTEXT_ACTION_SAVED_EVENT;
 const STAGE85_CONTEXT_ACTION_DIALOG_UNIFICATION = 'Context detail actions use one shared task, event, note and blocker dialog host';
@@ -180,7 +185,7 @@ export default function ContextActionDialogsHost() {
     resetMissingState();
   };
 
-  const handleSaved = async () => {
+  const handleSaved = async (savedRecord?: unknown) => {
     const savedRequest = request ? { ...request } : null;
     close();
     if (typeof window !== 'undefined' && savedRequest) {
@@ -188,7 +193,9 @@ export default function ContextActionDialogsHost() {
         detail: {
           ...savedRequest,
           source: 'ContextActionDialogsHost',
+          savedRecord: savedRecord || null,
           savedAt: new Date().toISOString(),
+          savedRecord: savedRecord ?? null,
         },
       }));
     }
@@ -265,7 +272,7 @@ export default function ContextActionDialogsHost() {
           workspaceId,
         } as any);
       } else {
-        await insertTaskToSupabase({
+        const createdMissingTask = await insertTaskToSupabase({
           title: draft.title,
           type: 'missing_item',
           status: 'missing_item',
@@ -303,8 +310,23 @@ export default function ContextActionDialogsHost() {
         } as any);
       }
 
+      if (request.recordType !== 'case') {
+        emitCloseflowWorkItemNoFlickerMutation({
+          action: 'create',
+          kind: 'task',
+          item: typeof createdMissingTask !== 'undefined' ? createdMissingTask : null,
+          id: (typeof createdMissingTask !== 'undefined' && (createdMissingTask as any)?.id) || null,
+          recordType: request.recordType,
+          recordId: request.recordId,
+          leadId: leadId || null,
+          clientId: clientId || null,
+          caseId: caseId || null,
+          source: 'stage228r48_context_blocker_create_no_flicker',
+        });
+      }
+
       toast.success('Brak dodany');
-      await handleSaved();
+      await handleSaved(typeof createdMissingTask !== 'undefined' ? createdMissingTask : undefined);
     } catch (error: any) {
       const message = error?.message || 'REQUEST_FAILED';
       setMissingError('Nie udało się zapisać braku: ' + message);
