@@ -1,4 +1,4 @@
-﻿# Stage230A - AI Draft Inbox / Voice Capture roadmap
+# Stage230A - AI Draft Inbox / Voice Capture roadmap
 
 - data i godzina: 2026-06-09 16:45 Europe/Warsaw
 - project_id: CloseFlow / LeadFlow

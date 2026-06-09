@@ -1,4 +1,4 @@
-﻿# Stage230A4 - ASCII backlog repair and push
+# Stage230A4 - backlog repair and push
 
 - data i godzina: 2026-06-09 17:30 Europe/Warsaw
 - project_id: CloseFlow / LeadFlow
@@ -7,17 +7,13 @@
 - typ wpisu: roadmap repair / backlog update / risk audit
 - status: prepared by ZIP runner
 
-## Powod
-
-Stage230A3 zatrzymal sie na bledzie parsera PowerShell przez znaki nie-ASCII w skrypcie. Stage230A4 uzywa ASCII-only markerow i dopisuje backlog bez zmiany runtime.
-
 ## Dopisane do backlogu
 
-- dokumenty / zalaczniki do leadow,
+- dokumenty / załączniki do leadów,
 - koszty / pozycje kosztowe,
-- uproszczenie edycji wydarzen i zadan,
-- poprawa ekranu startowego przed produkcja,
-- Smart Prospecting / AI Opportunity Finder jako modul CloseFlow, nie osobna aplikacja.
+- uproszczenie edycji wydarzeń i zadań,
+- poprawa ekranu startowego przed produkcją,
+- Smart Prospecting / AI Opportunity Finder jako moduł CloseFlow, nie osobna aplikacja.
 
 ## Testy
 
@@ -28,6 +24,5 @@ Stage230A3 zatrzymal sie na bledzie parsera PowerShell przez znaki nie-ASCII w s
 
 ## Audyt ryzyk
 
-- Smart Prospecting ma byc pozniejszym modulem po stabilizacji CRM, a nie nowa osobna aplikacja.
-- Dokumenty, koszty, edycja wydarzen/zadan i start screen wymagaja osobnych etapow i guardow.
-- Skrypty PowerShell w paczkach powinny unikac nie-ASCII w logice warunkow.
+- Smart Prospecting ma być późniejszym modułem po stabilizacji CRM, a nie nową osobną aplikacją.
+- Dokumenty, koszty, edycja wydarzeń/zadań i start screen wymagają osobnych etapów i guardów.
