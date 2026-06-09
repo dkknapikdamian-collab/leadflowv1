@@ -208,21 +208,6 @@ function isGoogleAuthContext(authContext: any) {
   return primary === 'google' || providers.includes('google');
 }
 
-function profileHasCurrentAuthUid(profileRow: Record<string, unknown> | null, uid: string | null) {
-  const normalizedUid = asNullableString(uid);
-  if (!profileRow || !normalizedUid) return false;
-
-  return uniqueStrings([
-    profileRow.id,
-    profileRow.firebase_uid,
-    profileRow.firebaseUid,
-    profileRow.auth_uid,
-    profileRow.authUid,
-    profileRow.external_auth_uid,
-    profileRow.externalAuthUid,
-  ]).includes(normalizedUid);
-}
-
 function uniqueStrings(values: unknown[]) {
   const seen = new Set<string>();
   const result: string[] = [];
@@ -1083,40 +1068,9 @@ export default async function handler(req: any, res: any) {
 
     let profileRow = await fetchProfile(uid, email);
 
-    const isGoogleAuth = isGoogleAuthContext(authContext);
-    const shouldGateGoogleLogin = isGoogleAuth && authIntent !== 'register';
-
-    if (shouldGateGoogleLogin) {
-      if (!profileRow) {
-        res.status(403).json({
-          error: 'REGISTER_FIRST_REQUIRED',
-          reason: 'google_login_profile_missing',
-        });
-        return;
-      }
-
-      if (!profileHasCurrentAuthUid(profileRow, uid)) {
-        res.status(403).json({
-          error: 'REGISTER_FIRST_REQUIRED',
-          reason: 'google_login_profile_uid_not_linked',
-        });
-        return;
-      }
-
-      const existingWorkspaceId = asNullableString(profileRow.workspace_id ?? profileRow.workspaceId ?? null);
-      let existingWorkspaceRow = await fetchWorkspace(existingWorkspaceId);
-
-      if (!existingWorkspaceRow) {
-        existingWorkspaceRow = await findWorkspaceForProfile(profileRow, uid, email);
-      }
-
-      if (!existingWorkspaceRow) {
-        res.status(403).json({
-          error: 'REGISTER_FIRST_REQUIRED',
-          reason: 'google_login_workspace_missing',
-        });
-        return;
-      }
+    if (!profileRow && authIntent !== 'register' && isGoogleAuthContext(authContext)) {
+      res.status(403).json({ error: 'REGISTER_FIRST_REQUIRED' });
+      return;
     }
 
     profileRow = await ensureProfile(profileRow, uid, email, fullName, null);

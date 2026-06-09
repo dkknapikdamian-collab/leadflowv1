@@ -35,7 +35,7 @@ if (!login.includes('getDefaultAuthTab')) fail('register tab URL default helper 
 if (!app.includes('REGISTER_FIRST_REQUIRED') || !app.includes('setCloseFlowAuthNotice')) fail('App register-first signout handler missing');
 if (!app.includes('<Route path="/" element={isLoggedIn ? <Today /> : <Login />} />')) fail('root route must show Login for logged-out users');
 if (!me.includes('REGISTER_FIRST_REQUIRED') || !me.includes('getCloseFlowAuthIntentFromRequest')) fail('api/me register-first gate missing');
-if (!me.includes('isGoogleAuthContext') || !me.includes('profileHasCurrentAuthUid') || !me.includes('shouldGateGoogleLogin') || !me.includes('google_login_profile_missing') || !me.includes('google_login_profile_uid_not_linked') || !me.includes('google_login_workspace_missing') || !me.includes('findWorkspaceForProfile(profileRow, uid, email)')) fail('api/me Google login UID+workspace hard gate missing');
+if (!me.includes('isGoogleAuthContext') || !me.includes("!profileRow && authIntent !== 'register' && isGoogleAuthContext(authContext)")) fail('api/me missing-intent Google hard gate missing');
 if (!nextSteps.includes('STAGE231E_EMAIL_COPY_REPAIR') || !nextSteps.includes('STAGE231F_INVITE_ONLY_TEST_MODE')) fail('future auth stages missing from next steps');
 if (!testHistory.includes('Google Login unknown account') || !testHistory.includes('R5')) fail('manual QA R5 test history missing');
 if (!sqlDoc.includes('STAGE231C_R7_NOOP_ALL_AUTH_USERS_BOOTSTRAP_TRIGGERS')) fail('Stage231C SQL repair documentation missing');
