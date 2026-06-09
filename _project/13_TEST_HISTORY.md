@@ -1934,3 +1934,47 @@ R5 expected:
 - Google Login unknown account with no existing profile/workspace must return REGISTER_FIRST_REQUIRED, sign out, and show Register notice.
 - Google Register unknown account must still create profile/workspace.
 - Email/password registration must still require e-mail confirmation and then allow bootstrap.
+
+## 2026-06-09 — STAGE231D_R7_GOOGLE_LOGIN_WORKSPACE_HARD_GATE
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+Zakres:
+- Zaostrzono Google Login gate w api/me.
+- Google Login bez intencji register wymaga istniejącego profilu oraz istniejącego workspace/membership.
+- Google Login nie może już samoczynnie dokończyć połówkowego profilu przez ensureWorkspace.
+- Google Register nadal może tworzyć profil/workspace.
+
+Testy wymagane:
+- node scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --test tests/stage231a-google-auth-entry-consistency.test.cjs
+- node scripts/check-stage231d-google-auth-intent-gate.cjs
+- node --test tests/stage231d-google-auth-intent-gate.test.cjs
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- npm run build
+- git diff --check
+
+Manual QA:
+- Google login świeżym kontem bez profilu/workspace ma zwrócić REGISTER_FIRST_REQUIRED i odesłać do rejestracji.
+- Google login istniejącym kontem z workspace ma nadal działać.
+- Google register nowym kontem ma nadal tworzyć profil/workspace.
+
+## 2026-06-09 — STAGE231D_R8_GOOGLE_LOGIN_UID_WORKSPACE_HARD_GATE
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+Powód:
+- Po R6 + push + deploy Google Login nadal przepuszczał konto bez intencjonalnej rejestracji.
+- Sam profileRow po emailu nie wystarcza jako dowód istniejącego konta CloseFlow.
+
+Zakres:
+- Google Login bez intencji register wymaga profilu powiązanego z aktualnym Supabase auth uid.
+- Google Login wymaga też istniejącego workspace/membership.
+- Google Login nie może samoczynnie podpiąć UID do profilu znalezionego tylko po emailu.
+- Google Register nadal może tworzyć profil/workspace.
+
+Manual QA:
+- Google login świeżym kontem bez profilu/workspace ma zwrócić REGISTER_FIRST_REQUIRED.
+- Google login kontem z profilem znalezionym tylko po emailu, ale bez uid linku, ma zwrócić REGISTER_FIRST_REQUIRED.
+- Google register nowym kontem ma nadal tworzyć profil/workspace.

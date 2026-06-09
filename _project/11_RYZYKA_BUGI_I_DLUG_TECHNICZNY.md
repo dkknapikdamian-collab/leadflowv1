@@ -117,3 +117,29 @@ Ryzyka:
 - A Google account that already received a profile/workspace from the earlier broken flow is now technically registered in CloseFlow and may still log in. Test the blocker with a truly fresh Google account or delete the earlier test profile/workspace deliberately.
 - Missing authIntent is now blocked only for Google OAuth without a profile, not for e-mail/password, to avoid breaking e-mail confirmation bootstrap after the Supabase trigger no-op repair.
 - URL query authIntent must be cleared after successful /api/me to avoid stale intent; clearCloseFlowAuthIntent now removes both sessionStorage and URL query keys.
+
+## 2026-06-09 — STAGE231D_R7_GOOGLE_LOGIN_WORKSPACE_HARD_GATE — ryzyka i skutki uboczne
+
+FAKTY:
+- R6 blokował brak profilu, ale nie blokował połówkowego profilu bez workspace.
+- Google login musi być bezpieczny dla publicznego SaaS: login istniejącego konta tak, bootstrap tylko przez register.
+
+RYZYKA:
+- Legacy profil bez workspace zostanie potraktowany jako niezarejestrowany przy Google Login.
+- To jest świadomy kompromis: taki profil powinien przejść przez rejestrację/repair, nie przez login.
+
+TEST:
+- Konieczny test świeżym kontem Google po deployu Vercel.
+
+## 2026-06-09 — STAGE231D_R8_GOOGLE_LOGIN_UID_WORKSPACE_HARD_GATE — ryzyka i skutki uboczne
+
+FAKTY:
+- R6/R7 assumptions were too weak for accounts that could match profile by email.
+- Google Login must not link a new Google UID to an email-only profile.
+
+RYZYKA:
+- Existing legacy users with email-only profile and no auth UID may need to use registration/repair path once.
+- This is acceptable for public SaaS safety because login should not create/link accounts silently.
+
+TEST:
+- Required Vercel QA with a truly fresh Google account and with the previously failing Google account.

@@ -2536,3 +2536,15 @@ Not changed:
 - Added authIntent to GET cache scope.
 - Changed api/me gate: Google OAuth cannot bootstrap a missing app profile unless authIntent=register.
 - Preserved working flows from QA: existing Google login, Google registration, e-mail confirmation, one auth page.
+
+## 2026-06-09 — STAGE231D_R7_GOOGLE_LOGIN_WORKSPACE_HARD_GATE
+
+- Hardened Google login/register split after manual QA showed unknown Google login still entered the app.
+- The gate now treats an existing CloseFlow account as profile + workspace, not just any profile row.
+- Google login cannot create or repair workspace; Google register remains the allowed bootstrap path.
+
+## 2026-06-09 — STAGE231D_R8_GOOGLE_LOGIN_UID_WORKSPACE_HARD_GATE
+
+- Hardened Google login gate again after Vercel QA showed R6 still allowed unknown Google accounts.
+- Existing Google login now requires a profile linked to current auth UID plus an existing workspace/membership.
+- A profile matched only by email is no longer enough for Google Login.
