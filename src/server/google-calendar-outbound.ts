@@ -1,6 +1,7 @@
 import { supabaseRequest, updateById } from './_supabase.js';
 import {
   createGoogleCalendarEvent,
+  deleteGoogleCalendarEvent,
   getGoogleCalendarConnection,
   updateGoogleCalendarEvent,
 } from './google-calendar-sync.js';
@@ -77,6 +78,44 @@ function isDeletedLike(row: WorkItemRow) {
   return Boolean(row.deleted_at || row.archived_at || row.deletedAt || row.archivedAt);
 }
 
+
+const CLOSED_OR_HIDDEN_GOOGLE_DELETE_STATUSES_STAGE229B = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
+
+function statusOfStage229B(row: WorkItemRow) {
+  return asText(row.status || row.statusRaw).toLowerCase();
+}
+
+function isExplicitlyHiddenFromCalendarStage229B(row: WorkItemRow) {
+  return row.show_in_calendar === false || row.showInCalendar === false;
+}
+
+function shouldRemoteDeleteGoogleCalendarEventStage229B(row: WorkItemRow) {
+  if (!googleEventIdFrom(row)) return false;
+  if (googleSyncStatusFrom(row) === 'pending_delete') return true;
+  if (isExplicitlyHiddenFromCalendarStage229B(row)) return true;
+  if (CLOSED_OR_HIDDEN_GOOGLE_DELETE_STATUSES_STAGE229B.has(statusOfStage229B(row))) return true;
+  if (isDeletedLike(row)) return true;
+  return false;
+}
+
+function isGoogleAlreadyGoneStage229B(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return /\b(404|410)\b|not\s*found|gone/i.test(message);
+}
+
+async function writeSyncDeletedStage229B(row: WorkItemRow, calendarId: string) {
+  await updateById('work_items', itemId(row), {
+    google_calendar_sync_enabled: true,
+    google_calendar_id: calendarId || 'primary',
+    google_calendar_event_id: null,
+    google_calendar_event_etag: null,
+    google_calendar_html_link: null,
+    google_calendar_synced_at: new Date().toISOString(),
+    google_calendar_sync_status: 'deleted',
+    google_calendar_sync_error: null,
+    updated_at: new Date().toISOString(),
+  });
+}
 function shouldIncludeByMode(row: WorkItemRow, mode: GoogleCalendarOutboundMode) {
   const status = googleSyncStatusFrom(row);
   const googleEventId = googleEventIdFrom(row);
@@ -196,7 +235,7 @@ export async function syncGoogleCalendarOutbound(input: {
 
   const connection = await getGoogleCalendarConnection(workspaceId, userId);
   if (!connection || connection.sync_enabled === false) {
-    return { ok: true, connected: false, scanned: 0, created: 0, updated: 0, skipped: 0, failed: 0, errors: [] };
+    return { ok: true, connected: false, scanned: 0, created: 0, updated: 0, deleted: 0, skipped: 0, failed: 0, errors: [] };
   }
 
   const modeRaw = asText(input.mode).toLowerCase();
@@ -212,11 +251,35 @@ export async function syncGoogleCalendarOutbound(input: {
   const errors: Array<{ id?: string; title?: string; error?: string }> = [];
   let created = 0;
   let updated = 0;
+  let deleted = 0;
   let skipped = 0;
   let failed = 0;
 
   for (const row of rows) {
-    if (!itemId(row) || isDeletedLike(row) || !isCalendarVisible(row) || !isWithinRange(row, minMs, maxMs) || !shouldIncludeByMode(row, mode)) {
+
+    const existingGoogleEventIdStage229B = googleEventIdFrom(row);
+    if (shouldRemoteDeleteGoogleCalendarEventStage229B(row)) {
+      try {
+        await deleteGoogleCalendarEvent(connection, existingGoogleEventIdStage229B);
+        await writeSyncDeletedStage229B(row, String(connection.google_calendar_id || 'primary'));
+        deleted += 1;
+      } catch (error) {
+        if (isGoogleAlreadyGoneStage229B(error)) {
+          await writeSyncDeletedStage229B(row, String(connection.google_calendar_id || 'primary'));
+          deleted += 1;
+        } else {
+          const message = error instanceof Error ? error.message : String(error || 'GOOGLE_CALENDAR_REMOTE_DELETE_FAILED');
+          failed += 1;
+          errors.push({ id: itemId(row), title: asText(row.title), error: message.slice(0, 300) });
+          try {
+            await writeSyncFailure(row, 'REMOTE_DELETE_FAILED: ' + message);
+          } catch (writeError) {
+            errors.push({ id: itemId(row), title: asText(row.title), error: 'SYNC_STATE_WRITE_FAILED: ' + (writeError instanceof Error ? writeError.message : String(writeError)) });
+          }
+        }
+      }
+      continue;
+    }    if (!itemId(row) || isDeletedLike(row) || !isCalendarVisible(row) || !isWithinRange(row, minMs, maxMs) || !shouldIncludeByMode(row, mode)) {
       skipped += 1;
       continue;
     }
@@ -251,6 +314,7 @@ export async function syncGoogleCalendarOutbound(input: {
     scanned: rows.length,
     created,
     updated,
+    deleted,
     skipped,
     failed,
     errors,

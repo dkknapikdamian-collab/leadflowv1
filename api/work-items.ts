@@ -51,6 +51,38 @@ function googleEventIdFrom(row: any, body: any) {
   ).trim();
 }
 
+
+const CLOSED_OR_HIDDEN_GOOGLE_DELETE_STATUSES_STAGE229B = new Set(['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted', 'removed']);
+
+function asLowerTextStage229B(value: unknown) {
+  return typeof value === 'string' ? value.trim().toLowerCase() : '';
+}
+
+function isShowInCalendarFalseStage229B(value: unknown) {
+  return value === false || asLowerTextStage229B(value) === 'false';
+}
+
+function shouldRemoteDeleteAfterWorkItemMutationStage229B(input: {
+  action: 'create' | 'update' | 'delete';
+  row: any;
+  body: any;
+  existingGoogleEventId: string;
+}) {
+  if (!input.existingGoogleEventId) return false;
+  if (input.action === 'delete') return true;
+  const status = asLowerTextStage229B(input.row?.status ?? input.body?.status);
+  const showInCalendar = input.row?.show_in_calendar ?? input.row?.showInCalendar ?? input.body?.show_in_calendar ?? input.body?.showInCalendar;
+  if (isShowInCalendarFalseStage229B(showInCalendar)) return true;
+  if (CLOSED_OR_HIDDEN_GOOGLE_DELETE_STATUSES_STAGE229B.has(status)) return true;
+  if (input.row?.deleted_at || input.row?.archived_at || input.row?.deletedAt || input.row?.archivedAt) return true;
+  return false;
+}
+
+function isGoogleAlreadyGoneStage229B(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error || '');
+  return /\b(404|410)\b|not\s*found|gone/i.test(message);
+}
+
 type GoogleReminderMethod = 'default' | 'popup' | 'email' | 'popup_email';
 
 function googleReminderMethodFrom(row: any, body: any): GoogleReminderMethod | null {
@@ -257,10 +289,27 @@ async function syncGoogleCalendarEventAfterMutation(input: {
   const existingGoogleEventId = googleEventIdFrom(input.row, input.body);
 
   try {
-    if (input.action === 'delete') {
-      if (existingGoogleEventId) {
+    if (shouldRemoteDeleteAfterWorkItemMutationStage229B({
+      action: input.action,
+      row: input.row,
+      body: input.body,
+      existingGoogleEventId,
+    })) {
+      try {
         await deleteGoogleCalendarEvent(connection, existingGoogleEventId);
+      } catch (deleteError) {
+        if (!isGoogleAlreadyGoneStage229B(deleteError)) throw deleteError;
       }
+      await writeGoogleCalendarSyncState(rowId, input.workspaceId, {
+        google_calendar_sync_enabled: true,
+        google_calendar_id: connection.google_calendar_id || 'primary',
+        google_calendar_event_id: null,
+        google_calendar_event_etag: null,
+        google_calendar_html_link: null,
+        google_calendar_synced_at: new Date().toISOString(),
+        google_calendar_sync_status: 'deleted',
+        google_calendar_sync_error: null,
+      });
       return;
     }
 
