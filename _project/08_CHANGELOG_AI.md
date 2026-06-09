@@ -2383,3 +2383,21 @@ Not changed:
 ## 2026-06-09 - STAGE230B R8 - title preview guard hotfix
 - Naprawiono brak kontraktu tytulu quick capture w getDraftTitle.
 - Utrzymano brak AI parse, brak SQL, brak providerow AI w handlerze Stage230B.
+
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C Phone dictation duplicate-words audit
+
+Changed:
+- Added optional Debug dyktowania panel inside Szybki szkic on /ai-drafts.
+- Added local voice_input_event_trace for beforeinput/input/change/composition/paste.
+- Added duplicate signal diagnostics: repeated_last_word_x2, repeated_last_word_x3_plus, repeated_tail_phrase, same_value_reapplied, large_append, composition_duplicate_suspected.
+- Added copy/clear trace actions and local event counters.
+- Added Stage230C guard/test.
+
+Not changed:
+- No AI parser.
+- No Gemini/Cloudflare provider.
+- No Supabase schema.
+- No approval engine.
+- No automatic deduplication.
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_CHANGELOG_END -->

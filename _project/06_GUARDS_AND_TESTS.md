@@ -2319,3 +2319,21 @@ Contract:
 - Guard: scripts/check-stage230b-quick-capture-inbox.cjs
 - Test: tests/stage230b-quick-capture-inbox.test.cjs
 - Zakres: wymusza etykiete i tytul Szybki szkic z preview raw tekstu.
+
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_GUARD_START -->
+## 2026-06-09 - STAGE230C Phone dictation duplicate-words audit
+
+Guard/test:
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+
+Regresja:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+
+Kontrakt:
+- debug dyktowania jest opcjonalny i domyślnie wyłączony.
+- trace loguje lokalnie beforeinput/input/change/composition/paste.
+- brak AI parse, Gemini, Cloudflare, SQL i localStorage.
+- brak automatycznej deduplikacji.
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_GUARD_END -->

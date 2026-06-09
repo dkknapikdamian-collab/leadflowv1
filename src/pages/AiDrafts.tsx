@@ -122,6 +122,73 @@ const AI_DRAFTS_METRIC_CARD_ALIAS_REPAIR = 'AI_DRAFTS_METRIC_CARD_ALIAS_REPAIR_2
 void AI_DRAFTS_METRIC_CARD_ALIAS_REPAIR;
 const MetricCard = StatShortcutCard;
 
+// STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_HELPERS_START
+const STAGE230C_PHONE_DICTATION_TRACE = 'STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT';
+
+type VoiceInputTraceEntry = {
+  id: string;
+  timestamp: string;
+  eventType: string;
+  inputType?: string;
+  isComposing?: boolean;
+  beforeLength: number;
+  afterLength: number;
+  deltaLength: number;
+  tailTokens: string[];
+  duplicateSignal: string;
+};
+
+function getVoiceInputTailTokens(value: string, limit = 12) {
+  return String(value || '')
+    .trim()
+    .split(/\s+/u)
+    .filter(Boolean)
+    .slice(-limit);
+}
+
+function detectVoiceInputDuplicateSignal(beforeText: string, afterText: string, eventType: string) {
+  const before = String(beforeText || '');
+  const after = String(afterText || '');
+  const tokens = getVoiceInputTailTokens(after, 12);
+  const eventName = String(eventType || '').toLowerCase();
+  const lowerTokens = tokens.map((token) => token.toLowerCase());
+
+  const last = lowerTokens[lowerTokens.length - 1] || '';
+  const prev = lowerTokens[lowerTokens.length - 2] || '';
+  const prev2 = lowerTokens[lowerTokens.length - 3] || '';
+
+  if (last && last === prev && last === prev2) {
+    return 'repeated_last_word_x3_plus';
+  }
+
+  if (last && last === prev) {
+    return 'repeated_last_word_x2';
+  }
+
+  for (const size of [4, 3, 2]) {
+    if (lowerTokens.length >= size * 2) {
+      const tail = lowerTokens.slice(-size).join(' ');
+      const previousTail = lowerTokens.slice(-size * 2, -size).join(' ');
+      if (tail && tail === previousTail) return 'repeated_tail_phrase';
+    }
+  }
+
+  if (before && before === after && ['input', 'change', 'compositionend'].includes(eventName)) {
+    return 'same_value_reapplied';
+  }
+
+  if (after.length - before.length > 80) {
+    return 'large_append';
+  }
+
+  if (eventName.includes('composition') && after.length > before.length && tokens.length >= 3) {
+    return 'composition_duplicate_suspected';
+  }
+
+  return 'none';
+}
+// STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_HELPERS_END
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -406,6 +473,9 @@ function AiDraftsInner() {
   });
   const [quickCaptureText, setQuickCaptureText] = useState('');
   const [quickCaptureSaving, setQuickCaptureSaving] = useState(false);
+  const [voiceDebugEnabled, setVoiceDebugEnabled] = useState(false);
+  const [voiceInputTrace, setVoiceInputTrace] = useState<VoiceInputTraceEntry[]>([]);
+  const [voiceInputBeforeValue, setVoiceInputBeforeValue] = useState('');
 
 
   const reloadDrafts = async () => {
@@ -425,6 +495,65 @@ function AiDraftsInner() {
   }, []);
 
 
+  // STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_HANDLERS_START
+  const appendVoiceInputTrace = (eventType: string, event: any, nextValue?: string) => {
+    if (!voiceDebugEnabled) return;
+
+    const targetValue =
+      typeof nextValue === 'string'
+        ? nextValue
+        : String(event?.currentTarget?.value ?? event?.target?.value ?? quickCaptureText ?? '');
+
+    const beforeValue = voiceInputBeforeValue;
+    const duplicateSignal = detectVoiceInputDuplicateSignal(beforeValue, targetValue, eventType);
+
+    const entry: VoiceInputTraceEntry = {
+      id: Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 8),
+      timestamp: new Date().toISOString(),
+      eventType,
+      inputType: event?.nativeEvent?.inputType || event?.inputType || undefined,
+      isComposing: Boolean(event?.nativeEvent?.isComposing || event?.isComposing),
+      beforeLength: beforeValue.length,
+      afterLength: targetValue.length,
+      deltaLength: targetValue.length - beforeValue.length,
+      tailTokens: getVoiceInputTailTokens(targetValue, 12),
+      duplicateSignal,
+    };
+
+    setVoiceInputTrace((current) => [entry, ...current].slice(0, 80));
+    setVoiceInputBeforeValue(targetValue);
+  };
+
+  const clearVoiceInputTrace = () => {
+    setVoiceInputTrace([]);
+    setVoiceInputBeforeValue(quickCaptureText);
+  };
+
+  const copyVoiceInputTrace = async () => {
+    try {
+      const payload = {
+        stage: STAGE230C_PHONE_DICTATION_TRACE,
+        copiedAt: new Date().toISOString(),
+        currentLength: quickCaptureText.length,
+        eventCount: voiceInputTrace.length,
+        suspiciousCount: voiceInputTrace.filter((entry) => entry.duplicateSignal !== 'none').length,
+        trace: voiceInputTrace,
+      };
+
+      if (!navigator?.clipboard) throw new Error('NO_CLIPBOARD');
+      await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+      toast.success('Trace dyktowania skopiowany.');
+    } catch {
+      toast.error('Nie udało się skopiować trace. Zaznacz go ręcznie.');
+    }
+  };
+
+  const handleQuickCaptureChange = (event: any) => {
+    const nextValue = event.target.value;
+    appendVoiceInputTrace('change', event, nextValue);
+    setQuickCaptureText(nextValue);
+  };
+  // STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_HANDLERS_END
 
   const handleSaveQuickCaptureDraft = async () => {
     const rawText = quickCaptureText.trim();
@@ -507,6 +636,12 @@ useEffect(() => {
   const filteredDrafts = useMemo(() => {
     return drafts.filter((draft) => shouldShowByFilter(draft, activeFilter) && matchesDraftSearch(draft, searchQuery));
   }, [activeFilter, drafts, searchQuery]);
+
+  const voiceInputTraceStats = useMemo(() => ({
+    events: voiceInputTrace.length,
+    suspicious: voiceInputTrace.filter((entry) => entry.duplicateSignal !== 'none').length,
+    length: quickCaptureText.length,
+  }), [quickCaptureText.length, voiceInputTrace]);
 
   const approvalClientOptions = useMemo(() => buildAiDraftRelationOptions(approvalClients, 'client'), [approvalClients]);
   const approvalLeadOptions = useMemo(() => buildAiDraftRelationOptions(approvalLeads, 'lead'), [approvalLeads]);
@@ -1097,11 +1232,90 @@ useEffect(() => {
 
           <Textarea
             value={quickCaptureText}
-            onChange={(event) => setQuickCaptureText(event.target.value)}
+            onBeforeInput={(event) => appendVoiceInputTrace('beforeinput', event)}
+            onInput={(event) => appendVoiceInputTrace('input', event)}
+            onChange={handleQuickCaptureChange}
+            onCompositionStart={(event) => appendVoiceInputTrace('compositionstart', event)}
+            onCompositionUpdate={(event) => appendVoiceInputTrace('compositionupdate', event)}
+            onCompositionEnd={(event) => appendVoiceInputTrace('compositionend', event)}
+            onPaste={(event) => appendVoiceInputTrace('paste', event)}
             placeholder="Np. Dzwonił Marek z Tarnowa, chce ofertę, numer 500 600 700, oddzwonić jutro po 10..."
             className="ai-drafts-quick-capture-textarea"
             data-stage230b-quick-capture-textarea="true"
           />
+
+
+          <div className="ai-drafts-voice-debug-panel" data-stage230c-phone-dictation-debug="true">
+            <label className="ai-drafts-voice-debug-toggle">
+              <input
+                type="checkbox"
+                checked={voiceDebugEnabled}
+                onChange={(event) => {
+                  const enabled = event.target.checked;
+                  setVoiceDebugEnabled(enabled);
+                  setVoiceInputBeforeValue(quickCaptureText);
+                  if (!enabled) setVoiceInputTrace([]);
+                }}
+                data-stage230c-phone-dictation-toggle="true"
+              />
+              <span>Debug dyktowania</span>
+            </label>
+            <p>
+              Włącz tylko do testu na telefonie. Trace zostaje lokalnie na ekranie i pomaga ustalić, gdzie tekst zaczyna się powtarzać.
+            </p>
+
+            {voiceDebugEnabled ? (
+              <div className="ai-drafts-voice-trace-box" data-stage230c-phone-dictation-trace="true">
+                <div className="ai-drafts-voice-trace-head">
+                  <div>
+                    <strong>voice_input_event_trace</strong>
+                    <small>{STAGE230C_PHONE_DICTATION_TRACE}</small>
+                  </div>
+                  <div className="ai-drafts-voice-trace-actions">
+                    <button type="button" onClick={clearVoiceInputTrace} data-stage230c-phone-dictation-clear="true">
+                      Wyczyść trace
+                    </button>
+                    <button type="button" onClick={() => void copyVoiceInputTrace()} data-stage230c-phone-dictation-copy="true">
+                      Kopiuj trace
+                    </button>
+                  </div>
+                </div>
+
+                <div className="ai-drafts-voice-trace-stats">
+                  <span>Eventy: {voiceInputTraceStats.events}</span>
+                  <span>Podejrzane: {voiceInputTraceStats.suspicious}</span>
+                  <span>Długość tekstu: {voiceInputTraceStats.length}</span>
+                </div>
+
+                <div className="ai-drafts-voice-trace-list">
+                  {voiceInputTrace.length === 0 ? (
+                    <p>Brak eventów. Wpisz tekst albo użyj dyktowania telefonu.</p>
+                  ) : (
+                    voiceInputTrace.slice(0, 40).map((entry) => (
+                      <div
+                        key={entry.id}
+                        className={[
+                          'ai-drafts-voice-trace-row',
+                          entry.duplicateSignal !== 'none' ? 'ai-drafts-voice-trace-row-warning' : '',
+                        ].join(' ')}
+                      >
+                        <div>
+                          <strong>{entry.eventType}</strong>
+                          <span>{entry.duplicateSignal}</span>
+                        </div>
+                        <small>
+                          {entry.timestamp} | inputType: {entry.inputType || 'brak'} | composing: {String(entry.isComposing)}
+                        </small>
+                        <code>
+                          before {entry.beforeLength} / after {entry.afterLength} / delta {entry.deltaLength} | tail: {entry.tailTokens.join(' ')}
+                        </code>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            ) : null}
+          </div>
 
           <div className="ai-drafts-quick-capture-actions">
             <Button

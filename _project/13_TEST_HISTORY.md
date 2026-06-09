@@ -1741,3 +1741,24 @@ Planowane/uruchamiane po hotfixie:
 - node --test tests/stage230a-ai-draft-inbox-roadmap.test.cjs
 - npm run build
 - git diff --check
+
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C Phone dictation duplicate-words audit
+
+Automated tests:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- npm run build
+- git diff --check
+
+Manual QA:
+- /ai-drafts
+- enable Debug dyktowania
+- manual typing
+- mobile dictation
+- copy trace
+- save draft
+- F5 persistence
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_TEST_HISTORY_END -->

@@ -29,3 +29,14 @@
 - Ryzyko: /activity, /ai-drafts, /notifications, /help, /settings, /billing mają inne klasy i wymagają osobnego etapu.
 - Ryzyko: /funnel ma osobny bug kodowania znaków i nie należy mieszać go z rail source truth.
 <!-- /STAGE228R1_RISK -->
+
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_RISK_START -->
+## 2026-06-09 - STAGE230C Phone dictation duplicate-words audit
+
+Ryzyka:
+- Trace może zawierać końcówkę realnej treści klienta; dlatego pozostaje tylko lokalnym stanem React i UI.
+- Automatyczna deduplikacja bez dowodu może usuwać poprawne powtórzenia użytkownika.
+- Problem może być mobile-only i nie odtworzyć się na desktopie.
+- IME/composition może działać inaczej w Android Chrome, Samsung Keyboard, Gboard i iOS Safari.
+- Jeśli problem jest po stronie klawiatury/browsera, aplikacja może tylko ograniczyć skutki albo ostrzec użytkownika w osobnym etapie.
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_RISK_END -->

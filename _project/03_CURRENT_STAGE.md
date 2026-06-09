@@ -1369,3 +1369,31 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE230C Phone dictation duplicate-words audit
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- Stage230B Quick Capture Inbox jest warunkiem wejścia.
+- Stage230C dodaje lokalny, opcjonalny trace eventów textarea szybkiego szkicu.
+- Trace jest tylko w stanie React i UI; nie idzie do Supabase, backendu, localStorage ani usług zewnętrznych.
+- Etap nie naprawia i nie deduplikuje tekstu automatycznie.
+
+DECYZJE:
+- Najpierw diagnoza miejsca duplikacji/trójblowania słów.
+- Deduplikacja może być dopiero osobnym etapem po analizie trace.
+
+TESTY:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Trace może zawierać końcówkę realnej wypowiedzi klienta, dlatego jest lokalny, opcjonalny i nietrwały.
+- Bez testu na realnym telefonie nie wolno twierdzić, że źródło problemu jest znane.
+<!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_CURRENT_STAGE_END -->
