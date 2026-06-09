@@ -944,7 +944,11 @@
     "check:stage228r25-delete-flow-source-truth": "node scripts/check-stage228r25-delete-flow-source-truth.cjs",
     "check:stage228r25-delete-flow": "node scripts/check-stage228r25-delete-flow-source-truth.cjs",
     "prebuild": "node scripts/check-stage228r25-delete-flow-source-truth.cjs && node scripts/check-stage228r41-delete-flow-final-validate.cjs",
-    "check:stage228r41-delete-flow-final-validate": "node scripts/check-stage228r41-delete-flow-final-validate.cjs"
+    "check:stage228r41-delete-flow-final-validate": "node scripts/check-stage228r41-delete-flow-final-validate.cjs",
+    "check:stage228r42-runtime-delete-status-contract": "node scripts/check-stage228r42-runtime-delete-status-contract.cjs",
+    "test:stage228r42-runtime-delete-status-contract": "node --test tests/stage228r42-runtime-delete-status-contract.test.cjs",
+    "check:stage228r43-r42-guard-repair": "node scripts/check-stage228r43-r42-guard-repair.cjs",
+    "test:stage228r43-r42-guard-repair": "node --test tests/stage228r43-r42-guard-repair.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

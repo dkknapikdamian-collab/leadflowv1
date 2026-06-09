@@ -1,3 +1,6 @@
+export const STAGE228R42_DELETE_STATUS_RUNTIME_CONTRACT = 'PATCH /api/tasks deleted must stay deleted, not normalize back to todo';
+void STAGE228R42_DELETE_STATUS_RUNTIME_CONTRACT;
+
 export const LEAD_STATUS_VALUES = [
   'new',
   'contacted',
@@ -37,6 +40,7 @@ export const TASK_STATUS_VALUES = [
   'in_progress',
   'done',
   'canceled',
+  'deleted',
 ] as const;
 
 export type TaskStatus = (typeof TASK_STATUS_VALUES)[number];
@@ -47,6 +51,7 @@ export const EVENT_STATUS_VALUES = [
   'in_progress',
   'done',
   'canceled',
+  'deleted',
 ] as const;
 
 export type EventStatus = (typeof EVENT_STATUS_VALUES)[number];
@@ -251,6 +256,7 @@ export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   in_progress: 'W trakcie',
   done: 'Zrobione',
   canceled: 'Anulowane',
+  deleted: 'Usuniete',
 };
 
 export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
@@ -258,6 +264,7 @@ export const EVENT_STATUS_LABELS: Record<EventStatus, string> = {
   in_progress: 'W trakcie',
   done: 'Zrobione',
   canceled: 'Anulowane',
+  deleted: 'Usuniete',
 };
 
 export const PORTAL_ITEM_STATUS_LABELS: Record<PortalItemStatus, string> = {
