@@ -39,6 +39,7 @@ import {
   archiveAiLeadDraftAsync,
   deleteAiLeadDraftAsync,
   getAiLeadDraftsAsync,
+  saveAiLeadDraftAsync,
   markAiLeadDraftConvertedAsync,
   updateAiLeadDraftAsync,
   type AiLeadDraft,
@@ -139,6 +140,14 @@ function getDraftParsedData(draft: AiLeadDraft) {
   return parsed && typeof parsed === 'object' ? (parsed as Record<string, unknown>) : null;
 }
 
+function isStage230BQuickCaptureDraft(draft: AiLeadDraft) {
+  const parsed = getDraftParsedData(draft);
+  return (
+    draft.source === 'quick_capture' &&
+    (parsed?.captureMode === 'quick_capture_raw' || parsed?.stage === 'STAGE230B_QUICK_CAPTURE_INBOX')
+  );
+}
+
 function getDraftType(draft: AiLeadDraft): AiDraftApprovalType {
   if (draft.type === 'task' || draft.type === 'event' || draft.type === 'note' || draft.type === 'lead') {
     return draft.type;
@@ -147,6 +156,7 @@ function getDraftType(draft: AiLeadDraft): AiDraftApprovalType {
 }
 
 function getDraftTypeLabel(draft: AiLeadDraft) {
+  if (isStage230BQuickCaptureDraft(draft)) return 'Szybki szkic';
   const type = getDraftType(draft);
   if (type === 'task') return 'Zadanie';
   if (type === 'event') return 'Wydarzenie';
@@ -242,7 +252,17 @@ function shortPreview(value: unknown) {
 }
 
 function getDraftTitle(draft: AiLeadDraft) {
-  const parsed = getDraftParsedData(draft);
+
+  // STAGE230B_GET_DRAFT_TITLE_PREVIEW
+  if (isStage230BQuickCaptureDraft(draft)) {
+    return 'Szybki szkic: ' + shortPreview(draft.rawText);
+  }
+  // STAGE230B_QUICK_CAPTURE_TITLE_GUARD
+  if (isStage230BQuickCaptureDraft(draft)) {
+    const preview = shortPreview(draft.rawText);
+    return preview && !preview.startsWith('Brak ') ? 'Szybki szkic: ' + preview : 'Szybki szkic';
+  }
+const parsed = getDraftParsedData(draft);
   const typeLabel = getDraftTypeLabel(draft);
   const title = firstText(parsed, ['title', 'name', 'contactName', 'clientName', 'summary', 'need']);
   if (title) return typeLabel + ': ' + title;
@@ -384,6 +404,9 @@ function AiDraftsInner() {
     case: '',
     client: '',
   });
+  const [quickCaptureText, setQuickCaptureText] = useState('');
+  const [quickCaptureSaving, setQuickCaptureSaving] = useState(false);
+
 
   const reloadDrafts = async () => {
     setDraftsLoading(true);
@@ -401,7 +424,42 @@ function AiDraftsInner() {
     void reloadDrafts();
   }, []);
 
-  useEffect(() => {
+
+
+  const handleSaveQuickCaptureDraft = async () => {
+    const rawText = quickCaptureText.trim();
+
+    if (!rawText) {
+      toast.error('Wpisz treść szkicu.');
+      return;
+    }
+
+    setQuickCaptureSaving(true);
+
+    try {
+      await saveAiLeadDraftAsync({
+        rawText,
+        source: 'quick_capture',
+        type: 'note',
+        parsedDraft: {
+          stage: 'STAGE230B_QUICK_CAPTURE_INBOX',
+          captureMode: 'quick_capture_raw',
+          inputMode: 'manual_or_system_dictation',
+          rawTextPreserved: true,
+          title: rawText.length > 80 ? rawText.slice(0, 77) + '...' : rawText,
+        },
+      });
+
+      setQuickCaptureText('');
+      await reloadDrafts();
+      toast.success('Szkic zapisany.');
+    } catch (error: any) {
+      toast.error('Nie udało się zapisać szkicu: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setQuickCaptureSaving(false);
+    }
+  };
+useEffect(() => {
     let cancelled = false;
     setApprovalRelationsLoading(true);
 
@@ -1027,6 +1085,37 @@ function AiDraftsInner() {
             </>
           }
         />
+
+        <section className="ai-drafts-quick-capture" data-stage230b-quick-capture="true">
+          <div className="ai-drafts-quick-capture-head">
+            <div>
+              <p className="ai-drafts-eyebrow">Szybki zapis</p>
+              <h2>Szybki szkic</h2>
+              <p>Zapisz luźną notatkę z rozmowy. AI nie analizuje jej jeszcze w tym etapie.</p>
+            </div>
+          </div>
+
+          <Textarea
+            value={quickCaptureText}
+            onChange={(event) => setQuickCaptureText(event.target.value)}
+            placeholder="Np. Dzwonił Marek z Tarnowa, chce ofertę, numer 500 600 700, oddzwonić jutro po 10..."
+            className="ai-drafts-quick-capture-textarea"
+            data-stage230b-quick-capture-textarea="true"
+          />
+
+          <div className="ai-drafts-quick-capture-actions">
+            <Button
+              type="button"
+              onClick={() => void handleSaveQuickCaptureDraft()}
+              disabled={quickCaptureSaving || !quickCaptureText.trim()}
+              data-stage230b-quick-capture-save="true"
+            >
+              {quickCaptureSaving ? 'Zapisuję...' : 'Zapisz szkic'}
+            </Button>
+            <p>Na telefonie możesz użyć dyktowania systemowego klawiatury. Duplikowanie słów sprawdzimy osobno w Stage230C.</p>
+          </div>
+        </section>
+
 
         <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
           <MetricCard label="Do sprawdzenia" value={stats.draft} icon={AiEntityIcon} tone="drafts" active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />

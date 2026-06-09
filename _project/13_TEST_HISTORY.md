@@ -1714,3 +1714,30 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE230B_QUICK_CAPTURE_INBOX_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230B Quick Capture Inbox bez AI
+
+Planned/executed by apply script:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230a-ai-draft-inbox-roadmap.cjs
+- node --test tests/stage230a-ai-draft-inbox-roadmap.test.cjs
+- npm run build
+- git diff --check
+
+Manual QA required before push:
+- desktop save and F5 persistence
+- mobile system dictation save and F5 persistence
+- verify words duplication only as Stage230C observation
+<!-- STAGE230B_QUICK_CAPTURE_INBOX_TEST_HISTORY_END -->
+
+<!-- STAGE230B_R8_TEST_HISTORY -->
+## 2026-06-09 - STAGE230B R8 test history
+Planowane/uruchamiane po hotfixie:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230a-ai-draft-inbox-roadmap.cjs
+- node --test tests/stage230a-ai-draft-inbox-roadmap.test.cjs
+- npm run build
+- git diff --check

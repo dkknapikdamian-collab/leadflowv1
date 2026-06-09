@@ -2360,3 +2360,26 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE230B_QUICK_CAPTURE_INBOX_CHANGELOG_START -->
+## 2026-06-09 - STAGE230B Quick Capture Inbox bez AI
+
+Status: LOCAL_ONLY_APPLIED_BY_ZIP_R6 / DO_MANUAL_QA_AND_PUSH
+
+Changed:
+- Added Szybki szkic panel on /ai-drafts.
+- Saved raw draft through saveAiLeadDraftAsync with source quick_capture and type note.
+- Added Szybki szkic label/helper.
+- Added CSS, guard, test, run report and Obsidian update.
+
+Not changed:
+- No SQL.
+- No AI parser.
+- No Gemini/Cloudflare.
+- No custom microphone JS.
+<!-- STAGE230B_QUICK_CAPTURE_INBOX_CHANGELOG_END -->
+
+<!-- STAGE230B_R8_TITLE_PREVIEW_HOTFIX -->
+## 2026-06-09 - STAGE230B R8 - title preview guard hotfix
+- Naprawiono brak kontraktu tytulu quick capture w getDraftTitle.
+- Utrzymano brak AI parse, brak SQL, brak providerow AI w handlerze Stage230B.

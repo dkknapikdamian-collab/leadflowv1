@@ -2296,3 +2296,26 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE230B_QUICK_CAPTURE_INBOX_GUARD_START -->
+## 2026-06-09 - STAGE230B Quick Capture Inbox bez AI
+
+Status: LOCAL_ONLY_APPLIED_BY_ZIP_R6 / DO_MANUAL_QA_AND_PUSH
+
+Guard/test:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+
+Contract:
+- /ai-drafts has Szybki szkic panel.
+- raw text saves through saveAiLeadDraftAsync.
+- source quick_capture, type note.
+- parsedDraft.stage STAGE230B_QUICK_CAPTURE_INBOX.
+- no AI parser/provider/SQL in this stage.
+<!-- STAGE230B_QUICK_CAPTURE_INBOX_GUARD_END -->
+
+<!-- STAGE230B_R8_TITLE_PREVIEW_GUARD_HOTFIX -->
+## 2026-06-09 - STAGE230B R8 - Quick Capture title preview guard hotfix
+- Guard: scripts/check-stage230b-quick-capture-inbox.cjs
+- Test: tests/stage230b-quick-capture-inbox.test.cjs
+- Zakres: wymusza etykiete i tytul Szybki szkic z preview raw tekstu.
