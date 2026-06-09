@@ -2385,3 +2385,45 @@ Mass preflight:
 - npm run build
 - git diff --check
 <!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_GUARD_END -->
+
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_GUARD_START -->
+## 2026-06-09 - STAGE230C R10 quick capture visual source truth
+
+Guard/test:
+- node scripts/check-stage230c-r10-quick-capture-visual-source-truth.cjs
+- node --test tests/stage230c-r10-quick-capture-visual-source-truth.test.cjs
+
+Kontrakt:
+- /ai-drafts Szybki szkic importuje visual-stage20-lead-form-vnext.css.
+- Quick capture używa lead-form-section / lead-form-textarea jako source truth formularzy.
+- Tekst textarea, placeholder, caret i przyciski mają wymuszony kontrast mobilny.
+- Brak deduplikacji, AI parse, SQL i localStorage.
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_GUARD_END -->
+
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_GUARD_START -->
+## 2026-06-09 - STAGE230C R12 R2 guard global marker compatibility
+
+Guard/test:
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+
+Kontrakt:
+- Guard R2/R8/R10/R12 sprawdza markery globalnie, bez kruchego wycinania sekcji po className.
+- Wspiera visual source truth R10: lead-form-section / lead-form-textarea.
+- Nie sprawdza ani nie wprowadza deduplikacji.
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_GUARD_END -->
+
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_GUARD_START -->
+## 2026-06-09 - STAGE230C R15 guard split + visual source truth
+
+Guard/test:
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- node scripts/check-stage230c-r10-quick-capture-visual-source-truth.cjs
+- node --test tests/stage230c-r10-quick-capture-visual-source-truth.test.cjs
+
+Kontrakt:
+- R2 guard nie wymaga markerów R10.
+- R10 guard pilnuje importu visual-stage20-lead-form-vnext.css oraz klas lead-form-section/lead-form-textarea.
+- Oba guardy mają stabilne PASS markery.
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_GUARD_END -->

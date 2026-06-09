@@ -2452,3 +2452,51 @@ Not changed:
 - No AI parser.
 - No Supabase schema.
 <!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_CHANGELOG_END -->
+
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C R10 quick capture visual source truth
+
+Changed:
+- Connected quick capture visual style to lead-form visual source truth.
+- Added lead-form-section/lead-form-textarea classes and R10 markers.
+- Forced dark readable textarea text, placeholder and caret on mobile.
+- Forced readable save/trace/disabled button colors.
+- Added Stage230C-R10 guard/test.
+
+Not changed:
+- No dictation deduplication.
+- No AI parser.
+- No Supabase schema.
+- No save flow changes.
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_CHANGELOG_END -->
+
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C R12 R2 guard global marker compatibility
+
+Changed:
+- Replaced brittle quick-capture region extraction in the R2 visibility guard.
+- Added marker-based validation compatible with R8 panel rewrite and R10 visual source truth classes.
+- Kept existing UI/CSS unchanged.
+
+Not changed:
+- No dictation deduplication.
+- No AI parser.
+- No Supabase schema.
+- No save flow changes.
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_CHANGELOG_END -->
+
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C R15 guard split + visual source truth
+
+Changed:
+- Stabilized R2 visibility guard/test.
+- Stabilized R10 visual source truth guard/test.
+- Re-applied quick capture source truth markers and readable text CSS selectors.
+- Kept quick capture aligned with lead/client form visual source truth.
+
+Not changed:
+- No deduplication.
+- No AI parser.
+- No Supabase schema.
+- No save flow change.
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_CHANGELOG_END -->

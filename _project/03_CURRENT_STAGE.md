@@ -1454,3 +1454,75 @@ TESTY:
 - npm run build
 - git diff --check
 <!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_CURRENT_STAGE_END -->
+
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE230C R10 quick capture visual source truth
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- Dublowanie dyktowania nie odtwarza się na innym telefonie, więc nie traktujemy go jako błąd aplikacji.
+- Problem do naprawy: biały tekst na białym tle i niespójne kolory przycisków w Szybkim szkicu.
+- Źródło prawdy wizualnej dla formularzy to visual-stage20-lead-form-vnext.css oraz klasy lead-form-section/lead-form-textarea.
+
+DECYZJE:
+- R10 poprawia tylko styl wizualny i kontrast.
+- Quick capture ma być podpięty do visual source truth formularzy typu Nowy klient / Dodaj leada.
+- Brak zmian w zapisie szkicu, AI parserze, Supabase i deduplikacji.
+
+TESTY:
+- node --check dla guardów/testów Stage230B/Stage230C/R10
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2/R8 guard/test
+- Stage230C-R10 guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_END -->
+
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE230C R12 R2 guard global marker compatibility
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- R10 prawidłowo dopina Szybki szkic do visual source truth formularzy.
+- R11 nadal fałszywie padał, bo próbował wycinać quick capture po złym regionie JSX.
+- R12 zastępuje guard R2 odpornym sprawdzaniem markerów w całym AiDrafts.tsx i CSS, bez kruchego wycinania JSX po className.
+
+DECYZJE:
+- Guardy wizualne nie mogą zakładać dokładnej kolejności klas JSX, gdy etap celowo podpina source truth.
+- Nie zmieniamy UI w R12; tylko naprawiamy guard/test i preflight.
+
+TESTY:
+- node --check dla Stage230B/230C/R10/R12 guardów i testów
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2/R8/R10/R12 guard/test
+- Stage230C-R10 guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_CURRENT_STAGE_END -->
+
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE230C R15 guard split + visual source truth
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- Problem dublowania dyktowania zostal potwierdzony jako zależny od jednego telefonu, nie ogólny błąd aplikacji.
+- R10 wprowadza wizualne dopięcie Szybkiego szkicu do source truth formularzy lead/client.
+- R15 rozdziela odpowiedzialność guardów: R2 pilnuje widoczności diagnostyki, R10 pilnuje visual source truth.
+
+DECYZJE:
+- Nie robimy deduplikacji.
+- Szybki szkic ma być wizualnie zgodny z formularzami dodaj lead/klient.
+
+TESTY:
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2 guard/test
+- Stage230C-R10 guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_END -->

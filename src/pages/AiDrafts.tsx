@@ -65,6 +65,7 @@ import {
   buildAiDraftConfirmedParsedDraft,
   getAiDraftCreatedRecordId
 } from '../lib/ai-draft-confirm-records';
+import '../styles/visual-stage20-lead-form-vnext.css';
 import '../styles/visual-stage9-ai-drafts-vnext.css';
 import '../styles/hotfix-right-rail-dark-wrappers.css';
 import '../styles/closeflow-ai-drafts-rail-force-colors-stage181w.css';
@@ -1223,7 +1224,7 @@ useEffect(() => {
           }
         />
 
-        <section className="ai-drafts-quick-capture" data-stage230b-quick-capture="true" data-stage230c-r8-panel-rewrite="true">
+        <section className="ai-drafts-quick-capture lead-form-section lead-form-primary-section" data-stage230b-quick-capture="true" data-stage230c-r8-panel-rewrite="true" data-stage230c-r10-form-visual-source-truth="lead-form-vnext" data-stage230c-r10-visual-source-truth="true" data-stage230c-r15-visual-source-truth="true">
           <div className="ai-drafts-quick-capture-head">
             <div>
               <p className="ai-drafts-eyebrow">Szybki zapis</p>
@@ -1242,12 +1243,15 @@ useEffect(() => {
             onCompositionEnd={(event) => appendVoiceInputTrace('compositionend', event)}
             onPaste={(event) => appendVoiceInputTrace('paste', event)}
             placeholder="Np. Dzwonił Marek z Tarnowa, chce ofertę, numer 500 600 700, oddzwonić jutro po 10..."
-            className="ai-drafts-quick-capture-textarea"
+            className="ai-drafts-quick-capture-textarea lead-form-textarea stage230c-r10-readable-textarea"
             data-stage230b-quick-capture-textarea="true"
             data-stage230c-r8-readable-textarea="true"
+            data-stage230c-r10-visual-source-truth-textarea="true"
+            data-stage230c-r15-visual-source-truth-textarea="true"
+            data-stage230c-r10-readable-textarea="true"
           />
 
-          <div className="ai-drafts-voice-debug-panel" data-stage230c-phone-dictation-debug="true" data-stage230c-r8-visible-trace-actions="true">
+          <div className="ai-drafts-voice-debug-panel lead-form-section" data-stage230c-phone-dictation-debug="true" data-stage230c-r8-visible-trace-actions="true" data-stage230c-r10-visual-source-truth-panel="lead-form-section">
             <div className="ai-drafts-voice-debug-top">
               <label className="ai-drafts-voice-debug-toggle">
                 <input
@@ -1341,6 +1345,7 @@ useEffect(() => {
               type="button"
               onClick={() => void handleSaveQuickCaptureDraft()}
               disabled={quickCaptureSaving || !quickCaptureText.trim()}
+              className="ai-drafts-quick-capture-save-button"
               data-stage230b-quick-capture-save="true"
             >
               {quickCaptureSaving ? 'Zapisuję...' : 'Zapisz szkic'}

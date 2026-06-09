@@ -68,3 +68,30 @@ Ryzyka:
 - Dalsze poprawki panelu powinny podmieniac wyznaczony region albo uzywac AST/prettier/build before package.
 - Manualny test telefonu nadal jest wymagany przed push.
 <!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_RISK_END -->
+
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_RISK_START -->
+## 2026-06-09 - STAGE230C R10 quick capture visual source truth
+
+Ryzyka:
+- Globalne style mogą nadal nadpisywać część komponentów, dlatego R10 używa scoped selektorów i !important tylko w obrębie quick capture.
+- Visual source truth jest obecnie w CSS formularzy Stage20; długofalowo warto wydzielić centralne tokeny formularzy, zamiast rozpraszać klasy.
+- Dublowanie dyktowania jest oznaczone jako problem konkretnego telefonu, nie aplikacji, dopóki nie pojawi się reprodukcja na innym urządzeniu.
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_RISK_END -->
+
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_RISK_START -->
+## 2026-06-09 - STAGE230C R12 R2 guard global marker compatibility
+
+Ryzyka:
+- Zbyt kruche guardy JSX potrafią blokować dobre poprawki UI; R12 usuwa to ryzyko dla quick capture.
+- Guard global-marker jest mniej precyzyjny niż parser AST, ale bezpieczniejszy niż błędne wycinanie sekcji po className.
+- Docelowo warto wydzielić komponent/form source truth, aby quick capture nie wymagał lokalnych wyjątków CSS.
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_RISK_END -->
+
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_RISK_START -->
+## 2026-06-09 - STAGE230C R15 guard split + visual source truth
+
+Ryzyka:
+- Dotychczasowe R2-R14 pokazaly zbyt kruche guardy oparte o dokładny JSX.
+- Dalsze guardy UI powinny sprawdzać stabilne data-markery i source truth, nie pełny string className.
+- Test telefonu nadal wymagany dla kontrastu: tekst, placeholder, disabled button, przyciski diagnostyczne.
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_RISK_END -->

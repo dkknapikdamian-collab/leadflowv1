@@ -1821,3 +1821,67 @@ Tests:
 - npm run build
 - git diff --check
 <!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_TEST_HISTORY_END -->
+
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C R10 quick capture visual source truth
+
+Automated tests:
+- node --check scripts/check-stage230b-quick-capture-inbox.cjs
+- node --check tests/stage230b-quick-capture-inbox.test.cjs
+- node --check scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --check tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- node --check scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --check tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- node --check scripts/check-stage230c-r10-quick-capture-visual-source-truth.cjs
+- node --check tests/stage230c-r10-quick-capture-visual-source-truth.test.cjs
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2/R8 guard/test
+- Stage230C-R10 guard/test
+- npm run build
+- git diff --check
+
+Manual QA:
+- /ai-drafts on phone
+- typed text is dark and visible
+- placeholder is visible
+- Zapisz szkic disabled/enabled states readable
+- diagnostic trace buttons readable
+<!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_TEST_HISTORY_END -->
+
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C R12 R2 guard global marker compatibility
+
+Tests:
+- node --check scripts/check-stage230b-quick-capture-inbox.cjs
+- node --check tests/stage230b-quick-capture-inbox.test.cjs
+- node --check scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --check tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- node --check scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --check tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- node --check scripts/check-stage230c-r10-quick-capture-visual-source-truth.cjs
+- node --check tests/stage230c-r10-quick-capture-visual-source-truth.test.cjs
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2/R8/R10/R12 guard/test
+- Stage230C-R10 guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_TEST_HISTORY_END -->
+
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C R15 guard split + visual source truth
+
+Tests:
+- node --check Stage230B/230C/R2/R10 guardów i testów
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- node scripts/check-stage230c-r10-quick-capture-visual-source-truth.cjs
+- node --test tests/stage230c-r10-quick-capture-visual-source-truth.test.cjs
+- npm run build
+- git diff --check
+<!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_TEST_HISTORY_END -->
