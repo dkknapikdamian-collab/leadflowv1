@@ -1885,3 +1885,21 @@ Tests:
 - npm run build
 - git diff --check
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_TEST_HISTORY_END -->
+
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE231A Google auth entry consistency
+
+Automated tests:
+- node --check scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --check tests/stage231a-google-auth-entry-consistency.test.cjs
+- node scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --test tests/stage231a-google-auth-entry-consistency.test.cjs
+- npm run build
+- git diff --check
+
+Manual QA:
+- /login -> Logowanie -> Kontynuuj przez Google
+- /login -> Rejestracja -> Zarejestruj przez Google
+- e-mail/hasło rejestracji nadal widoczne
+- reset hasła nadal widoczny
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_TEST_HISTORY_END -->

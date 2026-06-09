@@ -95,3 +95,12 @@ Ryzyka:
 - Dalsze guardy UI powinny sprawdzać stabilne data-markery i source truth, nie pełny string className.
 - Test telefonu nadal wymagany dla kontrastu: tekst, placeholder, disabled button, przyciski diagnostyczne.
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_RISK_END -->
+
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_RISK_START -->
+## 2026-06-09 - STAGE231A Google auth entry consistency
+
+Ryzyka:
+- Obecny OAuth bootstrap oznacza publiczny trial dla nowych kont Google, dopóki STAGE231D nie zdecyduje inaczej.
+- Settings nadal ma akcje bezpieczeństwa na Firebase Auth i wymaga migracji do Supabase Auth w STAGE231B.
+- Maile auth i redirect URL wymagają osobnej QA w STAGE231C.
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_RISK_END -->

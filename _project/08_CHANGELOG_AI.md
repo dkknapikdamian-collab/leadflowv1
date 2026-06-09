@@ -2500,3 +2500,20 @@ Not changed:
 - No Supabase schema.
 - No save flow change.
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_CHANGELOG_END -->
+
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CHANGELOG_START -->
+## 2026-06-09 - STAGE231A Google auth entry consistency
+
+Changed:
+- Added Google entry to registration tab.
+- Renamed login Google button to "Kontynuuj przez Google".
+- Added explicit copy that a new Google account can create a trial workspace.
+- Added /api/me public trial bootstrap marker.
+- Added urgent auth backlog to next steps.
+- Added Stage231A guard/test.
+
+Not changed:
+- No Supabase schema change.
+- No invite-only gate yet.
+- No Firebase Settings migration yet.
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CHANGELOG_END -->

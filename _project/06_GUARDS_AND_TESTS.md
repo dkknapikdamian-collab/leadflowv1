@@ -2427,3 +2427,18 @@ Kontrakt:
 - R10 guard pilnuje importu visual-stage20-lead-form-vnext.css oraz klas lead-form-section/lead-form-textarea.
 - Oba guardy mają stabilne PASS markery.
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_GUARD_END -->
+
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_GUARD_START -->
+## 2026-06-09 - STAGE231A Google auth entry consistency
+
+Guard/test:
+- node scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --test tests/stage231a-google-auth-entry-consistency.test.cjs
+
+Kontrakt:
+- Login ma przycisk "Kontynuuj przez Google".
+- Rejestracja ma przycisk "Zarejestruj przez Google".
+- Rejestracja pokazuje copy o możliwości utworzenia trial/workspace dla nowego konta Google.
+- /api/me ma marker obecnego public trial bootstrap przez OAuth.
+- Next steps zawiera kolejkę STAGE231B/C/D/E.
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_GUARD_END -->

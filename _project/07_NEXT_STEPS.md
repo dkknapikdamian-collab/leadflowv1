@@ -2846,3 +2846,18 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rĂ„â„˘czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE231_AUTH_URGENT_BACKLOG_START -->
+## 2026-06-09 - PILNE: Auth / rejestracja / Google / e-mail / hasło
+
+Priorytet przed kolejnymi funkcjami:
+1. STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY — dodać Google do rejestracji, ujednolicić copy logowania/rejestracji, jawnie opisać obecny public trial bootstrap OAuth.
+2. STAGE231B_SUPABASE_ONLY_SETTINGS_SECURITY — przenieść ustawienia bezpieczeństwa z Firebase Auth na Supabase Auth: zmiana hasła, ustaw hasło dla kont Google-only, zmiana e-maila.
+3. STAGE231C_AUTH_EMAIL_DELIVERY_AND_REDIRECT_QA — sprawdzić maile: rejestracja, potwierdzenie, reset hasła, zmiana e-maila, redirect URL.
+4. STAGE231D_PUBLIC_TRIAL_OR_INVITE_ONLY_DECISION — decyzja czy nowe konta Google mogą same tworzyć workspace trial, czy wprowadzamy invite/gate.
+5. STAGE231E_AUTH_FULL_MATRIX_QA — matryca testów: nowe Google, istniejące Google, e-mail/hasło, reset, zmiana hasła, zmiana e-maila, wyloguj wszystkie urządzenia.
+
+Uwaga:
+- Obecnie /api/me może bootstrapować nowy workspace trial po OAuth.
+- Settings używa jeszcze Firebase Auth do części akcji bezpieczeństwa i wymaga migracji.
+<!-- STAGE231_AUTH_URGENT_BACKLOG_END -->

@@ -1526,3 +1526,26 @@ TESTY:
 - npm run build
 - git diff --check
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_END -->
+
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE231A Google auth entry consistency
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- Login/Rejestracja korzysta z Supabase Auth.
+- Google OAuth jest obecnie możliwy na loginie.
+- Rejestracja nie miała osobnego wejścia Google.
+- /api/me potrafi utworzyć profil/workspace trial po OAuth.
+
+DECYZJE:
+- W tym etapie nie blokujemy nowych kont Google.
+- Ujednolicamy UX: Google jest widoczny w loginie i rejestracji.
+- Pełna decyzja public trial vs invite-only idzie do STAGE231D.
+
+TESTY:
+- node scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --test tests/stage231a-google-auth-entry-consistency.test.cjs
+- npm run build
+- git diff --check
+<!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CURRENT_STAGE_END -->

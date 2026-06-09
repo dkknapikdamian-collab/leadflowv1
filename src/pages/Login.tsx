@@ -252,7 +252,7 @@ export default function Login() {
 
           <Button variant="outline" onClick={handleGoogleLogin} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
             {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
-            Google
+            Kontynuuj przez Google
           </Button>
         </TabsContent>
 
@@ -281,6 +281,22 @@ export default function Login() {
             </div>
             <Button type="submit" className="h-11 w-full rounded-xl font-semibold" disabled={loading || !authConfig.configured}>{loading ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Utwórz konto'}</Button>
           </form>
+
+          <div data-stage231a-register-google-entry="true" className="space-y-4">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-200"></span></div>
+              <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400">Albo zarejestruj przez</span></div>
+            </div>
+
+            <Button type="button" variant="outline" onClick={handleGoogleLogin} className="flex h-11 w-full items-center justify-center gap-3 rounded-xl text-base font-semibold hover:bg-slate-50" disabled={loading || !authConfig.configured}>
+              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <LogIn className="h-5 w-5" />}
+              Zarejestruj przez Google
+            </Button>
+
+            <p data-stage231a-google-trial-copy="true" className="text-center text-xs leading-5 text-slate-500">
+              Jeśli wybierzesz nowe konto Google, CloseFlow może utworzyć nowe konto testowe i workspace trial.
+            </p>
+          </div>
         </TabsContent>
       </Tabs>
 
