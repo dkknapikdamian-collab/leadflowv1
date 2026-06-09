@@ -2337,3 +2337,51 @@ Kontrakt:
 - brak AI parse, Gemini, Cloudflare, SQL i localStorage.
 - brak automatycznej deduplikacji.
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_GUARD_END -->
+
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_GUARD_START -->
+## 2026-06-09 - STAGE230C-R2 Voice debug visibility/readability hotfix
+
+Guard/test:
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+
+Kontrakt:
+- textarea quick capture ma wymuszony czytelny tekst/caret/placeholder.
+- `Kopiuj trace` i `Wyczyść trace` są widoczne w panelu trace.
+- trace box pokazuje instrukcję nawet gdy debug jest wyłączony.
+- brak deduplikacji, AI parsera, SQL i localStorage.
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_GUARD_END -->
+
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_GUARD_START -->
+## 2026-06-09 - STAGE230C R6 voice debug panel rewrite
+
+Guard/test:
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+
+Regression:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_GUARD_END -->
+
+
+<!-- STAGE230C_R7_MASS_GUARD_AND_BUILD_PREFLIGHT -->
+## 2026-06-09 - STAGE230C R7 mass guard/build preflight
+- Rewrote Stage230C-R2 visibility guard/test with syntax-safe code.
+- Added mass node --check before runtime tests.
+- No deduplication and no AI parser changes.
+
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_GUARD_START -->
+## 2026-06-09 - STAGE230C R8 mass panel region rewrite
+
+Guard/test:
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+
+Mass preflight:
+- node --check for Stage230B/230C/R8 scripts and tests
+- npm run build
+- git diff --check
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_GUARD_END -->

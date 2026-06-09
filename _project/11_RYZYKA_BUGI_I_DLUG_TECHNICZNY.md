@@ -40,3 +40,31 @@ Ryzyka:
 - IME/composition może działać inaczej w Android Chrome, Samsung Keyboard, Gboard i iOS Safari.
 - Jeśli problem jest po stronie klawiatury/browsera, aplikacja może tylko ograniczyć skutki albo ostrzec użytkownika w osobnym etapie.
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_RISK_END -->
+
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_RISK_START -->
+## 2026-06-09 - STAGE230C-R2 Voice debug visibility/readability hotfix
+
+Ryzyka:
+- Błąd dublowania nadal istnieje; R2 tylko umożliwia zebranie trace.
+- Jeżeli użytkownik nie widzi przycisku kopiowania, Stage230C nie daje dowodu.
+- Globalne style mogą nadpisywać kolory textarea/buttonów; R2 dodaje scoped `!important` tylko dla quick capture/debug.
+- Deduplikacja bez trace nadal zakazana.
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_RISK_END -->
+
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_RISK_START -->
+## 2026-06-09 - STAGE230C R6 voice debug panel rewrite
+
+Ryzyka:
+- R2/R4/R5 zostawiły lokalnie częściowy stan, więc R6 celowo nadpisuje cały blok panelu zamiast łatać pojedynczą klamrę.
+- Nadal wymagany ręczny test telefonu: widoczność tekstu, widoczność Kopiuj trace i realny trace duplikacji.
+- Problem dublowania tekstu nie jest naprawiany w tym etapie.
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_RISK_END -->
+
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_RISK_START -->
+## 2026-06-09 - STAGE230C R8 mass panel region rewrite
+
+Ryzyka:
+- Wielokrotne lokalne hotfixy R2-R7 pokazaly, ze punktowe patche JSX sa zbyt kruche.
+- Dalsze poprawki panelu powinny podmieniac wyznaczony region albo uzywac AST/prettier/build before package.
+- Manualny test telefonu nadal jest wymagany przed push.
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_RISK_END -->

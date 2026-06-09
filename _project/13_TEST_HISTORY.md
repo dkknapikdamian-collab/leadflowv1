@@ -1762,3 +1762,62 @@ Manual QA:
 - save draft
 - F5 persistence
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_TEST_HISTORY_END -->
+
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C-R2 Voice debug visibility/readability hotfix
+
+Automated tests:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- npm run build
+- git diff --check
+
+Manual QA:
+- /ai-drafts
+- verify typed text is dark and visible
+- enable Debug dyktowania
+- verify Kopiuj trace is visible
+- reproduce duplicated dictation and copy trace
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_TEST_HISTORY_END -->
+
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C R6 voice debug panel rewrite
+
+Automated tests:
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- node scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --test tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- node scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --test tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- npm run build
+- git diff --check
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_TEST_HISTORY_END -->
+
+
+<!-- STAGE230C_R7_MASS_GUARD_AND_BUILD_PREFLIGHT -->
+## 2026-06-09 - STAGE230C R7 mass guard/build preflight
+- Rewrote Stage230C-R2 visibility guard/test with syntax-safe code.
+- Added mass node --check before runtime tests.
+- No deduplication and no AI parser changes.
+
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_TEST_HISTORY_START -->
+## 2026-06-09 - STAGE230C R8 mass panel region rewrite
+
+Tests:
+- node --check scripts/check-stage230b-quick-capture-inbox.cjs
+- node --check tests/stage230b-quick-capture-inbox.test.cjs
+- node --check scripts/check-stage230c-phone-dictation-duplicate-words-audit.cjs
+- node --check tests/stage230c-phone-dictation-duplicate-words-audit.test.cjs
+- node --check scripts/check-stage230c-r2-voice-debug-visibility-hotfix.cjs
+- node --check tests/stage230c-r2-voice-debug-visibility-hotfix.test.cjs
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2/R8 guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_TEST_HISTORY_END -->

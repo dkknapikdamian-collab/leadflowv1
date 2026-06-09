@@ -124,6 +124,8 @@ const MetricCard = StatShortcutCard;
 
 // STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_HELPERS_START
 const STAGE230C_PHONE_DICTATION_TRACE = 'STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT';
+const STAGE230C_R2_VOICE_DEBUG_VISIBILITY = 'STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX';
+void STAGE230C_R2_VOICE_DEBUG_VISIBILITY;
 
 type VoiceInputTraceEntry = {
   id: string;
@@ -1221,7 +1223,7 @@ useEffect(() => {
           }
         />
 
-        <section className="ai-drafts-quick-capture" data-stage230b-quick-capture="true">
+        <section className="ai-drafts-quick-capture" data-stage230b-quick-capture="true" data-stage230c-r8-panel-rewrite="true">
           <div className="ai-drafts-quick-capture-head">
             <div>
               <p className="ai-drafts-eyebrow">Szybki zapis</p>
@@ -1242,79 +1244,96 @@ useEffect(() => {
             placeholder="Np. Dzwonił Marek z Tarnowa, chce ofertę, numer 500 600 700, oddzwonić jutro po 10..."
             className="ai-drafts-quick-capture-textarea"
             data-stage230b-quick-capture-textarea="true"
+            data-stage230c-r8-readable-textarea="true"
           />
 
+          <div className="ai-drafts-voice-debug-panel" data-stage230c-phone-dictation-debug="true" data-stage230c-r8-visible-trace-actions="true">
+            <div className="ai-drafts-voice-debug-top">
+              <label className="ai-drafts-voice-debug-toggle">
+                <input
+                  type="checkbox"
+                  checked={voiceDebugEnabled}
+                  onChange={(event) => {
+                    const enabled = event.target.checked;
+                    setVoiceDebugEnabled(enabled);
+                    setVoiceInputBeforeValue(quickCaptureText);
+                    if (!enabled) setVoiceInputTrace([]);
+                  }}
+                  data-stage230c-phone-dictation-toggle="true"
+                />
+                <span>Debug dyktowania</span>
+              </label>
 
-          <div className="ai-drafts-voice-debug-panel" data-stage230c-phone-dictation-debug="true">
-            <label className="ai-drafts-voice-debug-toggle">
-              <input
-                type="checkbox"
-                checked={voiceDebugEnabled}
-                onChange={(event) => {
-                  const enabled = event.target.checked;
-                  setVoiceDebugEnabled(enabled);
-                  setVoiceInputBeforeValue(quickCaptureText);
-                  if (!enabled) setVoiceInputTrace([]);
-                }}
-                data-stage230c-phone-dictation-toggle="true"
-              />
-              <span>Debug dyktowania</span>
-            </label>
+              <div className="ai-drafts-voice-trace-actions ai-drafts-voice-trace-actions-visible" data-stage230c-r8-copy-actions-visible="true">
+                <button
+                  type="button"
+                  onClick={clearVoiceInputTrace}
+                  disabled={!voiceDebugEnabled || voiceInputTrace.length === 0}
+                  data-stage230c-phone-dictation-clear="true"
+                >
+                  Wyczyść trace
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void copyVoiceInputTrace()}
+                  disabled={!voiceDebugEnabled || voiceInputTrace.length === 0}
+                  data-stage230c-phone-dictation-copy="true"
+                >
+                  Kopiuj trace
+                </button>
+              </div>
+            </div>
+
             <p>
               Włącz tylko do testu na telefonie. Trace zostaje lokalnie na ekranie i pomaga ustalić, gdzie tekst zaczyna się powtarzać.
             </p>
+            <p className="ai-drafts-voice-debug-limit" data-stage230c-r8-trace-limit="true">
+              Limit trace: ostatnie 80 eventów. Kopiowanie działa tylko po ręcznym kliknięciu.
+            </p>
 
-            {voiceDebugEnabled ? (
-              <div className="ai-drafts-voice-trace-box" data-stage230c-phone-dictation-trace="true">
-                <div className="ai-drafts-voice-trace-head">
-                  <div>
-                    <strong>voice_input_event_trace</strong>
-                    <small>{STAGE230C_PHONE_DICTATION_TRACE}</small>
-                  </div>
-                  <div className="ai-drafts-voice-trace-actions">
-                    <button type="button" onClick={clearVoiceInputTrace} data-stage230c-phone-dictation-clear="true">
-                      Wyczyść trace
-                    </button>
-                    <button type="button" onClick={() => void copyVoiceInputTrace()} data-stage230c-phone-dictation-copy="true">
-                      Kopiuj trace
-                    </button>
-                  </div>
-                </div>
-
-                <div className="ai-drafts-voice-trace-stats">
-                  <span>Eventy: {voiceInputTraceStats.events}</span>
-                  <span>Podejrzane: {voiceInputTraceStats.suspicious}</span>
-                  <span>Długość tekstu: {voiceInputTraceStats.length}</span>
-                </div>
-
-                <div className="ai-drafts-voice-trace-list">
-                  {voiceInputTrace.length === 0 ? (
-                    <p>Brak eventów. Wpisz tekst albo użyj dyktowania telefonu.</p>
-                  ) : (
-                    voiceInputTrace.slice(0, 40).map((entry) => (
-                      <div
-                        key={entry.id}
-                        className={[
-                          'ai-drafts-voice-trace-row',
-                          entry.duplicateSignal !== 'none' ? 'ai-drafts-voice-trace-row-warning' : '',
-                        ].join(' ')}
-                      >
-                        <div>
-                          <strong>{entry.eventType}</strong>
-                          <span>{entry.duplicateSignal}</span>
-                        </div>
-                        <small>
-                          {entry.timestamp} | inputType: {entry.inputType || 'brak'} | composing: {String(entry.isComposing)}
-                        </small>
-                        <code>
-                          before {entry.beforeLength} / after {entry.afterLength} / delta {entry.deltaLength} | tail: {entry.tailTokens.join(' ')}
-                        </code>
-                      </div>
-                    ))
-                  )}
+            <div className="ai-drafts-voice-trace-box" data-stage230c-phone-dictation-trace="true">
+              <div className="ai-drafts-voice-trace-head">
+                <div>
+                  <strong>voice_input_event_trace</strong>
+                  <small>{STAGE230C_PHONE_DICTATION_TRACE}</small>
                 </div>
               </div>
-            ) : null}
+
+              <div className="ai-drafts-voice-trace-stats">
+                <span>Eventy: {voiceInputTraceStats.events}</span>
+                <span>Podejrzane: {voiceInputTraceStats.suspicious}</span>
+                <span>Długość tekstu: {voiceInputTraceStats.length}</span>
+              </div>
+
+              <div className="ai-drafts-voice-trace-list">
+                {!voiceDebugEnabled ? (
+                  <p className="ai-drafts-voice-trace-empty">Trace wyłączony. Włącz Debug dyktowania, podyktuj tekst i wtedy użyj Kopiuj trace.</p>
+                ) : voiceInputTrace.length === 0 ? (
+                  <p className="ai-drafts-voice-trace-empty">Brak eventów. Wpisz tekst albo użyj dyktowania telefonu.</p>
+                ) : (
+                  voiceInputTrace.slice(0, 40).map((entry) => (
+                    <div
+                      key={entry.id}
+                      className={[
+                        'ai-drafts-voice-trace-row',
+                        entry.duplicateSignal !== 'none' ? 'ai-drafts-voice-trace-row-warning' : '',
+                      ].join(' ')}
+                    >
+                      <div>
+                        <strong>{entry.eventType}</strong>
+                        <span>{entry.duplicateSignal}</span>
+                      </div>
+                      <small>
+                        {entry.timestamp} | inputType: {entry.inputType || 'brak'} | composing: {String(entry.isComposing)}
+                      </small>
+                      <code>
+                        before {entry.beforeLength} / after {entry.afterLength} / delta {entry.deltaLength} | tail: {entry.tailTokens.join(' ')}
+                      </code>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="ai-drafts-quick-capture-actions">
@@ -1326,10 +1345,9 @@ useEffect(() => {
             >
               {quickCaptureSaving ? 'Zapisuję...' : 'Zapisz szkic'}
             </Button>
-            <p>Na telefonie możesz użyć dyktowania systemowego klawiatury. Duplikowanie słów sprawdzimy osobno w Stage230C.</p>
+            <p>Na telefonie możesz użyć dyktowania systemowego klawiatury. Duplikowanie słów sprawdzamy trace’em Stage230C.</p>
           </div>
         </section>
-
 
         <section className="ai-drafts-stats-grid" aria-label="Statystyki szkiców AI" data-ai-draft-stats="true">
           <MetricCard label="Do sprawdzenia" value={stats.draft} icon={AiEntityIcon} tone="drafts" active={activeFilter === 'draft'} onClick={() => setActiveFilter('draft')} dataTab="draft" />

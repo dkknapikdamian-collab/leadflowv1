@@ -1397,3 +1397,60 @@ RYZYKA:
 - Trace może zawierać końcówkę realnej wypowiedzi klienta, dlatego jest lokalny, opcjonalny i nietrwały.
 - Bez testu na realnym telefonie nie wolno twierdzić, że źródło problemu jest znane.
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_CURRENT_STAGE_END -->
+
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE230C-R2 Voice debug visibility/readability hotfix
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- Damian potwierdził, że tekst przy dyktowaniu nadal się dubluje.
+- `Kopiuj trace` jest za słabo widoczny albo schowany, więc trace nie spełnia celu diagnostycznego.
+- Quick capture textarea / przyciski wymagają twardych reguł kontrastu.
+
+DECYZJE:
+- R2 jest hotfixem UX/debug visibility, bez deduplikacji i bez zmian zapisu.
+
+TESTY:
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2 guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_CURRENT_STAGE_END -->
+
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_START -->
+## 2026-06-09 - STAGE230C R6 voice debug panel rewrite
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- R4/R5 wykryły błąd JSX w panelu debug trace po hotfixach widoczności.
+- R6 nadpisuje cały blok Szybki szkic czystym JSX-em zamiast punktowo usuwać osieroconą klamrę.
+
+TESTY:
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2 visibility guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_END -->
+
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_CURRENT_STAGE_START -->
+## 2026-06-09 - STAGE230C R8 mass panel region rewrite
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- R2-R7 zostawily lokalny quick capture panel w stanie czesciowo uszkodzonego JSX/guarda.
+- R8 wycina caly region quick capture i wstawia czysty JSX zamiast punktowo usuwac klamry.
+- R8 utrzymuje brak deduplikacji, brak AI parse i brak zmian Supabase.
+
+TESTY:
+- node --check guard/test Stage230B/Stage230C/R8
+- Stage230B guard/test
+- Stage230C guard/test
+- Stage230C-R2/R8 visibility guard/test
+- npm run build
+- git diff --check
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_CURRENT_STAGE_END -->

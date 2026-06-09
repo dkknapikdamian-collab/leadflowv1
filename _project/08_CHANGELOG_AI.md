@@ -2401,3 +2401,54 @@ Not changed:
 - No approval engine.
 - No automatic deduplication.
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_CHANGELOG_END -->
+
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C-R2 Voice debug visibility/readability hotfix
+
+Changed:
+- Made Stage230C trace controls discoverable and visible.
+- Added R2 marker and readable textarea marker.
+- Added high-specificity CSS for quick capture textarea, save button, trace buttons and trace text.
+- Added Stage230C-R2 guard/test.
+
+Not changed:
+- No dedupe or text mutation.
+- No AI parse.
+- No Supabase schema.
+<!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_CHANGELOG_END -->
+
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C R6 voice debug panel rewrite
+
+Changed:
+- Rewrote Szybki szkic JSX block to remove dangling conditional close.
+- Kept Kopiuj trace/Wyczyść trace visible with disabled state when debug is off or trace is empty.
+- Replaced Stage230C visibility guard with syntax-safe region-based guard.
+
+Not changed:
+- No deduplication.
+- No save flow changes.
+- No AI parse or schema changes.
+<!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_CHANGELOG_END -->
+
+
+<!-- STAGE230C_R7_MASS_GUARD_AND_BUILD_PREFLIGHT -->
+## 2026-06-09 - STAGE230C R7 mass guard/build preflight
+- Rewrote Stage230C-R2 visibility guard/test with syntax-safe code.
+- Added mass node --check before runtime tests.
+- No deduplication and no AI parser changes.
+
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_CHANGELOG_START -->
+## 2026-06-09 - STAGE230C R8 mass panel region rewrite
+
+Changed:
+- Rewrote the whole quick capture JSX region to remove dangling conditional fragments from previous local hotfixes.
+- Kept Kopiuj trace / Wyczyść trace visible and disabled when trace is unavailable.
+- Added forced readable text styles for mobile textarea and trace controls.
+- Replaced R2 visibility guard/test with syntax-safe mass-preflight version.
+
+Not changed:
+- No automatic deduplication.
+- No AI parser.
+- No Supabase schema.
+<!-- STAGE230C_R8_MASS_PANEL_REGION_REWRITE_CHANGELOG_END -->
