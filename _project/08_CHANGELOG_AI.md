@@ -2527,3 +2527,12 @@ Not changed:
 - Changed logged-out / and /start to one auth entry.
 - Documented STAGE231C Supabase auth trigger no-op repair.
 - Added future backlog: STAGE231E email copy repair and STAGE231F invite-only test mode.
+
+## 2026-06-09 — STAGE231D_R5_GOOGLE_LOGIN_MISSING_INTENT_HARD_GATE
+
+- Hardened Google login/register intent gate after manual QA showed unknown Google Login still entered app.
+- Added authIntent URL fallback for OAuth/email confirmation redirects.
+- Added explicit /api/me?authIntent=... propagation.
+- Added authIntent to GET cache scope.
+- Changed api/me gate: Google OAuth cannot bootstrap a missing app profile unless authIntent=register.
+- Preserved working flows from QA: existing Google login, Google registration, e-mail confirmation, one auth page.

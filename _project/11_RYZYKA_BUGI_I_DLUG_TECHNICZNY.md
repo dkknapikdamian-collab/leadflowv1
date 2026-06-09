@@ -111,3 +111,9 @@ Ryzyka:
 - Email/password requires Supabase e-mail confirmation when configured; this is expected.
 - Invite-only should be a later optional mode, not default public SaaS behavior.
 - Supabase auth trigger functions are no-op after STAGE231C; api/me is the source of truth for app profile/workspace bootstrap.
+
+## STAGE231D_R5_RISK_AUDIT
+
+- A Google account that already received a profile/workspace from the earlier broken flow is now technically registered in CloseFlow and may still log in. Test the blocker with a truly fresh Google account or delete the earlier test profile/workspace deliberately.
+- Missing authIntent is now blocked only for Google OAuth without a profile, not for e-mail/password, to avoid breaking e-mail confirmation bootstrap after the Supabase trigger no-op repair.
+- URL query authIntent must be cleared after successful /api/me to avoid stale intent; clearCloseFlowAuthIntent now removes both sessionStorage and URL query keys.

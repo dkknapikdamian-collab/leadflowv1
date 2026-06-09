@@ -1920,3 +1920,17 @@ Manual:
 - Google Login unknown account returns to Register with notice.
 - Google Register unknown account creates profile/workspace via api/me.
 - Email/password signup still uses Supabase email confirmation.
+
+## STAGE231D_R5_MANUAL_QA_EXPECTED
+
+Owner manual QA before R5:
+- Google Login existing account: PASS.
+- Google Login unknown account: FAIL, still entered app.
+- Google Register: PASS.
+- Email/password confirmation: PASS.
+- One auth entry page: PASS.
+
+R5 expected:
+- Google Login unknown account with no existing profile/workspace must return REGISTER_FIRST_REQUIRED, sign out, and show Register notice.
+- Google Register unknown account must still create profile/workspace.
+- Email/password registration must still require e-mail confirmation and then allow bootstrap.

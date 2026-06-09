@@ -109,9 +109,12 @@ export function mapSupabaseUser(user: User | null | undefined): SupabaseSessionU
   };
 }
 
-function getAuthRedirectTo() {
+function getAuthRedirectTo(intent?: CloseFlowAuthIntent) {
   if (typeof window === 'undefined') return undefined;
-  return window.location.origin;
+
+  const url = new URL(window.location.origin);
+  if (intent) url.searchParams.set('authIntent', intent);
+  return url.toString();
 }
 
 function requireClient() {
@@ -154,7 +157,7 @@ export async function signInWithGoogle(intent: CloseFlowAuthIntent = 'login') {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: getAuthRedirectTo(),
+      redirectTo: getAuthRedirectTo(intent),
       queryParams: { prompt: 'select_account' },
     },
   });
@@ -170,12 +173,13 @@ export async function signInWithPassword(email: string, password: string) {
 }
 
 export async function signUpWithPassword(email: string, password: string, fullName: string) {
+  setCloseFlowAuthIntent('register');
   const supabase = requireClient();
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
-      emailRedirectTo: getAuthRedirectTo(),
+      emailRedirectTo: getAuthRedirectTo('register'),
       data: { full_name: fullName, name: fullName },
     },
   });

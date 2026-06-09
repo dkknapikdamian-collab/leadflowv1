@@ -200,6 +200,14 @@ function getCloseFlowAuthIntentFromRequest(req: any) {
   return raw === 'login' || raw === 'register' ? raw : '';
 }
 
+function isGoogleAuthContext(authContext: any) {
+  const primary = String(authContext?.authProvider || '').trim().toLowerCase();
+  const providers = Array.isArray(authContext?.authProviders)
+    ? authContext.authProviders.map((provider: unknown) => String(provider || '').trim().toLowerCase())
+    : [];
+  return primary === 'google' || providers.includes('google');
+}
+
 function uniqueStrings(values: unknown[]) {
   const seen = new Set<string>();
   const result: string[] = [];
@@ -1060,7 +1068,7 @@ export default async function handler(req: any, res: any) {
 
     let profileRow = await fetchProfile(uid, email);
 
-    if (authIntent === 'login' && !profileRow) {
+    if (!profileRow && authIntent !== 'register' && isGoogleAuthContext(authContext)) {
       res.status(403).json({ error: 'REGISTER_FIRST_REQUIRED' });
       return;
     }

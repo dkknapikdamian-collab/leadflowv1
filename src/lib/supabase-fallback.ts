@@ -258,7 +258,11 @@ async function getAuthHeaders() {
 
   return headers;
 }
-function getCacheScope() { const ctx = getAuthContext(); return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}:${getStoredWorkspaceId() || 'no-workspace'}`; }
+function getCacheScope() {
+  const ctx = getAuthContext();
+  const authIntent = getCloseFlowAuthIntent() || 'no-auth-intent';
+  return `${ctx.uid || 'anon'}:${ctx.email || 'anon'}:${getStoredWorkspaceId() || 'no-workspace'}:${authIntent}`;
+}
 
 
 const STAGE228R25_DELETE_FLOW_FIX_AND_PUSH = 'delete flow uses verified mutation requests, source-id fallback and debug-gated response diagnostics';
@@ -769,6 +773,9 @@ export async function deleteEventFromSupabase(id: string) {
   return result;
 }
 export async function fetchMeFromSupabase(input?: { uid?: string; email?: string; fullName?: string }) {
+  // STAGE231D_R6_FIX_FETCH_ME_SYNTAX
+  // R5 added Google auth intent routing, but a malformed duplicate tail broke build.
+  // Keep the intent query path and replace the whole function block atomically.
   const headers: Record<string, string> = {};
   if (input?.uid) {
     headers['x-user-id'] = input.uid;
@@ -777,7 +784,10 @@ export async function fetchMeFromSupabase(input?: { uid?: string; email?: string
   }
   if (input?.email) headers['x-user-email'] = input.email;
   if (input?.fullName) headers['x-user-full-name'] = input.fullName;
-  return callApi<MeResponse>('/api/me', { headers });
+
+  const authIntent = getCloseFlowAuthIntent();
+  const path = authIntent ? `/api/me?authIntent=${encodeURIComponent(authIntent)}` : '/api/me';
+  return callApi<MeResponse>(path, { headers });
 }
 export async function updateProfileSettingsInSupabase(input: ProfileSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/system?kind=profile-settings', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function updateWorkspaceSettingsInSupabase(input: WorkspaceSettingsUpdate) { return callApi<SupabaseInsertResult>('/api/workspace-settings', { method: 'PATCH', body: JSON.stringify(input) }); }

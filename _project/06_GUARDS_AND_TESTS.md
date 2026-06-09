@@ -2453,3 +2453,20 @@ Kontrakt:
 - node --test tests/stage230b-quick-capture-inbox.test.cjs
 - npm run build
 - git diff --check
+
+## STAGE231D_R5_GOOGLE_LOGIN_MISSING_INTENT_HARD_GATE — guards/tests
+
+- node scripts/check-stage231a-google-auth-entry-consistency.cjs
+- node --test tests/stage231a-google-auth-entry-consistency.test.cjs
+- node scripts/check-stage231d-google-auth-intent-gate.cjs
+- node --test tests/stage231d-google-auth-intent-gate.test.cjs
+- node scripts/check-stage230b-quick-capture-inbox.cjs
+- node --test tests/stage230b-quick-capture-inbox.test.cjs
+- npm run build
+- git diff --check
+
+Manual required:
+- Google Login existing CloseFlow account -> PASS
+- Google Login truly fresh Google account without app profile -> must block and redirect/register notice
+- Google Register fresh Google account -> must create profile/workspace
+- Email/password signup -> must keep e-mail confirmation flow

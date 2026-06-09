@@ -1562,3 +1562,18 @@ Zakres:
 - App wylogowuje taki przypadek i pokazuje komunikat, żeby najpierw utworzyć konto.
 - / i /start pokazują Login/Rejestrację dla niezalogowanego użytkownika.
 - STAGE231C SQL no-op repair udokumentowany w docs/sql/STAGE231C_AUTH_TRIGGER_NOOP_REPAIR.md.
+
+## STAGE231D_R5_GOOGLE_LOGIN_MISSING_INTENT_HARD_GATE — LOCAL_ONLY_PACKAGE_PREPARED
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+Powód:
+- Manual QA po R4: Google Login istniejącym kontem działa, Google Register działa, e-mail/hasło działa, / i /start działają.
+- Google Login nowym kontem nadal wpuszczał, więc sama intencja w sessionStorage/headerze nie była wystarczającym zabezpieczeniem.
+
+Zakres R5:
+- authIntent jest przenoszony także w redirect URL.
+- authIntent jest dopisywany jawnie do /api/me?authIntent=...
+- cache GET uwzględnia authIntent.
+- api/me blokuje tworzenie nowego profilu dla Google OAuth, jeśli authIntent nie jest register.
+- E-mail/password register dalej może tworzyć profil po potwierdzeniu e-maila.
