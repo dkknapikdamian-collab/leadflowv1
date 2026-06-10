@@ -1,4 +1,4 @@
-# 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md
+﻿# 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY.md
 
 <!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
 ## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 risk sweep
@@ -117,3 +117,27 @@ Ryzyka:
 - A Google account that already received a profile/workspace from the earlier broken flow is now technically registered in CloseFlow and may still log in. Test the blocker with a truly fresh Google account or delete the earlier test profile/workspace deliberately.
 - Missing authIntent is now blocked only for Google OAuth without a profile, not for e-mail/password, to avoid breaking e-mail confirmation bootstrap after the Supabase trigger no-op repair.
 - URL query authIntent must be cleared after successful /api/me to avoid stale intent; clearCloseFlowAuthIntent now removes both sessionStorage and URL query keys.
+
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START -->
+## 2026-06-10 Europe/Warsaw — STAGE230D0 Text/Input Contrast Sweep
+
+FAKT:
+- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
+- Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
+
+DECYZJA:
+- Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
+- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
+
+TESTY:
+- Stage230B regression guard/test.
+- Stage230C regression guard/test.
+- Stage230D0 contrast guard/test.
+- npm run build.
+- git diff --check.
+
+RYZYKA:
+- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
+- Nie wdrażano deduplikacji dyktowania bez trace.
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
+

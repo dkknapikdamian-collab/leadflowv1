@@ -1,4 +1,4 @@
-.ai-drafts-vnext-page {
+﻿.ai-drafts-vnext-page {
   min-height: 100%;
   padding: 28px clamp(16px, 3vw, 36px) 40px;
   background: var(--cf-canvas-bg, #f8fafc);
@@ -1888,3 +1888,89 @@
   opacity: 1 !important;
 }
 /* STAGE230C_R15_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_END */
+
+/* STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START */
+/*
+  STAGE230D0 — text/input contrast sweep.
+  Problem: mobile dictation and typed text in /ai-drafts could become invisible
+  because input/textarea text inherited white text on a light field.
+  Scope: AiDrafts quick capture, approval/edit inputs and Stage230C debug trace.
+*/
+
+.ai-drafts-vnext-page input,
+.ai-drafts-vnext-page textarea,
+.ai-drafts-vnext-page select,
+.ai-drafts-vnext-page option,
+.ai-drafts-vnext-page .ai-drafts-approval-input,
+.ai-drafts-vnext-page .ai-drafts-approval-textarea,
+.ai-drafts-vnext-page .ai-drafts-inline-edit textarea,
+.ai-drafts-vnext-page [data-stage230c-voice-trace-textarea='true'],
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-debug='true'],
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-trace='true'] {
+  background-color: #ffffff;
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+  caret-color: #2563eb;
+}
+
+.ai-drafts-vnext-page input::placeholder,
+.ai-drafts-vnext-page textarea::placeholder,
+.ai-drafts-vnext-page .ai-drafts-approval-input::placeholder,
+.ai-drafts-vnext-page .ai-drafts-approval-textarea::placeholder,
+.ai-drafts-vnext-page .ai-drafts-inline-edit textarea::placeholder,
+.ai-drafts-vnext-page [data-stage230c-voice-trace-textarea='true']::placeholder {
+  color: #667085;
+  -webkit-text-fill-color: #667085;
+  opacity: 1;
+}
+
+.ai-drafts-vnext-page input:focus,
+.ai-drafts-vnext-page textarea:focus,
+.ai-drafts-vnext-page select:focus,
+.ai-drafts-vnext-page .ai-drafts-approval-input:focus,
+.ai-drafts-vnext-page .ai-drafts-approval-textarea:focus,
+.ai-drafts-vnext-page .ai-drafts-inline-edit textarea:focus,
+.ai-drafts-vnext-page [data-stage230c-voice-trace-textarea='true']:focus {
+  background-color: #ffffff;
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+  border-color: #2563eb;
+  outline: 2px solid rgba(37, 99, 235, 0.18);
+  outline-offset: 2px;
+}
+
+.ai-drafts-vnext-page button,
+.ai-drafts-vnext-page .ai-drafts-action,
+.ai-drafts-vnext-page .ai-drafts-header-button,
+.ai-drafts-vnext-page .ai-drafts-filter-pill {
+  -webkit-text-fill-color: currentColor;
+}
+
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-trace='true'],
+.ai-drafts-vnext-page .ai-drafts-stage230c-trace-panel,
+.ai-drafts-vnext-page .ai-drafts-stage230c-trace-list,
+.ai-drafts-vnext-page .ai-drafts-stage230c-trace-item {
+  background: #ffffff;
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+}
+
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-trace='true'] code,
+.ai-drafts-vnext-page .ai-drafts-stage230c-trace-panel code,
+.ai-drafts-vnext-page .ai-drafts-stage230c-trace-list code,
+.ai-drafts-vnext-page .ai-drafts-stage230c-trace-item code {
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+}
+
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-toggle='true'],
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-copy='true'],
+.ai-drafts-vnext-page [data-stage230c-phone-dictation-clear='true'],
+.ai-drafts-vnext-page [data-stage230c-copy-trace='true'],
+.ai-drafts-vnext-page [data-stage230c-clear-trace='true'] {
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+}
+
+/* STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END */
+

@@ -1,4 +1,4 @@
-# 03_CURRENT_STAGE - CloseFlow / LeadFlow
+﻿# 03_CURRENT_STAGE - CloseFlow / LeadFlow
 
 Aktualny etap: pelna pamiec projektu + Obsidian + czytelne nazwy + raporty wykonania.
 
@@ -1577,3 +1577,27 @@ Zakres R5:
 - cache GET uwzględnia authIntent.
 - api/me blokuje tworzenie nowego profilu dla Google OAuth, jeśli authIntent nie jest register.
 - E-mail/password register dalej może tworzyć profil po potwierdzeniu e-maila.
+
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START -->
+## 2026-06-10 Europe/Warsaw — STAGE230D0 Text/Input Contrast Sweep
+
+FAKT:
+- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
+- Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
+
+DECYZJA:
+- Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
+- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
+
+TESTY:
+- Stage230B regression guard/test.
+- Stage230C regression guard/test.
+- Stage230D0 contrast guard/test.
+- npm run build.
+- git diff --check.
+
+RYZYKA:
+- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
+- Nie wdrażano deduplikacji dyktowania bez trace.
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
+

@@ -1,4 +1,4 @@
-# 13_TEST_HISTORY - CloseFlow / LeadFlow
+﻿# 13_TEST_HISTORY - CloseFlow / LeadFlow
 
 ## V6
 PowerShell parser przerwal skrypt w okolicy raportu generycznych nazw.
@@ -1934,3 +1934,27 @@ R5 expected:
 - Google Login unknown account with no existing profile/workspace must return REGISTER_FIRST_REQUIRED, sign out, and show Register notice.
 - Google Register unknown account must still create profile/workspace.
 - Email/password registration must still require e-mail confirmation and then allow bootstrap.
+
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START -->
+## 2026-06-10 Europe/Warsaw — STAGE230D0 Text/Input Contrast Sweep
+
+FAKT:
+- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
+- Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
+
+DECYZJA:
+- Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
+- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
+
+TESTY:
+- Stage230B regression guard/test.
+- Stage230C regression guard/test.
+- Stage230D0 contrast guard/test.
+- npm run build.
+- git diff --check.
+
+RYZYKA:
+- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
+- Nie wdrażano deduplikacji dyktowania bez trace.
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
+

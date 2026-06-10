@@ -1,4 +1,4 @@
-# 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
+﻿# 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
 
 ## Guard dodany przez V9
 npm run check:project-memory:closeflow
@@ -2470,3 +2470,27 @@ Manual required:
 - Google Login truly fresh Google account without app profile -> must block and redirect/register notice
 - Google Register fresh Google account -> must create profile/workspace
 - Email/password signup -> must keep e-mail confirmation flow
+
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START -->
+## 2026-06-10 Europe/Warsaw — STAGE230D0 Text/Input Contrast Sweep
+
+FAKT:
+- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
+- Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
+
+DECYZJA:
+- Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
+- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
+
+TESTY:
+- Stage230B regression guard/test.
+- Stage230C regression guard/test.
+- Stage230D0 contrast guard/test.
+- npm run build.
+- git diff --check.
+
+RYZYKA:
+- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
+- Nie wdrażano deduplikacji dyktowania bez trace.
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
+

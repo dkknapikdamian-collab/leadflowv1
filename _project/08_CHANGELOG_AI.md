@@ -1,4 +1,4 @@
-# 08_CHANGELOG_AI - CloseFlow / LeadFlow
+﻿# 08_CHANGELOG_AI - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
 - Added `_project/00_PROJECT_MEMORY_PROTOCOL.md`.
@@ -2536,3 +2536,27 @@ Not changed:
 - Added authIntent to GET cache scope.
 - Changed api/me gate: Google OAuth cannot bootstrap a missing app profile unless authIntent=register.
 - Preserved working flows from QA: existing Google login, Google registration, e-mail confirmation, one auth page.
+
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START -->
+## 2026-06-10 Europe/Warsaw — STAGE230D0 Text/Input Contrast Sweep
+
+FAKT:
+- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
+- Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
+
+DECYZJA:
+- Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
+- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
+
+TESTY:
+- Stage230B regression guard/test.
+- Stage230C regression guard/test.
+- Stage230D0 contrast guard/test.
+- npm run build.
+- git diff --check.
+
+RYZYKA:
+- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
+- Nie wdrażano deduplikacji dyktowania bez trace.
+<!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
+
