@@ -1,8 +1,12 @@
-<!-- STAGE231D0B_CLIENT_LIST_CARD_UI_DICTIONARY_START -->
+# UI Dictionary — STAGE231D0A / STAGE231D0B
+
+Status: ACTIVE
+Last updated: 2026-06-10 Europe/Warsaw
+
 ## ClientListCard
 
 Nazwa ludzka:
-Kafelek klienta na liĹ›cie klientĂłw
+Kafelek klienta na liście klientów
 
 Nazwa systemowa:
 ClientListCard
@@ -23,15 +27,14 @@ Wiersz 1:
 Wiersz 2:
 - firma
 - sprawy count
-- zarobione Ĺ‚Ä…cznie
-- najbliĹĽsza akcja
+- zarobione łącznie
+- najbliższa akcja
 - ryzyka/statusy pomocnicze
 
 Zakaz:
-Nie uĹĽywaÄ‡ badge â€žAktywna sprawaâ€ť, bo klient moĹĽe mieÄ‡ wiele spraw.
-Nie pokazywaÄ‡ â€žLeadyâ€ť, bo klient jest juĹĽ pozyskanym leadem.
+Nie używać badge „Aktywna sprawa”, bo klient może mieć wiele spraw.
+Nie pokazywać „Leady”, bo klient jest już pozyskanym leadem.
 
-ĹąrĂłdĹ‚a finansowe:
+Źródła finansowe:
 - Aktywna prowizja = suma prowizji z aktywnych spraw.
-- Zarobione Ĺ‚Ä…cznie = suma wpĹ‚aconej prowizji ze wszystkich spraw klienta.
-<!-- STAGE231D0B_CLIENT_LIST_CARD_UI_DICTIONARY_END -->
+- Zarobione łącznie = suma wpłaconej prowizji ze wszystkich spraw klienta.

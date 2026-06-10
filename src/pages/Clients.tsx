@@ -966,8 +966,8 @@ export default function Clients() {
                           <span className="client-list-card-row-secondary">
                             <span className="sub cf-client-company-slot">{client.company || 'Bez firmy'}</span>
                             <span className="cf-client-cases-count">Sprawy: {counters.cases}</span>
-                            <span className="cf-list-row-value cf-client-lifetime-earned">Zarobione Ĺ‚Ä…cznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
-                            <span className="cf-client-nearest-action">NajbliĹĽsza akcja: {nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</span>
+                            <span className="cf-list-row-value cf-client-lifetime-earned">Zarobione łącznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
+                            <span className="cf-client-nearest-action">{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</span>
                             {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">w koszu</span> : counters.cases === 0 ? <span className="cf-status-pill cf-chip-no-case">bez spraw</span> : null}
                           </span>
                         </span>
@@ -975,8 +975,8 @@ export default function Clients() {
                           <span className="btn ghost cf-icon-action-button" aria-hidden="true"><ChevronRight className="h-4 w-4" /></span>
                           <button
                             type="button"
-                            aria-label={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
-                            title={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
+                            aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
+                            title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
                             disabled={archivePendingId === client.id}
                             onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
                             className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}

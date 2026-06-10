@@ -2011,30 +2011,30 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - zakres: tests/stage226r11-gcal-timezone-reminder-truth.test.cjs + project memory/report/run/obsidian update.
 
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_LEDGER_START -->
-## 2026-06-06 15:35 Europe/Warsaw â€” STAGE227A implementation ledger
+## 2026-06-06 15:35 Europe/Warsaw — STAGE227A implementation ledger
 
 Nowe pliki: `src/pages/SalesFunnel.tsx`, `src/lib/owner-control/sales-funnel-movement.ts`, `scripts/check-stage227a-sales-funnel-movement-view.cjs`, `tests/stage227a-sales-funnel-movement-view.test.cjs`, raporty `_project`. Zmienione: `App.tsx`, `Layout.tsx`, `package.json`, `closeflow-release-check-quiet.cjs`, centralne pliki `_project`.
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_LEDGER_END -->
 
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_LEDGER_START -->
-## 2026-06-06 15:45 Europe/Warsaw â€” STAGE227B â€” implementation ledger
+## 2026-06-06 15:45 Europe/Warsaw — STAGE227B — implementation ledger
 
 Zakres: `src/pages/SalesFunnel.tsx`, guard/test Stage227B, rejestracja w package.json i quiet release gate, aktualizacje `_project` i Obsidian update manifest.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_LEDGER_END -->
 
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_LEDGER_START -->
-## 2026-06-06 17:05 Europe/Warsaw â€” STAGE228A implementation ledger
+## 2026-06-06 17:05 Europe/Warsaw — STAGE228A implementation ledger
 
 Zakres: `src/pages/SalesFunnel.tsx`, `src/lib/owner-control/sales-funnel-movement.ts`, `scripts/check-stage228a-sales-funnel-truth-clickability.cjs`, `tests/stage228a-sales-funnel-truth-clickability.test.cjs`, `package.json`, `scripts/closeflow-release-check-quiet.cjs`, `_project` i Obsidian update manifest.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_LEDGER_END -->
 
-## 2026-06-06 18:00 Europe/Warsaw â€” STAGE228B Lead Work Action Center
+## 2026-06-06 18:00 Europe/Warsaw — STAGE228B Lead Work Action Center
 
-- typ: etap wdroĹĽeniowy local-only
-- decyzja: Lead nie dostaje peĹ‚nego lejka; dostaje centrum pracy â€žCo robimy teraz?â€ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- typ: etap wdrożeniowy local-only
+- decyzja: Lead nie dostaje pełnego lejka; dostaje centrum pracy „Co robimy teraz?” z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
 - pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
 - testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
-- ryzyko: nie tworzyÄ‡ drugiego systemu dziaĹ‚aĹ„; uĹĽywaÄ‡ istniejÄ…cych handlerĂłw LeadDetail.
+- ryzyko: nie tworzyć drugiego systemu działań; używać istniejących handlerów LeadDetail.
 
 
 ## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
@@ -2201,13 +2201,13 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw â€” Stage228R18 â€” missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikaĹ‚ po klikniÄ™ciu UsuĹ„, ale wracaĹ‚ po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byÄ‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byÄ‡ ĹşrĂłdĹ‚owana z linkedTasks, nie z caĹ‚ego timeline, ĹĽeby activity history nie odtwarzaĹ‚a aktywnego braku.
-- testy: check-stage228r18, node test, npm run build, git diff --check, test rÄ™czny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niĹĽ soft-delete; historia usuniÄ™cia zostaje jako activity.
+- problem: Brak znikał po kliknięciu Usuń, ale wracał po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
+- testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
+- ryzyko: DELETE jest mocniejsze niż soft-delete; historia usunięcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -2252,12 +2252,12 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-09 02:50 Europe/Warsaw â€” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+## 2026-06-09 02:50 Europe/Warsaw — STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Ĺ‚aĹ„cuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym łańcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siÄ™ juĹĽ na dokĹ‚adnym polskim tekĹ›cie toastu, tylko na strukturze przepĹ‚ywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera się już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -2267,10 +2267,10 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- Po deployu wymagany ręczny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
 
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_LEDGER_START -->
-## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” implementation ledger
+## 2026-06-10 17:10 Europe/Warsaw — STAGE231D0A — implementation ledger
 
 Typ: inventory / guard / documentation.
 
@@ -2281,7 +2281,7 @@ Zakres:
 - `_project/VISUAL_SOURCE_OF_TRUTH.md`,
 - `_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md`,
 - `_project/obsidian_payloads/STAGE231D0A_VISUAL_SOURCE_TRUTH_OBSIDIAN_PAYLOAD.md`,
-- centralne `_project` wpisy roadmapy/testĂłw/historii.
+- centralne `_project` wpisy roadmapy/testów/historii.
 
 Granica:
 - bez runtime UI,
@@ -2417,7 +2417,7 @@ następny krok:
 - no SQL
 - no new api/*.ts
 
-## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
+## STAGE231D3-R7-R2 — Polish guard restore and D3 close
 
 - timestamp: 2026-06-10 20:42 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED
@@ -2430,31 +2430,39 @@ następny krok:
 STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
 
 FAKTY:
-- Kafelek klienta na liĹ›cie klientĂłw zostaĹ‚ przestawiony na ukĹ‚ad 2-wierszowy.
-- Z kafelka klienta usuniÄ™to Leady: oraz badge Aktywna sprawa.
+- Kafelek klienta na liście klientów został przestawiony na układ 2-wierszowy.
+- Z kafelka klienta usunięto Leady: oraz badge Aktywna sprawa.
 - Wiersz 1 pokazuje: nazwa, telefon, e-mail, Aktywna prowizja, akcje.
-- Wiersz 2 pokazuje: firma, Sprawy, Zarobione Ĺ‚Ä…cznie, NajbliĹĽsza akcja oraz dozwolone statusy pomocnicze.
-- Telefon ma osobny marker data-client-list-phone i klasÄ™ client-list-card-phone.
-- E-mail ma osobny marker data-client-list-email i klasÄ™ client-list-card-email.
-- UI dalej korzysta z closeflow-record-list-source-truth.css jako ĹşrĂłdĹ‚a prawdy stylu list.
+- Wiersz 2 pokazuje: firma, Sprawy, Zarobione łącznie, Najbliższa akcja oraz dozwolone statusy pomocnicze.
+- Telefon ma osobny marker data-client-list-phone i klasę client-list-card-phone.
+- E-mail ma osobny marker data-client-list-email i klasę client-list-card-email.
+- UI dalej korzysta z closeflow-record-list-source-truth.css jako źródła prawdy stylu list.
 
 DECYZJA DAMIANA:
-- Klient jest juĹĽ pozyskanym leadem, wiÄ™c nie pokazujemy Leady w kafelku klienta.
-- Klient moĹĽe mieÄ‡ wiele spraw, wiÄ™c nie pokazujemy binarnego badge'a Aktywna sprawa.
-- Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
+- Klient jest już pozyskanym leadem, więc nie pokazujemy Leady w kafelku klienta.
+- Klient może mieć wiele spraw, więc nie pokazujemy binarnego badge'a Aktywna sprawa.
+- Na liście klientów mają być widoczne: Aktywna prowizja, Zarobione łącznie, Sprawy, Najbliższa akcja.
 
 TESTY/GUARDY:
-- 
+-
 pm run check:stage231d0b-client-list-card-freeze
-- 
+-
 pm run build
 - git diff --check
 
 DO POTWIERDZENIA:
-- Test rÄ™czny desktop/mobile na /clients po lokalnym uruchomieniu.
+- Test ręczny desktop/mobile na /clients po lokalnym uruchomieniu.
 
 RYZYKA:
-- JeĹ›li dane prowizyjne w bazie sÄ… niepeĹ‚ne, Aktywna prowizja moĹĽe pokazaÄ‡ 0 PLN mimo aktywnej sprawy bez uzupeĹ‚nionej prowizji.
-- JeĹ›li pĹ‚atnoĹ›ci prowizyjne nie majÄ… typu/statusu rozpoznawanego przez finance source, Zarobione Ĺ‚Ä…cznie moĹĽe wymagaÄ‡ osobnego etapu porzÄ…dkujÄ…cego dane pĹ‚atnoĹ›ci.
-- Zmiana dotyczy tylko listy klientĂłw, nie przebudowuje ClientDetail ani modeli finansowych.
+- Jeśli dane prowizyjne w bazie są niepełne, Aktywna prowizja może pokazać 0 PLN mimo aktywnej sprawy bez uzupełnionej prowizji.
+- Jeśli płatności prowizyjne nie mają typu/statusu rozpoznawanego przez finance source, Zarobione łącznie może wymagać osobnego etapu porządkującego dane płatności.
+- Zmiana dotyczy tylko listy klientów, nie przebudowuje ClientDetail ani modeli finansowych.
 <!-- STAGE231D0B_CLIENT_LIST_CARD_LEDGER_END -->
+
+
+## 2026-06-10 Europe/Warsaw - STAGE231D0B-R8-MASS-ENCODING-RESCUE
+
+Marker: STAGE231D0B-R8-MASS-ENCODING-RESCUE
+Tryb: local-only rescue ZIP.
+Przyczyna: bad commit 7dd40688 został wypchnięty mimo FAIL guardu.
+Zakres: kontrolowany sweep allowlisty STAGE231D0B + raport klasowy mojibake.

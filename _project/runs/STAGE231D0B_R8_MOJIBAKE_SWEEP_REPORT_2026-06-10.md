@@ -1,0 +1,259 @@
+# STAGE231D0B-R8 mojibake sweep report
+
+Data: 2026-06-10 Europe/Warsaw
+Scanned files: 2820
+Suspicious hits after R8: 1856
+
+## Hits to review
+
+- src/pages/Calendar.tsx:2093 — tokens: U+0139, U+00C4 —       toast.error('Nie mo[U+0139]Ľna usun[U+00C4]…[U+00C4]‡ tego typu wpisu z kalendarza.');
+- src/pages/ClientDetail.tsx:82 — tokens: U+0139 — const CLIENT_RELATION_PATH_GUARD = '[U+0139]šcieżka klienta';
+- src/pages/ClientDetail.tsx:83 — tokens: U+0139 — const CLIENT_RELATION_PATH_GUARD_UTF8 = '[U+0139]šcieżka klienta';
+- src/pages/TasksStable.tsx:525 — tokens: U+00C4 —       toast.success('Zadanie usuni[U+00C4]™te.');
+- src/pages/TasksStable.tsx:529 — tokens: U+0139, U+00C4 —       toast.error('Nie uda[U+0139]‚o si[U+00C4]™ usun[U+00C4]…[U+00C4]‡ zadania: ' + (error?.message || 'REQUEST_FAILED'));
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:2 — tokens: U+0139, U+00C4 —    Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelk[U+00C4]‚[U+0139]‚w /leads, /clients, /cases.
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:3 — tokens: U+0102, U+00E2+U+20AC —    Wzorcem s[U+0102]„[U+00E2+U+20AC]¦ /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:4 — tokens: U+0139, U+00C4 —    Zakaz runtime mapper[U+00C4]‚[U+0139]‚w: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:267 — tokens: U+0102, U+0139, U+00C4 —    - cf-rail-top-row i cf-rail-risk-row maj[U+00C4]… u[U+0139]Ľywa[U+00C4]‡ tych samych ton[U+0102]łw co cf-rail-filter-row.
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:268 — tokens: U+0102, U+0139, U+00C4 —    - [U+0139]ąr[U+0102]łd[U+0139]‚em rytmu s[U+00C4]… /tasks: tasks-stage178-filter-button i tasks-stage178-urgent-button.
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:269 — tokens: U+00C4 —    - Nie tworzymy kafelka w kafelku: wewn[U+00C4]™trzne label/money wrappery s[U+00C4]… transparentne.
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:272 — tokens: U+00C4 — /* Jeden rytm: filtry, top-value i risk rows maj[U+00C4]… siatk[U+00C4]™ jak /tasks. */
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:292 — tokens: U+0139, U+00C4 — /* Top-value / risk te[U+0139]Ľ dostaj[U+00C4]… tone background/border. Wcze[U+0139]›niej tone dzia[U+0139]‚a[U+0139]‚ tylko na filtrach. */
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:343 — tokens: U+0139, U+00C4 — /* Zabijamy "kafelek w kafelku": stare lead-relation wrappery nie mog[U+00C4]… mie[U+00C4]‡ w[U+0139]‚asnego t[U+0139]‚a/paddingu/radiusu. */
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:356 — tokens: U+0139, U+00C4 — /* Lewa cz[U+00C4]™[U+0139]›[U+00C4]‡ tekstu: ellipsis, jeden styl, bez osobnego chipu. */
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:390 — tokens: U+0139, U+00C4 — /* Kwota/licznik = jak prawa warto[U+0139]›[U+00C4]‡ z /tasks. */
+- src/styles/operator-rail-tasks-pattern-stage228r1.css:411 — tokens: U+0139, U+00C4 — /* SVG w risk row nie mo[U+0139]Ľe pompowa[U+00C4]‡ wysoko[U+0139]›ci ani koloru. */
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:72 — tokens: U+00C5 —     .replace(/zada[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'zadań')
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:73 — tokens: U+00C5 —     .replace(/Zaleg[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:74 — tokens: U+00C5 —     .replace(/Dzi[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Dziś')
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:76 — tokens: U+00C5 —     .replace(/zak[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'zakładkach');
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:104 — tokens: U+00C5 —   source = source.replace(/<h2>Filtry zada[[U+00C5]\u0139][^<]*<\/h2>/g, `<h2>Filtry zadań</h2>`);
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:120 — tokens: U+00C5 —     .replace(/zada[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'zadań')
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:121 — tokens: U+00C5 —     .replace(/Zaleg[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+- scripts/apply-stage179b-tasks-polish-guard-alignment.cjs:122 — tokens: U+00C5 —     .replace(/Dzi[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Dziś');
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:87 — tokens: U+00C5 —     .replace(/zada[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'zadań')
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:88 — tokens: U+00C5 —     .replace(/Zaleg[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:89 — tokens: U+00C5 —     .replace(/Dzi[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Dziś')
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:91 — tokens: U+00C5 —     .replace(/zak[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'zakładkach');
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:119 — tokens: U+00C5 —   source = source.replace(/<h2>Filtry zada[[U+00C5]\u0139][^<]*<\/h2>/g, '<h2>Filtry zadań</h2>');
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:135 — tokens: U+00C5 —     .replace(/zada[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'zadań')
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:136 — tokens: U+00C5 —     .replace(/Zaleg[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Zaległe')
+- scripts/apply-stage179c-tasks-polish-final-guard-repair.cjs:137 — tokens: U+00C5 —     .replace(/Dzi[[U+00C5]\u0139][^'"`<>\s,.)]*/g, 'Dziś');
+- scripts/check-polish-encoding-stage231b0-r15-r3.cjs:16 — tokens: U+0102, U+0139, U+00C2, U+00E2+U+20AC —   '[U+0102]…[U+00E2+U+20AC]š', '[U+0102]…[U+00C2]Ľ', '[U+0102]…[U+00C2]ş', '[U+0102]…[U+00E2+U+20AC]ş', '[U+0102]…[U+00E2+U+20AC]ž', '[U+0102]…[U+00E2+U+20AC]ş', '[U+0102]…[U+0139]ˇ', '[U+0102]…[U+00C2]»', '[U+0102]…[U+0
+- scripts/check-polish-encoding-stage231b0-r15-r3.cjs:17 — tokens: U+0102, U+0139, U+00C2, U+010F+U+017C+U+02DD, U+00E2+U+20AC —   '[U+0102]„[U+00E2+U+20AC]¦', '[U+0102]„â„˘', '[U+0102]„[U+00E2+U+20AC]ˇ', '[U+0102]„[U+0139]‚', '[U+0102][U+00C2]ł', '[U+0102]˘â‚¬â„˘', '[U+0102]˘â‚¬[U+00E2+U+20AC]ś', '[U+0102]˘â‚¬[U+00E2+U+20AC]ť', '[U+010F+U+017C+U
+- scripts/check-stage180c-apply-wrapper-ascii.cjs:8 — tokens: U+00C5 — if (/\u00C4|[U+00C5]|\u0139|\u00C2|â|\uFFFD/.test(self)) {
+- scripts/check-stage180e-support-visible-copy.cjs:53 — tokens: U+00C5 — const mojibakeMarkers = ['\u00C4', '[U+00C5]', '\u0139', '\u00C2', 'â', '\uFFFD'];
+- scripts/check-stage180f-support-sidebar-header-copy.cjs:53 — tokens: U+00C5 — const mojibakeMarkers = ['\u00C4', '[U+00C5]', '\u0139', '\u00C2', 'â', '\uFFFD'];
+- scripts/check-stage212a-visual-foundation-reset.cjs:18 — tokens: U+00C5 — for (const token of ['Dziś', 'Aktywno[U+00C5]', 'Zg[U+00C5]', 'ś', 'ć', 'ł', 'ó', '\u00C2', '\uFFFD']) {
+- scripts/check-stage212d-index-css-import-order-hard-repair.cjs:44 — tokens: U+00C5 — const mojibake = /[[U+00C5]\u00C4\u0139\u00C2\uFFFD]/;
+- scripts/check-stage212e-mojibake-import-and-runtime.cjs:26 — tokens: U+00C5 — const forbidden = ['Dziś', 'Dziś', 'Aktywno[U+00C5]', 'Aktywno\u0139', 'Zg[U+00C5]', 'Zg\u0139', 'ó', 'ł', 'ś', 'ć', 'ę', 'ą', '\u00C2', '\uFFFD'];
+- scripts/check-stage212g-bulk-ui-repair.cjs:55 — tokens: U+00C5 — const mojibakePattern = /[U+00C5]|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|┼|ÔÇ|├/;
+- scripts/check-stage212h-final-mojibake-sweep-and-build-repair.cjs:35 — tokens: U+00C5 — const mojibake = /[U+00C5]|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|┼|├|ÔÇ|•/;
+- scripts/check-stage212i-final-bulk-repair.cjs:38 — tokens: U+00C5 — const mojibake = /[U+00C5]|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|┼|Ô|Ç|├|•|–|—|…/;
+- scripts/check-stage212j-guard-syntax-and-bulk-finish.cjs:34 — tokens: U+00C5 — const mojibakeMarkers = ['[U+00C5]', '\u00C4', '\u0139', '\u00C2', 'Ã', '\uFFFD', 'Ð', '¤', 'œ', '¼', 'º', '³', '┼', '├', 'ÔÇ'];
+- scripts/check-stage212m-visual-source-truth-debug-today.cjs:73 — tokens: U+00C5 — const mojibakePattern = /[U+00C5]|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|ÔÇ|┼|├/;
+- scripts/check-stage212t-polish-and-visual-source-truth.cjs:20 — tokens: U+00C5 — const mojibakePattern = /[U+00C5]|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|ÔÇ|┼|├|\u0102/;
+- scripts/check-stage220a8-single-actions-card-polish.cjs:29 — tokens: U+00E2+U+20AC — const mojibake = ['\u00C4', '\u0139', '\u00C2', '\u0102', '[U+00E2+U+20AC]', '—', '–', '\u00C4ą', '\u0102„', 'ż'];
+- scripts/check-stage227e2-lead-detail-top-cards-polish.cjs:67 — tokens: U+0139, U+00C4 — if (topCards.includes('<h2>' + VALUE + '</h2>')) fail('top cards still use Warto[U+0139]›[U+00C4]‡ heading instead of Potencja[U+0139]‚');
+- scripts/check-stage227e2-remove-sales-context-block.cjs:33 — tokens: U+0139 — mustNotContain(lead, 'KONTEKST SPRZEDA[U+0139]»OWY', 'sales context kicker');
+- scripts/check-stage227e3-shared-quick-actions-bar.cjs:47 — tokens: U+0102 — if (/[[U+0102]„[U+0102]…[U+0102][U+0102]‚]|[â”Ľâ”€]/.test(caseQuick)) fail('CaseQuickActions contains mojibake markers');
+- scripts/check-stage227e3-shared-quick-actions-bar.cjs:58 — tokens: U+0139, U+00C4 — requireContains(lead, 'Rozpocznij obs\u0142ug\u0119', 'lead action label: Rozpocznij obs[U+0139]‚ug[U+00C4]™');
+- scripts/check-stage228b-lead-work-action-center.cjs:53 — tokens: U+00E2+U+20AC — if (source.includes('[U+00E2+U+20AC]˘') || source.includes('[U+00E2+U+20AC]¢')) {
+- scripts/check-stage228b-r14-lead-action-center-vst.cjs:22 — tokens: U+00E2+U+20AC — if (source.includes('[U+00E2+U+20AC]˘') || source.includes('[U+00E2+U+20AC]¢')) failures.push('mojibake bullet still present');
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:34 — tokens: U+00C4 —   "[U+00C4]…",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:35 — tokens: U+00C4 —   "[U+00C4]„",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:36 — tokens: U+00C4 —   "[U+00C4]‡",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:37 — tokens: U+00C4 —   "[U+00C4]†",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:38 — tokens: U+00C4 —   "[U+00C4]™",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:39 — tokens: U+00C4 —   "[U+00C4]˜",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:40 — tokens: U+00C5 —   "[U+00C5]‚",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:41 — tokens: U+0139 —   "[U+0139]‚",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:42 — tokens: U+00C5 —   "[U+00C5]",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:43 — tokens: U+0139, U+FFFD —   "[U+0139][U+FFFD]",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:44 — tokens: U+00C5, U+FFFD —   "[U+00C5][U+FFFD]",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:45 — tokens: U+00C5 —   "[U+00C5]„",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:46 — tokens: U+0139 —   "[U+0139]„",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:47 — tokens: U+00C5 —   "[U+00C5]ƒ",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:48 — tokens: U+0139 —   "[U+0139]ƒ",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:50 — tokens: U+0102 —   "[U+0102]ł",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:52 — tokens: U+0102 —   "[U+0102]“",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:53 — tokens: U+00C5 —   "[U+00C5]›",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:54 — tokens: U+0139 —   "[U+0139]›",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:55 — tokens: U+00C5 —   "[U+00C5]Š",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:56 — tokens: U+0139 —   "[U+0139]Š",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:57 — tokens: U+00C5 —   "[U+00C5]º",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:58 — tokens: U+0139 —   "[U+0139]ş",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:59 — tokens: U+0139 —   "[U+0139]º",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:60 — tokens: U+00C5 —   "[U+00C5]¹",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:61 — tokens: U+0139 —   "[U+0139]ą",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:62 — tokens: U+0139 —   "[U+0139]¹",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:63 — tokens: U+00C5 —   "[U+00C5]¼",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:64 — tokens: U+0139 —   "[U+0139]Ľ",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:65 — tokens: U+0139 —   "[U+0139]¼",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:66 — tokens: U+00C5 —   "[U+00C5]»",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:67 — tokens: U+0139 —   "[U+0139]»",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:68 — tokens: U+00E2+U+20AC —   "[U+00E2+U+20AC]™",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:69 — tokens: U+00E2+U+20AC —   "[U+00E2+U+20AC]œ",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:70 — tokens: U+00E2+U+20AC —   "[U+00E2+U+20AC]",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:71 — tokens: U+00E2+U+20AC —   "[U+00E2+U+20AC]”",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:72 — tokens: U+00E2+U+20AC —   "[U+00E2+U+20AC]“",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:73 — tokens: U+00C2 —   "[U+00C2]·",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:74 — tokens: U+00C2 —   "[U+00C2] ",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:75 — tokens: U+00C2 —   "[U+00C2] ",
+- scripts/check-stage231b0-r15-r3-polish-encoding.cjs:76 — tokens: U+FFFD —   "[U+FFFD]"
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:44 — tokens: U+0139 —   '[U+0139]adowanie klienta...',
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:45 — tokens: U+0139 —   '[U+0139]adowanie klienta...',
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:46 — tokens: U+00C4 —   'SPRAWA ZAMKNI[U+00C4]TA',
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:47 — tokens: U+00C4 —   'SPRAWA ZAMKNI[U+00C4]TA',
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:48 — tokens: U+00E2+U+20AC —   '[U+00E2+U+20AC]˘',
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:49 — tokens: U+00E2+U+20AC —   '[U+00E2+U+20AC]¢',
+- scripts/check-stage231d0-client-workspace-ux-cleanup.cjs:87 — tokens: U+FFFD —   if (/[[U+FFFD]]/u.test(text)) errors.push(`${name} contains replacement character`);
+- scripts/check-stage231d1-cost-model-source-truth.cjs:29 — tokens: U+0102, U+0139, U+00C4, U+00C5, U+00C2, U+FFFD, U+010F+U+017C+U+02DD —   for (const bad of ['[U+0102]', '[U+0139]', '[U+00C4]', '[U+00C5]', '[U+00C2]', '[U+FFFD]', '[U+010F+U+017C+U+02DD]']) {
+- scripts/local-stage212k-hard-mojibake-sweep.cjs:60 — tokens: U+00C5 — const mojibakeRe = /[U+00C5]|\u00C4|\u0139|\u00C2|Ã|\uFFFD|Ð|¤|œ|¼|º|³|ÔÇ|┼|├/;
+- scripts/local-stage212t-polish-and-visual-fix.cjs:35 — tokens: U+00C5 —   ['[U+00C5]¹', 'Ź'],
+- _project/00_PROJECT_STATUS.md:66 — tokens: U+00E2+U+20AC — ## 2026-06-08 21:10 Europe/Warsaw [U+00E2+U+20AC]” Stage228R18 [U+00E2+U+20AC]” missing item hard delete source truth
+- _project/00_PROJECT_STATUS.md:68 — tokens: U+0139, U+00C4 — - problem: Brak znika[U+0139]‚ po klikni[U+00C4]™ciu Usu[U+0139]„, ale wraca[U+0139]‚ po hard refresh.
+- _project/00_PROJECT_STATUS.md:69 — tokens: U+00C4 — - decyzja: aktywny Brak w LeadDetail ma by[U+00C4]‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- _project/00_PROJECT_STATUS.md:70 — tokens: U+0102, U+0139, U+00C4 — - dodatkowo: lista Braki i blokady ma by[U+00C4]‡ [U+0139]şr[U+0102]łd[U+0139]‚owana z linkedTasks, nie z ca[U+0139]‚ego timeline, [U+0139]Ľeby activity history nie odtwarza[U+0139]‚a aktywnego braku.
+- _project/00_PROJECT_STATUS.md:71 — tokens: U+00C4 — - testy: check-stage228r18, node test, npm run build, git diff --check, test r[U+00C4]™czny dodaj/usun/hard refresh.
+- _project/00_PROJECT_STATUS.md:72 — tokens: U+0139, U+00C4 — - ryzyko: DELETE jest mocniejsze ni[U+0139]Ľ soft-delete; historia usuni[U+00C4]™cia zostaje jako activity.
+- _project/03_CURRENT_STAGE.md:11 — tokens: U+0102 — ## 2026-05-16 [U+0102]˘â‚¬” Stage104 / Paczka F [U+0102]˘â‚¬” Calendar loading performance
+- _project/03_CURRENT_STAGE.md:36 — tokens: U+0102 — ## Stage105 / Paczka G [U+0102]˘â‚¬” Templates delete + visual contract [U+0102]˘â‚¬” 2026-05-16
+- _project/03_CURRENT_STAGE.md:101 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:134 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:161 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:185 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:211 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:238 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:265 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:291 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:318 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:343 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:370 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:399 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:427 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:453 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:482 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:513 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:540 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:567 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:601 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:634 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:669 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:701 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:738 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:777 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:809 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:839 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:871 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:901 — tokens: U+00C4 — TESTY R[U+00C4]CZNE:
+- _project/03_CURRENT_STAGE.md:913 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:951 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:993 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:1032 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:1071 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:1107 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:1165 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/03_CURRENT_STAGE.md:1234 — tokens: U+00C4 — STATUS: LOCAL ONLY, DO TESTU R[U+00C4]CZNEGO.
+- _project/03_CURRENT_STAGE.md:1305 — tokens: U+0102 — ## 2026-06-08 21:10 Europe/Warsaw [U+0102]˘â‚¬” Stage228R18 [U+0102]˘â‚¬” missing item hard delete source truth
+- _project/03_CURRENT_STAGE.md:1307 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - problem: Brak znika[U+00C4]ą[U+00E2+U+20AC]š po klikni[U+0102]„â„˘ciu Usu[U+00C4]ą„, ale wraca[U+00C4]ą[U+00E2+U+20AC]š po hard refresh.
+- _project/03_CURRENT_STAGE.md:1308 — tokens: U+0102, U+00E2+U+20AC — - decyzja: aktywny Brak w LeadDetail ma by[U+0102]„[U+00E2+U+20AC]ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- _project/03_CURRENT_STAGE.md:1309 — tokens: U+0102, U+0139, U+00C4, U+00E2+U+20AC — - dodatkowo: lista Braki i blokady ma by[U+0102]„[U+00E2+U+20AC]ˇ [U+00C4]ą[U+0139]źr[U+00C4]‚łd[U+00C4]ą[U+00E2+U+20AC]šowana z linkedTasks, nie z ca[U+00C4]ą[U+00E2+U+20AC]šego timeline, [U+00C4]ą[U+00C4]˝eby activity
+- _project/03_CURRENT_STAGE.md:1310 — tokens: U+0102 — - testy: check-stage228r18, node test, npm run build, git diff --check, test r[U+0102]„â„˘czny dodaj/usun/hard refresh.
+- _project/03_CURRENT_STAGE.md:1311 — tokens: U+0102, U+00C4 — - ryzyko: DELETE jest mocniejsze ni[U+00C4]ą[U+00C4]˝ soft-delete; historia usuni[U+0102]„â„˘cia zostaje jako activity.
+- _project/03_CURRENT_STAGE.md:1356 — tokens: U+0102 — ## 2026-06-09 02:50 Europe/Warsaw [U+0102]˘â‚¬” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+- _project/03_CURRENT_STAGE.md:1359 — tokens: U+00C4, U+00E2+U+20AC — - R41 finalizuje delete flow po nieudanym lokalnym [U+00C4]ą[U+00E2+U+20AC]ša[U+00C4]ą„cuchu R26-R40.
+- _project/03_CURRENT_STAGE.md:1361 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - Walidacja nie opiera si[U+0102]„â„˘ ju[U+00C4]ą[U+00C4]˝ na dok[U+00C4]ą[U+00E2+U+20AC]šadnym polskim tek[U+00C4]ą[U+00E2+U+20AC]şcie toastu, tylko na strukturze przep[U+00C4]ą[U+00E2+U+20AC]šywu: branch event/task, to
+- _project/03_CURRENT_STAGE.md:1371 — tokens: U+0102 — - Po deployu wymagany r[U+0102]„â„˘czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- _project/03_CURRENT_STAGE.md:1805 — tokens: U+FFFD — ## 2026-06-10 [U+FFFD] STAGE231B0-R15-R2 [U+FFFD] ClientDetail shared canvas width source
+- _project/03_CURRENT_STAGE.md:1807 — tokens: U+FFFD — - Pow[U+FFFD]d: R14 trafi[U+FFFD] w z[U+FFFD]y DOM node (`ClientMultiContactField`), wi[U+FFFD]c nie m[U+FFFD]g[U+FFFD] rozci[U+FFFD]gn[U+FFFD][U+FFFD] kartoteki klienta.
+- _project/03_CURRENT_STAGE.md:1808 — tokens: U+FFFD — - Decyzja: ClientDetail ma u[U+FFFD]ywa[U+FFFD] wsp[U+FFFD]lnego canvasu strony: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"`.
+- _project/03_CURRENT_STAGE.md:1809 — tokens: U+FFFD — - [U+FFFD]r[U+FFFD]d[U+FFFD]o prawdy szeroko[U+FFFD]ci: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
+- _project/03_CURRENT_STAGE.md:1810 — tokens: U+FFFD — - Widok konsumuj[U+FFFD]cy kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
+- _project/03_CURRENT_STAGE.md:1811 — tokens: U+FFFD — - R14 guard/test usuni[U+FFFD]te jako fa[U+FFFD]szywy kontrakt.
+- _project/03_CURRENT_STAGE.md:1813 — tokens: U+FFFD — ## 2026-06-10 [U+FFFD] STAGE231B0-R15-R3 [U+FFFD] ClientDetail width guard + Polish encoding guard
+- _project/03_CURRENT_STAGE.md:1815 — tokens: U+FFFD — - Potwierdzenie u[U+FFFD]ytkownika: wygl[U+FFFD]d kartoteki klienta jest poprawny i ma tak zosta[U+FFFD].
+- _project/03_CURRENT_STAGE.md:1816 — tokens: U+FFFD — - Guard szeroko[U+FFFD]ci: `scripts/check-stage231b0-r15-r3-client-detail-width-source-truth.cjs`.
+- _project/03_CURRENT_STAGE.md:1817 — tokens: U+FFFD — - Guard polskich znak[U+FFFD]w: `scripts/check-stage231b0-r15-r3-polish-encoding.cjs`.
+- _project/03_CURRENT_STAGE.md:1818 — tokens: U+FFFD — - Guard pilnuje, [U+FFFD]e ClientDetail u[U+FFFD]ywa wsp[U+FFFD]lnego canvasu: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"` oraz zmiennych `--cf-page-canvas-*`.
+- _project/03_CURRENT_STAGE.md:1819 — tokens: U+FFFD — - Guard pilnuje usuni[U+FFFD]cia b[U+FFFD][U+FFFD]dnego R14 i braku mojibake/replacement chars w kluczowych plikach kartoteki klienta.
+- _project/03_CURRENT_STAGE.md:1820 — tokens: U+FFFD — - Naprawiono higien[U+FFFD] EOF w `src/pages/ClientDetail.tsx`.
+- _project/03_CURRENT_STAGE.md:1834 — tokens: U+00C2 — - Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/[U+00C2]·/–`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
+- _project/04_DECISIONS.md:1446 — tokens: U+0139, U+00E2+U+20AC — ## 2026-06-06 15:35 Europe/Warsaw [U+00E2+U+20AC]” STAGE227A [U+00E2+U+20AC]” Lejek ruchu sprzeda[U+0139]Ľowego read-only
+- _project/04_DECISIONS.md:1448 — tokens: U+0139, U+00C4 — Stage227A jest lokalnym, read-only wdro[U+0139]Ľeniem widoku Lejek. Lejek nie jest klasycznym kanbanem CRM. Nie ma drag/drop ani mutacji statusu. Widok zbiera istniej[U+00C4]…ce sygna[U+0139]‚y: cisz[U+00C4]™, brak nast[
+- _project/04_DECISIONS.md:1452 — tokens: U+00E2+U+20AC — ## 2026-06-06 15:45 Europe/Warsaw [U+00E2+U+20AC]” STAGE227B [U+00E2+U+20AC]” lejek jako panel decyzyjny, nie kanban
+- _project/04_DECISIONS.md:1454 — tokens: U+0102, U+0139, U+00C4 — DECYZJA: Stage227A dzia[U+0139]‚a[U+0139]‚ technicznie, ale r[U+00C4]™czny UX test pokaza[U+0139]‚, [U+0139]Ľe szeroki kanban jest za g[U+00C4]™sty. `/funnel` zostaje osobn[U+00C4]… zak[U+0139]‚adk[U+00C4]…, ale zostaje
+- _project/04_DECISIONS.md:1458 — tokens: U+00E2+U+20AC — ## 2026-06-06 17:05 Europe/Warsaw [U+00E2+U+20AC]” STAGE228A [U+00E2+U+20AC]” Funnel truth + clickability
+- _project/04_DECISIONS.md:1460 — tokens: U+0102, U+0139, U+00C4 — DECYZJA: `/funnel` musi by[U+00C4]‡ wiarygodny. Kafel `Pieni[U+00C4]…dze` nie mo[U+0139]Ľe pokazywa[U+00C4]‡ kwoty, kt[U+0102]łrej nie da si[U+00C4]™ znale[U+0139]ş[U+00C4]‡ na li[U+0139]›cie. Klikni[U+00C4]™cie kafla w[
+- _project/04_DECISIONS.md:1463 — tokens: U+00E2+U+20AC — ## 2026-06-06 18:00 Europe/Warsaw [U+00E2+U+20AC]” STAGE228B Lead Work Action Center
+- _project/04_DECISIONS.md:1465 — tokens: U+0139 — - typ: etap wdro[U+0139]Ľeniowy local-only
+- _project/04_DECISIONS.md:1466 — tokens: U+0139, U+00E2+U+20AC — - decyzja: Lead nie dostaje pe[U+0139]‚nego lejka; dostaje centrum pracy [U+00E2+U+20AC]žCo robimy teraz?[U+00E2+U+20AC]ť z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- _project/04_DECISIONS.md:1469 — tokens: U+0102, U+0139, U+00C4 — - ryzyko: nie tworzy[U+00C4]‡ drugiego systemu dzia[U+0139]‚a[U+0139]„; u[U+0139]Ľywa[U+00C4]‡ istniej[U+00C4]…cych handler[U+0102]łw LeadDetail.
+- _project/05_MANUAL_TESTS.md:1196 — tokens: U+00E2+U+20AC — ## 2026-06-08 21:10 Europe/Warsaw [U+00E2+U+20AC]” Stage228R18 [U+00E2+U+20AC]” missing item hard delete source truth
+- _project/05_MANUAL_TESTS.md:1198 — tokens: U+0139, U+00C4 — - problem: Brak znika[U+0139]‚ po klikni[U+00C4]™ciu Usu[U+0139]„, ale wraca[U+0139]‚ po hard refresh.
+- _project/05_MANUAL_TESTS.md:1199 — tokens: U+00C4 — - decyzja: aktywny Brak w LeadDetail ma by[U+00C4]‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- _project/05_MANUAL_TESTS.md:1200 — tokens: U+0102, U+0139, U+00C4 — - dodatkowo: lista Braki i blokady ma by[U+00C4]‡ [U+0139]şr[U+0102]łd[U+0139]‚owana z linkedTasks, nie z ca[U+0139]‚ego timeline, [U+0139]Ľeby activity history nie odtwarza[U+0139]‚a aktywnego braku.
+- _project/05_MANUAL_TESTS.md:1201 — tokens: U+00C4 — - testy: check-stage228r18, node test, npm run build, git diff --check, test r[U+00C4]™czny dodaj/usun/hard refresh.
+- _project/05_MANUAL_TESTS.md:1202 — tokens: U+0139, U+00C4 — - ryzyko: DELETE jest mocniejsze ni[U+0139]Ľ soft-delete; historia usuni[U+00C4]™cia zostaje jako activity.
+- _project/05_MANUAL_TESTS.md:1247 — tokens: U+00E2+U+20AC — ## 2026-06-09 02:50 Europe/Warsaw [U+00E2+U+20AC]” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+- _project/05_MANUAL_TESTS.md:1250 — tokens: U+0139 — - R41 finalizuje delete flow po nieudanym lokalnym [U+0139]‚a[U+0139]„cuchu R26-R40.
+- _project/05_MANUAL_TESTS.md:1252 — tokens: U+0139, U+00C4 — - Walidacja nie opiera si[U+00C4]™ ju[U+0139]Ľ na dok[U+0139]‚adnym polskim tek[U+0139]›cie toastu, tylko na strukturze przep[U+0139]‚ywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- _project/05_MANUAL_TESTS.md:1262 — tokens: U+00C4 — - Po deployu wymagany r[U+00C4]™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- _project/06_GUARDS_AND_TESTS.md:143 — tokens: U+0102 — ## 2026-05-16 [U+0102]˘â‚¬” Stage104 / Paczka F [U+0102]˘â‚¬” Calendar loading performance
+- _project/06_GUARDS_AND_TESTS.md:168 — tokens: U+0102 — ## Stage105 / Paczka G [U+0102]˘â‚¬” Templates delete + visual contract [U+0102]˘â‚¬” 2026-05-16
+- _project/06_GUARDS_AND_TESTS.md:617 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:650 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:677 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:701 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:727 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:754 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:781 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:807 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:834 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:859 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:886 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:915 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:943 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:969 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:998 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1029 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1056 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1083 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1117 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1150 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1185 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1217 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1254 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1293 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1325 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1355 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1387 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1417 — tokens: U+00C4 — TESTY R[U+00C4]CZNE:
+- _project/06_GUARDS_AND_TESTS.md:1429 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1467 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1509 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1548 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1587 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1623 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1681 — tokens: U+00C4 — NAST[U+00C4]PNY KROK:
+- _project/06_GUARDS_AND_TESTS.md:1693 — tokens: U+0139 — - Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/[U+0139]šrednie, tekst Pokazano 8 z X, pusty stan operacyjny.
+- _project/06_GUARDS_AND_TESTS.md:1715 — tokens: U+0102 — - Karta sprawy w kliencie używa getCaseFinanceSummary, więc prowizja procentowa 69 000 PLN [U+0102]— 2% daje 1 380 PLN zamiast 0 PLN.
+- _project/06_GUARDS_AND_TESTS.md:1989 — tokens: U+0102 — ## 2026-06-06 15:35 Europe/Warsaw [U+0102]˘â‚¬” STAGE227A guardy i testy
+- _project/06_GUARDS_AND_TESTS.md:1995 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - Regresja R10 lead/client separation, je[U+00C4]ą[U+00E2+U+20AC]şli pliki istniej[U+0102]„….
+- _project/06_GUARDS_AND_TESTS.md:1996 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - Regresja R11 Google Calendar timezone reminder truth, je[U+00C4]ą[U+00E2+U+20AC]şli pliki istniej[U+0102]„….
+- _project/06_GUARDS_AND_TESTS.md:2001 — tokens: U+0102 — ## 2026-06-06 15:45 Europe/Warsaw [U+0102]˘â‚¬” STAGE227B [U+0102]˘â‚¬” guardy/testy
+- _project/06_GUARDS_AND_TESTS.md:2013 — tokens: U+0102 — ## 2026-06-06 17:05 Europe/Warsaw [U+0102]˘â‚¬” STAGE228A guardy i testy
+- _project/06_GUARDS_AND_TESTS.md:2023 — tokens: U+0102 — ## 2026-06-06 18:00 Europe/Warsaw [U+0102]˘â‚¬” STAGE228B Lead Work Action Center
+- _project/06_GUARDS_AND_TESTS.md:2025 — tokens: U+00C4 — - typ: etap wdro[U+00C4]ą[U+00C4]˝eniowy local-only
+- _project/06_GUARDS_AND_TESTS.md:2026 — tokens: U+0102, U+0139, U+00C4, U+00E2+U+20AC — - decyzja: Lead nie dostaje pe[U+00C4]ą[U+00E2+U+20AC]šnego lejka; dostaje centrum pracy [U+0102]˘â‚¬[U+0139]ľCo robimy teraz?[U+0102]˘â‚¬[U+0139]Ą z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- _project/06_GUARDS_AND_TESTS.md:2029 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - ryzyko: nie tworzy[U+0102]„[U+00E2+U+20AC]ˇ drugiego systemu dzia[U+00C4]ą[U+00E2+U+20AC]ša[U+00C4]ą„; u[U+00C4]ą[U+00C4]˝ywa[U+0102]„[U+00E2+U+20AC]ˇ istniej[U+0102]„…cych handler[U+00C4]‚łw LeadDetail.
+- _project/06_GUARDS_AND_TESTS.md:2233 — tokens: U+0102 — ## 2026-06-08 21:10 Europe/Warsaw [U+0102]˘â‚¬” Stage228R18 [U+0102]˘â‚¬” missing item hard delete source truth
+- _project/06_GUARDS_AND_TESTS.md:2235 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - problem: Brak znika[U+00C4]ą[U+00E2+U+20AC]š po klikni[U+0102]„â„˘ciu Usu[U+00C4]ą„, ale wraca[U+00C4]ą[U+00E2+U+20AC]š po hard refresh.
+- _project/06_GUARDS_AND_TESTS.md:2236 — tokens: U+0102, U+00E2+U+20AC — - decyzja: aktywny Brak w LeadDetail ma by[U+0102]„[U+00E2+U+20AC]ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- _project/06_GUARDS_AND_TESTS.md:2237 — tokens: U+0102, U+0139, U+00C4, U+00E2+U+20AC — - dodatkowo: lista Braki i blokady ma by[U+0102]„[U+00E2+U+20AC]ˇ [U+00C4]ą[U+0139]źr[U+00C4]‚łd[U+00C4]ą[U+00E2+U+20AC]šowana z linkedTasks, nie z ca[U+00C4]ą[U+00E2+U+20AC]šego timeline, [U+00C4]ą[U+00C4]˝eby activity
+- _project/06_GUARDS_AND_TESTS.md:2238 — tokens: U+0102 — - testy: check-stage228r18, node test, npm run build, git diff --check, test r[U+0102]„â„˘czny dodaj/usun/hard refresh.
+- _project/06_GUARDS_AND_TESTS.md:2239 — tokens: U+0102, U+00C4 — - ryzyko: DELETE jest mocniejsze ni[U+00C4]ą[U+00C4]˝ soft-delete; historia usuni[U+0102]„â„˘cia zostaje jako activity.
+- _project/06_GUARDS_AND_TESTS.md:2284 — tokens: U+0102 — ## 2026-06-09 02:50 Europe/Warsaw [U+0102]˘â‚¬” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+- _project/06_GUARDS_AND_TESTS.md:2287 — tokens: U+00C4, U+00E2+U+20AC — - R41 finalizuje delete flow po nieudanym lokalnym [U+00C4]ą[U+00E2+U+20AC]ša[U+00C4]ą„cuchu R26-R40.
+- _project/06_GUARDS_AND_TESTS.md:2289 — tokens: U+0102, U+00C4, U+00E2+U+20AC — - Walidacja nie opiera si[U+0102]„â„˘ ju[U+00C4]ą[U+00C4]˝ na dok[U+00C4]ą[U+00E2+U+20AC]šadnym polskim tek[U+00C4]ą[U+00E2+U+20AC]şcie toastu, tylko na strukturze przep[U+00C4]ą[U+00E2+U+20AC]šywu: branch event/task, to
+- truncated additional hits: 1606

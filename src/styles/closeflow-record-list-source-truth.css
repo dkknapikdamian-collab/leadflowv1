@@ -752,3 +752,51 @@
     grid-template-columns: minmax(0, 1fr) !important;
   }
 }
+
+/* STAGE231D0B-R8 CLIENT LIST CARD MASS ENCODING RESCUE START */
+.client-list-card-row-primary,
+.client-list-card-row-secondary {
+  display: grid;
+  grid-template-columns: minmax(220px, 1.35fr) minmax(140px, 0.75fr) minmax(180px, 1fr) minmax(240px, 1.25fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.client-list-card-row-secondary {
+  grid-template-columns: minmax(220px, 1.35fr) minmax(140px, 0.75fr) minmax(240px, 1.25fr) minmax(260px, 1.35fr) auto;
+}
+
+.client-list-card-phone {
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+  color: var(--record-list-ink-strong, #111827);
+  white-space: nowrap;
+}
+
+.client-list-card-email,
+.client-list-card-company,
+.client-list-card-cases,
+.client-list-card-nearest-action {
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.client-list-card-active-commission,
+.client-list-card-earned {
+  min-width: max-content;
+  width: auto;
+  max-width: none;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+@media (max-width: 980px) {
+  .client-list-card-row-primary,
+  .client-list-card-row-secondary {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+}
+/* STAGE231D0B-R8 CLIENT LIST CARD MASS ENCODING RESCUE END */
