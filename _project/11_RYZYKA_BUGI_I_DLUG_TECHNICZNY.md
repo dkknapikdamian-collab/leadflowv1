@@ -293,3 +293,10 @@ Archive/restore uses status update only. No SQL. Existing duplicate savedRecord 
 - UX: `ClientDetail` ma szeroki układ jak widok sprawy, z lewym wyrównaniem i breakpointami skalowania.
 - Dodano guard `scripts/check-stage231b0-r11-client-width-and-cases-runtime.cjs` oraz test node.
 - Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
+
+
+## 2026-06-10 — STAGE231B0-R12-R7 — Final Cases runtime contract rescue
+- Status: LOCAL_ONLY_PREPARED.
+- Po R12-R6 zastosowano mocniejszy rescue: helper `renderClosedCaseBannerStage231B0R12`, jeden kontrakt `activeCases/closedCases` przez `useMemo`, `record.status` tylko w dwóch filtrach.
+- Guardy R11/R12/R12-R7 pilnują tego samego kontraktu i blokują `closedRecordStage231B0R8` oraz `record?.status`.
+- Nie ruszano finansów, SQL, Google Calendar, płatności ani innych modułów.

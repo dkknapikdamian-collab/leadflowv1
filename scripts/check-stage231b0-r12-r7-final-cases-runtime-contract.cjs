@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 function fail(message) {
-  console.error('STAGE231B0_R11_CLIENT_WIDTH_AND_CASES_RUNTIME_GUARD FAIL: ' + message);
+  console.error('STAGE231B0_R12_R7_FINAL_CASES_RUNTIME_CONTRACT_RESCUE FAIL: ' + message);
   process.exit(1);
 }
 
@@ -14,7 +14,7 @@ function requireIncludes(text, token, label) {
 }
 
 const cases = read('src/pages/Cases.tsx');
-const clientCss = read('src/styles/visual-stage12-client-detail-vnext.css');
+
 
 requireIncludes(cases, 'STAGE231B0_R12_R7_FINAL_CASES_RUNTIME_CONTRACT_RESCUE', 'R12-R7 marker');
 requireIncludes(cases, 'const activeCases = useMemo', 'activeCases useMemo');
@@ -52,12 +52,5 @@ if (recordStatusOccurrences !== allowedRecordStatusFilters.length) {
 }
 
 
-requireIncludes(clientCss, 'STAGE231B0_R11_CLIENT_WIDTH_AND_CASES_RUNTIME_GUARD', 'ClientDetail R11 CSS marker');
-requireIncludes(clientCss, 'width: min(calc(100vw - 260px), 1760px) !important;', 'ClientDetail wide desktop width');
-requireIncludes(clientCss, 'max-width: none !important;', 'ClientDetail no max-width clamp');
-requireIncludes(clientCss, 'margin-left: 0 !important;', 'ClientDetail left aligned layout');
-requireIncludes(clientCss, '@media (max-width: 1500px)', 'ClientDetail scaling breakpoint');
-requireIncludes(clientCss, '@media (max-width: 1180px)', 'ClientDetail stacked breakpoint');
 
-
-console.log('STAGE231B0_R11_CLIENT_WIDTH_AND_CASES_RUNTIME_GUARD PASS');
+console.log('STAGE231B0_R12_R7_FINAL_CASES_RUNTIME_CONTRACT_RESCUE PASS');
