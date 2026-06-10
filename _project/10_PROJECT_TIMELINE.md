@@ -1,4 +1,4 @@
-# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
+﻿# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
 
 ## 2026-05-16 - memory protocol and Obsidian mapping closeout
 - Remote GitHub closeout added minimal project memory protocol, minimal stage template, required 08:54 run checkpoint and AGENTS marker.
@@ -1319,3 +1319,17 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TIMELINE_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” Visual Source of Truth Inventory + UI Consistency Guard
+
+Dodano:
+- centralny raport `_project/VISUAL_SOURCE_OF_TRUTH.md`,
+- run report `_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md`,
+- payload Obsidian `_project/obsidian_payloads/STAGE231D0A_VISUAL_SOURCE_TRUTH_OBSIDIAN_PAYLOAD.md`,
+- guard i test D0A,
+- wpis roadmapy D0A przed D0.
+
+Nie zmieniano runtime UI, danych, SQL, finansĂłw, Google Auth ani Google Calendar.
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TIMELINE_END -->
+

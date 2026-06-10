@@ -1,4 +1,4 @@
-# 12_IMPLEMENTATION_LEDGER - CloseFlow / LeadFlow
+﻿# 12_IMPLEMENTATION_LEDGER - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
 
@@ -2268,3 +2268,25 @@ TESTY:
 
 RYZYKA:
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_LEDGER_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” implementation ledger
+
+Typ: inventory / guard / documentation.
+
+Zakres:
+- `package.json` scripts,
+- `scripts/check-stage231d0a-visual-source-truth-consistency.cjs`,
+- `tests/stage231d0a-visual-source-truth-consistency.test.cjs`,
+- `_project/VISUAL_SOURCE_OF_TRUTH.md`,
+- `_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md`,
+- `_project/obsidian_payloads/STAGE231D0A_VISUAL_SOURCE_TRUTH_OBSIDIAN_PAYLOAD.md`,
+- centralne `_project` wpisy roadmapy/testĂłw/historii.
+
+Granica:
+- bez runtime UI,
+- bez SQL,
+- bez zmian danych,
+- bez refaktoru ClientDetail/Cases/Clients.
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_LEDGER_END -->
+

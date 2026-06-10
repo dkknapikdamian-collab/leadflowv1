@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 07_NEXT_STEPS - CloseFlow / LeadFlow
 
 <!-- STAGE230_AI_DRAFT_INBOX_ROADMAP_START -->
@@ -3120,3 +3120,23 @@ Next: STAGE231B1 â€” Client Lifetime Earnings Summary. Do not start monthly
 - Naprawa: dokumentacja etapu nie zapisuje już przykładowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentację zakresu R15.
 - Guard blokuje uszkodzenia kodowania, puste linie na EOF i brak aktualnych polskich fraz w ClientDetail.
 - Commit/push tylko po PASS guardów, build i git diff --check.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_NEXT_STEPS_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” obowiÄ…zkowy etap przed D0
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+KolejnoĹ›Ä‡ po poprawce:
+1. R10 â€” domkniÄ™cie archiwum spraw.
+2. D0A â€” Visual Source of Truth Inventory + UI Consistency Guard.
+3. D0 â€” Client workspace UX cleanup + mojibake guard.
+4. D1 â€” model kosztĂłw.
+5. D2 â€” koszty w sprawie.
+6. D3 â€” finanse klienta + koszty.
+7. D4 â€” miesiÄ™czny wykres.
+8. D5 â€” regresja finansĂłw/kosztĂłw/UI.
+
+NajbliĹĽszy krok po PASS D0A:
+- wdroĹĽyÄ‡ D0, ale tylko na bazie mapy `_project/VISUAL_SOURCE_OF_TRUTH.md` i bez lokalnych wyjÄ…tkĂłw UI.
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_NEXT_STEPS_END -->
+

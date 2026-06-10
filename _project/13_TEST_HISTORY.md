@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 13_TEST_HISTORY - CloseFlow / LeadFlow
 
 ## V6
@@ -2203,3 +2203,20 @@ Run R7 guard/test, Stage231B0 regression, delete-flow regressions, build and git
 - Naprawa: dokumentacja etapu nie zapisuje już przykładowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentację zakresu R15.
 - Guard blokuje uszkodzenia kodowania, puste linie na EOF i brak aktualnych polskich fraz w ClientDetail.
 - Commit/push tylko po PASS guardów, build i git diff --check.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TEST_HISTORY_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” test history
+
+Do uruchomienia lokalnie przez apply script:
+- `node scripts/check-stage231d0a-visual-source-truth-consistency.cjs`
+- `node --test tests/stage231d0a-visual-source-truth-consistency.test.cjs`
+- `npm run build`
+- `git diff --check`
+
+Warunek PASS:
+- D0A ma mapÄ™ Visual Source of Truth,
+- roadmapa zawiera D0A przed D0,
+- istniejÄ…cy UI korzysta z wykrytych ĹşrĂłdeĹ‚ prawdy,
+- dokumentacja i payload Obsidiana nie zawierajÄ… mojibake.
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TEST_HISTORY_END -->
+

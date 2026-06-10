@@ -1,4 +1,4 @@
-# 03_CURRENT_STAGE - CloseFlow / LeadFlow
+﻿# 03_CURRENT_STAGE - CloseFlow / LeadFlow
 
 Aktualny etap: pelna pamiec projektu + Obsidian + czytelne nazwy + raporty wykonania.
 
@@ -1841,3 +1841,43 @@ STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION: active/closed case separation, re
 - Naprawa: dokumentacja etapu nie zapisuje już przykładowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentację zakresu R15.
 - Guard blokuje uszkodzenia kodowania, puste linie na EOF i brak aktualnych polskich fraz w ClientDetail.
 - Commit/push tylko po PASS guardów, build i git diff --check.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” Visual Source of Truth Inventory + UI Consistency Guard
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+STAGE231D0A_VISUAL_SOURCE_TRUTH_CONSISTENCY
+
+Cel: zamknÄ…Ä‡ obowiÄ…zkowy etap przed D0, ĹĽeby nastÄ™pne zmiany UI nie tworzyĹ‚y lokalnych, niespĂłjnych kafelkĂłw, ikon, badgeâ€™y, przyciskĂłw ani wierszy finansowych.
+
+Fakty z repo:
+- Button source of truth: `src/components/ui/button.tsx`.
+- Action/button cluster source of truth: `src/components/entity-actions.tsx`.
+- Entity icons source of truth: `src/components/ui-system/icon-registry.ts` + `EntityIcon.tsx`.
+- Badge/status source of truth: `src/components/ui-system/StatusPill.tsx`.
+- Card/tile source of truth: `SurfaceCard.tsx`, `MetricTile.tsx`, `OperatorMetricTiles`, `closeflow-record-list-source-truth.css`.
+- Finance rows source of truth: `src/components/finance/FinanceMiniSummary.tsx` + `src/styles/finance/closeflow-finance.css`.
+- Page/detail canvas source of truth: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
+
+Decyzja:
+- Nie tworzymy w D0A nowych runtime komponentĂłw typu `EntityBadge`, `EntityCardShell` ani nowego `visual-source-truth.css`, bo repo ma juĹĽ lepsze istniejÄ…ce ĹşrĂłdĹ‚a prawdy.
+- D0A jest etapem inventory + guard + dokumentacja. Dopiero D0 moĹĽe przebudowywaÄ‡ kartÄ™ klienta/sprawy na podstawie tej mapy.
+
+KolejnoĹ›Ä‡ roadmapy:
+R10 â€” domkniÄ™cie archiwum spraw
+D0A â€” Visual Source of Truth Inventory + UI Consistency Guard
+D0 â€” Client workspace UX cleanup + mojibake guard
+D1 â€” model kosztĂłw
+D2 â€” koszty w sprawie
+D3 â€” finanse klienta + koszty
+D4 â€” miesiÄ™czny wykres
+D5 â€” regresja finansĂłw/kosztĂłw/UI
+
+Testy:
+- `node scripts/check-stage231d0a-visual-source-truth-consistency.cjs`
+- `node --test tests/stage231d0a-visual-source-truth-consistency.test.cjs`
+- `npm run build`
+- `git diff --check`
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_END -->
+

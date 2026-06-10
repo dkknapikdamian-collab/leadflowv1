@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
 
 ## Guard dodany przez V9
@@ -2743,3 +2743,25 @@ node scripts/check-stage231b0-r7-case-archive-restore-navigation.cjs
 - Naprawa: dokumentacja etapu nie zapisuje już przykładowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentację zakresu R15.
 - Guard blokuje uszkodzenia kodowania, puste linie na EOF i brak aktualnych polskich fraz w ClientDetail.
 - Commit/push tylko po PASS guardów, build i git diff --check.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_GUARDS_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” Visual Source of Truth guard
+
+Marker: `STAGE231D0A_VISUAL_SOURCE_TRUTH_CONSISTENCY`
+
+Guard:
+- `scripts/check-stage231d0a-visual-source-truth-consistency.cjs`
+
+Test:
+- `tests/stage231d0a-visual-source-truth-consistency.test.cjs`
+
+Chroniona klasa bĹ‚Ä™du:
+- lokalne style kart/kafelkĂłw bez mapy VST,
+- nowe ikony bez centralnego registry,
+- nowe badgeâ€™e/statusy bez `StatusPill`,
+- niespĂłjne przyciski akcji bez `Button`/`entity-actions`,
+- finance rows bez `FinanceMiniSummary`/finance CSS,
+- powrĂłt mojibake w dokumentach D0A,
+- pominiÄ™cie roadmapy D0A przed D0.
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_GUARDS_END -->
+

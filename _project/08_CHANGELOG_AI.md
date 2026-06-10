@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 08_CHANGELOG_AI - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
@@ -2804,3 +2804,17 @@ Added closed case archive view, restore flow, client closed cases section and gu
 - Naprawa: dokumentacja etapu nie zapisuje już przykładowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentację zakresu R15.
 - Guard blokuje uszkodzenia kodowania, puste linie na EOF i brak aktualnych polskich fraz w ClientDetail.
 - Commit/push tylko po PASS guardów, build i git diff --check.
+
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CHANGELOG_START -->
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” Visual Source of Truth Inventory + UI Consistency Guard
+
+Dodano:
+- centralny raport `_project/VISUAL_SOURCE_OF_TRUTH.md`,
+- run report `_project/runs/STAGE231D0A_VISUAL_SOURCE_TRUTH_INVENTORY_RUN.md`,
+- payload Obsidian `_project/obsidian_payloads/STAGE231D0A_VISUAL_SOURCE_TRUTH_OBSIDIAN_PAYLOAD.md`,
+- guard i test D0A,
+- wpis roadmapy D0A przed D0.
+
+Nie zmieniano runtime UI, danych, SQL, finansĂłw, Google Auth ani Google Calendar.
+<!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CHANGELOG_END -->
+

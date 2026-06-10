@@ -983,7 +983,9 @@
     "check:stage229b2-google-calendar-pending-delete-remote-worker": "node scripts/check-stage229b2-google-calendar-pending-delete-remote-worker.cjs",
     "test:stage229b2-google-calendar-pending-delete-remote-worker": "node --test tests/stage229b2-google-calendar-pending-delete-remote-worker.test.cjs",
     "check:stage229c-calendar-delete-sync-regression-guards": "node scripts/check-stage229c-calendar-delete-sync-regression-guards.cjs",
-    "test:stage229c-calendar-delete-sync-regression-guards": "node --test tests/stage229c-calendar-delete-sync-regression-guards.test.cjs"
+    "test:stage229c-calendar-delete-sync-regression-guards": "node --test tests/stage229c-calendar-delete-sync-regression-guards.test.cjs",
+    "check:stage231d0a-visual-source-truth-consistency": "node scripts/check-stage231d0a-visual-source-truth-consistency.cjs",
+    "test:stage231d0a-visual-source-truth-consistency": "node --test tests/stage231d0a-visual-source-truth-consistency.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
