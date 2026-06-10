@@ -1,3 +1,6 @@
+// STAGE231B0_R9_R10_CLIENTDETAIL_JSX_SECTION_CLOSE_REPAIR: restores central section close before right rail aside.
+// STAGE231B0_R9_R5_CLIENT_HISTORY_RENDERER_GUARD_REPAIR: Client history closed cases render via shared smart card renderer.
+// STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -133,6 +136,8 @@ import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-miss
 import { isClosedCaseStatus } from '../lib/cases';
 const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH';
 void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
+const STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL = 'STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL';
+void STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL;
 
 type Stage231B0R7ClientCaseListRecord = {
   id?: string | null;
@@ -2126,10 +2131,11 @@ function ClientDetail() {
     return (
       <article key={caseId || title} className={cardClassName} data-client-case-smart-card="true" data-stage231b0-r8-client-case-card={options.closed ? 'closed' : 'active'}>
         <div className="client-detail-case-smart-main">
-          <span className="client-detail-case-smart-kicker">{options.closed ? 'Sprawa zamknięta' : 'Sprawa'}</span>
+          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIĘTA' : 'Sprawa'}</span>
           <strong>{title}</strong>
           <div className="client-detail-case-smart-meta">
             <span data-stage231b0-r8-case-status-label="true">{status}</span>
+            {options.closed ? <span className="client-detail-case-smart-last-activity-stage231b0-r9">Ostatnia aktywność: {formatDateTime(caseRecord?.closedAt || caseRecord?.lastActivityAt || caseRecord?.updatedAt || caseRecord?.createdAt)}</span> : null}
             <span>Kompletność {completeness}%</span>
           </div>
         </div>
@@ -2187,7 +2193,7 @@ function ClientDetail() {
   };
   const clientNextAction = buildClientNextAction(
     leads,
-    cases,
+    activeCases,
     clientTasks,
     clientEvents,
     String(clientId || ''),
@@ -2867,16 +2873,16 @@ return (
             ) : null}
 
             {activeTab === 'cases' ? (
-              <div className="client-detail-tab-panel" data-client-cases-list-panel="true" data-stage231b0-r8-client-case-relation-truth="true">
+              <div className="client-detail-tab-panel" data-client-cases-list-panel="true" data-stage231b0-r9-client-active-cases-only="true">
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy aktywne</h2>
-                      <p>Zamknięte sprawy nie są aktywną pracą operacyjną klienta.</p>
+                      <p>Zamknięte sprawy są w Historii klienta, bo nie są aktywną pracą operacyjną.</p>
                     </div>
                   </div>
 
-                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true" data-client-cases-without-lead-view="true" data-stage231b0-r8-active-client-cases="true">
+                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true" data-client-cases-without-lead-view="true" data-stage231b0-r9-active-client-cases="true">
                     {activeClientCases.length ? (
                       activeClientCases.map((caseRecord: any) => renderClientCaseSmartCardStage231B0R8(caseRecord, { closed: false }))
                     ) : (
@@ -2884,16 +2890,21 @@ return (
                     )}
                   </div>
                 </section>
+              </div>
+            ) : null}
 
-                <section className="client-detail-section-card client-detail-closed-cases-stage231b0-r8" data-stage231b0-r8-closed-client-cases-section="true">
+            {activeTab === 'history' ? (
+              <div className="client-detail-tab-panel" data-stage231b0-r9-client-history-tab="true">
+                <section className="client-detail-section-card client-detail-closed-cases-history-stage231b0-r9" data-stage231b0-r9-history-closed-client-cases-section="true">
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy zamknięte</h2>
-                      <p>Historia, prowizje i wpłaty zostają przy kliencie.</p>
+                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIĘTA</span>
+                      <p>Archiwum operacyjne klienta. Historia, prowizje i wpłaty zostają przy relacji.</p>
                     </div>
                   </div>
 
-                  <div className="client-detail-case-smart-list" data-stage231b0-r8-closed-client-cases="true">
+                  <div className="client-detail-case-smart-list" data-stage231b0-r9-history-closed-client-cases="true">
                     {closedClientCases.length ? (
                       closedClientCases.map((caseRecord: any) => renderClientCaseSmartCardStage231B0R8(caseRecord, { closed: true }))
                     ) : (
@@ -2901,11 +2912,7 @@ return (
                     )}
                   </div>
                 </section>
-              </div>
-            ) : null}
 
-{activeTab === 'history' ? (
-              <div className="client-detail-tab-panel">
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
@@ -2931,6 +2938,8 @@ return (
                 </section>
               </div>
             ) : null}
+
+
           </section>
           <aside className="client-detail-right-rail" aria-label="Panel klienta" data-stage216m-r4-client-right-rail="true">
             <section className="right-card client-detail-right-card client-detail-upcoming-actions-card" data-stage216m-r4-client-upcoming-actions-card="true">

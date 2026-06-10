@@ -2410,3 +2410,21 @@ aside.case-detail-right-rail::after {
   background: rgba(59, 130, 246, 0.13);
   color: #bfdbfe;
 }
+
+
+/* STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL: keep case detail actions on the right after R8. */
+.case-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.case-detail-header-copy {
+  order: 1;
+}
+
+.case-detail-header-actions-stage231b0 {
+  order: 2;
+  margin-left: auto;
+  justify-content: flex-end;
+}

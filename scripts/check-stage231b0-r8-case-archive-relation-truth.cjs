@@ -49,11 +49,29 @@ requireIncludes(cases, '!isClosedCaseStatus(record.status)', 'Cases');
 requireIncludes(cases, 'isClosedCaseStatus(record.status)', 'Cases');
 requireIncludes(cases, 'total: activeCases.length', 'Cases stats');
 requireIncludes(cases, 'closed: closedCases.length', 'Cases stats');
-requireIncludes(cases, "const sourceCases = caseView === 'closed' ? closedCases : activeCases", 'Cases filtered source');
-requireIncludes(cases, "setSearchParams({ view: 'closed' })", 'Cases closed URL');
+if (!(
+  cases.includes("const sourceCases = caseView === 'closed' ? closedCases : activeCases") ||
+  (
+    cases.includes('const sourceCases =') &&
+    cases.includes("caseView === 'closed' ? closedCases :") &&
+    cases.includes("caseView === 'all' ? cases :") &&
+    cases.includes('activeCases;')
+  )
+)) {
+  fail('Cases filtered source missing R8/R9 active/closed/all source model');
+}
+// R9_R2_COMPAT_SOURCE_CASES_MODEL
+if (!(cases.includes("setSearchParams({ view: 'closed' })") || cases.includes("setSearchParams({ view })"))) {
+  fail('Cases closed URL missing R8/R9 setSearchParams model');
+}
+// R9_R2_COMPAT_URL_SETTER
 requireIncludes(cases, "label: 'Sprawy zamknięte'", 'Cases right rail');
 requireIncludes(cases, "value: stats.closed", 'Cases right rail');
 requireIncludes(cases, 'Brak zamkniętych spraw', 'Cases closed empty state');
+if (!(cases.includes("searchParams.get('view')") || cases.includes('searchParams.get("view")'))) {
+  fail('Cases URL reader missing searchParams.get view model');
+}
+// R9_R2_COMPAT_URL_READER
 
 const toggleCountStage231B0R9 = cases.split('const toggleCaseView = (view: CaseView) => {').length - 1;
 if (toggleCountStage231B0R9 !== 1) {

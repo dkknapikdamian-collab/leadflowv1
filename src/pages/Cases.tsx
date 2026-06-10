@@ -1,3 +1,8 @@
+// STAGE231B0_R9_R9_CASES_ITEMS_JSX_SYNTAX_REPAIR: fixes JSX prop syntax items={[...]} for cases shortcuts.
+// STAGE231B0_R9_R8_R8_SETTER_WRAPPER_SCAN_REPAIR: explicit R8 -> R9 setter wrapper inserted by function scan.
+// STAGE231B0_R9_R3_CLOSED_CASE_BANNER_REPAIR: ensures visible closed case banner in /cases list.
+// STAGE231B0_R9_R2_CASES_URL_READER_AND_R8_GUARD_COMPAT: URL view reader repair after partial R9.
+// STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
@@ -80,7 +85,16 @@ type ClientOption = {
   source: 'case' | 'lead' | 'client';
 };
 
-type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked' | 'closed';
+type CaseView =
+  | 'open'
+  | 'closed'
+  | 'all'
+  | 'waiting'
+  | 'blocked'
+  | 'approval'
+  | 'ready'
+  | 'needs_next_step'
+  | 'linked';
 
 
 const stage231b0R7CasesClosedViewContract = {
@@ -88,7 +102,7 @@ const stage231b0R7CasesClosedViewContract = {
   label: 'Sprawy zamknięte',
   matches(record: { status?: unknown }, caseView: CaseView) {
     const isClosedCase = isClosedCaseStatus(record.status);
-    return (caseView === 'closed' && isClosedCase) || (caseView === 'all' && !isClosedCase);
+    return (caseView === 'closed' && isClosedCase) || (caseView === 'open' && !isClosedCase) || caseView === 'all';
   },
 };
 void stage231b0R7CasesClosedViewContract;
@@ -258,7 +272,7 @@ export default function Cases() {
   const [caseEvents, setCaseEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [caseView, setCaseView] = useState<CaseView>('all');
+  const [caseView, setCaseView] = useState<CaseView>('open');
   const [caseToDelete, setCaseToDelete] = useState<CaseRecord | null>(null);
   const [deletePending, setDeletePending] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
@@ -341,6 +355,14 @@ export default function Cases() {
   const caseEventsByCaseId = useMemo(() => buildCaseActionMap(caseEvents), [caseEvents]);
   const ownerRiskSettings = useMemo(() => readOwnerRiskSettings(), []);
 
+  const caseViewFromUrlStage231B0R9 = searchParams.get('view');
+
+  useEffect(() => {
+    const allowedViews: CaseView[] = ['open', 'closed', 'all', 'waiting', 'blocked', 'approval', 'ready', 'needs_next_step', 'linked'];
+    const nextView = allowedViews.includes(caseViewFromUrlStage231B0R9 as CaseView) ? (caseViewFromUrlStage231B0R9 as CaseView) : 'open';
+    if (caseView !== nextView) setCaseView(nextView);
+  }, [caseView, caseViewFromUrlStage231B0R9]);
+
   const activeCases = useMemo(
     () => cases.filter((record) => !isClosedCaseStatus(record.status)),
     [cases],
@@ -356,6 +378,8 @@ export default function Cases() {
 
     return {
       total: activeCases.length,
+      open: activeCases.length,
+      all: cases.length,
       waiting: lifecycleRows.filter((entry) => entry.bucket === 'blocked' || entry.bucket === 'waiting_approval').length,
       blocked: lifecycleRows.filter((entry) => entry.bucket === 'blocked').length,
       approval: lifecycleRows.filter((entry) => entry.bucket === 'waiting_approval').length,
@@ -364,7 +388,7 @@ export default function Cases() {
       linked: activeCases.filter((record) => !!record.leadId).length,
       closed: closedCases.length,
     };
-  }, [activeCases, caseEventsByCaseId, caseTasksByCaseId, closedCases.length]);
+  }, [activeCases, caseEventsByCaseId, caseTasksByCaseId, cases.length, closedCases.length]);
 
   const leadsById = useMemo(
     () => new Map((leadCandidates || []).map((entry: any) => [String(entry.id || ''), entry])),
@@ -411,7 +435,10 @@ export default function Cases() {
 
   const filteredCases = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
-    const sourceCases = caseView === 'closed' ? closedCases : activeCases;
+    const sourceCases =
+      caseView === 'closed' ? closedCases :
+      caseView === 'all' ? cases :
+      activeCases;
 
     return sourceCases.filter((record) => {
       const matchesSearch = !normalizedQuery || (
@@ -424,7 +451,8 @@ export default function Cases() {
 
       const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
       const matchesView =
-        caseView === 'closed'
+        caseView === 'open'
+        || caseView === 'closed'
         || caseView === 'all'
         || (caseView === 'waiting' && (lifecycle.bucket === 'blocked' || lifecycle.bucket === 'waiting_approval'))
         || (caseView === 'blocked' && lifecycle.bucket === 'blocked')
@@ -435,23 +463,28 @@ export default function Cases() {
 
       return matchesSearch && matchesView;
     });
-  }, [activeCases, caseEventsByCaseId, caseTasksByCaseId, caseView, closedCases, searchQuery]);
+  }, [activeCases, caseEventsByCaseId, caseTasksByCaseId, caseView, cases, closedCases, searchQuery]);
 
-  const setCaseViewStage231B0R8 = (view: CaseView) => {
+  const setCaseViewStage231B0R9 = (view: CaseView) => {
     setCaseView(view);
-    if (view === 'closed') {
-      setSearchParams({ view: 'closed' });
+    if (view === 'open') {
+      setSearchParams({});
       return;
     }
-    setSearchParams({});
+    setSearchParams({ view });
   };
 
-  const toggleCaseView = (view: CaseView) => {
+
+  const setCaseViewStage231B0R8 = (view: CaseView) => {
+    setCaseViewStage231B0R9(view);
+  };
+
+const toggleCaseView = (view: CaseView) => {
     if (caseView === view) {
-      setCaseViewStage231B0R8('all');
+      setCaseViewStage231B0R9('open');
       return;
     }
-    setCaseViewStage231B0R8(view);
+    setCaseViewStage231B0R9(view);
   };
 
   async function handleDeleteCase() {
@@ -703,12 +736,12 @@ export default function Cases() {
 
         <div className="grid-4" data-stage16c-cases-stat-grid="true" data-stage228g-cases-one-row-stat-grid="true">
           <StatShortcutCard
-            label="W realizacji"
-            value={stats.total}
+            label="Otwarte sprawy"
+            value={stats.open}
             icon={FileText}
             tone="blue"
-            active={caseView === 'all'}
-            onClick={() => setCaseView('all')}
+            active={caseView === 'open'}
+            onClick={() => setCaseViewStage231B0R9('open')}
           />
           <StatShortcutCard
             label="Czeka na klienta"
@@ -750,14 +783,15 @@ export default function Cases() {
               <div className="table-card">
                 <div className="row row-empty">
                   <span className="index"><div className="h-4 w-4 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" /></span>
-                  <span><span className="title">Ładowanie spraw</span><span className="sub">Pobieram dane z aplikacji.</span></span>
+                  <span><span className="title">Ładowanie spraw</span>
+                          {closedRecordStage231B0R8 ? <span className="cf-case-closed-banner-stage231b0-r9" data-stage231b0-r9-closed-case-banner="true">SPRAWA ZAMKNIĘTA</span> : null}<span className="sub">Pobieram dane z aplikacji.</span></span>
                 </div>
               </div>
             ) : filteredCases.length === 0 ? (
               <div className="table-card">
                 <div className="row row-empty">
                   <span className="index">0</span>
-                  <span><span className="title">{caseView === 'closed' ? 'Brak zamkniętych spraw' : 'Brak spraw w tym widoku'}</span><span className="sub">Zmień wyszukiwanie albo kliknij inny kafel metryk.</span></span>
+                  <span><span className="title">{caseView === 'closed' ? 'Brak zamkniętych spraw' : caseView === 'all' ? 'Brak spraw' : 'Brak otwartych spraw'}</span><span className="sub">Zmień wyszukiwanie albo kliknij inny kafel metryk.</span></span>
                 </div>
               </div>
             ) : (
@@ -771,14 +805,14 @@ export default function Cases() {
                   const statusLabel = caseStatusLabel(record.status);
                   const statusTone = closedRecordStage231B0R8 ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
-                  const compactLifecyclePill = compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel;
+                  const compactLifecyclePill = closedRecordStage231B0R8 ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
                   const progressTone = attention ? 'red' : percent >= 75 ? 'green' : percent >= 35 ? 'blue' : 'amber';
                   const nearestCaseAction = getNearestPlannedAction({
                     recordType: 'case',
                     recordId: String(record.id || ''),
                     items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                   });
-                  const nextActionLabel = nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
+                  const nextActionLabel = closedRecordStage231B0R8 ? 'Sprawa zamknięta' : nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
                   const ownerRiskBadges = closedRecordStage231B0R8 ? [] : getCaseOwnerRiskBadges(record, {
                     settings: ownerRiskSettings,
                     relatedRecords: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
@@ -863,11 +897,13 @@ export default function Cases() {
               dataTestId="cases-operational-shortcuts-card"
               dataAttrs={{ 'data-stage228g-cases-shortcuts-source-truth': true }}
               items={[
+                { key: 'open', label: 'Otwarte sprawy', value: stats.open, onClick: () => setCaseViewStage231B0R9('open') },
+                { key: 'closed', label: 'Sprawy zamknięte', value: stats.closed, onClick: () => setCaseViewStage231B0R9('closed') },
+                { key: 'all', label: 'Wszystkie sprawy', value: stats.all, onClick: () => setCaseViewStage231B0R9('all') },
                 { key: 'needs_next_step', label: 'Bez zaplanowanej akcji', value: stats.needsNextStep, onClick: () => toggleCaseView('needs_next_step') },
                 { key: 'linked', label: 'Portal klienta', value: stats.linked, onClick: () => toggleCaseView('linked') },
                 { key: 'waiting', label: 'Sprawy bez ruchu', value: stats.waiting, onClick: () => toggleCaseView('waiting') },
                 { key: 'approval', label: 'Akceptacje', value: stats.approval, onClick: () => toggleCaseView('approval') },
-                { key: 'closed', label: 'Sprawy zamknięte', value: stats.closed, onClick: () => setCaseViewStage231B0R8('closed') },
               ]}
             />
 

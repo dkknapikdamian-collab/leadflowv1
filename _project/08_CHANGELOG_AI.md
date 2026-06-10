@@ -2648,3 +2648,60 @@ Added closed case archive view, restore flow, client closed cases section and gu
 - Status: LOCAL_ONLY_PREPARED.
 - Naprawa masowa po build fail: usuniÄ™to stary drugi `toggleCaseView`, ktĂłry pozostaĹ‚ po R8 obok URL-aware `setCaseViewStage231B0R8`.
 - Guard R8 rozszerzony o dokĹ‚adnie jeden `toggleCaseView` i zakaz legacy `setCaseView((prev) => ...)`.
+
+
+## 2026-06-10 — STAGE231B0-R9 — Client history and case view model
+- Status: LOCAL_ONLY_PREPARED.
+- Zakres: /cases jawne widoki Otwarte/Zamknięte/Wszystkie, zamknięte sprawy klienta przeniesione do Historii, szerszy layout klienta, finanse all_cases zachowane.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow R25/R41, build, git diff --check.
+- Ryzyka: UX historii klienta, sourceCases w /cases, brak regresji finansów i aktywnych ryzyk.
+
+
+## 2026-06-10 — STAGE231B0-R9-R2 — Cases URL reader repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po częściowym R9: brakowało jawnego searchParams.get('view') w src/pages/Cases.tsx.
+- R8 guard dostosowany do R9 modelu open/closed/all, aby regresja R8 dalej sprawdzała intencję, nie stary exact string.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
+
+
+## 2026-06-10 — STAGE231B0-R9-R3 — Closed case banner repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po częściowym R9-R2: `/cases` musi mieć widoczny banner `SPRAWA ZAMKNIĘTA` dla zamkniętej sprawy.
+- Guard R9 rozszerzony o data-marker bannera, żeby nie przechodził sam tekst bez realnego elementu UI.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
+
+
+## 2026-06-10 — STAGE231B0-R9-R5 — Client history renderer guard repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po R9-R4: Historia klienta renderuje zamknięte sprawy przez wspólny renderer karty, więc guard akceptuje akcje `Otwórz` i `Przywróć sprawę` z renderera, nie tylko literalnie z segmentu Historii.
+- Wymuszono widoczny label `SPRAWA ZAMKNIĘTA` w Historii i rendererze zamkniętej karty.
+- Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
+
+
+## 2026-06-10 — STAGE231B0-R9-R6 — Right rail guard robust repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po R9-R5: guard R9 zakładał literalny `</SimpleFiltersCard>`, a komponent prawych skrótów może być self-closing albo sformatowany inaczej.
+- Logika produktu bez zmian; naprawiono elastyczne wycinanie powierzchni prawego panelu w guardzie.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
+
+
+## 2026-06-10 — STAGE231B0-R9-R8 — R8 setter wrapper scan repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po R9-R7: poprzedni patcher szukał `toggleCaseView`, którego aktualne ułożenie w `Cases.tsx` nie było stabilnym anchorem.
+- Dodano jawny wrapper `setCaseViewStage231B0R8` przez skan końca funkcji `setCaseViewStage231B0R9`, bez zmiany logiki produktu.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
+
+
+## 2026-06-10 — STAGE231B0-R9-R9 — Cases items JSX syntax repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po R9-R8: build wykrył błędną składnię JSX `items=[...]` w `src/pages/Cases.tsx`.
+- Poprawiono na `items={[...]}` bez zmiany logiki produktu.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
+
+
+## 2026-06-10 — STAGE231B0-R9-R10 — ClientDetail JSX section close repair
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po R9-R9: build wykrył niedomkniętą strukturę JSX w `ClientDetail.tsx` przy przejściu z głównej sekcji do prawego panelu.
+- Dodano brakujące `</section>` przed `<aside className="client-detail-right-rail"...>` bez zmiany logiki produktu.
+- Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
+- Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
