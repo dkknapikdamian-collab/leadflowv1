@@ -14,5 +14,3 @@ function fail(message) {
 function assertIncludes(source, needle, label) {
   if (!source.includes(needle)) fail(`missing ${label}: ${needle}`);
 }
-
-function assertNotIncludes(source, needle, label) {
