@@ -1095,7 +1095,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
       </article>
 
       <article className="client-detail-top-tile entity-overview-tile entity-overview-tile-cases" data-client-top-tile="cases-summary">
-        <div className="entity-overview-tile-head">
+        <div className="entity-overview-tile-head" data-stage231d0c-trial-top-card="true">
           <span className="entity-overview-tile-icon"><EntityIcon entity="case" className="h-4 w-4" /></span>
           <small>Sprawy</small>
         </div>

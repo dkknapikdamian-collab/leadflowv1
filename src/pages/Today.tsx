@@ -1341,7 +1341,7 @@ function TodayPipelineValueCard({ leads, cases = [] }: { leads: any[]; cases?: a
                   <TrendingUp className="h-4 w-4" />
                   Największa wartość leadów
                 </div>
-                <div className="grid gap-2">
+                <div className="grid gap-2" data-stage231d0c-trial-top-card="true">
                   {topLeads.map((lead) => (
                     <Link
                       key={lead.id}

@@ -2237,8 +2237,6 @@ NASTEPNY KROK:
 - The deletion activity stays in history, but it must not recreate active blocker state.
 - Similar delete behavior in ClientDetail should be checked after LeadDetail is confirmed.
 
-
-
 ## 2026-06-08 22:20 Europe/Warsaw - STAGE228R19R2 missing item active source truth
 
 - status: LOCAL_APPLIED_PENDING_MANUAL_TEST
@@ -2466,3 +2464,19 @@ Marker: STAGE231D0B-R8-MASS-ENCODING-RESCUE
 Tryb: local-only rescue ZIP.
 Przyczyna: bad commit 7dd40688 został wypchnięty mimo FAIL guardu.
 Zakres: kontrolowany sweep allowlisty STAGE231D0B + raport klasowy mojibake.
+
+## 2026-06-10 22:00 Europe/Warsaw - STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
+
+Marker: STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
+Tryb: local-only ZIP after STAGE231D0B-R8B closure.
+Zakres: UI/CSS only, no SQL/Supabase.
+
+## 2026-06-10 22:20 Europe/Warsaw - STAGE231D0C-R2-GUARD-SYNTAX-FIX
+
+Marker: STAGE231D0C-R2-GUARD-SYNTAX-FIX
+Tryb: local-only ZIP; patch only guard syntax and docs.
+
+## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R3-PREVIEW-STRING-RESCUE
+
+Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
+Tryb: local-only ZIP; restore preview source and patch guard.

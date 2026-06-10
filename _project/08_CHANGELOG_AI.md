@@ -2330,8 +2330,6 @@ NASTEPNY KROK:
 - The deletion activity stays in history, but it must not recreate active blocker state.
 - Similar delete behavior in ClientDetail should be checked after LeadDetail is confirmed.
 
-
-
 ## 2026-06-08 22:20 Europe/Warsaw - STAGE228R19R2 missing item active source truth
 
 - status: LOCAL_APPLIED_PENDING_MANUAL_TEST
@@ -2641,8 +2639,6 @@ Added closed case archive view, restore flow, client closed cases section and gu
 - Status: LOCAL_ONLY_PREPARED.
 - Naprawa masowa po build fail: usunięto sklejone anchory `const X = useMemo( const X = useMemo(` po częściowym R2/R4/R6/R7.
 - Zakres: dotknięte pliki TSX, whitespace, sanity check R8, pełny build/test.
-
-
 
 ## 2026-06-10 — STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
@@ -2992,3 +2988,22 @@ Marker: STAGE231D0B-R8-MASS-ENCODING-RESCUE
 - Naprawiono klasę błędu: mojibake po STAGE231D0B.
 - Przepisano guard tak, żeby nie akceptował uszkodzonych polskich znaków.
 - Dodano masowy sweep report encodingu dla src, scripts i _project.
+
+## 2026-06-10 22:00 Europe/Warsaw - STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
+
+Marker: STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
+- Dodano top layout cleanup dla /clients.
+- Trial banner ma dedykowany top-card marker.
+- Filtry proste dostały centered rail layout.
+
+## 2026-06-10 22:20 Europe/Warsaw - STAGE231D0C-R2-GUARD-SYNTAX-FIX
+
+Marker: STAGE231D0C-R2-GUARD-SYNTAX-FIX
+- Fixed STAGE231D0C guard SyntaxError.
+- D0C layout patch remains unchanged.
+
+## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R3-PREVIEW-STRING-RESCUE
+
+Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
+- Restored UiPreview static HTML source from HEAD to fix build.
+- Updated D0C guard to avoid mutating/checking static HTML preview strings as live source.
