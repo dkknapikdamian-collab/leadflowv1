@@ -2705,3 +2705,12 @@ Added closed case archive view, restore flow, client closed cases section and gu
 - Dodano brakujące `</section>` przed `<aside className="client-detail-right-rail"...>` bez zmiany logiki produktu.
 - Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
+
+
+## 2026-06-10 — STAGE231B0-R11 — Client width + Cases runtime guard
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa po R9 push: `/cases` rzucał runtime `ReferenceError: closedRecordStage231B0R8 is not defined` przy wejściu w widok spraw.
+- Naprawa: wolne użycia `closedRecordStage231B0R8` w JSX zastąpiono bezpiecznym `isClosedCaseStatus(record?.status)`.
+- UX: `ClientDetail` ma szeroki układ jak widok sprawy, z lewym wyrównaniem i breakpointami skalowania.
+- Dodano guard `scripts/check-stage231b0-r11-client-width-and-cases-runtime.cjs` oraz test node.
+- Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.

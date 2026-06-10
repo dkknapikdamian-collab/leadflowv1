@@ -1,3 +1,4 @@
+// STAGE231B0_R11_CLIENT_WIDTH_AND_CASES_RUNTIME_GUARD: remove runtime free closedRecordStage231B0R8 usage from JSX.
 // STAGE231B0_R9_R9_CASES_ITEMS_JSX_SYNTAX_REPAIR: fixes JSX prop syntax items={[...]} for cases shortcuts.
 // STAGE231B0_R9_R8_R8_SETTER_WRAPPER_SCAN_REPAIR: explicit R8 -> R9 setter wrapper inserted by function scan.
 // STAGE231B0_R9_R3_CLOSED_CASE_BANNER_REPAIR: ensures visible closed case banner in /cases list.
@@ -784,7 +785,7 @@ const toggleCaseView = (view: CaseView) => {
                 <div className="row row-empty">
                   <span className="index"><div className="h-4 w-4 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" /></span>
                   <span><span className="title">Ładowanie spraw</span>
-                          {closedRecordStage231B0R8 ? <span className="cf-case-closed-banner-stage231b0-r9" data-stage231b0-r9-closed-case-banner="true">SPRAWA ZAMKNIĘTA</span> : null}<span className="sub">Pobieram dane z aplikacji.</span></span>
+                          {isClosedCaseStatus(record?.status) ? <span className="cf-case-closed-banner-stage231b0-r9" data-stage231b0-r9-closed-case-banner="true">SPRAWA ZAMKNIĘTA</span> : null}<span className="sub">Pobieram dane z aplikacji.</span></span>
                 </div>
               </div>
             ) : filteredCases.length === 0 ? (
@@ -798,22 +799,22 @@ const toggleCaseView = (view: CaseView) => {
               <div className="table-card">
                 {filteredCases.map((record, index) => {
                   const closedRecordStage231B0R8 = isClosedCaseStatus(record.status);
-                  const attention = closedRecordStage231B0R8 ? false : caseNeedsAttention(record);
+                  const attention = isClosedCaseStatus(record?.status) ? false : caseNeedsAttention(record);
                   const percent = Math.round(record.completenessPercent || 0);
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
                   const statusLabel = caseStatusLabel(record.status);
-                  const statusTone = closedRecordStage231B0R8 ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
+                  const statusTone = isClosedCaseStatus(record?.status) ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
-                  const compactLifecyclePill = closedRecordStage231B0R8 ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
+                  const compactLifecyclePill = isClosedCaseStatus(record?.status) ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
                   const progressTone = attention ? 'red' : percent >= 75 ? 'green' : percent >= 35 ? 'blue' : 'amber';
                   const nearestCaseAction = getNearestPlannedAction({
                     recordType: 'case',
                     recordId: String(record.id || ''),
                     items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                   });
-                  const nextActionLabel = closedRecordStage231B0R8 ? 'Sprawa zamknięta' : nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
-                  const ownerRiskBadges = closedRecordStage231B0R8 ? [] : getCaseOwnerRiskBadges(record, {
+                  const nextActionLabel = isClosedCaseStatus(record?.status) ? 'Sprawa zamknięta' : nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
+                  const ownerRiskBadges = isClosedCaseStatus(record?.status) ? [] : getCaseOwnerRiskBadges(record, {
                     settings: ownerRiskSettings,
                     relatedRecords: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                     hasNextStep: Boolean(nearestCaseAction),
