@@ -3674,3 +3674,53 @@ button.client-detail-top-tile-link {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* STAGE231B0_R14_CLIENT_DETAIL_FULL_WIDTH_LAYOUT_LOCK
+   Contract: Client detail uses full available app width between sidebar and right viewport edge.
+*/
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) main,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) [role="main"],
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .app-main,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .main-content,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .page-content,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .workspace-content {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+}
+
+.cf-client-detail-full-width-stage231b0-r14 {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  align-self: stretch !important;
+  justify-self: stretch !important;
+  box-sizing: border-box !important;
+  padding-left: clamp(16px, 1.6vw, 28px) !important;
+  padding-right: clamp(16px, 1.6vw, 28px) !important;
+}
+
+.cf-client-detail-full-width-stage231b0-r14 > *,
+.cf-client-detail-full-width-stage231b0-r14 [class*="client-detail"],
+.cf-client-detail-full-width-stage231b0-r14 [class*="ClientDetail"],
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) [class*="client-detail"],
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) [class*="ClientDetail"],
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-page-shell,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-page-container,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-content-shell,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-content-container,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .page-shell,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .page-container,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .content-shell,
+body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .content-container {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  margin-inline: 0 !important;
+}

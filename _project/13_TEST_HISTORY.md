@@ -2157,3 +2157,9 @@ Run R7 guard/test, Stage231B0 regression, delete-flow regressions, build and git
 - R13-R5 zatrzymał się przed zmianą pliku, bo check starego bloku z HEAD był błędny.
 - Naprawa: uszkodzony zakres `ownerRiskBadges -> metaParts` jest zastępowany kompletną, zamkniętą składniowo deklaracją.
 - `getCaseOwnerRiskBadges` dostaje bezpieczny kontekst lokalny: lifecycle, nearestCaseAction, nextActionLabel, statusLabel, compactLifecycleLabel, compactLifecyclePill, percent, updatedAt.
+
+## 2026-06-10 — STAGE231B0-R14 — Client detail full-width layout lock
+- Status: LOCAL_ONLY_PREPARED.
+- Powód: kartoteka klienta nadal jest centrowana/ściśnięta zamiast używać pełnej szerokości od lewego panelu do prawej krawędzi ekranu.
+- Zakres: marker route w ClientDetail + CSS lock w visual-stage12-client-detail-vnext.css.
+- Kontrakt: brak max-width shell, width 100%, margin-inline 0, stable horizontal spacing during scroll.

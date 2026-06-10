@@ -1,3 +1,4 @@
+// STAGE231B0_R14_CLIENT_DETAIL_FULL_WIDTH_LAYOUT_LOCK: locks client detail page to full available application width.
 // STAGE231B0_R9_R10_CLIENTDETAIL_JSX_SECTION_CLOSE_REPAIR: restores central section close before right rail aside.
 // STAGE231B0_R9_R5_CLIENT_HISTORY_RENDERER_GUARD_REPAIR: Client history closed cases render via shared smart card renderer.
 // STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL
@@ -931,7 +932,7 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
   };
 
   return (
-    <div className="client-detail-edit-field" data-client-contact-repeat={kind}>
+    <div data-stage231b0-r14-client-detail-full-width-lock="true" className="client-detail-edit-field cf-client-detail-full-width-stage231b0-r14" data-client-contact-repeat={kind}>
       <div className="client-detail-edit-label-row">
         <Label>{label}</Label>
         <button
