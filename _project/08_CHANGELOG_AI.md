@@ -2920,3 +2920,11 @@ następny krok:
 - audyt ryzyk: po deployu powtórzyć manualny test Dodaj koszt, bo zmienia się ścieżka API.
 - następny krok: PASS -> push -> deploy -> test ręczny kosztu.
 <!-- STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX_END -->
+
+## 2026-06-10 — STAGE231D2-R5 CaseDetail render crash hotfix
+
+- Status: LOCAL_ONLY_HOTFIX_PREPARED
+- Problem: produkcyjna karta sprawy wysypywała render przez brak definicji caseCostsSummaryStage231D2.
+- Fix: dodano useMemo summary przed JSX i guard blokujący regresję.
+- Testy: R5/D2/D2R3/D1/D0/D0A/Polish/build.
+- Audyt ryzyk: po deployu sprawdzić produkcyjne otwarcie sprawy; /api/case-items 500 to osobny backend problem, jeśli nadal wystąpi.

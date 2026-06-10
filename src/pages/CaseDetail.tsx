@@ -1,3 +1,5 @@
+const STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX = 'STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX';
+void STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX;
 const STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE = 'CaseDetail loads case_costs through fetchCaseCostsFromSupabase and updates the D2 cost panel';
 void STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE;
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
@@ -1943,6 +1945,12 @@ export default function CaseDetail() {
       billingStatus,
     };
   }, [caseFinanceSourceStage220A26]);
+  const caseCostsSummaryStage231D2 = useMemo(() => getCaseCostsSummary({
+    costs: caseCostsStage231D2,
+    commissionRemainingAmount: caseFinance.remaining,
+    currency: caseFinance.currency,
+  }), [caseCostsStage231D2, caseFinance.remaining, caseFinance.currency]);
+
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nearestOperationalAction = useMemo(() => getNearestPlannedAction({
     recordType: 'case',
