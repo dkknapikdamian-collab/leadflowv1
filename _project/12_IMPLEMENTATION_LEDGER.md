@@ -2480,3 +2480,16 @@ Tryb: local-only ZIP; patch only guard syntax and docs.
 
 Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
 Tryb: local-only ZIP; restore preview source and patch guard.
+
+## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
+
+Marker: STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
+Tryb: local-only ZIP.
+Zakres: CSS/Layout only. No SQL/Supabase.
+
+## 2026-06-10 Europe/Warsaw - STAGE231D0C-R5 Layout JSX repair
+
+Status: LOCAL_ONLY_PREPARED.
+Zakres: naprawa błędu builda po R4, gdzie atrybuty trial top-card trafiły na zamykający tag p w src/components/Layout.tsx.
+Testy: D0B guard, D0C guard, D0C-R4 guard, git diff --check, build.
+Ryzyko: guard layoutu nie zastępuje wizualnej kontroli /clients.
