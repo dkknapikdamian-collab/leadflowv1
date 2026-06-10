@@ -1,3 +1,4 @@
+// STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -17,7 +18,8 @@ import {
   fetchTasksFromSupabase,
   updateClientInSupabase,
   updateLeadInSupabase,
-  updateTaskInSupabase
+  updateTaskInSupabase,
+  updateCaseInSupabase
 } from '../lib/supabase-fallback';
 import { toast } from 'sonner';
 const STAGE228R7_R5_CLIENTDETAIL_LAZY_EXPORT_HOTFIX = 'ClientDetail has both named and default exports for lazyPage runtime';
@@ -129,6 +131,8 @@ import { EntityContactInfoList } from '../components/entity-contact-card';
 import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { isClosedCaseStatus } from '../lib/cases';
+const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH';
+void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
 
 type Stage231B0R7ClientCaseListRecord = {
   id?: string | null;
@@ -1404,15 +1408,33 @@ function ClientDetail() {
       meta: String(activity?.eventType || activity?.activityType || 'Aktywność'),
     }));
   }, [clientActivities]);
+  const clientRelatedCasesStage231B0R8 = useMemo(() => {
+    const currentClientId = String(client?.id || clientId || '').trim();
+    const currentClientName = getClientName(client).toLowerCase();
+
+    return cases.filter((caseRecord) => {
+      const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
+      const caseClientName = asText(caseRecord?.clientName).toLowerCase();
+
+      return Boolean(
+        (caseClientId && currentClientId && caseClientId === currentClientId) ||
+        (caseClientName && currentClientName && caseClientName === currentClientName)
+      );
+    });
+  }, [cases, client, clientId]);
+
   const activeCases = useMemo(
-    () => cases.filter((caseRecord) => !['completed', 'canceled'].includes(String(caseRecord.status || ''))),
-    [cases],
+    () => activeClientCasesStage231B0R7(clientRelatedCasesStage231B0R8),
+    [clientRelatedCasesStage231B0R8],
   );
 
   const closedCases = useMemo(
-    () => cases.filter((caseRecord) => ['completed', 'canceled'].includes(String(caseRecord.status || ''))),
-    [cases],
+    () => closedClientCasesStage231B0R7(clientRelatedCasesStage231B0R8),
+    [clientRelatedCasesStage231B0R8],
   );
+
+  const activeClientCases = activeCases;
+  const closedClientCases = closedCases;
 
   const waitingCaseCount = useMemo(
     () => cases.filter((caseRecord) => ['waiting_on_client', 'blocked', 'to_approve', 'on_hold'].includes(String(caseRecord.status || ''))).length,
@@ -1477,7 +1499,9 @@ function ClientDetail() {
       hasMixedCurrencies: new Set(currencies).size > 1,
     };
   }, [cases, client?.currency, clientFinanceSummary.remainingTotal, leads, payments]);
-  const mainCase = activeCases[0] || cases[0] || null;
+  const mainCase = activeCases[0] || null;
+  const latestClosedCase = closedCases[0] || null;
+  void latestClosedCase;
   const mainCaseCompleteness = mainCase ? getCaseCompleteness(mainCase) : 0;
   const activeTaskCount = useMemo(() => clientTasks.filter((task) => !isDoneStatus(task.status)).length, [clientTasks]);
 
@@ -1493,7 +1517,7 @@ function ClientDetail() {
   }, [clientTasks]);
 
   const activeEventCount = useMemo(() => clientEvents.filter((event) => !isDoneStatus(event.status)).length, [clientEvents]);
-  const nextAction = useMemo(() => buildClientNextAction(leads, cases, clientTasks, clientEvents, String(clientId || '')), [cases, clientEvents, clientId, clientTasks, leads]);
+  const nextAction = useMemo(() => buildClientNextAction(leads, activeCases, clientTasks, clientEvents, String(clientId || '')), [cases, clientEvents, clientId, clientTasks, leads]);
   const lastActivityDate = clientActivities[0]?.createdAt || clientActivities[0]?.updatedAt || client?.updatedAt || client?.createdAt;
   const firstSourceLead = leads[0] || null;
   const STAGE86_CONTEXT_ACTION_EXPLICIT_TRIGGERS = 'Client detail uses shared context action dialogs instead of local simplified quick forms';
@@ -2034,6 +2058,127 @@ function ClientDetail() {
   };
 
   useEffect(() => () => stopClientNoteSpeech(), []);
+
+  const handleRestoreClientCaseStage231B0R8 = useCallback(async (caseRecord: any) => {
+    if (!hasAccess) {
+      toast.error('Twój trial wygasł.');
+      return;
+    }
+
+    const caseId = String(caseRecord?.id || '').trim();
+    if (!caseId) {
+      toast.error('Brak ID sprawy. Nie można przywrócić.');
+      return;
+    }
+
+    const reopenedAt = new Date().toISOString();
+
+    try {
+      await updateCaseInSupabase({
+        id: caseId,
+        status: 'in_progress',
+        lastActivityAt: reopenedAt,
+      } as any);
+
+      await insertActivityToSupabase({
+        caseId,
+        clientId: String(clientId || client?.id || ''),
+        eventType: 'case_lifecycle_reopened',
+        payload: {
+          recordType: 'case',
+          title: 'Sprawa przywrócona',
+          status: 'in_progress',
+          previousStatus: caseRecord?.status || null,
+          reopenedAt,
+          source: STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH,
+          financePreserved: true,
+          historyPreserved: true,
+        },
+        workspaceId: workspace?.id,
+      } as any);
+
+      toast.success('Sprawa przywrócona do aktywnych. Historia i rozliczenia zostały zachowane.');
+      await reload();
+    } catch (error: any) {
+      toast.error('Nie udało się przywrócić sprawy: ' + (error?.message || 'REQUEST_FAILED'));
+    }
+  }, [client?.id, clientId, hasAccess, reload, workspace?.id]);
+
+
+  const renderClientCaseSmartCardStage231B0R8 = (caseRecord: any, options: { closed: boolean }) => {
+    const caseId = String(caseRecord?.id || '');
+    const title = getCaseTitle(caseRecord);
+    const status = options.closed ? 'Zamknięta' : caseStatusLabel(String(caseRecord?.status || 'in_progress'));
+    const casePayments = payments.filter((payment: any) => {
+      const paymentCaseId = String(payment?.caseId || payment?.case_id || payment?.relatedCaseId || payment?.related_case_id || '').trim();
+      return paymentCaseId && paymentCaseId === caseId;
+    });
+    const caseFinance = getCaseFinanceSummary(caseRecord, casePayments);
+    const value = formatMoneyWithCurrency(caseFinance.commissionAmount, caseFinance.currency);
+    const commissionPaid = formatMoneyWithCurrency(caseFinance.commissionPaidAmount, caseFinance.currency);
+    const commissionRemaining = formatMoneyWithCurrency(caseFinance.commissionRemainingAmount, caseFinance.currency);
+    const transactionValue = formatMoneyWithCurrency(caseFinance.contractValue, caseFinance.currency);
+    const completeness = getCaseCompleteness(caseRecord);
+    const cardClassName = options.closed
+      ? 'client-detail-case-smart-card client-detail-case-smart-card-closed-stage231b0-r7 client-detail-case-smart-card-closed-stage231b0-r8'
+      : 'client-detail-case-smart-card';
+
+    return (
+      <article key={caseId || title} className={cardClassName} data-client-case-smart-card="true" data-stage231b0-r8-client-case-card={options.closed ? 'closed' : 'active'}>
+        <div className="client-detail-case-smart-main">
+          <span className="client-detail-case-smart-kicker">{options.closed ? 'Sprawa zamknięta' : 'Sprawa'}</span>
+          <strong>{title}</strong>
+          <div className="client-detail-case-smart-meta">
+            <span data-stage231b0-r8-case-status-label="true">{status}</span>
+            <span>Kompletność {completeness}%</span>
+          </div>
+        </div>
+        <div className="client-detail-case-smart-value" data-stage220a35-case-card-commission="true" data-stage228r7-case-card-commission-balance="true" data-stage231b0-r8-finance-preserved="true">
+          <small>Prowizja należna</small>
+          <b>{value}</b>
+          <span className="sub">Wpłacono prowizji: {commissionPaid}</span>
+          <span className="sub">Do zapłaty prowizji: {commissionRemaining}</span>
+          <span className="sub">Wartość transakcji: {transactionValue}</span>
+        </div>
+        <div className="client-detail-case-smart-actions">
+          <Button type="button" size="sm" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>
+            Otwórz
+          </Button>
+          {options.closed ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              className="client-detail-case-restore-action-stage231b0-r8"
+              data-stage231b0-r8-client-restore-case-button="true"
+              onClick={() => handleRestoreClientCaseStage231B0R8(caseRecord)}
+            >
+              Przywróć sprawę
+            </Button>
+          ) : null}
+          {!options.closed ? (
+            <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>
+              Edytuj
+            </Button>
+          ) : null}
+          <EntityActionButton
+            type="button"
+            size="sm"
+            variant="outline"
+            tone="danger"
+            iconOnly
+            className="client-detail-case-smart-delete-icon-button"
+            aria-label="Usuń sprawę"
+            title="Usuń sprawę"
+            onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
+          >
+            <Trash2 className="h-4 w-4" aria-hidden="true" />
+          </EntityActionButton>
+        </div>
+      </article>
+    );
+  };
+
 
   // STAGE117B: no new/open lead shortcut from ClientDetail.  // STAGE117B: no new/open lead shortcut from ClientDetail.
   const openMainCase = () => {
@@ -2721,117 +2866,40 @@ return (
               </div>
             ) : null}
 
-                        {activeTab === 'cases' ? (
-              <div className="client-detail-tab-panel" data-client-cases-list-panel="true">
+            {activeTab === 'cases' ? (
+              <div className="client-detail-tab-panel" data-client-cases-list-panel="true" data-stage231b0-r8-client-case-relation-truth="true">
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy aktywne</h2>
+                      <p>Zamknięte sprawy nie są aktywną pracą operacyjną klienta.</p>
                     </div>
                   </div>
 
-                  <>
-
-                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true" data-client-cases-without-lead-view="true">
-                    {(cases.filter((caseRecord: any) => {
-                      const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
-                      const caseClientName = asText(caseRecord?.clientName);
-                      const currentClientId = String(client.id || '').trim();
-                      const currentClientName = getClientName(client).toLowerCase();
-                      const isMainCase = mainCase?.id && String(caseRecord?.id || '') === String(mainCase.id);
-                      return Boolean(
-                        isMainCase ||
-                        (caseClientId && caseClientId === currentClientId) ||
-                        (caseClientName && caseClientName.toLowerCase() === currentClientName)
-                      );
-                    }).length
-                      ? cases.filter((caseRecord: any) => {
-                          const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
-                          const caseClientName = asText(caseRecord?.clientName);
-                          const currentClientId = String(client.id || '').trim();
-                          const currentClientName = getClientName(client).toLowerCase();
-                          const isMainCase = mainCase?.id && String(caseRecord?.id || '') === String(mainCase.id);
-                          return Boolean(
-                            isMainCase ||
-                            (caseClientId && caseClientId === currentClientId) ||
-                            (caseClientName && caseClientName.toLowerCase() === currentClientName)
-                          );
-                        })
-                      : mainCase?.id
-                        ? [mainCase]
-                        : []
-                    ).map((caseRecord: any) => {
-                      const caseId = String(caseRecord?.id || '');
-                      const title = getCaseTitle(caseRecord);
-                      const status = caseStatusLabel(String(caseRecord?.status || 'in_progress'));
-                      const casePayments = payments.filter((payment: any) => {
-                        const paymentCaseId = String(payment?.caseId || payment?.case_id || payment?.relatedCaseId || payment?.related_case_id || '').trim();
-                        return paymentCaseId && paymentCaseId === caseId;
-                      });
-                      const caseFinance = getCaseFinanceSummary(caseRecord, casePayments);
-                      const value = formatMoneyWithCurrency(caseFinance.commissionAmount, caseFinance.currency);
-                       const commissionPaid = formatMoneyWithCurrency(caseFinance.commissionPaidAmount, caseFinance.currency);
-                       const commissionRemaining = formatMoneyWithCurrency(caseFinance.commissionRemainingAmount, caseFinance.currency);
-                       const transactionValue = formatMoneyWithCurrency(caseFinance.contractValue, caseFinance.currency);
-                      const completeness = getCaseCompleteness(caseRecord);
-                      return (
-                        <article key={caseId || title} className="client-detail-case-smart-card" data-client-case-smart-card="true">
-                          <div className="client-detail-case-smart-main">
-                            <span className="client-detail-case-smart-kicker">Sprawa</span>
-                            <strong>{title}</strong>
-                            <div className="client-detail-case-smart-meta">
-                              <span>{status}</span>
-                              <span>Kompletność {completeness}%</span>
-                            </div>
-                          </div>
-                          <div className="client-detail-case-smart-value" data-stage220a35-case-card-commission="true" data-stage228r7-case-card-commission-balance="true">
-                             <small>Prowizja należna</small>
-                             <b>{value}</b>
-                             <span className="sub">Wpłacono prowizji: {commissionPaid}</span>
-                             <span className="sub">Do zapłaty prowizji: {commissionRemaining}</span>
-                             <span className="sub">Wartość transakcji: {transactionValue}</span>
-                           </div>
-                          <div className="client-detail-case-smart-actions">
-                            <Button type="button" size="sm" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
-                              Wejdź w sprawę
-                            </Button>
-                            <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate(`/cases/${caseId}`) : toast.info('Brak ID sprawy.'))}>
-                              Edytuj
-                            </Button>
-                            <EntityActionButton
-                              type="button"
-                              size="sm"
-                              variant="outline"
-                              tone="danger"
-                              iconOnly
-                              className="client-detail-case-smart-delete-icon-button"
-                              aria-label="Usuń sprawę"
-                              title="Usuń sprawę"
-                              onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
-                            >
-                              <Trash2 className="h-4 w-4" aria-hidden="true" />
-                            </EntityActionButton>
-                          </div>
-                        </article>
-                      );
-                    })}
-                    {!(cases.filter((caseRecord: any) => {
-                      const caseClientId = String(caseRecord?.clientId || caseRecord?.client_id || caseRecord?.clientID || '').trim();
-                      const caseClientName = asText(caseRecord?.clientName);
-                      const currentClientId = String(client.id || '').trim();
-                      const currentClientName = getClientName(client).toLowerCase();
-                      const isMainCase = mainCase?.id && String(caseRecord?.id || '') === String(mainCase.id);
-                      return Boolean(
-                        isMainCase ||
-                        (caseClientId && caseClientId === currentClientId) ||
-                        (caseClientName && caseClientName.toLowerCase() === currentClientName)
-                      );
-                    }).length || mainCase?.id) ? (
+                  <div className="client-detail-case-smart-list" data-client-case-smart-list="true" data-client-cases-without-lead-view="true" data-stage231b0-r8-active-client-cases="true">
+                    {activeClientCases.length ? (
+                      activeClientCases.map((caseRecord: any) => renderClientCaseSmartCardStage231B0R8(caseRecord, { closed: false }))
+                    ) : (
                       <div className="client-detail-case-smart-empty">Brak aktywnej sprawy dla klienta.</div>
-                    ) : null}
+                    )}
+                  </div>
+                </section>
+
+                <section className="client-detail-section-card client-detail-closed-cases-stage231b0-r8" data-stage231b0-r8-closed-client-cases-section="true">
+                  <div className="client-detail-section-head">
+                    <div>
+                      <h2>Sprawy zamknięte</h2>
+                      <p>Historia, prowizje i wpłaty zostają przy kliencie.</p>
+                    </div>
                   </div>
 
-                  </>
+                  <div className="client-detail-case-smart-list" data-stage231b0-r8-closed-client-cases="true">
+                    {closedClientCases.length ? (
+                      closedClientCases.map((caseRecord: any) => renderClientCaseSmartCardStage231B0R8(caseRecord, { closed: true }))
+                    ) : (
+                      <div className="client-detail-case-smart-empty">Brak zamkniętych spraw dla klienta.</div>
+                    )}
+                  </div>
                 </section>
               </div>
             ) : null}

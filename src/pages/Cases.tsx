@@ -1,3 +1,4 @@
+// STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
@@ -248,7 +249,7 @@ const CLOSEFLOW_FORM_ACTION_FOOTER_CONTRACT_STAGE6_CASES = 'form/modal actions u
 
 export default function Cases() {
   const { workspace, hasAccess, loading: workspaceLoading, workspaceReady } = useWorkspace();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const stage23PrefillHandledRef = useRef(false);
   const [cases, setCases] = useState<CaseRecord[]>([]);
   const [leadCandidates, setLeadCandidates] = useState<any[]>([]);
@@ -340,19 +341,30 @@ export default function Cases() {
   const caseEventsByCaseId = useMemo(() => buildCaseActionMap(caseEvents), [caseEvents]);
   const ownerRiskSettings = useMemo(() => readOwnerRiskSettings(), []);
 
+  const activeCases = useMemo(
+    () => cases.filter((record) => !isClosedCaseStatus(record.status)),
+    [cases],
+  );
+
+  const closedCases = useMemo(
+    () => cases.filter((record) => isClosedCaseStatus(record.status)),
+    [cases],
+  );
+
   const stats = useMemo(() => {
-    const lifecycleRows = cases.map((record) => resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId));
+    const lifecycleRows = activeCases.map((record) => resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId));
 
     return {
-      total: cases.length,
+      total: activeCases.length,
       waiting: lifecycleRows.filter((entry) => entry.bucket === 'blocked' || entry.bucket === 'waiting_approval').length,
       blocked: lifecycleRows.filter((entry) => entry.bucket === 'blocked').length,
       approval: lifecycleRows.filter((entry) => entry.bucket === 'waiting_approval').length,
       ready: lifecycleRows.filter((entry) => entry.bucket === 'ready_to_start').length,
       needsNextStep: lifecycleRows.filter((entry) => entry.bucket === 'needs_next_step').length,
-      linked: cases.filter((record) => !!record.leadId).length,
+      linked: activeCases.filter((record) => !!record.leadId).length,
+      closed: closedCases.length,
     };
-  }, [caseEventsByCaseId, caseTasksByCaseId, cases]);
+  }, [activeCases, caseEventsByCaseId, caseTasksByCaseId, closedCases.length]);
 
   const leadsById = useMemo(
     () => new Map((leadCandidates || []).map((entry: any) => [String(entry.id || ''), entry])),
@@ -399,8 +411,9 @@ export default function Cases() {
 
   const filteredCases = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
+    const sourceCases = caseView === 'closed' ? closedCases : activeCases;
 
-    return cases.filter((record) => {
+    return sourceCases.filter((record) => {
       const matchesSearch = !normalizedQuery || (
         record.title?.toLowerCase().includes(normalizedQuery)
         || record.clientName?.toLowerCase().includes(normalizedQuery)
@@ -411,7 +424,8 @@ export default function Cases() {
 
       const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
       const matchesView =
-        caseView === 'all'
+        caseView === 'closed'
+        || caseView === 'all'
         || (caseView === 'waiting' && (lifecycle.bucket === 'blocked' || lifecycle.bucket === 'waiting_approval'))
         || (caseView === 'blocked' && lifecycle.bucket === 'blocked')
         || (caseView === 'approval' && lifecycle.bucket === 'waiting_approval')
@@ -421,10 +435,23 @@ export default function Cases() {
 
       return matchesSearch && matchesView;
     });
-  }, [caseEventsByCaseId, caseTasksByCaseId, caseView, cases, searchQuery]);
+  }, [activeCases, caseEventsByCaseId, caseTasksByCaseId, caseView, closedCases, searchQuery]);
+
+  const setCaseViewStage231B0R8 = (view: CaseView) => {
+    setCaseView(view);
+    if (view === 'closed') {
+      setSearchParams({ view: 'closed' });
+      return;
+    }
+    setSearchParams({});
+  };
 
   const toggleCaseView = (view: CaseView) => {
-    setCaseView((prev) => (prev === view ? 'all' : view));
+    if (caseView === view) {
+      setCaseViewStage231B0R8('all');
+      return;
+    }
+    setCaseViewStage231B0R8(view);
   };
 
   async function handleDeleteCase() {
@@ -730,18 +757,19 @@ export default function Cases() {
               <div className="table-card">
                 <div className="row row-empty">
                   <span className="index">0</span>
-                  <span><span className="title">Brak spraw w tym widoku</span><span className="sub">Zmień wyszukiwanie albo kliknij inny kafel metryk.</span></span>
+                  <span><span className="title">{caseView === 'closed' ? 'Brak zamkniętych spraw' : 'Brak spraw w tym widoku'}</span><span className="sub">Zmień wyszukiwanie albo kliknij inny kafel metryk.</span></span>
                 </div>
               </div>
             ) : (
               <div className="table-card">
                 {filteredCases.map((record, index) => {
-                  const attention = caseNeedsAttention(record);
+                  const closedRecordStage231B0R8 = isClosedCaseStatus(record.status);
+                  const attention = closedRecordStage231B0R8 ? false : caseNeedsAttention(record);
                   const percent = Math.round(record.completenessPercent || 0);
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
                   const statusLabel = caseStatusLabel(record.status);
-                  const statusTone = record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
+                  const statusTone = closedRecordStage231B0R8 ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
                   const compactLifecyclePill = compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel;
                   const progressTone = attention ? 'red' : percent >= 75 ? 'green' : percent >= 35 ? 'blue' : 'amber';
@@ -751,7 +779,7 @@ export default function Cases() {
                     items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                   });
                   const nextActionLabel = nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
-                  const ownerRiskBadges = getCaseOwnerRiskBadges(record, {
+                  const ownerRiskBadges = closedRecordStage231B0R8 ? [] : getCaseOwnerRiskBadges(record, {
                     settings: ownerRiskSettings,
                     relatedRecords: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                     hasNextStep: Boolean(nearestCaseAction),
@@ -839,6 +867,7 @@ export default function Cases() {
                 { key: 'linked', label: 'Portal klienta', value: stats.linked, onClick: () => toggleCaseView('linked') },
                 { key: 'waiting', label: 'Sprawy bez ruchu', value: stats.waiting, onClick: () => toggleCaseView('waiting') },
                 { key: 'approval', label: 'Akceptacje', value: stats.approval, onClick: () => toggleCaseView('approval') },
+                { key: 'closed', label: 'Sprawy zamknięte', value: stats.closed, onClick: () => setCaseViewStage231B0R8('closed') },
               ]}
             />
 

@@ -3514,3 +3514,20 @@ button.client-detail-top-tile-link {
 .client-detail-case-smart-card-closed-stage231b0-r7 [data-stage231b0-r7-closed-case-label='true'] {
   color: #cbd5e1;
 }
+
+
+/* STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH: closed client cases are separate from active relation work. */
+.client-detail-closed-cases-stage231b0-r8 {
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+.client-detail-case-smart-card-closed-stage231b0-r8 {
+  border-color: rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.62);
+}
+
+.client-detail-case-restore-action-stage231b0-r8 {
+  border-color: rgba(59, 130, 246, 0.44);
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+}

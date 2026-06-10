@@ -1,3 +1,4 @@
+// STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH: active/closed relation truth uses shared closed status source.
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION: shared case archive/restore/navigation status contract.
 import { deleteCaseFromSupabase, isSupabaseConfigured } from './supabase-fallback';
 
@@ -5,8 +6,10 @@ export function normalizeCaseStatus(value: unknown): string {
   return String(value || '').trim().toLowerCase();
 }
 
+export const CLOSED_CASE_STATUSES = ['completed', 'done', 'closed', 'archived', 'canceled', 'cancelled'] as const;
+
 export function isClosedCaseStatus(status: unknown): boolean {
-  return ['completed', 'done', 'closed', 'archived', 'canceled', 'cancelled'].includes(normalizeCaseStatus(status));
+  return (CLOSED_CASE_STATUSES as readonly string[]).includes(normalizeCaseStatus(status));
 }
 
 export function getCaseStatusLabel(status: unknown): string {

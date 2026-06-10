@@ -2375,3 +2375,38 @@ aside.case-detail-right-rail::after {
   background: rgba(34, 197, 94, 0.2);
   color: #dcfce7;
 }
+
+
+/* STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH: case header copy left, actions right. */
+.case-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.case-detail-header-copy {
+  order: 1;
+}
+
+.case-detail-header-actions-stage231b0 {
+  order: 2;
+  margin-left: auto;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.cf-case-detail-close-positive-stage231b0-r8 {
+  border-color: rgba(34, 197, 94, 0.42);
+  background: rgba(34, 197, 94, 0.13);
+  color: #bbf7d0;
+}
+
+.cf-case-detail-restore-action-stage231b0-r8 {
+  border-color: rgba(59, 130, 246, 0.44);
+  background: rgba(59, 130, 246, 0.13);
+  color: #bfdbfe;
+}
