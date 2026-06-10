@@ -1,3 +1,8 @@
+// STAGE231B0_R13_R6_OWNER_RISK_MINIMAL_SAFE_CALL: replaces broken ownerRiskBadges fragment with closed safe call.
+// STAGE231B0_R13_R4_GUARD_MAP_WINDOW_REPAIR: guard window repair after R13-R3 nested call false fail.
+// STAGE231B0_R13_R3_NEXT_ACTION_GUARD_AND_MAP_COMPLETION: normalizes nextActionLabel and R13 guard contract.
+// STAGE231B0_R13_R2_CASES_MAP_CLOSED_LOGIC_COMPLETION: completes R13 closed-state row logic and fixes guard contract.
+// STAGE231B0_R13_CASES_MAP_RECORD_SCOPE_REAL_FIX: fixes filteredCases.map record scope after R12/R7 regression.
 // STAGE231B0_R12_R7_FINAL_CASES_RUNTIME_CONTRACT_RESCUE: final rescue for /cases open/closed/all source and runtime closed banner contract.
 // STAGE231B0_R11_CLIENT_WIDTH_AND_CASES_RUNTIME_GUARD: remove runtime free renderClosedCaseBannerStage231B0R12 usage from JSX.
 // STAGE231B0_R9_R9_CASES_ITEMS_JSX_SYNTAX_REPAIR: fixes JSX prop syntax items={[...]} for cases shortcuts.
@@ -802,8 +807,7 @@ const toggleCaseView = (view: CaseView) => {
               <div className="table-card">
                 <div className="row row-empty">
                   <span className="index"><div className="h-4 w-4 animate-spin rounded-full border-b-2 border-[color:var(--app-primary)]" /></span>
-                  <span><span className="title">Ładowanie spraw</span>
-                          {isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status) ? <span className="cf-case-closed-banner-stage231b0-r9" data-stage231b0-r9-closed-case-banner="true">SPRAWA ZAMKNIĘTA</span> : null}<span className="sub">Pobieram dane z aplikacji.</span></span>
+                  <span><span className="title">Ładowanie spraw</span><span className="sub">Pobieram dane z aplikacji.</span></span>
                 </div>
               </div>
             ) : filteredCases.length === 0 ? (
@@ -816,28 +820,48 @@ const toggleCaseView = (view: CaseView) => {
             ) : (
               <div className="table-card">
                 {filteredCases.map((record, index) => {
-                  const renderClosedCaseBannerStage231B0R12 = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status);
-                  const attention = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status) ? false : caseNeedsAttention(record);
+
+                  const isCaseClosedStage231B0R13 = isClosedCaseStatus(record.status);
+const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record);
                   const percent = Math.round(record.completenessPercent || 0);
                   const updatedAt = toUpdatedDate(record.updatedAt);
                   const lifecycle = resolveCaseListLifecycle(record, caseTasksByCaseId, caseEventsByCaseId);
                   const statusLabel = caseStatusLabel(record.status);
-                  const statusTone = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status) ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
+                  const statusTone = isCaseClosedStage231B0R13 ? 'green' : record.status === 'blocked' ? 'red' : record.status === 'waiting_on_client' ? 'amber' : 'blue';
                   const compactLifecycleLabel = lifecycleCompactLabel(record, lifecycle);
-                  const compactLifecyclePill = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status) ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
+                  const compactLifecyclePill = isCaseClosedStage231B0R13 ? null : (compactLifecycleLabel === statusLabel ? null : compactLifecycleLabel);
                   const progressTone = attention ? 'red' : percent >= 75 ? 'green' : percent >= 35 ? 'blue' : 'amber';
                   const nearestCaseAction = getNearestPlannedAction({
                     recordType: 'case',
                     recordId: String(record.id || ''),
                     items: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
                   });
-                  const nextActionLabel = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status) ? 'Sprawa zamknięta' : nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
-                  const ownerRiskBadges = isClosedCaseStatus((typeof caseRecord !== "undefined" ? caseRecord : null)?.status) ? [] : getCaseOwnerRiskBadges(record, {
-                    settings: ownerRiskSettings,
-                    relatedRecords: [...(caseTasksByCaseId.get(String(record.id || '')) || []), ...(caseEventsByCaseId.get(String(record.id || '')) || [])],
-                    hasNextStep: Boolean(nearestCaseAction),
-                  }).slice(0, 4);
-                  const metaParts = [
+                  const nextActionLabel = isCaseClosedStage231B0R13 ? 'Sprawa zamknięta' : nearestCaseAction ? formatNearestCaseAction(nearestCaseAction) : compactNextAction(lifecycle.nextOperatorAction);
+
+                  const ownerRiskBadges = isCaseClosedStage231B0R13
+
+                    ? []
+
+                    : getCaseOwnerRiskBadges(record, {
+
+                        lifecycle,
+
+                        nearestCaseAction,
+
+                        nextActionLabel,
+
+                        statusLabel,
+
+                        compactLifecycleLabel,
+
+                        compactLifecyclePill,
+
+                        percent,
+
+                        updatedAt,
+
+                      });
+const metaParts = [
                     lifecycle.openActionCount > 0 ? `${lifecycle.openActionCount} działań` : 'brak działań',
                     lifecycle.waitingApprovalCount > 0 ? `akceptacje ${lifecycle.waitingApprovalCount}` : null,
                     lifecycle.missingRequiredCount > 0 ? `brakuje ${lifecycle.missingRequiredCount} elementów` : null,
@@ -903,7 +927,17 @@ const toggleCaseView = (view: CaseView) => {
                       </span>
                     </div>
                   );
-                })}
+
+                    {isCaseClosedStage231B0R13 ? (
+                      <span
+                        className="cf-case-closed-banner-stage231b0-r9"
+                        data-stage231b0-r9-closed-case-banner="true"
+                        data-stage231b0-r13-closed-case-row-banner="true"
+                      >
+                        SPRAWA ZAMKNIĘTA
+                      </span>
+                    ) : null}
+})}
               </div>
             )}
           </div>

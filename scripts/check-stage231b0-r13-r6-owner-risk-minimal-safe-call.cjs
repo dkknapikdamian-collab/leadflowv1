@@ -1,6 +1,6 @@
 const fs = require('fs');
 function fail(message) {
-  console.error('STAGE231B0_R12_R7_FINAL_CASES_RUNTIME_CONTRACT_RESCUE FAIL: ' + message);
+  console.error('STAGE231B0_R13_R6_OWNER_RISK_MINIMAL_SAFE_CALL FAIL: ' + message);
   process.exit(1);
 }
 const cases = fs.readFileSync('src/pages/Cases.tsx', 'utf8');
@@ -62,4 +62,4 @@ if (ownerRiskIndex < 0 || metaPartsIndex < 0 || ownerRiskIndex > metaPartsIndex)
 const ownerRiskChunk = mapWindow.slice(ownerRiskIndex, metaPartsIndex);
 if (!ownerRiskChunk.includes('});')) fail('ownerRiskBadges chunk is not closed before metaParts');
 if (ownerRiskChunk.includes('const metaParts')) fail('ownerRiskBadges chunk leaked into metaParts');
-console.log('STAGE231B0_R12_R7_FINAL_CASES_RUNTIME_CONTRACT_RESCUE PASS');
+console.log('STAGE231B0_R13_R6_OWNER_RISK_MINIMAL_SAFE_CALL PASS');

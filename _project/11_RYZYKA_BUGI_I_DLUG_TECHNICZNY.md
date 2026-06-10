@@ -300,3 +300,40 @@ Archive/restore uses status update only. No SQL. Existing duplicate savedRecord 
 - Po R12-R6 zastosowano mocniejszy rescue: helper `renderClosedCaseBannerStage231B0R12`, jeden kontrakt `activeCases/closedCases` przez `useMemo`, `record.status` tylko w dwóch filtrach.
 - Guardy R11/R12/R12-R7 pilnują tego samego kontraktu i blokują `closedRecordStage231B0R8` oraz `record?.status`.
 - Nie ruszano finansów, SQL, Google Calendar, płatności ani innych modułów.
+
+
+## 2026-06-10 — STAGE231B0-R13 — Cases map record scope real fix
+- Status: LOCAL_ONLY_PREPARED.
+- Naprawa realnego błędu po R12/R7 w `filteredCases.map((record, index) => ...)`.
+- Usunięto `caseRecord` fallback i lokalny shadow `renderClosedCaseBannerStage231B0R12` z mapy.
+- Dodano scoped boolean `isCaseClosedStage231B0R13 = isClosedCaseStatus(record.status)`.
+- Usunięto błędny banner z loading row.
+- Dodano guard/test R13 oraz zaktualizowano guardy R11/R12/R12-R7.
+
+
+## 2026-06-10 — STAGE231B0-R13-R2 — Cases map closed logic completion
+- Status: LOCAL_ONLY_PREPARED.
+- Kontynuacja po częściowym R13: guard liczbowy był za ostry, więc zamieniono go na sprawdzanie konkretnych linii logiki.
+- Domknięto `attention`, `statusTone`, `compactLifecyclePill`, `nextActionLabel`, `ownerRiskBadges` i banner zamkniętej sprawy na `isCaseClosedStage231B0R13`.
+- Guard blokuje powrót `caseRecord` fallback i local shadow helpera w mapie.
+
+
+## 2026-06-10 — STAGE231B0-R13-R3 — Next action guard and map completion
+- Status: LOCAL_ONLY_PREPARED.
+- Kontynuacja po R13-R2: guard był zbyt wrażliwy na dokładny polski tekst `Sprawa zamknięta`.
+- Znormalizowano `nextActionLabel` i zmieniono guard na strukturę logiczną zamiast pełnego literalnego tekstu.
+- Dalej blokowany jest `caseRecord` fallback i local shadow helpera w `filteredCases.map`.
+
+
+## 2026-06-10 — STAGE231B0-R13-R4 — Guard map window repair
+- Status: LOCAL_ONLY_PREPARED.
+- R13-R3 guard fałszywie ciął `filteredCases.map` na pierwszym zagnieżdżonym `});`, czyli przed `nextActionLabel`.
+- Naprawa: guardy używają szerokiego deterministycznego okna od początku mapy zamiast pierwszego `});`.
+- Nie zmieniano logiki biznesowej poza markerem stage; naprawa dotyczy guardów i dokumentacji.
+
+
+## 2026-06-10 — STAGE231B0-R13-R6 — Owner risk minimal safe call
+- Status: LOCAL_ONLY_PREPARED.
+- R13-R5 zatrzymał się przed zmianą pliku, bo check starego bloku z HEAD był błędny.
+- Naprawa: uszkodzony zakres `ownerRiskBadges -> metaParts` jest zastępowany kompletną, zamkniętą składniowo deklaracją.
+- `getCaseOwnerRiskBadges` dostaje bezpieczny kontekst lokalny: lifecycle, nearestCaseAction, nextActionLabel, statusLabel, compactLifecycleLabel, compactLifecyclePill, percent, updatedAt.
