@@ -2089,16 +2089,3 @@ Zakres: fix only the D0C guard syntax after D0C patch was applied.
 Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
 Status: LOCAL_ONLY_PREVIEW_STRING_RESCUE_PREPARED
 Zakres: restore static UI preview HTML files and keep D0C live layout guard.
-
-## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
-
-Marker: STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
-Status: LOCAL_ONLY_PACKAGE_PREPARED
-Powód: D0C PASS/PUSHED, ale bez widocznej poprawy na /clients.
-
-## 2026-06-10 Europe/Warsaw - STAGE231D0C-R5 Layout JSX repair
-
-Status: LOCAL_ONLY_PREPARED.
-Zakres: naprawa błędu builda po R4, gdzie atrybuty trial top-card trafiły na zamykający tag p w src/components/Layout.tsx.
-Testy: D0B guard, D0C guard, D0C-R4 guard, git diff --check, build.
-Ryzyko: guard layoutu nie zastępuje wizualnej kontroli /clients.

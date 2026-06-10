@@ -2962,16 +2962,3 @@ Zmiana: replace fragile invalid backslash regexp with path.sep split/join helper
 Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
 Guard: scripts/check-stage231d0c-clients-top-layout-cleanup.cjs
 Zmiana: guard ignores static preview HTML sources and blocks live-source regressions.
-
-## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
-
-Marker: STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
-Guard: scripts/check-stage231d0c-r4-effective-visual-layout-rescue.cjs
-Sprawdza: unscoped CSS, live layout markers, trial top-card marker, no mojibake, no D0B regression.
-
-## 2026-06-10 Europe/Warsaw - STAGE231D0C-R5 Layout JSX repair
-
-Status: LOCAL_ONLY_PREPARED.
-Zakres: naprawa błędu builda po R4, gdzie atrybuty trial top-card trafiły na zamykający tag p w src/components/Layout.tsx.
-Testy: D0B guard, D0C guard, D0C-R4 guard, git diff --check, build.
-Ryzyko: guard layoutu nie zastępuje wizualnej kontroli /clients.

@@ -3007,17 +3007,3 @@ Marker: STAGE231D0C-R2-GUARD-SYNTAX-FIX
 Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
 - Restored UiPreview static HTML source from HEAD to fix build.
 - Updated D0C guard to avoid mutating/checking static HTML preview strings as live source.
-
-## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
-
-Marker: STAGE231D0C-R4-EFFECTIVE-VISUAL-LAYOUT-RESCUE
-- Dodano effective visual rescue dla /clients po nieskutecznym D0C.
-- Filtry proste przesunięte bliżej środka przez R4 CSS.
-- Trial banner dostał marker top-card.
-
-## 2026-06-10 Europe/Warsaw - STAGE231D0C-R5 Layout JSX repair
-
-Status: LOCAL_ONLY_PREPARED.
-Zakres: naprawa błędu builda po R4, gdzie atrybuty trial top-card trafiły na zamykający tag p w src/components/Layout.tsx.
-Testy: D0B guard, D0C guard, D0C-R4 guard, git diff --check, build.
-Ryzyko: guard layoutu nie zastępuje wizualnej kontroli /clients.

@@ -136,7 +136,7 @@ function TrialCard({ trialDaysLeft }: { trialDaysLeft: number }) {
       <div className="bar" aria-hidden="true" data-stage231d0c-trial-top-card="true">
         <span style={{ width: `${width}%` }} />
       </div>
-      <Link to="/billing" className="trial-link trial-banner-r4-top-card" data-stage231d0c-r4-trial-top-card="true">
+      <Link to="/billing" className="trial-link">
         Aktywuj plan <ChevronRight className="h-3 w-3" />
       </Link>
     </div>
@@ -568,10 +568,10 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         {workspace && !hasAccess && (
-          <div className="access-warning trial-banner-r4-top-card" data-shell-access-warning="true" data-stage231d0c-r4-trial-top-card="true">
+          <div className="access-warning" data-shell-access-warning="true">
             <AlertTriangle className="h-4 w-4 shrink-0" />
             <p>Twój okres próbny wygasł. Niektóre funkcje są zablokowane.</p>
-            <Link to="/billing" className="access-warning-action trial-banner-r4-top-card" data-stage231d0c-r4-trial-top-card="true">
+            <Link to="/billing" className="access-warning-action">
               Aktywuj plan
             </Link>
           </div>
