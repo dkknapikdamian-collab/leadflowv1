@@ -448,3 +448,6 @@ export function getCaseFinanceSemanticValues(caseLike: any = {}) {
     expectedRevenue: commissionDue,
   };
 }
+
+// STAGE231D1_COST_MODEL_SOURCE_TRUTH: case-finance source exports central cost model for D2/D3 consumers.
+export * from './case-costs-source.js';

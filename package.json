@@ -987,7 +987,9 @@
     "check:stage231d0a-visual-source-truth-consistency": "node scripts/check-stage231d0a-visual-source-truth-consistency.cjs",
     "test:stage231d0a-visual-source-truth-consistency": "node --test tests/stage231d0a-visual-source-truth-consistency.test.cjs",
     "check:stage231d0-client-workspace-ux-cleanup": "node scripts/check-stage231d0-client-workspace-ux-cleanup.cjs",
-    "test:stage231d0-client-workspace-ux-cleanup": "node --test tests/stage231d0-client-workspace-ux-cleanup.test.cjs"
+    "test:stage231d0-client-workspace-ux-cleanup": "node --test tests/stage231d0-client-workspace-ux-cleanup.test.cjs",
+    "check:stage231d1-cost-model-source-truth": "node scripts/check-stage231d1-cost-model-source-truth.cjs",
+    "test:stage231d1-cost-model-source-truth": "node --test tests/stage231d1-cost-model-source-truth.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

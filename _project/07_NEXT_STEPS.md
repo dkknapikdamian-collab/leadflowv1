@@ -3180,3 +3180,33 @@ NASTĘPNY KROK:
 - Zakres bez zmian danych: ClientDetail UI, guard/test D0, raporty _project i Obsidian payload.
 - Testy: D0 guard/test, D0A regression, Polish guard, build, git diff --check.
 - Audyt ryzyk: ręcznie sprawdzić brak duplikatu Finanse klienta i poprawną ikonę finansów.
+<!-- STAGE231D1_COST_MODEL_SOURCE_TRUTH_START -->
+## 2026-06-10 — STAGE231D1 Cost model source truth
+
+Status: LOCAL_ONLY_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- STAGE231D1_COST_MODEL_SOURCE_TRUTH: dodano centralny model kosztów sprawy bez zmian runtime UI.
+- Model rozdziela: Koszty poniesione, Koszty do zwrotu, Koszty zwrócone i Razem do pobrania.
+- D1 nie dodaje SQL, tabel, migracji, Supabase ani formularza UI.
+
+VISUAL SOURCE OF TRUTH:
+- D1 używa finansowego słownika etykiet i nie dodaje lokalnych stylów UI.
+- UI zostaje do D2/D3, zgodnie z D0A Visual Source of Truth.
+
+TESTY:
+- npm run check:stage231d1-cost-model-source-truth
+- npm run test:stage231d1-cost-model-source-truth
+- npm run check:stage231d0-client-workspace-ux-cleanup
+- npm run check:stage231d0a-visual-source-truth-consistency
+- npm run build
+- git diff --check
+
+audyt ryzyk:
+- Ryzyko: D2 może potrzebować SQL/tabeli, ale D1 celowo nie dotyka bazy.
+- Ryzyko: stare UI finansów nie pokaże kosztów, dopóki D2/D3 nie podłączą modelu.
+- Ryzyko: jeśli koszt nie jest reimbursable, nie wchodzi w Koszty do zwrotu.
+
+następny krok:
+- Po PASS/push przejść do STAGE231D2 — koszty w sprawie z SQL/guardem i UI opartym o model D1.
+<!-- STAGE231D1_COST_MODEL_SOURCE_TRUTH_END -->
