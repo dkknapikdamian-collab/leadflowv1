@@ -2408,3 +2408,15 @@ następny krok:
 - zmiana: skrócenie górnego paska tytułu sprawy do lewej kolumny i podciągnięcie prawego raila do górnego miejsca po prawej.
 - testy: guard/test R6 + D2/R5/R3/D1/D0/D0A/Polish/build/git diff check.
 - ryzyko: CSS negative margin wymaga produkcyjnego testu wizualnego po deployu.
+
+## 2026-06-10 17:32 Europe/Warsaw — STAGE231D2-R7 CaseDetail side meta + quick actions layout
+
+- Status: LOCAL_APPLY_PREPARED
+- Zmiana: najwyższy header/kafel karty sprawy zostaje przeniesiony do prawego raila jako pierwszy boczny card; szybkie akcje są bezpośrednio pod nim.
+- Testy: R7 guard/test + regresje R6/R5/D2/R3/D1/D0/D0A/Polish + build + git diff --check.
+- Audyt ryzyk: tylko UI layout; bez SQL/API; po deployu sprawdzić, czy rail nie nachodzi i czy mobile przechodzi do jednej kolumny.
+- Następny krok: push po PASS i test produkcyjny.
+
+## 2026-06-10 17:36 Europe/Warsaw - STAGE231D2-R7-R2 R6 regression guard compatibility
+
+Status: LOCAL_ONLY_GUARD_COMPAT_PRE_PUSH. R7 zastępuje szeroki top strip układem: meta sprawy jako pierwsza karta prawego panelu, a szybkie akcje bezpośrednio pod nią. Stary R6 guard został zmieniony na compatibility guard, który akceptuje R7 jako supersession R6. Audyt ryzyk: nie dodano API, SQL ani nowych funkcji serverless; nadal obowiązuje limit Vercel 12/12. Następny krok: push i produkcyjny test układu.

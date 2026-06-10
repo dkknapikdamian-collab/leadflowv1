@@ -1,3 +1,5 @@
+const STAGE231D2_R7_CASE_DETAIL_SIDE_META_QUICK_ACTIONS_LAYOUT = 'CaseDetail title/meta card is first in the side rail and quick actions sit directly under it';
+void STAGE231D2_R7_CASE_DETAIL_SIDE_META_QUICK_ACTIONS_LAYOUT;
 const STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX = 'STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX';
 void STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX;
 const STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT = 'CaseDetail top title strip is narrowed and right rail is lifted into the top row without adding API functions';
@@ -2610,73 +2612,7 @@ async function handleConfirmDeleteCaseRecord() {
     <Layout>
 
       <main className="case-detail-vnext-page">
-        <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true" data-stage231b0-r8-case-header-order="copy-left-actions-right" data-stage231d2-r6-top-strip-left-card="true">
-          <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
-            <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
-              <ArrowLeft className="h-4 w-4" />
-              Sprawy
-            </button>
-            <p className="case-detail-kicker client-detail-kicker">KARTOTEKA SPRAWY</p>
-
-            <h1 className="case-detail-header-composed-title" data-stage220a3-header-title="true">
-              <span className="case-detail-header-client-name">{getCaseHeaderClientLabel(caseData)}</span>
-              <span className="case-detail-header-separator" aria-hidden="true">—</span>
-              <span className="case-detail-header-case-name">{getCaseHeaderCaseLabel(caseData)}</span>
-            </h1>
-          </div>
-
-          <div className="case-detail-header-actions-stage231b0" data-stage231b0-case-close-archive-finance-truth-actions="true" data-stage231b0-r7-case-archive-restore-navigation="true" data-stage231b0-r8-case-header-actions-right="true">
-            {isCaseClosedStage231B0R7 ? (
-              <Button
-                type="button"
-                variant="outline"
-                className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8"
-                data-stage231b0-r7-restore-case-button="true"
-                data-stage231b0-r8-restore-case-button="true"
-                aria-label="Przywróć sprawę"
-                title="Przywróć sprawę"
-                disabled={restoreCasePending}
-                onClick={handleConfirmReopenCaseRecord}
-              >
-                <CheckCircle2 className="h-4 w-4" />
-                Przywróć sprawę
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="outline"
-                className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-action-stage231b0-r8 cf-case-detail-close-positive-stage231b0-r7 cf-case-detail-close-positive-stage231b0-r8"
-                data-case-detail-close-action="true"
-                data-stage231b0-close-case-button="true"
-                data-stage231b0-r7-close-case-button="true"
-                data-stage231b0-r8-close-case-button="true"
-                data-cf-vst-kind="status"
-                aria-label="Zamknij sprawę"
-                title="Zamknij sprawę"
-                disabled={closeCasePending}
-                onClick={() => setCloseCaseOpen(true)}
-              >
-                <Check className="h-4 w-4" />
-                Zamknij sprawę
-              </Button>
-            )}
-            <Button
-              type="button"
-              variant="outline"
-              className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0"
-              data-case-detail-delete-action="true"
-              data-stage231b0-emergency-delete-case-button="true"
-              aria-label="Awaryjnie usuń sprawę"
-              title="Awaryjnie usuń sprawę"
-              onClick={() => setDeleteCaseOpen(true)}
-            >
-              <Trash2 className={trashActionIconClass("h-4 w-4")} />
-              Usuń sprawę
-            </Button>
-          </div>
-        </header>
-
-<div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true" data-stage231d2-r6-side-rail-top-lift="true">
+        <div className="case-detail-shell case-detail-stage228r9-shell case-detail-stage231d2r7-main-split" data-stage228r9-shell-rail-lift="true" data-stage231d2-r6-side-rail-top-lift="true" data-stage231d2-r7-side-meta-layout="true">
           <section className="case-detail-main-column" data-stage228r9-main-column="true">
             <div
               className="case-detail-stage228r10d-tabs-card"
@@ -3059,6 +2995,73 @@ async function handleConfirmDeleteCaseRecord() {
           </section>
 
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
+
+          <section className="right-card case-detail-right-card case-detail-meta-card-stage231d2r7" data-stage231d2-r7-side-meta-card="true" aria-label="Karta sprawy">
+            <div className="case-detail-meta-card-stage231d2r7__top">
+              <button type="button" className="case-detail-back-button client-detail-back-button case-detail-meta-card-stage231d2r7__back" onClick={() => navigate('/cases')}>
+                <ArrowLeft className="h-4 w-4" />
+                Sprawy
+              </button>
+              <p className="case-detail-kicker client-detail-kicker">KARTOTEKA SPRAWY</p>
+            </div>
+
+            <h1 className="case-detail-header-composed-title case-detail-meta-card-stage231d2r7__title" data-stage220a3-header-title="true" data-stage231d2-r7-meta-title="true">
+              <span className="case-detail-header-client-name">{getCaseHeaderClientLabel(caseData)}</span>
+              <span className="case-detail-header-separator" aria-hidden="true">—</span>
+              <span className="case-detail-header-case-name">{getCaseHeaderCaseLabel(caseData)}</span>
+            </h1>
+
+            <div className="case-detail-header-actions-stage231b0 case-detail-meta-card-stage231d2r7__actions" data-stage231b0-case-close-archive-finance-truth-actions="true" data-stage231b0-r7-case-archive-restore-navigation="true" data-stage231d2-r7-meta-actions="true">
+              {isCaseClosedStage231B0R7 ? (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8"
+                  data-stage231b0-r7-restore-case-button="true"
+                  data-stage231b0-r8-restore-case-button="true"
+                  aria-label="Przywróć sprawę"
+                  title="Przywróć sprawę"
+                  disabled={restoreCasePending}
+                  onClick={handleConfirmReopenCaseRecord}
+                >
+                  <CheckCircle2 className="h-4 w-4" />
+                  Przywróć sprawę
+                </Button>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-action-stage231b0-r8 cf-case-detail-close-positive-stage231b0-r7 cf-case-detail-close-positive-stage231b0-r8"
+                  data-case-detail-close-action="true"
+                  data-stage231b0-close-case-button="true"
+                  data-stage231b0-r7-close-case-button="true"
+                  data-stage231b0-r8-close-case-button="true"
+                  data-cf-vst-kind="status"
+                  aria-label="Zamknij sprawę"
+                  title="Zamknij sprawę"
+                  disabled={closeCasePending}
+                  onClick={() => setCloseCaseOpen(true)}
+                >
+                  <Check className="h-4 w-4" />
+                  Zamknij sprawę
+                </Button>
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0"
+                data-case-detail-delete-action="true"
+                data-stage231b0-emergency-delete-case-button="true"
+                aria-label="Awaryjnie usuń sprawę"
+                title="Awaryjnie usuń sprawę"
+                onClick={() => setDeleteCaseOpen(true)}
+              >
+                <Trash2 className={trashActionIconClass("h-4 w-4")} />
+                Usuń sprawę
+              </Button>
+            </div>
+          </section>
+
             <div data-case-quick-actions-anchor="case-detail">
               <CaseQuickActions
                 caseId={caseData.id}
