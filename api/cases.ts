@@ -242,6 +242,126 @@ async function ensureClientForCase(workspaceId: string, input: { clientId?: unkn
   return Array.isArray(result.data) && result.data[0] ? result.data[0] as Record<string, unknown> : null;
 }
 
+
+const STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX = 'case costs are consolidated into api/cases.ts resource=costs to avoid Vercel Hobby serverless function limit';
+void STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX;
+const STAGE231D2_R3_COST_KINDS = new Set(['court_fee', 'notary', 'travel', 'document', 'office', 'marketing', 'other']);
+const STAGE231D2_R3_COST_STATUSES = new Set(['planned', 'incurred', 'submitted', 'partially_reimbursed', 'reimbursed', 'cancelled']);
+
+function caseCostsResourceStage231D2R3(req: any) {
+  const resource = asText(req.query?.resource || req.query?.subresource || req.query?.kind).toLowerCase();
+  return resource === 'costs' || resource === 'case-costs' || resource === 'case_costs';
+}
+
+function caseCostMoneyStage231D2R3(value: unknown) {
+  const parsed = Number(String(value ?? '').replace(/\s+/g, '').replace(',', '.'));
+  return Number.isFinite(parsed) && parsed > 0 ? Math.round(parsed * 100) / 100 : 0;
+}
+
+function caseCostBoolStage231D2R3(value: unknown, fallback = true) {
+  if (value === true || value === false) return value;
+  const normalized = asText(value).toLowerCase();
+  if (['true', '1', 'yes', 'tak'].includes(normalized)) return true;
+  if (['false', '0', 'no', 'nie'].includes(normalized)) return false;
+  return fallback;
+}
+
+function caseCostIsoStage231D2R3(value: unknown) {
+  const raw = asText(value);
+  if (!raw) return null;
+  const parsed = new Date(raw);
+  return Number.isNaN(parsed.getTime()) ? null : parsed.toISOString();
+}
+
+function normalizeCaseCostPayloadStage231D2R3(body: Record<string, unknown>, workspaceId: string) {
+  const amount = caseCostMoneyStage231D2R3(body.amount ?? body.costAmount ?? body.cost_amount);
+  const reimbursable = caseCostBoolStage231D2R3(body.reimbursable, true);
+  const reimbursableAmount = reimbursable ? caseCostMoneyStage231D2R3(body.reimbursableAmount ?? body.reimbursable_amount ?? amount) : 0;
+  const reimbursedAmount = Math.min(caseCostMoneyStage231D2R3(body.reimbursedAmount ?? body.reimbursed_amount), reimbursableAmount);
+  const kindRaw = asText(body.kind ?? body.type ?? body.category).toLowerCase();
+  const statusRaw = asText(body.status).toLowerCase();
+  return {
+    workspace_id: workspaceId,
+    case_id: asText(body.caseId ?? body.case_id),
+    client_id: asText(body.clientId ?? body.client_id) || null,
+    kind: STAGE231D2_R3_COST_KINDS.has(kindRaw) ? kindRaw : 'other',
+    status: STAGE231D2_R3_COST_STATUSES.has(statusRaw) ? statusRaw : 'incurred',
+    amount,
+    reimbursable,
+    reimbursable_amount: reimbursableAmount,
+    reimbursed_amount: reimbursedAmount,
+    currency: normalizeCurrency(body.currency),
+    incurred_at: caseCostIsoStage231D2R3(body.incurredAt ?? body.incurred_at) || new Date().toISOString(),
+    reimbursed_at: caseCostIsoStage231D2R3(body.reimbursedAt ?? body.reimbursed_at),
+    note: asText(body.note) || null,
+  };
+}
+
+function queryTextStage231D2R3(value: unknown) {
+  return Array.isArray(value) ? asText(value[0]) : asText(value);
+}
+
+async function handleCaseCostsResourceStage231D2R3(req: any, res: any, workspaceId: string, bodyInput?: Record<string, unknown>) {
+  const method = String(req.method || 'GET').toUpperCase();
+  const body = bodyInput && typeof bodyInput === 'object' ? bodyInput : {};
+
+  if (method !== 'GET') {
+    await assertWorkspaceWriteAccess(workspaceId, req);
+  }
+
+  if (method === 'GET') {
+    const params = new URLSearchParams();
+    params.set('select', '*');
+    const caseId = queryTextStage231D2R3(req.query?.caseId ?? req.query?.case_id);
+    const clientId = queryTextStage231D2R3(req.query?.clientId ?? req.query?.client_id);
+    const status = queryTextStage231D2R3(req.query?.status);
+    if (caseId) params.set('case_id', 'eq.' + caseId);
+    if (clientId) params.set('client_id', 'eq.' + clientId);
+    if (status) params.set('status', 'eq.' + status);
+    params.set('order', 'incurred_at.desc,created_at.desc');
+    const result = await selectFirstAvailable([withWorkspaceFilter('case_costs?' + params.toString(), workspaceId)]);
+    res.status(200).json(Array.isArray(result.data) ? result.data : []);
+    return;
+  }
+
+  if (method === 'POST') {
+    const payload = normalizeCaseCostPayloadStage231D2R3(body, workspaceId);
+    if (!payload.case_id) {
+      res.status(400).json({ error: 'CASE_ID_REQUIRED' });
+      return;
+    }
+    const result = await insertWithVariants(['case_costs'], [payload]);
+    res.status(200).json(Array.isArray(result.data) ? result.data[0] || result.data : result.data);
+    return;
+  }
+
+  if (method === 'PATCH') {
+    const id = asText(body.id ?? req.query?.id);
+    if (!id) {
+      res.status(400).json({ error: 'ID_REQUIRED' });
+      return;
+    }
+    const payload = normalizeCaseCostPayloadStage231D2R3(body, workspaceId) as Record<string, unknown>;
+    delete payload.workspace_id;
+    if (!payload.case_id) delete payload.case_id;
+    const data = await updateByIdScoped('case_costs', id, workspaceId, payload);
+    res.status(200).json(Array.isArray(data) ? data[0] || data : data);
+    return;
+  }
+
+  if (method === 'DELETE') {
+    const id = queryTextStage231D2R3(req.query?.id ?? body.id);
+    if (!id) {
+      res.status(400).json({ error: 'ID_REQUIRED' });
+      return;
+    }
+    const data = await deleteByIdScoped('case_costs', id, workspaceId);
+    res.status(200).json(Array.isArray(data) ? data[0] || data : data);
+    return;
+  }
+
+  res.status(405).json({ error: 'METHOD_NOT_ALLOWED' });
+}
 export default async function handler(req: any, res: any) {
   let workspaceId: string | null = null;
   try {
@@ -258,6 +378,12 @@ export default async function handler(req: any, res: any) {
     workspaceId = await resolveRequestWorkspaceId(req);
     if (!workspaceId) {
       res.status(401).json({ error: 'AUTH_WORKSPACE_REQUIRED' });
+      return;
+    }
+
+    if (caseCostsResourceStage231D2R3(req)) {
+      const bodyForCaseCostsStage231D2R3 = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : req.body || {};
+      await handleCaseCostsResourceStage231D2R3(req, res, workspaceId, bodyForCaseCostsStage231D2R3);
       return;
     }
 
@@ -553,4 +679,3 @@ export default async function handler(req: any, res: any) {
     res.status(message === 'CASE_NOT_FOUND' ? 404 : 500).json({ error: message });
   }
 }
-

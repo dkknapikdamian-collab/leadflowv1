@@ -2381,3 +2381,14 @@ następny krok:
 - audyt ryzyk: SQL still required before manual cost write test.
 - następny krok: run SQL, manual add-cost test, selective push.
 <!-- STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE_END -->
+
+<!-- STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX_START -->
+## STAGE231D2-R3 — Vercel Hobby function limit fix
+- data: 2026-06-10 19:25 Europe/Warsaw
+- status: LOCAL_ONLY_PACKAGE_PREPARED / DO_APPLY_TEST_PUSH_DEPLOY
+- powód: Vercel Hobby blokuje deployment po przekroczeniu limitu Serverless Functions.
+- zakres: usunięcie api/case-costs.ts, konsolidacja kosztów pod api/cases.ts?resource=costs, guard budżetu funkcji.
+- testy: D2 guard/test, Vercel budget guard/test, D1/D0/D0A regression, Polish guard, build, git diff --check.
+- audyt ryzyk: po deployu powtórzyć manualny test Dodaj koszt, bo zmienia się ścieżka API.
+- następny krok: PASS -> push -> deploy -> test ręczny kosztu.
+<!-- STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX_END -->
