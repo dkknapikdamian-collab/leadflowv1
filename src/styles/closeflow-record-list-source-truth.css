@@ -657,3 +657,98 @@
   border-color: rgba(244, 63, 94, 0.32) !important;
   background: #fff1f2 !important;
 }
+/* STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE
+   owner: CloseFlow Visual System
+   scope: /clients ClientListCard
+   rule: desktop 2-line relationship row; phone is a strong standalone slot; no leads count; no active-case badge
+*/
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
+  grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(5rem, auto) !important;
+  align-items: center !important;
+  gap: 0.55rem 0.82rem !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-list-card-content {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.34rem !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-row-actions,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .client-card-action-buttons {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  justify-self: end !important;
+  align-self: center !important;
+}
+
+#root .cf-html-view.main-clients-html .client-list-card-row-primary,
+#root .cf-html-view.main-clients-html .client-list-card-row-secondary {
+  min-width: 0 !important;
+  display: grid !important;
+  align-items: center !important;
+  gap: 0.42rem 0.74rem !important;
+}
+
+#root .cf-html-view.main-clients-html .client-list-card-row-primary {
+  grid-template-columns: minmax(10rem, 1.15fr) minmax(8.25rem, 0.7fr) minmax(10rem, 0.85fr) minmax(12rem, 0.85fr) !important;
+}
+
+#root .cf-html-view.main-clients-html .client-list-card-row-secondary {
+  grid-template-columns: minmax(10rem, 1.15fr) minmax(6.5rem, 0.45fr) minmax(12rem, 0.8fr) minmax(12rem, 1fr) auto !important;
+}
+
+#root .cf-html-view.main-clients-html .client-list-card-phone {
+  font-size: 0.94rem !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .client-list-card-email,
+#root .cf-html-view.main-clients-html .cf-client-active-commission,
+#root .cf-html-view.main-clients-html .cf-client-lifetime-earned,
+#root .cf-html-view.main-clients-html .cf-client-cases-count,
+#root .cf-html-view.main-clients-html .cf-client-nearest-action,
+#root .cf-html-view.main-clients-html .cf-client-company-slot {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .cf-client-active-commission,
+#root .cf-html-view.main-clients-html .cf-client-lifetime-earned,
+#root .cf-html-view.main-clients-html .cf-client-cases-count {
+  font-weight: 850 !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-clients-html .client-list-card-row-primary,
+  #root .cf-html-view.main-clients-html .client-list-card-row-secondary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
+    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-row-actions,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .client-card-action-buttons {
+    grid-column: 2 !important;
+    grid-row: auto !important;
+    justify-self: start !important;
+  }
+
+  #root .cf-html-view.main-clients-html .client-list-card-row-primary,
+  #root .cf-html-view.main-clients-html .client-list-card-row-secondary {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}

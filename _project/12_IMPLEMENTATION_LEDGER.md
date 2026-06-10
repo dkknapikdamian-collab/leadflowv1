@@ -2423,3 +2423,38 @@ następny krok:
 - status: LOCAL_ONLY_PACKAGE_PREPARED
 - result: restored missing scripts/check-polish-encoding-stage231b0-r15-r3.cjs required by regression lane after STAGE231D3-R7.
 - risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.
+
+<!-- STAGE231D0B_CLIENT_LIST_CARD_LEDGER_START -->
+## 2026-06-10 21:10 Europe/Warsaw - STAGE231D0B Client List Card Visual Freeze
+
+STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
+
+FAKTY:
+- Kafelek klienta na liĹ›cie klientĂłw zostaĹ‚ przestawiony na ukĹ‚ad 2-wierszowy.
+- Z kafelka klienta usuniÄ™to Leady: oraz badge Aktywna sprawa.
+- Wiersz 1 pokazuje: nazwa, telefon, e-mail, Aktywna prowizja, akcje.
+- Wiersz 2 pokazuje: firma, Sprawy, Zarobione Ĺ‚Ä…cznie, NajbliĹĽsza akcja oraz dozwolone statusy pomocnicze.
+- Telefon ma osobny marker data-client-list-phone i klasÄ™ client-list-card-phone.
+- E-mail ma osobny marker data-client-list-email i klasÄ™ client-list-card-email.
+- UI dalej korzysta z closeflow-record-list-source-truth.css jako ĹşrĂłdĹ‚a prawdy stylu list.
+
+DECYZJA DAMIANA:
+- Klient jest juĹĽ pozyskanym leadem, wiÄ™c nie pokazujemy Leady w kafelku klienta.
+- Klient moĹĽe mieÄ‡ wiele spraw, wiÄ™c nie pokazujemy binarnego badge'a Aktywna sprawa.
+- Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
+
+TESTY/GUARDY:
+- 
+pm run check:stage231d0b-client-list-card-freeze
+- 
+pm run build
+- git diff --check
+
+DO POTWIERDZENIA:
+- Test rÄ™czny desktop/mobile na /clients po lokalnym uruchomieniu.
+
+RYZYKA:
+- JeĹ›li dane prowizyjne w bazie sÄ… niepeĹ‚ne, Aktywna prowizja moĹĽe pokazaÄ‡ 0 PLN mimo aktywnej sprawy bez uzupeĹ‚nionej prowizji.
+- JeĹ›li pĹ‚atnoĹ›ci prowizyjne nie majÄ… typu/statusu rozpoznawanego przez finance source, Zarobione Ĺ‚Ä…cznie moĹĽe wymagaÄ‡ osobnego etapu porzÄ…dkujÄ…cego dane pĹ‚atnoĹ›ci.
+- Zmiana dotyczy tylko listy klientĂłw, nie przebudowuje ClientDetail ani modeli finansowych.
+<!-- STAGE231D0B_CLIENT_LIST_CARD_LEDGER_END -->

@@ -70,7 +70,7 @@ import {
   getTodayDateInputValue,
 } from '../lib/owner-control/last-contact-intake';
 import { buildTopClientValueEntries } from '../lib/client-value';
-import { getCaseFinanceSummary } from '../lib/finance/case-finance-source';
+import { getCaseFinanceSummary, getClientCasesFinanceSummary } from '../lib/finance/case-finance-source';
 import '../styles/visual-stage23-client-case-forms-vnext.css';
 import '../styles/clients-next-action-layout.css';
 
@@ -143,6 +143,8 @@ const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'new client starter ca
 const STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK = 'client create modal only asks for case name then redirects to CaseDetail finance editor';
 const STAGE228R5R3_CLIENT_CASE_NAME_ONLY_MODAL = 'client create modal shows only case title; all case value and commission fields live in CaseDetail finance modal';
 const STAGE226R10_CLIENTS_LIST_SOURCE_TRUTH = 'clients page renders rows only from clients state; leads are relation context only';
+const STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE = 'ClientListCard uses 2-line relationship row: active commission, lifetime earned, cases, nearest action; no leads count or active-case badge';
+void STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE;
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 void STAGE228R5R2_CLIENT_CASE_FINANCE_FLOW_LOCK;
 void STAGE228R5R3_CLIENT_CASE_NAME_ONLY_MODAL;
@@ -386,6 +388,32 @@ export default function Clients() {
     }
     return map;
   }, [caseValueByClientId, clientFieldValueByClientId, clients, leadValueByClientId, paymentValueByClientId]);
+
+  const clientFinanceByClientId = useMemo(() => {
+    const map = new Map<string, { activeCommission: number; lifetimeEarned: number }>();
+    for (const client of clients) {
+      const clientId = String(client.id || '').trim();
+      if (!clientId) continue;
+      const clientCases = (cases as Record<string, unknown>[]).filter((caseRow) => getStage35RelationClientId(caseRow) === clientId);
+      const activeSummary = getClientCasesFinanceSummary({
+        client,
+        cases: clientCases,
+        payments,
+        mode: 'all_active_cases',
+      });
+      const lifetimeSummary = getClientCasesFinanceSummary({
+        client,
+        cases: clientCases,
+        payments,
+        mode: 'all_cases',
+      });
+      map.set(clientId, {
+        activeCommission: activeSummary.commissionAmount,
+        lifetimeEarned: lifetimeSummary.commissionPaidAmount,
+      });
+    }
+    return map;
+  }, [cases, clients, payments]);
 
   const nearestActionByClientId = useMemo(() => {
     const map = new Map<string, string>();
@@ -915,8 +943,7 @@ export default function Clients() {
               <div className="table-card w-full max-w-none">
                 {filtered.map((client, index) => {
                    const counters = countersByClientId.get(client.id) || { leads: 0, cases: 0, payments: 0 };
-                   const isArchived = Boolean(client.archivedAt);
-                   const clientValue = clientValueByClientId.get(client.id) || 0;
+                   const isArchived = Boolean(client.archivedAt);                const clientFinance = clientFinanceByClientId.get(client.id) || { activeCommission: 0, lifetimeEarned: 0 };
                    const nearestActionLabel = nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji';
                    const operationalBadges = buildRecordOperationalBadges({
                      entityType: 'client',
@@ -927,49 +954,38 @@ export default function Clients() {
                    return (
                      <div key={client.id} className="relative group/client-card w-full" data-client-card-wide-layout="true">
                        <Link to={`/clients/${client.id}`} className="block">
-                         <div className="row client-row cf-client-row-inline">
-                         <span className="index">{index + 1}</span>
-                         <span className="lead-main-cell min-w-0 cf-client-main-cell">
-                           <span className="title">{client.name || 'Klient'}</span>
-                           <span className="cf-list-row-meta">
-                             <span className="sub">{client.company || 'Bez firmy'}</span>
-                             <span className="cf-list-row-contact">{[client.email, client.phone].filter(Boolean).join(' · ') || 'brak kontaktu'}</span>
-                             <span className="cf-list-row-value">{formatClientMoney(clientValue)}</span>
-                           </span>
-                           <span className="statusline">
-                             {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">W koszu</span> : counters.cases > 0 ? <span className="cf-status-pill cf-chip-case-active" data-cf-status-tone="green">Aktywna sprawa</span> : <span className="cf-status-pill cf-chip-no-case">Bez sprawy</span>}
-                             <span className="cf-status-pill cf-chip-leads-count" data-cf-status-tone="blue">Leady: {counters.leads}</span>
-                             <span className="cf-list-row-value cf-chip-client-value" data-stage220a36-client-commission-value="true">Prowizja: {formatClientMoney(clientValue)}</span>
-                              {operationalBadges.map((badge) => (
-                                <span
-                                  key={badge.id}
-                                  className="cf-status-pill"
-                                  data-cf-status-tone={badge.tone}
-                                  data-stage222-r4-client-operational-badge="true"
-                                  title={badge.title}
-                                >
-                                  {badge.label}
-                                </span>
-                              ))}
-                           </span>
-                         </span>
-                         <span className="lead-value-cell cf-client-cases-cell"><span className="mini">Sprawy</span><strong>{counters.cases}</strong></span>
-                         <span className="lead-action-cell client-card-next-action-block cf-client-next-action-panel cf-client-next-action-inline"><span className="mini">Najbliższa akcja</span><strong>{nearestActionLabel}</strong></span>
-                         <span className="lead-actions client-card-action-buttons cf-client-row-actions cf-client-row-inline">
-                           <span className="btn ghost cf-icon-action-button cf-client-row-open-indicator" aria-hidden="true" title="Otwórz klienta" data-stage220a22-client-chevron="true"><ChevronRight className="h-4 w-4" /></span>
-                           <button
-                             type="button"
-                             aria-label={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
-                             title={isArchived ? 'Przywróć klienta' : 'Przenieś klienta do kosza'}
-                             disabled={archivePendingId === client.id}
-                             onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
-                              className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
-                           >
-                             {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
-                           </button>
-                         </span>
-                         </div>
-                       </Link>
+                         <div className="row client-row cf-client-row-two-line" data-ui-dictionary="ClientListCard" data-client-list-card-variant="client-relationship-row-2line">
+                        <span className="index">{index + 1}</span>
+                        <span className="cf-client-list-card-content min-w-0">
+                          <span className="client-list-card-row-primary">
+                            <span className="title cf-client-list-card-name">{client.name || 'Klient'}</span>
+                            <span className="client-list-card-phone" data-client-list-phone="true">{client.phone || 'Brak telefonu'}</span>
+                            <span className="client-list-card-email" data-client-list-email="true">{client.email || 'Brak e-maila'}</span>
+                            <span className="cf-list-row-value cf-client-active-commission">Aktywna prowizja: {formatClientMoney(clientFinance.activeCommission)}</span>
+                          </span>
+                          <span className="client-list-card-row-secondary">
+                            <span className="sub cf-client-company-slot">{client.company || 'Bez firmy'}</span>
+                            <span className="cf-client-cases-count">Sprawy: {counters.cases}</span>
+                            <span className="cf-list-row-value cf-client-lifetime-earned">Zarobione Ĺ‚Ä…cznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
+                            <span className="cf-client-nearest-action">NajbliĹĽsza akcja: {nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</span>
+                            {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">w koszu</span> : counters.cases === 0 ? <span className="cf-status-pill cf-chip-no-case">bez spraw</span> : null}
+                          </span>
+                        </span>
+                        <span className="lead-actions client-card-action-buttons cf-client-row-actions">
+                          <span className="btn ghost cf-icon-action-button" aria-hidden="true"><ChevronRight className="h-4 w-4" /></span>
+                          <button
+                            type="button"
+                            aria-label={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
+                            title={isArchived ? 'PrzywrĂłÄ‡ klienta' : 'PrzenieĹ› klienta do kosza'}
+                            disabled={archivePendingId === client.id}
+                            onClick={(event) => isArchived ? handleRestoreClient(event, client) : handleArchiveClient(event, client, counters)}
+                            className={actionIconClass('danger', 'btn ghost cf-icon-action-button')}
+                          >
+                            {archivePendingId === client.id ? <Loader2 className="h-4 w-4 animate-spin" /> : isArchived ? <RotateCcw className="h-4 w-4" /> : <Trash2 className="h-4 w-4" />}
+                          </button>
+                        </span>
+                      </div>
+                    </Link>
                      </div>
                    );
                  })}
