@@ -1809,3 +1809,12 @@ STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION: active/closed case separation, re
 - èrÛd≥o prawdy szerokoúci: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
 - Widok konsumujπcy kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
 - R14 guard/test usuniÍte jako fa≥szywy kontrakt.
+
+## 2026-06-10 ó STAGE231B0-R15-R3 ó ClientDetail width guard + Polish encoding guard
+- Status: FINAL_GUARD_FOR_PUSH.
+- Potwierdzenie uøytkownika: wyglπd kartoteki klienta jest poprawny i ma tak zostaÊ.
+- Guard szerokoúci: `scripts/check-stage231b0-r15-r3-client-detail-width-source-truth.cjs`.
+- Guard polskich znakÛw: `scripts/check-stage231b0-r15-r3-polish-encoding.cjs`.
+- Guard pilnuje, øe ClientDetail uøywa wspÛlnego canvasu: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"` oraz zmiennych `--cf-page-canvas-*`.
+- Guard pilnuje usuniÍcia b≥Ídnego R14 i braku mojibake/replacement chars w kluczowych plikach kartoteki klienta.
+- Naprawiono higienÍ EOF w `src/pages/ClientDetail.tsx`.
