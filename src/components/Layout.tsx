@@ -133,7 +133,7 @@ function TrialCard({ trialDaysLeft }: { trialDaysLeft: number }) {
         <span>Trial</span>
         <strong>{safeDays} dni</strong>
       </div>
-      <div className="bar" aria-hidden="true" data-stage231d0c-trial-top-card="true">
+      <div className="bar" aria-hidden="true">
         <span style={{ width: `${width}%` }} />
       </div>
       <Link to="/billing" className="trial-link">
@@ -606,3 +606,5 @@ export default function Layout({ children }: LayoutProps) {
 /* PHASE0_AI_ASSISTANT_LAYOUT_LAST7 GlobalQuickActions */
 
 /* ADMIN_DEBUG_TOOLBAR_LAYOUT_STAGE87 isAdmin || isAppOwner */
+
+

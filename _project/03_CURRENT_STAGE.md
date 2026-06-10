@@ -1338,6 +1338,8 @@ NASTEPNY KROK:
 - The deletion activity stays in history, but it must not recreate active blocker state.
 - Similar delete behavior in ClientDetail should be checked after LeadDetail is confirmed.
 
+
+
 ## 2026-06-08 22:20 Europe/Warsaw - STAGE228R19R2 missing item active source truth
 
 - status: LOCAL_APPLIED_PENDING_MANUAL_TEST
@@ -1676,6 +1678,8 @@ STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION: active/closed case separation, re
 - Status: LOCAL_ONLY_PREPARED.
 - Naprawa masowa po build fail: usunięto sklejone anchory `const X = useMemo( const X = useMemo(` po częściowym R2/R4/R6/R7.
 - Zakres: dotknięte pliki TSX, whitespace, sanity check R8, pełny build/test.
+
+
 
 ## 2026-06-10 — STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
@@ -2070,22 +2074,3 @@ Warunek push:
 - git diff --check
 - npm run build
 - ręczny test /clients
-
-## 2026-06-10 22:00 Europe/Warsaw - STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
-
-Marker: STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
-Status: LOCAL_ONLY_PACKAGE_PREPARED
-Zakres: /clients top layout, trial top card, centered simple filters.
-Warunek: D0B guard PASS, D0C guard PASS, git diff --check PASS, build PASS, manual /clients PASS.
-
-## 2026-06-10 22:20 Europe/Warsaw - STAGE231D0C-R2-GUARD-SYNTAX-FIX
-
-Marker: STAGE231D0C-R2-GUARD-SYNTAX-FIX
-Status: LOCAL_ONLY_GUARD_SYNTAX_FIX_PREPARED
-Zakres: fix only the D0C guard syntax after D0C patch was applied.
-
-## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R3-PREVIEW-STRING-RESCUE
-
-Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
-Status: LOCAL_ONLY_PREVIEW_STRING_RESCUE_PREPARED
-Zakres: restore static UI preview HTML files and keep D0C live layout guard.

@@ -1283,7 +1283,7 @@ function CaseDetailLoadingState() {
       <main className="case-detail-page case-detail-page-loading" data-case-detail-loading="true">
         <section className="case-detail-transition-loader" role="status" aria-live="polite">
           <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-          <div data-stage231d0c-trial-top-card="true">
+          <div>
             <p>Ładowanie sprawy...</p>
             <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
           </div>

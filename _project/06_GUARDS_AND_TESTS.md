@@ -2266,6 +2266,8 @@ NASTEPNY KROK:
 - The deletion activity stays in history, but it must not recreate active blocker state.
 - Similar delete behavior in ClientDetail should be checked after LeadDetail is confirmed.
 
+
+
 ## 2026-06-08 22:20 Europe/Warsaw - STAGE228R19R2 missing item active source truth
 
 - status: LOCAL_APPLIED_PENDING_MANUAL_TEST
@@ -2578,6 +2580,8 @@ node scripts/check-stage231b0-r7-case-archive-restore-navigation.cjs
 - Status: LOCAL_ONLY_PREPARED.
 - Naprawa masowa po build fail: usunięto sklejone anchory `const X = useMemo( const X = useMemo(` po częściowym R2/R4/R6/R7.
 - Zakres: dotknięte pliki TSX, whitespace, sanity check R8, pełny build/test.
+
+
 
 ## 2026-06-10 — STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
@@ -2944,21 +2948,3 @@ Guard blokuje:
 - prefiks Najbliższa akcja: w samym slocie kafelka,
 - brak Sprawy:, Aktywna prowizja, Zarobione łącznie,
 - brak osobnych slotów telefonu/e-maila i dwuwierszowego layoutu.
-
-## 2026-06-10 22:00 Europe/Warsaw - STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
-
-Marker: STAGE231D0C-CLIENTS-TOP-LAYOUT-CLEANUP
-Guard: scripts/check-stage231d0c-clients-top-layout-cleanup.cjs
-Sprawdza: layout markers, source-of-truth CSS, trial card marker if source exists, no mojibake, no regression Leady/Aktywna sprawa.
-
-## 2026-06-10 22:20 Europe/Warsaw - STAGE231D0C-R2-GUARD-SYNTAX-FIX
-
-Marker: STAGE231D0C-R2-GUARD-SYNTAX-FIX
-Guard: scripts/check-stage231d0c-clients-top-layout-cleanup.cjs
-Zmiana: replace fragile invalid backslash regexp with path.sep split/join helper.
-
-## 2026-06-10 22:35 Europe/Warsaw - STAGE231D0C-R3-PREVIEW-STRING-RESCUE
-
-Marker: STAGE231D0C-R3-PREVIEW-STRING-RESCUE
-Guard: scripts/check-stage231d0c-clients-top-layout-cleanup.cjs
-Zmiana: guard ignores static preview HTML sources and blocks live-source regressions.
