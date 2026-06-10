@@ -854,7 +854,7 @@ export default function Clients() {
           }
         />
 
-        <div className="grid-4 clients-metrics-row-tight" data-stage231d0c-metrics-up="true">
+        <div className="grid-4 clients-metrics-row-tight clients-metrics-row-r4-tight" data-stage231d0c-r4-metrics-up="true" data-stage231d0c-metrics-up="true">
           <StatShortcutCard
             label="Aktywni"
             value={activeCount}
@@ -898,7 +898,7 @@ export default function Clients() {
           />
         </div>
 
-        <div className="layout-list w-full max-w-none clients-centered-rail-layout" data-clients-wide-layout="true" data-stage231d0c-clients-centered-filters="true">
+        <div className="layout-list w-full max-w-none clients-centered-rail-layout clients-layout-r4 clients-layout-r4-single-column-rail" data-stage231d0c-r4-live-layout="true" data-clients-wide-layout="true" data-stage231d0c-clients-centered-filters="true">
           <div className="stack">
             <div className="search cf-main-search" data-cf-main-search="true" data-clients-search="true" data-cf-main-search-source="stage173">
               <span aria-hidden="true"><Search className="w-4 h-4" /></span>
@@ -993,7 +993,7 @@ export default function Clients() {
              )}
           </div>
 
-          <div className="clients-right-rail clients-filters-centered-rail" data-stage231d0c-centered-filters="true">
+          <div className="clients-right-rail clients-filters-centered-rail clients-filters-r4-center" data-stage231d0c-r4-centered-filters="true" data-stage231d0c-centered-filters="true">
             <SimpleFiltersCard
               className="client-right-card operator-simple-filters-card"
               title="Filtry proste"
