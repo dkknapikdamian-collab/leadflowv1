@@ -1001,8 +1001,7 @@
     "test:stage231d2r6-case-detail-top-rail-lift": "node --test tests/stage231d2r6-case-detail-top-rail-lift.test.cjs",
     "check:stage231d3-client-finance-costs-rollup": "node scripts/check-stage231d3-client-finance-costs-rollup.cjs",
     "test:stage231d3-client-finance-costs-rollup": "node --test tests/stage231d3-client-finance-costs-rollup.test.cjs",
-    "check:stage231d0c-clients-top-layout-cleanup": "node scripts/check-stage231d0c-clients-top-layout-cleanup.cjs",
-    "check:stage231d0c-r4-effective-visual-layout-rescue": "node scripts/check-stage231d0c-r4-effective-visual-layout-rescue.cjs"
+    "check:stage231d0c-clients-top-layout-cleanup": "node scripts/check-stage231d0c-clients-top-layout-cleanup.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
