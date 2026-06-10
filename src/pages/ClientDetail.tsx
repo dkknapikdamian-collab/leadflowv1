@@ -1,4 +1,5 @@
-﻿// STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL: ClientDetail uses shared full-width canvas variables from unified page canvas.
+// STAGE231D0_CLIENT_WORKSPACE_UX_CLEANUP: Client workspace UI cleanup uses D0A Visual Source of Truth.
+// STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL: ClientDetail uses shared full-width canvas variables from unified page canvas.
 // STAGE231B0_R9_R10_CLIENTDETAIL_JSX_SECTION_CLOSE_REPAIR: restores central section close before right rail aside.
 // STAGE231B0_R9_R5_CLIENT_HISTORY_RENDERER_GUARD_REPAIR: Client history closed cases render via shared smart card renderer.
 // STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL
@@ -2132,7 +2133,7 @@ function ClientDetail() {
     return (
       <article key={caseId || title} className={cardClassName} data-client-case-smart-card="true" data-stage231b0-r8-client-case-card={options.closed ? 'closed' : 'active'}>
         <div className="client-detail-case-smart-main">
-          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIÄTA' : 'Sprawa'}</span>
+          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIĘTA' : 'Sprawa'}</span>
           <strong>{title}</strong>
           <div className="client-detail-case-smart-meta">
             <span data-stage231b0-r8-case-status-label="true">{status}</span>
@@ -2217,7 +2218,7 @@ return (
 <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage216m-r14-clean-copy-finance-mojibake-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ĺadowanie klienta...</span>
+            <span>Ładowanie klienta...</span>
           </div>
         </main>
       </Layout>
@@ -2311,7 +2312,7 @@ return (
               </Link>
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
-              <EntityIcon entity="case" className="h-4 w-4" />
+              <EntityIcon entity="payment" className="h-4 w-4" />
               Otwórz główną sprawę
             </Button>
           </div>
@@ -2343,10 +2344,11 @@ return (
                 ) : null}
               </article>
               {/* STAGE220A13: client finance is all client cases, not one case. */}
-              <article className="client-detail-today-info-tile client-detail-today-info-tile-finance cf-finance-scope-card cf-finance-scope-card--client" data-client-left-finance-tile="true" data-stage220a13-client-finance-scope-card="true" aria-label="Finanse klienta">
+              <article className="client-detail-today-info-tile client-detail-today-info-tile-finance cf-finance-scope-card cf-finance-scope-card--client" data-client-left-finance-tile="true"
+                  data-stage231d0-finance-icon-source-truth="payment" data-stage220a13-client-finance-scope-card="true" aria-label="Finanse klienta">
                 <div className="cf-finance-scope-card__head">
                   <span className="cf-finance-scope-card__icon">
-                    <EntityIcon entity="case" className="h-4 w-4" />
+                    <EntityIcon entity="payment" className="h-4 w-4" />
                   </span>
                   <strong>Finanse klienta</strong>
                 </div>
@@ -2791,7 +2793,7 @@ return (
                       ) : null}
                     </section>
 
-                    <section className="client-detail-summary-card client-detail-finance-card" aria-label="Finanse klienta">
+                    <section className="client-detail-summary-card client-detail-finance-card" aria-label="Finanse sprawy">
                       <div className="client-detail-card-title-row">
                         <EntityIcon entity="client" className="h-4 w-4" />
                         <h2>Finanse klienta</h2>
@@ -2900,7 +2902,7 @@ return (
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy zamknięte</h2>
-                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIÄTA</span>
+                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIĘTA</span>
                       <p>Archiwum operacyjne klienta. Historia, prowizje i wpłaty zostają przy relacji.</p>
                     </div>
                   </div>
@@ -2957,7 +2959,7 @@ return (
                     <article key={`client-right-rail-action-${entry.kind}-${entry.id}`} className={`client-detail-upcoming-action-row ${entry.isOverdue ? 'client-detail-work-row-overdue' : ''}`} data-stage216m-r4-client-upcoming-action-row="true">
                       <span className="client-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                       <div>
-                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â€˘ {entry.statusLabel}</small>
+                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
                         <strong>{entry.title}</strong>
                         <p>{entry.dateLabel}</p>
                       </div>
@@ -3043,24 +3045,7 @@ return (
               </div>
             </section>
 
-            <section className="right-card client-detail-right-card client-detail-right-finance-card-hard-render" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true" data-stage216m-r12-client-finance-hard-render="true">
-              <div className="client-detail-card-title-row"><EntityIcon entity="client" className="h-4 w-4" /><h2>Finanse klienta</h2></div>
-              <small>Suma wartości transakcji: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
-              <small>Prowizja należna: {formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</small>
-              <small>Wpłacono prowizji: {formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</small>
-              <small>Do zapłaty prowizji: {formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</small>
-              <small>Sprawy aktywne / rozliczone: {clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</small>
-              <div className="client-detail-right-actions">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
-                >
-                  Finanse w sprawie
-                </Button>
-              </div>
-            </section>
+
           </aside>
         </div>
       </main>

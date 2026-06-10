@@ -2231,3 +2231,36 @@ Do wykonania lokalnie:
 
 PASS tych komend jest warunkiem pushu.
 <!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_TEST_HISTORY_END -->
+
+<!-- STAGE231D0_CLIENT_WORKSPACE_UX_CLEANUP_R4_START -->
+## 2026-06-10 — STAGE231D0-R4 Client workspace UX final runner fix
+
+Status: LOCAL_ONLY_PREPARED / DO_TEST_AND_PUSH
+
+FAKTY:
+- R4 naprawia wyłącznie niedziałający runner/patch D0 i domyka ClientDetail UX cleanup.
+- Zakres UI: marker D0, tekst Ładowanie klienta..., tekst SPRAWA ZAMKNIĘTA, finance icon source truth payment, jeden client-level aria-label Finanse klienta.
+
+TESTY:
+- npm run check:stage231d0-client-workspace-ux-cleanup
+- npm run test:stage231d0-client-workspace-ux-cleanup
+- npm run check:stage231d0a-visual-source-truth-consistency
+- npm run test:stage231d0a-visual-source-truth-consistency
+- node scripts/check-stage231b0-r15-r3-polish-encoding.cjs
+- npm run build
+- git diff --check
+
+AUDYT RYZYK:
+- Nie ruszano modelu finansów i kosztów.
+- Istniejące ostrzeżenie duplicate savedRecord zostaje poza zakresem.
+
+NASTĘPNY KROK:
+- Po PASS/push przejść do STAGE231D1 — model kosztów.
+<!-- STAGE231D0_CLIENT_WORKSPACE_UX_CLEANUP_R4_END -->
+
+## 2026-06-10 — STAGE231D0-R5 — Client workspace UX guard close
+- Status: LOCAL_ONLY_RESCUE_PRE_PUSH.
+- Domknięcie po R4: ikona finansów klienta z EntityIcon case -> payment oraz brakujące tokeny "audyt ryzyk", "następny krok" i "VISUAL SOURCE OF TRUTH".
+- Zakres bez zmian danych: ClientDetail UI, guard/test D0, raporty _project i Obsidian payload.
+- Testy: D0 guard/test, D0A regression, Polish guard, build, git diff --check.
+- Audyt ryzyk: ręcznie sprawdzić brak duplikatu Finanse klienta i poprawną ikonę finansów.
