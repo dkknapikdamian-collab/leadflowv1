@@ -58,7 +58,7 @@ Branch: dev-rollout-freeze
 - Card title pattern: `SurfaceCard` title uses `text-base font-black tracking-tight`.
 - Record row title pattern: `closeflow-record-list-source-truth.css` uses compact row title sizing.
 - Finance number pattern: `FinanceMiniSummary` uses `cf-finance-mini-summary__value` and `cf-finance-metric`.
-- Do not introduce arbitrary local `font-size: 13px/17px/19px` in new UI without tying it to an existing source or documenting a scoped exception.
+- Do not introduce arbitrary local odd local font-size values in new UI without tying it to an existing source or documenting a scoped exception.
 
 ### Spacing:
 - Shared page canvas: `src/styles/closeflow-unified-page-canvas-stage211c.css` with `--cf-page-canvas-*` variables.

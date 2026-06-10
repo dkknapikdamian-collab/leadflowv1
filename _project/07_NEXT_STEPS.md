@@ -3140,3 +3140,10 @@ NajbliĹĽszy krok po PASS D0A:
 - wdroĹĽyÄ‡ D0, ale tylko na bazie mapy `_project/VISUAL_SOURCE_OF_TRUTH.md` i bez lokalnych wyjÄ…tkĂłw UI.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_NEXT_STEPS_END -->
 
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_NEXT_STEPS_START -->
+## STAGE231D0A-R3 — następny krok
+
+1. Uruchomić rescue R3.
+2. Po PASS: commit i push wyłącznie plików D0A-R3.
+3. Następny etap: STAGE231D0 — Client workspace UX cleanup + mojibake guard.
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_NEXT_STEPS_END -->

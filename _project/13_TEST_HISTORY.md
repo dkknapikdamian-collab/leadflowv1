@@ -2220,3 +2220,14 @@ Warunek PASS:
 - dokumentacja i payload Obsidiana nie zawierajÄ… mojibake.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TEST_HISTORY_END -->
 
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_TEST_HISTORY_START -->
+## STAGE231D0A-R3 — test history
+
+Do wykonania lokalnie:
+- npm run check:stage231d0a-visual-source-truth-consistency
+- npm run test:stage231d0a-visual-source-truth-consistency
+- npm run build
+- git diff --check
+
+PASS tych komend jest warunkiem pushu.
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_TEST_HISTORY_END -->

@@ -38,10 +38,10 @@ Kolejność po poprawce:
 - `npm run build`
 - `git diff --check`
 
-## Audyt ryzyk
+## audyt ryzyk po etapie
 - Bez D0A developer może znowu stworzyć niespójne lokalne kafelki.
 - Istnieją starsze style page-local; D0A nie usuwa ich automatycznie, tylko wskazuje źródła prawdy i blokuje brak raportu.
 - D0/D1-D3 muszą kontynuować na bazie mapy VST, inaczej etap należy odrzucić.
 
-## Następny krok
+## następny krok
 Po PASS D0A wdrożyć D0 dopiero po sprawdzeniu mapy VST i raportu developera.

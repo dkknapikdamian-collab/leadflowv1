@@ -1333,3 +1333,8 @@ Dodano:
 Nie zmieniano runtime UI, danych, SQL, finansĂłw, Google Auth ani Google Calendar.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TIMELINE_END -->
 
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_TIMELINE_START -->
+## 2026-06-10 — STAGE231D0A-R3
+
+Rescue po błędnym runnerze R2 i wcześniejszym pushu D0A mimo FAIL. R3 domyka guard, test i higienę plików przed D0.
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_TIMELINE_END -->

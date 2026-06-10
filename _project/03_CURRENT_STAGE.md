@@ -1881,3 +1881,20 @@ Testy:
 - `git diff --check`
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CURRENT_STAGE_END -->
 
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_CURRENT_STAGE_START -->
+## 2026-06-10 — STAGE231D0A-R3 — Guard payload + EOF rescue
+
+Status: LOCAL_RESCUE_PREPARED / DO_TEST_AND_PUSH
+
+Powód:
+- R2 runner miał błąd parsera PowerShell.
+- D0A wymaga domknięcia, bo poprzedni push poszedł mimo FAIL guard/test/diff hygiene.
+
+Zakres:
+- Payload Obsidiana zawiera tokeny wymagane przez guard.
+- Centralne pliki projektu mają znormalizowany EOF.
+- VST doc nie generuje ostrzeżenia przez literalny przykład przypadkowej wartości CSS.
+
+Nie ruszano:
+- runtime UI, routing, Supabase, Google Calendar, finanse, koszty, delete/restore.
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_CURRENT_STAGE_END -->

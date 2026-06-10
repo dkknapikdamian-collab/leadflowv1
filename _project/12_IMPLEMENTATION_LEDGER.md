@@ -2290,3 +2290,11 @@ Granica:
 - bez refaktoru ClientDetail/Cases/Clients.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_LEDGER_END -->
 
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_LEDGER_START -->
+## STAGE231D0A-R3 — implementation ledger
+
+Typ: rescue / closeout hygiene
+Zakres: _project, payload Obsidiana, VST docs
+Ryzyko: niskie, brak zmian runtime UI
+Warunek zamknięcia: PASS D0A guard/test/build/diff
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_LEDGER_END -->

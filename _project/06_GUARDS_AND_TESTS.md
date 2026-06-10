@@ -2765,3 +2765,14 @@ Chroniona klasa bĹ‚Ä™du:
 - pominiÄ™cie roadmapy D0A przed D0.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_GUARDS_END -->
 
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_GUARDS_START -->
+## STAGE231D0A-R3 — guard/test closeout
+
+Wymagane PASS:
+- npm run check:stage231d0a-visual-source-truth-consistency
+- npm run test:stage231d0a-visual-source-truth-consistency
+- npm run build
+- git diff --check
+
+Warunek: brak FAIL, brak new blank line at EOF, brak brakujących tokenów payloadu Obsidiana.
+<!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_GUARDS_END -->
