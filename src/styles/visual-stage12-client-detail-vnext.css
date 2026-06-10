@@ -3675,52 +3675,72 @@ button.client-detail-top-tile-link {
   }
 }
 
-/* STAGE231B0_R14_CLIENT_DETAIL_FULL_WIDTH_LAYOUT_LOCK
-   Contract: Client detail uses full available app width between sidebar and right viewport edge.
+/* STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL
+   ClientDetail consumes the shared full-width canvas contract.
+   This intentionally overrides old page clamps from prior ClientDetail stages.
 */
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) main,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) [role="main"],
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .app-main,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .main-content,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .page-content,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .workspace-content {
-  width: 100% !important;
-  max-width: none !important;
+main.main-client-detail > .view.active[data-shell-content="true"][data-visual-stage-client-detail="06-client-detail"],
+main[data-current-section="client-detail"] > .view.active[data-shell-content="true"] {
+  width: var(--cf-page-canvas-full-width) !important;
+  max-width: var(--cf-page-canvas-full-max-width) !important;
   min-width: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  align-self: stretch !important;
-  justify-self: stretch !important;
-}
-
-.cf-client-detail-full-width-stage231b0-r14 {
-  width: 100% !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  margin-left: 0 !important;
-  margin-right: 0 !important;
-  align-self: stretch !important;
-  justify-self: stretch !important;
+  margin: 0 !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   box-sizing: border-box !important;
-  padding-left: clamp(16px, 1.6vw, 28px) !important;
-  padding-right: clamp(16px, 1.6vw, 28px) !important;
 }
 
-.cf-client-detail-full-width-stage231b0-r14 > *,
-.cf-client-detail-full-width-stage231b0-r14 [class*="client-detail"],
-.cf-client-detail-full-width-stage231b0-r14 [class*="ClientDetail"],
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) [class*="client-detail"],
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) [class*="ClientDetail"],
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-page-shell,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-page-container,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-content-shell,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .cf-content-container,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .page-shell,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .page-container,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .content-shell,
-body:has([data-stage231b0-r14-client-detail-full-width-lock="true"]) .content-container {
-  width: 100% !important;
-  max-width: none !important;
+main.main-client-detail > .view.active[data-shell-content="true"][data-visual-stage-client-detail="06-client-detail"] > .client-detail-vnext-page,
+main[data-current-section="client-detail"] > .view.active[data-shell-content="true"] > .client-detail-vnext-page,
+.client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] {
+  width: var(--cf-page-canvas-full-width) !important;
+  max-width: var(--cf-page-canvas-full-max-width) !important;
   min-width: 0 !important;
+  margin: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   margin-inline: 0 !important;
+  padding-left: var(--cf-page-canvas-padding-x) !important;
+  padding-right: var(--cf-page-canvas-padding-x) !important;
+  padding-top: var(--cf-page-canvas-padding-y) !important;
+  padding-bottom: var(--cf-page-canvas-bottom) !important;
+  box-sizing: border-box !important;
+}
+
+.client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] .client-detail-header,
+.client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] .client-detail-shell {
+  width: var(--cf-page-canvas-full-width) !important;
+  max-width: var(--cf-page-canvas-full-max-width) !important;
+  min-width: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  margin-inline: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] .client-detail-shell {
+  display: grid !important;
+  align-items: start !important;
+  gap: var(--cf-page-canvas-gap) !important;
+}
+
+@media (min-width: 1280px) {
+  .client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] .client-detail-shell {
+    grid-template-columns: var(--cf-page-canvas-left-rail) minmax(0, 1fr) var(--cf-page-canvas-right-rail) !important;
+  }
+}
+
+@media (max-width: 1279px) {
+  .client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] .client-detail-shell {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .client-detail-vnext-page[data-stage231b0-r15-r2-client-detail-shared-canvas="true"] {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+    padding-top: 16px !important;
+    padding-bottom: 94px !important;
+  }
 }

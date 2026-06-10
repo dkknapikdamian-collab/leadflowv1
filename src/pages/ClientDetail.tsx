@@ -1,4 +1,4 @@
-// STAGE231B0_R14_CLIENT_DETAIL_FULL_WIDTH_LAYOUT_LOCK: locks client detail page to full available application width.
+﻿// STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL: ClientDetail uses shared full-width canvas variables from unified page canvas.
 // STAGE231B0_R9_R10_CLIENTDETAIL_JSX_SECTION_CLOSE_REPAIR: restores central section close before right rail aside.
 // STAGE231B0_R9_R5_CLIENT_HISTORY_RENDERER_GUARD_REPAIR: Client history closed cases render via shared smart card renderer.
 // STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL
@@ -32,7 +32,7 @@ const CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1 = 'ClientDetail route param sou
 void CLOSEFLOW_CLIENT_DETAIL_ID_ROUTE_HOTFIX_V1;
 const STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_SOURCE = 'ClientDetail follows LeadDetail visual source: main tiles lowered, notes centered, avatar removed, right rail simplified';
 void STAGE216L_CLIENT_DETAIL_LEAD_LAYOUT_SOURCE;
-const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes Otwórz sprawę relation action copy';
+const CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY = 'VS7 repair1: ClientDetail exposes OtwĂłrz sprawÄ™ relation action copy';
 void CLOSEFLOW_VS7_REPAIR1_CLIENT_RELATION_COMMAND_COPY;
 
 /* STAGE14B_CLIENT_NEXT_ACTION_CONTEXT */
@@ -55,8 +55,8 @@ CLIENT_DETAIL_STAGE46_ACQUISITION_HISTORY_ONLY
 STAGE50_CLIENT_DETAIL_EDIT_HEADER_POLISH
 */
 const STAGE35_CLIENT_DETAIL_EDIT_TOGGLE_GUARD = "contactEditing ? 'Zapisz' : 'Edytuj'";
-const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu Drugorzędne akcje menu pomocnicze';
-const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe Drugorzędne akcje';
+const CLIENT_DETAIL_FINAL_MORE_MENU_GUARD = 'Dodatkowe client-detail-more-menu DrugorzÄ™dne akcje menu pomocnicze';
+const CLIENT_DETAIL_FINAL_MORE_MENU_COPY = 'Dodatkowe DrugorzÄ™dne akcje';
 const CLIENT_DETAIL_NEW_CASE_FOR_CLIENT_COPY_GUARD = '+ Nowa sprawa dla klienta';
 const FIN13_CLIENT_DETAIL_CASE_FINANCES_VISIBLE = 'FIN13_CLIENT_DETAIL_CASE_FINANCES_VISIBLE';
 const STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH = 'client finance sums all client cases while case finance stays single-case scoped';
@@ -78,13 +78,13 @@ const CLIENT_DETAIL_EDIT_BUTTON_UNDER_DATA_GUARD = 'edit button under client dat
 const CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_GUARD = 'recent moves under client data';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD = 'Klient jako centrum relacji';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD_UTF8 = 'Klient jako centrum relacji';
-const CLIENT_RELATION_PATH_GUARD = 'Ścieżka klienta';
-const CLIENT_RELATION_PATH_GUARD_UTF8 = 'Ścieżka klienta';
+const CLIENT_RELATION_PATH_GUARD = 'ĹšcieĹĽka klienta';
+const CLIENT_RELATION_PATH_GUARD_UTF8 = 'ĹšcieĹĽka klienta';
 const STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT = 'ClientDetail keeps lead data as acquisition source only and does not render a lead cockpit';
 void STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT;
-const CLIENT_RELATION_OPEN_CASE_GUARD = 'Otwórz sprawę';
-const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'Otwórz sprawę';
-const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'Następny ruch';
+const CLIENT_RELATION_OPEN_CASE_GUARD = 'OtwĂłrz sprawÄ™';
+const CLIENT_RELATION_OPEN_CASE_GUARD_UTF8 = 'OtwĂłrz sprawÄ™';
+const CLIENT_OPERATIONAL_NEXT_MOVE_GUARD = 'NastÄ™pny ruch';
 const STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS = 'ClientDetail V1 operational center labels contract';
 void STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS;
 const STAGE228R16_CLIENT_DIRECT_BRAK_POINTERDOWN = 'ClientDetail Brak button opens on pointerdown and click through ContextActionDialogs';
@@ -99,18 +99,18 @@ const STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING = 'ClientDetail Brak quick 
 void STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING;
 const CLIENT_DETAIL_OPERATIONAL_TASKS_LABEL = 'Zadania klienta';
 const CLIENT_DETAIL_OPERATIONAL_EVENTS_LABEL = 'Wydarzenia klienta';
-const CLIENT_DETAIL_OPERATIONAL_ACTIVITY_LABEL = 'Aktywność klienta';
+const CLIENT_DETAIL_OPERATIONAL_ACTIVITY_LABEL = 'AktywnoĹ›Ä‡ klienta';
 void CLIENT_DETAIL_OPERATIONAL_TASKS_LABEL;
 void CLIENT_DETAIL_OPERATIONAL_EVENTS_LABEL;
 void CLIENT_DETAIL_OPERATIONAL_ACTIVITY_LABEL;
-const CLIENT_DETAIL_SIMPLIFIED_GUARD_MOJIBAKE = 'Praca dzieje się w sprawie';
-const CLIENT_DETAIL_SIMPLIFIED_GUARD_UTF8 = 'Praca dzieje się w sprawie';
-const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_1 = 'Lead źródłowy';
-const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead źródłowy';
+const CLIENT_DETAIL_SIMPLIFIED_GUARD_MOJIBAKE = 'Praca dzieje siÄ™ w sprawie';
+const CLIENT_DETAIL_SIMPLIFIED_GUARD_UTF8 = 'Praca dzieje siÄ™ w sprawie';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_1 = 'Lead ĹşrĂłdĹ‚owy';
+const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead ĹşrĂłdĹ‚owy';
 const CLIENT_DETAIL_HISTORY_ACQUISITION_COPY_GUARD = 'Historia pozyskania';
-const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
-const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
-const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'ĹąrĂłdĹ‚o:';
+const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'ĹąrĂłdĹ‚o:';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'OtwĂłrz sprawÄ™';
 import Layout from '../components/Layout';
 import { EntityActionButton, formActionsClass, modalFooterClass } from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
@@ -157,8 +157,8 @@ const closedClientCasesStage231B0R7 = <T extends Stage231B0R7ClientCaseListRecor
 
 const stage231b0R7ClientDetailCaseListsContract = {
   activeLabel: 'Sprawy aktywne',
-  closedLabel: 'Sprawy zamknięte',
-  restoreLabel: 'Przywróć sprawę',
+  closedLabel: 'Sprawy zamkniÄ™te',
+  restoreLabel: 'PrzywrĂłÄ‡ sprawÄ™',
   activeClientCasesStage231B0R7,
   closedClientCasesStage231B0R7,
 };
@@ -185,10 +185,10 @@ void handleRestoreClientCaseStage231B0R7;
 
 const stage231b0R7ClientDetailClosedCasesContract = {
   activeLabel: 'Sprawy aktywne',
-  closedLabel: 'Sprawy zamknięte',
-  restoreLabel: 'Przywróć sprawę',
+  closedLabel: 'Sprawy zamkniÄ™te',
+  restoreLabel: 'PrzywrĂłÄ‡ sprawÄ™',
   reopenedActivityType: 'case_lifecycle_reopened',
-  reopenedActivityTitle: 'Sprawa przywrócona',
+  reopenedActivityTitle: 'Sprawa przywrĂłcona',
   isClosed(record: { status?: unknown }) {
     return isClosedCaseStatus(record.status);
   },
@@ -365,13 +365,13 @@ function leadStatusLabel(status?: string) {
     case 'qualification':
       return 'Kwalifikacja';
     case 'proposal_sent':
-      return 'Oferta wysłana';
+      return 'Oferta wysĹ‚ana';
     case 'waiting_response':
-      return 'Czeka na odpowiedź';
+      return 'Czeka na odpowiedĹş';
     case 'accepted':
       return 'Zaakceptowany';
     case 'moved_to_service':
-      return 'W obsłudze';
+      return 'W obsĹ‚udze';
     case 'won':
       return 'Wygrany';
     case 'lost':
@@ -399,7 +399,7 @@ function caseStatusLabel(status?: string) {
     case 'on_hold':
       return 'Wstrzymana';
     case 'completed':
-      return 'Zakończona';
+      return 'ZakoĹ„czona';
     case 'canceled':
       return 'Anulowana';
     default:
@@ -410,11 +410,11 @@ function paymentStatusLabel(status?: string) {
   switch (status) {
     case 'paid':
     case 'fully_paid':
-      return 'Opłacone';
+      return 'OpĹ‚acone';
     case 'partially_paid':
-      return 'Częściowo opłacone';
+      return 'CzÄ™Ĺ›ciowo opĹ‚acone';
     case 'awaiting_payment':
-      return 'Czeka na płatność';
+      return 'Czeka na pĹ‚atnoĹ›Ä‡';
     case 'deposit_paid':
       return 'Zaliczka';
     case 'refunded':
@@ -484,7 +484,7 @@ function getClientActivityTypeStage14A(activity: Stage14AActivityLike) {
 
 function isTechnicalActivityFallbackStage14A(value: string) {
   const normalized = String(value || '').trim().toLowerCase();
-  return !normalized || normalized === 'client_note' || normalized === 'activity' || normalized === 'aktywność klienta' || normalized === 'brak daty';
+  return !normalized || normalized === 'client_note' || normalized === 'activity' || normalized === 'aktywnoĹ›Ä‡ klienta' || normalized === 'brak daty';
 }
 
 function getClientActivityBodyStage14A(activity: Stage14AActivityLike) {
@@ -509,7 +509,7 @@ function getClientActivityBodyStage14A(activity: Stage14AActivityLike) {
     const text = asText(candidate);
     if (text && !isTechnicalActivityFallbackStage14A(text)) return text;
   }
-  return 'Brak treści aktywności';
+  return 'Brak treĹ›ci aktywnoĹ›ci';
 }
 
 function formatClientActivityTitleStage14A(activity: Stage14AActivityLike) {
@@ -521,11 +521,11 @@ function formatClientActivityTitleStage14A(activity: Stage14AActivityLike) {
   if (type.includes('note')) return 'Notatka';
   if (type.includes('task')) return 'Zadanie';
   if (type.includes('event') || type.includes('calendar') || type.includes('meeting')) return 'Wydarzenie';
-  if (type.includes('payment') || type.includes('finance')) return 'Płatność';
+  if (type.includes('payment') || type.includes('finance')) return 'PĹ‚atnoĹ›Ä‡';
   if (type.includes('case')) return 'Sprawa';
   if (type.includes('lead')) return 'Lead';
   if (type.includes('status')) return 'Zmiana statusu';
-  return 'Aktywność';
+  return 'AktywnoĹ›Ä‡';
 }
 
 function formatClientActivityDateStage14A(activity: Stage14AActivityLike) {
@@ -581,7 +581,7 @@ function isClientRelatedActivityStage14A(activity: Stage14AActivityLike, clientI
 function isClientNoteActivityStage14A(activity: Stage14AActivityLike, clientId: string) {
   const type = getClientActivityTypeStage14A(activity);
   const body = getClientActivityBodyStage14A(activity);
-  return isClientRelatedActivityStage14A(activity, clientId) && (type.includes('note') || type === 'client_note' || Boolean(body && body !== 'Brak treści aktywności'));
+  return isClientRelatedActivityStage14A(activity, clientId) && (type.includes('note') || type === 'client_note' || Boolean(body && body !== 'Brak treĹ›ci aktywnoĹ›ci'));
 }
 
 function activityLabel(activity: any) {
@@ -592,21 +592,21 @@ function activityLabel(activity: any) {
     case 'calendar_entry_completed':
       return title ? `Wpis kalendarza wykonany: ${title}` : 'Wpis kalendarza wykonany';
     case 'calendar_entry_restored':
-      return title ? `Wpis kalendarza przywrócony: ${title}` : 'Wpis kalendarza przywrócony';
+      return title ? `Wpis kalendarza przywrĂłcony: ${title}` : 'Wpis kalendarza przywrĂłcony';
     case 'calendar_entry_deleted':
-      return title ? `Wpis kalendarza usunięty: ${title}` : 'Wpis kalendarza usunięty';
+      return title ? `Wpis kalendarza usuniÄ™ty: ${title}` : 'Wpis kalendarza usuniÄ™ty';
     case 'today_task_completed':
       return title ? `Zadanie wykonane: ${title}` : 'Zadanie wykonane';
     case 'today_task_restored':
-      return title ? `Zadanie przywrócone: ${title}` : 'Zadanie przywrócone';
+      return title ? `Zadanie przywrĂłcone: ${title}` : 'Zadanie przywrĂłcone';
     case 'today_task_snoozed':
-      return title ? `Zadanie przesunięte: ${title}` : 'Zadanie przesunięte';
+      return title ? `Zadanie przesuniÄ™te: ${title}` : 'Zadanie przesuniÄ™te';
     case 'today_event_snoozed':
-      return title ? `Wydarzenie przesunięte: ${title}` : 'Wydarzenie przesunięte';
+      return title ? `Wydarzenie przesuniÄ™te: ${title}` : 'Wydarzenie przesuniÄ™te';
     case 'case_lifecycle_started':
-      return title ? `Sprawa rozpoczęta: ${title}` : 'Sprawa rozpoczęta';
+      return title ? `Sprawa rozpoczÄ™ta: ${title}` : 'Sprawa rozpoczÄ™ta';
     case 'case_lifecycle_completed':
-      return title ? `Sprawa zakończona: ${title}` : 'Sprawa zakończona';
+      return title ? `Sprawa zakoĹ„czona: ${title}` : 'Sprawa zakoĹ„czona';
     case 'case_lifecycle_reopened':
       return title ? `Sprawa wznowiona: ${title}` : 'Sprawa wznowiona';
     case 'ai_draft_converted':
@@ -634,13 +634,13 @@ function getCaseTitle(caseRecord: any) {
   if (rawTitle && clientName) {
     const titleLower = rawTitle.toLowerCase();
     const clientLower = clientName.toLowerCase();
-    if (titleLower === clientLower) return 'Sprawa obsługowa';
+    if (titleLower === clientLower) return 'Sprawa obsĹ‚ugowa';
     if (titleLower.includes(clientLower)) {
-      const cleaned = rawTitle.replace(clientName, '').replace(/^\s*[-–—:]\s*/g, '').trim();
-      return cleaned || 'Sprawa obsługowa';
+      const cleaned = rawTitle.replace(clientName, '').replace(/^\s*[-â€“â€”:]\s*/g, '').trim();
+      return cleaned || 'Sprawa obsĹ‚ugowa';
     }
   }
-  return String(rawTitle || 'Sprawa obsługowa');
+  return String(rawTitle || 'Sprawa obsĹ‚ugowa');
 }
 
 function getStage14BLeadTitle(lead: any) {
@@ -734,7 +734,7 @@ function getCaseBlocker(caseRecord: any) {
   const status = String(caseRecord?.status || '');
   if (status === 'blocked') return 'blokada w sprawie';
   if (status === 'waiting_on_client') return 'czeka na klienta';
-  if (status === 'to_approve') return 'czeka na akceptację';
+  if (status === 'to_approve') return 'czeka na akceptacjÄ™';
   if (status === 'on_hold') return 'sprawa wstrzymana';
   return '';
 }
@@ -806,7 +806,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     return {
       kind: isEvent ? 'event' : 'task',
       title: nearest.title,
-      subtitle: `${isEvent ? 'Wydarzenie' : 'Zadanie'} · ${formatDateTime(nearest.when)}`,
+      subtitle: `${isEvent ? 'Wydarzenie' : 'Zadanie'} Â· ${formatDateTime(nearest.when)}`,
       date: nearest.when,
       relationId: targetCaseId || targetLeadId || String(clientId || ''),
       to: targetCaseId ? `/cases/${targetCaseId}` : isEvent ? '/calendar' : '/today',
@@ -825,7 +825,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (overdueTask) {
     return {
       kind: 'task',
-      title: String(overdueTask.title || 'Zaległe zadanie'),
+      title: String(overdueTask.title || 'ZalegĹ‚e zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(overdueTask))}`,
       date: getTaskDate(overdueTask),
       relationId: String(overdueTask.caseId || overdueTask.leadId || ''),
@@ -842,7 +842,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (nextTask) {
     return {
       kind: 'task',
-      title: String(nextTask.title || 'Następne zadanie'),
+      title: String(nextTask.title || 'NastÄ™pne zadanie'),
       subtitle: `Termin: ${formatDateTime(getTaskDate(nextTask))}`,
       date: getTaskDate(nextTask),
       relationId: String(nextTask.caseId || nextTask.leadId || ''),
@@ -859,7 +859,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
   if (nextEvent) {
     return {
       kind: 'event',
-      title: String(nextEvent.title || 'Następne wydarzenie'),
+      title: String(nextEvent.title || 'NastÄ™pne wydarzenie'),
       subtitle: `Start: ${formatDateTime(getEventDate(nextEvent))}`,
       date: getEventDate(nextEvent),
       relationId: String(nextEvent.caseId || nextEvent.leadId || ''),
@@ -873,7 +873,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
     return {
       kind: 'case',
       title: getCaseTitle(activeCase),
-      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} · kompletność ${getCaseCompleteness(activeCase)}%`,
+      subtitle: `${caseStatusLabel(String(activeCase.status || 'in_progress'))} Â· kompletnoĹ›Ä‡ ${getCaseCompleteness(activeCase)}%`,
       relationId: String(activeCase.id || ''),
       to: `/cases/${String(activeCase.id)}`,
       tone: 'emerald',
@@ -884,7 +884,7 @@ function buildClientNextAction(leads: any[], cases: any[], tasks: any[], events:
 
   return {
     kind: 'empty',
-    title: 'Brak zaplanowanych działań',
+    title: 'Brak zaplanowanych dziaĹ‚aĹ„',
     subtitle: 'Ten klient nie ma teraz otwartego zadania, wydarzenia ani sprawy.',
     tone: 'slate',
   };
@@ -932,7 +932,7 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
   };
 
   return (
-    <div data-stage231b0-r14-client-detail-full-width-lock="true" className="client-detail-edit-field cf-client-detail-full-width-stage231b0-r14" data-client-contact-repeat={kind}>
+    <div className="client-detail-edit-field" data-client-contact-repeat={kind}>
       <div className="client-detail-edit-label-row">
         <Label>{label}</Label>
         <button
@@ -959,9 +959,9 @@ function ClientMultiContactField({ kind, label, value, onChange, placeholder }: 
                 type="button"
                 className="client-detail-mini-button client-detail-mini-button-muted"
                 onClick={() => removeValue(index)}
-                aria-label={kind === 'email' ? 'Usuń email klienta' : 'Usuń telefon klienta'}
+                aria-label={kind === 'email' ? 'UsuĹ„ email klienta' : 'UsuĹ„ telefon klienta'}
               >
-                Usuń
+                UsuĹ„
               </button>
             ) : null}
           </div>
@@ -981,7 +981,7 @@ function StatCell({ label, value }: { label: string; value: string | number }) {
 
 const CLIENT_DETAIL_TOP_TILES_REPAIR6_GUARD = 'client-detail-top-tiles repair6 compact unified safe';
 const STAGE23A_CLIENT_CASES_VISIBLE_PANEL_GUARD = 'client cases visible panel with safe actions';
-const STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'Wejdź w sprawę';
+const STAGE23A_CLIENT_OPEN_CASE_COPY_COMPAT = 'WejdĹş w sprawÄ™';
 const STAGE24A_CLIENT_SIDE_QUICK_ACTIONS_GUARD = 'client side quick actions use context action host';
 const STAGE25B_CLIENT_DETAIL_FEEDBACK_COMPLETE_REPAIR_GUARD = 'client detail feedback complete repair';
 const STAGE25C_CLIENT_DETAIL_GUARD_COMPAT_FINAL = 'client detail final feedback guard compatibility';
@@ -1054,16 +1054,16 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
       >
         <div className="entity-overview-tile-head">
           <span className="entity-overview-tile-icon"><Clock className="h-4 w-4" /></span>
-          <small>Najbliższa zaplanowana akcja</small>
+          <small>NajbliĹĽsza zaplanowana akcja</small>
         </div>
         <strong>{nextAction.title}</strong>
         <p>{nextAction.subtitle}</p>
         {nextAction.to ? (
           <Link to={nextAction.to} className="entity-overview-tile-link">
-            Otwórz
+            OtwĂłrz
           </Link>
         ) : (
-          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted">Brak szybkiego przejścia</span>
+          <span className="entity-overview-tile-chip entity-overview-tile-chip-muted">Brak szybkiego przejĹ›cia</span>
         )}
       </article>
 
@@ -1075,15 +1075,15 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
         <strong>{formatMoneyWithCurrency(commissionDueTotal)}</strong>
         <div className="entity-overview-metrics" data-stage220a35-client-commission-metrics="true">
           <div className="entity-overview-metric-row">
-            <span>Wartość transakcji</span>
+            <span>WartoĹ›Ä‡ transakcji</span>
             <b>{formatMoneyWithCurrency(transactionTotal)}</b>
           </div>
           <div className="entity-overview-metric-row">
-            <span>Wpłacono prowizji</span>
+            <span>WpĹ‚acono prowizji</span>
             <b>{formatMoneyWithCurrency(commissionPaidTotal)}</b>
           </div>
           <div className="entity-overview-metric-row">
-            <span>Do zapłaty prowizji</span>
+            <span>Do zapĹ‚aty prowizji</span>
             <b>{formatMoneyWithCurrency(commissionRemainingTotal)}</b>
           </div>
           <div className="entity-overview-metric-row">
@@ -1103,10 +1103,10 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
           {blockedCases.length > 0
             ? `${blockedCases.length} wymaga uwagi.`
             : cases.length > 0
-              ? 'Brak dodatkowego opisu.' : 'Brak spraw przypiętych do klienta.'}
+              ? 'Brak dodatkowego opisu.' : 'Brak spraw przypiÄ™tych do klienta.'}
         </p>
         <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
-          Pokaż sprawy
+          PokaĹĽ sprawy
         </button>
       </article>
     </section>
@@ -1198,11 +1198,11 @@ function ClientDetail() {
     async (note: any) => {
       const noteId = String(note?.id || '').trim();
       const previousContent = String(note?.content || '');
-      const nextContent = typeof window !== 'undefined' ? window.prompt('Edytuj notatkę', previousContent) : previousContent;
+      const nextContent = typeof window !== 'undefined' ? window.prompt('Edytuj notatkÄ™', previousContent) : previousContent;
       if (nextContent === null) return;
       const cleanContent = String(nextContent || '').trim();
       if (!cleanContent) {
-        toast.error('Notatka nie może być pusta.');
+        toast.error('Notatka nie moĹĽe byÄ‡ pusta.');
         return;
       }
       try {
@@ -1235,7 +1235,7 @@ function ClientDetail() {
         toast.success('Notatka zaktualizowana');
       } catch (error) {
         console.error(error);
-        toast.error('Nie udało się edytować notatki.');
+        toast.error('Nie udaĹ‚o siÄ™ edytowaÄ‡ notatki.');
       }
     },
     [client?.id],
@@ -1245,15 +1245,15 @@ function ClientDetail() {
     async (note: any) => {
       const noteId = String(note?.id || '').trim();
       if (!noteId) return;
-      if (typeof window !== 'undefined' && !window.confirm('Usunąć tę notatkę?')) return;
+      if (typeof window !== 'undefined' && !window.confirm('UsunÄ…Ä‡ tÄ™ notatkÄ™?')) return;
       try {
         await deleteActivityFromSupabase(noteId);
         setActivities((previous) => previous.filter((activity) => String(activity?.id || '') !== noteId));
         persistClientPinnedNotes(clientPinnedNoteIds.filter((id) => id !== noteId));
-        toast.success('Notatka usunięta');
+        toast.success('Notatka usuniÄ™ta');
       } catch (error) {
         console.error(error);
-        toast.error('Nie udało się usunąć notatki.');
+        toast.error('Nie udaĹ‚o siÄ™ usunÄ…Ä‡ notatki.');
       }
     },
     [clientPinnedNoteIds, persistClientPinnedNotes],
@@ -1322,7 +1322,7 @@ function ClientDetail() {
 
       });
     } catch (error: any) {
-      toast.error(`Błąd odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d odczytu klienta: ${error?.message || 'REQUEST_FAILED'}`);
       setClient(null);
     } finally {
       setLoading(false);
@@ -1411,7 +1411,7 @@ function ClientDetail() {
       id: String(activity?.id || activity?.activityId || activity?.eventId || (getActivityTime(activity) + '-' + index)),
       title: activityLabel(activity),
       time: formatDateTime(getActivityTime(activity)),
-      meta: String(activity?.eventType || activity?.activityType || 'Aktywność'),
+      meta: String(activity?.eventType || activity?.activityType || 'AktywnoĹ›Ä‡'),
     }));
   }, [clientActivities]);
   const clientRelatedCasesStage231B0R8 = useMemo(() => {
@@ -1548,8 +1548,8 @@ function ClientDetail() {
         leadId: caseRecord?.leadId ? String(caseRecord.leadId) : null,
         status: String(caseRecord.status || 'in_progress'),
         statusLabel: caseStatusLabel(String(caseRecord.status || 'in_progress')),
-        nextActionLabel: next ? next.title : 'Brak zaplanowanych działań',
-        nextActionMeta: next ? `${next.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} · ${relativeActionLabel(next.date)}` : 'Dodaj zadanie albo wydarzenie w sprawie.',
+        nextActionLabel: next ? next.title : 'Brak zaplanowanych dziaĹ‚aĹ„',
+        nextActionMeta: next ? `${next.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} Â· ${relativeActionLabel(next.date)}` : 'Dodaj zadanie albo wydarzenie w sprawie.',
         sourceLabel: sourceLead ? `Lead: ${String(sourceLead.name || sourceLead.company || 'bez nazwy')}` : `Utworzono: ${formatDate(caseRecord.createdAt)}`,
         completeness: getCaseCompleteness(caseRecord),
         blocker: getCaseBlocker(caseRecord),
@@ -1574,7 +1574,7 @@ function ClientDetail() {
 
   const handleSave = async () => {
     if (!clientId) return;
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     try {
       setSaving(true);
       await updateClientInSupabase({
@@ -1599,13 +1599,13 @@ function ClientDetail() {
       const failedLeadSyncs = linkedLeadResults.filter((result) => result.status === 'rejected').length;
 
       if (failedLeadSyncs > 0) {
-        toast.error('Klient zapisany, ale nie udało się zsynchronizować części powiązanych leadów.');
+        toast.error('Klient zapisany, ale nie udaĹ‚o siÄ™ zsynchronizowaÄ‡ czÄ™Ĺ›ci powiÄ…zanych leadĂłw.');
       } else {
         toast.success('Klient zaktualizowany');
       }
       await reload();
     } catch (error: any) {
-      toast.error(`Błąd zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`BĹ‚Ä…d zapisu klienta: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setSaving(false);
     }
@@ -1632,12 +1632,12 @@ function ClientDetail() {
   };
 
   const copyValue = async (label: string, value: string) => {
-    if (!value) return toast.error(`Brak wartości: ${label}`);
+    if (!value) return toast.error(`Brak wartoĹ›ci: ${label}`);
     try {
       await navigator.clipboard.writeText(value);
       toast.success(`${label} skopiowano`);
     } catch {
-      toast.error('Nie udało się skopiować.');
+      toast.error('Nie udaĹ‚o siÄ™ skopiowaÄ‡.');
     }
   };
 
@@ -1676,12 +1676,12 @@ function ClientDetail() {
 
   const handleSaveClientMissingItemStage227C3B = useCallback(async () => {
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
     const safeClientId = String(clientId || client?.id || '').trim();
     if (!safeClientId) {
-      setClientMissingError('Brak ID klienta. Nie można dodać braku.');
+      setClientMissingError('Brak ID klienta. Nie moĹĽna dodaÄ‡ braku.');
       return;
     }
 
@@ -1784,8 +1784,8 @@ function ClientDetail() {
       toast.success('Dodano brak do klienta.');
       void reload();
     } catch (error: any) {
-      setClientMissingError(error?.message || 'Nie udało się dodać braku.');
-      toast.error('Nie udało się dodać braku: ' + (error?.message || 'błąd zapisu'));
+      setClientMissingError(error?.message || 'Nie udaĹ‚o siÄ™ dodaÄ‡ braku.');
+      toast.error('Nie udaĹ‚o siÄ™ dodaÄ‡ braku: ' + (error?.message || 'bĹ‚Ä…d zapisu'));
     } finally {
       setClientMissingSaving(false);
     }
@@ -1794,14 +1794,14 @@ function ClientDetail() {
 
   const handleResolveClientMissingItemStage228R13 = useCallback(async (item: any) => {
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     const safeClientId = String(clientId || client?.id || '').trim();
     const taskId = String(item?.id || '').trim();
     if (!safeClientId || !taskId) {
-      toast.error('Brak ID klienta albo braku. Nie można oznaczyć jako rozwiązany.');
+      toast.error('Brak ID klienta albo braku. Nie moĹĽna oznaczyÄ‡ jako rozwiÄ…zany.');
       return;
     }
 
@@ -1856,28 +1856,28 @@ function ClientDetail() {
             : task,
         ),
       );
-      toast.success('Brak oznaczony jako rozwiązany');
+      toast.success('Brak oznaczony jako rozwiÄ…zany');
       void reload();
     } catch (error: any) {
-      toast.error('Nie udało się rozwiązać braku: ' + (error?.message || 'błąd zapisu'));
+      toast.error('Nie udaĹ‚o siÄ™ rozwiÄ…zaÄ‡ braku: ' + (error?.message || 'bĹ‚Ä…d zapisu'));
     }
   }, [client, clientId, hasAccess, reload, workspace?.id]);
 
 
   const handleDeleteClientMissingItemStage228R15 = useCallback(async (item: any) => {
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     const safeClientId = String(clientId || client?.id || '').trim();
     const taskId = String(item?.id || '').trim();
     if (!safeClientId || !taskId) {
-      toast.error('Brak ID klienta albo braku. Nie można usunąć.');
+      toast.error('Brak ID klienta albo braku. Nie moĹĽna usunÄ…Ä‡.');
       return;
     }
 
-    if (typeof window !== 'undefined' && !window.confirm('Usunąć ten brak?')) return;
+    if (typeof window !== 'undefined' && !window.confirm('UsunÄ…Ä‡ ten brak?')) return;
 
     const deletedAt = new Date().toISOString();
     const taskTitle = String(item?.title || 'Brak');
@@ -1939,22 +1939,22 @@ function ClientDetail() {
         ),
       );
 
-      toast.success('Brak usunięty');
+      toast.success('Brak usuniÄ™ty');
       void reload();
     } catch (error: any) {
-      toast.error('Nie udało się usunąć braku: ' + (error?.message || 'błąd zapisu'));
+      toast.error('Nie udaĹ‚o siÄ™ usunÄ…Ä‡ braku: ' + (error?.message || 'bĹ‚Ä…d zapisu'));
     }
   }, [client, clientId, hasAccess, reload, workspace?.id]);
 
   const handleAddClientNote = useCallback(async () => {
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
     if (!clientId) return;
     const content = clientNoteDraft.trim();
     if (!content) {
-      toast.error('Wpisz treść notatki.');
+      toast.error('Wpisz treĹ›Ä‡ notatki.');
       return;
     }
     const createdAt = new Date().toISOString();
@@ -2003,14 +2003,14 @@ function ClientDetail() {
       toast.success('Notatka dodana');
     } catch (error: any) {
       console.error(error);
-      toast.error('Nie udało się dodać notatki.');
+      toast.error('Nie udaĹ‚o siÄ™ dodaÄ‡ notatki.');
     } finally {
       setClientNoteSaving(false);
     }
   }, [clientId, clientNoteDraft, hasAccess]);
 
   const handleToggleClientNoteSpeech = () => {
-    if (!hasAccess) return toast.error('Twój trial wygasł.');
+    if (!hasAccess) return toast.error('TwĂłj trial wygasĹ‚.');
     if (clientNoteListening) {
       stopClientNoteSpeech();
       return;
@@ -2020,7 +2020,7 @@ function ClientDetail() {
     void 'data-stage216m-r16-r3-speech-opens-modal';
     const RecognitionConstructor = getSpeechRecognitionConstructor();
     if (!RecognitionConstructor) {
-      toast.error('Dyktowanie nie jest dostępne w tej przeglądarce.');
+      toast.error('Dyktowanie nie jest dostÄ™pne w tej przeglÄ…darce.');
       return;
     }
     try {
@@ -2045,7 +2045,7 @@ function ClientDetail() {
         setClientNoteInterimText(interimTranscript);
       };
       recognition.onerror = () => {
-        toast.error('Nie udało się dokończyć dyktowania notatki.');
+        toast.error('Nie udaĹ‚o siÄ™ dokoĹ„czyÄ‡ dyktowania notatki.');
         stopClientNoteSpeech();
       };
       recognition.onend = () => {
@@ -2056,9 +2056,9 @@ function ClientDetail() {
       clientNoteRecognitionRef.current = recognition;
       recognition.start();
       setClientNoteListening(true);
-      toast.success('Dyktowanie notatki włączone');
+      toast.success('Dyktowanie notatki wĹ‚Ä…czone');
     } catch {
-      toast.error('Nie udało się uruchomić dyktowania.');
+      toast.error('Nie udaĹ‚o siÄ™ uruchomiÄ‡ dyktowania.');
       stopClientNoteSpeech();
     }
   };
@@ -2067,13 +2067,13 @@ function ClientDetail() {
 
   const handleRestoreClientCaseStage231B0R8 = useCallback(async (caseRecord: any) => {
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     const caseId = String(caseRecord?.id || '').trim();
     if (!caseId) {
-      toast.error('Brak ID sprawy. Nie można przywrócić.');
+      toast.error('Brak ID sprawy. Nie moĹĽna przywrĂłciÄ‡.');
       return;
     }
 
@@ -2092,7 +2092,7 @@ function ClientDetail() {
         eventType: 'case_lifecycle_reopened',
         payload: {
           recordType: 'case',
-          title: 'Sprawa przywrócona',
+          title: 'Sprawa przywrĂłcona',
           status: 'in_progress',
           previousStatus: caseRecord?.status || null,
           reopenedAt,
@@ -2103,10 +2103,10 @@ function ClientDetail() {
         workspaceId: workspace?.id,
       } as any);
 
-      toast.success('Sprawa przywrócona do aktywnych. Historia i rozliczenia zostały zachowane.');
+      toast.success('Sprawa przywrĂłcona do aktywnych. Historia i rozliczenia zostaĹ‚y zachowane.');
       await reload();
     } catch (error: any) {
-      toast.error('Nie udało się przywrócić sprawy: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ sprawy: ' + (error?.message || 'REQUEST_FAILED'));
     }
   }, [client?.id, clientId, hasAccess, reload, workspace?.id]);
 
@@ -2114,7 +2114,7 @@ function ClientDetail() {
   const renderClientCaseSmartCardStage231B0R8 = (caseRecord: any, options: { closed: boolean }) => {
     const caseId = String(caseRecord?.id || '');
     const title = getCaseTitle(caseRecord);
-    const status = options.closed ? 'Zamknięta' : caseStatusLabel(String(caseRecord?.status || 'in_progress'));
+    const status = options.closed ? 'ZamkniÄ™ta' : caseStatusLabel(String(caseRecord?.status || 'in_progress'));
     const casePayments = payments.filter((payment: any) => {
       const paymentCaseId = String(payment?.caseId || payment?.case_id || payment?.relatedCaseId || payment?.related_case_id || '').trim();
       return paymentCaseId && paymentCaseId === caseId;
@@ -2132,24 +2132,24 @@ function ClientDetail() {
     return (
       <article key={caseId || title} className={cardClassName} data-client-case-smart-card="true" data-stage231b0-r8-client-case-card={options.closed ? 'closed' : 'active'}>
         <div className="client-detail-case-smart-main">
-          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIĘTA' : 'Sprawa'}</span>
+          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIÄTA' : 'Sprawa'}</span>
           <strong>{title}</strong>
           <div className="client-detail-case-smart-meta">
             <span data-stage231b0-r8-case-status-label="true">{status}</span>
-            {options.closed ? <span className="client-detail-case-smart-last-activity-stage231b0-r9">Ostatnia aktywność: {formatDateTime(caseRecord?.closedAt || caseRecord?.lastActivityAt || caseRecord?.updatedAt || caseRecord?.createdAt)}</span> : null}
-            <span>Kompletność {completeness}%</span>
+            {options.closed ? <span className="client-detail-case-smart-last-activity-stage231b0-r9">Ostatnia aktywnoĹ›Ä‡: {formatDateTime(caseRecord?.closedAt || caseRecord?.lastActivityAt || caseRecord?.updatedAt || caseRecord?.createdAt)}</span> : null}
+            <span>KompletnoĹ›Ä‡ {completeness}%</span>
           </div>
         </div>
         <div className="client-detail-case-smart-value" data-stage220a35-case-card-commission="true" data-stage228r7-case-card-commission-balance="true" data-stage231b0-r8-finance-preserved="true">
-          <small>Prowizja należna</small>
+          <small>Prowizja naleĹĽna</small>
           <b>{value}</b>
-          <span className="sub">Wpłacono prowizji: {commissionPaid}</span>
-          <span className="sub">Do zapłaty prowizji: {commissionRemaining}</span>
-          <span className="sub">Wartość transakcji: {transactionValue}</span>
+          <span className="sub">WpĹ‚acono prowizji: {commissionPaid}</span>
+          <span className="sub">Do zapĹ‚aty prowizji: {commissionRemaining}</span>
+          <span className="sub">WartoĹ›Ä‡ transakcji: {transactionValue}</span>
         </div>
         <div className="client-detail-case-smart-actions">
           <Button type="button" size="sm" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>
-            Otwórz
+            OtwĂłrz
           </Button>
           {options.closed ? (
             <Button
@@ -2160,7 +2160,7 @@ function ClientDetail() {
               data-stage231b0-r8-client-restore-case-button="true"
               onClick={() => handleRestoreClientCaseStage231B0R8(caseRecord)}
             >
-              Przywróć sprawę
+              PrzywrĂłÄ‡ sprawÄ™
             </Button>
           ) : null}
           {!options.closed ? (
@@ -2175,8 +2175,8 @@ function ClientDetail() {
             tone="danger"
             iconOnly
             className="client-detail-case-smart-delete-icon-button"
-            aria-label="Usuń sprawę"
-            title="Usuń sprawę"
+            aria-label="UsuĹ„ sprawÄ™"
+            title="UsuĹ„ sprawÄ™"
             onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}
           >
             <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -2214,10 +2214,10 @@ useMemo(() => [], [activities, client?.id, clientId, id]);
 
 return (
       <Layout>
-<main className="client-detail-vnext-page" data-stage216m-r14-clean-copy-finance-mojibake-marker="true">
+<main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage216m-r14-clean-copy-finance-mojibake-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ładowanie klienta...</span>
+            <span>Ĺadowanie klienta...</span>
           </div>
         </main>
       </Layout>
@@ -2239,14 +2239,14 @@ return (
   if (!client) {
     return (
       <Layout>
-        <main className="client-detail-vnext-page">
+        <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
           <section className="client-detail-empty-card">
             <EntityIcon entity="client" className="h-8 w-8" />
             <h1>Nie znaleziono klienta</h1>
-            <p>Ten rekord mógł zostać usunięty albo nie należy do aktualnego workspace.</p>
+            <p>Ten rekord mĂłgĹ‚ zostaÄ‡ usuniÄ™ty albo nie naleĹĽy do aktualnego workspace.</p>
             <Button type="button" onClick={() => navigate('/clients')} variant="outline">
               <ArrowLeft className="h-4 w-4" />
-              Wróć do klientów
+              WrĂłÄ‡ do klientĂłw
             </Button>
           </section>
         </main>
@@ -2292,7 +2292,7 @@ return (
 
   return (
     <Layout>
-      <main className="client-detail-vnext-page" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true">
+      <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
         <header className="client-detail-header">
           <div className="client-detail-header-copy">
             <button type="button" className="client-detail-back-button" onClick={() => navigate('/clients')}>
@@ -2312,7 +2312,7 @@ return (
             </Button>
             <Button type="button" className="client-detail-header-action-primary" onClick={openMainCase} disabled={!mainCase?.id}>
               <EntityIcon entity="case" className="h-4 w-4" />
-              Otwórz główną sprawę
+              OtwĂłrz gĹ‚ĂłwnÄ… sprawÄ™
             </Button>
           </div>
         </header>
@@ -2326,7 +2326,7 @@ return (
                   <EntityIcon entity="client" className="h-4 w-4" />
                 </div>
                 <div className="client-detail-today-info-tile-body">
-                  <small>Najbliższa zaplanowana akcja</small>
+                  <small>NajbliĹĽsza zaplanowana akcja</small>
                   <strong>{clientNextAction.title}</strong>
                   <p>{clientNextAction.subtitle}</p>
                   {renderClientNextActionContextStage14B(clientNextAction)}
@@ -2338,7 +2338,7 @@ return (
                     className="client-detail-today-info-tile-action"
                     onClick={() => navigate(clientNextAction.to!)}
                   >
-                    Otwórz
+                    OtwĂłrz
                   </Button>
                 ) : null}
               </article>
@@ -2351,10 +2351,10 @@ return (
                   <strong>Finanse klienta</strong>
                 </div>
                 <dl className="cf-finance-scope-card__metrics">
-                  <div><dt>Suma wartości transakcji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Prowizja należna</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Wpłacono prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Do zapłaty prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Suma wartoĹ›ci transakcji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Prowizja naleĹĽna</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>WpĹ‚acono prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</dd></div>
+                  <div><dt>Do zapĹ‚aty prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</dd></div>
                   <div><dt>Sprawy aktywne / rozliczone</dt><dd>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</dd></div>
                 </dl>
                 <button type="button" className="cf-finance-scope-card__main-action" onClick={() => setActiveTab('cases')}>
@@ -2412,7 +2412,7 @@ return (
                   <div className={formActionsClass('client-detail-edit-actions')}>
                     <Button type="button" onClick={handleSave} disabled={saving}>
                       <Save className="h-4 w-4" />
-                      {saving ? 'Zapisuję...' : 'Zapisz'}
+                      {saving ? 'ZapisujÄ™...' : 'Zapisz'}
                     </Button>
                     <Button type="button" variant="outline" onClick={cancelClientPanelEdit} disabled={saving}>
                       Anuluj
@@ -2423,11 +2423,11 @@ return (
                 <div className="client-detail-data-panel-list" data-stage216m-r6-client-data-panel-list="true">
                   <div className="client-detail-data-panel-row">
                     <small>Status relacji</small>
-                    <strong>{activeCases.length > 0 ? 'Aktywna obsługa' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</strong>
+                    <strong>{activeCases.length > 0 ? 'Aktywna obsĹ‚uga' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</strong>
                   </div>
                   <div className="client-detail-data-panel-row">
-                    <small>Źródło</small>
-                    <strong>{firstSourceLead?.source || 'Brak źródła'}</strong>
+                    <small>ĹąrĂłdĹ‚o</small>
+                    <strong>{firstSourceLead?.source || 'Brak ĹşrĂłdĹ‚a'}</strong>
                   </div>
                   <div className="client-detail-data-panel-row client-detail-data-panel-row-copy">
                     <small>Telefon</small>
@@ -2448,7 +2448,7 @@ return (
                     <strong>{client.company || 'Brak firmy'}</strong>
                   </div>
                   <div className="client-detail-data-panel-row">
-                    <small>Wartość</small>
+                    <small>WartoĹ›Ä‡</small>
                     <strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong>
                   </div>
                   <div className="client-detail-data-panel-row">
@@ -2464,7 +2464,7 @@ return (
         {/* client detail right rail notes repair component marker */}
                     <div className="client-detail-card-title-row">
                       <EntityIcon entity="activity" className="h-4 w-4" />
-                      <h2>Historia aktywności</h2>
+                      <h2>Historia aktywnoĹ›ci</h2>
                     </div>
                     {recentClientMovements.length ? (
                       <div className="client-detail-recent-moves-list">
@@ -2479,10 +2479,10 @@ return (
                         ))}
                       </div>
                     ) : (
-                      <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact"><strong>Brak historii aktywności.</strong></div>
+                      <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact"><strong>Brak historii aktywnoĹ›ci.</strong></div>
                     )}
                     <Link to="/activity" className="client-detail-recent-moves-link">
-                      Zobacz całą Aktywność
+                      Zobacz caĹ‚Ä… AktywnoĹ›Ä‡
                     </Link>
                   </section>
 
@@ -2543,7 +2543,7 @@ return (
                           {note ? <small>{note}</small> : null}
                         </span>
                         <div className="client-detail-missing-item-actions" data-stage228r13-client-missing-status-actions="true">
-                          <em>{isDoneStatus(item?.status) ? 'Rozwiązany' : 'Otwarty'}</em>
+                          <em>{isDoneStatus(item?.status) ? 'RozwiÄ…zany' : 'Otwarty'}</em>
                           <Button
                             type="button"
                             size="sm"
@@ -2552,7 +2552,7 @@ return (
                             disabled={!hasAccess || isDoneStatus(item?.status)}
                             data-stage228r13-client-missing-resolve-action="true"
                           >
-                            {isDoneStatus(item?.status) ? 'Rozwiązany' : 'Rozwiąż'}
+                            {isDoneStatus(item?.status) ? 'RozwiÄ…zany' : 'RozwiÄ…ĹĽ'}
                           </Button>
                           <Button
                             type="button"
@@ -2562,7 +2562,7 @@ return (
                             disabled={!hasAccess || isDoneStatus(item?.status)}
                             data-stage228r15-client-missing-delete-action="true"
                           >
-                            Usuń
+                            UsuĹ„
                           </Button>
                         </div>
                       </article>
@@ -2570,7 +2570,7 @@ return (
                   })
                 ) : (
                   <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
-                    <strong>Brak otwartych braków.</strong>
+                    <strong>Brak otwartych brakĂłw.</strong>
                   </div>
                 )}
               </div>
@@ -2590,7 +2590,7 @@ return (
                     data-stage216m-r16-r2-client-note-add="true"
                   >
                     <Plus className="h-4 w-4" />
-                    Dodaj notatkę
+                    Dodaj notatkÄ™
                   </Button>
                   <Button
                     type="button"
@@ -2605,7 +2605,7 @@ return (
                     data-stage216m-r17-client-note-dictate-lead-pattern="true"
                   >
                     {clientNoteListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
-                    {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkę'}
+                    {clientNoteListening ? 'Zatrzymaj dyktowanie' : 'Dyktuj notatkÄ™'}
                   </Button>
                 </div>
               </div>
@@ -2621,18 +2621,18 @@ return (
                       data-client-note-pinned={clientPinnedNoteIds.includes(note.id) ? 'true' : 'false'}
                     >
                       <p>{note.content}</p>
-                      <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilą'}</small>
+                      <small>{note.createdAt ? formatDateTime(note.createdAt) : 'Dodano przed chwilÄ…'}</small>
                       <div className="client-detail-note-item-toolbar" data-client-note-actions="true">
-                        <button type="button" title="Przypnij notatkę" aria-label="Przypnij notatkę" onClick={() => handleToggleClientNotePin(note)}>
+                        <button type="button" title="Przypnij notatkÄ™" aria-label="Przypnij notatkÄ™" onClick={() => handleToggleClientNotePin(note)}>
                           <Pin className="h-3.5 w-3.5" />
                         </button>
-                        <button type="button" title="Podgląd całej notatki" aria-label="Podgląd całej notatki" onClick={() => handlePreviewClientNote(note)}>
+                        <button type="button" title="PodglÄ…d caĹ‚ej notatki" aria-label="PodglÄ…d caĹ‚ej notatki" onClick={() => handlePreviewClientNote(note)}>
                           <Eye className="h-3.5 w-3.5" />
                         </button>
-                        <button type="button" title="Edytuj notatkę" aria-label="Edytuj notatkę" onClick={() => handleEditClientNote(note)}>
+                        <button type="button" title="Edytuj notatkÄ™" aria-label="Edytuj notatkÄ™" onClick={() => handleEditClientNote(note)}>
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
-                        <EntityActionButton type="button" tone="danger" iconOnly className="client-detail-note-delete-button" title="Usuń notatkę" aria-label="Usuń notatkę" onClick={() => handleDeleteClientNote(note)}>
+                        <EntityActionButton type="button" tone="danger" iconOnly className="client-detail-note-delete-button" title="UsuĹ„ notatkÄ™" aria-label="UsuĹ„ notatkÄ™" onClick={() => handleDeleteClientNote(note)}>
                           <Trash2 className="h-3.5 w-3.5" />
                         </EntityActionButton>
                       </div>
@@ -2687,8 +2687,8 @@ return (
             >
               <DialogContent className="client-detail-note-dialog" data-stage216m-r17-client-note-dialog-source="lead-detail" data-stage216m-r16-r2-client-note-modal="true" data-stage216m-r16-r3-client-note-modal-portal="true">
                 <DialogHeader>
-                  <DialogTitle>Dodaj notatkę</DialogTitle>
-                  <DialogDescription>Zapisz notatkę po rozmowie, telefonie, spotkaniu albo ustaleniach z klientem.</DialogDescription>
+                  <DialogTitle>Dodaj notatkÄ™</DialogTitle>
+                  <DialogDescription>Zapisz notatkÄ™ po rozmowie, telefonie, spotkaniu albo ustaleniach z klientem.</DialogDescription>
                 </DialogHeader>
                 <form
                   className="lead-detail-add-note-dialog-form client-detail-add-note-dialog-form"
@@ -2700,7 +2700,7 @@ return (
                   <Textarea
                     value={clientNoteDraft}
                     onChange={(event) => setClientNoteDraft(event.target.value)}
-                    placeholder="Wpisz notatkę..."
+                    placeholder="Wpisz notatkÄ™..."
                     className="lead-detail-note-input client-detail-note-input"
                     lang="pl-PL"
                     disabled={!hasAccess || clientNoteSaving}
@@ -2725,14 +2725,14 @@ return (
                       Anuluj
                     </Button>
                     <Button type="submit" disabled={!clientNoteDraft.trim() || !hasAccess || clientNoteSaving}>
-                      {clientNoteSaving ? 'Zapisywanie...' : 'Zapisz notatkę'}
+                      {clientNoteSaving ? 'Zapisywanie...' : 'Zapisz notatkÄ™'}
                     </Button>
                   </DialogFooter>
                 </form>
               </DialogContent>
             </Dialog>
 
-            <nav className="client-detail-tabs" aria-label="Zakładki klienta">
+            <nav className="client-detail-tabs" aria-label="ZakĹ‚adki klienta">
               {[
                 { key: 'cases', label: 'Sprawy' },
                 { key: 'summary', label: 'Podsumowanie' },
@@ -2756,8 +2756,8 @@ return (
             {activeTab === 'summary' ? (
               <div className="client-detail-tab-panel">
                 <div className="client-detail-top-cards">
-                  <section className="client-detail-hero-card" aria-label="Najbliższa zaplanowana akcja">
-                    <div className="client-detail-hero-kicker">NAJBLIŻSZA ZAPLANOWANA AKCJA</div>
+                  <section className="client-detail-hero-card" aria-label="NajbliĹĽsza zaplanowana akcja">
+                    <div className="client-detail-hero-kicker">NAJBLIĹ»SZA ZAPLANOWANA AKCJA</div>
                     <div className="client-detail-hero-date">{nextAction.date || formatDate(new Date())}</div>
                     <div className="client-detail-hero-sub">{nextAction.subtitle}</div>
                     <Button
@@ -2770,18 +2770,18 @@ return (
                       }}
                       disabled={!hasAccess && !mainCase?.id && !nextAction.to}
                     >
-                      Otwórz sprawę
+                      OtwĂłrz sprawÄ™
                     </Button>
                   </section>
 
                                     <div className="client-detail-top-cards-side">
-                    <section className="client-detail-completeness-card" aria-label="Kompletność sprawy">
+                    <section className="client-detail-completeness-card" aria-label="KompletnoĹ›Ä‡ sprawy">
                       <div className="client-detail-card-title-row">
                         <CheckCircle2 className="h-4 w-4" />
-                        <h2>Kompletność sprawy</h2>
+                        <h2>KompletnoĹ›Ä‡ sprawy</h2>
                       </div>
                       <strong>{mainCase ? `${mainCaseCompleteness}%` : '0%'}</strong>
-                      <p>{mainCase ? getCaseTitle(mainCase) : 'Główna sprawa nie ma kompletu elementów.'}</p>
+                      <p>{mainCase ? getCaseTitle(mainCase) : 'GĹ‚Ăłwna sprawa nie ma kompletu elementĂłw.'}</p>
                       {mainCase ? <div className="client-detail-progress"><span style={{ width: `${mainCaseCompleteness}%` }} /></div> : null}
                       {blockers.length > 0 ? (
                         <div className="client-detail-completeness-note">
@@ -2798,19 +2798,19 @@ return (
                       </div>
                       <div className="client-detail-finance-metrics">
                         <div>
-                          <small>Wartość transakcji</small>
+                          <small>WartoĹ›Ä‡ transakcji</small>
                           <strong>{formatMoneyWithCurrency(clientFinanceSummary.contractValueTotal, clientFinance.currency)}</strong>
                         </div>
                         <div>
-                          <small>Wpłacono prowizji</small>
+                          <small>WpĹ‚acono prowizji</small>
                           <strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong>
                         </div>
                         <div>
-                          <small>Do zapłaty prowizji</small>
+                          <small>Do zapĹ‚aty prowizji</small>
                           <strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong>
                         </div>
                       </div>
-                      {clientFinance.hasMixedCurrencies ? <p>Wykryto wiele walut, podsumowanie pokazuje walutę dominującą.</p> : null}
+                      {clientFinance.hasMixedCurrencies ? <p>Wykryto wiele walut, podsumowanie pokazuje walutÄ™ dominujÄ…cÄ….</p> : null}
                     </section>
                   </div>
                 </div>
@@ -2821,25 +2821,25 @@ return (
                       <h2>Relacje</h2>
 </div>
                     <Button type="button" variant="outline" onClick={() => setActiveTab('history')}>
-                      Znajdź w historii
+                      ZnajdĹş w historii
                     </Button>
                   </div>
                   <div className="client-detail-relations-list">
                     {clientCaseRows.length === 0 ? (
-                      <div className="client-detail-light-empty">Brak spraw przy tym kliencie. Po pozyskaniu tematu utwórz sprawę i prowadź tam dalszą obsługę.</div>
+                      <div className="client-detail-light-empty">Brak spraw przy tym kliencie. Po pozyskaniu tematu utwĂłrz sprawÄ™ i prowadĹş tam dalszÄ… obsĹ‚ugÄ™.</div>
                     ) : (
                       clientCaseRows.slice(0, 4).map((caseRecord) => (
                         <article key={caseRecord.id} className="client-detail-relation-row">
                           <div className="client-detail-relation-main">
                             <h3>{caseRecord.title}</h3>
-                            <p>{caseRecord.nextActionMeta || `W realizacji · najbliższa akcja ${caseRecord.nextActionLabel}`}</p>
+                            <p>{caseRecord.nextActionMeta || `W realizacji Â· najbliĹĽsza akcja ${caseRecord.nextActionLabel}`}</p>
                           </div>
                           <span className={`client-detail-pill ${statusBadgeClass(caseRecord.status)}`}>
                             {activeCases.some((entry) => String(entry.id) === String(caseRecord.id)) ? 'Aktywna' : caseRecord.statusLabel}
                           </span>
                           <div className="client-detail-relation-actions">
                             <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(caseRecord.id)}`)}>
-                              Otwórz sprawę
+                              OtwĂłrz sprawÄ™
                             </Button>
                           </div>
                         </article>
@@ -2852,7 +2852,7 @@ return (
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy aktywne</h2>
-                      <p>Lista spraw klienta z szybkim wejściem do prowadzenia.</p>
+                      <p>Lista spraw klienta z szybkim wejĹ›ciem do prowadzenia.</p>
                     </div>
                     <span className="client-detail-source-history-chip" data-client-source-history-readonly="true">Historia pozyskania</span>
                   </div>
@@ -2862,11 +2862,11 @@ return (
                       <strong>{firstSourceLead ? formatDate(firstSourceLead.createdAt || firstSourceLead.updatedAt) : formatDate(client.createdAt)}</strong>
                     </span>
                     <span>
-                      Źródło: <strong>{firstSourceLead?.source || client.source || 'Brak źródła'}</strong>
+                      ĹąrĂłdĹ‚o: <strong>{firstSourceLead?.source || client.source || 'Brak ĹşrĂłdĹ‚a'}</strong>
                     </span>
                     <span>
-                      Lead źródłowy:{' '}
-                      <strong>{firstSourceLead ? String(firstSourceLead.name || firstSourceLead.company || 'Lead bez nazwy') : 'Brak powiązanego leada'}</strong>
+                      Lead ĹşrĂłdĹ‚owy:{' '}
+                      <strong>{firstSourceLead ? String(firstSourceLead.name || firstSourceLead.company || 'Lead bez nazwy') : 'Brak powiÄ…zanego leada'}</strong>
                     </span>
                   </div>
                 </section>
@@ -2879,7 +2879,7 @@ return (
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy aktywne</h2>
-                      <p>Zamknięte sprawy są w Historii klienta, bo nie są aktywną pracą operacyjną.</p>
+                      <p>ZamkniÄ™te sprawy sÄ… w Historii klienta, bo nie sÄ… aktywnÄ… pracÄ… operacyjnÄ….</p>
                     </div>
                   </div>
 
@@ -2899,9 +2899,9 @@ return (
                 <section className="client-detail-section-card client-detail-closed-cases-history-stage231b0-r9" data-stage231b0-r9-history-closed-client-cases-section="true">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Sprawy zamknięte</h2>
-                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIĘTA</span>
-                      <p>Archiwum operacyjne klienta. Historia, prowizje i wpłaty zostają przy relacji.</p>
+                      <h2>Sprawy zamkniÄ™te</h2>
+                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIÄTA</span>
+                      <p>Archiwum operacyjne klienta. Historia, prowizje i wpĹ‚aty zostajÄ… przy relacji.</p>
                     </div>
                   </div>
 
@@ -2909,7 +2909,7 @@ return (
                     {closedClientCases.length ? (
                       closedClientCases.map((caseRecord: any) => renderClientCaseSmartCardStage231B0R8(caseRecord, { closed: true }))
                     ) : (
-                      <div className="client-detail-case-smart-empty">Brak zamkniętych spraw dla klienta.</div>
+                      <div className="client-detail-case-smart-empty">Brak zamkniÄ™tych spraw dla klienta.</div>
                     )}
                   </div>
                 </section>
@@ -2918,7 +2918,7 @@ return (
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Historia</h2>
-                      <p>Realne ruchy powiązane z klientem, leadami i sprawami.</p>
+                      <p>Realne ruchy powiÄ…zane z klientem, leadami i sprawami.</p>
                     </div>
                   </div>
                   <div className="client-detail-history-list">
@@ -2944,20 +2944,20 @@ return (
           </section>
           <aside className="client-detail-right-rail" aria-label="Panel klienta" data-stage216m-r4-client-right-rail="true">
             <section className="right-card client-detail-right-card client-detail-upcoming-actions-card" data-stage216m-r4-client-upcoming-actions-card="true">
-              <div className="client-detail-card-title-row"><Clock className="h-4 w-4" /><h2>Najbliższe działania</h2></div>
+              <div className="client-detail-card-title-row"><Clock className="h-4 w-4" /><h2>NajbliĹĽsze dziaĹ‚ania</h2></div>
 
               <div className="client-detail-upcoming-actions-list">
                 {clientRightRailActionsStage216M4.length === 0 ? (
                   <div className="client-detail-light-empty client-detail-action-empty client-detail-action-empty-compact">
-                    <strong>Brak zaplanowanych działań.</strong>
-                    <span>Dodaj zadanie albo wydarzenie, żeby klient nie został bez ruchu.</span>
+                    <strong>Brak zaplanowanych dziaĹ‚aĹ„.</strong>
+                    <span>Dodaj zadanie albo wydarzenie, ĹĽeby klient nie zostaĹ‚ bez ruchu.</span>
                   </div>
                 ) : (
                   clientRightRailActionsStage216M4.map((entry) => (
                     <article key={`client-right-rail-action-${entry.kind}-${entry.id}`} className={`client-detail-upcoming-action-row ${entry.isOverdue ? 'client-detail-work-row-overdue' : ''}`} data-stage216m-r4-client-upcoming-action-row="true">
                       <span className="client-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                       <div>
-                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
+                        <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} â€˘ {entry.statusLabel}</small>
                         <strong>{entry.title}</strong>
                         <p>{entry.dateLabel}</p>
                       </div>
@@ -3013,21 +3013,21 @@ return (
             </section>
 
             <section className="right-card client-detail-right-card" data-stage216m-r4-client-main-case-card="true">
-              <div className="client-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>Główna sprawa</h2></div>
+              <div className="client-detail-card-title-row"><EntityIcon entity="case" className="h-4 w-4" /><h2>GĹ‚Ăłwna sprawa</h2></div>
               <p>{mainCase ? getCaseTitle(mainCase) : 'Klient nie ma jeszcze aktywnej sprawy.'}</p>
-              <small>{mainCase ? caseStatusLabel(String(mainCase.status || 'in_progress')) : 'Utwórz sprawę, gdy temat jest gotowy do realizacji.'}</small>
+              <small>{mainCase ? caseStatusLabel(String(mainCase.status || 'in_progress')) : 'UtwĂłrz sprawÄ™, gdy temat jest gotowy do realizacji.'}</small>
               {mainCase?.id ? (
-                <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(mainCase.id)}`)}>Otwórz główną sprawę</Button>
+                <Button type="button" size="sm" variant="outline" onClick={() => navigate(`/cases/${String(mainCase.id)}`)}>OtwĂłrz gĹ‚ĂłwnÄ… sprawÄ™</Button>
               ) : (
-                <Button type="button" size="sm" onClick={openNewCase} disabled={!hasAccess}>Utwórz sprawę</Button>
+                <Button type="button" size="sm" onClick={openNewCase} disabled={!hasAccess}>UtwĂłrz sprawÄ™</Button>
               )}
               <div className="client-detail-right-finance-inline-card" data-stage216m-r13-client-finance-inline-card="true">
                 <div className="client-detail-finance-inline-title"><EntityIcon entity="client" className="h-4 w-4" /><h3>Finanse klienta</h3></div>
                 <div className="client-detail-finance-inline-metrics">
-                  <small><span>Suma wartości transakcji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Prowizja należna</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Wpłacono prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Do zapłaty prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Suma wartoĹ›ci transakcji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Prowizja naleĹĽna</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</strong></small>
+                  <small><span>WpĹ‚acono prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong></small>
+                  <small><span>Do zapĹ‚aty prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong></small>
                   <small><span>Sprawy aktywne / rozliczone</span><strong>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</strong></small>
                 </div>
                 <div className="client-detail-right-actions">
@@ -3035,7 +3035,7 @@ return (
                     type="button"
                     size="sm"
                     variant="outline"
-                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
+                    onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwĂłrz sprawÄ™ klienta.'))}
                   >
                     Finanse w sprawie
                   </Button>
@@ -3045,17 +3045,17 @@ return (
 
             <section className="right-card client-detail-right-card client-detail-right-finance-card-hard-render" data-client-finance-summary="true" data-stage216m-r4-client-finance-card="true" data-stage216m-r12-client-finance-hard-render="true">
               <div className="client-detail-card-title-row"><EntityIcon entity="client" className="h-4 w-4" /><h2>Finanse klienta</h2></div>
-              <small>Suma wartości transakcji: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
-              <small>Prowizja należna: {formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</small>
-              <small>Wpłacono prowizji: {formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</small>
-              <small>Do zapłaty prowizji: {formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</small>
+              <small>Suma wartoĹ›ci transakcji: {formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</small>
+              <small>Prowizja naleĹĽna: {formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</small>
+              <small>WpĹ‚acono prowizji: {formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</small>
+              <small>Do zapĹ‚aty prowizji: {formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</small>
               <small>Sprawy aktywne / rozliczone: {clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</small>
               <div className="client-detail-right-actions">
                 <Button
                   type="button"
                   size="sm"
                   variant="outline"
-                  onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwórz sprawę klienta.'))}
+                  onClick={() => (mainCase?.id ? navigate(`/cases/${String(mainCase.id)}`) : toast.info('Najpierw utwĂłrz sprawÄ™ klienta.'))}
                 >
                   Finanse w sprawie
                 </Button>
@@ -3114,3 +3114,4 @@ const CLOSEFLOW_FIN9_CLIENT_DETAIL_DUPLICATE_SAFETY_MARKER = 'CLOSEFLOW_FIN9_CLI
 void CLOSEFLOW_FIN9_CLIENT_DETAIL_DUPLICATE_SAFETY_MARKER;
 export { ClientDetail };
 export default ClientDetail;
+

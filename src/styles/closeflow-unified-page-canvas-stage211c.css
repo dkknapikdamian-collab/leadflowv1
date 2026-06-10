@@ -421,3 +421,38 @@ main.main,
   }
 }
 /* STAGE227F6_CONTACT_CADENCE_AND_FUNNEL_WIDTH_END */
+
+/* STAGE231B0_R15_R2_CLIENT_DETAIL_SHARED_CANVAS_WIDTH_TRIAL
+   Shared source of truth for full-width app pages.
+   Use this when a route must fill the available workspace from the sidebar edge to the right viewport edge.
+*/
+:root {
+  --cf-page-canvas-full-width: 100%;
+  --cf-page-canvas-full-max-width: none;
+  --cf-page-canvas-full-margin-inline: 0;
+  --cf-page-canvas-padding-x: clamp(20px, 1.7vw, 32px);
+  --cf-page-canvas-padding-y: 30px;
+  --cf-page-canvas-bottom: 64px;
+  --cf-page-canvas-gap: 22px;
+  --cf-page-canvas-left-rail: minmax(280px, 320px);
+  --cf-page-canvas-right-rail: minmax(300px, 340px);
+}
+
+.cf-page-canvas,
+[data-cf-page-canvas="full"] {
+  width: var(--cf-page-canvas-full-width) !important;
+  max-width: var(--cf-page-canvas-full-max-width) !important;
+  min-width: 0 !important;
+  margin-left: var(--cf-page-canvas-full-margin-inline) !important;
+  margin-right: var(--cf-page-canvas-full-margin-inline) !important;
+  margin-inline: var(--cf-page-canvas-full-margin-inline) !important;
+  box-sizing: border-box !important;
+}
+
+.cf-page-canvas--full,
+[data-cf-page-canvas="full"] {
+  padding-left: var(--cf-page-canvas-padding-x) !important;
+  padding-right: var(--cf-page-canvas-padding-x) !important;
+  padding-top: var(--cf-page-canvas-padding-y) !important;
+  padding-bottom: var(--cf-page-canvas-bottom) !important;
+}

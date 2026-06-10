@@ -1801,3 +1801,11 @@ STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION: active/closed case separation, re
 - PowÃ³d: kartoteka klienta nadal jest centrowana/Å›ciÅ›niÄ™ta zamiast uÅ¼ywaÄ‡ peÅ‚nej szerokoÅ›ci od lewego panelu do prawej krawÄ™dzi ekranu.
 - Zakres: marker route w ClientDetail + CSS lock w visual-stage12-client-detail-vnext.css.
 - Kontrakt: brak max-width shell, width 100%, margin-inline 0, stable horizontal spacing during scroll.
+
+## 2026-06-10 — STAGE231B0-R15-R2 — ClientDetail shared canvas width source
+- Status: FINALIZE_FOR_PUSH.
+- Powód: R14 trafi³ w z³y DOM node (`ClientMultiContactField`), wiêc nie móg³ rozci¹gn¹æ kartoteki klienta.
+- Decyzja: ClientDetail ma u¿ywaæ wspólnego canvasu strony: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"`.
+- ród³o prawdy szerokoœci: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
+- Widok konsumuj¹cy kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
+- R14 guard/test usuniête jako fa³szywy kontrakt.
