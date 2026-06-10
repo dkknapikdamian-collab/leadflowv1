@@ -1,3 +1,4 @@
+/* STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION */
 /* CLIENT_DETAIL_VISUAL_REBUILD_STAGE12 */
 
 .client-detail-vnext-page {
@@ -3502,3 +3503,14 @@ button.client-detail-top-tile-link {
   color: rgba(254, 226, 226, 0.96);
 }
 /* STAGE227C3B_CLIENT_MISSING_ITEM_RUNTIME_WIRING_END */
+
+
+.client-detail-case-smart-card-closed-stage231b0-r7 {
+  border-color: rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.58);
+  opacity: 0.94;
+}
+
+.client-detail-case-smart-card-closed-stage231b0-r7 [data-stage231b0-r7-closed-case-label='true'] {
+  color: #cbd5e1;
+}

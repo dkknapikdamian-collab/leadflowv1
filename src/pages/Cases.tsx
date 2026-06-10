@@ -1,3 +1,4 @@
+// STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { AlertTriangle, CheckCircle2, ChevronRight, Clock, ExternalLink, FileText, Loader2, Plus, Search, Trash2, X } from 'lucide-react';
@@ -17,7 +18,7 @@ import { Badge } from '../components/ui/badge';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '../components/ui/dialog';
 import { Label } from '../components/ui/label';
 import { useWorkspace } from '../hooks/useWorkspace';
-import { deleteCaseWithRelations } from '../lib/cases';
+import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { getCaseOwnerRiskBadges, ownerRiskTone } from '../lib/owner-control/owner-risk-rules';
@@ -78,7 +79,18 @@ type ClientOption = {
   source: 'case' | 'lead' | 'client';
 };
 
-type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked';
+type CaseView = 'all' | 'waiting' | 'blocked' | 'approval' | 'ready' | 'needs_next_step' | 'linked' | 'closed';
+
+
+const stage231b0R7CasesClosedViewContract = {
+  route: '/cases?view=closed',
+  label: 'Sprawy zamknięte',
+  matches(record: { status?: unknown }, caseView: CaseView) {
+    const isClosedCase = isClosedCaseStatus(record.status);
+    return (caseView === 'closed' && isClosedCase) || (caseView === 'all' && !isClosedCase);
+  },
+};
+void stage231b0R7CasesClosedViewContract;
 
 function normalizeClientText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
@@ -133,7 +145,7 @@ function caseStatusLabel(status?: string) {
     case 'in_progress':
       return 'W realizacji';
     case 'completed':
-      return 'Zrobione';
+      return 'Zamknięta';
     default:
       return 'W realizacji';
   }

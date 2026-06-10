@@ -1,4 +1,5 @@
-﻿# 08_CHANGELOG_AI - CloseFlow / LeadFlow
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+# 08_CHANGELOG_AI - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
 - Added `_project/00_PROJECT_MEMORY_PROTOCOL.md`.
@@ -2568,3 +2569,69 @@ RYZYKA:
 - Główne CTA zmienione na "Zamknij sprawę" / "Sprawa zamknięta".
 - Awaryjne usuwanie zostaje osobno.
 - Dodano guard, test, run report i obsidian update.
+
+## 2026-06-10 — STAGE231B0-R7
+
+Added closed case archive view, restore flow, client closed cases section and guard/test.
+
+
+## R5_CASEDETAIL_RESTORE_REPAIR
+- Naprawiono realny brak CaseDetail: "Przywróć sprawę".
+- Restore flow używa updateCaseInSupabase({ status: 'in_progress' }) i activity "case_lifecycle_reopened".
+- Historia i rozliczenia pozostają zachowane; delete flow nie jest używany przez restore.
+
+
+## R6_REOPEN_HANDLER_ALIAS_REPAIR
+- Naprawiono zgodność nazwy handlera restore z guardem R7.
+- Dodano/upewniono `handleConfirmReopenCaseRecord` jako publiczny handler przywracania sprawy.
+- Przycisk `Przywróć sprawę` używa handlera reopen.
+- Logika finansów, delete flow i dane rozliczeń pozostają bez zmian.
+
+
+## R7_CLOSED_STATUS_LITERAL_REPAIR
+- Naprawiono zgodność CaseDetail z guardem R7.
+- Dodano jawne sprawdzenie `isClosedCaseStatus(caseData?.status)`.
+- Zachowano fallback na `effectiveStatus`.
+- Bez zmian w delete flow, płatnościach i prowizjach.
+
+
+## R8_REOPEN_CONST_SEGMENT_REPAIR
+- Naprawiono zgodność segmentu CaseDetail z guardem R7.
+- Handler przywracania ma teraz formę `const handleConfirmReopenCaseRecord = async () => { ... }`.
+- Przycisk `Przywróć sprawę` używa handlera reopen.
+- Bez zmian w delete flow, płatnościach i prowizjach.
+
+
+## R9_CASES_CLOSED_VIEW_LITERAL_REPAIR
+- Naprawiono zgodność `Cases.tsx` z guardem R7.
+- `CaseView` zawiera literal `| 'closed'`.
+- Utrwalono kontrakt widoku `/cases?view=closed`, etykietę `Sprawy zamknięte` oraz filtr aktywne vs zamknięte.
+- Bez zmian w delete flow, płatnościach i prowizjach.
+
+
+## R10_CLIENTDETAIL_CLOSED_CASES_REPAIR
+- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
+- Utrwalono kontrakt klienta: `Sprawy aktywne`, `Sprawy zamknięte`, `Przywróć sprawę`.
+- Kontrakt używa wspólnego `isClosedCaseStatus(record.status)`.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+
+
+## R11_CLIENTDETAIL_RESTORE_HANDLER_REPAIR
+- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
+- Dodano jawny handler/kontrakt `handleRestoreClientCaseStage231B0R7`.
+- Utrwalono kontrakt aktywne/zamknięte/przywróć oraz activity `case_lifecycle_reopened`.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+
+
+## R12_CLIENTDETAIL_CLOSED_LISTS_REPAIR
+- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
+- Dodano `activeClientCasesStage231B0R7` i `closedClientCasesStage231B0R7`.
+- Podział używa wspólnego `isClosedCaseStatus(record.status)`.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+
+
+## R13_CSS_CONTRACT_REPAIR
+- Naprawiono zgodność CSS z guardem R7.
+- Dodano `cf-case-detail-close-action-stage231b0-r7` do CSS karty sprawy i do klasy przycisku zamykania.
+- Dodano `client-detail-case-smart-card-closed-stage231b0-r7` do CSS klienta.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.

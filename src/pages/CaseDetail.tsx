@@ -1,3 +1,4 @@
+// STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { AlertCircle, ArrowLeft, ArrowRight, CalendarClock, Check, CheckCircle2, Clock, Copy, ExternalLink, History, ListChecks, Loader2, MessageSquare, Paperclip, Plus, Send, StickyNote, Trash2, X } from 'lucide-react';
@@ -41,7 +42,7 @@ import {
   fetchLeadByIdFromSupabase,
   updateLeadInSupabase,
 } from '../lib/supabase-fallback';
-import { deleteCaseWithRelations } from '../lib/cases';
+import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
 import { getEventMainDate, getTaskMainDate } from '../lib/scheduling';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
@@ -183,6 +184,8 @@ void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 
 const STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH = 'STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH';
+const STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION = 'STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION';
+void STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION;
 void STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH;
 
 type CaseDetailTab = 'service' | 'checklists' | 'history';
@@ -1557,6 +1560,7 @@ export default function CaseDetail() {
   const [deleteCasePending, setDeleteCasePending] = useState(false);
   const [closeCaseOpen, setCloseCaseOpen] = useState(false);
   const [closeCasePending, setCloseCasePending] = useState(false);
+  const [restoreCasePending, setRestoreCasePending] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
@@ -1794,6 +1798,8 @@ export default function CaseDetail() {
   const uploadedItems = useMemo(() => items.filter((item) => item.status === 'uploaded'), [items]);
   const blockers = useMemo(() => items.filter((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected')), [items]);
   const effectiveStatus = useMemo(() => resolveCaseStatusFromItems(items, caseData?.status || 'in_progress'), [caseData?.status, items]);
+  const isCaseClosedByStoredStatusStage231B0R7 = isClosedCaseStatus(caseData?.status);
+  const isCaseClosedStage231B0R7 = isCaseClosedByStoredStatusStage231B0R7 || isClosedCaseStatus(effectiveStatus);
   const caseLifecycleV1 = useMemo(
     () =>
       resolveCaseLifecycleV1({
@@ -2054,7 +2060,12 @@ export default function CaseDetail() {
     }
   };
 
-  const refreshStatusAfterMutation = async (nextStatus?: string) => {
+
+  const handleConfirmReopenCaseRecord = async () => {
+    return handleConfirmRestoreCaseRecord();
+  };
+
+const refreshStatusAfterMutation = async (nextStatus?: string) => {
     if (!caseId) return;
     const status = nextStatus || resolveCaseStatusFromItems(items, caseData?.status || 'in_progress');
     await updateCaseInSupabase({ id: caseId, status, completenessPercent: completionPercent, lastActivityAt: new Date().toISOString() }).catch(() => null);
@@ -2364,7 +2375,42 @@ export default function CaseDetail() {
     }
   };
 
-  async function handleConfirmDeleteCaseRecord() {
+
+  async function handleConfirmRestoreCaseRecord() {
+    if (!caseData?.id || restoreCasePending) return;
+    if (!guardCaseDetailWriteAccess('przywrócić sprawy')) return;
+
+    const confirmed = window.confirm('Sprawa wróci do aktywnych. Historia i rozliczenia zostaną zachowane.');
+    if (!confirmed) return;
+
+    const reopenedAt = new Date().toISOString();
+    const previousStatus = caseData?.status || null;
+
+    try {
+      setRestoreCasePending(true);
+      await updateCaseInSupabase({
+        id: caseData.id,
+        status: 'in_progress',
+        lastActivityAt: reopenedAt,
+      });
+      await recordActivity('case_lifecycle_reopened', {
+        title: 'Sprawa przywrócona',
+        status: 'in_progress',
+        previousStatus,
+        reopenedAt,
+        source: STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION,
+        financePreserved: true,
+        historyPreserved: true,
+      });
+      await refreshCaseData();
+      toast.success('Sprawa przywrócona do aktywnych. Historia i rozliczenia zostały zachowane.');
+    } catch (error: any) {
+      toast.error(`Nie udało się przywrócić sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setRestoreCasePending(false);
+    }
+  }
+async function handleConfirmDeleteCaseRecord() {
     if (!caseData?.id || deleteCasePending) return;
     if (!guardCaseDetailWriteAccess('usunąć sprawy')) {
       setDeleteCaseOpen(false);
@@ -2457,37 +2503,43 @@ export default function CaseDetail() {
 
       <main className="case-detail-vnext-page">
         <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
-          <div className="case-detail-header-actions-stage231b0" data-stage231b0-case-close-archive-finance-truth-actions="true">
-            <CaseDetailTrashButton
-              type="button"
-              className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32 cf-case-detail-close-action-stage231b0"
-              data-case-detail-delete-action="true"
-              data-case-detail-close-action="true"
-              data-stage220a17-delete-case-button="true"
-              data-stage220a32-delete-case-button="true"
-              data-stage231b0-close-case-button="true"
-              data-cf-vst-kind="status"
-              aria-label={caseData?.status === 'completed' ? 'Sprawa zamknięta' : 'Zamknij sprawę'}
-              title={caseData?.status === 'completed' ? 'Sprawa zamknięta' : 'Zamknij sprawę'}
-              disabled={closeCasePending || caseData?.status === 'completed'}
-              onClick={() => setCloseCaseOpen(true)}
-            >
-              {caseData?.status === 'completed' ? (
-                <>
-                  <CheckCircle2 className="h-4 w-4" />
-                  Sprawa zamknięta
-                </>
-              ) : (
-                <>
-                  <Check className="h-4 w-4" />
-                  Zamknij sprawę
-                </>
-              )}
-            </CaseDetailTrashButton>
+                    <div className="case-detail-header-actions-stage231b0" data-stage231b0-case-close-archive-finance-truth-actions="true" data-stage231b0-r7-case-archive-restore-navigation="true">
+            {isCaseClosedStage231B0R7 ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7"
+                data-stage231b0-r7-restore-case-button="true"
+                aria-label="Przywróć sprawę"
+                title="Przywróć sprawę"
+                disabled={restoreCasePending}
+                onClick={handleConfirmReopenCaseRecord}
+              >
+                <CheckCircle2 className="h-4 w-4" />
+                Przywróć sprawę
+              </Button>
+            ) : (
+              <CaseDetailTrashButton
+                type="button"
+                className="cf-vst-button cf-case-detail-close-action-stage231b0 cf-case-detail-close-action-stage231b0-r7 cf-case-detail-close-positive-stage231b0-r7"
+                data-case-detail-close-action="true"
+                data-stage231b0-close-case-button="true"
+                data-stage231b0-r7-close-case-button="true"
+                data-cf-vst-kind="status"
+                aria-label="Zamknij sprawę"
+                title="Zamknij sprawę"
+                disabled={closeCasePending}
+                onClick={() => setCloseCaseOpen(true)}
+              >
+                <Check className="h-4 w-4" />
+                Zamknij sprawę
+              </CaseDetailTrashButton>
+            )}
             <Button
               type="button"
               variant="outline"
               className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0"
+              data-case-detail-delete-action="true"
               data-stage231b0-emergency-delete-case-button="true"
               aria-label="Awaryjnie usuń sprawę"
               title="Awaryjnie usuń sprawę"

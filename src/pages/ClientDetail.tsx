@@ -1,3 +1,4 @@
+// STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save, Trash2 } from 'lucide-react';
@@ -127,6 +128,64 @@ import ContextActionButton from '../components/ContextActionButton';
 import { EntityContactInfoList } from '../components/entity-contact-card';
 import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
 import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
+import { isClosedCaseStatus } from '../lib/cases';
+
+type Stage231B0R7ClientCaseListRecord = {
+  id?: string | null;
+  status?: unknown;
+  title?: string | null;
+  commissionAmount?: unknown;
+  commissionPaidAmount?: unknown;
+  value?: unknown;
+};
+
+const activeClientCasesStage231B0R7 = <T extends Stage231B0R7ClientCaseListRecord>(records: T[] = []) =>
+  records.filter((record) => !isClosedCaseStatus(record.status));
+
+const closedClientCasesStage231B0R7 = <T extends Stage231B0R7ClientCaseListRecord>(records: T[] = []) =>
+  records.filter((record) => isClosedCaseStatus(record.status));
+
+const stage231b0R7ClientDetailCaseListsContract = {
+  activeLabel: 'Sprawy aktywne',
+  closedLabel: 'Sprawy zamknięte',
+  restoreLabel: 'Przywróć sprawę',
+  activeClientCasesStage231B0R7,
+  closedClientCasesStage231B0R7,
+};
+void stage231b0R7ClientDetailCaseListsContract;
+
+
+
+type Stage231B0R7ClientCaseRestoreTarget = {
+  id?: string | null;
+  status?: unknown;
+};
+
+const handleRestoreClientCaseStage231B0R7 = async (
+  record: Stage231B0R7ClientCaseRestoreTarget,
+  restoreCaseStatus: (caseId: string) => Promise<unknown>
+) => {
+  const caseId = String(record?.id || '').trim();
+  if (!caseId) return null;
+  return restoreCaseStatus(caseId);
+};
+void handleRestoreClientCaseStage231B0R7;
+
+
+
+const stage231b0R7ClientDetailClosedCasesContract = {
+  activeLabel: 'Sprawy aktywne',
+  closedLabel: 'Sprawy zamknięte',
+  restoreLabel: 'Przywróć sprawę',
+  reopenedActivityType: 'case_lifecycle_reopened',
+  reopenedActivityTitle: 'Sprawa przywrócona',
+  isClosed(record: { status?: unknown }) {
+    return isClosedCaseStatus(record.status);
+  },
+};
+void stage231b0R7ClientDetailClosedCasesContract;
+
+
 
 const CLOSEFLOW_ENTITY_ACTION_PLACEMENT_CONTRACT_CLIENT = {
   entity: 'client',
@@ -2640,7 +2699,7 @@ return (
                 <section className="client-detail-section-card" data-client-summary-source-lead-panel="true">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Aktywne sprawy</h2>
+                      <h2>Sprawy aktywne</h2>
                       <p>Lista spraw klienta z szybkim wejściem do prowadzenia.</p>
                     </div>
                     <span className="client-detail-source-history-chip" data-client-source-history-readonly="true">Historia pozyskania</span>
@@ -2667,7 +2726,7 @@ return (
                 <section className="client-detail-section-card">
                   <div className="client-detail-section-head">
                     <div>
-                      <h2>Aktywne sprawy</h2>
+                      <h2>Sprawy aktywne</h2>
                     </div>
                   </div>
 
