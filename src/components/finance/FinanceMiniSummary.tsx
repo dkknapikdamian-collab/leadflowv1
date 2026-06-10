@@ -4,8 +4,9 @@ import { toast } from 'sonner';
 import type { CommissionMode, CommissionStatus, FinanceSummary } from '../../lib/finance/finance-types';
 import type { CaseFinanceSummary } from '../../lib/finance/case-finance-source';
 import { getCaseFinanceSummary } from '../../lib/finance/case-finance-source';
+import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike, type CaseCostsSummary } from '../../lib/finance/case-costs-source';
 import { calculateClientFinanceSummary } from '../../lib/client-finance';
-import { createPaymentInSupabase, fetchCasesFromSupabase, fetchPaymentsFromSupabase, updateCaseInSupabase } from '../../lib/supabase-fallback';
+import { createPaymentInSupabase, fetchCaseCostsFromSupabase, fetchCasesFromSupabase, fetchPaymentsFromSupabase, updateCaseInSupabase } from '../../lib/supabase-fallback';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 import { Input } from '../ui/input';
@@ -19,6 +20,9 @@ import '../../styles/finance/closeflow-finance.css';
 
 export const CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES = 'CLOSEFLOW_FIN13_CLIENT_CASE_FINANCES_V1' as const;
 export const STAGE228R7_CLIENT_FINANCE_COMMISSION_BALANCE_TRUTH = 'client finance summary shows commission paid and remaining as main balance' as const;
+export const STAGE231D3_CLIENT_FINANCE_COSTS_ROLLUP = 'STAGE231D3_CLIENT_FINANCE_COSTS_ROLLUP_MASS_GUARD_V1' as const;
+
+const EMPTY_CASE_COSTS_STAGE231D3: CaseCostLike[] = [];
 
 type FinanceMiniSummaryProps = {
   summary: FinanceSummary | CaseFinanceSummary;
@@ -41,7 +45,9 @@ type ClientFinanceCaseRow = {
   caseId: string;
   title: string;
   payments: Record<string, unknown>[];
+  costs: CaseCostLike[];
   summary: CaseFinanceSummary;
+  costsSummary: CaseCostsSummary;
 };
 
 const COMMISSION_STATUS_LABELS: Record<string, string> = {
@@ -89,6 +95,10 @@ function getPaymentCaseId(payment: unknown): string {
   return readId(payment, ['caseId', 'case_id', 'relatedCaseId', 'related_case_id']);
 }
 
+function getCaseCostCaseId(cost: unknown): string {
+  return readId(cost, ['caseId', 'case_id', 'relatedCaseId', 'related_case_id']);
+}
+
 function getCaseTitle(caseRecord: unknown): string {
   const row = asRecord(caseRecord);
   return String(row.title || row.name || row.clientName || row.client_name || 'Sprawa bez nazwy').trim();
@@ -108,16 +118,30 @@ function getCasePayments(caseRecord: unknown, payments: Record<string, unknown>[
   });
 }
 
-function buildClientCaseRows(cases: Record<string, unknown>[], payments: Record<string, unknown>[]): ClientFinanceCaseRow[] {
+function getCaseCosts(caseRecord: unknown, costs: CaseCostLike[]): CaseCostLike[] {
+  const caseId = getCaseId(caseRecord);
+  if (!caseId) return [];
+  return costs.filter((cost) => getCaseCostCaseId(cost) === caseId);
+}
+
+function buildClientCaseRows(cases: Record<string, unknown>[], payments: Record<string, unknown>[], costs: CaseCostLike[] = EMPTY_CASE_COSTS_STAGE231D3): ClientFinanceCaseRow[] {
   return cases.filter(Boolean).map((caseRecord) => {
     const casePayments = getCasePayments(caseRecord, payments, cases.length);
+    const caseCosts = getCaseCosts(caseRecord, costs);
     const summary = getCaseFinanceSummary(caseRecord, casePayments);
+    const costsSummary = getCaseCostsSummary({
+      costs: caseCosts,
+      commissionRemainingAmount: summary.commissionRemainingAmount,
+      currency: summary.currency,
+    });
     return {
       caseRecord,
       caseId: getCaseId(caseRecord),
       title: getCaseTitle(caseRecord),
       payments: casePayments,
+      costs: caseCosts,
       summary,
+      costsSummary,
     };
   });
 }
@@ -185,6 +209,7 @@ export function ClientFinanceRelationSummary({
   const navigate = useNavigate();
   const [loadedCases, setLoadedCases] = useState<Array<Record<string, unknown>>>([]);
   const [loadedPayments, setLoadedPayments] = useState<Array<Record<string, unknown>>>([]);
+  const [loadedCaseCosts, setLoadedCaseCosts] = useState<CaseCostLike[]>([]);
   const [editingRow, setEditingRow] = useState<ClientFinanceCaseRow | null>(null);
   const [paymentRow, setPaymentRow] = useState<ClientFinanceCaseRow | null>(null);
   const [paymentType, setPaymentType] = useState<'deposit' | 'partial' | 'commission'>('partial');
@@ -193,12 +218,14 @@ export function ClientFinanceRelationSummary({
 
   async function reloadClientFinanceData() {
     if (!resolvedClientId) return;
-    const [caseRows, paymentRows] = await Promise.all([
+    const [caseRows, paymentRows, costRows] = await Promise.all([
       Array.isArray(cases) ? Promise.resolve(cases) : fetchCasesFromSupabase({ clientId: resolvedClientId }),
       Array.isArray(payments) ? Promise.resolve(payments) : fetchPaymentsFromSupabase({ clientId: resolvedClientId }),
+      fetchCaseCostsFromSupabase({ clientId: resolvedClientId }),
     ]);
     if (!Array.isArray(cases)) setLoadedCases(Array.isArray(caseRows) ? caseRows as Array<Record<string, unknown>> : []);
     if (!Array.isArray(payments)) setLoadedPayments(Array.isArray(paymentRows) ? paymentRows as Array<Record<string, unknown>> : []);
+    setLoadedCaseCosts(Array.isArray(costRows) ? costRows as CaseCostLike[] : []);
   }
 
   useEffect(() => {
@@ -207,27 +234,36 @@ export function ClientFinanceRelationSummary({
     Promise.all([
       Array.isArray(cases) ? Promise.resolve(cases) : fetchCasesFromSupabase({ clientId: resolvedClientId }),
       Array.isArray(payments) ? Promise.resolve(payments) : fetchPaymentsFromSupabase({ clientId: resolvedClientId }),
-    ]).then(([caseRows, paymentRows]) => {
+      fetchCaseCostsFromSupabase({ clientId: resolvedClientId }),
+    ]).then(([caseRows, paymentRows, costRows]) => {
       if (cancelled) return;
       if (!Array.isArray(cases)) setLoadedCases(Array.isArray(caseRows) ? caseRows as Array<Record<string, unknown>> : []);
       if (!Array.isArray(payments)) setLoadedPayments(Array.isArray(paymentRows) ? paymentRows as Array<Record<string, unknown>> : []);
+      setLoadedCaseCosts(Array.isArray(costRows) ? costRows as CaseCostLike[] : []);
     }).catch(() => {
       if (cancelled) return;
       if (!Array.isArray(cases)) setLoadedCases([]);
       if (!Array.isArray(payments)) setLoadedPayments([]);
+      setLoadedCaseCosts([]);
     });
     return () => { cancelled = true; };
   }, [cases, payments, resolvedClientId]);
 
   const resolvedCases = Array.isArray(cases) ? cases : loadedCases;
   const resolvedPayments = Array.isArray(payments) ? payments : loadedPayments;
-  const rows = useMemo(() => buildClientCaseRows(resolvedCases, resolvedPayments), [resolvedCases, resolvedPayments]);
+  const resolvedCaseCosts = loadedCaseCosts;
+  const rows = useMemo(() => buildClientCaseRows(resolvedCases, resolvedPayments, resolvedCaseCosts), [resolvedCases, resolvedPayments, resolvedCaseCosts]);
   const totals = useMemo(() => calculateClientFinanceSummary({
     client: client || { id: resolvedClientId },
     cases: resolvedCases,
     payments: resolvedPayments,
     mode: 'all_active_cases',
   }), [client, resolvedCases, resolvedClientId, resolvedPayments]);
+  const clientCostsSummary = useMemo(() => getCaseCostsSummary({
+    costs: resolvedCaseCosts,
+    commissionRemainingAmount: totals.commissionRemainingAmount,
+    currency: totals.currency,
+  }), [resolvedCaseCosts, totals.commissionRemainingAmount, totals.currency]);
 
   async function handleSaveCaseFinance(patch: CaseFinancePatch) {
     const caseId = editingRow?.caseId;
@@ -247,7 +283,7 @@ export function ClientFinanceRelationSummary({
   }
 
   return (
-    <SurfaceCard className="cf-finance-mini-summary cf-finance-client-summary cf-fin13-client-case-finances" data-fin13-client-case-finances="true" aria-label={title}>
+    <SurfaceCard className="cf-finance-mini-summary cf-finance-client-summary cf-fin13-client-case-finances" data-fin13-client-case-finances="true" data-stage231d3-client-finance-costs-rollup="true" aria-label={title}>
       <div className="cf-finance-mini-summary__header cf-fin13-client-finance-header">
         <div>
           <p className="cf-finance-kicker">FIN-13</p>
@@ -261,6 +297,8 @@ export function ClientFinanceRelationSummary({
         <div className="cf-finance-metric"><dt>Prowizja należna</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
         <div className="cf-finance-metric"><dt>Wpłacono prowizji</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
         <div className="cf-finance-metric"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(totals.commissionRemainingAmount)}</dd></div>
+        <div className="cf-finance-metric" data-stage231d3-client-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(clientCostsSummary.costsToReimburseAmount, clientCostsSummary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-stage231d3-client-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(clientCostsSummary.totalToCollectAmount, clientCostsSummary.currency)}</dd></div>
       </dl>
 
       <div className="cf-fin13-client-case-finance-list" aria-label="Lista spraw z finansami">
@@ -268,7 +306,7 @@ export function ClientFinanceRelationSummary({
         {rows.length === 0 ? (
           <p className="cf-fin13-client-case-finance-empty">Brak spraw powiązanych z klientem.</p>
         ) : rows.map((row) => (
-          <article key={row.caseId || row.title} className="cf-fin13-client-case-finance-row" data-fin13-client-case-finance-row="true">
+          <article key={row.caseId || row.title} className="cf-fin13-client-case-finance-row" data-fin13-client-case-finance-row="true" data-stage231d3-client-case-costs-row="true">
             <div className="cf-fin13-client-case-finance-row__head">
               <div>
                 <p>Sprawa: {row.title}</p>
@@ -283,6 +321,8 @@ export function ClientFinanceRelationSummary({
               <div><dt>Prowizja należna</dt><dd>{formatMoney(row.summary.commissionAmount, row.summary.currency)}</dd></div>
               <div><dt>Wpłacono prowizji</dt><dd>{formatMoney(row.summary.commissionPaidAmount, row.summary.currency)}</dd></div>
               <div><dt>Do zapłaty prowizji</dt><dd>{formatMoney(row.summary.commissionRemainingAmount, row.summary.currency)}</dd></div>
+              <div data-stage231d3-row-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(row.costsSummary.costsToReimburseAmount, row.costsSummary.currency)}</dd></div>
+              <div data-stage231d3-row-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(row.costsSummary.totalToCollectAmount, row.costsSummary.currency)}</dd></div>
               <div><dt>Status prowizji</dt><dd>{COMMISSION_STATUS_LABELS[row.summary.commissionStatus] || row.summary.commissionStatus}</dd></div>
             </dl>
             <CaseFinanceActionButtons

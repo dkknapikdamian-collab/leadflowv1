@@ -1,4 +1,4 @@
-﻿# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
+# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
 
 ## 2026-05-16 - memory protocol and Obsidian mapping closeout
 - Remote GitHub closeout added minimal project memory protocol, minimal stage template, required 08:54 run checkpoint and AGENTS marker.
@@ -1448,3 +1448,14 @@ następny krok:
 - zmiana: skrócenie górnego paska tytułu sprawy do lewej kolumny i podciągnięcie prawego raila do górnego miejsca po prawej.
 - testy: guard/test R6 + D2/R5/R3/D1/D0/D0A/Polish/build/git diff check.
 - ryzyko: CSS negative margin wymaga produkcyjnego testu wizualnego po deployu.
+
+## 2026-06-10 20:05 Europe/Warsaw — STAGE231D3-R7 prepared
+
+- D3-R1..R6 failed because patchers/guards used brittle anchors. R7 switches to controlled file replacement and mass guard.
+
+## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
+
+- timestamp: 2026-06-10 20:42 Europe/Warsaw
+- status: LOCAL_ONLY_PACKAGE_PREPARED
+- result: restored missing scripts/check-polish-encoding-stage231b0-r15-r3.cjs required by regression lane after STAGE231D3-R7.
+- risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.

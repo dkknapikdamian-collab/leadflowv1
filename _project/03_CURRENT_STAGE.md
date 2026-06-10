@@ -1,4 +1,4 @@
-﻿# 03_CURRENT_STAGE - CloseFlow / LeadFlow
+# 03_CURRENT_STAGE - CloseFlow / LeadFlow
 
 Aktualny etap: pelna pamiec projektu + Obsidian + czytelne nazwy + raporty wykonania.
 
@@ -2008,3 +2008,16 @@ następny krok:
 - zmiana: skrócenie górnego paska tytułu sprawy do lewej kolumny i podciągnięcie prawego raila do górnego miejsca po prawej.
 - testy: guard/test R6 + D2/R5/R3/D1/D0/D0A/Polish/build/git diff check.
 - ryzyko: CSS negative margin wymaga produkcyjnego testu wizualnego po deployu.
+
+## 2026-06-10 20:05 Europe/Warsaw — STAGE231D3-R7 client finance costs rollup mass clean
+
+- status: LOCAL_ONLY_PACKAGE_APPLIED_PENDING_PUSH
+- scope: client finance rollup for case costs, with failed D3 leftovers cleaned
+- no new api/*.ts file; case costs stay consolidated under /api/cases?resource=costs
+
+## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
+
+- timestamp: 2026-06-10 20:42 Europe/Warsaw
+- status: LOCAL_ONLY_PACKAGE_PREPARED
+- result: restored missing scripts/check-polish-encoding-stage231b0-r15-r3.cjs required by regression lane after STAGE231D3-R7.
+- risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.

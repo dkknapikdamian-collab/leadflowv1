@@ -1,4 +1,4 @@
-﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 13_TEST_HISTORY - CloseFlow / LeadFlow
 
 ## V6
@@ -2341,3 +2341,15 @@ następny krok:
 - zmiana: skrócenie górnego paska tytułu sprawy do lewej kolumny i podciągnięcie prawego raila do górnego miejsca po prawej.
 - testy: guard/test R6 + D2/R5/R3/D1/D0/D0A/Polish/build/git diff check.
 - ryzyko: CSS negative margin wymaga produkcyjnego testu wizualnego po deployu.
+
+## 2026-06-10 20:05 Europe/Warsaw — STAGE231D3-R7 planned test result
+
+- expected: guard/test/build PASS before push
+- production manual: client finance costs rollup visible and CaseDetail still opens
+
+## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
+
+- timestamp: 2026-06-10 20:42 Europe/Warsaw
+- status: LOCAL_ONLY_PACKAGE_PREPARED
+- result: restored missing scripts/check-polish-encoding-stage231b0-r15-r3.cjs required by regression lane after STAGE231D3-R7.
+- risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.

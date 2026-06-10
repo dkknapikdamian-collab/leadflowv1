@@ -488,21 +488,6 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
 export async function createPaymentInSupabase(input: PaymentUpsertInput) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updatePaymentInSupabase(input: PaymentUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deletePaymentFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/payments?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
-export async function fetchCaseCostsFromSupabase(params?: { caseId?: string; clientId?: string; status?: string }) {
-  // STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX: case costs are served through /api/cases?resource=costs to stay under Vercel Hobby serverless function budget.
-  if (isDevPreviewDataEnabled()) return [] as Record<string, unknown>[];
-  const query = new URLSearchParams();
-  query.set('resource', 'costs');
-  if (params?.caseId) query.set('caseId', params.caseId);
-  if (params?.clientId) query.set('clientId', params.clientId);
-  if (params?.status) query.set('status', params.status);
-  return callApi<Record<string, unknown>[]>(`/api/cases?${query.toString()}`);
-}
-
-export async function createCaseCostInSupabase(input: CaseCostUpsertInput) {
-  return callApi<SupabaseInsertResult>('/api/cases?resource=costs', { method: 'POST', body: JSON.stringify(input) });
-}
-
 export async function updateCaseCostInSupabase(input: CaseCostUpsertInput & { id: string }) {
   return callApi<SupabaseInsertResult>('/api/cases?resource=costs', { method: 'PATCH', body: JSON.stringify(input) });
 }
@@ -683,6 +668,24 @@ export async function fetchCaseByIdFromSupabase(id: string) {
 export async function createCaseInSupabase(input: CaseUpsertInput) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseInSupabase(input: CaseUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/cases', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deleteCaseFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/cases?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+
+const STAGE231D3_CASE_COSTS_CONSOLIDATED_RESOURCE_GUARD = "resource: 'costs' via /api/cases";
+void STAGE231D3_CASE_COSTS_CONSOLIDATED_RESOURCE_GUARD;
+
+export async function fetchCaseCostsFromSupabase(params?: { caseId?: string | null; clientId?: string | null; workspaceId?: string | null }) {
+  if (shouldUseDevNoAuthMocks()) return [];
+  const query = new URLSearchParams();
+  query.set('resource', 'costs');
+  if (params?.caseId) query.set('caseId', params.caseId);
+  if (params?.clientId) query.set('clientId', params.clientId);
+  if (params?.workspaceId) query.set('workspaceId', params.workspaceId);
+  return callApi<Record<string, unknown>[]>(`/api/cases?${query.toString()}`);
+}
+
+export async function createCaseCostInSupabase(input: CaseCostUpsertInput) {
+  return callApi<SupabaseInsertResult>('/api/cases?resource=costs', { method: 'POST', body: JSON.stringify(input) });
+}
+
 export async function fetchCaseItemsFromSupabase(caseId: string) { return callApi<Record<string, unknown>[]>(`/api/case-items?caseId=${encodeURIComponent(caseId)}`).then(normalizeCaseItemListContract); }
 export async function insertCaseItemToSupabase(input: CaseItemInput) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updateCaseItemInSupabase(input: CaseItemInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/case-items', { method: 'PATCH', body: JSON.stringify(input) }); }
