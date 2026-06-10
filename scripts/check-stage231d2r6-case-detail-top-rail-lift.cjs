@@ -2,50 +2,44 @@ const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
-const read = (rel) => fs.readFileSync(path.join(root, rel), 'utf8');
 const errors = [];
-
-function has(file, token) {
-  return read(file).includes(token);
+function read(rel) {
+  const file = path.join(root, rel);
+  if (!fs.existsSync(file)) {
+    errors.push('missing file: ' + rel);
+    return '';
+  }
+  return fs.readFileSync(file, 'utf8');
 }
-function must(file, token, label = token) {
-  if (!has(file, token)) errors.push(file + ': missing token "' + label + '"');
+function must(text, token, label) {
+  if (!text.includes(token)) errors.push(label + ': missing token "' + token + '"');
 }
-
-const caseDetailFile = 'src/pages/CaseDetail.tsx';
-const cssFile = 'src/styles/case-detail-stage228r9-shell-rail-lift.css';
-const caseDetail = read(caseDetailFile);
-const css = read(cssFile);
-
-const r6LayoutPresent = caseDetail.includes('data-stage231d2-r6-top-strip-left-card="true"');
-const r7SupersedesR6 = caseDetail.includes('data-stage231d2-r7-side-meta-card="true"') && caseDetail.includes('data-stage231d2-r7-side-meta-layout="true"');
-
-if (!r6LayoutPresent && !r7SupersedesR6) {
-  errors.push('CaseDetail layout: missing R6 top-strip marker and missing R7 side-meta supersession marker');
+function mustNotExist(rel) {
+  if (fs.existsSync(path.join(root, rel))) errors.push('forbidden file still exists: ' + rel);
 }
 
-if (r7SupersedesR6) {
-  must(caseDetailFile, 'data-stage231d2-r7-side-meta-card="true"', 'R7 side meta card');
-  must(caseDetailFile, 'data-stage231d2-r7-side-meta-layout="true"', 'R7 side meta layout');
-  must(caseDetailFile, 'case-detail-meta-card-stage231d2r7', 'R7 meta card class');
-  must(caseDetailFile, 'case-detail-stage231d2r7-main-split', 'R7 narrowed main split class');
-  must(caseDetailFile, '<aside className="case-detail-right-rail" aria-label="Panel sprawy">', 'right rail aside still present');
-  must(cssFile, 'STAGE231D2_R7_CASE_DETAIL_SIDE_META_QUICK_ACTIONS_LAYOUT', 'R7 CSS supersedes R6');
-  must(cssFile, 'grid-template-columns: minmax(0, 1fr) 340px', 'R7 desktop rail width');
-} else {
-  must(caseDetailFile, 'data-stage231d2-r6-top-strip-left-card="true"', 'R6 top strip left card');
-  must(caseDetailFile, 'data-stage231d2-r6-side-rail-top-lift="true"', 'R6 side rail top lift');
-  must(cssFile, 'STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT', 'R6 CSS marker');
-}
+const stage = 'STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT';
+const caseDetail = read('src/pages/CaseDetail.tsx');
+const css = read('src/styles/case-detail-stage228r9-shell-rail-lift.css');
+const pkg = JSON.parse(read('package.json') || '{}');
 
-if (caseDetail.includes('caseCostsSummaryStage231D2 is not defined')) {
-  errors.push('CaseDetail contains crash text instead of the render fix');
-}
+must(caseDetail, stage, 'CaseDetail marker');
+must(caseDetail, 'data-stage231d2-r6-top-strip-left-card="true"', 'CaseDetail header attr');
+must(caseDetail, 'data-stage231d2-r6-side-rail-top-lift="true"', 'CaseDetail shell attr');
+must(caseDetail, 'caseCostsSummaryStage231D2', 'D2 cost summary still present');
+must(css, stage, 'CSS marker');
+must(css, 'max-width: calc(100% - 342px)', 'CSS shortened top card');
+must(css, 'width: calc(100% - 342px)', 'CSS top card width');
+must(css, 'margin-top: -96px', 'CSS right rail top lift');
+must(css, '.case-detail-right-rail', 'CSS rail selector');
+must(css, '@media (max-width: 1220px)', 'CSS responsive reset');
+must(JSON.stringify(pkg.scripts || {}), 'check:stage231d2r6-case-detail-top-rail-lift', 'package check script');
+must(JSON.stringify(pkg.scripts || {}), 'test:stage231d2r6-case-detail-top-rail-lift', 'package test script');
+mustNotExist('api/case-costs.ts');
 
 if (errors.length) {
-  console.error('STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT_COMPAT: FAIL');
+  console.error('STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT: FAIL');
   for (const error of errors) console.error('- ' + error);
   process.exit(1);
 }
-
-console.log('STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT_COMPAT: PASS');
+console.log('STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT: PASS');

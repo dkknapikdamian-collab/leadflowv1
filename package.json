@@ -997,9 +997,7 @@
     "check:stage231d2r5-case-detail-render-crash": "node scripts/check-stage231d2r5-case-detail-render-crash.cjs",
     "test:stage231d2r5-case-detail-render-crash": "node --test tests/stage231d2r5-case-detail-render-crash.test.cjs",
     "check:stage231d2r6-case-detail-top-rail-lift": "node scripts/check-stage231d2r6-case-detail-top-rail-lift.cjs",
-    "test:stage231d2r6-case-detail-top-rail-lift": "node --test tests/stage231d2r6-case-detail-top-rail-lift.test.cjs",
-    "check:stage231d2r7-case-detail-side-meta-layout": "node scripts/check-stage231d2r7-case-detail-side-meta-layout.cjs",
-    "test:stage231d2r7-case-detail-side-meta-layout": "node --test tests/stage231d2r7-case-detail-side-meta-layout.test.cjs"
+    "test:stage231d2r6-case-detail-top-rail-lift": "node --test tests/stage231d2r6-case-detail-top-rail-lift.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",
