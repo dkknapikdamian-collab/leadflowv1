@@ -2839,3 +2839,23 @@ audyt ryzyk:
 następny krok:
 - Po PASS/push przejść do STAGE231D2 — koszty w sprawie z SQL/guardem i UI opartym o model D1.
 <!-- STAGE231D1_COST_MODEL_SOURCE_TRUTH_END -->
+
+<!-- STAGE231D2_CASE_COSTS_IN_CASE_START -->
+## STAGE231D2 — Case costs in case
+- data: 2026-06-10 18:55 Europe/Warsaw
+- status: LOCAL_ONLY_PACKAGE_PREPARED / DO_APPLY_TEST_SQL_AND_PUSH
+- zakres: SQL case_costs, API /api/case-costs, CaseDetail cost panel, guard/test.
+- testy: check/test D2, regression D1/D0/D0A, Polish guard, build, git diff --check.
+- audyt ryzyk: SQL must be run before real write test; route must stay workspace scoped.
+- następny krok: apply package, run SQL, manual add-cost test, then push.
+<!-- STAGE231D2_CASE_COSTS_IN_CASE_END -->
+
+<!-- STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE_START -->
+## STAGE231D2-R2 — Case costs fetch guard close
+- data: 2026-06-10 19:10 Europe/Warsaw
+- status: LOCAL_ONLY_GUARD_CLOSE / DO_TEST_SQL_AND_PUSH
+- zakres: CaseDetail import/fetch integration for case_costs.
+- testy: D2 guard/test, D1/D0/D0A regression, Polish guard, build, git diff --check.
+- audyt ryzyk: SQL still required before manual cost write test.
+- następny krok: run SQL, manual add-cost test, selective push.
+<!-- STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE_END -->

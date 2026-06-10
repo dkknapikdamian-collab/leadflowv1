@@ -989,7 +989,9 @@
     "check:stage231d0-client-workspace-ux-cleanup": "node scripts/check-stage231d0-client-workspace-ux-cleanup.cjs",
     "test:stage231d0-client-workspace-ux-cleanup": "node --test tests/stage231d0-client-workspace-ux-cleanup.test.cjs",
     "check:stage231d1-cost-model-source-truth": "node scripts/check-stage231d1-cost-model-source-truth.cjs",
-    "test:stage231d1-cost-model-source-truth": "node --test tests/stage231d1-cost-model-source-truth.test.cjs"
+    "test:stage231d1-cost-model-source-truth": "node --test tests/stage231d1-cost-model-source-truth.test.cjs",
+    "check:stage231d2-case-costs-in-case": "node scripts/check-stage231d2-case-costs-in-case.cjs",
+    "test:stage231d2-case-costs-in-case": "node --test tests/stage231d2-case-costs-in-case.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

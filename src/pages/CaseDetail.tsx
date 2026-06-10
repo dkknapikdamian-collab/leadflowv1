@@ -1,23 +1,64 @@
+const STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE = 'CaseDetail loads case_costs through fetchCaseCostsFromSupabase and updates the D2 cost panel';
+void STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE;
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { AlertCircle, ArrowLeft, ArrowRight, CalendarClock, Check, CheckCircle2, Clock, Copy, ExternalLink, History, ListChecks, Loader2, MessageSquare, Paperclip, Plus, Send, StickyNote, Trash2, X } from 'lucide-react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState } from 'react';
+import { Link,
+  useNavigate,
+  useParams } from 'react-router-dom';
+import { AlertCircle,
+  ArrowLeft,
+  ArrowRight,
+  CalendarClock,
+  Check,
+  CheckCircle2,
+  Clock,
+  Copy,
+  ExternalLink,
+  History,
+  ListChecks,
+  Loader2,
+  MessageSquare,
+  Paperclip,
+  Plus,
+  Send,
+  StickyNote,
+  Trash2,
+  X } from 'lucide-react';
 import {
   EntityIcon } from '../components/ui-system';
 import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { ConfirmDialog } from '../components/confirm-dialog';
-import { EntityActionButton, EntityTrashButton, actionButtonClass, modalFooterClass, trashActionIconClass } from '../components/entity-actions';
-import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
+import { EntityActionButton,
+  EntityTrashButton,
+  actionButtonClass,
+  modalFooterClass,
+  trashActionIconClass } from '../components/entity-actions';
+import { openContextQuickAction,
+  type ContextActionKind } from '../components/ContextActionDialogs';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from '../components/ui/button';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
+import { Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription } from '../components/ui/dialog';
 import { Input } from '../components/ui/input';
 import { Label } from '../components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
-import { CaseSettlementSection, type CaseSettlementCommissionInput, type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementSection';
+import { CaseSettlementSection,
+  type CaseSettlementCommissionInput,
+  type CaseSettlementPaymentInput } from '../components/finance/CaseSettlementSection';
 import CaseQuickActions from '../components/CaseQuickActions';
 import {
   createClientPortalTokenInSupabase,
@@ -42,6 +83,8 @@ import {
   deleteTaskFromSupabase,
   fetchLeadByIdFromSupabase,
   updateLeadInSupabase,
+  fetchCaseCostsFromSupabase,
+  createCaseCostInSupabase,
 } from '../lib/supabase-fallback';
 import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
@@ -58,6 +101,7 @@ import '../styles/case-detail-stage228r9-shell-rail-lift.css';
 import '../styles/closeflow-case-finance-modal-stage220a30.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
+import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from '../lib/finance/case-costs-source';
 
 const STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS = 'case-detail write gate static contracts active imports';
 void STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS;
@@ -266,6 +310,8 @@ type EventRecord = {
   clientId?: string | null;
 };
 
+
+type CaseCostRecord = CaseCostLike & { id?: string; caseId?: string | null; case_id?: string | null; clientId?: string | null; client_id?: string | null; createdAt?: any; created_at?: any };
 
 type CasePaymentRecord = {
   id?: string;
@@ -1277,6 +1323,10 @@ export default function CaseDetail() {
   const { hasAccess, access } = useWorkspace();
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [casePayments, setCasePayments] = useState<CasePaymentRecord[]>([]);
+  const [caseCostsStage231D2, setCaseCostsStage231D2] = useState<CaseCostRecord[]>([]);
+  const [isCaseCostOpenStage231D2, setIsCaseCostOpenStage231D2] = useState(false);
+  const [caseCostSubmittingStage231D2, setCaseCostSubmittingStage231D2] = useState(false);
+  const [caseCostDraftStage231D2, setCaseCostDraftStage231D2] = useState({ kind: 'other', status: 'incurred', amount: '', reimbursable: true, note: '' });
 
   /* FIN-11_CASE_RIGHT_FINANCE_STATE_AND_HANDLERS */
   const [isFinanceEditOpen, setIsFinanceEditOpen] = useState(false);
@@ -1664,6 +1714,50 @@ export default function CaseDetail() {
     }
   };
 
+
+  const handleCreateCaseCostStage231D2 = async () => {
+    if (!caseId || !caseData) return;
+    if (!guardCaseDetailWriteAccess('dodać kosztu sprawy')) return;
+    const amount = Number(String(caseCostDraftStage231D2.amount || '').replace(',', '.'));
+    if (!Number.isFinite(amount) || amount <= 0) {
+      toast.error('Podaj poprawną kwotę kosztu.');
+      return;
+    }
+    try {
+      setCaseCostSubmittingStage231D2(true);
+      const input = {
+        caseId,
+        clientId: caseData.clientId || null,
+        kind: caseCostDraftStage231D2.kind,
+        status: caseCostDraftStage231D2.status,
+        amount,
+        reimbursable: caseCostDraftStage231D2.reimbursable,
+        reimbursableAmount: caseCostDraftStage231D2.reimbursable ? amount : 0,
+        reimbursedAmount: 0,
+        currency: caseFinanceSourceStage220A26.currency || caseData.currency || 'PLN',
+        incurredAt: new Date().toISOString(),
+        note: caseCostDraftStage231D2.note.trim(),
+      };
+      const created = await createCaseCostInSupabase(input as any);
+      setCaseCostsStage231D2((previous) => [created || input, ...previous] as CaseCostRecord[]);
+      await insertActivityToSupabase({
+        caseId,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        actorType: 'operator',
+        eventType: 'case_cost_added',
+        payload: { title: 'Dodano koszt sprawy', amount, currency: input.currency, kind: input.kind, note: input.note },
+      } as any).catch(() => null);
+      setCaseCostDraftStage231D2({ kind: 'other', status: 'incurred', amount: '', reimbursable: true, note: '' });
+      setIsCaseCostOpenStage231D2(false);
+      toast.success('Koszt sprawy zapisany');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać kosztu sprawy.');
+    } finally {
+      setCaseCostSubmittingStage231D2(false);
+    }
+  };
+
   const refreshCaseData = useCallback(async () => {
     if (!caseId) {
       setLoadError('Brak identyfikatora sprawy w adresie.');
@@ -1692,9 +1786,10 @@ export default function CaseDetail() {
         fetchTasksFromSupabase().catch(() => []),
         fetchEventsFromSupabase().catch(() => []),
         fetchPaymentsFromSupabase({ caseId }).catch(() => []),
+        fetchCaseCostsFromSupabase({ caseId }).catch(() => []),
       ]);
 
-      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskRowsRaw, eventRowsRaw, paymentRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
+      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskRowsRaw, eventRowsRaw, paymentRowsRaw, costRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
       const normalizedCase = normalizeRecord<CaseRecord>(caseRowRaw);
 
       if (!normalizedCase?.id) {
@@ -1729,6 +1824,7 @@ export default function CaseDetail() {
         ),
       );
       setPayments(Array.isArray(paymentRowsRaw) ? paymentRowsRaw : []);
+      setCaseCostsStage231D2((Array.isArray(costRowsRaw) ? costRowsRaw : []) as CaseCostRecord[]);
     } catch (error: any) {
       setCaseData(null);
       setItems([]);
@@ -1736,6 +1832,7 @@ export default function CaseDetail() {
       setTasks([]);
       setEvents([]);
       setPayments([]);
+      setCaseCostsStage231D2([]);
       setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ładowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
@@ -3026,6 +3123,42 @@ async function handleConfirmDeleteCaseRecord() {
                   </div>
                 )}
               </div>
+
+              <section className="case-detail-section-card case-detail-costs-card-stage231d2" data-stage231d2-case-costs-in-case="STAGE231D2_CASE_COSTS_IN_CASE">
+                <div className="case-detail-section-header">
+                  <div>
+                    <span className="case-detail-section-kicker">KOSZTY SPRAWY</span>
+                    <h2>Koszty i zwroty</h2>
+                  </div>
+                  <Button type="button" size="sm" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(true)} disabled={!hasAccess}>
+                    <Plus className="h-4 w-4" />
+                    Dodaj koszt
+                  </Button>
+                </div>
+                <div className="case-detail-finance-grid" data-stage231d2-cost-summary-grid="true">
+                  <div><span>{CASE_COST_FINANCE_LABELS.costsIncurred}</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
+                  <div><span>{CASE_COST_FINANCE_LABELS.costsToReimburse}</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
+                  <div><span>{CASE_COST_FINANCE_LABELS.costsReimbursed}</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
+                  <div><span>{CASE_COST_FINANCE_LABELS.totalToCollect}</span><strong>{formatMoney(caseCostsSummaryStage231D2.totalToCollectAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
+                </div>
+                {caseCostsStage231D2.length === 0 ? (
+                  <p className="case-detail-light-empty">Brak kosztów przypiętych do tej sprawy.</p>
+                ) : (
+                  <div className="case-finance-payment-history-stage220a27__list" data-stage231d2-cost-list="true">
+                    {caseCostsStage231D2.slice(0, 5).map((cost) => (
+                      <article key={'case-cost-stage231d2-' + String(cost.id || cost.incurredAt || cost.amount)} className="case-finance-payment-history-stage220a27__row">
+                        <div>
+                          <strong>{String(cost.kind || cost.type || 'other')}</strong>
+                          <small>{String(cost.status || 'incurred')}</small>
+                          {cost.note ? <p>{cost.note}</p> : null}
+                        </div>
+                        <div className="case-finance-payment-history-stage220a27__amount"><strong>{formatMoney((cost as any).amount || 0, (cost as any).currency || caseCostsSummaryStage231D2.currency)}</strong></div>
+                      </article>
+                    ))}
+                  </div>
+                )}
+              </section>
+
               <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
             </section>
                                                 </aside>
@@ -3126,6 +3259,45 @@ async function handleConfirmDeleteCaseRecord() {
       />
 
 
+
+
+      <Dialog open={isCaseCostOpenStage231D2} onOpenChange={setIsCaseCostOpenStage231D2}>
+        <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30" data-stage231d2-case-cost-dialog="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
+          <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
+            <DialogTitle>Dodaj koszt sprawy</DialogTitle>
+            <DialogDescription>Koszt zostanie przypięty do tej sprawy i wliczony do kwoty razem do pobrania.</DialogDescription>
+          </DialogHeader>
+          <div className="case-detail-payment-form case-finance-source-form-stage220a30">
+            <div>
+              <Label htmlFor="case-cost-amount-stage231d2">Kwota kosztu</Label>
+              <Input id="case-cost-amount-stage231d2" type="number" min="0" step="0.01" value={caseCostDraftStage231D2.amount} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, amount: event.target.value }))} placeholder="np. 250" />
+            </div>
+            <div>
+              <Label htmlFor="case-cost-kind-stage231d2">Typ kosztu</Label>
+              <select id="case-cost-kind-stage231d2" value={caseCostDraftStage231D2.kind} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, kind: event.target.value }))}>
+                <option value="court_fee">Opłata sądowa</option>
+                <option value="notary">Notariusz</option>
+                <option value="travel">Dojazd</option>
+                <option value="document">Dokumenty</option>
+                <option value="office">Biuro</option>
+                <option value="marketing">Marketing</option>
+                <option value="other">Inny</option>
+              </select>
+            </div>
+            <div>
+              <Label htmlFor="case-cost-note-stage231d2">Notatka</Label>
+              <Textarea id="case-cost-note-stage231d2" value={caseCostDraftStage231D2.note} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, note: event.target.value }))} placeholder="np. wypis z rejestru, opłata za dokument" />
+            </div>
+          </div>
+          <DialogFooter className={modalFooterClass('event-form-footer case-finance-source-footer-stage220a30')}>
+            <Button type="button" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(false)}>Anuluj</Button>
+            <Button type="button" onClick={handleCreateCaseCostStage231D2} disabled={caseCostSubmittingStage231D2 || !hasAccess}>
+              {caseCostSubmittingStage231D2 ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+              Zapisz koszt
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
         <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--payment" aria-describedby={undefined}>

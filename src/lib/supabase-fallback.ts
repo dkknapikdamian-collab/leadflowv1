@@ -19,6 +19,7 @@ type LeadInsertInput = { name: string; email?: string; phone?: string; company?:
 type ClientUpsertInput = { id?: string; name?: string; company?: string; email?: string; phone?: string; lastContactAt?: string | null; notes?: string; tags?: string[]; sourcePrimary?: string; lastActivityAt?: string | null; archivedAt?: string | null; primaryCaseId?: string | null; workspaceId?: string; allowDuplicate?: boolean; forceDuplicate?: boolean };
 type ServiceProfileUpsertInput = { id?: string; name?: string; description?: string; startRule?: string; winRule?: string; billingModel?: string; caseCreationMode?: string; isDefault?: boolean; isArchived?: boolean; workspaceId?: string };
 type PaymentUpsertInput = { id?: string; clientId?: string | null; leadId?: string | null; caseId?: string | null; type?: string; status?: string; amount?: number; currency?: string; paidAt?: string | null; dueAt?: string | null; note?: string; workspaceId?: string };
+type CaseCostUpsertInput = { id?: string; caseId?: string | null; clientId?: string | null; kind?: string; status?: string; amount?: number; reimbursable?: boolean; reimbursableAmount?: number; reimbursedAmount?: number; currency?: string; incurredAt?: string | null; reimbursedAt?: string | null; note?: string; workspaceId?: string };
 type ProfileSettingsUpdate = { fullName?: string; companyName?: string; email?: string; appearanceSkin?: string; planningConflictWarningsEnabled?: boolean; browserNotificationsEnabled?: boolean; forceLogoutAfter?: string | null; workspaceId?: string | null };
 type WorkspaceSettingsUpdate = { workspaceId: string; planId?: string; subscriptionStatus?: string; trialEndsAt?: string | null; billingProvider?: string | null; providerCustomerId?: string | null; providerSubscriptionId?: string | null; nextBillingAt?: string | null; cancelAtPeriodEnd?: boolean; dailyDigestEnabled?: boolean; dailyDigestEmailEnabled?: boolean; lastDigestSentAt?: string | null; dailyDigestHour?: number; dailyDigestTimezone?: string | null; dailyDigestRecipientEmail?: string | null; timezone?: string | null };
 type TaskInsertInput = { title: string; type?: string; date?: string; scheduledAt?: string;
@@ -487,6 +488,18 @@ export async function fetchPaymentsFromSupabase(params?: { leadId?: string; case
 export async function createPaymentInSupabase(input: PaymentUpsertInput) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'POST', body: JSON.stringify(input) }); }
 export async function updatePaymentInSupabase(input: PaymentUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/payments', { method: 'PATCH', body: JSON.stringify(input) }); }
 export async function deletePaymentFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/payments?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
+export async function fetchCaseCostsFromSupabase(params?: { caseId?: string; clientId?: string; status?: string }) {
+  // STAGE231D2_CASE_COSTS_IN_CASE: case costs use dedicated API and the D1 source model; payments remain payment source truth.
+  if (isDevPreviewDataEnabled()) return [] as Record<string, unknown>[];
+  const query = new URLSearchParams();
+  if (params?.caseId) query.set('caseId', params.caseId);
+  if (params?.clientId) query.set('clientId', params.clientId);
+  if (params?.status) query.set('status', params.status);
+  return callApi<Record<string, unknown>[]>(`/api/case-costs${query.toString() ? `?${query.toString()}` : ''}`);
+}
+export async function createCaseCostInSupabase(input: CaseCostUpsertInput) { return callApi<SupabaseInsertResult>('/api/case-costs', { method: 'POST', body: JSON.stringify(input) }); }
+export async function updateCaseCostInSupabase(input: CaseCostUpsertInput & { id: string }) { return callApi<SupabaseInsertResult>('/api/case-costs', { method: 'PATCH', body: JSON.stringify(input) }); }
+export async function deleteCaseCostFromSupabase(id: string) { return callApi<SupabaseInsertResult>(`/api/case-costs?id=${encodeURIComponent(id)}`, { method: 'DELETE' }); }
 export async function insertTaskToSupabase(input: TaskInsertInput) {
   const result = await callApi<SupabaseInsertResult>('/api/tasks', { method: 'POST', body: JSON.stringify(input) });
   emitCloseflowWorkItemNoFlickerMutation({ action: 'create', kind: 'task', record: result, source: 'stage228r50_insertTaskToSupabase_no_flicker_create' });
