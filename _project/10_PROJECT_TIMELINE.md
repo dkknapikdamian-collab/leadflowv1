@@ -1440,3 +1440,11 @@ następny krok:
 - Fix: dodano useMemo summary przed JSX i guard blokujący regresję.
 - Testy: R5/D2/D2R3/D1/D0/D0A/Polish/build.
 - Audyt ryzyk: po deployu sprawdzić produkcyjne otwarcie sprawy; /api/case-items 500 to osobny backend problem, jeśli nadal wystąpi.
+
+## STAGE231D2-R6 — CaseDetail top strip rail lift
+
+- data i godzina: 2026-06-10 19:55 Europe/Warsaw
+- status: LOCAL_ONLY_PACKAGE_PREPARED
+- zmiana: skrócenie górnego paska tytułu sprawy do lewej kolumny i podciągnięcie prawego raila do górnego miejsca po prawej.
+- testy: guard/test R6 + D2/R5/R3/D1/D0/D0A/Polish/build/git diff check.
+- ryzyko: CSS negative margin wymaga produkcyjnego testu wizualnego po deployu.

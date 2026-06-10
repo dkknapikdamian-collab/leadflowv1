@@ -1,5 +1,7 @@
 const STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX = 'STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX';
 void STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX;
+const STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT = 'CaseDetail top title strip is narrowed and right rail is lifted into the top row without adding API functions';
+void STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT;
 const STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE = 'CaseDetail loads case_costs through fetchCaseCostsFromSupabase and updates the D2 cost panel';
 void STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE;
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
@@ -2608,7 +2610,7 @@ async function handleConfirmDeleteCaseRecord() {
     <Layout>
 
       <main className="case-detail-vnext-page">
-        <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true" data-stage231b0-r8-case-header-order="copy-left-actions-right">
+        <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true" data-stage231b0-r8-case-header-order="copy-left-actions-right" data-stage231d2-r6-top-strip-left-card="true">
           <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
             <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />
@@ -2674,7 +2676,7 @@ async function handleConfirmDeleteCaseRecord() {
           </div>
         </header>
 
-<div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true">
+<div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true" data-stage231d2-r6-side-rail-top-lift="true">
           <section className="case-detail-main-column" data-stage228r9-main-column="true">
             <div
               className="case-detail-stage228r10d-tabs-card"

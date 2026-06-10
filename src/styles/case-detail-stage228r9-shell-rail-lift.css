@@ -258,3 +258,68 @@
 .case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] [data-stage220a11-case-tab-trigger] {
   flex: 0 0 auto !important;
 }
+
+
+/* STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT
+   Damian requested the top case/name card to stop spanning the full width.
+   The title strip becomes the left card and the existing right rail is pulled upward into the freed top-right area.
+   CSS-only: no new API function, no route change, no finance/cost logic change. */
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] {
+  box-sizing: border-box !important;
+  margin-bottom: 16px !important;
+  max-width: calc(100% - 342px) !important;
+  min-height: 62px !important;
+  padding: 14px 18px !important;
+  width: calc(100% - 342px) !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-copy,
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .client-detail-header-copy {
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-composed-title {
+  align-items: center !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-client-name,
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-case-name {
+  display: inline-block !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-client-name {
+  flex: 0 1 auto !important;
+  max-width: 36% !important;
+}
+
+.case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] .case-detail-header-case-name {
+  flex: 1 1 auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -96px !important;
+  top: 8px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-header[data-stage231d2-r6-top-strip-left-card="true"] {
+    max-width: none !important;
+    width: 100% !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+    top: auto !important;
+  }
+}
