@@ -1958,3 +1958,12 @@ RYZYKA:
 - Nie wdrażano deduplikacji dyktowania bez trace.
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
 
+## 2026-06-10 — STAGE231B0 tests
+
+Planowane / wymagane:
+- node scripts/check-stage231b0-case-close-archive-finance-truth.cjs
+- node --test tests/stage231b0-case-close-archive-finance-truth.test.cjs
+- node scripts/check-stage228r25-delete-flow-source-truth.cjs
+- node scripts/check-stage228r41-delete-flow-final-validate.cjs
+- npm run build
+- git diff --check

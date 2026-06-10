@@ -2871,3 +2871,16 @@ Poprawić treści e-maili Supabase/Auth: rejestracja, potwierdzenie e-maila, res
 ### STAGE231F_INVITE_ONLY_TEST_MODE
 
 Dodać opcjonalny tryb invite-only/test-mode: tylko e-maile na allowliście/zaproszeniach mogą tworzyć konto. Nie wdrażać jako default dla publicznego SaaS.
+
+## 2026-06-10 — po STAGE231B0
+
+Następny etap po PASS i pushu:
+STAGE231B1 — Client Lifetime Earnings Summary.
+
+Zakres:
+- Zarobione łącznie przy kliencie.
+- Aktywna prowizja do zebrania.
+- Prowizja pozostała.
+- Zamknięte sprawy z zarobkiem.
+- all_cases dla lifetime earnings.
+- all_active_cases dla aktywnych pieniędzy.

@@ -2560,3 +2560,11 @@ RYZYKA:
 - Nie wdrażano deduplikacji dyktowania bez trace.
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
 
+## 2026-06-10 — STAGE231B0 R5
+
+- Dodano flow zamykania sprawy bez delete.
+- Zamknięcie używa status completed i lastActivityAt.
+- Dodano activity "Sprawa zamknięta".
+- Główne CTA zmienione na "Zamknij sprawę" / "Sprawa zamknięta".
+- Awaryjne usuwanie zostaje osobno.
+- Dodano guard, test, run report i obsidian update.

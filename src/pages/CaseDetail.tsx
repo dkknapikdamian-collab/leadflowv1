@@ -182,6 +182,9 @@ void STAGE228R7_COMMISSION_BALANCE_TRUTH;
 void STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS;
 void STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL;
 
+const STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH = 'STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH';
+void STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH;
+
 type CaseDetailTab = 'service' | 'checklists' | 'history';
 type CaseActionAccordionGroup = 'next' | 'blockers' | 'active' | null;
 type CaseItemStatus = 'missing' | 'uploaded' | 'accepted' | 'rejected' | string;
@@ -1238,7 +1241,7 @@ function CaseDetailLoadingState() {
         onOpenChange={(open) => {
           if (!open && !deleteCasePending) setDeleteCaseOpen(false);
         }}
-        title="Usunąć sprawę?"
+        title="Awaryjnie usunąć sprawę?"
         description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
         confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
         cancelLabel="Nie"
@@ -1552,6 +1555,8 @@ export default function CaseDetail() {
   const [loading, setLoading] = useState(true);
   const [deleteCaseOpen, setDeleteCaseOpen] = useState(false);
   const [deleteCasePending, setDeleteCasePending] = useState(false);
+  const [closeCaseOpen, setCloseCaseOpen] = useState(false);
+  const [closeCasePending, setCloseCasePending] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
@@ -2012,6 +2017,43 @@ export default function CaseDetail() {
     }
   };
 
+
+  const handleConfirmCloseCaseRecord = async () => {
+    if (!caseId || closeCasePending) return;
+    if (!guardCaseDetailWriteAccess('zamknąć sprawy')) {
+      setCloseCaseOpen(false);
+      return;
+    }
+
+    const closedAt = new Date().toISOString();
+    const previousStatus = caseData?.status || null;
+
+    try {
+      setCloseCasePending(true);
+      await updateCaseInSupabase({
+        id: caseId,
+        status: 'completed',
+        lastActivityAt: closedAt,
+      });
+      await recordActivity('case_lifecycle_completed', {
+        title: 'Sprawa zamknięta',
+        status: 'completed',
+        previousStatus,
+        closedAt,
+        source: STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH,
+        financePreserved: true,
+        historyPreserved: true,
+      });
+      await refreshCaseData();
+      setCloseCaseOpen(false);
+      toast.success('Sprawa zamknięta. Historia i rozliczenia zostają przy kliencie.');
+    } catch (error: any) {
+      toast.error(`Nie udało się zamknąć sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setCloseCasePending(false);
+    }
+  };
+
   const refreshStatusAfterMutation = async (nextStatus?: string) => {
     if (!caseId) return;
     const status = nextStatus || resolveCaseStatusFromItems(items, caseData?.status || 'in_progress');
@@ -2415,20 +2457,46 @@ export default function CaseDetail() {
 
       <main className="case-detail-vnext-page">
         <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true">
-          <CaseDetailTrashButton
-            type="button"
-            className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32"
-            data-case-detail-delete-action="true"
-            data-stage220a17-delete-case-button="true"
-            data-stage220a32-delete-case-button="true"
-            data-cf-vst-kind="delete"
-            aria-label="Usuń sprawę"
-            title="Usuń sprawę"
-            onClick={() => setDeleteCaseOpen(true)}
-          >
-            <Trash2 className={trashActionIconClass("h-4 w-4")} />
-            Usuń sprawę
-          </CaseDetailTrashButton>
+          <div className="case-detail-header-actions-stage231b0" data-stage231b0-case-close-archive-finance-truth-actions="true">
+            <CaseDetailTrashButton
+              type="button"
+              className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-action cf-case-detail-delete-action-stage220a32 cf-case-detail-close-action-stage231b0"
+              data-case-detail-delete-action="true"
+              data-case-detail-close-action="true"
+              data-stage220a17-delete-case-button="true"
+              data-stage220a32-delete-case-button="true"
+              data-stage231b0-close-case-button="true"
+              data-cf-vst-kind="status"
+              aria-label={caseData?.status === 'completed' ? 'Sprawa zamknięta' : 'Zamknij sprawę'}
+              title={caseData?.status === 'completed' ? 'Sprawa zamknięta' : 'Zamknij sprawę'}
+              disabled={closeCasePending || caseData?.status === 'completed'}
+              onClick={() => setCloseCaseOpen(true)}
+            >
+              {caseData?.status === 'completed' ? (
+                <>
+                  <CheckCircle2 className="h-4 w-4" />
+                  Sprawa zamknięta
+                </>
+              ) : (
+                <>
+                  <Check className="h-4 w-4" />
+                  Zamknij sprawę
+                </>
+              )}
+            </CaseDetailTrashButton>
+            <Button
+              type="button"
+              variant="outline"
+              className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0"
+              data-stage231b0-emergency-delete-case-button="true"
+              aria-label="Awaryjnie usuń sprawę"
+              title="Awaryjnie usuń sprawę"
+              onClick={() => setDeleteCaseOpen(true)}
+            >
+              <Trash2 className={trashActionIconClass("h-4 w-4")} />
+              Usuń sprawę
+            </Button>
+          </div>
 
           <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
             <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
@@ -2957,13 +3025,29 @@ export default function CaseDetail() {
         </DialogContent>
       </Dialog>
 
+
+      <span hidden data-stage231b0-case-close-archive-finance-truth="STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH" />
+      <ConfirmDialog
+        open={closeCaseOpen}
+        onOpenChange={(open) => {
+          if (!open && !closeCasePending) setCloseCaseOpen(false);
+        }}
+        title="Zamknąć sprawę?"
+        description="Sprawa zostanie zamknięta. Historia i rozliczenia zostaną zachowane."
+        confirmLabel={closeCasePending ? 'Zamykanie...' : 'Zamknij sprawę'}
+        cancelLabel="Anuluj"
+        confirmTone="default"
+        pending={closeCasePending}
+        onConfirm={handleConfirmCloseCaseRecord}
+      />
+
       <span hidden data-stage220a7-delete-case-confirm="true" />
       <ConfirmDialog
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}
-        title="Usunąć sprawę?"
-        description={`Sprawa „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” zostanie usunięta. Tej akcji nie można cofnąć.`}
-        confirmLabel="Usuń sprawę"
+        title="Awaryjnie usunąć sprawę?"
+        description={`Awaryjne usunięcie sprawy „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” usunie rekord i powiązania. Normalne zakończenie procesu wykonuj przez Zamknij sprawę.`}
+        confirmLabel="Awaryjnie usuń"
         cancelLabel="Anuluj"
         confirmTone="destructive"
         pending={deleteCasePending}

@@ -1601,3 +1601,8 @@ RYZYKA:
 - Nie wdrażano deduplikacji dyktowania bez trace.
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
 
+## 2026-06-10 — STAGE231B0 CASE CLOSE / ARCHIVE / FINANCE TRUTH
+
+Status: LOCAL_ONLY_R5_PRE_PUSH
+
+Etap zmienia model zakończenia sprawy: "Zamknij sprawę" ustawia status completed i zachowuje historię oraz rozliczenia. "Usuń sprawę" zostaje tylko jako awaryjna akcja destrukcyjna.

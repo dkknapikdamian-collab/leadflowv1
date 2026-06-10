@@ -141,3 +141,9 @@ RYZYKA:
 - Nie wdrażano deduplikacji dyktowania bez trace.
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
 
+## 2026-06-10 — STAGE231B0 risk audit
+
+- Nie dodano SQL ani pól closed_at/archived_at bez potwierdzenia schematu.
+- Zamknięcie nie zeruje pól finansowych i nie usuwa payments.
+- Awaryjne usunięcie nadal istnieje, więc wymaga ręcznego testu UI, czy nie jest mylone z normalnym zakończeniem.
+- Lifetime earnings klienta wymaga osobnego Stage231B1.
