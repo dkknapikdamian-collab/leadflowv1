@@ -3082,3 +3082,13 @@ TESTY:
 
 RYZYKA:
 - Etap jest wizualny; ostateczne zamknięcie wymaga deployu i ręcznego sprawdzenia /clients.
+
+
+---
+## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R9 finance text start align
+Marker: STAGE231D0B_R10_R9_FINANCE_TEXT_START_ALIGN
+Status: LOCAL_APPLY_PACKAGE_PREPARED
+Scope: ClientListCard on /clients only.
+Decision: zielone finance chipy nie maja konczyc sie rowno; teksty "Aktywna prowizja" i "Zarobione lacznie" maja zaczynac sie w jednej osi kolumny, tak jak nazwa/firma w lewej czesci karty. Dlugosc chipa moze dyktowac prawa krawedz.
+Tests: npm run check:stage231d0b-client-list-card-freeze; node --test tests/stage231d0b-client-list-card-freeze.test.cjs; git diff --check; npm run build.
+Risk: R8 right-edge alignment was visually wrong for Damian's expected reading flow; R9 supersedes R8 by later CSS source-truth override.

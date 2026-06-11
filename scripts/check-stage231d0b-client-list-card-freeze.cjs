@@ -106,6 +106,17 @@ requireIncludes('CSS source truth', css, 'margin-inline-end: 0');
 /* STAGE231D0B_R10_R8_FINANCE_ALIGN_GUARD_END */
 
 
+/* STAGE231D0B_R10_R9_FINANCE_TEXT_START_ALIGN_GUARD_START */
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R9_FINANCE_TEXT_START_ALIGN');
+requireIncludes('CSS source truth', css, 'finance text must start on one shared left axis');
+requireIncludes('CSS source truth', css, 'R8 right-edge alignment is deprecated');
+requireIncludes('CSS source truth', css, 'place-self: center start');
+requireIncludes('CSS source truth', css, 'justify-self: start');
+requireIncludes('CSS source truth', css, 'margin-inline-start: 0');
+requireIncludes('CSS source truth', css, 'margin-inline-end: auto');
+/* STAGE231D0B_R10_R9_FINANCE_TEXT_START_ALIGN_GUARD_END */
+
+
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
 requireIncludes('CSS source truth', css, 'cf-client-active-commission');
 requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');
