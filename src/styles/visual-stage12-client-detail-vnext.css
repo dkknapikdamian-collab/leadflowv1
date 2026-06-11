@@ -3744,3 +3744,32 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
     padding-bottom: 94px !important;
   }
 }
+
+/* STAGE231D0C_CLIENT_DETAIL_WORKSPACE_BASELINE
+   Scope: ClientDetail workspace baseline only.
+   Decision: active case card is compact; top overview tiles and notes are lighter; no SQL/cost/chart changes.
+*/
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-main-top-tiles[data-client-overview-compact="true"] { display: block !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-main-top-tiles[data-client-overview-compact="true"] .client-detail-top-tiles { gap: 12px !important; margin: 0 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-main-top-tiles[data-client-overview-compact="true"] .client-detail-top-tile,
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-top-tiles[data-client-overview-compact="true"] .client-detail-top-tile { min-height: 118px !important; padding: 14px !important; border-radius: 22px !important; box-shadow: 0 8px 22px rgba(16, 24, 40, 0.045) !important; gap: 7px !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-top-tiles[data-client-overview-compact="true"] .client-detail-top-tile strong { font-size: 18px !important; line-height: 1.12 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-missing-items-section .client-detail-light-empty.client-detail-action-empty-compact { padding: 10px 12px !important; min-height: 0 !important; border-radius: 16px !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-notes-center-section[data-client-notes-compact="true"] { padding: 16px !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-notes-center-section[data-client-notes-compact="true"] .client-detail-notes-center-list { display: grid !important; gap: 8px !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-notes-center-section[data-client-notes-compact="true"] .client-detail-note-center-item { padding: 10px 12px !important; border-radius: 16px !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-notes-center-section[data-client-notes-compact="true"] .client-detail-note-center-item p { display: -webkit-box !important; -webkit-line-clamp: 2 !important; -webkit-box-orient: vertical !important; overflow: hidden !important; margin: 0 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-card[data-client-active-case-card="true"] { display: grid !important; grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.9fr) max-content !important; align-items: center !important; gap: 14px !important; padding: 16px !important; min-height: 0 !important; border-radius: 22px !important; background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,250,252,.98)) !important; border: 1px solid rgba(148, 163, 184, .22) !important; box-shadow: 0 10px 24px rgba(16, 24, 40, .045) !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-card-main { min-width: 0 !important; display: grid !important; gap: 7px !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-card-title-line { display: flex !important; align-items: center !important; gap: 8px !important; min-width: 0 !important; flex-wrap: wrap !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-card-title-line > strong { min-width: 10rem !important; max-width: 34rem !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; font-size: 15px !important; line-height: 1.2 !important; color: #101828 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-next-action { margin: 0 !important; color: #667085 !important; font-size: 13px !important; overflow: hidden !important; text-overflow: ellipsis !important; white-space: nowrap !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-finance-row[data-client-active-case-finance-row="true"] { display: grid !important; grid-template-columns: repeat(3, minmax(5.8rem, 1fr)) !important; gap: 8px !important; align-items: stretch !important; min-width: 0 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-finance-row[data-client-active-case-finance-row="true"] > span { display: grid !important; gap: 3px !important; padding: 8px 10px !important; border-radius: 14px !important; background: rgba(236, 253, 245, .72) !important; border: 1px solid rgba(16, 185, 129, .18) !important; min-width: 0 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-finance-row small { color: #667085 !important; font-size: 11px !important; line-height: 1 !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-finance-row strong { color: #065f46 !important; font-size: 13px !important; line-height: 1.1 !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-actions { display: flex !important; align-items: center !important; justify-content: flex-end !important; gap: 8px !important; white-space: nowrap !important; }
+@media (max-width: 1180px) {
+  .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-card[data-client-active-case-card="true"] { grid-template-columns: 1fr !important; align-items: stretch !important; }
+  .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-actions { justify-content: flex-start !important; flex-wrap: wrap !important; }
+}

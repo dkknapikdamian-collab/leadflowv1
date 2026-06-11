@@ -2551,3 +2551,9 @@ TESTY:
 RYZYKA:
 - Visual guard does not measure browser geometry. Manual QA on /leads and /clients remains required.
 - Lead cards contain more badges/meta than client cards; CSS must compress, not delete semantics.
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0C/R6 test history
+
+Planned run: guard, node test, ClientListCard regression, optional Stage231B0 R9, build, git diff --check.

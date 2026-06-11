@@ -2229,3 +2229,11 @@ TESTY:
 RYZYKA:
 - Visual guard does not measure browser geometry. Manual QA on /leads and /clients remains required.
 - Lead cards contain more badges/meta than client cards; CSS must compress, not delete semantics.
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0C/R6 ClientDetail Workspace Baseline
+
+Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+
+Zakres: kompaktowa aktywna sprawa klienta, compact top tiles, compact notes, UI Dictionary, guard/test.

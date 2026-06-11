@@ -75,3 +75,68 @@ Ten sam record-list source truth co ClientListCard, ale inny payload biznesowy.
 
 Status:
 MAPPING_ONLY_STAGE231D0B_R9 — runtime leadów nie jest przebudowywany w tym etapie.
+
+## ClientDetailWorkspace
+
+Nazwa ludzka:
+Karta klienta / widok klienta detail
+
+Nazwa systemowa:
+ClientDetailWorkspace
+
+Rola:
+Centrum relacji z klientem: dane, aktywne sprawy, najbliższy ruch, finanse i historia.
+
+Główne obszary:
+- ClientDetailHeader
+- ClientDataRail
+- ClientWorkspaceCenter
+- ClientRightRail
+- ClientTabs
+
+## ClientActiveCaseCard
+
+Nazwa ludzka:
+Kafelek aktywnej sprawy w kliencie
+
+Nazwa systemowa:
+ClientActiveCaseCard
+
+Wariant:
+case-active-compact-in-client
+
+Rola:
+Szybka ocena aktywnej sprawy klienta.
+
+Pokazuje:
+- tytuł sprawy
+- status
+- kompletność
+- najbliższy ruch
+- prowizja
+- wpłacono
+- zostało
+- akcje Otwórz / Edytuj
+
+Nie pokazuje:
+- wielkiego zielonego panelu finansowego
+- kosztów
+- pełnej historii płatności
+- labela SPRAWA jako głównego elementu
+
+## ClientOverviewTile
+
+Nazwa ludzka:
+Kafelek podsumowania klienta u góry
+
+Nazwa systemowa:
+ClientOverviewTile
+
+Wariant:
+client-overview-compact
+
+Rola:
+Krótki sygnał: najbliższy ruch / finanse / sprawy.
+
+Zasada:
+Ma być kompaktowy i nie dublować pełnego prawego panelu.

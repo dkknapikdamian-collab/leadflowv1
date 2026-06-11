@@ -140,6 +140,8 @@ const STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH = 'STAGE231B0_R8_CASE_ARCHIVE_RE
 void STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH;
 const STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL = 'STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL';
 void STAGE231B0_R9_CLIENT_HISTORY_AND_CASE_VIEW_MODEL;
+const STAGE231D0C_CLIENT_DETAIL_WORKSPACE_BASELINE = 'STAGE231D0C_CLIENT_DETAIL_WORKSPACE_BASELINE';
+void STAGE231D0C_CLIENT_DETAIL_WORKSPACE_BASELINE;
 
 type Stage231B0R7ClientCaseListRecord = {
   id?: string | null;
@@ -1048,7 +1050,7 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
   );
 
   return (
-    <section className="client-detail-top-tiles entity-overview-tiles" data-client-top-tiles="true" aria-label="Szybkie podsumowanie klienta">
+    <section className="client-detail-top-tiles entity-overview-tiles" data-client-overview-compact="true" data-client-overview-tile-variant="client-overview-compact" data-client-top-tiles="true" aria-label="Szybkie podsumowanie klienta">
       <article
         className={'client-detail-top-tile entity-overview-tile entity-overview-tile-action ' + nextActionToneClass(nextAction.tone)}
         data-client-top-tile="next-action"
@@ -2126,6 +2128,46 @@ function ClientDetail() {
     const commissionRemaining = formatMoneyWithCurrency(caseFinance.commissionRemainingAmount, caseFinance.currency);
     const transactionValue = formatMoneyWithCurrency(caseFinance.contractValue, caseFinance.currency);
     const completeness = getCaseCompleteness(caseRecord);
+
+
+    if (!options.closed) {
+      const activeNextAction = getCaseNextAction(caseRecord, clientTasks, clientEvents);
+      const activeNextActionTitle = activeNextAction?.title || 'Brak zaplanowanych działań';
+      return (
+        <article
+          key={caseId || title}
+          className="client-detail-case-smart-card client-active-case-card client-active-case-card-compact"
+          data-client-case-smart-card="true"
+          data-client-active-case-card="true"
+          data-client-active-case-card-variant="case-active-compact-in-client"
+          data-stage231d0c-client-detail-workspace-baseline="true"
+        >
+          <div className="client-active-case-card-main">
+            <div className="client-active-case-card-title-line">
+              <strong title={title}>{title}</strong>
+              <span className={'client-detail-pill ' + statusBadgeClass(caseRecord?.status)} data-client-active-case-status="true">{status}</span>
+              <span className="client-detail-pill client-detail-pill-muted" data-client-active-case-completeness="true">Kompletność {completeness}%</span>
+            </div>
+            <p className="client-active-case-next-action" title={activeNextActionTitle}>
+              Najbliższy ruch: {activeNextActionTitle}
+            </p>
+          </div>
+          <div className="client-active-case-finance-row" data-client-active-case-finance-row="true">
+            <span><small>Prowizja</small><strong>{value}</strong></span>
+            <span><small>Wpłacono</small><strong>{commissionPaid}</strong></span>
+            <span><small>Zostało</small><strong>{commissionRemaining}</strong></span>
+          </div>
+          <div className="client-active-case-actions">
+            <Button type="button" size="sm" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>Otwórz</Button>
+            <Button type="button" size="sm" variant="outline" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>Edytuj</Button>
+            <EntityActionButton type="button" size="sm" variant="outline" tone="danger" iconOnly className="client-detail-case-smart-delete-icon-button" aria-label="Usuń sprawę" title="Usuń sprawę" onClick={() => toast.info('Usuwanie sprawy wymaga potwierdzenia w widoku sprawy.')}>
+              <Trash2 className="h-4 w-4" aria-hidden="true" />
+            </EntityActionButton>
+          </div>
+        </article>
+      );
+    }
+
     const cardClassName = options.closed
       ? 'client-detail-case-smart-card client-detail-case-smart-card-closed-stage231b0-r7 client-detail-case-smart-card-closed-stage231b0-r8'
       : 'client-detail-case-smart-card';
@@ -2215,7 +2257,7 @@ useMemo(() => [], [activities, client?.id, clientId, id]);
 
 return (
       <Layout>
-<main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage216m-r14-clean-copy-finance-mojibake-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
+<main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231d0c-client-detail-workspace-baseline="true" data-stage216m-r14-clean-copy-finance-mojibake-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Ładowanie klienta...</span>
@@ -2240,7 +2282,7 @@ return (
   if (!client) {
     return (
       <Layout>
-        <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
+        <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231d0c-client-detail-workspace-baseline="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
           <section className="client-detail-empty-card">
             <EntityIcon entity="client" className="h-8 w-8" />
             <h1>Nie znaleziono klienta</h1>
@@ -2293,7 +2335,7 @@ return (
 
   return (
     <Layout>
-      <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
+      <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231d0c-client-detail-workspace-baseline="true" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
         <header className="client-detail-header">
           <div className="client-detail-header-copy">
             <button type="button" className="client-detail-back-button" onClick={() => navigate('/clients')}>
@@ -2491,7 +2533,7 @@ return (
           </aside>
 
           <section className="client-detail-main-column">
-            <div className="client-detail-main-top-tiles" data-stage216l-client-top-tiles-in-main-column="true">
+            <div className="client-detail-main-top-tiles" data-client-overview-compact="true" data-client-overview-tile-variant="client-overview-compact" data-stage216l-client-top-tiles-in-main-column="true">
               <ClientTopTiles
                 clientId={String(clientId || '')}
                 leads={leads}
@@ -2578,7 +2620,7 @@ return (
               </div>
             </section>
 
-                        <section className="client-detail-section-card client-detail-notes-center-section" data-stage216m-r15-r5-client-notes-source="true" data-stage216m-r16-r2-client-note-modal-source="true" data-client-notes-center-list="true">
+                        <section className="client-detail-section-card client-detail-notes-center-section" data-client-notes-compact="true" data-stage216m-r15-r5-client-notes-source="true" data-stage216m-r16-r2-client-note-modal-source="true" data-client-notes-center-list="true">
               <div className="client-detail-section-head">
                 <div>
                   <h2>Notatki</h2>
@@ -2614,7 +2656,7 @@ return (
 
               <div className="client-detail-notes-center-list">
                 {clientVisibleNotesForRenderStage216L.length ? (
-                  clientVisibleNotesForRenderStage216L.map((note) => (
+                  clientVisibleNotesForRenderStage216L.slice(0, 3).map((note) => (
                     <article
                       key={note.id}
                       className="client-detail-note-item client-detail-note-center-item"
