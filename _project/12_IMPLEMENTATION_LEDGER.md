@@ -2466,3 +2466,25 @@ Marker: STAGE231D0B-R8-MASS-ENCODING-RESCUE
 Tryb: local-only rescue ZIP.
 Przyczyna: bad commit 7dd40688 został wypchnięty mimo FAIL guardu.
 Zakres: kontrolowany sweep allowlisty STAGE231D0B + raport klasowy mojibake.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0C_R9_CLIENT_DETAIL_LEFT_RAIL_VISUAL_ALIGN
+
+Status: LOCAL_APPLIED / VISUAL_SPACING_FIX / NEED_PUSH
+
+Zakres:
+- poprawiono realny desktopowy offset lewego raila w ClientDetail, bo po R7 panel nadal zaczynał za wysoko względem prawego raila;
+- zwiększono offset tylko dla desktopu przez CSS variable i silniejszy selektor;
+- zachowano zaakceptowany górny układ kafelków, kompaktową aktywną sprawę, dane i routing.
+
+Testy/guardy:
+- node scripts/check-stage231d0c-r9-client-detail-left-rail-visual-align.cjs
+- node --test tests/stage231d0c-r9-client-detail-left-rail-visual-align.test.cjs
+- node scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs
+- node scripts/check-stage231d0c-client-detail-workspace-baseline.cjs
+- node scripts/check-stage231d0b-client-list-card-freeze.cjs
+- git diff --check
+- npm run build
+
+Ryzyka:
+- finalna akceptacja wymaga screenshotu /clients/<id> po deployu i Ctrl+F5;
+- tablet/mobile resetują offset do 0, żeby nie zrobić sztucznej dziury.
