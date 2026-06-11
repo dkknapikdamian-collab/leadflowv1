@@ -117,6 +117,23 @@ requireIncludes('CSS source truth', css, 'margin-inline-end: auto');
 /* STAGE231D0B_R10_R9_FINANCE_TEXT_START_ALIGN_GUARD_END */
 
 
+/* STAGE231D0B_R10_R10_SINGLE_GRID_GUARD_START */
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT');
+const stage231d0bR10R10BlockIndex = css.indexOf('STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT');
+const stage231d0bR10R10Block = stage231d0bR10R10BlockIndex >= 0 ? css.slice(stage231d0bR10R10BlockIndex) : '';
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'display: contents');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'grid-template-rows: auto auto');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, '.cf-client-active-commission');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, '.cf-client-lifetime-earned');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'grid-column: 4');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'grid-row: 1');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'grid-row: 2');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'place-self: center start');
+requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'margin-inline-start: 0');
+forbidIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'place-self: center end');
+forbidIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'justify-self: end');
+/* STAGE231D0B_R10_R10_SINGLE_GRID_GUARD_END */
+
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
 requireIncludes('CSS source truth', css, 'cf-client-active-commission');
 requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');

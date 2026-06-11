@@ -1057,3 +1057,115 @@
   }
 }
 /* STAGE231D0B-R10-R9 FINANCE TEXT START ALIGN END */
+
+/* STAGE231D0B-R10-R10 SINGLE GRID ALIGNMENT START
+   Machine guard marker: STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT
+   Scope: /clients ClientListCard only.
+   Decision: ClientListCard content uses one physical CSS grid, not two independent row grids. Text starts must align by shared grid columns.
+*/
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
+  display: grid !important;
+  grid-template-columns: minmax(9.5rem, 1.15fr) minmax(6.7rem, 0.58fr) minmax(9.5rem, 0.9fr) minmax(9rem, max-content) minmax(4.8rem, max-content) !important;
+  grid-template-rows: auto auto !important;
+  align-items: center !important;
+  gap: 0.34rem 0.72rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
+  display: contents !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
+  grid-column: 1 !important;
+  grid-row: 2 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
+  grid-column: 2 !important;
+  grid-row: 2 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action {
+  grid-column: 3 !important;
+  grid-row: 2 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission {
+  grid-column: 4 !important;
+  grid-row: 1 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
+  grid-column: 4 !important;
+  grid-row: 2 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
+  grid-column: 5 !important;
+  grid-row: 2 !important;
+  justify-self: start !important;
+  align-self: center !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action) {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-active-commission, .cf-client-lifetime-earned) {
+  place-self: center start !important;
+  justify-self: start !important;
+  align-self: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  margin-inline-start: 0 !important;
+  margin-inline-end: auto !important;
+  width: fit-content !important;
+  max-width: max-content !important;
+  max-inline-size: min(100%, 13.5rem) !important;
+  transform: none !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+    grid-template-rows: auto !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action, .cf-client-active-commission, .cf-client-lifetime-earned, .client-list-card-row-secondary > .cf-status-pill) {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] :is(.cf-client-list-card-name, .cf-client-company-slot, .client-list-card-phone, .cf-client-cases-count, .client-list-card-email, .cf-client-nearest-action, .cf-client-active-commission, .cf-client-lifetime-earned, .client-list-card-row-secondary > .cf-status-pill) {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+}
+/* STAGE231D0B-R10-R10 SINGLE GRID ALIGNMENT END */
