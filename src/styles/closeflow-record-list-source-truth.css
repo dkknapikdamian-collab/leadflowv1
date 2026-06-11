@@ -992,3 +992,31 @@
   }
 }
 /* STAGE231D0B-R10-R7 FINANCE CHIP START ALIGN END */
+
+/* STAGE231D0B-R10-R8 FINANCE CHIP END ALIGN START
+   Machine guard marker: STAGE231D0B-R10-R8_FINANCE_CHIP_END_ALIGN
+   Scope: /clients ClientListCard only.
+   Decision: finance chip boxes align to the right edge of the finance column. Text inside chips stays left; chip width may vary.
+*/
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
+  place-self: center end !important;
+  justify-self: end !important;
+  align-self: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  margin-inline-start: auto !important;
+  margin-inline-end: 0 !important;
+  transform: none !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
+    place-self: center end !important;
+    justify-self: end !important;
+    margin-inline-start: auto !important;
+    margin-inline-end: 0 !important;
+  }
+}
+/* STAGE231D0B-R10-R8 FINANCE CHIP END ALIGN END */

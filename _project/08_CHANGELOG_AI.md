@@ -3056,3 +3056,29 @@ RYZYKA:
 
 NASTEPNY KROK:
 - Po PASS i push: sprawdzic /clients, czy oba chipy finansowe startuja w tej samej osi.
+
+
+
+---
+
+## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R8 — finance chip right-edge alignment
+
+Status: LOCAL_APPLIED_PENDING_PUSH_AND_DEPLOY_QA
+
+FAKTY:
+- R7 wyrównał finance chipy w złą stronę dla oczekiwanego widoku Damiana.
+- R8 nie przebudowuje karty klienta. Zmienia tylko oś wyrównania zielonych chipów finansowych.
+- Chipy pozostają o zmiennej długości; prawa krawędź chipów ma być wspólna.
+
+DECYZJA DAMIANA:
+- Początek i koniec karty zostają bez zmian.
+- Zielone kafelki finansowe mają być wyrównane od prawej strony.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Etap jest wizualny; ostateczne zamknięcie wymaga deployu i ręcznego sprawdzenia /clients.

@@ -97,6 +97,15 @@ requireIncludes('CSS source truth', css, 'margin-inline-start: 0');
 /* STAGE231D0B_R10_R7_FINANCE_ALIGN_GUARD_END */
 
 
+/* STAGE231D0B_R10_R8_FINANCE_ALIGN_GUARD_START */
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R8_FINANCE_CHIP_END_ALIGN');
+requireIncludes('CSS source truth', css, 'place-self: center end');
+requireIncludes('CSS source truth', css, 'justify-self: end');
+requireIncludes('CSS source truth', css, 'margin-inline-start: auto');
+requireIncludes('CSS source truth', css, 'margin-inline-end: 0');
+/* STAGE231D0B_R10_R8_FINANCE_ALIGN_GUARD_END */
+
+
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
 requireIncludes('CSS source truth', css, 'cf-client-active-commission');
 requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');
