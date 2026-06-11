@@ -3095,3 +3095,26 @@ TESTY:
 RYZYKA:
 - Visual QA is mandatory after deploy: desktop, narrow window, mobile.
 - CSS history R7/R8/R9 remains in file as deprecated layers; R10/R11 is the final active override.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0C LeadListCard client-view freeze
+
+FAKT:
+- /clients ClientListCard view accepted visually after R10/R11 fixed column axis.
+- /leads should reuse the same card rhythm, fixed axes, compact card size and action column where the fields are semantically reusable.
+- This stage does not change lead data semantics, create flow, filters, trial banner, top layout, SQL or Supabase.
+
+DECYZJA DAMIANA:
+- Freeze the accepted Clients view.
+- Align the Leads tab to this look only for repeated card/shell elements.
+- Do not invent a new layout and do not break existing lead semantics.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node scripts/check-stage231d0c-lead-list-card-client-align.cjs
+- node --test tests/stage231d0c-lead-list-card-client-align.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Visual guard does not measure browser geometry. Manual QA on /leads and /clients remains required.
+- Lead cards contain more badges/meta than client cards; CSS must compress, not delete semantics.

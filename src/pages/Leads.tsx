@@ -118,6 +118,7 @@ const STAGE225_CONTACT_CADENCE_GRID_LEADS = 'leads list uses Contact Cadence Gri
 const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue view from buildLostLeadRescue';
 const STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME = 'lead create stays lead-only and never creates or displays a client row';
 const STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT = 'Leads Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
+const STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE = 'LeadListCard reuses frozen ClientListCard visual shell: size, axes, ellipsis and action column; lead data semantics stay unchanged';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
@@ -127,6 +128,7 @@ void STAGE225_CONTACT_CADENCE_GRID_LEADS;
 void STAGE226_LOST_LEAD_RESCUE_LEADS;
 void STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME;
 void STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT;
+void STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE;
 const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate conflict dialog renders once and client matches cannot be restored from lead create';
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
@@ -1140,7 +1142,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                         </span>
                         <span className="sub">{row.reasonDetail}</span>
                       </span>
-                      <span className="lead-action-cell">
+                      <span className="lead-action-cell" title={nextActionMeta.title}>
                         <span className="mini">Następny ruch</span>
                         <strong>{row.nextMoveTitle || 'Brak zaplanowanej akcji'}</strong>
                         <span className="sub">{row.nextMoveAt || 'Ustaw zadanie ręcznie po otwarciu leada.'}</span>
@@ -1205,13 +1207,13 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   return (
                     <div key={leadId || leadIndex} className="relative group/lead-row w-full" data-lead-card-wide-layout="true">
                       <Link to={`/leads/${leadId}`} className="block">
-                        <div className="row lead-row lead-card-value-block cf-lead-row-inline" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true">
+                        <div className="row lead-row lead-card-value-block cf-lead-row-inline cf-lead-row-client-aligned" data-stage231d0c-lead-card-client-aligned="true" data-ui-dictionary="LeadListCard" data-stage25-lead-row="true" data-stage31-lead-thin-row="true" data-stage14e-leads-value-layout="true">
                         <span className="index">{leadIndex + 1}</span>
 
                         <span className="lead-main-cell">
-                          <span className="title">{lead.name || 'Lead bez nazwy'}</span>
+                          <span className="title cf-lead-list-card-name" title={lead.name || 'Lead bez nazwy'}>{lead.name || 'Lead bez nazwy'}</span>
                           <span className="cf-list-row-meta" data-stage31-lead-one-line-meta="true">
-                            {contactLabel ? <span className="cf-list-row-contact">{contactLabel}</span> : null}
+                            {contactLabel ? <span className="cf-list-row-contact" title={contactLabel}>{contactLabel}</span> : null}
                             <span className="cf-list-row-value">{leadValueLabel}</span>
                             {meta ? <span className="sub">{meta}</span> : null}
                           </span>
@@ -1233,14 +1235,14 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                           </span>
                         </span>
 
-                        <span className="lead-value-cell">
+                        <span className="lead-value-cell" title={'Wartość: ' + leadValueLabel}>
                           <span className="mini">Wartość</span>
                           <strong className="cf-list-row-value lead-card-value-pill" data-lead-value-pill="true">{leadValueLabel}</strong>
                         </span>
 
                         <span className="lead-action-cell">
                           <span className="mini">Najbliższa zaplanowana akcja</span>
-                          <strong className={nextActionMeta.overdue ? 'danger' : ''}>{nextActionMeta.title}</strong>
+                          <strong className={nextActionMeta.overdue ? 'danger cf-lead-next-action-title' : 'cf-lead-next-action-title'} title={nextActionMeta.title}>{nextActionMeta.title}</strong>
                           {nextActionMeta.subtitle ? <span className="sub">{nextActionMeta.subtitle}</span> : null}
                         </span>
 

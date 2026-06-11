@@ -1306,3 +1306,212 @@
   }
 }
 /* STAGE231D0B-R10-R11 FIXED COLUMN AXIS END */
+
+/* STAGE231D0C LEAD LIST CARD CLIENT VIEW FREEZE START
+   Machine guard marker: STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE
+   Scope: /leads LeadListCard only.
+   Decision: accepted ClientListCard visual shell is frozen and LeadListCard reuses the same card rhythm, fixed axes, action column, ellipsis and compact pill sizing. Lead data semantics stay unchanged.
+*/
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] {
+  --cf-lead-card-main-col: minmax(13.5rem, 1.25fr);
+  --cf-lead-card-value-col: 10.5rem;
+  --cf-lead-card-action-col: minmax(17rem, 1fr);
+  --cf-lead-card-actions-col: 5rem;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 4.05rem !important;
+  display: grid !important;
+  grid-template-columns: minmax(2.15rem, 2.5rem) var(--cf-lead-card-main-col) var(--cf-lead-card-value-col) var(--cf-lead-card-action-col) var(--cf-lead-card-actions-col) !important;
+  grid-template-rows: auto !important;
+  align-items: center !important;
+  gap: 0.34rem 0.72rem !important;
+  padding: 0.68rem 0.82rem !important;
+  border-radius: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .index {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: start !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-main-cell {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  gap: 0.18rem !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-value-cell {
+  grid-column: 3 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 0.16rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-action-cell {
+  grid-column: 4 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  align-self: center !important;
+  justify-self: stretch !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  gap: 0.12rem !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-actions {
+  grid-column: 5 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+  justify-self: end !important;
+  width: auto !important;
+  min-width: max-content !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: nowrap !important;
+  gap: 0.42rem !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-lead-list-card-name,
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-list-row-contact,
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-action-cell strong,
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-action-cell .sub {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-list-row-meta,
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .statusline {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  gap: 0.26rem !important;
+  overflow: hidden !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .statusline > *,
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-list-row-meta > * {
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-value-cell .mini,
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-action-cell .mini {
+  margin: 0 !important;
+  font-size: 0.61rem !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  color: rgb(100 116 139) !important;
+  -webkit-text-fill-color: rgb(100 116 139) !important;
+  font-weight: 850 !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .lead-card-value-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: fit-content !important;
+  max-width: max-content !important;
+  max-inline-size: min(100%, 10rem) !important;
+  min-width: 0 !important;
+  padding: 0.22rem 0.5rem !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(16, 185, 129, 0.22) !important;
+  background: rgba(236, 253, 245, 0.78) !important;
+  color: rgb(4, 120, 87) !important;
+  -webkit-text-fill-color: rgb(4, 120, 87) !important;
+  font-size: 0.78rem !important;
+  font-weight: 850 !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] .cf-lead-next-action-title {
+  line-height: 1.08 !important;
+  font-size: 0.82rem !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] {
+    grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(8rem, auto) minmax(4.8rem, max-content) !important;
+  }
+
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-main-cell {
+    grid-column: 2 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-value-cell {
+    grid-column: 3 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-action-cell {
+    grid-column: 2 / 4 !important;
+    grid-row: 2 !important;
+  }
+
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-actions {
+    grid-column: 4 !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] {
+    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > :is(.lead-main-cell, .lead-value-cell, .lead-action-cell, .lead-actions) {
+    grid-column: 2 !important;
+    grid-row: auto !important;
+    justify-self: stretch !important;
+    width: 100% !important;
+  }
+
+  #root .cf-html-view.main-leads-html .row.lead-row.cf-lead-row-inline[data-stage231d0c-lead-card-client-aligned="true"] > .lead-actions {
+    justify-content: flex-start !important;
+  }
+}
+/* STAGE231D0C LEAD LIST CARD CLIENT VIEW FREEZE END */
