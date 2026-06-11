@@ -41,6 +41,13 @@ function forbidIncludes(name, text, token) {
   if (text.includes(token)) fail(name + ' contains forbidden token: ' + token);
 }
 
+function extractCssBlock(text, marker, endMarker) {
+  const start = text.indexOf(marker);
+  if (start < 0) return '';
+  const end = text.indexOf(endMarker, start);
+  return end >= 0 ? text.slice(start, end + endMarker.length) : text.slice(start);
+}
+
 function makeEncodingDriftTokens() {
   const single = [0x0102, 0x0139, 0x00c4, 0x00c5, 0x00c2, 0xfffd].map((code) => String.fromCodePoint(code));
   const triplet = String.fromCodePoint(0x010f) + String.fromCodePoint(0x017c) + String.fromCodePoint(0x02dd);
@@ -119,8 +126,7 @@ requireIncludes('CSS source truth', css, 'margin-inline-end: auto');
 
 /* STAGE231D0B_R10_R10_SINGLE_GRID_GUARD_START */
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT');
-const stage231d0bR10R10BlockIndex = css.indexOf('STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT');
-const stage231d0bR10R10Block = stage231d0bR10R10BlockIndex >= 0 ? css.slice(stage231d0bR10R10BlockIndex) : '';
+const stage231d0bR10R10Block = extractCssBlock(css, 'STAGE231D0B-R10-R10_SINGLE_GRID_ALIGNMENT', '/* STAGE231D0B-R10-R10 SINGLE GRID ALIGNMENT END */');
 requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'display: contents');
 requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'grid-template-rows: auto auto');
 requireIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, '.cf-client-active-commission');
@@ -137,8 +143,7 @@ forbidIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'justify-self:
 
 /* STAGE231D0B_R10_R11_FIXED_COLUMN_AXIS_GUARD_START */
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R11_FIXED_COLUMN_AXIS');
-const stage231d0bR10R11BlockIndex = css.indexOf('STAGE231D0B-R10-R11_FIXED_COLUMN_AXIS');
-const stage231d0bR10R11Block = stage231d0bR10R11BlockIndex >= 0 ? css.slice(stage231d0bR10R11BlockIndex) : '';
+const stage231d0bR10R11Block = extractCssBlock(css, 'STAGE231D0B-R10-R11_FIXED_COLUMN_AXIS', '/* STAGE231D0B-R10-R11 FIXED COLUMN AXIS END */');
 requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-name-col');
 requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-phone-col');
 requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-email-col');
