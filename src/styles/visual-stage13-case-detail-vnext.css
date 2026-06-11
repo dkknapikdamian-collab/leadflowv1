@@ -2700,3 +2700,56 @@ aside.case-detail-right-rail::after {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* STAGE231D0D_R4_CASE_DETAIL_LEAN_SERVICE_WORKSPACE: tabs aligned to actions column; right rail is lean. */
+.case-detail-vnext-page .case-service-tabs-column[data-case-service-tabs-column="true"] {
+  width: min(100%, calc((100% - 14px) * 0.654)) !important;
+  max-width: calc((100% - 14px) * 0.654) !important;
+  margin-right: auto !important;
+  margin-bottom: 14px !important;
+  box-sizing: border-box !important;
+}
+
+.case-service-left-column {
+  min-width: 0;
+}
+
+.case-detail-vnext-page .case-service-tabs-column[data-case-service-tabs-column="true"] .case-detail-stage228r9-tabs-compact,
+.case-detail-vnext-page .case-service-tabs-column[data-case-service-tabs-column="true"] .case-detail-tabs {
+  width: auto !important;
+  max-width: max-content !important;
+  margin-left: 0 !important;
+  margin-right: auto !important;
+  justify-content: flex-start !important;
+}
+
+.case-detail-vnext-page .case-service-workspace-grid {
+  align-items: start !important;
+}
+
+.case-detail-vnext-page .case-service-notes-panel .stage217-case-notes-panel,
+.case-detail-vnext-page .case-service-actions-panel .stage217-case-operation-workspace {
+  height: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail .case-settlement-rail-card[data-case-settlement-compact="true"] {
+  margin-bottom: 12px !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail .case-quick-actions-rail[data-case-quick-actions-rail="true"] {
+  margin-top: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail [data-case-context-rail-card="true"],
+.case-detail-vnext-page .case-detail-right-rail [data-case-settlement-payment-summary="true"],
+.case-detail-vnext-page .case-detail-right-rail [data-case-settlement-cost-summary="true"] {
+  display: none !important;
+}
+
+@media (max-width: 1180px) {
+  .case-detail-vnext-page .case-service-tabs-column[data-case-service-tabs-column="true"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}

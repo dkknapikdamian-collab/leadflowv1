@@ -218,6 +218,14 @@ Rola: Kompaktowe akcje operacyjne po rozliczeniu sprawy.
 
 ## CaseContextRailCard
 
+Status:
+Deprecated in main rail.
+
+Decyzja:
+Nie renderować jako stałej karty w prawym panelu. Dane zostają w systemie i mogą wrócić jako modal/szczegóły sprawy.
+
+
+
 Nazwa ludzka: Dane sprawy i klienta w prawym panelu
 Nazwa systemowa: CaseContextRailCard
 Rola: Kompaktowy kontekst sprawy: klient, status, źródłowy lead, działania i notatki.
@@ -348,3 +356,44 @@ CaseNotesPanelCompact
 
 Rola:
 Szybki podgląd 3 ostatnich notatek i wejście do wszystkich notatek.
+
+
+## CaseServiceWorkspaceGridR4
+
+Nazwa ludzka:
+Układ obsługi sprawy na 100%.
+
+Nazwa systemowa:
+CaseServiceWorkspaceGridR4
+
+Rola:
+Zbalansowany widok: tabs wyrównane do kolumny działań, działania po lewej, notatki po prawej, rozliczenie i szybkie akcje w railu.
+
+Zasady:
+- tabs są wyrównane do kolumny działań,
+- notatki są podniesione do góry,
+- prawy rail nie renderuje stałej karty danych kontekstowych.
+
+
+## CaseSettlementRailCardLean
+
+Nazwa ludzka:
+Odchudzone rozliczenie sprawy.
+
+Nazwa systemowa:
+CaseSettlementRailCardLean
+
+Rola:
+Szybki odczyt pieniędzy bez dublowania historii i pełnych kosztów.
+
+Pokazuje:
+- prowizja,
+- wpłacono,
+- do zapłaty,
+- koszty do zwrotu,
+- razem do pobrania.
+
+Nie pokazuje stale:
+- pełnej historii wpłat,
+- pełnej listy kosztów,
+- dużych empty states.

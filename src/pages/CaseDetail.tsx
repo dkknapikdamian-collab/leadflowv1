@@ -2682,8 +2682,9 @@ async function handleConfirmDeleteCaseRecord() {
 <div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true" data-stage231d2-r6-side-rail-top-lift="true">
           <section className="case-detail-main-column" data-stage228r9-main-column="true">
             <div
-              className="case-detail-stage228r10d-tabs-card"
+              className="case-detail-stage228r10d-tabs-card case-service-tabs-column"
               data-stage228r10d-tabs-card="true"
+              data-case-service-tabs-column="true"
               data-stage228r10d-card-spacing-lock="true"
               aria-label="Obsługa, checklisty i historia sprawy"
             >
@@ -2976,6 +2977,7 @@ async function handleConfirmDeleteCaseRecord() {
           </section>
           <span hidden data-stage231d0d-r2-case-detail-service-notes-finance-rail="STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL" />
           <span hidden data-stage231d0d-r3-case-detail-100-scale-balanced-workspace="STAGE231D0D_R3_CASE_DETAIL_100_SCALE_BALANCED_WORKSPACE" />
+          <span hidden data-stage231d0d-r4-case-detail-lean-service-workspace="STAGE231D0D_R4_CASE_DETAIL_LEAN_SERVICE_WORKSPACE" />
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
 <section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card" data-case-settlement-rail-card="true" data-case-settlement-compact="true" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Rozliczenie sprawy">
               <div className="cf-finance-scope-card__head">
@@ -3013,21 +3015,11 @@ async function handleConfirmDeleteCaseRecord() {
                   Koryguj wpłatę prowizji
                 </Button>
               </div>
-              <div className="case-settlement-compact-section case-settlement-compact-payments" data-case-settlement-payment-summary="true">
-                <div className="case-settlement-compact-row"><span>Historia wpłat</span><strong>{visibleCasePayments.length}</strong></div>
-                <Button type="button" size="sm" variant="outline" onClick={() => setIsPaymentHistoryOpenStage220A27B(true)}>
-                  Otwórz historię
-                </Button>
-              </div>
+                            <span hidden data-case-settlement-payment-summary-deprecated="true" />
 
-              <div className="case-settlement-compact-section case-settlement-compact-costs" data-case-settlement-cost-summary="true">
-                <div className="case-settlement-compact-row"><span>Koszty</span><strong>{caseCostsStage231D2.length}</strong></div>
-                <div className="case-settlement-compact-row"><span className="case-cost cost-warning">Koszty do zwrotu</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
-                <div className="case-settlement-compact-actions">
-                  <Button type="button" size="sm" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(true)} disabled={!hasAccess}>Dodaj koszt</Button>
-                  <Button type="button" size="sm" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(true)} disabled={!hasAccess}>Otwórz koszty</Button>
-                </div>
-              </div>
+
+                            <span hidden data-case-settlement-cost-summary-deprecated="true" />
+
 
             <div className="case-quick-actions-rail" data-case-quick-actions-rail="true" data-case-quick-actions-anchor="case-detail">
               <CaseQuickActions
@@ -3038,19 +3030,8 @@ async function handleConfirmDeleteCaseRecord() {
                 onAddPayment={() => openCaseFinancePaymentModal('commission')}
               />
             </div>
-            <section className="right-card case-detail-right-card case-context-rail-card" data-case-context-rail-card="true" data-case-context-compact="true" aria-label="Dane sprawy i klienta">
-              <div className="case-context-rail-card__head">
-                <strong>Dane sprawy i klienta</strong>
-              </div>
-              <dl className="case-context-rail-card__list">
-                <div><dt>Klient</dt><dd>{getCaseHeaderClientLabel(caseData)}</dd></div>
-                <div><dt>Sprawa</dt><dd>{getCaseHeaderCaseLabel(caseData)}</dd></div>
-                <div><dt>Status</dt><dd>{String((caseData as any).status || (caseData as any).stage || 'Brak statusu')}</dd></div>
-                <div><dt>Źródłowy lead</dt><dd>{sourceLead ? String((sourceLead as any).name || (sourceLead as any).title || (sourceLead as any).fullName || (sourceLead as any).id || 'Lead') : 'Brak'}</dd></div>
-                <div><dt>Aktywne działania</dt><dd>{workItems.length}</dd></div>
-                <div><dt>Notatki</dt><dd>{caseNoteItems.length}</dd></div>
-              </dl>
-            </section>
+                        <span hidden data-case-context-rail-card-deprecated-main-rail="true" />
+
 
               <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
             </section>

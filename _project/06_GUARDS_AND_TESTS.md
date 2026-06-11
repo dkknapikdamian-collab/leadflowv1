@@ -3390,3 +3390,29 @@ Testy:
 - D0B regression,
 - build,
 - git diff --check.
+
+
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0D-R4 CaseDetail lean service workspace
+
+Status: LOCAL_PACKAGE_APPLIED_PENDING_PUSH
+
+FAKTY Z KODU:
+- R4 usuwa widoczną kartę danych sprawy i klienta z głównego right raila bez usuwania danych z systemu.
+- R4 usuwa stałe sekcje historii wpłat i kosztów z right raila.
+- R4 zachowuje rozliczenie sprawy i szybkie akcje w railu.
+- R4 dopina marker data-case-service-tabs-column="true" do tabs card.
+
+TESTY:
+- check-stage231d0d-r4-case-detail-lean-service-workspace.cjs
+- stage231d0d-r4-case-detail-lean-service-workspace.test.cjs
+- R3/R2 regression guards
+- D0C regression
+- npm run build
+- git diff --check
+
+RYZYKA:
+- Tabs są wyrównane wizualnie do kolumny działań bez pełnej przebudowy logiki Tabs; przy kolejnym większym refaktorze warto przenieść strukturę logicznie do left-column.
+- Historia wpłat i koszty pozostają dostępne przez istniejące przyciski/modale, ale nie są stałą listą w railu.
