@@ -2421,3 +2421,7 @@ RYZYKA:
 
 NASTĘPNY KROK:
 - Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0B-R10 tests
+
+Plan: D0B guard, node test, git diff --check, build. Manual QA: /clients po Ctrl+F5.

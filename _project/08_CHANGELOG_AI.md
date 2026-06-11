@@ -3024,3 +3024,7 @@ NASTĘPNY KROK:
 
 - Added exact CSS source-truth marker and max-width token required by the R9/R3 guard.
 - No runtime lead, trial, top layout or Supabase changes.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0B-R10
+
+ClientListCard: dodano wyrównanie środkowych kolumn, title tooltipy i ellipsis dla długich pól. Zmiana wizualna wymaga manualnego potwierdzenia po deployu.

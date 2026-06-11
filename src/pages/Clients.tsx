@@ -954,20 +954,20 @@ export default function Clients() {
                    return (
                      <div key={client.id} className="relative group/client-card w-full" data-client-card-wide-layout="true">
                        <Link to={`/clients/${client.id}`} className="block">
-                         <div className="row client-row cf-client-row-two-line" data-ui-dictionary="ClientListCard" data-client-list-card-variant="client-relationship-row-2line">
+                         <div className="row client-row cf-client-row-two-line" data-stage231d0b-r10-client-card-alignment="true" data-ui-dictionary="ClientListCard" data-client-list-card-variant="client-relationship-row-2line">
                         <span className="index">{index + 1}</span>
                         <span className="cf-client-list-card-content min-w-0">
                           <span className="client-list-card-row-primary">
-                            <span className="title cf-client-list-card-name">{client.name || 'Klient'}</span>
-                            <span className="client-list-card-phone" data-client-list-phone="true">{client.phone || 'Brak telefonu'}</span>
-                            <span className="client-list-card-email" data-client-list-email="true">{client.email || 'Brak e-maila'}</span>
-                            <span className="cf-list-row-value cf-client-active-commission">Aktywna prowizja: {formatClientMoney(clientFinance.activeCommission)}</span>
+                            <span className="title cf-client-list-card-name" title={client.name || 'Klient'}>{client.name || 'Klient'}</span>
+                            <span className="client-list-card-phone" data-client-list-phone="true" title={client.phone || 'Brak telefonu'}>{client.phone || 'Brak telefonu'}</span>
+                            <span className="client-list-card-email" data-client-list-email="true" title={client.email || 'Brak e-maila'}>{client.email || 'Brak e-maila'}</span>
+                            <span className="cf-list-row-value cf-client-active-commission" title={'Aktywna prowizja: ' + formatClientMoney(clientFinance.activeCommission)}>Aktywna prowizja: {formatClientMoney(clientFinance.activeCommission)}</span>
                           </span>
                           <span className="client-list-card-row-secondary">
-                            <span className="sub cf-client-company-slot">{client.company || 'Bez firmy'}</span>
-                            <span className="cf-client-cases-count">Sprawy: {counters.cases}</span>
-                            <span className="cf-list-row-value cf-client-lifetime-earned">Zarobione łącznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
-                            <span className="cf-client-nearest-action">{nearestActionByClientId.get(client.id) || 'Brak zaplanowanej akcji'}</span>
+                            <span className="sub cf-client-company-slot" title={client.company || 'Bez firmy'}>{client.company || 'Bez firmy'}</span>
+                            <span className="cf-client-cases-count" title={'Sprawy: ' + counters.cases}>Sprawy: {counters.cases}</span>
+                            <span className="cf-client-nearest-action" title={nearestActionLabel}>{nearestActionLabel}</span>
+                             <span className="cf-list-row-value cf-client-lifetime-earned" title={'Zarobione łącznie: ' + formatClientMoney(clientFinance.lifetimeEarned)}>Zarobione łącznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
                             {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">w koszu</span> : counters.cases === 0 ? <span className="cf-status-pill cf-chip-no-case">bez spraw</span> : null}
                           </span>
                         </span>

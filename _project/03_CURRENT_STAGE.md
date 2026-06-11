@@ -2097,3 +2097,9 @@ RYZYKA:
 
 NASTĘPNY KROK:
 - Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0B-R10 ClientListCard alignment + ellipsis tooltip
+
+Status: PRE_PUSH / MANUAL_SCREENSHOT_REQUIRED
+
+Zakres: wyrównanie środka karty klienta, finanse w jednej osi, ellipsis i title tooltip dla długich tekstów. Nie ruszano leadów, triala, filtrów, top layoutu, SQL ani Supabase.

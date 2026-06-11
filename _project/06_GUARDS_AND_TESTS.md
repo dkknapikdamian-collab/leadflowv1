@@ -2984,3 +2984,11 @@ NASTĘPNY KROK:
 - Scope: align CSS source-truth exact markers with strengthened R9/R3 guard.
 - Guard: npm run check:stage231d0b-client-list-card-freeze.
 - Test: node --test tests/stage231d0b-client-list-card-freeze.test.cjs.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0B-R10 guard/test
+
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+- Manual QA: /clients screenshot required.

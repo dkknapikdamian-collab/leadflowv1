@@ -74,6 +74,21 @@ requireIncludes('Clients.tsx', clients, 'client-list-card-row-secondary');
 requireIncludes('Clients.tsx', clients, 'client-list-card-phone');
 requireIncludes('Clients.tsx', clients, 'client-list-card-email');
 
+/* STAGE231D0B_R10_GUARD_START */
+requireIncludes('Clients.tsx', clients, 'data-stage231d0b-r10-client-card-alignment="true"');
+requireIncludes('Clients.tsx', clients, "title={client.name || 'Klient'}");
+requireIncludes('Clients.tsx', clients, "title={client.phone || 'Brak telefonu'}");
+requireIncludes('Clients.tsx', clients, "title={client.email || 'Brak e-maila'}");
+requireIncludes('Clients.tsx', clients, "title={client.company || 'Bez firmy'}");
+requireIncludes('Clients.tsx', clients, 'title={nearestActionLabel}');
+requireIncludes('Clients.tsx', clients, "title={'Aktywna prowizja: ' + formatClientMoney(clientFinance.activeCommission)}");
+requireIncludes('Clients.tsx', clients, "title={'Zarobione łącznie: ' + formatClientMoney(clientFinance.lifetimeEarned)}");
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R10_CLIENT_CARD_ALIGNMENT_ELLIPSIS_TOOLTIP');
+requireIncludes('CSS source truth', css, 'data-stage231d0b-r10-client-card-alignment="true"');
+requireIncludes('CSS source truth', css, 'grid-column: 4');
+requireIncludes('CSS source truth', css, 'text-overflow: ellipsis');
+/* STAGE231D0B_R10_GUARD_END */
+
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
 requireIncludes('CSS source truth', css, 'cf-client-active-commission');
 requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');

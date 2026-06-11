@@ -866,3 +866,98 @@
   }
 }
 /* STAGE231D0B-R9 CLIENTLISTCARD SOURCE TRUTH CLEANUP END */
+
+/* STAGE231D0B-R10 CLIENTLISTCARD ALIGNMENT ELLIPSIS TOOLTIP START
+   Machine guard marker: STAGE231D0B-R10_CLIENT_CARD_ALIGNMENT_ELLIPSIS_TOOLTIP
+   Scope: /clients ClientListCard only.
+   Decision: primary and secondary rows share the same visual columns; long text uses ellipsis and full value is exposed through title attributes in JSX.
+*/
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-content {
+  display: grid !important;
+  gap: 0.36rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
+  display: grid !important;
+  grid-template-columns: minmax(9.5rem, 1.15fr) minmax(6.7rem, 0.58fr) minmax(9.5rem, 0.9fr) minmax(9rem, max-content) minmax(4.8rem, max-content) !important;
+  align-items: center !important;
+  gap: 0.34rem 0.72rem !important;
+  min-width: 0 !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
+  grid-column: 1 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action {
+  grid-column: 3 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
+  grid-column: 4 !important;
+  justify-self: start !important;
+  max-inline-size: min(100%, 13.5rem) !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
+  grid-column: 5 !important;
+  justify-self: start !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-list-card-name,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-company-slot {
+    grid-column: 1 !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-phone,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-cases-count {
+    grid-column: 2 !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-email,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-nearest-action,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary > .cf-status-pill {
+    grid-column: auto !important;
+  }
+}
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+/* STAGE231D0B-R10 CLIENTLISTCARD ALIGNMENT ELLIPSIS TOOLTIP END */

@@ -3293,3 +3293,7 @@ RYZYKA:
 
 NASTĘPNY KROK:
 - Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.
+
+## 2026-06-11 Europe/Warsaw - next after STAGE231D0B-R10
+
+Po PASS i screenshot /clients można pushować R10. Jeśli nadal jest nierówno, kolejny etap ma dotyczyć tylko CSS gridu ClientListCard, bez leadów i bez top layoutu.
