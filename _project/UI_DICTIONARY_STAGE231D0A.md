@@ -169,3 +169,132 @@ Zasady:
 - akcje po prawej,
 - ikony w akcjach zawsze widoczne,
 - nie dublować danych z paneli niżej.
+
+
+
+---
+
+## CaseDetailWorkspace
+
+Nazwa ludzka: Karta sprawy / widok sprawy detail
+Nazwa systemowa: CaseDetailWorkspace
+Rola: Centrum pracy nad konkretną sprawą: działania, notatki, rozliczenie, koszty i historia.
+Obszary: CaseDetailHeader, CaseServiceTab, CaseNotesPanel, CaseAllNotesModal, CaseSettlementRailCard, CaseQuickActionsRail, CaseContextRailCard
+
+## CaseServiceTab
+
+Nazwa ludzka: Zakładka Obsługa w sprawie
+Nazwa systemowa: CaseServiceTab
+Rola: Bieżąca praca: zadania, wydarzenia, braki i blokady.
+Zasada: Jedno źródło prawdy. Nie wolno mieć dwóch równoległych sekcji Obsługa.
+
+## CaseNotesPanel
+
+Nazwa ludzka: Notatki sprawy
+Nazwa systemowa: CaseNotesPanel
+Rola: Szybki podgląd ostatnich notatek sprawy.
+Pokazuje: max 3-5 ostatnich notatek, Dodaj notatkę, Dyktuj notatkę, Wszystkie notatki.
+
+## CaseAllNotesModal
+
+Nazwa ludzka: Okno wszystkich notatek sprawy
+Nazwa systemowa: CaseAllNotesModal
+Rola: Pełna lista notatek przypiętych do sprawy.
+Źródło wizualne: Wspólny modal/dialog CloseFlow, ten sam styl co dodawanie wydarzenia/leada.
+
+## CaseSettlementRailCard
+
+Nazwa ludzka: Prawy kafel rozliczenia sprawy
+Nazwa systemowa: CaseSettlementRailCard
+Rola: Najważniejsze finanse sprawy: prowizja, wpłaty, koszty i razem do pobrania.
+Pozycja: Pierwszy kafel w prawym panelu sprawy.
+Kolory: prowizja = finance-positive, koszty = cost-warning/case-cost, razem do pobrania = case-total-to-collect.
+
+## CaseQuickActionsRail
+
+Nazwa ludzka: Szybkie akcje sprawy w prawym panelu
+Nazwa systemowa: CaseQuickActionsRail
+Rola: Kompaktowe akcje operacyjne po rozliczeniu sprawy.
+
+## CaseContextRailCard
+
+Nazwa ludzka: Dane sprawy i klienta w prawym panelu
+Nazwa systemowa: CaseContextRailCard
+Rola: Kompaktowy kontekst sprawy: klient, status, źródłowy lead, działania i notatki.
+
+
+
+
+---
+
+## CaseDetailWorkspace
+
+Nazwa ludzka: Karta sprawy / widok sprawy detail
+Nazwa systemowa: CaseDetailWorkspace
+Rola: Centrum pracy nad konkretną sprawą: działania, notatki, rozliczenie, koszty i historia.
+Obszary: CaseDetailHeader, CaseServiceTab, CaseNotesPanel, CaseAllNotesModal, CaseSettlementRailCard, CaseQuickActionsRail, CaseContextRailCard
+
+## CaseServiceTab
+
+Nazwa ludzka: Zakładka Obsługa w sprawie
+Nazwa systemowa: CaseServiceTab
+Rola: Bieżąca praca: zadania, wydarzenia, braki i blokady.
+Zasada: Jedno źródło prawdy. Nie wolno mieć dwóch równoległych sekcji Obsługa.
+
+## CaseNotesPanel
+
+Nazwa ludzka: Notatki sprawy
+Nazwa systemowa: CaseNotesPanel
+Rola: Szybki podgląd ostatnich notatek sprawy.
+Pokazuje: max 3-5 ostatnich notatek, Dodaj notatkę, Dyktuj notatkę, Wszystkie notatki.
+
+## CaseAllNotesModal
+
+Nazwa ludzka: Okno wszystkich notatek sprawy
+Nazwa systemowa: CaseAllNotesModal
+Rola: Pełna lista notatek przypiętych do sprawy.
+Źródło wizualne: Wspólny modal/dialog CloseFlow, ten sam styl co dodawanie wydarzenia/leada.
+
+## CaseSettlementRailCard
+
+Nazwa ludzka: Prawy kafel rozliczenia sprawy
+Nazwa systemowa: CaseSettlementRailCard
+Rola: Najważniejsze finanse sprawy: prowizja, wpłaty, koszty i razem do pobrania.
+Pozycja: Pierwszy kafel w prawym panelu sprawy.
+Kolory: prowizja = finance-positive, koszty = cost-warning/case-cost, razem do pobrania = case-total-to-collect.
+
+## CaseQuickActionsRail
+
+Nazwa ludzka: Szybkie akcje sprawy w prawym panelu
+Nazwa systemowa: CaseQuickActionsRail
+Rola: Kompaktowe akcje operacyjne po rozliczeniu sprawy.
+
+## CaseContextRailCard
+
+Nazwa ludzka: Dane sprawy i klienta w prawym panelu
+Nazwa systemowa: CaseContextRailCard
+Rola: Kompaktowy kontekst sprawy: klient, status, źródłowy lead, działania i notatki.
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0D_R4_TOTAL_TO_COLLECT_AND_JSX_RESCUE
+
+Status: PATCH_RESCUE / CONTINUES_STAGE231D0D_R2
+
+Zakres:
+- naprawa częściowo zastosowanego D0D-R3 po guard fail,
+- dopisanie widocznego wiersza "Razem do pobrania" do pierwszej karty "Rozliczenie sprawy",
+- podpięcie totalu do istniejącego caseCostsSummaryStage231D2.totalToCollectAmount,
+- naprawa JSX service tab po usunięciu legacy Stage220A10 duplicate block,
+- bez SQL, bez nowego modelu kosztów, bez wykresów.
+
+Testy wymagane:
+- D0D-R2 guard/test,
+- D0C ClientDetail baseline regression,
+- D0B ClientListCard regression,
+- npm run build,
+- git diff --check.
+
+Audyt ryzyk:
+- nie dublować osobnej karty kosztów jako drugiego źródła rozliczenia; wiersz totalu w pierwszej karcie jest obowiązkowy dla skanowalności prawego panelu,
+- po deployu manualnie sprawdzić kolejność raila: Rozliczenie -> Szybkie akcje -> Dane sprawy i klienta.

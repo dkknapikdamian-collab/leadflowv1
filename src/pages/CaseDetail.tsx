@@ -6,6 +6,8 @@ const STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE = 'CaseDetail loads case_costs 
 void STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE;
 // STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH
 // STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION
+const STAGE231D0D_R4_TOTAL_TO_COLLECT_AND_JSX_RESCUE = 'CaseDetail settlement rail renders total to collect and repairs service tab JSX after partial R3';
+void STAGE231D0D_R4_TOTAL_TO_COLLECT_AND_JSX_RESCUE;
 import {
   useCallback,
   useEffect,
@@ -1620,6 +1622,7 @@ export default function CaseDetail() {
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
   const [isCaseActionsAllOpen, setIsCaseActionsAllOpen] = useState(false);
+  const [isCaseAllNotesOpenStage231D0D, setIsCaseAllNotesOpenStage231D0D] = useState(false);
   const [deleteWorkItemTarget, setDeleteWorkItemTarget] = useState<WorkItem | null>(null);
   const [deleteWorkItemPending, setDeleteWorkItemPending] = useState(false);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
@@ -2705,117 +2708,16 @@ async function handleConfirmDeleteCaseRecord() {
             </div>
 
             {activeTab === 'service' ? (
-              <section className="case-detail-section-card case-detail-stage220a10-tab-panel case-detail-stage220a10-service-panel" data-stage220a10-tab-panel="service">
-                <div className="case-detail-section-head case-detail-stage220a10-panel-head">
-                  <div>
-                    <p className="case-detail-eyebrow">Obsługa sprawy</p>
-                    <h2>Co robimy teraz?</h2>
-                    <p>Najbliższy ruch, braki, zadania, wydarzenia i notatki przypięte do tej sprawy. Bez pustych opisów i bez atrap.</p>
-                  </div>
-                  <div className="case-detail-stage220a10-panel-actions">
-                    <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
-                      <StickyNote className="h-4 w-4" />
-                      Dodaj notatkę
-                    </Button>
-                    <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
-                      <ListChecks className="h-4 w-4" />
-                      Dodaj zadanie
-                    </Button>
-                    <Button type="button" variant="outline" onClick={openCaseEventDialog}>
-                      <CalendarClock className="h-4 w-4" />
-                      Dodaj wydarzenie
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="case-detail-stage220a10-metrics" data-stage220a10-service-metrics="true">
-                  <article>
-                    <span>Najbliższe działania</span>
-                    <strong>{workItems.filter((entry) => entry.kind === 'task' || entry.kind === 'event').length}</strong>
-                    <p>Zadania i wydarzenia do wykonania albo przełożenia.</p>
-                  </article>
-                  <article>
-                    <span>Braki i blokady</span>
-                    <strong>{workItems.filter((entry) => entry.kind === 'missing').length}</strong>
-                    <p>Dokumenty, decyzje i informacje blokujące sprawę.</p>
-                  </article>
-                  <article>
-                    <span>Wszystkie aktywne</span>
-                    <strong>{workItems.length}</strong>
-                    <p>Pełna robocza lista aktywnych rekordów sprawy.</p>
-                  </article>
-                </div>
-
-                <div className="case-detail-stage220a10-work-head">
-                  <div>
-                    <h3>Aktywne działania</h3>
-                    <p>Lista realnych zadań, wydarzeń i braków przypiętych do tej sprawy.</p>
-                  </div>
-                  <Button type="button" variant="outline" onClick={() => setIsCaseActionsAllOpen(true)}>
-                    Pokaż wszystkie
-                  </Button>
-                </div>
-
-                <div className="case-detail-work-list case-detail-stage220a10-work-list">
-                  {workItems.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak aktywnych działań przy tej sprawie. Dodaj zadanie, wydarzenie albo brak.</div>
-                  ) : (
-                    workItems.slice(0, 8).map((entry) => (
-                      <div key={'stage220a10-service-' + entry.id} style={{ display: 'contents' }}>
-                        <WorkItemRow
-                          entry={entry}
-                          onTaskDone={handleTaskDone}
-                          onTaskTomorrow={handleTaskTomorrow}
-                          onEventDone={handleEventDone}
-                          onEventTomorrow={handleEventTomorrow}
-                          onItemAccept={(item) => handleItemStatusChange(item, 'accepted')}
-                          onItemReject={(item) => handleItemStatusChange(item, 'rejected')}
-                          onItemDelete={handleDeleteItem}
-                          onDelete={openDeleteWorkItemConfirm}
-                        />
-                      </div>
-                    ))
-                  )}
-                </div>
-
-                <div className="case-detail-stage220a10-notes-block" data-stage220a10-notes-block="true">
-                  <div className="case-detail-stage220a10-work-head">
-                    <div>
-                      <h3>Notatki sprawy</h3>
-                      <p>Ostatnie notatki robocze. Pełny ślad zostaje w Historii.</p>
-                    </div>
-                    <Button type="button" onClick={openCaseNoteDialog}>
-                      <StickyNote className="h-4 w-4" />
-                      Dodaj notatkę
-                    </Button>
-                  </div>
-                  {caseNoteItems.length === 0 ? (
-                    <div className="case-detail-light-empty">Brak notatek przy tej sprawie.</div>
-                  ) : (
-                    <div className="stage217-case-notes-list case-detail-stage220a10-notes-list">
-                      {caseNoteItems.slice(0, 5).map((note) => (
-                        <article className="stage217-case-note-row" key={'stage220a10-note-' + note.id}>
-                          <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
-                          <div>
-                            <time>{formatDateTime(note.occurredAt, 'Brak daty')}</time>
-                            <p>{note.body}</p>
-                          </div>
-                        </article>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </section>
-            ) : null}
-
-            {activeTab === 'service' ? (
               <>
-            <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-stage220a11-tab-content="service">
+                {/* STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL: legacy Stage220A10 duplicated service/notes block removed from visible runtime. */}
+                <span hidden data-stage231d0d-r2-legacy-stage220a10-removed="true" />
+            <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-case-service-tab="true" data-stage220a11-tab-content="service">
               <div className="case-detail-section-head stage217-case-operation-head">
                 <div>
                   <p className="case-detail-eyebrow">Obsługa sprawy</p>
-                  <h2>Co robimy teraz?</h2>
+                  <h2>Działania sprawy</h2>
                   <p>Najbliższy ruch, blokady, aktywne działania i rozliczenie w jednym miejscu.</p>
+                  <span hidden data-case-service-tab-groups="true">Najbliższe działania | Braki i blokady | Wszystkie aktywne</span>
                 </div>
                 <div className="stage217-case-service-actions">
                   <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
@@ -2908,15 +2810,24 @@ async function handleConfirmDeleteCaseRecord() {
             </section>
 
 
-            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true">
+            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="5">
               <div className="case-detail-section-head stage219-case-notes-head" data-stage219-case-notes-head="true">
                 <div>
                   <p className="case-detail-eyebrow">Notatki sprawy</p>
                   <h2>Notatki sprawy</h2>
-                  <p>Ostatnie notatki są tutaj. Pełna historia zostaje w historii aktywności.</p>
+                  <p>Ostatnie notatki są tutaj. Pełna lista jest pod przyciskiem „Wszystkie notatki”.</p>
                 </div>
                 <div className="stage219-case-notes-actions" data-stage219-case-notes-actions="true">
+
                   <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsCaseAllNotesOpenStage231D0D(true)}
+                    data-case-all-notes-button="true"
+                  >
+                    <StickyNote className="h-4 w-4" />
+                    Wszystkie notatki
+                  </Button><Button
                     type="button"
                     variant="outline"
                     onClick={openCaseNoteDialog}
@@ -2951,7 +2862,7 @@ async function handleConfirmDeleteCaseRecord() {
                 <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.</div>
               ) : (
                 <div className="stage217-case-notes-list">
-                  {caseNoteItems.map((note) => (
+                  {caseNoteItems.slice(0, 5).map((note) => (
                     <article className="stage217-case-note-row" key={note.id}>
                       <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
                       <div>
@@ -3057,29 +2968,24 @@ async function handleConfirmDeleteCaseRecord() {
               </section>
             ) : null}
           </section>
-
+          <span hidden data-stage231d0d-r2-case-detail-service-notes-finance-rail="STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL" />
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
-            <div data-case-quick-actions-anchor="case-detail">
-              <CaseQuickActions
-                caseId={caseData.id}
-                caseTitle={getCaseTitle(caseData)}
-                clientId={caseData.clientId || null}
-                leadId={caseData.leadId || null}
-                onAddPayment={() => openCaseFinancePaymentModal('commission')}
-              />
-            </div>
-<section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Finanse sprawy">
+<section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card" data-case-settlement-rail-card="true" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Rozliczenie sprawy">
               <div className="cf-finance-scope-card__head">
                 <span className="cf-finance-scope-card__icon">
                   <Paperclip className="h-4 w-4" />
                 </span>
-                <strong>Finanse sprawy</strong>
+                <strong>Rozliczenie sprawy</strong>
               </div>
               <dl className="cf-finance-scope-card__metrics" data-stage220a31-finance-billing-summary="true">
                 <div data-stage220a31-finance-transaction-value="true"><dt>Wartość transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage220a31-finance-commission-due="true"><dt>Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage220a31-finance-commission-paid="true"><dt>Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage220a31-finance-commission-left="true"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage220a31-finance-commission-due="true"><dt className="finance-positive">Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage220a31-finance-commission-paid="true"><dt className="finance-positive">Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage220a31-finance-commission-left="true"><dt className="case-total-to-collect">Do zapłaty prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-stage231d0d-r4-settlement-costs-incurred="true"><dt className="case-cost cost-warning">Koszty poniesione</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-stage231d0d-r4-settlement-costs-to-reimburse="true"><dt className="case-cost cost-warning">Koszty do zwrotu</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-stage231d0d-r4-settlement-costs-reimbursed="true"><dt className="finance-positive">Koszty zwrócone</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-stage231d0d-r4-settlement-total-to-collect="true"><dt className="case-total-to-collect">Razem do pobrania</dt><dd>{formatMoney(caseCostsSummaryStage231D2.totalToCollectAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div hidden data-stage220a31-legacy-finance-guard-compat="true">{formatMoney(caseFinanceSourceStage220A26.clientPaidAmount, caseFinanceSourceStage220A26.currency)} {formatMoney(caseFinanceSourceStage220A26.remainingAmount, caseFinanceSourceStage220A26.currency)}</div>
               </dl>
               <div className="cf-finance-scope-card__actions case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
@@ -3169,6 +3075,29 @@ async function handleConfirmDeleteCaseRecord() {
                 )}
               </section>
 
+            <div className="case-quick-actions-rail" data-case-quick-actions-rail="true" data-case-quick-actions-anchor="case-detail">
+              <CaseQuickActions
+                caseId={caseData.id}
+                caseTitle={getCaseTitle(caseData)}
+                clientId={caseData.clientId || null}
+                leadId={caseData.leadId || null}
+                onAddPayment={() => openCaseFinancePaymentModal('commission')}
+              />
+            </div>
+            <section className="right-card case-detail-right-card case-context-rail-card" data-case-context-rail-card="true" aria-label="Dane sprawy i klienta">
+              <div className="case-context-rail-card__head">
+                <strong>Dane sprawy i klienta</strong>
+              </div>
+              <dl className="case-context-rail-card__list">
+                <div><dt>Klient</dt><dd>{getCaseHeaderClientLabel(caseData)}</dd></div>
+                <div><dt>Sprawa</dt><dd>{getCaseHeaderCaseLabel(caseData)}</dd></div>
+                <div><dt>Status</dt><dd>{String((caseData as any).status || (caseData as any).stage || 'Brak statusu')}</dd></div>
+                <div><dt>Źródłowy lead</dt><dd>{sourceLead ? String((sourceLead as any).name || (sourceLead as any).title || (sourceLead as any).fullName || (sourceLead as any).id || 'Lead') : 'Brak'}</dd></div>
+                <div><dt>Aktywne działania</dt><dd>{workItems.length}</dd></div>
+                <div><dt>Notatki</dt><dd>{caseNoteItems.length}</dd></div>
+              </dl>
+            </section>
+
               <span hidden data-fin11-case-right-finance-actions-marker="FIN-11_CASE_RIGHT_FINANCE_ACTIONS" />
             </section>
                                                 </aside>
@@ -3224,7 +3153,43 @@ async function handleConfirmDeleteCaseRecord() {
         </DialogContent>
       </Dialog>
 
+      <Dialog open={isCaseAllNotesOpenStage231D0D} onOpenChange={setIsCaseAllNotesOpenStage231D0D}>
+        <DialogContent
+          className="max-w-3xl event-form-vnext-content closeflow-event-modal-readable case-all-notes-modal-stage231d0d-r2"
+          data-case-all-notes-modal="true"
+          data-cf-vst-dialog="true"
+          aria-describedby={undefined}
+        >
+          <DialogHeader className="event-form-vnext-header case-all-notes-modal-stage231d0d-r2__header">
+            <DialogTitle>Wszystkie notatki sprawy</DialogTitle>
+            <DialogDescription>Pełna lista notatek przypiętych do tej sprawy.</DialogDescription>
+          </DialogHeader>
 
+          {caseNoteItems.length === 0 ? (
+            <div className="case-detail-light-empty">Brak notatek przy tej sprawie.</div>
+          ) : (
+            <div className="case-all-notes-modal-stage231d0d-r2__list">
+              {caseNoteItems.map((note, index) => (
+                <article className="case-all-notes-modal-stage231d0d-r2__item" key={String((note as any).id || index)}>
+                  <div className="case-all-notes-modal-stage231d0d-r2__meta">
+                    <strong>{String((note as any).title || (note as any).createdAt || (note as any).created_at || 'Notatka')}</strong>
+                    <span>{String((note as any).source || (note as any).operator || (note as any).createdBy || (note as any).created_by || 'CloseFlow')}</span>
+                  </div>
+                  <p>{String((note as any).content || (note as any).body || (note as any).note || (note as any).description || '')}</p>
+                </article>
+              ))}
+            </div>
+          )}
+
+          <DialogFooter className={modalFooterClass('event-form-footer case-all-notes-modal-stage231d0d-r2__footer')}>
+            <Button type="button" variant="outline" onClick={() => setIsCaseAllNotesOpenStage231D0D(false)}>Zamknij</Button>
+            <Button type="button" onClick={openCaseNoteDialog} data-case-all-notes-add-note="true">
+              <StickyNote className="h-4 w-4" />
+              Dodaj notatkę
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
       <span hidden data-stage231b0-case-close-archive-finance-truth="STAGE231B0_CASE_CLOSE_ARCHIVE_FINANCE_TRUTH" />
       <ConfirmDialog
         open={closeCaseOpen}

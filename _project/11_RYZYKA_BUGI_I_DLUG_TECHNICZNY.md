@@ -711,3 +711,88 @@ Poza zakresem:
 - brak zmian aktywnej sprawy,
 - brak zmian CaseDetail,
 - brak zmian LeadListCard runtime.
+
+
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0D-R2 CaseDetail service notes and finance rail
+
+Status: APPLIED_BY_ZIP / READY_FOR_TEST_AND_PUSH
+
+FAKTY Z KODU:
+- CaseDetail had CaseQuickActions before the finance rail.
+- CaseDetail had an older Stage220A10 duplicated service/notes block before the current service tab source of truth.
+- Finance and cost source files already exist; this stage does not add SQL or a new data model.
+
+DECYZJE DAMIANA:
+- CaseDetail right rail order: Rozliczenie sprawy -> Szybkie akcje -> Dane sprawy i klienta.
+- One CaseServiceTab source of truth.
+- One CaseNotesPanel preview plus CaseAllNotesModal.
+- Costs use semantic orange/red cost-warning classes, not system-error styling.
+
+TESTY:
+- scripts/check-stage231d0d-r2-case-detail-service-notes-finance-rail.cjs
+- tests/stage231d0d-r2-case-detail-service-notes-finance-rail.test.cjs
+- D0C ClientDetail regression
+- npm run build
+- git diff --check
+
+RYZYKA:
+- CaseDetail still has old build warnings outside this stage.
+- Manual QA must confirm modal and right rail order on production.
+
+
+
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0D-R2 CaseDetail service notes and finance rail
+
+Status: APPLIED_BY_ZIP / READY_FOR_TEST_AND_PUSH
+
+FAKTY Z KODU:
+- CaseDetail had CaseQuickActions before the finance rail.
+- CaseDetail had an older Stage220A10 duplicated service/notes block before the current service tab source of truth.
+- Finance and cost source files already exist; this stage does not add SQL or a new data model.
+
+DECYZJE DAMIANA:
+- CaseDetail right rail order: Rozliczenie sprawy -> Szybkie akcje -> Dane sprawy i klienta.
+- One CaseServiceTab source of truth.
+- One CaseNotesPanel preview plus CaseAllNotesModal.
+- Costs use semantic orange/red cost-warning classes, not system-error styling.
+
+TESTY:
+- scripts/check-stage231d0d-r2-case-detail-service-notes-finance-rail.cjs
+- tests/stage231d0d-r2-case-detail-service-notes-finance-rail.test.cjs
+- D0C ClientDetail regression
+- npm run build
+- git diff --check
+
+RYZYKA:
+- CaseDetail still has old build warnings outside this stage.
+- Manual QA must confirm modal and right rail order on production.
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0D_R4_TOTAL_TO_COLLECT_AND_JSX_RESCUE
+
+Status: PATCH_RESCUE / CONTINUES_STAGE231D0D_R2
+
+Zakres:
+- naprawa częściowo zastosowanego D0D-R3 po guard fail,
+- dopisanie widocznego wiersza "Razem do pobrania" do pierwszej karty "Rozliczenie sprawy",
+- podpięcie totalu do istniejącego caseCostsSummaryStage231D2.totalToCollectAmount,
+- naprawa JSX service tab po usunięciu legacy Stage220A10 duplicate block,
+- bez SQL, bez nowego modelu kosztów, bez wykresów.
+
+Testy wymagane:
+- D0D-R2 guard/test,
+- D0C ClientDetail baseline regression,
+- D0B ClientListCard regression,
+- npm run build,
+- git diff --check.
+
+Audyt ryzyk:
+- nie dublować osobnej karty kosztów jako drugiego źródła rozliczenia; wiersz totalu w pierwszej karcie jest obowiązkowy dla skanowalności prawego panelu,
+- po deployu manualnie sprawdzić kolejność raila: Rozliczenie -> Szybkie akcje -> Dane sprawy i klienta.
