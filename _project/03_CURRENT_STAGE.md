@@ -2023,23 +2023,23 @@ następny krok:
 - risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.
 
 <!-- STAGE231D0B_CLIENT_LIST_CARD_CURRENT_STAGE_START -->
-## 2026-06-10 21:10 Europe/Warsaw - STAGE231D0B Client List Card Visual Freeze
+## 2026-06-11 19:57 Europe/Warsaw - STAGE231D0B Client List Card Visual Freeze
 
 STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
 
 FAKTY:
-- Kafelek klienta na liście klientów został przestawiony na układ 2-wierszowy.
-- Z kafelka klienta usunięto Leady: oraz badge Aktywna sprawa.
+- Kafelek klienta na liĹ›cie klientĂłw zostaĹ‚ przestawiony na ukĹ‚ad 2-wierszowy.
+- Z kafelka klienta usuniÄ™to Leady: oraz badge Aktywna sprawa.
 - Wiersz 1 pokazuje: nazwa, telefon, e-mail, Aktywna prowizja, akcje.
-- Wiersz 2 pokazuje: firma, Sprawy, Zarobione łącznie, Najbliższa akcja oraz dozwolone statusy pomocnicze.
-- Telefon ma osobny marker data-client-list-phone i klasę client-list-card-phone.
-- E-mail ma osobny marker data-client-list-email i klasę client-list-card-email.
-- UI dalej korzysta z closeflow-record-list-source-truth.css jako źródła prawdy stylu list.
+- Wiersz 2 pokazuje: firma, Sprawy, Zarobione Ĺ‚Ä…cznie, NajbliĹĽsza akcja oraz dozwolone statusy pomocnicze.
+- Telefon ma osobny marker data-client-list-phone i klasÄ™ client-list-card-phone.
+- E-mail ma osobny marker data-client-list-email i klasÄ™ client-list-card-email.
+- UI dalej korzysta z closeflow-record-list-source-truth.css jako ĹşrĂłdĹ‚a prawdy stylu list.
 
 DECYZJA DAMIANA:
-- Klient jest już pozyskanym leadem, więc nie pokazujemy Leady w kafelku klienta.
-- Klient może mieć wiele spraw, więc nie pokazujemy binarnego badge'a Aktywna sprawa.
-- Na liście klientów mają być widoczne: Aktywna prowizja, Zarobione łącznie, Sprawy, Najbliższa akcja.
+- Klient jest juĹĽ pozyskanym leadem, wiÄ™c nie pokazujemy Leady w kafelku klienta.
+- Klient moĹĽe mieÄ‡ wiele spraw, wiÄ™c nie pokazujemy binarnego badge'a Aktywna sprawa.
+- Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
 
 TESTY/GUARDY:
 -
@@ -2049,12 +2049,12 @@ pm run build
 - git diff --check
 
 DO POTWIERDZENIA:
-- Test ręczny desktop/mobile na /clients po lokalnym uruchomieniu.
+- Test rÄ™czny desktop/mobile na /clients po lokalnym uruchomieniu.
 
 RYZYKA:
-- Jeśli dane prowizyjne w bazie są niepełne, Aktywna prowizja może pokazać 0 PLN mimo aktywnej sprawy bez uzupełnionej prowizji.
-- Jeśli płatności prowizyjne nie mają typu/statusu rozpoznawanego przez finance source, Zarobione łącznie może wymagać osobnego etapu porządkującego dane płatności.
-- Zmiana dotyczy tylko listy klientów, nie przebudowuje ClientDetail ani modeli finansowych.
+- JeĹ›li dane prowizyjne w bazie sÄ… niepeĹ‚ne, Aktywna prowizja moĹĽe pokazaÄ‡ 0 PLN mimo aktywnej sprawy bez uzupeĹ‚nionej prowizji.
+- JeĹ›li pĹ‚atnoĹ›ci prowizyjne nie majÄ… typu/statusu rozpoznawanego przez finance source, Zarobione Ĺ‚Ä…cznie moĹĽe wymagaÄ‡ osobnego etapu porzÄ…dkujÄ…cego dane pĹ‚atnoĹ›ci.
+- Zmiana dotyczy tylko listy klientĂłw, nie przebudowuje ClientDetail ani modeli finansowych.
 <!-- STAGE231D0B_CLIENT_LIST_CARD_CURRENT_STAGE_END -->
 
 
@@ -2237,3 +2237,55 @@ RYZYKA:
 Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
 
 Zakres: kompaktowa aktywna sprawa klienta, compact top tiles, compact notes, UI Dictionary, guard/test.
+
+---
+
+## 2026-06-11 19:45 Europe/Warsaw - STAGE231D0C/R7 ClientDetail left rail spacing
+
+STAGE231D0C_R7_CLIENT_DETAIL_LEFT_RAIL_SPACING
+
+FAKTY Z KODU:
+- STAGE231D0C/R6 został wdrożony i wypchnięty jako baseline ClientDetail.
+- Manual QA wskazał, że lewy rail zaczyna się za wysoko i wizualnie wchodzi w następny poziom względem kart po prawej.
+
+DECYZJA DAMIANA:
+- Zachować zaakceptowane górne kafelki ClientDetail.
+- Obniżyć lewy rail do poziomu kafelków po prawej i zachować ten sam odstęp między kartami.
+
+ZAKRES:
+- CSS spacing only: lewy rail, prawy rail, odstęp między kartami.
+- Bez zmian danych, JSX, SQL, kosztów, wykresów, Google Calendar, LeadListCard runtime i CaseDetail.
+
+TESTY/GUARDY:
+- scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs
+- tests/stage231d0c-r7-client-detail-left-rail-spacing.test.cjs
+- regresja: STAGE231D0C ClientDetail baseline guard, STAGE231D0B ClientListCard guard, optional STAGE231B0 R9 guard, build, git diff --check.
+
+---
+
+## 2026-06-11 20:05 Europe/Warsaw - STAGE231D0C/R8 ClientDetail left rail spacing guard fix
+
+STAGE231D0C_R8_CLIENT_DETAIL_LEFT_RAIL_SPACING_GUARD_FIX
+
+FAKTY Z KODU:
+- STAGE231D0C/R7 patch zastosował spacing lewego raila, ale guard miał zepsuty regex po utracie backslashy.
+- R8 nie zmienia runtime poza naprawą guarda/testu i dokumentacją.
+
+DECYZJA DAMIANA:
+- Zachować górne kafelki ClientDetail.
+- Dokończyć spacing lewego raila bez przebudowy układu.
+
+ZAKRES:
+- Naprawa scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs.
+- Zachowanie CSS R7 i scope ClientDetail.
+- Bez zmian SQL, danych, CaseDetail, LeadListCard runtime, kosztów i wykresów.
+
+TESTY/GUARDY:
+- node --check guard R7.
+- R7 spacing guard.
+- R7 spacing node test.
+- STAGE231D0C ClientDetail baseline guard/test.
+- STAGE231D0B ClientListCard guard/test.
+- Optional STAGE231B0 R9 guard/test.
+- git diff --check.
+- npm run build.

@@ -3773,3 +3773,45 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
   .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-card[data-client-active-case-card="true"] { grid-template-columns: 1fr !important; align-items: stretch !important; }
   .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-active-case-actions { justify-content: flex-start !important; flex-wrap: wrap !important; }
 }
+
+/* STAGE231D0C_R7_CLIENT_DETAIL_LEFT_RAIL_SPACING
+   Decision: left ClientDetail rail must start lower, aligned with right rail cards.
+   Scope: spacing only. Keep accepted top overview tiles, active-case compact card, data and routing unchanged.
+*/
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] {
+  --cf-client-detail-rail-card-gap: 22px;
+  --cf-client-detail-left-rail-top-offset: clamp(26px, 2vw, 34px);
+}
+
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-shell {
+  align-items: start !important;
+}
+
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-left-rail {
+  gap: var(--cf-client-detail-rail-card-gap) !important;
+  padding-top: var(--cf-client-detail-left-rail-top-offset, clamp(26px, 2vw, 34px)) !important;
+  box-sizing: border-box !important;
+}
+
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-right-rail {
+  gap: var(--cf-client-detail-rail-card-gap) !important;
+}
+
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-left-rail > .client-detail-side-card,
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-left-rail > .client-detail-profile-card,
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-left-rail > .client-detail-recent-moves-card,
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-right-rail > .client-detail-right-card {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+@media (max-width: 1279px) {
+  .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] {
+    --cf-client-detail-rail-card-gap: 18px;
+    --cf-client-detail-left-rail-top-offset: 0px;
+  }
+
+  .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-left-rail {
+    padding-top: 0 !important;
+  }
+}

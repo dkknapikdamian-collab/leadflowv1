@@ -3429,3 +3429,55 @@ RYZYKA:
 ## 2026-06-11 Europe/Warsaw - After STAGE231D0C/R6
 
 Manual QA: /clients/<id> after deploy. Next planned: STAGE231D0D CaseDetail right rail finance-first layout.
+
+---
+
+## 2026-06-11 19:45 Europe/Warsaw - Next after STAGE231D0C/R7 ClientDetail left rail spacing
+
+STAGE231D0C_R7_CLIENT_DETAIL_LEFT_RAIL_SPACING
+
+FAKTY Z KODU:
+- STAGE231D0C/R6 został wdrożony i wypchnięty jako baseline ClientDetail.
+- Manual QA wskazał, że lewy rail zaczyna się za wysoko i wizualnie wchodzi w następny poziom względem kart po prawej.
+
+DECYZJA DAMIANA:
+- Zachować zaakceptowane górne kafelki ClientDetail.
+- Obniżyć lewy rail do poziomu kafelków po prawej i zachować ten sam odstęp między kartami.
+
+ZAKRES:
+- CSS spacing only: lewy rail, prawy rail, odstęp między kartami.
+- Bez zmian danych, JSX, SQL, kosztów, wykresów, Google Calendar, LeadListCard runtime i CaseDetail.
+
+TESTY/GUARDY:
+- scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs
+- tests/stage231d0c-r7-client-detail-left-rail-spacing.test.cjs
+- regresja: STAGE231D0C ClientDetail baseline guard, STAGE231D0B ClientListCard guard, optional STAGE231B0 R9 guard, build, git diff --check.
+
+---
+
+## 2026-06-11 20:05 Europe/Warsaw - Next after STAGE231D0C/R8 ClientDetail left rail spacing guard fix
+
+STAGE231D0C_R8_CLIENT_DETAIL_LEFT_RAIL_SPACING_GUARD_FIX
+
+FAKTY Z KODU:
+- STAGE231D0C/R7 patch zastosował spacing lewego raila, ale guard miał zepsuty regex po utracie backslashy.
+- R8 nie zmienia runtime poza naprawą guarda/testu i dokumentacją.
+
+DECYZJA DAMIANA:
+- Zachować górne kafelki ClientDetail.
+- Dokończyć spacing lewego raila bez przebudowy układu.
+
+ZAKRES:
+- Naprawa scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs.
+- Zachowanie CSS R7 i scope ClientDetail.
+- Bez zmian SQL, danych, CaseDetail, LeadListCard runtime, kosztów i wykresów.
+
+TESTY/GUARDY:
+- node --check guard R7.
+- R7 spacing guard.
+- R7 spacing node test.
+- STAGE231D0C ClientDetail baseline guard/test.
+- STAGE231D0B ClientListCard guard/test.
+- Optional STAGE231B0 R9 guard/test.
+- git diff --check.
+- npm run build.
