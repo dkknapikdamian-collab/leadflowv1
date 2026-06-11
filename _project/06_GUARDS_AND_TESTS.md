@@ -3226,3 +3226,39 @@ Tests/guards:
 Risk audit:
 - desktop offset can create too much vertical whitespace on narrow layouts, therefore reset is scoped to max-width 1180px.
 - final acceptance requires production screenshot after deploy and Ctrl+F5.
+
+---
+
+## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0C/R12 ClientDetail left rail measured axis fix
+
+Status: LOCAL_APPLY_PRE_PUSH.
+Commit target: fix ClientDetail left rail vertical axis using measured desktop DOM values.
+
+Measured fact from manual DOM audit after clearing debug inline style:
+- viewport innerWidth: 1920
+- leftFirstTop: 173
+- rightFirstTop: 200
+- leftMinusRight: -27
+- computed left rail margin-top before fix: -36px
+- required final desktop margin-top: -9px
+
+Change:
+- CSS-only override in src/styles/visual-stage12-client-detail-vnext.css.
+- Locks .client-detail-shell > .client-detail-left-rail margin-top to -9px on desktop >=1180px.
+- Resets margin/padding/transform on tablet/mobile <=1179px.
+
+Scope not touched:
+- JSX, data fetching, Supabase, SQL, costs, charts, active case card structure, CaseDetail, LeadListCard runtime.
+
+Tests required:
+- R12 measured-axis guard/test.
+- R9 and R7 left rail regressions.
+- ClientDetail baseline guard/test.
+- ClientListCard freeze regression.
+- git diff --check.
+- npm run build.
+
+Manual QA after deploy:
+- open /clients/<id>, Ctrl+F5.
+- verify left Data klienta card starts visually on the same axis as right Najbliższe działania card.
+- verify top tiles and active case compact card unchanged.

@@ -1,4 +1,4 @@
-﻿/* STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION */
+/* STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION */
 /* CLIENT_DETAIL_VISUAL_REBUILD_STAGE12 */
 
 .client-detail-vnext-page {
@@ -3855,5 +3855,30 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
   .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-shell > .client-detail-left-rail {
     --cf-client-detail-left-rail-top-offset: 0px !important;
     padding-top: 0 !important;
+  }
+}
+
+/* STAGE231D0C_R12_CLIENT_DETAIL_LEFT_RAIL_MEASURED_AXIS_FIX
+   Measured desktop axis fix.
+   Real desktop audit after clearing debug inline style:
+   leftFirstTop=173, rightFirstTop=200, current computed margin-top=-36px.
+   Required final desktop margin: -9px. This is a measured axis correction, not another guessed offset.
+   Scope: ClientDetail left rail only. Do not touch top tiles, active case card, data, routing, SQL, costs, CaseDetail or LeadListCard runtime.
+*/
+@media (min-width: 1180px) {
+  .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-shell > .client-detail-left-rail {
+    --cf-client-detail-left-rail-measured-axis-margin: -9px;
+    margin-top: var(--cf-client-detail-left-rail-measured-axis-margin) !important;
+    padding-top: 0 !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 1179px) {
+  .client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-shell > .client-detail-left-rail {
+    --cf-client-detail-left-rail-measured-axis-margin: 0px;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    transform: none !important;
   }
 }
