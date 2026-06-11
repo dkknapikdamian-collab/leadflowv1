@@ -134,6 +134,22 @@ forbidIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'place-self: c
 forbidIncludes('R10/R10 final CSS block', stage231d0bR10R10Block, 'justify-self: end');
 /* STAGE231D0B_R10_R10_SINGLE_GRID_GUARD_END */
 
+
+/* STAGE231D0B_R10_R11_FIXED_COLUMN_AXIS_GUARD_START */
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R11_FIXED_COLUMN_AXIS');
+const stage231d0bR10R11BlockIndex = css.indexOf('STAGE231D0B-R10-R11_FIXED_COLUMN_AXIS');
+const stage231d0bR10R11Block = stage231d0bR10R11BlockIndex >= 0 ? css.slice(stage231d0bR10R11BlockIndex) : '';
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-name-col');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-phone-col');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-email-col');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, '--cf-client-card-finance-col');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, 'grid-template-columns: var(--cf-client-card-name-col) var(--cf-client-card-phone-col) var(--cf-client-card-email-col) var(--cf-client-card-finance-col) var(--cf-client-card-status-col)');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, 'display: contents');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, 'grid-column: 4');
+requireIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, 'place-self: center start');
+forbidIncludes('R10/R11 fixed-axis CSS block', stage231d0bR10R11Block, 'grid-template-columns: minmax(9.5rem, 1.15fr) minmax(6.7rem, 0.58fr) minmax(9.5rem, 0.9fr) minmax(9rem, max-content)');
+/* STAGE231D0B_R10_R11_FIXED_COLUMN_AXIS_GUARD_END */
+
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
 requireIncludes('CSS source truth', css, 'cf-client-active-commission');
 requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');

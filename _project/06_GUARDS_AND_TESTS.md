@@ -3070,3 +3070,28 @@ ZAKRES: tylko /clients ClientListCard CSS source truth i guard. Nie ruszano lead
 TESTY: npm run check:stage231d0b-client-list-card-freeze, node --test tests/stage231d0b-client-list-card-freeze.test.cjs, git diff --check, npm run build.
 
 MANUAL QA: /clients po Ctrl+F5; sprawdzic, czy Aktywna prowizja i Zarobione lacznie startuja w jednej osi, tak jak nazwa/firma.
+
+
+---
+
+## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R11 fixed column axis
+
+Status: LOCAL_APPLY_READY / DO_MANUAL_QA_AFTER_DEPLOY
+
+FAKT:
+- R10/R10 fixed the physical single grid but the grid still used content-sensitive columns, so column starts could move between client cards.
+- R10/R11 pins deterministic column widths through CSS variables on .cf-client-list-card-content.
+
+DECYZJA DAMIANA:
+- Texts must start in the same place across every client card.
+- Longer text may decide where a chip ends, but it must not move the start axis.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Visual QA is mandatory after deploy: desktop, narrow window, mobile.
+- CSS history R7/R8/R9 remains in file as deprecated layers; R10/R11 is the final active override.
