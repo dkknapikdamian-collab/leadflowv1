@@ -687,3 +687,27 @@ Manual QA after deploy:
 - open /clients/<id>, Ctrl+F5.
 - verify left Data klienta card starts visually on the same axis as right Najbliższe działania card.
 - verify top tiles and active case compact card unchanged.
+
+---
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0C-R2 ClientDetailHeader visual freeze + visible icons
+
+Marker: STAGE231D0C_R2_CLIENT_DETAIL_HEADER_FREEZE
+Status: LOCAL_APPLY_PREPARED / DO_TEST_AND_PUSH
+
+Zakres:
+- zamrożenie ClientDetailHeader jako wzorca DetailHeader,
+- dopisanie stylu widoczności ikon w header buttons,
+- dopisanie DetailHeader do UI Dictionary,
+- dodanie guarda i testu R2,
+- regresja D0C baseline.
+
+Decyzja Damiana:
+Header karty klienta detail zostaje wzorcem dla kolejnych kart detail. Ikony w niebieskich przyciskach muszą być widoczne.
+
+Poza zakresem:
+- brak SQL,
+- brak zmian danych,
+- brak zmian aktywnej sprawy,
+- brak zmian CaseDetail,
+- brak zmian LeadListCard runtime.

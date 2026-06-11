@@ -140,3 +140,32 @@ Krótki sygnał: najbliższy ruch / finanse / sprawy.
 
 Zasada:
 Ma być kompaktowy i nie dublować pełnego prawego panelu.
+
+## DetailHeader
+
+Nazwa ludzka:
+Górny kafel / header karty detail
+
+Nazwa systemowa:
+DetailHeader
+
+Wariant:
+client-detail-header-baseline
+
+Rola:
+Stały nagłówek karty encji: powrót, typ kartoteki, nazwa rekordu, akcje główne.
+
+Źródło wzorca:
+ClientDetailHeader
+
+Pliki:
+src/pages/ClientDetail.tsx
+src/styles/visual-stage12-client-detail-vnext.css
+
+Zasady:
+- powrót po lewej,
+- kicker nad nazwą,
+- nazwa rekordu czytelna,
+- akcje po prawej,
+- ikony w akcjach zawsze widoczne,
+- nie dublować danych z paneli niżej.

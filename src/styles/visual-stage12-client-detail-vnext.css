@@ -3882,3 +3882,27 @@ main[data-current-section="client-detail"] > .view.active[data-shell-content="tr
     transform: none !important;
   }
 }
+
+/* STAGE231D0C_R2_CLIENT_DETAIL_HEADER_FREEZE
+   Decision: freeze ClientDetailHeader as detail-header baseline and keep header action icons visible.
+   Scope: header action visibility only. Do not change layout, data, active case, tabs, SQL, costs or CaseDetail.
+*/
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-header-actions {
+  justify-content: flex-end !important;
+}
+
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-header-action-soft svg,
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-header-action-primary svg {
+  opacity: 1 !important;
+  visibility: visible !important;
+  color: currentColor !important;
+  stroke: currentColor !important;
+  fill: none;
+  flex-shrink: 0;
+}
+
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-header-action-primary,
+.client-detail-vnext-page[data-stage231d0c-client-detail-workspace-baseline="true"] .client-detail-header-action-primary svg {
+  color: #ffffff !important;
+  stroke: currentColor !important;
+}
