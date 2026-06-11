@@ -2631,3 +2631,28 @@ Testy/guardy:
 Ryzyka:
 - finalna akceptacja wymaga screenshotu /clients/<id> po deployu i Ctrl+F5;
 - tablet/mobile resetują offset do 0, żeby nie zrobić sztucznej dziury.
+
+---
+## 2026-06-11 Europe/Warsaw - STAGE231D0C/R11 ClientDetail left rail axis lock
+
+Marker: STAGE231D0C_R11_CLIENT_DETAIL_LEFT_RAIL_AXIS_LOCK
+
+Status: LOCAL_APPLY_READY
+
+Scope:
+- desktop-only CSS axis lock for the ClientDetail left rail,
+- strengthens previous R7/R9 offset because production screenshot still showed the left rail above the right card axis,
+- keeps top overview tiles, compact active case card, data, routing and JSX unchanged.
+
+Tests/guards:
+- scripts/check-stage231d0c-r11-client-detail-left-rail-axis-lock.cjs
+- tests/stage231d0c-r11-client-detail-left-rail-axis-lock.test.cjs
+- R9/R7 regressions where present
+- ClientDetail baseline regression
+- ClientListCard regression
+- git diff --check
+- npm run build
+
+Risk audit:
+- desktop offset can create too much vertical whitespace on narrow layouts, therefore reset is scoped to max-width 1180px.
+- final acceptance requires production screenshot after deploy and Ctrl+F5.
