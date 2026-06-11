@@ -2992,3 +2992,35 @@ Marker: STAGE231D0B-R8-MASS-ENCODING-RESCUE
 - Naprawiono klasę błędu: mojibake po STAGE231D0B.
 - Przepisano guard tak, żeby nie akceptował uszkodzonych polskich znaków.
 - Dodano masowy sweep report encodingu dla src, scripts i _project.
+
+## 2026-06-10 Europe/Warsaw — STAGE231D0B-R9 ClientListCard polish + source truth cleanup
+
+Status: LOCAL_ONLY_PACKAGE_APPLIED_PENDING_PUSH
+
+FAKTY:
+- ClientListCard pozostaje 2-wierszowy.
+- Finance values są porządkowane jako kompaktowe chipy.
+- R8 unscoped CSS rescue zostaje zastąpiony scoped R9 source truth.
+- LeadListCard dodany tylko jako mapping w UI Dictionary, bez runtime zmian.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Manual QA nadal wymagany, bo guard nie mierzy odbioru wizualnego.
+- Osobny dług: duplicate savedRecord warning w ContextActionDialogs.tsx.
+
+NASTĘPNY KROK:
+- Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.
+
+## 2026-06-11 Europe/Warsaw — STAGE231D0B_R9_R3_GUARD_MOJIBAKE_SELF_SCAN_REPAIR
+
+- Fixed R9 guard self-scan failure caused by literal encoding-drift probe characters in the guard source.
+
+## 2026-06-11 Europe/Warsaw — STAGE231D0B_R9_R4_CSS_GUARD_TOKEN_ALIGNMENT
+
+- Added exact CSS source-truth marker and max-width token required by the R9/R3 guard.
+- No runtime lead, trial, top layout or Supabase changes.

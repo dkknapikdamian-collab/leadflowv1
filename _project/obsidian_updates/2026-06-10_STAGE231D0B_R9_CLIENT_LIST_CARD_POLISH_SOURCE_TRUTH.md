@@ -1,0 +1,24 @@
+# STAGE231D0B-R9 — ClientListCard visual polish + source truth cleanup
+
+- data i godzina: 2026-06-10 Europe/Warsaw
+- nazwa / alias wejściowy: STAGE231D0B-R9 — ClientListCard visual polish + source truth cleanup
+- entity_id: DO_POTWIERDZENIA
+- workspace_id: DO_POTWIERDZENIA
+- project_id: CloseFlow / LeadFlow
+- idea_id: nie dotyczy
+- report_id: nie dotyczy
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: 10_PROJEKTY/CloseFlow_Lead_App
+- mapa główna / pulpit: DO_POTWIERDZENIA
+- mapa zależności: ClientListCard -> closeflow-record-list-source-truth.css -> clients-next-action-layout.css
+- ściąga plików: Clients.tsx, closeflow-record-list-source-truth.css, clients-next-action-layout.css, UI_DICTIONARY_STAGE231D0A.md, check-stage231d0b-client-list-card-freeze.cjs
+- typ wpisu: etap cleanup UI + source truth
+- docelowa ścieżka: 10_PROJEKTY/CloseFlow_Lead_App/STAGE231D0B_R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH.md
+- status zapisu: przygotowane w ZIP / do przeniesienia do Obsidiana
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: D0B guard, node test, optional visual guards, git diff --check, build
+- audyt ryzyk po etapie: niescopowany CSS R8 zastąpiony R9; legacy clients-next-action-layout zabezpieczony przed cf-client-row-two-line
+- czego nie ruszano: Layout.tsx, trial banner, top layout, right rail filters, SQL, Supabase, runtime leadów
+- następny krok: manual QA /clients, potem STAGE231D0C LeadListCard align jeśli ekran zaakceptowany

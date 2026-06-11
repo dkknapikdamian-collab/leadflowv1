@@ -753,50 +753,116 @@
   }
 }
 
-/* STAGE231D0B-R8 CLIENT LIST CARD MASS ENCODING RESCUE START */
-.client-list-card-row-primary,
-.client-list-card-row-secondary {
-  display: grid;
-  grid-template-columns: minmax(220px, 1.35fr) minmax(140px, 0.75fr) minmax(180px, 1fr) minmax(240px, 1.25fr) auto;
-  align-items: center;
-  gap: 12px;
+/* STAGE231D0B-R9 CLIENTLISTCARD SOURCE TRUTH CLEANUP START
+   Machine guard marker: STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH */
+/*
+  Status: ACTIVE
+  Scope: only /clients ClientListCard two-line row.
+  Decision: R8 unscoped rescue selectors are removed. Finance values are compact chips, not long bars.
+  LeadListCard mapping is documented in UI Dictionary only; runtime leads are not changed in this stage.
+*/
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
+  grid-template-columns: minmax(2.15rem, 2.5rem) minmax(0, 1fr) minmax(4.8rem, max-content) !important;
+  align-items: center !important;
 }
 
-.client-list-card-row-secondary {
-  grid-template-columns: minmax(220px, 1.35fr) minmax(140px, 0.75fr) minmax(240px, 1.25fr) minmax(260px, 1.35fr) auto;
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-list-card-content {
+  display: grid !important;
+  gap: 0.34rem !important;
+  min-width: 0 !important;
 }
 
-.client-list-card-phone {
-  font-size: 15px;
-  font-weight: 900;
-  line-height: 1.15;
-  color: var(--record-list-ink-strong, #111827);
-  white-space: nowrap;
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
+  display: grid !important;
+  align-items: center !important;
+  gap: 0.34rem 0.62rem !important;
+  min-width: 0 !important;
 }
 
-.client-list-card-email,
-.client-list-card-company,
-.client-list-card-cases,
-.client-list-card-nearest-action {
-  min-width: 0;
-  white-space: nowrap;
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary {
+  grid-template-columns: minmax(9rem, 1.12fr) minmax(7.5rem, 0.68fr) minmax(9rem, 0.86fr) minmax(8.5rem, max-content) !important;
 }
 
-.client-list-card-active-commission,
-.client-list-card-earned {
-  min-width: max-content;
-  width: auto;
-  max-width: none;
-  white-space: nowrap;
-  overflow: visible;
-  text-overflow: clip;
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
+  grid-template-columns: minmax(9rem, 1.12fr) minmax(5.6rem, max-content) minmax(9rem, max-content) minmax(10rem, 1fr) auto !important;
 }
 
-@media (max-width: 980px) {
-  .client-list-card-row-primary,
-  .client-list-card-row-secondary {
-    grid-template-columns: 1fr;
-    align-items: start;
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-phone {
+  font-size: 0.95rem !important;
+  line-height: 1.05 !important;
+  font-weight: 900 !important;
+  color: rgb(15 23 42) !important;
+  -webkit-text-fill-color: rgb(15 23 42) !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-email,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-cases-count,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-nearest-action,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-company-slot {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line :is(.cf-client-active-commission, .cf-client-lifetime-earned) {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: fit-content !important;
+  max-width: max-content !important;
+  max-inline-size: min(100%, 14rem) !important;
+  min-width: 0 !important;
+  padding: 0.22rem 0.5rem !important;
+  border-radius: 999px !important;
+  border: 1px solid rgba(16, 185, 129, 0.22) !important;
+  background: rgba(236, 253, 245, 0.78) !important;
+  color: rgb(4, 120, 87) !important;
+  -webkit-text-fill-color: rgb(4, 120, 87) !important;
+  font-size: 0.78rem !important;
+  font-weight: 850 !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-shadow: none !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-lifetime-earned {
+  background: rgba(240, 253, 244, 0.62) !important;
+  border-color: rgba(22, 163, 74, 0.18) !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .cf-client-cases-count {
+  font-weight: 800 !important;
+  color: rgb(51 65 85) !important;
+  -webkit-text-fill-color: rgb(51 65 85) !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
   }
 }
-/* STAGE231D0B-R8 CLIENT LIST CARD MASS ENCODING RESCUE END */
+
+@media (max-width: 46rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line {
+    grid-template-columns: 2.1rem minmax(0, 1fr) !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .cf-client-row-actions,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line > .client-card-action-buttons {
+    grid-column: 2 !important;
+    grid-row: auto !important;
+    justify-self: start !important;
+  }
+
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-primary,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line .client-list-card-row-secondary {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+}
+/* STAGE231D0B-R9 CLIENTLISTCARD SOURCE TRUTH CLEANUP END */

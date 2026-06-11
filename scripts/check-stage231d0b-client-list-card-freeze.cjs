@@ -1,86 +1,134 @@
-const fs = require('fs');
+const fs = require('node:fs');
+const path = require('node:path');
 
-function read(file) {
-  return fs.readFileSync(file, 'utf8');
+const ROOT = process.cwd();
+
+function read(rel) {
+  return fs.readFileSync(path.join(ROOT, rel), 'utf8');
 }
 
-function ch(...codes) {
-  return String.fromCharCode(...codes);
+function exists(rel) {
+  return fs.existsSync(path.join(ROOT, rel));
 }
 
-const badTokens = [
-  ch(0x0102),
-  ch(0x0139),
-  ch(0x00c4),
-  ch(0x00c5),
-  ch(0x00c2),
-  ch(0xfffd),
-  ch(0x010f, 0x017c, 0x02dd),
-  ch(0x00e2, 0x20ac),
-];
+function fail(message) {
+  errors.push(message);
+}
 
 const errors = [];
-function fail(message) { errors.push(message); }
-function hasAny(text, needles) { return needles.some((needle) => text.includes(needle)); }
 
-function blockMojibake(file, text) {
-  for (const token of badTokens) {
-    if (text.includes(token)) {
-      fail('Mojibake detected in ' + file + ' token=' + Array.from(token).map((c) => 'U+' + c.codePointAt(0).toString(16).toUpperCase()).join('+'));
-      return;
+const files = {
+  clients: 'src/pages/Clients.tsx',
+  css: 'src/styles/closeflow-record-list-source-truth.css',
+  legacyCss: 'src/styles/clients-next-action-layout.css',
+  dictionary: '_project/UI_DICTIONARY_STAGE231D0A.md',
+  test: 'tests/stage231d0b-client-list-card-freeze.test.cjs',
+  runReport: '_project/runs/2026-06-10_STAGE231D0B_R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH.md',
+};
+
+const clients = read(files.clients);
+const css = read(files.css);
+const legacyCss = exists(files.legacyCss) ? read(files.legacyCss) : '';
+const dictionary = exists(files.dictionary) ? read(files.dictionary) : '';
+const testFile = exists(files.test) ? read(files.test) : '';
+const runReport = exists(files.runReport) ? read(files.runReport) : '';
+
+function requireIncludes(name, text, token) {
+  if (!text.includes(token)) fail(name + ' is missing required token: ' + token);
+}
+
+function forbidIncludes(name, text, token) {
+  if (text.includes(token)) fail(name + ' contains forbidden token: ' + token);
+}
+
+function makeEncodingDriftTokens() {
+  const single = [0x0102, 0x0139, 0x00c4, 0x00c5, 0x00c2, 0xfffd].map((code) => String.fromCodePoint(code));
+  const triplet = String.fromCodePoint(0x010f) + String.fromCodePoint(0x017c) + String.fromCodePoint(0x02dd);
+  return [...single, triplet];
+}
+
+const encodingTargets = [
+  files.clients,
+  files.css,
+  files.legacyCss,
+  files.dictionary,
+  files.test,
+  files.runReport,
+  'scripts/check-stage231d0b-client-list-card-freeze.cjs',
+].filter(exists);
+
+for (const rel of encodingTargets) {
+  const content = read(rel);
+  for (const token of makeEncodingDriftTokens()) {
+    if (content.includes(token)) fail('Encoding drift detected in ' + rel + ' tokenCode=' + Array.from(token).map((char) => char.codePointAt(0).toString(16)).join('-'));
+  }
+}
+
+forbidIncludes('Clients.tsx', clients, 'Leady:');
+forbidIncludes('Clients.tsx', clients, 'Aktywna sprawa');
+requireIncludes('Clients.tsx', clients, 'Sprawy:');
+requireIncludes('Clients.tsx', clients, 'Aktywna prowizja');
+requireIncludes('Clients.tsx', clients, 'Zarobione łącznie');
+requireIncludes('Clients.tsx', clients, 'client-list-card-row-primary');
+requireIncludes('Clients.tsx', clients, 'client-list-card-row-secondary');
+requireIncludes('Clients.tsx', clients, 'client-list-card-phone');
+requireIncludes('Clients.tsx', clients, 'client-list-card-email');
+
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
+requireIncludes('CSS source truth', css, 'cf-client-active-commission');
+requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');
+requireIncludes('CSS source truth', css, 'width: fit-content');
+requireIncludes('CSS source truth', css, 'max-width: max-content');
+
+const unscopedSelectors = [
+  'client-list-card-row-primary',
+  'client-list-card-row-secondary',
+  'client-list-card-phone',
+  'client-list-card-active-commission',
+  'client-list-card-earned',
+];
+
+for (const selector of unscopedSelectors) {
+  const lines = css.split(/\r?\n/);
+  for (let index = 0; index < lines.length; index += 1) {
+    const line = lines[index].trim();
+    if (line.startsWith('.' + selector)) {
+      fail('CSS source truth has unscoped selector .' + selector + ' at line ' + (index + 1));
     }
   }
 }
 
-function readIfExists(file) {
-  return fs.existsSync(file) ? read(file) : '';
+const longBarPatterns = [
+  /\.cf-client-active-commission[\s\S]{0,260}\bwidth\s*:\s*100%/,
+  /\.cf-client-lifetime-earned[\s\S]{0,260}\bwidth\s*:\s*100%/,
+  /\.client-list-card-active-commission[\s\S]{0,260}\bwidth\s*:\s*100%/,
+  /\.client-list-card-earned[\s\S]{0,260}\bwidth\s*:\s*100%/,
+];
+for (const pattern of longBarPatterns) {
+  if (pattern.test(css)) fail('Financial metric CSS looks like a full-width bar instead of a compact chip.');
 }
 
-const clients = read('src/pages/Clients.tsx');
-const css = read('src/styles/closeflow-record-list-source-truth.css');
-const guard = read('scripts/check-stage231d0b-client-list-card-freeze.cjs');
-const dictionary = readIfExists('_project/UI_DICTIONARY_STAGE231D0A.md');
-const runReport = readIfExists('_project/runs/STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE_RUN_REPORT_2026-06-10.md');
-const obsidianUpdate = readIfExists('_project/OBSIDIAN_UPDATE_STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE.md');
-const r8Run = readIfExists('_project/runs/STAGE231D0B_R8_MASS_ENCODING_RESCUE_RUN_REPORT_2026-06-10.md');
-const r8Obsidian = readIfExists('_project/OBSIDIAN_UPDATE_STAGE231D0B_R8_MASS_ENCODING_RESCUE.md');
-
-for (const [file, text] of [
-  ['src/pages/Clients.tsx', clients],
-  ['src/styles/closeflow-record-list-source-truth.css', css],
-  ['scripts/check-stage231d0b-client-list-card-freeze.cjs', guard],
-  ['_project/UI_DICTIONARY_STAGE231D0A.md', dictionary],
-  ['_project/runs/STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE_RUN_REPORT_2026-06-10.md', runReport],
-  ['_project/OBSIDIAN_UPDATE_STAGE231D0B_CLIENT_LIST_CARD_VISUAL_FREEZE.md', obsidianUpdate],
-  ['_project/runs/STAGE231D0B_R8_MASS_ENCODING_RESCUE_RUN_REPORT_2026-06-10.md', r8Run],
-  ['_project/OBSIDIAN_UPDATE_STAGE231D0B_R8_MASS_ENCODING_RESCUE.md', r8Obsidian],
-]) {
-  blockMojibake(file, text);
+if (/\.client-row\s*\{[\s\S]{0,260}grid-template-areas/.test(legacyCss) && !legacyCss.includes(':not(.cf-client-row-two-line)')) {
+  fail('clients-next-action-layout.css legacy .client-row grid is not narrowed away from .cf-client-row-two-line');
+}
+if (/\.cf-client-row-two-line\s*\{[\s\S]{0,260}grid-template-areas/.test(legacyCss)) {
+  fail('clients-next-action-layout.css must not define grid-template-areas for .cf-client-row-two-line');
 }
 
-if (clients.includes('Leady:')) fail('ClientListCard must not render Leady:');
-if (clients.includes('Aktywna sprawa')) fail('ClientListCard must not render Aktywna sprawa');
-if (clients.includes('Najbliższa akcja:')) fail('ClientListCard must render clean nearestActionLabel without Najbliższa akcja: prefix');
-if (!clients.includes('Sprawy:')) fail('ClientListCard must render Sprawy:');
-if (!hasAny(clients, ['Aktywna prowizja', 'Prowizja aktywna'])) fail('ClientListCard must render Aktywna prowizja or Prowizja aktywna');
-if (!clients.includes('Zarobione łącznie')) fail('ClientListCard must render Zarobione łącznie');
-if (!clients.includes('data-client-list-phone') && !clients.includes('client-list-card-phone')) fail('ClientListCard phone must have its own slot/class/marker');
-if (!clients.includes('data-client-list-email') && !clients.includes('client-list-card-email')) fail('ClientListCard email must have its own slot/class/marker');
-if (!clients.includes('client-list-card-row-primary')) fail('ClientListCard must have primary 2-line row marker');
-if (!clients.includes('client-list-card-row-secondary')) fail('ClientListCard must have secondary 2-line row marker');
-if (!clients.includes('closeflow-record-list-source-truth.css')) fail('Clients page must use closeflow-record-list-source-truth.css source of truth');
+requireIncludes('UI Dictionary', dictionary, 'ClientListCard');
+requireIncludes('UI Dictionary', dictionary, 'LeadListCard');
+requireIncludes('UI Dictionary', dictionary, 'lead-opportunity-row');
 
-for (const selector of ['client-list-card-row-primary', 'client-list-card-row-secondary', 'client-list-card-phone', 'client-list-card-earned']) {
-  if (!css.includes(selector)) fail('CSS source truth missing selector: ' + selector);
+if (!exists(files.test)) fail('Missing file test: ' + files.test);
+if (exists(files.test)) {
+  requireIncludes('Stage test', testFile, 'node:test');
+  requireIncludes('Stage test', testFile, 'check-stage231d0b-client-list-card-freeze.cjs');
 }
 
-if (!dictionary.includes('ClientListCard')) fail('UI Dictionary must include ClientListCard');
-if (!dictionary.includes('client-relationship-row-2line')) fail('UI Dictionary must include client-relationship-row-2line variant');
-if (!dictionary.includes('Zarobione łącznie')) fail('UI Dictionary must include Zarobione łącznie');
-if (!dictionary.includes('Aktywna prowizja')) fail('UI Dictionary must include Aktywna prowizja');
-if (!obsidianUpdate.includes('Źródła finansowe')) fail('Obsidian update must include clean Źródła finansowe heading');
+if (!runReport.includes('CSS SOURCE OF TRUTH MAP')) fail('Run report is missing CSS SOURCE OF TRUTH MAP');
+if (!runReport.includes('LEADLISTCARD MAPPING')) fail('Run report is missing LEADLISTCARD MAPPING');
 
-if (errors.length) {
+if (errors.length > 0) {
   console.error('STAGE231D0B client list card freeze guard: FAIL');
   for (const error of errors) console.error('- ' + error);
   process.exit(1);

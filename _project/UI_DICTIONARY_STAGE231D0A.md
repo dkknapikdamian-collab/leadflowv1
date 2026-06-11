@@ -38,3 +38,40 @@ Nie pokazywać „Leady”, bo klient jest już pozyskanym leadem.
 Źródła finansowe:
 - Aktywna prowizja = suma prowizji z aktywnych spraw.
 - Zarobione łącznie = suma wpłaconej prowizji ze wszystkich spraw klienta.
+
+
+## LeadListCard
+
+Nazwa ludzka:
+Kafelek leada na liście leadów
+
+Nazwa systemowa:
+LeadListCard
+
+Wariant:
+lead-opportunity-row
+
+Rola:
+Szybka ocena szansy sprzedażowej.
+
+Pokazuje:
+- nazwa / temat
+- telefon albo e-mail
+- źródło
+- status
+- potencjał
+- najbliższa akcja
+- ryzyka
+- akcje
+
+Nie pokazuje:
+- spraw klienta
+- kosztów sprawy
+- zarobione łącznie
+- wpłaconej prowizji
+
+Źródło wizualne:
+Ten sam record-list source truth co ClientListCard, ale inny payload biznesowy.
+
+Status:
+MAPPING_ONLY_STAGE231D0B_R9 — runtime leadów nie jest przebudowywany w tym etapie.

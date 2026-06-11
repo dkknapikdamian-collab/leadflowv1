@@ -2398,3 +2398,26 @@ Do wykonania:
 - git diff --check
 - npm run build
 - ręcznie /clients: brak krzaków, brak Leady:, brak Aktywna sprawa, poprawne Zarobione łącznie.
+
+## 2026-06-10 Europe/Warsaw — STAGE231D0B-R9 ClientListCard polish + source truth cleanup
+
+Status: LOCAL_ONLY_PACKAGE_APPLIED_PENDING_PUSH
+
+FAKTY:
+- ClientListCard pozostaje 2-wierszowy.
+- Finance values są porządkowane jako kompaktowe chipy.
+- R8 unscoped CSS rescue zostaje zastąpiony scoped R9 source truth.
+- LeadListCard dodany tylko jako mapping w UI Dictionary, bez runtime zmian.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Manual QA nadal wymagany, bo guard nie mierzy odbioru wizualnego.
+- Osobny dług: duplicate savedRecord warning w ContextActionDialogs.tsx.
+
+NASTĘPNY KROK:
+- Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.

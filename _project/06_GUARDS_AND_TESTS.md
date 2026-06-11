@@ -2948,3 +2948,39 @@ Guard blokuje:
 - prefiks Najbliższa akcja: w samym slocie kafelka,
 - brak Sprawy:, Aktywna prowizja, Zarobione łącznie,
 - brak osobnych slotów telefonu/e-maila i dwuwierszowego layoutu.
+
+## 2026-06-10 Europe/Warsaw — STAGE231D0B-R9 ClientListCard polish + source truth cleanup
+
+Status: LOCAL_ONLY_PACKAGE_APPLIED_PENDING_PUSH
+
+FAKTY:
+- ClientListCard pozostaje 2-wierszowy.
+- Finance values są porządkowane jako kompaktowe chipy.
+- R8 unscoped CSS rescue zostaje zastąpiony scoped R9 source truth.
+- LeadListCard dodany tylko jako mapping w UI Dictionary, bez runtime zmian.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Manual QA nadal wymagany, bo guard nie mierzy odbioru wizualnego.
+- Osobny dług: duplicate savedRecord warning w ContextActionDialogs.tsx.
+
+NASTĘPNY KROK:
+- Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.
+
+## 2026-06-11 Europe/Warsaw — STAGE231D0B_R9_R3_GUARD_MOJIBAKE_SELF_SCAN_REPAIR
+
+- Status: LOCAL_APPLY_READY
+- Guard: scripts/check-stage231d0b-client-list-card-freeze.cjs rewritten to avoid self-detecting literal encoding probe characters.
+- Test: tests/stage231d0b-client-list-card-freeze.test.cjs.
+
+## 2026-06-11 Europe/Warsaw — STAGE231D0B_R9_R4_CSS_GUARD_TOKEN_ALIGNMENT
+
+- Status: LOCAL_APPLY_READY
+- Scope: align CSS source-truth exact markers with strengthened R9/R3 guard.
+- Guard: npm run check:stage231d0b-client-list-card-freeze.
+- Test: node --test tests/stage231d0b-client-list-card-freeze.test.cjs.
