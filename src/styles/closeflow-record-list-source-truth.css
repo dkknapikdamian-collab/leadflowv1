@@ -961,3 +961,34 @@
   }
 }
 /* STAGE231D0B-R10 CLIENTLISTCARD ALIGNMENT ELLIPSIS TOOLTIP END */
+
+/* STAGE231D0B-R10-R7 FINANCE CHIP START ALIGN START
+   Machine guard marker: STAGE231D0B-R10-R7_FINANCE_CHIP_START_ALIGN
+   Scope: /clients ClientListCard only.
+   Decision: finance chips start in the same grid column. Chip length may vary; do not force equal chip width.
+*/
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-primary,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .client-list-card-row-secondary {
+  justify-items: start !important;
+}
+
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
+#root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
+  place-self: center start !important;
+  justify-self: start !important;
+  align-self: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  margin-inline-start: 0 !important;
+  margin-inline-end: auto !important;
+  transform: none !important;
+}
+
+@media (max-width: 72rem) {
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-active-commission,
+  #root .cf-html-view.main-clients-html .row.client-row.cf-client-row-two-line[data-stage231d0b-r10-client-card-alignment="true"] .cf-client-lifetime-earned {
+    place-self: center start !important;
+    justify-self: start !important;
+  }
+}
+/* STAGE231D0B-R10-R7 FINANCE CHIP START ALIGN END */

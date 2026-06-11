@@ -3028,3 +3028,31 @@ NASTĘPNY KROK:
 ## 2026-06-11 Europe/Warsaw - STAGE231D0B-R10
 
 ClientListCard: dodano wyrównanie środkowych kolumn, title tooltipy i ellipsis dla długich pól. Zmiana wizualna wymaga manualnego potwierdzenia po deployu.
+
+## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R7 - Client finance chip start alignment
+
+Marker: STAGE231D0B_R10_R7_FINANCE_CHIP_START_ALIGN
+
+Status: LOCAL_APPLY_PREPARED
+
+FAKTY:
+- R10/R6 poprawilo ogolny uklad karty klienta i ellipsis/tooltip.
+- Manual QA Damiana pokazal, ze karta jest juz dobra, ale chipy finansowe powinny zaczynac tekst w tej samej osi kolumny.
+- Ten etap dotyka tylko CSS source truth i guard dokumentujacy decyzje.
+
+DECYZJA DAMIANA:
+- "Zarobione lacznie" i "Aktywna prowizja" maja zaczynac sie w tym samym miejscu/kolumnie.
+- Dlugosc tekstu moze dyktowac, gdzie chip sie konczy.
+- Reszta ukladu zostaje.
+
+TESTY:
+- npm run check:stage231d0b-client-list-card-freeze
+- node --test tests/stage231d0b-client-list-card-freeze.test.cjs
+- git diff --check
+- npm run build
+
+RYZYKA:
+- Guard nie sprawdza realnej geometrii w przegladarce. Wymagany screenshot /clients po deployu.
+
+NASTEPNY KROK:
+- Po PASS i push: sprawdzic /clients, czy oba chipy finansowe startuja w tej samej osi.

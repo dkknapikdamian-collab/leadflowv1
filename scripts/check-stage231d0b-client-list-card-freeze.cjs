@@ -89,6 +89,14 @@ requireIncludes('CSS source truth', css, 'grid-column: 4');
 requireIncludes('CSS source truth', css, 'text-overflow: ellipsis');
 /* STAGE231D0B_R10_GUARD_END */
 
+/* STAGE231D0B_R10_R7_FINANCE_ALIGN_GUARD_START */
+requireIncludes('CSS source truth', css, 'STAGE231D0B-R10-R7_FINANCE_CHIP_START_ALIGN');
+requireIncludes('CSS source truth', css, 'justify-items: start');
+requireIncludes('CSS source truth', css, 'place-self: center start');
+requireIncludes('CSS source truth', css, 'margin-inline-start: 0');
+/* STAGE231D0B_R10_R7_FINANCE_ALIGN_GUARD_END */
+
+
 requireIncludes('CSS source truth', css, 'STAGE231D0B-R9_CLIENT_LIST_CARD_POLISH_SOURCE_TRUTH');
 requireIncludes('CSS source truth', css, 'cf-client-active-commission');
 requireIncludes('CSS source truth', css, 'cf-client-lifetime-earned');
