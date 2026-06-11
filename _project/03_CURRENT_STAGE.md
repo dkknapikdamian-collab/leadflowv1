@@ -2481,3 +2481,22 @@ Testy wymagane:
 Audyt ryzyk:
 - nie dublować osobnej karty kosztów jako drugiego źródła rozliczenia; wiersz totalu w pierwszej karcie jest obowiązkowy dla skanowalności prawego panelu,
 - po deployu manualnie sprawdzić kolejność raila: Rozliczenie -> Szybkie akcje -> Dane sprawy i klienta.
+
+## 2026-06-11 Europe/Warsaw - STAGE231D0D-R3 CaseDetail 100% scale balanced workspace
+
+Status: PREPARED_BY_ZIP / DO_TEST_AND_PUSH
+
+Zakres:
+- działania i notatki w jednym środkowym gridzie,
+- notatki compact preview: 3 ostatnie,
+- prawy rail compact: rozliczenie, szybkie akcje, dane,
+- historia wpłat i lista kosztów nie są stale rozlane w railu,
+- R2 guard zaktualizowany jako regresja zgodna z R3.
+
+Testy:
+- D0D/R3 guard/test,
+- D0D/R2 regression guard/test,
+- D0C regression,
+- D0B regression,
+- build,
+- git diff --check.

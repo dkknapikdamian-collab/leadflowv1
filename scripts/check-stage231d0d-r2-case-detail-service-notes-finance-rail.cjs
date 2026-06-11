@@ -4,6 +4,7 @@ const { spawnSync } = require('node:child_process');
 
 const repo = process.cwd();
 const stage = 'STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL';
+const r3Stage = 'STAGE231D0D_R3_CASE_DETAIL_100_SCALE_BALANCED_WORKSPACE';
 const errors = [];
 
 function read(rel) {
@@ -28,12 +29,14 @@ const caseDetail = read('src/pages/CaseDetail.tsx');
 const css = read('src/styles/visual-stage13-case-detail-vnext.css');
 const dict = read('_project/UI_DICTIONARY_STAGE231D0A.md');
 const combined = [caseDetail, css, dict].join('\n');
+const isR3 = caseDetail.includes(r3Stage);
+const noteLimit = isR3 ? '3' : '5';
 
 requireToken(caseDetail, stage, 'stage marker');
 requireToken(caseDetail, 'data-case-service-tab="true"', 'CaseServiceTab marker');
 requireToken(caseDetail, 'data-case-notes-panel="true"', 'CaseNotesPanel marker');
-requireToken(caseDetail, 'data-case-notes-preview-limit="5"', 'notes preview limit marker');
-requireToken(caseDetail, 'caseNoteItems.slice(0, 5).map', 'notes preview slice(0, 5)');
+requireToken(caseDetail, `data-case-notes-preview-limit="${noteLimit}"`, `notes preview limit marker ${noteLimit}`);
+requireToken(caseDetail, `caseNoteItems.slice(0, ${noteLimit}).map`, `notes preview slice(0, ${noteLimit})`);
 requireToken(caseDetail, 'data-case-all-notes-button="true"', 'all notes button');
 requireToken(caseDetail, 'data-case-all-notes-modal="true"', 'CaseAllNotesModal marker');
 requireToken(caseDetail, 'data-cf-vst-dialog="true"', 'shared VST dialog marker');
@@ -111,4 +114,6 @@ if (errors.length) {
   for (const error of errors) console.error('- ' + error);
   process.exit(1);
 }
-console.log('STAGE231D0D-R2 CaseDetail service notes and finance rail guard: PASS');
+console.log(isR3
+  ? 'STAGE231D0D-R2 CaseDetail service notes and finance rail guard: PASS (R3-compatible regression)'
+  : 'STAGE231D0D-R2 CaseDetail service notes and finance rail guard: PASS');

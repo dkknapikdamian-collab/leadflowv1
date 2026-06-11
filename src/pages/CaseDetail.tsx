@@ -2711,6 +2711,8 @@ async function handleConfirmDeleteCaseRecord() {
               <>
                 {/* STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL: legacy Stage220A10 duplicated service/notes block removed from visible runtime. */}
                 <span hidden data-stage231d0d-r2-legacy-stage220a10-removed="true" />
+            <section className="case-service-workspace-grid" data-case-service-workspace-grid="true">
+              <div className="case-service-actions-panel" data-case-service-actions-panel="true">
             <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-case-service-tab="true" data-stage220a11-tab-content="service">
               <div className="case-detail-section-head stage217-case-operation-head">
                 <div>
@@ -2810,7 +2812,9 @@ async function handleConfirmDeleteCaseRecord() {
             </section>
 
 
-            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="5">
+              </div>
+              <div className="case-service-notes-panel" data-case-service-notes-panel="true">
+            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="3">
               <div className="case-detail-section-head stage219-case-notes-head" data-stage219-case-notes-head="true">
                 <div>
                   <p className="case-detail-eyebrow">Notatki sprawy</p>
@@ -2862,7 +2866,7 @@ async function handleConfirmDeleteCaseRecord() {
                 <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.</div>
               ) : (
                 <div className="stage217-case-notes-list">
-                  {caseNoteItems.slice(0, 5).map((note) => (
+                  {caseNoteItems.slice(0, 3).map((note) => (
                     <article className="stage217-case-note-row" key={note.id}>
                       <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
                       <div>
@@ -2873,6 +2877,8 @@ async function handleConfirmDeleteCaseRecord() {
                   ))}
                 </div>
               )}
+            </section>
+              </div>
             </section>
       {pendingNoteFollowUp ? (
         <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
@@ -2969,8 +2975,9 @@ async function handleConfirmDeleteCaseRecord() {
             ) : null}
           </section>
           <span hidden data-stage231d0d-r2-case-detail-service-notes-finance-rail="STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL" />
+          <span hidden data-stage231d0d-r3-case-detail-100-scale-balanced-workspace="STAGE231D0D_R3_CASE_DETAIL_100_SCALE_BALANCED_WORKSPACE" />
           <aside className="case-detail-right-rail" aria-label="Panel sprawy">
-<section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card" data-case-settlement-rail-card="true" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Rozliczenie sprawy">
+<section className="right-card case-detail-right-card cf-finance-scope-card cf-finance-scope-card--case case-settlement-rail-card" data-case-settlement-rail-card="true" data-case-settlement-compact="true" data-fin10-legacy-finance-panel-removed="true" data-case-finance-panel="true" data-fin11-case-right-finance-panel="true" data-stage220a13-case-finance-scope-card="true" aria-label="Rozliczenie sprawy">
               <div className="cf-finance-scope-card__head">
                 <span className="cf-finance-scope-card__icon">
                   <Paperclip className="h-4 w-4" />
@@ -3006,74 +3013,21 @@ async function handleConfirmDeleteCaseRecord() {
                   Koryguj wpłatę prowizji
                 </Button>
               </div>
-              <div className="case-finance-payment-history-stage220a27" data-stage220a27-payment-history="true">
-                <div className="case-finance-payment-history-stage220a27__head">
-                  <strong>Historia wpłat prowizji</strong>
-                  <span>{visibleCasePayments.length}</span>
-                </div>
-                {visibleCasePayments.length === 0 ? (
-                  <p className="case-finance-payment-history-stage220a27__empty">Brak wpłat prowizji i korekt przy tej sprawie.</p>
-                ) : (
-                  <div className="case-finance-payment-history-stage220a27__list">
-                    {visibleCasePayments.map((payment) => {
-                      const type = getCasePaymentTypeStage220A27(payment);
-                      const signedAmount = getCasePaymentSignedAmountStage220A27(payment);
-                      const isCorrection = type === 'refund';
-                      return (
-                        <article
-                          key={'case-payment-history-stage220a27-' + String(payment.id || payment.paidAt || payment.createdAt || payment.amount)}
-                          className={'case-finance-payment-history-stage220a27__row ' + (isCorrection ? 'case-finance-payment-history-stage220a27__row--correction' : '')}
-                          data-stage220a27-payment-history-row={type || 'payment'}
-                        >
-                          <div>
-                            <strong>{getCasePaymentLabelStage220A27(payment)}</strong>
-                            <small>{formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</small>
-                            {payment.note ? <p>{payment.note}</p> : null}
-                          </div>
-                          <div className="case-finance-payment-history-stage220a27__amount">
-                            <strong>{formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</strong>
-                          </div>
-                        </article>
-                      );
-                    })}
-                  </div>
-                )}
+              <div className="case-settlement-compact-section case-settlement-compact-payments" data-case-settlement-payment-summary="true">
+                <div className="case-settlement-compact-row"><span>Historia wpłat</span><strong>{visibleCasePayments.length}</strong></div>
+                <Button type="button" size="sm" variant="outline" onClick={() => setIsPaymentHistoryOpenStage220A27B(true)}>
+                  Otwórz historię
+                </Button>
               </div>
 
-              <section className="case-detail-section-card case-detail-costs-card-stage231d2" data-stage231d2-case-costs-in-case="STAGE231D2_CASE_COSTS_IN_CASE">
-                <div className="case-detail-section-header">
-                  <div>
-                    <span className="case-detail-section-kicker">KOSZTY SPRAWY</span>
-                    <h2>Koszty i zwroty</h2>
-                  </div>
-                  <Button type="button" size="sm" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(true)} disabled={!hasAccess}>
-                    <Plus className="h-4 w-4" />
-                    Dodaj koszt
-                  </Button>
+              <div className="case-settlement-compact-section case-settlement-compact-costs" data-case-settlement-cost-summary="true">
+                <div className="case-settlement-compact-row"><span>Koszty</span><strong>{caseCostsStage231D2.length}</strong></div>
+                <div className="case-settlement-compact-row"><span className="case-cost cost-warning">Koszty do zwrotu</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
+                <div className="case-settlement-compact-actions">
+                  <Button type="button" size="sm" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(true)} disabled={!hasAccess}>Dodaj koszt</Button>
+                  <Button type="button" size="sm" variant="outline" onClick={() => setIsCaseCostOpenStage231D2(true)} disabled={!hasAccess}>Otwórz koszty</Button>
                 </div>
-                <div className="case-detail-finance-grid" data-stage231d2-cost-summary-grid="true">
-                  <div><span>{CASE_COST_FINANCE_LABELS.costsIncurred}</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
-                  <div><span>{CASE_COST_FINANCE_LABELS.costsToReimburse}</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
-                  <div><span>{CASE_COST_FINANCE_LABELS.costsReimbursed}</span><strong>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
-                  <div><span>{CASE_COST_FINANCE_LABELS.totalToCollect}</span><strong>{formatMoney(caseCostsSummaryStage231D2.totalToCollectAmount, caseCostsSummaryStage231D2.currency)}</strong></div>
-                </div>
-                {caseCostsStage231D2.length === 0 ? (
-                  <p className="case-detail-light-empty">Brak kosztów przypiętych do tej sprawy.</p>
-                ) : (
-                  <div className="case-finance-payment-history-stage220a27__list" data-stage231d2-cost-list="true">
-                    {caseCostsStage231D2.slice(0, 5).map((cost) => (
-                      <article key={'case-cost-stage231d2-' + String(cost.id || cost.incurredAt || cost.amount)} className="case-finance-payment-history-stage220a27__row">
-                        <div>
-                          <strong>{String(cost.kind || cost.type || 'other')}</strong>
-                          <small>{String(cost.status || 'incurred')}</small>
-                          {cost.note ? <p>{cost.note}</p> : null}
-                        </div>
-                        <div className="case-finance-payment-history-stage220a27__amount"><strong>{formatMoney((cost as any).amount || 0, (cost as any).currency || caseCostsSummaryStage231D2.currency)}</strong></div>
-                      </article>
-                    ))}
-                  </div>
-                )}
-              </section>
+              </div>
 
             <div className="case-quick-actions-rail" data-case-quick-actions-rail="true" data-case-quick-actions-anchor="case-detail">
               <CaseQuickActions
@@ -3084,7 +3038,7 @@ async function handleConfirmDeleteCaseRecord() {
                 onAddPayment={() => openCaseFinancePaymentModal('commission')}
               />
             </div>
-            <section className="right-card case-detail-right-card case-context-rail-card" data-case-context-rail-card="true" aria-label="Dane sprawy i klienta">
+            <section className="right-card case-detail-right-card case-context-rail-card" data-case-context-rail-card="true" data-case-context-compact="true" aria-label="Dane sprawy i klienta">
               <div className="case-context-rail-card__head">
                 <strong>Dane sprawy i klienta</strong>
               </div>

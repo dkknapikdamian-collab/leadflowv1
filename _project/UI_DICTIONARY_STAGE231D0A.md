@@ -298,3 +298,53 @@ Testy wymagane:
 Audyt ryzyk:
 - nie dublować osobnej karty kosztów jako drugiego źródła rozliczenia; wiersz totalu w pierwszej karcie jest obowiązkowy dla skanowalności prawego panelu,
 - po deployu manualnie sprawdzić kolejność raila: Rozliczenie -> Szybkie akcje -> Dane sprawy i klienta.
+
+## CaseServiceWorkspaceGrid
+
+Nazwa ludzka:
+Środkowy układ obsługi sprawy
+
+Nazwa systemowa:
+CaseServiceWorkspaceGrid
+
+Rola:
+Desktopowy układ 100% skali: działania sprawy obok notatek sprawy.
+
+Układ:
+- działania po lewej/szerzej,
+- notatki po prawej/węziej,
+- na mniejszych ekranach stack.
+
+## CaseSettlementRailCardCompact
+
+Nazwa ludzka:
+Kompaktowe rozliczenie sprawy w prawym panelu
+
+Nazwa systemowa:
+CaseSettlementRailCardCompact
+
+Rola:
+Szybki odczyt pieniędzy bez przeładowania raila.
+
+Stale pokazuje:
+- prowizja należna
+- wpłacono
+- do zapłaty
+- koszty do zwrotu
+- razem do pobrania
+
+Nie pokazuje stale:
+- pełnej listy historii wpłat
+- pełnej listy kosztów
+- dużych empty states
+
+## CaseNotesPanelCompact
+
+Nazwa ludzka:
+Kompaktowe notatki sprawy obok działań
+
+Nazwa systemowa:
+CaseNotesPanelCompact
+
+Rola:
+Szybki podgląd 3 ostatnich notatek i wejście do wszystkich notatek.
