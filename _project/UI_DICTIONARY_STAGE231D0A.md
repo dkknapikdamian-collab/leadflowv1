@@ -415,3 +415,23 @@ Zasady:
 - nie dublować wpłaty prowizji w szybkich akcjach,
 - zachować spójny odstęp kafelków,
 - notatki i prawy rail mają być wyrównane wyżej bez chaosu w spacingu.
+
+---
+
+## CaseServiceWorkspaceGridR6
+
+Nazwa ludzka:
+Prawdziwy ukĹ‚ad obsĹ‚ugi sprawy
+
+Nazwa systemowa:
+CaseServiceWorkspaceGridR6
+
+Rola:
+Jeden spĂłjny grid dla zakĹ‚adki ObsĹ‚uga: lewa kolumna zawiera tabs i dziaĹ‚ania, Ĺ›rodkowa kolumna zawiera notatki startujÄ…ce od gĂłry, prawy rail zawiera rozliczenie i szybkie akcje.
+
+Zasady:
+- tabs nie sÄ… osobnÄ… belkÄ… nad caĹ‚ym workspace,
+- tabs sÄ… czÄ™Ĺ›ciÄ… lewej kolumny dziaĹ‚aĹ„,
+- notatki startujÄ… od gĂłry tego samego gridu,
+- odstÄ™p miÄ™dzy kafelkami uĹĽywa wspĂłlnego rytmu 14px,
+- nie uĹĽywaÄ‡ losowych marginĂłw do maskowania zĹ‚ej struktury.

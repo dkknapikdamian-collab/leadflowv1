@@ -2792,3 +2792,39 @@ aside.case-detail-right-rail::after {
     gap: var(--cf-case-detail-card-gap) !important;
   }
 }
+
+/* STAGE231D0D_R6_TRUE_SERVICE_GRID_GEOMETRY_CSS
+   Real geometry fix: service tabs live inside the left workspace column.
+   Notes start at the top of the same grid, not under a separate tabs strip. */
+.case-detail-vnext-page .case-service-workspace-grid[data-stage231d0d-r6-true-service-grid-geometry="true"] {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1.7fr) minmax(300px, 0.9fr) !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+  align-items: start !important;
+}
+
+.case-detail-vnext-page .case-service-workspace-grid[data-stage231d0d-r6-true-service-grid-geometry="true"] .case-service-left-column {
+  display: grid !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+  align-content: start !important;
+  min-width: 0 !important;
+}
+
+.case-detail-vnext-page .case-service-workspace-grid[data-stage231d0d-r6-true-service-grid-geometry="true"] .case-service-left-column > .case-detail-stage228r10d-tabs-card {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.case-detail-vnext-page .case-service-workspace-grid[data-stage231d0d-r6-true-service-grid-geometry="true"] .case-service-notes-panel,
+.case-detail-vnext-page .case-service-workspace-grid[data-stage231d0d-r6-true-service-grid-geometry="true"] .case-service-actions-panel {
+  align-self: start !important;
+  margin-top: 0 !important;
+  min-width: 0 !important;
+}
+
+@media (max-width: 1180px) {
+  .case-detail-vnext-page .case-service-workspace-grid[data-stage231d0d-r6-true-service-grid-geometry="true"] {
+    grid-template-columns: 1fr !important;
+  }
+}

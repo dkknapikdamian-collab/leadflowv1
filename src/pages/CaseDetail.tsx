@@ -2681,6 +2681,7 @@ async function handleConfirmDeleteCaseRecord() {
 
 <div className="case-detail-shell case-detail-stage228r9-shell" data-stage228r9-shell-rail-lift="true" data-stage231d2-r6-side-rail-top-lift="true">
           <section className="case-detail-main-column" data-stage228r9-main-column="true">
+            {activeTab !== 'service' ? (
             <div
               className="case-detail-stage228r10d-tabs-card case-service-tabs-column"
               data-stage228r10d-tabs-card="true"
@@ -2707,12 +2708,41 @@ async function handleConfirmDeleteCaseRecord() {
           </nav>
         </Tabs>
             </div>
+            ) : null}
 
             {activeTab === 'service' ? (
               <>
                 {/* STAGE231D0D_R2_CASE_DETAIL_SERVICE_NOTES_FINANCE_RAIL: legacy Stage220A10 duplicated service/notes block removed from visible runtime. */}
                 <span hidden data-stage231d0d-r2-legacy-stage220a10-removed="true" />
-            <section className="case-service-workspace-grid" data-case-service-workspace-grid="true">
+            <span hidden data-stage231d0d-r6-marker="STAGE231D0D_R6_TRUE_SERVICE_GRID_GEOMETRY" />
+            <section className="case-service-workspace-grid case-service-workspace-grid-r6" data-case-service-workspace-grid="true" data-stage231d0d-r6-true-service-grid-geometry="true">
+              <div className="case-service-left-column" data-case-service-left-column="true">
+            <div
+              className="case-detail-stage228r10d-tabs-card case-service-tabs-column"
+              data-stage228r10d-tabs-card="true"
+              data-case-service-tabs-column="true" data-stage231d0d-r6-tabs-inside-left-column="true"
+              data-stage228r10d-card-spacing-lock="true"
+              aria-label="Obsługa, checklisty i historia sprawy"
+            >
+            <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
+          <span hidden data-stage220a11-marker="STAGE220A11_CASE_DETAIL_TABS_PRODUCTION" />
+          <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="Zakładki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
+            <TabsList className="case-detail-tabs case-detail-stage220a10-tabs">
+              {[
+                { key: 'service' as CaseDetailTab, label: 'Obsługa', count: workItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
+                { key: 'checklists' as CaseDetailTab, label: 'Checklisty', count: items.length, icon: <ListChecks className="h-4 w-4" /> },
+                { key: 'history' as CaseDetailTab, label: 'Historia', count: caseHistoryItems.length, icon: <History className="h-4 w-4" /> },
+              ].map((tab) => (
+                <TabsTrigger key={tab.key} value={tab.key} className={activeTab === tab.key ? 'case-detail-tab-active' : ''} data-stage220a10-tab={tab.key} data-stage220a11-case-tab-trigger={tab.key}>
+                  <span className="case-detail-stage220a10-tab-icon" aria-hidden="true">{tab.icon}</span>
+                  <span className="case-detail-stage220a10-tab-label">{tab.label}</span>
+                  <span className="case-detail-stage220a10-tab-count">{tab.count}</span>
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </nav>
+        </Tabs>
+            </div>
               <div className="case-service-actions-panel" data-case-service-actions-panel="true">
             <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-case-service-tab="true" data-stage220a11-tab-content="service">
               <div className="case-detail-section-head stage217-case-operation-head">
@@ -2811,8 +2841,7 @@ async function handleConfirmDeleteCaseRecord() {
                 })}
               </section>
             </section>
-
-
+              </div>
               </div>
               <div className="case-service-notes-panel" data-case-service-notes-panel="true">
             <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="3">

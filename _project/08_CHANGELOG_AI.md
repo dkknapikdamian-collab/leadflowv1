@@ -3482,3 +3482,20 @@ Naprawa:
 
 Powód:
 Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek względnych .NET/PowerShell.
+
+---
+
+## 2026-06-12 08:10 Europe/Warsaw - STAGE231D0D-R6 true service grid geometry
+
+Status: READY_FOR_TEST
+
+Zakres:
+- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakĹ‚adki ObsĹ‚uga,
+- lewa kolumna ma teraz: tabs + dziaĹ‚ania,
+- Ĺ›rodkowa kolumna ma notatki startujÄ…ce od gĂłry tego samego gridu,
+- prawy rail jest wyrĂłwnany do osi true service grid i uĹĽywa wspĂłlnego gapu,
+- nie ruszano SQL, danych, modelu finansĂłw ani modali.
+
+Audyt:
+- R5 byĹ‚ technicznie zielony, ale wizualnie nie zamykaĹ‚ celu, bo tabs byĹ‚y poza gridem.
+- R6 naprawia strukturÄ™ JSX, a guard sprawdza kolejnoĹ›Ä‡ grid -> left column -> tabs -> actions -> notes.
