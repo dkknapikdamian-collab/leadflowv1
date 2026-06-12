@@ -3008,6 +3008,15 @@ async function handleConfirmDeleteCaseRecord() {
                   type="button"
                   size="sm"
                   variant="outline"
+                  onClick={() => setIsCaseCostOpenStage231D2(true)}
+                  disabled={!hasAccess}
+                  data-stage231d0d-r5-add-case-cost="true"
+                >
+                  Dodaj koszt
+                </Button>                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
                   onClick={() => setIsPaymentHistoryOpenStage220A27B(true)}
                   disabled={visibleCasePayments.length === 0}
                   data-stage220a27b-open-payment-history-modal="true"
@@ -3027,7 +3036,6 @@ async function handleConfirmDeleteCaseRecord() {
                 caseTitle={getCaseTitle(caseData)}
                 clientId={caseData.clientId || null}
                 leadId={caseData.leadId || null}
-                onAddPayment={() => openCaseFinancePaymentModal('commission')}
               />
             </div>
                         <span hidden data-case-context-rail-card-deprecated-main-rail="true" />

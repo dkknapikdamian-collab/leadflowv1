@@ -2863,3 +2863,19 @@ Ryzyka:
 - override CSS musi nie rozjechać mobile/tablet,
 - quick actions nie mogą dublować akcji finansowych,
 - R2/R3/R4 guardy były składniowo uszkodzone i zostały naprawione.
+
+---
+
+## 2026-06-12 07:58 Europe/Warsaw - STAGE231D0D-R5 repair after red guard push
+
+Status: REPAIR_READY_FOR_TEST
+
+Naprawa:
+- usunięto "Wpłata prowizji" z CaseQuickActions,
+- dodano "Dodaj koszt" do kompaktowego rozliczenia sprawy,
+- dodano spacing marker i wspólny odstęp kafelków 14px,
+- dodano micro-lift prawego raila,
+- zachowano wpłatę prowizji tylko w rozliczeniu sprawy.
+
+Powód:
+Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek względnych .NET/PowerShell.

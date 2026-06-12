@@ -397,3 +397,21 @@ Nie pokazuje stale:
 - pełnej historii wpłat,
 - pełnej listy kosztów,
 - dużych empty states.
+
+---
+
+## CaseQuickActionsRailR5
+
+Nazwa ludzka:
+Szybkie akcje sprawy bez duplikacji finansów
+
+Nazwa systemowa:
+CaseQuickActionsRailR5
+
+Rola:
+Prawy rail pokazuje szybkie akcje operacyjne: Notatka, Zadanie, Wydarzenie, Brak. Wpłata prowizji jest dostępna w rozliczeniu sprawy, nie jako osobna szybka akcja.
+
+Zasady:
+- nie dublować wpłaty prowizji w szybkich akcjach,
+- zachować spójny odstęp kafelków,
+- notatki i prawy rail mają być wyrównane wyżej bez chaosu w spacingu.

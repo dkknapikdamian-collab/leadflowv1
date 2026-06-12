@@ -2753,3 +2753,42 @@ aside.case-detail-right-rail::after {
     max-width: 100% !important;
   }
 }
+
+/* STAGE231D0D_R5_SPACING_NOTES_QUICK_ACTIONS
+   Notes lifted, shared card gap preserved, quick actions no longer duplicate commission payment. */
+:root {
+  --cf-case-detail-card-gap: 14px;
+}
+
+.case-detail-vnext-page .case-service-workspace-grid {
+  gap: var(--cf-case-detail-card-gap) !important;
+  align-items: start !important;
+}
+
+.case-detail-vnext-page .case-service-left-column {
+  display: grid !important;
+  gap: var(--cf-case-detail-card-gap) !important;
+  align-content: start !important;
+}
+
+.case-detail-vnext-page .case-service-actions-panel,
+.case-detail-vnext-page .case-service-notes-panel {
+  align-self: start !important;
+  margin-top: 0 !important;
+}
+
+.case-detail-vnext-page .case-service-notes-panel .stage217-case-notes-panel {
+  margin-top: 0 !important;
+}
+
+.case-detail-vnext-page .case-detail-right-rail {
+  gap: var(--cf-case-detail-card-gap) !important;
+}
+
+@media (max-width: 1180px) {
+  .case-detail-vnext-page .case-service-workspace-grid,
+  .case-detail-vnext-page .case-service-left-column,
+  .case-detail-vnext-page .case-detail-right-rail {
+    gap: var(--cf-case-detail-card-gap) !important;
+  }
+}

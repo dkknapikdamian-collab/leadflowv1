@@ -1,4 +1,4 @@
-import { CalendarClock, CircleDollarSign, FileWarning, ListChecks, StickyNote } from 'lucide-react';
+import { CalendarClock, FileWarning, ListChecks, StickyNote } from 'lucide-react';
 import { openContextQuickAction } from './ContextActionDialogs';
 import QuickActionsBar from './detail/QuickActionsBar';
 
@@ -7,7 +7,6 @@ export type CaseQuickActionsProps = {
   caseTitle?: string;
   clientId?: string | null;
   leadId?: string | null;
-  onAddPayment?: () => void;
   onAfterMutation?: () => void;
 };
 
@@ -17,6 +16,8 @@ const STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR = 'CaseQuickActions renders 
 void STAGE227E3_CASE_QUICK_ACTIONS_USES_SHARED_BAR;
 const STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH = 'Case quick actions use the shared card-list quick action visual source of truth';
 void STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH;
+const STAGE231D0D_R5_CASE_QUICK_ACTIONS_NO_PAYMENT = 'Case quick actions do not duplicate commission payment; payment stays in settlement rail';
+void STAGE231D0D_R5_CASE_QUICK_ACTIONS_NO_PAYMENT;
 
 
 export default function CaseQuickActions({
@@ -24,7 +25,6 @@ export default function CaseQuickActions({
   caseTitle,
   clientId,
   leadId,
-  onAddPayment,
   onAfterMutation,
 }: CaseQuickActionsProps) {
   void onAfterMutation;
@@ -113,14 +113,6 @@ export default function CaseQuickActions({
               'data-stage227e3-case-missing-action': 'true',
               'data-stage228r12-case-context-blocker': 'true',
             },
-          },
-          {
-            key: 'payment',
-            label: 'Wpłata prowizji',
-            tone: 'payment',
-            icon: <CircleDollarSign className="h-4 w-4" />,
-            onClick: onAddPayment,
-            data: { 'data-stage227e3-case-payment-action': 'true', 'data-stage228r7r8-case-commission-payment-action': 'true' },
           },
         ]}
       />

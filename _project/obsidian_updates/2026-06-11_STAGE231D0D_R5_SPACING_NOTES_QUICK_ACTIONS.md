@@ -14,3 +14,19 @@ Branch: dev-rollout-freeze
 
 ## Status
 Do zapisania po PASS/PUSH.
+
+---
+
+## 2026-06-12 07:58 Europe/Warsaw - STAGE231D0D-R5 repair after red guard push
+
+Status: REPAIR_READY_FOR_TEST
+
+Naprawa:
+- usunięto "Wpłata prowizji" z CaseQuickActions,
+- dodano "Dodaj koszt" do kompaktowego rozliczenia sprawy,
+- dodano spacing marker i wspólny odstęp kafelków 14px,
+- dodano micro-lift prawego raila,
+- zachowano wpłatę prowizji tylko w rozliczeniu sprawy.
+
+Powód:
+Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek względnych .NET/PowerShell.

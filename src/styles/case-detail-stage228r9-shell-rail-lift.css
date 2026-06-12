@@ -323,3 +323,15 @@
     top: auto !important;
   }
 }
+
+/* STAGE231D0D_R5_RIGHT_RAIL_MICRO_LIFT
+   Delicate lift only; keep global card rhythm and reset on smaller screens. */
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -8px !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}
