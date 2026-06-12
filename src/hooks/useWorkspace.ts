@@ -8,7 +8,7 @@ import {
   persistWorkspaceId,
 } from '../lib/supabase-fallback';
 import { useClientAuthSnapshot } from './useClientAuthSnapshot';
-import { buildPlanAccessModel } from '../lib/plans';
+import { buildPlanAccessModel, PLAN_IDS, TRIAL_MS } from '../lib/plans';
 
 function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
   const normalizedWorkspaceId = normalizeWorkspaceContextId(storedWorkspaceId);
@@ -18,9 +18,9 @@ function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
   return {
     id: workspaceId,
     ownerId: null,
-    planId: 'trial_14d',
+    planId: PLAN_IDS.trial,
     subscriptionStatus: 'trial_active',
-    trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    trialEndsAt: new Date(Date.now() + TRIAL_MS).toISOString(),
     billingProvider: 'manual',
     providerCustomerId: null,
     providerSubscriptionId: null,

@@ -113,7 +113,8 @@ function buildTrialEndingSummary(trialDaysLeft: number, trialProgressPercent: nu
 export function getAccessSummary(workspace?: WorkspaceLike | null): AccessSummary {
   const trialEnd = parseTrialEnd(workspace?.trialEndsAt);
   const rawStatus = workspace?.subscriptionStatus ?? 'inactive';
-  const trialDaysLeft = trialEnd ? Math.max(0, differenceInCalendarDays(trialEnd, new Date())) : 0;
+  const rawTrialDaysLeft = trialEnd ? Math.max(0, differenceInCalendarDays(trialEnd, new Date())) : 0;
+  const trialDaysLeft = Math.min(TRIAL_LENGTH_DAYS, rawTrialDaysLeft);
   const trialProgressPercent = trialEnd
     ? Math.max(6, Math.min(100, Math.round((trialDaysLeft / TRIAL_LENGTH_DAYS) * 100)))
     : 0;

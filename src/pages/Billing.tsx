@@ -45,6 +45,7 @@ import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import { Button } from '../components/ui/button';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { PLAN_IDS, TRIAL_DAYS } from '../lib/plans';
 import {
   billingActionInSupabase,
   fetchCasesFromSupabase,
@@ -258,6 +259,13 @@ function getAccessCopy(status?: string | null) {
   return ACCESS_COPY[String(status || 'inactive')] || ACCESS_COPY.inactive;
 }
 
+function getTrialContractEndsAtLabel(daysLeft?: unknown) {
+  const numericDays = Number(daysLeft || 0);
+  const safeDays = Number.isFinite(numericDays) ? Math.max(0, Math.min(TRIAL_DAYS, Math.floor(numericDays))) : 0;
+  if (safeDays <= 0) return 'Nie ustawiono';
+  return safeDateLabel(new Date(Date.now() + safeDays * 24 * 60 * 60 * 1000).toISOString());
+}
+
 function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | null) {
   const normalized = String(planId || '');
   if (['closeflow_basic', 'closeflow_basic_yearly', 'closeflow_pro', 'closeflow_pro_yearly', 'closeflow_business', 'closeflow_business_yearly'].includes(normalized)) {
@@ -267,7 +275,7 @@ function getDisplayPlanId(planId?: string | null, subscriptionStatus?: string | 
     return 'closeflow_pro';
   }
   if (subscriptionStatus === 'paid_active') return 'closeflow_pro';
-  return 'trial_21d';
+  return PLAN_IDS.trial;
 }
 
 function getCurrentPlanName(displayPlanId: string, isPaidActive: boolean, isTrialActive: boolean) {
@@ -423,7 +431,9 @@ export default function Billing() {
         : currentPlanId.includes('closeflow_basic')
           ? 'basic'
           : effectivePlan.key;
-  const trialEndsAtLabel = safeDateLabel(workspace?.trialEndsAt);
+  const trialEndsAtLabel = access?.isTrialActive
+    ? getTrialContractEndsAtLabel(access?.trialDaysLeft)
+    : safeDateLabel(workspace?.trialEndsAt);
   const nextBillingAtLabel = safeDateLabel(workspace?.nextBillingAt);
   const blockedState = !access?.hasAccess;
   const paidConfirmed = access?.status === 'paid_active';

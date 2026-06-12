@@ -40,8 +40,14 @@ assert(access.includes("import { TRIAL_DAYS } from './plans';"), 'access.ts must
 assert(!/const\s+TRIAL_LENGTH_DAYS\s*=\s*21\b/.test(access), 'access.ts must not hard-code 21-day trial length.');
 assert(!/21\s*\*\s*24\s*\*\s*60\s*\*\s*60\s*\*\s*1000/.test(access), 'access.ts must not hard-code 21-day duration.');
 
-assert(workspace.includes("planId: 'trial_14d'"), 'useWorkspace local fallback must use trial_14d.');
-assert(workspace.includes('Date.now() + 14 * 24 * 60 * 60 * 1000'), 'useWorkspace local fallback must use 14 days.');
+assert(
+  workspace.includes('PLAN_IDS.trial') || workspace.includes("planId: 'trial_14d'"),
+  'useWorkspace local fallback must source trial plan from PLAN_IDS.trial or canonical trial_14d.'
+);
+assert(
+  workspace.includes('TRIAL_MS') || workspace.includes('Date.now() + 14 * 24 * 60 * 60 * 1000'),
+  'useWorkspace local fallback must source trial duration from TRIAL_MS or explicit 14-day duration.'
+);
 assert(!workspace.includes("planId: 'trial_21d'"), 'useWorkspace must not use canonical trial_21d.');
 assert(!workspace.includes('Date.now() + 21 * 24 * 60 * 60 * 1000'), 'useWorkspace must not use 21-day local fallback.');
 
