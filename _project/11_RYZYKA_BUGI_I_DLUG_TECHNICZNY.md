@@ -891,3 +891,20 @@ Zakres:
 Audyt:
 - R5 był technicznie zielony, ale wizualnie nie zamykał celu, bo tabs były poza gridem.
 - R6 naprawia strukturę JSX, a guard sprawdza kolejność grid -> left column -> tabs -> actions -> notes.
+
+---
+
+## 2026-06-12 08:28 Europe/Warsaw - STAGE231D0D-R8 tabs card + right rail axis polish
+
+Status: READY_FOR_TEST
+
+Zakres:
+- prawy panel z rozliczeniem i szybkimi akcjami podniesiony do osi kafelka danych sprawy,
+- zakĹ‚adki ObsĹ‚uga / Checklisty / Historia dostaĹ‚y peĹ‚ny, rozciÄ…gniÄ™ty kafelek nad DziaĹ‚aniami sprawy,
+- zachowany wspĂłlny odstÄ™p kafelkĂłw 14px,
+- nie ruszano finansĂłw, modali, SQL, danych, handlerĂłw ani quick actions poza stylem ukĹ‚adu.
+
+Ryzyka:
+- etap jest CSS-only, wiÄ™c wymaga rÄ™cznego potwierdzenia na 100% zoom,
+- lift prawego raila ma reset na wÄ™ĹĽszych ekranach,
+- historyczne mojibake w starych wpisach _project nie jest czyszczone w tym etapie.

@@ -349,3 +349,17 @@
     margin-top: 0 !important;
   }
 }
+
+/* STAGE231D0D_R8_RIGHT_RAIL_ALIGN_TO_CASE_HEADER
+   Visual-only fix: lift the right finance/actions rail to the same top axis
+   as the case data header card. Do not alter finance logic or quick actions. */
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -96px !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}
