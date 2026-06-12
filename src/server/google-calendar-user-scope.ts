@@ -28,18 +28,15 @@ export async function getGoogleCalendarUserConnection(workspaceId: string, userI
   const user = String(userId || '').trim();
   if (!workspace || !user) return null;
 
-  const rows = await supabaseRequest(
-    [
-      'google_calendar_connections?',
-      `workspace_id=eq.${encode(workspace)}`,
-      `user_id=eq.${encode(user)}`,
-      'disconnected_at=is.null',
-      'select=*',
-      'limit=1',
-    ].join('&'),
-    { method: 'GET' },
-  );
+  const filter = [
+    `workspace_id=eq.${encode(workspace)}`,
+    `user_id=eq.${encode(user)}`,
+    'disconnected_at=is.null',
+    'select=*',
+    'limit=1',
+  ].join('&');
 
+  const rows = await supabaseRequest(`google_calendar_connections?${filter}`, { method: 'GET' });
   const connection = Array.isArray(rows) ? rows[0] : null;
   return isUserScopedGoogleCalendarConnection(connection, user) ? connection : null;
 }
@@ -49,18 +46,15 @@ export async function getGoogleCalendarLegacyWorkspaceConnection(workspaceId: st
   const user = String(userId || '').trim();
   if (!workspace) return null;
 
-  const rows = await supabaseRequest(
-    [
-      'google_calendar_connections?',
-      `workspace_id=eq.${encode(workspace)}`,
-      'disconnected_at=is.null',
-      'sync_enabled=eq.true',
-      'select=*',
-      'limit=20',
-    ].join('&'),
-    { method: 'GET' },
-  );
+  const filter = [
+    `workspace_id=eq.${encode(workspace)}`,
+    'disconnected_at=is.null',
+    'sync_enabled=eq.true',
+    'select=*',
+    'limit=20',
+  ].join('&');
 
+  const rows = await supabaseRequest(`google_calendar_connections?${filter}`, { method: 'GET' });
   const list = Array.isArray(rows) ? rows : [];
   return list.find((connection) => !user || !isUserScopedGoogleCalendarConnection(connection, user)) || null;
 }
