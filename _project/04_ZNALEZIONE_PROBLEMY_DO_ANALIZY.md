@@ -116,3 +116,21 @@ Przeplyw decyzyjny:
 ## Aktualne wpisy
 
 Brak wpisow na start. Ten plik zostal utworzony jako centralne miejsce dla przyszlych znalezisk z audytow.
+
+
+### 2026-06-13 00:45 Europe/Warsaw - Google Calendar personal sync needs durable work_items owner fields
+
+- id: FOUND-20260613-01
+- status: PRZYJETE_DO_ETAPU
+- znalezione przy etapie: STAGE231F_R1_GOOGLE_CALENDAR_USER_SCOPE_SAFETY_LOCK
+- ekran / trasa: Settings / Google Calendar sync-inbound / sync-outbound
+- modul / pliki: src/server/google-calendar-outbound.ts, src/server/google-calendar-inbound.ts, work_items
+- problem: personal Google Calendar sync needs a durable per-row owner/user field for calendar-visible work_items. Without it, a member sync can either over-sync the whole workspace or skip unowned records.
+- dowod: previous outbound implementation fetched work_items only by workspace_id; inbound payload did not guarantee source_user_id/google_calendar_user_id persistence in older schemas.
+- dlaczego to problem: private Google Calendar sync must not push another user's workspace tasks/events into a member's personal calendar.
+- ryzyko: users may miss expected sync for records without owner fields until schema/product model is confirmed.
+- priorytet wstepny: P1
+- czy jest juz w etapach/kierunku: TAK, STAGE231F_R3_GOOGLE_CALENDAR_PERSONAL_SYNC_ITEM_SCOPE
+- propozycja dalszego kroku: confirm work_items ownership schema and add SQL/guard if required; keep R1 fail-closed safety lock until then.
+- decyzja Damiana: V1 ma byc personal sync, workspace-wide calendar only as later explicit admin mode.
+- powiazany etap, jesli powstanie: STAGE231F_R3_GOOGLE_CALENDAR_PERSONAL_SYNC_ITEM_SCOPE

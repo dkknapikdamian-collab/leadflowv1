@@ -2,9 +2,9 @@ import { supabaseRequest, updateById } from './_supabase.js';
 import {
   createGoogleCalendarEvent,
   deleteGoogleCalendarEvent,
-  getGoogleCalendarConnection,
   updateGoogleCalendarEvent,
 } from './google-calendar-sync.js';
+import { getGoogleCalendarUserConnection } from './google-calendar-user-scope.js';
 
 type WorkItemRow = Record<string, any>;
 
@@ -72,6 +72,45 @@ function isCalendarVisible(row: WorkItemRow) {
   if (type !== 'task' && type !== 'event') return false;
   if (row.show_in_calendar === false || row.showInCalendar === false) return false;
   return Boolean(startsAtOf(row));
+}
+
+const GOOGLE_CALENDAR_PERSONAL_SCOPE_USER_FIELDS_STAGE231F_R1 = [
+  'user_id',
+  'userId',
+  'owner_id',
+  'ownerId',
+  'owner_user_id',
+  'ownerUserId',
+  'assigned_user_id',
+  'assignedUserId',
+  'assignee_id',
+  'assigneeId',
+  'assigned_to',
+  'assignedTo',
+  'created_by',
+  'createdBy',
+  'created_by_user_id',
+  'createdByUserId',
+  'source_user_id',
+  'sourceUserId',
+  'google_calendar_user_id',
+  'googleCalendarUserId',
+];
+
+function googleCalendarPersonalScopeForRowStage231F(row: WorkItemRow, userId: string) {
+  const expected = asText(userId);
+  const matches: string[] = [];
+  const checked: string[] = [];
+  if (!expected) return { matched: false, checked, matches };
+
+  for (const field of GOOGLE_CALENDAR_PERSONAL_SCOPE_USER_FIELDS_STAGE231F_R1) {
+    const value = asText(row[field]);
+    if (!value) continue;
+    checked.push(field);
+    if (value === expected) matches.push(field);
+  }
+
+  return { matched: matches.length > 0, checked, matches };
 }
 
 function isDeletedLike(row: WorkItemRow) {
@@ -233,9 +272,10 @@ export async function syncGoogleCalendarOutbound(input: {
   if (!workspaceId) throw new Error('GOOGLE_CALENDAR_WORKSPACE_REQUIRED');
   if (!userId) throw new Error('GOOGLE_CALENDAR_USER_REQUIRED');
 
-  const connection = await getGoogleCalendarConnection(workspaceId, userId);
+  // STAGE231F_R1: ordinary user sync must never use a silent workspace fallback token.
+  const connection = await getGoogleCalendarUserConnection(workspaceId, userId);
   if (!connection || connection.sync_enabled === false) {
-    return { ok: true, connected: false, scanned: 0, created: 0, updated: 0, deleted: 0, skipped: 0, failed: 0, errors: [] };
+    return { ok: true, connected: false, connectionScope: 'none', reason: 'user_not_connected', scanned: 0, created: 0, updated: 0, deleted: 0, skipped: 0, failed: 0, personalScopeSkipped: 0, errors: [] };
   }
 
   const modeRaw = asText(input.mode).toLowerCase();
@@ -254,8 +294,16 @@ export async function syncGoogleCalendarOutbound(input: {
   let deleted = 0;
   let skipped = 0;
   let failed = 0;
+  let personalScopeSkipped = 0;
 
   for (const row of rows) {
+    const personalScope = googleCalendarPersonalScopeForRowStage231F(row, userId);
+    if (!personalScope.matched) {
+      // STAGE231F_R1: fail closed. Do not push the entire workspace into a member's private calendar.
+      personalScopeSkipped += 1;
+      skipped += 1;
+      continue;
+    }
 
     const existingGoogleEventIdStage229B = googleEventIdFrom(row);
     if (shouldRemoteDeleteGoogleCalendarEventStage229B(row)) {
@@ -309,6 +357,9 @@ export async function syncGoogleCalendarOutbound(input: {
   return {
     ok: true,
     connected: true,
+    connectionScope: 'user',
+    personalScope: 'user',
+    workspaceWideDefault: false,
     mode,
     connectedCalendarId: String(connection.google_calendar_id || 'primary'),
     scanned: rows.length,
@@ -316,6 +367,7 @@ export async function syncGoogleCalendarOutbound(input: {
     updated,
     deleted,
     skipped,
+    personalScopeSkipped,
     failed,
     errors,
   };

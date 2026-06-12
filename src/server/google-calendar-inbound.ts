@@ -2,10 +2,8 @@ import { Calendar } from 'lucide-react';
 import crypto from 'crypto';
 import { googleDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 import { deleteById, supabaseRequest } from './_supabase.js';
-import {
-  getGoogleCalendarConnection,
-  listGoogleCalendarEvents,
-} from './google-calendar-sync.js';
+import { listGoogleCalendarEvents } from './google-calendar-sync.js';
+import { getGoogleCalendarUserConnection } from './google-calendar-user-scope.js';
 
 type InboundSyncInput = {
   workspaceId: string;
@@ -135,15 +133,17 @@ async function safeInsertWorkItem(payload: Record<string, unknown>) {
   }
   throw new Error('GOOGLE_INBOUND_SAFE_INSERT_EXHAUSTED');
 }
-async function findExistingWorkItem(workspaceId: string, googleEvent: GoogleEvent) {
+async function findExistingWorkItem(workspaceId: string, userId: string, googleEvent: GoogleEvent) {
   const googleId = asText(googleEvent?.id);
   const closeflowId = getPrivateProperty(googleEvent, 'closeflowId');
-  const queries = [
-    closeflowId ? `work_items?workspace_id=eq.${encode(workspaceId)}&id=eq.${encode(closeflowId)}&select=*&limit=1` : '',
-    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&google_calendar_event_id=eq.${encode(googleId)}&select=*&limit=1` : '',
-    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleId)}&select=*&limit=1` : '',
+  const scopedQueries = [
+    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
+    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&google_calendar_event_id=eq.${encode(googleId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
+    googleId ? `work_items?workspace_id=eq.${encode(workspaceId)}&source_provider=eq.google_calendar&source_external_id=eq.${encode(googleId)}&google_calendar_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
+    closeflowId ? `work_items?workspace_id=eq.${encode(workspaceId)}&id=eq.${encode(closeflowId)}&source_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
+    closeflowId ? `work_items?workspace_id=eq.${encode(workspaceId)}&id=eq.${encode(closeflowId)}&owner_user_id=eq.${encode(userId)}&select=*&limit=1` : '',
   ].filter(Boolean);
-  for (const query of queries) {
+  for (const query of scopedQueries) {
     const rows = await safeSelect(query);
     if (rows[0]) return rows[0];
   }
@@ -181,7 +181,7 @@ function buildConflictMessage(event: GoogleEvent, conflicts: WorkItemRow[]) {
   const title = asText(event.summary) || 'Google Calendar';
   return `Wpis z Google Calendar „${title}” nakłada się z: ${conflictTitle}. Sprawdź kalendarz przed potwierdzeniem terminu.`;
 }
-function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: WorkItemRow | null, conflicts: WorkItemRow[] = []) {
+function basePayload(workspaceId: string, userId: string, googleEvent: GoogleEvent, existing?: WorkItemRow | null, conflicts: WorkItemRow[] = []) {
   // GOOGLE_CALENDAR_STAGE11H_INBOUND_PARITY_CONFIRMED
   const startAt = googleEventStart(googleEvent);
   const endAt = googleEventEnd(googleEvent, startAt);
@@ -192,6 +192,12 @@ function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: W
   const allDay = googleEventIsAllDay(googleEvent);
   const payload: Record<string, unknown> = {
     workspace_id: workspaceId,
+    // STAGE231F_R1: imported Google events are owned by the user who authorized this OAuth connection.
+    // safeInsert/safePatch strips missing columns in older schemas, but new schemas should keep these fields.
+    user_id: userId,
+    owner_user_id: userId,
+    source_user_id: userId,
+    google_calendar_user_id: userId,
     record_type: isExistingTask ? 'task' : 'event',
     type: isExistingTask ? (existing?.type || 'task') : 'external_google_event',
     title: asText(googleEvent.summary) || '(Google Calendar) Bez tytułu',
@@ -230,10 +236,10 @@ function basePayload(workspaceId: string, googleEvent: GoogleEvent, existing?: W
   if (!existing) payload.created_at = nowIso();
   return payload;
 }
-async function applyGoogleEvent(workspaceId: string, googleEvent: GoogleEvent) {
+async function applyGoogleEvent(workspaceId: string, userId: string, googleEvent: GoogleEvent) {
   const googleId = asText(googleEvent.id);
   if (!googleId) return { action: 'skipped', conflicts: [] as any[] };
-  const existing = await findExistingWorkItem(workspaceId, googleEvent);
+  const existing = await findExistingWorkItem(workspaceId, userId, googleEvent);
   const existingId = asText(existing?.id);
 
   if (googleEvent.status === 'cancelled') {
@@ -251,7 +257,7 @@ async function applyGoogleEvent(workspaceId: string, googleEvent: GoogleEvent) {
   if (!startAt || !endAt) return { action: 'skipped_no_time', conflicts: [] as any[] };
 
   const conflicts = await findConflicts(workspaceId, { selfId: existingId || null, startAt, endAt, googleEventId: googleId });
-  const payload = basePayload(workspaceId, googleEvent, existing, conflicts);
+  const payload = basePayload(workspaceId, userId, googleEvent, existing, conflicts);
 
   if (existingId) {
     const rows = await safePatchWorkItem(existingId, payload);
@@ -265,9 +271,12 @@ async function applyGoogleEvent(workspaceId: string, googleEvent: GoogleEvent) {
 export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
   // GOOGLE_CALENDAR_STAGE10K_INBOUND_SYNC_BACKEND
   if (!input.workspaceId) throw new Error('GOOGLE_INBOUND_WORKSPACE_REQUIRED');
-  const connection = await getGoogleCalendarConnection(input.workspaceId, input.userId || undefined);
+  const userId = asText(input.userId);
+  if (!userId) throw new Error('GOOGLE_INBOUND_USER_REQUIRED');
+  // STAGE231F_R1: ordinary user sync must never use a silent workspace fallback token.
+  const connection = await getGoogleCalendarUserConnection(input.workspaceId, userId);
   if (!connection || connection.sync_enabled === false) {
-    return { ok: true, connected: false, scanned: 0, created: 0, updated: 0, deleted: 0, conflicts: [] as any[] };
+    return { ok: true, connected: false, connectionScope: 'none', reason: 'user_not_connected', scanned: 0, created: 0, updated: 0, deleted: 0, conflicts: [] as any[] };
   }
   const daysBack = clampInt(input.daysBack, 30, 0, 365);
   const daysForward = clampInt(input.daysForward, 90, 1, 730);
@@ -280,7 +289,7 @@ export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
   let deleted = 0;
   const conflicts: any[] = [];
   for (const googleEvent of listed.items || []) {
-    const result = await applyGoogleEvent(input.workspaceId, googleEvent);
+    const result = await applyGoogleEvent(input.workspaceId, userId, googleEvent);
     if (result.action === 'created') created += 1;
     if (result.action === 'updated') updated += 1;
     if (result.action === 'deleted') deleted += 1;
@@ -298,6 +307,9 @@ export async function syncGoogleCalendarInbound(input: InboundSyncInput) {
   return {
     ok: true,
     connected: true,
+    connectionScope: 'user',
+    personalScope: 'user',
+    workspaceWideDefault: false,
     scanned: (listed.items || []).length,
     created,
     updated,
