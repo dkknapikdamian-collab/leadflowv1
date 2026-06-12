@@ -5,10 +5,13 @@ import {
   disconnectGoogleCalendarConnection,
   exchangeGoogleCalendarCode,
   getGoogleCalendarConfigStatus,
-  getGoogleCalendarConnection,
-  upsertGoogleCalendarConnection,
   verifyGoogleOAuthState,
 } from './google-calendar-sync.js';
+import {
+  getGoogleCalendarLegacyWorkspaceConnection,
+  getGoogleCalendarUserConnection,
+  upsertGoogleCalendarUserConnection,
+} from './google-calendar-user-scope.js';
 import { syncGoogleCalendarInbound } from './google-calendar-inbound.js';
 import { syncGoogleCalendarOutbound } from './google-calendar-outbound.js';
 
@@ -39,6 +42,28 @@ function route(req: any, body: any) {
   return String(Array.isArray(raw) ? raw[0] : raw || 'status').trim().toLowerCase();
 }
 
+function decodeGoogleAccountEmailFromIdToken(idToken?: string) {
+  if (!idToken) return null;
+  try {
+    const [, payload] = String(idToken).split('.');
+    if (!payload) return null;
+    const data = JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
+    return typeof data?.email === 'string' && data.email.trim() ? data.email.trim() : null;
+  } catch {
+    return null;
+  }
+}
+
+function legacyConnectionSummary(connection: any) {
+  if (!connection) return null;
+  return {
+    googleCalendarId: connection.google_calendar_id || 'primary',
+    googleAccountEmail: connection.google_account_email || '',
+    syncEnabled: connection.sync_enabled !== false,
+    userId: connection.user_id || '',
+  };
+}
+
 // GOOGLE_CALENDAR_SYSTEM_ROUTE_CONSOLIDATION_2026_05_03
 export default async function handler(req: any, res: any) {
   try {
@@ -55,11 +80,11 @@ export default async function handler(req: any, res: any) {
 
       const verified = verifyGoogleOAuthState(state);
       const tokens = await exchangeGoogleCalendarCode(code);
-      await upsertGoogleCalendarConnection({
+      await upsertGoogleCalendarUserConnection({
         workspaceId: verified.workspaceId,
         userId: verified.userId,
         tokens,
-        googleAccountEmail: null,
+        googleAccountEmail: decodeGoogleAccountEmailFromIdToken(tokens.id_token),
       });
 
       const returnTo = verified.returnTo || '/settings?googleCalendar=connected';
@@ -89,12 +114,18 @@ export default async function handler(req: any, res: any) {
 
     if (req.method === 'POST' && action === 'sync-inbound') {
       // GOOGLE_CALENDAR_STAGE10K_SYNC_INBOUND_ROUTE
+      // STAGE231F: ordinary user sync must use only that user's workspaceId + userId connection.
       const cfg = getGoogleCalendarConfigStatus();
       if (!cfg.configured) {
-        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing });
+        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing, reason: 'app_not_configured' });
         return;
       }
       await assertWorkspaceWriteAccess(workspaceId, req);
+      const userConnection = await getGoogleCalendarUserConnection(workspaceId, userId);
+      if (!userConnection || userConnection.sync_enabled === false) {
+        res.status(200).json({ ok: true, connected: false, connectionScope: 'none', reason: 'user_not_connected', scanned: 0, created: 0, updated: 0, deleted: 0, conflicts: [] });
+        return;
+      }
       const result = await syncGoogleCalendarInbound({
         workspaceId,
         userId,
@@ -102,18 +133,24 @@ export default async function handler(req: any, res: any) {
         daysForward: body.daysForward,
         updatedMin: body.updatedMin || null,
       });
-      res.status(200).json(result);
+      res.status(200).json({ ...result, connectionScope: 'user', googleAccountEmail: userConnection.google_account_email || null });
       return;
     }
 
     if (req.method === 'POST' && (action === 'sync-outbound' || action === 'sync-now')) {
       // GOOGLE_CALENDAR_STAGE12_SYNC_OUTBOUND_ROUTE
+      // STAGE231F: no silent workspace fallback; CloseFlow must not sync a member through Damian's token.
       const cfg = getGoogleCalendarConfigStatus();
       if (!cfg.configured) {
-        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing });
+        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing, reason: 'app_not_configured' });
         return;
       }
       await assertWorkspaceWriteAccess(workspaceId, req);
+      const userConnection = await getGoogleCalendarUserConnection(workspaceId, userId);
+      if (!userConnection || userConnection.sync_enabled === false) {
+        res.status(200).json({ ok: true, connected: false, connectionScope: 'none', reason: 'user_not_connected', scanned: 0, created: 0, updated: 0, deleted: 0, skipped: 0, failed: 0, errors: [] });
+        return;
+      }
       const result = await syncGoogleCalendarOutbound({
         workspaceId,
         userId,
@@ -122,18 +159,30 @@ export default async function handler(req: any, res: any) {
         daysBack: body.daysBack,
         daysForward: body.daysForward,
       });
-      res.status(200).json(result);
+      res.status(200).json({ ...result, connectionScope: 'user', googleAccountEmail: userConnection.google_account_email || null });
       return;
     }
 
     if (req.method === 'GET' && action === 'status') {
       const cfg = getGoogleCalendarConfigStatus();
-      const connection = await getGoogleCalendarConnection(workspaceId, userId).catch(() => null);
+      const connection = await getGoogleCalendarUserConnection(workspaceId, userId).catch(() => null);
+      const legacyConnection = connection ? null : await getGoogleCalendarLegacyWorkspaceConnection(workspaceId, userId).catch(() => null);
+      const reason = !cfg.configured
+        ? 'app_not_configured'
+        : connection
+          ? 'connected'
+          : legacyConnection
+            ? 'legacy_workspace_connection'
+            : 'user_not_connected';
       res.status(200).json({
         ok: true,
         configured: cfg.configured,
+        featureAllowed: true,
         missing: cfg.missing,
         connected: Boolean(connection),
+        connectionScope: connection ? 'user' : legacyConnection ? 'workspace_legacy' : 'none',
+        reason,
+        legacyWorkspaceConnection: legacyConnectionSummary(legacyConnection),
         connection: connection
           ? {
               googleCalendarId: connection.google_calendar_id || 'primary',
@@ -149,7 +198,7 @@ export default async function handler(req: any, res: any) {
       await assertWorkspaceWriteAccess(workspaceId, req);
       const cfg = getGoogleCalendarConfigStatus();
       if (!cfg.configured) {
-        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing });
+        res.status(409).json({ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg.missing, reason: 'app_not_configured' });
         return;
       }
       const authUrl = buildGoogleCalendarOAuthUrl({
@@ -157,14 +206,14 @@ export default async function handler(req: any, res: any) {
         userId,
         returnTo: body.returnTo || '/settings',
       });
-      res.status(200).json({ ok: true, authUrl, configured: true, userEmail });
+      res.status(200).json({ ok: true, authUrl, configured: true, connectionScope: 'user', userEmail });
       return;
     }
 
     if ((req.method === 'DELETE' || req.method === 'POST') && action === 'disconnect') {
       await assertWorkspaceWriteAccess(workspaceId, req);
       await disconnectGoogleCalendarConnection(workspaceId, userId);
-      res.status(200).json({ ok: true, disconnected: true });
+      res.status(200).json({ ok: true, disconnected: true, connectionScope: 'user' });
       return;
     }
 
