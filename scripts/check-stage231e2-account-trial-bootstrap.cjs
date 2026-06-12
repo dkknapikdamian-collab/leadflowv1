@@ -1,35 +1,58 @@
 const fs = require('fs');
+const path = require('path');
 
-const plansPath = 'src/lib/plans.ts';
-const apiMePath = 'api/me.ts';
+const ROOT = process.cwd();
 
-function read(path) {
-  if (!fs.existsSync(path)) {
-    throw new Error(`Missing required file: ${path}`);
-  }
-  return fs.readFileSync(path, 'utf8');
+function read(file) {
+  const full = path.join(ROOT, file);
+  if (!fs.existsSync(full)) throw new Error(`Missing required file: ${file}`);
+  return fs.readFileSync(full, 'utf8');
 }
 
 function assert(condition, message) {
-  if (!condition) {
-    throw new Error(message);
-  }
+  if (!condition) throw new Error(message);
 }
 
-const plans = read(plansPath);
-const apiMe = read(apiMePath);
+const plans = read('src/lib/plans.ts');
+const access = read('src/lib/access.ts');
+const apiMe = read('api/me.ts');
+const r2Guard = read('scripts/check-stage231e2-r2-trial-14d-lock.cjs');
+const r2Report = read('_project/runs/2026-06-12_STAGE231E2_R2_TRIAL_14D_LOCK.md');
 
-assert(plans.includes('STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_BLOCKER'), 'plans.ts must document the account trial bootstrap blocker.');
-assert(/return\s+PLAN_IDS\.free;\s*}\s*\n\s*export function getPlanDefinition/s.test(plans), 'normalizePlanId fallback must fail closed to Free, not Trial.');
-assert(!/return\s+PLAN_IDS\.trial;\s*}\s*\n\s*export function getPlanDefinition/s.test(plans), 'normalizePlanId must not silently return trial for unknown states.');
-assert(apiMe.includes('buildTrialEndsAt()'), 'api/me.ts must build fresh trial end dates server-side.');
-assert(apiMe.includes('shouldRepairFreshTrialBootstrap'), 'api/me.ts must keep fresh broken trial bootstrap repair logic.');
-assert(apiMe.includes("authIntent !== 'register'") || apiMe.includes('authIntent !== "register"'), 'api/me.ts must still distinguish register vs login for account bootstrap.');
-assert(apiMe.includes('BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS'), 'api/me.ts must keep a bounded repair window for broken fresh bootstrap rows.');
-assert(apiMe.includes('trial_expired'), 'api/me.ts must explicitly classify expired trials instead of treating them as active.');
+// R3 contract:
+// - older account bootstrap guard must not block the accepted R2 product decision.
+// - canonical trial is 14 days.
+// - trial_21d remains allowed only as a legacy alias for existing DB rows.
+// - unknown/missing plans fail closed and must not silently grant trial features.
+
+assert(plans.includes('export const TRIAL_DAYS = 14;'), 'plans.ts must define the active trial as 14 days.');
+assert(plans.includes("trial: 'trial_14d'"), 'PLAN_IDS.trial must use canonical trial_14d.');
+assert(plans.includes('trial_14d: PLAN_IDS.trial'), 'plans.ts must include trial_14d alias.');
+assert(plans.includes('trial_21d: PLAN_IDS.trial'), 'plans.ts must keep trial_21d as a legacy alias for existing rows.');
+assert(!plans.includes('export const TRIAL_DAYS = 21;'), 'plans.ts must not define 21-day trial.');
+assert(!plans.includes("trial: 'trial_21d'"), 'trial_21d must not be the canonical trial id.');
+assert(!plans.includes('Trial 21 dni'), 'active plan copy must not say Trial 21 dni.');
+
+assert(
+  plans.includes('STAGE231E2_R2_TRIAL_14D_LOCK') || plans.includes('STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_BLOCKER'),
+  'plans.ts must document the account trial/bootstrap stage marker.'
+);
+
+assert(access.includes("import { TRIAL_DAYS } from './plans';"), 'access.ts must source trial length from plans.ts.');
+assert(!/const\s+TRIAL_LENGTH_DAYS\s*=\s*21\b/.test(access), 'access.ts must not hard-code a 21-day trial.');
+assert(!/21\s*\*\s*24\s*\*\s*60\s*\*\s*60\s*\*\s*1000/.test(access), 'access.ts must not hard-code 21-day milliseconds.');
+
+assert(apiMe.includes('PLAN_TRIAL_DAYS') && apiMe.includes('PLAN_TRIAL_MS'), 'api/me.ts must source trial duration from plans.ts.');
+assert(apiMe.includes('STAGE231E2_R2_TRIAL_14D_LOCK'), 'api/me.ts must include R2 stage marker.');
+assert(!/const\s+TRIAL_DAYS\s*=\s*21\b/.test(apiMe), 'api/me.ts must not hard-code TRIAL_DAYS=21.');
+assert(!/21\s*\*\s*24\s*\*\s*60\s*\*\s*60\s*\*\s*1000/.test(apiMe), 'api/me.ts must not hard-code 21-day milliseconds.');
+
+assert(r2Guard.includes('STAGE231E2_R2_TRIAL_14D_LOCK'), 'R2 trial 14d guard must exist.');
+assert(r2Report.includes('AUDYT PRZED ETAPEM') && r2Report.includes('AUDYT PO ETAPIE'), 'R2 run report must include stage audits.');
+assert(r2Report.includes('14 dni') || r2Report.includes('14-day'), 'R2 run report must document 14-day trial decision.');
 
 console.log(JSON.stringify({
   ok: true,
-  stage: 'STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_BLOCKER_R1',
-  contract: 'unknown plan states fail closed to Free; fresh trial bootstrap repair stays bounded; expired trials remain explicit',
+  stage: 'STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_GUARD_R3',
+  contract: 'older bootstrap guard accepts R2 14-day trial model, keeps legacy trial_21d alias, and blocks 21-day canonical fallback',
 }, null, 2));

@@ -15,6 +15,8 @@ const PAID_PLAN_IDS = new Set([
 const DEFAULT_STATUS = 'trial_active';
 const TRIAL_DAYS = PLAN_TRIAL_DAYS;
 const TRIAL_MS = PLAN_TRIAL_MS;
+const STAGE231E2_R2_TRIAL_14D_LOCK = 'New account trial length is sourced from src/lib/plans.ts TRIAL_DAYS=14 and must not use stale 21-day literals.';
+void STAGE231E2_R2_TRIAL_14D_LOCK;
 const BROKEN_BOOTSTRAP_REPAIR_WINDOW_MS = 12 * 60 * 60 * 1000;
 const STAGE231A_GOOGLE_AUTH_PUBLIC_TRIAL_BOOTSTRAP_DECISION = 'Google OAuth can currently bootstrap a new trial workspace through api/me; decide public trial vs invite-only in STAGE231D.';
 void STAGE231A_GOOGLE_AUTH_PUBLIC_TRIAL_BOOTSTRAP_DECISION;

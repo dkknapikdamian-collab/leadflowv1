@@ -1,4 +1,4 @@
-export const TRIAL_DAYS = 21;
+export const TRIAL_DAYS = 14;
 export const TRIAL_MS = TRIAL_DAYS * 24 * 60 * 60 * 1000;
 
 export const PLAN_IDS = {
@@ -6,7 +6,7 @@ export const PLAN_IDS = {
   basic: 'basic',
   pro: 'pro',
   ai: 'ai',
-  trial: 'trial_21d',
+  trial: 'trial_14d',
 } as const;
 
 export type PlanId = (typeof PLAN_IDS)[keyof typeof PLAN_IDS];
@@ -213,7 +213,7 @@ export const PLAN_DEFINITIONS: Record<PlanId, PlanDefinition> = {
   },
   [PLAN_IDS.trial]: {
     id: PLAN_IDS.trial,
-    name: 'Trial 21 dni',
+    name: 'Trial 14 dni',
     role: 'trial',
     limits: {
       ...UNLIMITED_LIMITS,
@@ -244,6 +244,8 @@ const PLAN_ALIASES: Record<string, PlanId> = {
   closeflow_business_yearly: PLAN_IDS.ai,
   business: PLAN_IDS.ai,
   trial: PLAN_IDS.trial,
+  trial_14d: PLAN_IDS.trial,
+  // Legacy alias: old workspaces may still store trial_21d. Do not remove without data migration.
   trial_21d: PLAN_IDS.trial,
   trial_active: PLAN_IDS.trial,
   trial_ending: PLAN_IDS.trial,
@@ -268,7 +270,7 @@ export function normalizePlanId(planId?: string | null, subscriptionStatus?: str
     return rawPlan && PLAN_ALIASES[rawPlan] ? PLAN_ALIASES[rawPlan] : PLAN_IDS.free;
   }
 
-  // STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_BLOCKER
+  // STAGE231E2_R2_TRIAL_14D_LOCK
   // Unknown access states must fail closed to Free. Do not silently grant trial
   // features to a new/incomplete account unless the backend explicitly returns
   // trial_active or trial_ending with a valid trial window.
