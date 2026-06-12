@@ -65,7 +65,6 @@ import '../styles/closeflow-operator-top-trim-source-truth.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 
 import { OperatorMetricToneRuntime } from './ui-system';
-import { parseISO, differenceInDays } from 'date-fns';
 // STAGE200 disabled legacy visual/sidebar layer: /* STAGE198B disabled global 80pct density import: closeflow-desktop-density-source-truth.css */
 interface LayoutProps {
   children: ReactNode;
@@ -123,9 +122,21 @@ function NavButton({
   );
 }
 
-function TrialCard({ trialDaysLeft }: { trialDaysLeft: number }) {
-  const safeDays = Math.max(0, trialDaysLeft);
-  const width = Math.max(0, Math.min(100, (safeDays / 21) * 100));
+function TrialCard({
+  trialDaysLeft,
+  trialProgressPercent,
+  ctaLabel = 'Zobacz plan',
+}: {
+  trialDaysLeft: number;
+  trialProgressPercent: number;
+  ctaLabel?: string;
+}) {
+  const safeDays = Number.isFinite(trialDaysLeft) ? Math.max(0, Math.floor(trialDaysLeft)) : 0;
+  const width = Number.isFinite(trialProgressPercent)
+    ? Math.max(0, Math.min(100, Math.round(trialProgressPercent)))
+    : 0;
+
+  if (safeDays <= 0) return null;
 
   return (
     <div className="trial-card" data-shell-trial-card="true">
@@ -137,7 +148,7 @@ function TrialCard({ trialDaysLeft }: { trialDaysLeft: number }) {
         <span style={{ width: `${width}%` }} />
       </div>
       <Link to="/billing" className="trial-link">
-        Aktywuj plan <ChevronRight className="h-3 w-3" />
+        {ctaLabel} <ChevronRight className="h-3 w-3" />
       </Link>
     </div>
   );
@@ -379,7 +390,17 @@ export default function Layout({ children }: LayoutProps) {
   const isCasesRoute = location.pathname === '/cases';
   const isCaseDetailRoute = /^\/(?:case|cases)\/[^/]+$/.test(location.pathname);
   const currentSection = isTodayRoute ? 'today' : isLeadsRoute ? 'leads' : isLeadDetailRoute ? 'lead-detail' : isClientsRoute ? 'clients' : isClientDetailRoute ? 'client-detail' : isCasesRoute ? 'cases' : isCaseDetailRoute ? 'case-detail' : currentTitle.toLowerCase();
-  const trialDaysLeft = workspace?.trialEndsAt ? differenceInDays(parseISO(workspace.trialEndsAt), new Date()) : 0;
+  const trialDaysLeft = Number.isFinite(Number(access?.trialDaysLeft))
+    ? Math.max(0, Math.floor(Number(access?.trialDaysLeft)))
+    : 0;
+  const trialProgressPercent = Number.isFinite(Number(access?.trialProgressPercent))
+    ? Math.max(0, Math.min(100, Number(access?.trialProgressPercent)))
+    : 0;
+  const shouldShowTrialCard = Boolean(
+    access?.isTrialActive
+      && (access?.status === 'trial_active' || access?.status === 'trial_ending')
+      && trialDaysLeft > 0,
+  );
   const userEmail = profile?.email || supabaseUser?.email || '';
   const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';
   const userInitial = (userName.trim().charAt(0) || userEmail.trim().charAt(0) || 'U').toUpperCase();
@@ -493,7 +514,13 @@ export default function Layout({ children }: LayoutProps) {
             marginTop: 0,
           }}
         >
-          {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
+          {shouldShowTrialCard ? (
+            <TrialCard
+              trialDaysLeft={trialDaysLeft}
+              trialProgressPercent={trialProgressPercent}
+              ctaLabel={access?.ctaLabel}
+            />
+          ) : null}
           <UserCard userInitial={userInitial} name={userName} email={userEmail} />
           <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
             <LogOut className="h-4 w-4" />
@@ -538,7 +565,13 @@ export default function Layout({ children }: LayoutProps) {
             </nav>
 
             <div className="mobile-drawer-footer">
-              {workspace?.subscriptionStatus === 'trial_active' ? <TrialCard trialDaysLeft={trialDaysLeft} /> : null}
+              {shouldShowTrialCard ? (
+            <TrialCard
+              trialDaysLeft={trialDaysLeft}
+              trialProgressPercent={trialProgressPercent}
+              ctaLabel={access?.ctaLabel}
+            />
+          ) : null}
               <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
                 <LogOut className="h-4 w-4" />
                 <span>Wyloguj się</span>
