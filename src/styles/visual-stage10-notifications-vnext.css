@@ -1175,3 +1175,89 @@ body #root .notifications-vnext-shell {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS
+   Notifications use CloseFlowMetricTileV2 for top tiles.
+   Local notifications-today-parity-card/classes are deprecated in JSX and must not be active source truth.
+*/
+
+.notifications-stats-grid.cf-metric-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: var(--cf-metric-tile-gap, 18px) !important;
+  align-items: stretch !important;
+}
+
+.notifications-stats-grid .cf-top-metric-tile {
+  min-width: 0 !important;
+}
+
+.notifications-stats-grid .cf-top-metric-tile-content {
+  min-height: var(--cf-metric-tile-min-height, 72px) !important;
+}
+
+.notifications-list-title {
+  min-width: 0;
+}
+
+.notifications-list-meta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.notifications-list-refresh,
+.notifications-list-count {
+  border: 1px solid #e4e7ec;
+  border-radius: 999px;
+  background: #f9fafb;
+  color: #475467;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.notifications-list-count {
+  color: #1d4ed8;
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.notifications-row-icon {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  border-radius: 12px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.notifications-row-icon svg {
+  width: 15px !important;
+  height: 15px !important;
+  stroke: currentColor !important;
+}
+
+.notifications-row-icon[data-cf-notification-row-tone="info"] {
+  background: rgba(37, 99, 235, 0.08) !important;
+  color: #2563eb !important;
+}
+
+.notifications-row-icon[data-cf-notification-row-tone="warning"] {
+  background: rgba(217, 119, 6, 0.10) !important;
+  color: #b45309 !important;
+}
+
+.notifications-row-icon[data-cf-notification-row-tone="error"] {
+  background: rgba(225, 29, 72, 0.10) !important;
+  color: #e11d48 !important;
+}
+
+.notifications-row-icon[data-cf-notification-row-tone="success"] {
+  background: rgba(5, 150, 105, 0.10) !important;
+  color: #059669 !important;
+}

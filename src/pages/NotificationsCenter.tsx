@@ -60,11 +60,17 @@ import '../styles/closeflow-canvas-runtime-source-truth-stage211j.css';
 const CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W = 'CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W';
 const STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED = 'STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED';
 const STAGE213C_A_NOTIFICATIONS_QUERY_BUDGET_FIX = 'Stage213C-A: NotificationsCenter no longer polls full Supabase calendar bundle every 60 seconds';
+const STAGE231D0H_N1_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP = 'Notifications top tiles use CloseFlowMetricTileV2; conflict placeholder removed; row icons use small source-truth boxes';
+const STAGE231D0H_N1_R2_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_ANCHOR_REPAIR = 'Notifications N1 patch uses resilient anchors for real local JSX shape';
+const STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS = 'Notifications N1 conflict card removal uses section bounds';
 const NOTIFICATIONS_BACKGROUND_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
 const NOTIFICATIONS_BACKGROUND_REFRESH_TTL_MS = 4 * 60 * 1000;
 void CLOSEFLOW_NOTIFICATIONS_OPERATOR_METRIC_TONE_PARITY_VS5W;
 void STAGE180R_NOTIFICATIONS_CHANNELS_CARD_REMOVED;
 void STAGE213C_A_NOTIFICATIONS_QUERY_BUDGET_FIX;
+void STAGE231D0H_N1_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP;
+void STAGE231D0H_N1_R2_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_ANCHOR_REPAIR;
+void STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS;
 
 type NotificationFilter =
   | 'all'
@@ -331,7 +337,11 @@ function NotificationsRow({
 }) {
   return (
     <article className="notifications-row" data-testid="notification-row">
-      <div className="notifications-row-icon cf-severity-dot" data-cf-severity={notificationRowSeverity(row.status)}>
+      <div
+        className="notifications-row-icon"
+        data-cf-notification-row-tone={notificationRowSeverity(row.status)}
+        data-cf-notification-row-kind={row.kind}
+      >
         <NotificationRowIcon kind={row.kind} />
       </div>
 
@@ -635,7 +645,7 @@ export default function NotificationsCenter() {
 
   return (
     <Layout>
-      <main className="notifications-vnext-page" data-stage213c-a-notifications-query-budget="ttl-visible-refresh">
+      <main className="notifications-vnext-page" data-stage213c-a-notifications-query-budget="ttl-visible-refresh" data-stage231d0h-n1-notifications-visual-source-cleanup="true" data-stage231d0h-n1-r3-section-bounds="true">
         <CloseFlowPageHeaderV2
           pageKey="notifications"
           actions={
@@ -673,11 +683,11 @@ export default function NotificationsCenter() {
         />
 
         <section
-          className="notifications-stats-grid notifications-today-parity-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          className="notifications-stats-grid cf-metric-grid grid gap-3 sm:grid-cols-2 lg:grid-cols-4"
           aria-label="Statystyki powiadomień"
           data-notifications-metric-grid="true"
-          data-cf-metric-replacement="stage181d-today-parity"
-          data-stage181d-notifications-metric-renderer-final="true"
+          data-cf-metric-replacement="CloseFlowMetricTileV2"
+          data-stage231d0h-n1-notifications-metric-renderer="CloseFlowMetricTileV2"
         >
           {notificationMetricTiles.map((tile) => {
             const Icon = tile.icon;
@@ -686,22 +696,27 @@ export default function NotificationsCenter() {
               <button
                 key={tile.id}
                 type="button"
-                className="notifications-today-parity-tile"
+                className={['cf-top-metric-tile', active ? 'is-active' : ''].filter(Boolean).join(' ')}
                 onClick={() => setActiveFilter(tile.id)}
                 data-notifications-metric-tile="true"
+                data-stage231d0h-n1-notifications-metric-tile="true"
                 data-notifications-metric-active={active ? 'true' : 'false'}
+                data-eliteflow-metric-tone={tile.tone}
+                data-cf-metric-tile-contract="final-vs5"
               >
                 <div
-                  className={['notifications-today-parity-card', active ? 'notifications-today-parity-card-active' : ''].join(' ')}
-                  data-notifications-metric-tone={tile.tone}
+                  className={['cf-top-metric-tile-content', active ? 'is-active' : ''].filter(Boolean).join(' ')}
+                  data-cf-metric-tile-contract="final-vs5"
                 >
-                  <div className="notifications-today-parity-copy">
-                    <p>{tile.label}</p>
-                    <strong>{tile.value}</strong>
+                  <div className="cf-top-metric-tile-left">
+                    <span className="cf-top-metric-tile-label">{tile.label}</span>
                   </div>
-                  <span className="notifications-today-parity-icon">
-                    <Icon className="h-4 w-4" />
-                  </span>
+                  <div className="cf-top-metric-tile-value-row">
+                    <strong className="cf-top-metric-tile-value">{tile.value}</strong>
+                    <span className="cf-top-metric-tile-icon" aria-hidden="true">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  </div>
                 </div>
               </button>
             );
@@ -738,12 +753,14 @@ export default function NotificationsCenter() {
 
             <section className="notifications-list-card" aria-label="Lista powiadomień">
               <div className="notifications-list-head">
-                <div>
+                <div className="notifications-list-title">
                   <p>Centrum reakcji</p>
                   <h2>Powiadomienia i przypomnienia</h2>
-                  <span data-stage213c-a-notifications-last-refresh="true">Ostatni odczyt danych: {lastLoadedLabel}</span>
                 </div>
-                <span>{filteredRows.length} / {rows.length}</span>
+                <div className="notifications-list-meta">
+                  <span className="notifications-list-refresh" data-stage213c-a-notifications-last-refresh="true">Ostatni odczyt danych: {lastLoadedLabel}</span>
+                  <span className="notifications-list-count">{filteredRows.length} / {rows.length}</span>
+                </div>
               </div>
 
               {loading ? (
@@ -798,16 +815,6 @@ export default function NotificationsCenter() {
                 <span>Oznacz przeczytane</span>
                 <strong>{unreadCount}</strong>
               </button>
-            </section>
-
-            <section className="right-card notifications-right-card" data-notification-rail-card="conflicts" data-stage181aj-conflict-notifications="true">
-              <div className="notifications-right-card-head">
-                <ShieldAlert className="h-4 w-4" />
-                <h2>Ostrzeżenia o konfliktach terminów</h2>
-              </div>
-              <p className="notifications-rail-empty">
-                Gdy terminy będą się nakładać, alert pojawi się tutaj.
-              </p>
             </section>
 
             <section className="right-card notifications-right-card" data-notification-rail-card="upcoming">

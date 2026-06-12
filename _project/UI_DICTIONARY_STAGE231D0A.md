@@ -1126,3 +1126,28 @@ ACTIVE GLOBAL RIGHT RAIL CARD SOURCE
 Status:
 ACTIVE FINANCE TILE SOURCE
 <!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
+
+<!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_START -->
+## 2026-06-12 22:05 Europe/Warsaw — STAGE231D0H-N1-R3 Section bounds repair
+
+STATUS:
+READY_TO_APPLY
+
+Zakres:
+Naprawia usuwanie conflict placeholder card przez section bounds, nie przez kruchy regex całego tekstu.
+
+NotificationsMetricTile:
+- source: CloseFlowMetricTileV2
+- active JSX: `cf-top-metric-tile`, `data-eliteflow-metric-tone`, `data-cf-metric-tile-contract="final-vs5"`
+- deprecated in JSX: `notifications-today-parity-card`, `data-notifications-metric-tone`, `notifications-today-parity-icon`
+
+NotificationsRowIcon:
+- active JSX: `data-cf-notification-row-tone`, `data-cf-notification-row-kind`
+- deprecated wrapper in JSX: `className="notifications-row-icon cf-severity-dot"`
+
+NotificationsRightRail:
+- conflict placeholder card removed from visible rail
+
+NotificationsCenterVisualBaseline:
+- N1 visual QA required after deploy
+<!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->

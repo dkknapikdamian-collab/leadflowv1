@@ -4041,3 +4041,31 @@ TESTY:
 - npm run build
 - git diff --check
 <!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_START -->
+## 2026-06-12 22:05 Europe/Warsaw — STAGE231D0H-N1-R3 Notifications visual source cleanup section bounds
+
+STATUS: READY_TO_APPLY
+
+FAKTY:
+- N1 R2 failed during patch on conflict placeholder removal.
+- Real conflict card is a standalone right rail `<section>` before the upcoming card.
+- R3 removes the whole section using section boundaries.
+
+ZMIANA:
+- R3 uses section bounds for conflict card removal.
+- R3 preserves N1 scope: visual/source truth only.
+- Runtime data logic, filters, localStorage, Supabase, SQL and routing are untouched.
+
+TESTY:
+- `node scripts/check-stage231d0h-n1-notifications-visual-source-cleanup.cjs`
+- `node --test tests/stage231d0h-n1-notifications-visual-source-cleanup.test.cjs`
+- `node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs`
+- `node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Visual QA `/notifications` required.
+- Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
+<!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
