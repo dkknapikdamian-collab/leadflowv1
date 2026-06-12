@@ -3879,3 +3879,43 @@ TESTY:
 RYZYKO:
 - Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_START -->
+## 2026-06-12 18:30 Europe/Warsaw — STAGE231D0F-R12 Funnel metric colors real CSS enforce
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z QA:
+- Po pushu R11 układ Lejka jest OK.
+- W Vercel `/funnel` nadal wygląda prawie szaro.
+- Problem: kolor nie dochodzi wystarczająco mocno do kafli/SVG.
+
+FAKTY Z KODU:
+- `SalesFunnel.tsx` ma `data-eliteflow-metric-tone` i `cf-top-metric-tile-icon`.
+- `closeflow-metric-tiles.css` ma tokeny `--cf-metric-tone-*-icon`, ale nie wymuszał pełnego `stroke: currentColor` na SVG i dzieciach SVG.
+- `Pieniądze` ma długą wartość i wymaga value-kind.
+
+DECYZJA:
+- Układ Lejka zostaje zamrożony.
+- R12 zmienia tylko realną kolorystykę kafelków/ikon.
+- `Cisza 7+` ma być purple, nie amber.
+- Kolor ma być subtelny, nie tęcza.
+- Source of truth: `closeflow-metric-tiles.css`.
+
+ZMIANA:
+- `FUNNEL_OWNER_TILE_TONE_MAP` ma jawne tony: blue, amber, purple, red, green.
+- Dodano `data-cf-metric-value-kind`.
+- `closeflow-metric-tiles.css` wymusza SVG `stroke: currentColor`.
+- Dodano subtelne tła/bordery kafli per tone.
+- Dodano money value sizing.
+
+TESTY:
+- `node scripts/check-stage231d0f-r12-funnel-metric-colors-real-css-enforce.cjs`
+- `node --test tests/stage231d0f-r12-funnel-metric-colors-real-css-enforce.test.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Visual QA dalej wymagane, bo to etap CSS/render.
+- Local tree ma wcześniejsze śmieci; push tylko selektywny.
+<!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_END -->

@@ -34,6 +34,7 @@ const STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER = 'funnel icon color source t
 const STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR = 'records header line-level repair removes stale visibleLabel/title fragments';
 const STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH = 'resilient patch for funnel no visible stage money, shared filters, icon source and Clients filter header';
 const STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR = 'layout frozen; funnel icon colors resolve from shared CloseFlow metric icon tone source truth after R7 syntax repair';
+const STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE = 'layout frozen; funnel owner tile colors use literal tone map plus closeflow metric CSS real SVG color enforcement';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
@@ -46,6 +47,7 @@ void STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER;
 void STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR;
 void STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH;
 void STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR;
+void STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE;
 
 type LoadState = {
   leads: any[];
@@ -67,6 +69,7 @@ type FunnelTileDefinition = {
   helper: string;
   tone: FunnelMetricTone;
   iconToneKey: string;
+  valueKind?: 'count' | 'money';
   Icon: ComponentType<{ className?: string }>;
 };
 
@@ -81,36 +84,41 @@ const FUNNEL_OWNER_TILE_TONE_MAP: Record<FunnelTileFilter, FunnelTileDefinition>
   move_now: {
     label: 'Do ruchu teraz',
     helper: 'Ryzyko, cisza albo brak kroku.',
-    tone: resolveCloseflowMetricIconTone({ id: 'move_now', label: 'Do ruchu teraz', icon: 'Target', semantic: 'lead_action' }),
-    iconToneKey: 'lead_action:Target',
+    tone: 'blue',
+    iconToneKey: 'funnel:move_now:blue:Target',
+    valueKind: 'count',
     Icon: Target,
   },
   no_next_move: {
     label: 'Bez kroku',
     helper: 'Rekordy bez akcji.',
-    tone: resolveCloseflowMetricIconTone({ id: 'no_next_move', label: 'Bez kroku', icon: 'Filter', semantic: 'waiting_no_next_move' }),
-    iconToneKey: 'waiting_no_next_move:Filter',
+    tone: 'amber',
+    iconToneKey: 'funnel:no_next_move:amber:Filter',
+    valueKind: 'count',
     Icon: Filter,
   },
   silent_7: {
     label: 'Cisza 7+',
     helper: 'Brak kontaktu 7+ dni.',
-    tone: resolveCloseflowMetricIconTone({ id: 'silent_7', label: 'Cisza 7+', icon: 'Clock3', semantic: 'silence_waiting' }),
-    iconToneKey: 'silence_waiting:Clock3',
+    tone: 'purple',
+    iconToneKey: 'funnel:silent_7:purple:Clock3',
+    valueKind: 'count',
     Icon: Clock3,
   },
   high_risk: {
     label: 'Wysokie ryzyko',
     helper: 'High i critical.',
-    tone: resolveCloseflowMetricIconTone({ id: 'high_risk', label: 'Wysokie ryzyko', icon: 'ShieldAlert', semantic: 'risk' }),
-    iconToneKey: 'risk:ShieldAlert',
+    tone: 'red',
+    iconToneKey: 'funnel:high_risk:red:ShieldAlert',
+    valueKind: 'count',
     Icon: ShieldAlert,
   },
   money: {
     label: 'Pieniądze',
     helper: 'Źródła kwoty.',
-    tone: resolveCloseflowMetricIconTone({ id: 'money', label: 'Pieniądze', icon: 'PaymentEntityIcon', entity: 'payment', semantic: 'finance' }),
-    iconToneKey: 'finance:PaymentEntityIcon',
+    tone: 'green',
+    iconToneKey: 'funnel:money:green:PaymentEntityIcon',
+    valueKind: 'money',
     Icon: FunnelMoneyMetricIcon,
   },
 };
@@ -284,9 +292,12 @@ function FunnelOwnerDecisionTile({
       data-stage231d0f-owner-decision-tile="true"
       data-stage231d0f-r2-owner-tile-tone={filter}
       data-stage231d0f-r8-layout-frozen="true"
+      data-stage231d0f-r12-layout-frozen="true"
       data-stage231d0f-r8-icon-tone-key={definition.iconToneKey}
+      data-stage231d0f-r12-icon-tone-key={definition.iconToneKey}
       data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"
       data-eliteflow-metric-tone={definition.tone}
+      data-cf-metric-value-kind={definition.valueKind || 'count'}
     >
       <span className={`cf-top-metric-tile-content ${active ? 'is-active' : ''}`}>
         <span className="cf-top-metric-tile-left">

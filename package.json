@@ -1010,7 +1010,8 @@
     "check:stage231d0f-r8-funnel-icon-tone-syntax-repair": "node scripts/check-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs",
     "check:stage231d0f-r10-funnel-icon-tone-powershell-strictmode-repair": "node scripts/check-stage231d0f-r10-funnel-icon-tone-powershell-strictmode-repair.cjs",
     "check:stage231d0f-r9-funnel-icon-tone-ui-dictionary-guard-repair": "node scripts/check-stage231d0f-r9-funnel-icon-tone-ui-dictionary-guard-repair.cjs",
-    "check:stage231d0f-r11-funnel-r6-regression-guard-resolver-repair": "node scripts/check-stage231d0f-r11-funnel-r6-regression-guard-resolver-repair.cjs"
+    "check:stage231d0f-r11-funnel-r6-regression-guard-resolver-repair": "node scripts/check-stage231d0f-r11-funnel-r6-regression-guard-resolver-repair.cjs",
+    "check:stage231d0f-r12-funnel-metric-colors-real-css-enforce": "node scripts/check-stage231d0f-r12-funnel-metric-colors-real-css-enforce.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

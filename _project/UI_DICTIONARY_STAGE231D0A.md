@@ -960,3 +960,54 @@ MetricTileIconColorSource
 Resolver:
 `resolveCloseflowMetricIconTone`
 <!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_START -->
+## 2026-06-12 18:30 Europe/Warsaw — FunnelMetricToneMapR12
+
+Nazwa ludzka:
+Mapa kolorów kafelków Lejka
+
+Nazwa systemowa:
+FunnelMetricToneMapR12
+
+Rola:
+Stałe przypisanie kafelków Lejka do kolorów i ikon. Układ Lejka jest zamrożony.
+
+Mapa:
+- Do ruchu teraz: blue / Target
+- Bez kroku: amber / Filter
+- Cisza 7+: purple / Clock3
+- Wysokie ryzyko: red / ShieldAlert
+- Pieniądze: green / PaymentEntityIcon
+
+Zasada:
+Lejek nie losuje koloru z lokalnego CSS. Kolor kafla idzie przez `data-eliteflow-metric-tone` i `closeflow-metric-tiles.css`.
+
+## MetricTileIconColorSource
+
+Dopisek R12:
+`closeflow-metric-tiles.css` wymusza dziedziczenie `currentColor` przez SVG ikon i ich dzieci. Dzięki temu `cf-top-metric-tile-icon` realnie koloruje ikonę, a nie tylko wrapper.
+
+## FunnelMoneyMetricTile
+
+Nazwa ludzka:
+Kafelek pieniędzy w Lejku
+
+Nazwa systemowa:
+FunnelMoneyMetricTile
+
+Rola:
+Pokazuje sumę pieniędzy z rekordów źródłowych.
+
+Zasada:
+Używa tego samego kafla co pozostałe owner tiles, ale ma `data-cf-metric-value-kind="money"`, żeby długa kwota nie rozwalała proporcji.
+
+## R2/R3/R5/R6/R8 compatibility audit
+
+Aktywna prawda kolorów:
+- `STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE`
+- `FUNNEL_OWNER_TILE_TONE_MAP`
+- `closeflow-metric-tiles.css`
+
+Stare markery R2/R3/R5/R6/R8 zostają jako historia/kompatybilność guardów, nie jako źródło koloru.
+<!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_END -->

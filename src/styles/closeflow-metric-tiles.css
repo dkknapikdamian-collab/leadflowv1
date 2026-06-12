@@ -638,3 +638,70 @@ html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-i
 [data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"] [fill]:not([fill="none"]) {
   fill: currentColor !important;
 }
+
+/* STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE
+   Layout frozen. Real color source for metric tile icon/value/tile accents.
+   Do not move these tone rules to SalesFunnel local CSS.
+*/
+
+:root {
+  --cf-metric-tone-blue-tile-bg: linear-gradient(135deg, rgba(239, 246, 255, 0.92), rgba(255, 255, 255, 0.98));
+  --cf-metric-tone-blue-tile-border: rgba(37, 99, 235, 0.28);
+  --cf-metric-tone-amber-tile-bg: linear-gradient(135deg, rgba(255, 251, 235, 0.96), rgba(255, 255, 255, 0.98));
+  --cf-metric-tone-amber-tile-border: rgba(217, 119, 6, 0.26);
+  --cf-metric-tone-red-tile-bg: linear-gradient(135deg, rgba(255, 241, 242, 0.96), rgba(255, 255, 255, 0.98));
+  --cf-metric-tone-red-tile-border: rgba(225, 29, 72, 0.24);
+  --cf-metric-tone-green-tile-bg: linear-gradient(135deg, rgba(236, 253, 243, 0.96), rgba(255, 255, 255, 0.98));
+  --cf-metric-tone-green-tile-border: rgba(5, 150, 105, 0.24);
+  --cf-metric-tone-purple-tile-bg: linear-gradient(135deg, rgba(245, 243, 255, 0.96), rgba(255, 255, 255, 0.98));
+  --cf-metric-tone-purple-tile-border: rgba(124, 58, 237, 0.24);
+}
+
+[data-eliteflow-metric-tone="blue"] .cf-top-metric-tile-content {
+  border-color: var(--cf-metric-tone-blue-tile-border) !important;
+  background: var(--cf-metric-tone-blue-tile-bg) !important;
+}
+
+[data-eliteflow-metric-tone="amber"] .cf-top-metric-tile-content,
+[data-eliteflow-metric-tone="orange"] .cf-top-metric-tile-content {
+  border-color: var(--cf-metric-tone-amber-tile-border) !important;
+  background: var(--cf-metric-tone-amber-tile-bg) !important;
+}
+
+[data-eliteflow-metric-tone="red"] .cf-top-metric-tile-content {
+  border-color: var(--cf-metric-tone-red-tile-border) !important;
+  background: var(--cf-metric-tone-red-tile-bg) !important;
+}
+
+[data-eliteflow-metric-tone="green"] .cf-top-metric-tile-content {
+  border-color: var(--cf-metric-tone-green-tile-border) !important;
+  background: var(--cf-metric-tone-green-tile-bg) !important;
+}
+
+[data-eliteflow-metric-tone="purple"] .cf-top-metric-tile-content {
+  border-color: var(--cf-metric-tone-purple-tile-border) !important;
+  background: var(--cf-metric-tone-purple-tile-bg) !important;
+}
+
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon,
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon * {
+  color: currentColor !important;
+}
+
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg,
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg *,
+[data-cf-icon-tone-source] svg,
+[data-cf-icon-tone-source] svg * {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg [fill]:not([fill="none"]),
+[data-cf-icon-tone-source] svg [fill]:not([fill="none"]) {
+  fill: currentColor !important;
+}
+
+[data-cf-metric-value-kind="money"] .cf-top-metric-tile-value {
+  font-size: clamp(1rem, 1.2vw, 1.35rem) !important;
+  letter-spacing: -0.03em !important;
+}
