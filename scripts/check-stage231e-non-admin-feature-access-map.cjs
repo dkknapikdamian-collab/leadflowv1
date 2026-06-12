@@ -35,6 +35,8 @@ const allowedVerdicts = new Set([
   'DO_NAPRAWY_OSOBNY_ETAP',
 ]);
 
+const allowedVerdictPattern = /\|\s*(OK|DO_NAPRAWY_W_231F|DO_NAPRAWY_W_231G|DO_NAPRAWY_OSOBNY_ETAP)\s*\|/g;
+
 function fail(message) {
   console.error('STAGE231E_NON_ADMIN_FEATURE_ACCESS_MAP_FAIL: ' + message);
   process.exit(1);
@@ -79,13 +81,21 @@ const rows = matrix
 
 const seen = new Set();
 for (const line of rows) {
-  const cols = line.split('|').slice(1, -1).map((value) => value.trim());
-  const feature = cols[0];
-  const verdict = cols[7];
-  if (!requiredFeatures.includes(feature)) continue;
+  const feature = requiredFeatures.find((requiredFeature) => line.startsWith('| ' + requiredFeature + ' |'));
+  if (!feature) continue;
+
   seen.add(feature);
-  if (!allowedVerdicts.has(verdict)) {
-    fail('Invalid or empty verdict for ' + feature + ': ' + String(verdict || 'EMPTY'));
+
+  const verdictMatches = [...line.matchAll(allowedVerdictPattern)].map((match) => match[1]);
+  const uniqueVerdicts = [...new Set(verdictMatches)].filter((verdict) => allowedVerdicts.has(verdict));
+
+  if (uniqueVerdicts.length !== 1) {
+    fail(
+      'Invalid or ambiguous verdict for ' +
+        feature +
+        ': ' +
+        (uniqueVerdicts.length ? uniqueVerdicts.join(', ') : 'EMPTY')
+    );
   }
 }
 
