@@ -22,6 +22,8 @@ Application repo:
 - `AGENTS.md`
 - `_project/00_PROJECT_MEMORY_PROTOCOL.md`
 - `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
+- `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW__FOUND_PROBLEMS_ADDENDUM.md`
+- `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`
 - `_project/STAGE_TEMPLATE_MINIMAL.md`
 - full `_project/`
 - newest `_project/runs/` reports
@@ -37,6 +39,7 @@ Obsidian:
 - `PROJECTS.md`
 - `00_INSTRUKCJA_OBSIDIAN_DLA_AI.md`
 - `10_PROJEKTY/CloseFlow_Lead_App/00_START - CloseFlow Lead App.md`
+- `10_PROJEKTY/CloseFlow_Lead_App/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`, if synced
 - remaining notes in `10_PROJEKTY/CloseFlow_Lead_App/`
 
 ## Mandatory scan proof
@@ -73,6 +76,21 @@ It must include:
 
 The audit should look for real problems only: wrong bindings, unfinished work, duplicated patterns, broken gating, stale data flows, fallback masking, missing guard coverage and documentation drift. It must not turn into random repo-wide cleanup.
 
+## Mandatory found-problems ledger
+
+`_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md` is the central ledger for real problems found during audits that are not already in the current stage, repair stages or active development direction.
+
+This file is not a stage list. It is a decision queue for Damian.
+
+During every stage, the operator/developer must:
+- read the found-problems ledger before planning or implementing,
+- check whether the touched module already has open entries,
+- add evidence-based problems found during pre-stage or post-stage audit,
+- not fix them silently unless they block the stage or Damian includes them in scope,
+- report either `Znalezione problemy: brak nowych` or list the new IDs added to the ledger.
+
+Examples that belong there: inconsistent buttons for the same action, duplicated visual source of truth, different colors or components for one pattern, stale data source, unfinished wiring, public/private route drift, missing class-level guard, docs/code conflict or workaround comments in touched modules.
+
 ## Mandatory post-stage audit
 
 After every stage, the operator must write `AUDYT PO ETAPIE`.
@@ -99,6 +117,7 @@ Each meaningful run report must separate:
 - HIPOTEZY / PROPOZYCJE AI
 - DO POTWIERDZENIA
 - AUDYT PRZED ETAPEM
+- ZNALEZIONE PROBLEMY
 - TESTY AUTOMATYCZNE
 - GUARDY
 - TESTY RECZNE
