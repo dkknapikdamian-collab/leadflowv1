@@ -1,6 +1,6 @@
 # 07_AKTYWNA_KOLEJKA_ETAPOW_CLOSEFLOW - CloseFlow / LeadFlow
 
-Data: 2026-06-12 22:25 Europe/Warsaw  
+Data: 2026-06-12 22:45 Europe/Warsaw  
 Status: ACTIVE_STAGE_QUEUE_INDEX  
 Typ: scalony indeks etapow aplikacji, napraw i kierunku rozwoju  
 Repo: dkknapikdamian-collab/leadflowv1  
@@ -46,10 +46,11 @@ Znalezione problemy spoza zakresu etapu ida do `_project/04_ZNALEZIONE_PROBLEMY_
 Te etapy maja pierwszenstwo przed kosmetyka, bo sprawdzaja czy aplikacja dziala nie tylko na koncie Damiana i czy sprzedawane plany zgadzaja sie z realnym dostepem.
 
 1. `STAGE231E_NON_ADMIN_ACCOUNT_FEATURE_ACCESS_AUDIT`  
-   Status: NAJBLIZSZY_ETAP_PO_DEEP_SCAN.  
+   Status: WDROZONE_MAPA_I_GUARD_R1_DO_LOKALNEGO_PASS.  
    Cel: sprawdzic wszystkie opcje przewidziane dla zwyklych uzytkownikow i czlonkow workspace.  
    Zakres: Google Calendar, digest, weekly report, powiadomienia, ustawienia, AI/drafts, kalendarz, zadania, leady, klienci, sprawy.  
-   Warunek: powstaje mapa dostepu: admin-only / owner-only / plan-feature / workspace-member / hidden / dev-only.
+   Warunek: powstaje mapa dostepu: admin-only / owner-only / plan-feature / workspace-member / hidden / dev-only.  
+   Uwaga 2026-06-12 22:45 Europe/Warsaw: lokalny guard R0 padl na parserze markdown, bo warunek `isAdmin || isAppOwner || access.features.googleCalendar` zawiera `||`. Guard R1 zostal naprawiony, aby wykrywac werdykt jako komorke markdown z dozwolonej listy, a nie liczyc kolumn przez prosty split po `|`. Wymagane ponowne lokalne uruchomienie guarda po `git pull`.
 
 2. `STAGE231E2_PLAN_ENTITLEMENT_MATRIX_AND_OFFER_AUDIT`  
    Status: OBOWIAZKOWE_PO_231E_PRZED_NAPRAWAMI_PLANOWANYCH_FUNKCJI.  
@@ -61,7 +62,8 @@ Te etapy maja pierwszenstwo przed kosmetyka, bo sprawdzaja czy aplikacja dziala 
    Status: PILNE_PO_231E_I_231E2_ALBO_OD_RAZU_JESLI_SYNC_BLOKUJE_TESTY.  
    Cel: zweryfikowac i naprawic problem Google Calendar na kontach innych niz konto Damiana.  
    Zakres: status, connect, disconnect, sync-inbound, sync-outbound, workspace, user, plan gate, test zwyklego uzytkownika.  
-   Warunek: zwykly uprawniony uzytkownik ma jasny wynik: synchronizacja dziala albo widzi poprawny komunikat braku uprawnien. Nie moze byc cichego braku synchronizacji.
+   Warunek: zwykly uprawniony uzytkownik ma jasny wynik: synchronizacja dziala albo widzi poprawny komunikat braku uprawnien. Nie moze byc cichego braku synchronizacji.  
+   Decyzja dopisana 2026-06-12: konfiguracja Google OAuth jest centralna po stronie CloseFlow; koncowy uzytkownik nie konfiguruje Google Cloud ani sekretow. Kazdy uzytkownik tylko autoryzuje dostep OAuth do swojego kalendarza.
 
 4. `STAGE231G_DAILY_DIGEST_AND_WEEKLY_REPORT_ACCESS_DELIVERY_AUDIT`  
    Status: DO_WDROZENIA_PO_231F_LUB_RAZEM_Z_ACCOUNT_SCOPE_JESLI_DOTYCZY.  
@@ -118,7 +120,7 @@ Te etapy sa konieczne przed pokazaniem aplikacji szerzej. Nie sa kosmetyka. Bez 
 ## BLOK 2 - app/product safety przed dalsza praca
 
 12. `STAGE232A_PUBLIC_PREVIEW_ROUTES_PRODUCTION_LOCK`  
-    Status: PO_BLOKU_0_ALBO_WASKI_FIX_JESLI_DAMIAN_CHCE_NATYCHMIAST.  
+    Status: WDROZONE_W_REPO_DO_LOKALNEGO_PASS.  
     Cel: zamknac publiczne preview routes w produkcji i ograniczyc fixture preview data.
 
 13. `STAGE232B_CHUNK_BOUNDARY_RUNTIME_STABILITY`  
@@ -168,67 +170,3 @@ Zrodlo: `_project/07_NEXT_STEPS.md`, sekcja STAGE230.
 28. `STAGE230H_AI_EVAL_PACK`.
 
 Zasada: raw draft ma byc zapisany przed AI, a AI nie wykonuje akcji bez zatwierdzenia. STAGE230G dotyczy voice-first/mobile quick capture; nie zastepuje app-wide mobile readability z STAGE231H. Naprawa wysylki szkicow jest teraz osobnym etapem STAGE231K, bo dotyczy produkcyjnego approval/send flow.
-
-## BLOK 6 - pre-production core backlog
-
-Zrodlo: `_project/07_NEXT_STEPS.md`, sekcja STAGE230A3.
-
-29. `STAGE231A_DOCUMENTS_FOR_LEADS`.
-30. `STAGE231B_COSTS_AND_FINANCIAL_ITEMS`.
-31. `STAGE231C_SIMPLIFY_TASK_EVENT_EDITING`.
-32. `STAGE231D_START_SCREEN_PRODUCTION_READINESS`.
-
-## BLOK 7 - wave 2 visual / operational surfaces
-
-Zrodlo: `_project/CLOSEFLOW_VISUAL_TILE_ATLAS.md`.
-
-33. `STAGE231D0G_WAVE2_TODAY_VISUAL_TILE_MIGRATION` - `/today`.
-34. `STAGE231D0G_WAVE2_TASKS_VISUAL_TILE_MIGRATION` - `/tasks`.
-35. `STAGE231D0G_WAVE2_CALENDAR_VISUAL_TILE_MIGRATION` - `/calendar`.
-36. `STAGE231D0G_WAVE2_BILLING_VISUAL_TILE_MIGRATION` - `/billing`.
-37. `STAGE231D0G_WAVE2_ACTIVITY_VISUAL_TILE_MIGRATION` - `/activity`.
-38. `STAGE231D0G_WAVE2_NOTIFICATIONS_VISUAL_TILE_MIGRATION` - `/notifications`.
-
-## BLOK 8 - wave 3 support/settings/templates
-
-39. `STAGE231D0G_WAVE3_TEMPLATES_VISUAL_TILE_MIGRATION` - `/templates`.
-40. `STAGE231D0G_WAVE3_RESPONSE_TEMPLATES_VISUAL_TILE_MIGRATION` - `/response-templates`.
-41. `STAGE231D0G_WAVE3_SETTINGS_VISUAL_TILE_MIGRATION` - `/settings`.
-42. `STAGE231D0G_WAVE3_SETTINGS_AI_VISUAL_TILE_MIGRATION` - `/settings/ai`.
-43. `STAGE231D0G_WAVE3_SUPPORT_VISUAL_TILE_MIGRATION` - `/support`.
-
-## BLOK 9 - technical/docs hygiene po app core
-
-Zrodlo: `_project/07_REPAIR_STAGES_HIDDEN_AUDIT_FINDINGS.md`.
-
-44. `STAGE232D_DOCS_ENCODING_SWEEP`.
-45. `STAGE232E_POLISH_MOJIBAKE_GUARD_SCOPE`.
-46. `STAGE232F_GUARD_RUNNER_CROSS_PLATFORM_CLEANUP`.
-
-## BLOK 10 - pozniejszy growth / pre-CRM
-
-Zrodlo: `_project/07_NEXT_STEPS.md`, AI Opportunity Finder.
-
-47. `STAGE240A_SMART_SEARCH_INPUT_AND_MANUAL_IMPORT`.
-48. `STAGE240B_OPPORTUNITY_REASON_SCHEMA`.
-49. `STAGE240C_AI_SCORING_AND_PRIORITY`.
-50. `STAGE240D_CREATE_LEADS_WITH_REASON_AND_FOLLOWUP`.
-51. `STAGE240E_MONTHLY_OPPORTUNITY_MONITORING`.
-
----
-
-# Najblizszy etap
-
-Najblizszy etap po deep scan 2026-06-12: `STAGE231E_NON_ADMIN_ACCOUNT_FEATURE_ACCESS_AUDIT`.
-
-Powod: Damian wskazal powazny problem, ze Google Calendar dziala inaczej na koncie Damiana niz na innych kontach. Kod pokazuje wiele funkcji gated przez role i plan features, dlatego najpierw trzeba zrobic mape dostepnosci opcji na zwyklym koncie.
-
-Nastepny po nim: `STAGE231E2_PLAN_ENTITLEMENT_MATRIX_AND_OFFER_AUDIT`.
-
-Po 231E2 Damian decyduje:
-
-- jesli blokuje realna synchronizacja: robimy `STAGE231F_GOOGLE_CALENDAR_MULTI_USER_SYNC_AUDIT_AND_FIX`,
-- jesli trzeba domknac wysylke i maile: robimy `STAGE231I_PRODUCTION_DOMAIN_AND_MAILBOX_SETUP_PLAN` oraz `STAGE231J_TRANSACTIONAL_EMAILS_AND_NON_SENDING_EMAILS_CONTRACT`,
-- jesli wysylka szkicow/AI ma byc testowana produkcyjnie: robimy `STAGE231K_AI_DRAFT_SEND_AND_APPROVAL_FLOW_REPAIR` i `STAGE231L_AI_RUNTIME_PROVIDER_AND_FEATURE_REPAIR`,
-- jesli priorytetem jest billing: robimy `STAGE231M_BILLING_PAYMENTS_SETTLEMENTS_AND_PLAN_DISPLAY_AUDIT`,
-- jesli priorytetem jest UI na telefonie: robimy `STAGE231H_MOBILE_READABILITY_APP_WIDE_AUDIT_AND_FIX`.
