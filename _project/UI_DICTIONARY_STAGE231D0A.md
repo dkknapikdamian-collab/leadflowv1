@@ -1053,3 +1053,76 @@ Tony:
 Dopisek R13:
 Na desktopie przyciski `Otwórz lead` i `Otwórz sprawę` mają stałą szerokość `156px`, `white-space: nowrap` i ikonę po prawej bez łamania tekstu.
 <!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_END -->
+
+<!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
+## 2026-06-12 20:10 Europe/Warsaw — CloseFlowMetricTileV2
+
+Nazwa ludzka:
+Globalny kafelek metryczny CloseFlow
+
+Nazwa systemowa:
+CloseFlowMetricTileV2
+
+Źródło baseline:
+FunnelMetricTileR13 / STAGE231D0F-R13
+
+Rola:
+Jeden wzorzec kafelków liczbowych i decyzyjnych w aplikacji.
+
+Zasady:
+- boczny albo powierzchniowy subtelny akcent koloru,
+- kolorowa ikona,
+- kolorowa wartość,
+- jasny surface,
+- wspólny radius i shadow,
+- bez lokalnych kolorów w widokach,
+- bez tęczy.
+
+## CloseFlowMetricToneMap
+
+blue:
+ruch, aktywne, lead, informacja, etap
+
+amber:
+brak kroku, oczekiwanie, blokada, do decyzji
+
+purple:
+sprawa, historia, cisza, operacja
+
+red:
+ryzyko, zagrożenie, zaległość, usunięcie
+
+green:
+pieniądze, prowizja, wpłata, sukces
+
+neutral:
+dane kontekstowe, liczniki pomocnicze
+
+## FunnelMetricTileR13
+
+Status:
+FROZEN BASELINE
+
+Decyzja:
+Kafelki w Lejku po R13 są wzorem wizualnym dla globalnych kafelków aplikacji.
+
+## SharedFilterStrip
+
+Status:
+ACTIVE GLOBAL FILTER SOURCE
+
+## RecordListCard
+
+Status:
+ACTIVE GLOBAL RECORD CARD SOURCE
+
+## RightRailCard
+
+Status:
+ACTIVE GLOBAL RIGHT RAIL CARD SOURCE
+
+## FinanceMetricTile
+
+Status:
+ACTIVE FINANCE TILE SOURCE
+<!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->

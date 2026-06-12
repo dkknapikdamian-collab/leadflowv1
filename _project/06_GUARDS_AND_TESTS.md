@@ -3954,3 +3954,37 @@ RYZYKO:
 - To etap CSS/render, więc manual QA jest obowiązkowy.
 - Local tree ma wcześniejsze śmieci; push tylko selektywny.
 <!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_END -->
+
+<!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
+## 2026-06-12 20:10 Europe/Warsaw — STAGE231D0G Visual Tile Source Truth Atlas
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- STAGE231D0F-R13 przeszedł guard/test/build.
+- Commit `0b2f6fb2 fix: improve funnel visual color density` został wypchnięty na `dev-rollout-freeze`.
+- Damian wizualnie akceptuje Lejek i zamraża go jako baseline.
+
+DECYZJA DAMIANA:
+- FunnelMetricTileR13 zostaje źródłem prawdy dla globalnego CloseFlowMetricTileV2.
+- Nie przebudowywać całej aplikacji chaotycznie.
+- Najpierw source truth, atlas, guard i plan fal.
+
+ZMIANA:
+- Dodano `_project/CLOSEFLOW_VISUAL_TILE_SYSTEM.md`.
+- Dodano `_project/CLOSEFLOW_VISUAL_TILE_ATLAS.md`.
+- Dopisano UI Dictionary: CloseFlowMetricTileV2, CloseFlowMetricToneMap, FunnelMetricTileR13, SharedFilterStrip, RecordListCard, RightRailCard, FinanceMetricTile.
+- Dodano guard/test D0G.
+- Runtime widoków nie jest przepinany w tym etapie.
+
+TESTY:
+- `node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs`
+- `node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs`
+- R13 regression guard/test jeśli istnieje
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- UI Dictionary ma stare duplikaty i historyczne mojibake. Guard D0G skanuje aktywny blok D0G i nowe source truth, nie całą historię słownika.
+- Pełny cleanup lokalnych śmieci po starych paczkach zostaje osobnym etapem.
+<!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
