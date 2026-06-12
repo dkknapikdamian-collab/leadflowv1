@@ -621,3 +621,123 @@ Kafelek musi renderować:
 - widoczny SVG w ikonie
 - jawny wpis w `FUNNEL_OWNER_TILE_TONE_MAP`
 <!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_END -->
+
+<!-- STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — MetricTileIconColorSource
+
+Nazwa ludzka:
+Jedno źródło koloru ikon w kafelkach metrycznych
+
+Nazwa systemowa:
+MetricTileIconColorSource
+
+Plik źródłowy:
+`src/styles/closeflow-metric-tiles.css`
+
+Zasada:
+Kolor ikon i tła ikon w kafelkach top metrics wynika z `data-eliteflow-metric-tone`, nie z lokalnych hexów w konkretnym widoku.
+
+Tony:
+- blue
+- amber
+- purple
+- red
+- green
+- neutral
+
+## FunnelRecordsHeaderRow
+
+Nazwa ludzka:
+Nagłówek rekordów w Lejku
+
+Nazwa systemowa:
+FunnelRecordsHeaderRow
+
+Rola:
+Jeden wiersz opisujący aktywny widok i liczbę rekordów.
+
+Zasada:
+Nie rozbijać na osobny fioletowy label i osobny tytuł pod spodem, żeby tekst nie wchodził pod filtry.
+
+## FunnelColorToneMap — dopisek R3
+
+Ikony Lejka korzystają z `MetricTileIconColorSource` i `data-eliteflow-metric-tone`.
+<!-- STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER_2026_06_12_END -->
+
+<!-- STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — FunnelRecordsHeaderRow R5
+
+Nazwa ludzka:
+Nagłówek rekordów w Lejku — naprawa liniowa
+
+Nazwa systemowa:
+FunnelRecordsHeaderRow
+
+Rola:
+Jednowierszowy nagłówek listy rekordów. R5 usuwa konkretne stare fragmenty liniowo:
+- stary `visibleLabel` paragraph,
+- stary tytuł `Rekordy w aktywnym widoku`,
+- stary licznik tekstowy.
+
+Zasada:
+Nie wolno wracać do dwóch osobnych elementów nagłówka rekordów. Dozwolony jest tylko `cf-funnel-records-header-row`.
+
+Naprawa:
+`STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR`
+<!-- STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — MetricTileIconColorSource
+
+Nazwa ludzka:
+Jedno źródło koloru ikon w kafelkach metrycznych
+
+Nazwa systemowa:
+MetricTileIconColorSource
+
+Plik źródłowy:
+`src/styles/closeflow-metric-tiles.css`
+
+Zasada:
+Kolor ikon i tła ikon w kafelkach top metrics wynika z `data-eliteflow-metric-tone`, nie z lokalnych hexów w konkretnym widoku.
+
+Tony:
+- blue
+- amber
+- purple
+- red
+- green
+- neutral
+
+## FunnelColorToneMap
+
+Nazwa ludzka:
+Mapa kolorów Lejka
+
+Nazwa systemowa:
+FunnelColorToneMap
+
+Rola:
+Stała semantyczna mapa kolorów i ikon dla owner decision tiles.
+
+Mapa:
+- Do ruchu teraz: blue / Target
+- Bez kroku: amber / Filter
+- Cisza 7+: purple / Clock3
+- Wysokie ryzyko: red / ShieldAlert
+- Pieniądze: green / ArrowRight
+
+## FunnelRecordsHeaderRow
+
+Nazwa ludzka:
+Nagłówek rekordów w Lejku
+
+Nazwa systemowa:
+FunnelRecordsHeaderRow
+
+Rola:
+Jeden wiersz opisujący aktywny widok i liczbę rekordów.
+
+Zasada:
+Nie rozbijać na osobny fioletowy label i osobny tytuł pod spodem.
+<!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->

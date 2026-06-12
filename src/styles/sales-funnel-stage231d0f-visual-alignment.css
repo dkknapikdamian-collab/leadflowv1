@@ -387,3 +387,47 @@
   color: currentColor;
   opacity: 0.76;
 }
+
+/* STAGE231D0F_R3_FUNNEL_RECORDS_HEADER_ROW */
+
+#root .main-funnel-html .cf-funnel-records-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.35rem;
+  margin-bottom: 0.55rem;
+  min-width: 0;
+}
+
+#root .main-funnel-html .cf-funnel-records-title {
+  min-width: 0;
+  margin: 0;
+  color: #6d28d9;
+  font-size: 0.82rem;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#root .main-funnel-html .cf-funnel-records-count {
+  flex: 0 0 auto;
+  color: #64748b;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  #root .main-funnel-html .cf-funnel-records-header-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #root .main-funnel-html .cf-funnel-records-title {
+    white-space: normal;
+  }
+}

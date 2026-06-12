@@ -3055,3 +3055,103 @@ RYZYKO:
 - Nie wolno przez ten etap zmienić działania filtrów ani przerobić Lejka w kanban.
 - Nie mieszać w tym commicie wcześniejszych plików `STAGE231D0E`, jeśli nie są osobno domykane.
 <!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_END -->
+
+<!-- STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R3 Funnel icon source truth + records header fix
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z KODU:
+- `SalesFunnel.tsx` ma już `FUNNEL_OWNER_TILE_TONE_MAP` i używa `data-eliteflow-metric-tone`.
+- `closeflow-metric-tiles.css` ma zmienne source of truth dla ikon i tła ikon.
+- `SalesFunnel.tsx` nadal miał dwuliniowy nagłówek rekordów: mały label + `Rekordy w aktywnym widoku`.
+
+DECYZJE DAMIANA:
+- Ikony kafelków Lejka mają mieć widoczny kolor.
+- Kolor ikon ma iść ze wspólnego source of truth `closeflow-metric-tiles.css`.
+- Nie kolorować lokalnie kafelków Lejka losowymi hexami.
+- Nagłówek rekordów ma być jednym wierszem.
+- Nie ruszać logiki filtrów, SQL, Supabase, kanbana ani drag/drop.
+
+ZMIANA:
+- Dodany marker `STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER`.
+- W `closeflow-metric-tiles.css` dopisano ogólną regułę `stroke: currentColor` / `color: currentColor` dla SVG ikon metric tiles.
+- W `SalesFunnel.tsx` nagłówek rekordów zmieniony na `FunnelRecordsHeaderRow`.
+- W `sales-funnel-stage231d0f-visual-alignment.css` dodano CSS dla jednowierszowego nagłówka.
+
+TESTY:
+- `node scripts/check-stage231d0f-r3-funnel-icon-source-and-header.cjs`
+- `node --test tests/stage231d0f-r3-funnel-icon-source-and-header.test.cjs`
+- `node scripts/check-stage231d0f-r2-funnel-color-filter-parity.cjs`
+- `node --test tests/stage231d0f-r2-funnel-color-filter-parity.test.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Jeśli ikony dalej wyglądają bez koloru, możliwa przyczyna to kolejność ładowania CSS albo zewnętrzne nadpisanie SVG. Guard sprawdza source of truth, ale manual QA nadal jest konieczne.
+<!-- STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER_2026_06_12_END -->
+
+<!-- STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R5 Funnel records header line repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R4 patcher dalej zatrzymał się na starym fragmencie `<p className="text-xs font-black uppercase tracking...">`.
+- Przyczyna: nawet regex R4 nie trafił lokalnego wariantu starego JSX.
+- Problem jest w konkretnych liniach starego headera, nie w całym Lejku.
+
+ZMIANA:
+- R5 usuwa liniowo stare fragmenty:
+  - `visibleLabel` paragraph,
+  - stary `h2` rekordów,
+  - stary licznik tekstowy.
+- R5 wymaga nowego `data-stage231d0f-r5-records-header-line-repair`.
+- R5 odświeża R3/R4 guardy, żeby walidowały naprawiony stan bez fałszywego globalnego blokowania.
+
+NIE RUSZAĆ:
+- logiki filtrów,
+- Supabase,
+- SQL,
+- kanbana,
+- drag/drop,
+- STAGE231D0E.
+
+TESTY:
+- `node scripts/check-stage231d0f-r5-funnel-records-header-line-repair.cjs`
+- `node --test tests/stage231d0f-r5-funnel-records-header-line-repair.test.cjs`
+- R4/R3 regression guard/test
+- R2 guard/test jeśli istnieją
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Local tree ma dużo wcześniejszych śladów failed packages. Push tylko selektywny.
+<!-- STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R6 Funnel UI Dictionary guard repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R5 runtime patch przeszedł.
+- R5 guard zatrzymał etap wyłącznie na brakach w UI Dictionary: `MetricTileIconColorSource` i `FunnelColorToneMap`.
+- To jest problem guardu/pamięci projektu, nie logiki Lejka.
+
+ZMIANA:
+- R6 dopisuje brakujące pojęcia do aktywnego bloku UI Dictionary.
+- R6 guard łączy aktywne bloki R6/R5/R4/R3/R2 zamiast patrzeć tylko w ostatni blok.
+- R6 nie dotyka logiki filtrów, Supabase, SQL, drag/drop ani kanbana.
+
+TESTY:
+- `node scripts/check-stage231d0f-r6-funnel-ui-dictionary-guard-repair.cjs`
+- `node --test tests/stage231d0f-r6-funnel-ui-dictionary-guard-repair.test.cjs`
+- R5/R4/R3 regression guard/test
+- R2 guard/test jeśli istnieją
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Local tree jest brudny po wielu próbach. Push tylko selektywny.
+<!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->

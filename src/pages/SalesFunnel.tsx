@@ -28,6 +28,8 @@ const STAGE228A_FUNNEL_TRUTH_CLICKABILITY = 'funnel money tile is traceable to v
 const STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS = 'Sales funnel uses shared full width canvas and stable gutters, not centered narrow max-width';
 const STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT = 'funnel owner dashboard visual alignment: owner decision tiles, stage strip, decision cards and priority rail';
 const STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY = 'funnel owner tiles use explicit semantic color/icon map and stage filters share client filter visual language';
+const STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER = 'funnel icon color source truth uses closeflow metric tiles and records header is one row';
+const STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR = 'records header line-level repair removes stale visibleLabel/title fragments';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
@@ -36,6 +38,8 @@ void STAGE228A_FUNNEL_TRUTH_CLICKABILITY;
 void STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS;
 void STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT;
 void STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY;
+void STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER;
+void STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR;
 
 type LoadState = {
   leads: any[];
@@ -524,12 +528,9 @@ export function SalesFunnel() {
 
           <section className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_320px]">
             <div className="space-y-3" data-stage227b-decision-list="true">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-slate-500">{visibleLabel}</p>
-                  <h2 className="text-xl font-black text-slate-950">Rekordy w aktywnym widoku</h2>
-                </div>
-                <div className="text-sm font-semibold text-slate-500">Pokazuję {filteredCards.length} z {allCards.length} rekordów</div>
+              <div className="cf-funnel-records-header-row" data-stage231d0f-r3-records-header-row="true" data-stage231d0f-r5-records-header-line-repair="true">
+                <h2 className="cf-funnel-records-title">{visibleLabel} · rekordy w aktywnym widoku</h2>
+                <div className="cf-funnel-records-count">Pokazuję {filteredCards.length} z {allCards.length} rekordów</div>
               </div>
 
               {loading ? (
