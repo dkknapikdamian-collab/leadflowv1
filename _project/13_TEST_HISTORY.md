@@ -2846,3 +2846,20 @@ TESTY:
 RYZYKA:
 - Tabs są wyrównane wizualnie do kolumny działań bez pełnej przebudowy logiki Tabs; przy kolejnym większym refaktorze warto przenieść strukturę logicznie do left-column.
 - Historia wpłat i koszty pozostają dostępne przez istniejące przyciski/modale, ale nie są stałą listą w railu.
+
+---
+
+## 2026-06-12 07:39 Europe/Warsaw - STAGE231D0D-R5 spacing / notes lift / quick actions cleanup
+
+Status: READY_FOR_TEST
+Zakres:
+- notatki podciągnięte do góry bez łamania wspólnego odstępu kafelków,
+- wspólny odstęp kafelków: 14px,
+- prawy rail delikatnie podniesiony,
+- z CaseQuickActions usunięto osobną akcję "Wpłata prowizji",
+- wpłata prowizji zostaje w rozliczeniu sprawy.
+
+Ryzyka:
+- override CSS musi nie rozjechać mobile/tablet,
+- quick actions nie mogą dublować akcji finansowych,
+- R2/R3/R4 guardy były składniowo uszkodzone i zostały naprawione.

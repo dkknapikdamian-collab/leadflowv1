@@ -5,14 +5,14 @@ function fail(message){ failures.push(message); }
 function requireToken(text, token, label = token){ if (!text.includes(token)) fail('missing ' + label + ': ' + token); }
 const failures = [];
 const caseDetail = read('src/pages/CaseDetail.tsx');
-const css = read('src/styles/visual-stage13-case-detail-vnext.css') + '
-' + read('src/styles/closeflow-case-detail-stage217-operation-workspace.css') + '
-' + read('src/styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css') + '
-' + read('src/styles/case-detail-stage228r9-shell-rail-lift.css');
+const css = [
+  read('src/styles/visual-stage13-case-detail-vnext.css'),
+  read('src/styles/closeflow-case-detail-stage217-operation-workspace.css'),
+  read('src/styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css'),
+  read('src/styles/case-detail-stage228r9-shell-rail-lift.css')
+].join('\n');
 const ui = read('_project/UI_DICTIONARY_STAGE231D0A.md');
-const combined = caseDetail + '
-' + css + '
-' + ui;
+const combined = [caseDetail, css, ui].join('\n');
 for (const token of ['Ă','Ĺ','Ä','Å','Â','�','ďż˝']) if (combined.includes(token)) fail('mojibake token present: ' + token);
 for (const token of ['CREATE TABLE','ALTER TABLE','chart.js','recharts']) if (combined.includes(token)) fail('forbidden scope creep token present: ' + token);
 requireToken(caseDetail, 'STAGE231D0D_R4_CASE_DETAIL_LEAN_SERVICE_WORKSPACE', 'R4 marker');
@@ -41,4 +41,4 @@ if (failures.length) {
   for (const item of failures) console.error('- ' + item);
   process.exit(1);
 }
-console.log('STAGE231D0D-R4 CaseDetail lean service workspace guard: PASS');
+console.log('STAGE231D0D-R4 CaseDetail lean service workspace guard: PASS (R5-compatible regression)');

@@ -6,9 +6,7 @@ const failures = [];
 const caseDetail = read('src/pages/CaseDetail.tsx');
 const css = read('src/styles/visual-stage13-case-detail-vnext.css');
 const ui = read('_project/UI_DICTIONARY_STAGE231D0A.md');
-const combined = caseDetail + '
-' + css + '
-' + ui;
+const combined = [caseDetail, css, ui].join('\n');
 for (const token of ['Ă','Ĺ','Ä','Å','Â','�','ďż˝']) if (combined.includes(token)) failures.push('mojibake token present: ' + token);
 for (const token of ['CREATE TABLE','ALTER TABLE','chart.js','recharts']) if (combined.includes(token)) failures.push('forbidden scope creep token present: ' + token);
 requireToken(caseDetail, 'STAGE231D0D_R3_CASE_DETAIL_100_SCALE_BALANCED_WORKSPACE', 'R3 marker');
@@ -32,4 +30,4 @@ if (failures.length) {
   for (const item of failures) console.error('- ' + item);
   process.exit(1);
 }
-console.log('STAGE231D0D-R3 CaseDetail 100% scale balanced workspace guard: PASS (R4-compatible regression)');
+console.log('STAGE231D0D-R3 CaseDetail 100% scale balanced workspace guard: PASS (R5-compatible regression)');
