@@ -2872,3 +2872,27 @@ aside.case-detail-right-rail::after {
     padding: 14px !important;
   }
 }
+
+/* STAGE231D0D_R9_TABS_PILLS_TRUE_CENTER
+   Visual-only: center Obsługa / Checklisty / Historia inside the stretched tabs card.
+   Do not change runtime data, finance, modals or handlers. */
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"],
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"].case-detail-stage228r9-tabs-compact,
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"].case-detail-stage220a10-tabs-wrap {
+  align-items: center !important;
+  display: flex !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] > *,
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] .case-detail-stage220a10-tabs,
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] .case-detail-stage228r9-tabs-compact,
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] .case-detail-stage220a10-tabs-wrap {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r10d-tabs-card[data-stage228r10d-tabs-card="true"] .case-detail-stage220a10-tabs {
+  transform: translateX(0) !important;
+}

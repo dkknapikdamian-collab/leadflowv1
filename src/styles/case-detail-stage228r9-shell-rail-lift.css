@@ -363,3 +363,25 @@
     margin-top: 0 !important;
   }
 }
+
+/* STAGE231D0D_R9_MIDDLE_AND_RIGHT_AXIS_MICRO_LIFT
+   Visual-only: lift the middle service section slightly and pull the right finance/action rail
+   to the same visual axis. Do not alter finance logic, quick actions or data handlers. */
+.case-detail-vnext-page .case-detail-stage228r9-shell {
+  margin-top: -10px !important;
+}
+
+.case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+  margin-top: -112px !important;
+  gap: var(--cf-case-detail-card-gap, 14px) !important;
+}
+
+@media (max-width: 1220px) {
+  .case-detail-vnext-page .case-detail-stage228r9-shell {
+    margin-top: 0 !important;
+  }
+
+  .case-detail-vnext-page .case-detail-stage228r9-shell[data-stage231d2-r6-side-rail-top-lift="true"] .case-detail-right-rail {
+    margin-top: 0 !important;
+  }
+}

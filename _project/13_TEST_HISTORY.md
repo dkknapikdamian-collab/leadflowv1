@@ -2913,3 +2913,21 @@ Ryzyka:
 - etap jest CSS-only, wiÄ™c wymaga rÄ™cznego potwierdzenia na 100% zoom,
 - lift prawego raila ma reset na wÄ™ĹĽszych ekranach,
 - historyczne mojibake w starych wpisach _project nie jest czyszczone w tym etapie.
+
+---
+
+## 2026-06-12 08:58 Europe/Warsaw - STAGE231D0D-R9 tabs center + axis microfix
+
+Status: APPLIED_LOCAL_WAITING_VISUAL_PASS
+
+Zakres:
+- pigułki Obsługa / Checklisty / Historia wyśrodkowane w rozciągniętym kafelku,
+- środkowa sekcja CaseDetail podniesiona lekko wyżej,
+- prawy panel rozliczeń i szybkich akcji dociągnięty do tej samej osi,
+- bez zmian w SQL, Supabase, finansach, modalach, handlerach i danych.
+
+Testy:
+- R9 guard/test,
+- regresje R8/R6/R5/R4/R3/R2/D0C/D0B,
+- git diff --check,
+- npm run build.
