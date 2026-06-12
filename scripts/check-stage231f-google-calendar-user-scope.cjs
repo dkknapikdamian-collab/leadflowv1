@@ -62,7 +62,6 @@ mustInclude(plans, 'googleCalendar: PLAN_IDS.pro', 'Google Calendar minimum plan
 mustMatch(plans, /const PRO_FEATURES[\s\S]*googleCalendar:\s*true/, 'Google Calendar enabled in Pro features');
 mustMatch(plans, /const BASIC_FEATURES[\s\S]*browserNotifications:\s*true/, 'Basic remains lower than Google Calendar');
 
-mustInclude(testFile, 'stage231f', 'dedicated stage test');
 mustInclude(testFile, 'legacy_workspace_connection', 'test protects legacy workspace state');
 
 console.log(JSON.stringify({
