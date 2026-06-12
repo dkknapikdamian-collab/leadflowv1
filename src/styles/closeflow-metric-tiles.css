@@ -623,3 +623,18 @@ html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-i
 [data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg [fill]:not([fill="none"]) {
   fill: currentColor !important;
 }
+
+/* STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR
+   Layout is frozen. This block only ensures nested entity/lucide icons inherit metric tile tone.
+*/
+
+[data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"] svg,
+[data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"] svg *,
+[data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"] .cf-entity-icon-svg {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+[data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"] [fill]:not([fill="none"]) {
+  fill: currentColor !important;
+}

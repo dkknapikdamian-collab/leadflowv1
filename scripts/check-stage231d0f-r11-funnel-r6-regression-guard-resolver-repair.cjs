@@ -30,11 +30,10 @@ function block(text, markerPrefix) {
 }
 
 const salesFunnel = read('src/pages/SalesFunnel.tsx');
-const clients = read('src/pages/Clients.tsx');
+const iconRegistry = read('src/components/ui-system/metric-icon-tone-registry.ts');
+const operatorTone = read('src/components/ui-system/operator-metric-tone-contract.ts');
+const uiIndex = read('src/components/ui-system/index.ts');
 const metricCss = read('src/styles/closeflow-metric-tiles.css');
-const funnelCss = read('src/styles/sales-funnel-stage231d0f-visual-alignment.css');
-const recordCss = read('src/styles/closeflow-record-list-source-truth.css');
-const iconRegistry = read('src/components/ui-system/metric-icon-tone-registry.ts', true);
 const uiAll = read('_project/UI_DICTIONARY_STAGE231D0A.md', true);
 
 const uiRelevant = [
@@ -63,106 +62,78 @@ const obsidian = [
   read('_project/obsidian_updates/2026-06-12_STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR.md', true),
 ].join('\n');
 
-const relevant = [salesFunnel, clients, metricCss, funnelCss, recordCss, iconRegistry, uiRelevant, run, obsidian].join('\n');
+const relevant = [salesFunnel, iconRegistry, operatorTone, uiIndex, metricCss, uiRelevant, run, obsidian].join('\n');
 
 const badTokens = [0x0102, 0x0139, 0x00c4, 0x00c5, 0x00c2, 0xfffd].map((code) => String.fromCharCode(code)).concat(['ďż˝']);
 for (const token of badTokens) forbidToken(relevant, token, 'mojibake token in active stage scope');
 
 for (const token of [
-  'STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH',
-  'data-stage231d0f-r6-stage-filter-no-visible-money="true"',
-  'cf-filter-strip',
-  'cf-filter-pills',
-  'cf-filter-pill',
-  'FUNNEL_OWNER_TILE_TONE_MAP',
-  'data-eliteflow-metric-tone',
+  'STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR',
+  'data-stage231d0f-r8-layout-frozen="true"',
+  'data-stage231d0f-r8-icon-tone-key={definition.iconToneKey}',
+  'data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"',
+  'PaymentEntityIcon',
+  'FunnelMoneyMetricIcon',
+  'resolveCloseflowMetricIconTone',
+  "iconToneKey: 'lead_action:Target'",
+  "iconToneKey: 'waiting_no_next_move:Filter'",
+  "iconToneKey: 'silence_waiting:Clock3'",
+  "iconToneKey: 'risk:ShieldAlert'",
+  "iconToneKey: 'finance:PaymentEntityIcon'",
 ]) {
-  requireToken(salesFunnel, token, `SalesFunnel R6 shared filter token ${token}`);
+  requireToken(salesFunnel, token, `SalesFunnel ${token}`);
 }
 
 for (const token of [
-  'STAGE231D0F_R6_CLIENTS_SHARED_FILTER_RESILIENT_PATCH',
-  'data-stage231d0f-r6-client-shared-filter-strip="true"',
-  'data-stage231d0f-r6-client-filter-header="true"',
-  'cf-filter-strip',
-  'cf-filter-strip-header',
-  'cf-filter-strip-title',
-  'cf-filter-strip-description',
-  'cf-filter-pills',
-  'cf-filter-pill',
+  'CLOSEFLOW_METRIC_ICON_TONE_SOURCE_TRUTH_R8',
+  "lead: 'blue'",
+  "target: 'blue'",
+  "payment: 'green'",
+  "commission: 'green'",
+  "billing: 'green'",
+  "risk: 'red'",
+  "shield_alert: 'red'",
+  "silent_7: 'amber'",
+  "clock3: 'amber'",
+  "case: 'purple'",
+  "event: 'purple'",
+  'resolveCloseflowMetricIconTone',
 ]) {
-  requireToken(clients, token, `Clients R6 shared filter token ${token}`);
-}
-
-if (salesFunnel.includes('cf-funnel-stage-filter-chip-value')) {
-  failures.push('visible stage filter money class still rendered in SalesFunnel');
+  requireToken(iconRegistry, token, `icon tone registry ${token}`);
 }
 
 for (const token of [
-  'aria-label={`${label}, ${count} rekordów, wartość ${formatMoney(value, \'PLN\')}`}',
-  'title={`${label}: ${count} rekordów · ${formatMoney(value, \'PLN\')}`}',
+  "import { resolveCloseflowMetricIconTone } from './metric-icon-tone-registry';",
+  'CLOSEFLOW_METRIC_ICON_TONE_CONTRACT_R8',
+  'resolveCloseflowMetricIconTone({ id: input.id, label: input.label, semantic: input.id, fallback: input.tone as OperatorMetricTone })',
 ]) {
-  requireToken(salesFunnel, token, `stage filter accessible money token ${token}`);
+  requireToken(operatorTone, token, `operator tone contract ${token}`);
 }
+
+requireToken(uiIndex, "export * from './metric-icon-tone-registry';", 'ui-system export');
 
 for (const token of [
-  '--cf-funnel-open-link-width',
-  '.cf-funnel-decision-open-link',
-  'width: var(--cf-funnel-open-link-width)',
-  'min-width: var(--cf-funnel-open-link-width)',
-]) {
-  requireToken(funnelCss, token, `open button CSS ${token}`);
-}
-
-if (/\.cf-funnel-decision-open-link[\s\S]{0,320}min-width:\s*max-content/.test(funnelCss)) {
-  failures.push('funnel open button still uses min-width: max-content');
-}
-
-for (const token of [
-  '[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg',
+  'STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR',
+  '[data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"] svg',
   'stroke: currentColor',
-  'color: currentColor',
 ]) {
-  requireToken(metricCss, token, `metric icon CSS token ${token}`);
+  requireToken(metricCss, token, `metric CSS ${token}`);
 }
 
-const usesResolver = salesFunnel.includes('resolveCloseflowMetricIconTone');
-if (usesResolver) {
-  for (const token of [
-    "semantic: 'lead_action'",
-    "semantic: 'waiting_no_next_move'",
-    "semantic: 'silence_waiting'",
-    "semantic: 'risk'",
-    "semantic: 'finance'",
-    "semantic: 'all'",
-    "iconToneKey: 'lead_action:Target'",
-    "iconToneKey: 'waiting_no_next_move:Filter'",
-    "iconToneKey: 'silence_waiting:Clock3'",
-    "iconToneKey: 'risk:ShieldAlert'",
-    "iconToneKey: 'finance:PaymentEntityIcon'",
-  ]) {
-    requireToken(salesFunnel, token, `resolver tone token ${token}`);
-  }
-
-  for (const token of [
-    "lead: 'blue'",
-    "payment: 'green'",
-    "risk: 'red'",
-    "silent_7: 'amber'",
-    "case: 'purple'",
-  ]) {
-    requireToken(iconRegistry, token, `registry tone token ${token}`);
-  }
-} else {
-  for (const token of [
-    "tone: 'blue'",
-    "tone: 'amber'",
-    "tone: 'purple'",
-    "tone: 'red'",
-    "tone: 'green'",
-  ]) {
-    requireToken(salesFunnel, token, `legacy literal tone token ${token}`);
-  }
+if (/money:\s*\{[\s\S]{0,320}Icon:\s*ArrowRight/.test(salesFunnel)) {
+  failures.push('money tile still uses ArrowRight instead of payment source icon');
+}
+if (!/silent_7:\s*\{[\s\S]{0,320}semantic:\s*'silence_waiting'/.test(salesFunnel)) {
+  failures.push('silent_7 tile is not mapped through silence_waiting semantic tone');
+}
+if (!/high_risk:\s*\{[\s\S]{0,320}semantic:\s*'risk'/.test(salesFunnel)) {
+  failures.push('high_risk tile is not mapped through risk semantic tone');
+}
+if (!/money:\s*\{[\s\S]{0,420}semantic:\s*'finance'/.test(salesFunnel)) {
+  failures.push('money tile is not mapped through finance semantic tone');
+}
+if (!salesFunnel.includes("label=\"Wszystkie\" count={allCards.length} value={totalValue} tone={resolveCloseflowMetricIconTone({ id: 'all', label: 'Wszystkie', semantic: 'all' })}")) {
+  failures.push('all stage filter does not use neutral all semantic tone');
 }
 
 for (const token of [
@@ -179,9 +150,9 @@ for (const token of ['CREATE TABLE', 'ALTER TABLE', 'onDrag', 'onDrop', 'draggab
 }
 
 if (failures.length) {
-  console.error('STAGE231D0F-R6 Funnel shared filter resilient patch guard: FAIL');
+  console.error('STAGE231D0F-R11 Funnel R6 regression guard resolver repair guard: FAIL');
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
 
-console.log('STAGE231D0F-R6 Funnel shared filter resilient patch guard: PASS');
+console.log('STAGE231D0F-R11 Funnel R6 regression guard resolver repair guard: PASS');

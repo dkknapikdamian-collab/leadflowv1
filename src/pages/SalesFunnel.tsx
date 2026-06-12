@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
+import { PaymentEntityIcon, resolveCloseflowMetricIconTone } from '../components/ui-system';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-metric-tiles.css';
 import '../styles/closeflow-record-list-source-truth.css';
@@ -32,6 +33,7 @@ const STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY = 'funnel owner tiles use explic
 const STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER = 'funnel icon color source truth uses closeflow metric tiles and records header is one row';
 const STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR = 'records header line-level repair removes stale visibleLabel/title fragments';
 const STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH = 'resilient patch for funnel no visible stage money, shared filters, icon source and Clients filter header';
+const STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR = 'layout frozen; funnel icon colors resolve from shared CloseFlow metric icon tone source truth after R7 syntax repair';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
@@ -43,6 +45,7 @@ void STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY;
 void STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER;
 void STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR;
 void STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH;
+void STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR;
 
 type LoadState = {
   leads: any[];
@@ -63,8 +66,11 @@ type FunnelTileDefinition = {
   label: string;
   helper: string;
   tone: FunnelMetricTone;
+  iconToneKey: string;
   Icon: ComponentType<{ className?: string }>;
 };
+
+const FunnelMoneyMetricIcon: ComponentType<{ className?: string }> = PaymentEntityIcon;
 
 type FunnelFilterState = {
   ownerFilter: OwnerFilter;
@@ -75,45 +81,51 @@ const FUNNEL_OWNER_TILE_TONE_MAP: Record<FunnelTileFilter, FunnelTileDefinition>
   move_now: {
     label: 'Do ruchu teraz',
     helper: 'Ryzyko, cisza albo brak kroku.',
-    tone: 'blue',
+    tone: resolveCloseflowMetricIconTone({ id: 'move_now', label: 'Do ruchu teraz', icon: 'Target', semantic: 'lead_action' }),
+    iconToneKey: 'lead_action:Target',
     Icon: Target,
   },
   no_next_move: {
     label: 'Bez kroku',
     helper: 'Rekordy bez akcji.',
-    tone: 'amber',
+    tone: resolveCloseflowMetricIconTone({ id: 'no_next_move', label: 'Bez kroku', icon: 'Filter', semantic: 'waiting_no_next_move' }),
+    iconToneKey: 'waiting_no_next_move:Filter',
     Icon: Filter,
   },
   silent_7: {
     label: 'Cisza 7+',
     helper: 'Brak kontaktu 7+ dni.',
-    tone: 'purple',
+    tone: resolveCloseflowMetricIconTone({ id: 'silent_7', label: 'Cisza 7+', icon: 'Clock3', semantic: 'silence_waiting' }),
+    iconToneKey: 'silence_waiting:Clock3',
     Icon: Clock3,
   },
   high_risk: {
     label: 'Wysokie ryzyko',
     helper: 'High i critical.',
-    tone: 'red',
+    tone: resolveCloseflowMetricIconTone({ id: 'high_risk', label: 'Wysokie ryzyko', icon: 'ShieldAlert', semantic: 'risk' }),
+    iconToneKey: 'risk:ShieldAlert',
     Icon: ShieldAlert,
   },
   money: {
     label: 'Pieniądze',
     helper: 'Źródła kwoty.',
-    tone: 'green',
-    Icon: ArrowRight,
+    tone: resolveCloseflowMetricIconTone({ id: 'money', label: 'Pieniądze', icon: 'PaymentEntityIcon', entity: 'payment', semantic: 'finance' }),
+    iconToneKey: 'finance:PaymentEntityIcon',
+    Icon: FunnelMoneyMetricIcon,
   },
 };
 
 function resolveFunnelStageFilterTone(key: string, label: string): FunnelStageTone {
   const source = `${key} ${label}`.toLowerCase();
-  if (key === 'all' || source.includes('wszystkie')) return 'blue';
-  if (source.includes('utrac') || source.includes('lost')) return 'red';
-  if (source.includes('obsług') || source.includes('obslug') || source.includes('won') || source.includes('wygran')) return 'green';
-  if (source.includes('negocj')) return 'purple';
-  if (source.includes('kontakt')) return 'purple';
-  if (source.includes('kwalifik') || source.includes('oferta') || source.includes('czeka') || source.includes('odp')) return 'amber';
-  if (source.includes('now')) return 'blue';
-  return 'neutral';
+  if (key === 'all' || source.includes('wszystkie')) return resolveCloseflowMetricIconTone({ id: 'all', label, semantic: 'all' });
+  if (source.includes('utrac') || source.includes('lost')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'lost' });
+  if (source.includes('obsług') || source.includes('obslug') || source.includes('moved_to_service')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'do obslugi' });
+  if (source.includes('negocj')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'negocjacje' });
+  if (source.includes('kontakt')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'kontakt' });
+  if (source.includes('kwalifik')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'kwalifikacja' });
+  if (source.includes('oferta') || source.includes('czeka') || source.includes('odp')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'waiting' });
+  if (source.includes('now')) return resolveCloseflowMetricIconTone({ id: key, label, semantic: 'lead' });
+  return resolveCloseflowMetricIconTone({ id: key, label, semantic: label, fallback: 'neutral' });
 }
 
 function buildDateRange(now = new Date()) {
@@ -271,6 +283,9 @@ function FunnelOwnerDecisionTile({
       data-stage228a-clickable-filter="true"
       data-stage231d0f-owner-decision-tile="true"
       data-stage231d0f-r2-owner-tile-tone={filter}
+      data-stage231d0f-r8-layout-frozen="true"
+      data-stage231d0f-r8-icon-tone-key={definition.iconToneKey}
+      data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"
       data-eliteflow-metric-tone={definition.tone}
     >
       <span className={`cf-top-metric-tile-content ${active ? 'is-active' : ''}`}>
@@ -280,7 +295,7 @@ function FunnelOwnerDecisionTile({
         </span>
         <span className="cf-top-metric-tile-value-row">
           <span className="cf-top-metric-tile-value">{value}</span>
-          <span className="cf-top-metric-tile-icon" aria-hidden="true"><Icon className="h-4 w-4" /></span>
+          <span className="cf-top-metric-tile-icon" aria-hidden="true" data-cf-icon-tone-source="closeflow-metric-icon-tone-source-truth-r8"><Icon className="h-4 w-4" /></span>
         </span>
       </span>
     </button>
@@ -516,7 +531,7 @@ export function SalesFunnel() {
               </button>
             </div>
             <div className="cf-funnel-stage-filter-scroll cf-contact-cadence-pills cf-filter-pills">
-              <FunnelStageFilterChip active={stageFilter === 'all' && ownerFilter === 'all'} label="Wszystkie" count={allCards.length} value={totalValue} tone="blue" onClick={() => applyStageFilter('all')} />
+              <FunnelStageFilterChip active={stageFilter === 'all' && ownerFilter === 'all'} label="Wszystkie" count={allCards.length} value={totalValue} tone={resolveCloseflowMetricIconTone({ id: 'all', label: 'Wszystkie', semantic: 'all' })} onClick={() => applyStageFilter('all')} />
               {stageOptions.map((stage) => (
                 <FunnelStageFilterChip
                   key={stage.key}

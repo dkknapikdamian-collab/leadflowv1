@@ -1,4 +1,7 @@
+import { resolveCloseflowMetricIconTone } from './metric-icon-tone-registry';
 export type OperatorMetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple';
+
+export const CLOSEFLOW_METRIC_ICON_TONE_CONTRACT_R8 = 'CLOSEFLOW_METRIC_ICON_TONE_CONTRACT_R8: semantic icon tone registry participates in metric tone resolution';
 
 export const CLOSEFLOW_VS7_SEMANTIC_METRIC_TONE_SOURCE_OF_TRUTH =
   'CLOSEFLOW_VS7_SEMANTIC_METRIC_TONE_SOURCE_OF_TRUTH: semantic label/id/status owns metric tile tone before local screen colors';
@@ -191,6 +194,7 @@ export function resolveOperatorMetricTone(input: {
     || toneFromExactKey(labelKey)
     || toneFromIncludedKey(idKey)
     || toneFromIncludedKey(labelKey)
+    || resolveCloseflowMetricIconTone({ id: input.id, label: input.label, semantic: input.id, fallback: input.tone as OperatorMetricTone })
     || toneFromRawTone(input.tone)
     || toneFromClassText(input.classText)
     || 'neutral'

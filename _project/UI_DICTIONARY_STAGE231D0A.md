@@ -777,3 +777,186 @@ Nie pokazuje stale kwoty `0 zł`. Pokazuje nazwę etapu i liczbę rekordów. Kwo
 
 SVG i wszystkie elementy ikon w metric tiles dziedziczą `currentColor` z `data-eliteflow-metric-tone`.
 <!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_END -->
+
+<!-- STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — FunnelLayoutFrozen
+
+Nazwa ludzka:
+Lejek — układ wizualny zamrożony
+
+Nazwa systemowa:
+FunnelLayoutFrozen
+
+Decyzja:
+Układ Lejka po R6 jest zaakceptowany wizualnie. Nie ruszać osi, wielkości, siatki kafelków, listy rekordów, filtrów, prawego raila ani przycisków. Ten etap dotyczy tylko kolorystyki ikon i kafelków.
+
+## FunnelIconToneSourceTruth
+
+Nazwa ludzka:
+Kolory ikon Lejka ze wspólnego source of truth
+
+Nazwa systemowa:
+FunnelIconToneSourceTruth
+
+Source of truth:
+`src/components/ui-system/metric-icon-tone-registry.ts`
+
+Mapa Lejka:
+- `Do ruchu teraz` / `Target` / lead action → blue
+- `Bez kroku` / `Filter` / waiting/no next move → amber
+- `Cisza 7+` / `Clock3` / silence/waiting → amber
+- `Wysokie ryzyko` / `ShieldAlert` / risk → red
+- `Pieniądze` / `PaymentEntityIcon` / finance → green
+- `Wszystkie` / all → neutral
+
+## MetricTileIconColorSource — dopisek R8
+
+`OperatorMetricTiles`, `StatShortcutCard` i Lejek mają docelowo używać tego samego semantycznego resolvera koloru:
+`resolveCloseflowMetricIconTone`.
+
+R8 naprawia błąd składni z R7 i dodaje `node --check` do apply script.
+<!-- STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R9_FUNNEL_ICON_TONE_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — SharedFilterStrip
+
+Nazwa ludzka:
+Wspólny pasek filtrów list
+
+Nazwa systemowa:
+SharedFilterStrip
+
+Rola:
+Wspólny kontrakt wizualny filtrów listowych. W Lejku układ jest zamrożony; R9 nie zmienia wyglądu, tylko naprawia dokumentacyjny guard.
+
+Status:
+Aktywny termin wymagany przez guardy R8/R9.
+
+## FunnelLayoutFrozen
+
+Nazwa ludzka:
+Lejek — układ wizualny zamrożony
+
+Nazwa systemowa:
+FunnelLayoutFrozen
+
+Decyzja:
+Układ Lejka jest zaakceptowany. Nie ruszać osi, wielkości, siatki kafelków, listy rekordów, filtrów, prawego raila ani przycisków.
+
+## FunnelIconToneSourceTruth
+
+Nazwa ludzka:
+Kolory ikon Lejka ze wspólnego source of truth
+
+Nazwa systemowa:
+FunnelIconToneSourceTruth
+
+Source of truth:
+`src/components/ui-system/metric-icon-tone-registry.ts`
+
+Mapa Lejka:
+- `Do ruchu teraz` / `Target` / lead action → blue
+- `Bez kroku` / `Filter` / waiting/no next move → amber
+- `Cisza 7+` / `Clock3` / silence/waiting → amber
+- `Wysokie ryzyko` / `ShieldAlert` / risk → red
+- `Pieniądze` / `PaymentEntityIcon` / finance → green
+- `Wszystkie` / all → neutral
+
+## MetricTileIconColorSource
+
+Nazwa ludzka:
+Źródło koloru ikon metric tiles
+
+Nazwa systemowa:
+MetricTileIconColorSource
+
+Resolver:
+`resolveCloseflowMetricIconTone`
+<!-- STAGE231D0F_R9_FUNNEL_ICON_TONE_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R10_FUNNEL_ICON_TONE_POWERSHELL_STRICTMODE_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — PowerShell StrictMode repair
+
+Nazwa ludzka:
+Naprawa StrictMode dla skryptu apply R9
+
+Nazwa systemowa:
+FunnelIconTonePowerShellStrictModeRepair
+
+Zakres:
+Naprawa dotyczy tylko `APPLY_STAGE231D0F_R9.ps1`/R10 workflow i package.json script add. Runtime Lejka nie jest zmieniany.
+
+## SharedFilterStrip
+
+Nazwa systemowa:
+SharedFilterStrip
+
+Status:
+Aktywny termin wymagany przez guardy R8/R9/R10.
+
+## FunnelLayoutFrozen
+
+Nazwa systemowa:
+FunnelLayoutFrozen
+
+Decyzja:
+Układ Lejka jest zaakceptowany i zamrożony.
+
+## FunnelIconToneSourceTruth
+
+Nazwa systemowa:
+FunnelIconToneSourceTruth
+
+Source of truth:
+`src/components/ui-system/metric-icon-tone-registry.ts`
+
+## MetricTileIconColorSource
+
+Nazwa systemowa:
+MetricTileIconColorSource
+
+Resolver:
+`resolveCloseflowMetricIconTone`
+<!-- STAGE231D0F_R10_FUNNEL_ICON_TONE_POWERSHELL_STRICTMODE_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — R6 regression guard resolver repair
+
+Nazwa ludzka:
+Naprawa guarda regresji R6 po przejściu na resolver kolorów
+
+Nazwa systemowa:
+FunnelR6RegressionGuardResolverRepair
+
+Zakres:
+Bez zmian runtime Lejka. R11 odświeża tylko stary regression guard R6, który oczekiwał twardych literalów `tone: 'blue'`, `tone: 'amber'`, `tone: 'purple'`, `tone: 'red'`, `tone: 'green'`.
+
+Powód:
+Po R8 kolorystyka ikon/kafelków idzie przez `resolveCloseflowMetricIconTone`, więc guard R6 musi akceptować resolver oraz `metric-icon-tone-registry.ts`.
+
+## SharedFilterStrip
+
+Nazwa systemowa:
+SharedFilterStrip
+
+## FunnelLayoutFrozen
+
+Nazwa systemowa:
+FunnelLayoutFrozen
+
+## FunnelIconToneSourceTruth
+
+Nazwa systemowa:
+FunnelIconToneSourceTruth
+
+Source of truth:
+`src/components/ui-system/metric-icon-tone-registry.ts`
+
+## MetricTileIconColorSource
+
+Nazwa systemowa:
+MetricTileIconColorSource
+
+Resolver:
+`resolveCloseflowMetricIconTone`
+<!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_END -->

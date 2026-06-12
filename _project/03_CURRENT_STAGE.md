@@ -2882,3 +2882,130 @@ TESTY:
 RYZYKO:
 - Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_END -->
+
+<!-- STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R8 Funnel icon tone syntax repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R7 zatrzymał się przed patchowaniem na błędzie składni w patcherze.
+- Błąd: niepoprawnie escapowany string `payment: \\'green\\''` w tablicy walidacyjnej.
+- To nie jest błąd aplikacji ani koncepcji kolorów.
+
+DECYZJA DAMIANA:
+- Układ Lejka jest zamrożony.
+- Etap dotyczy tylko spójnej kolorystyki ikon/kafelków.
+
+ZMIANA:
+- R8 naprawia składnię patchera.
+- R8 dodaje `node --check` dla patchera i guardu przed patchowaniem.
+- R8 dodaje `metric-icon-tone-registry.ts`.
+- R8 podpina Lejek i operator metric tone contract pod wspólny resolver koloru.
+- Kafel `Pieniądze` używa `PaymentEntityIcon`, nie strzałki.
+
+TESTY:
+- `node --check payload/scripts/apply-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs`
+- `node --check payload/scripts/check-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs`
+- `node scripts/check-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs`
+- `node --test tests/stage231d0f-r8-funnel-icon-tone-syntax-repair.test.cjs`
+- R6 guard jeśli istnieje
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Zmiana ikony `Pieniądze` ze strzałki na ikonę płatności jest świadoma.
+- Manual QA wymagany dla realnego koloru SVG.
+<!-- STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R9_FUNNEL_ICON_TONE_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R9 Funnel icon tone UI Dictionary guard repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R8 patch runtime przeszedł.
+- R8 zatrzymał się dopiero na guardzie dokumentacji.
+- Brakujący token: `SharedFilterStrip` w aktywnym zakresie UI Dictionary.
+- To nie jest problem Lejka ani kolorów ikon.
+
+ZMIANA:
+- R9 dopisuje aktywny blok UI Dictionary z literalami:
+  - `SharedFilterStrip`
+  - `FunnelLayoutFrozen`
+  - `FunnelIconToneSourceTruth`
+  - `MetricTileIconColorSource`
+- R9 odświeża R8 guard, żeby czytał bloki R9/R8/R6/R5/R4 razem.
+- R9 nie zmienia runtime Lejka.
+
+TESTY:
+- `node --check` dla R9/R8 guardów
+- R9 guard/test
+- R8 regression guard/test
+- R6 guard jeśli istnieje
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+<!-- STAGE231D0F_R9_FUNNEL_ICON_TONE_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R10_FUNNEL_ICON_TONE_POWERSHELL_STRICTMODE_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R10 Funnel icon tone PowerShell StrictMode repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R9 zatrzymał się po dopisaniu UI Dictionary i project memory.
+- Błąd: `The property 'check:stage231d0f-r9-funnel-icon-tone-ui-dictionary-guard-repair' cannot be found on this object.`
+- Przyczyna: PowerShell `Set-StrictMode` i dostęp do brakującej właściwości w `package.json`.
+- To nie jest problem runtime Lejka.
+
+ZMIANA:
+- R10 usuwa kruchy dostęp PowerShell `$Pkg.scripts.'...'`.
+- Dopisanie scriptów do `package.json` odbywa się przez `node -e`.
+- R10 uruchamia R10/R9/R8 guardy i testy.
+- R10 nie zmienia runtime Lejka.
+
+TESTY:
+- `node --check` dla R10/R9/R8 guardów
+- R10 guard/test
+- R9 guard/test
+- R8 guard/test
+- R6 guard jeśli istnieje
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+<!-- STAGE231D0F_R10_FUNNEL_ICON_TONE_POWERSHELL_STRICTMODE_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R11 Funnel R6 regression guard resolver repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R10/R9/R8 guardy i testy przeszły.
+- Etap zatrzymał wyłącznie stary R6 regression guard.
+- R6 guard oczekiwał literalów `tone: 'blue'`, `tone: 'amber'`, `tone: 'purple'`, `tone: 'red'`, `tone: 'green'`.
+- Po R8 te literały zostały celowo zastąpione resolverem `resolveCloseflowMetricIconTone`.
+
+ZMIANA:
+- R11 odświeża R6 guard/test, żeby akceptował nowy source of truth.
+- R11 odpala R11/R10/R9/R8/R6 guardy i testy.
+- R11 nie zmienia runtime Lejka.
+
+TESTY:
+- `node --check` dla guardów R11/R10/R9/R8/R6
+- R11 guard/test
+- R10 guard/test
+- R9 guard/test
+- R8 guard/test
+- R6 refreshed guard/test
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+<!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_END -->
