@@ -12,43 +12,43 @@
 <!-- STAGE228G_RISK_AUDIT -->
 ## 2026-06-07 19:05 Europe/Warsaw - STAGE228G risk audit
 
-- Potencjalne ryzyko: label/key based tone resolver moĹĽe Ĺşle dobraÄ‡ kolor przy nowych nazwach. Mitigacja: SimpleFilterItem obsĹ‚uguje explicit tone.
-- Potencjalne ryzyko: import CSS w OperatorSideCard obejmuje wszystkie operator rail cards. To celowe, ale trzeba sprawdziÄ‡ /leads, /clients i /cases.
-- Potencjalne ryzyko: usuniÄ™cie helper sentence w case row zmniejsza iloĹ›Ä‡ tekstu diagnostycznego na liĹ›cie. SzczegĂłĹ‚y nadal zostajÄ… w status pills i detailu sprawy.
-- Test rÄ™czny: /cases desktop i narrow width, potem /leads oraz /clients right rail smoke.
+- Potencjalne ryzyko: label/key based tone resolver może źle dobrać kolor przy nowych nazwach. Mitigacja: SimpleFilterItem obsługuje explicit tone.
+- Potencjalne ryzyko: import CSS w OperatorSideCard obejmuje wszystkie operator rail cards. To celowe, ale trzeba sprawdzić /leads, /clients i /cases.
+- Potencjalne ryzyko: usunięcie helper sentence w case row zmniejsza ilość tekstu diagnostycznego na liście. Szczegóły nadal zostają w status pills i detailu sprawy.
+- Test ręczny: /cases desktop i narrow width, potem /leads oraz /clients right rail smoke.
 
 <!-- STAGE228H_R3_RISKS -->
 ## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 risks
-- Ryzyko: wczeĹ›niejsze etapy F/G sÄ… nadal lokalne i modyfikujÄ… te same obszary UI; przed commitem potrzebny zbiorczy smoke /leads /clients /cases /dev/funnel.
-- Ryzyko: prebuild miaĹ‚ stary guard wymagajÄ…cy skasowanego copy; R3 aktualizuje guard, bo inaczej build byĹ‚by sprzeczny z decyzjÄ… UI cleanup.
-- Ryzyko: /dev/funnel bez logowania uĹĽywaÄ‡ tylko do podglÄ…du dev; /funnel produkcyjnie zostaje chroniony.
+- Ryzyko: wcześniejsze etapy F/G są nadal lokalne i modyfikują te same obszary UI; przed commitem potrzebny zbiorczy smoke /leads /clients /cases /dev/funnel.
+- Ryzyko: prebuild miał stary guard wymagający skasowanego copy; R3 aktualizuje guard, bo inaczej build byłby sprzeczny z decyzją UI cleanup.
+- Ryzyko: /dev/funnel bez logowania używać tylko do podglądu dev; /funnel produkcyjnie zostaje chroniony.
 <!-- /STAGE228H_R3_RISKS -->
 
 <!-- STAGE228R1_RISK -->
 ## 2026-06-08 - Stage228R1 risk audit
-- Ryzyko: lokalne stare pliki Stage228 mogÄ… nadal istnieÄ‡, ale nie powinny byÄ‡ aktywnie importowane.
-- Ryzyko: /activity, /ai-drafts, /notifications, /help, /settings, /billing majÄ… inne klasy i wymagajÄ… osobnego etapu.
-- Ryzyko: /funnel ma osobny bug kodowania znakĂłw i nie naleĹĽy mieszaÄ‡ go z rail source truth.
+- Ryzyko: lokalne stare pliki Stage228 mogą nadal istnieć, ale nie powinny być aktywnie importowane.
+- Ryzyko: /activity, /ai-drafts, /notifications, /help, /settings, /billing mają inne klasy i wymagają osobnego etapu.
+- Ryzyko: /funnel ma osobny bug kodowania znaków i nie należy mieszać go z rail source truth.
 <!-- /STAGE228R1_RISK -->
 
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_RISK_START -->
 ## 2026-06-09 - STAGE230C Phone dictation duplicate-words audit
 
 Ryzyka:
-- Trace moĹĽe zawieraÄ‡ koĹ„cĂłwkÄ™ realnej treĹ›ci klienta; dlatego pozostaje tylko lokalnym stanem React i UI.
-- Automatyczna deduplikacja bez dowodu moĹĽe usuwaÄ‡ poprawne powtĂłrzenia uĹĽytkownika.
-- Problem moĹĽe byÄ‡ mobile-only i nie odtworzyÄ‡ siÄ™ na desktopie.
-- IME/composition moĹĽe dziaĹ‚aÄ‡ inaczej w Android Chrome, Samsung Keyboard, Gboard i iOS Safari.
-- JeĹ›li problem jest po stronie klawiatury/browsera, aplikacja moĹĽe tylko ograniczyÄ‡ skutki albo ostrzec uĹĽytkownika w osobnym etapie.
+- Trace może zawierać końcówkę realnej treści klienta; dlatego pozostaje tylko lokalnym stanem React i UI.
+- Automatyczna deduplikacja bez dowodu może usuwać poprawne powtórzenia użytkownika.
+- Problem może być mobile-only i nie odtworzyć się na desktopie.
+- IME/composition może działać inaczej w Android Chrome, Samsung Keyboard, Gboard i iOS Safari.
+- Jeśli problem jest po stronie klawiatury/browsera, aplikacja może tylko ograniczyć skutki albo ostrzec użytkownika w osobnym etapie.
 <!-- STAGE230C_PHONE_DICTATION_DUPLICATE_WORDS_AUDIT_RISK_END -->
 
 <!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_RISK_START -->
 ## 2026-06-09 - STAGE230C-R2 Voice debug visibility/readability hotfix
 
 Ryzyka:
-- BĹ‚Ä…d dublowania nadal istnieje; R2 tylko umoĹĽliwia zebranie trace.
-- JeĹĽeli uĹĽytkownik nie widzi przycisku kopiowania, Stage230C nie daje dowodu.
-- Globalne style mogÄ… nadpisywaÄ‡ kolory textarea/buttonĂłw; R2 dodaje scoped `!important` tylko dla quick capture/debug.
+- Błąd dublowania nadal istnieje; R2 tylko umożliwia zebranie trace.
+- Jeżeli użytkownik nie widzi przycisku kopiowania, Stage230C nie daje dowodu.
+- Globalne style mogą nadpisywać kolory textarea/buttonów; R2 dodaje scoped `!important` tylko dla quick capture/debug.
 - Deduplikacja bez trace nadal zakazana.
 <!-- STAGE230C_R2_VOICE_DEBUG_VISIBILITY_HOTFIX_RISK_END -->
 
@@ -56,8 +56,8 @@ Ryzyka:
 ## 2026-06-09 - STAGE230C R6 voice debug panel rewrite
 
 Ryzyka:
-- R2/R4/R5 zostawiĹ‚y lokalnie czÄ™Ĺ›ciowy stan, wiÄ™c R6 celowo nadpisuje caĹ‚y blok panelu zamiast Ĺ‚ataÄ‡ pojedynczÄ… klamrÄ™.
-- Nadal wymagany rÄ™czny test telefonu: widocznoĹ›Ä‡ tekstu, widocznoĹ›Ä‡ Kopiuj trace i realny trace duplikacji.
+- R2/R4/R5 zostawiły lokalnie częściowy stan, więc R6 celowo nadpisuje cały blok panelu zamiast łatać pojedynczą klamrę.
+- Nadal wymagany ręczny test telefonu: widoczność tekstu, widoczność Kopiuj trace i realny trace duplikacji.
 - Problem dublowania tekstu nie jest naprawiany w tym etapie.
 <!-- STAGE230C_R6_VOICE_DEBUG_PANEL_REWRITE_RISK_END -->
 
@@ -74,26 +74,26 @@ Ryzyka:
 ## 2026-06-09 - STAGE230C R10 quick capture visual source truth
 
 Ryzyka:
-- Globalne style mogÄ… nadal nadpisywaÄ‡ czÄ™Ĺ›Ä‡ komponentĂłw, dlatego R10 uĹĽywa scoped selektorĂłw i !important tylko w obrÄ™bie quick capture.
-- Visual source truth jest obecnie w CSS formularzy Stage20; dĹ‚ugofalowo warto wydzieliÄ‡ centralne tokeny formularzy, zamiast rozpraszaÄ‡ klasy.
-- Dublowanie dyktowania jest oznaczone jako problem konkretnego telefonu, nie aplikacji, dopĂłki nie pojawi siÄ™ reprodukcja na innym urzÄ…dzeniu.
+- Globalne style mogą nadal nadpisywać część komponentów, dlatego R10 używa scoped selektorów i !important tylko w obrębie quick capture.
+- Visual source truth jest obecnie w CSS formularzy Stage20; długofalowo warto wydzielić centralne tokeny formularzy, zamiast rozpraszać klasy.
+- Dublowanie dyktowania jest oznaczone jako problem konkretnego telefonu, nie aplikacji, dopóki nie pojawi się reprodukcja na innym urządzeniu.
 <!-- STAGE230C_R10_QUICK_CAPTURE_VISUAL_SOURCE_TRUTH_RISK_END -->
 
 <!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_RISK_START -->
 ## 2026-06-09 - STAGE230C R12 R2 guard global marker compatibility
 
 Ryzyka:
-- Zbyt kruche guardy JSX potrafiÄ… blokowaÄ‡ dobre poprawki UI; R12 usuwa to ryzyko dla quick capture.
-- Guard global-marker jest mniej precyzyjny niĹĽ parser AST, ale bezpieczniejszy niĹĽ bĹ‚Ä™dne wycinanie sekcji po className.
-- Docelowo warto wydzieliÄ‡ komponent/form source truth, aby quick capture nie wymagaĹ‚ lokalnych wyjÄ…tkĂłw CSS.
+- Zbyt kruche guardy JSX potrafią blokować dobre poprawki UI; R12 usuwa to ryzyko dla quick capture.
+- Guard global-marker jest mniej precyzyjny niż parser AST, ale bezpieczniejszy niż błędne wycinanie sekcji po className.
+- Docelowo warto wydzielić komponent/form source truth, aby quick capture nie wymagał lokalnych wyjątków CSS.
 <!-- STAGE230C_R12_R2_GUARD_GLOBAL_MARKER_COMPAT_RISK_END -->
 
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_RISK_START -->
 ## 2026-06-09 - STAGE230C R15 guard split + visual source truth
 
 Ryzyka:
-- Dotychczasowe R2-R14 pokazaly zbyt kruche guardy oparte o dokĹ‚adny JSX.
-- Dalsze guardy UI powinny sprawdzaÄ‡ stabilne data-markery i source truth, nie peĹ‚ny string className.
+- Dotychczasowe R2-R14 pokazaly zbyt kruche guardy oparte o dokładny JSX.
+- Dalsze guardy UI powinny sprawdzać stabilne data-markery i source truth, nie pełny string className.
 - Test telefonu nadal wymagany dla kontrastu: tekst, placeholder, disabled button, przyciski diagnostyczne.
 <!-- STAGE230C_R15_GUARD_SPLIT_VISUAL_SOURCE_TRUTH_RISK_END -->
 
@@ -101,9 +101,9 @@ Ryzyka:
 ## 2026-06-09 - STAGE231A Google auth entry consistency
 
 Ryzyka:
-- Obecny OAuth bootstrap oznacza publiczny trial dla nowych kont Google, dopĂłki STAGE231D nie zdecyduje inaczej.
-- Settings nadal ma akcje bezpieczeĹ„stwa na Firebase Auth i wymaga migracji do Supabase Auth w STAGE231B.
-- Maile auth i redirect URL wymagajÄ… osobnej QA w STAGE231C.
+- Obecny OAuth bootstrap oznacza publiczny trial dla nowych kont Google, dopóki STAGE231D nie zdecyduje inaczej.
+- Settings nadal ma akcje bezpieczeństwa na Firebase Auth i wymaga migracji do Supabase Auth w STAGE231B.
+- Maile auth i redirect URL wymagają osobnej QA w STAGE231C.
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_RISK_END -->
 
 ## STAGE231D_RISK_AUDIT
@@ -123,12 +123,12 @@ Ryzyka:
 ## 2026-06-10 Europe/Warsaw â€” STAGE230D0 Text/Input Contrast Sweep
 
 FAKT:
-- Damian zgĹ‚osiĹ‚ biaĹ‚y tekst na biaĹ‚ym tle podczas wpisywania/dyktowania w aplikacji.
+- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
 - Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
 
 DECYZJA:
 - Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
-- Nie uĹĽywaÄ‡ lokalnych ZIP-Ăłw jako gĹ‚Ăłwnej Ĺ›cieĹĽki dla Damiana.
+- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
 
 TESTY:
 - Stage230B regression guard/test.
@@ -138,15 +138,15 @@ TESTY:
 - git diff --check.
 
 RYZYKA:
-- MoĹĽliwe podobne problemy kontrastu w innych moduĹ‚ach aplikacji.
-- Nie wdraĹĽano deduplikacji dyktowania bez trace.
+- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
+- Nie wdrażano deduplikacji dyktowania bez trace.
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
 
 ## 2026-06-10 â€” STAGE231B0 risk audit
 
-- Nie dodano SQL ani pĂłl closed_at/archived_at bez potwierdzenia schematu.
-- ZamkniÄ™cie nie zeruje pĂłl finansowych i nie usuwa payments.
-- Awaryjne usuniÄ™cie nadal istnieje, wiÄ™c wymaga rÄ™cznego testu UI, czy nie jest mylone z normalnym zakoĹ„czeniem.
+- Nie dodano SQL ani pól closed_at/archived_at bez potwierdzenia schematu.
+- Zamknięcie nie zeruje pól finansowych i nie usuwa payments.
+- Awaryjne usunięcie nadal istnieje, więc wymaga ręcznego testu UI, czy nie jest mylone z normalnym zakończeniem.
 - Lifetime earnings klienta wymaga osobnego Stage231B1.
 
 ## Risk audit â€” STAGE231B0-R7
@@ -155,78 +155,78 @@ Archive/restore uses status update only. No SQL. Existing duplicate savedRecord 
 
 
 ## R5_CASEDETAIL_RESTORE_REPAIR
-- Naprawiono realny brak CaseDetail: "PrzywrĂłÄ‡ sprawÄ™".
-- Restore flow uĹĽywa updateCaseInSupabase({ status: 'in_progress' }) i activity "case_lifecycle_reopened".
-- Historia i rozliczenia pozostajÄ… zachowane; delete flow nie jest uĹĽywany przez restore.
+- Naprawiono realny brak CaseDetail: "Przywróć sprawę".
+- Restore flow używa updateCaseInSupabase({ status: 'in_progress' }) i activity "case_lifecycle_reopened".
+- Historia i rozliczenia pozostają zachowane; delete flow nie jest używany przez restore.
 
 
 ## R6_REOPEN_HANDLER_ALIAS_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ nazwy handlera restore z guardem R7.
+- Naprawiono zgodność nazwy handlera restore z guardem R7.
 - Dodano/upewniono `handleConfirmReopenCaseRecord` jako publiczny handler przywracania sprawy.
-- Przycisk `PrzywrĂłÄ‡ sprawÄ™` uĹĽywa handlera reopen.
-- Logika finansĂłw, delete flow i dane rozliczeĹ„ pozostajÄ… bez zmian.
+- Przycisk `Przywróć sprawę` używa handlera reopen.
+- Logika finansów, delete flow i dane rozliczeń pozostają bez zmian.
 
 
 ## R7_CLOSED_STATUS_LITERAL_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ CaseDetail z guardem R7.
+- Naprawiono zgodność CaseDetail z guardem R7.
 - Dodano jawne sprawdzenie `isClosedCaseStatus(caseData?.status)`.
 - Zachowano fallback na `effectiveStatus`.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach i prowizjach.
+- Bez zmian w delete flow, płatnościach i prowizjach.
 
 
 ## R8_REOPEN_CONST_SEGMENT_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ segmentu CaseDetail z guardem R7.
-- Handler przywracania ma teraz formÄ™ `const handleConfirmReopenCaseRecord = async () => { ... }`.
-- Przycisk `PrzywrĂłÄ‡ sprawÄ™` uĹĽywa handlera reopen.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach i prowizjach.
+- Naprawiono zgodność segmentu CaseDetail z guardem R7.
+- Handler przywracania ma teraz formę `const handleConfirmReopenCaseRecord = async () => { ... }`.
+- Przycisk `Przywróć sprawę` używa handlera reopen.
+- Bez zmian w delete flow, płatnościach i prowizjach.
 
 
 ## R9_CASES_CLOSED_VIEW_LITERAL_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ `Cases.tsx` z guardem R7.
+- Naprawiono zgodność `Cases.tsx` z guardem R7.
 - `CaseView` zawiera literal `| 'closed'`.
-- Utrwalono kontrakt widoku `/cases?view=closed`, etykietÄ™ `Sprawy zamkniÄ™te` oraz filtr aktywne vs zamkniÄ™te.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach i prowizjach.
+- Utrwalono kontrakt widoku `/cases?view=closed`, etykietę `Sprawy zamknięte` oraz filtr aktywne vs zamknięte.
+- Bez zmian w delete flow, płatnościach i prowizjach.
 
 
 ## R10_CLIENTDETAIL_CLOSED_CASES_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ `ClientDetail.tsx` z guardem R7.
-- Utrwalono kontrakt klienta: `Sprawy aktywne`, `Sprawy zamkniÄ™te`, `PrzywrĂłÄ‡ sprawÄ™`.
-- Kontrakt uĹĽywa wspĂłlnego `isClosedCaseStatus(record.status)`.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
+- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
+- Utrwalono kontrakt klienta: `Sprawy aktywne`, `Sprawy zamknięte`, `Przywróć sprawę`.
+- Kontrakt używa wspólnego `isClosedCaseStatus(record.status)`.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
 
 
 ## R11_CLIENTDETAIL_RESTORE_HANDLER_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ `ClientDetail.tsx` z guardem R7.
+- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
 - Dodano jawny handler/kontrakt `handleRestoreClientCaseStage231B0R7`.
-- Utrwalono kontrakt aktywne/zamkniÄ™te/przywrĂłÄ‡ oraz activity `case_lifecycle_reopened`.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
+- Utrwalono kontrakt aktywne/zamknięte/przywróć oraz activity `case_lifecycle_reopened`.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
 
 
 ## R12_CLIENTDETAIL_CLOSED_LISTS_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ `ClientDetail.tsx` z guardem R7.
+- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
 - Dodano `activeClientCasesStage231B0R7` i `closedClientCasesStage231B0R7`.
-- PodziaĹ‚ uĹĽywa wspĂłlnego `isClosedCaseStatus(record.status)`.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
+- Podział używa wspólnego `isClosedCaseStatus(record.status)`.
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
 
 
 ## R13_CSS_CONTRACT_REPAIR
-- Naprawiono zgodnoĹ›Ä‡ CSS z guardem R7.
+- Naprawiono zgodność CSS z guardem R7.
 - Dodano `cf-case-detail-close-action-stage231b0-r7` do CSS karty sprawy i do klasy przycisku zamykania.
 - Dodano `client-detail-case-smart-card-closed-stage231b0-r7` do CSS klienta.
-- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
-\n\n## 2026-06-10 â€” STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH\n- Status: LOCAL_ONLY_PREPARED / R6_CLIENTDETAIL_FLEXIBLE_REPAIR.\n- Naprawa po czÄ™Ĺ›ciowym R4: elastyczny patch ClientDetail, aktywne/zamkniÄ™te sprawy klienta, restore z klienta, CSS, guard/test.\n- Finanse i historia zachowane.\n
+- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+\n\n## 2026-06-10 â€” STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH\n- Status: LOCAL_ONLY_PREPARED / R6_CLIENTDETAIL_FLEXIBLE_REPAIR.\n- Naprawa po częściowym R4: elastyczny patch ClientDetail, aktywne/zamknięte sprawy klienta, restore z klienta, CSS, guard/test.\n- Finanse i historia zachowane.\n
 
 ## 2026-06-10 â€” STAGE231B0_R8_R8_DUPLICATE_CONST_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa masowa po build fail: usuniÄ™to sklejone anchory `const X = useMemo( const X = useMemo(` po czÄ™Ĺ›ciowym R2/R4/R6/R7.
-- Zakres: dotkniÄ™te pliki TSX, whitespace, sanity check R8, peĹ‚ny build/test.
+- Naprawa masowa po build fail: usunięto sklejone anchory `const X = useMemo( const X = useMemo(` po częściowym R2/R4/R6/R7.
+- Zakres: dotknięte pliki TSX, whitespace, sanity check R8, pełny build/test.
 
 
 
 ## 2026-06-10 â€” STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa masowa po build fail: usuniÄ™to stary drugi `toggleCaseView`, ktĂłry pozostaĹ‚ po R8 obok URL-aware `setCaseViewStage231B0R8`.
-- Guard R8 rozszerzony o dokĹ‚adnie jeden `toggleCaseView` i zakaz legacy `setCaseView((prev) => ...)`.
+- Naprawa masowa po build fail: usunięto stary drugi `toggleCaseView`, który pozostał po R8 obok URL-aware `setCaseViewStage231B0R8`.
+- Guard R8 rozszerzony o dokładnie jeden `toggleCaseView` i zakaz legacy `setCaseView((prev) => ...)`.
 
 
 ## 2026-06-10 — STAGE231B0-R9 — Client history and case view model
@@ -373,7 +373,7 @@ Archive/restore uses status update only. No SQL. Existing duplicate savedRecord 
 ## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard batch repair
 - Status: BATCH_REPAIR_AFTER_R2_R3_PARTIALS.
 - Powód: R2/R3 częściowo naprawiły pliki, ale R3 zatrzymał się przez zbyt wąski parser dirty paths.
-- Naprawa: masowo obsłużono warianty mojibake `Ä…/Å‚/Ĺ‚/Ăł/Â·/â€“`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
+- Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/·/â€“`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
 - Zasada: commit/push tylko po PASS guardów, build i git diff --check.
 
 
@@ -882,12 +882,12 @@ Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek
 Status: READY_FOR_TEST
 
 Zakres:
-- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakĹ‚adki ObsĹ‚uga,
-- lewa kolumna ma teraz: tabs + dziaĹ‚ania,
-- Ĺ›rodkowa kolumna ma notatki startujÄ…ce od gĂłry tego samego gridu,
-- prawy rail jest wyrĂłwnany do osi true service grid i uĹĽywa wspĂłlnego gapu,
-- nie ruszano SQL, danych, modelu finansĂłw ani modali.
+- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakładki Obsługa,
+- lewa kolumna ma teraz: tabs + działania,
+- środkowa kolumna ma notatki startujące od góry tego samego gridu,
+- prawy rail jest wyrównany do osi true service grid i używa wspólnego gapu,
+- nie ruszano SQL, danych, modelu finansów ani modali.
 
 Audyt:
-- R5 byĹ‚ technicznie zielony, ale wizualnie nie zamykaĹ‚ celu, bo tabs byĹ‚y poza gridem.
-- R6 naprawia strukturÄ™ JSX, a guard sprawdza kolejnoĹ›Ä‡ grid -> left column -> tabs -> actions -> notes.
+- R5 był technicznie zielony, ale wizualnie nie zamykał celu, bo tabs były poza gridem.
+- R6 naprawia strukturę JSX, a guard sprawdza kolejność grid -> left column -> tabs -> actions -> notes.

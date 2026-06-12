@@ -6,4 +6,4 @@ Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 
 ## Decyzja
-Naprawa nie moĹĽe byÄ‡ kolejnym margin-top. Tabs muszÄ… wejĹ›Ä‡ do lewej kolumny workspace, ĹĽeby notatki startowaĹ‚y od gĂłry i ekran miaĹ‚ jeden spĂłjny rytm.
+Naprawa nie może być kolejnym margin-top. Tabs muszą wejść do lewej kolumny workspace, żeby notatki startowały od góry i ekran miał jeden spójny rytm.

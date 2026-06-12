@@ -421,17 +421,17 @@ Zasady:
 ## CaseServiceWorkspaceGridR6
 
 Nazwa ludzka:
-Prawdziwy ukĹ‚ad obsĹ‚ugi sprawy
+Prawdziwy układ obsługi sprawy
 
 Nazwa systemowa:
 CaseServiceWorkspaceGridR6
 
 Rola:
-Jeden spĂłjny grid dla zakĹ‚adki ObsĹ‚uga: lewa kolumna zawiera tabs i dziaĹ‚ania, Ĺ›rodkowa kolumna zawiera notatki startujÄ…ce od gĂłry, prawy rail zawiera rozliczenie i szybkie akcje.
+Jeden spójny grid dla zakładki Obsługa: lewa kolumna zawiera tabs i działania, środkowa kolumna zawiera notatki startujące od góry, prawy rail zawiera rozliczenie i szybkie akcje.
 
 Zasady:
-- tabs nie sÄ… osobnÄ… belkÄ… nad caĹ‚ym workspace,
-- tabs sÄ… czÄ™Ĺ›ciÄ… lewej kolumny dziaĹ‚aĹ„,
-- notatki startujÄ… od gĂłry tego samego gridu,
-- odstÄ™p miÄ™dzy kafelkami uĹĽywa wspĂłlnego rytmu 14px,
-- nie uĹĽywaÄ‡ losowych marginĂłw do maskowania zĹ‚ej struktury.
+- tabs nie są osobną belką nad całym workspace,
+- tabs są częścią lewej kolumny działań,
+- notatki startują od góry tego samego gridu,
+- odstęp między kafelkami używa wspólnego rytmu 14px,
+- nie używać losowych marginów do maskowania złej struktury.

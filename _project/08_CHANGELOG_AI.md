@@ -375,7 +375,7 @@ Kryterium: dzień z wpisem nie może wyglądać jak pusty biały pasek/mini-kafe
 
 ## 2026-05-17 — Stage104C: Calendar week plan card unclamp
 
-### FAKTY Z KODU / PLIKĂ“W
+### FAKTY Z KODU / PLIKÓW
 - Poprzednia paczka Stage104B nie wykonała patchera: plik CJS miał błąd składni przez nieucieczony backtick w osadzonym teście.
 - Faktyczny problem UI: w Plan najbliższych dni wpis istnieje, ale renderuje się jako wąski pionowy fragment akcji.
 - Naprawa Stage104C: root week-plan card nie używa legacy klasy calendar-entry-card i dostaje anti-collapse CSS: width 100%, max-width none, min-height 92px, overflow visible, visibility visible, opacity 1.
@@ -498,7 +498,7 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 - Added overdue detection for LeadDetail work items.
 - Timeline tasks/events with past date and open status now render `Zaległe`.
 - Added red danger pill and overdue row styling.
-- Replaced mojibake separator `Ă˘”Â¬Äš` with `â€˘`.
+- Replaced mojibake separator `Ă˘”¬Äš` with `â€˘`.
 
 ## Stage115E LeadDetail finance actions dialog
 
@@ -1827,7 +1827,7 @@ Data: 2026-06-05 20:32 Europe/Warsaw
 ## FAKTY
 - Stage226R7 usuwa runtime blocker w src/pages/Leads.tsx: wolne odwołanie do filter po dodaniu leada.
 - Dodaje guard i runtime test Stage226R7.
-- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/Ĺšrednie, tekst Pokazano 8 z X, pusty stan operacyjny.
+- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/Średnie, tekst Pokazano 8 z X, pusty stan operacyjny.
 - Nie aktywuje przycisków Ustaw zadanie / Odłóż / Oznacz jako martwy.
 
 ## TESTY
@@ -2794,7 +2794,7 @@ Added closed case archive view, restore flow, client closed cases section and gu
 ## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard batch repair
 - Status: BATCH_REPAIR_AFTER_R2_R3_PARTIALS.
 - Powód: R2/R3 częściowo naprawiły pliki, ale R3 zatrzymał się przez zbyt wąski parser dirty paths.
-- Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/Â·/–`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
+- Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/·/–`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
 - Zasada: commit/push tylko po PASS guardów, build i git diff --check.
 
 
@@ -2956,18 +2956,18 @@ następny krok:
 STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
 
 FAKTY:
-- Kafelek klienta na liĹ›cie klientĂłw zostaĹ‚ przestawiony na ukĹ‚ad 2-wierszowy.
-- Z kafelka klienta usuniÄ™to Leady: oraz badge Aktywna sprawa.
+- Kafelek klienta na liście klientów został przestawiony na układ 2-wierszowy.
+- Z kafelka klienta usunięto Leady: oraz badge Aktywna sprawa.
 - Wiersz 1 pokazuje: nazwa, telefon, e-mail, Aktywna prowizja, akcje.
-- Wiersz 2 pokazuje: firma, Sprawy, Zarobione Ĺ‚Ä…cznie, NajbliĹĽsza akcja oraz dozwolone statusy pomocnicze.
-- Telefon ma osobny marker data-client-list-phone i klasÄ™ client-list-card-phone.
-- E-mail ma osobny marker data-client-list-email i klasÄ™ client-list-card-email.
-- UI dalej korzysta z closeflow-record-list-source-truth.css jako ĹşrĂłdĹ‚a prawdy stylu list.
+- Wiersz 2 pokazuje: firma, Sprawy, Zarobione łącznie, Najbliższa akcja oraz dozwolone statusy pomocnicze.
+- Telefon ma osobny marker data-client-list-phone i klasę client-list-card-phone.
+- E-mail ma osobny marker data-client-list-email i klasę client-list-card-email.
+- UI dalej korzysta z closeflow-record-list-source-truth.css jako źródła prawdy stylu list.
 
 DECYZJA DAMIANA:
-- Klient jest juĹĽ pozyskanym leadem, wiÄ™c nie pokazujemy Leady w kafelku klienta.
-- Klient moĹĽe mieÄ‡ wiele spraw, wiÄ™c nie pokazujemy binarnego badge'a Aktywna sprawa.
-- Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
+- Klient jest już pozyskanym leadem, więc nie pokazujemy Leady w kafelku klienta.
+- Klient może mieć wiele spraw, więc nie pokazujemy binarnego badge'a Aktywna sprawa.
+- Na liście klientów mają być widoczne: Aktywna prowizja, Zarobione łącznie, Sprawy, Najbliższa akcja.
 
 TESTY/GUARDY:
 -
@@ -2977,12 +2977,12 @@ pm run build
 - git diff --check
 
 DO POTWIERDZENIA:
-- Test rÄ™czny desktop/mobile na /clients po lokalnym uruchomieniu.
+- Test ręczny desktop/mobile na /clients po lokalnym uruchomieniu.
 
 RYZYKA:
-- JeĹ›li dane prowizyjne w bazie sÄ… niepeĹ‚ne, Aktywna prowizja moĹĽe pokazaÄ‡ 0 PLN mimo aktywnej sprawy bez uzupeĹ‚nionej prowizji.
-- JeĹ›li pĹ‚atnoĹ›ci prowizyjne nie majÄ… typu/statusu rozpoznawanego przez finance source, Zarobione Ĺ‚Ä…cznie moĹĽe wymagaÄ‡ osobnego etapu porzÄ…dkujÄ…cego dane pĹ‚atnoĹ›ci.
-- Zmiana dotyczy tylko listy klientĂłw, nie przebudowuje ClientDetail ani modeli finansowych.
+- Jeśli dane prowizyjne w bazie są niepełne, Aktywna prowizja może pokazać 0 PLN mimo aktywnej sprawy bez uzupełnionej prowizji.
+- Jeśli płatności prowizyjne nie mają typu/statusu rozpoznawanego przez finance source, Zarobione łącznie może wymagać osobnego etapu porządkującego dane płatności.
+- Zmiana dotyczy tylko listy klientów, nie przebudowuje ClientDetail ani modeli finansowych.
 <!-- STAGE231D0B_CLIENT_LIST_CARD_CHANGELOG_END -->
 
 
@@ -3490,12 +3490,12 @@ Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek
 Status: READY_FOR_TEST
 
 Zakres:
-- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakĹ‚adki ObsĹ‚uga,
-- lewa kolumna ma teraz: tabs + dziaĹ‚ania,
-- Ĺ›rodkowa kolumna ma notatki startujÄ…ce od gĂłry tego samego gridu,
-- prawy rail jest wyrĂłwnany do osi true service grid i uĹĽywa wspĂłlnego gapu,
-- nie ruszano SQL, danych, modelu finansĂłw ani modali.
+- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakładki Obsługa,
+- lewa kolumna ma teraz: tabs + działania,
+- środkowa kolumna ma notatki startujące od góry tego samego gridu,
+- prawy rail jest wyrównany do osi true service grid i używa wspólnego gapu,
+- nie ruszano SQL, danych, modelu finansów ani modali.
 
 Audyt:
-- R5 byĹ‚ technicznie zielony, ale wizualnie nie zamykaĹ‚ celu, bo tabs byĹ‚y poza gridem.
-- R6 naprawia strukturÄ™ JSX, a guard sprawdza kolejnoĹ›Ä‡ grid -> left column -> tabs -> actions -> notes.
+- R5 był technicznie zielony, ale wizualnie nie zamykał celu, bo tabs były poza gridem.
+- R6 naprawia strukturę JSX, a guard sprawdza kolejność grid -> left column -> tabs -> actions -> notes.
