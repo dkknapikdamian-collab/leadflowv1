@@ -268,7 +268,11 @@ export function normalizePlanId(planId?: string | null, subscriptionStatus?: str
     return rawPlan && PLAN_ALIASES[rawPlan] ? PLAN_ALIASES[rawPlan] : PLAN_IDS.free;
   }
 
-  return PLAN_IDS.trial;
+  // STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_BLOCKER
+  // Unknown access states must fail closed to Free. Do not silently grant trial
+  // features to a new/incomplete account unless the backend explicitly returns
+  // trial_active or trial_ending with a valid trial window.
+  return PLAN_IDS.free;
 }
 
 export function getPlanDefinition(planId?: string | null, subscriptionStatus?: string | null): PlanDefinition {
