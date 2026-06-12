@@ -1,7 +1,7 @@
 # 2026-06-12 — STAGE231D0G Visual Tile Source Truth Atlas
 
 Status:
-READY_TO_APPLY
+PASS / CLOSED
 
 ## Scan report
 
@@ -56,3 +56,41 @@ Created:
 - Main risk: local page CSS overriding global tile source.
 - Guard prevents missing atlas/source truth but does not refactor runtime views.
 - Dirty working tree from old packages must not be pushed accidentally.
+
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
+## 2026-06-12 — STAGE231D0G-CLOSEOUT
+
+Status:
+PASS / CLOSED
+
+## Test results
+
+- `node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs`: PASS
+- `node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs`: PASS
+- `node scripts/check-stage231d0f-r13-funnel-visual-color-density.cjs`: PASS
+- `node --test tests/stage231d0f-r13-funnel-visual-color-density.test.cjs`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS, only LF/CRLF warnings allowed
+
+## Final decision
+
+D0G is closed as documentation/source-truth stage.
+
+Closed artifacts:
+- `_project/CLOSEFLOW_VISUAL_TILE_SYSTEM.md`
+- `_project/CLOSEFLOW_VISUAL_TILE_ATLAS.md`
+- `_project/UI_DICTIONARY_STAGE231D0A.md`
+- `scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs`
+- `tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs`
+
+No runtime UI migration was performed in this closeout.
+
+## Next step
+
+`STAGE231D0H-1 — Leads + Clients metric tiles and filters to CloseFlowMetricTileV2`
+
+## Risk audit
+
+- UI Dictionary still contains historical duplicate/mojibake entries. Active D0G block is valid. Full dictionary cleanup should be a separate hygiene stage.
+- Working tree may still contain old local artifacts. Push must remain selective.
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->

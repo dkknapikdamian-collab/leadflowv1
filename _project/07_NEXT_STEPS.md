@@ -4278,3 +4278,29 @@ RYZYKO:
 - UI Dictionary ma stare duplikaty i historyczne mojibake. Guard D0G skanuje aktywny blok D0G i nowe source truth, nie całą historię słownika.
 - Pełny cleanup lokalnych śmieci po starych paczkach zostaje osobnym etapem.
 <!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
+
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
+## 2026-06-12 — Next after STAGE231D0G-CLOSEOUT
+
+STATUS: D0G CLOSED
+
+Next stage:
+`STAGE231D0H-1 — Leads + Clients metric tiles and filters to CloseFlowMetricTileV2`
+
+Scope for D0H-1:
+- `/leads`
+- `/clients`
+- metric tiles
+- shared filter strips
+- list/record cards if directly tied to tile visual parity
+
+Do not include in D0H-1:
+- SQL
+- Supabase schema
+- routing
+- CaseDetail
+- Calendar
+- Billing
+- Settings
+- full UI Dictionary cleanup
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->

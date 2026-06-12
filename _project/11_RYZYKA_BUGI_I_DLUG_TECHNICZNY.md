@@ -1407,3 +1407,36 @@ RYZYKO:
 - UI Dictionary ma stare duplikaty i historyczne mojibake. Guard D0G skanuje aktywny blok D0G i nowe source truth, nie całą historię słownika.
 - Pełny cleanup lokalnych śmieci po starych paczkach zostaje osobnym etapem.
 <!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
+
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
+## 2026-06-12 — STAGE231D0G-CLOSEOUT risk audit
+
+Risk audit result:
+- D0G can be closed as a documentation/source-truth stage.
+- UI Dictionary still has historical duplicate/mojibake entries. Active D0G block is clean enough for next stages.
+- Full UI Dictionary cleanup should not be mixed with Leads/Clients migration.
+- Working tree has old local artifacts from previous stages; push only selected D0G-CLOSEOUT files.
+- Build warning `Duplicate key "savedRecord"` remains non-blocking and should be separate.
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
+<!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_START -->
+## 2026-06-12 â€” STAGE231D0G-CLOSEOUT-R2 Guard scope repair
+
+STATUS: READY_TO_RUN
+
+FAKTY:
+- D0G guard/test PASS, R13 regression PASS, build PASS.
+- Poprzedni closeout guard skanowal cale historyczne pliki centralne.
+- Historyczne pliki zawieraja stare mojibake i stare teksty SQL/scope, wiec guard dal falszywy FAIL.
+
+ZMIANA:
+- R2 guard skanuje tylko aktywne bloki STAGE231D0G-CLOSEOUT i Obsidian payload.
+- R2 nie rusza runtime UI.
+
+TESTY:
+- node scripts/check-stage231d0g-closeout-visual-tile-source-truth-atlas.cjs
+- node --test tests/stage231d0g-closeout-visual-tile-source-truth-atlas.test.cjs
+- node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs
+- node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs
+- npm run build
+- git diff --check
+<!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_END -->

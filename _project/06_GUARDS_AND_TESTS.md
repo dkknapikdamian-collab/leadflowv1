@@ -3988,3 +3988,53 @@ RYZYKO:
 - UI Dictionary ma stare duplikaty i historyczne mojibake. Guard D0G skanuje aktywny blok D0G i nowe source truth, nie całą historię słownika.
 - Pełny cleanup lokalnych śmieci po starych paczkach zostaje osobnym etapem.
 <!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
+
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
+## 2026-06-12 — STAGE231D0G-CLOSEOUT Visual Tile Source Truth Atlas
+
+STATUS: PASS / CLOSED
+
+FAKTY:
+- D0G source truth and atlas were already committed and pushed.
+- Closeout reran D0G guard/test and R13 regression guard/test.
+- Build passed.
+- `git diff --check` passed with non-blocking LF/CRLF warnings only.
+- Runtime UI was not changed.
+
+TESTY:
+- `node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs`: PASS
+- `node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs`: PASS
+- `node scripts/check-stage231d0f-r13-funnel-visual-color-density.cjs`: PASS
+- `node --test tests/stage231d0f-r13-funnel-visual-color-density.test.cjs`: PASS
+- `npm run build`: PASS
+- `git diff --check`: PASS
+
+DECYZJA:
+D0G is closed. Next implementation stage is D0H-1: Leads + Clients metric tiles and filters to CloseFlowMetricTileV2.
+
+RYZYKA:
+- Historical UI Dictionary duplicate/mojibake entries remain outside active D0G block.
+- Old local artifacts must not be included in push.
+<!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
+<!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_START -->
+## 2026-06-12 â€” STAGE231D0G-CLOSEOUT-R2 Guard scope repair
+
+STATUS: READY_TO_RUN
+
+FAKTY:
+- D0G guard/test PASS, R13 regression PASS, build PASS.
+- Poprzedni closeout guard skanowal cale historyczne pliki centralne.
+- Historyczne pliki zawieraja stare mojibake i stare teksty SQL/scope, wiec guard dal falszywy FAIL.
+
+ZMIANA:
+- R2 guard skanuje tylko aktywne bloki STAGE231D0G-CLOSEOUT i Obsidian payload.
+- R2 nie rusza runtime UI.
+
+TESTY:
+- node scripts/check-stage231d0g-closeout-visual-tile-source-truth-atlas.cjs
+- node --test tests/stage231d0g-closeout-visual-tile-source-truth-atlas.test.cjs
+- node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs
+- node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs
+- npm run build
+- git diff --check
+<!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_END -->
