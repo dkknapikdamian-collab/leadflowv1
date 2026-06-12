@@ -2425,7 +2425,7 @@ następny krok:
 - risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.
 
 <!-- STAGE231D0B_CLIENT_LIST_CARD_LEDGER_START -->
-## 2026-06-11 19:57 Europe/Warsaw - STAGE231D0B Client List Card Visual Freeze
+## 2026-06-12 11:15 Europe/Warsaw - STAGE231D0B Client List Card Visual Freeze
 
 STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
 
@@ -2444,9 +2444,9 @@ DECYZJA DAMIANA:
 - Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
 
 TESTY/GUARDY:
--
+- 
 pm run check:stage231d0b-client-list-card-freeze
--
+- 
 pm run build
 - git diff --check
 
