@@ -53,6 +53,15 @@ reject('src/pages/Billing.tsx', /return\s+['"]trial_21d['"]/, 'Billing.tsx must 
 assert(/14 dni testu/.test(login), 'Login.tsx must say 14 dni testu.');
 assert(/TRIAL_DAYS as PLAN_TRIAL_DAYS/.test(apiMe) && /TRIAL_MS as PLAN_TRIAL_MS/.test(apiMe), 'api/me.ts must source trial length from plans.ts.');
 assert(/buildTrialEndsAt\(\)[\s\S]*TRIAL_MS/.test(apiMe), 'api/me.ts must build trial end from TRIAL_MS.');
+assert(/STAGE231E2_R7_TRIAL_ACCESS_BOOTSTRAP_REPAIR/.test(apiMe), 'api/me.ts must document STAGE231E2_R7 trial access bootstrap repair.');
+assert(/shouldRepairTrialAccessBootstrap/.test(apiMe), 'api/me.ts must repair fresh non-historical trial access bootstrap.');
+assert(/workspaceResolutionMode === 'historical_mapping'/.test(apiMe) && /workspaceResolutionMode === 'explicit_fallback'/.test(apiMe), 'api/me.ts must not silently reactivate historical or explicit fallback workspaces.');
+assert(/currentStatus === 'trial_active' \|\| currentStatus === 'trial_ending'/.test(apiMe) && /!isFutureDate\(currentTrialEndsAt\)/.test(apiMe), 'api/me.ts must repair trial_active/trial_ending with missing or past trialEndsAt.');
+assert(/data-shell-access-status-card/.test(layout), 'Layout.tsx must render sidebar access status card, not only active trial card.');
+assert(/shouldShowAccessStatusCard/.test(layout), 'Layout.tsx must calculate shouldShowAccessStatusCard.');
+assert(/access\?\.status === 'trial_expired'/.test(layout), 'Layout.tsx must show expired trial status in sidebar.');
+assert(/access\?\.status === 'payment_failed'/.test(layout), 'Layout.tsx must show payment failure status in sidebar.');
+assert(/access\?\.status === 'paid_active'/.test(layout), 'Layout.tsx must show paid active status in sidebar.');
 
 console.log(JSON.stringify({
   ok: true,

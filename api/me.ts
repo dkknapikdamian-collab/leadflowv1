@@ -887,6 +887,45 @@ function shouldRepairFreshTrialBootstrap(row: Record<string, unknown> | null) {
   return false;
 }
 
+type WorkspaceResolutionMode = 'profile_workspace' | 'identity_mapping' | 'historical_mapping' | 'explicit_fallback';
+
+type EnsureWorkspaceOptions = {
+  workspaceResolutionMode?: WorkspaceResolutionMode;
+};
+
+const STAGE231E2_R7_TRIAL_ACCESS_BOOTSTRAP_REPAIR = 'Fresh profile/identity trial bootstrap must not return PLAN Trial + ACCESS Trial expired.';
+void STAGE231E2_R7_TRIAL_ACCESS_BOOTSTRAP_REPAIR;
+
+function isTrialAccessBootstrapRepairCandidate(row: Record<string, unknown> | null) {
+  if (!row) return false;
+
+  const currentStatus = asNullableString(row.subscription_status ?? row.subscriptionStatus ?? row.status);
+  const currentTrialEndsAt = asNullableString(row.trial_ends_at ?? row.trialEndsAt ?? null);
+  const currentPlanId = asNullableString(row.plan_id ?? row.planId ?? row.plan ?? null);
+  const canonicalPlanId = normalizePlanId(currentPlanId, currentStatus);
+  const paidActive = currentStatus === 'paid_active';
+
+  if (paidActive) return false;
+  if (canonicalPlanId !== DEFAULT_PLAN_ID) return false;
+
+  if (!currentStatus || currentStatus === 'inactive') return true;
+  if ((currentStatus === 'trial_active' || currentStatus === 'trial_ending') && !isFutureDate(currentTrialEndsAt)) {
+    return true;
+  }
+
+  // Do not silently reactivate an intentionally expired old trial. That needs a manual decision / SQL.
+  if (currentStatus === 'trial_expired') return false;
+
+  return false;
+}
+
+function shouldRepairTrialAccessBootstrap(row: Record<string, unknown> | null, workspaceResolutionMode?: WorkspaceResolutionMode) {
+  if (!row) return false;
+  if (workspaceResolutionMode === 'historical_mapping' || workspaceResolutionMode === 'explicit_fallback') {
+    return false;
+  }
+  return isTrialAccessBootstrapRepairCandidate(row);
+}
 function resolveWorkspaceOwnerUserId(profileRow: Record<string, unknown> | null, uid: string | null) {
   return extractUuidCandidate(
     profileRow?.id,
@@ -911,6 +950,7 @@ async function ensureWorkspace(
   fullName: string | null,
   workspaceId: string | null,
   row: Record<string, unknown> | null,
+  options: EnsureWorkspaceOptions = {},
 ) {
   const nowIso = new Date().toISOString();
   const trialEndsAt = buildTrialEndsAt();
@@ -993,7 +1033,7 @@ async function ensureWorkspace(
     shouldPatch = true;
   }
 
-  if (!paidActive && shouldRepairFreshTrialBootstrap(row)) {
+  if (!paidActive && (shouldRepairFreshTrialBootstrap(row) || shouldRepairTrialAccessBootstrap(row, options.workspaceResolutionMode))) {
     patch.plan_id = DEFAULT_PLAN_ID;
     patch.subscription_status = DEFAULT_STATUS;
     patch.trial_ends_at = trialEndsAt;
@@ -1102,7 +1142,9 @@ export default async function handler(req: any, res: any) {
       if (workspaceRow) workspaceResolutionMode = 'explicit_fallback';
     }
 
-    const ensuredWorkspace = await ensureWorkspace(workspaceOwnerUserId, fullName, workspaceId, workspaceRow);
+    const ensuredWorkspace = await ensureWorkspace(workspaceOwnerUserId, fullName, workspaceId, workspaceRow, {
+      workspaceResolutionMode: workspaceResolutionMode as WorkspaceResolutionMode,
+    });
     workspaceId = ensuredWorkspace.workspaceId;
     workspaceRow = ensuredWorkspace.workspaceRow;
     if (!workspaceId || !isUuid(workspaceId)) {

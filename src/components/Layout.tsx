@@ -126,34 +126,53 @@ function TrialCard({
   trialDaysLeft,
   trialProgressPercent,
   ctaLabel = 'Zobacz plan',
+  accessStatus = 'trial_active',
+  sidebarLabel,
 }: {
   trialDaysLeft: number;
   trialProgressPercent: number;
   ctaLabel?: string;
+  accessStatus?: string;
+  sidebarLabel?: string;
 }) {
   const safeDays = Number.isFinite(trialDaysLeft) ? Math.max(0, Math.floor(trialDaysLeft)) : 0;
   const width = Number.isFinite(trialProgressPercent)
     ? Math.max(0, Math.min(100, Math.round(trialProgressPercent)))
     : 0;
+  const isActiveTrial = accessStatus === 'trial_active' || accessStatus === 'trial_ending';
+  const eyebrow = accessStatus === 'paid_active'
+    ? 'Plan'
+    : accessStatus === 'payment_failed'
+      ? 'PĹ‚atnoĹ›Ä‡'
+      : 'DostÄ™p';
+  const strongLabel = isActiveTrial && safeDays > 0
+    ? `${safeDays} dni`
+    : sidebarLabel || 'Status dostÄ™pu';
 
-  if (safeDays <= 0) return null;
+  if (isActiveTrial && safeDays <= 0) return null;
 
   return (
-    <div className="trial-card" data-shell-trial-card="true">
+    <div
+      className={`trial-card trial-card-${String(accessStatus || 'unknown')}`}
+      data-shell-trial-card={isActiveTrial ? 'true' : undefined}
+      data-shell-access-status-card="true"
+      data-access-status={accessStatus}
+    >
       <div className="top">
-        <span>Trial</span>
-        <strong>{safeDays} dni</strong>
+        <span>{eyebrow}</span>
+        <strong>{strongLabel}</strong>
       </div>
-      <div className="bar" aria-hidden="true">
-        <span style={{ width: `${width}%` }} />
-      </div>
+      {isActiveTrial ? (
+        <div className="bar" aria-hidden="true">
+          <span style={{ width: `${width}%` }} />
+        </div>
+      ) : null}
       <Link to="/billing" className="trial-link">
         {ctaLabel} <ChevronRight className="h-3 w-3" />
       </Link>
     </div>
   );
 }
-
 function UserCard({ userInitial, name, email }: { userInitial: string; name: string; email?: string | null }) {
   return (
     <div className="user-card" data-shell-user-card="true">
@@ -401,6 +420,14 @@ export default function Layout({ children }: LayoutProps) {
       && (access?.status === 'trial_active' || access?.status === 'trial_ending')
       && trialDaysLeft > 0,
   );
+  const shouldShowAccessStatusCard = Boolean(
+    shouldShowTrialCard
+      || access?.status === 'trial_expired'
+      || access?.status === 'payment_failed'
+      || access?.status === 'paid_active'
+      || access?.status === 'canceled'
+      || access?.status === 'inactive',
+  );
   const userEmail = profile?.email || supabaseUser?.email || '';
   const userName = profile?.fullName || supabaseUser?.displayName || userEmail || 'Użytkownik';
   const userInitial = (userName.trim().charAt(0) || userEmail.trim().charAt(0) || 'U').toUpperCase();
@@ -514,11 +541,13 @@ export default function Layout({ children }: LayoutProps) {
             marginTop: 0,
           }}
         >
-          {shouldShowTrialCard ? (
+          {shouldShowAccessStatusCard ? (
             <TrialCard
               trialDaysLeft={trialDaysLeft}
               trialProgressPercent={trialProgressPercent}
               ctaLabel={access?.ctaLabel}
+                          accessStatus={access?.status}
+                          sidebarLabel={access?.sidebarLabel}
             />
           ) : null}
           <UserCard userInitial={userInitial} name={userName} email={userEmail} />
@@ -565,11 +594,13 @@ export default function Layout({ children }: LayoutProps) {
             </nav>
 
             <div className="mobile-drawer-footer">
-              {shouldShowTrialCard ? (
+              {shouldShowAccessStatusCard ? (
             <TrialCard
               trialDaysLeft={trialDaysLeft}
               trialProgressPercent={trialProgressPercent}
               ctaLabel={access?.ctaLabel}
+                          accessStatus={access?.status}
+                          sidebarLabel={access?.sidebarLabel}
             />
           ) : null}
               <button type="button" className="sidebar-logout" onClick={() => void handleSignOut()}>
