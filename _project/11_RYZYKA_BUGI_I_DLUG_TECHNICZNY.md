@@ -900,13 +900,13 @@ Status: READY_FOR_TEST
 
 Zakres:
 - prawy panel z rozliczeniem i szybkimi akcjami podniesiony do osi kafelka danych sprawy,
-- zakĹ‚adki ObsĹ‚uga / Checklisty / Historia dostaĹ‚y peĹ‚ny, rozciÄ…gniÄ™ty kafelek nad DziaĹ‚aniami sprawy,
-- zachowany wspĂłlny odstÄ™p kafelkĂłw 14px,
-- nie ruszano finansĂłw, modali, SQL, danych, handlerĂłw ani quick actions poza stylem ukĹ‚adu.
+- zakładki Obsługa / Checklisty / Historia dostały pełny, rozciągnięty kafelek nad Działaniami sprawy,
+- zachowany wspólny odstęp kafelków 14px,
+- nie ruszano finansów, modali, SQL, danych, handlerów ani quick actions poza stylem układu.
 
 Ryzyka:
-- etap jest CSS-only, wiÄ™c wymaga rÄ™cznego potwierdzenia na 100% zoom,
-- lift prawego raila ma reset na wÄ™ĹĽszych ekranach,
+- etap jest CSS-only, więc wymaga ręcznego potwierdzenia na 100% zoom,
+- lift prawego raila ma reset na węższych ekranach,
 - historyczne mojibake w starych wpisach _project nie jest czyszczone w tym etapie.
 
 ---
@@ -926,3 +926,83 @@ Testy:
 - regresje R8/R6/R5/R4/R3/R2/D0C/D0B,
 - git diff --check,
 - npm run build.
+---
+
+## 2026-06-12 14:34 Europe/Warsaw - STAGE231D0E-R1 ClientDetail grid axis align
+
+Status: PREPARED_LOCAL / pending visual PASS before push
+
+Scope:
+- CSS-only alignment of ClientDetail workspace columns.
+- Align left data card, center column and right upcoming-actions rail to one top axis.
+- Force center content under Braki i blokady to keep same width/left edge as the center column.
+- Force right rail content under Najbliższe działania to keep same width/left edge as the rail.
+
+User decision:
+- "wszystko co pod braki i blokady oraz najbliższe działania musimy wyrównać z kafelkiem dane klienta"
+
+Touched runtime files:
+- src/styles/visual-stage12-client-detail-vnext.css
+
+Not touched:
+- src/pages/ClientDetail.tsx
+- src/components/CaseQuickActions.tsx
+- CaseDetail logic
+- Supabase / SQL / finance formulas / handlers / modals
+
+Guards:
+- scripts/check-stage231d0e-r1-client-detail-grid-axis-align.cjs
+- tests/stage231d0e-r1-client-detail-grid-axis-align.test.cjs
+
+Risk audit:
+- Visual-only risk: desktop alignment may improve while tablet breakpoint needs manual check.
+- No runtime data risk because only CSS and docs/guards are changed.
+- Do not mix with failed R11 finance/notes package or old D0B client-list-card guard drift.
+
+<!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — Risk audit after STAGE231D0F
+
+Ryzyka:
+- Lejek może zostać w przyszłości przypadkiem rozbudowany w kanban, co byłoby sprzeczne z decyzją Damiana.
+- Lokalne style kafelków mogą wrócić przy kolejnych poprawkach.
+- Prawy rail może znowu stać się ciężką instrukcyjną kartą.
+- Zmiany wizualne mogą przypadkiem naruszyć czytelność klikanych filtrów.
+
+Guard:
+- blokuje stare lokalne nazwy/styl `DecisionTile`, `StagePill`, `Signal`, `text-3xl`,
+- blokuje SQL, wykresy, drag/drop/kanban runtime,
+- wymaga wpisów UI Dictionary.
+<!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_END -->
+
+<!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R4 Funnel targeted guard repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGÓW:
+- R2 poprawnie zatrzymał się po czerwonym guardzie.
+- R3 zatrzymał się na zbyt szerokim mojibake sweepie, który zaczął czyścić stare historyczne wpisy `_project`.
+- To nie jest właściwy zakres dla etapu UI Lejka.
+
+DECYZJA:
+- Naprawiamy aktywny zakres STAGE231D0F, nie całą historię projektu.
+- Lejek pozostaje listą decyzji właściciela, nie kanbanem.
+- Nie ruszać logiki filtrów, Supabase, SQL, płatności, routingu, wykresów ani drag/drop.
+
+R4:
+- targetowany repair mojibake tylko dla runtime i aktywnych plików etapu,
+- guard STAGE231D0F sprawdza aktywny blok UI Dictionary, CSS i runtime,
+- guardy nie failują na własnych definicjach tokenów,
+- CaseDetail R4 guard jest podmieniany na bezpieczną wersję z tokenami generowanymi po kodach znaków.
+
+TESTY:
+- `node scripts/check-stage231d0f-funnel-owner-dashboard-visual-alignment.cjs`
+- `node --test tests/stage231d0f-funnel-owner-dashboard-visual-alignment.test.cjs`
+- `node scripts/check-stage231d0d-r4-case-detail-lean-service-workspace.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- W repo nadal mogą istnieć stare historyczne wpisy z mojibake. Nie naprawiać ich w tym etapie.
+- Jeżeli chcemy pełne sprzątanie `_project`, to osobny etap: `ENCODING-SWEEP`, bez mieszania z Lejkiem.
+<!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_END -->

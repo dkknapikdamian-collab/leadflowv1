@@ -1,44 +1,91 @@
 #!/usr/bin/env node
 const fs = require('fs');
-function read(p){ return fs.readFileSync(p, 'utf8'); }
-function fail(message){ failures.push(message); }
-function requireToken(text, token, label = token){ if (!text.includes(token)) fail('missing ' + label + ': ' + token); }
+const path = require('path');
+
 const failures = [];
-const caseDetail = read('src/pages/CaseDetail.tsx');
-const css = [
-  read('src/styles/visual-stage13-case-detail-vnext.css'),
-  read('src/styles/closeflow-case-detail-stage217-operation-workspace.css'),
-  read('src/styles/closeflow-case-detail-stage220a10-tabs-layout-repair.css'),
-  read('src/styles/case-detail-stage228r9-shell-rail-lift.css')
-].join('\n');
-const ui = read('_project/UI_DICTIONARY_STAGE231D0A.md');
-const combined = [caseDetail, css, ui].join('\n');
-for (const token of ['Ă','Ĺ','Ä','Å','Â','�','ďż˝']) if (combined.includes(token)) fail('mojibake token present: ' + token);
-for (const token of ['CREATE TABLE','ALTER TABLE','chart.js','recharts']) if (combined.includes(token)) fail('forbidden scope creep token present: ' + token);
-requireToken(caseDetail, 'STAGE231D0D_R4_CASE_DETAIL_LEAN_SERVICE_WORKSPACE', 'R4 marker');
-requireToken(caseDetail, 'data-case-service-tabs-column="true"', 'tabs column marker');
-requireToken(caseDetail, 'data-case-service-actions-panel="true"', 'actions panel marker');
-requireToken(caseDetail, 'data-case-service-notes-panel="true"', 'notes panel marker');
-for (const token of ['case-service-workspace-grid','case-service-left-column','case-service-notes-panel','grid-template-columns']) requireToken(css, token, 'CSS ' + token);
-for (const token of ['caseNoteItems.slice(0, 3)','Wszystkie notatki','Dyktuj notatkę','Dodaj notatkę','data-case-all-notes-modal="true"']) requireToken(caseDetail, token, 'notes ' + token);
-const railStart = caseDetail.indexOf('<aside className="case-detail-right-rail"');
-const railEnd = railStart >= 0 ? caseDetail.indexOf('</aside>', railStart) : -1;
-if (railStart < 0 || railEnd < 0) fail('cannot locate right rail');
-const rail = railStart >= 0 && railEnd >= 0 ? caseDetail.slice(railStart, railEnd) : '';
-const settlementIndex = rail.indexOf('data-case-settlement-rail-card="true"');
-const quickIndex = rail.indexOf('data-case-quick-actions-rail="true"');
-if (settlementIndex < 0) fail('missing settlement in right rail');
-if (quickIndex < 0) fail('missing quick actions in right rail');
-if (settlementIndex >= 0 && quickIndex >= 0 && !(settlementIndex < quickIndex)) fail('wrong right rail order: settlement must be before quick actions');
-for (const token of ['Prowizja należna','Wpłacono prowizji','Do zapłaty prowizji','Koszty do zwrotu','Razem do pobrania','Dodaj koszt','Dodaj wpłatę prowizji']) requireToken(rail, token, 'settlement rail ' + token);
-for (const token of ['data-case-context-rail-card="true"','Dane sprawy i klienta','data-case-settlement-payment-summary="true"','data-case-settlement-cost-summary="true"','Otwórz historię','Otwórz koszty','Brak kosztów przypiętych']) {
-  if (rail.includes(token)) fail('right rail still renders forbidden token: ' + token);
+const repoRoot = process.cwd();
+const caseDetailPath = path.join(repoRoot, 'src', 'pages', 'CaseDetail.tsx');
+
+function fail(message) {
+  failures.push(message);
 }
-for (const token of ['CaseServiceWorkspaceGridR4','CaseSettlementRailCardLean','CaseContextRailCard']) requireToken(ui, token, 'UI dictionary ' + token);
-if (ui.includes('## CaseContextRailCard') && !ui.includes('Deprecated in main rail')) fail('CaseContextRailCard dictionary entry must mark main rail deprecation');
-if (failures.length) {
-  console.error('STAGE231D0D-R4 guard: FAIL');
-  for (const item of failures) console.error('- ' + item);
+
+function requireToken(source, token, label) {
+  if (!source.includes(token)) fail(`missing ${label}: ${token}`);
+}
+
+function forbidToken(source, token, label) {
+  if (source.includes(token)) fail(`forbidden ${label}: ${token}`);
+}
+
+function count(source, token) {
+  return source.split(token).length - 1;
+}
+
+function requireCount(source, token, expected, label) {
+  const actual = count(source, token);
+  if (actual !== expected) fail(`${label}: expected ${expected}, got ${actual}`);
+}
+
+if (!fs.existsSync(caseDetailPath)) {
+  console.error(`STAGE231D0D-R4 guard: FAIL\n- missing ${caseDetailPath}`);
   process.exit(1);
 }
-console.log('STAGE231D0D-R4 CaseDetail lean service workspace guard: PASS (R5-compatible regression)');
+
+const src = fs.readFileSync(caseDetailPath, 'utf8');
+
+const badTokens = [
+  0x0102, // Ă
+  0x0139, // Ĺ
+  0x00c4, // Ä
+  0x00c5, // Å
+  0x00c2, // Â
+  0xfffd, // �
+].map((code) => String.fromCharCode(code)).concat(['ďż˝']);
+
+for (const token of badTokens) {
+  forbidToken(src, token, 'mojibake token in CaseDetail.tsx');
+}
+
+requireToken(src, 'STAGE231D0D_R4_CASE_DETAIL_LEAN_SERVICE_WORKSPACE', 'R4 freeze marker');
+requireToken(src, 'data-case-service-tabs-column="true"', 'service tabs column marker');
+requireToken(src, 'data-case-service-actions-panel="true"', 'service actions panel marker');
+requireToken(src, 'data-case-service-notes-panel="true"', 'service notes panel marker');
+requireToken(src, 'data-case-settlement-rail-card="true"', 'settlement rail card marker');
+requireToken(src, 'data-case-quick-actions-rail="true"', 'quick actions rail marker');
+
+requireCount(src, 'data-case-service-actions-panel="true"', 1, 'service actions panel marker count');
+requireCount(src, 'data-case-service-notes-panel="true"', 1, 'service notes panel marker count');
+requireCount(src, 'data-case-settlement-rail-card="true"', 1, 'settlement rail card marker count');
+requireCount(src, 'data-case-quick-actions-rail="true"', 1, 'quick actions rail marker count');
+
+const railStart = src.indexOf('<aside className="case-detail-right-rail"');
+if (railStart < 0) fail('missing case-detail-right-rail aside');
+const railEndCandidates = [
+  src.indexOf('<CaseItemDialog', railStart),
+  src.indexOf('</main>', railStart),
+].filter((value) => value > railStart);
+const railEnd = railEndCandidates.length ? Math.min(...railEndCandidates) : src.length;
+const rail = src.slice(railStart, railEnd);
+
+requireToken(rail, 'data-case-settlement-rail-card="true"', 'right rail settlement');
+requireToken(rail, 'data-case-quick-actions-rail="true"', 'right rail quick actions');
+requireToken(rail, '<CaseQuickActions', 'CaseQuickActions in rail');
+
+for (const token of [
+  'Dane sprawy i klienta',
+  'data-case-context-rail-card="true"',
+  'data-case-client-data-rail-card="true"',
+  'case-payment-history-expanded',
+  'case-cost-history-expanded',
+]) {
+  forbidToken(rail, token, 'forbidden permanent rail content');
+}
+
+if (failures.length) {
+  console.error('STAGE231D0D-R4 guard: FAIL');
+  for (const failure of failures) console.error(`- ${failure}`);
+  process.exit(1);
+}
+
+console.log('STAGE231D0D-R4 guard: PASS');

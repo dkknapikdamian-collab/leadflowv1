@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Clock3, Filter, Loader2, RefreshCw, ShieldAlert, Target } from 'lucide-react';
 import Layout from '../components/Layout';
@@ -6,6 +6,8 @@ import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
+import '../styles/closeflow-metric-tiles.css';
+import '../styles/sales-funnel-stage231d0f-visual-alignment.css';
 import {
   fetchCasesFromSupabase,
   fetchClientsFromSupabase,
@@ -24,12 +26,14 @@ const STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW = 'read-only owner sales funnel movem
 const STAGE227B_SALES_FUNNEL_DECISION_LIST = 'sales funnel is a readable owner decision list, not a crowded CRM kanban';
 const STAGE228A_FUNNEL_TRUTH_CLICKABILITY = 'funnel money tile is traceable to visible cards and owner/stage filters do not hide source records';
 const STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS = 'Sales funnel uses shared full width canvas and stable gutters, not centered narrow max-width';
+const STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT = 'funnel owner dashboard visual alignment: owner decision tiles, stage strip, decision cards and priority rail';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
 void STAGE227B_SALES_FUNNEL_DECISION_LIST;
 void STAGE228A_FUNNEL_TRUTH_CLICKABILITY;
 void STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS;
+void STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT;
 
 type LoadState = {
   leads: any[];
@@ -179,35 +183,54 @@ function activeFilterLabel(ownerFilter: OwnerFilter, stageFilter: StageFilter, s
   return 'Wszystkie rekordy';
 }
 
-function DecisionTile({
+
+function FunnelOwnerDecisionTile({
   active,
   label,
   value,
   helper,
+  icon,
+  tone,
   onClick,
 }: {
   active: boolean;
   label: string;
   value: string | number;
   helper: string;
+  icon?: ReactNode;
+  tone?: 'neutral' | 'blue' | 'amber' | 'red' | 'green';
   onClick: () => void;
 }) {
+  const resolvedTone = tone || (label === 'Pieniądze' ? 'green' : label === 'Wysokie ryzyko' ? 'red' : label === 'Do ruchu teraz' ? 'blue' : 'amber');
+  const resolvedIcon = icon || (label === 'Pieniądze' ? <ArrowRight className="h-4 w-4" /> : label === 'Wysokie ryzyko' ? <ShieldAlert className="h-4 w-4" /> : label === 'Cisza 7+' ? <Clock3 className="h-4 w-4" /> : label === 'Bez kroku' ? <Filter className="h-4 w-4" /> : <Target className="h-4 w-4" />);
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`rounded-2xl border p-4 text-left shadow-sm transition ${active ? 'border-blue-300 bg-blue-50 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'}`}
+      className={`cf-funnel-owner-decision-tile cf-top-metric-tile ${active ? 'is-active' : ''}`}
       data-stage227b-owner-filter="true"
       data-stage228a-clickable-filter="true"
+      data-stage231d0f-owner-decision-tile="true"
+      data-eliteflow-metric-tone={resolvedTone}
     >
-      <div className="text-[11px] font-black uppercase tracking-[0.16em] text-slate-500">{label}</div>
-      <div className="mt-2 text-3xl font-black tracking-tight text-slate-950">{value}</div>
-      <div className="mt-1 text-xs leading-relaxed text-slate-500">{helper}</div>
+      <span className={`cf-top-metric-tile-content ${active ? 'is-active' : ''}`}>
+        <span className="cf-top-metric-tile-left">
+          <span className="cf-top-metric-tile-label">{label}</span>
+          <span className="cf-top-metric-tile-helper">{helper}</span>
+        </span>
+        <span className="cf-top-metric-tile-value-row">
+          <span className="cf-top-metric-tile-value">{value}</span>
+          <span className="cf-top-metric-tile-icon" aria-hidden="true">{resolvedIcon}</span>
+        </span>
+      </span>
     </button>
   );
 }
 
-function StagePill({
+
+
+function FunnelStageFilterChip({
   active,
   label,
   count,
@@ -224,41 +247,47 @@ function StagePill({
     <button
       type="button"
       onClick={onClick}
-      className={`shrink-0 rounded-2xl border px-4 py-3 text-left transition ${active ? 'border-blue-300 bg-blue-50 ring-2 ring-blue-100' : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'}`}
+      className={`cf-funnel-stage-filter-chip ${active ? 'is-active' : ''}`}
       data-stage227b-stage-filter="true"
       data-stage228a-clickable-filter="true"
+      data-stage231d0f-stage-filter-chip="true"
     >
-      <div className="flex items-center gap-2">
-        <strong className="text-sm text-slate-950">{label}</strong>
-        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-600">{count}</span>
-      </div>
-      <div className="mt-1 text-xs text-slate-500">{formatMoney(value, 'PLN')}</div>
+      <span className="cf-funnel-stage-filter-chip-main">
+        <strong className="cf-funnel-stage-filter-chip-label">{label}</strong>
+        <span className="cf-funnel-stage-filter-chip-count">{count}</span>
+      </span>
+      <span className="cf-funnel-stage-filter-chip-value">{formatMoney(value, 'PLN')}</span>
     </button>
   );
 }
 
-function Signal({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
+
+
+function FunnelDecisionSignal({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
   return (
-    <div className="rounded-xl border border-slate-100 bg-slate-50 px-3 py-2" data-stage227b-signal="true">
-      <div className="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400">{label}</div>
-      <div className={`mt-0.5 text-sm ${strong ? 'font-black text-slate-950' : 'font-semibold text-slate-700'}`}>{value}</div>
+    <div className="cf-funnel-decision-signal" data-stage227b-signal="true" data-stage231d0f-decision-signal="true">
+      <div className="cf-funnel-decision-signal-label">{label}</div>
+      <div className={`cf-funnel-decision-signal-value ${strong ? 'is-strong' : ''}`}>{value}</div>
     </div>
   );
 }
 
-function DecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
+
+
+function FunnelDecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
   const primaryReason = card.riskReasons[0] || (card.hasNextMove ? 'Ruch zaplanowany' : 'Brak następnego kroku');
   const movementTone = needsMovement(card) ? 'border-amber-200 bg-amber-50 text-amber-800' : 'border-emerald-200 bg-emerald-50 text-emerald-700';
 
   return (
     <article
-      className="grid gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow-md lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1.5fr)_auto] lg:items-center"
+      className="cf-funnel-decision-list-card"
       data-stage227b-funnel-list-card="true"
       data-stage227a-funnel-card="true"
       data-stage228a-money-source-card={card.valueAmount > 0 ? 'true' : 'false'}
+      data-stage231d0f-decision-list-card="true"
     >
-      <div className="min-w-0">
-        <div className="mb-2 flex flex-wrap items-center gap-2">
+      <div className="cf-funnel-decision-card-head">
+        <div className="cf-funnel-decision-card-badges">
           <Badge variant="outline" className="border-slate-200 bg-slate-50 text-[10px] font-black uppercase tracking-[0.12em] text-slate-600">
             {card.entityType === 'lead' ? 'Lead' : 'Sprawa'}
           </Badge>
@@ -270,21 +299,21 @@ function DecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
             {needsMovement(card) ? 'Do decyzji' : 'Ruch zaplanowany'}
           </Badge>
         </div>
-        <h3 className="truncate text-base font-black text-slate-950">{card.title}</h3>
-        {card.subtitle ? <p className="mt-1 line-clamp-2 text-sm text-slate-500">{card.subtitle}</p> : null}
-        <p className="mt-2 text-sm font-semibold text-slate-700">{primaryReason}</p>
+        <h3 className="cf-funnel-decision-card-title">{card.title}</h3>
+        {card.subtitle ? <p className="cf-funnel-decision-card-subtitle">{card.subtitle}</p> : null}
+        <p className="cf-funnel-decision-card-reason">{primaryReason}</p>
       </div>
 
-      <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
-        <Signal label="Etap" value={card.stageLabel} strong />
-        <div data-stage227a-funnel-silence-age="true"><Signal label="Kontakt" value={silenceLabel(card.silenceDays)} strong /></div>
-        <div data-stage227a-funnel-next-step="true"><Signal label="Następny krok" value={card.hasNextMove ? `${card.nextMoveTitle || 'Zaplanowany'} · ${formatDateTime(card.nextMoveAt)}` : 'Brak'} strong={!card.hasNextMove} /></div>
-        <div data-stage227a-funnel-value="true"><Signal label={card.valueSourceLabel || 'Wartość/prowizja'} value={formatMoney(card.valueAmount, card.valueCurrency)} strong /></div>
+      <div className="cf-funnel-decision-signal-grid">
+        <FunnelDecisionSignal label="Etap" value={card.stageLabel} strong />
+        <div data-stage227a-funnel-silence-age="true"><FunnelDecisionSignal label="Kontakt" value={silenceLabel(card.silenceDays)} strong /></div>
+        <div data-stage227a-funnel-next-step="true"><FunnelDecisionSignal label="Następny krok" value={card.hasNextMove ? `${card.nextMoveTitle || 'Zaplanowany'} · ${formatDateTime(card.nextMoveAt)}` : 'Brak'} strong={!card.hasNextMove} /></div>
+        <div data-stage227a-funnel-value="true"><FunnelDecisionSignal label={card.valueSourceLabel || 'Wartość/prowizja'} value={formatMoney(card.valueAmount, card.valueCurrency)} strong /></div>
       </div>
 
       <Link
         to={card.href}
-        className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-black text-slate-900 transition hover:border-blue-300 hover:bg-blue-50 hover:text-blue-700"
+        className="cf-funnel-decision-open-link"
         data-stage227b-open-detail="true"
         data-stage228a-clickable-detail="true"
       >
@@ -294,6 +323,7 @@ function DecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
     </article>
   );
 }
+
 
 export function SalesFunnel() {
   const [data, setData] = useState<LoadState | null>(null);
@@ -379,7 +409,7 @@ export function SalesFunnel() {
 
   return (
     <Layout>
-      <div className="min-h-full bg-slate-50 px-4 py-5 sm:px-6 lg:px-8 sales-funnel-stage227f6-page" data-stage227a-sales-funnel-movement-view="true" data-stage227b-decision-list-view="true" data-stage228a-funnel-truth-clickability="true" data-stage227f6-sales-funnel-wide-shell="true">
+      <div className="min-h-full bg-slate-50 px-4 py-5 sm:px-6 lg:px-8 sales-funnel-stage227f6-page cf-html-view main-funnel-html" data-stage231d0f-funnel-owner-dashboard="true" data-stage227a-sales-funnel-movement-view="true" data-stage227b-decision-list-view="true" data-stage228a-funnel-truth-clickability="true" data-stage227f6-sales-funnel-wide-shell="true">
         <div className="sales-funnel-stage227f6-canvas space-y-5">
           <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -406,28 +436,28 @@ export function SalesFunnel() {
             </Card>
           ) : null}
 
-          <section className="grid gap-3 md:grid-cols-2 xl:grid-cols-5" data-stage227b-owner-filter-row="true" data-stage227a-funnel-summary="true">
-            <DecisionTile active={ownerFilter === 'move_now'} label="Do ruchu teraz" value={countByFilter(allCards, 'move_now')} helper="Kliknij — pokaż ryzyko, ciszę albo brak kroku." onClick={() => applyOwnerFilter('move_now')} />
-            <DecisionTile active={ownerFilter === 'no_next_move'} label="Bez kroku" value={countByFilter(allCards, 'no_next_move')} helper="Kliknij — pokaż rekordy bez akcji." onClick={() => applyOwnerFilter('no_next_move')} />
-            <DecisionTile active={ownerFilter === 'silent_7'} label="Cisza 7+" value={countByFilter(allCards, 'silent_7')} helper="Kliknij — pokaż brak kontaktu 7+ dni." onClick={() => applyOwnerFilter('silent_7')} />
-            <DecisionTile active={ownerFilter === 'high_risk'} label="Wysokie ryzyko" value={countByFilter(allCards, 'high_risk')} helper="Kliknij — pokaż high/critical." onClick={() => applyOwnerFilter('high_risk')} />
-            <DecisionTile active={ownerFilter === 'money'} label="Pieniądze" value={formatMoney(totalValue, view.summary.currency || 'PLN')} helper="Kliknij — pokaż rekordy, z których liczona jest kwota." onClick={() => applyOwnerFilter('money')} />
+          <section className="cf-funnel-owner-decision-grid grid gap-3 md:grid-cols-2 xl:grid-cols-5" data-stage231d0f-owner-decision-row="true" data-stage227b-owner-filter-row="true" data-stage227a-funnel-summary="true">
+            <FunnelOwnerDecisionTile active={ownerFilter === 'move_now'} label="Do ruchu teraz" value={countByFilter(allCards, 'move_now')} helper="Ryzyko, cisza albo brak kroku." onClick={() => applyOwnerFilter('move_now')} />
+            <FunnelOwnerDecisionTile active={ownerFilter === 'no_next_move'} label="Bez kroku" value={countByFilter(allCards, 'no_next_move')} helper="Rekordy bez akcji." onClick={() => applyOwnerFilter('no_next_move')} />
+            <FunnelOwnerDecisionTile active={ownerFilter === 'silent_7'} label="Cisza 7+" value={countByFilter(allCards, 'silent_7')} helper="Brak kontaktu 7+ dni." onClick={() => applyOwnerFilter('silent_7')} />
+            <FunnelOwnerDecisionTile active={ownerFilter === 'high_risk'} label="Wysokie ryzyko" value={countByFilter(allCards, 'high_risk')} helper="High i critical." onClick={() => applyOwnerFilter('high_risk')} />
+            <FunnelOwnerDecisionTile active={ownerFilter === 'money'} label="Pieniądze" value={formatMoney(totalValue, view.summary.currency || 'PLN')} helper="Źródła kwoty." onClick={() => applyOwnerFilter('money')} />
           </section>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm" data-stage227b-stage-filter-strip="true">
-            <div className="mb-3 flex items-center justify-between gap-3">
+          <section className="cf-funnel-stage-filter-strip" data-stage231d0f-stage-filter-strip="true" data-stage227b-stage-filter-strip="true">
+            <div className="cf-funnel-stage-filter-header">
               <div className="flex items-center gap-2 text-sm font-black text-slate-900">
                 <Filter className="h-4 w-4 text-blue-600" />
                 Etapy jako filtr, nie ściśnięte kolumny
               </div>
-              <button type="button" onClick={() => applyStageFilter('all')} className="text-xs font-bold text-blue-700 hover:text-blue-900" data-stage228a-show-all="true">
+              <button type="button" onClick={() => applyStageFilter('all')} className="cf-funnel-stage-show-all" data-stage228a-show-all="true">
                 Pokaż wszystkie
               </button>
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-1">
-              <StagePill active={stageFilter === 'all' && ownerFilter === 'all'} label="Wszystkie" count={allCards.length} value={totalValue} onClick={() => applyStageFilter('all')} />
+            <div className="cf-funnel-stage-filter-scroll">
+              <FunnelStageFilterChip active={stageFilter === 'all' && ownerFilter === 'all'} label="Wszystkie" count={allCards.length} value={totalValue} onClick={() => applyStageFilter('all')} />
               {stageOptions.map((stage) => (
-                <StagePill
+                <FunnelStageFilterChip
                   key={stage.key}
                   active={ownerFilter === 'all' && stageFilter === stage.key}
                   label={stage.label}
@@ -457,7 +487,7 @@ export function SalesFunnel() {
                   </CardContent>
                 </Card>
               ) : filteredCards.length ? (
-                filteredCards.map((card) => <DecisionListCard key={card.id} card={card} />)
+                filteredCards.map((card) => <FunnelDecisionListCard key={card.id} card={card} />)
               ) : (
                 <Card className="border-dashed border-slate-300 bg-white shadow-sm">
                   <CardContent className="p-8 text-center">
@@ -469,7 +499,7 @@ export function SalesFunnel() {
               )}
             </div>
 
-            <aside className="space-y-3 xl:sticky xl:top-5 xl:self-start" data-stage227b-owner-priority-panel="true">
+            <aside className="cf-funnel-owner-priority-rail space-y-3 xl:sticky xl:top-5 xl:self-start" data-stage231d0f-owner-priority-rail="true" data-stage227b-owner-priority-panel="true">
               <Card className="border-slate-200 bg-white shadow-sm">
                 <CardContent className="p-4">
                   <div className="flex items-center gap-2 text-sm font-black text-slate-900">
@@ -483,10 +513,10 @@ export function SalesFunnel() {
                         <h3 className="mt-2 text-base font-black text-slate-950">{topPriority.title}</h3>
                         <p className="mt-1 text-sm text-slate-500">{topPriority.entityType === 'case' ? 'Sprawa' : 'Lead'} · {topPriority.stageLabel}</p>
                       </div>
-                      <div className="rounded-2xl bg-slate-50 p-3 text-sm text-slate-700">
+                      <div className="cf-funnel-priority-reason">
                         {topPriority.riskReasons[0] || (topPriority.hasNextMove ? 'Ruch jest zaplanowany.' : 'Brak następnego kroku.')}
                       </div>
-                      <Link to={topPriority.href} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-950 px-4 py-3 text-sm font-black text-white hover:bg-slate-800" data-stage228a-priority-link="true">
+                      <Link to={topPriority.href} className="cf-funnel-priority-link inline-flex w-full items-center justify-center gap-2 bg-slate-950 px-4 py-3 text-sm font-black text-white hover:bg-slate-800" data-stage228a-priority-link="true">
                         Otwórz priorytet
                         <ArrowRight className="h-4 w-4" />
                       </Link>
@@ -503,7 +533,7 @@ export function SalesFunnel() {
                     <Clock3 className="h-4 w-4 text-blue-600" />
                     Reguła widoku
                   </div>
-                  Lejek nie służy do przeciągania kart. Ma w 5 sekund pokazać, co wymaga ruchu i gdzie są pieniądze. Kafle decyzyjne czyszczą filtr etapu, żeby nie ukrywać źródła kwot.
+                  Lejek to lista decyzji, nie kanban. Ma szybko pokazać: ruch, ciszę, ryzyko i pieniądze.
                 </CardContent>
               </Card>
             </aside>

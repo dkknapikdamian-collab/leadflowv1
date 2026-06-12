@@ -1,0 +1,307 @@
+/* STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT
+   owner: CloseFlow Visual System
+   scope: /funnel SalesFunnel owner dashboard
+   rule: Lejek is an owner decision list, not a kanban.
+*/
+
+:root {
+  --cf-funnel-card-bg: #ffffff;
+  --cf-funnel-card-border: #e2e8f0;
+  --cf-funnel-card-shadow: 0 14px 32px rgba(15, 23, 42, 0.055);
+  --cf-funnel-card-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
+  --cf-funnel-muted: #64748b;
+  --cf-funnel-strong: #0f172a;
+}
+
+#root .main-funnel-html.sales-funnel-stage227f6-page {
+  color: var(--cf-funnel-strong);
+}
+
+#root .main-funnel-html .cf-funnel-owner-decision-grid {
+  align-items: stretch;
+}
+
+#root .main-funnel-html .cf-funnel-owner-decision-tile {
+  min-width: 0;
+}
+
+#root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-content {
+  min-height: 76px !important;
+  padding: 14px 15px !important;
+  border-radius: 22px !important;
+}
+
+#root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-value {
+  font-size: clamp(1.1rem, 1.6vw, 1.55rem) !important;
+  letter-spacing: -0.035em !important;
+  white-space: nowrap;
+}
+
+#root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-helper {
+  max-width: 13rem;
+  white-space: normal !important;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-strip {
+  border: 1px solid var(--cf-funnel-card-border);
+  border-radius: 1.35rem;
+  background: var(--cf-funnel-card-bg);
+  box-shadow: var(--cf-funnel-card-shadow);
+  padding: 0.8rem;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.58rem;
+}
+
+#root .main-funnel-html .cf-funnel-stage-show-all {
+  color: #1d4ed8;
+  font-size: 0.73rem;
+  font-weight: 850;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-scroll {
+  display: flex;
+  gap: 0.48rem;
+  overflow-x: auto;
+  padding-bottom: 0.15rem;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip {
+  min-width: 7.2rem;
+  flex: 0 0 auto;
+  border: 1px solid var(--cf-funnel-card-border);
+  border-radius: 999px;
+  background: #ffffff;
+  padding: 0.52rem 0.7rem;
+  text-align: left;
+  transition: border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip:hover {
+  border-color: rgba(37, 99, 235, 0.32);
+  background: #f8fafc;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip.is-active {
+  border-color: rgba(37, 99, 235, 0.28);
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.07);
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip-main {
+  display: flex;
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip-label {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--cf-funnel-strong);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.05;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip-value {
+  margin-top: 0.18rem;
+  color: var(--cf-funnel-muted);
+  font-size: 0.69rem;
+  font-weight: 750;
+  line-height: 1.1;
+}
+
+#root .main-funnel-html .cf-funnel-decision-list-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 1.42fr) auto;
+  align-items: center;
+  gap: 0.9rem;
+  border: 1px solid var(--cf-funnel-card-border);
+  border-radius: 1.25rem;
+  background: #ffffff;
+  padding: 0.78rem 0.86rem;
+  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.045);
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+#root .main-funnel-html .cf-funnel-decision-list-card:hover {
+  border-color: rgba(37, 99, 235, 0.22);
+  box-shadow: var(--cf-funnel-card-shadow-hover);
+}
+
+#root .main-funnel-html .cf-funnel-decision-card-head {
+  min-width: 0;
+}
+
+#root .main-funnel-html .cf-funnel-decision-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.34rem;
+  margin-bottom: 0.34rem;
+}
+
+#root .main-funnel-html .cf-funnel-decision-card-title {
+  margin: 0;
+  overflow: hidden;
+  color: var(--cf-funnel-strong);
+  font-size: 0.94rem;
+  font-weight: 900;
+  line-height: 1.12;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#root .main-funnel-html .cf-funnel-decision-card-subtitle {
+  display: -webkit-box;
+  margin-top: 0.16rem;
+  overflow: hidden;
+  color: var(--cf-funnel-muted);
+  font-size: 0.78rem;
+  line-height: 1.22;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#root .main-funnel-html .cf-funnel-decision-card-reason {
+  margin-top: 0.32rem;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 750;
+  line-height: 1.2;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal {
+  min-width: 0;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 0.9rem;
+  background: #f8fafc;
+  padding: 0.52rem 0.58rem;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal-label {
+  color: #64748b;
+  font-size: 0.61rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal-value {
+  display: -webkit-box;
+  margin-top: 0.16rem;
+  overflow: hidden;
+  color: #334155;
+  font-size: 0.76rem;
+  font-weight: 720;
+  line-height: 1.12;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal-value.is-strong {
+  color: #0f172a;
+  font-weight: 900;
+}
+
+#root .main-funnel-html .cf-funnel-decision-open-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.42rem;
+  min-width: max-content;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.95rem;
+  background: #ffffff;
+  padding: 0.66rem 0.86rem;
+  color: #0f172a;
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-decoration: none;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+#root .main-funnel-html .cf-funnel-decision-open-link:hover {
+  border-color: rgba(37, 99, 235, 0.34);
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+#root .main-funnel-html .cf-funnel-owner-priority-rail {
+  min-width: 0;
+}
+
+#root .main-funnel-html .cf-funnel-owner-priority-rail > .border-slate-200.bg-white,
+#root .main-funnel-html .cf-funnel-priority-card,
+#root .main-funnel-html .cf-funnel-rule-card {
+  border: 1px solid var(--cf-funnel-card-border) !important;
+  border-radius: 1.25rem !important;
+  background: #ffffff !important;
+  box-shadow: var(--cf-funnel-card-shadow) !important;
+}
+
+#root .main-funnel-html .cf-funnel-priority-reason {
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  border-radius: 1rem;
+  background: #f8fafc;
+  padding: 0.7rem;
+  color: #334155;
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+#root .main-funnel-html .cf-funnel-priority-link {
+  border-radius: 1rem;
+}
+
+@media (max-width: 82rem) {
+  #root .main-funnel-html .cf-funnel-decision-list-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .main-funnel-html .cf-funnel-decision-signal-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  #root .main-funnel-html .cf-funnel-decision-open-link {
+    width: 100%;
+  }
+}
+
+@media (max-width: 44rem) {
+  #root .main-funnel-html .cf-funnel-decision-signal-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-content {
+    align-items: flex-start !important;
+  }
+}

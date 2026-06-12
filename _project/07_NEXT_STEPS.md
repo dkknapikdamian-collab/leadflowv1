@@ -698,7 +698,7 @@ Do potwierdzenia przez run:
 Status: TEST RĂ„CZNY DO WYKONANIA. WejÄąâ€şĂ„â€ˇ na /calendar i sprawdziĂ„â€ˇ dzieÄąâ€ž z 1 wpis oraz dzieÄąâ€ž z 0 wpisÄ‚łw.
 
 ## Stage104E - do rozwaÄąÄ˝enia
-- Audyt opÄ‚łÄąĹźnienia po UsuÄąâ€ž / Zrobione: optimistic update albo refresh bez Google inbound pull po lokalnej mutacji.
+- Audyt opÄ‚łÄąźnienia po UsuÄąâ€ž / Zrobione: optimistic update albo refresh bez Google inbound pull po lokalnej mutacji.
 
 
 ## STAGE107_CLIENT_DETAIL_RUNTIME_TDZ_FINANCE_FIX_2026_05_17
@@ -944,7 +944,7 @@ After Stage124E, wire the visible Calendar page/sidebar month/week/day range int
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs.
 - UruchomiÄ‚â€žĂ˘â‚¬Ë‡:
 pm run build.
-- Test rÄ‚â€žĂ˘â€žËczny: /settings, sekcja Ä‚ËĂ˘â€š¬ÄąÄľPrzypomnienia Google CalendarÄ‚ËĂ˘â€š¬ÄąĄ, pola Ä‚ËĂ˘â€š¬ÄąÄľTyp przypomnienia GoogleÄ‚ËĂ˘â€š¬ÄąĄ i Ä‚ËĂ˘â€š¬ÄąÄľIle minut wczeĂ„ąĂ˘â‚¬ĹźniejÄ‚ËĂ˘â€š¬ÄąĄ.
+- Test rÄ‚â€žĂ˘â€žËczny: /settings, sekcja Ä‚ËĂ˘â€š¬ÄąÄľPrzypomnienia Google CalendarÄ‚ËĂ˘â€š¬ÄąĄ, pola Ä‚ËĂ˘â€š¬ÄąÄľTyp przypomnienia GoogleÄ‚ËĂ˘â€š¬ÄąĄ i Ä‚ËĂ˘â€š¬ÄąÄľIle minut wczeĂ„ąĂ˘â‚¬źniejÄ‚ËĂ˘â€š¬ÄąĄ.
 - Nie pushowaÄ‚â€žĂ˘â‚¬Ë‡ osobno, dopiÄ‚â€žĂ˘â‚¬¦Ä‚â€žĂ˘â‚¬Ë‡ do wiÄ‚â€žĂ˘â€žËkszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
 
 ## 2026-05-29 - Next after STAGE179 Settings readability
@@ -953,7 +953,7 @@ pm run build.
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs.
 - UruchomiÄ‚â€žĂ˘â‚¬Ë‡:
 pm run build.
-- Test rÄ‚â€žĂ˘â€žËczny: /settings, sekcja Ä‚ËĂ˘â€š¬ÄąÄľPrzypomnienia Google CalendarÄ‚ËĂ˘â€š¬ÄąĄ, pola Ä‚ËĂ˘â€š¬ÄąÄľTyp przypomnienia GoogleÄ‚ËĂ˘â€š¬ÄąĄ i Ä‚ËĂ˘â€š¬ÄąÄľIle minut wczeĂ„ąĂ˘â‚¬ĹźniejÄ‚ËĂ˘â€š¬ÄąĄ.
+- Test rÄ‚â€žĂ˘â€žËczny: /settings, sekcja Ä‚ËĂ˘â€š¬ÄąÄľPrzypomnienia Google CalendarÄ‚ËĂ˘â€š¬ÄąĄ, pola Ä‚ËĂ˘â€š¬ÄąÄľTyp przypomnienia GoogleÄ‚ËĂ˘â€š¬ÄąĄ i Ä‚ËĂ˘â€š¬ÄąÄľIle minut wczeĂ„ąĂ˘â‚¬źniejÄ‚ËĂ˘â€š¬ÄąĄ.
 - Nie pushowaÄ‚â€žĂ˘â‚¬Ë‡ osobno, dopiÄ‚â€žĂ˘â‚¬¦Ä‚â€žĂ˘â‚¬Ë‡ do wiÄ‚â€žĂ˘â€žËkszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
 
 <!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_START -->
@@ -971,7 +971,7 @@ CloseFlow nie ma konkurowaĂ„â€ˇ jako tani, szeroki CRM. CloseFlow ma byĂ
 
 FAKTY Z REPO:
 - Repo: `dkknapikdamian-collab/leadflowv1`.
-- Aktywna gaÄąâ€šĂ„â€¦ÄąĹź projektu wedÄąâ€šug pamiĂ„â„˘ci projektu: `dev-rollout-freeze`.
+- Aktywna gaÄąâ€šĂ„â€¦Äąź projektu wedÄąâ€šug pamiĂ„â„˘ci projektu: `dev-rollout-freeze`.
 - Local path: `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`.
 - `README.md` na `dev-rollout-freeze` juÄąÄ˝ pozycjonuje produkt jako aplikacjĂ„â„˘ do pilnowania leadÄ‚łw, follow-upÄ‚łw, zadaÄąâ€ž, wydarzeÄąâ€ž i spraw po sprzedaÄąÄ˝y.
 - GÄąâ€šÄ‚łwne widoki istniejĂ„â€¦ w routingu aplikacji: Today, Leads, LeadDetail, Clients, ClientDetail, Cases, CaseDetail, Tasks, Calendar, AiDrafts, Billing, Support, Notifications, Templates.
@@ -1007,7 +1007,7 @@ ZAKRES:
 - Wynik ma byĂ„â€ˇ uÄąÄ˝ywalny jako:
   - wewnĂ„â„˘trzny ekran diagnostyczny,
   - podstawa oferty `CloseFlow Control Sprint`,
-  - ÄąĹźrÄ‚łdÄąâ€šo danych do kolejnych etapÄ‚łw.
+  - ÄąźrÄ‚łdÄąâ€šo danych do kolejnych etapÄ‚łw.
 
 NIE RUSZAĂ„â€ :
 - Nie budowaĂ„â€ˇ BI dashboardu.
@@ -1197,7 +1197,7 @@ ZAKRES:
   - dyktowanie,
   - parser,
   - AI.
-- ZatwierdÄąĹź jako:
+- ZatwierdÄąź jako:
   - lead,
   - zadanie,
   - wydarzenie,
@@ -1381,7 +1381,7 @@ FAKTY:
 
 DECYZJE:
 - Nie wyÄąâ€šĂ„â€¦czamy release gate.
-- Dodajemy minimalny test kontraktu ÄąĹźrÄ‚łdÄąâ€ša logo CloseFlow.
+- Dodajemy minimalny test kontraktu ÄąźrÄ‚łdÄąâ€ša logo CloseFlow.
 - Push Stage223 dopiero po zielonym `verify:closeflow:quiet`.
 
 TESTY:
@@ -1427,13 +1427,13 @@ FAKTY:
 - R2D dopiĂ„â€¦Äąâ€š marker kosza na liÄąâ€şcie spraw, ale release gate przeszedÄąâ€š do kolejnego warunku.
 - Guard `case trash actions` wymaga teÄąÄ˝, ÄąÄ˝eby `CaseDetail.tsx` uÄąÄ˝ywaÄąâ€š `EntityTrashButton`.
 - `CaseDetail.tsx` miaÄąâ€š przycisk usuwania i marker `data-case-detail-delete-action="true"`, ale renderowaÄąâ€š zwykÄąâ€šy `Button`.
-- R2E zmienia tylko ÄąĹźrÄ‚łdÄąâ€šo przycisku na `EntityTrashButton` i uÄąÄ˝ywa `trashActionIconClass`.
+- R2E zmienia tylko ÄąźrÄ‚łdÄąâ€šo przycisku na `EntityTrashButton` i uÄąÄ˝ywa `trashActionIconClass`.
 - Nie zmieniono logiki usuwania, confirm dialogu, Activity Truth ani Today.
 
 DECYZJE:
 - Nie wyÄąâ€šĂ„â€¦czamy guardÄ‚łw.
 - Nie zmieniamy release gate.
-- Dopinamy CaseDetail do wspÄ‚łlnego ÄąĹźrÄ‚łdÄąâ€ša prawdy kosza.
+- Dopinamy CaseDetail do wspÄ‚łlnego ÄąźrÄ‚łdÄąâ€ša prawdy kosza.
 
 TESTY:
 - node scripts/check-closeflow-case-trash-actions.cjs
@@ -1481,7 +1481,7 @@ FAKTY:
 - R2F ma zielone Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
 - `verify:closeflow:quiet` zatrzymaÄąâ€š release na Stage98 Polish mojibake hard gate.
 - Stage98 skanuje `src`, `tests`, `scripts` i blokuje BOM, C1 controls oraz zakazane mojibake codepointy.
-- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych ÄąĹźrÄ‚łdÄąâ€šach.
+- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych ÄąźrÄ‚łdÄąâ€šach.
 - PozostaÄąâ€še literalne znaki mojibake w guardach/testach sĂ„â€¦ zamieniane na ASCII unicode escapes, ÄąÄ˝eby guardy mogÄąâ€šy dalej opisywaĂ„â€ˇ zÄąâ€še znaki bez Äąâ€šamania Stage98.
 
 DECYZJE:
@@ -1968,7 +1968,7 @@ DECYZJE:
 - Nie wyÄąâ€šĂ„â€¦czamy starych gateĂ˘â‚¬â„˘Ä‚łw.
 - Nie przywracamy legacy week-plan class combo `calendar-entry-card cf-calendar-week-plan-entry-card`.
 - Dialogi bez opisu dostajĂ„â€¦ jawny `aria-describedby={undefined}` escape.
-- Trash actions majĂ„â€¦ iÄąâ€şĂ„â€ˇ przez wspÄ‚łlne ÄąĹźrÄ‚łdÄąâ€šo `trash-action-source`.
+- Trash actions majĂ„â€¦ iÄąâ€şĂ„â€ˇ przez wspÄ‚łlne ÄąźrÄ‚łdÄąâ€šo `trash-action-source`.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -2025,7 +2025,7 @@ FAKTY:
 - R2Z po patchu przeprowadziÄąâ€š `scripts/check-stage220a28-modal-focus-trash.cjs` i `tests/stage95-destructive-action-visual-source.test.cjs`.
 - Mass scan zostaÄąâ€š z jednym failing gate: `tests/stage105-calendar-modal-no-dark-inputs.test.cjs`.
 - Konflikt byÄąâ€š sprzeczny: Stage220A28 zabrania `cf-case-row-delete-text-action`, a Stage105 wymagaÄąâ€š tego tokena w `Cases.tsx`.
-- R2AA aktualizuje Stage105 do bieÄąÄ˝Ă„â€¦cego ÄąĹźrÄ‚łdÄąâ€ša prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
+- R2AA aktualizuje Stage105 do bieÄąÄ˝Ă„â€¦cego ÄąźrÄ‚łdÄąâ€ša prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
 
 DECYZJE:
 - ÄąąrÄ‚łdÄąâ€šem prawdy dla Cases delete action jest Stage220A28 + Stage95, nie stary fragment Stage105.
@@ -2074,7 +2074,7 @@ TESTY:
 
 AUDYT RYZYK:
 - To jest naprawa skÄąâ€šadni po regexowym patchu. NajwiĂ„â„˘ksze ryzyko: delete button w Calendar moÄąÄ˝e mieĂ„â€ˇ poprawny build, ale trzeba go kliknĂ„â€¦Ă„â€ˇ rĂ„â„˘cznie po deployu.
-- Po deployu sprawdziĂ„â€ˇ `/calendar`: usuÄąâ€ž wpis tygodnia, usuÄąâ€ž wpis z selected day, sprawdÄąĹź dialog/confirm i brak czerwonej plakietki.
+- Po deployu sprawdziĂ„â€ˇ `/calendar`: usuÄąâ€ž wpis tygodnia, usuÄąâ€ž wpis z selected day, sprawdÄąź dialog/confirm i brak czerwonej plakietki.
 - JeÄąâ€şli kolejny build pokaÄąÄ˝e bÄąâ€šĂ„â€¦d skÄąâ€šadni w Calendar, nie robiĂ„â€ˇ szerokiego refaktoru; naprawiĂ„â€ˇ lokalnie bÄąâ€šĂ„â„˘dny JSX.
 
 NASTĂ„PNY KROK:
@@ -2235,7 +2235,7 @@ TESTY:
 
 AUDYT RYZYK:
 - To zmiana guard/test contract, nie nowa funkcja.
-- GÄąâ€šÄ‚łwne ryzyko: stary test wymuszaÄąâ€š zachowanie, ktÄ‚łre teraz uznaliÄąâ€şmy za ÄąĹźrÄ‚łdÄąâ€šo bugÄ‚łw.
+- GÄąâ€šÄ‚łwne ryzyko: stary test wymuszaÄąâ€š zachowanie, ktÄ‚łre teraz uznaliÄąâ€şmy za ÄąźrÄ‚łdÄąâ€šo bugÄ‚łw.
 - Nowy kontrakt utrzymuje dostĂ„â„˘pnoÄąâ€şĂ„â€ˇ i focus, ale blokuje scroll trap.
 
 NASTĂ„PNY KROK:
@@ -2370,7 +2370,7 @@ Data: 2026-06-05 20:32 Europe/Warsaw
 
 ## AUDYT RYZYK
 - create lead flow wymaga rĂ„â„˘cznego testu po patchu.
-- Rescue UI moÄąÄ˝e wymagaĂ„â€ˇ pÄ‚łÄąĹźniejszego uproszczenia wizualnego.
+- Rescue UI moÄąÄ˝e wymagaĂ„â€ˇ pÄ‚łÄąźniejszego uproszczenia wizualnego.
 - Backend akcji Rescue nie jest jeszcze wdroÄąÄ˝ony, wiĂ„â„˘c disabled actions sĂ„â€¦ prawidÄąâ€šowe.
 
 ## STAGE220A35 Ă˘â‚¬â€ť Client Commission Finance Source Truth
@@ -2648,7 +2648,7 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 
 1. UruchomiÄ‚â€žĂ˘â‚¬Ë‡ lokalny apply i testy.
 2. OtworzyÄ‚â€žĂ˘â‚¬Ë‡ `/funnel` lokalnie.
-3. SprawdziÄ‚â€žĂ˘â‚¬Ë‡ leady, sprawy, next step, ciszÄ‚â€žĂ˘â€žË, ryzyko i wartoĂ„ąĂ˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡/prowizjÄ‚â€žĂ˘â€žË.
+3. SprawdziÄ‚â€žĂ˘â‚¬Ë‡ leady, sprawy, next step, ciszÄ‚â€žĂ˘â€žË, ryzyko i wartoĂ„ąĂ˘â‚¬źÄ‚â€žĂ˘â‚¬Ë‡/prowizjÄ‚â€žĂ˘â€žË.
 4. Po akceptacji Damiana zrobiÄ‚â€žĂ˘â‚¬Ë‡ selektywny commit/push bez `git add .`.
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_NEXT_END -->
 
@@ -2661,7 +2661,7 @@ Po lokalnym PASS trzeba rÄ‚â€žĂ˘â€žËcznie sprawdziÄ‚â€žĂ
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_START -->
 ## 2026-06-06 17:05 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE228A next step
 
-Po wdroĂ„ąĂ„Ëťeniu sprawdziÄ‚â€žĂ˘â‚¬Ë‡ `/funnel`: domyĂ„ąĂ˘â‚¬Ĺźlnie powinny byÄ‚â€žĂ˘â‚¬Ë‡ widoczne wszystkie rekordy, klikniÄ‚â€žĂ˘â€žËcie `PieniÄ‚â€žĂ˘â‚¬¦dze` ma pokazaÄ‚â€žĂ˘â‚¬Ë‡ rekord z kwotÄ‚â€žĂ˘â‚¬¦ 1380 PLN, a klikniÄ‚â€žĂ˘â€žËcie rekordu ma prowadziÄ‚â€žĂ˘â‚¬Ë‡ do sprawy. NastÄ‚â€žĂ˘â€žËpny etap: Stage228B Lead Work Action Center.
+Po wdroĂ„ąĂ„Ëťeniu sprawdziÄ‚â€žĂ˘â‚¬Ë‡ `/funnel`: domyĂ„ąĂ˘â‚¬źlnie powinny byÄ‚â€žĂ˘â‚¬Ë‡ widoczne wszystkie rekordy, klikniÄ‚â€žĂ˘â€žËcie `PieniÄ‚â€žĂ˘â‚¬¦dze` ma pokazaÄ‚â€žĂ˘â‚¬Ë‡ rekord z kwotÄ‚â€žĂ˘â‚¬¦ 1380 PLN, a klikniÄ‚â€žĂ˘â€žËcie rekordu ma prowadziÄ‚â€žĂ˘â‚¬Ë‡ do sprawy. NastÄ‚â€žĂ˘â€žËpny etap: Stage228B Lead Work Action Center.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_END -->
 
 ## 2026-06-06 18:00 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE228B Lead Work Action Center
@@ -2703,7 +2703,7 @@ Po wdroĂ„ąĂ„Ëťeniu sprawdziÄ‚â€žĂ˘â‚¬Ë‡ `/funnel`: domy
 ## 2026-06-06 19:45 Europe/Warsaw Ă˘â‚¬â€ť STAGE228B_R14_LEAD_ACTION_CENTER_VST
 
 - FAKT: Po Stage228B LeadDetail dziaÄąâ€ša, ale centrum dziaÄąâ€šaÄąâ€ž leada byÄąâ€šo mniej czytelne niÄąÄ˝ analogiczna karta sprawy.
-- DECYZJA: Nie tworzyĂ„â€ˇ osobnego systemu wizualnego dla leada. Lead action center ma iÄąâ€şĂ„â€ˇ w kierunku tego samego ÄąĹźrÄ‚łdÄąâ€ša wizualnego co CaseDetail: jeden nagÄąâ€šÄ‚łwek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
+- DECYZJA: Nie tworzyĂ„â€ˇ osobnego systemu wizualnego dla leada. Lead action center ma iÄąâ€şĂ„â€ˇ w kierunku tego samego ÄąźrÄ‚łdÄąâ€ša wizualnego co CaseDetail: jeden nagÄąâ€šÄ‚łwek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
 - ZMIANA: UsuniĂ„â„˘to duplikujĂ„â€¦ce copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych brakÄ‚łw/blokad zamiast dublowaĂ„â€ˇ kaÄąÄ˝de zalegÄąâ€še wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
 - RYZYKO: Po deployu sprawdziĂ„â€ˇ rĂ„â„˘cznie LeadDetail z zalegÄąâ€šym wydarzeniem i porÄ‚łwnaĂ„â€ˇ czytelnoÄąâ€şĂ„â€ˇ do CaseDetail.
@@ -2836,7 +2836,7 @@ NASTEPNY KROK:
 FAKTY:
 - R41 finalizuje delete flow po nieudanym lokalnym Ă„ąĂ˘â‚¬ĹˇaĂ„ąĂ˘â‚¬Ĺľcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siÄ‚â€žĂ˘â€žË juĂ„ąĂ„Ëť na dokĂ„ąĂ˘â‚¬Ĺˇadnym polskim tekĂ„ąĂ˘â‚¬Ĺźcie toastu, tylko na strukturze przepĂ„ąĂ˘â‚¬Ĺˇywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera siÄ‚â€žĂ˘â€žË juĂ„ąĂ„Ëť na dokĂ„ąĂ˘â‚¬Ĺˇadnym polskim tekĂ„ąĂ˘â‚¬źcie toastu, tylko na strukturze przepĂ„ąĂ˘â‚¬Ĺˇywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -3777,13 +3777,13 @@ Status: READY_FOR_TEST
 
 Zakres:
 - prawy panel z rozliczeniem i szybkimi akcjami podniesiony do osi kafelka danych sprawy,
-- zakĹ‚adki ObsĹ‚uga / Checklisty / Historia dostaĹ‚y peĹ‚ny, rozciÄ…gniÄ™ty kafelek nad DziaĹ‚aniami sprawy,
-- zachowany wspĂłlny odstÄ™p kafelkĂłw 14px,
-- nie ruszano finansĂłw, modali, SQL, danych, handlerĂłw ani quick actions poza stylem ukĹ‚adu.
+- zakładki Obsługa / Checklisty / Historia dostały pełny, rozciągnięty kafelek nad Działaniami sprawy,
+- zachowany wspólny odstęp kafelków 14px,
+- nie ruszano finansów, modali, SQL, danych, handlerów ani quick actions poza stylem układu.
 
 Ryzyka:
-- etap jest CSS-only, wiÄ™c wymaga rÄ™cznego potwierdzenia na 100% zoom,
-- lift prawego raila ma reset na wÄ™ĹĽszych ekranach,
+- etap jest CSS-only, więc wymaga ręcznego potwierdzenia na 100% zoom,
+- lift prawego raila ma reset na węższych ekranach,
 - historyczne mojibake w starych wpisach _project nie jest czyszczone w tym etapie.
 
 ---
@@ -3803,3 +3803,77 @@ Testy:
 - regresje R8/R6/R5/R4/R3/R2/D0C/D0B,
 - git diff --check,
 - npm run build.
+---
+
+## 2026-06-12 14:34 Europe/Warsaw - STAGE231D0E-R1 ClientDetail grid axis align
+
+Status: PREPARED_LOCAL / pending visual PASS before push
+
+Scope:
+- CSS-only alignment of ClientDetail workspace columns.
+- Align left data card, center column and right upcoming-actions rail to one top axis.
+- Force center content under Braki i blokady to keep same width/left edge as the center column.
+- Force right rail content under Najbliższe działania to keep same width/left edge as the rail.
+
+User decision:
+- "wszystko co pod braki i blokady oraz najbliższe działania musimy wyrównać z kafelkiem dane klienta"
+
+Touched runtime files:
+- src/styles/visual-stage12-client-detail-vnext.css
+
+Not touched:
+- src/pages/ClientDetail.tsx
+- src/components/CaseQuickActions.tsx
+- CaseDetail logic
+- Supabase / SQL / finance formulas / handlers / modals
+
+Guards:
+- scripts/check-stage231d0e-r1-client-detail-grid-axis-align.cjs
+- tests/stage231d0e-r1-client-detail-grid-axis-align.test.cjs
+
+Risk audit:
+- Visual-only risk: desktop alignment may improve while tablet breakpoint needs manual check.
+- No runtime data risk because only CSS and docs/guards are changed.
+- Do not mix with failed R11 finance/notes package or old D0B client-list-card guard drift.
+
+<!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — Next after STAGE231D0F
+
+Po wdrożeniu i PASS:
+- sprawdzić manualnie `/funnel`,
+- potwierdzić, że górne kafle, pasek etapów, lista rekordów i prawy rail są spójne z nowym UI,
+- potem wrócić do kolejnego sensownego etapu baseline: `STAGE231D0E — CaseDetail checklist tab baseline`, jeśli nie został jeszcze zamknięty.
+<!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_END -->
+
+<!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R4 Funnel targeted guard repair
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGÓW:
+- R2 poprawnie zatrzymał się po czerwonym guardzie.
+- R3 zatrzymał się na zbyt szerokim mojibake sweepie, który zaczął czyścić stare historyczne wpisy `_project`.
+- To nie jest właściwy zakres dla etapu UI Lejka.
+
+DECYZJA:
+- Naprawiamy aktywny zakres STAGE231D0F, nie całą historię projektu.
+- Lejek pozostaje listą decyzji właściciela, nie kanbanem.
+- Nie ruszać logiki filtrów, Supabase, SQL, płatności, routingu, wykresów ani drag/drop.
+
+R4:
+- targetowany repair mojibake tylko dla runtime i aktywnych plików etapu,
+- guard STAGE231D0F sprawdza aktywny blok UI Dictionary, CSS i runtime,
+- guardy nie failują na własnych definicjach tokenów,
+- CaseDetail R4 guard jest podmieniany na bezpieczną wersję z tokenami generowanymi po kodach znaków.
+
+TESTY:
+- `node scripts/check-stage231d0f-funnel-owner-dashboard-visual-alignment.cjs`
+- `node --test tests/stage231d0f-funnel-owner-dashboard-visual-alignment.test.cjs`
+- `node scripts/check-stage231d0d-r4-case-detail-lean-service-workspace.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- W repo nadal mogą istnieć stare historyczne wpisy z mojibake. Nie naprawiać ich w tym etapie.
+- Jeżeli chcemy pełne sprzątanie `_project`, to osobny etap: `ENCODING-SWEEP`, bez mieszania z Lejkiem.
+<!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_END -->

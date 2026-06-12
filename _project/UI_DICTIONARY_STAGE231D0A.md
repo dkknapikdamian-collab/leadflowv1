@@ -440,7 +440,7 @@ Zasady:
 ## ClientListCard
 
 Nazwa ludzka:
-Kafelek klienta na liĹ›cie klientĂłw
+Kafelek klienta na liście klientów
 
 Nazwa systemowa:
 ClientListCard
@@ -461,15 +461,119 @@ Wiersz 1:
 Wiersz 2:
 - firma
 - sprawy count
-- zarobione Ĺ‚Ä…cznie
-- najbliĹĽsza akcja
+- zarobione łącznie
+- najbliższa akcja
 - ryzyka/statusy pomocnicze
 
 Zakaz:
-Nie uĹĽywaÄ‡ badge â€žAktywna sprawaâ€ť, bo klient moĹĽe mieÄ‡ wiele spraw.
-Nie pokazywaÄ‡ â€žLeadyâ€ť, bo klient jest juĹĽ pozyskanym leadem.
+Nie używać badge â€žAktywna sprawaâ€ť, bo klient może mieć wiele spraw.
+Nie pokazywać â€žLeadyâ€ť, bo klient jest już pozyskanym leadem.
 
-ĹąrĂłdĹ‚a finansowe:
+Źródła finansowe:
 - Aktywna prowizja = suma prowizji z aktywnych spraw.
-- Zarobione Ĺ‚Ä…cznie = suma wpĹ‚aconej prowizji ze wszystkich spraw klienta.
+- Zarobione łącznie = suma wpłaconej prowizji ze wszystkich spraw klienta.
 <!-- STAGE231D0B_CLIENT_LIST_CARD_UI_DICTIONARY_END -->
+
+<!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — FunnelOwnerDashboard
+
+Nazwa ludzka:
+Lejek / panel właściciela
+
+Nazwa systemowa:
+FunnelOwnerDashboard
+
+Rola:
+Widok decyzji właściciela: co wymaga ruchu, gdzie jest cisza, gdzie ryzyko i gdzie pieniądze.
+
+Zasada:
+Nie jest kanbanem. To lista decyzji i filtrów priorytetu.
+
+## FunnelOwnerDecisionTile
+
+Nazwa ludzka:
+Górny kafelek decyzji w lejku
+
+Nazwa systemowa:
+FunnelOwnerDecisionTile
+
+Rola:
+Szybki filtr właściciela: ruch, brak kroku, cisza, ryzyko, pieniądze.
+
+Źródło stylu:
+Wspólne metric/summary tiles CloseFlow, nie lokalny ciężki styl.
+
+## FunnelStageFilterStrip
+
+Nazwa ludzka:
+Pasek etapów w lejku
+
+Nazwa systemowa:
+FunnelStageFilterStrip
+
+Rola:
+Etapy jako filtr, nie kolumny kanban.
+
+Zasada:
+Ma być kompaktowy i nie dominować ekranu.
+
+## FunnelDecisionListCard
+
+Nazwa ludzka:
+Rekord decyzyjny w lejku
+
+Nazwa systemowa:
+FunnelDecisionListCard
+
+Rola:
+Jedna sprawa albo lead wymagający decyzji właściciela.
+
+Pokazuje:
+- typ rekordu,
+- ryzyko,
+- etap,
+- kontakt/cisza,
+- następny krok,
+- wartość/prowizja,
+- akcję otwarcia.
+
+## FunnelOwnerPriorityRail
+
+Nazwa ludzka:
+Prawy panel priorytetu w lejku
+
+Nazwa systemowa:
+FunnelOwnerPriorityRail
+
+Rola:
+Lekki panel właściciela: najwyższy priorytet teraz + krótka reguła widoku.
+
+Zasada:
+Styl zgodny z prawym railem detail. Bez ciężkiej instrukcyjnej karty.
+<!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_END -->
+
+<!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — FunnelOwnerDashboard R4 targeted baseline
+
+Nazwa ludzka:
+Lejek / panel właściciela
+
+Nazwa systemowa:
+FunnelOwnerDashboard
+
+Rola:
+Widok decyzji właściciela: co wymaga ruchu, gdzie jest cisza, gdzie ryzyko i gdzie pieniądze.
+
+Zasada:
+Nie jest kanbanem. To lista decyzji i filtrów priorytetu.
+
+Komponenty wzorcowe:
+- `FunnelOwnerDecisionTile`
+- `FunnelStageFilterStrip`
+- `FunnelDecisionListCard`
+- `FunnelOwnerPriorityRail`
+
+Guard:
+- sprawdza aktywny zakres STAGE231D0F,
+- nie skanuje całej historii `_project`.
+<!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_END -->
