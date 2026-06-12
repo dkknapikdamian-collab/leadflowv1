@@ -59,6 +59,7 @@ import './styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.c
 import './styles/closeflow-secondary-pages-full-width-stage181ad.css';
 import './styles/closeflow-app-viewport-scale-75-stage201.css';
 import './styles/closeflow-ops-badges-and-icons-stretch-stage204.css';
+
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 const STAGE228R21_LEADDETAIL_STATIC_IMPORT_UNBLOCK = 'LeadDetail is statically imported to bypass lazy export/chunk runtime failure';
 void STAGE228R21_LEADDETAIL_STATIC_IMPORT_UNBLOCK;
@@ -251,6 +252,7 @@ export default function App() {
   }
 
   const isLoggedIn = Boolean(user);
+  const isDevelopmentPreviewEnabled = import.meta.env.DEV;
 
   if (isLoggedIn && user && isSupabaseEmailVerificationRequiredForUser(user)) {
     return (
@@ -296,8 +298,14 @@ export default function App() {
               <Route path="/support" element={isLoggedIn ? <SupportCenter /> : <Navigate to="/login" />} />
               <Route path="/settings/ai" element={isLoggedIn ? <AdminAiSettings /> : <Navigate to="/login" />} />
               <Route path="/settings" element={isLoggedIn ? <Settings /> : <Navigate to="/login" />} />
-              <Route path="/ui-preview-vnext" element={<UiPreviewVNext />} />
-              <Route path="/ui-preview-vnext-full" element={<UiPreviewVNextFull />} />
+              <Route
+                path="/ui-preview-vnext"
+                element={isDevelopmentPreviewEnabled ? <UiPreviewVNext /> : <Navigate to="/login" replace />}
+              />
+              <Route
+                path="/ui-preview-vnext-full"
+                element={isDevelopmentPreviewEnabled ? <UiPreviewVNextFull /> : <Navigate to="/login" replace />}
+              />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </Suspense>
@@ -317,45 +325,3 @@ export default function App() {
 /* STAGE16_FINAL_QA_RELEASE_CANDIDATE_2026_05_06: /today and /support route aliases are release-candidate smoke routes. */
 
 /* STAGE231D_GOOGLE_AUTH_INTENT_GATE: / and /start show Login/Register for logged-out users; PublicLanding no longer creates a second auth entry. */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
