@@ -21,6 +21,7 @@ Before any meaningful stage, scan and read:
 Application repo:
 - `AGENTS.md`
 - `_project/00_PROJECT_MEMORY_PROTOCOL.md`
+- `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
 - `_project/STAGE_TEMPLATE_MINIMAL.md`
 - full `_project/`
 - newest `_project/runs/` reports
@@ -52,6 +53,44 @@ Each run report must include:
 
 Without scan proof, the stage is invalid.
 
+## Mandatory pre-stage audit
+
+Before every stage, the operator must write `AUDYT PRZED ETAPEM`.
+
+It must include:
+- stage name and goal,
+- visual place in the application where Damian will verify the result,
+- affected routes/screens/components/data sources,
+- current implementation map,
+- whether the stage already exists fully or partially,
+- similar places to inspect,
+- real adjacent problems found, if any,
+- problems intentionally not touched,
+- regression risks,
+- guard/test plan,
+- manual test plan for Damian,
+- source-of-truth conflicts.
+
+The audit should look for real problems only: wrong bindings, unfinished work, duplicated patterns, broken gating, stale data flows, fallback masking, missing guard coverage and documentation drift. It must not turn into random repo-wide cleanup.
+
+## Mandatory post-stage audit
+
+After every stage, the operator must write `AUDYT PO ETAPIE`.
+
+It must include:
+- what changed,
+- whether the original cause was fixed,
+- whether similar places were checked,
+- what could have regressed,
+- what additional real problems were found,
+- what was intentionally not touched,
+- guard/test result,
+- manual verification instructions,
+- `_project` and Obsidian update status,
+- next best step.
+
+A stage is not closed if pre-stage and post-stage audit sections are missing.
+
 ## Required report baskets
 
 Each meaningful run report must separate:
@@ -59,9 +98,11 @@ Each meaningful run report must separate:
 - DECYZJE DAMIANA
 - HIPOTEZY / PROPOZYCJE AI
 - DO POTWIERDZENIA
+- AUDYT PRZED ETAPEM
 - TESTY AUTOMATYCZNE
 - GUARDY
 - TESTY RECZNE
+- AUDYT PO ETAPIE
 - POTWIERDZENIA DAMIANA
 - BRAKI I RYZYKA
 - WPLYW NA OBSIDIANA
