@@ -3919,3 +3919,38 @@ RYZYKO:
 - Visual QA dalej wymagane, bo to etap CSS/render.
 - Local tree ma wcześniejsze śmieci; push tylko selektywny.
 <!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_END -->
+
+<!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_START -->
+## 2026-06-12 19:20 Europe/Warsaw — STAGE231D0F-R13 Funnel visual color density
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z QA:
+- R12 przeszedł technicznie i został wypchnięty.
+- Ekran `/funnel` nadal wygląda za blado.
+- Problem nie dotyczy już tylko ikon; brakuje warstwy kolorystycznej kafli i rekordów.
+
+DECYZJE DAMIANA:
+- Układ Lejka jest zaakceptowany i zamrożony.
+- Dodać kolor bez tęczy.
+- Kafelki mają mieć kolor w ikonie, wartości i subtelnym surface/accent.
+- Rekordy mają dostać lekkie semantyczne akcenty.
+- Przyciski `Otwórz` mają być równe i bez łamania.
+
+ZMIANA:
+- R13 dodaje `FunnelDecisionSignal tone`.
+- R13 dodaje data atrybuty rekordów.
+- R13 dodaje tone surface/accent dla kafli w `closeflow-metric-tiles.css`.
+- R13 zwiększa open button z 132px do 156px i dodaje nowrap.
+- R13 nie zmienia layoutu ani logiki filtrów.
+
+TESTY:
+- `node scripts/check-stage231d0f-r13-funnel-visual-color-density.cjs`
+- `node --test tests/stage231d0f-r13-funnel-visual-color-density.test.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- To etap CSS/render, więc manual QA jest obowiązkowy.
+- Local tree ma wcześniejsze śmieci; push tylko selektywny.
+<!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_END -->

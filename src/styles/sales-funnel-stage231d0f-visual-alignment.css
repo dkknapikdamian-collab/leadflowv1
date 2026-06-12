@@ -11,7 +11,7 @@
   --cf-funnel-card-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
   --cf-funnel-muted: #64748b;
   --cf-funnel-strong: #0f172a;
-  --cf-funnel-open-link-width: 132px;
+  --cf-funnel-open-link-width: 156px;
 }
 
 #root .main-funnel-html.sales-funnel-stage227f6-page {
@@ -435,4 +435,57 @@
   #root .main-funnel-html .cf-funnel-records-title {
     white-space: normal;
   }
+}
+
+/* STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY
+   Layout frozen. Adds semantic tone density to signals and prevents open button wrapping.
+*/
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="blue"] {
+  border-color: rgba(37, 99, 235, 0.18) !important;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.06), #fff 70%) !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="blue"] .cf-funnel-decision-signal-label,
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="blue"] .cf-funnel-decision-signal-value.is-strong {
+  color: #1d4ed8 !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="amber"] {
+  border-color: rgba(217, 119, 6, 0.18) !important;
+  background: linear-gradient(135deg, rgba(217, 119, 6, 0.065), #fff 70%) !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="amber"] .cf-funnel-decision-signal-label,
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="amber"] .cf-funnel-decision-signal-value.is-strong {
+  color: #b45309 !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="purple"] {
+  border-color: rgba(124, 58, 237, 0.18) !important;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.06), #fff 70%) !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="purple"] .cf-funnel-decision-signal-label,
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="purple"] .cf-funnel-decision-signal-value.is-strong {
+  color: #6d28d9 !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="green"] {
+  border-color: rgba(5, 150, 105, 0.18) !important;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.06), #fff 70%) !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="green"] .cf-funnel-decision-signal-label,
+#root .main-funnel-html .cf-funnel-decision-signal[data-cf-signal-tone="green"] .cf-funnel-decision-signal-value.is-strong {
+  color: #047857 !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-open-link {
+  white-space: nowrap !important;
+  line-height: 1 !important;
+}
+
+#root .main-funnel-html .cf-funnel-decision-open-link svg {
+  flex: 0 0 auto !important;
 }

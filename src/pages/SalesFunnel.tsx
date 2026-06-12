@@ -35,6 +35,7 @@ const STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR = 'records header line-le
 const STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH = 'resilient patch for funnel no visible stage money, shared filters, icon source and Clients filter header';
 const STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR = 'layout frozen; funnel icon colors resolve from shared CloseFlow metric icon tone source truth after R7 syntax repair';
 const STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE = 'layout frozen; funnel owner tile colors use literal tone map plus closeflow metric CSS real SVG color enforcement';
+const STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY = 'layout frozen; final funnel visual tone density for tiles, signals and open button rhythm';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
@@ -48,6 +49,7 @@ void STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR;
 void STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH;
 void STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR;
 void STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE;
+void STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY;
 
 type LoadState = {
   leads: any[];
@@ -350,9 +352,24 @@ function FunnelStageFilterChip({
   );
 }
 
-function FunnelDecisionSignal({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
+function FunnelDecisionSignal({
+  label,
+  value,
+  strong = false,
+  tone = 'neutral',
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+  tone?: FunnelStageTone;
+}) {
   return (
-    <div className="cf-funnel-decision-signal" data-stage227b-signal="true" data-stage231d0f-decision-signal="true">
+    <div
+      className="cf-funnel-decision-signal"
+      data-stage227b-signal="true"
+      data-stage231d0f-decision-signal="true"
+      data-cf-signal-tone={tone}
+    >
       <div className="cf-funnel-decision-signal-label">{label}</div>
       <div className={`cf-funnel-decision-signal-value ${strong ? 'is-strong' : ''}`}>{value}</div>
     </div>
@@ -372,6 +389,11 @@ function FunnelDecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
       data-stage227a-funnel-card="true"
       data-stage228a-money-source-card={card.valueAmount > 0 ? 'true' : 'false'}
       data-stage231d0f-decision-list-card="true"
+      data-stage231d0f-r13-decision-list-card="true"
+      data-cf-funnel-entity-type={card.entityType}
+      data-cf-funnel-risk-level={card.riskLevel}
+      data-cf-funnel-needs-movement={needsMovement(card) ? 'true' : 'false'}
+      data-cf-funnel-has-value={card.valueAmount > 0 ? 'true' : 'false'}
     >
       <div className="cf-funnel-decision-card-head">
         <div className="cf-funnel-decision-card-badges">
@@ -392,10 +414,10 @@ function FunnelDecisionListCard({ card }: { card: SalesFunnelMovementCard }) {
       </div>
 
       <div className="cf-funnel-decision-signal-grid">
-        <FunnelDecisionSignal label="Etap" value={card.stageLabel} strong />
-        <div data-stage227a-funnel-silence-age="true"><FunnelDecisionSignal label="Kontakt" value={silenceLabel(card.silenceDays)} strong /></div>
-        <div data-stage227a-funnel-next-step="true"><FunnelDecisionSignal label="Następny krok" value={card.hasNextMove ? `${card.nextMoveTitle || 'Zaplanowany'} · ${formatDateTime(card.nextMoveAt)}` : 'Brak'} strong={!card.hasNextMove} /></div>
-        <div data-stage227a-funnel-value="true"><FunnelDecisionSignal label={card.valueSourceLabel || 'Wartość/prowizja'} value={formatMoney(card.valueAmount, card.valueCurrency)} strong /></div>
+        <FunnelDecisionSignal label="Etap" value={card.stageLabel} strong tone={card.entityType === 'case' ? 'purple' : 'blue'} />
+        <div data-stage227a-funnel-silence-age="true"><FunnelDecisionSignal label="Kontakt" value={silenceLabel(card.silenceDays)} strong tone={typeof card.silenceDays === 'number' && card.silenceDays >= 7 ? 'purple' : 'neutral'} /></div>
+        <div data-stage227a-funnel-next-step="true"><FunnelDecisionSignal label="Następny krok" value={card.hasNextMove ? `${card.nextMoveTitle || 'Zaplanowany'} · ${formatDateTime(card.nextMoveAt)}` : 'Brak'} strong={!card.hasNextMove} tone={card.hasNextMove ? 'green' : 'amber'} /></div>
+        <div data-stage227a-funnel-value="true"><FunnelDecisionSignal label={card.valueSourceLabel || 'Wartość/prowizja'} value={formatMoney(card.valueAmount, card.valueCurrency)} strong tone={card.valueAmount > 0 ? 'green' : 'neutral'} /></div>
       </div>
 
       <Link

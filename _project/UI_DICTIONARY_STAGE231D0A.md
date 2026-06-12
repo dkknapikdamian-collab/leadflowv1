@@ -1011,3 +1011,45 @@ Aktywna prawda kolorów:
 
 Stare markery R2/R3/R5/R6/R8 zostają jako historia/kompatybilność guardów, nie jako źródło koloru.
 <!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_END -->
+
+<!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_START -->
+## 2026-06-12 19:20 Europe/Warsaw — FunnelVisualToneR13
+
+Nazwa ludzka:
+Warstwa kolorystyczna Lejka
+
+Nazwa systemowa:
+FunnelVisualToneR13
+
+Rola:
+Subtelne, spójne kolory dla owner tiles, rekordów i akcji bez zmiany układu.
+
+Zasady:
+- layout frozen,
+- kolory z tone map,
+- bez lokalnej tęczy,
+- ikony i wartości korzystają z jednego source of truth,
+- kafle mają kolor w ikonie, wartości i delikatnym surface/accent.
+
+## FunnelDecisionSignalTone
+
+Nazwa ludzka:
+Kolorystyczny sygnał w rekordzie Lejka
+
+Nazwa systemowa:
+FunnelDecisionSignalTone
+
+Rola:
+Delikatnie wyróżnia etap, kontakt, następny krok i wartość/prowizję.
+
+Tony:
+- etap: blue/purple,
+- kontakt/cisza: purple,
+- brak następnego kroku: amber,
+- wartość/prowizja: green.
+
+## FunnelDecisionOpenButton
+
+Dopisek R13:
+Na desktopie przyciski `Otwórz lead` i `Otwórz sprawę` mają stałą szerokość `156px`, `white-space: nowrap` i ikonę po prawej bez łamania tekstu.
+<!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_END -->
