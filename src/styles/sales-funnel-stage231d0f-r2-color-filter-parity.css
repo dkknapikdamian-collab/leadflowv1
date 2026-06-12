@@ -1,0 +1,81 @@
+/* STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY
+   Scope: color/icon/filter parity for /funnel only.
+   Rule: owner tiles use the shared metric tone system; stage filters use shared filter/pill language.
+*/
+
+#root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-icon {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+#root .main-funnel-html .cf-funnel-owner-decision-tile .cf-top-metric-tile-icon svg {
+  stroke: currentColor !important;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-strip.cf-contact-cadence-strip,
+#root .main-funnel-html .cf-funnel-stage-filter-strip.cf-filter-strip {
+  border: 1px solid var(--cf-funnel-card-border);
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: var(--cf-funnel-card-shadow);
+  padding: 0.72rem;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-scroll.cf-contact-cadence-pills,
+#root .main-funnel-html .cf-funnel-stage-filter-scroll.cf-filter-pills {
+  display: flex;
+  gap: 0.45rem;
+  overflow-x: auto;
+  padding-bottom: 0.12rem;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip.cf-filter-pill {
+  min-width: max-content;
+  border-radius: 999px;
+  padding: 0.48rem 0.68rem;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip.pill {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip.cf-status-pill {
+  border-color: transparent;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip[data-cf-status-tone="blue"] {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip[data-cf-status-tone="amber"] {
+  background: #fffbeb;
+  color: #b45309;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip[data-cf-status-tone="purple"] {
+  background: #f5f3ff;
+  color: #6d28d9;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip[data-cf-status-tone="green"] {
+  background: #ecfdf3;
+  color: #047857;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip[data-cf-status-tone="red"] {
+  background: #fff1f2;
+  color: #be123c;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip-count {
+  background: rgba(255, 255, 255, 0.66);
+  color: currentColor;
+}
+
+#root .main-funnel-html .cf-funnel-stage-filter-chip-value {
+  color: currentColor;
+  opacity: 0.76;
+}

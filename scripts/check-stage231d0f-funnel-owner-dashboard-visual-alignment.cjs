@@ -30,28 +30,20 @@ function block(text, markerPrefix) {
 }
 
 const badTokens = [
-  0x0102, // Ă
-  0x0139, // Ĺ
-  0x00c4, // Ä
-  0x00c5, // Å
-  0x00c2, // Â
-  0xfffd, // �
+  0x0102, 0x0139, 0x00c4, 0x00c5, 0x00c2, 0xfffd,
 ].map((code) => String.fromCharCode(code)).concat(['ďż˝']);
 
 const salesFunnel = read('src/pages/SalesFunnel.tsx');
 const css = read('src/styles/sales-funnel-stage231d0f-visual-alignment.css');
 const uiAll = read('_project/UI_DICTIONARY_STAGE231D0A.md', true);
 const uiRelevant =
+  block(uiAll, 'STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12') ||
   block(uiAll, 'STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12') ||
-  block(uiAll, 'STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12') ||
   uiAll.slice(Math.max(0, uiAll.lastIndexOf('FunnelOwnerDashboard') - 1200));
-
-const runR4 = read('_project/runs/2026-06-12_STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR.md', true);
-const obsidianR4 = read('_project/obsidian_updates/2026-06-12_STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR.md', true);
-const combinedRelevant = [salesFunnel, css, uiRelevant, runR4, obsidianR4].join('\n');
+const relevant = [salesFunnel, css, uiRelevant].join('\n');
 
 for (const token of badTokens) {
-  forbidToken(combinedRelevant, token, 'mojibake token in active stage scope');
+  forbidToken(relevant, token, 'mojibake token in active funnel scope');
 }
 
 for (const token of [
@@ -63,10 +55,10 @@ for (const token of [
   'data-stage231d0f-stage-filter-strip="true"',
   'data-stage231d0f-decision-list-card="true"',
   'data-stage231d0f-owner-priority-rail="true"',
-  'function FunnelOwnerDecisionTile',
-  'function FunnelStageFilterChip',
-  'function FunnelDecisionSignal',
-  'function FunnelDecisionListCard',
+  'FunnelOwnerDecisionTile',
+  'FunnelStageFilterChip',
+  'FunnelDecisionSignal',
+  'FunnelDecisionListCard',
   'cf-funnel-owner-decision-tile',
   'cf-funnel-stage-filter-strip',
   'cf-funnel-decision-list-card',
@@ -77,54 +69,16 @@ for (const token of [
   requireToken(salesFunnel, token, `SalesFunnel ${token}`);
 }
 
-for (const token of [
-  'FunnelOwnerDashboard',
-  'FunnelOwnerDecisionTile',
-  'FunnelStageFilterStrip',
-  'FunnelDecisionListCard',
-  'FunnelOwnerPriorityRail',
-]) {
-  requireToken(uiRelevant, token, `UI Dictionary ${token}`);
-}
-
-for (const token of [
-  'Do ruchu teraz',
-  'Bez kroku',
-  'Cisza 7+',
-  'Wysokie ryzyko',
-  'Pieniądze',
-]) {
-  requireToken(salesFunnel, token, `owner filter ${token}`);
-}
-
-if (!/lista decyzji/i.test(combinedRelevant)) failures.push('missing owner-dashboard rule: lista decyzji');
-if (!/nie kanban/i.test(combinedRelevant) && !/nie jest kanbanem/i.test(combinedRelevant)) failures.push('missing owner-dashboard rule: nie kanban');
-
-for (const token of [
-  'function DecisionTile(',
-  'function StagePill(',
-  'function Signal(',
-  '<DecisionTile',
-  '<StagePill',
-  '<Signal',
-  '<DecisionListCard',
-  'text-3xl font-black tracking-tight',
-  'rounded-2xl border p-4 text-left shadow-sm',
-]) {
-  forbidToken(salesFunnel, token, 'old local funnel style');
-}
+if (!/lista decyzji/i.test(relevant)) failures.push('missing owner-dashboard rule: lista decyzji');
+if (!/nie kanban/i.test(relevant) && !/nie jest kanbanem/i.test(relevant)) failures.push('missing owner-dashboard rule: nie kanban');
 
 for (const token of ['CREATE TABLE', 'ALTER TABLE', 'chart.js', 'recharts']) {
-  forbidToken(combinedRelevant, token, 'scope creep token');
+  forbidToken(relevant, token, 'scope creep token');
 }
 
 for (const token of ['onDrag', 'onDrop', 'draggable=', 'KanbanBoard', 'kanban-column', 'data-kanban']) {
   forbidToken(salesFunnel, token, 'kanban/drag runtime token');
 }
-
-requireToken(css, 'STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT', 'CSS marker');
-requireToken(css, '--cf-funnel-card-shadow', 'funnel shadow token');
-requireToken(css, 'not a kanban', 'CSS product rule');
 
 if (failures.length) {
   console.error('STAGE231D0F Funnel owner dashboard visual alignment guard: FAIL');

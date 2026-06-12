@@ -4,9 +4,9 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
 
-test('STAGE231D0F regression guard passes for funnel owner dashboard visual alignment', () => {
+test('STAGE231D0F-R2 guard passes for funnel color/icon/filter parity', () => {
   const repoRoot = path.resolve(__dirname, '..');
-  const guard = path.join(repoRoot, 'scripts', 'check-stage231d0f-funnel-owner-dashboard-visual-alignment.cjs');
+  const guard = path.join(repoRoot, 'scripts', 'check-stage231d0f-r2-funnel-color-filter-parity.cjs');
 
   assert.equal(fs.existsSync(guard), true, 'guard script must exist');
 
@@ -16,5 +16,5 @@ test('STAGE231D0F regression guard passes for funnel owner dashboard visual alig
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
-  assert.match(output, /STAGE231D0F Funnel owner dashboard visual alignment guard: PASS/);
+  assert.match(output, /STAGE231D0F-R2 Funnel color\/filter parity guard: PASS/);
 });

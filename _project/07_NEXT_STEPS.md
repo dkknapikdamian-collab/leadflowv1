@@ -3877,3 +3877,41 @@ RYZYKO:
 - W repo nadal mogą istnieć stare historyczne wpisy z mojibake. Nie naprawiać ich w tym etapie.
 - Jeżeli chcemy pełne sprzątanie `_project`, to osobny etap: `ENCODING-SWEEP`, bez mieszania z Lejkiem.
 <!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R2 Funnel color/icon/filter parity
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z KODU:
+- `SalesFunnel.tsx` ma już `FunnelOwnerDecisionTile`, `FunnelStageFilterChip`, `FunnelDecisionListCard`.
+- `closeflow-metric-tiles.css` ma wspólne tony `blue`, `amber`, `red`, `green`, `purple`.
+- Klienci używają wzorca filtrów: `cf-contact-cadence-strip`, `cf-contact-cadence-pills`, `cf-status-pill`, `pill`, `data-cf-status-tone`.
+
+DECYZJE DAMIANA:
+- Zamysł Lejka zostaje.
+- Lejek nie jest kanbanem.
+- Kafelki właścicielskie mają mieć kolorowe ikony.
+- `Cisza 7+` ma dostać ton `purple`.
+- Filtry etapów mają mówić tym samym językiem wizualnym co filtry w Klientach.
+- Nie ruszać logiki filtrów, Supabase, SQL, drag/drop ani kanbana.
+
+ZMIANA:
+- Dodany marker `STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY`.
+- Dodana jawna mapa `FUNNEL_OWNER_TILE_TONE_MAP`.
+- `FunnelStageFilterChip` dostaje `data-cf-status-tone`, `cf-status-pill` / `pill` oraz alias `cf-filter-pill`.
+- Pasek etapów dostaje `cf-contact-cadence-strip`, `cf-contact-cadence-pills`, `cf-filter-strip`, `cf-filter-pills`.
+- CSS wymusza widoczne kolorowe ikony w owner tiles.
+
+TESTY:
+- `node scripts/check-stage231d0f-r2-funnel-color-filter-parity.cjs`
+- `node --test tests/stage231d0f-r2-funnel-color-filter-parity.test.cjs`
+- `node scripts/check-stage231d0f-funnel-owner-dashboard-visual-alignment.cjs`
+- `node --test tests/stage231d0f-funnel-owner-dashboard-visual-alignment.test.cjs`
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Nie wolno przez ten etap zmienić działania filtrów ani przerobić Lejka w kanban.
+- Nie mieszać w tym commicie wcześniejszych plików `STAGE231D0E`, jeśli nie są osobno domykane.
+<!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_END -->

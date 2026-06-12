@@ -577,3 +577,47 @@ Guard:
 - sprawdza aktywny zakres STAGE231D0F,
 - nie skanuje całej historii `_project`.
 <!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — FunnelColorToneMap
+
+Nazwa ludzka:
+Mapa kolorów Lejka
+
+Nazwa systemowa:
+FunnelColorToneMap
+
+Rola:
+Stała semantyczna mapa kolorów i ikon dla owner decision tiles.
+
+Mapa:
+- Do ruchu teraz: blue / Target
+- Bez kroku: amber / Filter
+- Cisza 7+: purple / Clock3
+- Wysokie ryzyko: red / ShieldAlert
+- Pieniądze: green / ArrowRight
+
+## FunnelStageFilterStrip — dopisek R2
+
+Ma korzystać z tego samego języka wizualnego co filtry kontaktu w Klientach:
+- compact strip,
+- pill/chip,
+- active status tone,
+- bez osobnego ciężkiego stylu.
+
+Dozwolone klasy źródłowe/wspólne:
+- `cf-contact-cadence-strip`
+- `cf-contact-cadence-pills`
+- `cf-status-pill`
+- `pill`
+- `data-cf-status-tone`
+- aliasy wspólne: `cf-filter-strip`, `cf-filter-pills`, `cf-filter-pill`
+
+## FunnelOwnerDecisionTile — dopisek R2
+
+Kafelek musi renderować:
+- `data-eliteflow-metric-tone`
+- `cf-top-metric-tile-icon`
+- widoczny SVG w ikonie
+- jawny wpis w `FUNNEL_OWNER_TILE_TONE_MAP`
+<!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_END -->

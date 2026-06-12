@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useState, type ComponentType, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { AlertTriangle, ArrowRight, Clock3, Filter, Loader2, RefreshCw, ShieldAlert, Target } from 'lucide-react';
 import Layout from '../components/Layout';
@@ -27,6 +27,7 @@ const STAGE227B_SALES_FUNNEL_DECISION_LIST = 'sales funnel is a readable owner d
 const STAGE228A_FUNNEL_TRUTH_CLICKABILITY = 'funnel money tile is traceable to visible cards and owner/stage filters do not hide source records';
 const STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS = 'Sales funnel uses shared full width canvas and stable gutters, not centered narrow max-width';
 const STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT = 'funnel owner dashboard visual alignment: owner decision tiles, stage strip, decision cards and priority rail';
+const STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY = 'funnel owner tiles use explicit semantic color/icon map and stage filters share client filter visual language';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
@@ -34,6 +35,7 @@ void STAGE227B_SALES_FUNNEL_DECISION_LIST;
 void STAGE228A_FUNNEL_TRUTH_CLICKABILITY;
 void STAGE227F6_SALES_FUNNEL_FULL_WIDTH_CANVAS;
 void STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT;
+void STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY;
 
 type LoadState = {
   leads: any[];
@@ -47,10 +49,65 @@ type LoadState = {
 export type OwnerFilter = 'all' | 'move_now' | 'no_next_move' | 'silent_7' | 'high_risk' | 'money';
 export type StageFilter = 'all' | string;
 
+type FunnelMetricTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple';
+type FunnelStageTone = 'neutral' | 'blue' | 'amber' | 'red' | 'green' | 'purple';
+type FunnelTileFilter = Exclude<OwnerFilter, 'all'>;
+type FunnelTileDefinition = {
+  label: string;
+  helper: string;
+  tone: FunnelMetricTone;
+  Icon: ComponentType<{ className?: string }>;
+};
+
 type FunnelFilterState = {
   ownerFilter: OwnerFilter;
   stageFilter: StageFilter;
 };
+
+const FUNNEL_OWNER_TILE_TONE_MAP: Record<FunnelTileFilter, FunnelTileDefinition> = {
+  move_now: {
+    label: 'Do ruchu teraz',
+    helper: 'Ryzyko, cisza albo brak kroku.',
+    tone: 'blue',
+    Icon: Target,
+  },
+  no_next_move: {
+    label: 'Bez kroku',
+    helper: 'Rekordy bez akcji.',
+    tone: 'amber',
+    Icon: Filter,
+  },
+  silent_7: {
+    label: 'Cisza 7+',
+    helper: 'Brak kontaktu 7+ dni.',
+    tone: 'purple',
+    Icon: Clock3,
+  },
+  high_risk: {
+    label: 'Wysokie ryzyko',
+    helper: 'High i critical.',
+    tone: 'red',
+    Icon: ShieldAlert,
+  },
+  money: {
+    label: 'Pieniądze',
+    helper: 'Źródła kwoty.',
+    tone: 'green',
+    Icon: ArrowRight,
+  },
+};
+
+function resolveFunnelStageFilterTone(key: string, label: string): FunnelStageTone {
+  const source = `${key} ${label}`.toLowerCase();
+  if (key === 'all' || source.includes('wszystkie')) return 'blue';
+  if (source.includes('utrac') || source.includes('lost')) return 'red';
+  if (source.includes('obsług') || source.includes('obslug') || source.includes('won') || source.includes('wygran')) return 'green';
+  if (source.includes('negocj')) return 'purple';
+  if (source.includes('kontakt')) return 'purple';
+  if (source.includes('kwalifik') || source.includes('oferta') || source.includes('czeka') || source.includes('odp')) return 'amber';
+  if (source.includes('now')) return 'blue';
+  return 'neutral';
+}
 
 function buildDateRange(now = new Date()) {
   const from = new Date(now.getTime() - 120 * 86_400_000).toISOString();
@@ -185,24 +242,18 @@ function activeFilterLabel(ownerFilter: OwnerFilter, stageFilter: StageFilter, s
 
 
 function FunnelOwnerDecisionTile({
+  filter,
   active,
-  label,
   value,
-  helper,
-  icon,
-  tone,
   onClick,
 }: {
+  filter: FunnelTileFilter;
   active: boolean;
-  label: string;
   value: string | number;
-  helper: string;
-  icon?: ReactNode;
-  tone?: 'neutral' | 'blue' | 'amber' | 'red' | 'green';
   onClick: () => void;
 }) {
-  const resolvedTone = tone || (label === 'Pieniądze' ? 'green' : label === 'Wysokie ryzyko' ? 'red' : label === 'Do ruchu teraz' ? 'blue' : 'amber');
-  const resolvedIcon = icon || (label === 'Pieniądze' ? <ArrowRight className="h-4 w-4" /> : label === 'Wysokie ryzyko' ? <ShieldAlert className="h-4 w-4" /> : label === 'Cisza 7+' ? <Clock3 className="h-4 w-4" /> : label === 'Bez kroku' ? <Filter className="h-4 w-4" /> : <Target className="h-4 w-4" />);
+  const definition = FUNNEL_OWNER_TILE_TONE_MAP[filter];
+  const Icon = definition.Icon;
 
   return (
     <button
@@ -212,45 +263,48 @@ function FunnelOwnerDecisionTile({
       data-stage227b-owner-filter="true"
       data-stage228a-clickable-filter="true"
       data-stage231d0f-owner-decision-tile="true"
-      data-eliteflow-metric-tone={resolvedTone}
+      data-stage231d0f-r2-owner-tile-tone={filter}
+      data-eliteflow-metric-tone={definition.tone}
     >
       <span className={`cf-top-metric-tile-content ${active ? 'is-active' : ''}`}>
         <span className="cf-top-metric-tile-left">
-          <span className="cf-top-metric-tile-label">{label}</span>
-          <span className="cf-top-metric-tile-helper">{helper}</span>
+          <span className="cf-top-metric-tile-label">{definition.label}</span>
+          <span className="cf-top-metric-tile-helper">{definition.helper}</span>
         </span>
         <span className="cf-top-metric-tile-value-row">
           <span className="cf-top-metric-tile-value">{value}</span>
-          <span className="cf-top-metric-tile-icon" aria-hidden="true">{resolvedIcon}</span>
+          <span className="cf-top-metric-tile-icon" aria-hidden="true"><Icon className="h-4 w-4" /></span>
         </span>
       </span>
     </button>
   );
 }
 
-
-
 function FunnelStageFilterChip({
   active,
   label,
   count,
   value,
+  tone = 'neutral',
   onClick,
 }: {
   active: boolean;
   label: string;
   count: number;
   value: number;
+  tone?: FunnelStageTone;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`cf-funnel-stage-filter-chip ${active ? 'is-active' : ''}`}
+      className={`cf-funnel-stage-filter-chip cf-filter-pill ${active ? 'cf-status-pill' : 'pill'}`}
+      data-cf-status-tone={active ? tone : undefined}
       data-stage227b-stage-filter="true"
       data-stage228a-clickable-filter="true"
       data-stage231d0f-stage-filter-chip="true"
+      data-stage231d0f-r2-filter-tone={tone}
     >
       <span className="cf-funnel-stage-filter-chip-main">
         <strong className="cf-funnel-stage-filter-chip-label">{label}</strong>
@@ -260,8 +314,6 @@ function FunnelStageFilterChip({
     </button>
   );
 }
-
-
 
 function FunnelDecisionSignal({ label, value, strong = false }: { label: string; value: string; strong?: boolean }) {
   return (
@@ -436,15 +488,15 @@ export function SalesFunnel() {
             </Card>
           ) : null}
 
-          <section className="cf-funnel-owner-decision-grid grid gap-3 md:grid-cols-2 xl:grid-cols-5" data-stage231d0f-owner-decision-row="true" data-stage227b-owner-filter-row="true" data-stage227a-funnel-summary="true">
-            <FunnelOwnerDecisionTile active={ownerFilter === 'move_now'} label="Do ruchu teraz" value={countByFilter(allCards, 'move_now')} helper="Ryzyko, cisza albo brak kroku." onClick={() => applyOwnerFilter('move_now')} />
-            <FunnelOwnerDecisionTile active={ownerFilter === 'no_next_move'} label="Bez kroku" value={countByFilter(allCards, 'no_next_move')} helper="Rekordy bez akcji." onClick={() => applyOwnerFilter('no_next_move')} />
-            <FunnelOwnerDecisionTile active={ownerFilter === 'silent_7'} label="Cisza 7+" value={countByFilter(allCards, 'silent_7')} helper="Brak kontaktu 7+ dni." onClick={() => applyOwnerFilter('silent_7')} />
-            <FunnelOwnerDecisionTile active={ownerFilter === 'high_risk'} label="Wysokie ryzyko" value={countByFilter(allCards, 'high_risk')} helper="High i critical." onClick={() => applyOwnerFilter('high_risk')} />
-            <FunnelOwnerDecisionTile active={ownerFilter === 'money'} label="Pieniądze" value={formatMoney(totalValue, view.summary.currency || 'PLN')} helper="Źródła kwoty." onClick={() => applyOwnerFilter('money')} />
+          <section className="cf-funnel-owner-decision-grid grid gap-3 md:grid-cols-2 xl:grid-cols-5" data-stage231d0f-r2-owner-color-map="true" data-stage231d0f-owner-decision-row="true" data-stage227b-owner-filter-row="true" data-stage227a-funnel-summary="true">
+            <FunnelOwnerDecisionTile filter="move_now" active={ownerFilter === 'move_now'} value={countByFilter(allCards, 'move_now')} onClick={() => applyOwnerFilter('move_now')} />
+            <FunnelOwnerDecisionTile filter="no_next_move" active={ownerFilter === 'no_next_move'} value={countByFilter(allCards, 'no_next_move')} onClick={() => applyOwnerFilter('no_next_move')} />
+            <FunnelOwnerDecisionTile filter="silent_7" active={ownerFilter === 'silent_7'} value={countByFilter(allCards, 'silent_7')} onClick={() => applyOwnerFilter('silent_7')} />
+            <FunnelOwnerDecisionTile filter="high_risk" active={ownerFilter === 'high_risk'} value={countByFilter(allCards, 'high_risk')} onClick={() => applyOwnerFilter('high_risk')} />
+            <FunnelOwnerDecisionTile filter="money" active={ownerFilter === 'money'} value={formatMoney(totalValue, view.summary.currency || 'PLN')} onClick={() => applyOwnerFilter('money')} />
           </section>
 
-          <section className="cf-funnel-stage-filter-strip" data-stage231d0f-stage-filter-strip="true" data-stage227b-stage-filter-strip="true">
+          <section className="cf-funnel-stage-filter-strip cf-contact-cadence-strip cf-filter-strip" data-stage231d0f-r2-filter-parity-strip="true" data-stage231d0f-stage-filter-strip="true" data-stage227b-stage-filter-strip="true">
             <div className="cf-funnel-stage-filter-header">
               <div className="flex items-center gap-2 text-sm font-black text-slate-900">
                 <Filter className="h-4 w-4 text-blue-600" />
@@ -454,8 +506,8 @@ export function SalesFunnel() {
                 Pokaż wszystkie
               </button>
             </div>
-            <div className="cf-funnel-stage-filter-scroll">
-              <FunnelStageFilterChip active={stageFilter === 'all' && ownerFilter === 'all'} label="Wszystkie" count={allCards.length} value={totalValue} onClick={() => applyStageFilter('all')} />
+            <div className="cf-funnel-stage-filter-scroll cf-contact-cadence-pills cf-filter-pills">
+              <FunnelStageFilterChip active={stageFilter === 'all' && ownerFilter === 'all'} label="Wszystkie" count={allCards.length} value={totalValue} tone="blue" onClick={() => applyStageFilter('all')} />
               {stageOptions.map((stage) => (
                 <FunnelStageFilterChip
                   key={stage.key}
@@ -463,6 +515,7 @@ export function SalesFunnel() {
                   label={stage.label}
                   count={stage.count}
                   value={stage.value}
+                  tone={resolveFunnelStageFilterTone(stage.key, stage.label)}
                   onClick={() => applyStageFilter(stage.key)}
                 />
               ))}
