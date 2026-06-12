@@ -7,6 +7,7 @@ Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze  
 Canonical name: CloseFlow / LeadFlow  
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App  
+Audit protocol: `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`
 
 ## Cel
 
@@ -17,6 +18,34 @@ Decyzja Damiana z 2026-06-12: na razie skupiamy sie przede wszystkim na aplikacj
 ## Kolejność logiczna
 
 Najpierw zamykamy rzeczy, ktore moga dotknac uzytkownika, produkcji, logowania albo ladowania aplikacji. Dopiero potem robimy dokumentacje, guardy i porzadki runnerow.
+
+## Obowiązkowy audyt przed i po każdym etapie
+
+Każdy etap z tej listy musi używać protokołu `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`.
+
+Przed etapem developer/operator musi zapisać:
+
+- gdzie w aplikacji Damian zobaczy efekt,
+- jakie trasy/ekrany/komponenty są dotykane,
+- co już istnieje i czy etap nie jest częściowo wdrożony,
+- jakie podobne miejsca trzeba sprawdzić,
+- jakie realne problemy znaleziono obok,
+- czego świadomie nie ruszamy,
+- jaki guard/test będzie dowodem,
+- jaki test ręczny ma wykonać Damian.
+
+Po etapie developer/operator musi zapisać:
+
+- czy naprawiono przyczynę, nie tylko objaw,
+- czy podobne miejsca zostały sprawdzone,
+- co mogło się zepsuć,
+- jakie nowe realne problemy wyszły podczas pracy,
+- co nie zostało ruszone i dlaczego,
+- wynik guardów/testów,
+- instrukcję ręcznego sprawdzenia,
+- update `_project` i payload Obsidiana.
+
+Nie doszukujemy się problemów na siłę. Szukamy rzeczy realnych: źle podpiętych, niedopiętych, niedokończonych, sprzecznych z kierunkiem aplikacji, ryzykownych albo takich, które mogą wrócić po odświeżeniu/refetchu.
 
 ---
 
@@ -40,9 +69,20 @@ Zakres:
   - admin-only / owner-only, jesli preview ma zostac jako narzedzie wewnetrzne.
 - Usunac lub zanonimizowac dane fixture wygladajace jak realne osoby.
 
+Audyt przed etapem:
+- Sprawdzic `src/App.tsx`, `src/pages/UiPreviewVNext.tsx`, `src/pages/UiPreviewVNextFull.tsx`.
+- Sprawdzic, czy istnieja inne preview/dev/demo routes dostepne publicznie.
+- Sprawdzic, czy fixture dane wygladaja jak realne dane osobowe.
+- Nie robic refactoru calego routingu.
+
 Guard/test:
 - Guard blokujacy publiczne preview routes w produkcyjnym `App.tsx`.
 - Manual test: wejsc niezalogowanym na `/ui-preview-vnext` i `/ui-preview-vnext-full`; produkcja nie moze pokazac preview.
+
+Audyt po etapie:
+- Sprawdzic, czy preview nie jest widoczne niezalogowanemu uzytkownikowi.
+- Sprawdzic, czy dev/admin fallback nie wycieka do produkcji.
+- Sprawdzic, czy zanonimizowano dane fixture albo czy nie sa renderowane w produkcji.
 
 Done condition:
 - Niezalogowany uzytkownik nie widzi preview.
@@ -70,10 +110,21 @@ Zakres:
 - Sprawdzic, czy `LeadDetail` i `ClientDetail` mozna bezpiecznie przywrocic do lazyPage albo czy trzeba utrzymac swiadomy kontrakt statycznego importu.
 - Nie robic refactoru routingu bez potrzeby.
 
+Audyt przed etapem:
+- Sprawdzic komentarze przy importach statycznych.
+- Sprawdzic `lazyPage` i exporty stron.
+- Sprawdzic tylko trasy powiazane z tym problemem: lead/client/case i glowne strony lazy.
+- Nie ruszac layoutu LeadDetail/ClientDetail.
+
 Guard/test:
 - Guard default/named export dla stron ladowanych przez lazyPage.
 - Route smoke dla najwazniejszych tras: `/leads`, `/leads/:id`, `/clients`, `/clients/:id`, `/cases`, `/case/:caseId`.
 - Build.
+
+Audyt po etapie:
+- Sprawdzic, czy aplikacja dalej laduje trasy lead/client/case.
+- Sprawdzic, czy nie zwiekszono zakresu statycznych importow.
+- Sprawdzic, czy ewentualne obejscie ma zapisany kontrakt i guard.
 
 Done condition:
 - Wiadomo, czy statyczne importy sa nadal potrzebne.
@@ -101,9 +152,19 @@ Zakres:
 - W produkcji wymagac anon key dla auth verify.
 - Service role fallback dopuscic tylko jawnie i tylko poza produkcja, jesli w ogole zostaje.
 
+Audyt przed etapem:
+- Sprawdzic wszystkie helpery auth/env/server request scope.
+- Sprawdzic, czy podobny fallback nie wystepuje w innych server helpers.
+- Nie zmieniac RLS ani migracji SQL.
+
 Guard/test:
 - Test env contract: production auth verify nie uzywa service role jako cichego fallbacku.
 - Test braku `SUPABASE_ANON_KEY` w produkcji powinien konczyc sie czytelnym bledem konfiguracyjnym.
+
+Audyt po etapie:
+- Sprawdzic, czy brak anon key w produkcji nie jest maskowany.
+- Sprawdzic, czy lokal/dev nadal ma czytelna sciezke uruchomienia.
+- Sprawdzic, czy nie wycieto potrzebnego server-only service role usage poza auth verify.
 
 Done condition:
 - Brak cichego service-role fallback w produkcji.
@@ -133,9 +194,19 @@ Zakres:
 - Sprawdzic aktywne docs i `_project` tylko w aktywnych sekcjach, bez masowego przepisywania historii.
 - Nie zmieniac runtime UI ani logiki aplikacji.
 
+Audyt przed etapem:
+- Sprawdzic aktywne dokumenty wejściowe, nie cala historie.
+- Zidentyfikowac znaki kontrolne i mojibake.
+- Nie przepisywac run reportow i archiwalnych etapow bez powodu.
+
 Guard/test:
 - Guard aktywnych dokumentow: README, `.env.example`, wybrane aktywne docs, aktywne project-memory pliki.
 - Guard ma lapac mojibake i kontrolne znaki w blokach kodu.
+
+Audyt po etapie:
+- Sprawdzic, czy README i `.env.example` sa czytelne.
+- Sprawdzic, czy guard nie blokuje rozwoju na starych archiwach.
+- Sprawdzic, czy nie zmieniono znaczenia instrukcji przy poprawianiu kodowania.
 
 Done condition:
 - README i `.env.example` sa czytelne UTF-8.
@@ -162,10 +233,20 @@ Zakres:
 - Utrzymac szybki runtime guard dla `src/pages`, `src/components`, `src/lib`.
 - Dodac osobny docs/project-memory guard dla aktywnych plikow.
 
+Audyt przed etapem:
+- Sprawdzic obecny zakres skryptu `check-polish-mojibake`.
+- Sprawdzic, ktore aktywne dokumenty powinny wejsc do nowego guardu.
+- Nie rozszerzac guardu na cala historyczna lawine run reportow.
+
 Guard/test:
 - `check:polish-runtime` albo obecny odpowiednik.
 - `check:polish-active-docs` dla aktywnych docs i wejsc project-memory.
 - Test, ze guard wykrywa typowe sekwencje mojibake.
+
+Audyt po etapie:
+- Sprawdzic, czy runtime guard nadal jest szybki.
+- Sprawdzic, czy docs guard lapie realne krzaki.
+- Sprawdzic, czy release gate nie zostal przypadkowo zablokowany przez stare archiwum.
 
 Done condition:
 - Guard nie udaje, ze cale repo jest czyste, jesli skanuje tylko runtime.
@@ -192,9 +273,19 @@ Zakres:
 - Ustalic jeden glowny release gate.
 - Przepisac runner na cross-platform Node, jesli `npm.cmd` jest w aktywnym skrypcie wymaganym poza lokalnym Windowsem.
 
+Audyt przed etapem:
+- Sprawdzic `package.json`, scripts, aktualne run reporty i uzywane komendy.
+- Ustalic, ktory gate jest faktycznie produkcyjny.
+- Nie wycinac guardow bez mapy zaleznosci.
+
 Guard/test:
 - Test odpalenia glownego release gate na Windows i w Linux shell/CI, jesli dostepne.
 - `npm run verify:closeflow:quiet` jako glowny kandydat release gate.
+
+Audyt po etapie:
+- Sprawdzic, czy developer wie, ktory guard jest glowny.
+- Sprawdzic, czy Windows i Linux nie maja sprzecznych sciezek.
+- Sprawdzic, czy nie wycieto starych guardow odpowiedzialnych za regresje.
 
 Done condition:
 - Brak Windows-only komend w skryptach, ktore maja dzialac w CI/Linux.
