@@ -609,3 +609,17 @@ html body #root [data-cf-metric-tile-contract="final-vs5"] .cf-top-metric-tile-i
   stroke: currentColor !important;
   color: currentColor !important;
 }
+
+/* STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH
+   Source truth: data-eliteflow-metric-tone controls metric tile SVG icon color.
+*/
+
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg,
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg * {
+  color: currentColor !important;
+  stroke: currentColor !important;
+}
+
+[data-eliteflow-metric-tone] .cf-top-metric-tile-icon svg [fill]:not([fill="none"]) {
+  fill: currentColor !important;
+}

@@ -741,3 +741,39 @@ Jeden wiersz opisujący aktywny widok i liczbę rekordów.
 Zasada:
 Nie rozbijać na osobny fioletowy label i osobny tytuł pod spodem.
 <!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — SharedFilterStrip R6
+
+Nazwa ludzka:
+Wspólny pasek filtrów list — odporny patch
+
+Nazwa systemowa:
+SharedFilterStrip
+
+Rola:
+Jeden styl filtrów dla list: Klienci, Lejek, docelowo Leady.
+
+Klasy:
+- `cf-filter-strip`
+- `cf-filter-strip-header`
+- `cf-filter-strip-title`
+- `cf-filter-strip-description`
+- `cf-filter-pills`
+- `cf-filter-pill`
+
+Zasada:
+Filtr ma filtrować. Nie pokazuje stale zbędnych kwot typu `0 zł`, jeśli nie są główną funkcją filtra.
+
+## FunnelStageFilterChip — dopisek R6
+
+Nie pokazuje stale kwoty `0 zł`. Pokazuje nazwę etapu i liczbę rekordów. Kwota może być dostępna w `title` albo `aria-label`.
+
+## FunnelDecisionOpenButton — dopisek R6
+
+`Otwórz lead` i `Otwórz sprawę` mają równą szerokość na desktopie przez `--cf-funnel-open-link-width`.
+
+## MetricTileIconColorSource — dopisek R6
+
+SVG i wszystkie elementy ikon w metric tiles dziedziczą `currentColor` z `data-eliteflow-metric-tone`.
+<!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_END -->

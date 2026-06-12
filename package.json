@@ -1005,7 +1005,8 @@
     "check:stage231d0f-funnel-owner-dashboard-visual-alignment": "node scripts/check-stage231d0f-funnel-owner-dashboard-visual-alignment.cjs",
     "check:stage231d0f-r2-funnel-color-filter-parity": "node scripts/check-stage231d0f-r2-funnel-color-filter-parity.cjs",
     "check:stage231d0f-r3-funnel-icon-source-and-header": "node scripts/check-stage231d0f-r3-funnel-icon-source-and-header.cjs",
-    "check:stage231d0f-r5-funnel-records-header-line-repair": "node scripts/check-stage231d0f-r5-funnel-records-header-line-repair.cjs"
+    "check:stage231d0f-r5-funnel-records-header-line-repair": "node scripts/check-stage231d0f-r5-funnel-records-header-line-repair.cjs",
+    "check:stage231d0f-r6-funnel-shared-filter-resilient-patch": "node scripts/check-stage231d0f-r6-funnel-shared-filter-resilient-patch.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

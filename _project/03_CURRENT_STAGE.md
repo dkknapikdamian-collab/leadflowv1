@@ -2855,3 +2855,30 @@ TESTY:
 RYZYKO:
 - Local tree jest brudny po wielu próbach. Push tylko selektywny.
 <!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->
+
+<!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_START -->
+## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R6 Funnel shared filter resilient patch
+
+STATUS: READY_TO_APPLY
+
+FAKTY Z LOGU:
+- R5 shared filter patch zatrzymał się na `SalesFunnel post-patch token missing: data-stage231d0f-r5-stage-filter-no-visible-money`.
+- Przyczyna: patcher szukał zbyt szerokiego wariantu całego `<button>` w `FunnelStageFilterChip`.
+- Realny `SalesFunnel.tsx` ma stabilny marker `data-stage231d0f-r2-filter-tone={tone}` i widoczny `cf-funnel-stage-filter-chip-value`.
+
+ZMIANA:
+- R6 patchuje wyłącznie blok funkcji `FunnelStageFilterChip`, a nie cały plik na ślepo.
+- R6 dopina no-visible-money marker po stabilnym atrybucie.
+- R6 usuwa widoczną kwotę z chipu, zostawia kwotę w `aria-label` i `title`.
+- R6 zachowuje wspólny filtr dla Klientów przez stabilny `cf-contact-cadence-pills`.
+
+TESTY:
+- `node scripts/check-stage231d0f-r6-funnel-shared-filter-resilient-patch.cjs`
+- `node --test tests/stage231d0f-r6-funnel-shared-filter-resilient-patch.test.cjs`
+- R3 guard/test jeśli istnieje
+- `npm run build`
+- `git diff --check`
+
+RYZYKO:
+- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+<!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_END -->

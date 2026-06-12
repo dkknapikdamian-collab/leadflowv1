@@ -11,6 +11,7 @@
   --cf-funnel-card-shadow-hover: 0 18px 40px rgba(15, 23, 42, 0.085);
   --cf-funnel-muted: #64748b;
   --cf-funnel-strong: #0f172a;
+  --cf-funnel-open-link-width: 132px;
 }
 
 #root .main-funnel-html.sales-funnel-stage227f6-page {
@@ -237,7 +238,9 @@
   align-items: center;
   justify-content: center;
   gap: 0.42rem;
-  min-width: max-content;
+  width: var(--cf-funnel-open-link-width);
+  min-width: var(--cf-funnel-open-link-width);
+  max-width: var(--cf-funnel-open-link-width);
   border: 1px solid #e2e8f0;
   border-radius: 0.95rem;
   background: #ffffff;
@@ -293,6 +296,8 @@
 
   #root .main-funnel-html .cf-funnel-decision-open-link {
     width: 100%;
+    min-width: 0;
+    max-width: none;
   }
 }
 

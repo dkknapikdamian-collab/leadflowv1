@@ -132,10 +132,12 @@ const STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE = 'new client form can cr
 const STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS = 'client creation captures explicit lastContactAt for activity truth';
 const STAGE225_CONTACT_CADENCE_GRID_CLIENTS = 'clients list uses Contact Cadence Grid filter from activity-truth';
 const STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT = 'Clients Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
+const STAGE231D0F_R6_CLIENTS_SHARED_FILTER_RESILIENT_PATCH = 'Clients contact cadence filters use robust SharedFilterStrip header and pill classes';
 void STAGE220A25_CASE_FINANCE_SYNC_FROM_CLIENT_CREATE;
 void STAGE223R3_LAST_CONTACT_INTAKE_CLIENTS;
 void STAGE225_CONTACT_CADENCE_GRID_CLIENTS;
 void STAGE227F6_CLIENTS_CONTACT_CADENCE_COMPACT;
+void STAGE231D0F_R6_CLIENTS_SHARED_FILTER_RESILIENT_PATCH;
 
 const CLOSEFLOW_CLIENT_VALUE_EXPECTED_NOT_PAID_V29 = 'client list shows expected relation value, not paid amount only';
 const STAGE220A36_CLIENTS_COMMISSION_VALUE_SOURCE = 'clients list operational value uses commission due, not transaction price';
@@ -908,12 +910,18 @@ export default function Clients() {
 
 
             {!showArchived ? (
-              <div className="cf-contact-cadence-strip w-full max-w-none" data-stage225-contact-cadence-grid="clients" data-stage227f6-contact-cadence-compact="clients">
-                <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />
-                <div className="cf-contact-cadence-pills">
+              <div className="cf-contact-cadence-strip cf-filter-strip w-full max-w-none" data-stage231d0f-r6-client-shared-filter-strip="true" data-stage225-contact-cadence-grid="clients" data-stage227f6-contact-cadence-compact="clients">
+                <span hidden data-stage225-cadence-14-label="14+ dni ciszy" />                <div className="cf-filter-strip-header" data-stage231d0f-r6-client-filter-header="true">
+                  <div>
+                    <div className="cf-filter-strip-title">Filtry kontaktu</div>
+                    <p className="cf-filter-strip-description">Szybko pokaż klientów według ciszy i ostatniego kontaktu.</p>
+                  </div>
+                </div>
+
+                <div className="cf-contact-cadence-pills cf-filter-pills">
                   <button
                     type="button"
-                    className={cadenceFilter === 'all' ? 'cf-status-pill' : 'pill'}
+                    className={cadenceFilter === 'all' ? 'cf-status-pill cf-filter-pill' : 'pill cf-filter-pill'}
                     data-cf-status-tone={cadenceFilter === 'all' ? 'blue' : undefined}
                     onClick={() => setCadenceFilter('all')}
                   >
@@ -923,7 +931,7 @@ export default function Clients() {
                     <button
                       key={bucket.key}
                       type="button"
-                      className={cadenceFilter === bucket.key ? 'cf-status-pill' : 'pill'}
+                      className={cadenceFilter === bucket.key ? 'cf-status-pill cf-filter-pill' : 'pill cf-filter-pill'}
                       data-cf-status-tone={cadenceFilter === bucket.key ? (bucket.severity === 'high' ? 'red' : bucket.severity === 'medium' ? 'amber' : 'blue') : undefined}
                       onClick={() => setCadenceFilter(bucket.key)}
                       title={bucket.description}

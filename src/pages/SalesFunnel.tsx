@@ -7,6 +7,7 @@ import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import '../styles/closeflow-metric-tiles.css';
+import '../styles/closeflow-record-list-source-truth.css';
 import '../styles/sales-funnel-stage231d0f-visual-alignment.css';
 import {
   fetchCasesFromSupabase,
@@ -30,6 +31,7 @@ const STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT = 'funnel owner dashbo
 const STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY = 'funnel owner tiles use explicit semantic color/icon map and stage filters share client filter visual language';
 const STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER = 'funnel icon color source truth uses closeflow metric tiles and records header is one row';
 const STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR = 'records header line-level repair removes stale visibleLabel/title fragments';
+const STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH = 'resilient patch for funnel no visible stage money, shared filters, icon source and Clients filter header';
 // Stage227A static guard compatibility markers only, not rendered kanban columns:
 // data-stage227a-sales-funnel-movement-view="true" data-stage227a-funnel-summary="true" data-stage227a-funnel-column="true" data-stage227a-funnel-card="true" data-stage227a-funnel-next-step="true" data-stage227a-funnel-silence-age="true" data-stage227a-funnel-risk-flag="true" data-stage227a-funnel-value="true"
 void STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW;
@@ -40,6 +42,7 @@ void STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT;
 void STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY;
 void STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER;
 void STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR;
+void STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH;
 
 type LoadState = {
   leads: any[];
@@ -303,19 +306,21 @@ function FunnelStageFilterChip({
     <button
       type="button"
       onClick={onClick}
+      aria-label={`${label}, ${count} rekordów, wartość ${formatMoney(value, 'PLN')}`}
+      title={`${label}: ${count} rekordów · ${formatMoney(value, 'PLN')}`}
       className={`cf-funnel-stage-filter-chip cf-filter-pill ${active ? 'cf-status-pill' : 'pill'}`}
       data-cf-status-tone={active ? tone : undefined}
       data-stage227b-stage-filter="true"
       data-stage228a-clickable-filter="true"
       data-stage231d0f-stage-filter-chip="true"
       data-stage231d0f-r2-filter-tone={tone}
+      data-stage231d0f-r6-stage-filter-no-visible-money="true"
     >
       <span className="cf-funnel-stage-filter-chip-main">
         <strong className="cf-funnel-stage-filter-chip-label">{label}</strong>
         <span className="cf-funnel-stage-filter-chip-count">{count}</span>
       </span>
-      <span className="cf-funnel-stage-filter-chip-value">{formatMoney(value, 'PLN')}</span>
-    </button>
+</button>
   );
 }
 
@@ -500,11 +505,11 @@ export function SalesFunnel() {
             <FunnelOwnerDecisionTile filter="money" active={ownerFilter === 'money'} value={formatMoney(totalValue, view.summary.currency || 'PLN')} onClick={() => applyOwnerFilter('money')} />
           </section>
 
-          <section className="cf-funnel-stage-filter-strip cf-contact-cadence-strip cf-filter-strip" data-stage231d0f-r2-filter-parity-strip="true" data-stage231d0f-stage-filter-strip="true" data-stage227b-stage-filter-strip="true">
-            <div className="cf-funnel-stage-filter-header">
+          <section className="cf-funnel-stage-filter-strip cf-contact-cadence-strip cf-filter-strip" data-stage231d0f-r2-filter-parity-strip="true" data-stage231d0f-r6-funnel-shared-filter-strip="true" data-stage231d0f-stage-filter-strip="true" data-stage227b-stage-filter-strip="true">
+            <div className="cf-funnel-stage-filter-header cf-filter-strip-header">
               <div className="flex items-center gap-2 text-sm font-black text-slate-900">
                 <Filter className="h-4 w-4 text-blue-600" />
-                Etapy jako filtr, nie ściśnięte kolumny
+                <span className="cf-filter-strip-title">Etapy jako filtr</span>
               </div>
               <button type="button" onClick={() => applyStageFilter('all')} className="cf-funnel-stage-show-all" data-stage228a-show-all="true">
                 Pokaż wszystkie
