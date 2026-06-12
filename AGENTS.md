@@ -142,3 +142,24 @@ Nie wolno doszukiwać się problemów na siłę, robić chaotycznego refactoru a
 
 Etap bez sekcji `AUDYT PRZED ETAPEM` i `AUDYT PO ETAPIE` jest niezamknięty.
 <!-- CLOSEFLOW_STAGE_AUDIT_PROTOCOL_2026_06_12_END -->
+
+<!-- CLOSEFLOW_FOUND_PROBLEMS_LEDGER_2026_06_12_START -->
+# CloseFlow / LeadFlow - znalezione problemy do analizy Damiana
+
+Aktywny plik centralny: `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`.
+
+## Decyzja Damiana
+Od 2026-06-12 problemy znalezione przy audycie etapów, pracy developera, testach, guardach albo ręcznym sprawdzaniu aplikacji mają trafiać do centralnego pliku `Znalezione problemy`, jeżeli nie są już częścią aktualnego etapu, etapów naprawy albo kierunku rozwoju.
+
+To nie jest lista rzeczy do automatycznego wdrożenia. To jest rejestr przyszłych potencjalnych etapów do decyzji Damiana.
+
+## Obowiązek developera / Codexa
+Przy każdym etapie developer ma:
+- przeczytać `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`,
+- sprawdzić, czy ruszany obszar ma już wpisy `NOWE`, `DO_ANALIZY_DAMIANA` albo `PRZYJETE_DO_ETAPU`,
+- wpisać do tego pliku realne problemy znalezione obok zakresu etapu,
+- nie naprawiać ich po cichu bez decyzji, chyba że blokują etap albo są częścią zatwierdzonego zakresu,
+- w run report zapisać: `Znalezione problemy: brak nowych` albo podać ID nowych wpisów.
+
+Przykład: jeśli przy sprawdzaniu przycisków wyjdzie, że ta sama akcja ma inne źródło prawdy, inne kolory, inny komponent albo lokalny styl zamiast wspólnego wzorca, developer ma dodać wpis do `Znalezione problemy`, a nie gubić tego w czacie.
+<!-- CLOSEFLOW_FOUND_PROBLEMS_LEDGER_2026_06_12_END -->
