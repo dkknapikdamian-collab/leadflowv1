@@ -24,5 +24,5 @@ test('missing Google Calendar environment is shown as configuration, not success
   const settings = read('src/pages/Settings.tsx');
   const handler = read('src/server/google-calendar-handler.ts');
   assert.match(settings, /Wymaga konfiguracji/);
-  assert.match(handler, /status\(409\)\.json\(\{ error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED', missing: cfg\.missing \}\)/);
+  assert.match(handler, /status\(409\)\.json\(\{[\s\S]*error: 'GOOGLE_CALENDAR_CONFIG_REQUIRED'[\s\S]*missing: cfg\.missing[\s\S]*reason: 'app_not_configured'[\s\S]*\}\)/);
 });
