@@ -1,6 +1,7 @@
 # 04_ZNALEZIONE_PROBLEMY_DO_ANALIZY - CloseFlow / LeadFlow
 
 Data utworzenia: 2026-06-12 20:28 Europe/Warsaw  
+Ostatnia aktualizacja: 2026-06-12 23:59 Europe/Warsaw  
 Status: ACTIVE  
 Typ: centralny rejestr problemow znalezionych podczas audytow etapow  
 Repo: dkknapikdamian-collab/leadflowv1  
@@ -46,7 +47,7 @@ Przyklady problemow, ktore maja trafic do tego pliku:
 - komentarz/TODO/FIXME dotyczy aktualnie ruszanego modulu,
 - funkcja wyglada na niedokonczona albo podlaczona tylko czesciowo,
 - modul ma obejscie, ktore maskuje stary blad,
-- UI jest nieczytelne w 5 sekund albo odbiega od zaakceptowanego wzorca,
+- UI jest nieczytelne w 5 sekund albo odbiega od zaakceptowanego wzorcem,
 - brakuje testu/guardu dla powtarzalnej klasy bledu.
 
 ## Czego tu nie wpisywac
@@ -104,7 +105,7 @@ Przy kazdym etapie developer ma:
 
 ## Relacja do etapow
 
-Ten plik nie zastępuje `_project/07_NEXT_STEPS.md` ani `_project/07_REPAIR_STAGES_HIDDEN_AUDIT_FINDINGS.md`.
+Ten plik nie zastępuje `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`, `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`, `_project/07_NEXT_STEPS.md` ani `_project/07_REPAIR_STAGES_HIDDEN_AUDIT_FINDINGS.md`.
 
 Przeplyw decyzyjny:
 
@@ -115,22 +116,46 @@ Przeplyw decyzyjny:
 
 ## Aktualne wpisy
 
-Brak wpisow na start. Ten plik zostal utworzony jako centralne miejsce dla przyszlych znalezisk z audytow.
+### 2026-06-12 23:59 Europe/Warsaw - Burdel w roadmapie i brak trzech centralnych plikow decyzyjnych
 
-
-### 2026-06-13 00:45 Europe/Warsaw - Google Calendar personal sync needs durable work_items owner fields
-
-- id: FOUND-20260613-01
+- id: FOUND-20260612-01
 - status: PRZYJETE_DO_ETAPU
-- znalezione przy etapie: STAGE231F_R1_GOOGLE_CALENDAR_USER_SCOPE_SAFETY_LOCK
-- ekran / trasa: Settings / Google Calendar sync-inbound / sync-outbound
-- modul / pliki: src/server/google-calendar-outbound.ts, src/server/google-calendar-inbound.ts, work_items
-- problem: personal Google Calendar sync needs a durable per-row owner/user field for calendar-visible work_items. Without it, a member sync can either over-sync the whole workspace or skip unowned records.
-- dowod: previous outbound implementation fetched work_items only by workspace_id; inbound payload did not guarantee source_user_id/google_calendar_user_id persistence in older schemas.
-- dlaczego to problem: private Google Calendar sync must not push another user's workspace tasks/events into a member's personal calendar.
-- ryzyko: users may miss expected sync for records without owner fields until schema/product model is confirmed.
+- znalezione przy etapie: audit kierunku rozwoju aplikacji po pytaniu Damiana o digest, szkice, kalendarz, pilnowanie leadow, dokumenty i pozyskiwanie leadow
+- ekran / trasa: nie dotyczy bezposrednio UI; problem dotyczy `_project` i pamieci projektu
+- modul / pliki:
+  - `_project/07_NEXT_STEPS.md`
+  - `_project/03_CURRENT_STAGE.md`
+  - `_project/04_DECISIONS.md`
+  - `_project/06_GUARDS_AND_TESTS.md`
+  - `_project/10_PROJECT_TIMELINE.md`
+  - `_project/12_IMPLEMENTATION_LEDGER.md`
+  - `_project/13_TEST_HISTORY.md`
+- problem: informacje o etapach, kierunku rozwoju, problemach technicznych, Smart Prospecting / AI Opportunity Finder i starych hotfixach byly rozrzucone po kilku dlugich plikach. Przy pytaniu Damiana o kierunek aplikacji AI moglo pominac istotny kierunek growth, mimo ze byl zapisany w repo.
+- dowod: `AI Opportunity Finder / Smart Prospecting` byl zapisany w dlugim `_project/07_NEXT_STEPS.md`, ale nie istnial czysty centralny plik kierunku rozwoju ani centralny plik etapow odpowiadajacy na pytanie "co robimy teraz i pozniej".
+- dlaczego to problem: kolejny chat/Codex moze czytac zly fragment, uznac stary helper za aktualna kolejke albo pominac wazny kierunek produktu. To zwieksza ryzyko chaosu etapow, przepisywania pomyslow i zlych priorytetow.
+- ryzyko: decyzje produktowe beda gubic sie w historii, a aplikacja bedzie rozwijana przypadkowymi funkcjami zamiast jednym kierunkiem owner-control + Smart Prospecting jako pozniejszy growth module.
 - priorytet wstepny: P1
-- czy jest juz w etapach/kierunku: TAK, STAGE231F_R3_GOOGLE_CALENDAR_PERSONAL_SYNC_ITEM_SCOPE
-- propozycja dalszego kroku: confirm work_items ownership schema and add SQL/guard if required; keep R1 fail-closed safety lock until then.
-- decyzja Damiana: V1 ma byc personal sync, workspace-wide calendar only as later explicit admin mode.
-- powiazany etap, jesli powstanie: STAGE231F_R3_GOOGLE_CALENDAR_PERSONAL_SYNC_ITEM_SCOPE
+- czy jest juz w etapach/kierunku: CZESCIOWO, stare wpisy byly w `_project/07_NEXT_STEPS.md`, ale brakowalo centralnych plikow kanonicznych.
+- propozycja dalszego kroku: utworzyc i utrzymywac trzy centralne pliki: `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`, `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`, `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md`.
+- decyzja Damiana: Damian wskazal, ze powinny byc trzy pliki odpowiadajace na pytanie: `Etapy`, `Kierunek rozwoju`, `Problemy znalezione przez AI`.
+- powiazany etap, jesli powstanie: `CF-DOCS-ROADMAP-CANON-001`
+
+### 2026-06-12 23:59 Europe/Warsaw - AI Opportunity Finder byl ukryty w dlugim pliku zamiast w kierunku rozwoju
+
+- id: FOUND-20260612-02
+- status: PRZYJETE_DO_ETAPU
+- znalezione przy etapie: audit kierunku rozwoju aplikacji
+- ekran / trasa: przyszly modul growth / smart prospecting
+- modul / pliki:
+  - `_project/07_NEXT_STEPS.md`
+  - `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
+  - `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
+- problem: kierunek "użytkownik wybiera branżę/miasto/problem, system znajduje firmy, ocenia potencjał, tworzy powód kontaktu, zapisuje leady i ustawia follow-up" istnial w repo, ale nie byl wyeksponowany w centralnym kierunku rozwoju.
+- dowod: fragment `LeadFlow AI Opportunity Finder` w `_project/07_NEXT_STEPS.md` opisywal Smart Prospecting / Opportunity Finder jako modul pozyskiwania leadow, ale znajdowal sie w dlugim pliku z innymi etapami i historia.
+- dlaczego to problem: jest to wazny kierunek growth i przewaga produktu, ale moze zostac pominiety przy priorytetyzacji, jesli AI czyta tylko skrot albo nowsze hotfixy.
+- ryzyko: aplikacja bedzie rozwijana tylko jako CRM po otrzymaniu leadow, a nie jako system domykajacy caly ruch: wykrycie okazji -> zapis leada -> follow-up -> owner report.
+- priorytet wstepny: P2
+- czy jest juz w etapach/kierunku: TAK, przeniesione do `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md` i `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
+- propozycja dalszego kroku: traktowac `STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER` jako pozniejszy growth module po stabilizacji owner-control core.
+- decyzja Damiana: kierunek ma byc widoczny przy pytaniu o rozwoj aplikacji.
+- powiazany etap, jesli powstanie: `STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER`
