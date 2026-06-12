@@ -112,3 +112,33 @@ Etap jest niewazny, jesli nie ma dowodu skanu repo, `_project/`, Obsidiana, wpis
 ## Granica tego etapu
 Zmiany organizacyjne moga dotykac tylko `AGENTS.md`, `_project/` i dashboardu Obsidiana. Nie zmieniac runtime UI, routingu, logiki produktu, styli ani architektury aplikacji bez osobnego etapu.
 <!-- DAMIAN_MINIMAL_PROJECT_MEMORY_PROTOCOL_END -->
+
+<!-- CLOSEFLOW_STAGE_AUDIT_PROTOCOL_2026_06_12_START -->
+# CloseFlow / LeadFlow - obowiązkowy audyt przed i po etapie
+
+Aktywny plik szczegółowy: `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`.
+
+## Decyzja Damiana
+Od 2026-06-12 każdy etap musi mieć audyt przed wdrożeniem i audyt po wdrożeniu.
+
+Audyt ma szukać realnych problemów: złych podpięć, niedopiętych funkcji, niedokończonych przepięć, sprzeczności z kierunkiem aplikacji, ryzyk regresji, drugich źródeł prawdy, brakujących guardów/testów i rzeczy, które mogą wrócić po refetchu albo odświeżeniu.
+
+Nie wolno doszukiwać się problemów na siłę, robić chaotycznego refactoru ani ruszać obcych modułów bez związku z etapem.
+
+## Wymagane przed etapem
+- przeczytać `AGENTS.md`, `_project/00_PROJECT_MEMORY_PROTOCOL.md`, `_project/04_STAGE_AUDIT_PROTOCOL_CLOSEFLOW.md`, `_project/STAGE_TEMPLATE_MINIMAL.md` i właściwy plik etapu,
+- sprawdzić, czy etap nie jest już wdrożony częściowo,
+- wypisać ekran/trasę, gdzie Damian zobaczy efekt,
+- wypisać podobne miejsca do sprawdzenia,
+- zaplanować guard/test albo jawnie zapisać brak guardu z powodem.
+
+## Wymagane po etapie
+- sprawdzić, czy poprawiono przyczynę, nie tylko objaw,
+- sprawdzić powiązane miejsca i ryzyka regresji,
+- uruchomić właściwe guardy/testy,
+- podać manualny test dla Damiana,
+- zaktualizować `_project` i payload Obsidiana,
+- zapisać `AUDYT PO ETAPIE` w run report.
+
+Etap bez sekcji `AUDYT PRZED ETAPEM` i `AUDYT PO ETAPIE` jest niezamknięty.
+<!-- CLOSEFLOW_STAGE_AUDIT_PROTOCOL_2026_06_12_END -->
