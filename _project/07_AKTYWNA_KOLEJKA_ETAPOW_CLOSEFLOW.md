@@ -1,6 +1,6 @@
 # 07_AKTYWNA_KOLEJKA_ETAPOW_CLOSEFLOW - CloseFlow / LeadFlow
 
-Data: 2026-06-12 21:35 Europe/Warsaw  
+Data: 2026-06-12 22:10 Europe/Warsaw  
 Status: ACTIVE_STAGE_QUEUE_INDEX  
 Typ: scalony indeks etapow aplikacji, napraw i kierunku rozwoju  
 Repo: dkknapikdamian-collab/leadflowv1  
@@ -45,13 +45,13 @@ Znalezione problemy spoza zakresu etapu ida do `_project/04_ZNALEZIONE_PROBLEMY_
 Te etapy maja pierwszenstwo przed kosmetyka, bo sprawdzaja czy aplikacja dziala nie tylko na koncie Damiana.
 
 1. `STAGE231E_NON_ADMIN_ACCOUNT_FEATURE_ACCESS_AUDIT`  
-   Status: NAJBLIZSZY_ETAP_PO_DEEP_SCAN.  
+   Status: WDROZONE_MAPA_I_GUARD_DO_LOKALNEGO_PASS.  
    Cel: sprawdzic wszystkie opcje przewidziane dla zwyklych uzytkownikow i czlonkow workspace.  
    Zakres: Google Calendar, digest, weekly report, powiadomienia, ustawienia, AI/drafts, kalendarz, zadania, leady, klienci, sprawy.  
-   Warunek: powstaje mapa dostepu: admin-only / owner-only / plan-feature / workspace-member / hidden / dev-only.
+   Warunek: powstala mapa dostepu: `_project/07_STAGE231E_NON_ADMIN_FEATURE_ACCESS_MATRIX.md`; guard: `scripts/check-stage231e-non-admin-feature-access-map.cjs`; run report: `_project/runs/2026-06-12_STAGE231E_NON_ADMIN_ACCOUNT_FEATURE_ACCESS_AUDIT.md`.
 
 2. `STAGE231F_GOOGLE_CALENDAR_MULTI_USER_SYNC_AUDIT_AND_FIX`  
-   Status: PILNE_PO_231E_ALBO_OD_RAZU_JESLI_SYNC_BLOKUJE_TESTY.  
+   Status: NAJBLIZSZY_ETAP_PO_STAGE231E.  
    Cel: zweryfikowac i naprawic problem Google Calendar na kontach innych niz konto Damiana.  
    Zakres: status, connect, disconnect, sync-inbound, sync-outbound, workspace, user, plan gate, test zwyklego uzytkownika.  
    Warunek: zwykly uprawniony uzytkownik ma jasny wynik: synchronizacja dziala albo widzi poprawny komunikat braku uprawnien. Nie moze byc cichego braku synchronizacji.
@@ -71,7 +71,7 @@ Te etapy maja pierwszenstwo przed kosmetyka, bo sprawdzaja czy aplikacja dziala 
 ## BLOK 1 - app/product safety przed dalsza praca
 
 5. `STAGE232A_PUBLIC_PREVIEW_ROUTES_PRODUCTION_LOCK`  
-   Status: PO_BLOKU_0_ALBO_WASKI_FIX_JESLI_DAMIAN_CHCE_NATYCHMIAST.  
+   Status: WDROZONE_WASKI_FIX_DO_LOKALNEGO_PASS.  
    Cel: zamknac publiczne preview routes w produkcji i ograniczyc fixture preview data.
 
 6. `STAGE232B_CHUNK_BOUNDARY_RUNTIME_STABILITY`  
@@ -158,14 +158,14 @@ Zrodlo: `_project/07_NEXT_STEPS.md`, AI Opportunity Finder.
 
 # Najblizszy etap
 
-Najblizszy etap po deep scan 2026-06-12: `STAGE231E_NON_ADMIN_ACCOUNT_FEATURE_ACCESS_AUDIT`.
+Najblizszy etap po STAGE231E 2026-06-12: `STAGE231F_GOOGLE_CALENDAR_MULTI_USER_SYNC_AUDIT_AND_FIX`.
 
-Powod: Damian wskazal powazny problem, ze Google Calendar dziala inaczej na koncie Damiana niz na innych kontach. Kod pokazuje wiele funkcji gated przez role i plan features, dlatego najpierw trzeba zrobic mape dostepnosci opcji na zwyklym koncie.
+Powod: STAGE231E potwierdzil, ze Google Calendar ma frontowy gate przez `isAdmin || isAppOwner || access.features.googleCalendar` oraz requesty z workspace/user headers, ale realny multi-user/token/backend contract wymaga osobnego testu i naprawy.
 
-Nastepny po nim: `STAGE231F_GOOGLE_CALENDAR_MULTI_USER_SYNC_AUDIT_AND_FIX`.
+Nastepny po nim: `STAGE231G_DAILY_DIGEST_AND_WEEKLY_REPORT_ACCESS_DELIVERY_AUDIT` albo `STAGE231H_MOBILE_READABILITY_APP_WIDE_AUDIT_AND_FIX` wedlug decyzji Damiana po wyniku 231F.
 
 Po 231F Damian decyduje:
 
 - jesli wysylka maili/digestow ma byc aktywna produkcyjnie: robimy `STAGE231G_DAILY_DIGEST_AND_WEEKLY_REPORT_ACCESS_DELIVERY_AUDIT`,
 - jesli priorytetem jest UI na telefonie: robimy `STAGE231H_MOBILE_READABILITY_APP_WIDE_AUDIT_AND_FIX`,
-- dopiero potem wracamy do `STAGE232A_PUBLIC_PREVIEW_ROUTES_PRODUCTION_LOCK` albo do fal wizualnych.
+- dopiero potem wracamy do `STAGE232B_CHUNK_BOUNDARY_RUNTIME_STABILITY` albo do fal wizualnych.
