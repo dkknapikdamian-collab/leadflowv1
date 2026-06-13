@@ -112,6 +112,9 @@ import { Label } from '../components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Textarea } from '../components/ui/textarea';
 import { useWorkspace } from '../hooks/useWorkspace';
+import { buildActivityTruth } from '../lib/owner-control/activity-truth';
+import { buildNextMoveContract } from '../lib/owner-control/next-move-contract';
+import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 import { EVENT_TYPES, PRIORITY_OPTIONS, TASK_TYPES } from '../lib/options';
 import { isLeadMovedToService } from '../lib/lead-health';
 import { isLeadInServiceStatus } from '../lib/lead-service-state';
@@ -543,29 +546,35 @@ void STAGE227E3_DECISION_CARDS_CLEANUP;
 
 const STAGE227E5_WORK_CENTER_BLOCKERS_SOURCE_OF_TRUTH = 'LeadDetail keeps one central work center and removes duplicated upcoming work from right rail';
 void STAGE227E5_WORK_CENTER_BLOCKERS_SOURCE_OF_TRUTH;
-function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: any[], nextTimelineEntry: TimelineEntry | null, leadInService: boolean) {
-  const contactDates = [
-    lead?.lastContactAt,
-    lead?.last_contact_at,
-    lead?.lastTouchAt,
-    lead?.last_touch_at,
-    lead?.lastActivityAt,
-    lead?.last_activity_at,
-    ...activities.map((activity) => activity?.happenedAt || activity?.createdAt || activity?.payload?.happenedAt || activity?.payload?.createdAt),
-    ...tasks.map((task) => task?.completedAt || task?.scheduledAt || task?.dueAt || task?.date || task?.createdAt),
-    ...events.map((event) => event?.completedAt || event?.startAt || event?.scheduledAt || event?.createdAt),
-  ]
-    .map((value) => asDate(value))
-    .filter(Boolean) as Date[];
-
-  const lastContact = contactDates.sort((left, right) => right.getTime() - left.getTime())[0] || null;
-  const daysSilent = lastContact ? Math.max(0, Math.floor((Date.now() - lastContact.getTime()) / 86400000)) : null;
-  const hasNextAction = Boolean(nextTimelineEntry);
+function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: any[], nextTimelineEntry: TimelineEntry | null, leadInService: boolean, workspaceSettings: unknown) {
+  const settings = readOwnerRiskSettings(workspaceSettings);
+  const activityTruth = buildActivityTruth({
+    entityType: 'lead',
+    entityId: String(lead?.id || ''),
+    record: lead,
+    activities,
+    tasks,
+    events,
+  });
+  const daysSilent = activityTruth.contactSilentDays ?? activityTruth.activitySilentDays;
+  const nextMove = buildNextMoveContract({
+    entityType: 'lead',
+    entityId: String(lead?.id || ''),
+    status: String(lead?.status || ''),
+    nearestAction: nextTimelineEntry ? {
+      when: nextTimelineEntry.dateValue,
+      title: nextTimelineEntry.title,
+      type: nextTimelineEntry.kind,
+      status: nextTimelineEntry.status,
+    } : null,
+  });
   const isLost = String(lead?.status || '').toLowerCase() === 'lost';
 
   let label = 'Pod kontrolą';
-  let headline = hasNextAction ? 'Jest następny ruch' : 'Brak następnego ruchu';
-  let details = lastContact ? `Ostatni kontakt/ruch: ${formatDateTime(lastContact)}.` : 'Brak zapisanego kontaktu/ruchu.';
+  let headline = nextMove.label;
+  let details = activityTruth.lastContactAt || activityTruth.lastActivityAt
+    ? `Ostatni kontakt/ruch: ${formatDateTime(activityTruth.lastContactAt || activityTruth.lastActivityAt)}.`
+    : 'Brak zapisanego kontaktu/ruchu.';
   let toneClass = 'lead-detail-pill-green';
 
   if (leadInService) {
@@ -578,14 +587,19 @@ function getLeadSilenceRisk(lead: any, activities: any[], tasks: any[], events: 
     headline = 'Lead zamknięty jako utracony';
     details = 'Nie prowadź dalszej sprzedaży bez ponownego otwarcia tematu.';
     toneClass = 'lead-detail-pill-muted';
-  } else if (!hasNextAction) {
+  } else if (nextMove.isMissing) {
     label = 'Brak akcji';
     toneClass = 'lead-detail-pill-danger';
     details = daysSilent === null ? 'Nie ma ani kontaktu/ruchu, ani zaplanowanej akcji.' : `Cisza: ${daysSilent} dni. Brakuje następnego kroku.`;
-  } else if (typeof daysSilent === 'number' && daysSilent >= 7) {
+  } else if (typeof daysSilent === 'number' && daysSilent >= settings.criticalDays) {
+    label = 'Alarm';
+    headline = `${daysSilent} dni bez ruchu`;
+    details = 'Temat przekroczył krytyczny próg ciszy. Skontaktuj się albo podejmij decyzję o zamknięciu.';
+    toneClass = 'lead-detail-pill-danger';
+  } else if (typeof daysSilent === 'number' && daysSilent >= settings.warningDays) {
     label = 'Cisza';
     headline = `${daysSilent} dni bez ruchu`;
-    details = 'Sprawdź, czy zaplanowana akcja jest nadal aktualna.';
+    details = 'Temat przekroczył próg ostrzegawczy. Sprawdź, czy zaplanowana akcja jest nadal aktualna.';
     toneClass = 'lead-detail-pill-amber';
   }
 
@@ -1302,8 +1316,8 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
   }, [activities, lead, leadInService, nextTimelineEntry, sortedLinkedEvents, sortedLinkedTasks]);
 
   const leadSilenceRisk = useMemo(
-    () => getLeadSilenceRisk(lead, activities, sortedLinkedTasks, sortedLinkedEvents, nextTimelineEntry, leadInService),
-    [activities, lead, leadInService, nextTimelineEntry, sortedLinkedEvents, sortedLinkedTasks],
+    () => getLeadSilenceRisk(lead, activities, sortedLinkedTasks, sortedLinkedEvents, nextTimelineEntry, leadInService, workspace),
+    [activities, lead, leadInService, nextTimelineEntry, sortedLinkedEvents, sortedLinkedTasks, workspace],
   );
 
 

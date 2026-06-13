@@ -1,5 +1,5 @@
 import { buildActivityTruth } from './activity-truth';
-import { SALES_SILENCE_THRESHOLDS_DAYS } from './owner-risk-rules';
+import { normalizeOwnerRiskSettings, SALES_SILENCE_THRESHOLDS_DAYS } from './owner-risk-rules';
 
 export type ContactCadenceBucketKey =
   | 'today'
@@ -55,6 +55,19 @@ export const CONTACT_CADENCE_BUCKETS: ContactCadenceBucket[] = [
   { key: 'silent_14_plus', label: '14+ dni ciszy', shortLabel: '14+ dni', description: 'Minęło co najmniej 14 dni od ostatniego kontaktu.', severity: 'high', minDays: 14, maxDays: null },
   { key: 'unknown', label: 'Brak daty kontaktu', shortLabel: 'Brak daty', description: 'Brak pewnej daty prawdziwego kontaktu.', severity: 'medium', minDays: null, maxDays: null },
 ];
+
+export function buildContactCadenceBuckets(settings?: unknown): ContactCadenceBucket[] {
+  const normalized = normalizeOwnerRiskSettings(settings);
+  return CONTACT_CADENCE_BUCKETS.map((bucket) => {
+    if (bucket.key === 'silent_7') {
+      return { ...bucket, label: `${normalized.warningDays}+ dni ciszy`, shortLabel: `${normalized.warningDays}+ dni`, description: `Od ${normalized.warningDays} do ${normalized.criticalDays - 1} dni bez kontaktu.`, minDays: normalized.warningDays, maxDays: normalized.criticalDays - 1 };
+    }
+    if (bucket.key === 'silent_14_plus') {
+      return { ...bucket, label: `${normalized.criticalDays}+ dni ciszy`, shortLabel: `${normalized.criticalDays}+ dni`, description: `Co najmniej ${normalized.criticalDays} dni bez kontaktu.`, minDays: normalized.criticalDays };
+    }
+    return bucket;
+  });
+}
 
 const CONTACT_CADENCE_BUCKET_KEYS = CONTACT_CADENCE_BUCKETS.map((bucket) => bucket.key) as ContactCadenceBucketKey[];
 const STAGE225_CONTACT_CADENCE_GRID = 'Contact cadence grid uses activity-truth and imported SALES_SILENCE_THRESHOLDS_DAYS';
@@ -138,15 +151,17 @@ function hasPlannedNextStep(record: Record<string, unknown>, relatedRecords: unk
   });
 }
 
-export function classifyContactCadenceBucket(contactSilentDays: number | null): ContactCadenceBucketKey {
+export function classifyContactCadenceBucket(contactSilentDays: number | null, settings?: unknown): ContactCadenceBucketKey {
+  const normalized = normalizeOwnerRiskSettings(settings);
   if (typeof contactSilentDays !== 'number' || !Number.isFinite(contactSilentDays)) return 'unknown';
   if (contactSilentDays <= 0) return 'today';
+  if (contactSilentDays >= normalized.criticalDays) return 'silent_14_plus';
+  if (contactSilentDays >= normalized.warningDays) return 'silent_7';
   if (contactSilentDays === 1) return 'silent_1';
   if (contactSilentDays === 2) return 'silent_2';
   if (contactSilentDays === 3) return 'silent_3';
   if (contactSilentDays <= 5) return 'silent_5';
-  if (contactSilentDays < 14) return 'silent_7';
-  return 'silent_14_plus';
+  return 'silent_5';
 }
 
 function buildBadges(bucketKey: ContactCadenceBucketKey, contactSilentDays: number | null) {
@@ -197,6 +212,7 @@ export function buildContactCadenceGrid(input: {
   records: unknown[];
   relatedRecordsById?: Map<string, unknown[]>;
   now?: Date;
+  settings?: unknown;
 }): ContactCadenceGrid {
   const now = input.now || new Date();
   const grid = createEmptyGrid(now.toISOString());
@@ -218,7 +234,7 @@ export function buildContactCadenceGrid(input: {
       payments: relatedRecords,
       now,
     });
-    const bucketKey = classifyContactCadenceBucket(truth.contactSilentDays);
+    const bucketKey = classifyContactCadenceBucket(truth.contactSilentDays, input.settings);
     const hasNextStep = hasPlannedNextStep(record, relatedRecords);
     const value = getValue(record);
     const rescue = resolveRescue({

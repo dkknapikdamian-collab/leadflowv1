@@ -22,6 +22,7 @@ export type BuildRecordOperationalBadgesInput = {
   relatedRecords?: unknown[];
   hasNextStep?: boolean;
   now?: Date;
+  settings?: unknown;
 };
 
 const STAGE222_R4_RECORD_OPERATIONAL_BADGES = 'lead/client rows show operational silence and missing contact as record-level badges';
@@ -105,7 +106,7 @@ export function buildRecordOperationalBadges(input: BuildRecordOperationalBadges
     });
 
     badges.push(...getLeadOwnerRiskBadges(record, {
-      settings: readOwnerRiskSettings(),
+      settings: readOwnerRiskSettings(input.settings),
       relatedRecords,
       hasNextStep: input.hasNextStep,
       nextMove,

@@ -26,6 +26,8 @@ const pkg = JSON.parse(read('package.json'));
 
 for (const token of [
   'DEFAULT_HIGH_VALUE_THRESHOLD_PLN = 5000',
+  'DEFAULT_OWNER_CONTROL_WARNING_DAYS = 7',
+  'DEFAULT_OWNER_CONTROL_CRITICAL_DAYS = 14',
   'SALES_SILENCE_THRESHOLDS_DAYS = [1, 2, 3, 5, 7, 14]',
   'OwnerRiskSeverity',
   'OwnerRiskBadge',
@@ -34,23 +36,25 @@ for (const token of [
   'getLeadOwnerRiskBadges',
   'getCaseOwnerRiskBadges',
   'getMoneyOwnerRiskBadges',
-  'Cisza 7+ dni',
-  'Cisza 14+ dni',
+  'settings.warningDays',
+  'settings.criticalDays',
   'Brak następnej akcji',
   'Wysoka wartość',
   'Brak następnego ruchu',
-  'Sprawa bez ruchu 7+ dni',
-  'Sprawa bez ruchu 14+ dni',
+  'Sprawa bez ruchu ${settings.warningDays}+ dni',
+  'Sprawa bez ruchu ${settings.criticalDays}+ dni',
   'Pieniądze bez ruchu',
 ]) {
   if (!helper.includes(token)) fail('helper missing token: ' + token);
 }
 
-if (!settings.includes('Progi ryzyka sprzedaży')) fail('Settings missing risk threshold section');
+if (!settings.includes('Progi kontroli sprzedaży')) fail('Settings missing owner control threshold section');
+if (!settings.includes('Ostrzegaj po')) fail('Settings missing warning days input label');
+if (!settings.includes('Alarm krytyczny po')) fail('Settings missing critical days input label');
 if (!settings.includes('Wysoka wartość od')) fail('Settings missing high value input label');
 if (!settings.includes('readOwnerRiskSettings')) fail('Settings missing owner risk settings adapter read');
 if (!settings.includes('writeOwnerRiskSettings')) fail('Settings missing owner risk settings adapter write');
-if (!settingsAdapter.includes('DO POTWIERDZENIA')) fail('Settings fallback must be explicit DO POTWIERDZENIA');
+if (!settingsAdapter.includes('Lokalny zapis działa tylko jako fallback')) fail('Settings adapter must describe local fallback');
 
 if (!leads.includes('buildRecordOperationalBadges')) fail('Leads must keep record-level badge integration');
 if (!recordBadges.includes('getLeadOwnerRiskBadges')) fail('Record badges must reuse owner risk rules for leads');

@@ -9,12 +9,14 @@ import {
 } from '../lib/supabase-fallback';
 import { useClientAuthSnapshot } from './useClientAuthSnapshot';
 import { buildPlanAccessModel, PLAN_IDS, TRIAL_MS } from '../lib/plans';
+import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
 
 function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
   const normalizedWorkspaceId = normalizeWorkspaceContextId(storedWorkspaceId);
   const workspaceId = normalizedWorkspaceId || (import.meta.env.DEV ? '11111111-1111-4111-8111-111111111111' : '');
   if (!workspaceId) return null;
 
+  const ownerRiskSettings = readOwnerRiskSettings();
   return {
     id: workspaceId,
     ownerId: null,
@@ -31,6 +33,9 @@ function buildLocalWorkspace(storedWorkspaceId: string, email: string) {
     dailyDigestHour: 7,
     dailyDigestTimezone: 'Europe/Warsaw',
     dailyDigestRecipientEmail: email,
+    ownerControlWarningDays: ownerRiskSettings.warningDays,
+    ownerControlCriticalDays: ownerRiskSettings.criticalDays,
+    ownerControlHighValueThresholdPln: ownerRiskSettings.highValueThresholdPln,
   };
 }
 

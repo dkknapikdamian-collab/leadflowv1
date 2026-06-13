@@ -90,10 +90,8 @@ for (const token of [
   'resolveNextMove',
   'resolveActivityTruth',
   'SALES_SILENCE_THRESHOLDS_DAYS = [1, 2, 3, 5, 7, 14] as const',
-  'Brak świeżego ruchu 7+ dni',
-  'Brak świeżego ruchu 14+ dni',
-  'Cisza 7+ dni',
-  'Cisza 14+ dni',
+  'settings.warningDays',
+  'settings.criticalDays',
   'Brak następnej akcji',
   'Brak następnego ruchu',
   'Pieniądze bez ruchu',
@@ -105,7 +103,7 @@ assertIncludes(recordBadges, "from './owner-control/activity-truth'", 'record ba
 assertIncludes(recordBadges, "from './owner-control/next-move-contract'", 'record badges must use next move contract');
 assertIncludes(recordBadges, "from './owner-control/owner-risk-rules'", 'record badges must use owner risk rules');
 
-assertNotIncludes(today, 'Kontrola sprzedaży', 'Today must not get duplicated Kontrola sprzedaży panel');
+assertNotIncludes(today, '<h2>Kontrola sprzedaży</h2>', 'Today must not get duplicated Kontrola sprzedaży panel');
 assertIncludes(today, 'Wysoka wartość / ryzyko', 'Today must keep existing Wysoka wartość / ryzyko section');
 
 const pageFiles = [

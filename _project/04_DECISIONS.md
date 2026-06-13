@@ -1527,3 +1527,9 @@ Nie robimy teraz:
 
 Do rozważenia później:
 - SQL missing_items dopiero, jesli beda potrzebne globalne raporty, filtrowanie, SLA, typy brakow albo zbiorcza lista brakow przez workspace.
+
+## 2026-06-13 - STAGE231F_R3
+- DECYZJA: Owner Control jest logika produktu, nie osobnym dashboardem.
+- DECYZJA: `/today` jest glowna lista dzialania, bez dodatkowego panelu Kontrola sprzedazy.
+- DECYZJA: progi ciszy sa workspace-level; domyslnie 7/14 dni, owner/admin moze je zmienic.
+- DECYZJA: localStorage pozostaje tylko fallbackiem przy niedostepnym API lub starszym workspace.

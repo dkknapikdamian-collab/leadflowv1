@@ -1468,3 +1468,10 @@ RYZYKO:
 - Visual QA `/notifications` required.
 - Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
+
+## STAGE231F_R3 - ryzyka po etapie
+- Produkcyjny zapis workspace wymaga zastosowanej migracji Supabase.
+- `verify:closeflow:quiet` jest czerwony przez historyczny mojibake/BOM poza zakresem etapu.
+- Build nadal ostrzega o podwojnym kluczu `savedRecord` w `ContextActionDialogs.tsx`.
+- Manualny test Damiana na wdrozonym srodowisku pozostaje wymagany.
+- `verify:migrations:supabase` ma globalny pre-existing FAIL na dwoch migracjach portalu z 2026-05-02; Stage231F R3 stosuje jawny SKIP dla tego gate.

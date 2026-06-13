@@ -1259,4 +1259,12 @@ TESTY:
 - git diff --check
 
 RYZYKA:
+
+## STAGE231F_R3 - TEST RECZNY DO WYKONANIA
+1. `/settings` -> Aplikacja: znalezc `Progi kontroli sprzedazy` w 5 sekund.
+2. Zapisac 3 i 10 dni, odswiezyc i potwierdzic trwalosc.
+3. `/today`: sprawdzic kolejnosc, status, powod, dni i najblizsza akcje.
+4. Dla 10 leadow potwierdzic, ze 3 bez next step sa czerwone i pierwsze.
+5. Dodac next step, wykonac refetch i twardy refresh; alert nie moze wrocic.
+6. Sprawdzic case bez postepu i krytyczna cisze.
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.

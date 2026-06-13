@@ -2,6 +2,8 @@ import { buildActivityTruth, type ActivityTruth } from './activity-truth';
 import { buildNextMoveContract, type NextMoveContract } from './next-move-contract';
 
 export const DEFAULT_HIGH_VALUE_THRESHOLD_PLN = 5000;
+export const DEFAULT_OWNER_CONTROL_WARNING_DAYS = 7;
+export const DEFAULT_OWNER_CONTROL_CRITICAL_DAYS = 14;
 
 export const SALES_SILENCE_THRESHOLDS_DAYS = [1, 2, 3, 5, 7, 14] as const;
 
@@ -16,6 +18,8 @@ export type OwnerRiskBadge = {
 
 export type OwnerRiskSettings = {
   highValueThresholdPln: number;
+  warningDays: number;
+  criticalDays: number;
 };
 
 export type OwnerRiskContext = {
@@ -34,15 +38,26 @@ void STAGE223_OWNER_MOVEMENT_RISK_SYSTEM;
 
 export function normalizeOwnerRiskSettings(input: unknown): OwnerRiskSettings {
   const raw = input && typeof input === 'object' ? input as Record<string, unknown> : {};
-  const candidate = raw.highValueThresholdPln ?? raw.high_value_threshold_pln ?? raw.highValueThreshold ?? raw.high_value_threshold;
+  const candidate = raw.highValueThresholdPln ?? raw.ownerControlHighValueThresholdPln ?? raw.owner_control_high_value_threshold_pln ?? raw.high_value_threshold_pln ?? raw.highValueThreshold ?? raw.high_value_threshold;
   const parsed = typeof candidate === 'number'
     ? candidate
     : typeof candidate === 'string'
       ? Number(candidate.replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''))
       : DEFAULT_HIGH_VALUE_THRESHOLD_PLN;
 
+  const warningCandidate = Number(raw.warningDays ?? raw.ownerControlWarningDays ?? raw.owner_control_warning_days ?? DEFAULT_OWNER_CONTROL_WARNING_DAYS);
+  const criticalCandidate = Number(raw.criticalDays ?? raw.ownerControlCriticalDays ?? raw.owner_control_critical_days ?? DEFAULT_OWNER_CONTROL_CRITICAL_DAYS);
+  const warningDays = Number.isInteger(warningCandidate) && warningCandidate >= 1 && warningCandidate <= 365
+    ? warningCandidate
+    : DEFAULT_OWNER_CONTROL_WARNING_DAYS;
+  const criticalDays = Number.isInteger(criticalCandidate) && criticalCandidate > warningDays && criticalCandidate <= 365
+    ? criticalCandidate
+    : Math.max(DEFAULT_OWNER_CONTROL_CRITICAL_DAYS, warningDays + 1);
+
   return {
     highValueThresholdPln: Number.isFinite(parsed) && parsed >= 0 ? Math.round(parsed) : DEFAULT_HIGH_VALUE_THRESHOLD_PLN,
+    warningDays,
+    criticalDays,
   };
 }
 
@@ -132,42 +147,42 @@ function resolveActivityTruth(entityType: 'lead' | 'case' | 'client', record: Re
   });
 }
 
-function buildSilenceBadge(entityType: 'lead' | 'case', truth: ActivityTruth): OwnerRiskBadge | null {
+function buildSilenceBadge(entityType: 'lead' | 'case', truth: ActivityTruth, settings: OwnerRiskSettings): OwnerRiskBadge | null {
   if (typeof truth.contactSilentDays === 'number') {
-    if (truth.contactSilentDays >= 14) {
+    if (truth.contactSilentDays >= settings.criticalDays) {
       return {
-        key: entityType + '-contact-silence-14',
-        label: entityType === 'lead' ? 'Cisza 14+ dni' : 'Sprawa bez kontaktu 14+ dni',
+        key: entityType + '-contact-silence-critical',
+        label: entityType === 'lead' ? `Cisza ${settings.criticalDays}+ dni` : `Sprawa bez kontaktu ${settings.criticalDays}+ dni`,
         severity: 'high',
-        reason: 'Brak prawdziwego kontaktu od co najmniej 14 dni.',
+        reason: `Brak prawdziwego kontaktu od co najmniej ${settings.criticalDays} dni.`,
       };
     }
-    if (truth.contactSilentDays >= 7) {
+    if (truth.contactSilentDays >= settings.warningDays) {
       return {
-        key: entityType + '-contact-silence-7',
-        label: entityType === 'lead' ? 'Cisza 7+ dni' : 'Sprawa bez kontaktu 7+ dni',
+        key: entityType + '-contact-silence-warning',
+        label: entityType === 'lead' ? `Cisza ${settings.warningDays}+ dni` : `Sprawa bez kontaktu ${settings.warningDays}+ dni`,
         severity: 'medium',
-        reason: 'Brak prawdziwego kontaktu od co najmniej 7 dni.',
+        reason: `Brak prawdziwego kontaktu od co najmniej ${settings.warningDays} dni.`,
       };
     }
     return null;
   }
 
   if (typeof truth.activitySilentDays === 'number') {
-    if (truth.activitySilentDays >= 14) {
+    if (truth.activitySilentDays >= settings.criticalDays) {
       return {
-        key: entityType + '-activity-silence-14',
-        label: entityType === 'lead' ? 'Brak świeżego ruchu 14+ dni' : 'Sprawa bez ruchu 14+ dni',
+        key: entityType + '-activity-silence-critical',
+        label: entityType === 'lead' ? `Brak świeżego ruchu ${settings.criticalDays}+ dni` : `Sprawa bez ruchu ${settings.criticalDays}+ dni`,
         severity: 'high',
-        reason: 'Nie znaleziono kontaktu; fallback pokazuje brak świeżej aktywności od co najmniej 14 dni.',
+        reason: `Nie znaleziono kontaktu; brak świeżej aktywności od co najmniej ${settings.criticalDays} dni.`,
       };
     }
-    if (truth.activitySilentDays >= 7) {
+    if (truth.activitySilentDays >= settings.warningDays) {
       return {
-        key: entityType + '-activity-silence-7',
-        label: entityType === 'lead' ? 'Brak świeżego ruchu 7+ dni' : 'Sprawa bez ruchu 7+ dni',
+        key: entityType + '-activity-silence-warning',
+        label: entityType === 'lead' ? `Brak świeżego ruchu ${settings.warningDays}+ dni` : `Sprawa bez ruchu ${settings.warningDays}+ dni`,
         severity: 'medium',
-        reason: 'Nie znaleziono kontaktu; fallback pokazuje brak świeżej aktywności od co najmniej 7 dni.',
+        reason: `Nie znaleziono kontaktu; brak świeżej aktywności od co najmniej ${settings.warningDays} dni.`,
       };
     }
   }
@@ -211,7 +226,7 @@ export function getLeadOwnerRiskBadges(lead: unknown, context: OwnerRiskContext 
     });
   }
 
-  const silence = buildSilenceBadge('lead', activityTruth);
+  const silence = buildSilenceBadge('lead', activityTruth, settings);
   if (silence) badges.push(silence);
 
   return dedupeBadges(badges);
@@ -253,7 +268,7 @@ export function getCaseOwnerRiskBadges(caseRecord: unknown, context: OwnerRiskCo
     });
   }
 
-  const silence = buildSilenceBadge('case', activityTruth);
+  const silence = buildSilenceBadge('case', activityTruth, settings);
   if (silence) badges.push(silence);
 
   if (value >= settings.highValueThresholdPln && (nextMove.isMissing || nextMove.isOverdue)) {

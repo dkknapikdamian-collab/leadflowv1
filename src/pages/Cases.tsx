@@ -360,7 +360,7 @@ export default function Cases() {
 
   const caseTasksByCaseId = useMemo(() => buildCaseActionMap(caseTasks), [caseTasks]);
   const caseEventsByCaseId = useMemo(() => buildCaseActionMap(caseEvents), [caseEvents]);
-  const ownerRiskSettings = useMemo(() => readOwnerRiskSettings(), []);
+  const ownerRiskSettings = useMemo(() => readOwnerRiskSettings(workspace), [workspace]);
 
   const caseViewFromUrlStage231B0R9 = searchParams.get('view');
 
@@ -843,6 +843,8 @@ const attention = isCaseClosedStage231B0R13 ? false : caseNeedsAttention(record)
                     ? []
 
                     : getCaseOwnerRiskBadges(record, {
+
+                        settings: ownerRiskSettings,
 
                         lifecycle,
 

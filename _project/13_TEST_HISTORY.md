@@ -3487,3 +3487,12 @@ RYZYKO:
 - Visual QA `/notifications` required.
 - Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
+
+## 2026-06-13 - STAGE231F_R3
+- PASS: dedicated guard and 5 tests.
+- PASS: Stage222 (3), Stage223 (3 + 3 runtime), Stage225 (3).
+- PASS: nearest action (3), Today reschedule G1/G1R1/G2.
+- PASS: production build.
+- PASS: browser `/settings` 3/10 persistence and `/today` queue after hard refresh.
+- FAIL/SKIP FOR PUSH GATE: `verify:closeflow:quiet` stopped on pre-existing global mojibake/BOM findings.
+- FAIL/SKIP FOR PUSH GATE: `verify:migrations:supabase` stopped on two pre-existing portal migrations from 2026-05-02.

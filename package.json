@@ -1015,7 +1015,9 @@
     "check:stage231d0f-r13-funnel-visual-color-density": "node scripts/check-stage231d0f-r13-funnel-visual-color-density.cjs",
     "check:stage231d0g-visual-tile-source-truth-atlas": "node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs",
     "check:stage231d0g-closeout-visual-tile-source-truth-atlas": "node scripts/check-stage231d0g-closeout-visual-tile-source-truth-atlas.cjs",
-    "check:stage231d0h-n1-notifications-visual-source-cleanup": "node scripts/check-stage231d0h-n1-notifications-visual-source-cleanup.cjs"
+    "check:stage231d0h-n1-notifications-visual-source-cleanup": "node scripts/check-stage231d0h-n1-notifications-visual-source-cleanup.cjs",
+    "check:stage231f-r3-owner-control-baseline": "node scripts/check-stage231f-r3-owner-control-baseline.cjs",
+    "test:stage231f-r3-owner-control-baseline": "node --test tests/stage231f-r3-owner-control-baseline.test.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.3.0",

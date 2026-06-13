@@ -15,6 +15,9 @@ export type WorkspaceLike = {
   dailyDigestTimezone?: string | null;
   dailyDigestRecipientEmail?: string | null;
   timezone?: string | null;
+  ownerControlWarningDays?: number | null;
+  ownerControlCriticalDays?: number | null;
+  ownerControlHighValueThresholdPln?: number | null;
 };
 
 export type AccessState =

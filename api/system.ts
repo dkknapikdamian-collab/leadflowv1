@@ -143,6 +143,9 @@ const SYSTEM_SCHEMA_FALLBACK_ALLOWED_COLUMNS: Record<string, Set<string>> = {
     'daily_digest_timezone',
     'daily_digest_recipient_email',
     'timezone',
+    'owner_control_warning_days',
+    'owner_control_critical_days',
+    'owner_control_high_value_threshold_pln',
   ]),
 };
 
@@ -377,6 +380,31 @@ async function handleWorkspaceSettings(req: any, res: any) {
     if ((body as any).dailyDigestTimezone !== undefined) payload.daily_digest_timezone = asNullableString((body as any).dailyDigestTimezone) || 'Europe/Warsaw';
     if ((body as any).dailyDigestRecipientEmail !== undefined) payload.daily_digest_recipient_email = asNullableString((body as any).dailyDigestRecipientEmail);
     if ((body as any).timezone !== undefined) payload.timezone = asNullableString((body as any).timezone) || 'Europe/Warsaw';
+    const requestedWarningDays = (body as any).ownerControlWarningDays === undefined ? null : Number((body as any).ownerControlWarningDays);
+    const requestedCriticalDays = (body as any).ownerControlCriticalDays === undefined ? null : Number((body as any).ownerControlCriticalDays);
+    const requestedHighValue = (body as any).ownerControlHighValueThresholdPln === undefined ? null : Number((body as any).ownerControlHighValueThresholdPln);
+    if (requestedWarningDays !== null && (!Number.isInteger(requestedWarningDays) || requestedWarningDays < 1 || requestedWarningDays > 365)) {
+      res.status(400).json({ error: 'OWNER_CONTROL_WARNING_DAYS_INVALID' });
+      return;
+    }
+    if (requestedCriticalDays !== null && (!Number.isInteger(requestedCriticalDays) || requestedCriticalDays < 1 || requestedCriticalDays > 365)) {
+      res.status(400).json({ error: 'OWNER_CONTROL_CRITICAL_DAYS_INVALID' });
+      return;
+    }
+    if (requestedHighValue !== null && (!Number.isFinite(requestedHighValue) || requestedHighValue < 0)) {
+      res.status(400).json({ error: 'OWNER_CONTROL_HIGH_VALUE_INVALID' });
+      return;
+    }
+    if (requestedWarningDays !== null) payload.owner_control_warning_days = requestedWarningDays;
+    if (requestedCriticalDays !== null) payload.owner_control_critical_days = requestedCriticalDays;
+    if (requestedHighValue !== null) payload.owner_control_high_value_threshold_pln = Math.round(requestedHighValue);
+
+    const warningDays = Number(payload.owner_control_warning_days ?? (body as any).ownerControlWarningDays ?? 7);
+    const criticalDays = Number(payload.owner_control_critical_days ?? (body as any).ownerControlCriticalDays ?? 14);
+    if ((requestedWarningDays !== null || requestedCriticalDays !== null) && (!Number.isInteger(warningDays) || !Number.isInteger(criticalDays) || criticalDays <= warningDays)) {
+      res.status(400).json({ error: 'OWNER_CONTROL_THRESHOLDS_INVALID' });
+      return;
+    }
 
     const updated = await safeUpdateById('workspaces', String(workspaceId), payload);
     const row = Array.isArray(updated) && updated[0] ? updated[0] : { ...payload, id: workspaceId };
@@ -398,6 +426,9 @@ async function handleWorkspaceSettings(req: any, res: any) {
         dailyDigestTimezone: (row as any)?.daily_digest_timezone ?? (body as any).dailyDigestTimezone ?? 'Europe/Warsaw',
         dailyDigestRecipientEmail: (row as any)?.daily_digest_recipient_email ?? (body as any).dailyDigestRecipientEmail ?? null,
         timezone: (row as any)?.timezone ?? (body as any).timezone ?? 'Europe/Warsaw',
+        ownerControlWarningDays: Number((row as any)?.owner_control_warning_days ?? (body as any).ownerControlWarningDays ?? 7),
+        ownerControlCriticalDays: Number((row as any)?.owner_control_critical_days ?? (body as any).ownerControlCriticalDays ?? 14),
+        ownerControlHighValueThresholdPln: Number((row as any)?.owner_control_high_value_threshold_pln ?? (body as any).ownerControlHighValueThresholdPln ?? 5000),
       },
     });
   } catch (error: any) {

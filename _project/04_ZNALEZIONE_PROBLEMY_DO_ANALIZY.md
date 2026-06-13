@@ -159,3 +159,30 @@ Przeplyw decyzyjny:
 - propozycja dalszego kroku: traktowac `STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER` jako pozniejszy growth module po stabilizacji owner-control core.
 - decyzja Damiana: kierunek ma byc widoczny przy pytaniu o rozwoj aplikacji.
 - powiazany etap, jesli powstanie: `STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER`
+
+### 2026-06-13 - Globalny quiet gate blokowany przez historyczny mojibake/BOM
+- id: FOUND-20260613-03
+- status: DO_ANALIZY_DAMIANA
+- znalezione przy etapie: STAGE231F_R3
+- problem: `verify:closeflow:quiet` zatrzymuje sie na Stage98 mojibake hard gate w wielu starszych plikach poza zakresem Owner Control.
+- dowod: m.in. Calendar.tsx, TasksStable.tsx, ClientDetail.tsx, stare CSS/testy/skrypty.
+- ryzyko: pelny release gate pozostaje czerwony mimo zielonych dedykowanych testow etapu.
+- propozycja: osobny kontrolowany etap encoding/guard scope, bez mieszania z Owner Control.
+
+### 2026-06-13 - Podwojny klucz savedRecord w ContextActionDialogs
+- id: FOUND-20260613-04
+- status: DO_ANALIZY_DAMIANA
+- znalezione przy etapie: STAGE231F_R3 build audit
+- problem: esbuild ostrzega o podwojnym kluczu `savedRecord` w jednym obiekcie.
+- dowod: `src/components/ContextActionDialogs.tsx` okolice linii 196-198.
+- ryzyko: pierwsza wartosc jest zawsze nadpisywana, co utrudnia rozumienie kontraktu zapisu.
+- propozycja: osobny maly bugfix z testem kontraktu dialogu.
+
+### 2026-06-13 - Globalny migration guard blokowany przez stare migracje portalu
+- id: FOUND-20260613-05
+- status: DO_ANALIZY_DAMIANA
+- znalezione przy etapie: STAGE231F_R3 migration preflight
+- problem: `verify:migrations:supabase` zglasza `POSSIBLE_SECRET_IN_MIGRATION` dla dwoch migracji z 2026-05-02.
+- dowod: `20260502100000_portal_uploads_storage_bucket.sql` i `20260502_portal_uploads_storage_bucket.sql`.
+- ryzyko: globalny migration guard pozostaje czerwony niezaleznie od nowej migracji Stage231F R3.
+- propozycja: osobny audyt starych migracji portalu i doprecyzowanie guarda.

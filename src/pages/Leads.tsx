@@ -82,7 +82,7 @@ import { isActiveSalesLead, isLeadMovedToService } from '../lib/lead-health';
 import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
 import {
   buildContactCadenceGrid,
-  CONTACT_CADENCE_BUCKETS,
+  buildContactCadenceBuckets,
   type ContactCadenceBucketKey,
 } from '../lib/owner-control/contact-cadence-grid';
 import { buildLostLeadRescue } from '../lib/owner-control/lost-lead-rescue';
@@ -704,9 +704,12 @@ export default function Leads() {
       entityType: 'lead',
       records: activeLeads,
       relatedRecordsById: relatedRecordsByLeadId,
+      settings: workspace,
     }),
-    [activeLeads, relatedRecordsByLeadId],
+    [activeLeads, relatedRecordsByLeadId, workspace],
   );
+
+  const contactCadenceBuckets = useMemo(() => buildContactCadenceBuckets(workspace), [workspace]);
 
   const lostLeadRescueSummary = useMemo(
     () => buildLostLeadRescue({
@@ -1095,7 +1098,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                   >
                     Wszystkie ({activeLeads.length})
                   </button>
-                  {CONTACT_CADENCE_BUCKETS.map((bucket) => (
+                  {contactCadenceBuckets.map((bucket) => (
                     <button
                       key={bucket.key}
                       type="button"
@@ -1202,6 +1205,7 @@ STAGE32_VALUABLE_RELATIONS_RIGHT_RAIL
                     record: lead,
                     relatedRecords: linkedCase ? [linkedCase] : [],
                     hasNextStep: Boolean(nextAction),
+                    settings: workspace,
                   });
 
                   return (

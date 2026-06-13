@@ -78,4 +78,28 @@ describe('STAGE225 contact cadence grid', () => {
     assert.equal(byId.get('silent-with-next').rescueCandidate, false);
     assert.equal(byId.get('fresh').rescueCandidate, false);
   });
+
+  it('uses workspace warning and critical thresholds in list buckets', async () => {
+    const { buildContactCadenceBuckets, buildContactCadenceGrid } = await loadHelper();
+    const now = new Date('2026-06-05T12:00:00.000Z');
+    const settings = { warningDays: 3, criticalDays: 10, highValueThresholdPln: 5000 };
+    const grid = buildContactCadenceGrid({
+      entityType: 'client',
+      now,
+      settings,
+      records: [
+        { id: 'two', name: 'Two', lastContactAt: daysAgoIso(now, 2) },
+        { id: 'three', name: 'Three', lastContactAt: daysAgoIso(now, 3) },
+        { id: 'nine', name: 'Nine', lastContactAt: daysAgoIso(now, 9) },
+        { id: 'ten', name: 'Ten', lastContactAt: daysAgoIso(now, 10) },
+      ],
+    });
+    const buckets = buildContactCadenceBuckets(settings);
+
+    assert.deepEqual(grid.buckets.silent_2.map((row) => row.entityId), ['two']);
+    assert.deepEqual(grid.buckets.silent_7.map((row) => row.entityId), ['three', 'nine']);
+    assert.deepEqual(grid.buckets.silent_14_plus.map((row) => row.entityId), ['ten']);
+    assert.equal(buckets.find((bucket) => bucket.key === 'silent_7').label, '3+ dni ciszy');
+    assert.equal(buckets.find((bucket) => bucket.key === 'silent_14_plus').label, '10+ dni ciszy');
+  });
 });

@@ -315,6 +315,10 @@ function normalizeWorkspace(
   const dailyDigestHour = Number.isFinite(dailyDigestHourRaw) ? Math.max(0, Math.min(23, Math.floor(dailyDigestHourRaw))) : 7;
   const dailyDigestTimezone = asNullableString(row?.daily_digest_timezone ?? row?.dailyDigestTimezone ?? null) || timezone;
   const dailyDigestRecipientEmail = asNullableString(row?.daily_digest_recipient_email ?? row?.dailyDigestRecipientEmail ?? null);
+  const ownerControlWarningDays = Math.max(1, Math.min(365, Math.floor(Number(row?.owner_control_warning_days ?? row?.ownerControlWarningDays ?? 7))));
+  const ownerControlCriticalDaysRaw = Math.max(1, Math.min(365, Math.floor(Number(row?.owner_control_critical_days ?? row?.ownerControlCriticalDays ?? 14))));
+  const ownerControlCriticalDays = ownerControlCriticalDaysRaw > ownerControlWarningDays ? ownerControlCriticalDaysRaw : Math.min(365, ownerControlWarningDays + 1);
+  const ownerControlHighValueThresholdPln = Math.max(0, Math.round(Number(row?.owner_control_high_value_threshold_pln ?? row?.ownerControlHighValueThresholdPln ?? 5000)));
   return {
     id: workspaceId,
     ownerId,
@@ -331,6 +335,9 @@ function normalizeWorkspace(
     dailyDigestHour,
     dailyDigestTimezone,
     dailyDigestRecipientEmail,
+    ownerControlWarningDays,
+    ownerControlCriticalDays,
+    ownerControlHighValueThresholdPln,
   };
 }
 
@@ -971,6 +978,9 @@ async function ensureWorkspace(
       daily_digest_hour: 7,
       daily_digest_timezone: 'Europe/Warsaw',
       daily_digest_recipient_email: null,
+      owner_control_warning_days: 7,
+      owner_control_critical_days: 14,
+      owner_control_high_value_threshold_pln: 5000,
       created_at: nowIso,
       updated_at: nowIso,
     };
@@ -1200,6 +1210,9 @@ export default async function handler(req: any, res: any) {
       dailyDigestHour: 7,
       dailyDigestTimezone: 'Europe/Warsaw',
       dailyDigestRecipientEmail: email || '',
+      ownerControlWarningDays: 7,
+      ownerControlCriticalDays: 14,
+      ownerControlHighValueThresholdPln: 5000,
     };
     const fallbackProfile = {
       id: uid || email || crypto.randomUUID(),

@@ -82,12 +82,12 @@ if ((helper.match(/SALES_SILENCE_THRESHOLDS_DAYS\s*=\s*\[/g) || []).length) {
 
 [
   'buildContactCadenceGrid',
-  'CONTACT_CADENCE_BUCKETS',
+  'buildContactCadenceBuckets',
   'ContactCadenceBucketKey',
   'data-stage225-contact-cadence-grid="leads"',
   'cadenceFilter',
   'setCadenceFilter',
-  '14+ dni ciszy',
+  'settings: workspace',
 ].forEach((token) => {
   if (!leads.includes(token)) fail('Leads.tsx missing ' + token);
 });
@@ -111,12 +111,12 @@ if (!buildCadenceCall.includes('relatedRecordsById: relatedRecordsByLeadId')) {
 
 [
   'buildContactCadenceGrid',
-  'CONTACT_CADENCE_BUCKETS',
+  'buildContactCadenceBuckets',
   'ContactCadenceBucketKey',
   'data-stage225-contact-cadence-grid="clients"',
   'cadenceFilter',
   'setCadenceFilter',
-  '14+ dni ciszy',
+  'settings: workspace',
 ].forEach((token) => {
   if (!clients.includes(token)) fail('Clients.tsx missing ' + token);
 });

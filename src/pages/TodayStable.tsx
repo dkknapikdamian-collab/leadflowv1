@@ -33,6 +33,9 @@ import { subscribeCloseflowDataMutations } from '../lib/supabase-fallback';
 import { getAiLeadDraftsAsync, type AiLeadDraft } from '../lib/ai-drafts';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { buildOwnerControlBaseline } from '../lib/owner-control/owner-control-baseline';
+import { readOwnerRiskSettings } from '../lib/owner-control/owner-risk-settings';
+import { useWorkspace } from '../hooks/useWorkspace';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
 import WorkItemCard, { getWorkItemCardStatusTone } from '../components/work-item-card';
 import '../styles/closeflow-page-header-v2.css';
@@ -103,13 +106,6 @@ type DashboardData = {
   events: any[];
   cases: any[];
   drafts: AiLeadDraft[];
-};
-
-type TodayLeadRisk = {
-  reason: string;
-  suggestedAction: string;
-  score: number;
-  tone: 'red' | 'amber' | 'blue' | 'slate';
 };
 
 type UpcomingRow = {
@@ -376,123 +372,6 @@ function sortByMoment(a: { momentRaw: string }, b: { momentRaw: string }) {
   return parseTime(a.momentRaw) - parseTime(b.momentRaw);
 }
 
-function getLeadValue(lead: any) {
-  const candidates = [lead?.dealValue, lead?.deal_value, lead?.value, lead?.estimatedValue, lead?.estimated_value, lead?.budget, lead?.amount];
-  for (const candidate of candidates) {
-    if (typeof candidate === 'number' && Number.isFinite(candidate)) return candidate;
-    if (typeof candidate === 'string' && candidate.trim()) {
-      const parsed = Number(candidate.replace(/\s+/g, '').replace(',', '.').replace(/[^0-9.-]/g, ''));
-      if (Number.isFinite(parsed)) return parsed;
-    }
-  }
-  return 0;
-}
-
-function getLeadFreshnessDays(lead: any) {
-  const raw = readMomentRaw(lead, ['lastActivityAt', 'last_activity_at', 'updatedAt', 'updated_at', 'createdAt', 'created_at']);
-  if (!raw) return null;
-  const parsed = new Date(raw);
-  if (!Number.isFinite(parsed.getTime())) return null;
-  const diffMs = Date.now() - parsed.getTime();
-  return Math.max(0, Math.floor(diffMs / 86_400_000));
-}
-
-function getLeadStatus(lead: any) {
-  return String(lead?.status || '').trim().toLowerCase();
-}
-
-function getLeadRisk(lead: any, momentRaw: string, todayKey: string): TodayLeadRisk {
-  const value = getLeadValue(lead);
-  const freshnessDays = getLeadFreshnessDays(lead);
-  const dateKey = getDateKey(momentRaw);
-  const status = getLeadStatus(lead);
-  const hasNoAction = !dateKey;
-  const isOverdue = Boolean(dateKey) && dateKey < todayKey;
-  const isToday = Boolean(dateKey) && dateKey === todayKey;
-  const isWaiting = status.includes('waiting') || status.includes('czeka') || status.includes('proposal') || status.includes('negotiation');
-  const highValue = value >= 5000;
-  const stale = typeof freshnessDays === 'number' && freshnessDays >= 7;
-
-  if (isOverdue && highValue) {
-    return {
-      reason: 'zaległy follow-up przy wartościowym leadzie',
-      suggestedAction: 'skontaktuj się dziś albo ustaw konkretny nowy termin',
-      score: 120 + value / 1000,
-      tone: 'red',
-    };
-  }
-
-  if (isOverdue) {
-    return {
-      reason: 'zaległy termin kontaktu',
-      suggestedAction: 'wykonaj kontakt albo przesuń termin na realną datę',
-      score: 95,
-      tone: 'red',
-    };
-  }
-
-  if (hasNoAction && highValue) {
-    return {
-      reason: 'wysoka wartość i brak najbliższej zaplanowanej akcji',
-      suggestedAction: 'ustaw follow-up albo zdecyduj, czy temat zamknąć',
-      score: 90 + value / 1000,
-      tone: 'amber',
-    };
-  }
-
-  if (hasNoAction) {
-    return {
-      reason: 'brak najbliższej zaplanowanej akcji',
-      suggestedAction: 'ustaw follow-up albo zamknij temat jako utracony',
-      score: 78,
-      tone: 'amber',
-    };
-  }
-
-  if (isWaiting && stale) {
-    return {
-      reason: 'czeka za długo bez świeżego ruchu',
-      suggestedAction: 'wyślij krótkie przypomnienie albo ustaw ostatni follow-up',
-      score: 72,
-      tone: 'amber',
-    };
-  }
-
-  if (isToday && highValue) {
-    return {
-      reason: 'dzisiejszy kontakt przy wartościowym leadzie',
-      suggestedAction: 'obsłuż ten kontakt przed zwykłymi zadaniami',
-      score: 70 + value / 1000,
-      tone: 'blue',
-    };
-  }
-
-  if (isToday) {
-    return {
-      reason: 'kontakt zaplanowany na dziś',
-      suggestedAction: 'wykonaj kontakt i ustaw kolejny konkretny ruch',
-      score: 55,
-      tone: 'blue',
-    };
-  }
-
-  if (stale) {
-    return {
-      reason: 'brak świeżej aktywności od ' + freshnessDays + ' dni',
-      suggestedAction: 'sprawdź, czy lead nadal ma sens albo zamknij temat',
-      score: 45,
-      tone: 'slate',
-    };
-  }
-
-  return {
-    reason: 'lead wymaga kontroli procesu',
-    suggestedAction: 'sprawdź szczegóły i potwierdź kolejny krok',
-    score: 20,
-    tone: 'slate',
-  };
-}
-
 function getSectionHeaderSeverity(tone: string): 'error' | 'warning' | 'info' | 'success' | null {
   if (tone === 'cf-severity:error') return 'error';
   if (tone === 'cf-severity:warning') return 'warning';
@@ -563,7 +442,7 @@ const TODAY_SECTION_TITLES: Record<TodaySectionKey, string> = {
   no_action: 'Leady bez najbliższej akcji',
   risk: 'Wysoka wartość / ryzyko',
   waiting: 'Leady czekające',
-  leads: 'Leady do obsługi dziś',
+  leads: 'Co masz zrobić dzisiaj',
   tasks: 'Zadania do wykonania dziś',
   events: 'Wydarzenia dziś',
   upcoming: 'Najbliższe 7 dni',
@@ -626,7 +505,7 @@ function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
   if (text.includes('leady bez najblizszej akcji') || text.includes('bez najblizszej zaplanowanej akcji')) return 'no_action';
   if (text.includes('wysoka wartosc') || text.includes('ryzyko')) return 'risk';
   if (text.includes('leady czekajace') || text.includes('czeka za dlugo')) return 'waiting';
-  if (text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
+  if (text.includes('co masz zrobic dzisiaj') || text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
   if (text.includes('zadania do wykonania dzis') || text.includes('zadania dzis')) return 'tasks';
   if (text.includes('wydarzenia dzis') || text.includes('wydarzenie dzis')) return 'events';
   if (text.includes('najblizsze 7 dni')) return 'upcoming';
@@ -667,6 +546,7 @@ function RowLink({
   meta,
   helper,
   badge,
+  badgeTone,
   onDone,
   doneLabel,
   doneBusy,
@@ -682,6 +562,7 @@ function RowLink({
   meta?: string;
   helper?: string;
   badge?: string;
+  badgeTone?: 'red' | 'amber' | 'blue' | 'green' | 'neutral';
   onDone?: () => void;
   doneLabel?: string;
   doneBusy?: boolean;
@@ -729,7 +610,7 @@ function RowLink({
               {title}
             </Link>
             {badge ? (
-              <Badge variant="outline" className="cf-status-pill rounded-full" data-cf-status-tone={semanticBadgeTone(badge)}>
+              <Badge variant="outline" className="cf-status-pill rounded-full" data-cf-status-tone={badgeTone || semanticBadgeTone(badge)}>
                 {badge}
               </Badge>
             ) : null}
@@ -969,6 +850,7 @@ function todayActionKindClass(kind: unknown) {
 }
 function TodayStable() {
   const navigate = useNavigate();
+  const { workspace } = useWorkspace();
   const [status, setStatus] = useState<DashboardStatus>('idle');
   const [data, setData] = useState<DashboardData>(emptyData);
   const [lastLoadedAt, setLastLoadedAt] = useState<string>('');
@@ -1245,27 +1127,21 @@ function TodayStable() {
       .sort(sortByMoment);
   }, [data.tasks, todayKey]);
 
-  const operatorLeads = useMemo(() => {
-    return activeLeadsWithPlannedAction
-      .map((lead) => {
-        const momentRaw = getLeadMomentRaw(lead);
-        return { lead, momentRaw, risk: getLeadRisk(lead, momentRaw, todayKey) };
-      })
-      .filter((entry) => {
-        const dateKey = getDateKey(entry.momentRaw);
-        return !dateKey || dateKey <= todayKey;
-      })
-      .sort((a, b) => {
-        if (b.risk.score !== a.risk.score) return b.risk.score - a.risk.score;
-        if (!a.momentRaw && b.momentRaw) return -1;
-        if (a.momentRaw && !b.momentRaw) return 1;
-        return parseTime(a.momentRaw) - parseTime(b.momentRaw);
-      });
-  }, [activeLeadsWithPlannedAction, todayKey]);
-
-  const noActionLeads = useMemo(() => operatorLeads.filter((entry) => !getDateKey(entry.momentRaw)).slice(0, 5), [operatorLeads]);
-  const highValueAtRiskRows = useMemo(() => operatorLeads.filter((entry) => getLeadValue(entry.lead) >= 5000 || entry.risk.reason.includes('wartości')).slice(0, 5), [operatorLeads]);
-  const waitingLeadRows = useMemo(() => operatorLeads.filter((entry) => entry.risk.reason.includes('czeka za długo') || getLeadStatus(entry.lead).includes('waiting') || getLeadStatus(entry.lead).includes('czeka')).slice(0, 5), [operatorLeads]);
+  const ownerControlBaseline = useMemo(() => buildOwnerControlBaseline({
+    leads: data.leads,
+    cases: data.cases,
+    tasks: data.tasks,
+    events: data.events,
+    settings: readOwnerRiskSettings(workspace),
+  }), [data.cases, data.events, data.leads, data.tasks, workspace]);
+  const leadById = useMemo(() => new Map(data.leads.map((lead: any) => [String(lead?.id || ''), lead])), [data.leads]);
+  const ownerControlLeadRows = useMemo(() => ownerControlBaseline.items
+    .filter((item) => item.entityType === 'lead')
+    .map((item) => ({ item, lead: leadById.get(item.entityId) }))
+    .filter((entry) => Boolean(entry.lead)), [leadById, ownerControlBaseline.items]);
+  const noActionLeads = useMemo(() => ownerControlLeadRows.filter(({ item }) => item.signals.includes('Brak następnego kroku')), [ownerControlLeadRows]);
+  const highValueAtRiskRows = useMemo(() => ownerControlLeadRows.filter(({ item }) => item.valuePln >= ownerControlBaseline.settings.highValueThresholdPln), [ownerControlBaseline.settings.highValueThresholdPln, ownerControlLeadRows]);
+  const waitingLeadRows = useMemo(() => ownerControlLeadRows.filter(({ item }) => typeof item.silentDays === 'number' && item.silentDays >= ownerControlBaseline.settings.warningDays), [ownerControlBaseline.settings.warningDays, ownerControlLeadRows]);
 
   const todayEvents = useMemo(() => {
     return data.events
@@ -1321,8 +1197,7 @@ function TodayStable() {
     const leadRows = activeLeadsWithPlannedAction
       .map((lead) => {
         const momentRaw = getLeadMomentRaw(lead);
-        const risk = getLeadRisk(lead, momentRaw, todayKey);
-        return { lead, momentRaw, risk };
+        return { lead, momentRaw };
       })
       .filter((entry) => {
         const dateKey = getDateKey(entry.momentRaw);
@@ -1333,7 +1208,7 @@ function TodayStable() {
         kind: 'lead' as const,
         title: getLeadTitle(entry.lead),
         helper: '',
-        meta: 'Ruch: ' + entry.risk.suggestedAction + ' · ' + formatDateTime(entry.momentRaw),
+        meta: 'Ruch: wykonaj zaplanowany kontakt i ustaw kolejny konkretny krok · ' + formatDateTime(entry.momentRaw),
         momentRaw: entry.momentRaw,
         to: entry.lead.id ? '/leads/' + String(entry.lead.id) : '/leads',
         badge: 'Lead',
@@ -1415,7 +1290,7 @@ function TodayStable() {
     no_action: 'Leady bez najbliższej akcji',
     risk: 'Wysoka wartość / ryzyko',
     waiting: 'Leady czekające',
-    leads: 'Leady do obsługi dziś',
+    leads: 'Co masz zrobić dzisiaj',
     tasks: 'Zadania do wykonania dziś',
     events: 'Wydarzenia dziś',
     upcoming: 'Najbliższe 7 dni',
@@ -1430,10 +1305,10 @@ function TodayStable() {
     activeTone: string;
     icon: ReactNode;
   }> = [
-    { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-warning', activeTone: 'cf-severity-hover-warning', icon: <AlertTriangle className="h-4 w-4" /> },
+    { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <AlertTriangle className="h-4 w-4" /> },
     { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <TrendingUp className="h-4 w-4" /> },
     { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
-    { key: 'leads', title: todaySectionLabels.leads, count: operatorLeads.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
+    { key: 'leads', title: todaySectionLabels.leads, count: ownerControlBaseline.items.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
     { key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className="h-4 w-4" /> },
     { key: 'events', title: todaySectionLabels.events, count: todayEvents.length, tone: 'text-violet-700', activeTone: 'hover:border-violet-200', icon: <CalendarDays className="h-4 w-4" /> },
     { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRows.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
@@ -1779,16 +1654,17 @@ function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-3" hidden={!sectionVisible('risk') && !sectionVisible('no_action') && !sectionVisible('waiting')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="cf-severity:warning" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
+            <SectionHeader title={todaySectionLabels.no_action} count={noActionLeads.length} icon={<AlertTriangle className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('no_action')} onToggle={() => toggleSectionCollapse('no_action')} />
             <div hidden={isCollapsed('no_action')}>
-            {noActionLeads.length ? noActionLeads.map(({ lead, risk }) => (
+            {noActionLeads.length ? noActionLeads.map(({ lead, item }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
                 helper=""
-                meta={'Ruch: ' + risk.suggestedAction}
-                badge={readText(lead, ['status'], 'open')}
+                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
+                badge={item.statusLabel}
+                badgeTone="red"
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
                 onDelete={() => void handleArchiveLead(lead)}
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
@@ -1800,14 +1676,15 @@ function TodayStable() {
           <StableCard>
             <SectionHeader title={todaySectionLabels.risk} count={highValueAtRiskRows.length} icon={<TrendingUp className="h-5 w-5" />} tone="cf-severity:error" collapsed={isCollapsed('risk')} onToggle={() => toggleSectionCollapse('risk')} />
             <div hidden={isCollapsed('risk')}>
-            {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, risk, momentRaw }) => (
+            {highValueAtRiskRows.length ? highValueAtRiskRows.map(({ lead, item }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
                 helper=""
-                meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
-                badge={String(getLeadValue(lead)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
+                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
+                badge={String(Math.round(item.valuePln)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + ' PLN'}
+                badgeTone="red"
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
                 onDelete={() => void handleArchiveLead(lead)}
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
@@ -1819,14 +1696,15 @@ function TodayStable() {
           <StableCard>
             <SectionHeader title={todaySectionLabels.waiting} count={waitingLeadRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('waiting')} onToggle={() => toggleSectionCollapse('waiting')} />
             <div hidden={isCollapsed('waiting')}>
-            {waitingLeadRows.length ? waitingLeadRows.map(({ lead, risk, momentRaw }) => (
+            {waitingLeadRows.length ? waitingLeadRows.map(({ lead, item }) => (
               <RowLink
                 key={String(lead.id || getLeadTitle(lead))}
                 to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
                 title={getLeadTitle(lead)}
                 helper=""
-                meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
-                badge={readText(lead, ['status'], 'waiting')}
+                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
+                badge={item.statusLabel}
+                badgeTone={item.severity === 'critical' ? 'red' : 'amber'}
                 onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
                 onDelete={() => void handleArchiveLead(lead)}
                 deleting={actionPendingId === `lead:${String(lead.id || '')}`}
@@ -1838,21 +1716,21 @@ function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.leads} count={operatorLeads.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+            <SectionHeader title={todaySectionLabels.leads} count={ownerControlBaseline.items.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
             <div hidden={isCollapsed('leads')}>
-            {operatorLeads.length ? operatorLeads.map(({ lead, momentRaw, risk }) => (
+            {ownerControlBaseline.items.length ? ownerControlBaseline.items.map((item) => (
               <RowLink
-                key={String(lead.id || getLeadTitle(lead))}
-                to={lead.id ? '/leads/' + String(lead.id) : '/leads'}
-                title={getLeadTitle(lead)}
+                key={item.key}
+                to={item.href}
+                title={item.title}
                 helper=""
-                meta={'Ruch: ' + risk.suggestedAction + (momentRaw ? ' · ' + formatDateTime(momentRaw) : '')}
-                badge={readText(lead, ['status'], 'open')}
-                onEdit={() => navigate(lead.id ? `/leads/${String(lead.id)}` : '/leads')}
-                onDelete={() => void handleArchiveLead(lead)}
-                deleting={actionPendingId === `lead:${String(lead.id || '')}`}
+                meta={'Ruch: ' + item.suggestedAction + ' · ' + item.reason}
+                badge={item.statusLabel}
+                badgeTone={item.severity === 'critical' ? 'red' : item.severity === 'warning' ? 'amber' : 'blue'}
+                taskId={item.entityType === 'task' ? item.entityId : undefined}
+                doneKind={item.entityType === 'task' || item.entityType === 'event' ? item.entityType : undefined}
               />
-            )) : <EmptyState text="Brak leadów wymagających ruchu." />}
+            )) : <EmptyState text="Dzisiaj nie ma rekordów wymagających ruchu." />}
             </div>
           </StableCard>
 

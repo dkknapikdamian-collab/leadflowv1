@@ -60,7 +60,7 @@ import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { buildRecordOperationalBadges } from '../lib/record-operational-badges';
 import {
   buildContactCadenceGrid,
-  CONTACT_CADENCE_BUCKETS,
+  buildContactCadenceBuckets,
   type ContactCadenceBucketKey,
 } from '../lib/owner-control/contact-cadence-grid';
 import {
@@ -283,9 +283,12 @@ export default function Clients() {
     () => buildContactCadenceGrid({
       entityType: 'client',
       records: clients.filter((client) => !client.archivedAt),
+      settings: workspace,
     }),
-    [clients],
+    [clients, workspace],
   );
+
+  const contactCadenceBuckets = useMemo(() => buildContactCadenceBuckets(workspace), [workspace]);
 
   // STAGE226R10_FILTERED_CLIENT_ROWS_ONLY: main /clients list starts from clients and never maps leads into client rows.
   const filtered = useMemo(() => {
@@ -927,7 +930,7 @@ export default function Clients() {
                   >
                     Wszystkie ({activeCount})
                   </button>
-                  {CONTACT_CADENCE_BUCKETS.map((bucket) => (
+                  {contactCadenceBuckets.map((bucket) => (
                     <button
                       key={bucket.key}
                       type="button"
@@ -958,6 +961,7 @@ export default function Clients() {
                      record: client,
                      relatedRecords: operationalRecordsByClientId.get(client.id) || [],
                      hasNextStep: nearestActionLabel !== 'Brak zaplanowanej akcji',
+                     settings: workspace,
                    });
                    return (
                      <div key={client.id} className="relative group/client-card w-full" data-client-card-wide-layout="true">

@@ -3146,3 +3146,8 @@ RYZYKO:
 - Visual QA `/notifications` required.
 - Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
+
+## ACTIVE: STAGE231F_R3_OWNER_CONTROL_BASELINE
+- Status: local PASS, przed selektywnym commit/push.
+- Ekrany: `/settings` -> Aplikacja oraz `/today`.
+- Zakres: wspolny silnik, workspace settings, migracja, listy lead/client/case, guardy i browser QA.

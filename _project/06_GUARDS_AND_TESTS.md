@@ -4066,3 +4066,11 @@ RYZYKO:
 - Visual QA `/notifications` required.
 - Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
+
+## 2026-06-13 - STAGE231F_R3
+- `check:stage231f-r3-owner-control-baseline`: PASS.
+- `test:stage231f-r3-owner-control-baseline`: 5/5 PASS.
+- Stage222/223/225 regression lanes: PASS.
+- nearest action and Stage227G1/G1R1/G2: PASS.
+- build: PASS.
+- `verify:closeflow:quiet`: FAIL - global pre-existing Stage98 mojibake/BOM gate; FOUND-20260613-03.

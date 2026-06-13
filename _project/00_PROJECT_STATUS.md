@@ -111,3 +111,9 @@ NASTEPNY KROK:
 - manual test: add Brak -> hard refresh -> delete -> hard refresh -> Brak does not return.
 - risk sweep: ClientDetail may require an analogous source-truth sweep if the same symptom appears there.
 - marker: STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH
+
+## 2026-06-13 - STAGE231F_R3 Owner Control Baseline
+- Status: IMPLEMENTED_LOCAL_PASS_READY_FOR_SELECTIVE_PUSH.
+- `/today` ma wspolny silnik Owner Control i pelna kolejke `Co masz zrobic dzisiaj`.
+- Progi workspace: 7/14/5000 domyslnie, konfigurowalne w Ustawienia -> Aplikacja.
+- Browser QA potwierdzil zapis 3/10 i trwalosc po twardym refreshu.

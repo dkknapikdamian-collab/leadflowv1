@@ -2549,3 +2549,10 @@ Manual QA after deploy:
 - open /clients/<id>, Ctrl+F5.
 - verify left Data klienta card starts visually on the same axis as right Najbliższe działania card.
 - verify top tiles and active case compact card unchanged.
+
+## 2026-06-13 - STAGE231F_R3_OWNER_CONTROL_BASELINE
+- source: `src/lib/owner-control/owner-control-baseline.ts`
+- settings: `src/pages/Settings.tsx`, `/api/me`, `/api/workspace-settings`
+- data: migration `20260613065348_stage231f_r3_owner_control_workspace_settings.sql`
+- consumers: TodayStable, Leads, Clients, Cases, LeadDetail, contact cadence and record badges.
+- proof: dedicated guard/test, Stage222/223/225 regressions, build and browser hard-refresh test.

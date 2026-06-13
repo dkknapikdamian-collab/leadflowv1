@@ -11,17 +11,18 @@ test('Stage222 owner risk rules helper defines thresholds and badge contracts', 
 
   for (const token of [
     'DEFAULT_HIGH_VALUE_THRESHOLD_PLN = 5000',
+    'DEFAULT_OWNER_CONTROL_WARNING_DAYS = 7',
+    'DEFAULT_OWNER_CONTROL_CRITICAL_DAYS = 14',
     'SALES_SILENCE_THRESHOLDS_DAYS = [1, 2, 3, 5, 7, 14]',
     'normalizeOwnerRiskSettings',
     'getLeadOwnerRiskBadges',
     'getCaseOwnerRiskBadges',
     'getMoneyOwnerRiskBadges',
-    'Cisza 7+ dni',
-    'Cisza 14+ dni',
+    'settings.warningDays',
+    'settings.criticalDays',
     'Brak następnej akcji',
     'Wysoka wartość',
     'Brak następnego ruchu',
-    'Sprawa bez ruchu 7+ dni',
     'Pieniądze bez ruchu',
   ]) {
     assert.match(helper, new RegExp(token.replace(/[+]/g, '\\+').replace(/[[]/g, '\\[').replace(/[]]/g, '\\]')), 'missing token: ' + token);
@@ -34,7 +35,9 @@ test('Stage222 wires settings, lead badges and case badges without new Today pan
   const recordBadges = read('src/lib/record-operational-badges.ts');
   const today = read('src/pages/TodayStable.tsx');
 
-  assert.match(settings, /Progi ryzyka sprzedaży/);
+  assert.match(settings, /Progi kontroli sprzedaży/);
+  assert.match(settings, /Ostrzegaj po/);
+  assert.match(settings, /Alarm krytyczny po/);
   assert.match(settings, /Wysoka wartość od/);
   assert.match(settings, /writeOwnerRiskSettings/);
   assert.match(recordBadges, /getLeadOwnerRiskBadges/);

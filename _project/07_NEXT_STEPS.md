@@ -4332,3 +4332,9 @@ RYZYKO:
 - Visual QA `/notifications` required.
 - Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
+
+## Po STAGE231F_R3
+1. Selektywny commit i push tylko plikow Stage231F R3.
+2. Zastosowac migracje Supabase na srodowisku docelowym.
+3. Damian wykonuje manualny flow `/settings` -> `/today` -> next step -> hard refresh.
+4. Globalny mojibake/BOM gate pozostaje osobnym etapem naprawczym.

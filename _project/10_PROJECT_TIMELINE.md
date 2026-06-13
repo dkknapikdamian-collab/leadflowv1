@@ -1459,3 +1459,8 @@ następny krok:
 - status: LOCAL_ONLY_PACKAGE_PREPARED
 - result: restored missing scripts/check-polish-encoding-stage231b0-r15-r3.cjs required by regression lane after STAGE231D3-R7.
 - risk audit: this fixes guard infrastructure drift only; it does not modify SQL, API routes, or CaseDetail layout.
+
+## 2026-06-13 09:11 Europe/Warsaw - STAGE231F_R3
+- status: IMPLEMENTED_LOCAL_PASS_READY_FOR_SELECTIVE_PUSH
+- result: owner-control core, workspace thresholds, full Today queue, list integration and refresh persistence completed.
+- evidence: dedicated tests, regression guards, build and browser QA PASS.

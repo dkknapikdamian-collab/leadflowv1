@@ -52,7 +52,8 @@ import {
 } from '../lib/reminders';
 import {
   updateProfileSettingsInSupabase,
-  updateWorkspaceSettingsInSupabase
+  updateWorkspaceSettingsInSupabase,
+  isSupabaseConfigured
 } from '../lib/supabase-fallback';
 import {
   getSupabaseAccessToken
@@ -64,7 +65,7 @@ import {
   getGoogleCalendarReminderPreference,
   setGoogleCalendarReminderPreference
 } from '../lib/google-calendar-reminder-preferences';
-import { DEFAULT_HIGH_VALUE_THRESHOLD_PLN } from '../lib/owner-control/owner-risk-rules';
+import { DEFAULT_HIGH_VALUE_THRESHOLD_PLN, DEFAULT_OWNER_CONTROL_CRITICAL_DAYS, DEFAULT_OWNER_CONTROL_WARNING_DAYS } from '../lib/owner-control/owner-risk-rules';
 import { readOwnerRiskSettings, writeOwnerRiskSettings, getOwnerRiskSettingsStorageNote } from '../lib/owner-control/owner-risk-settings';
 import '../styles/visual-stage19-settings-vnext.css';
 import { CloseFlowPageHeaderV2 } from '../components/CloseFlowPageHeaderV2';
@@ -236,6 +237,9 @@ const authSnapshot = useClientAuthSnapshot();
   const [googleCalendarReminderMethod, setGoogleCalendarReminderMethod] = useState(() => getGoogleCalendarReminderPreference().method);
   const [googleCalendarReminderMinutes, setGoogleCalendarReminderMinutes] = useState(() => String(getGoogleCalendarReminderPreference().minutesBefore));
   const [ownerRiskHighValueThreshold, setOwnerRiskHighValueThreshold] = useState(() => String(readOwnerRiskSettings().highValueThresholdPln));
+  const [ownerRiskWarningDays, setOwnerRiskWarningDays] = useState(() => String(readOwnerRiskSettings().warningDays));
+  const [ownerRiskCriticalDays, setOwnerRiskCriticalDays] = useState(() => String(readOwnerRiskSettings().criticalDays));
+  const [savingOwnerRiskSettings, setSavingOwnerRiskSettings] = useState(false);
 
 useEffect(() => {
     setProfile({
@@ -261,6 +265,10 @@ useEffect(() => {
     setDailyDigestHour(String(workspace?.dailyDigestHour ?? 7));
     setDailyDigestTimezone(workspace?.dailyDigestTimezone || workspace?.timezone || 'Europe/Warsaw');
     setDailyDigestRecipientEmail(workspace?.dailyDigestRecipientEmail || workspaceProfile?.email || auth.currentUser?.email || '');
+    const ownerRiskSettings = readOwnerRiskSettings(workspace);
+    setOwnerRiskWarningDays(String(ownerRiskSettings.warningDays));
+    setOwnerRiskCriticalDays(String(ownerRiskSettings.criticalDays));
+    setOwnerRiskHighValueThreshold(String(ownerRiskSettings.highValueThresholdPln));
   }, [workspace, workspaceProfile]);
 
   useEffect(() => {
@@ -481,12 +489,57 @@ useEffect(() => {
     toast.success('Ustawienia przypomnień Google Calendar zapisane.');
   };
 
-  const handleSaveOwnerRiskSettings = () => {
-    const normalized = writeOwnerRiskSettings({
-      highValueThresholdPln: ownerRiskHighValueThreshold.trim() ? Number(ownerRiskHighValueThreshold) : DEFAULT_HIGH_VALUE_THRESHOLD_PLN,
-    });
-    setOwnerRiskHighValueThreshold(String(normalized.highValueThresholdPln));
-    toast.success('Progi ryzyka sprzedaży zapisane.');
+  const handleSaveOwnerRiskSettings = async () => {
+    if (!workspace?.id) {
+      toast.error('Brak aktywnego workspace. Odśwież aplikację i spróbuj ponownie.');
+      return;
+    }
+
+    const warningDays = Number(ownerRiskWarningDays);
+    const criticalDays = Number(ownerRiskCriticalDays);
+    const highValueThresholdPln = ownerRiskHighValueThreshold.trim() ? Number(ownerRiskHighValueThreshold) : DEFAULT_HIGH_VALUE_THRESHOLD_PLN;
+    if (!Number.isInteger(warningDays) || warningDays < 1 || warningDays > 365) {
+      toast.error('Próg ostrzegawczy musi być pełną liczbą od 1 do 365 dni.');
+      return;
+    }
+    if (!Number.isInteger(criticalDays) || criticalDays < 1 || criticalDays > 365 || criticalDays <= warningDays) {
+      toast.error('Alarm krytyczny musi być później niż ostrzeżenie i mieścić się w zakresie 1-365 dni.');
+      return;
+    }
+    if (!Number.isFinite(highValueThresholdPln) || highValueThresholdPln < 0) {
+      toast.error('Próg wysokiej wartości nie może być ujemny.');
+      return;
+    }
+
+    setSavingOwnerRiskSettings(true);
+    try {
+      let workspaceSaved = false;
+      if (isSupabaseConfigured()) {
+        try {
+          await updateWorkspaceSettingsInSupabase({
+            workspaceId: workspace.id,
+            ownerControlWarningDays: warningDays,
+            ownerControlCriticalDays: criticalDays,
+            ownerControlHighValueThresholdPln: Math.round(highValueThresholdPln),
+          });
+          workspaceSaved = true;
+        } catch {
+          workspaceSaved = false;
+        }
+      }
+      const normalized = writeOwnerRiskSettings({ warningDays, criticalDays, highValueThresholdPln });
+      setOwnerRiskWarningDays(String(normalized.warningDays));
+      setOwnerRiskCriticalDays(String(normalized.criticalDays));
+      setOwnerRiskHighValueThreshold(String(normalized.highValueThresholdPln));
+      await refresh();
+      toast.success(workspaceSaved
+        ? 'Progi kontroli sprzedaży zapisane dla całego workspace.'
+        : 'API workspace jest niedostępne. Progi zapisano lokalnie jako fallback.');
+    } catch (error: any) {
+      toast.error(`Błąd zapisu progów: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setSavingOwnerRiskSettings(false);
+    }
   };
 
   const handleUpdateProfile = async () => {
@@ -1199,16 +1252,46 @@ useEffect(() => {
               </div>
             </section>
 
-<section hidden={activeSettingsTab !== 'app'} data-settings-tab-panel="app" className="settings-section-card" data-stage222-owner-risk-settings="true">
+<section hidden={activeSettingsTab !== 'app'} data-settings-tab-panel="app" className="settings-section-card" data-stage222-owner-risk-settings="true" data-stage231f-r3-owner-control-settings="true">
               <div className="settings-section-head">
                 <div>
-                  <span><SlidersHorizontal className="h-4 w-4" /> Progi ryzyka sprzedaży</span>
-                  <h2>Progi ryzyka sprzedaży</h2>
-                  <p>Ustaw próg, od którego leady, sprawy i pieniądze są traktowane jako wysoka wartość.</p>
+                  <span><SlidersHorizontal className="h-4 w-4" /> Kontrola sprzedaży</span>
+                  <h2>Progi kontroli sprzedaży</h2>
+                  <p>Po ilu dniach bez kontaktu temat wymaga uwagi.</p>
                 </div>
               </div>
 
               <div className="settings-form-grid">
+                <div className="settings-field">
+                  <Label>Ostrzegaj po</Label>
+                  <Input
+                    type="number"
+                    min={1}
+                    max={365}
+                    step={1}
+                    inputMode="numeric"
+                    value={ownerRiskWarningDays}
+                    onChange={(event) => setOwnerRiskWarningDays(event.target.value)}
+                    placeholder={String(DEFAULT_OWNER_CONTROL_WARNING_DAYS)}
+                    disabled={!isAdmin && !isAppOwner}
+                  />
+                  <span className="settings-muted-note">dni bez kontaktu lub świeżego ruchu</span>
+                </div>
+                <div className="settings-field">
+                  <Label>Alarm krytyczny po</Label>
+                  <Input
+                    type="number"
+                    min={2}
+                    max={365}
+                    step={1}
+                    inputMode="numeric"
+                    value={ownerRiskCriticalDays}
+                    onChange={(event) => setOwnerRiskCriticalDays(event.target.value)}
+                    placeholder={String(DEFAULT_OWNER_CONTROL_CRITICAL_DAYS)}
+                    disabled={!isAdmin && !isAppOwner}
+                  />
+                  <span className="settings-muted-note">musi być później niż ostrzeżenie</span>
+                </div>
                 <div className="settings-field">
                   <Label>Wysoka wartość od</Label>
                   <Input
@@ -1218,21 +1301,30 @@ useEffect(() => {
                     value={ownerRiskHighValueThreshold}
                     onChange={(event) => setOwnerRiskHighValueThreshold(event.target.value)}
                     placeholder="5000"
+                    disabled={!isAdmin && !isAppOwner}
                   />
+                  <span className="settings-muted-note">PLN</span>
                 </div>
-                <div className="settings-field">
-                  <Label>Waluta</Label>
-                  <Input value="PLN" disabled readOnly />
+              </div>
+
+              <div className="settings-diagnostics-box" data-stage231f-r3-owner-control-preview="true">
+                <div>
+                  <strong>{ownerRiskWarningDays || DEFAULT_OWNER_CONTROL_WARNING_DAYS} dni = ostrzeżenie</strong>
+                  <span className="settings-muted-note">Temat trafia na listę rzeczy do sprawdzenia.</span>
+                </div>
+                <div>
+                  <strong>{ownerRiskCriticalDays || DEFAULT_OWNER_CONTROL_CRITICAL_DAYS} dni = czerwony alert</strong>
+                  <span className="settings-muted-note">Temat wymaga pilnej decyzji lub kontaktu.</span>
                 </div>
               </div>
 
               <div className="settings-action-row">
-                <Button type="button" onClick={handleSaveOwnerRiskSettings}>
+                <Button type="button" onClick={() => void handleSaveOwnerRiskSettings()} disabled={savingOwnerRiskSettings || (!isAdmin && !isAppOwner)}>
                   <Save className="h-4 w-4" />
-                  Zapisz próg ryzyka
+                  {savingOwnerRiskSettings ? 'Zapisywanie...' : 'Zapisz progi'}
                 </Button>
                 <span className="settings-muted-note">
-                  {getOwnerRiskSettingsStorageNote()}
+                  {isAdmin || isAppOwner ? getOwnerRiskSettingsStorageNote() : 'Tylko owner lub admin może zmieniać progi.'}
                 </span>
               </div>
             </section>

@@ -4069,3 +4069,9 @@ RYZYKO:
 - Visual QA `/notifications` required.
 - Previous failed N1/N1-R2 copied guard/test/run/obsidian files; R3 overwrites active guard/test and creates final R3 run/obsidian.
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_END -->
+
+## 2026-06-13 09:11 - STAGE231F_R3 Owner Control Baseline
+- Dodano wspolny silnik Owner Control i migracje progow workspace.
+- Przepieto `/today`, LeadDetail i listy lead/client/case na wspolne kontrakty.
+- Dodano konfiguracje 7/14/5000 oraz trwaly local fallback.
+- Dodano dedykowany guard/test i rozszerzono Stage225 o progi 3/10.
