@@ -44,3 +44,15 @@ Powiązanie: STAGE231E2_R5_TRIAL_14D_WORKSPACE_FALLBACK_AND_PLAN_MATRIX
 2. Billing pokazuje datę triala liczona z aktywnego kontraktu 14 dni.
 3. Stare konto z większą datą końca triala traktować jako legacy data case, nie jako nowy trial.
 4. Basic nie widzi Google Calendar jako dostępnego, Pro/AI/Trial mają dostęp zgodnie z planem i konfiguracją aplikacji.
+## STAGE231E2_R8_PLAN_WIRING_CONFIRMATION
+
+Data: 2026-06-13
+
+- Potwierdzenie guardem: `free`, `basic`, `pro`, `ai`, `trial_14d` maja wpisy w `PLAN_IDS` i `PLAN_DEFINITIONS`.
+- Potwierdzenie guardem: kazdy plan ma pelny zestaw `PlanFeatures` i `PlanLimits`.
+- Potwierdzenie guardem: minimum planow jest spojne:
+  - Basic: `digest`, `lightParser`, `lightDrafts`, `browserNotifications`;
+  - Pro: `googleCalendar`, `weeklyReport`, `csvImport`, `recurringReminders`;
+  - AI: `ai`, `fullAi`;
+  - Trial: dziedziczy AI/Pro w czasie aktywnego triala 14 dni.
+- Potwierdzenie guardem: sidebar nie moze zawierac mojibake.

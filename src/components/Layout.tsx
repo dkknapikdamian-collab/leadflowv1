@@ -140,14 +140,18 @@ function TrialCard({
     ? Math.max(0, Math.min(100, Math.round(trialProgressPercent)))
     : 0;
   const isActiveTrial = accessStatus === 'trial_active' || accessStatus === 'trial_ending';
-  const eyebrow = accessStatus === 'paid_active'
-    ? 'Plan'
-    : accessStatus === 'payment_failed'
-      ? 'PĹ‚atnoĹ›Ä‡'
-      : 'DostÄ™p';
+  const eyebrow = accessStatus === 'trial_active'
+    ? 'Trial aktywny'
+    : accessStatus === 'trial_ending'
+      ? 'Trial ko\u0144czy si\u0119'
+      : accessStatus === 'paid_active'
+        ? 'Plan'
+        : accessStatus === 'payment_failed'
+          ? 'P\u0142atno\u015b\u0107'
+          : 'Dost\u0119p';
   const strongLabel = isActiveTrial && safeDays > 0
     ? `${safeDays} dni`
-    : sidebarLabel || 'Status dostÄ™pu';
+    : sidebarLabel || 'Status dost\u0119pu';
 
   if (isActiveTrial && safeDays <= 0) return null;
 
