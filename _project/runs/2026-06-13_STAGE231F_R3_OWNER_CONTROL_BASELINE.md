@@ -74,4 +74,5 @@ entity_id / workspace_id: DO_POTWIERDZENIA
 ## GIT / ZIP STATUS
 - Backup: `_local_backups/STAGE231F_R3_OWNER_CONTROL_BASELINE_20260613_085014/closeflow-backup-package.zip`.
 - SHA256: `B5B01DAF24F21DB3A26588568A040898D8470AFFCC1054FBBE01610241DC6DEC`.
-- Commit/push: do uzupelnienia po wykonaniu.
+- App feature commit: `3139ee04` (`feat: add owner control baseline`) pushed to `origin/dev-rollout-freeze`.
+- Obsidian commit: `7f01d16` (`docs: record owner control baseline`) pushed to `origin/main`.

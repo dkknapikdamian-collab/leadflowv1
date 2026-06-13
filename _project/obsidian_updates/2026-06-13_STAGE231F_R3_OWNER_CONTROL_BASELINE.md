@@ -8,3 +8,5 @@
 - Backup: `_local_backups/STAGE231F_R3_OWNER_CONTROL_BASELINE_20260613_085014/`.
 - Ryzyka: produkcyjna migracja do zastosowania; globalny quiet gate blokowany przez stary mojibake/BOM.
 - Manual QA Damiana: ustawienia 3/10, `/today`, 3 leady bez next step, ustawienie next step i twardy refresh.
+- App feature commit/push: `3139ee04` -> `dev-rollout-freeze`.
+- Obsidian commit/push: `7f01d16` -> `main`.

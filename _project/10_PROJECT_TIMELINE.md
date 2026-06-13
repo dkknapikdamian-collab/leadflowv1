@@ -1464,3 +1464,5 @@ następny krok:
 - status: IMPLEMENTED_LOCAL_PASS_READY_FOR_SELECTIVE_PUSH
 - result: owner-control core, workspace thresholds, full Today queue, list integration and refresh persistence completed.
 - evidence: dedicated tests, regression guards, build and browser QA PASS.
+- app push: `3139ee04` -> `origin/dev-rollout-freeze`.
+- Obsidian push: `7f01d16` -> `origin/main`.
