@@ -55,7 +55,7 @@ const pkg = JSON.parse(read('package.json'));
   'STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL',
   'URLSearchParams(window.location.search)',
   "params.get('finance') === '1'",
-  "params.get('source') === 'client-create'",
+  "['client-create', 'client-detail']",
   'setFinanceEditForm(buildFin11FinanceEditState(caseData, casePayments))',
   'setIsFinanceEditOpen(true)',
 ].forEach((token) => requireText(caseDetail, token, 'CaseDetail'));

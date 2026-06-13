@@ -9,6 +9,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Activity, AlertTriangle, ArrowLeft, CheckCircle2, Clock, Eye, Loader2, Mic, MicOff, Pencil, Pin, Plus, Save, Trash2 } from 'lucide-react';
 import { EntityIcon } from '../components/ui-system';
+import { CreateClientCaseDialog } from '../components/CreateClientCaseDialog';
 import { actionButtonClass } from '../components/entity-actions';
 import { Button } from '../components/ui/button';
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogDescription } from '../components/ui/dialog';
@@ -127,6 +128,7 @@ import {
 } from '../lib/supabase-fallback';
 import { getNearestPlannedAction } from '../lib/work-items/planned-actions';
 import { normalizeWorkItem } from '../lib/work-items/normalize';
+import { resolveClientPrimaryCase } from '../lib/client-cases';
 import '../styles/visual-stage12-client-detail-vnext.css';
 import '../styles/closeflow-unified-page-canvas-stage211c.css';
 import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlowActionVisualDataKind, inferCloseFlowActionVisualKind } from '../lib/action-visual-taxonomy';
@@ -1036,8 +1038,9 @@ type ClientTopTilesProps = {
   events: any[];
   financeSummary: ClientFinanceSummaryForTopTiles;
   onOpenCases: () => void;
+  onAddCase: () => void;
 };
-function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, financeSummary, onOpenCases }: ClientTopTilesProps) {
+function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, financeSummary, onOpenCases, onAddCase }: ClientTopTilesProps) {
   const nextAction = buildClientNextAction(leads, cases, tasks, events, clientId);
   const transactionTotal = financeSummary.contractValueTotal;
   const commissionDueTotal = financeSummary.commissionDueTotal;
@@ -1108,9 +1111,15 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
             : cases.length > 0
               ? 'Brak dodatkowego opisu.' : 'Brak spraw przypiętych do klienta.'}
         </p>
-        <button type="button" className="entity-overview-tile-link" onClick={onOpenCases}>
-          Pokaż sprawy
-        </button>
+        <div className="mt-auto flex flex-wrap items-center gap-2">
+          <button type="button" className="entity-overview-tile-link !mt-0" onClick={onOpenCases}>
+            Pokaż sprawy
+          </button>
+          <Button type="button" size="sm" className="rounded-full" onClick={onAddCase}>
+            <Plus className="h-4 w-4" />
+            Dodaj sprawę
+          </Button>
+        </div>
       </article>
     </section>
   );
@@ -1289,6 +1298,7 @@ function ClientDetail() {
   const [clientMissingSaving, setClientMissingSaving] = useState(false);
   const [clientNoteModalOpen, setClientNoteModalOpen] = useState(false);
   const [clientNoteAutosaving, setClientNoteAutosaving] = useState(false);
+  const [clientCaseCreateOpen, setClientCaseCreateOpen] = useState(false);
   const clientNoteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const clientNoteVoiceDirtyRef = useRef(false);
 
@@ -1432,14 +1442,19 @@ function ClientDetail() {
     });
   }, [cases, client, clientId]);
 
+  const clientCaseState = useMemo(
+    () => resolveClientPrimaryCase({ client, cases: clientRelatedCasesStage231B0R8 }),
+    [client, clientRelatedCasesStage231B0R8],
+  );
+
   const activeCases = useMemo(
-    () => activeClientCasesStage231B0R7(clientRelatedCasesStage231B0R8),
-    [clientRelatedCasesStage231B0R8],
+    () => activeClientCasesStage231B0R7(clientCaseState.sortedCases),
+    [clientCaseState.sortedCases],
   );
 
   const closedCases = useMemo(
-    () => closedClientCasesStage231B0R7(clientRelatedCasesStage231B0R8),
-    [clientRelatedCasesStage231B0R8],
+    () => closedClientCasesStage231B0R7(clientCaseState.sortedCases),
+    [clientCaseState.sortedCases],
   );
 
   const activeClientCases = activeCases;
@@ -1646,7 +1661,7 @@ function ClientDetail() {
 
   const openNewCase = () => {
     if (!clientId) return navigate('/cases');
-    navigate(`/cases?clientId=${encodeURIComponent(clientId)}&new=1`);
+    setClientCaseCreateOpen(true);
   };
 
   const stopClientNoteSpeech = () => {
@@ -2335,6 +2350,14 @@ return (
 
   return (
     <Layout>
+      <CreateClientCaseDialog
+        open={clientCaseCreateOpen}
+        onOpenChange={setClientCaseCreateOpen}
+        client={client}
+        workspaceId={String(workspace?.id || '')}
+        hasAccess={hasAccess}
+        hasExistingCase={clientRelatedCasesStage231B0R8.length > 0}
+      />
       <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231d0c-client-detail-workspace-baseline="true" data-client-detail-simplified-card-view="true" data-stage216m-r6-client-data-card-marker="true" data-stage216m-r6-r1-client-data-card-polish-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
         <header className="client-detail-header">
           <div className="client-detail-header-copy">
@@ -2543,6 +2566,7 @@ return (
                 events={clientEvents}
                 financeSummary={clientFinanceSummary}
                 onOpenCases={() => setActiveTab('cases')}
+                onAddCase={openNewCase}
               />
             </div>
 

@@ -4338,3 +4338,8 @@ RYZYKO:
 2. Zastosowac migracje Supabase na srodowisku docelowym.
 3. Damian wykonuje manualny flow `/settings` -> `/today` -> next step -> hard refresh.
 4. Globalny mojibake/BOM gate pozostaje osobnym etapem naprawczym.
+
+## Po CLOSEFLOW_CLIENT_CASE_URGENT_FIX
+1. Damian wykonuje test reczny kartoteki klienta i sprawy.
+2. Po akceptacji mozna wykonac selektywny commit/push tylko plikow tego pakietu.
+3. Osobno domknac globalny Stage98 mojibake/BOM i niedokonczony guard 231D2.

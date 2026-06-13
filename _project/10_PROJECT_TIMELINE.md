@@ -1466,3 +1466,9 @@ następny krok:
 - evidence: dedicated tests, regression guards, build and browser QA PASS.
 - app push: `3139ee04` -> `origin/dev-rollout-freeze`.
 - Obsidian push: `7f01d16` -> `origin/main`.
+
+## 2026-06-13 13:30 Europe/Warsaw - CLOSEFLOW_CLIENT_CASE_URGENT_FIX
+- status: LOCAL_IMPLEMENTED_MANUAL_PENDING
+- backup: `_local_backups/URGENT_CLIENT_CASE_FIX_20260613_124545/`
+- result: four urgent client/case regressions fixed with shared finance and case-create sources.
+- git: no commit and no push by decision.

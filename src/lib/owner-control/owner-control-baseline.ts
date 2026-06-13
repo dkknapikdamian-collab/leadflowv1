@@ -3,6 +3,7 @@ import { normalizeWorkItem } from '../work-items/normalize';
 import { buildActivityTruth } from './activity-truth';
 import { buildNextMoveContract } from './next-move-contract';
 import { normalizeOwnerRiskSettings, type OwnerRiskSettings } from './owner-risk-rules';
+import { getCaseFinanceValue } from '../finance/case-finance-source';
 
 export type OwnerControlEntityType = 'lead' | 'case' | 'task' | 'event';
 export type OwnerControlSeverity = 'critical' | 'warning' | 'normal';
@@ -131,7 +132,7 @@ function buildRecordItem(input: {
   });
   const silentDays = activity.contactSilentDays ?? activity.activitySilentDays;
   const silenceSeverity = classifySilence(silentDays, input.settings);
-  const valuePln = getValue(input.record);
+  const valuePln = input.entityType === 'case' ? getCaseFinanceValue(input.record) : getValue(input.record);
   const signals: string[] = [];
 
   if (nextMove.isMissing) pushSignal(signals, 'Brak następnego kroku');

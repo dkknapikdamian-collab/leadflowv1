@@ -39,7 +39,7 @@ mustNotInclude('src/components/topic-contact-picker.tsx', 'pl-10');
 
 [
   'createClientInSupabase',
-  'createCaseInSupabase',
+  'createStarterCaseForClient',
   'fetchClientsFromSupabase',
   'data-client-create-dialog-stage172="true"',
   'lead-form-vnext-content',

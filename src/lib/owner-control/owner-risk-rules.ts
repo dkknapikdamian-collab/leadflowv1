@@ -1,5 +1,6 @@
 import { buildActivityTruth, type ActivityTruth } from './activity-truth';
 import { buildNextMoveContract, type NextMoveContract } from './next-move-contract';
+import { getCaseFinanceValue } from '../finance/case-finance-source';
 
 export const DEFAULT_HIGH_VALUE_THRESHOLD_PLN = 5000;
 export const DEFAULT_OWNER_CONTROL_WARNING_DAYS = 7;
@@ -235,7 +236,7 @@ export function getLeadOwnerRiskBadges(lead: unknown, context: OwnerRiskContext 
 export function getCaseOwnerRiskBadges(caseRecord: unknown, context: OwnerRiskContext = {}): OwnerRiskBadge[] {
   const record = asRecord(caseRecord);
   const settings = getContextSettings(context);
-  const value = getValue(record);
+  const value = getCaseFinanceValue(record);
   const nextMove = resolveNextMove('case', record, context);
   const activityTruth = resolveActivityTruth('case', record, context);
 

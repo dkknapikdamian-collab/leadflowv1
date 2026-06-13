@@ -1267,4 +1267,13 @@ RYZYKA:
 4. Dla 10 leadow potwierdzic, ze 3 bez next step sa czerwone i pierwsze.
 5. Dodac next step, wykonac refetch i twardy refresh; alert nie moze wrocic.
 6. Sprawdzic case bez postepu i krytyczna cisze.
+
+## CLOSEFLOW_CLIENT_CASE_URGENT_FIX - TEST RECZNY DO WYKONANIA
+1. Otworz klienta z jedna glowna sprawa; w kafelku `Sprawy` kliknij `Dodaj sprawe`.
+2. Podaj tylko nazwe; potwierdz przekierowanie do nowej sprawy z otwartymi finansami.
+3. Ustaw 69000 PLN i 2%; potwierdz prowizje oraz `Razem do pobrania` 1380 PLN bez kosztow.
+4. Kliknij `Cofnij`; aplikacja ma wrocic do kartoteki klienta.
+5. W `Sprawy aktywne` glowna sprawa ma zostac pierwsza, nowa ma byc ponizej.
+6. Po Ctrl+F5 nowa sprawa i kolejnosc maja pozostac.
+7. Sprawa 3500 PLN przy progu 5000 PLN nie moze miec alertu wysokiej wartosci.
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.

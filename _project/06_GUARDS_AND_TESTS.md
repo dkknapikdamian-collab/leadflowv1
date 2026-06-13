@@ -4074,3 +4074,11 @@ RYZYKO:
 - nearest action and Stage227G1/G1R1/G2: PASS.
 - build: PASS.
 - `verify:closeflow:quiet`: FAIL - global pre-existing Stage98 mojibake/BOM gate; FOUND-20260613-03.
+
+## 2026-06-13 - CLOSEFLOW_CLIENT_CASE_URGENT_FIX
+- PASS: dedykowany guard i test wrapper.
+- PASS: `check:stage231f-r3-owner-control-baseline`.
+- PASS: `npm run build`.
+- FAIL pre-existing: Stage231D2 guard oczekuje brakujacego markera w obcym zakresie 231D.
+- FAIL pre-existing: `verify:closeflow:quiet` zatrzymuje Stage98 mojibake/BOM.
+- Browser automation SKIP: polityka narzedzia zablokowala lokalny URL.

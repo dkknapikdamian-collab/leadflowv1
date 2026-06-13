@@ -4075,3 +4075,10 @@ RYZYKO:
 - Przepieto `/today`, LeadDetail i listy lead/client/case na wspolne kontrakty.
 - Dodano konfiguracje 7/14/5000 oraz trwaly local fallback.
 - Dodano dedykowany guard/test i rozszerzono Stage225 o progi 3/10.
+
+## 2026-06-13 - CLOSEFLOW_CLIENT_CASE_URGENT_FIX
+- Case Owner Control korzysta z kanonicznej wartosci transakcji z finance source.
+- Kartoteka klienta ma `Dodaj sprawe`; tworzenie korzysta ze wspolnego starter-case helpera i otwiera finanse.
+- Glowna sprawa pozostaje pierwsza, a kolejne sprawy sa ponizej.
+- `Razem do pobrania` korzysta z pozostalej prowizji, nie pozostalej wartosci transakcji.
+- `Cofnij` wraca do powiazanego klienta, z fallbackiem do `/cases`.

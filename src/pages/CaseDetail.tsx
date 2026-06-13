@@ -1359,7 +1359,8 @@ export default function CaseDetail() {
     if (didAutoOpenCaseFinanceFromClientCreateStage228R5 || !caseData?.id) return;
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    const shouldOpenFinance = params.get('finance') === '1' && params.get('source') === 'client-create';
+    const financeSource = params.get('source');
+    const shouldOpenFinance = params.get('finance') === '1' && ['client-create', 'client-detail'].includes(String(financeSource || ''));
     if (!shouldOpenFinance) return;
 
     setFinanceEditForm(buildFin11FinanceEditState(caseData, casePayments));
@@ -1952,9 +1953,9 @@ export default function CaseDetail() {
   }, [caseFinanceSourceStage220A26]);
   const caseCostsSummaryStage231D2 = useMemo(() => getCaseCostsSummary({
     costs: caseCostsStage231D2,
-    commissionRemainingAmount: caseFinance.remaining,
+    commissionRemainingAmount: caseFinanceSourceStage220A26.commissionRemainingAmount,
     currency: caseFinance.currency,
-  }), [caseCostsStage231D2, caseFinance.remaining, caseFinance.currency]);
+  }), [caseCostsStage231D2, caseFinance.currency, caseFinanceSourceStage220A26.commissionRemainingAmount]);
 
   const recentCaseMoves = useMemo(() => activities.slice(0, 5), [activities]);
   const nearestOperationalAction = useMemo(() => getNearestPlannedAction({
@@ -2615,9 +2616,13 @@ async function handleConfirmDeleteCaseRecord() {
       <main className="case-detail-vnext-page">
         <header className="case-detail-header client-detail-header" data-stage228r9-wide-header="true" data-stage220a3-case-header-source-card="STAGE220A3_CASE_HEADER_SOURCE_CARD" data-stage220a6-client-header-source="true" data-stage231b0-r8-case-header-order="copy-left-actions-right" data-stage231d2-r6-top-strip-left-card="true">
           <div className="case-detail-header-copy client-detail-header-copy" data-stage220a6-client-copy="true">
-            <button type="button" className="case-detail-back-button client-detail-back-button" onClick={() => navigate('/cases')}>
+            <button
+              type="button"
+              className="case-detail-back-button client-detail-back-button"
+              onClick={() => navigate(caseData.clientId ? `/clients/${encodeURIComponent(String(caseData.clientId))}` : '/cases')}
+            >
               <ArrowLeft className="h-4 w-4" />
-              Sprawy
+              Cofnij
             </button>
             <p className="case-detail-kicker client-detail-kicker">KARTOTEKA SPRAWY</p>
 

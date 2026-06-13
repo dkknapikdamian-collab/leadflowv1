@@ -1475,3 +1475,10 @@ RYZYKO:
 - Build nadal ostrzega o podwojnym kluczu `savedRecord` w `ContextActionDialogs.tsx`.
 - Manualny test Damiana na wdrozonym srodowisku pozostaje wymagany.
 - `verify:migrations:supabase` ma globalny pre-existing FAIL na dwoch migracjach portalu z 2026-05-02; Stage231F R3 stosuje jawny SKIP dla tego gate.
+
+## CLOSEFLOW_CLIENT_CASE_URGENT_FIX - audyt ryzyka
+- Manualny test lokalnego UI nie zostal wykonany automatycznie z powodu blokady localhost w narzedziu przegladarkowym.
+- Stary guard Stage228R5 wymaga wpisu w `prebuild`, ktorego aktualny `package.json` nie zawiera.
+- Guard Stage231D2 jest czerwony przez brak markera w obcym, aktywnym zakresie 231D.
+- Globalny Stage98 mojibake/BOM nadal blokuje `verify:closeflow:quiet`.
+- Brak migracji i zmian schematu w tym pakiecie.

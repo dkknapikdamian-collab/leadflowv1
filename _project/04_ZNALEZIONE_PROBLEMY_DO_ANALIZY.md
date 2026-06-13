@@ -165,6 +165,12 @@ Przeplyw decyzyjny:
 - status: DO_ANALIZY_DAMIANA
 - znalezione przy etapie: STAGE231F_R3
 - problem: `verify:closeflow:quiet` zatrzymuje sie na Stage98 mojibake hard gate w wielu starszych plikach poza zakresem Owner Control.
+
+### FOUND-20260613-04 - Stare guardy Stage228R5 nie zgadzaja sie z aktywnym prebuild
+- status: DO_ANALIZY_DAMIANA
+- obszar: infrastruktura guardow tworzenia klienta/sprawy
+- dowod: guard wymaga swojej komendy w `prebuild`, ale aktywny `prebuild` zawiera tylko finalne guardy delete flow R25/R41.
+- decyzja w tym pakiecie: nie rozszerzano prebuild; build i nowy dedykowany guard przechodza.
 - dowod: m.in. Calendar.tsx, TasksStable.tsx, ClientDetail.tsx, stare CSS/testy/skrypty.
 - ryzyko: pelny release gate pozostaje czerwony mimo zielonych dedykowanych testow etapu.
 - propozycja: osobny kontrolowany etap encoding/guard scope, bez mieszania z Owner Control.

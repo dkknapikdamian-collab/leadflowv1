@@ -3151,3 +3151,8 @@ RYZYKO:
 - Status: local PASS, przed selektywnym commit/push.
 - Ekrany: `/settings` -> Aplikacja oraz `/today`.
 - Zakres: wspolny silnik, workspace settings, migracja, listy lead/client/case, guardy i browser QA.
+
+## ACTIVE: CLOSEFLOW_CLIENT_CASE_URGENT_FIX (ID: DO_POTWIERDZENIA)
+- Ekrany: `/clients/:id`, `/cases/:id`, `/cases`, `/today`.
+- Efekt: poprawny prog wartosci, kolejne sprawy klienta, poprawne saldo prowizji i `Cofnij` do klienta.
+- Status: kod i testy automatyczne zakonczone; test reczny Damiana oczekuje.

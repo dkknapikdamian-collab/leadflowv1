@@ -2556,3 +2556,10 @@ Manual QA after deploy:
 - data: migration `20260613065348_stage231f_r3_owner_control_workspace_settings.sql`
 - consumers: TodayStable, Leads, Clients, Cases, LeadDetail, contact cadence and record badges.
 - proof: dedicated guard/test, Stage222/223/225 regressions, build and browser hard-refresh test.
+
+## CLOSEFLOW_CLIENT_CASE_URGENT_FIX (ID: DO_POTWIERDZENIA)
+- value truth: `getCaseFinanceValue` feeds Owner Control case classification.
+- create truth: `src/lib/cases/create-client-case.ts` is shared by client creation and client detail.
+- finance truth: CaseDetail settlement total receives `commissionRemainingAmount`.
+- navigation truth: linked case returns to `/clients/:clientId`, otherwise `/cases`.
+- primary truth: existing primary stays first through `resolveClientPrimaryCase`.

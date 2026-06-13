@@ -22,6 +22,7 @@ function forbidText(text, token, label) {
 
 const clients = read('src/pages/Clients.tsx');
 const clientCreateDialog = read('src/components/ClientCreateDialog.tsx');
+const createClientCase = read('src/lib/cases/create-client-case.ts');
 const caseDetail = read('src/pages/CaseDetail.tsx');
 const pkg = JSON.parse(read('package.json'));
 
@@ -41,10 +42,16 @@ const pkg = JSON.parse(read('package.json'));
 [
   'STAGE228R5R6_ACTIVE_CLIENT_CREATE_DIALOG_FINANCE_REDIRECT',
   'const navigate = useNavigate();',
-  'readCreatedCaseId',
   'let createdCaseId =',
-  'const createdCase = await createCaseInSupabase({',
+  'const createdCaseResult = await createStarterCaseForClient({',
   "navigate('/cases/' + encodeURIComponent(createdCaseId) + '?finance=1&source=client-create')",
+  'Utw\u00f3rz spraw\u0119 od razu',
+  'Nazwa sprawy',
+].forEach((token) => requireText(clientCreateDialog, token, 'ClientCreateDialog'));
+
+[
+  'createCaseInSupabase',
+  'readCreatedCaseId',
   'contractValue: 0',
   'expectedRevenue: 0',
   'caseValue: 0',
@@ -52,9 +59,7 @@ const pkg = JSON.parse(read('package.json'));
   "commissionMode: 'not_set'",
   'commissionAmount: 0',
   "commissionStatus: 'not_set'",
-  'Utw\u00f3rz spraw\u0119 od razu',
-  'Nazwa sprawy',
-].forEach((token) => requireText(clientCreateDialog, token, 'ClientCreateDialog'));
+].forEach((token) => requireText(createClientCase, token, 'create-client-case'));
 
 [
   'caseCommission',
@@ -85,7 +90,7 @@ const pkg = JSON.parse(read('package.json'));
   'didAutoOpenCaseFinanceFromClientCreateStage228R5',
   'URLSearchParams(window.location.search)',
   "params.get('finance') === '1'",
-  "params.get('source') === 'client-create'",
+  "['client-create', 'client-detail']",
   'setIsFinanceEditOpen(true)',
   'buildFin11FinanceEditState(caseData, casePayments)',
   'window.history.replaceState',

@@ -117,3 +117,9 @@ NASTEPNY KROK:
 - `/today` ma wspolny silnik Owner Control i pelna kolejke `Co masz zrobic dzisiaj`.
 - Progi workspace: 7/14/5000 domyslnie, konfigurowalne w Ustawienia -> Aplikacja.
 - Browser QA potwierdzil zapis 3/10 i trwalosc po twardym refreshu.
+
+## 2026-06-13 - Pilny pakiet kartotek klienta i sprawy (ID: DO_POTWIERDZENIA)
+- Status: LOCAL_IMPLEMENTED_AUTOMATED_PASS_MANUAL_PENDING.
+- Naprawiono wartosc sprawy w Owner Control, `Razem do pobrania`, dodawanie kolejnej sprawy z klienta i powrot do klienta.
+- Backup: `_local_backups/URGENT_CLIENT_CASE_FIX_20260613_124545/`.
+- Build i dedykowany guard: PASS; manualny test UI: DO WYKONANIA.

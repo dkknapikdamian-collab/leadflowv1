@@ -3496,3 +3496,11 @@ RYZYKO:
 - PASS: browser `/settings` 3/10 persistence and `/today` queue after hard refresh.
 - FAIL/SKIP FOR PUSH GATE: `verify:closeflow:quiet` stopped on pre-existing global mojibake/BOM findings.
 - FAIL/SKIP FOR PUSH GATE: `verify:migrations:supabase` stopped on two pre-existing portal migrations from 2026-05-02.
+
+## 2026-06-13 - CLOSEFLOW_CLIENT_CASE_URGENT_FIX
+- PASS: value boundaries 3500, 4999, 5000, 5001 and high commission below threshold.
+- PASS: 69000 PLN x 2% = 1380 PLN commission and total to collect.
+- PASS: primary case remains first, new case is second.
+- PASS: build.
+- FAIL unrelated: Stage231D2 marker guard and global Stage98 mojibake/BOM quiet gate.
+- MANUAL: DO WYKONANIA przez Damiana.

@@ -2,7 +2,8 @@ import { type FormEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
-import { createCaseInSupabase, createClientInSupabase, fetchClientsFromSupabase } from '../lib/supabase-fallback';
+import { createClientInSupabase, fetchClientsFromSupabase } from '../lib/supabase-fallback';
+import { createStarterCaseForClient } from '../lib/cases/create-client-case';
 import { requireWorkspaceId } from '../lib/workspace-context';
 import { useWorkspace } from '../hooks/useWorkspace';
 import { Button } from './ui/button';
@@ -69,20 +70,6 @@ function readCreatedClientId(result: unknown) {
     || row.client?.id
     || row.data?.id
     || row.data?.client?.id
-    || row.row?.id
-    || ''
-  ).trim();
-}
-
-function readCreatedCaseId(result: unknown) {
-  const row = (result || {}) as Record<string, any>;
-  return String(
-    row.id
-    || row.caseId
-    || row.case_id
-    || row.case?.id
-    || row.data?.id
-    || row.data?.case?.id
     || row.row?.id
     || ''
   ).trim();
@@ -183,25 +170,17 @@ export default function ClientCreateDialog({ open, onOpenChange }: ClientCreateD
         const caseTitle = prepared.caseTitle || `Sprawa: ${prepared.name}`;
         let createdCaseId = '';
 
-        const createdCase = await createCaseInSupabase({
+        const createdCaseResult = await createStarterCaseForClient({
           title: caseTitle,
           clientId,
           clientName: prepared.name,
           clientEmail: prepared.email,
           clientPhone: prepared.phone,
-          status: 'new',
-          contractValue: 0,
-          expectedRevenue: 0,
-          caseValue: 0,
-          remainingAmount: 0,
-          commissionMode: 'not_set',
-          commissionAmount: 0,
-          commissionStatus: 'not_set',
           primaryForClient: true,
           workspaceId,
         });
 
-        createdCaseId = readCreatedCaseId(createdCase);
+        createdCaseId = createdCaseResult.createdCaseId;
 
         if (!createdCaseId) {
           toast.error('Klient i sprawa zapisane, ale nie udało się otworzyć edycji finansów.');
