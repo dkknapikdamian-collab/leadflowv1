@@ -179,10 +179,10 @@ export function FinanceMiniSummary({
         <strong className="cf-finance-mini-summary__value">{formatMoney(summary.contractValue, summary.currency)}</strong>
       </div>
       <dl className="cf-finance-mini-summary__grid">
-        <div className="cf-finance-metric"><dt>Wartość transakcji</dt><dd>{formatMoney(summary.contractValue, summary.currency)}</dd></div>
-        <div className="cf-finance-metric"><dt>Prowizja należna</dt><dd>{buildCommissionLabel(summary, commissionMode, commissionRate)}</dd></div>
-        <div className="cf-finance-metric"><dt>Wpłacono prowizji</dt><dd>{formatMoney(summary.commissionPaidAmount, summary.currency)}</dd></div>
-        <div className="cf-finance-metric"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(summary.commissionRemainingAmount, summary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="transaction"><dt>Wartość transakcji</dt><dd>{formatMoney(summary.contractValue, summary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{buildCommissionLabel(summary, commissionMode, commissionRate)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoney(summary.commissionPaidAmount, summary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(summary.commissionRemainingAmount, summary.currency)}</dd></div>
         <div className="cf-finance-metric cf-finance-metric--wide">
           <dt>Status prowizji</dt>
           <dd>
@@ -293,12 +293,12 @@ export function ClientFinanceRelationSummary({
       </div>
 
       <dl className="cf-finance-mini-summary__grid cf-fin13-client-finance-totals">
-        <div className="cf-finance-metric"><dt>Suma wartości transakcji</dt><dd>{formatMoney(totals.totalValue)}</dd></div>
-        <div className="cf-finance-metric"><dt>Prowizja należna</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
-        <div className="cf-finance-metric"><dt>Wpłacono prowizji</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
-        <div className="cf-finance-metric"><dt>Do zapłaty prowizji</dt><dd>{formatMoney(totals.commissionRemainingAmount)}</dd></div>
-        <div className="cf-finance-metric" data-stage231d3-client-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(clientCostsSummary.costsToReimburseAmount, clientCostsSummary.currency)}</dd></div>
-        <div className="cf-finance-metric" data-stage231d3-client-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(clientCostsSummary.totalToCollectAmount, clientCostsSummary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="transaction"><dt>Suma wartości transakcji</dt><dd>{formatMoney(totals.totalValue)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{formatMoney(totals.commissionAmount)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoney(totals.commissionPaidAmount)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(totals.commissionRemainingAmount)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="cost" data-stage231d3-client-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(clientCostsSummary.costsToReimburseAmount, clientCostsSummary.currency)}</dd></div>
+        <div className="cf-finance-metric" data-cf-finance-tone="total" data-stage231d3-client-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(clientCostsSummary.totalToCollectAmount, clientCostsSummary.currency)}</dd></div>
       </dl>
 
       <div className="cf-fin13-client-case-finance-list" aria-label="Lista spraw z finansami">
@@ -317,10 +317,10 @@ export function ClientFinanceRelationSummary({
               </StatusPill>
             </div>
             <dl className="cf-fin13-client-case-finance-row__metrics">
-              <div><dt>Wartość transakcji</dt><dd>{row.summary.contractValue > 0 ? formatMoney(row.summary.contractValue, row.summary.currency) : 'Nie ustawiono'}</dd></div>
-              <div><dt>Prowizja należna</dt><dd>{formatMoney(row.summary.commissionAmount, row.summary.currency)}</dd></div>
-              <div><dt>Wpłacono prowizji</dt><dd>{formatMoney(row.summary.commissionPaidAmount, row.summary.currency)}</dd></div>
-              <div><dt>Do zapłaty prowizji</dt><dd>{formatMoney(row.summary.commissionRemainingAmount, row.summary.currency)}</dd></div>
+              <div data-cf-finance-tone="transaction"><dt>Wartość transakcji</dt><dd>{row.summary.contractValue > 0 ? formatMoney(row.summary.contractValue, row.summary.currency) : 'Nie ustawiono'}</dd></div>
+              <div data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{formatMoney(row.summary.commissionAmount, row.summary.currency)}</dd></div>
+              <div data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoney(row.summary.commissionPaidAmount, row.summary.currency)}</dd></div>
+              <div data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(row.summary.commissionRemainingAmount, row.summary.currency)}</dd></div>
               <div data-stage231d3-row-costs-to-reimburse="true"><dt>{CASE_COST_FINANCE_LABELS.costsToReimburse}</dt><dd>{formatMoney(row.costsSummary.costsToReimburseAmount, row.costsSummary.currency)}</dd></div>
               <div data-stage231d3-row-total-to-collect="true"><dt>{CASE_COST_FINANCE_LABELS.totalToCollect}</dt><dd>{formatMoney(row.costsSummary.totalToCollectAmount, row.costsSummary.currency)}</dd></div>
               <div><dt>Status prowizji</dt><dd>{COMMISSION_STATUS_LABELS[row.summary.commissionStatus] || row.summary.commissionStatus}</dd></div>

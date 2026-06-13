@@ -1482,3 +1482,11 @@ RYZYKO:
 - Guard Stage231D2 jest czerwony przez brak markera w obcym, aktywnym zakresie 231D.
 - Globalny Stage98 mojibake/BOM nadal blokuje `verify:closeflow:quiet`.
 - Brak migracji i zmian schematu w tym pakiecie.
+
+## CLOSEFLOW_CASE_FINANCE_UI_REPAIR - audyt ryzyka
+- Migracja musi zostac zastosowana na docelowym Supabase; sam kod nie doda kolumny w zdalnej bazie.
+- Browser localhost byl zablokowany przez polityke narzedzia, wiec pozostaje test reczny Damiana.
+- `verify:closeflow:quiet` nadal blokuje niezwiązany globalny mojibake/BOM.
+- `verify:migrations:supabase` nadal blokuja dwie starsze migracje portalu.
+- Podwojny klucz `savedRecord` w `ContextActionDialogs` zostal usuniety.
+- Znalezione problemy obok zakresu: brak nowych.

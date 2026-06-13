@@ -3504,3 +3504,11 @@ RYZYKO:
 - PASS: build.
 - FAIL unrelated: Stage231D2 marker guard and global Stage98 mojibake/BOM quiet gate.
 - MANUAL: DO WYKONANIA przez Damiana.
+
+## 2026-06-13 - CLOSEFLOW_CASE_FINANCE_UI_REPAIR
+- PASS: dedicated guard and node test.
+- PASS: task/event contract, urgent client/case regressions, build and diff-check.
+- FAIL unrelated: migration guard flags two portal migrations from 2026-05-02.
+- FAIL unrelated: quiet gate stops on global Stage98 mojibake/BOM.
+- SKIP: browser localhost blocked by tool policy.
+- MANUAL: DO WYKONANIA przez Damiana.

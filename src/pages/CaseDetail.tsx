@@ -1620,6 +1620,7 @@ export default function CaseDetail() {
   const [closeCasePending, setCloseCasePending] = useState(false);
   const [restoreCasePending, setRestoreCasePending] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [caseActionsLoadError, setCaseActionsLoadError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<CaseDetailTab>('service');
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
   const [isCaseActionsAllOpen, setIsCaseActionsAllOpen] = useState(false);
@@ -1784,6 +1785,15 @@ export default function CaseDetail() {
     try {
       setLoading(true);
       setLoadError(null);
+      setCaseActionsLoadError(null);
+      const captureActionRows = async (loader: () => Promise<unknown[]>) => {
+        try {
+          return { rows: await loader(), error: null as unknown };
+        } catch (error) {
+          console.error('CASE_DETAIL_ACTIONS_LOAD_FAILED', error);
+          return { rows: [] as unknown[], error };
+        }
+      };
       const timeoutPromise = new Promise<never>((_, reject) => {
         timeoutId = window.setTimeout(() => reject(new Error('TIMEOUT_CASE_DETAIL_LOAD')), 12000);
       });
@@ -1791,14 +1801,19 @@ export default function CaseDetail() {
         fetchCaseByIdFromSupabase(caseId),
         fetchCaseItemsFromSupabase(caseId).catch(() => []),
         fetchActivitiesFromSupabase({ caseId, limit: 80 }).catch(() => []),
-        fetchTasksFromSupabase().catch(() => []),
-        fetchEventsFromSupabase().catch(() => []),
+        captureActionRows(() => fetchTasksFromSupabase({ caseId })),
+        captureActionRows(() => fetchEventsFromSupabase({ caseId })),
         fetchPaymentsFromSupabase({ caseId }).catch(() => []),
         fetchCaseCostsFromSupabase({ caseId }).catch(() => []),
       ]);
 
-      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskRowsRaw, eventRowsRaw, paymentRowsRaw, costRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
+      const [caseRowRaw, itemRowsRaw, activityRowsRaw, taskLoadRaw, eventLoadRaw, paymentRowsRaw, costRowsRaw] = await Promise.race([dataPromise, timeoutPromise]);
       const normalizedCase = normalizeRecord<CaseRecord>(caseRowRaw);
+      const taskRowsRaw = taskLoadRaw.rows;
+      const eventRowsRaw = eventLoadRaw.rows;
+      if (taskLoadRaw.error || eventLoadRaw.error) {
+        setCaseActionsLoadError('Nie udało się pobrać wszystkich działań sprawy. Odśwież widok lub spróbuj ponownie.');
+      }
 
       if (!normalizedCase?.id) {
         setCaseData(null);
@@ -1839,6 +1854,7 @@ export default function CaseDetail() {
       setActivities([]);
       setTasks([]);
       setEvents([]);
+      setCaseActionsLoadError('Nie udało się pobrać działań sprawy.');
       setPayments([]);
       setCaseCostsStage231D2([]);
       setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ładowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
@@ -1884,12 +1900,25 @@ export default function CaseDetail() {
       if (detailCaseId && String(detailCaseId) !== String(caseId || '')) return;
       if (recordType && recordType !== 'case') return;
 
+      const savedRecord = detail?.savedRecord;
+      const kind = String(detail?.kind || '').toLowerCase();
+      if (savedRecord && (kind === 'task' || kind === 'event')) {
+        const normalized = { ...savedRecord, ...normalizeWorkItem(savedRecord) } as TaskRecord & EventRecord;
+        if (belongsToCase(normalized, caseId, caseData)) {
+          if (kind === 'task') {
+            setTasks((current) => dedupeCaseTasks([normalized, ...current], caseId, caseData));
+          } else {
+            setEvents((current) => dedupeCaseEvents([normalized, ...current], caseId, caseData));
+          }
+        }
+      }
+
       void refreshCaseData();
     };
 
     window.addEventListener('closeflow:context-action-saved', listener as EventListener);
     return () => window.removeEventListener('closeflow:context-action-saved', listener as EventListener);
-  }, [caseId, refreshCaseData]);
+  }, [caseData, caseId, refreshCaseData]);
 
 
   const completionPercent = useMemo(() => {
@@ -1898,8 +1927,8 @@ export default function CaseDetail() {
     return 0;
   }, [caseData?.completenessPercent, items]);
 
-  const openTasks = useMemo(() => tasks.filter((task) => !['done', 'completed', 'cancelled'].includes(String(task.status || ''))), [tasks]);
-  const plannedEvents = useMemo(() => events.filter((event) => !['done', 'completed', 'cancelled'].includes(String(event.status || ''))), [events]);
+  const openTasks = useMemo(() => tasks.filter((task) => !['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'].includes(String(task.status || '').toLowerCase())), [tasks]);
+  const plannedEvents = useMemo(() => events.filter((event) => !['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'].includes(String(event.status || '').toLowerCase())), [events]);
   const missingItems = useMemo(() => items.filter((item) => item.status === 'missing'), [items]);
   const uploadedItems = useMemo(() => items.filter((item) => item.status === 'uploaded'), [items]);
   const blockers = useMemo(() => items.filter((item) => item.isRequired && (item.status === 'missing' || item.status === 'rejected')), [items]);
@@ -2787,6 +2816,12 @@ async function handleConfirmDeleteCaseRecord() {
                   </div>
                 </div>
 
+                {caseActionsLoadError ? (
+                  <div className="case-detail-light-empty" role="alert" data-case-actions-load-error="true">
+                    {caseActionsLoadError}
+                  </div>
+                ) : null}
+
                 {[
                   {
                     key: 'next' as CaseActionAccordionGroup,
@@ -2852,7 +2887,6 @@ async function handleConfirmDeleteCaseRecord() {
             <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="3">
               <div className="case-detail-section-head stage219-case-notes-head" data-stage219-case-notes-head="true">
                 <div>
-                  <p className="case-detail-eyebrow">Notatki sprawy</p>
                   <h2>Notatki sprawy</h2>
                   <p>Ostatnie notatki są tutaj. Pełna lista jest pod przyciskiem „Wszystkie notatki”.</p>
                 </div>
@@ -2860,13 +2894,19 @@ async function handleConfirmDeleteCaseRecord() {
 
                   <Button
                     type="button"
-                    variant="outline"
-                    onClick={() => setIsCaseAllNotesOpenStage231D0D(true)}
-                    data-case-all-notes-button="true"
+                    onClick={openCaseNoteDialog}
+                    data-context-action-kind="note"
+                    data-context-record-type="case"
+                    data-context-record-id={caseData.id}
+                    data-context-client-id={caseData.clientId || ''}
+                    data-context-lead-id={caseData.leadId || ''}
+                    data-context-record-label={getCaseTitle(caseData)}
+                    data-stage219-add-note="true"
                   >
                     <StickyNote className="h-4 w-4" />
-                    Wszystkie notatki
-                  </Button><Button
+                    Dodaj notatkę
+                  </Button>
+                  <Button
                     type="button"
                     variant="outline"
                     onClick={openCaseNoteDialog}
@@ -2883,17 +2923,12 @@ async function handleConfirmDeleteCaseRecord() {
                   </Button>
                   <Button
                     type="button"
-                    onClick={openCaseNoteDialog}
-                    data-context-action-kind="note"
-                    data-context-record-type="case"
-                    data-context-record-id={caseData.id}
-                    data-context-client-id={caseData.clientId || ''}
-                    data-context-lead-id={caseData.leadId || ''}
-                    data-context-record-label={getCaseTitle(caseData)}
-                    data-stage219-add-note="true"
+                    variant="outline"
+                    onClick={() => setIsCaseAllNotesOpenStage231D0D(true)}
+                    data-case-all-notes-button="true"
                   >
                     <StickyNote className="h-4 w-4" />
-                    Dodaj notatkę
+                    Wszystkie notatki
                   </Button>
                 </div>
               </div>
@@ -3021,14 +3056,14 @@ async function handleConfirmDeleteCaseRecord() {
                 <strong>Rozliczenie sprawy</strong>
               </div>
               <dl className="cf-finance-scope-card__metrics" data-stage220a31-finance-billing-summary="true">
-                <div data-stage220a31-finance-transaction-value="true"><dt>Wartość transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage220a31-finance-commission-due="true"><dt className="finance-positive">Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage220a31-finance-commission-paid="true"><dt className="finance-positive">Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage220a31-finance-commission-left="true"><dt className="case-total-to-collect">Do zapłaty prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-stage231d0d-r4-settlement-costs-incurred="true"><dt className="case-cost cost-warning">Koszty poniesione</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
-                <div data-stage231d0d-r4-settlement-costs-to-reimburse="true"><dt className="case-cost cost-warning">Koszty do zwrotu</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
-                <div data-stage231d0d-r4-settlement-costs-reimbursed="true"><dt className="finance-positive">Koszty zwrócone</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
-                <div data-stage231d0d-r4-settlement-total-to-collect="true"><dt className="case-total-to-collect">Razem do pobrania</dt><dd>{formatMoney(caseCostsSummaryStage231D2.totalToCollectAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-cf-finance-tone="transaction" data-stage220a31-finance-transaction-value="true"><dt>Wartość transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="commission" data-stage220a31-finance-commission-due="true"><dt>Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="paid" data-stage220a31-finance-commission-paid="true"><dt>Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="remaining" data-stage220a31-finance-commission-left="true"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="cost" data-stage231d0d-r4-settlement-costs-incurred="true"><dt>Koszty poniesione</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-cf-finance-tone="cost" data-stage231d0d-r4-settlement-costs-to-reimburse="true"><dt>Koszty do zwrotu</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-cf-finance-tone="reimbursed" data-stage231d0d-r4-settlement-costs-reimbursed="true"><dt>Koszty zwrócone</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-cf-finance-tone="total" data-stage231d0d-r4-settlement-total-to-collect="true"><dt>Razem do pobrania</dt><dd>{formatMoney(caseCostsSummaryStage231D2.totalToCollectAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div hidden data-stage220a31-legacy-finance-guard-compat="true">{formatMoney(caseFinanceSourceStage220A26.clientPaidAmount, caseFinanceSourceStage220A26.currency)} {formatMoney(caseFinanceSourceStage220A26.remainingAmount, caseFinanceSourceStage220A26.currency)}</div>
               </dl>
               <div className="cf-finance-scope-card__actions case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
@@ -3579,7 +3614,7 @@ async function handleConfirmDeleteCaseRecord() {
               <div><span>Wartość transakcji/zlecenia:</span><strong>{financeEditForm.commissionMode === 'percent' ? formatMoney(financeEditPreview.contractValue, financeEditPreview.currency) : 'Nie dotyczy'}</strong></div>
               <div><span>Prowizja należna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
               <div><span>Wpłacono prowizji:</span><strong>{formatMoney(financeEditPreview.commissionPaidAmount, financeEditPreview.currency)}</strong></div>
-              <div><span>Do zapłaty prowizji:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
+              <div data-cf-finance-tone="remaining"><span>Pozostało do zapłaty:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>
           <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">

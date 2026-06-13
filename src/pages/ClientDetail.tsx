@@ -1080,16 +1080,16 @@ function ClientTopTiles({ clientId, leads, cases, payments, tasks, events, finan
         </div>
         <strong>{formatMoneyWithCurrency(commissionDueTotal)}</strong>
         <div className="entity-overview-metrics" data-stage220a35-client-commission-metrics="true">
-          <div className="entity-overview-metric-row">
+          <div className="entity-overview-metric-row" data-cf-finance-tone="transaction">
             <span>Wartość transakcji</span>
             <b>{formatMoneyWithCurrency(transactionTotal)}</b>
           </div>
-          <div className="entity-overview-metric-row">
+          <div className="entity-overview-metric-row" data-cf-finance-tone="paid">
             <span>Wpłacono prowizji</span>
             <b>{formatMoneyWithCurrency(commissionPaidTotal)}</b>
           </div>
-          <div className="entity-overview-metric-row">
-            <span>Do zapłaty prowizji</span>
+          <div className="entity-overview-metric-row" data-cf-finance-tone="remaining">
+            <span>Pozostało do zapłaty</span>
             <b>{formatMoneyWithCurrency(commissionRemainingTotal)}</b>
           </div>
           <div className="entity-overview-metric-row">
@@ -2199,11 +2199,11 @@ function ClientDetail() {
           </div>
         </div>
         <div className="client-detail-case-smart-value" data-stage220a35-case-card-commission="true" data-stage228r7-case-card-commission-balance="true" data-stage231b0-r8-finance-preserved="true">
-          <small>Prowizja należna</small>
-          <b>{value}</b>
-          <span className="sub">Wpłacono prowizji: {commissionPaid}</span>
-          <span className="sub">Do zapłaty prowizji: {commissionRemaining}</span>
-          <span className="sub">Wartość transakcji: {transactionValue}</span>
+          <small data-cf-finance-tone="commission">Prowizja należna</small>
+          <b data-cf-finance-tone="commission">{value}</b>
+          <span className="sub" data-cf-finance-tone="paid">Wpłacono prowizji: {commissionPaid}</span>
+          <span className="sub" data-cf-finance-tone="remaining">Pozostało do zapłaty: {commissionRemaining}</span>
+          <span className="sub" data-cf-finance-tone="transaction">Wartość transakcji: {transactionValue}</span>
         </div>
         <div className="client-detail-case-smart-actions">
           <Button type="button" size="sm" onClick={() => (caseId ? navigate('/cases/' + caseId) : toast.info('Brak ID sprawy.'))}>
@@ -2418,10 +2418,10 @@ return (
                   <strong>Finanse klienta</strong>
                 </div>
                 <dl className="cf-finance-scope-card__metrics">
-                  <div><dt>Suma wartości transakcji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Prowizja należna</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Wpłacono prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</dd></div>
-                  <div><dt>Do zapłaty prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</dd></div>
+                  <div data-cf-finance-tone="transaction"><dt>Suma wartości transakcji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</dd></div>
+                  <div data-cf-finance-tone="commission"><dt>Prowizja należna</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</dd></div>
+                  <div data-cf-finance-tone="paid"><dt>Wpłacono prowizji</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</dd></div>
+                  <div data-cf-finance-tone="remaining"><dt>Pozostało do zapłaty</dt><dd>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</dd></div>
                   <div><dt>Sprawy aktywne / rozliczone</dt><dd>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</dd></div>
                 </dl>
                 <button type="button" className="cf-finance-scope-card__main-action" onClick={() => setActiveTab('cases')}>
@@ -2865,16 +2865,16 @@ return (
                         <h2>Finanse klienta</h2>
                       </div>
                       <div className="client-detail-finance-metrics">
-                        <div>
+                        <div data-cf-finance-tone="transaction">
                           <small>Wartość transakcji</small>
                           <strong>{formatMoneyWithCurrency(clientFinanceSummary.contractValueTotal, clientFinance.currency)}</strong>
                         </div>
-                        <div>
+                        <div data-cf-finance-tone="paid">
                           <small>Wpłacono prowizji</small>
                           <strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong>
                         </div>
-                        <div>
-                          <small>Do zapłaty prowizji</small>
+                        <div data-cf-finance-tone="remaining">
+                          <small>Pozostało do zapłaty</small>
                           <strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong>
                         </div>
                       </div>
@@ -3092,10 +3092,10 @@ return (
               <div className="client-detail-right-finance-inline-card" data-stage216m-r13-client-finance-inline-card="true">
                 <div className="client-detail-finance-inline-title"><EntityIcon entity="client" className="h-4 w-4" /><h3>Finanse klienta</h3></div>
                 <div className="client-detail-finance-inline-metrics">
-                  <small><span>Suma wartości transakcji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Prowizja należna</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Wpłacono prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong></small>
-                  <small><span>Do zapłaty prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong></small>
+                  <small data-cf-finance-tone="transaction"><span>Suma wartości transakcji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.caseValueTotal, clientFinance.currency)}</strong></small>
+                  <small data-cf-finance-tone="commission"><span>Prowizja należna</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionDueTotal, clientFinance.currency)}</strong></small>
+                  <small data-cf-finance-tone="paid"><span>Wpłacono prowizji</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.commissionPaidTotal, clientFinance.currency)}</strong></small>
+                  <small data-cf-finance-tone="remaining"><span>Pozostało do zapłaty</span><strong>{formatMoneyWithCurrency(clientFinanceSummary.remainingCommissionTotal, clientFinance.currency)}</strong></small>
                   <small><span>Sprawy aktywne / rozliczone</span><strong>{clientFinanceSummary.activeCases} / {clientFinanceSummary.settledCases}</strong></small>
                 </div>
                 <div className="client-detail-right-actions">

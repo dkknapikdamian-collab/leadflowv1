@@ -3156,3 +3156,8 @@ RYZYKO:
 - Ekrany: `/clients/:id`, `/cases/:id`, `/cases`, `/today`.
 - Efekt: poprawny prog wartosci, kolejne sprawy klienta, poprawne saldo prowizji i `Cofnij` do klienta.
 - Status: kod i testy automatyczne zakonczone; test reczny Damiana oczekuje.
+
+## ACTIVE: CLOSEFLOW_CASE_FINANCE_UI_REPAIR (ID: DO_POTWIERDZENIA)
+- Ekrany: `/cases/:id`, `/clients`, `/clients/:id`, `/leads`.
+- Efekt: dzialania sprawy zachowuja `case_id`, braki zapisuja opis, a finanse maja jeden kontrakt tonow.
+- Status: build i dedykowane guardy PASS; browser SKIP przez blokade localhost; test reczny Damiana oczekuje.

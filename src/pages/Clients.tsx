@@ -973,13 +973,13 @@ export default function Clients() {
                             <span className="title cf-client-list-card-name" title={client.name || 'Klient'}>{client.name || 'Klient'}</span>
                             <span className="client-list-card-phone" data-client-list-phone="true" title={client.phone || 'Brak telefonu'}>{client.phone || 'Brak telefonu'}</span>
                             <span className="client-list-card-email" data-client-list-email="true" title={client.email || 'Brak e-maila'}>{client.email || 'Brak e-maila'}</span>
-                            <span className="cf-list-row-value cf-client-active-commission" title={'Aktywna prowizja: ' + formatClientMoney(clientFinance.activeCommission)}>Aktywna prowizja: {formatClientMoney(clientFinance.activeCommission)}</span>
+                            <span className="cf-list-row-value cf-client-active-commission" data-cf-finance-tone="commission" title={'Aktywna prowizja: ' + formatClientMoney(clientFinance.activeCommission)}>Aktywna prowizja: {formatClientMoney(clientFinance.activeCommission)}</span>
                           </span>
                           <span className="client-list-card-row-secondary">
                             <span className="sub cf-client-company-slot" title={client.company || 'Bez firmy'}>{client.company || 'Bez firmy'}</span>
                             <span className="cf-client-cases-count" title={'Sprawy: ' + counters.cases}>Sprawy: {counters.cases}</span>
                             <span className="cf-client-nearest-action" title={nearestActionLabel}>{nearestActionLabel}</span>
-                             <span className="cf-list-row-value cf-client-lifetime-earned" title={'Zarobione łącznie: ' + formatClientMoney(clientFinance.lifetimeEarned)}>Zarobione łącznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
+                             <span className="cf-list-row-value cf-client-lifetime-earned" data-cf-finance-tone="earned" title={'Zarobione łącznie: ' + formatClientMoney(clientFinance.lifetimeEarned)}>Zarobione łącznie: {formatClientMoney(clientFinance.lifetimeEarned)}</span>
                             {isArchived ? <span className="cf-status-pill" data-cf-status-tone="amber">w koszu</span> : counters.cases === 0 ? <span className="cf-status-pill cf-chip-no-case">bez spraw</span> : null}
                           </span>
                         </span>

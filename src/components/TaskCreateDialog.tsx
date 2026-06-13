@@ -162,7 +162,7 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
     try {
       const relation = resolveTopicContactLink(selectedTaskRelationOption);
 
-      await insertTaskToSupabase({
+      const createdTask = await insertTaskToSupabase({
         title: form.title.trim(),
         type: form.type || 'follow_up',
         date: form.dueAt.slice(0, 10),
@@ -180,7 +180,7 @@ export default function TaskCreateDialog({ open, onOpenChange, onSaved, context 
       toast.success('Zadanie dodane');
       onOpenChange(false);
       setForm(defaultTaskCreateForm(context));
-      await onSaved?.();
+      await onSaved?.(createdTask);
     } catch {
       toast.error('Nie udało się zapisać zadania.');
     } finally {

@@ -1276,4 +1276,13 @@ RYZYKA:
 5. W `Sprawy aktywne` glowna sprawa ma zostac pierwsza, nowa ma byc ponizej.
 6. Po Ctrl+F5 nowa sprawa i kolejnosc maja pozostac.
 7. Sprawa 3500 PLN przy progu 5000 PLN nie moze miec alertu wysokiej wartosci.
+
+## CLOSEFLOW_CASE_FINANCE_UI_REPAIR - TEST RECZNY DO WYKONANIA
+1. Otworz sprawe, dodaj zadanie i potwierdz je w `Najblizsze dzialania` oraz `Wszystkie aktywne`.
+2. Dodaj 6 dzialan: rozwiniecie pokazuje 5, a `Pokaz wszystkie` pelna liste.
+3. Odswiez strone; zadania nadal naleza wylacznie do wlasciwej sprawy.
+4. Dodaj brak z opisem i terminem; zapis nie moze zwrocic `PGRST204`.
+5. Sprawdz finanse: transakcja niebieska, prowizja fioletowa, wplacono zielone, pozostalo pomaranczowe.
+6. Sprawdz kolejnosc: `Dodaj notatke`, `Dyktuj notatke`, `Wszystkie notatki`.
+7. Na `/leads` dluga nazwa ma wielokropek i pelny tekst po najechaniu.
 - Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.

@@ -31,7 +31,7 @@ export const CASE_COST_FINANCE_LABELS = {
   costsToReimburse: 'Koszty do zwrotu',
   costsReimbursed: 'Koszty zwrócone',
   totalToCollect: 'Razem do pobrania',
-  commissionDue: 'Do zapłaty prowizji',
+  commissionDue: 'Pozostało do zapłaty',
 } as const;
 
 export type CaseCostLike = {

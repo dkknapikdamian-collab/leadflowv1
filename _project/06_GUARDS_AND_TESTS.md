@@ -4082,3 +4082,10 @@ RYZYKO:
 - FAIL pre-existing: Stage231D2 guard oczekuje brakujacego markera w obcym zakresie 231D.
 - FAIL pre-existing: `verify:closeflow:quiet` zatrzymuje Stage98 mojibake/BOM.
 - Browser automation SKIP: polityka narzedzia zablokowala lokalny URL.
+
+## 2026-06-13 - CLOSEFLOW_CASE_FINANCE_UI_REPAIR
+- PASS: dedykowany guard i test.
+- PASS: urgent client/case regressions, task/event contract, build i `git diff --check`.
+- FAIL pre-existing: migration guard wskazuje dwie migracje portalu z 2026-05-02.
+- FAIL pre-existing: quiet gate zatrzymuje globalny Stage98 mojibake/BOM.
+- Browser automation SKIP: polityka narzedzia zablokowala lokalny URL.

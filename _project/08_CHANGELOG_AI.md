@@ -4082,3 +4082,10 @@ RYZYKO:
 - Glowna sprawa pozostaje pierwsza, a kolejne sprawy sa ponizej.
 - `Razem do pobrania` korzysta z pozostalej prowizji, nie pozostalej wartosci transakcji.
 - `Cofnij` wraca do powiazanego klienta, z fallbackiem do `/cases`.
+
+## 2026-06-13 14:33 - CLOSEFLOW_CASE_FINANCE_UI_REPAIR
+- API zadan i wydarzen filtruje po `case_id`, a fallback zachowuje `case_id` i `client_id`.
+- CaseDetail pokazuje blad pobrania, dopisuje utworzone dzialanie i wykonuje refetch.
+- Migracja przywraca brakujace kolumny `case_items`.
+- Dodano wspolne tony finansow oraz tekst `Pozostalo do zaplaty`.
+- Uporzadkowano akcje notatek i ellipsis najcenniejszych leadow.

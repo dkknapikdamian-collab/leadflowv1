@@ -653,6 +653,81 @@
   width: 100%;
 }
 
+/* Shared semantic finance tone contract. Change finance colors here, not per page. */
+[data-cf-finance-tone="transaction"],
+[data-cf-finance-tone="earned"] {
+  --cf-finance-tone-bg: #eff6ff;
+  --cf-finance-tone-border: #bfdbfe;
+  --cf-finance-tone-text: #1d4ed8;
+}
+
+[data-cf-finance-tone="commission"] {
+  --cf-finance-tone-bg: #f5f3ff;
+  --cf-finance-tone-border: #ddd6fe;
+  --cf-finance-tone-text: #7c3aed;
+}
+
+[data-cf-finance-tone="paid"],
+[data-cf-finance-tone="reimbursed"] {
+  --cf-finance-tone-bg: #ecfdf5;
+  --cf-finance-tone-border: #a7f3d0;
+  --cf-finance-tone-text: #047857;
+}
+
+[data-cf-finance-tone="remaining"] {
+  --cf-finance-tone-bg: #fff7ed;
+  --cf-finance-tone-border: #fed7aa;
+  --cf-finance-tone-text: #c2410c;
+}
+
+[data-cf-finance-tone="cost"] {
+  --cf-finance-tone-bg: #fffbeb;
+  --cf-finance-tone-border: #fde68a;
+  --cf-finance-tone-text: #b45309;
+}
+
+[data-cf-finance-tone="total"] {
+  --cf-finance-tone-bg: #fff7ed;
+  --cf-finance-tone-border: #fdba74;
+  --cf-finance-tone-text: #9a3412;
+}
+
+:is(
+  .cf-finance-metric,
+  .cf-finance-settlement-metric,
+  .cf-finance-scope-card__metrics > div,
+  .client-detail-finance-metrics > div,
+  .client-detail-finance-inline-metrics > small,
+  .entity-overview-metric-row
+)[data-cf-finance-tone] {
+  background: var(--cf-finance-tone-bg) !important;
+  border-color: var(--cf-finance-tone-border) !important;
+}
+
+[data-cf-finance-tone] :is(dd, strong, b),
+[data-cf-finance-tone]:is(dd, strong, b, small, span) {
+  color: var(--cf-finance-tone-text) !important;
+}
+
+#root .cf-html-view.main-clients-html :is(.cf-client-active-commission, .cf-client-lifetime-earned)[data-cf-finance-tone] {
+  background: var(--cf-finance-tone-bg) !important;
+  border-color: var(--cf-finance-tone-border) !important;
+  color: var(--cf-finance-tone-text) !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value {
+  background: #f8fafc !important;
+  border-color: #e2e8f0 !important;
+}
+
+.client-detail-vnext-page .client-detail-case-smart-value > [data-cf-finance-tone] {
+  background: var(--cf-finance-tone-bg) !important;
+  border: 1px solid var(--cf-finance-tone-border) !important;
+  border-radius: 9px !important;
+  color: var(--cf-finance-tone-text) !important;
+  padding: 3px 7px !important;
+}
+
 /* STAGE220A36-R2_COMMISSION_MODAL_FIELD_ORDER */
 .cf-finance-dialog[data-stage220a36r2-commission-field-order="true"] {
   max-width: min(920px, calc(100vw - 24px));

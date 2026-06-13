@@ -259,7 +259,7 @@ export function CaseFinanceEditorDialog({
             <div><span>Podstawa procentu:</span><strong>{isPercentCommission && preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie dotyczy'}</strong></div>
             <div><span>Prowizja należna:</span><strong>{formatCaseFinanceMoney(preview.commissionAmount, preview.currency)}</strong></div>
             <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatCaseFinanceMoney(preview.remainingAmount, preview.currency)}</strong></div>
-            <div><span>Do zapłaty prowizji:</span><strong>{formatCaseFinanceMoney(preview.commissionRemainingAmount, preview.currency)}</strong></div>
+            <div data-cf-finance-tone="remaining"><span>Pozostało do zapłaty:</span><strong>{formatCaseFinanceMoney(preview.commissionRemainingAmount, preview.currency)}</strong></div>
           </div>
           <DialogFooter className="cf-finance-dialog__footer">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSaving || localSaving}>Anuluj</Button>

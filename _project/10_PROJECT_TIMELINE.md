@@ -1472,3 +1472,9 @@ następny krok:
 - backup: `_local_backups/URGENT_CLIENT_CASE_FIX_20260613_124545/`
 - result: four urgent client/case regressions fixed with shared finance and case-create sources.
 - git: no commit and no push by decision.
+
+## 2026-06-13 14:33 Europe/Warsaw - CLOSEFLOW_CASE_FINANCE_UI_REPAIR
+- status: LOCAL_IMPLEMENTED_MANUAL_PENDING
+- backup: `_local_backups/DO_POTWIERDZENIA_CASE_FINANCE_UI_20260613_142044/`
+- result: case actions, case_items schema contract, finance tones, notes and lead truncation repaired.
+- git: selective staging only; no commit and no push.

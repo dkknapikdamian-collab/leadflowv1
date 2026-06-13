@@ -4343,3 +4343,9 @@ RYZYKO:
 1. Damian wykonuje test reczny kartoteki klienta i sprawy.
 2. Po akceptacji mozna wykonac selektywny commit/push tylko plikow tego pakietu.
 3. Osobno domknac globalny Stage98 mojibake/BOM i niedokonczony guard 231D2.
+
+## Po CLOSEFLOW_CASE_FINANCE_UI_REPAIR
+1. Zastosowac migracje `20260613143500_restore_case_items_canonical_columns.sql` w Supabase.
+2. Damian wykonuje test reczny sprawy, klienta i leadow po twardym odswiezeniu.
+3. Po akceptacji wykonac selektywny commit/push tylko stage'owanych plikow pakietu.
+4. Globalny Stage98 mojibake/BOM pozostaje osobnym etapem.

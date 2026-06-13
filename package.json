@@ -4,6 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "check:closeflow-case-finance-ui-repair": "node scripts/check-closeflow-case-finance-ui-repair.cjs",
+    "test:closeflow-case-finance-ui-repair": "node --test tests/closeflow-case-finance-ui-repair.test.cjs",
     "check:closeflow-client-case-urgent-regressions": "node scripts/check-closeflow-client-case-urgent-regressions.cjs",
     "check:stage124-supabase-egress-contract": "node scripts/check-stage124-supabase-egress-contract.cjs",
     "check:calendar:stage114-mojibake": "node scripts/check-stage114-calendar-mojibake.cjs",

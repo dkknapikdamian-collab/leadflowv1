@@ -193,7 +193,6 @@ export default function ContextActionDialogsHost() {
         detail: {
           ...savedRequest,
           source: 'ContextActionDialogsHost',
-          savedRecord: savedRecord || null,
           savedAt: new Date().toISOString(),
           savedRecord: savedRecord ?? null,
         },

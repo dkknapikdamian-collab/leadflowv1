@@ -598,6 +598,7 @@ export type TaskEventRangeParamsStage124E = {
   from?: string;
   to?: string;
   limit?: number;
+  caseId?: string;
 };
 
 function buildTaskEventRangeQueryStage124E(params?: TaskEventRangeParamsStage124E) {
@@ -607,6 +608,7 @@ function buildTaskEventRangeQueryStage124E(params?: TaskEventRangeParamsStage124
   if (typeof params?.limit === 'number' && Number.isFinite(params.limit) && params.limit > 0) {
     query.set('limit', String(Math.min(Math.floor(params.limit), 200)));
   }
+  if (params?.caseId) query.set('caseId', params.caseId);
   const encoded = query.toString();
   return encoded ? '?' + encoded : '';
 }

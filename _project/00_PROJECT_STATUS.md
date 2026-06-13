@@ -123,3 +123,9 @@ NASTEPNY KROK:
 - Naprawiono wartosc sprawy w Owner Control, `Razem do pobrania`, dodawanie kolejnej sprawy z klienta i powrot do klienta.
 - Backup: `_local_backups/URGENT_CLIENT_CASE_FIX_20260613_124545/`.
 - Build i dedykowany guard: PASS; manualny test UI: DO WYKONANIA.
+
+## 2026-06-13 - Pakiet dzialan sprawy, finansow i czytelnosci UI (ID: DO_POTWIERDZENIA)
+- Status: LOCAL_IMPLEMENTED_AUTOMATED_PASS_MANUAL_PENDING.
+- Naprawiono filtrowanie zadan i wydarzen po `case_id`, jawny blad pobierania oraz natychmiastowe dopisanie utworzonego dzialania.
+- Dodano migracje kanonicznych kolumn `case_items`, wspolny kontrakt kolorow finansowych, porzadek notatek i ellipsis leadow.
+- Backup: `_local_backups/DO_POTWIERDZENIA_CASE_FINANCE_UI_20260613_142044/`.

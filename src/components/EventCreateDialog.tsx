@@ -122,7 +122,7 @@ export default function EventCreateDialog({ open, onOpenChange, onSaved, context
 
     setSaving(true);
     try {
-      await insertEventToSupabase({
+      const createdEvent = await insertEventToSupabase({
         title: form.title.trim(),
         type: form.type || 'meeting',
         startAt: form.startAt,
@@ -139,7 +139,7 @@ export default function EventCreateDialog({ open, onOpenChange, onSaved, context
       toast.success('Wydarzenie dodane');
       onOpenChange(false);
       setForm(defaultEventCreateForm(context));
-      await onSaved?.();
+      await onSaved?.(createdEvent);
     } catch {
       toast.error('Nie udało się zapisać wydarzenia.');
     } finally {

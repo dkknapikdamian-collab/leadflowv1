@@ -214,9 +214,9 @@ function getCommissionLine(mode: CommissionMode, rate: number | null, commission
   return formatMoney(commissionAmount, currency);
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({ label, value, tone = 'neutral' }: { label: string; value: string; tone?: string }) {
   return (
-    <div className="cf-finance-settlement-metric">
+    <div className="cf-finance-settlement-metric" data-cf-finance-tone={tone}>
       <dt>{label}</dt>
       <dd>{value}</dd>
     </div>
@@ -285,11 +285,11 @@ export function CaseSettlementPanel({
       ) : null}
 
       <dl className="cf-finance-settlement-grid">
-        <Metric label="Wartość transakcji" value={formatMoney(contractValue, currency)} />
-        <Metric label="Prowizja" value={getCommissionLine(summary.commissionMode, summary.commissionRate, commissionAmount, currency)} />
-        <Metric label="Prowizja należna" value={formatMoney(commissionAmount, currency)} />
-        <Metric label="Wpłacono prowizji" value={formatMoney(commissionPaid, currency)} />
-        <Metric label="Do zapłaty prowizji" value={formatMoney(commissionRemaining, currency)} />
+        <Metric label="Wartość transakcji" value={formatMoney(contractValue, currency)} tone="transaction" />
+        <Metric label="Prowizja" value={getCommissionLine(summary.commissionMode, summary.commissionRate, commissionAmount, currency)} tone="commission" />
+        <Metric label="Prowizja należna" value={formatMoney(commissionAmount, currency)} tone="commission" />
+        <Metric label="Wpłacono prowizji" value={formatMoney(commissionPaid, currency)} tone="paid" />
+        <Metric label="Pozostało do zapłaty" value={formatMoney(commissionRemaining, currency)} tone="remaining" />
         <Metric label="Status prowizji" value={COMMISSION_STATUS_LABELS[commissionStatus] || commissionStatus} />
       </dl>
 

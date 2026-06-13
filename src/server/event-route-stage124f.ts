@@ -36,6 +36,8 @@ const EVENT_LIST_SELECT_STAGE124D_MIN = [
   'id',
   'workspace_id',
   'lead_id',
+  'case_id',
+  'client_id',
   'record_type',
   'type',
   'title',
@@ -125,6 +127,7 @@ async function readEvents(req: any, workspaceId: string) {
   const limit = capLimit(queryValue(req, 'limit'));
   const from = asIsoDate(queryValue(req, 'from') || queryValue(req, 'start') || queryValue(req, 'dateFrom'));
   const to = asIsoDate(queryValue(req, 'to') || queryValue(req, 'end') || queryValue(req, 'dateTo'));
+  const caseId = queryValue(req, 'caseId') || queryValue(req, 'case_id');
 
   const baseQueries = [
     'work_items?select=' + EVENT_LIST_SELECT_STAGE124D + '&record_type=eq.event&order=start_at.asc.nullslast&limit=' + limit,
@@ -136,6 +139,7 @@ async function readEvents(req: any, workspaceId: string) {
 
   const queries = baseQueries
     .map((query) => addDateRange(query, 'start_at', from, to))
+    .map((query) => caseId ? query + '&case_id=eq.' + encodeURIComponent(caseId) : query)
     .map((query) => withWorkspaceFilter(query, workspaceId));
 
   const result = await selectFirstAvailable(queries);

@@ -2563,3 +2563,10 @@ Manual QA after deploy:
 - finance truth: CaseDetail settlement total receives `commissionRemainingAmount`.
 - navigation truth: linked case returns to `/clients/:clientId`, otherwise `/cases`.
 - primary truth: existing primary stays first through `resolveClientPrimaryCase`.
+
+## CLOSEFLOW_CASE_FINANCE_UI_REPAIR (ID: DO_POTWIERDZENIA)
+- relation truth: API query `case_id=eq.<id>` plus canonical normalizers.
+- missing-item truth: `case_items` with restored columns and PostgREST schema reload notification.
+- finance visual truth: `data-cf-finance-tone` in `src/styles/finance/closeflow-finance.css`.
+- refresh truth: saved record is inserted locally, then CaseDetail refetches backend state.
+- proof: dedicated guard/test, task-event guard, urgent regression guard and build.
