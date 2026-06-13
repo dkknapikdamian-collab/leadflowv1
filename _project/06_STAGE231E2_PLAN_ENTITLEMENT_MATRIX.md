@@ -28,6 +28,7 @@ Powiązanie: STAGE231E2_R5_TRIAL_14D_WORKSPACE_FALLBACK_AND_PLAN_MATRIX
 | `activeLeads` | 5 | bez limitu | bez limitu | bez limitu | bez limitu | limity widoczne w modelu planu | `FREE_LIMITS.activeLeads = 5` | Free opisuje limity | OK |
 | `activeTasks` | 5 | bez limitu | bez limitu | bez limitu | bez limitu | limity widoczne w modelu planu | `FREE_LIMITS.activeTasks = 5` | Free opisuje limity | OK |
 | `activeEvents` | 5 | bez limitu | bez limitu | bez limitu | bez limitu | limity widoczne w modelu planu | `FREE_LIMITS.activeEvents = 5` | Free opisuje limity | OK |
+| ctiveTasksAndEvents | 5 | bez limitu | bez limitu | bez limitu | bez limitu | limit laczny zadan i wydarzen w trybie Free | ctiveTasksAndEvents = 5 | Free opisuje limity | OK |
 | `activeDrafts` | 3 | bez limitu | bez limitu | bez limitu | bez limitu | limity widoczne w modelu planu | `FREE_LIMITS.activeDrafts = 3` | Free opisuje limity | OK |
 | `aiDaily` | null | null | null | 30 | 30 | AI limit tylko AI/Trial | `AI_FEATURES`, `aiDaily=30` | AI: 30/dzień | OK |
 | `aiMonthly` | null | null | null | 300 | 300 | AI limit tylko AI/Trial | `AI_FEATURES`, `aiMonthly=300` | AI: 300/miesiąc | OK |
@@ -56,3 +57,10 @@ Data: 2026-06-13
   - AI: `ai`, `fullAi`;
   - Trial: dziedziczy AI/Pro w czasie aktywnego triala 14 dni.
 - Potwierdzenie guardem: sidebar nie moze zawierac mojibake.
+## STAGE231E2_R8A_MATRIX_LIMIT_ROW_HOTFIX
+
+Data: 2026-06-13
+
+- Hotfix po R8: dedykowany guard R8 wymaga w matrixie limitu `activeTasksAndEvents`, bo ten limit istnieje w `PlanLimits`.
+- Dodano row `activeTasksAndEvents` do centralnej matrycy planow.
+- Zakres: dokumentacja/matrix + raport; bez zmian runtime, SQL, Stripe, Google Calendar.
