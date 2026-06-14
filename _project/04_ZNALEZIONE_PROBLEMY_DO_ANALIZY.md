@@ -330,3 +330,10 @@ eplace(/s+/g, ' ').
 
 Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
 Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
+
+## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
+
+- Data: 2026-06-14 23:45 Europe/Warsaw
+- Status: TECH_STAGE_IN_PROGRESS
+- Zakres: CaseDetail action map, note follow-up display/source map, quick note local append, finance loading flicker removal.
+- Audyt: R10 failed on brittle anchor. R10C uses regex/whole-class source-aware patch and guard.

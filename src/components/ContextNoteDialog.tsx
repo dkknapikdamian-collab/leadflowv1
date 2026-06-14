@@ -17,7 +17,7 @@ const STAGE27A_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
 type ContextNoteDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSaved?: () => void | Promise<void>;
+  onSaved?: (savedRecord?: unknown) => void | Promise<void>;
   context?: TaskCreateDialogContext;
 };
 
@@ -70,14 +70,14 @@ export default function ContextNoteDialog({ open, onOpenChange, onSaved, context
 
     setSaving(true);
     try {
-      await insertActivityToSupabase(input);
+      const createdNote = await insertActivityToSupabase(input);
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent(STAGE27A_CONTEXT_NOTE_SAVED_EVENT, { detail: input }));
+        window.dispatchEvent(new CustomEvent(STAGE27A_CONTEXT_NOTE_SAVED_EVENT, { detail: { ...input, savedRecord: createdNote || input } }));
       }
       toast.success('Notatka dodana');
       onOpenChange(false);
       setNote('');
-      await onSaved?.();
+      await onSaved?.(createdNote || input);
     } catch {
       toast.error('Nie udało się zapisać notatki.');
     } finally {

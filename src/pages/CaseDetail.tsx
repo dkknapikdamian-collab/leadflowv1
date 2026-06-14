@@ -234,6 +234,9 @@ const STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD = 'CaseDeta
 void STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD;
 const STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR = 'CaseDetail R6 R9 whole-file mass repair from clean origin without brittle anchors';
 void STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR;
+const STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING = 'CaseDetail maps all note actions to activities, displays note follow-up correctly and keeps loading free of finance panel flicker';
+void STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING;
+
 
 function getCaseNoteSpeechRecognitionConstructorStage231H_R1D2() {
   if (typeof window === 'undefined') return null;
@@ -1279,6 +1282,15 @@ function dedupeCaseEvents(events: EventRecord[], caseId?: string, caseRecord?: C
   return Array.from(byKey.values());
 }
 function getCaseWorkItemDedupeKey(item: WorkItem) {
+  const source = (item.source || {}) as any;
+  const normalizedSource = normalizeWorkItem(source || {}) as any;
+  const sourceType = String(normalizedSource.type || source.type || '').trim().toLowerCase();
+  const sourceTitle = String(normalizedSource.title || source.title || item.title || '').trim().toLowerCase();
+  if (item.kind === 'task' && (sourceType === 'follow_up' || sourceTitle.startsWith('follow-up po notatce') || sourceTitle.startsWith('follow-up:'))) {
+    const noteFollowUpCaseId = normalizeCaseDedupePart(normalizedSource.caseId || source.caseId);
+    const noteFollowUpDate = normalizeCaseDedupePart(getTaskMainDate(normalizedSource) || normalizedSource.reminderAt || normalizedSource.dueAt || normalizedSource.date || item.dateLabel);
+    return ['task', 'note-follow-up', noteFollowUpCaseId, noteFollowUpDate].map(normalizeCaseDedupePart).join('|');
+  }
   const id = normalizeCaseRelationId(item.id);
   if (id) return `${item.kind}:id:${id}`;
   return [item.kind, item.title, item.status, item.dateLabel].map(normalizeCaseDedupePart).join('|');
@@ -1301,17 +1313,22 @@ const CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13 = 'buildWor
 void CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13;
 
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
-  const taskItems: WorkItem[] = tasks.map((task) => ({
-    id: `task-${task.id}`,
-    kind: 'task',
-    title: task.title || 'Zadanie bez tytułu',
-    subtitle: task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą',
-    status: getTaskStatusLabel(task.status),
-    statusClass: getStatusClass(task.status),
-    dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
-    sortTime: sortTime(getTaskMainDate(task) || task.reminderAt),
-    source: task,
-  }));
+  const taskItems: WorkItem[] = tasks.map((task) => {
+    const taskTypeStage231H_R1D2_R10C = String(task.type || '').trim().toLowerCase();
+    const taskTitleStage231H_R1D2_R10C = String(task.title || '').trim();
+    const isNoteFollowUpStage231H_R1D2_R10C = taskTypeStage231H_R1D2_R10C === 'follow_up' || taskTitleStage231H_R1D2_R10C.toLowerCase().startsWith('follow-up po notatce') || taskTitleStage231H_R1D2_R10C.toLowerCase().startsWith('follow-up:');
+    return {
+      id: `task-${task.id}`,
+      kind: 'task',
+      title: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.title || 'Zadanie bez tytułu'),
+      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Notatka · follow-up przypięty do sprawy' : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
+      status: getTaskStatusLabel(task.status),
+      statusClass: getStatusClass(task.status),
+      dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
+      sortTime: sortTime(getTaskMainDate(task) || task.reminderAt),
+      source: task,
+    };
+  });
 
   const eventItems: WorkItem[] = events.map((event) => ({
     id: `event-${event.id}`,
@@ -2204,13 +2221,34 @@ export default function CaseDetail() {
 
       const savedRecord = detail?.savedRecord;
       const kind = String(detail?.kind || '').toLowerCase();
-      if (savedRecord && (kind === 'task' || kind === 'event')) {
-        const normalized = { ...savedRecord, ...normalizeWorkItem(savedRecord) } as TaskRecord & EventRecord;
-        if (belongsToCase(normalized, caseId, caseData)) {
-          if (kind === 'task') {
-            setTasks((current) => dedupeCaseTasks([normalized, ...current], caseId, caseData));
-          } else {
-            setEvents((current) => dedupeCaseEvents([normalized, ...current], caseId, caseData));
+      if (savedRecord && (kind === 'task' || kind === 'event' || kind === 'note')) {
+        if (kind === 'note') {
+          const savedNote = savedRecord as CaseActivity;
+          const normalizedNote = {
+            ...savedNote,
+            caseId: savedNote.caseId || caseId || null,
+            clientId: savedNote.clientId || caseData?.clientId || null,
+            leadId: savedNote.leadId || caseData?.leadId || null,
+            eventType: savedNote.eventType || 'operator_note',
+            payload: {
+              ...(savedNote.payload || {}),
+              note: getCaseNoteTextStage231H_R1D2_R6(savedNote) || (savedNote.payload as any)?.content || '',
+              content: getCaseNoteTextStage231H_R1D2_R6(savedNote) || (savedNote.payload as any)?.content || '',
+              source: (savedNote.payload as any)?.source || 'stage85-context-note-dialog',
+              sourceMap: STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING,
+            },
+          } as CaseActivity;
+          if (String(normalizedNote.caseId || '') === String(caseId || '') && isCaseOperatorNoteStage231H_R1D2_R6(normalizedNote)) {
+            setActivities((current) => sortActivities([normalizedNote, ...current]));
+          }
+        } else {
+          const normalized = { ...savedRecord, ...normalizeWorkItem(savedRecord) } as TaskRecord & EventRecord;
+          if (belongsToCase(normalized, caseId, caseData)) {
+            if (kind === 'task') {
+              setTasks((current) => dedupeCaseTasks([normalized, ...current], caseId, caseData));
+            } else {
+              setEvents((current) => dedupeCaseEvents([normalized, ...current], caseId, caseData));
+            }
           }
         }
       }
@@ -2639,7 +2677,8 @@ export default function CaseDetail() {
       toast.error('Wybierz termin follow-upu');
       return;
     }
-    const title = 'Follow-up: ' + getCaseTitle(caseData);
+    const notePreviewStage231H_R1D2_R10C = String(pendingNoteFollowUp.note || '').replace(/\s+/g, ' ').trim();
+    const title = 'Follow-up po notatce';
     const taskInput = {
       title,
       type: 'follow_up',
@@ -2675,7 +2714,7 @@ export default function CaseDetail() {
         noteSource: 'activities',
         source: STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD,
         choice: getCaseNoteFollowUpChoiceLabel(choice),
-        notePreview: pendingNoteFollowUp.note.slice(0, 160),
+        notePreview: notePreviewStage231H_R1D2_R10C.slice(0, 160),
       });
       await updateCaseInSupabase({ id: caseId, lastActivityAt: new Date().toISOString() }).catch(() => null);
       window.dispatchEvent(new CustomEvent('closeflow:context-action-saved', {
@@ -3140,18 +3179,6 @@ async function handleConfirmDeleteCaseRecord() {
       <Layout>
         <main className="case-detail-vnext-page">
           <section className="case-detail-loading-card">
-              <div data-fin5-case-settlement-instance="true">
-                <CaseSettlementSection
-              routeCaseId={caseId}
-                  record={caseData}
-                  payments={casePayments}
-                  readonly={!hasAccess}
-                  isSaving={caseSettlementSaving}
-                  onAddPayment={handleAddCaseSettlementPayment}
-                  onEditCommission={handleEditCaseSettlementCommission}
-                />
-              </div>
-
             <Loader2 className="h-5 w-5 animate-spin" />
             <span>Ładowanie sprawy...</span>
           </section>
@@ -3494,6 +3521,7 @@ async function handleConfirmDeleteCaseRecord() {
                     <article className="stage217-case-note-row" key={note.id}>
                       <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
                       <div>
+                        <span className="case-note-kind-label-stage231h-r1d2-r10c" data-stage231h-r1d2-r10c-note-kind-label="true">Notatka</span>
                         <time>{formatDateTime(note.occurredAt, 'Brak daty')}</time>
                         <p>{note.body}</p>
                       </div>
