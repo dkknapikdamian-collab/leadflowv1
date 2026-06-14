@@ -81,3 +81,9 @@ git diff --check
 - build: PASS
 - git diff --check: PASS
 - Manual UI verification: REQUIRED_BY_DAMIAN before final closeout
+
+
+## Superseded closeout note: STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
+
+Status: R1B_PARTIAL_SUPERSEDED_BY_CLOSEOUT
+Reason: Shared CaseFinanceEditorDialog still used percent-only contractValue logic. Closeout stage patches shared finance editor and extends R1B guard coverage.

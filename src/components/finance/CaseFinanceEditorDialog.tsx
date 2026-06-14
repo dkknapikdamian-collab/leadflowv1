@@ -123,11 +123,10 @@ export function CaseFinanceEditorDialog({
       : form.commissionMode === 'percent'
         ? Math.round(((contractValue * commissionRate) / 100) * 100) / 100
         : 0;
-    const transactionBasis = form.commissionMode === 'percent' ? contractValue : 0;
     const summary = getCaseFinanceSummary({
       ...(caseRecord || {}),
-      contractValue: transactionBasis,
-      expectedRevenue: transactionBasis,
+      contractValue: contractValue,
+      expectedRevenue: contractValue,
       currency: form.currency,
       commissionMode: form.commissionMode,
       commissionBase: 'contract_value',
@@ -148,16 +147,16 @@ export function CaseFinanceEditorDialog({
     event.preventDefault();
     if (!canSave) return;
     const commissionMode = normalizeCommissionMode(form.commissionMode);
-    const transactionBasis = commissionMode === 'percent' ? parseCaseFinanceNumber(form.contractValue) : 0;
+    const contractValue = parseCaseFinanceNumber(form.contractValue);
     const commissionRate = commissionMode === 'percent' ? Math.min(100, parseCaseFinanceNumber(form.commissionRate)) : 0;
     const commissionAmount = commissionMode === 'fixed'
       ? parseCaseFinanceNumber(form.commissionAmount)
       : commissionMode === 'percent'
-        ? Math.round(((transactionBasis * commissionRate) / 100) * 100) / 100
+        ? Math.round(((contractValue * commissionRate) / 100) * 100) / 100
         : 0;
     const patch = buildCaseFinancePatch({
-      contractValue: transactionBasis,
-      expectedRevenue: transactionBasis,
+      contractValue: contractValue,
+      expectedRevenue: contractValue,
       currency: normalizeCurrency(form.currency, 'PLN'),
       commissionMode,
       commissionBase: 'contract_value',
@@ -219,16 +218,15 @@ export function CaseFinanceEditorDialog({
               />
               <small>Przy stałej kwocie wpisujesz ręcznie. Przy procencie system wylicza i blokuje edycję.</small>
             </label>
-            <label className="cf-finance-field cf-finance-field--basis cf-finance-field--wide">
-              <span>Podstawa procentu (wartość transakcji/zlecenia)</span>
+            <label className="cf-finance-field cf-finance-field--basis cf-finance-field--wide" data-stage231h-r1b-shared-contract-value-always-editable="true">
+              <span>Wartość transakcji / zlecenia</span>
               <Input
-                value={isPercentCommission ? form.contractValue : ''}
+                value={form.contractValue}
                 inputMode="decimal"
-                disabled={!isPercentCommission}
                 placeholder="np. 100000"
                 onChange={(event) => setForm((current) => ({ ...current, contractValue: event.target.value }))}
               />
-              <small>To nie jest prowizja. To kwota, od której liczysz procent, np. cena sprzedaży działki albo wartość zlecenia.</small>
+              <small>Wartość sprawy zostaje zapisana niezależnie od rodzaju prowizji. Przy procencie jest podstawą wyliczenia, przy kwocie stałej zostaje wartością sprawy.</small>
             </label>
             <label className="cf-finance-field cf-finance-field--currency">
               <span>Waluta</span>
@@ -256,7 +254,7 @@ export function CaseFinanceEditorDialog({
             </label>
           </div>
           <div className="cf-finance-editor-preview" aria-label="Podgląd finansów sprawy">
-            <div><span>Podstawa procentu:</span><strong>{isPercentCommission && preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie dotyczy'}</strong></div>
+            <div data-stage231h-r1b-shared-contract-value-preview="true"><span>Wartość transakcji/zlecenia:</span><strong>{preview.contractValue > 0 ? formatCaseFinanceMoney(preview.contractValue, preview.currency) : 'Nie ustawiono'}</strong></div>
             <div><span>Prowizja należna:</span><strong>{formatCaseFinanceMoney(preview.commissionAmount, preview.currency)}</strong></div>
             <div><span>Po wpłatach klienta pozostaje:</span><strong>{formatCaseFinanceMoney(preview.remainingAmount, preview.currency)}</strong></div>
             <div data-cf-finance-tone="remaining"><span>Pozostało do zapłaty:</span><strong>{formatCaseFinanceMoney(preview.commissionRemainingAmount, preview.currency)}</strong></div>

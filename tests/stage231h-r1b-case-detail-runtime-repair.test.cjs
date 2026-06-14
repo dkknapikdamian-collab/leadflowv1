@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
@@ -5,35 +6,42 @@ const path = require('node:path');
 
 const repo = process.cwd();
 const caseSource = fs.readFileSync(path.join(repo, 'src', 'pages', 'CaseDetail.tsx'), 'utf8');
+const financeSource = fs.readFileSync(path.join(repo, 'src', 'components', 'finance', 'CaseFinanceEditorDialog.tsx'), 'utf8');
 const guardSource = fs.readFileSync(path.join(repo, 'scripts', 'check-stage231h-r1b-case-detail-runtime-repair.cjs'), 'utf8');
-const runReport = fs.readFileSync(path.join(repo, '_project', 'runs', 'STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR.md'), 'utf8');
+const run = fs.readFileSync(path.join(repo, '_project', 'runs', 'STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT.md'), 'utf8');
 
-test('STAGE231H_R1B disables fake dictation instead of opening normal note dialog', () => {
+test('STAGE231H_R1B closeout keeps fake dictation disabled and honest', () => {
   assert.equal(caseSource.includes('Dyktuj notatkę'), false);
-  assert.match(caseSource, /data-stage231h-r1b-dictation-disabled="true"/);
-  assert.match(caseSource, /Notatka głosowa — wkrótce/);
+  assert.equal(caseSource.includes('Notatka głosowa — wkrótce'), true);
+  assert.equal(caseSource.includes('data-stage231h-r1b-dictation-disabled="true"'), true);
 });
 
-test('STAGE231H_R1B keeps missing out of nextAction fallback', () => {
+test('STAGE231H_R1B closeout keeps missing out of nextAction and payment history honest', () => {
   assert.equal(caseSource.includes("item.kind === 'task' || item.kind === 'event' || item.kind === 'missing'"), false);
-  assert.match(caseSource, /workItems\.find\(\(item\) => item\.kind === 'task' \|\| item\.kind === 'event'\) \|\| null/);
+  assert.equal(caseSource.includes("workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null"), true);
+  assert.equal(caseSource.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>'), true);
+  assert.equal(caseSource.includes('payments: sortCasePayments(casePayments),'), true);
 });
 
-test('STAGE231H_R1B makes contract value editable regardless of commission mode', () => {
-  assert.equal(caseSource.includes("contractValue: nextMode === 'percent' ? current.contractValue : ''"), false);
-  assert.equal(caseSource.includes("value={financeEditForm.commissionMode === 'percent' ? financeEditForm.contractValue : ''}"), false);
-  assert.match(caseSource, /data-stage231h-r1b-contract-value-always-editable="true"/);
+test('STAGE231H_R1B closeout fixes shared CaseFinanceEditorDialog contractValue for fixed/none', () => {
+  assert.equal(financeSource.includes("const transactionBasis = commissionMode === 'percent' ? parseCaseFinanceNumber(form.contractValue) : 0;"), false);
+  assert.equal(financeSource.includes("const transactionBasis = form.commissionMode === 'percent' ? contractValue : 0;"), false);
+  assert.equal(financeSource.includes("value={isPercentCommission ? form.contractValue : ''}"), false);
+  assert.equal(financeSource.includes('data-stage231h-r1b-shared-contract-value-always-editable="true"'), true);
+  assert.equal(financeSource.includes('value={form.contractValue}'), true);
+  assert.equal(financeSource.includes('contractValue: contractValue'), true);
+  assert.equal(financeSource.includes('expectedRevenue: contractValue'), true);
 });
 
-test('STAGE231H_R1B makes payment history copy honest and full case history uses all payments', () => {
-  assert.equal(caseSource.includes('<DialogTitle>Historia wpłat i korekt</DialogTitle>'), false);
-  assert.match(caseSource, /<DialogTitle>Ostatnie 8 wpłat i korekt<\/DialogTitle>/);
-  assert.match(caseSource, /payments: sortCasePayments\(casePayments\),/);
+test('STAGE231H_R1B closeout guard covers shared finance regression patterns', () => {
+  assert.equal(guardSource.includes('CaseFinanceEditorDialog.tsx'), true);
+  assert.equal(guardSource.includes('shared finance editor still contains forbidden token'), true);
+  assert.equal(guardSource.includes('data-stage231h-r1b-shared-contract-value-always-editable'), true);
 });
 
-test('STAGE231H_R1B guard blocks known regression patterns', () => {
-  assert.match(guardSource, /Dyktuj notatkę/);
-  assert.match(guardSource, /contractValue/);
-  assert.match(guardSource, /visibleCasePayments/);
-  assert.match(runReport, /cost lifecycle left as R1C/);
+test('STAGE231H_R1B closeout documents case_item decision and cost lifecycle deferment', () => {
+  assert.equal(run.includes('case_item source truth decision: two UI entries, one case_items contract'), true);
+  assert.equal(run.includes('cost lifecycle left as R1C'), true);
+  assert.equal(run.includes('SQL: NOT_TOUCHED'), true);
+  assert.equal(run.includes('R1B_CLOSEOUT_RUNTIME_REPAIR'), true);
 });

@@ -4,93 +4,68 @@ const path = require('node:path');
 
 const repo = process.cwd();
 const casePath = path.join(repo, 'src', 'pages', 'CaseDetail.tsx');
-const runPath = path.join(repo, '_project', 'runs', 'STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR.md');
-const obsPath = path.join(repo, '_project', 'obsidian_updates', '2026-06-14_STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR.md');
+const financeDialogPath = path.join(repo, 'src', 'components', 'finance', 'CaseFinanceEditorDialog.tsx');
+const runPath = path.join(repo, '_project', 'runs', 'STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT.md');
+const obsPath = path.join(repo, '_project', 'obsidian_updates', '2026-06-14_STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT.md');
+const testHistoryPath = path.join(repo, '_project', '13_TEST_HISTORY.md');
 
 function fail(message) {
-  console.error(`STAGE231H_R1B FAIL: ${message}`);
+  console.error(`STAGE231H_R1B_CLOSEOUT FAIL: ${message}`);
   process.exit(1);
 }
-
 function read(filePath) {
   if (!fs.existsSync(filePath)) fail(`missing file: ${path.relative(repo, filePath)}`);
   return fs.readFileSync(filePath, 'utf8');
 }
 
-const source = read(casePath);
+const caseSource = read(casePath);
+const financeSource = read(financeDialogPath);
 const run = read(runPath);
 const obs = read(obsPath);
+const testHistory = fs.existsSync(testHistoryPath) ? fs.readFileSync(testHistoryPath, 'utf8') : '';
 
-if (source.includes('Dyktuj notatkę')) {
-  fail('fake "Dyktuj notatkę" label still exists in CaseDetail.');
-}
+if (caseSource.includes('Dyktuj notatkę')) fail('fake Dyktuj notatkę label still exists in CaseDetail.');
+if (!caseSource.includes('data-stage231h-r1b-dictation-disabled="true"')) fail('disabled voice-note marker missing in CaseDetail.');
+if (!caseSource.includes('Notatka głosowa — wkrótce')) fail('honest disabled voice-note copy missing.');
+if (caseSource.includes("item.kind === 'task' || item.kind === 'event' || item.kind === 'missing'")) fail('nextAction still mixes missing fallback.');
+if (!caseSource.includes("workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null")) fail('task/event-only nextAction fallback missing.');
+if (caseSource.includes('payments: visibleCasePayments,')) fail('case history still uses visibleCasePayments.');
+if (!caseSource.includes('payments: sortCasePayments(casePayments),')) fail('case history must use full sorted payments.');
+if (caseSource.includes('<DialogTitle>Historia wpłat i korekt</DialogTitle>')) fail('payment modal still promises full history.');
+if (!caseSource.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>')) fail('payment modal title must be honest.');
 
-if (!source.includes('data-stage231h-r1b-dictation-disabled="true"')) {
-  fail('disabled/not-promised voice-note marker is missing.');
+const sharedForbidden = [
+  "const transactionBasis = form.commissionMode === 'percent' ? contractValue : 0;",
+  "const transactionBasis = commissionMode === 'percent' ? parseCaseFinanceNumber(form.contractValue) : 0;",
+  "value={isPercentCommission ? form.contractValue : ''}",
+  'contractValue: transactionBasis',
+  'expectedRevenue: transactionBasis',
+];
+for (const token of sharedForbidden) {
+  if (financeSource.includes(token)) fail(`shared finance editor still contains forbidden token: ${token}`);
 }
+const sharedInputStart = financeSource.indexOf('data-stage231h-r1b-shared-contract-value-always-editable="true"');
+if (sharedInputStart < 0) fail('shared finance editor marker for always-editable contractValue missing.');
+const sharedInputEnd = financeSource.indexOf('</label>', sharedInputStart);
+if (sharedInputEnd < 0) fail('shared contract value label end not found.');
+const sharedInputBlock = financeSource.slice(sharedInputStart, sharedInputEnd);
+if (!sharedInputBlock.includes('value={form.contractValue}')) fail('shared finance editor contractValue input is not always bound to form.contractValue.');
+if (sharedInputBlock.includes('disabled={!isPercentCommission}') || sharedInputBlock.includes('disabled={')) fail('shared contractValue input is still disabled.');
+if (!financeSource.includes('data-stage231h-r1b-shared-contract-value-preview="true"')) fail('shared finance editor preview marker missing.');
+if (!financeSource.includes('contractValue: contractValue') || !financeSource.includes('expectedRevenue: contractValue')) fail('shared finance patch must retain contractValue for fixed/none.');
 
-if (!source.includes('Notatka głosowa — wkrótce')) {
-  fail('voice-note copy must clearly say it is not active yet.');
+const requiredRunTokens = [
+  'R1B_CLOSEOUT_RUNTIME_REPAIR',
+  'CaseFinanceEditorDialog shared finance path fixed',
+  'case_item source truth decision: two UI entries, one case_items contract',
+  'cost lifecycle left as R1C',
+  'SQL: NOT_TOUCHED',
+];
+for (const token of requiredRunTokens) {
+  if (!run.includes(token)) fail(`run report missing token: ${token}`);
 }
+if (run.includes('Status: REQUIRES_R1B_RUNTIME_REPAIR')) fail('closeout report cannot keep R1 requires-runtime status.');
+if (!obs.includes('STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT')) fail('Obsidian payload missing closeout stage id.');
+if (!testHistory.includes('STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT')) fail('test history missing closeout stage entry.');
 
-if (source.includes("item.kind === 'task' || item.kind === 'event' || item.kind === 'missing'")) {
-  fail('nextAction still mixes missing with operational task/event fallback.');
-}
-
-if (!source.includes("workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null")) {
-  fail('nextAction task/event-only fallback is missing.');
-}
-
-if (source.includes("contractValue: nextMode === 'percent' ? current.contractValue : ''")) {
-  fail('commission mode change still clears contractValue outside percent mode.');
-}
-
-if (source.includes("value={financeEditForm.commissionMode === 'percent' ? financeEditForm.contractValue : ''}")) {
-  fail('transaction/contract value input is still percent-only.');
-}
-
-if (source.includes('data-stage220a36r10-transaction-basis-input="percent-only"')) {
-  fail('transaction basis marker still says percent-only.');
-}
-
-if (!source.includes('data-stage231h-r1b-contract-value-always-editable="true"')) {
-  fail('always-editable contract value marker is missing.');
-}
-
-const transactionBasisStart = source.indexOf('data-stage220a36r10-transaction-basis-field="true"');
-if (transactionBasisStart < 0) fail('transaction basis field marker is missing.');
-const transactionBasisEnd = source.indexOf('</label>', transactionBasisStart);
-if (transactionBasisEnd < 0) fail('transaction basis label end not found.');
-const transactionBasisBlock = source.slice(transactionBasisStart, transactionBasisEnd);
-if (transactionBasisBlock.includes('disabled={financeEditForm.commissionMode !==')) {
-  fail('transaction basis input is still disabled by commissionMode.');
-}
-if (transactionBasisBlock.includes('aria-disabled={financeEditForm.commissionMode !==')) {
-  fail('transaction basis input still exposes aria-disabled by commissionMode.');
-}
-
-if (source.includes('<DialogTitle>Historia wpłat i korekt</DialogTitle>')) {
-  fail('payment history modal still promises full history while using visibleCasePayments.');
-}
-
-if (!source.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>')) {
-  fail('payment history modal must be honest about the 8-row visible list.');
-}
-
-if (!source.includes('payments: sortCasePayments(casePayments),')) {
-  fail('Case history should use full sorted casePayments, not visibleCasePayments.');
-}
-
-if (source.includes('payments: visibleCasePayments,')) {
-  fail('Case history still uses visibleCasePayments.');
-}
-
-if (!run.includes('R1B_RUNTIME_REPAIR') || !run.includes('cost lifecycle left as R1C')) {
-  fail('run report does not document R1B scope and cost lifecycle deferment.');
-}
-
-if (!obs.includes('STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR')) {
-  fail('Obsidian payload missing R1B stage id.');
-}
-
-console.log('STAGE231H_R1B PASS: CaseDetail runtime repair contract is guarded.');
+console.log('STAGE231H_R1B_CLOSEOUT PASS: CaseDetail runtime closeout and shared finance mapping are guarded.');

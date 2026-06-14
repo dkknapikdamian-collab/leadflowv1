@@ -3565,3 +3565,12 @@ Plan:
 - Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
 - SQL: NOT_TOUCHED.
 - Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.
+
+## 2026-06-14 — STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
+
+- Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
+- Scope: fixed shared CaseFinanceEditorDialog contractValue clearing bug after R1B.
+- Guard: scripts/check-stage231h-r1b-case-detail-runtime-repair.cjs now covers CaseDetail and shared finance dialog.
+- Decision: case_item source truth decision: two UI entries, one case_items contract.
+- Risk: cost lifecycle left as R1C.
+- SQL: NOT_TOUCHED.
