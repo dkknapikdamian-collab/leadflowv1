@@ -1556,3 +1556,9 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 - date: 2026-06-14 18:55 Europe/Warsaw
 - event: Damian confirmed manual UI tests for CaseDetail cost/payment lifecycle after R1G/R1G2.
 - result: product closeout for the current CaseDetail finance/cost chain.
+
+## 2026-06-14 19:10 Europe/Warsaw — STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+- R1G2 finance/cost pozostaje PRODUCT_PASS.
+- R1D2 przywraca realne dyktowanie notatki w CaseDetail.
+- Nastepny logiczny etap po manual PASS: R1E koszt zwrocony/czesciowo zwrocony.

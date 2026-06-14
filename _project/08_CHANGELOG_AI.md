@@ -4184,3 +4184,10 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 - type: docs-only / manual UI confirmation
 - result: CaseDetail cost/payment lifecycle moved from SERVER_UI_REQUIRED to PRODUCT_PASS after Damian confirmed manual tests.
 - runtime changes: none.
+
+## STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+- data: 2026-06-14 19:10 Europe/Warsaw
+- zmiana: przywrocono runtime dyktowania notatki w CaseDetail przez Web Speech / SpeechRecognition; dodano autosave po ciszy i dokumentacje etapu.
+- SQL: nie ruszano.
+- status: DO_TEST_AND_PUSH / SERVER_UI_REQUIRED.

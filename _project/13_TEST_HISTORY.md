@@ -3631,3 +3631,10 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.
   - R1/R1B/R1D-finance/R1F/R1F4/R1G/R1G4/R1G2 PASS;
   - R1C historical guard/test SKIP because files do not exist;
   - npm build PASS.
+
+## STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+- data: 2026-06-14 19:10 Europe/Warsaw
+- automatyczne: R1G2 regression guard/test, R1D2 guard/test, build, git diff --check.
+- manualne do wykonania: dyktowanie jednego zdania, autosave po ok. 2 sekundach ciszy, hard refresh, brak duplikatow, komunikat przy odmowie mikrofonu.
+- status: DO_TEST_AND_PUSH / SERVER_UI_REQUIRED.

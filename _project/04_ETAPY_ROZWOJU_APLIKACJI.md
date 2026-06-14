@@ -499,3 +499,10 @@ Manual UI required before product-level PASS:
 - blocked from being treated as done:
   - R1D2 note dictation;
   - R1E reimbursed cost marking.
+
+## STAGE231H_R1G2_PRODUCT_PASS_SYNC_FOR_R1D2
+
+- data: 2026-06-14 19:10 Europe/Warsaw
+- status: PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED
+- reason: R1G2/R1G3 manual UI was confirmed by Damian and R1D2 guard requires central stage memory to expose this exact status before dictation runtime proceeds.
+- scope: memory sync only, no cost/payment runtime changes.

@@ -4184,3 +4184,10 @@ Zakres: wspólne okno `Koryguj wpłatę/koszt`, czerwone koszty, update/delete k
 - added guard: scripts/check-stage231h-r1g3-case-detail-manual-ui-pass.cjs
 - added test: tests/stage231h-r1g3-case-detail-manual-ui-pass.test.cjs
 - purpose: keep the manual UI confirmation and next-stage boundary documented without touching runtime.
+
+## STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+- data: 2026-06-14 19:10 Europe/Warsaw
+- guard: scripts/check-stage231h-r1d2-case-detail-note-dictation-restore.cjs
+- test: tests/stage231h-r1d2-case-detail-note-dictation-restore.test.cjs
+- blokuje: disabled/wkrotce jako finalny stan, Dyktuj notatke bez SpeechRecognition, brak autosave 2000 ms, brak caseId, pusta transkrypcja, brak dokumentacji.

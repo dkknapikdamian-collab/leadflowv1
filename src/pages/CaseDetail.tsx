@@ -14,6 +14,7 @@ import {
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState } from 'react';
 import { Link,
   useNavigate,
@@ -225,6 +226,13 @@ const STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS = 'case delete action uses
 void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 const STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT = 'case finance correction modal removes redundant status chips from cost and commission payment rows';
 void STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT;
+const STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME = 'CaseDetail restores real Web Speech note dictation with autosave after silence';
+void STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME;
+
+function getCaseNoteSpeechRecognitionConstructorStage231H_R1D2() {
+  if (typeof window === 'undefined') return null;
+  return (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition || null;
+}
 const STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION = 'case finance correction modal edits payment amount date note and cost kind date amount status note';
 void STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION;
 
@@ -1734,6 +1742,21 @@ export default function CaseDetail() {
   const [pendingNoteFollowUp, setPendingNoteFollowUp] = useState<{ note: string; createdAt: string } | null>(null);
   const [customNoteFollowUpAt, setCustomNoteFollowUpAt] = useState('');
   const [isCreatingNoteFollowUp, setIsCreatingNoteFollowUp] = useState(false);
+  const [caseNoteDictationStatusStage231H_R1D2, setCaseNoteDictationStatusStage231H_R1D2] = useState<'idle' | 'listening' | 'saving' | 'error'>('idle');
+  const [caseNoteDictationTranscriptStage231H_R1D2, setCaseNoteDictationTranscriptStage231H_R1D2] = useState('');
+  const [caseNoteDictationErrorStage231H_R1D2, setCaseNoteDictationErrorStage231H_R1D2] = useState('');
+  const caseNoteDictationRecognitionRefStage231H_R1D2 = useRef<any | null>(null);
+  const caseNoteDictationAutosaveRefStage231H_R1D2 = useRef<number | null>(null);
+  const lastSavedCaseNoteDictationStage231H_R1D2 = useRef('');
+
+  useEffect(() => {
+    return () => {
+      if (caseNoteDictationAutosaveRefStage231H_R1D2.current) {
+        window.clearTimeout(caseNoteDictationAutosaveRefStage231H_R1D2.current);
+      }
+      caseNoteDictationRecognitionRefStage231H_R1D2.current?.abort?.();
+    };
+  }, []);
   const [isCasePaymentOpen, setIsCasePaymentOpen] = useState(false);
   const [casePaymentSubmitting, setCasePaymentSubmitting] = useState(false);
   const [casePaymentDraft, setCasePaymentDraft] = useState({
@@ -2272,6 +2295,128 @@ export default function CaseDetail() {
   const handleAddNote = async () => {
     if (!guardCaseDetailWriteAccess('dodać notatki')) return;
     openCaseContextAction('note');
+  };
+
+  async function saveCaseDictatedNoteStage231H_R1D2(noteText: string) {
+    const cleanNote = String(noteText || '').replace(/s+/g, ' ').trim();
+    if (!cleanNote) return;
+    if (!caseId || !caseData?.id) {
+      toast.error('Nie można zapisać notatki bez sprawy.');
+      return;
+    }
+
+    const noteKey = String(caseId) + '|' + cleanNote;
+    if (lastSavedCaseNoteDictationStage231H_R1D2.current === noteKey) return;
+
+    const createdAt = new Date().toISOString();
+    const payload = {
+      title: 'Notatka głosowa',
+      note: cleanNote,
+      content: cleanNote,
+      caseId,
+      source: STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME,
+    };
+
+    try {
+      setCaseNoteDictationStatusStage231H_R1D2('saving');
+      const created = await insertActivityToSupabase({
+        caseId,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        actorType: 'operator',
+        eventType: 'operator_note',
+        payload,
+      } as any);
+      lastSavedCaseNoteDictationStage231H_R1D2.current = noteKey;
+      setActivities((current) => [
+        {
+          id: String((created as any)?.id || 'case-voice-note-' + Date.now()),
+          actorType: 'operator',
+          eventType: 'operator_note',
+          payload,
+          createdAt: (created as any)?.createdAt || createdAt,
+        },
+        ...current,
+      ]);
+      await updateCaseInSupabase({ id: caseId, lastActivityAt: createdAt }).catch(() => null);
+      setPendingNoteFollowUp({ note: cleanNote, createdAt });
+      setCaseNoteDictationTranscriptStage231H_R1D2('');
+      setCaseNoteDictationErrorStage231H_R1D2('');
+      setCaseNoteDictationStatusStage231H_R1D2('idle');
+      await refreshCaseData();
+      toast.success('Notatka głosowa zapisana');
+    } catch (error: any) {
+      setCaseNoteDictationStatusStage231H_R1D2('error');
+      setCaseNoteDictationErrorStage231H_R1D2(error?.message || 'Nie udało się zapisać notatki głosowej.');
+      toast.error('Nie udało się zapisać notatki głosowej.');
+    }
+  }
+
+  function scheduleCaseDictationAutosaveStage231H_R1D2(nextTranscript: string) {
+    const cleanTranscript = String(nextTranscript || '').replace(/s+/g, ' ').trim();
+    if (!cleanTranscript) return;
+    if (caseNoteDictationAutosaveRefStage231H_R1D2.current) {
+      window.clearTimeout(caseNoteDictationAutosaveRefStage231H_R1D2.current);
+    }
+    caseNoteDictationAutosaveRefStage231H_R1D2.current = window.setTimeout(() => {
+      void saveCaseDictatedNoteStage231H_R1D2(cleanTranscript);
+    }, 2000);
+  }
+
+  const handleStartCaseNoteDictationStage231H_R1D2 = () => {
+    if (!guardCaseDetailWriteAccess('dyktować notatki')) return;
+    if (caseNoteDictationStatusStage231H_R1D2 === 'listening') {
+      caseNoteDictationRecognitionRefStage231H_R1D2.current?.stop?.();
+      setCaseNoteDictationStatusStage231H_R1D2('idle');
+      return;
+    }
+
+    const SpeechRecognition = getCaseNoteSpeechRecognitionConstructorStage231H_R1D2();
+    if (!SpeechRecognition) {
+      const message = 'Dyktowanie nie jest obsługiwane w tej przeglądarce.';
+      setCaseNoteDictationStatusStage231H_R1D2('error');
+      setCaseNoteDictationErrorStage231H_R1D2(message);
+      toast.error(message);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'pl-PL';
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.onresult = (event: any) => {
+        const transcript = Array.from(event?.results || [])
+          .map((result: any) => String(result?.[0]?.transcript || ''))
+          .join(' ')
+          .replace(/s+/g, ' ')
+          .trim();
+        if (!transcript) return;
+        setCaseNoteDictationTranscriptStage231H_R1D2(transcript);
+        scheduleCaseDictationAutosaveStage231H_R1D2(transcript);
+      };
+      recognition.onerror = (event: any) => {
+        const message = event?.error === 'not-allowed'
+          ? 'Mikrofon jest zablokowany. Zezwól na dostęp do mikrofonu i spróbuj ponownie.'
+          : 'Nie udało się uruchomić dyktowania notatki.';
+        setCaseNoteDictationStatusStage231H_R1D2('error');
+        setCaseNoteDictationErrorStage231H_R1D2(message);
+        toast.error(message);
+      };
+      recognition.onend = () => {
+        setCaseNoteDictationStatusStage231H_R1D2((current) => current === 'listening' ? 'idle' : current);
+      };
+      caseNoteDictationRecognitionRefStage231H_R1D2.current = recognition;
+      setCaseNoteDictationErrorStage231H_R1D2('');
+      setCaseNoteDictationStatusStage231H_R1D2('listening');
+      recognition.start();
+      toast.message('Dyktuję notatkę. Przestań mówić na ok. 2 sekundy, żeby zapisać.');
+    } catch (error: any) {
+      const message = error?.message || 'Nie udało się uruchomić mikrofonu.';
+      setCaseNoteDictationStatusStage231H_R1D2('error');
+      setCaseNoteDictationErrorStage231H_R1D2(message);
+      toast.error(message);
+    }
   };
 
   const openCaseTaskDialog = () => {
@@ -3036,6 +3181,21 @@ async function handleConfirmDeleteCaseRecord() {
                     <StickyNote className="h-4 w-4" />
                     Dodaj notatkę
                   </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleStartCaseNoteDictationStage231H_R1D2}
+                    data-stage231h-r1d2-voice-note-button="true"
+                    aria-label="Dyktuj notatkę"
+                  >
+                    <MessageSquare className="h-4 w-4" />
+                    {caseNoteDictationStatusStage231H_R1D2 === 'listening' ? 'Słucham...' : 'Dyktuj notatkę'}
+                  </Button>
+                  {(caseNoteDictationTranscriptStage231H_R1D2 || caseNoteDictationErrorStage231H_R1D2) ? (
+                    <p className="case-detail-muted-hint" data-stage231h-r1d2-voice-note-status="true">
+                      {caseNoteDictationErrorStage231H_R1D2 || caseNoteDictationTranscriptStage231H_R1D2}
+                    </p>
+                  ) : null}
                   <Button type="button" variant="outline" onClick={openCaseTaskDialog}>
                     <ListChecks className="h-4 w-4" />
                     Dodaj zadanie
