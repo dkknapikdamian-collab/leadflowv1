@@ -75,3 +75,12 @@ Do wykonania po apply:
 ## AUDYT PO ETAPIE
 
 Do uzupełnienia po apply/push/manual test.
+
+
+## STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON — 2026-06-14 19:40 Europe/Warsaw
+
+- status: RUNTIME_HOTFIX_PREPARED
+- zakres: drugi widoczny przycisk w panelu Notatki sprawy nie może zostać jako disabled „Notatka głosowa — wkrótce”; ma używać tego samego handlera SpeechRecognition/autosave co przycisk w panelu Działania sprawy.
+- runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztów zwróconych.
+- test: R1D2 guard/test + R1D2 R4 guard/test + build + diff-check.
+- ryzyko: wcześniejszy R1D2 zabezpieczał pierwszy przycisk, ale nie objął drugiego widocznego przycisku w panelu notatek.

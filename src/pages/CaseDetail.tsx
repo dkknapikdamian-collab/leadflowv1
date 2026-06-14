@@ -3314,15 +3314,18 @@ async function handleConfirmDeleteCaseRecord() {
                   <Button
                     type="button"
                     variant="outline"
-                    disabled
-                    aria-disabled="true"
-                    title="Notatka głosowa nie jest jeszcze podłączona"
-                    data-stage219-dictate-note-deprecated="true"
-                    data-stage231h-r1b-dictation-disabled="true"
+                    onClick={handleStartCaseNoteDictationStage231H_R1D2}
+                    data-stage231h-r1d2-notes-panel-voice-note-button="true"
+                    aria-label="Dyktuj notatkę"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    Notatka głosowa — wkrótce
+                    {caseNoteDictationStatusStage231H_R1D2 === 'listening' ? 'Słucham...' : 'Dyktuj notatkę'}
                   </Button>
+                  {(caseNoteDictationTranscriptStage231H_R1D2 || caseNoteDictationErrorStage231H_R1D2) ? (
+                    <p className="case-detail-muted-hint" data-stage231h-r1d2-notes-panel-voice-note-status="true">
+                      {caseNoteDictationErrorStage231H_R1D2 || caseNoteDictationTranscriptStage231H_R1D2}
+                    </p>
+                  ) : null}
                   <Button
                     type="button"
                     variant="outline"
