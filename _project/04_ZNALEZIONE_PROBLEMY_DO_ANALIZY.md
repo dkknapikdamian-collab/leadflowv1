@@ -239,3 +239,13 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 Problem: koszty sprawy dało się dodać, ale nie dało się ich skorygować ani usunąć z jednego okna rozliczenia.
 
 Decyzja: przycisk w railu zmienia się na `Koryguj wpłatę/koszt`; okno pokazuje wpłaty/korekty oraz koszty. Koszty są czerwone i mają akcje `Koryguj` oraz `Usuń`. Pełne potwierdzenie PASS wymaga manualnego testu po refreshu.
+
+## 2026-06-14 15:45 Europe/Warsaw — STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT
+
+- Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
+- Scope: compact cleanup of CaseDetail finance correction modal after R1C.
+- Decision: remove redundant cost status chip from the correction list; cost status remains editable inside the cost correction form.
+- Decision: commission payment is a paid commission entry by default; remove status/type selectors from add-commission-payment UI.
+- Decision: remove the redundant "Korekta / prowizja" fallback label from payment rows.
+- SQL: NOT_TOUCHED.
+- Manual test: open Koryguj wpłatę/koszt, verify rows fit, add commission payment, add/correct/delete cost, refresh.

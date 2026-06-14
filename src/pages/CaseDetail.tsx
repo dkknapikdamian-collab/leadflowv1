@@ -220,6 +220,8 @@ const STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL = 'case payment history moda
 void STAGE220A29_PAYMENT_DELETE_FROM_HISTORY_MODAL;
 const STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS = 'case delete action uses destructive icon style and finance modal labels controls are readable and state-aware';
 void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
+const STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT = 'case finance correction modal removes redundant status chips from cost and commission payment rows';
+void STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
@@ -1696,9 +1698,9 @@ export default function CaseDetail() {
   const [isCasePaymentOpen, setIsCasePaymentOpen] = useState(false);
   const [casePaymentSubmitting, setCasePaymentSubmitting] = useState(false);
   const [casePaymentDraft, setCasePaymentDraft] = useState({
-    type: 'deposit',
+    type: 'payment',
     amount: '',
-    status: 'deposit_paid',
+    status: 'fully_paid',
     dueAt: '',
     note: '',
   });
@@ -1769,8 +1771,8 @@ export default function CaseDetail() {
         caseId,
         clientId: caseData.clientId || null,
         leadId: caseData.leadId || null,
-        type: casePaymentDraft.type || 'payment',
-        status: casePaymentDraft.status || 'partially_paid',
+        type: 'payment',
+        status: 'fully_paid',
         amount,
         currency: caseData.currency || 'PLN',
         dueAt: casePaymentDraft.dueAt ? toIsoFromLocalInput(casePaymentDraft.dueAt) : '',
@@ -1788,7 +1790,7 @@ export default function CaseDetail() {
         eventType: 'payment_added',
         payload: { title: 'Dodano wpłatę', amount, status: input.status, note: input.note },
       } as any).catch(() => null);
-      setCasePaymentDraft({ type: 'payment', amount: '', status: 'partially_paid', dueAt: '', note: '' });
+      setCasePaymentDraft({ type: 'payment', amount: '', status: 'fully_paid', dueAt: '', note: '' });
       setIsCasePaymentOpen(false);
       toast.success('Wpłata dodana');
     } catch (error) {
@@ -3486,32 +3488,7 @@ async function handleConfirmDeleteCaseRecord() {
                 placeholder="np. 2000"
               />
             </div>
-            <div>
-              <Label htmlFor="case-payment-status">Status wpłaty</Label>
-              <select
-                id="case-payment-status"
-                value={casePaymentDraft.status}
-                onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, status: event.target.value }))}
-              >
-                <option value="deposit_paid">Zaliczka wpłacona</option>
-                <option value="partially_paid">Częściowo opłacone</option>
-                <option value="fully_paid">Opłacone</option>
-                <option value="awaiting_payment">Czeka na płatność</option>
-              </select>
-            </div>
-            <div>
-              <Label htmlFor="case-payment-type">Typ wpłaty</Label>
-              <select
-                id="case-payment-type"
-                value={casePaymentDraft.type}
-                onChange={(event) => setCasePaymentDraft((draft) => ({ ...draft, type: event.target.value }))}
-              >
-                <option value="deposit">Zaliczka</option>
-                <option value="partial">Wpłata częściowa</option>
-                <option value="final">Dopłata końcowa</option>
-                <option value="other">Inna wpłata</option>
-              </select>
-            </div>
+            <span hidden data-stage231h-r1d-commission-payment-defaults="status-fully-paid-type-payment" />
             <div>
               <Label htmlFor="case-payment-note">Notatka do wpłaty</Label>
               <Textarea
@@ -3570,7 +3547,7 @@ async function handleConfirmDeleteCaseRecord() {
                         <strong>Koszt: {getCaseCostKindLabelStage231H_R1C(cost.kind || (cost as any).type)}</strong>
                         <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1c-cost-meta="true">
                           <span>Data: {formatDateTime(getCaseCostDateStage231H_R1C(cost), 'Bez daty')}</span>
-                          <span>Status: {getCaseCostStatusLabelStage231H_R1C(cost.status)}</span>
+                          {/* STAGE231H_R1D: status kosztu jest dostępny w korekcie, ale nie zabiera miejsca na liście. */}
                           <span>Wartość: {formatMoney(-costAmount, costCurrency)}</span>
                           <span>Do zwrotu: {formatMoney(getCaseCostReimbursableAmountStage231H_R1C(cost), costCurrency)}</span>
                           <span>Zwrócono: {formatMoney(getCaseCostReimbursedAmountStage231H_R1C(cost), costCurrency)}</span>
@@ -3637,9 +3614,7 @@ async function handleConfirmDeleteCaseRecord() {
                         >
                           Koryguj
                         </Button>
-                      ) : (
-                        <span>Korekta / prowizja</span>
-                      )}
+                      ) : null}
                       <Button
                         type="button"
                         size="sm"
