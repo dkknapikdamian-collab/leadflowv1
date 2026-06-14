@@ -231,3 +231,11 @@ Decyzja: naprawic w R4, zanim analogiczny mapping zostanie przeniesiony na CaseD
 - Decision: case_item source truth decision: two UI entries, one case_items contract.
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
+
+## STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL — 2026-06-14
+
+Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
+
+Problem: koszty sprawy dało się dodać, ale nie dało się ich skorygować ani usunąć z jednego okna rozliczenia.
+
+Decyzja: przycisk w railu zmienia się na `Koryguj wpłatę/koszt`; okno pokazuje wpłaty/korekty oraz koszty. Koszty są czerwone i mają akcje `Koryguj` oraz `Usuń`. Pełne potwierdzenie PASS wymaga manualnego testu po refreshu.

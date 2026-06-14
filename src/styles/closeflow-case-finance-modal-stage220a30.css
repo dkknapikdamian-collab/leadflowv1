@@ -547,3 +547,26 @@
   }
 }
 /* END_STAGE220A36_R12_COMMISSION_MODAL_WIDTH_POLISH */
+
+
+/* STAGE231H_R1C_COST_CORRECTION_MODAL_CSS
+   Koszty w oknie korekty finansów mają być jawnie czerwone, żeby nie mieszać ich z wpłatami.
+*/
+.case-payment-history-modal-stage231h-r1c__row--cost {
+  border-color: #fecaca !important;
+  background: #fff7f7 !important;
+}
+
+.case-payment-history-modal-stage231h-r1c__row--cost,
+.case-payment-history-modal-stage231h-r1c__row--cost strong,
+.case-payment-history-modal-stage231h-r1c__row--cost p {
+  color: #991b1b !important;
+  -webkit-text-fill-color: #991b1b !important;
+}
+
+.case-payment-history-modal-stage231h-r1c__row--cost .case-payment-history-modal-stage220a27b__meta span {
+  border-color: #fecaca !important;
+  background: #fee2e2 !important;
+  color: #991b1b !important;
+  -webkit-text-fill-color: #991b1b !important;
+}

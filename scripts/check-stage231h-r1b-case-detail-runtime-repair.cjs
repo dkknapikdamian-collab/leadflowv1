@@ -23,6 +23,10 @@ const financeSource = read(financeDialogPath);
 const run = read(runPath);
 const obs = read(obsPath);
 const testHistory = fs.existsSync(testHistoryPath) ? fs.readFileSync(testHistoryPath, 'utf8') : '';
+const hasR1cCombinedPaymentCostModal =
+  caseSource.includes('STAGE231H_R1C_COST_CORRECTION_MODAL') ||
+  caseSource.includes('financeCorrectionRowsStage231H_R1C') ||
+  caseSource.includes('data-stage231h-r1c-cost-correction-row="true"');
 
 if (caseSource.includes('Dyktuj notatkę')) fail('fake Dyktuj notatkę label still exists in CaseDetail.');
 if (!caseSource.includes('data-stage231h-r1b-dictation-disabled="true"')) fail('disabled voice-note marker missing in CaseDetail.');
@@ -32,7 +36,12 @@ if (!caseSource.includes("workItems.find((item) => item.kind === 'task' || item.
 if (caseSource.includes('payments: visibleCasePayments,')) fail('case history still uses visibleCasePayments.');
 if (!caseSource.includes('payments: sortCasePayments(casePayments),')) fail('case history must use full sorted payments.');
 if (caseSource.includes('<DialogTitle>Historia wpłat i korekt</DialogTitle>')) fail('payment modal still promises full history.');
-if (!caseSource.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>')) fail('payment modal title must be honest.');
+if (hasR1cCombinedPaymentCostModal) {
+  if (!caseSource.includes('<DialogTitle>Koryguj wpłatę/koszt</DialogTitle>')) fail('R1C combined payment/cost modal title must be Koryguj wpłatę/koszt.');
+  if (!caseSource.includes('data-stage231h-r1c-cost-correction-row="true"')) fail('R1C combined title requires visible cost rows in the modal.');
+} else if (!caseSource.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>')) {
+  fail('payment modal title must be honest.');
+}
 
 const sharedForbidden = [
   "const transactionBasis = form.commissionMode === 'percent' ? contractValue : 0;",

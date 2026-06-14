@@ -3574,3 +3574,14 @@ Plan:
 - Decision: case_item source truth decision: two UI entries, one case_items contract.
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
+
+## 2026-06-14 — STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
+
+Plan testów:
+- guard R1/R1B/R1C,
+- test R1C,
+- build,
+- ręcznie: dodaj koszt -> okno `Koryguj wpłatę/koszt` -> koszt widoczny na czerwono -> korekta kwoty/statusu -> refresh -> summary się zmienia,
+- ręcznie: usuń koszt -> refresh -> koszt nie wraca.
+
+Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.

@@ -10,6 +10,12 @@ const financeSource = fs.readFileSync(path.join(repo, 'src', 'components', 'fina
 const guardSource = fs.readFileSync(path.join(repo, 'scripts', 'check-stage231h-r1b-case-detail-runtime-repair.cjs'), 'utf8');
 const run = fs.readFileSync(path.join(repo, '_project', 'runs', 'STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT.md'), 'utf8');
 
+function hasHonestPaymentHistoryOrCombinedCostTitle() {
+  if (caseSource.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>')) return true;
+  return caseSource.includes('<DialogTitle>Koryguj wpłatę/koszt</DialogTitle>') &&
+    caseSource.includes('data-stage231h-r1c-cost-correction-row="true"');
+}
+
 test('STAGE231H_R1B closeout keeps fake dictation disabled and honest', () => {
   assert.equal(caseSource.includes('Dyktuj notatkę'), false);
   assert.equal(caseSource.includes('Notatka głosowa — wkrótce'), true);
@@ -19,7 +25,8 @@ test('STAGE231H_R1B closeout keeps fake dictation disabled and honest', () => {
 test('STAGE231H_R1B closeout keeps missing out of nextAction and payment history honest', () => {
   assert.equal(caseSource.includes("item.kind === 'task' || item.kind === 'event' || item.kind === 'missing'"), false);
   assert.equal(caseSource.includes("workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null"), true);
-  assert.equal(caseSource.includes('<DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>'), true);
+  assert.equal(caseSource.includes('<DialogTitle>Historia wpłat i korekt</DialogTitle>'), false);
+  assert.equal(hasHonestPaymentHistoryOrCombinedCostTitle(), true);
   assert.equal(caseSource.includes('payments: sortCasePayments(casePayments),'), true);
 });
 
@@ -33,10 +40,12 @@ test('STAGE231H_R1B closeout fixes shared CaseFinanceEditorDialog contractValue 
   assert.equal(financeSource.includes('expectedRevenue: contractValue'), true);
 });
 
-test('STAGE231H_R1B closeout guard covers shared finance regression patterns', () => {
+test('STAGE231H_R1B closeout guard covers shared finance and R1C-safe title regression patterns', () => {
   assert.equal(guardSource.includes('CaseFinanceEditorDialog.tsx'), true);
   assert.equal(guardSource.includes('shared finance editor still contains forbidden token'), true);
   assert.equal(guardSource.includes('data-stage231h-r1b-shared-contract-value-always-editable'), true);
+  assert.equal(guardSource.includes('Koryguj wpłatę/koszt'), true);
+  assert.equal(guardSource.includes('data-stage231h-r1c-cost-correction-row'), true);
 });
 
 test('STAGE231H_R1B closeout documents case_item decision and cost lifecycle deferment', () => {

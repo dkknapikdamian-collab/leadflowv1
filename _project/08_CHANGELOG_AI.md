@@ -4144,3 +4144,7 @@ Zakaz zakresu: bez SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail
 - Decision: case_item source truth decision: two UI entries, one case_items contract.
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
+
+## 2026-06-14 — STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
+
+Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Koszty są pokazane jako czerwone pozycje, z akcją `Koryguj` i `Usuń`. SQL nie ruszany.

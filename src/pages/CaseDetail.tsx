@@ -91,6 +91,8 @@ import {
   updateLeadInSupabase,
   fetchCaseCostsFromSupabase,
   createCaseCostInSupabase,
+  updateCaseCostInSupabase,
+  deleteCaseCostFromSupabase,
 } from '../lib/supabase-fallback';
 import { deleteCaseWithRelations, isClosedCaseStatus } from '../lib/cases';
 import { resolveCaseLifecycleV1 } from '../lib/case-lifecycle-v1';
@@ -503,6 +505,60 @@ function getCasePaymentSignedAmountStage220A27(payment: CasePaymentRecord) {
 function canCorrectCasePaymentStage220A27(payment: CasePaymentRecord) {
   const type = getCasePaymentTypeStage220A27(payment);
   return type !== 'refund' && type !== 'commission' && getPaymentAmount(payment) > 0;
+}
+
+const STAGE231H_R1C_COST_CORRECTION_MODAL = 'CaseDetail correction modal includes payments and editable/deletable costs with red cost rows';
+void STAGE231H_R1C_COST_CORRECTION_MODAL;
+
+function getCaseCostIdStage231H_R1C(cost: CaseCostRecord | null | undefined) {
+  return String(cost?.id || '').trim();
+}
+function getCaseCostAmountStage231H_R1C(cost: CaseCostRecord | null | undefined) {
+  const raw = cost?.amount ?? (cost as any)?.costAmount ?? (cost as any)?.cost_amount ?? cost?.value ?? cost?.total ?? 0;
+  return fin11Amount(raw);
+}
+function getCaseCostReimbursableAmountStage231H_R1C(cost: CaseCostRecord | null | undefined) {
+  const amount = getCaseCostAmountStage231H_R1C(cost);
+  const raw = cost?.reimbursableAmount ?? (cost as any)?.reimbursable_amount;
+  const value = fin11Amount(raw);
+  return value > 0 ? value : amount;
+}
+function getCaseCostReimbursedAmountStage231H_R1C(cost: CaseCostRecord | null | undefined) {
+  return fin11Amount(cost?.reimbursedAmount ?? (cost as any)?.reimbursed_amount);
+}
+function getCaseCostCurrencyStage231H_R1C(cost: CaseCostRecord | null | undefined, fallback = 'PLN') {
+  return fin11Currency(cost?.currency || fallback);
+}
+function getCaseCostDateStage231H_R1C(cost: CaseCostRecord | null | undefined) {
+  return cost?.incurredAt || cost?.incurred_at || cost?.createdAt || cost?.created_at || null;
+}
+function getCaseCostKindLabelStage231H_R1C(kind: unknown) {
+  const value = String(kind || '').trim();
+  const labels: Record<string, string> = {
+    court_fee: 'Opłata sądowa',
+    notary: 'Notariusz',
+    travel: 'Dojazd',
+    document: 'Dokumenty',
+    office: 'Biuro',
+    marketing: 'Marketing',
+    other: 'Inny',
+  };
+  return labels[value] || value || 'Koszt';
+}
+function getCaseCostStatusLabelStage231H_R1C(status: unknown) {
+  const value = String(status || '').trim();
+  const labels: Record<string, string> = {
+    planned: 'Planowany',
+    incurred: 'Poniesiony',
+    submitted: 'Do zwrotu',
+    partially_reimbursed: 'Częściowo zwrócony',
+    reimbursed: 'Zwrócony',
+    cancelled: 'Anulowany',
+  };
+  return labels[value] || value || 'Poniesiony';
+}
+function getCaseCostNoteStage231H_R1C(cost: CaseCostRecord | null | undefined) {
+  return String(cost?.note || '').trim();
 }
 function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
   // CLOSEFLOW_CASE_SETTLEMENT_EXPECTED_VALUE_V29
@@ -1333,6 +1389,11 @@ export default function CaseDetail() {
   const [isCaseCostOpenStage231D2, setIsCaseCostOpenStage231D2] = useState(false);
   const [caseCostSubmittingStage231D2, setCaseCostSubmittingStage231D2] = useState(false);
   const [caseCostDraftStage231D2, setCaseCostDraftStage231D2] = useState({ kind: 'other', status: 'incurred', amount: '', reimbursable: true, note: '' });
+  const [caseCostCorrectionTargetStage231H_R1C, setCaseCostCorrectionTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
+  const [caseCostCorrectionFormStage231H_R1C, setCaseCostCorrectionFormStage231H_R1C] = useState({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+  const [caseCostCorrectionSubmittingStage231H_R1C, setCaseCostCorrectionSubmittingStage231H_R1C] = useState(false);
+  const [caseCostDeleteTargetStage231H_R1C, setCaseCostDeleteTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
+  const [caseCostDeleteSubmittingStage231H_R1C, setCaseCostDeleteSubmittingStage231H_R1C] = useState(false);
 
   /* FIN-11_CASE_RIGHT_FINANCE_STATE_AND_HANDLERS */
   const [isFinanceEditOpen, setIsFinanceEditOpen] = useState(false);
@@ -1675,6 +1736,21 @@ export default function CaseDetail() {
   );
   const caseFinanceSummary = caseFinanceSourceStage220A26;
   const visibleCasePayments = useMemo(() => sortCasePayments(effectiveCasePaymentsStage220A25).slice(0, 8), [effectiveCasePaymentsStage220A25]);
+  const financeCorrectionRowsStage231H_R1C = useMemo(() => {
+    const paymentRows = visibleCasePayments.map((payment) => ({
+      kind: 'payment' as const,
+      id: 'payment-' + String(payment.id || payment.paidAt || payment.createdAt || payment.amount || Math.random()),
+      date: getCasePaymentDateStage220A27(payment),
+      payment,
+    }));
+    const costRows = caseCostsStage231D2.map((cost) => ({
+      kind: 'cost' as const,
+      id: 'cost-' + String(getCaseCostIdStage231H_R1C(cost) || getCaseCostDateStage231H_R1C(cost) || getCaseCostAmountStage231H_R1C(cost) || Math.random()),
+      date: getCaseCostDateStage231H_R1C(cost),
+      cost,
+    }));
+    return [...paymentRows, ...costRows].sort((left, right) => sortTime(right.date, 0) - sortTime(left.date, 0)).slice(0, 16);
+  }, [caseCostsStage231D2, visibleCasePayments]);
 
   const handleCreateCasePayment = async () => {
     if (!caseId || !caseData) return;
@@ -1766,6 +1842,114 @@ export default function CaseDetail() {
       setCaseCostSubmittingStage231D2(false);
     }
   };
+
+
+  function openCaseCostCorrectionModalStage231H_R1C(cost: CaseCostRecord) {
+    if (!guardCaseDetailWriteAccess('skorygować kosztu sprawy')) return;
+    setCaseCostCorrectionTargetStage231H_R1C(cost);
+    setCaseCostCorrectionFormStage231H_R1C({
+      amount: fin11MoneyInput(getCaseCostAmountStage231H_R1C(cost)),
+      reimbursableAmount: fin11MoneyInput(getCaseCostReimbursableAmountStage231H_R1C(cost)),
+      reimbursedAmount: fin11MoneyInput(getCaseCostReimbursedAmountStage231H_R1C(cost)),
+      status: String(cost.status || 'incurred'),
+      note: getCaseCostNoteStage231H_R1C(cost),
+    });
+  }
+
+  function openCaseCostDeleteConfirmStage231H_R1C(cost: CaseCostRecord) {
+    if (!guardCaseDetailWriteAccess('usunąć kosztu sprawy')) return;
+    if (!getCaseCostIdStage231H_R1C(cost)) {
+      toast.error('Nie można usunąć kosztu bez identyfikatora.');
+      return;
+    }
+    setCaseCostDeleteTargetStage231H_R1C(cost);
+  }
+
+  async function handleSaveCaseCostCorrectionStage231H_R1C() {
+    const target = caseCostCorrectionTargetStage231H_R1C;
+    const costId = getCaseCostIdStage231H_R1C(target);
+    if (!target || !costId || !caseData?.id || caseCostCorrectionSubmittingStage231H_R1C) return;
+    if (!guardCaseDetailWriteAccess('skorygować kosztu sprawy')) return;
+
+    const amount = fin11Amount(caseCostCorrectionFormStage231H_R1C.amount);
+    const reimbursableAmount = fin11Amount(caseCostCorrectionFormStage231H_R1C.reimbursableAmount);
+    const reimbursedRaw = fin11Amount(caseCostCorrectionFormStage231H_R1C.reimbursedAmount);
+    const status = String(caseCostCorrectionFormStage231H_R1C.status || 'incurred');
+    const finalReimbursableAmount = reimbursableAmount > 0 ? reimbursableAmount : amount;
+    const finalReimbursedAmount = status === 'reimbursed' && reimbursedRaw <= 0 ? finalReimbursableAmount : Math.min(reimbursedRaw, finalReimbursableAmount);
+    const note = caseCostCorrectionFormStage231H_R1C.note.trim();
+    const currency = getCaseCostCurrencyStage231H_R1C(target, caseFinanceSourceStage220A26.currency || caseData.currency || 'PLN');
+
+    if (amount <= 0) {
+      toast.error('Podaj poprawną kwotę kosztu.');
+      return;
+    }
+
+    try {
+      setCaseCostCorrectionSubmittingStage231H_R1C(true);
+      const payload = {
+        id: costId,
+        caseId: caseData.id,
+        clientId: caseData.clientId || null,
+        kind: String(target.kind || (target as any).type || 'other'),
+        status,
+        amount,
+        reimbursable: finalReimbursableAmount > 0,
+        reimbursableAmount: finalReimbursableAmount,
+        reimbursedAmount: finalReimbursedAmount,
+        currency,
+        incurredAt: getCaseCostDateStage231H_R1C(target) || new Date().toISOString(),
+        reimbursedAt: finalReimbursedAmount > 0 ? new Date().toISOString() : null,
+        note,
+      };
+      const updated = await updateCaseCostInSupabase(payload as any);
+      setCaseCostsStage231D2((previous) => previous.map((cost) => getCaseCostIdStage231H_R1C(cost) === costId ? ({ ...cost, ...payload, ...(updated || {}) } as CaseCostRecord) : cost));
+      await insertActivityToSupabase({
+        caseId: caseData.id,
+        clientId: caseData.clientId || null,
+        leadId: caseData.leadId || null,
+        actorType: 'operator',
+        eventType: 'case_cost_corrected',
+        payload: { title: 'Skorygowano koszt sprawy', costId, amount, reimbursableAmount: finalReimbursableAmount, reimbursedAmount: finalReimbursedAmount, currency, status, note },
+      } as any).catch(() => null);
+      await refreshCaseData();
+      setCaseCostCorrectionTargetStage231H_R1C(null);
+      setCaseCostCorrectionFormStage231H_R1C({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+      toast.success('Koszt sprawy skorygowany');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować kosztu sprawy.');
+    } finally {
+      setCaseCostCorrectionSubmittingStage231H_R1C(false);
+    }
+  }
+
+  async function handleConfirmDeleteCaseCostStage231H_R1C() {
+    const target = caseCostDeleteTargetStage231H_R1C;
+    const costId = getCaseCostIdStage231H_R1C(target);
+    if (!target || !costId || caseCostDeleteSubmittingStage231H_R1C) return;
+    if (!guardCaseDetailWriteAccess('usunąć kosztu sprawy')) return;
+
+    try {
+      setCaseCostDeleteSubmittingStage231H_R1C(true);
+      await deleteCaseCostFromSupabase(costId);
+      setCaseCostsStage231D2((previous) => previous.filter((cost) => getCaseCostIdStage231H_R1C(cost) !== costId));
+      await insertActivityToSupabase({
+        caseId: caseData?.id || target.caseId || target.case_id || null,
+        clientId: caseData?.clientId || target.clientId || target.client_id || null,
+        leadId: caseData?.leadId || null,
+        actorType: 'operator',
+        eventType: 'case_cost_deleted',
+        payload: { title: 'Usunięto koszt sprawy', costId, amount: getCaseCostAmountStage231H_R1C(target), currency: getCaseCostCurrencyStage231H_R1C(target, caseFinanceSourceStage220A26.currency) },
+      } as any).catch(() => null);
+      await refreshCaseData();
+      setCaseCostDeleteTargetStage231H_R1C(null);
+      toast.success('Koszt sprawy usunięty');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Nie udało się usunąć kosztu sprawy.');
+    } finally {
+      setCaseCostDeleteSubmittingStage231H_R1C(false);
+    }
+  }
 
   const refreshCaseData = useCallback(async () => {
     if (!caseId) {
@@ -3084,10 +3268,10 @@ async function handleConfirmDeleteCaseRecord() {
                   size="sm"
                   variant="outline"
                   onClick={() => setIsPaymentHistoryOpenStage220A27B(true)}
-                  disabled={visibleCasePayments.length === 0}
+                  disabled={financeCorrectionRowsStage231H_R1C.length === 0}
                   data-stage220a27b-open-payment-history-modal="true"
                 >
-                  Koryguj wpłatę prowizji
+                  Koryguj wpłatę/koszt
                 </Button>
               </div>
                             <span hidden data-case-settlement-payment-summary-deprecated="true" />
@@ -3359,7 +3543,7 @@ async function handleConfirmDeleteCaseRecord() {
           data-cf-vst-dialog="true"
          aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>
+            <DialogTitle>Koryguj wpłatę/koszt</DialogTitle>
           </DialogHeader>
 
           <div className="client-case-form-section case-payment-history-modal-stage220a27b__context case-payment-history-modal-stage220a28-context" data-stage220a27b-payment-history-context="case">
@@ -3368,10 +3552,61 @@ async function handleConfirmDeleteCaseRecord() {
           </div>
 
           {visibleCasePayments.length === 0 ? (
-            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpłat prowizji i korekt przy tej sprawie.</p>
+            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpłat, korekt i kosztów przy tej sprawie.</p>
           ) : (
             <div className="case-payment-history-modal-stage220a27b__list">
-              {visibleCasePayments.map((payment) => {
+              {financeCorrectionRowsStage231H_R1C.map((row) => {
+                if (row.kind === 'cost') {
+                  const cost = row.cost as CaseCostRecord;
+                  const costCurrency = getCaseCostCurrencyStage231H_R1C(cost, caseFinanceSourceStage220A26.currency);
+                  const costAmount = getCaseCostAmountStage231H_R1C(cost);
+                  return (
+                    <article
+                      key={'case-payment-history-modal-stage231h-r1c-' + row.id}
+                      className="client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-payment-history-modal-stage231h-r1c__row--cost"
+                      data-stage231h-r1c-cost-correction-row="true"
+                    >
+                      <div className="case-payment-history-modal-stage220a27b__main case-payment-history-modal-stage231h-r1c__cost-main">
+                        <strong>Koszt: {getCaseCostKindLabelStage231H_R1C(cost.kind || (cost as any).type)}</strong>
+                        <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1c-cost-meta="true">
+                          <span>Data: {formatDateTime(getCaseCostDateStage231H_R1C(cost), 'Bez daty')}</span>
+                          <span>Status: {getCaseCostStatusLabelStage231H_R1C(cost.status)}</span>
+                          <span>Wartość: {formatMoney(-costAmount, costCurrency)}</span>
+                          <span>Do zwrotu: {formatMoney(getCaseCostReimbursableAmountStage231H_R1C(cost), costCurrency)}</span>
+                          <span>Zwrócono: {formatMoney(getCaseCostReimbursedAmountStage231H_R1C(cost), costCurrency)}</span>
+                        </div>
+                        {getCaseCostNoteStage231H_R1C(cost) ? <p>{getCaseCostNoteStage231H_R1C(cost)}</p> : null}
+                      </div>
+
+                      <div className="case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={() => openCaseCostCorrectionModalStage231H_R1C(cost)}
+                          disabled={caseCostCorrectionSubmittingStage231H_R1C || caseCostDeleteSubmittingStage231H_R1C || !getCaseCostIdStage231H_R1C(cost)}
+                          data-stage231h-r1c-select-cost-correction="true"
+                        >
+                          Koryguj
+                        </Button>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a29__delete case-payment-history-modal-stage220a30__delete"
+                          onClick={() => openCaseCostDeleteConfirmStage231H_R1C(cost)}
+                          disabled={caseCostDeleteSubmittingStage231H_R1C || caseCostCorrectionSubmittingStage231H_R1C || !getCaseCostIdStage231H_R1C(cost)}
+                          data-stage231h-r1c-delete-cost-from-history="true"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Usuń
+                        </Button>
+                      </div>
+                    </article>
+                  );
+                }
+
+                const payment = row.payment as CasePaymentRecord;
                 const type = getCasePaymentTypeStage220A27(payment);
                 const signedAmount = getCasePaymentSignedAmountStage220A27(payment);
                 const isCorrection = type === 'refund';
@@ -3516,6 +3751,133 @@ async function handleConfirmDeleteCaseRecord() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+
+      <Dialog
+        open={Boolean(caseCostCorrectionTargetStage231H_R1C)}
+        onOpenChange={(open) => {
+          if (!open && !caseCostCorrectionSubmittingStage231H_R1C) {
+            setCaseCostCorrectionTargetStage231H_R1C(null);
+            setCaseCostCorrectionFormStage231H_R1C({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+          }
+        }}
+      >
+        <DialogContent
+          className="client-case-form-content case-payment-correction-modal-stage220a27 case-payment-correction-modal-stage220a28-vst max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--correction"
+          data-stage231h-r1c-cost-correction-modal="true"
+          data-cf-vst-dialog="true"
+          aria-describedby={undefined}>
+          <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
+            <DialogTitle>Korekta kosztu</DialogTitle>
+          </DialogHeader>
+
+          <div className="case-payment-correction-modal-stage220a27__summary case-payment-history-modal-stage231h-r1c__row--cost" data-stage231h-r1c-cost-correction-summary="true">
+            <div>
+              <span>Oryginalny koszt</span>
+              <strong>{formatMoney(-getCaseCostAmountStage231H_R1C(caseCostCorrectionTargetStage231H_R1C || {} as CaseCostRecord), getCaseCostCurrencyStage231H_R1C(caseCostCorrectionTargetStage231H_R1C || undefined, caseFinanceSourceStage220A26.currency))}</strong>
+            </div>
+            <div>
+              <span>Status</span>
+              <strong>{getCaseCostStatusLabelStage231H_R1C(caseCostCorrectionTargetStage231H_R1C?.status)}</strong>
+            </div>
+          </div>
+
+          <div className="case-finance-edit-form case-finance-source-form-stage220a30">
+            <label className="case-finance-edit-field">
+              <span>Kwota kosztu</span>
+              <Input
+                inputMode="decimal"
+                value={caseCostCorrectionFormStage231H_R1C.amount}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, amount: event.target.value }))}
+                placeholder="np. 2000"
+                data-stage231h-r1c-cost-correction-amount="true"
+              />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Koszt do zwrotu</span>
+              <Input
+                inputMode="decimal"
+                value={caseCostCorrectionFormStage231H_R1C.reimbursableAmount}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, reimbursableAmount: event.target.value }))}
+                placeholder="np. 2000"
+                data-stage231h-r1c-cost-correction-reimbursable="true"
+              />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Koszt zwrócony</span>
+              <Input
+                inputMode="decimal"
+                value={caseCostCorrectionFormStage231H_R1C.reimbursedAmount}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, reimbursedAmount: event.target.value }))}
+                placeholder="np. 0"
+                data-stage231h-r1c-cost-correction-reimbursed="true"
+              />
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Status kosztu</span>
+              <select
+                className="cf-vst-input case-finance-edit-select"
+                value={caseCostCorrectionFormStage231H_R1C.status}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, status: event.target.value }))}
+                data-stage231h-r1c-cost-correction-status="true"
+              >
+                <option value="planned">Planowany</option>
+                <option value="incurred">Poniesiony</option>
+                <option value="submitted">Do zwrotu</option>
+                <option value="partially_reimbursed">Częściowo zwrócony</option>
+                <option value="reimbursed">Zwrócony</option>
+                <option value="cancelled">Anulowany</option>
+              </select>
+            </label>
+            <label className="case-finance-edit-field case-finance-edit-field--wide">
+              <span>Notatka / powód korekty</span>
+              <Textarea
+                value={caseCostCorrectionFormStage231H_R1C.note}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, note: event.target.value }))}
+                placeholder="Np. korekta kwoty, zwrot kosztu, błędnie dodany koszt"
+                data-stage231h-r1c-cost-correction-note="true"
+              />
+            </label>
+          </div>
+
+          <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setCaseCostCorrectionTargetStage231H_R1C(null);
+                setCaseCostCorrectionFormStage231H_R1C({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+              }}
+              disabled={caseCostCorrectionSubmittingStage231H_R1C}
+            >
+              Anuluj
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSaveCaseCostCorrectionStage231H_R1C}
+              disabled={caseCostCorrectionSubmittingStage231H_R1C || fin11Amount(caseCostCorrectionFormStage231H_R1C.amount) <= 0}
+              data-stage231h-r1c-save-cost-correction="true"
+            >
+              {caseCostCorrectionSubmittingStage231H_R1C ? 'Zapisywanie...' : 'Zapisz korektę kosztu'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmDialog
+        open={Boolean(caseCostDeleteTargetStage231H_R1C)}
+        onOpenChange={(open) => {
+          if (!open && !caseCostDeleteSubmittingStage231H_R1C) setCaseCostDeleteTargetStage231H_R1C(null);
+        }}
+        title="Usunąć koszt?"
+        description={caseCostDeleteTargetStage231H_R1C ? 'Koszt ' + formatMoney(-getCaseCostAmountStage231H_R1C(caseCostDeleteTargetStage231H_R1C), getCaseCostCurrencyStage231H_R1C(caseCostDeleteTargetStage231H_R1C, caseFinanceSourceStage220A26.currency)) + ' zostanie usunięty z rozliczenia sprawy. Tej akcji nie można cofnąć.' : 'Usunąć wybrany koszt?'}
+        confirmLabel="Usuń koszt"
+        cancelLabel="Anuluj"
+        confirmTone="destructive"
+        pending={caseCostDeleteSubmittingStage231H_R1C}
+        onConfirm={handleConfirmDeleteCaseCostStage231H_R1C}
+        data-stage231h-r1c-delete-cost-confirm="true"
+      />
 
       {/* FIN-11_CASE_RIGHT_FINANCE_MODALS */}
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>

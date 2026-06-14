@@ -1517,3 +1517,7 @@ Opis: przygotowano R4 closeout LeadDetail po R3. Etap zostanie zamkniety po loka
 - Decision: case_item source truth decision: two UI entries, one case_items contract.
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
+
+## 2026-06-14 — STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
+
+Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne okno korekty wpłat i kosztów.

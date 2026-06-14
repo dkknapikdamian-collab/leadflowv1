@@ -4139,3 +4139,10 @@ Sprawdza: brak legacy MissingItemQuickActionModal w LeadDetail, ContextActionDia
 - Decision: case_item source truth decision: two UI entries, one case_items contract.
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
+
+## STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL — guard/test
+
+- `scripts/check-stage231h-r1c-case-detail-cost-correction.cjs`
+- `tests/stage231h-r1c-case-detail-cost-correction.test.cjs`
+
+Zakres: wspólne okno `Koryguj wpłatę/koszt`, czerwone koszty, update/delete kosztu, docs/run report/Obsidian payload.
