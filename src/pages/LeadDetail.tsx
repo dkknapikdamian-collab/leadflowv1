@@ -764,6 +764,9 @@ export default function LeadDetail() {
   const [leadPaymentAmount, setLeadPaymentAmount] = useState('');
   const [leadPaymentNote, setLeadPaymentNote] = useState('');
   const [leadPaymentSaving, setLeadPaymentSaving] = useState(false);
+  const [isPotentialEditingStage231GR7, setIsPotentialEditingStage231GR7] = useState(false);
+  const [potentialDraftStage231GR7, setPotentialDraftStage231GR7] = useState('');
+  const [potentialSavingStage231GR7, setPotentialSavingStage231GR7] = useState(false);
   const [leadActionOpenGroup, setLeadActionOpenGroup] = useState<LeadActionAccordionGroup>('next');
   const [editLinkedTask, setEditLinkedTask] = useState<any | null>(null);
   const [editLinkedEvent, setEditLinkedEvent] = useState<any | null>(null);
@@ -1518,9 +1521,50 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
 
   const handleStartPotentialEditingStage231G = () => {
     if (!hasAccess) return toast.error('Trial wygasł.');
-    setEditLead({ ...(lead || {}), dealValue: Number(leadFinance.dealValue || 0) || '' });
-    setIsEditing(true);
+    setPotentialDraftStage231GR7(String(Number(leadFinance.dealValue || 0) || ''));
+    setIsPotentialEditingStage231GR7(true);
     window.setTimeout(() => potentialInputRefStage231G.current?.focus(), 80);
+  };
+
+  const handleCancelPotentialEditingStage231GR7 = () => {
+    setIsPotentialEditingStage231GR7(false);
+    setPotentialDraftStage231GR7('');
+  };
+
+  const parsePotentialStage231GR7 = (value: string) => {
+    const normalized = String(value || '').replace(/s+/g, '').replace(',', '.');
+    const parsed = Number(normalized);
+    if (!Number.isFinite(parsed) || parsed < 0) return null;
+    return Math.round(parsed * 100) / 100;
+  };
+
+  const handleSavePotentialStage231GR7 = async (event?: FormEvent) => {
+    event?.preventDefault();
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    if (!leadId || potentialSavingStage231GR7) return;
+    const amount = parsePotentialStage231GR7(potentialDraftStage231GR7);
+    if (amount === null) return toast.error('Wpisz poprawną wartość potencjału.');
+    try {
+      setPotentialSavingStage231GR7(true);
+      await updateLeadInSupabase({
+        id: leadId,
+        dealValue: amount,
+        deal_value: amount,
+        value: amount,
+        contractValue: amount,
+        contract_value: amount,
+      } as any);
+      setLead((current: any) => current ? { ...current, dealValue: amount, deal_value: amount, value: amount, contractValue: amount, contract_value: amount } : current);
+      setEditLead((current: any) => current ? { ...current, dealValue: amount, deal_value: amount, value: amount, contractValue: amount, contract_value: amount } : current);
+      await addActivity('lead_potential_updated', { dealValue: amount, currency: leadFinance.currency, source: 'stage231g_r7_potential_only_modal' });
+      toast.success('Potencjał zaktualizowany');
+      setIsPotentialEditingStage231GR7(false);
+      await loadLead({ silent: true });
+    } catch (error: any) {
+      toast.error(`Błąd zapisu potencjału: ${error?.message || 'REQUEST_FAILED'}`);
+    } finally {
+      setPotentialSavingStage231GR7(false);
+    }
   };
 
   const handleCancelLeadEditing = () => {
@@ -2731,6 +2775,41 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                 <Button type="button" variant="outline" onClick={closeLeadPaymentDialog} disabled={leadPaymentSaving}>Anuluj</Button>
                 <Button type="submit" disabled={leadPaymentSaving || !leadPaymentAmount.trim()}>
                   {leadPaymentSaving ? 'Zapisuję...' : 'Zapisz płatność'}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={isPotentialEditingStage231GR7} onOpenChange={(open) => { if (open) setIsPotentialEditingStage231GR7(true); else handleCancelPotentialEditingStage231GR7(); }}>
+          <DialogContent className="lead-detail-potential-dialog" data-stage231g-r7-potential-only-dialog="true" aria-describedby={undefined}>
+            <DialogHeader>
+              <DialogTitle>Ustaw potencjał</DialogTitle>
+              <DialogDescription>Wpisz tylko wartość potencjału. Pozostałe dane leada zostają bez zmian.</DialogDescription>
+            </DialogHeader>
+            <form className="lead-detail-dialog-grid lead-detail-potential-dialog-form" onSubmit={handleSavePotentialStage231GR7}>
+              <div className="lead-detail-finance-dialog-summary" data-stage231g-r7-potential-summary="true">
+                <span>Aktualnie: <strong>{Number(leadFinance.dealValue || 0).toLocaleString('pl-PL')} {leadFinance.currency}</strong></span>
+                <span>Źródło: <strong>wartość leada</strong></span>
+              </div>
+              <Label>Potencjał / wartość
+                <Input
+                  ref={potentialInputRefStage231G}
+                  data-stage231g-potential-input="true"
+                  data-stage231g-r7-potential-only-input="true"
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={potentialDraftStage231GR7}
+                  onChange={(event) => setPotentialDraftStage231GR7(event.target.value)}
+                  placeholder="np. 12000"
+                  autoFocus
+                />
+              </Label>
+              <DialogFooter className={modalFooterClass()}>
+                <Button type="button" variant="outline" onClick={handleCancelPotentialEditingStage231GR7} disabled={potentialSavingStage231GR7}>Anuluj</Button>
+                <Button type="submit" disabled={potentialSavingStage231GR7 || !potentialDraftStage231GR7.trim()}>
+                  {potentialSavingStage231GR7 ? 'Zapisuję...' : 'Zapisz potencjał'}
                 </Button>
               </DialogFooter>
             </form>

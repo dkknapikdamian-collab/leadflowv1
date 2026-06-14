@@ -4102,3 +4102,9 @@ RYZYKO:
 - Naprawiono konflikt rebase w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
 - Dodano realne klasy work-row content/status/actions w LeadDetail.
 - Poprawiono guard/test, żeby nie mylił poprawnego group.key w accordion z błędem overflow.
+
+## 2026-06-14 10:45 Europe/Warsaw - STAGE231G R7
+
+- LeadDetail: CTA Potencjał otwiera mały modal tylko do wartości, oparty o ten sam Dialog/DialogFooter pattern co inne modale.
+- api/leads: zapis potencjału synchronizuje value i deal_value przy POST/PATCH.
+- LeadDetail CSS: poprawiono desktopowe wyrównanie akcji wierszy, żeby Zrobione nie spadało samotnie poza linię.

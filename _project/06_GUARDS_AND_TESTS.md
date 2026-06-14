@@ -4101,3 +4101,11 @@ Chroni klasę błędu: kafelki display-only bez CTA, brak edycji potencjału, br
 ## 2026-06-14 10:40 Europe/Warsaw - STAGE231G R6 guard/test correction
 
 R6 poprawia guard/test po fałszywym zamknięciu R5: walidacja sprawdza realne klasy content/status/actions oraz brak stale group.key tylko w overflow section. Guard jest ASCII/no-BOM.
+
+## 2026-06-14 10:45 Europe/Warsaw - STAGE231G_R7 guard/test
+
+Dodano:
+- scripts/check-stage231g-r7-potential-only-source-and-workrow.cjs
+- tests/stage231g-r7-potential-only-source-and-workrow.test.cjs
+
+Chroni: potencjał otwierany jako osobny modal tylko do wartości, zapis value + deal_value w API, brak otwierania pełnej edycji leada z CTA potencjału oraz desktopowe wyrównanie akcji wiersza.

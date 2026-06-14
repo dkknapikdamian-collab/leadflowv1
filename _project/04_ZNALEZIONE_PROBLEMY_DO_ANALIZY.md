@@ -200,3 +200,11 @@ Status: PRZYJETE_DO_ETAPU
 Problem: karta leada pokazywała potencjał i statusy, ale część kafelków nie prowadziła do jasnej operacji. Dodatkowo formularz tworzenia leada miał pole dealValue opisane zbyt ogólnie jako "Wartość", przez co użytkownik nie widział, że może od razu wpisać potencjał.
 
 Zakres naprawy: LeadDetail + Leads create form + guard/test. Bez SQL, Google Calendar, billing/trial, CaseDetail i ClientDetail.
+
+## 2026-06-14 10:45 Europe/Warsaw - STAGE231G_R7_POTENTIAL_ONLY_SOURCE_AND_WORKROW_FIX
+
+Status: PRZYJETE_DO_HOTFIXA
+
+Problem: ręczny test Damiana wykazał, że CTA Potencjał otwierało pełną edycję leada zamiast małego modala tylko dla wartości. Dodatkowo zapisana wartość mogła nie być widoczna, bo API PATCH zapisywał tylko value, a kontrakt odczytu preferuje deal_value przed value. Wiersze działań zrzucały przycisk Zrobione poza linię na desktopie.
+
+Zakres: LeadDetail potential-only modal, api/leads value + deal_value source truth, work-row alignment CSS, guard/test. Bez SQL, Google Calendar, billing/trial, CaseDetail i ClientDetail.

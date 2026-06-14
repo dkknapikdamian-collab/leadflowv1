@@ -3529,3 +3529,12 @@ Do przejścia przed push:
 - node --test tests/stage231g-lead-detail-operational-wiring.test.cjs
 - npm run build
 - git diff --check
+
+## 2026-06-14 10:45 Europe/Warsaw - STAGE231G R7 manual test
+
+Do wykonania:
+1. Kliknij Edytuj/Ustaw potencjał na kafelku Potencjał.
+2. Modal ma zawierać tylko pole Potencjał / wartość, podsumowanie, Anuluj i Zapisz potencjał.
+3. Wpisz nową wartość, zapisz, zrób hard refresh.
+4. Kafelek Potencjał i Finanse leada pokazują nową wartość.
+5. W sekcji Najbliższe działania przyciski, w tym Zrobione, są wyrównane na desktopie.

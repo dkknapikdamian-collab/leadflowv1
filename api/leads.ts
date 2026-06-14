@@ -1005,7 +1005,11 @@ export default async function handler(req: any, res: any) {
       if (body.email !== undefined) payload.email = asText(body.email);
       if (body.phone !== undefined) payload.phone = asText(body.phone);
       if (body.source !== undefined) payload.source = normalizeSource(body.source);
-      if (body.dealValue !== undefined) payload.value = Number(body.dealValue) || 0;
+      if (body.dealValue !== undefined || body.deal_value !== undefined || body.value !== undefined || body.contractValue !== undefined || body.contract_value !== undefined) {
+        const nextLeadValueStage231GR7 = asNumber(body.dealValue ?? body.deal_value ?? body.value ?? body.contractValue ?? body.contract_value);
+        payload.value = nextLeadValueStage231GR7;
+        payload.deal_value = nextLeadValueStage231GR7;
+      }
       if (body.currency !== undefined) payload.currency = normalizeCurrency(body.currency);
       if (body.partialPayments !== undefined) payload.partial_payments = normalizePartialPayments(body.partialPayments);
       if (nextStatus !== undefined) payload.status = nextStatus;
@@ -1094,6 +1098,7 @@ export default async function handler(req: any, res: any) {
     // STAGE226R10_LEAD_CREATE_POST_LEAD_ONLY_API: ordinary lead creation must not create, reuse or attach a client.
     // Client creation belongs to explicit start_service conversion only.
     const nextActionAt = status === 'moved_to_service' ? null : toIsoDateTime(body.nextActionAt);
+    const leadPotentialValueStage231GR7 = asNumber(body.dealValue ?? body.deal_value ?? body.value ?? body.contractValue ?? body.contract_value);
 
     const payload: Record<string, unknown> = {
       workspace_id: finalWorkspaceId,
@@ -1106,7 +1111,8 @@ export default async function handler(req: any, res: any) {
       email: asText(body.email),
       phone: asText(body.phone),
       source: normalizeSource(body.source),
-      value: Number(body.dealValue) || 0,
+      value: leadPotentialValueStage231GR7,
+      deal_value: leadPotentialValueStage231GR7,
       currency: normalizeCurrency(body.currency),
       partial_payments: normalizePartialPayments(body.partialPayments),
       summary: asText(body.summary),

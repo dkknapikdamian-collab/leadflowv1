@@ -1482,3 +1482,7 @@ następny krok:
 ## 2026-06-14 10:05 Europe/Warsaw - STAGE231G R2 - LeadDetail operational wiring
 
 Etap przygotowany jako lokalny ZIP R2 po błędzie parsera PowerShell w R1. Zakres rozszerzony o jawny potencjał w formularzu tworzenia leada.
+
+## 2026-06-14 10:45 Europe/Warsaw - STAGE231G R7 - potential-only modal and value source
+
+Hotfix po ręcznym teście Damiana. Przyczyna: UX był za szeroki, a source of truth wartości leada był niespójny pomiędzy value i deal_value. Warunek zamknięcia: R7 guard, R7 node test, STAGE231G guard, build, git diff --check i test ręczny potencjału.
