@@ -1,0 +1,45 @@
+/* STAGE231H_R1E_FINANCE_CORRECTION_MODAL_SERVER_HOTFIX
+   Cel: serwerowy hotfix UI po R1D. W realnym deployu nadal widoczny był dropdown/status
+   w oknie korekt. Ten plik jest importowany globalnie z main.tsx, żeby wygrać kolejność CSS
+   i nie polegać na lokalnym dev serverze.
+   SQL: NOT_TOUCHED.
+*/
+
+/* Nie pokazujemy żadnej listy statusu/filtra w oknach korekt finansowych CaseDetail. */
+.case-finance-source-modal-stage220a30--correction .case-finance-edit-field:has(select),
+.case-finance-source-modal-stage220a30--correction select,
+.case-finance-source-modal-stage220a30--history select,
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-status] {
+  display: none !important;
+}
+
+/* Status kosztu nie ma zabierać miejsca w podsumowaniu korekty. */
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-summary] > div:nth-child(2) {
+  display: none !important;
+}
+
+/* Podsumowanie korekty kosztu ma być neutralne; czerwony akcent zostaje tylko w liście kosztów, nie jako dodatkowy status w formularzu korekty. */
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-summary] {
+  background: #f8fafc !important;
+  border-color: #dbe5f3 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-summary] * {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+/* Wiersze w historii/korektach mają być czytelne i nie wypychać akcji poza modal. */
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__row {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+}
+
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__meta {
+  overflow: hidden !important;
+}
+
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__meta span {
+  max-width: 100% !important;
+}
