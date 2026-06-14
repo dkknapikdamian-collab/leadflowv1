@@ -208,3 +208,10 @@ Status: PRZYJETE_DO_HOTFIXA
 Problem: ręczny test Damiana wykazał, że CTA Potencjał otwierało pełną edycję leada zamiast małego modala tylko dla wartości. Dodatkowo zapisana wartość mogła nie być widoczna, bo API PATCH zapisywał tylko value, a kontrakt odczytu preferuje deal_value przed value. Wiersze działań zrzucały przycisk Zrobione poza linię na desktopie.
 
 Zakres: LeadDetail potential-only modal, api/leads value + deal_value source truth, work-row alignment CSS, guard/test. Bez SQL, Google Calendar, billing/trial, CaseDetail i ClientDetail.
+
+## STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
+
+Data: 2026-06-14 11:45 Europe/Warsaw
+Status: PRZYJETE_DO_ETAPU
+Problem: po R3 w LeadDetail zostaly trzy luki: legacy MissingItemQuickActionModal, zly delete missing_item w overflow oraz kruchy CSS work-row.
+Decyzja: naprawic w R4, zanim analogiczny mapping zostanie przeniesiony na CaseDetail.

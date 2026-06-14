@@ -3547,3 +3547,14 @@ Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIO
 Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
 Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
 SQL: nie ruszano.
+
+## STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
+
+Data: 2026-06-14 11:45 Europe/Warsaw
+Status: DO URUCHOMIENIA
+Plan:
+- R3 guard/test
+- R4 guard/test
+- build
+- git diff --check
+- test manualny: Brak add/delete/hard refresh i work-row srednia szerokosc.

@@ -1,4 +1,4 @@
-﻿/* LEAD_DETAIL_VISUAL_REBUILD_STAGE14 */
+/* LEAD_DETAIL_VISUAL_REBUILD_STAGE14 */
 
 .lead-detail-vnext-page {
   min-height: 100%;
@@ -349,7 +349,7 @@
 
 .lead-detail-work-row {
   display: grid;
-  grid-template-columns: 38px minmax(260px, 1fr) auto minmax(280px, auto);
+  grid-template-columns: 38px minmax(0, 1fr);
   gap: 14px;
   align-items: center;
   border: 1px solid #e4e7ec;
@@ -1359,7 +1359,7 @@
 }
 
 .lead-detail-work-row {
-  grid-template-columns: 38px minmax(220px, 1fr) auto minmax(220px, auto);
+  grid-template-columns: 38px minmax(0, 1fr);
 }
 
 .lead-detail-history-row {

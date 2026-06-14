@@ -419,3 +419,14 @@ Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIO
 Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
 Test: tests/stage231g-r3-lead-detail-function-mapping.test.cjs
 SQL: nie ruszano.
+
+## STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
+
+Data: 2026-06-14 11:45 Europe/Warsaw
+Status: DO TESTU LOKALNEGO
+Cel: domknac LeadDetail po R3 przez usuniecie drugiej sciezki Brak, naprawe delete missing_item w overflow i utwardzenie CSS work-row.
+Run report: _project/runs/STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX.md
+Guard: scripts/check-stage231g-r4-lead-detail-function-mapping-closeout.cjs
+Test: tests/stage231g-r4-lead-detail-function-mapping-closeout.test.cjs
+Typecheck: SKIP jesli package.json nie ma scripts.typecheck.
+Zakaz zakresu: bez SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail.

@@ -4116,3 +4116,10 @@ Chroni: potencjał otwierany jako osobny modal tylko do wartości, zapis value +
 - test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs
 - klasa bĹ‚Ä™du: martwe/Ĺşle podpiÄ™te akcje LeadDetail, zĹ‚y parser potencjaĹ‚u, missing_item mieszany ze zwykĹ‚ym taskiem, zlewajÄ…ce siÄ™ wiersze dziaĹ‚aĹ„.
 - status: do uruchomienia lokalnie po apply.
+
+## STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
+
+Data: 2026-06-14 11:45 Europe/Warsaw
+Guard: scripts/check-stage231g-r4-lead-detail-function-mapping-closeout.cjs
+Test: tests/stage231g-r4-lead-detail-function-mapping-closeout.test.cjs
+Sprawdza: brak legacy MissingItemQuickActionModal w LeadDetail, ContextActionDialogs/blocker jako jedyna sciezka Brak, hard missing delete w overflow i odporny CSS work-row.
