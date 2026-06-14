@@ -1,0 +1,21 @@
+﻿# Obsidian payload - STAGE231G R3 guard/test syntax hotfix
+
+- data i godzina: 2026-06-14 HH:mm Europe/Warsaw
+- nazwa / alias wejĹ›ciowy: LeadDetail STAGE231G R3 - naprawa guard/test
+- entity_id: DO_POTWIERDZENIA
+- workspace_id: DO_POTWIERDZENIA
+- project_id: CloseFlow / LeadFlow
+- idea_id: nie dotyczy
+- report_id: STAGE231G_R3_GUARD_TEST_SYNTAX_HOTFIX
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: 10_PROJEKTY/CloseFlow_Lead_App
+- typ wpisu: hotfix walidacji etapu / audyt po bĹ‚Ä™dzie ZIP
+- docelowa Ĺ›cieĹĽka: 09_TESTY_DO_WYKONANIA_I_WYNIKI oraz 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY
+- status zapisu: payload przygotowany w repo
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: guard STAGE231G, node --test STAGE231G, npm run build, git diff --check
+- audyt ryzyk po etapie: R2 build PASS, ale guard/test FAIL przez skĹ‚adniÄ™; R3 naprawia tylko walidacjÄ™, bez ruszania runtime aplikacji
+- czego nie ruszano: SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail, AI Drafts
+- nastÄ™pny krok: uruchomiÄ‡ R3 apply i po PASS zrobiÄ‡ selektywny commit/push z plikami STAGE231G oraz R3

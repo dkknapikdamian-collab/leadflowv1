@@ -4089,3 +4089,15 @@ RYZYKO:
 - FAIL pre-existing: migration guard wskazuje dwie migracje portalu z 2026-05-02.
 - FAIL pre-existing: quiet gate zatrzymuje globalny Stage98 mojibake/BOM.
 - Browser automation SKIP: polityka narzedzia zablokowala lokalny URL.
+
+## 2026-06-14 10:05 Europe/Warsaw - STAGE231G guard/test
+
+Dodano:
+- scripts/check-stage231g-lead-detail-operational-wiring.cjs
+- tests/stage231g-lead-detail-operational-wiring.test.cjs
+
+Chroni klasę błędu: kafelki display-only bez CTA, brak edycji potencjału, brak widocznego potencjału przy tworzeniu leada, zlewający się layout work-row i błąd group.key w overflow.
+
+## 2026-06-14 10:40 Europe/Warsaw - STAGE231G R6 guard/test correction
+
+R6 poprawia guard/test po fałszywym zamknięciu R5: walidacja sprawdza realne klasy content/status/actions oraz brak stale group.key tylko w overflow section. Guard jest ASCII/no-BOM.

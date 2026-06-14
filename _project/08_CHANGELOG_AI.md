@@ -4089,3 +4089,16 @@ RYZYKO:
 - Migracja przywraca brakujace kolumny `case_items`.
 - Dodano wspolne tony finansow oraz tekst `Pozostalo do zaplaty`.
 - Uporzadkowano akcje notatek i ellipsis najcenniejszych leadow.
+
+## 2026-06-14 10:05 Europe/Warsaw - STAGE231G R2
+
+- LeadDetail: dodano operacyjne CTA do kafelków i panelu finansów.
+- LeadDetail: wydzielono content/status/actions w wierszach działań.
+- Leads: pole tworzenia leada opisane jako Potencjał / wartość i oznaczone markerem testowym.
+- Naprawiono paczkę R1: PowerShell nie trzyma już dużych stringów TSX, patch wykonuje Node.
+
+## 2026-06-14 10:40 Europe/Warsaw - STAGE231G R6
+
+- Naprawiono konflikt rebase w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
+- Dodano realne klasy work-row content/status/actions w LeadDetail.
+- Poprawiono guard/test, żeby nie mylił poprawnego group.key w accordion z błędem overflow.

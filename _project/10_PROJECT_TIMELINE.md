@@ -1478,3 +1478,7 @@ następny krok:
 - backup: `_local_backups/DO_POTWIERDZENIA_CASE_FINANCE_UI_20260613_142044/`
 - result: case actions, case_items schema contract, finance tones, notes and lead truncation repaired.
 - git: selective staging only; no commit and no push.
+
+## 2026-06-14 10:05 Europe/Warsaw - STAGE231G R2 - LeadDetail operational wiring
+
+Etap przygotowany jako lokalny ZIP R2 po błędzie parsera PowerShell w R1. Zakres rozszerzony o jawny potencjał w formularzu tworzenia leada.

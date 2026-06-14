@@ -3512,3 +3512,20 @@ RYZYKO:
 - FAIL unrelated: quiet gate stops on global Stage98 mojibake/BOM.
 - SKIP: browser localhost blocked by tool policy.
 - MANUAL: DO WYKONANIA przez Damiana.
+
+## 2026-06-14 10:05 Europe/Warsaw - STAGE231G manual test
+
+Do wykonania po apply:
+1. Dodaj nowego leada z Potencjał / wartość = 12000.
+2. Otwórz kartę leada i sprawdź, czy kafelek Potencjał pokazuje 12 000 PLN.
+3. Edytuj potencjał z kafelka i z panelu Finanse leada.
+4. Hard refresh: wartość zostaje.
+5. Dodaj zadanie, wydarzenie i brak; sprawdź layout wierszy i akcje Jutro/Zrobione/Rozwiąż brak/Usuń.
+
+## 2026-06-14 10:40 Europe/Warsaw - STAGE231G R6 validation
+
+Do przejścia przed push:
+- node scripts/check-stage231g-lead-detail-operational-wiring.cjs
+- node --test tests/stage231g-lead-detail-operational-wiring.test.cjs
+- npm run build
+- git diff --check

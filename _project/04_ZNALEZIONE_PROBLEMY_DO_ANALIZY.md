@@ -192,3 +192,11 @@ Przeplyw decyzyjny:
 - dowod: `20260502100000_portal_uploads_storage_bucket.sql` i `20260502_portal_uploads_storage_bucket.sql`.
 - ryzyko: globalny migration guard pozostaje czerwony niezaleznie od nowej migracji Stage231F R3.
 - propozycja: osobny audyt starych migracji portalu i doprecyzowanie guarda.
+
+## 2026-06-14 10:05 Europe/Warsaw - STAGE231G_LEAD_DETAIL_OPERATIONAL_WIRING_AUDIT_AND_FIX
+
+Status: PRZYJETE_DO_ETAPU
+
+Problem: karta leada pokazywała potencjał i statusy, ale część kafelków nie prowadziła do jasnej operacji. Dodatkowo formularz tworzenia leada miał pole dealValue opisane zbyt ogólnie jako "Wartość", przez co użytkownik nie widział, że może od razu wpisać potencjał.
+
+Zakres naprawy: LeadDetail + Leads create form + guard/test. Bez SQL, Google Calendar, billing/trial, CaseDetail i ClientDetail.

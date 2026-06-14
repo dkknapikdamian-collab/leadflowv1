@@ -119,6 +119,7 @@ const STAGE226_LOST_LEAD_RESCUE_LEADS = 'lead list exposes Do odzyskania rescue 
 const STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME = 'lead create stays lead-only and never creates or displays a client row';
 const STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT = 'Leads Contact Cadence Grid is a compact filter strip without explanatory runtime copy';
 const STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE = 'LeadListCard reuses frozen ClientListCard visual shell: size, axes, ellipsis and action column; lead data semantics stay unchanged';
+const STAGE231G_LEAD_CREATE_POTENTIAL_INPUT = 'Lead create form exposes Potencjał / wartość and persists dealValue';
 const CLOSEFLOW_STAGE134_MAIN_SEARCH_PLACEHOLDER = 'Szukaj po nazwie, telefonie, e-mailu, firmie albo sprawie...';
 const CLOSEFLOW_STAGE134_TRASH_SEARCH_PLACEHOLDER = 'Szukaj w koszu...';
 void STAGE117_LEADS_RIGHT_RAIL_LAYOUT_CONTRACT;
@@ -129,6 +130,7 @@ void STAGE226_LOST_LEAD_RESCUE_LEADS;
 void STAGE226R10_LEAD_CLIENT_SEPARATION_RUNTIME;
 void STAGE227F6_LEADS_CONTACT_CADENCE_COMPACT;
 void STAGE231D0C_LEAD_LIST_CARD_CLIENT_VIEW_FREEZE;
+void STAGE231G_LEAD_CREATE_POTENTIAL_INPUT;
 const STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG = 'lead creation duplicate conflict dialog renders once and client matches cannot be restored from lead create';
 void STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG;
 const STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE = 'lead duplicate conflict preflight fails closed and requires explicit add anyway';
@@ -891,14 +893,18 @@ export default function Leads() {
                                       </select>
                                     </div>
 
-                                    <div className="lead-form-field">
-                                      <Label>Wartość</Label>
+                                    <div className="lead-form-field" data-stage231g-lead-create-potential-field="true">
+                                      <Label>Potencjał / wartość</Label>
                                       <Input
+                                        data-stage231g-lead-create-potential-input="true"
                                         type="number"
+                                        min="0"
+                                        step="1"
                                         value={newLead.dealValue}
                                         onChange={(event) => setNewLead({ ...newLead, dealValue: event.target.value })}
-                                        placeholder="0"
+                                        placeholder="np. 12000"
                                       />
+                                      <small className="sub">Kwota trafia do potencjału leada i finansów na karcie leada.</small>
                                     </div>
 
                                     <div className="lead-form-field lead-form-field-wide">

@@ -426,6 +426,14 @@ function getEventDate(event: any) {
 function isDoneStatus(status: unknown) {
   return ['done', 'completed', 'cancelled', 'canceled', 'archived', 'deleted'].includes(String(status || '').toLowerCase());
 }
+function isMissingItemTimelineEntry(entry: any) {
+  const raw = entry?.raw || entry || {};
+  const payload = raw?.payload && typeof raw.payload === 'object' ? raw.payload : {};
+  const status = String(entry?.status || raw?.status || payload?.status || '').toLowerCase();
+  const type = String(raw?.type || raw?.kind || payload?.type || payload?.kind || '').toLowerCase();
+  const title = String(entry?.title || raw?.title || '').toLowerCase();
+  return entry?.kind === 'task' && (type === 'missing_item' || status === 'missing_item' || title.includes('brak') || title.includes('missing'));
+}
 function isWorkItemOverdue(dateValue: unknown, status: unknown) {
   const parsed = asDate(dateValue);
   if (!parsed || isDoneStatus(status)) return false;
@@ -543,6 +551,8 @@ const STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH = 'LeadDetail top cards show Nast�
 void STAGE227E2_LEAD_DETAIL_TOP_CARDS_POLISH;
 const STAGE227E3_DECISION_CARDS_CLEANUP = 'LeadDetail top decision cards use Następny krok, Potencjał, Cisza / ryzyko and Blokada without source/status duplication';
 void STAGE227E3_DECISION_CARDS_CLEANUP;
+const STAGE231G_LEAD_DETAIL_OPERATIONAL_WIRING_AUDIT_AND_FIX = 'LeadDetail operational cards expose real actions for potential, next step, risk and blockers; work rows use separate content/status/actions layout';
+void STAGE231G_LEAD_DETAIL_OPERATIONAL_WIRING_AUDIT_AND_FIX;
 
 const STAGE227E5_WORK_CENTER_BLOCKERS_SOURCE_OF_TRUTH = 'LeadDetail keeps one central work center and removes duplicated upcoming work from right rail';
 void STAGE227E5_WORK_CENTER_BLOCKERS_SOURCE_OF_TRUTH;
@@ -760,6 +770,7 @@ export default function LeadDetail() {
   const [editLinkedTaskSubmitting, setEditLinkedTaskSubmitting] = useState(false);
   const [editLinkedEventSubmitting, setEditLinkedEventSubmitting] = useState(false);
   const noteRecognitionRef = useRef<SpeechRecognitionLike | null>(null);
+  const potentialInputRefStage231G = useRef<HTMLInputElement | null>(null);
   const noteVoiceDirtyRef = useRef(false);
 
   const loadLead = async (options?: { silent?: boolean }) => {
@@ -1503,6 +1514,13 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
   const handleStartLeadEditing = () => {
     resetLeadEditDraft();
     setIsEditing(true);
+  };
+
+  const handleStartPotentialEditingStage231G = () => {
+    if (!hasAccess) return toast.error('Trial wygasł.');
+    setEditLead({ ...(lead || {}), dealValue: Number(leadFinance.dealValue || 0) || '' });
+    setIsEditing(true);
+    window.setTimeout(() => potentialInputRefStage231G.current?.focus(), 80);
   };
 
   const handleCancelLeadEditing = () => {
@@ -2283,11 +2301,17 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                       <strong>{nextTimelineEntry.title}</strong>
                       <p>{nextTimelineEntry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {nextTimelineEntry.statusLabel} • {nextTimelineEntry.dateLabel}</p>
                       <span className={`lead-detail-pill ${statusClass(nextTimelineEntry.status, nextTimelineEntry.dateValue)}`}>{nextTimelineEntry.statusLabel}</span>
+                      <div className="lead-detail-card-inline-actions" data-stage231g-next-step-action="true">
+                        <button type="button" className="lead-detail-inline-action" onClick={() => (nextTimelineEntry.kind === 'task' ? openLinkedTaskEditor(nextTimelineEntry.raw) : openLinkedEventEditor(nextTimelineEntry.raw))} disabled={!hasAccess}>Edytuj krok</button>
+                      </div>
                     </>
                   ) : (
                     <div className="lead-detail-action-empty lead-detail-action-empty-compact">
                       <strong>Brak zaplanowanej akcji</strong>
                       <p>Ustal zadanie albo wydarzenie, żeby lead nie wisiał bez decyzji.</p>
+                      <div className="lead-detail-card-inline-actions" data-stage231g-next-step-action="true">
+                        <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>Dodaj następny krok</button>
+                      </div>
                     </div>
                   )}
                 </article>
@@ -2295,12 +2319,21 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                   <div className="lead-detail-card-title-row"><DollarSign className="h-4 w-4" /><h2>Potencjał</h2></div>
                   <strong>{leadFinance.formatted}</strong>
                   <p>{Number(lead?.dealValue || 0) > 0 ? 'Zapisana wartość leada' : 'Brak wpisanej wartości'}</p>
+                  <div className="lead-detail-card-inline-actions" data-stage231g-potential-edit-action="true">
+                    <button type="button" className="lead-detail-inline-action" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>{Number(leadFinance.dealValue || 0) > 0 ? 'Edytuj potencjał' : 'Ustaw potencjał'}</button>
+                  </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-amber" data-stage227e2-silence-risk-card="true" data-stage227e3-silence-risk-card="true">
                   <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Cisza / ryzyko</h2></div>
                   <strong>{leadSilenceRisk.headline}</strong>
                   <p>{leadSilenceRisk.details}</p>
                   <span className={`lead-detail-pill ${leadSilenceRisk.toneClass}`}>{leadSilenceRisk.label}</span>
+                  <div className="lead-detail-card-inline-actions" data-stage231g-risk-action="true">
+                    <button type="button" className="lead-detail-inline-action" onClick={handleCreateQuickTask} disabled={!hasAccess}>Ustaw follow-up</button>
+                    {leadSilenceRisk.label !== 'Pod kontrolą' ? (
+                      <button type="button" className="lead-detail-inline-action" onClick={() => handleUpdateStatus('contacted')} disabled={!hasAccess}>Kontakt wykonany</button>
+                    ) : null}
+                  </div>
                 </article>
                 <article className="lead-detail-top-card lead-detail-callout-red" data-stage227e3-blocker-card="true">
                   <div className="lead-detail-card-title-row"><AlertTriangle className="h-4 w-4" /><h2>Blokada</h2></div>
@@ -2309,12 +2342,19 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                       <strong>{leadBlockerEntries[0]?.title || 'Blokada do sprawdzenia'}</strong>
                       <p>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : `${leadBlockerEntries.length} aktywne blokady`}</p>
                       <span className="lead-detail-pill lead-detail-work-risk-danger">Wymaga ruchu</span>
+                      <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true">
+                        <button type="button" className="lead-detail-inline-action" onClick={() => handleResolveLeadMissingItemStage228R13(leadBlockerEntries[0])} disabled={!hasAccess || linkedEntryActionId !== null}>Rozwiąż brak</button>
+                        <button type="button" className="lead-detail-inline-action" onClick={() => handleDeleteLeadMissingItemStage228R15(leadBlockerEntries[0])} disabled={!hasAccess || linkedEntryActionId !== null}>Usuń brak</button>
+                      </div>
                     </>
                   ) : (
                     <>
                       <strong>Brak blokad</strong>
                       <p>Nie ma jawnych braków blokujących kolejny ruch.</p>
                       <span className="lead-detail-pill lead-detail-work-risk-good">Czysto</span>
+                      <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true">
+                        <button type="button" className="lead-detail-inline-action" onClick={() => openLeadContextAction('blocker')} disabled={!hasAccess}>Dodaj brak</button>
+                      </div>
                     </>
                   )}
                 </article>
@@ -2344,20 +2384,21 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                         key={entry.id}
                         className={`lead-detail-work-row ${entry.isOverdue ? 'lead-detail-work-row-overdue' : ''}`}
                         data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
+                         data-stage231g-work-row-layout="true"
                       >
                         <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
-                        <div>
+                        <div className="lead-detail-work-row__content lead-detail-work-content">
                           <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}</small>
                           <h3>{entry.title}</h3>
                           <p>{entry.dateLabel}</p>
                         </div>
-                        <span className={`lead-detail-pill ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
-                        <div className="lead-detail-row-actions">
+                        <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
+                        <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block">
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 60 * 60 * 1000, '+1H') : handleRescheduleLinkedEvent(entry.raw, 60 * 60 * 1000, '+1H'))} disabled={linkedEntryActionId !== null}>+1H</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, '+1D') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, '+1D'))} disabled={linkedEntryActionId !== null}>+1D</LeadActionButton>
                           <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W') : handleRescheduleLinkedEvent(entry.raw, 7 * 24 * 60 * 60 * 1000, '+1W'))} disabled={linkedEntryActionId !== null}>+1W</LeadActionButton>
-                          {group.key === 'blockers' && entry.kind === 'task' ? (
+                          {isMissingItemTimelineEntry(entry) ? (
                                         <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
@@ -2435,23 +2476,23 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                             ) : (
                               <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
                                 {group.items.map((entry) => (
-                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true">
+                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true">
                                     <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
-                                    <div>
+                                    <div className="lead-detail-work-row__content lead-detail-work-content">
                                       <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
                                       <h3>{entry.title}</h3>
                                       <p>{entry.dateLabel}</p>
                                     </div>
-                                    <span className={`lead-detail-pill ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
-                                    <div className="lead-detail-row-actions">
+                                    <span className={`lead-detail-pill lead-detail-work-row__status lead-detail-work-status ${statusClass(entry.status, entry.dateValue)}`}>{entry.statusLabel}</span>
+                                    <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block">
                                       <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                                       <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
-                                      {group.key === 'blockers' && entry.kind === 'task' ? (
+                                      {isMissingItemTimelineEntry(entry) ? (
                                         <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
                                       )}
-                                      {group.key === 'blockers' && entry.kind === 'task' ? (
+                                      {isMissingItemTimelineEntry(entry) ? (
                                         <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
@@ -2596,6 +2637,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
               <small>Status płatności: {billingStatusLabel(String(leadFinancePanel.billingStatus || lead?.billingStatus || 'not_started'))}</small>
               {!leadInService ? (
                 <div className="lead-detail-right-actions">
+                  <button type="button" data-stage231g-finance-edit-potential="true" onClick={handleStartPotentialEditingStage231G} disabled={!hasAccess}>Edytuj potencjał</button>
                   <button type="button" data-stage115e-open-deposit-payment="true" onClick={() => openLeadPaymentDialog('deposit')} disabled={!hasAccess}>Dodaj zaliczkę</button>
                   <button type="button" data-stage115e-open-partial-payment="true" onClick={() => openLeadPaymentDialog('partial')} disabled={!hasAccess}>Płatność częściowa</button>
                 </div>
@@ -2705,7 +2747,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
               <Label>Telefon<Input value={editLead?.phone || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, phone: event.target.value }))} /></Label>
               <Label>E-mail<Input value={editLead?.email || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, email: event.target.value }))} /></Label>
               <Label>Źródło<select className={modalSelectClass} value={editLead?.source || 'other'} onChange={(event) => setEditLead((current: any) => ({ ...current, source: event.target.value }))}>{SOURCE_OPTIONS.map((entry) => <option key={entry.value} value={entry.value}>{entry.label}</option>)}</select></Label>
-              <Label>Wartość<Input type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
+              <Label>Potencjał / wartość<Input ref={potentialInputRefStage231G} data-stage231g-potential-input="true" type="number" value={editLead?.dealValue || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, dealValue: event.target.value }))} /></Label>
               <Label>Notatka<Textarea value={editLead?.note || editLead?.notes || ''} onChange={(event) => setEditLead((current: any) => ({ ...current, note: event.target.value }))} /></Label>
             </div>
             <DialogFooter className={modalFooterClass()}><Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Anuluj</Button><Button type="button" onClick={handleUpdateLead}>Zapisz</Button></DialogFooter>
