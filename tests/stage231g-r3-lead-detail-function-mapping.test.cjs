@@ -10,18 +10,35 @@ const css = fs.readFileSync(path.join(root, 'src/styles/visual-stage14-lead-deta
 test('STAGE231G_R3 potential edit is wired to the same source of truth in card and finance panel', () => {
   assert.match(lead, /data-stage231g-potential-edit-action="true"[\s\S]*handleStartPotentialEditingStage231G/);
   assert.match(lead, /data-stage231g-finance-edit-potential="true"[\s\S]*handleStartPotentialEditingStage231G/);
-  assert.match(lead, /updateLeadInSupabase({[sS]*dealValue: amount/);
-  assert.match(lead, /replace(/\\s+/g, '')/);
-  assert.doesNotMatch(lead, /replace(/s+/g, '')/);
+  assert.ok(
+    lead.includes('updateLeadInSupabase({') && lead.includes('dealValue: amount'),
+    'dealValue must be saved via updateLeadInSupabase'
+  );
+  assert.ok(lead.includes("replace(/\\s+/g, '')"), 'potential parser must strip whitespace with /\\s+/g');
+  assert.ok(!lead.includes("replace(/s+/g, '')"), 'potential parser must not use literal /s+/g');
 });
 
 test('STAGE231G_R3 missing_item is not a normal next action and uses filtered next action fallback', () => {
-  assert.ok(lead.includes("activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && (entry.kind === 'task' || entry.kind === 'event'))"));
-  assert.doesNotMatch(lead, /activeLeadWorkEntries\.filter\(\(entry\) => entry\.kind === 'task' \|\| entry\.kind === 'event'\)/);
-  assert.ok(lead.includes('if (!nearestPlannedAction?.id) return leadNextActionEntries[0] || null;'));
-  assert.doesNotMatch(lead, /return timeline\.find\(\(entry\) => !isDoneStatus\(entry\.status\)\)/);
-  assert.match(lead, /handleDeleteLeadMissingItemStage228R15(entry)/);
-  assert.match(lead, /hardDeleteTaskFromSupabase(taskId)/);
+  assert.ok(
+    lead.includes("activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && (entry.kind === 'task' || entry.kind === 'event'))"),
+    'leadNextActionEntries must exclude missing_item before task/event filtering'
+  );
+  assert.doesNotMatch(
+    lead,
+    /activeLeadWorkEntries\.filter\(\(entry\) => entry\.kind === 'task' \|\| entry\.kind === 'event'\)/,
+    'leadNextActionEntries must not use raw task/event filter'
+  );
+  assert.ok(
+    lead.includes('if (!nearestPlannedAction?.id) return leadNextActionEntries[0] || null;'),
+    'nextTimelineEntry fallback must use filtered leadNextActionEntries'
+  );
+  assert.doesNotMatch(
+    lead,
+    /return timeline\.find\(\(entry\) => !isDoneStatus\(entry\.status\)\)/,
+    'nextTimelineEntry must not fallback to full timeline'
+  );
+  assert.match(lead, /handleDeleteLeadMissingItemStage228R15\(entry\)/);
+  assert.match(lead, /hardDeleteTaskFromSupabase\(taskId\)/);
 });
 
 test('STAGE231G_R3 work rows have separate icon content status actions blocks', () => {
