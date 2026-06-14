@@ -4123,3 +4123,10 @@ Data: 2026-06-14 11:45 Europe/Warsaw
 Guard: scripts/check-stage231g-r4-lead-detail-function-mapping-closeout.cjs
 Test: tests/stage231g-r4-lead-detail-function-mapping-closeout.test.cjs
 Sprawdza: brak legacy MissingItemQuickActionModal w LeadDetail, ContextActionDialogs/blocker jako jedyna sciezka Brak, hard missing delete w overflow i odporny CSS work-row.
+
+## 2026-06-14 — STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
+
+- Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
+- Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
+- SQL: NOT_TOUCHED.
+- Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.

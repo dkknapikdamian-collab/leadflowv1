@@ -2000,7 +2000,7 @@ export default function CaseDetail() {
         dateLabel: formatDateTime(nearestOperationalAction.when),
       };
     }
-    return workItems.find((item) => item.kind === 'task' || item.kind === 'event' || item.kind === 'missing') || null;
+    return workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null;
   }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
   const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
@@ -2576,7 +2576,7 @@ async function handleConfirmDeleteCaseRecord() {
       activities,
       tasks,
       events,
-      payments: visibleCasePayments,
+      payments: sortCasePayments(casePayments),
       caseItems: items,
     });
 
@@ -2588,7 +2588,7 @@ async function handleConfirmDeleteCaseRecord() {
     }
 
     return Array.from(unique.values()).slice(0, 50);
-  }, [activities, tasks, events, visibleCasePayments, items]);
+  }, [activities, tasks, events, casePayments, items]);
   const caseNoteItems = useMemo<CaseHistoryItem[]>(() => {
     return sortCaseHistoryItemsStage14D(
       activities
@@ -2909,17 +2909,14 @@ async function handleConfirmDeleteCaseRecord() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={openCaseNoteDialog}
-                    data-context-action-kind="note"
-                    data-context-record-type="case"
-                    data-context-record-id={caseData.id}
-                    data-context-client-id={caseData.clientId || ''}
-                    data-context-lead-id={caseData.leadId || ''}
-                    data-context-record-label={getCaseTitle(caseData)}
-                    data-stage219-dictate-note="true"
+                    disabled
+                    aria-disabled="true"
+                    title="Notatka głosowa nie jest jeszcze podłączona"
+                    data-stage219-dictate-note-deprecated="true"
+                    data-stage231h-r1b-dictation-disabled="true"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    Dyktuj notatkę
+                    Notatka głosowa — wkrótce
                   </Button>
                   <Button
                     type="button"
@@ -3362,7 +3359,7 @@ async function handleConfirmDeleteCaseRecord() {
           data-cf-vst-dialog="true"
          aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Historia wpłat i korekt</DialogTitle>
+            <DialogTitle>Ostatnie 8 wpłat i korekt</DialogTitle>
           </DialogHeader>
 
           <div className="client-case-form-section case-payment-history-modal-stage220a27b__context case-payment-history-modal-stage220a28-context" data-stage220a27b-payment-history-context="case">
@@ -3524,7 +3521,7 @@ async function handleConfirmDeleteCaseRecord() {
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-stage220a36r7-case-detail-legacy-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Prowizja sprawy</DialogTitle>
+            <DialogTitle>Wartość i prowizja sprawy</DialogTitle>
             <DialogDescription>Ustaw sposób liczenia prowizji. Szczegóły są pod ikonami „?”.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form case-finance-source-form-stage220a30 case-finance-edit-form--commission-r10 case-finance-edit-form--commission-r11" data-stage220a36r7-case-detail-finance-order="true" data-stage220a36r10-commission-layout="true" data-stage220a36r12-compact-width-polish="true" data-stage220a36r11-compact-tooltips="true">
@@ -3539,7 +3536,7 @@ async function handleConfirmDeleteCaseRecord() {
                     setFinanceEditForm((current) => ({
                       ...current,
                       commissionMode: nextMode,
-                      contractValue: nextMode === 'percent' ? current.contractValue : '',
+                      contractValue: current.contractValue,
                       commissionRate: nextMode === 'percent' ? current.commissionRate : '',
                       commissionAmount: nextMode === 'fixed' ? current.commissionAmount : '',
                     }));
@@ -3584,11 +3581,10 @@ async function handleConfirmDeleteCaseRecord() {
               <span className="case-finance-field-label-with-help-stage220a36r11"><span>Wartość transakcji / zlecenia</span><span className="case-finance-help-dot-stage220a36r11" title="To nie jest prowizja. To kwota sprzedaży, transakcji albo zlecenia, od której liczysz procent." aria-label="Wyjaśnienie wartości transakcji lub zlecenia" tabIndex={0}>?</span></span>
               <Input
                 inputMode="decimal"
-                value={financeEditForm.commissionMode === 'percent' ? financeEditForm.contractValue : ''}
-                disabled={financeEditForm.commissionMode !== 'percent'}
-                aria-disabled={financeEditForm.commissionMode !== 'percent'}
-                data-stage220a36r7-percent-basis-input="percent-only"
-                data-stage220a36r10-transaction-basis-input="percent-only"
+                value={financeEditForm.contractValue}
+                data-stage220a36r7-percent-basis-input="always-editable"
+                data-stage220a36r10-transaction-basis-input="always-editable"
+                data-stage231h-r1b-contract-value-always-editable="true"
                 placeholder="np. 69000"
                 onChange={(event) => setFinanceEditForm((current) => ({ ...current, contractValue: event.target.value }))}
               />
@@ -3611,7 +3607,7 @@ async function handleConfirmDeleteCaseRecord() {
               </label>
             </div>
             <div className="case-finance-edit-preview" data-fin11-case-finance-preview="true" data-stage220a31-finance-preview="true" data-stage220a36r10-finance-preview="true">
-              <div><span>Wartość transakcji/zlecenia:</span><strong>{financeEditForm.commissionMode === 'percent' ? formatMoney(financeEditPreview.contractValue, financeEditPreview.currency) : 'Nie dotyczy'}</strong></div>
+              <div data-stage231h-r1b-contract-value-preview="always-visible"><span>Wartość transakcji/zlecenia:</span><strong>{formatMoney(financeEditPreview.contractValue, financeEditPreview.currency)}</strong></div>
               <div><span>Prowizja należna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
               <div><span>Wpłacono prowizji:</span><strong>{formatMoney(financeEditPreview.commissionPaidAmount, financeEditPreview.currency)}</strong></div>
               <div data-cf-finance-tone="remaining"><span>Pozostało do zapłaty:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>

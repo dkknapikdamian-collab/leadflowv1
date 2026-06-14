@@ -3558,3 +3558,10 @@ Plan:
 - build
 - git diff --check
 - test manualny: Brak add/delete/hard refresh i work-row srednia szerokosc.
+
+## 2026-06-14 — STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
+
+- Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
+- Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
+- SQL: NOT_TOUCHED.
+- Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.
