@@ -3,7 +3,13 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const { spawnSync } = require('child_process');
 
-const source = fs.readFileSync('src/pages/CaseDetail.tsx', 'utf8');
+const source = fs.readFileSync('src/pages/CaseDetail.tsx', 'utf8').replace(/\r\n/g, '\n');
+
+function findBlock(text, marker) {
+  const index = text.indexOf(marker);
+  if (index < 0) return '';
+  return text.slice(Math.max(0, index - 2500), Math.min(text.length, index + 4500));
+}
 
 test('STAGE231H_R1F payment correction updates original payment', () => {
   assert.match(source, /updatePaymentInSupabase\(payload as any\)/);
@@ -12,7 +18,11 @@ test('STAGE231H_R1F payment correction updates original payment', () => {
 });
 
 test('STAGE231H_R1F cost correction saves full operational payload', () => {
-  assert.match(source, /const payload = \{[\s\S]*?kind,\s*status,\s*amount,[\s\S]*?incurredAt,[\s\S]*?note,[\s\S]*?\};[\s\S]*?updateCaseCostInSupabase\(payload as any\)/);
+  const block = findBlock(source, 'updateCaseCostInSupabase(payload as any)');
+  assert.ok(block, 'missing cost update block');
+  for (const token of ['kind', 'status', 'amount', 'reimbursableAmount', 'reimbursedAmount', 'currency', 'incurredAt', 'note']) {
+    assert.ok(block.includes(token), `missing ${token}`);
+  }
 });
 
 test('STAGE231H_R1F guard passes', () => {

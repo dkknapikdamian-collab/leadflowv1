@@ -4167,3 +4167,7 @@ Zakres: wspólne okno `Koryguj wpłatę/koszt`, czerwone koszty, update/delete k
 ## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
 - Added/updated guards: R1D, R1F, R1F4.
 - Required: R1/R1B/R1D/R1F/R1F4 guard/test + build + diff-check.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+- Added guard: scripts/check-stage231h-r1g-cost-other-name-and-reimbursable-flag.cjs.
+- Added test: tests/stage231h-r1g-cost-other-name-and-reimbursable-flag.test.cjs.

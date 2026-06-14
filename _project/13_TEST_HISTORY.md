@@ -3605,3 +3605,6 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.
 
 ## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
 - Planned/required: R1/R1B/R1D/R1F/R1F4 PASS, build PASS, diff-check PASS, server UI after deploy.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+- Required: R1/R1B/R1D/R1F/R1F4/R1G guards/tests PASS, build PASS, diff-check PASS, server UI after deploy.

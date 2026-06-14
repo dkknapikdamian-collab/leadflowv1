@@ -4168,3 +4168,6 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 
 ## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
 - Repair after red-guard pushed R1F: normalize commission payment save and make guards CRLF-safe.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+- Added cost other-name field and explicit reimbursable checkbox in CaseDetail cost create/correct flows.

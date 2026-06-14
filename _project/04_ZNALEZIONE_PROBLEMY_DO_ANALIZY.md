@@ -261,3 +261,8 @@ Decyzja: przycisk w railu zmienia się na `Koryguj wpłatę/koszt`; okno pokazuj
 - Status: DO_TEST_AND_PUSH.
 - Problem: R1F was pushed after red guards; payment save path and guards needed repair.
 - SQL: NOT_TOUCHED.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+- Status: DO_TEST_AND_PUSH.
+- Problem: cost kind other had no name field; reimbursable flag existed in state but not visible in UI.
+- SQL: NOT_TOUCHED.

@@ -517,6 +517,9 @@ function canCorrectCasePaymentStage220A27(payment: CasePaymentRecord) {
 const STAGE231H_R1C_COST_CORRECTION_MODAL = 'CaseDetail correction modal includes payments and editable/deletable costs with red cost rows';
 void STAGE231H_R1C_COST_CORRECTION_MODAL;
 
+const STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG = 'CaseDetail cost form captures custom other cost name and explicit reimbursable flag';
+void STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG;
+
 function getCaseCostIdStage231H_R1C(cost: CaseCostRecord | null | undefined) {
   return String(cost?.id || '').trim();
 }
@@ -526,6 +529,8 @@ function getCaseCostAmountStage231H_R1C(cost: CaseCostRecord | null | undefined)
 }
 function getCaseCostReimbursableAmountStage231H_R1C(cost: CaseCostRecord | null | undefined) {
   const amount = getCaseCostAmountStage231H_R1C(cost);
+  const reimbursableFlag = (cost as any)?.reimbursable;
+  if (reimbursableFlag === false || reimbursableFlag === 'false' || reimbursableFlag === 0) return 0;
   const raw = cost?.reimbursableAmount ?? (cost as any)?.reimbursable_amount;
   const value = fin11Amount(raw);
   return value > 0 ? value : amount;
@@ -564,8 +569,38 @@ function getCaseCostStatusLabelStage231H_R1C(status: unknown) {
   };
   return labels[value] || value || 'Poniesiony';
 }
+const CASE_COST_OTHER_NOTE_PREFIX_STAGE231H_R1G = 'Nazwa kosztu:';
+
+function splitCaseCostNoteStage231H_R1G(note: unknown) {
+  const text = String(note || '').replace(/\r\n/g, '\n').trim();
+  if (!text.toLowerCase().startsWith(CASE_COST_OTHER_NOTE_PREFIX_STAGE231H_R1G.toLowerCase())) {
+    return { otherName: '', note: text };
+  }
+  const withoutPrefix = text.slice(CASE_COST_OTHER_NOTE_PREFIX_STAGE231H_R1G.length).trim();
+  const [firstLine, ...rest] = withoutPrefix.split('\n');
+  return { otherName: String(firstLine || '').trim(), note: rest.join('\n').trim() };
+}
+
+function buildCaseCostStoredNoteStage231H_R1G(otherName: unknown, note: unknown) {
+  const cleanOtherName = String(otherName || '').trim();
+  const cleanNote = String(note || '').trim();
+  if (!cleanOtherName) return cleanNote;
+  return CASE_COST_OTHER_NOTE_PREFIX_STAGE231H_R1G + ' ' + cleanOtherName + (cleanNote ? '\n' + cleanNote : '');
+}
+
+function getCaseCostOtherNameStage231H_R1G(cost: CaseCostRecord | null | undefined) {
+  if (String(cost?.kind || (cost as any)?.type || '').trim() !== 'other') return '';
+  return splitCaseCostNoteStage231H_R1G(cost?.note).otherName;
+}
+
 function getCaseCostNoteStage231H_R1C(cost: CaseCostRecord | null | undefined) {
-  return String(cost?.note || '').trim();
+  return splitCaseCostNoteStage231H_R1G(cost?.note).note;
+}
+
+function getCaseCostDisplayLabelStage231H_R1G(cost: CaseCostRecord | null | undefined) {
+  const kind = cost?.kind || (cost as any)?.type;
+  const otherName = getCaseCostOtherNameStage231H_R1G(cost);
+  return otherName || getCaseCostKindLabelStage231H_R1C(kind);
 }
 function getCaseExpectedRevenue(caseData?: CaseRecord | null) {
   // CLOSEFLOW_CASE_SETTLEMENT_EXPECTED_VALUE_V29
@@ -1395,9 +1430,9 @@ export default function CaseDetail() {
   const [caseCostsStage231D2, setCaseCostsStage231D2] = useState<CaseCostRecord[]>([]);
   const [isCaseCostOpenStage231D2, setIsCaseCostOpenStage231D2] = useState(false);
   const [caseCostSubmittingStage231D2, setCaseCostSubmittingStage231D2] = useState(false);
-  const [caseCostDraftStage231D2, setCaseCostDraftStage231D2] = useState({ kind: 'other', status: 'incurred', amount: '', reimbursable: true, note: '' });
+  const [caseCostDraftStage231D2, setCaseCostDraftStage231D2] = useState({ kind: 'other', otherName: '', status: 'incurred', amount: '', reimbursable: true, note: '' });
   const [caseCostCorrectionTargetStage231H_R1C, setCaseCostCorrectionTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
-  const [caseCostCorrectionFormStage231H_R1C, setCaseCostCorrectionFormStage231H_R1C] = useState({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
+  const [caseCostCorrectionFormStage231H_R1C, setCaseCostCorrectionFormStage231H_R1C] = useState({ kind: 'other', otherName: '', amount: '', reimbursable: true, reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
   const [caseCostCorrectionSubmittingStage231H_R1C, setCaseCostCorrectionSubmittingStage231H_R1C] = useState(false);
   const [caseCostDeleteTargetStage231H_R1C, setCaseCostDeleteTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
   const [caseCostDeleteSubmittingStage231H_R1C, setCaseCostDeleteSubmittingStage231H_R1C] = useState(false);
@@ -1814,20 +1849,27 @@ export default function CaseDetail() {
       toast.error('Podaj poprawną kwotę kosztu.');
       return;
     }
+    const costKind = String(caseCostDraftStage231D2.kind || 'other');
+    const costOtherName = costKind === 'other' ? String(caseCostDraftStage231D2.otherName || '').trim() : '';
+    if (costKind === 'other' && !costOtherName) {
+      toast.error('Podaj nazwę kosztu dla typu Inny.');
+      return;
+    }
+    const costNote = buildCaseCostStoredNoteStage231H_R1G(costOtherName, caseCostDraftStage231D2.note);
     try {
       setCaseCostSubmittingStage231D2(true);
       const input = {
         caseId,
         clientId: caseData.clientId || null,
-        kind: caseCostDraftStage231D2.kind,
+        kind: costKind,
         status: caseCostDraftStage231D2.status,
         amount,
-        reimbursable: caseCostDraftStage231D2.reimbursable,
+        reimbursable: Boolean(caseCostDraftStage231D2.reimbursable),
         reimbursableAmount: caseCostDraftStage231D2.reimbursable ? amount : 0,
         reimbursedAmount: 0,
         currency: caseFinanceSourceStage220A26.currency || caseData.currency || 'PLN',
         incurredAt: new Date().toISOString(),
-        note: caseCostDraftStage231D2.note.trim(),
+        note: costNote,
       };
       const created = await createCaseCostInSupabase(input as any);
       setCaseCostsStage231D2((previous) => [created || input, ...previous] as CaseCostRecord[]);
@@ -1837,9 +1879,9 @@ export default function CaseDetail() {
         leadId: caseData.leadId || null,
         actorType: 'operator',
         eventType: 'case_cost_added',
-        payload: { title: 'Dodano koszt sprawy', amount, currency: input.currency, kind: input.kind, note: input.note },
+        payload: { title: 'Dodano koszt sprawy', amount, currency: input.currency, kind: input.kind, otherName: costOtherName, reimbursable: input.reimbursable, reimbursableAmount: input.reimbursableAmount, note: getCaseCostNoteStage231H_R1C(input as CaseCostRecord) },
       } as any).catch(() => null);
-      setCaseCostDraftStage231D2({ kind: 'other', status: 'incurred', amount: '', reimbursable: true, note: '' });
+      setCaseCostDraftStage231D2({ kind: 'other', otherName: '', status: 'incurred', amount: '', reimbursable: true, note: '' });
       setIsCaseCostOpenStage231D2(false);
       toast.success('Koszt sprawy zapisany');
     } catch (error) {
@@ -1853,10 +1895,13 @@ export default function CaseDetail() {
   function openCaseCostCorrectionModalStage231H_R1C(cost: CaseCostRecord) {
     if (!guardCaseDetailWriteAccess('skorygować kosztu sprawy')) return;
     setCaseCostCorrectionTargetStage231H_R1C(cost);
+    const isCostReimbursableStage231H_R1G = getCaseCostReimbursableAmountStage231H_R1C(cost) > 0;
     setCaseCostCorrectionFormStage231H_R1C({
       kind: String(cost.kind || (cost as any).type || 'other'),
+      otherName: getCaseCostOtherNameStage231H_R1G(cost),
       amount: fin11MoneyInput(getCaseCostAmountStage231H_R1C(cost)),
-      reimbursableAmount: fin11MoneyInput(getCaseCostReimbursableAmountStage231H_R1C(cost)),
+      reimbursable: isCostReimbursableStage231H_R1G,
+      reimbursableAmount: isCostReimbursableStage231H_R1G ? fin11MoneyInput(getCaseCostReimbursableAmountStage231H_R1C(cost)) : '',
       reimbursedAmount: fin11MoneyInput(getCaseCostReimbursedAmountStage231H_R1C(cost)),
       status: String(cost.status || 'incurred'),
       incurredAt: fin11DateTimeLocal(getCaseCostDateStage231H_R1C(cost) || new Date().toISOString()),
@@ -1884,14 +1929,20 @@ export default function CaseDetail() {
     const reimbursedRaw = fin11Amount(caseCostCorrectionFormStage231H_R1C.reimbursedAmount);
     const status = String(caseCostCorrectionFormStage231H_R1C.status || 'incurred');
     const kind = String(caseCostCorrectionFormStage231H_R1C.kind || target.kind || (target as any).type || 'other');
+    const otherName = kind === 'other' ? String(caseCostCorrectionFormStage231H_R1C.otherName || '').trim() : '';
     const incurredAt = fin11IsoFromLocal(caseCostCorrectionFormStage231H_R1C.incurredAt) || getCaseCostDateStage231H_R1C(target) || new Date().toISOString();
-    const finalReimbursableAmount = reimbursableAmount > 0 ? reimbursableAmount : amount;
-    const finalReimbursedAmount = status === 'reimbursed' && reimbursedRaw <= 0 ? finalReimbursableAmount : Math.min(reimbursedRaw, finalReimbursableAmount);
-    const note = caseCostCorrectionFormStage231H_R1C.note.trim();
+    const isCostReimbursable = Boolean(caseCostCorrectionFormStage231H_R1C.reimbursable);
+    const finalReimbursableAmount = isCostReimbursable ? (reimbursableAmount > 0 ? reimbursableAmount : amount) : 0;
+    const finalReimbursedAmount = isCostReimbursable ? (status === 'reimbursed' && reimbursedRaw <= 0 ? finalReimbursableAmount : Math.min(reimbursedRaw, finalReimbursableAmount)) : 0;
+    const note = buildCaseCostStoredNoteStage231H_R1G(otherName, caseCostCorrectionFormStage231H_R1C.note);
     const currency = getCaseCostCurrencyStage231H_R1C(target, caseFinanceSourceStage220A26.currency || caseData.currency || 'PLN');
 
     if (amount <= 0) {
       toast.error('Podaj poprawną kwotę kosztu.');
+      return;
+    }
+    if (kind === 'other' && !otherName) {
+      toast.error('Podaj nazwę kosztu dla typu Inny.');
       return;
     }
 
@@ -1904,7 +1955,7 @@ export default function CaseDetail() {
         kind,
         status,
         amount,
-        reimbursable: finalReimbursableAmount > 0,
+        reimbursable: isCostReimbursable,
         reimbursableAmount: finalReimbursableAmount,
         reimbursedAmount: finalReimbursedAmount,
         currency,
@@ -1920,11 +1971,11 @@ export default function CaseDetail() {
         leadId: caseData.leadId || null,
         actorType: 'operator',
         eventType: 'case_cost_corrected',
-        payload: { title: 'Skorygowano koszt sprawy', costId, kind, amount, reimbursableAmount: finalReimbursableAmount, reimbursedAmount: finalReimbursedAmount, currency, status, incurredAt, note },
+        payload: { title: 'Skorygowano koszt sprawy', costId, kind, otherName, amount, reimbursable: isCostReimbursable, reimbursableAmount: finalReimbursableAmount, reimbursedAmount: finalReimbursedAmount, currency, status, incurredAt, note: getCaseCostNoteStage231H_R1C({ note } as CaseCostRecord) },
       } as any).catch(() => null);
       await refreshCaseData();
       setCaseCostCorrectionTargetStage231H_R1C(null);
-      setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
+      setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', otherName: '', amount: '', reimbursable: true, reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
       toast.success('Koszt sprawy skorygowany');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować kosztu sprawy.');
@@ -3443,7 +3494,7 @@ async function handleConfirmDeleteCaseRecord() {
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30" data-stage231d2-case-cost-dialog="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Dodaj koszt sprawy</DialogTitle>
-            <DialogDescription>Koszt zostanie przypięty do tej sprawy i wliczony do kwoty razem do pobrania.</DialogDescription>
+            <DialogDescription>Koszt zostanie przypięty do tej sprawy. Jeśli zaznaczysz koszt do zwrotu, zostanie doliczony do kwoty razem do pobrania.</DialogDescription>
           </DialogHeader>
           <div className="case-detail-payment-form case-finance-source-form-stage220a30">
             <div>
@@ -3462,6 +3513,17 @@ async function handleConfirmDeleteCaseRecord() {
                 <option value="other">Inny</option>
               </select>
             </div>
+            {caseCostDraftStage231D2.kind === 'other' ? (
+              <div data-stage231h-r1g-add-cost-other-name="true">
+                <Label htmlFor="case-cost-other-name-stage231h-r1g">Nazwa kosztu</Label>
+                <Input id="case-cost-other-name-stage231h-r1g" value={caseCostDraftStage231D2.otherName} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, otherName: event.target.value }))} placeholder="np. opłata parkingowa" />
+              </div>
+            ) : null}
+            <label className="case-finance-edit-field case-cost-reimbursable-toggle-stage231h-r1g" data-stage231h-r1g-add-cost-reimbursable-toggle="true">
+              <span>Koszt do zwrotu</span>
+              <input type="checkbox" checked={caseCostDraftStage231D2.reimbursable} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, reimbursable: event.target.checked }))} />
+              <small>{caseCostDraftStage231D2.reimbursable ? 'Będzie doliczony do Kosztów do zwrotu i Razem do pobrania.' : 'Zostanie tylko w Kosztach poniesionych, bez doliczania do pobrania.'}</small>
+            </label>
             <div>
               <Label htmlFor="case-cost-note-stage231d2">Notatka</Label>
               <Textarea id="case-cost-note-stage231d2" value={caseCostDraftStage231D2.note} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, note: event.target.value }))} placeholder="np. wypis z rejestru, opłata za dokument" />
@@ -3552,13 +3614,11 @@ async function handleConfirmDeleteCaseRecord() {
                       data-stage231h-r1c-cost-correction-row="true"
                     >
                       <div className="case-payment-history-modal-stage220a27b__main case-payment-history-modal-stage231h-r1c__cost-main">
-                        <strong>Koszt: {getCaseCostKindLabelStage231H_R1C(cost.kind || (cost as any).type)}</strong>
+                        <strong>Koszt: {getCaseCostDisplayLabelStage231H_R1G(cost)}</strong>
                         <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1c-cost-meta="true">
                           <span>Data: {formatDateTime(getCaseCostDateStage231H_R1C(cost), 'Bez daty')}</span>
                           {/* STAGE231H_R1D: status kosztu jest dostępny w korekcie, ale nie zabiera miejsca na liście. */}
                           <span>Wartość: {formatMoney(-costAmount, costCurrency)}</span>
-                          <span>Do zwrotu: {formatMoney(getCaseCostReimbursableAmountStage231H_R1C(cost), costCurrency)}</span>
-                          <span>Zwrócono: {formatMoney(getCaseCostReimbursedAmountStage231H_R1C(cost), costCurrency)}</span>
                         </div>
                         {getCaseCostNoteStage231H_R1C(cost) ? <p>{getCaseCostNoteStage231H_R1C(cost)}</p> : null}
                       </div>
@@ -3742,7 +3802,7 @@ async function handleConfirmDeleteCaseRecord() {
         onOpenChange={(open) => {
           if (!open && !caseCostCorrectionSubmittingStage231H_R1C) {
             setCaseCostCorrectionTargetStage231H_R1C(null);
-            setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
+            setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', otherName: '', amount: '', reimbursable: true, reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
           }
         }}
       >
@@ -3784,6 +3844,16 @@ async function handleConfirmDeleteCaseRecord() {
                 <option value="other">Inny</option>
               </select>
             </label>
+            {caseCostCorrectionFormStage231H_R1C.kind === 'other' ? (
+              <label className="case-finance-edit-field" data-stage231h-r1g-correct-cost-other-name="true">
+                <span>Nazwa kosztu</span>
+                <Input
+                  value={caseCostCorrectionFormStage231H_R1C.otherName}
+                  onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, otherName: event.target.value }))}
+                  placeholder="np. opłata parkingowa"
+                />
+              </label>
+            ) : null}
             <label className="case-finance-edit-field">
               <span>Data kosztu</span>
               <Input
@@ -3803,16 +3873,33 @@ async function handleConfirmDeleteCaseRecord() {
                 data-stage231h-r1c-cost-correction-amount="true"
               />
             </label>
-            <label className="case-finance-edit-field">
+            <label className="case-finance-edit-field case-cost-reimbursable-toggle-stage231h-r1g" data-stage231h-r1g-correct-cost-reimbursable-toggle="true">
               <span>Koszt do zwrotu</span>
-              <Input
-                inputMode="decimal"
-                value={caseCostCorrectionFormStage231H_R1C.reimbursableAmount}
-                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, reimbursableAmount: event.target.value }))}
-                placeholder="np. 2000"
-                data-stage231h-r1c-cost-correction-reimbursable="true"
+              <input
+                type="checkbox"
+                checked={caseCostCorrectionFormStage231H_R1C.reimbursable}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({
+                  ...current,
+                  reimbursable: event.target.checked,
+                  reimbursableAmount: event.target.checked ? (current.reimbursableAmount || current.amount) : '',
+                  reimbursedAmount: event.target.checked ? current.reimbursedAmount : '',
+                }))}
+                data-stage231h-r1g-cost-correction-reimbursable-flag="true"
               />
+              <small>{caseCostCorrectionFormStage231H_R1C.reimbursable ? 'Doliczany do kosztów do zwrotu i razem do pobrania.' : 'Tylko koszt poniesiony, bez doliczania do pobrania.'}</small>
             </label>
+            {caseCostCorrectionFormStage231H_R1C.reimbursable ? (
+              <label className="case-finance-edit-field">
+                <span>Kwota do zwrotu</span>
+                <Input
+                  inputMode="decimal"
+                  value={caseCostCorrectionFormStage231H_R1C.reimbursableAmount}
+                  onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, reimbursableAmount: event.target.value }))}
+                  placeholder="np. 2000"
+                  data-stage231h-r1c-cost-correction-reimbursable="true"
+                />
+              </label>
+            ) : null}
             <label className="case-finance-edit-field">
               <span>Koszt zwrócony</span>
               <Input
@@ -3856,7 +3943,7 @@ async function handleConfirmDeleteCaseRecord() {
               variant="outline"
               onClick={() => {
                 setCaseCostCorrectionTargetStage231H_R1C(null);
-                setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
+                setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', otherName: '', amount: '', reimbursable: true, reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
               }}
               disabled={caseCostCorrectionSubmittingStage231H_R1C}
             >

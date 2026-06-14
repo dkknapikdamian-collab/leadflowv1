@@ -1541,3 +1541,6 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 
 ## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
 - Prepared R1F4 ZIP repair. No direct push by assistant.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+- Prepared runtime stage for correct cost reimbursement calculation and custom other cost labels.
