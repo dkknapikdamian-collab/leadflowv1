@@ -1,11 +1,12 @@
 # 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
-Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
-Status: ACTIVE / CANONICAL
-Typ: centralna kolejność etapów rozwoju aplikacji
-Repo: dkknapikdamian-collab/leadflowv1
-Branch: dev-rollout-freeze
-Canonical name: CloseFlow / LeadFlow
+Data utworzenia: 2026-06-12 23:59 Europe/Warsaw  
+Ostatnia regulacja kolejki: 2026-06-14 20:05 Europe/Warsaw  
+Status: ACTIVE / CANONICAL  
+Typ: centralna kolejność etapów rozwoju aplikacji  
+Repo: dkknapikdamian-collab/leadflowv1  
+Branch: dev-rollout-freeze  
+Canonical name: CloseFlow / LeadFlow  
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Cel pliku
@@ -16,14 +17,21 @@ Ten plik odpowiada na pytanie:
 Co wdrażamy teraz, co później i w jakiej kolejności?
 ```
 
-Ten plik nie jest ledgerem wszystkich starych hotfixów. Ma być czytelną kolejką etapów decyzyjnych.
+To jest **jedyne aktywne źródło prawdy dla kolejki etapów**.  
+Run reporty w `_project/runs/` i payloady w `_project/obsidian_updates/` są szczegółami etapu, dowodami skanu, testami i historią, ale **nie zastępują tej kolejki**.
 
-Powiązane pliki centralne:
+Nie wdrażać etapów z luźnej rozmowy, jeśli nie są wpisane albo potwierdzone w tym pliku.
+
+## Powiązane pliki centralne
 
 - `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md` - kierunek i uzasadnienie rozwoju,
 - `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md` - problemy znalezione przez AI/audyt do decyzji Damiana,
-- `_project/15_SQL_LEDGER_AND_TESTED_SQL.md` - spis SQL, migracji i testów SQL; każdy użyty SQL ma mieć wynik i status testu,
-- `_project/07_NEXT_STEPS.md` - stary plik pomocniczy z historią i wieloma blokami; nie powinien być jedyną kolejką.
+- `_project/06_GUARDS_AND_TESTS.md` - rejestr guardów/testów,
+- `_project/08_CHANGELOG_AI.md` - historia zmian,
+- `_project/10_PROJECT_TIMELINE.md` - timeline projektu,
+- `_project/13_TEST_HISTORY.md` - wyniki testów,
+- `_project/15_SQL_LEDGER_AND_TESTED_SQL.md` - spis SQL, migracji i testów SQL,
+- `_project/07_NEXT_STEPS.md` - stary plik pomocniczy; nie powinien być jedyną kolejką.
 
 ## Zasada etapów
 
@@ -39,19 +47,266 @@ Każdy etap musi mieć:
 - update `_project` i Obsidiana albo payload do synchronizacji,
 - selektywny commit/push po PASS.
 
-Nie wdrażać etapów z luźnej rozmowy, jeśli nie są wpisane albo potwierdzone w tym pliku.
+Statusy dopuszczalne:
 
-## Kolejność główna - produkt i sprzedaż
+- DO_WDROZENIA,
+- W_TRAKCIE,
+- LOCAL_ONLY,
+- PASS_LOCAL,
+- TECH_PUSHED,
+- PRODUCT_PASS,
+- PASS_WITH_EXPLICIT_RISK,
+- BLOCKED,
+- ODLOZONE,
+- ZAMKNIETE.
+
+## AKTUALNA KANONICZNA KOLEJKA - od 2026-06-14 20:05 Europe/Warsaw
+
+### 0. STAGE231L_STAGE_QUEUE_CANONICAL_SYNC
+
+Status: WYKONANE_W_TYM_COMMICIE / DOCS_ONLY
+
+Cel: uporządkować wszystkie ostatnie etapy w tym jednym centralnym pliku.  
+Zakres: kolejka etapów, bez runtime, bez SQL, bez UI.  
+Warunek zamknięcia: ten plik zawiera aktualną kolejność; przyszłe etapy nie mogą być tylko w run reports albo payloadach.
+
+---
+
+### 1. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+Status: NAJBLIŻSZY ETAP DO WDROŻENIA
+
+Cel: przywrócić realne dyktowanie notatki w CaseDetail.
+
+Kontrakt:
+
+- przycisk `Dyktuj notatkę` nie może być disabled ani `wkrótce`,
+- używa SpeechRecognition / webkitSpeechRecognition,
+- transkrypcja trafia do notatki sprawy,
+- autosave po około 2 sekundach ciszy,
+- zapis jako activity/note z `caseId`,
+- po hard refresh notatka zostaje,
+- nie zapisuje pustych notatek,
+- nie tworzy duplikatów autosave,
+- brak wsparcia przeglądarki / odmowa mikrofonu ma jasny komunikat.
+
+Nie ruszać:
+
+- Google Calendar,
+- SQL,
+- billing/trial,
+- AI Drafts,
+- koszty zwrócone R1E,
+- global layout.
+
+Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md`  
+Właściwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.md`
+
+---
+
+### 2. STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
+
+Status: PO R1D2
+
+Cel: dodać lekką akcję oznaczania kosztu jako zwrócony / częściowo zwrócony bez tworzenia dużego nowego menu.
+
+Kontrakt UX:
+
+- akcja przy konkretnym koszcie, np. `Oznacz zwrot`,
+- domyślna kwota = pozostało do zwrotu,
+- obsługa pełnego i częściowego zwrotu,
+- data zwrotu domyślnie dziś,
+- notatka opcjonalna,
+- zapis aktualizuje `reimbursedAmount`, `reimbursedAt`, status `partially_reimbursed` / `reimbursed`,
+- summary aktualizuje `Koszty zwrócone`, `Koszty do zwrotu`, `Razem do pobrania`.
+
+Nie ruszać:
+
+- SQL bez wcześniejszego schema check,
+- Google Calendar,
+- AI Drafts,
+- global finance rewrite.
+
+Run decision/payload: `_project/obsidian_updates/2026-06-14_STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING.md`
+
+---
+
+### 3. STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT
+
+Status: PO R1E ALBO WCZEŚNIEJ, JEŚLI SZKICE BLOKUJĄ PRACĘ
+
+Cel: rozdzielić `Szybki szkic` od `Szkicu AI`.
+
+Decyzja produktu:
+
+- `Szybki szkic` = zwykła notatka/raw capture, wpisana albo dyktowana, zapis bez AI i bez `fullAi`,
+- `Szkic AI` = osobna funkcja AI, która analizuje tekst i proponuje akcję do zatwierdzenia,
+- użytkownik nie może dostawać `WORKSPACE_AI_ACCESS_REQUIRED` przy zwykłym szybkim szkicu,
+- surowy tekst typu `Dzwonił Piotrek, jutro kontakt w sprawie umowy` ma zostać zapisany jako notatka/szkic,
+- dopiero funkcja AI może zaproponować task/follow-up/lead/event do zatwierdzenia.
+
+Miejsca do audytu:
+
+- `/ai-drafts`,
+- Today,
+- LeadDetail,
+- ClientDetail,
+- CaseDetail,
+- shared quick actions,
+- backend `/api/system?kind=ai-drafts`.
+
+Run decision: `_project/runs/STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT.md`
+
+---
+
+### 4. STAGE231F_R2_GOOGLE_CALENDAR_MULTI_USER_OWNERSHIP_AND_SYNC_CLOSEOUT
+
+Status: PO UI/DETAIL CLOSEOUT I PO PILNYCH SZKICACH
+
+Cel: naprawić i potwierdzić Google Calendar dla wielu użytkowników.
+
+Problem:
+
+- backend jest częściowo user-scoped,
+- ale task/event create może nadal nie nadawać ownership fields,
+- outbound sync może pomijać rekordy przez `personalScopeSkipped`,
+- trzeba potwierdzić działanie na drugim koncie, nie tylko Damiana.
+
+Zakres:
+
+- `google_calendar_connections` per user,
+- task/event ownership fields,
+- outbound sync bez fallbacku do konta Damiana,
+- UI Settings pokazuje connected/user_not_connected/skipped/created/failed,
+- manualny test drugiego konta.
+
+Run decision: `_project/runs/2026-06-14_STAGE_ORDER_UI_THEN_GOOGLE_CALENDAR_AUDIT.md`
+
+---
+
+### 5. STAGE231K1_DOMAIN_AND_EMAIL_FOUNDATION
+
+Status: PO GOOGLE CALENDAR ALBO WCZEŚNIEJ, JEŚLI PRODUKCJA MAILI BLOKUJE RELEASE
+
+Cel: założyć/podpiąć domenę i realny fundament maila.
+
+Zakres:
+
+- domena produkcyjna,
+- DNS,
+- realny sender / dostawca maila,
+- SPF / DKIM / DMARC / MX,
+- env i diagnostyka konfiguracji,
+- test wysyłki,
+- brak silent fail.
+
+Run decision: `_project/runs/STAGE231K_EMAIL_DOMAIN_AND_PRODUCTION_MAIL_CHAIN.md`
+
+---
+
+### 6. STAGE231K2_TRANSACTIONAL_EMAIL_TEMPLATES_AND_AUTH_NOTIFICATIONS
+
+Status: PO K1
+
+Cel: wdrożyć maile systemowe.
+
+Zakres:
+
+- reset hasła,
+- potwierdzenie zmiany maila,
+- potwierdzenie rejestracji,
+- potwierdzenie płatności,
+- błąd/status płatności,
+- podstawowe powiadomienia systemowe,
+- log/outbox i test renderu.
+
+---
+
+### 7. STAGE231K3_OWNER_DIGEST_EMAILS_DAILY_AND_WEEKLY
+
+Status: PO K2
+
+Cel: poranny digest i tygodniowe podsumowanie na e-mail.
+
+Zakres:
+
+- daily digest jako lista decyzji i ryzyk,
+- weekly report jako podsumowanie tygodnia,
+- brak newsletterowego lania wody,
+- brak wysyłki bez realnego mail foundation,
+- guard przed duplikatami.
+
+---
+
+### 8. STAGE231K4_SUPPORT_HELP_PRODUCTION_TAB_AND_EMAIL_ROUTING
+
+Status: PO K2/K3
+
+Cel: produkcyjna zakładka Pomoc / Support.
+
+Zakres:
+
+- formularz zgłoszenia,
+- routing do realnego support mailbox / outbox,
+- mail potwierdzający przyjęcie zgłoszenia,
+- status zgłoszenia dla użytkownika,
+- brak martwego support tab.
+
+---
+
+### 9. CODEX-AUTO-CONTEXT-001
+
+Status: TECH BACKLOG / PO PILNYCH ETAPACH
+
+Cel: dodać stały kontekst dla Codexa i AI developerów.
+
+Zakres:
+
+- `_project/CODEX_CONTEXT_INDEX.md`,
+- `scripts/codex-context-pack.ps1`,
+- `.codex/skills/*` scan-first skills,
+- skrócenie skanów i ograniczenie chaosu.
+
+Powód: w repo nie znaleziono jeszcze `_project/CODEX_CONTEXT_INDEX.md` ani `scripts/codex-context-pack.ps1`.
+
+## Zamknięte / aktualnie uznane za domknięte etapy UI/detail
+
+### LeadDetail
+
+- `STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT` - technicznie domknięty dla potencjału, next action i głównego missing_item guardu.
+- `STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX` - closeout starej ścieżki Brak, delete missing_item overflow i CSS work-row.
+- `STAGE231G_R4D_WORK_ROW_ONE_LINE_ALIGNMENT` - wzmocnienie układu work-row.
+
+Nie traktować jako otwarte, chyba że test regresji pokaże błąd.
+
+### CaseDetail finance/cost closeout chain
+
+Status zbiorczy: PRODUCT_PASS / MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / TECH_PUSHED dla łańcucha finansów i kosztów, z wyjątkiem nowych osobnych etapów R1D2 i R1E.
+
+Zamknięte albo objęte manualnym PASS:
+
+- `STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT` - contractValue/prowizja,
+- `STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL` - korekta/usuwanie kosztów,
+- `STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION` - pełna korekta wpłat i kosztów,
+- `STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR` - naprawa czerwonych guardów i zapisu płatności,
+- `STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG` - koszt `Inny` + checkbox `Koszt do zwrotu`,
+- `STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC` - porządek ledgerów,
+- `STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS` - manualny PASS Damiana.
+
+Nadal otwarte:
+
+- `STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME`,
+- `STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING`.
+
+## Backlog produktowy po stabilizacji detail views
 
 ### STAGE-A35-OWNER-CONTROL-BASELINE
 
-Status: NAJBLIŻSZY GŁÓWNY ETAP DO ROZPISANIA / WDROŻENIA
+Status: PO PILNYCH DETAIL/MAIL/CALENDAR LUB JAKO RÓWNOLEGŁY PRODUCT SPRINT
 
-Cel:
+Cel: owner-control audit: co ruszyć, czego nie przegapić, które leady/sprawy stoją.
 
-Zbudować pierwszy widoczny owner-control audit w aplikacji.
-
-Ma pokazać:
+Zakres:
 
 - leady bez następnego kroku,
 - leady bez kontaktu 7+ dni,
@@ -61,243 +316,61 @@ Ma pokazać:
 - rekordy bez odpowiedzialnego,
 - rekordy z notatką, ale bez zadania/follow-upu.
 
-Widoczny efekt:
-
-- właściciel widzi listę rzeczy do ruszenia,
-- aplikacja pokazuje realne ryzyka, nie ozdobne metryki,
-- wynik można użyć do demo i oferty CloseFlow Control Sprint.
-
-Nie ruszać:
-
-- AI parsera,
-- ciężkiego BI,
-- ERP/faktur/KSeF,
-- automatycznych wysyłek.
-
-Guard/test:
-
-- guard wymaga metryk: no-next-step, 7d silence, 14d silence, stale cases, money-without-next-step,
-- test ręczny: porównać liczby z listą leadów/spraw.
-
 ### STAGE-A35B-MANDATORY-NEXT-STEP-CONTRACT
 
 Status: PO A35
 
-Cel:
-
-Każdy aktywny lead/sprawa ma mieć jasny następny krok albo świadomy status `brak kolejnego kroku`.
-
-Zakres:
-
-- ujednolicić definicję next step,
-- pokazać last contact / next step / silence age / risk na detailach,
-- dodać szybkie akcje: ustaw follow-up, dodaj zadanie, dodaj notatkę, oznacz jako martwy/utracony,
-- historia aktywności ma zasilać status ryzyka.
-
-Nie ruszać:
-
-- AI Drafts rebuild,
-- automatyzacji mail/SMS,
-- pełnej przebudowy Today.
-
-Guard/test:
-
-- detail views mają widoczny kontrakt last-contact / next-step / silence-age / risk.
+Cel: każdy aktywny lead/sprawa ma mieć jasny następny krok albo świadomy status `brak kolejnego kroku`.
 
 ### STAGE231A2_DOCUMENT_BLOCKERS_LITE
 
-Status: PO A35B ALBO RÓWNOLEGLE JAKO MAŁY ETAP, jeśli Damian chce szybki efekt sprzedażowy
+Status: PO A35B ALBO RÓWNOLEGLE JAKO MAŁY ETAP
 
-Cel:
-
-Dodać dokumenty/braki jako element kontroli procesu, nie jako martwe załączniki.
-
-Zakres V1:
-
-- dokument wymagany,
-- dokument otrzymany,
-- dokument do poprawy,
-- dokument nie dotyczy,
-- dokument blokuje leada/klienta/sprawę,
-- opcjonalny link do pliku,
-- notatka,
-- data dodania,
-- widoczność w LeadDetail i ClientDetail.
-
-Ważne:
-
-Na start preferowany jest wariant metadane/checklista/link, bez ciężkiego uploadu, jeżeli storage/RLS nie jest potwierdzone.
-
-Nie ruszać:
-
-- pełnego DMS,
-- publicznego portalu klienta,
-- storage upload, jeśli etap tego jawnie nie obejmuje,
-- SQL/RLS bez osobnej decyzji.
-
-Guard/test:
-
-- dokumenty nie mieszają się z notatkami,
-- status dokumentu nie ginie po odświeżeniu,
-- brak dokumentu może być widoczny jako bloker.
+Cel: dokumenty/braki jako element kontroli procesu, nie martwe załączniki.
 
 ### STAGE-A41-CONTACT-CADENCE-GRID
 
 Status: PO A35B / PO DOCUMENT_BLOCKERS_LITE
 
-Cel:
-
-Dodać siatkę kontaktu: dziś, 1 dzień ciszy, 2 dni, 3 dni, 5 dni, 7 dni, 14 dni.
-
-Zakres:
-
-- rekord pokazuje osobę/firmę,
-- typ: lead/klient/sprawa,
-- ostatni kontakt,
-- następny krok,
-- wartość sprawy, jeśli istnieje,
-- status ryzyka,
-- szybkie akcje.
-
-Nie ruszać:
-
-- browser notifications jako głównej funkcji,
-- sekwencera mailowego,
-- automatycznych wysyłek.
-
-Guard/test:
-
-- bucket 7d/14d musi wynikać z obliczania ostatniego kontaktu, nie ze statycznego tekstu.
+Cel: siatka kontaktu: dziś, 1d, 2d, 3d, 5d, 7d, 14d.
 
 ### STAGE-A42-LOST-LEAD-RESCUE
 
 Status: PO A41
 
-Cel:
+Cel: ekran `Do odzyskania` dla leadów z ciszą, brakiem kroku i ryzykiem utraty.
 
-Osobny ekran `Do odzyskania`.
+### STAGE-A46-SALES-FUNNEL_MOVEMENT_VIEW
 
-Zakres:
+Status: PO A41 LUB PO A42
 
-- brak ruchu 7+ dni,
-- 14 dni ciszy,
-- brak następnego kroku,
-- wartościowe leady bez aktywności,
-- niedokończone szkice,
-- leady bez właściciela,
-- szybkie akcje: odezwij się dziś, utwórz zadanie, odłóż, dodaj notatkę, przygotuj szkic, oznacz jako martwy/utracony.
-
-- automatyzacji marketingowych,
-- wysyłki bez zatwierdzenia.
-
-- ekran wymaga kryteriów 7d, 14d, no-next-step i quick actions.
-
-### STAGE-A46-SALES-FUNNEL-MOVEMENT-VIEW
-
-Status: PO A41 LUB PO A42, zależnie od aktualnego stanu lejka
-
-Lejek ma pokazywać ruch, ciszę, brak kroku, ryzyko i pieniądze, nie tylko etap.
-
-- etap,
-- wiek kontaktu,
-- ostatni kontakt,
-- następny krok,
-- dni bez ruchu,
-- wartość/potencjalna prowizja,
-- risk flag,
-- szybkie akcje.
-
-- forecastingu enterprise,
-- kopii klasycznego kanbana CRM.
-
-- karta lejka zawiera next-step, silence-age, risk, quick actions.
+Cel: lejek pokazuje ruch, ciszę, brak kroku, ryzyko i pieniądze, nie tylko etap.
 
 ### STAGE-A45-FINANCE-WATCHLIST
 
 Status: PO A42/A46
 
-Lista pieniędzy do ruszenia, nie księgowość.
-
-- sprawy z wartością, ale bez następnego kroku,
-- prowizje do rozliczenia,
-- wpłaty po terminie,
-- brak daty płatności,
-- korekty do sprawdzenia,
-- duże kwoty bez ruchu 7+ dni.
-
-- KSeF,
-- fakturowania,
-- banków,
-- ERP,
-- księgowości.
-
-- finance watchlist nie importuje modułów księgowych/ERP ani nie obiecuje fakturowania.
+Cel: lista pieniędzy do ruszenia, nie księgowość.
 
 ### STAGE-A44-OWNER-DIGEST-WEEKLY-REPORT
 
-Status: PO A35/A41/A42/A45, bo digest powinien korzystać z tych danych
+Status: PO A35/A41/A42/A45 ORAZ PO STAGE231K1/K2, JEŚLI MA IŚĆ MAILEM
 
-Dzienny/tygodniowy raport właściciela jako lista decyzji.
-
-Zakres daily:
-
-- co dziś ruszyć,
-- kto nie ma następnego kroku,
-- kto ma 7/14 dni ciszy,
-- które sprawy stoją,
-- jakie pieniądze wymagają ruchu.
-
-Zakres weekly:
-
-- ile leadów weszło,
-- ile leadów bez next step,
-- ile 7d/14d ciszy,
-- ile spraw bez ruchu,
-- ile pieniędzy bez ruchu,
-- największe ryzyko tygodnia.
-
-- newslettera,
-- dashboardu wykresów dla ozdoby,
-- wysyłki maili, jeśli produkcyjny email nie jest gotowy.
-
-- digest ma listę ryzyk i akcji, nie tylko metryki.
+Cel: dzienny/tygodniowy raport właściciela jako lista decyzji i ryzyk.
 
 ### STAGE-A36-DRAFTS-REBUILD
 
-Status: PO OWNER-CONTROL CORE / NIE JAKO PIERWSZY WYRÓŻNIK
+Status: PO STAGE231J2 / NIE JAKO PIERWSZY WYRÓŻNIK
 
-Jedna skrzynka szkiców: ręczny szkic, wklejony tekst, dyktowanie, parser, AI.
-
-- zatwierdź jako lead,
-- zatwierdź jako zadanie,
-- zatwierdź jako wydarzenie,
-- zatwierdź jako notatka,
-- zatwierdź jako follow-up,
-- zachowaj kontekst LeadDetail/ClientDetail/CaseDetail.
-
-- automatycznej wysyłki wiadomości,
-- automatycznego finalnego zapisu bez akceptacji.
-
-- AI drafts confirm-first,
-- brak automatycznego finalnego zapisu bez akceptacji.
+Cel: jedna skrzynka szkiców: ręczny szkic, wklejony tekst, dyktowanie, parser, AI; zatwierdzanie jako lead/task/event/notatka/follow-up.
 
 ### STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER
 
 Status: WYSOKA WARTOŚĆ / PÓŹNIEJ, po stabilizacji podstawowego CRM i owner-control core
 
-Moduł pozyskiwania okazji sprzedażowych na podstawie branży, miasta i problemu/sygnału.
+Cel: znajdować okazje sprzedażowe po problemie/sygnale, nie budować pustej bazy firm.
 
-Zakres docelowy:
-
-- użytkownik wybiera branżę, miasto i sygnał problemu,
-- system znajduje firmy,
-- system ocenia potencjał,
-- system tworzy powód kontaktu,
-- system zapisuje leady,
-- system ustawia follow-up,
-- wszystko trafia do obecnego flow CloseFlow.
-
-Etapy późniejsze:
+Podetapy:
 
 1. `STAGE240A_SMART_SEARCH_INPUT_AND_MANUAL_IMPORT`
 2. `STAGE240B_OPPORTUNITY_REASON_SCHEMA`
@@ -305,40 +378,13 @@ Etapy późniejsze:
 4. `STAGE240D_CREATE_LEADS_WITH_REASON_AND_FOLLOWUP`
 5. `STAGE240E_MONTHLY_OPPORTUNITY_MONITORING`
 
-Nie ruszać teraz:
-
-- osobnej aplikacji,
-- generycznej bazy firm,
-- scrapera bez powodu kontaktu,
-- pełnej automatyzacji bez kontroli użytkownika.
-
-- każdy lead z tego modułu musi mieć problem/sygnał i powód kontaktu,
-- nie wolno tworzyć pustej bazy firm bez uzasadnienia.
-
 ### STAGE-A47-CONTROL-SPRINT-OFFER
 
 Status: PO A35 DEMO / MOŻE IŚĆ JAKO ETAP BIZNESOWY RÓWNOLEGLE
 
-Spiąć produkt z usługą wdrożeniową.
-
-- nazwa oferty: `CloseFlow Control Sprint`,
-- readiness audit,
-- porządkowanie danych,
-- ustawienie etapów,
-- next-step discipline,
-- contact cadence,
-- owner digest,
-- podstawowy finance watchlist,
-- jedno szkolenie.
-
-Test:
-
-- 10 rozmów/demo na danych z ostatnich 30 dni,
-- próba sprzedaży Control Sprint.
+Cel: spiąć produkt z usługą wdrożeniową `CloseFlow Control Sprint`.
 
 ## Etapy techniczne / safety backlog
-
-Te etapy są ważne, ale nie są głównym wyróżnikiem sprzedażowym.
 
 ### STAGE232A_PUBLIC_PREVIEW_ROUTES_PRODUCTION_LOCK
 
@@ -376,142 +422,8 @@ Status: PO 232E
 
 Ustalić jeden główny release gate i uporządkować runner pod Windows/Linux.
 
-## Aktualny następny najlepszy etap
-
-Rekomendacja:
-
-```txt
-STAGE-A35-OWNER-CONTROL-BASELINE
-```
-
-Zastrzeżenie:
-
-Jeśli aplikacja ma być zaraz pokazywana testerom publicznie, przed tym albo równolegle zrobić `STAGE232A_PUBLIC_PREVIEW_ROUTES_PRODUCTION_LOCK`, bo to jest safety/hygiene.
-
 ## Warunek aktualizacji tego pliku
 
-Po każdym zatwierdzonym etapie zmienić status w tym pliku:
-
-- DO_WDROZENIA,
-- W_TRAKCIE,
-- LOCAL_ONLY,
-- PASS_LOCAL,
-- PUSHED,
-- BLOCKED,
-- ODLOZONE,
-- ZAMKNIETE.
-
-Nie zostawiać kolejności tylko w czacie.
-
-## 2026-06-14 10:05 Europe/Warsaw - STAGE231G_LEAD_DETAIL_OPERATIONAL_WIRING_AUDIT_AND_FIX
-
-Status: DO_WDROZENIA_LOKALNIE_R2
-
-Cel: domknąć LeadDetail jako centrum pracy: potencjał, następny krok, ryzyko i blokady mają mieć jasne CTA, a wiersze działań nie mogą się zlewać. R2 dodatkowo dopina widoczny potencjał przy dodawaniu leada.
-
-Warunek zamknięcia: build, typecheck, guard stage231g, node test, git diff --check, test ręczny Damiana.
-
-## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
-
-Status: DO TESTU LOKALNEGO
-Cel: domknac karte leada jako operacyjne centrum pracy: potencjal, nastepny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dzialan.
-Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md
-Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
-Test: tests/stage231g-r3-lead-detail-function-mapping.test.cjs
-SQL: nie ruszano.
-
-## STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
-
-Data: 2026-06-14 11:45 Europe/Warsaw
-Status: DO TESTU LOKALNEGO
-Cel: domknac LeadDetail po R3 przez usuniecie drugiej sciezki Brak, naprawe delete missing_item w overflow i utwardzenie CSS work-row.
-Run report: _project/runs/STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX.md
-Guard: scripts/check-stage231g-r4-lead-detail-function-mapping-closeout.cjs
-Test: tests/stage231g-r4-lead-detail-function-mapping-closeout.test.cjs
-Typecheck: SKIP jesli package.json nie ma scripts.typecheck.
-Zakaz zakresu: bez SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail.
-
-## 2026-06-14 — STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
-
-- Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
-- Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
-- SQL: NOT_TOUCHED.
-- Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.
-
-## CaseDetail finance/cost closeout chain - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
-
-Status: ACTIVE_CLOSEOUT / SERVER_UI_REQUIRED
-
-This section is the canonical CaseDetail finance/cost sequence after the R1F4 and R1G pushes. It prevents future developers from using loose chat order as the source of truth.
-
-### STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
-Status: TECH_PUSHED / SERVER_UI_REQUIRED
-Scope: contract value / shared finance path repair. Does not claim cost lifecycle PASS.
-
-### STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
-Status: TECH_PUSHED / SERVER_UI_REQUIRED
-Scope: cost rows in correction modal, cost correct/delete path.
-
-### STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION
-Status: TECH_PUSHED / SERVER_UI_REQUIRED
-Scope: commission payment correction and full operational cost correction.
-
-### STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
-Status: TECH_PUSHED / SERVER_UI_REQUIRED
-Scope: repair red-guard pushed state and normalize payment save/correction.
-
-### STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
-Status: TECH_PUSHED / SERVER_UI_REQUIRED
-Scope: custom name for cost kind Other and visible reimbursable checkbox.
-
-### STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
-Status: NEXT_AFTER_R1G2_AND_MANUAL_CHECK
-Scope: restore real CaseDetail note dictation. Uses R1D2 to avoid collision with R1D finance compact stage.
-
-### STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
-Status: AFTER_R1D2_OR_AFTER_CASEDETAIL_MANUAL_CLOSEOUT
-Scope: mark costs as returned/reimbursed, including partial/full returned amount.
-
-Manual UI required before product-level PASS:
-- commission payment add/correct/refresh,
-- cost add/correct/delete/refresh,
-- other cost name required and persisted,
-- reimbursable and non-reimbursable cost summary behavior,
-- no regression in finance modal.
-
-
-## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — CaseDetail manual UI PASS
-
-- date: 2026-06-14 18:55 Europe/Warsaw
-- status: PRODUCT_PASS / MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / TECH_PUSHED
-- source confirmation: Damian confirmed manual server UI tests: "jest ok testy reczne".
-- closes:
-  - STAGE231H_R1B
-  - STAGE231H_R1C
-  - STAGE231H_R1F
-  - STAGE231H_R1F4
-  - STAGE231H_R1G
-  - STAGE231H_R1G2
-- next allowed stages:
-  1. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
-  2. STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
-  3. STAGE231F_R2_GOOGLE_CALENDAR_MULTI_USER_OWNERSHIP_AND_SYNC_CLOSEOUT
-- blocked from being treated as done:
-  - R1D2 note dictation;
-  - R1E reimbursed cost marking.
-
-## STAGE231H_R1G2_PRODUCT_PASS_SYNC_FOR_R1D2
-
-- data: 2026-06-14 19:10 Europe/Warsaw
-- status: PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED
-- reason: R1G2/R1G3 manual UI was confirmed by Damian and R1D2 guard requires central stage memory to expose this exact status before dictation runtime proceeds.
-- scope: memory sync only, no cost/payment runtime changes.
-
-
-## STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON — 2026-06-14 19:40 Europe/Warsaw
-
-- status: RUNTIME_HOTFIX_PREPARED
-- zakres: drugi widoczny przycisk w panelu Notatki sprawy nie może zostać jako disabled „Notatka głosowa — wkrótce”; ma używać tego samego handlera SpeechRecognition/autosave co przycisk w panelu Działania sprawy.
-- runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztów zwróconych.
-- test: R1D2 guard/test + R1D2 R4 guard/test + build + diff-check.
-- ryzyko: wcześniejszy R1D2 zabezpieczał pierwszy przycisk, ale nie objął drugiego widocznego przycisku w panelu notatek.
+Po każdym zatwierdzonym etapie zmienić status w tym pliku.  
+Nie zostawiać kolejności tylko w czacie, run reportach albo payloadach Obsidiana.  
+Jeżeli powstaje nowy etap, jego ID i kolejność muszą trafić tutaj.
