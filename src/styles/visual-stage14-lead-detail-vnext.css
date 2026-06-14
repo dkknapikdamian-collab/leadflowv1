@@ -2451,7 +2451,7 @@
   background: transparent !important;
   border-color: rgba(15, 23, 42, 0.12) !important;
   box-shadow: none !important;
-  grid-template-columns: 38px minmax(0, 1fr) auto minmax(250px, auto) !important;
+  grid-template-columns: 38px minmax(0, 1fr) max-content max-content !important;
 }
 
 .lead-detail-stage228d-action-center .lead-detail-work-row-overdue {
@@ -3851,5 +3851,73 @@
   .lead-detail-work-row__actions {
     grid-column: 4;
     justify-content: flex-end;
+  }
+}
+/* STAGE231G_R4D_WORK_ROW_ONE_LINE_ALIGNMENT_GUARD
+   Desktop/action-center row contract:
+   - icon, content, status and actions stay in one visual row on wide screens
+   - actions cannot reserve a fragile fixed-width actions column
+   - buttons do not wrap inside the action cell
+   - medium/mobile falls back to stacked actions in column 2
+*/
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] {
+  grid-template-columns: 38px minmax(0, 1fr) max-content max-content !important;
+  align-items: center !important;
+  column-gap: 12px !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__icon {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__content {
+  grid-column: 2 !important;
+  min-width: 0 !important;
+  align-self: center !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__status {
+  grid-column: 3 !important;
+  justify-self: end !important;
+  align-self: center !important;
+  white-space: nowrap !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__actions {
+  grid-column: 4 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  flex-wrap: nowrap !important;
+  gap: 8px !important;
+  min-width: max-content !important;
+  max-width: none !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__actions button,
+.lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__actions .lead-detail-chip-button {
+  flex: 0 0 auto !important;
+  white-space: nowrap !important;
+}
+
+@media (max-width: 1180px) {
+  .lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] {
+    grid-template-columns: 38px minmax(0, 1fr) !important;
+    align-items: start !important;
+  }
+
+  .lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__status,
+  .lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__actions {
+    grid-column: 2 !important;
+    justify-self: start !important;
+  }
+
+  .lead-detail-stage228d-action-center .lead-detail-work-row[data-stage231g-work-row-layout="true"] .lead-detail-work-row__actions {
+    flex-wrap: wrap !important;
+    justify-content: flex-start !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
   }
 }

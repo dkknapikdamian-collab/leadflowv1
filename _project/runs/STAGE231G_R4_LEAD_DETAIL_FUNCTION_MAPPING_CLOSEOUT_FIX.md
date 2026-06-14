@@ -1,7 +1,7 @@
 # STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
 
 Data: 2026-06-14 11:45 Europe/Warsaw
-Status: LOCAL_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+Status: PASS_WITH_VISUAL_FOLLOWUP / R4D_DO_TEST_AND_PUSH
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Local path: C:\\Users\\malim\\Desktop\\biznesy_ai\\2.closeflow
@@ -123,3 +123,24 @@ Zmiany:
 - zostawiono Brak wyłącznie przez ContextActionDialogs/blocker,
 - poprawiono overflow delete missing_item na handleDeleteLeadMissingItemStage228R15(entry),
 - dopięto CSS work-row actions/status/content dla średnich szerokości.
+## 2026-06-14 R4D - work-row one-line alignment guard
+
+Status: LOCAL_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+Cel: poprawiÄ‡ zgĹ‚oszony wizualnie rozjazd wierszy w "DziaĹ‚ania leada", gdzie status i akcje miaĹ‚y nie trzymaÄ‡ jednego wiersza.
+Zmiany:
+- usuniÄ™to konfliktowy override `minmax(250px, auto)` dla `.lead-detail-stage228d-action-center .lead-detail-work-row`,
+- wymuszono desktopowy ukĹ‚ad: ikona / treĹ›Ä‡ / status / akcje w jednym wierszu,
+- akcje majÄ… `flex-wrap: nowrap` na desktopie,
+- Ĺ›rednie/mobile szerokoĹ›ci majÄ… kontrolowany fallback z akcjami w kolumnie 2,
+- R4 guard rozszerzony o blokadÄ™ powrotu `minmax(250px, auto)`,
+- dodano R4D guard i test.
+Testy wymagane:
+- R3 guard/test,
+- R4 guard/test,
+- R4D guard/test,
+- build,
+- git diff --check.
+Manual:
+- sprawdziÄ‡ widok z 2+ akcjami w "NajbliĹĽsze dziaĹ‚ania",
+- status, treĹ›Ä‡ i przyciski majÄ… byÄ‡ w jednym desktopowym wierszu,
+- przy Ĺ›redniej szerokoĹ›ci brak kolizji tekstu z przyciskami.
