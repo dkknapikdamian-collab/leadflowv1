@@ -1,12 +1,12 @@
 # 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
-Data utworzenia: 2026-06-12 23:59 Europe/Warsaw  
-Ostatnia regulacja kolejki: 2026-06-14 20:05 Europe/Warsaw  
-Status: ACTIVE / CANONICAL  
-Typ: centralna kolejność etapów rozwoju aplikacji  
-Repo: dkknapikdamian-collab/leadflowv1  
-Branch: dev-rollout-freeze  
-Canonical name: CloseFlow / LeadFlow  
+Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
+Ostatnia regulacja kolejki: 2026-06-14 20:05 Europe/Warsaw
+Status: ACTIVE / CANONICAL
+Typ: centralna kolejność etapów rozwoju aplikacji
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+Canonical name: CloseFlow / LeadFlow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Cel pliku
@@ -17,7 +17,7 @@ Ten plik odpowiada na pytanie:
 Co wdrażamy teraz, co później i w jakiej kolejności?
 ```
 
-To jest **jedyne aktywne źródło prawdy dla kolejki etapów**.  
+To jest **jedyne aktywne źródło prawdy dla kolejki etapów**.
 Run reporty w `_project/runs/` i payloady w `_project/obsidian_updates/` są szczegółami etapu, dowodami skanu, testami i historią, ale **nie zastępują tej kolejki**.
 
 Nie wdrażać etapów z luźnej rozmowy, jeśli nie są wpisane albo potwierdzone w tym pliku.
@@ -66,8 +66,8 @@ Statusy dopuszczalne:
 
 Status: WYKONANE_W_TYM_COMMICIE / DOCS_ONLY
 
-Cel: uporządkować wszystkie ostatnie etapy w tym jednym centralnym pliku.  
-Zakres: kolejka etapów, bez runtime, bez SQL, bez UI.  
+Cel: uporządkować wszystkie ostatnie etapy w tym jednym centralnym pliku.
+Zakres: kolejka etapów, bez runtime, bez SQL, bez UI.
 Warunek zamknięcia: ten plik zawiera aktualną kolejność; przyszłe etapy nie mogą być tylko w run reports albo payloadach.
 
 ---
@@ -99,7 +99,7 @@ Nie ruszać:
 - koszty zwrócone R1E,
 - global layout.
 
-Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md`  
+Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md`
 Właściwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.md`
 
 ---
@@ -424,6 +424,50 @@ Ustalić jeden główny release gate i uporządkować runner pod Windows/Linux.
 
 ## Warunek aktualizacji tego pliku
 
-Po każdym zatwierdzonym etapie zmienić status w tym pliku.  
-Nie zostawiać kolejności tylko w czacie, run reportach albo payloadach Obsidiana.  
+Po każdym zatwierdzonym etapie zmienić status w tym pliku.
+Nie zostawiać kolejności tylko w czacie, run reportach albo payloadach Obsidiana.
 Jeżeli powstaje nowy etap, jego ID i kolejność muszą trafić tutaj.
+
+
+## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
+
+Status: DO_APPLY / mass repair from clean origin.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
+
+
+## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1G2 central product-pass sync for legacy R1D2 guard
+
+Status: PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED
+PowĂłd wpisu: historyczny guard scripts/check-stage231h-r1d2-case-detail-note-dictation-restore.cjs wymaga dokĹ‚adnej frazy PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED w centralnym pliku etapĂłw. R1G2 wczeĹ›niej byĹ‚ potwierdzony manualnie i wypchniÄ™ty, ale po syncu kolejki etapĂłw fraza nie byĹ‚a obecna w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
+
+
+## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
+
+Status: DO_APPLY / guard-ledger sync after R9 partial apply.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
+
+
+## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON legacy guard sync
+
+Status: TECH_PUSHED / REQUIRED_BY_LEGACY_GUARD / SOURCE_SYNC
+PowĂłd wpisu: legacy guard R1D2 R4 wymaga obecnoĹ›ci markera STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON w centralnych ledgerach 04/06/08/10/13 oraz w run/Obsidian payload. Ten wpis nie zmienia runtime; synchronizuje ĹşrĂłdĹ‚o prawdy po wczeĹ›niejszych etapach R6-R9.
+
+
+## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
+
+Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
+Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
+
+
+## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
+
+Status: DO_APPLY / MASS_GUARD_REGEX_FIX
+Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
+eplace(/s+/g, ' ').
+
+
+## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
+
+Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
+Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.

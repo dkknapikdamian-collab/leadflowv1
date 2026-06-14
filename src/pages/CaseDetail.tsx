@@ -1,4 +1,4 @@
-﻿const STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR = 'CaseDetail payment save and guard repair after R1F red-guard push';
+const STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR = 'CaseDetail payment save and guard repair after R1F red-guard push';
 void STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR;
 const STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX = 'STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX';
 void STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX;
@@ -82,6 +82,8 @@ import {
   deletePaymentFromSupabase,
   updatePaymentInSupabase,
   insertActivityToSupabase,
+  updateActivityInSupabase,
+  deleteActivityFromSupabase,
   insertCaseItemToSupabase,
   insertTaskToSupabase,
   isSupabaseConfigured,
@@ -228,6 +230,10 @@ const STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT = 'case finance correction 
 void STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT;
 const STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME = 'CaseDetail restores real Web Speech note dictation with autosave after silence';
 void STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME;
+const STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD = 'CaseDetail note follow-up writes a real task and notes modal supports edit/delete';
+void STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD;
+const STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR = 'CaseDetail R6 R9 whole-file mass repair from clean origin without brittle anchors';
+void STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR;
 
 function getCaseNoteSpeechRecognitionConstructorStage231H_R1D2() {
   if (typeof window === 'undefined') return null;
@@ -313,11 +319,13 @@ type TaskRecord = {
   date?: string | null;
   scheduledAt?: string | null;
   reminderAt?: string | null;
+  dueAt?: string | null;
   priority?: string;
   status?: string;
   caseId?: string | null;
   leadId?: string | null;
   clientId?: string | null;
+  workspaceId?: string | null;
 };
 
 type EventRecord = {
@@ -355,6 +363,9 @@ type CasePaymentRecord = {
 
 type CaseActivity = {
   id: string;
+  caseId?: string | null;
+  clientId?: string | null;
+  leadId?: string | null;
   actorType?: string;
   eventType?: string;
   payload?: Record<string, any>;
@@ -921,6 +932,25 @@ function getActivityText(activity: CaseActivity) {
   if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
   return 'Dodano ruch w sprawie';
 }
+function getCaseNotePayloadStage231H_R1D2_R6(activity: CaseActivity | null | undefined) {
+  return activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+}
+function isCaseOperatorNoteStage231H_R1D2_R6(activity: CaseActivity | null | undefined) {
+  const payload = getCaseNotePayloadStage231H_R1D2_R6(activity);
+  const eventType = String(activity?.eventType || payload.eventType || payload.type || '').trim().toLowerCase();
+  return eventType === 'operator_note' || eventType.includes('note');
+}
+function getCaseNoteTextStage231H_R1D2_R6(activity: CaseActivity | null | undefined) {
+  const payload = getCaseNotePayloadStage231H_R1D2_R6(activity);
+  return String(payload.note || payload.content || payload.body || payload.description || '').replace(/\s+/g, ' ').trim();
+}
+function getCaseNoteTitleStage231H_R1D2_R6(activity: CaseActivity | null | undefined) {
+  const payload = getCaseNotePayloadStage231H_R1D2_R6(activity);
+  return String(payload.title || 'Notatka').replace(/\s+/g, ' ').trim() || 'Notatka';
+}
+function getCaseNoteIdStage231H_R1D2_R6(activity: CaseActivity | null | undefined) {
+  return String(activity?.id || '').trim();
+}
 function getCaseHistoryPayloadStage14D(activity: CaseActivity) {
   return activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
 }
@@ -1432,7 +1462,7 @@ function caseDetailActionKindClass(kind: unknown) {
 export default function CaseDetail() {
   const { caseId } = useParams();
   const navigate = useNavigate();
-  const { hasAccess, access } = useWorkspace();
+  const { hasAccess, access, workspace } = useWorkspace();
   const [caseData, setCaseData] = useState<CaseRecord | null>(null);
   const [casePayments, setCasePayments] = useState<CasePaymentRecord[]>([]);
   const [caseCostsStage231D2, setCaseCostsStage231D2] = useState<CaseCostRecord[]>([]);
@@ -1735,6 +1765,10 @@ export default function CaseDetail() {
   const [caseActionOpenGroup, setCaseActionOpenGroup] = useState<CaseActionAccordionGroup>('next');
   const [isCaseActionsAllOpen, setIsCaseActionsAllOpen] = useState(false);
   const [isCaseAllNotesOpenStage231D0D, setIsCaseAllNotesOpenStage231D0D] = useState(false);
+  const [caseNoteEditTargetStage231H_R1D2_R6, setCaseNoteEditTargetStage231H_R1D2_R6] = useState<CaseActivity | null>(null);
+  const [caseNoteEditTextStage231H_R1D2_R6, setCaseNoteEditTextStage231H_R1D2_R6] = useState('');
+  const [caseNoteEditSubmittingStage231H_R1D2_R6, setCaseNoteEditSubmittingStage231H_R1D2_R6] = useState(false);
+  const [caseNoteDeleteSubmittingIdStage231H_R1D2_R6, setCaseNoteDeleteSubmittingIdStage231H_R1D2_R6] = useState('');
   const [deleteWorkItemTarget, setDeleteWorkItemTarget] = useState<WorkItem | null>(null);
   const [deleteWorkItemPending, setDeleteWorkItemPending] = useState(false);
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
@@ -2274,6 +2308,7 @@ export default function CaseDetail() {
   const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
   const caseDetailWriteAccessDenied = !hasAccess;
   const caseDetailAccessStatus = String(access?.status || 'inactive');
+  const workspaceIdStage231H_R1D2_R6 = String((workspace as any)?.id || (caseData as any)?.workspaceId || (caseData as any)?.workspace_id || (sourceLead as any)?.workspaceId || (sourceLead as any)?.workspace_id || (access as any)?.workspaceId || (access as any)?.workspace_id || (access as any)?.workspace?.id || '').trim();
   const guardCaseDetailWriteAccess = (actionLabel: string) => {
     if (!caseDetailWriteAccessDenied) return true;
     const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostępu.';
@@ -2298,7 +2333,7 @@ export default function CaseDetail() {
   };
 
   async function saveCaseDictatedNoteStage231H_R1D2(noteText: string) {
-    const cleanNote = String(noteText || '').replace(/s+/g, ' ').trim();
+    const cleanNote = String(noteText || '').replace(/\s+/g, ' ').trim();
     if (!cleanNote) return;
     if (!caseId || !caseData?.id) {
       toast.error('Nie można zapisać notatki bez sprawy.');
@@ -2314,6 +2349,9 @@ export default function CaseDetail() {
       note: cleanNote,
       content: cleanNote,
       caseId,
+      clientId: caseData.clientId || null,
+      leadId: caseData.leadId || null,
+      workspaceId: workspaceIdStage231H_R1D2_R6 || undefined,
       source: STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME,
     };
 
@@ -2326,6 +2364,7 @@ export default function CaseDetail() {
         actorType: 'operator',
         eventType: 'operator_note',
         payload,
+        workspaceId: workspaceIdStage231H_R1D2_R6 || undefined,
       } as any);
       lastSavedCaseNoteDictationStage231H_R1D2.current = noteKey;
       setActivities((current) => [
@@ -2333,6 +2372,9 @@ export default function CaseDetail() {
           id: String((created as any)?.id || 'case-voice-note-' + Date.now()),
           actorType: 'operator',
           eventType: 'operator_note',
+          caseId,
+          clientId: caseData.clientId || null,
+          leadId: caseData.leadId || null,
           payload,
           createdAt: (created as any)?.createdAt || createdAt,
         },
@@ -2353,7 +2395,7 @@ export default function CaseDetail() {
   }
 
   function scheduleCaseDictationAutosaveStage231H_R1D2(nextTranscript: string) {
-    const cleanTranscript = String(nextTranscript || '').replace(/s+/g, ' ').trim();
+    const cleanTranscript = String(nextTranscript || '').replace(/\s+/g, ' ').trim();
     if (!cleanTranscript) return;
     if (caseNoteDictationAutosaveRefStage231H_R1D2.current) {
       window.clearTimeout(caseNoteDictationAutosaveRefStage231H_R1D2.current);
@@ -2389,7 +2431,7 @@ export default function CaseDetail() {
         const transcript = Array.from(event?.results || [])
           .map((result: any) => String(result?.[0]?.transcript || ''))
           .join(' ')
-          .replace(/s+/g, ' ')
+          .replace(/\s+/g, ' ')
           .trim();
         if (!transcript) return;
         setCaseNoteDictationTranscriptStage231H_R1D2(transcript);
@@ -2507,6 +2549,83 @@ export default function CaseDetail() {
   };
 
 
+  function openCaseNoteEditStage231H_R1D2_R6(activity: CaseActivity) {
+    const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
+    if (!noteId) {
+      toast.error('Nie można edytować notatki bez identyfikatora.');
+      return;
+    }
+    setCaseNoteEditTargetStage231H_R1D2_R6(activity);
+    setCaseNoteEditTextStage231H_R1D2_R6(getCaseNoteTextStage231H_R1D2_R6(activity));
+  }
+
+  function closeCaseNoteEditStage231H_R1D2_R6() {
+    setCaseNoteEditTargetStage231H_R1D2_R6(null);
+    setCaseNoteEditTextStage231H_R1D2_R6('');
+  }
+
+  async function handleSaveCaseNoteEditStage231H_R1D2_R6() {
+    const target = caseNoteEditTargetStage231H_R1D2_R6;
+    const noteId = getCaseNoteIdStage231H_R1D2_R6(target);
+    const cleanNote = String(caseNoteEditTextStage231H_R1D2_R6 || '').replace(/\s+/g, ' ').trim();
+    if (!target || !noteId || caseNoteEditSubmittingStage231H_R1D2_R6) return;
+    if (!guardCaseDetailWriteAccess('edytować notatki')) return;
+    if (!cleanNote) {
+      toast.error('Notatka nie może być pusta.');
+      return;
+    }
+
+    const payload = {
+      ...getCaseNotePayloadStage231H_R1D2_R6(target),
+      title: getCaseNoteTitleStage231H_R1D2_R6(target),
+      note: cleanNote,
+      content: cleanNote,
+      source: STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD,
+      updatedAt: new Date().toISOString(),
+    };
+
+    try {
+      setCaseNoteEditSubmittingStage231H_R1D2_R6(true);
+      const updated = await updateActivityInSupabase({
+        id: noteId,
+        caseId: caseId || target.caseId || null,
+        clientId: caseData?.clientId || target.clientId || null,
+        leadId: caseData?.leadId || target.leadId || null,
+        workspaceId: workspaceIdStage231H_R1D2_R6 || undefined,
+        eventType: 'operator_note',
+        payload,
+      } as any);
+      setActivities((current) => current.map((activity) => getCaseNoteIdStage231H_R1D2_R6(activity) === noteId ? ({ ...activity, ...(updated || {}), payload } as CaseActivity) : activity));
+      closeCaseNoteEditStage231H_R1D2_R6();
+      await refreshCaseData();
+      toast.success('Notatka zaktualizowana');
+    } catch (error: any) {
+      toast.error('Nie udało się zaktualizować notatki: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setCaseNoteEditSubmittingStage231H_R1D2_R6(false);
+    }
+  }
+
+  async function handleDeleteCaseNoteStage231H_R1D2_R6(activity: CaseActivity) {
+    const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
+    if (!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6) return;
+    if (!guardCaseDetailWriteAccess('usunąć notatki')) return;
+    const confirmed = window.confirm('Usunąć tę notatkę? Powiązany follow-up zostaje jako osobne zadanie, jeśli został utworzony.');
+    if (!confirmed) return;
+    try {
+      setCaseNoteDeleteSubmittingIdStage231H_R1D2_R6(noteId);
+      await deleteActivityFromSupabase(noteId);
+      setActivities((current) => current.filter((item) => getCaseNoteIdStage231H_R1D2_R6(item) !== noteId));
+      await refreshCaseData();
+      toast.success('Notatka usunięta');
+    } catch (error: any) {
+      toast.error('Nie udało się usunąć notatki: ' + (error?.message || 'REQUEST_FAILED'));
+    } finally {
+      setCaseNoteDeleteSubmittingIdStage231H_R1D2_R6('');
+    }
+  }
+
+
   const closeNoteFollowUpPrompt = () => {
     setPendingNoteFollowUp(null);
     setCustomNoteFollowUpAt('');
@@ -2520,40 +2639,64 @@ export default function CaseDetail() {
       toast.error('Wybierz termin follow-upu');
       return;
     }
-    const title = `Follow-up: ${getCaseTitle(caseData)}`;
+    const title = 'Follow-up: ' + getCaseTitle(caseData);
+    const taskInput = {
+      title,
+      type: 'follow_up',
+      status: 'todo',
+      priority: 'normal',
+      scheduledAt,
+      dueAt: scheduledAt,
+      reminderAt: scheduledAt,
+      date: buildDateOnlyFromIso(scheduledAt),
+      caseId,
+      clientId: caseData?.clientId || null,
+      leadId: caseData?.leadId || null,
+      workspaceId: workspaceIdStage231H_R1D2_R6 || undefined,
+    };
     try {
       setIsCreatingNoteFollowUp(true);
-      const created = await insertTaskToSupabase({
-        title,
-        type: 'follow_up',
-        status: 'todo',
-        priority: 'normal',
-        scheduledAt,
-        reminderAt: scheduledAt,
-        date: buildDateOnlyFromIso(scheduledAt),
-        caseId,
-        clientId: caseData?.clientId || null,
-        leadId: caseData?.leadId || null,
-      });
+      const created = await insertTaskToSupabase(taskInput as any);
+      const normalizedCreated = {
+        ...taskInput,
+        ...(created || {}),
+        ...normalizeWorkItem({ ...taskInput, ...(created || {}) }),
+      } as TaskRecord;
+      setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));
+      await ensureCaseLeadNextActionTitleSafe(caseData?.leadId || null, title, scheduledAt).catch(() => null);
       await recordActivity('case_note_follow_up_added', {
         title,
         scheduledAt,
-        taskId: (created as any)?.id || null,
-        source: 'case_note_follow_up_prompt',
+        dueAt: scheduledAt,
+        reminderAt: scheduledAt,
+        date: buildDateOnlyFromIso(scheduledAt),
+        taskId: String((created as any)?.id || ''),
+        taskSource: 'tasks',
+        noteSource: 'activities',
+        source: STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD,
         choice: getCaseNoteFollowUpChoiceLabel(choice),
         notePreview: pendingNoteFollowUp.note.slice(0, 160),
       });
       await updateCaseInSupabase({ id: caseId, lastActivityAt: new Date().toISOString() }).catch(() => null);
+      window.dispatchEvent(new CustomEvent('closeflow:context-action-saved', {
+        detail: {
+          kind: 'task',
+          recordType: 'case',
+          caseId,
+          recordId: caseId,
+          savedRecord: normalizedCreated,
+          source: STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD,
+        },
+      }));
       closeNoteFollowUpPrompt();
       await refreshCaseData();
       toast.success('Follow-up dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Nie udało się dodać follow-upu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error('Nie udało się dodać follow-upu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setIsCreatingNoteFollowUp(false);
     }
   };
-
 
   const handleConfirmCloseCaseRecord = async () => {
     if (!caseId || closeCasePending) return;
@@ -2985,6 +3128,12 @@ async function handleConfirmDeleteCaseRecord() {
         .map((activity) => getCaseNoteHistoryItemStage217(activity))
         .filter((item): item is CaseHistoryItem => Boolean(item)),
     ).slice(0, 20);
+  }, [activities]);
+  const caseNoteActivityRowsStage231H_R1D2_R6 = useMemo(() => {
+    return sortActivities(activities)
+      .filter((activity) => isCaseOperatorNoteStage231H_R1D2_R6(activity))
+      .filter((activity) => getCaseNoteTextStage231H_R1D2_R6(activity))
+      .slice(0, 80);
   }, [activities]);
   if (loading) {
     return (
@@ -3570,31 +3719,76 @@ async function handleConfirmDeleteCaseRecord() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isCaseAllNotesOpenStage231D0D} onOpenChange={setIsCaseAllNotesOpenStage231D0D}>
+      <Dialog
+        open={isCaseAllNotesOpenStage231D0D}
+        onOpenChange={(open) => {
+          setIsCaseAllNotesOpenStage231D0D(open);
+          if (!open) closeCaseNoteEditStage231H_R1D2_R6();
+        }}
+      >
         <DialogContent
-          className="max-w-3xl event-form-vnext-content closeflow-event-modal-readable case-all-notes-modal-stage231d0d-r2"
+          className="client-case-form-content case-payment-history-modal-stage220a27b case-payment-history-modal-stage220a27b-r3-light case-payment-history-modal-stage220a28-vst max-w-3xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-all-notes-modal-stage231d0d-r2"
           data-case-all-notes-modal="true"
+          data-stage231h-r1d2-r6-notes-crud-modal="true"
           data-cf-vst-dialog="true"
           aria-describedby={undefined}
         >
-          <DialogHeader className="event-form-vnext-header case-all-notes-modal-stage231d0d-r2__header">
+          <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30 case-all-notes-modal-stage231d0d-r2__header">
             <DialogTitle>Wszystkie notatki sprawy</DialogTitle>
-            <DialogDescription>Pełna lista notatek przypiętych do tej sprawy.</DialogDescription>
+            <DialogDescription>Notatki są źródłem prawdy w activities. Follow-up po notatce jest osobnym zadaniem w tasks.</DialogDescription>
           </DialogHeader>
 
-          {caseNoteItems.length === 0 ? (
+          {caseNoteActivityRowsStage231H_R1D2_R6.length === 0 ? (
             <div className="case-detail-light-empty">Brak notatek przy tej sprawie.</div>
           ) : (
-            <div className="case-all-notes-modal-stage231d0d-r2__list">
-              {caseNoteItems.map((note, index) => (
-                <article className="case-all-notes-modal-stage231d0d-r2__item" key={String((note as any).id || index)}>
-                  <div className="case-all-notes-modal-stage231d0d-r2__meta">
-                    <strong>{String((note as any).title || (note as any).createdAt || (note as any).created_at || 'Notatka')}</strong>
-                    <span>{String((note as any).source || (note as any).operator || (note as any).createdBy || (note as any).created_by || 'CloseFlow')}</span>
-                  </div>
-                  <p>{String((note as any).content || (note as any).body || (note as any).note || (note as any).description || '')}</p>
-                </article>
-              ))}
+            <div className="case-all-notes-modal-stage231d0d-r2__list case-payment-history-modal-stage220a27b__list" data-stage231h-r1d2-r6-notes-crud-list="true">
+              {caseNoteActivityRowsStage231H_R1D2_R6.map((activity, index) => {
+                const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
+                const isEditing = Boolean(caseNoteEditTargetStage231H_R1D2_R6 && getCaseNoteIdStage231H_R1D2_R6(caseNoteEditTargetStage231H_R1D2_R6) === noteId);
+                const noteText = getCaseNoteTextStage231H_R1D2_R6(activity);
+                return (
+                  <article className="client-case-form-section case-payment-history-modal-stage220a27b__row case-payment-history-modal-stage220a28-row case-note-crud-row-stage231h-r1d2-r6" key={noteId || 'case-note-r6-' + index} data-stage231h-r1d2-r6-note-crud-row="true">
+                    <div className="case-payment-history-modal-stage220a27b__main">
+                      <strong>{getCaseNoteTitleStage231H_R1D2_R6(activity)}</strong>
+                      <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1d2-r6-note-meta="true">
+                        <span>Data: {formatDateTime(activity.createdAt, 'Bez daty')}</span>
+                        <span>Źródło: activities</span>
+                      </div>
+                      {isEditing ? (
+                        <Textarea
+                          value={caseNoteEditTextStage231H_R1D2_R6}
+                          onChange={(event) => setCaseNoteEditTextStage231H_R1D2_R6(event.target.value)}
+                          data-stage231h-r1d2-r6-note-edit-textarea="true"
+                        />
+                      ) : (
+                        <p>{noteText}</p>
+                      )}
+                    </div>
+                    <div className="case-payment-history-modal-stage220a27b__actions case-payment-history-modal-stage220a30__actions" data-stage231h-r1d2-r6-note-actions="true">
+                      {isEditing ? (
+                        <>
+                          <Button type="button" size="sm" onClick={handleSaveCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6} data-stage231h-r1d2-r6-save-note-edit="true">
+                            Zapisz
+                          </Button>
+                          <Button type="button" size="sm" variant="outline" onClick={closeCaseNoteEditStage231H_R1D2_R6} disabled={caseNoteEditSubmittingStage231H_R1D2_R6}>
+                            Anuluj
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button type="button" size="sm" variant="outline" onClick={() => openCaseNoteEditStage231H_R1D2_R6(activity)} disabled={!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6 === noteId} data-stage231h-r1d2-r6-edit-note="true">
+                            Edytuj
+                          </Button>
+                          <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() => handleDeleteCaseNoteStage231H_R1D2_R6(activity)} disabled={!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6 === noteId} data-stage231h-r1d2-r6-delete-note="true">
+                            <Trash2 className="h-4 w-4" />
+                            Usuń
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </article>
+                );
+              })}
             </div>
           )}
 

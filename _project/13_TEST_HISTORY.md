@@ -3647,3 +3647,35 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.
 - runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztów zwróconych.
 - test: R1D2 guard/test + R1D2 R4 guard/test + build + diff-check.
 - ryzyko: wcześniejszy R1D2 zabezpieczał pierwszy przycisk, ale nie objął drugiego widocznego przycisku w panelu notatek.
+
+
+## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
+
+Status: DO_APPLY / mass repair from clean origin.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
+
+
+## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
+
+Status: DO_APPLY / guard-ledger sync after R9 partial apply.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
+
+
+## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
+
+Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
+Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
+
+
+## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
+
+Status: DO_APPLY / MASS_GUARD_REGEX_FIX
+Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
+eplace(/s+/g, ' ').
+
+
+## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
+
+Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
+Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
