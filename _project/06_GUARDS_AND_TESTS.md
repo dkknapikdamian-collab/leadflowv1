@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
 
 ## Guard dodany przez V9
@@ -4162,3 +4162,8 @@ Zakres: wspólne okno `Koryguj wpłatę/koszt`, czerwone koszty, update/delete k
 - Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
 - SQL: not touched.
 - Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
+
+
+## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+- Added/updated guards: R1D, R1F, R1F4.
+- Required: R1/R1B/R1D/R1F/R1F4 guard/test + build + diff-check.

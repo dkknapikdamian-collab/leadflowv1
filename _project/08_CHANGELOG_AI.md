@@ -1,4 +1,4 @@
-<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 08_CHANGELOG_AI - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
@@ -4164,3 +4164,7 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 - Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
 - SQL: not touched.
 - Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
+
+
+## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+- Repair after red-guard pushed R1F: normalize commission payment save and make guards CRLF-safe.

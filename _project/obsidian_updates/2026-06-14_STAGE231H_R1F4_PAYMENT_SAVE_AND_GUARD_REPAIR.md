@@ -1,0 +1,22 @@
+﻿# Obsidian payload - STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+
+- data i godzina: 2026-06-14 Europe/Warsaw
+- project_id: CloseFlow / LeadFlow
+- report_id: STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+- status: RED_GUARD_PUSH_REPAIR / DO_TEST_AND_PUSH
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- SQL nie ruszany.
+- Zakres:
+  - naprawa czerwonych guardów po R1F;
+  - wymuszenie wpłaty prowizji jako opłaconej wpłaty;
+  - korekta wpłaty nadal edytuje kwotę, datę i opis;
+  - korekta kosztu nadal edytuje rodzaj, datę, status, kwoty i notatkę.
+- Testy:
+  - R1/R1B/R1D/R1F/R1F4 guardy i testy;
+  - npm run build;
+  - git diff --check.
+- Ryzyka:
+  - etap nie jest zamknięty bez sprawdzenia serwera po deployu;
+  - nie używać direct push;
+  - nie robić kolejnego etapu po czerwonym guardzie.

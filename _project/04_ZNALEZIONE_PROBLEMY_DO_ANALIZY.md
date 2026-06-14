@@ -1,12 +1,12 @@
-# 04_ZNALEZIONE_PROBLEMY_DO_ANALIZY - CloseFlow / LeadFlow
+﻿# 04_ZNALEZIONE_PROBLEMY_DO_ANALIZY - CloseFlow / LeadFlow
 
-Data utworzenia: 2026-06-12 20:28 Europe/Warsaw  
-Ostatnia aktualizacja: 2026-06-12 23:59 Europe/Warsaw  
-Status: ACTIVE  
-Typ: centralny rejestr problemow znalezionych podczas audytow etapow  
-Repo: dkknapikdamian-collab/leadflowv1  
-Branch: dev-rollout-freeze  
-Canonical name: CloseFlow / LeadFlow  
+Data utworzenia: 2026-06-12 20:28 Europe/Warsaw
+Ostatnia aktualizacja: 2026-06-12 23:59 Europe/Warsaw
+Status: ACTIVE
+Typ: centralny rejestr problemow znalezionych podczas audytow etapow
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+Canonical name: CloseFlow / LeadFlow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Cel
@@ -255,3 +255,9 @@ Decyzja: przycisk w railu zmienia się na `Koryguj wpłatę/koszt`; okno pokazuj
 - Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
 - SQL: not touched.
 - Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
+
+
+## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+- Status: DO_TEST_AND_PUSH.
+- Problem: R1F was pushed after red guards; payment save path and guards needed repair.
+- SQL: NOT_TOUCHED.

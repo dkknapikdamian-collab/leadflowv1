@@ -1,0 +1,25 @@
+﻿# STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+
+- Date: 2026-06-14 Europe/Warsaw
+- Status: RED_GUARD_PUSH_REPAIR / DO_TEST_AND_PUSH
+- Repo: dkknapikdamian-collab/leadflowv1
+- Branch: dev-rollout-freeze
+- Previous issue:
+  - STAGE231H_R1F was pushed as 3940f601 after R1D/R1F red guards.
+  - R1D guard was too brittle for CRLF and exact formatting.
+  - R1F guard was too brittle for cost payload formatting.
+  - A remaining finance payment save path still allowed form-controlled type/status.
+- Runtime repair:
+  - force commission payment creation to `type: 'payment'` and `status: 'fully_paid'`;
+  - force payment correction to save normalized paid payment type/status;
+  - keep correction of payment amount/date/note;
+  - keep cost correction full payload: kind/status/amount/reimbursableAmount/reimbursedAmount/currency/incurredAt/note.
+- Guard repair:
+  - R1D guard made CRLF/formatting safe;
+  - R1F guard made cost payload detection robust;
+  - R1F4 guard added for payment save normalization.
+- SQL: NOT_TOUCHED
+- Manual UI required on server after push:
+  - added commission payment is paid without dropdown/status;
+  - payment correction edits amount/date/note;
+  - cost correction edits kind/date/status/note and amounts.

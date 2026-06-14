@@ -1,9 +1,12 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
 function read(rel) {
   return fs.readFileSync(path.join(root, rel), 'utf8');
+}
+function exists(rel) {
+  return fs.existsSync(path.join(root, rel));
 }
 function assert(condition, message) {
   if (!condition) {
@@ -15,7 +18,7 @@ function assert(condition, message) {
 const caseDetail = read('src/pages/CaseDetail.tsx');
 const run = read('_project/runs/STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT.md');
 const obsidian = read('_project/obsidian_updates/2026-06-14_STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT.md');
-const testHistory = fs.existsSync(path.join(root, '_project/13_TEST_HISTORY.md')) ? read('_project/13_TEST_HISTORY.md') : '';
+const testHistory = exists('_project/13_TEST_HISTORY.md') ? read('_project/13_TEST_HISTORY.md') : '';
 
 assert(caseDetail.includes('STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT'), 'missing R1D source marker');
 assert(caseDetail.includes('Koryguj wpłatę/koszt'), 'combined payment/cost modal title missing');
@@ -25,8 +28,8 @@ assert(!caseDetail.includes('<span>Korekta / prowizja</span>'), 'redundant payme
 assert(!caseDetail.includes('id="case-payment-status"'), 'commission payment status select still visible');
 assert(!caseDetail.includes('id="case-payment-type"'), 'commission payment type select still visible');
 assert(caseDetail.includes('data-stage231h-r1d-commission-payment-defaults="status-fully-paid-type-payment"'), 'hidden commission payment default contract missing');
-assert(caseDetail.includes("type: 'payment',\n        status: 'fully_paid',"), 'commission payment save defaults are not fixed as paid payment');
-assert(caseDetail.includes("setCasePaymentDraft({ type: 'payment', amount: '', status: 'fully_paid'"), 'commission payment reset default not fully_paid');
+assert(/type:\s*'payment',\s*status:\s*'fully_paid'/.test(caseDetail), 'commission payment save defaults are not fixed as paid payment');
+assert(/setCasePaymentDraft\(\{\s*type:\s*'payment',\s*amount:\s*'',\s*status:\s*'fully_paid'/.test(caseDetail), 'commission payment reset default not fully_paid');
 assert(caseDetail.includes('data-stage231h-r1c-cost-correction-row="true"'), 'R1C cost row marker missing');
 assert(caseDetail.includes('data-stage231h-r1c-select-cost-correction="true"'), 'R1C cost correction action missing');
 assert(caseDetail.includes('data-stage231h-r1c-delete-cost-from-history="true"'), 'R1C cost delete action missing');

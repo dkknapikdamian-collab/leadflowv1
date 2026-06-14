@@ -1,4 +1,4 @@
-# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
+﻿# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
 
 ## 2026-05-16 - memory protocol and Obsidian mapping closeout
 - Remote GitHub closeout added minimal project memory protocol, minimal stage template, required 08:54 run checkpoint and AGENTS marker.
@@ -1489,11 +1489,11 @@ Hotfix po ręcznym teście Damiana. Przyczyna: UX był za szeroki, a source of t
 
 ## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
 
-Status: DO TESTU LOKALNEGO  
-Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.  
-Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md  
-Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
-Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
+Status: DO TESTU LOKALNEGO
+Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.
+Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md
+Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
+Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs
 SQL: nie ruszano.
 
 ## STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX
@@ -1537,3 +1537,7 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 - Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
 - SQL: not touched.
 - Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
+
+
+## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+- Prepared R1F4 ZIP repair. No direct push by assistant.

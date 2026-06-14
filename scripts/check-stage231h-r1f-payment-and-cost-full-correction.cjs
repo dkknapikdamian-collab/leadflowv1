@@ -1,5 +1,4 @@
-
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 const root = process.cwd();
@@ -27,7 +26,7 @@ assert(source.includes('STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION'), 'CaseD
 assert(fallback.includes('export async function updatePaymentInSupabase'), 'supabase fallback missing updatePaymentInSupabase');
 assert(source.includes('updatePaymentInSupabase,'), 'CaseDetail does not import updatePaymentInSupabase');
 assert(source.includes("return type !== 'refund' && getPaymentAmount(payment) > 0;"), 'commission payments are still blocked from correction');
-assert(source.includes("setPaymentCorrectionFormStage220A27({\n      amount: fin11MoneyInput(amount),\n      paidAt: fin11DateTimeLocal(getCasePaymentDateStage220A27(payment) || new Date().toISOString()),\n      reason: String(payment.note || ''),\n    });") || source.includes("reason: String(payment.note ||"), 'payment correction does not preload original date and note');
+assert(/reason:\s*String\(payment\.note \|\| ''\)/.test(source), 'payment correction does not preload original note');
 assert(source.includes('updatePaymentInSupabase(payload as any)'), 'payment correction does not update the existing payment');
 assert(!source.includes("type: 'refund',\\n        status: 'paid',\\n        amount,"), 'payment correction still creates refund-only record');
 assert(source.includes('<DialogTitle>Korekta wpłaty prowizji</DialogTitle>'), 'payment correction title not updated');
@@ -44,7 +43,9 @@ assert(source.includes('data-stage231h-r1f-cost-correction-kind="true"'), 'cost 
 assert(source.includes('data-stage231h-r1f-cost-correction-date="true"'), 'cost correction date field missing');
 assert(source.includes('const kind = String(caseCostCorrectionFormStage231H_R1C.kind'), 'cost correction does not derive kind from form');
 assert(source.includes('const incurredAt = fin11IsoFromLocal(caseCostCorrectionFormStage231H_R1C.incurredAt'), 'cost correction does not derive incurredAt from form');
-assert(source.includes('kind,\\n        status,') || source.includes('kind,\n        status,'), 'cost correction payload does not save kind');
+
+const costPayloadPattern = /const payload = \{[\s\S]*?id:\s*costId,[\s\S]*?kind,\s*status,\s*amount,[\s\S]*?reimbursableAmount:\s*finalReimbursableAmount,[\s\S]*?reimbursedAmount:\s*finalReimbursedAmount,[\s\S]*?currency,[\s\S]*?incurredAt,[\s\S]*?note,[\s\S]*?\};[\s\S]*?updateCaseCostInSupabase\(payload as any\)/;
+assert(costPayloadPattern.test(source), 'cost correction payload does not save full kind/status/date/note payload');
 assert(source.includes('incurredAt,'), 'cost correction payload does not save incurredAt');
 
 assert(run.includes('STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION'), 'R1F run report missing');
@@ -53,4 +54,4 @@ assert(run.includes('cost kind/date/status/note'), 'R1F run report missing cost 
 assert(obsidian.includes('STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION'), 'R1F Obsidian payload missing');
 assert(obsidian.includes('SQL nie ruszany'), 'R1F Obsidian payload must state SQL untouched');
 
-console.log('STAGE231H_STAGE231H_R1F R2 PASS: payment and cost full correction is guarded.');
+console.log('STAGE231H_R1F PASS: payment and cost full correction is guarded.');

@@ -1,3 +1,5 @@
+﻿const STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR = 'CaseDetail payment save and guard repair after R1F red-guard push';
+void STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR;
 const STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX = 'STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX';
 void STAGE231D2_R5_CASE_DETAIL_COST_SUMMARY_RENDER_HOTFIX;
 const STAGE231D2_R6_CASE_DETAIL_TOP_STRIP_RAIL_LIFT = 'CaseDetail top title strip is narrowed and right rail is lifted into the top row without adding API functions';
@@ -1504,8 +1506,8 @@ export default function CaseDetail() {
         caseId: caseData.id,
         clientId: caseData.clientId || null,
         leadId: caseData.leadId || null,
-        type: financePaymentForm.type,
-        status: financePaymentForm.status,
+        type: 'payment',
+        status: 'fully_paid',
         amount,
         currency: fin11Currency(financePaymentForm.currency),
         paidAt: fin11IsoFromLocal(financePaymentForm.paidAt),
@@ -1617,8 +1619,8 @@ export default function CaseDetail() {
 
     const correctedPaidAt = fin11IsoFromLocal(paymentCorrectionFormStage220A27.paidAt) || new Date().toISOString();
     const currency = fin11Currency(paymentCorrectionTargetStage220A27.currency || caseFinanceSourceStage220A26.currency || 'PLN');
-    const paymentType = getCasePaymentTypeStage220A27(paymentCorrectionTargetStage220A27) || 'payment';
-    const paymentStatus = String(paymentCorrectionTargetStage220A27.status || '').trim() || 'fully_paid';
+    const paymentType = 'payment';
+    const paymentStatus = 'fully_paid';
 
     try {
       setPaymentCorrectionSubmittingStage220A27(true);
@@ -3726,6 +3728,7 @@ async function handleConfirmDeleteCaseRecord() {
               onClick={handleSavePaymentCorrectionStage220A27}
               disabled={paymentCorrectionSubmittingStage220A27 || fin11Amount(paymentCorrectionFormStage220A27.amount) <= 0 || !paymentCorrectionFormStage220A27.paidAt}
               data-stage231h-r1f-save-payment-correction="true"
+              data-stage231h-r1f4-payment-correction-normalized-paid="true"
             >
               {paymentCorrectionSubmittingStage220A27 ? 'Zapisywanie...' : 'Zapisz wpłatę'}
             </Button>
