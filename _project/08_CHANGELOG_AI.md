@@ -4176,3 +4176,11 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 - Synced CaseDetail finance/cost stage ledger after R1F4/R1G.
 - No runtime changes.
 - Renamed future dictation execution stage to R1D2 to avoid R1D collision.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — CaseDetail cost/payment lifecycle product closeout
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- type: docs-only / manual UI confirmation
+- result: CaseDetail cost/payment lifecycle moved from SERVER_UI_REQUIRED to PRODUCT_PASS after Damian confirmed manual tests.
+- runtime changes: none.

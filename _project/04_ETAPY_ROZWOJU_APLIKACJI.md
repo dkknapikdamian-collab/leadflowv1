@@ -478,3 +478,24 @@ Manual UI required before product-level PASS:
 - other cost name required and persisted,
 - reimbursable and non-reimbursable cost summary behavior,
 - no regression in finance modal.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — CaseDetail manual UI PASS
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- status: PRODUCT_PASS / MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / TECH_PUSHED
+- source confirmation: Damian confirmed manual server UI tests: "jest ok testy reczne".
+- closes:
+  - STAGE231H_R1B
+  - STAGE231H_R1C
+  - STAGE231H_R1F
+  - STAGE231H_R1F4
+  - STAGE231H_R1G
+  - STAGE231H_R1G2
+- next allowed stages:
+  1. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+  2. STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
+  3. STAGE231F_R2_GOOGLE_CALENDAR_MULTI_USER_OWNERSHIP_AND_SYNC_CLOSEOUT
+- blocked from being treated as done:
+  - R1D2 note dictation;
+  - R1E reimbursed cost marking.

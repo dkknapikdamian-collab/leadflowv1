@@ -278,3 +278,14 @@ Decyzja: przycisk w railu zmienia się na `Koryguj wpłatę/koszt`; okno pokazuj
 - R1B/R1C/R1F/R1F4/R1G are technically pushed but still require server/manual UI verification.
 - R1D name collision is resolved by routing note dictation restore to STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.
 - Reimbursed cost marking remains STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — closed manual verification risk
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- status: CLOSED_FOR_CASEDETAIL_COST_PAYMENT_CHAIN
+- confirmation: Damian confirmed manual server UI tests: "jest ok testy reczne".
+- resolved risk: CaseDetail R1B/R1C/R1F/R1F4/R1G/R1G2 were technically pushed but needed server/manual UI confirmation.
+- remaining risk:
+  - R1D2 note dictation still not implemented;
+  - R1E reimbursed cost marking still not implemented.

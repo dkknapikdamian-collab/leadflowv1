@@ -1549,3 +1549,10 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 - Closeout/sync stage prepared for CaseDetail finance/cost lifecycle.
 - Runtime R1G remains TECH_PUSHED / SERVER_UI_REQUIRED.
 - Next stages: R1D2 dictation restore, R1E reimbursed cost marking.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- event: Damian confirmed manual UI tests for CaseDetail cost/payment lifecycle after R1G/R1G2.
+- result: product closeout for the current CaseDetail finance/cost chain.

@@ -3614,3 +3614,20 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.
 - Required build: npm run build.
 - Required hygiene: git diff --check.
 - Manual UI remains required before product-level PASS.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — manual UI test result
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- status: PASS_MANUAL_CONFIRMED_BY_DAMIAN
+- confirmation: Damian confirmed manual server UI tests: "jest ok testy reczne".
+- tested:
+  - commission payment add/correction/refresh;
+  - cost Inny with required name;
+  - reimbursable and non-reimbursable cost calculation;
+  - full cost correction persistence after refresh;
+  - test cost delete persistence after refresh.
+- automated chain before manual confirmation:
+  - R1/R1B/R1D-finance/R1F/R1F4/R1G/R1G4/R1G2 PASS;
+  - R1C historical guard/test SKIP because files do not exist;
+  - npm build PASS.

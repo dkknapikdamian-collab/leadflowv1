@@ -1,0 +1,24 @@
+# Obsidian update — STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS
+
+- data i godzina: `2026-06-14 18:55 Europe/Warsaw`
+- nazwa / alias wejściowy: `CaseDetail manual tests OK`
+- entity_id: `DO_POTWIERDZENIA`
+- workspace_id: `DO_POTWIERDZENIA`
+- project_id: `CloseFlow / LeadFlow`
+- idea_id: `NIE_DOTYCZY`
+- report_id: `STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS`
+- canonical_name: `CloseFlow / LeadFlow`
+- folder Obsidiana: `10_PROJEKTY/CloseFlow_Lead_App`
+- mapa główna / pulpit: `DO_POTWIERDZENIA`
+- mapa zależności: `DO_POTWIERDZENIA`
+- ściąga plików: `DO_POTWIERDZENIA`
+- typ wpisu: `manual UI confirmation / product closeout`
+- docelowa ścieżka: `_project/obsidian_updates/2026-06-14_STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS.md`
+- status zapisu: `prepared in repo package`
+- repo: `dkknapikdamian-collab/leadflowv1`
+- branch: `dev-rollout-freeze`
+- local path: `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`
+- testy: `manual UI PASS confirmed by Damian: "jest ok testy reczne"; R1G3 guard/test/build required`
+- audyt ryzyk po etapie: `Close only CaseDetail cost/payment lifecycle. Do not mark R1D2 note dictation or R1E reimbursed cost marking as completed.`
+- czego nie ruszano: `runtime, SQL, LeadDetail, Google Calendar, billing/trial, AI Drafts`
+- następny krok: `commit/push docs-only manual PASS, then choose R1D2 or R1E`

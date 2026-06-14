@@ -4,7 +4,7 @@ Date: 2026-06-14 Europe/Warsaw
 Project: CloseFlow / LeadFlow
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
-Status: DOCS_ONLY_CLOSEOUT / TECH_SYNC_READY / SERVER_UI_REQUIRED
+Status: MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / PRODUCT_PASS / TECH_PUSHED
 
 ## Purpose
 
@@ -67,3 +67,22 @@ Manual UI remains required for commission payment correction, custom other cost 
 ## R5 repair note
 
 R5 fixes R1F4 legacy guard compatibility by preserving exact RED_GUARD_PUSH_REPAIR token while keeping current status honest as TECH_PUSHED / SERVER_UI_REQUIRED. Runtime remains untouched.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — manual UI confirmation
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- confirmation: Damian confirmed manual server UI tests: "jest ok testy reczne".
+- result: PRODUCT_PASS for CaseDetail cost/payment lifecycle after R1G2 docs closeout.
+- confirmed area:
+  - commission payment add/correction persists after refresh;
+  - cost type Inny exposes required cost name;
+  - reimbursable cost adds to costs incurred, costs to reimburse, and total to collect;
+  - non-reimbursable cost adds only to costs incurred;
+  - cost correction persists type, custom name, date, amount, reimbursable flag, status, and note after refresh;
+  - deleted test cost does not return after refresh.
+- not included in this PASS:
+  - STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME;
+  - STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING;
+  - Google Calendar closeout.
+- risk audit: this closes the already shipped cost/payment lifecycle only. Future reimbursement marking must not reuse R1D name and must keep the finance summary source of truth intact.

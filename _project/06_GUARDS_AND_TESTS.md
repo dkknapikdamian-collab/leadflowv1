@@ -4176,3 +4176,11 @@ Zakres: wspólne okno `Koryguj wpłatę/koszt`, czerwone koszty, update/delete k
 - Added guard: scripts/check-stage231h-r1g2-case-detail-cost-payment-closeout.cjs.
 - Added test: tests/stage231h-r1g2-case-detail-cost-payment-closeout.test.cjs.
 - Guard blocks claiming full CaseDetail PASS without SERVER_UI_REQUIRED/manual status.
+
+
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — manual confirmation guard
+
+- date: 2026-06-14 18:55 Europe/Warsaw
+- added guard: scripts/check-stage231h-r1g3-case-detail-manual-ui-pass.cjs
+- added test: tests/stage231h-r1g3-case-detail-manual-ui-pass.test.cjs
+- purpose: keep the manual UI confirmation and next-stage boundary documented without touching runtime.
