@@ -60,6 +60,7 @@ import './styles/closeflow-tasks-right-rail-grouped-list-source-truth-stage178.c
 import './styles/closeflow-secondary-pages-full-width-stage181ad.css';
 import './styles/closeflow-app-viewport-scale-75-stage201.css';
 import './styles/closeflow-ops-badges-and-icons-stretch-stage204.css';
+import './styles/stage231h-r1e-case-finance-correction-modal-final.css';
 
 const FORCE_LOGOUT_NOTICE_SESSION_KEY = 'closeflow:force-logout-notice';
 const STAGE228R21_LEADDETAIL_STATIC_IMPORT_UNBLOCK = 'LeadDetail is statically imported to bypass lazy export/chunk runtime failure';
