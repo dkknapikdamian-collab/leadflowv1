@@ -34,3 +34,14 @@ Manual: dodaj brak, usun brak z overflow, hard refresh, sprawdz srednia szerokos
 
 Ryzyko zamykane: dwie sciezki Brak, zly delete missing_item w overflow, kruchy CSS work-row.
 Ryzyko pozostawione: actorId/ownerId w aktywnosciach wymaga osobnego etapu.
+
+## 2026-06-14 R4C - red-push repair
+
+Status: DO_TEST_AND_PUSH
+Cel: naprawa po commicie 62f7917a i nieudanym R4B, gdzie R4 guard/test były czerwone.
+Zmiany:
+- usunięto legacy MissingItemQuickActionModal z LeadDetail,
+- usunięto lokalny opener/zapis braku z LeadDetail,
+- zostawiono Brak wyłącznie przez ContextActionDialogs/blocker,
+- poprawiono overflow delete missing_item na handleDeleteLeadMissingItemStage228R15(entry),
+- dopięto CSS work-row actions/status/content dla średnich szerokości.

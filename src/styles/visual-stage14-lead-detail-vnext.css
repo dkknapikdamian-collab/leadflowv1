@@ -351,7 +351,7 @@
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr);
   gap: 14px;
-  align-items: center;
+  align-items: start;
   border: 1px solid #e4e7ec;
   border-radius: 20px;
   background: #fff;
@@ -710,7 +710,7 @@
 
 .lead-detail-work-risk {
   display: inline-flex;
-  align-items: center;
+  align-items: start;
   justify-content: center;
   min-width: max-content;
   padding: 8px 11px;
@@ -1574,7 +1574,7 @@
 .lead-detail-header-copy {
   min-width: 0;
   display: flex;
-  align-items: center;
+  align-items: start;
   gap: 12px;
 }
 
@@ -2628,7 +2628,7 @@
 
 .lead-detail-header-contact-grid .lead-detail-header-meta-item {
   display: inline-flex;
-  align-items: center;
+  align-items: start;
   gap: 8px;
   min-height: 34px;
   padding: 7px 11px;
@@ -3797,5 +3797,59 @@
   .lead-detail-work-row__status,
   .lead-detail-work-row__actions {
     grid-column: 1 / -1;
+  }
+}
+
+/* STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX */
+.lead-detail-work-row__icon {
+  grid-column: 1;
+  grid-row: 1 / span 3;
+  align-self: start;
+}
+
+.lead-detail-work-row__content {
+  grid-column: 2;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.lead-detail-work-row__status {
+  grid-column: 2;
+  justify-self: start;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lead-detail-work-row__actions {
+  grid-column: 2;
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (min-width: 1280px) {
+  .lead-detail-work-row {
+    grid-template-columns: 38px minmax(0, 1fr) max-content minmax(0, auto);
+    align-items: center;
+  }
+
+  .lead-detail-work-row__icon {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .lead-detail-work-row__content {
+    grid-column: 2;
+  }
+
+  .lead-detail-work-row__status {
+    grid-column: 3;
+  }
+
+  .lead-detail-work-row__actions {
+    grid-column: 4;
+    justify-content: flex-end;
   }
 }

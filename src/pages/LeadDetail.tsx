@@ -1,4 +1,4 @@
-﻿const STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS = 'LeadDetail uses linkedTasks/linkedEvents real anchors for no-flicker work item add/delete and silent refresh';
+const STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS = 'LeadDetail uses linkedTasks/linkedEvents real anchors for no-flicker work item add/delete and silent refresh';
 void STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS;
 const STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH = 'LeadDetail active Braki source is linkedTasks only; activity timeline cannot resurrect deleted missing items';
 const STAGE228R53_LEAD_DETAIL_CONTEXT_SAVED_RECORD_NO_FLICKER = 'LeadDetail consumes savedRecord from context-action-saved and locally appends linkedTasks/linkedEvents before silent refresh';
@@ -101,7 +101,6 @@ import { toast } from 'sonner';
 import Layout from '../components/Layout';
 import EntityContactCard from '../components/entity-contact-card';
 import QuickActionsBar from '../components/detail/QuickActionsBar';
-import { MissingItemQuickActionModal } from '../components/detail/MissingItemQuickActionModal';
 import { actionButtonClass, modalFooterClass} from '../components/entity-actions';
 import { openContextQuickAction, type ContextActionKind } from '../components/ContextActionDialogs';
 import { Button } from '../components/ui/button';
@@ -123,7 +122,6 @@ import { normalizeWorkItem } from '../lib/work-items/normalize';
 import { getNearestPlannedAction } from '../lib/nearest-action';
 import { getActivityTimelineDescription, getActivityTimelineTitle } from '../lib/activity-timeline';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { startLeadToCaseHandoff } from '../lib/lead-case-handoff';
 import {
   deleteEventFromSupabase,
@@ -742,11 +740,6 @@ export default function LeadDetail() {
   const [isEditing, setIsEditing] = useState(false);
   const [isCreateCaseOpen, setIsCreateCaseOpen] = useState(false);
   const [createCasePending, setCreateCasePending] = useState(false);
-  const [missingItemDialogOpen, setMissingItemDialogOpen] = useState(false);
-  const [missingItemTitle, setMissingItemTitle] = useState('');
-  const [missingItemNote, setMissingItemNote] = useState('');
-  const [missingItemError, setMissingItemError] = useState('');
-  const [missingItemSaving, setMissingItemSaving] = useState(false);
   const [editLead, setEditLead] = useState<any>(null);
   const [linkCaseId, setLinkCaseId] = useState('');
   const [linkingCase, setLinkingCase] = useState(false);
@@ -1008,84 +1001,6 @@ export default function LeadDetail() {
     if (leadOperationalArchive) return toast.error('Dodawaj dalsze wydarzenia w sprawie.');
     openLeadContextAction('event');
   };
-
-  const openLeadMissingItemDialog = () => {
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (leadOperationalArchive) return toast.error('Braki dla obsługiwanego tematu dodawaj w sprawie.');
-    setMissingItemTitle('');
-    setMissingItemNote('');
-    setMissingItemError('');
-    setMissingItemDialogOpen(true);
-  };
-
-  const closeLeadMissingItemDialog = () => {
-    if (missingItemSaving) return;
-    setMissingItemDialogOpen(false);
-    setMissingItemTitle('');
-    setMissingItemNote('');
-    setMissingItemError('');
-  };
-
-  const handleSaveLeadMissingItem = async () => {
-    if (!leadId) return;
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    const workspaceId = requireWorkspaceId(workspace);
-    if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
-
-    let draft;
-    try {
-      draft = buildMissingItemModalDraft(
-        { entityType: 'lead', entityId: leadId, entityLabel: getLeadName(lead) },
-        { title: missingItemTitle, note: missingItemNote },
-      );
-    } catch (error: any) {
-      const message = error?.message || 'Wpisz, czego brakuje.';
-      setMissingItemError(message);
-      return;
-    }
-
-    const now = new Date().toISOString();
-    try {
-      setMissingItemSaving(true);
-      setMissingItemError('');
-      await insertTaskToSupabase({
-        title: draft.title,
-        type: 'missing_item',
-        status: 'missing_item',
-        priority: 'high',
-        leadId,
-        caseId: serviceCaseId || null,
-        clientId: lead?.clientId ? String(lead.clientId) : null,
-        scheduledAt: now,
-        dueAt: now,
-        workspaceId,
-      });
-      await insertActivityToSupabase({
-        leadId,
-        caseId: serviceCaseId || null,
-        clientId: lead?.clientId ? String(lead.clientId) : null,
-        eventType: 'missing_item_created',
-        payload: {
-          type: 'missing_item',
-          marker: 'stage227c3a_lead_missing_item',
-          title: draft.title,
-          note: draft.note,
-          entityType: draft.entityType,
-          entityId: draft.entityId,
-          persistenceTarget: draft.persistenceTarget,
-        },
-        workspaceId,
-      });
-      toast.success('Brak dodany');
-      closeLeadMissingItemDialog();
-      await loadLead({ silent: true });
-    } catch (error: any) {
-      toast.error(`Nie udało się zapisać braku: ${error?.message || 'REQUEST_FAILED'}`);
-    } finally {
-      setMissingItemSaving(false);
-    }
-  };
-
   const handleResolveLeadMissingItemStage228R13 = async (entry: any) => {
     if (!hasAccess) return toast.error('Trial wygasł.');
     const task = entry?.raw || entry || {};
@@ -2390,6 +2305,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                       <p>{leadBlockerEntries.length === 1 ? '1 aktywna blokada' : `${leadBlockerEntries.length} aktywne blokady`}</p>
                       <span className="lead-detail-pill lead-detail-work-risk-danger">Wymaga ruchu</span>
                       <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true">
+                        <span hidden data-stage231g-r4-context-blocker-only="true" />
                         <button type="button" className="lead-detail-inline-action" onClick={() => handleResolveLeadMissingItemStage228R13(leadBlockerEntries[0])} disabled={!hasAccess || linkedEntryActionId !== null}>Rozwiąż brak</button>
                         <button type="button" className="lead-detail-inline-action" onClick={() => handleDeleteLeadMissingItemStage228R15(leadBlockerEntries[0])} disabled={!hasAccess || linkedEntryActionId !== null}>Usuń brak</button>
                       </div>
@@ -2400,6 +2316,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                       <p>Nie ma jawnych braków blokujących kolejny ruch.</p>
                       <span className="lead-detail-pill lead-detail-work-risk-good">Czysto</span>
                       <div className="lead-detail-card-inline-actions" data-stage231g-blocker-action="true">
+                        <span hidden data-stage231g-r4-context-blocker-only="true" />
                         <button type="button" className="lead-detail-inline-action" onClick={() => openLeadContextAction('blocker')} disabled={!hasAccess}>Dodaj brak</button>
                       </div>
                     </>
@@ -2450,7 +2367,11 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
                                       )}
-                          <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                                                    {isMissingItemTimelineEntry(entry) ? (
+                            <LeadActionButton data-stage231g-r4-overflow-missing-delete="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
+                          ) : (
+                            <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>
+                          )}
                         </div>
                       </article>
                     ))
@@ -2698,24 +2619,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
           </aside>
           ) : null}
         </div>
-
-
-        <div data-stage227c3a-lead-missing-modal-instance="true">
-          <MissingItemQuickActionModal
-            open={missingItemDialogOpen}
-            context={{ entityType: 'lead', entityId: leadId || '', entityLabel: getLeadName(lead) }}
-            titleValue={missingItemTitle}
-            noteValue={missingItemNote}
-            error={missingItemError}
-            isSaving={missingItemSaving}
-            onTitleChange={(value) => { setMissingItemTitle(value); if (missingItemError) setMissingItemError(''); }}
-            onNoteChange={setMissingItemNote}
-            onCancel={closeLeadMissingItemDialog}
-            onSubmit={handleSaveLeadMissingItem}
-          />
-        </div>
-
-        <Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
+<Dialog open={isCreateCaseOpen} onOpenChange={setIsCreateCaseOpen}>
           <DialogContent aria-describedby={undefined}>
             <DialogHeader><DialogTitle>Rozpocznij obsługę</DialogTitle>
 <DialogDescription>Uzupełnij dane i zapisz zmiany w kartotece leada.</DialogDescription></DialogHeader>
