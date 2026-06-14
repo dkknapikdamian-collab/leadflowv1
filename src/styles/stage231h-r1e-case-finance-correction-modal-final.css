@@ -1,0 +1,45 @@
+/* STAGE231H_R1E_CASE_FINANCE_CORRECTION_MODAL_FINAL
+   Server hotfix: the correction list must stay readable on deploy.
+   The clipped chip in the screenshot is not a button. It is the cost metadata chip "Do zwrotu".
+   List rows keep only Date + Value. Detailed refund/status fields stay in the correction form/data model.
+*/
+
+.case-finance-source-modal-stage220a30--history [data-stage231h-r1c-cost-meta="true"] span:nth-of-type(n + 3) {
+  display: none !important;
+}
+
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__row {
+  grid-template-columns: minmax(0, 1fr) max-content !important;
+}
+
+.case-finance-source-modal-stage220a30--history .case-payment-history-modal-stage220a27b__meta {
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.case-finance-source-modal-stage220a30--history select,
+.case-finance-source-modal-stage220a30--history [role="combobox"] {
+  display: none !important;
+}
+
+.case-finance-source-modal-stage220a30--correction label:has([data-stage231h-r1c-cost-correction-status]),
+.case-finance-source-modal-stage220a30--correction [data-stage231h-r1c-cost-correction-status] {
+  display: none !important;
+}
+
+.case-finance-source-modal-stage220a30--correction [data-stage231h-r1c-cost-correction-summary="true"] > div:nth-of-type(2) {
+  display: none !important;
+}
+
+.case-finance-source-modal-stage220a30--correction [data-stage231h-r1c-cost-correction-summary="true"] {
+  background: #f8fafc !important;
+  border-color: #dbe5f3 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-finance-source-modal-stage220a30--correction [data-stage231h-r1c-cost-correction-summary="true"] strong,
+.case-finance-source-modal-stage220a30--correction [data-stage231h-r1c-cost-correction-summary="true"] span {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
