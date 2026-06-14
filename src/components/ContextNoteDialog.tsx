@@ -13,6 +13,8 @@ import type { TaskCreateDialogContext } from './TaskCreateDialog';
 const STAGE85_CONTEXT_NOTE_DIALOG_SHARED = 'Shared note dialog for lead, client and case detail context actions';
 const STAGE27E_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
 const STAGE27A_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
+const STAGE231H_R1D2_R11_CONTEXT_NOTE_FOLLOWUP_HANDOFF = 'ContextNoteDialog passes saved note record so CaseDetail can open the same follow-up prompt as dictation notes';
+void STAGE231H_R1D2_R11_CONTEXT_NOTE_FOLLOWUP_HANDOFF;
 
 type ContextNoteDialogProps = {
   open: boolean;

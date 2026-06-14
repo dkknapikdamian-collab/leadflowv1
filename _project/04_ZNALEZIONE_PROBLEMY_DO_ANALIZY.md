@@ -337,3 +337,9 @@ Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina
 - Status: TECH_STAGE_IN_PROGRESS
 - Zakres: CaseDetail action map, note follow-up display/source map, quick note local append, finance loading flicker removal.
 - Audyt: R10 failed on brittle anchor. R10C uses regex/whole-class source-aware patch and guard.
+
+### STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD
+- data: 2026-06-14T20:31:30.095Z
+- status: DO_TEST_AND_PUSH
+- zakres: notatki CaseDetail pokazują do 5 wpisów, mają tooltip pełnej treści, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w działaniach pokazuje treść notatki jako opis.
+- guard: scripts/check-stage231h-r1d2-r11-note-panel-followup-prompt-map-guard.cjs

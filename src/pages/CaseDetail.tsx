@@ -236,6 +236,8 @@ const STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR = 'CaseDeta
 void STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR;
 const STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING = 'CaseDetail maps all note actions to activities, displays note follow-up correctly and keeps loading free of finance panel flicker';
 void STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING;
+const STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD = 'CaseDetail notes panel shows 5 notes with hover text, quick-note opens the same follow-up prompt and note follow-up cards show the note preview';
+void STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD;
 
 
 function getCaseNoteSpeechRecognitionConstructorStage231H_R1D2() {
@@ -329,6 +331,9 @@ type TaskRecord = {
   leadId?: string | null;
   clientId?: string | null;
   workspaceId?: string | null;
+  notePreview?: string | null;
+  description?: string | null;
+  payload?: Record<string, any> | null;
 };
 
 type EventRecord = {
@@ -1303,6 +1308,30 @@ function dedupeCaseWorkItems(workItems: WorkItem[]) {
   }
   return Array.from(byKey.values()).sort((first, second) => first.sortTime - second.sortTime);
 }
+
+function normalizeCaseNotePreviewStage231H_R1D2_R11(value: unknown) {
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function isTaskNoteFollowUpStage231H_R1D2_R11(task: TaskRecord) {
+  const taskType = String(task.type || '').trim().toLowerCase();
+  const taskTitle = String(task.title || '').trim().toLowerCase();
+  return taskType === 'follow_up' || taskTitle.startsWith('follow-up po notatce') || taskTitle.startsWith('follow-up:');
+}
+
+function getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task: TaskRecord) {
+  const payload = ((task as any).payload && typeof (task as any).payload === 'object') ? ((task as any).payload as Record<string, any>) : {};
+  return normalizeCaseNotePreviewStage231H_R1D2_R11(
+    (task as any).notePreview ||
+    (task as any).note_preview ||
+    (task as any).description ||
+    payload.notePreview ||
+    payload.note_preview ||
+    payload.note ||
+    payload.content ||
+    payload.description
+  );
+}
 const CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13 = 'CaseActivity notes belong only to history rows, never to workItems cards';
 void CLOSEFLOW_CASE_HISTORY_NO_ACTIVITY_NOTES_IN_WORKITEMS_2026_05_13;
 
@@ -1314,14 +1343,13 @@ void CLOSEFLOW_CASE_DETAIL_REWRITE_BUILD_WORKITEMS_FINAL_2026_05_13;
 
 function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseItem[]) {
   const taskItems: WorkItem[] = tasks.map((task) => {
-    const taskTypeStage231H_R1D2_R10C = String(task.type || '').trim().toLowerCase();
-    const taskTitleStage231H_R1D2_R10C = String(task.title || '').trim();
-    const isNoteFollowUpStage231H_R1D2_R10C = taskTypeStage231H_R1D2_R10C === 'follow_up' || taskTitleStage231H_R1D2_R10C.toLowerCase().startsWith('follow-up po notatce') || taskTitleStage231H_R1D2_R10C.toLowerCase().startsWith('follow-up:');
+    const isNoteFollowUpStage231H_R1D2_R10C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
+    const noteFollowUpPreviewStage231H_R1D2_R11 = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task);
     return {
       id: `task-${task.id}`,
       kind: 'task',
       title: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.title || 'Zadanie bez tytułu'),
-      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Notatka · follow-up przypięty do sprawy' : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
+      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka · follow-up przypięty do sprawy') : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
       status: getTaskStatusLabel(task.status),
       statusClass: getStatusClass(task.status),
       dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
@@ -2224,6 +2252,7 @@ export default function CaseDetail() {
       if (savedRecord && (kind === 'task' || kind === 'event' || kind === 'note')) {
         if (kind === 'note') {
           const savedNote = savedRecord as CaseActivity;
+          const savedNotePreviewStage231H_R1D2_R11 = normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(savedNote) || (savedNote.payload as any)?.content || (savedNote.payload as any)?.note || '');
           const normalizedNote = {
             ...savedNote,
             caseId: savedNote.caseId || caseId || null,
@@ -2240,6 +2269,9 @@ export default function CaseDetail() {
           } as CaseActivity;
           if (String(normalizedNote.caseId || '') === String(caseId || '') && isCaseOperatorNoteStage231H_R1D2_R6(normalizedNote)) {
             setActivities((current) => sortActivities([normalizedNote, ...current]));
+            if (savedNotePreviewStage231H_R1D2_R11) {
+              setPendingNoteFollowUp({ note: savedNotePreviewStage231H_R1D2_R11, createdAt: new Date().toISOString() });
+            }
           }
         } else {
           const normalized = { ...savedRecord, ...normalizeWorkItem(savedRecord) } as TaskRecord & EventRecord;
@@ -2305,7 +2337,35 @@ export default function CaseDetail() {
       }),
     [effectiveStatus, events, items, tasks],
   );
-  const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasks, plannedEvents, items)), [items, openTasks, plannedEvents]);
+  const noteFollowUpPreviewByTaskStage231H_R1D2_R11 = useMemo(() => {
+    const byKey = new Map<string, string>();
+    for (const activity of activities) {
+      const payload = getCaseNotePayloadStage231H_R1D2_R6(activity);
+      const eventType = String(activity.eventType || payload.eventType || '').trim().toLowerCase();
+      if (!eventType.includes('case_note_follow_up')) continue;
+      const preview = normalizeCaseNotePreviewStage231H_R1D2_R11(payload.notePreview || payload.note || payload.content || payload.description);
+      if (!preview) continue;
+      const taskId = String(payload.taskId || payload.task_id || '').trim();
+      if (taskId) byKey.set('task:' + taskId, preview);
+      const scheduledAt = String(payload.scheduledAt || payload.dueAt || payload.reminderAt || payload.date || '').trim();
+      if (scheduledAt) byKey.set('time:' + scheduledAt.slice(0, 16), preview);
+    }
+    return byKey;
+  }, [activities]);
+
+  const openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11 = useMemo(() => {
+    return openTasks.map((task) => {
+      if (!isTaskNoteFollowUpStage231H_R1D2_R11(task)) return task;
+      const taskId = String(task.id || '').trim();
+      const taskWhen = String(getTaskMainDate(task) || task.reminderAt || task.dueAt || task.date || '').trim();
+      const preview = getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
+        (taskId ? noteFollowUpPreviewByTaskStage231H_R1D2_R11.get('task:' + taskId) : '') ||
+        (taskWhen ? noteFollowUpPreviewByTaskStage231H_R1D2_R11.get('time:' + taskWhen.slice(0, 16)) : '') || '';
+      return preview ? ({ ...task, notePreview: preview, description: preview } as TaskRecord) : task;
+    });
+  }, [noteFollowUpPreviewByTaskStage231H_R1D2_R11, openTasks]);
+
+  const workItems = useMemo(() => dedupeCaseWorkItems(buildWorkItems(openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11, plannedEvents, items)), [items, openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11, plannedEvents]);
   const caseFinance = useMemo(() => {
     const expected = Number(caseFinanceSourceStage220A26.contractValue || 0);
     const paid = Number(caseFinanceSourceStage220A26.clientPaidAmount || 0);
@@ -2692,6 +2752,9 @@ export default function CaseDetail() {
       clientId: caseData?.clientId || null,
       leadId: caseData?.leadId || null,
       workspaceId: workspaceIdStage231H_R1D2_R6 || undefined,
+      notePreview: notePreviewStage231H_R1D2_R10C,
+      description: notePreviewStage231H_R1D2_R10C,
+      payload: { kind: 'case_note_follow_up', notePreview: notePreviewStage231H_R1D2_R10C },
     };
     try {
       setIsCreatingNoteFollowUp(true);
@@ -3465,7 +3528,7 @@ async function handleConfirmDeleteCaseRecord() {
               </div>
               </div>
               <div className="case-service-notes-panel" data-case-service-notes-panel="true">
-            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="3">
+            <section className="case-detail-section-card stage217-case-notes-panel" data-stage217-case-notes-panel="true" data-case-notes-panel="true" data-case-notes-preview-limit="5">
               <div className="case-detail-section-head stage219-case-notes-head" data-stage219-case-notes-head="true">
                 <div>
                   <h2>Notatki sprawy</h2>
@@ -3517,13 +3580,13 @@ async function handleConfirmDeleteCaseRecord() {
                 <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.</div>
               ) : (
                 <div className="stage217-case-notes-list">
-                  {caseNoteItems.slice(0, 3).map((note) => (
+                  {caseNoteItems.slice(0, 5).map((note) => (
                     <article className="stage217-case-note-row" key={note.id}>
                       <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
                       <div>
                         <span className="case-note-kind-label-stage231h-r1d2-r10c" data-stage231h-r1d2-r10c-note-kind-label="true">Notatka</span>
                         <time>{formatDateTime(note.occurredAt, 'Brak daty')}</time>
-                        <p>{note.body}</p>
+                        <p title={note.body}>{note.body}</p>
                       </div>
                     </article>
                   ))}
