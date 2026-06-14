@@ -1,4 +1,4 @@
-﻿# 04_ZNALEZIONE_PROBLEMY_DO_ANALIZY - CloseFlow / LeadFlow
+# 04_ZNALEZIONE_PROBLEMY_DO_ANALIZY - CloseFlow / LeadFlow
 
 Data utworzenia: 2026-06-12 20:28 Europe/Warsaw
 Ostatnia aktualizacja: 2026-06-12 23:59 Europe/Warsaw
@@ -266,3 +266,15 @@ Decyzja: przycisk w railu zmienia się na `Koryguj wpłatę/koszt`; okno pokazuj
 - Status: DO_TEST_AND_PUSH.
 - Problem: cost kind other had no name field; reimbursable flag existed in state but not visible in UI.
 - SQL: NOT_TOUCHED.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+- CaseDetail finance/cost chain required ledger synchronization after runtime pushes.
+- R1D name collision identified: note dictation must execute as R1D2.
+- Reimbursed/returned cost marking remains a separate runtime stage R1E.
+- Full product PASS is blocked until server manual UI validation is done.
+
+## 2026-06-14 - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+- Status: DOCS_ONLY_CLOSEOUT / SERVER_UI_REQUIRED_AFTER_PUSH.
+- R1B/R1C/R1F/R1F4/R1G are technically pushed but still require server/manual UI verification.
+- R1D name collision is resolved by routing note dictation restore to STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.
+- Reimbursed cost marking remains STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING.

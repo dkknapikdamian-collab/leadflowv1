@@ -1,6 +1,6 @@
 # STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
 
-Status: PASS_TECHNICAL_PUSH_READY / MANUAL_UI_REQUIRED
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
 Date: 2026-06-14 Europe/Warsaw
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
@@ -59,3 +59,9 @@ git diff --check
 - Two UI entries for case_item are accepted only as one storage contract, not as two different data models.
 - Cost edit/delete is deliberately not claimed.
 - Manual UI test still required before product-level closeout.
+
+## R1G2_CLOSEOUT_STATUS_SYNC
+
+- Status changed to TECH_PUSHED / SERVER_UI_REQUIRED.
+- This does not claim product-level manual UI PASS.
+- R1B is part of the CaseDetail finance/cost lifecycle closeout chain.

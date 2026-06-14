@@ -1,4 +1,4 @@
-﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 08_CHANGELOG_AI - CloseFlow / LeadFlow
 
 ## 2026-05-16 - Memory protocol and Obsidian mapping closeout
@@ -4171,3 +4171,8 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 
 ## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
 - Added cost other-name field and explicit reimbursable checkbox in CaseDetail cost create/correct flows.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+- Synced CaseDetail finance/cost stage ledger after R1F4/R1G.
+- No runtime changes.
+- Renamed future dictation execution stage to R1D2 to avoid R1D collision.

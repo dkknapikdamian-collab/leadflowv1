@@ -437,3 +437,44 @@ Zakaz zakresu: bez SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail
 - Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
 - SQL: NOT_TOUCHED.
 - Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.
+
+## CaseDetail finance/cost closeout chain - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+
+Status: ACTIVE_CLOSEOUT / SERVER_UI_REQUIRED
+
+This section is the canonical CaseDetail finance/cost sequence after the R1F4 and R1G pushes. It prevents future developers from using loose chat order as the source of truth.
+
+### STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
+Scope: contract value / shared finance path repair. Does not claim cost lifecycle PASS.
+
+### STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
+Scope: cost rows in correction modal, cost correct/delete path.
+
+### STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
+Scope: commission payment correction and full operational cost correction.
+
+### STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
+Scope: repair red-guard pushed state and normalize payment save/correction.
+
+### STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
+Scope: custom name for cost kind Other and visible reimbursable checkbox.
+
+### STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+Status: NEXT_AFTER_R1G2_AND_MANUAL_CHECK
+Scope: restore real CaseDetail note dictation. Uses R1D2 to avoid collision with R1D finance compact stage.
+
+### STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
+Status: AFTER_R1D2_OR_AFTER_CASEDETAIL_MANUAL_CLOSEOUT
+Scope: mark costs as returned/reimbursed, including partial/full returned amount.
+
+Manual UI required before product-level PASS:
+- commission payment add/correct/refresh,
+- cost add/correct/delete/refresh,
+- other cost name required and persisted,
+- reimbursable and non-reimbursable cost summary behavior,
+- no regression in finance modal.

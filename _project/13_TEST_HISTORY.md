@@ -1,4 +1,4 @@
-﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 13_TEST_HISTORY - CloseFlow / LeadFlow
 
 ## V6
@@ -3608,3 +3608,9 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.
 
 ## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
 - Required: R1/R1B/R1D/R1F/R1F4/R1G guards/tests PASS, build PASS, diff-check PASS, server UI after deploy.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+- Required automated chain: R1/R1B/R1C/R1D-finance/R1F/R1F4/R1G/R1G2.
+- Required build: npm run build.
+- Required hygiene: git diff --check.
+- Manual UI remains required before product-level PASS.

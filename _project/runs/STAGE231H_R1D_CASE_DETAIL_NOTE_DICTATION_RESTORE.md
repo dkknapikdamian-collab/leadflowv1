@@ -79,3 +79,13 @@ Docelowo dopisac do:
 - `08_HISTORIA_ZMIAN` - decyzja Damiana o przywroceniu dyktowania.
 - `09_TESTY_DO_WYKONANIA_I_WYNIKI` - manualny test dyktowania i autosave po 2 sekundach ciszy.
 - `11_RYZYKA_BUGI_I_DLUG_TECHNICZNY` - ryzyko Web Speech, duplikatow i wylaczonej funkcji.
+
+## R1G2_ID_COLLISION_RESOLUTION
+
+- Future execution ID changed to STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.
+- Reason: R1D is already used by finance correction modal compact guard/stage.
+- Scope stays the same: restore real CaseDetail note dictation with SpeechRecognition and autosave after silence.
+
+## R1D2 rename note
+
+Future runtime stage for dictation must use STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME because STAGE231H_R1D is already used by finance modal compact cleanup.

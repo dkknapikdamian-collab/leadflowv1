@@ -1,7 +1,8 @@
-﻿# STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
+# STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
 
 - Date: 2026-06-14 Europe/Warsaw
-- Status: LOCAL_PACKAGE_PREPARED / DO_TEST_AND_PUSH
+- Status: TECH_PUSHED / SERVER_UI_REQUIRED
 - Repo: dkknapikdamian-collab/leadflowv1
 - Branch: dev-rollout-freeze
 - SQL: NOT_TOUCHED
@@ -46,3 +47,15 @@ R1F4 is pushed and green in the uploaded log. The next active runtime issue is c
 
 ## Audit after stage
 To be completed after apply/push and server verification.
+
+## R1G2_CLOSEOUT_STATUS_SYNC
+
+- Status changed to TECH_PUSHED / SERVER_UI_REQUIRED.
+- R1G was pushed as f384ae0f and is guarded by R1G and R1G4.
+- Manual server verification is still required before product PASS.
+
+## Audit after stage
+
+- Automated guards/build passed before push.
+- Manual server verification still required.
+- Next runtime stages: R1D2 note dictation restore, then R1E reimbursed cost marking.

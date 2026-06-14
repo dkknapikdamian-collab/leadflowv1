@@ -1,6 +1,7 @@
+Status: TECH_PUSHED / SERVER_UI_REQUIRED
 # STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION
 
-- Status: LOCAL_PACKAGE_PREPARED / DO_TEST_AND_PUSH / SERVER_UI_REQUIRED
+- Status: TECH_PUSHED / SERVER_UI_REQUIRED
 - Date: 2026-06-14 16:55 Europe/Warsaw
 - Repo: dkknapikdamian-collab/leadflowv1
 - Branch: dev-rollout-freeze
@@ -55,3 +56,8 @@ After push/deploy:
 - If PATCH `/api/payments` rejects updates for current schema, backend payment update repair is required.
 - If payment notes are not persisted by API normalization, payments endpoint must be checked next.
 - This stage does not close R1C2 memory; it fixes a runtime gap discovered during server UI verification.
+
+## R1G2_CLOSEOUT_STATUS_SYNC
+
+- Status changed to TECH_PUSHED / SERVER_UI_REQUIRED.
+- Payment and cost correction runtime is guarded, but server manual UI remains required.

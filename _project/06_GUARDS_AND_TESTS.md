@@ -1,4 +1,4 @@
-﻿<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
+<!-- STAGE231B0_R7_CASE_ARCHIVE_RESTORE_NAVIGATION -->
 # 06_GUARDS_AND_TESTS - CloseFlow / LeadFlow
 
 ## Guard dodany przez V9
@@ -4171,3 +4171,8 @@ Zakres: wspólne okno `Koryguj wpłatę/koszt`, czerwone koszty, update/delete k
 ## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
 - Added guard: scripts/check-stage231h-r1g-cost-other-name-and-reimbursable-flag.cjs.
 - Added test: tests/stage231h-r1g-cost-other-name-and-reimbursable-flag.test.cjs.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+- Added guard: scripts/check-stage231h-r1g2-case-detail-cost-payment-closeout.cjs.
+- Added test: tests/stage231h-r1g2-case-detail-cost-payment-closeout.test.cjs.
+- Guard blocks claiming full CaseDetail PASS without SERVER_UI_REQUIRED/manual status.

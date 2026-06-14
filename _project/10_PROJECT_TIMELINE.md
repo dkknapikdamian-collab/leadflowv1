@@ -1,4 +1,4 @@
-﻿# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
+# 10_PROJECT_TIMELINE - CloseFlow / LeadFlow
 
 ## 2026-05-16 - memory protocol and Obsidian mapping closeout
 - Remote GitHub closeout added minimal project memory protocol, minimal stage template, required 08:54 run checkpoint and AGENTS marker.
@@ -1544,3 +1544,8 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 
 ## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
 - Prepared runtime stage for correct cost reimbursement calculation and custom other cost labels.
+
+## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC
+- Closeout/sync stage prepared for CaseDetail finance/cost lifecycle.
+- Runtime R1G remains TECH_PUSHED / SERVER_UI_REQUIRED.
+- Next stages: R1D2 dictation restore, R1E reimbursed cost marking.
