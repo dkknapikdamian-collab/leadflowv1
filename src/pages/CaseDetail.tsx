@@ -77,6 +77,7 @@ import {
   fetchTasksFromSupabase,
   createPaymentInSupabase,
   deletePaymentFromSupabase,
+  updatePaymentInSupabase,
   insertActivityToSupabase,
   insertCaseItemToSupabase,
   insertTaskToSupabase,
@@ -222,6 +223,8 @@ const STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS = 'case delete action uses
 void STAGE220A32_CASE_FINANCE_CONTROLS_DELETE_LABELS;
 const STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT = 'case finance correction modal removes redundant status chips from cost and commission payment rows';
 void STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT;
+const STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION = 'case finance correction modal edits payment amount date note and cost kind date amount status note';
+void STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION;
 
 const STAGE220A31_FINANCE_MODAL_SAFE_INSET_AND_COMMISSION_BASIS = 'finance modals keep safe inner spacing and show commission as remuneration, not transaction amount to collect';
 const STAGE228R5_CLIENT_CREATE_OPENS_CASE_FINANCE_MODAL = 'case detail auto-opens finance editor when entered from new client starter case';
@@ -506,7 +509,7 @@ function getCasePaymentSignedAmountStage220A27(payment: CasePaymentRecord) {
 }
 function canCorrectCasePaymentStage220A27(payment: CasePaymentRecord) {
   const type = getCasePaymentTypeStage220A27(payment);
-  return type !== 'refund' && type !== 'commission' && getPaymentAmount(payment) > 0;
+  return type !== 'refund' && getPaymentAmount(payment) > 0;
 }
 
 const STAGE231H_R1C_COST_CORRECTION_MODAL = 'CaseDetail correction modal includes payments and editable/deletable costs with red cost rows';
@@ -1392,7 +1395,7 @@ export default function CaseDetail() {
   const [caseCostSubmittingStage231D2, setCaseCostSubmittingStage231D2] = useState(false);
   const [caseCostDraftStage231D2, setCaseCostDraftStage231D2] = useState({ kind: 'other', status: 'incurred', amount: '', reimbursable: true, note: '' });
   const [caseCostCorrectionTargetStage231H_R1C, setCaseCostCorrectionTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
-  const [caseCostCorrectionFormStage231H_R1C, setCaseCostCorrectionFormStage231H_R1C] = useState({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+  const [caseCostCorrectionFormStage231H_R1C, setCaseCostCorrectionFormStage231H_R1C] = useState({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
   const [caseCostCorrectionSubmittingStage231H_R1C, setCaseCostCorrectionSubmittingStage231H_R1C] = useState(false);
   const [caseCostDeleteTargetStage231H_R1C, setCaseCostDeleteTargetStage231H_R1C] = useState<CaseCostRecord | null>(null);
   const [caseCostDeleteSubmittingStage231H_R1C, setCaseCostDeleteSubmittingStage231H_R1C] = useState(false);
@@ -1524,8 +1527,8 @@ export default function CaseDetail() {
     setPaymentCorrectionTargetStage220A27(payment);
     setPaymentCorrectionFormStage220A27({
       amount: fin11MoneyInput(amount),
-      paidAt: fin11DateTimeLocal(new Date().toISOString()),
-      reason: '',
+      paidAt: fin11DateTimeLocal(getCasePaymentDateStage220A27(payment) || new Date().toISOString()),
+      reason: String(payment.note || ''),
     });
   }
 
@@ -1593,76 +1596,75 @@ export default function CaseDetail() {
   async function handleSavePaymentCorrectionStage220A27() {
     if (!caseData?.id || !paymentCorrectionTargetStage220A27 || paymentCorrectionSubmittingStage220A27) return;
 
+    const paymentId = String(paymentCorrectionTargetStage220A27.id || '').trim();
     const amount = fin11Amount(paymentCorrectionFormStage220A27.amount);
-    const originalAmount = getPaymentAmount(paymentCorrectionTargetStage220A27);
-    const reason = paymentCorrectionFormStage220A27.reason.trim();
+    const note = paymentCorrectionFormStage220A27.reason.trim();
 
-    if (amount <= 0) {
-      toast.error('Podaj kwotę korekty.');
+    if (!paymentId) {
+      toast.error('Nie można skorygować wpłaty bez identyfikatora.');
       return;
     }
 
-    if (amount > originalAmount) {
-      toast.error('Korekta nie może być większa niż korygowana wpłata.');
+    if (amount <= 0) {
+      toast.error('Podaj kwotę wpłaty.');
       return;
     }
 
     if (!paymentCorrectionFormStage220A27.paidAt) {
-      toast.error('Podaj datę korekty.');
+      toast.error('Podaj datę wpłaty.');
       return;
     }
 
-    if (!reason) {
-      toast.error('Podaj powód korekty.');
-      return;
-    }
-
-    const correctionPaidAt = fin11IsoFromLocal(paymentCorrectionFormStage220A27.paidAt) || new Date().toISOString();
+    const correctedPaidAt = fin11IsoFromLocal(paymentCorrectionFormStage220A27.paidAt) || new Date().toISOString();
     const currency = fin11Currency(paymentCorrectionTargetStage220A27.currency || caseFinanceSourceStage220A26.currency || 'PLN');
-    const originalLabel = formatMoney(originalAmount, currency);
-    const correctionLabel = formatMoney(amount, currency);
-    const originalId = String(paymentCorrectionTargetStage220A27.id || 'brak-id');
+    const paymentType = getCasePaymentTypeStage220A27(paymentCorrectionTargetStage220A27) || 'payment';
+    const paymentStatus = String(paymentCorrectionTargetStage220A27.status || '').trim() || 'fully_paid';
 
     try {
       setPaymentCorrectionSubmittingStage220A27(true);
 
-      await createPaymentInSupabase({
+      const payload = {
+        id: paymentId,
         caseId: caseData.id,
-        clientId: caseData.clientId || null,
-        leadId: caseData.leadId || null,
-        type: 'refund',
-        status: 'paid',
+        clientId: paymentCorrectionTargetStage220A27.clientId || caseData.clientId || null,
+        leadId: paymentCorrectionTargetStage220A27.leadId || caseData.leadId || null,
+        type: paymentType,
+        status: paymentStatus,
         amount,
         currency,
-        paidAt: correctionPaidAt,
-        dueAt: null,
-        note: '[KOREKTA WPŁATY] Korekta: -' + correctionLabel + '. Oryginalna wpłata: ' + originalLabel + '. ID oryginału: ' + originalId + '. Powód: ' + reason,
-      } as any);
+        paidAt: correctedPaidAt,
+        dueAt: paymentCorrectionTargetStage220A27.dueAt || null,
+        note,
+      };
+
+      const updated = await updatePaymentInSupabase(payload as any);
+      setPayments((previous) => previous.map((payment) => String(payment?.id || '') === paymentId ? ({ ...payment, ...payload, ...(updated || {}) } as any) : payment));
+      setCasePayments((previous) => previous.map((payment) => String(payment?.id || '') === paymentId ? ({ ...payment, ...payload, ...(updated || {}) } as CasePaymentRecord) : payment));
 
       await insertActivityToSupabase({
         caseId: caseData.id,
         clientId: caseData.clientId || null,
         leadId: caseData.leadId || null,
         actorType: 'operator',
-        eventType: 'payment_correction_added',
+        eventType: 'payment_updated',
         payload: {
-          title: 'Korekta wpłaty',
-          amount: -amount,
-          correctionAmount: amount,
+          title: 'Skorygowano wpłatę prowizji',
+          paymentId,
+          paymentType,
+          amount,
           currency,
-          paidAt: correctionPaidAt,
-          originalPaymentId: originalId,
-          originalAmount,
-          reason,
+          paidAt: correctedPaidAt,
+          note,
+          source: 'STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION',
         },
       } as any).catch(() => null);
 
       await reloadCaseFinanceData(caseData);
       setPaymentCorrectionTargetStage220A27(null);
       setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
-      toast.success('Korekta wpłaty zapisana');
+      toast.success('Wpłata prowizji skorygowana');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać korekty wpłaty.');
+      toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować wpłaty prowizji.');
     } finally {
       setPaymentCorrectionSubmittingStage220A27(false);
     }
@@ -1850,10 +1852,12 @@ export default function CaseDetail() {
     if (!guardCaseDetailWriteAccess('skorygować kosztu sprawy')) return;
     setCaseCostCorrectionTargetStage231H_R1C(cost);
     setCaseCostCorrectionFormStage231H_R1C({
+      kind: String(cost.kind || (cost as any).type || 'other'),
       amount: fin11MoneyInput(getCaseCostAmountStage231H_R1C(cost)),
       reimbursableAmount: fin11MoneyInput(getCaseCostReimbursableAmountStage231H_R1C(cost)),
       reimbursedAmount: fin11MoneyInput(getCaseCostReimbursedAmountStage231H_R1C(cost)),
       status: String(cost.status || 'incurred'),
+      incurredAt: fin11DateTimeLocal(getCaseCostDateStage231H_R1C(cost) || new Date().toISOString()),
       note: getCaseCostNoteStage231H_R1C(cost),
     });
   }
@@ -1877,6 +1881,8 @@ export default function CaseDetail() {
     const reimbursableAmount = fin11Amount(caseCostCorrectionFormStage231H_R1C.reimbursableAmount);
     const reimbursedRaw = fin11Amount(caseCostCorrectionFormStage231H_R1C.reimbursedAmount);
     const status = String(caseCostCorrectionFormStage231H_R1C.status || 'incurred');
+    const kind = String(caseCostCorrectionFormStage231H_R1C.kind || target.kind || (target as any).type || 'other');
+    const incurredAt = fin11IsoFromLocal(caseCostCorrectionFormStage231H_R1C.incurredAt) || getCaseCostDateStage231H_R1C(target) || new Date().toISOString();
     const finalReimbursableAmount = reimbursableAmount > 0 ? reimbursableAmount : amount;
     const finalReimbursedAmount = status === 'reimbursed' && reimbursedRaw <= 0 ? finalReimbursableAmount : Math.min(reimbursedRaw, finalReimbursableAmount);
     const note = caseCostCorrectionFormStage231H_R1C.note.trim();
@@ -1893,14 +1899,14 @@ export default function CaseDetail() {
         id: costId,
         caseId: caseData.id,
         clientId: caseData.clientId || null,
-        kind: String(target.kind || (target as any).type || 'other'),
+        kind,
         status,
         amount,
         reimbursable: finalReimbursableAmount > 0,
         reimbursableAmount: finalReimbursableAmount,
         reimbursedAmount: finalReimbursedAmount,
         currency,
-        incurredAt: getCaseCostDateStage231H_R1C(target) || new Date().toISOString(),
+        incurredAt,
         reimbursedAt: finalReimbursedAmount > 0 ? new Date().toISOString() : null,
         note,
       };
@@ -1912,11 +1918,11 @@ export default function CaseDetail() {
         leadId: caseData.leadId || null,
         actorType: 'operator',
         eventType: 'case_cost_corrected',
-        payload: { title: 'Skorygowano koszt sprawy', costId, amount, reimbursableAmount: finalReimbursableAmount, reimbursedAmount: finalReimbursedAmount, currency, status, note },
+        payload: { title: 'Skorygowano koszt sprawy', costId, kind, amount, reimbursableAmount: finalReimbursableAmount, reimbursedAmount: finalReimbursedAmount, currency, status, incurredAt, note },
       } as any).catch(() => null);
       await refreshCaseData();
       setCaseCostCorrectionTargetStage231H_R1C(null);
-      setCaseCostCorrectionFormStage231H_R1C({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+      setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
       toast.success('Koszt sprawy skorygowany');
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować kosztu sprawy.');
@@ -3658,7 +3664,7 @@ async function handleConfirmDeleteCaseRecord() {
           data-cf-vst-dialog="true"
          aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Korekta wpłaty</DialogTitle>
+            <DialogTitle>Korekta wpłaty prowizji</DialogTitle>
           </DialogHeader>
 
           <div className="case-payment-correction-modal-stage220a27__summary" data-stage220a27-payment-correction-summary="true">
@@ -3674,31 +3680,31 @@ async function handleConfirmDeleteCaseRecord() {
 
           <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
-              <span>Wartość korekty</span>
+              <span>Kwota wpłaty</span>
               <Input
                 inputMode="decimal"
                 value={paymentCorrectionFormStage220A27.amount}
                 onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, amount: event.target.value }))}
                 placeholder="np. 500"
-                data-stage220a27-payment-correction-amount="true"
+                data-stage231h-r1f-payment-correction-amount="true"
               />
             </label>
             <label className="case-finance-edit-field">
-              <span>Data korekty</span>
+              <span>Data wpłaty</span>
               <Input
                 type="datetime-local"
                 value={paymentCorrectionFormStage220A27.paidAt}
                 onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, paidAt: event.target.value }))}
-                data-stage220a27-payment-correction-date="true"
+                data-stage231h-r1f-payment-correction-date="true"
               />
             </label>
             <label className="case-finance-edit-field case-finance-edit-field--wide">
-              <span>Powód korekty</span>
+              <span>Opis / dopisek do wpłaty</span>
               <Textarea
                 value={paymentCorrectionFormStage220A27.reason}
                 onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, reason: event.target.value }))}
-                placeholder="Np. pomyłka w kwocie, błędnie dodana wpłata, zwrot klientowi"
-                data-stage220a27-payment-correction-reason="true"
+                placeholder="Np. za co jest wpłata, korekta daty albo dopisek do prowizji"
+                data-stage231h-r1f-payment-correction-note="true"
               />
             </label>
           </div>
@@ -3718,10 +3724,10 @@ async function handleConfirmDeleteCaseRecord() {
             <Button
               type="button"
               onClick={handleSavePaymentCorrectionStage220A27}
-              disabled={paymentCorrectionSubmittingStage220A27 || fin11Amount(paymentCorrectionFormStage220A27.amount) <= 0 || !paymentCorrectionFormStage220A27.paidAt || !paymentCorrectionFormStage220A27.reason.trim()}
-              data-stage220a27-save-payment-correction="true"
+              disabled={paymentCorrectionSubmittingStage220A27 || fin11Amount(paymentCorrectionFormStage220A27.amount) <= 0 || !paymentCorrectionFormStage220A27.paidAt}
+              data-stage231h-r1f-save-payment-correction="true"
             >
-              {paymentCorrectionSubmittingStage220A27 ? 'Zapisywanie...' : 'Zapisz korektę'}
+              {paymentCorrectionSubmittingStage220A27 ? 'Zapisywanie...' : 'Zapisz wpłatę'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -3733,7 +3739,7 @@ async function handleConfirmDeleteCaseRecord() {
         onOpenChange={(open) => {
           if (!open && !caseCostCorrectionSubmittingStage231H_R1C) {
             setCaseCostCorrectionTargetStage231H_R1C(null);
-            setCaseCostCorrectionFormStage231H_R1C({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+            setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
           }
         }}
       >
@@ -3758,6 +3764,32 @@ async function handleConfirmDeleteCaseRecord() {
           </div>
 
           <div className="case-finance-edit-form case-finance-source-form-stage220a30">
+            <label className="case-finance-edit-field">
+              <span>Rodzaj kosztu</span>
+              <select
+                className="cf-vst-input case-finance-edit-select"
+                value={caseCostCorrectionFormStage231H_R1C.kind}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, kind: event.target.value }))}
+                data-stage231h-r1f-cost-correction-kind="true"
+              >
+                <option value="court_fee">Opłata sądowa</option>
+                <option value="notary">Notariusz</option>
+                <option value="travel">Dojazd</option>
+                <option value="document">Dokumenty</option>
+                <option value="office">Biuro</option>
+                <option value="marketing">Marketing</option>
+                <option value="other">Inny</option>
+              </select>
+            </label>
+            <label className="case-finance-edit-field">
+              <span>Data kosztu</span>
+              <Input
+                type="datetime-local"
+                value={caseCostCorrectionFormStage231H_R1C.incurredAt}
+                onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, incurredAt: event.target.value }))}
+                data-stage231h-r1f-cost-correction-date="true"
+              />
+            </label>
             <label className="case-finance-edit-field">
               <span>Kwota kosztu</span>
               <Input
@@ -3821,7 +3853,7 @@ async function handleConfirmDeleteCaseRecord() {
               variant="outline"
               onClick={() => {
                 setCaseCostCorrectionTargetStage231H_R1C(null);
-                setCaseCostCorrectionFormStage231H_R1C({ amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', note: '' });
+                setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', amount: '', reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
               }}
               disabled={caseCostCorrectionSubmittingStage231H_R1C}
             >

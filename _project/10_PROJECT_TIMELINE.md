@@ -1531,3 +1531,9 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 - Decision: remove the redundant "Korekta / prowizja" fallback label from payment rows.
 - SQL: NOT_TOUCHED.
 - Manual test: open Koryguj wpłatę/koszt, verify rows fit, add commission payment, add/correct/delete cost, refresh.
+
+## STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION — 2026-06-14 16:40 Europe/Warsaw
+- Status: LOCAL_APPLIED / DO_TEST_AND_PUSH / SERVER_UI_REQUIRED
+- Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
+- SQL: not touched.
+- Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
