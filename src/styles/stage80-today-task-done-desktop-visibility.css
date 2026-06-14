@@ -37,3 +37,31 @@
     transform: none !important;
   }
 }
+
+/* STAGE231H_R1E_FINANCE_CORRECTION_MODAL_SERVER_HOTFIX
+   Serwerowy hotfix UI: użytkownik na deployu dalej widział dropdown/status w modalu korekt.
+   Ten plik jest importowany bezpośrednio przez main.tsx, więc działa na serwerze bez lokalnego dev servera.
+   SQL: NOT_TOUCHED.
+*/
+.case-finance-source-modal-stage220a30--correction .case-finance-edit-field:has(select),
+.case-finance-source-modal-stage220a30--correction select,
+.case-finance-source-modal-stage220a30--history select,
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-status] {
+  display: none !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-summary] > div:nth-child(2) {
+  display: none !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-summary] {
+  background: #f8fafc !important;
+  border-color: #dbe5f3 !important;
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+.case-finance-source-modal-stage220a30 [data-stage231h-r1c-cost-correction-summary] * {
+  color: #0f172a !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
