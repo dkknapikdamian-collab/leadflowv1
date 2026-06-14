@@ -129,3 +129,13 @@ NASTEPNY KROK:
 - Naprawiono filtrowanie zadan i wydarzen po `case_id`, jawny blad pobierania oraz natychmiastowe dopisanie utworzonego dzialania.
 - Dodano migracje kanonicznych kolumn `case_items`, wspolny kontrakt kolorow finansowych, porzadek notatek i ellipsis leadow.
 - Backup: `_local_backups/DO_POTWIERDZENIA_CASE_FINANCE_UI_20260613_142044/`.
+
+## 2026-06-14 08:55 Europe/Warsaw - SQL case_items kanoniczne kolumny i test reczny
+- Status: SQL_EXECUTED_SUCCESS / MANUAL_TEST_PASS.
+- SQL: `SQL-20260614-001` zapisany w `_project/15_SQL_LEDGER_AND_TESTED_SQL.md`.
+- Zakres: `public.case_items` - kanoniczne kolumny, w tym `description`, `order_index`, `user_id`, `owner_user_id`, `created_by_user_id`.
+- Wynik Supabase: migracja wykonana komunikatem `Success. No rows returned`.
+- Guard SQL: PASS; wymagane kolumny zwrocily status `OK`.
+- Test reczny: ZALICZONY wedlug potwierdzenia Damiana.
+- Ryzyko: `sort_order` i `order_index` istnieja rownolegle; nie usuwac zadnej kolumny bez osobnego audytu mapperow runtime.
+- Nastepny krok: kazdy kolejny SQL zapisywac w centralnym SQL ledgerze i dopisywac wynik guarda/testu.
