@@ -1260,7 +1260,10 @@ useEffect(() => {
 }, [linkedTasks]);
 
 const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
-  const leadNextActionEntries = useMemo(() => activeLeadWorkEntries.filter((entry) => entry.kind === 'task' || entry.kind === 'event'), [activeLeadWorkEntries]);
+  const leadNextActionEntries = useMemo(
+    () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && (entry.kind === 'task' || entry.kind === 'event')),
+    [activeLeadWorkEntries],
+  );
   const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
   const leadActiveWorkPreviewEntries = activeLeadWorkEntries.slice(0, 5);
   const nearestPlannedAction = useMemo(() => getNearestPlannedAction({
@@ -1270,9 +1273,9 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
     events: linkedEvents,
   }), [associatedCase?.id, leadId, linkedEvents, linkedTasks]);
   const nextTimelineEntry = useMemo(() => {
-    if (!nearestPlannedAction?.id) return timeline.find((entry) => !isDoneStatus(entry.status)) || null;
-    return timeline.find((entry) => String(entry.raw?.id || '') === nearestPlannedAction.id) || timeline.find((entry) => !isDoneStatus(entry.status)) || null;
-  }, [nearestPlannedAction, timeline]);
+    if (!nearestPlannedAction?.id) return leadNextActionEntries[0] || null;
+    return leadNextActionEntries.find((entry) => String(entry.raw?.id || '') === nearestPlannedAction.id) || leadNextActionEntries[0] || null;
+  }, [leadNextActionEntries, nearestPlannedAction]);
   const leadWorkCenter = useMemo(() => {
     const nowMs = Date.now();
     const activityDates = activities

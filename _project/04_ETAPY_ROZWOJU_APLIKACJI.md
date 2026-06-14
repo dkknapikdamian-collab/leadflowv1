@@ -1,11 +1,11 @@
 # 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
-Data utworzenia: 2026-06-12 23:59 Europe/Warsaw  
-Status: ACTIVE / CANONICAL  
-Typ: centralna kolejność etapów rozwoju aplikacji  
-Repo: dkknapikdamian-collab/leadflowv1  
-Branch: dev-rollout-freeze  
-Canonical name: CloseFlow / LeadFlow  
+Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
+Status: ACTIVE / CANONICAL
+Typ: centralna kolejność etapów rozwoju aplikacji
+Repo: dkknapikdamian-collab/leadflowv1
+Branch: dev-rollout-freeze
+Canonical name: CloseFlow / LeadFlow
 Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 
 ## Cel pliku
@@ -413,9 +413,9 @@ Warunek zamknięcia: build, typecheck, guard stage231g, node test, git diff --ch
 
 ## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
 
-Status: DO TESTU LOKALNEGO  
-Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.  
-Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md  
-Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
-Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
+Status: DO TESTU LOKALNEGO
+Cel: domknac karte leada jako operacyjne centrum pracy: potencjal, nastepny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dzialan.
+Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md
+Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
+Test: tests/stage231g-r3-lead-detail-function-mapping.test.cjs
 SQL: nie ruszano.

@@ -1,0 +1,24 @@
+# Obsidian update - STAGE231G_R3_HOTFIX_MISSING_ITEM_GUARD_R4
+
+- data i godzina: 2026-06-14 11:30 Europe/Warsaw
+- nazwa / alias wejściowy: STAGE231G_R3 Hotfix R4 - missing_item guard
+- entity_id: DO_POTWIERDZENIA
+- workspace_id: DO_POTWIERDZENIA
+- project_id: CloseFlow / LeadFlow
+- idea_id: nie dotyczy
+- report_id: STAGE231G_R3_HOTFIX_MISSING_ITEM_GUARD_R4
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: 10_PROJEKTY/CloseFlow_Lead_App
+- mapa główna / pulpit: 01_PULPIT - CloseFlow_Lead_App
+- mapa zależności: 06_MAPA_ZALEZNOSCI - CloseFlow_Lead_App
+- ściąga plików: 07_SCIAGA_PLIKOW - CloseFlow_Lead_App
+- typ wpisu: hotfix po czerwonym guardzie i po bledzie paczki R3
+- docelowa ścieżka: _project/runs/STAGE231G_R3_HOTFIX_MISSING_ITEM_GUARD_R4.md
+- status zapisu: do zastosowania lokalnie i push po PASS
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: guard STAGE231G_R3, node test STAGE231G_R3, build, selective git diff --check
+- audyt ryzyk po etapie: missing_item nie moze wracac jako zwykly nastepny task; push po czerwonym guardzie byl bledem procesu
+- czego nie ruszano: SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail, globalny layout
+- następny krok: uruchomic apply R4, potem push R4 po PASS
