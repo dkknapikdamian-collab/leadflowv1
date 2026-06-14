@@ -3538,3 +3538,12 @@ Do wykonania:
 3. Wpisz nową wartość, zapisz, zrób hard refresh.
 4. Kafelek Potencjał i Finanse leada pokazują nową wartość.
 5. W sekcji Najbliższe działania przyciski, w tym Zrobione, są wyrównane na desktopie.
+
+## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
+
+Status: DO TESTU LOKALNEGO  
+Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.  
+Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md  
+Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
+Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
+SQL: nie ruszano.

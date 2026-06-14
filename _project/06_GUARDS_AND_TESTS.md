@@ -4109,3 +4109,10 @@ Dodano:
 - tests/stage231g-r7-potential-only-source-and-workrow.test.cjs
 
 Chroni: potencjał otwierany jako osobny modal tylko do wartości, zapis value + deal_value w API, brak otwierania pełnej edycji leada z CTA potencjału oraz desktopowe wyrównanie akcji wiersza.
+
+## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping guard
+
+- guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
+- test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs
+- klasa bĹ‚Ä™du: martwe/Ĺşle podpiÄ™te akcje LeadDetail, zĹ‚y parser potencjaĹ‚u, missing_item mieszany ze zwykĹ‚ym taskiem, zlewajÄ…ce siÄ™ wiersze dziaĹ‚aĹ„.
+- status: do uruchomienia lokalnie po apply.

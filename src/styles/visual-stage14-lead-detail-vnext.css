@@ -1,4 +1,4 @@
-/* LEAD_DETAIL_VISUAL_REBUILD_STAGE14 */
+﻿/* LEAD_DETAIL_VISUAL_REBUILD_STAGE14 */
 
 .lead-detail-vnext-page {
   min-height: 100%;
@@ -3757,5 +3757,45 @@
     justify-content: flex-start !important;
     flex-wrap: wrap !important;
     min-width: 0 !important;
+  }
+}
+/* STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT */
+.lead-detail-work-row__icon {
+  flex: 0 0 auto;
+}
+
+.lead-detail-work-row__content {
+  min-width: 0;
+}
+
+.lead-detail-work-row__content h3 {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.lead-detail-work-row__status {
+  justify-self: start;
+}
+
+.lead-detail-work-row__actions {
+  min-width: 0;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1120px) {
+  .lead-detail-work-row__status,
+  .lead-detail-work-row__actions {
+    grid-column: 2;
+  }
+
+  .lead-detail-work-row__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .lead-detail-work-row__status,
+  .lead-detail-work-row__actions {
+    grid-column: 1 / -1;
   }
 }

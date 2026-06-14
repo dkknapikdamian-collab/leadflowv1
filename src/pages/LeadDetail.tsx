@@ -1,4 +1,4 @@
-const STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS = 'LeadDetail uses linkedTasks/linkedEvents real anchors for no-flicker work item add/delete and silent refresh';
+﻿const STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS = 'LeadDetail uses linkedTasks/linkedEvents real anchors for no-flicker work item add/delete and silent refresh';
 void STAGE228R50_LEAD_DETAIL_NO_FLICKER_REAL_ANCHORS;
 const STAGE228R19R2_MISSING_ITEM_ACTIVE_SOURCE_TRUTH = 'LeadDetail active Braki source is linkedTasks only; activity timeline cannot resurrect deleted missing items';
 const STAGE228R53_LEAD_DETAIL_CONTEXT_SAVED_RECORD_NO_FLICKER = 'LeadDetail consumes savedRecord from context-action-saved and locally appends linkedTasks/linkedEvents before silent refresh';
@@ -1532,7 +1532,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
   };
 
   const parsePotentialStage231GR7 = (value: string) => {
-    const normalized = String(value || '').replace(/s+/g, '').replace(',', '.');
+    const normalized = String(value || '').replace(/\s+/g, '').replace(',', '.');
     const parsed = Number(normalized);
     if (!Number.isFinite(parsed) || parsed < 0) return null;
     return Math.round(parsed * 100) / 100;
@@ -2430,7 +2430,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                         data-lead-work-item-overdue={entry.isOverdue ? 'true' : 'false'}
                          data-stage231g-work-row-layout="true"
                       >
-                        <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                        <span className="lead-detail-work-row__icon lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                         <div className="lead-detail-work-row__content lead-detail-work-content">
                           <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'}</small>
                           <h3>{entry.title}</h3>
@@ -2521,7 +2521,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
                               <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
                                 {group.items.map((entry) => (
                                   <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true">
-                                    <span className="lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
+                                    <span className="lead-detail-work-row__icon lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                                     <div className="lead-detail-work-row__content lead-detail-work-content">
                                       <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>
                                       <h3>{entry.title}</h3>

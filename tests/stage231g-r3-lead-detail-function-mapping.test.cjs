@@ -1,0 +1,39 @@
+﻿const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = process.cwd();
+const lead = fs.readFileSync(path.join(root, 'src/pages/LeadDetail.tsx'), 'utf8');
+const css = fs.readFileSync(path.join(root, 'src/styles/visual-stage14-lead-detail-vnext.css'), 'utf8');
+
+test('STAGE231G_R3 potential edit is wired to the same source of truth in card and finance panel', () => {
+  assert.match(lead, /data-stage231g-potential-edit-action="true"[\s\S]*handleStartPotentialEditingStage231G/);
+  assert.match(lead, /data-stage231g-finance-edit-potential="true"[\s\S]*handleStartPotentialEditingStage231G/);
+  assert.match(lead, /updateLeadInSupabase\(\{[\s\S]*dealValue: amount/);
+  assert.match(lead, /replace\(\/\\s\+\/g, ''\)/);
+  assert.doesNotMatch(lead, /replace\(\/s\+\/g, ''\)/);
+});
+
+test('STAGE231G_R3 missing_item is not a normal next action and uses missing delete path', () => {
+  assert.match(lead, /const leadNextActionEntries = activeLeadWorkEntries\.filter\(\(entry\) => !isMissingItemTimelineEntry\(entry\)\);/);
+  assert.match(lead, /handleDeleteLeadMissingItemStage228R15\(entry\)/);
+  assert.match(lead, /hardDeleteTaskFromSupabase\(taskId\)/);
+});
+
+test('STAGE231G_R3 work rows have separate icon content status actions blocks', () => {
+  for (const marker of ['lead-detail-work-row__icon', 'lead-detail-work-row__content', 'lead-detail-work-row__status', 'lead-detail-work-row__actions']) {
+    assert.ok(lead.includes(marker), `${marker} missing in LeadDetail`);
+  }
+  assert.ok(css.includes('.lead-detail-work-row__content'));
+  assert.ok(css.includes('overflow-wrap: anywhere'));
+});
+
+test('STAGE231G_R3 top cards and quick actions have real actions', () => {
+  for (const marker of ['data-stage231g-next-step-action="true"', 'data-stage231g-risk-action="true"', 'data-stage231g-blocker-action="true"']) {
+    assert.ok(lead.includes(marker), `${marker} missing`);
+  }
+  for (const key of ["key: 'note'", "key: 'task'", "key: 'event'", "key: 'missing'", "key: 'lost'", "key: 'service'"]) {
+    assert.ok(lead.includes(key), `${key} quick action missing`);
+  }
+});

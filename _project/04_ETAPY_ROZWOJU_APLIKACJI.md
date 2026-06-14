@@ -410,3 +410,12 @@ Status: DO_WDROZENIA_LOKALNIE_R2
 Cel: domknąć LeadDetail jako centrum pracy: potencjał, następny krok, ryzyko i blokady mają mieć jasne CTA, a wiersze działań nie mogą się zlewać. R2 dodatkowo dopina widoczny potencjał przy dodawaniu leada.
 
 Warunek zamknięcia: build, typecheck, guard stage231g, node test, git diff --check, test ręczny Damiana.
+
+## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
+
+Status: DO TESTU LOKALNEGO  
+Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.  
+Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md  
+Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
+Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
+SQL: nie ruszano.

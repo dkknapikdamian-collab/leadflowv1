@@ -4108,3 +4108,12 @@ RYZYKO:
 - LeadDetail: CTA Potencjał otwiera mały modal tylko do wartości, oparty o ten sam Dialog/DialogFooter pattern co inne modale.
 - api/leads: zapis potencjału synchronizuje value i deal_value przy POST/PATCH.
 - LeadDetail CSS: poprawiono desktopowe wyrównanie akcji wierszy, żeby Zrobione nie spadało samotnie poza linię.
+
+## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
+
+Status: DO TESTU LOKALNEGO  
+Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.  
+Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md  
+Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
+Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
+SQL: nie ruszano.

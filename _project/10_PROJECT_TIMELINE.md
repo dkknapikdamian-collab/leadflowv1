@@ -1486,3 +1486,12 @@ Etap przygotowany jako lokalny ZIP R2 po błędzie parsera PowerShell w R1. Zakr
 ## 2026-06-14 10:45 Europe/Warsaw - STAGE231G R7 - potential-only modal and value source
 
 Hotfix po ręcznym teście Damiana. Przyczyna: UX był za szeroki, a source of truth wartości leada był niespójny pomiędzy value i deal_value. Warunek zamknięcia: R7 guard, R7 node test, STAGE231G guard, build, git diff --check i test ręczny potencjału.
+
+## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
+
+Status: DO TESTU LOKALNEGO  
+Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.  
+Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md  
+Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs  
+Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs  
+SQL: nie ruszano.
