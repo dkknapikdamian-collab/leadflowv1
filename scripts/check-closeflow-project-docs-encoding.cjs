@@ -9,21 +9,18 @@ const files = [
   '_project/13_TEST_HISTORY.md',
 ];
 
-const forbidden = /Ä‚|Ă„|Ă˘|Äą|Ĺ|Â|â€|â‚¬|Ë|�/;
-
+const forbidden = /Ä‚|Ă„|Ă˘|Äą|Ä…|Ä‡|Ä™|Äł|Ä›|Ĺ|Ăł|Ăź|Ă|Â|â€|â‚¬|â„¢|Ë|�/;
 let ok = true;
 
 for (const file of files) {
   const text = fs.readFileSync(file, 'utf8');
-  const lines = text.split(/\r?\n/);
-  lines.forEach((line, index) => {
+  text.split(/\r?\n/).forEach((line, index) => {
     if (forbidden.test(line)) {
-      console.error(`CLOSEFLOW_PROJECT_DOCS_ENCODING_FAIL: ${file}:${index + 1}: ${line.slice(0, 180)}`);
+      console.error(`CLOSEFLOW_PROJECT_DOCS_ENCODING_FAIL: ${file}:${index + 1}: ${line.slice(0, 220)}`);
       ok = false;
     }
   });
 }
 
 if (!ok) process.exit(1);
-
 console.log('CLOSEFLOW_PROJECT_DOCS_ENCODING_PASS: central _project files have no guarded mojibake tokens.');

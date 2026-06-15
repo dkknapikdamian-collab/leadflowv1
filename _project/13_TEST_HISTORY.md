@@ -1181,7 +1181,7 @@ Data: 2026-06-05 21:05 Europe/Warsaw
 ### FAKTY
 - Naprawiono rozjazd: wartość transakcji/sprawy nie jest prowizją właściciela.
 - ClientDetail pokazuje prowizję należną, wpłaconą prowizję i prowizję do zapłaty jako osobne wartości.
-- Karta sprawy w kliencie używa getCaseFinanceSummary, więc prowizja procentowa 69 000 PLN Ă— 2% daje 1 380 PLN zamiast 0 PLN.
+- Karta sprawy w kliencie używa getCaseFinanceSummary, więc prowizja procentowa 69 000 PLN × 2% daje 1 380 PLN zamiast 0 PLN.
 - Wartość transakcji nadal jest widoczna jako osobna informacja.
 
 ### TESTY
@@ -1446,30 +1446,30 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - oczekiwane po R11B: R11 guard/test PASS, regresje R10D2/R10C2/R10B/R10 PASS, build PASS, verify PASS, diff check clean.
 
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_TEST_HISTORY_START -->
-## 2026-06-06 15:35 Europe/Warsaw Ă˘â‚¬” STAGE227A test history
+## 2026-06-06 15:35 Europe/Warsaw — STAGE227A test history
 
-Status przed lokalnym uruchomieniem: PENDING_LOCAL_RUN. Skrypt `APPLY_STAGE227A_LOCAL_ONLY.ps1` uruchamia guard, runtime test, build, verify quiet, regresje R10/R11 jeÄąâ€şli istniejĂ„… oraz `git diff --check`.
+Status przed lokalnym uruchomieniem: PENDING_LOCAL_RUN. Skrypt `APPLY_STAGE227A_LOCAL_ONLY.ps1` uruchamia guard, runtime test, build, verify quiet, regresje R10/R11 jeśli istnieją oraz `git diff --check`.
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_TEST_HISTORY_END -->
 
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_START -->
-## 2026-06-06 15:45 Europe/Warsaw Ă˘â‚¬” STAGE227B Ă˘â‚¬” test history
+## 2026-06-06 15:45 Europe/Warsaw — STAGE227B — test history
 
 Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify quiet, git diff --check. Manual: `/funnel` ma byĂ„â€ˇ czytelny i ma otworzyĂ„â€ˇ siĂ„â„˘ bez biaÄąâ€šego ekranu.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_END -->
 
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_START -->
-## 2026-06-06 17:05 Europe/Warsaw Ă˘â‚¬” STAGE228A test history
+## 2026-06-06 17:05 Europe/Warsaw — STAGE228A test history
 
 Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` Ă˘â€ ’ `PieniĂ„…dze` Ă˘â€ ’ widoczny rekord ÄąźrÄ‚łdÄąâ€šowy kwoty.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_END -->
 
-## 2026-06-06 18:00 Europe/Warsaw Ă˘â‚¬” STAGE228B Lead Work Action Center
+## 2026-06-06 18:00 Europe/Warsaw — STAGE228B Lead Work Action Center
 
 - typ: etap wdroÄąÄ˝eniowy local-only
-- decyzja: Lead nie dostaje peÄąâ€šnego lejka; dostaje centrum pracy Ă˘â‚¬ĹľCo robimy teraz?Ă˘â‚¬ĹĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- decyzja: Lead nie dostaje peÄąâ€šnego lejka; dostaje centrum pracy Ă˘€ĹľCo robimy teraz?Ă˘€ĹĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
 - pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
 - testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
-- ryzyko: nie tworzyĂ„â€ˇ drugiego systemu dziaÄąâ€šaÄą„; uÄąÄ˝ywaĂ„â€ˇ istniejĂ„…cych handlerÄ‚łw LeadDetail.
+- ryzyko: nie tworzyĂ„â€ˇ drugiego systemu dziaÄąâ€šaÄą„; uÄąÄ˝ywaĂ„â€ˇ istniejących handlerÄ‚łw LeadDetail.
 
 
 ## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
@@ -1648,12 +1648,12 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw Ă˘â‚¬” Stage228R18 Ă˘â‚¬” missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
 - problem: Brak znikaÄąâ€š po klikniĂ„â„˘ciu UsuÄą„, ale wracaÄąâ€š po hard refresh.
 - decyzja: aktywny Brak w LeadDetail ma byĂ„â€ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
 - dodatkowo: lista Braki i blokady ma byĂ„â€ˇ ÄąźrÄ‚łdÄąâ€šowana z linkedTasks, nie z caÄąâ€šego timeline, ÄąÄ˝eby activity history nie odtwarzaÄąâ€ša aktywnego braku.
-- testy: check-stage228r18, node test, npm run build, git diff --check, test rĂ„â„˘czny dodaj/usun/hard refresh.
+- testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
 - ryzyko: DELETE jest mocniejsze niÄąÄ˝ soft-delete; historia usuniĂ„â„˘cia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
@@ -1699,12 +1699,12 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-09 02:50 Europe/Warsaw Ă˘â‚¬” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+## 2026-06-09 02:50 Europe/Warsaw — STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
 - R41 finalizuje delete flow po nieudanym lokalnym Äąâ€šaÄą„cuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siĂ„â„˘ juÄąÄ˝ na dokÄąâ€šadnym polskim tekÄąâ€şcie toastu, tylko na strukturze przepÄąâ€šywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera siĂ„â„˘ już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -1714,7 +1714,7 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Po deployu wymagany rĂ„â„˘czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- Po deployu wymagany ręczny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
 
 <!-- STAGE230B_QUICK_CAPTURE_INBOX_TEST_HISTORY_START -->
 ## 2026-06-09 - STAGE230B Quick Capture Inbox bez AI
@@ -2164,22 +2164,22 @@ Run R7 guard/test, Stage231B0 regression, delete-flow regressions, build and git
 - Zakres: marker route w ClientDetail + CSS lock w visual-stage12-client-detail-vnext.css.
 - Kontrakt: brak max-width shell, width 100%, margin-inline 0, stable horizontal spacing during scroll.
 
-## 2026-06-10 � STAGE231B0-R15-R2 � ClientDetail shared canvas width source
+## 2026-06-10  STAGE231B0-R15-R2  ClientDetail shared canvas width source
 - Status: FINALIZE_FOR_PUSH.
-- Pow�d: R14 trafi� w z�y DOM node (`ClientMultiContactField`), wi�c nie m�g� rozci�gn�� kartoteki klienta.
-- Decyzja: ClientDetail ma u�ywa� wsp�lnego canvasu strony: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"`.
-- �r�d�o prawdy szeroko�ci: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
-- Widok konsumuj�cy kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
-- R14 guard/test usuni�te jako fa�szywy kontrakt.
+- Powód: R14 trafił w zły DOM node (`ClientMultiContactField`), więc nie mógł rozciągnąć kartoteki klienta.
+- Decyzja: ClientDetail ma używać wsplnego canvasu strony: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"`.
+- źródło prawdy szerokości: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
+- Widok konsumujący kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
+- R14 guard/test usunięte jako fałszywy kontrakt.
 
-## 2026-06-10 � STAGE231B0-R15-R3 � ClientDetail width guard + Polish encoding guard
+## 2026-06-10  STAGE231B0-R15-R3  ClientDetail width guard + Polish encoding guard
 - Status: FINAL_GUARD_FOR_PUSH.
-- Potwierdzenie u�ytkownika: wygl�d kartoteki klienta jest poprawny i ma tak zosta�.
-- Guard szeroko�ci: `scripts/check-stage231b0-r15-r3-client-detail-width-source-truth.cjs`.
-- Guard polskich znak�w: `scripts/check-stage231b0-r15-r3-polish-encoding.cjs`.
-- Guard pilnuje, �e ClientDetail u�ywa wsp�lnego canvasu: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"` oraz zmiennych `--cf-page-canvas-*`.
-- Guard pilnuje usuni�cia b��dnego R14 i braku mojibake/replacement chars w kluczowych plikach kartoteki klienta.
-- Naprawiono higien� EOF w `src/pages/ClientDetail.tsx`.
+- Potwierdzenie użytkownika: wygląd kartoteki klienta jest poprawny i ma tak zostać.
+- Guard szerokości: `scripts/check-stage231b0-r15-r3-client-detail-width-source-truth.cjs`.
+- Guard polskich znaków: `scripts/check-stage231b0-r15-r3-polish-encoding.cjs`.
+- Guard pilnuje, e ClientDetail używa wsplnego canvasu: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"` oraz zmiennych `--cf-page-canvas-*`.
+- Guard pilnuje usunięcia błędnego R14 i braku mojibake/replacement chars w kluczowych plikach kartoteki klienta.
+- Naprawiono higienę EOF w `src/pages/ClientDetail.tsx`.
 
 
 ## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard safe repair R2
@@ -3438,7 +3438,7 @@ Build warning still present:
 - Not part of D0G closeout; should be fixed in a separate small stage.
 <!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
 <!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_START -->
-## 2026-06-12 â€” STAGE231D0G-CLOSEOUT-R2 Guard scope repair
+## 2026-06-12 — STAGE231D0G-CLOSEOUT-R2 Guard scope repair
 
 STATUS: READY_TO_RUN
 
@@ -3542,7 +3542,7 @@ Do wykonania:
 ## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
 
 Status: DO TESTU LOKALNEGO
-Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.
+Cel: domknąć kartę leada jako operacyjne centrum pracy: potencjał, następny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze działań.
 Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md
 Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
 Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs
@@ -3652,33 +3652,33 @@ Status: LOCAL_APPLIED / DO_TEST_AND_PUSH.
 ## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
 
 Status: DO_APPLY / mass repair from clean origin.
-Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/Usuń/Zapisz. Etap zastępuje runtime file bez kruchych anchorów po błędach R6/R7/R8.
 
 
 ## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
 
 Status: DO_APPLY / guard-ledger sync after R9 partial apply.
-Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/Usuń/Zapisz.
 
 
 ## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
 
 Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
-Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
+Zakres: masowe domknięcie klasy błędów legacy markerów. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia pełny chain guardów/testów/build.
 
 
 ## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
 
 Status: DO_APPLY / MASS_GUARD_REGEX_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
-eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
+Zakres: naprawa klasy błędu guardów R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieć podwójnie escapowany backslash. Bez tego guard szuka błędnego
 eplace(/s+/g, ' ').
 
 
 ## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
 
 Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
+Zakres: naprawa klasy błędu guardów R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie może wymagać nieistniejącej składni previousTasks.
 
 ## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
 
@@ -3706,7 +3706,7 @@ Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina
 
 - Data: 2026-06-15T11:25:01.568Z
 - Typ: CaseDetail notes panel / linked follow-up delete / guard
-- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powi�zanego taska.
+- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powiązanego taska.
 - Status: LOCAL_APPLIED_PENDING_VERIFY
 
 ## STAGE231H_R1D2_R15C - 2026-06-15 15:10 Europe/Warsaw
@@ -3719,6 +3719,13 @@ Test:
 - git diff --check
 
 ## STAGE_PROJECT_DOCS_ENCODING_REPAIR_001 - 2026-06-15 19:15 Europe/Warsaw
+
+Testy:
+- node scripts/check-closeflow-branch-scope.cjs
+- node scripts/check-closeflow-project-docs-encoding.cjs
+- git diff --check
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_004_SAFE - 2026-06-15 20:15 Europe/Warsaw
 
 Testy:
 - node scripts/check-closeflow-branch-scope.cjs

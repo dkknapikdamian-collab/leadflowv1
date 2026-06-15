@@ -1711,3 +1711,11 @@ Nie ruszać:
 - global layout.
 
 Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md`
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_004_SAFE - 2026-06-15 20:15 Europe/Warsaw
+
+- Zakres: naprawa mojibake w centralnych plikach _project.
+- Runtime: nie ruszano.
+- main: nie ruszano.
+- Guard: scripts/check-closeflow-project-docs-encoding.cjs.
+- Push tylko na dev-rollout-freeze.

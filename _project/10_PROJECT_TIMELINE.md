@@ -35,7 +35,7 @@ Paczka V9 odbudowuje pamiec projektu, Obsidiana i guardy po bledach parsera w V6
 
 
 <!-- STAGE104_CALENDAR_PERFORMANCE_F -->
-## 2026-05-16 â€” Stage104 / Paczka F â€” Calendar loading performance
+## 2026-05-16 — Stage104 / Paczka F — Calendar loading performance
 
 STATUS: WDROŻONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
 
@@ -60,7 +60,7 @@ NAST\u00c4\u0098PNY KROK:
 
 
 ---
-## Stage105 / Paczka G â€” Templates delete + visual contract â€” 2026-05-16
+## Stage105 / Paczka G — Templates delete + visual contract — 2026-05-16
 
 STATUS: WDROŻONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
 
@@ -1252,13 +1252,13 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw â€” Stage228R18 â€” missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikaĹ‚ po klikniÄ™ciu UsuĹ„, ale wracaĹ‚ po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byÄ‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byÄ‡ ĹşrĂłdĹ‚owana z linkedTasks, nie z caĹ‚ego timeline, ĹĽeby activity history nie odtwarzaĹ‚a aktywnego braku.
-- testy: check-stage228r18, node test, npm run build, git diff --check, test rÄ™czny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niĹĽ soft-delete; historia usuniÄ™cia zostaje jako activity.
+- problem: Brak znikał po kliknięciu Usuń, ale wracał po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
+- testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
+- ryzyko: DELETE jest mocniejsze niż soft-delete; historia usunięcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -1303,12 +1303,12 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-09 02:50 Europe/Warsaw â€” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+## 2026-06-09 02:50 Europe/Warsaw — STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Ĺ‚aĹ„cuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym łańcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siÄ™ juĹĽ na dokĹ‚adnym polskim tekĹ›cie toastu, tylko na strukturze przepĹ‚ywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera się już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -1318,10 +1318,10 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Po deployu wymagany rÄ™czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- Po deployu wymagany ręczny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
 
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TIMELINE_START -->
-## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” Visual Source of Truth Inventory + UI Consistency Guard
+## 2026-06-10 17:10 Europe/Warsaw — STAGE231D0A — Visual Source of Truth Inventory + UI Consistency Guard
 
 Dodano:
 - centralny raport `_project/VISUAL_SOURCE_OF_TRUTH.md`,
@@ -1330,7 +1330,7 @@ Dodano:
 - guard i test D0A,
 - wpis roadmapy D0A przed D0.
 
-Nie zmieniano runtime UI, danych, SQL, finansĂłw, Google Auth ani Google Calendar.
+Nie zmieniano runtime UI, danych, SQL, finansów, Google Auth ani Google Calendar.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_TIMELINE_END -->
 
 <!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_TIMELINE_START -->
@@ -1453,7 +1453,7 @@ następny krok:
 
 - D3-R1..R6 failed because patchers/guards used brittle anchors. R7 switches to controlled file replacement and mass guard.
 
-## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
+## STAGE231D3-R7-R2 — Polish guard restore and D3 close
 
 - timestamp: 2026-06-10 20:42 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED
@@ -1490,7 +1490,7 @@ Hotfix po ręcznym teście Damiana. Przyczyna: UX był za szeroki, a source of t
 ## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
 
 Status: DO TESTU LOKALNEGO
-Cel: domknÄ…Ä‡ kartÄ™ leada jako operacyjne centrum pracy: potencjaĹ‚, nastÄ™pny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze dziaĹ‚aĹ„.
+Cel: domknąć kartę leada jako operacyjne centrum pracy: potencjał, następny krok, cisza/ryzyko, blokada, szybkie akcje, finanse, missing_item i czytelne wiersze działań.
 Run report: _project/runs/STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT.md
 Guard: scripts/check-stage231g-r3-lead-detail-function-mapping.cjs
 Test: 	ests/stage231g-r3-lead-detail-function-mapping.test.cjs
@@ -1576,33 +1576,33 @@ Po manualnym teście R1B wykryto brak edycji kosztów. Dodano etap R1C: wspólne
 ## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
 
 Status: DO_APPLY / mass repair from clean origin.
-Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/Usuń/Zapisz. Etap zastępuje runtime file bez kruchych anchorów po błędach R6/R7/R8.
 
 
 ## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
 
 Status: DO_APPLY / guard-ledger sync after R9 partial apply.
-Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/Usuń/Zapisz.
 
 
 ## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
 
 Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
-Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
+Zakres: masowe domknięcie klasy błędów legacy markerów. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia pełny chain guardów/testów/build.
 
 
 ## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
 
 Status: DO_APPLY / MASS_GUARD_REGEX_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
-eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
+Zakres: naprawa klasy błędu guardów R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieć podwójnie escapowany backslash. Bez tego guard szuka błędnego
 eplace(/s+/g, ' ').
 
 
 ## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
 
 Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
+Zakres: naprawa klasy błędu guardów R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie może wymagać nieistniejącej składni previousTasks.
 
 ## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
 
@@ -1630,19 +1630,19 @@ Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina
 
 - Data: 2026-06-15T11:25:01.568Z
 - Typ: CaseDetail notes panel / linked follow-up delete / guard
-- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powi�zanego taska.
+- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powiązanego taska.
 - Status: LOCAL_APPLIED_PENDING_VERIFY
 
 ## STAGE231H_R1D2_R15C - 2026-06-15 15:10 Europe/Warsaw
-- CaseDetail: naprawiono dwukierunkowe powi�zanie notatka/follow-up, ostrze�enie przy kasowaniu follow-upu z dzia�a� i hierarchi� tekstu w karcie dzia�ania.
+- CaseDetail: naprawiono dwukierunkowe powizanie notatka/follow-up, ostrzeenie przy kasowaniu follow-upu z dziaa i hierarchię tekstu w karcie dziaania.
 
 ## STAGE_BRANCH_AUDIT_001_MAIN_QUARANTINE_AND_DEV_FREEZE_GUARD - 2026-06-15 18:35 Europe/Warsaw
 
-- Decyzja: CloseFlow pracuje wy��cznie na dev-rollout-freeze.
+- Decyzja: CloseFlow pracuje wycznie na dev-rollout-freeze.
 - main zostaje zablokowany: bez push, bez merge, bez rebase.
 - Dozwolony push: git push origin HEAD:dev-rollout-freeze.
 - Dodano guard: scripts/check-closeflow-branch-scope.cjs.
-- main mo�na czyta� tylko read-only i ewentualne dobre fragmenty przenosi� r�cznie osobnymi etapami.
+- main mona czyta tylko read-only i ewentualne dobre fragmenty przenosi rcznie osobnymi etapami.
 
 ## STAGE_PROJECT_DOCS_ENCODING_REPAIR_001 - 2026-06-15 19:15 Europe/Warsaw
 
@@ -1650,4 +1650,12 @@ Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina
 - Runtime: nie ruszano.
 - main: nie ruszano.
 - Dodano guard: scripts/check-closeflow-project-docs-encoding.cjs.
+- Push tylko na dev-rollout-freeze.
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_004_SAFE - 2026-06-15 20:15 Europe/Warsaw
+
+- Zakres: naprawa mojibake w centralnych plikach _project.
+- Runtime: nie ruszano.
+- main: nie ruszano.
+- Guard: scripts/check-closeflow-project-docs-encoding.cjs.
 - Push tylko na dev-rollout-freeze.
