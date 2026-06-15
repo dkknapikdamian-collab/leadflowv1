@@ -288,3 +288,39 @@ Właściciel w 5 sekund ma wiedzieć:
 - kto wymaga kontaktu,
 - gdzie kliknąć, żeby zobaczyć dokładnie tę listę.
 ```
+
+### 8. Zakładka Sprawy jako realne centrum obsługi, nie lista statusów
+
+To jest aktywny kierunek produktowy od STAGE232D.
+
+Teza:
+
+```txt
+Zakładka Sprawy ma mówić właścicielowi i operatorowi, które sprawy są otwarte, które realnie stoją, które czekają na klienta, które są zablokowane, które mają najbliższy termin i gdzie jest ryzyko.
+Nie może mieszać blokady, czekania, braku ruchu, portalu klienta i powiązania z leadem w tych samych licznikach.
+```
+
+Zasady:
+
+- `Czeka na klienta` nie może liczyć wszystkich blokad ani akceptacji,
+- `Zablokowane` wymaga realnego blokera albo statusu blokującego,
+- `Sprawy bez ruchu` musi wynikać z activity-truth/contact/activity silence, nie ze statusu `waiting`,
+- `Portal klienta` liczy `portalReady` albo realny stan portalu, nie `leadId`,
+- `Bez zaplanowanej akcji` liczy brak otwartego task/event z poprawną datą,
+- `Blokery i ryzyko` pokazuje najważniejsze ryzyka, nie pierwsze rekordy aktualnej listy,
+- `Braki 0` nie może być renderowane, jeśli lista nie ma źródła checklist/items,
+- badge `Brak następnego ruchu` i `Pieniądze bez ruchu` muszą korzystać z tego samego najbliższego ruchu, który widzi użytkownik w wierszu,
+- `Najbliższy termin w sprawie` pokazuje termin task/event, nie `updatedAt`,
+- kolorystyka zostaje w globalnym systemie: blue/amber/red/green bez lokalnych wyjątków.
+
+Warunek jakości produktu:
+
+```txt
+W 5 sekund użytkownik ma wiedzieć:
+- które sprawy robi teraz,
+- które stoją przez klienta,
+- które stoją przez blokadę,
+- gdzie nie ma następnego ruchu,
+- gdzie jest pieniądz/ryzyko,
+- gdzie kliknąć, żeby zobaczyć dokładnie tę listę.
+```

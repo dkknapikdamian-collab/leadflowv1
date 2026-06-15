@@ -566,6 +566,262 @@ Run decision do utworzenia: `_project/runs/STAGE232C_CLIENTS_RELATION_TILE_SOURC
 
 ---
 
+### 4. STAGE232D_CASES_OPERATIONAL_TILES_SOURCE_OF_TRUTH
+
+Status: DO_WDROZENIA PO STAGE232A/STAGE232B/STAGE232C ALBO WCZEŚNIEJ, JEŚLI ZAKŁADKA SPRAWY BLOKUJE TESTY PRODUKTOWE / PRIORYTET PRODUKTOWY P1
+
+Powód priorytetu:
+
+- Damian zlecił szczegółowy audyt zakładki `Sprawy`: każdy kafelek, prawy rail, lista, kolorystyka, styl i produkcyjne źródła danych.
+- Zakładka `Sprawy` jest głównym panelem obsługi spraw. Ma pokazywać: co jest otwarte, co czeka na klienta, co jest zablokowane, co jest gotowe, gdzie brakuje ruchu, gdzie są akceptacje, gdzie jest ryzyko.
+- Aktualny ekran ma dobry fundament: `/cases` używa `src/pages/Cases.tsx`, pobiera sprawy, leady, klientów, zadania i wydarzenia, a filtrowanie opiera się na `caseView`.
+- Jednocześnie audyt wykazał kilka błędów kontraktu produktu:
+  - `Czeka na klienta` liczy `blocked` albo `waiting_approval`, a nie czysto sprawy czekające na klienta.
+  - `Sprawy bez ruchu` w prawym railu używa `stats.waiting`, czyli tej samej liczby co `Czeka na klienta`, a to nie jest to samo.
+  - `Portal klienta` używa `stats.linked`, czyli spraw z `leadId`, a nie spraw z gotowym portalem klienta.
+  - `Blokery i ryzyko` pokazuje `filteredCases.slice(0, 4)`, czyli pierwsze sprawy z aktualnej listy, nie najważniejsze ryzyka.
+  - `Braki 0` w railu może być fałszywe, bo `resolveCaseListLifecycle()` nie dostaje checklist/items, tylko tasks/events.
+  - `Brak następnego ruchu` / `Pieniądze bez ruchu` może pojawiać się mimo najbliższego terminu, bo `getCaseOwnerRiskBadges()` nie dostaje poprawnego `nextMove` ani `nearestAction`; obecnie przekazywane pola `nearestCaseAction`, `lifecycle`, `nextActionLabel` nie są czytane przez helper.
+  - Wiersz pokazuje etykietę `Najbliższy termin w sprawie`, ale gdy nie ma terminu, fallbackiem jest instrukcja typu `Dodaj zadanie...`, a pod spodem bywa `updatedAt`, co udaje datę terminu.
+  - `Postęp` bazuje na `record.completenessPercent`, a lifecycle liczy completeness z `items`, których lista nie przekazuje. Źródło postępu nie jest jawne.
+
+Cel:
+
+Ustawić produkcyjny kontrakt zakładki `Sprawy` tak, żeby każdy kafelek, filtr, wiersz i prawy rail odpowiadały na konkretne pytanie biznesowe:
+
+```txt
+Które sprawy są otwarte?
+Które realnie czekają na klienta?
+Które są zablokowane?
+Które są gotowe do startu/zakończenia?
+Które nie mają zaplanowanego następnego ruchu?
+Które są bez ruchu / bez świeżej aktywności?
+Które mają portal klienta gotowy?
+Które mają największe realne ryzyko?
+```
+
+Audyt faktycznego stanu:
+
+- `src/App.tsx` routuje `/cases` do lazy page `src/pages/Cases.tsx`.
+- `src/pages/Cases.tsx` pobiera:
+  - `fetchCasesFromSupabase()`,
+  - `fetchLeadsFromSupabase()`,
+  - `fetchClientsFromSupabase()`,
+  - `fetchTasksFromSupabase()`,
+  - `fetchEventsFromSupabase()`.
+- `CaseView` obejmuje:
+  - `open`,
+  - `closed`,
+  - `all`,
+  - `waiting`,
+  - `blocked`,
+  - `approval`,
+  - `ready`,
+  - `needs_next_step`,
+  - `linked`.
+- `activeCases` = sprawy niezamknięte.
+- `closedCases` = sprawy zamknięte.
+- `stats.open` = `activeCases.length`.
+- `stats.all` = `cases.length`.
+- `stats.closed` = `closedCases.length`.
+- `stats.waiting` = lifecycle bucket `blocked` albo `waiting_approval`.
+- `stats.blocked` = lifecycle bucket `blocked`.
+- `stats.approval` = lifecycle bucket `waiting_approval`.
+- `stats.ready` = lifecycle bucket `ready_to_start`.
+- `stats.needsNextStep` = lifecycle bucket `needs_next_step`.
+- `stats.linked` = aktywne sprawy z `leadId`.
+- `filteredCases` wybiera source po `caseView`: closed/all/active, a potem filtruje po search i lifecycle.
+- `resolveCaseListLifecycle()` dostaje tylko tasks/events, nie dostaje checklist/items.
+- Wiersz liczy `nearestCaseAction` z tasks/events powiązanych z caseId.
+- `getCaseOwnerRiskBadges()` w wierszu dostaje parametry niezgodne z kontraktem helpera; helper oczekuje `nextMove`, `activityTruth`, `relatedRecords` albo `hasNextStep`, a nie `nearestCaseAction`.
+- Prawy rail `Blokery i ryzyko` bierze `filteredCases.slice(0, 4)`, nie sortuje po ryzyku.
+
+Kontrakt produkcyjny kafelków:
+
+1. `Otwarte sprawy`
+   - Źródło: `activeCases.length`.
+   - Klik: view `open`.
+   - Status: OK.
+
+2. `Czeka na klienta`
+   - Źródło: tylko sprawy, które realnie czekają na klienta:
+     - status `waiting_on_client`,
+     - albo jawny lifecycle bucket `waiting_on_client`, jeśli powstanie,
+     - albo brak/blokada oznaczona jako zależna od klienta.
+   - Nie mieszać z `blocked` i `approval`.
+   - Klik: view `waiting_client` albo `waiting_on_client`.
+
+3. `Zablokowane`
+   - Źródło: status `blocked` albo jawne `blocksProgress=true`.
+   - W R1 można użyć lifecycle `blocked`, ale tylko jeśli lifecycle dostaje prawdziwe braki/checklist/items.
+   - Nie liczyć każdej sprawy czekającej na klienta jako blokady, jeśli nie ma jawnego blokera.
+
+4. `Gotowe`
+   - Źródło: status `ready_to_start` albo kompletność wymaganych elementów 100% z prawdziwego checklist/source.
+   - Jeśli checklist/items nie są dostępne na liście, nie udawać gotowości z pustych danych.
+
+5. `Bez zaplanowanej akcji`
+   - Źródło: brak otwartego task/event z poprawną datą dla caseId.
+   - Może pozostać jako `needs_next_step`, ale nazwa i filtr muszą być konsekwentne.
+
+6. `Sprawy bez ruchu`
+   - Źródło: activity-truth / brak świeżej aktywności / brak kontaktu według progów owner-risk.
+   - Nie może używać `stats.waiting`.
+   - Osobny view: `no_movement` albo `stale`.
+
+7. `Portal klienta`
+   - Źródło: `portalReady === true` albo osobny stan portalu.
+   - Jeśli licznik ma oznaczać sprawy powiązane z leadem, nazwa musi brzmieć `Z leada` / `Powiązane z leadem`, nie `Portal klienta`.
+
+8. `Akceptacje`
+   - Źródło: `waitingApprovalCount > 0` albo status `to_approve`.
+   - Musi dostać prawdziwe checklist/items/uploaded, nie pustą listę.
+
+Kontrakt produkcyjny wiersza sprawy:
+
+- Lewa część: tytuł, klient, statusy i ryzyka.
+- `Postęp`:
+  - jeśli źródło = `record.completenessPercent`, nazwać `Postęp zapisany`,
+  - docelowo źródło = checklist/items + finanse/obsługa według CaseDetail.
+- `Najbliższy termin w sprawie`:
+  - pokazywać tylko realny najbliższy task/event z datą,
+  - jeśli go nie ma: `Brak zaplanowanego terminu`,
+  - nie pokazywać `updatedAt` jako terminu sprawy,
+  - `updatedAt` może być pokazany jako `Ostatnia aktualizacja`.
+- Owner-risk badges:
+  - muszą używać tego samego `nearestCaseAction` co wiersz,
+  - do `getCaseOwnerRiskBadges()` przekazać jawny `nextMove = buildNextMoveContract({ entityType: 'case', entityId, status, nearestAction })`,
+  - przekazać `relatedRecords` albo `activityTruth`, żeby `Sprawa bez ruchu` nie była liczona z pustego kontekstu.
+- Badge `Pieniądze bez ruchu` może pojawić się tylko wtedy, gdy sprawa ma wysoką wartość i naprawdę brakuje następnego ruchu albo jest zaległy.
+
+Kontrakt prawego raila:
+
+1. `Operacyjne skróty`
+   - każdy element musi ustawiać realny view/filtr, który pokazuje dokładnie tę samą kolekcję co licznik.
+   - `Sprawy bez ruchu` dostaje osobny licznik i osobny view.
+   - `Portal klienta` nie może liczyć `leadId`.
+
+2. `Blokery i ryzyko`
+   - nie może pokazywać pierwszych 4 spraw z `filteredCases`.
+   - ma zbudować `riskRows` z aktywnych spraw i sortować:
+     1. high risk,
+     2. blocked,
+     3. money-without-motion,
+     4. overdue/missing next move,
+     5. missing required count,
+     6. high value.
+   - jeśli ryzyka brak, pokazać `Brak aktywnych ryzyk`, nie losowe pierwsze sprawy.
+
+Kolorystyka i styl:
+
+- Top kafelki mogą zostać na `StatShortcutCard`:
+  - otwarte = blue,
+  - czeka na klienta = amber,
+  - zablokowane = red,
+  - gotowe = green.
+- Prawy rail ma używać `SimpleFiltersCard` i `data-cf-operator-rail-tone`, bez lokalnego nowego systemu kolorów.
+- Wiersze spraw powinny korzystać ze wspólnego systemu list albo osobnego jawnego `cases-list-source-truth`; aktualny `closeflow-record-list-source-truth.css` opisuje scope `/leads and /clients`, a `Cases.tsx` używa klas `lead-main-cell`, `lead-value-cell`, `lead-action-cell`. To jest techniczny dług: działa wizualnie, ale nazewnictwo nie jest czyste.
+- Nie robić dużego redesignu. Najpierw naprawić prawdę danych i nazwy.
+
+Minimalny zakres wdrożenia R1:
+
+1. Dodać jawne kolekcje:
+   - `openCaseRows`,
+   - `closedCaseRows`,
+   - `waitingOnClientRows`,
+   - `blockedCaseRows`,
+   - `readyCaseRows`,
+   - `needsNextStepRows`,
+   - `noMovementCaseRows`,
+   - `portalReadyCaseRows`,
+   - `approvalCaseRows`,
+   - `riskRows`.
+2. `stats` ma być budowane z tych kolekcji, nie z niejawnego mieszania bucketów.
+3. Top card `Czeka na klienta` przestaje liczyć `blocked || waiting_approval`.
+4. Prawy rail `Sprawy bez ruchu` przestaje używać `stats.waiting`.
+5. Prawy rail `Portal klienta` przestaje używać `leadId`; używa `portalReady`.
+6. `getCaseOwnerRiskBadges()` dostaje prawdziwy `nextMove` z `nearestCaseAction`.
+7. `activityTruth` / `relatedRecords` dla spraw ma zawierać tasks/events/case/payments, jeśli dostępne.
+8. `Blokery i ryzyko` sortuje po realnym ryzyku, nie po kolejności listy.
+9. `Braki 0` nie może być pokazane, jeśli lista nie ma source dla checklist/items. Albo podpiąć items, albo ukryć/zmienić etykietę.
+10. `Najbliższy termin w sprawie` nie używa `updatedAt` jako daty terminu.
+11. Dodać guard i test kontraktu źródeł danych.
+12. Zaktualizować `_project`, run report, guard registry, test history, risks, changelog i Obsidian payload.
+
+Czego nie ruszać w R1:
+
+- CaseDetail layout freeze STAGE231D0D-R4,
+- SQL/migracje bez osobnego schema check,
+- finanse CaseDetail,
+- Google Calendar sync,
+- LeadDetail braki/blokady STAGE232A,
+- TodayStable STAGE232B,
+- Clients STAGE232C,
+- duży redesign globalnego layoutu,
+- masowe usuwanie CSS bez guardu.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232d-cases-operational-tiles.cjs`
+- `node --test tests/stage232d-cases-operational-tiles.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet` albo jawny SKIP z powodem, jeśli blokuje historyczny niezwiązany gate
+- `git diff --check`
+
+Guard ma sprawdzić minimum:
+
+- `/cases` nadal używa `src/pages/Cases.tsx`,
+- `stats.waiting` nie liczy `blocked || waiting_approval`,
+- `Sprawy bez ruchu` nie używa `stats.waiting`,
+- `Portal klienta` nie używa `leadId`,
+- `riskRows` nie jest `filteredCases.slice(0, 4)`,
+- `getCaseOwnerRiskBadges()` dostaje `nextMove` albo `activityTruth/relatedRecords`,
+- badge `Brak następnego ruchu` nie pojawia się, jeśli `nearestCaseAction` istnieje i ma poprawną datę,
+- `Najbliższy termin w sprawie` nie pokazuje `updatedAt` jako terminu,
+- `Braki 0` nie jest renderowane z pustego source checklist/items,
+- top cardy i rail mają spójne liczniki z tymi samymi kolekcjami,
+- nie dodano lokalnego, niespójnego systemu kolorów.
+
+Test ręczny Damiana:
+
+1. Wejdź w `/cases`.
+2. Sprawdź top cardy:
+   - `Otwarte sprawy` = aktywne niezamknięte sprawy,
+   - `Czeka na klienta` = tylko sprawy realnie zależne od klienta,
+   - `Zablokowane` = tylko realne blokady,
+   - `Gotowe` = tylko gotowe do startu/zamknięcia według source.
+3. Kliknij każdy top card i sprawdź, czy lista pokazuje dokładnie to, co licznik.
+4. Kliknij prawy rail:
+   - `Bez zaplanowanej akcji`,
+   - `Portal klienta`,
+   - `Sprawy bez ruchu`,
+   - `Akceptacje`.
+5. Dla sprawy z najbliższym terminem sprawdź, czy nie ma badge `Brak następnego ruchu`.
+6. Dla sprawy bez terminu sprawdź, czy widzisz `Brak zaplanowanego terminu`, a nie datę `updatedAt` jako termin.
+7. Sprawdź `Blokery i ryzyko`: na górze mają być najpoważniejsze ryzyka, nie pierwsze sprawy z listy.
+8. Sprawdź kolory:
+   - amber = oczekiwanie/uwaga,
+   - red = realna blokada/ryzyko,
+   - green = gotowe/zamknięte,
+   - blue = neutralne/otwarte.
+9. Hard refresh i zmiana filtra nie mogą zmienić liczników losowo.
+10. Mobile: wiersz sprawy nie może ucinać tytułu, klienta, postępu i akcji w sposób uniemożliwiający obsługę.
+
+Warunek zamknięcia:
+
+- każdy kafelek liczy to, co mówi,
+- każdy klik pokazuje tę samą kolekcję co licznik,
+- badge ryzyka nie kłamią względem realnego najbliższego terminu,
+- `Sprawy bez ruchu` ma osobną definicję, nie kopię `Czeka na klienta`,
+- `Portal klienta` liczy portal, nie leadId,
+- `Blokery i ryzyko` jest posortowane po ryzyku,
+- brak fałszywych `Braki 0` z pustego source,
+- kolorystyka pozostaje w globalnym systemie,
+- guardy, testy, build i `git diff --check` są zielone,
+- `_project` i Obsidian payload są zaktualizowane.
+
+---
+
 ### 3. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 
 Status: PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA
