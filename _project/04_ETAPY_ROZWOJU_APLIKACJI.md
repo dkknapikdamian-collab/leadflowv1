@@ -1099,6 +1099,303 @@ Warunek zamknięcia:
 
 ---
 
+### 6. STAGE232F_TASKS_OPERATIONAL_WORKQUEUE_SOURCE_OF_TRUTH
+
+Status: DO_WDROZENIA PO STAGE232A-E ALBO WCZEŚNIEJ, JEŚLI ZAKŁADKA ZADANIA MA BYĆ NASTĘPNĄ TESTOWANĄ ZAKŁADKĄ / PRIORYTET PRODUKTOWY P1
+
+Powód priorytetu:
+
+- Damian zlecił szczegółowy audyt zakładki `Zadania`: kafelki, filtry, najpilniejsze zadania, lista, akcje `Zrobione/Edytuj/Usuń`, kolorystyka, styl i produkcyjne źródła danych.
+- Zakładka `Zadania` wygląda stabilniej niż część poprzednich widoków, bo kontrakt danych jest prosty: taski + sprawy.
+- Aktywna trasa `/tasks` używa `src/pages/TasksStable.tsx`.
+- Obecny widok ma dobry fundament:
+  - `Aktywne`, `Dziś`, `Zaległe`, `Zrobione` bazują na jasnych predykatach,
+  - prawy rail filtrów używa tych samych zakresów co lista,
+  - lista grupuje zadania operacyjnie: zaległe, dziś, nadchodzące, bez terminu, zrobione,
+  - akcje są widoczne i używają istniejącego systemu modal/confirm,
+  - kolorystyka idzie przez globalne metric tiles i lokalny stage178 right rail.
+- Jednocześnie audyt wykazał ryzyka kontraktu produktu:
+  - `Aktywne` oznacza wszystkie niezrobione zadania, a lista od razu pokazuje grupę `Zaległe`. To jest logiczne, ale nazwa powinna mówić `Wszystkie aktywne` albo helper powinien wyjaśniać, że zaległe są częścią aktywnych.
+  - `Dziś` liczy tylko zadania z datą równą lokalnemu `todayKey`; zadania bez daty nie są w `Dziś`, nawet jeśli są operacyjnie pilne.
+  - `Zaległe` i `Dziś` używają `getTaskDateKey(task).slice(0,10)`, co może źle klasyfikować zadania, jeśli daty przychodzą jako UTC/ISO z przesunięciem strefy.
+  - `Najpilniejsze zadania` jest globalne dla wszystkich niezrobionych tasków, niezależnie od aktywnego filtra. To może być OK, ale UI powinno mówić `globalnie`, albo działać jako priorytet aktywnego widoku.
+  - `Bez powiązania` patrzy tylko na `leadId`, `caseId`, `clientId`; jeśli task ma relację w innym polu (`relatedId`, payload/meta), licznik może być fałszywy.
+  - Zadanie powiązane z leadem nie pokaże nazwy leada, jeśli rekord nie ma denormalizowanego `leadName`; widok pobiera tylko `cases`, nie pobiera `leads` i `clients`.
+  - `Zrobione` natychmiast proponuje kolejny krok dla tasków powiązanych albo typu follow. To jest dobry kierunek, ale może tworzyć nowy task nawet wtedy, gdy istnieje już inny przyszły ruch dla tej samej relacji.
+  - `toggleTask()` po zmianie statusu robi pełny `refreshData()`, nie silent/local update; może powodować migotanie albo zmianę scrolla przy długiej liście.
+  - `high` priority liczy tylko `high/urgent/wysoki/pilne`; `medium` jako tekst nie jest mapowany na polskie UI, ale to kosmetyka.
+  - Kolorystyka jest spójna, ale `Aktywne` ma tone neutral, podczas gdy prawy filtr `Aktywne` ma blue. To drobna niespójność semantyczna.
+
+Cel:
+
+Ustawić produkcyjny kontrakt zakładki `Zadania` tak, żeby każdy kafelek, filtr, grupa i prawa lista mówiły prawdę:
+
+```txt
+Ile zadań jest otwartych?
+Co jest do zrobienia dziś?
+Co jest zaległe?
+Co jest zrobione?
+Co jest wysokim priorytetem?
+Które zadania nie są podpięte pod lead/sprawę/klienta?
+Które zadanie powinienem zrobić jako pierwsze?
+Czy kliknięcie pokazuje dokładnie tę samą kolekcję, którą liczy filtr/kafelek?
+```
+
+Audyt faktycznego stanu:
+
+- `src/App.tsx` routuje `/tasks` do `src/pages/TasksStable.tsx`.
+- `TasksStable.tsx` pobiera:
+  - `fetchTasksFromSupabase()`,
+  - `fetchCasesFromSupabase()`.
+- `TaskScope` obejmuje:
+  - `active`,
+  - `today`,
+  - `overdue`,
+  - `done`,
+  - `high`,
+  - `unlinked`.
+- `getTaskMomentRaw()` czyta pola:
+  - `scheduledAt`,
+  - `scheduled_at`,
+  - `dueAt`,
+  - `due_at`,
+  - `startAt`,
+  - `start_at`,
+  - `startsAt`,
+  - `starts_at`,
+  - `dateTime`,
+  - `date_time`,
+  - fallback `date + time`.
+- `getTaskDateKey()` używa `getTaskMomentRaw(task).slice(0,10)`.
+- `isTaskDone()` traktuje jako zamknięte: `done`, `completed`, `closed`, `cancelled`, `canceled`.
+- `isTaskToday()` porównuje task date key do lokalnego `localDateKey()`.
+- `isTaskOverdue()` = dateKey < todayKey i task nie jest done.
+- `buildTaskGroups()` grupuje według:
+  - overdue,
+  - today,
+  - upcoming,
+  - no_due,
+  - done.
+- `stats.active` = wszystkie taski, które nie są done.
+- `stats.today` = taski nie-done z datą dzisiaj.
+- `stats.overdue` = taski overdue.
+- `stats.done` = taski done.
+- `filteredTasks` używa `scope` i search.
+- `urgentTasks` sortuje wszystkie niezrobione zadania według overdue/today/high/termin i bierze top 5.
+- `taskScopeFilters` liczą active/today/overdue/high/unlinked/done.
+- `unlinked` = brak `leadId`, `caseId`, `clientId`.
+- Wiersz pokazuje tytuł, status, priority, type, termin, sprawę i leadName, jeśli jest denormalizowany.
+- Nowe/edycja zadania nie pozwala w UI przypiąć zadania do sprawy/leada/klienta, mimo że stan formularza ma leadId/caseId/clientId.
+- Po oznaczeniu jako zrobione aplikacja może zaproponować kolejny follow-up.
+
+Kontrakt produkcyjny kafelków:
+
+1. `Aktywne`
+   - Źródło: wszystkie niezrobione zadania.
+   - Nazwa rekomendowana: `Wszystkie aktywne` albo helper `zaległe + dziś + przyszłe + bez terminu`.
+   - Tone: neutral albo blue, ale top tile i rail powinny być spójne.
+
+2. `Dziś`
+   - Źródło: niezrobione zadania z datą w dzisiejszej lokalnej dobie.
+   - Guard: nie liczyć UTC poprzedniego/następnego dnia błędnie przez surowe `slice(0,10)`.
+   - Nie mieszać z zaległymi, chyba że nazwa zmieni się na `Dziś i zaległe`.
+
+3. `Zaległe`
+   - Źródło: niezrobione zadania z terminem przed lokalnym dziś.
+   - Tone: red.
+   - Klik/lista mają pokazać dokładnie zaległe.
+
+4. `Zrobione`
+   - Źródło: taski ze statusem done/completed/closed/cancelled/canceled.
+   - Warto rozważyć rozdzielenie done od cancelled, bo operacyjnie `anulowane` nie znaczy `zrobione`.
+   - R1: zostawić, ale wpisać ryzyko.
+
+5. `Wysoki priorytet`
+   - Źródło: niezrobione zadania z priority high/urgent/wysoki/pilne.
+   - Tone: amber.
+   - Guard: licznik = widoczna lista po kliknięciu.
+
+6. `Bez powiązania`
+   - Źródło R1: brak leadId/caseId/clientId.
+   - Ryzyko: jeśli task ma relację w payload/meta/relatedId, nie może być liczony jako bez powiązania.
+   - Guard ma sprawdzić znane alternatywne pola relacji albo jawnie wpisać, że R1 ich nie obsługuje.
+
+Kontrakt grup listy:
+
+- `Zaległe`: najpierw, bo odblokowuje ryzyko.
+- `Dziś`: zadania na teraz.
+- `Nadchodzące`: przyszłe terminy.
+- `Bez terminu`: taski do uporządkowania, nie chować ich na końcu bez ryzyka.
+- `Zrobione`: tylko w scope done albo jeśli użytkownik świadomie filtruje done. W active nie mieszać done.
+- Grupy i liczniki grup muszą sumować się do `filteredTasks.length`.
+
+Kontrakt prawego raila:
+
+1. `Filtry zadań`
+   - każdy przycisk musi ustawiać dokładnie ten sam scope, którego licznik pokazuje,
+   - count przy filtrze = liczba elementów widocznych po kliknięciu i search pusty,
+   - przy aktywnym search można pokazać header `Widoczne: X`, ale filtr count zostaje globalny albo trzeba dopisać `poza wyszukiwaniem`.
+
+2. `Najpilniejsze zadania`
+   - Rekomendacja R1: zostaje globalne, ale dodać helper/nazwę `Najpilniejsze globalnie`.
+   - Alternatywa: przełączyć na top 5 z aktywnego filtra. Nie rekomenduję w R1, bo globalny priorytet jest użyteczny.
+   - Klik urgent item aktualnie ustawia scope active/done i searchQuery na tytuł. To działa, ale może zawęzić listę nieprecyzyjnie przy podobnych tytułach.
+   - Lepszy docelowy mechanizm: selectedTaskId / anchor scroll / highlight, nie search po tytule.
+   - R1: zostawić search, ale guardem zablokować ukrycie wyniku przez filtr/scope.
+
+Kontrakt akcji:
+
+1. `Zrobione`
+   - oznacza status `done`,
+   - po sukcesie może proponować kolejny krok.
+   - Przed dodaniem kolejnego kroku trzeba sprawdzić, czy dla tej relacji nie istnieje już przyszły otwarty task/event.
+   - R1: dopisać to jako ryzyko albo wdrożyć prosty check w tasks.
+
+2. `Edytuj`
+   - edycja zachowuje leadId/caseId/clientId.
+   - Formularz nie pozwala zmienić powiązania; to może być OK w R1, ale trzeba nie udawać pełnej edycji relacji.
+
+3. `Usuń`
+   - używa confirm dialog i optimistic local removal.
+   - OK, ale guard ma sprawdzić brak full refresh po delete, bo istnieje stage no-flicker delete.
+
+Kolorystyka i styl:
+
+- Plusy:
+  - top kafelki używają `OperatorMetricTiles`,
+  - lista + rail są opisane jako operational panel, nie pusta lista,
+  - search jest w tym samym systemie co inne widoki,
+  - rail ma tony blue/red/green/amber/neutral,
+  - mobile składa rail pod listę.
+- Ryzyka:
+  - lokalny CSS stage178 ma własne zmienne kolorów; akceptowalne jako etapowy source truth, ale nie dodawać kolejnego systemu,
+  - top `Aktywne` tone neutral vs rail `Aktywne` blue jest niespójne,
+  - akcja `Usuń` jest czerwona i widoczna przy każdym wierszu; to OK tylko jeśli nie dominuje wizualnie i potwierdzenie jest obowiązkowe,
+  - długi tytuł w urgent rail jest ucinany; tooltip istnieje, ale trzeba pilnować dostępności i mobile.
+
+Minimalny zakres wdrożenia R1:
+
+1. Utworzyć jawne kolekcje:
+   - `activeTasks`,
+   - `todayTasks`,
+   - `overdueTasks`,
+   - `doneTasks`,
+   - `highPriorityTasks`,
+   - `unlinkedTasks`,
+   - `filteredTasks`,
+   - `groupedTasks`,
+   - `urgentGlobalTasks`.
+2. `stats` i `taskScopeFilters` mają być liczone z tych samych kolekcji.
+3. Ujednolicić ton `Aktywne` top tile i rail.
+4. Dopisać helper/nazwę, że `Aktywne` = wszystkie niezrobione.
+5. Dodać jawny helper do `Najpilniejsze zadania`: `globalnie`, jeśli zostaje globalne.
+6. Poprawić klasyfikację dat:
+   - nie opierać się wyłącznie na `slice(0,10)`,
+   - lokalna data zadania ma być liczona przez jedną funkcję `getTaskLocalDateKey()`.
+7. Zablokować przeszłe/dziwne daty bez terminu przed błędnym wpadaniem do dziś/zaległe.
+8. Sprawdzić alternatywne pola relacji w `isTaskUnlinked()`.
+9. Guardem sprawdzić, że group counts sumują się do filteredTasks.
+10. Guardem sprawdzić, że urgentTasks nie zawiera done.
+11. Guardem sprawdzić, że klik urgent item nie może ukryć wybranego taska przez zły scope.
+12. Wpisać ryzyko: `done` miesza cancelled/completed; osobny etap może rozdzielić anulowane.
+13. Zaktualizować `_project`, run report, guard registry, test history, risks, changelog i Obsidian payload.
+
+Czego nie ruszać w R1:
+
+- SQL/migracje,
+- pełny system relacji zadań,
+- LeadDetail/CaseDetail runtime,
+- Calendar sync,
+- Today/Clients/Cases/Funnel runtime,
+- pełny redesign UI,
+- usuwanie CSS stage178,
+- masowe zmiany modali,
+- zewnętrzne automatyczne tworzenie tasków bez potwierdzenia.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232f-tasks-operational-workqueue.cjs`
+- `node --test tests/stage232f-tasks-operational-workqueue.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet` albo jawny SKIP z powodem, jeśli blokuje historyczny niezwiązany gate
+- `git diff --check`
+
+Guard ma sprawdzić minimum:
+
+- `/tasks` routuje do `src/pages/TasksStable.tsx`,
+- `stats` i `taskScopeFilters` bazują na jawnych kolekcjach,
+- `active` = niezrobione, a nie wszystkie taski,
+- `today` = lokalna dzisiejsza doba,
+- `overdue` = termin przed dzisiaj i nie done,
+- `done` = tylko statusy zamykające,
+- `high` = niezrobione i high/urgent/wysoki/pilne,
+- `unlinked` nie ignoruje znanych alternatywnych pól relacji,
+- `groupedTasks` sumuje się do `filteredTasks.length`,
+- `urgentTasks` nie zawiera done i sortuje zaległe przed dzisiejszymi/przyszłymi,
+- `Najpilniejsze zadania` ma jawny globalny albo active-filter contract,
+- top tile/rail count zgadza się z listą po kliknięciu,
+- nie dodano nowego lokalnego systemu kolorów poza stage178/global metric system.
+
+Test ręczny Damiana:
+
+1. Wejdź w `/tasks`.
+2. Sprawdź top kafelki:
+   - `Aktywne`,
+   - `Dziś`,
+   - `Zaległe`,
+   - `Zrobione`.
+3. Kliknij każdy kafelek i sprawdź, czy liczba = widoczna lista przy pustym search.
+4. Sprawdź prawy rail:
+   - `Aktywne`,
+   - `Dziś`,
+   - `Zaległe`,
+   - `Wysoki priorytet`,
+   - `Bez powiązania`,
+   - `Zrobione`.
+5. Sprawdź grupy:
+   - suma liczników grup = `Widoczne`.
+6. Sprawdź zadanie z datą dzisiaj:
+   - wpada do `Dziś`,
+   - nie wpada do `Zaległe`.
+7. Sprawdź zadanie z przeszłości:
+   - wpada do `Zaległe`.
+8. Sprawdź zadanie bez daty:
+   - wpada do `Bez terminu`, nie do `Dziś`.
+9. Kliknij `Najpilniejsze zadania`:
+   - lista pokazuje wybrane zadanie,
+   - nie gubi go przez filtr/search.
+10. Oznacz zadanie jako `Zrobione`:
+   - znika z aktywnych,
+   - pojawia się w zrobionych,
+   - jeśli powiązane, pytanie o kolejny krok ma sens i nie dubluje istniejącego przyszłego ruchu.
+11. Sprawdź `Usuń`:
+   - confirm jest czytelny,
+   - po anulowaniu nic nie znika,
+   - po usunięciu rekord nie wraca po refreshu.
+12. Sprawdź kolorystykę:
+   - red tylko zaległe/ryzykowne/usuwanie,
+   - blue dziś/aktywne,
+   - green zrobione,
+   - amber wysoki priorytet,
+   - neutral bez powiązania.
+13. Mobile:
+   - rail schodzi pod listę,
+   - akcje nie rozjeżdżają karty.
+
+Warunek zamknięcia:
+
+- każdy kafelek i filtr liczy to, co mówi,
+- klasyfikacja dat jest lokalna i stabilna,
+- `Najpilniejsze zadania` ma jawny kontrakt globalny albo aktywnego filtra,
+- `Bez powiązania` nie kłamie przy alternatywnych polach relacji,
+- grupy sumują się do widocznych rekordów,
+- akcje nie powodują migotania lub utraty scrolla ponad akceptowalny poziom,
+- kolorystyka zostaje w globalnym/stage178 systemie,
+- guardy, testy, build i `git diff --check` są zielone,
+- `_project` i Obsidian payload są zaktualizowane.
+
+---
+
 ### 3. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 
 Status: PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA

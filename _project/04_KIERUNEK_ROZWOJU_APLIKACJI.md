@@ -359,3 +359,38 @@ W 5 sekund użytkownik ma wiedzieć:
 - gdzie jest pieniądz,
 - który rekord otworzyć jako pierwszy.
 ```
+
+### 10. Zakładka Zadania jako operacyjna kolejka pracy
+
+To jest aktywny kierunek produktowy od STAGE232F.
+
+Teza:
+
+```txt
+Zadania mają być kolejką pracy operatora: zaległe, dzisiejsze, nadchodzące, bez terminu, wysokiego priorytetu i bez powiązania.
+Nie mogą być tylko listą tasków z przyciskami.
+```
+
+Zasady:
+
+- `Aktywne` = wszystkie niezrobione zadania; UI ma to wyjaśniać.
+- `Dziś` = lokalna dzisiejsza data zadania, nie UTC przypadkowo pocięte `slice(0,10)`.
+- `Zaległe` = niezrobione zadania z terminem przed dzisiaj.
+- `Bez terminu` ma być osobną grupą operacyjną, nie ma znikać bez śladu.
+- `Najpilniejsze zadania` może być globalne, ale musi być tak nazwane; jeśli ma zależeć od filtra, trzeba to wdrożyć jawnie.
+- `Bez powiązania` ma sprawdzać wszystkie obsługiwane pola relacji, nie tylko trzy najprostsze ID, jeśli baza używa payload/meta.
+- `Zrobione` nie powinno na zawsze mieszać `cancelled` i `completed`; R1 może zostawić, ale ryzyko ma zostać zapisane.
+- Akcje `Zrobione`, `Edytuj`, `Usuń` muszą być stabilne, bez przypadkowego reloadu/utracenia scrolla i z confirmem dla delete.
+- Kolorystyka: red = zaległe/usuń, blue = dziś/aktywne, green = zrobione, amber = wysoki priorytet, neutral = bez powiązania.
+
+Warunek jakości produktu:
+
+```txt
+W 5 sekund użytkownik ma wiedzieć:
+- co jest spóźnione,
+- co trzeba zrobić dzisiaj,
+- co jest kolejne,
+- co nie ma terminu,
+- co nie jest podpięte do żadnej relacji,
+- które zadanie ruszyć jako pierwsze.
+```
