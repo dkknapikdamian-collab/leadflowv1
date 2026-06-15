@@ -1,0 +1,21 @@
+# Obsidian payload - STAGE232B R4
+
+- data i godzina: 2026-06-15 21:30 Europe/Warsaw
+- nazwa / alias wejściowy: STAGE232B Today Owner Control Tile Source of Truth R4
+- entity_id: E_CLOSEFLOW_DO_POTWIERDZENIA
+- workspace_id: W_CLOSEFLOW_DO_POTWIERDZENIA
+- project_id: P_CLOSEFLOW_DO_POTWIERDZENIA
+- idea_id: nie dotyczy
+- report_id: STAGE232B_R4_IDEMPOTENT_REPAIR
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: 10_PROJEKTY/CloseFlow_Lead_App
+- typ wpisu: etap wdrożeniowy / idempotent repair / source-of-truth kafelków TodayStable
+- docelowa ścieżka: 04_KIERUNEK_DO_WDROZENIA / 09_TESTY_DO_WYKONANIA_I_WYNIKI / 11_RYZYKA_BUGI_I_DLUG_TECHNICZNY / 08_HISTORIA_ZMIAN
+- status zapisu: payload w repo do synchronizacji
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: dedicated guard, node test, build, git diff --check
+- audyt ryzyk po etapie: R4 usuwa brittle patch/guard problem; product status nadal DO_SPRAWDZENIA przez Damiana
+- czego nie ruszano: SQL, Google Calendar, LeadDetail, CaseDetail, płatności, global layout
+- następny krok: push po PASS, następnie ręczny test /today

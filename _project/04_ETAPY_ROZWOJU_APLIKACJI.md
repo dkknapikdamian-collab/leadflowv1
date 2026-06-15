@@ -361,7 +361,7 @@ Run decision do utworzenia: `_project/runs/STAGE232B_TODAY_OWNER_CONTROL_TILE_SO
 
 ### 3. STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH
 
-Status: DO_WDROZENIA PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI ZAKŁADKA KLIENCI BLOKUJE TESTY PRODUKTOWE / PRIORYTET PRODUKTOWY P1
+Status: WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA / R4_LOCAL_PASS
 
 Powód priorytetu:
 
@@ -1719,3 +1719,9 @@ Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md
 - main: nie ruszano.
 - Guard: scripts/check-closeflow-project-docs-encoding.cjs.
 - Push tylko na dev-rollout-freeze.
+
+#### STAGE232B_R4_IDEMPOTENT_REPAIR_2026_06_15
+
+Data: 2026-06-15 21:30 Europe/Warsaw
+Status: WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
+Uwagi: R4 zamyka serię R1/R2/R3 jako idempotentny repair. Etap jest technicznie wdrożony po zielonym dedicated guard/test/build/git diff check, ale PRODUCT_PASS wymaga ręcznego sprawdzenia Damiana w /today.

@@ -97,6 +97,8 @@ void ADMIN_FEEDBACK_P1_TODAY_HEADER_ACTION_STACK_FIX;
 const STAGE213C_C_TODAY_FOCUS_VISIBILITY_THROTTLE = 'Stage213C-C: TodayStable focus/visibility refresh is TTL-gated';
 const TODAY_STABLE_BACKGROUND_REFRESH_TTL_MS = 4 * 60 * 1000;
 void STAGE213C_C_TODAY_FOCUS_VISIBILITY_THROTTLE;
+const STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH = 'STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH: Today Wymaga ruchu uses explicit actionRequiredRows; upcoming 7 days uses full count plus preview; task tile label is truthful for overdue/today rows';
+void STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -442,8 +444,8 @@ const TODAY_SECTION_TITLES: Record<TodaySectionKey, string> = {
   no_action: 'Leady bez najbliższej akcji',
   risk: 'Wysoka wartość / ryzyko',
   waiting: 'Leady czekające',
-  leads: 'Co masz zrobić dzisiaj',
-  tasks: 'Zadania do wykonania dziś',
+  leads: 'Wymaga ruchu',
+  tasks: 'Zadania dziś i zaległe',
   events: 'Wydarzenia dziś',
   upcoming: 'Najbliższe 7 dni',
   drafts: 'Szkice AI do sprawdzenia',
@@ -500,13 +502,25 @@ function getTodayWorkItemTone(status: unknown, momentRaw: string, todayKey: stri
   });
 }
 
+
+function getStage232BTaskTileLabel(operatorTasks: Array<{ momentRaw: string }>, todayKey: string) {
+  const todayCount = operatorTasks.filter((entry) => getDateKey(entry.momentRaw) === todayKey).length;
+  const overdueCount = operatorTasks.filter((entry) => {
+    const dateKey = getDateKey(entry.momentRaw);
+    return Boolean(dateKey) && dateKey < todayKey;
+  }).length;
+  if (todayCount > 0 && overdueCount > 0) return 'Zadania dziś i zaległe';
+  if (overdueCount > 0) return 'Zaległe zadania';
+  if (todayCount > 0) return 'Zadania dziś';
+  return 'Zadania do obsługi';
+}
 function getTodaySectionFromTileText(value: string): TodaySectionKey | null {
   const text = normalizeSemanticLabel(value);
   if (text.includes('leady bez najblizszej akcji') || text.includes('bez najblizszej zaplanowanej akcji')) return 'no_action';
   if (text.includes('wysoka wartosc') || text.includes('ryzyko')) return 'risk';
   if (text.includes('leady czekajace') || text.includes('czeka za dlugo')) return 'waiting';
-  if (text.includes('co masz zrobic dzisiaj') || text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
-  if (text.includes('zadania do wykonania dzis') || text.includes('zadania dzis')) return 'tasks';
+  if (text.includes('wymaga ruchu') || text.includes('do obslugi') || text.includes('co masz zrobic dzisiaj') || text.includes('leady do obslugi dzis') || text.includes('leady do ruchu')) return 'leads';
+  if (text.includes('zadania dzis i zalegle') || text.includes('zalegle zadania') || text.includes('zadania do obslugi') || text.includes('zadania do wykonania dzis') || text.includes('zadania dzis')) return 'tasks';
   if (text.includes('wydarzenia dzis') || text.includes('wydarzenie dzis')) return 'events';
   if (text.includes('najblizsze 7 dni')) return 'upcoming';
   if (text.includes('szkice ai') || text.includes('inbox szkicow')) return 'drafts';
@@ -1142,6 +1156,7 @@ function TodayStable() {
   const noActionLeads = useMemo(() => ownerControlLeadRows.filter(({ item }) => item.signals.includes('Brak następnego kroku')), [ownerControlLeadRows]);
   const highValueAtRiskRows = useMemo(() => ownerControlLeadRows.filter(({ item }) => item.valuePln >= ownerControlBaseline.settings.highValueThresholdPln), [ownerControlBaseline.settings.highValueThresholdPln, ownerControlLeadRows]);
   const waitingLeadRows = useMemo(() => ownerControlLeadRows.filter(({ item }) => typeof item.silentDays === 'number' && item.silentDays >= ownerControlBaseline.settings.warningDays), [ownerControlBaseline.settings.warningDays, ownerControlLeadRows]);
+  const actionRequiredRows = useMemo(() => ownerControlBaseline.items, [ownerControlBaseline.items]);
 
   const todayEvents = useMemo(() => {
     return data.events
@@ -1151,7 +1166,7 @@ function TodayStable() {
       .sort(sortByMoment);
   }, [data.events, todayKey]);
 
-  const upcomingRows = useMemo<UpcomingRow[]>(() => {
+  const upcomingRowsAll = useMemo<UpcomingRow[]>(() => {
     const taskRows = data.tasks
       .filter((task) => !isClosedStatus(task?.status))
       .map((task) => ({ task, momentRaw: getTaskMomentRaw(task) }))
@@ -1215,10 +1230,12 @@ function TodayStable() {
         raw: entry.lead,
       }));
 
-    return [...taskRows, ...eventRows, ...leadRows].sort(sortByMoment).slice(0, 10);
+    return [...taskRows, ...eventRows, ...leadRows].sort(sortByMoment);
   }, [activeLeadsWithPlannedAction, data.events, data.tasks, next7EndKey, todayKey]);
 
-  const upcomingDayCards = useMemo(() => buildUpcomingDayCards(upcomingRows), [upcomingRows]);
+  const upcomingRowsPreview = useMemo<UpcomingRow[]>(() => upcomingRowsAll.slice(0, 10), [upcomingRowsAll]);
+  const upcomingRows = upcomingRowsPreview;
+  const upcomingDayCards = useMemo(() => buildUpcomingDayCards(upcomingRowsPreview), [upcomingRowsPreview]);
 
   const pendingDrafts = useMemo(() => {
     return data.drafts.filter((draft: any) => String(draft?.status || '').toLowerCase() === 'draft');
@@ -1286,12 +1303,14 @@ function TodayStable() {
     return () => window.clearTimeout(timer);
   }, [activeTodaySection, collapsedSections, visibleTodaySections]);
 
+  const taskTileLabel = useMemo(() => getStage232BTaskTileLabel(operatorTasks, todayKey), [operatorTasks, todayKey]);
+
   const todaySectionLabels = {
     no_action: 'Leady bez najbliższej akcji',
     risk: 'Wysoka wartość / ryzyko',
     waiting: 'Leady czekające',
-    leads: 'Co masz zrobić dzisiaj',
-    tasks: 'Zadania do wykonania dziś',
+    leads: 'Wymaga ruchu',
+    tasks: taskTileLabel,
     events: 'Wydarzenia dziś',
     upcoming: 'Najbliższe 7 dni',
     drafts: 'Szkice AI do sprawdzenia',
@@ -1308,10 +1327,10 @@ function TodayStable() {
     { key: 'no_action', title: todaySectionLabels.no_action, count: noActionLeads.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <AlertTriangle className="h-4 w-4" /> },
     { key: 'risk', title: todaySectionLabels.risk, count: highValueAtRiskRows.length, tone: 'cf-severity-text-error', activeTone: 'cf-severity-hover-error', icon: <TrendingUp className="h-4 w-4" /> },
     { key: 'waiting', title: todaySectionLabels.waiting, count: waitingLeadRows.length, tone: 'text-orange-700', activeTone: 'hover:border-orange-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
-    { key: 'leads', title: todaySectionLabels.leads, count: ownerControlBaseline.items.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
+    { key: 'leads', title: todaySectionLabels.leads, count: actionRequiredRows.length, tone: 'text-blue-700', activeTone: 'hover:border-blue-200', icon: <EntityIcon entity="client" className="h-4 w-4" /> },
     { key: 'tasks', title: todaySectionLabels.tasks, count: operatorTasks.length, tone: 'text-emerald-700', activeTone: 'hover:border-emerald-200', icon: <CheckSquare className="h-4 w-4" /> },
     { key: 'events', title: todaySectionLabels.events, count: todayEvents.length, tone: 'text-violet-700', activeTone: 'hover:border-violet-200', icon: <CalendarDays className="h-4 w-4" /> },
-    { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRows.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
+    { key: 'upcoming', title: todaySectionLabels.upcoming, count: upcomingRowsAll.length, tone: 'text-slate-700', activeTone: 'hover:border-slate-300', icon: <CalendarDays className="h-4 w-4" /> },
     { key: 'drafts', title: todaySectionLabels.drafts, count: pendingDrafts.length, tone: 'text-indigo-700', activeTone: 'hover:border-indigo-200', icon: <EntityIcon entity="template" className="h-4 w-4" /> },
   ];
 
@@ -1716,9 +1735,10 @@ function TodayStable() {
 
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.leads} count={ownerControlBaseline.items.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+            <SectionHeader title={todaySectionLabels.leads} count={actionRequiredRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
+            <p className="px-4 pt-3 text-xs font-semibold text-slate-500" data-stage232b-owner-control-helper="true">To nie jest kalendarz. To lista tematów, które wymagają decyzji/ruchu.</p>
             <div hidden={isCollapsed('leads')}>
-            {ownerControlBaseline.items.length ? ownerControlBaseline.items.map((item) => (
+            {actionRequiredRows.length ? actionRequiredRows.map((item) => (
               <RowLink
                 key={item.key}
                 to={item.href}
@@ -1730,7 +1750,7 @@ function TodayStable() {
                 taskId={item.entityType === 'task' ? item.entityId : undefined}
                 doneKind={item.entityType === 'task' || item.entityType === 'event' ? item.entityType : undefined}
               />
-            )) : <EmptyState text="Dzisiaj nie ma rekordów wymagających ruchu." />}
+            )) : <EmptyState text="Brak tematów wymagających ruchu." />}
             </div>
           </StableCard>
 
@@ -1805,8 +1825,11 @@ function TodayStable() {
 
         <div hidden={!sectionVisible('upcoming')}>
           <StableCard>
-            <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRows.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('upcoming')} onToggle={() => toggleSectionCollapse('upcoming')} />
+            <SectionHeader title={todaySectionLabels.upcoming} count={upcomingRowsAll.length} icon={<CalendarDays className="h-5 w-5" />} tone="bg-indigo-50 text-indigo-700" collapsed={isCollapsed('upcoming')} onToggle={() => toggleSectionCollapse('upcoming')} />
             <div hidden={isCollapsed('upcoming')}>
+              {upcomingRowsAll.length > upcomingRowsPreview.length ? (
+                <p className="px-4 pt-3 text-xs font-semibold text-slate-500" data-stage232b-upcoming-preview-disclosure="true">pokazano {upcomingRowsPreview.length} z {upcomingRowsAll.length}</p>
+              ) : null}
               {upcomingDayCards.length ? (
                 <div data-today-next7-v30="true" className="grid gap-3 p-4">
                   {upcomingDayCards.map((day) => (
