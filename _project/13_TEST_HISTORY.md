@@ -18,7 +18,7 @@ Do wykonania po apply:
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs
 -
 pm run build
-- RĂ„â„˘cznie /settings: czytelnoÄąâ€şĂ„â€ˇ select/input/disabled/dropdown/focus w sekcji Google Calendar reminders.
+- Ręcznie /settings: czytelność select/input/disabled/dropdown/focus w sekcji Google Calendar reminders.
 
 ## 2026-05-29 - STAGE179 Settings readability tests
 
@@ -28,7 +28,7 @@ Do wykonania po apply:
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs
 -
 pm run build
-- RĂ„â„˘cznie /settings: czytelnoÄąâ€şĂ„â€ˇ select/input/disabled/dropdown/focus w sekcji Google Calendar reminders.
+- Ręcznie /settings: czytelność select/input/disabled/dropdown/focus w sekcji Google Calendar reminders.
 
 <!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_TEST_HISTORY_START -->
 ## 2026-06-04 — Stage221 owner-control roadmap memory test
@@ -1454,22 +1454,22 @@ Status przed lokalnym uruchomieniem: PENDING_LOCAL_RUN. Skrypt `APPLY_STAGE227A_
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_START -->
 ## 2026-06-06 15:45 Europe/Warsaw — STAGE227B — test history
 
-Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify quiet, git diff --check. Manual: `/funnel` ma byĂ„â€ˇ czytelny i ma otworzyĂ„â€ˇ siĂ„â„˘ bez biaÄąâ€šego ekranu.
+Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify quiet, git diff --check. Manual: `/funnel` ma być czytelny i ma otworzyć się bez białego ekranu.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_TEST_HISTORY_END -->
 
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_START -->
 ## 2026-06-06 17:05 Europe/Warsaw — STAGE228A test history
 
-Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` Ă˘â€ ’ `PieniĂ„…dze` Ă˘â€ ’ widoczny rekord ÄąźrÄ‚łdÄąâ€šowy kwoty.
+Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` ˘â€ ’ `Pieniądze` ˘â€ ’ widoczny rekord źródłowy kwoty.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_END -->
 
 ## 2026-06-06 18:00 Europe/Warsaw — STAGE228B Lead Work Action Center
 
-- typ: etap wdroÄąÄ˝eniowy local-only
-- decyzja: Lead nie dostaje peÄąâ€šnego lejka; dostaje centrum pracy Ă˘€ĹľCo robimy teraz?Ă˘€ĹĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- typ: etap wdrożeniowy local-only
+- decyzja: Lead nie dostaje pełnego lejka; dostaje centrum pracy „Co robimy teraz?” z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
 - pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
 - testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
-- ryzyko: nie tworzyĂ„â€ˇ drugiego systemu dziaÄąâ€šaÄą„; uÄąÄ˝ywaĂ„â€ˇ istniejących handlerÄ‚łw LeadDetail.
+- ryzyko: nie tworzyć drugiego systemu działań; używać istniejących handlerów LeadDetail.
 
 
 ## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
@@ -1650,11 +1650,11 @@ NASTEPNY KROK:
 
 ## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikaÄąâ€š po klikniĂ„â„˘ciu UsuÄą„, ale wracaÄąâ€š po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byĂ„â€ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byĂ„â€ˇ ÄąźrÄ‚łdÄąâ€šowana z linkedTasks, nie z caÄąâ€šego timeline, ÄąÄ˝eby activity history nie odtwarzaÄąâ€ša aktywnego braku.
+- problem: Brak znikał po kliknięciu Usuń, ale wracażâ€š po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
 - testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niÄąÄ˝ soft-delete; historia usuniĂ„â„˘cia zostaje jako activity.
+- ryzyko: DELETE jest mocniejsze niż soft-delete; historia usunięcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -1702,9 +1702,9 @@ NASTEPNY KROK:
 ## 2026-06-09 02:50 Europe/Warsaw — STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Äąâ€šaÄą„cuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym łańcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siĂ„â„˘ już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera się już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -3726,6 +3726,13 @@ Testy:
 - git diff --check
 
 ## STAGE_PROJECT_DOCS_ENCODING_REPAIR_004_SAFE - 2026-06-15 20:15 Europe/Warsaw
+
+Testy:
+- node scripts/check-closeflow-branch-scope.cjs
+- node scripts/check-closeflow-project-docs-encoding.cjs
+- git diff --check
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_005_REMAINING_TOKENS - 2026-06-15 20:30 Europe/Warsaw
 
 Testy:
 - node scripts/check-closeflow-branch-scope.cjs

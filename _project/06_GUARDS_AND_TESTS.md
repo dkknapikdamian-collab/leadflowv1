@@ -2022,11 +2022,11 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 
 ## 2026-06-06 18:00 Europe/Warsaw — STAGE228B Lead Work Action Center
 
-- typ: etap wdroÄąÄ˝eniowy local-only
-- decyzja: Lead nie dostaje peÄąâ€šnego lejka; dostaje centrum pracy Ă˘€ĹľCo robimy teraz?Ă˘€ĹĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- typ: etap wdrożeniowy local-only
+- decyzja: Lead nie dostaje pełnego lejka; dostaje centrum pracy „Co robimy teraz?” z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
 - pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
 - testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
-- ryzyko: nie tworzyĂ„â€ˇ drugiego systemu dziaÄąâ€šaÄą„; uÄąÄ˝ywaĂ„â€ˇ istniejących handlerÄ‚łw LeadDetail.
+- ryzyko: nie tworzyć drugiego systemu działań; używać istniejących handlerów LeadDetail.
 
 ## 2026-06-06 18:36 Europe/Warsaw - Stage228B R8 AlertTriangle import guard
 
@@ -2232,11 +2232,11 @@ NASTEPNY KROK:
 
 ## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikaÄąâ€š po klikniĂ„â„˘ciu UsuÄą„, ale wracaÄąâ€š po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byĂ„â€ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byĂ„â€ˇ ÄąźrÄ‚łdÄąâ€šowana z linkedTasks, nie z caÄąâ€šego timeline, ÄąÄ˝eby activity history nie odtwarzaÄąâ€ša aktywnego braku.
+- problem: Brak znikał po kliknięciu Usuń, ale wracażâ€š po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
 - testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niÄąÄ˝ soft-delete; historia usuniĂ„â„˘cia zostaje jako activity.
+- ryzyko: DELETE jest mocniejsze niż soft-delete; historia usunięcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -2284,9 +2284,9 @@ NASTEPNY KROK:
 ## 2026-06-09 02:50 Europe/Warsaw — STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Äąâ€šaÄą„cuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym łańcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siĂ„â„˘ już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera się już na dokładnym polskim tekście toastu, tylko na strukturze przepływu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -4287,3 +4287,10 @@ Guard:
 - scripts/check-closeflow-project-docs-encoding.cjs
 
 Cel: blokować powrót mojibake w centralnych plikach _project.
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_005_REMAINING_TOKENS - 2026-06-15 20:30 Europe/Warsaw
+
+Guard:
+- scripts/check-closeflow-project-docs-encoding.cjs
+
+Wynik oczekiwany: centralne pliki _project bez tokenów mojibake.
