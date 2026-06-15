@@ -522,11 +522,11 @@ export default function TasksStable() {
 
     try {
       await deleteTaskFromSupabase(deleteId);
-      toast.success('Zadanie usuniÄ™te.');
+      toast.success('Zadanie usunięte.');
       setTaskToDelete(null);
     } catch (error: any) {
       setTasks(optimisticSnapshot);
-      toast.error('Nie udaĹ‚o siÄ™ usunÄ…Ä‡ zadania: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udało się usunąć zadania: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setTaskDeletePending(false);
     }

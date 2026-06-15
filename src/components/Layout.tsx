@@ -674,5 +674,3 @@ export default function Layout({ children }: LayoutProps) {
 /* PHASE0_AI_ASSISTANT_LAYOUT_LAST7 GlobalQuickActions */
 
 /* ADMIN_DEBUG_TOOLBAR_LAYOUT_STAGE87 isAdmin || isAppOwner */
-
-

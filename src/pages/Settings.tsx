@@ -928,7 +928,7 @@ useEffect(() => {
                     {syncingGoogleCalendarOutbound ? 'Synchronizuję...' : 'Synchronizuj teraz'}
                   </Button>
                   <span className="settings-muted-note">
-                    
+
                   </span>
                 </div>
 
@@ -980,7 +980,7 @@ useEffect(() => {
                   Zapisz przypomnienia Google
                 </Button>
                 <span className="settings-muted-note">
-                  
+
                 </span>
               </div>
             </section>
@@ -1021,7 +1021,7 @@ useEffect(() => {
               </div>
             </section>
 
-            
+
 
             <section hidden={activeSettingsTab !== 'notifications'} data-settings-tab-panel="notifications" className="settings-section-card">
               <div className="settings-section-head">
@@ -1500,6 +1500,3 @@ useEffect(() => { if (!canUseGoogleCalendarByPlan) return; loadGoogleCalendarSta
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-reminder-ui="stage06"
 <section hidden={!canUseGoogleCalendarByPlan} className="settings-section-card" data-plan-visibility-stage32e="google-calendar" data-google-calendar-sync-v1-stage03="true"
 */}
-
-
-

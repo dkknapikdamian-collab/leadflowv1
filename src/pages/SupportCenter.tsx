@@ -466,7 +466,7 @@ export default function SupportCenter() {
           }
         />
 
-        
+
         <div className={isAdmin ? 'support-shell support-shell-admin' : 'support-shell'}>
           <section className="support-main-column">
             <section className="support-form-card" data-support-compose-card="true">

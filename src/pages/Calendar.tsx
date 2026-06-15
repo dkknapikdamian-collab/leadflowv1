@@ -2090,7 +2090,7 @@ export default function Calendar() {
   const handleDeleteEntry = async (entry: ScheduleEntry) => {
     // STAGE228R37_UNSUPPORTED_DELETE_KIND_NO_FALSE_SUCCESS
     if (entry.kind !== 'event' && entry.kind !== 'task') {
-      toast.error('Nie moĹĽna usunÄ…Ä‡ tego typu wpisu z kalendarza.');
+      toast.error('Nie można usunąć tego typu wpisu z kalendarza.');
       return;
     }
     if (!hasAccess) {
@@ -2299,7 +2299,7 @@ export default function Calendar() {
                                 </div>
 
                                 <div className="rounded-2xl border border-slate-200 p-4 space-y-4">
-                                  
+
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div className="event-form-field">
                                       <Label>Start</Label>
@@ -2867,5 +2867,3 @@ export default function Calendar() {
 }
 
 /* CALENDAR_STAGE08D_NO_FIREBASE_BOOT_BLOCK GLOBAL_QUICK_ACTIONS_STAGE08D_CALENDAR_MODAL_EVENT_BUS */
-
-

@@ -1,7 +1,7 @@
 /* STAGE228R1_RAIL_TASKS_PATTERN_SOURCE_TRUTH
-   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelkÄ‚Ĺ‚w /leads, /clients, /cases.
+   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelkÄ‚łw /leads, /clients, /cases.
    Wzorcem sĂ„â€¦ /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
-   Zakaz runtime mapperÄ‚Ĺ‚w: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
+   Zakaz runtime mapperÄ‚łw: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
 */
 :root {
   --cf-rail-r1-title-size: 13px;
@@ -264,12 +264,12 @@
 
 /* STAGE228R3_TOP_VALUE_AND_RISK_TONE_SOURCE_TRUTH
    Cel:
-   - cf-rail-top-row i cf-rail-risk-row majÄ… uĹĽywaÄ‡ tych samych tonĂłw co cf-rail-filter-row.
-   - ĹąrĂłdĹ‚em rytmu sÄ… /tasks: tasks-stage178-filter-button i tasks-stage178-urgent-button.
-   - Nie tworzymy kafelka w kafelku: wewnÄ™trzne label/money wrappery sÄ… transparentne.
+   - cf-rail-top-row i cf-rail-risk-row mają używać tych samych tonów co cf-rail-filter-row.
+   - Ĺąródłem rytmu są /tasks: tasks-stage178-filter-button i tasks-stage178-urgent-button.
+   - Nie tworzymy kafelka w kafelku: wewnętrzne label/money wrappery są transparentne.
 */
 
-/* Jeden rytm: filtry, top-value i risk rows majÄ… siatkÄ™ jak /tasks. */
+/* Jeden rytm: filtry, top-value i risk rows mają siatkę jak /tasks. */
 #root .lead-right-rail .cf-rail-filter-row,
 #root .clients-right-rail .cf-rail-filter-row,
 #root .cases-right-rail .cf-rail-filter-row,
@@ -289,7 +289,7 @@
   overflow: hidden !important;
 }
 
-/* Top-value / risk teĹĽ dostajÄ… tone background/border. WczeĹ›niej tone dziaĹ‚aĹ‚ tylko na filtrach. */
+/* Top-value / risk też dostają tone background/border. Wcześniej tone działał tylko na filtrach. */
 #root .lead-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="blue"],
 #root .clients-right-rail .cf-rail-top-row[data-cf-operator-rail-tone="blue"],
 #root .cases-right-rail .cf-rail-risk-row[data-cf-operator-rail-tone="blue"] {
@@ -340,7 +340,7 @@
   border-color: var(--cf-rail-r1-slate-border) !important;
 }
 
-/* Zabijamy "kafelek w kafelku": stare lead-relation wrappery nie mogÄ… mieÄ‡ wĹ‚asnego tĹ‚a/paddingu/radiusu. */
+/* Zabijamy "kafelek w kafelku": stare lead-relation wrappery nie mogą mieć własnego tła/paddingu/radiusu. */
 #root .lead-right-rail .cf-rail-top-row :is(.lead-relation-label-wrap, .cf-top-value-label-wrap, .lead-relation-label, .cf-top-value-label, .lead-relation-description, .cf-top-value-description, .lead-relation-money, .cf-top-value-money),
 #root .clients-right-rail .cf-rail-top-row :is(.lead-relation-label-wrap, .cf-top-value-label-wrap, .lead-relation-label, .cf-top-value-label, .lead-relation-description, .cf-top-value-description, .lead-relation-money, .cf-top-value-money),
 #root .cases-right-rail .cf-rail-risk-row :is(.cf-rail-risk-copy, .cf-rail-risk-title, .cf-rail-risk-meta) {
@@ -353,7 +353,7 @@
   height: auto !important;
 }
 
-/* Lewa czÄ™Ĺ›Ä‡ tekstu: ellipsis, jeden styl, bez osobnego chipu. */
+/* Lewa część tekstu: ellipsis, jeden styl, bez osobnego chipu. */
 #root .lead-right-rail .cf-rail-top-name,
 #root .clients-right-rail .cf-rail-top-name,
 #root .cases-right-rail .cf-rail-risk-copy {
@@ -387,7 +387,7 @@
   white-space: nowrap !important;
 }
 
-/* Kwota/licznik = jak prawa wartoĹ›Ä‡ z /tasks. */
+/* Kwota/licznik = jak prawa wartość z /tasks. */
 #root .lead-right-rail .cf-rail-top-value,
 #root .clients-right-rail .cf-rail-top-value {
   flex: 0 0 auto !important;
@@ -408,7 +408,7 @@
   white-space: nowrap !important;
 }
 
-/* SVG w risk row nie moĹĽe pompowaÄ‡ wysokoĹ›ci ani koloru. */
+/* SVG w risk row nie może pompować wysokości ani koloru. */
 #root .cases-right-rail .cf-rail-risk-row svg {
   width: 16px !important;
   height: 16px !important;
