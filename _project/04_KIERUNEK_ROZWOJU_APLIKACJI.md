@@ -219,75 +219,37 @@ Przykładowe sygnały:
 - nieaktualne dane kontaktowe,
 - widoczny problem konwersji albo zaufania.
 
-Granice:
+### 6. Zakładka Dziś jako prawdziwe centrum decyzji, nie worek rekordów
 
-- nie budować generycznej bazy firm,
-- nie kopiować Apollo/Clay/Lusha,
-- nie robić scrapera bez powodu kontaktu,
-- nie robić osobnej aplikacji DealGram.
+To jest aktywny kierunek produktowy od STAGE232B.
 
-Status:
+Teza:
 
 ```txt
-Ważny kierunek growth, ale dopiero po stabilizacji CRM, szkiców, kalendarza i owner-control core.
+Dziś ma mówić właścicielowi, co wymaga ruchu teraz, co jest zaległe, co jest dzisiaj i co jest najbliżej.
+Nie może udawać kalendarza, jeśli pokazuje pełny portfel Owner Control.
 ```
 
-### 6. Digest / Weekly Report jako lista decyzji
+Zasady:
 
-Digest nie ma być newsletterem.
+- każdy kafelek w `Dziś` musi mieć jawny selektor danych,
+- licznik kafelka musi odpowiadać sekcji, którą kafelek otwiera,
+- nazwa kafelka musi opisywać rzeczywiste źródło danych,
+- `Co masz zrobić dzisiaj` nie może liczyć pełnego `ownerControlBaseline.items`, jeśli nie ma dopisku, że to pełny portfel rzeczy wymagających ruchu,
+- rekomendowana nazwa dla pełnego portfela Owner Control to `Wymaga ruchu` albo `Do obsługi`,
+- czyste dzisiejsze terminy mają zostać w `Zadania do wykonania dziś` i `Wydarzenia dziś`,
+- zaległe zadania powinny być jawnie opisane jako zaległe albo `do obsługi`,
+- `Najbliższe 7 dni` może pokazywać preview, ale musi jasno odróżniać pełny count od listy top 10,
+- aktywna trasa `/today` ma dalej używać `TodayStable`, a legacy `Today.tsx` nie jest powierzchnią aktywnego refactoru.
 
-Ma pokazywać:
-
-- co dziś ruszyć,
-- kto nie ma następnego kroku,
-- kto ma 7/14 dni ciszy,
-- które sprawy stoją,
-- jakie pieniądze wymagają ruchu,
-- jakie braki i blokady wymagają decyzji,
-- jakie szkice czekają na decyzję.
-
-Weekly report ma mówić, co wydarzyło się w tygodniu i co wymaga reakcji, nie produkować ozdobnego dashboardu.
-
-## Czego nie robić teraz
-
-Nie robić teraz:
-
-- ERP,
-- KSeF,
-- fakturowania,
-- magazynu,
-- własnego VoIP,
-- ciężkiego BI,
-- rozbudowanego automation buildera,
-- 10 branż naraz,
-- pełnego marketplace'u playbooków,
-- pełnego DMS przed uporządkowaniem braków/blokad,
-- pełnego AI prospectingu przed stabilnym owner-control core.
-
-## Najbliższy kierunek priorytetowy
-
-Priorytet główny:
+Warunek jakości produktu:
 
 ```txt
-STAGE232A Missing & Blocker Source of Truth dla LeadDetail
+Użytkownik ma w 5 sekund wiedzieć, czy patrzy na:
+- terminy dzisiejsze,
+- zaległości,
+- brak next stepu,
+- ciszę / waiting,
+- pełny owner-control backlog,
+- szkice do decyzji.
 ```
-
-Dlaczego:
-
-- bez tego `Braki`, `Blokady`, historia i działania leada są niespójne,
-- to bezpośrednio odpowiada na pytanie właściciela: co stoi i czego brakuje,
-- porządkuje fundament pod późniejsze dokumenty, checklisty, digest i owner-control,
-- usuwa ryzyko, że aplikacja wygląda bogato, ale nie daje produkcyjnego zaufania.
-
-Po STAGE232A wrócić do kolejki zapisanej w `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
-
-## Warunek zmiany kierunku
-
-Kierunek można zmienić, jeśli:
-
-- test sprzedażowy pokaże, że właściciele nie rozumieją owner-control,
-- użytkownicy bardziej płacą za inny, konkretny moduł,
-- podstawowy CRM nie jest jeszcze wystarczająco stabilny,
-- techniczne ryzyko blokuje wdrożenie owner-control szybciej niż alternatywny etap.
-
-Bez takiego dowodu nie rozpraszać roadmapy na przypadkowe funkcje.
