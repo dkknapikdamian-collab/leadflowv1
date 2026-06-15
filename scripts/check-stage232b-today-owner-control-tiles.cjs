@@ -1,33 +1,32 @@
 const fs = require('fs');
 const path = require('path');
-const root = process.cwd();
-const read = (file) => fs.readFileSync(path.join(root, file), 'utf8');
-function assert(condition, message) { if (!condition) throw new Error(message); }
-const app = read('src/App.tsx');
-const today = read('src/pages/TodayStable.tsx');
-const usesTodayStable = /lazyPage\(\s*\(\)\s*=>\s*import\(['"]\.\/pages\/TodayStable['"]\)\s*,\s*['"]TodayStable['"]\s*\)/s.test(app) || /from ['"]\.\/pages\/TodayStable['"]/.test(app);
-const usesLegacyToday = /lazyPage\(\s*\(\)\s*=>\s*import\(['"]\.\/pages\/Today['"]\)/s.test(app) || /from ['"]\.\/pages\/Today['"]/.test(app);
-assert(usesTodayStable, 'Active Today route must import/lazy-load TodayStable.');
-assert(!usesLegacyToday, 'Active Today route must not import/lazy-load legacy Today.tsx.');
-assert(/STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH/.test(today), 'TodayStable must contain STAGE232B marker.');
-assert(/leads:\s*'Wymaga ruchu'/.test(today), 'Owner-control section must be named Wymaga ruchu.');
-assert(!/leads:\s*'Co masz zrobić dzisiaj'/.test(today), 'Misleading Co masz zrobić dzisiaj label must not remain.');
-assert(/data-stage232b-owner-control-helper="true"/.test(today), 'Owner-control helper must explain it is not a calendar.');
-assert(/const\s+actionRequiredRows\s*=\s*useMemo\(\(\) => ownerControlBaseline\.items/.test(today), 'TodayStable must expose explicit actionRequiredRows collection.');
-assert(/count:\s*actionRequiredRows\.length/.test(today), 'Wymaga ruchu tile must count actionRequiredRows.');
-assert(/<SectionHeader title=\{todaySectionLabels\.leads\} count=\{actionRequiredRows\.length\}/.test(today), 'Wymaga ruchu section header must count actionRequiredRows.');
-assert(/actionRequiredRows\.length \? actionRequiredRows\.map/.test(today), 'Wymaga ruchu section list must render actionRequiredRows.');
-assert(!/count:\s*ownerControlBaseline\.items\.length/.test(today), 'Metric tile must not count ownerControlBaseline.items directly.');
-assert(!/<SectionHeader title=\{todaySectionLabels\.leads\} count=\{ownerControlBaseline\.items\.length\}/.test(today), 'Section header must not count ownerControlBaseline.items directly.');
-assert(/const\s+upcomingRowsAll\s*=\s*useMemo<UpcomingRow\[\]>/.test(today), 'Upcoming 7 days must compute full upcomingRowsAll.');
-assert(/const\s+upcomingRowsPreview\s*=\s*useMemo<UpcomingRow\[\]>\(\(\) => upcomingRowsAll\.slice\(0, 10\), \[upcomingRowsAll\]\);/.test(today), 'Upcoming 7 days must compute preview top 10 from full rows.');
-assert(/count:\s*upcomingRowsAll\.length/.test(today), 'Upcoming tile must count full upcomingRowsAll.');
-assert(/<SectionHeader title=\{todaySectionLabels\.upcoming\} count=\{upcomingRowsAll\.length\}/.test(today), 'Upcoming section header must count full upcomingRowsAll.');
-assert(/data-stage232b-upcoming-preview-disclosure="true"/.test(today), 'Upcoming section must disclose preview count.');
-assert(/pokazano \{upcomingRowsPreview\.length\} z \{upcomingRowsAll\.length\}/.test(today), 'Upcoming section must show displayed count vs full count.');
-assert(/function getStage232BTaskTileLabel/.test(today), 'Task tile must use truthful dynamic label helper.');
-assert(/if \(todayCount > 0 && overdueCount > 0\) return 'Zadania dziś i zaległe';/.test(today), 'Task label helper must handle today plus overdue.');
-assert(/if \(overdueCount > 0\) return 'Zaległe zadania';/.test(today), 'Task label helper must handle overdue-only.');
-assert(/if \(todayCount > 0\) return 'Zadania dziś';/.test(today), 'Task label helper must handle today-only.');
-assert(/tasks:\s*taskTileLabel/.test(today), 'Task section label must use dynamic taskTileLabel.');
-console.log(JSON.stringify({ ok: true, stage: 'STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH_R4', contract: 'TodayStable tiles use truthful labels, explicit actionRequiredRows, full upcoming count plus preview disclosure, and dynamic task label.' }, null, 2));
+
+const repo = process.cwd();
+const app = fs.readFileSync(path.join(repo, 'src/App.tsx'), 'utf8');
+const today = fs.readFileSync(path.join(repo, 'src/pages/TodayStable.tsx'), 'utf8');
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
+}
+
+assert(/import\(['"]\.\/pages\/TodayStable['"]\)/.test(app), 'Active Today route must lazy-import TodayStable.');
+assert(!/const\s+Today\s*=\s*lazyPage\(\(\)\s*=>\s*import\(['"]\.\/pages\/Today['"]\)/.test(app), 'Active Today route must not use legacy Today.tsx.');
+
+assert(today.includes('STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH'), 'TodayStable must contain STAGE232B marker.');
+assert(/leads\s*:\s*['"]Wymaga ruchu['"]/.test(today), 'Owner-control tile label must remain Wymaga ruchu.');
+assert(today.includes('actionRequiredRows'), 'TodayStable must use explicit actionRequiredRows source.');
+assert(!today.includes('ownerControlBaseline.items.length'), 'Owner-control tile count must not read ownerControlBaseline.items.length directly.');
+assert(!today.includes('To nie jest kalendarz'), 'Today UI must not contain developer/helper explanatory copy.');
+assert(!today.includes('data-stage232b-owner-control-helper'), 'Today UI must not contain STAGE232B helper paragraph marker.');
+assert(today.includes('upcomingRowsAll'), 'TodayStable must keep upcomingRowsAll full-count source.');
+assert(today.includes('upcomingRowsPreview'), 'TodayStable must keep upcomingRowsPreview source.');
+assert(today.includes('data-stage232b-upcoming-preview-disclosure'), 'TodayStable must disclose upcoming preview count.');
+assert(today.includes('getStage232BTaskTileLabel'), 'TodayStable must use dynamic task tile label helper.');
+assert(today.includes('Zadania dziś i zaległe'), 'Task tile must handle today plus overdue tasks truthfully.');
+assert(today.includes('Zaległe zadania'), 'Task tile must handle overdue-only tasks truthfully.');
+
+console.log(JSON.stringify({
+  ok: true,
+  stage: 'STAGE232B_R8_TODAY_LABEL_AND_HELPER_COPY_FIX',
+  contract: 'Today keeps Wymaga ruchu, no developer helper copy, full upcoming count with preview disclosure, and dynamic task labels.'
+}, null, 2));

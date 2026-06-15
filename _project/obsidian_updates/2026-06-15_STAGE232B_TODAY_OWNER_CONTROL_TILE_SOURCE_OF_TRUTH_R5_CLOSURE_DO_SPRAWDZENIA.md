@@ -15,7 +15,7 @@ Etap wdrozeniowy / poprawka zrodla prawdy kafelkow zakladki Dzis.
 
 - Kafelek Co masz zrobic dzisiaj zostal przepiety na prawdziwy kontrakt Wymaga ruchu.
 - Lista/kafelek uzywa jawnej kolekcji ctionRequiredRows.
-- Dodano helper: To nie jest kalendarz. To lista tematow, ktore wymagaja decyzji/ruchu.
+- R6: usunieto z UI odrzucony dopisek techniczny spod kafelka `Wymaga ruchu`; nie wymagac go w testach recznych.
 - Najblizsze 7 dni rozdziela full count od preview top 10.
 - UI pokazuje pokazano 10 z X, gdy lista jest przycieta.
 - Etykieta zadan jest dynamiczna: Zadania dzis i zalegle, Zalegle zadania, Zadania dzis albo Zadania do obslugi.
@@ -25,9 +25,9 @@ Etap wdrozeniowy / poprawka zrodla prawdy kafelkow zakladki Dzis.
 
 - Dedicated guard: PASS
 - Dedicated node test: PASS
-- 
+-
 pm run build: PASS
-- 
+-
 pm run verify:closeflow:quiet: SKIP_UNRELATED/DO_ANALIZY, bo blokuje stary guard CaseDetail niezwiÄ…zany z /today.
 - git diff --check: R4 wykryl trailing whitespace w dokumentach; R5 usuwa whitespace i wymaga ponownego PASS.
 

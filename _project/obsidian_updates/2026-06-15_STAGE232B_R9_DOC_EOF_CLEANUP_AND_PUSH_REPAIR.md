@@ -1,0 +1,24 @@
+# Obsidian update — STAGE232B_R9_DOC_EOF_CLEANUP_AND_PUSH_REPAIR
+
+- data i godzina: 2026-06-15 22:30 Europe/Warsaw
+- nazwa / alias wejściowy: STAGE232B_R9_DOC_EOF_CLEANUP_AND_PUSH_REPAIR
+- entity_id: E_CLOSEFLOW_DO_POTWIERDZENIA
+- workspace_id: W_CLOSEFLOW_DO_POTWIERDZENIA
+- project_id: P_CLOSEFLOW_DO_POTWIERDZENIA
+- idea_id: nie dotyczy
+- report_id: nie dotyczy
+- canonical_name: CloseFlow / LeadFlow
+- folder Obsidiana: 10_PROJEKTY/CloseFlow_Lead_App
+- mapa główna / pulpit: DO_POTWIERDZENIA
+- mapa zależności: DO_POTWIERDZENIA
+- ściąga plików: DO_POTWIERDZENIA
+- typ wpisu: hotfix techniczny po R8 / cleanup dokumentacji
+- docelowa ścieżka: _project/obsidian_updates/2026-06-15_STAGE232B_R9_DOC_EOF_CLEANUP_AND_PUSH_REPAIR.md
+- status zapisu: payload w repo, do synchronizacji z centralnymi notatkami Obsidiana
+- repo: dkknapikdamian-collab/leadflowv1
+- branch: dev-rollout-freeze
+- local path: C:\Users\malim\Desktop\biznesy_ai\2.closeflow
+- testy: dedicated guard, dedicated test, build, git diff --check
+- audyt ryzyk po etapie: R8 funkcjonalnie PASS, ale diff check wykrył blank line at EOF; R9 usuwa tę klasę błędu i usuwa artefakty po nieudanych R6/R7
+- czego nie ruszano: SQL, CaseDetail, LeadDetail, Google Calendar, finanse
+- następny krok: push R9, potem ręczny test /today i przejście do STAGE232A

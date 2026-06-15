@@ -99,6 +99,8 @@ const TODAY_STABLE_BACKGROUND_REFRESH_TTL_MS = 4 * 60 * 1000;
 void STAGE213C_C_TODAY_FOCUS_VISIBILITY_THROTTLE;
 const STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH = 'STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH: Today Wymaga ruchu uses explicit actionRequiredRows; upcoming 7 days uses full count plus preview; task tile label is truthful for overdue/today rows';
 void STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH;
+const STAGE232B_R6_TODAY_NO_DEV_HELPER_COPY = 'STAGE232B_R6: Today UI must not show developer explanatory helper copy under Wymaga ruchu';
+void STAGE232B_R6_TODAY_NO_DEV_HELPER_COPY;
 
 type DashboardStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -1736,8 +1738,7 @@ function TodayStable() {
         <section className="grid gap-4 xl:grid-cols-2" hidden={!sectionVisible('leads') && !sectionVisible('tasks') && !sectionVisible('events') && !sectionVisible('drafts')}>
           <StableCard>
             <SectionHeader title={todaySectionLabels.leads} count={actionRequiredRows.length} icon={<EntityIcon entity="client" className="h-5 w-5" />} tone="cf-severity:info" collapsed={isCollapsed('leads')} onToggle={() => toggleSectionCollapse('leads')} />
-            <p className="px-4 pt-3 text-xs font-semibold text-slate-500" data-stage232b-owner-control-helper="true">To nie jest kalendarz. To lista tematów, które wymagają decyzji/ruchu.</p>
-            <div hidden={isCollapsed('leads')}>
+<div hidden={isCollapsed('leads')}>
             {actionRequiredRows.length ? actionRequiredRows.map((item) => (
               <RowLink
                 key={item.key}

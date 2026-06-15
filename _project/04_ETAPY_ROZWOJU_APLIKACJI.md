@@ -192,7 +192,7 @@ Run decision do utworzenia: `_project/runs/STAGE232A_LEAD_MISSING_BLOCKER_SOURCE
 
 ### 2. STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH
 
-Status: DO_WDROZENIA PO STAGE232A / PRIORYTET PRODUKTOWY P1
+Status: TECH_PUSHED / WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
 
 Powód priorytetu:
 
@@ -292,7 +292,7 @@ Minimalny zakres wdrożenia R1:
 2. Zmienić nazwę kafelka `Co masz zrobić dzisiaj` na produkcyjnie prawdziwą nazwę, rekomendowane: `Wymaga ruchu` albo `Do obsługi`.
 3. Jeżeli nazwa zostaje `Co masz zrobić dzisiaj`, zmienić źródło na tylko dzisiejsze/zaległe rekordy Owner Control.
 4. Ujednolicić licznik kafelka z listą po kliknięciu: tile count === section count === liczba renderowanych rekordów albo jawnie oznaczony preview/full count.
-5. Dodać helper copy przy głównej liście owner-control: `To nie jest kalendarz. To lista tematów, które wymagają decyzji/ruchu.`
+- R6: usunieto z UI odrzucony dopisek techniczny spod kafelka `Wymaga ruchu`; nie wymagac go w testach recznych.
 6. Naprawić `Najbliższe 7 dni`: licznik pełny, lista preview top 10, tekst `pokazano 10 z X`, jeśli X > 10.
 7. Upewnić się, że click kafelka otwiera dokładnie tę sekcję i nie tworzy scroll trap/reorder DOM.
 8. Nie ruszać runtime starego `Today.tsx` poza ewentualnym guardem, że nie jest aktywną trasą.
@@ -361,7 +361,7 @@ Run decision do utworzenia: `_project/runs/STAGE232B_TODAY_OWNER_CONTROL_TILE_SO
 
 ### 3. STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH
 
-Status: WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA / R4_LOCAL_PASS
+Status: DO_WDROZENIA / DO_POTWIERDZENIA_PO_ST232A
 
 Powód priorytetu:
 
@@ -1725,3 +1725,53 @@ Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md
 Data: 2026-06-15 21:30 Europe/Warsaw
 Status: WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
 Uwagi: R4 zamyka serię R1/R2/R3 jako idempotentny repair. Etap jest technicznie wdrożony po zielonym dedicated guard/test/build/git diff check, ale PRODUCT_PASS wymaga ręcznego sprawdzenia Damiana w /today.
+
+## STAGE232B_R6_TODAY_REMOVE_DEV_HELPER_COPY_AND_QUEUE_REPAIR
+
+Data: 2026-06-15 22:05 Europe/Warsaw
+Status: WDROZONE_ZIP_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
+Typ: hotfix UX + dokumentacja kolejki
+
+FAKTY:
+- Damian odrzucil dopisek w UI: `To nie jest kalendarz. To lista tematow, ktore wymagaja decyzji/ruchu.`
+- Dopisek byl zbyt techniczny i wygladal jak komentarz dla developera, nie jak produktowy interfejs.
+- STAGE232B zostaje jako kontrakt zrodla prawdy kafelka `Wymaga ruchu`, ale bez dodatkowego objasnienia pod lista.
+
+ZAKRES:
+- usunac dopisek z `src/pages/TodayStable.tsx`,
+- zaktualizowac guard/test tak, zeby blokowaly powrot tego copy,
+- utrzymac kontrakty STAGE232B: `Wymaga ruchu`, `actionRequiredRows`, `upcomingRowsAll/upcomingRowsPreview`, dynamiczna nazwa zadan,
+- dopisac payload Obsidiana w repo.
+
+NIE RUSZAC:
+- LeadDetail / STAGE232A,
+- CaseDetail,
+- Google Calendar,
+- SQL,
+- finanse,
+- globalny layout.
+
+NASTEPNY LOGICZNY ETAP PO R6:
+- STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH.
+
+## STAGE232B_R8_TODAY_LABEL_AND_HELPER_COPY_FIX
+
+Data: 2026-06-15 22:35 Europe/Warsaw
+Status: WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
+
+Zakres:
+- usunieto z /today dopisek developerski: "To nie jest kalendarz...";
+- przywrocono i zabezpieczono etykiete kafelka: "Wymaga ruchu";
+- guard/test blokuja powrot technicznego/helperowego copy w UI;
+- nie ruszano STAGE232A, LeadDetail, CaseDetail, SQL, Google Calendar ani finansow.
+
+Testy:
+- node scripts/check-stage232b-today-owner-control-tiles.cjs — PASS;
+- node --test tests/stage232b-today-owner-control-tiles.test.cjs — PASS;
+- npm run build — PASS;
+- verify:closeflow:quiet — SKIP_UNRELATED/DO_ANALIZY dla starego guarda CaseDetail.
+
+Audyt ryzyk:
+- R7 ujawnil regresje copy/label: usuniecie helpera nie moze zmieniac kontraktu "Wymaga ruchu";
+- dodano guard antyregresyjny na brak dopisku "To nie jest kalendarz" i obecność "Wymaga ruchu";
+- CaseDetail guard pozostaje osobnym ryzykiem do osobnego etapu, bez mieszania ze STAGE232B.
