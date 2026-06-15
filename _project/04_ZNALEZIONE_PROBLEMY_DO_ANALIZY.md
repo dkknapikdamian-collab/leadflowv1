@@ -28,7 +28,7 @@ Kazdy realny problem znaleziony przy pracy nad etapem ma zostac wpisany tutaj, j
 - nie jest juz zapisany jako etap naprawczy,
 - nie jest juz zapisany w aktualnym kierunku rozwoju,
 - ma dowod w kodzie, UI, guardzie, tescie, dokumentacji albo zachowaniu aplikacji,
-- moze wplywac na jakosc, spojnoĹ›Ä‡, bezpieczenstwo, dane, UX albo koszty pozniejszej naprawy.
+- moze wplywac na jakosc, spojnoÄąâ€şĂ„â€ˇ, bezpieczenstwo, dane, UX albo koszty pozniejszej naprawy.
 
 Nie wpisywac spekulacji bez dowodu. Nie robic losowego polowania po repo. Wpisywac tylko to, co wyszlo realnie przy audycie albo sprawdzaniu powiazanych miejsc.
 
@@ -105,7 +105,7 @@ Przy kazdym etapie developer ma:
 
 ## Relacja do etapow
 
-Ten plik nie zastÄ™puje `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`, `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`, `_project/07_NEXT_STEPS.md` ani `_project/07_REPAIR_STAGES_HIDDEN_AUDIT_FINDINGS.md`.
+Ten plik nie zastĂ„â„˘puje `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`, `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`, `_project/07_NEXT_STEPS.md` ani `_project/07_REPAIR_STAGES_HIDDEN_AUDIT_FINDINGS.md`.
 
 Przeplyw decyzyjny:
 
@@ -150,7 +150,7 @@ Przeplyw decyzyjny:
   - `_project/07_NEXT_STEPS.md`
   - `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md`
   - `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`
-- problem: kierunek "uĹĽytkownik wybiera branĹĽÄ™/miasto/problem, system znajduje firmy, ocenia potencjaĹ‚, tworzy powĂłd kontaktu, zapisuje leady i ustawia follow-up" istnial w repo, ale nie byl wyeksponowany w centralnym kierunku rozwoju.
+- problem: kierunek "uÄąÄ˝ytkownik wybiera branÄąÄ˝Ă„â„˘/miasto/problem, system znajduje firmy, ocenia potencjaÄąâ€š, tworzy powÄ‚Ĺ‚d kontaktu, zapisuje leady i ustawia follow-up" istnial w repo, ale nie byl wyeksponowany w centralnym kierunku rozwoju.
 - dowod: fragment `LeadFlow AI Opportunity Finder` w `_project/07_NEXT_STEPS.md` opisywal Smart Prospecting / Opportunity Finder jako modul pozyskiwania leadow, ale znajdowal sie w dlugim pliku z innymi etapami i historia.
 - dlaczego to problem: jest to wazny kierunek growth i przewaga produktu, ale moze zostac pominiety przy priorytetyzacji, jesli AI czyta tylko skrot albo nowsze hotfixy.
 - ryzyko: aplikacja bedzie rozwijana tylko jako CRM po otrzymaniu leadow, a nie jako system domykajacy caly ruch: wykrycie okazji -> zapis leada -> follow-up -> owner report.
@@ -197,7 +197,7 @@ Przeplyw decyzyjny:
 
 Status: PRZYJETE_DO_ETAPU
 
-Problem: karta leada pokazywaĹ‚a potencjaĹ‚ i statusy, ale czÄ™Ĺ›Ä‡ kafelkĂłw nie prowadziĹ‚a do jasnej operacji. Dodatkowo formularz tworzenia leada miaĹ‚ pole dealValue opisane zbyt ogĂłlnie jako "WartoĹ›Ä‡", przez co uĹĽytkownik nie widziaĹ‚, ĹĽe moĹĽe od razu wpisaÄ‡ potencjaĹ‚.
+Problem: karta leada pokazywaÄąâ€ša potencjaÄąâ€š i statusy, ale czĂ„â„˘Äąâ€şĂ„â€ˇ kafelkÄ‚Ĺ‚w nie prowadziÄąâ€ša do jasnej operacji. Dodatkowo formularz tworzenia leada miaÄąâ€š pole dealValue opisane zbyt ogÄ‚Ĺ‚lnie jako "WartoÄąâ€şĂ„â€ˇ", przez co uÄąÄ˝ytkownik nie widziaÄąâ€š, ÄąÄ˝e moÄąÄ˝e od razu wpisaĂ„â€ˇ potencjaÄąâ€š.
 
 Zakres naprawy: LeadDetail + Leads create form + guard/test. Bez SQL, Google Calendar, billing/trial, CaseDetail i ClientDetail.
 
@@ -205,7 +205,7 @@ Zakres naprawy: LeadDetail + Leads create form + guard/test. Bez SQL, Google Cal
 
 Status: PRZYJETE_DO_HOTFIXA
 
-Problem: rÄ™czny test Damiana wykazaĹ‚, ĹĽe CTA PotencjaĹ‚ otwieraĹ‚o peĹ‚nÄ… edycjÄ™ leada zamiast maĹ‚ego modala tylko dla wartoĹ›ci. Dodatkowo zapisana wartoĹ›Ä‡ mogĹ‚a nie byÄ‡ widoczna, bo API PATCH zapisywaĹ‚ tylko value, a kontrakt odczytu preferuje deal_value przed value. Wiersze dziaĹ‚aĹ„ zrzucaĹ‚y przycisk Zrobione poza liniÄ™ na desktopie.
+Problem: rĂ„â„˘czny test Damiana wykazaÄąâ€š, ÄąÄ˝e CTA PotencjaÄąâ€š otwieraÄąâ€šo peÄąâ€šnĂ„â€¦ edycjĂ„â„˘ leada zamiast maÄąâ€šego modala tylko dla wartoÄąâ€şci. Dodatkowo zapisana wartoÄąâ€şĂ„â€ˇ mogÄąâ€ša nie byĂ„â€ˇ widoczna, bo API PATCH zapisywaÄąâ€š tylko value, a kontrakt odczytu preferuje deal_value przed value. Wiersze dziaÄąâ€šaÄąâ€ž zrzucaÄąâ€šy przycisk Zrobione poza liniĂ„â„˘ na desktopie.
 
 Zakres: LeadDetail potential-only modal, api/leads value + deal_value source truth, work-row alignment CSS, guard/test. Bez SQL, Google Calendar, billing/trial, CaseDetail i ClientDetail.
 
@@ -216,14 +216,14 @@ Status: PRZYJETE_DO_ETAPU
 Problem: po R3 w LeadDetail zostaly trzy luki: legacy MissingItemQuickActionModal, zly delete missing_item w overflow oraz kruchy CSS work-row.
 Decyzja: naprawic w R4, zanim analogiczny mapping zostanie przeniesiony na CaseDetail.
 
-## 2026-06-14 â€” STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
+## 2026-06-14 Ă˘â‚¬â€ť STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
 
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 - Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
 - SQL: NOT_TOUCHED.
 - Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.
 
-## 2026-06-14 â€” STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
+## 2026-06-14 Ă˘â‚¬â€ť STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
 
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 - Scope: fixed shared CaseFinanceEditorDialog contractValue clearing bug after R1B.
@@ -232,15 +232,15 @@ Decyzja: naprawic w R4, zanim analogiczny mapping zostanie przeniesiony na CaseD
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
 
-## STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL â€” 2026-06-14
+## STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL Ă˘â‚¬â€ť 2026-06-14
 
 Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 
-Problem: koszty sprawy daĹ‚o siÄ™ dodaÄ‡, ale nie daĹ‚o siÄ™ ich skorygowaÄ‡ ani usunÄ…Ä‡ z jednego okna rozliczenia.
+Problem: koszty sprawy daÄąâ€šo siĂ„â„˘ dodaĂ„â€ˇ, ale nie daÄąâ€šo siĂ„â„˘ ich skorygowaĂ„â€ˇ ani usunĂ„â€¦Ă„â€ˇ z jednego okna rozliczenia.
 
-Decyzja: przycisk w railu zmienia siÄ™ na `Koryguj wpĹ‚atÄ™/koszt`; okno pokazuje wpĹ‚aty/korekty oraz koszty. Koszty sÄ… czerwone i majÄ… akcje `Koryguj` oraz `UsuĹ„`. PeĹ‚ne potwierdzenie PASS wymaga manualnego testu po refreshu.
+Decyzja: przycisk w railu zmienia siĂ„â„˘ na `Koryguj wpÄąâ€šatĂ„â„˘/koszt`; okno pokazuje wpÄąâ€šaty/korekty oraz koszty. Koszty sĂ„â€¦ czerwone i majĂ„â€¦ akcje `Koryguj` oraz `UsuÄąâ€ž`. PeÄąâ€šne potwierdzenie PASS wymaga manualnego testu po refreshu.
 
-## 2026-06-14 15:45 Europe/Warsaw â€” STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT
+## 2026-06-14 15:45 Europe/Warsaw Ă˘â‚¬â€ť STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT
 
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 - Scope: compact cleanup of CaseDetail finance correction modal after R1C.
@@ -248,16 +248,16 @@ Decyzja: przycisk w railu zmienia siÄ™ na `Koryguj wpĹ‚atÄ™/koszt`; okn
 - Decision: commission payment is a paid commission entry by default; remove status/type selectors from add-commission-payment UI.
 - Decision: remove the redundant "Korekta / prowizja" fallback label from payment rows.
 - SQL: NOT_TOUCHED.
-- Manual test: open Koryguj wpĹ‚atÄ™/koszt, verify rows fit, add commission payment, add/correct/delete cost, refresh.
+- Manual test: open Koryguj wpÄąâ€šatĂ„â„˘/koszt, verify rows fit, add commission payment, add/correct/delete cost, refresh.
 
-## STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION â€” 2026-06-14 16:40 Europe/Warsaw
+## STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION Ă˘â‚¬â€ť 2026-06-14 16:40 Europe/Warsaw
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH / SERVER_UI_REQUIRED
 - Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
 - SQL: not touched.
 - Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
 
 
-## 2026-06-14 HH:mm Europe/Warsaw â€” STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+## 2026-06-14 HH:mm Europe/Warsaw Ă˘â‚¬â€ť STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
 - Status: DO_TEST_AND_PUSH.
 - Problem: R1F was pushed after red guards; payment save path and guards needed repair.
 - SQL: NOT_TOUCHED.
@@ -280,7 +280,7 @@ Decyzja: przycisk w railu zmienia siÄ™ na `Koryguj wpĹ‚atÄ™/koszt`; okn
 - Reimbursed cost marking remains STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING.
 
 
-## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS â€” closed manual verification risk
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS Ă˘â‚¬â€ť closed manual verification risk
 
 - date: 2026-06-14 18:55 Europe/Warsaw
 - status: CLOSED_FOR_CASEDETAIL_COST_PAYMENT_CHAIN
@@ -291,45 +291,45 @@ Decyzja: przycisk w railu zmienia siÄ™ na `Koryguj wpĹ‚atÄ™/koszt`; okn
   - R1E reimbursed cost marking still not implemented.
 
 
-## STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON â€” 2026-06-14 19:40 Europe/Warsaw
+## STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON Ă˘â‚¬â€ť 2026-06-14 19:40 Europe/Warsaw
 
 - status: RUNTIME_HOTFIX_PREPARED
-- zakres: drugi widoczny przycisk w panelu Notatki sprawy nie moĹĽe zostaÄ‡ jako disabled â€žNotatka gĹ‚osowa â€” wkrĂłtceâ€ť; ma uĹĽywaÄ‡ tego samego handlera SpeechRecognition/autosave co przycisk w panelu DziaĹ‚ania sprawy.
-- runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztĂłw zwrĂłconych.
+- zakres: drugi widoczny przycisk w panelu Notatki sprawy nie moÄąÄ˝e zostaĂ„â€ˇ jako disabled Ă˘â‚¬ĹľNotatka gÄąâ€šosowa Ă˘â‚¬â€ť wkrÄ‚Ĺ‚tceĂ˘â‚¬ĹĄ; ma uÄąÄ˝ywaĂ„â€ˇ tego samego handlera SpeechRecognition/autosave co przycisk w panelu DziaÄąâ€šania sprawy.
+- runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztÄ‚Ĺ‚w zwrÄ‚Ĺ‚conych.
 - test: R1D2 guard/test + R1D2 R4 guard/test + build + diff-check.
-- ryzyko: wczeĹ›niejszy R1D2 zabezpieczaĹ‚ pierwszy przycisk, ale nie objÄ…Ĺ‚ drugiego widocznego przycisku w panelu notatek.
+- ryzyko: wczeÄąâ€şniejszy R1D2 zabezpieczaÄąâ€š pierwszy przycisk, ale nie objĂ„â€¦Äąâ€š drugiego widocznego przycisku w panelu notatek.
 
 
 ## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
 
 Status: DO_APPLY / mass repair from clean origin.
-Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuÄąâ€ž/Zapisz. Etap zastĂ„â„˘puje runtime file bez kruchych anchorÄ‚Ĺ‚w po bÄąâ€šĂ„â„˘dach R6/R7/R8.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĂ„Ä…Ă˘â‚¬Ĺľ/Zapisz. Etap zastÄ‚â€žĂ˘â€žËpuje runtime file bez kruchych anchorĂ„â€šÄąâ€šw po bĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â€žËdach R6/R7/R8.
 
 
 ## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
 
 Status: DO_APPLY / guard-ledger sync after R9 partial apply.
-Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuÄąâ€ž/Zapisz.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĂ„Ä…Ă˘â‚¬Ĺľ/Zapisz.
 
 
 ## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
 
 Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
-Zakres: masowe domkniĂ„â„˘cie klasy bÄąâ€šĂ„â„˘dÄ‚Ĺ‚w legacy markerÄ‚Ĺ‚w. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peÄąâ€šny chain guardÄ‚Ĺ‚w/testÄ‚Ĺ‚w/build.
+Zakres: masowe domkniÄ‚â€žĂ˘â€žËcie klasy bĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â€žËdĂ„â€šÄąâ€šw legacy markerĂ„â€šÄąâ€šw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĂ„Ä…Ă˘â‚¬Ĺˇny chain guardĂ„â€šÄąâ€šw/testĂ„â€šÄąâ€šw/build.
 
 
 ## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
 
 Status: DO_APPLY / MASS_GUARD_REGEX_FIX
-Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9D/R9E: sprawdzenie runtime regex
-eplace(/\s+/g, ' ') w guardzie musi mieĂ„â€ˇ podwÄ‚Ĺ‚jnie escapowany backslash. Bez tego guard szuka bÄąâ€šĂ„â„˘dnego
+Zakres: naprawa klasy bĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â€žËdu guardĂ„â€šÄąâ€šw R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieÄ‚â€žĂ˘â‚¬Ë‡ podwĂ„â€šÄąâ€šjnie escapowany backslash. Bez tego guard szuka bĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â€žËdnego
 eplace(/s+/g, ' ').
 
 
 ## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
 
 Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
-Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moÄąÄ˝e wymagaĂ„â€ˇ nieistniejĂ„â€¦cej skÄąâ€šadni previousTasks.
+Zakres: naprawa klasy bĂ„Ä…Ă˘â‚¬ĹˇÄ‚â€žĂ˘â€žËdu guardĂ„â€šÄąâ€šw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĂ„Ä…Ă„Ëťe wymagaÄ‚â€žĂ˘â‚¬Ë‡ nieistniejÄ‚â€žĂ˘â‚¬Â¦cej skĂ„Ä…Ă˘â‚¬Ĺˇadni previousTasks.
 
 ## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
 
@@ -341,7 +341,7 @@ Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9E/R9F: runti
 ### STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD
 - data: 2026-06-14T20:31:30.095Z
 - status: DO_TEST_AND_PUSH
-- zakres: notatki CaseDetail pokazujÄ… do 5 wpisĂłw, majÄ… tooltip peĹ‚nej treĹ›ci, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w dziaĹ‚aniach pokazuje treĹ›Ä‡ notatki jako opis.
+- zakres: notatki CaseDetail pokazujĂ„â€¦ do 5 wpisÄ‚Ĺ‚w, majĂ„â€¦ tooltip peÄąâ€šnej treÄąâ€şci, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w dziaÄąâ€šaniach pokazuje treÄąâ€şĂ„â€ˇ notatki jako opis.
 - guard: scripts/check-stage231h-r1d2-r11-note-panel-followup-prompt-map-guard.cjs
 
 ## STAGE231H_R1D2_R12D_CASE_QUICK_NOTE_SCOPE_CLIENT_DEDUPE_FINAL_ANCHORLESS
@@ -357,5 +357,8 @@ Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9E/R9F: runti
 
 - Data: 2026-06-15T11:25:01.568Z
 - Typ: CaseDetail notes panel / linked follow-up delete / guard
-- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powiązanego taska.
+- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powiÄ…zanego taska.
 - Status: LOCAL_APPLIED_PENDING_VERIFY
+
+## ZAMKNIĘTE / PRZYJĘTE DO ETAPU - 2026-06-15 15:10 Europe/Warsaw
+- R15C: follow-up po notatce mógł zostać osierocony i miał odwróconą hierarchię tekstu w działaniach.

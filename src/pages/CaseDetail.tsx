@@ -122,6 +122,8 @@ import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from
 const STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE = 'CaseDetail deletes linked note follow-up and expands notes panel to ten rows';
 void STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE;
 const CASE_NOTE_PANEL_PREVIEW_LIMIT_STAGE231H_R1D2_R14F = 10;
+const STAGE231H_R1D2_R15C_NOTE_FOLLOWUP_BIDIRECTIONAL_LINK_AND_WORK_ROW_TITLE = 'CaseDetail keeps note follow-up links bidirectional and renders note text above follow-up label';
+void STAGE231H_R1D2_R15C_NOTE_FOLLOWUP_BIDIRECTIONAL_LINK_AND_WORK_ROW_TITLE;
 
 const STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS = 'case-detail write gate static contracts active imports';
 void STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS;
@@ -1354,8 +1356,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
     return {
       id: `task-${task.id}`,
       kind: 'task',
-      title: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.title || 'Zadanie bez tytułu'),
-      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka · follow-up przypięty do sprawy') : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
+      title: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka do follow-upu') : (task.title || 'Zadanie bez tytułu'),
+      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
       status: getTaskStatusLabel(task.status),
       statusClass: getStatusClass(task.status),
       dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
@@ -2805,29 +2807,44 @@ export default function CaseDetail() {
     }
   }
 
+  function getCaseNoteFollowUpPayloadStage231H_R1D2_R15C(value: unknown) {
+    return value && typeof value === 'object' ? (value as Record<string, any>) : {};
+  }
+
   function getLinkedCaseNoteFollowUpsStage231H_R1D2_R14F(activity: CaseActivity) {
     const noteIdStage231H_R1D2_R14F = getCaseNoteIdStage231H_R1D2_R6(activity);
     const noteTextStage231H_R1D2_R14F = normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(activity));
     const currentCaseIdStage231H_R1D2_R14F = String(caseId || '').trim();
+    const linkedTaskIdsFromActivitiesStage231H_R1D2_R15C = new Set<string>();
+
+    for (const activityEntryStage231H_R1D2_R15C of activities) {
+      const payloadStage231H_R1D2_R15C = getCaseNoteFollowUpPayloadStage231H_R1D2_R15C((activityEntryStage231H_R1D2_R15C as any).payload);
+      const eventTypeStage231H_R1D2_R15C = String((activityEntryStage231H_R1D2_R15C as any).eventType || payloadStage231H_R1D2_R15C.eventType || '').trim().toLowerCase();
+      if (!eventTypeStage231H_R1D2_R15C.includes('case_note_follow_up')) continue;
+
+      const activityCaseIdStage231H_R1D2_R15C = String((activityEntryStage231H_R1D2_R15C as any).caseId || payloadStage231H_R1D2_R15C.caseId || '').trim();
+      if (currentCaseIdStage231H_R1D2_R14F && activityCaseIdStage231H_R1D2_R15C && activityCaseIdStage231H_R1D2_R15C !== currentCaseIdStage231H_R1D2_R14F) continue;
+
+      const activityNoteIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.sourceNoteId || payloadStage231H_R1D2_R15C.noteId || '').trim();
+      const activityPreviewStage231H_R1D2_R15C = normalizeCaseNotePreviewStage231H_R1D2_R11(payloadStage231H_R1D2_R15C.notePreview || payloadStage231H_R1D2_R15C.note || payloadStage231H_R1D2_R15C.content || payloadStage231H_R1D2_R15C.description);
+
+      const matchesNoteStage231H_R1D2_R15C =
+        Boolean(noteIdStage231H_R1D2_R14F && activityNoteIdStage231H_R1D2_R15C && activityNoteIdStage231H_R1D2_R15C === noteIdStage231H_R1D2_R14F) ||
+        Boolean(activityPreviewStage231H_R1D2_R15C && noteTextStage231H_R1D2_R14F && activityPreviewStage231H_R1D2_R15C === noteTextStage231H_R1D2_R14F);
+
+      if (!matchesNoteStage231H_R1D2_R15C) continue;
+
+      const taskIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.taskId || payloadStage231H_R1D2_R15C.task_id || '').trim();
+      if (taskIdStage231H_R1D2_R15C) linkedTaskIdsFromActivitiesStage231H_R1D2_R15C.add(taskIdStage231H_R1D2_R15C);
+    }
 
     return tasks.filter((task) => {
       const normalizedTaskStage231H_R1D2_R14F = normalizeWorkItem(task) as any;
       const payloadStage231H_R1D2_R14F = ((task as any).payload && typeof (task as any).payload === 'object')
         ? ((task as any).payload as Record<string, any>)
         : {};
-      const taskCaseIdStage231H_R1D2_R14F = String(
-        normalizedTaskStage231H_R1D2_R14F.caseId ||
-        (task as any).caseId ||
-        payloadStage231H_R1D2_R14F.caseId ||
-        ''
-      ).trim();
-      const taskNoteIdStage231H_R1D2_R14F = String(
-        payloadStage231H_R1D2_R14F.sourceNoteId ||
-        payloadStage231H_R1D2_R14F.noteId ||
-        (task as any).sourceNoteId ||
-        (task as any).noteId ||
-        ''
-      ).trim();
+      const taskCaseIdStage231H_R1D2_R14F = String(normalizedTaskStage231H_R1D2_R14F.caseId || (task as any).caseId || payloadStage231H_R1D2_R14F.caseId || '').trim();
+      const taskNoteIdStage231H_R1D2_R14F = String(payloadStage231H_R1D2_R14F.sourceNoteId || payloadStage231H_R1D2_R14F.noteId || (task as any).sourceNoteId || (task as any).noteId || '').trim();
       const taskPreviewStage231H_R1D2_R14F = normalizeCaseNotePreviewStage231H_R1D2_R11(
         (task as any).notePreview ||
         (task as any).note_preview ||
@@ -2839,14 +2856,48 @@ export default function CaseDetail() {
         payloadStage231H_R1D2_R14F.content
       );
       const taskKindStage231H_R1D2_R14F = String(payloadStage231H_R1D2_R14F.kind || '').trim().toLowerCase();
+      const taskIdStage231H_R1D2_R15C = String((task as any).id || '').trim();
 
       if (!isTaskNoteFollowUpStage231H_R1D2_R11(task)) return false;
       if (!currentCaseIdStage231H_R1D2_R14F || taskCaseIdStage231H_R1D2_R14F !== currentCaseIdStage231H_R1D2_R14F) return false;
+      if (taskIdStage231H_R1D2_R15C && linkedTaskIdsFromActivitiesStage231H_R1D2_R15C.has(taskIdStage231H_R1D2_R15C)) return true;
       if (noteIdStage231H_R1D2_R14F && taskNoteIdStage231H_R1D2_R14F && taskNoteIdStage231H_R1D2_R14F === noteIdStage231H_R1D2_R14F) return true;
 
       return taskKindStage231H_R1D2_R14F === 'case_note_follow_up' &&
         Boolean(taskPreviewStage231H_R1D2_R14F && noteTextStage231H_R1D2_R14F && taskPreviewStage231H_R1D2_R14F === noteTextStage231H_R1D2_R14F);
     });
+  }
+
+  function findCaseNoteForFollowUpTaskStage231H_R1D2_R15C(task: TaskRecord) {
+    const taskIdStage231H_R1D2_R15C = String((task as any).id || '').trim();
+    const payloadStage231H_R1D2_R15C = getCaseNoteFollowUpPayloadStage231H_R1D2_R15C((task as any).payload);
+
+    let noteIdStage231H_R1D2_R15C = String(payloadStage231H_R1D2_R15C.sourceNoteId || payloadStage231H_R1D2_R15C.noteId || (task as any).sourceNoteId || (task as any).noteId || '').trim();
+    let notePreviewStage231H_R1D2_R15C = normalizeCaseNotePreviewStage231H_R1D2_R11(
+      getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task) ||
+      payloadStage231H_R1D2_R15C.notePreview ||
+      payloadStage231H_R1D2_R15C.note ||
+      payloadStage231H_R1D2_R15C.content ||
+      payloadStage231H_R1D2_R15C.description
+    );
+
+    for (const activityEntryStage231H_R1D2_R15C of activities) {
+      const payload = getCaseNoteFollowUpPayloadStage231H_R1D2_R15C((activityEntryStage231H_R1D2_R15C as any).payload);
+      const eventType = String((activityEntryStage231H_R1D2_R15C as any).eventType || payload.eventType || '').trim().toLowerCase();
+      if (!eventType.includes('case_note_follow_up')) continue;
+      const payloadTaskId = String(payload.taskId || payload.task_id || '').trim();
+      if (taskIdStage231H_R1D2_R15C && payloadTaskId && payloadTaskId !== taskIdStage231H_R1D2_R15C) continue;
+      noteIdStage231H_R1D2_R15C = noteIdStage231H_R1D2_R15C || String(payload.sourceNoteId || payload.noteId || '').trim();
+      notePreviewStage231H_R1D2_R15C = notePreviewStage231H_R1D2_R15C || normalizeCaseNotePreviewStage231H_R1D2_R11(payload.notePreview || payload.note || payload.content || payload.description);
+    }
+
+    return activities.find((activity) => {
+      if (!isCaseOperatorNoteStage231H_R1D2_R6(activity)) return false;
+      const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
+      const notePreview = normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(activity));
+      if (noteIdStage231H_R1D2_R15C && noteId && noteId === noteIdStage231H_R1D2_R15C) return true;
+      return Boolean(notePreviewStage231H_R1D2_R15C && notePreview && notePreview === notePreviewStage231H_R1D2_R15C);
+    }) || null;
   }
 
           async function handleDeleteCaseNoteStage231H_R1D2_R6(activity: CaseActivity) {
@@ -3143,10 +3194,35 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
 
       if (target.kind === 'task') {
         const task = target.source as TaskRecord;
+        const isNoteFollowUpTaskStage231H_R1D2_R15C = isTaskNoteFollowUpStage231H_R1D2_R11(task);
+        const linkedNoteStage231H_R1D2_R15C = isNoteFollowUpTaskStage231H_R1D2_R15C ? findCaseNoteForFollowUpTaskStage231H_R1D2_R15C(task) : null;
+        const linkedNotePreviewStage231H_R1D2_R15C = linkedNoteStage231H_R1D2_R15C
+          ? normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(linkedNoteStage231H_R1D2_R15C))
+          : getTaskNoteFollowUpPreviewStage231H_R1D2_R11(task);
+
+        if (isNoteFollowUpTaskStage231H_R1D2_R15C) {
+          const confirmed = window.confirm(
+            'To jest follow-up przypięty do notatki.' +
+            (linkedNotePreviewStage231H_R1D2_R15C ? '\n\nNotatka: „' + linkedNotePreviewStage231H_R1D2_R15C + '”' : '') +
+            '\n\nUsunąć tylko follow-up? Notatka zostanie w panelu notatek.'
+          );
+          if (!confirmed) {
+            setDeleteWorkItemTarget(null);
+            return;
+          }
+        }
+
         await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);
         await deleteTaskFromSupabase(task.id);
-        await recordActivity('task_deleted', { title: task.title, taskId: task.id });
-        toast.success('Zadanie usunięte');
+        await recordActivity('task_deleted', {
+          title: task.title,
+          taskId: task.id,
+          noteFollowUpDeleted: isNoteFollowUpTaskStage231H_R1D2_R15C,
+          linkedNoteId: linkedNoteStage231H_R1D2_R15C ? getCaseNoteIdStage231H_R1D2_R6(linkedNoteStage231H_R1D2_R15C) : null,
+          notePreview: linkedNotePreviewStage231H_R1D2_R15C || null,
+          noteLinkPreserved: Boolean(linkedNoteStage231H_R1D2_R15C),
+        });
+        toast.success(isNoteFollowUpTaskStage231H_R1D2_R15C ? 'Follow-up usunięty. Powiązana notatka została w panelu notatek.' : 'Zadanie usunięte');
       } else if (target.kind === 'event') {
         const event = target.source as EventRecord;
         await ensureCaseLeadNextActionTitleSafe(event.leadId || caseData?.leadId || null, event.title, getEventMainDate(event) || event.reminderAt || event.startAt);
