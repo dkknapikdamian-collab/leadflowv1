@@ -1562,3 +1562,25 @@ Status: WDROZONE_TECHNICZNIE_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
 Brak/Blokada ma jawne pola missingKind, blocksProgress i blockScope. Modal i ContextActionDialogs zapisują metadata do historii/no-flicker payloadu. R4 naprawia częściowy stan po nieudanych R1/R2/R3.
 
 Ryzyko: brak pewności utrwalenia metadata w tasku bez audytu API. Ewentualny kolejny etap: API/SQL persistence.
+
+## STAGE232A_R5_MISSING_ITEM_MODAL_VISUAL_SOURCE_TRUTH
+
+Data: 2026-06-15 23:55 Europe/Warsaw
+Status: WDROZONE_ZIP_DO_SPRAWDZENIA / TEST_RECZNY_DAMIANA
+
+Zakres:
+- modal Dodaj brak zostaje podpięty pod wizualne źródło prawdy szybkiego dodawania leada: lead-form-vnext;
+- karta, nagłówek, sekcje, grid pól, select, checkbox, textarea i footer używają tych samych klas źródłowych;
+- logika Brak/Blokada z STAGE232A R4 nie jest refaktorowana;
+- dodany guard/test blokuje powrót jasnego, słabo czytelnego standalone shell dla MissingItemQuickActionModal.
+
+Testy:
+- node scripts/check-stage232a-r5-missing-item-visual-source.cjs;
+- node --test tests/stage232a-r5-missing-item-visual-source.test.cjs;
+- npm run build;
+- verify:closeflow:quiet traktować jako SKIP_UNRELATED jeśli pada wyłącznie na stary CaseDetail guard.
+
+Audyt ryzyk:
+- ryzyko: zmiana CSS może wpływać na modal Brak w lead/client/case, bo komponent jest wspólny;
+- guard ogranicza regresję do wizualnego kontraktu, ale manualnie trzeba sprawdzić modal na LeadDetail;
+- nie ruszano SQL, API, aktywnych list Brak/Blokada ani CaseDetail.
