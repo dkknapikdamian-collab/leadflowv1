@@ -1,6 +1,7 @@
 # 04_KIERUNEK_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
 Data utworzenia: 2026-06-12 23:59 Europe/Warsaw  
+Ostatnia aktualizacja: 2026-06-15 Europe/Warsaw  
 Status: ACTIVE / CANONICAL  
 Typ: centralny kierunek rozwoju aplikacji  
 Repo: dkknapikdamian-collab/leadflowv1  
@@ -37,6 +38,8 @@ Gdzie jest cisza?
 Która sprawa stoi?
 Gdzie leżą pieniądze?
 Co trzeba ruszyć dzisiaj?
+Czego brakuje?
+Co realnie blokuje ruch?
 ```
 
 Sprzedajemy efekt operacyjny, nie listę funkcji CRM.
@@ -53,7 +56,7 @@ Nie pozycjonować jako:
 
 Pozycjonować jako:
 
-- prosty system pilnowania leadów, klientów, spraw, zadań, kalendarza i follow-upów,
+- prosty system pilnowania leadów, klientów, spraw, zadań, kalendarza, braków, blokad i follow-upów,
 - owner control system dla małej firmy usługowej,
 - narzędzie, które mówi właścicielowi, co wymaga ruchu,
 - furtka do wdrożenia procesu sprzedaży i obsługi.
@@ -98,15 +101,50 @@ Funkcje:
 - Sales Funnel Movement View,
 - Lost Lead Rescue,
 - Finance Watchlist,
-- Owner Digest / Weekly Report.
+- Owner Digest / Weekly Report,
+- Missing & Blocker Source of Truth.
 
 Cel:
 
 ```txt
-Właściciel w kilka sekund widzi, co stoi, co ucieka i co trzeba zrobić teraz.
+Właściciel w kilka sekund widzi, co stoi, co ucieka, czego brakuje i co trzeba zrobić teraz.
 ```
 
-### 2. Dokumenty jako blokery ruchu, nie martwe załączniki
+### 2. Braki i blokady jako kontrola ruchu, nie ozdobna historia
+
+To jest aktywny kierunek produktowy od STAGE232A.
+
+Definicje:
+
+```txt
+Brak = aktywny element pracy, który czegoś wymaga, ale nie musi zatrzymywać procesu.
+Blokada = brak albo problem, który realnie zatrzymuje następny ruch.
+Historia = dziennik zdarzeń, nie źródło prawdy dla aktywnych braków.
+```
+
+Zasady:
+
+- aplikacja nie zgaduje po tytule, że dokument, spotkanie albo informacja blokuje proces,
+- użytkownik lub szablon/checklista musi jawnie oznaczyć, czy dany brak blokuje ruch,
+- aktywne braki i blokady muszą pochodzić z work items/tasks/checklist source of truth, nie z historii,
+- historia pokazuje, co się wydarzyło, ale nie liczy aktywnych braków,
+- top card `Blokada` pokazuje tylko prawdziwe blokady,
+- sekcja `Działania leada` / odpowiednik w sprawie ma być jednym centrum pracy, nie trzema kopiami tej samej listy,
+- rozwiązany albo usunięty brak nie może wracać po hard refresh.
+
+Minimalny model danych, jeśli nie ma jeszcze migracji SQL:
+
+```txt
+type/kind = missing_item
+status = open/todo/done/deleted
+payload.blocksProgress = true/false
+payload.blockScope = lead_next_action/offer/case_start/case_completion/payment/other/none
+payload.missingKind = document/information/decision/payment/meeting/other
+```
+
+To jest warunek jakości produktu. Bez tego aplikacja udaje kontrolę procesu, ale nie mówi prawdy o tym, co realnie stoi.
+
+### 3. Dokumenty jako blokery ruchu, nie martwe załączniki
 
 Dokumenty mają być rozwijane jako część kontroli procesu:
 
@@ -123,7 +161,7 @@ Nie budować na start ciężkiego DMS. Dokumenty mają odpowiadać na pytanie:
 Czego brakuje, przez co temat stoi?
 ```
 
-### 3. AI Drafts / szybkie szkice confirm-first
+### 4. AI Drafts / szybkie szkice confirm-first
 
 AI ma działać wyłącznie w granicach aplikacji.
 
@@ -149,7 +187,7 @@ Kontrakt:
 
 AI nie ma być chatbotem ogólnym, nie ma sprawdzać pogody, internetu ani wykonywać akcji poza CloseFlow.
 
-### 4. AI Opportunity Finder / Smart Prospecting
+### 5. AI Opportunity Finder / Smart Prospecting
 
 To jest ważny późniejszy kierunek, który nie może zginąć.
 
@@ -194,7 +232,7 @@ Status:
 Ważny kierunek growth, ale dopiero po stabilizacji CRM, szkiców, kalendarza i owner-control core.
 ```
 
-### 5. Digest / Weekly Report jako lista decyzji
+### 6. Digest / Weekly Report jako lista decyzji
 
 Digest nie ma być newsletterem.
 
@@ -205,6 +243,7 @@ Ma pokazywać:
 - kto ma 7/14 dni ciszy,
 - które sprawy stoją,
 - jakie pieniądze wymagają ruchu,
+- jakie braki i blokady wymagają decyzji,
 - jakie szkice czekają na decyzję.
 
 Weekly report ma mówić, co wydarzyło się w tygodniu i co wymaga reakcji, nie produkować ozdobnego dashboardu.
@@ -222,6 +261,7 @@ Nie robić teraz:
 - rozbudowanego automation buildera,
 - 10 branż naraz,
 - pełnego marketplace'u playbooków,
+- pełnego DMS przed uporządkowaniem braków/blokad,
 - pełnego AI prospectingu przed stabilnym owner-control core.
 
 ## Najbliższy kierunek priorytetowy
@@ -229,15 +269,17 @@ Nie robić teraz:
 Priorytet główny:
 
 ```txt
-A35 Owner Control Baseline / Readiness Audit
+STAGE232A Missing & Blocker Source of Truth dla LeadDetail
 ```
 
 Dlaczego:
 
-- najlepiej pokazuje przewagę produktu,
-- daje materiał do demo i sprzedaży,
-- zasila potem Contact Cadence, Lost Lead Rescue, Digest i Control Sprint,
-- odróżnia aplikację od zwykłego CRM.
+- bez tego `Braki`, `Blokady`, historia i działania leada są niespójne,
+- to bezpośrednio odpowiada na pytanie właściciela: co stoi i czego brakuje,
+- porządkuje fundament pod późniejsze dokumenty, checklisty, digest i owner-control,
+- usuwa ryzyko, że aplikacja wygląda bogato, ale nie daje produkcyjnego zaufania.
+
+Po STAGE232A wrócić do kolejki zapisanej w `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`.
 
 ## Warunek zmiany kierunku
 
