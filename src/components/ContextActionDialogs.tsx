@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { toast } from 'sonner';
 import { CONTEXT_ACTION_CONTRACT, STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1 } from '../lib/context-action-contract';
 import { requireWorkspaceId } from '../lib/workspace-context';
-import { buildMissingItemModalDraft } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
+import { buildMissingItemModalDraft, type MissingItemKind } from '../lib/missing-items/stage227c2-missing-item-modal-contract';
 import { insertActivityToSupabase, insertCaseItemToSupabase, insertTaskToSupabase } from '../lib/supabase-fallback';
 import { useWorkspace } from '../hooks/useWorkspace';
 import TaskCreateDialog, { type TaskCreateDialogContext } from './TaskCreateDialog';
@@ -30,6 +30,8 @@ void STAGE220A7_CONTEXT_ACTION_SAVED_EVENT;
 const STAGE85_CONTEXT_ACTION_DIALOG_UNIFICATION = 'Context detail actions use one shared task, event, note and blocker dialog host';
 const STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST = 'ContextActionDialogs owns Brak/blocker action and persists missing_item without SQL for lead, client and case';
 void STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST;
+const STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA = 'ContextActionDialogs persists explicit Brak/Blokada metadata from the missing item modal';
+void STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA;
 const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY = STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1;
 const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event, note and blocker through the same shared dialog host';
 export const CONTEXT_ACTION_KIND_ATTR = 'data-context-action-kind';
@@ -138,12 +140,18 @@ export default function ContextActionDialogsHost() {
   const [request, setRequest] = useState<ContextActionRequest | null>(null);
   const [missingTitle, setMissingTitle] = useState('');
   const [missingNote, setMissingNote] = useState('');
+  const [missingKind, setMissingKind] = useState<MissingItemKind>('document');
+  const [missingBlocksProgress, setMissingBlocksProgress] = useState(true);
+  const [missingBlockScope, setMissingBlockScope] = useState('');
   const [missingError, setMissingError] = useState('');
   const [missingSaving, setMissingSaving] = useState(false);
 
   const resetMissingState = () => {
     setMissingTitle('');
     setMissingNote('');
+    setMissingKind('document');
+    setMissingBlocksProgress(true);
+    setMissingBlockScope('');
     setMissingError('');
   };
 
@@ -216,7 +224,7 @@ export default function ContextActionDialogsHost() {
           entityId: request.recordId,
           entityLabel: request.recordLabel || (request.recordType === 'lead' ? 'Lead' : request.recordType === 'client' ? 'Klient' : 'Sprawa'),
         },
-        { title: missingTitle, note: missingNote },
+        { title: missingTitle, note: missingNote, missingKind, blocksProgress: missingBlocksProgress, blockScope: missingBlockScope },
       );
     } catch (error: any) {
       setMissingError(error?.message || 'Wpisz, czego brakuje.');
@@ -224,6 +232,12 @@ export default function ContextActionDialogsHost() {
     }
 
     const now = new Date().toISOString();
+    const stage232aMissingItemMetadata = {
+      marker232A: 'stage232a_missing_blocker_contract_r4',
+      missingKind: draft.missingKind,
+      blocksProgress: draft.blocksProgress,
+      blockScope: draft.blockScope || null,
+    };
     const leadId = request.leadId || (request.recordType === 'lead' ? request.recordId : null);
     const clientId = request.clientId || (request.recordType === 'client' ? request.recordId : null);
     const caseId = request.caseId || (request.recordType === 'case' ? request.recordId : null);
@@ -267,6 +281,7 @@ export default function ContextActionDialogsHost() {
             entityType: draft.entityType,
             entityId: draft.entityId,
             persistenceTarget: draft.persistenceTarget,
+          ...stage232aMissingItemMetadata,
           },
           workspaceId,
         } as any);
@@ -304,6 +319,7 @@ export default function ContextActionDialogsHost() {
             entityType: draft.entityType,
             entityId: draft.entityId,
             persistenceTarget: draft.persistenceTarget,
+          ...stage232aMissingItemMetadata,
           },
           workspaceId,
         } as any);
@@ -313,7 +329,7 @@ export default function ContextActionDialogsHost() {
         emitCloseflowWorkItemNoFlickerMutation({
           action: 'create',
           kind: 'task',
-          item: typeof createdMissingTask !== 'undefined' ? createdMissingTask : null,
+          item: typeof createdMissingTask !== 'undefined' ? { ...(createdMissingTask as Record<string, unknown>), ...stage232aMissingItemMetadata } : stage232aMissingItemMetadata,
           id: (typeof createdMissingTask !== 'undefined' && (createdMissingTask as any)?.id) || null,
           recordType: request.recordType,
           recordId: request.recordId,
@@ -355,10 +371,16 @@ export default function ContextActionDialogsHost() {
         context={missingContext}
         titleValue={missingTitle}
         noteValue={missingNote}
+        missingKindValue={missingKind}
+        blocksProgressValue={missingBlocksProgress}
+        blockScopeValue={missingBlockScope}
         error={missingError}
         isSaving={missingSaving}
         onTitleChange={(value) => { setMissingTitle(value); if (missingError) setMissingError(''); }}
         onNoteChange={setMissingNote}
+        onMissingKindChange={setMissingKind}
+        onBlocksProgressChange={setMissingBlocksProgress}
+        onBlockScopeChange={setMissingBlockScope}
         onCancel={close}
         onSubmit={handleSaveBlocker}
       />

@@ -1,0 +1,22 @@
+const fs = require('fs');
+const path = require('path');
+const root = process.cwd();
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+function assert(condition, message) { if (!condition) throw new Error(message); }
+const contract = read('src/lib/missing-items/stage227c2-missing-item-modal-contract.ts');
+const modal = read('src/components/detail/MissingItemQuickActionModal.tsx');
+const host = read('src/components/ContextActionDialogs.tsx');
+const timeline = read('src/lib/activity-timeline.ts');
+assert(contract.includes('STAGE232A_R4_LEAD_MISSING_BLOCKER_CONTRACT'), 'contract marker missing');
+assert(contract.includes('missingKind') && contract.includes('blocksProgress') && contract.includes('blockScope'), 'draft must contain missingKind/blocksProgress/blockScope');
+assert(contract.includes('normalizeMissingItemKind'), 'missing kind normalizer missing');
+assert(modal.includes('missingKindValue') && modal.includes('blocksProgressValue') && modal.includes('blockScopeValue'), 'modal must expose missing/blocker fields');
+assert(modal.includes('data-stage232a-blocks-progress-field'), 'modal must render blocker checkbox field');
+assert(!modal.includes('<input\n          <input'), 'modal must not contain duplicate input tag');
+assert(host.includes('const [missingKind') && host.includes('const [missingBlocksProgress') && host.includes('const [missingBlockScope'), 'host must own missing/blocker state');
+assert(host.includes('stage232aMissingItemMetadata'), 'host must build STAGE232A metadata');
+assert(host.includes('...stage232aMissingItemMetadata'), 'host must persist metadata into payloads');
+assert(host.includes('missingKindValue={missingKind}') && host.includes('onBlocksProgressChange={setMissingBlocksProgress}'), 'host must wire modal props');
+assert(timeline.includes('STAGE232A_R4_ACTIVITY_TIMELINE_MISSING_BLOCKER_LABELS') || timeline.includes('STAGE232A_R3_ACTIVITY_TIMELINE_MISSING_BLOCKER_LABELS'), 'timeline marker missing');
+assert(timeline.includes('Blokada') && timeline.includes('Brak'), 'timeline must format Brak/Blokada explicitly');
+console.log(JSON.stringify({ ok: true, stage: 'STAGE232A_R4_LEAD_MISSING_BLOCKER_CONTRACT_REPAIR', contract: 'modal + host + activity timeline use explicit missing/blocker source of truth' }, null, 2));

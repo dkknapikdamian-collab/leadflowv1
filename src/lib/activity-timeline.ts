@@ -13,6 +13,9 @@ export type ActivityTimelineItem = {
   raw: unknown;
 };
 
+export const STAGE232A_R4_ACTIVITY_TIMELINE_MISSING_BLOCKER_LABELS =
+  'Activity timeline formats missing_item as Brak or Blokada from explicit payload fields';
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -58,12 +61,29 @@ function statusText(status: unknown, f: ActivityTimelineFormatters) {
   return f.statusLabel ? f.statusLabel(raw) : raw;
 }
 
+function isMissingItemPayload(payload: Record<string, unknown>, type: string) {
+  const kind = String(payload.kind || payload.type || payload.status || '').toLowerCase();
+  return type.includes('missing_item') || kind.includes('missing_item');
+}
+
+function isBlockingMissingItem(payload: Record<string, unknown>) {
+  if (typeof payload.blocksProgress === 'boolean') return payload.blocksProgress;
+  if (typeof payload.blocks_progress === 'boolean') return payload.blocks_progress;
+  const raw = String(payload.blocksProgress || payload.blocks_progress || '').toLowerCase();
+  return raw === 'true' || raw === '1' || raw === 'yes';
+}
+
+function missingItemPrefix(payload: Record<string, unknown>) {
+  return isBlockingMissingItem(payload) ? 'Blokada' : 'Brak';
+}
+
 export function getActivityTimelineTitle(activityInput: unknown, f: ActivityTimelineFormatters = {}) {
   void f;
   const activity = asRecord(activityInput);
   const payload = payloadOf(activity);
   const type = eventType(activity);
 
+  if (isMissingItemPayload(payload, type)) return missingItemPrefix(payload);
   if (type.includes('status')) return 'Zmieniono status';
   if (type.includes('note')) return 'Dodano notatkę';
   if (type.includes('payment') || type.includes('paid') || type.includes('billing')) return 'Wpłata';
@@ -83,6 +103,15 @@ export function getActivityTimelineDescription(activityInput: unknown, f: Activi
   const activity = asRecord(activityInput);
   const payload = payloadOf(activity);
   const type = eventType(activity);
+
+  if (isMissingItemPayload(payload, type)) {
+    const prefix = missingItemPrefix(payload);
+    const title = pickText(payload, ['title', 'itemTitle', 'taskTitle', 'name', 'content']);
+    const blockScope = pickText(payload, ['blockScope', 'block_scope']);
+    const note = pickText(payload, ['note', 'description', 'body', 'message']);
+    const main = title ? prefix + ': ' + title : prefix + ' zapisany w historii.';
+    return [main, blockScope ? 'Blokuje: ' + blockScope : '', note].filter(Boolean).join(' · ');
+  }
 
   if (type.includes('status')) {
     const from = statusText(payload.fromStatus || payload.previousStatus || payload.oldStatus || payload.from || payload.before, f);
