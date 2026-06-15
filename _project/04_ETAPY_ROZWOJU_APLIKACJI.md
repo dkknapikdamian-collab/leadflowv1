@@ -822,6 +822,283 @@ Warunek zamknięcia:
 
 ---
 
+### 5. STAGE232E_FUNNEL_OWNER_DECISION_SOURCE_OF_TRUTH
+
+Status: DO_WDROZENIA PO STAGE232A/STAGE232B/STAGE232C/STAGE232D ALBO WCZEŚNIEJ, JEŚLI LEJEK MA BYĆ NASTĘPNĄ TESTOWANĄ ZAKŁADKĄ / PRIORYTET PRODUKTOWY P1
+
+Powód priorytetu:
+
+- Damian zlecił szczegółowy audyt zakładki `Lejek`: każdy kafelek, etapy, priorytet, pieniądze, kolorystyka, styl i produkcyjne źródła danych.
+- Zakładka `Lejek` jest inna niż klasyczny CRM kanban. Obecny kierunek w kodzie mówi wprost: `Sales funnel is a readable owner decision list, not a crowded CRM kanban`.
+- Aktualny ekran ma najlepszy fundament spośród audytowanych zakładek:
+  - `/funnel` używa `src/pages/SalesFunnel.tsx`,
+  - dane są budowane przez `buildSalesFunnelMovementView()`,
+  - kafelki owner-control są klikalne i liczby prowadzą do widocznych rekordów,
+  - etapy są filtrami, nie kolumnami kanbana,
+  - kolorystyka bazuje na wspólnym metric tile system.
+- Jednocześnie audyt wykazał ryzyka kontraktu produktu:
+  - `Do ruchu teraz` oznacza `!hasNextMove || silenceDays >= 7 || highRisk`, czyli bardzo szeroką mieszankę; nazwa może sugerować tylko natychmiastowe działania.
+  - `Bez kroku` liczy `!hasNextMove`, ale `hasNextMove` zależy od direct next action albo nearest task/event w 120 dni wstecz / 180 dni w przód; trzeba jawnie zablokować liczenie historycznych ruchów jako przyszły next move.
+  - `Cisza 7+` dla leadów opiera się na contact cadence, a dla spraw na `buildActivityTruth` z powiązanych rekordów; trzeba potwierdzić, że related records dla spraw naprawdę zawierają sensowne kontakty, a nie tylko dowolne task/event/payment.
+  - `Pieniądze` sumuje wszystkie karty z `valueAmount > 0`, ale może mieszać wartość leada i prowizję sprawy w jednym kafelku. To może być OK, ale musi być nazwane jako `Wartość/prowizja w ruchu`, nie czysta prowizja.
+  - Klik owner kafelka resetuje stageFilter do `all`, a klik etapu resetuje ownerFilter do `all`. To upraszcza widok, ale uniemożliwia pytanie: `pokaż Bez kroku tylko w Nowe`.
+  - `Priorytet teraz` bierze pierwszy rekord z `filteredCards`. To jest poprawne, jeśli `cardSort` jest prawdą biznesową. Trzeba guardem potwierdzić, że sort używa risk > brak kroku > cisza > wartość i nie jest przypadkowym sortem.
+  - `Etapy jako filtr` liczą count i value po stage, ale value nie jest widoczne w chipach. To jest celowe z wcześniejszych stage’y, ale trzeba nie zgubić wartości w aria/title albo osobnym tooltipie.
+  - Kolorystyka jest w większości spójna, ale `Do ruchu teraz` ma tone blue, mimo że jest akcją/ryzykiem. Blue jest neutralne; jeśli kafelek oznacza alarm operacyjny, lepszy jest amber. Jeśli zostaje blue, helper musi jasno mówić, że to nie alarm, tylko inbox decyzji.
+  - CSS Lejka jest własny i ma sporo `!important`. Jest wizualnie stabilny, ale trzeba nie tworzyć kolejnego lokalnego systemu kolorów poza globalnym metric system.
+
+Cel:
+
+Ustawić produkcyjny kontrakt zakładki `Lejek` tak, żeby każdy kafelek i każdy filtr odpowiadał na konkretne pytanie biznesowe:
+
+```txt
+Co wymaga ruchu teraz?
+Które rekordy nie mają następnego kroku?
+Gdzie jest cisza 7+ dni?
+Gdzie jest wysokie ryzyko?
+Ile pieniędzy/prowizji jest w aktywnym ruchu?
+W którym etapie lejka jest problem?
+Czy klik pokazuje dokładnie tę samą kolekcję, którą liczy kafelek?
+```
+
+Audyt faktycznego stanu:
+
+- `src/App.tsx` routuje `/funnel` do `src/pages/SalesFunnel.tsx`.
+- `SalesFunnel.tsx` pobiera:
+  - `fetchLeadsFromSupabase({ visibility: 'active' })`,
+  - `fetchCasesFromSupabase({ includeArchived: false })`,
+  - `fetchClientsFromSupabase({ includeArchived: false })`,
+  - `fetchTasksFromSupabase(range)`,
+  - `fetchEventsFromSupabase(range)`,
+  - `fetchPaymentsFromSupabase()`.
+- `buildDateRange()` pobiera taski/eventy od 120 dni wstecz do 180 dni w przód.
+- `buildSalesFunnelMovementView()` tworzy karty dla leadów i spraw.
+- `FUNNEL_COLUMNS` ma etapy:
+  - `new`,
+  - `contact`,
+  - `qualification`,
+  - `proposal_sent`,
+  - `waiting_response`,
+  - `negotiation`,
+  - `service`,
+  - `lost`,
+  - `other`.
+- Owner filters:
+  - `move_now`,
+  - `no_next_move`,
+  - `silent_7`,
+  - `high_risk`,
+  - `money`.
+- `getCardsForOwnerFilter()`:
+  - `move_now` = `needsMovement`,
+  - `no_next_move` = `!card.hasNextMove`,
+  - `silent_7` = `silenceDays >= 7`,
+  - `high_risk` = `critical || high`,
+  - `money` = `valueAmount > 0`.
+- `needsMovement()` = `!hasNextMove || silenceDays >= 7 || highRisk`.
+- `cardSort()` sortuje po:
+  1. risk,
+  2. brak next move,
+  3. silenceDays,
+  4. valueAmount.
+- `resolveFunnelFilterAfterOwnerClick()` resetuje stage do `all`.
+- `resolveFunnelFilterAfterStageClick()` resetuje owner do `all`.
+- `Pieniądze` pokazuje sumę z `getMoneyTotalForCards(getCardsForOwnerFilter(allCards, 'money'))`.
+- `Priorytet teraz` używa pierwszego rekordu z `filteredCards`.
+- Layout i kolory używają `closeflow-metric-tiles.css`, `closeflow-record-list-source-truth.css` i `sales-funnel-stage231d0f-visual-alignment.css`.
+
+Kontrakt produkcyjny kafelków:
+
+1. `Do ruchu teraz`
+   - Źródło: osobna kolekcja `moveNowCards`.
+   - Dopuszczalna definicja R1:
+     - brak next move,
+     - cisza 7+,
+     - high/critical risk.
+   - Nazwa/helper musi jasno mówić, że to szeroki inbox decyzji, nie tylko taski na dziś.
+   - Alternatywna nazwa do rozważenia: `Wymaga decyzji`.
+   - Tone:
+     - jeśli to inbox decyzji: blue może zostać,
+     - jeśli to alarm: amber.
+   - Guard: licznik kafelka = liczba kart widocznych po kliknięciu.
+
+2. `Bez kroku`
+   - Źródło: `cards.filter(!hasNextMove)`.
+   - `hasNextMove` musi oznaczać przyszły / aktywny ruch, nie historyczny task/event z ostatnich 120 dni.
+   - Guard musi zablokować traktowanie przeszłego event/task jako obecnego next move.
+   - Helper: `Brak zaplanowanego następnego ruchu`, nie ogólne `Rekordy bez akcji`.
+
+3. `Cisza 7+`
+   - Źródło: `silenceDays >= 7`.
+   - Dla leadów: contact cadence z related records.
+   - Dla spraw: activity truth musi liczyć tylko sensowne kontakty/aktywności, nie dowolny payment jako kontakt.
+   - `Brak daty kontaktu` nie powinien automatycznie wpadać do `Cisza 7+`, ale powinien podbijać ryzyko / `Do ruchu teraz`.
+
+4. `Wysokie ryzyko`
+   - Źródło: `riskLevel high/critical`.
+   - Risk musi być deterministyczny i oparty o:
+     - brak next move,
+     - ciszę,
+     - status waiting-like,
+     - pieniądze bez kroku,
+     - operational badges.
+   - Guard: `high_risk` nie może być ręcznie liczonym skrótem rozjechanym z `riskBadgeClass`.
+
+5. `Pieniądze`
+   - Źródło: `cards.filter(valueAmount > 0)` i suma `valueAmount`.
+   - Trzeba rozdzielić semantycznie:
+     - lead = `Wartość leada`,
+     - sprawa = `Prowizja sprawy`.
+   - Jeśli kafelek miesza oba typy, nazwa/helper powinny brzmieć: `Wartość/prowizja`, `Suma wartości w ruchu`, a nie czysta prowizja.
+   - Guard: suma kafelka = suma wartości widocznych po kliknięciu `Pieniądze`.
+
+Kontrakt filtrów etapów:
+
+- `Etapy jako filtr` ma być stage filter, nie nowy kanban.
+- Count etapu = liczba kart w danym `stageKey`.
+- Stage click resetuje ownerFilter w aktualnym R1, ale to ma być jawna decyzja:
+  - albo pozostawiamy prosty tryb single-filter,
+  - albo wprowadzamy tryb compound filter `ownerFilter + stageFilter`.
+- Rekomendacja:
+  - R1: zostawić single-filter, ale UI ma jasno pokazać, że klik etapu czyści kafelek owner.
+  - R2: rozważyć compound filter, bo użytkownik będzie naturalnie pytał: `Bez kroku w Nowe`.
+- Guard: chip `Wszystkie` pokazuje `allCards.length`, a header `Pokazuję X z Y` zgadza się z aktywnym filtrem.
+
+Kontrakt prawego raila `Priorytet teraz`:
+
+- `topPriority = filteredCards[0]`.
+- To jest OK tylko jeśli:
+  - `filteredCards` jest posortowane przez `cardSort`,
+  - `cardSort` jest zgodny z biznesową wagą ryzyka,
+  - priorytet w aktywnym filtrze nie udaje globalnego priorytetu, gdy user filtruje stage/money.
+- UI powinno rozróżnić:
+  - `Priorytet teraz` w aktywnym filtrze,
+  - opcjonalnie później `Globalny priorytet`.
+- Guard: przy aktywnym filtrze topPriority musi pochodzić z `filteredCards[0]`, a nie z losowej/globalnej listy.
+
+Kolorystyka i styl:
+
+- Plusy:
+  - owner tiles idą przez `cf-top-metric-tile` i globalny metric tone system,
+  - stage chips używają `cf-filter-pill` / `cf-status-pill`,
+  - sygnały w kartach mają semantyczne tony blue/amber/purple/green,
+  - mobile ma osobny układ gridu.
+- Ryzyka:
+  - `Do ruchu teraz` jako blue może być zbyt neutralne, jeśli ma oznaczać akcję pilną,
+  - `high` risk badge jest amber, a `critical` red; to jest sensowne,
+  - lokalny CSS Lejka zawiera dużo `!important`, więc nie dokładać nowych wyjątków bez guardu,
+  - rekordy Lejka korzystają częściowo z `closeflow-record-list-source-truth.css`, ale mają własny `cf-funnel-decision-list-card`; to jest akceptowalne, jeśli Lejek zostaje owner decision listą.
+
+Minimalny zakres wdrożenia R1:
+
+1. Utworzyć jawne kolekcje w `SalesFunnel.tsx`:
+   - `moveNowCards`,
+   - `noNextMoveCards`,
+   - `silent7Cards`,
+   - `highRiskCards`,
+   - `moneyCards`,
+   - `stageCardsByKey`,
+   - `filteredCards`,
+   - `topPriorityInActiveFilter`.
+2. Upewnić się, że każdy kafelek liczy dokładnie swoją kolekcję.
+3. Upewnić się, że klik kafelka pokazuje dokładnie tę samą kolekcję.
+4. Uporządkować nazwy/helpery:
+   - `Bez kroku` -> helper `Brak zaplanowanego następnego ruchu`.
+   - `Pieniądze` -> helper `Wartość/prowizja w ruchu` albo `Suma wartości z widocznych źródeł`.
+   - `Do ruchu teraz` -> albo zostaje, ale helper mówi `Brak kroku, cisza 7+ albo wysokie ryzyko`, albo zmienić nazwę na `Wymaga decyzji`.
+5. Dodać jawny komentarz/małą regułę UI: `filtr właściciela i filtr etapu działają pojedynczo`, jeśli nie wdrażamy compound filter.
+6. W `sales-funnel-movement.ts` doprecyzować `getNextMove` tak, żeby `hasNextMove` nie uznawał przeszłych tasków/eventów za aktualny następny ruch.
+7. Dla spraw sprawdzić `buildActivityTruth()` i related records: płatność nie powinna udawać kontaktu klienta, jeśli nie jest komunikacją.
+8. Dodać guard i test źródeł danych.
+9. Nie ruszać layout freeze Stage231D0F bez potrzeby.
+10. Zaktualizować `_project`, run report, guard registry, test history, risks, changelog i Obsidian payload.
+
+Czego nie ruszać w R1:
+
+- globalny layout,
+- LeadDetail/CaseDetail,
+- SQL/migracje,
+- płatności runtime,
+- Today/Clients/Cases runtime,
+- duży redesign Lejka,
+- compound filter, jeśli nie ma czasu na pełny test,
+- usuwanie CSS `sales-funnel-stage231d0f-visual-alignment.css`.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232e-funnel-owner-decision-source-truth.cjs`
+- `node --test tests/stage232e-funnel-owner-decision-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet` albo jawny SKIP z powodem, jeśli blokuje historyczny niezwiązany gate
+- `git diff --check`
+
+Guard ma sprawdzić minimum:
+
+- `/funnel` routuje do `src/pages/SalesFunnel.tsx`,
+- `SalesFunnel.tsx` używa `buildSalesFunnelMovementView`,
+- każdy owner tile używa `countByFilter` albo jawnej kolekcji odpowiadającej filtrowi,
+- `Pieniądze` suma = suma `valueAmount` kart z `money`,
+- `getCardsForOwnerFilter('move_now')` jest zgodne z definicją `needsMovement`,
+- `needsMovement` jest jawnie opisane i nie zmienia się po cichu,
+- `Bez kroku` nie uznaje historycznego work item jako future next move,
+- owner click i stage click mają jawne resetowanie albo jawny compound filter,
+- `topPriority` pochodzi z `filteredCards[0]`,
+- stage counts odpowiadają liczbie kart w column.cards,
+- nie dodano nowego lokalnego systemu kolorów poza `cf-top-metric-tile`, `data-eliteflow-metric-tone`, `data-cf-signal-tone`.
+
+Test ręczny Damiana:
+
+1. Wejdź w `/funnel`.
+2. Sprawdź każdy kafelek:
+   - `Do ruchu teraz`,
+   - `Bez kroku`,
+   - `Cisza 7+`,
+   - `Wysokie ryzyko`,
+   - `Pieniądze`.
+3. Kliknij kafelek i sprawdź, czy:
+   - liczba w kafelku = liczba widocznych rekordów,
+   - header mówi właściwy filtr,
+   - prawa karta `Priorytet teraz` pokazuje pierwszy rekord z aktywnej listy.
+4. Kliknij każdy etap:
+   - `Nowe`,
+   - `Kontakt`,
+   - `Kwalifikacja`,
+   - `Oferta wysłana`,
+   - `Czeka na odpowiedź`,
+   - `Negocjacje`,
+   - `Do obsługi`,
+   - `Utracone`,
+   - `Inne`.
+5. Sprawdź, czy stage click czyści owner filter. Jeśli tak, UI nie może sugerować, że filtry się łączą.
+6. Sprawdź rekord z zaplanowanym ruchem:
+   - nie może wpadać do `Bez kroku`,
+   - może wpadać do `Do ruchu teraz` tylko przez ciszę 7+ albo wysokie ryzyko.
+7. Sprawdź rekord bez daty kontaktu:
+   - nie może udawać `Cisza 7+`,
+   - powinien być oznaczony jako niepewna data kontaktu / ryzyko.
+8. Sprawdź `Pieniądze`:
+   - po kliknięciu widać tylko rekordy z wartością/prowizją > 0,
+   - suma na kafelku odpowiada sumie widocznych wartości.
+9. Sprawdź mobile:
+   - karty nie rozjeżdżają etapu, kontaktu, następnego kroku i wartości.
+10. Hard refresh:
+   - liczby i kolejność priorytetu nie zmieniają się losowo.
+
+Warunek zamknięcia:
+
+- każdy kafelek liczy to, co mówi,
+- każdy klik pokazuje tę samą kolekcję,
+- `Do ruchu teraz` ma jasną definicję,
+- `Bez kroku` nie ignoruje realnego przyszłego ruchu i nie liczy przeszłości jako ruchu,
+- `Cisza 7+` nie miesza braku daty kontaktu z realną ciszą 7 dni,
+- `Pieniądze` ma jawny kontrakt wartości/prowizji,
+- `Priorytet teraz` wynika z sortowania aktywnego filtra,
+- kolorystyka zostaje w globalnym systemie,
+- guardy, testy, build i `git diff --check` są zielone,
+- `_project` i Obsidian payload są zaktualizowane.
+
+---
+
 ### 3. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 
 Status: PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA

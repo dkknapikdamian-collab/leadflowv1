@@ -324,3 +324,38 @@ W 5 sekund użytkownik ma wiedzieć:
 - gdzie jest pieniądz/ryzyko,
 - gdzie kliknąć, żeby zobaczyć dokładnie tę listę.
 ```
+
+### 9. Zakładka Lejek jako lista decyzji właściciela, nie kanban
+
+To jest aktywny kierunek produktowy od STAGE232E.
+
+Teza:
+
+```txt
+Lejek ma być listą decyzji właściciela: ruch, cisza, ryzyko i pieniądze.
+Nie ma być kanbanem i nie ma udawać CRM-owego boardu, jeśli realna wartość jest w szybkim wskazaniu, gdzie przepada ruch sprzedażowy.
+```
+
+Zasady:
+
+- `Do ruchu teraz` musi mieć jawny kontrakt: brak kroku, cisza 7+ albo wysokie ryzyko; jeśli nazwa jest za szeroka, zmienić na `Wymaga decyzji`.
+- `Bez kroku` oznacza brak przyszłego/aktywnego następnego ruchu, nie brak dowolnej historycznej aktywności.
+- `Cisza 7+` oznacza realne 7+ dni od kontaktu/aktywności kontaktowej, nie sam brak daty.
+- `Wysokie ryzyko` musi wynikać z deterministycznego risk modelu, a nie osobnego ręcznego licznika.
+- `Pieniądze` może mieszać wartość leadów i prowizję spraw, ale wtedy musi być nazwane jako `Wartość/prowizja`, nie czysta prowizja.
+- Etapy są filtrem, nie kolumnami kanbana.
+- Klik owner kafelka i klik etapu mogą działać jako single-filter w R1, ale UI nie może sugerować compound filter, jeśli go nie ma.
+- `Priorytet teraz` oznacza priorytet w aktywnym filtrze; jeśli ma być globalny, trzeba go osobno nazwać.
+- Kolorystyka zostaje w globalnym metric/signal systemie, bez lokalnego nowego systemu.
+
+Warunek jakości produktu:
+
+```txt
+W 5 sekund użytkownik ma wiedzieć:
+- co wymaga decyzji,
+- gdzie nie ma kroku,
+- gdzie jest cisza,
+- gdzie jest wysokie ryzyko,
+- gdzie jest pieniądz,
+- który rekord otworzyć jako pierwszy.
+```
