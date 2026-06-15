@@ -1,7 +1,7 @@
 # 04_ETAPY_ROZWOJU_APLIKACJI - CloseFlow / LeadFlow
 
 Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
-Ostatnia regulacja kolejki: 2026-06-14 20:05 Europe/Warsaw
+Ostatnia regulacja kolejki: 2026-06-15 Europe/Warsaw
 Status: ACTIVE / CANONICAL
 Typ: centralna kolejność etapów rozwoju aplikacji
 Repo: dkknapikdamian-collab/leadflowv1
@@ -60,7 +60,7 @@ Statusy dopuszczalne:
 - ODLOZONE,
 - ZAMKNIETE.
 
-## AKTUALNA KANONICZNA KOLEJKA - od 2026-06-14 20:05 Europe/Warsaw
+## AKTUALNA KANONICZNA KOLEJKA - od 2026-06-15 Europe/Warsaw
 
 ### 0. STAGE231L_STAGE_QUEUE_CANONICAL_SYNC
 
@@ -72,9 +72,127 @@ Warunek zamknięcia: ten plik zawiera aktualną kolejność; przyszłe etapy nie
 
 ---
 
-### 1. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+### 1. STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH
 
-Status: NAJBLIŻSZY ETAP DO WDROŻENIA
+Status: NAJBLIŻSZY ETAP DO WDROŻENIA / PRIORYTET PRODUKTOWY
+
+Powód priorytetu:
+
+- Damian zgłosił realny błąd produkcyjny: dodany `Brak` pojawia się w historii, ale nie pojawia się w sekcji braków ani w blokadach.
+- Historia pokazuje tytuł dwa razy zamiast czytelnego formatu `Brak: tytuł` + opis/typ pod spodem.
+- LeadDetail ma wizualnie kilka miejsc pokazujących podobne działania, przez co użytkownik może widzieć duplikację zamiast jednego centrum pracy.
+- To dotyka głównej obietnicy produktu: właściciel ma widzieć, co stoi, czego brakuje i co realnie blokuje ruch.
+
+Cel:
+
+Ustawić produkcyjny model `Brak` / `Blokada` w LeadDetail tak, żeby:
+
+```txt
+Brak = aktywny element pracy, który czegoś wymaga, ale nie musi blokować procesu.
+Blokada = brak albo problem, który realnie zatrzymuje następny ruch.
+Historia = dziennik zdarzeń, nie źródło prawdy dla aktywnych braków.
+```
+
+Kontrakt produktu:
+
+- aktywne `Braki` w LeadDetail pochodzą z jednego źródła prawdy: powiązane work items / tasks z `leadId` i `type/kind = missing_item`,
+- historia nie może być używana do liczenia aktywnych braków ani do odtwarzania usuniętych braków,
+- dodanie braku ma utworzyć realny aktywny rekord pracy oraz wpis historii,
+- `Brak` domyślnie nie jest blokadą,
+- `Blokada` musi mieć jawne pole `blocksProgress = true` albo równoważny zapis w payloadzie,
+- aplikacja nie może zgadywać po tytule, że dokument albo spotkanie blokuje proces,
+- modal dodawania braku musi pozwolić określić, czy brak blokuje dalszy ruch i co blokuje,
+- top card `Blokada` pokazuje tylko prawdziwe blokady, nie każdy brak,
+- sekcja `Działania leada` staje się jednym centrum pracy z filtrami, a nie trzecią kopią tej samej listy,
+- historia pokazuje czytelny wpis `Brak:` / `Blokada:` i nie powiela tytułu jako opisu.
+
+Miejsca do audytu przed wdrożeniem:
+
+- `src/pages/LeadDetail.tsx`,
+- `src/components/ContextActionDialogs.tsx`,
+- `src/lib/activity-timeline.ts`,
+- helpery `insertTaskToSupabase`, `insertActivityToSupabase`, `emitCloseflowWorkItemNoFlickerMutation`,
+- filtry `linkedTasks`, `activeMissingItemEntries`, `leadBlockerEntries`,
+- komponent/sekcja `LeadActionGroup` albo odpowiednik `Działania leada`,
+- testy/guardy Stage227/Stage228 dotyczące `missing_item`, `Braki i blokady`, no-flicker i delete/resolve.
+
+Minimalny zakres wdrożenia R1:
+
+1. Naprawić zapis `Brak` z modala tak, żeby zwracał i przekazywał realny `createdMissingTask` do lokalnego update/no-flicker i do `handleSaved`.
+2. Ujednolicić aktywne źródło braków: `linkedTasks` / work items z `type/kind = missing_item`, `leadId`, statusem otwartym.
+3. Dodać jawny model blokowania w payloadzie, jeśli nie ma jeszcze osobnej kolumny:
+   - `blocksProgress: boolean`,
+   - `blockScope: lead_next_action | offer | case_start | case_completion | payment | other | none`,
+   - `missingKind: document | information | decision | payment | meeting | other`.
+4. W modalu `Brak` dodać decyzję użytkownika:
+   - `Czy to blokuje dalszy ruch?` Tak/Nie,
+   - jeśli Tak: `Co blokuje?`.
+5. Rozdzielić w UI:
+   - `Braki` = wszystkie otwarte missing items,
+   - `Blokady` = tylko missing/problem items z `blocksProgress=true`.
+6. Naprawić formatter historii dla:
+   - `missing_item_created`,
+   - `missing_item_resolved`,
+   - `missing_item_deleted`,
+   - przyszłościowo `missing_item_blocking_changed`.
+7. Ograniczyć duplikację list:
+   - top cards = stan i decyzja,
+   - `Działania leada` = jedyna lista operacyjna,
+   - historia = dziennik,
+   - prawy rail nie może być kolejną kopią tej samej listy.
+
+Czego nie ruszać w R1:
+
+- SQL, jeśli obecne pola da się obsłużyć payloadem; osobna migracja dopiero po schema check,
+- Google Calendar,
+- finanse,
+- AI Drafts poza ewentualnym zachowaniem kompatybilności akcji `create_missing_item`,
+- CaseDetail checklist rewrite,
+- globalny layout aplikacji,
+- pełne DMS/dokumenty jako osobny moduł.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232a-lead-missing-blocker-source-truth.cjs`,
+- `node --test tests/stage232a-lead-missing-blocker-source-truth.test.cjs`,
+- regresje Stage227/Stage228 missing item, jeśli istnieją,
+- `npm run build`,
+- `npm run verify:closeflow:quiet`, jeśli istnieje,
+- `git diff --check`.
+
+Test ręczny Damiana:
+
+1. Wejdź w konkretnego leada.
+2. Dodaj brak `TEST BRAK 123`, nieblokujący.
+3. Sprawdź, że:
+   - pojawia się w `Braki`,
+   - nie pojawia się w top card `Blokada`,
+   - historia pokazuje `Brak: TEST BRAK 123`, bez powtórzonego tytułu jako opisu.
+4. Dodaj brak `TEST BLOKADA 123` i oznacz jako blokujący.
+5. Sprawdź, że:
+   - pojawia się w `Braki`,
+   - pojawia się w `Blokady` i top card `Blokada`,
+   - pokazuje, co blokuje.
+6. Oznacz pierwszy brak jako rozwiązany.
+7. Sprawdź, że znika z aktywnych braków, ale zostaje w historii jako rozwiązany.
+8. Zrób hard refresh i potwierdź, że stan się nie rozjechał.
+
+Warunek zamknięcia:
+
+- brak dodany z LeadDetail jest widoczny w aktywnych brakach bez reloadu i po hard refresh,
+- blokada jest jawnie oznaczona i nie jest zgadywana po tytule,
+- historia nie dubluje tytułu,
+- UI ma jedno centrum pracy, a nie trzy kopie tej samej listy,
+- guardy i build są zielone,
+- `_project`, changelog, test history, ryzyka i Obsidian payload są zaktualizowane.
+
+Run decision do utworzenia: `_project/runs/STAGE232A_LEAD_MISSING_BLOCKER_SOURCE_OF_TRUTH.md`
+
+---
+
+### 2. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+Status: PO STAGE232A ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA
 
 Cel: przywrócić realne dyktowanie notatki w CaseDetail.
 
@@ -104,7 +222,7 @@ Właściwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL
 
 ---
 
-### 2. STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
+### 3. STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
 
 Status: PO R1D2
 
@@ -131,7 +249,7 @@ Run decision/payload: `_project/obsidian_updates/2026-06-14_STAGE231H_R1E_CASE_D
 
 ---
 
-### 3. STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT
+### 4. STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT
 
 Status: PO R1E ALBO WCZEŚNIEJ, JEŚLI SZKICE BLOKUJĄ PRACĘ
 
@@ -159,7 +277,7 @@ Run decision: `_project/runs/STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELI
 
 ---
 
-### 4. STAGE231F_R2_GOOGLE_CALENDAR_MULTI_USER_OWNERSHIP_AND_SYNC_CLOSEOUT
+### 5. STAGE231F_R2_GOOGLE_CALENDAR_MULTI_USER_OWNERSHIP_AND_SYNC_CLOSEOUT
 
 Status: PO UI/DETAIL CLOSEOUT I PO PILNYCH SZKICACH
 
@@ -184,7 +302,7 @@ Run decision: `_project/runs/2026-06-14_STAGE_ORDER_UI_THEN_GOOGLE_CALENDAR_AUDI
 
 ---
 
-### 5. STAGE231K1_DOMAIN_AND_EMAIL_FOUNDATION
+### 6. STAGE231K1_DOMAIN_AND_EMAIL_FOUNDATION
 
 Status: PO GOOGLE CALENDAR ALBO WCZEŚNIEJ, JEŚLI PRODUKCJA MAILI BLOKUJE RELEASE
 
@@ -204,7 +322,7 @@ Run decision: `_project/runs/STAGE231K_EMAIL_DOMAIN_AND_PRODUCTION_MAIL_CHAIN.md
 
 ---
 
-### 6. STAGE231K2_TRANSACTIONAL_EMAIL_TEMPLATES_AND_AUTH_NOTIFICATIONS
+### 7. STAGE231K2_TRANSACTIONAL_EMAIL_TEMPLATES_AND_AUTH_NOTIFICATIONS
 
 Status: PO K1
 
@@ -222,7 +340,7 @@ Zakres:
 
 ---
 
-### 7. STAGE231K3_OWNER_DIGEST_EMAILS_DAILY_AND_WEEKLY
+### 8. STAGE231K3_OWNER_DIGEST_EMAILS_DAILY_AND_WEEKLY
 
 Status: PO K2
 
@@ -237,285 +355,3 @@ Zakres:
 - guard przed duplikatami.
 
 ---
-
-### 8. STAGE231K4_SUPPORT_HELP_PRODUCTION_TAB_AND_EMAIL_ROUTING
-
-Status: PO K2/K3
-
-Cel: produkcyjna zakładka Pomoc / Support.
-
-Zakres:
-
-- formularz zgłoszenia,
-- routing do realnego support mailbox / outbox,
-- mail potwierdzający przyjęcie zgłoszenia,
-- status zgłoszenia dla użytkownika,
-- brak martwego support tab.
-
----
-
-### 9. CODEX-AUTO-CONTEXT-001
-
-Status: TECH BACKLOG / PO PILNYCH ETAPACH
-
-Cel: dodać stały kontekst dla Codexa i AI developerów.
-
-Zakres:
-
-- `_project/CODEX_CONTEXT_INDEX.md`,
-- `scripts/codex-context-pack.ps1`,
-- `.codex/skills/*` scan-first skills,
-- skrócenie skanów i ograniczenie chaosu.
-
-Powód: w repo nie znaleziono jeszcze `_project/CODEX_CONTEXT_INDEX.md` ani `scripts/codex-context-pack.ps1`.
-
-## Zamknięte / aktualnie uznane za domknięte etapy UI/detail
-
-### LeadDetail
-
-- `STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT` - technicznie domknięty dla potencjału, next action i głównego missing_item guardu.
-- `STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX` - closeout starej ścieżki Brak, delete missing_item overflow i CSS work-row.
-- `STAGE231G_R4D_WORK_ROW_ONE_LINE_ALIGNMENT` - wzmocnienie układu work-row.
-
-Nie traktować jako otwarte, chyba że test regresji pokaże błąd.
-
-### CaseDetail finance/cost closeout chain
-
-Status zbiorczy: PRODUCT_PASS / MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / TECH_PUSHED dla łańcucha finansów i kosztów, z wyjątkiem nowych osobnych etapów R1D2 i R1E.
-
-Zamknięte albo objęte manualnym PASS:
-
-- `STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT` - contractValue/prowizja,
-- `STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL` - korekta/usuwanie kosztów,
-- `STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION` - pełna korekta wpłat i kosztów,
-- `STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR` - naprawa czerwonych guardów i zapisu płatności,
-- `STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG` - koszt `Inny` + checkbox `Koszt do zwrotu`,
-- `STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC` - porządek ledgerów,
-- `STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS` - manualny PASS Damiana.
-
-Nadal otwarte:
-
-- `STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME`,
-- `STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING`.
-
-## Backlog produktowy po stabilizacji detail views
-
-### STAGE-A35-OWNER-CONTROL-BASELINE
-
-Status: PO PILNYCH DETAIL/MAIL/CALENDAR LUB JAKO RÓWNOLEGŁY PRODUCT SPRINT
-
-Cel: owner-control audit: co ruszyć, czego nie przegapić, które leady/sprawy stoją.
-
-Zakres:
-
-- leady bez następnego kroku,
-- leady bez kontaktu 7+ dni,
-- leady bez kontaktu 14+ dni,
-- sprawy bez ruchu,
-- sprawy z wartością/pieniędzmi, ale bez następnego kroku,
-- rekordy bez odpowiedzialnego,
-- rekordy z notatką, ale bez zadania/follow-upu.
-
-### STAGE-A35B-MANDATORY-NEXT-STEP-CONTRACT
-
-Status: PO A35
-
-Cel: każdy aktywny lead/sprawa ma mieć jasny następny krok albo świadomy status `brak kolejnego kroku`.
-
-### STAGE231A2_DOCUMENT_BLOCKERS_LITE
-
-Status: PO A35B ALBO RÓWNOLEGLE JAKO MAŁY ETAP
-
-Cel: dokumenty/braki jako element kontroli procesu, nie martwe załączniki.
-
-### STAGE-A41-CONTACT-CADENCE-GRID
-
-Status: PO A35B / PO DOCUMENT_BLOCKERS_LITE
-
-Cel: siatka kontaktu: dziś, 1d, 2d, 3d, 5d, 7d, 14d.
-
-### STAGE-A42-LOST-LEAD-RESCUE
-
-Status: PO A41
-
-Cel: ekran `Do odzyskania` dla leadów z ciszą, brakiem kroku i ryzykiem utraty.
-
-### STAGE-A46-SALES-FUNNEL_MOVEMENT_VIEW
-
-Status: PO A41 LUB PO A42
-
-Cel: lejek pokazuje ruch, ciszę, brak kroku, ryzyko i pieniądze, nie tylko etap.
-
-### STAGE-A45-FINANCE-WATCHLIST
-
-Status: PO A42/A46
-
-Cel: lista pieniędzy do ruszenia, nie księgowość.
-
-### STAGE-A44-OWNER-DIGEST-WEEKLY-REPORT
-
-Status: PO A35/A41/A42/A45 ORAZ PO STAGE231K1/K2, JEŚLI MA IŚĆ MAILEM
-
-Cel: dzienny/tygodniowy raport właściciela jako lista decyzji i ryzyk.
-
-### STAGE-A36-DRAFTS-REBUILD
-
-Status: PO STAGE231J2 / NIE JAKO PIERWSZY WYRÓŻNIK
-
-Cel: jedna skrzynka szkiców: ręczny szkic, wklejony tekst, dyktowanie, parser, AI; zatwierdzanie jako lead/task/event/notatka/follow-up.
-
-### STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER
-
-Status: WYSOKA WARTOŚĆ / PÓŹNIEJ, po stabilizacji podstawowego CRM i owner-control core
-
-Cel: znajdować okazje sprzedażowe po problemie/sygnale, nie budować pustej bazy firm.
-
-Podetapy:
-
-1. `STAGE240A_SMART_SEARCH_INPUT_AND_MANUAL_IMPORT`
-2. `STAGE240B_OPPORTUNITY_REASON_SCHEMA`
-3. `STAGE240C_AI_SCORING_AND_PRIORITY`
-4. `STAGE240D_CREATE_LEADS_WITH_REASON_AND_FOLLOWUP`
-5. `STAGE240E_MONTHLY_OPPORTUNITY_MONITORING`
-
-### STAGE-A47-CONTROL-SPRINT-OFFER
-
-Status: PO A35 DEMO / MOŻE IŚĆ JAKO ETAP BIZNESOWY RÓWNOLEGLE
-
-Cel: spiąć produkt z usługą wdrożeniową `CloseFlow Control Sprint`.
-
-## Etapy techniczne / safety backlog
-
-### STAGE232A_PUBLIC_PREVIEW_ROUTES_PRODUCTION_LOCK
-
-Status: P1 / TECHNICAL SAFETY / DO WYKONANIA PRZED SZERSZYM TESTEM
-
-Zablokować publiczne preview routes w produkcji, jeżeli pokazują prototyp albo dane wyglądające jak realne kontakty.
-
-### STAGE232B_CHUNK_BOUNDARY_RUNTIME_STABILITY
-
-Status: PO 232A
-
-Sprawdzić, czy statyczne importy LeadDetail/ClientDetail są nadal potrzebne i czy lazy/chunk boundary jest stabilny.
-
-### STAGE232C_AUTH_ENV_FAIL_CLOSED
-
-Status: PO 232B
-
-Auth/env ma fail-closed w produkcji i nie maskować złej konfiguracji service-role fallbackiem.
-
-### STAGE232D_DOCS_ENCODING_SWEEP
-
-Status: PO APP CORE
-
-Naprawić aktywne README/.env/docs z mojibake bez przepisywania całej historycznej lawiny.
-
-### STAGE232E_POLISH_MOJIBAKE_GUARD_SCOPE
-
-Status: PO 232D
-
-Rozdzielić runtime guard od docs/project-memory guard.
-
-### STAGE232F_GUARD_RUNNER_CROSS_PLATFORM_CLEANUP
-
-Status: PO 232E
-
-Ustalić jeden główny release gate i uporządkować runner pod Windows/Linux.
-
-## Warunek aktualizacji tego pliku
-
-Po każdym zatwierdzonym etapie zmienić status w tym pliku.
-Nie zostawiać kolejności tylko w czacie, run reportach albo payloadach Obsidiana.
-Jeżeli powstaje nowy etap, jego ID i kolejność muszą trafić tutaj.
-
-
-## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
-
-Status: DO_APPLY / mass repair from clean origin.
-Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
-
-
-## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1G2 central product-pass sync for legacy R1D2 guard
-
-Status: PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED
-PowĂłd wpisu: historyczny guard scripts/check-stage231h-r1d2-case-detail-note-dictation-restore.cjs wymaga dokĹ‚adnej frazy PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED w centralnym pliku etapĂłw. R1G2 wczeĹ›niej byĹ‚ potwierdzony manualnie i wypchniÄ™ty, ale po syncu kolejki etapĂłw fraza nie byĹ‚a obecna w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
-
-
-## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
-
-Status: DO_APPLY / guard-ledger sync after R9 partial apply.
-Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
-
-
-## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON legacy guard sync
-
-Status: TECH_PUSHED / REQUIRED_BY_LEGACY_GUARD / SOURCE_SYNC
-PowĂłd wpisu: legacy guard R1D2 R4 wymaga obecnoĹ›ci markera STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON w centralnych ledgerach 04/06/08/10/13 oraz w run/Obsidian payload. Ten wpis nie zmienia runtime; synchronizuje ĹşrĂłdĹ‚o prawdy po wczeĹ›niejszych etapach R6-R9.
-
-
-## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
-
-Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
-Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
-
-
-## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
-
-Status: DO_APPLY / MASS_GUARD_REGEX_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
-eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
-eplace(/s+/g, ' ').
-
-
-## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
-
-Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
-
-## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
-
-- Data: 2026-06-14 23:45 Europe/Warsaw
-- Status: TECH_STAGE_IN_PROGRESS
-- Zakres: CaseDetail action map, note follow-up display/source map, quick note local append, finance loading flicker removal.
-- Audyt: R10 failed on brittle anchor. R10C uses regex/whole-class source-aware patch and guard.
-
-### STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD
-- data: 2026-06-14T20:31:30.095Z
-- status: DO_TEST_AND_PUSH
-- zakres: notatki CaseDetail pokazują do 5 wpisów, mają tooltip pełnej treści, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w działaniach pokazuje treść notatki jako opis.
-- guard: scripts/check-stage231h-r1d2-r11-note-panel-followup-prompt-map-guard.cjs
-
-## STAGE231H_R1D2_R12D_CASE_QUICK_NOTE_SCOPE_CLIENT_DEDUPE_FINAL_ANCHORLESS
-
-- data: 2026-06-15 Europe/Warsaw
-- status: DO_APPLY / final anchorless repair
-- zakres: CaseQuickActions explicit case scope, ContextNoteDialog handoff order, CaseDetail quick note local append + prompt, ClientDetail action dedupe
-- guard: scripts/check-stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.cjs
-- test: tests/stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.test.cjs
-- SQL: nie dotyczy
-
-## STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE
-
-- Data: 2026-06-15T11:25:01.568Z
-- Typ: CaseDetail notes panel / linked follow-up delete / guard
-- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powi�zanego taska.
-- Status: LOCAL_APPLIED_PENDING_VERIFY
-
-## STAGE231H_R1D2_R15C - 2026-06-15 15:10 Europe/Warsaw
-- CaseDetail: naprawiono dwukierunkowe powi�zanie notatka/follow-up, ostrze�enie przy kasowaniu follow-upu z dzia�a� i hierarchi� tekstu w karcie dzia�ania.
-
-## STAGE_BRANCH_AUDIT_001_MAIN_QUARANTINE_AND_DEV_FREEZE_GUARD - 2026-06-15 18:35 Europe/Warsaw
-
-- Decyzja: CloseFlow pracuje wy��cznie na dev-rollout-freeze.
-- main zostaje zablokowany: bez push, bez merge, bez rebase.
-- Dozwolony push: git push origin HEAD:dev-rollout-freeze.
-- Dodano guard: scripts/check-closeflow-branch-scope.cjs.
-- main mo�na czyta� tylko read-only i ewentualne dobre fragmenty przenosi� r�cznie osobnymi etapami.
-
-## STAGE_PROJECT_DOCS_ENCODING_REPAIR_001 - 2026-06-15 19:15 Europe/Warsaw
-
-- Zakres: naprawa mojibake w centralnych plikach _project.
-- Runtime: nie ruszano.
-- main: nie ruszano.
-- Dodano guard: scripts/check-closeflow-project-docs-encoding.cjs.
-- Push tylko na dev-rollout-freeze.
