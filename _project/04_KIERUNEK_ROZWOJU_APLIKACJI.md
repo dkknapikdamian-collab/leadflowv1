@@ -253,3 +253,38 @@ Użytkownik ma w 5 sekund wiedzieć, czy patrzy na:
 - pełny owner-control backlog,
 - szkice do decyzji.
 ```
+
+### 7. Zakładka Klienci jako relacyjna kontrola ruchu, nie katalog kontaktów
+
+To jest aktywny kierunek produktowy od STAGE232C.
+
+Teza:
+
+```txt
+Klienci mają pokazywać stan relacji: kto ma sprawę, kto nie ma sprawy, gdzie jest aktywna prowizja, gdzie nie ma ruchu i jaki jest najbliższy krok.
+To nie może być katalog kontaktów z ozdobnymi licznikami.
+```
+
+Zasady:
+
+- lista klientów startuje z `clients`, a leady/sprawy/płatności/zadania/wydarzenia są tylko kontekstem relacji,
+- `Aktywni` = niearchiwalni klienci, chyba że powstaje osobny kafelek `Z aktywną sprawą`,
+- `Bez sprawy` musi mieć realny filtr i pokazywać tylko klientów bez spraw,
+- `Bez ruchu` nie może oznaczać `brak leadów`; ma wynikać z activity-truth/contact cadence/braku następnej akcji,
+- `Prowizja` musi mieć jedną definicję wspólną dla kafelka, listy i prawego raila,
+- jeśli pokazujemy aktywną prowizję, nie mieszamy jej z lifetime earned ani fallbackiem płatności,
+- jeżeli pokazujemy wartość relacji, tak ją nazywamy,
+- filtry kontaktu klientów muszą widzieć aktywność z klienta, leadów, spraw, zadań, wydarzeń i płatności powiązanych z relacją,
+- top kafelki i prawy rail nie mogą być martwymi przyciskami,
+- kolorystyka musi iść przez globalny system `StatShortcutCard` / `OperatorMetricTile`, bez lokalnego malowania kafelków.
+
+Warunek jakości produktu:
+
+```txt
+Właściciel w 5 sekund ma wiedzieć:
+- ilu klientów faktycznie obsługujemy,
+- którzy są tylko kontaktami bez spraw,
+- gdzie jest pieniądz do zarobienia,
+- kto wymaga kontaktu,
+- gdzie kliknąć, żeby zobaczyć dokładnie tę listę.
+```

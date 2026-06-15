@@ -359,6 +359,213 @@ Run decision do utworzenia: `_project/runs/STAGE232B_TODAY_OWNER_CONTROL_TILE_SO
 
 ---
 
+### 3. STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH
+
+Status: DO_WDROZENIA PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI ZAKŁADKA KLIENCI BLOKUJE TESTY PRODUKTOWE / PRIORYTET PRODUKTOWY P1
+
+Powód priorytetu:
+
+- Damian zlecił szczegółowy audyt zakładki `Klienci`: każdy kafelek, źródła danych, kliknięcia, spójność kolorystyki, styl i produkcyjne podpięcie.
+- Zakładka `Klienci` jest jedną z głównych powierzchni owner-control: ma mówić, gdzie są relacje, pieniądze, brak sprawy, brak ruchu i najbliższy krok.
+- Aktualny kod ma dobry fundament, bo lista klientów startuje z `clients`, a leady/sprawy/płatności/zadania/wydarzenia są kontekstem relacji, nie źródłem wierszy.
+- Jednocześnie kilka kafelków i filtrów jest mylących:
+  - `Aktywni` liczy wszystkich niearchiwalnych klientów, ale helper mówi `z otwartą sprawą`.
+  - `Bez sprawy` liczy klientów bez spraw, ale kliknięcie nie ustawia realnego filtra `bez sprawy`.
+  - `Prowizja` miesza aktywną prowizję, fallback z leadów i czasem płatności, mimo że helper mówi `do zarobienia`.
+  - `Bez ruchu` liczy klientów bez leadów, a nie realną ciszę/brak aktywności.
+  - `Filtry kontaktu` dla klientów nie dostają pełnego `relatedRecordsById`, więc mogą opierać się głównie na `lastContactAt`, zamiast na prawdziwej aktywności relacji.
+  - Prawy rail `Filtry proste` dubluje kafelki, ale nie zawsze ma realny stan filtra.
+  - `Najwyższa prowizja` używa własnego mapowania wartości, a importowany helper `buildTopClientValueEntries` nie jest faktycznie użyty.
+
+Cel:
+
+Ustawić produkcyjny kontrakt zakładki `Klienci` tak, żeby każdy kafelek, filtr, lista i prawy rail odpowiadały na jedno konkretne pytanie biznesowe:
+
+```txt
+Którzy klienci są aktywni?
+Którzy nie mają żadnej sprawy?
+Gdzie jest aktywna prowizja do zarobienia?
+Który klient nie ma ruchu / kontaktu?
+Jaka jest najbliższa akcja klienta?
+Czy lista po kliknięciu pokazuje dokładnie to, co obiecuje kafelek?
+```
+
+Audyt faktycznego stanu:
+
+- Aktywna trasa `/clients` używa `src/pages/Clients.tsx`.
+- `Clients.tsx` ładuje:
+  - `fetchClientsFromSupabase()`,
+  - `fetchLeadsFromSupabase()`,
+  - `fetchCasesFromSupabase()`,
+  - `fetchPaymentsFromSupabase()`,
+  - `fetchTasksFromSupabase()`,
+  - `fetchEventsFromSupabase()`.
+- Główna lista `filtered` startuje z `clients`, nie z leadów. To jest właściwy kierunek.
+- `countersByClientId` liczy powiązane leady, sprawy i płatności po `clientId`.
+- `nearestActionByClientId` bierze zadania/wydarzenia powiązane bezpośrednio z klientem oraz przez powiązane leady/sprawy.
+- `operationalRecordsByClientId` dodaje klienta, leady, sprawy, płatności, taski i eventy, ale taski/eventy tylko jeśli mają bezpośredni `clientId`; trzeba sprawdzić powiązania po `leadId/caseId`.
+- `contactCadenceGrid` dla klientów jest budowany bez `relatedRecordsById`, więc filtry ciszy mogą nie widzieć realnej aktywności w leadach/sprawach/zadaniach/wydarzeniach.
+- `activeCount` = wszyscy niearchiwalni klienci.
+- `clientsWithoutCases` = niearchiwalni klienci z `cases === 0`.
+- `relationValue` = suma `clientValueByClientId`, gdzie `clientValueByClientId` może używać: aktywnej wartości ze spraw, wartości leadów, wartości z klienta albo fallbacku płatności.
+- `staleClients` = klienci bez powiązanych leadów. To nie jest poprawna definicja `bez ruchu`.
+- Kafelek `Bez sprawy` i prawy filtr `Bez sprawy` tylko wywołują `setShowArchived(false)`, więc nie zawężają listy do klientów bez sprawy.
+- Kolorystyka kafelków używa `StatShortcutCard` i `OperatorMetricTile`, więc kierunek jest spójny z systemem, ale konkretne tony wymagają mapy semantycznej:
+  - aktywni / relacje = blue,
+  - bez sprawy / uwaga miękka = amber albo neutral,
+  - aktywna prowizja = green,
+  - brak ruchu / ryzyko = red,
+  - kosz = neutral/amber, nie czerwony blok.
+- Lista klientów korzysta z `closeflow-record-list-source-truth.css` wspólnego dla leadów i klientów, więc styl jest zasadniczo spójny z LeadListCard.
+- `clients-next-action-layout.css` zawiera wiele reguł dla starego układu `:not(.cf-client-row-two-line)`, podczas gdy aktywny wiersz ma `cf-client-row-two-line`. Trzeba usunąć martwe/nieaktywne zależności tylko po guardzie, nie na ślepo.
+
+Kontrakt produkcyjny kafelków:
+
+1. `Aktywni`
+   - Źródło: wszyscy niearchiwalni klienci.
+   - Helper: `niearchiwalni klienci`, nie `z otwartą sprawą`.
+   - Klik: filtr `active` albo reset do aktywnych.
+   - Nie mylić z `Klienci z aktywną sprawą`.
+
+2. `Bez sprawy`
+   - Źródło: niearchiwalni klienci, dla których liczba spraw = 0.
+   - Klik: ustawia realny filtr `without-case`.
+   - Lista po kliknięciu pokazuje tylko klientów bez sprawy.
+   - Helper: `tylko kontakt`.
+
+3. `Prowizja`
+   - Źródło R1: suma `activeCommission` z `clientFinanceByClientId`, nie fallback z płatności.
+   - Helper: `aktywna prowizja`, nie ogólne `do zarobienia`, jeśli w liczbie nie ma tylko aktywnej prowizji.
+   - Prawy rail `Najwyższa prowizja` ma używać tej samej definicji co kafelek i wiersz.
+   - Lifetime earned zostaje osobnym polem w wierszu, ale nie miesza się z aktywną prowizją.
+
+4. `Bez ruchu`
+   - Źródło: contact cadence / activity truth, nie `brak leadów`.
+   - Minimalnie w R1: klienci z bucketami `silent_7`, `silent_14_plus`, `unknown` albo bez najbliższej akcji, zgodnie z ustawieniami.
+   - Lepsza nazwa, jeśli zakres jest szeroki: `Wymaga kontaktu`.
+   - Klik: ustawia realny filtr `stale` / `needs-contact`.
+
+5. `Filtry kontaktu`
+   - Źródło: `buildContactCadenceGrid` z `relatedRecordsById` dla klienta.
+   - `relatedRecordsById` musi zawierać:
+     - klienta,
+     - powiązane leady,
+     - powiązane sprawy,
+     - taski/eventy powiązane bezpośrednio z klientem,
+     - taski/eventy powiązane przez leadId/caseId,
+     - płatności powiązane z klientem/sprawą, jeśli activity-truth ich używa.
+   - Kliknięcie bucketu ma realnie filtrować listę.
+
+6. `Prawy rail - Filtry proste`
+   - Nie może być martwą kopią top kafelków.
+   - Każdy element musi ustawić taki sam stan filtra jak odpowiadający kafelek.
+   - Jeśli filtr nie istnieje, element z raila nie powinien udawać przycisku filtra.
+
+7. `Najwyższa prowizja`
+   - Źródło: top 5 klientów wg tej samej aktywnej prowizji co kafelek `Prowizja`.
+   - Jeśli pokazywana jest wartość relacji, nazwa musi brzmieć `Najwyższa wartość relacji`, nie `Najwyższa prowizja`.
+
+Minimalny zakres wdrożenia R1:
+
+1. Dodać jawny stan filtra klientów:
+   - `all`,
+   - `without_case`,
+   - `needs_contact` albo `stale`,
+   - opcjonalnie `high_value`.
+2. Ujednolicić kliknięcia top kafelków i prawego raila:
+   - `Aktywni` resetuje do aktywnych/all,
+   - `Bez sprawy` filtruje tylko klientów bez spraw,
+   - `Bez ruchu` filtruje klientów wymagających kontaktu,
+   - `Prowizja` może sortować po aktywnej prowizji albo ustawić filtr/sortowanie, ale musi to pokazać helperem.
+3. Zmienić helper `Aktywni` z `z otwartą sprawą` na `niearchiwalni klienci`, chyba że powstaje osobny kafelek `Z aktywną sprawą`.
+4. Zmienić definicję `staleClients`; nie może oznaczać `brak leadów`.
+5. Dodać `relatedRecordsByClientId` i przekazać do `buildContactCadenceGrid`.
+6. Ujednolicić definicję aktywnej prowizji:
+   - kafelek `Prowizja`,
+   - wiersz klienta `Aktywna prowizja`,
+   - prawy rail `Najwyższa prowizja`.
+7. Uporządkować nazwy:
+   - jeśli liczba pokazuje prowizję aktywną, nazwa/helper mówią `Aktywna prowizja`,
+   - jeśli liczba pokazuje wartość relacji, nazwa mówi `Wartość relacji`.
+8. Sprawdzić kolorystykę:
+   - używać `StatShortcutCard`/`OperatorMetricTile`,
+   - nie dodawać lokalnych kolorów poza systemem,
+   - tony zgodne z semantyką.
+9. Dodać guard i test kontraktu źródeł danych.
+10. Nie usuwać legacy CSS bez osobnego guardu, ale zablokować dodawanie nowych styli poza wspólnym source-of-truth.
+
+Czego nie ruszać w R1:
+
+- SQL / Supabase schema,
+- ClientDetail,
+- CaseDetail,
+- LeadDetail / STAGE232A,
+- TodayStable / STAGE232B,
+- płatności runtime,
+- Google Calendar,
+- globalny layout aplikacji,
+- duży redesign całej listy,
+- migracja finansów.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232c-clients-relation-tiles.cjs`
+- `node --test tests/stage232c-clients-relation-tiles.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet` albo jawny SKIP z powodem, jeśli globalny gate blokują historyczne niezwiązane guardy
+- `git diff --check`
+
+Guard ma sprawdzić minimum:
+
+- `/clients` nadal routuje do `src/pages/Clients.tsx`,
+- lista `filtered` startuje z `clients`, nie z leadów,
+- `Aktywni` nie ma helpera `z otwartą sprawą`, jeśli licznik = wszyscy niearchiwalni,
+- `Bez sprawy` ma realny filtr stanu, nie tylko `setShowArchived(false)`,
+- `Bez ruchu` nie może być liczone jako `clients with leads === 0`,
+- `buildContactCadenceGrid({ entityType: 'client' })` dostaje `relatedRecordsById`,
+- `Prowizja`/`Najwyższa prowizja` korzystają z tej samej definicji aktywnej prowizji co wiersz klienta,
+- top kafelki i prawy rail nie są martwymi przyciskami,
+- tony kafelków są z systemu `StatShortcutCard`/`OperatorMetricTile`,
+- nie dodano nowego lokalnego systemu kolorów dla klientów.
+
+Test ręczny Damiana:
+
+1. Wejdź w `/clients`.
+2. Sprawdź kafelek `Aktywni`:
+   - liczba = wszyscy niearchiwalni,
+   - opis nie mówi `z otwartą sprawą`, jeśli nie jest to prawda.
+3. Kliknij `Bez sprawy`:
+   - lista ma pokazać tylko klientów bez spraw,
+   - licznik kafelka i liczba w filtrze/listingu mają się zgadzać.
+4. Kliknij `Bez ruchu` / `Wymaga kontaktu`:
+   - lista ma pokazać klientów z ciszą/brakiem kontaktu/brakiem następnej akcji według activity-truth,
+   - nie może to oznaczać tylko `brak leadów`.
+5. Porównaj kafelek `Prowizja`, wiersze klientów i prawy rail `Najwyższa prowizja`:
+   - wszystkie używają tej samej definicji aktywnej prowizji.
+6. Sprawdź kolorystykę:
+   - kafelki mają ten sam styl jak Leady/Dziś,
+   - brak czerwonych plam poza realnym ryzykiem,
+   - przyciski kosza są subtelne, nie dominują listy.
+7. Sprawdź mobile:
+   - wiersz klienta nie rozjeżdża telefonu, e-maila, prowizji i najbliższej akcji.
+8. Hard refresh:
+   - filtr i lista nie pokazują pustych/losowych danych,
+   - nie pojawiają się rekordy z kosza w aktywnych.
+
+Warunek zamknięcia:
+
+- każdy kafelek liczy dokładnie to, co mówi,
+- klik każdego kafelka i każdego prostego filtra zmienia realny widok,
+- `Bez ruchu` bazuje na activity-truth/contact cadence, nie na braku leadów,
+- `Prowizja` jest spójna między kafelkiem, wierszem i prawym railem,
+- kolorystyka jest zgodna z globalnym UI systemem,
+- guardy, testy, build i `git diff --check` są zielone,
+- `_project`, changelog, test history, ryzyka i Obsidian payload są zaktualizowane.
+
+Run decision do utworzenia: `_project/runs/STAGE232C_CLIENTS_RELATION_TILE_SOURCE_OF_TRUTH.md`
+
+---
+
 ### 3. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 
 Status: PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA
