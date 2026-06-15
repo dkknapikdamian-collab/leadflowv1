@@ -394,3 +394,39 @@ W 5 sekund użytkownik ma wiedzieć:
 - co nie jest podpięte do żadnej relacji,
 - które zadanie ruszyć jako pierwsze.
 ```
+
+### 11. Zakładka Kalendarz jako źródło prawdy czasu operatora
+
+To jest aktywny kierunek produktowy od STAGE232G.
+
+Teza:
+
+```txt
+Kalendarz ma być źródłem prawdy czasu operatora: co jest w danym dniu, co przesuwamy, co kończymy i co usuwamy.
+Nie może pokazywać fałszywych sukcesów ani udawać zmiany tygodnia, jeśli zakres danych się nie zmienił.
+```
+
+Zasady:
+
+- `Miesiąc` pokazuje preview dnia; `Wybrany dzień` pokazuje pełną listę.
+- `+ X więcej` musi odpowiadać pełnej liczbie wpisów minus preview.
+- `Tydzień` musi bazować na aktywnym anchor date, nie zawsze na `new Date()`.
+- `+1H/+1D/+1W` aktualizuje realny rekord i widoczny stan bez fałszywego sukcesu.
+- `Zrobione` działa tylko dla typów, które naprawdę można zakończyć; dla lead/unknown ma być blokada albo prawdziwa obsługa lead next action.
+- `Usuń` działa tylko dla event/task; lead nie może być usunięty z kalendarza jako zwykły wpis.
+- Relacje lead/case/client nie mogą ginąć przy tworzeniu i edycji wpisów.
+- Completed entries mają być widoczne, ale zgaszone/przekreślone.
+- Kolorystyka ma zostać w systemie VST/tone: task/event/lead/done/delete bez lokalnych nowych wyjątków.
+- DEV seed nie może wpływać na produkcję.
+
+Warunek jakości produktu:
+
+```txt
+W 5 sekund użytkownik ma wiedzieć:
+- co jest w wybranym dniu,
+- co jest tylko preview w miesiącu,
+- czy tydzień naprawdę się zmienił,
+- czy wpis został realnie przesunięty,
+- czy wpis jest zrobiony,
+- czy można go bezpiecznie edytować/usunąć.
+```

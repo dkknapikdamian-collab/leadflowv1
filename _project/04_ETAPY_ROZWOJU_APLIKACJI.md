@@ -1396,6 +1396,293 @@ Warunek zamknięcia:
 
 ---
 
+### 7. STAGE232G_CALENDAR_OPERATIONAL_SOURCE_OF_TRUTH
+
+Status: DO_WDROZENIA PO STAGE232A-F ALBO WCZEŚNIEJ, JEŚLI KALENDARZ MA BYĆ NASTĘPNĄ TESTOWANĄ ZAKŁADKĄ / PRIORYTET PRODUKTOWY P1
+
+Powód priorytetu:
+
+- Damian zlecił szczegółowy audyt zakładki `Kalendarz`: widok miesiąca/tygodnia, wybrany dzień, przyciski `+1H/+1D/+1W/Zrobione/Usuń`, kolorystyka, style i produkcyjne źródła danych.
+- Zakładka `Kalendarz` jest newralgiczna, bo ma pokazywać faktyczny czas pracy operatora. Jeśli daty, przesunięcia albo `Zrobione` kłamią, użytkownik straci zaufanie do całej aplikacji.
+- Aktywna trasa `/calendar` używa `src/pages/Calendar.tsx`.
+- Obecny ekran ma bardzo dużo poprzednich napraw i jest wizualnie dość stabilny, ale audyt wykazał kilka ryzyk runtime/source-of-truth:
+  - widok tygodnia buduje `rollingWeekStart` z `new Date()`, nie z `selectedDate/currentMonth`, więc nawigacja poprzedni/następny tydzień może nie zmieniać realnego tygodnia,
+  - `Zrobione` obsługuje event/task, ale nie blokuje `lead`, więc wpis typu lead może dostać toast sukcesu bez realnej zmiany statusu,
+  - `Usuń` poprawnie blokuje unsupported kind, ale `Zrobione` nie ma analogicznego zabezpieczenia,
+  - month grid używa `dayEntries.slice(0, 3/4)` i `+ X więcej`; to jest OK tylko jeśli selected-day panel pokazuje pełną listę i licznik jest zgodny,
+  - w Calendar.tsx są DOM-normalizatory month rows uruchamiane przez `requestAnimationFrame` i timeouts; to działa jak plaster na UI, ale produkcyjnie powinno być guardowane i docelowo zastąpione renderowaniem źródłowym,
+  - `getEntryTone()` w scheduling używa bezpośrednich klas Tailwind, podczas gdy reszta aplikacji idzie przez globalny VST/tone system; trzeba nie dokładać kolejnego lokalnego systemu kolorów,
+  - tworzenie zadania/wydarzenia z kalendarza nie zapisuje bezpośrednio `clientId`, mimo że selected/edit UI zna klienta; zadania/wydarzenia klient-only mogą wpadać jako `Brak powiązania`,
+  - local/dev seed `appendStage181ILocalCalendarSeed()` jest aktywny w DEV; guard ma potwierdzić, że nie trafia do produkcji.
+
+Cel:
+
+Ustawić produkcyjny kontrakt zakładki `Kalendarz` tak, żeby każdy wpis, widok i akcja odpowiadały na prawdziwy stan danych:
+
+```txt
+Które zadania/wydarzenia/leady są w danym dniu?
+Czy miesiąc pokazuje tylko preview, a wybrany dzień pełną listę?
+Czy tydzień naprawdę zmienia tydzień?
+Czy +1H/+1D/+1W zmienia właściwy rekord i datę?
+Czy Zrobione faktycznie zmienia status właściwego typu wpisu?
+Czy Usuń nie pokazuje fałszywego sukcesu?
+Czy kolory typów/statusów są spójne z resztą aplikacji?
+```
+
+Audyt faktycznego stanu:
+
+- `src/App.tsx` routuje `/calendar` do `src/pages/Calendar.tsx`.
+- `Calendar.tsx` ładuje:
+  - `events`,
+  - `tasks`,
+  - `leads`,
+  - `cases`,
+  - `clients`.
+- Dane kalendarza przychodzą przez `fetchCalendarBundleFromSupabase()` oraz osobno `fetchClientsFromSupabase()`.
+- `scheduleEntries` powstają przez `combineScheduleEntries({ events, tasks, leads, rangeStart, rangeEnd })`.
+- `combineScheduleEntries()` scala:
+  - event entries,
+  - task entries,
+  - operator-today overdue task catch-up entries,
+  - lead next action entries,
+  - operator-today lead catch-up entries,
+  - dedupe,
+  - remove lead shadow entries.
+- `entriesByDayKey` i `weekEntriesByDayKey` są precomputowane przez `buildEntriesByDayKey()`.
+- `CalendarSelectedDayTileV9` pokazuje pełne `selectedDayEntries`.
+- Month cell pokazuje tylko preview: 3 wpisy dla compact albo 4 dla default/large i przycisk `+ X więcej`.
+- `handleShowMoreMonthDay()` wybiera dzień i scrolluje do selected-day panelu.
+- `handleShiftEntry()` obsługuje event/task/lead.
+- `handleShiftEntryHours()` obsługuje event/task/lead.
+- `handleDeleteEntry()` obsługuje tylko event/task i blokuje unsupported kind.
+- `handleCompleteEntry()` obsługuje update event/task, ale nie blokuje `lead`; może logować aktywność i pokazać sukces bez update leada.
+- Completed visibility jest szeroka: status done/completed/complete/finished/closed/zrobione/wykonane/archived albo flagi done/completedAt.
+- Widok tygodnia:
+  - `calendarView` ma `week|month`,
+  - `visibleCalendarRange` tworzy `rollingWeekStart = new Date()`, a nie z `selectedDate`,
+  - nav previous/next week ustawia `selectedDate/currentMonth`, ale sam week range może zostać przy bieżącym tygodniu.
+- `calendarScale` zmienia min-height i preview count w month cell.
+- DEV local seed istnieje i dopina robocze taski/eventy tylko przy `import.meta.env.DEV`.
+
+Kontrakt produkcyjny widoków:
+
+1. `Miesiąc`
+   - Źródło: `scheduleEntries` dla zakresu całego widocznego miesiąca.
+   - Komórka dnia pokazuje preview, nie pełną listę.
+   - Preview musi mieć jasny kontrakt:
+     - compact = 3,
+     - default/large = 4,
+     - `+ X więcej` = pełna liczba minus preview.
+   - Klik wpisu otwiera edycję konkretnego wpisu.
+   - Klik dnia wybiera dzień.
+   - Klik `+ więcej` wybiera dzień i przewija do pełnego selected-day panelu.
+   - Nie pokazywać mini-kart w miesiącu; month rows mają być krótkimi tekstowymi chipami.
+
+2. `Wybrany dzień`
+   - Źródło: pełne `selectedDayEntries`.
+   - Licznik `X rzeczy` = długość pełnej listy.
+   - Lista posortowana tak samo jak wpisy dnia.
+   - Każdy wpis pokazuje:
+     - typ,
+     - godzinę,
+     - status,
+     - tytuł,
+     - powiązanie,
+     - akcje.
+   - `Brak powiązania` musi być prawdziwe względem leadId/caseId/clientId.
+
+3. `Tydzień`
+   - Źródło: 7 dni od aktywnego anchor date.
+   - Nie może zawsze pokazywać `today + 6`.
+   - `Poprzedni tydzień` i `Następny tydzień` mają realnie zmieniać `weekDays`, `weekEntries` i widoczne liczniki.
+   - Rekomendacja: dodać `weekAnchorDate` albo oprzeć `rollingWeekStart` o `selectedDate`.
+   - Guard: po kliknięciu next week zakres dat musi być inny niż current week.
+
+Kontrakt akcji:
+
+1. `+1H`
+   - Obsługiwane typy: event/task/lead.
+   - Musi aktualizować właściwe pola:
+     - event: startAt/endAt,
+     - task: scheduledAt/dueAt/date/time przez `syncTaskDerivedFields`,
+     - lead: nextActionAt/nextActionTitle.
+   - Po update lokalny optimistic state musi pokazać nową datę/godzinę bez fałszywego sukcesu.
+
+2. `+1D` / `+1W`
+   - Ten sam kontrakt co +1H, tylko przesunięcie dnia/tygodnia.
+   - Po przesunięciu entry powinien przenieść się do nowego dnia i selectedDate/currentMonth powinny wskazać nowy dzień.
+
+3. `Zrobione`
+   - Obsługiwane typy R1:
+     - event,
+     - task.
+   - Dla `lead` nie wolno pokazywać sukcesu bez prawdziwej zmiany; albo zablokować z toastem `Tego wpisu nie można oznaczyć jako zrobione w kalendarzu`, albo wdrożyć poprawną zmianę leada.
+   - Guard ma wymagać analogicznego unsupported-kind gate jak przy delete.
+   - Completed styling zostaje: przekreślenie + neutral/green tone.
+
+4. `Usuń`
+   - Obsługiwane typy:
+     - event,
+     - task.
+   - Lead nie może być usuwany z kalendarza przez delete.
+   - Obecny kierunek jest dobry: unsupported kind error + no false success.
+   - Guard ma utrzymać ten kontrakt.
+
+5. `Edytuj`
+   - Event/task mają pełny modal.
+   - Lead nie powinien wejść w modal, jeśli zapis nie obsługuje leada.
+   - Jeśli lead może być edytowany, musi aktualizować `nextActionAt/nextActionTitle`; inaczej zablokować.
+
+Kontrakt danych i relacji:
+
+- `ScheduleEntry` musi zachowywać:
+  - `kind`,
+  - `sourceId`,
+  - `startsAt`,
+  - `raw`,
+  - `leadId`,
+  - `caseId`,
+  - `clientId`, jeśli dostępne.
+- `getCalendarEntryRelationLabel()` musi spójnie rozpoznawać:
+  - sprawę,
+  - leada,
+  - klienta.
+- Tworzenie nowego task/event z kalendarza powinno zapisać `clientId`, jeśli TopicContactPicker wybrał klienta-only.
+- Jeśli R1 nie obsługuje client-only relation create, UI nie może udawać, że klient-only powiązanie zostało zapisane.
+
+Kolorystyka i styl:
+
+- Obecna kolorystyka jest w większości spójna:
+  - task = zielony/emerald,
+  - event = indigo/purple,
+  - lead = amber/blue zależnie od miejsca,
+  - done = przekreślenie + zgaszenie,
+  - delete = destructive source.
+- Ryzyko:
+  - `getEntryTone()` używa bezpośrednich klas Tailwind, a nie centralnego VST token map.
+  - Month/selected-day/week mają wiele historycznych CSS warstw i DOM-normalizatorów.
+- R1:
+  - nie robić redesignu,
+  - nie dokładać nowych lokalnych kolorów,
+  - guardem utrzymać `data-cf-vst-kind`, `data-cf-vst-calendar-status`, `data-calendar-entry-completed`.
+- R2:
+  - usunąć DOM-normalizatory i zastąpić renderowaniem month row w JSX.
+
+Minimalny zakres wdrożenia R1:
+
+1. Naprawić anchor tygodnia:
+   - `weekDays` i `weekEntries` mają bazować na `selectedDate` albo osobnym `weekAnchorDate`, nie zawsze na `new Date()`.
+2. Dodać unsupported-kind gate dla `handleCompleteEntry()`:
+   - event/task OK,
+   - lead zablokowany albo poprawnie obsłużony.
+3. Dodać analogiczny gate dla `handleEditEntry()` / `handleSaveEdit()`, jeśli lead edit nie zapisuje prawdziwie.
+4. Dodać jawne kolekcje:
+   - `monthScheduleEntries`,
+   - `weekScheduleEntries`,
+   - `entriesByDayKey`,
+   - `weekEntriesByDayKey`,
+   - `selectedDayEntries`.
+5. Guardem potwierdzić:
+   - month preview count,
+   - selected-day full count,
+   - `+ X więcej` = full - preview.
+6. Guardem potwierdzić, że `Zrobione` na lead nie pokazuje fałszywego sukcesu.
+7. Guardem potwierdzić, że delete unsupported kind dalej nie pokazuje sukcesu.
+8. Guardem potwierdzić, że DEV seed nie działa w produkcji.
+9. Sprawdzić client-only relation create:
+   - jeśli `TopicContactPicker` może zwrócić clientId, payload create task/event musi go zapisać,
+   - albo UI ma blokować client-only wybór dla kalendarza R1.
+10. Nie usuwać CSS historycznych warstw bez osobnego stage.
+11. Zaktualizować `_project`, run report, guard registry, test history, risks, changelog i Obsidian payload.
+
+Czego nie ruszać w R1:
+
+- Google Calendar sync runtime poza guardem,
+- duży redesign month/week,
+- usuwanie DOM-normalizatorów,
+- przebudowa modali,
+- SQL/migracje,
+- LeadDetail/CaseDetail/Tasks runtime poza kompatybilnością danych,
+- zewnętrzne wysyłki/powiadomienia,
+- style globalne poza minimalnym dopięciem guardów.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232g-calendar-operational-source-truth.cjs`
+- `node --test tests/stage232g-calendar-operational-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet` albo jawny SKIP z powodem, jeśli blokuje historyczny niezwiązany gate
+- `git diff --check`
+
+Guard ma sprawdzić minimum:
+
+- `/calendar` routuje do `src/pages/Calendar.tsx`,
+- `weekDays` nie są liczone zawsze od `new Date()` niezależnie od selected/current anchor,
+- previous/next week zmienia realny zakres tygodnia,
+- `handleCompleteEntry()` ma unsupported-kind gate dla lead/unknown albo prawdziwą obsługę lead,
+- `handleDeleteEntry()` nadal blokuje unsupported kind,
+- month preview używa 3/4 limitów i `+ X więcej` liczy full-preview,
+- selected-day count = pełne selectedDayEntries.length,
+- `ScheduleEntryCard` i selected-day row mają VST/data markers,
+- completed entries mają `data-calendar-entry-completed` i line-through/zgaszenie,
+- DEV local seed jest ograniczony do `import.meta.env.DEV`,
+- create/edit task/event nie gubi clientId, jeśli TopicContactPicker obsługuje client-only.
+
+Test ręczny Damiana:
+
+1. Wejdź w `/calendar`.
+2. Włącz `Miesiąc`.
+3. Sprawdź dzień z wieloma wpisami:
+   - w kafelku miesiąca widzisz tylko preview,
+   - `+ X więcej` pokazuje poprawną liczbę,
+   - po kliknięciu `+ więcej` wybrany dzień pokazuje pełną listę.
+4. Kliknij pojedynczy wpis w miesiącu:
+   - otwiera edycję tego konkretnego wpisu.
+5. Kliknij dzień bez wpisów:
+   - selected-day panel pokazuje pusty stan.
+6. Włącz `Tydzień`.
+7. Kliknij `Następny tydzień` i `Poprzedni tydzień`:
+   - dni i wpisy naprawdę zmieniają zakres, nie zostają na bieżącym tygodniu.
+8. Na wpisie typu zadanie kliknij:
+   - `+1H`,
+   - `+1D`,
+   - `+1W`.
+   Wpis ma przenieść się w czasie i nie wrócić po refreshu.
+9. Na wpisie typu wydarzenie wykonaj analogiczny test.
+10. Na wpisie typu lead:
+   - shift może działać tylko jeśli aktualizuje nextActionAt,
+   - `Zrobione` nie może pokazać fałszywego sukcesu.
+11. Kliknij `Zrobione`:
+   - event/task przekreśla się i ma status zrobione,
+   - `Przywróć` cofa status.
+12. Kliknij `Usuń`:
+   - event/task ma confirm i znika,
+   - lead nie może być usunięty z kalendarza jako task/event.
+13. Sprawdź kolory:
+   - zadanie zielone,
+   - wydarzenie fiolet/indigo,
+   - lead odróżnialny,
+   - done zgaszone/przekreślone,
+   - delete czerwony tylko jako akcja destrukcyjna.
+14. Hard refresh:
+   - wybrany dzień i wpisy nie kłamią po pobraniu danych.
+
+Warunek zamknięcia:
+
+- tydzień realnie przewija tydzień,
+- selected-day count i month preview są spójne,
+- `Zrobione` nie pokazuje fałszywego sukcesu dla lead/unknown,
+- `Usuń` nadal nie obsługuje unsupported kind fałszywie,
+- przesunięcia +1H/+1D/+1W zmieniają właściwy rekord i datę,
+- completed visibility jest spójna,
+- DEV seed nie wpływa na produkcję,
+- relacje lead/case/client nie są gubione w create/edit,
+- kolorystyka zostaje w istniejącym systemie,
+- guardy, testy, build i `git diff --check` są zielone,
+- `_project` i Obsidian payload są zaktualizowane.
+
+---
+
 ### 3. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 
 Status: PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA
