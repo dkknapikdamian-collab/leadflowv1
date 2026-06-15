@@ -1460,7 +1460,7 @@ Do wykonania lokalnie: Stage227A guard/test, Stage227B guard/test, build, verify
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_START -->
 ## 2026-06-06 17:05 Europe/Warsaw — STAGE228A test history
 
-Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` ˘â€ ’ `Pieniądze` ˘â€ ’ widoczny rekord źródłowy kwoty.
+Do lokalnego uruchomienia: Stage228A guard/test, regresje Stage227A/B, build, verify quiet i git diff check. Manual: `/funnel` → `Pieniądze` → widoczny rekord źródłowy kwoty.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_TEST_HISTORY_END -->
 
 ## 2026-06-06 18:00 Europe/Warsaw — STAGE228B Lead Work Action Center
@@ -3745,3 +3745,12 @@ Testy:
 - node scripts/check-closeflow-branch-scope.cjs
 - node scripts/check-closeflow-project-docs-encoding.cjs
 - git diff --check
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_007_FINAL_ARROW - 2026-06-15 20:50 Europe/Warsaw
+
+Testy:
+- node scripts/check-closeflow-branch-scope.cjs
+- node scripts/check-closeflow-project-docs-encoding.cjs
+- git diff --check
+
+Wynik oczekiwany: PASS po usunięciu końcowego tokenu mojibake strzałki.
