@@ -190,9 +190,178 @@ Run decision do utworzenia: `_project/runs/STAGE232A_LEAD_MISSING_BLOCKER_SOURCE
 
 ---
 
-### 2. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+### 2. STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH
 
-Status: PO STAGE232A ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA
+Status: DO_WDROZENIA PO STAGE232A / PRIORYTET PRODUKTOWY P1
+
+Powód priorytetu:
+
+- Damian zgłosił podejrzenie, że zakładka `Dziś` pokazuje nielogiczne liczniki, np. kafelek `Co masz zrobić dzisiaj` ma 129 wpisów i wygląda, jakby lądowało tam wszystko.
+- Aktywna trasa `/` i `/today` używa `src/pages/TodayStable.tsx`, a nie legacy `src/pages/Today.tsx`.
+- `TodayStable` ma dobry kierunek owner-control, ale część nazw kafelków nie odpowiada dokładnie temu, co liczy kod.
+- Największy problem: kafelek `Co masz zrobić dzisiaj` liczy `ownerControlBaseline.items.length`, czyli pełną listę Owner Control: leady, sprawy, zadania i wydarzenia wymagające ruchu; to nie jest czyste `dzisiaj`.
+- To może obniżyć zaufanie użytkownika, bo ekran `Dziś` ma być centrum decyzji, a nie wysypiskiem wszystkich problemów.
+
+Cel:
+
+Ustawić produkcyjny kontrakt zakładki `Dziś` tak, żeby każdy kafelek odpowiadał na jedno jasne pytanie i liczył dokładnie tę samą kolekcję, którą pokazuje po kliknięciu.
+
+```txt
+Dziś = centrum decyzji operacyjnej właściciela.
+Kafelek = licznik konkretnej listy.
+Lista = jawne źródło danych i jawny filtr.
+Owner Control = portfel wymagający ruchu, nie zawsze tylko dzisiejszy termin.
+```
+
+Audyt faktycznego stanu:
+
+- Aktywny ekran: `src/pages/TodayStable.tsx`.
+- Legacy ekran: `src/pages/Today.tsx`; nie ruszać go w tym etapie poza guardem, który ma potwierdzić, że aktywna trasa nadal używa `TodayStable`.
+- Dane ładowane przez `loadStableTodayData()`:
+  - `fetchTasksFromSupabase()`,
+  - `fetchLeadsFromSupabase()`,
+  - `fetchEventsFromSupabase()`,
+  - `fetchCasesFromSupabase()`,
+  - `getAiLeadDraftsAsync()`.
+- Kafelki w `TodayStable`:
+  - `Leady bez najbliższej akcji` = `noActionLeads.length`,
+  - `Wysoka wartość / ryzyko` = `highValueAtRiskRows.length`,
+  - `Leady czekające` = `waitingLeadRows.length`,
+  - `Co masz zrobić dzisiaj` = `ownerControlBaseline.items.length`,
+  - `Zadania do wykonania dziś` = `operatorTasks.length`,
+  - `Wydarzenia dziś` = `todayEvents.length`,
+  - `Najbliższe 7 dni` = `upcomingRows.length`,
+  - `Szkice AI do sprawdzenia` = `pendingDrafts.length`.
+
+Werdykt audytu:
+
+- `Leady bez najbliższej akcji` jest logicznie sensowne, bo filtruje sygnał `Brak następnego kroku` z Owner Control.
+- `Wysoka wartość / ryzyko` jest częściowo sensowne, ale wymaga doprecyzowania, czy sama wysoka wartość wystarczy, czy musi być wysoka wartość + ryzyko/ruch.
+- `Leady czekające` jest sensowne, jeśli ustawienia `warningDays` są prawidłowe i liczone z realnej aktywności/contact truth.
+- `Co masz zrobić dzisiaj` jest źle nazwane albo źle podpięte. Obecnie to nie jest tylko `dzisiaj`, tylko cały `ownerControlBaseline.items`.
+- `Zadania do wykonania dziś` faktycznie obejmuje zadania zaległe i dzisiejsze, bo `operatorTasks` filtruje `dateKey <= todayKey`; nazwa może zostać, ale lepsza produkcyjnie to `Zadania zaległe i dziś` albo tytuł dynamiczny z istniejącej funkcji `getFb4TodayTasksSectionTitle`.
+- `Wydarzenia dziś` jest najczystsze, bo filtruje wydarzenia z datą równą `todayKey`.
+- `Najbliższe 7 dni` ucina listę do 10 rekordów przez `slice(0, 10)`, więc licznik pokazuje liczbę pokazanych rekordów, nie pełne obciążenie 7 dni. To trzeba jawnie oznaczyć albo zmienić na licznik pełny + lista top 10.
+- `Szkice AI do sprawdzenia` jest sensowne, bo liczy status `draft`.
+
+Kontrakt produkcyjny kafelków:
+
+1. `Leady bez najbliższej akcji`
+   - Źródło: `ownerControlBaseline.items` zawężone do `entityType=lead` i sygnału `Brak następnego kroku`.
+   - Nie liczyć spraw, zadań i wydarzeń.
+   - Klik pokazuje dokładnie tę samą kolekcję.
+
+2. `Wysoka wartość / ryzyko`
+   - Źródło: rekordy Owner Control z `valuePln >= threshold` oraz realnym ryzykiem: brak next step, zaległy ruch albo cisza.
+   - Nie liczyć samej wysokiej wartości, jeśli rekord ma bezpieczny następny ruch i świeżą aktywność.
+   - W opisie pokazać próg i powód.
+
+3. `Leady czekające`
+   - Źródło: leady z realną ciszą/contact truth >= `warningDays`.
+   - Nie liczyć tylko `updatedAt`, jeśli istnieje realny kontakt/aktywność.
+   - Nazwa alternatywna: `Cisza / czekają za długo`.
+
+4. `Co masz zrobić dzisiaj`
+   - Nie może liczyć pełnego `ownerControlBaseline.items.length`, jeśli zostaje taka nazwa.
+   - Dwa dopuszczalne kierunki:
+     - A: zmienić filtr na `ownerControlBaseline.items` tylko ze statusem `Dzisiaj` albo zaległe/dzisiaj, bez przyszłych planowanych rekordów,
+     - B: zmienić nazwę na `Wymaga ruchu` / `Do obsługi` i jawnie opisać, że to pełna lista owner-control, nie tylko dzisiejszy kalendarz.
+   - Rekomendacja: B jako R1, bo lepiej pasuje do produktu owner-control i nie ukrywa problemów tylko dlatego, że nie mają daty dzisiejszej.
+
+5. `Zadania do wykonania dziś`
+   - Źródło: `tasks` otwarte z datą `<= todayKey`.
+   - Nazwa powinna być dynamiczna: jeśli są zaległe, `Zaległe zadania` albo `Zadania do obsługi`.
+   - Klik pokazuje wyłącznie te zadania, nie całą listę tasks.
+
+6. `Wydarzenia dziś`
+   - Źródło: `events` otwarte z datą `== todayKey`.
+   - Klik pokazuje dokładnie dzisiejsze wydarzenia.
+
+7. `Najbliższe 7 dni`
+   - Źródło: przyszłe tasks/events/leads z datą `> todayKey && <= todayKey+7`.
+   - Licznik powinien oznaczać pełną liczbę rekordów w 7 dni albo kafelek powinien mówić `Najbliższe 10 z 7 dni`.
+   - Rekomendacja: liczyć pełny zbiór, a listę nadal ograniczyć do top 10 z opisem `pokazano 10 z X`.
+
+8. `Szkice AI do sprawdzenia`
+   - Źródło: `drafts.status === draft`.
+   - Finalny zapis nadal tylko w centrum szkiców, nie w Dziś.
+
+Minimalny zakres wdrożenia R1:
+
+1. Dodać w `TodayStable.tsx` jawne selektory/zmienne dla każdej kolekcji kafelka, np. `todayDueOwnerItems`, `ownerControlActionItems`, `upcomingRowsAll`, `upcomingRowsPreview`.
+2. Zmienić nazwę kafelka `Co masz zrobić dzisiaj` na produkcyjnie prawdziwą nazwę, rekomendowane: `Wymaga ruchu` albo `Do obsługi`.
+3. Jeżeli nazwa zostaje `Co masz zrobić dzisiaj`, zmienić źródło na tylko dzisiejsze/zaległe rekordy Owner Control.
+4. Ujednolicić licznik kafelka z listą po kliknięciu: tile count === section count === liczba renderowanych rekordów albo jawnie oznaczony preview/full count.
+5. Dodać helper copy przy głównej liście owner-control: `To nie jest kalendarz. To lista tematów, które wymagają decyzji/ruchu.`
+6. Naprawić `Najbliższe 7 dni`: licznik pełny, lista preview top 10, tekst `pokazano 10 z X`, jeśli X > 10.
+7. Upewnić się, że click kafelka otwiera dokładnie tę sekcję i nie tworzy scroll trap/reorder DOM.
+8. Nie ruszać runtime starego `Today.tsx` poza ewentualnym guardem, że nie jest aktywną trasą.
+
+Czego nie ruszać w R1:
+
+- SQL/Supabase schema,
+- płatności,
+- Google Calendar sync,
+- LeadDetail / STAGE232A,
+- CaseDetail,
+- pełny refactor Owner Control,
+- legacy `src/pages/Today.tsx`,
+- global layout aplikacji.
+
+Guardy/testy wymagane:
+
+- `node scripts/check-stage232b-today-owner-control-tiles.cjs`,
+- `node --test tests/stage232b-today-owner-control-tiles.test.cjs`,
+- `npm run build`,
+- `npm run verify:closeflow:quiet` albo jawny SKIP z powodem, jeśli globalny gate blokują historyczne niezwiązane guardy,
+- `git diff --check`.
+
+Guard ma sprawdzić minimum:
+
+- `src/App.tsx` nadal routuje `Today` z `./pages/TodayStable`,
+- `src/pages/Today.tsx` ma marker legacy/inactive i nie jest aktywną trasą,
+- każdy kafelek w `todayTiles` ma osobną, nazwaną kolekcję źródłową,
+- kafelek `Co masz zrobić dzisiaj` nie może bez opisu liczyć `ownerControlBaseline.items.length`,
+- jeśli używamy `upcomingRows.slice(0, 10)`, musi istnieć pełny count i tekst preview,
+- tile count i section header count muszą korzystać z tej samej kolekcji albo jawnie opisanej pary `full/preview`.
+
+Test ręczny Damiana:
+
+1. Wejdź w `/today` albo ekran `Dziś`.
+2. Sprawdź kafelek głównej listy owner-control:
+   - jeśli nazywa się `Wymaga ruchu` / `Do obsługi`, liczba może być większa niż same zadania na dziś,
+   - jeśli nazywa się `Co masz zrobić dzisiaj`, liczba nie może obejmować wszystkich problemów bez daty dzisiejszej.
+3. Kliknij każdy kafelek i sprawdź, że otwiera właściwą sekcję:
+   - Leady bez najbliższej akcji,
+   - Wysoka wartość / ryzyko,
+   - Leady czekające,
+   - Wymaga ruchu / Do obsługi,
+   - Zadania,
+   - Wydarzenia,
+   - Najbliższe 7 dni,
+   - Szkice AI.
+4. Porównaj licznik kafelka z licznikiem nagłówka sekcji.
+5. Sprawdź `Najbliższe 7 dni`: jeśli jest więcej niż 10 rekordów, UI ma jasno powiedzieć, że pokazuje preview.
+6. Oznacz zadanie jako zrobione i potwierdź, że znika z aktywnej listy po refreshu.
+7. Przeładuj stronę i potwierdź, że stan się nie rozjeżdża.
+
+Warunek zamknięcia:
+
+- żaden kafelek nie udaje innej listy niż liczy,
+- `Co masz zrobić dzisiaj` nie pokazuje pełnego owner-control bez prawdziwej nazwy/opisu,
+- licznik kafelka i lista są zgodne,
+- `Najbliższe 7 dni` ma pełny count albo jawny preview count,
+- aktywna trasa nadal używa `TodayStable`,
+- guardy i build są zielone,
+- `_project`, changelog, test history, ryzyka i Obsidian payload są zaktualizowane.
+
+Run decision do utworzenia: `_project/runs/STAGE232B_TODAY_OWNER_CONTROL_TILE_SOURCE_OF_TRUTH.md`
+
+---
+
+### 3. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
+
+Status: PO STAGE232A/STAGE232B ALBO WCZEŚNIEJ, JEŚLI DYKTOWANIE SPRAW BLOKUJE TESTY UŻYTKOWNIKA
 
 Cel: przywrócić realne dyktowanie notatki w CaseDetail.
 
@@ -218,140 +387,3 @@ Nie ruszać:
 - global layout.
 
 Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md`
-Właściwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.md`
-
----
-
-### 3. STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING
-
-Status: PO R1D2
-
-Cel: dodać lekką akcję oznaczania kosztu jako zwrócony / częściowo zwrócony bez tworzenia dużego nowego menu.
-
-Kontrakt UX:
-
-- akcja przy konkretnym koszcie, np. `Oznacz zwrot`,
-- domyślna kwota = pozostało do zwrotu,
-- obsługa pełnego i częściowego zwrotu,
-- data zwrotu domyślnie dziś,
-- notatka opcjonalna,
-- zapis aktualizuje `reimbursedAmount`, `reimbursedAt`, status `partially_reimbursed` / `reimbursed`,
-- summary aktualizuje `Koszty zwrócone`, `Koszty do zwrotu`, `Razem do pobrania`.
-
-Nie ruszać:
-
-- SQL bez wcześniejszego schema check,
-- Google Calendar,
-- AI Drafts,
-- global finance rewrite.
-
-Run decision/payload: `_project/obsidian_updates/2026-06-14_STAGE231H_R1E_CASE_DETAIL_REIMBURSED_COST_MARKING.md`
-
----
-
-### 4. STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT
-
-Status: PO R1E ALBO WCZEŚNIEJ, JEŚLI SZKICE BLOKUJĄ PRACĘ
-
-Cel: rozdzielić `Szybki szkic` od `Szkicu AI`.
-
-Decyzja produktu:
-
-- `Szybki szkic` = zwykła notatka/raw capture, wpisana albo dyktowana, zapis bez AI i bez `fullAi`,
-- `Szkic AI` = osobna funkcja AI, która analizuje tekst i proponuje akcję do zatwierdzenia,
-- użytkownik nie może dostawać `WORKSPACE_AI_ACCESS_REQUIRED` przy zwykłym szybkim szkicu,
-- surowy tekst typu `Dzwonił Piotrek, jutro kontakt w sprawie umowy` ma zostać zapisany jako notatka/szkic,
-- dopiero funkcja AI może zaproponować task/follow-up/lead/event do zatwierdzenia.
-
-Miejsca do audytu:
-
-- `/ai-drafts`,
-- Today,
-- LeadDetail,
-- ClientDetail,
-- CaseDetail,
-- shared quick actions,
-- backend `/api/system?kind=ai-drafts`.
-
-Run decision: `_project/runs/STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT.md`
-
----
-
-### 5. STAGE231F_R2_GOOGLE_CALENDAR_MULTI_USER_OWNERSHIP_AND_SYNC_CLOSEOUT
-
-Status: PO UI/DETAIL CLOSEOUT I PO PILNYCH SZKICACH
-
-Cel: naprawić i potwierdzić Google Calendar dla wielu użytkowników.
-
-Problem:
-
-- backend jest częściowo user-scoped,
-- ale task/event create może nadal nie nadawać ownership fields,
-- outbound sync może pomijać rekordy przez `personalScopeSkipped`,
-- trzeba potwierdzić działanie na drugim koncie, nie tylko Damiana.
-
-Zakres:
-
-- `google_calendar_connections` per user,
-- task/event ownership fields,
-- outbound sync bez fallbacku do konta Damiana,
-- UI Settings pokazuje connected/user_not_connected/skipped/created/failed,
-- manualny test drugiego konta.
-
-Run decision: `_project/runs/2026-06-14_STAGE_ORDER_UI_THEN_GOOGLE_CALENDAR_AUDIT.md`
-
----
-
-### 6. STAGE231K1_DOMAIN_AND_EMAIL_FOUNDATION
-
-Status: PO GOOGLE CALENDAR ALBO WCZEŚNIEJ, JEŚLI PRODUKCJA MAILI BLOKUJE RELEASE
-
-Cel: założyć/podpiąć domenę i realny fundament maila.
-
-Zakres:
-
-- domena produkcyjna,
-- DNS,
-- realny sender / dostawca maila,
-- SPF / DKIM / DMARC / MX,
-- env i diagnostyka konfiguracji,
-- test wysyłki,
-- brak silent fail.
-
-Run decision: `_project/runs/STAGE231K_EMAIL_DOMAIN_AND_PRODUCTION_MAIL_CHAIN.md`
-
----
-
-### 7. STAGE231K2_TRANSACTIONAL_EMAIL_TEMPLATES_AND_AUTH_NOTIFICATIONS
-
-Status: PO K1
-
-Cel: wdrożyć maile systemowe.
-
-Zakres:
-
-- reset hasła,
-- potwierdzenie zmiany maila,
-- potwierdzenie rejestracji,
-- potwierdzenie płatności,
-- błąd/status płatności,
-- podstawowe powiadomienia systemowe,
-- log/outbox i test renderu.
-
----
-
-### 8. STAGE231K3_OWNER_DIGEST_EMAILS_DAILY_AND_WEEKLY
-
-Status: PO K2
-
-Cel: poranny digest i tygodniowe podsumowanie na e-mail.
-
-Zakres:
-
-- daily digest jako lista decyzji i ryzyk,
-- weekly report jako podsumowanie tygodnia,
-- brak newsletterowego lania wody,
-- brak wysyłki bez realnego mail foundation,
-- guard przed duplikatami.
-
----
