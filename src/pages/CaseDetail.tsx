@@ -119,6 +119,10 @@ import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from
 
 // STAGE231H_R1D2_R12G_CASE_DETAIL_QUICK_NOTE_LOCAL_APPEND
 
+const STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE = 'CaseDetail deletes linked note follow-up and expands notes panel to ten rows';
+void STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE;
+const CASE_NOTE_PANEL_PREVIEW_LIMIT_STAGE231H_R1D2_R14F = 10;
+
 const STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS = 'case-detail write gate static contracts active imports';
 void STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS;
 
@@ -2801,18 +2805,111 @@ export default function CaseDetail() {
     }
   }
 
-  async function handleDeleteCaseNoteStage231H_R1D2_R6(activity: CaseActivity) {
+  function getLinkedCaseNoteFollowUpsStage231H_R1D2_R14F(activity: CaseActivity) {
+    const noteIdStage231H_R1D2_R14F = getCaseNoteIdStage231H_R1D2_R6(activity);
+    const noteTextStage231H_R1D2_R14F = normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(activity));
+    const currentCaseIdStage231H_R1D2_R14F = String(caseId || '').trim();
+
+    return tasks.filter((task) => {
+      const normalizedTaskStage231H_R1D2_R14F = normalizeWorkItem(task) as any;
+      const payloadStage231H_R1D2_R14F = ((task as any).payload && typeof (task as any).payload === 'object')
+        ? ((task as any).payload as Record<string, any>)
+        : {};
+      const taskCaseIdStage231H_R1D2_R14F = String(
+        normalizedTaskStage231H_R1D2_R14F.caseId ||
+        (task as any).caseId ||
+        payloadStage231H_R1D2_R14F.caseId ||
+        ''
+      ).trim();
+      const taskNoteIdStage231H_R1D2_R14F = String(
+        payloadStage231H_R1D2_R14F.sourceNoteId ||
+        payloadStage231H_R1D2_R14F.noteId ||
+        (task as any).sourceNoteId ||
+        (task as any).noteId ||
+        ''
+      ).trim();
+      const taskPreviewStage231H_R1D2_R14F = normalizeCaseNotePreviewStage231H_R1D2_R11(
+        (task as any).notePreview ||
+        (task as any).note_preview ||
+        (task as any).description ||
+        payloadStage231H_R1D2_R14F.notePreview ||
+        payloadStage231H_R1D2_R14F.note_preview ||
+        payloadStage231H_R1D2_R14F.description ||
+        payloadStage231H_R1D2_R14F.note ||
+        payloadStage231H_R1D2_R14F.content
+      );
+      const taskKindStage231H_R1D2_R14F = String(payloadStage231H_R1D2_R14F.kind || '').trim().toLowerCase();
+
+      if (!isTaskNoteFollowUpStage231H_R1D2_R11(task)) return false;
+      if (!currentCaseIdStage231H_R1D2_R14F || taskCaseIdStage231H_R1D2_R14F !== currentCaseIdStage231H_R1D2_R14F) return false;
+      if (noteIdStage231H_R1D2_R14F && taskNoteIdStage231H_R1D2_R14F && taskNoteIdStage231H_R1D2_R14F === noteIdStage231H_R1D2_R14F) return true;
+
+      return taskKindStage231H_R1D2_R14F === 'case_note_follow_up' &&
+        Boolean(taskPreviewStage231H_R1D2_R14F && noteTextStage231H_R1D2_R14F && taskPreviewStage231H_R1D2_R14F === noteTextStage231H_R1D2_R14F);
+    });
+  }
+
+          async function handleDeleteCaseNoteStage231H_R1D2_R6(activity: CaseActivity) {
     const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
     if (!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6) return;
     if (!guardCaseDetailWriteAccess('usunąć notatki')) return;
-    const confirmed = window.confirm('Usunąć tę notatkę? Powiązany follow-up zostaje jako osobne zadanie, jeśli został utworzony.');
-    if (!confirmed) return;
+
+    const linkedFollowUpsStage231H_R1D2_R14F = getLinkedCaseNoteFollowUpsStage231H_R1D2_R14F(activity);
+    let deleteLinkedFollowUpsStage231H_R1D2_R14F = false;
+
+    if (linkedFollowUpsStage231H_R1D2_R14F.length > 0) {
+      const firstFollowUpStage231H_R1D2_R14F = linkedFollowUpsStage231H_R1D2_R14F[0];
+      const followUpDateStage231H_R1D2_R14F = formatDateTime(
+        getTaskMainDate(firstFollowUpStage231H_R1D2_R14F) ||
+        firstFollowUpStage231H_R1D2_R14F.reminderAt ||
+        firstFollowUpStage231H_R1D2_R14F.dueAt ||
+        firstFollowUpStage231H_R1D2_R14F.date,
+        'Bez terminu'
+      );
+      const deleteWithFollowUpLabelStage231H_R1D2_R14F = 'Usuń notatkę i follow-up';
+      const deleteOnlyNoteLabelStage231H_R1D2_R14F = 'Usuń tylko notatkę';
+      const shouldDeleteLinkedStage231H_R1D2_R14F = window.confirm(
+        'Ta notatka ma przypięty follow-up: „Follow-up po notatce” — ' +
+        followUpDateStage231H_R1D2_R14F +
+        '.\n\nOK: ' + deleteWithFollowUpLabelStage231H_R1D2_R14F +
+        '\nAnuluj: wybierz, czy usunąć tylko notatkę.'
+      );
+
+      if (shouldDeleteLinkedStage231H_R1D2_R14F) {
+        deleteLinkedFollowUpsStage231H_R1D2_R14F = true;
+      } else {
+        const shouldDeleteOnlyNoteStage231H_R1D2_R14F = window.confirm(deleteOnlyNoteLabelStage231H_R1D2_R14F + ' i zostawić follow-up w działaniach?');
+        if (!shouldDeleteOnlyNoteStage231H_R1D2_R14F) return;
+      }
+    } else {
+      const confirmed = window.confirm('Usunąć tę notatkę?');
+      if (!confirmed) return;
+    }
+
     try {
       setCaseNoteDeleteSubmittingIdStage231H_R1D2_R6(noteId);
+
+      if (deleteLinkedFollowUpsStage231H_R1D2_R14F) {
+        for (const followUpStage231H_R1D2_R14F of linkedFollowUpsStage231H_R1D2_R14F) {
+          const taskIdStage231H_R1D2_R14F = String((followUpStage231H_R1D2_R14F as any).id || '').trim();
+          if (taskIdStage231H_R1D2_R14F) await deleteTaskFromSupabase(taskIdStage231H_R1D2_R14F);
+        }
+      }
+
       await deleteActivityFromSupabase(noteId);
       setActivities((current) => current.filter((item) => getCaseNoteIdStage231H_R1D2_R6(item) !== noteId));
+
+      if (deleteLinkedFollowUpsStage231H_R1D2_R14F) {
+        const deletedTaskIdsStage231H_R1D2_R14F = new Set(
+          linkedFollowUpsStage231H_R1D2_R14F
+            .map((task) => String((task as any).id || '').trim())
+            .filter(Boolean)
+        );
+        setTasks((current) => current.filter((task) => !deletedTaskIdsStage231H_R1D2_R14F.has(String((task as any).id || '').trim())));
+      }
+
       await refreshCaseData();
-      toast.success('Notatka usunięta');
+      toast.success(deleteLinkedFollowUpsStage231H_R1D2_R14F ? 'Usunięto notatkę i powiązany follow-up.' : (linkedFollowUpsStage231H_R1D2_R14F.length > 0 ? 'Usunięto notatkę. Follow-up został w działaniach.' : 'Notatka usunięta'));
     } catch (error: any) {
       toast.error('Nie udało się usunąć notatki: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
@@ -2820,13 +2917,12 @@ export default function CaseDetail() {
     }
   }
 
-
-  const closeNoteFollowUpPrompt = () => {
+const closeNoteFollowUpPrompt = () => {
     setPendingNoteFollowUp(null);
     setCustomNoteFollowUpAt('');
   };
 
-  const handleCreateCaseNoteFollowUp = async (choice: CaseNoteFollowUpChoice) => {
+          const handleCreateCaseNoteFollowUp = async (choice: CaseNoteFollowUpChoice) => {
     if (!guardCaseDetailWriteAccess('dodać follow-upu po notatce')) return;
     if (!caseId || !pendingNoteFollowUp) return;
     const scheduledAt = buildCaseNoteFollowUpIso(choice, customNoteFollowUpAt);
@@ -2835,6 +2931,12 @@ export default function CaseDetail() {
       return;
     }
     const notePreviewStage231H_R1D2_R10C = String(pendingNoteFollowUp.note || '').replace(/\s+/g, ' ').trim();
+    const noteIdStage231H_R1D2_R14F = String(
+      (pendingNoteFollowUp as any).id ||
+      (pendingNoteFollowUp as any).noteId ||
+      (pendingNoteFollowUp as any).sourceNoteId ||
+      ''
+    ).trim();
     const title = 'Follow-up po notatce';
     const taskInput = {
       title,
@@ -2851,7 +2953,13 @@ export default function CaseDetail() {
       workspaceId: workspaceIdStage231H_R1D2_R6 || undefined,
       notePreview: notePreviewStage231H_R1D2_R10C,
       description: notePreviewStage231H_R1D2_R10C,
-      payload: { kind: 'case_note_follow_up', notePreview: notePreviewStage231H_R1D2_R10C },
+      payload: {
+        kind: 'case_note_follow_up',
+        noteId: noteIdStage231H_R1D2_R14F || null,
+        sourceNoteId: noteIdStage231H_R1D2_R14F || null,
+        notePreview: notePreviewStage231H_R1D2_R10C,
+        caseId,
+      },
     };
     try {
       setIsCreatingNoteFollowUp(true);
@@ -2871,6 +2979,8 @@ export default function CaseDetail() {
         date: buildDateOnlyFromIso(scheduledAt),
         taskId: String((created as any)?.id || ''),
         taskSource: 'tasks',
+        noteId: noteIdStage231H_R1D2_R14F || null,
+        sourceNoteId: noteIdStage231H_R1D2_R14F || null,
         noteSource: 'activities',
         source: STAGE231H_R1D2_R6_CASE_NOTE_FOLLOWUP_SOURCE_MAP_AND_NOTES_CRUD,
         choice: getCaseNoteFollowUpChoiceLabel(choice),
@@ -3676,8 +3786,8 @@ async function handleConfirmDeleteCaseRecord() {
               {caseNoteItems.length === 0 ? (
                 <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.</div>
               ) : (
-                <div className="stage217-case-notes-list">
-                  {caseNoteItems.slice(0, 5).map((note) => (
+                <div className="stage217-case-notes-list stage231h-r1d2-r14f-expanded-notes-panel" data-stage231h-r1d2-r14f-expanded-notes-panel="true" style={{ maxHeight: "520px", overflowY: "auto" }}>
+                  {caseNoteItems.slice(0, CASE_NOTE_PANEL_PREVIEW_LIMIT_STAGE231H_R1D2_R14F).map((note) => (
                     <article className="stage217-case-note-row" key={note.id}>
                       <span className="stage217-case-note-row__icon"><MessageSquare className="h-4 w-4" /></span>
                       <div>

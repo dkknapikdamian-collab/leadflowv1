@@ -1,4 +1,4 @@
-const fs = require('fs');
+﻿const fs = require('fs');
 const path = require('path');
 
 function read(rel) {
@@ -19,7 +19,7 @@ const noteDialogText = read('src/components/ContextNoteDialog.tsx');
 
 requireIncludes(caseText, stage, 'R11 CaseDetail stage marker');
 requireIncludes(caseText, 'data-case-notes-preview-limit="5"', 'notes panel preview limit 5');
-requireIncludes(caseText, 'caseNoteItems.slice(0, 5)', 'notes panel renders five latest notes');
+requireIncludes(caseText, 'caseNoteItems.slice(0, CASE_NOTES_PANEL_PREVIEW_LIMIT_STAGE231H_R14F)', 'notes panel renders latest notes preview');
 requireIncludes(caseText, '<p title={note.body}>{note.body}</p>', 'note row full text hover title');
 requireIncludes(caseText, 'setPendingNoteFollowUp({ note: savedNotePreviewStage231H_R1D2_R11', 'quick/shared note opens same follow-up prompt');
 requireIncludes(caseText, 'notePreview: notePreviewStage231H_R1D2_R10C', 'follow-up task carries note preview');
@@ -28,8 +28,8 @@ requireIncludes(caseText, "payload: { kind: 'case_note_follow_up', notePreview: 
 requireIncludes(caseText, 'getTaskNoteFollowUpPreviewStage231H_R1D2_R11', 'task note follow-up preview helper');
 requireIncludes(caseText, 'noteFollowUpPreviewByTaskStage231H_R1D2_R11', 'activity-to-task preview source map');
 requireIncludes(caseText, 'openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11', 'open tasks enriched before work item build');
-requireIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka Â· follow-up przypiÄ™ty do sprawy')", 'work item subtitle uses note preview fallback');
-requireNotIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Notatka Â· follow-up przypiÄ™ty do sprawy'", 'old static follow-up subtitle');
+requireIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka Ă‚Â· follow-up przypiĂ„â„˘ty do sprawy')", 'work item subtitle uses note preview fallback');
+requireNotIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Notatka Ă‚Â· follow-up przypiĂ„â„˘ty do sprawy'", 'old static follow-up subtitle');
 
 requireIncludes(noteDialogText, 'STAGE231H_R1D2_R11_CONTEXT_NOTE_FOLLOWUP_HANDOFF', 'ContextNoteDialog R11 handoff marker');
 requireIncludes(noteDialogText, 'onSaved?: (savedRecord?: unknown) => void | Promise<void>', 'ContextNoteDialog passes saved record contract');
@@ -49,3 +49,4 @@ for (const rel of [
 }
 
 console.log('STAGE231H_R1D2_R11 PASS: note panel, quick-note follow-up prompt and note preview mapping are guarded.');
+

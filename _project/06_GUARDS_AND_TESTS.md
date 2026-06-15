@@ -4254,3 +4254,10 @@ Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9E/R9F: runti
 - guard: scripts/check-stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.cjs
 - test: tests/stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.test.cjs
 - SQL: nie dotyczy
+
+## STAGE231H_R1D2_R14F_NOTE_DELETE_LINKED_FOLLOWUP_EXPANDED_PANEL_ARROW_SAFE
+
+- Data: 2026-06-15T11:25:01.568Z
+- Typ: CaseDetail notes panel / linked follow-up delete / guard
+- Zakres: CaseDetail notatki sprawy, follow-up po notatce, kasowanie powiązanego taska.
+- Status: LOCAL_APPLIED_PENDING_VERIFY
