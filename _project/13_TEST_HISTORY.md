@@ -1650,7 +1650,7 @@ NASTEPNY KROK:
 
 ## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikał po kliknięciu Usuń, ale wracażâ€š po hard refresh.
+- problem: Brak znikał po kliknięciu Usuń, ale wracał po hard refresh.
 - decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
 - dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
 - testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
@@ -3733,6 +3733,13 @@ Testy:
 - git diff --check
 
 ## STAGE_PROJECT_DOCS_ENCODING_REPAIR_005_REMAINING_TOKENS - 2026-06-15 20:30 Europe/Warsaw
+
+Testy:
+- node scripts/check-closeflow-branch-scope.cjs
+- node scripts/check-closeflow-project-docs-encoding.cjs
+- git diff --check
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_006_FINAL_TOKENS - 2026-06-15 20:40 Europe/Warsaw
 
 Testy:
 - node scripts/check-closeflow-branch-scope.cjs

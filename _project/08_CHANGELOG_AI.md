@@ -2141,7 +2141,7 @@ Przebudowano `/funnel` z przeładowanego kanbana na czytelny widok decyzyjny: ka
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_START -->
 ## 2026-06-06 17:05 Europe/Warsaw — STAGE228A — funnel truth + clickability
 
-Poprawiono `/funnel`: domyślnie pokazuje wszystkie rekordy, kafle właścicielskie i etapy nie nakładają się na siebie w sposób ukrywający źródła kwot, a karty pokazują źródło wartożâ€şci/prowizji.
+Poprawiono `/funnel`: domyślnie pokazuje wszystkie rekordy, kafle właścicielskie i etapy nie nakładają się na siebie w sposób ukrywający źródła kwot, a karty pokazują źródło wartości/prowizji.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_END -->
 
 ## 2026-06-06 18:00 Europe/Warsaw — STAGE228B Lead Work Action Center
@@ -2296,7 +2296,7 @@ NASTEPNY KROK:
 
 ## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikał po kliknięciu Usuń, ale wracażâ€š po hard refresh.
+- problem: Brak znikał po kliknięciu Usuń, ale wracał po hard refresh.
 - decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
 - dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
 - testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
@@ -4292,3 +4292,7 @@ Zakres: naprawa klasy błędu guardów R9E/R9F: runtime poprawnie dopina nowy fo
 ## STAGE_PROJECT_DOCS_ENCODING_REPAIR_005_REMAINING_TOKENS - 2026-06-15 20:30 Europe/Warsaw
 
 Naprawiono pozostałe tokeny mojibake w centralnych plikach _project. Runtime i main nie były ruszane.
+
+## STAGE_PROJECT_DOCS_ENCODING_REPAIR_006_FINAL_TOKENS - 2026-06-15 20:40 Europe/Warsaw
+
+Usunięto ostatnie tokeny mojibake z centralnych dokumentów _project. Runtime i main nie były ruszane.
