@@ -117,6 +117,8 @@ import { getCloseFlowActionKindClass, getCloseFlowActionVisualClass, getCloseFlo
 import { buildCaseFinancePatch, getCaseFinanceSummary as getCaseFinanceSourceSummary } from '../lib/finance/case-finance-source';
 import { CASE_COST_FINANCE_LABELS, getCaseCostsSummary, type CaseCostLike } from '../lib/finance/case-costs-source';
 
+// STAGE231H_R1D2_R12G_CASE_DETAIL_QUICK_NOTE_LOCAL_APPEND
+
 const STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS = 'case-detail write gate static contracts active imports';
 void STAGE16O_CASE_DETAIL_WRITE_GATE_STATIC_CONTRACTS;
 
@@ -153,7 +155,7 @@ void STAGE220A13_FINANCE_SCOPE_SOURCE_TRUTH;
 const FIN11_CASE_PORTAL_ACTION_GUARD_COMPAT = 'Portal klienta';
 const STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX = 'case detail operation workspace separates notes from activity history';
 void STAGE217_CASE_DETAIL_OPERATION_WORKSPACE_UX;
-const STAGE217_CASE_NOTE_HISTORY_SUMMARY = "Notatka zapisana przy sprawie. Pełna treść jest w panelu Notatki.";
+const STAGE217_CASE_NOTE_HISTORY_SUMMARY = "Notatka zapisana przy sprawie. PeĹ‚na treĹ›Ä‡ jest w panelu Notatki.";
 void STAGE217_CASE_NOTE_HISTORY_SUMMARY;
 const STAGE219_R4_CONTEXT_NOTE_REFRESH = 'case detail refreshes after shared note saved';
 void STAGE219_R4_CONTEXT_NOTE_REFRESH;
@@ -414,14 +416,14 @@ const CASE_STATUS_LABELS: Record<string, string> = {
 };
 
 const CASE_STATUS_HINTS: Record<string, string> = {
-  new: 'Dodaj pierwszy brak albo zaplanuj pierwszą akcję.',
+  new: 'Dodaj pierwszy brak albo zaplanuj pierwszÄ… akcjÄ™.',
   waiting_on_client: 'Czekamy na klienta. Najpierw zdejmij braki po jego stronie.',
-  in_progress: 'Sprawa jest w pracy. Pilnuj najbliższej akcji i terminów.',
-  to_approve: 'Klient coś przesłał. Sprawdź i zaakceptuj albo odrzuć.',
-  blocked: 'Sprawa stoi. Usuń blokery zanim przejdziesz dalej.',
+  in_progress: 'Sprawa jest w pracy. Pilnuj najbliĹĽszej akcji i terminĂłw.',
+  to_approve: 'Klient coĹ› przesĹ‚aĹ‚. SprawdĹş i zaakceptuj albo odrzuÄ‡.',
+  blocked: 'Sprawa stoi. UsuĹ„ blokery zanim przejdziesz dalej.',
   ready_to_start: 'Sprawa jest gotowa do dalszej pracy operacyjnej.',
-  completed: 'Sprawa zrobiona. Historia zostaje jako ślad pracy.',
-  canceled: 'Sprawa została anulowana.',
+  completed: 'Sprawa zrobiona. Historia zostaje jako Ĺ›lad pracy.',
+  canceled: 'Sprawa zostaĹ‚a anulowana.',
 };
 
 const ITEM_STATUS_LABELS: Record<string, string> = {
@@ -429,7 +431,7 @@ const ITEM_STATUS_LABELS: Record<string, string> = {
   uploaded: 'Do akceptacji',
   accepted: 'Zaakceptowane',
   rejected: 'Odrzucone',
-  sent: 'Wysłane',
+  sent: 'WysĹ‚ane',
 };
 
 const ITEM_TYPE_LABELS: Record<string, string> = {
@@ -498,16 +500,16 @@ function isPaidPaymentStatus(status: unknown) {
 function billingStatusLabel(status?: string) {
   switch (String(status || '').toLowerCase()) {
     case 'deposit_paid':
-      return 'Zaliczka wpłacona';
+      return 'Zaliczka wpĹ‚acona';
     case 'partially_paid':
-      return 'Częściowo opłacone';
+      return 'CzÄ™Ĺ›ciowo opĹ‚acone';
     case 'fully_paid':
     case 'paid':
-      return 'Opłacone';
+      return 'OpĹ‚acone';
     case 'awaiting_payment':
-      return 'Czeka na płatność';
+      return 'Czeka na pĹ‚atnoĹ›Ä‡';
     case 'not_started':
-      return 'Brak wpłaty';
+      return 'Brak wpĹ‚aty';
     default:
       return status || 'Brak statusu';
   }
@@ -523,11 +525,11 @@ function getCasePaymentTypeStage220A27(payment: CasePaymentRecord) {
 }
 function getCasePaymentLabelStage220A27(payment: CasePaymentRecord) {
   const type = getCasePaymentTypeStage220A27(payment);
-  if (type === 'refund') return 'Korekta wpłaty';
-  if (type === 'commission') return 'Wpłata prowizji';
+  if (type === 'refund') return 'Korekta wpĹ‚aty';
+  if (type === 'commission') return 'WpĹ‚ata prowizji';
   if (type === 'deposit') return 'Zaliczka';
-  if (type === 'final') return 'Dopłata końcowa';
-  return 'Wpłata';
+  if (type === 'final') return 'DopĹ‚ata koĹ„cowa';
+  return 'WpĹ‚ata';
 }
 function getCasePaymentDateStage220A27(payment: CasePaymentRecord) {
   return payment.paidAt || payment.createdAt || payment.dueAt || null;
@@ -574,7 +576,7 @@ function getCaseCostDateStage231H_R1C(cost: CaseCostRecord | null | undefined) {
 function getCaseCostKindLabelStage231H_R1C(kind: unknown) {
   const value = String(kind || '').trim();
   const labels: Record<string, string> = {
-    court_fee: 'Opłata sądowa',
+    court_fee: 'OpĹ‚ata sÄ…dowa',
     notary: 'Notariusz',
     travel: 'Dojazd',
     document: 'Dokumenty',
@@ -590,8 +592,8 @@ function getCaseCostStatusLabelStage231H_R1C(status: unknown) {
     planned: 'Planowany',
     incurred: 'Poniesiony',
     submitted: 'Do zwrotu',
-    partially_reimbursed: 'Częściowo zwrócony',
-    reimbursed: 'Zwrócony',
+    partially_reimbursed: 'CzÄ™Ĺ›ciowo zwrĂłcony',
+    reimbursed: 'ZwrĂłcony',
     cancelled: 'Anulowany',
   };
   return labels[value] || value || 'Poniesiony';
@@ -654,12 +656,12 @@ function getCaseFinanceSummary(caseData: CaseRecord | null, payments: CasePaymen
   const progress = source.contractValue > 0 ? Math.min(100, Math.round((source.clientPaidAmount / source.contractValue) * 100)) : 0;
   const status =
     source.contractValue <= 0
-      ? 'Ustal wartość'
+      ? 'Ustal wartoĹ›Ä‡'
       : source.clientPaidAmount <= 0
-        ? 'Brak wpłaty'
+        ? 'Brak wpĹ‚aty'
         : source.remainingAmount <= 0
-          ? 'Opłacone'
-          : 'Częściowo opłacone';
+          ? 'OpĹ‚acone'
+          : 'CzÄ™Ĺ›ciowo opĹ‚acone';
   return {
     expected: source.contractValue,
     paid: source.clientPaidAmount,
@@ -813,11 +815,11 @@ function buildCaseNoteFollowUpIso(choice: CaseNoteFollowUpChoice, customValue?: 
   return buildQuickRescheduleIso(7, null, 9);
 }
 function getCaseNoteFollowUpChoiceLabel(choice: CaseNoteFollowUpChoice) {
-  if (choice === 'today') return 'Dziś';
+  if (choice === 'today') return 'DziĹ›';
   if (choice === 'tomorrow') return 'Jutro';
   if (choice === 'two_days') return 'Za 2 dni';
-  if (choice === 'week') return 'Za tydzień';
-  return 'Własny termin';
+  if (choice === 'week') return 'Za tydzieĹ„';
+  return 'WĹ‚asny termin';
 }
 function getEventDurationMs(event: EventRecord) {
   const start = toDate(event.startAt);
@@ -839,7 +841,7 @@ function normalizeCaseHeaderLabelStage220A3(value: unknown) {
 function normalizeCaseHeaderCompareStage220A3(value: unknown) {
   return normalizeCaseHeaderLabelStage220A3(value)
     .toLowerCase()
-    .replace(/[–—-]+/g, '-')
+    .replace(/[â€“â€”-]+/g, '-')
     .replace(/\s*-\s*/g, '-');
 }
 
@@ -869,7 +871,7 @@ function getCaseHeaderCaseLabel(caseData?: CaseRecord | null) {
   if (normalizedClient && normalizedTitle === normalizedClient) return 'Sprawa';
 
   if (normalizedClient && normalizedTitle.startsWith(normalizedClient + '-')) {
-    const clientPrefix = new RegExp('^' + escapeCaseHeaderRegExpStage220A3(client) + '\\s*[-–—:]\\s*', 'i');
+    const clientPrefix = new RegExp('^' + escapeCaseHeaderRegExpStage220A3(client) + '\\s*[-â€“â€”:]\\s*', 'i');
     const withoutClient = fallbackTitle.replace(clientPrefix, '').trim();
     return withoutClient || 'Sprawa';
   }
@@ -881,8 +883,8 @@ function getCaseStatusLabel(status?: string) {
   return CASE_STATUS_LABELS[status] || status;
 }
 function getCaseStatusHint(status?: string) {
-  if (!status) return 'Ustal status sprawy i najbliższy ruch.';
-  return CASE_STATUS_HINTS[status] || 'Sprawdź najbliższe działania i blokery.';
+  if (!status) return 'Ustal status sprawy i najbliĹĽszy ruch.';
+  return CASE_STATUS_HINTS[status] || 'SprawdĹş najbliĹĽsze dziaĹ‚ania i blokery.';
 }
 function getItemStatusLabel(status?: string) {
   if (!status) return 'Brak';
@@ -925,19 +927,19 @@ function getActivityText(activity: CaseActivity) {
   const title = activity.payload?.title || activity.payload?.itemTitle || 'element';
 
   if (activity.eventType === 'item_added') return `Dodano brak: ${title}`;
-  if (activity.eventType === 'status_changed') return `Zmieniono status „${title}” na: ${getItemStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'status_changed') return `Zmieniono status â€ž${title}â€ť na: ${getItemStatusLabel(activity.payload?.status)}`;
   if (activity.eventType === 'file_uploaded') return `Dodano plik: ${title}`;
-  if (activity.eventType === 'decision_made') return `Dodano decyzję: ${title}`;
-  if (activity.eventType === 'operator_note') return 'Dodano notatkę';
+  if (activity.eventType === 'decision_made') return `Dodano decyzjÄ™: ${title}`;
+  if (activity.eventType === 'operator_note') return 'Dodano notatkÄ™';
   if (activity.eventType === 'task_added') return `Dodano zadanie: ${title}`;
   if (activity.eventType === 'event_added') return `Dodano wydarzenie: ${title}`;
-  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania „${title}” na: ${getTaskStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia „${title}” na: ${getEventStatusLabel(activity.payload?.status)}`;
-  if (activity.eventType === 'task_rescheduled') return `Przełożono zadanie „${title}” na: ${formatDateTime(activity.payload?.scheduledAt)}`;
-  if (activity.eventType === 'event_rescheduled') return `Przełożono wydarzenie „${title}” na: ${formatDateTime(activity.payload?.startAt)}`;
-  if (activity.eventType === 'case_lifecycle_started') return 'Rozpoczęto realizację sprawy';
-  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawę jako zrobioną';
-  if (activity.eventType === 'case_lifecycle_reopened') return 'Przywrócono sprawę do pracy';
+  if (activity.eventType === 'task_status_changed') return `Zmieniono status zadania â€ž${title}â€ť na: ${getTaskStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'event_status_changed') return `Zmieniono status wydarzenia â€ž${title}â€ť na: ${getEventStatusLabel(activity.payload?.status)}`;
+  if (activity.eventType === 'task_rescheduled') return `PrzeĹ‚oĹĽono zadanie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.scheduledAt)}`;
+  if (activity.eventType === 'event_rescheduled') return `PrzeĹ‚oĹĽono wydarzenie â€ž${title}â€ť na: ${formatDateTime(activity.payload?.startAt)}`;
+  if (activity.eventType === 'case_lifecycle_started') return 'RozpoczÄ™to realizacjÄ™ sprawy';
+  if (activity.eventType === 'case_lifecycle_completed') return 'Oznaczono sprawÄ™ jako zrobionÄ…';
+  if (activity.eventType === 'case_lifecycle_reopened') return 'PrzywrĂłcono sprawÄ™ do pracy';
   return 'Dodano ruch w sprawie';
 }
 function getCaseNotePayloadStage231H_R1D2_R6(activity: CaseActivity | null | undefined) {
@@ -967,7 +969,7 @@ function asCaseHistoryTextStage14D(value: unknown) {
 }
 function isGenericCaseHistoryTextStage14D(value: string) {
   const normalized = String(value || '').trim().toLowerCase();
-  const blocked = ['notatka', 'historia sprawy', 'dodano ruch w sprawie', 'dodano notatkę'];
+  const blocked = ['notatka', 'historia sprawy', 'dodano ruch w sprawie', 'dodano notatkÄ™'];
   const blockedOperational = 'zapis operacyjny ' + 'sprawy';
   return !normalized || blocked.includes(normalized) || normalized === blockedOperational;
 }
@@ -1003,7 +1005,7 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
     const status = String(payload.status || payload.nextStatus || payload.toStatus || '').toLowerCase();
     const actionName = pickCaseHistoryActionNameStage220A17(payload, body);
     const isDone = lowerType.includes('done') || lowerType.includes('completed') || status.includes('done') || status.includes('completed');
-    const safeBody = actionName || (isDone ? 'Nazwa zadania niedostępna' : body);
+    const safeBody = actionName || (isDone ? 'Nazwa zadania niedostÄ™pna' : body);
     return safeBody ? { id: 'activity-' + id, kind: 'task', title: isDone ? 'Zadanie wykonane' : 'Zadanie', body: safeBody, occurredAt } : null;
   }
 
@@ -1012,7 +1014,7 @@ function getCaseActivityHistoryItemStage14D(activity: CaseActivity): CaseHistory
   }
 
   if (lowerType.includes('payment') || lowerType.includes('billing')) {
-    return body ? { id: 'activity-' + id, kind: 'payment', title: 'Wpłata', body, occurredAt } : null;
+    return body ? { id: 'activity-' + id, kind: 'payment', title: 'WpĹ‚ata', body, occurredAt } : null;
   }
 
   if (lowerType.includes('note') || lowerType === 'operator_note') {
@@ -1083,7 +1085,7 @@ function buildCaseHistoryItemsStage14D(input: {
     pushCaseHistoryItemStage14D(history, getCaseActivityHistoryItemStage14D(activity));
   }
   for (const task of input.tasks || []) {
-    const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytułu');
+    const body = pickCaseHistoryBodyStage14D(task.title, 'Zadanie bez tytuĹ‚u');
     const status = String(task.status || '').toLowerCase();
     const title = status === 'done' || status === 'completed' ? 'Zadanie wykonane' : 'Zadanie';
     pushCaseHistoryItemStage14D(history, {
@@ -1095,7 +1097,7 @@ function buildCaseHistoryItemsStage14D(input: {
     });
   }
   for (const event of input.events || []) {
-    const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytułu');
+    const body = pickCaseHistoryBodyStage14D(event.title, 'Wydarzenie bez tytuĹ‚u');
     pushCaseHistoryItemStage14D(history, {
       id: 'event-' + String(event.id || body),
       kind: 'event',
@@ -1108,11 +1110,11 @@ function buildCaseHistoryItemsStage14D(input: {
     const currency = typeof payment.currency === 'string' && payment.currency.trim() ? payment.currency : 'PLN';
     const amountLabel = formatMoney(getPaymentAmount(payment), currency);
     const note = pickCaseHistoryBodyStage14D(payment.note, billingStatusLabel(payment.status));
-    const body = note ? amountLabel + ' · ' + note : amountLabel;
+    const body = note ? amountLabel + ' Â· ' + note : amountLabel;
     pushCaseHistoryItemStage14D(history, {
       id: 'payment-' + String(payment.id || payment.paidAt || payment.createdAt || body),
       kind: 'payment',
-      title: 'Wpłata',
+      title: 'WpĹ‚ata',
       body,
       occurredAt: getCaseHistoryDateStage14D(payment.paidAt, payment.createdAt, payment.dueAt),
     });
@@ -1134,12 +1136,12 @@ function buildCaseHistoryItemsStage14D(input: {
 function formatCaseHistoryBodyStage220A11(item: CaseHistoryItem) {
   if (item.kind === 'note') return STAGE217_CASE_NOTE_HISTORY_SUMMARY;
   const raw = String(item.body || '').trim();
-  if (!raw) return item.kind === 'task' && item.title === 'Zadanie wykonane' ? 'Nazwa zadania niedostępna' : 'Bez szczegółów';
+  if (!raw) return item.kind === 'task' && item.title === 'Zadanie wykonane' ? 'Nazwa zadania niedostÄ™pna' : 'Bez szczegĂłĹ‚Ăłw';
   const compact = raw.replace(/\s+/g, ' ');
   const looksLikeJson = (compact.startsWith('{') && compact.endsWith('}')) || (compact.includes('\":') && compact.includes('{'));
-  if (looksLikeJson) return 'Zapis aktywności bez technicznych szczegółów.';
+  if (looksLikeJson) return 'Zapis aktywnoĹ›ci bez technicznych szczegĂłĹ‚Ăłw.';
   if (item.kind === 'task' && item.title === 'Zadanie wykonane' && isCaseHistoryBareStatusStage220A17(compact)) {
-    return 'Nazwa zadania niedostępna';
+    return 'Nazwa zadania niedostÄ™pna';
   }
   return compact.length > 220 ? compact.slice(0, 217).trimEnd() + '...' : compact;
 }
@@ -1165,7 +1167,7 @@ function getCaseRecentMoveMeta(activity: CaseActivity) {
   const eventType = String(activity.eventType || '');
   if (eventType.includes('task')) return { label: 'Zadanie', className: 'case-detail-recent-move-dot-task' };
   if (eventType.includes('event')) return { label: 'Wydarzenie', className: 'case-detail-recent-move-dot-event' };
-  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'Kompletność', className: 'case-detail-recent-move-dot-item' };
+  if (eventType.includes('item') || eventType.includes('file') || eventType.includes('decision')) return { label: 'KompletnoĹ›Ä‡', className: 'case-detail-recent-move-dot-item' };
   if (eventType.includes('status') || eventType.includes('lifecycle')) return { label: 'Status', className: 'case-detail-recent-move-dot-status' };
   if (eventType.includes('note')) return { label: 'Notatka', className: 'case-detail-recent-move-dot-note' };
   return { label: 'Ruch', className: 'case-detail-recent-move-dot-note' };
@@ -1348,8 +1350,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
     return {
       id: `task-${task.id}`,
       kind: 'task',
-      title: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.title || 'Zadanie bez tytułu'),
-      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka · follow-up przypięty do sprawy') : (task.type ? `Zadanie · ${task.type}` : 'Zadanie powiązane ze sprawą'),
+      title: isNoteFollowUpStage231H_R1D2_R10C ? 'Follow-up po notatce' : (task.title || 'Zadanie bez tytuĹ‚u'),
+      subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka Â· follow-up przypiÄ™ty do sprawy') : (task.type ? `Zadanie Â· ${task.type}` : 'Zadanie powiÄ…zane ze sprawÄ…'),
       status: getTaskStatusLabel(task.status),
       statusClass: getStatusClass(task.status),
       dateLabel: formatDateTime(getTaskMainDate(task) || task.reminderAt, 'Bez terminu'),
@@ -1361,8 +1363,8 @@ function buildWorkItems(tasks: TaskRecord[], events: EventRecord[], items: CaseI
   const eventItems: WorkItem[] = events.map((event) => ({
     id: `event-${event.id}`,
     kind: 'event',
-    title: event.title || 'Wydarzenie bez tytułu',
-    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiązane ze sprawą',
+    title: event.title || 'Wydarzenie bez tytuĹ‚u',
+    subtitle: event.endAt ? `Wydarzenie do ${formatDateTime(event.endAt)}` : 'Wydarzenie powiÄ…zane ze sprawÄ…',
     status: getEventStatusLabel(event.status),
     statusClass: getStatusClass(event.status),
     dateLabel: formatDateTime(getEventMainDate(event) || event.reminderAt, 'Bez terminu'),
@@ -1404,7 +1406,7 @@ const CASE_HISTORY_VISUAL_TAXONOMY_STAGE220A17 = {
   note: { label: 'Notatka', vstKind: 'note' },
   task: { label: 'Zadanie', vstKind: 'task' },
   event: { label: 'Wydarzenie', vstKind: 'event' },
-  payment: { label: 'Wpłata', vstKind: 'payment' },
+  payment: { label: 'WpĹ‚ata', vstKind: 'payment' },
   status: { label: 'Status', vstKind: 'status' },
   case: { label: 'Element sprawy', vstKind: 'case-item' },
 } as const;
@@ -1467,8 +1469,8 @@ function CaseDetailLoadingState() {
         <section className="case-detail-transition-loader" role="status" aria-live="polite">
           <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
           <div>
-            <p>Ładowanie sprawy...</p>
-            <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
+            <p>Ĺadowanie sprawy...</p>
+            <span>Przygotowujemy dane sprawy. Panele i akcje pojawiÄ… siÄ™ po zaĹ‚adowaniu rekordu.</span>
           </div>
         </section>
       </main>
@@ -1478,9 +1480,9 @@ function CaseDetailLoadingState() {
         onOpenChange={(open) => {
           if (!open && !deleteCasePending) setDeleteCaseOpen(false);
         }}
-        title="Awaryjnie usunąć sprawę?"
-        description={`Czy na pewno chcesz usunąć sprawę "${caseData?.title || caseData?.clientName || 'bez tytułu'}"? Tej operacji nie można cofnąć.`}
-        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuń'}
+        title="Awaryjnie usunÄ…Ä‡ sprawÄ™?"
+        description={`Czy na pewno chcesz usunÄ…Ä‡ sprawÄ™ "${caseData?.title || caseData?.clientName || 'bez tytuĹ‚u'}"? Tej operacji nie moĹĽna cofnÄ…Ä‡.`}
+        confirmLabel={deleteCasePending ? 'Usuwanie...' : 'Tak, usuĹ„'}
         cancelLabel="Nie"
         confirmTone="destructive"
         pending={deleteCasePending}
@@ -1553,7 +1555,7 @@ export default function CaseDetail() {
     setIsFinanceEditOpen(true);
     setDidAutoOpenCaseFinanceFromClientCreateStage228R5(true);
     window.history.replaceState(null, '', window.location.pathname);
-    toast.info('Uzupełnij finanse nowej sprawy.');
+    toast.info('UzupeĹ‚nij finanse nowej sprawy.');
   }, [caseData, casePayments, didAutoOpenCaseFinanceFromClientCreateStage228R5]);
 
   function openCaseFinancePaymentModal(type: 'partial' | 'commission') {
@@ -1603,9 +1605,9 @@ export default function CaseDetail() {
       setCaseData(nextCase);
       await reloadCaseFinanceData(nextCase);
       setIsFinanceEditOpen(false);
-      toast.success('Zapisano wartość i prowizję sprawy');
+      toast.success('Zapisano wartoĹ›Ä‡ i prowizjÄ™ sprawy');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać wartości i prowizji sprawy');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ zapisaÄ‡ wartoĹ›ci i prowizji sprawy');
     } finally {
       setIsFinanceSaving(false);
     }
@@ -1615,7 +1617,7 @@ export default function CaseDetail() {
     if (!caseData?.id || isFinanceSaving) return;
     const amount = fin11Amount(financePaymentForm.amount);
     if (amount <= 0) {
-      toast.error('Podaj kwotę płatności');
+      toast.error('Podaj kwotÄ™ pĹ‚atnoĹ›ci');
       return;
     }
     setIsFinanceSaving(true);
@@ -1634,15 +1636,15 @@ export default function CaseDetail() {
       });
       await reloadCaseFinanceData(caseData);
       setIsFinancePaymentOpen(false);
-      toast.success(financePaymentForm.type === 'commission' ? 'Dodano płatność prowizji' : 'Dodano wpłatę');
+      toast.success(financePaymentForm.type === 'commission' ? 'Dodano pĹ‚atnoĹ›Ä‡ prowizji' : 'Dodano wpĹ‚atÄ™');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się dodać płatności');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ dodaÄ‡ pĹ‚atnoĹ›ci');
     } finally {
       setIsFinanceSaving(false);
     }
   }
   function openPaymentCorrectionModalStage220A27(payment: CasePaymentRecord) {
-    if (!guardCaseDetailWriteAccess('skorygować wpłaty')) return;
+    if (!guardCaseDetailWriteAccess('skorygowaÄ‡ wpĹ‚aty')) return;
     const amount = getPaymentAmount(payment);
     setPaymentCorrectionTargetStage220A27(payment);
     setPaymentCorrectionFormStage220A27({
@@ -1658,10 +1660,10 @@ export default function CaseDetail() {
   }
 
   function openPaymentDeleteConfirmStage220A29(payment: CasePaymentRecord) {
-    if (!guardCaseDetailWriteAccess('usunąć wpłaty')) return;
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ wpĹ‚aty')) return;
     const paymentId = String(payment.id || '').trim();
     if (!paymentId) {
-      toast.error('Nie można usunąć wpłaty bez identyfikatora.');
+      toast.error('Nie moĹĽna usunÄ…Ä‡ wpĹ‚aty bez identyfikatora.');
       return;
     }
     setPaymentDeleteTargetStage220A29(payment);
@@ -1671,7 +1673,7 @@ export default function CaseDetail() {
     const target = paymentDeleteTargetStage220A29;
     const paymentId = String(target?.id || '').trim();
     if (!paymentId || paymentDeleteSubmittingStage220A29) return;
-    if (!guardCaseDetailWriteAccess('usunąć wpłaty')) return;
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ wpĹ‚aty')) return;
 
     const paymentType = getCasePaymentTypeStage220A27(target as CasePaymentRecord);
     const signedAmount = getCasePaymentSignedAmountStage220A27(target as CasePaymentRecord);
@@ -1688,7 +1690,7 @@ export default function CaseDetail() {
         actorType: 'operator',
         eventType: 'payment_deleted',
         payload: {
-          title: paymentType === 'refund' ? 'Usunięto korektę wpłaty' : 'Usunięto wpłatę',
+          title: paymentType === 'refund' ? 'UsuniÄ™to korektÄ™ wpĹ‚aty' : 'UsuniÄ™to wpĹ‚atÄ™',
           paymentId,
           paymentType: paymentType || 'payment',
           amount: signedAmount,
@@ -1705,9 +1707,9 @@ export default function CaseDetail() {
 
       await reloadCaseFinanceData(caseData);
       setPaymentDeleteTargetStage220A29(null);
-      toast.success(paymentType === 'refund' ? 'Korekta wpłaty usunięta' : 'Wpłata usunięta');
+      toast.success(paymentType === 'refund' ? 'Korekta wpĹ‚aty usuniÄ™ta' : 'WpĹ‚ata usuniÄ™ta');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się usunąć wpłaty.');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ usunÄ…Ä‡ wpĹ‚aty.');
     } finally {
       setPaymentDeleteSubmittingStage220A29(false);
     }
@@ -1721,17 +1723,17 @@ export default function CaseDetail() {
     const note = paymentCorrectionFormStage220A27.reason.trim();
 
     if (!paymentId) {
-      toast.error('Nie można skorygować wpłaty bez identyfikatora.');
+      toast.error('Nie moĹĽna skorygowaÄ‡ wpĹ‚aty bez identyfikatora.');
       return;
     }
 
     if (amount <= 0) {
-      toast.error('Podaj kwotę wpłaty.');
+      toast.error('Podaj kwotÄ™ wpĹ‚aty.');
       return;
     }
 
     if (!paymentCorrectionFormStage220A27.paidAt) {
-      toast.error('Podaj datę wpłaty.');
+      toast.error('Podaj datÄ™ wpĹ‚aty.');
       return;
     }
 
@@ -1768,7 +1770,7 @@ export default function CaseDetail() {
         actorType: 'operator',
         eventType: 'payment_updated',
         payload: {
-          title: 'Skorygowano wpłatę prowizji',
+          title: 'Skorygowano wpĹ‚atÄ™ prowizji',
           paymentId,
           paymentType,
           amount,
@@ -1782,9 +1784,9 @@ export default function CaseDetail() {
       await reloadCaseFinanceData(caseData);
       setPaymentCorrectionTargetStage220A27(null);
       setPaymentCorrectionFormStage220A27({ amount: '', paidAt: '', reason: '' });
-      toast.success('Wpłata prowizji skorygowana');
+      toast.success('WpĹ‚ata prowizji skorygowana');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować wpłaty prowizji.');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ skorygowaÄ‡ wpĹ‚aty prowizji.');
     } finally {
       setPaymentCorrectionSubmittingStage220A27(false);
     }
@@ -1836,6 +1838,59 @@ export default function CaseDetail() {
       caseNoteDictationRecognitionRefStage231H_R1D2.current?.abort?.();
     };
   }, []);
+
+  const STAGE231H_R1D2_R12F_QUICK_NOTE_LOCAL_APPEND_AND_PROMPT = 'CaseDetail locally appends quick-action case notes and opens the same follow-up prompt as panel and dictation notes';
+  void STAGE231H_R1D2_R12F_QUICK_NOTE_LOCAL_APPEND_AND_PROMPT;
+
+  useEffect(() => {
+    const handleQuickCaseNoteSavedStage231H_R1D2_R12F = (event: Event) => {
+      const detail = ((event as CustomEvent<any>).detail || {}) as any;
+      const savedRecord = detail.savedRecord || detail.activity || detail;
+      const savedCaseId = String(savedRecord?.caseId || detail.caseId || '').trim();
+      const currentCaseId = String(caseId || '').trim();
+      if (!currentCaseId || savedCaseId !== currentCaseId) return;
+
+      const payload = (savedRecord?.payload && typeof savedRecord.payload === 'object') ? savedRecord.payload : (detail.payload || {});
+      const noteText = String(payload.note || payload.content || detail.note || detail.content || '').replace(/\s+/g, ' ').trim();
+      if (!noteText) return;
+
+      const createdAt = String(savedRecord?.createdAt || savedRecord?.created_at || detail.createdAt || new Date().toISOString());
+      const noteActivity = {
+        ...savedRecord,
+        id: savedRecord?.id || detail.id || 'quick-note-' + currentCaseId + '-' + createdAt,
+        caseId: currentCaseId,
+        clientId: savedRecord?.clientId || detail.clientId || caseData?.clientId || null,
+        leadId: savedRecord?.leadId || detail.leadId || caseData?.leadId || null,
+        actorType: savedRecord?.actorType || 'operator',
+        eventType: 'operator_note',
+        createdAt,
+        payload: {
+          ...payload,
+          title: payload.title || 'Notatka',
+          note: noteText,
+          content: noteText,
+          source: payload.source || 'stage231h_r1d2_r12f_quick_case_note',
+        },
+      } as CaseActivity;
+
+      setActivities((current) => {
+        const noteId = String(noteActivity.id || '').trim();
+        const exists = current.some((activity) => {
+          const activityId = String(activity?.id || '').trim();
+          if (noteId && activityId && activityId === noteId) return true;
+          return String(activity?.caseId || '').trim() === currentCaseId &&
+            String(activity?.eventType || '').trim() === 'operator_note' &&
+            String(getCaseNoteTextStage231H_R1D2_R6(activity) || '').replace(/\s+/g, ' ').trim() === noteText;
+        });
+        return exists ? current : [noteActivity, ...current];
+      });
+      setPendingNoteFollowUp({ note: noteText, createdAt });
+    };
+
+    window.addEventListener('closeflow:context-note-saved', handleQuickCaseNoteSavedStage231H_R1D2_R12F as EventListener);
+    return () => window.removeEventListener('closeflow:context-note-saved', handleQuickCaseNoteSavedStage231H_R1D2_R12F as EventListener);
+  }, [caseId, caseData?.clientId, caseData?.leadId]);
+
   const [isCasePaymentOpen, setIsCasePaymentOpen] = useState(false);
   const [casePaymentSubmitting, setCasePaymentSubmitting] = useState(false);
   const [casePaymentDraft, setCasePaymentDraft] = useState({
@@ -1898,12 +1953,12 @@ export default function CaseDetail() {
   const handleCreateCasePayment = async () => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('Brak dostępu do zapisu płatności.');
+      toast.error('Brak dostÄ™pu do zapisu pĹ‚atnoĹ›ci.');
       return;
     }
     const amount = Number(casePaymentDraft.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawną kwotę wpłaty.');
+      toast.error('Podaj poprawnÄ… kwotÄ™ wpĹ‚aty.');
       return;
     }
     try {
@@ -1929,14 +1984,14 @@ export default function CaseDetail() {
         leadId: caseData.leadId || null,
         actorType: 'operator',
         eventType: 'payment_added',
-        payload: { title: 'Dodano wpłatę', amount, status: input.status, note: input.note },
+        payload: { title: 'Dodano wpĹ‚atÄ™', amount, status: input.status, note: input.note },
       } as any).catch(() => null);
       setCasePaymentDraft({ type: 'payment', amount: '', status: 'fully_paid', dueAt: '', note: '' });
       setIsCasePaymentOpen(false);
-      toast.success('Wpłata dodana');
+      toast.success('WpĹ‚ata dodana');
     } catch (error) {
       console.error(error);
-      toast.error('Nie udało się dodać wpłaty.');
+      toast.error('Nie udaĹ‚o siÄ™ dodaÄ‡ wpĹ‚aty.');
     } finally {
       setCasePaymentSubmitting(false);
     }
@@ -1945,16 +2000,16 @@ export default function CaseDetail() {
 
   const handleCreateCaseCostStage231D2 = async () => {
     if (!caseId || !caseData) return;
-    if (!guardCaseDetailWriteAccess('dodać kosztu sprawy')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ kosztu sprawy')) return;
     const amount = Number(String(caseCostDraftStage231D2.amount || '').replace(',', '.'));
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawną kwotę kosztu.');
+      toast.error('Podaj poprawnÄ… kwotÄ™ kosztu.');
       return;
     }
     const costKind = String(caseCostDraftStage231D2.kind || 'other');
     const costOtherName = costKind === 'other' ? String(caseCostDraftStage231D2.otherName || '').trim() : '';
     if (costKind === 'other' && !costOtherName) {
-      toast.error('Podaj nazwę kosztu dla typu Inny.');
+      toast.error('Podaj nazwÄ™ kosztu dla typu Inny.');
       return;
     }
     const costNote = buildCaseCostStoredNoteStage231H_R1G(costOtherName, caseCostDraftStage231D2.note);
@@ -1987,7 +2042,7 @@ export default function CaseDetail() {
       setIsCaseCostOpenStage231D2(false);
       toast.success('Koszt sprawy zapisany');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się zapisać kosztu sprawy.');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ zapisaÄ‡ kosztu sprawy.');
     } finally {
       setCaseCostSubmittingStage231D2(false);
     }
@@ -1995,7 +2050,7 @@ export default function CaseDetail() {
 
 
   function openCaseCostCorrectionModalStage231H_R1C(cost: CaseCostRecord) {
-    if (!guardCaseDetailWriteAccess('skorygować kosztu sprawy')) return;
+    if (!guardCaseDetailWriteAccess('skorygowaÄ‡ kosztu sprawy')) return;
     setCaseCostCorrectionTargetStage231H_R1C(cost);
     const isCostReimbursableStage231H_R1G = getCaseCostReimbursableAmountStage231H_R1C(cost) > 0;
     setCaseCostCorrectionFormStage231H_R1C({
@@ -2012,9 +2067,9 @@ export default function CaseDetail() {
   }
 
   function openCaseCostDeleteConfirmStage231H_R1C(cost: CaseCostRecord) {
-    if (!guardCaseDetailWriteAccess('usunąć kosztu sprawy')) return;
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ kosztu sprawy')) return;
     if (!getCaseCostIdStage231H_R1C(cost)) {
-      toast.error('Nie można usunąć kosztu bez identyfikatora.');
+      toast.error('Nie moĹĽna usunÄ…Ä‡ kosztu bez identyfikatora.');
       return;
     }
     setCaseCostDeleteTargetStage231H_R1C(cost);
@@ -2024,7 +2079,7 @@ export default function CaseDetail() {
     const target = caseCostCorrectionTargetStage231H_R1C;
     const costId = getCaseCostIdStage231H_R1C(target);
     if (!target || !costId || !caseData?.id || caseCostCorrectionSubmittingStage231H_R1C) return;
-    if (!guardCaseDetailWriteAccess('skorygować kosztu sprawy')) return;
+    if (!guardCaseDetailWriteAccess('skorygowaÄ‡ kosztu sprawy')) return;
 
     const amount = fin11Amount(caseCostCorrectionFormStage231H_R1C.amount);
     const reimbursableAmount = fin11Amount(caseCostCorrectionFormStage231H_R1C.reimbursableAmount);
@@ -2040,11 +2095,11 @@ export default function CaseDetail() {
     const currency = getCaseCostCurrencyStage231H_R1C(target, caseFinanceSourceStage220A26.currency || caseData.currency || 'PLN');
 
     if (amount <= 0) {
-      toast.error('Podaj poprawną kwotę kosztu.');
+      toast.error('Podaj poprawnÄ… kwotÄ™ kosztu.');
       return;
     }
     if (kind === 'other' && !otherName) {
-      toast.error('Podaj nazwę kosztu dla typu Inny.');
+      toast.error('Podaj nazwÄ™ kosztu dla typu Inny.');
       return;
     }
 
@@ -2080,7 +2135,7 @@ export default function CaseDetail() {
       setCaseCostCorrectionFormStage231H_R1C({ kind: 'other', otherName: '', amount: '', reimbursable: true, reimbursableAmount: '', reimbursedAmount: '', status: 'incurred', incurredAt: '', note: '' });
       toast.success('Koszt sprawy skorygowany');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się skorygować kosztu sprawy.');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ skorygowaÄ‡ kosztu sprawy.');
     } finally {
       setCaseCostCorrectionSubmittingStage231H_R1C(false);
     }
@@ -2090,7 +2145,7 @@ export default function CaseDetail() {
     const target = caseCostDeleteTargetStage231H_R1C;
     const costId = getCaseCostIdStage231H_R1C(target);
     if (!target || !costId || caseCostDeleteSubmittingStage231H_R1C) return;
-    if (!guardCaseDetailWriteAccess('usunąć kosztu sprawy')) return;
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ kosztu sprawy')) return;
 
     try {
       setCaseCostDeleteSubmittingStage231H_R1C(true);
@@ -2102,13 +2157,13 @@ export default function CaseDetail() {
         leadId: caseData?.leadId || null,
         actorType: 'operator',
         eventType: 'case_cost_deleted',
-        payload: { title: 'Usunięto koszt sprawy', costId, amount: getCaseCostAmountStage231H_R1C(target), currency: getCaseCostCurrencyStage231H_R1C(target, caseFinanceSourceStage220A26.currency) },
+        payload: { title: 'UsuniÄ™to koszt sprawy', costId, amount: getCaseCostAmountStage231H_R1C(target), currency: getCaseCostCurrencyStage231H_R1C(target, caseFinanceSourceStage220A26.currency) },
       } as any).catch(() => null);
       await refreshCaseData();
       setCaseCostDeleteTargetStage231H_R1C(null);
-      toast.success('Koszt sprawy usunięty');
+      toast.success('Koszt sprawy usuniÄ™ty');
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Nie udało się usunąć kosztu sprawy.');
+      toast.error(error instanceof Error ? error.message : 'Nie udaĹ‚o siÄ™ usunÄ…Ä‡ kosztu sprawy.');
     } finally {
       setCaseCostDeleteSubmittingStage231H_R1C(false);
     }
@@ -2122,7 +2177,7 @@ export default function CaseDetail() {
     }
 
     if (!isSupabaseConfigured()) {
-      setLoadError('Brak konfiguracji Supabase. Sprawdź zmienne środowiskowe aplikacji.');
+      setLoadError('Brak konfiguracji Supabase. SprawdĹş zmienne Ĺ›rodowiskowe aplikacji.');
       setLoading(false);
       return;
     }
@@ -2159,7 +2214,7 @@ export default function CaseDetail() {
       const taskRowsRaw = taskLoadRaw.rows;
       const eventRowsRaw = eventLoadRaw.rows;
       if (taskLoadRaw.error || eventLoadRaw.error) {
-        setCaseActionsLoadError('Nie udało się pobrać wszystkich działań sprawy. Odśwież widok lub spróbuj ponownie.');
+        setCaseActionsLoadError('Nie udaĹ‚o siÄ™ pobraÄ‡ wszystkich dziaĹ‚aĹ„ sprawy. OdĹ›wieĹĽ widok lub sprĂłbuj ponownie.');
       }
 
       if (!normalizedCase?.id) {
@@ -2201,10 +2256,10 @@ export default function CaseDetail() {
       setActivities([]);
       setTasks([]);
       setEvents([]);
-      setCaseActionsLoadError('Nie udało się pobrać działań sprawy.');
+      setCaseActionsLoadError('Nie udaĹ‚o siÄ™ pobraÄ‡ dziaĹ‚aĹ„ sprawy.');
       setPayments([]);
       setCaseCostsStage231D2([]);
-      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ładowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ĺadowanie sprawy trwa za dĹ‚ugo. SprĂłbuj ponownie.' : `Nie moĹĽna wczytaÄ‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
       setLoading(false);
@@ -2226,17 +2281,59 @@ export default function CaseDetail() {
   useEffect(() => {
     const listener = (event: Event) => {
       const detail = (event as CustomEvent<any>).detail || {};
-      if (detail?.caseId && String(detail.caseId) !== String(caseId || '')) return;
-      if (detail?.payload?.recordType && detail.payload.recordType !== 'case') return;
+      const savedRecord = detail?.savedRecord || detail;
+      const payload = savedRecord?.payload || detail?.payload || {};
+      const recordType = String(detail?.recordType || payload?.recordType || '').trim();
+      const detailCaseId = String(savedRecord?.caseId || detail?.caseId || payload?.caseId || (recordType === 'case' ? detail?.recordId : '') || '').trim();
+      if (detailCaseId && String(detailCaseId) !== String(caseId || '')) return;
+      if (recordType && recordType !== 'case') return;
+      const noteText = normalizeCaseNotePreviewStage231H_R1D2_R11(
+        getCaseNoteTextStage231H_R1D2_R6(savedRecord as CaseActivity) || payload?.content || payload?.note || detail?.content || detail?.note || '',
+      );
+      if (noteText && String(detailCaseId || caseId || '') === String(caseId || '')) {
+        const createdAt = String(savedRecord?.createdAt || detail?.createdAt || new Date().toISOString());
+        const normalizedNote = {
+          ...(savedRecord || {}),
+          id: String(savedRecord?.id || detail?.id || 'case-quick-note-' + Date.now()),
+          actorType: savedRecord?.actorType || detail?.actorType || 'operator',
+          eventType: savedRecord?.eventType || detail?.eventType || 'operator_note',
+          caseId: detailCaseId || caseId || null,
+          clientId: savedRecord?.clientId || detail?.clientId || payload?.clientId || caseData?.clientId || null,
+          leadId: savedRecord?.leadId || detail?.leadId || payload?.leadId || caseData?.leadId || null,
+          createdAt,
+          payload: {
+            ...payload,
+            note: noteText,
+            content: noteText,
+            source: payload?.source || 'stage85-context-note-dialog',
+            sourceMap: STAGE231H_R1D2_R12D_CONTEXT_NOTE_SAVED_LOCAL_APPEND,
+          },
+        } as CaseActivity;
+        if (isCaseOperatorNoteStage231H_R1D2_R6(normalizedNote)) {
+          setActivities((current) => {
+            const noteId = getCaseNoteIdStage231H_R1D2_R6(normalizedNote);
+            const alreadyExists = current.some((activity) => {
+              const activityId = getCaseNoteIdStage231H_R1D2_R6(activity);
+              if (noteId && activityId && noteId === activityId) return true;
+              return String(activity.caseId || '') === String(caseId || '') &&
+                normalizeCaseNotePreviewStage231H_R1D2_R11(getCaseNoteTextStage231H_R1D2_R6(activity)) === noteText;
+            });
+            return alreadyExists ? current : sortActivities([normalizedNote, ...current]);
+          });
+          setPendingNoteFollowUp({ note: noteText, createdAt });
+        }
+      }
       void refreshCaseData();
     };
     window.addEventListener('closeflow:context-note-saved', listener as EventListener);
     return () => window.removeEventListener('closeflow:context-note-saved', listener as EventListener);
-  }, [caseId, refreshCaseData]);
+  }, [caseData?.clientId, caseData?.leadId, caseId, refreshCaseData]);
   const STAGE219_R4_CASE_NOTE_SAVED_REFRESH_MARKER = 'data-stage219-case-note-saved-refresh';
   void STAGE219_R4_CASE_NOTE_SAVED_REFRESH_MARKER;
   const STAGE220A7_CASE_CONTEXT_ACTION_REFRESH = 'CaseDetail refreshes after task/event/note save';
   void STAGE220A7_CASE_CONTEXT_ACTION_REFRESH;
+  const STAGE231H_R1D2_R12D_CONTEXT_NOTE_SAVED_LOCAL_APPEND = 'CaseDetail locally appends quick action case notes and opens the same follow-up prompt';
+  void STAGE231H_R1D2_R12D_CONTEXT_NOTE_SAVED_LOCAL_APPEND;
 
   useEffect(() => {
     const listener = (event: Event) => {
@@ -2403,30 +2500,30 @@ export default function CaseDetail() {
     return workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null;
   }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
-  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
+  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'ĹąrĂłdĹ‚owy lead') : caseData?.leadId ? 'ĹąrĂłdĹ‚owy lead podpiÄ™ty' : 'Brak ĹşrĂłdĹ‚owego leada';
   const caseDetailWriteAccessDenied = !hasAccess;
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const workspaceIdStage231H_R1D2_R6 = String((workspace as any)?.id || (caseData as any)?.workspaceId || (caseData as any)?.workspace_id || (sourceLead as any)?.workspaceId || (sourceLead as any)?.workspace_id || (access as any)?.workspaceId || (access as any)?.workspace_id || (access as any)?.workspace?.id || '').trim();
   const guardCaseDetailWriteAccess = (actionLabel: string) => {
     if (!caseDetailWriteAccessDenied) return true;
-    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasł.' : 'Brak aktywnego dostępu.';
+    const reason = caseDetailAccessStatus === 'trial_expired' ? 'Trial wygasĹ‚.' : 'Brak aktywnego dostÄ™pu.';
     toast.error(reason + ' Nie mozna teraz ' + actionLabel + '.');
     return false;
   };
 
 
   const handleAddTask = async () => {
-    if (!guardCaseDetailWriteAccess('dodać zadania')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ zadania')) return;
     openCaseContextAction('task');
   };
 
   const handleAddEvent = async () => {
-    if (!guardCaseDetailWriteAccess('dodać wydarzenia')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ wydarzenia')) return;
     openCaseContextAction('event');
   };
 
   const handleAddNote = async () => {
-    if (!guardCaseDetailWriteAccess('dodać notatki')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ notatki')) return;
     openCaseContextAction('note');
   };
 
@@ -2434,7 +2531,7 @@ export default function CaseDetail() {
     const cleanNote = String(noteText || '').replace(/\s+/g, ' ').trim();
     if (!cleanNote) return;
     if (!caseId || !caseData?.id) {
-      toast.error('Nie można zapisać notatki bez sprawy.');
+      toast.error('Nie moĹĽna zapisaÄ‡ notatki bez sprawy.');
       return;
     }
 
@@ -2443,7 +2540,7 @@ export default function CaseDetail() {
 
     const createdAt = new Date().toISOString();
     const payload = {
-      title: 'Notatka głosowa',
+      title: 'Notatka gĹ‚osowa',
       note: cleanNote,
       content: cleanNote,
       caseId,
@@ -2484,11 +2581,11 @@ export default function CaseDetail() {
       setCaseNoteDictationErrorStage231H_R1D2('');
       setCaseNoteDictationStatusStage231H_R1D2('idle');
       await refreshCaseData();
-      toast.success('Notatka głosowa zapisana');
+      toast.success('Notatka gĹ‚osowa zapisana');
     } catch (error: any) {
       setCaseNoteDictationStatusStage231H_R1D2('error');
-      setCaseNoteDictationErrorStage231H_R1D2(error?.message || 'Nie udało się zapisać notatki głosowej.');
-      toast.error('Nie udało się zapisać notatki głosowej.');
+      setCaseNoteDictationErrorStage231H_R1D2(error?.message || 'Nie udaĹ‚o siÄ™ zapisaÄ‡ notatki gĹ‚osowej.');
+      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ notatki gĹ‚osowej.');
     }
   }
 
@@ -2504,7 +2601,7 @@ export default function CaseDetail() {
   }
 
   const handleStartCaseNoteDictationStage231H_R1D2 = () => {
-    if (!guardCaseDetailWriteAccess('dyktować notatki')) return;
+    if (!guardCaseDetailWriteAccess('dyktowaÄ‡ notatki')) return;
     if (caseNoteDictationStatusStage231H_R1D2 === 'listening') {
       caseNoteDictationRecognitionRefStage231H_R1D2.current?.stop?.();
       setCaseNoteDictationStatusStage231H_R1D2('idle');
@@ -2513,7 +2610,7 @@ export default function CaseDetail() {
 
     const SpeechRecognition = getCaseNoteSpeechRecognitionConstructorStage231H_R1D2();
     if (!SpeechRecognition) {
-      const message = 'Dyktowanie nie jest obsługiwane w tej przeglądarce.';
+      const message = 'Dyktowanie nie jest obsĹ‚ugiwane w tej przeglÄ…darce.';
       setCaseNoteDictationStatusStage231H_R1D2('error');
       setCaseNoteDictationErrorStage231H_R1D2(message);
       toast.error(message);
@@ -2537,8 +2634,8 @@ export default function CaseDetail() {
       };
       recognition.onerror = (event: any) => {
         const message = event?.error === 'not-allowed'
-          ? 'Mikrofon jest zablokowany. Zezwól na dostęp do mikrofonu i spróbuj ponownie.'
-          : 'Nie udało się uruchomić dyktowania notatki.';
+          ? 'Mikrofon jest zablokowany. ZezwĂłl na dostÄ™p do mikrofonu i sprĂłbuj ponownie.'
+          : 'Nie udaĹ‚o siÄ™ uruchomiÄ‡ dyktowania notatki.';
         setCaseNoteDictationStatusStage231H_R1D2('error');
         setCaseNoteDictationErrorStage231H_R1D2(message);
         toast.error(message);
@@ -2550,9 +2647,9 @@ export default function CaseDetail() {
       setCaseNoteDictationErrorStage231H_R1D2('');
       setCaseNoteDictationStatusStage231H_R1D2('listening');
       recognition.start();
-      toast.message('Dyktuję notatkę. Przestań mówić na ok. 2 sekundy, żeby zapisać.');
+      toast.message('DyktujÄ™ notatkÄ™. PrzestaĹ„ mĂłwiÄ‡ na ok. 2 sekundy, ĹĽeby zapisaÄ‡.');
     } catch (error: any) {
-      const message = error?.message || 'Nie udało się uruchomić mikrofonu.';
+      const message = error?.message || 'Nie udaĹ‚o siÄ™ uruchomiÄ‡ mikrofonu.';
       setCaseNoteDictationStatusStage231H_R1D2('error');
       setCaseNoteDictationErrorStage231H_R1D2(message);
       toast.error(message);
@@ -2572,7 +2669,7 @@ export default function CaseDetail() {
   };
 
   const openCasePaymentDialog = (type: 'deposit' | 'partial') => {
-    if (!guardCaseDetailWriteAccess('dodać płatności')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ pĹ‚atnoĹ›ci')) return;
     setCasePaymentDraft({
       type,
       amount: '',
@@ -2584,10 +2681,10 @@ export default function CaseDetail() {
   };
 
   const markCaseFullyPaid = async () => {
-    if (!caseId || !guardCaseDetailWriteAccess('oznaczyć sprawy jako opłaconej')) return;
+    if (!caseId || !guardCaseDetailWriteAccess('oznaczyÄ‡ sprawy jako opĹ‚aconej')) return;
     const remaining = Number(caseFinance.remaining || 0);
     if (remaining <= 0) {
-      toast.message('Ta sprawa jest już rozliczona.');
+      toast.message('Ta sprawa jest juĹĽ rozliczona.');
       return;
     }
     try {
@@ -2600,21 +2697,21 @@ export default function CaseDetail() {
         amount: remaining,
         currency: caseFinance.currency,
         paidAt: new Date().toISOString(),
-        note: 'Rozliczenie końcowe sprawy',
+        note: 'Rozliczenie koĹ„cowe sprawy',
       });
       await updateCaseInSupabase({ id: caseId, paidAmount: caseFinance.paid + remaining, remainingAmount: 0 }).catch(() => null);
       await refreshCaseData();
-      toast.success('Sprawa oznaczona jako opłacona.');
+      toast.success('Sprawa oznaczona jako opĹ‚acona.');
     } catch (error: any) {
-      toast.error(`Nie udało się domknąć płatności: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ domknÄ…Ä‡ pĹ‚atnoĹ›ci: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleSaveCasePayment = async () => {
-    if (!caseId || !guardCaseDetailWriteAccess('zapisać płatności')) return;
+    if (!caseId || !guardCaseDetailWriteAccess('zapisaÄ‡ pĹ‚atnoĹ›ci')) return;
     const amount = Number(casePaymentDraft.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawną kwotę płatności.');
+      toast.error('Podaj poprawnÄ… kwotÄ™ pĹ‚atnoĹ›ci.');
       return;
     }
     try {
@@ -2633,9 +2730,9 @@ export default function CaseDetail() {
       });
       await refreshCaseData();
       setIsCasePaymentOpen(false);
-      toast.success('Płatność sprawy zapisana.');
+      toast.success('PĹ‚atnoĹ›Ä‡ sprawy zapisana.');
     } catch (error: any) {
-      toast.error(`Nie udało się zapisać płatności: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zapisaÄ‡ pĹ‚atnoĹ›ci: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCasePaymentSubmitting(false);
     }
@@ -2650,7 +2747,7 @@ export default function CaseDetail() {
   function openCaseNoteEditStage231H_R1D2_R6(activity: CaseActivity) {
     const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
     if (!noteId) {
-      toast.error('Nie można edytować notatki bez identyfikatora.');
+      toast.error('Nie moĹĽna edytowaÄ‡ notatki bez identyfikatora.');
       return;
     }
     setCaseNoteEditTargetStage231H_R1D2_R6(activity);
@@ -2667,9 +2764,9 @@ export default function CaseDetail() {
     const noteId = getCaseNoteIdStage231H_R1D2_R6(target);
     const cleanNote = String(caseNoteEditTextStage231H_R1D2_R6 || '').replace(/\s+/g, ' ').trim();
     if (!target || !noteId || caseNoteEditSubmittingStage231H_R1D2_R6) return;
-    if (!guardCaseDetailWriteAccess('edytować notatki')) return;
+    if (!guardCaseDetailWriteAccess('edytowaÄ‡ notatki')) return;
     if (!cleanNote) {
-      toast.error('Notatka nie może być pusta.');
+      toast.error('Notatka nie moĹĽe byÄ‡ pusta.');
       return;
     }
 
@@ -2698,7 +2795,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Notatka zaktualizowana');
     } catch (error: any) {
-      toast.error('Nie udało się zaktualizować notatki: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ zaktualizowaÄ‡ notatki: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setCaseNoteEditSubmittingStage231H_R1D2_R6(false);
     }
@@ -2707,17 +2804,17 @@ export default function CaseDetail() {
   async function handleDeleteCaseNoteStage231H_R1D2_R6(activity: CaseActivity) {
     const noteId = getCaseNoteIdStage231H_R1D2_R6(activity);
     if (!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6) return;
-    if (!guardCaseDetailWriteAccess('usunąć notatki')) return;
-    const confirmed = window.confirm('Usunąć tę notatkę? Powiązany follow-up zostaje jako osobne zadanie, jeśli został utworzony.');
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ notatki')) return;
+    const confirmed = window.confirm('UsunÄ…Ä‡ tÄ™ notatkÄ™? PowiÄ…zany follow-up zostaje jako osobne zadanie, jeĹ›li zostaĹ‚ utworzony.');
     if (!confirmed) return;
     try {
       setCaseNoteDeleteSubmittingIdStage231H_R1D2_R6(noteId);
       await deleteActivityFromSupabase(noteId);
       setActivities((current) => current.filter((item) => getCaseNoteIdStage231H_R1D2_R6(item) !== noteId));
       await refreshCaseData();
-      toast.success('Notatka usunięta');
+      toast.success('Notatka usuniÄ™ta');
     } catch (error: any) {
-      toast.error('Nie udało się usunąć notatki: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ usunÄ…Ä‡ notatki: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setCaseNoteDeleteSubmittingIdStage231H_R1D2_R6('');
     }
@@ -2730,7 +2827,7 @@ export default function CaseDetail() {
   };
 
   const handleCreateCaseNoteFollowUp = async (choice: CaseNoteFollowUpChoice) => {
-    if (!guardCaseDetailWriteAccess('dodać follow-upu po notatce')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ follow-upu po notatce')) return;
     if (!caseId || !pendingNoteFollowUp) return;
     const scheduledAt = buildCaseNoteFollowUpIso(choice, customNoteFollowUpAt);
     if (!scheduledAt) {
@@ -2794,7 +2891,7 @@ export default function CaseDetail() {
       await refreshCaseData();
       toast.success('Follow-up dodany do sprawy');
     } catch (error: any) {
-      toast.error('Nie udało się dodać follow-upu: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ dodaÄ‡ follow-upu: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setIsCreatingNoteFollowUp(false);
     }
@@ -2802,7 +2899,7 @@ export default function CaseDetail() {
 
   const handleConfirmCloseCaseRecord = async () => {
     if (!caseId || closeCasePending) return;
-    if (!guardCaseDetailWriteAccess('zamknąć sprawy')) {
+    if (!guardCaseDetailWriteAccess('zamknÄ…Ä‡ sprawy')) {
       setCloseCaseOpen(false);
       return;
     }
@@ -2818,7 +2915,7 @@ export default function CaseDetail() {
         lastActivityAt: closedAt,
       });
       await recordActivity('case_lifecycle_completed', {
-        title: 'Sprawa zamknięta',
+        title: 'Sprawa zamkniÄ™ta',
         status: 'completed',
         previousStatus,
         closedAt,
@@ -2828,9 +2925,9 @@ export default function CaseDetail() {
       });
       await refreshCaseData();
       setCloseCaseOpen(false);
-      toast.success('Sprawa zamknięta. Historia i rozliczenia zostają przy kliencie.');
+      toast.success('Sprawa zamkniÄ™ta. Historia i rozliczenia zostajÄ… przy kliencie.');
     } catch (error: any) {
-      toast.error(`Nie udało się zamknąć sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setCloseCasePending(false);
     }
@@ -2848,7 +2945,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
   };
 
   const handleCopyPortal = async () => {
-    if (!guardCaseDetailWriteAccess('wygenerować linku do portalu')) return;
+    if (!guardCaseDetailWriteAccess('wygenerowaÄ‡ linku do portalu')) return;
     if (!caseId) return;
     try {
       const payload = await createClientPortalTokenInSupabase(caseId);
@@ -2856,14 +2953,14 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await navigator.clipboard.writeText(url);
       toast.success('Link do portalu skopiowany');
     } catch (error: any) {
-      toast.error(`Nie udało się skopiować portalu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ skopiowaÄ‡ portalu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleAddItem = async () => {
-    if (!guardCaseDetailWriteAccess('dodać braku')) return;
+    if (!guardCaseDetailWriteAccess('dodaÄ‡ braku')) return;
     if (!caseId || !newItem.title.trim()) {
-      toast.error('Podaj nazwę braku');
+      toast.error('Podaj nazwÄ™ braku');
       return;
     }
     try {
@@ -2883,12 +2980,12 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await refreshCaseData();
       toast.success('Brak dodany do sprawy');
     } catch (error: any) {
-      toast.error(`Nie udało się dodać braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ dodaÄ‡ braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleItemStatusChange = async (item: CaseItem, status: CaseItemStatus) => {
-    if (!guardCaseDetailWriteAccess('zmienić statusu braku')) return;
+    if (!guardCaseDetailWriteAccess('zmieniÄ‡ statusu braku')) return;
     if (!caseId) return;
     try {
       await updateCaseItemInSupabase({ id: item.id, caseId, status, approvedAt: status === 'accepted' ? new Date().toISOString() : null });
@@ -2897,20 +2994,20 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await refreshCaseData();
       toast.success('Status braku zmieniony');
     } catch (error: any) {
-      toast.error(`Nie udało się zmienić statusu: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
   const handleDeleteItem = async (item: CaseItem) => {
-    if (!guardCaseDetailWriteAccess('usunąć braku')) return;
-    if (!window.confirm('Usunąć ten brak ze sprawy?')) return;
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ braku')) return;
+    if (!window.confirm('UsunÄ…Ä‡ ten brak ze sprawy?')) return;
     try {
       await deleteCaseItemFromSupabase(item.id);
       await recordActivity('item_deleted', { itemId: item.id, title: item.title });
       await refreshCaseData();
-      toast.success('Brak usunięty');
+      toast.success('Brak usuniÄ™ty');
     } catch (error: any) {
-      toast.error(`Nie udało się usunąć braku: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ usunÄ…Ä‡ braku: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -2926,7 +3023,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
   const handleConfirmDeleteWorkItem = async () => {
     const target = deleteWorkItemTarget;
     if (!target || deleteWorkItemPending) return;
-    if (!guardCaseDetailWriteAccess('usunąć działania sprawy')) {
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ dziaĹ‚ania sprawy')) {
       setDeleteWorkItemTarget(null);
       return;
     }
@@ -2939,24 +3036,24 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         await ensureCaseLeadNextActionTitleSafe(task.leadId || caseData?.leadId || null, task.title, getTaskMainDate(task) || task.reminderAt || task.date);
         await deleteTaskFromSupabase(task.id);
         await recordActivity('task_deleted', { title: task.title, taskId: task.id });
-        toast.success('Zadanie usunięte');
+        toast.success('Zadanie usuniÄ™te');
       } else if (target.kind === 'event') {
         const event = target.source as EventRecord;
         await ensureCaseLeadNextActionTitleSafe(event.leadId || caseData?.leadId || null, event.title, getEventMainDate(event) || event.reminderAt || event.startAt);
         await deleteEventFromSupabase(event.id);
         await recordActivity('event_deleted', { title: event.title, eventId: event.id });
-        toast.success('Wydarzenie usunięte');
+        toast.success('Wydarzenie usuniÄ™te');
       } else if (target.kind === 'missing') {
         const item = target.source as CaseItem;
         await deleteCaseItemFromSupabase(item.id);
         await recordActivity('item_deleted', { itemId: item.id, title: item.title });
-        toast.success('Brak usunięty');
+        toast.success('Brak usuniÄ™ty');
       }
 
       setDeleteWorkItemTarget(null);
       await refreshCaseData();
     } catch (error: any) {
-      toast.error(`Nie udało się usunąć: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ usunÄ…Ä‡: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setDeleteWorkItemPending(false);
     }
@@ -2971,8 +3068,8 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
     if (!leadId) return;
 
     const safeTitle =
-      String(titleInput || getCaseTitle(caseData) || 'Działanie sprawy').trim() ||
-      'Działanie sprawy';
+      String(titleInput || getCaseTitle(caseData) || 'DziaĹ‚anie sprawy').trim() ||
+      'DziaĹ‚anie sprawy';
 
     const payload: Record<string, unknown> = {
       id: leadId,
@@ -2994,7 +3091,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await refreshCaseData();
       toast.success('Zrobione');
     } catch (error: any) {
-      toast.error(`Nie udało się zamknąć zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -3005,9 +3102,9 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await updateTaskInSupabase({ id: task.id, scheduledAt: nextDate, dueAt: nextDate, date: buildDateOnlyFromIso(nextDate) });
       await recordActivity('task_rescheduled', { title: task.title, taskId: task.id, scheduledAt: nextDate });
       await refreshCaseData();
-      toast.success('Zadanie przełożone na jutro');
+      toast.success('Zadanie przeĹ‚oĹĽone na jutro');
     } catch (error: any) {
-      toast.error(`Nie udało się przełożyć zadania: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ zadania: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -3021,7 +3118,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await refreshCaseData();
       toast.success('Wydarzenie oznaczone jako zrobione');
     } catch (error: any) {
-      toast.error(`Nie udało się zamknąć wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zamknÄ…Ä‡ wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -3033,9 +3130,9 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await updateEventInSupabase({ id: event.id, startAt: nextStart, endAt: nextEnd });
       await recordActivity('event_rescheduled', { title: event.title, eventId: event.id, startAt: nextStart });
       await refreshCaseData();
-      toast.success('Wydarzenie przełożone na jutro');
+      toast.success('Wydarzenie przeĹ‚oĹĽone na jutro');
     } catch (error: any) {
-      toast.error(`Nie udało się przełożyć wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ przeĹ‚oĹĽyÄ‡ wydarzenia: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -3052,7 +3149,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       await refreshCaseData();
       toast.success('Status sprawy zaktualizowany');
     } catch (error: any) {
-      toast.error(`Nie udało się zmienić statusu sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ zmieniÄ‡ statusu sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     }
   };
 
@@ -3072,13 +3169,13 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
   const handleAddCaseSettlementPayment = async (value: CaseSettlementPaymentInput) => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     const amount = Number(value.amount || 0);
     if (!Number.isFinite(amount) || amount <= 0) {
-      toast.error('Podaj poprawną kwotę płatności.');
+      toast.error('Podaj poprawnÄ… kwotÄ™ pĹ‚atnoĹ›ci.');
       return;
     }
 
@@ -3097,9 +3194,9 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         note: value.note || '',
       });
       await refreshCaseSettlementPayments();
-      toast.success(value.type === 'commission' ? 'Wpłata prowizji dodana' : 'Wpłata klienta dodana');
+      toast.success(value.type === 'commission' ? 'WpĹ‚ata prowizji dodana' : 'WpĹ‚ata klienta dodana');
     } catch (error: any) {
-      toast.error('Nie udało się zapisać płatności: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ pĹ‚atnoĹ›ci: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setCaseSettlementSaving(false);
     }
@@ -3108,13 +3205,13 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
   const handleEditCaseSettlementCommission = async (value: CaseSettlementCommissionInput) => {
     if (!caseId || !caseData) return;
     if (!hasAccess) {
-      toast.error('Twój trial wygasł.');
+      toast.error('TwĂłj trial wygasĹ‚.');
       return;
     }
 
     const nextContractValue = Number(value.contractValue || 0);
     if (!Number.isFinite(nextContractValue) || nextContractValue < 0) {
-      toast.error('Podaj poprawną wartość transakcji.');
+      toast.error('Podaj poprawnÄ… wartoĹ›Ä‡ transakcji.');
       return;
     }
 
@@ -3145,7 +3242,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
       } : current);
       toast.success('Prowizja sprawy zapisana');
     } catch (error: any) {
-      toast.error('Nie udało się zapisać prowizji: ' + (error?.message || 'REQUEST_FAILED'));
+      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ prowizji: ' + (error?.message || 'REQUEST_FAILED'));
     } finally {
       setCaseSettlementSaving(false);
     }
@@ -3154,9 +3251,9 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
 
   async function handleConfirmRestoreCaseRecord() {
     if (!caseData?.id || restoreCasePending) return;
-    if (!guardCaseDetailWriteAccess('przywrócić sprawy')) return;
+    if (!guardCaseDetailWriteAccess('przywrĂłciÄ‡ sprawy')) return;
 
-    const confirmed = window.confirm('Sprawa wróci do aktywnych. Historia i rozliczenia zostaną zachowane.');
+    const confirmed = window.confirm('Sprawa wrĂłci do aktywnych. Historia i rozliczenia zostanÄ… zachowane.');
     if (!confirmed) return;
 
     const reopenedAt = new Date().toISOString();
@@ -3170,7 +3267,7 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         lastActivityAt: reopenedAt,
       });
       await recordActivity('case_lifecycle_reopened', {
-        title: 'Sprawa przywrócona',
+        title: 'Sprawa przywrĂłcona',
         status: 'in_progress',
         previousStatus,
         reopenedAt,
@@ -3179,16 +3276,16 @@ const refreshStatusAfterMutation = async (nextStatus?: string) => {
         historyPreserved: true,
       });
       await refreshCaseData();
-      toast.success('Sprawa przywrócona do aktywnych. Historia i rozliczenia zostały zachowane.');
+      toast.success('Sprawa przywrĂłcona do aktywnych. Historia i rozliczenia zostaĹ‚y zachowane.');
     } catch (error: any) {
-      toast.error(`Nie udało się przywrócić sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      toast.error(`Nie udaĹ‚o siÄ™ przywrĂłciÄ‡ sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       setRestoreCasePending(false);
     }
   }
 async function handleConfirmDeleteCaseRecord() {
     if (!caseData?.id || deleteCasePending) return;
-    if (!guardCaseDetailWriteAccess('usunąć sprawy')) {
+    if (!guardCaseDetailWriteAccess('usunÄ…Ä‡ sprawy')) {
       setDeleteCaseOpen(false);
       return;
     }
@@ -3196,11 +3293,11 @@ async function handleConfirmDeleteCaseRecord() {
     try {
       setDeleteCasePending(true);
       await deleteCaseWithRelations(caseData.id);
-      toast.success('Sprawa usunięta');
+      toast.success('Sprawa usuniÄ™ta');
       setDeleteCaseOpen(false);
       navigate('/cases');
     } catch (error: any) {
-      toast.error(`Błąd: ${error?.message || 'Nie udało się usunąć sprawy.'}`);
+      toast.error(`BĹ‚Ä…d: ${error?.message || 'Nie udaĹ‚o siÄ™ usunÄ…Ä‡ sprawy.'}`);
     } finally {
       setDeleteCasePending(false);
     }
@@ -3243,7 +3340,7 @@ async function handleConfirmDeleteCaseRecord() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ładowanie sprawy...</span>
+            <span>Ĺadowanie sprawy...</span>
           </section>
         </main>
       </Layout>
@@ -3256,11 +3353,11 @@ async function handleConfirmDeleteCaseRecord() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-empty-card">
             <AlertCircle className="h-8 w-8" />
-            <h1>Nie można otworzyć sprawy</h1>
+            <h1>Nie moĹĽna otworzyÄ‡ sprawy</h1>
             <p>{loadError || 'Nie znaleziono tej sprawy w aktualnym workspace.'}</p>
             <Button type="button" variant="outline" onClick={() => navigate('/cases')}>
               <ArrowLeft className="h-4 w-4" />
-              Wróć do spraw
+              WrĂłÄ‡ do spraw
             </Button>
           </section>
         </main>
@@ -3286,7 +3383,7 @@ async function handleConfirmDeleteCaseRecord() {
 
             <h1 className="case-detail-header-composed-title" data-stage220a3-header-title="true">
               <span className="case-detail-header-client-name">{getCaseHeaderClientLabel(caseData)}</span>
-              <span className="case-detail-header-separator" aria-hidden="true">—</span>
+              <span className="case-detail-header-separator" aria-hidden="true">â€”</span>
               <span className="case-detail-header-case-name">{getCaseHeaderCaseLabel(caseData)}</span>
             </h1>
           </div>
@@ -3299,13 +3396,13 @@ async function handleConfirmDeleteCaseRecord() {
                 className="cf-vst-button cf-case-detail-restore-action-stage231b0-r7 cf-case-detail-restore-action-stage231b0-r8"
                 data-stage231b0-r7-restore-case-button="true"
                 data-stage231b0-r8-restore-case-button="true"
-                aria-label="Przywróć sprawę"
-                title="Przywróć sprawę"
+                aria-label="PrzywrĂłÄ‡ sprawÄ™"
+                title="PrzywrĂłÄ‡ sprawÄ™"
                 disabled={restoreCasePending}
                 onClick={handleConfirmReopenCaseRecord}
               >
                 <CheckCircle2 className="h-4 w-4" />
-                Przywróć sprawę
+                PrzywrĂłÄ‡ sprawÄ™
               </Button>
             ) : (
               <Button
@@ -3317,13 +3414,13 @@ async function handleConfirmDeleteCaseRecord() {
                 data-stage231b0-r7-close-case-button="true"
                 data-stage231b0-r8-close-case-button="true"
                 data-cf-vst-kind="status"
-                aria-label="Zamknij sprawę"
-                title="Zamknij sprawę"
+                aria-label="Zamknij sprawÄ™"
+                title="Zamknij sprawÄ™"
                 disabled={closeCasePending}
                 onClick={() => setCloseCaseOpen(true)}
               >
                 <Check className="h-4 w-4" />
-                Zamknij sprawę
+                Zamknij sprawÄ™
               </Button>
             )}
             <Button
@@ -3332,12 +3429,12 @@ async function handleConfirmDeleteCaseRecord() {
               className="cf-vst-button cf-vst-button-delete cf-case-detail-delete-emergency-action-stage231b0"
               data-case-detail-delete-action="true"
               data-stage231b0-emergency-delete-case-button="true"
-              aria-label="Awaryjnie usuń sprawę"
-              title="Awaryjnie usuń sprawę"
+              aria-label="Awaryjnie usuĹ„ sprawÄ™"
+              title="Awaryjnie usuĹ„ sprawÄ™"
               onClick={() => setDeleteCaseOpen(true)}
             >
               <Trash2 className={trashActionIconClass("h-4 w-4")} />
-              Usuń sprawę
+              UsuĹ„ sprawÄ™
             </Button>
           </div>
         </header>
@@ -3350,14 +3447,14 @@ async function handleConfirmDeleteCaseRecord() {
               data-stage228r10d-tabs-card="true"
               data-case-service-tabs-column="true"
               data-stage228r10d-card-spacing-lock="true"
-              aria-label="Obsługa, checklisty i historia sprawy"
+              aria-label="ObsĹ‚uga, checklisty i historia sprawy"
             >
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
           <span hidden data-stage220a11-marker="STAGE220A11_CASE_DETAIL_TABS_PRODUCTION" />
-          <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="Zakładki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
+          <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="ZakĹ‚adki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
             <TabsList className="case-detail-tabs case-detail-stage220a10-tabs">
               {[
-                { key: 'service' as CaseDetailTab, label: 'Obsługa', count: workItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
+                { key: 'service' as CaseDetailTab, label: 'ObsĹ‚uga', count: workItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
                 { key: 'checklists' as CaseDetailTab, label: 'Checklisty', count: items.length, icon: <ListChecks className="h-4 w-4" /> },
                 { key: 'history' as CaseDetailTab, label: 'Historia', count: caseHistoryItems.length, icon: <History className="h-4 w-4" /> },
               ].map((tab) => (
@@ -3385,14 +3482,14 @@ async function handleConfirmDeleteCaseRecord() {
               data-stage228r10d-tabs-card="true"
               data-case-service-tabs-column="true" data-stage231d0d-r6-tabs-inside-left-column="true"
               data-stage228r10d-card-spacing-lock="true"
-              aria-label="Obsługa, checklisty i historia sprawy"
+              aria-label="ObsĹ‚uga, checklisty i historia sprawy"
             >
             <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as CaseDetailTab)}>
           <span hidden data-stage220a11-marker="STAGE220A11_CASE_DETAIL_TABS_PRODUCTION" />
-          <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="Zakładki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
+          <nav className="case-detail-stage220a10-tabs-wrap case-detail-stage228r9-tabs-compact" aria-label="ZakĹ‚adki sprawy" data-stage220a10-tabs-top="true" data-stage228r9-tabs-compact="true">
             <TabsList className="case-detail-tabs case-detail-stage220a10-tabs">
               {[
-                { key: 'service' as CaseDetailTab, label: 'Obsługa', count: workItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
+                { key: 'service' as CaseDetailTab, label: 'ObsĹ‚uga', count: workItems.length, icon: <CheckCircle2 className="h-4 w-4" /> },
                 { key: 'checklists' as CaseDetailTab, label: 'Checklisty', count: items.length, icon: <ListChecks className="h-4 w-4" /> },
                 { key: 'history' as CaseDetailTab, label: 'Historia', count: caseHistoryItems.length, icon: <History className="h-4 w-4" /> },
               ].map((tab) => (
@@ -3410,25 +3507,25 @@ async function handleConfirmDeleteCaseRecord() {
             <section className="case-detail-section-card stage217-case-operation-workspace" data-stage217-case-operation-workspace="true" data-case-service-tab="true" data-stage220a11-tab-content="service">
               <div className="case-detail-section-head stage217-case-operation-head">
                 <div>
-                  <p className="case-detail-eyebrow">Obsługa sprawy</p>
-                  <h2>Działania sprawy</h2>
-                  <p>Najbliższy ruch, blokady, aktywne działania i rozliczenie w jednym miejscu.</p>
-                  <span hidden data-case-service-tab-groups="true">Najbliższe działania | Braki i blokady | Wszystkie aktywne</span>
+                  <p className="case-detail-eyebrow">ObsĹ‚uga sprawy</p>
+                  <h2>DziaĹ‚ania sprawy</h2>
+                  <p>NajbliĹĽszy ruch, blokady, aktywne dziaĹ‚ania i rozliczenie w jednym miejscu.</p>
+                  <span hidden data-case-service-tab-groups="true">NajbliĹĽsze dziaĹ‚ania | Braki i blokady | Wszystkie aktywne</span>
                 </div>
                 <div className="stage217-case-service-actions">
                   <Button type="button" variant="outline" onClick={openCaseNoteDialog}>
                     <StickyNote className="h-4 w-4" />
-                    Dodaj notatkę
+                    Dodaj notatkÄ™
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleStartCaseNoteDictationStage231H_R1D2}
                     data-stage231h-r1d2-voice-note-button="true"
-                    aria-label="Dyktuj notatkę"
+                    aria-label="Dyktuj notatkÄ™"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    {caseNoteDictationStatusStage231H_R1D2 === 'listening' ? 'Słucham...' : 'Dyktuj notatkę'}
+                    {caseNoteDictationStatusStage231H_R1D2 === 'listening' ? 'SĹ‚ucham...' : 'Dyktuj notatkÄ™'}
                   </Button>
                   {(caseNoteDictationTranscriptStage231H_R1D2 || caseNoteDictationErrorStage231H_R1D2) ? (
                     <p className="case-detail-muted-hint" data-stage231h-r1d2-voice-note-status="true">
@@ -3449,13 +3546,13 @@ async function handleConfirmDeleteCaseRecord() {
               <section className="stage220a8-case-actions-preview stage220a8-case-actions-accordion" data-stage220a8-single-actions-card="STAGE220A8_4_SINGLE_ACTIONS_CARD" data-stage220a8-case-actions-preview="true" data-stage220a8-case-actions-accordion="true">
                 <div className="stage220a8-case-actions-preview-head">
                   <div>
-                    <span className="stage220a8-case-actions-preview-label">Działania sprawy</span>
-                    <h3>Zadania, wydarzenia i braki przypięte do tej sprawy</h3>
+                    <span className="stage220a8-case-actions-preview-label">DziaĹ‚ania sprawy</span>
+                    <h3>Zadania, wydarzenia i braki przypiÄ™te do tej sprawy</h3>
                   </div>
                   <div className="stage220a8-case-actions-head-actions">
                     <span className="stage220a8-case-actions-preview-count">{workItems.length}</span>
                     <button type="button" className="stage220a8-show-all-button" onClick={() => setIsCaseActionsAllOpen(true)} data-stage220a8-show-all-actions="true">
-                      Pokaż wszystkie
+                      PokaĹĽ wszystkie
                     </button>
                   </div>
                 </div>
@@ -3469,23 +3566,23 @@ async function handleConfirmDeleteCaseRecord() {
                 {[
                   {
                     key: 'next' as CaseActionAccordionGroup,
-                    label: 'Najbliższe działania',
+                    label: 'NajbliĹĽsze dziaĹ‚ania',
                     count: workItems.filter((entry) => entry.kind === 'task' || entry.kind === 'event').length,
-                    empty: 'Brak zaplanowanych zadań i wydarzeń w tej sprawie.',
+                    empty: 'Brak zaplanowanych zadaĹ„ i wydarzeĹ„ w tej sprawie.',
                     items: workItems.filter((entry) => entry.kind === 'task' || entry.kind === 'event').slice(0, 5),
                   },
                   {
                     key: 'blockers' as CaseActionAccordionGroup,
                     label: 'Braki i blokady',
                     count: workItems.filter((entry) => entry.kind === 'missing').length,
-                    empty: 'Brak braków i blokad w tej sprawie.',
+                    empty: 'Brak brakĂłw i blokad w tej sprawie.',
                     items: workItems.filter((entry) => entry.kind === 'missing').slice(0, 5),
                   },
                   {
                     key: 'active' as CaseActionAccordionGroup,
                     label: 'Wszystkie aktywne',
                     count: workItems.length,
-                    empty: 'Brak działań przypiętych bezpośrednio do tej sprawy.',
+                    empty: 'Brak dziaĹ‚aĹ„ przypiÄ™tych bezpoĹ›rednio do tej sprawy.',
                     items: workItems.slice(0, 5),
                   },
                 ].map((group) => {
@@ -3532,7 +3629,7 @@ async function handleConfirmDeleteCaseRecord() {
               <div className="case-detail-section-head stage219-case-notes-head" data-stage219-case-notes-head="true">
                 <div>
                   <h2>Notatki sprawy</h2>
-                  <p>Ostatnie notatki są tutaj. Pełna lista jest pod przyciskiem „Wszystkie notatki”.</p>
+                  <p>Ostatnie notatki sÄ… tutaj. PeĹ‚na lista jest pod przyciskiem â€žWszystkie notatkiâ€ť.</p>
                 </div>
                 <div className="stage219-case-notes-actions" data-stage219-case-notes-actions="true">
 
@@ -3548,17 +3645,17 @@ async function handleConfirmDeleteCaseRecord() {
                     data-stage219-add-note="true"
                   >
                     <StickyNote className="h-4 w-4" />
-                    Dodaj notatkę
+                    Dodaj notatkÄ™
                   </Button>
                   <Button
                     type="button"
                     variant="outline"
                     onClick={handleStartCaseNoteDictationStage231H_R1D2}
                     data-stage231h-r1d2-notes-panel-voice-note-button="true"
-                    aria-label="Dyktuj notatkę"
+                    aria-label="Dyktuj notatkÄ™"
                   >
                     <MessageSquare className="h-4 w-4" />
-                    {caseNoteDictationStatusStage231H_R1D2 === 'listening' ? 'Słucham...' : 'Dyktuj notatkę'}
+                    {caseNoteDictationStatusStage231H_R1D2 === 'listening' ? 'SĹ‚ucham...' : 'Dyktuj notatkÄ™'}
                   </Button>
                   {(caseNoteDictationTranscriptStage231H_R1D2 || caseNoteDictationErrorStage231H_R1D2) ? (
                     <p className="case-detail-muted-hint" data-stage231h-r1d2-notes-panel-voice-note-status="true">
@@ -3577,7 +3674,7 @@ async function handleConfirmDeleteCaseRecord() {
                 </div>
               </div>
               {caseNoteItems.length === 0 ? (
-                <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszą notatkę z szybkich akcji.</div>
+                <div className="case-detail-light-empty">Brak notatek przy tej sprawie. Dodaj pierwszÄ… notatkÄ™ z szybkich akcji.</div>
               ) : (
                 <div className="stage217-case-notes-list">
                   {caseNoteItems.slice(0, 5).map((note) => (
@@ -3599,9 +3696,9 @@ async function handleConfirmDeleteCaseRecord() {
         <section className="case-detail-note-follow-up-panel" data-case-note-follow-up-prompt="true">
           <div className="case-detail-note-follow-up-head">
             <div>
-              <p className="case-detail-eyebrow">Następny ruch</p>
-              <h3>Ustawić follow-up do tej notatki?</h3>
-              <p>Notatka jest zapisana. Teraz możesz od razu przypiąć kolejny ruch do tej sprawy.</p>
+              <p className="case-detail-eyebrow">NastÄ™pny ruch</p>
+              <h3>UstawiÄ‡ follow-up do tej notatki?</h3>
+              <p>Notatka jest zapisana. Teraz moĹĽesz od razu przypiÄ…Ä‡ kolejny ruch do tej sprawy.</p>
             </div>
             <Button type="button" variant="ghost" onClick={closeNoteFollowUpPrompt} data-case-note-follow-up-dismiss="true">
               Nie teraz
@@ -3609,15 +3706,15 @@ async function handleConfirmDeleteCaseRecord() {
           </div>
           <div className="case-detail-note-follow-up-preview">{pendingNoteFollowUp.note}</div>
           <div className="case-detail-note-follow-up-actions">
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">Dziś</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('today')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="today">DziĹ›</Button>
             <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('tomorrow')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="tomorrow">Jutro</Button>
             <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('two_days')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="two_days">Za 2 dni</Button>
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzień</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('week')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="week">Za tydzieĹ„</Button>
           </div>
           <div className="case-detail-note-follow-up-custom">
-            <Label htmlFor="case-note-follow-up-at">Własny termin</Label>
+            <Label htmlFor="case-note-follow-up-at">WĹ‚asny termin</Label>
             <Input id="case-note-follow-up-at" type="datetime-local" value={customNoteFollowUpAt} onChange={(event) => setCustomNoteFollowUpAt(event.target.value)} data-case-note-follow-up-custom-input="true" />
-            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw własny</Button>
+            <Button type="button" onClick={() => handleCreateCaseNoteFollowUp('custom')} disabled={isCreatingNoteFollowUp} data-case-note-follow-up-choice="custom">Ustaw wĹ‚asny</Button>
           </div>
         </section>
       ) : null}
@@ -3645,14 +3742,14 @@ async function handleConfirmDeleteCaseRecord() {
                         <div>
                           <span className="case-detail-kind-pill">{getItemTypeLabel(item.type)}</span>
                           <h3>{item.title || 'Element sprawy'}</h3>
-                          <p>{item.description || 'Bez opisu'} · Termin: {formatDate(item.dueDate)}</p>
+                          <p>{item.description || 'Bez opisu'} Â· Termin: {formatDate(item.dueDate)}</p>
                         </div>
                         <span className={`case-detail-pill ${getStatusClass(item.status)}`}>{getItemStatusLabel(item.status)}</span>
                         <div className="case-detail-row-actions">
                           <button type="button" onClick={() => handleItemStatusChange(item, 'missing')}>Brak</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>Wysłane</button>
+                          <button type="button" onClick={() => handleItemStatusChange(item, 'uploaded')}>WysĹ‚ane</button>
                           <button type="button" onClick={() => handleItemStatusChange(item, 'accepted')}>Akceptuj</button>
-                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>Odrzuć</button>
+                          <button type="button" onClick={() => handleItemStatusChange(item, 'rejected')}>OdrzuÄ‡</button>
                         </div>
                       </article>
                     ))
@@ -3701,22 +3798,22 @@ async function handleConfirmDeleteCaseRecord() {
                 <strong>Rozliczenie sprawy</strong>
               </div>
               <dl className="cf-finance-scope-card__metrics" data-stage220a31-finance-billing-summary="true">
-                <div data-cf-finance-tone="transaction" data-stage220a31-finance-transaction-value="true"><dt>Wartość transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-cf-finance-tone="commission" data-stage220a31-finance-commission-due="true"><dt>Prowizja należna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-cf-finance-tone="paid" data-stage220a31-finance-commission-paid="true"><dt>Wpłacono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
-                <div data-cf-finance-tone="remaining" data-stage220a31-finance-commission-left="true"><dt>Pozostało do zapłaty</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="transaction" data-stage220a31-finance-transaction-value="true"><dt>WartoĹ›Ä‡ transakcji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.contractValue, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="commission" data-stage220a31-finance-commission-due="true"><dt>Prowizja naleĹĽna</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="paid" data-stage220a31-finance-commission-paid="true"><dt>WpĹ‚acono prowizji</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionPaidAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
+                <div data-cf-finance-tone="remaining" data-stage220a31-finance-commission-left="true"><dt>PozostaĹ‚o do zapĹ‚aty</dt><dd>{formatMoney(caseFinanceSourceStage220A26.commissionRemainingAmount, caseFinanceSourceStage220A26.currency)}</dd></div>
                 <div data-cf-finance-tone="cost" data-stage231d0d-r4-settlement-costs-incurred="true"><dt>Koszty poniesione</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsIncurredAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div data-cf-finance-tone="cost" data-stage231d0d-r4-settlement-costs-to-reimburse="true"><dt>Koszty do zwrotu</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsToReimburseAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
-                <div data-cf-finance-tone="reimbursed" data-stage231d0d-r4-settlement-costs-reimbursed="true"><dt>Koszty zwrócone</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
+                <div data-cf-finance-tone="reimbursed" data-stage231d0d-r4-settlement-costs-reimbursed="true"><dt>Koszty zwrĂłcone</dt><dd>{formatMoney(caseCostsSummaryStage231D2.costsReimbursedAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div data-cf-finance-tone="total" data-stage231d0d-r4-settlement-total-to-collect="true"><dt>Razem do pobrania</dt><dd>{formatMoney(caseCostsSummaryStage231D2.totalToCollectAmount, caseCostsSummaryStage231D2.currency)}</dd></div>
                 <div hidden data-stage220a31-legacy-finance-guard-compat="true">{formatMoney(caseFinanceSourceStage220A26.clientPaidAmount, caseFinanceSourceStage220A26.currency)} {formatMoney(caseFinanceSourceStage220A26.remainingAmount, caseFinanceSourceStage220A26.currency)}</div>
               </dl>
               <div className="cf-finance-scope-card__actions case-finance-panel-actions" data-fin11-case-right-finance-actions="true">
                 <Button type="button" size="sm" variant="outline" onClick={openCaseFinanceEditModal} disabled={isFinanceSaving}>
-                  Edytuj wartość/prowizję
+                  Edytuj wartoĹ›Ä‡/prowizjÄ™
                 </Button>
                 <Button type="button" size="sm" variant="outline" onClick={() => openCaseFinancePaymentModal('commission')} disabled={isFinanceSaving} data-stage228r7-add-commission-payment="true">
-                  Dodaj wpłatę prowizji
+                  Dodaj wpĹ‚atÄ™ prowizji
                 </Button>
                 <Button
                   type="button"
@@ -3735,7 +3832,7 @@ async function handleConfirmDeleteCaseRecord() {
                   disabled={financeCorrectionRowsStage231H_R1C.length === 0}
                   data-stage220a27b-open-payment-history-modal="true"
                 >
-                  Koryguj wpłatę/koszt
+                  Koryguj wpĹ‚atÄ™/koszt
                 </Button>
               </div>
                             <span hidden data-case-settlement-payment-summary-deprecated="true" />
@@ -3769,9 +3866,9 @@ async function handleConfirmDeleteCaseRecord() {
         onOpenChange={(open) => {
           if (!open && !deleteWorkItemPending) setDeleteWorkItemTarget(null);
         }}
-        title="Usunąć działanie?"
-        description={deleteWorkItemTarget ? `${getWorkKindLabel(deleteWorkItemTarget.kind)} „${deleteWorkItemTarget.title}” zostanie usunięte z tej sprawy. Tej akcji nie można cofnąć.` : 'Usunąć wybrane działanie?'}
-        confirmLabel="Usuń"
+        title="UsunÄ…Ä‡ dziaĹ‚anie?"
+        description={deleteWorkItemTarget ? `${getWorkKindLabel(deleteWorkItemTarget.kind)} â€ž${deleteWorkItemTarget.title}â€ť zostanie usuniÄ™te z tej sprawy. Tej akcji nie moĹĽna cofnÄ…Ä‡.` : 'UsunÄ…Ä‡ wybrane dziaĹ‚anie?'}
+        confirmLabel="UsuĹ„"
         cancelLabel="Anuluj"
         confirmTone="destructive"
         pending={deleteWorkItemPending}
@@ -3782,12 +3879,12 @@ async function handleConfirmDeleteCaseRecord() {
       <Dialog open={isCaseActionsAllOpen} onOpenChange={setIsCaseActionsAllOpen}>
         <DialogContent className="stage220a8-case-actions-all-modal sm:max-w-4xl" data-stage220a8-case-actions-all-modal="true" aria-describedby={undefined}>
           <DialogHeader>
-            <DialogTitle>Wszystkie działania sprawy</DialogTitle>
-            <DialogDescription>Zadania, wydarzenia i braki przypięte bezpośrednio do tej sprawy.</DialogDescription>
+            <DialogTitle>Wszystkie dziaĹ‚ania sprawy</DialogTitle>
+            <DialogDescription>Zadania, wydarzenia i braki przypiÄ™te bezpoĹ›rednio do tej sprawy.</DialogDescription>
           </DialogHeader>
 
           {workItems.length === 0 ? (
-            <div className="case-detail-light-empty">Brak działań przypiętych bezpośrednio do tej sprawy.</div>
+            <div className="case-detail-light-empty">Brak dziaĹ‚aĹ„ przypiÄ™tych bezpoĹ›rednio do tej sprawy.</div>
           ) : (
             <div className="case-detail-work-list stage220a8-case-actions-all-list">
               {workItems.map((entry) => (
@@ -3826,7 +3923,7 @@ async function handleConfirmDeleteCaseRecord() {
         >
           <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30 case-all-notes-modal-stage231d0d-r2__header">
             <DialogTitle>Wszystkie notatki sprawy</DialogTitle>
-            <DialogDescription>Notatki są źródłem prawdy w activities. Follow-up po notatce jest osobnym zadaniem w tasks.</DialogDescription>
+            <DialogDescription>Notatki sÄ… ĹşrĂłdĹ‚em prawdy w activities. Follow-up po notatce jest osobnym zadaniem w tasks.</DialogDescription>
           </DialogHeader>
 
           {caseNoteActivityRowsStage231H_R1D2_R6.length === 0 ? (
@@ -3843,7 +3940,7 @@ async function handleConfirmDeleteCaseRecord() {
                       <strong>{getCaseNoteTitleStage231H_R1D2_R6(activity)}</strong>
                       <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1d2-r6-note-meta="true">
                         <span>Data: {formatDateTime(activity.createdAt, 'Bez daty')}</span>
-                        <span>Źródło: activities</span>
+                        <span>ĹąrĂłdĹ‚o: activities</span>
                       </div>
                       {isEditing ? (
                         <Textarea
@@ -3872,7 +3969,7 @@ async function handleConfirmDeleteCaseRecord() {
                           </Button>
                           <Button type="button" size="sm" variant="outline" className="cf-vst-button cf-vst-button-delete case-payment-history-modal-stage220a30__delete" onClick={() => handleDeleteCaseNoteStage231H_R1D2_R6(activity)} disabled={!noteId || caseNoteDeleteSubmittingIdStage231H_R1D2_R6 === noteId} data-stage231h-r1d2-r6-delete-note="true">
                             <Trash2 className="h-4 w-4" />
-                            Usuń
+                            UsuĹ„
                           </Button>
                         </>
                       )}
@@ -3887,7 +3984,7 @@ async function handleConfirmDeleteCaseRecord() {
             <Button type="button" variant="outline" onClick={() => setIsCaseAllNotesOpenStage231D0D(false)}>Zamknij</Button>
             <Button type="button" onClick={openCaseNoteDialog} data-case-all-notes-add-note="true">
               <StickyNote className="h-4 w-4" />
-              Dodaj notatkę
+              Dodaj notatkÄ™
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -3898,9 +3995,9 @@ async function handleConfirmDeleteCaseRecord() {
         onOpenChange={(open) => {
           if (!open && !closeCasePending) setCloseCaseOpen(false);
         }}
-        title="Zamknąć sprawę?"
-        description="Sprawa zostanie zamknięta. Historia i rozliczenia zostaną zachowane."
-        confirmLabel={closeCasePending ? 'Zamykanie...' : 'Zamknij sprawę'}
+        title="ZamknÄ…Ä‡ sprawÄ™?"
+        description="Sprawa zostanie zamkniÄ™ta. Historia i rozliczenia zostanÄ… zachowane."
+        confirmLabel={closeCasePending ? 'Zamykanie...' : 'Zamknij sprawÄ™'}
         cancelLabel="Anuluj"
         confirmTone="default"
         pending={closeCasePending}
@@ -3911,9 +4008,9 @@ async function handleConfirmDeleteCaseRecord() {
       <ConfirmDialog
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}
-        title="Awaryjnie usunąć sprawę?"
-        description={`Awaryjne usunięcie sprawy „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” usunie rekord i powiązania. Normalne zakończenie procesu wykonuj przez Zamknij sprawę.`}
-        confirmLabel="Awaryjnie usuń"
+        title="Awaryjnie usunÄ…Ä‡ sprawÄ™?"
+        description={`Awaryjne usuniÄ™cie sprawy â€ž${getCaseHeaderClientLabel(caseData)} â€” ${getCaseHeaderCaseLabel(caseData)}â€ť usunie rekord i powiÄ…zania. Normalne zakoĹ„czenie procesu wykonuj przez Zamknij sprawÄ™.`}
+        confirmLabel="Awaryjnie usuĹ„"
         cancelLabel="Anuluj"
         confirmTone="destructive"
         pending={deleteCasePending}
@@ -3925,9 +4022,9 @@ async function handleConfirmDeleteCaseRecord() {
         onOpenChange={(open) => {
           if (!open && !paymentDeleteSubmittingStage220A29) setPaymentDeleteTargetStage220A29(null);
         }}
-        title="Usunąć wpłatę?"
-        description={paymentDeleteTargetStage220A29 ? `${getCasePaymentLabelStage220A27(paymentDeleteTargetStage220A29)} ${formatMoney(getCasePaymentSignedAmountStage220A27(paymentDeleteTargetStage220A29), paymentDeleteTargetStage220A29.currency || caseFinanceSourceStage220A26.currency)} zostanie usunięta z historii i rozliczenia sprawy. Tej akcji nie można cofnąć.` : 'Usunąć wybraną wpłatę?'}
-        confirmLabel="Usuń wpłatę"
+        title="UsunÄ…Ä‡ wpĹ‚atÄ™?"
+        description={paymentDeleteTargetStage220A29 ? `${getCasePaymentLabelStage220A27(paymentDeleteTargetStage220A29)} ${formatMoney(getCasePaymentSignedAmountStage220A27(paymentDeleteTargetStage220A29), paymentDeleteTargetStage220A29.currency || caseFinanceSourceStage220A26.currency)} zostanie usuniÄ™ta z historii i rozliczenia sprawy. Tej akcji nie moĹĽna cofnÄ…Ä‡.` : 'UsunÄ…Ä‡ wybranÄ… wpĹ‚atÄ™?'}
+        confirmLabel="UsuĹ„ wpĹ‚atÄ™"
         cancelLabel="Anuluj"
         confirmTone="destructive"
         pending={paymentDeleteSubmittingStage220A29}
@@ -3942,7 +4039,7 @@ async function handleConfirmDeleteCaseRecord() {
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30" data-stage231d2-case-cost-dialog="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
             <DialogTitle>Dodaj koszt sprawy</DialogTitle>
-            <DialogDescription>Koszt zostanie przypięty do tej sprawy. Jeśli zaznaczysz koszt do zwrotu, zostanie doliczony do kwoty razem do pobrania.</DialogDescription>
+            <DialogDescription>Koszt zostanie przypiÄ™ty do tej sprawy. JeĹ›li zaznaczysz koszt do zwrotu, zostanie doliczony do kwoty razem do pobrania.</DialogDescription>
           </DialogHeader>
           <div className="case-detail-payment-form case-finance-source-form-stage220a30">
             <div>
@@ -3952,7 +4049,7 @@ async function handleConfirmDeleteCaseRecord() {
             <div>
               <Label htmlFor="case-cost-kind-stage231d2">Typ kosztu</Label>
               <select id="case-cost-kind-stage231d2" value={caseCostDraftStage231D2.kind} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, kind: event.target.value }))}>
-                <option value="court_fee">Opłata sądowa</option>
+                <option value="court_fee">OpĹ‚ata sÄ…dowa</option>
                 <option value="notary">Notariusz</option>
                 <option value="travel">Dojazd</option>
                 <option value="document">Dokumenty</option>
@@ -3964,17 +4061,17 @@ async function handleConfirmDeleteCaseRecord() {
             {caseCostDraftStage231D2.kind === 'other' ? (
               <div data-stage231h-r1g-add-cost-other-name="true">
                 <Label htmlFor="case-cost-other-name-stage231h-r1g">Nazwa kosztu</Label>
-                <Input id="case-cost-other-name-stage231h-r1g" value={caseCostDraftStage231D2.otherName} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, otherName: event.target.value }))} placeholder="np. opłata parkingowa" />
+                <Input id="case-cost-other-name-stage231h-r1g" value={caseCostDraftStage231D2.otherName} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, otherName: event.target.value }))} placeholder="np. opĹ‚ata parkingowa" />
               </div>
             ) : null}
             <label className="case-finance-edit-field case-cost-reimbursable-toggle-stage231h-r1g" data-stage231h-r1g-add-cost-reimbursable-toggle="true">
               <span>Koszt do zwrotu</span>
               <input type="checkbox" checked={caseCostDraftStage231D2.reimbursable} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, reimbursable: event.target.checked }))} />
-              <small>{caseCostDraftStage231D2.reimbursable ? 'Będzie doliczony do Kosztów do zwrotu i Razem do pobrania.' : 'Zostanie tylko w Kosztach poniesionych, bez doliczania do pobrania.'}</small>
+              <small>{caseCostDraftStage231D2.reimbursable ? 'BÄ™dzie doliczony do KosztĂłw do zwrotu i Razem do pobrania.' : 'Zostanie tylko w Kosztach poniesionych, bez doliczania do pobrania.'}</small>
             </label>
             <div>
               <Label htmlFor="case-cost-note-stage231d2">Notatka</Label>
-              <Textarea id="case-cost-note-stage231d2" value={caseCostDraftStage231D2.note} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, note: event.target.value }))} placeholder="np. wypis z rejestru, opłata za dokument" />
+              <Textarea id="case-cost-note-stage231d2" value={caseCostDraftStage231D2.note} onChange={(event) => setCaseCostDraftStage231D2((draft) => ({ ...draft, note: event.target.value }))} placeholder="np. wypis z rejestru, opĹ‚ata za dokument" />
             </div>
           </div>
           <DialogFooter className={modalFooterClass('event-form-footer case-finance-source-footer-stage220a30')}>
@@ -3990,8 +4087,8 @@ async function handleConfirmDeleteCaseRecord() {
       <Dialog open={isCasePaymentOpen} onOpenChange={setIsCasePaymentOpen}>
         <DialogContent data-case-payment-dialog="true" data-stage220a26-case-payment-dialog="true" data-cf-vst-dialog="true" className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--payment" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Dodaj wpłatę</DialogTitle>
-            <DialogDescription>Wpisz kwotę, datę i krótki opis. Po zapisie wpłata trafi do rozliczenia sprawy.</DialogDescription>
+            <DialogTitle>Dodaj wpĹ‚atÄ™</DialogTitle>
+            <DialogDescription>Wpisz kwotÄ™, datÄ™ i krĂłtki opis. Po zapisie wpĹ‚ata trafi do rozliczenia sprawy.</DialogDescription>
           </DialogHeader>
           <div className="case-detail-payment-form case-finance-source-form-stage220a30 case-finance-source-form-stage220a30--legacy-payment">
             <div>
@@ -4008,7 +4105,7 @@ async function handleConfirmDeleteCaseRecord() {
             </div>
             <span hidden data-stage231h-r1d-commission-payment-defaults="status-fully-paid-type-payment" />
             <div>
-              <Label htmlFor="case-payment-note">Notatka do wpłaty</Label>
+              <Label htmlFor="case-payment-note">Notatka do wpĹ‚aty</Label>
               <Textarea
                 id="case-payment-note"
                 value={casePaymentDraft.note}
@@ -4023,7 +4120,7 @@ async function handleConfirmDeleteCaseRecord() {
             </Button>
             <Button type="button" onClick={handleCreateCasePayment} disabled={casePaymentSubmitting || !hasAccess}>
               {casePaymentSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
-              Zapisz wpłatę
+              Zapisz wpĹ‚atÄ™
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -4038,7 +4135,7 @@ async function handleConfirmDeleteCaseRecord() {
           data-cf-vst-dialog="true"
          aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-history-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Koryguj wpłatę/koszt</DialogTitle>
+            <DialogTitle>Koryguj wpĹ‚atÄ™/koszt</DialogTitle>
           </DialogHeader>
 
           <div className="client-case-form-section case-payment-history-modal-stage220a27b__context case-payment-history-modal-stage220a28-context" data-stage220a27b-payment-history-context="case">
@@ -4047,7 +4144,7 @@ async function handleConfirmDeleteCaseRecord() {
           </div>
 
           {visibleCasePayments.length === 0 ? (
-            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpłat, korekt i kosztów przy tej sprawie.</p>
+            <p className="case-payment-history-modal-stage220a27b__empty">Brak wpĹ‚at, korekt i kosztĂłw przy tej sprawie.</p>
           ) : (
             <div className="case-payment-history-modal-stage220a27b__list">
               {financeCorrectionRowsStage231H_R1C.map((row) => {
@@ -4065,8 +4162,8 @@ async function handleConfirmDeleteCaseRecord() {
                         <strong>Koszt: {getCaseCostDisplayLabelStage231H_R1G(cost)}</strong>
                         <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1c-cost-meta="true">
                           <span>Data: {formatDateTime(getCaseCostDateStage231H_R1C(cost), 'Bez daty')}</span>
-                          {/* STAGE231H_R1D: status kosztu jest dostępny w korekcie, ale nie zabiera miejsca na liście. */}
-                          <span>Wartość: {formatMoney(-costAmount, costCurrency)}</span>
+                          {/* STAGE231H_R1D: status kosztu jest dostÄ™pny w korekcie, ale nie zabiera miejsca na liĹ›cie. */}
+                          <span>WartoĹ›Ä‡: {formatMoney(-costAmount, costCurrency)}</span>
                         </div>
                         {getCaseCostNoteStage231H_R1C(cost) ? <p>{getCaseCostNoteStage231H_R1C(cost)}</p> : null}
                       </div>
@@ -4092,7 +4189,7 @@ async function handleConfirmDeleteCaseRecord() {
                           data-stage231h-r1c-delete-cost-from-history="true"
                         >
                           <Trash2 className="h-4 w-4" />
-                          Usuń
+                          UsuĹ„
                         </Button>
                       </div>
                     </article>
@@ -4113,7 +4210,7 @@ async function handleConfirmDeleteCaseRecord() {
                       <strong>{getCasePaymentLabelStage220A27(payment)}</strong>
                       <div className="case-payment-history-modal-stage220a27b__meta" data-stage220a27b-r2-payment-meta="true">
                         <span>Data: {formatDateTime(getCasePaymentDateStage220A27(payment), 'Bez daty')}</span>
-                        <span>Wartość: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
+                        <span>WartoĹ›Ä‡: {formatMoney(signedAmount, payment.currency || caseFinanceSourceStage220A26.currency)}</span>
                       </div>
                       {payment.note ? <p>{payment.note}</p> : null}
                     </div>
@@ -4141,7 +4238,7 @@ async function handleConfirmDeleteCaseRecord() {
                         data-stage220a29-delete-payment-from-history="true"
                       >
                         <Trash2 className="h-4 w-4" />
-                        Usuń
+                        UsuĹ„
                       </Button>
                     </div>
                   </article>
@@ -4174,23 +4271,23 @@ async function handleConfirmDeleteCaseRecord() {
           data-cf-vst-dialog="true"
          aria-describedby={undefined}>
           <DialogHeader className="client-case-form-header case-payment-correction-modal-stage220a28-header event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Korekta wpłaty prowizji</DialogTitle>
+            <DialogTitle>Korekta wpĹ‚aty prowizji</DialogTitle>
           </DialogHeader>
 
           <div className="case-payment-correction-modal-stage220a27__summary" data-stage220a27-payment-correction-summary="true">
             <div>
-              <span>Oryginalna wpłata</span>
+              <span>Oryginalna wpĹ‚ata</span>
               <strong>{formatMoney(getPaymentAmount((paymentCorrectionTargetStage220A27 || {}) as CasePaymentRecord), paymentCorrectionTargetStage220A27?.currency || caseFinanceSourceStage220A26.currency)}</strong>
             </div>
             <div>
-              <span>Data oryginału</span>
+              <span>Data oryginaĹ‚u</span>
               <strong>{formatDateTime(getCasePaymentDateStage220A27((paymentCorrectionTargetStage220A27 || {}) as CasePaymentRecord), 'Bez daty')}</strong>
             </div>
           </div>
 
           <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
-              <span>Kwota wpłaty</span>
+              <span>Kwota wpĹ‚aty</span>
               <Input
                 inputMode="decimal"
                 value={paymentCorrectionFormStage220A27.amount}
@@ -4200,7 +4297,7 @@ async function handleConfirmDeleteCaseRecord() {
               />
             </label>
             <label className="case-finance-edit-field">
-              <span>Data wpłaty</span>
+              <span>Data wpĹ‚aty</span>
               <Input
                 type="datetime-local"
                 value={paymentCorrectionFormStage220A27.paidAt}
@@ -4209,11 +4306,11 @@ async function handleConfirmDeleteCaseRecord() {
               />
             </label>
             <label className="case-finance-edit-field case-finance-edit-field--wide">
-              <span>Opis / dopisek do wpłaty</span>
+              <span>Opis / dopisek do wpĹ‚aty</span>
               <Textarea
                 value={paymentCorrectionFormStage220A27.reason}
                 onChange={(event) => setPaymentCorrectionFormStage220A27((current) => ({ ...current, reason: event.target.value }))}
-                placeholder="Np. za co jest wpłata, korekta daty albo dopisek do prowizji"
+                placeholder="Np. za co jest wpĹ‚ata, korekta daty albo dopisek do prowizji"
                 data-stage231h-r1f-payment-correction-note="true"
               />
             </label>
@@ -4238,7 +4335,7 @@ async function handleConfirmDeleteCaseRecord() {
               data-stage231h-r1f-save-payment-correction="true"
               data-stage231h-r1f4-payment-correction-normalized-paid="true"
             >
-              {paymentCorrectionSubmittingStage220A27 ? 'Zapisywanie...' : 'Zapisz wpłatę'}
+              {paymentCorrectionSubmittingStage220A27 ? 'Zapisywanie...' : 'Zapisz wpĹ‚atÄ™'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -4283,7 +4380,7 @@ async function handleConfirmDeleteCaseRecord() {
                 onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, kind: event.target.value }))}
                 data-stage231h-r1f-cost-correction-kind="true"
               >
-                <option value="court_fee">Opłata sądowa</option>
+                <option value="court_fee">OpĹ‚ata sÄ…dowa</option>
                 <option value="notary">Notariusz</option>
                 <option value="travel">Dojazd</option>
                 <option value="document">Dokumenty</option>
@@ -4298,7 +4395,7 @@ async function handleConfirmDeleteCaseRecord() {
                 <Input
                   value={caseCostCorrectionFormStage231H_R1C.otherName}
                   onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, otherName: event.target.value }))}
-                  placeholder="np. opłata parkingowa"
+                  placeholder="np. opĹ‚ata parkingowa"
                 />
               </label>
             ) : null}
@@ -4334,7 +4431,7 @@ async function handleConfirmDeleteCaseRecord() {
                 }))}
                 data-stage231h-r1g-cost-correction-reimbursable-flag="true"
               />
-              <small>{caseCostCorrectionFormStage231H_R1C.reimbursable ? 'Doliczany do kosztów do zwrotu i razem do pobrania.' : 'Tylko koszt poniesiony, bez doliczania do pobrania.'}</small>
+              <small>{caseCostCorrectionFormStage231H_R1C.reimbursable ? 'Doliczany do kosztĂłw do zwrotu i razem do pobrania.' : 'Tylko koszt poniesiony, bez doliczania do pobrania.'}</small>
             </label>
             {caseCostCorrectionFormStage231H_R1C.reimbursable ? (
               <label className="case-finance-edit-field">
@@ -4349,7 +4446,7 @@ async function handleConfirmDeleteCaseRecord() {
               </label>
             ) : null}
             <label className="case-finance-edit-field">
-              <span>Koszt zwrócony</span>
+              <span>Koszt zwrĂłcony</span>
               <Input
                 inputMode="decimal"
                 value={caseCostCorrectionFormStage231H_R1C.reimbursedAmount}
@@ -4369,17 +4466,17 @@ async function handleConfirmDeleteCaseRecord() {
                 <option value="planned">Planowany</option>
                 <option value="incurred">Poniesiony</option>
                 <option value="submitted">Do zwrotu</option>
-                <option value="partially_reimbursed">Częściowo zwrócony</option>
-                <option value="reimbursed">Zwrócony</option>
+                <option value="partially_reimbursed">CzÄ™Ĺ›ciowo zwrĂłcony</option>
+                <option value="reimbursed">ZwrĂłcony</option>
                 <option value="cancelled">Anulowany</option>
               </select>
             </label>
             <label className="case-finance-edit-field case-finance-edit-field--wide">
-              <span>Notatka / powód korekty</span>
+              <span>Notatka / powĂłd korekty</span>
               <Textarea
                 value={caseCostCorrectionFormStage231H_R1C.note}
                 onChange={(event) => setCaseCostCorrectionFormStage231H_R1C((current) => ({ ...current, note: event.target.value }))}
-                placeholder="Np. korekta kwoty, zwrot kosztu, błędnie dodany koszt"
+                placeholder="Np. korekta kwoty, zwrot kosztu, bĹ‚Ä™dnie dodany koszt"
                 data-stage231h-r1c-cost-correction-note="true"
               />
             </label>
@@ -4403,7 +4500,7 @@ async function handleConfirmDeleteCaseRecord() {
               disabled={caseCostCorrectionSubmittingStage231H_R1C || fin11Amount(caseCostCorrectionFormStage231H_R1C.amount) <= 0}
               data-stage231h-r1c-save-cost-correction="true"
             >
-              {caseCostCorrectionSubmittingStage231H_R1C ? 'Zapisywanie...' : 'Zapisz korektę kosztu'}
+              {caseCostCorrectionSubmittingStage231H_R1C ? 'Zapisywanie...' : 'Zapisz korektÄ™ kosztu'}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -4414,9 +4511,9 @@ async function handleConfirmDeleteCaseRecord() {
         onOpenChange={(open) => {
           if (!open && !caseCostDeleteSubmittingStage231H_R1C) setCaseCostDeleteTargetStage231H_R1C(null);
         }}
-        title="Usunąć koszt?"
-        description={caseCostDeleteTargetStage231H_R1C ? 'Koszt ' + formatMoney(-getCaseCostAmountStage231H_R1C(caseCostDeleteTargetStage231H_R1C), getCaseCostCurrencyStage231H_R1C(caseCostDeleteTargetStage231H_R1C, caseFinanceSourceStage220A26.currency)) + ' zostanie usunięty z rozliczenia sprawy. Tej akcji nie można cofnąć.' : 'Usunąć wybrany koszt?'}
-        confirmLabel="Usuń koszt"
+        title="UsunÄ…Ä‡ koszt?"
+        description={caseCostDeleteTargetStage231H_R1C ? 'Koszt ' + formatMoney(-getCaseCostAmountStage231H_R1C(caseCostDeleteTargetStage231H_R1C), getCaseCostCurrencyStage231H_R1C(caseCostDeleteTargetStage231H_R1C, caseFinanceSourceStage220A26.currency)) + ' zostanie usuniÄ™ty z rozliczenia sprawy. Tej akcji nie moĹĽna cofnÄ…Ä‡.' : 'UsunÄ…Ä‡ wybrany koszt?'}
+        confirmLabel="UsuĹ„ koszt"
         cancelLabel="Anuluj"
         confirmTone="destructive"
         pending={caseCostDeleteSubmittingStage231H_R1C}
@@ -4428,13 +4525,13 @@ async function handleConfirmDeleteCaseRecord() {
       <Dialog open={isFinanceEditOpen} onOpenChange={setIsFinanceEditOpen}>
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-stage220a36r7-case-detail-legacy-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>Wartość i prowizja sprawy</DialogTitle>
-            <DialogDescription>Ustaw sposób liczenia prowizji. Szczegóły są pod ikonami „?”.</DialogDescription>
+            <DialogTitle>WartoĹ›Ä‡ i prowizja sprawy</DialogTitle>
+            <DialogDescription>Ustaw sposĂłb liczenia prowizji. SzczegĂłĹ‚y sÄ… pod ikonami â€ž?â€ť.</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form case-finance-source-form-stage220a30 case-finance-edit-form--commission-r10 case-finance-edit-form--commission-r11" data-stage220a36r7-case-detail-finance-order="true" data-stage220a36r10-commission-layout="true" data-stage220a36r12-compact-width-polish="true" data-stage220a36r11-compact-tooltips="true">
             <div className="case-finance-edit-top-row-stage220a36r10" data-stage220a36r10-top-row="true">
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-mode">
-                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Rodzaj prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Kwota stała: wpisujesz prowizję ręcznie. Procent: prowizja liczy się ze stawki i wartości transakcji/zlecenia." aria-label="Wyjaśnienie rodzaju prowizji" tabIndex={0}>?</span></span>
+                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Rodzaj prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Kwota staĹ‚a: wpisujesz prowizjÄ™ rÄ™cznie. Procent: prowizja liczy siÄ™ ze stawki i wartoĹ›ci transakcji/zlecenia." aria-label="WyjaĹ›nienie rodzaju prowizji" tabIndex={0}>?</span></span>
                 <select
                   className="cf-vst-input case-finance-edit-select"
                   value={financeEditForm.commissionMode}
@@ -4451,12 +4548,12 @@ async function handleConfirmDeleteCaseRecord() {
                   data-stage220a32-commission-mode-control="true"
                 >
                   <option value="none">Brak</option>
-                  <option value="percent">Procent od wartości transakcji</option>
-                  <option value="fixed">Kwota stała</option>
+                  <option value="percent">Procent od wartoĹ›ci transakcji</option>
+                  <option value="fixed">Kwota staĹ‚a</option>
                 </select>
               </label>
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-rate">
-                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Stawka (%)</span><span className="case-finance-help-dot-stage220a36r11" title="Aktywne tylko przy prowizji procentowej, np. 2 oznacza 2%." aria-label="Wyjaśnienie stawki procentowej" tabIndex={0}>?</span></span>
+                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Stawka (%)</span><span className="case-finance-help-dot-stage220a36r11" title="Aktywne tylko przy prowizji procentowej, np. 2 oznacza 2%." aria-label="WyjaĹ›nienie stawki procentowej" tabIndex={0}>?</span></span>
                 <Input
                   inputMode="decimal"
                   value={financeEditForm.commissionRate}
@@ -4469,7 +4566,7 @@ async function handleConfirmDeleteCaseRecord() {
                 />
               </label>
               <label className="case-finance-edit-field" data-stage220a36r10-top-field="commission-amount">
-                <span className="case-finance-field-label-with-help-stage220a36r11"><span>Wartość prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Przy kwocie stałej wpisujesz ją ręcznie. Przy procencie system wylicza ją automatycznie." aria-label="Wyjaśnienie wartości prowizji" tabIndex={0}>?</span></span>
+                <span className="case-finance-field-label-with-help-stage220a36r11"><span>WartoĹ›Ä‡ prowizji</span><span className="case-finance-help-dot-stage220a36r11" title="Przy kwocie staĹ‚ej wpisujesz jÄ… rÄ™cznie. Przy procencie system wylicza jÄ… automatycznie." aria-label="WyjaĹ›nienie wartoĹ›ci prowizji" tabIndex={0}>?</span></span>
                 <Input
                   inputMode="decimal"
                   value={financeEditForm.commissionMode === 'percent' ? fin11MoneyInput(financeEditPreview.commissionAmount) : financeEditForm.commissionAmount}
@@ -4485,7 +4582,7 @@ async function handleConfirmDeleteCaseRecord() {
               </label>
             </div>
             <label className="case-finance-edit-field case-finance-edit-field--wide case-finance-edit-transaction-basis-stage220a36r10" data-stage220a36r10-transaction-basis-field="true">
-              <span className="case-finance-field-label-with-help-stage220a36r11"><span>Wartość transakcji / zlecenia</span><span className="case-finance-help-dot-stage220a36r11" title="To nie jest prowizja. To kwota sprzedaży, transakcji albo zlecenia, od której liczysz procent." aria-label="Wyjaśnienie wartości transakcji lub zlecenia" tabIndex={0}>?</span></span>
+              <span className="case-finance-field-label-with-help-stage220a36r11"><span>WartoĹ›Ä‡ transakcji / zlecenia</span><span className="case-finance-help-dot-stage220a36r11" title="To nie jest prowizja. To kwota sprzedaĹĽy, transakcji albo zlecenia, od ktĂłrej liczysz procent." aria-label="WyjaĹ›nienie wartoĹ›ci transakcji lub zlecenia" tabIndex={0}>?</span></span>
               <Input
                 inputMode="decimal"
                 value={financeEditForm.contractValue}
@@ -4506,18 +4603,18 @@ async function handleConfirmDeleteCaseRecord() {
                 <select className="cf-vst-input case-finance-edit-select" value={financeEditForm.commissionStatus} onChange={(event) => setFinanceEditForm((current) => ({ ...current, commissionStatus: event.target.value }))}>
                   <option value="not_set">nieustawiona</option>
                   <option value="expected">oczekiwana</option>
-                  <option value="due">należna</option>
-                  <option value="partially_paid">częściowo zapłacona</option>
-                  <option value="paid">zapłacona</option>
-                  <option value="overdue">zaległa</option>
+                  <option value="due">naleĹĽna</option>
+                  <option value="partially_paid">czÄ™Ĺ›ciowo zapĹ‚acona</option>
+                  <option value="paid">zapĹ‚acona</option>
+                  <option value="overdue">zalegĹ‚a</option>
                 </select>
               </label>
             </div>
             <div className="case-finance-edit-preview" data-fin11-case-finance-preview="true" data-stage220a31-finance-preview="true" data-stage220a36r10-finance-preview="true">
-              <div data-stage231h-r1b-contract-value-preview="always-visible"><span>Wartość transakcji/zlecenia:</span><strong>{formatMoney(financeEditPreview.contractValue, financeEditPreview.currency)}</strong></div>
-              <div><span>Prowizja należna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
-              <div><span>Wpłacono prowizji:</span><strong>{formatMoney(financeEditPreview.commissionPaidAmount, financeEditPreview.currency)}</strong></div>
-              <div data-cf-finance-tone="remaining"><span>Pozostało do zapłaty:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
+              <div data-stage231h-r1b-contract-value-preview="always-visible"><span>WartoĹ›Ä‡ transakcji/zlecenia:</span><strong>{formatMoney(financeEditPreview.contractValue, financeEditPreview.currency)}</strong></div>
+              <div><span>Prowizja naleĹĽna:</span><strong>{formatMoney(financeEditPreview.commissionAmount, financeEditPreview.currency)}</strong></div>
+              <div><span>WpĹ‚acono prowizji:</span><strong>{formatMoney(financeEditPreview.commissionPaidAmount, financeEditPreview.currency)}</strong></div>
+              <div data-cf-finance-tone="remaining"><span>PozostaĹ‚o do zapĹ‚aty:</span><strong>{formatMoney(financeEditPreview.commissionRemainingAmount, financeEditPreview.currency)}</strong></div>
             </div>
           </div>
           <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
@@ -4536,8 +4633,8 @@ async function handleConfirmDeleteCaseRecord() {
       <Dialog open={isFinancePaymentOpen} onOpenChange={setIsFinancePaymentOpen}>
         <DialogContent className="max-w-2xl event-form-vnext-content closeflow-event-modal-readable case-finance-source-modal-stage220a30 case-finance-source-modal-stage220a30--finance" data-stage220a26-case-finance-modal="true" data-cf-vst-dialog="true" aria-describedby={undefined}>
           <DialogHeader className="event-form-vnext-header case-finance-source-header-stage220a30">
-            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj wpłatę prowizji' : 'Dodaj wpłatę'}</DialogTitle>
-            <DialogDescription>{financePaymentForm.type === 'commission' ? 'Wpisz kwotę prowizji, datę zapłaty i notatkę dla sprawy.' : 'Wpisz kwotę wpłaty, datę zapłaty i notatkę. Po zapisie kwota trafi do rozliczenia sprawy.'}</DialogDescription>
+            <DialogTitle>{financePaymentForm.type === 'commission' ? 'Dodaj wpĹ‚atÄ™ prowizji' : 'Dodaj wpĹ‚atÄ™'}</DialogTitle>
+            <DialogDescription>{financePaymentForm.type === 'commission' ? 'Wpisz kwotÄ™ prowizji, datÄ™ zapĹ‚aty i notatkÄ™ dla sprawy.' : 'Wpisz kwotÄ™ wpĹ‚aty, datÄ™ zapĹ‚aty i notatkÄ™. Po zapisie kwota trafi do rozliczenia sprawy.'}</DialogDescription>
           </DialogHeader>
           <div className="case-finance-edit-form case-finance-source-form-stage220a30">
             <label className="case-finance-edit-field">
@@ -4551,30 +4648,30 @@ async function handleConfirmDeleteCaseRecord() {
             <label className="case-finance-edit-field">
               <span>Status</span>
               <select className="cf-vst-input case-finance-edit-select" value={financePaymentForm.status} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, status: event.target.value }))}>
-                <option value="paid">opłacona</option>
-                <option value="partially_paid">częściowo opłacona</option>
-                <option value="fully_paid">w pełni opłacona</option>
-                <option value="deposit_paid">zaliczka wpłacona</option>
-                <option value="due">należna</option>
+                <option value="paid">opĹ‚acona</option>
+                <option value="partially_paid">czÄ™Ĺ›ciowo opĹ‚acona</option>
+                <option value="fully_paid">w peĹ‚ni opĹ‚acona</option>
+                <option value="deposit_paid">zaliczka wpĹ‚acona</option>
+                <option value="due">naleĹĽna</option>
                 <option value="planned">zaplanowana</option>
               </select>
             </label>
             <label className="case-finance-edit-field">
-              <span>Data zapłaty</span>
+              <span>Data zapĹ‚aty</span>
               <Input type="datetime-local" value={financePaymentForm.paidAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, paidAt: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field">
-              <span>Termin płatności (opcjonalnie)</span>
+              <span>Termin pĹ‚atnoĹ›ci (opcjonalnie)</span>
               <Input type="datetime-local" value={financePaymentForm.dueAt} onChange={(event) => setFinancePaymentForm((current) => ({ ...current, dueAt: event.target.value }))} />
             </label>
             <label className="case-finance-edit-field case-finance-edit-field--wide">
               <span>Notatka</span>
-              <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotówka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
+              <Textarea value={financePaymentForm.note} placeholder="np. przelew / gotĂłwka / faktura" onChange={(event) => setFinancePaymentForm((current) => ({ ...current, note: event.target.value }))} />
             </label>
           </div>
           <DialogFooter className="event-form-footer case-finance-modal-stage220a26-footer case-finance-source-footer-stage220a30">
             <Button type="button" variant="outline" onClick={() => setIsFinancePaymentOpen(false)} disabled={isFinanceSaving}>Anuluj</Button>
-            <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz płatność</Button>
+            <Button type="button" onClick={handleSaveCaseFinancePayment} disabled={isFinanceSaving || fin11Amount(financePaymentForm.amount) <= 0}>Zapisz pĹ‚atnoĹ›Ä‡</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -4611,7 +4708,7 @@ function CaseDetailV1CommandCenter({
           Zrobione
         </button>
         <button type="button" onClick={() => onSetStatus('in_progress')} disabled={!isCompleted}>
-          Przywróć
+          PrzywrĂłÄ‡
         </button>
       </div>
     </section>
@@ -4685,15 +4782,15 @@ function WorkItemRow({
         {entry.kind === 'missing' ? (
           <>
             <button type="button" onClick={() => onItemAccept(entry.source as CaseItem)}>Akceptuj</button>
-            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>Odrzuć</button>
+            <button type="button" onClick={() => onItemReject(entry.source as CaseItem)}>OdrzuÄ‡</button>
           </>
         ) : null}
         <EntityActionButton
           type="button"
           tone="danger"
           className="case-detail-row-action-trash"
-          title={`Usuń ${getWorkKindLabel(entry.kind).toLowerCase()}`}
-          aria-label={`Usuń ${getWorkKindLabel(entry.kind).toLowerCase()}`}
+          title={`UsuĹ„ ${getWorkKindLabel(entry.kind).toLowerCase()}`}
+          aria-label={`UsuĹ„ ${getWorkKindLabel(entry.kind).toLowerCase()}`}
           onClick={() => onDelete(entry)}
           data-stage220a8-delete-work-item="true"
         >
@@ -4720,10 +4817,10 @@ return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent aria-describedby={undefined}>
         <DialogHeader><DialogTitle>Dodaj brak</DialogTitle>
-<DialogDescription>Uzupełnij brakujący element i zapisz go w checklistach sprawy.</DialogDescription></DialogHeader>
+<DialogDescription>UzupeĹ‚nij brakujÄ…cy element i zapisz go w checklistach sprawy.</DialogDescription></DialogHeader>
         <div className="case-detail-dialog-grid">
-          <label>Tytuł<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
-          <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="Krótko opisz, czego brakuje." /></label>
+          <label>TytuĹ‚<Input value={value.title} onChange={(event) => onChange({ ...value, title: event.target.value })} placeholder="np. Umowa, skan dokumentu, decyzja" /></label>
+          <label>Opis<Textarea value={value.description} onChange={(event) => onChange({ ...value, description: event.target.value })} placeholder="KrĂłtko opisz, czego brakuje." /></label>
           <label>Typ<select value={value.type} onChange={(event) => onChange({ ...value, type: event.target.value })}><option value="file">Plik</option><option value="decision">Decyzja</option><option value="text">Tekst</option></select></label>
           <label>Termin<Input type="date" value={value.dueDate} onChange={(event) => onChange({ ...value, dueDate: event.target.value })} /></label>
           <label className="case-detail-checkbox-label"><input type="checkbox" checked={value.isRequired} onChange={(event) => onChange({ ...value, isRequired: event.target.checked })} /> Wymagane do startu / realizacji</label>

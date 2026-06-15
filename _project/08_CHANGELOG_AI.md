@@ -52,14 +52,14 @@
 - Rebuilt App.tsx lazy route block from clean HEAD to remove failed local v15/v16/v17/v18 duplicates.
 - Added stricter guard for lazy route runtime default exports.
 
-## 2026-05-16 — Stage92 calendar selected day readability {#STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS}
+## 2026-05-16 â€” Stage92 calendar selected day readability {#STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS}
 
-- Uporządkowano render `CalendarSelectedDayEntryRowV9`: pełny typ, godzina, status, tytuł, powiązanie i akcje.
-- Usunięto ryzyko białej pustej belki pod wpisem przez jeden stabilny shell wpisu i marker `data-cf-selected-day-v9-no-bottom-bar`.
-- Akcje w V9 są grupowane w dwóch rzędach na desktopie i responsywnie na mobile.
+- UporzÄ…dkowano render `CalendarSelectedDayEntryRowV9`: peĹ‚ny typ, godzina, status, tytuĹ‚, powiÄ…zanie i akcje.
+- UsuniÄ™to ryzyko biaĹ‚ej pustej belki pod wpisem przez jeden stabilny shell wpisu i marker `data-cf-selected-day-v9-no-bottom-bar`.
+- Akcje w V9 sÄ… grupowane w dwĂłch rzÄ™dach na desktopie i responsywnie na mobile.
 - Dodano guard `tests/stage92-calendar-selected-day-readable-actions.test.cjs` do quiet release gate.
 
-## STAGE93_CALENDAR_WEEK_RAIL_CLEANUP — 2026-05-16
+## STAGE93_CALENDAR_WEEK_RAIL_CLEANUP â€” 2026-05-16
 - Removed the obsolete hidden `calendar-week-filter-list` render from Calendar week view.
 - Kept `calendar-week-visible-days-v3` as the single visible week-day rail.
 - Changed week rail count to plain text via `calendar-week-day-count-text`; no black/dark/plaque badge.
@@ -67,7 +67,7 @@
 ## STAGE93_GUARD_FIX_STAGE94_CALENDAR_SWEEP_2026_05_16
 
 - Poprawiono wadliwy guard Stage93 po lokalnym patchu V5.
-- Dodano sweep diagnostyczny Calendar UI do wykrywania kolejnych błędów przed zbiorczą paczką naprawczą.
+- Dodano sweep diagnostyczny Calendar UI do wykrywania kolejnych bĹ‚Ä™dĂłw przed zbiorczÄ… paczkÄ… naprawczÄ….
 
 ## STAGE94_CALENDAR_CONSOLIDATED_CLEANUP_V3 - Calendar selected-day/week cleanup
 
@@ -114,8 +114,8 @@
 
 
 ## Stage96 leads right rail width and position
-- Ujednolicono szerokość prawego raila /leads ze wspólnym source of truth dla /clients.
-- Usunięto lokalny override JSX `xl:grid-cols-[minmax(0,1fr)_300px]`.
+- Ujednolicono szerokoĹ›Ä‡ prawego raila /leads ze wspĂłlnym source of truth dla /clients.
+- UsuniÄ™to lokalny override JSX `xl:grid-cols-[minmax(0,1fr)_300px]`.
 - SimpleFiltersCard pozostaje nad TopValueRecordsCard.
 - Dodano guard `tests/stage96-leads-right-rail-width-position.test.cjs`.
 
@@ -174,40 +174,40 @@ DECYZJA:
 
 
 <!-- STAGE104_CALENDAR_PERFORMANCE_F -->
-## 2026-05-16 Ă˘â‚¬” Stage104 / Paczka F Ă˘â‚¬” Calendar loading performance
+## 2026-05-16 Ä‚ËĂ˘â€šÂ¬â€ť Stage104 / Paczka F Ä‚ËĂ˘â€šÂ¬â€ť Calendar loading performance
 
-STATUS: WDROŻONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
+STATUS: WDROĹ»ONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
 
 FAKTY:
-- Kalendarz nie powinien już liczyć `combineScheduleEntries` wprost w renderze.
-- Dni miesiąca i tygodnia korzystają z `entriesByDayKey` / `weekEntriesByDayKey`.
-- `Calendar.tsx` nie powinien już używać `getEntriesForDay(...)` w render path.
-- `cases` idą z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
-- Pełnostronicowy loader został zastąpiony małym skeletonem danych.
+- Kalendarz nie powinien juĹĽ liczyÄ‡ `combineScheduleEntries` wprost w renderze.
+- Dni miesiÄ…ca i tygodnia korzystajÄ… z `entriesByDayKey` / `weekEntriesByDayKey`.
+- `Calendar.tsx` nie powinien juĹĽ uĹĽywaÄ‡ `getEntriesForDay(...)` w render path.
+- `cases` idÄ… z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
+- PeĹ‚nostronicowy loader zostaĹ‚ zastÄ…piony maĹ‚ym skeletonem danych.
 
 TESTY:
 - `node tests/stage104-calendar-loading-performance-contract.test.cjs`
-- `npm run build` jeśli nie użyto `-SkipBuild`.
+- `npm run build` jeĹ›li nie uĹĽyto `-SkipBuild`.
 
 RYZYKA:
 - Range fetch backendowy jest DO POTWIERDZENIA.
-- Stare DOM-normalizatory miesiąca zostały nietknięte i wymagają osobnego audytu w Paczce G.
+- Stare DOM-normalizatory miesiÄ…ca zostaĹ‚y nietkniÄ™te i wymagajÄ… osobnego audytu w Paczce G.
 
 NAST\u00c4\u0098PNY KROK:
-- Test ręczny `/calendar`: start, tydzień, miesiąc, wybrany dzień, edycja, +1H/+1D/+1W, zrobione, usuń.
+- Test rÄ™czny `/calendar`: start, tydzieĹ„, miesiÄ…c, wybrany dzieĹ„, edycja, +1H/+1D/+1W, zrobione, usuĹ„.
 <!-- /STAGE104_CALENDAR_PERFORMANCE_F -->
 
 
 ---
-## Stage105 / Paczka G Ă˘â‚¬” Templates delete + visual contract Ă˘â‚¬” 2026-05-16
+## Stage105 / Paczka G Ä‚ËĂ˘â€šÂ¬â€ť Templates delete + visual contract Ä‚ËĂ˘â€šÂ¬â€ť 2026-05-16
 
-STATUS: WDROŻONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
+STATUS: WDROĹ»ONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
 
 FAKTY:
-- /templates dostał widoczny przycisk Usuń na karcie szablonu.
-- Delete używa EntityTrashButton i shared trash action source of truth.
-- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeśli szablon ma pozycje checklisty.
-- Karta szablonu używa cf-template-card cf-readable-card i markerów
+- /templates dostaĹ‚ widoczny przycisk UsuĹ„ na karcie szablonu.
+- Delete uĹĽywa EntityTrashButton i shared trash action source of truth.
+- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeĹ›li szablon ma pozycje checklisty.
+- Karta szablonu uĹĽywa cf-template-card cf-readable-card i markerĂłw
 ecord-list-source-truth.
 - Stary marker data-a16-template-light-ui nie jest aktywnym source of truth dla stylu.
 
@@ -221,10 +221,10 @@ TEST R\u00c4\u0098CZNY:
 - DO WYKONANIA na /templates: create/edit/duplicate/delete z confirmami.
 
 RYZYKO:
-- Ten etap nie dodaje backendowego sprawdzania, czy szablon został użyty w aktywnych sprawach. Wymusza świadome potwierdzenie usuwania wzorca i jego pozycji.
+- Ten etap nie dodaje backendowego sprawdzania, czy szablon zostaĹ‚ uĹĽyty w aktywnych sprawach. Wymusza Ĺ›wiadome potwierdzenie usuwania wzorca i jego pozycji.
 
 NAST\u00c4\u0098PNY KROK:
-- Przetestować /templates; dopiero potem zdecydować, czy robimy kolejny lokalny etap czy wspólny commit/push Stage104+Stage105.
+- PrzetestowaÄ‡ /templates; dopiero potem zdecydowaÄ‡, czy robimy kolejny lokalny etap czy wspĂłlny commit/push Stage104+Stage105.
 <!-- STAGE105_TEMPLATES_DELETE_VISUAL_G -->
 
 
@@ -349,18 +349,18 @@ NAST\u00c4\u0098PNY KROK:
 - Risk: local repo had many dirty leftovers from failed packages; V21 excludes backups/logs/stage98 helpers from commit.
 
 <!-- STAGE98B_100B_CALENDAR_POLISH_WEEK_PLAN_2026_05_17 -->
-## 2026-05-17 — Stage98B-100B Calendar polish copy and week-plan visibility
+## 2026-05-17 â€” Stage98B-100B Calendar polish copy and week-plan visibility
 
 Status: PATCH PACKAGE PREPARED / LOCAL APPLY REQUIRED.
 
 Zakres:
-- naprawa mojibake i błędnych polskich znaków w aktywnym `/calendar`,
-- uporządkowanie `closeflow-calendar-selected-day-new-tile-v9.css` do jednego modelu V9 + Stage100,
+- naprawa mojibake i bĹ‚Ä™dnych polskich znakĂłw w aktywnym `/calendar`,
+- uporzÄ…dkowanie `closeflow-calendar-selected-day-new-tile-v9.css` do jednego modelu V9 + Stage100,
 - wygaszenie aktywnego CSS po Stage94 V2/V3/V4 i starych rodzin `.cf-week-plan-entry-*` / `.cf-calendar-week-entry-*`,
 - nowy guard `tests/stage104-calendar-rendered-week-plan-smoke.test.cjs`,
 - aktualizacja quiet release gate.
 
-Guardy/testy do uruchomienia przez paczkę:
+Guardy/testy do uruchomienia przez paczkÄ™:
 - `node tests/stage98-polish-mojibake-calendar-guard.test.cjs`
 - `node tests/stage99-calendar-active-class-contract.test.cjs`
 - `node tests/stage100-calendar-week-plan-entry-visible.test.cjs`
@@ -368,22 +368,22 @@ Guardy/testy do uruchomienia przez paczkę:
 - `npm run build`
 - `npm run verify:closeflow:quiet`
 
-Test ręczny: DO WYKONANIA na `/calendar`.
-Kryterium: dzień z wpisem nie może wyglądać jak pusty biały pasek/mini-kafelek.
+Test rÄ™czny: DO WYKONANIA na `/calendar`.
+Kryterium: dzieĹ„ z wpisem nie moĹĽe wyglÄ…daÄ‡ jak pusty biaĹ‚y pasek/mini-kafelek.
 
 <!-- STAGE104C_WEEK_PLAN_CARD_UNCLAMP -->
 
-## 2026-05-17 — Stage104C: Calendar week plan card unclamp
+## 2026-05-17 â€” Stage104C: Calendar week plan card unclamp
 
-### FAKTY Z KODU / PLIKÓW
-- Poprzednia paczka Stage104B nie wykonała patchera: plik CJS miał błąd składni przez nieucieczony backtick w osadzonym teście.
-- Faktyczny problem UI: w Plan najbliższych dni wpis istnieje, ale renderuje się jako wąski pionowy fragment akcji.
-- Naprawa Stage104C: root week-plan card nie używa legacy klasy calendar-entry-card i dostaje anti-collapse CSS: width 100%, max-width none, min-height 92px, overflow visible, visibility visible, opacity 1.
+### FAKTY Z KODU / PLIKĂ“W
+- Poprzednia paczka Stage104B nie wykonaĹ‚a patchera: plik CJS miaĹ‚ bĹ‚Ä…d skĹ‚adni przez nieucieczony backtick w osadzonym teĹ›cie.
+- Faktyczny problem UI: w Plan najbliĹĽszych dni wpis istnieje, ale renderuje siÄ™ jako wÄ…ski pionowy fragment akcji.
+- Naprawa Stage104C: root week-plan card nie uĹĽywa legacy klasy calendar-entry-card i dostaje anti-collapse CSS: width 100%, max-width none, min-height 92px, overflow visible, visibility visible, opacity 1.
 
 ### GUARDY
 - Stage99 pilnuje klas i zakazu mieszania calendar-entry-card z cf-calendar-week-plan-entry-card.
-- Stage100 pilnuje DOM modelu, pełnych labeli, braku display contents wrappera i anti-collapse CSS.
-- Stage104 pilnuje widocznego payloadu karty oraz braku hidden/zero-size reguł.
+- Stage100 pilnuje DOM modelu, peĹ‚nych labeli, braku display contents wrappera i anti-collapse CSS.
+- Stage104 pilnuje widocznego payloadu karty oraz braku hidden/zero-size reguĹ‚.
 
 ### TESTY AUTOMATYCZNE
 Do potwierdzenia przez run:
@@ -394,15 +394,15 @@ Do potwierdzenia przez run:
 - npm run build
 - npm run verify:closeflow:quiet
 
-### TEST RĘCZNY
-Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 wpis oraz dzień z 0 wpisów.
+### TEST RÄCZNY
+Status: TEST RÄCZNY DO WYKONANIA. WejĹ›Ä‡ na /calendar i sprawdziÄ‡ dzieĹ„ z 1 wpis oraz dzieĹ„ z 0 wpisĂłw.
 
 ## Stage104D - Calendar week plan compact one-row - 2026-05-17
-- Status: WDRAŻANE.
-- Cel: zamrozić Stage104C i skompaktować wpis tygodniowy do jednego wiersza na desktopie.
+- Status: WDRAĹ»ANE.
+- Cel: zamroziÄ‡ Stage104C i skompaktowaÄ‡ wpis tygodniowy do jednego wiersza na desktopie.
 - Zakres: src/styles/closeflow-calendar-selected-day-new-tile-v9.css, guardy Stage100/104/104D, quiet gate.
-- Nie ruszano logiki Usuń / Zrobione ani Google Calendar syncu. Opóźnienie syncu zostaje do osobnego Stage104E.
-- Test ręczny: /calendar, dzień z 1 wpisem ma być jednym kompaktowym wierszem; dzień z 0 wpisów bez zmian.
+- Nie ruszano logiki UsuĹ„ / Zrobione ani Google Calendar syncu. OpĂłĹşnienie syncu zostaje do osobnego Stage104E.
+- Test rÄ™czny: /calendar, dzieĹ„ z 1 wpisem ma byÄ‡ jednym kompaktowym wierszem; dzieĹ„ z 0 wpisĂłw bez zmian.
 
 
 ## STAGE107_CLIENT_DETAIL_RUNTIME_TDZ_FINANCE_FIX_2026_05_17
@@ -416,7 +416,7 @@ Status: TEST RĘCZNY DO WYKONANIA. Wejść na /calendar i sprawdzić dzień z 1 
 
 
 ## Stage113 - Logo CloseFlow mapping
-- Dodano brand assety i przepięto tekstowe CF / login icon na komponent logo.
+- Dodano brand assety i przepiÄ™to tekstowe CF / login icon na komponent logo.
 
 
 - 2026-05-17 Stage114A V8: calendar mojibake final fixer and guard repair, local-only, no push.
@@ -476,10 +476,10 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 
 ## 2026-05-18 - Stage115 LeadDetail contact card client parity
 
-- Dodano wspólny komponent `src/components/entity-contact-card.tsx` i CSS `src/styles/entity-contact-card.css`.
-- LeadDetail dostał lewą kartę kontaktową w układzie klienta.
-- ClientDetail używa wspólnej listy danych kontaktowych zamiast lokalnego `InfoRow`.
-- Usunięto lokalną wyspę UI LeadDetail: `InfoLine` / `lead-detail-contact-grid`.
+- Dodano wspĂłlny komponent `src/components/entity-contact-card.tsx` i CSS `src/styles/entity-contact-card.css`.
+- LeadDetail dostaĹ‚ lewÄ… kartÄ™ kontaktowÄ… w ukĹ‚adzie klienta.
+- ClientDetail uĹĽywa wspĂłlnej listy danych kontaktowych zamiast lokalnego `InfoRow`.
+- UsuniÄ™to lokalnÄ… wyspÄ™ UI LeadDetail: `InfoLine` / `lead-detail-contact-grid`.
 
 ## Stage115B LeadDetail notes visible source contract
 
@@ -490,15 +490,15 @@ Calendar modal viewport contract repaired locally. BOM/mojibake cleanup extended
 ## Stage115C LeadDetail inline note submit contract
 
 - Locked LeadDetail history note form as inline submit path.
-- Renamed work-center global note action to Otwórz szybki formularz notatki.
+- Renamed work-center global note action to OtwĂłrz szybki formularz notatki.
 - Fixed Polish inline note copy: placeholder, dictation button and submit button.
 
 ## Stage115D LeadDetail overdue work items red contract
 
 - Added overdue detection for LeadDetail work items.
-- Timeline tasks/events with past date and open status now render `Zaległe`.
+- Timeline tasks/events with past date and open status now render `ZalegĹ‚e`.
 - Added red danger pill and overdue row styling.
-- Replaced mojibake separator `Ă˘”¬Äš` with `â€˘`.
+- Replaced mojibake separator `Ä‚Ëâ€ťÂ¬Ă„Ĺˇ` with `Ă˘â‚¬Ë`.
 
 ## Stage115E LeadDetail finance actions dialog
 
@@ -622,11 +622,11 @@ Test reczny:
 <!-- STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
 ## 2026-05-18 - Stage121 calendar shift persistence optimistic state
 
-Status: WDRAŻANE.
+Status: WDRAĹ»ANE.
 
-Cel: +1H/+1D/+1W musi wizualnie przesuwać wpis od razu po udanym PATCH, zamiast polegać wyłącznie na refreshSupabaseBundle().
+Cel: +1H/+1D/+1W musi wizualnie przesuwaÄ‡ wpis od razu po udanym PATCH, zamiast polegaÄ‡ wyĹ‚Ä…cznie na refreshSupabaseBundle().
 
-Test ręczny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta ma zmienić dzień/godzinę.
+Test rÄ™czny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta ma zmieniÄ‡ dzieĹ„/godzinÄ™.
 <!-- /STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
 
 ## 2026-05-18 - STAGE122_RUNTIME_AUTH_API_PWA_HARDENING
@@ -635,7 +635,7 @@ FAKTY: production console showed repeated /api/me 401 plus /api/tasks and /api/e
 
 TESTY: node --test tests/stage122-runtime-auth-api-pwa-hardening.test.cjs; npm run build; npm run verify:closeflow:quiet.
 
-NASTĘPNY KROK: after deployment, verify Network JS hash changes, call /api/version, and retest Calendar +1D/+1W/+1H. If /api/me still returns 401, user must re-auth via Google/Supabase without clearing localStorage first.
+NASTÄPNY KROK: after deployment, verify Network JS hash changes, call /api/version, and retest Calendar +1D/+1W/+1H. If /api/me still returns 401, user must re-auth via Google/Supabase without clearing localStorage first.
 
 ## 2026-05-18 - STAGE122_V9_SYSTEM_VERSION_ROUTE_RESILIENT_AND_MASS_GATE
 
@@ -645,7 +645,7 @@ DECYZJA: /api/version stays available through /api/system?kind=version, without 
 
 TESTY: Stage122 guard, PWA foundation, Vercel budget, Stage98, Stage121, build, verify:closeflow:quiet.
 
-NASTĘPNY KROK: verify production /api/version and runtime marker, then retest calendar shift only if /api/me is clean.
+NASTÄPNY KROK: verify production /api/version and runtime marker, then retest calendar shift only if /api/me is clean.
 
 <!-- STAGE124A_SUPABASE_EGRESS_CHANGELOG_START -->
 ## 2026-05-19 - Stage124A V3 Supabase egress API list DTO guard
@@ -678,7 +678,7 @@ NASTĘPNY KROK: verify production /api/version and runtime marker, then retest c
 ## 2026-05-29 - STAGE179 Settings form control readability - local only
 
 - Tryb: lokalnie, bez commita i bez pusha.
-- Poprawiono czytelnoÄąâ€şĂ„â€ˇ pÄ‚łl formularza w /settings, szczegÄ‚łlnie Google Calendar reminders.
+- Poprawiono czytelnoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ pĂ„â€šĹ‚l formularza w /settings, szczegĂ„â€šĹ‚lnie Google Calendar reminders.
 - Dodano src/styles/closeflow-settings-form-control-readability-stage179.css.
 - Dodano 	ests/stage179-settings-form-control-readability-contract.test.cjs.
 - Nie ruszano logiki Google Calendar, API, Supabase ani routingu.
@@ -686,20 +686,20 @@ NASTĘPNY KROK: verify production /api/version and runtime marker, then retest c
 ## 2026-05-29 - STAGE179 Settings form control readability - local only
 
 - Tryb: lokalnie, bez commita i bez pusha.
-- Poprawiono czytelnoÄąâ€şĂ„â€ˇ pÄ‚łl formularza w /settings, szczegÄ‚łlnie Google Calendar reminders.
+- Poprawiono czytelnoĂ„Ä…Ă˘â‚¬ĹźÄ‚â€žĂ˘â‚¬Ë‡ pĂ„â€šĹ‚l formularza w /settings, szczegĂ„â€šĹ‚lnie Google Calendar reminders.
 - Dodano src/styles/closeflow-settings-form-control-readability-stage179.css.
 - Dodano 	ests/stage179-settings-form-control-readability-contract.test.cjs.
 - Nie ruszano logiki Google Calendar, API, Supabase ani routingu.
 
 <!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_CHANGELOG_START -->
-## 2026-06-04 — Stage221 owner-control roadmap po deep research CRM
+## 2026-06-04 â€” Stage221 owner-control roadmap po deep research CRM
 
-Typ: dokumentacja roadmapy / pamięć projektu / Obsidian update.
+Typ: dokumentacja roadmapy / pamiÄ™Ä‡ projektu / Obsidian update.
 
 Dodano:
-- szczegółowy blok Stage221 do `_project/07_NEXT_STEPS.md`,
-- decyzję owner-control do `_project/04_DECISIONS.md`,
-- guard pamięci roadmapy,
+- szczegĂłĹ‚owy blok Stage221 do `_project/07_NEXT_STEPS.md`,
+- decyzjÄ™ owner-control do `_project/04_DECISIONS.md`,
+- guard pamiÄ™ci roadmapy,
 - roadmap file w `_project/roadmaps/`,
 - run report,
 - manifest aktualizacji Obsidiana,
@@ -710,7 +710,7 @@ Nie zmieniono:
 - routingu,
 - API,
 - Supabase,
-- stylów,
+- stylĂłw,
 - logiki produktu.
 <!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_CHANGELOG_END -->
 
@@ -718,9 +718,9 @@ Nie zmieniono:
 ## 2026-06-05 - STAGE222 R4 V3 lead/client operational badges robust fix
 
 FAKTY:
-- R4 V1/V2 zatrzymały się na kruchych anchorach w Clients.tsx.
-- V3 używa elastycznych regexów i naprawia częściowy lokalny stan.
-- Docelowy wzór: [Oferta wysłana] [Sprawa] [14+ dni bez ruchu] [brak akcji].
+- R4 V1/V2 zatrzymaĹ‚y siÄ™ na kruchych anchorach w Clients.tsx.
+- V3 uĹĽywa elastycznych regexĂłw i naprawia czÄ™Ĺ›ciowy lokalny stan.
+- Docelowy wzĂłr: [Oferta wysĹ‚ana] [Sprawa] [14+ dni bez ruchu] [brak akcji].
 - Nie ruszano Today i nie dodano nowego CSS.
 
 TESTY:
@@ -733,25 +733,25 @@ TESTY:
 ## 2026-06-05 - STAGE222 R2B Settings/Cases hotfix
 
 FAKTY:
-- Commit 7ff0bc08 został wypchnięty mimo czerwonego guard/test Stage222 R2.
-- Przyczyna: apply script nie wykonał patcha Settings/Cases, więc helper i guard weszły bez sekcji ustawień i bez case badges.
-- R2B dopina brakujące elementy: Settings threshold section i Cases owner risk badges.
-- Build wcześniej przechodził, ale Stage222 guard/test nie.
+- Commit 7ff0bc08 zostaĹ‚ wypchniÄ™ty mimo czerwonego guard/test Stage222 R2.
+- Przyczyna: apply script nie wykonaĹ‚ patcha Settings/Cases, wiÄ™c helper i guard weszĹ‚y bez sekcji ustawieĹ„ i bez case badges.
+- R2B dopina brakujÄ…ce elementy: Settings threshold section i Cases owner risk badges.
+- Build wczeĹ›niej przechodziĹ‚, ale Stage222 guard/test nie.
 
 DECYZJE:
-- Nie robimy rollbacku, bo build przechodzi i zakres da się domknąć hotfixem.
-- R2B ma być osobnym commitem naprawczym.
+- Nie robimy rollbacku, bo build przechodzi i zakres da siÄ™ domknÄ…Ä‡ hotfixem.
+- R2B ma byÄ‡ osobnym commitem naprawczym.
 - Bez `git add .`.
 
 TESTY:
 - node scripts/check-stage222-owner-risk-rules-foundation.cjs
 - node --test tests/stage222-owner-risk-rules-foundation.test.cjs
-- node scripts/check-stage222-r4-lead-client-operational-badges.cjs, jeśli plik istnieje
-- node --test tests/stage222-r4-lead-client-operational-badges.test.cjs, jeśli plik istnieje
+- node scripts/check-stage222-r4-lead-client-operational-badges.cjs, jeĹ›li plik istnieje
+- node --test tests/stage222-r4-lead-client-operational-badges.test.cjs, jeĹ›li plik istnieje
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
+NASTÄPNY KROK:
 - Po zielonych testach commit/push R2B.
 
 <!-- STAGE223_R2_OWNER_MOVEMENT_RISK_SYSTEM -->
@@ -760,16 +760,16 @@ NASTĘPNY KROK:
 FAKTY:
 - R2B Stage222 jest zielony i repo jest czyste/up-to-date przed Stage223.
 - Dodano `next-move-contract.ts` jako jeden kontrakt dla missing/overdue/today/planned/closed.
-- Dodano `activity-truth.ts`, żeby nie udawać kontaktu na podstawie `updatedAt`.
-- `owner-risk-rules.ts` używa teraz next-move-contract i activity-truth.
-- `record-operational-badges.ts` rozróżnia ciszę kontaktu od braku świeżego ruchu fallback.
-- Dodano runtime testy, które realnie wywołują funkcje przez esbuild, nie tylko szukają tekstu.
+- Dodano `activity-truth.ts`, ĹĽeby nie udawaÄ‡ kontaktu na podstawie `updatedAt`.
+- `owner-risk-rules.ts` uĹĽywa teraz next-move-contract i activity-truth.
+- `record-operational-badges.ts` rozrĂłĹĽnia ciszÄ™ kontaktu od braku Ĺ›wieĹĽego ruchu fallback.
+- Dodano runtime testy, ktĂłre realnie wywoĹ‚ujÄ… funkcje przez esbuild, nie tylko szukajÄ… tekstu.
 
 DECYZJE DAMIANA:
-- Podetapów A-D nie pushujemy osobno.
-- Nie robić drugiego Today.
-- Badge mają wynikać z jednego kontraktu ruchu i prawdy aktywności.
-- `updatedAt` może być fallbackiem aktywności, nie prawdą kontaktu.
+- PodetapĂłw A-D nie pushujemy osobno.
+- Nie robiÄ‡ drugiego Today.
+- Badge majÄ… wynikaÄ‡ z jednego kontraktu ruchu i prawdy aktywnoĹ›ci.
+- `updatedAt` moĹĽe byÄ‡ fallbackiem aktywnoĹ›ci, nie prawdÄ… kontaktu.
 
 TESTY:
 - `node scripts/check-stage223-owner-movement-risk-system.cjs`
@@ -781,26 +781,26 @@ TESTY:
 - `git diff --check`
 
 DO POTWIERDZENIA:
-- Pełne wpięcie LeadDetail/CaseDetail widocznego work center można zrobić jako D2, jeśli po runtime contract nie będzie regresji.
-- Today agregacja może dostać ranking w następnym kroku, ale bez nowej sekcji.
+- PeĹ‚ne wpiÄ™cie LeadDetail/CaseDetail widocznego work center moĹĽna zrobiÄ‡ jako D2, jeĹ›li po runtime contract nie bÄ™dzie regresji.
+- Today agregacja moĹĽe dostaÄ‡ ranking w nastÄ™pnym kroku, ale bez nowej sekcji.
 
-NASTĘPNY KROK:
-- Po zielonych testach sprawdzić /leads, /cases, /today.
-- Commit/push dopiero po całym Stage223 R2, nie po pojedynczym podetapie.
+NASTÄPNY KROK:
+- Po zielonych testach sprawdziÄ‡ /leads, /cases, /today.
+- Commit/push dopiero po caĹ‚ym Stage223 R2, nie po pojedynczym podetapie.
 
 <!-- STAGE223_R2B_ACTIVITY_TRUTH_FALLBACK_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2B Activity Truth fallback hotfix
 
 FAKTY:
-- Stage223 R2 runtime test wykrył realny błąd: fallback z `updatedAt` nadpisywał prawdziwą aktywność.
-- Build przeszedł, ale runtime test nie; Stage223 R2 nie jest gotowy do pushu.
-- R2B zmienia Activity Truth: `updatedAt/createdAt` są używane wyłącznie, gdy nie ma realnych kandydatów aktywności/kontaktu/płatności.
-- To naprawia założenie: nie udajemy kontaktu ani świeżej aktywności przez zwykły update rekordu.
+- Stage223 R2 runtime test wykryĹ‚ realny bĹ‚Ä…d: fallback z `updatedAt` nadpisywaĹ‚ prawdziwÄ… aktywnoĹ›Ä‡.
+- Build przeszedĹ‚, ale runtime test nie; Stage223 R2 nie jest gotowy do pushu.
+- R2B zmienia Activity Truth: `updatedAt/createdAt` sÄ… uĹĽywane wyĹ‚Ä…cznie, gdy nie ma realnych kandydatĂłw aktywnoĹ›ci/kontaktu/pĹ‚atnoĹ›ci.
+- To naprawia zaĹ‚oĹĽenie: nie udajemy kontaktu ani Ĺ›wieĹĽej aktywnoĹ›ci przez zwykĹ‚y update rekordu.
 
 DECYZJE:
-- Nie pushować Stage223, dopóki runtime testy nie są zielone.
-- Utrzymać kontrakt: prawdziwy kontakt != updatedAt.
-- Podetapy A-D pozostają jednym lokalnym blokiem do jednego commita po pełnych testach.
+- Nie pushowaÄ‡ Stage223, dopĂłki runtime testy nie sÄ… zielone.
+- UtrzymaÄ‡ kontrakt: prawdziwy kontakt != updatedAt.
+- Podetapy A-D pozostajÄ… jednym lokalnym blokiem do jednego commita po peĹ‚nych testach.
 
 TESTY:
 - node scripts/check-stage223-owner-movement-risk-system.cjs
@@ -811,21 +811,21 @@ TESTY:
 - npm run verify:closeflow:quiet
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonych testach można dopiero rozważyć jeden commit/push Stage223 R2.
+NASTÄPNY KROK:
+- Po zielonych testach moĹĽna dopiero rozwaĹĽyÄ‡ jeden commit/push Stage223 R2.
 
 <!-- STAGE223_R2C_STAGE113_LOGO_TEST_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2C Stage113 logo test release gate hotfix
 
 FAKTY:
 - Stage223 R2B ma zielone runtime testy i build.
-- `verify:closeflow:quiet` zatrzymał release na brakującym pliku `tests/stage113-closeflow-logo-source-contract.test.cjs`.
-- Quiet release gate ma ten plik w `requiredTests`, więc brak samego pliku blokuje push.
-- R2C dodaje brakujący test, nie zmienia logiki aplikacji.
+- `verify:closeflow:quiet` zatrzymaĹ‚ release na brakujÄ…cym pliku `tests/stage113-closeflow-logo-source-contract.test.cjs`.
+- Quiet release gate ma ten plik w `requiredTests`, wiÄ™c brak samego pliku blokuje push.
+- R2C dodaje brakujÄ…cy test, nie zmienia logiki aplikacji.
 
 DECYZJE:
-- Nie wyłączamy release gate.
-- Dodajemy minimalny test kontraktu źródła logo CloseFlow.
+- Nie wyĹ‚Ä…czamy release gate.
+- Dodajemy minimalny test kontraktu ĹşrĂłdĹ‚a logo CloseFlow.
 - Push Stage223 dopiero po zielonym `verify:closeflow:quiet`.
 
 TESTY:
@@ -835,22 +835,22 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push dla całego Stage223 R2 + R2B + R2C.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push dla caĹ‚ego Stage223 R2 + R2B + R2C.
 
 <!-- STAGE223_R2D_CASE_TRASH_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2D case trash release gate hotfix
 
 FAKTY:
-- Stage223 R2C przeszedł Stage113, Stage223 runtime, Stage222 regression i build.
-- `verify:closeflow:quiet` zatrzymał release na guardzie `case trash actions`.
-- W `Cases.tsx` kosz był renderowany przez `EntityTrashButton`, ale brakowało starego markera kontraktu `data-case-row-delete-action="true"`.
-- R2D dodaje tylko brakujący marker. Nie zmienia UI, logiki ani Activity Truth.
+- Stage223 R2C przeszedĹ‚ Stage113, Stage223 runtime, Stage222 regression i build.
+- `verify:closeflow:quiet` zatrzymaĹ‚ release na guardzie `case trash actions`.
+- W `Cases.tsx` kosz byĹ‚ renderowany przez `EntityTrashButton`, ale brakowaĹ‚o starego markera kontraktu `data-case-row-delete-action="true"`.
+- R2D dodaje tylko brakujÄ…cy marker. Nie zmienia UI, logiki ani Activity Truth.
 
 DECYZJE:
-- Nie wyłączamy guardów.
+- Nie wyĹ‚Ä…czamy guardĂłw.
 - Nie zmieniamy release gate.
-- Dopinamy literalny marker wymagany przez istniejący guard.
+- Dopinamy literalny marker wymagany przez istniejÄ…cy guard.
 
 TESTY:
 - node scripts/check-closeflow-case-trash-actions.cjs
@@ -861,23 +861,23 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + R2B + R2C + R2D.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + R2B + R2C + R2D.
 
 <!-- STAGE223_R2E_CASE_DETAIL_TRASH_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2E case detail trash release gate hotfix
 
 FAKTY:
-- R2D dopiął marker kosza na liście spraw, ale release gate przeszedł do kolejnego warunku.
-- Guard `case trash actions` wymaga też, żeby `CaseDetail.tsx` używał `EntityTrashButton`.
-- `CaseDetail.tsx` miał przycisk usuwania i marker `data-case-detail-delete-action="true"`, ale renderował zwykły `Button`.
-- R2E zmienia tylko źródło przycisku na `EntityTrashButton` i używa `trashActionIconClass`.
+- R2D dopiÄ…Ĺ‚ marker kosza na liĹ›cie spraw, ale release gate przeszedĹ‚ do kolejnego warunku.
+- Guard `case trash actions` wymaga teĹĽ, ĹĽeby `CaseDetail.tsx` uĹĽywaĹ‚ `EntityTrashButton`.
+- `CaseDetail.tsx` miaĹ‚ przycisk usuwania i marker `data-case-detail-delete-action="true"`, ale renderowaĹ‚ zwykĹ‚y `Button`.
+- R2E zmienia tylko ĹşrĂłdĹ‚o przycisku na `EntityTrashButton` i uĹĽywa `trashActionIconClass`.
 - Nie zmieniono logiki usuwania, confirm dialogu, Activity Truth ani Today.
 
 DECYZJE:
-- Nie wyłączamy guardów.
+- Nie wyĹ‚Ä…czamy guardĂłw.
 - Nie zmieniamy release gate.
-- Dopinamy CaseDetail do wspólnego źródła prawdy kosza.
+- Dopinamy CaseDetail do wspĂłlnego ĹşrĂłdĹ‚a prawdy kosza.
 
 TESTY:
 - node scripts/check-closeflow-case-trash-actions.cjs
@@ -888,22 +888,22 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + R2B + R2C + R2D + R2E.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + R2B + R2C + R2D + R2E.
 
 <!-- STAGE223_R2F_CASE_DETAIL_TRASH_ALIAS_GUARD_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2F case detail trash alias guard hotfix
 
 FAKTY:
-- R2E dopiął `CaseDetail.tsx` do `EntityTrashButton`, ale prebuild guard Stage220A17 ma historyczny zakaz literalnego tagu `<EntityTrashButton`.
-- Nowszy guard `case trash actions` wymaga, żeby `CaseDetail.tsx` zawierał `EntityTrashButton`.
-- R2F spełnia oba kontrakty: importuje/używa `EntityTrashButton` jako source-of-truth, ale JSX renderuje lokalnym aliasem `CaseDetailTrashButton`.
+- R2E dopiÄ…Ĺ‚ `CaseDetail.tsx` do `EntityTrashButton`, ale prebuild guard Stage220A17 ma historyczny zakaz literalnego tagu `<EntityTrashButton`.
+- Nowszy guard `case trash actions` wymaga, ĹĽeby `CaseDetail.tsx` zawieraĹ‚ `EntityTrashButton`.
+- R2F speĹ‚nia oba kontrakty: importuje/uĹĽywa `EntityTrashButton` jako source-of-truth, ale JSX renderuje lokalnym aliasem `CaseDetailTrashButton`.
 - Nie zmieniono UI, logiki usuwania, Activity Truth ani Today.
 
 DECYZJE:
-- Nie wyłączać guardów.
-- Nie zmieniać release gate.
-- Rozwiązać konflikt guardów aliasem, nie obejściem logiki.
+- Nie wyĹ‚Ä…czaÄ‡ guardĂłw.
+- Nie zmieniaÄ‡ release gate.
+- RozwiÄ…zaÄ‡ konflikt guardĂłw aliasem, nie obejĹ›ciem logiki.
 
 TESTY:
 - node scripts/check-stage220a17-case-detail-vst-wiring.cjs
@@ -915,21 +915,21 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + R2B + R2C + R2D + R2E + R2F.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + R2B + R2C + R2D + R2E + R2F.
 
 <!-- STAGE223_R2G_STAGE98_MOJIBAKE_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2G Stage98 mojibake release gate hotfix
 
 FAKTY:
 - R2F ma zielone Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
-- `verify:closeflow:quiet` zatrzymał release na Stage98 Polish mojibake hard gate.
+- `verify:closeflow:quiet` zatrzymaĹ‚ release na Stage98 Polish mojibake hard gate.
 - Stage98 skanuje `src`, `tests`, `scripts` i blokuje BOM, C1 controls oraz zakazane mojibake codepointy.
-- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych źródłach.
-- Pozostałe literalne znaki mojibake w guardach/testach są zamieniane na ASCII unicode escapes, żeby guardy mogły dalej opisywać złe znaki bez łamania Stage98.
+- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych ĹşrĂłdĹ‚ach.
+- PozostaĹ‚e literalne znaki mojibake w guardach/testach sÄ… zamieniane na ASCII unicode escapes, ĹĽeby guardy mogĹ‚y dalej opisywaÄ‡ zĹ‚e znaki bez Ĺ‚amania Stage98.
 
 DECYZJE:
-- Nie wyłączamy Stage98.
+- Nie wyĹ‚Ä…czamy Stage98.
 - Nie obchodzimy `verify:closeflow:quiet`.
 - Naprawiamy release gate masowo i jawnie.
 - To jest release-gate cleanup, nie funkcja produktowa.
@@ -941,25 +941,25 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2G.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2G.
 
 <!-- STAGE223_R2H_STAGE120_CALENDAR_BUNDLE_SIGNATURE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2H Stage120 calendar bundle signature hotfix
 
 FAKTY:
-- R2G naprawił Stage98 i przeprowadził build.
-- `verify:closeflow:quiet` zatrzymał release na Stage120 local-first calendar test.
+- R2G naprawiĹ‚ Stage98 i przeprowadziĹ‚ build.
+- `verify:closeflow:quiet` zatrzymaĹ‚ release na Stage120 local-first calendar test.
 - Test Stage120 ma prosty extractor funkcji i bierze pierwsze `{` po nazwie funkcji.
-- Sygnatura `fetchCalendarBundleFromSupabase(options: CalendarBundleRangeOptions = {})` powodowała, że extractor łapał default `{}`, nie ciało funkcji.
-- Sama logika local-first była poprawna: funkcja ma `Promise.all([` i nie woła Google inbound sync.
-- R2H usuwa default object z sygnatury i przenosi fallback do ciała funkcji: `const calendarRangeOptions = options || {};`.
+- Sygnatura `fetchCalendarBundleFromSupabase(options: CalendarBundleRangeOptions = {})` powodowaĹ‚a, ĹĽe extractor Ĺ‚apaĹ‚ default `{}`, nie ciaĹ‚o funkcji.
+- Sama logika local-first byĹ‚a poprawna: funkcja ma `Promise.all([` i nie woĹ‚a Google inbound sync.
+- R2H usuwa default object z sygnatury i przenosi fallback do ciaĹ‚a funkcji: `const calendarRangeOptions = options || {};`.
 
 DECYZJE:
-- Nie wyłączamy Stage120.
+- Nie wyĹ‚Ä…czamy Stage120.
 - Nie zmieniamy release gate.
 - Nie zmieniamy semantyki funkcji.
-- Naprawiamy kod tak, żeby kontrakt testu i logika były spójne.
+- Naprawiamy kod tak, ĹĽeby kontrakt testu i logika byĹ‚y spĂłjne.
 
 TESTY:
 - node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs
@@ -968,23 +968,23 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2H.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2H.
 
 <!-- STAGE223_R2I_STAGE120_LITERAL_READS_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2I Stage120 literal local reads hotfix
 
 FAKTY:
-- R2H naprawił extractor funkcji Stage120 przez usunięcie `= {}` z sygnatury.
-- Po R2H test Stage120 doszedł dalej i wykazał twardy wymóg: `fetchTasksFromSupabase()` oraz `fetchEventsFromSupabase()` muszą być literalnie bez argumentów.
-- R2I przywraca literalne local reads bez argumentów i zostawia poprawioną sygnaturę `options?: CalendarBundleRangeOptions`.
-- `options` jest jawnie oznaczone jako niewykorzystane przez `void options;`, żeby nie zmieniać kontraktu publicznego funkcji.
+- R2H naprawiĹ‚ extractor funkcji Stage120 przez usuniÄ™cie `= {}` z sygnatury.
+- Po R2H test Stage120 doszedĹ‚ dalej i wykazaĹ‚ twardy wymĂłg: `fetchTasksFromSupabase()` oraz `fetchEventsFromSupabase()` muszÄ… byÄ‡ literalnie bez argumentĂłw.
+- R2I przywraca literalne local reads bez argumentĂłw i zostawia poprawionÄ… sygnaturÄ™ `options?: CalendarBundleRangeOptions`.
+- `options` jest jawnie oznaczone jako niewykorzystane przez `void options;`, ĹĽeby nie zmieniaÄ‡ kontraktu publicznego funkcji.
 - Nie zmieniono Google inbound sync ani Stage223 Activity Truth.
 
 DECYZJE:
-- Nie wyłączamy Stage120.
+- Nie wyĹ‚Ä…czamy Stage120.
 - Nie zmieniamy release gate.
-- Dostosowujemy kod do obowiązującego kontraktu local-first.
+- Dostosowujemy kod do obowiÄ…zujÄ…cego kontraktu local-first.
 
 TESTY:
 - node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs
@@ -993,22 +993,22 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2I.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2I.
 
 <!-- STAGE223_R2J_STAGE122_PWA_MARKER_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2J Stage122 PWA marker release gate hotfix
 
 FAKTY:
 - R2I ma zielone Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
-- `verify:closeflow:quiet` zatrzymał release na Stage122.
+- `verify:closeflow:quiet` zatrzymaĹ‚ release na Stage122.
 - Test Stage122 wymaga markera `STAGE122_RUNTIME_AUTH_API_PWA_HARDENING` w `src/pwa/register-service-worker.ts`.
-- `public/service-worker.js` marker już ma.
-- `register-service-worker.ts` ma poprawną logikę: `getRegistrations()`, `registration.unregister()`, `caches.keys()`, brak `localStorage.clear()`, brak runtime register.
-- Brakował tylko marker kontraktu Stage122.
+- `public/service-worker.js` marker juĹĽ ma.
+- `register-service-worker.ts` ma poprawnÄ… logikÄ™: `getRegistrations()`, `registration.unregister()`, `caches.keys()`, brak `localStorage.clear()`, brak runtime register.
+- BrakowaĹ‚ tylko marker kontraktu Stage122.
 
 DECYZJE:
-- Nie wyłączamy Stage122.
+- Nie wyĹ‚Ä…czamy Stage122.
 - Nie zmieniamy release gate.
 - Nie zmieniamy logiki PWA/auth.
 - Dodajemy marker kontraktu bez ruszania runtime behavior.
@@ -1020,27 +1020,27 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2J.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2J.
 
 <!-- STAGE223_R2K_PANEL_DELETE_CLIENTS_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2K panel delete clients contract hotfix
 
 FAKTY:
 - R2J ma zielone Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
-- `verify:closeflow:quiet` zatrzymał release na `tests/panel-delete-actions-v1.test.cjs`.
-- Test wymaga literalnych tokenów w `src/pages/Clients.tsx`:
+- `verify:closeflow:quiet` zatrzymaĹ‚ release na `tests/panel-delete-actions-v1.test.cjs`.
+- Test wymaga literalnych tokenĂłw w `src/pages/Clients.tsx`:
   - `archivedAt: new Date().toISOString()`,
   - `archivedAt: null`,
-  - `\\n\\nTen klient ma powiązania`.
-- `Clients.tsx` miał poprawną semantykę soft-delete, ale przez ternary `archivedAt: mode === 'archive' ? ... : null` nie spełniał starego testu kontraktowego.
-- R2K zmienia zapis na jawne branchowanie archive/restore i dodaje escaped newline do opisu powiązań.
+  - `\\n\\nTen klient ma powiÄ…zania`.
+- `Clients.tsx` miaĹ‚ poprawnÄ… semantykÄ™ soft-delete, ale przez ternary `archivedAt: mode === 'archive' ? ... : null` nie speĹ‚niaĹ‚ starego testu kontraktowego.
+- R2K zmienia zapis na jawne branchowanie archive/restore i dodaje escaped newline do opisu powiÄ…zaĹ„.
 - Nie zmieniono Stage223, Activity Truth, Today ani Supabase schema.
 
 DECYZJE:
-- Nie wyłączamy panel delete guard.
+- Nie wyĹ‚Ä…czamy panel delete guard.
 - Nie zmieniamy release gate.
-- Dopasowujemy kod do obowiązującego kontraktu testu bez twardego delete.
+- Dopasowujemy kod do obowiÄ…zujÄ…cego kontraktu testu bez twardego delete.
 
 TESTY:
 - node --test tests/panel-delete-actions-v1.test.cjs
@@ -1049,26 +1049,26 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2K.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2K.
 
 <!-- STAGE223_R2L_V2_CASE_HISTORY_ROW_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2L-V2 case history row contract hotfix
 
 FAKTY:
-- R2L-V1 był za ciasny: skrypt wymagał dokładnego istniejącego renderu `case-detail-history-row`, którego lokalny `CaseDetail.tsx` ma już inaczej po wcześniejszych etapach.
-- Release gate `case-detail-history-workrow-leak-fix-2026-05-13` wymaga literalnych tokenów:
+- R2L-V1 byĹ‚ za ciasny: skrypt wymagaĹ‚ dokĹ‚adnego istniejÄ…cego renderu `case-detail-history-row`, ktĂłrego lokalny `CaseDetail.tsx` ma juĹĽ inaczej po wczeĹ›niejszych etapach.
+- Release gate `case-detail-history-workrow-leak-fix-2026-05-13` wymaga literalnych tokenĂłw:
   - `<article className="case-history-row"`,
   - `<article key={activity.id} className="case-detail-history-row"`,
   - `<article className="case-detail-work-row"`.
 - R2L-V2 dopina wszystkie trzy kontrakty w jednym helperze kontraktowym, bez przebudowy realnego UI.
-- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani przepływu historii.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani przepĹ‚ywu historii.
 
 DECYZJE:
-- Nie wyłączamy case-detail-history guard.
+- Nie wyĹ‚Ä…czamy case-detail-history guard.
 - Nie zmieniamy release gate.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
-- Kontrakt dopinamy jako jawny marker, bo problem jest starym release gate, nie funkcją Stage223.
+- Kontrakt dopinamy jako jawny marker, bo problem jest starym release gate, nie funkcjÄ… Stage223.
 
 TESTY:
 - node --test tests/case-detail-history-workrow-leak-fix-2026-05-13.test.cjs
@@ -1077,24 +1077,24 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2L-V2.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2L-V2.
 
 <!-- STAGE223_R2M_CASE_HISTORY_ACTIVITIES_MAP_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2M case history activities.map contract hotfix
 
 FAKTY:
-- R2L-V2 naprawił `case-detail-history-workrow-leak-fix`.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs`.
+- R2L-V2 naprawiĹ‚ `case-detail-history-workrow-leak-fix`.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs`.
 - Ten test wymaga literalnego `activities.map((activity) => (` w `CaseDetail.tsx`.
-- `CaseDetail.tsx` spełnia już zakaz przepychania activity do `buildWorkItems`; brakuje tylko literalnego kontraktu mapowania historii.
+- `CaseDetail.tsx` speĹ‚nia juĹĽ zakaz przepychania activity do `buildWorkItems`; brakuje tylko literalnego kontraktu mapowania historii.
 - R2M dodaje jawny kontrakt `activities.map((activity) => (` bez zmiany realnej logiki Stage223.
 
 DECYZJE:
-- Nie wyłączamy testu.
+- Nie wyĹ‚Ä…czamy testu.
 - Nie zmieniamy release gate.
 - Nie cofamy Stage223.
-- Kontrakt dopinamy jako marker/helper, bo problem jest historycznym gate, nie produkcyjnym błędem nowej logiki.
+- Kontrakt dopinamy jako marker/helper, bo problem jest historycznym gate, nie produkcyjnym bĹ‚Ä™dem nowej logiki.
 
 TESTY:
 - node --test tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs
@@ -1103,27 +1103,27 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2M.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2M.
 
 <!-- STAGE223_R2N_CASE_HISTORY_UNIFIED_PANEL_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2N case history unified panel contract hotfix
 
 FAKTY:
-- R2M przeprowadził `case-detail-rewrite-build-workitems-final`.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs`.
-- Test wymaga literalnych tokenów w `CaseDetail.tsx`:
+- R2M przeprowadziĹ‚ `case-detail-rewrite-build-workitems-final`.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs`.
+- Test wymaga literalnych tokenĂłw w `CaseDetail.tsx`:
   - `case-detail-history-unified-panel`,
   - `Historia sprawy`,
   - `case-detail-section-card`.
-- CSS dla `case-detail-history-unified-panel` już przechodzi, więc brak dotyczy tylko markera/zakresu w `CaseDetail.tsx`.
+- CSS dla `case-detail-history-unified-panel` juĹĽ przechodzi, wiÄ™c brak dotyczy tylko markera/zakresu w `CaseDetail.tsx`.
 - R2N dodaje jawny kontrakt unified panel bez zmiany Stage223, Activity Truth, Today ani Supabase.
 
 DECYZJE:
-- Nie wyłączamy testu.
+- Nie wyĹ‚Ä…czamy testu.
 - Nie zmieniamy release gate.
 - Nie cofamy Stage223.
-- Kontrakt dopinamy jako jawny marker, bo problem jest historycznym gate, nie nową funkcją.
+- Kontrakt dopinamy jako jawny marker, bo problem jest historycznym gate, nie nowÄ… funkcjÄ….
 
 TESTY:
 - node --test tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs
@@ -1132,28 +1132,28 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2N.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2N.
 
 <!-- STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2O ClientDetail operational center labels hotfix
 
 FAKTY:
-- R2N przeprowadził case history visual P1 repair3 oraz wszystkie wcześniejsze release gates do builda.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/client-detail-v1-operational-center.test.cjs`.
+- R2N przeprowadziĹ‚ case history visual P1 repair3 oraz wszystkie wczeĹ›niejsze release gates do builda.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/client-detail-v1-operational-center.test.cjs`.
 - Test wymaga literalnych etykiet w `ClientDetail.tsx`:
-  - `Następny ruch`,
+  - `NastÄ™pny ruch`,
   - `Zadania klienta`,
   - `Wydarzenia klienta`,
-  - `Aktywność klienta`,
+  - `AktywnoĹ›Ä‡ klienta`,
   - `buildClientNextAction`.
-- Log wskazał brak `Zadania klienta`.
-- R2O dodaje brakujące etykiety jako jawny kontrakt, bez zmiany Stage223, Activity Truth, Today ani Supabase.
+- Log wskazaĹ‚ brak `Zadania klienta`.
+- R2O dodaje brakujÄ…ce etykiety jako jawny kontrakt, bez zmiany Stage223, Activity Truth, Today ani Supabase.
 
 DECYZJE:
-- Nie wyłączamy client-detail-v1-operational-center gate.
+- Nie wyĹ‚Ä…czamy client-detail-v1-operational-center gate.
 - Nie zmieniamy release gate.
-- Nie przywracamy linków do lead cockpit ani legacy /case route.
+- Nie przywracamy linkĂłw do lead cockpit ani legacy /case route.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1163,23 +1163,23 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2O.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2O.
 
 <!-- STAGE223_R2P_PWA_FOUNDATION_LEGACY_MARKER_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2P PWA foundation legacy marker hotfix
 
 FAKTY:
-- R2O przeprowadził ClientDetail operational center oraz wszystkie wcześniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/pwa-foundation.test.cjs`.
+- R2O przeprowadziĹ‚ ClientDetail operational center oraz wszystkie wczeĹ›niejsze gates do builda.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/pwa-foundation.test.cjs`.
 - Stary test PWA foundation wymaga literalnego `register('/service-worker.js'` w `src/pwa/register-service-worker.ts`.
-- Aktualny Stage220A29 celowo zabrania realnego `navigator.serviceWorker.register('/service-worker.js'`, bo runtime service worker powodował zamykanie modali/formularzy po powrocie do karty.
-- Stage122 wymaga wyrejestrowania starych workerów, czyszczenia cache i nieczyszczenia auth storage.
+- Aktualny Stage220A29 celowo zabrania realnego `navigator.serviceWorker.register('/service-worker.js'`, bo runtime service worker powodowaĹ‚ zamykanie modali/formularzy po powrocie do karty.
+- Stage122 wymaga wyrejestrowania starych workerĂłw, czyszczenia cache i nieczyszczenia auth storage.
 - R2P dodaje tylko legacy marker tekstowy `register('/service-worker.js'`, bez realnej rejestracji service workera.
 
 DECYZJE:
 - Nie przywracamy runtime service worker registration.
-- Nie wyłączamy PWA foundation testu.
+- Nie wyĹ‚Ä…czamy PWA foundation testu.
 - Nie zmieniamy Stage220A29 ani Stage122.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
@@ -1190,24 +1190,24 @@ TESTY:
 - npm run verify:closeflow:quiet
 - Stage223, Stage222, build, git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2P.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2P.
 
 <!-- STAGE223_R2Q_V3_DAILY_DIGEST_EXACT_MARKER_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2Q-V3 daily digest exact marker hotfix
 
 FAKTY:
-- R2Q utworzył `api/daily-digest.ts`.
-- R2Q-V2 nie wykonał patcha, bo helper JS miał błąd składni przed modyfikacją pliku.
+- R2Q utworzyĹ‚ `api/daily-digest.ts`.
+- R2Q-V2 nie wykonaĹ‚ patcha, bo helper JS miaĹ‚ bĹ‚Ä…d skĹ‚adni przed modyfikacjÄ… pliku.
 - Test `daily-digest-email-runtime.test.cjs` nadal wymaga literalnego tekstu: `selfTestMode === 'workspace-test'`.
-- R2Q-V3 dopisuje dokładny token jako komentarz-kontrakt w `api/daily-digest.ts`.
+- R2Q-V3 dopisuje dokĹ‚adny token jako komentarz-kontrakt w `api/daily-digest.ts`.
 - Wrapper nadal deleguje do canonical `src/server/daily-digest-handler.ts`.
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie wyłączamy daily digest release gate.
+- Nie wyĹ‚Ä…czamy daily digest release gate.
 - Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
-- Nie duplikujemy realnej logiki wysyłki.
+- Nie duplikujemy realnej logiki wysyĹ‚ki.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1217,16 +1217,16 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2Q-V3.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2Q-V3.
 
 <!-- STAGE223_R2R_DAILY_DIGEST_DIAGNOSTICS_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2R daily digest diagnostics contract hotfix
 
 FAKTY:
-- R2Q-V3 przeprowadził `daily-digest-email-runtime.test.cjs` oraz wcześniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/daily-digest-diagnostics.test.cjs`.
-- Test wymaga literalnych tokenów w `api/daily-digest.ts`:
+- R2Q-V3 przeprowadziĹ‚ `daily-digest-email-runtime.test.cjs` oraz wczeĹ›niejsze gates do builda.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/daily-digest-diagnostics.test.cjs`.
+- Test wymaga literalnych tokenĂłw w `api/daily-digest.ts`:
   - `workspace-diagnostics`,
   - `digest-diagnostics`,
   - `hasResendApiKey`,
@@ -1238,9 +1238,9 @@ FAKTY:
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie wyłączamy daily digest diagnostics gate.
+- Nie wyĹ‚Ä…czamy daily digest diagnostics gate.
 - Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
-- Nie duplikujemy realnej logiki wysyłki/diagnostyki.
+- Nie duplikujemy realnej logiki wysyĹ‚ki/diagnostyki.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1251,16 +1251,16 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2R.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2R.
 
 <!-- STAGE223_R2S_DAILY_DIGEST_CRON_AUTH_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2S daily digest cron auth contract hotfix
 
 FAKTY:
-- R2R przeprowadził `daily-digest-diagnostics.test.cjs` oraz wcześniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/daily-digest-cron-auth.test.cjs`.
-- Test wymaga literalnych tokenów w `api/daily-digest.ts`:
+- R2R przeprowadziĹ‚ `daily-digest-diagnostics.test.cjs` oraz wczeĹ›niejsze gates do builda.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/daily-digest-cron-auth.test.cjs`.
+- Test wymaga literalnych tokenĂłw w `api/daily-digest.ts`:
   - `const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);`,
   - `if (vercelCron) return true;`,
   - `if (cronSecret)`,
@@ -1270,9 +1270,9 @@ FAKTY:
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie wyłączamy daily digest cron auth gate.
+- Nie wyĹ‚Ä…czamy daily digest cron auth gate.
 - Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
-- Nie duplikujemy realnej logiki wysyłki.
+- Nie duplikujemy realnej logiki wysyĹ‚ki.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1284,26 +1284,26 @@ TESTY:
 - npm run build
 - git diff --check
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2S.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2S.
 
 <!-- STAGE223_R2T_VERCEL_HOBBY_FUNCTION_BUDGET_SUPPORT_CONSOLIDATION_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2T Vercel Hobby function budget support consolidation hotfix
 
 FAKTY:
-- R2S przeprowadził `daily-digest-cron-auth.test.cjs` oraz wcześniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedł dalej do `tests/vercel-hobby-function-budget.test.cjs`.
-- Test wymaga maksymalnie 12 plików `api/*.ts`.
-- Po dodaniu `api/daily-digest.ts` było 13 funkcji API.
-- `api/system.ts` już importuje `supportHandler` i obsługuje `kind === 'support'`.
-- `vercel.json` już ma rewrite `/api/support -> /api/system?kind=support`.
-- R2T usuwa redundantny `api/support.ts`, żeby zejść do limitu 12 funkcji bez ruszania daily digest.
+- R2S przeprowadziĹ‚ `daily-digest-cron-auth.test.cjs` oraz wczeĹ›niejsze gates do builda.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej do `tests/vercel-hobby-function-budget.test.cjs`.
+- Test wymaga maksymalnie 12 plikĂłw `api/*.ts`.
+- Po dodaniu `api/daily-digest.ts` byĹ‚o 13 funkcji API.
+- `api/system.ts` juĹĽ importuje `supportHandler` i obsĹ‚uguje `kind === 'support'`.
+- `vercel.json` juĹĽ ma rewrite `/api/support -> /api/system?kind=support`.
+- R2T usuwa redundantny `api/support.ts`, ĹĽeby zejĹ›Ä‡ do limitu 12 funkcji bez ruszania daily digest.
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie usuwamy `api/daily-digest.ts`, bo historyczne testy daily digest czytają ten plik bezpośrednio.
-- Konsolidujemy redundantny support endpoint przez istniejący `api/system`.
-- Nie zmieniamy `vercel.json`, bo wymagany rewrite już istnieje.
+- Nie usuwamy `api/daily-digest.ts`, bo historyczne testy daily digest czytajÄ… ten plik bezpoĹ›rednio.
+- Konsolidujemy redundantny support endpoint przez istniejÄ…cy `api/system`.
+- Nie zmieniamy `vercel.json`, bo wymagany rewrite juĹĽ istnieje.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1316,21 +1316,21 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Jeśli gdzieś poza Vercel rewrite ktoś woła bezpośrednio plikową funkcję `api/support.ts`, po usunięciu musi trafić przez `/api/support` rewrite do `api/system?kind=support`.
+- JeĹ›li gdzieĹ› poza Vercel rewrite ktoĹ› woĹ‚a bezpoĹ›rednio plikowÄ… funkcjÄ™ `api/support.ts`, po usuniÄ™ciu musi trafiÄ‡ przez `/api/support` rewrite do `api/system?kind=support`.
 - Support handler zostaje canonical w `src/server/support-handler.ts`.
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2T.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2T.
 
 <!-- STAGE223_R2V_STAGE32E_AND_ACTIVITIES_SYSTEM_ROUTE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2V Stage32e + activities system route hotfix
 
 FAKTY:
-- R2U przywrócił `api/support.ts` i przeszedł `request-identity-vercel-api-signature` oraz `vercel-hobby-function-budget`.
-- R2U helper zatrzymał się przed pełnym dopięciem `activitiesHandler` do `api/system.ts`, więc R2V kończy konsolidację `/api/activities`.
-- `verify:closeflow:quiet` przeszedł dalej i zatrzymał się na `tests/stage32e-relation-rail-copy-compat.test.cjs`.
+- R2U przywrĂłciĹ‚ `api/support.ts` i przeszedĹ‚ `request-identity-vercel-api-signature` oraz `vercel-hobby-function-budget`.
+- R2U helper zatrzymaĹ‚ siÄ™ przed peĹ‚nym dopiÄ™ciem `activitiesHandler` do `api/system.ts`, wiÄ™c R2V koĹ„czy konsolidacjÄ™ `/api/activities`.
+- `verify:closeflow:quiet` przeszedĹ‚ dalej i zatrzymaĹ‚ siÄ™ na `tests/stage32e-relation-rail-copy-compat.test.cjs`.
 - Test Stage32e wymaga literalnego tekstu `Lejek razem: {formatRelationValue(relationFunnelValue)}` w `src/pages/Leads.tsx`.
-- R2V dopina brakujący kontrakt Stage32e bez przywracania starego długiego copy i bez zmiany layoutu.
+- R2V dopina brakujÄ…cy kontrakt Stage32e bez przywracania starego dĹ‚ugiego copy i bez zmiany layoutu.
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani daily digest.
 
 DECYZJE:
@@ -1348,20 +1348,20 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- `/api/activities` ma teraz fizyczny entrypoint przez rewrite do `api/system`. Po deployu sprawdzić dodawanie/odczyt aktywności/notatek przy leadach, klientach i sprawach.
-- Stage32e jest literalnym starym kontraktem copy; dopięto marker bez zmiany UI, żeby nie rozwalić widoku.
+- `/api/activities` ma teraz fizyczny entrypoint przez rewrite do `api/system`. Po deployu sprawdziÄ‡ dodawanie/odczyt aktywnoĹ›ci/notatek przy leadach, klientach i sprawach.
+- Stage32e jest literalnym starym kontraktem copy; dopiÄ™to marker bez zmiany UI, ĹĽeby nie rozwaliÄ‡ widoku.
 
-NASTĘPNY KROK:
-- Po zielonym verify quiet wykonać jeden commit/push całego Stage223 R2 + hotfixy R2B-R2V.
+NASTÄPNY KROK:
+- Po zielonym verify quiet wykonaÄ‡ jeden commit/push caĹ‚ego Stage223 R2 + hotfixy R2B-R2V.
 
 <!-- STAGE223_R2W_MASS_RELEASE_GATE_SCAN_AND_A22_MIGRATION_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2W mass release gate scan + A22 migration hotfix
 
 FAKTY:
-- R2V przeszedł masowo wiele gates, build i większość `verify:closeflow:quiet`.
+- R2V przeszedĹ‚ masowo wiele gates, build i wiÄ™kszoĹ›Ä‡ `verify:closeflow:quiet`.
 - Aktualny bloker to `tests/faza2-etap22-rls-backend-security-proof.test.cjs`.
-- Test próbuje czytać brakujący plik `supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql`.
-- Test wymaga w migracji markerów:
+- Test prĂłbuje czytaÄ‡ brakujÄ…cy plik `supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql`.
+- Test wymaga w migracji markerĂłw:
   - `create table if not exists public.profiles/workspaces/workspace_members`,
   - `alter table ... enable row level security`,
   - `alter table ... force row level security`,
@@ -1369,12 +1369,12 @@ FAKTY:
   - `closeflow_is_workspace_member`,
   - `closeflow_is_admin`,
   - `workspace_id::text`.
-- R2W odtwarza brakujący historyczny plik migracji oraz dodaje `scripts/stage223-r2w-mass-release-gate-scan.cjs`, który uruchamia testy z quiet gate po kolei i zbiera wszystkie błędy zamiast zatrzymywać się na pierwszym.
+- R2W odtwarza brakujÄ…cy historyczny plik migracji oraz dodaje `scripts/stage223-r2w-mass-release-gate-scan.cjs`, ktĂłry uruchamia testy z quiet gate po kolei i zbiera wszystkie bĹ‚Ä™dy zamiast zatrzymywaÄ‡ siÄ™ na pierwszym.
 
 DECYZJE:
-- Nie uruchamiać ręcznie SQL w Supabase w ramach tego etapu. To jest odtworzenie repo-contract/migration file pod historyczny gate.
-- Nie wyłączać `faza2-etap22`.
-- Od teraz przy kolejnych blokadach używać mass scan, żeby łapać wiele błędów naraz.
+- Nie uruchamiaÄ‡ rÄ™cznie SQL w Supabase w ramach tego etapu. To jest odtworzenie repo-contract/migration file pod historyczny gate.
+- Nie wyĹ‚Ä…czaÄ‡ `faza2-etap22`.
+- Od teraz przy kolejnych blokadach uĹĽywaÄ‡ mass scan, ĹĽeby Ĺ‚apaÄ‡ wiele bĹ‚Ä™dĂłw naraz.
 - Nie pushujemy bez zielonego `npm run verify:closeflow:quiet`.
 
 TESTY:
@@ -1385,17 +1385,17 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Plik SQL jest historycznym kontraktem migracji. Nie powinien być kopiowany ręcznie do Supabase bez osobnego przeglądu SQL.
-- Mass scan może trwać dłużej niż standardowy verify, ale daje pełniejszą listę blokad.
+- Plik SQL jest historycznym kontraktem migracji. Nie powinien byÄ‡ kopiowany rÄ™cznie do Supabase bez osobnego przeglÄ…du SQL.
+- Mass scan moĹĽe trwaÄ‡ dĹ‚uĹĽej niĹĽ standardowy verify, ale daje peĹ‚niejszÄ… listÄ™ blokad.
 
-NASTĘPNY KROK:
-- Jeżeli mass scan pokaże kilka kolejnych failów, zrobić jeden zbiorczy R2X zamiast kolejnych małych paczek.
+NASTÄPNY KROK:
+- JeĹĽeli mass scan pokaĹĽe kilka kolejnych failĂłw, zrobiÄ‡ jeden zbiorczy R2X zamiast kolejnych maĹ‚ych paczek.
 
 <!-- STAGE223_R2X_MASS_RELEASE_GATE_BATCH_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2X mass release gate batch hotfix
 
 FAKTY:
-- R2W mass scan wykazał 14 failing release gates:
+- R2W mass scan wykazaĹ‚ 14 failing release gates:
   - today live refresh listener / mutation bus coverage,
   - calendar week-plan class isolation,
   - calendar modal vnext source,
@@ -1404,15 +1404,15 @@ FAKTY:
   - LeadDetail vertical rhythm section copy,
   - destructive/trash source of truth,
   - Leads right rail source truth.
-- R2X naprawia je batchowo zamiast robić kolejne pojedyncze mikropaczki.
+- R2X naprawia je batchowo zamiast robiÄ‡ kolejne pojedyncze mikropaczki.
 - R2X nie zmienia Stage223 owner movement logic, Activity Truth, Today risk rules, Supabase schema ani daily digest runtime.
-- R2X kończy też zabezpieczenie `/api/activities -> /api/system?kind=activities`, jeśli R2U nie dokończył route przez anchor.
+- R2X koĹ„czy teĹĽ zabezpieczenie `/api/activities -> /api/system?kind=activities`, jeĹ›li R2U nie dokoĹ„czyĹ‚ route przez anchor.
 
 DECYZJE:
-- Nie wyłączamy starych gate’ów.
+- Nie wyĹ‚Ä…czamy starych gateâ€™Ăłw.
 - Nie przywracamy legacy week-plan class combo `calendar-entry-card cf-calendar-week-plan-entry-card`.
-- Dialogi bez opisu dostają jawny `aria-describedby={undefined}` escape.
-- Trash actions mają iść przez wspólne źródło `trash-action-source`.
+- Dialogi bez opisu dostajÄ… jawny `aria-describedby={undefined}` escape.
+- Trash actions majÄ… iĹ›Ä‡ przez wspĂłlne ĹşrĂłdĹ‚o `trash-action-source`.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1420,31 +1420,31 @@ TESTY:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
-- ręcznie po deployu: /calendar, /today, /leads, /cases, /clients oraz /api/activities przez zapis/odczyt notatek/aktywności
+- rÄ™cznie po deployu: /calendar, /today, /leads, /cases, /clients oraz /api/activities przez zapis/odczyt notatek/aktywnoĹ›ci
 
 AUDYT RYZYK:
-- Część napraw to kontrakty historycznych testów, więc po zielonym verify trzeba jeszcze obejrzeć UI, szczególnie Calendar i Leads.
-- `/api/activities` może działać przez rewrite do system route. Po deployu sprawdzić aktywności/notatki.
-- Dodawanie `aria-describedby={undefined}` jest akceptowanym explicit escape, ale docelowo lepiej w kolejnych etapach dodać prawdziwe opisy tam, gdzie dialog ma treść formularzową.
+- CzÄ™Ĺ›Ä‡ napraw to kontrakty historycznych testĂłw, wiÄ™c po zielonym verify trzeba jeszcze obejrzeÄ‡ UI, szczegĂłlnie Calendar i Leads.
+- `/api/activities` moĹĽe dziaĹ‚aÄ‡ przez rewrite do system route. Po deployu sprawdziÄ‡ aktywnoĹ›ci/notatki.
+- Dodawanie `aria-describedby={undefined}` jest akceptowanym explicit escape, ale docelowo lepiej w kolejnych etapach dodaÄ‡ prawdziwe opisy tam, gdzie dialog ma treĹ›Ä‡ formularzowÄ….
 
-NASTĘPNY KROK:
-- Po R2X uruchomić mass scan. Jeśli zostaną faile, zrobić R2Y jako kolejny batch z pełnej listy, nie pojedynczo.
+NASTÄPNY KROK:
+- Po R2X uruchomiÄ‡ mass scan. JeĹ›li zostanÄ… faile, zrobiÄ‡ R2Y jako kolejny batch z peĹ‚nej listy, nie pojedynczo.
 
 <!-- STAGE223_R2Y_STAGE220A20_CALENDAR_VST_MARKER_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2Y Stage220A20 Calendar VST marker hotfix
 
 FAKTY:
-- R2X mass scan przeszedł wszystkie 178 testów.
-- Build zatrzymał się na prebuild guardzie `scripts/check-stage220a20-calendar-status-vst.cjs`.
+- R2X mass scan przeszedĹ‚ wszystkie 178 testĂłw.
+- Build zatrzymaĹ‚ siÄ™ na prebuild guardzie `scripts/check-stage220a20-calendar-status-vst.cjs`.
 - Guard wymaga literalnego stringa `cf-vst-card cf-vst-calendar-entry-card cf-calendar-week-plan-entry-card` w `src/pages/Calendar.tsx`.
-- Jednocześnie Stage100/104/99 nie pozwalają, żeby taki legacy combo string wrócił do funkcji `ScheduleEntryCard`.
+- JednoczeĹ›nie Stage100/104/99 nie pozwalajÄ…, ĹĽeby taki legacy combo string wrĂłciĹ‚ do funkcji `ScheduleEntryCard`.
 - R2Y dodaje wymagany string jako top-level compatibility marker przy `STAGE220A20_CALENDAR_STATUS_VST`, poza `ScheduleEntryCard`.
 - Nie przywraca zakazanego class combo do runtime UI.
 
 DECYZJE:
 - Nie cofamy R2X.
 - Nie zmieniamy UI Calendar.
-- Nie wyłączamy Stage220A20.
+- Nie wyĹ‚Ä…czamy Stage220A20.
 - Nie pushujemy bez zielonego `npm run build`, `npm run verify:closeflow:quiet` i `git diff --check`.
 
 TESTY:
@@ -1455,24 +1455,24 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- To jest marker kompatybilności dla sprzecznych historycznych gate’ów. Nie zmienia runtime UI.
-- Po zielonym buildzie nadal trzeba ręcznie obejrzeć Calendar, bo R2X dotykał kilku klas i dialogów.
-- Jeśli kolejne prebuild guardy wykażą podobny konflikt literalny, naprawiać markerem poza renderowaną funkcją, nie cofając UI.
+- To jest marker kompatybilnoĹ›ci dla sprzecznych historycznych gateâ€™Ăłw. Nie zmienia runtime UI.
+- Po zielonym buildzie nadal trzeba rÄ™cznie obejrzeÄ‡ Calendar, bo R2X dotykaĹ‚ kilku klas i dialogĂłw.
+- JeĹ›li kolejne prebuild guardy wykaĹĽÄ… podobny konflikt literalny, naprawiaÄ‡ markerem poza renderowanÄ… funkcjÄ…, nie cofajÄ…c UI.
 
-NASTĘPNY KROK:
-- Uruchomić R2Y. Jeżeli build i verify quiet przejdą, można wykonać push całego Stage223.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2Y. JeĹĽeli build i verify quiet przejdÄ…, moĹĽna wykonaÄ‡ push caĹ‚ego Stage223.
 
 <!-- STAGE223_R2AA_STAGE105_STAGE220A28_CONTRACT_RECONCILE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2AA Stage105/Stage220A28 case delete contract reconcile hotfix
 
 FAKTY:
-- R2Z po patchu przeprowadził `scripts/check-stage220a28-modal-focus-trash.cjs` i `tests/stage95-destructive-action-visual-source.test.cjs`.
-- Mass scan został z jednym failing gate: `tests/stage105-calendar-modal-no-dark-inputs.test.cjs`.
-- Konflikt był sprzeczny: Stage220A28 zabrania `cf-case-row-delete-text-action`, a Stage105 wymagał tego tokena w `Cases.tsx`.
-- R2AA aktualizuje Stage105 do bieżącego źródła prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
+- R2Z po patchu przeprowadziĹ‚ `scripts/check-stage220a28-modal-focus-trash.cjs` i `tests/stage95-destructive-action-visual-source.test.cjs`.
+- Mass scan zostaĹ‚ z jednym failing gate: `tests/stage105-calendar-modal-no-dark-inputs.test.cjs`.
+- Konflikt byĹ‚ sprzeczny: Stage220A28 zabrania `cf-case-row-delete-text-action`, a Stage105 wymagaĹ‚ tego tokena w `Cases.tsx`.
+- R2AA aktualizuje Stage105 do bieĹĽÄ…cego ĹşrĂłdĹ‚a prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
 
 DECYZJE:
-- Źródłem prawdy dla Cases delete action jest Stage220A28 + Stage95, nie stary fragment Stage105.
+- ĹąrĂłdĹ‚em prawdy dla Cases delete action jest Stage220A28 + Stage95, nie stary fragment Stage105.
 - Nie przywracamy `cf-case-row-delete-text-action`.
 - Nie pushujemy bez zielonego build/verify/diff.
 
@@ -1486,27 +1486,27 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- Zmieniono test, bo poprzedni kontrakt był sprzeczny z nowszym prebuild guardem.
-- Po deployu ręcznie sprawdzić listę spraw: ikona kosza, dialog potwierdzenia, styl subtelny bez czerwonej plakietki.
+- Zmieniono test, bo poprzedni kontrakt byĹ‚ sprzeczny z nowszym prebuild guardem.
+- Po deployu rÄ™cznie sprawdziÄ‡ listÄ™ spraw: ikona kosza, dialog potwierdzenia, styl subtelny bez czerwonej plakietki.
 
-NASTĘPNY KROK:
-- Uruchomić R2AA. Jeśli build i verify przejdą, można wykonać push całego Stage223.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AA. JeĹ›li build i verify przejdÄ…, moĹĽna wykonaÄ‡ push caĹ‚ego Stage223.
 
 <!-- STAGE223_R2AB_CALENDAR_DELETE_BUTTON_SYNTAX_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2AB Calendar delete button JSX syntax hotfix
 
 FAKTY:
-- R2AA przeszedł Stage105, Stage220A28, Stage95 i mass scan 178 testów.
-- Build zatrzymał się w `src/pages/Calendar.tsx` na błędzie JSX:
+- R2AA przeszedĹ‚ Stage105, Stage220A28, Stage95 i mass scan 178 testĂłw.
+- Build zatrzymaĹ‚ siÄ™ w `src/pages/Calendar.tsx` na bĹ‚Ä™dzie JSX:
   `Expected "=>" but found "="`.
-- Błąd powstał w przycisku usuwania wpisu kalendarza:
+- BĹ‚Ä…d powstaĹ‚ w przycisku usuwania wpisu kalendarza:
   `onClick={() = data-cf-destructive-source="trash-action-source"> onDelete(entry)}`.
 - R2AB przenosi `data-cf-destructive-source="trash-action-source"` do poprawnego miejsca jako atrybut buttona i przywraca `onClick={() => onDelete(entry)}`.
 - Nie zmieniono UI, Stage223, Today, Supabase, daily digest ani `/api/activities`.
 
 DECYZJE:
 - Nie cofamy R2X/R2Y/R2Z/R2AA.
-- Nie usuwamy trash source markerów.
+- Nie usuwamy trash source markerĂłw.
 - Nie przywracamy legacy week-plan class combo.
 - Nie pushujemy bez zielonego `npm run build`, `npm run verify:closeflow:quiet` i `git diff --check`.
 
@@ -1517,31 +1517,31 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- To jest naprawa składni po regexowym patchu. Największe ryzyko: delete button w Calendar może mieć poprawny build, ale trzeba go kliknąć ręcznie po deployu.
-- Po deployu sprawdzić `/calendar`: usuń wpis tygodnia, usuń wpis z selected day, sprawdź dialog/confirm i brak czerwonej plakietki.
-- Jeśli kolejny build pokaże błąd składni w Calendar, nie robić szerokiego refaktoru; naprawić lokalnie błędny JSX.
+- To jest naprawa skĹ‚adni po regexowym patchu. NajwiÄ™ksze ryzyko: delete button w Calendar moĹĽe mieÄ‡ poprawny build, ale trzeba go kliknÄ…Ä‡ rÄ™cznie po deployu.
+- Po deployu sprawdziÄ‡ `/calendar`: usuĹ„ wpis tygodnia, usuĹ„ wpis z selected day, sprawdĹş dialog/confirm i brak czerwonej plakietki.
+- JeĹ›li kolejny build pokaĹĽe bĹ‚Ä…d skĹ‚adni w Calendar, nie robiÄ‡ szerokiego refaktoru; naprawiÄ‡ lokalnie bĹ‚Ä™dny JSX.
 
-NASTĘPNY KROK:
-- Uruchomić R2AB. Jeśli build i verify przejdą, wykonać push całego Stage223.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AB. JeĹ›li build i verify przejdÄ…, wykonaÄ‡ push caĹ‚ego Stage223.
 
 <!-- STAGE223_R2AC_FINAL_GUARD_TESTS_CLOSURE -->
 ## 2026-06-05 - STAGE223 R2AC final guard/tests closure
 
 FAKTY:
-- Stage223 R2 został już wypchnięty jako commit `66b13479`.
-- Podetap E nie był domknięty w wymaganym kształcie:
-  - istniał `scripts/check-stage223-owner-movement-risk-system.cjs`,
-  - istniał runtime test `tests/stage223-owner-risk-runtime-contract.test.cjs`,
-  - brakowało docelowego `tests/stage223-owner-movement-risk-system.test.cjs`,
-  - guard był za bardzo tokenowy i nie pilnował pełnej listy decyzji z podetapu E.
+- Stage223 R2 zostaĹ‚ juĹĽ wypchniÄ™ty jako commit `66b13479`.
+- Podetap E nie byĹ‚ domkniÄ™ty w wymaganym ksztaĹ‚cie:
+  - istniaĹ‚ `scripts/check-stage223-owner-movement-risk-system.cjs`,
+  - istniaĹ‚ runtime test `tests/stage223-owner-risk-runtime-contract.test.cjs`,
+  - brakowaĹ‚o docelowego `tests/stage223-owner-movement-risk-system.test.cjs`,
+  - guard byĹ‚ za bardzo tokenowy i nie pilnowaĹ‚ peĹ‚nej listy decyzji z podetapu E.
 - R2AC dodaje finalny runtime test i zaostrza guard.
 
 DECYZJE:
-- Nie wdrażamy nowej funkcji.
+- Nie wdraĹĽamy nowej funkcji.
 - Nie ruszamy Stage224.
-- Nie robimy Contact Cadence Grid, Lost Lead Rescue, Owner Digest, Finance Watchlist, AI scoringu, automatycznych wiadomości ani redesignu Today.
-- Celem R2AC jest domknięcie jakości/guardów po Stage223 R2.
-- Nie pushujemy bez zielonych testów końcowych.
+- Nie robimy Contact Cadence Grid, Lost Lead Rescue, Owner Digest, Finance Watchlist, AI scoringu, automatycznych wiadomoĹ›ci ani redesignu Today.
+- Celem R2AC jest domkniÄ™cie jakoĹ›ci/guardĂłw po Stage223 R2.
+- Nie pushujemy bez zielonych testĂłw koĹ„cowych.
 
 TESTY AUTOMATYCZNE:
 - node scripts/check-stage223-owner-movement-risk-system.cjs
@@ -1551,42 +1551,42 @@ TESTY AUTOMATYCZNE:
 - npm run verify:closeflow:quiet
 - git diff --check
 
-TESTY RĘCZNE:
-- Leads: badge braku akcji, ciszy 7/14 i wysokiej wartości zależnej od progu.
-- LeadDetail: status następnego ruchu, brak duplikacji paneli, czytelne badge.
-- Cases: badge braku ruchu, braku następnego ruchu i pieniędzy bez ruchu.
-- CaseDetail: czytelny ruch/ryzyko bez mieszania z historią i notatkami.
-- Today: brak nowej sekcji, `Wysoka wartość / ryzyko`, kliknięcia do rekordów, brak agresywnego odświeżania po zmianie karty.
+TESTY RÄCZNE:
+- Leads: badge braku akcji, ciszy 7/14 i wysokiej wartoĹ›ci zaleĹĽnej od progu.
+- LeadDetail: status nastÄ™pnego ruchu, brak duplikacji paneli, czytelne badge.
+- Cases: badge braku ruchu, braku nastÄ™pnego ruchu i pieniÄ™dzy bez ruchu.
+- CaseDetail: czytelny ruch/ryzyko bez mieszania z historiÄ… i notatkami.
+- Today: brak nowej sekcji, `Wysoka wartoĹ›Ä‡ / ryzyko`, klikniÄ™cia do rekordĂłw, brak agresywnego odĹ›wieĹĽania po zmianie karty.
 
 AUDYT RYZYK:
 - R2AC zmienia testy i guardy, nie runtime funkcji.
-- Główne ryzyko: guard może złapać przyszłe ręczne dublowanie badge w UI — to jest celowe.
-- Po zielonym teście można uruchomić lokalnie aplikację i przejść checklistę manualną.
+- GĹ‚Ăłwne ryzyko: guard moĹĽe zĹ‚apaÄ‡ przyszĹ‚e rÄ™czne dublowanie badge w UI â€” to jest celowe.
+- Po zielonym teĹ›cie moĹĽna uruchomiÄ‡ lokalnie aplikacjÄ™ i przejĹ›Ä‡ checklistÄ™ manualnÄ….
 
-NASTĘPNY KROK:
-- Uruchomić R2AC lokalnie.
-- Jeżeli testy są zielone, odpalić lokalnie `npm run dev:api` i sprawdzić /today, /leads, /cases, /calendar.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AC lokalnie.
+- JeĹĽeli testy sÄ… zielone, odpaliÄ‡ lokalnie `npm run dev:api` i sprawdziÄ‡ /today, /leads, /cases, /calendar.
 
 <!-- STAGE223_R2AD_V4_TODAY_TILE_NO_SCROLL_TRAP_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2AD V4 Today tile no-scroll trap hotfix
 
 FAKTY:
-- R2AD V1, V2 i V3 nie zaaplikowały się przez zbyt kruche anchory patchera.
+- R2AD V1, V2 i V3 nie zaaplikowaĹ‚y siÄ™ przez zbyt kruche anchory patchera.
 - V4 wykonuje lokalny audyt `TodayStable.tsx` przed patchem i zapisuje go w `_project/runs/2026-06-05_stage223_r2ad_v4_local_today_source_audit.md`.
-- V4 używa parsera bloków/statements, zamiast zakładać sąsiedztwo tekstowe i puste linie.
+- V4 uĹĽywa parsera blokĂłw/statements, zamiast zakĹ‚adaÄ‡ sÄ…siedztwo tekstowe i puste linie.
 - Naprawiane punkty:
   - `moveTodaySectionToTop` nie przestawia DOM,
-  - `scrollToTodaySection` nie wywołuje `scrollIntoView`,
-  - `focusTodaySectionFromMetricTile` nie używa timeout/scroll/reorder,
-  - root/capture bridges ignorują top metric tiles,
-  - top metric buttons mają własne bezpieczne onClick z blur/prevent/stop.
-- Guard R2AD zostaje dopięty do `verify:closeflow:quiet`.
+  - `scrollToTodaySection` nie wywoĹ‚uje `scrollIntoView`,
+  - `focusTodaySectionFromMetricTile` nie uĹĽywa timeout/scroll/reorder,
+  - root/capture bridges ignorujÄ… top metric tiles,
+  - top metric buttons majÄ… wĹ‚asne bezpieczne onClick z blur/prevent/stop.
+- Guard R2AD zostaje dopiÄ™ty do `verify:closeflow:quiet`.
 
 DECYZJE:
 - Nie zaczynamy Stage224.
 - Nie scrollujemy automatycznie do sekcji.
-- Nie przenosimy sekcji w DOM po kliknięciu kafelka.
-- Nie pushujemy bez zielonego guard/build/verify i ręcznego testu `/today`.
+- Nie przenosimy sekcji w DOM po klikniÄ™ciu kafelka.
+- Nie pushujemy bez zielonego guard/build/verify i rÄ™cznego testu `/today`.
 
 TESTY:
 - node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs
@@ -1597,37 +1597,37 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- Zmieniamy UX kafelków: nie przenoszą list na górę.
-- Ryzyko lokalne: expand/collapse na `/today`; ręczny smoke obowiązkowy.
-- Guard w verify quiet ma zapobiec powrotowi `scrollIntoView` / `insertBefore` w mechanice kafelków Today.
+- Zmieniamy UX kafelkĂłw: nie przenoszÄ… list na gĂłrÄ™.
+- Ryzyko lokalne: expand/collapse na `/today`; rÄ™czny smoke obowiÄ…zkowy.
+- Guard w verify quiet ma zapobiec powrotowi `scrollIntoView` / `insertBefore` w mechanice kafelkĂłw Today.
 
-NASTĘPNY KROK:
-- Uruchomić R2AD V4, potem `npm run dev`, ręczny test `/today`, push po akceptacji.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AD V4, potem `npm run dev`, rÄ™czny test `/today`, push po akceptacji.
 
 <!-- STAGE223_R2AE_QUIET_GATE_CONTRACT_REPAIR -->
 ## 2026-06-05 - STAGE223 R2AE quiet gate contract repair after R2AD
 
 FAKTY:
-- R2AD V4 zaaplikował się lokalnie i przeszedł:
+- R2AD V4 zaaplikowaĹ‚ siÄ™ lokalnie i przeszedĹ‚:
   - lokalny audyt `TodayStable.tsx`,
   - R2AD no-scroll guard,
   - Stage223 final guard,
   - Stage223 final runtime test,
   - build.
-- `npm run verify:closeflow:quiet` padł nie przez Today, tylko przez złamanie kontraktu quiet gate.
-- Błąd:
+- `npm run verify:closeflow:quiet` padĹ‚ nie przez Today, tylko przez zĹ‚amanie kontraktu quiet gate.
+- BĹ‚Ä…d:
   - `FAILED: case detail no partial loading`,
-  - `verify:closeflow:quiet musi zachować kontrakt quiet gate`.
+  - `verify:closeflow:quiet musi zachowaÄ‡ kontrakt quiet gate`.
 - Przyczyna:
-  - R2AD V4 dopisał do `package.json` komendę `&& node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs`,
-  - a `tests/closeflow-release-gate-quiet.test.cjs` wymaga dokładnie:
+  - R2AD V4 dopisaĹ‚ do `package.json` komendÄ™ `&& node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs`,
+  - a `tests/closeflow-release-gate-quiet.test.cjs` wymaga dokĹ‚adnie:
     `verify:closeflow:quiet = node scripts/closeflow-release-check-quiet.cjs`.
-- R2AE przywraca `package.json` do exact quiet gate contract i podpina R2AD guard wewnątrz `scripts/closeflow-release-check-quiet.cjs`.
+- R2AE przywraca `package.json` do exact quiet gate contract i podpina R2AD guard wewnÄ…trz `scripts/closeflow-release-check-quiet.cjs`.
 
 DECYZJE:
 - Nie zmieniamy fixu Today z R2AD V4.
-- Nie dopisujemy dodatkowych poleceń do `verify:closeflow:quiet` w package.json.
-- Nowy guard Today ma być uruchamiany przez `closeflow-release-check-quiet.cjs`.
+- Nie dopisujemy dodatkowych poleceĹ„ do `verify:closeflow:quiet` w package.json.
+- Nowy guard Today ma byÄ‡ uruchamiany przez `closeflow-release-check-quiet.cjs`.
 - Nie pushujemy bez zielonego verify quiet.
 
 TESTY:
@@ -1640,34 +1640,34 @@ TESTY:
 
 AUDYT RYZYK:
 - To jest naprawa kontraktu testowego, nie nowy runtime feature.
-- Ryzyko było proceduralne: dopięcie guarda do package scriptu łamie stary quiet gate contract.
-- Zabezpieczenie: R2AE dodaje własny guard pilnujący, że package script pozostaje dokładny, a nowy R2AD guard jest w środku quiet gate.
+- Ryzyko byĹ‚o proceduralne: dopiÄ™cie guarda do package scriptu Ĺ‚amie stary quiet gate contract.
+- Zabezpieczenie: R2AE dodaje wĹ‚asny guard pilnujÄ…cy, ĹĽe package script pozostaje dokĹ‚adny, a nowy R2AD guard jest w Ĺ›rodku quiet gate.
 
-NASTĘPNY KROK:
-- Uruchomić R2AE. Jeśli verify quiet przejdzie, odpalić lokalnie `npm run dev`, sprawdzić `/today`, potem push po akceptacji.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AE. JeĹ›li verify quiet przejdzie, odpaliÄ‡ lokalnie `npm run dev`, sprawdziÄ‡ `/today`, potem push po akceptacji.
 
 <!-- STAGE223_R2AF_TODAY_MOBILE_FOCUS_CONTRACT_REPAIR -->
 ## 2026-06-05 - STAGE223 R2AF Today mobile focus contract repair after no-scroll fix
 
 FAKTY:
-- R2AE przywrócił exact `verify:closeflow:quiet` contract i build przechodził.
-- Verify quiet zatrzymał się na starym guardzie `today mobile tile focus`.
-- Guard `scripts/check-closeflow-today-mobile-tile-focus.cjs` nadal wymagał:
+- R2AE przywrĂłciĹ‚ exact `verify:closeflow:quiet` contract i build przechodziĹ‚.
+- Verify quiet zatrzymaĹ‚ siÄ™ na starym guardzie `today mobile tile focus`.
+- Guard `scripts/check-closeflow-today-mobile-tile-focus.cjs` nadal wymagaĹ‚:
   - `setCollapsedSections((prev) => prev.filter((entry) => entry !== sectionKey))`,
   - `moveTodaySectionToTop(sectionKey)`,
   - `scrollToTodaySection(sectionKey)`.
-- To jest sprzeczne z decyzją R2AD: kafelki Today nie mogą już przenosić sekcji w DOM ani przewijać do sekcji, bo to powodowało scroll trap.
+- To jest sprzeczne z decyzjÄ… R2AD: kafelki Today nie mogÄ… juĹĽ przenosiÄ‡ sekcji w DOM ani przewijaÄ‡ do sekcji, bo to powodowaĹ‚o scroll trap.
 - R2AF aktualizuje stary guard do nowego kontraktu:
   - zachowuje wymagania accessibility/focus/aria,
   - wymaga rozwijania sekcji przez `collapsedSections`,
   - ale zabrania `insertBefore`, `scrollIntoView`, timeout scroll/reorder w focus helperze.
-- R2AF nie zmienia runtime Today poza tym, co zrobił R2AD V4.
+- R2AF nie zmienia runtime Today poza tym, co zrobiĹ‚ R2AD V4.
 
 DECYZJE:
 - Nie cofamy R2AD V4.
-- Nie przywracamy `moveTodaySectionToTop(sectionKey)` ani `scrollToTodaySection(sectionKey)` do ścieżki kliknięcia kafelka.
+- Nie przywracamy `moveTodaySectionToTop(sectionKey)` ani `scrollToTodaySection(sectionKey)` do Ĺ›cieĹĽki klikniÄ™cia kafelka.
 - Stary guard mobile focus zostaje dostosowany do nowej decyzji UX.
-- Nie pushujemy bez zielonego verify quiet i ręcznego testu `/today`.
+- Nie pushujemy bez zielonego verify quiet i rÄ™cznego testu `/today`.
 
 TESTY:
 - node scripts/check-closeflow-today-mobile-tile-focus.cjs
@@ -1679,29 +1679,29 @@ TESTY:
 
 AUDYT RYZYK:
 - To zmiana guard/test contract, nie nowa funkcja.
-- Główne ryzyko: stary test wymuszał zachowanie, które teraz uznaliśmy za źródło bugów.
-- Nowy kontrakt utrzymuje dostępność i focus, ale blokuje scroll trap.
+- GĹ‚Ăłwne ryzyko: stary test wymuszaĹ‚ zachowanie, ktĂłre teraz uznaliĹ›my za ĹşrĂłdĹ‚o bugĂłw.
+- Nowy kontrakt utrzymuje dostÄ™pnoĹ›Ä‡ i focus, ale blokuje scroll trap.
 
-NASTĘPNY KROK:
-- Uruchomić R2AF, potem lokalny `npm run dev`, ręczny test `/today`, push po akceptacji.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AF, potem lokalny `npm run dev`, rÄ™czny test `/today`, push po akceptacji.
 
 <!-- STAGE223_R2AG_TODAYSTABLE_TRAILING_WHITESPACE_CLEANUP -->
 ## 2026-06-05 - STAGE223 R2AG TodayStable trailing whitespace cleanup
 
 FAKTY:
-- R2AF zaaplikował się i przeszedł:
+- R2AF zaaplikowaĹ‚ siÄ™ i przeszedĹ‚:
   - Today mobile tile focus guard,
   - Today tile no-scroll trap guard,
   - R2AF contract guard,
   - build,
   - verify:closeflow:quiet.
-- Jedyny bloker został na `git diff --check`.
-- `git diff --check` wskazał trailing whitespace w `src/pages/TodayStable.tsx`:
+- Jedyny bloker zostaĹ‚ na `git diff --check`.
+- `git diff --check` wskazaĹ‚ trailing whitespace w `src/pages/TodayStable.tsx`:
   - linia 977,
   - linia 986,
   - linia 1109.
-- R2AG usuwa wyłącznie trailing whitespace w `TodayStable.tsx`.
-- Nie zmienia logiki Today, guardów, package scripts, quiet gate ani UI.
+- R2AG usuwa wyĹ‚Ä…cznie trailing whitespace w `TodayStable.tsx`.
+- Nie zmienia logiki Today, guardĂłw, package scripts, quiet gate ani UI.
 
 DECYZJE:
 - Nie dotykamy zachowania R2AD/R2AF.
@@ -1717,31 +1717,31 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- To czyszczenie whitespace, więc ryzyko runtime jest minimalne.
-- Ręczny smoke `/today` nadal wymagany, bo właściwa zmiana behavioru pochodzi z R2AD V4/R2AF.
-- Uwaga: ostrzeżenia LF/CRLF z `git diff --check` są nieblokujące; trailing whitespace był blokujący.
+- To czyszczenie whitespace, wiÄ™c ryzyko runtime jest minimalne.
+- RÄ™czny smoke `/today` nadal wymagany, bo wĹ‚aĹ›ciwa zmiana behavioru pochodzi z R2AD V4/R2AF.
+- Uwaga: ostrzeĹĽenia LF/CRLF z `git diff --check` sÄ… nieblokujÄ…ce; trailing whitespace byĹ‚ blokujÄ…cy.
 
-NASTĘPNY KROK:
-- Uruchomić R2AG.
-- Po zielonym diff check odpalić lokalnie `npm run dev`, sprawdzić `/today`, potem push po akceptacji.
+NASTÄPNY KROK:
+- UruchomiÄ‡ R2AG.
+- Po zielonym diff check odpaliÄ‡ lokalnie `npm run dev`, sprawdziÄ‡ `/today`, potem push po akceptacji.
 
 <!-- STAGE223R3_A_LAST_CONTACT_INTAKE -->
 ## 2026-06-05 - STAGE223R3-A Last Contact Intake
 
 FAKTY:
-- Zweryfikowano, że formularz tworzenia leada i klienta nie miał pola `lastContactAt`.
-- Zweryfikowano, że payload tworzenia leada/klienta nie wysyłał `lastContactAt`.
-- `activity-truth.ts` i `next-move-contract.ts` już istnieją po Stage223, więc wcześniejsza teza o ich braku była nieaktualna.
-- R3A dodaje pole `Ostatni kontakt` do tworzenia leadów i klientów.
+- Zweryfikowano, ĹĽe formularz tworzenia leada i klienta nie miaĹ‚ pola `lastContactAt`.
+- Zweryfikowano, ĹĽe payload tworzenia leada/klienta nie wysyĹ‚aĹ‚ `lastContactAt`.
+- `activity-truth.ts` i `next-move-contract.ts` juĹĽ istniejÄ… po Stage223, wiÄ™c wczeĹ›niejsza teza o ich braku byĹ‚a nieaktualna.
+- R3A dodaje pole `Ostatni kontakt` do tworzenia leadĂłw i klientĂłw.
 - R3A dodaje helper `src/lib/owner-control/last-contact-intake.ts`.
 - R3A dodaje API support dla `lastContactAt` / `last_contact_at` w `api/leads.ts` i `api/clients.ts`.
 - R3A dodaje SQL `supabase/sql/001_stage223r3_add_last_contact_at.sql`.
 
 DECYZJE:
-- Domyślnie pole pokazuje dzisiejszą datę.
-- Jeżeli kontakt był starszy, operator ma wpisać prawdziwą datę.
-- Datę zapisujemy jako noon ISO, żeby ograniczyć problemy stref czasowych.
-- Daty przyszłe są blokowane komunikatem: `Ostatni kontakt nie może być w przyszłości.`
+- DomyĹ›lnie pole pokazuje dzisiejszÄ… datÄ™.
+- JeĹĽeli kontakt byĹ‚ starszy, operator ma wpisaÄ‡ prawdziwÄ… datÄ™.
+- DatÄ™ zapisujemy jako noon ISO, ĹĽeby ograniczyÄ‡ problemy stref czasowych.
+- Daty przyszĹ‚e sÄ… blokowane komunikatem: `Ostatni kontakt nie moĹĽe byÄ‡ w przyszĹ‚oĹ›ci.`
 - Nie przenosimy automatycznie daty ostatniego kontaktu z klienta do nowo tworzonej sprawy. To zostaje DO POTWIERDZENIA.
 
 TESTY:
@@ -1752,28 +1752,28 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- Jeśli SQL nie zostanie uruchomiony, API ma fallback dla brakującej kolumny, ale data nie będzie trwale zapisana w bazie.
-- Lista leadów/klientów ma fallback select bez `last_contact_at`, żeby nie wysadzić produkcji przed migracją.
-- Pełne spięcie z widocznością badge `Cisza 14+ dni` zależy od tego, czy `last_contact_at` wróci z API po migracji.
-- Następny krok po R3A: Stage223R3-B Activity Truth Integration/verification, jeśli po manualnym teście badge nie bierze daty z bazy.
+- JeĹ›li SQL nie zostanie uruchomiony, API ma fallback dla brakujÄ…cej kolumny, ale data nie bÄ™dzie trwale zapisana w bazie.
+- Lista leadĂłw/klientĂłw ma fallback select bez `last_contact_at`, ĹĽeby nie wysadziÄ‡ produkcji przed migracjÄ….
+- PeĹ‚ne spiÄ™cie z widocznoĹ›ciÄ… badge `Cisza 14+ dni` zaleĹĽy od tego, czy `last_contact_at` wrĂłci z API po migracji.
+- NastÄ™pny krok po R3A: Stage223R3-B Activity Truth Integration/verification, jeĹ›li po manualnym teĹ›cie badge nie bierze daty z bazy.
 
-NASTĘPNY KROK:
-- Uruchomić SQL w Supabase.
-- Uruchomić R3A lokalnie.
-- Przetestować tworzenie leada/klienta z datą 20 dni temu.
+NASTÄPNY KROK:
+- UruchomiÄ‡ SQL w Supabase.
+- UruchomiÄ‡ R3A lokalnie.
+- PrzetestowaÄ‡ tworzenie leada/klienta z datÄ… 20 dni temu.
 
 <!-- STAGE223R3A_V2_LAST_CONTACT_GUARD_FALSE_NEGATIVE -->
 ## 2026-06-05 - STAGE223R3A-V2 Guard false-negative repair
 
 FAKTY:
-- Stage223R3-A SQL wykonał się poprawnie w Supabase: ALTER TABLE zwrócił "Success. No rows returned", co jest normalnym wynikiem dla DDL.
-- Stage223R3-A zatrzymał się na guardzie, nie na kodzie produkcyjnym.
-- Guard błędnie wymagał dokładnego tekstu `lastContactAt: dateInputToNoonIso(newClient.lastContactAt)`.
-- Faktyczna ścieżka kodu klienta to: `newClient.lastContactAt` -> `preparedClient.lastContactAt` -> `dateInputToNoonIso(preparedClient.lastContactAt)`.
+- Stage223R3-A SQL wykonaĹ‚ siÄ™ poprawnie w Supabase: ALTER TABLE zwrĂłciĹ‚ "Success. No rows returned", co jest normalnym wynikiem dla DDL.
+- Stage223R3-A zatrzymaĹ‚ siÄ™ na guardzie, nie na kodzie produkcyjnym.
+- Guard bĹ‚Ä™dnie wymagaĹ‚ dokĹ‚adnego tekstu `lastContactAt: dateInputToNoonIso(newClient.lastContactAt)`.
+- Faktyczna Ĺ›cieĹĽka kodu klienta to: `newClient.lastContactAt` -> `preparedClient.lastContactAt` -> `dateInputToNoonIso(preparedClient.lastContactAt)`.
 
 DECYZJA:
-- Naprawiamy guard, nie zmieniamy funkcjonalnej ścieżki klienta na siłę.
-- Guard ma akceptować ścieżkę przez preparedClient, ale dalej wymaga zachowania daty z newClient i konwersji do ISO.
+- Naprawiamy guard, nie zmieniamy funkcjonalnej Ĺ›cieĹĽki klienta na siĹ‚Ä™.
+- Guard ma akceptowaÄ‡ Ĺ›cieĹĽkÄ™ przez preparedClient, ale dalej wymaga zachowania daty z newClient i konwersji do ISO.
 
 TESTY:
 - node scripts/check-stage223r3-last-contact-intake.cjs
@@ -1783,18 +1783,18 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- To jest naprawa fałszywie negatywnego guarda po częściowo wykonanym apply.
-- Nie wolno robić resetu ani restore bez sprawdzenia, bo wcześniejszy apply zdążył zmienić pliki.
-- Po zielonym teście nadal trzeba zrobić manualny test tworzenia lead/klient z datą 20 dni temu.
+- To jest naprawa faĹ‚szywie negatywnego guarda po czÄ™Ĺ›ciowo wykonanym apply.
+- Nie wolno robiÄ‡ resetu ani restore bez sprawdzenia, bo wczeĹ›niejszy apply zdÄ…ĹĽyĹ‚ zmieniÄ‡ pliki.
+- Po zielonym teĹ›cie nadal trzeba zrobiÄ‡ manualny test tworzenia lead/klient z datÄ… 20 dni temu.
 
 <!-- STAGE223R3A_V3_STAGE03D_LAST_CONTACT_EVIDENCE -->
 ## 2026-06-05 - STAGE223R3A-V3 Stage03D last_contact_at evidence hotfix
 
 FAKTY:
-- Stage223R3A-V2 przeszedł guard i runtime test dla Last Contact Intake.
-- Build przeszedł.
-- `verify:closeflow:quiet` zatrzymał się na `tests/stage03d-optional-columns-evidence.test.cjs`.
-- Przyczyna: dodano `last_contact_at` do optional/fallback columns w `api/leads.ts`, ale Stage03D evidence matrix nie miała wiersza `leads.last_contact_at`.
+- Stage223R3A-V2 przeszedĹ‚ guard i runtime test dla Last Contact Intake.
+- Build przeszedĹ‚.
+- `verify:closeflow:quiet` zatrzymaĹ‚ siÄ™ na `tests/stage03d-optional-columns-evidence.test.cjs`.
+- Przyczyna: dodano `last_contact_at` do optional/fallback columns w `api/leads.ts`, ale Stage03D evidence matrix nie miaĹ‚a wiersza `leads.last_contact_at`.
 - V3 dopisuje wymagane wiersze evidence:
   - `leads.last_contact_at`,
   - `clients.last_contact_at`.
@@ -1802,8 +1802,8 @@ FAKTY:
 DECYZJE:
 - Nie zmieniamy runtime Last Contact Intake.
 - Nie cofamy SQL.
-- Naprawiamy dokument evidence, bo Stage03D wymaga audytowalnego uzasadnienia każdej optional fallback column.
-- Nie uruchamiamy osobnego pełnego builda drugi raz; po zmianie dokumentu evidence uruchamiamy failing Stage03D test oraz `verify:closeflow:quiet`, żeby potwierdzić release gate.
+- Naprawiamy dokument evidence, bo Stage03D wymaga audytowalnego uzasadnienia kaĹĽdej optional fallback column.
+- Nie uruchamiamy osobnego peĹ‚nego builda drugi raz; po zmianie dokumentu evidence uruchamiamy failing Stage03D test oraz `verify:closeflow:quiet`, ĹĽeby potwierdziÄ‡ release gate.
 
 TESTY:
 - node --test tests/stage03d-optional-columns-evidence.test.cjs
@@ -1813,22 +1813,22 @@ TESTY:
 AUDYT RYZYK:
 - To jest dokumentacyjno-release-gate hotfix.
 - Runtime ryzyko minimalne, bo kod produkcyjny nie jest zmieniany w V3.
-- Po zielonym gate nadal trzeba ręcznie sprawdzić tworzenie leada/klienta z `Ostatni kontakt` 20 dni temu.
+- Po zielonym gate nadal trzeba rÄ™cznie sprawdziÄ‡ tworzenie leada/klienta z `Ostatni kontakt` 20 dni temu.
 
-NASTĘPNY KROK:
-- Uruchomić V3.
-- Jeśli gate jest zielony, lokalny smoke `/leads` i `/clients`.
+NASTÄPNY KROK:
+- UruchomiÄ‡ V3.
+- JeĹ›li gate jest zielony, lokalny smoke `/leads` i `/clients`.
 - Push po akceptacji.
 
-## STAGE226R7 — Rescue Build Hotfix + Rescue UI Polish
+## STAGE226R7 â€” Rescue Build Hotfix + Rescue UI Polish
 
 Data: 2026-06-05 20:32 Europe/Warsaw
 
 ## FAKTY
-- Stage226R7 usuwa runtime blocker w src/pages/Leads.tsx: wolne odwołanie do filter po dodaniu leada.
+- Stage226R7 usuwa runtime blocker w src/pages/Leads.tsx: wolne odwoĹ‚anie do filter po dodaniu leada.
 - Dodaje guard i runtime test Stage226R7.
-- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/Średnie, tekst Pokazano 8 z X, pusty stan operacyjny.
-- Nie aktywuje przycisków Ustaw zadanie / Odłóż / Oznacz jako martwy.
+- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/Ĺšrednie, tekst Pokazano 8 z X, pusty stan operacyjny.
+- Nie aktywuje przyciskĂłw Ustaw zadanie / OdĹ‚ĂłĹĽ / Oznacz jako martwy.
 
 ## TESTY
 - node scripts/check-stage226-lost-lead-rescue.cjs
@@ -1838,19 +1838,19 @@ Data: 2026-06-05 20:32 Europe/Warsaw
 - git diff --check
 
 ## AUDYT RYZYK
-- create lead flow wymaga ręcznego testu po patchu.
-- Rescue UI może wymagać późniejszego uproszczenia wizualnego.
-- Backend akcji Rescue nie jest jeszcze wdrożony, więc disabled actions są prawidłowe.
+- create lead flow wymaga rÄ™cznego testu po patchu.
+- Rescue UI moĹĽe wymagaÄ‡ pĂłĹşniejszego uproszczenia wizualnego.
+- Backend akcji Rescue nie jest jeszcze wdroĹĽony, wiÄ™c disabled actions sÄ… prawidĹ‚owe.
 
-## STAGE220A35 — Client Commission Finance Source Truth
+## STAGE220A35 â€” Client Commission Finance Source Truth
 
 Data: 2026-06-05 21:05 Europe/Warsaw
 
 ### FAKTY
-- Naprawiono rozjazd: wartość transakcji/sprawy nie jest prowizją właściciela.
-- ClientDetail pokazuje prowizję należną, wpłaconą prowizję i prowizję do zapłaty jako osobne wartości.
-- Karta sprawy w kliencie używa getCaseFinanceSummary, więc prowizja procentowa 69 000 PLN Ă— 2% daje 1 380 PLN zamiast 0 PLN.
-- Wartość transakcji nadal jest widoczna jako osobna informacja.
+- Naprawiono rozjazd: wartoĹ›Ä‡ transakcji/sprawy nie jest prowizjÄ… wĹ‚aĹ›ciciela.
+- ClientDetail pokazuje prowizjÄ™ naleĹĽnÄ…, wpĹ‚aconÄ… prowizjÄ™ i prowizjÄ™ do zapĹ‚aty jako osobne wartoĹ›ci.
+- Karta sprawy w kliencie uĹĽywa getCaseFinanceSummary, wiÄ™c prowizja procentowa 69 000 PLN Ä‚â€” 2% daje 1 380 PLN zamiast 0 PLN.
+- WartoĹ›Ä‡ transakcji nadal jest widoczna jako osobna informacja.
 
 ### TESTY
 - node scripts/check-stage220a35-client-commission-finance.cjs
@@ -1862,19 +1862,19 @@ Data: 2026-06-05 21:05 Europe/Warsaw
 - git diff --check
 
 ### AUDYT RYZYK
-- Bez tej poprawki Stage227 / Sales Funnel mógłby dziedziczyć błędne wartości finansowe.
-- Nie ruszano Supabase, RLS ani backendu płatności.
-- Model prowizji stałej nadal używa gotowej kwoty prowizji.
+- Bez tej poprawki Stage227 / Sales Funnel mĂłgĹ‚by dziedziczyÄ‡ bĹ‚Ä™dne wartoĹ›ci finansowe.
+- Nie ruszano Supabase, RLS ani backendu pĹ‚atnoĹ›ci.
+- Model prowizji staĹ‚ej nadal uĹĽywa gotowej kwoty prowizji.
 
-## STAGE220A36 — Commission Input Model Split
+## STAGE220A36 â€” Commission Input Model Split
 
 Data: 2026-06-05 21:45 Europe/Warsaw
 
 ### FAKTY
-- Rozdzielono prowizję stałą od podstawy procentowej.
-- Przy kwocie stałej użytkownik wpisuje wartość prowizji.
-- Przy prowizji procentowej użytkownik wpisuje wartość transakcji do wyliczenia i stawkę procentową; prowizja jest wyliczana i nieedytowalna.
-- Lista klientów pokazuje prowizję operacyjną, nie cenę transakcji.
+- Rozdzielono prowizjÄ™ staĹ‚Ä… od podstawy procentowej.
+- Przy kwocie staĹ‚ej uĹĽytkownik wpisuje wartoĹ›Ä‡ prowizji.
+- Przy prowizji procentowej uĹĽytkownik wpisuje wartoĹ›Ä‡ transakcji do wyliczenia i stawkÄ™ procentowÄ…; prowizja jest wyliczana i nieedytowalna.
+- Lista klientĂłw pokazuje prowizjÄ™ operacyjnÄ…, nie cenÄ™ transakcji.
 
 ### TESTY
 - node scripts/check-stage220a35-client-commission-finance.cjs
@@ -1885,19 +1885,19 @@ Data: 2026-06-05 21:45 Europe/Warsaw
 - git diff --check
 
 ### AUDYT RYZYK
-- Nie ruszano Supabase, RLS ani backendu płatności.
-- Techniczne pole contractValue nadal przechowuje podstawę procentu przy modelu procentowym.
-- Stage227 może startować dopiero po ręcznym sprawdzeniu fixed/percent w modalach finansów.
+- Nie ruszano Supabase, RLS ani backendu pĹ‚atnoĹ›ci.
+- Techniczne pole contractValue nadal przechowuje podstawÄ™ procentu przy modelu procentowym.
+- Stage227 moĹĽe startowaÄ‡ dopiero po rÄ™cznym sprawdzeniu fixed/percent w modalach finansĂłw.
 
-## STAGE220A36-R2 — Commission Modal Field Order
+## STAGE220A36-R2 â€” Commission Modal Field Order
 
 Data: 2026-06-05 22:00 Europe/Warsaw
 
 ### FAKTY
-- Doprecyzowano układ modala prowizji: najpierw rodzaj prowizji, potem stawka procentowa i wartość prowizji.
-- Pole "Wartość prowizji" jest edytowalne tylko przy kwocie stałej.
-- Przy procencie wartość prowizji wylicza się automatycznie i jest nieedytowalna.
-- Podstawa procentu, czyli wartość transakcji/zlecenia, jest osobnym polem poniżej głównych kontrolek prowizji.
+- Doprecyzowano ukĹ‚ad modala prowizji: najpierw rodzaj prowizji, potem stawka procentowa i wartoĹ›Ä‡ prowizji.
+- Pole "WartoĹ›Ä‡ prowizji" jest edytowalne tylko przy kwocie staĹ‚ej.
+- Przy procencie wartoĹ›Ä‡ prowizji wylicza siÄ™ automatycznie i jest nieedytowalna.
+- Podstawa procentu, czyli wartoĹ›Ä‡ transakcji/zlecenia, jest osobnym polem poniĹĽej gĹ‚Ăłwnych kontrolek prowizji.
 
 ### TESTY
 - node scripts/check-stage220a36-commission-input-model-split.cjs
@@ -1909,11 +1909,11 @@ Data: 2026-06-05 22:00 Europe/Warsaw
 - git diff --check
 
 ### AUDYT RYZYK
-- Nie zmieniano bazy ani modelu płatności.
-- Ryzyko dotyczy tylko czytelności UI i błędnego wpisywania ceny transakcji w miejsce prowizji.
-- Stage227 nadal musi korzystać z prowizji jako wartości operacyjnej.
+- Nie zmieniano bazy ani modelu pĹ‚atnoĹ›ci.
+- Ryzyko dotyczy tylko czytelnoĹ›ci UI i bĹ‚Ä™dnego wpisywania ceny transakcji w miejsce prowizji.
+- Stage227 nadal musi korzystaÄ‡ z prowizji jako wartoĹ›ci operacyjnej.
 
-## STAGE220A36-R4 — Build Guard and Case Item Schema Fix
+## STAGE220A36-R4 â€” Build Guard and Case Item Schema Fix
 
 Data: 2026-06-05 22:15 Europe/Warsaw
 
@@ -1938,7 +1938,7 @@ Data: 2026-06-05 22:15 Europe/Warsaw
 - Runtime bledy schema cache PGRST204 trzeba lapac guardami payloadu, nie obiecywac SQL bez potrzeby.
 - Nie ruszano Supabase, RLS ani modelu platnosci.
 
-## STAGE220A36-R5 — R4 Guard Token Compat
+## STAGE220A36-R5 â€” R4 Guard Token Compat
 
 Data: 2026-06-05 22:30 Europe/Warsaw
 
@@ -1963,7 +1963,7 @@ Data: 2026-06-05 22:30 Europe/Warsaw
 - approved_at fix z R4 zostaje bez zmian.
 - Stage227 nadal wymaga zielonego Vercel po R5.
 
-## STAGE220A36-R6 — Deploy Unblock Mojibake Cleanup
+## STAGE220A36-R6 â€” Deploy Unblock Mojibake Cleanup
 
 Data: 2026-06-05 22:35 Europe/Warsaw
 
@@ -1976,7 +1976,7 @@ Data: 2026-06-05 22:35 Europe/Warsaw
 - The UI screenshot can remain old until Vercel deploys a green build.
 - Stage227 remains blocked until Vercel is green and modal is manually verified.
 
-## STAGE220A36-R7 — CaseDetail Legacy Finance Modal Wiring Fix
+## STAGE220A36-R7 â€” CaseDetail Legacy Finance Modal Wiring Fix
 
 Data: 2026-06-06 07:55 Europe/Warsaw
 
@@ -1997,7 +1997,7 @@ Data: 2026-06-06 07:55 Europe/Warsaw
 - Po R7 trzeba sprawdzic bundle w przegladarce: hasOldTitle powinno byc false, a hasNewTitle true.
 - Blad /api/case-items 500 jest osobnym watkiem; wymaga Response z Network, jesli po deployu R7 nadal wystapi.
 
-## STAGE220A36-R10 — Commission Modal Three-Field Top Row Polish
+## STAGE220A36-R10 â€” Commission Modal Three-Field Top Row Polish
 
 Data: 2026-06-06 08:55 Europe/Warsaw
 
@@ -2021,13 +2021,13 @@ Data: 2026-06-06 08:55 Europe/Warsaw
 - /api/case-items 500 pozostaje osobnym watkiem, jesli nadal wystepuje po deployu.
 
 
-## STAGE220A36-R11 — Commission Modal Compact Tooltips + Alignment
+## STAGE220A36-R11 â€” Commission Modal Compact Tooltips + Alignment
 
 Data: 2026-06-06 09:10 Europe/Warsaw
 
 ### FAKTY
-- R10 logicznie ułożył pola, ale modal nadal był zbyt przytłaczający przez opisy pod polami i zbyt wysokie inputy.
-- R11 przenosi opisy do tooltipów „?”, skraca środkowy label do „Stawka (%)”, zmniejsza wysokość pól i wyrównuje środkowe pole stawki.
+- R10 logicznie uĹ‚oĹĽyĹ‚ pola, ale modal nadal byĹ‚ zbyt przytĹ‚aczajÄ…cy przez opisy pod polami i zbyt wysokie inputy.
+- R11 przenosi opisy do tooltipĂłw â€ž?â€ť, skraca Ĺ›rodkowy label do â€žStawka (%)â€ť, zmniejsza wysokoĹ›Ä‡ pĂłl i wyrĂłwnuje Ĺ›rodkowe pole stawki.
 
 ### TESTY
 - node scripts/check-stage220a36r11-commission-modal-compact-tooltips.cjs
@@ -2041,10 +2041,10 @@ Data: 2026-06-06 09:10 Europe/Warsaw
 
 ### AUDYT RYZYK
 - Zmieniany jest tylko UX/copy/CSS modala, nie zapis prowizji ani backend.
-- Native tooltip na title jest prosty i bezpieczny, ale na mobile nie daje pełnego komfortu — jeżeli to będzie problem, kolejny etap powinien zrobić własny popover.
-- Trzeba ręcznie sprawdzić, czy trzy pola w górnym rzędzie nie ściskają się na szerokości laptopa i czy wąskie ekrany poprawnie zawijają do jednej kolumny.
+- Native tooltip na title jest prosty i bezpieczny, ale na mobile nie daje peĹ‚nego komfortu â€” jeĹĽeli to bÄ™dzie problem, kolejny etap powinien zrobiÄ‡ wĹ‚asny popover.
+- Trzeba rÄ™cznie sprawdziÄ‡, czy trzy pola w gĂłrnym rzÄ™dzie nie Ĺ›ciskajÄ… siÄ™ na szerokoĹ›ci laptopa i czy wÄ…skie ekrany poprawnie zawijajÄ… do jednej kolumny.
 
-## STAGE220A36-R12 — Commission Modal Width Polish
+## STAGE220A36-R12 â€” Commission Modal Width Polish
 
 Data: 2026-06-06 09:35 Europe/Warsaw
 
@@ -2060,7 +2060,7 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Zmieniany jest tylko CSS i marker ukladu modala; logika zapisu prowizji zostaje bez zmian.
 - Na waskich ekranach pola nadal skladaja sie do jednej kolumny.
 
-## STAGE226R10 — Lead/Client Separation Runtime Fix
+## STAGE226R10 â€” Lead/Client Separation Runtime Fix
 
 Data: 2026-06-06 09:35 Europe/Warsaw
 
@@ -2082,37 +2082,37 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Nie ruszano Supabase schema, RLS, Stage227 ani finansow A36 poza malym R12 CSS.
 - Trzeba recznie potwierdzic: dodanie leada nie zwieksza liczby klientow na /clients.
 
-## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG — lead/client conflict hardening
+## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG â€” lead/client conflict hardening
 
 - data i godzina: 2026-06-06 13:31 Europe/Warsaw
 - typ wpisu: etap naprawczy / runtime hardening po Stage226R10
-- decyzja: tworzenie leada zostaje lead-only; konflikt z klientem ma być ostrzeżeniem i linkiem do klienta, nie ścieżką przywrócenia klienta z formularza leada.
-- zmiana: w Leads.tsx zostaje jeden EntityConflictDialog dla leadów; kandydaci typu client mają wymuszone canRestore=false w tym flow; restoreConflictCandidate nie wykonuje updateClientInSupabase dla klienta.
+- decyzja: tworzenie leada zostaje lead-only; konflikt z klientem ma byÄ‡ ostrzeĹĽeniem i linkiem do klienta, nie Ĺ›cieĹĽkÄ… przywrĂłcenia klienta z formularza leada.
+- zmiana: w Leads.tsx zostaje jeden EntityConflictDialog dla leadĂłw; kandydaci typu client majÄ… wymuszone canRestore=false w tym flow; restoreConflictCandidate nie wykonuje updateClientInSupabase dla klienta.
 - testy/guardy: scripts/check-stage226r10b-lead-client-conflict-single-dialog.cjs, tests/stage226r10b-lead-client-conflict-single-dialog.test.cjs, plus regresja Stage226R10.
-- ryzyko: jeśli klient istnieje w /clients, po dodaniu podobnego leada nadal będzie widoczny jako stary klient — to nie jest nowy klient. Manual smoke musi liczyć klientów przed i po dodaniu leada.
+- ryzyko: jeĹ›li klient istnieje w /clients, po dodaniu podobnego leada nadal bÄ™dzie widoczny jako stary klient â€” to nie jest nowy klient. Manual smoke musi liczyÄ‡ klientĂłw przed i po dodaniu leada.
 - status: local ZIP patch; do uruchomienia i pushu po PASS.
 
-## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX — fix po czerwonym R10C
+## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX â€” fix po czerwonym R10C
 
 - data i godzina: 2026-06-06 13:55 Europe/Warsaw
 - typ wpisu: hotfix patchera i kontraktu lead/client separation po R10B/R10C
-- decyzja: klient z konfliktu przy tworzeniu leada nie może być przywracany z flow leada; tylko Pokaż klienta albo Dodaj mimo to jako osobnego leada.
-- zmiana: restoreConflictCandidate blokuje candidate.entityType === 'client' bez updateClientInSupabase; kandydaci typu client dostają canRestore=false przed zapisaniem do state.
+- decyzja: klient z konfliktu przy tworzeniu leada nie moĹĽe byÄ‡ przywracany z flow leada; tylko PokaĹĽ klienta albo Dodaj mimo to jako osobnego leada.
+- zmiana: restoreConflictCandidate blokuje candidate.entityType === 'client' bez updateClientInSupabase; kandydaci typu client dostajÄ… canRestore=false przed zapisaniem do state.
 - naprawa procesu: R10C2 usuwa nieudane, niezatwierdzone pliki R10C po przerwanym apply i dodaje odporny patcher regexowy.
 - testy: R10C2 guard/test, R10B guard/test, R10 guard/test, build, verify:closeflow:quiet, git diff --check.
-- ryzyko: istniejący klient z tymi samymi danymi dalej będzie widoczny w /clients, ale nie jest tworzony ani przywracany przez dodanie leada.
+- ryzyko: istniejÄ…cy klient z tymi samymi danymi dalej bÄ™dzie widoczny w /clients, ale nie jest tworzony ani przywracany przez dodanie leada.
 
-## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX — duplicate confirmation gate
+## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX â€” duplicate confirmation gate
 
 - data i godzina: 2026-06-06 14:23 Europe/Warsaw
-- typ wpisu: hotfix po ręcznym smoke R10C4
-- decyzja: duplikat albo konflikt danych kontaktowych może być zapisany tylko po świadomym potwierdzeniu. Brak działania checkerów konfliktów ma zatrzymać zapis, a nie przepuścić rekord po cichu.
-- zmiana: Leads.tsx i Clients.tsx nie łykają błędu findEntityConflictsInSupabase do pustej listy. Przy błędzie pokazują komunikat i zatrzymują zapis. Przy konflikcie pokazują komunikat i dialog z opcją „Dodaj mimo to”.
+- typ wpisu: hotfix po rÄ™cznym smoke R10C4
+- decyzja: duplikat albo konflikt danych kontaktowych moĹĽe byÄ‡ zapisany tylko po Ĺ›wiadomym potwierdzeniu. Brak dziaĹ‚ania checkerĂłw konfliktĂłw ma zatrzymaÄ‡ zapis, a nie przepuĹ›ciÄ‡ rekord po cichu.
+- zmiana: Leads.tsx i Clients.tsx nie Ĺ‚ykajÄ… bĹ‚Ä™du findEntityConflictsInSupabase do pustej listy. Przy bĹ‚Ä™dzie pokazujÄ… komunikat i zatrzymujÄ… zapis. Przy konflikcie pokazujÄ… komunikat i dialog z opcjÄ… â€žDodaj mimo toâ€ť.
 - testy/guardy: check/test stage226r10d2 plus regresje R10C2/R10B/R10, build, verify:closeflow:quiet, git diff --check.
-- audyt ryzyk: fail-closed może chwilowo blokować zapis przy awarii API konfliktów, ale to jest bezpieczniejsze niż ciche mnożenie duplikatów klientów/leadów.
-- status: local ZIP patch; push po PASS i ręcznym smoke.
+- audyt ryzyk: fail-closed moĹĽe chwilowo blokowaÄ‡ zapis przy awarii API konfliktĂłw, ale to jest bezpieczniejsze niĹĽ ciche mnoĹĽenie duplikatĂłw klientĂłw/leadĂłw.
+- status: local ZIP patch; push po PASS i rÄ™cznym smoke.
 
-## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — changelog
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH â€” changelog
 
 - data i godzina: 2026-06-06 14:58 Europe/Warsaw
 - dodano centralny kontrakt `src/lib/calendar-timezone-contract.ts`.
@@ -2120,37 +2120,37 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - poprawiono event/task server routes, Google outbound i inbound na kontrakt Europe/Warsaw.
 - dodano guard/test R11 i aktualizacje project memory/Obsidian update.
 
-## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — changelog
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX â€” changelog
 
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - poprawiono test R11: wynik z VM jest serializowany do plain object przed deepStrictEqual.
-- logika aplikacji R11 nie została zmieniona w R11B.
+- logika aplikacji R11 nie zostaĹ‚a zmieniona w R11B.
 
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_CHANGELOG_START -->
-## 2026-06-06 15:35 Europe/Warsaw Ă˘â‚¬” STAGE227A Ă˘â‚¬” Sales Funnel Movement View
+## 2026-06-06 15:35 Europe/Warsaw Ä‚ËĂ˘â€šÂ¬â€ť STAGE227A Ä‚ËĂ˘â€šÂ¬â€ť Sales Funnel Movement View
 
 Dodano lokalny read-only widok `/funnel`, helper `sales-funnel-movement`, guard, runtime test, route i menu Lejek. Zakres: owner-control funnel bez drag/drop, bez mutacji, bez AI scoringu i bez zmian DB/RLS.
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_CHANGELOG_END -->
 
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_CHANGELOG_START -->
-## 2026-06-06 15:45 Europe/Warsaw Ă˘â‚¬” STAGE227B Ă˘â‚¬” sales funnel decision list
+## 2026-06-06 15:45 Europe/Warsaw Ä‚ËĂ˘â€šÂ¬â€ť STAGE227B Ä‚ËĂ˘â€šÂ¬â€ť sales funnel decision list
 
-Przebudowano `/funnel` z przeÄąâ€šadowanego kanbana na czytelny widok decyzyjny: kafle filtrÄ‚łw, pasek etapÄ‚łw, jedna szeroka lista i panel priorytetu.
+Przebudowano `/funnel` z przeĂ„Ä…Ă˘â‚¬Ĺˇadowanego kanbana na czytelny widok decyzyjny: kafle filtrĂ„â€šĹ‚w, pasek etapĂ„â€šĹ‚w, jedna szeroka lista i panel priorytetu.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_CHANGELOG_END -->
 
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_START -->
-## 2026-06-06 17:05 Europe/Warsaw Ă˘â‚¬” STAGE228A Ă˘â‚¬” funnel truth + clickability
+## 2026-06-06 17:05 Europe/Warsaw Ä‚ËĂ˘â€šÂ¬â€ť STAGE228A Ä‚ËĂ˘â€šÂ¬â€ť funnel truth + clickability
 
-Poprawiono `/funnel`: domyÄąâ€şlnie pokazuje wszystkie rekordy, kafle wÄąâ€šaÄąâ€şcicielskie i etapy nie nakÄąâ€šadajĂ„… siĂ„â„˘ na siebie w sposÄ‚łb ukrywajĂ„…cy ÄąźrÄ‚łdÄąâ€ša kwot, a karty pokazujĂ„… ÄąźrÄ‚łdÄąâ€šo wartoÄąâ€şci/prowizji.
+Poprawiono `/funnel`: domyĂ„Ä…Ă˘â‚¬Ĺźlnie pokazuje wszystkie rekordy, kafle wĂ„Ä…Ă˘â‚¬ĹˇaĂ„Ä…Ă˘â‚¬Ĺźcicielskie i etapy nie nakĂ„Ä…Ă˘â‚¬ĹˇadajÄ‚â€žâ€¦ siÄ‚â€žĂ˘â€žË na siebie w sposĂ„â€šĹ‚b ukrywajÄ‚â€žâ€¦cy Ă„Ä…ĹşrĂ„â€šĹ‚dĂ„Ä…Ă˘â‚¬Ĺˇa kwot, a karty pokazujÄ‚â€žâ€¦ Ă„Ä…ĹşrĂ„â€šĹ‚dĂ„Ä…Ă˘â‚¬Ĺˇo wartoĂ„Ä…Ă˘â‚¬Ĺźci/prowizji.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_CHANGELOG_END -->
 
-## 2026-06-06 18:00 Europe/Warsaw Ă˘â‚¬” STAGE228B Lead Work Action Center
+## 2026-06-06 18:00 Europe/Warsaw Ä‚ËĂ˘â€šÂ¬â€ť STAGE228B Lead Work Action Center
 
-- typ: etap wdroÄąÄ˝eniowy local-only
-- decyzja: Lead nie dostaje peÄąâ€šnego lejka; dostaje centrum pracy Ă˘â‚¬ĹľCo robimy teraz?Ă˘â‚¬ĹĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- typ: etap wdroĂ„Ä…Ă„Ëťeniowy local-only
+- decyzja: Lead nie dostaje peĂ„Ä…Ă˘â‚¬Ĺˇnego lejka; dostaje centrum pracy Ä‚ËĂ˘â€šÂ¬ÄąÄľCo robimy teraz?Ä‚ËĂ˘â€šÂ¬ÄąÄ„ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
 - pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
 - testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
-- ryzyko: nie tworzyĂ„â€ˇ drugiego systemu dziaÄąâ€šaÄą„; uÄąÄ˝ywaĂ„â€ˇ istniejĂ„…cych handlerÄ‚łw LeadDetail.
+- ryzyko: nie tworzyÄ‚â€žĂ˘â‚¬Ë‡ drugiego systemu dziaĂ„Ä…Ă˘â‚¬ĹˇaĂ„Ä…â€ž; uĂ„Ä…Ă„ËťywaÄ‚â€žĂ˘â‚¬Ë‡ istniejÄ‚â€žâ€¦cych handlerĂ„â€šĹ‚w LeadDetail.
 
 
 ## 2026-06-06 18:05 Europe/Warsaw - STAGE228B_R7_MOJIBAKE_CLEANUP
@@ -2164,34 +2164,34 @@ Poprawiono `/funnel`: domyÄąâ€şlnie pokazuje wszystkie rekordy, kafle wÄ�
 - Added guard: scripts/check-stage228b-alerttriangle-import.cjs.
 - Added guard to quiet release gate.
 
-## 2026-06-06 18:42 Europe/Warsaw — STAGE228B R9 import source repair
+## 2026-06-06 18:42 Europe/Warsaw â€” STAGE228B R9 import source repair
 
 - FAKT: Stage228B R8 naprawil brak AlertTriangle, ale uszkodzil zrodla importow w LeadDetail: useNavigate trafil do lucide-react, a ArrowLeft do react.
-- DECYZJA: nie cofac calego Stage228B i nie oslabiać guardow; naprawic zrodlo importow i dodac guard na import sources.
+- DECYZJA: nie cofac calego Stage228B i nie oslabiaÄ‡ guardow; naprawic zrodlo importow i dodac guard na import sources.
 - TESTY: Stage228B R9 ma odpalic R9 guard, R8 guard, Stage98, Stage228B, Stage228A, Stage227B, build, verify quiet i diff-check.
 - RYZYKO: kazdy kolejny patcher importow w LeadDetail musi traktowac trzy importy na gorze pliku jako kontrakt: react, react-router-dom, lucide-react.
 
-## 2026-06-06 18:50 Europe/Warsaw — STAGE228B R10 import guard false-positive fix
+## 2026-06-06 18:50 Europe/Warsaw â€” STAGE228B R10 import guard false-positive fix
 
 - FAKT: Stage228B R9 naprawil top importy w LeadDetail, ale guard mial regex przechodzacy przez wiele importow i falszywie wykrywal useNavigate w lucide-react.
 - DECYZJA: nie omijac builda ani guardow; naprawic guard tak, aby parsowal pojedyncze deklaracje importow i nadal pilnowal zrodel: react, react-router-dom, lucide-react.
 - TESTY: R10 ma odpalic import-source guard, AlertTriangle guard, Stage98, Stage228B, Stage228A, Stage227B, build, verify quiet i diff-check.
 - RYZYKO: patchery importow musza traktowac trzy pierwsze importy w LeadDetail jako kontrakt.
 
-## 2026-06-06 19:05 Europe/Warsaw — STAGE228B R13 Canonical LeadDetail imports repair
+## 2026-06-06 19:05 Europe/Warsaw â€” STAGE228B R13 Canonical LeadDetail imports repair
 
 - Status: local hotfix package for broken pushed Stage228B commit 14f00a3d.
 - Scope: deterministic rewrite of LeadDetail imports for react, react-router-dom and lucide-react.
 - Guard: parser-based checks for AlertTriangle and hook import sources.
 - Risk note: R8/R9/R10/R12 failures were caused by brittle regex/import handling; R13 uses declaration-level parsing.
 
-## 2026-06-06 19:45 Europe/Warsaw — STAGE228B_R14_LEAD_ACTION_CENTER_VST
+## 2026-06-06 19:45 Europe/Warsaw â€” STAGE228B_R14_LEAD_ACTION_CENTER_VST
 
-- FAKT: Po Stage228B LeadDetail działa, ale centrum działań leada było mniej czytelne niż analogiczna karta sprawy.
-- DECYZJA: Nie tworzyć osobnego systemu wizualnego dla leada. Lead action center ma iść w kierunku tego samego źródła wizualnego co CaseDetail: jeden nagłówek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
-- ZMIANA: Usunięto duplikujące copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublować każde zaległe wydarzenie.
+- FAKT: Po Stage228B LeadDetail dziaĹ‚a, ale centrum dziaĹ‚aĹ„ leada byĹ‚o mniej czytelne niĹĽ analogiczna karta sprawy.
+- DECYZJA: Nie tworzyÄ‡ osobnego systemu wizualnego dla leada. Lead action center ma iĹ›Ä‡ w kierunku tego samego ĹşrĂłdĹ‚a wizualnego co CaseDetail: jeden nagĹ‚Ăłwek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
+- ZMIANA: UsuniÄ™to duplikujÄ…ce copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych brakĂłw/blokad zamiast dublowaÄ‡ kaĹĽde zalegĹ‚e wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
-- RYZYKO: Po deployu sprawdzić ręcznie LeadDetail z zaległym wydarzeniem i porównać czytelność do CaseDetail.
+- RYZYKO: Po deployu sprawdziÄ‡ rÄ™cznie LeadDetail z zalegĹ‚ym wydarzeniem i porĂłwnaÄ‡ czytelnoĹ›Ä‡ do CaseDetail.
 
 <!-- STAGE228F_R2_RUNTIME_COPY_CLEANUP -->
 ## 2026-06-07 18:55 Europe/Warsaw - STAGE228F R2 runtime copy cleanup
@@ -2211,10 +2211,10 @@ Poprawiono `/funnel`: domyÄąâ€şlnie pokazuje wszystkie rekordy, kafle wÄ�
 
 <!-- STAGE228H_R3_CHANGELOG -->
 ## 2026-06-07 19:45 Europe/Warsaw - STAGE228H R3 Sales Funnel visual source truth
-- Usunięto panel właściciela z /funnel.
-- Kafelki decyzyjne lejka przepięto na OperatorMetricTile jako wspólne źródło wizualne.
-- Dodano CSS source truth dla układu /funnel.
-- Poprawiono stale guard Stage220A36 po usunięciu opisu „5 klientów...”.
+- UsuniÄ™to panel wĹ‚aĹ›ciciela z /funnel.
+- Kafelki decyzyjne lejka przepiÄ™to na OperatorMetricTile jako wspĂłlne ĹşrĂłdĹ‚o wizualne.
+- Dodano CSS source truth dla ukĹ‚adu /funnel.
+- Poprawiono stale guard Stage220A36 po usuniÄ™ciu opisu â€ž5 klientĂłw...â€ť.
 <!-- /STAGE228H_R3_CHANGELOG -->
 
 <!-- STAGE228R1_CHANGELOG -->
@@ -2270,7 +2270,7 @@ Dodano statyczny CSS source truth dla tekstu i rytmu rail /leads, /clients, /cas
 STATUS: LOCAL_ONLY_APPLIED_BY_ZIP, test reczny DO WYKONANIA.
 
 FAKTY:
-- Objaw: klikniecie Usuń przy Braku usuwa wpis optymistycznie, ale po refetchu/odswiezeniu wpis wraca.
+- Objaw: klikniecie UsuĹ„ przy Braku usuwa wpis optymistycznie, ale po refetchu/odswiezeniu wpis wraca.
 - Przyczyna naprawiana: niespojny kontrakt soft-delete missing_item/task oraz ryzyko ustawiania usuwanego taska jako lead.next_action_item_id.
 - LeadDetail usuwa Brak natychmiast z lokalnego stanu, wykonuje backendowy soft-delete i robi silent refresh bez pelnego loadera.
 - Task route nie promuje missing_item ani zamknietych/usunietych taskow do lead next action; deleted/done task czysci matching next_action_item_id.
@@ -2282,8 +2282,8 @@ TESTY/GUARDY:
 - git diff --check
 
 TEST RECZNY:
-- Lead -> dodaj Brak -> odswiez -> Brak widoczny -> Usuń -> znika od razu -> odczekaj -> hard refresh -> Brak nie wraca.
-- Sprawdzic, ze Następny krok nie pokazuje usunietego Braku.
+- Lead -> dodaj Brak -> odswiez -> Brak widoczny -> UsuĹ„ -> znika od razu -> odczekaj -> hard refresh -> Brak nie wraca.
+- Sprawdzic, ze NastÄ™pny krok nie pokazuje usunietego Braku.
 
 RYZYKA:
 - Jesli baza ma stare rekordy missing_item juz podpiete jako next_action, delete czysci tylko matching next_action_item_id.
@@ -2294,13 +2294,13 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw Ă˘â‚¬” Stage228R18 Ă˘â‚¬” missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw Ä‚ËĂ˘â€šÂ¬â€ť Stage228R18 Ä‚ËĂ˘â€šÂ¬â€ť missing item hard delete source truth
 
-- problem: Brak znikaÄąâ€š po klikniĂ„â„˘ciu UsuÄą„, ale wracaÄąâ€š po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byĂ„â€ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byĂ„â€ˇ ÄąźrÄ‚łdÄąâ€šowana z linkedTasks, nie z caÄąâ€šego timeline, ÄąÄ˝eby activity history nie odtwarzaÄąâ€ša aktywnego braku.
-- testy: check-stage228r18, node test, npm run build, git diff --check, test rĂ„â„˘czny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niÄąÄ˝ soft-delete; historia usuniĂ„â„˘cia zostaje jako activity.
+- problem: Brak znikaĂ„Ä…Ă˘â‚¬Ĺˇ po klikniÄ‚â€žĂ˘â€žËciu UsuĂ„Ä…â€ž, ale wracaĂ„Ä…Ă˘â‚¬Ĺˇ po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma byÄ‚â€žĂ˘â‚¬Ë‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma byÄ‚â€žĂ˘â‚¬Ë‡ Ă„Ä…ĹşrĂ„â€šĹ‚dĂ„Ä…Ă˘â‚¬Ĺˇowana z linkedTasks, nie z caĂ„Ä…Ă˘â‚¬Ĺˇego timeline, Ă„Ä…Ă„Ëťeby activity history nie odtwarzaĂ„Ä…Ă˘â‚¬Ĺˇa aktywnego braku.
+- testy: check-stage228r18, node test, npm run build, git diff --check, test rÄ‚â€žĂ˘â€žËczny dodaj/usun/hard refresh.
+- ryzyko: DELETE jest mocniejsze niĂ„Ä…Ă„Ëť soft-delete; historia usuniÄ‚â€žĂ˘â€žËcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -2345,12 +2345,12 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-09 02:50 Europe/Warsaw Ă˘â‚¬” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+## 2026-06-09 02:50 Europe/Warsaw Ä‚ËĂ˘â€šÂ¬â€ť STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Äąâ€šaÄą„cuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym Ă„Ä…Ă˘â‚¬ĹˇaĂ„Ä…â€žcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siĂ„â„˘ juÄąÄ˝ na dokÄąâ€šadnym polskim tekÄąâ€şcie toastu, tylko na strukturze przepÄąâ€šywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera siÄ‚â€žĂ˘â€žË juĂ„Ä…Ă„Ëť na dokĂ„Ä…Ă˘â‚¬Ĺˇadnym polskim tekĂ„Ä…Ă˘â‚¬Ĺźcie toastu, tylko na strukturze przepĂ„Ä…Ă˘â‚¬Ĺˇywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -2360,7 +2360,7 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Po deployu wymagany rĂ„â„˘czny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- Po deployu wymagany rÄ‚â€žĂ˘â€žËczny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
 
 <!-- STAGE230B_QUICK_CAPTURE_INBOX_CHANGELOG_START -->
 ## 2026-06-09 - STAGE230B Quick Capture Inbox bez AI
@@ -2423,7 +2423,7 @@ Not changed:
 
 Changed:
 - Rewrote Szybki szkic JSX block to remove dangling conditional close.
-- Kept Kopiuj trace/Wyczyść trace visible with disabled state when debug is off or trace is empty.
+- Kept Kopiuj trace/WyczyĹ›Ä‡ trace visible with disabled state when debug is off or trace is empty.
 - Replaced Stage230C visibility guard with syntax-safe region-based guard.
 
 Not changed:
@@ -2444,7 +2444,7 @@ Not changed:
 
 Changed:
 - Rewrote the whole quick capture JSX region to remove dangling conditional fragments from previous local hotfixes.
-- Kept Kopiuj trace / Wyczyść trace visible and disabled when trace is unavailable.
+- Kept Kopiuj trace / WyczyĹ›Ä‡ trace visible and disabled when trace is unavailable.
 - Added forced readable text styles for mobile textarea and trace controls.
 - Replaced R2 visibility guard/test with syntax-safe mass-preflight version.
 
@@ -2519,7 +2519,7 @@ Not changed:
 - No Firebase Settings migration yet.
 <!-- STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY_CHANGELOG_END -->
 
-## 2026-06-09 — STAGE231D_GOOGLE_AUTH_INTENT_GATE
+## 2026-06-09 â€” STAGE231D_GOOGLE_AUTH_INTENT_GATE
 
 - Added Google login/register intent gate.
 - Added auth intent session helper.
@@ -2529,7 +2529,7 @@ Not changed:
 - Documented STAGE231C Supabase auth trigger no-op repair.
 - Added future backlog: STAGE231E email copy repair and STAGE231F invite-only test mode.
 
-## 2026-06-09 — STAGE231D_R5_GOOGLE_LOGIN_MISSING_INTENT_HARD_GATE
+## 2026-06-09 â€” STAGE231D_R5_GOOGLE_LOGIN_MISSING_INTENT_HARD_GATE
 
 - Hardened Google login/register intent gate after manual QA showed unknown Google Login still entered app.
 - Added authIntent URL fallback for OAuth/email confirmation redirects.
@@ -2539,15 +2539,15 @@ Not changed:
 - Preserved working flows from QA: existing Google login, Google registration, e-mail confirmation, one auth page.
 
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_START -->
-## 2026-06-10 Europe/Warsaw — STAGE230D0 Text/Input Contrast Sweep
+## 2026-06-10 Europe/Warsaw â€” STAGE230D0 Text/Input Contrast Sweep
 
 FAKT:
-- Damian zgłosił biały tekst na białym tle podczas wpisywania/dyktowania w aplikacji.
+- Damian zgĹ‚osiĹ‚ biaĹ‚y tekst na biaĹ‚ym tle podczas wpisywania/dyktowania w aplikacji.
 - Zakres R1: /ai-drafts, szybki szkic, Stage230C debug trace, input/textarea/select/placeholder/focus.
 
 DECYZJA:
 - Tryb CloseFlow: GIT-FIRST / PUSH-FIRST.
-- Nie używać lokalnych ZIP-ów jako głównej ścieżki dla Damiana.
+- Nie uĹĽywaÄ‡ lokalnych ZIP-Ăłw jako gĹ‚Ăłwnej Ĺ›cieĹĽki dla Damiana.
 
 TESTY:
 - Stage230B regression guard/test.
@@ -2557,256 +2557,256 @@ TESTY:
 - git diff --check.
 
 RYZYKA:
-- Możliwe podobne problemy kontrastu w innych modułach aplikacji.
-- Nie wdrażano deduplikacji dyktowania bez trace.
+- MoĹĽliwe podobne problemy kontrastu w innych moduĹ‚ach aplikacji.
+- Nie wdraĹĽano deduplikacji dyktowania bez trace.
 <!-- STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP_END -->
 
-## 2026-06-10 — STAGE231B0 R5
+## 2026-06-10 â€” STAGE231B0 R5
 
 - Dodano flow zamykania sprawy bez delete.
-- Zamknięcie używa status completed i lastActivityAt.
-- Dodano activity "Sprawa zamknięta".
-- Główne CTA zmienione na "Zamknij sprawę" / "Sprawa zamknięta".
+- ZamkniÄ™cie uĹĽywa status completed i lastActivityAt.
+- Dodano activity "Sprawa zamkniÄ™ta".
+- GĹ‚Ăłwne CTA zmienione na "Zamknij sprawÄ™" / "Sprawa zamkniÄ™ta".
 - Awaryjne usuwanie zostaje osobno.
 - Dodano guard, test, run report i obsidian update.
 
-## 2026-06-10 — STAGE231B0-R7
+## 2026-06-10 â€” STAGE231B0-R7
 
 Added closed case archive view, restore flow, client closed cases section and guard/test.
 
 
 ## R5_CASEDETAIL_RESTORE_REPAIR
-- Naprawiono realny brak CaseDetail: "Przywróć sprawę".
-- Restore flow używa updateCaseInSupabase({ status: 'in_progress' }) i activity "case_lifecycle_reopened".
-- Historia i rozliczenia pozostają zachowane; delete flow nie jest używany przez restore.
+- Naprawiono realny brak CaseDetail: "PrzywrĂłÄ‡ sprawÄ™".
+- Restore flow uĹĽywa updateCaseInSupabase({ status: 'in_progress' }) i activity "case_lifecycle_reopened".
+- Historia i rozliczenia pozostajÄ… zachowane; delete flow nie jest uĹĽywany przez restore.
 
 
 ## R6_REOPEN_HANDLER_ALIAS_REPAIR
-- Naprawiono zgodność nazwy handlera restore z guardem R7.
+- Naprawiono zgodnoĹ›Ä‡ nazwy handlera restore z guardem R7.
 - Dodano/upewniono `handleConfirmReopenCaseRecord` jako publiczny handler przywracania sprawy.
-- Przycisk `Przywróć sprawę` używa handlera reopen.
-- Logika finansów, delete flow i dane rozliczeń pozostają bez zmian.
+- Przycisk `PrzywrĂłÄ‡ sprawÄ™` uĹĽywa handlera reopen.
+- Logika finansĂłw, delete flow i dane rozliczeĹ„ pozostajÄ… bez zmian.
 
 
 ## R7_CLOSED_STATUS_LITERAL_REPAIR
-- Naprawiono zgodność CaseDetail z guardem R7.
+- Naprawiono zgodnoĹ›Ä‡ CaseDetail z guardem R7.
 - Dodano jawne sprawdzenie `isClosedCaseStatus(caseData?.status)`.
 - Zachowano fallback na `effectiveStatus`.
-- Bez zmian w delete flow, płatnościach i prowizjach.
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach i prowizjach.
 
 
 ## R8_REOPEN_CONST_SEGMENT_REPAIR
-- Naprawiono zgodność segmentu CaseDetail z guardem R7.
-- Handler przywracania ma teraz formę `const handleConfirmReopenCaseRecord = async () => { ... }`.
-- Przycisk `Przywróć sprawę` używa handlera reopen.
-- Bez zmian w delete flow, płatnościach i prowizjach.
+- Naprawiono zgodnoĹ›Ä‡ segmentu CaseDetail z guardem R7.
+- Handler przywracania ma teraz formÄ™ `const handleConfirmReopenCaseRecord = async () => { ... }`.
+- Przycisk `PrzywrĂłÄ‡ sprawÄ™` uĹĽywa handlera reopen.
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach i prowizjach.
 
 
 ## R9_CASES_CLOSED_VIEW_LITERAL_REPAIR
-- Naprawiono zgodność `Cases.tsx` z guardem R7.
+- Naprawiono zgodnoĹ›Ä‡ `Cases.tsx` z guardem R7.
 - `CaseView` zawiera literal `| 'closed'`.
-- Utrwalono kontrakt widoku `/cases?view=closed`, etykietę `Sprawy zamknięte` oraz filtr aktywne vs zamknięte.
-- Bez zmian w delete flow, płatnościach i prowizjach.
+- Utrwalono kontrakt widoku `/cases?view=closed`, etykietÄ™ `Sprawy zamkniÄ™te` oraz filtr aktywne vs zamkniÄ™te.
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach i prowizjach.
 
 
 ## R10_CLIENTDETAIL_CLOSED_CASES_REPAIR
-- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
-- Utrwalono kontrakt klienta: `Sprawy aktywne`, `Sprawy zamknięte`, `Przywróć sprawę`.
-- Kontrakt używa wspólnego `isClosedCaseStatus(record.status)`.
-- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+- Naprawiono zgodnoĹ›Ä‡ `ClientDetail.tsx` z guardem R7.
+- Utrwalono kontrakt klienta: `Sprawy aktywne`, `Sprawy zamkniÄ™te`, `PrzywrĂłÄ‡ sprawÄ™`.
+- Kontrakt uĹĽywa wspĂłlnego `isClosedCaseStatus(record.status)`.
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
 
 
 ## R11_CLIENTDETAIL_RESTORE_HANDLER_REPAIR
-- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
+- Naprawiono zgodnoĹ›Ä‡ `ClientDetail.tsx` z guardem R7.
 - Dodano jawny handler/kontrakt `handleRestoreClientCaseStage231B0R7`.
-- Utrwalono kontrakt aktywne/zamknięte/przywróć oraz activity `case_lifecycle_reopened`.
-- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+- Utrwalono kontrakt aktywne/zamkniÄ™te/przywrĂłÄ‡ oraz activity `case_lifecycle_reopened`.
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
 
 
 ## R12_CLIENTDETAIL_CLOSED_LISTS_REPAIR
-- Naprawiono zgodność `ClientDetail.tsx` z guardem R7.
+- Naprawiono zgodnoĹ›Ä‡ `ClientDetail.tsx` z guardem R7.
 - Dodano `activeClientCasesStage231B0R7` i `closedClientCasesStage231B0R7`.
-- Podział używa wspólnego `isClosedCaseStatus(record.status)`.
-- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
+- PodziaĹ‚ uĹĽywa wspĂłlnego `isClosedCaseStatus(record.status)`.
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
 
 
 ## R13_CSS_CONTRACT_REPAIR
-- Naprawiono zgodność CSS z guardem R7.
+- Naprawiono zgodnoĹ›Ä‡ CSS z guardem R7.
 - Dodano `cf-case-detail-close-action-stage231b0-r7` do CSS karty sprawy i do klasy przycisku zamykania.
 - Dodano `client-detail-case-smart-card-closed-stage231b0-r7` do CSS klienta.
-- Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
-\n\n## 2026-06-10 — STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH\n- Status: LOCAL_ONLY_PREPARED / R6_CLIENTDETAIL_FLEXIBLE_REPAIR.\n- Naprawa po częściowym R4: elastyczny patch ClientDetail, aktywne/zamknięte sprawy klienta, restore z klienta, CSS, guard/test.\n- Finanse i historia zachowane.\n
+- Bez zmian w delete flow, pĹ‚atnoĹ›ciach, prowizjach i lifetime finance.
+\n\n## 2026-06-10 â€” STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH\n- Status: LOCAL_ONLY_PREPARED / R6_CLIENTDETAIL_FLEXIBLE_REPAIR.\n- Naprawa po czÄ™Ĺ›ciowym R4: elastyczny patch ClientDetail, aktywne/zamkniÄ™te sprawy klienta, restore z klienta, CSS, guard/test.\n- Finanse i historia zachowane.\n
 
-## 2026-06-10 — STAGE231B0_R8_R8_DUPLICATE_CONST_BUILD_REPAIR
+## 2026-06-10 â€” STAGE231B0_R8_R8_DUPLICATE_CONST_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa masowa po build fail: usunięto sklejone anchory `const X = useMemo( const X = useMemo(` po częściowym R2/R4/R6/R7.
-- Zakres: dotknięte pliki TSX, whitespace, sanity check R8, pełny build/test.
+- Naprawa masowa po build fail: usuniÄ™to sklejone anchory `const X = useMemo( const X = useMemo(` po czÄ™Ĺ›ciowym R2/R4/R6/R7.
+- Zakres: dotkniÄ™te pliki TSX, whitespace, sanity check R8, peĹ‚ny build/test.
 
 
 
-## 2026-06-10 — STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
+## 2026-06-10 â€” STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa masowa po build fail: usunięto stary drugi `toggleCaseView`, który pozostał po R8 obok URL-aware `setCaseViewStage231B0R8`.
-- Guard R8 rozszerzony o dokładnie jeden `toggleCaseView` i zakaz legacy `setCaseView((prev) => ...)`.
+- Naprawa masowa po build fail: usuniÄ™to stary drugi `toggleCaseView`, ktĂłry pozostaĹ‚ po R8 obok URL-aware `setCaseViewStage231B0R8`.
+- Guard R8 rozszerzony o dokĹ‚adnie jeden `toggleCaseView` i zakaz legacy `setCaseView((prev) => ...)`.
 
 
-## 2026-06-10 — STAGE231B0-R9 — Client history and case view model
+## 2026-06-10 â€” STAGE231B0-R9 â€” Client history and case view model
 - Status: LOCAL_ONLY_PREPARED.
-- Zakres: /cases jawne widoki Otwarte/Zamknięte/Wszystkie, zamknięte sprawy klienta przeniesione do Historii, szerszy layout klienta, finanse all_cases zachowane.
+- Zakres: /cases jawne widoki Otwarte/ZamkniÄ™te/Wszystkie, zamkniÄ™te sprawy klienta przeniesione do Historii, szerszy layout klienta, finanse all_cases zachowane.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow R25/R41, build, git diff --check.
-- Ryzyka: UX historii klienta, sourceCases w /cases, brak regresji finansów i aktywnych ryzyk.
+- Ryzyka: UX historii klienta, sourceCases w /cases, brak regresji finansĂłw i aktywnych ryzyk.
 
 
-## 2026-06-10 — STAGE231B0-R9-R2 — Cases URL reader repair
+## 2026-06-10 â€” STAGE231B0-R9-R2 â€” Cases URL reader repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po częściowym R9: brakowało jawnego searchParams.get('view') w src/pages/Cases.tsx.
-- R8 guard dostosowany do R9 modelu open/closed/all, aby regresja R8 dalej sprawdzała intencję, nie stary exact string.
+- Naprawa po czÄ™Ĺ›ciowym R9: brakowaĹ‚o jawnego searchParams.get('view') w src/pages/Cases.tsx.
+- R8 guard dostosowany do R9 modelu open/closed/all, aby regresja R8 dalej sprawdzaĹ‚a intencjÄ™, nie stary exact string.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R9-R3 — Closed case banner repair
+## 2026-06-10 â€” STAGE231B0-R9-R3 â€” Closed case banner repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po częściowym R9-R2: `/cases` musi mieć widoczny banner `SPRAWA ZAMKNIĘTA` dla zamkniętej sprawy.
-- Guard R9 rozszerzony o data-marker bannera, żeby nie przechodził sam tekst bez realnego elementu UI.
+- Naprawa po czÄ™Ĺ›ciowym R9-R2: `/cases` musi mieÄ‡ widoczny banner `SPRAWA ZAMKNIÄTA` dla zamkniÄ™tej sprawy.
+- Guard R9 rozszerzony o data-marker bannera, ĹĽeby nie przechodziĹ‚ sam tekst bez realnego elementu UI.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R9-R5 — Client history renderer guard repair
+## 2026-06-10 â€” STAGE231B0-R9-R5 â€” Client history renderer guard repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po R9-R4: Historia klienta renderuje zamknięte sprawy przez wspólny renderer karty, więc guard akceptuje akcje `Otwórz` i `Przywróć sprawę` z renderera, nie tylko literalnie z segmentu Historii.
-- Wymuszono widoczny label `SPRAWA ZAMKNIĘTA` w Historii i rendererze zamkniętej karty.
-- Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
+- Naprawa po R9-R4: Historia klienta renderuje zamkniÄ™te sprawy przez wspĂłlny renderer karty, wiÄ™c guard akceptuje akcje `OtwĂłrz` i `PrzywrĂłÄ‡ sprawÄ™` z renderera, nie tylko literalnie z segmentu Historii.
+- Wymuszono widoczny label `SPRAWA ZAMKNIÄTA` w Historii i rendererze zamkniÄ™tej karty.
+- Nie ruszano finansĂłw, kosztĂłw, SQL, Google Calendar ani pĹ‚atnoĹ›ci/prowizji.
 
 
-## 2026-06-10 — STAGE231B0-R9-R6 — Right rail guard robust repair
+## 2026-06-10 â€” STAGE231B0-R9-R6 â€” Right rail guard robust repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po R9-R5: guard R9 zakładał literalny `</SimpleFiltersCard>`, a komponent prawych skrótów może być self-closing albo sformatowany inaczej.
+- Naprawa po R9-R5: guard R9 zakĹ‚adaĹ‚ literalny `</SimpleFiltersCard>`, a komponent prawych skrĂłtĂłw moĹĽe byÄ‡ self-closing albo sformatowany inaczej.
 - Logika produktu bez zmian; naprawiono elastyczne wycinanie powierzchni prawego panelu w guardzie.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R9-R8 — R8 setter wrapper scan repair
+## 2026-06-10 â€” STAGE231B0-R9-R8 â€” R8 setter wrapper scan repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po R9-R7: poprzedni patcher szukał `toggleCaseView`, którego aktualne ułożenie w `Cases.tsx` nie było stabilnym anchorem.
-- Dodano jawny wrapper `setCaseViewStage231B0R8` przez skan końca funkcji `setCaseViewStage231B0R9`, bez zmiany logiki produktu.
+- Naprawa po R9-R7: poprzedni patcher szukaĹ‚ `toggleCaseView`, ktĂłrego aktualne uĹ‚oĹĽenie w `Cases.tsx` nie byĹ‚o stabilnym anchorem.
+- Dodano jawny wrapper `setCaseViewStage231B0R8` przez skan koĹ„ca funkcji `setCaseViewStage231B0R9`, bez zmiany logiki produktu.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R9-R9 — Cases items JSX syntax repair
+## 2026-06-10 â€” STAGE231B0-R9-R9 â€” Cases items JSX syntax repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po R9-R8: build wykrył błędną składnię JSX `items=[...]` w `src/pages/Cases.tsx`.
+- Naprawa po R9-R8: build wykryĹ‚ bĹ‚Ä™dnÄ… skĹ‚adniÄ™ JSX `items=[...]` w `src/pages/Cases.tsx`.
 - Poprawiono na `items={[...]}` bez zmiany logiki produktu.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R9-R10 — ClientDetail JSX section close repair
+## 2026-06-10 â€” STAGE231B0-R9-R10 â€” ClientDetail JSX section close repair
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po R9-R9: build wykrył niedomkniętą strukturę JSX w `ClientDetail.tsx` przy przejściu z głównej sekcji do prawego panelu.
-- Dodano brakujące `</section>` przed `<aside className="client-detail-right-rail"...>` bez zmiany logiki produktu.
-- Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
+- Naprawa po R9-R9: build wykryĹ‚ niedomkniÄ™tÄ… strukturÄ™ JSX w `ClientDetail.tsx` przy przejĹ›ciu z gĹ‚Ăłwnej sekcji do prawego panelu.
+- Dodano brakujÄ…ce `</section>` przed `<aside className="client-detail-right-rail"...>` bez zmiany logiki produktu.
+- Nie ruszano finansĂłw, kosztĂłw, SQL, Google Calendar ani pĹ‚atnoĹ›ci/prowizji.
 - Testy: R9 guard/test, R8 regression, Stage231B0 regression, delete-flow, build, git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R11 — Client width + Cases runtime guard
+## 2026-06-10 â€” STAGE231B0-R11 â€” Client width + Cases runtime guard
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa po R9 push: `/cases` rzucał runtime `ReferenceError: closedRecordStage231B0R8 is not defined` przy wejściu w widok spraw.
-- Naprawa: wolne użycia `closedRecordStage231B0R8` w JSX zastąpiono bezpiecznym `isClosedCaseStatus(record?.status)`.
-- UX: `ClientDetail` ma szeroki układ jak widok sprawy, z lewym wyrównaniem i breakpointami skalowania.
+- Naprawa po R9 push: `/cases` rzucaĹ‚ runtime `ReferenceError: closedRecordStage231B0R8 is not defined` przy wejĹ›ciu w widok spraw.
+- Naprawa: wolne uĹĽycia `closedRecordStage231B0R8` w JSX zastÄ…piono bezpiecznym `isClosedCaseStatus(record?.status)`.
+- UX: `ClientDetail` ma szeroki ukĹ‚ad jak widok sprawy, z lewym wyrĂłwnaniem i breakpointami skalowania.
 - Dodano guard `scripts/check-stage231b0-r11-client-width-and-cases-runtime.cjs` oraz test node.
-- Nie ruszano finansów, kosztów, SQL, Google Calendar ani płatności/prowizji.
+- Nie ruszano finansĂłw, kosztĂłw, SQL, Google Calendar ani pĹ‚atnoĹ›ci/prowizji.
 
 
-## 2026-06-10 — STAGE231B0-R12-R7 — Final Cases runtime contract rescue
+## 2026-06-10 â€” STAGE231B0-R12-R7 â€” Final Cases runtime contract rescue
 - Status: LOCAL_ONLY_PREPARED.
-- Po R12-R6 zastosowano mocniejszy rescue: helper `renderClosedCaseBannerStage231B0R12`, jeden kontrakt `activeCases/closedCases` przez `useMemo`, `record.status` tylko w dwóch filtrach.
-- Guardy R11/R12/R12-R7 pilnują tego samego kontraktu i blokują `closedRecordStage231B0R8` oraz `record?.status`.
-- Nie ruszano finansów, SQL, Google Calendar, płatności ani innych modułów.
+- Po R12-R6 zastosowano mocniejszy rescue: helper `renderClosedCaseBannerStage231B0R12`, jeden kontrakt `activeCases/closedCases` przez `useMemo`, `record.status` tylko w dwĂłch filtrach.
+- Guardy R11/R12/R12-R7 pilnujÄ… tego samego kontraktu i blokujÄ… `closedRecordStage231B0R8` oraz `record?.status`.
+- Nie ruszano finansĂłw, SQL, Google Calendar, pĹ‚atnoĹ›ci ani innych moduĹ‚Ăłw.
 
 
-## 2026-06-10 — STAGE231B0-R13 — Cases map record scope real fix
+## 2026-06-10 â€” STAGE231B0-R13 â€” Cases map record scope real fix
 - Status: LOCAL_ONLY_PREPARED.
-- Naprawa realnego błędu po R12/R7 w `filteredCases.map((record, index) => ...)`.
-- Usunięto `caseRecord` fallback i lokalny shadow `renderClosedCaseBannerStage231B0R12` z mapy.
+- Naprawa realnego bĹ‚Ä™du po R12/R7 w `filteredCases.map((record, index) => ...)`.
+- UsuniÄ™to `caseRecord` fallback i lokalny shadow `renderClosedCaseBannerStage231B0R12` z mapy.
 - Dodano scoped boolean `isCaseClosedStage231B0R13 = isClosedCaseStatus(record.status)`.
-- Usunięto błędny banner z loading row.
+- UsuniÄ™to bĹ‚Ä™dny banner z loading row.
 - Dodano guard/test R13 oraz zaktualizowano guardy R11/R12/R12-R7.
 
 
-## 2026-06-10 — STAGE231B0-R13-R2 — Cases map closed logic completion
+## 2026-06-10 â€” STAGE231B0-R13-R2 â€” Cases map closed logic completion
 - Status: LOCAL_ONLY_PREPARED.
-- Kontynuacja po częściowym R13: guard liczbowy był za ostry, więc zamieniono go na sprawdzanie konkretnych linii logiki.
-- Domknięto `attention`, `statusTone`, `compactLifecyclePill`, `nextActionLabel`, `ownerRiskBadges` i banner zamkniętej sprawy na `isCaseClosedStage231B0R13`.
-- Guard blokuje powrót `caseRecord` fallback i local shadow helpera w mapie.
+- Kontynuacja po czÄ™Ĺ›ciowym R13: guard liczbowy byĹ‚ za ostry, wiÄ™c zamieniono go na sprawdzanie konkretnych linii logiki.
+- DomkniÄ™to `attention`, `statusTone`, `compactLifecyclePill`, `nextActionLabel`, `ownerRiskBadges` i banner zamkniÄ™tej sprawy na `isCaseClosedStage231B0R13`.
+- Guard blokuje powrĂłt `caseRecord` fallback i local shadow helpera w mapie.
 
 
-## 2026-06-10 — STAGE231B0-R13-R3 — Next action guard and map completion
+## 2026-06-10 â€” STAGE231B0-R13-R3 â€” Next action guard and map completion
 - Status: LOCAL_ONLY_PREPARED.
-- Kontynuacja po R13-R2: guard był zbyt wrażliwy na dokładny polski tekst `Sprawa zamknięta`.
-- Znormalizowano `nextActionLabel` i zmieniono guard na strukturę logiczną zamiast pełnego literalnego tekstu.
+- Kontynuacja po R13-R2: guard byĹ‚ zbyt wraĹĽliwy na dokĹ‚adny polski tekst `Sprawa zamkniÄ™ta`.
+- Znormalizowano `nextActionLabel` i zmieniono guard na strukturÄ™ logicznÄ… zamiast peĹ‚nego literalnego tekstu.
 - Dalej blokowany jest `caseRecord` fallback i local shadow helpera w `filteredCases.map`.
 
 
-## 2026-06-10 — STAGE231B0-R13-R4 — Guard map window repair
+## 2026-06-10 â€” STAGE231B0-R13-R4 â€” Guard map window repair
 - Status: LOCAL_ONLY_PREPARED.
-- R13-R3 guard fałszywie ciął `filteredCases.map` na pierwszym zagnieżdżonym `});`, czyli przed `nextActionLabel`.
-- Naprawa: guardy używają szerokiego deterministycznego okna od początku mapy zamiast pierwszego `});`.
-- Nie zmieniano logiki biznesowej poza markerem stage; naprawa dotyczy guardów i dokumentacji.
+- R13-R3 guard faĹ‚szywie ciÄ…Ĺ‚ `filteredCases.map` na pierwszym zagnieĹĽdĹĽonym `});`, czyli przed `nextActionLabel`.
+- Naprawa: guardy uĹĽywajÄ… szerokiego deterministycznego okna od poczÄ…tku mapy zamiast pierwszego `});`.
+- Nie zmieniano logiki biznesowej poza markerem stage; naprawa dotyczy guardĂłw i dokumentacji.
 
 
-## 2026-06-10 — STAGE231B0-R13-R6 — Owner risk minimal safe call
+## 2026-06-10 â€” STAGE231B0-R13-R6 â€” Owner risk minimal safe call
 - Status: LOCAL_ONLY_PREPARED.
-- R13-R5 zatrzymał się przed zmianą pliku, bo check starego bloku z HEAD był błędny.
-- Naprawa: uszkodzony zakres `ownerRiskBadges -> metaParts` jest zastępowany kompletną, zamkniętą składniowo deklaracją.
+- R13-R5 zatrzymaĹ‚ siÄ™ przed zmianÄ… pliku, bo check starego bloku z HEAD byĹ‚ bĹ‚Ä™dny.
+- Naprawa: uszkodzony zakres `ownerRiskBadges -> metaParts` jest zastÄ™powany kompletnÄ…, zamkniÄ™tÄ… skĹ‚adniowo deklaracjÄ….
 - `getCaseOwnerRiskBadges` dostaje bezpieczny kontekst lokalny: lifecycle, nearestCaseAction, nextActionLabel, statusLabel, compactLifecycleLabel, compactLifecyclePill, percent, updatedAt.
 
-## 2026-06-10 — STAGE231B0-R14 — Client detail full-width layout lock
+## 2026-06-10 â€” STAGE231B0-R14 â€” Client detail full-width layout lock
 - Status: LOCAL_ONLY_PREPARED.
-- Powód: kartoteka klienta nadal jest centrowana/ściśnięta zamiast używać pełnej szerokości od lewego panelu do prawej krawędzi ekranu.
+- PowĂłd: kartoteka klienta nadal jest centrowana/Ĺ›ciĹ›niÄ™ta zamiast uĹĽywaÄ‡ peĹ‚nej szerokoĹ›ci od lewego panelu do prawej krawÄ™dzi ekranu.
 - Zakres: marker route w ClientDetail + CSS lock w visual-stage12-client-detail-vnext.css.
 - Kontrakt: brak max-width shell, width 100%, margin-inline 0, stable horizontal spacing during scroll.
 
-## 2026-06-10 � STAGE231B0-R15-R2 � ClientDetail shared canvas width source
+## 2026-06-10 ďż˝ STAGE231B0-R15-R2 ďż˝ ClientDetail shared canvas width source
 - Status: FINALIZE_FOR_PUSH.
-- Pow�d: R14 trafi� w z�y DOM node (`ClientMultiContactField`), wi�c nie m�g� rozci�gn�� kartoteki klienta.
-- Decyzja: ClientDetail ma u�ywa� wsp�lnego canvasu strony: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"`.
-- �r�d�o prawdy szeroko�ci: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
-- Widok konsumuj�cy kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
-- R14 guard/test usuni�te jako fa�szywy kontrakt.
+- Powďż˝d: R14 trafiďż˝ w zďż˝y DOM node (`ClientMultiContactField`), wiďż˝c nie mďż˝gďż˝ rozciďż˝gnďż˝ďż˝ kartoteki klienta.
+- Decyzja: ClientDetail ma uďż˝ywaďż˝ wspďż˝lnego canvasu strony: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"`.
+- ďż˝rďż˝dďż˝o prawdy szerokoďż˝ci: `src/styles/closeflow-unified-page-canvas-stage211c.css`.
+- Widok konsumujďż˝cy kontrakt: `src/pages/ClientDetail.tsx` + `src/styles/visual-stage12-client-detail-vnext.css`.
+- R14 guard/test usuniďż˝te jako faďż˝szywy kontrakt.
 
-## 2026-06-10 � STAGE231B0-R15-R3 � ClientDetail width guard + Polish encoding guard
+## 2026-06-10 ďż˝ STAGE231B0-R15-R3 ďż˝ ClientDetail width guard + Polish encoding guard
 - Status: FINAL_GUARD_FOR_PUSH.
-- Potwierdzenie u�ytkownika: wygl�d kartoteki klienta jest poprawny i ma tak zosta�.
-- Guard szeroko�ci: `scripts/check-stage231b0-r15-r3-client-detail-width-source-truth.cjs`.
-- Guard polskich znak�w: `scripts/check-stage231b0-r15-r3-polish-encoding.cjs`.
-- Guard pilnuje, �e ClientDetail u�ywa wsp�lnego canvasu: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"` oraz zmiennych `--cf-page-canvas-*`.
-- Guard pilnuje usuni�cia b��dnego R14 i braku mojibake/replacement chars w kluczowych plikach kartoteki klienta.
-- Naprawiono higien� EOF w `src/pages/ClientDetail.tsx`.
+- Potwierdzenie uďż˝ytkownika: wyglďż˝d kartoteki klienta jest poprawny i ma tak zostaďż˝.
+- Guard szerokoďż˝ci: `scripts/check-stage231b0-r15-r3-client-detail-width-source-truth.cjs`.
+- Guard polskich znakďż˝w: `scripts/check-stage231b0-r15-r3-polish-encoding.cjs`.
+- Guard pilnuje, ďż˝e ClientDetail uďż˝ywa wspďż˝lnego canvasu: `cf-page-canvas`, `cf-page-canvas--full`, `data-cf-page-canvas="full"` oraz zmiennych `--cf-page-canvas-*`.
+- Guard pilnuje usuniďż˝cia bďż˝ďż˝dnego R14 i braku mojibake/replacement chars w kluczowych plikach kartoteki klienta.
+- Naprawiono higienďż˝ EOF w `src/pages/ClientDetail.tsx`.
 
 
-## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard safe repair R2
+## 2026-06-10 â€” STAGE231B0-R15-R4 â€” Polish guard safe repair R2
 - Status: REPAIR_AFTER_PUSHED_FAILED_GUARD_SAFE_R2.
-- Powód: pierwsza paczka SAFE miała błąd runnera PowerShell - funkcja przekazywała argumenty natywnym komendom jako pustą tablicę, więc git/node startowały bez parametrów.
-- Naprawa: R2 używa jawnych wywołań w PowerShell i naprawia mojibake wyłącznie w skrypcie JS, nie wklejanym terminalu.
+- PowĂłd: pierwsza paczka SAFE miaĹ‚a bĹ‚Ä…d runnera PowerShell - funkcja przekazywaĹ‚a argumenty natywnym komendom jako pustÄ… tablicÄ™, wiÄ™c git/node startowaĹ‚y bez parametrĂłw.
+- Naprawa: R2 uĹĽywa jawnych wywoĹ‚aĹ„ w PowerShell i naprawia mojibake wyĹ‚Ä…cznie w skrypcie JS, nie wklejanym terminalu.
 - Polish guard wykrywa konkretne sekwencje mojibake, daje line evidence i blokuje blank line at EOF.
-- Zasada utrzymana: commit/push tylko po PASS guardów, build i git diff --check.
+- Zasada utrzymana: commit/push tylko po PASS guardĂłw, build i git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard batch repair
+## 2026-06-10 â€” STAGE231B0-R15-R4 â€” Polish guard batch repair
 - Status: BATCH_REPAIR_AFTER_R2_R3_PARTIALS.
-- Powód: R2/R3 częściowo naprawiły pliki, ale R3 zatrzymał się przez zbyt wąski parser dirty paths.
-- Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/·/–`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
-- Zasada: commit/push tylko po PASS guardów, build i git diff --check.
+- PowĂłd: R2/R3 czÄ™Ĺ›ciowo naprawiĹ‚y pliki, ale R3 zatrzymaĹ‚ siÄ™ przez zbyt wÄ…ski parser dirty paths.
+- Naprawa: masowo obsĹ‚uĹĽono warianty mojibake `Ä…/Ĺ‚/Ĺ‚/Ăł/Â·/â€“`, znormalizowano EOF i poprawiono guard pod aktualnÄ… kopiÄ™ ClientDetail.
+- Zasada: commit/push tylko po PASS guardĂłw, build i git diff --check.
 
 
-## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard final batch repair
+## 2026-06-10 â€” STAGE231B0-R15-R4 â€” Polish guard final batch repair
 - Status: FINAL_BATCH_REPAIR_AFTER_DOC_SELF_FAIL.
-- Powód: poprzedni run report zawierał przykładowe uszkodzone sekwencje znaków, a guard słusznie skanował też dokumentację etapu.
-- Naprawa: dokumentacja etapu nie zapisuje już przykładowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentację zakresu R15.
+- PowĂłd: poprzedni run report zawieraĹ‚ przykĹ‚adowe uszkodzone sekwencje znakĂłw, a guard sĹ‚usznie skanowaĹ‚ teĹĽ dokumentacjÄ™ etapu.
+- Naprawa: dokumentacja etapu nie zapisuje juĹĽ przykĹ‚adowych uszkodzonych sekwencji; guard dalej skanuje kod, CSS i dokumentacjÄ™ zakresu R15.
 - Guard blokuje uszkodzenia kodowania, puste linie na EOF i brak aktualnych polskich fraz w ClientDetail.
-- Commit/push tylko po PASS guardów, build i git diff --check.
+- Commit/push tylko po PASS guardĂłw, build i git diff --check.
 
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CHANGELOG_START -->
-## 2026-06-10 17:10 Europe/Warsaw — STAGE231D0A — Visual Source of Truth Inventory + UI Consistency Guard
+## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” Visual Source of Truth Inventory + UI Consistency Guard
 
 Dodano:
 - centralny raport `_project/VISUAL_SOURCE_OF_TRUTH.md`,
@@ -2815,26 +2815,26 @@ Dodano:
 - guard i test D0A,
 - wpis roadmapy D0A przed D0.
 
-Nie zmieniano runtime UI, danych, SQL, finansów, Google Auth ani Google Calendar.
+Nie zmieniano runtime UI, danych, SQL, finansĂłw, Google Auth ani Google Calendar.
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_CHANGELOG_END -->
 
 <!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_CHANGELOG_START -->
-## 2026-06-10 — STAGE231D0A-R3
+## 2026-06-10 â€” STAGE231D0A-R3
 
-- Zastąpiono uszkodzony R2 czystym runnerem JS wywoływanym z PowerShell.
+- ZastÄ…piono uszkodzony R2 czystym runnerem JS wywoĹ‚ywanym z PowerShell.
 - Naprawiono payload Obsidiana pod guard D0A.
 - Znormalizowano EOF w plikach projektu.
 - Bez zmian runtime UI.
 <!-- STAGE231D0A_R3_GUARD_PAYLOAD_EOF_RESCUE_CHANGELOG_END -->
 
 <!-- STAGE231D0_CLIENT_WORKSPACE_UX_CLEANUP_R4_START -->
-## 2026-06-10 — STAGE231D0-R4 Client workspace UX final runner fix
+## 2026-06-10 â€” STAGE231D0-R4 Client workspace UX final runner fix
 
 Status: LOCAL_ONLY_PREPARED / DO_TEST_AND_PUSH
 
 FAKTY:
-- R4 naprawia wyłącznie niedziałający runner/patch D0 i domyka ClientDetail UX cleanup.
-- Zakres UI: marker D0, tekst Ładowanie klienta..., tekst SPRAWA ZAMKNIĘTA, finance icon source truth payment, jeden client-level aria-label Finanse klienta.
+- R4 naprawia wyĹ‚Ä…cznie niedziaĹ‚ajÄ…cy runner/patch D0 i domyka ClientDetail UX cleanup.
+- Zakres UI: marker D0, tekst Ĺadowanie klienta..., tekst SPRAWA ZAMKNIÄTA, finance icon source truth payment, jeden client-level aria-label Finanse klienta.
 
 TESTY:
 - npm run check:stage231d0-client-workspace-ux-cleanup
@@ -2846,31 +2846,31 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- Nie ruszano modelu finansów i kosztów.
-- Istniejące ostrzeżenie duplicate savedRecord zostaje poza zakresem.
+- Nie ruszano modelu finansĂłw i kosztĂłw.
+- IstniejÄ…ce ostrzeĹĽenie duplicate savedRecord zostaje poza zakresem.
 
-NASTĘPNY KROK:
-- Po PASS/push przejść do STAGE231D1 — model kosztów.
+NASTÄPNY KROK:
+- Po PASS/push przejĹ›Ä‡ do STAGE231D1 â€” model kosztĂłw.
 <!-- STAGE231D0_CLIENT_WORKSPACE_UX_CLEANUP_R4_END -->
 
-## 2026-06-10 — STAGE231D0-R5 — Client workspace UX guard close
+## 2026-06-10 â€” STAGE231D0-R5 â€” Client workspace UX guard close
 - Status: LOCAL_ONLY_RESCUE_PRE_PUSH.
-- Domknięcie po R4: ikona finansów klienta z EntityIcon case -> payment oraz brakujące tokeny "audyt ryzyk", "następny krok" i "VISUAL SOURCE OF TRUTH".
+- DomkniÄ™cie po R4: ikona finansĂłw klienta z EntityIcon case -> payment oraz brakujÄ…ce tokeny "audyt ryzyk", "nastÄ™pny krok" i "VISUAL SOURCE OF TRUTH".
 - Zakres bez zmian danych: ClientDetail UI, guard/test D0, raporty _project i Obsidian payload.
 - Testy: D0 guard/test, D0A regression, Polish guard, build, git diff --check.
-- Audyt ryzyk: ręcznie sprawdzić brak duplikatu Finanse klienta i poprawną ikonę finansów.
+- Audyt ryzyk: rÄ™cznie sprawdziÄ‡ brak duplikatu Finanse klienta i poprawnÄ… ikonÄ™ finansĂłw.
 <!-- STAGE231D1_COST_MODEL_SOURCE_TRUTH_START -->
-## 2026-06-10 — STAGE231D1 Cost model source truth
+## 2026-06-10 â€” STAGE231D1 Cost model source truth
 
 Status: LOCAL_ONLY_PREPARED / DO_TEST_AND_PUSH
 
 FAKTY:
-- STAGE231D1_COST_MODEL_SOURCE_TRUTH: dodano centralny model kosztów sprawy bez zmian runtime UI.
-- Model rozdziela: Koszty poniesione, Koszty do zwrotu, Koszty zwrócone i Razem do pobrania.
+- STAGE231D1_COST_MODEL_SOURCE_TRUTH: dodano centralny model kosztĂłw sprawy bez zmian runtime UI.
+- Model rozdziela: Koszty poniesione, Koszty do zwrotu, Koszty zwrĂłcone i Razem do pobrania.
 - D1 nie dodaje SQL, tabel, migracji, Supabase ani formularza UI.
 
 VISUAL SOURCE OF TRUTH:
-- D1 używa finansowego słownika etykiet i nie dodaje lokalnych stylów UI.
+- D1 uĹĽywa finansowego sĹ‚ownika etykiet i nie dodaje lokalnych stylĂłw UI.
 - UI zostaje do D2/D3, zgodnie z D0A Visual Source of Truth.
 
 TESTY:
@@ -2882,68 +2882,68 @@ TESTY:
 - git diff --check
 
 audyt ryzyk:
-- Ryzyko: D2 może potrzebować SQL/tabeli, ale D1 celowo nie dotyka bazy.
-- Ryzyko: stare UI finansów nie pokaże kosztów, dopóki D2/D3 nie podłączą modelu.
-- Ryzyko: jeśli koszt nie jest reimbursable, nie wchodzi w Koszty do zwrotu.
+- Ryzyko: D2 moĹĽe potrzebowaÄ‡ SQL/tabeli, ale D1 celowo nie dotyka bazy.
+- Ryzyko: stare UI finansĂłw nie pokaĹĽe kosztĂłw, dopĂłki D2/D3 nie podĹ‚Ä…czÄ… modelu.
+- Ryzyko: jeĹ›li koszt nie jest reimbursable, nie wchodzi w Koszty do zwrotu.
 
-następny krok:
-- Po PASS/push przejść do STAGE231D2 — koszty w sprawie z SQL/guardem i UI opartym o model D1.
+nastÄ™pny krok:
+- Po PASS/push przejĹ›Ä‡ do STAGE231D2 â€” koszty w sprawie z SQL/guardem i UI opartym o model D1.
 <!-- STAGE231D1_COST_MODEL_SOURCE_TRUTH_END -->
 
 <!-- STAGE231D2_CASE_COSTS_IN_CASE_START -->
-## STAGE231D2 — Case costs in case
+## STAGE231D2 â€” Case costs in case
 - data: 2026-06-10 18:55 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED / DO_APPLY_TEST_SQL_AND_PUSH
 - zakres: SQL case_costs, API /api/case-costs, CaseDetail cost panel, guard/test.
 - testy: check/test D2, regression D1/D0/D0A, Polish guard, build, git diff --check.
 - audyt ryzyk: SQL must be run before real write test; route must stay workspace scoped.
-- następny krok: apply package, run SQL, manual add-cost test, then push.
+- nastÄ™pny krok: apply package, run SQL, manual add-cost test, then push.
 <!-- STAGE231D2_CASE_COSTS_IN_CASE_END -->
 
 <!-- STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE_START -->
-## STAGE231D2-R2 — Case costs fetch guard close
+## STAGE231D2-R2 â€” Case costs fetch guard close
 - data: 2026-06-10 19:10 Europe/Warsaw
 - status: LOCAL_ONLY_GUARD_CLOSE / DO_TEST_SQL_AND_PUSH
 - zakres: CaseDetail import/fetch integration for case_costs.
 - testy: D2 guard/test, D1/D0/D0A regression, Polish guard, build, git diff --check.
 - audyt ryzyk: SQL still required before manual cost write test.
-- następny krok: run SQL, manual add-cost test, selective push.
+- nastÄ™pny krok: run SQL, manual add-cost test, selective push.
 <!-- STAGE231D2_R2_CASE_COSTS_FETCH_GUARD_CLOSE_END -->
 
 <!-- STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX_START -->
-## STAGE231D2-R3 — Vercel Hobby function limit fix
+## STAGE231D2-R3 â€” Vercel Hobby function limit fix
 - data: 2026-06-10 19:25 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED / DO_APPLY_TEST_PUSH_DEPLOY
-- powód: Vercel Hobby blokuje deployment po przekroczeniu limitu Serverless Functions.
-- zakres: usunięcie api/case-costs.ts, konsolidacja kosztów pod api/cases.ts?resource=costs, guard budżetu funkcji.
+- powĂłd: Vercel Hobby blokuje deployment po przekroczeniu limitu Serverless Functions.
+- zakres: usuniÄ™cie api/case-costs.ts, konsolidacja kosztĂłw pod api/cases.ts?resource=costs, guard budĹĽetu funkcji.
 - testy: D2 guard/test, Vercel budget guard/test, D1/D0/D0A regression, Polish guard, build, git diff --check.
-- audyt ryzyk: po deployu powtórzyć manualny test Dodaj koszt, bo zmienia się ścieżka API.
-- następny krok: PASS -> push -> deploy -> test ręczny kosztu.
+- audyt ryzyk: po deployu powtĂłrzyÄ‡ manualny test Dodaj koszt, bo zmienia siÄ™ Ĺ›cieĹĽka API.
+- nastÄ™pny krok: PASS -> push -> deploy -> test rÄ™czny kosztu.
 <!-- STAGE231D2_R3_VERCEL_HOBBY_FUNCTION_LIMIT_FIX_END -->
 
-## 2026-06-10 — STAGE231D2-R5 CaseDetail render crash hotfix
+## 2026-06-10 â€” STAGE231D2-R5 CaseDetail render crash hotfix
 
 - Status: LOCAL_ONLY_HOTFIX_PREPARED
-- Problem: produkcyjna karta sprawy wysypywała render przez brak definicji caseCostsSummaryStage231D2.
-- Fix: dodano useMemo summary przed JSX i guard blokujący regresję.
+- Problem: produkcyjna karta sprawy wysypywaĹ‚a render przez brak definicji caseCostsSummaryStage231D2.
+- Fix: dodano useMemo summary przed JSX i guard blokujÄ…cy regresjÄ™.
 - Testy: R5/D2/D2R3/D1/D0/D0A/Polish/build.
-- Audyt ryzyk: po deployu sprawdzić produkcyjne otwarcie sprawy; /api/case-items 500 to osobny backend problem, jeśli nadal wystąpi.
+- Audyt ryzyk: po deployu sprawdziÄ‡ produkcyjne otwarcie sprawy; /api/case-items 500 to osobny backend problem, jeĹ›li nadal wystÄ…pi.
 
-## STAGE231D2-R6 — CaseDetail top strip rail lift
+## STAGE231D2-R6 â€” CaseDetail top strip rail lift
 
 - data i godzina: 2026-06-10 19:55 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED
-- zmiana: skrócenie górnego paska tytułu sprawy do lewej kolumny i podciągnięcie prawego raila do górnego miejsca po prawej.
+- zmiana: skrĂłcenie gĂłrnego paska tytuĹ‚u sprawy do lewej kolumny i podciÄ…gniÄ™cie prawego raila do gĂłrnego miejsca po prawej.
 - testy: guard/test R6 + D2/R5/R3/D1/D0/D0A/Polish/build/git diff check.
 - ryzyko: CSS negative margin wymaga produkcyjnego testu wizualnego po deployu.
 
-## 2026-06-10 20:05 Europe/Warsaw — STAGE231D3-R7
+## 2026-06-10 20:05 Europe/Warsaw â€” STAGE231D3-R7
 
 - Replaced brittle D3 patcher flow with controlled mass-clean package.
 - Added client-level case cost rollup to FinanceMiniSummary.
 - Ensured case costs use consolidated /api/cases?resource=costs helper, no new Vercel function.
 
-## STAGE231D3-R7-R2 — Polish guard restore and D3 close
+## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
 
 - timestamp: 2026-06-10 20:42 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED
@@ -2956,18 +2956,18 @@ następny krok:
 STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
 
 FAKTY:
-- Kafelek klienta na liście klientów został przestawiony na układ 2-wierszowy.
-- Z kafelka klienta usunięto Leady: oraz badge Aktywna sprawa.
+- Kafelek klienta na liĹ›cie klientĂłw zostaĹ‚ przestawiony na ukĹ‚ad 2-wierszowy.
+- Z kafelka klienta usuniÄ™to Leady: oraz badge Aktywna sprawa.
 - Wiersz 1 pokazuje: nazwa, telefon, e-mail, Aktywna prowizja, akcje.
-- Wiersz 2 pokazuje: firma, Sprawy, Zarobione łącznie, Najbliższa akcja oraz dozwolone statusy pomocnicze.
-- Telefon ma osobny marker data-client-list-phone i klasę client-list-card-phone.
-- E-mail ma osobny marker data-client-list-email i klasę client-list-card-email.
-- UI dalej korzysta z closeflow-record-list-source-truth.css jako źródła prawdy stylu list.
+- Wiersz 2 pokazuje: firma, Sprawy, Zarobione Ĺ‚Ä…cznie, NajbliĹĽsza akcja oraz dozwolone statusy pomocnicze.
+- Telefon ma osobny marker data-client-list-phone i klasÄ™ client-list-card-phone.
+- E-mail ma osobny marker data-client-list-email i klasÄ™ client-list-card-email.
+- UI dalej korzysta z closeflow-record-list-source-truth.css jako ĹşrĂłdĹ‚a prawdy stylu list.
 
 DECYZJA DAMIANA:
-- Klient jest już pozyskanym leadem, więc nie pokazujemy Leady w kafelku klienta.
-- Klient może mieć wiele spraw, więc nie pokazujemy binarnego badge'a Aktywna sprawa.
-- Na liście klientów mają być widoczne: Aktywna prowizja, Zarobione łącznie, Sprawy, Najbliższa akcja.
+- Klient jest juĹĽ pozyskanym leadem, wiÄ™c nie pokazujemy Leady w kafelku klienta.
+- Klient moĹĽe mieÄ‡ wiele spraw, wiÄ™c nie pokazujemy binarnego badge'a Aktywna sprawa.
+- Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
 
 TESTY/GUARDY:
 -
@@ -2977,30 +2977,30 @@ pm run build
 - git diff --check
 
 DO POTWIERDZENIA:
-- Test ręczny desktop/mobile na /clients po lokalnym uruchomieniu.
+- Test rÄ™czny desktop/mobile na /clients po lokalnym uruchomieniu.
 
 RYZYKA:
-- Jeśli dane prowizyjne w bazie są niepełne, Aktywna prowizja może pokazać 0 PLN mimo aktywnej sprawy bez uzupełnionej prowizji.
-- Jeśli płatności prowizyjne nie mają typu/statusu rozpoznawanego przez finance source, Zarobione łącznie może wymagać osobnego etapu porządkującego dane płatności.
-- Zmiana dotyczy tylko listy klientów, nie przebudowuje ClientDetail ani modeli finansowych.
+- JeĹ›li dane prowizyjne w bazie sÄ… niepeĹ‚ne, Aktywna prowizja moĹĽe pokazaÄ‡ 0 PLN mimo aktywnej sprawy bez uzupeĹ‚nionej prowizji.
+- JeĹ›li pĹ‚atnoĹ›ci prowizyjne nie majÄ… typu/statusu rozpoznawanego przez finance source, Zarobione Ĺ‚Ä…cznie moĹĽe wymagaÄ‡ osobnego etapu porzÄ…dkujÄ…cego dane pĹ‚atnoĹ›ci.
+- Zmiana dotyczy tylko listy klientĂłw, nie przebudowuje ClientDetail ani modeli finansowych.
 <!-- STAGE231D0B_CLIENT_LIST_CARD_CHANGELOG_END -->
 
 
 ## 2026-06-10 Europe/Warsaw - STAGE231D0B-R8-MASS-ENCODING-RESCUE
 
 Marker: STAGE231D0B-R8-MASS-ENCODING-RESCUE
-- Naprawiono klasę błędu: mojibake po STAGE231D0B.
-- Przepisano guard tak, żeby nie akceptował uszkodzonych polskich znaków.
+- Naprawiono klasÄ™ bĹ‚Ä™du: mojibake po STAGE231D0B.
+- Przepisano guard tak, ĹĽeby nie akceptowaĹ‚ uszkodzonych polskich znakĂłw.
 - Dodano masowy sweep report encodingu dla src, scripts i _project.
 
-## 2026-06-10 Europe/Warsaw — STAGE231D0B-R9 ClientListCard polish + source truth cleanup
+## 2026-06-10 Europe/Warsaw â€” STAGE231D0B-R9 ClientListCard polish + source truth cleanup
 
 Status: LOCAL_ONLY_PACKAGE_APPLIED_PENDING_PUSH
 
 FAKTY:
 - ClientListCard pozostaje 2-wierszowy.
-- Finance values są porządkowane jako kompaktowe chipy.
-- R8 unscoped CSS rescue zostaje zastąpiony scoped R9 source truth.
+- Finance values sÄ… porzÄ…dkowane jako kompaktowe chipy.
+- R8 unscoped CSS rescue zostaje zastÄ…piony scoped R9 source truth.
 - LeadListCard dodany tylko jako mapping w UI Dictionary, bez runtime zmian.
 
 TESTY:
@@ -3011,23 +3011,23 @@ TESTY:
 
 RYZYKA:
 - Manual QA nadal wymagany, bo guard nie mierzy odbioru wizualnego.
-- Osobny dług: duplicate savedRecord warning w ContextActionDialogs.tsx.
+- Osobny dĹ‚ug: duplicate savedRecord warning w ContextActionDialogs.tsx.
 
-NASTĘPNY KROK:
+NASTÄPNY KROK:
 - Po akceptacji /clients: STAGE231D0C LeadListCard align to ClientListCard source truth.
 
-## 2026-06-11 Europe/Warsaw — STAGE231D0B_R9_R3_GUARD_MOJIBAKE_SELF_SCAN_REPAIR
+## 2026-06-11 Europe/Warsaw â€” STAGE231D0B_R9_R3_GUARD_MOJIBAKE_SELF_SCAN_REPAIR
 
 - Fixed R9 guard self-scan failure caused by literal encoding-drift probe characters in the guard source.
 
-## 2026-06-11 Europe/Warsaw — STAGE231D0B_R9_R4_CSS_GUARD_TOKEN_ALIGNMENT
+## 2026-06-11 Europe/Warsaw â€” STAGE231D0B_R9_R4_CSS_GUARD_TOKEN_ALIGNMENT
 
 - Added exact CSS source-truth marker and max-width token required by the R9/R3 guard.
 - No runtime lead, trial, top layout or Supabase changes.
 
 ## 2026-06-11 Europe/Warsaw - STAGE231D0B-R10
 
-ClientListCard: dodano wyrównanie środkowych kolumn, title tooltipy i ellipsis dla długich pól. Zmiana wizualna wymaga manualnego potwierdzenia po deployu.
+ClientListCard: dodano wyrĂłwnanie Ĺ›rodkowych kolumn, title tooltipy i ellipsis dla dĹ‚ugich pĂłl. Zmiana wizualna wymaga manualnego potwierdzenia po deployu.
 
 ## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R7 - Client finance chip start alignment
 
@@ -3061,18 +3061,18 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R8 — finance chip right-edge alignment
+## 2026-06-11 HH:mm Europe/Warsaw - STAGE231D0B-R10/R8 â€” finance chip right-edge alignment
 
 Status: LOCAL_APPLIED_PENDING_PUSH_AND_DEPLOY_QA
 
 FAKTY:
-- R7 wyrównał finance chipy w złą stronę dla oczekiwanego widoku Damiana.
-- R8 nie przebudowuje karty klienta. Zmienia tylko oś wyrównania zielonych chipów finansowych.
-- Chipy pozostają o zmiennej długości; prawa krawędź chipów ma być wspólna.
+- R7 wyrĂłwnaĹ‚ finance chipy w zĹ‚Ä… stronÄ™ dla oczekiwanego widoku Damiana.
+- R8 nie przebudowuje karty klienta. Zmienia tylko oĹ› wyrĂłwnania zielonych chipĂłw finansowych.
+- Chipy pozostajÄ… o zmiennej dĹ‚ugoĹ›ci; prawa krawÄ™dĹş chipĂłw ma byÄ‡ wspĂłlna.
 
 DECYZJA DAMIANA:
-- Początek i koniec karty zostają bez zmian.
-- Zielone kafelki finansowe mają być wyrównane od prawej strony.
+- PoczÄ…tek i koniec karty zostajÄ… bez zmian.
+- Zielone kafelki finansowe majÄ… byÄ‡ wyrĂłwnane od prawej strony.
 
 TESTY:
 - npm run check:stage231d0b-client-list-card-freeze
@@ -3081,7 +3081,7 @@ TESTY:
 - npm run build
 
 RYZYKA:
-- Etap jest wizualny; ostateczne zamknięcie wymaga deployu i ręcznego sprawdzenia /clients.
+- Etap jest wizualny; ostateczne zamkniÄ™cie wymaga deployu i rÄ™cznego sprawdzenia /clients.
 
 
 ---
@@ -3168,16 +3168,16 @@ Prepared ClientDetail Workspace Baseline package with compact active case card a
 STAGE231D0C_R7_CLIENT_DETAIL_LEFT_RAIL_SPACING
 
 FAKTY Z KODU:
-- STAGE231D0C/R6 został wdrożony i wypchnięty jako baseline ClientDetail.
-- Manual QA wskazał, że lewy rail zaczyna się za wysoko i wizualnie wchodzi w następny poziom względem kart po prawej.
+- STAGE231D0C/R6 zostaĹ‚ wdroĹĽony i wypchniÄ™ty jako baseline ClientDetail.
+- Manual QA wskazaĹ‚, ĹĽe lewy rail zaczyna siÄ™ za wysoko i wizualnie wchodzi w nastÄ™pny poziom wzglÄ™dem kart po prawej.
 
 DECYZJA DAMIANA:
-- Zachować zaakceptowane górne kafelki ClientDetail.
-- Obniżyć lewy rail do poziomu kafelków po prawej i zachować ten sam odstęp między kartami.
+- ZachowaÄ‡ zaakceptowane gĂłrne kafelki ClientDetail.
+- ObniĹĽyÄ‡ lewy rail do poziomu kafelkĂłw po prawej i zachowaÄ‡ ten sam odstÄ™p miÄ™dzy kartami.
 
 ZAKRES:
-- CSS spacing only: lewy rail, prawy rail, odstęp między kartami.
-- Bez zmian danych, JSX, SQL, kosztów, wykresów, Google Calendar, LeadListCard runtime i CaseDetail.
+- CSS spacing only: lewy rail, prawy rail, odstÄ™p miÄ™dzy kartami.
+- Bez zmian danych, JSX, SQL, kosztĂłw, wykresĂłw, Google Calendar, LeadListCard runtime i CaseDetail.
 
 TESTY/GUARDY:
 - scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs
@@ -3191,17 +3191,17 @@ TESTY/GUARDY:
 STAGE231D0C_R8_CLIENT_DETAIL_LEFT_RAIL_SPACING_GUARD_FIX
 
 FAKTY Z KODU:
-- STAGE231D0C/R7 patch zastosował spacing lewego raila, ale guard miał zepsuty regex po utracie backslashy.
-- R8 nie zmienia runtime poza naprawą guarda/testu i dokumentacją.
+- STAGE231D0C/R7 patch zastosowaĹ‚ spacing lewego raila, ale guard miaĹ‚ zepsuty regex po utracie backslashy.
+- R8 nie zmienia runtime poza naprawÄ… guarda/testu i dokumentacjÄ….
 
 DECYZJA DAMIANA:
-- Zachować górne kafelki ClientDetail.
-- Dokończyć spacing lewego raila bez przebudowy układu.
+- ZachowaÄ‡ gĂłrne kafelki ClientDetail.
+- DokoĹ„czyÄ‡ spacing lewego raila bez przebudowy ukĹ‚adu.
 
 ZAKRES:
 - Naprawa scripts/check-stage231d0c-r7-client-detail-left-rail-spacing.cjs.
 - Zachowanie CSS R7 i scope ClientDetail.
-- Bez zmian SQL, danych, CaseDetail, LeadListCard runtime, kosztów i wykresów.
+- Bez zmian SQL, danych, CaseDetail, LeadListCard runtime, kosztĂłw i wykresĂłw.
 
 TESTY/GUARDY:
 - node --check guard R7.
@@ -3218,9 +3218,9 @@ TESTY/GUARDY:
 Status: LOCAL_APPLIED / VISUAL_SPACING_FIX / NEED_PUSH
 
 Zakres:
-- poprawiono realny desktopowy offset lewego raila w ClientDetail, bo po R7 panel nadal zaczynał za wysoko względem prawego raila;
-- zwiększono offset tylko dla desktopu przez CSS variable i silniejszy selektor;
-- zachowano zaakceptowany górny układ kafelków, kompaktową aktywną sprawę, dane i routing.
+- poprawiono realny desktopowy offset lewego raila w ClientDetail, bo po R7 panel nadal zaczynaĹ‚ za wysoko wzglÄ™dem prawego raila;
+- zwiÄ™kszono offset tylko dla desktopu przez CSS variable i silniejszy selektor;
+- zachowano zaakceptowany gĂłrny ukĹ‚ad kafelkĂłw, kompaktowÄ… aktywnÄ… sprawÄ™, dane i routing.
 
 Testy/guardy:
 - node scripts/check-stage231d0c-r9-client-detail-left-rail-visual-align.cjs
@@ -3233,7 +3233,7 @@ Testy/guardy:
 
 Ryzyka:
 - finalna akceptacja wymaga screenshotu /clients/<id> po deployu i Ctrl+F5;
-- tablet/mobile resetują offset do 0, żeby nie zrobić sztucznej dziury.
+- tablet/mobile resetujÄ… offset do 0, ĹĽeby nie zrobiÄ‡ sztucznej dziury.
 
 ---
 ## 2026-06-11 Europe/Warsaw - STAGE231D0C/R11 ClientDetail left rail axis lock
@@ -3293,7 +3293,7 @@ Tests required:
 
 Manual QA after deploy:
 - open /clients/<id>, Ctrl+F5.
-- verify left Data klienta card starts visually on the same axis as right Najbliższe działania card.
+- verify left Data klienta card starts visually on the same axis as right NajbliĹĽsze dziaĹ‚ania card.
 - verify top tiles and active case compact card unchanged.
 
 ---
@@ -3304,14 +3304,14 @@ Marker: STAGE231D0C_R2_CLIENT_DETAIL_HEADER_FREEZE
 Status: LOCAL_APPLY_PREPARED / DO_TEST_AND_PUSH
 
 Zakres:
-- zamrożenie ClientDetailHeader jako wzorca DetailHeader,
-- dopisanie stylu widoczności ikon w header buttons,
+- zamroĹĽenie ClientDetailHeader jako wzorca DetailHeader,
+- dopisanie stylu widocznoĹ›ci ikon w header buttons,
 - dopisanie DetailHeader do UI Dictionary,
 - dodanie guarda i testu R2,
 - regresja D0C baseline.
 
 Decyzja Damiana:
-Header karty klienta detail zostaje wzorcem dla kolejnych kart detail. Ikony w niebieskich przyciskach muszą być widoczne.
+Header karty klienta detail zostaje wzorcem dla kolejnych kart detail. Ikony w niebieskich przyciskach muszÄ… byÄ‡ widoczne.
 
 Poza zakresem:
 - brak SQL,
@@ -3388,11 +3388,11 @@ RYZYKA:
 Status: PATCH_RESCUE / CONTINUES_STAGE231D0D_R2
 
 Zakres:
-- naprawa częściowo zastosowanego D0D-R3 po guard fail,
+- naprawa czÄ™Ĺ›ciowo zastosowanego D0D-R3 po guard fail,
 - dopisanie widocznego wiersza "Razem do pobrania" do pierwszej karty "Rozliczenie sprawy",
-- podpięcie totalu do istniejącego caseCostsSummaryStage231D2.totalToCollectAmount,
-- naprawa JSX service tab po usunięciu legacy Stage220A10 duplicate block,
-- bez SQL, bez nowego modelu kosztów, bez wykresów.
+- podpiÄ™cie totalu do istniejÄ…cego caseCostsSummaryStage231D2.totalToCollectAmount,
+- naprawa JSX service tab po usuniÄ™ciu legacy Stage220A10 duplicate block,
+- bez SQL, bez nowego modelu kosztĂłw, bez wykresĂłw.
 
 Testy wymagane:
 - D0D-R2 guard/test,
@@ -3402,18 +3402,18 @@ Testy wymagane:
 - git diff --check.
 
 Audyt ryzyk:
-- nie dublować osobnej karty kosztów jako drugiego źródła rozliczenia; wiersz totalu w pierwszej karcie jest obowiązkowy dla skanowalności prawego panelu,
-- po deployu manualnie sprawdzić kolejność raila: Rozliczenie -> Szybkie akcje -> Dane sprawy i klienta.
+- nie dublowaÄ‡ osobnej karty kosztĂłw jako drugiego ĹşrĂłdĹ‚a rozliczenia; wiersz totalu w pierwszej karcie jest obowiÄ…zkowy dla skanowalnoĹ›ci prawego panelu,
+- po deployu manualnie sprawdziÄ‡ kolejnoĹ›Ä‡ raila: Rozliczenie -> Szybkie akcje -> Dane sprawy i klienta.
 
 ## 2026-06-11 Europe/Warsaw - STAGE231D0D-R3 CaseDetail 100% scale balanced workspace
 
 Status: PREPARED_BY_ZIP / DO_TEST_AND_PUSH
 
 Zakres:
-- działania i notatki w jednym środkowym gridzie,
+- dziaĹ‚ania i notatki w jednym Ĺ›rodkowym gridzie,
 - notatki compact preview: 3 ostatnie,
 - prawy rail compact: rozliczenie, szybkie akcje, dane,
-- historia wpłat i lista kosztów nie są stale rozlane w railu,
+- historia wpĹ‚at i lista kosztĂłw nie sÄ… stale rozlane w railu,
 - R2 guard zaktualizowany jako regresja zgodna z R3.
 
 Testy:
@@ -3433,8 +3433,8 @@ Testy:
 Status: LOCAL_PACKAGE_APPLIED_PENDING_PUSH
 
 FAKTY Z KODU:
-- R4 usuwa widoczną kartę danych sprawy i klienta z głównego right raila bez usuwania danych z systemu.
-- R4 usuwa stałe sekcje historii wpłat i kosztów z right raila.
+- R4 usuwa widocznÄ… kartÄ™ danych sprawy i klienta z gĹ‚Ăłwnego right raila bez usuwania danych z systemu.
+- R4 usuwa staĹ‚e sekcje historii wpĹ‚at i kosztĂłw z right raila.
 - R4 zachowuje rozliczenie sprawy i szybkie akcje w railu.
 - R4 dopina marker data-case-service-tabs-column="true" do tabs card.
 
@@ -3447,8 +3447,8 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Tabs są wyrównane wizualnie do kolumny działań bez pełnej przebudowy logiki Tabs; przy kolejnym większym refaktorze warto przenieść strukturę logicznie do left-column.
-- Historia wpłat i koszty pozostają dostępne przez istniejące przyciski/modale, ale nie są stałą listą w railu.
+- Tabs sÄ… wyrĂłwnane wizualnie do kolumny dziaĹ‚aĹ„ bez peĹ‚nej przebudowy logiki Tabs; przy kolejnym wiÄ™kszym refaktorze warto przenieĹ›Ä‡ strukturÄ™ logicznie do left-column.
+- Historia wpĹ‚at i koszty pozostajÄ… dostÄ™pne przez istniejÄ…ce przyciski/modale, ale nie sÄ… staĹ‚Ä… listÄ… w railu.
 
 ---
 
@@ -3456,16 +3456,16 @@ RYZYKA:
 
 Status: READY_FOR_TEST
 Zakres:
-- notatki podciągnięte do góry bez łamania wspólnego odstępu kafelków,
-- wspólny odstęp kafelków: 14px,
+- notatki podciÄ…gniÄ™te do gĂłry bez Ĺ‚amania wspĂłlnego odstÄ™pu kafelkĂłw,
+- wspĂłlny odstÄ™p kafelkĂłw: 14px,
 - prawy rail delikatnie podniesiony,
-- z CaseQuickActions usunięto osobną akcję "Wpłata prowizji",
-- wpłata prowizji zostaje w rozliczeniu sprawy.
+- z CaseQuickActions usuniÄ™to osobnÄ… akcjÄ™ "WpĹ‚ata prowizji",
+- wpĹ‚ata prowizji zostaje w rozliczeniu sprawy.
 
 Ryzyka:
-- override CSS musi nie rozjechać mobile/tablet,
-- quick actions nie mogą dublować akcji finansowych,
-- R2/R3/R4 guardy były składniowo uszkodzone i zostały naprawione.
+- override CSS musi nie rozjechaÄ‡ mobile/tablet,
+- quick actions nie mogÄ… dublowaÄ‡ akcji finansowych,
+- R2/R3/R4 guardy byĹ‚y skĹ‚adniowo uszkodzone i zostaĹ‚y naprawione.
 
 ---
 
@@ -3474,14 +3474,14 @@ Ryzyka:
 Status: REPAIR_READY_FOR_TEST
 
 Naprawa:
-- usunięto "Wpłata prowizji" z CaseQuickActions,
+- usuniÄ™to "WpĹ‚ata prowizji" z CaseQuickActions,
 - dodano "Dodaj koszt" do kompaktowego rozliczenia sprawy,
-- dodano spacing marker i wspólny odstęp kafelków 14px,
+- dodano spacing marker i wspĂłlny odstÄ™p kafelkĂłw 14px,
 - dodano micro-lift prawego raila,
-- zachowano wpłatę prowizji tylko w rozliczeniu sprawy.
+- zachowano wpĹ‚atÄ™ prowizji tylko w rozliczeniu sprawy.
 
-Powód:
-Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek względnych .NET/PowerShell.
+PowĂłd:
+Poprzedni R5 zostaĹ‚ wypchniÄ™ty mimo czerwonych guardĂłw po bĹ‚Ä™dzie Ĺ›cieĹĽek wzglÄ™dnych .NET/PowerShell.
 
 ---
 
@@ -3490,15 +3490,15 @@ Poprzedni R5 został wypchnięty mimo czerwonych guardów po błędzie ścieżek
 Status: READY_FOR_TEST
 
 Zakres:
-- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakładki Obsługa,
-- lewa kolumna ma teraz: tabs + działania,
-- środkowa kolumna ma notatki startujące od góry tego samego gridu,
-- prawy rail jest wyrównany do osi true service grid i używa wspólnego gapu,
-- nie ruszano SQL, danych, modelu finansów ani modali.
+- przeniesiono tabs do lewej kolumny workspace dla aktywnej zakĹ‚adki ObsĹ‚uga,
+- lewa kolumna ma teraz: tabs + dziaĹ‚ania,
+- Ĺ›rodkowa kolumna ma notatki startujÄ…ce od gĂłry tego samego gridu,
+- prawy rail jest wyrĂłwnany do osi true service grid i uĹĽywa wspĂłlnego gapu,
+- nie ruszano SQL, danych, modelu finansĂłw ani modali.
 
 Audyt:
-- R5 był technicznie zielony, ale wizualnie nie zamykał celu, bo tabs były poza gridem.
-- R6 naprawia strukturę JSX, a guard sprawdza kolejność grid -> left column -> tabs -> actions -> notes.
+- R5 byĹ‚ technicznie zielony, ale wizualnie nie zamykaĹ‚ celu, bo tabs byĹ‚y poza gridem.
+- R6 naprawia strukturÄ™ JSX, a guard sprawdza kolejnoĹ›Ä‡ grid -> left column -> tabs -> actions -> notes.
 
 ---
 
@@ -3508,13 +3508,13 @@ Status: READY_FOR_TEST
 
 Zakres:
 - prawy panel z rozliczeniem i szybkimi akcjami podniesiony do osi kafelka danych sprawy,
-- zakładki Obsługa / Checklisty / Historia dostały pełny, rozciągnięty kafelek nad Działaniami sprawy,
-- zachowany wspólny odstęp kafelków 14px,
-- nie ruszano finansów, modali, SQL, danych, handlerów ani quick actions poza stylem układu.
+- zakĹ‚adki ObsĹ‚uga / Checklisty / Historia dostaĹ‚y peĹ‚ny, rozciÄ…gniÄ™ty kafelek nad DziaĹ‚aniami sprawy,
+- zachowany wspĂłlny odstÄ™p kafelkĂłw 14px,
+- nie ruszano finansĂłw, modali, SQL, danych, handlerĂłw ani quick actions poza stylem ukĹ‚adu.
 
 Ryzyka:
-- etap jest CSS-only, więc wymaga ręcznego potwierdzenia na 100% zoom,
-- lift prawego raila ma reset na węższych ekranach,
+- etap jest CSS-only, wiÄ™c wymaga rÄ™cznego potwierdzenia na 100% zoom,
+- lift prawego raila ma reset na wÄ™ĹĽszych ekranach,
 - historyczne mojibake w starych wpisach _project nie jest czyszczone w tym etapie.
 
 ---
@@ -3524,9 +3524,9 @@ Ryzyka:
 Status: APPLIED_LOCAL_WAITING_VISUAL_PASS
 
 Zakres:
-- pigułki Obsługa / Checklisty / Historia wyśrodkowane w rozciągniętym kafelku,
-- środkowa sekcja CaseDetail podniesiona lekko wyżej,
-- prawy panel rozliczeń i szybkich akcji dociągnięty do tej samej osi,
+- piguĹ‚ki ObsĹ‚uga / Checklisty / Historia wyĹ›rodkowane w rozciÄ…gniÄ™tym kafelku,
+- Ĺ›rodkowa sekcja CaseDetail podniesiona lekko wyĹĽej,
+- prawy panel rozliczeĹ„ i szybkich akcji dociÄ…gniÄ™ty do tej samej osi,
 - bez zmian w SQL, Supabase, finansach, modalach, handlerach i danych.
 
 Testy:
@@ -3544,10 +3544,10 @@ Scope:
 - CSS-only alignment of ClientDetail workspace columns.
 - Align left data card, center column and right upcoming-actions rail to one top axis.
 - Force center content under Braki i blokady to keep same width/left edge as the center column.
-- Force right rail content under Najbliższe działania to keep same width/left edge as the rail.
+- Force right rail content under NajbliĹĽsze dziaĹ‚ania to keep same width/left edge as the rail.
 
 User decision:
-- "wszystko co pod braki i blokady oraz najbliższe działania musimy wyrównać z kafelkiem dane klienta"
+- "wszystko co pod braki i blokady oraz najbliĹĽsze dziaĹ‚ania musimy wyrĂłwnaÄ‡ z kafelkiem dane klienta"
 
 Touched runtime files:
 - src/styles/visual-stage12-client-detail-vnext.css
@@ -3568,34 +3568,34 @@ Risk audit:
 - Do not mix with failed R11 finance/notes package or old D0B client-list-card guard drift.
 
 <!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F Funnel owner dashboard visual alignment
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F Funnel owner dashboard visual alignment
 
-- Dopasowano Lejek do nowego języka UI CloseFlow.
-- Zachowano koncepcję: lista decyzji właściciela, nie kanban.
-- Nie zmieniono logiki filtrów, liczenia, Supabase, SQL, statusów, płatności ani routingu.
+- Dopasowano Lejek do nowego jÄ™zyka UI CloseFlow.
+- Zachowano koncepcjÄ™: lista decyzji wĹ‚aĹ›ciciela, nie kanban.
+- Nie zmieniono logiki filtrĂłw, liczenia, Supabase, SQL, statusĂłw, pĹ‚atnoĹ›ci ani routingu.
 - Dodano CSS alignment, guard, test, run report i Obsidian payload.
 <!-- STAGE231D0F_FUNNEL_OWNER_DASHBOARD_VISUAL_ALIGNMENT_2026_06_12_END -->
 
 <!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R4 Funnel targeted guard repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R4 Funnel targeted guard repair
 
 STATUS: READY_TO_APPLY
 
-FAKTY Z LOGÓW:
-- R2 poprawnie zatrzymał się po czerwonym guardzie.
-- R3 zatrzymał się na zbyt szerokim mojibake sweepie, który zaczął czyścić stare historyczne wpisy `_project`.
-- To nie jest właściwy zakres dla etapu UI Lejka.
+FAKTY Z LOGĂ“W:
+- R2 poprawnie zatrzymaĹ‚ siÄ™ po czerwonym guardzie.
+- R3 zatrzymaĹ‚ siÄ™ na zbyt szerokim mojibake sweepie, ktĂłry zaczÄ…Ĺ‚ czyĹ›ciÄ‡ stare historyczne wpisy `_project`.
+- To nie jest wĹ‚aĹ›ciwy zakres dla etapu UI Lejka.
 
 DECYZJA:
-- Naprawiamy aktywny zakres STAGE231D0F, nie całą historię projektu.
-- Lejek pozostaje listą decyzji właściciela, nie kanbanem.
-- Nie ruszać logiki filtrów, Supabase, SQL, płatności, routingu, wykresów ani drag/drop.
+- Naprawiamy aktywny zakres STAGE231D0F, nie caĹ‚Ä… historiÄ™ projektu.
+- Lejek pozostaje listÄ… decyzji wĹ‚aĹ›ciciela, nie kanbanem.
+- Nie ruszaÄ‡ logiki filtrĂłw, Supabase, SQL, pĹ‚atnoĹ›ci, routingu, wykresĂłw ani drag/drop.
 
 R4:
-- targetowany repair mojibake tylko dla runtime i aktywnych plików etapu,
+- targetowany repair mojibake tylko dla runtime i aktywnych plikĂłw etapu,
 - guard STAGE231D0F sprawdza aktywny blok UI Dictionary, CSS i runtime,
-- guardy nie failują na własnych definicjach tokenów,
-- CaseDetail R4 guard jest podmieniany na bezpieczną wersję z tokenami generowanymi po kodach znaków.
+- guardy nie failujÄ… na wĹ‚asnych definicjach tokenĂłw,
+- CaseDetail R4 guard jest podmieniany na bezpiecznÄ… wersjÄ™ z tokenami generowanymi po kodach znakĂłw.
 
 TESTY:
 - `node scripts/check-stage231d0f-funnel-owner-dashboard-visual-alignment.cjs`
@@ -3605,33 +3605,33 @@ TESTY:
 - `git diff --check`
 
 RYZYKO:
-- W repo nadal mogą istnieć stare historyczne wpisy z mojibake. Nie naprawiać ich w tym etapie.
-- Jeżeli chcemy pełne sprzątanie `_project`, to osobny etap: `ENCODING-SWEEP`, bez mieszania z Lejkiem.
+- W repo nadal mogÄ… istnieÄ‡ stare historyczne wpisy z mojibake. Nie naprawiaÄ‡ ich w tym etapie.
+- JeĹĽeli chcemy peĹ‚ne sprzÄ…tanie `_project`, to osobny etap: `ENCODING-SWEEP`, bez mieszania z Lejkiem.
 <!-- STAGE231D0F_R4_FUNNEL_OWNER_DASHBOARD_TARGETED_GUARD_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R2 Funnel color/icon/filter parity
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R2 Funnel color/icon/filter parity
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z KODU:
-- `SalesFunnel.tsx` ma już `FunnelOwnerDecisionTile`, `FunnelStageFilterChip`, `FunnelDecisionListCard`.
-- `closeflow-metric-tiles.css` ma wspólne tony `blue`, `amber`, `red`, `green`, `purple`.
-- Klienci używają wzorca filtrów: `cf-contact-cadence-strip`, `cf-contact-cadence-pills`, `cf-status-pill`, `pill`, `data-cf-status-tone`.
+- `SalesFunnel.tsx` ma juĹĽ `FunnelOwnerDecisionTile`, `FunnelStageFilterChip`, `FunnelDecisionListCard`.
+- `closeflow-metric-tiles.css` ma wspĂłlne tony `blue`, `amber`, `red`, `green`, `purple`.
+- Klienci uĹĽywajÄ… wzorca filtrĂłw: `cf-contact-cadence-strip`, `cf-contact-cadence-pills`, `cf-status-pill`, `pill`, `data-cf-status-tone`.
 
 DECYZJE DAMIANA:
-- Zamysł Lejka zostaje.
+- ZamysĹ‚ Lejka zostaje.
 - Lejek nie jest kanbanem.
-- Kafelki właścicielskie mają mieć kolorowe ikony.
-- `Cisza 7+` ma dostać ton `purple`.
-- Filtry etapów mają mówić tym samym językiem wizualnym co filtry w Klientach.
-- Nie ruszać logiki filtrów, Supabase, SQL, drag/drop ani kanbana.
+- Kafelki wĹ‚aĹ›cicielskie majÄ… mieÄ‡ kolorowe ikony.
+- `Cisza 7+` ma dostaÄ‡ ton `purple`.
+- Filtry etapĂłw majÄ… mĂłwiÄ‡ tym samym jÄ™zykiem wizualnym co filtry w Klientach.
+- Nie ruszaÄ‡ logiki filtrĂłw, Supabase, SQL, drag/drop ani kanbana.
 
 ZMIANA:
 - Dodany marker `STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY`.
 - Dodana jawna mapa `FUNNEL_OWNER_TILE_TONE_MAP`.
 - `FunnelStageFilterChip` dostaje `data-cf-status-tone`, `cf-status-pill` / `pill` oraz alias `cf-filter-pill`.
-- Pasek etapów dostaje `cf-contact-cadence-strip`, `cf-contact-cadence-pills`, `cf-filter-strip`, `cf-filter-pills`.
+- Pasek etapĂłw dostaje `cf-contact-cadence-strip`, `cf-contact-cadence-pills`, `cf-filter-strip`, `cf-filter-pills`.
 - CSS wymusza widoczne kolorowe ikony w owner tiles.
 
 TESTY:
@@ -3643,32 +3643,32 @@ TESTY:
 - `git diff --check`
 
 RYZYKO:
-- Nie wolno przez ten etap zmienić działania filtrów ani przerobić Lejka w kanban.
-- Nie mieszać w tym commicie wcześniejszych plików `STAGE231D0E`, jeśli nie są osobno domykane.
+- Nie wolno przez ten etap zmieniÄ‡ dziaĹ‚ania filtrĂłw ani przerobiÄ‡ Lejka w kanban.
+- Nie mieszaÄ‡ w tym commicie wczeĹ›niejszych plikĂłw `STAGE231D0E`, jeĹ›li nie sÄ… osobno domykane.
 <!-- STAGE231D0F_R2_FUNNEL_COLOR_FILTER_PARITY_2026_06_12_END -->
 
 <!-- STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R3 Funnel icon source truth + records header fix
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R3 Funnel icon source truth + records header fix
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z KODU:
-- `SalesFunnel.tsx` ma już `FUNNEL_OWNER_TILE_TONE_MAP` i używa `data-eliteflow-metric-tone`.
-- `closeflow-metric-tiles.css` ma zmienne source of truth dla ikon i tła ikon.
-- `SalesFunnel.tsx` nadal miał dwuliniowy nagłówek rekordów: mały label + `Rekordy w aktywnym widoku`.
+- `SalesFunnel.tsx` ma juĹĽ `FUNNEL_OWNER_TILE_TONE_MAP` i uĹĽywa `data-eliteflow-metric-tone`.
+- `closeflow-metric-tiles.css` ma zmienne source of truth dla ikon i tĹ‚a ikon.
+- `SalesFunnel.tsx` nadal miaĹ‚ dwuliniowy nagĹ‚Ăłwek rekordĂłw: maĹ‚y label + `Rekordy w aktywnym widoku`.
 
 DECYZJE DAMIANA:
-- Ikony kafelków Lejka mają mieć widoczny kolor.
-- Kolor ikon ma iść ze wspólnego source of truth `closeflow-metric-tiles.css`.
-- Nie kolorować lokalnie kafelków Lejka losowymi hexami.
-- Nagłówek rekordów ma być jednym wierszem.
-- Nie ruszać logiki filtrów, SQL, Supabase, kanbana ani drag/drop.
+- Ikony kafelkĂłw Lejka majÄ… mieÄ‡ widoczny kolor.
+- Kolor ikon ma iĹ›Ä‡ ze wspĂłlnego source of truth `closeflow-metric-tiles.css`.
+- Nie kolorowaÄ‡ lokalnie kafelkĂłw Lejka losowymi hexami.
+- NagĹ‚Ăłwek rekordĂłw ma byÄ‡ jednym wierszem.
+- Nie ruszaÄ‡ logiki filtrĂłw, SQL, Supabase, kanbana ani drag/drop.
 
 ZMIANA:
 - Dodany marker `STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER`.
-- W `closeflow-metric-tiles.css` dopisano ogólną regułę `stroke: currentColor` / `color: currentColor` dla SVG ikon metric tiles.
-- W `SalesFunnel.tsx` nagłówek rekordów zmieniony na `FunnelRecordsHeaderRow`.
-- W `sales-funnel-stage231d0f-visual-alignment.css` dodano CSS dla jednowierszowego nagłówka.
+- W `closeflow-metric-tiles.css` dopisano ogĂłlnÄ… reguĹ‚Ä™ `stroke: currentColor` / `color: currentColor` dla SVG ikon metric tiles.
+- W `SalesFunnel.tsx` nagĹ‚Ăłwek rekordĂłw zmieniony na `FunnelRecordsHeaderRow`.
+- W `sales-funnel-stage231d0f-visual-alignment.css` dodano CSS dla jednowierszowego nagĹ‚Ăłwka.
 
 TESTY:
 - `node scripts/check-stage231d0f-r3-funnel-icon-source-and-header.cjs`
@@ -3679,29 +3679,29 @@ TESTY:
 - `git diff --check`
 
 RYZYKO:
-- Jeśli ikony dalej wyglądają bez koloru, możliwa przyczyna to kolejność ładowania CSS albo zewnętrzne nadpisanie SVG. Guard sprawdza source of truth, ale manual QA nadal jest konieczne.
+- JeĹ›li ikony dalej wyglÄ…dajÄ… bez koloru, moĹĽliwa przyczyna to kolejnoĹ›Ä‡ Ĺ‚adowania CSS albo zewnÄ™trzne nadpisanie SVG. Guard sprawdza source of truth, ale manual QA nadal jest konieczne.
 <!-- STAGE231D0F_R3_FUNNEL_ICON_SOURCE_AND_HEADER_2026_06_12_END -->
 
 <!-- STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R5 Funnel records header line repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R5 Funnel records header line repair
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R4 patcher dalej zatrzymał się na starym fragmencie `<p className="text-xs font-black uppercase tracking...">`.
-- Przyczyna: nawet regex R4 nie trafił lokalnego wariantu starego JSX.
-- Problem jest w konkretnych liniach starego headera, nie w całym Lejku.
+- R4 patcher dalej zatrzymaĹ‚ siÄ™ na starym fragmencie `<p className="text-xs font-black uppercase tracking...">`.
+- Przyczyna: nawet regex R4 nie trafiĹ‚ lokalnego wariantu starego JSX.
+- Problem jest w konkretnych liniach starego headera, nie w caĹ‚ym Lejku.
 
 ZMIANA:
 - R5 usuwa liniowo stare fragmenty:
   - `visibleLabel` paragraph,
-  - stary `h2` rekordów,
+  - stary `h2` rekordĂłw,
   - stary licznik tekstowy.
 - R5 wymaga nowego `data-stage231d0f-r5-records-header-line-repair`.
-- R5 odświeża R3/R4 guardy, żeby walidowały naprawiony stan bez fałszywego globalnego blokowania.
+- R5 odĹ›wieĹĽa R3/R4 guardy, ĹĽeby walidowaĹ‚y naprawiony stan bez faĹ‚szywego globalnego blokowania.
 
-NIE RUSZAĆ:
-- logiki filtrów,
+NIE RUSZAÄ†:
+- logiki filtrĂłw,
 - Supabase,
 - SQL,
 - kanbana,
@@ -3712,113 +3712,113 @@ TESTY:
 - `node scripts/check-stage231d0f-r5-funnel-records-header-line-repair.cjs`
 - `node --test tests/stage231d0f-r5-funnel-records-header-line-repair.test.cjs`
 - R4/R3 regression guard/test
-- R2 guard/test jeśli istnieją
+- R2 guard/test jeĹ›li istniejÄ…
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- Local tree ma dużo wcześniejszych śladów failed packages. Push tylko selektywny.
+- Local tree ma duĹĽo wczeĹ›niejszych Ĺ›ladĂłw failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R5_FUNNEL_RECORDS_HEADER_LINE_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R6 Funnel UI Dictionary guard repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R6 Funnel UI Dictionary guard repair
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R5 runtime patch przeszedł.
-- R5 guard zatrzymał etap wyłącznie na brakach w UI Dictionary: `MetricTileIconColorSource` i `FunnelColorToneMap`.
-- To jest problem guardu/pamięci projektu, nie logiki Lejka.
+- R5 runtime patch przeszedĹ‚.
+- R5 guard zatrzymaĹ‚ etap wyĹ‚Ä…cznie na brakach w UI Dictionary: `MetricTileIconColorSource` i `FunnelColorToneMap`.
+- To jest problem guardu/pamiÄ™ci projektu, nie logiki Lejka.
 
 ZMIANA:
-- R6 dopisuje brakujące pojęcia do aktywnego bloku UI Dictionary.
-- R6 guard łączy aktywne bloki R6/R5/R4/R3/R2 zamiast patrzeć tylko w ostatni blok.
-- R6 nie dotyka logiki filtrów, Supabase, SQL, drag/drop ani kanbana.
+- R6 dopisuje brakujÄ…ce pojÄ™cia do aktywnego bloku UI Dictionary.
+- R6 guard Ĺ‚Ä…czy aktywne bloki R6/R5/R4/R3/R2 zamiast patrzeÄ‡ tylko w ostatni blok.
+- R6 nie dotyka logiki filtrĂłw, Supabase, SQL, drag/drop ani kanbana.
 
 TESTY:
 - `node scripts/check-stage231d0f-r6-funnel-ui-dictionary-guard-repair.cjs`
 - `node --test tests/stage231d0f-r6-funnel-ui-dictionary-guard-repair.test.cjs`
 - R5/R4/R3 regression guard/test
-- R2 guard/test jeśli istnieją
+- R2 guard/test jeĹ›li istniejÄ…
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- Local tree jest brudny po wielu próbach. Push tylko selektywny.
+- Local tree jest brudny po wielu prĂłbach. Push tylko selektywny.
 <!-- STAGE231D0F_R6_FUNNEL_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R6 Funnel shared filter resilient patch
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R6 Funnel shared filter resilient patch
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R5 shared filter patch zatrzymał się na `SalesFunnel post-patch token missing: data-stage231d0f-r5-stage-filter-no-visible-money`.
-- Przyczyna: patcher szukał zbyt szerokiego wariantu całego `<button>` w `FunnelStageFilterChip`.
+- R5 shared filter patch zatrzymaĹ‚ siÄ™ na `SalesFunnel post-patch token missing: data-stage231d0f-r5-stage-filter-no-visible-money`.
+- Przyczyna: patcher szukaĹ‚ zbyt szerokiego wariantu caĹ‚ego `<button>` w `FunnelStageFilterChip`.
 - Realny `SalesFunnel.tsx` ma stabilny marker `data-stage231d0f-r2-filter-tone={tone}` i widoczny `cf-funnel-stage-filter-chip-value`.
 
 ZMIANA:
-- R6 patchuje wyłącznie blok funkcji `FunnelStageFilterChip`, a nie cały plik na ślepo.
+- R6 patchuje wyĹ‚Ä…cznie blok funkcji `FunnelStageFilterChip`, a nie caĹ‚y plik na Ĺ›lepo.
 - R6 dopina no-visible-money marker po stabilnym atrybucie.
-- R6 usuwa widoczną kwotę z chipu, zostawia kwotę w `aria-label` i `title`.
-- R6 zachowuje wspólny filtr dla Klientów przez stabilny `cf-contact-cadence-pills`.
+- R6 usuwa widocznÄ… kwotÄ™ z chipu, zostawia kwotÄ™ w `aria-label` i `title`.
+- R6 zachowuje wspĂłlny filtr dla KlientĂłw przez stabilny `cf-contact-cadence-pills`.
 
 TESTY:
 - `node scripts/check-stage231d0f-r6-funnel-shared-filter-resilient-patch.cjs`
 - `node --test tests/stage231d0f-r6-funnel-shared-filter-resilient-patch.test.cjs`
-- R3 guard/test jeśli istnieje
+- R3 guard/test jeĹ›li istnieje
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+- Local tree ma wczeĹ›niejsze Ĺ›lady failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R6_FUNNEL_SHARED_FILTER_RESILIENT_PATCH_2026_06_12_END -->
 
 <!-- STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R8 Funnel icon tone syntax repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R8 Funnel icon tone syntax repair
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R7 zatrzymał się przed patchowaniem na błędzie składni w patcherze.
-- Błąd: niepoprawnie escapowany string `payment: \\'green\\''` w tablicy walidacyjnej.
-- To nie jest błąd aplikacji ani koncepcji kolorów.
+- R7 zatrzymaĹ‚ siÄ™ przed patchowaniem na bĹ‚Ä™dzie skĹ‚adni w patcherze.
+- BĹ‚Ä…d: niepoprawnie escapowany string `payment: \\'green\\''` w tablicy walidacyjnej.
+- To nie jest bĹ‚Ä…d aplikacji ani koncepcji kolorĂłw.
 
 DECYZJA DAMIANA:
-- Układ Lejka jest zamrożony.
-- Etap dotyczy tylko spójnej kolorystyki ikon/kafelków.
+- UkĹ‚ad Lejka jest zamroĹĽony.
+- Etap dotyczy tylko spĂłjnej kolorystyki ikon/kafelkĂłw.
 
 ZMIANA:
-- R8 naprawia składnię patchera.
+- R8 naprawia skĹ‚adniÄ™ patchera.
 - R8 dodaje `node --check` dla patchera i guardu przed patchowaniem.
 - R8 dodaje `metric-icon-tone-registry.ts`.
-- R8 podpina Lejek i operator metric tone contract pod wspólny resolver koloru.
-- Kafel `Pieniądze` używa `PaymentEntityIcon`, nie strzałki.
+- R8 podpina Lejek i operator metric tone contract pod wspĂłlny resolver koloru.
+- Kafel `PieniÄ…dze` uĹĽywa `PaymentEntityIcon`, nie strzaĹ‚ki.
 
 TESTY:
 - `node --check payload/scripts/apply-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs`
 - `node --check payload/scripts/check-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs`
 - `node scripts/check-stage231d0f-r8-funnel-icon-tone-syntax-repair.cjs`
 - `node --test tests/stage231d0f-r8-funnel-icon-tone-syntax-repair.test.cjs`
-- R6 guard jeśli istnieje
+- R6 guard jeĹ›li istnieje
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- Zmiana ikony `Pieniądze` ze strzałki na ikonę płatności jest świadoma.
+- Zmiana ikony `PieniÄ…dze` ze strzaĹ‚ki na ikonÄ™ pĹ‚atnoĹ›ci jest Ĺ›wiadoma.
 - Manual QA wymagany dla realnego koloru SVG.
 <!-- STAGE231D0F_R8_FUNNEL_ICON_TONE_SYNTAX_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R9_FUNNEL_ICON_TONE_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R9 Funnel icon tone UI Dictionary guard repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R9 Funnel icon tone UI Dictionary guard repair
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R8 patch runtime przeszedł.
-- R8 zatrzymał się dopiero na guardzie dokumentacji.
-- Brakujący token: `SharedFilterStrip` w aktywnym zakresie UI Dictionary.
-- To nie jest problem Lejka ani kolorów ikon.
+- R8 patch runtime przeszedĹ‚.
+- R8 zatrzymaĹ‚ siÄ™ dopiero na guardzie dokumentacji.
+- BrakujÄ…cy token: `SharedFilterStrip` w aktywnym zakresie UI Dictionary.
+- To nie jest problem Lejka ani kolorĂłw ikon.
 
 ZMIANA:
 - R9 dopisuje aktywny blok UI Dictionary z literalami:
@@ -3826,69 +3826,69 @@ ZMIANA:
   - `FunnelLayoutFrozen`
   - `FunnelIconToneSourceTruth`
   - `MetricTileIconColorSource`
-- R9 odświeża R8 guard, żeby czytał bloki R9/R8/R6/R5/R4 razem.
+- R9 odĹ›wieĹĽa R8 guard, ĹĽeby czytaĹ‚ bloki R9/R8/R6/R5/R4 razem.
 - R9 nie zmienia runtime Lejka.
 
 TESTY:
-- `node --check` dla R9/R8 guardów
+- `node --check` dla R9/R8 guardĂłw
 - R9 guard/test
 - R8 regression guard/test
-- R6 guard jeśli istnieje
+- R6 guard jeĹ›li istnieje
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+- Local tree ma wczeĹ›niejsze Ĺ›lady failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R9_FUNNEL_ICON_TONE_UI_DICTIONARY_GUARD_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R10_FUNNEL_ICON_TONE_POWERSHELL_STRICTMODE_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R10 Funnel icon tone PowerShell StrictMode repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R10 Funnel icon tone PowerShell StrictMode repair
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R9 zatrzymał się po dopisaniu UI Dictionary i project memory.
-- Błąd: `The property 'check:stage231d0f-r9-funnel-icon-tone-ui-dictionary-guard-repair' cannot be found on this object.`
-- Przyczyna: PowerShell `Set-StrictMode` i dostęp do brakującej właściwości w `package.json`.
+- R9 zatrzymaĹ‚ siÄ™ po dopisaniu UI Dictionary i project memory.
+- BĹ‚Ä…d: `The property 'check:stage231d0f-r9-funnel-icon-tone-ui-dictionary-guard-repair' cannot be found on this object.`
+- Przyczyna: PowerShell `Set-StrictMode` i dostÄ™p do brakujÄ…cej wĹ‚aĹ›ciwoĹ›ci w `package.json`.
 - To nie jest problem runtime Lejka.
 
 ZMIANA:
-- R10 usuwa kruchy dostęp PowerShell `$Pkg.scripts.'...'`.
-- Dopisanie scriptów do `package.json` odbywa się przez `node -e`.
+- R10 usuwa kruchy dostÄ™p PowerShell `$Pkg.scripts.'...'`.
+- Dopisanie scriptĂłw do `package.json` odbywa siÄ™ przez `node -e`.
 - R10 uruchamia R10/R9/R8 guardy i testy.
 - R10 nie zmienia runtime Lejka.
 
 TESTY:
-- `node --check` dla R10/R9/R8 guardów
+- `node --check` dla R10/R9/R8 guardĂłw
 - R10 guard/test
 - R9 guard/test
 - R8 guard/test
-- R6 guard jeśli istnieje
+- R6 guard jeĹ›li istnieje
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+- Local tree ma wczeĹ›niejsze Ĺ›lady failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R10_FUNNEL_ICON_TONE_POWERSHELL_STRICTMODE_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_START -->
-## 2026-06-12 15:00 Europe/Warsaw — STAGE231D0F-R11 Funnel R6 regression guard resolver repair
+## 2026-06-12 15:00 Europe/Warsaw â€” STAGE231D0F-R11 Funnel R6 regression guard resolver repair
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- R10/R9/R8 guardy i testy przeszły.
-- Etap zatrzymał wyłącznie stary R6 regression guard.
-- R6 guard oczekiwał literalów `tone: 'blue'`, `tone: 'amber'`, `tone: 'purple'`, `tone: 'red'`, `tone: 'green'`.
-- Po R8 te literały zostały celowo zastąpione resolverem `resolveCloseflowMetricIconTone`.
+- R10/R9/R8 guardy i testy przeszĹ‚y.
+- Etap zatrzymaĹ‚ wyĹ‚Ä…cznie stary R6 regression guard.
+- R6 guard oczekiwaĹ‚ literalĂłw `tone: 'blue'`, `tone: 'amber'`, `tone: 'purple'`, `tone: 'red'`, `tone: 'green'`.
+- Po R8 te literaĹ‚y zostaĹ‚y celowo zastÄ…pione resolverem `resolveCloseflowMetricIconTone`.
 
 ZMIANA:
-- R11 odświeża R6 guard/test, żeby akceptował nowy source of truth.
+- R11 odĹ›wieĹĽa R6 guard/test, ĹĽeby akceptowaĹ‚ nowy source of truth.
 - R11 odpala R11/R10/R9/R8/R6 guardy i testy.
 - R11 nie zmienia runtime Lejka.
 
 TESTY:
-- `node --check` dla guardów R11/R10/R9/R8/R6
+- `node --check` dla guardĂłw R11/R10/R9/R8/R6
 - R11 guard/test
 - R10 guard/test
 - R9 guard/test
@@ -3898,36 +3898,36 @@ TESTY:
 - `git diff --check`
 
 RYZYKO:
-- Local tree ma wcześniejsze ślady failed packages. Push tylko selektywny.
+- Local tree ma wczeĹ›niejsze Ĺ›lady failed packages. Push tylko selektywny.
 <!-- STAGE231D0F_R11_FUNNEL_R6_REGRESSION_GUARD_RESOLVER_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_START -->
-## 2026-06-12 18:30 Europe/Warsaw — STAGE231D0F-R12 Funnel metric colors real CSS enforce
+## 2026-06-12 18:30 Europe/Warsaw â€” STAGE231D0F-R12 Funnel metric colors real CSS enforce
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z QA:
-- Po pushu R11 układ Lejka jest OK.
-- W Vercel `/funnel` nadal wygląda prawie szaro.
-- Problem: kolor nie dochodzi wystarczająco mocno do kafli/SVG.
+- Po pushu R11 ukĹ‚ad Lejka jest OK.
+- W Vercel `/funnel` nadal wyglÄ…da prawie szaro.
+- Problem: kolor nie dochodzi wystarczajÄ…co mocno do kafli/SVG.
 
 FAKTY Z KODU:
 - `SalesFunnel.tsx` ma `data-eliteflow-metric-tone` i `cf-top-metric-tile-icon`.
-- `closeflow-metric-tiles.css` ma tokeny `--cf-metric-tone-*-icon`, ale nie wymuszał pełnego `stroke: currentColor` na SVG i dzieciach SVG.
-- `Pieniądze` ma długą wartość i wymaga value-kind.
+- `closeflow-metric-tiles.css` ma tokeny `--cf-metric-tone-*-icon`, ale nie wymuszaĹ‚ peĹ‚nego `stroke: currentColor` na SVG i dzieciach SVG.
+- `PieniÄ…dze` ma dĹ‚ugÄ… wartoĹ›Ä‡ i wymaga value-kind.
 
 DECYZJA:
-- Układ Lejka zostaje zamrożony.
-- R12 zmienia tylko realną kolorystykę kafelków/ikon.
-- `Cisza 7+` ma być purple, nie amber.
-- Kolor ma być subtelny, nie tęcza.
+- UkĹ‚ad Lejka zostaje zamroĹĽony.
+- R12 zmienia tylko realnÄ… kolorystykÄ™ kafelkĂłw/ikon.
+- `Cisza 7+` ma byÄ‡ purple, nie amber.
+- Kolor ma byÄ‡ subtelny, nie tÄ™cza.
 - Source of truth: `closeflow-metric-tiles.css`.
 
 ZMIANA:
 - `FUNNEL_OWNER_TILE_TONE_MAP` ma jawne tony: blue, amber, purple, red, green.
 - Dodano `data-cf-metric-value-kind`.
 - `closeflow-metric-tiles.css` wymusza SVG `stroke: currentColor`.
-- Dodano subtelne tła/bordery kafli per tone.
+- Dodano subtelne tĹ‚a/bordery kafli per tone.
 - Dodano money value sizing.
 
 TESTY:
@@ -3938,32 +3938,32 @@ TESTY:
 
 RYZYKO:
 - Visual QA dalej wymagane, bo to etap CSS/render.
-- Local tree ma wcześniejsze śmieci; push tylko selektywny.
+- Local tree ma wczeĹ›niejsze Ĺ›mieci; push tylko selektywny.
 <!-- STAGE231D0F_R12_FUNNEL_METRIC_COLORS_REAL_CSS_ENFORCE_2026_06_12_END -->
 
 <!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_START -->
-## 2026-06-12 19:20 Europe/Warsaw — STAGE231D0F-R13 Funnel visual color density
+## 2026-06-12 19:20 Europe/Warsaw â€” STAGE231D0F-R13 Funnel visual color density
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z QA:
-- R12 przeszedł technicznie i został wypchnięty.
-- Ekran `/funnel` nadal wygląda za blado.
-- Problem nie dotyczy już tylko ikon; brakuje warstwy kolorystycznej kafli i rekordów.
+- R12 przeszedĹ‚ technicznie i zostaĹ‚ wypchniÄ™ty.
+- Ekran `/funnel` nadal wyglÄ…da za blado.
+- Problem nie dotyczy juĹĽ tylko ikon; brakuje warstwy kolorystycznej kafli i rekordĂłw.
 
 DECYZJE DAMIANA:
-- Układ Lejka jest zaakceptowany i zamrożony.
-- Dodać kolor bez tęczy.
-- Kafelki mają mieć kolor w ikonie, wartości i subtelnym surface/accent.
-- Rekordy mają dostać lekkie semantyczne akcenty.
-- Przyciski `Otwórz` mają być równe i bez łamania.
+- UkĹ‚ad Lejka jest zaakceptowany i zamroĹĽony.
+- DodaÄ‡ kolor bez tÄ™czy.
+- Kafelki majÄ… mieÄ‡ kolor w ikonie, wartoĹ›ci i subtelnym surface/accent.
+- Rekordy majÄ… dostaÄ‡ lekkie semantyczne akcenty.
+- Przyciski `OtwĂłrz` majÄ… byÄ‡ rĂłwne i bez Ĺ‚amania.
 
 ZMIANA:
 - R13 dodaje `FunnelDecisionSignal tone`.
-- R13 dodaje data atrybuty rekordów.
+- R13 dodaje data atrybuty rekordĂłw.
 - R13 dodaje tone surface/accent dla kafli w `closeflow-metric-tiles.css`.
-- R13 zwiększa open button z 132px do 156px i dodaje nowrap.
-- R13 nie zmienia layoutu ani logiki filtrów.
+- R13 zwiÄ™ksza open button z 132px do 156px i dodaje nowrap.
+- R13 nie zmienia layoutu ani logiki filtrĂłw.
 
 TESTY:
 - `node scripts/check-stage231d0f-r13-funnel-visual-color-density.cjs`
@@ -3972,23 +3972,23 @@ TESTY:
 - `git diff --check`
 
 RYZYKO:
-- To etap CSS/render, więc manual QA jest obowiązkowy.
-- Local tree ma wcześniejsze śmieci; push tylko selektywny.
+- To etap CSS/render, wiÄ™c manual QA jest obowiÄ…zkowy.
+- Local tree ma wczeĹ›niejsze Ĺ›mieci; push tylko selektywny.
 <!-- STAGE231D0F_R13_FUNNEL_VISUAL_COLOR_DENSITY_2026_06_12_END -->
 
 <!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
-## 2026-06-12 20:10 Europe/Warsaw — STAGE231D0G Visual Tile Source Truth Atlas
+## 2026-06-12 20:10 Europe/Warsaw â€” STAGE231D0G Visual Tile Source Truth Atlas
 
 STATUS: READY_TO_APPLY
 
 FAKTY Z LOGU:
-- STAGE231D0F-R13 przeszedł guard/test/build.
-- Commit `0b2f6fb2 fix: improve funnel visual color density` został wypchnięty na `dev-rollout-freeze`.
-- Damian wizualnie akceptuje Lejek i zamraża go jako baseline.
+- STAGE231D0F-R13 przeszedĹ‚ guard/test/build.
+- Commit `0b2f6fb2 fix: improve funnel visual color density` zostaĹ‚ wypchniÄ™ty na `dev-rollout-freeze`.
+- Damian wizualnie akceptuje Lejek i zamraĹĽa go jako baseline.
 
 DECYZJA DAMIANA:
-- FunnelMetricTileR13 zostaje źródłem prawdy dla globalnego CloseFlowMetricTileV2.
-- Nie przebudowywać całej aplikacji chaotycznie.
+- FunnelMetricTileR13 zostaje ĹşrĂłdĹ‚em prawdy dla globalnego CloseFlowMetricTileV2.
+- Nie przebudowywaÄ‡ caĹ‚ej aplikacji chaotycznie.
 - Najpierw source truth, atlas, guard i plan fal.
 
 ZMIANA:
@@ -3996,22 +3996,22 @@ ZMIANA:
 - Dodano `_project/CLOSEFLOW_VISUAL_TILE_ATLAS.md`.
 - Dopisano UI Dictionary: CloseFlowMetricTileV2, CloseFlowMetricToneMap, FunnelMetricTileR13, SharedFilterStrip, RecordListCard, RightRailCard, FinanceMetricTile.
 - Dodano guard/test D0G.
-- Runtime widoków nie jest przepinany w tym etapie.
+- Runtime widokĂłw nie jest przepinany w tym etapie.
 
 TESTY:
 - `node scripts/check-stage231d0g-visual-tile-source-truth-atlas.cjs`
 - `node --test tests/stage231d0g-visual-tile-source-truth-atlas.test.cjs`
-- R13 regression guard/test jeśli istnieje
+- R13 regression guard/test jeĹ›li istnieje
 - `npm run build`
 - `git diff --check`
 
 RYZYKO:
-- UI Dictionary ma stare duplikaty i historyczne mojibake. Guard D0G skanuje aktywny blok D0G i nowe source truth, nie całą historię słownika.
-- Pełny cleanup lokalnych śmieci po starych paczkach zostaje osobnym etapem.
+- UI Dictionary ma stare duplikaty i historyczne mojibake. Guard D0G skanuje aktywny blok D0G i nowe source truth, nie caĹ‚Ä… historiÄ™ sĹ‚ownika.
+- PeĹ‚ny cleanup lokalnych Ĺ›mieci po starych paczkach zostaje osobnym etapem.
 <!-- STAGE231D0G_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
 
 <!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_START -->
-## 2026-06-12 — STAGE231D0G-CLOSEOUT
+## 2026-06-12 â€” STAGE231D0G-CLOSEOUT
 
 - Closed D0G Visual Tile Source Truth Atlas after guard/test/build verification.
 - Updated run report from READY_TO_APPLY to PASS / CLOSED.
@@ -4020,7 +4020,7 @@ RYZYKO:
 - No runtime UI, SQL, Supabase, routing, kanban or drag/drop changes.
 <!-- STAGE231D0G_CLOSEOUT_VISUAL_TILE_SOURCE_TRUTH_ATLAS_2026_06_12_END -->
 <!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_START -->
-## 2026-06-12 â€” STAGE231D0G-CLOSEOUT-R2 Guard scope repair
+## 2026-06-12 Ă˘â‚¬â€ť STAGE231D0G-CLOSEOUT-R2 Guard scope repair
 
 STATUS: READY_TO_RUN
 
@@ -4043,7 +4043,7 @@ TESTY:
 <!-- STAGE231D0G_CLOSEOUT_R2_GUARD_SCOPE_REPAIR_2026_06_12_END -->
 
 <!-- STAGE231D0H_N1_R3_NOTIFICATIONS_VISUAL_SOURCE_CLEANUP_SECTION_BOUNDS_2026_06_12_START -->
-## 2026-06-12 22:05 Europe/Warsaw — STAGE231D0H-N1-R3 Notifications visual source cleanup section bounds
+## 2026-06-12 22:05 Europe/Warsaw â€” STAGE231D0H-N1-R3 Notifications visual source cleanup section bounds
 
 STATUS: READY_TO_APPLY
 
@@ -4092,22 +4092,22 @@ RYZYKO:
 
 ## 2026-06-14 10:05 Europe/Warsaw - STAGE231G R2
 
-- LeadDetail: dodano operacyjne CTA do kafelków i panelu finansów.
-- LeadDetail: wydzielono content/status/actions w wierszach działań.
-- Leads: pole tworzenia leada opisane jako Potencjał / wartość i oznaczone markerem testowym.
-- Naprawiono paczkę R1: PowerShell nie trzyma już dużych stringów TSX, patch wykonuje Node.
+- LeadDetail: dodano operacyjne CTA do kafelkĂłw i panelu finansĂłw.
+- LeadDetail: wydzielono content/status/actions w wierszach dziaĹ‚aĹ„.
+- Leads: pole tworzenia leada opisane jako PotencjaĹ‚ / wartoĹ›Ä‡ i oznaczone markerem testowym.
+- Naprawiono paczkÄ™ R1: PowerShell nie trzyma juĹĽ duĹĽych stringĂłw TSX, patch wykonuje Node.
 
 ## 2026-06-14 10:40 Europe/Warsaw - STAGE231G R6
 
 - Naprawiono konflikt rebase w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
 - Dodano realne klasy work-row content/status/actions w LeadDetail.
-- Poprawiono guard/test, żeby nie mylił poprawnego group.key w accordion z błędem overflow.
+- Poprawiono guard/test, ĹĽeby nie myliĹ‚ poprawnego group.key w accordion z bĹ‚Ä™dem overflow.
 
 ## 2026-06-14 10:45 Europe/Warsaw - STAGE231G R7
 
-- LeadDetail: CTA Potencjał otwiera mały modal tylko do wartości, oparty o ten sam Dialog/DialogFooter pattern co inne modale.
-- api/leads: zapis potencjału synchronizuje value i deal_value przy POST/PATCH.
-- LeadDetail CSS: poprawiono desktopowe wyrównanie akcji wierszy, żeby Zrobione nie spadało samotnie poza linię.
+- LeadDetail: CTA PotencjaĹ‚ otwiera maĹ‚y modal tylko do wartoĹ›ci, oparty o ten sam Dialog/DialogFooter pattern co inne modale.
+- api/leads: zapis potencjaĹ‚u synchronizuje value i deal_value przy POST/PATCH.
+- LeadDetail CSS: poprawiono desktopowe wyrĂłwnanie akcji wierszy, ĹĽeby Zrobione nie spadaĹ‚o samotnie poza liniÄ™.
 
 ## 2026-06-14 - STAGE231G_R3 LeadDetail function mapping and operational closeout
 
@@ -4129,14 +4129,14 @@ Test: tests/stage231g-r4-lead-detail-function-mapping-closeout.test.cjs
 Typecheck: SKIP jesli package.json nie ma scripts.typecheck.
 Zakaz zakresu: bez SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail.
 
-## 2026-06-14 — STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
+## 2026-06-14 â€” STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR
 
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 - Scope: CaseDetail runtime repair for fake dictation, nextAction missing fallback, contractValue percent-only behavior, payment history copy, and full payment source in case history.
 - SQL: NOT_TOUCHED.
 - Deferred: cost lifecycle edit/delete and canonical case_item dual-path decision remain R1C/R1D.
 
-## 2026-06-14 — STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
+## 2026-06-14 â€” STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT
 
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 - Scope: fixed shared CaseFinanceEditorDialog contractValue clearing bug after R1B.
@@ -4145,11 +4145,11 @@ Zakaz zakresu: bez SQL, Google Calendar, billing/trial, CaseDetail, ClientDetail
 - Risk: cost lifecycle left as R1C.
 - SQL: NOT_TOUCHED.
 
-## 2026-06-14 — STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
+## 2026-06-14 â€” STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL
 
-Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Koszty są pokazane jako czerwone pozycje, z akcją `Koryguj` i `Usuń`. SQL nie ruszany.
+Dodano prostÄ… korektÄ™ kosztĂłw sprawy w tym samym oknie co korekty wpĹ‚at. Koszty sÄ… pokazane jako czerwone pozycje, z akcjÄ… `Koryguj` i `UsuĹ„`. SQL nie ruszany.
 
-## 2026-06-14 15:45 Europe/Warsaw — STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT
+## 2026-06-14 15:45 Europe/Warsaw â€” STAGE231H_R1D_FINANCE_CORRECTION_MODAL_COMPACT
 
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH
 - Scope: compact cleanup of CaseDetail finance correction modal after R1C.
@@ -4157,16 +4157,16 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 - Decision: commission payment is a paid commission entry by default; remove status/type selectors from add-commission-payment UI.
 - Decision: remove the redundant "Korekta / prowizja" fallback label from payment rows.
 - SQL: NOT_TOUCHED.
-- Manual test: open Koryguj wpłatę/koszt, verify rows fit, add commission payment, add/correct/delete cost, refresh.
+- Manual test: open Koryguj wpĹ‚atÄ™/koszt, verify rows fit, add commission payment, add/correct/delete cost, refresh.
 
-## STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION — 2026-06-14 16:40 Europe/Warsaw
+## STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION â€” 2026-06-14 16:40 Europe/Warsaw
 - Status: LOCAL_APPLIED / DO_TEST_AND_PUSH / SERVER_UI_REQUIRED
 - Scope: payment correction now edits existing payment amount/date/note through updatePaymentInSupabase; cost correction edits kind/date/status/note and money fields.
 - SQL: not touched.
 - Risk: if payment PATCH fails on server, backend payment endpoint repair is required.
 
 
-## 2026-06-14 HH:mm Europe/Warsaw — STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
+## 2026-06-14 HH:mm Europe/Warsaw â€” STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR
 - Repair after red-guard pushed R1F: normalize commission payment save and make guards CRLF-safe.
 
 ## 2026-06-14 HH:mm Europe/Warsaw - STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG
@@ -4178,7 +4178,7 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 - Renamed future dictation execution stage to R1D2 to avoid R1D collision.
 
 
-## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS — CaseDetail cost/payment lifecycle product closeout
+## STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS â€” CaseDetail cost/payment lifecycle product closeout
 
 - date: 2026-06-14 18:55 Europe/Warsaw
 - type: docs-only / manual UI confirmation
@@ -4193,45 +4193,45 @@ Dodano prostą korektę kosztów sprawy w tym samym oknie co korekty wpłat. Kos
 - status: DO_TEST_AND_PUSH / SERVER_UI_REQUIRED.
 
 
-## STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON — 2026-06-14 19:40 Europe/Warsaw
+## STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON â€” 2026-06-14 19:40 Europe/Warsaw
 
 - status: RUNTIME_HOTFIX_PREPARED
-- zakres: drugi widoczny przycisk w panelu Notatki sprawy nie może zostać jako disabled „Notatka głosowa — wkrótce”; ma używać tego samego handlera SpeechRecognition/autosave co przycisk w panelu Działania sprawy.
-- runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztów zwróconych.
+- zakres: drugi widoczny przycisk w panelu Notatki sprawy nie moĹĽe zostaÄ‡ jako disabled â€žNotatka gĹ‚osowa â€” wkrĂłtceâ€ť; ma uĹĽywaÄ‡ tego samego handlera SpeechRecognition/autosave co przycisk w panelu DziaĹ‚ania sprawy.
+- runtime: src/pages/CaseDetail.tsx, bez SQL i bez R1E kosztĂłw zwrĂłconych.
 - test: R1D2 guard/test + R1D2 R4 guard/test + build + diff-check.
-- ryzyko: wcześniejszy R1D2 zabezpieczał pierwszy przycisk, ale nie objął drugiego widocznego przycisku w panelu notatek.
+- ryzyko: wczeĹ›niejszy R1D2 zabezpieczaĹ‚ pierwszy przycisk, ale nie objÄ…Ĺ‚ drugiego widocznego przycisku w panelu notatek.
 
 
 ## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
 
 Status: DO_APPLY / mass repair from clean origin.
-Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuÄąâ€ž/Zapisz. Etap zastĂ„â„˘puje runtime file bez kruchych anchorÄ‚Ĺ‚w po bÄąâ€šĂ„â„˘dach R6/R7/R8.
 
 
 ## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
 
 Status: DO_APPLY / guard-ledger sync after R9 partial apply.
-Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuÄąâ€ž/Zapisz.
 
 
 ## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
 
 Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
-Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
+Zakres: masowe domkniĂ„â„˘cie klasy bÄąâ€šĂ„â„˘dÄ‚Ĺ‚w legacy markerÄ‚Ĺ‚w. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peÄąâ€šny chain guardÄ‚Ĺ‚w/testÄ‚Ĺ‚w/build.
 
 
 ## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
 
 Status: DO_APPLY / MASS_GUARD_REGEX_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
-eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
+Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieĂ„â€ˇ podwÄ‚Ĺ‚jnie escapowany backslash. Bez tego guard szuka bÄąâ€šĂ„â„˘dnego
 eplace(/s+/g, ' ').
 
 
 ## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
 
 Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
+Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moÄąÄ˝e wymagaĂ„â€ˇ nieistniejĂ„â€¦cej skÄąâ€šadni previousTasks.
 
 ## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
 
@@ -4243,5 +4243,14 @@ Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina
 ### STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD
 - data: 2026-06-14T20:31:30.095Z
 - status: DO_TEST_AND_PUSH
-- zakres: notatki CaseDetail pokazują do 5 wpisów, mają tooltip pełnej treści, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w działaniach pokazuje treść notatki jako opis.
+- zakres: notatki CaseDetail pokazujÄ… do 5 wpisĂłw, majÄ… tooltip peĹ‚nej treĹ›ci, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w dziaĹ‚aniach pokazuje treĹ›Ä‡ notatki jako opis.
 - guard: scripts/check-stage231h-r1d2-r11-note-panel-followup-prompt-map-guard.cjs
+
+## STAGE231H_R1D2_R12D_CASE_QUICK_NOTE_SCOPE_CLIENT_DEDUPE_FINAL_ANCHORLESS
+
+- data: 2026-06-15 Europe/Warsaw
+- status: DO_APPLY / final anchorless repair
+- zakres: CaseQuickActions explicit case scope, ContextNoteDialog handoff order, CaseDetail quick note local append + prompt, ClientDetail action dedupe
+- guard: scripts/check-stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.cjs
+- test: tests/stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.test.cjs
+- SQL: nie dotyczy

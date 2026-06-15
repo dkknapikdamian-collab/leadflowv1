@@ -2,6 +2,8 @@ import { CalendarClock, FileWarning, ListChecks, StickyNote } from 'lucide-react
 import { openContextQuickAction } from './ContextActionDialogs';
 import QuickActionsBar from './detail/QuickActionsBar';
 
+const STAGE231H_R1D2_R12G_CASE_QUICK_ACTIONS_EXPLICIT_CASE_SCOPE = 'CaseQuickActions sends explicit data-context-case-id for every case quick action after R12 partial repair';
+void STAGE231H_R1D2_R12G_CASE_QUICK_ACTIONS_EXPLICIT_CASE_SCOPE;
 export type CaseQuickActionsProps = {
   caseId: string;
   caseTitle?: string;
@@ -18,6 +20,14 @@ const STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH = 'Case quick actions u
 void STAGE228R7_R8_CASE_QUICK_ACTIONS_CARD_SOURCE_TRUTH;
 const STAGE231D0D_R5_CASE_QUICK_ACTIONS_NO_PAYMENT = 'Case quick actions do not duplicate commission payment; payment stays in settlement rail';
 void STAGE231D0D_R5_CASE_QUICK_ACTIONS_NO_PAYMENT;
+const STAGE231H_R1D2_R12F_CASE_QUICK_ACTIONS_CASE_ID_SCOPE = 'Case quick actions explicitly carry caseId for note task event and blocker actions';
+void STAGE231H_R1D2_R12F_CASE_QUICK_ACTIONS_CASE_ID_SCOPE;
+const STAGE231H_R1D2_R12E_CASE_QUICK_ACTIONS_EXPLICIT_CASE_SCOPE = 'Case quick actions always carry explicit data-context-case-id for note, task, event and blocker actions';
+void STAGE231H_R1D2_R12E_CASE_QUICK_ACTIONS_EXPLICIT_CASE_SCOPE;
+const STAGE231H_R1D2_R12D_CASE_QUICK_ACTIONS_EXPLICIT_CASE_SCOPE = 'CaseQuickActions sends explicit data-context-case-id for every case quick action';
+void STAGE231H_R1D2_R12D_CASE_QUICK_ACTIONS_EXPLICIT_CASE_SCOPE;
+const STAGE231H_R1D2_R12C_CASE_QUICK_ACTIONS_CASE_ID_SCOPE = 'CaseQuickActions passes explicit data-context-case-id for note, task, event and missing actions';
+void STAGE231H_R1D2_R12C_CASE_QUICK_ACTIONS_CASE_ID_SCOPE;
 
 
 export default function CaseQuickActions({
@@ -62,6 +72,7 @@ export default function CaseQuickActions({
               'data-context-action-kind': 'note',
               'data-context-record-type': 'case',
               'data-context-record-id': caseId,
+              'data-context-case-id': caseId || '',
               'data-context-client-id': clientId || '',
               'data-context-lead-id': leadId || '',
               'data-context-record-label': recordLabel,
@@ -77,6 +88,7 @@ export default function CaseQuickActions({
               'data-context-action-kind': 'task',
               'data-context-record-type': 'case',
               'data-context-record-id': caseId,
+              'data-context-case-id': caseId || '',
               'data-context-client-id': clientId || '',
               'data-context-lead-id': leadId || '',
               'data-context-record-label': recordLabel,
@@ -92,6 +104,7 @@ export default function CaseQuickActions({
               'data-context-action-kind': 'event',
               'data-context-record-type': 'case',
               'data-context-record-id': caseId,
+              'data-context-case-id': caseId || '',
               'data-context-client-id': clientId || '',
               'data-context-lead-id': leadId || '',
               'data-context-record-label': recordLabel,
@@ -107,6 +120,7 @@ export default function CaseQuickActions({
               'data-context-action-kind': 'blocker',
               'data-context-record-type': 'case',
               'data-context-record-id': caseId,
+              'data-context-case-id': caseId || '',
               'data-context-client-id': clientId || '',
               'data-context-lead-id': leadId || '',
               'data-context-record-label': recordLabel,

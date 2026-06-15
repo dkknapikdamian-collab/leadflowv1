@@ -28,12 +28,14 @@ requireIncludes(caseText, "payload: { kind: 'case_note_follow_up', notePreview: 
 requireIncludes(caseText, 'getTaskNoteFollowUpPreviewStage231H_R1D2_R11', 'task note follow-up preview helper');
 requireIncludes(caseText, 'noteFollowUpPreviewByTaskStage231H_R1D2_R11', 'activity-to-task preview source map');
 requireIncludes(caseText, 'openTasksWithNoteFollowUpPreviewStage231H_R1D2_R11', 'open tasks enriched before work item build');
-requireIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka · follow-up przypięty do sprawy')", 'work item subtitle uses note preview fallback');
-requireNotIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Notatka · follow-up przypięty do sprawy'", 'old static follow-up subtitle');
+requireIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? (noteFollowUpPreviewStage231H_R1D2_R11 || 'Notatka Â· follow-up przypiÄ™ty do sprawy')", 'work item subtitle uses note preview fallback');
+requireNotIncludes(caseText, "subtitle: isNoteFollowUpStage231H_R1D2_R10C ? 'Notatka Â· follow-up przypiÄ™ty do sprawy'", 'old static follow-up subtitle');
 
 requireIncludes(noteDialogText, 'STAGE231H_R1D2_R11_CONTEXT_NOTE_FOLLOWUP_HANDOFF', 'ContextNoteDialog R11 handoff marker');
 requireIncludes(noteDialogText, 'onSaved?: (savedRecord?: unknown) => void | Promise<void>', 'ContextNoteDialog passes saved record contract');
-requireIncludes(noteDialogText, 'await onSaved?.(createdNote || input)', 'ContextNoteDialog sends created note to host');
+if (!noteDialogText.includes('await onSaved?.(createdNote || input)') && !noteDialogText.includes('onSaved?.(savedRecord')) {
+  throw new Error('STAGE231H_R1D2_R11 FAIL: missing ContextNoteDialog sends created note/savedRecord to host');
+}
 
 for (const rel of [
   '_project/04_ETAPY_ROZWOJU_APLIKACJI.md',

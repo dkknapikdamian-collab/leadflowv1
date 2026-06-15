@@ -3,7 +3,7 @@
 Data utworzenia: 2026-06-12 23:59 Europe/Warsaw
 Ostatnia regulacja kolejki: 2026-06-14 20:05 Europe/Warsaw
 Status: ACTIVE / CANONICAL
-Typ: centralna kolejność etapów rozwoju aplikacji
+Typ: centralna kolejnoĹ›Ä‡ etapĂłw rozwoju aplikacji
 Repo: dkknapikdamian-collab/leadflowv1
 Branch: dev-rollout-freeze
 Canonical name: CloseFlow / LeadFlow
@@ -14,35 +14,35 @@ Obsidian folder: 10_PROJEKTY/CloseFlow_Lead_App
 Ten plik odpowiada na pytanie:
 
 ```txt
-Co wdrażamy teraz, co później i w jakiej kolejności?
+Co wdraĹĽamy teraz, co pĂłĹşniej i w jakiej kolejnoĹ›ci?
 ```
 
-To jest **jedyne aktywne źródło prawdy dla kolejki etapów**.
-Run reporty w `_project/runs/` i payloady w `_project/obsidian_updates/` są szczegółami etapu, dowodami skanu, testami i historią, ale **nie zastępują tej kolejki**.
+To jest **jedyne aktywne ĹşrĂłdĹ‚o prawdy dla kolejki etapĂłw**.
+Run reporty w `_project/runs/` i payloady w `_project/obsidian_updates/` sÄ… szczegĂłĹ‚ami etapu, dowodami skanu, testami i historiÄ…, ale **nie zastÄ™pujÄ… tej kolejki**.
 
-Nie wdrażać etapów z luźnej rozmowy, jeśli nie są wpisane albo potwierdzone w tym pliku.
+Nie wdraĹĽaÄ‡ etapĂłw z luĹşnej rozmowy, jeĹ›li nie sÄ… wpisane albo potwierdzone w tym pliku.
 
-## Powiązane pliki centralne
+## PowiÄ…zane pliki centralne
 
 - `_project/04_KIERUNEK_ROZWOJU_APLIKACJI.md` - kierunek i uzasadnienie rozwoju,
 - `_project/04_ZNALEZIONE_PROBLEMY_DO_ANALIZY.md` - problemy znalezione przez AI/audyt do decyzji Damiana,
-- `_project/06_GUARDS_AND_TESTS.md` - rejestr guardów/testów,
+- `_project/06_GUARDS_AND_TESTS.md` - rejestr guardĂłw/testĂłw,
 - `_project/08_CHANGELOG_AI.md` - historia zmian,
 - `_project/10_PROJECT_TIMELINE.md` - timeline projektu,
-- `_project/13_TEST_HISTORY.md` - wyniki testów,
-- `_project/15_SQL_LEDGER_AND_TESTED_SQL.md` - spis SQL, migracji i testów SQL,
-- `_project/07_NEXT_STEPS.md` - stary plik pomocniczy; nie powinien być jedyną kolejką.
+- `_project/13_TEST_HISTORY.md` - wyniki testĂłw,
+- `_project/15_SQL_LEDGER_AND_TESTED_SQL.md` - spis SQL, migracji i testĂłw SQL,
+- `_project/07_NEXT_STEPS.md` - stary plik pomocniczy; nie powinien byÄ‡ jedynÄ… kolejkÄ….
 
-## Zasada etapów
+## Zasada etapĂłw
 
-Każdy etap musi mieć:
+KaĹĽdy etap musi mieÄ‡:
 
 - audyt przed etapem,
-- sprawdzenie, czy nie istnieje już częściowo,
+- sprawdzenie, czy nie istnieje juĹĽ czÄ™Ĺ›ciowo,
 - zakres,
-- czego nie ruszać,
+- czego nie ruszaÄ‡,
 - guard/test,
-- test ręczny dla Damiana,
+- test rÄ™czny dla Damiana,
 - audyt po etapie,
 - update `_project` i Obsidiana albo payload do synchronizacji,
 - selektywny commit/push po PASS.
@@ -66,41 +66,41 @@ Statusy dopuszczalne:
 
 Status: WYKONANE_W_TYM_COMMICIE / DOCS_ONLY
 
-Cel: uporządkować wszystkie ostatnie etapy w tym jednym centralnym pliku.
-Zakres: kolejka etapów, bez runtime, bez SQL, bez UI.
-Warunek zamknięcia: ten plik zawiera aktualną kolejność; przyszłe etapy nie mogą być tylko w run reports albo payloadach.
+Cel: uporzÄ…dkowaÄ‡ wszystkie ostatnie etapy w tym jednym centralnym pliku.
+Zakres: kolejka etapĂłw, bez runtime, bez SQL, bez UI.
+Warunek zamkniÄ™cia: ten plik zawiera aktualnÄ… kolejnoĹ›Ä‡; przyszĹ‚e etapy nie mogÄ… byÄ‡ tylko w run reports albo payloadach.
 
 ---
 
 ### 1. STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME
 
-Status: NAJBLIŻSZY ETAP DO WDROŻENIA
+Status: NAJBLIĹ»SZY ETAP DO WDROĹ»ENIA
 
-Cel: przywrócić realne dyktowanie notatki w CaseDetail.
+Cel: przywrĂłciÄ‡ realne dyktowanie notatki w CaseDetail.
 
 Kontrakt:
 
-- przycisk `Dyktuj notatkę` nie może być disabled ani `wkrótce`,
-- używa SpeechRecognition / webkitSpeechRecognition,
+- przycisk `Dyktuj notatkÄ™` nie moĹĽe byÄ‡ disabled ani `wkrĂłtce`,
+- uĹĽywa SpeechRecognition / webkitSpeechRecognition,
 - transkrypcja trafia do notatki sprawy,
-- autosave po około 2 sekundach ciszy,
+- autosave po okoĹ‚o 2 sekundach ciszy,
 - zapis jako activity/note z `caseId`,
 - po hard refresh notatka zostaje,
 - nie zapisuje pustych notatek,
-- nie tworzy duplikatów autosave,
-- brak wsparcia przeglądarki / odmowa mikrofonu ma jasny komunikat.
+- nie tworzy duplikatĂłw autosave,
+- brak wsparcia przeglÄ…darki / odmowa mikrofonu ma jasny komunikat.
 
-Nie ruszać:
+Nie ruszaÄ‡:
 
 - Google Calendar,
 - SQL,
 - billing/trial,
 - AI Drafts,
-- koszty zwrócone R1E,
+- koszty zwrĂłcone R1E,
 - global layout.
 
 Run decision: `_project/runs/STAGE231H_R1D_CASE_DETAIL_NOTE_DICTATION_RESTORE.md`
-Właściwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.md`
+WĹ‚aĹ›ciwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL_NOTE_DICTATION_RESTORE_RUNTIME.md`
 
 ---
 
@@ -108,21 +108,21 @@ Właściwy etap runtime do utworzenia: `_project/runs/STAGE231H_R1D2_CASE_DETAIL
 
 Status: PO R1D2
 
-Cel: dodać lekką akcję oznaczania kosztu jako zwrócony / częściowo zwrócony bez tworzenia dużego nowego menu.
+Cel: dodaÄ‡ lekkÄ… akcjÄ™ oznaczania kosztu jako zwrĂłcony / czÄ™Ĺ›ciowo zwrĂłcony bez tworzenia duĹĽego nowego menu.
 
 Kontrakt UX:
 
 - akcja przy konkretnym koszcie, np. `Oznacz zwrot`,
-- domyślna kwota = pozostało do zwrotu,
-- obsługa pełnego i częściowego zwrotu,
-- data zwrotu domyślnie dziś,
+- domyĹ›lna kwota = pozostaĹ‚o do zwrotu,
+- obsĹ‚uga peĹ‚nego i czÄ™Ĺ›ciowego zwrotu,
+- data zwrotu domyĹ›lnie dziĹ›,
 - notatka opcjonalna,
 - zapis aktualizuje `reimbursedAmount`, `reimbursedAt`, status `partially_reimbursed` / `reimbursed`,
-- summary aktualizuje `Koszty zwrócone`, `Koszty do zwrotu`, `Razem do pobrania`.
+- summary aktualizuje `Koszty zwrĂłcone`, `Koszty do zwrotu`, `Razem do pobrania`.
 
-Nie ruszać:
+Nie ruszaÄ‡:
 
-- SQL bez wcześniejszego schema check,
+- SQL bez wczeĹ›niejszego schema check,
 - Google Calendar,
 - AI Drafts,
 - global finance rewrite.
@@ -133,17 +133,17 @@ Run decision/payload: `_project/obsidian_updates/2026-06-14_STAGE231H_R1E_CASE_D
 
 ### 3. STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELINE_SPLIT
 
-Status: PO R1E ALBO WCZEŚNIEJ, JEŚLI SZKICE BLOKUJĄ PRACĘ
+Status: PO R1E ALBO WCZEĹšNIEJ, JEĹšLI SZKICE BLOKUJÄ„ PRACÄ
 
-Cel: rozdzielić `Szybki szkic` od `Szkicu AI`.
+Cel: rozdzieliÄ‡ `Szybki szkic` od `Szkicu AI`.
 
 Decyzja produktu:
 
-- `Szybki szkic` = zwykła notatka/raw capture, wpisana albo dyktowana, zapis bez AI i bez `fullAi`,
-- `Szkic AI` = osobna funkcja AI, która analizuje tekst i proponuje akcję do zatwierdzenia,
-- użytkownik nie może dostawać `WORKSPACE_AI_ACCESS_REQUIRED` przy zwykłym szybkim szkicu,
-- surowy tekst typu `Dzwonił Piotrek, jutro kontakt w sprawie umowy` ma zostać zapisany jako notatka/szkic,
-- dopiero funkcja AI może zaproponować task/follow-up/lead/event do zatwierdzenia.
+- `Szybki szkic` = zwykĹ‚a notatka/raw capture, wpisana albo dyktowana, zapis bez AI i bez `fullAi`,
+- `Szkic AI` = osobna funkcja AI, ktĂłra analizuje tekst i proponuje akcjÄ™ do zatwierdzenia,
+- uĹĽytkownik nie moĹĽe dostawaÄ‡ `WORKSPACE_AI_ACCESS_REQUIRED` przy zwykĹ‚ym szybkim szkicu,
+- surowy tekst typu `DzwoniĹ‚ Piotrek, jutro kontakt w sprawie umowy` ma zostaÄ‡ zapisany jako notatka/szkic,
+- dopiero funkcja AI moĹĽe zaproponowaÄ‡ task/follow-up/lead/event do zatwierdzenia.
 
 Miejsca do audytu:
 
@@ -163,14 +163,14 @@ Run decision: `_project/runs/STAGE231J2_QUICK_DRAFT_RAW_NOTE_AND_AI_DRAFT_PIPELI
 
 Status: PO UI/DETAIL CLOSEOUT I PO PILNYCH SZKICACH
 
-Cel: naprawić i potwierdzić Google Calendar dla wielu użytkowników.
+Cel: naprawiÄ‡ i potwierdziÄ‡ Google Calendar dla wielu uĹĽytkownikĂłw.
 
 Problem:
 
-- backend jest częściowo user-scoped,
-- ale task/event create może nadal nie nadawać ownership fields,
-- outbound sync może pomijać rekordy przez `personalScopeSkipped`,
-- trzeba potwierdzić działanie na drugim koncie, nie tylko Damiana.
+- backend jest czÄ™Ĺ›ciowo user-scoped,
+- ale task/event create moĹĽe nadal nie nadawaÄ‡ ownership fields,
+- outbound sync moĹĽe pomijaÄ‡ rekordy przez `personalScopeSkipped`,
+- trzeba potwierdziÄ‡ dziaĹ‚anie na drugim koncie, nie tylko Damiana.
 
 Zakres:
 
@@ -186,9 +186,9 @@ Run decision: `_project/runs/2026-06-14_STAGE_ORDER_UI_THEN_GOOGLE_CALENDAR_AUDI
 
 ### 5. STAGE231K1_DOMAIN_AND_EMAIL_FOUNDATION
 
-Status: PO GOOGLE CALENDAR ALBO WCZEŚNIEJ, JEŚLI PRODUKCJA MAILI BLOKUJE RELEASE
+Status: PO GOOGLE CALENDAR ALBO WCZEĹšNIEJ, JEĹšLI PRODUKCJA MAILI BLOKUJE RELEASE
 
-Cel: założyć/podpiąć domenę i realny fundament maila.
+Cel: zaĹ‚oĹĽyÄ‡/podpiÄ…Ä‡ domenÄ™ i realny fundament maila.
 
 Zakres:
 
@@ -197,7 +197,7 @@ Zakres:
 - realny sender / dostawca maila,
 - SPF / DKIM / DMARC / MX,
 - env i diagnostyka konfiguracji,
-- test wysyłki,
+- test wysyĹ‚ki,
 - brak silent fail.
 
 Run decision: `_project/runs/STAGE231K_EMAIL_DOMAIN_AND_PRODUCTION_MAIL_CHAIN.md`
@@ -208,15 +208,15 @@ Run decision: `_project/runs/STAGE231K_EMAIL_DOMAIN_AND_PRODUCTION_MAIL_CHAIN.md
 
 Status: PO K1
 
-Cel: wdrożyć maile systemowe.
+Cel: wdroĹĽyÄ‡ maile systemowe.
 
 Zakres:
 
-- reset hasła,
+- reset hasĹ‚a,
 - potwierdzenie zmiany maila,
 - potwierdzenie rejestracji,
-- potwierdzenie płatności,
-- błąd/status płatności,
+- potwierdzenie pĹ‚atnoĹ›ci,
+- bĹ‚Ä…d/status pĹ‚atnoĹ›ci,
 - podstawowe powiadomienia systemowe,
 - log/outbox i test renderu.
 
@@ -233,7 +233,7 @@ Zakres:
 - daily digest jako lista decyzji i ryzyk,
 - weekly report jako podsumowanie tygodnia,
 - brak newsletterowego lania wody,
-- brak wysyłki bez realnego mail foundation,
+- brak wysyĹ‚ki bez realnego mail foundation,
 - guard przed duplikatami.
 
 ---
@@ -242,14 +242,14 @@ Zakres:
 
 Status: PO K2/K3
 
-Cel: produkcyjna zakładka Pomoc / Support.
+Cel: produkcyjna zakĹ‚adka Pomoc / Support.
 
 Zakres:
 
-- formularz zgłoszenia,
+- formularz zgĹ‚oszenia,
 - routing do realnego support mailbox / outbox,
-- mail potwierdzający przyjęcie zgłoszenia,
-- status zgłoszenia dla użytkownika,
+- mail potwierdzajÄ…cy przyjÄ™cie zgĹ‚oszenia,
+- status zgĹ‚oszenia dla uĹĽytkownika,
 - brak martwego support tab.
 
 ---
@@ -258,39 +258,39 @@ Zakres:
 
 Status: TECH BACKLOG / PO PILNYCH ETAPACH
 
-Cel: dodać stały kontekst dla Codexa i AI developerów.
+Cel: dodaÄ‡ staĹ‚y kontekst dla Codexa i AI developerĂłw.
 
 Zakres:
 
 - `_project/CODEX_CONTEXT_INDEX.md`,
 - `scripts/codex-context-pack.ps1`,
 - `.codex/skills/*` scan-first skills,
-- skrócenie skanów i ograniczenie chaosu.
+- skrĂłcenie skanĂłw i ograniczenie chaosu.
 
-Powód: w repo nie znaleziono jeszcze `_project/CODEX_CONTEXT_INDEX.md` ani `scripts/codex-context-pack.ps1`.
+PowĂłd: w repo nie znaleziono jeszcze `_project/CODEX_CONTEXT_INDEX.md` ani `scripts/codex-context-pack.ps1`.
 
-## Zamknięte / aktualnie uznane za domknięte etapy UI/detail
+## ZamkniÄ™te / aktualnie uznane za domkniÄ™te etapy UI/detail
 
 ### LeadDetail
 
-- `STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT` - technicznie domknięty dla potencjału, next action i głównego missing_item guardu.
-- `STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX` - closeout starej ścieżki Brak, delete missing_item overflow i CSS work-row.
-- `STAGE231G_R4D_WORK_ROW_ONE_LINE_ALIGNMENT` - wzmocnienie układu work-row.
+- `STAGE231G_R3_LEAD_DETAIL_FUNCTION_MAPPING_AND_OPERATIONAL_CLOSEOUT` - technicznie domkniÄ™ty dla potencjaĹ‚u, next action i gĹ‚Ăłwnego missing_item guardu.
+- `STAGE231G_R4_LEAD_DETAIL_FUNCTION_MAPPING_CLOSEOUT_FIX` - closeout starej Ĺ›cieĹĽki Brak, delete missing_item overflow i CSS work-row.
+- `STAGE231G_R4D_WORK_ROW_ONE_LINE_ALIGNMENT` - wzmocnienie ukĹ‚adu work-row.
 
-Nie traktować jako otwarte, chyba że test regresji pokaże błąd.
+Nie traktowaÄ‡ jako otwarte, chyba ĹĽe test regresji pokaĹĽe bĹ‚Ä…d.
 
 ### CaseDetail finance/cost closeout chain
 
-Status zbiorczy: PRODUCT_PASS / MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / TECH_PUSHED dla łańcucha finansów i kosztów, z wyjątkiem nowych osobnych etapów R1D2 i R1E.
+Status zbiorczy: PRODUCT_PASS / MANUAL_UI_PASS_CONFIRMED_BY_DAMIAN / TECH_PUSHED dla Ĺ‚aĹ„cucha finansĂłw i kosztĂłw, z wyjÄ…tkiem nowych osobnych etapĂłw R1D2 i R1E.
 
-Zamknięte albo objęte manualnym PASS:
+ZamkniÄ™te albo objÄ™te manualnym PASS:
 
 - `STAGE231H_R1B_CASE_DETAIL_RUNTIME_REPAIR_AND_CLOSEOUT` - contractValue/prowizja,
-- `STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL` - korekta/usuwanie kosztów,
-- `STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION` - pełna korekta wpłat i kosztów,
-- `STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR` - naprawa czerwonych guardów i zapisu płatności,
+- `STAGE231H_R1C_CASE_DETAIL_COST_CORRECTION_MODAL` - korekta/usuwanie kosztĂłw,
+- `STAGE231H_R1F_PAYMENT_AND_COST_FULL_CORRECTION` - peĹ‚na korekta wpĹ‚at i kosztĂłw,
+- `STAGE231H_R1F4_PAYMENT_SAVE_AND_GUARD_REPAIR` - naprawa czerwonych guardĂłw i zapisu pĹ‚atnoĹ›ci,
 - `STAGE231H_R1G_COST_OTHER_NAME_AND_REIMBURSABLE_FLAG` - koszt `Inny` + checkbox `Koszt do zwrotu`,
-- `STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC` - porządek ledgerów,
+- `STAGE231H_R1G2_CASE_DETAIL_COST_PAYMENT_CLOSEOUT_AND_STAGE_LEDGER_SYNC` - porzÄ…dek ledgerĂłw,
 - `STAGE231H_R1G3_CASE_DETAIL_MANUAL_UI_PASS` - manualny PASS Damiana.
 
 Nadal otwarte:
@@ -302,73 +302,73 @@ Nadal otwarte:
 
 ### STAGE-A35-OWNER-CONTROL-BASELINE
 
-Status: PO PILNYCH DETAIL/MAIL/CALENDAR LUB JAKO RÓWNOLEGŁY PRODUCT SPRINT
+Status: PO PILNYCH DETAIL/MAIL/CALENDAR LUB JAKO RĂ“WNOLEGĹY PRODUCT SPRINT
 
-Cel: owner-control audit: co ruszyć, czego nie przegapić, które leady/sprawy stoją.
+Cel: owner-control audit: co ruszyÄ‡, czego nie przegapiÄ‡, ktĂłre leady/sprawy stojÄ….
 
 Zakres:
 
-- leady bez następnego kroku,
+- leady bez nastÄ™pnego kroku,
 - leady bez kontaktu 7+ dni,
 - leady bez kontaktu 14+ dni,
 - sprawy bez ruchu,
-- sprawy z wartością/pieniędzmi, ale bez następnego kroku,
+- sprawy z wartoĹ›ciÄ…/pieniÄ™dzmi, ale bez nastÄ™pnego kroku,
 - rekordy bez odpowiedzialnego,
-- rekordy z notatką, ale bez zadania/follow-upu.
+- rekordy z notatkÄ…, ale bez zadania/follow-upu.
 
 ### STAGE-A35B-MANDATORY-NEXT-STEP-CONTRACT
 
 Status: PO A35
 
-Cel: każdy aktywny lead/sprawa ma mieć jasny następny krok albo świadomy status `brak kolejnego kroku`.
+Cel: kaĹĽdy aktywny lead/sprawa ma mieÄ‡ jasny nastÄ™pny krok albo Ĺ›wiadomy status `brak kolejnego kroku`.
 
 ### STAGE231A2_DOCUMENT_BLOCKERS_LITE
 
-Status: PO A35B ALBO RÓWNOLEGLE JAKO MAŁY ETAP
+Status: PO A35B ALBO RĂ“WNOLEGLE JAKO MAĹY ETAP
 
-Cel: dokumenty/braki jako element kontroli procesu, nie martwe załączniki.
+Cel: dokumenty/braki jako element kontroli procesu, nie martwe zaĹ‚Ä…czniki.
 
 ### STAGE-A41-CONTACT-CADENCE-GRID
 
 Status: PO A35B / PO DOCUMENT_BLOCKERS_LITE
 
-Cel: siatka kontaktu: dziś, 1d, 2d, 3d, 5d, 7d, 14d.
+Cel: siatka kontaktu: dziĹ›, 1d, 2d, 3d, 5d, 7d, 14d.
 
 ### STAGE-A42-LOST-LEAD-RESCUE
 
 Status: PO A41
 
-Cel: ekran `Do odzyskania` dla leadów z ciszą, brakiem kroku i ryzykiem utraty.
+Cel: ekran `Do odzyskania` dla leadĂłw z ciszÄ…, brakiem kroku i ryzykiem utraty.
 
 ### STAGE-A46-SALES-FUNNEL_MOVEMENT_VIEW
 
 Status: PO A41 LUB PO A42
 
-Cel: lejek pokazuje ruch, ciszę, brak kroku, ryzyko i pieniądze, nie tylko etap.
+Cel: lejek pokazuje ruch, ciszÄ™, brak kroku, ryzyko i pieniÄ…dze, nie tylko etap.
 
 ### STAGE-A45-FINANCE-WATCHLIST
 
 Status: PO A42/A46
 
-Cel: lista pieniędzy do ruszenia, nie księgowość.
+Cel: lista pieniÄ™dzy do ruszenia, nie ksiÄ™gowoĹ›Ä‡.
 
 ### STAGE-A44-OWNER-DIGEST-WEEKLY-REPORT
 
-Status: PO A35/A41/A42/A45 ORAZ PO STAGE231K1/K2, JEŚLI MA IŚĆ MAILEM
+Status: PO A35/A41/A42/A45 ORAZ PO STAGE231K1/K2, JEĹšLI MA IĹšÄ† MAILEM
 
-Cel: dzienny/tygodniowy raport właściciela jako lista decyzji i ryzyk.
+Cel: dzienny/tygodniowy raport wĹ‚aĹ›ciciela jako lista decyzji i ryzyk.
 
 ### STAGE-A36-DRAFTS-REBUILD
 
-Status: PO STAGE231J2 / NIE JAKO PIERWSZY WYRÓŻNIK
+Status: PO STAGE231J2 / NIE JAKO PIERWSZY WYRĂ“Ĺ»NIK
 
-Cel: jedna skrzynka szkiców: ręczny szkic, wklejony tekst, dyktowanie, parser, AI; zatwierdzanie jako lead/task/event/notatka/follow-up.
+Cel: jedna skrzynka szkicĂłw: rÄ™czny szkic, wklejony tekst, dyktowanie, parser, AI; zatwierdzanie jako lead/task/event/notatka/follow-up.
 
 ### STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER
 
-Status: WYSOKA WARTOŚĆ / PÓŹNIEJ, po stabilizacji podstawowego CRM i owner-control core
+Status: WYSOKA WARTOĹšÄ† / PĂ“ĹąNIEJ, po stabilizacji podstawowego CRM i owner-control core
 
-Cel: znajdować okazje sprzedażowe po problemie/sygnale, nie budować pustej bazy firm.
+Cel: znajdowaÄ‡ okazje sprzedaĹĽowe po problemie/sygnale, nie budowaÄ‡ pustej bazy firm.
 
 Podetapy:
 
@@ -380,9 +380,9 @@ Podetapy:
 
 ### STAGE-A47-CONTROL-SPRINT-OFFER
 
-Status: PO A35 DEMO / MOŻE IŚĆ JAKO ETAP BIZNESOWY RÓWNOLEGLE
+Status: PO A35 DEMO / MOĹ»E IĹšÄ† JAKO ETAP BIZNESOWY RĂ“WNOLEGLE
 
-Cel: spiąć produkt z usługą wdrożeniową `CloseFlow Control Sprint`.
+Cel: spiÄ…Ä‡ produkt z usĹ‚ugÄ… wdroĹĽeniowÄ… `CloseFlow Control Sprint`.
 
 ## Etapy techniczne / safety backlog
 
@@ -390,87 +390,87 @@ Cel: spiąć produkt z usługą wdrożeniową `CloseFlow Control Sprint`.
 
 Status: P1 / TECHNICAL SAFETY / DO WYKONANIA PRZED SZERSZYM TESTEM
 
-Zablokować publiczne preview routes w produkcji, jeżeli pokazują prototyp albo dane wyglądające jak realne kontakty.
+ZablokowaÄ‡ publiczne preview routes w produkcji, jeĹĽeli pokazujÄ… prototyp albo dane wyglÄ…dajÄ…ce jak realne kontakty.
 
 ### STAGE232B_CHUNK_BOUNDARY_RUNTIME_STABILITY
 
 Status: PO 232A
 
-Sprawdzić, czy statyczne importy LeadDetail/ClientDetail są nadal potrzebne i czy lazy/chunk boundary jest stabilny.
+SprawdziÄ‡, czy statyczne importy LeadDetail/ClientDetail sÄ… nadal potrzebne i czy lazy/chunk boundary jest stabilny.
 
 ### STAGE232C_AUTH_ENV_FAIL_CLOSED
 
 Status: PO 232B
 
-Auth/env ma fail-closed w produkcji i nie maskować złej konfiguracji service-role fallbackiem.
+Auth/env ma fail-closed w produkcji i nie maskowaÄ‡ zĹ‚ej konfiguracji service-role fallbackiem.
 
 ### STAGE232D_DOCS_ENCODING_SWEEP
 
 Status: PO APP CORE
 
-Naprawić aktywne README/.env/docs z mojibake bez przepisywania całej historycznej lawiny.
+NaprawiÄ‡ aktywne README/.env/docs z mojibake bez przepisywania caĹ‚ej historycznej lawiny.
 
 ### STAGE232E_POLISH_MOJIBAKE_GUARD_SCOPE
 
 Status: PO 232D
 
-Rozdzielić runtime guard od docs/project-memory guard.
+RozdzieliÄ‡ runtime guard od docs/project-memory guard.
 
 ### STAGE232F_GUARD_RUNNER_CROSS_PLATFORM_CLEANUP
 
 Status: PO 232E
 
-Ustalić jeden główny release gate i uporządkować runner pod Windows/Linux.
+UstaliÄ‡ jeden gĹ‚Ăłwny release gate i uporzÄ…dkowaÄ‡ runner pod Windows/Linux.
 
 ## Warunek aktualizacji tego pliku
 
-Po każdym zatwierdzonym etapie zmienić status w tym pliku.
-Nie zostawiać kolejności tylko w czacie, run reportach albo payloadach Obsidiana.
-Jeżeli powstaje nowy etap, jego ID i kolejność muszą trafić tutaj.
+Po kaĹĽdym zatwierdzonym etapie zmieniÄ‡ status w tym pliku.
+Nie zostawiaÄ‡ kolejnoĹ›ci tylko w czacie, run reportach albo payloadach Obsidiana.
+JeĹĽeli powstaje nowy etap, jego ID i kolejnoĹ›Ä‡ muszÄ… trafiÄ‡ tutaj.
 
 
 ## 2026-06-14 22:00 Europe/Warsaw - STAGE231H_R1D2_R6_R9_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR
 
 Status: DO_APPLY / mass repair from clean origin.
-Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuĹ„/Zapisz. Etap zastÄ™puje runtime file bez kruchych anchorĂłw po bĹ‚Ä™dach R6/R7/R8.
+Zakres: CaseDetail note follow-up source map and notes CRUD. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek dostaje Edytuj/UsuÄąâ€ž/Zapisz. Etap zastĂ„â„˘puje runtime file bez kruchych anchorÄ‚Ĺ‚w po bÄąâ€šĂ„â„˘dach R6/R7/R8.
 
 
 ## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1G2 central product-pass sync for legacy R1D2 guard
 
 Status: PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED
-PowĂłd wpisu: historyczny guard scripts/check-stage231h-r1d2-case-detail-note-dictation-restore.cjs wymaga dokĹ‚adnej frazy PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED w centralnym pliku etapĂłw. R1G2 wczeĹ›niej byĹ‚ potwierdzony manualnie i wypchniÄ™ty, ale po syncu kolejki etapĂłw fraza nie byĹ‚a obecna w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
+PowÄ‚Ĺ‚d wpisu: historyczny guard scripts/check-stage231h-r1d2-case-detail-note-dictation-restore.cjs wymaga dokÄąâ€šadnej frazy PRODUCT_PASS / TECH_PUSHED / MANUAL_CONFIRMED w centralnym pliku etapÄ‚Ĺ‚w. R1G2 wczeÄąâ€şniej byÄąâ€š potwierdzony manualnie i wypchniĂ„â„˘ty, ale po syncu kolejki etapÄ‚Ĺ‚w fraza nie byÄąâ€ša obecna w _project/04_ETAPY_ROZWOJU_APLIKACJI.md.
 
 
 ## 2026-06-14 22:15 Europe/Warsaw - STAGE231H_R1D2_R6_R9D_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_REPAIR_GUARD_SYNC
 
 Status: DO_APPLY / guard-ledger sync after R9 partial apply.
-Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuĹ„/Zapisz.
+Zakres: centralny R1G2 product-pass sync wymagany przez legacy R1D2 guard plus R9 mass repair. Notatka zostaje w activities/operator_note. Follow-up po notatce jest tasks/follow_up z workspaceId, dueAt, scheduledAt, reminderAt, date, caseId, clientId, leadId. Modal wszystkich notatek ma Edytuj/UsuÄąâ€ž/Zapisz.
 
 
 ## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON legacy guard sync
 
 Status: TECH_PUSHED / REQUIRED_BY_LEGACY_GUARD / SOURCE_SYNC
-PowĂłd wpisu: legacy guard R1D2 R4 wymaga obecnoĹ›ci markera STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON w centralnych ledgerach 04/06/08/10/13 oraz w run/Obsidian payload. Ten wpis nie zmienia runtime; synchronizuje ĹşrĂłdĹ‚o prawdy po wczeĹ›niejszych etapach R6-R9.
+PowÄ‚Ĺ‚d wpisu: legacy guard R1D2 R4 wymaga obecnoÄąâ€şci markera STAGE231H_R1D2_R4_NOTES_PANEL_DICTATION_BUTTON w centralnych ledgerach 04/06/08/10/13 oraz w run/Obsidian payload. Ten wpis nie zmienia runtime; synchronizuje ÄąĹźrÄ‚Ĺ‚dÄąâ€šo prawdy po wczeÄąâ€şniejszych etapach R6-R9.
 
 
 ## 2026-06-14 22:30 Europe/Warsaw - STAGE231H_R1D2_R6_R9E_CASE_NOTE_FOLLOWUP_NOTES_CRUD_MASS_GUARD_SYNC
 
 Status: DO_APPLY / MASS_GUARD_SYNC_CONTINUATION
-Zakres: masowe domkniÄ™cie klasy bĹ‚Ä™dĂłw legacy markerĂłw. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peĹ‚ny chain guardĂłw/testĂłw/build.
+Zakres: masowe domkniĂ„â„˘cie klasy bÄąâ€šĂ„â„˘dÄ‚Ĺ‚w legacy markerÄ‚Ĺ‚w. Synchronizuje R1G2, R1D2 R4, R9, R9D i R9E w centralnych ledgerach oraz uruchamia peÄąâ€šny chain guardÄ‚Ĺ‚w/testÄ‚Ĺ‚w/build.
 
 
 ## 2026-06-14 22:40 Europe/Warsaw - STAGE231H_R1D2_R6_R9F_CASE_NOTE_FOLLOWUP_NOTES_CRUD_GUARD_REGEX_MASS_FIX
 
 Status: DO_APPLY / MASS_GUARD_REGEX_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9D/R9E: sprawdzenie runtime regex
-eplace(/\s+/g, ' ') w guardzie musi mieÄ‡ podwĂłjnie escapowany backslash. Bez tego guard szuka bĹ‚Ä™dnego
+Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9D/R9E: sprawdzenie runtime regex
+eplace(/\s+/g, ' ') w guardzie musi mieĂ„â€ˇ podwÄ‚Ĺ‚jnie escapowany backslash. Bez tego guard szuka bÄąâ€šĂ„â„˘dnego
 eplace(/s+/g, ' ').
 
 
 ## 2026-06-14 22:50 Europe/Warsaw - STAGE231H_R1D2_R6_R9G_CASE_NOTE_FOLLOWUP_NOTES_CRUD_LOCAL_TASKS_GUARD_MASS_FIX
 
 Status: DO_APPLY / MASS_LOCAL_TASKS_GUARD_FIX
-Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moĹĽe wymagaÄ‡ nieistniejÄ…cej skĹ‚adni previousTasks.
+Zakres: naprawa klasy bÄąâ€šĂ„â„˘du guardÄ‚Ĺ‚w R9E/R9F: runtime poprawnie dopina nowy follow-up task do lokalnego 	asks przez setTasks((current) => dedupeCaseTasks([normalizedCreated, ...current], caseId, caseData));, a guard nie moÄąÄ˝e wymagaĂ„â€ˇ nieistniejĂ„â€¦cej skÄąâ€šadni previousTasks.
 
 ## STAGE231H_R1D2_R10C_CASE_DETAIL_ACTION_MAP_FOLLOWUP_NOTES_FINANCE_LOADING
 
@@ -482,5 +482,14 @@ Zakres: naprawa klasy bĹ‚Ä™du guardĂłw R9E/R9F: runtime poprawnie dopina
 ### STAGE231H_R1D2_R11_NOTE_PANEL_FOLLOWUP_PROMPT_MAP_GUARD
 - data: 2026-06-14T20:31:30.095Z
 - status: DO_TEST_AND_PUSH
-- zakres: notatki CaseDetail pokazują do 5 wpisów, mają tooltip pełnej treści, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w działaniach pokazuje treść notatki jako opis.
+- zakres: notatki CaseDetail pokazujÄ… do 5 wpisĂłw, majÄ… tooltip peĹ‚nej treĹ›ci, szybka notatka otwiera ten sam prompt follow-upu co dyktowanie, a follow-up w dziaĹ‚aniach pokazuje treĹ›Ä‡ notatki jako opis.
 - guard: scripts/check-stage231h-r1d2-r11-note-panel-followup-prompt-map-guard.cjs
+
+## STAGE231H_R1D2_R12D_CASE_QUICK_NOTE_SCOPE_CLIENT_DEDUPE_FINAL_ANCHORLESS
+
+- data: 2026-06-15 Europe/Warsaw
+- status: DO_APPLY / final anchorless repair
+- zakres: CaseQuickActions explicit case scope, ContextNoteDialog handoff order, CaseDetail quick note local append + prompt, ClientDetail action dedupe
+- guard: scripts/check-stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.cjs
+- test: tests/stage231h-r1d2-r12d-case-quick-note-scope-client-dedupe-final-anchorless.test.cjs
+- SQL: nie dotyczy

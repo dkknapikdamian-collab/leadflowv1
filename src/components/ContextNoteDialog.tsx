@@ -15,6 +15,13 @@ const STAGE27E_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
 const STAGE27A_CONTEXT_NOTE_SAVED_EVENT = 'closeflow:context-note-saved';
 const STAGE231H_R1D2_R11_CONTEXT_NOTE_FOLLOWUP_HANDOFF = 'ContextNoteDialog passes saved note record so CaseDetail can open the same follow-up prompt as dictation notes';
 void STAGE231H_R1D2_R11_CONTEXT_NOTE_FOLLOWUP_HANDOFF;
+const STAGE231H_R1D2_R12F_CONTEXT_NOTE_SAVED_BEFORE_CLOSE = 'ContextNoteDialog calls onSaved with savedRecord before closing so CaseDetail keeps the case note source-of-truth handoff';
+void STAGE231H_R1D2_R12F_CONTEXT_NOTE_SAVED_BEFORE_CLOSE;
+const STAGE231H_R1D2_R12_CONTEXT_NOTE_CASE_SOURCE_TRUTH = 'ContextNoteDialog keeps case notes scoped to caseId and calls onSaved before closing the host request';
+void STAGE231H_R1D2_R12_CONTEXT_NOTE_CASE_SOURCE_TRUTH;
+
+const STAGE231H_R1D2_R12D_CONTEXT_NOTE_ONSAVED_BEFORE_CLOSE = 'ContextNoteDialog calls onSaved(createdNote) before closing so quick case note handoff is not lost';
+void STAGE231H_R1D2_R12D_CONTEXT_NOTE_ONSAVED_BEFORE_CLOSE;
 
 type ContextNoteDialogProps = {
   open: boolean;
@@ -47,8 +54,8 @@ export default function ContextNoteDialog({ open, onOpenChange, onSaved, context
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const content = note.trim();
-    if (!hasAccess) return toast.error('Trial wygasł.');
-    if (!content) return toast.error('Wpisz treść notatki.');
+    if (!hasAccess) return toast.error('Trial wygasĹ‚.');
+    if (!content) return toast.error('Wpisz treĹ›Ä‡ notatki.');
     const workspaceId = requireWorkspaceId(workspace);
     if (!workspaceId) return toast.error('Kontekst workspace nie jest jeszcze gotowy.');
 
@@ -73,15 +80,22 @@ export default function ContextNoteDialog({ open, onOpenChange, onSaved, context
     setSaving(true);
     try {
       const createdNote = await insertActivityToSupabase(input);
+      const savedRecord = createdNote || input;
       if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent(STAGE27A_CONTEXT_NOTE_SAVED_EVENT, { detail: { ...input, savedRecord: createdNote || input } }));
+        window.dispatchEvent(new CustomEvent(STAGE27A_CONTEXT_NOTE_SAVED_EVENT, {
+          detail: {
+            ...input,
+            savedRecord,
+            activity: savedRecord,
+          },
+        }));
       }
+      await onSaved?.(savedRecord);
       toast.success('Notatka dodana');
       onOpenChange(false);
       setNote('');
-      await onSaved?.(createdNote || input);
     } catch {
-      toast.error('Nie udało się zapisać notatki.');
+      toast.error('Nie udaĹ‚o siÄ™ zapisaÄ‡ notatki.');
     } finally {
       setSaving(false);
     }
@@ -91,22 +105,22 @@ export default function ContextNoteDialog({ open, onOpenChange, onSaved, context
     <Dialog open={open} onOpenChange={(nextOpen) => (nextOpen ? onOpenChange(true) : closeDialog())}>
       <DialogContent className="max-w-2xl" data-context-note-dialog-stage85="true">
         <DialogHeader>
-          <DialogTitle>Dodaj notatkę</DialogTitle>
+          <DialogTitle>Dodaj notatkÄ™</DialogTitle>
         </DialogHeader>
         {context?.recordLabel ? (
           <div className="rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm font-semibold text-blue-900" data-stage85-context-relation="true">
-            Powiązanie: {context.recordLabel}
+            PowiÄ…zanie: {context.recordLabel}
           </div>
         ) : null}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label>Treść notatki</Label>
-            <Textarea value={note} onChange={(event) => setNote(event.target.value)} rows={8} placeholder="Wpisz notatkę po rozmowie, ustalenia albo ważny kontekst." />
-            <p className="text-xs font-medium text-slate-500">Notatka zostanie przypięta do aktualnego rekordu. Nie tworzy zadania ani wydarzenia bez osobnego kliknięcia.</p>
+            <Label>TreĹ›Ä‡ notatki</Label>
+            <Textarea value={note} onChange={(event) => setNote(event.target.value)} rows={8} placeholder="Wpisz notatkÄ™ po rozmowie, ustalenia albo waĹĽny kontekst." />
+            <p className="text-xs font-medium text-slate-500">Notatka zostanie przypiÄ™ta do aktualnego rekordu. Nie tworzy zadania ani wydarzenia bez osobnego klikniÄ™cia.</p>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={closeDialog} disabled={saving}>Anuluj</Button>
-            <Button type="submit" disabled={saving || workspaceLoading}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz notatkę</Button>
+            <Button type="submit" disabled={saving || workspaceLoading}>{saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}Zapisz notatkÄ™</Button>
           </DialogFooter>
         </form>
       </DialogContent>
