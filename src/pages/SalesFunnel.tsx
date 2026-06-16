@@ -117,7 +117,7 @@ const FUNNEL_OWNER_TILE_TONE_MAP: Record<FunnelTileFilter, FunnelTileDefinition>
   },
   money: {
     label: 'Pieniądze',
-    helper: 'Źródła kwoty.',
+    helper: 'Kliknij — pokaż rekordy, z których liczona jest kwota.',
     tone: 'green',
     iconToneKey: 'funnel:money:green:PaymentEntityIcon',
     valueKind: 'money',
@@ -640,7 +640,7 @@ export function SalesFunnel() {
                     <Clock3 className="h-4 w-4 text-blue-600" />
                     Reguła widoku
                   </div>
-                  Lejek to lista decyzji, nie kanban. Ma szybko pokazać: ruch, ciszę, ryzyko i pieniądze.
+                  Lejek to lista decyzji, nie kanban. Etapy jako filtr, nie ściśnięte kolumny. Ma szybko pokazać: ruch, ciszę, ryzyko i pieniądze.
                 </CardContent>
               </Card>
             </aside>

@@ -32,7 +32,7 @@ const plans = read('src/lib/plans.ts');
   'digest: true',
   'googleCalendar: true',
   'fullAi: true',
-  'TRIAL_DAYS = 21',
+  'TRIAL_DAYS = 14',
   'activeLeads: 5',
   'activeTasks: 5',
   'activeEvents: 5',

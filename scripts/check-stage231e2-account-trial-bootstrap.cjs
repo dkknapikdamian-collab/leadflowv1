@@ -29,9 +29,9 @@ assert(plans.includes('export const TRIAL_DAYS = 14;'), 'plans.ts must define th
 assert(plans.includes("trial: 'trial_14d'"), 'PLAN_IDS.trial must use canonical trial_14d.');
 assert(plans.includes('trial_14d: PLAN_IDS.trial'), 'plans.ts must include trial_14d alias.');
 assert(plans.includes('trial_21d: PLAN_IDS.trial'), 'plans.ts must keep trial_21d as a legacy alias for existing rows.');
-assert(!plans.includes('export const TRIAL_DAYS = 21;'), 'plans.ts must not define 21-day trial.');
-assert(!plans.includes("trial: 'trial_21d'"), 'trial_21d must not be the canonical trial id.');
-assert(!plans.includes('Trial 21 dni'), 'active plan copy must not say Trial 21 dni.');
+assert(!plans.includes('export const TRIAL_DAYS = 14;'), 'plans.ts must not define 21-day trial.');
+assert(!plans.includes("trial: 'trial_14d'"), 'trial_21d must not be the canonical trial id.');
+assert(!plans.includes('Trial 14 dni'), 'active plan copy must not say Trial 14 dni.');
 
 assert(
   plans.includes('STAGE231E2_R2_TRIAL_14D_LOCK') || plans.includes('STAGE231E2_ACCOUNT_TRIAL_BOOTSTRAP_BLOCKER'),

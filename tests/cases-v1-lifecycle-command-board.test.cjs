@@ -33,7 +33,9 @@ test('Cases page exposes lifecycle command filters', () => {
 test('Cases cards show operator next action and lifecycle counters', () => {
   const source = read('src/pages/Cases.tsx');
 
-  assert.match(source, /lifecycle\.headline/);
+  assert.match(source, /lifecycleCompactLabel\(record, lifecycle\)/);
+  assert.match(source, /const compactLifecycleLabel = lifecycleCompactLabel\(record, lifecycle\)/);
+  assert.match(source, /compactLifecyclePill/);
   assert.match(source, /lifecycle\.nextOperatorAction/);
   assert.match(source, /lifecycleRiskLabel\(lifecycle\.riskLevel\)/);
   assert.match(source, /lifecycle\.openActionCount/);

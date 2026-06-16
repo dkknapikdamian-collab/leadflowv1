@@ -70,13 +70,13 @@ for (const file of Object.values(files)) {
 
 section('Canonical plans.ts contract');
 for (const needle of [
-  'export const TRIAL_DAYS = 21',
+  'export const TRIAL_DAYS = 14',
   'export const PLAN_IDS',
   "free: 'free'",
   "basic: 'basic'",
   "pro: 'pro'",
   "ai: 'ai'",
-  "trial: 'trial_21d'",
+  "trial: 'trial_14d'",
   'export const ACCESS_STATUSES',
   'trial_active',
   'trial_ending',

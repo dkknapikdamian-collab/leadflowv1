@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 function read(p){ return fs.readFileSync(p,'utf8'); }
 function fail(msg){ console.error(`STAGE231H_R1D2_R12G FAIL: ${msg}`); process.exit(1); }
 function count(h,n){ return (h.match(new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'g'))||[]).length; }

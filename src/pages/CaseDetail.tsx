@@ -1475,7 +1475,7 @@ function CaseDetailLoadingState() {
         <section className="case-detail-transition-loader" role="status" aria-live="polite">
           <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
           <div>
-            <p>Ĺadowanie sprawy...</p>
+            <p>Ładowanie sprawy...</p>
             <span>Przygotowujemy dane sprawy. Panele i akcje pojawią się po załadowaniu rekordu.</span>
           </div>
         </section>
@@ -2265,7 +2265,7 @@ export default function CaseDetail() {
       setCaseActionsLoadError('Nie udało się pobrać działań sprawy.');
       setPayments([]);
       setCaseCostsStage231D2([]);
-      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ĺadowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
+      setLoadError(error?.message === 'TIMEOUT_CASE_DETAIL_LOAD' ? 'Ładowanie sprawy trwa za długo. Spróbuj ponownie.' : `Nie można wczytać sprawy: ${error?.message || 'REQUEST_FAILED'}`);
     } finally {
       if (timeoutId) window.clearTimeout(timeoutId);
       setLoading(false);
@@ -2506,7 +2506,7 @@ export default function CaseDetail() {
     return workItems.find((item) => item.kind === 'task' || item.kind === 'event') || null;
   }, [nearestOperationalAction, workItems]);
   const lastActivityAt = caseData?.lastActivityAt || caseData?.updatedAt || activities[0]?.createdAt || caseData?.createdAt;
-  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Ĺąródłowy lead') : caseData?.leadId ? 'Ĺąródłowy lead podpięty' : 'Brak źródłowego leada';
+  const sourceLeadLabel = sourceLead ? String(sourceLead.name || sourceLead.company || 'Źródłowy lead') : caseData?.leadId ? 'Źródłowy lead podpięty' : 'Brak źródłowego leada';
   const caseDetailWriteAccessDenied = !hasAccess;
   const caseDetailAccessStatus = String(access?.status || 'inactive');
   const workspaceIdStage231H_R1D2_R6 = String((workspace as any)?.id || (caseData as any)?.workspaceId || (caseData as any)?.workspace_id || (sourceLead as any)?.workspaceId || (sourceLead as any)?.workspace_id || (access as any)?.workspaceId || (access as any)?.workspace_id || (access as any)?.workspace?.id || '').trim();
@@ -3526,7 +3526,7 @@ async function handleConfirmDeleteCaseRecord() {
         <main className="case-detail-vnext-page">
           <section className="case-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ĺadowanie sprawy...</span>
+            <span>Ładowanie sprawy...</span>
           </section>
         </main>
       </Layout>
@@ -4126,7 +4126,7 @@ async function handleConfirmDeleteCaseRecord() {
                       <strong>{getCaseNoteTitleStage231H_R1D2_R6(activity)}</strong>
                       <div className="case-payment-history-modal-stage220a27b__meta" data-stage231h-r1d2-r6-note-meta="true">
                         <span>Data: {formatDateTime(activity.createdAt, 'Bez daty')}</span>
-                        <span>Ĺąródło: activities</span>
+                        <span>Źródło: activities</span>
                       </div>
                       {isEditing ? (
                         <Textarea
@@ -4195,7 +4195,7 @@ async function handleConfirmDeleteCaseRecord() {
         open={deleteCaseOpen}
         onOpenChange={setDeleteCaseOpen}
         title="Awaryjnie usunąć sprawę?"
-        description={`Awaryjne usunięcie sprawy „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” usunie rekord i powiązania. Normalne zakończenie procesu wykonuj przez Zamknij sprawę.`}
+        description={`Awaryjne usunięcie sprawy „${getCaseHeaderClientLabel(caseData)} — ${getCaseHeaderCaseLabel(caseData)}” usunie rekord i powiązania. Normalne zrobioneenie procesu wykonuj przez Zamknij sprawę.`}
         confirmLabel="Awaryjnie usuń"
         cancelLabel="Anuluj"
         confirmTone="destructive"

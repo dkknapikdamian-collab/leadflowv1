@@ -25,6 +25,7 @@ const requiredTests = [
   'tests/right-rail-card-source-of-truth.test.cjs',
   'tests/closeflow-release-gate.test.cjs',
   'tests/closeflow-release-gate-quiet.test.cjs',
+  'tests/cf-runtime-00-source-truth.test.cjs',
   'tests/lead-next-action-title-not-null.test.cjs',
   'tests/lead-client-path-contract.test.cjs',
   'tests/client-relation-command-center.test.cjs',
@@ -249,6 +250,7 @@ runQuiet('case trash actions', process.execPath, ['scripts/check-closeflow-case-
 // STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_START
 runQuiet('stage98 calendar mojibake hard gate preflight', process.execPath, ['--test', 'tests/stage98-polish-mojibake-calendar-guard.test.cjs']);
 // STAGE119_CALENDAR_RELEASE_GATE_TRUST_PREFLIGHT_END
+runQuiet('cf-runtime-00 source truth guard', process.execPath, ['scripts/check-cf-runtime-00-source-truth.cjs']);
 runQuiet('production build', process.execPath, ['scripts/closeflow-vite-build-runner.mjs']);
 
 for (const relativePath of requiredTests) {

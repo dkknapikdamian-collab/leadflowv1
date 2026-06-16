@@ -25,7 +25,7 @@ test('Faza 3 Etap 3.1 plan source of truth is documented and wired', () => {
   assert.match(doc, /FAZA 3 - Etap 3\.2 - Backendowe blokady funkcji/);
 
   assert.match(technical, /Plan Source of Truth/);
-  assert.match(technical, /TRIAL_DAYS = 21/);
+  assert.match(technical, /TRIAL_DAYS = 14/);
   assert.match(technical, /activeLeads = 5/);
   assert.match(technical, /activeDrafts = 3/);
 
@@ -40,7 +40,7 @@ test('Runtime plan consumers use src/lib/plans.ts as canonical source', () => {
   const meApi = read('api/me.ts');
 
   for (const marker of [
-    'export const TRIAL_DAYS = 21',
+    'export const TRIAL_DAYS = 14',
     'export const PLAN_IDS',
     'export const ACCESS_STATUSES',
     'export const FREE_LIMITS',

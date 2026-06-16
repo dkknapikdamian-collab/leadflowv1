@@ -80,8 +80,8 @@ const CLIENT_DETAIL_EDIT_BUTTON_UNDER_DATA_GUARD = 'edit button under client dat
 const CLIENT_DETAIL_RECENT_MOVES_UNDER_DATA_GUARD = 'recent moves under client data';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD = 'Klient jako centrum relacji';
 const CLIENT_RELATION_COMMAND_CENTER_GUARD_UTF8 = 'Klient jako centrum relacji';
-const CLIENT_RELATION_PATH_GUARD = 'ÄąĹˇcieżka klienta';
-const CLIENT_RELATION_PATH_GUARD_UTF8 = 'ÄąĹˇcieżka klienta';
+const CLIENT_RELATION_PATH_GUARD = 'Ścieżka klienta';
+const CLIENT_RELATION_PATH_GUARD_UTF8 = 'Ścieżka klienta';
 const STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT = 'ClientDetail keeps lead data as acquisition source only and does not render a lead cockpit';
 void STAGE117B_CLIENT_DETAIL_NO_LEAD_VIEW_CONTRACT;
 const CLIENT_RELATION_OPEN_CASE_GUARD = 'Otwórz sprawę';
@@ -110,8 +110,8 @@ const CLIENT_DETAIL_SIMPLIFIED_GUARD_UTF8 = 'Praca dzieje się w sprawie';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_1 = 'Lead źródłowy';
 const CLIENT_DETAIL_HISTORY_GUARD_UTF8_1 = 'Lead źródłowy';
 const CLIENT_DETAIL_HISTORY_ACQUISITION_COPY_GUARD = 'Historia pozyskania';
-const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Ĺąródło:';
-const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Ĺąródło:';
+const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_2 = 'Źródło:';
+const CLIENT_DETAIL_HISTORY_GUARD_UTF8_2 = 'Źródło:';
 const CLIENT_DETAIL_HISTORY_GUARD_MOJIBAKE_3 = 'Otwórz sprawę';
 import Layout from '../components/Layout';
 import { EntityActionButton, formActionsClass, modalFooterClass } from '../components/entity-actions';
@@ -2254,7 +2254,7 @@ function ClientDetail() {
     return (
       <article key={caseId || title} className={cardClassName} data-client-case-smart-card="true" data-stage231b0-r8-client-case-card={options.closed ? 'closed' : 'active'}>
         <div className="client-detail-case-smart-main">
-          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIÄTA' : 'Sprawa'}</span>
+          <span className={options.closed ? 'client-detail-case-smart-kicker client-detail-case-smart-closed-label-stage231b0-r9' : 'client-detail-case-smart-kicker'}>{options.closed ? 'SPRAWA ZAMKNIĘTA' : 'Sprawa'}</span>
           <strong>{title}</strong>
           <div className="client-detail-case-smart-meta">
             <span data-stage231b0-r8-case-status-label="true">{status}</span>
@@ -2339,7 +2339,7 @@ return (
 <main className="client-detail-vnext-page cf-page-canvas cf-page-canvas--full cf-html-view main-client-detail-html cf-client-detail-layout-stage231b0-r15-r2" data-stage231d0c-client-detail-workspace-baseline="true" data-stage216m-r14-clean-copy-finance-mojibake-marker="true" data-stage231b0-r15-r2-client-detail-shared-canvas="true" data-cf-page-canvas="full">
           <div className="client-detail-loading-card">
             <Loader2 className="h-5 w-5 animate-spin" />
-            <span>Ĺadowanie klienta...</span>
+            <span>Ładowanie klienta...</span>
           </div>
         </main>
       </Layout>
@@ -2559,7 +2559,7 @@ return (
                     <strong>{activeCases.length > 0 ? 'Aktywna obsługa' : leads.length > 0 ? 'Kontakt po leadzie' : 'Kartoteka'}</strong>
                   </div>
                   <div className="client-detail-data-panel-row">
-                    <small>Ĺąródło</small>
+                    <small>Źródło</small>
                     <strong>{firstSourceLead?.source || 'Brak źródła'}</strong>
                   </div>
                   <div className="client-detail-data-panel-row client-detail-data-panel-row-copy">
@@ -2996,7 +2996,7 @@ return (
                       <strong>{firstSourceLead ? formatDate(firstSourceLead.createdAt || firstSourceLead.updatedAt) : formatDate(client.createdAt)}</strong>
                     </span>
                     <span>
-                      Ĺąródło: <strong>{firstSourceLead?.source || client.source || 'Brak źródła'}</strong>
+                      Źródło: <strong>{firstSourceLead?.source || client.source || 'Brak źródła'}</strong>
                     </span>
                     <span>
                       Lead źródłowy:{' '}
@@ -3034,7 +3034,7 @@ return (
                   <div className="client-detail-section-head">
                     <div>
                       <h2>Sprawy zamknięte</h2>
-                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIÄTA</span>
+                      <span className="client-detail-case-smart-closed-label-stage231b0-r9" data-stage231b0-r9-client-history-closed-label="true">SPRAWA ZAMKNIĘTA</span>
                       <p>Archiwum operacyjne klienta. Historia, prowizje i wpłaty zostają przy relacji.</p>
                     </div>
                   </div>

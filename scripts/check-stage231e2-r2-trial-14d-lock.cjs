@@ -33,8 +33,8 @@ assert(plans.includes("trial: 'trial_14d'"), 'PLAN_IDS.trial must use canonical 
 assert(plans.includes("name: 'Trial 14 dni'"), 'Trial plan label must say Trial 14 dni.');
 assert(plans.includes('trial_14d: PLAN_IDS.trial'), 'PLAN_ALIASES must include trial_14d.');
 assert(plans.includes('trial_21d: PLAN_IDS.trial'), 'PLAN_ALIASES must keep legacy trial_21d alias for existing rows.');
-assert(!plans.includes('Trial 21 dni'), 'plans.ts must not show Trial 21 dni copy.');
-assert(!plans.includes('export const TRIAL_DAYS = 21;'), 'plans.ts must not define 21-day trial.');
+assert(!plans.includes('Trial 14 dni'), 'plans.ts must not show Trial 14 dni copy.');
+assert(!plans.includes('export const TRIAL_DAYS = 14;'), 'plans.ts must not define 21-day trial.');
 
 assert(access.includes("import { TRIAL_DAYS } from './plans';"), 'access.ts must source trial length from plans.ts.');
 assert(!/const\s+TRIAL_LENGTH_DAYS\s*=\s*21\b/.test(access), 'access.ts must not hard-code 21-day trial length.');

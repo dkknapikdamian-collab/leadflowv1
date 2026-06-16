@@ -10,8 +10,12 @@ function read(relativePath) {
 
 test('Case quick actions header no longer contains noisy helper copy', () => {
   const source = read('src/components/CaseQuickActions.tsx');
+  const sharedBar = read('src/components/detail/QuickActionsBar.tsx');
   assert.equal(source.includes('Dodaj operacyjny ruch bez starego kafelka formularza.'), false);
-  assert.ok(source.includes('<strong>Szybkie akcje</strong>'));
+  assert.ok(source.includes('<QuickActionsBar'));
+  assert.ok(source.includes('title="Szybkie akcje"'));
+  assert.ok(sharedBar.includes('<strong>{title}</strong>'));
+  assert.ok(sharedBar.includes("title = 'Szybkie akcje'"));
 });
 
 test('Case detail history visual source truth forces compact single-style history rows', () => {

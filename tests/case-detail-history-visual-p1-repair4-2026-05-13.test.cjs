@@ -17,7 +17,11 @@ test('CaseDetail keeps explicit unified visual history scope', () => {
 test('Case quick actions helper copy stays removed', () => {
   const source = read('src/components/CaseQuickActions.tsx');
   assert.equal(source.includes('Dodaj operacyjny ruch bez starego kafelka formularza.'), false);
-  assert.ok(source.includes('CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13'));
+  assert.equal(source.includes('Dodaj operacyjny ruch bez starego kafelka formularza.'), false);
+  assert.ok(source.includes('<QuickActionsBar'));
+  assert.ok(source.includes('title="Szybkie akcje"'));
+  const sharedQuickActionsBar = read('src/components/detail/QuickActionsBar.tsx');
+  assert.ok(sharedQuickActionsBar.includes('<strong>{title}</strong>'));
 });
 
 test('Case history CSS uses explicit unified panel scope and generic work-row fallback', () => {

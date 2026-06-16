@@ -81,7 +81,7 @@ for (const marker of [
   'const AI_FEATURES',
   'ai: true',
   'fullAi: true',
-  'Trial 21 dni',
+  'Trial 14 dni',
 ]) {
   assertIncludes(files.plans, plans, marker, 'plans.ts contains plan matrix marker: ' + marker);
 }
@@ -131,7 +131,7 @@ for (const marker of [
   'Basic:',
   'Pro:',
   'AI:',
-  'Trial 21 dni:',
+  'Trial 14 dni:',
   'assertWorkspaceFeatureAccess',
   'FAZA 3 - Etap 3.2B - Plan-based UI visibility and feature smoke',
 ]) {

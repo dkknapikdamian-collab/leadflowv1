@@ -71,11 +71,20 @@ test('Stage119 V5 requiredTests preflight reports all missing tests before quiet
   assert.deepStrictEqual(missing, [], 'Missing requiredTests files: ' + missing.join(', '));
 });
 
-test('Stage98 hard gate scans active code/test/script sources, not historical _project reports', () => {
+test('Stage98 hard gate scans runtime source and current release guards, not historical _project reports', () => {
   const guard = fs.readFileSync(path.join(repoRoot, stage98), 'utf8');
-  assert.match(guard, /const roots = \['src', 'tests', 'scripts'\]/);
+
+  assert.match(guard, /STAGE98_RUNTIME_SOURCE_AND_CURRENT_GUARDS/);
+  assert.match(guard, /const currentGuardFiles = new Set\(\[/);
+  assert.match(guard, /function shouldScan\(rel\)/);
+  assert.match(guard, /rel\.startsWith\('src\/'\)/);
+  assert.match(guard, /walk\('src'\)/);
+  assert.match(guard, /tests\/stage98-polish-mojibake-calendar-guard\.test\.cjs/);
+
   assert.doesNotMatch(guard, /const roots = \['src', 'tests', 'scripts', '_project'\]/);
-  assert.match(guard, /active code\/test\/script sources/);
+  assert.doesNotMatch(guard, /walk\('_project'\)|walk\("_project"\)/);
+  assert.doesNotMatch(guard, /\.\.\.walk\('tests'\)/);
+  assert.doesNotMatch(guard, /\.\.\.walk\('scripts'\)/);
 });
 
 test('Stage119 guard is registered in package scripts', () => {

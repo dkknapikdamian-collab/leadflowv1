@@ -14,12 +14,12 @@ No other file should define its own independent plan matrix.
 ## Canonical constants
 
 ```text
-TRIAL_DAYS = 21
+TRIAL_DAYS = 14
 PLAN_IDS.free = free
 PLAN_IDS.basic = basic
 PLAN_IDS.pro = pro
 PLAN_IDS.ai = ai
-PLAN_IDS.trial = trial_21d
+PLAN_IDS.trial = trial_14d
 ```
 
 ## Canonical access statuses

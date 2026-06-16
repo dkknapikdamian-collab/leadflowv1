@@ -1170,7 +1170,8 @@ useEffect(() => {
     const type = String(entry?.type || entry?.payload?.type || entry?.payload?.kind || '').toLowerCase();
     const title = String(entry?.title || '').toLowerCase();
     if (closedStatuses.has(status)) return false;
-    return type === 'missing_item' || status === 'missing_item' || title.includes('brak') || title.includes('missing');
+    const isMissingOrBlockerStatus = status.includes('block') || status.includes('missing');
+    return type === 'missing_item' || isMissingOrBlockerStatus || title.includes('brak') || title.includes('missing');
   });
 }, [linkedTasks]);
 
@@ -1271,7 +1272,8 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       <div className="lead-detail-work-center-header">
         <div>
           <span>Centrum pracy leada</span>
-          <h2>AI wsparcie</h2>
+          <h2>Co robimy teraz?</h2>
+                    <p className="lead-detail-stage228b-r14-source-copy">Najbliższe zadania, wydarzenia i braki przypięte do tego leada.</p>
 
         </div>
         <span className={`lead-detail-work-risk lead-detail-work-risk-${leadWorkCenter.riskTone}`}>
@@ -1308,7 +1310,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
       {!leadInService ? (
         <div className="lead-detail-work-actions" aria-label="Szybkie akcje na leadzie">
           <LeadActionButton onClick={handleCreateQuickTask} disabled={!hasAccess}>
-            <Phone className="h-4 w-4" /> Zaplanuj telefon / follow-up
+            <Phone className="h-4 w-4" /> Dodaj zadanie
           </LeadActionButton>
           <LeadActionButton onClick={handleCreateQuickEvent} disabled={!hasAccess}>
             <EntityIcon entity="event" className="h-4 w-4" /> Zaplanuj spotkanie
@@ -2381,7 +2383,7 @@ const leadBlockerEntries = activeMissingItemEntriesStage228R19R2;
             ) : null}
 
 {!leadInService ? (
-              <section data-stage227f3-lead-actions-anchor="true" id="lead-actions" className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true" data-stage227f3-lead-actions-source="true">
+              <section data-stage227f3-lead-actions-anchor="true" id="lead-actions" className="lead-detail-section-card lead-detail-stage228b-work-action-center lead-detail-stage228d-action-center" data-stage228b-lead-work-action-center="true" data-stage228b-r14-lead-action-center-vst="true" data-stage228d-lead-action-center-accordion="true" data-stage227e5-work-center-blockers-source="true" data-stage227f1-work-center="true" data-stage227f1-work-center-no-super-heading="true" data-stage227f3-lead-actions-source="true">
                 <div className="lead-detail-section-head">
                   <div>
                     <h2>Działania leada</h2>

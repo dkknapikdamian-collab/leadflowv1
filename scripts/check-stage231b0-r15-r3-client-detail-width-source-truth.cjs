@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 
 function fail(message) {
   console.error('STAGE231B0_R15_R3_CLIENT_DETAIL_WIDTH_SOURCE_TRUTH FAIL: ' + message);

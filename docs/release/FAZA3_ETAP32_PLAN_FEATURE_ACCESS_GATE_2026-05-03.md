@@ -58,7 +58,7 @@ Jeżeli nie, plan matrix jest zły.
 
 ## Decyzja planów
 
-| Funkcja | Free | Basic | Pro | AI | Trial 21 dni |
+| Funkcja | Free | Basic | Pro | AI | Trial 14 dni |
 |---|---:|---:|---:|---:|---:|
 | Leady / klienci / sprawy / zadania / wydarzenia | limit | tak | tak | tak | tak |
 | Limity aktywnych leadów | 5 | brak | brak | brak | brak |

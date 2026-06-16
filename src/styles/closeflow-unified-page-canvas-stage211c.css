@@ -1,4 +1,4 @@
-﻿/* STAGE211C_UNIFIED_APP_CANVAS
+/* STAGE211C_UNIFIED_APP_CANVAS
    Source of truth for the neutral app canvas.
    Goal: every operator tab uses one consistent background behind, between and around cards.
    This intentionally removes old page-local radial/linear canvas gradients without changing card surfaces.

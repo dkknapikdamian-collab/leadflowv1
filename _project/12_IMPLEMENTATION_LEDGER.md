@@ -2430,33 +2430,33 @@ następny krok:
 STATUS: LOCAL_APPLIED_PENDING_MANUAL_TEST_AND_PUSH
 
 FAKTY:
-- Kafelek klienta na liĹ›cie klientĂłw zostaĹ‚ przestawiony na ukĹ‚ad 2-wierszowy.
-- Z kafelka klienta usuniÄ™to Leady: oraz badge Aktywna sprawa.
+- Kafelek klienta na liście klientów został przestawiony na układ 2-wierszowy.
+- Z kafelka klienta usunięto Leady: oraz badge Aktywna sprawa.
 - Wiersz 1 pokazuje: nazwa, telefon, e-mail, Aktywna prowizja, akcje.
-- Wiersz 2 pokazuje: firma, Sprawy, Zarobione Ĺ‚Ä…cznie, NajbliĹĽsza akcja oraz dozwolone statusy pomocnicze.
-- Telefon ma osobny marker data-client-list-phone i klasÄ™ client-list-card-phone.
-- E-mail ma osobny marker data-client-list-email i klasÄ™ client-list-card-email.
-- UI dalej korzysta z closeflow-record-list-source-truth.css jako ĹşrĂłdĹ‚a prawdy stylu list.
+- Wiersz 2 pokazuje: firma, Sprawy, Zarobione łącznie, Najbliższa akcja oraz dozwolone statusy pomocnicze.
+- Telefon ma osobny marker data-client-list-phone i klasę client-list-card-phone.
+- E-mail ma osobny marker data-client-list-email i klasę client-list-card-email.
+- UI dalej korzysta z closeflow-record-list-source-truth.css jako źródła prawdy stylu list.
 
 DECYZJA DAMIANA:
-- Klient jest juĹĽ pozyskanym leadem, wiÄ™c nie pokazujemy Leady w kafelku klienta.
-- Klient moĹĽe mieÄ‡ wiele spraw, wiÄ™c nie pokazujemy binarnego badge'a Aktywna sprawa.
-- Na liĹ›cie klientĂłw majÄ… byÄ‡ widoczne: Aktywna prowizja, Zarobione Ĺ‚Ä…cznie, Sprawy, NajbliĹĽsza akcja.
+- Klient jest już pozyskanym leadem, więc nie pokazujemy Leady w kafelku klienta.
+- Klient może mieć wiele spraw, więc nie pokazujemy binarnego badge'a Aktywna sprawa.
+- Na liście klientów mają być widoczne: Aktywna prowizja, Zarobione łącznie, Sprawy, Najbliższa akcja.
 
 TESTY/GUARDY:
-- 
+-
 pm run check:stage231d0b-client-list-card-freeze
-- 
+-
 pm run build
 - git diff --check
 
 DO POTWIERDZENIA:
-- Test rÄ™czny desktop/mobile na /clients po lokalnym uruchomieniu.
+- Test ręczny desktop/mobile na /clients po lokalnym uruchomieniu.
 
 RYZYKA:
-- JeĹ›li dane prowizyjne w bazie sÄ… niepeĹ‚ne, Aktywna prowizja moĹĽe pokazaÄ‡ 0 PLN mimo aktywnej sprawy bez uzupeĹ‚nionej prowizji.
-- JeĹ›li pĹ‚atnoĹ›ci prowizyjne nie majÄ… typu/statusu rozpoznawanego przez finance source, Zarobione Ĺ‚Ä…cznie moĹĽe wymagaÄ‡ osobnego etapu porzÄ…dkujÄ…cego dane pĹ‚atnoĹ›ci.
-- Zmiana dotyczy tylko listy klientĂłw, nie przebudowuje ClientDetail ani modeli finansowych.
+- Jeśli dane prowizyjne w bazie są niepełne, Aktywna prowizja może pokazać 0 PLN mimo aktywnej sprawy bez uzupełnionej prowizji.
+- Jeśli płatności prowizyjne nie mają typu/statusu rozpoznawanego przez finance source, Zarobione łącznie może wymagać osobnego etapu porządkującego dane płatności.
+- Zmiana dotyczy tylko listy klientów, nie przebudowuje ClientDetail ani modeli finansowych.
 <!-- STAGE231D0B_CLIENT_LIST_CARD_LEDGER_END -->
 
 
@@ -2570,3 +2570,34 @@ Manual QA after deploy:
 - finance visual truth: `data-cf-finance-tone` in `src/styles/finance/closeflow-finance.css`.
 - refresh truth: saved record is inserted locally, then CaseDetail refetches backend state.
 - proof: dedicated guard/test, task-event guard, urgent regression guard and build.
+
+
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_START -->
+## 2026-06-15 22:56 Europe/Warsaw — CF-RUNTIME-00 Shared source-of-truth foundation
+
+Status: PREPARED_IN_ZIP_LOCAL_APPLY
+Typ: techniczny fundament / guard baseline
+Zakres: route truth, status truth, missing/blocker truth, access/plan truth wrapper.
+
+Dodane pliki:
+- `src/lib/closeflow-runtime-source-truth.ts`
+- `tests/cf-runtime-00-source-truth.test.cjs`
+- `scripts/check-cf-runtime-00-source-truth.cjs`
+- `_project/runs/2026-06-15_CF_RUNTIME_00_SHARED_SOURCE_TRUTH.md`
+
+Testy/guardy:
+- `node scripts/check-cf-runtime-00-source-truth.cjs`
+- `node --test tests/cf-runtime-00-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+
+Czego nie ruszano:
+- UI, LeadDetail, ClientDetail, CaseDetail, Today, Tasks, Calendar, Billing, Settings, CSS, SQL, Supabase, migrations, env.
+
+Ryzyko:
+- istniejący fallback `paid_active -> pro` w `src/lib/plans.ts` pozostaje do późniejszego etapu runtime wiring; helper tylko daje bezpieczny kontrakt.
+
+Następny krok:
+- CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->

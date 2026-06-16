@@ -2,7 +2,7 @@
 # 07_NEXT_STEPS - CloseFlow / LeadFlow
 
 <!-- STAGE230_AI_DRAFT_INBOX_ROADMAP_START -->
-## 2026-06-09 â€” STAGE230 â€” AI Draft Inbox / Voice Capture / App-Scoped AI Roadmap
+## 2026-06-09 — STAGE230 — AI Draft Inbox / Voice Capture / App-Scoped AI Roadmap
 
 STATUS: ROADMAP_DO_WDROŻENIA / PRIORYTET PRZED STARYMI ETAPAMI
 
@@ -46,7 +46,7 @@ DO POTWIERDZENIA:
 
 ### Architektura docelowa
 
-#### Warstwa 1 â€” Capture
+#### Warstwa 1 — Capture
 
 Wejścia:
 - `manual_text`,
@@ -84,7 +84,7 @@ Minimalne pola szkicu:
 - `approved_by`,
 - `approved_at`.
 
-#### Warstwa 2 â€” App-scoped AI parser
+#### Warstwa 2 — App-scoped AI parser
 
 Backend server-only endpoint:
 - `POST /api/ai/drafts/parse`
@@ -129,11 +129,11 @@ Zakazane akcje:
 - ogólne porady,
 - dowolne działania poza workspace CloseFlow.
 
-#### Warstwa 3 â€” Relation resolver
+#### Warstwa 3 — Relation resolver
 
 AI nie może samodzielnie zgadywać rekordu, jeśli dopasowanie jest niejednoznaczne. System wyszukuje możliwe rekordy, UI pokazuje wybór i dopiero potem akcja może być zatwierdzona.
 
-#### Warstwa 4 â€” Review / Approval UI
+#### Warstwa 4 — Review / Approval UI
 
 Inbox szkiców ma pokazywać:
 - surowy tekst,
@@ -146,7 +146,7 @@ Inbox szkiców ma pokazywać:
 
 AI nie wykonuje mutacji bez zatwierdzenia.
 
-#### Warstwa 5 â€” Apply engine
+#### Warstwa 5 — Apply engine
 
 Po zatwierdzeniu tworzymy realne rekordy:
 - lead,
@@ -181,7 +181,7 @@ Wymogi bezpieczeństwa:
 
 ### Etapy wdrożenia
 
-#### STAGE230A â€” Roadmap + provider inventory + guard
+#### STAGE230A — Roadmap + provider inventory + guard
 Cel: zapisać roadmapę przed starymi etapami w `_project/07_NEXT_STEPS.md`, dodać guard i spisać inventory istniejącej warstwy szkiców. Bez runtime UI i bez bazy.
 
 Testy:
@@ -189,7 +189,7 @@ Testy:
 - `node --test tests/stage230a-ai-draft-inbox-roadmap.test.cjs`
 - `git diff --check`
 
-#### STAGE230B â€” Quick Capture Inbox bez AI
+#### STAGE230B — Quick Capture Inbox bez AI
 Cel: użytkownik może szybko zapisać szkic tekstowy z mobile/desktop. Raw draft zawsze trafia do Supabase i jest widoczny w Inboxie szkiców.
 
 Zakres:
@@ -209,7 +209,7 @@ Manual test:
 - F5 after save,
 - draft visible in inbox.
 
-#### STAGE230C â€” Phone dictation duplicate-words audit
+#### STAGE230C — Phone dictation duplicate-words audit
 Cel: zweryfikować problem duplikowania słów przy dyktowaniu na telefonie.
 
 Hipoteza: problem może pochodzić z browser speech input / IME, kilku `input/composition` eventów albo z naszego handlera.
@@ -227,7 +227,7 @@ Zakres techniczny:
 - nie logować danych klienta do zewnętrznych usług,
 - sprawdzić, czy duplikacja powstaje przed zapisem czy dopiero w naszej aplikacji.
 
-#### STAGE230D â€” AI parser jako propozycja, nie wykonanie
+#### STAGE230D — AI parser jako propozycja, nie wykonanie
 Cel: dodać server-only parser AI zwracający JSON propozycji.
 
 Endpoint:
@@ -245,7 +245,7 @@ Guardy:
 - AI cannot return weather/internet/general assistant response,
 - AI failure leaves raw draft intact.
 
-#### STAGE230E â€” AI Review Card w Inboxie szkiców
+#### STAGE230E — AI Review Card w Inboxie szkiców
 Cel: użytkownik widzi, co AI rozpoznało, i może zatwierdzić / poprawić.
 
 UI:
@@ -259,7 +259,7 @@ UI:
 
 Bez automatycznego wykonania bez kliknięcia.
 
-#### STAGE230F â€” Apply engine po zatwierdzeniu
+#### STAGE230F — Apply engine po zatwierdzeniu
 Cel: zatwierdzony draft tworzy realny rekord w aplikacji.
 
 Mutacje:
@@ -282,7 +282,7 @@ Guardy:
 - linked record id written,
 - activity log created.
 
-#### STAGE230G â€” Voice-first polish + mobile UX
+#### STAGE230G — Voice-first polish + mobile UX
 Cel: zrobić z tego funkcję, która realnie działa w samochodzie.
 
 Zakres:
@@ -293,7 +293,7 @@ Zakres:
 - jasne komunikaty błędów,
 - brak migania i utraty tekstu.
 
-#### STAGE230H â€” AI eval pack
+#### STAGE230H — AI eval pack
 Cel: testować polskie, chaotyczne dyktowanie.
 
 Przykłady testowe:
@@ -311,11 +311,11 @@ Guard:
 - no external assistant behavior,
 - raw draft preserved.
 
-### STAGE230A3 â€” dodatkowe etapy rozwoju aplikacji wpisane do backlogu produkcyjnego
+### STAGE230A3 — dodatkowe etapy rozwoju aplikacji wpisane do backlogu produkcyjnego
 
 STATUS: BACKLOG_DO_WDROŻENIA / DO_PRIORYTETYZACJI_PRZED_PRODUKCJĄ
 
-#### Pre-production core backlog â€” rzeczy do dopięcia przed wejściem produkcyjnym
+#### Pre-production core backlog — rzeczy do dopięcia przed wejściem produkcyjnym
 
 1. `STAGE231A_DOCUMENTS_FOR_LEADS`
    - Cel: dodać dokumenty/załączniki do leadów.
@@ -341,7 +341,7 @@ STATUS: BACKLOG_DO_WDROŻENIA / DO_PRIORYTETYZACJI_PRZED_PRODUKCJĄ
    - Wymóg: start ma pokazywać co robić teraz, nie być ozdobnym dashboardem.
    - Ryzyko: przeładowanie ekranu i powrót do CRM-owego chaosu.
 
-## 2026-06-09 16:00 Europe/Warsaw â€” LeadFlow AI Opportunity Finder
+## 2026-06-09 16:00 Europe/Warsaw — LeadFlow AI Opportunity Finder
 
 Status: KIERUNEK_ROZWOJU_DO_AKCEPTACJI
 Priorytet: WYSOKI
@@ -387,7 +387,7 @@ Docelowy efekt:
 
 ### Dlaczego to ma sens
 
-CRM zaczyna się za późno, jeśli użytkownik nie ma sensownych leadów. Dla wielu małych firm ból nie brzmi â€žjak obsłużyć 1000 leadówâ€ť, tylko â€žskąd wziąć pierwsze 20 sensownych leadów z powodem kontaktuâ€ť.
+CRM zaczyna się za późno, jeśli użytkownik nie ma sensownych leadów. Dla wielu małych firm ból nie brzmi „jak obsłużyć 1000 leadów”, tylko „skąd wziąć pierwsze 20 sensownych leadów z powodem kontaktu”.
 
 LeadFlow powinien docelowo obsługiwać cały ruch:
 1. wykrycie okazji,
@@ -432,7 +432,7 @@ Do wdrożenia dopiero po ustabilizowaniu podstawowego CRM i szkiców.
 4. `STAGE240D_CREATE_LEADS_WITH_REASON_AND_FOLLOWUP`
 5. `STAGE240E_MONTHLY_OPPORTUNITY_MONITORING`
 
-#### Growth backlog â€” moduł pozyskiwania leadów, nie osobna aplikacja
+#### Growth backlog — moduł pozyskiwania leadów, nie osobna aplikacja
 
 `STAGE240_LEADFLOW_SMART_PROSPECTING_OPPORTUNITY_FINDER`
 
@@ -443,7 +443,7 @@ Decyzja robocza:
 - dopiero potem dokładamy pre-CRM: Smart Prospecting / AI Opportunity Finder.
 
 Teza:
-- małe firmy nie kupują â€śbazy firmâ€ť,
+- małe firmy nie kupują â€śbazy firm”,
 - kupują listę konkretnych okazji sprzedażowych z powodem kontaktu.
 
 Docelowy moduł:
@@ -488,9 +488,9 @@ Funkcja jest dobra dopiero gdy:
 ### Następny logiczny etap po tej roadmapie
 
 Po Stage230A wdrażamy:
-1. STAGE230B â€” Quick Capture Inbox bez AI,
-2. STAGE230C â€” phone dictation duplicate-words audit,
-3. STAGE230D â€” AI parser proposal endpoint.
+1. STAGE230B — Quick Capture Inbox bez AI,
+2. STAGE230C — phone dictation duplicate-words audit,
+3. STAGE230D — AI parser proposal endpoint.
 
 <!-- STAGE230_AI_DRAFT_INBOX_ROADMAP_END -->
 
@@ -516,14 +516,14 @@ Po Stage230A wdrażamy:
 - Manual test status, even if the stage is organizational.
 - Tests/guards status or explicit skip reason.
 
-## 2026-05-16 Ă˘â‚¬â€ť Next step po Stage92 {#STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS}
+## 2026-05-16 — Next step po Stage92 {#STAGE92_CALENDAR_SELECTED_DAY_READABLE_ACTIONS}
 
-1. WykonaĂ„â€ˇ test rĂ„â„˘czny na `/calendar`: dzieÄąâ€ž z wydarzeniem, zadaniem i wpisem bez powiĂ„â€¦zania.
-2. SprawdziĂ„â€ˇ desktop: treÄąâ€şĂ„â€ˇ po lewej, akcje po prawej w dwÄ‚łch rzĂ„â„˘dach, bez biaÄąâ€šej pustej belki.
-3. SprawdziĂ„â€ˇ mobile: akcje nie rozjeÄąÄ˝dÄąÄ˝ajĂ„â€¦ wpisu i nie chowajĂ„â€¦ tytuÄąâ€šu.
-4. Po potwierdzeniu Damiana dopiero Äąâ€šĂ„â€¦czyĂ„â€ˇ z nastĂ„â„˘pnymi paczkami i robiĂ„â€ˇ zbiorczy push.
+1. WykonaĂ„â€ˇ test rĂ„â„˘czny na `/calendar`: dzieŚ„ z wydarzeniem, zadaniem i wpisem bez powiĂ„â€¦zania.
+2. SprawdziĂ„â€ˇ desktop: treŚâ€şĂ„â€ˇ po lewej, akcje po prawej w dwóch rzĂ„â„˘dach, bez biaŚâ€šej pustej belki.
+3. SprawdziĂ„â€ˇ mobile: akcje nie rozjeŚÄ˝dŚÄ˝ajĂ„â€¦ wpisu i nie chowajĂ„â€¦ tytuŚâ€šu.
+4. Po potwierdzeniu Damiana dopiero Śâ€šĂ„â€¦czyĂ„â€ˇ z nastĂ„â„˘pnymi paczkami i robiĂ„â€ˇ zbiorczy push.
 
-## STAGE93_MANUAL_TEST_CALENDAR_DESKTOP Ă˘â‚¬â€ť 2026-05-16
+## STAGE93_MANUAL_TEST_CALENDAR_DESKTOP — 2026-05-16
 - Manual test needed: open `/calendar` at desktop 2048x972 and normal zoom.
 - Verify the week rail shows day label, full date label and plain text count.
 - Verify no black count badge/plaque and no old week filter list.
@@ -531,7 +531,7 @@ Po Stage230A wdrażamy:
 ## NEXT_STAGE_CALENDAR_BATCH_REPAIR_AFTER_SWEEP_2026_05_16
 
 1. PrzeczytaĂ„â€ˇ `_project/runs/STAGE94_CALENDAR_UI_SWEEP_LOCAL_REPORT.md`.
-2. Na podstawie P1 zrobiĂ„â€ˇ jednĂ„â€¦ zbiorczĂ„â€¦ paczkĂ„â„˘ Calendar cleanup, zamiast kolejnych mikroÄąâ€šatek.
+2. Na podstawie P1 zrobiĂ„â€ˇ jednĂ„â€¦ zbiorczĂ„â€¦ paczkĂ„â„˘ Calendar cleanup, zamiast kolejnych mikroŚâ€šatek.
 3. RĂ„â„˘cznie sprawdziĂ„â€ˇ `/calendar` na desktop 2048x972 i normalnym zoomie.
 
 ## NEXT STEP: Manual Calendar consolidated cleanup test
@@ -573,9 +573,9 @@ Next: manual /calendar week view at desktop width. Confirm no Wy/Zad-only rows a
 
 
 ## Stage96 leads right rail width and position
-- Test rĂ„â„˘czny: /leads na desktopie, sprawdziĂ„â€ˇ czy Filtry proste sĂ„â€¦ nad Najcenniejsze leady i majĂ„â€¦ szerokoÄąâ€şĂ„â€ˇ jak /clients.
-- Test rĂ„â„˘czny: /clients porÄ‚łwnaĂ„â€ˇ szerokoÄąâ€şĂ„â€ˇ raila.
-- Nie zmieniaĂ„â€ˇ listy leadÄ‚łw w tym etapie.
+- Test rĂ„â„˘czny: /leads na desktopie, sprawdziĂ„â€ˇ czy Filtry proste są nad Najcenniejsze leady i majĂ„â€¦ szerokoŚâ€şĂ„â€ˇ jak /clients.
+- Test rĂ„â„˘czny: /clients porównaĂ„â€ˇ szerokoŚâ€şĂ„â€ˇ raila.
+- Nie zmieniaĂ„â€ˇ listy leadów w tym etapie.
 
 - Manual test: compare /leads and /clients right rail on desktop; verify Filtry proste is above Najcenniejsze leady and rail is not ~195px.
 
@@ -596,7 +596,7 @@ Next: manual /calendar week view at desktop width. Confirm no Wy/Zad-only rows a
 
 ## STAGE97_NEXT_MANUAL_TODAY_OVERDUE_TASK_DONE
 
-- Manual test: open /, expand ZalegÄąâ€še zadania or Zadania do obsÄąâ€šugi, verify every task row has Edytuj and Zrobione.
+- Manual test: open /, expand ZalegŚâ€še zadania or Zadania do obsŚâ€šugi, verify every task row has Edytuj and Zrobione.
 - Click Zrobione and verify the task disappears from the active Today list after completion.
 
 ## Stage97 manual test / Today
@@ -608,40 +608,40 @@ Next: manual /calendar week view at desktop width. Confirm no Wy/Zad-only rows a
 
 
 <!-- STAGE104_CALENDAR_PERFORMANCE_F -->
-## 2026-05-16 Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ Stage104 / Paczka F Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ Calendar loading performance
+## 2026-05-16 ËĂ˘â€š¬„ Stage104 / Paczka F ËĂ˘â€š¬„ Calendar loading performance
 
-STATUS: WDROÄą»ONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
+STATUS: WDROŚ»ONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
 
 FAKTY:
-- Kalendarz nie powinien juÄąÄ˝ liczyĂ„â€ˇ `combineScheduleEntries` wprost w renderze.
+- Kalendarz nie powinien juŚÄ˝ liczyĂ„â€ˇ `combineScheduleEntries` wprost w renderze.
 - Dni miesiĂ„â€¦ca i tygodnia korzystajĂ„â€¦ z `entriesByDayKey` / `weekEntriesByDayKey`.
-- `Calendar.tsx` nie powinien juÄąÄ˝ uÄąÄ˝ywaĂ„â€ˇ `getEntriesForDay(...)` w render path.
+- `Calendar.tsx` nie powinien juŚÄ˝ uŚÄ˝ywaĂ„â€ˇ `getEntriesForDay(...)` w render path.
 - `cases` idĂ„â€¦ z `fetchCalendarBundleFromSupabase()`, bez drugiego `fetchCasesFromSupabase()` w `Calendar.tsx`.
-- PeÄąâ€šnostronicowy loader zostaÄąâ€š zastĂ„â€¦piony maÄąâ€šym skeletonem danych.
+- PeŚâ€šnostronicowy loader zostaŚâ€š zastĂ„â€¦piony maŚâ€šym skeletonem danych.
 
 TESTY:
 - `node tests/stage104-calendar-loading-performance-contract.test.cjs`
-- `npm run build` jeÄąâ€şli nie uÄąÄ˝yto `-SkipBuild`.
+- `npm run build` jeŚâ€şli nie uŚÄ˝yto `-SkipBuild`.
 
 RYZYKA:
 - Range fetch backendowy jest DO POTWIERDZENIA.
-- Stare DOM-normalizatory miesiĂ„â€¦ca zostaÄąâ€šy nietkniĂ„â„˘te i wymagajĂ„â€¦ osobnego audytu w Paczce G.
+- Stare DOM-normalizatory miesiĂ„â€¦ca zostaŚâ€šy nietkniĂ„â„˘te i wymagajĂ„â€¦ osobnego audytu w Paczce G.
 
 NAST\u00c4\u0098PNY KROK:
-- Test rĂ„â„˘czny `/calendar`: start, tydzieÄąâ€ž, miesiĂ„â€¦c, wybrany dzieÄąâ€ž, edycja, +1H/+1D/+1W, zrobione, usuÄąâ€ž.
+- Test rĂ„â„˘czny `/calendar`: start, tydzieŚ„, miesiĂ„â€¦c, wybrany dzieŚ„, edycja, +1H/+1D/+1W, zrobione, usuŚ„.
 <!-- /STAGE104_CALENDAR_PERFORMANCE_F -->
 
 
 ---
-## Stage105 / Paczka G Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ Templates delete + visual contract Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ 2026-05-16
+## Stage105 / Paczka G ËĂ˘â€š¬„ Templates delete + visual contract ËĂ˘â€š¬„ 2026-05-16
 
-STATUS: WDROÄą»ONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
+STATUS: WDROŚ»ONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
 
 FAKTY:
-- /templates dostaÄąâ€š widoczny przycisk UsuÄąâ€ž na karcie szablonu.
-- Delete uÄąÄ˝ywa EntityTrashButton i shared trash action source of truth.
-- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeÄąâ€şli szablon ma pozycje checklisty.
-- Karta szablonu uÄąÄ˝ywa cf-template-card cf-readable-card i markerÄ‚łw
+- /templates dostaŚâ€š widoczny przycisk UsuŚ„ na karcie szablonu.
+- Delete uŚÄ˝ywa EntityTrashButton i shared trash action source of truth.
+- Delete wymaga window.confirm oraz dodatkowego potwierdzenia, jeŚâ€şli szablon ma pozycje checklisty.
+- Karta szablonu uŚÄ˝ywa cf-template-card cf-readable-card i markerów
 ecord-list-source-truth.
 - Stary marker data-a16-template-light-ui nie jest aktywnym source of truth dla stylu.
 
@@ -655,35 +655,35 @@ TEST R\u00c4\u0098CZNY:
 - DO WYKONANIA na /templates: create/edit/duplicate/delete z confirmami.
 
 RYZYKO:
-- Ten etap nie dodaje backendowego sprawdzania, czy szablon zostaÄąâ€š uÄąÄ˝yty w aktywnych sprawach. Wymusza Äąâ€şwiadome potwierdzenie usuwania wzorca i jego pozycji.
+- Ten etap nie dodaje backendowego sprawdzania, czy szablon zostaŚâ€š uŚÄ˝yty w aktywnych sprawach. Wymusza Śâ€şwiadome potwierdzenie usuwania wzorca i jego pozycji.
 
 NAST\u00c4\u0098PNY KROK:
-- PrzetestowaĂ„â€ˇ /templates; dopiero potem zdecydowaĂ„â€ˇ, czy robimy kolejny lokalny etap czy wspÄ‚łlny commit/push Stage104+Stage105.
+- PrzetestowaĂ„â€ˇ /templates; dopiero potem zdecydowaĂ„â€ˇ, czy robimy kolejny lokalny etap czy wspólny commit/push Stage104+Stage105.
 <!-- STAGE105_TEMPLATES_DELETE_VISUAL_G -->
 
 <!-- STAGE98B_100B_CALENDAR_POLISH_WEEK_PLAN_NEXT_2026_05_17 -->
 ## NastĂ„â„˘pny krok po Stage98B-100B
 
 1. UruchomiĂ„â€ˇ paczkĂ„â„˘ lokalnie na `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`.
-2. JeÄąÄ˝eli wszystkie testy i `verify:closeflow:quiet` przejdĂ„â€¦, paczka wykona commit/push.
+2. JeŚÄ˝eli wszystkie testy i `verify:closeflow:quiet` przejdĂ„â€¦, paczka wykona commit/push.
 3. OtworzyĂ„â€ˇ `/calendar`.
-4. ZrobiĂ„â€ˇ screen dnia z `1 wpis` i dnia z `0 wpisÄ‚łw`.
-5. ZamknĂ„â€¦Ă„â€ˇ etap dopiero po potwierdzeniu braku mojibake i braku pustego biaÄąâ€šego mini-kafelka.
+4. ZrobiĂ„â€ˇ screen dnia z `1 wpis` i dnia z `0 wpisów`.
+5. ZamknĂ„â€¦Ă„â€ˇ etap dopiero po potwierdzeniu braku mojibake i braku pustego biaŚâ€šego mini-kafelka.
 6. Dopiero potem ruszaĂ„â€ˇ modal i templates.
 
 <!-- STAGE104C_WEEK_PLAN_CARD_UNCLAMP -->
 
-## 2026-05-17 Ă˘â‚¬â€ť Stage104C: Calendar week plan card unclamp
+## 2026-05-17 — Stage104C: Calendar week plan card unclamp
 
-### FAKTY Z KODU / PLIKÄ‚â€śW
-- Poprzednia paczka Stage104B nie wykonaÄąâ€ša patchera: plik CJS miaÄąâ€š bÄąâ€šĂ„â€¦d skÄąâ€šadni przez nieucieczony backtick w osadzonym teÄąâ€şcie.
-- Faktyczny problem UI: w Plan najbliÄąÄ˝szych dni wpis istnieje, ale renderuje siĂ„â„˘ jako wĂ„â€¦ski pionowy fragment akcji.
-- Naprawa Stage104C: root week-plan card nie uÄąÄ˝ywa legacy klasy calendar-entry-card i dostaje anti-collapse CSS: width 100%, max-width none, min-height 92px, overflow visible, visibility visible, opacity 1.
+### FAKTY Z KODU / PLIKâ€śW
+- Poprzednia paczka Stage104B nie wykonaŚâ€ša patchera: plik CJS miaŚâ€š bŚâ€šĂ„â€¦d skŚâ€šadni przez nieucieczony backtick w osadzonym teŚâ€şcie.
+- Faktyczny problem UI: w Plan najbliŚÄ˝szych dni wpis istnieje, ale renderuje siĂ„â„˘ jako wĂ„â€¦ski pionowy fragment akcji.
+- Naprawa Stage104C: root week-plan card nie uŚÄ˝ywa legacy klasy calendar-entry-card i dostaje anti-collapse CSS: width 100%, max-width none, min-height 92px, overflow visible, visibility visible, opacity 1.
 
 ### GUARDY
 - Stage99 pilnuje klas i zakazu mieszania calendar-entry-card z cf-calendar-week-plan-entry-card.
-- Stage100 pilnuje DOM modelu, peÄąâ€šnych labeli, braku display contents wrappera i anti-collapse CSS.
-- Stage104 pilnuje widocznego payloadu karty oraz braku hidden/zero-size reguÄąâ€š.
+- Stage100 pilnuje DOM modelu, peŚâ€šnych labeli, braku display contents wrappera i anti-collapse CSS.
+- Stage104 pilnuje widocznego payloadu karty oraz braku hidden/zero-size reguŚâ€š.
 
 ### TESTY AUTOMATYCZNE
 Do potwierdzenia przez run:
@@ -695,10 +695,10 @@ Do potwierdzenia przez run:
 - npm run verify:closeflow:quiet
 
 ### TEST RĂ„CZNY
-Status: TEST RĂ„CZNY DO WYKONANIA. WejÄąâ€şĂ„â€ˇ na /calendar i sprawdziĂ„â€ˇ dzieÄąâ€ž z 1 wpis oraz dzieÄąâ€ž z 0 wpisÄ‚łw.
+Status: TEST RĂ„CZNY DO WYKONANIA. WejŚâ€şĂ„â€ˇ na /calendar i sprawdziĂ„â€ˇ dzieŚ„ z 1 wpis oraz dzieŚ„ z 0 wpisów.
 
-## Stage104E - do rozwaÄąÄ˝enia
-- Audyt opÄ‚łÄąźnienia po UsuÄąâ€ž / Zrobione: optimistic update albo refresh bez Google inbound pull po lokalnej mutacji.
+## Stage104E - do rozwaŚÄ˝enia
+- Audyt opóŚźnienia po UsuŚ„ / Zrobione: optimistic update albo refresh bez Google inbound pull po lokalnej mutacji.
 
 
 ## STAGE107_CLIENT_DETAIL_RUNTIME_TDZ_FINANCE_FIX_2026_05_17
@@ -710,7 +710,7 @@ Status: TEST RĂ„CZNY DO WYKONANIA. WejÄąâ€şĂ„â€ˇ na /calendar 
 
 ## Stage113 manual visual check
 1. SprawdziĂ„â€ˇ logo w desktop sidebar, mobile top, mobile drawer i login.
-2. ZgÄąâ€šosiĂ„â€ˇ tylko jednĂ„â€¦ korektĂ„â„˘, jeÄąâ€şli potrzebna: rozmiar, kontrast, margines albo obrys.
+2. ZgŚâ€šosiĂ„â€ˇ tylko jednĂ„â€¦ korektĂ„â„˘, jeŚâ€şli potrzebna: rozmiar, kontrast, margines albo obrys.
 
 
 - After Stage114A V8 passes, proceed to Stage114B: fix /calendar refresh loading behavior.
@@ -769,7 +769,7 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 ## Stage115 - nastĂ„â„˘pny krok po 3.1
 
 1. Damian: test rĂ„â„˘czny /leads/:id: karta kontaktowa po lewej, telefon/e-mail/firma/ostatni kontakt, copy button.
-2. JeÄąÄ˝eli 3.1 OK: osobny podetap Stage115.2 dla notatek leada.
+2. JeŚÄ˝eli 3.1 OK: osobny podetap Stage115.2 dla notatek leada.
 3. Potem osobno: Stage115.3 overdue taski i Stage115.4 finanse leada, bez mieszania przyczyn w jednym patchu.
 
 ## Stage115B next step
@@ -785,18 +785,18 @@ Manual QA: /calendar edit modal, header offset, bottom scroll, sticky footer, no
 
 ## Stage115D next step
 
-- Damian manual check: create or find a lead task with a date in the past and status todo/open. Expected: `ZalegÄąâ€še` red pill in work list and nearest action.
+- Damian manual check: create or find a lead task with a date in the past and status todo/open. Expected: `ZalegŚâ€še` red pill in work list and nearest action.
 - If confirmed, continue Stage115E finance repair.
 - Do not mix finance with overdue logic.
 
 ## Stage115E next step
 
-- Damian manual check: click Dodaj zaliczkĂ„â„˘ and PÄąâ€šatnoÄąâ€şĂ„â€ˇ czĂ„â„˘Äąâ€şciowa in /leads/:id. Expected: modal opens, positive amount saves, finance panel refreshes.
+- Damian manual check: click Dodaj zaliczkĂ„â„˘ and PŚâ€šatnoŚâ€şĂ„â€ˇ czĂ„â„˘Śâ€şciowa in /leads/:id. Expected: modal opens, positive amount saves, finance panel refreshes.
 - After manual QA, close Stage115 LeadDetail P1 batch or schedule full finance unification.
 
 ## Stage116 - Today work item card source of truth
 
-- Manual QA: /today task/event rows and NajbliÄąÄ˝sze 7 dni task/event rows.
+- Manual QA: /today task/event rows and NajbliŚÄ˝sze 7 dni task/event rows.
 - If accepted, plan Stage117 to migrate Calendar selected-day/week-plan to the same card contract.
 - Do not migrate LeadDetail/ClientDetail/CaseDetail in this stage.
 ## Stage117 next step
@@ -898,11 +898,11 @@ Test reczny:
 <!-- STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
 ## 2026-05-18 - Stage121 calendar shift persistence optimistic state
 
-Status: WDRAÄą»ANE.
+Status: WDRAŚ»ANE.
 
-Cel: +1H/+1D/+1W musi wizualnie przesuwaĂ„â€ˇ wpis od razu po udanym PATCH, zamiast polegaĂ„â€ˇ wyÄąâ€šĂ„â€¦cznie na refreshSupabaseBundle().
+Cel: +1H/+1D/+1W musi wizualnie przesuwaĂ„â€ˇ wpis od razu po udanym PATCH, zamiast polegaĂ„â€ˇ wyŚâ€šĂ„â€¦cznie na refreshSupabaseBundle().
 
-Test rĂ„â„˘czny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta ma zmieniĂ„â€ˇ dzieÄąâ€ž/godzinĂ„â„˘.
+Test rĂ„â„˘czny: /calendar, wpis task/event, akcje +1H/+1D/+1W. Po sukcesie karta ma zmieniĂ„â€ˇ dzieŚ„/godzinĂ„â„˘.
 <!-- /STAGE121_CALENDAR_SHIFT_PERSISTENCE_OPTIMISTIC_STATE -->
 
 ## 2026-05-18 - STAGE122_RUNTIME_AUTH_API_PWA_HARDENING
@@ -940,59 +940,59 @@ After Stage124E, wire the visible Calendar page/sidebar month/week/day range int
 
 ## 2026-05-29 - Next after STAGE179 Settings readability
 
-- UruchomiÄ‚â€žĂ˘â‚¬Ë‡:
+- Uruchomi„Ă˘â‚¬Ë‡:
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs.
-- UruchomiÄ‚â€žĂ˘â‚¬Ë‡:
+- Uruchomi„Ă˘â‚¬Ë‡:
 pm run build.
-- Test rÄ‚â€žĂ˘â€žËczny: /settings, sekcja Ä‚ËĂ˘â€š¬ÄąÄľPrzypomnienia Google CalendarÄ‚ËĂ˘â€š¬ÄąĄ, pola Ä‚ËĂ˘â€š¬ÄąÄľTyp przypomnienia GoogleÄ‚ËĂ˘â€š¬ÄąĄ i Ä‚ËĂ˘â€š¬ÄąÄľIle minut wczeĂ„ąĂ˘â‚¬źniejÄ‚ËĂ˘â€š¬ÄąĄ.
-- Nie pushowaÄ‚â€žĂ˘â‚¬Ë‡ osobno, dopiÄ‚â€žĂ˘â‚¬¦Ä‚â€žĂ˘â‚¬Ë‡ do wiÄ‚â€žĂ˘â€žËkszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
+- Test r„Ă˘„Ëczny: /settings, sekcja ËĂ˘â€š¬ŚÄľPrzypomnienia Google CalendarËĂ˘â€š¬ŚĄ, pola ËĂ˘â€š¬ŚÄľTyp przypomnienia GoogleËĂ˘â€š¬ŚĄ i ËĂ˘â€š¬ŚÄľIle minut wczeĂ„ąĂ˘â‚¬źniejËĂ˘â€š¬ŚĄ.
+- Nie pushowa„Ă˘â‚¬Ë‡ osobno, dopi„Ă˘â‚¬¦„Ă˘â‚¬Ë‡ do wi„Ă˘„Ëkszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
 
 ## 2026-05-29 - Next after STAGE179 Settings readability
 
-- UruchomiÄ‚â€žĂ˘â‚¬Ë‡:
+- Uruchomi„Ă˘â‚¬Ë‡:
 ode --test tests/stage179-settings-form-control-readability-contract.test.cjs.
-- UruchomiÄ‚â€žĂ˘â‚¬Ë‡:
+- Uruchomi„Ă˘â‚¬Ë‡:
 pm run build.
-- Test rÄ‚â€žĂ˘â€žËczny: /settings, sekcja Ä‚ËĂ˘â€š¬ÄąÄľPrzypomnienia Google CalendarÄ‚ËĂ˘â€š¬ÄąĄ, pola Ä‚ËĂ˘â€š¬ÄąÄľTyp przypomnienia GoogleÄ‚ËĂ˘â€š¬ÄąĄ i Ä‚ËĂ˘â€š¬ÄąÄľIle minut wczeĂ„ąĂ˘â‚¬źniejÄ‚ËĂ˘â€š¬ÄąĄ.
-- Nie pushowaÄ‚â€žĂ˘â‚¬Ë‡ osobno, dopiÄ‚â€žĂ˘â‚¬¦Ä‚â€žĂ˘â‚¬Ë‡ do wiÄ‚â€žĂ˘â€žËkszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
+- Test r„Ă˘„Ëczny: /settings, sekcja ËĂ˘â€š¬ŚÄľPrzypomnienia Google CalendarËĂ˘â€š¬ŚĄ, pola ËĂ˘â€š¬ŚÄľTyp przypomnienia GoogleËĂ˘â€š¬ŚĄ i ËĂ˘â€š¬ŚÄľIle minut wczeĂ„ąĂ˘â‚¬źniejËĂ˘â€š¬ŚĄ.
+- Nie pushowa„Ă˘â‚¬Ë‡ osobno, dopi„Ă˘â‚¬¦„Ă˘â‚¬Ë‡ do wi„Ă˘„Ëkszej paczki lokalnych UI poprawek po potwierdzeniu Damiana.
 
 <!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_START -->
-## 2026-06-04 Ă˘â‚¬â€ť STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH Ă˘â‚¬â€ť owner control roadmap po deep research CRM
+## 2026-06-04 — STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH — owner control roadmap po deep research CRM
 
-STATUS: DO WDROÄą»ENIA JAKO ETAP PAMIĂ„CI/ROADMAPY. NIE ZMIENIA RUNTIME UI ANI LOGIKI APLIKACJI.
+STATUS: DO WDROŚ»ENIA JAKO ETAP PAMIĂ„CI/ROADMAPY. NIE ZMIENIA RUNTIME UI ANI LOGIKI APLIKACJI.
 
-### PowÄ‚łd etapu
+### Powód etapu
 
 Po analizie konkurencji CRM i raportu `deep-research-report (2).md` dopinamy roadmapĂ„â„˘ CloseFlow do realnego kierunku produktu:
 
-CloseFlow nie ma konkurowaĂ„â€ˇ jako tani, szeroki CRM. CloseFlow ma byĂ„â€ˇ operacyjnym systemem pilnowania ruchu sprzedaÄąÄ˝owego, nastĂ„â„˘pnego kroku, ciszy, spraw i pieniĂ„â„˘dzy dla maÄąâ€šych firm usÄąâ€šugowych.
+CloseFlow nie ma konkurowaĂ„â€ˇ jako tani, szeroki CRM. CloseFlow ma byĂ„â€ˇ operacyjnym systemem pilnowania ruchu sprzedaŚÄ˝owego, nastĂ„â„˘pnego kroku, ciszy, spraw i pieniĂ„â„˘dzy dla maŚâ€šych firm usŚâ€šugowych.
 
 ### Realny stan aplikacji potwierdzony przed wpisem
 
 FAKTY Z REPO:
 - Repo: `dkknapikdamian-collab/leadflowv1`.
-- Aktywna gaÄąâ€šĂ„â€¦Äąź projektu wedÄąâ€šug pamiĂ„â„˘ci projektu: `dev-rollout-freeze`.
+- Aktywna gaŚâ€šĂ„â€¦Śź projektu wedŚâ€šug pamiĂ„â„˘ci projektu: `dev-rollout-freeze`.
 - Local path: `C:\Users\malim\Desktop\biznesy_ai\2.closeflow`.
-- `README.md` na `dev-rollout-freeze` juÄąÄ˝ pozycjonuje produkt jako aplikacjĂ„â„˘ do pilnowania leadÄ‚łw, follow-upÄ‚łw, zadaÄąâ€ž, wydarzeÄąâ€ž i spraw po sprzedaÄąÄ˝y.
-- GÄąâ€šÄ‚łwne widoki istniejĂ„â€¦ w routingu aplikacji: Today, Leads, LeadDetail, Clients, ClientDetail, Cases, CaseDetail, Tasks, Calendar, AiDrafts, Billing, Support, Notifications, Templates.
+- `README.md` na `dev-rollout-freeze` juŚÄ˝ pozycjonuje produkt jako aplikacjĂ„â„˘ do pilnowania leadów, follow-upów, zadaŚ„, wydarzeŚ„ i spraw po sprzedaŚÄ˝y.
+- GŚâ€šówne widoki istniejĂ„â€¦ w routingu aplikacji: Today, Leads, LeadDetail, Clients, ClientDetail, Cases, CaseDetail, Tasks, Calendar, AiDrafts, Billing, Support, Notifications, Templates.
 - `package.json` ma istniejĂ„â€¦ce guardy/komendy powiĂ„â€¦zane z no-next-step, nearest action, Today, billing, Google Calendar, release gate i `verify:closeflow:quiet`.
-- `_project/07_NEXT_STEPS.md` jest realnĂ„â€¦ listĂ„â€¦ etapÄ‚łw/next steps, ale zawiera teÄąÄ˝ historiĂ„â„˘, duplikaty i mojibake po starszych stageĂ˘â‚¬â„˘ach. Ten etap dopina nowĂ„â€¦ roadmapĂ„â„˘ jako osobny blok bez kasowania historii.
+- `_project/07_NEXT_STEPS.md` jest realnĂ„â€¦ listĂ„â€¦ etapów/next steps, ale zawiera teŚÄ˝ historiĂ„â„˘, duplikaty i mojibake po starszych stage’ach. Ten etap dopina nowĂ„â€¦ roadmapĂ„â„˘ jako osobny blok bez kasowania historii.
 
 ### Decyzja produktowa
 
 DECYZJA DAMIANA / KIERUNEK:
-- Nie budujemy Ă˘â‚¬ĹľtaÄąâ€žszego CRM-aĂ˘â‚¬ĹĄ.
+- Nie budujemy Ă˘â‚¬ĹľtaŚ„szego CRM-a„.
 - Nie kopiujemy Tillio/Firmao/HubSpot/Pipedrive feature-for-feature.
-- Budujemy wÄąâ€šaÄąâ€şcicielski system kontroli: kto ucieka, kto nie ma kolejnego kroku, ktÄ‚łra sprawa stoi, gdzie leÄąÄ˝Ă„â€¦ pieniĂ„â€¦dze, co trzeba ruszyĂ„â€ˇ dzisiaj.
-- SaaS ma byĂ„â€ˇ furtkĂ„â€¦. Realna monetyzacja ma iÄąâ€şĂ„â€ˇ przez wdroÄąÄ˝enie procesu, playbooki, cleanup i miesiĂ„â„˘czny review.
+- Budujemy wŚâ€šaŚâ€şcicielski system kontroli: kto ucieka, kto nie ma kolejnego kroku, która sprawa stoi, gdzie leŚÄ˝Ă„â€¦ pieniĂ„â€¦dze, co trzeba ruszyĂ„â€ˇ dzisiaj.
+- SaaS ma byĂ„â€ˇ furtkĂ„â€¦. Realna monetyzacja ma iŚâ€şĂ„â€ˇ przez wdroŚÄ˝enie procesu, playbooki, cleanup i miesiĂ„â„˘czny review.
 
-### Logiczna kolejnoÄąâ€şĂ„â€ˇ etapÄ‚łw do wdroÄąÄ˝enia
+### Logiczna kolejnoŚâ€şĂ„â€ˇ etapów do wdroŚÄ˝enia
 
-#### A35 Ă˘â‚¬â€ť Readiness Audit / Owner Control Baseline
+#### A35 — Readiness Audit / Owner Control Baseline
 
 CEL:
-- ZbudowaĂ„â€ˇ wewnĂ„â„˘trzny i/lub pÄ‚łÄąâ€šproduktowy audyt gotowoÄąâ€şci sprzedaÄąÄ˝owej.
-- Audyt ma dziaÄąâ€šaĂ„â€ˇ na realnych danych leadÄ‚łw/spraw z ostatnich 30 dni lub na rĂ„â„˘cznie/importowo podanych danych.
+- ZbudowaĂ„â€ˇ wewnĂ„â„˘trzny i/lub póŚâ€šproduktowy audyt gotowoŚâ€şci sprzedaŚÄ˝owej.
+- Audyt ma dziaŚâ€šaĂ„â€ˇ na realnych danych leadów/spraw z ostatnich 30 dni lub na rĂ„â„˘cznie/importowo podanych danych.
 
 ZAKRES:
 - Policz:
@@ -1000,28 +1000,28 @@ ZAKRES:
   - leady bez kontaktu 7+ dni,
   - leady bez kontaktu 14+ dni,
   - sprawy bez ruchu,
-  - sprawy z wartoÄąâ€şciĂ„â€¦ finansowĂ„â€¦, ale bez nastĂ„â„˘pnego kroku,
-  - rekordy bez wÄąâ€šaÄąâ€şciciela/odpowiedzialnego,
+  - sprawy z wartoŚâ€şciĂ„â€¦ finansowĂ„â€¦, ale bez nastĂ„â„˘pnego kroku,
+  - rekordy bez wŚâ€šaŚâ€şciciela/odpowiedzialnego,
   - rekordy z notatkĂ„â€¦, ale bez zadania/follow-upu.
 - DodaĂ„â€ˇ raport: `CloseFlow Readiness Audit`.
-- Wynik ma byĂ„â€ˇ uÄąÄ˝ywalny jako:
+- Wynik ma byĂ„â€ˇ uŚÄ˝ywalny jako:
   - wewnĂ„â„˘trzny ekran diagnostyczny,
   - podstawa oferty `CloseFlow Control Sprint`,
-  - ÄąźrÄ‚łdÄąâ€šo danych do kolejnych etapÄ‚łw.
+  - ŚźródŚâ€šo danych do kolejnych etapów.
 
 NIE RUSZAĂ„â€ :
 - Nie budowaĂ„â€ˇ BI dashboardu.
-- Nie budowaĂ„â€ˇ peÄąâ€šnego scoringu AI.
+- Nie budowaĂ„â€ˇ peŚâ€šnego scoringu AI.
 - Nie rozbudowywaĂ„â€ˇ ERP/faktur/KSeF.
 
 GUARD/TEST:
-- Guard ma sprawdzaĂ„â€ˇ, ÄąÄ˝e A35 dokumentuje metryki: no-next-step, 7d silence, 14d silence, stale cases, money-without-next-step.
-- Test rĂ„â„˘czny: na danych testowych/realnych porÄ‚łwnaĂ„â€ˇ liczby z listĂ„â€¦ leadÄ‚łw/spraw.
+- Guard ma sprawdzaĂ„â€ˇ, ŚÄ˝e A35 dokumentuje metryki: no-next-step, 7d silence, 14d silence, stale cases, money-without-next-step.
+- Test rĂ„â„˘czny: na danych testowych/realnych porównaĂ„â€ˇ liczby z listĂ„â€¦ leadów/spraw.
 
-#### A35B Ă˘â‚¬â€ť Mandatory Next Step Contract
+#### A35B — Mandatory Next Step Contract
 
 CEL:
-- KaÄąÄ˝dy aktywny lead/sprawa musi mieĂ„â€ˇ jasny stan kolejnego kroku albo Äąâ€şwiadomy status `brak kolejnego kroku`.
+- KaŚÄ˝dy aktywny lead/sprawa musi mieĂ„â€ˇ jasny stan kolejnego kroku albo Śâ€şwiadomy status `brak kolejnego kroku`.
 
 ZAKRES:
 - UjednoliciĂ„â€ˇ definicjĂ„â„˘ `next step`.
@@ -1031,53 +1031,53 @@ ZAKRES:
   - liczba dni ciszy,
   - status ryzyka,
   - szybkie akcje: ustaw follow-up, dodaj zadanie, dodaj notatkĂ„â„˘, oznacz jako martwy/utracony.
-- Nie pozwoliĂ„â€ˇ, ÄąÄ˝eby historia aktywnoÄąâ€şci byÄąâ€ša tylko dziennikiem. Historia ma karmiĂ„â€ˇ status ryzyka.
+- Nie pozwoliĂ„â€ˇ, ŚÄ˝eby historia aktywnoŚâ€şci byŚâ€ša tylko dziennikiem. Historia ma karmiĂ„â€ˇ status ryzyka.
 
 NIE RUSZAĂ„â€ :
-- Nie robiĂ„â€ˇ jeszcze peÄąâ€šnej automatyzacji.
+- Nie robiĂ„â€ˇ jeszcze peŚâ€šnej automatyzacji.
 - Nie mieszaĂ„â€ˇ z AI drafts rebuild.
 
 GUARD/TEST:
 - Guard: detail views majĂ„â€¦ widoczny kontrakt last-contact / next-step / silence-age / risk.
-- Test rĂ„â„˘czny: lead z kontaktem, lead bez kontaktu, sprawa z pÄąâ€šatnoÄąâ€şciĂ„â€¦, sprawa bez nastĂ„â„˘pnego kroku.
+- Test rĂ„â„˘czny: lead z kontaktem, lead bez kontaktu, sprawa z pŚâ€šatnoŚâ€şciĂ„â€¦, sprawa bez nastĂ„â„˘pnego kroku.
 
-#### A41 Ă˘â‚¬â€ť Contact Cadence Grid / Reminder Engine
+#### A41 — Contact Cadence Grid / Reminder Engine
 
 CEL:
-- DodaĂ„â€ˇ czytelnĂ„â€¦ siatkĂ„â„˘ kontaktu jako gÄąâ€šÄ‚łwny widok operacyjny, nie jako spam powiadomieÄąâ€ž.
+- DodaĂ„â€ˇ czytelnĂ„â€¦ siatkĂ„â„˘ kontaktu jako gŚâ€šówny widok operacyjny, nie jako spam powiadomieŚ„.
 
 ZAKRES:
 - Widok/sekcja `Siatka kontaktu`.
 - Bucket/filtrowanie:
-  - kontakt dziÄąâ€ş,
-  - 1 dzieÄąâ€ž ciszy,
+  - kontakt dziŚâ€ş,
+  - 1 dzieŚ„ ciszy,
   - 2 dni ciszy,
   - 3 dni ciszy,
   - 5 dni ciszy,
   - 7 dni ciszy,
   - 14 dni ciszy.
-- KaÄąÄ˝dy rekord pokazuje:
+- KaŚÄ˝dy rekord pokazuje:
   - osoba/firma,
   - typ: lead/klient/sprawa,
   - ostatni kontakt,
   - nastĂ„â„˘pny krok,
-  - wartoÄąâ€şĂ„â€ˇ sprawy jeÄąâ€şli istnieje,
+  - wartoŚâ€şĂ„â€ˇ sprawy jeŚâ€şli istnieje,
   - status ryzyka,
   - szybkie akcje.
-- Engine ma bazowaĂ„â€ˇ na realnej historii aktywnoÄąâ€şci, zadaniach i wydarzeniach.
+- Engine ma bazowaĂ„â€ˇ na realnej historii aktywnoŚâ€şci, zadaniach i wydarzeniach.
 
 NIE RUSZAĂ„â€ :
-- Nie zamieniaĂ„â€ˇ tego w zwykÄąâ€še browser notifications.
-- Nie budowaĂ„â€ˇ jeszcze peÄąâ€šnego sekwencera mailowego.
+- Nie zamieniaĂ„â€ˇ tego w zwykŚâ€še browser notifications.
+- Nie budowaĂ„â€ˇ jeszcze peŚâ€šnego sekwencera mailowego.
 
 GUARD/TEST:
-- Guard: bucket 7d/14d nie moÄąÄ˝e byĂ„â€ˇ tylko statycznym tekstem; musi byĂ„â€ˇ poÄąâ€šĂ„â€¦czony z obliczaniem ostatniego kontaktu.
-- Test rĂ„â„˘czny: rekordy z rÄ‚łÄąÄ˝nymi datami kontaktu wpadajĂ„â€¦ do wÄąâ€šaÄąâ€şciwych bucketÄ‚łw.
+- Guard: bucket 7d/14d nie moŚÄ˝e byĂ„â€ˇ tylko statycznym tekstem; musi byĂ„â€ˇ poŚâ€šĂ„â€¦czony z obliczaniem ostatniego kontaktu.
+- Test rĂ„â„˘czny: rekordy z róŚÄ˝nymi datami kontaktu wpadajĂ„â€¦ do wŚâ€šaŚâ€şciwych bucketów.
 
-#### A46 Ă˘â‚¬â€ť Sales Funnel Movement View / Lejek ruchu sprzedaÄąÄ˝owego
+#### A46 — Sales Funnel Movement View / Lejek ruchu sprzedaŚÄ˝owego
 
 CEL:
-- ZbudowaĂ„â€ˇ lejek ruchu, ktÄ‚łry pokazuje nie tylko etap, ale teÄąÄ˝ ciszĂ„â„˘, brak kroku, ryzyko i pieniĂ„â€¦dze.
+- ZbudowaĂ„â€ˇ lejek ruchu, który pokazuje nie tylko etap, ale teŚÄ˝ ciszĂ„â„˘, brak kroku, ryzyko i pieniĂ„â€¦dze.
 
 ZAKRES:
 - Pipeline/lejek ma pokazywaĂ„â€ˇ:
@@ -1086,21 +1086,21 @@ ZAKRES:
   - ostatni kontakt,
   - nastĂ„â„˘pny krok,
   - dni bez ruchu,
-  - wartoÄąâ€şĂ„â€ˇ/potencjalna prowizja,
+  - wartoŚâ€şĂ„â€ˇ/potencjalna prowizja,
   - risk flag,
   - szybkie akcje.
-- Karta w lejku nie moÄąÄ˝e byĂ„â€ˇ tylko nazwĂ„â€¦ i etapem.
+- Karta w lejku nie moŚÄ˝e byĂ„â€ˇ tylko nazwĂ„â€¦ i etapem.
 - Lejek ma zasilaĂ„â€ˇ Today, Lost Lead Rescue i Owner Digest.
 
 NIE RUSZAĂ„â€ :
-- Nie kopiowaĂ„â€ˇ klasycznego CRM kanban jako caÄąâ€šoÄąâ€şci.
+- Nie kopiowaĂ„â€ˇ klasycznego CRM kanban jako caŚâ€šoŚâ€şci.
 - Nie robiĂ„â€ˇ forecastingu enterprise.
 
 GUARD/TEST:
 - Guard: karta lejka zawiera next-step, silence-age, risk, quick actions.
 - Test rĂ„â„˘czny: leady/sprawy zmieniajĂ„â€¦ etap i nadal zachowujĂ„â€¦ status ruchu.
 
-#### A42 Ă˘â‚¬â€ť Lost Lead Rescue
+#### A42 — Lost Lead Rescue
 
 CEL:
 - ZbudowaĂ„â€ˇ osobny ekran `Do odzyskania`, nie tylko filtr w leadach.
@@ -1110,82 +1110,82 @@ ZAKRES:
   - brak ruchu 7+ dni,
   - 14 dni ciszy,
   - brak nastĂ„â„˘pnego kroku,
-  - leady z duÄąÄ˝Ă„â€¦ wartoÄąâ€şciĂ„â€¦ bez aktywnoÄąâ€şci,
-  - niedokoÄąâ€žczone szkice,
-  - leady bez wÄąâ€šaÄąâ€şciciela.
+  - leady z duŚÄ˝Ă„â€¦ wartoŚâ€şciĂ„â€¦ bez aktywnoŚâ€şci,
+  - niedokoŚ„czone szkice,
+  - leady bez wŚâ€šaŚâ€şciciela.
 - Szybkie akcje:
-  - odezwij siĂ„â„˘ dziÄąâ€ş,
-  - utwÄ‚łrz zadanie,
-  - odÄąâ€šÄ‚łÄąÄ˝,
+  - odezwij siĂ„â„˘ dziŚâ€ş,
+  - utwórz zadanie,
+  - odŚâ€šóŚÄ˝,
   - dodaj notatkĂ„â„˘,
   - przygotuj szkic,
   - oznacz jako martwy/utracony.
-- Widok ma byĂ„â€ˇ uÄąÄ˝ywalny codziennie/tygodniowo przez wÄąâ€šaÄąâ€şciciela.
+- Widok ma byĂ„â€ˇ uŚÄ˝ywalny codziennie/tygodniowo przez wŚâ€šaŚâ€şciciela.
 
 NIE RUSZAĂ„â€ :
 - Nie robiĂ„â€ˇ rozbudowanych automatyzacji marketingowych.
-- Nie wysyÄąâ€šaĂ„â€ˇ nic automatycznie bez akceptacji.
+- Nie wysyŚâ€šaĂ„â€ˇ nic automatycznie bez akceptacji.
 
 GUARD/TEST:
-- Guard: ekran/rescue model wymaga kryteriÄ‚łw 7d, 14d, no-next-step i quick actions.
-- Test rĂ„â„˘czny: minimum 5 przypadkÄ‚łw testowych wpada do wÄąâ€šaÄąâ€şciwych sekcji.
+- Guard: ekran/rescue model wymaga kryteriów 7d, 14d, no-next-step i quick actions.
+- Test rĂ„â„˘czny: minimum 5 przypadków testowych wpada do wŚâ€šaŚâ€şciwych sekcji.
 
-#### A45 Ă˘â‚¬â€ť Finance Watchlist / Money-at-Risk
+#### A45 — Finance Watchlist / Money-at-Risk
 
 CEL:
-- ZbudowaĂ„â€ˇ listĂ„â„˘ pieniĂ„â„˘dzy do ruszenia, nie peÄąâ€šny moduÄąâ€š ksiĂ„â„˘gowy.
+- ZbudowaĂ„â€ˇ listĂ„â„˘ pieniĂ„â„˘dzy do ruszenia, nie peŚâ€šny moduŚâ€š ksiĂ„â„˘gowy.
 
 ZAKRES:
 - Pokazuje:
-  - sprawy z wartoÄąâ€şciĂ„â€¦, ale bez nastĂ„â„˘pnego kroku,
+  - sprawy z wartoŚâ€şciĂ„â€¦, ale bez nastĂ„â„˘pnego kroku,
   - prowizje do rozliczenia,
-  - wpÄąâ€šaty po terminie,
-  - brak daty pÄąâ€šatnoÄąâ€şci,
+  - wpŚâ€šaty po terminie,
+  - brak daty pŚâ€šatnoŚâ€şci,
   - korekty do sprawdzenia,
-  - duÄąÄ˝e kwoty bez ruchu 7+ dni.
-- PowiĂ„â€¦zaĂ„â€ˇ z istniejĂ„â€¦cymi finansami sprawy: wartoÄąâ€şĂ„â€ˇ, prowizja, wpÄąâ€šaty, korekty, usuwanie wpÄąâ€šat.
+  - duŚÄ˝e kwoty bez ruchu 7+ dni.
+- PowiĂ„â€¦zaĂ„â€ˇ z istniejĂ„â€¦cymi finansami sprawy: wartoŚâ€şĂ„â€ˇ, prowizja, wpŚâ€šaty, korekty, usuwanie wpŚâ€šat.
 - Widok ma zasilaĂ„â€ˇ Owner Digest.
 
 NIE RUSZAĂ„â€ :
 - Nie budowaĂ„â€ˇ KSeF.
-- Nie budowaĂ„â€ˇ fakturowania, magazynu, bankÄ‚łw, ERP ani ksiĂ„â„˘gowoÄąâ€şci.
+- Nie budowaĂ„â€ˇ fakturowania, magazynu, banków, ERP ani ksiĂ„â„˘gowoŚâ€şci.
 - Nie kopiowaĂ„â€ˇ Firmao/Berg.
 
 GUARD/TEST:
-- Guard: finance watchlist nie moÄąÄ˝e importowaĂ„â€ˇ moduÄąâ€šÄ‚łw ksiĂ„â„˘gowych/ERP ani obiecywaĂ„â€ˇ fakturowania.
+- Guard: finance watchlist nie moŚÄ˝e importowaĂ„â€ˇ moduŚâ€šów ksiĂ„â„˘gowych/ERP ani obiecywaĂ„â€ˇ fakturowania.
 - Test rĂ„â„˘czny: sprawa z kwotĂ„â€¦ i brakiem next step pojawia siĂ„â„˘ jako money-at-risk.
 
-#### A44 Ă˘â‚¬â€ť Owner Digest / Weekly Report
+#### A44 — Owner Digest / Weekly Report
 
 CEL:
-- DodaĂ„â€ˇ dzienny/tygodniowy raport wÄąâ€šaÄąâ€şciciela jako listĂ„â„˘ decyzji, nie vanity dashboard.
+- DodaĂ„â€ˇ dzienny/tygodniowy raport wŚâ€šaŚâ€şciciela jako listĂ„â„˘ decyzji, nie vanity dashboard.
 
 ZAKRES:
 - Daily:
-  - co dziÄąâ€ş ruszyĂ„â€ˇ,
+  - co dziŚâ€ş ruszyĂ„â€ˇ,
   - kto nie ma nastĂ„â„˘pnego kroku,
   - kto ma 7/14 dni ciszy,
-  - ktÄ‚łre sprawy stojĂ„â€¦,
+  - które sprawy stojĂ„â€¦,
   - jakie pieniĂ„â€¦dze wymagajĂ„â€¦ ruchu.
 - Weekly:
-  - ile leadÄ‚łw weszÄąâ€šo,
-  - ile leadÄ‚łw bez next step,
+  - ile leadów weszŚâ€šo,
+  - ile leadów bez next step,
   - ile 7d/14d ciszy,
   - ile spraw bez ruchu,
   - ile pieniĂ„â„˘dzy bez ruchu,
   - najwiĂ„â„˘ksze ryzyko tygodnia.
-- Digest ma byĂ„â€ˇ widoczny w aplikacji i docelowo moÄąÄ˝liwy do wysyÄąâ€ški, ale bez automatycznego wysyÄąâ€šania bez konfiguracji/akceptacji.
+- Digest ma byĂ„â€ˇ widoczny w aplikacji i docelowo moŚÄ˝liwy do wysyŚâ€ški, ale bez automatycznego wysyŚâ€šania bez konfiguracji/akceptacji.
 
 NIE RUSZAĂ„â€ :
 - Nie robiĂ„â€ˇ newslettera.
-- Nie robiĂ„â€ˇ dashboardu wykresÄ‚łw dla samego wyglĂ„â€¦du.
-- Nie wysyÄąâ€šaĂ„â€ˇ e-maili, jeÄąâ€şli produkcyjny email nie jest gotowy.
+- Nie robiĂ„â€ˇ dashboardu wykresów dla samego wyglĂ„â€¦du.
+- Nie wysyŚâ€šaĂ„â€ˇ e-maili, jeŚâ€şli produkcyjny email nie jest gotowy.
 
 GUARD/TEST:
 - Guard: digest ma zawieraĂ„â€ˇ listĂ„â„˘ ryzyk i akcji, nie tylko metryki.
-- Test rĂ„â„˘czny: owner widzi co dziÄąâ€ş zrobiĂ„â€ˇ bez przechodzenia przez 5 ekranÄ‚łw.
+- Test rĂ„â„˘czny: owner widzi co dziŚâ€ş zrobiĂ„â€ˇ bez przechodzenia przez 5 ekranów.
 
-#### A36 Ă˘â‚¬â€ť Drafts Rebuild / Jedna skrzynka szkicÄ‚łw
+#### A36 — Drafts Rebuild / Jedna skrzynka szkiców
 
 CEL:
 - PrzebudowaĂ„â€ˇ szkice jako jedno miejsce zatwierdzania danych, ale dopiero po warstwie kontroli.
@@ -1197,41 +1197,41 @@ ZAKRES:
   - dyktowanie,
   - parser,
   - AI.
-- ZatwierdÄąź jako:
+- ZatwierdŚź jako:
   - lead,
   - zadanie,
   - wydarzenie,
   - notatka,
   - follow-up.
-- Po zatwierdzeniu wpis musi automatycznie przypisaĂ„â€ˇ siĂ„â„˘ do lead/klient/sprawa, jeÄąâ€şli kontekst jest znany.
-- AI dalej dziaÄąâ€ša confirm-first: nie zapisuje finalnych danych bez akceptacji uÄąÄ˝ytkownika.
+- Po zatwierdzeniu wpis musi automatycznie przypisaĂ„â€ˇ siĂ„â„˘ do lead/klient/sprawa, jeŚâ€şli kontekst jest znany.
+- AI dalej dziaŚâ€ša confirm-first: nie zapisuje finalnych danych bez akceptacji uŚÄ˝ytkownika.
 
 NIE RUSZAĂ„â€ :
-- Nie sprzedawaĂ„â€ˇ tego jako gÄąâ€šÄ‚łwnego wyrÄ‚łÄąÄ˝nika Ă˘â‚¬ĹľAI CRMĂ˘â‚¬ĹĄ.
-- Nie dodawaĂ„â€ˇ automatycznego wysyÄąâ€šania wiadomoÄąâ€şci.
+- Nie sprzedawaĂ„â€ˇ tego jako gŚâ€šównego wyróŚÄ˝nika Ă˘â‚¬ĹľAI CRM„.
+- Nie dodawaĂ„â€ˇ automatycznego wysyŚâ€šania wiadomoŚâ€şci.
 
 GUARD/TEST:
 - Guard: AI drafts confirm-first i brak automatycznego finalnego zapisu bez akceptacji.
 - Test rĂ„â„˘czny: szkic z LeadDetail/ClientDetail/CaseDetail zachowuje kontekst.
 
-#### A47 Ă˘â‚¬â€ť Branchen Playbooks / Control Sprint Offer
+#### A47 — Branchen Playbooks / Control Sprint Offer
 
 CEL:
-- SpiĂ„â€¦Ă„â€ˇ produkt z usÄąâ€šugĂ„â€¦ wdroÄąÄ˝eniowĂ„â€¦, ÄąÄ˝eby nie sprzedawaĂ„â€ˇ samego taniego SaaS.
+- SpiĂ„â€¦Ă„â€ˇ produkt z usŚâ€šugĂ„â€¦ wdroŚÄ˝eniowĂ„â€¦, ŚÄ˝eby nie sprzedawaĂ„â€ˇ samego taniego SaaS.
 
 ZAKRES:
 - Oferta startowa:
   - `CloseFlow Control Sprint`,
   - readiness audit,
   - import/porzĂ„â€¦dkowanie danych,
-  - ustawienie etapÄ‚łw,
+  - ustawienie etapów,
   - next-step discipline,
   - contact cadence,
   - owner digest,
   - podstawowy finance watchlist,
   - jedno szkolenie.
 - Pierwszy segment:
-  - maÄąâ€še usÄąâ€šugi B2B z inboundem i wÄąâ€šaÄąâ€şcicielem blisko sprzedaÄąÄ˝y.
+  - maŚâ€še usŚâ€šugi B2B z inboundem i wŚâ€šaŚâ€şcicielem blisko sprzedaŚÄ˝y.
 - Playbook V1:
   - etapy,
   - wymagane next steps,
@@ -1240,15 +1240,15 @@ ZAKRES:
   - raport ownera.
 
 NIE RUSZAĂ„â€ :
-- Nie robiĂ„â€ˇ 10 branÄąÄ˝ naraz.
-- Nie budowaĂ„â€ˇ marketplaceĂ˘â‚¬â„˘u playbookÄ‚łw.
-- Nie robiĂ„â€ˇ bespoke wdroÄąÄ˝eÄąâ€ž bez szablonu.
+- Nie robiĂ„â€ˇ 10 branŚÄ˝ naraz.
+- Nie budowaĂ„â€ˇ marketplace’u playbooków.
+- Nie robiĂ„â€ˇ bespoke wdroŚÄ˝eŚ„ bez szablonu.
 
 GUARD/TEST:
-- Guard: roadmapa nie moÄąÄ˝e mieĂ„â€ˇ wiĂ„â„˘cej niÄąÄ˝ jednego aktywnego segmentu startowego bez oznaczenia `DO_POTWIERDZENIA`.
-- Test sprzedaÄąÄ˝owy: 10 rozmÄ‚łw / demo na danych z ostatnich 30 dni / prÄ‚łba sprzedaÄąÄ˝y Control Sprint.
+- Guard: roadmapa nie moŚÄ˝e mieĂ„â€ˇ wiĂ„â„˘cej niŚÄ˝ jednego aktywnego segmentu startowego bez oznaczenia `DO_POTWIERDZENIA`.
+- Test sprzedaŚÄ˝owy: 10 rozmów / demo na danych z ostatnich 30 dni / próba sprzedaŚÄ˝y Control Sprint.
 
-### Minimalny porzĂ„â€¦dek wdroÄąÄ˝enia
+### Minimalny porzĂ„â€¦dek wdroŚÄ˝enia
 
 1. A35 Readiness Audit.
 2. A35B Mandatory Next Step Contract.
@@ -1262,21 +1262,21 @@ GUARD/TEST:
 
 ### Warunki zamkniĂ„â„˘cia tej roadmapy
 
-- KaÄąÄ˝dy etap ma osobny run report w `_project/runs/`.
-- KaÄąÄ˝dy etap ma guard/test albo jawny SKIP z powodem.
-- KaÄąÄ˝dy etap aktualizuje `_project/07_NEXT_STEPS.md`, `_project/08_CHANGELOG_AI.md`, `_project/12_IMPLEMENTATION_LEDGER.md`, `_project/13_TEST_HISTORY.md`.
-- KaÄąÄ˝dy etap ma aktualizacjĂ„â„˘ Obsidiana albo manifest.
-- Nie uÄąÄ˝ywaĂ„â€ˇ `git add .`.
-- Nie robiĂ„â€ˇ push przed testami/guardami i rĂ„â„˘cznym potwierdzeniem, jeÄąâ€şli etap dotyka runtime UI.
+- KaŚÄ˝dy etap ma osobny run report w `_project/runs/`.
+- KaŚÄ˝dy etap ma guard/test albo jawny SKIP z powodem.
+- KaŚÄ˝dy etap aktualizuje `_project/07_NEXT_STEPS.md`, `_project/08_CHANGELOG_AI.md`, `_project/12_IMPLEMENTATION_LEDGER.md`, `_project/13_TEST_HISTORY.md`.
+- KaŚÄ˝dy etap ma aktualizacjĂ„â„˘ Obsidiana albo manifest.
+- Nie uŚÄ˝ywaĂ„â€ˇ `git add .`.
+- Nie robiĂ„â€ˇ push przed testami/guardami i rĂ„â„˘cznym potwierdzeniem, jeŚâ€şli etap dotyka runtime UI.
 <!-- STAGE221_OWNER_CONTROL_ROADMAP_AFTER_CRM_RESEARCH_END -->
 
 <!-- STAGE222_R4_V3_LEAD_CLIENT_OPERATIONAL_BADGES -->
 ## 2026-06-05 - STAGE222 R4 V3 lead/client operational badges robust fix
 
 FAKTY:
-- R4 V1/V2 zatrzymaÄąâ€šy siĂ„â„˘ na kruchych anchorach w Clients.tsx.
-- V3 uÄąÄ˝ywa elastycznych regexÄ‚łw i naprawia czĂ„â„˘Äąâ€şciowy lokalny stan.
-- Docelowy wzÄ‚łr: [Oferta wysÄąâ€šana] [Sprawa] [14+ dni bez ruchu] [brak akcji].
+- R4 V1/V2 zatrzymaŚâ€šy siĂ„â„˘ na kruchych anchorach w Clients.tsx.
+- V3 uŚÄ˝ywa elastycznych regexów i naprawia czĂ„â„˘Śâ€şciowy lokalny stan.
+- Docelowy wzór: [Oferta wysŚâ€šana] [Sprawa] [14+ dni bez ruchu] [brak akcji].
 - Nie ruszano Today i nie dodano nowego CSS.
 
 TESTY:
@@ -1289,10 +1289,10 @@ TESTY:
 ## 2026-06-05 - STAGE222 R2B Settings/Cases hotfix
 
 FAKTY:
-- Commit 7ff0bc08 zostaÄąâ€š wypchniĂ„â„˘ty mimo czerwonego guard/test Stage222 R2.
-- Przyczyna: apply script nie wykonaÄąâ€š patcha Settings/Cases, wiĂ„â„˘c helper i guard weszÄąâ€šy bez sekcji ustawieÄąâ€ž i bez case badges.
+- Commit 7ff0bc08 zostaŚâ€š wypchniĂ„â„˘ty mimo czerwonego guard/test Stage222 R2.
+- Przyczyna: apply script nie wykonaŚâ€š patcha Settings/Cases, wiĂ„â„˘c helper i guard weszŚâ€šy bez sekcji ustawieŚ„ i bez case badges.
 - R2B dopina brakujĂ„â€¦ce elementy: Settings threshold section i Cases owner risk badges.
-- Build wczeÄąâ€şniej przechodziÄąâ€š, ale Stage222 guard/test nie.
+- Build wczeŚâ€şniej przechodziŚâ€š, ale Stage222 guard/test nie.
 
 DECYZJE:
 - Nie robimy rollbacku, bo build przechodzi i zakres da siĂ„â„˘ domknĂ„â€¦Ă„â€ˇ hotfixem.
@@ -1302,8 +1302,8 @@ DECYZJE:
 TESTY:
 - node scripts/check-stage222-owner-risk-rules-foundation.cjs
 - node --test tests/stage222-owner-risk-rules-foundation.test.cjs
-- node scripts/check-stage222-r4-lead-client-operational-badges.cjs, jeÄąâ€şli plik istnieje
-- node --test tests/stage222-r4-lead-client-operational-badges.test.cjs, jeÄąâ€şli plik istnieje
+- node scripts/check-stage222-r4-lead-client-operational-badges.cjs, jeŚâ€şli plik istnieje
+- node --test tests/stage222-r4-lead-client-operational-badges.test.cjs, jeŚâ€şli plik istnieje
 - npm run build
 - git diff --check
 
@@ -1316,16 +1316,16 @@ NASTĂ„PNY KROK:
 FAKTY:
 - R2B Stage222 jest zielony i repo jest czyste/up-to-date przed Stage223.
 - Dodano `next-move-contract.ts` jako jeden kontrakt dla missing/overdue/today/planned/closed.
-- Dodano `activity-truth.ts`, ÄąÄ˝eby nie udawaĂ„â€ˇ kontaktu na podstawie `updatedAt`.
-- `owner-risk-rules.ts` uÄąÄ˝ywa teraz next-move-contract i activity-truth.
-- `record-operational-badges.ts` rozrÄ‚łÄąÄ˝nia ciszĂ„â„˘ kontaktu od braku Äąâ€şwieÄąÄ˝ego ruchu fallback.
-- Dodano runtime testy, ktÄ‚łre realnie wywoÄąâ€šujĂ„â€¦ funkcje przez esbuild, nie tylko szukajĂ„â€¦ tekstu.
+- Dodano `activity-truth.ts`, ŚÄ˝eby nie udawaĂ„â€ˇ kontaktu na podstawie `updatedAt`.
+- `owner-risk-rules.ts` uŚÄ˝ywa teraz next-move-contract i activity-truth.
+- `record-operational-badges.ts` rozróŚÄ˝nia ciszĂ„â„˘ kontaktu od braku Śâ€şwieŚÄ˝ego ruchu fallback.
+- Dodano runtime testy, które realnie wywoŚâ€šujĂ„â€¦ funkcje przez esbuild, nie tylko szukajĂ„â€¦ tekstu.
 
 DECYZJE DAMIANA:
-- PodetapÄ‚łw A-D nie pushujemy osobno.
+- Podetapów A-D nie pushujemy osobno.
 - Nie robiĂ„â€ˇ drugiego Today.
-- Badge majĂ„â€¦ wynikaĂ„â€ˇ z jednego kontraktu ruchu i prawdy aktywnoÄąâ€şci.
-- `updatedAt` moÄąÄ˝e byĂ„â€ˇ fallbackiem aktywnoÄąâ€şci, nie prawdĂ„â€¦ kontaktu.
+- Badge majĂ„â€¦ wynikaĂ„â€ˇ z jednego kontraktu ruchu i prawdy aktywnoŚâ€şci.
+- `updatedAt` moŚÄ˝e byĂ„â€ˇ fallbackiem aktywnoŚâ€şci, nie prawdĂ„â€¦ kontaktu.
 
 TESTY:
 - `node scripts/check-stage223-owner-movement-risk-system.cjs`
@@ -1337,26 +1337,26 @@ TESTY:
 - `git diff --check`
 
 DO POTWIERDZENIA:
-- PeÄąâ€šne wpiĂ„â„˘cie LeadDetail/CaseDetail widocznego work center moÄąÄ˝na zrobiĂ„â€ˇ jako D2, jeÄąâ€şli po runtime contract nie bĂ„â„˘dzie regresji.
-- Today agregacja moÄąÄ˝e dostaĂ„â€ˇ ranking w nastĂ„â„˘pnym kroku, ale bez nowej sekcji.
+- PeŚâ€šne wpiĂ„â„˘cie LeadDetail/CaseDetail widocznego work center moŚÄ˝na zrobiĂ„â€ˇ jako D2, jeŚâ€şli po runtime contract nie bĂ„â„˘dzie regresji.
+- Today agregacja moŚÄ˝e dostaĂ„â€ˇ ranking w nastĂ„â„˘pnym kroku, ale bez nowej sekcji.
 
 NASTĂ„PNY KROK:
 - Po zielonych testach sprawdziĂ„â€ˇ /leads, /cases, /today.
-- Commit/push dopiero po caÄąâ€šym Stage223 R2, nie po pojedynczym podetapie.
+- Commit/push dopiero po caŚâ€šym Stage223 R2, nie po pojedynczym podetapie.
 
 <!-- STAGE223_R2B_ACTIVITY_TRUTH_FALLBACK_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2B Activity Truth fallback hotfix
 
 FAKTY:
-- Stage223 R2 runtime test wykryÄąâ€š realny bÄąâ€šĂ„â€¦d: fallback z `updatedAt` nadpisywaÄąâ€š prawdziwĂ„â€¦ aktywnoÄąâ€şĂ„â€ˇ.
-- Build przeszedÄąâ€š, ale runtime test nie; Stage223 R2 nie jest gotowy do pushu.
-- R2B zmienia Activity Truth: `updatedAt/createdAt` sĂ„â€¦ uÄąÄ˝ywane wyÄąâ€šĂ„â€¦cznie, gdy nie ma realnych kandydatÄ‚łw aktywnoÄąâ€şci/kontaktu/pÄąâ€šatnoÄąâ€şci.
-- To naprawia zaÄąâ€šoÄąÄ˝enie: nie udajemy kontaktu ani Äąâ€şwieÄąÄ˝ej aktywnoÄąâ€şci przez zwykÄąâ€šy update rekordu.
+- Stage223 R2 runtime test wykryŚâ€š realny bŚâ€šĂ„â€¦d: fallback z `updatedAt` nadpisywaŚâ€š prawdziwĂ„â€¦ aktywnoŚâ€şĂ„â€ˇ.
+- Build przeszedŚâ€š, ale runtime test nie; Stage223 R2 nie jest gotowy do pushu.
+- R2B zmienia Activity Truth: `updatedAt/createdAt` są uŚÄ˝ywane wyŚâ€šĂ„â€¦cznie, gdy nie ma realnych kandydatów aktywnoŚâ€şci/kontaktu/pŚâ€šatnoŚâ€şci.
+- To naprawia zaŚâ€šoŚÄ˝enie: nie udajemy kontaktu ani Śâ€şwieŚÄ˝ej aktywnoŚâ€şci przez zwykŚâ€šy update rekordu.
 
 DECYZJE:
-- Nie pushowaĂ„â€ˇ Stage223, dopÄ‚łki runtime testy nie sĂ„â€¦ zielone.
+- Nie pushowaĂ„â€ˇ Stage223, dopóki runtime testy nie są zielone.
 - UtrzymaĂ„â€ˇ kontrakt: prawdziwy kontakt != updatedAt.
-- Podetapy A-D pozostajĂ„â€¦ jednym lokalnym blokiem do jednego commita po peÄąâ€šnych testach.
+- Podetapy A-D pozostajĂ„â€¦ jednym lokalnym blokiem do jednego commita po peŚâ€šnych testach.
 
 TESTY:
 - node scripts/check-stage223-owner-movement-risk-system.cjs
@@ -1368,20 +1368,20 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonych testach moÄąÄ˝na dopiero rozwaÄąÄ˝yĂ„â€ˇ jeden commit/push Stage223 R2.
+- Po zielonych testach moŚÄ˝na dopiero rozwaŚÄ˝yĂ„â€ˇ jeden commit/push Stage223 R2.
 
 <!-- STAGE223_R2C_STAGE113_LOGO_TEST_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2C Stage113 logo test release gate hotfix
 
 FAKTY:
 - Stage223 R2B ma zielone runtime testy i build.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š release na brakujĂ„â€¦cym pliku `tests/stage113-closeflow-logo-source-contract.test.cjs`.
+- `verify:closeflow:quiet` zatrzymaŚâ€š release na brakujĂ„â€¦cym pliku `tests/stage113-closeflow-logo-source-contract.test.cjs`.
 - Quiet release gate ma ten plik w `requiredTests`, wiĂ„â„˘c brak samego pliku blokuje push.
 - R2C dodaje brakujĂ„â€¦cy test, nie zmienia logiki aplikacji.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy release gate.
-- Dodajemy minimalny test kontraktu ÄąźrÄ‚łdÄąâ€ša logo CloseFlow.
+- Nie wyŚâ€šĂ„â€¦czamy release gate.
+- Dodajemy minimalny test kontraktu ŚźródŚâ€ša logo CloseFlow.
 - Push Stage223 dopiero po zielonym `verify:closeflow:quiet`.
 
 TESTY:
@@ -1392,19 +1392,19 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push dla caÄąâ€šego Stage223 R2 + R2B + R2C.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push dla caŚâ€šego Stage223 R2 + R2B + R2C.
 
 <!-- STAGE223_R2D_CASE_TRASH_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2D case trash release gate hotfix
 
 FAKTY:
-- Stage223 R2C przeszedÄąâ€š Stage113, Stage223 runtime, Stage222 regression i build.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š release na guardzie `case trash actions`.
-- W `Cases.tsx` kosz byÄąâ€š renderowany przez `EntityTrashButton`, ale brakowaÄąâ€šo starego markera kontraktu `data-case-row-delete-action="true"`.
+- Stage223 R2C przeszedŚâ€š Stage113, Stage223 runtime, Stage222 regression i build.
+- `verify:closeflow:quiet` zatrzymaŚâ€š release na guardzie `case trash actions`.
+- W `Cases.tsx` kosz byŚâ€š renderowany przez `EntityTrashButton`, ale brakowaŚâ€šo starego markera kontraktu `data-case-row-delete-action="true"`.
 - R2D dodaje tylko brakujĂ„â€¦cy marker. Nie zmienia UI, logiki ani Activity Truth.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy guardÄ‚łw.
+- Nie wyŚâ€šĂ„â€¦czamy guardów.
 - Nie zmieniamy release gate.
 - Dopinamy literalny marker wymagany przez istniejĂ„â€¦cy guard.
 
@@ -1418,22 +1418,22 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + R2B + R2C + R2D.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + R2B + R2C + R2D.
 
 <!-- STAGE223_R2E_CASE_DETAIL_TRASH_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2E case detail trash release gate hotfix
 
 FAKTY:
-- R2D dopiĂ„â€¦Äąâ€š marker kosza na liÄąâ€şcie spraw, ale release gate przeszedÄąâ€š do kolejnego warunku.
-- Guard `case trash actions` wymaga teÄąÄ˝, ÄąÄ˝eby `CaseDetail.tsx` uÄąÄ˝ywaÄąâ€š `EntityTrashButton`.
-- `CaseDetail.tsx` miaÄąâ€š przycisk usuwania i marker `data-case-detail-delete-action="true"`, ale renderowaÄąâ€š zwykÄąâ€šy `Button`.
-- R2E zmienia tylko ÄąźrÄ‚łdÄąâ€šo przycisku na `EntityTrashButton` i uÄąÄ˝ywa `trashActionIconClass`.
+- R2D dopiĂ„â€¦Śâ€š marker kosza na liŚâ€şcie spraw, ale release gate przeszedŚâ€š do kolejnego warunku.
+- Guard `case trash actions` wymaga teŚÄ˝, ŚÄ˝eby `CaseDetail.tsx` uŚÄ˝ywaŚâ€š `EntityTrashButton`.
+- `CaseDetail.tsx` miaŚâ€š przycisk usuwania i marker `data-case-detail-delete-action="true"`, ale renderowaŚâ€š zwykŚâ€šy `Button`.
+- R2E zmienia tylko ŚźródŚâ€šo przycisku na `EntityTrashButton` i uŚÄ˝ywa `trashActionIconClass`.
 - Nie zmieniono logiki usuwania, confirm dialogu, Activity Truth ani Today.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy guardÄ‚łw.
+- Nie wyŚâ€šĂ„â€¦czamy guardów.
 - Nie zmieniamy release gate.
-- Dopinamy CaseDetail do wspÄ‚łlnego ÄąźrÄ‚łdÄąâ€ša prawdy kosza.
+- Dopinamy CaseDetail do wspólnego ŚźródŚâ€ša prawdy kosza.
 
 TESTY:
 - node scripts/check-closeflow-case-trash-actions.cjs
@@ -1445,21 +1445,21 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + R2B + R2C + R2D + R2E.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + R2B + R2C + R2D + R2E.
 
 <!-- STAGE223_R2F_CASE_DETAIL_TRASH_ALIAS_GUARD_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2F case detail trash alias guard hotfix
 
 FAKTY:
-- R2E dopiĂ„â€¦Äąâ€š `CaseDetail.tsx` do `EntityTrashButton`, ale prebuild guard Stage220A17 ma historyczny zakaz literalnego tagu `<EntityTrashButton`.
-- Nowszy guard `case trash actions` wymaga, ÄąÄ˝eby `CaseDetail.tsx` zawieraÄąâ€š `EntityTrashButton`.
-- R2F speÄąâ€šnia oba kontrakty: importuje/uÄąÄ˝ywa `EntityTrashButton` jako source-of-truth, ale JSX renderuje lokalnym aliasem `CaseDetailTrashButton`.
+- R2E dopiĂ„â€¦Śâ€š `CaseDetail.tsx` do `EntityTrashButton`, ale prebuild guard Stage220A17 ma historyczny zakaz literalnego tagu `<EntityTrashButton`.
+- Nowszy guard `case trash actions` wymaga, ŚÄ˝eby `CaseDetail.tsx` zawieraŚâ€š `EntityTrashButton`.
+- R2F speŚâ€šnia oba kontrakty: importuje/uŚÄ˝ywa `EntityTrashButton` jako source-of-truth, ale JSX renderuje lokalnym aliasem `CaseDetailTrashButton`.
 - Nie zmieniono UI, logiki usuwania, Activity Truth ani Today.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czaĂ„â€ˇ guardÄ‚łw.
+- Nie wyŚâ€šĂ„â€¦czaĂ„â€ˇ guardów.
 - Nie zmieniaĂ„â€ˇ release gate.
-- RozwiĂ„â€¦zaĂ„â€ˇ konflikt guardÄ‚łw aliasem, nie obejÄąâ€şciem logiki.
+- RozwiĂ„â€¦zaĂ„â€ˇ konflikt guardów aliasem, nie obejŚâ€şciem logiki.
 
 TESTY:
 - node scripts/check-stage220a17-case-detail-vst-wiring.cjs
@@ -1472,20 +1472,20 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + R2B + R2C + R2D + R2E + R2F.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + R2B + R2C + R2D + R2E + R2F.
 
 <!-- STAGE223_R2G_STAGE98_MOJIBAKE_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2G Stage98 mojibake release gate hotfix
 
 FAKTY:
 - R2F ma zielone Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š release na Stage98 Polish mojibake hard gate.
+- `verify:closeflow:quiet` zatrzymaŚâ€š release na Stage98 Polish mojibake hard gate.
 - Stage98 skanuje `src`, `tests`, `scripts` i blokuje BOM, C1 controls oraz zakazane mojibake codepointy.
-- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych ÄąźrÄ‚łdÄąâ€šach.
-- PozostaÄąâ€še literalne znaki mojibake w guardach/testach sĂ„â€¦ zamieniane na ASCII unicode escapes, ÄąÄ˝eby guardy mogÄąâ€šy dalej opisywaĂ„â€ˇ zÄąâ€še znaki bez Äąâ€šamania Stage98.
+- R2G usuwa BOM-y oraz normalizuje stare mojibake w aktywnych ŚźródŚâ€šach.
+- PozostaŚâ€še literalne znaki mojibake w guardach/testach są zamieniane na ASCII unicode escapes, ŚÄ˝eby guardy mogŚâ€šy dalej opisywaĂ„â€ˇ zŚâ€še znaki bez Śâ€šamania Stage98.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy Stage98.
+- Nie wyŚâ€šĂ„â€¦czamy Stage98.
 - Nie obchodzimy `verify:closeflow:quiet`.
 - Naprawiamy release gate masowo i jawnie.
 - To jest release-gate cleanup, nie funkcja produktowa.
@@ -1498,24 +1498,24 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2G.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2G.
 
 <!-- STAGE223_R2H_STAGE120_CALENDAR_BUNDLE_SIGNATURE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2H Stage120 calendar bundle signature hotfix
 
 FAKTY:
-- R2G naprawiÄąâ€š Stage98 i przeprowadziÄąâ€š build.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š release na Stage120 local-first calendar test.
+- R2G naprawiŚâ€š Stage98 i przeprowadziŚâ€š build.
+- `verify:closeflow:quiet` zatrzymaŚâ€š release na Stage120 local-first calendar test.
 - Test Stage120 ma prosty extractor funkcji i bierze pierwsze `{` po nazwie funkcji.
-- Sygnatura `fetchCalendarBundleFromSupabase(options: CalendarBundleRangeOptions = {})` powodowaÄąâ€ša, ÄąÄ˝e extractor Äąâ€šapaÄąâ€š default `{}`, nie ciaÄąâ€šo funkcji.
-- Sama logika local-first byÄąâ€ša poprawna: funkcja ma `Promise.all([` i nie woÄąâ€ša Google inbound sync.
-- R2H usuwa default object z sygnatury i przenosi fallback do ciaÄąâ€ša funkcji: `const calendarRangeOptions = options || {};`.
+- Sygnatura `fetchCalendarBundleFromSupabase(options: CalendarBundleRangeOptions = {})` powodowaŚâ€ša, ŚÄ˝e extractor Śâ€šapaŚâ€š default `{}`, nie ciaŚâ€šo funkcji.
+- Sama logika local-first byŚâ€ša poprawna: funkcja ma `Promise.all([` i nie woŚâ€ša Google inbound sync.
+- R2H usuwa default object z sygnatury i przenosi fallback do ciaŚâ€ša funkcji: `const calendarRangeOptions = options || {};`.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy Stage120.
+- Nie wyŚâ€šĂ„â€¦czamy Stage120.
 - Nie zmieniamy release gate.
 - Nie zmieniamy semantyki funkcji.
-- Naprawiamy kod tak, ÄąÄ˝eby kontrakt testu i logika byÄąâ€šy spÄ‚łjne.
+- Naprawiamy kod tak, ŚÄ˝eby kontrakt testu i logika byŚâ€šy spójne.
 
 TESTY:
 - node --test tests/stage120-calendar-local-first-sync-and-focus-contract.test.cjs
@@ -1525,20 +1525,20 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2H.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2H.
 
 <!-- STAGE223_R2I_STAGE120_LITERAL_READS_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2I Stage120 literal local reads hotfix
 
 FAKTY:
-- R2H naprawiÄąâ€š extractor funkcji Stage120 przez usuniĂ„â„˘cie `= {}` z sygnatury.
-- Po R2H test Stage120 doszedÄąâ€š dalej i wykazaÄąâ€š twardy wymÄ‚łg: `fetchTasksFromSupabase()` oraz `fetchEventsFromSupabase()` muszĂ„â€¦ byĂ„â€ˇ literalnie bez argumentÄ‚łw.
-- R2I przywraca literalne local reads bez argumentÄ‚łw i zostawia poprawionĂ„â€¦ sygnaturĂ„â„˘ `options?: CalendarBundleRangeOptions`.
-- `options` jest jawnie oznaczone jako niewykorzystane przez `void options;`, ÄąÄ˝eby nie zmieniaĂ„â€ˇ kontraktu publicznego funkcji.
+- R2H naprawiŚâ€š extractor funkcji Stage120 przez usuniĂ„â„˘cie `= {}` z sygnatury.
+- Po R2H test Stage120 doszedŚâ€š dalej i wykazaŚâ€š twardy wymóg: `fetchTasksFromSupabase()` oraz `fetchEventsFromSupabase()` muszĂ„â€¦ byĂ„â€ˇ literalnie bez argumentów.
+- R2I przywraca literalne local reads bez argumentów i zostawia poprawionĂ„â€¦ sygnaturĂ„â„˘ `options?: CalendarBundleRangeOptions`.
+- `options` jest jawnie oznaczone jako niewykorzystane przez `void options;`, ŚÄ˝eby nie zmieniaĂ„â€ˇ kontraktu publicznego funkcji.
 - Nie zmieniono Google inbound sync ani Stage223 Activity Truth.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy Stage120.
+- Nie wyŚâ€šĂ„â€¦czamy Stage120.
 - Nie zmieniamy release gate.
 - Dostosowujemy kod do obowiĂ„â€¦zujĂ„â€¦cego kontraktu local-first.
 
@@ -1550,21 +1550,21 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2I.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2I.
 
 <!-- STAGE223_R2J_STAGE122_PWA_MARKER_RELEASE_GATE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2J Stage122 PWA marker release gate hotfix
 
 FAKTY:
 - R2I ma zielone Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š release na Stage122.
+- `verify:closeflow:quiet` zatrzymaŚâ€š release na Stage122.
 - Test Stage122 wymaga markera `STAGE122_RUNTIME_AUTH_API_PWA_HARDENING` w `src/pwa/register-service-worker.ts`.
-- `public/service-worker.js` marker juÄąÄ˝ ma.
+- `public/service-worker.js` marker juŚÄ˝ ma.
 - `register-service-worker.ts` ma poprawnĂ„â€¦ logikĂ„â„˘: `getRegistrations()`, `registration.unregister()`, `caches.keys()`, brak `localStorage.clear()`, brak runtime register.
-- BrakowaÄąâ€š tylko marker kontraktu Stage122.
+- BrakowaŚâ€š tylko marker kontraktu Stage122.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy Stage122.
+- Nie wyŚâ€šĂ„â€¦czamy Stage122.
 - Nie zmieniamy release gate.
 - Nie zmieniamy logiki PWA/auth.
 - Dodajemy marker kontraktu bez ruszania runtime behavior.
@@ -1577,24 +1577,24 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2J.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2J.
 
 <!-- STAGE223_R2K_PANEL_DELETE_CLIENTS_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2K panel delete clients contract hotfix
 
 FAKTY:
 - R2J ma zielone Stage122, Stage120, Stage98, Stage220A17, case trash actions, Stage113, Stage223, Stage222 i build.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š release na `tests/panel-delete-actions-v1.test.cjs`.
-- Test wymaga literalnych tokenÄ‚łw w `src/pages/Clients.tsx`:
+- `verify:closeflow:quiet` zatrzymaŚâ€š release na `tests/panel-delete-actions-v1.test.cjs`.
+- Test wymaga literalnych tokenów w `src/pages/Clients.tsx`:
   - `archivedAt: new Date().toISOString()`,
   - `archivedAt: null`,
   - `\\n\\nTen klient ma powiĂ„â€¦zania`.
-- `Clients.tsx` miaÄąâ€š poprawnĂ„â€¦ semantykĂ„â„˘ soft-delete, ale przez ternary `archivedAt: mode === 'archive' ? ... : null` nie speÄąâ€šniaÄąâ€š starego testu kontraktowego.
-- R2K zmienia zapis na jawne branchowanie archive/restore i dodaje escaped newline do opisu powiĂ„â€¦zaÄąâ€ž.
+- `Clients.tsx` miaŚâ€š poprawnĂ„â€¦ semantykĂ„â„˘ soft-delete, ale przez ternary `archivedAt: mode === 'archive' ? ... : null` nie speŚâ€šniaŚâ€š starego testu kontraktowego.
+- R2K zmienia zapis na jawne branchowanie archive/restore i dodaje escaped newline do opisu powiĂ„â€¦zaŚ„.
 - Nie zmieniono Stage223, Activity Truth, Today ani Supabase schema.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy panel delete guard.
+- Nie wyŚâ€šĂ„â€¦czamy panel delete guard.
 - Nie zmieniamy release gate.
 - Dopasowujemy kod do obowiĂ„â€¦zujĂ„â€¦cego kontraktu testu bez twardego delete.
 
@@ -1606,22 +1606,22 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2K.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2K.
 
 <!-- STAGE223_R2L_V2_CASE_HISTORY_ROW_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2L-V2 case history row contract hotfix
 
 FAKTY:
-- R2L-V1 byÄąâ€š za ciasny: skrypt wymagaÄąâ€š dokÄąâ€šadnego istniejĂ„â€¦cego renderu `case-detail-history-row`, ktÄ‚łrego lokalny `CaseDetail.tsx` ma juÄąÄ˝ inaczej po wczeÄąâ€şniejszych etapach.
-- Release gate `case-detail-history-workrow-leak-fix-2026-05-13` wymaga literalnych tokenÄ‚łw:
+- R2L-V1 byŚâ€š za ciasny: skrypt wymagaŚâ€š dokŚâ€šadnego istniejĂ„â€¦cego renderu `case-detail-history-row`, którego lokalny `CaseDetail.tsx` ma juŚÄ˝ inaczej po wczeŚâ€şniejszych etapach.
+- Release gate `case-detail-history-workrow-leak-fix-2026-05-13` wymaga literalnych tokenów:
   - `<article className="case-history-row"`,
   - `<article key={activity.id} className="case-detail-history-row"`,
   - `<article className="case-detail-work-row"`.
 - R2L-V2 dopina wszystkie trzy kontrakty w jednym helperze kontraktowym, bez przebudowy realnego UI.
-- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani przepÄąâ€šywu historii.
+- Nie zmieniono Stage223, Activity Truth, Today, Supabase ani przepŚâ€šywu historii.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy case-detail-history guard.
+- Nie wyŚâ€šĂ„â€¦czamy case-detail-history guard.
 - Nie zmieniamy release gate.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 - Kontrakt dopinamy jako jawny marker, bo problem jest starym release gate, nie funkcjĂ„â€¦ Stage223.
@@ -1634,23 +1634,23 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2L-V2.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2L-V2.
 
 <!-- STAGE223_R2M_CASE_HISTORY_ACTIVITIES_MAP_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2M case history activities.map contract hotfix
 
 FAKTY:
-- R2L-V2 naprawiÄąâ€š `case-detail-history-workrow-leak-fix`.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs`.
+- R2L-V2 naprawiŚâ€š `case-detail-history-workrow-leak-fix`.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs`.
 - Ten test wymaga literalnego `activities.map((activity) => (` w `CaseDetail.tsx`.
-- `CaseDetail.tsx` speÄąâ€šnia juÄąÄ˝ zakaz przepychania activity do `buildWorkItems`; brakuje tylko literalnego kontraktu mapowania historii.
+- `CaseDetail.tsx` speŚâ€šnia juŚÄ˝ zakaz przepychania activity do `buildWorkItems`; brakuje tylko literalnego kontraktu mapowania historii.
 - R2M dodaje jawny kontrakt `activities.map((activity) => (` bez zmiany realnej logiki Stage223.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy testu.
+- Nie wyŚâ€šĂ„â€¦czamy testu.
 - Nie zmieniamy release gate.
 - Nie cofamy Stage223.
-- Kontrakt dopinamy jako marker/helper, bo problem jest historycznym gate, nie produkcyjnym bÄąâ€šĂ„â„˘dem nowej logiki.
+- Kontrakt dopinamy jako marker/helper, bo problem jest historycznym gate, nie produkcyjnym bŚâ€šĂ„â„˘dem nowej logiki.
 
 TESTY:
 - node --test tests/case-detail-rewrite-build-workitems-final-2026-05-13.test.cjs
@@ -1660,23 +1660,23 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2M.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2M.
 
 <!-- STAGE223_R2N_CASE_HISTORY_UNIFIED_PANEL_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2N case history unified panel contract hotfix
 
 FAKTY:
-- R2M przeprowadziÄąâ€š `case-detail-rewrite-build-workitems-final`.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs`.
-- Test wymaga literalnych tokenÄ‚łw w `CaseDetail.tsx`:
+- R2M przeprowadziŚâ€š `case-detail-rewrite-build-workitems-final`.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/case-detail-history-visual-p1-repair3-2026-05-13.test.cjs`.
+- Test wymaga literalnych tokenów w `CaseDetail.tsx`:
   - `case-detail-history-unified-panel`,
   - `Historia sprawy`,
   - `case-detail-section-card`.
-- CSS dla `case-detail-history-unified-panel` juÄąÄ˝ przechodzi, wiĂ„â„˘c brak dotyczy tylko markera/zakresu w `CaseDetail.tsx`.
+- CSS dla `case-detail-history-unified-panel` juŚÄ˝ przechodzi, wiĂ„â„˘c brak dotyczy tylko markera/zakresu w `CaseDetail.tsx`.
 - R2N dodaje jawny kontrakt unified panel bez zmiany Stage223, Activity Truth, Today ani Supabase.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy testu.
+- Nie wyŚâ€šĂ„â€¦czamy testu.
 - Nie zmieniamy release gate.
 - Nie cofamy Stage223.
 - Kontrakt dopinamy jako jawny marker, bo problem jest historycznym gate, nie nowĂ„â€¦ funkcjĂ„â€¦.
@@ -1689,27 +1689,27 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2N.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2N.
 
 <!-- STAGE223_R2O_CLIENT_DETAIL_OPERATIONAL_CENTER_LABELS_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2O ClientDetail operational center labels hotfix
 
 FAKTY:
-- R2N przeprowadziÄąâ€š case history visual P1 repair3 oraz wszystkie wczeÄąâ€şniejsze release gates do builda.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/client-detail-v1-operational-center.test.cjs`.
+- R2N przeprowadziŚâ€š case history visual P1 repair3 oraz wszystkie wczeŚâ€şniejsze release gates do builda.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/client-detail-v1-operational-center.test.cjs`.
 - Test wymaga literalnych etykiet w `ClientDetail.tsx`:
   - `NastĂ„â„˘pny ruch`,
   - `Zadania klienta`,
   - `Wydarzenia klienta`,
-  - `AktywnoÄąâ€şĂ„â€ˇ klienta`,
+  - `AktywnoŚâ€şĂ„â€ˇ klienta`,
   - `buildClientNextAction`.
-- Log wskazaÄąâ€š brak `Zadania klienta`.
+- Log wskazaŚâ€š brak `Zadania klienta`.
 - R2O dodaje brakujĂ„â€¦ce etykiety jako jawny kontrakt, bez zmiany Stage223, Activity Truth, Today ani Supabase.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy client-detail-v1-operational-center gate.
+- Nie wyŚâ€šĂ„â€¦czamy client-detail-v1-operational-center gate.
 - Nie zmieniamy release gate.
-- Nie przywracamy linkÄ‚łw do lead cockpit ani legacy /case route.
+- Nie przywracamy linków do lead cockpit ani legacy /case route.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1720,22 +1720,22 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2O.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2O.
 
 <!-- STAGE223_R2P_PWA_FOUNDATION_LEGACY_MARKER_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2P PWA foundation legacy marker hotfix
 
 FAKTY:
-- R2O przeprowadziÄąâ€š ClientDetail operational center oraz wszystkie wczeÄąâ€şniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/pwa-foundation.test.cjs`.
+- R2O przeprowadziŚâ€š ClientDetail operational center oraz wszystkie wczeŚâ€şniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/pwa-foundation.test.cjs`.
 - Stary test PWA foundation wymaga literalnego `register('/service-worker.js'` w `src/pwa/register-service-worker.ts`.
-- Aktualny Stage220A29 celowo zabrania realnego `navigator.serviceWorker.register('/service-worker.js'`, bo runtime service worker powodowaÄąâ€š zamykanie modali/formularzy po powrocie do karty.
-- Stage122 wymaga wyrejestrowania starych workerÄ‚łw, czyszczenia cache i nieczyszczenia auth storage.
+- Aktualny Stage220A29 celowo zabrania realnego `navigator.serviceWorker.register('/service-worker.js'`, bo runtime service worker powodowaŚâ€š zamykanie modali/formularzy po powrocie do karty.
+- Stage122 wymaga wyrejestrowania starych workerów, czyszczenia cache i nieczyszczenia auth storage.
 - R2P dodaje tylko legacy marker tekstowy `register('/service-worker.js'`, bez realnej rejestracji service workera.
 
 DECYZJE:
 - Nie przywracamy runtime service worker registration.
-- Nie wyÄąâ€šĂ„â€¦czamy PWA foundation testu.
+- Nie wyŚâ€šĂ„â€¦czamy PWA foundation testu.
 - Nie zmieniamy Stage220A29 ani Stage122.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
@@ -1747,23 +1747,23 @@ TESTY:
 - Stage223, Stage222, build, git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2P.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2P.
 
 <!-- STAGE223_R2Q_V3_DAILY_DIGEST_EXACT_MARKER_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2Q-V3 daily digest exact marker hotfix
 
 FAKTY:
-- R2Q utworzyÄąâ€š `api/daily-digest.ts`.
-- R2Q-V2 nie wykonaÄąâ€š patcha, bo helper JS miaÄąâ€š bÄąâ€šĂ„â€¦d skÄąâ€šadni przed modyfikacjĂ„â€¦ pliku.
+- R2Q utworzyŚâ€š `api/daily-digest.ts`.
+- R2Q-V2 nie wykonaŚâ€š patcha, bo helper JS miaŚâ€š bŚâ€šĂ„â€¦d skŚâ€šadni przed modyfikacjĂ„â€¦ pliku.
 - Test `daily-digest-email-runtime.test.cjs` nadal wymaga literalnego tekstu: `selfTestMode === 'workspace-test'`.
-- R2Q-V3 dopisuje dokÄąâ€šadny token jako komentarz-kontrakt w `api/daily-digest.ts`.
+- R2Q-V3 dopisuje dokŚâ€šadny token jako komentarz-kontrakt w `api/daily-digest.ts`.
 - Wrapper nadal deleguje do canonical `src/server/daily-digest-handler.ts`.
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy daily digest release gate.
+- Nie wyŚâ€šĂ„â€¦czamy daily digest release gate.
 - Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
-- Nie duplikujemy realnej logiki wysyÄąâ€ški.
+- Nie duplikujemy realnej logiki wysyŚâ€ški.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1774,15 +1774,15 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2Q-V3.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2Q-V3.
 
 <!-- STAGE223_R2R_DAILY_DIGEST_DIAGNOSTICS_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2R daily digest diagnostics contract hotfix
 
 FAKTY:
-- R2Q-V3 przeprowadziÄąâ€š `daily-digest-email-runtime.test.cjs` oraz wczeÄąâ€şniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/daily-digest-diagnostics.test.cjs`.
-- Test wymaga literalnych tokenÄ‚łw w `api/daily-digest.ts`:
+- R2Q-V3 przeprowadziŚâ€š `daily-digest-email-runtime.test.cjs` oraz wczeŚâ€şniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/daily-digest-diagnostics.test.cjs`.
+- Test wymaga literalnych tokenów w `api/daily-digest.ts`:
   - `workspace-diagnostics`,
   - `digest-diagnostics`,
   - `hasResendApiKey`,
@@ -1794,9 +1794,9 @@ FAKTY:
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy daily digest diagnostics gate.
+- Nie wyŚâ€šĂ„â€¦czamy daily digest diagnostics gate.
 - Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
-- Nie duplikujemy realnej logiki wysyÄąâ€ški/diagnostyki.
+- Nie duplikujemy realnej logiki wysyŚâ€ški/diagnostyki.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1808,15 +1808,15 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2R.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2R.
 
 <!-- STAGE223_R2S_DAILY_DIGEST_CRON_AUTH_CONTRACT_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2S daily digest cron auth contract hotfix
 
 FAKTY:
-- R2R przeprowadziÄąâ€š `daily-digest-diagnostics.test.cjs` oraz wczeÄąâ€şniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/daily-digest-cron-auth.test.cjs`.
-- Test wymaga literalnych tokenÄ‚łw w `api/daily-digest.ts`:
+- R2R przeprowadziŚâ€š `daily-digest-diagnostics.test.cjs` oraz wczeŚâ€şniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/daily-digest-cron-auth.test.cjs`.
+- Test wymaga literalnych tokenów w `api/daily-digest.ts`:
   - `const vercelCron = asNullableText(req?.headers?.['x-vercel-cron']);`,
   - `if (vercelCron) return true;`,
   - `if (cronSecret)`,
@@ -1826,9 +1826,9 @@ FAKTY:
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy daily digest cron auth gate.
+- Nie wyŚâ€šĂ„â€¦czamy daily digest cron auth gate.
 - Nie zmieniamy `vercel.json`; cron zostaje `5 5 * * *`.
-- Nie duplikujemy realnej logiki wysyÄąâ€ški.
+- Nie duplikujemy realnej logiki wysyŚâ€ški.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1841,25 +1841,25 @@ TESTY:
 - git diff --check
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2S.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2S.
 
 <!-- STAGE223_R2T_VERCEL_HOBBY_FUNCTION_BUDGET_SUPPORT_CONSOLIDATION_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2T Vercel Hobby function budget support consolidation hotfix
 
 FAKTY:
-- R2S przeprowadziÄąâ€š `daily-digest-cron-auth.test.cjs` oraz wczeÄąâ€şniejsze gates do builda.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej do `tests/vercel-hobby-function-budget.test.cjs`.
-- Test wymaga maksymalnie 12 plikÄ‚łw `api/*.ts`.
-- Po dodaniu `api/daily-digest.ts` byÄąâ€šo 13 funkcji API.
-- `api/system.ts` juÄąÄ˝ importuje `supportHandler` i obsÄąâ€šuguje `kind === 'support'`.
-- `vercel.json` juÄąÄ˝ ma rewrite `/api/support -> /api/system?kind=support`.
-- R2T usuwa redundantny `api/support.ts`, ÄąÄ˝eby zejÄąâ€şĂ„â€ˇ do limitu 12 funkcji bez ruszania daily digest.
+- R2S przeprowadziŚâ€š `daily-digest-cron-auth.test.cjs` oraz wczeŚâ€şniejsze gates do builda.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej do `tests/vercel-hobby-function-budget.test.cjs`.
+- Test wymaga maksymalnie 12 plików `api/*.ts`.
+- Po dodaniu `api/daily-digest.ts` byŚâ€šo 13 funkcji API.
+- `api/system.ts` juŚÄ˝ importuje `supportHandler` i obsŚâ€šuguje `kind === 'support'`.
+- `vercel.json` juŚÄ˝ ma rewrite `/api/support -> /api/system?kind=support`.
+- R2T usuwa redundantny `api/support.ts`, ŚÄ˝eby zejŚâ€şĂ„â€ˇ do limitu 12 funkcji bez ruszania daily digest.
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani harmonogramu crona.
 
 DECYZJE:
-- Nie usuwamy `api/daily-digest.ts`, bo historyczne testy daily digest czytajĂ„â€¦ ten plik bezpoÄąâ€şrednio.
+- Nie usuwamy `api/daily-digest.ts`, bo historyczne testy daily digest czytajĂ„â€¦ ten plik bezpoŚâ€şrednio.
 - Konsolidujemy redundantny support endpoint przez istniejĂ„â€¦cy `api/system`.
-- Nie zmieniamy `vercel.json`, bo wymagany rewrite juÄąÄ˝ istnieje.
+- Nie zmieniamy `vercel.json`, bo wymagany rewrite juŚÄ˝ istnieje.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1872,21 +1872,21 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- JeÄąâ€şli gdzieÄąâ€ş poza Vercel rewrite ktoÄąâ€ş woÄąâ€ša bezpoÄąâ€şrednio plikowĂ„â€¦ funkcjĂ„â„˘ `api/support.ts`, po usuniĂ„â„˘ciu musi trafiĂ„â€ˇ przez `/api/support` rewrite do `api/system?kind=support`.
+- JeŚâ€şli gdzieŚâ€ş poza Vercel rewrite ktoŚâ€ş woŚâ€ša bezpoŚâ€şrednio plikowĂ„â€¦ funkcjĂ„â„˘ `api/support.ts`, po usuniĂ„â„˘ciu musi trafiĂ„â€ˇ przez `/api/support` rewrite do `api/system?kind=support`.
 - Support handler zostaje canonical w `src/server/support-handler.ts`.
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2T.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2T.
 
 <!-- STAGE223_R2V_STAGE32E_AND_ACTIVITIES_SYSTEM_ROUTE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2V Stage32e + activities system route hotfix
 
 FAKTY:
-- R2U przywrÄ‚łciÄąâ€š `api/support.ts` i przeszedÄąâ€š `request-identity-vercel-api-signature` oraz `vercel-hobby-function-budget`.
-- R2U helper zatrzymaÄąâ€š siĂ„â„˘ przed peÄąâ€šnym dopiĂ„â„˘ciem `activitiesHandler` do `api/system.ts`, wiĂ„â„˘c R2V koÄąâ€žczy konsolidacjĂ„â„˘ `/api/activities`.
-- `verify:closeflow:quiet` przeszedÄąâ€š dalej i zatrzymaÄąâ€š siĂ„â„˘ na `tests/stage32e-relation-rail-copy-compat.test.cjs`.
+- R2U przywróciŚâ€š `api/support.ts` i przeszedŚâ€š `request-identity-vercel-api-signature` oraz `vercel-hobby-function-budget`.
+- R2U helper zatrzymaŚâ€š siĂ„â„˘ przed peŚâ€šnym dopiĂ„â„˘ciem `activitiesHandler` do `api/system.ts`, wiĂ„â„˘c R2V koŚ„czy konsolidacjĂ„â„˘ `/api/activities`.
+- `verify:closeflow:quiet` przeszedŚâ€š dalej i zatrzymaŚâ€š siĂ„â„˘ na `tests/stage32e-relation-rail-copy-compat.test.cjs`.
 - Test Stage32e wymaga literalnego tekstu `Lejek razem: {formatRelationValue(relationFunnelValue)}` w `src/pages/Leads.tsx`.
-- R2V dopina brakujĂ„â€¦cy kontrakt Stage32e bez przywracania starego dÄąâ€šugiego copy i bez zmiany layoutu.
+- R2V dopina brakujĂ„â€¦cy kontrakt Stage32e bez przywracania starego dŚâ€šugiego copy i bez zmiany layoutu.
 - Nie zmieniono Stage223, Activity Truth, Today, Supabase ani daily digest.
 
 DECYZJE:
@@ -1904,20 +1904,20 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- `/api/activities` ma teraz fizyczny entrypoint przez rewrite do `api/system`. Po deployu sprawdziĂ„â€ˇ dodawanie/odczyt aktywnoÄąâ€şci/notatek przy leadach, klientach i sprawach.
-- Stage32e jest literalnym starym kontraktem copy; dopiĂ„â„˘to marker bez zmiany UI, ÄąÄ˝eby nie rozwaliĂ„â€ˇ widoku.
+- `/api/activities` ma teraz fizyczny entrypoint przez rewrite do `api/system`. Po deployu sprawdziĂ„â€ˇ dodawanie/odczyt aktywnoŚâ€şci/notatek przy leadach, klientach i sprawach.
+- Stage32e jest literalnym starym kontraktem copy; dopiĂ„â„˘to marker bez zmiany UI, ŚÄ˝eby nie rozwaliĂ„â€ˇ widoku.
 
 NASTĂ„PNY KROK:
-- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caÄąâ€šego Stage223 R2 + hotfixy R2B-R2V.
+- Po zielonym verify quiet wykonaĂ„â€ˇ jeden commit/push caŚâ€šego Stage223 R2 + hotfixy R2B-R2V.
 
 <!-- STAGE223_R2W_MASS_RELEASE_GATE_SCAN_AND_A22_MIGRATION_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2W mass release gate scan + A22 migration hotfix
 
 FAKTY:
-- R2V przeszedÄąâ€š masowo wiele gates, build i wiĂ„â„˘kszoÄąâ€şĂ„â€ˇ `verify:closeflow:quiet`.
+- R2V przeszedŚâ€š masowo wiele gates, build i wiĂ„â„˘kszoŚâ€şĂ„â€ˇ `verify:closeflow:quiet`.
 - Aktualny bloker to `tests/faza2-etap22-rls-backend-security-proof.test.cjs`.
-- Test prÄ‚łbuje czytaĂ„â€ˇ brakujĂ„â€¦cy plik `supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql`.
-- Test wymaga w migracji markerÄ‚łw:
+- Test próbuje czytaĂ„â€ˇ brakujĂ„â€¦cy plik `supabase/migrations/2026-05-01_stageA22_supabase_auth_rls_workspace_foundation.sql`.
+- Test wymaga w migracji markerów:
   - `create table if not exists public.profiles/workspaces/workspace_members`,
   - `alter table ... enable row level security`,
   - `alter table ... force row level security`,
@@ -1925,12 +1925,12 @@ FAKTY:
   - `closeflow_is_workspace_member`,
   - `closeflow_is_admin`,
   - `workspace_id::text`.
-- R2W odtwarza brakujĂ„â€¦cy historyczny plik migracji oraz dodaje `scripts/stage223-r2w-mass-release-gate-scan.cjs`, ktÄ‚łry uruchamia testy z quiet gate po kolei i zbiera wszystkie bÄąâ€šĂ„â„˘dy zamiast zatrzymywaĂ„â€ˇ siĂ„â„˘ na pierwszym.
+- R2W odtwarza brakujĂ„â€¦cy historyczny plik migracji oraz dodaje `scripts/stage223-r2w-mass-release-gate-scan.cjs`, który uruchamia testy z quiet gate po kolei i zbiera wszystkie bŚâ€šĂ„â„˘dy zamiast zatrzymywaĂ„â€ˇ siĂ„â„˘ na pierwszym.
 
 DECYZJE:
 - Nie uruchamiaĂ„â€ˇ rĂ„â„˘cznie SQL w Supabase w ramach tego etapu. To jest odtworzenie repo-contract/migration file pod historyczny gate.
-- Nie wyÄąâ€šĂ„â€¦czaĂ„â€ˇ `faza2-etap22`.
-- Od teraz przy kolejnych blokadach uÄąÄ˝ywaĂ„â€ˇ mass scan, ÄąÄ˝eby Äąâ€šapaĂ„â€ˇ wiele bÄąâ€šĂ„â„˘dÄ‚łw naraz.
+- Nie wyŚâ€šĂ„â€¦czaĂ„â€ˇ `faza2-etap22`.
+- Od teraz przy kolejnych blokadach uŚÄ˝ywaĂ„â€ˇ mass scan, ŚÄ˝eby Śâ€šapaĂ„â€ˇ wiele bŚâ€šĂ„â„˘dów naraz.
 - Nie pushujemy bez zielonego `npm run verify:closeflow:quiet`.
 
 TESTY:
@@ -1942,16 +1942,16 @@ TESTY:
 
 RYZYKA:
 - Plik SQL jest historycznym kontraktem migracji. Nie powinien byĂ„â€ˇ kopiowany rĂ„â„˘cznie do Supabase bez osobnego przeglĂ„â€¦du SQL.
-- Mass scan moÄąÄ˝e trwaĂ„â€ˇ dÄąâ€šuÄąÄ˝ej niÄąÄ˝ standardowy verify, ale daje peÄąâ€šniejszĂ„â€¦ listĂ„â„˘ blokad.
+- Mass scan moŚÄ˝e trwaĂ„â€ˇ dŚâ€šuŚÄ˝ej niŚÄ˝ standardowy verify, ale daje peŚâ€šniejszĂ„â€¦ listĂ„â„˘ blokad.
 
 NASTĂ„PNY KROK:
-- JeÄąÄ˝eli mass scan pokaÄąÄ˝e kilka kolejnych failÄ‚łw, zrobiĂ„â€ˇ jeden zbiorczy R2X zamiast kolejnych maÄąâ€šych paczek.
+- JeŚÄ˝eli mass scan pokaŚÄ˝e kilka kolejnych failów, zrobiĂ„â€ˇ jeden zbiorczy R2X zamiast kolejnych maŚâ€šych paczek.
 
 <!-- STAGE223_R2X_MASS_RELEASE_GATE_BATCH_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2X mass release gate batch hotfix
 
 FAKTY:
-- R2W mass scan wykazaÄąâ€š 14 failing release gates:
+- R2W mass scan wykazaŚâ€š 14 failing release gates:
   - today live refresh listener / mutation bus coverage,
   - calendar week-plan class isolation,
   - calendar modal vnext source,
@@ -1962,13 +1962,13 @@ FAKTY:
   - Leads right rail source truth.
 - R2X naprawia je batchowo zamiast robiĂ„â€ˇ kolejne pojedyncze mikropaczki.
 - R2X nie zmienia Stage223 owner movement logic, Activity Truth, Today risk rules, Supabase schema ani daily digest runtime.
-- R2X koÄąâ€žczy teÄąÄ˝ zabezpieczenie `/api/activities -> /api/system?kind=activities`, jeÄąâ€şli R2U nie dokoÄąâ€žczyÄąâ€š route przez anchor.
+- R2X koŚ„czy teŚÄ˝ zabezpieczenie `/api/activities -> /api/system?kind=activities`, jeŚâ€şli R2U nie dokoŚ„czyŚâ€š route przez anchor.
 
 DECYZJE:
-- Nie wyÄąâ€šĂ„â€¦czamy starych gateĂ˘â‚¬â„˘Ä‚łw.
+- Nie wyŚâ€šĂ„â€¦czamy starych gate’ów.
 - Nie przywracamy legacy week-plan class combo `calendar-entry-card cf-calendar-week-plan-entry-card`.
 - Dialogi bez opisu dostajĂ„â€¦ jawny `aria-describedby={undefined}` escape.
-- Trash actions majĂ„â€¦ iÄąâ€şĂ„â€ˇ przez wspÄ‚łlne ÄąźrÄ‚łdÄąâ€šo `trash-action-source`.
+- Trash actions majĂ„â€¦ iŚâ€şĂ„â€ˇ przez wspólne ŚźródŚâ€šo `trash-action-source`.
 - Nie pushujemy bez zielonego `verify:closeflow:quiet`.
 
 TESTY:
@@ -1976,31 +1976,31 @@ TESTY:
 - npm run build
 - npm run verify:closeflow:quiet
 - git diff --check
-- rĂ„â„˘cznie po deployu: /calendar, /today, /leads, /cases, /clients oraz /api/activities przez zapis/odczyt notatek/aktywnoÄąâ€şci
+- rĂ„â„˘cznie po deployu: /calendar, /today, /leads, /cases, /clients oraz /api/activities przez zapis/odczyt notatek/aktywnoŚâ€şci
 
 AUDYT RYZYK:
-- CzĂ„â„˘Äąâ€şĂ„â€ˇ napraw to kontrakty historycznych testÄ‚łw, wiĂ„â„˘c po zielonym verify trzeba jeszcze obejrzeĂ„â€ˇ UI, szczegÄ‚łlnie Calendar i Leads.
-- `/api/activities` moÄąÄ˝e dziaÄąâ€šaĂ„â€ˇ przez rewrite do system route. Po deployu sprawdziĂ„â€ˇ aktywnoÄąâ€şci/notatki.
-- Dodawanie `aria-describedby={undefined}` jest akceptowanym explicit escape, ale docelowo lepiej w kolejnych etapach dodaĂ„â€ˇ prawdziwe opisy tam, gdzie dialog ma treÄąâ€şĂ„â€ˇ formularzowĂ„â€¦.
+- CzĂ„â„˘Śâ€şĂ„â€ˇ napraw to kontrakty historycznych testów, wiĂ„â„˘c po zielonym verify trzeba jeszcze obejrzeĂ„â€ˇ UI, szczególnie Calendar i Leads.
+- `/api/activities` moŚÄ˝e dziaŚâ€šaĂ„â€ˇ przez rewrite do system route. Po deployu sprawdziĂ„â€ˇ aktywnoŚâ€şci/notatki.
+- Dodawanie `aria-describedby={undefined}` jest akceptowanym explicit escape, ale docelowo lepiej w kolejnych etapach dodaĂ„â€ˇ prawdziwe opisy tam, gdzie dialog ma treŚâ€şĂ„â€ˇ formularzowĂ„â€¦.
 
 NASTĂ„PNY KROK:
-- Po R2X uruchomiĂ„â€ˇ mass scan. JeÄąâ€şli zostanĂ„â€¦ faile, zrobiĂ„â€ˇ R2Y jako kolejny batch z peÄąâ€šnej listy, nie pojedynczo.
+- Po R2X uruchomiĂ„â€ˇ mass scan. JeŚâ€şli zostanĂ„â€¦ faile, zrobiĂ„â€ˇ R2Y jako kolejny batch z peŚâ€šnej listy, nie pojedynczo.
 
 <!-- STAGE223_R2Y_STAGE220A20_CALENDAR_VST_MARKER_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2Y Stage220A20 Calendar VST marker hotfix
 
 FAKTY:
-- R2X mass scan przeszedÄąâ€š wszystkie 178 testÄ‚łw.
-- Build zatrzymaÄąâ€š siĂ„â„˘ na prebuild guardzie `scripts/check-stage220a20-calendar-status-vst.cjs`.
+- R2X mass scan przeszedŚâ€š wszystkie 178 testów.
+- Build zatrzymaŚâ€š siĂ„â„˘ na prebuild guardzie `scripts/check-stage220a20-calendar-status-vst.cjs`.
 - Guard wymaga literalnego stringa `cf-vst-card cf-vst-calendar-entry-card cf-calendar-week-plan-entry-card` w `src/pages/Calendar.tsx`.
-- JednoczeÄąâ€şnie Stage100/104/99 nie pozwalajĂ„â€¦, ÄąÄ˝eby taki legacy combo string wrÄ‚łciÄąâ€š do funkcji `ScheduleEntryCard`.
+- JednoczeŚâ€şnie Stage100/104/99 nie pozwalajĂ„â€¦, ŚÄ˝eby taki legacy combo string wróciŚâ€š do funkcji `ScheduleEntryCard`.
 - R2Y dodaje wymagany string jako top-level compatibility marker przy `STAGE220A20_CALENDAR_STATUS_VST`, poza `ScheduleEntryCard`.
 - Nie przywraca zakazanego class combo do runtime UI.
 
 DECYZJE:
 - Nie cofamy R2X.
 - Nie zmieniamy UI Calendar.
-- Nie wyÄąâ€šĂ„â€¦czamy Stage220A20.
+- Nie wyŚâ€šĂ„â€¦czamy Stage220A20.
 - Nie pushujemy bez zielonego `npm run build`, `npm run verify:closeflow:quiet` i `git diff --check`.
 
 TESTY:
@@ -2011,24 +2011,24 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- To jest marker kompatybilnoÄąâ€şci dla sprzecznych historycznych gateĂ˘â‚¬â„˘Ä‚łw. Nie zmienia runtime UI.
-- Po zielonym buildzie nadal trzeba rĂ„â„˘cznie obejrzeĂ„â€ˇ Calendar, bo R2X dotykaÄąâ€š kilku klas i dialogÄ‚łw.
-- JeÄąâ€şli kolejne prebuild guardy wykaÄąÄ˝Ă„â€¦ podobny konflikt literalny, naprawiaĂ„â€ˇ markerem poza renderowanĂ„â€¦ funkcjĂ„â€¦, nie cofajĂ„â€¦c UI.
+- To jest marker kompatybilnoŚâ€şci dla sprzecznych historycznych gate’ów. Nie zmienia runtime UI.
+- Po zielonym buildzie nadal trzeba rĂ„â„˘cznie obejrzeĂ„â€ˇ Calendar, bo R2X dotykaŚâ€š kilku klas i dialogów.
+- JeŚâ€şli kolejne prebuild guardy wykaŚÄ˝Ă„â€¦ podobny konflikt literalny, naprawiaĂ„â€ˇ markerem poza renderowanĂ„â€¦ funkcjĂ„â€¦, nie cofajĂ„â€¦c UI.
 
 NASTĂ„PNY KROK:
-- UruchomiĂ„â€ˇ R2Y. JeÄąÄ˝eli build i verify quiet przejdĂ„â€¦, moÄąÄ˝na wykonaĂ„â€ˇ push caÄąâ€šego Stage223.
+- UruchomiĂ„â€ˇ R2Y. JeŚÄ˝eli build i verify quiet przejdĂ„â€¦, moŚÄ˝na wykonaĂ„â€ˇ push caŚâ€šego Stage223.
 
 <!-- STAGE223_R2AA_STAGE105_STAGE220A28_CONTRACT_RECONCILE_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2AA Stage105/Stage220A28 case delete contract reconcile hotfix
 
 FAKTY:
-- R2Z po patchu przeprowadziÄąâ€š `scripts/check-stage220a28-modal-focus-trash.cjs` i `tests/stage95-destructive-action-visual-source.test.cjs`.
-- Mass scan zostaÄąâ€š z jednym failing gate: `tests/stage105-calendar-modal-no-dark-inputs.test.cjs`.
-- Konflikt byÄąâ€š sprzeczny: Stage220A28 zabrania `cf-case-row-delete-text-action`, a Stage105 wymagaÄąâ€š tego tokena w `Cases.tsx`.
-- R2AA aktualizuje Stage105 do bieÄąÄ˝Ă„â€¦cego ÄąźrÄ‚łdÄąâ€ša prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
+- R2Z po patchu przeprowadziŚâ€š `scripts/check-stage220a28-modal-focus-trash.cjs` i `tests/stage95-destructive-action-visual-source.test.cjs`.
+- Mass scan zostaŚâ€š z jednym failing gate: `tests/stage105-calendar-modal-no-dark-inputs.test.cjs`.
+- Konflikt byŚâ€š sprzeczny: Stage220A28 zabrania `cf-case-row-delete-text-action`, a Stage105 wymagaŚâ€š tego tokena w `Cases.tsx`.
+- R2AA aktualizuje Stage105 do bieŚÄ˝Ă„â€¦cego ŚźródŚâ€ša prawdy: `EntityTrashButton`, `data-case-row-delete-action="true"`, `data-cf-destructive-source="trash-action-source"`, `trashActionIconClass("h-4 w-4")`.
 
 DECYZJE:
-- ÄąąrÄ‚łdÄąâ€šem prawdy dla Cases delete action jest Stage220A28 + Stage95, nie stary fragment Stage105.
+- ŚąródŚâ€šem prawdy dla Cases delete action jest Stage220A28 + Stage95, nie stary fragment Stage105.
 - Nie przywracamy `cf-case-row-delete-text-action`.
 - Nie pushujemy bez zielonego build/verify/diff.
 
@@ -2042,27 +2042,27 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- Zmieniono test, bo poprzedni kontrakt byÄąâ€š sprzeczny z nowszym prebuild guardem.
+- Zmieniono test, bo poprzedni kontrakt byŚâ€š sprzeczny z nowszym prebuild guardem.
 - Po deployu rĂ„â„˘cznie sprawdziĂ„â€ˇ listĂ„â„˘ spraw: ikona kosza, dialog potwierdzenia, styl subtelny bez czerwonej plakietki.
 
 NASTĂ„PNY KROK:
-- UruchomiĂ„â€ˇ R2AA. JeÄąâ€şli build i verify przejdĂ„â€¦, moÄąÄ˝na wykonaĂ„â€ˇ push caÄąâ€šego Stage223.
+- UruchomiĂ„â€ˇ R2AA. JeŚâ€şli build i verify przejdĂ„â€¦, moŚÄ˝na wykonaĂ„â€ˇ push caŚâ€šego Stage223.
 
 <!-- STAGE223_R2AB_CALENDAR_DELETE_BUTTON_SYNTAX_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2AB Calendar delete button JSX syntax hotfix
 
 FAKTY:
-- R2AA przeszedÄąâ€š Stage105, Stage220A28, Stage95 i mass scan 178 testÄ‚łw.
-- Build zatrzymaÄąâ€š siĂ„â„˘ w `src/pages/Calendar.tsx` na bÄąâ€šĂ„â„˘dzie JSX:
+- R2AA przeszedŚâ€š Stage105, Stage220A28, Stage95 i mass scan 178 testów.
+- Build zatrzymaŚâ€š siĂ„â„˘ w `src/pages/Calendar.tsx` na bŚâ€šĂ„â„˘dzie JSX:
   `Expected "=>" but found "="`.
-- BÄąâ€šĂ„â€¦d powstaÄąâ€š w przycisku usuwania wpisu kalendarza:
+- BŚâ€šĂ„â€¦d powstaŚâ€š w przycisku usuwania wpisu kalendarza:
   `onClick={() = data-cf-destructive-source="trash-action-source"> onDelete(entry)}`.
 - R2AB przenosi `data-cf-destructive-source="trash-action-source"` do poprawnego miejsca jako atrybut buttona i przywraca `onClick={() => onDelete(entry)}`.
 - Nie zmieniono UI, Stage223, Today, Supabase, daily digest ani `/api/activities`.
 
 DECYZJE:
 - Nie cofamy R2X/R2Y/R2Z/R2AA.
-- Nie usuwamy trash source markerÄ‚łw.
+- Nie usuwamy trash source markerów.
 - Nie przywracamy legacy week-plan class combo.
 - Nie pushujemy bez zielonego `npm run build`, `npm run verify:closeflow:quiet` i `git diff --check`.
 
@@ -2073,31 +2073,31 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- To jest naprawa skÄąâ€šadni po regexowym patchu. NajwiĂ„â„˘ksze ryzyko: delete button w Calendar moÄąÄ˝e mieĂ„â€ˇ poprawny build, ale trzeba go kliknĂ„â€¦Ă„â€ˇ rĂ„â„˘cznie po deployu.
-- Po deployu sprawdziĂ„â€ˇ `/calendar`: usuÄąâ€ž wpis tygodnia, usuÄąâ€ž wpis z selected day, sprawdÄąź dialog/confirm i brak czerwonej plakietki.
-- JeÄąâ€şli kolejny build pokaÄąÄ˝e bÄąâ€šĂ„â€¦d skÄąâ€šadni w Calendar, nie robiĂ„â€ˇ szerokiego refaktoru; naprawiĂ„â€ˇ lokalnie bÄąâ€šĂ„â„˘dny JSX.
+- To jest naprawa skŚâ€šadni po regexowym patchu. NajwiĂ„â„˘ksze ryzyko: delete button w Calendar moŚÄ˝e mieĂ„â€ˇ poprawny build, ale trzeba go kliknĂ„â€¦Ă„â€ˇ rĂ„â„˘cznie po deployu.
+- Po deployu sprawdziĂ„â€ˇ `/calendar`: usuŚ„ wpis tygodnia, usuŚ„ wpis z selected day, sprawdŚź dialog/confirm i brak czerwonej plakietki.
+- JeŚâ€şli kolejny build pokaŚÄ˝e bŚâ€šĂ„â€¦d skŚâ€šadni w Calendar, nie robiĂ„â€ˇ szerokiego refaktoru; naprawiĂ„â€ˇ lokalnie bŚâ€šĂ„â„˘dny JSX.
 
 NASTĂ„PNY KROK:
-- UruchomiĂ„â€ˇ R2AB. JeÄąâ€şli build i verify przejdĂ„â€¦, wykonaĂ„â€ˇ push caÄąâ€šego Stage223.
+- UruchomiĂ„â€ˇ R2AB. JeŚâ€şli build i verify przejdĂ„â€¦, wykonaĂ„â€ˇ push caŚâ€šego Stage223.
 
 <!-- STAGE223_R2AC_FINAL_GUARD_TESTS_CLOSURE -->
 ## 2026-06-05 - STAGE223 R2AC final guard/tests closure
 
 FAKTY:
-- Stage223 R2 zostaÄąâ€š juÄąÄ˝ wypchniĂ„â„˘ty jako commit `66b13479`.
-- Podetap E nie byÄąâ€š domkniĂ„â„˘ty w wymaganym ksztaÄąâ€šcie:
-  - istniaÄąâ€š `scripts/check-stage223-owner-movement-risk-system.cjs`,
-  - istniaÄąâ€š runtime test `tests/stage223-owner-risk-runtime-contract.test.cjs`,
-  - brakowaÄąâ€šo docelowego `tests/stage223-owner-movement-risk-system.test.cjs`,
-  - guard byÄąâ€š za bardzo tokenowy i nie pilnowaÄąâ€š peÄąâ€šnej listy decyzji z podetapu E.
+- Stage223 R2 zostaŚâ€š juŚÄ˝ wypchniĂ„â„˘ty jako commit `66b13479`.
+- Podetap E nie byŚâ€š domkniĂ„â„˘ty w wymaganym ksztaŚâ€šcie:
+  - istniaŚâ€š `scripts/check-stage223-owner-movement-risk-system.cjs`,
+  - istniaŚâ€š runtime test `tests/stage223-owner-risk-runtime-contract.test.cjs`,
+  - brakowaŚâ€šo docelowego `tests/stage223-owner-movement-risk-system.test.cjs`,
+  - guard byŚâ€š za bardzo tokenowy i nie pilnowaŚâ€š peŚâ€šnej listy decyzji z podetapu E.
 - R2AC dodaje finalny runtime test i zaostrza guard.
 
 DECYZJE:
-- Nie wdraÄąÄ˝amy nowej funkcji.
+- Nie wdraŚÄ˝amy nowej funkcji.
 - Nie ruszamy Stage224.
-- Nie robimy Contact Cadence Grid, Lost Lead Rescue, Owner Digest, Finance Watchlist, AI scoringu, automatycznych wiadomoÄąâ€şci ani redesignu Today.
-- Celem R2AC jest domkniĂ„â„˘cie jakoÄąâ€şci/guardÄ‚łw po Stage223 R2.
-- Nie pushujemy bez zielonych testÄ‚łw koÄąâ€žcowych.
+- Nie robimy Contact Cadence Grid, Lost Lead Rescue, Owner Digest, Finance Watchlist, AI scoringu, automatycznych wiadomoŚâ€şci ani redesignu Today.
+- Celem R2AC jest domkniĂ„â„˘cie jakoŚâ€şci/guardów po Stage223 R2.
+- Nie pushujemy bez zielonych testów koŚ„cowych.
 
 TESTY AUTOMATYCZNE:
 - node scripts/check-stage223-owner-movement-risk-system.cjs
@@ -2108,34 +2108,34 @@ TESTY AUTOMATYCZNE:
 - git diff --check
 
 TESTY RĂ„CZNE:
-- Leads: badge braku akcji, ciszy 7/14 i wysokiej wartoÄąâ€şci zaleÄąÄ˝nej od progu.
+- Leads: badge braku akcji, ciszy 7/14 i wysokiej wartoŚâ€şci zaleŚÄ˝nej od progu.
 - LeadDetail: status nastĂ„â„˘pnego ruchu, brak duplikacji paneli, czytelne badge.
 - Cases: badge braku ruchu, braku nastĂ„â„˘pnego ruchu i pieniĂ„â„˘dzy bez ruchu.
 - CaseDetail: czytelny ruch/ryzyko bez mieszania z historiĂ„â€¦ i notatkami.
-- Today: brak nowej sekcji, `Wysoka wartoÄąâ€şĂ„â€ˇ / ryzyko`, klikniĂ„â„˘cia do rekordÄ‚łw, brak agresywnego odÄąâ€şwieÄąÄ˝ania po zmianie karty.
+- Today: brak nowej sekcji, `Wysoka wartoŚâ€şĂ„â€ˇ / ryzyko`, klikniĂ„â„˘cia do rekordów, brak agresywnego odŚâ€şwieŚÄ˝ania po zmianie karty.
 
 AUDYT RYZYK:
 - R2AC zmienia testy i guardy, nie runtime funkcji.
-- GÄąâ€šÄ‚łwne ryzyko: guard moÄąÄ˝e zÄąâ€šapaĂ„â€ˇ przyszÄąâ€še rĂ„â„˘czne dublowanie badge w UI Ă˘â‚¬â€ť to jest celowe.
-- Po zielonym teÄąâ€şcie moÄąÄ˝na uruchomiĂ„â€ˇ lokalnie aplikacjĂ„â„˘ i przejÄąâ€şĂ„â€ˇ checklistĂ„â„˘ manualnĂ„â€¦.
+- GŚâ€šówne ryzyko: guard moŚÄ˝e zŚâ€šapaĂ„â€ˇ przyszŚâ€še rĂ„â„˘czne dublowanie badge w UI — to jest celowe.
+- Po zielonym teŚâ€şcie moŚÄ˝na uruchomiĂ„â€ˇ lokalnie aplikacjĂ„â„˘ i przejŚâ€şĂ„â€ˇ checklistĂ„â„˘ manualnĂ„â€¦.
 
 NASTĂ„PNY KROK:
 - UruchomiĂ„â€ˇ R2AC lokalnie.
-- JeÄąÄ˝eli testy sĂ„â€¦ zielone, odpaliĂ„â€ˇ lokalnie `npm run dev:api` i sprawdziĂ„â€ˇ /today, /leads, /cases, /calendar.
+- JeŚÄ˝eli testy są zielone, odpaliĂ„â€ˇ lokalnie `npm run dev:api` i sprawdziĂ„â€ˇ /today, /leads, /cases, /calendar.
 
 <!-- STAGE223_R2AD_V4_TODAY_TILE_NO_SCROLL_TRAP_HOTFIX -->
 ## 2026-06-05 - STAGE223 R2AD V4 Today tile no-scroll trap hotfix
 
 FAKTY:
-- R2AD V1, V2 i V3 nie zaaplikowaÄąâ€šy siĂ„â„˘ przez zbyt kruche anchory patchera.
+- R2AD V1, V2 i V3 nie zaaplikowaŚâ€šy siĂ„â„˘ przez zbyt kruche anchory patchera.
 - V4 wykonuje lokalny audyt `TodayStable.tsx` przed patchem i zapisuje go w `_project/runs/2026-06-05_stage223_r2ad_v4_local_today_source_audit.md`.
-- V4 uÄąÄ˝ywa parsera blokÄ‚łw/statements, zamiast zakÄąâ€šadaĂ„â€ˇ sĂ„â€¦siedztwo tekstowe i puste linie.
+- V4 uŚÄ˝ywa parsera bloków/statements, zamiast zakŚâ€šadaĂ„â€ˇ sąsiedztwo tekstowe i puste linie.
 - Naprawiane punkty:
   - `moveTodaySectionToTop` nie przestawia DOM,
-  - `scrollToTodaySection` nie wywoÄąâ€šuje `scrollIntoView`,
-  - `focusTodaySectionFromMetricTile` nie uÄąÄ˝ywa timeout/scroll/reorder,
+  - `scrollToTodaySection` nie wywoŚâ€šuje `scrollIntoView`,
+  - `focusTodaySectionFromMetricTile` nie uŚÄ˝ywa timeout/scroll/reorder,
   - root/capture bridges ignorujĂ„â€¦ top metric tiles,
-  - top metric buttons majĂ„â€¦ wÄąâ€šasne bezpieczne onClick z blur/prevent/stop.
+  - top metric buttons majĂ„â€¦ wŚâ€šasne bezpieczne onClick z blur/prevent/stop.
 - Guard R2AD zostaje dopiĂ„â„˘ty do `verify:closeflow:quiet`.
 
 DECYZJE:
@@ -2153,9 +2153,9 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- Zmieniamy UX kafelkÄ‚łw: nie przenoszĂ„â€¦ list na gÄ‚łrĂ„â„˘.
+- Zmieniamy UX kafelków: nie przenoszĂ„â€¦ list na górĂ„â„˘.
 - Ryzyko lokalne: expand/collapse na `/today`; rĂ„â„˘czny smoke obowiĂ„â€¦zkowy.
-- Guard w verify quiet ma zapobiec powrotowi `scrollIntoView` / `insertBefore` w mechanice kafelkÄ‚łw Today.
+- Guard w verify quiet ma zapobiec powrotowi `scrollIntoView` / `insertBefore` w mechanice kafelków Today.
 
 NASTĂ„PNY KROK:
 - UruchomiĂ„â€ˇ R2AD V4, potem `npm run dev`, rĂ„â„˘czny test `/today`, push po akceptacji.
@@ -2164,25 +2164,25 @@ NASTĂ„PNY KROK:
 ## 2026-06-05 - STAGE223 R2AE quiet gate contract repair after R2AD
 
 FAKTY:
-- R2AD V4 zaaplikowaÄąâ€š siĂ„â„˘ lokalnie i przeszedÄąâ€š:
+- R2AD V4 zaaplikowaŚâ€š siĂ„â„˘ lokalnie i przeszedŚâ€š:
   - lokalny audyt `TodayStable.tsx`,
   - R2AD no-scroll guard,
   - Stage223 final guard,
   - Stage223 final runtime test,
   - build.
-- `npm run verify:closeflow:quiet` padÄąâ€š nie przez Today, tylko przez zÄąâ€šamanie kontraktu quiet gate.
-- BÄąâ€šĂ„â€¦d:
+- `npm run verify:closeflow:quiet` padŚâ€š nie przez Today, tylko przez zŚâ€šamanie kontraktu quiet gate.
+- BŚâ€šĂ„â€¦d:
   - `FAILED: case detail no partial loading`,
   - `verify:closeflow:quiet musi zachowaĂ„â€ˇ kontrakt quiet gate`.
 - Przyczyna:
-  - R2AD V4 dopisaÄąâ€š do `package.json` komendĂ„â„˘ `&& node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs`,
-  - a `tests/closeflow-release-gate-quiet.test.cjs` wymaga dokÄąâ€šadnie:
+  - R2AD V4 dopisaŚâ€š do `package.json` komendĂ„â„˘ `&& node scripts/check-stage223-r2ad-today-tile-no-scroll-trap.cjs`,
+  - a `tests/closeflow-release-gate-quiet.test.cjs` wymaga dokŚâ€šadnie:
     `verify:closeflow:quiet = node scripts/closeflow-release-check-quiet.cjs`.
 - R2AE przywraca `package.json` do exact quiet gate contract i podpina R2AD guard wewnĂ„â€¦trz `scripts/closeflow-release-check-quiet.cjs`.
 
 DECYZJE:
 - Nie zmieniamy fixu Today z R2AD V4.
-- Nie dopisujemy dodatkowych poleceÄąâ€ž do `verify:closeflow:quiet` w package.json.
+- Nie dopisujemy dodatkowych poleceŚ„ do `verify:closeflow:quiet` w package.json.
 - Nowy guard Today ma byĂ„â€ˇ uruchamiany przez `closeflow-release-check-quiet.cjs`.
 - Nie pushujemy bez zielonego verify quiet.
 
@@ -2196,32 +2196,32 @@ TESTY:
 
 AUDYT RYZYK:
 - To jest naprawa kontraktu testowego, nie nowy runtime feature.
-- Ryzyko byÄąâ€šo proceduralne: dopiĂ„â„˘cie guarda do package scriptu Äąâ€šamie stary quiet gate contract.
-- Zabezpieczenie: R2AE dodaje wÄąâ€šasny guard pilnujĂ„â€¦cy, ÄąÄ˝e package script pozostaje dokÄąâ€šadny, a nowy R2AD guard jest w Äąâ€şrodku quiet gate.
+- Ryzyko byŚâ€šo proceduralne: dopiĂ„â„˘cie guarda do package scriptu Śâ€šamie stary quiet gate contract.
+- Zabezpieczenie: R2AE dodaje wŚâ€šasny guard pilnujĂ„â€¦cy, ŚÄ˝e package script pozostaje dokŚâ€šadny, a nowy R2AD guard jest w Śâ€şrodku quiet gate.
 
 NASTĂ„PNY KROK:
-- UruchomiĂ„â€ˇ R2AE. JeÄąâ€şli verify quiet przejdzie, odpaliĂ„â€ˇ lokalnie `npm run dev`, sprawdziĂ„â€ˇ `/today`, potem push po akceptacji.
+- UruchomiĂ„â€ˇ R2AE. JeŚâ€şli verify quiet przejdzie, odpaliĂ„â€ˇ lokalnie `npm run dev`, sprawdziĂ„â€ˇ `/today`, potem push po akceptacji.
 
 <!-- STAGE223_R2AF_TODAY_MOBILE_FOCUS_CONTRACT_REPAIR -->
 ## 2026-06-05 - STAGE223 R2AF Today mobile focus contract repair after no-scroll fix
 
 FAKTY:
-- R2AE przywrÄ‚łciÄąâ€š exact `verify:closeflow:quiet` contract i build przechodziÄąâ€š.
-- Verify quiet zatrzymaÄąâ€š siĂ„â„˘ na starym guardzie `today mobile tile focus`.
-- Guard `scripts/check-closeflow-today-mobile-tile-focus.cjs` nadal wymagaÄąâ€š:
+- R2AE przywróciŚâ€š exact `verify:closeflow:quiet` contract i build przechodziŚâ€š.
+- Verify quiet zatrzymaŚâ€š siĂ„â„˘ na starym guardzie `today mobile tile focus`.
+- Guard `scripts/check-closeflow-today-mobile-tile-focus.cjs` nadal wymagaŚâ€š:
   - `setCollapsedSections((prev) => prev.filter((entry) => entry !== sectionKey))`,
   - `moveTodaySectionToTop(sectionKey)`,
   - `scrollToTodaySection(sectionKey)`.
-- To jest sprzeczne z decyzjĂ„â€¦ R2AD: kafelki Today nie mogĂ„â€¦ juÄąÄ˝ przenosiĂ„â€ˇ sekcji w DOM ani przewijaĂ„â€ˇ do sekcji, bo to powodowaÄąâ€šo scroll trap.
+- To jest sprzeczne z decyzjĂ„â€¦ R2AD: kafelki Today nie mogĂ„â€¦ juŚÄ˝ przenosiĂ„â€ˇ sekcji w DOM ani przewijaĂ„â€ˇ do sekcji, bo to powodowaŚâ€šo scroll trap.
 - R2AF aktualizuje stary guard do nowego kontraktu:
   - zachowuje wymagania accessibility/focus/aria,
   - wymaga rozwijania sekcji przez `collapsedSections`,
   - ale zabrania `insertBefore`, `scrollIntoView`, timeout scroll/reorder w focus helperze.
-- R2AF nie zmienia runtime Today poza tym, co zrobiÄąâ€š R2AD V4.
+- R2AF nie zmienia runtime Today poza tym, co zrobiŚâ€š R2AD V4.
 
 DECYZJE:
 - Nie cofamy R2AD V4.
-- Nie przywracamy `moveTodaySectionToTop(sectionKey)` ani `scrollToTodaySection(sectionKey)` do Äąâ€şcieÄąÄ˝ki klikniĂ„â„˘cia kafelka.
+- Nie przywracamy `moveTodaySectionToTop(sectionKey)` ani `scrollToTodaySection(sectionKey)` do Śâ€şcieŚÄ˝ki klikniĂ„â„˘cia kafelka.
 - Stary guard mobile focus zostaje dostosowany do nowej decyzji UX.
 - Nie pushujemy bez zielonego verify quiet i rĂ„â„˘cznego testu `/today`.
 
@@ -2235,8 +2235,8 @@ TESTY:
 
 AUDYT RYZYK:
 - To zmiana guard/test contract, nie nowa funkcja.
-- GÄąâ€šÄ‚łwne ryzyko: stary test wymuszaÄąâ€š zachowanie, ktÄ‚łre teraz uznaliÄąâ€şmy za ÄąźrÄ‚łdÄąâ€šo bugÄ‚łw.
-- Nowy kontrakt utrzymuje dostĂ„â„˘pnoÄąâ€şĂ„â€ˇ i focus, ale blokuje scroll trap.
+- GŚâ€šówne ryzyko: stary test wymuszaŚâ€š zachowanie, które teraz uznaliŚâ€şmy za ŚźródŚâ€šo bugów.
+- Nowy kontrakt utrzymuje dostĂ„â„˘pnoŚâ€şĂ„â€ˇ i focus, ale blokuje scroll trap.
 
 NASTĂ„PNY KROK:
 - UruchomiĂ„â€ˇ R2AF, potem lokalny `npm run dev`, rĂ„â„˘czny test `/today`, push po akceptacji.
@@ -2245,19 +2245,19 @@ NASTĂ„PNY KROK:
 ## 2026-06-05 - STAGE223 R2AG TodayStable trailing whitespace cleanup
 
 FAKTY:
-- R2AF zaaplikowaÄąâ€š siĂ„â„˘ i przeszedÄąâ€š:
+- R2AF zaaplikowaŚâ€š siĂ„â„˘ i przeszedŚâ€š:
   - Today mobile tile focus guard,
   - Today tile no-scroll trap guard,
   - R2AF contract guard,
   - build,
   - verify:closeflow:quiet.
-- Jedyny bloker zostaÄąâ€š na `git diff --check`.
-- `git diff --check` wskazaÄąâ€š trailing whitespace w `src/pages/TodayStable.tsx`:
+- Jedyny bloker zostaŚâ€š na `git diff --check`.
+- `git diff --check` wskazaŚâ€š trailing whitespace w `src/pages/TodayStable.tsx`:
   - linia 977,
   - linia 986,
   - linia 1109.
-- R2AG usuwa wyÄąâ€šĂ„â€¦cznie trailing whitespace w `TodayStable.tsx`.
-- Nie zmienia logiki Today, guardÄ‚łw, package scripts, quiet gate ani UI.
+- R2AG usuwa wyŚâ€šĂ„â€¦cznie trailing whitespace w `TodayStable.tsx`.
+- Nie zmienia logiki Today, guardów, package scripts, quiet gate ani UI.
 
 DECYZJE:
 - Nie dotykamy zachowania R2AD/R2AF.
@@ -2274,8 +2274,8 @@ TESTY:
 
 AUDYT RYZYK:
 - To czyszczenie whitespace, wiĂ„â„˘c ryzyko runtime jest minimalne.
-- RĂ„â„˘czny smoke `/today` nadal wymagany, bo wÄąâ€šaÄąâ€şciwa zmiana behavioru pochodzi z R2AD V4/R2AF.
-- Uwaga: ostrzeÄąÄ˝enia LF/CRLF z `git diff --check` sĂ„â€¦ nieblokujĂ„â€¦ce; trailing whitespace byÄąâ€š blokujĂ„â€¦cy.
+- RĂ„â„˘czny smoke `/today` nadal wymagany, bo wŚâ€šaŚâ€şciwa zmiana behavioru pochodzi z R2AD V4/R2AF.
+- Uwaga: ostrzeŚÄ˝enia LF/CRLF z `git diff --check` są nieblokujĂ„â€¦ce; trailing whitespace byŚâ€š blokujĂ„â€¦cy.
 
 NASTĂ„PNY KROK:
 - UruchomiĂ„â€ˇ R2AG.
@@ -2285,19 +2285,19 @@ NASTĂ„PNY KROK:
 ## 2026-06-05 - STAGE223R3-A Last Contact Intake
 
 FAKTY:
-- Zweryfikowano, ÄąÄ˝e formularz tworzenia leada i klienta nie miaÄąâ€š pola `lastContactAt`.
-- Zweryfikowano, ÄąÄ˝e payload tworzenia leada/klienta nie wysyÄąâ€šaÄąâ€š `lastContactAt`.
-- `activity-truth.ts` i `next-move-contract.ts` juÄąÄ˝ istniejĂ„â€¦ po Stage223, wiĂ„â„˘c wczeÄąâ€şniejsza teza o ich braku byÄąâ€ša nieaktualna.
-- R3A dodaje pole `Ostatni kontakt` do tworzenia leadÄ‚łw i klientÄ‚łw.
+- Zweryfikowano, ŚÄ˝e formularz tworzenia leada i klienta nie miaŚâ€š pola `lastContactAt`.
+- Zweryfikowano, ŚÄ˝e payload tworzenia leada/klienta nie wysyŚâ€šaŚâ€š `lastContactAt`.
+- `activity-truth.ts` i `next-move-contract.ts` juŚÄ˝ istniejĂ„â€¦ po Stage223, wiĂ„â„˘c wczeŚâ€şniejsza teza o ich braku byŚâ€ša nieaktualna.
+- R3A dodaje pole `Ostatni kontakt` do tworzenia leadów i klientów.
 - R3A dodaje helper `src/lib/owner-control/last-contact-intake.ts`.
 - R3A dodaje API support dla `lastContactAt` / `last_contact_at` w `api/leads.ts` i `api/clients.ts`.
 - R3A dodaje SQL `supabase/sql/001_stage223r3_add_last_contact_at.sql`.
 
 DECYZJE:
-- DomyÄąâ€şlnie pole pokazuje dzisiejszĂ„â€¦ datĂ„â„˘.
-- JeÄąÄ˝eli kontakt byÄąâ€š starszy, operator ma wpisaĂ„â€ˇ prawdziwĂ„â€¦ datĂ„â„˘.
-- DatĂ„â„˘ zapisujemy jako noon ISO, ÄąÄ˝eby ograniczyĂ„â€ˇ problemy stref czasowych.
-- Daty przyszÄąâ€še sĂ„â€¦ blokowane komunikatem: `Ostatni kontakt nie moÄąÄ˝e byĂ„â€ˇ w przyszÄąâ€šoÄąâ€şci.`
+- DomyŚâ€şlnie pole pokazuje dzisiejszĂ„â€¦ datĂ„â„˘.
+- JeŚÄ˝eli kontakt byŚâ€š starszy, operator ma wpisaĂ„â€ˇ prawdziwĂ„â€¦ datĂ„â„˘.
+- DatĂ„â„˘ zapisujemy jako noon ISO, ŚÄ˝eby ograniczyĂ„â€ˇ problemy stref czasowych.
+- Daty przyszŚâ€še są blokowane komunikatem: `Ostatni kontakt nie moŚÄ˝e byĂ„â€ˇ w przyszŚâ€šoŚâ€şci.`
 - Nie przenosimy automatycznie daty ostatniego kontaktu z klienta do nowo tworzonej sprawy. To zostaje DO POTWIERDZENIA.
 
 TESTY:
@@ -2308,10 +2308,10 @@ TESTY:
 - git diff --check
 
 AUDYT RYZYK:
-- JeÄąâ€şli SQL nie zostanie uruchomiony, API ma fallback dla brakujĂ„â€¦cej kolumny, ale data nie bĂ„â„˘dzie trwale zapisana w bazie.
-- Lista leadÄ‚łw/klientÄ‚łw ma fallback select bez `last_contact_at`, ÄąÄ˝eby nie wysadziĂ„â€ˇ produkcji przed migracjĂ„â€¦.
-- PeÄąâ€šne spiĂ„â„˘cie z widocznoÄąâ€şciĂ„â€¦ badge `Cisza 14+ dni` zaleÄąÄ˝y od tego, czy `last_contact_at` wrÄ‚łci z API po migracji.
-- NastĂ„â„˘pny krok po R3A: Stage223R3-B Activity Truth Integration/verification, jeÄąâ€şli po manualnym teÄąâ€şcie badge nie bierze daty z bazy.
+- JeŚâ€şli SQL nie zostanie uruchomiony, API ma fallback dla brakujĂ„â€¦cej kolumny, ale data nie bĂ„â„˘dzie trwale zapisana w bazie.
+- Lista leadów/klientów ma fallback select bez `last_contact_at`, ŚÄ˝eby nie wysadziĂ„â€ˇ produkcji przed migracjĂ„â€¦.
+- PeŚâ€šne spiĂ„â„˘cie z widocznoŚâ€şciĂ„â€¦ badge `Cisza 14+ dni` zaleŚÄ˝y od tego, czy `last_contact_at` wróci z API po migracji.
+- NastĂ„â„˘pny krok po R3A: Stage223R3-B Activity Truth Integration/verification, jeŚâ€şli po manualnym teŚâ€şcie badge nie bierze daty z bazy.
 
 NASTĂ„PNY KROK:
 - UruchomiĂ„â€ˇ SQL w Supabase.
@@ -2322,10 +2322,10 @@ NASTĂ„PNY KROK:
 ## 2026-06-05 - STAGE223R3A-V3 Stage03D last_contact_at evidence hotfix
 
 FAKTY:
-- Stage223R3A-V2 przeszedÄąâ€š guard i runtime test dla Last Contact Intake.
-- Build przeszedÄąâ€š.
-- `verify:closeflow:quiet` zatrzymaÄąâ€š siĂ„â„˘ na `tests/stage03d-optional-columns-evidence.test.cjs`.
-- Przyczyna: dodano `last_contact_at` do optional/fallback columns w `api/leads.ts`, ale Stage03D evidence matrix nie miaÄąâ€ša wiersza `leads.last_contact_at`.
+- Stage223R3A-V2 przeszedŚâ€š guard i runtime test dla Last Contact Intake.
+- Build przeszedŚâ€š.
+- `verify:closeflow:quiet` zatrzymaŚâ€š siĂ„â„˘ na `tests/stage03d-optional-columns-evidence.test.cjs`.
+- Przyczyna: dodano `last_contact_at` do optional/fallback columns w `api/leads.ts`, ale Stage03D evidence matrix nie miaŚâ€ša wiersza `leads.last_contact_at`.
 - V3 dopisuje wymagane wiersze evidence:
   - `leads.last_contact_at`,
   - `clients.last_contact_at`.
@@ -2333,8 +2333,8 @@ FAKTY:
 DECYZJE:
 - Nie zmieniamy runtime Last Contact Intake.
 - Nie cofamy SQL.
-- Naprawiamy dokument evidence, bo Stage03D wymaga audytowalnego uzasadnienia kaÄąÄ˝dej optional fallback column.
-- Nie uruchamiamy osobnego peÄąâ€šnego builda drugi raz; po zmianie dokumentu evidence uruchamiamy failing Stage03D test oraz `verify:closeflow:quiet`, ÄąÄ˝eby potwierdziĂ„â€ˇ release gate.
+- Naprawiamy dokument evidence, bo Stage03D wymaga audytowalnego uzasadnienia kaŚÄ˝dej optional fallback column.
+- Nie uruchamiamy osobnego peŚâ€šnego builda drugi raz; po zmianie dokumentu evidence uruchamiamy failing Stage03D test oraz `verify:closeflow:quiet`, ŚÄ˝eby potwierdziĂ„â€ˇ release gate.
 
 TESTY:
 - node --test tests/stage03d-optional-columns-evidence.test.cjs
@@ -2348,18 +2348,18 @@ AUDYT RYZYK:
 
 NASTĂ„PNY KROK:
 - UruchomiĂ„â€ˇ V3.
-- JeÄąâ€şli gate jest zielony, lokalny smoke `/leads` i `/clients`.
+- JeŚâ€şli gate jest zielony, lokalny smoke `/leads` i `/clients`.
 - Push po akceptacji.
 
-## STAGE226R7 Ă˘â‚¬â€ť Rescue Build Hotfix + Rescue UI Polish
+## STAGE226R7 — Rescue Build Hotfix + Rescue UI Polish
 
 Data: 2026-06-05 20:32 Europe/Warsaw
 
 ## FAKTY
-- Stage226R7 usuwa runtime blocker w src/pages/Leads.tsx: wolne odwoÄąâ€šanie do filter po dodaniu leada.
+- Stage226R7 usuwa runtime blocker w src/pages/Leads.tsx: wolne odwoŚâ€šanie do filter po dodaniu leada.
 - Dodaje guard i runtime test Stage226R7.
-- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/ÄąĹˇrednie, tekst Pokazano 8 z X, pusty stan operacyjny.
-- Nie aktywuje przyciskÄ‚łw Ustaw zadanie / OdÄąâ€šÄ‚łÄąÄ˝ / Oznacz jako martwy.
+- Dopolerowuje panel Do odzyskania: summary Krytyczne/Wysokie/Średnie, tekst Pokazano 8 z X, pusty stan operacyjny.
+- Nie aktywuje przycisków Ustaw zadanie / OdŚâ€šóŚÄ˝ / Oznacz jako martwy.
 
 ## TESTY
 - node scripts/check-stage226-lost-lead-rescue.cjs
@@ -2370,18 +2370,18 @@ Data: 2026-06-05 20:32 Europe/Warsaw
 
 ## AUDYT RYZYK
 - create lead flow wymaga rĂ„â„˘cznego testu po patchu.
-- Rescue UI moÄąÄ˝e wymagaĂ„â€ˇ pÄ‚łÄąźniejszego uproszczenia wizualnego.
-- Backend akcji Rescue nie jest jeszcze wdroÄąÄ˝ony, wiĂ„â„˘c disabled actions sĂ„â€¦ prawidÄąâ€šowe.
+- Rescue UI moŚÄ˝e wymagaĂ„â€ˇ póŚźniejszego uproszczenia wizualnego.
+- Backend akcji Rescue nie jest jeszcze wdroŚÄ˝ony, wiĂ„â„˘c disabled actions są prawidŚâ€šowe.
 
-## STAGE220A35 Ă˘â‚¬â€ť Client Commission Finance Source Truth
+## STAGE220A35 — Client Commission Finance Source Truth
 
 Data: 2026-06-05 21:05 Europe/Warsaw
 
 ### FAKTY
-- Naprawiono rozjazd: wartoÄąâ€şĂ„â€ˇ transakcji/sprawy nie jest prowizjĂ„â€¦ wÄąâ€šaÄąâ€şciciela.
-- ClientDetail pokazuje prowizjĂ„â„˘ naleÄąÄ˝nĂ„â€¦, wpÄąâ€šaconĂ„â€¦ prowizjĂ„â„˘ i prowizjĂ„â„˘ do zapÄąâ€šaty jako osobne wartoÄąâ€şci.
-- Karta sprawy w kliencie uÄąÄ˝ywa getCaseFinanceSummary, wiĂ„â„˘c prowizja procentowa 69 000 PLN Ä‚â€” 2% daje 1 380 PLN zamiast 0 PLN.
-- WartoÄąâ€şĂ„â€ˇ transakcji nadal jest widoczna jako osobna informacja.
+- Naprawiono rozjazd: wartoŚâ€şĂ„â€ˇ transakcji/sprawy nie jest prowizjĂ„â€¦ wŚâ€šaŚâ€şciciela.
+- ClientDetail pokazuje prowizjĂ„â„˘ naleŚÄ˝nĂ„â€¦, wpŚâ€šaconĂ„â€¦ prowizjĂ„â„˘ i prowizjĂ„â„˘ do zapŚâ€šaty jako osobne wartoŚâ€şci.
+- Karta sprawy w kliencie uŚÄ˝ywa getCaseFinanceSummary, wiĂ„â„˘c prowizja procentowa 69 000 PLN — 2% daje 1 380 PLN zamiast 0 PLN.
+- WartoŚâ€şĂ„â€ˇ transakcji nadal jest widoczna jako osobna informacja.
 
 ### TESTY
 - node scripts/check-stage220a35-client-commission-finance.cjs
@@ -2393,19 +2393,19 @@ Data: 2026-06-05 21:05 Europe/Warsaw
 - git diff --check
 
 ### AUDYT RYZYK
-- Bez tej poprawki Stage227 / Sales Funnel mÄ‚łgÄąâ€šby dziedziczyĂ„â€ˇ bÄąâ€šĂ„â„˘dne wartoÄąâ€şci finansowe.
-- Nie ruszano Supabase, RLS ani backendu pÄąâ€šatnoÄąâ€şci.
-- Model prowizji staÄąâ€šej nadal uÄąÄ˝ywa gotowej kwoty prowizji.
+- Bez tej poprawki Stage227 / Sales Funnel mógŚâ€šby dziedziczyĂ„â€ˇ bŚâ€šĂ„â„˘dne wartoŚâ€şci finansowe.
+- Nie ruszano Supabase, RLS ani backendu pŚâ€šatnoŚâ€şci.
+- Model prowizji staŚâ€šej nadal uŚÄ˝ywa gotowej kwoty prowizji.
 
-## STAGE220A36 Ă˘â‚¬â€ť Commission Input Model Split
+## STAGE220A36 — Commission Input Model Split
 
 Data: 2026-06-05 21:45 Europe/Warsaw
 
 ### FAKTY
-- Rozdzielono prowizjĂ„â„˘ staÄąâ€šĂ„â€¦ od podstawy procentowej.
-- Przy kwocie staÄąâ€šej uÄąÄ˝ytkownik wpisuje wartoÄąâ€şĂ„â€ˇ prowizji.
-- Przy prowizji procentowej uÄąÄ˝ytkownik wpisuje wartoÄąâ€şĂ„â€ˇ transakcji do wyliczenia i stawkĂ„â„˘ procentowĂ„â€¦; prowizja jest wyliczana i nieedytowalna.
-- Lista klientÄ‚łw pokazuje prowizjĂ„â„˘ operacyjnĂ„â€¦, nie cenĂ„â„˘ transakcji.
+- Rozdzielono prowizjĂ„â„˘ staŚâ€šĂ„â€¦ od podstawy procentowej.
+- Przy kwocie staŚâ€šej uŚÄ˝ytkownik wpisuje wartoŚâ€şĂ„â€ˇ prowizji.
+- Przy prowizji procentowej uŚÄ˝ytkownik wpisuje wartoŚâ€şĂ„â€ˇ transakcji do wyliczenia i stawkĂ„â„˘ procentowĂ„â€¦; prowizja jest wyliczana i nieedytowalna.
+- Lista klientów pokazuje prowizjĂ„â„˘ operacyjnĂ„â€¦, nie cenĂ„â„˘ transakcji.
 
 ### TESTY
 - node scripts/check-stage220a35-client-commission-finance.cjs
@@ -2416,19 +2416,19 @@ Data: 2026-06-05 21:45 Europe/Warsaw
 - git diff --check
 
 ### AUDYT RYZYK
-- Nie ruszano Supabase, RLS ani backendu pÄąâ€šatnoÄąâ€şci.
+- Nie ruszano Supabase, RLS ani backendu pŚâ€šatnoŚâ€şci.
 - Techniczne pole contractValue nadal przechowuje podstawĂ„â„˘ procentu przy modelu procentowym.
-- Stage227 moÄąÄ˝e startowaĂ„â€ˇ dopiero po rĂ„â„˘cznym sprawdzeniu fixed/percent w modalach finansÄ‚łw.
+- Stage227 moŚÄ˝e startowaĂ„â€ˇ dopiero po rĂ„â„˘cznym sprawdzeniu fixed/percent w modalach finansów.
 
-## STAGE220A36-R2 Ă˘â‚¬â€ť Commission Modal Field Order
+## STAGE220A36-R2 — Commission Modal Field Order
 
 Data: 2026-06-05 22:00 Europe/Warsaw
 
 ### FAKTY
-- Doprecyzowano ukÄąâ€šad modala prowizji: najpierw rodzaj prowizji, potem stawka procentowa i wartoÄąâ€şĂ„â€ˇ prowizji.
-- Pole "WartoÄąâ€şĂ„â€ˇ prowizji" jest edytowalne tylko przy kwocie staÄąâ€šej.
-- Przy procencie wartoÄąâ€şĂ„â€ˇ prowizji wylicza siĂ„â„˘ automatycznie i jest nieedytowalna.
-- Podstawa procentu, czyli wartoÄąâ€şĂ„â€ˇ transakcji/zlecenia, jest osobnym polem poniÄąÄ˝ej gÄąâ€šÄ‚łwnych kontrolek prowizji.
+- Doprecyzowano ukŚâ€šad modala prowizji: najpierw rodzaj prowizji, potem stawka procentowa i wartoŚâ€şĂ„â€ˇ prowizji.
+- Pole "WartoŚâ€şĂ„â€ˇ prowizji" jest edytowalne tylko przy kwocie staŚâ€šej.
+- Przy procencie wartoŚâ€şĂ„â€ˇ prowizji wylicza siĂ„â„˘ automatycznie i jest nieedytowalna.
+- Podstawa procentu, czyli wartoŚâ€şĂ„â€ˇ transakcji/zlecenia, jest osobnym polem poniŚÄ˝ej gŚâ€šównych kontrolek prowizji.
 
 ### TESTY
 - node scripts/check-stage220a36-commission-input-model-split.cjs
@@ -2440,11 +2440,11 @@ Data: 2026-06-05 22:00 Europe/Warsaw
 - git diff --check
 
 ### AUDYT RYZYK
-- Nie zmieniano bazy ani modelu pÄąâ€šatnoÄąâ€şci.
-- Ryzyko dotyczy tylko czytelnoÄąâ€şci UI i bÄąâ€šĂ„â„˘dnego wpisywania ceny transakcji w miejsce prowizji.
-- Stage227 nadal musi korzystaĂ„â€ˇ z prowizji jako wartoÄąâ€şci operacyjnej.
+- Nie zmieniano bazy ani modelu pŚâ€šatnoŚâ€şci.
+- Ryzyko dotyczy tylko czytelnoŚâ€şci UI i bŚâ€šĂ„â„˘dnego wpisywania ceny transakcji w miejsce prowizji.
+- Stage227 nadal musi korzystaĂ„â€ˇ z prowizji jako wartoŚâ€şci operacyjnej.
 
-## STAGE220A36-R4 Ă˘â‚¬â€ť Build Guard and Case Item Schema Fix
+## STAGE220A36-R4 — Build Guard and Case Item Schema Fix
 
 Data: 2026-06-05 22:15 Europe/Warsaw
 
@@ -2469,7 +2469,7 @@ Data: 2026-06-05 22:15 Europe/Warsaw
 - Runtime bledy schema cache PGRST204 trzeba lapac guardami payloadu, nie obiecywac SQL bez potrzeby.
 - Nie ruszano Supabase, RLS ani modelu platnosci.
 
-## STAGE220A36-R5 Ă˘â‚¬â€ť R4 Guard Token Compat
+## STAGE220A36-R5 — R4 Guard Token Compat
 
 Data: 2026-06-05 22:30 Europe/Warsaw
 
@@ -2494,7 +2494,7 @@ Data: 2026-06-05 22:30 Europe/Warsaw
 - approved_at fix z R4 zostaje bez zmian.
 - Stage227 nadal wymaga zielonego Vercel po R5.
 
-## STAGE220A36-R6 Ă˘â‚¬â€ť Deploy Unblock Mojibake Cleanup
+## STAGE220A36-R6 — Deploy Unblock Mojibake Cleanup
 
 Data: 2026-06-05 22:35 Europe/Warsaw
 
@@ -2507,7 +2507,7 @@ Data: 2026-06-05 22:35 Europe/Warsaw
 - The UI screenshot can remain old until Vercel deploys a green build.
 - Stage227 remains blocked until Vercel is green and modal is manually verified.
 
-## STAGE220A36-R7 Ă˘â‚¬â€ť CaseDetail Legacy Finance Modal Wiring Fix
+## STAGE220A36-R7 — CaseDetail Legacy Finance Modal Wiring Fix
 
 Data: 2026-06-06 07:55 Europe/Warsaw
 
@@ -2528,7 +2528,7 @@ Data: 2026-06-06 07:55 Europe/Warsaw
 - Po R7 trzeba sprawdzic bundle w przegladarce: hasOldTitle powinno byc false, a hasNewTitle true.
 - Blad /api/case-items 500 jest osobnym watkiem; wymaga Response z Network, jesli po deployu R7 nadal wystapi.
 
-## STAGE220A36-R10 Ă˘â‚¬â€ť Commission Modal Three-Field Top Row Polish
+## STAGE220A36-R10 — Commission Modal Three-Field Top Row Polish
 
 Data: 2026-06-06 08:55 Europe/Warsaw
 
@@ -2552,13 +2552,13 @@ Data: 2026-06-06 08:55 Europe/Warsaw
 - /api/case-items 500 pozostaje osobnym watkiem, jesli nadal wystepuje po deployu.
 
 
-## STAGE220A36-R11 Ă˘â‚¬â€ť Commission Modal Compact Tooltips + Alignment
+## STAGE220A36-R11 — Commission Modal Compact Tooltips + Alignment
 
 Data: 2026-06-06 09:10 Europe/Warsaw
 
 ### FAKTY
-- R10 logicznie uÄąâ€šoÄąÄ˝yÄąâ€š pola, ale modal nadal byÄąâ€š zbyt przytÄąâ€šaczajĂ„â€¦cy przez opisy pod polami i zbyt wysokie inputy.
-- R11 przenosi opisy do tooltipÄ‚łw Ă˘â‚¬Ĺľ?Ă˘â‚¬ĹĄ, skraca Äąâ€şrodkowy label do Ă˘â‚¬ĹľStawka (%)Ă˘â‚¬ĹĄ, zmniejsza wysokoÄąâ€şĂ„â€ˇ pÄ‚łl i wyrÄ‚łwnuje Äąâ€şrodkowe pole stawki.
+- R10 logicznie uŚâ€šoŚÄ˝yŚâ€š pola, ale modal nadal byŚâ€š zbyt przytŚâ€šaczajĂ„â€¦cy przez opisy pod polami i zbyt wysokie inputy.
+- R11 przenosi opisy do tooltipów Ă˘â‚¬Ĺľ?„, skraca Śâ€şrodkowy label do Ă˘â‚¬ĹľStawka (%)„, zmniejsza wysokoŚâ€şĂ„â€ˇ pól i wyrównuje Śâ€şrodkowe pole stawki.
 
 ### TESTY
 - node scripts/check-stage220a36r11-commission-modal-compact-tooltips.cjs
@@ -2572,10 +2572,10 @@ Data: 2026-06-06 09:10 Europe/Warsaw
 
 ### AUDYT RYZYK
 - Zmieniany jest tylko UX/copy/CSS modala, nie zapis prowizji ani backend.
-- Native tooltip na title jest prosty i bezpieczny, ale na mobile nie daje peÄąâ€šnego komfortu Ă˘â‚¬â€ť jeÄąÄ˝eli to bĂ„â„˘dzie problem, kolejny etap powinien zrobiĂ„â€ˇ wÄąâ€šasny popover.
-- Trzeba rĂ„â„˘cznie sprawdziĂ„â€ˇ, czy trzy pola w gÄ‚łrnym rzĂ„â„˘dzie nie Äąâ€şciskajĂ„â€¦ siĂ„â„˘ na szerokoÄąâ€şci laptopa i czy wĂ„â€¦skie ekrany poprawnie zawijajĂ„â€¦ do jednej kolumny.
+- Native tooltip na title jest prosty i bezpieczny, ale na mobile nie daje peŚâ€šnego komfortu — jeŚÄ˝eli to bĂ„â„˘dzie problem, kolejny etap powinien zrobiĂ„â€ˇ wŚâ€šasny popover.
+- Trzeba rĂ„â„˘cznie sprawdziĂ„â€ˇ, czy trzy pola w górnym rzĂ„â„˘dzie nie Śâ€şciskajĂ„â€¦ siĂ„â„˘ na szerokoŚâ€şci laptopa i czy wĂ„â€¦skie ekrany poprawnie zawijajĂ„â€¦ do jednej kolumny.
 
-## STAGE220A36-R12 Ă˘â‚¬â€ť Commission Modal Width Polish
+## STAGE220A36-R12 — Commission Modal Width Polish
 
 Data: 2026-06-06 09:35 Europe/Warsaw
 
@@ -2591,7 +2591,7 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Zmieniany jest tylko CSS i marker ukladu modala; logika zapisu prowizji zostaje bez zmian.
 - Na waskich ekranach pola nadal skladaja sie do jednej kolumny.
 
-## STAGE226R10 Ă˘â‚¬â€ť Lead/Client Separation Runtime Fix
+## STAGE226R10 — Lead/Client Separation Runtime Fix
 
 Data: 2026-06-06 09:35 Europe/Warsaw
 
@@ -2613,100 +2613,100 @@ Data: 2026-06-06 09:35 Europe/Warsaw
 - Nie ruszano Supabase schema, RLS, Stage227 ani finansow A36 poza malym R12 CSS.
 - Trzeba recznie potwierdzic: dodanie leada nie zwieksza liczby klientow na /clients.
 
-## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG Ă˘â‚¬â€ť next step
+## STAGE226R10B_LEAD_CLIENT_CONFLICT_SINGLE_DIALOG — next step
 
 - data i godzina: 2026-06-06 13:31 Europe/Warsaw
-- po PASS: wykonaĂ„â€ˇ manual smoke /clients -> /leads -> /clients i dopiero potem wrÄ‚łciĂ„â€ˇ do Stage226R11 albo Stage227.
+- po PASS: wykonaĂ„â€ˇ manual smoke /clients -> /leads -> /clients i dopiero potem wróciĂ„â€ˇ do Stage226R11 albo Stage227.
 - nie ruszaĂ„â€ˇ: Stage227, Google Calendar, finanse A36, RLS, schema.
 
-## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX Ă˘â‚¬â€ť next step
+## STAGE226R10C2_LEAD_CLIENT_CONFLICT_RESTORE_BLOCK_PATCHER_FIX — next step
 
 - data i godzina: 2026-06-06 13:55 Europe/Warsaw
 - po PASS: wykonaĂ„â€ˇ manual smoke /clients -> /leads -> /clients. Dopiero potem Stage226R11 timezone albo Stage227.
 - nie ruszaĂ„â€ˇ: Stage227, Google Calendar, finanse, RLS, schema.
 
-## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX Ă˘â‚¬â€ť next step
+## STAGE226R10D2_DUPLICATE_CONFLICT_CONFIRMATION_GATE_PATCHER_FIX — next step
 
 - data i godzina: 2026-06-06 14:23 Europe/Warsaw
-- po PASS: rĂ„â„˘cznie przetestowaĂ„â€ˇ konflikt/duplikat dla klienta i leada; dopiero potem wrÄ‚łciĂ„â€ˇ do Stage226R11 timezone Google Calendar albo kolejnego etapu.
+- po PASS: rĂ„â„˘cznie przetestowaĂ„â€ˇ konflikt/duplikat dla klienta i leada; dopiero potem wróciĂ„â€ˇ do Stage226R11 timezone Google Calendar albo kolejnego etapu.
 - nie ruszaĂ„â€ˇ: Stage227 przed domkniĂ„â„˘ciem lead/client + conflict gate smoke.
 
-## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH Ă˘â‚¬â€ť next step
+## STAGE226R11_GCAL_TIMEZONE_REMINDER_TRUTH — next step
 
 - data i godzina: 2026-06-06 14:58 Europe/Warsaw
 - po PASS: rĂ„â„˘czny smoke produkcyjny CloseFlow -> Google Calendar -> inbound sync.
-- dopiero po potwierdzeniu timezone/reminders wrÄ‚łciĂ„â€ˇ do Stage227 Ă˘â‚¬â€ť Sales Funnel Movement View.
+- dopiero po potwierdzeniu timezone/reminders wróciĂ„â€ˇ do Stage227 — Sales Funnel Movement View.
 
-## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX Ă˘â‚¬â€ť next step
+## STAGE226R11B_GCAL_TIMEZONE_TEST_CROSS_REALM_FIX — next step
 
 - data i godzina: 2026-06-06 15:05 Europe/Warsaw
 - po PASS R11B wykonaĂ„â€ˇ push R11/R11B, potem rĂ„â„˘czny smoke Google Calendar: godzina + przypomnienie.
 - nie przechodziĂ„â€ˇ do Stage227 bez smoke Google Calendar.
 
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_NEXT_START -->
-## 2026-06-06 15:35 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE227A next step
+## 2026-06-06 15:35 Europe/Warsaw ËĂ˘â€š¬„ STAGE227A next step
 
-1. UruchomiÄ‚â€žĂ˘â‚¬Ë‡ lokalny apply i testy.
-2. OtworzyÄ‚â€žĂ˘â‚¬Ë‡ `/funnel` lokalnie.
-3. SprawdziÄ‚â€žĂ˘â‚¬Ë‡ leady, sprawy, next step, ciszÄ‚â€žĂ˘â€žË, ryzyko i wartoĂ„ąĂ˘â‚¬źÄ‚â€žĂ˘â‚¬Ë‡/prowizjÄ‚â€žĂ˘â€žË.
-4. Po akceptacji Damiana zrobiÄ‚â€žĂ˘â‚¬Ë‡ selektywny commit/push bez `git add .`.
+1. Uruchomi„Ă˘â‚¬Ë‡ lokalny apply i testy.
+2. Otworzy„Ă˘â‚¬Ë‡ `/funnel` lokalnie.
+3. Sprawdzi„Ă˘â‚¬Ë‡ leady, sprawy, next step, cisz„Ă˘„Ë, ryzyko i wartoĂ„ąĂ˘â‚¬ź„Ă˘â‚¬Ë‡/prowizj„Ă˘„Ë.
+4. Po akceptacji Damiana zrobi„Ă˘â‚¬Ë‡ selektywny commit/push bez `git add .`.
 <!-- STAGE227A_SALES_FUNNEL_MOVEMENT_VIEW_NEXT_END -->
 
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_NEXT_START -->
-## 2026-06-06 15:45 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE227B Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ next step
+## 2026-06-06 15:45 Europe/Warsaw ËĂ˘â€š¬„ STAGE227B ËĂ˘â€š¬„ next step
 
-Po lokalnym PASS trzeba rÄ‚â€žĂ˘â€žËcznie sprawdziÄ‚â€žĂ˘â‚¬Ë‡ `http://localhost:3000/funnel`. JeĂ„ąĂ„Ëťeli widok jest czytelny, moĂ„ąĂ„Ëťna zrobiÄ‚â€žĂ˘â‚¬Ë‡ selektywny commit/push. JeĂ„ąĂ„Ëťeli nie, kolejny etap powinien dopracowaÄ‚â€žĂ˘â‚¬Ë‡ tylko kompozycjÄ‚â€žĂ˘â€žË UI, bez ruszania helperĂ„â€šÄąâ€šw danych.
+Po lokalnym PASS trzeba r„Ă˘„Ëcznie sprawdzi„Ă˘â‚¬Ë‡ `http://localhost:3000/funnel`. JeĂ„ąĂ„Ëťeli widok jest czytelny, moĂ„ąĂ„Ëťna zrobi„Ă˘â‚¬Ë‡ selektywny commit/push. JeĂ„ąĂ„Ëťeli nie, kolejny etap powinien dopracowa„Ă˘â‚¬Ë‡ tylko kompozycj„Ă˘„Ë UI, bez ruszania helperĂ„â€šŚâ€šw danych.
 <!-- STAGE227B_SALES_FUNNEL_DECISION_LIST_NEXT_END -->
 
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_START -->
-## 2026-06-06 17:05 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE228A next step
+## 2026-06-06 17:05 Europe/Warsaw ËĂ˘â€š¬„ STAGE228A next step
 
-Po wdroĂ„ąĂ„Ëťeniu sprawdziÄ‚â€žĂ˘â‚¬Ë‡ `/funnel`: domyĂ„ąĂ˘â‚¬źlnie powinny byÄ‚â€žĂ˘â‚¬Ë‡ widoczne wszystkie rekordy, klikniÄ‚â€žĂ˘â€žËcie `PieniÄ‚â€žĂ˘â‚¬¦dze` ma pokazaÄ‚â€žĂ˘â‚¬Ë‡ rekord z kwotÄ‚â€žĂ˘â‚¬¦ 1380 PLN, a klikniÄ‚â€žĂ˘â€žËcie rekordu ma prowadziÄ‚â€žĂ˘â‚¬Ë‡ do sprawy. NastÄ‚â€žĂ˘â€žËpny etap: Stage228B Lead Work Action Center.
+Po wdroĂ„ąĂ„Ëťeniu sprawdzi„Ă˘â‚¬Ë‡ `/funnel`: domyĂ„ąĂ˘â‚¬źlnie powinny by„Ă˘â‚¬Ë‡ widoczne wszystkie rekordy, klikni„Ă˘„Ëcie `Pieni„Ă˘â‚¬¦dze` ma pokaza„Ă˘â‚¬Ë‡ rekord z kwot„Ă˘â‚¬¦ 1380 PLN, a klikni„Ă˘„Ëcie rekordu ma prowadzi„Ă˘â‚¬Ë‡ do sprawy. Nast„Ă˘„Ëpny etap: Stage228B Lead Work Action Center.
 <!-- STAGE228A_FUNNEL_TRUTH_CLICKABILITY_NEXT_END -->
 
-## 2026-06-06 18:00 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE228B Lead Work Action Center
+## 2026-06-06 18:00 Europe/Warsaw ËĂ˘â€š¬„ STAGE228B Lead Work Action Center
 
 - typ: etap wdroĂ„ąĂ„Ëťeniowy local-only
-- decyzja: Lead nie dostaje peĂ„ąĂ˘â‚¬Ĺˇnego lejka; dostaje centrum pracy Ä‚ËĂ˘â€š¬ÄąÄľCo robimy teraz?Ä‚ËĂ˘â€š¬ÄąĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
+- decyzja: Lead nie dostaje peĂ„ąĂ˘â‚¬nego lejka; dostaje centrum pracy ËĂ˘â€š¬ŚÄľCo robimy teraz?ËĂ˘â€š¬ŚĄ z zadaniami, wydarzeniami, brakami i akcjami kontynuacji historii.
 - pliki: src/pages/LeadDetail.tsx, scripts/check-stage228b-lead-work-action-center.cjs, tests/stage228b-lead-work-action-center.test.cjs
 - testy: Stage228B guard/test + regresje Stage228A/227B + build + verify quiet + diff-check
-- ryzyko: nie tworzyÄ‚â€žĂ˘â‚¬Ë‡ drugiego systemu dziaĂ„ąĂ˘â‚¬ĹˇaĂ„ąĂ˘â‚¬Ĺľ; uĂ„ąĂ„ËťywaÄ‚â€žĂ˘â‚¬Ë‡ istniejÄ‚â€žĂ˘â‚¬¦cych handlerĂ„â€šÄąâ€šw LeadDetail.
+- ryzyko: nie tworzy„Ă˘â‚¬Ë‡ drugiego systemu dziaĂ„ąĂ˘â‚¬aĂ„ąĂ˘â‚¬Ĺľ; uĂ„ąĂ„Ëťywa„Ă˘â‚¬Ë‡ istniej„Ă˘â‚¬¦cych handlerĂ„â€šŚâ€šw LeadDetail.
 
 ## 2026-06-06 18:36 Europe/Warsaw - After Stage228B R8
 
 1. Push Stage228B R8 hotfix.
 2. Verify LeadDetail opens on the server without APP_ROUTE_RENDER_FAILED.
-3. Manually test actions: Edytuj, Jutro, Zrobione, UsuÄąâ€ž.
+3. Manually test actions: Edytuj, Jutro, Zrobione, UsuŚ„.
 4. Continue with STAGE228C_CLIENT_MOVEMENT_PANEL_AFTER_R8 only after LeadDetail is stable.
 
-## 2026-06-06 18:42 Europe/Warsaw Ă˘â‚¬â€ť STAGE228B R9 import source repair
+## 2026-06-06 18:42 Europe/Warsaw — STAGE228B R9 import source repair
 
 - FAKT: Stage228B R8 naprawil brak AlertTriangle, ale uszkodzil zrodla importow w LeadDetail: useNavigate trafil do lucide-react, a ArrowLeft do react.
 - DECYZJA: nie cofac calego Stage228B i nie oslabiaĂ„â€ˇ guardow; naprawic zrodlo importow i dodac guard na import sources.
 - TESTY: Stage228B R9 ma odpalic R9 guard, R8 guard, Stage98, Stage228B, Stage228A, Stage227B, build, verify quiet i diff-check.
 - RYZYKO: kazdy kolejny patcher importow w LeadDetail musi traktowac trzy importy na gorze pliku jako kontrakt: react, react-router-dom, lucide-react.
 
-## 2026-06-06 18:50 Europe/Warsaw Ă˘â‚¬â€ť STAGE228B R10 import guard false-positive fix
+## 2026-06-06 18:50 Europe/Warsaw — STAGE228B R10 import guard false-positive fix
 
 - FAKT: Stage228B R9 naprawil top importy w LeadDetail, ale guard mial regex przechodzacy przez wiele importow i falszywie wykrywal useNavigate w lucide-react.
 - DECYZJA: nie omijac builda ani guardow; naprawic guard tak, aby parsowal pojedyncze deklaracje importow i nadal pilnowal zrodel: react, react-router-dom, lucide-react.
 - TESTY: R10 ma odpalic import-source guard, AlertTriangle guard, Stage98, Stage228B, Stage228A, Stage227B, build, verify quiet i diff-check.
 - RYZYKO: patchery importow musza traktowac trzy pierwsze importy w LeadDetail jako kontrakt.
 
-## 2026-06-06 19:05 Europe/Warsaw Ă˘â‚¬â€ť STAGE228B R13 Canonical LeadDetail imports repair
+## 2026-06-06 19:05 Europe/Warsaw — STAGE228B R13 Canonical LeadDetail imports repair
 
 - Status: local hotfix package for broken pushed Stage228B commit 14f00a3d.
 - Scope: deterministic rewrite of LeadDetail imports for react, react-router-dom and lucide-react.
 - Guard: parser-based checks for AlertTriangle and hook import sources.
 - Risk note: R8/R9/R10/R12 failures were caused by brittle regex/import handling; R13 uses declaration-level parsing.
 
-## 2026-06-06 19:45 Europe/Warsaw Ă˘â‚¬â€ť STAGE228B_R14_LEAD_ACTION_CENTER_VST
+## 2026-06-06 19:45 Europe/Warsaw — STAGE228B_R14_LEAD_ACTION_CENTER_VST
 
-- FAKT: Po Stage228B LeadDetail dziaÄąâ€ša, ale centrum dziaÄąâ€šaÄąâ€ž leada byÄąâ€šo mniej czytelne niÄąÄ˝ analogiczna karta sprawy.
-- DECYZJA: Nie tworzyĂ„â€ˇ osobnego systemu wizualnego dla leada. Lead action center ma iÄąâ€şĂ„â€ˇ w kierunku tego samego ÄąźrÄ‚łdÄąâ€ša wizualnego co CaseDetail: jeden nagÄąâ€šÄ‚łwek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
-- ZMIANA: UsuniĂ„â„˘to duplikujĂ„â€¦ce copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych brakÄ‚łw/blokad zamiast dublowaĂ„â€ˇ kaÄąÄ˝de zalegÄąâ€še wydarzenie.
+- FAKT: Po Stage228B LeadDetail dziaŚâ€ša, ale centrum dziaŚâ€šaŚ„ leada byŚâ€šo mniej czytelne niŚÄ˝ analogiczna karta sprawy.
+- DECYZJA: Nie tworzyĂ„â€ˇ osobnego systemu wizualnego dla leada. Lead action center ma iŚâ€şĂ„â€ˇ w kierunku tego samego ŚźródŚâ€ša wizualnego co CaseDetail: jeden nagŚâ€šówek, jasne grupy, kompaktowe wiersze, akcje przy rekordzie.
+- ZMIANA: UsuniĂ„â„˘to duplikujĂ„â€¦ce copy, poprawiono separator w wierszach, ograniczono "Braki i blokady" do jawnych braków/blokad zamiast dublowaĂ„â€ˇ kaŚÄ˝de zalegŚâ€še wydarzenie.
 - TESTY: Stage228B R14 guard/test, Stage228B guard/test, Stage98, build, verify quiet, diff-check.
-- RYZYKO: Po deployu sprawdziĂ„â€ˇ rĂ„â„˘cznie LeadDetail z zalegÄąâ€šym wydarzeniem i porÄ‚łwnaĂ„â€ˇ czytelnoÄąâ€şĂ„â€ˇ do CaseDetail.
+- RYZYKO: Po deployu sprawdziĂ„â€ˇ rĂ„â„˘cznie LeadDetail z zalegŚâ€šym wydarzeniem i porównaĂ„â€ˇ czytelnoŚâ€şĂ„â€ˇ do CaseDetail.
 
 <!-- STAGE228R2_ADMIN_FEEDBACK_NEXT_STEPS -->
 ## 2026-06-08 08:58 Europe/Warsaw - Stage228R2 next steps
@@ -2756,7 +2756,7 @@ Next:
 STATUS: LOCAL_ONLY_APPLIED_BY_ZIP, test reczny DO WYKONANIA.
 
 FAKTY:
-- Objaw: klikniecie UsuÄąâ€ž przy Braku usuwa wpis optymistycznie, ale po refetchu/odswiezeniu wpis wraca.
+- Objaw: klikniecie UsuŚ„ przy Braku usuwa wpis optymistycznie, ale po refetchu/odswiezeniu wpis wraca.
 - Przyczyna naprawiana: niespojny kontrakt soft-delete missing_item/task oraz ryzyko ustawiania usuwanego taska jako lead.next_action_item_id.
 - LeadDetail usuwa Brak natychmiast z lokalnego stanu, wykonuje backendowy soft-delete i robi silent refresh bez pelnego loadera.
 - Task route nie promuje missing_item ani zamknietych/usunietych taskow do lead next action; deleted/done task czysci matching next_action_item_id.
@@ -2768,7 +2768,7 @@ TESTY/GUARDY:
 - git diff --check
 
 TEST RECZNY:
-- Lead -> dodaj Brak -> odswiez -> Brak widoczny -> UsuÄąâ€ž -> znika od razu -> odczekaj -> hard refresh -> Brak nie wraca.
+- Lead -> dodaj Brak -> odswiez -> Brak widoczny -> UsuŚ„ -> znika od razu -> odczekaj -> hard refresh -> Brak nie wraca.
 - Sprawdzic, ze NastĂ„â„˘pny krok nie pokazuje usunietego Braku.
 
 RYZYKA:
@@ -2780,13 +2780,13 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ Stage228R18 Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw ËĂ˘â€š¬„ Stage228R18 ËĂ˘â€š¬„ missing item hard delete source truth
 
-- problem: Brak znikaĂ„ąĂ˘â‚¬Ĺˇ po klikniÄ‚â€žĂ˘â€žËciu UsuĂ„ąĂ˘â‚¬Ĺľ, ale wracaĂ„ąĂ˘â‚¬Ĺˇ po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byÄ‚â€žĂ˘â‚¬Ë‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byÄ‚â€žĂ˘â‚¬Ë‡ Ă„ąÄąźrĂ„â€šÄąâ€šdĂ„ąĂ˘â‚¬Ĺˇowana z linkedTasks, nie z caĂ„ąĂ˘â‚¬Ĺˇego timeline, Ă„ąĂ„Ëťeby activity history nie odtwarzaĂ„ąĂ˘â‚¬Ĺˇa aktywnego braku.
-- testy: check-stage228r18, node test, npm run build, git diff --check, test rÄ‚â€žĂ˘â€žËczny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niĂ„ąĂ„Ëť soft-delete; historia usuniÄ‚â€žĂ˘â€žËcia zostaje jako activity.
+- problem: Brak znikaĂ„ąĂ˘â‚¬ po klikni„Ă˘„Ëciu UsuĂ„ąĂ˘â‚¬Ĺľ, ale wracaĂ„ąĂ˘â‚¬ po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma by„Ă˘â‚¬Ë‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma by„Ă˘â‚¬Ë‡ Ă„ąŚźrĂ„â€šŚâ€šdĂ„ąĂ˘â‚¬owana z linkedTasks, nie z caĂ„ąĂ˘â‚¬ego timeline, Ă„ąĂ„Ëťeby activity history nie odtwarzaĂ„ąĂ˘â‚¬a aktywnego braku.
+- testy: check-stage228r18, node test, npm run build, git diff --check, test r„Ă˘„Ëczny dodaj/usun/hard refresh.
+- ryzyko: DELETE jest mocniejsze niĂ„ąĂ„Ëť soft-delete; historia usuni„Ă˘„Ëcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -2831,12 +2831,12 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-09 02:50 Europe/Warsaw Ä‚ËĂ˘â€š¬Ă˘â‚¬ĹĄ STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+## 2026-06-09 02:50 Europe/Warsaw ËĂ˘â€š¬„ STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Ă„ąĂ˘â‚¬ĹˇaĂ„ąĂ˘â‚¬Ĺľcuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym Ă„ąĂ˘â‚¬aĂ„ąĂ˘â‚¬Ĺľcuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siÄ‚â€žĂ˘â€žË juĂ„ąĂ„Ëť na dokĂ„ąĂ˘â‚¬Ĺˇadnym polskim tekĂ„ąĂ˘â‚¬źcie toastu, tylko na strukturze przepĂ„ąĂ˘â‚¬Ĺˇywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera si„Ă˘„Ë juĂ„ąĂ„Ëť na dokĂ„ąĂ˘â‚¬adnym polskim tekĂ„ąĂ˘â‚¬źcie toastu, tylko na strukturze przepĂ„ąĂ˘â‚¬ywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -2846,17 +2846,17 @@ TESTY:
 - git diff --check
 
 RYZYKA:
-- Po deployu wymagany rÄ‚â€žĂ˘â€žËczny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
+- Po deployu wymagany r„Ă˘„Ëczny test produkcyjny usuwania: Calendar event/task, TasksStable task, LeadDetail Brak, ClientDetail Brak.
 
 <!-- STAGE231_AUTH_URGENT_BACKLOG_START -->
 ## 2026-06-09 - PILNE: Auth / rejestracja / Google / e-mail / hasło
 
 Priorytet przed kolejnymi funkcjami:
-1. STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY â€” dodać Google do rejestracji, ujednolicić copy logowania/rejestracji, jawnie opisać obecny public trial bootstrap OAuth.
-2. STAGE231B_SUPABASE_ONLY_SETTINGS_SECURITY â€” przenieść ustawienia bezpieczeństwa z Firebase Auth na Supabase Auth: zmiana hasła, ustaw hasło dla kont Google-only, zmiana e-maila.
-3. STAGE231C_AUTH_EMAIL_DELIVERY_AND_REDIRECT_QA â€” sprawdzić maile: rejestracja, potwierdzenie, reset hasła, zmiana e-maila, redirect URL.
-4. STAGE231D_PUBLIC_TRIAL_OR_INVITE_ONLY_DECISION â€” decyzja czy nowe konta Google mogą same tworzyć workspace trial, czy wprowadzamy invite/gate.
-5. STAGE231E_AUTH_FULL_MATRIX_QA â€” matryca testów: nowe Google, istniejące Google, e-mail/hasło, reset, zmiana hasła, zmiana e-maila, wyloguj wszystkie urządzenia.
+1. STAGE231A_GOOGLE_AUTH_ENTRY_CONSISTENCY — dodać Google do rejestracji, ujednolicić copy logowania/rejestracji, jawnie opisać obecny public trial bootstrap OAuth.
+2. STAGE231B_SUPABASE_ONLY_SETTINGS_SECURITY — przenieść ustawienia bezpieczeństwa z Firebase Auth na Supabase Auth: zmiana hasła, ustaw hasło dla kont Google-only, zmiana e-maila.
+3. STAGE231C_AUTH_EMAIL_DELIVERY_AND_REDIRECT_QA — sprawdzić maile: rejestracja, potwierdzenie, reset hasła, zmiana e-maila, redirect URL.
+4. STAGE231D_PUBLIC_TRIAL_OR_INVITE_ONLY_DECISION — decyzja czy nowe konta Google mogą same tworzyć workspace trial, czy wprowadzamy invite/gate.
+5. STAGE231E_AUTH_FULL_MATRIX_QA — matryca testów: nowe Google, istniejące Google, e-mail/hasło, reset, zmiana hasła, zmiana e-maila, wyloguj wszystkie urządzenia.
 
 Uwaga:
 - Obecnie /api/me może bootstrapować nowy workspace trial po OAuth.
@@ -2873,10 +2873,10 @@ Poprawić treści e-maili Supabase/Auth: rejestracja, potwierdzenie e-maila, res
 
 Dodać opcjonalny tryb invite-only/test-mode: tylko e-maile na allowliście/zaproszeniach mogą tworzyć konto. Nie wdrażać jako default dla publicznego SaaS.
 
-## 2026-06-10 â€” po STAGE231B0
+## 2026-06-10 — po STAGE231B0
 
 Następny etap po PASS i pushu:
-STAGE231B1 â€” Client Lifetime Earnings Summary.
+STAGE231B1 — Client Lifetime Earnings Summary.
 
 Zakres:
 - Zarobione łącznie przy kliencie.
@@ -2888,7 +2888,7 @@ Zakres:
 
 ## After STAGE231B0-R7
 
-Next: STAGE231B1 â€” Client Lifetime Earnings Summary. Do not start monthly charts/costs until restore/archive flow is verified.
+Next: STAGE231B1 — Client Lifetime Earnings Summary. Do not start monthly charts/costs until restore/archive flow is verified.
 
 
 ## R5_CASEDETAIL_RESTORE_REPAIR
@@ -2951,16 +2951,16 @@ Next: STAGE231B1 â€” Client Lifetime Earnings Summary. Do not start monthly
 - Dodano `cf-case-detail-close-action-stage231b0-r7` do CSS karty sprawy i do klasy przycisku zamykania.
 - Dodano `client-detail-case-smart-card-closed-stage231b0-r7` do CSS klienta.
 - Bez zmian w delete flow, płatnościach, prowizjach i lifetime finance.
-\n\n## 2026-06-10 â€” STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH\n- Status: LOCAL_ONLY_PREPARED / R6_CLIENTDETAIL_FLEXIBLE_REPAIR.\n- Naprawa po częściowym R4: elastyczny patch ClientDetail, aktywne/zamknięte sprawy klienta, restore z klienta, CSS, guard/test.\n- Finanse i historia zachowane.\n
+\n\n## 2026-06-10 — STAGE231B0_R8_CASE_ARCHIVE_RELATION_TRUTH\n- Status: LOCAL_ONLY_PREPARED / R6_CLIENTDETAIL_FLEXIBLE_REPAIR.\n- Naprawa po częściowym R4: elastyczny patch ClientDetail, aktywne/zamknięte sprawy klienta, restore z klienta, CSS, guard/test.\n- Finanse i historia zachowane.\n
 
-## 2026-06-10 â€” STAGE231B0_R8_R8_DUPLICATE_CONST_BUILD_REPAIR
+## 2026-06-10 — STAGE231B0_R8_R8_DUPLICATE_CONST_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
 - Naprawa masowa po build fail: usunięto sklejone anchory `const X = useMemo( const X = useMemo(` po częściowym R2/R4/R6/R7.
 - Zakres: dotknięte pliki TSX, whitespace, sanity check R8, pełny build/test.
 
 
 
-## 2026-06-10 â€” STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
+## 2026-06-10 — STAGE231B0_R8_R9_DUPLICATE_TOGGLE_BUILD_REPAIR
 - Status: LOCAL_ONLY_PREPARED.
 - Naprawa masowa po build fail: usunięto stary drugi `toggleCaseView`, który pozostał po R8 obok URL-aware `setCaseViewStage231B0R8`.
 - Guard R8 rozszerzony o dokładnie jeden `toggleCaseView` i zakaz legacy `setCaseView((prev) => ...)`.
@@ -3110,7 +3110,7 @@ Next: STAGE231B1 â€” Client Lifetime Earnings Summary. Do not start monthly
 ## 2026-06-10 — STAGE231B0-R15-R4 — Polish guard batch repair
 - Status: BATCH_REPAIR_AFTER_R2_R3_PARTIALS.
 - Powód: R2/R3 częściowo naprawiły pliki, ale R3 zatrzymał się przez zbyt wąski parser dirty paths.
-- Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/·/â€“`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
+- Naprawa: masowo obsłużono warianty mojibake `ą/ł/ł/ó/·/–`, znormalizowano EOF i poprawiono guard pod aktualną kopię ClientDetail.
 - Zasada: commit/push tylko po PASS guardów, build i git diff --check.
 
 
@@ -3122,19 +3122,19 @@ Next: STAGE231B1 â€” Client Lifetime Earnings Summary. Do not start monthly
 - Commit/push tylko po PASS guardów, build i git diff --check.
 
 <!-- STAGE231D0A_VISUAL_SOURCE_TRUTH_NEXT_STEPS_START -->
-## 2026-06-10 17:10 Europe/Warsaw â€” STAGE231D0A â€” obowiązkowy etap przed D0
+## 2026-06-10 17:10 Europe/Warsaw — STAGE231D0A — obowiązkowy etap przed D0
 
 Status: LOCAL_ONLY_PACKAGE_PREPARED / DO_TEST_AND_PUSH
 
 Kolejność po poprawce:
-1. R10 â€” domknięcie archiwum spraw.
-2. D0A â€” Visual Source of Truth Inventory + UI Consistency Guard.
-3. D0 â€” Client workspace UX cleanup + mojibake guard.
-4. D1 â€” model kosztów.
-5. D2 â€” koszty w sprawie.
-6. D3 â€” finanse klienta + koszty.
-7. D4 â€” miesięczny wykres.
-8. D5 â€” regresja finansów/kosztów/UI.
+1. R10 — domknięcie archiwum spraw.
+2. D0A — Visual Source of Truth Inventory + UI Consistency Guard.
+3. D0 — Client workspace UX cleanup + mojibake guard.
+4. D1 — model kosztów.
+5. D2 — koszty w sprawie.
+6. D3 — finanse klienta + koszty.
+7. D4 — miesięczny wykres.
+8. D5 — regresja finansów/kosztów/UI.
 
 Najbliższy krok po PASS D0A:
 - wdrożyć D0, ale tylko na bazie mapy `_project/VISUAL_SOURCE_OF_TRUTH.md` i bez lokalnych wyjątków UI.
@@ -3264,7 +3264,7 @@ następny krok:
 - production smoke: CaseDetail opens; Client finance shows Koszty do zwrotu and Razem do pobrania
 - if production fails, rollback D3-R7 only
 
-## STAGE231D3-R7-R2 â€” Polish guard restore and D3 close
+## STAGE231D3-R7-R2 — Polish guard restore and D3 close
 
 - timestamp: 2026-06-10 20:42 Europe/Warsaw
 - status: LOCAL_ONLY_PACKAGE_PREPARED
@@ -4349,3 +4349,34 @@ RYZYKO:
 2. Damian wykonuje test reczny sprawy, klienta i leadow po twardym odswiezeniu.
 3. Po akceptacji wykonac selektywny commit/push tylko stage'owanych plikow pakietu.
 4. Globalny Stage98 mojibake/BOM pozostaje osobnym etapem.
+
+
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_START -->
+## 2026-06-15 22:56 Europe/Warsaw — CF-RUNTIME-00 Shared source-of-truth foundation
+
+Status: PREPARED_IN_ZIP_LOCAL_APPLY
+Typ: techniczny fundament / guard baseline
+Zakres: route truth, status truth, missing/blocker truth, access/plan truth wrapper.
+
+Dodane pliki:
+- `src/lib/closeflow-runtime-source-truth.ts`
+- `tests/cf-runtime-00-source-truth.test.cjs`
+- `scripts/check-cf-runtime-00-source-truth.cjs`
+- `_project/runs/2026-06-15_CF_RUNTIME_00_SHARED_SOURCE_TRUTH.md`
+
+Testy/guardy:
+- `node scripts/check-cf-runtime-00-source-truth.cjs`
+- `node --test tests/cf-runtime-00-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+
+Czego nie ruszano:
+- UI, LeadDetail, ClientDetail, CaseDetail, Today, Tasks, Calendar, Billing, Settings, CSS, SQL, Supabase, migrations, env.
+
+Ryzyko:
+- istniejący fallback `paid_active -> pro` w `src/lib/plans.ts` pozostaje do późniejszego etapu runtime wiring; helper tylko daje bezpieczny kontrakt.
+
+Następny krok:
+- CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->

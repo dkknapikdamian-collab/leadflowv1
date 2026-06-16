@@ -1,7 +1,7 @@
 /* STAGE228R1_RAIL_TASKS_PATTERN_SOURCE_TRUTH
-   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelkÄ‚łw /leads, /clients, /cases.
-   Wzorcem sĂ„â€¦ /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
-   Zakaz runtime mapperÄ‚łw: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
+   Cel: jeden tekstowy i rytmiczny wzorzec dla prawych kafelków /leads, /clients, /cases.
+   Wzorcem są /tasks: tasks-stage178-filter-button oraz tasks-stage178-urgent-button.
+   Zakaz runtime mapperów: tylko statyczny CSS po klasach potwierdzonych w debug JSON.
 */
 :root {
   --cf-rail-r1-title-size: 13px;
@@ -265,7 +265,7 @@
 /* STAGE228R3_TOP_VALUE_AND_RISK_TONE_SOURCE_TRUTH
    Cel:
    - cf-rail-top-row i cf-rail-risk-row mają używać tych samych tonów co cf-rail-filter-row.
-   - Ĺąródłem rytmu są /tasks: tasks-stage178-filter-button i tasks-stage178-urgent-button.
+   - Źródłem rytmu są /tasks: tasks-stage178-filter-button i tasks-stage178-urgent-button.
    - Nie tworzymy kafelka w kafelku: wewnętrzne label/money wrappery są transparentne.
 */
 

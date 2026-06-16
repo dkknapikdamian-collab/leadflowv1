@@ -10,8 +10,9 @@ const count = (text, needle) => text.split(needle).length - 1;
 function getDeleteHandler(templates) {
   const start = templates.indexOf('async function handleDeleteTemplate');
   assert.notEqual(start, -1, 'missing handleDeleteTemplate');
-  const end = templates.indexOf('\n\n  return (', start);
-  assert.notEqual(end, -1, 'missing return marker after handleDeleteTemplate');
+  const relativeEnd = templates.slice(start).search(/\r?\n\r?\n\s+return\s*\(/);
+  assert.notEqual(relativeEnd, -1, 'missing return marker after handleDeleteTemplate');
+  const end = start + relativeEnd;
   return templates.slice(start, end);
 }
 

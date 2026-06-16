@@ -25,7 +25,7 @@ test('Stage115 CaseDetail runtime contract keeps route renderable', () => {
   const source = read(caseDetailPath);
 
   assert.match(source, /export\s+default\s+function\s+CaseDetail\s*\(/, 'CaseDetail must export a default route component');
-  assert.match(source, /const\s+\{\s*hasAccess\s*,\s*access\s*\}\s*=\s*useWorkspace\s*\(\s*\)/, 'CaseDetail should call the project useWorkspace hook at runtime');
+  assert.match(source, /const\s+\{[^}]*\bhasAccess\b[^}]*\baccess\b[^}]*\}\s*=\s*useWorkspace\s*\(\s*\)/, 'CaseDetail should call the project useWorkspace hook at runtime');
   assert.doesNotMatch(source, /APP_ROUTE_RENDER_FAILED/, 'CaseDetail must not contain APP_ROUTE_RENDER_FAILED fallback masking');
   assert.doesNotMatch(source, /p\.useWorkspace|React\.useWorkspace/, 'CaseDetail must not compile toward React namespace useWorkspace calls');
 

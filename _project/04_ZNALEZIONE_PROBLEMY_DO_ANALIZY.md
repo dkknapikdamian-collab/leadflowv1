@@ -374,3 +374,34 @@ Problem: centralne pliki _project mialy rozjechane polskie znaki/mojibake. Ryzyk
 ## STAGE_PROJECT_DOCS_ENCODING_REPAIR_004_SAFE - 2026-06-15 20:15 Europe/Warsaw
 
 Problem: centralne pliki _project zawierały realne tokeny mojibake i replacement char. Naprawa 004 czyści dokumenty bez dotykania runtime.
+
+
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_START -->
+## 2026-06-15 22:56 Europe/Warsaw — CF-RUNTIME-00 Shared source-of-truth foundation
+
+Status: PREPARED_IN_ZIP_LOCAL_APPLY
+Typ: techniczny fundament / guard baseline
+Zakres: route truth, status truth, missing/blocker truth, access/plan truth wrapper.
+
+Dodane pliki:
+- `src/lib/closeflow-runtime-source-truth.ts`
+- `tests/cf-runtime-00-source-truth.test.cjs`
+- `scripts/check-cf-runtime-00-source-truth.cjs`
+- `_project/runs/2026-06-15_CF_RUNTIME_00_SHARED_SOURCE_TRUTH.md`
+
+Testy/guardy:
+- `node scripts/check-cf-runtime-00-source-truth.cjs`
+- `node --test tests/cf-runtime-00-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+
+Czego nie ruszano:
+- UI, LeadDetail, ClientDetail, CaseDetail, Today, Tasks, Calendar, Billing, Settings, CSS, SQL, Supabase, migrations, env.
+
+Ryzyko:
+- istniejący fallback `paid_active -> pro` w `src/lib/plans.ts` pozostaje do późniejszego etapu runtime wiring; helper tylko daje bezpieczny kontrakt.
+
+Następny krok:
+- CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->

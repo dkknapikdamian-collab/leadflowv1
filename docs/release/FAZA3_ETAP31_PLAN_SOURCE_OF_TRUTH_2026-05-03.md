@@ -26,7 +26,7 @@ Free
 Basic
 Pro
 AI
-Trial 21 dni
+Trial 14 dni
 ```
 
 To jest etap kontraktowy. Nie zmienia cen, Stripe ani UI billing flow.
@@ -88,7 +88,7 @@ activeDrafts = 3
 | Basic | light parser/drafts, digest, browser notifications | unlimited core records |
 | Pro | Basic + Google Calendar + reports/imports/recurrence | unlimited core records |
 | AI | Pro + full AI | unlimited core records |
-| Trial 21 dni | AI feature set during trial | unlimited during trial |
+| Trial 14 dni | AI feature set during trial | unlimited during trial |
 
 ## Co robi ten etap
 

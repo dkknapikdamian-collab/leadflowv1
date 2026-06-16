@@ -34,7 +34,7 @@ AI:
 - Pro features
 - full AI assistant
 
-Trial 21 dni:
+Trial 14 dni:
 - AI features for trial period
 ```
 

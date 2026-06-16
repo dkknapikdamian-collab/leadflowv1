@@ -63,13 +63,13 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw â€” Stage228R18 â€” missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikaĹ‚ po klikniÄ™ciu UsuĹ„, ale wracaĹ‚ po hard refresh.
-- decyzja: aktywny Brak w LeadDetail ma byÄ‡ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byÄ‡ ĹşrĂłdĹ‚owana z linkedTasks, nie z caĹ‚ego timeline, ĹĽeby activity history nie odtwarzaĹ‚a aktywnego braku.
-- testy: check-stage228r18, node test, npm run build, git diff --check, test rÄ™czny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niĹĽ soft-delete; historia usuniÄ™cia zostaje jako activity.
+- problem: Brak znikał po kliknięciu Usuń, ale wracał po hard refresh.
+- decyzja: aktywny Brak w LeadDetail ma być usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
+- dodatkowo: lista Braki i blokady ma być źródłowana z linkedTasks, nie z całego timeline, żeby activity history nie odtwarzała aktywnego braku.
+- testy: check-stage228r18, node test, npm run build, git diff --check, test ręczny dodaj/usun/hard refresh.
+- ryzyko: DELETE jest mocniejsze niż soft-delete; historia usunięcia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -139,3 +139,34 @@ NASTEPNY KROK:
 - Test reczny: ZALICZONY wedlug potwierdzenia Damiana.
 - Ryzyko: `sort_order` i `order_index` istnieja rownolegle; nie usuwac zadnej kolumny bez osobnego audytu mapperow runtime.
 - Nastepny krok: kazdy kolejny SQL zapisywac w centralnym SQL ledgerze i dopisywac wynik guarda/testu.
+
+
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_START -->
+## 2026-06-15 22:56 Europe/Warsaw — CF-RUNTIME-00 Shared source-of-truth foundation
+
+Status: PREPARED_IN_ZIP_LOCAL_APPLY
+Typ: techniczny fundament / guard baseline
+Zakres: route truth, status truth, missing/blocker truth, access/plan truth wrapper.
+
+Dodane pliki:
+- `src/lib/closeflow-runtime-source-truth.ts`
+- `tests/cf-runtime-00-source-truth.test.cjs`
+- `scripts/check-cf-runtime-00-source-truth.cjs`
+- `_project/runs/2026-06-15_CF_RUNTIME_00_SHARED_SOURCE_TRUTH.md`
+
+Testy/guardy:
+- `node scripts/check-cf-runtime-00-source-truth.cjs`
+- `node --test tests/cf-runtime-00-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+
+Czego nie ruszano:
+- UI, LeadDetail, ClientDetail, CaseDetail, Today, Tasks, Calendar, Billing, Settings, CSS, SQL, Supabase, migrations, env.
+
+Ryzyko:
+- istniejący fallback `paid_active -> pro` w `src/lib/plans.ts` pozostaje do późniejszego etapu runtime wiring; helper tylko daje bezpieczny kontrakt.
+
+Następny krok:
+- CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->

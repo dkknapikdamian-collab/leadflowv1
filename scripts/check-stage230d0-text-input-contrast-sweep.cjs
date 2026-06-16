@@ -1,4 +1,4 @@
-﻿const fs = require('node:fs');
+const fs = require('node:fs');
 
 const STAGE = 'STAGE230D0_TEXT_INPUT_CONTRAST_SWEEP';
 

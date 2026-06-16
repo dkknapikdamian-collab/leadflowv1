@@ -1,4 +1,4 @@
-﻿const fs = require('fs');
+const fs = require('fs');
 const path = require('path');
 
 const source = fs.readFileSync(path.join(process.cwd(), 'src', 'pages', 'CaseDetail.tsx'), 'utf8');

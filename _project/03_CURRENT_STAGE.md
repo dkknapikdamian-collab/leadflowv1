@@ -8,7 +8,7 @@ Po wykonaniu tej paczki nalezy sprawdzic guardy i git status aplikacji oraz Obsi
 
 
 <!-- STAGE104_CALENDAR_PERFORMANCE_F -->
-## 2026-05-16 Ă˘â‚¬” Stage104 / Paczka F Ă˘â‚¬” Calendar loading performance
+## 2026-05-16 — Stage104 / Paczka F — Calendar loading performance
 
 STATUS: WDROŻONE LOKALNIE PO APPLY, TEST R\u00c4\u0098CZNY DO WYKONANIA.
 
@@ -33,7 +33,7 @@ NAST\u00c4\u0098PNY KROK:
 
 
 ---
-## Stage105 / Paczka G Ă˘â‚¬” Templates delete + visual contract Ă˘â‚¬” 2026-05-16
+## Stage105 / Paczka G — Templates delete + visual contract — 2026-05-16
 
 STATUS: WDROŻONE LOKALNIE Z PACZKI ZIP, BEZ COMMITA I BEZ PUSHA.
 
@@ -1302,13 +1302,13 @@ NASTEPNY KROK:
 - Po PASS recznym wykonac selektywny commit/push repo i osobny commit/push vaultu Obsidian.
 <!-- /STAGE228R17_MISSING_ITEM_DELETE_CONTRACT -->
 
-## 2026-06-08 21:10 Europe/Warsaw Ă˘â‚¬” Stage228R18 Ă˘â‚¬” missing item hard delete source truth
+## 2026-06-08 21:10 Europe/Warsaw — Stage228R18 — missing item hard delete source truth
 
-- problem: Brak znikaÄąâ€š po klikniĂ„â„˘ciu UsuÄą„, ale wracaÄąâ€š po hard refresh.
+- problem: Brak znikaŚâ€š po klikniĂ„â„˘ciu UsuŚ„, ale wracaŚâ€š po hard refresh.
 - decyzja: aktywny Brak w LeadDetail ma byĂ„â€ˇ usuwany realnym backend DELETE z work_items po ID, nie tylko statusem deleted.
-- dodatkowo: lista Braki i blokady ma byĂ„â€ˇ ÄąźrÄ‚łdÄąâ€šowana z linkedTasks, nie z caÄąâ€šego timeline, ÄąÄ˝eby activity history nie odtwarzaÄąâ€ša aktywnego braku.
+- dodatkowo: lista Braki i blokady ma byĂ„â€ˇ ŚźródŚâ€šowana z linkedTasks, nie z caŚâ€šego timeline, ŚÄ˝eby activity history nie odtwarzaŚâ€ša aktywnego braku.
 - testy: check-stage228r18, node test, npm run build, git diff --check, test rĂ„â„˘czny dodaj/usun/hard refresh.
-- ryzyko: DELETE jest mocniejsze niÄąÄ˝ soft-delete; historia usuniĂ„â„˘cia zostaje jako activity.
+- ryzyko: DELETE jest mocniejsze niŚÄ˝ soft-delete; historia usuniĂ„â„˘cia zostaje jako activity.
 
 ## 2026-06-08 21:50 Europe/Warsaw - STAGE228R18R5_MISSING_ITEM_HARD_DELETE_MASS_PREFLIGHT
 
@@ -1353,12 +1353,12 @@ NASTEPNY KROK:
 
 ---
 
-## 2026-06-09 02:50 Europe/Warsaw Ă˘â‚¬” STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
+## 2026-06-09 02:50 Europe/Warsaw — STAGE228R41_DELETE_FLOW_FINAL_VALIDATE_PUSH
 
 FAKTY:
-- R41 finalizuje delete flow po nieudanym lokalnym Äąâ€šaÄą„cuchu R26-R40.
+- R41 finalizuje delete flow po nieudanym lokalnym Śâ€šaŚ„cuchu R26-R40.
 - Package prebuild zostawia finalnie R25 i R41, bez wadliwych R26-R40.
-- Walidacja nie opiera siĂ„â„˘ juÄąÄ˝ na dokÄąâ€šadnym polskim tekÄąâ€şcie toastu, tylko na strukturze przepÄąâ€šywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
+- Walidacja nie opiera siĂ„â„˘ juŚÄ˝ na dokŚâ€šadnym polskim tekŚâ€şcie toastu, tylko na strukturze przepŚâ€šywu: branch event/task, toast.error, toast.success, local prune, filtry bundle.
 
 TESTY:
 - mass node --check stage228 scripts/tests
@@ -3161,3 +3161,34 @@ RYZYKO:
 - Ekrany: `/cases/:id`, `/clients`, `/clients/:id`, `/leads`.
 - Efekt: dzialania sprawy zachowuja `case_id`, braki zapisuja opis, a finanse maja jeden kontrakt tonow.
 - Status: build i dedykowane guardy PASS; browser SKIP przez blokade localhost; test reczny Damiana oczekuje.
+
+
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_START -->
+## 2026-06-15 22:56 Europe/Warsaw — CF-RUNTIME-00 Shared source-of-truth foundation
+
+Status: PREPARED_IN_ZIP_LOCAL_APPLY
+Typ: techniczny fundament / guard baseline
+Zakres: route truth, status truth, missing/blocker truth, access/plan truth wrapper.
+
+Dodane pliki:
+- `src/lib/closeflow-runtime-source-truth.ts`
+- `tests/cf-runtime-00-source-truth.test.cjs`
+- `scripts/check-cf-runtime-00-source-truth.cjs`
+- `_project/runs/2026-06-15_CF_RUNTIME_00_SHARED_SOURCE_TRUTH.md`
+
+Testy/guardy:
+- `node scripts/check-cf-runtime-00-source-truth.cjs`
+- `node --test tests/cf-runtime-00-source-truth.test.cjs`
+- `npm run build`
+- `npm run verify:closeflow:quiet`
+- `git diff --check`
+
+Czego nie ruszano:
+- UI, LeadDetail, ClientDetail, CaseDetail, Today, Tasks, Calendar, Billing, Settings, CSS, SQL, Supabase, migrations, env.
+
+Ryzyko:
+- istniejący fallback `paid_active -> pro` w `src/lib/plans.ts` pozostaje do późniejszego etapu runtime wiring; helper tylko daje bezpieczny kontrakt.
+
+Następny krok:
+- CF-RUNTIME-01 LeadDetail missing/blocker/handoff wiring albo CF-RUNTIME-03 CaseDetail wiring.
+<!-- CF_RUNTIME_00_SHARED_SOURCE_TRUTH_2026_06_15_END -->

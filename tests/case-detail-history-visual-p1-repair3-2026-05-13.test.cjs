@@ -17,8 +17,12 @@ test('CaseDetail marks a section with explicit unified visual history scope', ()
 
 test('Case quick actions has no helper subtitle under the title', () => {
   const source = read('src/components/CaseQuickActions.tsx');
+  const sharedBar = read('src/components/detail/QuickActionsBar.tsx');
   assert.equal(source.includes('Dodaj operacyjny ruch bez starego kafelka formularza.'), false);
-  assert.ok(source.includes('CLOSEFLOW_CASE_QUICK_ACTIONS_NO_HELPER_COPY_P1_2026_05_13'));
+  assert.ok(source.includes('<QuickActionsBar'));
+  assert.ok(source.includes('title="Szybkie akcje"'));
+  assert.ok(sharedBar.includes('<strong>{title}</strong>'));
+  assert.ok(sharedBar.includes("title = 'Szybkie akcje'"));
 });
 
 test('Case history CSS uses explicit unified panel scope and generic work-row fallback', () => {
