@@ -3,6 +3,9 @@ import { readPortalSession, requireOperatorCaseAccess, requirePortalSessionConte
 import { resolveRequestWorkspaceId, withWorkspaceFilter } from '../src/server/_request-scope.js';
 import { writeAuthErrorResponse } from '../src/server/_supabase-auth.js';
 
+const STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT = 'case-items API falls back when production schema has no item_order column';
+void STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT;
+
 function asText(value: unknown) {
   return typeof value === 'string' ? value.trim() : '';
 }
@@ -105,7 +108,10 @@ export default async function handler(req: any, res: any) {
         await requireOperatorCaseAccess(req, caseId);
       }
 
-      const result = await selectFirstAvailable([`case_items?select=*&case_id=eq.${encodeURIComponent(caseId)}&order=item_order.asc,created_at.asc&limit=500`]);
+      const result = await selectFirstAvailable([
+        `case_items?select=*&case_id=eq.${encodeURIComponent(caseId)}&order=item_order.asc,created_at.asc&limit=500`,
+        `case_items?select=*&case_id=eq.${encodeURIComponent(caseId)}&order=created_at.asc&limit=500`,
+      ]);
       const rows = Array.isArray(result.data) ? result.data : [];
       res.status(200).json(rows.map((row) => normalizeCaseItem(row, portalMode)));
       return;
@@ -168,7 +174,7 @@ export default async function handler(req: any, res: any) {
       }
       const now = new Date().toISOString();
       const itemType = asText(body.type) || 'file';
-      const payload = {
+      const basePayload = {
         case_id: caseId,
         title: asText(body.title),
         description: asText(body.description),
@@ -176,15 +182,16 @@ export default async function handler(req: any, res: any) {
         status: asText(body.status) || 'missing',
         is_required: body.isRequired !== undefined ? Boolean(body.isRequired) : true,
         due_date: body.dueDate || null,
-        item_order: Number(body.order || 0),
         response: sanitizeAccessResponse(itemType, body.response),
         file_url: null,
         file_name: null,
         created_at: now,
         updated_at: now,
       };
-      const inserted = await insertWithVariants(['case_items'], [payload]);
-      const row = Array.isArray(inserted.data) && inserted.data[0] ? inserted.data[0] : payload;
+      const payloadWithItemOrder = { ...basePayload, item_order: Number(body.order || 0) };
+      const payloadWithoutItemOrder = { ...basePayload };
+      const inserted = await insertWithVariants(['case_items'], [payloadWithItemOrder, payloadWithoutItemOrder]);
+      const row = Array.isArray(inserted.data) && inserted.data[0] ? inserted.data[0] : inserted.payload;
       res.status(200).json(normalizeCaseItem(row, portalMode));
       return;
     }

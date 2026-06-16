@@ -1,0 +1,11 @@
+const fs = require('fs');
+const assert = require('assert');
+const api = fs.readFileSync('api/case-items.ts', 'utf8');
+assert.ok(api.includes('STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT'), 'missing R7 marker');
+assert.ok(api.includes('order=item_order.asc,created_at.asc'), 'GET must first prefer item_order ordering');
+assert.ok(api.includes('order=created_at.asc&limit=500'), 'GET must fallback to created_at ordering when item_order is missing');
+assert.ok(api.includes('payloadWithItemOrder'), 'POST must prepare payload with item_order');
+assert.ok(api.includes('payloadWithoutItemOrder'), 'POST must prepare payload without item_order fallback');
+assert.ok(api.includes("insertWithVariants(['case_items'], [payloadWithItemOrder, payloadWithoutItemOrder])"), 'POST must retry case_items insert without item_order');
+assert.ok(!api.includes('const payload = {\n        case_id: caseId'), 'old single payload form must not remain');
+console.log(JSON.stringify({ ok: true, stage: 'STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT', guard: 'check-stage232a-r7-case-items-item-order-schema-compat' }, null, 2));

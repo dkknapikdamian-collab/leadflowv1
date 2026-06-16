@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // CF_RUNTIME_00_R21_BRITTLE_PARSER_MASS_GUARD_SYNTAX_FIX
 // CF_RUNTIME_00_STAGE232A_R6_SCOPE_COMPAT
+// CF_RUNTIME_00_STAGE232A_R7_CASE_ITEMS_SCHEMA_COMPAT
 // CF_RUNTIME_00_R19_MASS_SCOPE_CLOSURE_ALLOWED
 // CF_RUNTIME_00_R18_SHEBANG_SCOPE_ALLOWED
 // CF_RUNTIME_00_R17_TRIAL14_SCOPE_ALLOWED
@@ -171,6 +172,11 @@ const allowedChangePrefixes = [
   'src/components/ContextActionDialogs.tsx',
   'scripts/check-stage232a-r6-lead-missing-active-source.cjs',
   'tests/stage232a-r6-lead-missing-active-source.test.cjs',
+  '_project/obsidian_updates/2026-06-16_STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT.md',
+  '_project/runs/STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT.md',
+  'api/case-items.ts',
+  'scripts/check-stage232a-r7-case-items-item-order-schema-compat.cjs',
+  'tests/stage232a-r7-case-items-item-order-schema-compat.test.cjs',
   'tests/stage107-templates-delete-and-visual-contract.test.cjs',
 ];
 

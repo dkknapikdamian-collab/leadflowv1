@@ -1637,3 +1637,31 @@ Testy:
 - npm.cmd run build
 - npm.cmd run verify:closeflow:quiet
 - git diff --check
+
+
+## 2026-06-16 05:05 Europe/Warsaw - STAGE232A_R7_CASE_ITEMS_ITEM_ORDER_SCHEMA_COMPAT
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem produkcyjny:
+- Dodanie Braku dla sprawy zwracalo PGRST204: schema cache nie ma kolumny case_items.item_order.
+- Błąd blokował zapis Braku.
+
+Zakres:
+- api/case-items.ts GET: fallback z order=item_order.asc,created_at.asc na order=created_at.asc.
+- api/case-items.ts POST: insertWithVariants próbuje payload z item_order i fallback bez item_order.
+- Bez SQL i bez migracji w tym hotfixie.
+
+Testy:
+- node scripts/check-stage232a-r7-case-items-item-order-schema-compat.cjs
+- node --test tests/stage232a-r7-case-items-item-order-schema-compat.test.cjs
+- node scripts/check-stage232a-r6-lead-missing-active-source.cjs
+- node --test tests/stage232a-r6-lead-missing-active-source.test.cjs
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- Jeśli brak na sprawie wymaga trwałego porządku listy, trzeba później zrobić schema check/migrację item_order jako osobny SQL etap.
+- Ten hotfix ma przywrócić zapis bez wymuszania migracji.
