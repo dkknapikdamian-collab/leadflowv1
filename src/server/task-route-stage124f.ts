@@ -6,6 +6,8 @@ import { normalizeTaskListContract } from '../lib/data-contract.js';
 import { normalizeCloseFlowDateTimeToUtcIso } from '../lib/calendar-timezone-contract.js';
 
 const STAGE228R17_MISSING_ITEM_DELETE_CONTRACT = 'Task route does not promote deleted/done/missing_item records to lead next action and clears matching deleted next_action_item_id';
+const STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE = 'Task route preserves missing_item/blocking_missing_item status and description bridge for LeadDetail Braki UI';
+void STAGE232A_R8_TASK_ROUTE_MISSING_ITEM_STATUS_BRIDGE;
 void STAGE228R17_MISSING_ITEM_DELETE_CONTRACT;
 
 const TASK_LIST_SELECT_STAGE124D = [
@@ -92,11 +94,26 @@ function addDateRange(path: string, field: string, from?: string | null, to?: st
 function normalizeTask(row: Record<string, unknown>) {
   const normalized = normalizeTaskListContract([row])[0] || row;
   const scheduledAt = asIsoDate((normalized as any).scheduledAt)
+
     || asIsoDate((normalized as any).dueAt)
+
     || asIsoDate((normalized as any).date)
+
     || asIsoDate((normalized as any).startAt)
+
     || asIsoDate((normalized as any).createdAt)
+
     || new Date().toISOString();
+
+  const rawStatusStage232AR8 = asText(row.status).toLowerCase();
+
+  const normalizedStatusStage232AR8 = String((normalized as any).status || row.status || 'todo');
+
+  const taskStatusStage232AR8 = rawStatusStage232AR8.includes('missing') || rawStatusStage232AR8.includes('block')
+
+    ? rawStatusStage232AR8
+
+    : normalizedStatusStage232AR8;
 
   return {
     ...normalized,
@@ -106,7 +123,7 @@ function normalizeTask(row: Record<string, unknown>) {
     date: scheduledAt.slice(0, 10),
     scheduledAt,
     dueAt: scheduledAt,
-    status: String((normalized as any).status || row.status || 'todo'),
+    status: taskStatusStage232AR8,
     priority: String((normalized as any).priority || row.priority || 'medium'),
     leadId: (normalized as any).leadId || (row.lead_id ? String(row.lead_id) : undefined),
     caseId: (normalized as any).caseId || (row.case_id ? String(row.case_id) : undefined),
@@ -347,7 +364,7 @@ export default async function taskRouteStage124FHandler(req: any, res: any) {
       record_type: 'task',
       type: body.type || 'task',
       title: body.title,
-      description: body.description || '',
+      description: body.description || (body.payload && typeof body.payload === 'object' ? String(body.payload.note || '') : '') || '',
       status: body.status || 'todo',
       priority: body.priority || 'medium',
       scheduled_at: scheduledAt,

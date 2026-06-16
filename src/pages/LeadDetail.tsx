@@ -30,6 +30,8 @@ void STAGE227F6_LEAD_TOP_STRIP_REMOVED_CADENCE_FUNNEL_WIDTH;
 const STAGE227F1_VISUAL_HIERARCHY_POLISH = 'LeadDetail visual hierarchy uses a four-card decision dashboard, no work-center super-heading and neutral lower sections';
 void STAGE227F1_VISUAL_HIERARCHY_POLISH;
 const STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH = 'LeadDetail active Braki come from linkedTasks/workItems, lead blockers are explicit blocksProgress subset, history is not active source truth';
+const STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH = 'LeadDetail renders active Braki/Blokady from timeline entries keyed by linkedTasks, with activity metadata compatibility for stripped task rows';
+void STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -456,6 +458,76 @@ function isLeadBlockerTaskStage232AR6(item: any) {
   const metadata = readMissingItemMetadataStage232AR6(item);
   if (!isActiveMissingItemTaskStage232AR6(item)) return false;
   return metadata.blocksProgress === true || metadata.status.includes('block');
+}
+
+type LeadMissingActivityMetadataStage232AR8 = {
+  taskId: string;
+  titleKey: string;
+  missingKind: string;
+  blocksProgress: boolean;
+  blockScope: string;
+};
+
+function normalizeMissingActivityTitleStage232AR8(value: unknown) {
+  return String(value || '').toLowerCase().replace(/\s+/g, ' ').trim();
+}
+
+function boolStage232AR8(value: unknown) {
+  if (value === true) return true;
+  if (typeof value === 'number') return value !== 0;
+  if (typeof value === 'string') return ['true', '1', 'yes', 'tak', 'on'].includes(value.trim().toLowerCase());
+  return false;
+}
+
+function buildLeadMissingActivityMetadataStage232AR8(activities: any[]) {
+  const byTaskId = new Map<string, LeadMissingActivityMetadataStage232AR8>();
+  const byTitle = new Map<string, LeadMissingActivityMetadataStage232AR8>();
+
+  for (const activity of activities || []) {
+    const payload = activity?.payload && typeof activity.payload === 'object' ? activity.payload : {};
+    const eventType = String(activity?.eventType || activity?.event_type || activity?.type || '').toLowerCase();
+    const payloadKind = String(payload?.kind || payload?.type || payload?.status || '').toLowerCase();
+    const isMissingActivity = eventType.includes('missing_item') || payloadKind.includes('missing_item') || payloadKind.includes('block');
+    if (!isMissingActivity) continue;
+    if (eventType.includes('deleted') || String(payload?.status || '').toLowerCase() === 'deleted') continue;
+
+    const title = String(payload?.title || payload?.itemTitle || activity?.title || '').trim();
+    const titleKey = normalizeMissingActivityTitleStage232AR8(title);
+    const taskId = String(payload?.taskId || payload?.task_id || '').trim();
+    const status = String(payload?.status || '').toLowerCase();
+    const metadata: LeadMissingActivityMetadataStage232AR8 = {
+      taskId,
+      titleKey,
+      missingKind: String(payload?.missingKind || '').toLowerCase(),
+      blocksProgress: boolStage232AR8(payload?.blocksProgress) || status.includes('block') || eventType.includes('block'),
+      blockScope: String(payload?.blockScope || '').trim(),
+    };
+
+    if (taskId) byTaskId.set(taskId, metadata);
+    if (titleKey) byTitle.set(titleKey, metadata);
+  }
+
+  return { byTaskId, byTitle };
+}
+
+function readActivityMissingMetadataStage232AR8(item: any, index: ReturnType<typeof buildLeadMissingActivityMetadataStage232AR8>) {
+  const raw = item?.raw || item || {};
+  const id = String(raw?.id || item?.id || '').replace(/^task:/, '').trim();
+  const titleKey = normalizeMissingActivityTitleStage232AR8(raw?.title || item?.title || '');
+  return (id && index.byTaskId.get(id)) || (titleKey && index.byTitle.get(titleKey)) || null;
+}
+
+function isActiveMissingItemTaskStage232AR8(item: any, index: ReturnType<typeof buildLeadMissingActivityMetadataStage232AR8>) {
+  if (isActiveMissingItemTaskStage232AR6(item)) return true;
+  const metadata = readActivityMissingMetadataStage232AR8(item, index);
+  const rawStatus = String((item?.raw || item || {})?.status || item?.status || '').toLowerCase();
+  return Boolean(metadata) && !isDoneStatus(rawStatus);
+}
+
+function isLeadBlockerTaskStage232AR8(item: any, index: ReturnType<typeof buildLeadMissingActivityMetadataStage232AR8>) {
+  if (isLeadBlockerTaskStage232AR6(item)) return true;
+  const metadata = readActivityMissingMetadataStage232AR8(item, index);
+  return Boolean(metadata?.blocksProgress);
 }
 
 function isWorkItemOverdue(dateValue: unknown, status: unknown) {
@@ -1189,18 +1261,33 @@ useEffect(() => {
 
   const timeline = useMemo(() => buildTimeline(sortedLinkedTasks, sortedLinkedEvents), [sortedLinkedEvents, sortedLinkedTasks]);
   const activeLeadWorkEntries = useMemo(() => timeline.filter((entry) => !isDoneStatus(entry.status)), [timeline]);
-  const activeMissingItemEntriesStage232AR6 = useMemo(
-    () => linkedTasks.filter((entry: any) => isActiveMissingItemTaskStage232AR6(entry)),
-    [linkedTasks],
+  const leadMissingActivityMetadataStage232AR8 = useMemo(
+    () => buildLeadMissingActivityMetadataStage232AR8(activities),
+    [activities],
   );
-  const activeMissingItemEntriesStage228R19R2 = activeMissingItemEntriesStage232AR6;
+  const activeMissingTaskIdsStage232AR8 = useMemo(() => {
+    const ids = new Set<string>();
+    linkedTasks
+      .filter((entry: any) => isActiveMissingItemTaskStage232AR8(entry, leadMissingActivityMetadataStage232AR8))
+      .forEach((entry: any) => {
+        const id = String(entry?.id || '').trim();
+        if (id) ids.add(id);
+      });
+    return ids;
+  }, [leadMissingActivityMetadataStage232AR8, linkedTasks]);
+  const activeMissingItemEntriesStage232AR8 = useMemo(
+    () => timeline.filter((entry) => entry.kind === 'task' && activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim())),
+    [activeMissingTaskIdsStage232AR8, timeline],
+  );
+  const activeMissingItemEntriesStage232AR6 = activeMissingItemEntriesStage232AR8;
+  const activeMissingItemEntriesStage228R19R2 = activeMissingItemEntriesStage232AR8;
   const leadBlockerEntries = useMemo(
-    () => activeMissingItemEntriesStage232AR6.filter((entry: any) => isLeadBlockerTaskStage232AR6(entry)),
-    [activeMissingItemEntriesStage232AR6],
+    () => activeMissingItemEntriesStage232AR8.filter((entry: any) => isLeadBlockerTaskStage232AR8(entry.raw || entry, leadMissingActivityMetadataStage232AR8)),
+    [activeMissingItemEntriesStage232AR8, leadMissingActivityMetadataStage232AR8],
   );
   const leadNextActionEntries = useMemo(
-    () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && (entry.kind === 'task' || entry.kind === 'event')),
-    [activeLeadWorkEntries],
+    () => activeLeadWorkEntries.filter((entry) => !isMissingItemTimelineEntry(entry) && !activeMissingTaskIdsStage232AR8.has(String(entry.raw?.id || '').trim()) && (entry.kind === 'task' || entry.kind === 'event')),
+    [activeLeadWorkEntries, activeMissingTaskIdsStage232AR8],
   );
   const displayedLeadWorkEntries = leadNextActionEntries.slice(0, 5);
   const leadActiveWorkPreviewEntries = activeLeadWorkEntries.slice(0, 5);
@@ -2428,9 +2515,9 @@ useEffect(() => {
                       key: 'blockers' as LeadActionAccordionGroup,
                       tone: 'blockers',
                       label: 'Braki i blokady',
-                      count: leadBlockerEntries.length,
+                      count: activeMissingItemEntriesStage228R19R2.length,
                       empty: 'Brak jawnych braków i blokad przy tym leadzie.',
-                      items: leadBlockerEntries.slice(0, 5),
+                      items: activeMissingItemEntriesStage228R19R2.slice(0, 5),
                       icon: <AlertTriangle className="h-4 w-4" />,
                     },
                     {
@@ -2479,12 +2566,12 @@ useEffect(() => {
                                     <div className="lead-detail-row-actions lead-detail-work-row__actions lead-detail-work-actions-block">
                                       <LeadActionButton onClick={() => (entry.kind === 'task' ? openLinkedTaskEditor(entry.raw) : openLinkedEventEditor(entry.raw))}>Edytuj</LeadActionButton>
                                       <LeadActionButton onClick={() => (entry.kind === 'task' ? handleRescheduleLinkedTask(entry.raw, 24 * 60 * 60 * 1000, 'Jutro') : handleRescheduleLinkedEvent(entry.raw, 24 * 60 * 60 * 1000, 'Jutro'))} disabled={linkedEntryActionId !== null}>Jutro</LeadActionButton>
-                                      {isMissingItemTimelineEntry(entry) ? (
+                                      {(group.key === 'blockers' || isMissingItemTimelineEntry(entry)) ? (
                                         <LeadActionButton data-stage228r13-lead-missing-resolve-action="true" onClick={() => handleResolveLeadMissingItemStage228R13(entry)} disabled={linkedEntryActionId !== null}>Rozwiąż brak</LeadActionButton>
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleToggleLinkedTask(entry.raw) : handleToggleLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Zrobione</LeadActionButton>
                                       )}
-                                      {isMissingItemTimelineEntry(entry) ? (
+                                      {(group.key === 'blockers' || isMissingItemTimelineEntry(entry)) ? (
                                         <LeadActionButton data-stage228r15-lead-missing-delete-action="true" onClick={() => handleDeleteLeadMissingItemStage228R15(entry)} disabled={linkedEntryActionId !== null}>Usuń brak</LeadActionButton>
                                       ) : (
                                         <LeadActionButton onClick={() => (entry.kind === 'task' ? handleDeleteLinkedTask(entry.raw) : handleDeleteLinkedEvent(entry.raw))} disabled={linkedEntryActionId !== null}>Usuń</LeadActionButton>

@@ -181,3 +181,56 @@ Testy:
 Ryzyka:
 - Jeśli brak na sprawie wymaga trwałego porządku listy, trzeba później zrobić schema check/migrację item_order jako osobny SQL etap.
 - Ten hotfix ma przywrócić zapis bez wymuszania migracji.
+
+
+## 2026-06-16 06:55 Europe/Warsaw - STAGE232A_R8_LEAD_MISSING_BLOCKER_UI_SOURCE_TRUTH
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- R8-R4 czesciowo zapisal LeadDetail.tsx i ContextActionDialogs.tsx, a potem zatrzymal sie na data-contract przez zbyt krucha kotwice.
+- Ten wpis domyka stan posredni: data-contract, task-route, guard/test, CF-RUNTIME scope, run report i Obsidian payload.
+
+Zakres:
+- LeadDetail: aktywne Braki nadal pochodza z linkedTasks, ale renderuja sie jako timeline entries.
+- LeadDetail: Najblizsze dzialania wykluczaja aktywne Braki.
+- LeadDetail: Braki i blokady licza wszystkie aktywne Braki; top card Blokada liczy tylko subset blokujacy.
+- ContextActionDialogs: activity dostaje taskId i explicit blocker status.
+- data-contract/task-route: zachowuja missing_item/blocking_missing_item status.
+
+Testy:
+- node scripts/check-stage232a-r8-lead-missing-blocker-ui-source-truth.cjs
+- node --test tests/stage232a-r8-lead-missing-blocker-ui-source-truth.test.cjs
+- guard/test R7
+- guard/test R6
+- node scripts/check-cf-runtime-00-source-truth.cjs
+- npm.cmd run build
+- npm.cmd run verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- R8 ma kompatybilnosc po tytule dla starych rekordow bez taskId; dziala tylko gdy istnieje aktywny task, aby historia sama nie wskrzeszala brakow.
+- Po deployu wymagany reczny smoke na tym samym leadzie.
+
+
+## 2026-06-16 07:10 Europe/Warsaw - STAGE232A_R8_R6_R6_GUARD_COMPAT_CLOSURE
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- R8-R5 domknal kod i nowy guard/test R8, ale stary guard R6 byl zbyt literalny.
+- R6 guard szukal dokladnego tokenu isActiveMissingItemTaskStage232AR6(entry), mimo ze R8 zachowal zrodlo linkedTasks przez successor helper isActiveMissingItemTaskStage232AR8(entry, leadMissingActivityMetadataStage232AR8).
+
+Zakres:
+- Aktualizacja scripts/check-stage232a-r6-lead-missing-active-source.cjs.
+- Aktualizacja tests/stage232a-r6-lead-missing-active-source.test.cjs.
+- Brak zmian funkcjonalnych w UI ponad R8-R5.
+
+Testy:
+- R8 guard/test
+- R7 guard/test
+- R6 guard/test po kompatybilnosci
+- CF-RUNTIME guard
+- build
+- verify:closeflow:quiet
+- git diff --check

@@ -627,6 +627,9 @@ export function normalizeCaseContract(row: DataRecord): CaseDto {
   };
 }
 
+const DATA_CONTRACT_STAGE232A_R8_PRESERVE_MISSING_TASK_STATUS = 'normalizeTaskContract preserves missing_item/blocking_missing_item status so LeadDetail can route Braki/Blokady';
+void DATA_CONTRACT_STAGE232A_R8_PRESERVE_MISSING_TASK_STATUS;
+
 export function normalizeTaskContract(row: DataRecord): TaskDto {
   const scheduledAt =
     toIsoDateTime(row.scheduledAt) ||
@@ -639,12 +642,22 @@ export function normalizeTaskContract(row: DataRecord): TaskDto {
     null;
   const createdAt = toIsoDateTime(row.createdAt) || toIsoDateTime(row.created_at);
 
+  const rawTaskStatusStage232AR8 = pickText(row, ['status'], '').toLowerCase();
+
+  const normalizedTaskStatusStage232AR8 = normalizeTaskStatus(row.status);
+
+  const taskStatusStage232AR8 = rawTaskStatusStage232AR8.includes('missing') || rawTaskStatusStage232AR8.includes('block')
+
+    ? rawTaskStatusStage232AR8
+
+    : normalizedTaskStatusStage232AR8;
+
   return {
     ...row,
     id: pickText(row, ['id'], crypto.randomUUID()),
     workspaceId: pickText(row, ['workspaceId', 'workspace_id'], ''),
     title: pickText(row, ['title', 'name', 'summary'], 'Zadanie'),
-    status: normalizeTaskStatus(row.status),
+    status: taskStatusStage232AR8,
     type: pickText(row, ['type', 'taskType', 'task_type', 'recordType', 'record_type'], 'task'),
     priority: normalizePriority(row.priority),
     scheduledAt,

@@ -33,6 +33,8 @@ void STAGE228R12_CONTEXT_ACTION_BLOCKER_HOST;
 const STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA = 'ContextActionDialogs persists explicit Brak/Blokada metadata from the missing item modal';
 void STAGE232A_R4_CONTEXT_ACTION_MISSING_BLOCKER_METADATA;
 const STAGE232A_R6_CONTEXT_ACTION_MISSING_BLOCKER_TASK_PERSISTENCE = 'ContextActionDialogs persists missingKind blocksProgress blockScope on task and no-flicker saved record for hard refresh truth';
+const STAGE232A_R8_CONTEXT_ACTION_TASK_ID_ACTIVITY_BRIDGE = 'ContextActionDialogs stores taskId and explicit blocker status in missing_item activity payload for LeadDetail UI compatibility';
+void STAGE232A_R8_CONTEXT_ACTION_TASK_ID_ACTIVITY_BRIDGE;
 void STAGE232A_R6_CONTEXT_ACTION_MISSING_BLOCKER_TASK_PERSISTENCE;
 const STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY = STAGE17_CONTEXT_ACTION_CONTRACT_REGISTRY_V1;
 const STAGE15_CONTEXT_ACTION_EXPLICIT_TRIGGER_CONTRACT = 'Explicit data-context-action-kind routes task, event, note and blocker through the same shared dialog host';
@@ -325,9 +327,10 @@ export default function ContextActionDialogsHost() {
             source: 'context_action_dialogs_blocker',
             marker: request.recordType === 'lead' ? 'stage228r12_context_action_blocker_lead' : 'stage228r12_context_action_blocker_client',
             recordType: request.recordType,
+            taskId: (createdMissingTask as any)?.id || null,
             kind: 'missing_item',
             type: 'missing_item',
-            status: 'missing_item',
+            status: draft.blocksProgress ? 'blocking_missing_item' : 'missing_item',
             title: draft.title,
             note: draft.note,
             content: draft.note,
