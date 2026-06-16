@@ -3982,3 +3982,49 @@
   border-color: #93c5fd !important;
   color: #1d4ed8 !important;
 }
+
+
+/* STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE
+   The expanded Braki i blokady body must not contain a neutral/white inner card.
+   Empty state and rows inside the blockers group use the same amber missing-item tone as the group.
+*/
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-action-accordion-content {
+  background: #fffaeb !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-action-empty,
+.lead-detail-stage228d-action-center [data-stage232a-r10-r1-empty-tone="missing"] {
+  border-color: #fedf89 !important;
+  background: #fff7df !important;
+  color: #92400e !important;
+  box-shadow: inset 0 0 0 1px rgba(217, 119, 6, 0.06) !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-work-row,
+.lead-detail-stage228d-action-center [data-stage232a-r10-r1-missing-tone-row="true"] {
+  border-color: #fedf89 !important;
+  background: #fffaeb !important;
+  color: #78350f !important;
+  box-shadow: 0 8px 18px rgba(180, 83, 9, 0.05) !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-work-row__icon,
+.lead-detail-stage228d-action-center [data-stage232a-r10-r1-missing-tone-row="true"] .lead-detail-work-row__icon {
+  background: #fef3c7 !important;
+  color: #b45309 !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-work-row__content small,
+.lead-detail-stage228d-action-center [data-stage232a-r10-r1-missing-tone-row="true"] .lead-detail-work-row__content small {
+  color: #92400e !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-work-row__content h3,
+.lead-detail-stage228d-action-center [data-stage232a-r10-r1-missing-tone-row="true"] .lead-detail-work-row__content h3 {
+  color: #78350f !important;
+}
+
+.lead-detail-stage228d-action-center .lead-detail-action-accordion-group--blockers .lead-detail-work-row__content p,
+.lead-detail-stage228d-action-center [data-stage232a-r10-r1-missing-tone-row="true"] .lead-detail-work-row__content p {
+  color: #92400e !important;
+}

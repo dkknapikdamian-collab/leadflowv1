@@ -36,6 +36,8 @@ const STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING = 'LeadDetail blocke
 void STAGE232A_R9_BLOCKER_TOP_CARD_SUMMARY_AND_ALL_MISSING;
 const STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH = 'LeadDetail top decision cards share the same tone palette as the expandable action groups and Brak modal follows quick-lead form visual truth';
 void STAGE232A_R10_LEAD_DETAIL_VISUAL_SOURCE_TRUTH;
+const STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE = 'LeadDetail Braki i blokady accordion empty state and item rows use the same amber missing-item tone as the group itself';
+void STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE;
 void STAGE232A_R6_LEAD_MISSING_BLOCKER_ACTIVE_LIST_AND_TOP_CARD_SOURCE_TRUTH;
 import { type FormEvent, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -2563,11 +2565,11 @@ useEffect(() => {
                         {isOpen ? (
                           <div className="lead-detail-action-accordion-content" data-stage228d-lead-action-accordion-content="true">
                             {group.items.length === 0 ? (
-                              <div className="lead-detail-light-empty lead-detail-action-empty">{group.empty}</div>
+                              <div className="lead-detail-light-empty lead-detail-action-empty" data-stage232a-r10-r1-empty-tone={group.key === 'blockers' ? 'missing' : String(group.key)}>{group.empty}</div>
                             ) : (
                               <div className="lead-detail-work-list lead-detail-stage228d-work-list" data-stage228d-lead-action-visible-limit="5">
                                 {group.items.map((entry) => (
-                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true">
+                                  <article key={`stage228d-${String(group.key)}-${entry.id}`} className={`lead-detail-work-row ${entry.isOverdue || group.key === 'blockers' ? 'lead-detail-work-row-overdue' : ''}`} data-stage228d-lead-work-row="true" data-stage231g-work-row-layout="true" data-stage232a-r10-r1-group-key={String(group.key)} data-stage232a-r10-r1-missing-tone-row={group.key === 'blockers' ? 'true' : 'false'}>
                                     <span className="lead-detail-work-row__icon lead-detail-work-icon">{entry.kind === 'task' ? <CheckCircle2 className="h-4 w-4" /> : <EntityIcon entity="event" className="h-4 w-4" />}</span>
                                     <div className="lead-detail-work-row__content lead-detail-work-content">
                                       <small>{entry.kind === 'task' ? 'Zadanie' : 'Wydarzenie'} • {entry.statusLabel}</small>

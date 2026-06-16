@@ -1800,3 +1800,30 @@ Testy:
 Ryzyka:
 - To jest etap wizualny: konieczny manual smoke na LeadDetail z modalem Dodaj brak i top cardami.
 - Nie ruszano źródeł danych ani logiki zapisu.
+
+
+## 2026-06-16 23:45 Europe/Warsaw - STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE
+
+Status: PASS_LOCAL_DO_SPRAWDZENIA
+
+Problem:
+- R10 poprawil kolory top cardow i modal, ale po screenshocie Damiana wewnetrzny kafelek/empty state w rozwinietej liscie Braki i blokady nadal wygladal neutralnie.
+- Decyzja: nie wystarczy zolty header grupy. Wewnetrzny pusty kafelek i wiersze w grupie blockers musza miec amber/missing tone.
+
+Zakres:
+- LeadDetail dodaje jawne data attr dla empty state i wierszy w grupie blockers.
+- visual-stage14 dodaje R10-R1 CSS: amber background/border/text dla empty state i wierszy w Braki i blokady.
+- Dodany guard/test R10-R1.
+- Dodany mirror placementu do _project/04_STAGE_QUEUE_PLACEMENT_SYNC_2026_06_16.md.
+
+Testy:
+- node scripts/check-stage232a-r10-r1-missing-group-inner-tone.cjs
+- node --test tests/stage232a-r10-r1-missing-group-inner-tone.test.cjs
+- R10/R9/R8 guardy regresyjne
+- CF-RUNTIME guard
+- build
+- verify:closeflow:quiet
+- git diff --check
+
+Ryzyka:
+- Zmiana wizualna CSS, bez zmian danych. Wymaga manualnego smoke na ekranie.

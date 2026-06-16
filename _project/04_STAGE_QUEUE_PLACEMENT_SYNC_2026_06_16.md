@@ -51,3 +51,13 @@ Nie rozpisuj runtime z pliku rozproszonego, dopoki nie ma mirroru do `_project/0
 ## Nastepny krok
 
 Przy najblizszym ZIP runtime `STAGE232J_R1` wykonac tez pelny update centralnej kolejki `_project/04_ETAPY_ROZWOJU_APLIKACJI.md`, jesli lokalne narzedzie moze bezpiecznie zrobic patch na dlugim pliku bez utraty historii.
+
+
+## 2026-06-16 23:45 Europe/Warsaw - STAGE232A_R10_R1_MISSING_GROUP_INNER_TONE
+
+Status: RUNTIME_VISUAL_FIX / MIRRORED_TO_PROJECT_04
+
+Placement:
+- Ten etap jest dopisany do centralnych _project/04... i nie zostaje tylko w czacie ani payloadzie.
+- Zakres: korekta koloru wewnetrznego kafelka/empty state i wierszy w grupie Braki i blokady po screenshocie Damiana.
+- Nie zmienia kolejki glownych duzych etapow; jest mikroetap naprawczy po R10.
